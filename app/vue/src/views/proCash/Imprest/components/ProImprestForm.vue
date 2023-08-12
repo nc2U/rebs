@@ -15,12 +15,7 @@ const props = defineProps({
   imprest: { type: Object as PropType<ProjectCashBook>, default: null },
 })
 
-const emit = defineEmits([
-  'multi-submit',
-  'on-delete',
-  'close',
-  'on-bank-update',
-])
+const emit = defineEmits(['multi-submit', 'on-delete', 'close', 'on-bank-update'])
 
 const refBankAcc = ref()
 const refDelModal = ref()
@@ -114,19 +109,15 @@ const getAccName = (pk: number) =>
 
 const isImprest = computed(() =>
   form.bank_account_to
-    ? allProBankAccList.value.filter(ba => ba.pk === form.bank_account_to)[0]
-        .is_imprest
+    ? allProBankAccList.value.filter(ba => ba.pk === form.bank_account_to)[0].is_imprest
     : true,
 )
 
-const fetchProFormAccD2List = (sort: number | null) =>
-  proCashStore.fetchProFormAccD2List(sort)
+const fetchProFormAccD2List = (sort: number | null) => proCashStore.fetchProFormAccD2List(sort)
 const fetchProFormAccD3List = (d1: number | null, sort: number | null) =>
   proCashStore.fetchProFormAccD3List(d1, sort)
 
-const requireItem = computed(
-  () => !!form.project_account_d2 && !!form.project_account_d3,
-)
+const requireItem = computed(() => !!form.project_account_d2 && !!form.project_account_d3)
 
 const sepDisabled = computed(() => {
   const disabled = !!form.project_account_d2 || !!form.project_account_d3
@@ -233,9 +224,7 @@ const sepD1_change = () => {
 
 const accountStore = useAccount()
 const allowedPeriod = computed(() =>
-  props.imprest?.deal_date
-    ? accountStore.superAuth || diffDate(props.imprest.deal_date) <= 30
-    : 0,
+  props.imprest?.deal_date ? accountStore.superAuth || diffDate(props.imprest.deal_date) <= 30 : 0,
 )
 
 const onSubmit = (event: Event) => {
@@ -308,12 +297,7 @@ onBeforeMount(() => formDataSetup())
 </script>
 
 <template>
-  <CForm
-    class="needs-validation"
-    novalidate
-    :validated="validated"
-    @submit.prevent="onSubmit"
-  >
+  <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
     <CModalBody class="p-4">
       <div>
         <CRow class="mb-3">
@@ -355,27 +339,16 @@ onBeforeMount(() => formDataSetup())
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">
-                계정[상위분류]
-              </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 계정[상위분류] </CFormLabel>
               <CCol sm="8">
                 <CFormSelect
                   v-model.number="form.project_account_d2"
                   :required="!form.is_separate"
-                  :disabled="
-                    !form.sort ||
-                    form.is_separate ||
-                    form.sort === 3 ||
-                    form.sort === 4
-                  "
+                  :disabled="!form.sort || form.is_separate || form.sort === 3 || form.sort === 4"
                   @change="d1_change"
                 >
                   <option value="">---------</option>
-                  <option
-                    v-for="d1 in formAccD2List"
-                    :key="d1.pk"
-                    :value="d1.pk"
-                  >
+                  <option v-for="d1 in formAccD2List" :key="d1.pk" :value="d1.pk">
                     {{ d1.name }}
                   </option>
                 </CFormSelect>
@@ -384,9 +357,7 @@ onBeforeMount(() => formDataSetup())
           </CCol>
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">
-                계정[하위분류]
-              </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 계정[하위분류] </CFormLabel>
               <CCol sm="8">
                 <CFormSelect
                   v-model.number="form.project_account_d3"
@@ -399,11 +370,7 @@ onBeforeMount(() => formDataSetup())
                   "
                 >
                   <option value="">---------</option>
-                  <option
-                    v-for="d2 in formAccD3List"
-                    :key="d2.pk"
-                    :value="d2.pk"
-                  >
+                  <option v-for="d2 in formAccD3List" :key="d2.pk" :value="d2.pk">
                     <template v-if="form.sort === 3">대체</template>
                     <template v-else-if="form.sort === 4">취소</template>
                     <template v-else>{{ d2.name }}</template>
@@ -459,17 +426,9 @@ onBeforeMount(() => formDataSetup())
                 </a>
               </CFormLabel>
               <CCol sm="8">
-                <CFormSelect
-                  v-model.number="form.bank_account"
-                  required
-                  :disabled="!form.sort"
-                >
+                <CFormSelect v-model.number="form.bank_account" required :disabled="!form.sort">
                   <option value="">---------</option>
-                  <option
-                    v-for="ba in proImpBankAccs"
-                    :key="ba.value as number"
-                    :value="ba.value"
-                  >
+                  <option v-for="ba in proImpBankAccs" :key="ba.value as number" :value="ba.value">
                     {{ ba.label }}
                   </option>
                 </CFormSelect>
@@ -509,11 +468,7 @@ onBeforeMount(() => formDataSetup())
                   @change="isImprest"
                 >
                   <option value="">---------</option>
-                  <option
-                    v-for="ba in allProBankAccList"
-                    :key="ba.pk as number"
-                    :value="ba.pk"
-                  >
+                  <option v-for="ba in allProBankAccList" :key="ba.pk as number" :value="ba.pk">
                     {{ ba.alias_name }}
                   </option>
                 </CFormSelect>
@@ -533,11 +488,7 @@ onBeforeMount(() => formDataSetup())
                   min="0"
                   placeholder="출금 금액"
                   :required="form.sort !== 1"
-                  :disabled="
-                    form.sort === 1 ||
-                    !form.sort ||
-                    (imprest && !imprest.outlay)
-                  "
+                  :disabled="form.sort === 1 || !form.sort || (imprest && !imprest.outlay)"
                 />
               </CCol>
             </CRow>
@@ -553,18 +504,12 @@ onBeforeMount(() => formDataSetup())
                   min="0"
                   placeholder="입금 금액"
                   :required="form.sort === 1"
-                  :disabled="
-                    form.sort !== 1 ||
-                    !form.sort ||
-                    (imprest && !imprest.income)
-                  "
+                  :disabled="form.sort !== 1 || !form.sort || (imprest && !imprest.income)"
                 />
               </CCol>
             </CRow>
             <CRow v-else>
-              <CFormLabel class="col-sm-4 col-form-label">
-                출금 수수료
-              </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 출금 수수료 </CFormLabel>
               <CCol sm="8">
                 <CFormInput
                   v-model.number="form.charge"
@@ -583,11 +528,7 @@ onBeforeMount(() => formDataSetup())
             <CRow>
               <CFormLabel class="col-sm-2 col-form-label">비고</CFormLabel>
               <CCol sm="10">
-                <CFormTextarea
-                  v-model="form.note"
-                  placeholder="특이사항"
-                  :disabled="!form.sort"
-                />
+                <CFormTextarea v-model="form.note" placeholder="특이사항" :disabled="!form.sort" />
               </CCol>
             </CRow>
           </CCol>
@@ -611,12 +552,8 @@ onBeforeMount(() => formDataSetup())
           <CCol>
             <strong>
               <CIcon name="cilDescription" class="mr-2" />
-              {{
-                sepSummary[0] ? `입금액 합계 : ${numFormat(sepSummary[0])}` : ''
-              }}
-              {{
-                sepSummary[1] ? `출금액 합계 : ${numFormat(sepSummary[1])}` : ''
-              }}
+              {{ sepSummary[0] ? `입금액 합계 : ${numFormat(sepSummary[0])}` : '' }}
+              {{ sepSummary[1] ? `출금액 합계 : ${numFormat(sepSummary[1])}` : '' }}
             </strong>
           </CCol>
         </CRow>
@@ -626,21 +563,13 @@ onBeforeMount(() => formDataSetup())
             v-for="(sep, i) in imprest.sepItems"
             :key="sep.pk"
             class="mb-1"
-            :class="
-              sep.pk === sepItem.pk
-                ? 'text-success text-decoration-underline'
-                : ''
-            "
+            :class="sep.pk === sepItem.pk ? 'text-success text-decoration-underline' : ''"
           >
             <CCol sm="1">{{ i + 1 }}</CCol>
             <CCol sm="2">{{ sep.trader }}</CCol>
             <CCol sm="5">{{ cutString(sep.content, 20) }}</CCol>
             <CCol sm="2" class="text-right">
-              {{
-                sep.income
-                  ? numFormat(sep.income)
-                  : numFormat(sep.outlay as number)
-              }}
+              {{ sep.income ? numFormat(sep.income) : numFormat(sep.outlay as number) }}
             </CCol>
             <CCol sm="2" class="text-right">
               <CButton
@@ -661,9 +590,7 @@ onBeforeMount(() => formDataSetup())
             <CRow>
               <CCol sm="6">
                 <CRow>
-                  <CFormLabel class="col-sm-4 col-form-label">
-                    계정[상위분류]
-                  </CFormLabel>
+                  <CFormLabel class="col-sm-4 col-form-label"> 계정[상위분류] </CFormLabel>
                   <CCol sm="8">
                     <CFormSelect
                       v-model.number="sepItem.project_account_d2"
@@ -672,11 +599,7 @@ onBeforeMount(() => formDataSetup())
                       @change="sepD1_change"
                     >
                       <option value="">---------</option>
-                      <option
-                        v-for="d1 in formAccD2List"
-                        :key="d1.pk"
-                        :value="d1.pk"
-                      >
+                      <option v-for="d1 in formAccD2List" :key="d1.pk" :value="d1.pk">
                         {{ d1.name }}
                       </option>
                     </CFormSelect>
@@ -685,9 +608,7 @@ onBeforeMount(() => formDataSetup())
               </CCol>
               <CCol sm="6">
                 <CRow>
-                  <CFormLabel class="col-sm-4 col-form-label">
-                    계정[하위분류]
-                  </CFormLabel>
+                  <CFormLabel class="col-sm-4 col-form-label"> 계정[하위분류] </CFormLabel>
                   <CCol sm="8">
                     <CFormSelect
                       v-model.number="sepItem.project_account_d3"
@@ -695,11 +616,7 @@ onBeforeMount(() => formDataSetup())
                       required
                     >
                       <option value="">---------</option>
-                      <option
-                        v-for="d2 in formAccD3List"
-                        :key="d2.pk"
-                        :value="d2.pk"
-                      >
+                      <option v-for="d2 in formAccD3List" :key="d2.pk" :value="d2.pk">
                         {{ d2.name }}
                       </option>
                     </CFormSelect>
@@ -715,23 +632,15 @@ onBeforeMount(() => formDataSetup())
             <CRow>
               <CCol sm="6">
                 <CRow>
-                  <CFormLabel class="col-sm-4 col-form-label">
-                    적요
-                  </CFormLabel>
+                  <CFormLabel class="col-sm-4 col-form-label"> 적요 </CFormLabel>
                   <CCol sm="8">
-                    <CFormInput
-                      v-model="sepItem.content"
-                      maxlength="50"
-                      placeholder="거래 내용"
-                    />
+                    <CFormInput v-model="sepItem.content" maxlength="50" placeholder="거래 내용" />
                   </CCol>
                 </CRow>
               </CCol>
               <CCol sm="6">
                 <CRow>
-                  <CFormLabel class="col-sm-4 col-form-label">
-                    거래처
-                  </CFormLabel>
+                  <CFormLabel class="col-sm-4 col-form-label"> 거래처 </CFormLabel>
                   <CCol sm="8">
                     <CFormInput
                       v-model="sepItem.trader"
@@ -757,9 +666,7 @@ onBeforeMount(() => formDataSetup())
             <CRow>
               <CCol sm="6">
                 <CRow>
-                  <CFormLabel class="col-sm-4 col-form-label">
-                    거래계좌
-                  </CFormLabel>
+                  <CFormLabel class="col-sm-4 col-form-label"> 거래계좌 </CFormLabel>
                   <CCol sm="8">
                     <CFormSelect v-model.number="form.bank_account" disabled>
                       <option value="">---------</option>
@@ -777,9 +684,7 @@ onBeforeMount(() => formDataSetup())
 
               <CCol sm="6">
                 <CRow v-if="form.sort === 2">
-                  <CFormLabel class="col-sm-4 col-form-label">
-                    지출증빙
-                  </CFormLabel>
+                  <CFormLabel class="col-sm-4 col-form-label"> 지출증빙 </CFormLabel>
                   <CCol sm="8">
                     <CFormSelect v-model="sepItem.evidence" required>
                       <option value="">---------</option>
@@ -805,9 +710,7 @@ onBeforeMount(() => formDataSetup())
             <CRow>
               <CCol sm="6">
                 <CRow>
-                  <CFormLabel class="col-sm-4 col-form-label">
-                    출금액
-                  </CFormLabel>
+                  <CFormLabel class="col-sm-4 col-form-label"> 출금액 </CFormLabel>
                   <CCol sm="8">
                     <CFormInput
                       v-model.number="sepItem.outlay"
@@ -823,9 +726,7 @@ onBeforeMount(() => formDataSetup())
 
               <CCol sm="6">
                 <CRow>
-                  <CFormLabel class="col-sm-4 col-form-label">
-                    입금액
-                  </CFormLabel>
+                  <CFormLabel class="col-sm-4 col-form-label"> 입금액 </CFormLabel>
                   <CCol sm="8">
                     <CFormInput
                       v-model.number="sepItem.income"
@@ -857,17 +758,9 @@ onBeforeMount(() => formDataSetup())
     </CModalBody>
 
     <CModalFooter>
-      <CButton type="button" color="light" @click="emit('close')">
-        닫기
-      </CButton>
+      <CButton type="button" color="light" @click="emit('close')"> 닫기 </CButton>
       <slot name="footer">
-        <CButton
-          v-if="sepItem.pk"
-          type="button"
-          color="dark"
-          variant="outline"
-          @click="sepRemove"
-        >
+        <CButton v-if="sepItem.pk" type="button" color="dark" variant="outline" @click="sepRemove">
           취소
         </CButton>
         <CButton
@@ -877,12 +770,7 @@ onBeforeMount(() => formDataSetup())
         >
           저장
         </CButton>
-        <CButton
-          v-if="isModify"
-          type="button"
-          color="danger"
-          @click="deleteConfirm"
-        >
+        <CButton v-if="isModify" type="button" color="danger" @click="deleteConfirm">
           삭제
         </CButton>
       </slot>
@@ -892,8 +780,7 @@ onBeforeMount(() => formDataSetup())
   <ConfirmModal ref="refDelModal">
     <template #header> 운영비(전도금) 거래 정보 삭제</template>
     <template #default>
-      삭제한 데이터는 복구할 수 없습니다. 해당 입출금 거래 정보를
-      삭제하시겠습니까?
+      삭제한 데이터는 복구할 수 없습니다. 해당 입출금 거래 정보를 삭제하시겠습니까?
     </template>
     <template #footer>
       <CButton color="danger" @click="deleteObject">삭제</CButton>

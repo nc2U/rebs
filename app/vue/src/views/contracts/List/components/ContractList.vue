@@ -51,11 +51,7 @@ const pageSelect = (page: number) => emit('page-select', page)
     </CTableHead>
 
     <CTableBody>
-      <Contract
-        v-for="contract in contractList"
-        :key="contract.pk"
-        :contract="contract"
-      />
+      <Contract v-for="contract in contractList" :key="contract.pk" :contract="contract" />
     </CTableBody>
   </CTable>
 

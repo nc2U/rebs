@@ -55,9 +55,7 @@ defineExpose({ listFiltering })
         <strong> 직급 수 조회 결과 : {{ numFormat(gradesCount) }} 건 </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
-        <CButton color="info" size="sm" @click="resetForm">
-          검색조건 초기화
-        </CButton>
+        <CButton color="info" size="sm" @click="resetForm"> 검색조건 초기화 </CButton>
       </CCol>
     </CRow>
   </CCallout>

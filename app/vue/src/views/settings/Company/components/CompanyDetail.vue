@@ -42,17 +42,13 @@ const toCreate = () => {
           </CTableHead>
           <CTableBody>
             <CTableRow>
-              <CTableHeaderCell scope="row" :color="TableSecondary">
-                회사명
-              </CTableHeaderCell>
+              <CTableHeaderCell scope="row" :color="TableSecondary"> 회사명 </CTableHeaderCell>
               <CTableDataCell>
                 <span v-if="company">{{ company.name }}</span>
               </CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell scope="row" :color="TableSecondary">
-                대표자명
-              </CTableHeaderCell>
+              <CTableHeaderCell scope="row" :color="TableSecondary"> 대표자명 </CTableHeaderCell>
               <CTableDataCell>
                 <span v-if="company">{{ company.ceo }}</span>
               </CTableDataCell>
@@ -74,42 +70,32 @@ const toCreate = () => {
               </CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell scope="row" :color="TableSecondary">
-                업태
-              </CTableHeaderCell>
+              <CTableHeaderCell scope="row" :color="TableSecondary"> 업태 </CTableHeaderCell>
               <CTableDataCell>
                 <span v-if="company">{{ company.business_cond }}</span>
               </CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell scope="row" :color="TableSecondary">
-                종목
-              </CTableHeaderCell>
+              <CTableHeaderCell scope="row" :color="TableSecondary"> 종목 </CTableHeaderCell>
               <CTableDataCell>
                 <span v-if="company">{{ company.business_even }}</span>
               </CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell scope="row" :color="TableSecondary">
-                설립일자
-              </CTableHeaderCell>
+              <CTableHeaderCell scope="row" :color="TableSecondary"> 설립일자 </CTableHeaderCell>
               <CTableDataCell>
                 <span v-if="company">{{ company.es_date }}</span>
               </CTableDataCell>
             </CTableRow>
             <CTableRow>
-              <CTableHeaderCell scope="row" :color="TableSecondary">
-                개업일자
-              </CTableHeaderCell>
+              <CTableHeaderCell scope="row" :color="TableSecondary"> 개업일자 </CTableHeaderCell>
               <CTableDataCell>
                 <span v-if="company">{{ company.op_date }}</span>
               </CTableDataCell>
             </CTableRow>
 
             <CTableRow>
-              <CTableHeaderCell scope="row" :color="TableSecondary">
-                회사주소
-              </CTableHeaderCell>
+              <CTableHeaderCell scope="row" :color="TableSecondary"> 회사주소 </CTableHeaderCell>
               <CTableDataCell>
                 <span v-if="company">
                   <span v-if="company.zipcode">({{ company.zipcode }})</span>
@@ -127,12 +113,7 @@ const toCreate = () => {
   <CCardFooter>
     <CRow class="justify-content-between">
       <CCol xs="auto">
-        <CButton
-          type="button"
-          color="success"
-          :disabled="!company"
-          @click="toEdit"
-        >
+        <CButton type="button" color="success" :disabled="!company" @click="toEdit">
           <CIcon name="cil-check-circle" />
           수정하기
         </CButton>

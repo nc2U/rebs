@@ -41,10 +41,7 @@ export const useProjectData = defineStore('projectData', () => {
   )
 
   // actions
-  const fetchTypeList = (
-    projId: number,
-    sort?: '1' | '2' | '3' | '4' | '5' | '6',
-  ) =>
+  const fetchTypeList = (projId: number, sort?: '1' | '2' | '3' | '4' | '5' | '6') =>
     api
       .get(`/type/?project=${projId}&sort=${sort || ''}`)
       .then(res => {
@@ -91,10 +88,7 @@ export const useProjectData = defineStore('projectData', () => {
   )
 
   // actions
-  const fetchFloorTypeList = (
-    projId: number,
-    sort?: '1' | '2' | '3' | '4' | '5' | '6',
-  ) =>
+  const fetchFloorTypeList = (projId: number, sort?: '1' | '2' | '3' | '4' | '5' | '6') =>
     api
       .get(`/floor/?project=${projId}&sort=${sort || ''}`)
       .then(res => (floorTypeList.value = res.data.results))
@@ -172,25 +166,17 @@ export const useProjectData = defineStore('projectData', () => {
         }))
       : [],
   )
-  const mallExcludedUnits = computed(() =>
-    houseUnitList.value.filter(u => u.unit_type.sort < '5'),
-  )
+  const mallExcludedUnits = computed(() => houseUnitList.value.filter(u => u.unit_type.sort < '5'))
   const unitSummary = computed(() =>
     mallExcludedUnits.value
       ? {
           totalNum: mallExcludedUnits.value.length,
           holdNum: mallExcludedUnits.value.filter(u => u.is_hold).length,
           appNum: mallExcludedUnits.value.filter(
-            u =>
-              u.key_unit &&
-              u.key_unit.contract &&
-              u.key_unit.contract.contractor.status === '1',
+            u => u.key_unit && u.key_unit.contract && u.key_unit.contract.contractor.status === '1',
           ).length,
           contNum: mallExcludedUnits.value.filter(
-            u =>
-              u.key_unit &&
-              u.key_unit.contract &&
-              u.key_unit.contract.contractor.status === '2',
+            u => u.key_unit && u.key_unit.contract && u.key_unit.contract.contractor.status === '2',
           ).length,
         }
       : { totalNum: 0, holdNum: 0, appNum: 0, contNum: 0 },
@@ -213,11 +199,7 @@ export const useProjectData = defineStore('projectData', () => {
 
   const fetchNumUnitByType = (project: number, unit_type: number) =>
     api
-      .get(
-        `/house-unit/?building_unit__project=${
-          project || ''
-        }&unit_type=${unit_type}`,
-      )
+      .get(`/house-unit/?building_unit__project=${project || ''}&unit_type=${unit_type}`)
       .then(res => (numUnitByType.value = res.data.count))
       .catch(err => errorHandle(err.response.data))
 
@@ -230,9 +212,7 @@ export const useProjectData = defineStore('projectData', () => {
       .post(`/house-unit/`, houseUnits)
       .then(() =>
         fetchNumUnitByType(project, unit_type).then(() =>
-          api
-            .post(`/key-unit/`, keyUnits)
-            .catch(err => errorHandle(err.response.data)),
+          api.post(`/key-unit/`, keyUnits).catch(err => errorHandle(err.response.data)),
         ),
       )
       .catch(err => errorHandle(err.response.data))
@@ -242,9 +222,7 @@ export const useProjectData = defineStore('projectData', () => {
     const { pk, project, ...unitData } = payload
     return api
       .put(`/house-unit/${pk}/`, unitData)
-      .then(res =>
-        fetchNumUnitByType(project, res.data.unit_type).then(() => message()),
-      )
+      .then(res => fetchNumUnitByType(project, res.data.unit_type).then(() => message()))
       .catch(err => errorHandle(err.response.data))
   }
 

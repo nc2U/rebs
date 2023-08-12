@@ -47,12 +47,7 @@ const createEditor = () => {
       change: () => emit('update:modelValue', e.getHTML()),
     },
     theme: theme.value,
-    plugins: [
-      colorSyntax,
-      codeSyntaxHighlight,
-      tableMergedCell,
-      [chart, chartOptions],
-    ],
+    plugins: [colorSyntax, codeSyntaxHighlight, tableMergedCell, [chart, chartOptions]],
   })
   return e
 }

@@ -52,15 +52,7 @@ export interface SimpleSuitCase {
 }
 
 export type Post = {
-  [key: string]:
-    | undefined
-    | number
-    | number[]
-    | null
-    | string
-    | boolean
-    | Link[]
-    | AFile[]
+  [key: string]: undefined | number | number[] | null | string | boolean | Link[] | AFile[]
   pk?: number | null
   company: number | null
   project: number | null | string

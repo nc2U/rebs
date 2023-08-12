@@ -41,18 +41,14 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         <CTableHeaderCell rowspan="2" scope="col">지번</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">지목</CTableHeaderCell>
         <CTableHeaderCell colspan="2" scope="col">공부상 면적</CTableHeaderCell>
-        <CTableHeaderCell v-if="isReturned" colspan="2" scope="col">
-          환지 면적
-        </CTableHeaderCell>
+        <CTableHeaderCell v-if="isReturned" colspan="2" scope="col"> 환지 면적 </CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">소유자 목록</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">비고</CTableHeaderCell>
       </CTableRow>
       <CTableRow class="text-center">
         <CTableHeaderCell scope="col">m<sup>2</sup></CTableHeaderCell>
         <CTableHeaderCell scope="col">평</CTableHeaderCell>
-        <CTableHeaderCell v-if="isReturned" scope="col">
-          m<sup>2</sup>
-        </CTableHeaderCell>
+        <CTableHeaderCell v-if="isReturned" scope="col"> m<sup>2</sup> </CTableHeaderCell>
         <CTableHeaderCell v-if="isReturned" scope="col">평</CTableHeaderCell>
       </CTableRow>
     </CTableHead>

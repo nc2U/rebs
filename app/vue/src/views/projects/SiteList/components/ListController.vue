@@ -54,9 +54,7 @@ const resetForm = () => {
         <strong> 필지 건수 조회 결과 : {{ numFormat(siteCount) }} 건 </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
-        <CButton color="info" size="sm" @click="resetForm">
-          검색조건 초기화
-        </CButton>
+        <CButton color="info" size="sm" @click="resetForm"> 검색조건 초기화 </CButton>
       </CCol>
     </CRow>
   </CCallout>

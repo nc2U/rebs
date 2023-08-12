@@ -30,11 +30,7 @@ const multiSubmit = (payload: Position) => emit('multi-submit', payload)
   <FormModal ref="refFormModal" size="lg">
     <template #header>직위 정보 등록</template>
     <template #default>
-      <PositionForm
-        :company="company"
-        @multi-submit="multiSubmit"
-        @close="refFormModal.close()"
-      />
+      <PositionForm :company="company" @multi-submit="multiSubmit" @close="refFormModal.close()" />
     </template>
   </FormModal>
 

@@ -33,8 +33,7 @@ const fetchContRelease = (pk: number) => contStore.fetchContRelease(pk)
 const fetchContReleaseList = (projId: number, page?: number) =>
   contStore.fetchContReleaseList(projId, page)
 
-const createRelease = (payload: ContractRelease) =>
-  contStore.createRelease(payload)
+const createRelease = (payload: ContractRelease) => contStore.createRelease(payload)
 const updateRelease = (payload: ContractRelease & { page: number }) =>
   contStore.updateRelease(payload)
 
@@ -98,11 +97,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @proj-select="projSelect"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
 
   <ContentBody>
     <CCardBody class="pb-5">
@@ -113,11 +108,7 @@ onBeforeMount(() => {
         @get-release="getRelease"
       />
       <ContractorAlert v-if="contractor" :contractor="contractor" />
-      <ReleasetButton
-        v-if="contractor"
-        :contractor="contractor"
-        @on-submit="onSubmit"
-      />
+      <ReleasetButton v-if="contractor" :contractor="contractor" @on-submit="onSubmit" />
       <TableTitleRow
         title="계약 해지 현황"
         color="grey"
@@ -125,11 +116,7 @@ onBeforeMount(() => {
         :url="downloadUrl"
         :disabled="!project"
       />
-      <ReleaseList
-        @page-select="pageSelect"
-        @get-release="getRelease"
-        @on-submit="onSubmit"
-      />
+      <ReleaseList @page-select="pageSelect" @get-release="getRelease" @on-submit="onSubmit" />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>

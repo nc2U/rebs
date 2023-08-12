@@ -34,12 +34,7 @@ const onSubmit = (event: Event) => {
 </script>
 
 <template>
-  <CForm
-    class="needs-validation"
-    novalidate
-    :validated="validated"
-    @submit.prevent="onSubmit"
-  >
+  <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
     <h1>회원가입</h1>
     <p class="text-muted">Create your account</p>
     <CInputGroup class="mb-3">
@@ -98,12 +93,7 @@ const onSubmit = (event: Event) => {
 
     <CRow>
       <CCol>
-        <CButton
-          type="button"
-          color="link"
-          class="px-0"
-          @click="$router.push({ name: 'Login' })"
-        >
+        <CButton type="button" color="link" class="px-0" @click="$router.push({ name: 'Login' })">
           로그인하러 가기
         </CButton>
       </CCol>

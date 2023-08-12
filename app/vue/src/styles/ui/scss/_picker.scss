@@ -48,11 +48,11 @@
     }
 
     &:not(:first-child) {
-      @include ltr-rtl("border-left", 0);
+      @include ltr-rtl('border-left', 0);
     }
 
     &:not(:last-child) {
-      @include ltr-rtl("border-right", 0);
+      @include ltr-rtl('border-right', 0);
     }
 
     &[readonly] {
@@ -82,9 +82,9 @@
     @include border-radius($input-border-radius-sm, 0);
 
     .picker-input-group-icon {
-      width: .875rem;
-      height: .875rem;
-      font-size: .875rem;
+      width: 0.875rem;
+      height: 0.875rem;
+      font-size: 0.875rem;
     }
   }
 
@@ -103,7 +103,7 @@
   width: 1rem;
   height: 1rem;
   font-size: 1rem;
-  @include transition(background-image .15s ease-in-out);
+  @include transition(background-image 0.15s ease-in-out);
 }
 
 .picker-footer {
@@ -113,6 +113,6 @@
   border-top: var(--#{$prefix}picker-footer-border-top);
 
   .btn + .btn {
-    @include ltr-rtl("margin-left", .5rem);
+    @include ltr-rtl('margin-left', 0.5rem);
   }
 }

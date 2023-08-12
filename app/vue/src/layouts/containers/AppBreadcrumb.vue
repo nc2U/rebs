@@ -6,15 +6,11 @@ import router from '@/router'
 const breadcrumbs = ref()
 
 const getBreadcrumbs = () => {
-  return router.currentRoute.value.matched.map(
-    (route: RouteLocationMatched) => ({
-      active:
-        route.path === router.currentRoute.value.fullPath ||
-        route.path.includes(':'),
-      name: route.name,
-      path: `${router.options.history.base}${route.path}`,
-    }),
-  )
+  return router.currentRoute.value.matched.map((route: RouteLocationMatched) => ({
+    active: route.path === router.currentRoute.value.fullPath || route.path.includes(':'),
+    name: route.name,
+    path: `${router.options.history.base}${route.path}`,
+  }))
 }
 
 router.afterEach(() => (breadcrumbs.value = getBreadcrumbs()))

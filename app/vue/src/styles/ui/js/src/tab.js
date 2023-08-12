@@ -103,10 +103,7 @@ class Tab extends BaseComponent {
       relatedTarget: active,
     })
 
-    if (
-      showEvent.defaultPrevented ||
-      (hideEvent && hideEvent.defaultPrevented)
-    ) {
+    if (showEvent.defaultPrevented || (hideEvent && hideEvent.defaultPrevented)) {
       return
     }
 
@@ -180,11 +177,7 @@ class Tab extends BaseComponent {
   }
 
   _keydown(event) {
-    if (
-      ![ARROW_LEFT_KEY, ARROW_RIGHT_KEY, ARROW_UP_KEY, ARROW_DOWN_KEY].includes(
-        event.key,
-      )
-    ) {
+    if (![ARROW_LEFT_KEY, ARROW_RIGHT_KEY, ARROW_UP_KEY, ARROW_DOWN_KEY].includes(event.key)) {
       return
     }
 
@@ -304,11 +297,7 @@ class Tab extends BaseComponent {
         return
       }
 
-      if (
-        data[config] === undefined ||
-        config.startsWith('_') ||
-        config === 'constructor'
-      ) {
+      if (data[config] === undefined || config.startsWith('_') || config === 'constructor') {
         throw new TypeError(`No method named "${config}"`)
       }
 
@@ -321,22 +310,17 @@ class Tab extends BaseComponent {
  * Data API implementation
  */
 
-EventHandler.on(
-  document,
-  EVENT_CLICK_DATA_API,
-  SELECTOR_DATA_TOGGLE,
-  function (event) {
-    if (['A', 'AREA'].includes(this.tagName)) {
-      event.preventDefault()
-    }
+EventHandler.on(document, EVENT_CLICK_DATA_API, SELECTOR_DATA_TOGGLE, function (event) {
+  if (['A', 'AREA'].includes(this.tagName)) {
+    event.preventDefault()
+  }
 
-    if (isDisabled(this)) {
-      return
-    }
+  if (isDisabled(this)) {
+    return
+  }
 
-    Tab.getOrCreateInstance(this).show()
-  },
-)
+  Tab.getOrCreateInstance(this).show()
+})
 
 /**
  * Initialize on focus

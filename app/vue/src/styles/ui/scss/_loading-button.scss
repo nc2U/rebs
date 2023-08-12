@@ -8,16 +8,16 @@
 }
 
 .btn-loading-spinner {
-  @include ltr-rtl("margin-right", $spacer);
-  @include ltr-rtl("margin-left", ($spacer * -2));
+  @include ltr-rtl('margin-right', $spacer);
+  @include ltr-rtl('margin-left', ($spacer * -2));
   opacity: 0;
-  @include transition(margin .15s, opacity .15s, border .15s);
+  @include transition(margin 0.15s, opacity 0.15s, border 0.15s);
 }
 
 .btn-loading.is-loading {
   .btn-loading-spinner {
     width: 1rem;
-    @include ltr-rtl("margin-left", 0);
+    @include ltr-rtl('margin-left', 0);
     opacity: 1;
   }
 }

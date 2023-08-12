@@ -22,21 +22,16 @@ const pDataStore = useProjectData()
 const unitTypeList = computed(() => pDataStore.unitTypeList)
 provide('types', unitTypeList)
 
-const fetchOrderGroupList = (projId: number) =>
-  contStore.fetchOrderGroupList(projId)
+const fetchOrderGroupList = (projId: number) => contStore.fetchOrderGroupList(projId)
 
 const fetchTypeList = (projId: number) => pDataStore.fetchTypeList(projId)
 
 const payStore = usePayment()
-const fetchDownPayList = (payload: {
-  project: number
-  order_group?: number
-  unit_type?: number
-}) => payStore.fetchDownPayList(payload)
+const fetchDownPayList = (payload: { project: number; order_group?: number; unit_type?: number }) =>
+  payStore.fetchDownPayList(payload)
 const createDownPay = (payload: DownPay) => payStore.createDownPay(payload)
 const updateDownPay = (payload: DownPay) => payStore.updateDownPay(payload)
-const deleteDownPay = (pk: number, projId: number) =>
-  payStore.deleteDownPay(pk, projId)
+const deleteDownPay = (pk: number, projId: number) => payStore.deleteDownPay(pk, projId)
 
 const onCreateDownPay = (payload: DownPay) =>
   createDownPay({ ...{ project: project.value }, ...payload })
@@ -68,19 +63,12 @@ const projSelect = (target: number | null) => {
 onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
 </script>
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @proj-select="projSelect"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
 
   <ContentBody>
     <CCardBody class="pb-5">
       <DownPayAddForm :disabled="!project" @on-submit="onCreateDownPay" />
-      <DownPayFormList
-        @on-update="onUpdateDownPay"
-        @on-delete="onDeleteDownPay"
-      />
+      <DownPayFormList @on-update="onUpdateDownPay" @on-delete="onDeleteDownPay" />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>

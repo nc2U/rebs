@@ -18,8 +18,7 @@ const floorTypeList = computed(() => projectDataStore.floorTypeList)
 const paymentStore = usePayment()
 const priceList = computed(() => paymentStore.priceList)
 
-const getPrice = (floor: number) =>
-  priceList.value.filter((p: P) => p.unit_floor_type === floor)[0]
+const getPrice = (floor: number) => priceList.value.filter((p: P) => p.unit_floor_type === floor)[0]
 
 const onCreate = (payload: P) => emit('on-create', payload)
 const onUpdate = (payload: P) => emit('on-update', payload)

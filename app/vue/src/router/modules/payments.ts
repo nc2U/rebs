@@ -5,8 +5,7 @@ const account = computed(() => useAccount())
 const pageViewAuth = computed(
   () =>
     account.value.userInfo?.is_superuser ||
-    (account.value.userInfo?.staffauth &&
-      account.value.userInfo.staffauth?.payment > '0'),
+    (account.value.userInfo?.staffauth && account.value.userInfo.staffauth?.payment > '0'),
 )
 
 const payments = {

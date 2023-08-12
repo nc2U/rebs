@@ -48,15 +48,9 @@ const projSelect = (proj: number | null) => {
     <CCardBody>
       <HeaderNav :menus="navMenu" :query="$route.query" />
 
-      <CompanySelect
-        v-if="selector === 'CompanySelect'"
-        @com-select="comSelect"
-      />
+      <CompanySelect v-if="selector === 'CompanySelect'" @com-select="comSelect" />
 
-      <ProjectSelect
-        v-if="selector === 'ProjectSelect'"
-        @proj-select="projSelect"
-      />
+      <ProjectSelect v-if="selector === 'ProjectSelect'" @proj-select="projSelect" />
 
       <slot />
     </CCardBody>

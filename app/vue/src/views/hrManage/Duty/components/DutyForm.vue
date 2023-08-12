@@ -80,12 +80,7 @@ onBeforeMount(() => formDataSetup())
 </script>
 
 <template>
-  <CForm
-    class="needs-validation"
-    novalidate
-    :validated="validated"
-    @submit.prevent="onSubmit"
-  >
+  <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
     <CModalBody class="p-4">
       <div>
         <CRow class="mb-3"></CRow>
@@ -115,25 +110,12 @@ onBeforeMount(() => formDataSetup())
     </CModalBody>
 
     <CModalFooter>
-      <CButton type="button" color="light" @click="$emit('close')">
-        닫기
-      </CButton>
+      <CButton type="button" color="light" @click="$emit('close')"> 닫기 </CButton>
       <slot name="footer">
-        <CButton
-          type="submit"
-          :color="duty ? 'success' : 'primary'"
-          :disabled="formsCheck"
-        >
+        <CButton type="submit" :color="duty ? 'success' : 'primary'" :disabled="formsCheck">
           저장
         </CButton>
-        <CButton
-          v-if="duty"
-          type="button"
-          color="danger"
-          @click="deleteConfirm"
-        >
-          삭제
-        </CButton>
+        <CButton v-if="duty" type="button" color="danger" @click="deleteConfirm"> 삭제 </CButton>
       </slot>
     </CModalFooter>
   </CForm>

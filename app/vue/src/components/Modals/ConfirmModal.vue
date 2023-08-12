@@ -18,20 +18,15 @@ defineExpose({ callModal, close })
     <CModalHeader class="text-body">
       <CModalTitle>
         <slot name="icon">
-          <v-icon
-            icon="mdi mdi-arrow-right-bold-box"
-            color="blue-darken-3"
-            class="mr-2"
-          />
+          <v-icon icon="mdi mdi-arrow-right-bold-box" color="blue-darken-3" class="mr-2" />
         </slot>
         <slot name="header">Title</slot>
       </CModalTitle>
     </CModalHeader>
     <CModalBody class="text-body" style="line-height: 26px">
       <slot>
-        Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-        dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-        consectetur ac, vestibulum at eros.
+        Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,
+        egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
       </slot>
     </CModalBody>
     <CModalFooter>

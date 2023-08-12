@@ -39,7 +39,7 @@
       bottom: 0;
 
       &::before {
-        @include ltr-rtl("transform", rotate(-180deg), null, rotate(0deg));
+        @include ltr-rtl('transform', rotate(-180deg), null, rotate(0deg));
       }
     }
 
@@ -77,7 +77,7 @@
   &:hover {
     .sidebar-toggler {
       &::before {
-        @include ltr-rtl("transform", rotate(-180deg), null, rotate(0deg));
+        @include ltr-rtl('transform', rotate(-180deg), null, rotate(0deg));
       }
     }
 
@@ -95,10 +95,10 @@
       &.sidebar-narrow,
       &.sidebar-narrow-unfoldable {
         &:not(.sidebar-end) {
-          @include ltr-rtl("margin-left", calc(var(--#{$prefix}sidebar-narrow-width) * -1));
+          @include ltr-rtl('margin-left', calc(var(--#{$prefix}sidebar-narrow-width) * -1));
         }
         &.sidebar-end {
-          @include ltr-rtl("margin-right", calc(var(--#{$prefix}sidebar-narrow-width) * -1));
+          @include ltr-rtl('margin-right', calc(var(--#{$prefix}sidebar-narrow-width) * -1));
         }
       }
     }

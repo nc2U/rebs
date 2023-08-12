@@ -20,9 +20,7 @@ const contractStore = useContract()
 const contRelease = computed(() => contractStore.contRelease)
 
 const isSuccession = computed(
-  () =>
-    !!props.contractor?.successions.length &&
-    !props.contractor?.successions[0].is_approval,
+  () => !!props.contractor?.successions.length && !props.contractor?.successions[0].is_approval,
 )
 
 const callFormModal = () => {
@@ -48,9 +46,7 @@ const onSubmit = (payload: ContractRelease) => {
   </CAlert>
 
   <FormModal ref="releaseFormModal" size="lg">
-    <template #header>
-      계약 해지 {{ contRelease ? '수정' : '신규' }} 등록
-    </template>
+    <template #header> 계약 해지 {{ contRelease ? '수정' : '신규' }} 등록 </template>
     <template #default>
       <ReleaseForm
         :contractor="contractor"

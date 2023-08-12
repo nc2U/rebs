@@ -46,11 +46,7 @@ const onSubmit = (payload: ContractRelease) => emit('on-submit', payload)
     </CTableHead>
     <CTableBody>
       <CTableRow v-for="release in contReleaseList" :key="release.pk">
-        <Release
-          :release="release"
-          @get-release="getRelease"
-          @on-submit="onSubmit"
-        />
+        <Release :release="release" @get-release="getRelease" @on-submit="onSubmit" />
       </CTableRow>
     </CTableBody>
   </CTable>

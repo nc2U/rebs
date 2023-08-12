@@ -4,11 +4,7 @@ import { pageTitle, navMenu } from '@/views/proCash/_menu/headermixin'
 import { useComCash } from '@/store/pinia/comCash'
 import { useProCash } from '@/store/pinia/proCash'
 import { useProject } from '@/store/pinia/project'
-import {
-  CashBookFilter,
-  ProBankAcc,
-  ProjectCashBook as PrCashBook,
-} from '@/store/types/proCash'
+import { CashBookFilter, ProBankAcc, ProjectCashBook as PrCashBook } from '@/store/types/proCash'
 import { cutString } from '@/utils/baseMixins'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -74,20 +70,15 @@ const fetchProAccSortList = () => proCashStore.fetchProAccSortList()
 const fetchProAllAccD2List = () => proCashStore.fetchProAllAccD2List()
 const fetchProAllAccD3List = () => proCashStore.fetchProAllAccD3List()
 
-const fetchProFormAccD2List = (sort?: number | null) =>
-  proCashStore.fetchProFormAccD2List(sort)
+const fetchProFormAccD2List = (sort?: number | null) => proCashStore.fetchProFormAccD2List(sort)
 const fetchProFormAccD3List = (d1?: number | null, sort?: number | null) =>
   proCashStore.fetchProFormAccD3List(d1, sort)
 
-const fetchProBankAccList = (projId: number) =>
-  proCashStore.fetchProBankAccList(projId)
-const fetchAllProBankAccList = (projId: number) =>
-  proCashStore.fetchAllProBankAccList(projId)
-const fetchProjectCashList = (payload: CashBookFilter) =>
-  proCashStore.fetchProjectCashList(payload)
+const fetchProBankAccList = (projId: number) => proCashStore.fetchProBankAccList(projId)
+const fetchAllProBankAccList = (projId: number) => proCashStore.fetchAllProBankAccList(projId)
+const fetchProjectCashList = (payload: CashBookFilter) => proCashStore.fetchProjectCashList(payload)
 
-const patchProBankAcc = (payload: ProBankAcc) =>
-  proCashStore.patchProBankAcc(payload)
+const patchProBankAcc = (payload: ProBankAcc) => proCashStore.patchProBankAcc(payload)
 
 const createPrCashBook = (
   payload: PrCashBook & { sepData: PrCashBook | null } & {
@@ -228,11 +219,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @proj-select="projSelect"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
 
   <ContentBody>
     <CCardBody class="pb-5">

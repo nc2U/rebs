@@ -73,9 +73,7 @@ onMounted(() => pageInit())
                 aria-describedby="addon-wrapping"
                 @keydown.enter="listFiltering(1)"
               />
-              <CInputGroupText @click="listFiltering(1)">
-                계약 건 찾기
-              </CInputGroupText>
+              <CInputGroupText @click="listFiltering(1)"> 계약 건 찾기 </CInputGroupText>
             </CInputGroup>
           </CCol>
         </CRow>

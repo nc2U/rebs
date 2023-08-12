@@ -5,15 +5,13 @@ const account = computed(() => useAccount())
 const compViewAuth = computed(
   () =>
     account.value.userInfo?.is_superuser ||
-    (account.value.userInfo?.staffauth &&
-      account.value.userInfo.staffauth?.company_settings > '0'),
+    (account.value.userInfo?.staffauth && account.value.userInfo.staffauth?.company_settings > '0'),
 )
 
 const authViewAuth = computed(
   () =>
     account.value.userInfo?.is_superuser ||
-    (account.value.userInfo?.staffauth &&
-      account.value.userInfo.staffauth?.auth_manage > '0'),
+    (account.value.userInfo?.staffauth && account.value.userInfo.staffauth?.auth_manage > '0'),
 )
 
 const settings = {

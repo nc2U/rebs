@@ -72,7 +72,7 @@
 
 .page-item {
   &:not(:first-child) .page-link {
-    @include ltr-rtl("margin-left", $pagination-margin-start);
+    @include ltr-rtl('margin-left', $pagination-margin-start);
   }
 
   @if $pagination-margin-start == (calc($pagination-border-width * -1)) {
@@ -95,15 +95,24 @@
   }
 }
 
-
 //
 // Sizing
 //
 
 .pagination-lg {
-  @include pagination-size($pagination-padding-y-lg, $pagination-padding-x-lg, $font-size-lg, $pagination-border-radius-lg);
+  @include pagination-size(
+    $pagination-padding-y-lg,
+    $pagination-padding-x-lg,
+    $font-size-lg,
+    $pagination-border-radius-lg
+  );
 }
 
 .pagination-sm {
-  @include pagination-size($pagination-padding-y-sm, $pagination-padding-x-sm, $font-size-sm, $pagination-border-radius-sm);
+  @include pagination-size(
+    $pagination-padding-y-sm,
+    $pagination-padding-x-sm,
+    $font-size-sm,
+    $pagination-border-radius-sm
+  );
 }

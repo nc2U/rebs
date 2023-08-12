@@ -69,12 +69,8 @@ class FocusTrap extends Config {
     }
 
     EventHandler.off(document, EVENT_KEY) // guard against infinite focus loop
-    EventHandler.on(document, EVENT_FOCUSIN, event =>
-      this._handleFocusin(event),
-    )
-    EventHandler.on(document, EVENT_KEYDOWN_TAB, event =>
-      this._handleKeydown(event),
-    )
+    EventHandler.on(document, EVENT_FOCUSIN, event => this._handleFocusin(event))
+    EventHandler.on(document, EVENT_KEYDOWN_TAB, event => this._handleKeydown(event))
 
     this._isActive = true
   }
@@ -116,9 +112,7 @@ class FocusTrap extends Config {
       return
     }
 
-    this._lastTabNavDirection = event.shiftKey
-      ? TAB_NAV_BACKWARD
-      : TAB_NAV_FORWARD
+    this._lastTabNavDirection = event.shiftKey ? TAB_NAV_BACKWARD : TAB_NAV_FORWARD
   }
 }
 

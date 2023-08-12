@@ -30,11 +30,7 @@ const onSubmit = (payload: Company) => {
 </script>
 comLength
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    selector="CompanySelect"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" selector="CompanySelect" />
 
   <ContentBody>
     <CompanyDetail
@@ -44,11 +40,7 @@ comLength
       @update-form="updateForm"
     />
 
-    <CompanyForm
-      v-if="compName === 'CreateForm'"
-      @on-submit="onSubmit"
-      @reset-form="resetForm"
-    />
+    <CompanyForm v-if="compName === 'CreateForm'" @on-submit="onSubmit" @reset-form="resetForm" />
 
     <CompanyForm
       v-if="compName === 'UpdateForm'"

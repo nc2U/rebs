@@ -64,9 +64,7 @@ const formsCheck = computed(() => {
 
 const store = useStore()
 const isDark = computed(() => store.theme === 'dark')
-const bgLight = computed(() =>
-  !isDark.value ? 'bg-light' : 'bg-grey-darken-2',
-)
+const bgLight = computed(() => (!isDark.value ? 'bg-light' : 'bg-grey-darken-2'))
 const comStore = useCompany()
 const getSlugDeparts = computed(() => comStore.getSlugDeparts)
 const getGrades = computed(() => comStore.getGrades)
@@ -145,20 +143,13 @@ watch(
 </script>
 
 <template>
-  <CForm
-    class="needs-validation"
-    novalidate
-    :validated="validated"
-    @submit.prevent="onSubmit"
-  >
+  <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
     <CModalBody class="p-4">
       <div>
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight">
-                구분
-              </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight"> 구분 </CFormLabel>
               <CCol sm="8">
                 <Multiselect
                   v-model="form.sort"
@@ -175,16 +166,9 @@ watch(
 
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight">
-                입사일
-              </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight"> 입사일 </CFormLabel>
               <CCol sm="8">
-                <DatePicker
-                  v-model="form.date_join"
-                  maxlength="10"
-                  placeholder="입사일"
-                  required
-                />
+                <DatePicker v-model="form.date_join" maxlength="10" placeholder="입사일" required />
               </CCol>
             </CRow>
           </CCol>
@@ -192,9 +176,7 @@ watch(
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight">
-                성명
-              </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight"> 성명 </CFormLabel>
               <CCol sm="8">
                 <CFormInput v-model="form.name" required placeholder="성명" />
               </CCol>
@@ -224,9 +206,7 @@ watch(
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight">
-                휴대전화
-              </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight"> 휴대전화 </CFormLabel>
               <CCol sm="8">
                 <input
                   v-model="form.personal_phone"
@@ -243,15 +223,9 @@ watch(
 
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight">
-                이메일
-              </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight"> 이메일 </CFormLabel>
               <CCol sm="8">
-                <CFormInput
-                  v-model="form.email"
-                  type="email"
-                  placeholder="이메일"
-                />
+                <CFormInput v-model="form.email" type="email" placeholder="이메일" />
               </CCol>
             </CRow>
           </CCol>
@@ -262,9 +236,7 @@ watch(
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight">
-                부서
-              </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight"> 부서 </CFormLabel>
               <CCol sm="8">
                 <Multiselect
                   v-model="form.department"
@@ -281,9 +253,7 @@ watch(
 
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight">
-                직급
-              </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight"> 직급 </CFormLabel>
               <CCol sm="8">
                 <Multiselect
                   v-model="form.grade"
@@ -302,9 +272,7 @@ watch(
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight">
-                직위
-              </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight"> 직위 </CFormLabel>
               <CCol sm="8">
                 <Multiselect
                   v-model="form.position"
@@ -321,9 +289,7 @@ watch(
 
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight">
-                직책
-              </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight"> 직책 </CFormLabel>
               <CCol sm="8">
                 <Multiselect
                   v-model="form.duty"
@@ -342,9 +308,7 @@ watch(
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight">
-                상태
-              </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight"> 상태 </CFormLabel>
               <CCol sm="8">
                 <Multiselect
                   v-model="form.status"
@@ -361,15 +325,9 @@ watch(
 
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight">
-                퇴사일
-              </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight"> 퇴사일 </CFormLabel>
               <CCol sm="8">
-                <DatePicker
-                  v-model="form.date_leave"
-                  maxlength="10"
-                  placeholder="퇴사일"
-                />
+                <DatePicker v-model="form.date_leave" maxlength="10" placeholder="퇴사일" />
               </CCol>
             </CRow>
           </CCol>
@@ -382,9 +340,7 @@ watch(
 
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight">
-                유저 정보
-              </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label" :class="bgLight"> 유저 정보 </CFormLabel>
               <CCol sm="8">
                 <Multiselect
                   v-model.number="form.user"
@@ -403,25 +359,12 @@ watch(
     </CModalBody>
 
     <CModalFooter>
-      <CButton type="button" color="light" @click="$emit('close')">
-        닫기
-      </CButton>
+      <CButton type="button" color="light" @click="$emit('close')"> 닫기 </CButton>
       <slot name="footer">
-        <CButton
-          type="submit"
-          :color="staff ? 'success' : 'primary'"
-          :disabled="formsCheck"
-        >
+        <CButton type="submit" :color="staff ? 'success' : 'primary'" :disabled="formsCheck">
           저장
         </CButton>
-        <CButton
-          v-if="staff"
-          type="button"
-          color="danger"
-          @click="deleteConfirm"
-        >
-          삭제
-        </CButton>
+        <CButton v-if="staff" type="button" color="danger" @click="deleteConfirm"> 삭제 </CButton>
       </slot>
     </CModalFooter>
   </CForm>

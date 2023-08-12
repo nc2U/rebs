@@ -8,9 +8,7 @@
     </slot>
 
     <slot>
-      <CCardBody class="pb-5" style="height: 473px">
-        This page is under construction.
-      </CCardBody>
+      <CCardBody class="pb-5" style="height: 473px"> This page is under construction. </CCardBody>
 
       <CCardFooter>&nbsp;</CCardFooter>
     </slot>

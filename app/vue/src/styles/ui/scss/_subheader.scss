@@ -7,7 +7,8 @@
   min-height: $subheader-min-height;
   padding: $subheader-padding-y $subheader-padding-x;
   background: var(--#{$prefix}subheader-bg, $subheader-bg);
-  border-bottom: var(--#{$prefix}subheader-border-width, $subheader-border-width) solid var(--#{$prefix}subheader-border-color, $subheader-border-color);
+  border-bottom: var(--#{$prefix}subheader-border-width, $subheader-border-width) solid
+    var(--#{$prefix}subheader-border-color, $subheader-border-color);
 }
 
 .subheader-sticky {
@@ -24,7 +25,7 @@
 .subheader-nav {
   display: flex;
   flex-direction: row; // cannot use `inherit` to get the `.header`s value
-  @include ltr-rtl("padding-left", 0);
+  @include ltr-rtl('padding-left', 0);
   margin-bottom: 0;
   list-style: none;
 

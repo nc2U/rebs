@@ -4,12 +4,7 @@ import { useAccount } from '@/store/pinia/account'
 import { useSchedule } from '@/store/pinia/schedule'
 import { addDays, diffDate } from '@/utils/baseMixins'
 import { Event } from '@/store/types/schedule'
-import {
-  EventApi,
-  DateSelectArg,
-  EventClickArg,
-  CalendarOptions,
-} from '@fullcalendar/core'
+import { EventApi, DateSelectArg, EventClickArg, CalendarOptions } from '@fullcalendar/core'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -82,9 +77,7 @@ type CurrEvent = EventApi & { _instance: { range: { start: Date; end: Date } } }
 const transformData = (event: CurrEvent) => {
   const title = event.title
   const allDay = event.allDay
-  const s = event._instance?.range.start
-    .toISOString()
-    .replace('.000Z', '+09:00')
+  const s = event._instance?.range.start.toISOString().replace('.000Z', '+09:00')
   const e = event._instance?.range.end.toISOString().replace('.000Z', '+09:00')
   const start = allDay ? s?.substr(0, 10) : s
   const end = allDay ? e?.substr(0, 10) : e
@@ -219,9 +212,7 @@ onBeforeMount(() => {
         size="small"
       />
     </template>
-    <template #header>
-      진행 일정 - 이벤트 {{ mode === 'create' ? '등록' : '편집' }}
-    </template>
+    <template #header> 진행 일정 - 이벤트 {{ mode === 'create' ? '등록' : '편집' }} </template>
     <template #default>
       <CModalBody>
         <CRow>
@@ -238,39 +229,19 @@ onBeforeMount(() => {
       </CModalBody>
       <CModalFooter>
         <CButton color="light" @click="refFormModal.close"> 닫기</CButton>
-        <CButton
-          v-if="mode === 'create'"
-          color="primary"
-          @click="eventManagement"
-        >
-          등록
-        </CButton>
-        <CButton
-          v-if="mode === 'update'"
-          color="success"
-          @click="eventManagement"
-        >
-          수정
-        </CButton>
-        <CButton v-if="mode === 'update'" color="danger" @click="removeConfirm">
-          삭제
-        </CButton>
+        <CButton v-if="mode === 'create'" color="primary" @click="eventManagement"> 등록 </CButton>
+        <CButton v-if="mode === 'update'" color="success" @click="eventManagement"> 수정 </CButton>
+        <CButton v-if="mode === 'update'" color="danger" @click="removeConfirm"> 삭제 </CButton>
       </CModalFooter>
     </template>
   </FormModal>
 
   <ConfirmModal ref="refConfirmModal">
     <template #icon>
-      <v-icon
-        icon="mdi-trash-can-outline"
-        color="blue-grey-darken-1"
-        class="mr-2"
-        size="small"
-      />
+      <v-icon icon="mdi-trash-can-outline" color="blue-grey-darken-1" class="mr-2" size="small" />
     </template>
     <template #header> 진행 일정 - 이벤트 삭제</template>
-    [{{ eventTitle }}] - 삭제 후 복구할 수 없습니다. 해당 일정을 삭제
-    하시겠습니까?
+    [{{ eventTitle }}] - 삭제 후 복구할 수 없습니다. 해당 일정을 삭제 하시겠습니까?
     <template #footer>
       <CButton color="danger" @click="eventRemove">삭제</CButton>
     </template>

@@ -30,9 +30,7 @@ const subsSum = computed(() =>
         </colgroup>
         <CTableBody>
           <CTableRow>
-            <CTableHeaderCell :color="TableSecondary">
-              총세대수
-            </CTableHeaderCell>
+            <CTableHeaderCell :color="TableSecondary"> 총세대수 </CTableHeaderCell>
             <CTableDataCell class="text-right" colspan="3">
               {{ numFormat(unitSum.totalNum) }}
             </CTableDataCell>
@@ -50,19 +48,11 @@ const subsSum = computed(() =>
           </CTableRow>
 
           <CTableRow>
-            <CTableHeaderCell :color="TableSecondary">
-              동호미배정 세대
-            </CTableHeaderCell>
+            <CTableHeaderCell :color="TableSecondary"> 동호미배정 세대 </CTableHeaderCell>
             <CTableDataCell class="text-right">
-              {{
-                numFormat(
-                  subsSum + contSum - (unitSum.contNum + unitSum.appNum),
-                )
-              }}
+              {{ numFormat(subsSum + contSum - (unitSum.contNum + unitSum.appNum)) }}
             </CTableDataCell>
-            <CTableHeaderCell :color="TableSecondary">
-              홀딩세대
-            </CTableHeaderCell>
+            <CTableHeaderCell :color="TableSecondary"> 홀딩세대 </CTableHeaderCell>
             <CTableDataCell class="text-right">
               {{ numFormat(unitSum.holdNum) }}
             </CTableDataCell>
@@ -73,15 +63,9 @@ const subsSum = computed(() =>
             <CTableDataCell class="text-right">
               {{ numFormat(subsSum + contSum) }}
             </CTableDataCell>
-            <CTableHeaderCell :color="TableSecondary">
-              잔여세대
-            </CTableHeaderCell>
+            <CTableHeaderCell :color="TableSecondary"> 잔여세대 </CTableHeaderCell>
             <CTableDataCell class="text-right">
-              {{
-                numFormat(
-                  unitSum.totalNum - unitSum.holdNum - (subsSum + contSum),
-                )
-              }}
+              {{ numFormat(unitSum.totalNum - unitSum.holdNum - (subsSum + contSum)) }}
             </CTableDataCell>
           </CTableRow>
         </CTableBody>

@@ -164,15 +164,11 @@ const Pagination = defineComponent({
     })
 
     const afterDots = computed(() => {
-      return (
-        showDots.value && activePage.value < pages.value - maxNextItems.value
-      )
+      return showDots.value && activePage.value < pages.value - maxNextItems.value
     })
 
     const computedLimit = computed(() => {
-      return (
-        limit.value - (afterDots.value ? 1 : 0) - (beforeDots.value ? 1 : 0)
-      )
+      return limit.value - (afterDots.value ? 1 : 0) - (beforeDots.value ? 1 : 0)
     })
 
     const range = computed(() => {
@@ -180,15 +176,11 @@ const Pagination = defineComponent({
     })
 
     const lastItem = computed(() => {
-      return range.value >= pages.value
-        ? pages.value
-        : range.value - (afterDots.value ? 1 : 0)
+      return range.value >= pages.value ? pages.value : range.value - (afterDots.value ? 1 : 0)
     })
 
     const itemsAmount = computed(() => {
-      return pages.value < computedLimit.value
-        ? pages.value
-        : computedLimit.value
+      return pages.value < computedLimit.value ? pages.value : computedLimit.value
     })
 
     const items = computed(() => {
@@ -288,10 +280,7 @@ const Pagination = defineComponent({
                 CPaginationItem,
                 {
                   onClick: () => setPage(i),
-                  'aria-label':
-                    activePage.value === i
-                      ? `Current page ${i}`
-                      : `Go to page ${i}`,
+                  'aria-label': activePage.value === i ? `Current page ${i}` : `Go to page ${i}`,
                   active: activePage.value === i,
                 },
                 {

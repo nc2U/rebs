@@ -16,9 +16,7 @@ const successionAlertModal = ref()
 const contractStore = useContract()
 const succession = computed(() => contractStore.succession)
 
-const isSuccession = computed(
-  () => !!succession.value && !succession.value.is_approval,
-)
+const isSuccession = computed(() => !!succession.value && !succession.value.is_approval)
 
 const callFormModal = () => {
   if (write_contract.value) successionFormModal.value.callModal()
@@ -33,18 +31,13 @@ const onSubmit = (payload: Succession) => {
 
 <template>
   <CAlert :color="AlertLight" variant="solid" class="text-right">
-    <CButton
-      :color="isSuccession ? 'success' : 'primary'"
-      @click="callFormModal"
-    >
+    <CButton :color="isSuccession ? 'success' : 'primary'" @click="callFormModal">
       {{ isSuccession ? '수정하기' : '등록하기' }}
     </CButton>
   </CAlert>
 
   <FormModal ref="successionFormModal" size="lg">
-    <template #header>
-      권리 의무 승계 {{ isSuccession ? '수정' : '신규' }} 등록
-    </template>
+    <template #header> 권리 의무 승계 {{ isSuccession ? '수정' : '신규' }} 등록 </template>
     <template #default>
       <SuccessionForm
         :succession="isSuccession ? (succession as Succession) : undefined"

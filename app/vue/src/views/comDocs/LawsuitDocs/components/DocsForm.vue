@@ -76,9 +76,7 @@ const newFileRange = computed(() => {
   return array
 })
 
-const sortName = computed(() =>
-  props.post && props.post.project ? props.post.proj_name : '본사',
-)
+const sortName = computed(() => (props.post && props.post.project ? props.post.proj_name : '본사'))
 
 const route = useRoute()
 const btnClass = computed(() => (route.params.postId ? 'success' : 'primary'))
@@ -179,12 +177,7 @@ onUpdated(() => dataSetup())
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">제목</CFormLabel>
       <CCol md="9">
-        <CFormInput
-          id="title"
-          v-model="form.title"
-          required
-          placeholder="게시물 제목"
-        />
+        <CFormInput id="title" v-model="form.title" required placeholder="게시물 제목" />
       </CCol>
     </CRow>
 
@@ -205,9 +198,7 @@ onUpdated(() => dataSetup())
         />
       </CCol>
 
-      <CFormLabel for="category" class="col-md-2 col-lg-1 col-form-label">
-        카테고리
-      </CFormLabel>
+      <CFormLabel for="category" class="col-md-2 col-lg-1 col-form-label"> 카테고리 </CFormLabel>
       <CCol md="2">
         <CFormSelect id="category" v-model="form.category" required>
           <option value="">카테고리 선택</option>
@@ -221,11 +212,7 @@ onUpdated(() => dataSetup())
         문서 발행일자
       </CFormLabel>
       <CCol md="2">
-        <DatePicker
-          v-model="form.execution_date"
-          placeholder="문서 발행일자"
-          required
-        />
+        <DatePicker v-model="form.execution_date" placeholder="문서 발행일자" required />
       </CCol>
     </CRow>
 
@@ -242,11 +229,7 @@ onUpdated(() => dataSetup())
         <CRow v-if="post && form.oldLinks.length">
           <CAlert :color="AlertSecondary">
             <CCol>
-              <CInputGroup
-                v-for="(link, i) in form.oldLinks"
-                :key="link.pk"
-                class="mb-2"
-              >
+              <CInputGroup v-for="(link, i) in form.oldLinks" :key="link.pk" class="mb-2">
                 <CFormInput
                   :id="`post-link-${link.pk}`"
                   v-model="form.oldLinks[i].link"
@@ -270,11 +253,7 @@ onUpdated(() => dataSetup())
 
         <CRow class="mb-2">
           <CCol>
-            <CInputGroup
-              v-for="lNum in newLinkRange"
-              :key="`ln-${lNum}`"
-              class="mb-2"
-            >
+            <CInputGroup v-for="lNum in newLinkRange" :key="`ln-${lNum}`" class="mb-2">
               <CFormInput
                 :id="`link-${lNum}`"
                 v-model="form.newLinks[lNum]"
@@ -283,9 +262,7 @@ onUpdated(() => dataSetup())
               />
               <CInputGroupText id="basic-addon1" @click="ctlLinkNum(lNum)">
                 <v-icon
-                  :icon="`mdi-${
-                    lNum + 1 < newLinkNum ? 'minus' : 'plus'
-                  }-thick`"
+                  :icon="`mdi-${lNum + 1 < newLinkNum ? 'minus' : 'plus'}-thick`"
                   :color="lNum + 1 < newLinkNum ? 'error' : 'primary'"
                 />
               </CInputGroupText>
@@ -301,12 +278,7 @@ onUpdated(() => dataSetup())
         <CRow v-if="post && form.oldFiles.length">
           <CAlert :color="AlertSecondary">
             <small>{{ devideUri(form.oldFiles[0].file)[0] }}</small>
-            <CCol
-              v-for="(file, i) in form.oldFiles"
-              :key="file.pk"
-              xs="12"
-              color="primary"
-            >
+            <CCol v-for="(file, i) in form.oldFiles" :key="file.pk" xs="12" color="primary">
               <small>
                 현재 :
                 <a :href="file.file" target="_blank">
@@ -343,11 +315,7 @@ onUpdated(() => dataSetup())
 
         <CRow class="mb-2">
           <CCol>
-            <CInputGroup
-              v-for="fNum in newFileRange"
-              :key="`fn-${fNum}`"
-              class="mb-2"
-            >
+            <CInputGroup v-for="fNum in newFileRange" :key="`fn-${fNum}`" class="mb-2">
               <FileUpload
                 :id="`file-${fNum}`"
                 v-model="form.newFiles[fNum]"
@@ -356,9 +324,7 @@ onUpdated(() => dataSetup())
               />
               <CInputGroupText id="basic-addon2" @click="ctlFileNum(fNum)">
                 <v-icon
-                  :icon="`mdi-${
-                    fNum + 1 < newFileNum ? 'minus' : 'plus'
-                  }-thick`"
+                  :icon="`mdi-${fNum + 1 < newFileNum ? 'minus' : 'plus'}-thick`"
                   :color="fNum + 1 < newFileNum ? 'error' : 'primary'"
                 />
               </CInputGroupText>
@@ -370,22 +336,11 @@ onUpdated(() => dataSetup())
 
     <CRow>
       <CCol class="text-right">
-        <CButton
-          color="light"
-          @click="$router.push({ name: '본사 소송 문서' })"
-        >
+        <CButton color="light" @click="$router.push({ name: '본사 소송 문서' })">
           목록으로
         </CButton>
-        <CButton
-          v-if="route.params.postId"
-          color="light"
-          @click="$router.go(-1)"
-        >
-          뒤로
-        </CButton>
-        <CButton :color="btnClass" type="submit" :disabled="formsCheck">
-          저장하기
-        </CButton>
+        <CButton v-if="route.params.postId" color="light" @click="$router.go(-1)"> 뒤로 </CButton>
+        <CButton :color="btnClass" type="submit" :disabled="formsCheck"> 저장하기 </CButton>
       </CCol>
     </CRow>
   </CForm>

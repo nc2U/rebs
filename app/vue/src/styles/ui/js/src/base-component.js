@@ -66,8 +66,7 @@ class BaseComponent extends Config {
 
   static getOrCreateInstance(element, config = {}) {
     return (
-      this.getInstance(element) ||
-      new this(element, typeof config === 'object' ? config : null)
+      this.getInstance(element) || new this(element, typeof config === 'object' ? config : null)
     )
   }
 

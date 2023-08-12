@@ -10,12 +10,7 @@ const imgSrc = [
 <template>
   <CCard class="mb-4" xxl="9">
     <CCardBody>
-      <v-carousel
-        cycle
-        height="400"
-        delimiter-icon="mdi-square"
-        show-arrows="hover"
-      >
+      <v-carousel cycle height="400" delimiter-icon="mdi-square" show-arrows="hover">
         <v-carousel-item v-for="(img, i) in imgSrc" :key="i" :src="img" cover />
       </v-carousel>
     </CCardBody>

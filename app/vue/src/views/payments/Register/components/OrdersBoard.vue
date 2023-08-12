@@ -20,10 +20,7 @@ const thisPrice = computed(() => {
   if (props.contract) {
     return props.contract.keyunit.houseunit
       ? priceList.value
-          .filter(
-            (p: Price) =>
-              p.unit_floor_type === props.contract.keyunit.houseunit.floor_type,
-          )
+          .filter((p: Price) => p.unit_floor_type === props.contract.keyunit.houseunit.floor_type)
           .map((p: Price) => p.price)[0]
       : Math.ceil(props.contract.unit_type.average_price / 10000) * 10000
   }
@@ -34,9 +31,7 @@ const numDown = computed(
   () => payOrderList.value.filter((o: PayOrder) => o.pay_sort === '1').length,
 )
 
-const numMid = computed(
-  () => payOrderList.value.filter((o: PayOrder) => o.pay_sort === '2').length,
-)
+const numMid = computed(() => payOrderList.value.filter((o: PayOrder) => o.pay_sort === '2').length)
 
 const paidTotal = computed(() => {
   const paid = props.paymentList.map((p: AllPayment) => p.income)
@@ -74,11 +69,8 @@ const getCommits = (el: number | undefined) => {
     ? (thisPrice.value * Number(order.pay_ratio)) / 100
     : thisPrice.value * 0.1 // 1. payByOrder === '중도금' (지정된 비율이 없으면 회당 10%)
   const downPay = down ? down : payByOrder
-  const balace =
-    thisPrice.value - downPay * numDown.value - payByOrder * numMid.value // 분양가 - (계약금 + 중도금), 2. payByOrder
-  const balacePay = balace
-    ? balace
-    : (payByOrder * Number(order?.pay_ratio)) / 100
+  const balace = thisPrice.value - downPay * numDown.value - payByOrder * numMid.value // 분양가 - (계약금 + 중도금), 2. payByOrder
+  const balacePay = balace ? balace : (payByOrder * Number(order?.pay_ratio)) / 100
 
   if (order?.pay_sort === '1') {
     return downPay // 계약금
@@ -126,15 +118,11 @@ const getCommits = (el: number | undefined) => {
 
     <CTableHead>
       <CTableRow class="text-right">
-        <CTableHeaderCell :color="TableSecondary" class="text-center">
-          합계
-        </CTableHeaderCell>
+        <CTableHeaderCell :color="TableSecondary" class="text-center"> 합계 </CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(thisPrice || 0) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(paidTotal) }}</CTableHeaderCell>
-        <CTableHeaderCell
-          :class="paidTotal - dueTotal < 0 ? 'text-danger' : ''"
-        >
+        <CTableHeaderCell :class="paidTotal - dueTotal < 0 ? 'text-danger' : ''">
           {{ numFormat(paidTotal - dueTotal) }}
         </CTableHeaderCell>
       </CTableRow>

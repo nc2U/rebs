@@ -13,7 +13,7 @@
 
   // Gradients
   @each $color, $map in $theme-gradients-dt {
-    --#{$prefix}#{$color}-start: #{map-get($map, "start")};
-    --#{$prefix}#{$color}-stop: #{map-get($map, "stop")};
+    --#{$prefix}#{$color}-start: #{map-get($map, 'start')};
+    --#{$prefix}#{$color}-stop: #{map-get($map, 'stop')};
   }
 }

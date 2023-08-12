@@ -41,11 +41,7 @@ const ctorChk = (ctorPk: number) => {
 </script>
 
 <template>
-  <CTableRow
-    v-if="contract"
-    class="text-center"
-    :color="checked ? 'secondary' : ''"
-  >
+  <CTableRow v-if="contract" class="text-center" :color="checked ? 'secondary' : ''">
     <CTableDataCell>
       <CFormCheck
         :id="'check_' + contract.contractor?.pk"
@@ -73,15 +69,8 @@ const ctorChk = (ctorPk: number) => {
     <CTableDataCell>
       {{ contract.serial_number }}
     </CTableDataCell>
-    <CTableDataCell
-      :class="contract.keyunit?.houseunit ? '' : 'text-danger'"
-      class="text-left"
-    >
-      {{
-        contract.keyunit?.houseunit
-          ? contract.keyunit.houseunit.__str__
-          : '미정'
-      }}
+    <CTableDataCell :class="contract.keyunit?.houseunit ? '' : 'text-danger'" class="text-left">
+      {{ contract.keyunit?.houseunit ? contract.keyunit.houseunit.__str__ : '미정' }}
     </CTableDataCell>
     <CTableDataCell>
       <router-link
@@ -94,9 +83,7 @@ const ctorChk = (ctorPk: number) => {
       </router-link>
     </CTableDataCell>
     <CTableDataCell class="text-right">
-      <router-link
-        :to="{ name: '건별 수납 관리', query: { contract: contract.pk } }"
-      >
+      <router-link :to="{ name: '건별 수납 관리', query: { contract: contract.pk } }">
         {{ numFormat(contract.total_paid) }}
       </router-link>
     </CTableDataCell>

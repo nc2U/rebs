@@ -39,7 +39,7 @@
   // Prevent double borders when buttons are next to each other
   > .btn:not(:first-child),
   > .btn-group:not(:first-child) {
-    @include ltr-rtl("margin-left", -$btn-border-width);
+    @include ltr-rtl('margin-left', -$btn-border-width);
   }
 
   // Reset rounded corners
@@ -64,39 +64,41 @@
 //
 // Remix the default button sizing classes into new ones for easier manipulation.
 
-.btn-group-sm > .btn { @extend .btn-sm; }
-.btn-group-lg > .btn { @extend .btn-lg; }
-
+.btn-group-sm > .btn {
+  @extend .btn-sm;
+}
+.btn-group-lg > .btn {
+  @extend .btn-lg;
+}
 
 //
 // Split button dropdowns
 //
 
 .dropdown-toggle-split {
-  padding-right: $btn-padding-x * .75;
-  padding-left: $btn-padding-x * .75;
+  padding-right: $btn-padding-x * 0.75;
+  padding-left: $btn-padding-x * 0.75;
 
   &::after,
   .dropup &::after,
   .dropend &::after {
-    @include ltr-rtl("margin-left", 0);
+    @include ltr-rtl('margin-left', 0);
   }
 
   .dropstart &::before {
-    @include ltr-rtl("margin-right", 0);
+    @include ltr-rtl('margin-right', 0);
   }
 }
 
 .btn-sm + .dropdown-toggle-split {
-  padding-right: $btn-padding-x-sm * .75;
-  padding-left: $btn-padding-x-sm * .75;
+  padding-right: $btn-padding-x-sm * 0.75;
+  padding-left: $btn-padding-x-sm * 0.75;
 }
 
 .btn-lg + .dropdown-toggle-split {
-  padding-right: $btn-padding-x-lg * .75;
-  padding-left: $btn-padding-x-lg * .75;
+  padding-right: $btn-padding-x-lg * 0.75;
+  padding-left: $btn-padding-x-lg * 0.75;
 }
-
 
 // The clickable button for toggling the menu
 // Set the same inset shadow as the :active state
@@ -108,7 +110,6 @@
     @include box-shadow(none);
   }
 }
-
 
 //
 // Vertical button groups

@@ -41,9 +41,7 @@ const setContractor = (pk: number) => {
                 :disabled="!project"
                 @keydown.enter="searchContractor"
               />
-              <CInputGroupText @click="searchContractor">
-                계약 건 찾기
-              </CInputGroupText>
+              <CInputGroupText @click="searchContractor"> 계약 건 찾기 </CInputGroupText>
             </CInputGroup>
           </CCol>
           <CCol

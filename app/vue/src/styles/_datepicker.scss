@@ -1,13 +1,13 @@
 // DatePicker scss
 .dp__theme_dark {
   --dp-background-color: #353641 !important; // #474850
-  --dp-border-color: #42434C !important;
-  --dp-menu-border-color: #42434C !important;
+  --dp-border-color: #42434c !important;
+  --dp-menu-border-color: #42434c !important;
 }
 
 .dp__theme_light {
-  --dp-border-color: #B1B7C1 !important;
-  --dp-menu-border-color: #B1B7C1 !important;
+  --dp-border-color: #b1b7c1 !important;
+  --dp-menu-border-color: #b1b7c1 !important;
 }
 
 :root {
@@ -27,5 +27,5 @@
   --dp-row-maring: 2px 0; /*Adjust the spacing between rows in the calendar*/
 
   /*Font sizes*/
-  --dp-font-size: .875rem; /*Default font-size*/
+  --dp-font-size: 0.875rem; /*Default font-size*/
 }

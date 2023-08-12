@@ -24,8 +24,7 @@ const company = computed(() => comStore.company?.pk)
 const comName = computed(() => comStore.company?.name || undefined)
 
 const excelUrl = computed(
-  () =>
-    `/excel/positions/?company=${company.value}&search=${dataFilter.value.q}`,
+  () => `/excel/positions/?company=${company.value}&search=${dataFilter.value.q}`,
 )
 
 const listFiltering = (payload: ComFilter) => {
@@ -39,15 +38,13 @@ const listFiltering = (payload: ComFilter) => {
 }
 
 const fetchAllGradeList = (com?: number) => comStore.fetchAllGradeList(com)
-const fetchPositionList = (payload: ComFilter) =>
-  comStore.fetchPositionList(payload)
+const fetchPositionList = (payload: ComFilter) => comStore.fetchPositionList(payload)
 
 const createPosition = (payload: Position, p?: number, c?: number) =>
   comStore.createPosition(payload, p, c)
 const updatePosition = (payload: Position, p?: number, c?: number) =>
   comStore.updatePosition(payload, p, c)
-const deletePosition = (pk: number, com: number) =>
-  comStore.deletePosition(pk, com)
+const deletePosition = (pk: number, com: number) => comStore.deletePosition(pk, com)
 
 const multiSubmit = (payload: Position) => {
   const { page } = dataFilter.value
@@ -97,17 +94,8 @@ onMounted(() => dataSetup(company.value || comStore.initComId))
     <CCardBody>
       <ListController ref="refListControl" @list-filtering="listFiltering" />
       <AddPosition :company="comName" @multi-submit="multiSubmit" />
-      <TableTitleRow
-        title="직위 목록"
-        excel
-        :url="excelUrl"
-        :disabled="!company"
-      />
-      <PositionList
-        @multi-submit="multiSubmit"
-        @on-delete="onDelete"
-        @page-select="pageSelect"
-      />
+      <TableTitleRow title="직위 목록" excel :url="excelUrl" :disabled="!company" />
+      <PositionList @multi-submit="multiSubmit" @on-delete="onDelete" @page-select="pageSelect" />
     </CCardBody>
 
     <CCardFooter class="text-right">&nbsp;</CCardFooter>

@@ -64,7 +64,7 @@
 
   &[data-coreui-popper] {
     top: 100%;
-    @include ltr-rtl("left", 0);
+    @include ltr-rtl('left', 0);
     margin-top: var(--#{$prefix}dropdown-spacer);
   }
 
@@ -77,7 +77,6 @@
     > li:last-child .dropdown-item {
       @include border-bottom-radius(var(--#{$prefix}dropdown-inner-border-radius));
     }
-
   }
 }
 
@@ -128,10 +127,10 @@
 .dropend {
   .dropdown-menu[data-coreui-popper] {
     top: 0;
-    @include ltr-rtl("right", auto);
-    @include ltr-rtl("left", 100%);
+    @include ltr-rtl('right', auto);
+    @include ltr-rtl('left', 100%);
     margin-top: 0;
-    @include ltr-rtl("margin-left", var(--#{$prefix}dropdown-spacer));
+    @include ltr-rtl('margin-left', var(--#{$prefix}dropdown-spacer));
   }
 
   .dropdown-toggle {
@@ -146,10 +145,10 @@
   .dropdown-menu[data-coreui-popper] {
     top: 0;
 
-    @include ltr-rtl("right", 100%);
-    @include ltr-rtl("left", auto);
+    @include ltr-rtl('right', 100%);
+    @include ltr-rtl('left', auto);
     margin-top: 0;
-    @include ltr-rtl("margin-right", var(--#{$prefix}dropdown-spacer));
+    @include ltr-rtl('margin-right', var(--#{$prefix}dropdown-spacer));
   }
 
   .dropdown-toggle {
@@ -159,7 +158,6 @@
     }
   }
 }
-
 
 // Dividers (basically an `<hr>`) within the dropdown
 .dropdown-divider {

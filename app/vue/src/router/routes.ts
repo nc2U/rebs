@@ -30,19 +30,13 @@ const routes: Array<RouteRecordRaw> = [
         // route level code-splitting
         // this generates a separate chunk (dashboard.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
-        component: () =>
-          import(
-            /* webpackChunkName: "dashboard" */ '@/views/_Dashboard/index.vue'
-          ),
+        component: () => import(/* webpackChunkName: "dashboard" */ '@/views/_Dashboard/index.vue'),
         meta: { title: '대 시 보 드', auth: true, affix: true },
       },
       {
         path: 'schedule',
         name: '일 정 관 리',
-        component: () =>
-          import(
-            /* webpackChunkName: "schedule" */ '@/views/_Schedules/index.vue'
-          ),
+        component: () => import(/* webpackChunkName: "schedule" */ '@/views/_Schedules/index.vue'),
         meta: { title: '일 정 관 리', auth: true, affix: true },
       },
       contracts,
@@ -76,10 +70,7 @@ const routes: Array<RouteRecordRaw> = [
     meta: { title: '회원가입', except: true },
     beforeEnter: (to, from, next) => {
       const store = useStore()
-      if (
-        from.name === 'RegisterCode' &&
-        to.query.id == hashCode(store.registerCode).toString()
-      ) {
+      if (from.name === 'RegisterCode' && to.query.id == hashCode(store.registerCode).toString()) {
         next()
       } else {
         next({

@@ -41,10 +41,7 @@ const deleteObject = () => emit('on-delete', props.payment.pk)
 </script>
 
 <template>
-  <CTableRow
-    class="text-center"
-    :color="payment.pk.toString() === paymentId ? TableSecondary : ''"
-  >
+  <CTableRow class="text-center" :color="payment.pk.toString() === paymentId ? TableSecondary : ''">
     <CTableDataCell>{{ payment.deal_date }}</CTableDataCell>
     <CTableDataCell>
       {{ payment.installment_order ? payment.installment_order.__str__ : '-' }}
@@ -57,9 +54,7 @@ const deleteObject = () => emit('on-delete', props.payment.pk)
     <CTableDataCell>{{ payment.bank_account.alias_name }}</CTableDataCell>
     <CTableDataCell>{{ payment.trader }}</CTableDataCell>
     <CTableDataCell>
-      <CButton type="button" color="info" size="sm" @click="showDetail">
-        보기
-      </CButton>
+      <CButton type="button" color="info" size="sm" @click="showDetail"> 보기 </CButton>
     </CTableDataCell>
   </CTableRow>
 

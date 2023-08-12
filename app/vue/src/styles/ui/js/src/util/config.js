@@ -23,9 +23,7 @@ class Config {
   }
 
   static get NAME() {
-    throw new Error(
-      'You have to implement the static method "NAME", for each component!',
-    )
+    throw new Error('You have to implement the static method "NAME", for each component!')
   }
 
   _getConfig(config) {
@@ -40,9 +38,7 @@ class Config {
   }
 
   _mergeConfigObj(config, element) {
-    const jsonConfig = isElement(element)
-      ? Manipulator.getDataAttribute(element, 'config')
-      : {} // try to parse
+    const jsonConfig = isElement(element) ? Manipulator.getDataAttribute(element, 'config') : {} // try to parse
 
     return {
       ...this.constructor.Default,

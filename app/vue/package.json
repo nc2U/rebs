@@ -5,12 +5,13 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "lint": "vue-cli-service lint",
-    "test:unit": "vue-cli-service test:unit",
-    "test:e2e": "vue-cli-service test:e2e",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:serve": "vitepress serve docs"
+    "docs:serve": "vitepress serve docs",
+    "test:unit": "vue-cli-service test:unit",
+    "test:e2e": "vue-cli-service test:e2e",
+    "lint": "vue-cli-service lint",
+    "format": "prettier --write src/"
   },
   "dependencies": {
     "@coreui/chartjs": "^3.1.2",

@@ -16,23 +16,15 @@ import MainChartExample from '@/views/_Dashboard/components/charts/MainChartExam
               <CButton color="primary" class="float-end">
                 <CIcon icon="cil-cloud-download" />
               </CButton>
-              <CButtonGroup
-                class="float-end me-3"
-                role="group"
-                aria-label="Basic outlined example"
-              >
+              <CButtonGroup class="float-end me-3" role="group" aria-label="Basic outlined example">
                 <CButton color="secondary" variant="outline">Day</CButton>
-                <CButton color="secondary" variant="outline" active
-                  >Month
-                </CButton>
+                <CButton color="secondary" variant="outline" active>Month </CButton>
                 <CButton color="secondary" variant="outline">Year</CButton>
               </CButtonGroup>
             </CCol>
           </CRow>
           <CRow>
-            <MainChartExample
-              style="height: 300px; max-height: 300px; margin-top: 40px"
-            />
+            <MainChartExample style="height: 300px; max-height: 300px; margin-top: 40px" />
           </CRow>
         </CCardBody>
         <CCardFooter>
@@ -40,46 +32,22 @@ import MainChartExample from '@/views/_Dashboard/components/charts/MainChartExam
             <CCol class="mb-sm-2 mb-0">
               <div class="text-medium-emphasis">Visits</div>
               <strong>29.703 Users (40%)</strong>
-              <CProgress
-                class="mt-2"
-                color="success"
-                thin
-                :precision="1"
-                :value="40"
-              />
+              <CProgress class="mt-2" color="success" thin :precision="1" :value="40" />
             </CCol>
             <CCol class="mb-sm-2 mb-0 d-md-down-none">
               <div class="text-medium-emphasis">Unique</div>
               <strong>24.093 Users (20%)</strong>
-              <CProgress
-                class="mt-2"
-                color="info"
-                thin
-                :precision="1"
-                :value="20"
-              />
+              <CProgress class="mt-2" color="info" thin :precision="1" :value="20" />
             </CCol>
             <CCol class="mb-sm-2 mb-0">
               <div class="text-medium-emphasis">Pageviews</div>
               <strong>78.706 Views (60%)</strong>
-              <CProgress
-                class="mt-2"
-                color="warning"
-                thin
-                :precision="1"
-                :value="60"
-              />
+              <CProgress class="mt-2" color="warning" thin :precision="1" :value="60" />
             </CCol>
             <CCol class="mb-sm-2 mb-0">
               <div class="text-medium-emphasis">New Users</div>
               <strong>22.123 Users (80%)</strong>
-              <CProgress
-                class="mt-2"
-                color="danger"
-                thin
-                :precision="1"
-                :value="80"
-              />
+              <CProgress class="mt-2" color="danger" thin :precision="1" :value="80" />
             </CCol>
             <CCol class="mb-sm-2 mb-0 d-md-down-none">
               <div class="text-medium-emphasis">Bounce Rate</div>

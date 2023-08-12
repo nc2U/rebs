@@ -27,7 +27,7 @@
   flex-direction: column;
 
   // No need to set list-style: none; since .list-group-item is block level
-  @include ltr-rtl("padding-left", 0); // reset padding because ul and ol
+  @include ltr-rtl('padding-left', 0); // reset padding because ul and ol
   margin-bottom: 0;
   @include border-radius(var(--#{$prefix}list-group-border-radius));
 }
@@ -38,7 +38,7 @@
 
   > .list-group-item::before {
     // Increments only this instance of the section counter
-    content: counters(section, ".") ". ";
+    content: counters(section, '.') '. ';
     counter-increment: section;
   }
 }
@@ -108,7 +108,9 @@
     border-top-width: 0;
 
     &.active {
-      margin-top: calc(var(--#{$prefix}list-group-border-width) * -1); // stylelint-disable-line function-disallowed-list
+      margin-top: calc(
+        var(--#{$prefix}list-group-border-width) * -1
+      ); // stylelint-disable-line function-disallowed-list
       border-top-width: var(--#{$prefix}list-group-border-width);
     }
   }
@@ -142,18 +144,17 @@
 
         + .list-group-item {
           border-top-width: var(--#{$prefix}list-group-border-width);
-          @include ltr-rtl("border-left-width", 0);
+          @include ltr-rtl('border-left-width', 0);
 
           &.active {
-            @include ltr-rtl("margin-left", calc(var(--#{$prefix}list-group-border-width) * -1));
-            @include ltr-rtl("border-left-width", var(--#{$prefix}list-group-border-width));
+            @include ltr-rtl('margin-left', calc(var(--#{$prefix}list-group-border-width) * -1));
+            @include ltr-rtl('border-left-width', var(--#{$prefix}list-group-border-width));
           }
         }
       }
     }
   }
 }
-
 
 // Flush list items
 //
@@ -171,7 +172,6 @@
     }
   }
 }
-
 
 // scss-docs-start list-group-modifiers
 // List group contextual variants

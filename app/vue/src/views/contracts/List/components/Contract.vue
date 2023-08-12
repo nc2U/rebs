@@ -46,9 +46,7 @@ const router = useRouter()
       class="text-left"
       :class="contract.keyunit?.houseunit !== null ? '' : 'text-danger'"
     >
-      {{
-        contract.keyunit.houseunit ? contract.keyunit.houseunit.__str__ : '미정'
-      }}
+      {{ contract.keyunit.houseunit ? contract.keyunit.houseunit.__str__ : '미정' }}
     </CTableDataCell>
     <CTableDataCell>{{ contract.contractor.contract_date }}</CTableDataCell>
     <CTableDataCell class="text-right">
@@ -63,9 +61,7 @@ const router = useRouter()
     <CTableDataCell class="text-right">
       {{ numFormat(contract.total_paid) }}
     </CTableDataCell>
-    <CTableDataCell
-      >{{ contract.contractor.contractorcontact.cell_phone }}
-    </CTableDataCell>
+    <CTableDataCell>{{ contract.contractor.contractorcontact.cell_phone }} </CTableDataCell>
     <CTableDataCell>
       <CButton
         type="button"

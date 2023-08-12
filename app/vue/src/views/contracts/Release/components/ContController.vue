@@ -43,9 +43,7 @@ const setContractor = (pk: number, release: number | null) => {
                 :disabled="!project"
                 @keydown.enter="searchContractor"
               />
-              <CInputGroupText @click="searchContractor">
-                계약 건 찾기
-              </CInputGroupText>
+              <CInputGroupText @click="searchContractor"> 계약 건 찾기 </CInputGroupText>
             </CInputGroup>
           </CCol>
           <CCol
@@ -60,9 +58,7 @@ const setContractor = (pk: number, release: number | null) => {
               color="dark"
               variant="outline"
               size="sm"
-              @click="
-                setContractor(contractor.pk, contractor.contractorrelease)
-              "
+              @click="setContractor(contractor.pk, contractor.contractorrelease)"
             >
               {{ contractor.__str__ }}
             </CButton>

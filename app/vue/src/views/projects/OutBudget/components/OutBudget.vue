@@ -111,12 +111,7 @@ onBeforeMount(() => dataSetup())
       />
     </CTableDataCell>
     <CTableDataCell class="text-center">
-      <CButton
-        color="success"
-        size="sm"
-        :disabled="formsCheck"
-        @click="onUpdateBudget"
-      >
+      <CButton color="success" size="sm" :disabled="formsCheck" @click="onUpdateBudget">
         수정
       </CButton>
       <CButton color="danger" size="sm" @click="onDeleteBudget">삭제</CButton>

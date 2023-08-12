@@ -30,11 +30,7 @@ const multiSubmit = (payload: Grade) => emit('multi-submit', payload)
   <FormModal ref="refFormModal" size="lg">
     <template #header>직급 정보 등록</template>
     <template #default>
-      <GradeForm
-        :company="company"
-        @multi-submit="multiSubmit"
-        @close="refFormModal.close()"
-      />
+      <GradeForm :company="company" @multi-submit="multiSubmit" @close="refFormModal.close()" />
     </template>
   </FormModal>
 

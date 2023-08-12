@@ -64,8 +64,7 @@ export const callAddress = (data: AddressData) => {
     }
     if (data.buildingName !== '' && data.apartment === 'Y') {
       // 건물명이 있고, 공동주택일 경우 추가한다.
-      form.address3 +=
-        form.address3 !== '' ? ', ' + data.buildingName : data.buildingName
+      form.address3 += form.address3 !== '' ? ', ' + data.buildingName : data.buildingName
     }
     // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
     if (form.address3 !== '') {

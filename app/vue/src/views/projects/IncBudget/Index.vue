@@ -15,9 +15,7 @@ const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
 
 const pCashStore = useProCash()
-const allAccD2List = computed(() =>
-  pCashStore.allAccD2List.filter(d1 => d1.pk <= 2),
-)
+const allAccD2List = computed(() => pCashStore.allAccD2List.filter(d1 => d1.pk <= 2))
 const allAccD3List = computed(() =>
   pCashStore.allAccD3List.filter(d3 => d3.pk === 1 || d3.pk === 4),
 )
@@ -34,29 +32,23 @@ provide('orderGroups', getOrderGroups)
 provide('unitTypes', getTypes)
 
 const fetchIncBudgetList = (pj: number) => projStore.fetchIncBudgetList(pj)
-const createIncBudget = (payload: ProIncBudget) =>
-  projStore.createIncBudget(payload)
-const updateIncBudget = (payload: ProIncBudget) =>
-  projStore.updateIncBudget(payload)
-const deleteIncBudget = (pk: number, project: number) =>
-  projStore.deleteIncBudget(pk, project)
+const createIncBudget = (payload: ProIncBudget) => projStore.createIncBudget(payload)
+const updateIncBudget = (payload: ProIncBudget) => projStore.updateIncBudget(payload)
+const deleteIncBudget = (pk: number, project: number) => projStore.deleteIncBudget(pk, project)
 
 const fetchProAllAccD2List = () => pCashStore.fetchProAllAccD2List()
 const fetchProAllAccD3List = () => pCashStore.fetchProAllAccD3List()
 
-const fetchOrderGroupList = (proj: number) =>
-  contStore.fetchOrderGroupList(proj)
+const fetchOrderGroupList = (proj: number) => contStore.fetchOrderGroupList(proj)
 
 const fetchTypeList = (proj: number) => pDataStore.fetchTypeList(proj)
 
 const onSubmit = (payload: ProIncBudget) => {
-  if (project.value)
-    createIncBudget({ ...{ project: project.value }, ...payload })
+  if (project.value) createIncBudget({ ...{ project: project.value }, ...payload })
 }
 
 const onUpdateBudget = (payload: ProIncBudget) => {
-  if (project.value)
-    updateIncBudget({ ...{ project: project.value }, ...payload })
+  if (project.value) updateIncBudget({ ...{ project: project.value }, ...payload })
 }
 
 const onDeleteBudget = (pk: number) => {
@@ -88,11 +80,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @proj-select="projSelect"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
 
   <ContentBody>
     <CCardBody class="pb-5">

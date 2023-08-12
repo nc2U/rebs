@@ -16,8 +16,7 @@ const updateFormModal = ref()
 
 const showDetail = () => updateFormModal.value.callModal()
 const multiSubmit = (payload: Site) => emit('multi-submit', payload)
-const onDelete = (payload: { pk: number; project: number }) =>
-  emit('on-delete', payload)
+const onDelete = (payload: { pk: number; project: number }) => emit('on-delete', payload)
 </script>
 
 <template>

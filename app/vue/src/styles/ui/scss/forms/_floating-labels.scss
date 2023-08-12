@@ -11,7 +11,7 @@
   > label {
     position: absolute;
     top: 0;
-    @include ltr-rtl("left", 0);
+    @include ltr-rtl('left', 0);
     width: 100%;
     height: 100%; // allow textareas
     padding: $form-floating-padding-y $form-floating-padding-x;

@@ -13,8 +13,7 @@ import { isElement } from './index'
  * Constants
  */
 
-const SELECTOR_FIXED_CONTENT =
-  '.fixed-top, .fixed-bottom, .is-fixed, .sticky-top'
+const SELECTOR_FIXED_CONTENT = '.fixed-top, .fixed-bottom, .is-fixed, .sticky-top'
 const SELECTOR_STICKY_CONTENT = '.sticky-top'
 const PROPERTY_PADDING = 'padding-right'
 const PROPERTY_MARGIN = 'margin-right'
@@ -77,21 +76,13 @@ class ScrollBarHelper {
   _setElementAttributes(selector, styleProperty, callback) {
     const scrollbarWidth = this.getWidth()
     const manipulationCallBack = element => {
-      if (
-        element !== this._element &&
-        window.innerWidth > element.clientWidth + scrollbarWidth
-      ) {
+      if (element !== this._element && window.innerWidth > element.clientWidth + scrollbarWidth) {
         return
       }
 
       this._saveInitialAttribute(element, styleProperty)
-      const calculatedValue = window
-        .getComputedStyle(element)
-        .getPropertyValue(styleProperty)
-      element.style.setProperty(
-        styleProperty,
-        `${callback(Number.parseFloat(calculatedValue))}px`,
-      )
+      const calculatedValue = window.getComputedStyle(element).getPropertyValue(styleProperty)
+      element.style.setProperty(styleProperty, `${callback(Number.parseFloat(calculatedValue))}px`)
     }
 
     this._applyManipulationCallback(selector, manipulationCallBack)

@@ -112,9 +112,7 @@ onBeforeMount(() => {
     />
   </CTableDataCell>
   <CTableDataCell>
-    <CButton color="success" size="sm" :disabled="formsCheck" @click="relPatch">
-      적용
-    </CButton>
+    <CButton color="success" size="sm" :disabled="formsCheck" @click="relPatch"> 적용 </CButton>
   </CTableDataCell>
   <CTableDataCell v-if="index === 0" :rowspan="sitesNum">
     <CButton color="info" size="sm" @click="showDetail"> 확인</CButton>

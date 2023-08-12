@@ -3,11 +3,7 @@ import { ref, computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/proCash/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
 import { useProCash } from '@/store/pinia/proCash'
-import {
-  CashBookFilter,
-  ProBankAcc,
-  ProjectCashBook as PrCashBook,
-} from '@/store/types/proCash'
+import { CashBookFilter, ProBankAcc, ProjectCashBook as PrCashBook } from '@/store/types/proCash'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from '@/views/proCash/Imprest/components/ListController.vue'
@@ -53,20 +49,16 @@ const fetchProAccSortList = () => pCashStore.fetchProAccSortList()
 const fetchProAllAccD2List = () => pCashStore.fetchProAllAccD2List()
 const fetchProAllAccD3List = () => pCashStore.fetchProAllAccD3List()
 
-const fetchProFormAccD2List = (sort?: number | null) =>
-  pCashStore.fetchProFormAccD2List(sort)
+const fetchProFormAccD2List = (sort?: number | null) => pCashStore.fetchProFormAccD2List(sort)
 const fetchProFormAccD3List = (d2?: number | null, sort?: number | null) =>
   pCashStore.fetchProFormAccD3List(d2, sort)
 
-const fetchProBankAccList = (projId: number) =>
-  pCashStore.fetchProBankAccList(projId)
-const fetchAllProBankAccList = (projId: number) =>
-  pCashStore.fetchAllProBankAccList(projId)
+const fetchProBankAccList = (projId: number) => pCashStore.fetchProBankAccList(projId)
+const fetchAllProBankAccList = (projId: number) => pCashStore.fetchAllProBankAccList(projId)
 const fetchProjectImprestList = (payload: CashBookFilter) =>
   pCashStore.fetchProjectImprestList(payload)
 
-const patchProBankAcc = (payload: ProBankAcc) =>
-  pCashStore.patchProBankAcc(payload)
+const patchProBankAcc = (payload: ProBankAcc) => pCashStore.patchProBankAcc(payload)
 
 const createPrCashBook = (
   payload: PrCashBook & { sepData: PrCashBook | null } & {
@@ -97,8 +89,7 @@ const listFiltering = (payload: CashBookFilter) => {
   const d2 = payload.pro_acc_d2 ? payload.pro_acc_d2 : null
   fetchProFormAccD2List(sort)
   fetchProFormAccD3List(d2, sort)
-  if (project.value)
-    fetchProjectImprestList({ ...{ project: project.value }, ...payload })
+  if (project.value) fetchProjectImprestList({ ...{ project: project.value }, ...payload })
 }
 
 const chargeCreate = (
@@ -131,13 +122,7 @@ const onCreate = (
 ) => {
   if (project.value) payload.project = project.value || null
   if (payload.sort === 3 && payload.bank_account_to) {
-    const {
-      bank_account,
-      bank_account_to,
-      ba_is_imprest,
-      charge,
-      ...inputData
-    } = payload
+    const { bank_account, bank_account_to, ba_is_imprest, charge, ...inputData } = payload
 
     inputData.sort = 2
     inputData.trader = '내부대체'
@@ -150,15 +135,9 @@ const onCreate = (
     inputData.income = inputData.outlay
     inputData.outlay = null
 
-    setTimeout(
-      () => createPrCashBook({ bank_account: bank_account_to, ...inputData }),
-      300,
-    )
+    setTimeout(() => createPrCashBook({ bank_account: bank_account_to, ...inputData }), 300)
     if (!!charge) {
-      setTimeout(
-        () => chargeCreate({ bank_account, ...inputData }, charge),
-        600,
-      )
+      setTimeout(() => chargeCreate({ bank_account, ...inputData }, charge), 600)
     }
   } else if (payload.sort === 4) {
     // 취소 거래일 때
@@ -239,11 +218,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @proj-select="projSelect"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
 
   <ContentBody>
     <CCardBody class="pb-5">

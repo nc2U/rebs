@@ -118,12 +118,7 @@ onBeforeMount(() => dataSetup())
       />
     </CTableDataCell>
     <CTableDataCell class="text-center">
-      <CButton
-        color="success"
-        size="sm"
-        :disabled="formsCheck"
-        @click="onUpdateFloor"
-      >
+      <CButton color="success" size="sm" :disabled="formsCheck" @click="onUpdateFloor">
         수정
       </CButton>
       <CButton color="danger" size="sm" @click="onDeleteFloor">삭제</CButton>
@@ -133,8 +128,8 @@ onBeforeMount(() => dataSetup())
   <ConfirmModal ref="refConfirmModal">
     <template #header> 층별 타입 삭제</template>
     <template #default>
-      이 타입에 종속된 분양가 데이터가 있는 경우 해당 데이터를 모두 제거한 후
-      삭제가능 합니다. 해당 층별 타입을 삭제 하시겠습니까?
+      이 타입에 종속된 분양가 데이터가 있는 경우 해당 데이터를 모두 제거한 후 삭제가능 합니다. 해당
+      층별 타입을 삭제 하시겠습니까?
     </template>
     <template #footer>
       <CButton color="danger" @click="modalAction">삭제</CButton>

@@ -26,30 +26,20 @@ const paySumList = computed(() => paymentStore.paySumList)
 
 // 차수명
 const getOGName = (og: number) =>
-  orderGroup.value.length
-    ? orderGroup.value.filter(o => o.pk === og)[0]
-    : { order_group_name: '' }
+  orderGroup.value.length ? orderGroup.value.filter(o => o.pk === og)[0] : { order_group_name: '' }
 // 타입명
 const getUTName = (ut: number) =>
-  unitType.value.length
-    ? unitType.value.filter(u => u.pk === ut)[0]
-    : { name: '', color: '' }
+  unitType.value.length ? unitType.value.filter(u => u.pk === ut)[0] : { name: '', color: '' }
 // 차수 및 타입별 계약 건수
 const getContNum = (og: number, ut: number) =>
-  contSum.value
-    .filter(c => c.order_group === og && c.unit_type === ut)
-    .map(c => c.conts_num)[0]
+  contSum.value.filter(c => c.order_group === og && c.unit_type === ut).map(c => c.conts_num)[0]
 // 차수 및 타입별 계약 가격 총액
 const getContSum = (og: number, ut: number) =>
-  contSum.value
-    .filter(c => c.order_group === og && c.unit_type === ut)
-    .map(c => c.price_sum)[0]
+  contSum.value.filter(c => c.order_group === og && c.unit_type === ut).map(c => c.price_sum)[0]
 // 차수별 타입수
-const getUTbyOGNum = (og: number) =>
-  budgetList.value.filter(b => b.order_group === og).length
+const getUTbyOGNum = (og: number) => budgetList.value.filter(b => b.order_group === og).length
 // 차수별 첫번째 타입
-const getFirstType = (og: number) =>
-  budgetList.value.filter(b => b.order_group === og)[0].unit_type
+const getFirstType = (og: number) => budgetList.value.filter(b => b.order_group === og)[0].unit_type
 
 const paidSum = (og: number, ut: number) =>
   paySumList.value.filter(s => s.order_group === og && s.unit_type === ut)[0]
@@ -58,9 +48,7 @@ const totalBudgetNum = computed(
   () => budgetList.value.map(b => b.quantity).reduce((p, n) => p + n, 0), // 총 계획 세대수
 )
 const totalContNum = computed(() =>
-  budgetList.value.length
-    ? contSum.value.map(c => c.conts_num).reduce((x, y) => x + y, 0)
-    : 0,
+  budgetList.value.length ? contSum.value.map(c => c.conts_num).reduce((x, y) => x + y, 0) : 0,
 ) // 총 계약 세대수
 
 const totalContSum = computed(() =>
@@ -68,9 +56,7 @@ const totalContSum = computed(() =>
 ) // 총 계약금액
 
 const totalPaidSum = computed(() =>
-  budgetList.value.length
-    ? paySumList.value.map(s => s.paid_sum).reduce((x, y) => x + y, 0)
-    : 0,
+  budgetList.value.length ? paySumList.value.map(s => s.paid_sum).reduce((x, y) => x + y, 0) : 0,
 ) // 총 실수납 금액
 
 const totalBudget = computed(
@@ -134,11 +120,7 @@ const totalBudget = computed(
           {{ getOGName(bg.order_group || 0).order_group_name }}
         </CTableDataCell>
         <CTableDataCell class="text-left pl-4">
-          <v-icon
-            icon="mdi mdi-square"
-            :color="getUTName(bg.unit_type || 0).color"
-            size="sm"
-          />
+          <v-icon icon="mdi mdi-square" :color="getUTName(bg.unit_type || 0).color" size="sm" />
           <!-- 타입명 -->
           {{ getUTName(bg.unit_type || 0).name }}
         </CTableDataCell>
@@ -180,16 +162,14 @@ const totalBudget = computed(
             'text-danger':
               0 >
               (bg.average_price || 0) *
-                (bg.quantity -
-                  (getContNum(bg.order_group || 0, bg.unit_type || 0) || 0)),
+                (bg.quantity - (getContNum(bg.order_group || 0, bg.unit_type || 0) || 0)),
           }"
         >
           <!-- 미계약 금액 -->
           {{
             numFormat(
               (bg.average_price || 0) *
-                (bg.quantity -
-                  (getContNum(bg.order_group || 0, bg.unit_type || 0) || 0)),
+                (bg.quantity - (getContNum(bg.order_group || 0, bg.unit_type || 0) || 0)),
             )
           }}
         </CTableDataCell>
@@ -202,9 +182,7 @@ const totalBudget = computed(
       <CTableRow class="text-center text-danger" style="height: 200px">
         <CTableDataCell colspan="10">
           [
-          <router-link :to="{ name: '수입 예산 등록' }">
-            수입 예산 등록
-          </router-link>
+          <router-link :to="{ name: '수입 예산 등록' }"> 수입 예산 등록 </router-link>
           ] >> [신규 프로젝트] > [수입 예산 항목]에서 데이터를 등록하세요.
         </CTableDataCell>
       </CTableRow>
@@ -212,9 +190,7 @@ const totalBudget = computed(
 
     <CTableHead>
       <CTableRow class="text-right" :color="TableSecondary">
-        <CTableHeaderCell colspan="2" class="text-center">
-          합계
-        </CTableHeaderCell>
+        <CTableHeaderCell colspan="2" class="text-center"> 합계 </CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
         <!-- 계획 세대수 합계 -->
         <CTableHeaderCell>{{ numFormat(totalBudgetNum) }}</CTableHeaderCell>
