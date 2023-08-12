@@ -49,7 +49,7 @@ jobs:
       #        # 이후의 build까지 다 실행을 해보고 난 뒤 종료 하므로 모든 테스트 스크립트에 ${{ always() }}를 붙임.
       #        if: ${{ always() }}
 
-      - run: cd app/vue && yarn build && yarn docs:build
+      - run: cd app/vue && yarn build # && yarn docs:build
         if: ${{ always() }}
 
       - name: Docs Deploy
