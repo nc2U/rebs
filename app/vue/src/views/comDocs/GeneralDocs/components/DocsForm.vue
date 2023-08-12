@@ -181,7 +181,7 @@ onUpdated(() => dataSetup())
     </CRow>
 
     <CRow class="mb-3">
-      <CFormLabel for="category" class="col-sm-2 col-form-label"> 카테고리 </CFormLabel>
+      <CFormLabel for="category" class="col-sm-2 col-form-label"> 카테고리</CFormLabel>
       <CCol md="3">
         <CFormSelect id="category" v-model="form.category" required>
           <option value="">카테고리 선택</option>
@@ -191,7 +191,7 @@ onUpdated(() => dataSetup())
         </CFormSelect>
       </CCol>
 
-      <CFormLabel for="inputPassword" class="col-sm-2 col-form-label"> 문서 시행일자 </CFormLabel>
+      <CFormLabel for="inputPassword" class="col-sm-2 col-form-label"> 문서 시행일자</CFormLabel>
       <CCol md="3">
         <DatePicker v-model="form.execution_date" placeholder="문서 시행일자" />
       </CCol>
@@ -203,7 +203,8 @@ onUpdated(() => dataSetup())
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">내용</CFormLabel>
       <CCol md="10">
-        <ToastEditor v-model="form.content" placeholder="본문 내용" />
+        <VTextarea v-model="form.content" placeholder="본문 내용" />
+        <!--        <ToastEditor v-model="form.content" placeholder="본문 내용" />-->
       </CCol>
     </CRow>
 
@@ -319,9 +320,9 @@ onUpdated(() => dataSetup())
 
     <CRow>
       <CCol class="text-right">
-        <CButton color="light" @click="router.push({ name: '본사 일반 문서' })"> 목록으로 </CButton>
-        <CButton v-if="route.params.postId" color="light" @click="router.go(-1)"> 뒤로 </CButton>
-        <CButton :color="btnClass" type="submit" :disabled="formsCheck"> 저장하기 </CButton>
+        <CButton color="light" @click="router.push({ name: '본사 일반 문서' })"> 목록으로</CButton>
+        <CButton v-if="route.params.postId" color="light" @click="router.go(-1)"> 뒤로</CButton>
+        <CButton :color="btnClass" type="submit" :disabled="formsCheck"> 저장하기</CButton>
       </CCol>
     </CRow>
   </CForm>
