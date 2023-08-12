@@ -35,12 +35,12 @@ jobs:
         id: cache_vue
         with:
           path: ./app/vue/node_modules
-          key: yarn-packages-${{ hashFiles('**/yarn.lock') }}
+          key: pnpm-packages-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       # node_modules 변화기 있으면 빌드
       - name: Install Dependencies
         if: steps.cache_vue.outputs.cache-hit != 'true'
-        run: cd app/vue && yarn
+        run: cd app/vue && pnpm i
 
       #      - run: yarn lint
       #        # `if: ${{ always() }} => ` 만약 `yarn lint`라는 곳에서 에러가 났을 경우
@@ -49,7 +49,7 @@ jobs:
       #        # 이후의 build까지 다 실행을 해보고 난 뒤 종료 하므로 모든 테스트 스크립트에 ${{ always() }}를 붙임.
       #        if: ${{ always() }}
 
-      - run: cd app/vue && yarn build # && yarn docs:build
+      - run: cd app/vue && pnpm build # && yarn docs:build
         if: ${{ always() }}
 
       - name: Docs Deploy
