@@ -36,11 +36,11 @@ const relatedCaseName = computed(() =>
     : '',
 )
 
-const agencyFunc = computed(() =>
+const agencyFunc = () => {
   props.suitCase?.court_desc !== ''
     ? emit('agency-filter', props.suitCase?.court)
-    : emit('agency-search', props.suitCase.other_agency),
-)
+    : emit('agency-search', props.suitCase.other_agency)
+}
 
 const sortFunc = () => emit('sort-filter', props.suitCase?.project)
 const relatedFilter = () => emit('related-filter', props.suitCase?.related_case)
