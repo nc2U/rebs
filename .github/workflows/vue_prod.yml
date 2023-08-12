@@ -29,6 +29,13 @@ jobs:
         with:
           node-version: 18
 
+      # pnpm use
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8
+          run_install: false
+
       # node_modules 캐싱
       - name: Cache vue node
         uses: actions/cache@v3
