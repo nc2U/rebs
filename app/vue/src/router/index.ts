@@ -1,10 +1,10 @@
 import { computed } from 'vue'
 import { useAccount } from '@/store/pinia/account'
-import { createRouter, createWebHashHistory } from 'vue-router'
-import routes from '@/router/routes'
+import { createRouter, createWebHistory } from 'vue-router'
+import routes from './routes'
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 })
 

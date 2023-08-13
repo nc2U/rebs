@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { CachedViews, VisitedView } from '@/store/types/tagsView'
-import { RouteLocationNormalizedLoaded as RouteNormal } from 'vue-router'
+import { type CachedViews, type VisitedView } from '@/store/types/tagsView'
+import { type RouteLocationNormalizedLoaded as RouteNormal } from 'vue-router'
 
 export const useTagsView = defineStore('tags-view', () => {
   // state & getters
@@ -62,17 +62,14 @@ export const useTagsView = defineStore('tags-view', () => {
 
   const delOthersVisitedViews = (view: VisitedView) =>
     new Promise(resolve => {
-      visitedViews.value = visitedViews.value.filter(
-        v => v.meta.affix || v.path === view.path,
-      )
+      visitedViews.value = visitedViews.value.filter(v => v.meta.affix || v.path === view.path)
       resolve([...visitedViews.value])
     })
 
   const delOthersCachedViews = (view: VisitedView) =>
     new Promise(resolve => {
       const index = cachedViews.value.indexOf(view.name)
-      if (index > -1)
-        cachedViews.value = cachedViews.value.slice(index, index + 1)
+      if (index > -1) cachedViews.value = cachedViews.value.slice(index, index + 1)
       else cachedViews.value = []
       resolve([...cachedViews.value])
     })

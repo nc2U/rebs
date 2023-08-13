@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { AddressData } from '@/components/DaumPostcode/address'
+import { type AddressData } from '@/components/DaumPostcode/address'
 import { useStore } from '@/store'
 
 const store = useStore()
@@ -41,17 +41,13 @@ const heightVal = computed(() => props.height + 'px')
 const borderVal = computed(() => props.borderWidth + 'px solid')
 const leftVal = computed(
   () =>
-    ((window.innerWidth || document.documentElement.clientWidth) -
-      props.width) /
-      2 -
+    ((window.innerWidth || document.documentElement.clientWidth) - props.width) / 2 -
     props.borderWidth +
     'px',
 )
 const topVal = computed(
   () =>
-    ((window.innerHeight || document.documentElement.clientHeight) -
-      props.height) /
-      2 -
+    ((window.innerHeight || document.documentElement.clientHeight) - props.height) / 2 -
     props.borderWidth +
     'px',
 )
@@ -67,58 +63,57 @@ const theme = computed(() => {
 })
 
 const initiate = (formNum = 1) => {
-  ;(
-    window as { daum: { postcode: { load: (p: () => void) => void } } }
-  ).daum.postcode.load(() => {
-    new (
-      window as {
-        daum: {
-          Postcode: (p: {
-            hideMapBtn: boolean | undefined
-            maxSuggestItems: number | undefined
-            pleaseReadGuideTimer: number | undefined
-            showMoreHName: boolean | undefined
-            alwaysShowEngAddr: boolean | undefined
-            submitMode: boolean | undefined
-            autoResize: boolean | undefined
-            shorthand: boolean | undefined
-            hideEngBtn: boolean | undefined
-            animation: boolean | undefined
-            useSuggest: boolean | undefined
-            pleaseReadGuide: number | undefined
-            width: string
-            theme: { searchBgColor: string; queryTextColor: string } | null
-            oncomplete: (data: AddressData) => void
-            autoMapping: boolean | undefined
-            height: string
-          }) => void
-        }
-      }
-    ).daum.Postcode({
-      oncomplete: function oncomplete(data: AddressData) {
-        emit('address-callback', { ...{ formNum }, ...data })
-        displayVal.value = 'none'
-      },
-      alwaysShowEngAddr: props.alwaysShowEngAddr,
-      animation: props.animation,
-      autoMapping: props.autoMapping,
-      autoResize: props.autoResize,
-      hideEngBtn: props.hideEngBtn,
-      hideMapBtn: props.hideMapBtn,
-      maxSuggestItems: props.maxSuggestItems,
-      pleaseReadGuide: props.pleaseReadGuide,
-      pleaseReadGuideTimer: props.pleaseReadGuideTimer,
-      shorthand: props.shorthand,
-      showMoreHName: props.showMoreHName,
-      submitMode: props.submitMode,
-      theme: theme.value,
-      useSuggest: props.useSuggest,
-      width: '100%',
-      height: '100%',
-    }).embed(element_layer.value)
+  ;(window as any)// { daum: { postcode: { load: (p: () => void) => void } } }
+  .daum.postcode
+    .load(() => {
+      new // {
+      //     daum: {
+      //       Postcode: (p: {
+      //         hideMapBtn: boolean | undefined
+      //         maxSuggestItems: number | undefined
+      //         pleaseReadGuideTimer: number | undefined
+      //         showMoreHName: boolean | undefined
+      //         alwaysShowEngAddr: boolean | undefined
+      //         submitMode: boolean | undefined
+      //         autoResize: boolean | undefined
+      //         shorthand: boolean | undefined
+      //         hideEngBtn: boolean | undefined
+      //         animation: boolean | undefined
+      //         useSuggest: boolean | undefined
+      //         pleaseReadGuide: number | undefined
+      //         width: string
+      //         theme: { searchBgColor: string; queryTextColor: string } | null
+      //         oncomplete: (data: AddressData) => void
+      //         autoMapping: boolean | undefined
+      //         height: string
+      //       }) => void
+      //     }
+      //   }
+      (window as any).daum.Postcode({
+        oncomplete: function oncomplete(data: AddressData) {
+          emit('address-callback', { ...{ formNum }, ...data })
+          displayVal.value = 'none'
+        },
+        alwaysShowEngAddr: props.alwaysShowEngAddr,
+        animation: props.animation,
+        autoMapping: props.autoMapping,
+        autoResize: props.autoResize,
+        hideEngBtn: props.hideEngBtn,
+        hideMapBtn: props.hideMapBtn,
+        maxSuggestItems: props.maxSuggestItems,
+        pleaseReadGuide: props.pleaseReadGuide,
+        pleaseReadGuideTimer: props.pleaseReadGuideTimer,
+        shorthand: props.shorthand,
+        showMoreHName: props.showMoreHName,
+        submitMode: props.submitMode,
+        theme: theme.value,
+        useSuggest: props.useSuggest,
+        width: '100%',
+        height: '100%',
+      }).embed(element_layer.value)
 
-    displayVal.value = 'block'
-  })
+      displayVal.value = 'block'
+    })
 }
 
 defineExpose({ initiate })

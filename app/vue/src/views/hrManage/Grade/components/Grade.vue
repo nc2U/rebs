@@ -1,7 +1,7 @@
 <script lang="ts" setup="">
-import { computed, PropType, ref } from 'vue'
+import { computed, type PropType, ref } from 'vue'
 import { useCompany } from '@/store/pinia/company'
-import { Grade } from '@/store/types/company'
+import { type Grade } from '@/store/types/company'
 import FormModal from '@/components/Modals/FormModal.vue'
 import StaffForm from './GradeForm.vue'
 

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { ref, computed, PropType } from 'vue'
+import { ref, computed, type PropType } from 'vue'
 import { useStore } from '@/store'
 import { numFormat, cutString } from '@/utils/baseMixins'
-import { ProBankAcc, ProjectCashBook } from '@/store/types/proCash'
+import { type ProBankAcc, type ProjectCashBook } from '@/store/types/proCash'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ProImprestForm from '@/views/proCash/Imprest/components/ProImprestForm.vue'
 
@@ -15,8 +15,7 @@ const emit = defineEmits(['multi-submit', 'on-delete', 'on-bank-update'])
 const updateFormModal = ref()
 
 const sortClass = computed(
-  () =>
-    ['', 'text-primary', 'text-danger', 'text-info'][props.imprest?.sort || 0],
+  () => ['', 'text-primary', 'text-danger', 'text-info'][props.imprest?.sort || 0],
 )
 
 const store = useStore()
@@ -24,9 +23,7 @@ const dark = computed(() => store.theme === 'dark')
 const rowColor = computed(() => {
   let color = ''
   color =
-    props.imprest?.contract && (props.imprest.project_account_d3 as number) <= 2
-      ? 'info'
-      : color
+    props.imprest?.contract && (props.imprest.project_account_d3 as number) <= 2 ? 'info' : color
   color = dark.value ? '' : color
   color = props.imprest?.is_separate ? 'primary' : color
   color = props.imprest?.separated ? 'secondary' : color
@@ -35,13 +32,10 @@ const rowColor = computed(() => {
 
 const showDetail = () => updateFormModal.value.callModal()
 
-const multiSubmit = (payload: {
-  formData: ProjectCashBook
-  sepData: ProjectCashBook | null
-}) => emit('multi-submit', payload)
+const multiSubmit = (payload: { formData: ProjectCashBook; sepData: ProjectCashBook | null }) =>
+  emit('multi-submit', payload)
 
-const onDelete = (payload: { project: number; pk: number }) =>
-  emit('on-delete', payload)
+const onDelete = (payload: { project: number; pk: number }) => emit('on-delete', payload)
 
 const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
 </script>

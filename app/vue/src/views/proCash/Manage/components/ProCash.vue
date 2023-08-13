@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { ref, computed, PropType } from 'vue'
+import { ref, computed, type PropType } from 'vue'
 import { useStore } from '@/store'
 import { numFormat, cutString } from '@/utils/baseMixins'
-import { ProBankAcc, ProjectCashBook } from '@/store/types/proCash'
+import { type ProBankAcc, type ProjectCashBook } from '@/store/types/proCash'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ProCashForm from '@/views/proCash/Manage/components/ProCashForm.vue'
 
@@ -15,8 +15,7 @@ const emit = defineEmits(['multi-submit', 'on-delete', 'on-bank-update'])
 const updateFormModal = ref()
 
 const sortClass = computed(
-  () =>
-    ['', 'text-primary', 'text-danger', 'text-info'][props.proCash?.sort || 0],
+  () => ['', 'text-primary', 'text-danger', 'text-info'][props.proCash?.sort || 0],
 )
 
 const store = useStore()
@@ -25,8 +24,7 @@ const rowColor = computed(() => {
   let color = ''
   color =
     props.proCash?.contract &&
-    (props.proCash.project_account_d3 === 1 ||
-      props.proCash.project_account_d3 === 4)
+    (props.proCash.project_account_d3 === 1 || props.proCash.project_account_d3 === 4)
       ? 'info'
       : color
   color = dark.value ? '' : color
@@ -37,13 +35,10 @@ const rowColor = computed(() => {
 
 const showDetail = () => updateFormModal.value.callModal()
 
-const multiSubmit = (payload: {
-  formData: ProjectCashBook
-  sepData: ProjectCashBook | null
-}) => emit('multi-submit', payload)
+const multiSubmit = (payload: { formData: ProjectCashBook; sepData: ProjectCashBook | null }) =>
+  emit('multi-submit', payload)
 
-const onDelete = (payload: { project: number; pk: number }) =>
-  emit('on-delete', payload)
+const onDelete = (payload: { project: number; pk: number }) => emit('on-delete', payload)
 
 const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
 </script>

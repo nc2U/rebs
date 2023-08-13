@@ -1,16 +1,7 @@
 <script lang="ts" setup>
-import {
-  ref,
-  reactive,
-  computed,
-  watch,
-  onMounted,
-  onUpdated,
-  inject,
-  PropType,
-} from 'vue'
+import { ref, reactive, computed, watch, onMounted, onUpdated, inject, type PropType } from 'vue'
 import { useAccount } from '@/store/pinia/account'
-import { UnitFloorType } from '@/store/types/project'
+import { type UnitFloorType } from '@/store/types/project'
 import { write_project } from '@/utils/pageAuth'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -57,9 +48,7 @@ const formsCheck = computed(() => {
     const d = form.price === props.price.price || !props.price
     return a && b && c && d
   } else {
-    return (
-      !form.price_build && !form.price_land && !form.price_tax && !form.price
-    )
+    return !form.price_build && !form.price_land && !form.price_tax && !form.price
   }
 })
 
@@ -160,25 +149,17 @@ onUpdated(() => {
       />
     </CTableDataCell>
     <CTableDataCell class="text-center">
-      <CButton
-        :color="btnColor"
-        size="sm"
-        :disabled="formsCheck"
-        @click="onStorePrice"
-      >
+      <CButton :color="btnColor" size="sm" :disabled="formsCheck" @click="onStorePrice">
         {{ btnTitle }}
       </CButton>
-      <CButton color="danger" size="sm" :disabled="!price" @click="deletePrice">
-        삭제
-      </CButton>
+      <CButton color="danger" size="sm" :disabled="!price" @click="deletePrice"> 삭제</CButton>
     </CTableDataCell>
   </CTableRow>
 
   <ConfirmModal ref="refConfirmModal">
     <template #header> 공급가격 삭제</template>
     <template #default>
-      해당 데이터를 삭제하면 이후 복구할 수 없습니다. 이 공급가격 정보를 삭제
-      하시겠습니까?
+      해당 데이터를 삭제하면 이후 복구할 수 없습니다. 이 공급가격 정보를 삭제 하시겠습니까?
     </template>
     <template #footer>
       <CButton color="danger" @click="modalAction">삭제</CButton>

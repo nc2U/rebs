@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { ref, onMounted, computed, nextTick, PropType } from 'vue'
-import { ContFilter, useContract } from '@/store/pinia/contract'
-import { Contract } from '@/store/types/contract'
-import { PaymentPaid } from '@/store/types/proCash'
+import { ref, onMounted, computed, nextTick, type PropType } from 'vue'
+import { type ContFilter, useContract } from '@/store/pinia/contract'
+import { type Contract } from '@/store/types/contract'
+import { type PaymentPaid } from '@/store/types/proCash'
 import { write_payment } from '@/utils/pageAuth'
 import { numFormat } from '@/utils/baseMixins'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -30,8 +30,7 @@ onMounted(() => pageInit())
 
 const contStore = useContract()
 const contactList = computed(() => contStore.contractList)
-const fetchContractList = (payload: ContFilter) =>
-  contStore.fetchContractList(payload)
+const fetchContractList = (payload: ContFilter) => contStore.fetchContractList(payload)
 
 const pageInit = () => {
   form.value.search = ''
@@ -85,20 +84,14 @@ const modalAction = () => {
                     aria-describedby="addon-wrapping"
                     @keydown.enter="searchCont"
                   />
-                  <CInputGroupText @click="searchCont">
-                    계약 건 찾기
-                  </CInputGroupText>
+                  <CInputGroupText @click="searchCont"> 계약 건 찾기</CInputGroupText>
                 </CInputGroup>
               </CCol>
             </CRow>
           </CCol>
         </CRow>
         <CRow>
-          <CCol
-            v-if="contactList.length !== 0"
-            color="warning"
-            class="p-2 pl-3"
-          >
+          <CCol v-if="contactList.length !== 0" color="warning" class="p-2 pl-3">
             <CButton
               v-for="c in contactList"
               :key="c.pk"
@@ -117,13 +110,8 @@ const modalAction = () => {
         </CRow>
       </CCallout>
 
-      <CAlert
-        v-if="contactList.length !== 0"
-        color="default"
-        class="pt-0 pb-0 text-primary"
-      >
-        상기 계약 건 중 아래 수납 항목을 매칭 등록할 계약 건을 선택한 후
-        클릭하여 주십시요.
+      <CAlert v-if="contactList.length !== 0" color="default" class="pt-0 pb-0 text-primary">
+        상기 계약 건 중 아래 수납 항목을 매칭 등록할 계약 건을 선택한 후 클릭하여 주십시요.
       </CAlert>
 
       <CAlert color="info">
@@ -131,9 +119,7 @@ const modalAction = () => {
           {{
             `[입금자] : ${payment.trader}  | [입금액] : ${numFormat(
               payment.income,
-            )} | [입금계좌] : ${payment.bank_account} | [입금일] : ${
-              payment.deal_date
-            }`
+            )} | [입금계좌] : ${payment.bank_account} | [입금일] : ${payment.deal_date}`
           }}
         </span>
       </CAlert>

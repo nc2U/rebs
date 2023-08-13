@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount, PropType } from 'vue'
+import { ref, reactive, computed, onBeforeMount, type PropType } from 'vue'
 import { write_contract } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
-import { Contractor, ContractRelease } from '@/store/types/contract'
+import { type Contractor, type ContractRelease } from '@/store/types/contract'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -34,12 +34,10 @@ const form = reactive({
 const formsCheck = computed(() => {
   if (props.release) {
     const a = form.status === props.release.status
-    const b =
-      !form.refund_amount || form.refund_amount === props.release.refund_amount
+    const b = !form.refund_amount || form.refund_amount === props.release.refund_amount
     const c = form.refund_account_bank === props.release.refund_account_bank
     const d = form.refund_account_number === props.release.refund_account_number
-    const e =
-      form.refund_account_depositor === props.release.refund_account_depositor
+    const e = form.refund_account_depositor === props.release.refund_account_depositor
     const f = form.request_date === props.release.request_date
     const g = form.completion_date === props.release.completion_date
     const h = form.note === props.release.note
@@ -81,12 +79,7 @@ onBeforeMount(() => formDataSet())
 </script>
 
 <template>
-  <CForm
-    class="needs-validation"
-    novalidate
-    :validated="validated"
-    @submit.prevent="onSubmit"
-  >
+  <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
     <CModalBody class="p-4">
       <CRow class="mb-2">
         <CCol xs="6">
@@ -108,21 +101,14 @@ onBeforeMount(() => formDataSet())
             <CCol sm="8" class="text-left">
               <CFormSelect v-model="form.status" required>
                 <option value="">---------</option>
-                <option v-if="release && release.status < '4'" value="0">
-                  신청 취소
-                </option>
-                <option v-if="!release || release.status < '4'" value="3">
-                  해지 신청
-                </option>
+                <option v-if="release && release.status < '4'" value="0">신청 취소</option>
+                <option v-if="!release || release.status < '4'" value="3">해지 신청</option>
                 <option v-if="release" value="4">해지 완료</option>
                 <option v-if="release" value="5">자격 상실</option>
               </CFormSelect>
-              <small
-                v-if="form.status >= '4' && release.status < '4'"
-                class="text-danger"
-              >
-                해지 완료, 자격 상실 처리된 계약 건은 계약상태로 되돌릴 수
-                없으므로 최종 확정된 상태에서만 진행하십시요.
+              <small v-if="form.status >= '4' && release.status < '4'" class="text-danger">
+                해지 완료, 자격 상실 처리된 계약 건은 계약상태로 되돌릴 수 없으므로 최종 확정된
+                상태에서만 진행하십시요.
               </small>
             </CCol>
           </CRow>
@@ -132,9 +118,7 @@ onBeforeMount(() => formDataSet())
       <CRow class="mb-2">
         <CCol xs="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">
-              환불(예정)금액
-            </CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label"> 환불(예정)금액</CFormLabel>
             <CCol sm="8">
               <CFormInput
                 v-model.number="form.refund_amount"
@@ -149,9 +133,7 @@ onBeforeMount(() => formDataSet())
 
         <CCol xs="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">
-              거래은행(환불계좌)
-            </CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label"> 거래은행(환불계좌)</CFormLabel>
             <CCol sm="8">
               <CFormInput
                 v-model="form.refund_account_bank"
@@ -167,9 +149,7 @@ onBeforeMount(() => formDataSet())
       <CRow class="mb-2">
         <CCol xs="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">
-              계좌번호(환불계좌)
-            </CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label"> 계좌번호(환불계좌)</CFormLabel>
             <CCol sm="8">
               <CFormInput
                 v-model="form.refund_account_number"
@@ -183,9 +163,7 @@ onBeforeMount(() => formDataSet())
 
         <CCol xs="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">
-              예금주(환불계좌)
-            </CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label"> 예금주(환불계좌)</CFormLabel>
             <CCol sm="8">
               <CFormInput
                 v-model="form.refund_account_depositor"
@@ -203,20 +181,14 @@ onBeforeMount(() => formDataSet())
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label"> 해지신청일</CFormLabel>
             <CCol sm="8">
-              <DatePicker
-                v-model="form.request_date"
-                required
-                placeholder="해지신청일"
-              />
+              <DatePicker v-model="form.request_date" required placeholder="해지신청일" />
             </CCol>
           </CRow>
         </CCol>
 
         <CCol xs="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">
-              해지(환불)처리일
-            </CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label"> 해지(환불)처리일</CFormLabel>
             <CCol sm="8">
               <DatePicker
                 v-model="form.completion_date"
@@ -241,25 +213,12 @@ onBeforeMount(() => formDataSet())
     </CModalBody>
 
     <CModalFooter>
-      <CButton type="button" color="light" @click="emit('close')">
-        닫기
-      </CButton>
+      <CButton type="button" color="light" @click="emit('close')"> 닫기</CButton>
       <slot name="footer">
-        <CButton
-          type="submit"
-          :color="release ? 'success' : 'primary'"
-          :disabled="formsCheck"
-        >
+        <CButton type="submit" :color="release ? 'success' : 'primary'" :disabled="formsCheck">
           저장
         </CButton>
-        <CButton
-          v-if="release"
-          type="button"
-          color="danger"
-          @click="deleteConfirm"
-        >
-          삭제
-        </CButton>
+        <CButton v-if="release" type="button" color="danger" @click="deleteConfirm"> 삭제</CButton>
       </slot>
     </CModalFooter>
   </CForm>

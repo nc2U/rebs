@@ -1,0 +1,130 @@
+<script lang="ts" setup>
+import { ref, reactive, computed, onBeforeMount, inject } from 'vue'
+import { useAccount } from '@/store/pinia/account'
+import { write_project } from '@/utils/pageAuth'
+import { ProjectAccountD2, ProjectAccountD3 } from '@/store/types/proCash'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+
+const d2List = inject<ProjectAccountD2[]>('d2List')
+const d3List = inject<ProjectAccountD3[]>('d3List')
+
+const props = defineProps({ budget: { type: Object, required: true } })
+const emit = defineEmits(['on-update', 'on-delete'])
+
+const form = reactive({
+  pk: null,
+  account_d2: null,
+  account_opt: '',
+  account_d3: null,
+  basis_calc: null,
+  budget: null,
+})
+
+const refAlertModal = ref()
+const refConfirmModal = ref()
+
+const formsCheck = computed(() => {
+  const a = form.pk === props.budget.pk
+  const b = form.account_d2 === props.budget.account_d2
+  const c = form.account_opt === props.budget.account_opt
+  const d = form.account_d3 === props.budget.account_d3
+  const e = form.basis_calc === props.budget.basis_calc
+  const f = form.budget === props.budget.budget || !props.budget.budget
+  return a && b && c && d && e && f
+})
+
+const onUpdateBudget = () => {
+  if (write_project.value) {
+    emit('on-update', { ...form })
+  } else {
+    refAlertModal.value.callModal()
+    dataSetup()
+  }
+}
+
+const accStore = useAccount()
+const onDeleteBudget = () => {
+  if (accStore.superAuth) refConfirmModal.value.callModal()
+  else {
+    refAlertModal.value.callModal()
+    dataSetup()
+  }
+}
+
+const modalAction = () => {
+  emit('on-delete', props.budget.pk)
+  refConfirmModal.value.close()
+}
+
+const dataSetup = () => {
+  form.pk = props.budget.pk
+  form.account_d2 = props.budget.account_d2
+  form.account_opt = props.budget.account_opt
+  form.account_d3 = props.budget.account_d3
+  form.basis_calc = props.budget.basis_calc
+  form.budget = props.budget.budget || '0'
+}
+
+onBeforeMount(() => dataSetup())
+</script>
+
+<template>
+  <CTableRow>
+    <CTableDataCell>
+      <CFormSelect v-model.number="form.account_d2" required>
+        <option value="">대분류</option>
+        <option v-for="d2 in d2List" :key="d2.pk" :value="d2.pk">
+          {{ d2.name }}
+        </option>
+      </CFormSelect>
+    </CTableDataCell>
+    <CTableDataCell>
+      <CFormInput
+        v-model="form.account_opt"
+        placeholder="중분류(필요시 기재)"
+        @keydown.enter="onUpdateBudget"
+      />
+    </CTableDataCell>
+    <CTableDataCell>
+      <CFormSelect v-model.number="form.account_d3" required>
+        <option value="">소분류</option>
+        <option v-for="d3 in d3List" :key="d3.pk" :value="d3.pk">
+          {{ d3.name }}
+        </option>
+      </CFormSelect>
+    </CTableDataCell>
+    <CTableDataCell>
+      <CFormInput
+        v-model="form.basis_calc"
+        placeholder="산출근거"
+        @keydown.enter="onUpdateBudget"
+      />
+    </CTableDataCell>
+    <CTableDataCell>
+      <CFormInput
+        v-model.number="form.budget"
+        type="number"
+        min="0"
+        placeholder="지출예산"
+        @keydown.enter="onUpdateBudget"
+      />
+    </CTableDataCell>
+    <CTableDataCell class="text-center">
+      <CButton color="success" size="sm" :disabled="formsCheck" @click="onUpdateBudget">
+        수정
+      </CButton>
+      <CButton color="danger" size="sm" @click="onDeleteBudget">삭제</CButton>
+    </CTableDataCell>
+  </CTableRow>
+
+  <ConfirmModal ref="refConfirmModal">
+    <template #header> 지출 예산 삭제</template>
+    <template #default> 해당 지출 예산 항목을 삭제 하시겠습니까?</template>
+    <template #footer>
+      <CButton color="danger" @click="modalAction">삭제</CButton>
+    </template>
+  </ConfirmModal>
+
+  <AlertModal ref="refAlertModal" />
+</template>

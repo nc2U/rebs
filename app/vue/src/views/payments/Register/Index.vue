@@ -3,11 +3,11 @@ import { ref, computed, onBeforeMount, onMounted, onUpdated, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/payments/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
-import { Contract } from '@/store/types/contract'
-import { ContFilter, useContract } from '@/store/pinia/contract'
+import { type Contract } from '@/store/types/contract'
+import { type ContFilter, useContract } from '@/store/pinia/contract'
 import { useProCash } from '@/store/pinia/proCash'
-import { ProjectCashBook, CashBookFilter } from '@/store/types/proCash'
-import { DownPayFilter, PriceFilter, usePayment } from '@/store/pinia/payment'
+import { type ProjectCashBook, type CashBookFilter } from '@/store/types/proCash'
+import { type DownPayFilter, type PriceFilter, usePayment } from '@/store/pinia/payment'
 import { useRouter, useRoute, onBeforeRouteLeave } from 'vue-router'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -30,18 +30,13 @@ const AllPaymentList = computed(() => paymentStore.AllPaymentList)
 const projectDataStore = useProjectData()
 const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
 
-const fetchAllPaymentList = (payload: CashBookFilter) =>
-  paymentStore.fetchAllPaymentList(payload)
-const fetchPayOrderList = (projId: number) =>
-  paymentStore.fetchPayOrderList(projId)
-const fetchDownPayList = (payload: DownPayFilter) =>
-  paymentStore.fetchDownPayList(payload)
-const fetchPriceList = (payload: PriceFilter) =>
-  paymentStore.fetchPriceList(payload)
+const fetchAllPaymentList = (payload: CashBookFilter) => paymentStore.fetchAllPaymentList(payload)
+const fetchPayOrderList = (projId: number) => paymentStore.fetchPayOrderList(projId)
+const fetchDownPayList = (payload: DownPayFilter) => paymentStore.fetchDownPayList(payload)
+const fetchPriceList = (payload: PriceFilter) => paymentStore.fetchPriceList(payload)
 
 const proCashStore = useProCash()
-const fetchAllProBankAccList = (projId: number) =>
-  proCashStore.fetchAllProBankAccList(projId)
+const fetchAllProBankAccList = (projId: number) => proCashStore.fetchAllProBankAccList(projId)
 const createPrCashBook = (
   payload: ProjectCashBook & { sepData: ProjectCashBook | null } & {
     filters: CashBookFilter
@@ -60,8 +55,7 @@ const deletePrCashBook = (
   },
 ) => proCashStore.deletePrCashBook(payload)
 
-const fetchContractList = (payload: ContFilter) =>
-  contractStore.fetchContractList(payload)
+const fetchContractList = (payload: ContFilter) => contractStore.fetchContractList(payload)
 const fetchContract = (pk: number) => contractStore.fetchContract(pk)
 
 const [route, router] = [useRoute(), useRouter()]
@@ -181,11 +175,7 @@ onBeforeRouteLeave(() => {
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @proj-select="projSelect"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
 
   <ContentBody>
     <CCardBody class="pb-5">
@@ -206,16 +196,10 @@ onBeforeRouteLeave(() => {
             @on-delete="onDelete"
           />
 
-          <CreateButton
-            :contract="contract as Contract"
-            @on-create="onCreate"
-          />
+          <CreateButton :contract="contract as Contract" @on-create="onCreate" />
         </CCol>
         <CCol lg="5">
-          <OrdersBoard
-            :contract="contract as Contract"
-            :payment-list="AllPaymentList"
-          />
+          <OrdersBoard :contract="contract as Contract" :payment-list="AllPaymentList" />
         </CCol>
       </CRow>
     </CCardBody>

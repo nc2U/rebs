@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, watch } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
-import { BuildingUnit } from '@/store/types/project'
+import { type BuildingUnit } from '@/store/types/project'
 import { AlertLight } from '@/utils/cssMixins'
 import { write_project } from '@/utils/pageAuth'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -84,8 +84,7 @@ const reset = (n: number) => {
 const bldgSelect = (event: Event) => {
   const bdName = (event.target as HTMLSelectElement).value
     ? buildingList.value.filter(
-        (b: BuildingUnit) =>
-          b.pk.toString() == (event.target as HTMLSelectElement).value,
+        (b: BuildingUnit) => b.pk.toString() == (event.target as HTMLSelectElement).value,
       )[0].name
     : ''
   bldgName.value = bdName
@@ -99,14 +98,10 @@ const bldgSelect = (event: Event) => {
 const typeSelect = (event: Event) => {
   typeName.value = (event.target as HTMLSelectElement).value
     ? unitTypeList.value.filter(
-        (t: { pk: number }) =>
-          t.pk.toString() == (event.target as HTMLSelectElement).value,
+        (t: { pk: number }) => t.pk.toString() == (event.target as HTMLSelectElement).value,
       )[0].name
     : ''
-  fetchNumUnitByType(
-    props.project,
-    Number((event.target as HTMLSelectElement).value),
-  )
+  fetchNumUnitByType(props.project, Number((event.target as HTMLSelectElement).value))
 }
 
 const unitRegister = () => {
@@ -138,21 +133,11 @@ const modalAction = () => {
     <CRow>
       <CCol md="3" class="mb-2">
         <CRow>
-          <CFormLabel class="col-sm-4 col-form-label">
-            동(건물)선택
-          </CFormLabel>
+          <CFormLabel class="col-sm-4 col-form-label"> 동(건물)선택</CFormLabel>
           <CCol sm="8">
-            <CFormSelect
-              v-model.number="form.building"
-              :disabled="!project"
-              @change="bldgSelect"
-            >
+            <CFormSelect v-model.number="form.building" :disabled="!project" @change="bldgSelect">
               <option value>---------</option>
-              <option
-                v-for="bldg in buildingList"
-                :key="bldg.pk"
-                :value="bldg.pk"
-              >
+              <option v-for="bldg in buildingList" :key="bldg.pk" :value="bldg.pk">
                 {{ bldg.name }}동
               </option>
             </CFormSelect>
@@ -183,17 +168,9 @@ const modalAction = () => {
         <CRow>
           <CFormLabel class="col-sm-4 col-form-label"> 타입선택</CFormLabel>
           <CCol sm="8">
-            <CFormSelect
-              v-model.number="form.type"
-              :disabled="!form.line"
-              @change="typeSelect"
-            >
+            <CFormSelect v-model.number="form.type" :disabled="!form.line" @change="typeSelect">
               <option value>---------</option>
-              <option
-                v-for="type in unitTypeList"
-                :key="type.pk"
-                :value="type.pk"
-              >
+              <option v-for="type in unitTypeList" :key="type.pk" :value="type.pk">
                 {{ type.name }}
               </option>
             </CFormSelect>
@@ -237,17 +214,13 @@ const modalAction = () => {
 
   <CAlert v-if="warning" color="danger">
     <CIcon name="cilWarning" />
-    <strong> 주의</strong> : 해당 라인에서 시작층부터 종료층까지 범위의
-    호수(유니트)가 <strong>"일괄등록"</strong>됩니다. 해당 동, 타입과 층을 다시
-    한번 확인하고 불필요한 유니트가 등록되지 않도록 신중하게 진행하여 주십시요.
+    <strong> 주의</strong> : 해당 라인에서 시작층부터 종료층까지 범위의 호수(유니트)가
+    <strong>"일괄등록"</strong>됩니다. 해당 동, 타입과 층을 다시 한번 확인하고 불필요한 유니트가
+    등록되지 않도록 신중하게 진행하여 주십시요.
   </CAlert>
 
   <CAlert :color="AlertLight" variant="solid" class="text-right">
-    <CButton
-      color="primary"
-      :disabled="!project || !form.minFloor"
-      @click="unitRegister"
-    >
+    <CButton color="primary" :disabled="!project || !form.minFloor" @click="unitRegister">
       호수(유니트) 일괄등록
     </CButton>
   </CAlert>
@@ -257,8 +230,11 @@ const modalAction = () => {
     <template #default>
       <p class="text-primary">
         <strong>
-          [{{ bldgName }}동] ({{ form.type }} 타입) {{ form.line }}호 라인,
-          층<span v-if="form.maxFloor">범위</span> : {{ form.minFloor }}층
+          [{{ bldgName }}동] ({{ form.type }} 타입) {{ form.line }}호 라인, 층<span
+            v-if="form.maxFloor"
+            >범위</span
+          >
+          : {{ form.minFloor }}층
           <span v-if="form.maxFloor">- {{ form.maxFloor }}층</span>
         </strong>
       </p>

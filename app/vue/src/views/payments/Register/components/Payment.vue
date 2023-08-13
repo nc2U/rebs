@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { ref, onMounted, PropType } from 'vue'
-import { ProjectCashBook } from '@/store/types/proCash'
+import { ref, onMounted, type PropType } from 'vue'
+import { type ProjectCashBook } from '@/store/types/proCash'
 import { useRouter } from 'vue-router'
 import { numFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import PaymentForm from '@/views/payments/Register/components/PaymentForm.vue'
-import { AllPayment } from '@/store/types/payment'
+import { type AllPayment } from '@/store/types/payment'
 
 const props = defineProps({
   payment: { type: Object as PropType<AllPayment>, default: null },
@@ -41,10 +41,7 @@ const deleteObject = () => emit('on-delete', props.payment.pk)
 </script>
 
 <template>
-  <CTableRow
-    class="text-center"
-    :color="payment.pk.toString() === paymentId ? TableSecondary : ''"
-  >
+  <CTableRow class="text-center" :color="payment.pk.toString() === paymentId ? TableSecondary : ''">
     <CTableDataCell>{{ payment.deal_date }}</CTableDataCell>
     <CTableDataCell>
       {{ payment.installment_order ? payment.installment_order.__str__ : '-' }}
@@ -57,9 +54,7 @@ const deleteObject = () => emit('on-delete', props.payment.pk)
     <CTableDataCell>{{ payment.bank_account.alias_name }}</CTableDataCell>
     <CTableDataCell>{{ payment.trader }}</CTableDataCell>
     <CTableDataCell>
-      <CButton type="button" color="info" size="sm" @click="showDetail">
-        보기
-      </CButton>
+      <CButton type="button" color="info" size="sm" @click="showDetail"> 보기</CButton>
     </CTableDataCell>
   </CTableRow>
 

@@ -1,6 +1,6 @@
 <script lang="ts" setup="">
-import { PropType, ref } from 'vue'
-import { Staff } from '@/store/types/company'
+import { type PropType, ref } from 'vue'
+import { type Staff } from '@/store/types/company'
 import FormModal from '@/components/Modals/FormModal.vue'
 import StaffForm from './StaffForm.vue'
 

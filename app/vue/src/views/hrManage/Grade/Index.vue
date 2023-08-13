@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin2'
 import { useCompany } from '@/store/pinia/company'
-import { Grade, ComFilter } from '@/store/types/company'
+import { type Grade, type ComFilter } from '@/store/types/company'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
@@ -38,13 +38,10 @@ const listFiltering = (payload: ComFilter) => {
 }
 
 const fetchGradeList = (payload: ComFilter) => comStore.fetchGradeList(payload)
-const fetchAllPositionList = (com?: number) =>
-  comStore.fetchAllPositionList(com)
+const fetchAllPositionList = (com?: number) => comStore.fetchAllPositionList(com)
 
-const createGrade = (payload: Grade, p?: number, c?: number) =>
-  comStore.createGrade(payload, p, c)
-const updateGrade = (payload: Grade, p?: number, c?: number) =>
-  comStore.updateGrade(payload, p, c)
+const createGrade = (payload: Grade, p?: number, c?: number) => comStore.createGrade(payload, p, c)
+const updateGrade = (payload: Grade, p?: number, c?: number) => comStore.updateGrade(payload, p, c)
 const deleteGrade = (pk: number, com: number) => comStore.deleteGrade(pk, com)
 
 const multiSubmit = (payload: Grade) => {
@@ -95,17 +92,8 @@ onMounted(() => dataSetup(company.value || comStore.initComId))
     <CCardBody>
       <ListController ref="listControl" @list-filtering="listFiltering" />
       <AddGrade :company="comName" @multi-submit="multiSubmit" />
-      <TableTitleRow
-        title="직급 목록"
-        excel
-        :url="excelUrl"
-        :disabled="!company"
-      />
-      <GradeList
-        @multi-submit="multiSubmit"
-        @on-delete="onDelete"
-        @page-select="pageSelect"
-      />
+      <TableTitleRow title="직급 목록" excel :url="excelUrl" :disabled="!company" />
+      <GradeList @multi-submit="multiSubmit" @on-delete="onDelete" @page-select="pageSelect" />
     </CCardBody>
 
     <CCardFooter class="text-right">&nbsp;</CCardFooter>

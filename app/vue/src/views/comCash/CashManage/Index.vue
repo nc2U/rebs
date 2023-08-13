@@ -3,12 +3,8 @@ import { ref, computed, onBeforeMount } from 'vue'
 import { navMenu, pageTitle } from '@/views/comCash/_menu/headermixin'
 import { cutString } from '@/utils/baseMixins'
 import { useCompany } from '@/store/pinia/company'
-import {
-  useComCash,
-  DataFilter as Filter,
-  DataFilter,
-} from '@/store/pinia/comCash'
-import { CashBook, CompanyBank, SepItems } from '@/store/types/comCash'
+import { useComCash, type DataFilter as Filter, type DataFilter } from '@/store/pinia/comCash'
+import type { CashBook, CompanyBank, SepItems } from '@/store/types/comCash'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from '@/views/comCash/CashManage/components/ListController.vue'
@@ -56,23 +52,16 @@ const fetchAccSortList = () => cashStore.fetchAccSortList()
 const fetchAllAccD1List = () => cashStore.fetchAllAccD1List()
 const fetchAllAccD2List = () => cashStore.fetchAllAccD2List()
 const fetchAllAccD3List = () => cashStore.fetchAllAccD3List()
-const fetchFormAccD1List = (sort: number | null) =>
-  cashStore.fetchFormAccD1List(sort)
+const fetchFormAccD1List = (sort: number | null) => cashStore.fetchFormAccD1List(sort)
 const fetchFormAccD2List = (sort: number | null, d1: number | null) =>
   cashStore.fetchFormAccD2List(sort, d1)
-const fetchFormAccD3List = (
-  sort: number | null,
-  d1: number | null,
-  d2: number | null,
-) => cashStore.fetchFormAccD3List(sort, d1, d2)
+const fetchFormAccD3List = (sort: number | null, d1: number | null, d2: number | null) =>
+  cashStore.fetchFormAccD3List(sort, d1, d2)
 const fetchComBankAccList = (pk: number) => cashStore.fetchComBankAccList(pk)
-const fetchAllComBankAccList = (pk: number) =>
-  cashStore.fetchAllComBankAccList(pk)
-const patchComBankAcc = (payload: CompanyBank) =>
-  cashStore.patchComBankAcc(payload)
+const fetchAllComBankAccList = (pk: number) => cashStore.fetchAllComBankAccList(pk)
+const patchComBankAcc = (payload: CompanyBank) => cashStore.patchComBankAcc(payload)
 
-const fetchCashBookList = (payload: Filter) =>
-  cashStore.fetchCashBookList(payload)
+const fetchCashBookList = (payload: Filter) => cashStore.fetchCashBookList(payload)
 const createCashBook = (payload: CashBook & { sepData: SepItems | null }) =>
   cashStore.createCashBook(payload)
 const updateCashBook = (
@@ -80,8 +69,7 @@ const updateCashBook = (
 ) => cashStore.updateCashBook(payload)
 const deleteCashBook = (payload: CashBook & { filters: Filter }) =>
   cashStore.deleteCashBook(payload)
-const patchAccD3 = (payload: { pk: number; is_hide: boolean }) =>
-  cashStore.patchAccD3(payload)
+const patchAccD3 = (payload: { pk: number; is_hide: boolean }) => cashStore.patchAccD3(payload)
 
 const pageSelect = (page: number) => listControl.value.listFiltering(page)
 
@@ -97,10 +85,7 @@ const listFiltering = (payload: Filter) => {
   if (company.value) fetchCashBookList(payload)
 }
 
-const chargeCreate = (
-  payload: CashBook & { sepData: SepItems | null },
-  charge: number,
-) => {
+const chargeCreate = (payload: CashBook & { sepData: SepItems | null }, charge: number) => {
   payload.sort = 2
   payload.account_d1 = 5
   payload.account_d2 = 17
@@ -160,9 +145,8 @@ const onCreate = (
   }
 }
 
-const onUpdate = (
-  payload: CashBook & { sepData: SepItems | null } & { filters: Filter },
-) => updateCashBook(payload)
+const onUpdate = (payload: CashBook & { sepData: SepItems | null } & { filters: Filter }) =>
+  updateCashBook(payload)
 
 const multiSubmit = (payload: {
   formData: CashBook
@@ -181,8 +165,7 @@ const multiSubmit = (payload: {
 const onDelete = (payload: CashBook) =>
   deleteCashBook({ ...{ filters: dataFilter.value }, ...payload })
 
-const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
-  patchAccD3(payload)
+const patchD3Hide = (payload: { pk: number; is_hide: boolean }) => patchAccD3(payload)
 
 const onBankUpdate = (payload: CompanyBank) => patchComBankAcc(payload)
 

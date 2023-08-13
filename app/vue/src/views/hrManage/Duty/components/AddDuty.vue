@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { AlertSecondary } from '@/utils/cssMixins'
 import { write_human_resource } from '@/utils/pageAuth'
-import { Duty } from '@/store/types/company'
+import { type Duty } from '@/store/types/company'
 import DutyForm from './DutyForm.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 
@@ -29,11 +29,7 @@ const multiSubmit = (payload: Duty) => emit('multi-submit', payload)
   <FormModal ref="refFormModal" size="lg">
     <template #header>직책 정보 등록</template>
     <template #default>
-      <DutyForm
-        :company="company"
-        @multi-submit="multiSubmit"
-        @close="refFormModal.close()"
-      />
+      <DutyForm :company="company" @multi-submit="multiSubmit" @close="refFormModal.close()" />
     </template>
   </FormModal>
 

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { ref, computed, watch, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin2'
-import { UnitFilter, useContract } from '@/store/pinia/contract'
-import { Contract } from '@/store/types/contract'
+import { type UnitFilter, useContract } from '@/store/pinia/contract'
+import type { Contract, Contractor } from '@/store/types/contract'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
 import { usePayment } from '@/store/pinia/payment'
@@ -17,8 +17,8 @@ const contForm = ref()
 const [route, router] = [useRoute(), useRouter()]
 
 const contStore = useContract()
-const contract = computed(() => contStore.contract)
-const contractor = computed(() => contStore.contractor)
+const contract = computed<Contract | null>(() => contStore.contract)
+const contractor = computed<Contractor | null>(() => contStore.contractor)
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
@@ -27,31 +27,25 @@ const isUnion = computed(() => !projStore.project?.is_direct_manage)
 
 const fetchContract = (cont: number) => contStore.fetchContract(cont)
 
-const fetchContractor = (contor: number, proj?: number) =>
-  contStore.fetchContractor(contor, proj)
+const fetchContractor = (contor: number, proj?: number) => contStore.fetchContractor(contor, proj)
 
 const fetchContractorList = (projId: number, search = '') =>
   contStore.fetchContractorList(projId, search)
 
-const fetchOrderGroupList = (projId: number) =>
-  contStore.fetchOrderGroupList(projId)
+const fetchOrderGroupList = (projId: number) => contStore.fetchOrderGroupList(projId)
 
-const fetchKeyUnitList = (payload: UnitFilter) =>
-  contStore.fetchKeyUnitList(payload)
+const fetchKeyUnitList = (payload: UnitFilter) => contStore.fetchKeyUnitList(payload)
 
-const fetchHouseUnitList = (payload: UnitFilter) =>
-  contStore.fetchHouseUnitList(payload)
+const fetchHouseUnitList = (payload: UnitFilter) => contStore.fetchHouseUnitList(payload)
 
 const projDataStore = useProjectData()
 const fetchTypeList = (projId: number) => projDataStore.fetchTypeList(projId)
 
 const proCashStore = useProCash()
-const fetchAllProBankAccList = (projId: number) =>
-  proCashStore.fetchAllProBankAccList(projId)
+const fetchAllProBankAccList = (projId: number) => proCashStore.fetchAllProBankAccList(projId)
 
 const paymentStore = usePayment()
-const fetchPayOrderList = (projId: number) =>
-  paymentStore.fetchPayOrderList(projId)
+const fetchPayOrderList = (projId: number) => paymentStore.fetchPayOrderList(projId)
 
 watch(route, val => {
   const { contractor } = val.query
@@ -65,9 +59,7 @@ watch(route, val => {
 const resumeForm = (contor: string) => getContract(contor)
 
 watch(contractor, val => {
-  if (!!val)
-    if (!!contract.value && contract.value.pk !== val.contract)
-      fetchContract(val.contract)
+  if (!!val) if (!!contract.value && contract.value.pk !== val.contract) fetchContract(val.contract)
 })
 
 watch(contract, newVal => {
@@ -93,9 +85,7 @@ watch(contract, newVal => {
 })
 
 const getContract = (contor: string) =>
-  fetchContractor(Number(contor), project.value).then(res =>
-    fetchContract(res.contract),
-  )
+  fetchContractor(Number(contor), project.value).then(res => fetchContract(res.contract))
 
 const typeSelect = (payload: {
   unit_type?: number
@@ -167,18 +157,14 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @proj-select="projSelect"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
 
   <ContentBody>
     <ContractForm
       ref="contForm"
-      :project="project"
-      :contract="contract"
-      :contractor="contractor"
+      :project="project ?? undefined"
+      :contract="contract ?? undefined"
+      :contractor="contractor ?? undefined"
       :unit-set="unitSet"
       :is-union="isUnion"
       @type-select="typeSelect"

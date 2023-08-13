@@ -9,8 +9,9 @@ export interface Schedule {
 }
 
 export interface Event {
+  id?: number
   title: string
-  allDay: boolean
+  allDay?: boolean
   start?: string
   end?: string
 }

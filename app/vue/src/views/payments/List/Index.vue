@@ -6,7 +6,7 @@ import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
 import { usePayment } from '@/store/pinia/payment'
 import { useProCash } from '@/store/pinia/proCash'
-import { CashBookFilter, ProjectCashBook } from '@/store/types/proCash'
+import { type CashBookFilter, type ProjectCashBook } from '@/store/types/proCash'
 import { onBeforeRouteLeave } from 'vue-router'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -35,26 +35,20 @@ const project = computed(() => projStore.project?.pk)
 const fetchIncBudgetList = (proj: number) => projStore.fetchIncBudgetList(proj)
 
 const contStore = useContract()
-const fetchOrderGroupList = (projId: number) =>
-  contStore.fetchOrderGroupList(projId)
-const fetchContSummaryList = (projId: number) =>
-  contStore.fetchContSummaryList(projId)
+const fetchOrderGroupList = (projId: number) => contStore.fetchOrderGroupList(projId)
+const fetchContSummaryList = (projId: number) => contStore.fetchContSummaryList(projId)
 
 const proDataStore = useProjectData()
 const fetchTypeList = (projId: number) => proDataStore.fetchTypeList(projId)
 
 const paymentStore = usePayment()
 const fetchPaySumList = (projId: number) => paymentStore.fetchPaySumList(projId)
-const fetchContNumList = (projId: number) =>
-  paymentStore.fetchContNumList(projId)
-const fetchPayOrderList = (projId: number) =>
-  paymentStore.fetchPayOrderList(projId)
-const fetchPaymentList = (payload: CashBookFilter) =>
-  paymentStore.fetchPaymentList(payload)
+const fetchContNumList = (projId: number) => paymentStore.fetchContNumList(projId)
+const fetchPayOrderList = (projId: number) => paymentStore.fetchPayOrderList(projId)
+const fetchPaymentList = (payload: CashBookFilter) => paymentStore.fetchPaymentList(payload)
 
 const proCashStore = useProCash()
-const fetchAllProBankAccList = (projId: number) =>
-  proCashStore.fetchAllProBankAccList(projId)
+const fetchAllProBankAccList = (projId: number) => proCashStore.fetchAllProBankAccList(projId)
 const patchPrCashBook = (
   payload: ProjectCashBook & { isPayment?: boolean } & {
     filters: CashBookFilter
@@ -81,12 +75,10 @@ const byPayment = computed(() => {
   let pUrl = project.value ? `/excel/payments/?project=${project.value}` : ''
   if (filterItems.value.from_date) pUrl += `&sd=${filterItems.value.from_date}`
   if (filterItems.value.to_date) pUrl += `&ed=${filterItems.value.to_date}`
-  if (filterItems.value.order_group)
-    pUrl += `&og=${filterItems.value.order_group}`
+  if (filterItems.value.order_group) pUrl += `&og=${filterItems.value.order_group}`
   if (filterItems.value.unit_type) pUrl += `&ut=${filterItems.value.unit_type}`
   if (filterItems.value.pay_order) pUrl += `&ipo=${filterItems.value.pay_order}`
-  if (filterItems.value.pay_account)
-    pUrl += `&ba=${filterItems.value.pay_account}`
+  if (filterItems.value.pay_account) pUrl += `&ba=${filterItems.value.pay_account}`
   if (filterItems.value.no_contract) pUrl += `&nc=true`
   if (filterItems.value.no_install) pUrl += `&ni=true`
   if (filterItems.value.search) pUrl += `&q=${filterItems.value.search}`
@@ -101,9 +93,7 @@ const byContract = computed(() =>
 
 const excelSelect = ref('1') // 다운로드할 파일 선택
 
-const excelUrl = computed(() =>
-  excelSelect.value === '1' ? byPayment.value : byContract.value,
-)
+const excelUrl = computed(() => (excelSelect.value === '1' ? byPayment.value : byContract.value))
 
 const dataSetup = (pk: number) => {
   fetchOrderGroupList(pk)
@@ -144,11 +134,7 @@ onBeforeRouteLeave(() => {
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @proj-select="projSelect"
-  >
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect">
     <PaymentSummary :project="project as number" />
   </ContentHeader>
 

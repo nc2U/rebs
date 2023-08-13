@@ -2,7 +2,7 @@
 import { ref, reactive, computed, onBeforeMount, inject } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { write_project } from '@/utils/pageAuth'
-import { ProjectAccountD2, ProjectAccountD3 } from '@/store/types/proCash'
+import { type ProjectAccountD2, type ProjectAccountD3 } from '@/store/types/proCash'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
@@ -111,12 +111,7 @@ onBeforeMount(() => dataSetup())
       />
     </CTableDataCell>
     <CTableDataCell class="text-center">
-      <CButton
-        color="success"
-        size="sm"
-        :disabled="formsCheck"
-        @click="onUpdateBudget"
-      >
+      <CButton color="success" size="sm" :disabled="formsCheck" @click="onUpdateBudget">
         수정
       </CButton>
       <CButton color="danger" size="sm" @click="onDeleteBudget">삭제</CButton>

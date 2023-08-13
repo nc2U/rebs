@@ -2,7 +2,7 @@ import api from '@/api'
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { message, errorHandle } from '@/utils/helper'
-import { SalesBillIssue } from '@/store/types/notice'
+import { type SalesBillIssue } from '@/store/types/notice'
 
 export const useNotice = defineStore('notice', () => {
   // state & getters

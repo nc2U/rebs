@@ -12,7 +12,10 @@ NProgress.configure({
 })
 
 // Open the progress bar
-export const start = () => NProgress.start()
-
+export const start = () => {
+  NProgress.start()
+}
 // Close progress bar
-export const close = () => NProgress.done()
+export const close = () => {
+  NProgress.done()
+}

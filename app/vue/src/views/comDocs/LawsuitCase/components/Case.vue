@@ -1,25 +1,18 @@
 <script setup lang="ts">
-import { computed, PropType } from 'vue'
+import { computed, type PropType } from 'vue'
 import { useStore } from '@/store'
-import { SuitCase } from '@/store/types/document'
+import { type SuitCase } from '@/store/types/document'
 import { cutString } from '@/utils/baseMixins'
 
 const props = defineProps({
   suitCase: { type: Object as PropType<SuitCase>, default: null },
 })
 
-const emit = defineEmits([
-  'agency-filter',
-  'agency-search',
-  'related-filter',
-  'sort-filter',
-])
+const emit = defineEmits(['agency-filter', 'agency-search', 'related-filter', 'sort-filter'])
 
 const suitCaseName = computed(() => {
   const sCase = props.suitCase
-  return `${getCourt(
-    sCase?.court_desc,
-  )} ${sCase?.case_number} ${sCase?.case_name}`
+  return `${getCourt(sCase?.court_desc)} ${sCase?.case_number} ${sCase?.case_name}`
 })
 
 const store = useStore()
@@ -31,9 +24,7 @@ const agencyName = computed(() => {
   return agency ? getCourt(agency) : ''
 })
 const relatedCaseName = computed(() =>
-  props.suitCase?.related_case_name
-    ? props.suitCase?.related_case_name.split(' ')[1]
-    : '',
+  props.suitCase?.related_case_name ? props.suitCase?.related_case_name.split(' ')[1] : '',
 )
 
 const agencyFunc = () => {
@@ -46,10 +37,7 @@ const sortFunc = () => emit('sort-filter', props.suitCase?.project)
 const relatedFilter = () => emit('related-filter', props.suitCase?.related_case)
 const getCourt = (court: string | undefined) =>
   court
-    ? court
-        .replace('지방법원', '지법')
-        .replace('고등법원', '고법')
-        .replace('대법원', '대법')
+    ? court.replace('지방법원', '지법').replace('고등법원', '고법').replace('대법원', '대법')
     : ''
 </script>
 
@@ -81,9 +69,7 @@ const getCourt = (court: string | undefined) =>
       </CCol>
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      <router-link
-        :to="{ name: '본사 소송 사건 - 보기', params: { caseId: suitCase.pk } }"
-      >
+      <router-link :to="{ name: '본사 소송 사건 - 보기', params: { caseId: suitCase.pk } }">
         {{ cutString(suitCaseName, 28) }}
       </router-link>
     </CTableDataCell>

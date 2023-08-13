@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { TableSecondary } from '@/utils/cssMixins'
-import { ProIncBudget } from '@/store/types/project'
+import { type ProIncBudget } from '@/store/types/project'
 import IncBudget from './IncBudget.vue'
 
 const emit = defineEmits(['on-update', 'on-delete'])

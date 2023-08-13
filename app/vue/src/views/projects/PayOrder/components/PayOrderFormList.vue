@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { usePayment } from '@/store/pinia/payment'
-import { PayOrder as po } from '@/store/types/payment'
+import { type PayOrder as po } from '@/store/types/payment'
 import { TableSecondary } from '@/utils/cssMixins'
 import PayOrder from '@/views/projects/PayOrder/components/PayOrder.vue'
 

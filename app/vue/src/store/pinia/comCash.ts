@@ -3,15 +3,15 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
 import {
-  BankCode,
-  AccountSort,
-  AccountD1,
-  AccountD2,
-  AccountD3,
-  CompanyBank,
-  BalanceByAccount,
-  CashBook,
-  SepItems,
+  type BankCode,
+  type AccountSort,
+  type AccountD1,
+  type AccountD2,
+  type AccountD3,
+  type CompanyBank,
+  type BalanceByAccount,
+  type CashBook,
+  type SepItems,
 } from '@/store/types/comCash'
 
 export type DataFilter = {
@@ -74,9 +74,7 @@ export const useComCash = defineStore('comCash', () => {
     return api
       .patch(`/account-depth3/${pk}/`, hideData)
       .then(() => {
-        fetchAllAccD3List().then(() =>
-          fetchFormAccD3List(null, null, null).then(() => message()),
-        )
+        fetchAllAccD3List().then(() => fetchFormAccD3List(null, null, null).then(() => message()))
       })
       .catch(err => errorHandle(err.response.data))
   }
@@ -104,11 +102,7 @@ export const useComCash = defineStore('comCash', () => {
 
   const formAccD3List = ref<AccountD3[]>([])
 
-  const fetchFormAccD3List = (
-    sort: number | null,
-    d1: number | null,
-    d2: number | null,
-  ) => {
+  const fetchFormAccD3List = (sort: number | null, d1: number | null, d2: number | null) => {
     const uSort = sort ? `sort=${sort}` : ''
     const uD1 = d1 ? `&d2__d1=${d1}` : ''
     const uD2 = d2 ? `&d2=${d2}` : ''
@@ -126,9 +120,7 @@ export const useComCash = defineStore('comCash', () => {
 
   const fetchComBankAccList = (company: number) =>
     api
-      .get(
-        `/company-bank-account/?company=${company}&is_hide=false&inactive=false`,
-      )
+      .get(`/company-bank-account/?company=${company}&is_hide=false&inactive=false`)
       .then(res => (comBankList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
@@ -182,10 +174,7 @@ export const useComCash = defineStore('comCash', () => {
 
   const comBalanceByAccList = ref<BalanceByAccount[]>([])
 
-  const fetchComBalanceByAccList = (payload: {
-    company: number
-    date: string
-  }) => {
+  const fetchComBalanceByAccList = (payload: { company: number; date: string }) => {
     const { company, date } = payload
     const dateUri = date ? `&date=${date}` : ''
     return api
@@ -196,10 +185,7 @@ export const useComCash = defineStore('comCash', () => {
 
   const dateCashBook = ref<CashBook[]>([])
 
-  const fetchDateCashBookList = (payload: {
-    company: number
-    date: string
-  }) => {
+  const fetchDateCashBookList = (payload: { company: number; date: string }) => {
     const { company, date } = payload
     return api
       .get(`/date-cashbook/?company=${company}&date=${date}`)
@@ -210,8 +196,7 @@ export const useComCash = defineStore('comCash', () => {
   const cashBookList = ref<CashBook[]>([])
   const cashBookCount = ref<number>(0)
 
-  const cashesPages = (itemsPerPage: number) =>
-    Math.ceil(cashBookCount.value / itemsPerPage)
+  const cashesPages = (itemsPerPage: number) => Math.ceil(cashBookCount.value / itemsPerPage)
 
   const fetchCashBookList = (payload: DataFilter) => {
     const { company } = payload
@@ -239,9 +224,7 @@ export const useComCash = defineStore('comCash', () => {
   const createCashBook = (payload: CashBook & { sepData: SepItems | null }) =>
     api
       .post(`/cashbook/`, payload)
-      .then(res =>
-        fetchCashBookList({ company: res.data.company }).then(() => message()),
-      )
+      .then(res => fetchCashBookList({ company: res.data.company }).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
   const updateCashBook = (

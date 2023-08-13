@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, watch, nextTick, onMounted } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
-import { useContract, ContFilter } from '@/store/pinia/contract'
+import { useContract, type ContFilter } from '@/store/pinia/contract'
 import { numFormat } from '@/utils/baseMixins'
 import { bgLight } from '@/utils/cssMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -99,11 +99,7 @@ onMounted(() => {
           <CCol md="4" xl="2" class="mb-3">
             <CFormSelect v-model="form.order_group" @change="listFiltering(1)">
               <option value="">차수선택</option>
-              <option
-                v-for="order in orderGroupList"
-                :key="order.pk"
-                :value="order.pk"
-              >
+              <option v-for="order in orderGroupList" :key="order.pk" :value="order.pk">
                 {{ order.order_group_name }}
               </option>
             </CFormSelect>
@@ -112,11 +108,7 @@ onMounted(() => {
           <CCol md="4" xl="2" class="mb-3">
             <CFormSelect v-model="form.unit_type" @change="listFiltering(1)">
               <option value="">타입선택</option>
-              <option
-                v-for="type in simpleTypes"
-                :key="type.pk"
-                :value="type.pk"
-              >
+              <option v-for="type in simpleTypes" :key="type.pk" :value="type.pk">
                 {{ type.name }}
               </option>
             </CFormSelect>
@@ -125,11 +117,7 @@ onMounted(() => {
           <CCol md="4" xl="2" class="mb-3">
             <CFormSelect v-model="form.building" @change="listFiltering(1)">
               <option value="">동 선택</option>
-              <option
-                v-for="bldg in buildingList"
-                :key="bldg.pk"
-                :value="bldg.pk"
-              >
+              <option v-for="bldg in buildingList" :key="bldg.pk" :value="bldg.pk">
                 {{ bldg.name }}동
               </option>
             </CFormSelect>
@@ -160,12 +148,8 @@ onMounted(() => {
             <CFormSelect v-model="form.ordering" @change="listFiltering(1)">
               <option value="-created_at">등록일시 내림차순</option>
               <option value="created_at">등록일시 올림차순</option>
-              <option value="-contractor__contract_date">
-                계약일자 내림차순
-              </option>
-              <option value="contractor__contract_date">
-                계약일자 올림차순
-              </option>
+              <option value="-contractor__contract_date">계약일자 내림차순</option>
+              <option value="contractor__contract_date">계약일자 올림차순</option>
               <option value="-serial_number">일련번호 내림차순</option>
               <option value="serial_number">일련번호 올림차순</option>
               <option value="-contractor__name">계약자명 내림차순</option>
@@ -216,9 +200,7 @@ onMounted(() => {
         </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
-        <CButton color="info" size="sm" @click="resetForm">
-          검색조건 초기화
-        </CButton>
+        <CButton color="info" size="sm" @click="resetForm"> 검색조건 초기화</CButton>
       </CCol>
     </CRow>
   </CCallout>

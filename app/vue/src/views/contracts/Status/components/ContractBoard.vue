@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
 import Building from '@/views/contracts/Status/components/Building.vue'
 
-import { KeyUnit } from '@/store/types/project'
+import { type KeyUnit } from '@/store/types/project'
 
 export type SimpleUnit = {
   bldg: number
@@ -22,9 +22,7 @@ const isLoading = computed(() => pDataStore.isLoading)
 const getBldg = computed(() =>
   [...new Set(simpleUnits.value.map((u: SimpleUnit) => u.bldg))].sort(),
 )
-const maxFloor = computed(() =>
-  Math.max(...simpleUnits.value.map((u: SimpleUnit) => u.floor)),
-)
+const maxFloor = computed(() => Math.max(...simpleUnits.value.map((u: SimpleUnit) => u.floor)))
 
 const getUnits = (bldg: number): SimpleUnit[] =>
   simpleUnits.value.filter((u: SimpleUnit) => u.bldg === bldg)

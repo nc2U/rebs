@@ -3,7 +3,7 @@ import { ref, computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin3'
 import { useProject } from '@/store/pinia/project'
 import { useSite } from '@/store/pinia/project_site'
-import { Relation, SiteOwner } from '@/store/types/project'
+import { type Relation, type SiteOwner } from '@/store/types/project'
 import { numFormat } from '@/utils/baseMixins'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -44,12 +44,7 @@ const excelUrl = computed(() => {
 const listFiltering = (payload: filter) => {
   dataFilter.value = payload
   if (project.value)
-    siteStore.fetchSiteOwnerList(
-      project.value,
-      payload.page,
-      payload.own_sort,
-      payload.search,
-    )
+    siteStore.fetchSiteOwnerList(project.value, payload.page, payload.own_sort, payload.search)
 }
 
 const pageSelect = (page: number) => {
@@ -58,11 +53,9 @@ const pageSelect = (page: number) => {
   listControl.value.listFiltering(page)
 }
 
-const onCreate = (payload: SiteOwner & filter) =>
-  siteStore.createSiteOwner(payload)
+const onCreate = (payload: SiteOwner & filter) => siteStore.createSiteOwner(payload)
 
-const onUpdate = (payload: SiteOwner & filter) =>
-  siteStore.updateSiteOwner(payload)
+const onUpdate = (payload: SiteOwner & filter) => siteStore.updateSiteOwner(payload)
 
 const relationPatch = (payload: Relation) => {
   const { page, own_sort, search } = dataFilter.value
@@ -103,11 +96,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @proj-select="projSelect"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
 
   <ContentBody>
     <CCardBody class="pb-5">
@@ -117,12 +106,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
         @list-filtering="listFiltering"
       />
       <AddSiteOwner :project="project as number" @multi-submit="multiSubmit" />
-      <TableTitleRow
-        title="부지 소유자 목록"
-        excel
-        :url="excelUrl"
-        :disabled="!project"
-      >
+      <TableTitleRow title="부지 소유자 목록" excel :url="excelUrl" :disabled="!project">
         <span v-if="project" class="pt-1 text-success">
           소유자 면적 :
           {{ numFormat(getOwnersTotal as number, 2) }}m<sup>2</sup> ({{

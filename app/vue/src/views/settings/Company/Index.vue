@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { pageTitle, navMenu } from '@/views/settings/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
-import { Company } from '@/store/types/settings'
+import { type Company } from '@/store/types/settings'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import CompanyForm from './components/CompanyForm.vue'
@@ -30,11 +30,7 @@ const onSubmit = (payload: Company) => {
 </script>
 comLength
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    selector="CompanySelect"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" selector="CompanySelect" />
 
   <ContentBody>
     <CompanyDetail
@@ -44,11 +40,7 @@ comLength
       @update-form="updateForm"
     />
 
-    <CompanyForm
-      v-if="compName === 'CreateForm'"
-      @on-submit="onSubmit"
-      @reset-form="resetForm"
-    />
+    <CompanyForm v-if="compName === 'CreateForm'" @on-submit="onSubmit" @reset-form="resetForm" />
 
     <CompanyForm
       v-if="compName === 'UpdateForm'"

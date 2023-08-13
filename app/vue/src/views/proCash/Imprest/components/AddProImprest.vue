@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { AlertLight } from '@/utils/cssMixins'
-import { ProBankAcc, ProjectCashBook } from '@/store/types/proCash'
+import { type ProBankAcc, type ProjectCashBook } from '@/store/types/proCash'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ProImprestForm from '@/views/proCash/Imprest/components/ProImprestForm.vue'
 
@@ -12,19 +12,15 @@ const createFormModal = ref()
 
 const createConfirm = () => createFormModal.value.callModal()
 
-const multiSubmit = (payload: {
-  formData: ProjectCashBook
-  sepData: ProjectCashBook | null
-}) => emit('multi-submit', payload)
+const multiSubmit = (payload: { formData: ProjectCashBook; sepData: ProjectCashBook | null }) =>
+  emit('multi-submit', payload)
 
 const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
 </script>
 
 <template>
   <CAlert :color="AlertLight" variant="solid" class="text-right">
-    <CButton color="primary" :disabled="!project" @click="createConfirm">
-      신규등록
-    </CButton>
+    <CButton color="primary" :disabled="!project" @click="createConfirm"> 신규등록</CButton>
   </CAlert>
 
   <FormModal ref="createFormModal" size="lg">

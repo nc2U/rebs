@@ -2,7 +2,7 @@ import api from '@/api'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
-import { Schedule, Event } from '@/store/types/schedule'
+import { type Schedule, type Event } from '@/store/types/schedule'
 
 const transform = (payload: Event) => {
   const { title, start, allDay, end } = payload

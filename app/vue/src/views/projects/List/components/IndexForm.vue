@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, reactive, computed, onBeforeMount, PropType } from 'vue'
+import { ref, reactive, computed, onBeforeMount, type PropType } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { useStore } from '@/store'
-import { Project } from '@/store/types/project'
-import { callAddress, AddressData } from '@/components/DaumPostcode/address'
+import { type Project } from '@/store/types/project'
+import { callAddress, type AddressData } from '@/components/DaumPostcode/address'
 import { write_project } from '@/utils/pageAuth'
 import Datepicker from '@vuepic/vue-datepicker'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
@@ -17,7 +17,7 @@ const props = defineProps({
 const emit = defineEmits(['to-submit', 'reset-form', 'close'])
 
 const form = reactive<Project>({
-  pk: null,
+  pk: undefined,
   company: null,
   name: '',
   order: null,
@@ -181,12 +181,7 @@ onBeforeMount(() => formDataSetup())
 </script>
 
 <template>
-  <CForm
-    class="needs-validation"
-    novalidate
-    :validated="validated"
-    @submit.prevent="onSubmit"
-  >
+  <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
     <CCardBody>
       <CRow>
         <CCol xl="11" class="pt-3">
@@ -216,9 +211,7 @@ onBeforeMount(() => formDataSetup())
           </CRow>
 
           <CRow>
-            <CFormLabel class="col-md-2 col-form-label">
-              프로젝트종류
-            </CFormLabel>
+            <CFormLabel class="col-md-2 col-form-label"> 프로젝트종류</CFormLabel>
             <CCol md="10" lg="4" class="mb-md-3">
               <CFormSelect v-model="form.kind" required>
                 <option value="">프로젝트 종류</option>
@@ -234,9 +227,7 @@ onBeforeMount(() => formDataSetup())
               <CFormFeedback invalid>프로젝트종류를 선택하세요.</CFormFeedback>
             </CCol>
 
-            <CFormLabel class="col-md-2 col-form-label">
-              사업개시년도
-            </CFormLabel>
+            <CFormLabel class="col-md-2 col-form-label"> 사업개시년도</CFormLabel>
             <CCol md="10" lg="4" class="mb-md-3">
               <Datepicker
                 v-model.number="form.start_year"
@@ -262,8 +253,7 @@ onBeforeMount(() => formDataSetup())
                 :checked="project && project.is_direct_manage"
               />
               <CFormText class="text-grey">
-                본사 직접 운영하는 프로젝트인 경우 체크, 즉 시행대행이나
-                업무대행이 아닌 경우
+                본사 직접 운영하는 프로젝트인 경우 체크, 즉 시행대행이나 업무대행이 아닌 경우
               </CFormText>
             </CCol>
           </CRow>
@@ -301,9 +291,7 @@ onBeforeMount(() => formDataSetup())
             <CFormLabel class="col-md-2 col-form-label"> 우편번호</CFormLabel>
             <CCol md="3" lg="2" class="mb-3">
               <CInputGroup>
-                <CInputGroupText @click="refPostCode.initiate()">
-                  우편번호
-                </CInputGroupText>
+                <CInputGroupText @click="refPostCode.initiate()"> 우편번호</CInputGroupText>
                 <CFormInput
                   v-model="form.local_zipcode"
                   type="text"
@@ -350,9 +338,7 @@ onBeforeMount(() => formDataSetup())
           </CRow>
 
           <CRow>
-            <CFormLabel class="col-md-2 col-form-label">
-              용도지역지구
-            </CFormLabel>
+            <CFormLabel class="col-md-2 col-form-label"> 용도지역지구</CFormLabel>
             <CCol md="10" lg="4" class="mb-md-3">
               <CFormInput
                 v-model="form.area_usage"
@@ -378,9 +364,7 @@ onBeforeMount(() => formDataSetup())
           </CRow>
 
           <CRow>
-            <CFormLabel class="col-md-2 col-form-label">
-              세대(호/실)수
-            </CFormLabel>
+            <CFormLabel class="col-md-2 col-form-label"> 세대(호/실)수</CFormLabel>
             <CCol md="10" lg="4" class="mb-md-3">
               <CFormInput
                 v-model.number="form.num_unit"
@@ -390,9 +374,7 @@ onBeforeMount(() => formDataSetup())
               />
               <CFormFeedback invalid>세대(호/실)수를 입력하세요.</CFormFeedback>
             </CCol>
-            <CFormLabel class="col-md-2 col-form-label">
-              대지매입면적
-            </CFormLabel>
+            <CFormLabel class="col-md-2 col-form-label"> 대지매입면적</CFormLabel>
             <CCol md="10" lg="4" class="mb-md-3">
               <CFormInput
                 v-model.number="form.buy_land_extent"
@@ -401,16 +383,12 @@ onBeforeMount(() => formDataSetup())
                 step="0.0001"
                 placeholder="대지매입면적을 입력하세요"
               />
-              <CFormFeedback invalid>
-                대지매입면적을 소소점4자리 이하로 입력하세요.
-              </CFormFeedback>
+              <CFormFeedback invalid> 대지매입면적을 소소점4자리 이하로 입력하세요.</CFormFeedback>
             </CCol>
           </CRow>
 
           <CRow>
-            <CFormLabel class="col-md-2 col-form-label">
-              계획대지면적
-            </CFormLabel>
+            <CFormLabel class="col-md-2 col-form-label"> 계획대지면적</CFormLabel>
             <CCol md="10" lg="4" class="mb-md-3">
               <CFormInput
                 v-model.number="form.scheme_land_extent"
@@ -419,14 +397,10 @@ onBeforeMount(() => formDataSetup())
                 step="0.0001"
                 placeholder="계획대지면적을 입력하세요"
               />
-              <CFormFeedback invalid>
-                계획대지면적을 소소점4자리 이하로 입력하세요.
-              </CFormFeedback>
+              <CFormFeedback invalid> 계획대지면적을 소소점4자리 이하로 입력하세요.</CFormFeedback>
             </CCol>
 
-            <CFormLabel class="col-md-2 col-form-label">
-              기부채납면적
-            </CFormLabel>
+            <CFormLabel class="col-md-2 col-form-label"> 기부채납면적</CFormLabel>
             <CCol md="10" lg="4" class="mb-md-3">
               <CFormInput
                 v-model.number="form.donation_land_extent"
@@ -435,9 +409,7 @@ onBeforeMount(() => formDataSetup())
                 step="0.0001"
                 placeholder="기부채납면적을 입력하세요"
               />
-              <CFormFeedback invalid>
-                기부채납면적을 소소점4자리 이하로 입력하세요.
-              </CFormFeedback>
+              <CFormFeedback invalid> 기부채납면적을 소소점4자리 이하로 입력하세요.</CFormFeedback>
             </CCol>
           </CRow>
 
@@ -451,9 +423,7 @@ onBeforeMount(() => formDataSetup())
                 step="0.0001"
                 placeholder="지상연면적을 입력하세요"
               />
-              <CFormFeedback invalid>
-                지상연면적을 소소점4자리 이하로 입력하세요.
-              </CFormFeedback>
+              <CFormFeedback invalid> 지상연면적을 소소점4자리 이하로 입력하세요.</CFormFeedback>
             </CCol>
 
             <CFormLabel class="col-md-2 col-form-label"> 지하연면적</CFormLabel>
@@ -465,9 +435,7 @@ onBeforeMount(() => formDataSetup())
                 step="0.0001"
                 placeholder="지하연면적을 입력하세요"
               />
-              <CFormFeedback invalid>
-                지하연면적을 소소점4자리 이하로 입력하세요.
-              </CFormFeedback>
+              <CFormFeedback invalid> 지하연면적을 소소점4자리 이하로 입력하세요.</CFormFeedback>
             </CCol>
           </CRow>
 
@@ -481,9 +449,7 @@ onBeforeMount(() => formDataSetup())
                 step="0.0001"
                 placeholder="총 연면적을 입력하세요"
               />
-              <CFormFeedback invalid>
-                총 연면적을 소소점4자리 이하로 입력하세요.
-              </CFormFeedback>
+              <CFormFeedback invalid> 총 연면적을 소소점4자리 이하로 입력하세요.</CFormFeedback>
             </CCol>
 
             <CFormLabel class="col-md-2 col-form-label"> 건축면적</CFormLabel>
@@ -495,9 +461,7 @@ onBeforeMount(() => formDataSetup())
                 step="0.0001"
                 placeholder="건축면적을 입력하세요"
               />
-              <CFormFeedback invalid>
-                총 연면적을 소소점4자리 이하로 입력하세요.
-              </CFormFeedback>
+              <CFormFeedback invalid> 총 연면적을 소소점4자리 이하로 입력하세요.</CFormFeedback>
             </CCol>
           </CRow>
 
@@ -511,9 +475,7 @@ onBeforeMount(() => formDataSetup())
                 step="0.0001"
                 placeholder="용적율(%)을 입력하세요"
               />
-              <CFormFeedback invalid>
-                용적율(%)을 소소점4자리 이하로 입력하세요.
-              </CFormFeedback>
+              <CFormFeedback invalid> 용적율(%)을 소소점4자리 이하로 입력하세요.</CFormFeedback>
             </CCol>
             <CFormLabel class="col-md-2 col-form-label"> 건폐율(%)</CFormLabel>
             <CCol md="10" lg="4" class="mb-md-3">
@@ -524,16 +486,12 @@ onBeforeMount(() => formDataSetup())
                 step="0.0001"
                 placeholder="건폐율(%)을 입력하세요"
               />
-              <CFormFeedback invalid>
-                건폐율(%)을 소소점4자리 이하로 입력하세요.
-              </CFormFeedback>
+              <CFormFeedback invalid> 건폐율(%)을 소소점4자리 이하로 입력하세요.</CFormFeedback>
             </CCol>
           </CRow>
 
           <CRow>
-            <CFormLabel class="col-md-2 col-form-label">
-              법정주차대수
-            </CFormLabel>
+            <CFormLabel class="col-md-2 col-form-label"> 법정주차대수</CFormLabel>
             <CCol md="10" lg="4" class="mb-md-3">
               <CFormInput
                 v-model.number="form.num_legal_parking"
@@ -544,9 +502,7 @@ onBeforeMount(() => formDataSetup())
               <CFormFeedback invalid>법정주차대수를 입력하세요.</CFormFeedback>
             </CCol>
 
-            <CFormLabel class="col-md-2 col-form-label">
-              계획주차대수
-            </CFormLabel>
+            <CFormLabel class="col-md-2 col-form-label"> 계획주차대수</CFormLabel>
             <CCol md="10" lg="4" class="mb-3">
               <CFormInput
                 v-model.number="form.num_planed_parking"
@@ -562,17 +518,8 @@ onBeforeMount(() => formDataSetup())
     </CCardBody>
 
     <CCardFooter class="text-right">
-      <CButton type="button" color="light" @click="emit('reset-form')">
-        취소
-      </CButton>
-      <CButton
-        v-if="project"
-        type="button"
-        color="danger"
-        @click="deleteProject"
-      >
-        삭제
-      </CButton>
+      <CButton type="button" color="light" @click="emit('reset-form')"> 취소</CButton>
+      <CButton v-if="project" type="button" color="danger" @click="deleteProject"> 삭제</CButton>
       <CButton type="submit" :color="btnClass" :disabled="formsCheck">
         <CIcon name="cil-check-circle" />
         저장
@@ -592,9 +539,7 @@ onBeforeMount(() => formDataSetup())
 
   <ConfirmModal ref="refConfirmModal">
     <template #header> 프로젝트정보 {{ confirmText }}</template>
-    <template #default>
-      프로젝트정보 {{ confirmText }}을 진행하시겠습니까?
-    </template>
+    <template #default> 프로젝트정보 {{ confirmText }}을 진행하시겠습니까?</template>
     <template #footer>
       <CButton :color="btnClass" @click="modalAction">저장</CButton>
     </template>

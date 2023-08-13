@@ -4,11 +4,11 @@ import { defineStore } from 'pinia'
 import { useAccount } from '@/store/pinia/account'
 import { errorHandle, message } from '@/utils/helper'
 import {
-  Project,
-  ProIncBudget,
-  ProOutBudget,
-  StatusOutBudget,
-  ExecAmountToBudget,
+  type Project,
+  type ProIncBudget,
+  type ProOutBudget,
+  type StatusOutBudget,
+  type ExecAmountToBudget,
 } from '@/store/types/project'
 
 const accountStore = useAccount()
@@ -25,9 +25,7 @@ export const useProject = defineStore('project', () => {
   const projSelect = computed(() => {
     const getProject = accountStore.superAuth
       ? projectList.value
-      : projectList.value.filter((p: Project) =>
-          allowed_projects.value.includes(p.pk || 0),
-        )
+      : projectList.value.filter((p: Project) => allowed_projects.value.includes(p.pk || 0))
 
     return getProject.map((p: Project) => ({ value: p.pk, label: p.name }))
   })
@@ -68,11 +66,7 @@ export const useProject = defineStore('project', () => {
   const createProject = (payload: Project) =>
     api
       .post('/project/', payload)
-      .then(res =>
-        fetchProjectList().then(() =>
-          fetchProject(res.data.pk).then(() => message()),
-        ),
-      )
+      .then(res => fetchProjectList().then(() => fetchProject(res.data.pk).then(() => message())))
       .catch(err => errorHandle(err.response.data))
 
   const updateProject = (payload: Project) =>
@@ -85,9 +79,7 @@ export const useProject = defineStore('project', () => {
     api
       .delete(`/project/${pk}/`)
       .then(() =>
-        fetchProjectList().then(() =>
-          message('warning', '', '해당 오브젝트가 삭제되었습니다.'),
-        ),
+        fetchProjectList().then(() => message('warning', '', '해당 오브젝트가 삭제되었습니다.')),
       )
       .catch(err => errorHandle(err.response.data))
 
@@ -129,9 +121,7 @@ export const useProject = defineStore('project', () => {
       .catch(err => errorHandle(err.response.data))
 
   const patchIncBudgetList = (project: number, pk: number, budget: number) =>
-    api
-      .patch(`/Inc-budget/${pk}/`, { budget })
-      .then(() => fetchIncBudgetList(project))
+    api.patch(`/Inc-budget/${pk}/`, { budget }).then(() => fetchIncBudgetList(project))
 
   const deleteIncBudget = (pk: number, project: number) =>
     api
@@ -179,9 +169,7 @@ export const useProject = defineStore('project', () => {
       .catch(err => errorHandle(err.response.data))
 
   const patchOutBudget = (project: number, pk: number, budget: number) =>
-    api
-      .patch(`/out-budget/${pk}/`, { budget })
-      .then(() => fetchOutBudgetList(project))
+    api.patch(`/out-budget/${pk}/`, { budget }).then(() => fetchOutBudgetList(project))
 
   const deleteOutBudget = (pk: number, project: number) =>
     api
@@ -203,14 +191,8 @@ export const useProject = defineStore('project', () => {
       .then(res => (statusOutBudgetList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const patchStatusOutBudgetList = (
-    project: number,
-    pk: number,
-    budget: number,
-  ) =>
-    api
-      .patch(`/status-budget/${pk}/`, { budget })
-      .then(() => fetchStatusOutBudgetList(project))
+  const patchStatusOutBudgetList = (project: number, pk: number, budget: number) =>
+    api.patch(`/status-budget/${pk}/`, { budget }).then(() => fetchStatusOutBudgetList(project))
 
   // states & getters
   const execAmountList = ref<ExecAmountToBudget[]>([])

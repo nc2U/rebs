@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted, onUpdated, PropType } from 'vue'
+import { ref, reactive, computed, onMounted, onUpdated, type PropType } from 'vue'
 import { useRoute } from 'vue-router'
-import { SuitCase } from '@/store/types/document'
+import { type SuitCase } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
 import { courtChoices } from '@/views/comDocs/LawsuitCase/components/court'
 import Multiselect from '@vueform/multiselect'
@@ -11,7 +11,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
   getSuitCase: { type: Object, required: true },
-  suitcase: { type: Object as PropType<SuitCase>, default: null },
+  suitcase: { type: Object as PropType<SuitCase | null>, default: null },
 })
 const emit = defineEmits(['on-submit', 'close'])
 
@@ -157,9 +157,7 @@ onUpdated(() => dataSetup())
     </CRow>
 
     <CRow class="mb-3">
-      <CFormLabel for="related_case" class="col-md-2 col-form-label">
-        관련사건
-      </CFormLabel>
+      <CFormLabel for="related_case" class="col-md-2 col-form-label"> 관련사건</CFormLabel>
       <CCol md="4">
         <Multiselect
           v-model="form.related_case"
@@ -167,7 +165,7 @@ onUpdated(() => dataSetup())
           placeholder="관련 사건"
           autocomplete="label"
           :classes="{ search: 'form-control multiselect-search' }"
-          :add-option-on="['enter' | 'tab']"
+          :add-option-on="['enter', 'tab']"
           searchable
         />
         <small class="text-blue-grey-lighten-2">
@@ -177,9 +175,7 @@ onUpdated(() => dataSetup())
     </CRow>
 
     <CRow class="mb-3">
-      <CFormLabel for="related_case" class="col-md-2 col-form-label">
-        법원명
-      </CFormLabel>
+      <CFormLabel for="related_case" class="col-md-2 col-form-label"> 법원명</CFormLabel>
       <CCol md="4">
         <Multiselect
           v-model="form.court"
@@ -188,20 +184,14 @@ onUpdated(() => dataSetup())
           autocomplete="label"
           :classes="{ search: 'form-control multiselect-search' }"
           :attrs="form.court || form.other_agency ? {} : { required: true }"
-          :add-option-on="['enter' | 'tab']"
+          :add-option-on="['enter', 'tab']"
           searchable
         />
       </CCol>
 
-      <CFormLabel for="other_agency" class="col-md-2 col-form-label">
-        기타 처리기관
-      </CFormLabel>
+      <CFormLabel for="other_agency" class="col-md-2 col-form-label"> 기타 처리기관</CFormLabel>
       <CCol md="4">
-        <CFormInput
-          id="other_agency"
-          v-model="form.other_agency"
-          placeholder="기타 처리기관"
-        />
+        <CFormInput id="other_agency" v-model="form.other_agency" placeholder="기타 처리기관" />
         <small class="text-blue-grey-lighten-2">
           사건 유형이 기소 전 형사 사건인 경우 해당 수사기관을 기재
         </small>
@@ -209,67 +199,33 @@ onUpdated(() => dataSetup())
     </CRow>
 
     <CRow class="mb-3">
-      <CFormLabel for="case_number" class="col-md-2 col-form-label">
-        사건번호
-      </CFormLabel>
+      <CFormLabel for="case_number" class="col-md-2 col-form-label"> 사건번호</CFormLabel>
       <CCol md="4">
-        <CFormInput
-          id="case_number"
-          v-model="form.case_number"
-          placeholder="사건번호"
-          required
-        />
+        <CFormInput id="case_number" v-model="form.case_number" placeholder="사건번호" required />
       </CCol>
 
-      <CFormLabel for="case_name" class="col-md-2 col-form-label">
-        사건명
-      </CFormLabel>
+      <CFormLabel for="case_name" class="col-md-2 col-form-label"> 사건명</CFormLabel>
       <CCol md="4">
-        <CFormInput
-          id="case_name"
-          v-model="form.case_name"
-          placeholder="사건명"
-          required
-        />
+        <CFormInput id="case_name" v-model="form.case_name" placeholder="사건명" required />
       </CCol>
     </CRow>
 
     <CRow class="mb-3">
-      <CFormLabel for="plaintiff" class="col-md-2 col-form-label">
-        원고(신청인)
-      </CFormLabel>
+      <CFormLabel for="plaintiff" class="col-md-2 col-form-label"> 원고(신청인)</CFormLabel>
       <CCol md="4">
-        <CFormInput
-          id="plaintiff"
-          v-model="form.plaintiff"
-          placeholder="원고(신청인)"
-          required
-        />
+        <CFormInput id="plaintiff" v-model="form.plaintiff" placeholder="원고(신청인)" required />
       </CCol>
 
-      <CFormLabel for="defendant" class="col-md-2 col-form-label">
-        피고(피신청인)
-      </CFormLabel>
+      <CFormLabel for="defendant" class="col-md-2 col-form-label"> 피고(피신청인)</CFormLabel>
       <CCol md="4">
-        <CFormInput
-          id="defendant"
-          v-model="form.defendant"
-          placeholder="피고(피신청인)"
-          required
-        />
+        <CFormInput id="defendant" v-model="form.defendant" placeholder="피고(피신청인)" required />
       </CCol>
     </CRow>
 
     <CRow class="mb-3">
-      <CFormLabel for="related_debtor" class="col-md-2 col-form-label">
-        제3채무자
-      </CFormLabel>
+      <CFormLabel for="related_debtor" class="col-md-2 col-form-label"> 제3채무자</CFormLabel>
       <CCol md="4">
-        <CFormInput
-          id="related_debtor"
-          v-model="form.related_debtor"
-          placeholder="제3채무자"
-        />
+        <CFormInput id="related_debtor" v-model="form.related_debtor" placeholder="제3채무자" />
       </CCol>
 
       <CFormLabel for="case_start_date" class="col-md-2 col-form-label">
@@ -285,37 +241,19 @@ onUpdated(() => dataSetup())
     </CRow>
 
     <CRow class="mb-3">
-      <CFormLabel for="summary" class="col-md-2 col-form-label">
-        개요 및 경과
-      </CFormLabel>
+      <CFormLabel for="summary" class="col-md-2 col-form-label"> 개요 및 경과</CFormLabel>
       <CCol>
-        <CFormTextarea
-          id="summary"
-          v-model="form.summary"
-          rows="4"
-          placeholder="개요 및 경과"
-        />
+        <CFormTextarea id="summary" v-model="form.summary" rows="4" placeholder="개요 및 경과" />
       </CCol>
     </CRow>
 
     <CRow>
       <CCol class="text-right">
-        <CButton
-          color="light"
-          @click="$router.push({ name: '본사 소송 사건' })"
-        >
+        <CButton color="light" @click="$router.push({ name: '본사 소송 사건' })">
           목록으로
         </CButton>
-        <CButton
-          v-if="route.params.caseId"
-          color="light"
-          @click="$router.go(-1)"
-        >
-          뒤로
-        </CButton>
-        <CButton :color="btnClass" type="submit" :disabled="formsCheck">
-          저장하기
-        </CButton>
+        <CButton v-if="route.params.caseId" color="light" @click="$router.go(-1)"> 뒤로</CButton>
+        <CButton :color="btnClass" type="submit" :disabled="formsCheck"> 저장하기</CButton>
       </CCol>
     </CRow>
   </CForm>

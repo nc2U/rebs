@@ -2,8 +2,8 @@
 import { ref, reactive, computed, inject, onBeforeMount } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { write_project } from '@/utils/pageAuth'
-import { OrderGroup } from '@/store/types/contract'
-import { UnitType } from '@/store/types/project'
+import { type OrderGroup } from '@/store/types/contract'
+import { type UnitType } from '@/store/types/project'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
@@ -89,19 +89,12 @@ onBeforeMount(() => dataSetup())
         type="number"
         min="0"
         required
-        @keypress.enter="
-          formCheck(form.payment_amount !== downPay.payment_amount)
-        "
+        @keypress.enter="formCheck(form.payment_amount !== downPay.payment_amount)"
       />
     </CTableDataCell>
 
     <CTableDataCell class="text-center">
-      <CButton
-        color="success"
-        size="sm"
-        :disabled="formsCheck"
-        @click="onUpdateDownPay"
-      >
+      <CButton color="success" size="sm" :disabled="formsCheck" @click="onUpdateDownPay">
         수정
       </CButton>
       <CButton color="danger" size="sm" @click="onDeleteDownPay">삭제</CButton>
@@ -111,8 +104,7 @@ onBeforeMount(() => dataSetup())
   <ConfirmModal ref="refConfirmModal">
     <template #header> 계약 조건 삭제</template>
     <template #default>
-      해당 데이터를 삭제하면 이후 복구할 수 없습니다. 이 계약 조건 정보를 삭제
-      하시겠습니까?
+      해당 데이터를 삭제하면 이후 복구할 수 없습니다. 이 계약 조건 정보를 삭제 하시겠습니까?
     </template>
     <template #footer>
       <CButton color="danger" @click="modalAction">삭제</CButton>

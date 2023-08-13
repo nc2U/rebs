@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { ref, computed, PropType } from 'vue'
-import { Succession } from '@/store/types/contract'
+import { ref, computed, type PropType } from 'vue'
+import { type Succession } from '@/store/types/contract'
 import { useRouter } from 'vue-router'
 import { write_contract } from '@/utils/pageAuth'
 import FormModal from '@/components/Modals/FormModal.vue'
@@ -66,14 +66,7 @@ const onSubmit = (payload: Succession) => {
     {{ done ? '완료' : '' }}
   </CTableDataCell>
   <CTableDataCell class="text-center">
-    <CButton
-      type="button"
-      :color="buttonColor"
-      size="sm"
-      @click="callFormModal"
-    >
-      확인
-    </CButton>
+    <CButton type="button" :color="buttonColor" size="sm" @click="callFormModal"> 확인</CButton>
   </CTableDataCell>
 
   <FormModal ref="successionFormModal" size="lg">

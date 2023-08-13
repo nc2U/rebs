@@ -9,10 +9,11 @@ defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
-const onChange = (event: { target: { files: File[] } }) =>
+const onChange = (event: { target: { files: File[] } }) => {
   emit('update:modelValue', event.target.files[0])
+}
 </script>
 
 <template>
-  <input type="file" class="form-control" @change="onChange" />
+  <input type="file" class="form-control" @change="onChange as any" />
 </template>

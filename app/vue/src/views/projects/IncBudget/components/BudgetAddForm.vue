@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, reactive, inject, watch } from 'vue'
 import { write_project } from '@/utils/pageAuth'
-import { ProjectAccountD2, ProjectAccountD3 } from '@/store/types/proCash'
+import { type ProjectAccountD2, type ProjectAccountD3 } from '@/store/types/proCash'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
@@ -77,21 +77,12 @@ const resetForm = () => {
 </script>
 
 <template>
-  <CForm
-    novalidate
-    class="needs-validation"
-    :validated="validated"
-    @submit.prevent="onSubmit"
-  >
+  <CForm novalidate class="needs-validation" :validated="validated" @submit.prevent="onSubmit">
     <CRow class="p-2" color="success">
       <CCol lg="12" xl="5">
         <CRow>
           <CCol md="3" lg="3" class="mb-2">
-            <CFormSelect
-              v-model="form.account_d2"
-              required
-              :disabled="disabled"
-            >
+            <CFormSelect v-model="form.account_d2" required :disabled="disabled">
               <option value="">대분류</option>
               <option v-for="d2 in d2List" :key="d2.pk" :value="d2.pk">
                 {{ d2.name }}
@@ -100,11 +91,7 @@ const resetForm = () => {
           </CCol>
 
           <CCol md="3" lg="3" class="mb-2">
-            <CFormSelect
-              v-model="form.account_d3"
-              required
-              :disabled="disabled"
-            >
+            <CFormSelect v-model="form.account_d3" required :disabled="disabled">
               <option value="">중분류</option>
               <option v-for="d3 in d3List" :key="d3.pk" :value="d3.pk">
                 {{ d3.name }}
@@ -115,11 +102,7 @@ const resetForm = () => {
           <CCol md="3" lg="3" class="mb-2">
             <CFormSelect v-model="form.order_group" :disabled="disabled">
               <option value="">차수</option>
-              <option
-                v-for="og in orderGroups"
-                :key="og.value"
-                :value="og.value"
-              >
+              <option v-for="og in orderGroups" :key="og.value" :value="og.value">
                 {{ og.label }}
               </option>
             </CFormSelect>
@@ -184,18 +167,14 @@ const resetForm = () => {
       </CCol>
 
       <CCol lg="12" xl="2" class="d-grid gap-2 d-md-block mb-3">
-        <CButton color="primary" type="submit" :disabled="disabled">
-          수입 예산 추가
-        </CButton>
+        <CButton color="primary" type="submit" :disabled="disabled"> 수입 예산 추가</CButton>
       </CCol>
     </CRow>
   </CForm>
 
   <ConfirmModal ref="refConfirmModal">
     <template #header> 수입 예산 등록</template>
-    <template #default>
-      프로젝트의 수입 예산 정보 등록을 진행하시겠습니까?
-    </template>
+    <template #default> 프로젝트의 수입 예산 정보 등록을 진행하시겠습니까?</template>
     <template #footer>
       <CButton color="primary" @click="modalAction">저장</CButton>
     </template>

@@ -3,12 +3,12 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
 import {
-  AllSite,
-  Site,
-  AllOwner,
-  SiteOwner,
-  Relation,
-  SiteContract,
+  type AllSite,
+  type Site,
+  type AllOwner,
+  type SiteOwner,
+  type Relation,
+  type SiteContract,
 } from '@/store/types/project'
 
 export const useSite = defineStore('site', () => {
@@ -135,16 +135,9 @@ export const useSite = defineStore('site', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const fetchSiteOwnerList = (
-    project: number,
-    page = 1,
-    own_sort = '',
-    search = '',
-  ) => {
+  const fetchSiteOwnerList = (project: number, page = 1, own_sort = '', search = '') => {
     api
-      .get(
-        `/site-owner/?project=${project}&page=${page}&own_sort=${own_sort}&search=${search}`,
-      )
+      .get(`/site-owner/?project=${project}&page=${page}&own_sort=${own_sort}&search=${search}`)
       .then(res => {
         siteOwnerList.value = res.data.results
         siteOwnerCount.value = res.data.count
@@ -223,12 +216,7 @@ export const useSite = defineStore('site', () => {
     })
   }
 
-  const fetchSiteContList = (
-    project: number,
-    page = 1,
-    own_sort = '',
-    search = '',
-  ) => {
+  const fetchSiteContList = (project: number, page = 1, own_sort = '', search = '') => {
     api
       .get(
         `/site-contract/?project=${project}&page=${page}&owner__own_sort=${own_sort}&search=${search}`,

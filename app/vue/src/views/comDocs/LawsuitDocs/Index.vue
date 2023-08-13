@@ -2,14 +2,16 @@
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin2'
 import { formUtility } from '@/utils/helper'
-import {
-  RouteLocationNormalizedLoaded as LoadedRoute,
-  useRoute,
-  useRouter,
-} from 'vue-router'
+import { type RouteLocationNormalizedLoaded as LoadedRoute, useRoute, useRouter } from 'vue-router'
 import { useCompany } from '@/store/pinia/company'
-import { PostFilter, SuitCaseFilter, useDocument } from '@/store/pinia/document'
-import { AFile, Attatches, Link, PatchPost, Post } from '@/store/types/document'
+import { type PostFilter, type SuitCaseFilter, useDocument } from '@/store/pinia/document'
+import {
+  type AFile,
+  type Attatches,
+  type Link,
+  type PatchPost,
+  type Post,
+} from '@/store/types/document'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
@@ -60,20 +62,15 @@ const getSuitCase = computed(() => docStore.getSuitCase)
 const fetchPost = (pk: number) => docStore.fetchPost(pk)
 const fetchPostList = (payload: PostFilter) => docStore.fetchPostList(payload)
 const fetchCategoryList = (board: number) => docStore.fetchCategoryList(board)
-const fetchAllSuitCaseList = (payload: SuitCaseFilter) =>
-  docStore.fetchAllSuitCaseList(payload)
+const fetchAllSuitCaseList = (payload: SuitCaseFilter) => docStore.fetchAllSuitCaseList(payload)
 
 const createPost = (payload: { form: FormData }) => docStore.createPost(payload)
-const updatePost = (payload: { pk: number; form: FormData }) =>
-  docStore.updatePost(payload)
+const updatePost = (payload: { pk: number; form: FormData }) => docStore.updatePost(payload)
 const patchPost = (payload: PatchPost) => docStore.patchPost(payload)
 const patchLink = (payload: Link) => docStore.patchLink(payload)
 const patchFile = (payload: AFile) => docStore.patchFile(payload)
 
-const [route, router] = [
-  useRoute() as LoadedRoute & { name: string },
-  useRouter(),
-]
+const [route, router] = [useRoute() as LoadedRoute & { name: string }, useRouter()]
 
 watch(route, val => {
   if (val.params.postId) fetchPost(Number(val.params.postId))
@@ -81,7 +78,7 @@ watch(route, val => {
 })
 
 const onSubmit = (payload: Post & Attatches) => {
-  if (!!company.value) {
+  if (company.value) {
     const { pk, ...formData } = payload
     formData.company = company.value || null
     const form = formUtility.getFormData(
@@ -142,7 +139,7 @@ const dataReset = () => {
 
 const comSelect = (target: number | null) => {
   dataReset()
-  if (!!target) dataSetup(target)
+  if (target) dataSetup(target)
 }
 
 onBeforeMount(() => {

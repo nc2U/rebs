@@ -5,7 +5,7 @@ import { useProject } from '@/store/pinia/project'
 import { useProCash } from '@/store/pinia/proCash'
 import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
-import { ProOutBudget } from '@/store/types/project'
+import { type ProOutBudget } from '@/store/types/project'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import BudgetAddForm from '@/views/projects/OutBudget/components/BudgetAddForm.vue'
@@ -34,29 +34,23 @@ provide('orderGroups', getOrderGroups)
 provide('unitTypes', getTypes)
 
 const fetchOutBudgetList = (pj: number) => projStore.fetchOutBudgetList(pj)
-const createOutBudget = (payload: ProOutBudget) =>
-  projStore.createOutBudget(payload)
-const updateOutBudget = (payload: ProOutBudget) =>
-  projStore.updateOutBudget(payload)
-const deleteOutBudget = (pk: number, project: number) =>
-  projStore.deleteOutBudget(pk, project)
+const createOutBudget = (payload: ProOutBudget) => projStore.createOutBudget(payload)
+const updateOutBudget = (payload: ProOutBudget) => projStore.updateOutBudget(payload)
+const deleteOutBudget = (pk: number, project: number) => projStore.deleteOutBudget(pk, project)
 
 const fetchProAllAccD2List = () => pCashStore.fetchProAllAccD2List()
 const fetchProAllAccD3List = () => pCashStore.fetchProAllAccD3List()
 
-const fetchOrderGroupList = (proj: number) =>
-  contStore.fetchOrderGroupList(proj)
+const fetchOrderGroupList = (proj: number) => contStore.fetchOrderGroupList(proj)
 
 const fetchTypeList = (proj: number) => pDataStore.fetchTypeList(proj)
 
 const onSubmit = (payload: ProOutBudget) => {
-  if (project.value)
-    createOutBudget({ ...{ project: project.value }, ...payload })
+  if (project.value) createOutBudget({ ...{ project: project.value }, ...payload })
 }
 
 const onUpdateBudget = (payload: ProOutBudget) => {
-  if (project.value)
-    updateOutBudget({ ...{ project: project.value }, ...payload })
+  if (project.value) updateOutBudget({ ...{ project: project.value }, ...payload })
 }
 
 const onDeleteBudget = (pk: number) => {
@@ -88,11 +82,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @proj-select="projSelect"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
 
   <ContentBody>
     <CCardBody class="pb-5">

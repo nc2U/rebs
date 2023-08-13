@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useCompany } from '@/store/pinia/company'
 import { TableSecondary } from '@/utils/cssMixins'
-import { Position as PositionType } from '@/store/types/company'
+import { type Position as PositionType } from '@/store/types/company'
 import Pagination from '@/components/Pagination'
 import Position from './Position.vue'
 

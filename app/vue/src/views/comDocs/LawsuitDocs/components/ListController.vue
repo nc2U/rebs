@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { reactive, computed, nextTick, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
-import { PostFilter, useDocument } from '@/store/pinia/document'
+import { type PostFilter, useDocument } from '@/store/pinia/document'
 import { numFormat } from '@/utils/baseMixins'
 import { bgLight } from '@/utils/cssMixins'
 
@@ -66,11 +66,7 @@ onBeforeMount(() => fetchProjectList())
             <CFormSelect v-model="form.project" @change="listFiltering(1)">
               <option value="">전체 프로젝트</option>
               <option value="com">본사</option>
-              <option
-                v-for="proj in projSelect"
-                :key="proj.value"
-                :value="proj.value"
-              >
+              <option v-for="proj in projSelect" :key="proj.value" :value="proj.value">
                 {{ proj.label }}
               </option>
             </CFormSelect>
@@ -112,14 +108,10 @@ onBeforeMount(() => fetchProjectList())
     </CRow>
     <CRow>
       <CCol color="warning" class="p-2 pl-3">
-        <strong>
-          문서 건수 조회 결과 : {{ numFormat(postCount, 0, 0) }} 건
-        </strong>
+        <strong> 문서 건수 조회 결과 : {{ numFormat(postCount, 0, 0) }} 건 </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
-        <CButton color="info" size="sm" @click="resetForm">
-          검색조건 초기화
-        </CButton>
+        <CButton color="info" size="sm" @click="resetForm"> 검색조건 초기화</CButton>
       </CCol>
     </CRow>
   </CCallout>

@@ -3,7 +3,7 @@ import { ref, computed, watch, onBeforeMount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
-import { useContract, ContFilter } from '@/store/pinia/contract'
+import { useContract, type ContFilter } from '@/store/pinia/contract'
 import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin1'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -27,8 +27,7 @@ const project = computed(() => projStore.project)
 watch(project, nVal => {
   unitSet.value = nVal?.is_unit_set || false
   if (!!nVal)
-    if (nVal?.is_unit_set && !printItems.value.includes('6-7'))
-      printItems.value.splice(4, 0, '6-7')
+    if (nVal?.is_unit_set && !printItems.value.includes('6-7')) printItems.value.splice(4, 0, '6-7')
 })
 
 const excelUrl = computed(() => {
@@ -41,16 +40,14 @@ const contStore = useContract()
 
 const fetchOrderGroupList = (pk: number) => contStore.fetchOrderGroupList(pk)
 
-const fetchContractList = (payload: ContFilter) =>
-  contStore.fetchContractList(payload)
+const fetchContractList = (payload: ContFilter) => contStore.fetchContractList(payload)
 const fetchSubsSummaryList = (pk: number) => contStore.fetchSubsSummaryList(pk)
 const fetchContSummaryList = (pk: number) => contStore.fetchContSummaryList(pk)
 
 const proDataStore = useProjectData()
 
 const fetchTypeList = (projId: number) => proDataStore.fetchTypeList(projId)
-const fetchBuildingList = (projId: number) =>
-  proDataStore.fetchBuildingList(projId)
+const fetchBuildingList = (projId: number) => proDataStore.fetchBuildingList(projId)
 
 const pageSelect = (page: number) => listControl.value.listFiltering(page)
 
@@ -108,27 +105,14 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @proj-select="projSelect"
-  >
-    <ContractSummary :project="project" />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect">
+    <ContractSummary :project="project ?? undefined" />
   </ContentHeader>
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ListController
-        ref="listControl"
-        :status="status"
-        @cont-filtering="onContFiltering"
-      />
-      <TableTitleRow
-        title="계약현황"
-        excel
-        :url="excelUrl"
-        :disabled="!project"
-      >
+      <ListController ref="listControl" :status="status" @cont-filtering="onContFiltering" />
+      <TableTitleRow title="계약현황" excel :url="excelUrl" :disabled="!project">
         <v-btn
           size="small"
           rounded="pill"
@@ -140,11 +124,7 @@ onBeforeMount(() => {
           [엑셀 출력항목 선택]
         </v-btn>
       </TableTitleRow>
-      <SelectItems
-        :visible="visible"
-        :unit-set="unitSet"
-        @print-items="setItems"
-      />
+      <SelectItems :visible="visible" :unit-set="unitSet" @print-items="setItems" />
       <ContractList @page-select="pageSelect" />
     </CCardBody>
     <CCardFooter>&nbsp;</CCardFooter>

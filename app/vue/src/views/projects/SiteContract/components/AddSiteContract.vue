@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { SiteContract } from '@/store/types/project'
+import { type SiteContract } from '@/store/types/project'
 import { write_project } from '@/utils/pageAuth'
 import { AlertLight } from '@/utils/cssMixins'
 import FormModal from '@/components/Modals/FormModal.vue'

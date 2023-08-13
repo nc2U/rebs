@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { computed, PropType } from 'vue'
-import { Contract } from '@/store/types/contract'
-import { AllPayment } from '@/store/types/payment'
-import { ProjectCashBook } from '@/store/types/proCash'
+import { computed, type PropType } from 'vue'
+import { type Contract } from '@/store/types/contract'
+import { type AllPayment } from '@/store/types/payment'
+import { type ProjectCashBook } from '@/store/types/proCash'
 import { numFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 import Payment from '@/views/payments/Register/components/Payment.vue'
@@ -17,9 +17,7 @@ const emit = defineEmits(['on-update', 'on-delete'])
 
 const paymentSum = computed(() => {
   return props.paymentList.length !== 0
-    ? props.paymentList
-        .map((p: AllPayment) => p.income)
-        .reduce((x: number, y: number) => x + y, 0)
+    ? props.paymentList.map((p: AllPayment) => p.income).reduce((x: number, y: number) => x + y, 0)
     : 0
 })
 
@@ -63,9 +61,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 
     <CTableHead>
       <CTableRow class="text-right">
-        <CTableHeaderCell :color="TableSecondary" class="text-center">
-          합계
-        </CTableHeaderCell>
+        <CTableHeaderCell :color="TableSecondary" class="text-center"> 합계</CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
         <CTableHeaderCell>
           {{ numFormat(paymentSum) }}

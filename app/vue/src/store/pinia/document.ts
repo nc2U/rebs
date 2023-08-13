@@ -3,15 +3,15 @@ import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { message, errorHandle } from '@/utils/helper'
 import {
-  Group,
-  Board,
-  Category,
-  AFile,
-  Link,
-  PatchPost,
-  SuitCase,
-  SimpleSuitCase,
-  Post,
+  type Group,
+  type Board,
+  type Category,
+  type AFile,
+  type Link,
+  type PatchPost,
+  type SuitCase,
+  type SimpleSuitCase,
+  type Post,
 } from '@/store/types/document'
 
 export type SuitCaseFilter = {
@@ -99,8 +99,7 @@ export const useDocument = defineStore('document', () => {
     })),
   )
 
-  const casePages = (itemsPerPage: number) =>
-    Math.ceil(suitcaseCount.value / itemsPerPage)
+  const casePages = (itemsPerPage: number) => Math.ceil(suitcaseCount.value / itemsPerPage)
 
   const fetchSuitCase = (pk: number) =>
     api
@@ -109,8 +108,7 @@ export const useDocument = defineStore('document', () => {
       .catch(err => errorHandle(err.response.data))
 
   const getQueryStr = (payload: SuitCaseFilter) => {
-    const { is_com, project, court, related_case, sort, level, search } =
-      payload
+    const { is_com, project, court, related_case, sort, level, search } = payload
     let queryStr = ''
     if (is_com) queryStr += `&is_com=${is_com}`
     if (project) queryStr += `&project=${project}`
@@ -162,11 +160,7 @@ export const useDocument = defineStore('document', () => {
   const deleteSuitCase = (pk: number) =>
     api
       .delete(`/suitcase/${pk}/`)
-      .then(() =>
-        fetchAllSuitCaseList({}).then(() =>
-          fetchSuitCaseList({}).then(() => message()),
-        ),
-      )
+      .then(() => fetchAllSuitCaseList({}).then(() => fetchSuitCaseList({}).then(() => message())))
       .catch(err => errorHandle(err.response.data))
 
   const post = ref<Post | null>(null)
@@ -184,13 +178,10 @@ export const useDocument = defineStore('document', () => {
   )
 
   const getNext = computed(() =>
-    postIndex.value && postIndex.value === 0
-      ? null
-      : postPkList.value[postIndex.value - 1],
+    postIndex.value && postIndex.value === 0 ? null : postPkList.value[postIndex.value - 1],
   )
 
-  const postPages = (itemsPerPage: number) =>
-    Math.ceil(postCount.value / itemsPerPage)
+  const postPages = (itemsPerPage: number) => Math.ceil(postCount.value / itemsPerPage)
 
   const fetchPost = (pk: number) =>
     api

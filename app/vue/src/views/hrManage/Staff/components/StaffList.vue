@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useCompany } from '@/store/pinia/company'
 import { TableSecondary } from '@/utils/cssMixins'
-import { Staff as StaffType } from '@/store/types/company'
+import { type Staff as StaffType } from '@/store/types/company'
 import Pagination from '@/components/Pagination'
 import Staff from './Staff.vue'
 

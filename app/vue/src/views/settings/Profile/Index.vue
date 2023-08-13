@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { pageTitle, navMenu } from '@/views/settings/_menu/headermixin'
-import { Profile } from '@/store/types/accounts'
+import { type Profile } from '@/store/types/accounts'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ProfileForm from '@/views/settings/Profile/components/ProfileForm.vue'
@@ -14,8 +14,7 @@ const profile = computed(() => accStore.profile)
 const fileUpload = (img: File) => (image.value = img)
 
 const createProfile = (payload: FormData) => accStore.createProfile(payload)
-const patchProfile = (payload: { pk: number; form: FormData }) =>
-  accStore.patchProfile(payload)
+const patchProfile = (payload: { pk: number; form: FormData }) => accStore.patchProfile(payload)
 
 const onSubmit = (payload: Profile & { image: File | string | null }) => {
   if (image.value) payload.image = image.value
@@ -35,11 +34,7 @@ const onSubmit = (payload: Profile & { image: File | string | null }) => {
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    selector="CompanySelect"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" selector="CompanySelect" />
 
   <ContentBody>
     <ProfileForm

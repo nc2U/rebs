@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { ref, computed, PropType } from 'vue'
+import { ref, computed, type PropType } from 'vue'
 import { useContract } from '@/store/pinia/contract'
-import { Contractor, ContractRelease } from '@/store/types/contract'
+import { type Contractor, type ContractRelease } from '@/store/types/contract'
 import { AlertLight } from '@/utils/cssMixins'
 import { write_contract } from '@/utils/pageAuth'
 import FormModal from '@/components/Modals/FormModal.vue'
@@ -20,9 +20,7 @@ const contractStore = useContract()
 const contRelease = computed(() => contractStore.contRelease)
 
 const isSuccession = computed(
-  () =>
-    !!props.contractor?.successions.length &&
-    !props.contractor?.successions[0].is_approval,
+  () => !!props.contractor?.successions.length && !props.contractor?.successions[0].is_approval,
 )
 
 const callFormModal = () => {
@@ -48,9 +46,7 @@ const onSubmit = (payload: ContractRelease) => {
   </CAlert>
 
   <FormModal ref="releaseFormModal" size="lg">
-    <template #header>
-      계약 해지 {{ contRelease ? '수정' : '신규' }} 등록
-    </template>
+    <template #header> 계약 해지 {{ contRelease ? '수정' : '신규' }} 등록</template>
     <template #default>
       <ReleaseForm
         :contractor="contractor"

@@ -2,7 +2,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin1'
 import { useCompany } from '@/store/pinia/company'
-import { Department as Depart, DepFilter } from '@/store/types/company'
+import { type Department as Depart, type DepFilter } from '@/store/types/company'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
@@ -43,16 +43,14 @@ const listFiltering = (payload: DepFilter) => {
     })
 }
 
-const fetchDepartmentList = (payload: DepFilter) =>
-  comStore.fetchDepartmentList(payload)
+const fetchDepartmentList = (payload: DepFilter) => comStore.fetchDepartmentList(payload)
 const fetchAllDepartList = (com?: number) => comStore.fetchAllDepartList(com)
 
 const createDepartment = (payload: Depart, p?: number, c?: number) =>
   comStore.createDepartment(payload, p, c)
 const updateDepartment = (payload: Depart, p?: number, c?: number) =>
   comStore.updateDepartment(payload, p, c)
-const deleteDepartment = (pk: number, com: number) =>
-  comStore.deleteDepartment(pk, com)
+const deleteDepartment = (pk: number, com: number) => comStore.deleteDepartment(pk, com)
 
 const multiSubmit = (payload: Depart) => {
   const { page } = dataFilter.value
@@ -74,8 +72,7 @@ const pageSelect = (num: number) => {
   }
 }
 
-const getLevel = (up: number) =>
-  getPkDeparts.value.filter(d => d.value === up)[0].level + 1
+const getLevel = (up: number) => getPkDeparts.value.filter(d => d.value === up)[0].level + 1
 
 const dataSetup = (pk: number) => {
   fetchAllDepartList(pk)
@@ -106,17 +103,8 @@ onMounted(() => dataSetup(company.value || comStore.initComId))
     <CCardBody>
       <ListController ref="listControl" @list-filtering="listFiltering" />
       <AddDepartment :company="comName" @multi-submit="multiSubmit" />
-      <TableTitleRow
-        title="부서 목록"
-        excel
-        :url="excelUrl"
-        :disabled="!company"
-      />
-      <DepartmentList
-        @multi-submit="multiSubmit"
-        @on-delete="onDelete"
-        @page-select="pageSelect"
-      />
+      <TableTitleRow title="부서 목록" excel :url="excelUrl" :disabled="!company" />
+      <DepartmentList @multi-submit="multiSubmit" @on-delete="onDelete" @page-select="pageSelect" />
     </CCardBody>
 
     <CCardFooter class="text-right">&nbsp;</CCardFooter>

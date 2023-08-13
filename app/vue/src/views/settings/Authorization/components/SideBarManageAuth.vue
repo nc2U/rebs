@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, nextTick, onMounted, onUpdated } from 'vue'
-import { UserAuth } from '@/views/settings/Authorization/Index.vue'
+import { type UserAuth } from '@/views/settings/Authorization/Index.vue'
 import { useStore } from '@/store'
 
 const props = defineProps({
@@ -98,13 +98,8 @@ onUpdated(() => dataSetup())
         <CRow>
           <CCol md="6" lg="4">
             <CRow class="m-1">
-              <CFormLabel
-                class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3"
-              >
-                <v-icon
-                  icon="mdi mdi-account-arrow-left"
-                  :color="getColor(authData.contract)[0]"
-                />
+              <CFormLabel class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3">
+                <v-icon icon="mdi mdi-account-arrow-left" :color="getColor(authData.contract)[0]" />
                 분양 계약 관리
               </CFormLabel>
               <CCol>
@@ -113,9 +108,7 @@ onUpdated(() => dataSetup())
                   :options="auths"
                   :disabled="isPrInActive"
                   :style="{
-                    backgroundColor: isDark
-                      ? ''
-                      : getColor(authData.contract)[1],
+                    backgroundColor: isDark ? '' : getColor(authData.contract)[1],
                   }"
                   @change="selectAuth"
                 />
@@ -124,13 +117,8 @@ onUpdated(() => dataSetup())
           </CCol>
           <CCol md="6" lg="4">
             <CRow class="m-1">
-              <CFormLabel
-                class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3"
-              >
-                <v-icon
-                  icon="mdi mdi-account-arrow-left"
-                  :color="getColor(authData.payment)[0]"
-                />
+              <CFormLabel class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3">
+                <v-icon icon="mdi mdi-account-arrow-left" :color="getColor(authData.payment)[0]" />
                 분양 수납 관리
               </CFormLabel>
               <CCol>
@@ -139,9 +127,7 @@ onUpdated(() => dataSetup())
                   :options="auths"
                   :disabled="isPrInActive"
                   :style="{
-                    backgroundColor: isDark
-                      ? ''
-                      : getColor(authData.payment)[1],
+                    backgroundColor: isDark ? '' : getColor(authData.payment)[1],
                   }"
                   @change="selectAuth"
                 />
@@ -150,13 +136,8 @@ onUpdated(() => dataSetup())
           </CCol>
           <CCol md="6" lg="4">
             <CRow class="m-1">
-              <CFormLabel
-                class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3"
-              >
-                <v-icon
-                  icon="mdi mdi-account-arrow-left"
-                  :color="getColor(authData.notice)[0]"
-                />
+              <CFormLabel class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3">
+                <v-icon icon="mdi mdi-account-arrow-left" :color="getColor(authData.notice)[0]" />
                 고객 고지 관리
               </CFormLabel>
               <CCol>
@@ -175,9 +156,7 @@ onUpdated(() => dataSetup())
 
           <CCol md="6" lg="4">
             <CRow class="m-1">
-              <CFormLabel
-                class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3"
-              >
+              <CFormLabel class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3">
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
                   :color="getColor(authData.project_cash)[0]"
@@ -190,9 +169,7 @@ onUpdated(() => dataSetup())
                   :options="auths"
                   :disabled="isPrInActive"
                   :style="{
-                    backgroundColor: isDark
-                      ? ''
-                      : getColor(authData.project_cash)[1],
+                    backgroundColor: isDark ? '' : getColor(authData.project_cash)[1],
                   }"
                   @change="selectAuth"
                 />
@@ -201,9 +178,7 @@ onUpdated(() => dataSetup())
           </CCol>
           <CCol md="6" lg="4">
             <CRow class="m-1">
-              <CFormLabel
-                class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3"
-              >
+              <CFormLabel class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3">
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
                   :color="getColor(authData.project_docs)[0]"
@@ -216,9 +191,7 @@ onUpdated(() => dataSetup())
                   :options="auths"
                   :disabled="isPrInActive"
                   :style="{
-                    backgroundColor: isDark
-                      ? ''
-                      : getColor(authData.project_docs)[1],
+                    backgroundColor: isDark ? '' : getColor(authData.project_docs)[1],
                   }"
                   @change="selectAuth"
                 />
@@ -227,13 +200,8 @@ onUpdated(() => dataSetup())
           </CCol>
           <CCol md="6" lg="4">
             <CRow class="m-1">
-              <CFormLabel
-                class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3"
-              >
-                <v-icon
-                  icon="mdi mdi-account-arrow-left"
-                  :color="getColor(authData.project)[0]"
-                />
+              <CFormLabel class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3">
+                <v-icon icon="mdi mdi-account-arrow-left" :color="getColor(authData.project)[0]" />
                 신규 프로젝트
               </CFormLabel>
               <CCol>
@@ -242,9 +210,7 @@ onUpdated(() => dataSetup())
                   :options="auths"
                   :disabled="isPrInActive"
                   :style="{
-                    backgroundColor: isDark
-                      ? ''
-                      : getColor(authData.project)[1],
+                    backgroundColor: isDark ? '' : getColor(authData.project)[1],
                   }"
                   @change="selectAuth"
                 />
@@ -270,9 +236,7 @@ onUpdated(() => dataSetup())
         <CRow>
           <CCol md="6" lg="4">
             <CRow class="m-1">
-              <CFormLabel
-                class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3"
-              >
+              <CFormLabel class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3">
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
                   :color="getColor(authData.company_cash)[0]"
@@ -285,9 +249,7 @@ onUpdated(() => dataSetup())
                   :options="auths"
                   :disabled="isCoInActive"
                   :style="{
-                    backgroundColor: isDark
-                      ? ''
-                      : getColor(authData.company_cash)[1],
+                    backgroundColor: isDark ? '' : getColor(authData.company_cash)[1],
                   }"
                   @change="selectAuth"
                 />
@@ -296,9 +258,7 @@ onUpdated(() => dataSetup())
           </CCol>
           <CCol md="6" lg="4">
             <CRow class="m-1">
-              <CFormLabel
-                class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3"
-              >
+              <CFormLabel class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3">
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
                   :color="getColor(authData.company_docs)[0]"
@@ -311,9 +271,7 @@ onUpdated(() => dataSetup())
                   :options="auths"
                   :disabled="isCoInActive"
                   :style="{
-                    backgroundColor: isDark
-                      ? ''
-                      : getColor(authData.company_docs)[1],
+                    backgroundColor: isDark ? '' : getColor(authData.company_docs)[1],
                   }"
                   @change="selectAuth"
                 />
@@ -322,9 +280,7 @@ onUpdated(() => dataSetup())
           </CCol>
           <CCol md="6" lg="4">
             <CRow class="m-1">
-              <CFormLabel
-                class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3"
-              >
+              <CFormLabel class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3">
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
                   :color="getColor(authData.human_resource)[0]"
@@ -337,9 +293,7 @@ onUpdated(() => dataSetup())
                   :options="auths"
                   :disabled="isCoInActive"
                   :style="{
-                    backgroundColor: isDark
-                      ? ''
-                      : getColor(authData.human_resource)[1],
+                    backgroundColor: isDark ? '' : getColor(authData.human_resource)[1],
                   }"
                   @change="selectAuth"
                 />
@@ -349,9 +303,7 @@ onUpdated(() => dataSetup())
 
           <CCol md="6" lg="4">
             <CRow class="m-1">
-              <CFormLabel
-                class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3"
-              >
+              <CFormLabel class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3">
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
                   :color="getColor(authData.company_settings)[0]"
@@ -364,9 +316,7 @@ onUpdated(() => dataSetup())
                   :options="auths"
                   :disabled="isCoInActive"
                   :style="{
-                    backgroundColor: isDark
-                      ? ''
-                      : getColor(authData.company_settings)[1],
+                    backgroundColor: isDark ? '' : getColor(authData.company_settings)[1],
                   }"
                   @change="selectAuth"
                 />
@@ -375,9 +325,7 @@ onUpdated(() => dataSetup())
           </CCol>
           <CCol md="6" lg="4">
             <CRow class="m-1">
-              <CFormLabel
-                class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3"
-              >
+              <CFormLabel class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3">
                 <v-icon
                   icon="mdi mdi-account-arrow-left"
                   :color="getColor(authData.auth_manage)[0]"
@@ -390,9 +338,7 @@ onUpdated(() => dataSetup())
                   :options="auths"
                   :disabled="isCoInActive"
                   :style="{
-                    backgroundColor: isDark
-                      ? ''
-                      : getColor(authData.auth_manage)[1],
+                    backgroundColor: isDark ? '' : getColor(authData.auth_manage)[1],
                   }"
                   @change="selectAuth"
                 />

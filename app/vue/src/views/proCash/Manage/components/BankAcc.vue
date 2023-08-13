@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { useProCash } from '@/store/pinia/proCash'
-import { ProBankAcc } from '@/store/types/proCash'
+import { type ProBankAcc } from '@/store/types/proCash'
 import BankAccForm from './BankAccForm.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
@@ -24,11 +24,7 @@ defineExpose({ callModal })
     <template #header> 프로젝트 거래 계좌 관리</template>
     <template #default>
       <CAccordion>
-        <CAccordionItem
-          v-for="bank in allProBankAccList"
-          :key="bank.pk"
-          :item-key="bank.pk"
-        >
+        <CAccordionItem v-for="bank in allProBankAccList" :key="bank.pk" :item-key="bank.pk">
           <CAccordionHeader>
             {{ `${bank.alias_name}  :: ${bank.number}` }}
           </CAccordionHeader>

@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
 import { usePayment } from '@/store/pinia/payment'
 import { TableSecondary } from '@/utils/cssMixins'
-import { Price as P } from '@/store/types/payment'
+import { type Price as P } from '@/store/types/payment'
 import Price from '@/views/projects/Price/components/Price.vue'
 
 defineProps({
@@ -18,8 +18,7 @@ const floorTypeList = computed(() => projectDataStore.floorTypeList)
 const paymentStore = usePayment()
 const priceList = computed(() => paymentStore.priceList)
 
-const getPrice = (floor: number) =>
-  priceList.value.filter((p: P) => p.unit_floor_type === floor)[0]
+const getPrice = (floor: number) => priceList.value.filter((p: P) => p.unit_floor_type === floor)[0]
 
 const onCreate = (payload: P) => emit('on-create', payload)
 const onUpdate = (payload: P) => emit('on-update', payload)

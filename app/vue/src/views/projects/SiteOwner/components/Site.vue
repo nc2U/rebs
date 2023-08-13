@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, PropType, reactive, ref, watch } from 'vue'
+import { computed, onBeforeMount, type PropType, reactive, ref, watch } from 'vue'
 import { numFormat } from '@/utils/baseMixins'
-import { SiteOwner, SimpleSite } from '@/store/types/project'
+import { type SiteOwner, type SimpleSite } from '@/store/types/project'
 import DatePicker from '@/components/DatePicker/index.vue'
 
 const props = defineProps({
@@ -112,9 +112,7 @@ onBeforeMount(() => {
     />
   </CTableDataCell>
   <CTableDataCell>
-    <CButton color="success" size="sm" :disabled="formsCheck" @click="relPatch">
-      적용
-    </CButton>
+    <CButton color="success" size="sm" :disabled="formsCheck" @click="relPatch"> 적용</CButton>
   </CTableDataCell>
   <CTableDataCell v-if="index === 0" :rowspan="sitesNum">
     <CButton color="info" size="sm" @click="showDetail"> 확인</CButton>

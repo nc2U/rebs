@@ -1,7 +1,10 @@
 <script lang="ts" setup>
+import type { PropType } from 'vue'
+import type { Event } from '@/store/types/schedule'
+
 defineProps({
   calendarOptions: { type: Object, default: Function },
-  currentEvents: { type: Array, default: Function },
+  currentEvents: { type: Array as PropType<Event[]>, default: Function },
 })
 const emit = defineEmits(['weekends-toggle'])
 </script>
@@ -11,12 +14,7 @@ const emit = defineEmits(['weekends-toggle'])
     <div class="demo-app-sidebar">
       <div class="demo-app-sidebar-section">
         <h5>
-          <v-icon
-            icon="mdi-alpha-i-circle"
-            size="small"
-            class="mr-2"
-            color="indigo"
-          />
+          <v-icon icon="mdi-alpha-i-circle" size="small" class="mr-2" color="indigo" />
           참고
         </h5>
         <ul>
@@ -37,17 +35,12 @@ const emit = defineEmits(['weekends-toggle'])
       </div>
       <div class="demo-app-sidebar-section">
         <h5>
-          <v-icon
-            icon="mdi-alpha-i-circle"
-            size="small"
-            class="mr-2"
-            color="indigo"
-          />
+          <v-icon icon="mdi-alpha-i-circle" size="small" class="mr-2" color="indigo" />
           월간 진행 일정 목록 ({{ currentEvents.length }})
         </h5>
         <ul>
           <li v-for="event in currentEvents" :key="event.id">
-            <b>{{ event.start.replace('T', ' ').replace(':00+09:00', '') }}</b>
+            <b>{{ event.start?.replace('T', ' ').replace(':00+09:00', '') }}</b>
             <i class="ml-2">{{ event.title }}</i>
           </li>
         </ul>

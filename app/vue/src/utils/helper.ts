@@ -1,5 +1,4 @@
-import { createToast, ToastType } from 'mosha-vue-toastify'
-import { Position, TransitionType } from 'mosha-vue-toastify/dist/types'
+import { createToast, type ToastType, type Position, type TransitionType } from 'mosha-vue-toastify'
 
 export const message = (
   type: ToastType = 'success',
@@ -48,10 +47,7 @@ export const hashCode = (s: string) =>
   }, 0)
 
 export const isValidate = (event: Event) => {
-  const el = event.currentTarget as
-    | HTMLInputElement
-    | HTMLSelectElement
-    | HTMLFormElement
+  const el = event.currentTarget as HTMLInputElement | HTMLSelectElement | HTMLFormElement
   if (!el.checkValidity()) {
     event.preventDefault()
     event.stopPropagation()
@@ -62,12 +58,7 @@ export const isValidate = (event: Event) => {
 
 export const formUtility = {
   getFormData(
-    val:
-      | Date
-      | Array<{ [key: string]: string }>
-      | { [key: string]: string }
-      | File
-      | string,
+    val: Date | Array<{ [key: string]: string }> | { [key: string]: string } | File | string,
     formData = new FormData(),
     namespace = '',
   ) {
@@ -80,12 +71,9 @@ export const formUtility = {
         }
       } else if (typeof val === 'object' && !(val instanceof File)) {
         for (const key in val) {
+          // eslint-disable-next-line no-prototype-builtins
           if (val.hasOwnProperty(key)) {
-            this.getFormData(
-              val[key],
-              formData,
-              namespace ? `${namespace}[${key}]` : key,
-            )
+            this.getFormData(val[key], formData, namespace ? `${namespace}[${key}]` : key)
           }
         }
       } else if (val instanceof File) {

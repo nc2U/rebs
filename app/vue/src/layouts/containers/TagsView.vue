@@ -2,13 +2,8 @@
 import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import { useStore } from '@/store'
 import { useTagsView } from '@/store/pinia/tagsView'
-import { VisitedView } from '@/store/types/tagsView'
-import {
-  useRoute,
-  useRouter,
-  RouteRecordRaw,
-  RouteLocationMatched,
-} from 'vue-router'
+import { type VisitedView } from '@/store/types/tagsView'
+import { useRoute, useRouter, type RouteRecordRaw, type RouteLocationMatched } from 'vue-router'
 
 const store = useStore()
 const dark = computed(() => store.theme === 'dark')
@@ -42,9 +37,7 @@ const isAffix = (view: VisitedView) => view.meta && view.meta.affix
 
 const slashPath = (p: string) => (p.charAt(0) !== '/' ? '/' + p : p)
 
-const filterAffixTags = (
-  regRoutes: RouteLocationMatched[] | RouteRecordRaw[],
-) => {
+const filterAffixTags = (regRoutes: RouteLocationMatched[] | RouteRecordRaw[]) => {
   let affixedViews: VisitedView[] = []
   regRoutes.forEach((view: RouteLocationMatched | RouteRecordRaw) => {
     if (view.meta && view.meta.affix) {
@@ -89,8 +82,7 @@ const moveToCurrentTag = () =>
     for (const tag of currentTag.value) {
       if (tag.to.path === route.path) {
         // when query is different then update
-        if (tag.to.fullPath !== route.fullPath)
-          tagsViewStore.updateVisitedView(route)
+        if (tag.to.fullPath !== route.fullPath) tagsViewStore.updateVisitedView(route)
         break
       }
     }
@@ -135,12 +127,7 @@ onMounted(() => {
           :color="isActive(view) ? 'success' : btnColor"
           :to="{ path: view.fullPath }"
         >
-          <v-icon
-            v-if="isActive(view)"
-            icon="mdi-circle"
-            size="x-small"
-            class="mr-2"
-          />
+          <v-icon v-if="isActive(view)" icon="mdi-circle" size="x-small" class="mr-2" />
           {{ view.meta.title }}
           <v-icon
             v-if="!isAffix(view)"

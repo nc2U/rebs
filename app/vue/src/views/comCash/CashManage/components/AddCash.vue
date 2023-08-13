@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { CompanyBank, CashBook } from '@/store/types/comCash'
+import type { CompanyBank, CashBook } from '@/store/types/comCash'
 import { AlertLight } from '@/utils/cssMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import CashForm from '@/views/comCash/CashManage/components/CashForm.vue'
@@ -12,22 +12,17 @@ const createFormModal = ref()
 
 const createConfirm = () => createFormModal.value.callModal()
 
-const multiSubmit = (payload: {
-  formData: CashBook
-  sepData: CashBook | null
-}) => emit('multi-submit', payload)
+const multiSubmit = (payload: { formData: CashBook; sepData: CashBook | null }) =>
+  emit('multi-submit', payload)
 
-const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
-  emit('patch-d3-hide', payload)
+const patchD3Hide = (payload: { pk: number; is_hide: boolean }) => emit('patch-d3-hide', payload)
 
 const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
 </script>
 
 <template>
   <CAlert :color="AlertLight" variant="solid" class="text-right">
-    <CButton color="primary" :disabled="!company" @click="createConfirm">
-      신규등록
-    </CButton>
+    <CButton color="primary" :disabled="!company" @click="createConfirm"> 신규등록</CButton>
   </CAlert>
 
   <FormModal ref="createFormModal" size="lg">

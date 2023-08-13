@@ -2,8 +2,8 @@
 import { ref, computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
 import { useProject } from '@/store/pinia/project'
-import { HouseUnit } from '@/store/types/project'
-import { CreateUnit, useProjectData } from '@/store/pinia/project_data'
+import { type HouseUnit } from '@/store/types/project'
+import { type CreateUnit, useProjectData } from '@/store/pinia/project_data'
 import { message } from '@/utils/helper'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -11,7 +11,7 @@ import UnitController from '@/views/projects/Unit/components/UnitController.vue'
 import UnitTable from '@/views/projects/Unit/components/UnitTable.vue'
 
 const alertModal = ref()
-const unitController = ref()
+const refUnitController = ref()
 
 const bldgPk = ref<null | number>(null)
 const bldgName = ref('')
@@ -24,18 +24,14 @@ const numUnitByType = computed(() => pDataStore.numUnitByType)
 const simpleUnits = computed(() => pDataStore.simpleUnits)
 
 const fetchTypeList = (projId: number) => pDataStore.fetchTypeList(projId)
-const fetchFloorTypeList = (projId: number) =>
-  pDataStore.fetchFloorTypeList(projId)
-const fetchBuildingList = (projId: number) =>
-  pDataStore.fetchBuildingList(projId)
+const fetchFloorTypeList = (projId: number) => pDataStore.fetchFloorTypeList(projId)
+const fetchBuildingList = (projId: number) => pDataStore.fetchBuildingList(projId)
 const fetchHouseUnitList = (projId: number, bldg?: number) =>
   pDataStore.fetchHouseUnitList(projId, bldg)
 
 const createUnit = (payload: CreateUnit) => pDataStore.createUnit(payload)
-const patchUnit = (payload: HouseUnit & { bldg: number }) =>
-  pDataStore.patchUnit(payload)
-const deleteUnit = (pk: number, proj: number, type: number) =>
-  pDataStore.deleteUnit(pk, proj, type)
+const patchUnit = (payload: HouseUnit & { bldg: number }) => pDataStore.patchUnit(payload)
+const deleteUnit = (pk: number, proj: number, type: number) => pDataStore.deleteUnit(pk, proj, type)
 
 const bldgSelect = (bldg: { pk: number; name: string }) => {
   if (!!bldg.pk && project.value) fetchHouseUnitList(project.value, bldg.pk)
@@ -70,8 +66,7 @@ const unitRegister = (payload: OriginalUnit) => {
     const size = payload.maxFloor - payload.minFloor + 1
     const range = (size: number, min: number): number[] =>
       [...Array(size).keys()].map(key => key + min)
-    const between = (x: number, min: number, max: number): boolean =>
-      x >= min && x <= max // 주어진 x가 범위 내에 있늕지 확인하는 변수
+    const between = (x: number, min: number, max: number): boolean => x >= min && x <= max // 주어진 x가 범위 내에 있늕지 확인하는 변수
     const getCode = (num: number, digit: number) => {
       const prefix = '0'.repeat(digit - `${num}`.length)
       const typeStr = payload.typeName.replace(/[^0-9a-zA-Z]/g, '')
@@ -99,9 +94,7 @@ const unitRegister = (payload: OriginalUnit) => {
         floor_no: i,
         name: `${i < 0 ? `B${i * -1}` : i}${midWord}${bldg_line}`,
         floor_type: payload.floors
-          .filter((f: { start: number; end: number }) =>
-            between(i, f.start, f.end),
-          )
+          .filter((f: { start: number; end: number }) => between(i, f.start, f.end))
           .map((f: { pk: number }) => f.pk)[0],
         unit_code: getCode((num += 1), `${payload.maxUnits}`.length),
       })) // 입력할 유닛 데이터 배열 생성
@@ -150,7 +143,7 @@ const dataReset = () => {
 }
 
 const projSelect = (target: number | null) => {
-  unitController.value.projReset()
+  refUnitController.value.projReset()
   dataReset()
   if (!!target) dataSetup(target)
 }
@@ -162,25 +155,17 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @proj-select="projSelect"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
 
   <ContentBody>
     <CCardBody class="pb-5">
       <UnitController
-        ref="unitController"
+        ref="refUnitController"
         :project="project as number"
         @bldg-select="bldgSelect"
         @unit-register="unitRegister"
       />
-      <UnitTable
-        :bldg-name="bldgName"
-        @on-update="onUpdate"
-        @on-delete="onDelete"
-      />
+      <UnitTable :bldg-name="bldgName" @on-update="onUpdate" @on-delete="onDelete" />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>

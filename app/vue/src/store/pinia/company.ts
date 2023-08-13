@@ -3,16 +3,16 @@ import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useAccount } from '@/store/pinia/account'
 import { errorHandle, message } from '@/utils/helper'
-import { Company, Logo } from '@/store/types/settings'
+import { type Company, type Logo } from '@/store/types/settings'
 import {
-  Staff,
-  StaffFilter,
-  Department,
-  DepFilter,
-  Grade,
-  Position,
-  Duty,
-  ComFilter,
+  type Staff,
+  type StaffFilter,
+  type Department,
+  type DepFilter,
+  type Grade,
+  type Position,
+  type Duty,
+  type ComFilter,
 } from '@/store/types/company'
 
 const accountStore = useAccount()
@@ -23,9 +23,7 @@ export const useCompany = defineStore('company', () => {
   const company = ref<Company | null>(null)
 
   const initComId = computed(() =>
-    accountStore.userInfo?.staffauth?.company
-      ? accountStore.userInfo.staffauth.company
-      : 1,
+    accountStore.userInfo?.staffauth?.company ? accountStore.userInfo.staffauth.company : 1,
   )
 
   const comSelect = computed(() => {
@@ -51,11 +49,7 @@ export const useCompany = defineStore('company', () => {
   const createCompany = (payload: Company) =>
     api
       .post(`/company/`, payload)
-      .then(res =>
-        fetchCompanyList().then(() =>
-          fetchCompany(res.data.pk).then(() => message()),
-        ),
-      )
+      .then(res => fetchCompanyList().then(() => fetchCompany(res.data.pk).then(() => message())))
       .catch(err => errorHandle(err.response.data))
 
   const updateCompany = (payload: Company) =>
@@ -68,9 +62,7 @@ export const useCompany = defineStore('company', () => {
     api
       .delete(`/company/${pk}/`)
       .then(() =>
-        fetchCompanyList().then(() =>
-          message('warning', '', '해당 오브젝트가 삭제되었습니다.'),
-        ),
+        fetchCompanyList().then(() => message('warning', '', '해당 오브젝트가 삭제되었습니다.')),
       )
       .catch(err => errorHandle(err.response.data))
 
@@ -106,8 +98,7 @@ export const useCompany = defineStore('company', () => {
   const staffsCount = ref<number>(0)
 
   // actions
-  const staffPages = (itemsPerPage: number) =>
-    Math.ceil(staffsCount.value / itemsPerPage)
+  const staffPages = (itemsPerPage: number) => Math.ceil(staffsCount.value / itemsPerPage)
 
   const fetchStaffList = (payload: StaffFilter) => {
     const {
@@ -142,9 +133,7 @@ export const useCompany = defineStore('company', () => {
     api
       .post(`/staff/`, payload)
       .then(res =>
-        fetchStaffList({ page, com }).then(() =>
-          fetchStaff(res.data.pk).then(() => message()),
-        ),
+        fetchStaffList({ page, com }).then(() => fetchStaff(res.data.pk).then(() => message())),
       )
       .catch(err => errorHandle(err.response.data))
 
@@ -152,9 +141,7 @@ export const useCompany = defineStore('company', () => {
     api
       .put(`/staff/${payload.pk}/`, payload)
       .then(res => {
-        fetchStaffList({ page, com }).then(() =>
-          fetchStaff(res.data.pk).then(() => message()),
-        )
+        fetchStaffList({ page, com }).then(() => fetchStaff(res.data.pk).then(() => message()))
       })
       .catch(err => errorHandle(err.response.data))
 
@@ -191,16 +178,11 @@ export const useCompany = defineStore('company', () => {
   )
 
   const getUpperDeps = computed(() => [
-    ...new Set(
-      allDepartList.value
-        .filter(d => !!d.upper_depart)
-        .map(d => d.upper_depart),
-    ),
+    ...new Set(allDepartList.value.filter(d => !!d.upper_depart).map(d => d.upper_depart)),
   ])
 
   // actions
-  const departmentPages = (itemsPerPage: number) =>
-    Math.ceil(departmentsCount.value / itemsPerPage)
+  const departmentPages = (itemsPerPage: number) => Math.ceil(departmentsCount.value / itemsPerPage)
 
   const fetchDepartmentList = (payload: DepFilter) => {
     const { page = 1, com = 1, upp = '', q = '' } = payload
@@ -280,8 +262,7 @@ export const useCompany = defineStore('company', () => {
   )
 
   // actions
-  const gradePages = (itemsPerPage: number) =>
-    Math.ceil(gradesCount.value / itemsPerPage)
+  const gradePages = (itemsPerPage: number) => Math.ceil(gradesCount.value / itemsPerPage)
 
   const fetchGradeList = (payload: ComFilter) => {
     const { page = 1, com = 1, q = '' } = payload
@@ -313,9 +294,7 @@ export const useCompany = defineStore('company', () => {
     api
       .post(`/grade/`, payload)
       .then(res =>
-        fetchGradeList({ page, com }).then(() =>
-          fetchGrade(res.data.pk).then(() => message()),
-        ),
+        fetchGradeList({ page, com }).then(() => fetchGrade(res.data.pk).then(() => message())),
       )
       .catch(err => errorHandle(err.response.data))
 
@@ -323,9 +302,7 @@ export const useCompany = defineStore('company', () => {
     api
       .put(`/grade/${payload.pk}/`, payload)
       .then(res => {
-        fetchGradeList({ page, com }).then(() =>
-          fetchGrade(res.data.pk).then(() => message()),
-        )
+        fetchGradeList({ page, com }).then(() => fetchGrade(res.data.pk).then(() => message()))
       })
       .catch(err => errorHandle(err.response.data))
 
@@ -360,8 +337,7 @@ export const useCompany = defineStore('company', () => {
   )
 
   // actions
-  const positionPages = (itemsPerPage: number) =>
-    Math.ceil(positionsCount.value / itemsPerPage)
+  const positionPages = (itemsPerPage: number) => Math.ceil(positionsCount.value / itemsPerPage)
 
   const fetchPositionList = (payload: ComFilter) => {
     const { page = 1, com = 1, q = '' } = payload
@@ -440,8 +416,7 @@ export const useCompany = defineStore('company', () => {
   )
 
   // actions
-  const dutyPages = (itemsPerPage: number) =>
-    Math.ceil(dutysCount.value / itemsPerPage)
+  const dutyPages = (itemsPerPage: number) => Math.ceil(dutysCount.value / itemsPerPage)
 
   const fetchDutyList = (payload: ComFilter) => {
     const { page = 1, com = 1, q = '' } = payload
@@ -473,9 +448,7 @@ export const useCompany = defineStore('company', () => {
     api
       .post(`/duty-title/`, payload)
       .then(res =>
-        fetchDutyList({ page, com }).then(() =>
-          fetchDuty(res.data.pk).then(() => message()),
-        ),
+        fetchDutyList({ page, com }).then(() => fetchDuty(res.data.pk).then(() => message())),
       )
       .catch(err => errorHandle(err.response.data))
 
@@ -483,9 +456,7 @@ export const useCompany = defineStore('company', () => {
     api
       .put(`/duty-title/${payload.pk}/`, payload)
       .then(res => {
-        fetchDutyList({ page, com }).then(() =>
-          fetchDuty(res.data.pk).then(() => message()),
-        )
+        fetchDutyList({ page, com }).then(() => fetchDuty(res.data.pk).then(() => message()))
       })
       .catch(err => errorHandle(err.response.data))
 

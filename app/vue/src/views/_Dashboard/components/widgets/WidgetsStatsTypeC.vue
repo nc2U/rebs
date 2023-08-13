@@ -108,20 +108,14 @@ const tableItems = [
             <CCol :sm="12" :lg="6">
               <CRow>
                 <CCol :sm="6">
-                  <div
-                    class="border-start border-start-4 border-start-info py-1 px-3 mb-3"
-                  >
+                  <div class="border-start border-start-4 border-start-info py-1 px-3 mb-3">
                     <div class="text-medium-emphasis small">New Clients</div>
                     <div class="fs-5 fw-semibold">9,123</div>
                   </div>
                 </CCol>
                 <CCol :sm="6">
-                  <div
-                    class="border-start border-start-4 border-start-danger py-1 px-3 mb-3"
-                  >
-                    <div class="text-medium-emphasis small">
-                      Recurring Clients
-                    </div>
+                  <div class="border-start border-start-4 border-start-danger py-1 px-3 mb-3">
+                    <div class="text-medium-emphasis small">Recurring Clients</div>
                     <div class="fs-5 fw-semibold">22,643</div>
                   </div>
                 </CCol>
@@ -194,17 +188,13 @@ const tableItems = [
             <CCol :sm="12" :lg="6">
               <CRow>
                 <CCol :sm="6">
-                  <div
-                    class="border-start border-start-4 border-start-warning py-1 px-3 mb-3"
-                  >
+                  <div class="border-start border-start-4 border-start-warning py-1 px-3 mb-3">
                     <div class="text-medium-emphasis small">Pageviews</div>
                     <div class="fs-5 fw-semibold">78,623</div>
                   </div>
                 </CCol>
                 <CCol :sm="6">
-                  <div
-                    class="border-start border-start-4 border-start-success py-1 px-3 mb-3"
-                  >
+                  <div class="border-start border-start-4 border-start-success py-1 px-3 mb-3">
                     <div class="text-medium-emphasis small">Organic</div>
                     <div class="fs-5 fw-semibold">49,123</div>
                   </div>
@@ -246,12 +236,7 @@ const tableItems = [
               </div>
               <div class="progress-group">
                 <div class="progress-group-header">
-                  <CIcon
-                    icon="cib-facebook"
-                    height="17"
-                    class="me-2"
-                    size="lg"
-                  />
+                  <CIcon icon="cib-facebook" height="17" class="me-2" size="lg" />
                   <span class="title">Facebook</span>
                   <span class="ms-auto font-weight-bold">
                     51,223
@@ -264,12 +249,7 @@ const tableItems = [
               </div>
               <div class="progress-group">
                 <div class="progress-group-header">
-                  <CIcon
-                    icon="cib-twitter"
-                    height="17"
-                    class="me-2"
-                    size="lg"
-                  />
+                  <CIcon icon="cib-twitter" height="17" class="me-2" size="lg" />
                   <span class="title">Twitter</span>
                   <span class="ms-auto font-weight-bold">
                     37,564
@@ -282,12 +262,7 @@ const tableItems = [
               </div>
               <div class="progress-group">
                 <div class="progress-group-header">
-                  <CIcon
-                    icon="cib-linkedin"
-                    height="17"
-                    class="me-2"
-                    size="lg"
-                  />
+                  <CIcon icon="cib-linkedin" height="17" class="me-2" size="lg" />
                   <span class="title">LinkedIn</span>
                   <span class="ms-auto font-weight-bold">
                     27,319
@@ -308,24 +283,16 @@ const tableItems = [
                   <CIcon name="cil-people" />
                 </CTableHeaderCell>
                 <CTableHeaderCell>User</CTableHeaderCell>
-                <CTableHeaderCell class="text-center"
-                  >Country
-                </CTableHeaderCell>
+                <CTableHeaderCell class="text-center">Country</CTableHeaderCell>
                 <CTableHeaderCell>Usage</CTableHeaderCell>
-                <CTableHeaderCell class="text-center"
-                  >Payment Method
-                </CTableHeaderCell>
+                <CTableHeaderCell class="text-center">Payment Method</CTableHeaderCell>
                 <CTableHeaderCell>Activity</CTableHeaderCell>
               </CTableRow>
             </CTableHead>
             <CTableBody>
-              <CTableRow v-for="item in tableItems" :key="item.name">
+              <CTableRow v-for="item in tableItems" :key="item.user.name">
                 <CTableDataCell class="text-center">
-                  <CAvatar
-                    size="md"
-                    :src="item.avatar.src"
-                    :status="item.avatar.status"
-                  />
+                  <CAvatar size="md" :src="item.avatar.src" :status="item.avatar.status" />
                 </CTableDataCell>
                 <CTableDataCell>
                   <div>{{ item.user.name }}</div>
@@ -335,11 +302,7 @@ const tableItems = [
                   </div>
                 </CTableDataCell>
                 <CTableDataCell class="text-center">
-                  <CIcon
-                    size="xl"
-                    :name="item.country.flag"
-                    :title="item.country.name"
-                  />
+                  <CIcon size="xl" :name="item.country.flag" :title="item.country.name" />
                 </CTableDataCell>
                 <CTableDataCell>
                   <div class="clearfix">
@@ -352,11 +315,7 @@ const tableItems = [
                       </small>
                     </div>
                   </div>
-                  <CProgress
-                    thin
-                    :color="item.usage.color"
-                    :value="item.usage.value"
-                  />
+                  <CProgress thin :color="item.usage.color" :value="item.usage.value" />
                 </CTableDataCell>
                 <CTableDataCell class="text-center">
                   <CIcon size="xl" :name="item.payment.icon" />

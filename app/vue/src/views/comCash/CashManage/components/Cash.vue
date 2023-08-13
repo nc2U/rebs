@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { ref, computed, PropType } from 'vue'
+import { ref, computed, type PropType } from 'vue'
 import { useStore } from '@/store'
 import { useAccount } from '@/store/pinia/account'
-import { CompanyBank, CashBook } from '@/store/types/comCash'
+import type { CompanyBank, CashBook } from '@/store/types/comCash'
 import { write_company_cash } from '@/utils/pageAuth'
 import { numFormat, cutString, diffDate } from '@/utils/baseMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
@@ -14,12 +14,7 @@ const props = defineProps({
   cash: { type: Object as PropType<CashBook>, required: true },
 })
 
-const emit = defineEmits([
-  'multi-submit',
-  'on-delete',
-  'patch-d3-hide',
-  'on-bank-update',
-])
+const emit = defineEmits(['multi-submit', 'on-delete', 'patch-d3-hide', 'on-bank-update'])
 
 const refDelModal = ref()
 const refAlertModal = ref()
@@ -27,9 +22,7 @@ const updateFormModal = ref()
 
 const cls = ref(['text-primary', 'text-danger', 'text-info'])
 const sortClass = computed(() => cls.value[(props.cash?.sort as number) - 1])
-const d1Class = computed(
-  () => cls.value[((props.cash?.account_d1 as number) % 3) - 1],
-)
+const d1Class = computed(() => cls.value[((props.cash?.account_d1 as number) % 3) - 1])
 
 const store = useStore()
 const dark = computed(() => store.theme === 'dark')
@@ -43,17 +36,13 @@ const rowColor = computed(() => {
 
 const accountStore = useAccount()
 const allowedPeriod = computed(
-  () =>
-    accountStore.superAuth ||
-    (props.cash?.deal_date && diffDate(props.cash.deal_date) <= 30),
+  () => accountStore.superAuth || (props.cash?.deal_date && diffDate(props.cash.deal_date) <= 30),
 )
 
 const showDetail = () => updateFormModal.value.callModal()
 
-const multiSubmit = (payload: {
-  formData: CashBook
-  sepData: CashBook | null
-}) => emit('multi-submit', payload)
+const multiSubmit = (payload: { formData: CashBook; sepData: CashBook | null }) =>
+  emit('multi-submit', payload)
 
 const deleteConfirm = () => {
   if (write_company_cash.value)
@@ -71,8 +60,7 @@ const deleteObject = () => {
   refDelModal.value.close()
 }
 
-const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
-  emit('patch-d3-hide', payload)
+const patchD3Hide = (payload: { pk: number; is_hide: boolean }) => emit('patch-d3-hide', payload)
 
 const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
 </script>
@@ -138,8 +126,7 @@ const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
   <ConfirmModal ref="refDelModal">
     <template #header> 입출금 거래 정보 삭제</template>
     <template #default>
-      삭제한 데이터는 복구할 수 없습니다. 해당 입출금 거래 정보를
-      삭제하시겠습니까?
+      삭제한 데이터는 복구할 수 없습니다. 해당 입출금 거래 정보를 삭제하시겠습니까?
     </template>
     <template #footer>
       <CButton color="danger" @click="deleteObject">삭제</CButton>

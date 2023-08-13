@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { computed, PropType } from 'vue'
+import { computed, type PropType } from 'vue'
 import { useRoute } from 'vue-router'
 import { useContract } from '@/store/pinia/contract'
-import { Contractor } from '@/store/types/contract'
+import { type Contractor } from '@/store/types/contract'
 
 const props = defineProps({
   isBlank: { type: Boolean, default: false },
@@ -11,19 +11,13 @@ const props = defineProps({
 const emit = defineEmits(['resume-form'])
 
 const isSuccession = computed(
-  () =>
-    !!props.contractor.successions.length &&
-    !props.contractor.successions[0].is_approval,
+  () => !!props.contractor.successions.length && !props.contractor.successions[0].is_approval,
 )
 
 const alertColor = computed(() => {
   let aColor = 'info'
   if (isSuccession.value) aColor = 'success'
-  else if (
-    !!props.contractor.contractorrelease &&
-    props.contractor.status >= '3'
-  )
-    aColor = 'danger'
+  else if (!!props.contractor.contractorrelease && props.contractor.status >= '3') aColor = 'danger'
   return aColor
 })
 
@@ -57,18 +51,14 @@ const resumeForm = () => {
         <strong>
           <CIcon name="cilTask" />
           계약자명 :
-          {{ contractor.__str__ }} :::::: 현재상태 : [{{
-            getStatus(contractor.status)
-          }}]
+          {{ contractor.__str__ }} :::::: 현재상태 : [{{ getStatus(contractor.status) }}]
           {{ isSuccession ? '-> (!!!-권리 의무 승계 진행 중-!!!)' : '' }}
         </strong>
       </CCol>
       <CCol class="text-right">
         <router-link v-if="!isBlank" to="">
           <v-icon icon="mdi mdi-close" @click="removeContractor" />
-          <v-tooltip activator="parent" location="start">
-            계약자 선택 해제
-          </v-tooltip>
+          <v-tooltip activator="parent" location="start"> 계약자 선택 해제</v-tooltip>
         </router-link>
         <a v-else href="javascript:void(0)">
           <v-icon
@@ -78,9 +68,7 @@ const resumeForm = () => {
             class="rotate"
             @click="resumeForm"
           />
-          <v-tooltip activator="parent" location="start">
-            계약자 정보 채우기
-          </v-tooltip>
+          <v-tooltip activator="parent" location="start"> 계약자 정보 채우기</v-tooltip>
         </a>
       </CCol>
     </CRow>

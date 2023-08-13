@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { reactive, computed, nextTick, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
-import { SuitCaseFilter, useDocument } from '@/store/pinia/document'
+import { type SuitCaseFilter, useDocument } from '@/store/pinia/document'
 import { numFormat } from '@/utils/baseMixins'
 import { bgLight } from '@/utils/cssMixins'
 import { courtChoices } from '@/views/comDocs/LawsuitCase/components/court'
@@ -93,11 +93,7 @@ onBeforeMount(() => fetchProjectList())
             <CFormSelect v-model="form.project" @change="listFiltering(1)">
               <option value="">전체 프로젝트</option>
               <option value="com">본사</option>
-              <option
-                v-for="proj in projSelect"
-                :key="proj.value"
-                :value="proj.value"
-              >
+              <option v-for="proj in projSelect" :key="proj.value" :value="proj.value">
                 {{ proj.label }}
               </option>
             </CFormSelect>
@@ -109,7 +105,7 @@ onBeforeMount(() => fetchProjectList())
               placeholder="관할법원"
               autocomplete="label"
               :classes="{ search: 'form-control multiselect-search' }"
-              :add-option-on="['enter' | 'tab']"
+              :add-option-on="['enter', 'tab']"
               searchable
               @change="listFiltering(1)"
             />
@@ -122,7 +118,7 @@ onBeforeMount(() => fetchProjectList())
               placeholder="관련사건"
               autocomplete="label"
               :classes="{ search: 'form-control multiselect-search' }"
-              :add-option-on="['enter' | 'tab']"
+              :add-option-on="['enter', 'tab']"
               searchable
               @change="listFiltering(1)"
             />
@@ -145,21 +141,11 @@ onBeforeMount(() => fetchProjectList())
           <CCol md="4" lg="6" class="mb-3">
             <CFormSelect v-model="form.level" @change="listFiltering(1)">
               <option value="">사건심급 선택</option>
-              <option v-if="!form.sort || form.sort !== '5'" value="1">
-                1심
-              </option>
-              <option v-if="!form.sort || form.sort !== '5'" value="2">
-                2심
-              </option>
-              <option v-if="!form.sort || form.sort !== '5'" value="3">
-                3심
-              </option>
-              <option v-if="!form.sort || form.sort === '2'" value="4">
-                수사
-              </option>
-              <option v-if="!form.sort || form.sort === '5'" value="5">
-                신청/집행
-              </option>
+              <option v-if="!form.sort || form.sort !== '5'" value="1">1심</option>
+              <option v-if="!form.sort || form.sort !== '5'" value="2">2심</option>
+              <option v-if="!form.sort || form.sort !== '5'" value="3">3심</option>
+              <option v-if="!form.sort || form.sort === '2'" value="4">수사</option>
+              <option v-if="!form.sort || form.sort === '5'" value="5">신청/집행</option>
             </CFormSelect>
           </CCol>
         </CRow>
@@ -183,14 +169,10 @@ onBeforeMount(() => fetchProjectList())
 
     <CRow>
       <CCol color="warning" class="p-2 pl-3">
-        <strong>
-          문서 건수 조회 결과 : {{ numFormat(suitcaseCount, 0, 0) }} 건
-        </strong>
+        <strong> 문서 건수 조회 결과 : {{ numFormat(suitcaseCount, 0, 0) }} 건 </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
-        <CButton color="info" size="sm" @click="resetForm">
-          검색조건 초기화
-        </CButton>
+        <CButton color="info" size="sm" @click="resetForm"> 검색조건 초기화</CButton>
       </CCol>
     </CRow>
   </CCallout>

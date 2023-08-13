@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { usePayment } from '@/store/pinia/payment'
-import { ProjectCashBook, PaymentPaid } from '@/store/types/proCash'
+import { type ProjectCashBook, type PaymentPaid } from '@/store/types/proCash'
 import { TableSecondary } from '@/utils/cssMixins'
 import Payment from '@/views/payments/List/components/Payment.vue'
 import Pagination from '@/components/Pagination'

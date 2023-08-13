@@ -3,7 +3,7 @@ import { computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin1'
 import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
-import { OrderGroup } from '@/store/types/contract'
+import { type OrderGroup } from '@/store/types/contract'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import OrderAddForm from '@/views/projects/OrderGroup/components/OrderAddForm.vue'
@@ -15,10 +15,8 @@ const project = computed(() => projStore.project?.pk)
 const contStore = useContract()
 
 const fetchOrderGroupList = (pk: number) => contStore.fetchOrderGroupList(pk)
-const createOrderGroup = (payload: OrderGroup) =>
-  contStore.createOrderGroup(payload)
-const updateOrderGroup = (payload: OrderGroup) =>
-  contStore.updateOrderGroup(payload)
+const createOrderGroup = (payload: OrderGroup) => contStore.createOrderGroup(payload)
+const updateOrderGroup = (payload: OrderGroup) => contStore.updateOrderGroup(payload)
 const deleteOrderGroup = (payload: { pk: number; project: number }) =>
   contStore.deleteOrderGroup(payload)
 
@@ -40,11 +38,7 @@ onBeforeMount(() => fetchOrderGroupList(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @proj-select="projSelect"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
 
   <ContentBody>
     <CCardBody class="pb-5">

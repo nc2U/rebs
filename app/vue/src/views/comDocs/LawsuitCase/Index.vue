@@ -1,14 +1,10 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin2'
-import {
-  RouteLocationNormalizedLoaded as LoadedRoute,
-  useRoute,
-  useRouter,
-} from 'vue-router'
+import { type RouteLocationNormalizedLoaded as LoadedRoute, useRoute, useRouter } from 'vue-router'
 import { useCompany } from '@/store/pinia/company'
-import { SuitCaseFilter as cFilter, useDocument } from '@/store/pinia/document'
-import { SuitCase } from '@/store/types/document'
+import { type SuitCaseFilter as cFilter, useDocument } from '@/store/pinia/document'
+import { type SuitCase } from '@/store/types/document'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
@@ -49,19 +45,14 @@ const suitcaseList = computed(() => docStore.suitcaseList)
 const getSuitCase = computed(() => docStore.getSuitCase)
 
 const fetchSuitCase = (pk: number) => docStore.fetchSuitCase(pk)
-const fetchSuitCaseList = (payload: cFilter) =>
-  docStore.fetchSuitCaseList(payload)
-const fetchAllSuitCaseList = (payload: cFilter) =>
-  docStore.fetchAllSuitCaseList(payload)
+const fetchSuitCaseList = (payload: cFilter) => docStore.fetchSuitCaseList(payload)
+const fetchAllSuitCaseList = (payload: cFilter) => docStore.fetchAllSuitCaseList(payload)
 
 const createSuitCase = (payload: SuitCase) => docStore.createSuitCase(payload)
 const updateSuitCase = (payload: SuitCase) => docStore.updateSuitCase(payload)
 const deleteSuitCase = (pk: number) => docStore.deleteSuitCase(pk)
 
-const [route, router] = [
-  useRoute() as LoadedRoute & { name: string },
-  useRouter(),
-]
+const [route, router] = [useRoute() as LoadedRoute & { name: string }, useRouter()]
 
 watch(route, val => {
   if (val.params.caseId) fetchSuitCase(Number(val.params.caseId))
@@ -162,7 +153,7 @@ onBeforeMount(() => {
       </div>
 
       <div v-else-if="route.name.includes('보기')">
-        <CaseView :suitcase="suitcase" />
+        <CaseView :suitcase="suitcase as SuitCase" />
       </div>
 
       <div v-else-if="route.name.includes('작성')">

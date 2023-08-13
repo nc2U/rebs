@@ -3,7 +3,7 @@ import { ref, computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin3'
 import { useProject } from '@/store/pinia/project'
 import { useSite } from '@/store/pinia/project_site'
-import { SiteContract } from '@/store/types/project'
+import { type SiteContract } from '@/store/types/project'
 import { numFormat } from '@/utils/baseMixins'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -43,12 +43,7 @@ const excelUrl = computed(() => {
 const listFiltering = (payload: filter) => {
   dataFilter.value = payload
   if (project.value)
-    siteStore.fetchSiteContList(
-      project.value,
-      payload.page,
-      payload.own_sort,
-      payload.search,
-    )
+    siteStore.fetchSiteContList(project.value, payload.page, payload.own_sort, payload.search)
 }
 
 const pageSelect = (page: number) => {
@@ -90,11 +85,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @proj-select="projSelect"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
 
   <ContentBody>
     <CCardBody class="pb-5">
@@ -103,16 +94,8 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
         :project="project as number"
         @list-filtering="listFiltering"
       />
-      <AddSiteContract
-        :project="project as number"
-        @multi-submit="multiSubmit"
-      />
-      <TableTitleRow
-        title="부지 매입계약 목록"
-        excel
-        :url="excelUrl"
-        :disabled="!project"
-      >
+      <AddSiteContract :project="project as number" @multi-submit="multiSubmit" />
+      <TableTitleRow title="부지 매입계약 목록" excel :url="excelUrl" :disabled="!project">
         <span v-if="project" class="pt-1 text-success">
           총 계약 면적 :
           {{ numFormat(getContsTotal as number, 2) }}

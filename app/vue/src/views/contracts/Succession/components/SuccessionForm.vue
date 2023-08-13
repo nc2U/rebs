@@ -3,8 +3,8 @@ import { ref, reactive, computed, watch, onBeforeMount, nextTick } from 'vue'
 import { write_contract } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
 import { useContract } from '@/store/pinia/contract'
-import { Buyer } from '@/store/types/contract'
-import { AddressData, callAddress } from '@/components/DaumPostcode/address'
+import { type Buyer } from '@/store/types/contract'
+import { type AddressData, callAddress } from '@/components/DaumPostcode/address'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -190,12 +190,7 @@ onBeforeMount(() => formDataSet())
 </script>
 
 <template>
-  <CForm
-    class="needs-validation"
-    novalidate
-    :validated="validated"
-    @submit.prevent="onSubmit"
-  >
+  <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
     <CModalBody class="p-4">
       <CRow class="mb-2">
         <CCol xs="6">
@@ -204,12 +199,7 @@ onBeforeMount(() => formDataSet())
               양{{ done ? '수' : '도' }}계약자
             </CFormLabel>
             <CCol sm="8">
-              <CFormSelect
-                v-if="contractor"
-                v-model="form.seller"
-                required
-                readonly
-              >
+              <CFormSelect v-if="contractor" v-model="form.seller" required readonly>
                 <option :value="contractor.pk">
                   {{ contractor.name }}
                 </option>
@@ -222,12 +212,7 @@ onBeforeMount(() => formDataSet())
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">계약건</CFormLabel>
             <CCol sm="8" class="text-left">
-              <CFormSelect
-                v-if="contractor"
-                v-model="form.contract"
-                required
-                readonly
-              >
+              <CFormSelect v-if="contractor" v-model="form.contract" required readonly>
                 <option :value="contractor.contract">
                   {{ contractor.__str__ }}
                 </option>
@@ -240,30 +225,18 @@ onBeforeMount(() => formDataSet())
       <CRow class="mb-2">
         <CCol xs="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">
-              승계신청일
-            </CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label"> 승계신청일</CFormLabel>
             <CCol sm="8">
-              <DatePicker
-                v-model="form.apply_date"
-                required
-                placeholder="승계신청일"
-              />
+              <DatePicker v-model="form.apply_date" required placeholder="승계신청일" />
             </CCol>
           </CRow>
         </CCol>
 
         <CCol xs="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">
-              매매계약일
-            </CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label"> 매매계약일</CFormLabel>
             <CCol sm="8">
-              <DatePicker
-                v-model="form.trading_date"
-                required
-                placeholder="매매계약일"
-              />
+              <DatePicker v-model="form.trading_date" required placeholder="매매계약일" />
             </CCol>
           </CRow>
         </CCol>
@@ -411,14 +384,10 @@ onBeforeMount(() => formDataSet())
       <CRow class="mb-2">
         <CCol>
           <CRow class="mb-2">
-            <CFormLabel class="col-sm-2 col-form-label">
-              주민등록주소
-            </CFormLabel>
+            <CFormLabel class="col-sm-2 col-form-label"> 주민등록주소</CFormLabel>
             <CCol xs="4">
               <CInputGroup>
-                <CInputGroupText @click="postCode.initiate(2)">
-                  우편번호
-                </CInputGroupText>
+                <CInputGroupText @click="postCode.initiate(2)"> 우편번호</CInputGroupText>
                 <CFormInput
                   v-model="buyer_data.id_zipcode"
                   v-maska
@@ -468,14 +437,10 @@ onBeforeMount(() => formDataSet())
       <CRow class="mb-2">
         <CCol>
           <CRow class="mb-2">
-            <CFormLabel class="col-sm-2 col-form-label">
-              우편송달주소
-            </CFormLabel>
+            <CFormLabel class="col-sm-2 col-form-label"> 우편송달주소</CFormLabel>
             <CCol xs="4">
               <CInputGroup>
-                <CInputGroupText @click="postCode.initiate(3)">
-                  우편번호
-                </CInputGroupText>
+                <CInputGroupText @click="postCode.initiate(3)"> 우편번호</CInputGroupText>
                 <CFormInput
                   v-model="buyer_data.dm_zipcode"
                   v-maska
@@ -538,9 +503,7 @@ onBeforeMount(() => formDataSet())
       <CRow class="mb-2">
         <CCol xs="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">
-              변경인가여부
-            </CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label"> 변경인가여부</CFormLabel>
             <CCol sm="8" class="pt-2">
               <CFormSwitch
                 id="isApproval"
@@ -555,9 +518,7 @@ onBeforeMount(() => formDataSet())
 
         <CCol xs="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">
-              변경인가일
-            </CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label"> 변경인가일</CFormLabel>
             <CCol sm="8">
               <DatePicker
                 v-model="form.approval_date"
@@ -583,23 +544,12 @@ onBeforeMount(() => formDataSet())
     </CModalBody>
 
     <CModalFooter>
-      <CButton type="button" color="light" @click="emit('close')">
-        닫기
-      </CButton>
+      <CButton type="button" color="light" @click="emit('close')"> 닫기</CButton>
       <slot name="footer">
-        <CButton
-          type="submit"
-          :color="succession ? 'success' : 'primary'"
-          :disabled="formsCheck"
-        >
+        <CButton type="submit" :color="succession ? 'success' : 'primary'" :disabled="formsCheck">
           저장
         </CButton>
-        <CButton
-          v-if="succession"
-          type="button"
-          color="danger"
-          @click="deleteConfirm"
-        >
+        <CButton v-if="succession" type="button" color="danger" @click="deleteConfirm">
           삭제
         </CButton>
       </slot>

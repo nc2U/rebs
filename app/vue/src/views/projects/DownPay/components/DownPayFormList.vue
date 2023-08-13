@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { usePayment } from '@/store/pinia/payment'
-import { DownPay as dp } from '@/store/types/payment'
+import { type DownPay as dp } from '@/store/types/payment'
 import { TableSecondary } from '@/utils/cssMixins'
 import DownPay from '@/views/projects/DownPay/components/DownPay.vue'
 

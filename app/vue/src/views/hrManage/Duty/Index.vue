@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin2'
 import { useCompany } from '@/store/pinia/company'
-import { Duty, ComFilter } from '@/store/types/company'
+import { type Duty, type ComFilter } from '@/store/types/company'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
@@ -38,10 +38,8 @@ const listFiltering = (payload: ComFilter) => {
 
 const fetchDutyList = (payload: ComFilter) => comStore.fetchDutyList(payload)
 
-const createDuty = (payload: Duty, p?: number, c?: number) =>
-  comStore.createDuty(payload, p, c)
-const updateDuty = (payload: Duty, p?: number, c?: number) =>
-  comStore.updateDuty(payload, p, c)
+const createDuty = (payload: Duty, p?: number, c?: number) => comStore.createDuty(payload, p, c)
+const updateDuty = (payload: Duty, p?: number, c?: number) => comStore.updateDuty(payload, p, c)
 const deleteDuty = (pk: number, com: number) => comStore.deleteDuty(pk, com)
 
 const multiSubmit = (payload: Duty) => {
@@ -82,17 +80,8 @@ onMounted(() => fetchDutyList({ com: company.value || comStore.initComId }))
     <CCardBody>
       <ListController ref="listControl" @list-filtering="listFiltering" />
       <AddDuty :company="comName" @multi-submit="multiSubmit" />
-      <TableTitleRow
-        title="직책 목록"
-        excel
-        :url="excelUrl"
-        :disabled="!company"
-      />
-      <DutyList
-        @multi-submit="multiSubmit"
-        @on-delete="onDelete"
-        @page-select="pageSelect"
-      />
+      <TableTitleRow title="직책 목록" excel :url="excelUrl" :disabled="!company" />
+      <DutyList @multi-submit="multiSubmit" @on-delete="onDelete" @page-select="pageSelect" />
     </CCardBody>
 
     <CCardFooter class="text-right">&nbsp;</CCardFooter>

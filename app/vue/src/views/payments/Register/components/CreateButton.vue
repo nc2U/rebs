@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
-import { ProjectCashBook } from '@/store/types/proCash'
+import { type ProjectCashBook } from '@/store/types/proCash'
 import { AlertLight } from '@/utils/cssMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import PaymentForm from '@/views/payments/Register/components/PaymentForm.vue'
@@ -22,12 +22,7 @@ const createObject = (payload: ProjectCashBook) => {
 
 <template>
   <CAlert :color="AlertLight" variant="solid" class="text-right">
-    <CButton
-      type="button"
-      color="primary"
-      :disabled="btnActive"
-      @click="showDetail"
-    >
+    <CButton type="button" color="primary" :disabled="btnActive" @click="showDetail">
       신규납부 등록
     </CButton>
   </CAlert>

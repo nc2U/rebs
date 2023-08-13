@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin1'
-import {
-  RouteLocationNormalizedLoaded as Loaded,
-  useRoute,
-  useRouter,
-} from 'vue-router'
+import { type RouteLocationNormalizedLoaded as Loaded, useRoute, useRouter } from 'vue-router'
 import { useCompany } from '@/store/pinia/company'
-import { useDocument, PostFilter } from '@/store/pinia/document'
-import { AFile, Attatches, Link, Post, PatchPost } from '@/store/types/document'
+import { useDocument, type PostFilter } from '@/store/pinia/document'
+import {
+  type AFile,
+  type Attatches,
+  type Link,
+  type Post,
+  type PatchPost,
+} from '@/store/types/document'
 import { formUtility } from '@/utils/helper'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -61,8 +63,7 @@ const fetchPostList = (payload: PostFilter) => docStore.fetchPostList(payload)
 const fetchCategoryList = (board: number) => docStore.fetchCategoryList(board)
 
 const createPost = (payload: { form: FormData }) => docStore.createPost(payload)
-const updatePost = (payload: { pk: number; form: FormData }) =>
-  docStore.updatePost(payload)
+const updatePost = (payload: { pk: number; form: FormData }) => docStore.updatePost(payload)
 const patchPost = (payload: PatchPost) => docStore.patchPost(payload)
 const patchLink = (payload: Link) => docStore.patchLink(payload)
 const patchFile = (payload: AFile) => docStore.patchFile(payload)
@@ -78,12 +79,7 @@ const onSubmit = (payload: Post & Attatches) => {
   const { pk, ...formData } = payload
   formData.company = company.value || null
   const form = formUtility.getFormData(
-    formData as
-      | Date
-      | Array<{ [key: string]: string }>
-      | { [key: string]: string }
-      | File
-      | string,
+    formData as Date | Array<{ [key: string]: string }> | { [key: string]: string } | File | string,
   )
 
   console.log(formData)
@@ -187,11 +183,7 @@ onBeforeMount(() => {
       </div>
 
       <div v-else-if="route.name.includes('수정')">
-        <DocsForm
-          :category-list="categoryList"
-          :post="post as Post"
-          @on-submit="onSubmit"
-        />
+        <DocsForm :category-list="categoryList" :post="post as Post" @on-submit="onSubmit" />
       </div>
     </CCardBody>
 

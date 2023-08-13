@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
-import { UnitFloorType } from '@/store/types/project'
+import { type UnitFloorType } from '@/store/types/project'
 import { TableSecondary } from '@/utils/cssMixins'
 import Floor from '@/views/projects/Floor/components/Floor.vue'
 

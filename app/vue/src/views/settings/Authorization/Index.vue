@@ -2,7 +2,7 @@
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/settings/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
-import { User } from '@/store/types/accounts'
+import { type User } from '@/store/types/accounts'
 import { useAccount } from '@/store/pinia/account'
 import { write_auth_manage } from '@/utils/pageAuth'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -64,9 +64,7 @@ const formsCheck = computed(() => {
 
     if (!!sa) {
       const a = pa.assigned_project === sa?.assigned_project
-      const b =
-        JSON.stringify(pa.allowed_projects) ===
-        JSON.stringify(sa.allowed_projects)
+      const b = JSON.stringify(pa.allowed_projects) === JSON.stringify(sa.allowed_projects)
       const c = ma.contract === sa.contract
       const d = ma.payment === sa.payment
       const e = ma.notice === sa.notice
@@ -119,10 +117,8 @@ const selectUser = (pk: number | null) => {
   }
 }
 
-const getAllowed = (payload: number[]) =>
-  (projectAuth.value.allowed_projects = payload)
-const getAssigned = (payload: number | null) =>
-  (projectAuth.value.assigned_project = payload)
+const getAllowed = (payload: number[]) => (projectAuth.value.allowed_projects = payload)
+const getAssigned = (payload: number | null) => (projectAuth.value.assigned_project = payload)
 const selectAuth = (payload: UserAuth) => (menuAuth.value = payload)
 
 const authReset = () => {
@@ -150,8 +146,7 @@ const onSubmit = () => {
 const modalAction = () => {
   const authData = { ...comInfo.value, ...projectAuth.value, ...menuAuth.value }
   if (user.value && user.value.pk) {
-    if (!!authData.pk)
-      accStore.patchAuth(authData, user.value.pk) // staffauth patch
+    if (!!authData.pk) accStore.patchAuth(authData, user.value.pk) // staffauth patch
     else accStore.createAuth(authData, user.value.pk) // staffauth create
     refConfirmModal.value.close()
   } else {
@@ -202,11 +197,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    selector="CompanySelect"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" selector="CompanySelect" />
   <ContentBody>
     <CCardBody>
       <UserSelect :sel-user="user?.pk" @select-user="selectUser" />
@@ -238,12 +229,7 @@ onBeforeMount(() => {
       <template #header>사용자 권한설정</template>
       <template #default>사용자 권한설정 저장을 진행하시겠습니까?</template>
       <template #footer>
-        <CButton
-          :color="isStaffAuth ? 'success' : 'primary'"
-          @click="modalAction"
-        >
-          저장
-        </CButton>
+        <CButton :color="isStaffAuth ? 'success' : 'primary'" @click="modalAction"> 저장</CButton>
       </template>
     </ConfirmModal>
 

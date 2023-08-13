@@ -2,7 +2,7 @@
 import { ref, computed, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { useSite } from '@/store/pinia/project_site'
-import { Site } from '@/store/types/project'
+import { type Site } from '@/store/types/project'
 import { numFormat } from '@/utils/baseMixins'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin3'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -26,14 +26,11 @@ const isReturned = computed(() => projStore.project?.is_returned_area)
 const siteStore = useSite()
 const getSitesTotal = computed(() => siteStore.getSitesTotal)
 const totalArea = computed(() =>
-  isReturned.value
-    ? getSitesTotal.value?.returned
-    : getSitesTotal.value?.official,
+  isReturned.value ? getSitesTotal.value?.returned : getSitesTotal.value?.official,
 )
 
 const excelUrl = computed(
-  () =>
-    `excel/sites/?project=${project.value}&search=${dataFilter.value.search}`,
+  () => `excel/sites/?project=${project.value}&search=${dataFilter.value.search}`,
 )
 
 type filter = {
@@ -43,8 +40,7 @@ type filter = {
 
 const listFiltering = (payload: filter) => {
   dataFilter.value = payload
-  if (project.value)
-    siteStore.fetchSiteList(project.value, payload.page, payload.search)
+  if (project.value) siteStore.fetchSiteList(project.value, payload.page, payload.search)
 }
 
 const pageSelect = (page: number) => {
@@ -85,11 +81,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @proj-select="projSelect"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
 
   <ContentBody>
     <CCardBody class="pb-5">
@@ -100,12 +92,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
         @list-filtering="listFiltering"
       />
       <AddSite :project="project as number" @multi-submit="multiSubmit" />
-      <TableTitleRow
-        title="사업 부지 목록"
-        excel
-        :url="excelUrl"
-        :disabled="!project"
-      >
+      <TableTitleRow title="사업 부지 목록" excel :url="excelUrl" :disabled="!project">
         <span v-if="project" class="pt-1 text-success">
           총 면적 : {{ numFormat(totalArea as number, 2) }}m<sup>2</sup> ({{
             numFormat((totalArea as number) * 0.3025, 2)

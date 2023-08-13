@@ -3,7 +3,7 @@ import { ref, computed, onBeforeMount, watch } from 'vue'
 import { useCompany } from '@/store/pinia/company'
 import { isValidate } from '@/utils/helper'
 import { write_human_resource } from '@/utils/pageAuth'
-import { Grade } from '@/store/types/company'
+import { type Grade } from '@/store/types/company'
 import Multiselect from '@vueform/multiselect'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -41,9 +41,7 @@ const formsCheck = computed(() => {
   if (props.grade) {
     const a = form.value.name === props.grade.name
     const b = form.value.promotion_period === props.grade.promotion_period
-    const c =
-      JSON.stringify(form.value.positions) ===
-      JSON.stringify(props.grade.positions)
+    const c = JSON.stringify(form.value.positions) === JSON.stringify(props.grade.positions)
     const d = form.value.criteria_new === props.grade.criteria_new
 
     return a && b && c && d
@@ -93,12 +91,7 @@ onBeforeMount(() => formDataSetup())
 </script>
 
 <template>
-  <CForm
-    class="needs-validation"
-    novalidate
-    :validated="validated"
-    @submit.prevent="onSubmit"
-  >
+  <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
     <CModalBody class="p-4">
       <div>
         <CRow class="mb-3"></CRow>
@@ -115,9 +108,7 @@ onBeforeMount(() => formDataSetup())
 
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">
-                승급표준년수
-              </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 승급표준년수</CFormLabel>
               <CCol sm="8">
                 <CFormInput
                   v-model.number="form.promotion_period"
@@ -132,9 +123,7 @@ onBeforeMount(() => formDataSetup())
         <CRow class="mb-3">
           <CCol sm="12">
             <CRow>
-              <CFormLabel class="col-sm-2 col-form-label">
-                허용직위
-              </CFormLabel>
+              <CFormLabel class="col-sm-2 col-form-label"> 허용직위</CFormLabel>
               <CCol sm="10">
                 <Multiselect
                   v-model="form.positions"
@@ -154,14 +143,9 @@ onBeforeMount(() => formDataSetup())
         <CRow class="mb-3">
           <CCol sm="12">
             <CRow>
-              <CFormLabel class="col-sm-2 col-form-label">
-                신입부여기준
-              </CFormLabel>
+              <CFormLabel class="col-sm-2 col-form-label"> 신입부여기준</CFormLabel>
               <CCol sm="10">
-                <CFormInput
-                  v-model="form.criteria_new"
-                  placeholder="신입부여기준"
-                />
+                <CFormInput v-model="form.criteria_new" placeholder="신입부여기준" />
               </CCol>
             </CRow>
           </CCol>
@@ -170,25 +154,12 @@ onBeforeMount(() => formDataSetup())
     </CModalBody>
 
     <CModalFooter>
-      <CButton type="button" color="light" @click="$emit('close')">
-        닫기
-      </CButton>
+      <CButton type="button" color="light" @click="$emit('close')"> 닫기</CButton>
       <slot name="footer">
-        <CButton
-          type="submit"
-          :color="grade ? 'success' : 'primary'"
-          :disabled="formsCheck"
-        >
+        <CButton type="submit" :color="grade ? 'success' : 'primary'" :disabled="formsCheck">
           저장
         </CButton>
-        <CButton
-          v-if="grade"
-          type="button"
-          color="danger"
-          @click="deleteConfirm"
-        >
-          삭제
-        </CButton>
+        <CButton v-if="grade" type="button" color="danger" @click="deleteConfirm"> 삭제</CButton>
       </slot>
     </CModalFooter>
   </CForm>

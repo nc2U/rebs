@@ -4,10 +4,7 @@ import { useProject } from '@/store/pinia/project'
 import { write_project_cash } from '@/utils/pageAuth'
 import { numFormat } from '@/utils/baseMixins'
 import { TableInfo, TableSecondary } from '@/utils/cssMixins'
-import {
-  StatusOutBudget,
-  ExecAmountToBudget as ExeBudget,
-} from '@/store/types/project'
+import { type StatusOutBudget, type ExecAmountToBudget as ExeBudget } from '@/store/types/project'
 
 defineProps({ date: { type: String, default: '' } })
 
@@ -18,9 +15,7 @@ const execAmountList = computed(() => projStore.execAmountList)
 const statusOutBudgetList = computed(() => projStore.statusOutBudgetList)
 
 const getD3sInter = (arr: number[]) => {
-  const d3s = statusOutBudgetList.value.map(
-    (b: StatusOutBudget) => b.account_d3.pk,
-  )
+  const d3s = statusOutBudgetList.value.map((b: StatusOutBudget) => b.account_d3.pk)
   return arr.filter(x => d3s.includes(x))
 }
 const getLength = (arr: number[]) => getD3sInter(arr).length
@@ -30,21 +25,15 @@ const isFirst = (arr: number[], d3Pk: number) => getD3sInter(arr)[0] === d3Pk
 const getSubTitle = (sub: string, d2: number) =>
   sub !== ''
     ? statusOutBudgetList.value
-        .filter(
-          (b: StatusOutBudget) =>
-            b.account_opt === sub && b.account_d2.pk === d2,
-        )
+        .filter((b: StatusOutBudget) => b.account_opt === sub && b.account_d2.pk === d2)
         .map(b => b.pk)
     : []
 
-const getExecAmount = (d3: number) =>
-  execAmountList.value.filter((e: ExeBudget) => e.acc_d3 === d3)
+const getExecAmount = (d3: number) => execAmountList.value.filter((e: ExeBudget) => e.acc_d3 === d3)
 
-const getEASum = (d3: number) =>
-  getExecAmount(d3).map((e: ExeBudget) => e.all_sum)[0]
+const getEASum = (d3: number) => getExecAmount(d3).map((e: ExeBudget) => e.all_sum)[0]
 
-const getEAMonth = (d3: number) =>
-  getExecAmount(d3).map((e: ExeBudget) => e.month_sum)[0]
+const getEAMonth = (d3: number) => getExecAmount(d3).map((e: ExeBudget) => e.month_sum)[0]
 
 const sumTotal = computed(() => {
   const totalBudgetCalc = statusOutBudgetList.value
@@ -119,11 +108,7 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
     </CTableHead>
 
     <CTableBody>
-      <CTableRow
-        v-for="(obj, i) in statusOutBudgetList"
-        :key="obj.pk"
-        class="text-right"
-      >
+      <CTableRow v-for="(obj, i) in statusOutBudgetList" :key="obj.pk" class="text-right">
         <CTableDataCell
           v-if="i === 0"
           :color="TableInfo"
@@ -140,10 +125,7 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
           {{ obj.account_d2.name }}
         </CTableDataCell>
         <CTableDataCell
-          v-if="
-            obj.account_opt &&
-            obj.pk === getSubTitle(obj.account_opt, obj.account_d2.pk)[0]
-          "
+          v-if="obj.account_opt && obj.pk === getSubTitle(obj.account_opt, obj.account_d2.pk)[0]"
           class="text-left"
           :rowspan="getSubTitle(obj.account_opt, obj.account_d2.pk).length"
         >
@@ -165,21 +147,13 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
               type="text"
               class="form-control text-right"
               :value="obj.budget"
-              @blur="
-                patchBudget(obj.pk as number, $event.target.value, obj.budget)
-              "
-              @keydown.enter="
-                patchBudget(obj.pk as number, $event.target.value, obj.budget)
-              "
+              @blur="patchBudget(obj.pk as number, $event.target.value, obj.budget)"
+              @keydown.enter="patchBudget(obj.pk as number, $event.target.value, obj.budget)"
             />
           </span>
         </CTableDataCell>
         <CTableDataCell>
-          {{
-            numFormat(
-              getEASum(obj.account_d3.pk) - getEAMonth(obj.account_d3.pk),
-            )
-          }}
+          {{ numFormat(getEASum(obj.account_d3.pk) - getEAMonth(obj.account_d3.pk)) }}
         </CTableDataCell>
         <CTableDataCell>
           {{ numFormat(getEAMonth(obj.account_d3.pk) || 0) }}
@@ -187,32 +161,18 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
         <CTableDataCell>
           {{ numFormat(getEASum(obj.account_d3.pk) || 0) }}
         </CTableDataCell>
-        <CTableDataCell
-          :class="obj.budget < getEASum(obj.account_d3.pk) ? 'text-danger' : ''"
-        >
+        <CTableDataCell :class="obj.budget < getEASum(obj.account_d3.pk) ? 'text-danger' : ''">
           {{ numFormat(obj.budget - (getEASum(obj.account_d3.pk) || 0)) }}
         </CTableDataCell>
       </CTableRow>
 
       <CTableRow :color="TableSecondary" class="text-right">
-        <CTableHeaderCell colspan="4" class="text-center">
-          합계
-        </CTableHeaderCell>
-        <CTableHeaderCell
-          >{{ numFormat(sumTotal.totalBudget) }}
-        </CTableHeaderCell>
-        <CTableHeaderCell
-          >{{ numFormat(sumTotal.preExecAmt) }}
-        </CTableHeaderCell>
-        <CTableHeaderCell
-          >{{ numFormat(sumTotal.monthExecAmt) }}
-        </CTableHeaderCell>
-        <CTableHeaderCell
-          >{{ numFormat(sumTotal.totalExecAmt) }}
-        </CTableHeaderCell>
-        <CTableHeaderCell
-          >{{ numFormat(sumTotal.availableBudget) }}
-        </CTableHeaderCell>
+        <CTableHeaderCell colspan="4" class="text-center"> 합계</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(sumTotal.totalBudget) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(sumTotal.preExecAmt) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(sumTotal.monthExecAmt) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(sumTotal.totalExecAmt) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(sumTotal.availableBudget) }}</CTableHeaderCell>
       </CTableRow>
     </CTableBody>
   </CTable>

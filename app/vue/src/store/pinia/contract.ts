@@ -3,19 +3,19 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { message, errorHandle } from '@/utils/helper'
 import {
-  Contract,
-  SimpleCont,
-  Contractor,
-  SubsSummary,
-  ContSummary,
-  OrderGroup,
-  KeyUnit,
-  HouseUnit,
-  SalesPrice,
-  DownPayment,
-  Succession,
-  Buyer,
-  ContractRelease,
+  type Contract,
+  type SimpleCont,
+  type Contractor,
+  type SubsSummary,
+  type ContSummary,
+  type OrderGroup,
+  type KeyUnit,
+  type HouseUnit,
+  type SalesPrice,
+  type DownPayment,
+  type Succession,
+  type Buyer,
+  type ContractRelease,
 } from '@/store/types/contract'
 
 export interface ContFilter {
@@ -36,7 +36,7 @@ export interface ContFilter {
 export type UnitFilter = {
   project: number
   unit_type?: number
-  contract?: number | string
+  contract?: number
   available?: 'true' | ''
 }
 
@@ -47,8 +47,7 @@ export const useContract = defineStore('contract', () => {
   const contractsCount = ref<number>(0)
 
   // actions
-  const contractPages = (itemsPerPage: number) =>
-    Math.ceil(contractsCount.value / itemsPerPage)
+  const contractPages = (itemsPerPage: number) => Math.ceil(contractsCount.value / itemsPerPage)
 
   const fetchContract = (pk: number) =>
     api
@@ -61,8 +60,7 @@ export const useContract = defineStore('contract', () => {
     let url = `/contract-set/?project=${payload.project}&activation=true&contractor__status=${status}`
     if (payload.order_group) url += `&order_group=${payload.order_group}`
     if (payload.unit_type) url += `&unit_type=${payload.unit_type}`
-    if (payload.building)
-      url += `&keyunit__houseunit__building_unit=${payload.building}`
+    if (payload.building) url += `&keyunit__houseunit__building_unit=${payload.building}`
     if (payload.null_unit) url += '&houseunit__isnull=true'
     if (payload.registed) url += `&contractor__is_registed=${payload.registed}`
     if (payload.from_date) url += `&from_contract_date=${payload.from_date}`
@@ -105,9 +103,7 @@ export const useContract = defineStore('contract', () => {
   const allContPriceSet = (payload: SimpleCont) =>
     api
       .put(`/contract/${payload.pk}/`, payload)
-      .then(() =>
-        message('info', '', '개별 계약건 공급가가 재설정 되었습니다.', 5000),
-      )
+      .then(() => message('info', '', '개별 계약건 공급가가 재설정 되었습니다.', 5000))
       .catch(err => errorHandle(err.response.data))
 
   const contractor = ref<Contractor | null>(null)
@@ -122,9 +118,7 @@ export const useContract = defineStore('contract', () => {
 
   const fetchContractorList = (project: number, search = '') => {
     api
-      .get(
-        `/contractor/?contract__project=${project}&search=${search}&is_active=true`,
-      )
+      .get(`/contractor/?contract__project=${project}&search=${search}&is_active=true`)
       .then(res => (contractorList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
@@ -265,8 +259,7 @@ export const useContract = defineStore('contract', () => {
   const successionCount = ref<number>(0)
 
   // actions
-  const successionPages = (itemsPerPage: number) =>
-    Math.ceil(successionCount.value / itemsPerPage)
+  const successionPages = (itemsPerPage: number) => Math.ceil(successionCount.value / itemsPerPage)
 
   const fetchSuccession = (pk: number) =>
     api
@@ -283,9 +276,7 @@ export const useContract = defineStore('contract', () => {
       })
       .catch(err => errorHandle(err.response.data))
 
-  const patchSuccession = (
-    payload: Succession & Buyer & { project: number; page: number },
-  ) => {
+  const patchSuccession = (payload: Succession & Buyer & { project: number; page: number }) => {
     const { pk, project, page, ...dbData } = payload
     return api
       .put(`/succession/${pk}/`, dbData)
@@ -328,8 +319,7 @@ export const useContract = defineStore('contract', () => {
   const contReleaseCount = ref<number>(0)
 
   // actions
-  const releasePages = (itemsPerPage: number) =>
-    Math.ceil(contReleaseCount.value / itemsPerPage)
+  const releasePages = (itemsPerPage: number) => Math.ceil(contReleaseCount.value / itemsPerPage)
 
   const fetchContRelease = (pk: number) =>
     api
@@ -355,11 +345,7 @@ export const useContract = defineStore('contract', () => {
   const updateRelease = (payload: ContractRelease & { page: number }) =>
     api
       .put(`/contractor-release/${payload.pk}/`, payload)
-      .then(() =>
-        fetchContReleaseList(payload.project, payload.page).then(() =>
-          message(),
-        ),
-      )
+      .then(() => fetchContReleaseList(payload.project, payload.page).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
   return {

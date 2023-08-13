@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { computed, PropType } from 'vue'
+import { computed, type PropType } from 'vue'
 import { timeFormat } from '@/utils/baseMixins'
 import { useDocument } from '@/store/pinia/document'
 import { cutString } from '@/utils/baseMixins'
-import { Post, Link, AFile } from '@/store/types/document'
+import { type Post, type Link, type AFile } from '@/store/types/document'
 import sanitizeHtml from 'sanitize-html'
 
 const props = defineProps({
@@ -61,7 +61,7 @@ const getFileName = (file: string) => {
         <small class="mr-3">작성자 : {{ post.user }}</small>
         <small class="mr-3">
           <v-icon icon="mdi-comment-text-multiple" size="small" />
-          <span class="ml-2">{{ post.comments.length || 0 }}</span>
+          <span class="ml-2">{{ post.comments?.length || 0 }}</span>
         </small>
         <small class="mr-3">
           <v-icon icon="mdi-eye" size="small" />
@@ -84,7 +84,7 @@ const getFileName = (file: string) => {
       <CCol class="text-right" md="3">
         <small>
           <v-icon icon="mdi-calendar-clock" size="small" />
-          <span class="ml-2">{{ timeFormat(post.created) }}</span>
+          <span class="ml-2">{{ timeFormat(post.created ?? '') }}</span>
         </small>
       </CCol>
     </CRow>
@@ -111,11 +111,7 @@ const getFileName = (file: string) => {
                 :key="l.pk"
                 class="d-flex justify-content-between align-items-center"
               >
-                <a
-                  :href="l.link"
-                  target="_blank"
-                  @click="linkHitUp(l.pk as number)"
-                >
+                <a :href="l.link" target="_blank" @click="linkHitUp(l.pk as number)">
                   {{ cutString(l.link, 45) }}
                 </a>
                 <small>
@@ -138,11 +134,7 @@ const getFileName = (file: string) => {
                 :key="f.pk"
                 class="d-flex justify-content-between align-items-center"
               >
-                <a
-                  :href="f.file"
-                  target="_blank"
-                  @click="fileHitUp(f.pk as number)"
-                >
+                <a :href="f.file" target="_blank" @click="fileHitUp(f.pk as number)">
                   {{ cutString(getFileName(f.file), 29) }}
                 </a>
                 <small>
@@ -184,18 +176,10 @@ const getFileName = (file: string) => {
         <v-icon icon="mdi-instagram" class="mr-2" @click="toSocial" />
       </CCol>
       <CCol class="text-right">
-        <v-btn
-          variant="tonal"
-          size="small"
-          :rounded="0"
-          class="mr-1"
-          @click="toSocial"
-        >
+        <v-btn variant="tonal" size="small" :rounded="0" class="mr-1" @click="toSocial">
           스크랩
         </v-btn>
-        <v-btn variant="tonal" size="small" :rounded="0" @click="toSocial">
-          신고
-        </v-btn>
+        <v-btn variant="tonal" size="small" :rounded="0" @click="toSocial"> 신고</v-btn>
       </CCol>
     </CRow>
 
@@ -246,16 +230,10 @@ const getFileName = (file: string) => {
         </CButtonGroup>
       </CCol>
       <CCol class="text-right">
-        <CButton
-          color="light"
-          @click="$router.push({ name: '본사 소송 문서' })"
-        >
+        <CButton color="light" @click="$router.push({ name: '본사 소송 문서' })">
           목록으로
         </CButton>
-        <CButton
-          color="primary"
-          @click="$router.push({ name: '본사 소송 문서 - 작성' })"
-        >
+        <CButton color="primary" @click="$router.push({ name: '본사 소송 문서 - 작성' })">
           등록하기
         </CButton>
       </CCol>

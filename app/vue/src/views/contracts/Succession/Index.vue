@@ -4,7 +4,7 @@ import { navMenu, pageTitle } from '@/views/contracts/_menu/headermixin2'
 import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
 import { useRoute, useRouter } from 'vue-router'
-import { Buyer, Succession } from '@/store/types/contract'
+import { type Buyer, type Succession } from '@/store/types/contract'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContNavigation from '@/views/contracts/Register/components/ContNavigation.vue'
@@ -19,9 +19,7 @@ const page = ref(1)
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
 
-const downloadUrl = computed(
-  () => `/excel/successions/?project=${project.value}`,
-)
+const downloadUrl = computed(() => `/excel/successions/?project=${project.value}`)
 
 const contStore = useContract()
 const contractor = computed(() => contStore.contractor)
@@ -40,9 +38,8 @@ const fetchBuyerList = (projId: number) => contStore.fetchBuyerList(projId)
 const createBuyer = (payload: Succession & Buyer & { project: number }) =>
   contStore.createBuyer(payload)
 
-const patchSuccession = (
-  payload: Succession & Buyer & { project: number; page: number },
-) => contStore.patchSuccession(payload)
+const patchSuccession = (payload: Succession & Buyer & { project: number; page: number }) =>
+  contStore.patchSuccession(payload)
 
 const route = useRoute()
 watch(route, val => {
@@ -118,29 +115,15 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @proj-select="projSelect"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ContNavigation
-        :cont-on="!!contractor?.status && contractor.status < '3'"
-      />
-      <ContController
-        :project="project || undefined"
-        @search-contractor="searchContractor"
-      />
+      <ContNavigation :cont-on="!!contractor?.status && contractor.status < '3'" />
+      <ContController :project="project || undefined" @search-contractor="searchContractor" />
       <ContractorAlert v-if="contractor" :contractor="contractor" />
       <SuccessionButton v-if="contractor" @on-submit="onSubmit" />
-      <TableTitleRow
-        title="승계 진행 건 목록"
-        excel
-        :url="downloadUrl"
-        :disabled="!project"
-      />
+      <TableTitleRow title="승계 진행 건 목록" excel :url="downloadUrl" :disabled="!project" />
       <SuccessionList @page-select="pageSelect" @on-submit="onSubmit" />
     </CCardBody>
   </ContentBody>

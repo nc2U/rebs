@@ -3,7 +3,7 @@ import { ref, computed, onBeforeMount, watch } from 'vue'
 import { isValidate } from '@/utils/helper'
 import { write_human_resource } from '@/utils/pageAuth'
 import { useCompany } from '@/store/pinia/company'
-import { Department } from '@/store/types/company'
+import { type Department } from '@/store/types/company'
 import Multiselect from '@vueform/multiselect'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -90,12 +90,7 @@ onBeforeMount(() => formDataSetup())
 </script>
 
 <template>
-  <CForm
-    class="needs-validation"
-    novalidate
-    :validated="validated"
-    @submit.prevent="onSubmit"
-  >
+  <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
     <CModalBody class="p-4">
       <div>
         <CRow class="mb-3">
@@ -122,11 +117,7 @@ onBeforeMount(() => formDataSetup())
             <CRow>
               <CFormLabel class="col-sm-2 col-form-label">부서명</CFormLabel>
               <CCol sm="10">
-                <CFormInput
-                  v-model.number="form.name"
-                  required
-                  placeholder="부서명"
-                />
+                <CFormInput v-model.number="form.name" required placeholder="부서명" />
               </CCol>
             </CRow>
           </CCol>
@@ -146,23 +137,12 @@ onBeforeMount(() => formDataSetup())
     </CModalBody>
 
     <CModalFooter>
-      <CButton type="button" color="light" @click="$emit('close')">
-        닫기
-      </CButton>
+      <CButton type="button" color="light" @click="$emit('close')"> 닫기</CButton>
       <slot name="footer">
-        <CButton
-          type="submit"
-          :color="department ? 'success' : 'primary'"
-          :disabled="formsCheck"
-        >
+        <CButton type="submit" :color="department ? 'success' : 'primary'" :disabled="formsCheck">
           저장
         </CButton>
-        <CButton
-          v-if="department"
-          type="button"
-          color="danger"
-          @click="deleteConfirm"
-        >
+        <CButton v-if="department" type="button" color="danger" @click="deleteConfirm">
           삭제
         </CButton>
       </slot>
@@ -175,9 +155,7 @@ onBeforeMount(() => formDataSetup())
       삭제한 데이터는 복구할 수 없습니다. 해당 정보를 삭제하시겠습니까?
     </template>
     <template #footer>
-      <CButton color="danger" @click="deleteObject(department.pk)">
-        삭제
-      </CButton>
+      <CButton color="danger" @click="deleteObject(department.pk)"> 삭제</CButton>
     </template>
   </ConfirmModal>
 

@@ -1,12 +1,19 @@
 <script lang="ts" setup>
+import { type PropType } from 'vue'
 import { timeFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
-import { PropType } from 'vue'
-import { SuitCase } from '@/store/types/document'
+import { type SuitCase } from '@/store/types/document'
 
 defineProps({
   suitcase: { type: Object as PropType<SuitCase>, required: true },
 })
+
+const toPrint = () => alert('준비중!')
+const toSocial = () => alert('준비중!')
+const toDelete = () => alert('준비중!')
+
+const getPrev = 1
+const getNext = 3
 </script>
 
 <template>
@@ -35,7 +42,7 @@ defineProps({
       <CCol class="text-right" md="3">
         <small>
           <v-icon icon="mdi-calendar-clock" size="small" />
-          <span class="ml-2">{{ timeFormat(suitcase.created) }}</span>
+          <span class="ml-2">{{ timeFormat(suitcase.created ?? '') }}</span>
         </small>
       </CCol>
     </CRow>
@@ -45,9 +52,7 @@ defineProps({
         <CTable bordered responsive align="middle">
           <CTableHead>
             <CTableRow class="text-center" :color="TableSecondary">
-              <CTableHeaderCell scope="col" class="w-25">
-                구 분
-              </CTableHeaderCell>
+              <CTableHeaderCell scope="col" class="w-25"> 구 분</CTableHeaderCell>
               <CTableHeaderCell scope="col">내 용</CTableHeaderCell>
             </CTableRow>
           </CTableHead>
@@ -137,18 +142,10 @@ defineProps({
         <v-icon icon="mdi-instagram" class="mr-2" @click="toSocial" />
       </CCol>
       <CCol class="text-right">
-        <v-btn
-          variant="tonal"
-          size="small"
-          :rounded="0"
-          class="mr-1"
-          @click="toSocial"
-        >
+        <v-btn variant="tonal" size="small" :rounded="0" class="mr-1" @click="toSocial">
           스크랩
         </v-btn>
-        <v-btn variant="tonal" size="small" :rounded="0" @click="toSocial">
-          신고
-        </v-btn>
+        <v-btn variant="tonal" size="small" :rounded="0" @click="toSocial"> 신고</v-btn>
       </CCol>
     </CRow>
 
@@ -199,16 +196,10 @@ defineProps({
         </CButtonGroup>
       </CCol>
       <CCol class="text-right">
-        <CButton
-          color="light"
-          @click="$router.push({ name: '본사 소송 사건' })"
-        >
+        <CButton color="light" @click="$router.push({ name: '본사 소송 사건' })">
           목록으로
         </CButton>
-        <CButton
-          color="primary"
-          @click="$router.push({ name: '본사 소송 사건 - 작성' })"
-        >
+        <CButton color="primary" @click="$router.push({ name: '본사 소송 사건 - 작성' })">
           등록하기
         </CButton>
       </CCol>

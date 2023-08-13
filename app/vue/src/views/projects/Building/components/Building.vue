@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount, PropType } from 'vue'
+import { ref, reactive, computed, onBeforeMount, type PropType } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { write_project } from '@/utils/pageAuth'
-import { BuildingUnit } from '@/store/types/project'
+import { type BuildingUnit } from '@/store/types/project'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
@@ -62,12 +62,7 @@ onBeforeMount(() => dataSetup())
       />
     </CTableDataCell>
     <CTableDataCell class="text-center">
-      <CButton
-        color="success"
-        size="sm"
-        :disabled="formsCheck"
-        @click="onUpdateBuilding"
-      >
+      <CButton color="success" size="sm" :disabled="formsCheck" @click="onUpdateBuilding">
         수정
       </CButton>
       <CButton color="danger" size="sm" @click="onDeleteBuilding">삭제</CButton>
@@ -77,8 +72,8 @@ onBeforeMount(() => dataSetup())
   <ConfirmModal ref="refConfirmModal">
     <template #header> 동(건물) 삭제</template>
     <template #default>
-      이 동(건물)에 종속된 유니트(호수) 데이터가 있는 경우 해당 데이터를 모두
-      제거한 후 삭제가능 합니다. 해당 동(건물)을 삭제 하시겠습니까?
+      이 동(건물)에 종속된 유니트(호수) 데이터가 있는 경우 해당 데이터를 모두 제거한 후 삭제가능
+      합니다. 해당 동(건물)을 삭제 하시겠습니까?
     </template>
     <template #footer>
       <CButton color="danger" @click="modalAction">삭제</CButton>

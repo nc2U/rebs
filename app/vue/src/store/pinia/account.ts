@@ -4,7 +4,7 @@ import { Buffer } from 'buffer'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
-import { User, StaffAuth, Profile, Todo } from '@/store/types/accounts'
+import { type User, type StaffAuth, type Profile, type Todo } from '@/store/types/accounts'
 
 type LoginUser = { email: string; password: string }
 
@@ -26,14 +26,10 @@ export const useAccount = defineStore('account', () => {
 
   // getters
   const superAuth = computed(() => userInfo.value?.is_superuser)
-  const staffAuth = computed(() =>
-    userInfo.value?.staffauth ? userInfo.value.staffauth : null,
-  )
+  const staffAuth = computed(() => (userInfo.value?.staffauth ? userInfo.value.staffauth : null))
   const isAuthorized = computed(() => !!accessToken.value && !!userInfo.value)
   const myTodos = computed(() =>
-    todoList.value.filter(
-      todo => !todo.soft_deleted && todo.user === userInfo.value?.pk,
-    ),
+    todoList.value.filter(todo => !todo.soft_deleted && todo.user === userInfo.value?.pk),
   )
   const getUsers = computed(() =>
     usersList.value.map((u: User) => ({ value: u.pk, label: u.username })),
@@ -83,8 +79,7 @@ export const useAccount = defineStore('account', () => {
       })
       .catch(err => {
         console.log(err.response)
-        if (err.response.status === 401)
-          message('warning', '', err.response.data.detail)
+        if (err.response.status === 401) message('warning', '', err.response.data.detail)
       })
   }
 
@@ -120,9 +115,7 @@ export const useAccount = defineStore('account', () => {
     return api
       .post(`/staff-auth/`, payload)
       .then(() => {
-        return api
-          .get(`/user/${userPk}/`)
-          .then(() => fetchUser(userPk).then(() => message()))
+        return api.get(`/user/${userPk}/`).then(() => fetchUser(userPk).then(() => message()))
       })
       .catch(err => errorHandle(err.response.data))
   }
@@ -132,9 +125,7 @@ export const useAccount = defineStore('account', () => {
     return api
       .patch(`/staff-auth/${pk}/`, authData)
       .then(() => {
-        return api
-          .get(`/user/${userPk}/`)
-          .then(() => fetchUser(userPk).then(() => message()))
+        return api.get(`/user/${userPk}/`).then(() => fetchUser(userPk).then(() => message()))
       })
       .catch(err => errorHandle(err.response.data))
   }
@@ -171,9 +162,7 @@ export const useAccount = defineStore('account', () => {
   }
 
   const fetchTodoList = () => {
-    const url = userInfo.value
-      ? `/todo/?user=${userInfo.value.pk}&soft_deleted=false`
-      : '/todo/'
+    const url = userInfo.value ? `/todo/?user=${userInfo.value.pk}&soft_deleted=false` : '/todo/'
     return api
       .get(url)
       .then(res => {

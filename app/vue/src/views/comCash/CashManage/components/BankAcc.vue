@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { useComCash } from '@/store/pinia/comCash'
-import { CompanyBank } from '@/store/types/comCash'
+import type { CompanyBank } from '@/store/types/comCash'
 import BankAccForm from './BankAccForm.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
@@ -24,11 +24,7 @@ defineExpose({ callModal })
     <template #header> 본사 거래 계좌 관리</template>
     <template #default>
       <CAccordion>
-        <CAccordionItem
-          v-for="bank in allComBankList"
-          :key="bank.pk"
-          :item-key="bank.pk as number"
-        >
+        <CAccordionItem v-for="bank in allComBankList" :key="bank.pk" :item-key="bank.pk as number">
           <CAccordionHeader>
             {{ `${bank.alias_name}  :: ${bank.number}` }}
           </CAccordionHeader>

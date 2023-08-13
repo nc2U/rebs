@@ -2,11 +2,11 @@
 import { ref, reactive, computed, onBeforeMount, inject } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { write_project } from '@/utils/pageAuth'
-import { typeSortType } from './TypeAddForm.vue'
+import { type SortType } from './TypeAddForm.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const typeSort = inject<typeSortType[]>('typeSort')
+const typeSort = inject<SortType[]>('typeSort')
 const props = defineProps({ type: { type: Object, required: true } })
 const emit = defineEmits(['on-update', 'on-delete'])
 
@@ -77,11 +77,7 @@ onBeforeMount(() => dataSetup())
 <template>
   <CTableRow>
     <CTableDataCell>
-      <CFormSelect
-        v-model="form.sort"
-        required
-        @change="formCheck(form.sort !== type.sort)"
-      >
+      <CFormSelect v-model="form.sort" required @change="formCheck(form.sort !== type.sort)">
         <option v-for="tp in typeSort" :key="tp.value" :value="tp.value">
           {{ tp.label }}
         </option>
@@ -151,12 +147,7 @@ onBeforeMount(() => dataSetup())
       />
     </CTableDataCell>
     <CTableDataCell class="text-center">
-      <CButton
-        color="success"
-        size="sm"
-        :disabled="formsCheck"
-        @click="onUpdateType"
-      >
+      <CButton color="success" size="sm" :disabled="formsCheck" @click="onUpdateType">
         수정
       </CButton>
       <CButton color="danger" size="sm" @click="onDeleteType">삭제</CButton>
@@ -166,8 +157,8 @@ onBeforeMount(() => dataSetup())
   <ConfirmModal ref="refConfirmModal">
     <template #header> 타입 정보 삭제</template>
     <template #default>
-      이 타입에 종속 데이터가 있는 경우 해당 데이터를 모두 제거한 후 삭제가능
-      합니다. 해당 타입을 삭제 하시겠습니까?
+      이 타입에 종속 데이터가 있는 경우 해당 데이터를 모두 제거한 후 삭제가능 합니다. 해당 타입을
+      삭제 하시겠습니까?
     </template>
     <template #footer>
       <CButton color="danger" @click="modalAction">삭제</CButton>

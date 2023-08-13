@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { AlertSecondary } from '@/utils/cssMixins'
 import { write_human_resource } from '@/utils/pageAuth'
-import { Grade } from '@/store/types/company'
+import { type Grade } from '@/store/types/company'
 import GradeForm from './GradeForm.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -30,11 +30,7 @@ const multiSubmit = (payload: Grade) => emit('multi-submit', payload)
   <FormModal ref="refFormModal" size="lg">
     <template #header>직급 정보 등록</template>
     <template #default>
-      <GradeForm
-        :company="company"
-        @multi-submit="multiSubmit"
-        @close="refFormModal.close()"
-      />
+      <GradeForm :company="company" @multi-submit="multiSubmit" @close="refFormModal.close()" />
     </template>
   </FormModal>
 

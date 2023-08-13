@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useContract } from '@/store/pinia/contract'
-import { OrderGroup as og } from '@/store/types/contract'
+import { type OrderGroup as og } from '@/store/types/contract'
 import { TableSecondary } from '@/utils/cssMixins'
 import OrderGroup from './OrderGroup.vue'
 

@@ -3,7 +3,7 @@ import { computed, onBeforeMount, provide } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin1'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
-import { UnitType } from '@/store/types/project'
+import { type UnitType } from '@/store/types/project'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import TypeAddForm from '@/views/projects/Type/components/TypeAddForm.vue'
@@ -27,11 +27,9 @@ const pDataStore = useProjectData()
 const fetchTypeList = (projId: number) => pDataStore.fetchTypeList(projId)
 const createType = (payload: UnitType) => pDataStore.createType(payload)
 const updateType = (payload: UnitType) => pDataStore.updateType(payload)
-const deleteType = (pk: number, project: number) =>
-  pDataStore.deleteType(pk, project)
+const deleteType = (pk: number, project: number) => pDataStore.deleteType(pk, project)
 
-const onSubmit = (payload: UnitType) =>
-  createType({ ...{ project: project.value }, ...payload })
+const onSubmit = (payload: UnitType) => createType({ ...{ project: project.value }, ...payload })
 const onUpdateType = (payload: UnitType) =>
   updateType({ ...{ project: project.value }, ...payload })
 const onDeleteType = (pk: number) => {
@@ -47,11 +45,7 @@ onBeforeMount(() => fetchTypeList(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @proj-select="projSelect"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
 
   <ContentBody>
     <CCardBody class="pb-5">
