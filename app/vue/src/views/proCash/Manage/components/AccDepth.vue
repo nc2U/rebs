@@ -20,11 +20,7 @@ defineExpose({ callModal })
     <template #header> 프로젝트 계정 분류 보기</template>
     <template #default>
       <CAccordion>
-        <CAccordionItem
-          v-for="d2 in allAccD2List"
-          :key="d2.pk"
-          :item-key="d2.pk"
-        >
+        <CAccordionItem v-for="d2 in allAccD2List" :key="d2.pk" :item-key="d2.pk">
           <CAccordionHeader>
             {{ `[${d2.code}] ${d2.name} :: ${cutString(d2.description, 45)}` }}
           </CAccordionHeader>

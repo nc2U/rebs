@@ -13,14 +13,10 @@ const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
 
 const pDataStore = useProjectData()
-const fetchBuildingList = (projId: number) =>
-  pDataStore.fetchBuildingList(projId)
-const createBuilding = (payload: BuildingUnit) =>
-  pDataStore.createBuilding(payload)
-const updateBuilding = (payload: BuildingUnit) =>
-  pDataStore.updateBuilding(payload)
-const deleteBuilding = (pk: number, projId: number) =>
-  pDataStore.deleteBuilding(pk, projId)
+const fetchBuildingList = (projId: number) => pDataStore.fetchBuildingList(projId)
+const createBuilding = (payload: BuildingUnit) => pDataStore.createBuilding(payload)
+const updateBuilding = (payload: BuildingUnit) => pDataStore.updateBuilding(payload)
+const deleteBuilding = (pk: number, projId: number) => pDataStore.deleteBuilding(pk, projId)
 
 const onCreateBuilding = (payload: BuildingUnit) =>
   createBuilding({ ...{ project: project.value }, ...payload })
@@ -41,19 +37,12 @@ onBeforeMount(() => fetchBuildingList(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @proj-select="projSelect"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
 
   <ContentBody>
     <CCardBody class="pb-5">
       <BuildingAddForm :disabled="!project" @on-submit="onCreateBuilding" />
-      <BuildingFormList
-        @on-update="onUpdateBuilding"
-        @on-delete="onDeleteBuilding"
-      />
+      <BuildingFormList @on-update="onUpdateBuilding" @on-delete="onDeleteBuilding" />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>

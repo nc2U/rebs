@@ -77,11 +77,7 @@ defineExpose({ listFiltering })
           <CCol md="6" lg="2" class="mb-3">
             <CFormSelect v-model="form.order_group" @change="listFiltering(1)">
               <option value="">차수선택</option>
-              <option
-                v-for="order in orderGroupList"
-                :key="order.pk"
-                :value="order.pk"
-              >
+              <option v-for="order in orderGroupList" :key="order.pk" :value="order.pk">
                 {{ order.order_group_name }}
               </option>
             </CFormSelect>
@@ -90,11 +86,7 @@ defineExpose({ listFiltering })
           <CCol md="6" lg="2" class="mb-3">
             <CFormSelect v-model="form.unit_type" @change="listFiltering(1)">
               <option value="">타입선택</option>
-              <option
-                v-for="type in simpleTypes"
-                :key="type.pk"
-                :value="type.pk"
-              >
+              <option v-for="type in simpleTypes" :key="type.pk" :value="type.pk">
                 {{ type.name }}
               </option>
             </CFormSelect>
@@ -103,11 +95,7 @@ defineExpose({ listFiltering })
           <CCol md="6" lg="2" class="mb-3">
             <CFormSelect v-model="form.building" @change="listFiltering(1)">
               <option value="">동 선택</option>
-              <option
-                v-for="dong in buildingList"
-                :key="dong.pk"
-                :value="dong.pk"
-              >
+              <option v-for="dong in buildingList" :key="dong.pk" :value="dong.pk">
                 {{ dong.name }}
               </option>
             </CFormSelect>
@@ -117,12 +105,8 @@ defineExpose({ listFiltering })
             <CFormSelect v-model="form.ordering" @change="listFiltering(1)">
               <option value="contractor__name">계약자명 올림차순</option>
               <option value="-contractor__name">계약자명 내림차순</option>
-              <option value="contractor__contract_date">
-                계약일자 올림차순
-              </option>
-              <option value="-contractor__contract_date">
-                계약일자 내림차순
-              </option>
+              <option value="contractor__contract_date">계약일자 올림차순</option>
+              <option value="-contractor__contract_date">계약일자 내림차순</option>
               <option value="created_at">등록일시 올림차순</option>
               <option value="-created_at">등록일시 내림차순</option>
               <option value="serial_number">일련번호 올림차순</option>
@@ -157,9 +141,7 @@ defineExpose({ listFiltering })
         <strong>계약 건수 조회 결과 : {{ contractsCount }} 건</strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
-        <CButton color="info" size="sm" @click="resetForm">
-          검색조건 초기화
-        </CButton>
+        <CButton color="info" size="sm" @click="resetForm"> 검색조건 초기화 </CButton>
       </CCol>
     </CRow>
   </CCallout>

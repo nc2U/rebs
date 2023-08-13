@@ -29,11 +29,7 @@ const multiSubmit = (payload: Duty) => emit('multi-submit', payload)
   <FormModal ref="refFormModal" size="lg">
     <template #header>직책 정보 등록</template>
     <template #default>
-      <DutyForm
-        :company="company"
-        @multi-submit="multiSubmit"
-        @close="refFormModal.close()"
-      />
+      <DutyForm :company="company" @multi-submit="multiSubmit" @close="refFormModal.close()" />
     </template>
   </FormModal>
 

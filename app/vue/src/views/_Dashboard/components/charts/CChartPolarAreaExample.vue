@@ -10,15 +10,7 @@ export default {
   computed: {
     defaultData() {
       return {
-        labels: [
-          'Eating',
-          'Drinking',
-          'Sleeping',
-          'Designing',
-          'Coding',
-          'Cycling',
-          'Running',
-        ],
+        labels: ['Eating', 'Drinking', 'Sleeping', 'Designing', 'Coding', 'Cycling', 'Running'],
         datasets: [
           {
             label: 'My First dataset',

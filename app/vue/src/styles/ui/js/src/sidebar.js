@@ -216,11 +216,7 @@ class Sidebar extends BaseComponent {
   }
 
   _isMobile() {
-    return Boolean(
-      window
-        .getComputedStyle(this._element, null)
-        .getPropertyValue('--cui-is-mobile'),
-    )
+    return Boolean(window.getComputedStyle(this._element, null).getPropertyValue('--cui-is-mobile'))
   }
 
   _isNarrow() {
@@ -232,9 +228,7 @@ class Sidebar extends BaseComponent {
   }
 
   _isUnfoldable() {
-    return this._element.classList.contains(
-      CLASS_NAME_SIDEBAR_NARROW_UNFOLDABLE,
-    )
+    return this._element.classList.contains(CLASS_NAME_SIDEBAR_NARROW_UNFOLDABLE)
   }
 
   _isVisible() {
@@ -242,10 +236,8 @@ class Sidebar extends BaseComponent {
     return (
       rect.top >= 0 &&
       rect.left >= 0 &&
-      Math.floor(rect.bottom) <=
-        (window.innerHeight || document.documentElement.clientHeight) &&
-      Math.floor(rect.right) <=
-        (window.innerWidth || document.documentElement.clientWidth)
+      Math.floor(rect.bottom) <= (window.innerHeight || document.documentElement.clientHeight) &&
+      Math.floor(rect.right) <= (window.innerWidth || document.documentElement.clientWidth)
     )
   }
 
@@ -281,33 +273,23 @@ class Sidebar extends BaseComponent {
       this._addClickOutListener()
     }
 
-    EventHandler.on(
-      this._element,
-      EVENT_CLICK_DATA_API,
-      SELECTOR_DATA_TOGGLE,
-      event => {
-        event.preventDefault()
-        const toggle = Manipulator.getDataAttribute(event.target, 'toggle')
+    EventHandler.on(this._element, EVENT_CLICK_DATA_API, SELECTOR_DATA_TOGGLE, event => {
+      event.preventDefault()
+      const toggle = Manipulator.getDataAttribute(event.target, 'toggle')
 
-        if (toggle === 'narrow') {
-          this.toggleNarrow()
-        }
+      if (toggle === 'narrow') {
+        this.toggleNarrow()
+      }
 
-        if (toggle === 'unfoldable') {
-          this.toggleUnfoldable()
-        }
-      },
-    )
+      if (toggle === 'unfoldable') {
+        this.toggleUnfoldable()
+      }
+    })
 
-    EventHandler.on(
-      this._element,
-      EVENT_CLICK_DATA_API,
-      SELECTOR_DATA_CLOSE,
-      event => {
-        event.preventDefault()
-        this.hide()
-      },
-    )
+    EventHandler.on(this._element, EVENT_CLICK_DATA_API, SELECTOR_DATA_CLOSE, event => {
+      event.preventDefault()
+      this.hide()
+    })
 
     EventHandler.on(window, EVENT_RESIZE, () => {
       if (this._isMobile() && this._isVisible()) {
@@ -345,9 +327,7 @@ class Sidebar extends BaseComponent {
  */
 
 EventHandler.on(window, EVENT_LOAD_DATA_API, () => {
-  for (const element of Array.from(
-    document.querySelectorAll(SELECTOR_SIDEBAR),
-  )) {
+  for (const element of Array.from(document.querySelectorAll(SELECTOR_SIDEBAR))) {
     Sidebar.sidebarInterface(element)
   }
 })

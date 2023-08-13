@@ -30,9 +30,9 @@
   @if $enable-caret {
     &::after {
       display: inline-block;
-      @include ltr-rtl("margin-left", $caret-spacing);
+      @include ltr-rtl('margin-left', $caret-spacing);
       vertical-align: $caret-vertical-align;
-      content: "";
+      content: '';
       @if $direction == down {
         @include caret-down();
       } @else if $direction == up {
@@ -49,15 +49,15 @@
 
       &::before {
         display: inline-block;
-        @include ltr-rtl("margin-right", $caret-spacing);
+        @include ltr-rtl('margin-right', $caret-spacing);
         vertical-align: $caret-vertical-align;
-        content: "";
+        content: '';
         @include caret-start();
       }
     }
 
     &:empty::after {
-      @include ltr-rtl("margin-left", 0);
+      @include ltr-rtl('margin-left', 0);
     }
   }
 }

@@ -16,7 +16,7 @@
 
   display: flex;
   flex-wrap: wrap;
-  @include ltr-rtl("padding-left", 0);
+  @include ltr-rtl('padding-left', 0);
   margin-bottom: 0;
   list-style: none;
 }
@@ -62,7 +62,9 @@
   border-bottom: var(--#{$prefix}nav-tabs-border-width) solid var(--#{$prefix}nav-tabs-border-color);
 
   .nav-link {
-    margin-bottom: calc(var(--#{$prefix}nav-tabs-border-width) * -1); // stylelint-disable-line function-disallowed-list
+    margin-bottom: calc(
+      var(--#{$prefix}nav-tabs-border-width) * -1
+    ); // stylelint-disable-line function-disallowed-list
     background: none;
     border: var(--#{$prefix}nav-tabs-border-width) solid transparent;
     @include border-top-radius(var(--#{$prefix}nav-tabs-border-radius));
@@ -91,12 +93,13 @@
 
   .dropdown-menu {
     // Make dropdown border overlap tab border
-    margin-top: calc(var(--#{$prefix}nav-tabs-border-width) * -1); // stylelint-disable-line function-disallowed-list
+    margin-top: calc(
+      var(--#{$prefix}nav-tabs-border-width) * -1
+    ); // stylelint-disable-line function-disallowed-list
     // Remove the top rounded corners here since there is a hard edge above the menu
     @include border-top-radius(0);
   }
 }
-
 
 //
 // Pills
@@ -133,7 +136,8 @@
 //
 
 .nav-underline {
-  border-bottom: $nav-underline-border-width solid var(--#{$prefix}nav-underline-border-color, $nav-underline-border-color);
+  border-bottom: $nav-underline-border-width solid
+    var(--#{$prefix}nav-underline-border-color, $nav-underline-border-color);
 
   .nav-item {
     margin-bottom: $nav-underline-border-width * -1;
@@ -145,7 +149,10 @@
 
     &:hover,
     &:focus {
-      border-color: var(--#{$prefix}nav-underline-link-active-border-color, $nav-underline-link-active-border-color);
+      border-color: var(
+        --#{$prefix}nav-underline-link-active-border-color,
+        $nav-underline-link-active-border-color
+      );
     }
   }
 
@@ -153,7 +160,10 @@
   .show > .nav-link {
     color: var(--#{$prefix}nav-underline-link-active-color, $nav-underline-link-active-color);
     background: transparent;
-    border-color: var(--#{$prefix}nav-underline-link-active-border-color, $nav-underline-link-active-border-color);
+    border-color: var(
+      --#{$prefix}nav-underline-link-active-border-color,
+      $nav-underline-link-active-border-color
+    );
   }
 }
 
@@ -184,7 +194,6 @@
     width: 100%; // Make sure button will grow
   }
 }
-
 
 // Tabbable tabs
 //

@@ -2,9 +2,7 @@
   <CFooter class="mt-4">
     <div>
       <a href="https://brdnc.co.kr" target="_blank">Rebs</a>
-      <span class="ms-1"
-        >&copy; {{ new Date().getFullYear() }} creativeLabs.</span
-      >
+      <span class="ms-1">&copy; {{ new Date().getFullYear() }} creativeLabs.</span>
     </div>
     <div class="ms-auto">
       <span class="me-1" target="_blank">Powered by</span>

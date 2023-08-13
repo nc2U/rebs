@@ -1,32 +1,32 @@
 // If you want to override variables do it here
-@import "variables";
+@import 'variables';
 
 $enable-ltr: true;
 $enable-rtl: true;
 
 // Import styles
-@import "ui/scss/themes/dark";
-@import "@coreui/coreui/scss/coreui";
+@import 'ui/scss/themes/dark';
+@import '@coreui/coreui/scss/coreui';
 
 // Import Chart.js Tooltips
-@import "@coreui/chartjs/scss/tooltips";
+@import '@coreui/chartjs/scss/tooltips';
 
-@import "layout";
+@import 'layout';
 
 // If you want to add something do it here
-@import "custom";
+@import 'custom';
 
 // Transition
-@import "transition";
+@import 'transition';
 
 // multi-select
-@import "multi_select";
+@import 'multi_select';
 
 // Plugins
-@import "calendar";
-@import "mosha-vue-toastify/dist/style";
-@import "@vueform/multiselect/themes/default.scss";
-@import "node_modules/@vuepic/vue-datepicker/src/VueDatePicker/style/main.scss";
+@import 'calendar';
+@import 'mosha-vue-toastify/dist/style';
+@import '@vueform/multiselect/themes/default.scss';
+@import 'node_modules/@vuepic/vue-datepicker/src/VueDatePicker/style/main.scss';
 
 // datepicker
-@import "datepicker";
+@import 'datepicker';

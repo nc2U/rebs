@@ -125,9 +125,7 @@ class Collapse extends BaseComponent {
     if (this._config.parent) {
       activeChildren = this._getFirstLevelChildren(SELECTOR_ACTIVES)
         .filter(element => element !== this._element)
-        .map(element =>
-          Collapse.getOrCreateInstance(element, { toggle: false }),
-        )
+        .map(element => Collapse.getOrCreateInstance(element, { toggle: false }))
     }
 
     if (activeChildren.length && activeChildren[0]._isTransitioning) {
@@ -183,9 +181,7 @@ class Collapse extends BaseComponent {
 
     const dimension = this._getDimension()
 
-    this._element.style[dimension] = `${
-      this._element.getBoundingClientRect()[dimension]
-    }px`
+    this._element.style[dimension] = `${this._element.getBoundingClientRect()[dimension]}px`
 
     reflow(this._element)
 
@@ -226,9 +222,7 @@ class Collapse extends BaseComponent {
   }
 
   _getDimension() {
-    return this._element.classList.contains(CLASS_NAME_HORIZONTAL)
-      ? WIDTH
-      : HEIGHT
+    return this._element.classList.contains(CLASS_NAME_HORIZONTAL) ? WIDTH : HEIGHT
   }
 
   _initializeChildren() {
@@ -248,10 +242,7 @@ class Collapse extends BaseComponent {
   }
 
   _getFirstLevelChildren(selector) {
-    const children = SelectorEngine.find(
-      CLASS_NAME_DEEPER_CHILDREN,
-      this._config.parent,
-    )
+    const children = SelectorEngine.find(CLASS_NAME_DEEPER_CHILDREN, this._config.parent)
     // remove children if greater depth
     return SelectorEngine.find(selector, this._config.parent).filter(
       element => !children.includes(element),
@@ -294,27 +285,22 @@ class Collapse extends BaseComponent {
  * Data API implementation
  */
 
-EventHandler.on(
-  document,
-  EVENT_CLICK_DATA_API,
-  SELECTOR_DATA_TOGGLE,
-  function (event) {
-    // preventDefault only for <a> elements (which change the URL) not inside the collapsible element
-    if (
-      event.target.tagName === 'A' ||
-      (event.delegateTarget && event.delegateTarget.tagName === 'A')
-    ) {
-      event.preventDefault()
-    }
+EventHandler.on(document, EVENT_CLICK_DATA_API, SELECTOR_DATA_TOGGLE, function (event) {
+  // preventDefault only for <a> elements (which change the URL) not inside the collapsible element
+  if (
+    event.target.tagName === 'A' ||
+    (event.delegateTarget && event.delegateTarget.tagName === 'A')
+  ) {
+    event.preventDefault()
+  }
 
-    const selector = getSelectorFromElement(this)
-    const selectorElements = SelectorEngine.find(selector)
+  const selector = getSelectorFromElement(this)
+  const selectorElements = SelectorEngine.find(selector)
 
-    for (const element of selectorElements) {
-      Collapse.getOrCreateInstance(element, { toggle: false }).toggle()
-    }
-  },
-)
+  for (const element of selectorElements) {
+    Collapse.getOrCreateInstance(element, { toggle: false }).toggle()
+  }
+})
 
 /**
  * jQuery

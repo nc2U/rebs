@@ -8,13 +8,7 @@
  * --------------------------------------------------------------------------
  */
 
-import {
-  defineJQueryPlugin,
-  getElementFromSelector,
-  isRTL,
-  isVisible,
-  reflow,
-} from './util/index'
+import { defineJQueryPlugin, getElementFromSelector, isRTL, isVisible, reflow } from './util/index'
 import EventHandler from './dom/event-handler'
 import SelectorEngine from './dom/selector-engine'
 import ScrollBarHelper from './util/scrollbar'
@@ -143,11 +137,7 @@ class Modal extends BaseComponent {
 
     this._element.classList.remove(CLASS_NAME_SHOW)
 
-    this._queueCallback(
-      () => this._hideModal(),
-      this._element,
-      this._isAnimated(),
-    )
+    this._queueCallback(() => this._hideModal(), this._element, this._isAnimated())
   }
 
   dispose() {
@@ -276,14 +266,10 @@ class Modal extends BaseComponent {
       return
     }
 
-    const isModalOverflowing =
-      this._element.scrollHeight > document.documentElement.clientHeight
+    const isModalOverflowing = this._element.scrollHeight > document.documentElement.clientHeight
     const initialOverflowY = this._element.style.overflowY
     // return if the following background transition hasn't yet completed
-    if (
-      initialOverflowY === 'hidden' ||
-      this._element.classList.contains(CLASS_NAME_STATIC)
-    ) {
+    if (initialOverflowY === 'hidden' || this._element.classList.contains(CLASS_NAME_STATIC)) {
       return
     }
 
@@ -307,8 +293,7 @@ class Modal extends BaseComponent {
    */
 
   _adjustDialog() {
-    const isModalOverflowing =
-      this._element.scrollHeight > document.documentElement.clientHeight
+    const isModalOverflowing = this._element.scrollHeight > document.documentElement.clientHeight
     const scrollbarWidth = this._scrollBar.getWidth()
     const isBodyOverflowing = scrollbarWidth > 0
 
@@ -350,41 +335,36 @@ class Modal extends BaseComponent {
  * Data API implementation
  */
 
-EventHandler.on(
-  document,
-  EVENT_CLICK_DATA_API,
-  SELECTOR_DATA_TOGGLE,
-  function (event) {
-    const target = getElementFromSelector(this)
+EventHandler.on(document, EVENT_CLICK_DATA_API, SELECTOR_DATA_TOGGLE, function (event) {
+  const target = getElementFromSelector(this)
 
-    if (['A', 'AREA'].includes(this.tagName)) {
-      event.preventDefault()
+  if (['A', 'AREA'].includes(this.tagName)) {
+    event.preventDefault()
+  }
+
+  EventHandler.one(target, EVENT_SHOW, showEvent => {
+    if (showEvent.defaultPrevented) {
+      // only register focus restorer if modal will actually get shown
+      return
     }
 
-    EventHandler.one(target, EVENT_SHOW, showEvent => {
-      if (showEvent.defaultPrevented) {
-        // only register focus restorer if modal will actually get shown
-        return
+    EventHandler.one(target, EVENT_HIDDEN, () => {
+      if (isVisible(this)) {
+        this.focus()
       }
-
-      EventHandler.one(target, EVENT_HIDDEN, () => {
-        if (isVisible(this)) {
-          this.focus()
-        }
-      })
     })
+  })
 
-    // avoid conflict when clicking modal toggler while another one is open
-    const alreadyOpen = SelectorEngine.findOne(OPEN_SELECTOR)
-    if (alreadyOpen) {
-      Modal.getInstance(alreadyOpen).hide()
-    }
+  // avoid conflict when clicking modal toggler while another one is open
+  const alreadyOpen = SelectorEngine.findOne(OPEN_SELECTOR)
+  if (alreadyOpen) {
+    Modal.getInstance(alreadyOpen).hide()
+  }
 
-    const data = Modal.getOrCreateInstance(target)
+  const data = Modal.getOrCreateInstance(target)
 
-    data.toggle(this)
-  },
-)
+  data.toggle(this)
+})
 
 enableDismissTrigger(Modal)
 

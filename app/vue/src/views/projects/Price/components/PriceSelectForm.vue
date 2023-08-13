@@ -10,11 +10,7 @@ defineProps({
   types: { type: Object, default: null },
 })
 
-const emit = defineEmits([
-  'on-order-select',
-  'on-type-select',
-  'cont-price-set',
-])
+const emit = defineEmits(['on-order-select', 'on-type-select', 'cont-price-set'])
 
 const confirmModal = ref()
 
@@ -31,8 +27,7 @@ const onOrderSelect = (e: Event) => {
   type.value = null
   emit('on-order-select', (e.target as HTMLSelectElement).value)
 }
-const onTypeSelect = (e: Event) =>
-  emit('on-type-select', (e.target as HTMLSelectElement).value)
+const onTypeSelect = (e: Event) => emit('on-type-select', (e.target as HTMLSelectElement).value)
 
 const accStore = useAccount()
 const superAuth = computed(() => accStore.superAuth)
@@ -50,9 +45,7 @@ const modalAction = () => {
     <CRow>
       <CCol md="4" class="mb-2">
         <CRow>
-          <CFormLabel for="sel1" class="col-sm-3 col-form-label">
-            차수선택
-          </CFormLabel>
+          <CFormLabel for="sel1" class="col-sm-3 col-form-label"> 차수선택 </CFormLabel>
           <CCol sm="9">
             <CFormSelect
               id="sel1"
@@ -71,16 +64,9 @@ const modalAction = () => {
 
       <CCol md="4" class="mb-2">
         <CRow>
-          <CFormLabel for="sel2" class="col-sm-3 col-form-label">
-            타입선택
-          </CFormLabel>
+          <CFormLabel for="sel2" class="col-sm-3 col-form-label"> 타입선택 </CFormLabel>
           <CCol sm="9">
-            <CFormSelect
-              id="sel2"
-              v-model="type"
-              :disabled="!order"
-              @change="onTypeSelect"
-            >
+            <CFormSelect id="sel2" v-model="type" :disabled="!order" @change="onTypeSelect">
               <option value="">---------</option>
               <option v-for="t in types" :key="t.pk" :value="t.pk">
                 {{ t.name }}
@@ -115,12 +101,12 @@ const modalAction = () => {
     <template #header> 전체 계약건 공급가 / 계약금 재설정</template>
     <template #default>
       <p>
-        이 작업은 현재 등록된 전체 계약 건의 공급 가격 및 계약 금액 정보를 현재
-        등록된 공급 가격 및 계약 금액 데이터로 일괄 변경합니다. <br />
+        이 작업은 현재 등록된 전체 계약 건의 공급 가격 및 계약 금액 정보를 현재 등록된 공급 가격 및
+        계약 금액 데이터로 일괄 변경합니다. <br />
       </p>
       <p>
-        이 작업은 수 분 정도 소요될 수 있습니다. 전체 계약 건 개별 공급가격 및
-        계약금액을 현재 등록된 정보로 재설정하시겠습니까?
+        이 작업은 수 분 정도 소요될 수 있습니다. 전체 계약 건 개별 공급가격 및 계약금액을 현재
+        등록된 정보로 재설정하시겠습니까?
       </p>
     </template>
     <template #footer>

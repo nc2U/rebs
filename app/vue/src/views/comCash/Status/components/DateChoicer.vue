@@ -19,11 +19,7 @@ const setDate = () => emit('set-date', date.value)
     <CRow>
       <CFormLabel class="col-lg-1 col-form-label">기준일자</CFormLabel>
       <CCol md="6" lg="3">
-        <DatePicker
-          v-model="date"
-          :clearable="false"
-          @keydown.enter="setDate"
-        />
+        <DatePicker v-model="date" :clearable="false" @keydown.enter="setDate" />
       </CCol>
     </CRow>
   </CCallout>

@@ -40,10 +40,7 @@ const isAuthorized = computed(() => accountStore.isAuthorized)
         <AppBreadcrumb />
       </CHeaderNav>
       <CHeaderNav class="ms-auto me-4">
-        <CHeaderToggler
-          v-fullscreen.teleport="options"
-          class="d-none d-lg-block"
-        >
+        <CHeaderToggler v-fullscreen.teleport="options" class="d-none d-lg-block">
           <v-icon large :icon="screenIcon" />
           <v-tooltip activator="parent" location="bottom">
             {{ screenGuide }}
@@ -79,25 +76,13 @@ const isAuthorized = computed(() => accountStore.isAuthorized)
         </CButtonGroup>
       </CHeaderNav>
       <CHeaderNav class="mr-4">
-        <AppHeaderDropdownAccnt
-          v-if="isAuthorized"
-          :user-info="userInfo"
-          :profile="profile"
-        />
-        <router-link
-          v-else
-          :to="{ name: 'Login' }"
-          class="btn btn-outline-primary"
-        >
+        <AppHeaderDropdownAccnt v-if="isAuthorized" :user-info="userInfo" :profile="profile" />
+        <router-link v-else :to="{ name: 'Login' }" class="btn btn-outline-primary">
           로그인
         </router-link>
       </CHeaderNav>
       <CHeaderToggler class="px-md-0 me-md-3">
-        <CIcon
-          icon="cil-applications-settings"
-          size="lg"
-          @click="store.toggleAside"
-        />
+        <CIcon icon="cil-applications-settings" size="lg" @click="store.toggleAside" />
       </CHeaderToggler>
     </CContainer>
     <CHeaderDivider class="mb-0" />

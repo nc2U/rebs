@@ -106,17 +106,13 @@ onMounted(() => formDataSetup())
         <CCol md="6">
           <CRow class="mb-3">
             <h6>사용자 계정</h6>
-            <CFormLabel for="companyCeo" class="col-md-4 col-form-label">
-              아이디
-            </CFormLabel>
+            <CFormLabel for="companyCeo" class="col-md-4 col-form-label"> 아이디 </CFormLabel>
 
             <CCol md="8">{{ userInfo?.username || '' }}</CCol>
           </CRow>
 
           <CRow class="mb-3">
-            <CFormLabel for="companyName" class="col-md-4 col-form-label">
-              이메일 주소
-            </CFormLabel>
+            <CFormLabel for="companyName" class="col-md-4 col-form-label"> 이메일 주소 </CFormLabel>
 
             <CCol md="8">{{ userInfo?.email || '' }}</CCol>
           </CRow>
@@ -125,9 +121,7 @@ onMounted(() => formDataSetup())
 
           <CRow class="mb-3">
             <h6>사용자 프로필</h6>
-            <CFormLabel for="companyName" class="col-md-4 col-form-label">
-              성명
-            </CFormLabel>
+            <CFormLabel for="companyName" class="col-md-4 col-form-label"> 성명 </CFormLabel>
 
             <CCol md="8">
               <CFormInput
@@ -141,9 +135,7 @@ onMounted(() => formDataSetup())
             </CCol>
           </CRow>
           <CRow class="mb-3">
-            <CFormLabel for="companyCeo" class="col-md-4 col-form-label">
-              생년월일
-            </CFormLabel>
+            <CFormLabel for="companyCeo" class="col-md-4 col-form-label"> 생년월일 </CFormLabel>
 
             <CCol md="8">
               <DatePicker
@@ -156,9 +148,7 @@ onMounted(() => formDataSetup())
           </CRow>
 
           <CRow class="mb-3">
-            <CFormLabel for="companyCeo" class="col-md-4 col-form-label">
-              휴대전화
-            </CFormLabel>
+            <CFormLabel for="companyCeo" class="col-md-4 col-form-label"> 휴대전화 </CFormLabel>
 
             <CCol md="8">
               <input
@@ -175,19 +165,13 @@ onMounted(() => formDataSetup())
           </CRow>
         </CCol>
         <CCol md="6">
-          <AvatarInput
-            ref="avatar"
-            :image="form.image as string"
-            @file-upload="fileUpload"
-          />
+          <AvatarInput ref="avatar" :image="form.image as string" @file-upload="fileUpload" />
         </CCol>
       </CRow>
     </CCardBody>
 
     <CCardFooter class="text-right">
-      <CButton type="button" color="light" @click="formDataReset">
-        취소
-      </CButton>
+      <CButton type="button" color="light" @click="formDataReset"> 취소 </CButton>
       <CButton type="submit" :color="btnClass" :disabled="formsCheck">
         <CIcon name="cil-check-circle" />
         {{ confirmText }}
@@ -197,9 +181,7 @@ onMounted(() => formDataSetup())
 
   <ConfirmModal ref="refConfirmModal">
     <template #header>프로필 정보</template>
-    <template #default>
-      프로필 정보 {{ confirmText }}을 진행하시겠습니까?
-    </template>
+    <template #default> 프로필 정보 {{ confirmText }}을 진행하시겠습니까? </template>
     <template #footer>
       <CButton :color="btnClass" @click="modalAction">
         {{ confirmText }}

@@ -52,14 +52,10 @@ defineExpose({ listFiltering })
 
     <CRow>
       <CCol class="p-2 pl-3">
-        <strong>
-          직위 수 조회 결과 : {{ numFormat(positionsCount) }} 건
-        </strong>
+        <strong> 직위 수 조회 결과 : {{ numFormat(positionsCount) }} 건 </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
-        <CButton color="info" size="sm" @click="resetForm">
-          검색조건 초기화
-        </CButton>
+        <CButton color="info" size="sm" @click="resetForm"> 검색조건 초기화 </CButton>
       </CCol>
     </CRow>
   </CCallout>

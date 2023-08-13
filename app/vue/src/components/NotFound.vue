@@ -9,16 +9,11 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
       <h1 class="title">PAGE NOT FOUND</h1>
       <div class="divider"></div>
       <blockquote class="quote">
-        But if you don't change your direction, and if you keep looking, you may
-        end up where you are heading.
+        But if you don't change your direction, and if you keep looking, you may end up where you
+        are heading.
       </blockquote>
 
-      <v-btn
-        color="info"
-        variant="outlined"
-        rounded="pill"
-        @click="$router.go(-1)"
-      >
+      <v-btn color="info" variant="outlined" rounded="pill" @click="$router.go(-1)">
         To previous
       </v-btn>
 

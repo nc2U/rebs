@@ -12,7 +12,8 @@
   list-style: none;
 
   .nav-title {
-    padding: var(--#{$prefix}sidebar-nav-title-padding-y) var(--#{$prefix}sidebar-nav-title-padding-x);
+    padding: var(--#{$prefix}sidebar-nav-title-padding-y)
+      var(--#{$prefix}sidebar-nav-title-padding-x);
     margin-top: var(--#{$prefix}sidebar-nav-title-margin-top);
     font-size: 80%;
     font-weight: 700;
@@ -93,7 +94,7 @@
     @include transition(inherit);
 
     &:first-child {
-      @include ltr-rtl("margin-left", calc(var(--#{$prefix}sidebar-nav-link-padding-x) * -1));
+      @include ltr-rtl('margin-left', calc(var(--#{$prefix}sidebar-nav-link-padding-x) * -1));
     }
   }
 
@@ -102,7 +103,8 @@
     @include transition($sidebar-nav-group-transition);
 
     .nav-group-items {
-      padding: var(--#{$prefix}sidebar-nav-group-items-padding-y) var(--#{$prefix}sidebar-nav-group-items-padding-x);
+      padding: var(--#{$prefix}sidebar-nav-group-items-padding-y)
+        var(--#{$prefix}sidebar-nav-group-items-padding-x);
       overflow: hidden;
       @include transition($sidebar-nav-group-items-transition);
     }
@@ -135,8 +137,8 @@
       display: block;
       flex: 0 12px;
       height: 12px;
-      @include ltr-rtl("margin-left", auto);
-      content: "";
+      @include ltr-rtl('margin-left', auto);
+      content: '';
       background-image: var(--#{$prefix}sidebar-nav-group-indicator);
       background-repeat: no-repeat;
       background-position: center;
@@ -149,10 +151,10 @@
     list-style: none;
 
     .nav-link {
-      @include ltr-rtl("padding-left", var(--#{$prefix}sidebar-nav-icon-width));
+      @include ltr-rtl('padding-left', var(--#{$prefix}sidebar-nav-icon-width));
 
       .nav-icon {
-        @include ltr-rtl("margin-left", calc(var(--#{$prefix}sidebar-nav-icon-width) * -1));
+        @include ltr-rtl('margin-left', calc(var(--#{$prefix}sidebar-nav-icon-width) * -1));
       }
     }
   }
@@ -160,8 +162,12 @@
   &.compact,
   .compact {
     .nav-link {
-      padding-top: calc(var(--#{$prefix}sidebar-nav-link-padding-y) * .5); // stylelint-disable-line function-disallowed-list
-      padding-bottom: calc(var(--#{$prefix}sidebar-nav-link-padding-y) * .5); // stylelint-disable-line function-disallowed-list
+      padding-top: calc(
+        var(--#{$prefix}sidebar-nav-link-padding-y) * 0.5
+      ); // stylelint-disable-line function-disallowed-list
+      padding-bottom: calc(
+        var(--#{$prefix}sidebar-nav-link-padding-y) * 0.5
+      ); // stylelint-disable-line function-disallowed-list
     }
   }
 }

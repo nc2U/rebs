@@ -20,8 +20,7 @@ const compName = ref('StatusByAccount')
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
 
-const fetchStatusOutBudgetList = (proj: number) =>
-  projStore.fetchStatusOutBudgetList(proj)
+const fetchStatusOutBudgetList = (proj: number) => projStore.fetchStatusOutBudgetList(proj)
 const patchStatusOutBudgetList = (proj: number, pk: number, budget: number) =>
   projStore.patchStatusOutBudgetList(proj, pk, budget)
 const fetchExecAmountList = (project: number, date?: string) =>
@@ -30,14 +29,10 @@ const fetchExecAmountList = (project: number, date?: string) =>
 const pCashStore = useProCash()
 const fetchProAllAccD2List = () => pCashStore.fetchProAllAccD2List()
 const fetchProAllAccD3List = () => pCashStore.fetchProAllAccD3List()
-const fetchProBankAccList = (proj: number) =>
-  pCashStore.fetchProBankAccList(proj)
+const fetchProBankAccList = (proj: number) => pCashStore.fetchProBankAccList(proj)
 
-const fetchBalanceByAccList = (payload: {
-  project: number
-  direct?: string
-  date?: string
-}) => pCashStore.fetchBalanceByAccList(payload)
+const fetchBalanceByAccList = (payload: { project: number; direct?: string; date?: string }) =>
+  pCashStore.fetchBalanceByAccList(payload)
 const fetchDateCashBookList = (payload: { project: number; date: string }) =>
   pCashStore.fetchDateCashBookList(payload)
 
@@ -49,10 +44,8 @@ const excelUrl = computed(() => {
   let url = ''
   if (comp === 'StatusByAccount')
     url = `/excel/p-balance/?project=${pj}&date=${dt}&bank_account__directpay=${dr}`
-  else if (comp === 'CashListByDate')
-    url = `/excel/p-daily-cash/?project=${pj}&date=${dt}`
-  else if (comp === 'SummaryForBudget')
-    url = `/excel/p-budget/?project=${pj}&date=${dt}`
+  else if (comp === 'CashListByDate') url = `/excel/p-daily-cash/?project=${pj}&date=${dt}`
+  else if (comp === 'SummaryForBudget') url = `/excel/p-budget/?project=${pj}&date=${dt}`
   return `${url}`
 })
 
@@ -76,8 +69,7 @@ const setDate = (dt: string) => {
 }
 
 const patchBudget = (pk: number, budget: number) => {
-  if (project.value)
-    patchStatusOutBudgetList(project.value as number, pk, budget)
+  if (project.value) patchStatusOutBudgetList(project.value as number, pk, budget)
 }
 
 const directBalance = (val: boolean) => {
@@ -119,11 +111,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @proj-select="projSelect"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
 
   <ContentBody>
     <CCardBody class="pb-5">

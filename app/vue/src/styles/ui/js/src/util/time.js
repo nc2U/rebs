@@ -16,11 +16,7 @@ export const convert12hTo24h = (abbr, hour) => {
 
 export const convert24hTo12h = hour => hour % 12 || 12
 export const convertTimeToDate = time =>
-  time
-    ? time instanceof Date
-      ? new Date(time)
-      : new Date(`1970-01-01 ${time}`)
-    : null
+  time ? (time instanceof Date ? new Date(time) : new Date(`1970-01-01 ${time}`)) : null
 export const getAmPm = (date, locale) => {
   if (date.toLocaleTimeString(locale).includes('AM')) {
     return 'am'
@@ -76,20 +72,14 @@ export const getListOfSeconds = (locale, valueAsString = false) =>
   })
 
 export const getSelectedHour = (date, locale) =>
-  date
-    ? isAmPm(locale)
-      ? convert24hTo12h(date.getHours())
-      : date.getHours()
-    : ''
+  date ? (isAmPm(locale) ? convert24hTo12h(date.getHours()) : date.getHours()) : ''
 
 export const getSelectedMinutes = date => (date ? date.getMinutes() : '')
 
 export const getSelectedSeconds = date => (date ? date.getSeconds() : '')
 
 export const isAmPm = locale =>
-  ['am', 'AM', 'pm', 'PM'].some(el =>
-    new Date().toLocaleString(locale).includes(el),
-  )
+  ['am', 'AM', 'pm', 'PM'].some(el => new Date().toLocaleString(locale).includes(el))
 
 export const isValidTime = time => {
   const d = new Date(`1970-01-01 ${time}`)

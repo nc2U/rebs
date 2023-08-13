@@ -51,8 +51,7 @@ const getSumTotal = () => {
   dateIncSum.value = dateIncSumCalc
   dateOutSum.value = dateOutSumCalc
   dateBalance.value = dateIncTotalCalc - dateOutTotalCalc
-  preBalance.value =
-    dateIncTotalCalc - dateOutTotalCalc - (dateIncSumCalc - dateOutSumCalc)
+  preBalance.value = dateIncTotalCalc - dateOutTotalCalc - (dateIncSumCalc - dateOutSumCalc)
 }
 
 const directBalance = (val: boolean) => emit('direct-balance', val)
@@ -97,28 +96,14 @@ const directBalance = (val: boolean) => emit('direct-balance', val)
     </CTableHead>
 
     <CTableBody>
-      <CTableRow
-        v-for="(bal, i) in balanceByAccList"
-        :key="i"
-        class="text-right"
-      >
-        <CTableDataCell
-          v-if="i === 0"
-          class="text-center"
-          :rowspan="balanceByAccList.length"
-        >
+      <CTableRow v-for="(bal, i) in balanceByAccList" :key="i" class="text-right">
+        <CTableDataCell v-if="i === 0" class="text-center" :rowspan="balanceByAccList.length">
           보통예금
         </CTableDataCell>
         <CTableDataCell class="text-left">{{ bal.bank_acc }}</CTableDataCell>
         <CTableDataCell class="text-left">{{ bal.bank_num }}</CTableDataCell>
         <CTableDataCell>
-          {{
-            numFormat(
-              (bal.inc_sum || 0) -
-                (bal.out_sum || 0) -
-                (bal.date_inc - bal.date_out),
-            )
-          }}
+          {{ numFormat((bal.inc_sum || 0) - (bal.out_sum || 0) - (bal.date_inc - bal.date_out)) }}
         </CTableDataCell>
         <CTableDataCell>{{ numFormat(bal.date_inc) }}</CTableDataCell>
         <CTableDataCell>{{ numFormat(bal.date_out) }}</CTableDataCell>
@@ -128,9 +113,7 @@ const directBalance = (val: boolean) => emit('direct-balance', val)
       </CTableRow>
 
       <CTableRow :color="TableSecondary" class="text-right">
-        <CTableHeaderCell colspan="3" class="text-center">
-          현금성 자산 계
-        </CTableHeaderCell>
+        <CTableHeaderCell colspan="3" class="text-center"> 현금성 자산 계 </CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(preBalance) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(dateIncSum) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(dateOutSum) }}</CTableHeaderCell>

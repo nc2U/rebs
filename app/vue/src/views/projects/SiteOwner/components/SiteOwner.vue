@@ -32,8 +32,7 @@ const updateFormModal = ref()
 const showDetail = () => updateFormModal.value.callModal()
 const relationPatch = (payload: Relation) => emit('relation-patch', payload)
 const multiSubmit = (payload: SiteOwner) => emit('multi-submit', payload)
-const onDelete = (payload: { pk: number; project: number }) =>
-  emit('on-delete', payload)
+const onDelete = (payload: { pk: number; project: number }) => emit('on-delete', payload)
 
 onBeforeMount(() => {
   if (props.owner) {
@@ -56,11 +55,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <CTableRow
-    v-for="(site, index) in owner.sites"
-    :key="site.pk"
-    class="text-center"
-  >
+  <CTableRow v-for="(site, index) in owner.sites" :key="site.pk" class="text-center">
     <Site
       :owner="owner"
       :site="site as SimpleSite"

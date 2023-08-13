@@ -99,11 +99,7 @@ const active = (key: number) => key === activeKey.value
           >
             Tomorrow
           </CListGroupItem>
-          <CListGroupItem
-            accent="danger"
-            href="#"
-            class="border-start-4 border-start-danger"
-          >
+          <CListGroupItem accent="danger" href="#" class="border-start-4 border-start-danger">
             <div>New UI Project - <strong>deadline</strong></div>
             <small class="text-medium-emphasis me-3">
               <CIcon icon="cil-calendar" />
@@ -132,10 +128,7 @@ const active = (key: number) => key === activeKey.value
               Palo Alto, CA
             </small>
           </CListGroupItem>
-          <CListGroupItem
-            href="#"
-            class="border-start-4 border-start-primary border-bottom"
-          >
+          <CListGroupItem href="#" class="border-start-4 border-start-primary border-bottom">
             <div>
               <strong>Team meeting</strong>
             </div>
@@ -168,12 +161,10 @@ const active = (key: number) => key === activeKey.value
             <small class="text-medium-emphasis">Lukasz Holeczek</small>
             <small class="text-medium-emphasis float-end mt-1">1:52 PM</small>
           </div>
-          <div class="text-truncate fw-semibold">
-            Lorem ipsum dolor sit amet
-          </div>
+          <div class="text-truncate fw-semibold">Lorem ipsum dolor sit amet</div>
           <small class="text-medium-emphasis">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-            eiusmod tempor incididunt...
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+            incididunt...
           </small>
         </div>
         <hr />
@@ -185,12 +176,10 @@ const active = (key: number) => key === activeKey.value
             <small class="text-medium-emphasis">Lukasz Holeczek</small>
             <small class="text-medium-emphasis float-end mt-1">1:52 PM</small>
           </div>
-          <div class="text-truncate fw-semibold">
-            Lorem ipsum dolor sit amet
-          </div>
+          <div class="text-truncate fw-semibold">Lorem ipsum dolor sit amet</div>
           <small class="text-medium-emphasis">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-            eiusmod tempor incididunt...
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+            incididunt...
           </small>
         </div>
         <hr />
@@ -202,12 +191,10 @@ const active = (key: number) => key === activeKey.value
             <small class="text-medium-emphasis">Lukasz Holeczek</small>
             <small class="text-medium-emphasis float-end mt-1">1:52 PM</small>
           </div>
-          <div class="text-truncate fw-semibold">
-            Lorem ipsum dolor sit amet
-          </div>
+          <div class="text-truncate fw-semibold">Lorem ipsum dolor sit amet</div>
           <small class="text-medium-emphasis">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-            eiusmod tempor incididunt...
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+            incididunt...
           </small>
         </div>
         <hr />
@@ -219,12 +206,10 @@ const active = (key: number) => key === activeKey.value
             <small class="text-medium-emphasis">Lukasz Holeczek</small>
             <small class="text-medium-emphasis float-end mt-1">1:52 PM</small>
           </div>
-          <div class="text-truncate fw-semibold">
-            Lorem ipsum dolor sit amet
-          </div>
+          <div class="text-truncate fw-semibold">Lorem ipsum dolor sit amet</div>
           <small class="text-medium-emphasis">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-            eiusmod tempor incididunt...
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+            incididunt...
           </small>
         </div>
         <hr />
@@ -236,12 +221,10 @@ const active = (key: number) => key === activeKey.value
             <small class="text-medium-emphasis">Lukasz Holeczek</small>
             <small class="text-medium-emphasis float-end mt-1">1:52 PM</small>
           </div>
-          <div class="text-truncate fw-semibold">
-            Lorem ipsum dolor sit amet
-          </div>
+          <div class="text-truncate fw-semibold">Lorem ipsum dolor sit amet</div>
           <small class="text-medium-emphasis">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-            eiusmod tempor incididunt...
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+            incididunt...
           </small>
         </div>
       </CTabPane>
@@ -249,17 +232,12 @@ const active = (key: number) => key === activeKey.value
         <h6>Settings</h6>
         <div>
           <div class="clearfix mt-4">
-            <CFormSwitch
-              id="Option1"
-              size="lg"
-              label="Option 1"
-              default-checked
-            />
+            <CFormSwitch id="Option1" size="lg" label="Option 1" default-checked />
           </div>
           <div>
             <small class="text-medium-emphasis">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+              incididunt ut labore et dolore magna aliqua.
             </small>
           </div>
         </div>
@@ -269,8 +247,8 @@ const active = (key: number) => key === activeKey.value
           </div>
           <div>
             <small class="text-medium-emphasis">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+              incididunt ut labore et dolore magna aliqua.
             </small>
           </div>
         </div>
@@ -281,12 +259,7 @@ const active = (key: number) => key === activeKey.value
         </div>
         <div>
           <div class="clearfix mt-3">
-            <CFormSwitch
-              id="Option4"
-              size="lg"
-              label="Option 4"
-              default-checked
-            />
+            <CFormSwitch id="Option4" size="lg" label="Option 4" default-checked />
           </div>
         </div>
         <hr />

@@ -6,9 +6,7 @@ const store = useStore()
 const isDark = computed(() => store.theme === 'dark')
 
 // -----------------------------------------------------------------------
-export const TableSecondary = computed(() =>
-  isDark.value ? 'dark' : 'secondary',
-)
+export const TableSecondary = computed(() => (isDark.value ? 'dark' : 'secondary'))
 
 export const TablePrimary = computed(() => (isDark.value ? 'dark' : 'primary'))
 

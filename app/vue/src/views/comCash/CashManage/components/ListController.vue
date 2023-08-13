@@ -120,11 +120,7 @@ const resetForm = () => {
           <CCol md="6" lg="3" class="mb-3">
             <CFormSelect v-model="form.account_d1" @change="accountD1Select">
               <option value="">계정[대분류]</option>
-              <option
-                v-for="acc1 in formAccD1List"
-                :key="acc1.pk"
-                :value="acc1.pk"
-              >
+              <option v-for="acc1 in formAccD1List" :key="acc1.pk" :value="acc1.pk">
                 {{ acc1.name }}
               </option>
             </CFormSelect>
@@ -137,11 +133,7 @@ const resetForm = () => {
               @change="accountD2Select"
             >
               <option value="">계정[중분류]</option>
-              <option
-                v-for="acc2 in formAccD2List"
-                :key="acc2.pk"
-                :value="acc2.pk"
-              >
+              <option v-for="acc2 in formAccD2List" :key="acc2.pk" :value="acc2.pk">
                 {{ acc2.name }}
               </option>
             </CFormSelect>
@@ -154,11 +146,7 @@ const resetForm = () => {
               @change="listFiltering(1)"
             >
               <option value="">계정[소분류]</option>
-              <option
-                v-for="acc3 in formAccD3List"
-                :key="acc3.pk"
-                :value="acc3.pk"
-              >
+              <option v-for="acc3 in formAccD3List" :key="acc3.pk" :value="acc3.pk">
                 {{ acc3.name }}
               </option>
             </CFormSelect>
@@ -171,11 +159,7 @@ const resetForm = () => {
           <CCol md="6" lg="4" class="mb-3">
             <CFormSelect v-model="form.bank_account" @change="listFiltering(1)">
               <option value="">거래계좌</option>
-              <option
-                v-for="acc in allComBankList"
-                :key="acc.pk"
-                :value="acc.pk"
-              >
+              <option v-for="acc in allComBankList" :key="acc.pk" :value="acc.pk">
                 {{ acc.alias_name }}
               </option>
             </CFormSelect>
@@ -199,14 +183,10 @@ const resetForm = () => {
 
     <CRow>
       <CCol color="warning" class="p-2 pl-3">
-        <strong>
-          거래 건수 조회 결과 : {{ numFormat(cashBookCount, 0, 0) }} 건
-        </strong>
+        <strong> 거래 건수 조회 결과 : {{ numFormat(cashBookCount, 0, 0) }} 건 </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
-        <CButton color="info" size="sm" @click="resetForm">
-          검색조건 초기화
-        </CButton>
+        <CButton color="info" size="sm" @click="resetForm"> 검색조건 초기화 </CButton>
       </CCol>
     </CRow>
   </CCallout>

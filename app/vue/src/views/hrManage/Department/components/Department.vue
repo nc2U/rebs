@@ -24,9 +24,7 @@ const getUpperName = (up: number | null) => {
         level: number
       }[])
     : []
-  return up && !!deps.length
-    ? deps.filter(d => d.value === up).map(d => d.label)[0]
-    : ''
+  return up && !!deps.length ? deps.filter(d => d.value === up).map(d => d.label)[0] : ''
 }
 </script>
 

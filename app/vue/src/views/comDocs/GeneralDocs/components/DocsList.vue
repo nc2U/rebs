@@ -44,12 +44,7 @@ const sortFilter = (project: number | null) => emit('sort-filter', project)
     </CTableHead>
 
     <CTableBody>
-      <Docs
-        v-for="post in postList"
-        :key="post.pk"
-        :post="post"
-        @sort-filter="sortFilter"
-      />
+      <Docs v-for="post in postList" :key="post.pk" :post="post" @sort-filter="sortFilter" />
     </CTableBody>
   </CTable>
 

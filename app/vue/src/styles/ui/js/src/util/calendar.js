@@ -1,8 +1,6 @@
-export const convertToLocalDate = (d, locale, options = {}) =>
-  d.toLocaleDateString(locale, options)
+export const convertToLocalDate = (d, locale, options = {}) => d.toLocaleDateString(locale, options)
 
-export const convertToLocalTime = (d, locale, options = {}) =>
-  d.toLocaleTimeString(locale, options)
+export const convertToLocalTime = (d, locale, options = {}) => d.toLocaleTimeString(locale, options)
 
 export const createGroupsInArray = (arr, numberOfGroups) => {
   const perGroup = Math.ceil(arr.length / numberOfGroups)
@@ -18,9 +16,7 @@ export const getCurrentMonth = () => new Date().getMonth()
 
 export const getLocalDateFromString = (string, locale, time) => {
   const date = new Date(2013, 11, 31, 17, 19, 22)
-  let regex = time
-    ? date.toLocaleString(locale)
-    : date.toLocaleDateString(locale)
+  let regex = time ? date.toLocaleString(locale) : date.toLocaleDateString(locale)
   regex = regex
     .replace('2013', '(?<year>[0-9]{2,4})')
     .replace('12', '(?<month>[0-9]{1,2})')
@@ -143,12 +139,7 @@ const getTrailingDays = (year, month, leadingDays, monthDays) => {
 export const getMonthDetails = (year, month, firstDayOfWeek) => {
   const daysPrevMonth = getLeadingDays(year, month, firstDayOfWeek)
   const daysThisMonth = getMonthDays(year, month)
-  const daysNextMonth = getTrailingDays(
-    year,
-    month,
-    daysPrevMonth,
-    daysThisMonth,
-  )
+  const daysNextMonth = getTrailingDays(year, month, daysPrevMonth, daysThisMonth)
   const days = [...daysPrevMonth, ...daysThisMonth, ...daysNextMonth]
   const weeks = []
   for (const [index, day] of days.entries()) {
@@ -211,9 +202,7 @@ export const isDateInRange = (date, start, end) => {
 }
 
 export const isDateSelected = (date, start, end) => {
-  return (
-    (start && isSameDateAs(start, date)) || (end && isSameDateAs(end, date))
-  )
+  return (start && isSameDateAs(start, date)) || (end && isSameDateAs(end, date))
 }
 
 export const isEndDate = (date, start, end) => {

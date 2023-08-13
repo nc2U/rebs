@@ -18,10 +18,7 @@ const contMatchingModal = ref()
 
 const rowClass = computed(() => {
   let cls = ''
-  cls =
-    props.payment.contract && props.payment.installment_order === '-'
-      ? 'danger'
-      : cls
+  cls = props.payment.contract && props.payment.installment_order === '-' ? 'danger' : cls
   cls = !props.payment.contract ? 'warning' : cls
   return cls
 })
@@ -68,11 +65,7 @@ const payMatch = (payload: ProjectCashBook) => emit('pay-match', payload)
       </router-link>
     </CTableDataCell>
     <CTableDataCell
-      :class="
-        payment.contract && payment.installment_order === '-'
-          ? 'text-danger'
-          : ''
-      "
+      :class="payment.contract && payment.installment_order === '-' ? 'text-danger' : ''"
     >
       {{
         payment.contract && payment.installment_order === '-'
@@ -83,9 +76,7 @@ const payMatch = (payload: ProjectCashBook) => emit('pay-match', payload)
     <CTableDataCell>{{ payment.bank_account }}</CTableDataCell>
     <CTableDataCell>{{ payment.trader }}</CTableDataCell>
     <CTableDataCell>
-      <CButton type="button" color="info" size="sm" @click="toManage">
-        확인
-      </CButton>
+      <CButton type="button" color="info" size="sm" @click="toManage"> 확인 </CButton>
     </CTableDataCell>
   </CTableRow>
 

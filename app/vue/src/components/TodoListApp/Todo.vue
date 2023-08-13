@@ -41,12 +41,7 @@ const cancelEdit = (e: Event) => {
 <template>
   <li :class="{ completed: todo.completed, editing: editing }" class="todo">
     <div class="view">
-      <input
-        :checked="todo.completed"
-        class="toggle"
-        type="checkbox"
-        @change="toggleTodo(todo)"
-      />
+      <input :checked="todo.completed" class="toggle" type="checkbox" @change="toggleTodo(todo)" />
       <label @dblclick="editing = true" v-text="todo.title" />
       <button class="destroy" @click="delTodo(todo.pk)" />
     </div>

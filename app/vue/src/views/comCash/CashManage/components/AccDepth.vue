@@ -13,8 +13,7 @@ const listAccD1List = computed(() => useComCashStore.listAccD1List)
 const listAccD2List = computed(() => useComCashStore.listAccD2List)
 const listAccD3List = computed(() => useComCashStore.listAccD3List)
 
-const patchD3Hide = (pk: number, is_hide: boolean) =>
-  emit('patch-d3-hide', { pk, is_hide })
+const patchD3Hide = (pk: number, is_hide: boolean) => emit('patch-d3-hide', { pk, is_hide })
 
 const callModal = () => refDAccount.value.callModal()
 
@@ -26,11 +25,7 @@ defineExpose({ callModal })
     <template #header> 계정 분류 보기</template>
     <template #default>
       <CAccordion>
-        <CAccordionItem
-          v-for="d1 in listAccD1List"
-          :key="d1.pk"
-          :item-key="d1.pk"
-        >
+        <CAccordionItem v-for="d1 in listAccD1List" :key="d1.pk" :item-key="d1.pk">
           <CAccordionHeader>
             {{ `[${d1.code}] ${d1.name} (${d1.description})` }}
           </CAccordionHeader>

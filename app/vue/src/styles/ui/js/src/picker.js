@@ -118,9 +118,7 @@ class Picker extends BaseComponent {
 
     if (this._config.cancelButton) {
       const cancelButtonEl = document.createElement('button')
-      cancelButtonEl.classList.add(
-        ...this._getButtonClasses(this._config.cancelButtonClasses),
-      )
+      cancelButtonEl.classList.add(...this._getButtonClasses(this._config.cancelButtonClasses))
       cancelButtonEl.type = 'button'
       cancelButtonEl.innerHTML = this._config.cancelButton
       cancelButtonEl.addEventListener('click', () => {
@@ -133,9 +131,7 @@ class Picker extends BaseComponent {
 
     if (this._config.confirmButton) {
       const confirmButtonEl = document.createElement('button')
-      confirmButtonEl.classList.add(
-        ...this._getButtonClasses(this._config.confirmButtonClasses),
-      )
+      confirmButtonEl.classList.add(...this._getButtonClasses(this._config.confirmButtonClasses))
       confirmButtonEl.type = 'button'
       confirmButtonEl.innerHTML = this._config.confirmButton
       confirmButtonEl.addEventListener('click', () => {

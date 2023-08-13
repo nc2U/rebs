@@ -142,11 +142,7 @@ class Backdrop extends Config {
   }
 
   _emulateAnimation(callback) {
-    executeAfterTransition(
-      callback,
-      this._getElement(),
-      this._config.isAnimated,
-    )
+    executeAfterTransition(callback, this._getElement(), this._config.isAnimated)
   }
 }
 

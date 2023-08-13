@@ -46,10 +46,7 @@ const getSelector = element => {
     // so everything starting with `#` or `.`. If a "real" URL is used as the selector,
     // `document.querySelector` will rightfully complain it is invalid.
     // See https://github.com/twbs/bootstrap/issues/32273
-    if (
-      !hrefAttribute ||
-      (!hrefAttribute.includes('#') && !hrefAttribute.startsWith('.'))
-    ) {
+    if (!hrefAttribute || (!hrefAttribute.includes('#') && !hrefAttribute.startsWith('.'))) {
       return null
     }
 
@@ -58,8 +55,7 @@ const getSelector = element => {
       hrefAttribute = `#${hrefAttribute.split('#')[1]}`
     }
 
-    selector =
-      hrefAttribute && hrefAttribute !== '#' ? hrefAttribute.trim() : null
+    selector = hrefAttribute && hrefAttribute !== '#' ? hrefAttribute.trim() : null
   }
 
   return selector
@@ -102,8 +98,7 @@ const getTransitionDurationFromElement = element => {
   transitionDelay = transitionDelay.split(',')[0]
 
   return (
-    (Number.parseFloat(transitionDuration) +
-      Number.parseFloat(transitionDelay)) *
+    (Number.parseFloat(transitionDuration) + Number.parseFloat(transitionDelay)) *
     MILLISECONDS_MULTIPLIER
   )
 }
@@ -142,8 +137,7 @@ const isVisible = element => {
     return false
   }
 
-  const elementIsVisible =
-    getComputedStyle(element).getPropertyValue('visibility') === 'visible'
+  const elementIsVisible = getComputedStyle(element).getPropertyValue('visibility') === 'visible'
   // Handle `details` element as its content may falsie appear visible when it is closed
   const closedDetails = element.closest('details:not([open])')
 
@@ -178,10 +172,7 @@ const isDisabled = element => {
     return element.disabled
   }
 
-  return (
-    element.hasAttribute('disabled') &&
-    element.getAttribute('disabled') !== 'false'
-  )
+  return element.hasAttribute('disabled') && element.getAttribute('disabled') !== 'false'
 }
 
 const findShadowRoot = element => {
@@ -275,19 +266,14 @@ const execute = callback => {
   }
 }
 
-const executeAfterTransition = (
-  callback,
-  transitionElement,
-  waitForTransition = true,
-) => {
+const executeAfterTransition = (callback, transitionElement, waitForTransition = true) => {
   if (!waitForTransition) {
     execute(callback)
     return
   }
 
   const durationPadding = 5
-  const emulatedDuration =
-    getTransitionDurationFromElement(transitionElement) + durationPadding
+  const emulatedDuration = getTransitionDurationFromElement(transitionElement) + durationPadding
 
   let called = false
 
@@ -318,12 +304,7 @@ const executeAfterTransition = (
  * @param isCycleAllowed
  * @return {Element|elem} The proper element
  */
-const getNextActiveElement = (
-  list,
-  activeElement,
-  shouldGetNext,
-  isCycleAllowed,
-) => {
+const getNextActiveElement = (list, activeElement, shouldGetNext, isCycleAllowed) => {
   const listLength = list.length
   let index = list.indexOf(activeElement)
 

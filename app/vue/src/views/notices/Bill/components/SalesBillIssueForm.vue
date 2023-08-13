@@ -1,13 +1,5 @@
 <script lang="ts" setup>
-import {
-  ref,
-  reactive,
-  computed,
-  watch,
-  onMounted,
-  onUpdated,
-  PropType,
-} from 'vue'
+import { ref, reactive, computed, watch, onMounted, onUpdated, PropType } from 'vue'
 import { usePayment } from '@/store/pinia/payment'
 import { SalesBillIssue } from '@/store/types/notice'
 import { write_notice } from '@/utils/pageAuth'
@@ -198,23 +190,13 @@ onUpdated(() => formDataSetup())
     </CRow>
   </CAlert>
 
-  <CForm
-    class="needs-validation"
-    novalidate
-    :validated="validated"
-    @submit.prevent="onSubmit"
-  >
+  <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
     <CRow class="mb-1">
       <CCol sm="4" md="2" xl="1">
         <CFormLabel for="" class="col-form-label">발행일자</CFormLabel>
       </CCol>
       <CCol sm="8" md="4" xl="2">
-        <DatePicker
-          v-model="published_date"
-          placeholder="발행일자"
-          maxlength="10"
-          required
-        />
+        <DatePicker v-model="published_date" placeholder="발행일자" maxlength="10" required />
       </CCol>
     </CRow>
 
@@ -224,17 +206,9 @@ onUpdated(() => formDataSetup())
           <CFormLabel for="" class="col-form-label">발행회차</CFormLabel>
         </CCol>
         <CCol sm="8" md="4" xl="2">
-          <CFormSelect
-            v-model="form.now_payment_order"
-            placeholder="발행회차"
-            required
-          >
+          <CFormSelect v-model="form.now_payment_order" placeholder="발행회차" required>
             <option value="">--------</option>
-            <option
-              v-for="po in payOrderList"
-              :key="po.pk as number"
-              :value="po.pk"
-            >
+            <option v-for="po in payOrderList" :key="po.pk as number" :value="po.pk">
               {{ po.__str__ }}
             </option>
           </CFormSelect>
@@ -258,12 +232,7 @@ onUpdated(() => formDataSetup())
           <CFormLabel for="" class="col-form-label">시행자명</CFormLabel>
         </CCol>
         <CCol sm="8" md="4" xl="2">
-          <CFormInput
-            v-model="form.host_name"
-            placeholder="시행자명"
-            maxlength="20"
-            required
-          />
+          <CFormInput v-model="form.host_name" placeholder="시행자명" maxlength="20" required />
         </CCol>
 
         <CCol sm="4" md="2" xl="1">
@@ -286,11 +255,7 @@ onUpdated(() => formDataSetup())
           <CFormLabel for="" class="col-form-label">대행사명</CFormLabel>
         </CCol>
         <CCol sm="8" md="4" xl="2">
-          <CFormInput
-            v-model="form.agency"
-            placeholder="대행사명"
-            maxlength="20"
-          />
+          <CFormInput v-model="form.agency" placeholder="대행사명" maxlength="20" />
         </CCol>
 
         <CCol sm="4" md="2" xl="1">
@@ -338,12 +303,7 @@ onUpdated(() => formDataSetup())
           <CFormLabel for="" class="col-form-label">예금주[1]</CFormLabel>
         </CCol>
         <CCol sm="8" md="4" xl="3">
-          <CFormInput
-            v-model="form.bank_host1"
-            placeholder="예금주[1]"
-            maxlength="20"
-            required
-          />
+          <CFormInput v-model="form.bank_host1" placeholder="예금주[1]" maxlength="20" required />
         </CCol>
       </CRow>
 
@@ -352,33 +312,21 @@ onUpdated(() => formDataSetup())
           <CFormLabel for="" class="col-form-label">수납은행[2]</CFormLabel>
         </CCol>
         <CCol sm="8" md="4" xl="3">
-          <CFormInput
-            v-model="form.bank_account2"
-            placeholder="수납은행[2]"
-            maxlength="20"
-          />
+          <CFormInput v-model="form.bank_account2" placeholder="수납은행[2]" maxlength="20" />
         </CCol>
 
         <CCol sm="4" md="2" xl="1">
           <CFormLabel for="" class="col-form-label">계좌번호[2]</CFormLabel>
         </CCol>
         <CCol sm="8" md="4" xl="3">
-          <CFormInput
-            v-model="form.bank_number2"
-            placeholder="계좌번호[2]"
-            maxlength="25"
-          />
+          <CFormInput v-model="form.bank_number2" placeholder="계좌번호[2]" maxlength="25" />
         </CCol>
 
         <CCol sm="4" md="2" xl="1">
           <CFormLabel for="" class="col-form-label">예금주[2]</CFormLabel>
         </CCol>
         <CCol sm="8" md="4" xl="3">
-          <CFormInput
-            v-model="form.bank_host2"
-            placeholder="예금주[2]"
-            maxlength="20"
-          />
+          <CFormInput v-model="form.bank_host2" placeholder="예금주[2]" maxlength="20" />
         </CCol>
       </CRow>
 
@@ -389,9 +337,7 @@ onUpdated(() => formDataSetup())
 
         <CCol xs="12" sm="8" md="4" xl="2" class="mb-1">
           <CInputGroup>
-            <CInputGroupText @click="postCode.initiate()">
-              우편번호
-            </CInputGroupText>
+            <CInputGroupText @click="postCode.initiate()"> 우편번호 </CInputGroupText>
             <CFormInput
               v-model="form.zipcode"
               v-maska
@@ -433,12 +379,7 @@ onUpdated(() => formDataSetup())
         <CCol class="d-none d-sm-block d-md-none" sm="4" />
 
         <CCol sm="8" md="5" xl="3" class="mb-1">
-          <CFormInput
-            v-model="form.address3"
-            placeholder="참고항목"
-            maxlength="20"
-            required
-          />
+          <CFormInput v-model="form.address3" placeholder="참고항목" maxlength="20" required />
         </CCol>
       </CRow>
 
@@ -448,12 +389,7 @@ onUpdated(() => formDataSetup())
         </CCol>
 
         <CCol sm="8" md="10" lg="12" xl="11">
-          <CFormInput
-            v-model="form.title"
-            placeholder="고재서 제목"
-            maxlength="80"
-            required
-          />
+          <CFormInput v-model="form.title" placeholder="고재서 제목" maxlength="80" required />
         </CCol>
         <CCol class="d-none d-md-block d-lg-none" md="6" />
       </CRow>
@@ -463,21 +399,13 @@ onUpdated(() => formDataSetup())
           <CFormLabel for="" class="col-form-label">고지서 내용</CFormLabel>
         </CCol>
         <CCol sm="8" md="10" lg="12" xl="11">
-          <CFormTextarea
-            v-model="form.content"
-            placeholder="고지서 내용"
-            rows="4"
-          />
+          <CFormTextarea v-model="form.content" placeholder="고지서 내용" rows="4" />
         </CCol>
         <CCol class="d-none d-md-block d-lg-none" md="6" />
       </CRow>
 
       <CAlert color="secondary" class="text-right">
-        <CButton
-          type="submit"
-          :color="btnClass"
-          :disabled="!project || formsCheck"
-        >
+        <CButton type="submit" :color="btnClass" :disabled="!project || formsCheck">
           {{ confirmText }}
         </CButton>
       </CAlert>
@@ -488,9 +416,7 @@ onUpdated(() => formDataSetup())
 
   <ConfirmModal ref="refConfirmModal">
     <template #header> 수납 고지서 발행 정보</template>
-    <template #default>
-      수납 고지서 발행 정보 {{ confirmText }}을(를) 진행하시겠습니까?
-    </template>
+    <template #default> 수납 고지서 발행 정보 {{ confirmText }}을(를) 진행하시겠습니까? </template>
     <template #footer>
       <CButton :color="btnClass" @click="modalAction">저장</CButton>
     </template>

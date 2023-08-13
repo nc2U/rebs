@@ -31,42 +31,30 @@ const project = computed(() => projStore.project?.pk)
 const noticeStore = useNotice()
 const billIssue = computed(() => noticeStore.billIssue)
 
-const fetchSalesBillIssue = (projId: number) =>
-  noticeStore.fetchSalesBillIssue(projId)
-const createSalesBillIssue = (payload: SalesBillIssue) =>
-  noticeStore.createSalesBillIssue(payload)
-const patchSalesBillIssue = (payload: SalesBillIssue) =>
-  noticeStore.patchSalesBillIssue(payload)
+const fetchSalesBillIssue = (projId: number) => noticeStore.fetchSalesBillIssue(projId)
+const createSalesBillIssue = (payload: SalesBillIssue) => noticeStore.createSalesBillIssue(payload)
+const patchSalesBillIssue = (payload: SalesBillIssue) => noticeStore.patchSalesBillIssue(payload)
 
 const paymentStore = usePayment()
 const payOrder = computed(() => paymentStore.payOrder)
 
-const payOrderTime = computed(() =>
-  payOrder.value ? payOrder.value.pay_time : null,
-)
-const payOrderName = computed(() =>
-  payOrder.value ? payOrder.value.__str__ : '',
-)
+const payOrderTime = computed(() => (payOrder.value ? payOrder.value.pay_time : null))
+const payOrderName = computed(() => (payOrder.value ? payOrder.value.__str__ : ''))
 
 const fetchPayOrder = (pk: number) => paymentStore.fetchPayOrder(pk)
 const patchPayOrder = (payload: PayOrder) => paymentStore.patchPayOrder(payload)
-const fetchPayOrderList = (projId: number) =>
-  paymentStore.fetchPayOrderList(projId)
+const fetchPayOrderList = (projId: number) => paymentStore.fetchPayOrderList(projId)
 
 const projectDataStore = useProjectData()
 const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
-const fetchBuildingList = (projId: number) =>
-  projectDataStore.fetchBuildingList(projId)
+const fetchBuildingList = (projId: number) => projectDataStore.fetchBuildingList(projId)
 
 const contractStore = useContract()
-const fetchOrderGroupList = (projId: number) =>
-  contractStore.fetchOrderGroupList(projId)
-const fetchContractList = (payload: ContFilter) =>
-  contractStore.fetchContractList(payload)
+const fetchOrderGroupList = (projId: number) => contractStore.fetchOrderGroupList(projId)
+const fetchContractList = (payload: ContFilter) => contractStore.fetchContractList(payload)
 const fetchSalePriceList = (payload: { project: number }) =>
   contractStore.fetchSalePriceList(payload)
-const fetchDownPayList = (payload: { project: number }) =>
-  contractStore.fetchDownPayList(payload)
+const fetchDownPayList = (payload: { project: number }) => contractStore.fetchDownPayList(payload)
 
 watch(billIssue, val => {
   if (val) {
@@ -155,11 +143,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @proj-select="projSelect"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
 
   <ContentBody>
     <CCardBody class="pb-5">

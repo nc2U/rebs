@@ -14,9 +14,7 @@ import PaymentStatus from './components/PaymentStatus.vue'
 
 const date = ref(getToday())
 
-const excelUrl = computed(
-  () => `/excel/paid-status/?project=${project.value}&date=${date.value}`,
-)
+const excelUrl = computed(() => `/excel/paid-status/?project=${project.value}&date=${date.value}`)
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
@@ -27,14 +25,12 @@ const prDataStore = useProjectData()
 const fetchTypeList = (proj: number) => prDataStore.fetchTypeList(proj)
 
 const contStore = useContract()
-const fetchOrderGroupList = (proj: number) =>
-  contStore.fetchOrderGroupList(proj)
+const fetchOrderGroupList = (proj: number) => contStore.fetchOrderGroupList(proj)
 const fetchContSummaryList = (proj: number, date?: string) =>
   contStore.fetchContSummaryList(proj, date)
 
 const payStore = usePayment()
-const fetchPaySumList = (proj: number, date?: string) =>
-  payStore.fetchPaySumList(proj, date)
+const fetchPaySumList = (proj: number, date?: string) => payStore.fetchPaySumList(proj, date)
 
 const setDate = (d: string) => {
   date.value = d
@@ -69,11 +65,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @proj-select="projSelect"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
 
   <ContentBody>
     <CCardBody class="pb-5">

@@ -88,12 +88,7 @@ onUpdated(() => formDataSetup())
 </script>
 
 <template>
-  <CForm
-    class="needs-validation"
-    novalidate
-    :validated="validated"
-    @submit.prevent="onSubmit"
-  >
+  <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
     <CModalBody class="p-4">
       <div>
         <CRow class="mb-3">
@@ -103,11 +98,7 @@ onUpdated(() => formDataSetup())
               <CCol sm="8">
                 <CFormSelect v-model.number="form.bankcode" required>
                   <option value="">---------</option>
-                  <option
-                    v-for="bank in bankCodeList"
-                    :key="bank.pk"
-                    :value="bank.pk"
-                  >
+                  <option v-for="bank in bankCodeList" :key="bank.pk" :value="bank.pk">
                     {{ bank.name }}
                   </option>
                 </CFormSelect>
@@ -119,9 +110,7 @@ onUpdated(() => formDataSetup())
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">
-                계좌별칭
-              </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 계좌별칭 </CFormLabel>
               <CCol sm="8">
                 <CFormInput
                   v-model="form.alias_name"
@@ -134,15 +123,9 @@ onUpdated(() => formDataSetup())
           </CCol>
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">
-                계좌번호
-              </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 계좌번호 </CFormLabel>
               <CCol sm="8">
-                <CFormInput
-                  v-model="form.number"
-                  maxlength="30"
-                  placeholder="계좌번호"
-                />
+                <CFormInput v-model="form.number" maxlength="30" placeholder="계좌번호" />
               </CCol>
             </CRow>
           </CCol>
@@ -153,11 +136,7 @@ onUpdated(() => formDataSetup())
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label"> 예금주</CFormLabel>
               <CCol sm="8">
-                <CFormInput
-                  v-model="form.holder"
-                  maxlength="20"
-                  placeholder="예금주"
-                />
+                <CFormInput v-model="form.holder" maxlength="20" placeholder="예금주" />
               </CCol>
             </CRow>
           </CCol>
@@ -165,11 +144,7 @@ onUpdated(() => formDataSetup())
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">개설일자</CFormLabel>
               <CCol sm="8">
-                <DatePicker
-                  v-model="form.open_date"
-                  maxlength="10"
-                  placeholder="개설일자"
-                />
+                <DatePicker v-model="form.open_date" maxlength="10" placeholder="개설일자" />
               </CCol>
             </CRow>
           </CCol>
@@ -180,11 +155,7 @@ onUpdated(() => formDataSetup())
             <CRow>
               <CFormLabel class="col-sm-2 col-form-label">비고</CFormLabel>
               <CCol sm="10">
-                <CFormTextarea
-                  v-model="form.note"
-                  maxlength="50"
-                  placeholder="비고"
-                />
+                <CFormTextarea v-model="form.note" maxlength="50" placeholder="비고" />
               </CCol>
             </CRow>
           </CCol>
@@ -201,9 +172,7 @@ onUpdated(() => formDataSetup())
                   color="success"
                   hide-details
                 />
-                <v-tooltip activator="parent" location="start">
-                  운영비용(전도금) 계좌"
-                </v-tooltip>
+                <v-tooltip activator="parent" location="start"> 운영비용(전도금) 계좌" </v-tooltip>
               </CCol>
             </CRow>
           </CCol>
@@ -218,9 +187,7 @@ onUpdated(() => formDataSetup())
                   color="info"
                   hide-details
                 />
-                <v-tooltip activator="parent" location="start">
-                  용역비 직불 계좌
-                </v-tooltip>
+                <v-tooltip activator="parent" location="start"> 용역비 직불 계좌 </v-tooltip>
               </CCol>
             </CRow>
           </CCol>

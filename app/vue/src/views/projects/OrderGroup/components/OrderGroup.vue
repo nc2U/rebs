@@ -86,18 +86,11 @@ onBeforeMount(() => dataSetup())
         v-model="form.order_group_name"
         maxlength="20"
         placeholder="차수그룹명"
-        @keypress.enter="
-          formCheck(form.order_group_name !== order.order_group_name)
-        "
+        @keypress.enter="formCheck(form.order_group_name !== order.order_group_name)"
       />
     </CTableDataCell>
     <CTableDataCell class="text-center">
-      <CButton
-        color="success"
-        size="sm"
-        :disabled="formsCheck"
-        @click="onUpdateOrder"
-      >
+      <CButton color="success" size="sm" :disabled="formsCheck" @click="onUpdateOrder">
         수정
       </CButton>
       <CButton color="danger" size="sm" @click="onDeleteOrder">삭제</CButton>
@@ -107,8 +100,8 @@ onBeforeMount(() => dataSetup())
   <ConfirmModal ref="refConfirmModal">
     <template #header> 차수그룹 삭제</template>
     <template #default>
-      이 그룹에 종속 데이터가 있는 경우 해당 데이터를 모두 제거한 후 삭제가능
-      합니다. 해당 차수그룹을 삭제 하시겠습니까?
+      이 그룹에 종속 데이터가 있는 경우 해당 데이터를 모두 제거한 후 삭제가능 합니다. 해당
+      차수그룹을 삭제 하시겠습니까?
     </template>
     <template #footer>
       <CButton color="danger" @click="modalAction">삭제</CButton>

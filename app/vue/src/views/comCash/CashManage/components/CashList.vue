@@ -26,15 +26,12 @@ const cashBookList = computed(() => comCashStore.cashBookList)
 
 const pageSelect = (page: number) => emit('page-select', page)
 
-const multiSubmit = (payload: {
-  formData: CashBook
-  sepData: CashBook | null
-}) => emit('multi-submit', payload)
+const multiSubmit = (payload: { formData: CashBook; sepData: CashBook | null }) =>
+  emit('multi-submit', payload)
 
 const onDelete = (pk: number) => emit('on-delete', pk)
 
-const patchD3Hide = (payload: { pk: number; is_hide: boolean }) =>
-  emit('patch-d3-hide', payload)
+const patchD3Hide = (payload: { pk: number; is_hide: boolean }) => emit('patch-d3-hide', payload)
 
 const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
 </script>

@@ -51,10 +51,7 @@ export const useProCash = defineStore('proCash', () => {
 
   const formAccD3List = ref<ProjectAccountD3[]>([])
 
-  const fetchProFormAccD3List = (
-    d2: number | null = null,
-    sort: number | null = null,
-  ) => {
+  const fetchProFormAccD3List = (d2: number | null = null, sort: number | null = null) => {
     const uri = `?sort=${sort || ''}&d2=${d2 || ''}`
     return api
       .get(`/project-account-depth3/${uri}`)
@@ -73,9 +70,7 @@ export const useProCash = defineStore('proCash', () => {
 
   const fetchProBankAccList = (project: number) =>
     api
-      .get(
-        `/project-bank-account/?project=${project}&is_hide=false&inactive=false`,
-      )
+      .get(`/project-bank-account/?project=${project}&is_hide=false&inactive=false`)
       .then(res => (proBankAccountList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
@@ -129,11 +124,7 @@ export const useProCash = defineStore('proCash', () => {
 
   const balanceByAccList = ref<BalanceByAccount[]>([])
 
-  const fetchBalanceByAccList = (payload: {
-    project: number
-    direct?: string
-    date?: string
-  }) => {
+  const fetchBalanceByAccList = (payload: { project: number; direct?: string; date?: string }) => {
     const { project, date, direct = '0' } = payload
     let url = `/pr-balance-by-acc/?project=${project}&bank_account__directpay=${direct}`
     if (date) url += `&date=${date}`
@@ -145,10 +136,7 @@ export const useProCash = defineStore('proCash', () => {
 
   const proDateCashBook = ref<ProjectCashBook[]>([])
 
-  const fetchDateCashBookList = (payload: {
-    project: number
-    date: string
-  }) => {
+  const fetchDateCashBookList = (payload: { project: number; date: string }) => {
     const { project, date } = payload
     const url = `/pr-date-cashbook/?project=${project}&date=${date}`
     return api
@@ -188,8 +176,7 @@ export const useProCash = defineStore('proCash', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const proCashPages = (itemsPerPage: number) =>
-    Math.ceil(proCashesCount.value / itemsPerPage)
+  const proCashPages = (itemsPerPage: number) => Math.ceil(proCashesCount.value / itemsPerPage)
 
   const paymentStore = usePayment()
 
@@ -335,13 +322,7 @@ export const useProCash = defineStore('proCash', () => {
                     project,
                     ...filters,
                   })
-                  .then(() =>
-                    message(
-                      'warning',
-                      '알림!',
-                      '해당 오브젝트가 삭제되었습니다.',
-                    ),
-                  ),
+                  .then(() => message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.')),
               )
           }
         })
@@ -366,12 +347,9 @@ export const useProCash = defineStore('proCash', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const proImprestPages = (itemsPerPage: number) =>
-    Math.ceil(proImprestCount.value / itemsPerPage)
+  const proImprestPages = (itemsPerPage: number) => Math.ceil(proImprestCount.value / itemsPerPage)
 
-  const imprestBAccount = computed(() =>
-    allProBankAccountList.value.filter(b => b.is_imprest),
-  )
+  const imprestBAccount = computed(() => allProBankAccountList.value.filter(b => b.is_imprest))
 
   const getImpBankAccs = computed(() =>
     imprestBAccount.value.map(i => ({ value: i.pk, label: i.alias_name })),
@@ -409,9 +387,7 @@ export const useProCash = defineStore('proCash', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const patchPrImprestBook = (
-    payload: ProjectCashBook & { filters: CashBookFilter },
-  ) => {
+  const patchPrImprestBook = (payload: ProjectCashBook & { filters: CashBookFilter }) => {
     const { pk, filters, ...formData } = payload
     api
       .patch(`/project-imprest/${pk}/`, formData)
@@ -466,13 +442,7 @@ export const useProCash = defineStore('proCash', () => {
                     project,
                     ...filters,
                   })
-                  .then(() =>
-                    message(
-                      'warning',
-                      '알림!',
-                      '해당 오브젝트가 삭제되었습니다.',
-                    ),
-                  ),
+                  .then(() => message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.')),
               )
           }
         })

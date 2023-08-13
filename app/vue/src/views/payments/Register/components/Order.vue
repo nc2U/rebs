@@ -13,9 +13,7 @@ const props = defineProps({
   paymentList: { type: Array as PropType<AllPayment[]>, default: () => [] },
 })
 
-const dueDate = computed(
-  () => props.order.extra_due_date || props.order.pay_due_date || '-',
-)
+const dueDate = computed(() => props.order.extra_due_date || props.order.pay_due_date || '-')
 
 const paidByOrder = computed(() => {
   const paid = props.paymentList

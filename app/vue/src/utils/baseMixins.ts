@@ -1,8 +1,4 @@
-export const numFormat = (
-  val: number | string,
-  n?: number,
-  zero: string | 0 = '-',
-) => {
+export const numFormat = (val: number | string, n?: number, zero: string | 0 = '-') => {
   const value = typeof val === 'number' ? val : parseInt(val) || 0
   const parts = n ? value.toFixed(n).split('.') : value.toString().split('.')
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
@@ -19,20 +15,14 @@ export const diffDate = (date1: Date | string, date2?: Date) => {
   return between / 1000 / 60 / 60 / 24
 }
 
-export const addDays = (date: Date, days: number) =>
-  date.setDate(date.getDate() + days)
+export const addDays = (date: Date, days: number) => date.setDate(date.getDate() + days)
 
 export const dateFormat = (date: Date | string) => {
-  return typeof date === 'string'
-    ? date
-    : date.toISOString().replace(/T.*$/, '')
+  return typeof date === 'string' ? date : date.toISOString().replace(/T.*$/, '')
 }
 
 export const getToday = () =>
   new Date(new Date().getTime() + 32400000).toISOString().replace(/T.*$/, '')
 
 export const timeFormat = (date: string) =>
-  new Date(+new Date(date) + 32400000)
-    .toISOString()
-    .replace('T', ' ')
-    .replace(/\..*/, '')
+  new Date(+new Date(date) + 32400000).toISOString().replace('T', ' ').replace(/\..*/, '')

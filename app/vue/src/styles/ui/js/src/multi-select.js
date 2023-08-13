@@ -291,8 +291,7 @@ class MultiSelect extends BaseComponent {
     }
 
     const nodes = Array.from(node.childNodes).filter(
-      element =>
-        element.nodeName === 'OPTION' || element.nodeName === 'OPTGROUP',
+      element => element.nodeName === 'OPTION' || element.nodeName === 'OPTGROUP',
     )
     const options = []
 
@@ -555,15 +554,9 @@ class MultiSelect extends BaseComponent {
     const value = String(element.dataset.value)
     const text = element.textContent
 
-    if (
-      this._config.multiple &&
-      element.classList.contains(CLASS_NAME_SELECTED)
-    ) {
+    if (this._config.multiple && element.classList.contains(CLASS_NAME_SELECTED)) {
       this._deselectOption(value)
-    } else if (
-      this._config.multiple &&
-      !element.classList.contains(CLASS_NAME_SELECTED)
-    ) {
+    } else if (this._config.multiple && !element.classList.contains(CLASS_NAME_SELECTED)) {
       this._selectOption(value, text)
     } else if (!this._config.multiple) {
       this._selectOption(value, text)
@@ -588,19 +581,13 @@ class MultiSelect extends BaseComponent {
       })
     }
 
-    const nativeOption = SelectorEngine.findOne(
-      `option[value="${value}"]`,
-      this._element,
-    )
+    const nativeOption = SelectorEngine.findOne(`option[value="${value}"]`, this._element)
 
     if (nativeOption) {
       nativeOption.selected = true
     }
 
-    const option = SelectorEngine.findOne(
-      `[data-value="${value}"]`,
-      this._optionsElement,
-    )
+    const option = SelectorEngine.findOne(`[data-value="${value}"]`, this._optionsElement)
     if (option) {
       option.classList.add(CLASS_NAME_SELECTED)
     }
@@ -619,15 +606,9 @@ class MultiSelect extends BaseComponent {
     const selected = this._selection.filter(e => e.value !== value)
     this._selection = selected
 
-    SelectorEngine.findOne(
-      `option[value="${value}"]`,
-      this._element,
-    ).selected = false
+    SelectorEngine.findOne(`option[value="${value}"]`, this._element).selected = false
 
-    const option = SelectorEngine.findOne(
-      `[data-value="${value}"]`,
-      this._optionsElement,
-    )
+    const option = SelectorEngine.findOne(`[data-value="${value}"]`, this._optionsElement)
     if (option) {
       option.classList.remove(CLASS_NAME_SELECTED)
     }
@@ -681,10 +662,7 @@ class MultiSelect extends BaseComponent {
       return
     }
 
-    const selectionCleaner = SelectorEngine.findOne(
-      SELECTOR_SELECTION_CLEANER,
-      this._clone,
-    )
+    const selectionCleaner = SelectorEngine.findOne(SELECTOR_SELECTION_CLEANER, this._clone)
 
     if (this._selection.length > 0) {
       selectionCleaner.style.removeProperty('display')
@@ -734,8 +712,7 @@ class MultiSelect extends BaseComponent {
 
     if (
       this._selection.length > 0 &&
-      (this._config.selectionType === 'tags' ||
-        this._config.selectionType === 'text')
+      (this._config.selectionType === 'tags' || this._config.selectionType === 'text')
     ) {
       this._searchElement.size = size
       return
@@ -743,8 +720,7 @@ class MultiSelect extends BaseComponent {
 
     if (
       this._selection.length === 0 &&
-      (this._config.selectionType === 'tags' ||
-        this._config.selectionType === 'text')
+      (this._config.selectionType === 'tags' || this._config.selectionType === 'text')
     ) {
       this._searchElement.removeAttribute('size')
     }
@@ -818,9 +794,7 @@ class MultiSelect extends BaseComponent {
       placeholder.innerHTML = this._config.searchNoResultsLabel
 
       if (!SelectorEngine.findOne(SELECTOR_OPTIONS_EMPTY, this._clone)) {
-        SelectorEngine.findOne(SELECTOR_OPTIONS, this._clone).append(
-          placeholder,
-        )
+        SelectorEngine.findOne(SELECTOR_OPTIONS, this._clone).append(placeholder)
       }
     }
   }
@@ -848,8 +822,7 @@ class MultiSelect extends BaseComponent {
   static clearMenus(event) {
     if (
       event &&
-      (event.button === RIGHT_MOUSE_BUTTON ||
-        (event.type === 'keyup' && event.key !== TAB_KEY))
+      (event.button === RIGHT_MOUSE_BUTTON || (event.type === 'keyup' && event.key !== TAB_KEY))
     ) {
       return
     }

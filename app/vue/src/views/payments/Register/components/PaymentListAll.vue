@@ -17,9 +17,7 @@ const emit = defineEmits(['on-update', 'on-delete'])
 
 const paymentSum = computed(() => {
   return props.paymentList.length !== 0
-    ? props.paymentList
-        .map((p: AllPayment) => p.income)
-        .reduce((x: number, y: number) => x + y, 0)
+    ? props.paymentList.map((p: AllPayment) => p.income).reduce((x: number, y: number) => x + y, 0)
     : 0
 })
 
@@ -63,9 +61,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 
     <CTableHead>
       <CTableRow class="text-right">
-        <CTableHeaderCell :color="TableSecondary" class="text-center">
-          합계
-        </CTableHeaderCell>
+        <CTableHeaderCell :color="TableSecondary" class="text-center"> 합계 </CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
         <CTableHeaderCell>
           {{ numFormat(paymentSum) }}

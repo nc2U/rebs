@@ -1,7 +1,7 @@
 @mixin avatar($width) {
   width: $width;
   height: $width;
-  font-size: $width * .4;
+  font-size: $width * 0.4;
 
   .avatar-status {
     width: divide($width, 3.75);

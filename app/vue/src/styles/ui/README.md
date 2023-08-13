@@ -19,7 +19,6 @@
   <a href="https://coreui.io/blog/">Blog</a>
 </p>
 
-
 ## Table of contents
 
 - [Table of contents](#table-of-contents)
@@ -38,7 +37,6 @@
 - [Support CoreUI Development](#support-coreui-development)
 - [Copyright and license](#copyright-and-license)
 
-
 ## Quick start
 
 Several quick start options are available:
@@ -51,7 +49,6 @@ Several quick start options are available:
 
 Read the [Getting started page](https://coreui.io/docs/getting-started/introduction/) for information on the framework contents, templates and examples, and more.
 
-
 ## Status
 
 [![Build Status](https://github.com/coreui/coreui/workflows/JS%20Tests/badge.svg?branch=main)](https://github.com/coreui/coreui/actions?query=workflow%3AJS+Tests+branch%3Amain)
@@ -62,7 +59,6 @@ Read the [Getting started page](https://coreui.io/docs/getting-started/introduct
 [![CSS Brotli size](https://img.badgesize.io/coreui/coreui/main/dist/css/coreui.min.css?compression=brotli&label=CSS%20Brotli%20size)](https://github.com/coreui/coreui/blob/main/dist/css/coreui.min.css)
 [![JS gzip size](https://img.badgesize.io/coreui/coreui/main/dist/js/coreui.min.js?compression=gzip&label=JS%20gzip%20size)](https://github.com/coreui/coreui/blob/main/dist/js/coreui.min.js)
 [![JS Brotli size](https://img.badgesize.io/coreui/coreui/main/dist/js/coreui.min.js?compression=brotli&label=JS%20Brotli%20size)](https://github.com/coreui/coreui/blob/main/dist/js/coreui.min.js)
-
 
 ## What's included
 
@@ -120,7 +116,6 @@ coreui/
 
 We provide compiled CSS and JS (`coreui.*`), as well as compiled and minified CSS and JS (`coreui.min.*`). [source maps](https://developers.google.com/web/tools/chrome-devtools/javascript/source-maps) (`coreui.*.map`) are available for use with certain browsers' developer tools. Bundled JS files (`coreui.bundle.js` and minified `coreui.bundle.min.js`) include [Popper](https://popper.js.org/).
 
-
 ## Bugs and feature requests
 
 Have a bug or a feature request? Please first read the [issue guidelines](https://github.com/coreui/coreui/blob/main/.github/CONTRIBUTING.md#using-the-issue-tracker) and search for existing and closed issues. If your problem or idea is not addressed yet, [please open a new issue](https://github.com/coreui/coreui/issues/new).
@@ -175,19 +170,19 @@ For transparency into our release cycle and in striving to maintain backward com
 
 See [the Releases section of our project](https://github.com/coreui/coreui/releases) for changelogs for each release version.
 
-
 ## Creators
 
 **Łukasz Holeczek**
 
-* <https://twitter.com/lukaszholeczek>
-* <https://github.com/mrholek>
+- <https://twitter.com/lukaszholeczek>
+- <https://github.com/mrholek>
 
 **Andrzej Kopański**
 
-* <https://github.com/xidedix>
+- <https://github.com/xidedix>
 
 ## Thanks
+
 CoreUI is designed as the extension of [Bootstrap](https://getbootstrap.com). Special thanks for [Bootstrap team](https://getbootstrap.com/docs/5.0/about/team/) and [Bootstrap's contributors](https://github.com/twbs/bootstrap/graphs/contributors).
 
 ## Support CoreUI Development

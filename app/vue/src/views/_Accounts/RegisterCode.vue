@@ -64,18 +64,12 @@ const onSubmit = (event: Event) => {
               >
                 <CRow class="mb-2">
                   <CCol>
-                    <CFormInput
-                      v-model="registerCode"
-                      type="password"
-                      required
-                    />
+                    <CFormInput v-model="registerCode" type="password" required />
                   </CCol>
                 </CRow>
                 <CRow>
                   <CCol class="d-grid gap-2 mb-2">
-                    <CButton class="btn btn-primary" type="submit">
-                      제출하기
-                    </CButton>
+                    <CButton class="btn btn-primary" type="submit"> 제출하기 </CButton>
                   </CCol>
                 </CRow>
               </CForm>
@@ -83,8 +77,8 @@ const onSubmit = (event: Event) => {
               <CRow>
                 <CCol xs="12">
                   <p class="text-medium-emphasis">
-                    계정 생성코드 발급 및 가입 후 시스템 이용 관련 권한 관련
-                    사항은 관리자에게 문의하여 주시기 바랍니다.
+                    계정 생성코드 발급 및 가입 후 시스템 이용 관련 권한 관련 사항은 관리자에게
+                    문의하여 주시기 바랍니다.
                   </p>
                 </CCol>
               </CRow>
@@ -92,9 +86,7 @@ const onSubmit = (event: Event) => {
               <CRow>
                 <CCol>
                   <p>
-                    <router-link :to="{ name: 'Login' }">
-                      로그인 화면으로 돌아가기
-                    </router-link>
+                    <router-link :to="{ name: 'Login' }"> 로그인 화면으로 돌아가기 </router-link>
                   </p>
                 </CCol>
               </CRow>

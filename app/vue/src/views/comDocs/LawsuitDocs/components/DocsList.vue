@@ -45,12 +45,7 @@ const pageSelect = (page: number) => emit('page-select', page)
     </CTableHead>
 
     <CTableBody>
-      <Docs
-        v-for="post in postList"
-        :key="post.pk"
-        :post="post"
-        @sort-filter="sortFilter"
-      />
+      <Docs v-for="post in postList" :key="post.pk" :post="post" @sort-filter="sortFilter" />
     </CTableBody>
   </CTable>
 

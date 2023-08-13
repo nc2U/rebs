@@ -62,18 +62,14 @@ const listFiltering = (payload: StaffFilter) => {
     })
 }
 
-const fetchStaffList = (payload: StaffFilter) =>
-  comStore.fetchStaffList(payload)
+const fetchStaffList = (payload: StaffFilter) => comStore.fetchStaffList(payload)
 const fetchAllGradeList = (com?: number) => comStore.fetchAllGradeList(com)
 const fetchAllDepartList = (com?: number) => comStore.fetchAllDepartList(com)
-const fetchAllPositionList = (com?: number) =>
-  comStore.fetchAllPositionList(com)
+const fetchAllPositionList = (com?: number) => comStore.fetchAllPositionList(com)
 const fetchAllDutyList = (com?: number) => comStore.fetchAllDutyList(com)
 
-const createStaff = (payload: Staff, p?: number, c?: number) =>
-  comStore.createStaff(payload, p, c)
-const updateStaff = (payload: Staff, p?: number, c?: number) =>
-  comStore.updateStaff(payload, p, c)
+const createStaff = (payload: Staff, p?: number, c?: number) => comStore.createStaff(payload, p, c)
+const updateStaff = (payload: Staff, p?: number, c?: number) => comStore.updateStaff(payload, p, c)
 const deleteStaff = (pk: number, com: number) => comStore.deleteStaff(pk, com)
 
 const multiSubmit = (payload: Staff) => {
@@ -132,17 +128,8 @@ onMounted(() => {
     <CCardBody>
       <ListController ref="refListControl" @list-filtering="listFiltering" />
       <AddStaff :company="comName" @multi-submit="multiSubmit" />
-      <TableTitleRow
-        title="직원 목록"
-        excel
-        :url="excelUrl"
-        :disabled="!company"
-      />
-      <StaffList
-        @multi-submit="multiSubmit"
-        @on-delete="onDelete"
-        @page-select="pageSelect"
-      />
+      <TableTitleRow title="직원 목록" excel :url="excelUrl" :disabled="!company" />
+      <StaffList @multi-submit="multiSubmit" @on-delete="onDelete" @page-select="pageSelect" />
     </CCardBody>
 
     <CCardFooter class="text-right">&nbsp;</CCardFooter>

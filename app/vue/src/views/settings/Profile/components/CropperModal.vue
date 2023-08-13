@@ -49,12 +49,7 @@ export default defineComponent({
   <CModal :visible="visible" @close="() => close">
     <CModalHeader :close-button="false">
       <CModalTitle component="h6"> Crop your new profile picture</CModalTitle>
-      <CButton
-        type="button"
-        aria-label="Close"
-        class="btn btn-close"
-        @click="close"
-      />
+      <CButton type="button" aria-label="Close" class="btn btn-close" @click="close" />
     </CModalHeader>
     <CModalBody>
       <cropper

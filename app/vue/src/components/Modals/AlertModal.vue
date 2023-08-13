@@ -23,11 +23,7 @@ defineExpose({ callModal, close })
     <CModalHeader class="text-body">
       <CModalTitle>
         <slot name="icon">
-          <v-icon
-            icon="mdi mdi-alert-circle"
-            color="indigo-lighten-2"
-            class="mr-2"
-          />
+          <v-icon icon="mdi mdi-alert-circle" color="indigo-lighten-2" class="mr-2" />
         </slot>
         <slot name="header"> {{ headMessage || ' 알림' }}</slot>
       </CModalTitle>

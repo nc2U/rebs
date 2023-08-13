@@ -2,13 +2,7 @@ import { defineComponent, h, ref, resolveComponent, computed } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { RouterLink, useRoute, RouteLocation } from 'vue-router'
 
-import {
-  CBadge,
-  CNavGroup,
-  CNavItem,
-  CSidebarNav,
-  CNavTitle,
-} from '@coreui/vue'
+import { CBadge, CNavGroup, CNavItem, CSidebarNav, CNavTitle } from '@coreui/vue'
 import { CIcon } from '@coreui/icons-vue'
 import nav from '@/layouts/_nav'
 
@@ -27,9 +21,7 @@ type Item = {
 }
 
 const isCash = computed(
-  () =>
-    useAccount().superAuth ||
-    Number(useAccount().staffAuth?.company_cash || null),
+  () => useAccount().superAuth || Number(useAccount().staffAuth?.company_cash || null),
 )
 
 const normalizePath = (path: string) =>
@@ -87,8 +79,7 @@ const AppSidebarNav = defineComponent({
               }),
               item.name,
             ],
-            default: () =>
-              item.items && item.items.map(child => renderItem(child)),
+            default: () => item.items && item.items.map(child => renderItem(child)),
           },
         )
       }

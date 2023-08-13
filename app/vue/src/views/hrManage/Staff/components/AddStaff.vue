@@ -30,11 +30,7 @@ const multiSubmit = (payload: Staff) => emit('multi-submit', payload)
   <FormModal ref="refFormModal" size="lg">
     <template #header>직원 정보 등록</template>
     <template #default>
-      <StaffForm
-        :company="company"
-        @multi-submit="multiSubmit"
-        @close="refFormModal.close()"
-      />
+      <StaffForm :company="company" @multi-submit="multiSubmit" @close="refFormModal.close()" />
     </template>
   </FormModal>
 

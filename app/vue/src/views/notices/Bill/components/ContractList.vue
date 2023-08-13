@@ -25,8 +25,7 @@ const allUnChecked = () => {
   if (!allChecked.value) emit('all-un-checked')
 }
 
-const onCtorChk = (payload: { chk: boolean; pk: number }) =>
-  emit('on-ctor-chk', payload)
+const onCtorChk = (payload: { chk: boolean; pk: number }) => emit('on-ctor-chk', payload)
 </script>
 
 <template>
@@ -46,12 +45,7 @@ const onCtorChk = (payload: { chk: boolean; pk: number }) =>
     <CTableHead :color="TableSecondary">
       <CTableRow class="text-center">
         <CTableHeaderCell scope="col">
-          <CFormCheck
-            id="checkAll"
-            v-model="allChecked"
-            label="전체"
-            @change="allUnChecked"
-          />
+          <CFormCheck id="checkAll" v-model="allChecked" label="전체" @change="allUnChecked" />
         </CTableHeaderCell>
         <CTableHeaderCell scope="col">차수</CTableHeaderCell>
         <CTableHeaderCell scope="col">타입</CTableHeaderCell>

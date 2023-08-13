@@ -35,9 +35,7 @@ export const usePayment = defineStore('payment', () => {
     const unit_type = payload.unit_type || ''
 
     return api
-      .get(
-        `/price/?project=${project}&order_group=${order_group}&unit_type=${unit_type}`,
-      )
+      .get(`/price/?project=${project}&order_group=${order_group}&unit_type=${unit_type}`)
       .then(res => (priceList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
@@ -126,17 +124,13 @@ export const usePayment = defineStore('payment', () => {
   const createDownPay = (payload: DownPay) =>
     api
       .post(`/down-payment/`, payload)
-      .then(res =>
-        fetchDownPayList({ project: res.data.project }).then(() => message()),
-      )
+      .then(res => fetchDownPayList({ project: res.data.project }).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
   const updateDownPay = (payload: DownPay) =>
     api
       .put(`/down-payment/${payload.pk}/`, payload)
-      .then(res =>
-        fetchDownPayList({ project: res.data.project }).then(() => message()),
-      )
+      .then(res => fetchDownPayList({ project: res.data.project }).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
   const deleteDownPay = (pk: number, project: number) =>
@@ -158,18 +152,13 @@ export const usePayment = defineStore('payment', () => {
           pk: p.pk,
           deal_date: p.deal_date,
           contract: p.contract,
-          order_group: p.contract
-            ? p.contract.order_group.order_group_name
-            : '-',
+          order_group: p.contract ? p.contract.order_group.order_group_name : '-',
           type_color: p.contract ? p.contract.unit_type.color : '-',
           type_name: p.contract ? p.contract.unit_type.name : '-',
           serial_number: p.contract ? p.contract.serial_number : '-',
           contractor: p.contract ? p.contract.contractor : '-',
           income: p.income,
-          installment_order:
-            p.contract && p.installment_order
-              ? p.installment_order.__str__
-              : '-',
+          installment_order: p.contract && p.installment_order ? p.installment_order.__str__ : '-',
           bank_account: p.bank_account.alias_name,
           trader: p.trader,
         }))
@@ -183,8 +172,7 @@ export const usePayment = defineStore('payment', () => {
     let url = `/payment/?project=${project}`
     if (payload.from_date) url += `&from_deal_date=${payload.from_date}`
     if (payload.to_date) url += `&to_deal_date=${payload.to_date}`
-    if (payload.order_group)
-      url += `&contract__order_group=${payload.order_group}`
+    if (payload.order_group) url += `&contract__order_group=${payload.order_group}`
     if (payload.unit_type) url += `&contract__unit_type=${payload.unit_type}`
     if (payload.pay_order) url += `&installment_order=${payload.pay_order}`
     if (payload.pay_account) url += `&bank_account=${payload.pay_account}`
@@ -215,8 +203,7 @@ export const usePayment = defineStore('payment', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const paymentPages = (itemsPerPage: number) =>
-    Math.ceil(paymentsCount.value / itemsPerPage)
+  const paymentPages = (itemsPerPage: number) => Math.ceil(paymentsCount.value / itemsPerPage)
 
   // state & getters
   const paySumList = ref<PaySumByType[]>([])

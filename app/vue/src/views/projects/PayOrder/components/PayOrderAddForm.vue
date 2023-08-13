@@ -61,12 +61,7 @@ const resetForm = () => {
 </script>
 
 <template>
-  <CForm
-    novalidate
-    class="needs-validation"
-    :validated="validated"
-    @submit.prevent="onSubmit"
-  >
+  <CForm novalidate class="needs-validation" :validated="validated" @submit.prevent="onSubmit">
     <CRow class="p-2">
       <CCol xl="5">
         <CRow>
@@ -110,15 +105,9 @@ const resetForm = () => {
           </CCol>
           <CCol md="3" class="mb-2">
             <CRow>
-              <CFormLabel class="col-md-8 col-form-label">
-                PM용역비 여부
-              </CFormLabel>
+              <CFormLabel class="col-md-8 col-form-label"> PM용역비 여부 </CFormLabel>
               <CCol md="1" class="pt-2">
-                <CFormSwitch
-                  v-model="form.is_pm_cost"
-                  :checked="false"
-                  :disabled="disabled"
-                />
+                <CFormSwitch v-model="form.is_pm_cost" :checked="false" :disabled="disabled" />
               </CCol>
             </CRow>
           </CCol>
@@ -174,9 +163,7 @@ const resetForm = () => {
       <CCol xl="1">
         <CRow>
           <CCol md="12" class="d-grid gap-2 d-lg-block mb-3">
-            <CButton color="primary" type="submit" :disabled="disabled">
-              회차추가
-            </CButton>
+            <CButton color="primary" type="submit" :disabled="disabled"> 회차추가 </CButton>
           </CCol>
         </CRow>
       </CCol>
@@ -185,9 +172,7 @@ const resetForm = () => {
 
   <ConfirmModal ref="refConfirmModal">
     <template #header> 층별 타입 등록</template>
-    <template #default>
-      프로젝트의 층별 범위 타입 정보 등록을 진행하시겠습니까?
-    </template>
+    <template #default> 프로젝트의 층별 범위 타입 정보 등록을 진행하시겠습니까? </template>
     <template #footer>
       <CButton color="primary" @click="modalAction">저장</CButton>
     </template>

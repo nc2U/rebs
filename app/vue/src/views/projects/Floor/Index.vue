@@ -13,14 +13,10 @@ const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
 
 const pDataStore = useProjectData()
-const fetchFloorTypeList = (projId: number) =>
-  pDataStore.fetchFloorTypeList(projId)
-const createFloorType = (payload: UnitFloorType) =>
-  pDataStore.createFloorType(payload)
-const updateFloorType = (payload: UnitFloorType) =>
-  pDataStore.updateFloorType(payload)
-const deleteFloorType = (pk: number, project: number) =>
-  pDataStore.deleteFloorType(pk, project)
+const fetchFloorTypeList = (projId: number) => pDataStore.fetchFloorTypeList(projId)
+const createFloorType = (payload: UnitFloorType) => pDataStore.createFloorType(payload)
+const updateFloorType = (payload: UnitFloorType) => pDataStore.updateFloorType(payload)
+const deleteFloorType = (pk: number, project: number) => pDataStore.deleteFloorType(pk, project)
 
 const onSubmit = (payload: UnitFloorType) =>
   createFloorType({ ...{ project: project.value }, ...payload })
@@ -41,11 +37,7 @@ onBeforeMount(() => fetchFloorTypeList(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @proj-select="projSelect"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
 
   <ContentBody>
     <CCardBody class="pb-5">

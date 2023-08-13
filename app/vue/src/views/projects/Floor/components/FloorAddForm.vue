@@ -54,12 +54,7 @@ const resetForm = () => {
 </script>
 
 <template>
-  <CForm
-    novalidate
-    class="needs-validation"
-    :validated="validated"
-    @submit.prevent="onSubmit"
-  >
+  <CForm novalidate class="needs-validation" :validated="validated" @submit.prevent="onSubmit">
     <CRow class="p-2">
       <CCol md="2" class="mb-2">
         <CFormSelect v-model="form.sort" required :disabled="disabled">
@@ -115,18 +110,14 @@ const resetForm = () => {
       </CCol>
 
       <CCol md="2" class="d-grid gap-2 d-lg-block mb-3">
-        <CButton color="primary" type="submit" :disabled="disabled">
-          층별타입추가
-        </CButton>
+        <CButton color="primary" type="submit" :disabled="disabled"> 층별타입추가 </CButton>
       </CCol>
     </CRow>
   </CForm>
 
   <ConfirmModal ref="refConfirmModal">
     <template #header> 층별 타입 등록</template>
-    <template #default>
-      프로젝트의 층별 범위 타입 정보 등록을 진행하시겠습니까?
-    </template>
+    <template #default> 프로젝트의 층별 범위 타입 정보 등록을 진행하시겠습니까? </template>
     <template #footer>
       <CButton color="primary" @click="modalAction">저장</CButton>
     </template>

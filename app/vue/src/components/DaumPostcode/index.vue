@@ -41,17 +41,13 @@ const heightVal = computed(() => props.height + 'px')
 const borderVal = computed(() => props.borderWidth + 'px solid')
 const leftVal = computed(
   () =>
-    ((window.innerWidth || document.documentElement.clientWidth) -
-      props.width) /
-      2 -
+    ((window.innerWidth || document.documentElement.clientWidth) - props.width) / 2 -
     props.borderWidth +
     'px',
 )
 const topVal = computed(
   () =>
-    ((window.innerHeight || document.documentElement.clientHeight) -
-      props.height) /
-      2 -
+    ((window.innerHeight || document.documentElement.clientHeight) - props.height) / 2 -
     props.borderWidth +
     'px',
 )
@@ -67,9 +63,7 @@ const theme = computed(() => {
 })
 
 const initiate = (formNum = 1) => {
-  ;(
-    window as { daum: { postcode: { load: (p: () => void) => void } } }
-  ).daum.postcode.load(() => {
+  ;(window as { daum: { postcode: { load: (p: () => void) => void } } }).daum.postcode.load(() => {
     new (
       window as {
         daum: {

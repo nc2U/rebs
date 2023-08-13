@@ -47,12 +47,7 @@ const resetForm = () => {
 </script>
 
 <template>
-  <CForm
-    novalidate
-    class="needs-validation"
-    :validated="validated"
-    @submit.prevent="onSubmit"
-  >
+  <CForm novalidate class="needs-validation" :validated="validated" @submit.prevent="onSubmit">
     <CRow class="p-2" color="success">
       <CCol md="3" class="mb-2">
         <CFormInput
@@ -84,18 +79,14 @@ const resetForm = () => {
       </CCol>
 
       <CCol md="3" class="d-grid gap-2 d-lg-block mb-3">
-        <CButton color="primary" type="submit" :disabled="disabled">
-          그룹추가
-        </CButton>
+        <CButton color="primary" type="submit" :disabled="disabled"> 그룹추가 </CButton>
       </CCol>
     </CRow>
   </CForm>
 
   <ConfirmModal ref="refConfirmModal">
     <template #header> 차수그룹 등록</template>
-    <template #default>
-      프로젝트의 차수그룹 정보 등록을 진행하시겠습니까?
-    </template>
+    <template #default> 프로젝트의 차수그룹 정보 등록을 진행하시겠습니까? </template>
     <template #footer>
       <CButton color="primary" @click="modalAction">저장</CButton>
     </template>

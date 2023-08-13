@@ -15,11 +15,10 @@
 .date-picker-body {
   display: grid;
   grid-template-areas:
-    "ranges calendars"
-    "ranges timepickers";
+    'ranges calendars'
+    'ranges timepickers';
   grid-template-rows: auto;
   grid-template-columns: auto auto;
-
 }
 
 .date-picker-ranges {
@@ -48,7 +47,11 @@
 }
 
 .date-picker-arrow-icon {
-  @include ltr-rtl-value-only("background-image", escape-svg($date-picker-separator-icon), escape-svg($date-picker-separator-icon-rtl));
+  @include ltr-rtl-value-only(
+    'background-image',
+    escape-svg($date-picker-separator-icon),
+    escape-svg($date-picker-separator-icon-rtl)
+  );
 }
 
 .date-picker-cleaner-icon {
@@ -75,8 +78,8 @@
 
     .form-select {
       width: initial;
-      padding-right: .25rem;
-      padding-left: .25rem;
+      padding-right: 0.25rem;
+      padding-left: 0.25rem;
       text-align: right;
       background: none;
       border: 0;

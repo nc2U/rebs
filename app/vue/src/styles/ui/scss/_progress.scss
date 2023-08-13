@@ -3,7 +3,9 @@
 // scss-docs-start progress-keyframes
 @if $enable-transitions {
   @keyframes progress-bar-stripes {
-    0% { background-position-x: $progress-height; }
+    0% {
+      background-position-x: $progress-height;
+    }
   }
 }
 // scss-docs-end progress-keyframes
@@ -64,7 +66,7 @@
 
 // White progress bar
 .progress.progress-white {
-  background-color: rgba(255, 255, 255, .2);
+  background-color: rgba(255, 255, 255, 0.2);
   .progress-bar {
     background-color: $white;
   }

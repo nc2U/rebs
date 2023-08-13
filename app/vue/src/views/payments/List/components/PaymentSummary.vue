@@ -75,12 +75,7 @@ const getPaidByType = (ut: number) =>
     <CTableBody v-if="project">
       <CTableRow v-for="type in unitTypeList" :key="type.pk" class="text-right">
         <CTableHeaderCell class="text-left pl-5">
-          <CIcon
-            name="cib-node-js"
-            :style="{ color: type.color }"
-            size="sm"
-            class="mr-1"
-          />
+          <CIcon name="cib-node-js" :style="{ color: type.color }" size="sm" class="mr-1" />
           {{ type.name }}
         </CTableHeaderCell>
         <CTableDataCell>

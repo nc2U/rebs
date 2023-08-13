@@ -66,14 +66,7 @@ const onSubmit = (payload: Succession) => {
     {{ done ? '완료' : '' }}
   </CTableDataCell>
   <CTableDataCell class="text-center">
-    <CButton
-      type="button"
-      :color="buttonColor"
-      size="sm"
-      @click="callFormModal"
-    >
-      확인
-    </CButton>
+    <CButton type="button" :color="buttonColor" size="sm" @click="callFormModal"> 확인 </CButton>
   </CTableDataCell>
 
   <FormModal ref="successionFormModal" size="lg">

@@ -41,12 +41,7 @@ const toFindAccount = () => {
 </script>
 
 <template>
-  <CForm
-    novalidate
-    :validated="validated"
-    class="needs-validation"
-    @submit.prevent="onSubmit"
-  >
+  <CForm novalidate :validated="validated" class="needs-validation" @submit.prevent="onSubmit">
     <h1>로그인</h1>
     <p class="text-muted">Sign In to your account</p>
     <CInputGroup class="mb-3">

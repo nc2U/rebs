@@ -149,34 +149,18 @@ defineExpose({ listFiltering })
           </CCol>
 
           <CCol lg="6" xl="2" class="mb-3">
-            <CFormSelect
-              v-model="form.pay_order"
-              :disabled="byCont"
-              @change="listFiltering(1)"
-            >
+            <CFormSelect v-model="form.pay_order" :disabled="byCont" @change="listFiltering(1)">
               <option value="">납부회차 선택</option>
-              <option
-                v-for="po in payOrderList"
-                :key="po.pk as number"
-                :value="po.pk"
-              >
+              <option v-for="po in payOrderList" :key="po.pk as number" :value="po.pk">
                 {{ po.__str__ }}
               </option>
             </CFormSelect>
           </CCol>
 
           <CCol lg="6" xl="2" class="mb-3">
-            <CFormSelect
-              v-model="form.pay_account"
-              :disabled="byCont"
-              @change="listFiltering(1)"
-            >
+            <CFormSelect v-model="form.pay_account" :disabled="byCont" @change="listFiltering(1)">
               <option value="">납부계좌 선택</option>
-              <option
-                v-for="ba in allProBankAccountList"
-                :key="ba.pk as number"
-                :value="ba.pk"
-              >
+              <option v-for="ba in allProBankAccountList" :key="ba.pk as number" :value="ba.pk">
                 {{ ba.alias_name }}
               </option>
             </CFormSelect>
@@ -226,9 +210,7 @@ defineExpose({ listFiltering })
         <strong>납부 건수 조회 결과 : {{ paymentsCount }} 건</strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
-        <CButton color="info" size="sm" @click="resetForm">
-          검색조건 초기화
-        </CButton>
+        <CButton color="info" size="sm" @click="resetForm"> 검색조건 초기화 </CButton>
       </CCol>
     </CRow>
   </CCallout>

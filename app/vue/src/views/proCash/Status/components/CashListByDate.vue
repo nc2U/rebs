@@ -91,18 +91,12 @@ const setData = () => {
 
     <CTableBody>
       <CTableRow v-for="inc in dateIncSet" :key="inc.pk" class="text-center">
-        <CTableDataCell
-          >{{ getD1Text(inc.project_account_d2 as number) }}
-        </CTableDataCell>
-        <CTableDataCell
-          >{{ getD3Text(inc.project_account_d3 as number) }}
-        </CTableDataCell>
+        <CTableDataCell>{{ getD1Text(inc.project_account_d2 as number) }} </CTableDataCell>
+        <CTableDataCell>{{ getD3Text(inc.project_account_d3 as number) }} </CTableDataCell>
         <CTableDataCell class="text-right" color="success">
           {{ numFormat(inc.income || 0) }}
         </CTableDataCell>
-        <CTableDataCell
-          >{{ getBankAcc(inc.bank_account as number) }}
-        </CTableDataCell>
+        <CTableDataCell>{{ getBankAcc(inc.bank_account as number) }} </CTableDataCell>
         <CTableDataCell class="text-left">{{ inc.trader }}</CTableDataCell>
         <CTableDataCell class="text-left">{{ inc.content }}</CTableDataCell>
       </CTableRow>
@@ -117,9 +111,7 @@ const setData = () => {
       </CTableRow>
 
       <CTableRow :color="TableSecondary" class="text-right">
-        <CTableHeaderCell colspan="2" class="text-center">
-          합계
-        </CTableHeaderCell>
+        <CTableHeaderCell colspan="2" class="text-center"> 합계 </CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(dateIncTotal) }}</CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
@@ -185,9 +177,7 @@ const setData = () => {
       </CTableRow>
 
       <CTableRow :color="TableSecondary" class="text-right">
-        <CTableHeaderCell colspan="2" class="text-center">
-          합계
-        </CTableHeaderCell>
+        <CTableHeaderCell colspan="2" class="text-center"> 합계 </CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(dateOutTotal) }}</CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>

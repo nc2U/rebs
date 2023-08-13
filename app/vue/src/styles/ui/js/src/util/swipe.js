@@ -98,9 +98,7 @@ class Swipe extends Config {
 
   _move(event) {
     this._deltaX =
-      event.touches && event.touches.length > 1
-        ? 0
-        : event.touches[0].clientX - this._deltaX
+      event.touches && event.touches.length > 1 ? 0 : event.touches[0].clientX - this._deltaX
   }
 
   _handleSwipe() {
@@ -118,26 +116,18 @@ class Swipe extends Config {
       return
     }
 
-    execute(
-      direction > 0 ? this._config.rightCallback : this._config.leftCallback,
-    )
+    execute(direction > 0 ? this._config.rightCallback : this._config.leftCallback)
   }
 
   _initEvents() {
     if (this._supportPointerEvents) {
-      EventHandler.on(this._element, EVENT_POINTERDOWN, event =>
-        this._start(event),
-      )
+      EventHandler.on(this._element, EVENT_POINTERDOWN, event => this._start(event))
       EventHandler.on(this._element, EVENT_POINTERUP, event => this._end(event))
 
       this._element.classList.add(CLASS_NAME_POINTER_EVENT)
     } else {
-      EventHandler.on(this._element, EVENT_TOUCHSTART, event =>
-        this._start(event),
-      )
-      EventHandler.on(this._element, EVENT_TOUCHMOVE, event =>
-        this._move(event),
-      )
+      EventHandler.on(this._element, EVENT_TOUCHSTART, event => this._start(event))
+      EventHandler.on(this._element, EVENT_TOUCHMOVE, event => this._move(event))
       EventHandler.on(this._element, EVENT_TOUCHEND, event => this._end(event))
     }
   }
@@ -145,16 +135,13 @@ class Swipe extends Config {
   _eventIsPointerPenTouch(event) {
     return (
       this._supportPointerEvents &&
-      (event.pointerType === POINTER_TYPE_PEN ||
-        event.pointerType === POINTER_TYPE_TOUCH)
+      (event.pointerType === POINTER_TYPE_PEN || event.pointerType === POINTER_TYPE_TOUCH)
     )
   }
 
   // Static
   static isSupported() {
-    return (
-      'ontouchstart' in document.documentElement || navigator.maxTouchPoints > 0
-    )
+    return 'ontouchstart' in document.documentElement || navigator.maxTouchPoints > 0
   }
 }
 

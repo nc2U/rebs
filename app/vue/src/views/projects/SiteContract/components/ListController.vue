@@ -21,9 +21,7 @@ const own_sort_select = [
 const siteStore = useSite()
 const siteContCount = computed(() => siteStore.siteContCount)
 
-const formsCheck = computed(
-  () => form.own_sort === '' && form.search.trim() === '',
-)
+const formsCheck = computed(() => form.own_sort === '' && form.search.trim() === '')
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
@@ -50,17 +48,9 @@ defineExpose({ listFiltering })
       <CCol lg="4" md="6">
         <CRow>
           <CCol md="4" class="mb-3">
-            <CFormSelect
-              v-model="form.own_sort"
-              :disabled="!project"
-              @change="listFiltering(1)"
-            >
+            <CFormSelect v-model="form.own_sort" :disabled="!project" @change="listFiltering(1)">
               <option value="">소유구분</option>
-              <option
-                v-for="sort in own_sort_select"
-                :key="sort.val"
-                :value="sort.val"
-              >
+              <option v-for="sort in own_sort_select" :key="sort.val" :value="sort.val">
                 {{ sort.text }}
               </option>
             </CFormSelect>
@@ -82,14 +72,10 @@ defineExpose({ listFiltering })
     </CRow>
     <CRow>
       <CCol class="p-2 pl-3">
-        <strong>
-          소유자 수 조회 결과 : {{ numFormat(siteContCount) }} 건
-        </strong>
+        <strong> 소유자 수 조회 결과 : {{ numFormat(siteContCount) }} 건 </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
-        <CButton color="info" size="sm" @click="resetForm">
-          검색조건 초기화
-        </CButton>
+        <CButton color="info" size="sm" @click="resetForm"> 검색조건 초기화 </CButton>
       </CCol>
     </CRow>
   </CCallout>

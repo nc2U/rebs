@@ -36,7 +36,6 @@
   }
 }
 
-
 // Textual addons
 //
 // Serves as a catch-all element for any text or radio/checkbox input you wish
@@ -53,10 +52,10 @@
   text-align: center;
   white-space: nowrap;
   background-color: var(--#{$prefix}input-group-addon-bg, $input-group-addon-bg);
-  border: $input-border-width solid var(--#{$prefix}input-group-addon-border-color, $input-group-addon-border-color);
+  border: $input-border-width solid
+    var(--#{$prefix}input-group-addon-border-color, $input-group-addon-border-color);
   @include border-radius($input-border-radius);
 }
-
 
 // Sizing
 //
@@ -83,9 +82,8 @@
 
 .input-group-lg > .form-select,
 .input-group-sm > .form-select {
-  @include ltr-rtl("padding-right", $form-select-padding-x + $form-select-indicator-padding);
+  @include ltr-rtl('padding-right', $form-select-padding-x + $form-select-indicator-padding);
 }
-
 
 // Rounded corners
 //
@@ -109,13 +107,19 @@
     }
   }
 
-  $validation-messages: "";
+  $validation-messages: '';
   @each $state in map-keys($form-validation-states) {
-    $validation-messages: $validation-messages + ":not(." + unquote($state) + "-tooltip)" + ":not(." + unquote($state) + "-feedback)";
+    $validation-messages: $validation-messages +
+      ':not(.' +
+      unquote($state) +
+      '-tooltip)' +
+      ':not(.' +
+      unquote($state) +
+      '-feedback)';
   }
 
   > :not(:first-child):not(.dropdown-menu)#{$validation-messages} {
-    @include ltr-rtl("margin-left", -$input-border-width);
+    @include ltr-rtl('margin-left', -$input-border-width);
     @include border-start-radius(0);
   }
 }

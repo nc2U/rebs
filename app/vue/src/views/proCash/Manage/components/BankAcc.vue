@@ -24,11 +24,7 @@ defineExpose({ callModal })
     <template #header> 프로젝트 거래 계좌 관리</template>
     <template #default>
       <CAccordion>
-        <CAccordionItem
-          v-for="bank in allProBankAccList"
-          :key="bank.pk"
-          :item-key="bank.pk"
-        >
+        <CAccordionItem v-for="bank in allProBankAccList" :key="bank.pk" :item-key="bank.pk">
           <CAccordionHeader>
             {{ `${bank.alias_name}  :: ${bank.number}` }}
           </CAccordionHeader>

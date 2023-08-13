@@ -41,13 +41,10 @@ const form = reactive({
 
 const formsCheck = computed(() => {
   if (props.payment) {
-    const io = props.payment.installment_order
-      ? props.payment.installment_order.pk
-      : null
+    const io = props.payment.installment_order ? props.payment.installment_order.pk : null
     const a = form.installment_order && form.installment_order === io
     const b = form.trader && form.trader === props.payment.trader
-    const c =
-      form.bank_account && form.bank_account === props.payment.bank_account.pk
+    const c = form.bank_account && form.bank_account === props.payment.bank_account.pk
     const d = form.income && form.income === props.payment.income
     const e = form.note === props.payment.note
     const f = form.deal_date === props.payment.deal_date
@@ -58,9 +55,7 @@ const formsCheck = computed(() => {
 })
 
 const allowedPeriod = computed(() => {
-  return props.payment
-    ? useAccount().superAuth || diffDate(props.payment.deal_date) <= 90
-    : true
+  return props.payment ? useAccount().superAuth || diffDate(props.payment.deal_date) <= 90 : true
 })
 
 const paymentStore = usePayment()
@@ -90,8 +85,7 @@ const onSubmit = (event: Event) => {
   } else refAlertModal.value.callModal()
 }
 
-const modalAction = () =>
-  emit('on-submit', { rmCont: removeCont.value, ...form })
+const modalAction = () => emit('on-submit', { rmCont: removeCont.value, ...form })
 
 const deleteConfirm = () => {
   if (write_payment.value) {
@@ -131,23 +125,14 @@ onBeforeMount(() => formDataSet())
 </script>
 
 <template>
-  <CForm
-    class="needs-validation"
-    novalidate
-    :validated="validated"
-    @submit.prevent="onSubmit"
-  >
+  <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
     <CModalBody class="p-4">
       <CRow class="mb-2">
         <CCol xs="6">
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label"> 수납일자</CFormLabel>
             <CCol sm="8">
-              <DatePicker
-                v-model="form.deal_date"
-                required
-                placeholder="거래일자"
-              />
+              <DatePicker v-model="form.deal_date" required placeholder="거래일자" />
             </CCol>
           </CRow>
         </CCol>
@@ -160,11 +145,7 @@ onBeforeMount(() => formDataSet())
             <CCol sm="8">
               <CFormSelect v-model="form.installment_order" required>
                 <option value="">---------</option>
-                <option
-                  v-for="po in payOrderList"
-                  :key="po.pk as number"
-                  :value="po.pk"
-                >
+                <option v-for="po in payOrderList" :key="po.pk as number" :value="po.pk">
                   {{ po.__str__ }}
                 </option>
               </CFormSelect>
@@ -177,11 +158,7 @@ onBeforeMount(() => formDataSet())
             <CCol sm="8">
               <CFormSelect v-model="form.bank_account" required>
                 <option value="">---------</option>
-                <option
-                  v-for="pb in allProBankAccountList"
-                  :key="pb.pk as number"
-                  :value="pb.pk"
-                >
+                <option v-for="pb in allProBankAccountList" :key="pb.pk as number" :value="pb.pk">
                   {{ pb.alias_name }}
                 </option>
               </CFormSelect>
@@ -249,25 +226,12 @@ onBeforeMount(() => formDataSet())
     </CModalBody>
 
     <CModalFooter>
-      <CButton type="button" color="light" @click="$emit('close')">
-        닫기
-      </CButton>
+      <CButton type="button" color="light" @click="$emit('close')"> 닫기 </CButton>
       <slot name="footer">
-        <CButton
-          type="submit"
-          :color="payment ? 'success' : 'primary'"
-          :disabled="formsCheck"
-        >
+        <CButton type="submit" :color="payment ? 'success' : 'primary'" :disabled="formsCheck">
           저장
         </CButton>
-        <CButton
-          v-if="payment"
-          type="button"
-          color="danger"
-          @click="deleteConfirm"
-        >
-          삭제
-        </CButton>
+        <CButton v-if="payment" type="button" color="danger" @click="deleteConfirm"> 삭제 </CButton>
       </slot>
     </CModalFooter>
   </CForm>

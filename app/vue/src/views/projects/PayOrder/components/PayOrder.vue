@@ -107,10 +107,7 @@ onBeforeMount(() => dataSetup())
 
     <CTableDataCell>
       <CCol class="pt-2 pl-3">
-        <CFormSwitch
-          v-model="form.is_pm_cost"
-          :checked="payOrder.is_pm_cost === true"
-        />
+        <CFormSwitch v-model="form.is_pm_cost" :checked="payOrder.is_pm_cost === true" />
       </CCol>
     </CTableDataCell>
 
@@ -150,19 +147,12 @@ onBeforeMount(() => dataSetup())
         maxlength="10"
         placeholder="납부유예일"
         :required="false"
-        @keypress.enter="
-          formCheck(form.extra_due_date !== payOrder.extra_due_date)
-        "
+        @keypress.enter="formCheck(form.extra_due_date !== payOrder.extra_due_date)"
       />
     </CTableDataCell>
 
     <CTableDataCell class="text-center">
-      <CButton
-        color="success"
-        size="sm"
-        :disabled="formsCheck"
-        @click="onUpdatePayOrder"
-      >
+      <CButton color="success" size="sm" :disabled="formsCheck" @click="onUpdatePayOrder">
         수정
       </CButton>
       <CButton color="danger" size="sm" @click="onDeletePayOrder">삭제</CButton>
@@ -172,9 +162,8 @@ onBeforeMount(() => dataSetup())
   <ConfirmModal ref="refConfirmModal">
     <template #header> 납부 회차 삭제</template>
     <template #default>
-      프로젝트 입출금 데이터에 이 납부 회차 정보가 등록되어 있는 경우 해당
-      데이터에서 납부 회차 정보가 삭제됩니다. 이 납부 회차 정보를 삭제
-      하시겠습니까?
+      프로젝트 입출금 데이터에 이 납부 회차 정보가 등록되어 있는 경우 해당 데이터에서 납부 회차
+      정보가 삭제됩니다. 이 납부 회차 정보를 삭제 하시겠습니까?
     </template>
     <template #footer>
       <CButton color="danger" @click="modalAction">삭제</CButton>

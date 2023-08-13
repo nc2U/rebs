@@ -20,10 +20,8 @@ const listAccD3List = computed(() => comCashStore.listAccD3List)
 const comBankList = computed(() => comCashStore.comBankList)
 const dateCashBook = computed(() => comCashStore.dateCashBook)
 
-const getDAccText = <T extends { pk: number; name: string }>(
-  num: number | null,
-  acc: T[],
-) => (num ? acc.filter((d: T) => d.pk === num).map((d: T) => d.name)[0] : '')
+const getDAccText = <T extends { pk: number; name: string }>(num: number | null, acc: T[]) =>
+  num ? acc.filter((d: T) => d.pk === num).map((d: T) => d.name)[0] : ''
 
 const getBankAcc = (num: number) => {
   return comBankList.value
@@ -114,9 +112,7 @@ onBeforeMount(() => setData())
       </CTableRow>
 
       <CTableRow :color="TableSecondary" class="text-right">
-        <CTableHeaderCell colspan="3" class="text-center">
-          합계
-        </CTableHeaderCell>
+        <CTableHeaderCell colspan="3" class="text-center"> 합계 </CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(dateIncTotal) }}</CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
@@ -188,9 +184,7 @@ onBeforeMount(() => setData())
       </CTableRow>
 
       <CTableRow :color="TableSecondary" class="text-right">
-        <CTableHeaderCell colspan="3" class="text-center">
-          합계
-        </CTableHeaderCell>
+        <CTableHeaderCell colspan="3" class="text-center"> 합계 </CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(dateOutTotal) }}</CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>

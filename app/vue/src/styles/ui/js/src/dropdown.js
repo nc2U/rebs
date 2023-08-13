@@ -54,14 +54,12 @@ const CLASS_NAME_DROPSTART = 'dropstart'
 const CLASS_NAME_DROPUP_CENTER = 'dropup-center'
 const CLASS_NAME_DROPDOWN_CENTER = 'dropdown-center'
 
-const SELECTOR_DATA_TOGGLE =
-  '[data-coreui-toggle="dropdown"]:not(.disabled):not(:disabled)'
+const SELECTOR_DATA_TOGGLE = '[data-coreui-toggle="dropdown"]:not(.disabled):not(:disabled)'
 const SELECTOR_DATA_TOGGLE_SHOWN = `${SELECTOR_DATA_TOGGLE}.${CLASS_NAME_SHOW}`
 const SELECTOR_MENU = '.dropdown-menu'
 const SELECTOR_NAVBAR = '.navbar'
 const SELECTOR_NAVBAR_NAV = '.navbar-nav'
-const SELECTOR_VISIBLE_ITEMS =
-  '.dropdown-menu .dropdown-item:not(.disabled):not(:disabled)'
+const SELECTOR_VISIBLE_ITEMS = '.dropdown-menu .dropdown-item:not(.disabled):not(:disabled)'
 
 const PLACEMENT_TOP = isRTL() ? 'top-end' : 'top-start'
 const PLACEMENT_TOPEND = isRTL() ? 'top-start' : 'top-end'
@@ -131,11 +129,7 @@ class Dropdown extends BaseComponent {
       relatedTarget: this._element,
     }
 
-    const showEvent = EventHandler.trigger(
-      this._element,
-      EVENT_SHOW,
-      relatedTarget,
-    )
+    const showEvent = EventHandler.trigger(this._element, EVENT_SHOW, relatedTarget)
 
     if (showEvent.defaultPrevented) {
       return
@@ -147,10 +141,7 @@ class Dropdown extends BaseComponent {
     // empty mouseover listeners to the body's immediate children;
     // only needed because of broken event delegation on iOS
     // https://www.quirksmode.org/blog/archives/2014/02/mouse_event_bub.html
-    if (
-      'ontouchstart' in document.documentElement &&
-      !this._parent.closest(SELECTOR_NAVBAR_NAV)
-    ) {
+    if ('ontouchstart' in document.documentElement && !this._parent.closest(SELECTOR_NAVBAR_NAV)) {
       for (const element of [].concat(...document.body.children)) {
         EventHandler.on(element, 'mouseover', noop)
       }
@@ -193,11 +184,7 @@ class Dropdown extends BaseComponent {
 
   // Private
   _completeHide(relatedTarget) {
-    const hideEvent = EventHandler.trigger(
-      this._element,
-      EVENT_HIDE,
-      relatedTarget,
-    )
+    const hideEvent = EventHandler.trigger(this._element, EVENT_HIDE, relatedTarget)
     if (hideEvent.defaultPrevented) {
       return
     }
@@ -240,9 +227,7 @@ class Dropdown extends BaseComponent {
 
   _createPopper() {
     if (typeof Popper === 'undefined') {
-      throw new TypeError(
-        "Bootstrap's dropdowns require Popper (https://popper.js.org)",
-      )
+      throw new TypeError("Bootstrap's dropdowns require Popper (https://popper.js.org)")
     }
 
     let referenceElement = this._element
@@ -256,11 +241,7 @@ class Dropdown extends BaseComponent {
     }
 
     const popperConfig = this._getPopperConfig()
-    this._popper = Popper.createPopper(
-      referenceElement,
-      this._menu,
-      popperConfig,
-    )
+    this._popper = Popper.createPopper(referenceElement, this._menu, popperConfig)
   }
 
   _isShown() {
@@ -287,9 +268,7 @@ class Dropdown extends BaseComponent {
     }
 
     // We need to trim the value because custom properties can also include spaces
-    const isEnd =
-      getComputedStyle(this._menu).getPropertyValue('--cui-position').trim() ===
-      'end'
+    const isEnd = getComputedStyle(this._menu).getPropertyValue('--cui-position').trim() === 'end'
 
     if (parentDropdown.classList.contains(CLASS_NAME_DROPUP)) {
       return isEnd ? PLACEMENT_TOPEND : PLACEMENT_TOP
@@ -355,10 +334,9 @@ class Dropdown extends BaseComponent {
   }
 
   _selectMenuItem({ key, target }) {
-    const items = SelectorEngine.find(
-      SELECTOR_VISIBLE_ITEMS,
-      this._menu,
-    ).filter(element => isVisible(element))
+    const items = SelectorEngine.find(SELECTOR_VISIBLE_ITEMS, this._menu).filter(element =>
+      isVisible(element),
+    )
 
     if (!items.length) {
       return
@@ -366,12 +344,7 @@ class Dropdown extends BaseComponent {
 
     // if target isn't included in items (e.g. when expanding the dropdown)
     // allow cycling to get the last item in case key equals ARROW_UP_KEY
-    getNextActiveElement(
-      items,
-      target,
-      key === ARROW_DOWN_KEY,
-      !items.includes(target),
-    ).focus()
+    getNextActiveElement(items, target, key === ARROW_DOWN_KEY, !items.includes(target)).focus()
   }
 
   // Static
@@ -392,10 +365,7 @@ class Dropdown extends BaseComponent {
   }
 
   static clearMenus(event) {
-    if (
-      event.button === RIGHT_MOUSE_BUTTON ||
-      (event.type === 'keyup' && event.key !== TAB_KEY)
-    ) {
+    if (event.button === RIGHT_MOUSE_BUTTON || (event.type === 'keyup' && event.key !== TAB_KEY)) {
       return
     }
 
@@ -486,23 +456,13 @@ EventHandler.on(
   SELECTOR_DATA_TOGGLE,
   Dropdown.dataApiKeydownHandler,
 )
-EventHandler.on(
-  document,
-  EVENT_KEYDOWN_DATA_API,
-  SELECTOR_MENU,
-  Dropdown.dataApiKeydownHandler,
-)
+EventHandler.on(document, EVENT_KEYDOWN_DATA_API, SELECTOR_MENU, Dropdown.dataApiKeydownHandler)
 EventHandler.on(document, EVENT_CLICK_DATA_API, Dropdown.clearMenus)
 EventHandler.on(document, EVENT_KEYUP_DATA_API, Dropdown.clearMenus)
-EventHandler.on(
-  document,
-  EVENT_CLICK_DATA_API,
-  SELECTOR_DATA_TOGGLE,
-  function (event) {
-    event.preventDefault()
-    Dropdown.getOrCreateInstance(this).toggle()
-  },
-)
+EventHandler.on(document, EVENT_CLICK_DATA_API, SELECTOR_DATA_TOGGLE, function (event) {
+  event.preventDefault()
+  Dropdown.getOrCreateInstance(this).toggle()
+})
 
 /**
  * jQuery

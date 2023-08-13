@@ -9,7 +9,7 @@ export default defineConfig({
   base:
     process.env.NODE_ENV === 'production'
       ? '/static/dist/'
-      : 'http://localhost:3000',
+      : 'http://localhost:5173',
   build: {
     outDir: '../django/static/dist',
     emptyOutDir: true,
@@ -31,6 +31,10 @@ export default defineConfig({
   server: {
     proxy: {
       '/api/v1': {
+        target: 'http://localhost',
+        changeOrigin: true,
+      },
+      '/static': {
         target: 'http://localhost',
         changeOrigin: true,
       },

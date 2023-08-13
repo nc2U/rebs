@@ -11,12 +11,7 @@ const emit = defineEmits(['weekends-toggle'])
     <div class="demo-app-sidebar">
       <div class="demo-app-sidebar-section">
         <h5>
-          <v-icon
-            icon="mdi-alpha-i-circle"
-            size="small"
-            class="mr-2"
-            color="indigo"
-          />
+          <v-icon icon="mdi-alpha-i-circle" size="small" class="mr-2" color="indigo" />
           참고
         </h5>
         <ul>
@@ -37,12 +32,7 @@ const emit = defineEmits(['weekends-toggle'])
       </div>
       <div class="demo-app-sidebar-section">
         <h5>
-          <v-icon
-            icon="mdi-alpha-i-circle"
-            size="small"
-            class="mr-2"
-            color="indigo"
-          />
+          <v-icon icon="mdi-alpha-i-circle" size="small" class="mr-2" color="indigo" />
           월간 진행 일정 목록 ({{ currentEvents.length }})
         </h5>
         <ul>

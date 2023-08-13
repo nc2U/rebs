@@ -14,8 +14,7 @@ const props = defineProps({
       'border-radius': '50%',
       'line-height': '46px', // Please keep consistent with height to center vertically
       background: 'rgba( 255, 255, 255, 0.3 )',
-      boxShadow:
-        '0 10px 35px rgba(0, 0, 0, 0.05), 0 2px 2px rgba(0, 0, 0, 0.1)',
+      boxShadow: '0 10px 35px rgba(0, 0, 0, 0.05), 0 2px 2px rgba(0, 0, 0, 0.1)',
     }),
   },
   transitionName: {
@@ -28,8 +27,7 @@ const visible = ref(false)
 const interval = ref<number | undefined>(undefined)
 const isMoving = ref(false)
 
-const handleScroll = () =>
-  (visible.value = window.pageYOffset > props.visibilityHeight)
+const handleScroll = () => (visible.value = window.pageYOffset > props.visibilityHeight)
 
 const backToTop = () => {
   if (isMoving.value) return
@@ -64,12 +62,7 @@ onBeforeUnmount(() => {
 
 <template>
   <transition :name="transitionName">
-    <div
-      v-show="visible"
-      :style="customStyle"
-      class="back-to-ceiling"
-      @click="backToTop"
-    >
+    <div v-show="visible" :style="customStyle" class="back-to-ceiling" @click="backToTop">
       <svg
         width="16"
         height="16"

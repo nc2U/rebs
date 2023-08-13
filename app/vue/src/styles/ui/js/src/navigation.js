@@ -95,9 +95,7 @@ class Navigation extends BaseComponent {
   }
 
   _setActiveLink() {
-    for (const element of Array.from(
-      this._element.querySelectorAll(SELECTOR_NAV_LINK),
-    )) {
+    for (const element of Array.from(this._element.querySelectorAll(SELECTOR_NAV_LINK))) {
       if (element.classList.contains(CLASS_NAME_NAV_GROUP_TOGGLE)) {
         continue
       }
@@ -119,26 +117,19 @@ class Navigation extends BaseComponent {
       if (this._config.activeLinksExact && element.href === currentUrl) {
         element.classList.add(CLASS_NAME_ACTIVE)
         // eslint-disable-next-line unicorn/no-array-for-each
-        Array.from(this._getParents(element, SELECTOR_NAV_GROUP)).forEach(
-          element => {
-            element.classList.add(CLASS_NAME_SHOW)
-            element.setAttribute('aria-expanded', true)
-          },
-        )
+        Array.from(this._getParents(element, SELECTOR_NAV_GROUP)).forEach(element => {
+          element.classList.add(CLASS_NAME_SHOW)
+          element.setAttribute('aria-expanded', true)
+        })
       }
 
-      if (
-        !this._config.activeLinksExact &&
-        element.href.startsWith(currentUrl)
-      ) {
+      if (!this._config.activeLinksExact && element.href.startsWith(currentUrl)) {
         element.classList.add(CLASS_NAME_ACTIVE)
         // eslint-disable-next-line unicorn/no-array-for-each
-        Array.from(this._getParents(element, SELECTOR_NAV_GROUP)).forEach(
-          element => {
-            element.classList.add(CLASS_NAME_SHOW)
-            element.setAttribute('aria-expanded', true)
-          },
-        )
+        Array.from(this._getParents(element, SELECTOR_NAV_GROUP)).forEach(element => {
+          element.classList.add(CLASS_NAME_SHOW)
+          element.setAttribute('aria-expanded', true)
+        })
       }
     }
   }
@@ -196,10 +187,7 @@ class Navigation extends BaseComponent {
   }
 
   _getSiblings(element, filter) {
-    const siblings = this._getChildren(
-      element.parentNode.firstChild,
-      element,
-    ).filter(filter)
+    const siblings = this._getChildren(element.parentNode.firstChild, element).filter(filter)
     return siblings
   }
 
@@ -253,44 +241,31 @@ class Navigation extends BaseComponent {
     // Close other groups
     if (this._config.groupsAutoCollapse === true) {
       for (const element of this._getSiblings(toggler.parentNode, filter)) {
-        this._slideUp(
-          SelectorEngine.findOne(SELECTOR_NAV_GROUP_ITEMS, element),
-          () => {
-            element.classList.remove(CLASS_NAME_SHOW)
-            element.setAttribute('aria-expanded', false)
-          },
-        )
+        this._slideUp(SelectorEngine.findOne(SELECTOR_NAV_GROUP_ITEMS, element), () => {
+          element.classList.remove(CLASS_NAME_SHOW)
+          element.setAttribute('aria-expanded', false)
+        })
       }
     }
 
     if (toggler.parentNode.classList.contains(CLASS_NAME_SHOW)) {
-      this._slideUp(
-        SelectorEngine.findOne(SELECTOR_NAV_GROUP_ITEMS, toggler.parentNode),
-        () => {
-          toggler.parentNode.classList.remove(CLASS_NAME_SHOW)
-          toggler.parentNode.setAttribute('aria-expanded', false)
-        },
-      )
+      this._slideUp(SelectorEngine.findOne(SELECTOR_NAV_GROUP_ITEMS, toggler.parentNode), () => {
+        toggler.parentNode.classList.remove(CLASS_NAME_SHOW)
+        toggler.parentNode.setAttribute('aria-expanded', false)
+      })
       return
     }
 
     toggler.parentNode.classList.add(CLASS_NAME_SHOW)
     toggler.parentNode.setAttribute('aria-expanded', true)
-    this._slideDown(
-      SelectorEngine.findOne(SELECTOR_NAV_GROUP_ITEMS, toggler.parentNode),
-    )
+    this._slideDown(SelectorEngine.findOne(SELECTOR_NAV_GROUP_ITEMS, toggler.parentNode))
   }
 
   _addEventListeners() {
-    EventHandler.on(
-      this._element,
-      EVENT_CLICK_DATA_API,
-      SELECTOR_NAV_GROUP_TOGGLE,
-      event => {
-        event.preventDefault()
-        this._toggleGroupItems(event, this)
-      },
-    )
+    EventHandler.on(this._element, EVENT_CLICK_DATA_API, SELECTOR_NAV_GROUP_TOGGLE, event => {
+      event.preventDefault()
+      this._toggleGroupItems(event, this)
+    })
   }
 
   // Static
@@ -320,9 +295,7 @@ class Navigation extends BaseComponent {
  * ------------------------------------------------------------------------
  */
 EventHandler.on(window, EVENT_LOAD_DATA_API, () => {
-  for (const element of Array.from(
-    document.querySelectorAll(SELECTOR_DATA_NAVIGATION),
-  )) {
+  for (const element of Array.from(document.querySelectorAll(SELECTOR_DATA_NAVIGATION))) {
     Navigation.navigationInterface(element)
   }
 })

@@ -61,12 +61,16 @@
 
   .container:first-child,
   .container-fluid:first-child {
-    min-height: calc(var(--#{$prefix}header-min-height) - (2 * var(--#{$prefix}header-padding-y))); // stylelint-disable-line function-disallowed-list
+    min-height: calc(
+      var(--#{$prefix}header-min-height) - (2 * var(--#{$prefix}header-padding-y))
+    ); // stylelint-disable-line function-disallowed-list
   }
 
-  .container:nth-child(n+2),
-  .container-fluid:nth-child(n+2) {
-    min-height: calc(var(--#{$prefix}subheader-min-height) - (2 * var(--#{$prefix}header-padding-y))); // stylelint-disable-line function-disallowed-list
+  .container:nth-child(n + 2),
+  .container-fluid:nth-child(n + 2) {
+    min-height: calc(
+      var(--#{$prefix}subheader-min-height) - (2 * var(--#{$prefix}header-padding-y))
+    ); // stylelint-disable-line function-disallowed-list
   }
 
   &.header-sticky {
@@ -78,7 +82,9 @@
 }
 
 .header-divider {
-  flex-basis: calc(100% + (2 * var(--#{$prefix}header-padding-x))); // stylelint-disable-line function-disallowed-list
+  flex-basis: calc(
+    100% + (2 * var(--#{$prefix}header-padding-x))
+  ); // stylelint-disable-line function-disallowed-list
   height: 0;
   margin: var(--#{$prefix}header-padding-y) calc(var(--#{$prefix}header-padding-x) * -1); // stylelint-disable-line function-disallowed-list
   border-top: var(--#{$prefix}header-divider-border);
@@ -91,7 +97,7 @@
 .header-brand {
   padding-top: var(--#{$prefix}header-brand-padding-y);
   padding-bottom: var(--#{$prefix}header-brand-padding-y);
-  @include ltr-rtl("margin-right", $header-brand-margin-end);
+  @include ltr-rtl('margin-right', $header-brand-margin-end);
   @include font-size($header-brand-font-size);
   color: var(--#{$prefix}header-brand-color);
   text-decoration: if($link-decoration == none, null, none);
@@ -111,7 +117,7 @@
 .header-nav {
   display: flex;
   flex-direction: row; // cannot use `inherit` to get the `.header`s value
-  @include ltr-rtl("padding-left", 0);
+  @include ltr-rtl('padding-left', 0);
   margin-bottom: 0;
   list-style: none;
 
@@ -138,7 +144,6 @@
     position: absolute;
   }
 }
-
 
 // Header text
 //

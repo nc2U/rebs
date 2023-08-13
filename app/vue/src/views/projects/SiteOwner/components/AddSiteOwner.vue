@@ -30,10 +30,7 @@ const multiSubmit = (payload: SiteOwner) => emit('multi-submit', payload)
   <FormModal ref="refFormModal" size="lg">
     <template #header>부지 소유자 정보 등록</template>
     <template #default>
-      <SiteOwnerForm
-        @multi-submit="multiSubmit"
-        @close="refFormModal.close()"
-      />
+      <SiteOwnerForm @multi-submit="multiSubmit" @close="refFormModal.close()" />
     </template>
   </FormModal>
 

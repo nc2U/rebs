@@ -55,7 +55,9 @@
   --#{$prefix}sidebar-nav-group-items-padding-y: #{$sidebar-nav-group-items-padding-y};
   --#{$prefix}sidebar-nav-group-items-padding-x: #{$sidebar-nav-group-items-padding-x};
   --#{$prefix}sidebar-nav-group-indicator: #{escape-svg($sidebar-nav-group-indicator-icon)};
-  --#{$prefix}sidebar-nav-group-indicator-hover: #{escape-svg($sidebar-nav-group-indicator-hover-icon)};
+  --#{$prefix}sidebar-nav-group-indicator-hover: #{escape-svg(
+      $sidebar-nav-group-indicator-hover-icon
+    )};
   --#{$prefix}sidebar-nav-group-toggle-show-color: #{$sidebar-nav-group-toggle-show-color};
   // scss-docs-end sidebar-css-vars
 
@@ -70,12 +72,15 @@
   padding: var(--#{$prefix}sidebar-padding-y) var(--#{$prefix}sidebar-padding-x);
   color: var(--#{$prefix}sidebar-color);
   background: var(--#{$prefix}sidebar-bg);
-  @include ltr-rtl("border-right", var(--#{$prefix}sidebar-border-width) solid var(--#{$prefix}sidebar-border-color));
+  @include ltr-rtl(
+    'border-right',
+    var(--#{$prefix}sidebar-border-width) solid var(--#{$prefix}sidebar-border-color)
+  );
   box-shadow: none;
   @include transition($sidebar-transition);
 
-  &:not(.sidebar-end){
-    @include ltr-rtl("margin-left", 0);
+  &:not(.sidebar-end) {
+    @include ltr-rtl('margin-left', 0);
     ~ * {
       --#{$prefix}sidebar-occupy-start: #{$sidebar-width};
     }
@@ -83,14 +88,14 @@
 
   &.sidebar-end {
     order: 99;
-    @include ltr-rtl("margin-right", 0);
+    @include ltr-rtl('margin-right', 0);
     ~ * {
       --#{$prefix}sidebar-occupy-end: #{$sidebar-width};
     }
   }
 
-  &[class*="bg-"]  {
-    border-color: rgba($black, .1);
+  &[class*='bg-'] {
+    border-color: rgba($black, 0.1);
   }
 
   @each $width, $value in $sidebar-widths {
@@ -113,14 +118,14 @@
 
   @include media-breakpoint-up($mobile-breakpoint) {
     &.hide {
-      &:not(.sidebar-end){
-        @include ltr-rtl("margin-left", calc(-1 * var(--#{$prefix}sidebar-width)));
+      &:not(.sidebar-end) {
+        @include ltr-rtl('margin-left', calc(-1 * var(--#{$prefix}sidebar-width)));
         ~ * {
           --#{$prefix}sidebar-occupy-start: 0;
         }
       }
       &.sidebar-end {
-        @include ltr-rtl("margin-right", calc(-1 * var(--#{$prefix}sidebar-width)));
+        @include ltr-rtl('margin-right', calc(-1 * var(--#{$prefix}sidebar-width)));
         ~ * {
           --#{$prefix}sidebar-occupy-end: 0;
         }
@@ -137,11 +142,11 @@
       @include elevation(2);
 
       &:not(.sidebar-end) {
-        @include ltr-rtl("left", 0);
+        @include ltr-rtl('left', 0);
       }
 
       &.sidebar-end {
-        @include ltr-rtl("right", 0);
+        @include ltr-rtl('right', 0);
       }
     }
   }
@@ -165,16 +170,16 @@
     }
 
     &:not(.sidebar-end) {
-      @include ltr-rtl("left", 0);
+      @include ltr-rtl('left', 0);
       ~ * {
-        --#{$prefix}sidebar-occupy-start: 0 !important;  // stylelint-disable-line
+        --#{$prefix}sidebar-occupy-start: 0 !important; // stylelint-disable-line
       }
     }
 
     &.sidebar-end {
-      @include ltr-rtl("right", 0);
+      @include ltr-rtl('right', 0);
       ~ * {
-        --#{$prefix}sidebar-occupy-end: 0  !important; // stylelint-disable-line
+        --#{$prefix}sidebar-occupy-end: 0 !important; // stylelint-disable-line
       }
     }
   }
@@ -188,23 +193,23 @@
     z-index: $zindex-fixed + 1;
 
     &:not(.sidebar-end) {
-      @include ltr-rtl("left", 0);
+      @include ltr-rtl('left', 0);
       ~ * {
         --#{$prefix}sidebar-occupy-start: 0 !important; // stylelint-disable-line
       }
 
       &:not(.show) {
-        @include ltr-rtl("margin-left", calc(-1 * var(--#{$prefix}sidebar-width)));
+        @include ltr-rtl('margin-left', calc(-1 * var(--#{$prefix}sidebar-width)));
       }
     }
     &.sidebar-end {
-      @include ltr-rtl("right", 0);
+      @include ltr-rtl('right', 0);
       ~ * {
         --#{$prefix}sidebar-occupy-end: 0 !important; // stylelint-disable-line
       }
 
       &:not(.show) {
-        @include ltr-rtl("margin-right", calc(-1 * var(--#{$prefix}sidebar-width)));
+        @include ltr-rtl('margin-right', calc(-1 * var(--#{$prefix}sidebar-width)));
       }
     }
   }
@@ -213,7 +218,7 @@
 .sidebar-close {
   position: absolute;
   top: 0;
-  @include ltr-rtl("right", 0);
+  @include ltr-rtl('right', 0);
   width: var(--#{$prefix}sidebar-width);
   height: var(--#{$prefix}sidebar-header-height);
   color: var(--#{$prefix}sidebar-color);
@@ -281,11 +286,13 @@
     display: block;
     width: var(--#{$prefix}sidebar-toggler-indicator-width);
     height: var(--#{$prefix}sidebar-toggler-indicator-height);
-    content: "";
+    content: '';
     background-image: var(--#{$prefix}sidebar-toggler-indicator);
     background-repeat: no-repeat;
     background-position: center;
-    background-size: calc(var(--#{$prefix}sidebar-toggler-indicator-height) * .25); // stylelint-disable-line function-disallowed-list
+    background-size: calc(
+      var(--#{$prefix}sidebar-toggler-indicator-height) * 0.25
+    ); // stylelint-disable-line function-disallowed-list
     @include transition($sidebar-toggler-transition);
     @include rtl() {
       transform: rotate(-180deg);
@@ -321,7 +328,11 @@
   // scss-docs-end sidebar-backdrop-css-vars
 
   @include media-breakpoint-down($mobile-breakpoint) {
-    @include overlay-backdrop(var(--#{$prefix}backdrop-zindex), var(--#{$prefix}backdrop-bg), var(--#{$prefix}backdrop-opacity));
+    @include overlay-backdrop(
+      var(--#{$prefix}backdrop-zindex),
+      var(--#{$prefix}backdrop-bg),
+      var(--#{$prefix}backdrop-opacity)
+    );
   }
 }
 //

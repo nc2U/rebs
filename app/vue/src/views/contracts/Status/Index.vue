@@ -15,22 +15,15 @@ const project = computed(() => projStore.project?.pk)
 
 const pDataStore = useProjectData()
 const fetchTypeList = (projId: number) => pDataStore.fetchTypeList(projId)
-const fetchBuildingList = (projId: number) =>
-  pDataStore.fetchBuildingList(projId)
-const fetchHouseUnitList = (projId: number) =>
-  pDataStore.fetchHouseUnitList(projId)
+const fetchBuildingList = (projId: number) => pDataStore.fetchBuildingList(projId)
+const fetchHouseUnitList = (projId: number) => pDataStore.fetchHouseUnitList(projId)
 
 const contStore = useContract()
-const fetchContractList = (payload: { project: number }) =>
-  contStore.fetchContractList(payload)
-const fetchSubsSummaryList = (projId: number) =>
-  contStore.fetchSubsSummaryList(projId)
-const fetchContSummaryList = (projId: number) =>
-  contStore.fetchContSummaryList(projId)
+const fetchContractList = (payload: { project: number }) => contStore.fetchContractList(payload)
+const fetchSubsSummaryList = (projId: number) => contStore.fetchSubsSummaryList(projId)
+const fetchContSummaryList = (projId: number) => contStore.fetchContSummaryList(projId)
 
-const excelUrl = computed(() =>
-  project.value ? `excel/status/?project=${project.value}` : '',
-)
+const excelUrl = computed(() => (project.value ? `excel/status/?project=${project.value}` : ''))
 
 const dataSetup = (pk: number) => {
   fetchTypeList(pk)
@@ -59,11 +52,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    @proj-select="projSelect"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
 
   <ContentBody>
     <CCardBody class="pb-5">

@@ -26,9 +26,7 @@ const allChecked = computed(() => myTodos.value.every(todo => todo.completed))
 
 const filteredTodos = computed(() => filters[visibility.value](todos.value))
 
-const remaining = computed(
-  () => todos.value.filter((todo: T) => !todo.completed).length,
-)
+const remaining = computed(() => todos.value.filter((todo: T) => !todo.completed).length)
 
 const addTodo = (e: Event) => {
   const title = (e.target as HTMLInputElement).value.trim()
@@ -118,20 +116,13 @@ onBeforeMount(() => account.fetchTodoList())
       </span>
       <ul class="filters">
         <li v-for="(val, key) in filters" :key="key">
-          <a
-            :class="{ selected: visibility === key }"
-            @click.prevent="visibility = key"
-          >
+          <a :class="{ selected: visibility === key }" @click.prevent="visibility = key">
             {{ capitalize(key) }}
           </a>
         </li>
       </ul>
 
-      <button
-        v-show="todos.length > remaining"
-        class="clear-completed"
-        @click="clearCompleted"
-      >
+      <button v-show="todos.length > remaining" class="clear-completed" @click="clearCompleted">
         Clear completed
       </button>
     </footer>

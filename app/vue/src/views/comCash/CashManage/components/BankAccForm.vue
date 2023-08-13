@@ -89,12 +89,7 @@ onBeforeMount(() => dataSetup())
 </script>
 
 <template>
-  <CForm
-    class="needs-validation"
-    novalidate
-    :validated="validated"
-    @submit.prevent="onSubmit"
-  >
+  <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
     <CModalBody class="p-4">
       <div>
         <CRow class="mb-3">
@@ -108,11 +103,7 @@ onBeforeMount(() => dataSetup())
                   :disabled="form.alias_name === '현금'"
                 >
                   <option value="">---------</option>
-                  <option
-                    v-for="bank in bankCodeList"
-                    :key="bank.pk"
-                    :value="bank.pk"
-                  >
+                  <option v-for="bank in bankCodeList" :key="bank.pk" :value="bank.pk">
                     {{ bank.name }}
                   </option>
                 </CFormSelect>
@@ -124,16 +115,9 @@ onBeforeMount(() => dataSetup())
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">관리부서</CFormLabel>
               <CCol sm="8">
-                <CFormSelect
-                  v-model.number="form.depart"
-                  :disabled="form.alias_name === '현금'"
-                >
+                <CFormSelect v-model.number="form.depart" :disabled="form.alias_name === '현금'">
                   <option value="">---------</option>
-                  <option
-                    v-for="dep in getSlugDeparts"
-                    :key="dep.value"
-                    :value="dep.value"
-                  >
+                  <option v-for="dep in getSlugDeparts" :key="dep.value" :value="dep.value">
                     {{ dep.label }}
                   </option>
                 </CFormSelect>
@@ -145,9 +129,7 @@ onBeforeMount(() => dataSetup())
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">
-                계좌별칭
-              </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 계좌별칭 </CFormLabel>
               <CCol sm="8">
                 <CFormInput
                   v-model="form.alias_name"
@@ -161,9 +143,7 @@ onBeforeMount(() => dataSetup())
           </CCol>
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">
-                계좌번호
-              </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 계좌번호 </CFormLabel>
               <CCol sm="8">
                 <CFormInput
                   v-model="form.number"

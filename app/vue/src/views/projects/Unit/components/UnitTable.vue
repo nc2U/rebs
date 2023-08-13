@@ -10,12 +10,8 @@ const emit = defineEmits(['on-update', 'on-delete'])
 
 const proDataStore = useProjectData()
 const units = computed(() => proDataStore.simpleUnits)
-const floorList = computed(() =>
-  [...new Set(units.value.map(u => u.floor))].sort((a, b) => b - a),
-)
-const lineList = computed(() =>
-  [...new Set(units.value.map(u => u.line))].sort((a, b) => a - b),
-)
+const floorList = computed(() => [...new Set(units.value.map(u => u.floor))].sort((a, b) => b - a))
+const lineList = computed(() => [...new Set(units.value.map(u => u.line))].sort((a, b) => a - b))
 const houseUnitList = computed(() => proDataStore.houseUnitList)
 
 const unitCol = computed(() => (lineList.value.length > 8 ? 12 : 5))
@@ -27,16 +23,13 @@ const getUnit = (line: number, floor: number) =>
     .filter((u: { floor: number }) => u.floor === floor)[0]
 
 const onUpdate = (payload: HouseUnit) => emit('on-update', payload)
-const onDelete = (payload: { pk: number; type: number }) =>
-  emit('on-delete', payload)
+const onDelete = (payload: { pk: number; type: number }) => emit('on-delete', payload)
 </script>
 
 <template>
   <CContainer fluid>
     <CRow v-if="units.length === 0">
-      <CCol class="text-center p-5 text-danger">
-        등록된 데이터가 없습니다.
-      </CCol>
+      <CCol class="text-center p-5 text-danger"> 등록된 데이터가 없습니다. </CCol>
     </CRow>
 
     <CRow v-else>

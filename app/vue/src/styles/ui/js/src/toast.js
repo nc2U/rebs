@@ -181,18 +181,10 @@ class Toast extends BaseComponent {
   }
 
   _setListeners() {
-    EventHandler.on(this._element, EVENT_MOUSEOVER, event =>
-      this._onInteraction(event, true),
-    )
-    EventHandler.on(this._element, EVENT_MOUSEOUT, event =>
-      this._onInteraction(event, false),
-    )
-    EventHandler.on(this._element, EVENT_FOCUSIN, event =>
-      this._onInteraction(event, true),
-    )
-    EventHandler.on(this._element, EVENT_FOCUSOUT, event =>
-      this._onInteraction(event, false),
-    )
+    EventHandler.on(this._element, EVENT_MOUSEOVER, event => this._onInteraction(event, true))
+    EventHandler.on(this._element, EVENT_MOUSEOUT, event => this._onInteraction(event, false))
+    EventHandler.on(this._element, EVENT_FOCUSIN, event => this._onInteraction(event, true))
+    EventHandler.on(this._element, EVENT_FOCUSOUT, event => this._onInteraction(event, false))
   }
 
   _clearTimeout() {

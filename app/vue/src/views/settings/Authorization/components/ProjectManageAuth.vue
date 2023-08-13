@@ -21,8 +21,7 @@ const getAllowed = () =>
     if (allowedProjects.value.length === 0) assignedProject.value = null
     else emit('get-allowed', allowedProjects.value)
   })
-const getAssigned = () =>
-  nextTick(() => emit('get-assigned', assignedProject.value))
+const getAssigned = () => nextTick(() => emit('get-assigned', assignedProject.value))
 
 watch(
   () => props.user,
@@ -45,9 +44,7 @@ onBeforeMount(() => project.fetchProjectList())
     <CRow>
       <CCol md="10" lg="8" xl="6">
         <CRow class="m-1">
-          <CFormLabel class="col-md-4 col-form-label">
-            허용 프로젝트
-          </CFormLabel>
+          <CFormLabel class="col-md-4 col-form-label"> 허용 프로젝트 </CFormLabel>
           <CCol>
             <Multiselect
               v-model="allowedProjects"
@@ -70,9 +67,7 @@ onBeforeMount(() => project.fetchProjectList())
 
       <CCol md="10" lg="8" xl="6">
         <CRow class="m-1">
-          <CFormLabel class="col-md-4 col-form-label">
-            담당 메인 프로젝트
-          </CFormLabel>
+          <CFormLabel class="col-md-4 col-form-label"> 담당 메인 프로젝트 </CFormLabel>
           <CCol>
             <Multiselect
               v-model="assignedProject"

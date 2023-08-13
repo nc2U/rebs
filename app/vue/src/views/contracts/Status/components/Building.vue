@@ -15,15 +15,11 @@ const maxPiloti = ref(3) // 맥스 피로티 층
 const pDataStore = useProjectData()
 const buildingList = computed(() => pDataStore.buildingList)
 const lineList = computed(() => {
-  const lines = [
-    ...new Set(props.units.map((u: { line: number }) => u.line)),
-  ] as number[]
+  const lines = [...new Set(props.units.map((u: { line: number }) => u.line))] as number[]
   return lines.sort((prev: number, curr: number) => prev - curr)
 })
 const floorList = computed(() => {
-  const floors = [
-    ...new Set(props.units.map((u: { floor: number }) => u.floor)),
-  ] as number[]
+  const floors = [...new Set(props.units.map((u: { floor: number }) => u.floor))] as number[]
   return floors.sort((prev: number, curr: number) => curr - prev)
 })
 const bldgWidth = computed(() => 40 * lineList.value.length)
@@ -42,18 +38,12 @@ const getFirst = (floor: number) =>
     : 1
 
 const bldgName = (bldg: number) =>
-  buildingList.value
-    .filter((b: { pk: number; name: string }) => b.pk === bldg)
-    .map(b => b.name)[0]
+  buildingList.value.filter((b: { pk: number; name: string }) => b.pk === bldg).map(b => b.name)[0]
 </script>
 
 <template>
   <CCol class="ml-4 mt-5" :style="{ width: `${bldgWidth}px` }">
-    <CRow
-      v-for="i in floorList as Array<number>"
-      :key="i"
-      :style="{ width: `${bldgWidth}px` }"
-    >
+    <CRow v-for="i in floorList as Array<number>" :key="i" :style="{ width: `${bldgWidth}px` }">
       <Unit
         v-for="line in lineList as number[]"
         :key="line"
