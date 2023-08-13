@@ -62,19 +62,14 @@ const formsCheck = computed(() => {
   } else return false
 })
 
+const range = (from: number, to: number): number[] =>
+  from < to ? [from, ...range(from + 1, to)] : []
+
 const newLinkNum = ref(1)
-const newLinkRange = computed(() => {
-  const array = []
-  for (let i = 0; i < newLinkNum.value; ++i) array.push(i)
-  return array
-})
+const newLinkRange = computed(() => range(0, newLinkNum.value))
 
 const newFileNum = ref(1)
-const newFileRange = computed(() => {
-  const array = []
-  for (let i = 0; i < newFileNum.value; ++i) array.push(i)
-  return array
-})
+const newFileRange = computed(() => range(0, newFileNum.value))
 
 const sortName = computed(() => (props.post && props.post.project ? props.post.proj_name : '본사'))
 
