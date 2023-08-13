@@ -4,7 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import type { Post, Attatches, AFile } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
 import { AlertSecondary } from '@/utils/cssMixins'
-// import ToastEditor from '@/components/ToastEditor/index.vue'
+import QuillEditor from '@/components/QuillEditor/index.vue'
 import FileUpload from '@/components/FileUpload.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -202,10 +202,8 @@ onUpdated(() => dataSetup())
 
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">내용</CFormLabel>
-      <CCol md="10">
-        10
-        <!--        <ToastEditor v-model="form.content" placeholder="본문 내용" />-->
-        <v-textarea v-model="form.content" placeholder="본문 내용" />
+      <CCol md="10 mb-5">
+        <QuillEditor v-model:content="form.content" placeholder="본문 내용" />
       </CCol>
     </CRow>
 
