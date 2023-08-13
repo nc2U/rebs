@@ -202,8 +202,8 @@ onUpdated(() => dataSetup())
 
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">내용</CFormLabel>
-      <CCol md="10">
-        <QuillEditor v-model="form.content" placeholder="본문 내용" />
+      <CCol md="10 mb-5">
+        <QuillEditor v-model:content="form.content" placeholder="본문 내용" />
       </CCol>
     </CRow>
 
