@@ -4,7 +4,7 @@ import { useRoute } from 'vue-router'
 import { type Post, type Attatches, type AFile } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
 import { AlertSecondary } from '@/utils/cssMixins'
-import ToastEditor from '@/components/ToastEditor/index.vue'
+import QuillEditor from '@/components/QuillEditor/index.vue'
 import FileUpload from '@/components/FileUpload.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import Multiselect from '@vueform/multiselect'
@@ -62,19 +62,14 @@ const formsCheck = computed(() => {
   } else return false
 })
 
+const range = (from: number, to: number): number[] =>
+  from < to ? [from, ...range(from + 1, to)] : []
+
 const newLinkNum = ref(1)
-const newLinkRange = computed(() => {
-  const array = []
-  for (let i = 0; i < newLinkNum.value; ++i) array.push(i)
-  return array
-})
+const newLinkRange = computed(() => range(0, newLinkNum.value))
 
 const newFileNum = ref(1)
-const newFileRange = computed(() => {
-  const array = []
-  for (let i = 0; i < newFileNum.value; ++i) array.push(i)
-  return array
-})
+const newFileRange = computed(() => range(0, newFileNum.value))
 
 const sortName = computed(() => (props.post && props.post.project ? props.post.proj_name : '본사'))
 
@@ -219,7 +214,7 @@ onUpdated(() => dataSetup())
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">내용</CFormLabel>
       <CCol md="10">
-        <ToastEditor v-model="form.content" placeholder="본문 내용" />
+        <QuillEditor v-model:content="form.content" placeholder="본문 내용" />
       </CCol>
     </CRow>
 

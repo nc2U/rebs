@@ -44,18 +44,6 @@ dependencies:
   '@mdi/font':
     specifier: ^7.2.96
     version: 7.2.96
-  '@toast-ui/editor-plugin-chart':
-    specifier: ^3.0.1
-    version: 3.0.1
-  '@toast-ui/editor-plugin-code-syntax-highlight':
-    specifier: ^3.1.0
-    version: 3.1.0
-  '@toast-ui/editor-plugin-color-syntax':
-    specifier: ^3.1.0
-    version: 3.1.0
-  '@toast-ui/editor-plugin-table-merged-cell':
-    specifier: ^3.1.0
-    version: 3.1.0
   '@vueform/multiselect':
     specifier: ^2.6.2
     version: 2.6.2
@@ -913,32 +901,6 @@ packages:
   /@sinclair/typebox@0.27.8:
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
     dev: true
-
-  /@toast-ui/chart@4.6.1:
-    resolution: {integrity: sha512-F35IkHS0U9zqN6xIV1Yj3/wh8KGlZyzT3bwVGBJh/82DMDMn8rD2Us8X7xBMBGcZ3E15qkfnKjrATxU5ZoGAnA==}
-    dev: false
-
-  /@toast-ui/editor-plugin-chart@3.0.1:
-    resolution: {integrity: sha512-mdqJerDo836kxKZEa3B6NZOJLrb+acRMkPIanYo//9GFPJcllG7KFdZU+K0bSMapEED7W7OJCsOzM0VNThndHg==}
-    dependencies:
-      '@toast-ui/chart': 4.6.1
-    dev: false
-
-  /@toast-ui/editor-plugin-code-syntax-highlight@3.1.0:
-    resolution: {integrity: sha512-OgX5pZiTnHREoTTXDAFu1k6RzEspGOxeJNRlt/Lnoi1GvLbIpUTTbBcls9becpXT/Qdls++8G3r5C60cVdellA==}
-    dependencies:
-      prismjs: 1.29.0
-    dev: false
-
-  /@toast-ui/editor-plugin-color-syntax@3.1.0:
-    resolution: {integrity: sha512-UVKfMBPV+3snSaJn9RUKGbxJbgi92D2t68ow8wAjGezvMp1ht4UVETrvomdTGr+RYhXSeH3JvSwN9nmQqw0qzA==}
-    dependencies:
-      tui-color-picker: 2.2.8
-    dev: false
-
-  /@toast-ui/editor-plugin-table-merged-cell@3.1.0:
-    resolution: {integrity: sha512-9ch9h1heTs0Kkmhwpb1ef9psQSM77wvUO3J75BsHv3RO5nAug42W3HC4Y+qbX5n1z1VhOGGjuOb4GPIr8s5dRA==}
-    dev: false
 
   /@tootallnate/once@2.0.0:
     resolution: {integrity: sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==}
@@ -4409,11 +4371,6 @@ packages:
       react-is: 18.2.0
     dev: true
 
-  /prismjs@1.29.0:
-    resolution: {integrity: sha512-Kx/1w86q/epKcmte75LNrEoT+lX8pBpavuAbvJWRXar7Hz8jrtF+e3vY751p0R8H9HdArwaCTNDDzHg/ScJK1Q==}
-    engines: {node: '>=6'}
-    dev: false
-
   /proto-list@1.2.4:
     resolution: {integrity: sha512-vtK/94akxsTMhe0/cbfpR+syPuszcuwhqVjJq26CuNDgFGj682oRBXOP5MJpv2r7JtE8MsiepGIqvvOTBwn2vA==}
     dev: true
@@ -5153,10 +5110,6 @@ packages:
       tslib: 1.14.1
       typescript: 5.1.6
     dev: true
-
-  /tui-color-picker@2.2.8:
-    resolution: {integrity: sha512-q5sE9NQ5NR9lYpilYjcI7Sdv0KCogo+W8fZY+AYTj/HYg+9fscYy3UuJ6UQiV1bF+ARCLwFRWC8UcOt9kuUctQ==}
-    dev: false
 
   /tunnel-agent@0.6.0:
     resolution: {integrity: sha512-McnNiV1l8RYeY8tBgEpuodCC1mLUdbSN+CYBL7kJsJNInOP8UjDDEwdk6Mw60vdLLrr5NHKZhMAOSrR2NZuQ+w==}
