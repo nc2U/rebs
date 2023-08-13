@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useContract } from '@/store/pinia/contract'
-import { Succession as SuccessType } from '@/store/types/contract'
+import { type Succession as SuccessType } from '@/store/types/contract'
 import { TableSecondary } from '@/utils/cssMixins'
 import Pagination from '@/components/Pagination'
 import Succession from '@/views/contracts/Succession/components/Succession.vue'

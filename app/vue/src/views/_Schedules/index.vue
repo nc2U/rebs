@@ -3,8 +3,15 @@ import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { useSchedule } from '@/store/pinia/schedule'
 import { addDays, diffDate } from '@/utils/baseMixins'
-import { Event } from '@/store/types/schedule'
-import { EventApi, DateSelectArg, EventClickArg, CalendarOptions } from '@fullcalendar/core'
+import type { Event } from '@/store/types/schedule'
+import type {
+  EventApi,
+  DateSelectArg,
+  EventClickArg,
+  DatesSetArg,
+  EventChangeArg,
+  CalendarOptions,
+} from '@fullcalendar/core'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -79,14 +86,14 @@ const transformData = (event: CurrEvent) => {
   const allDay = event.allDay
   const s = event._instance?.range.start.toISOString().replace('.000Z', '+09:00')
   const e = event._instance?.range.end.toISOString().replace('.000Z', '+09:00')
-  const start = allDay ? s?.substr(0, 10) : s
-  const end = allDay ? e?.substr(0, 10) : e
+  const start = allDay ? s?.substring(0, 10) : s
+  const end = allDay ? e?.substring(0, 10) : e
   return { title, allDay, start, end }
 }
 
-const handleChange = (el: EventClickArg & { event: CurrEvent }) => {
+const handleChange = (el: EventChangeArg) => {
   const pk = el.event.id
-  const eventDate = transformData(el.event)
+  const eventDate = transformData(el.event as CurrEvent)
   scheduleStore.updateSchedule({ pk, data: eventDate })
 }
 
@@ -118,7 +125,7 @@ const eventRemove = () => {
   refConfirmModal.value.close()
 }
 
-const handleMonthChange = (payload: CalEvent) => {
+const handleMonthChange = (payload: DatesSetArg) => {
   const diff = diffDate(payload.start, new Date(payload.end))
   const addDay = diff > 10 ? 7 : 1
   const date = new Date(addDays(new Date(payload.start), addDay))
@@ -127,7 +134,7 @@ const handleMonthChange = (payload: CalEvent) => {
 
 watch(month, val => fetchScheduleList(val))
 
-const calendarOptions = reactive({
+const calendarOptions = reactive<CalendarOptions>({
   plugins: [
     dayGridPlugin,
     timeGridPlugin,
@@ -139,7 +146,7 @@ const calendarOptions = reactive({
     right: 'dayGridMonth,timeGridWeek,timeGridDay',
   },
   initialView: 'dayGridMonth',
-  events: currentEvents,
+  events: currentEvents as any,
   editable: true,
   selectable: true,
   selectMirror: true,
@@ -179,11 +186,7 @@ onBeforeMount(() => {
           <CCardBody>
             <div class="demo-app text-body">
               <div class="demo-app-main">
-                <FullCalendar
-                  ref="cal"
-                  class="demo-app-calendar"
-                  :options="calendarOptions as CalendarOptions"
-                >
+                <FullCalendar ref="cal" class="demo-app-calendar" :options="calendarOptions">
                   <template #eventContent="arg">
                     <b>{{ arg.timeText }} </b>
                     <i class="ml-1">{{ arg.event.title }}</i>
@@ -197,7 +200,7 @@ onBeforeMount(() => {
 
       <CalendarInfo
         :calendar-options="calendarOptions"
-        :current-events="currentEvents"
+        :current-events="currentEvents as any"
         @weekends-toggle="handleWeekendsToggle"
       />
     </CRow>
@@ -212,7 +215,7 @@ onBeforeMount(() => {
         size="small"
       />
     </template>
-    <template #header> 진행 일정 - 이벤트 {{ mode === 'create' ? '등록' : '편집' }} </template>
+    <template #header> 진행 일정 - 이벤트 {{ mode === 'create' ? '등록' : '편집' }}</template>
     <template #default>
       <CModalBody>
         <CRow>
@@ -229,9 +232,9 @@ onBeforeMount(() => {
       </CModalBody>
       <CModalFooter>
         <CButton color="light" @click="refFormModal.close"> 닫기</CButton>
-        <CButton v-if="mode === 'create'" color="primary" @click="eventManagement"> 등록 </CButton>
-        <CButton v-if="mode === 'update'" color="success" @click="eventManagement"> 수정 </CButton>
-        <CButton v-if="mode === 'update'" color="danger" @click="removeConfirm"> 삭제 </CButton>
+        <CButton v-if="mode === 'create'" color="primary" @click="eventManagement"> 등록</CButton>
+        <CButton v-if="mode === 'update'" color="success" @click="eventManagement"> 수정</CButton>
+        <CButton v-if="mode === 'update'" color="danger" @click="removeConfirm"> 삭제</CButton>
       </CModalFooter>
     </template>
   </FormModal>

@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useCompany } from '@/store/pinia/company'
 import { TableSecondary } from '@/utils/cssMixins'
-import { Grade as GradeType } from '@/store/types/company'
+import { type Grade as GradeType } from '@/store/types/company'
 import Pagination from '@/components/Pagination'
 import Grade from './Grade.vue'
 

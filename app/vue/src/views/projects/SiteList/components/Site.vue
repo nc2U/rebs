@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { PropType, ref } from 'vue'
-import { Site } from '@/store/types/project'
+import { type PropType, ref } from 'vue'
+import { type Site } from '@/store/types/project'
 import { numFormat } from '@/utils/baseMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import SiteForm from './SiteForm.vue'

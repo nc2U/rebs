@@ -2,8 +2,8 @@
 import { ref, reactive, inject, watch } from 'vue'
 import { write_project } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
-import { OrderGroup } from '@/store/types/contract'
-import { UnitType } from '@/store/types/project'
+import { type OrderGroup } from '@/store/types/contract'
+import { type UnitType } from '@/store/types/project'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
@@ -86,7 +86,7 @@ const resetForm = () => {
       <CCol md="2">
         <CRow>
           <CCol md="12" class="d-grid gap-2 d-lg-block mb-3">
-            <CButton color="primary" type="submit" :disabled="disabled"> 계약금액 추가 </CButton>
+            <CButton color="primary" type="submit" :disabled="disabled"> 계약금액 추가</CButton>
           </CCol>
         </CRow>
       </CCol>
@@ -95,7 +95,7 @@ const resetForm = () => {
 
   <ConfirmModal ref="refConfirmModal">
     <template #header> 타입별 계약금</template>
-    <template #default> 프로젝트의 타입별 계약금 정보 등록을 진행하시겠습니까? </template>
+    <template #default> 프로젝트의 타입별 계약금 정보 등록을 진행하시겠습니까?</template>
     <template #footer>
       <CButton color="primary" @click="modalAction">저장</CButton>
     </template>

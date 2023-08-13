@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onBeforeMount } from 'vue'
-import { RouteLocationMatched } from 'vue-router'
+import { type RouteLocationMatched } from 'vue-router'
 import router from '@/router'
 
 const breadcrumbs = ref()

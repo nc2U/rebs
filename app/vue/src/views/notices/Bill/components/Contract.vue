@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { ref, computed, watch, PropType } from 'vue'
+import { ref, computed, watch, type PropType } from 'vue'
 import { numFormat } from '@/utils/baseMixins'
-import { Contract } from '@/store/types/contract'
+import { type Contract } from '@/store/types/contract'
 
 const props = defineProps({
   contract: { type: Object as PropType<Contract>, required: true },

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { PropType, ref, watch, nextTick } from 'vue'
-import { Todo } from '@/store/types/accounts'
+import { type PropType, ref, watch, nextTick } from 'vue'
+import type { Todo } from '@/store/types/accounts'
 
 const props = defineProps({
   todo: { type: Object as PropType<Todo>, required: true },

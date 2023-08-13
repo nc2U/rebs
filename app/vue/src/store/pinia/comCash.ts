@@ -3,15 +3,15 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
 import {
-  BankCode,
-  AccountSort,
-  AccountD1,
-  AccountD2,
-  AccountD3,
-  CompanyBank,
-  BalanceByAccount,
-  CashBook,
-  SepItems,
+  type BankCode,
+  type AccountSort,
+  type AccountD1,
+  type AccountD2,
+  type AccountD3,
+  type CompanyBank,
+  type BalanceByAccount,
+  type CashBook,
+  type SepItems,
 } from '@/store/types/comCash'
 
 export type DataFilter = {

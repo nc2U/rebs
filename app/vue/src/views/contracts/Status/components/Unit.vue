@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { computed, PropType } from 'vue'
-import { SimpleUnit } from './ContractBoard.vue'
+import { computed, type PropType } from 'vue'
+import { type SimpleUnit } from './ContractBoard.vue'
 
 const props = defineProps({
   units: { type: Object as PropType<SimpleUnit[]>, default: null },

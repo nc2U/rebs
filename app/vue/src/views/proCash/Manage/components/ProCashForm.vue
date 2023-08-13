@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { PropType, ref, reactive, computed, watch, onBeforeMount, nextTick } from 'vue'
+import { type PropType, ref, reactive, computed, watch, onBeforeMount, nextTick } from 'vue'
 import { useProCash } from '@/store/pinia/proCash'
 import { useAccount } from '@/store/pinia/account'
 import { diffDate, getToday, cutString, numFormat } from '@/utils/baseMixins'
 import { write_project_cash } from '@/utils/pageAuth'
-import { ProBankAcc, ProjectCashBook, ProSepItems } from '@/store/types/proCash'
+import { type ProBankAcc, type ProjectCashBook, type ProSepItems } from '@/store/types/proCash'
 import { isValidate } from '@/utils/helper'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -333,7 +333,7 @@ onBeforeMount(() => formDataSetup())
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 계정[상위분류] </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 계정[상위분류]</CFormLabel>
               <CCol sm="8">
                 <CFormSelect
                   v-model.number="form.project_account_d2"
@@ -351,7 +351,7 @@ onBeforeMount(() => formDataSetup())
           </CCol>
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 계정[하위분류] </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 계정[하위분류]</CFormLabel>
               <CCol sm="8">
                 <CFormSelect
                   v-model.number="form.project_account_d3"
@@ -503,7 +503,7 @@ onBeforeMount(() => formDataSetup())
               </CCol>
             </CRow>
             <CRow v-else>
-              <CFormLabel class="col-sm-4 col-form-label"> 출금 수수료 </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 출금 수수료</CFormLabel>
               <CCol sm="8">
                 <CFormInput
                   v-model.number="form.charge"
@@ -580,7 +580,7 @@ onBeforeMount(() => formDataSetup())
             <CRow>
               <CCol sm="6">
                 <CRow>
-                  <CFormLabel class="col-sm-4 col-form-label"> 계정[상위분류] </CFormLabel>
+                  <CFormLabel class="col-sm-4 col-form-label"> 계정[상위분류]</CFormLabel>
                   <CCol sm="8">
                     <CFormSelect
                       v-model.number="sepItem.project_account_d2"
@@ -598,7 +598,7 @@ onBeforeMount(() => formDataSetup())
               </CCol>
               <CCol sm="6">
                 <CRow>
-                  <CFormLabel class="col-sm-4 col-form-label"> 계정[하위분류] </CFormLabel>
+                  <CFormLabel class="col-sm-4 col-form-label"> 계정[하위분류]</CFormLabel>
                   <CCol sm="8">
                     <CFormSelect
                       v-model.number="sepItem.project_account_d3"
@@ -622,7 +622,7 @@ onBeforeMount(() => formDataSetup())
             <CRow>
               <CCol sm="6">
                 <CRow>
-                  <CFormLabel class="col-sm-4 col-form-label"> 적요 </CFormLabel>
+                  <CFormLabel class="col-sm-4 col-form-label"> 적요</CFormLabel>
                   <CCol sm="8">
                     <CFormInput v-model="sepItem.content" maxlength="50" placeholder="거래 내용" />
                   </CCol>
@@ -630,7 +630,7 @@ onBeforeMount(() => formDataSetup())
               </CCol>
               <CCol sm="6">
                 <CRow>
-                  <CFormLabel class="col-sm-4 col-form-label"> 거래처 </CFormLabel>
+                  <CFormLabel class="col-sm-4 col-form-label"> 거래처</CFormLabel>
                   <CCol sm="8">
                     <CFormInput
                       v-model="sepItem.trader"
@@ -656,7 +656,7 @@ onBeforeMount(() => formDataSetup())
             <CRow>
               <CCol sm="6">
                 <CRow>
-                  <CFormLabel class="col-sm-4 col-form-label"> 거래계좌 </CFormLabel>
+                  <CFormLabel class="col-sm-4 col-form-label"> 거래계좌</CFormLabel>
                   <CCol sm="8">
                     <CFormSelect v-model.number="form.bank_account" disabled>
                       <option value="">---------</option>
@@ -670,7 +670,7 @@ onBeforeMount(() => formDataSetup())
 
               <CCol sm="6">
                 <CRow v-if="form.sort === 2">
-                  <CFormLabel class="col-sm-4 col-form-label"> 지출증빙 </CFormLabel>
+                  <CFormLabel class="col-sm-4 col-form-label"> 지출증빙</CFormLabel>
                   <CCol sm="8">
                     <CFormSelect v-model="sepItem.evidence" required>
                       <option value="">---------</option>
@@ -696,7 +696,7 @@ onBeforeMount(() => formDataSetup())
             <CRow>
               <CCol sm="6">
                 <CRow>
-                  <CFormLabel class="col-sm-4 col-form-label"> 출금액 </CFormLabel>
+                  <CFormLabel class="col-sm-4 col-form-label"> 출금액</CFormLabel>
                   <CCol sm="8">
                     <CFormInput
                       v-model.number="sepItem.outlay"
@@ -712,7 +712,7 @@ onBeforeMount(() => formDataSetup())
 
               <CCol sm="6">
                 <CRow>
-                  <CFormLabel class="col-sm-4 col-form-label"> 입금액 </CFormLabel>
+                  <CFormLabel class="col-sm-4 col-form-label"> 입금액</CFormLabel>
                   <CCol sm="8">
                     <CFormInput
                       v-model.number="sepItem.income"
@@ -744,7 +744,7 @@ onBeforeMount(() => formDataSetup())
     </CModalBody>
 
     <CModalFooter>
-      <CButton type="button" color="light" @click="emit('close')"> 닫기 </CButton>
+      <CButton type="button" color="light" @click="emit('close')"> 닫기</CButton>
       <slot name="footer">
         <CButton v-if="sepItem.pk" type="button" color="dark" variant="outline" @click="sepRemove">
           취소

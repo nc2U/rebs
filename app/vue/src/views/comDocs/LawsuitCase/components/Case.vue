@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, PropType } from 'vue'
+import { computed, type PropType } from 'vue'
 import { useStore } from '@/store'
-import { SuitCase } from '@/store/types/document'
+import { type SuitCase } from '@/store/types/document'
 import { cutString } from '@/utils/baseMixins'
 
 const props = defineProps({

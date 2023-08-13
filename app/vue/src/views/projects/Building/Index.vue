@@ -2,7 +2,7 @@
 import { computed, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
-import { BuildingUnit } from '@/store/types/project'
+import { type BuildingUnit } from '@/store/types/project'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'

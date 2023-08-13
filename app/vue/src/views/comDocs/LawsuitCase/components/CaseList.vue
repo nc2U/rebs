@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import type { PropType } from 'vue'
 import { useDocument } from '@/store/pinia/document'
 import { TableSecondary } from '@/utils/cssMixins'
+import type { SuitCase } from '@/store/types/document'
 import Case from './Case.vue'
 import Pagination from '@/components/Pagination'
 
 defineProps({
   company: { type: Number, default: null },
   page: { type: Number, default: 1 },
-  caseList: { type: Array, default: () => [] },
+  caseList: { type: Array as PropType<SuitCase[]>, default: () => [] },
 })
 
 const emit = defineEmits([
@@ -60,7 +62,7 @@ const pageSelect = (page: number) => emit('page-select', page)
     <CTableBody>
       <Case
         v-for="suitcase in caseList"
-        :key="suitcase.pk"
+        :key="suitcase.pk as number"
         :suit-case="suitcase"
         @agency-filter="agencyFilter"
         @agency-search="agencySearch"

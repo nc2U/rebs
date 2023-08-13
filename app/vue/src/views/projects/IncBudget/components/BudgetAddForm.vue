@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, reactive, inject, watch } from 'vue'
 import { write_project } from '@/utils/pageAuth'
-import { ProjectAccountD2, ProjectAccountD3 } from '@/store/types/proCash'
+import { type ProjectAccountD2, type ProjectAccountD3 } from '@/store/types/proCash'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
@@ -167,14 +167,14 @@ const resetForm = () => {
       </CCol>
 
       <CCol lg="12" xl="2" class="d-grid gap-2 d-md-block mb-3">
-        <CButton color="primary" type="submit" :disabled="disabled"> 수입 예산 추가 </CButton>
+        <CButton color="primary" type="submit" :disabled="disabled"> 수입 예산 추가</CButton>
       </CCol>
     </CRow>
   </CForm>
 
   <ConfirmModal ref="refConfirmModal">
     <template #header> 수입 예산 등록</template>
-    <template #default> 프로젝트의 수입 예산 정보 등록을 진행하시겠습니까? </template>
+    <template #default> 프로젝트의 수입 예산 정보 등록을 진행하시겠습니까?</template>
     <template #footer>
       <CButton color="primary" @click="modalAction">저장</CButton>
     </template>

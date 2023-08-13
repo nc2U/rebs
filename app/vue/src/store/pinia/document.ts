@@ -3,15 +3,15 @@ import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { message, errorHandle } from '@/utils/helper'
 import {
-  Group,
-  Board,
-  Category,
-  AFile,
-  Link,
-  PatchPost,
-  SuitCase,
-  SimpleSuitCase,
-  Post,
+  type Group,
+  type Board,
+  type Category,
+  type AFile,
+  type Link,
+  type PatchPost,
+  type SuitCase,
+  type SimpleSuitCase,
+  type Post,
 } from '@/store/types/document'
 
 export type SuitCaseFilter = {

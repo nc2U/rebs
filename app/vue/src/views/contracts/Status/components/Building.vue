@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { ref, computed, PropType } from 'vue'
+import { ref, computed, type PropType } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
-import { SimpleUnit } from './ContractBoard.vue'
+import { type SimpleUnit } from './ContractBoard.vue'
 import Unit from '@/views/contracts/Status/components/Unit.vue'
 
 const props = defineProps({

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
-import { UnitType } from '@/store/types/project'
+import { type UnitType } from '@/store/types/project'
 import { TableSecondary } from '@/utils/cssMixins'
 import Type from '@/views/projects/Type/components/Type.vue'
 

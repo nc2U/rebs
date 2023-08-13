@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, onMounted, onUpdated, inject, PropType } from 'vue'
+import { ref, reactive, computed, watch, onMounted, onUpdated, inject, type PropType } from 'vue'
 import { useAccount } from '@/store/pinia/account'
-import { UnitFloorType } from '@/store/types/project'
+import { type UnitFloorType } from '@/store/types/project'
 import { write_project } from '@/utils/pageAuth'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -152,7 +152,7 @@ onUpdated(() => {
       <CButton :color="btnColor" size="sm" :disabled="formsCheck" @click="onStorePrice">
         {{ btnTitle }}
       </CButton>
-      <CButton color="danger" size="sm" :disabled="!price" @click="deletePrice"> 삭제 </CButton>
+      <CButton color="danger" size="sm" :disabled="!price" @click="deletePrice"> 삭제</CButton>
     </CTableDataCell>
   </CTableRow>
 

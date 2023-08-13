@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { ref, computed, PropType } from 'vue'
+import { ref, computed, type PropType } from 'vue'
 import { useStore } from '@/store'
 import { numFormat, cutString } from '@/utils/baseMixins'
-import { ProBankAcc, ProjectCashBook } from '@/store/types/proCash'
+import { type ProBankAcc, type ProjectCashBook } from '@/store/types/proCash'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ProCashForm from '@/views/proCash/Manage/components/ProCashForm.vue'
 

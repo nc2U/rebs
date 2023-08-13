@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { pageTitle, navMenu } from '@/views/settings/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
-import { Company } from '@/store/types/settings'
+import { type Company } from '@/store/types/settings'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import CompanyForm from './components/CompanyForm.vue'

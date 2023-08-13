@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-import { ref, computed, PropType } from 'vue'
+import { ref, computed, type PropType } from 'vue'
 import { useStore } from '@/store'
 import { useRouter } from 'vue-router'
-import { User, Profile } from '@/store/types/accounts'
+import { type User, type Profile } from '@/store/types/accounts'
 import { useAccount } from '@/store/pinia/account'
 import TodoModal from '@/components/Modals/TodoModal.vue'
 
 const props = defineProps({
   userInfo: { type: Object as PropType<User>, required: true },
-  profile: { type: Object as PropType<Profile>, default: null },
+  profile: { type: Object as PropType<Profile | null>, default: null },
 })
 
-const todoModal = ref()
+const refsTodoModal = ref()
 
 const router = useRouter()
 
@@ -52,7 +52,7 @@ const logout = () => {
       <CDropdownHeader component="h6" class="fw-semibold py-2" :class="headerClass">
         {{ profile && profile.name ? profile.name : userInfo.username }}님
       </CDropdownHeader>
-      <CDropdownItem @click="todoModal.callModal()">
+      <CDropdownItem @click="refsTodoModal.callModal()">
         <CIcon icon="cil-task" />
         할일 관리
         <CBadge color="danger" size="sm" class="ms-auto">
@@ -85,5 +85,5 @@ const logout = () => {
     </CDropdownMenu>
   </CDropdown>
 
-  <TodoModal ref="todoModal" />
+  <TodoModal ref="refsTodoModal" />
 </template>

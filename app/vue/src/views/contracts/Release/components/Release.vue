@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { ref, computed, PropType } from 'vue'
+import { ref, computed, type PropType } from 'vue'
 import { useContract } from '@/store/pinia/contract'
-import { Contractor, ContractRelease } from '@/store/types/contract'
+import { type Contractor, type ContractRelease } from '@/store/types/contract'
 import { useRouter } from 'vue-router'
 import { numFormat, cutString } from '@/utils/baseMixins'
 import { write_contract } from '@/utils/pageAuth'
@@ -89,7 +89,7 @@ const onSubmit = (payload: ContractRelease) => {
     {{ release.completion_date }}
   </CTableDataCell>
   <CTableDataCell class="text-center">
-    <CButton type="button" :color="buttonColor" size="sm" @click="callFormModal"> 확인 </CButton>
+    <CButton type="button" :color="buttonColor" size="sm" @click="callFormModal"> 확인</CButton>
   </CTableDataCell>
 
   <FormModal ref="releaseFormModal" size="lg">

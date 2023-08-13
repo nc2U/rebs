@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { useComCash } from '@/store/pinia/comCash'
-import { CompanyBank, CashBook } from '@/store/types/comCash'
+import type { CompanyBank, CashBook } from '@/store/types/comCash'
 import { TableSecondary } from '@/utils/cssMixins'
 import Cash from '@/views/comCash/CashManage/components/Cash.vue'
 import Pagination from '@/components/Pagination'

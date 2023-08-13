@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, PropType } from 'vue'
-import { Post } from '@/store/types/document'
+import { computed, type PropType } from 'vue'
+import type { Post } from '@/store/types/document'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 
 const props = defineProps({
@@ -28,10 +28,10 @@ const sortFunc = () => emit('sort-filter', props.post?.project)
       <router-link :to="{ name: '본사 일반 문서 - 보기', params: { postId: post.pk } }">
         {{ cutString(post.title, 30) }}
       </router-link>
-      <CBadge v-if="post.is_new" color="warning" size="sm" class="ml-2"> new </CBadge>
+      <CBadge v-if="post.is_new" color="warning" size="sm" class="ml-2"> new</CBadge>
     </CTableDataCell>
     <CTableDataCell>{{ post.user }}</CTableDataCell>
-    <CTableDataCell>{{ timeFormat(post.created) }}</CTableDataCell>
+    <CTableDataCell>{{ timeFormat(post.created ?? '') }}</CTableDataCell>
     <CTableDataCell>{{ post.hit }}</CTableDataCell>
   </CTableRow>
 </template>

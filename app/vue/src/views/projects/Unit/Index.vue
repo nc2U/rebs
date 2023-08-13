@@ -2,8 +2,8 @@
 import { ref, computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
 import { useProject } from '@/store/pinia/project'
-import { HouseUnit } from '@/store/types/project'
-import { CreateUnit, useProjectData } from '@/store/pinia/project_data'
+import { type HouseUnit } from '@/store/types/project'
+import { type CreateUnit, useProjectData } from '@/store/pinia/project_data'
 import { message } from '@/utils/helper'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -11,7 +11,7 @@ import UnitController from '@/views/projects/Unit/components/UnitController.vue'
 import UnitTable from '@/views/projects/Unit/components/UnitTable.vue'
 
 const alertModal = ref()
-const unitController = ref()
+const refUnitController = ref()
 
 const bldgPk = ref<null | number>(null)
 const bldgName = ref('')
@@ -143,7 +143,7 @@ const dataReset = () => {
 }
 
 const projSelect = (target: number | null) => {
-  unitController.value.projReset()
+  refUnitController.value.projReset()
   dataReset()
   if (!!target) dataSetup(target)
 }
@@ -160,7 +160,7 @@ onBeforeMount(() => {
   <ContentBody>
     <CCardBody class="pb-5">
       <UnitController
-        ref="unitController"
+        ref="refUnitController"
         :project="project as number"
         @bldg-select="bldgSelect"
         @unit-register="unitRegister"

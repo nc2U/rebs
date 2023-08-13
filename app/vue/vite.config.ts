@@ -1,15 +1,12 @@
+// import { fileURLToPath, URL } from 'node:url'
+import * as path from 'path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vuetify from 'vite-plugin-vuetify'
 
-import path = require('path')
-
 // https://vitejs.dev/config/
 export default defineConfig({
-  base:
-    process.env.NODE_ENV === 'production'
-      ? '/static/dist/'
-      : 'http://localhost:5173',
+  base: process.env.NODE_ENV === 'production' ? '/static/dist/' : 'http://localhost:5173',
   build: {
     outDir: '../django/static/dist',
     emptyOutDir: true,
@@ -17,7 +14,6 @@ export default defineConfig({
   },
   plugins: [
     vue(),
-    // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vite-plugin
     vuetify({
       autoImport: true,
     }),
@@ -26,6 +22,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
+      // '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
   server: {

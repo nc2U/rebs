@@ -2,7 +2,7 @@
 import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
 import { useSite } from '@/store/pinia/project_site'
 import { isValidate } from '@/utils/helper'
-import { SiteContract } from '@/store/types/project'
+import { type SiteContract } from '@/store/types/project'
 import { write_project } from '@/utils/pageAuth'
 import Multiselect from '@vueform/multiselect'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -178,7 +178,7 @@ onBeforeMount(() => dataSetup())
 
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 총 계약면적 </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 총 계약면적</CFormLabel>
               <CCol sm="8">
                 <CFormInput
                   v-model.number="form.contract_area"
@@ -195,7 +195,7 @@ onBeforeMount(() => dataSetup())
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 총 매매가격 </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 총 매매가격</CFormLabel>
               <CCol sm="8">
                 <CFormInput
                   v-model.number="form.total_price"
@@ -210,7 +210,7 @@ onBeforeMount(() => dataSetup())
 
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 계약 체결일 </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 계약 체결일</CFormLabel>
               <CCol sm="8">
                 <DatePicker v-model="form.contract_date" maxlength="10" placeholder="계약 체결일" />
               </CCol>
@@ -221,7 +221,7 @@ onBeforeMount(() => dataSetup())
         <CRow>
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 계약금 (1차) </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 계약금 (1차)</CFormLabel>
               <CCol sm="8">
                 <CInputGroup class="mb-3">
                   <CFormInput
@@ -245,7 +245,7 @@ onBeforeMount(() => dataSetup())
 
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 계약금 (2차) </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 계약금 (2차)</CFormLabel>
               <CCol sm="8">
                 <CInputGroup class="mb-3">
                   <CFormInput
@@ -271,7 +271,7 @@ onBeforeMount(() => dataSetup())
         <CRow>
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 중도금 (1차) </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 중도금 (1차)</CFormLabel>
               <CCol sm="8">
                 <CInputGroup class="mb-3">
                   <CFormInput
@@ -295,7 +295,7 @@ onBeforeMount(() => dataSetup())
 
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 지급 일자 </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 지급 일자</CFormLabel>
               <CCol sm="8">
                 <DatePicker
                   v-model="form.inter_pay1_date"
@@ -311,7 +311,7 @@ onBeforeMount(() => dataSetup())
         <CRow>
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 중도금 (2차) </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 중도금 (2차)</CFormLabel>
               <CCol sm="8">
                 <CInputGroup class="mb-3">
                   <CFormInput
@@ -335,7 +335,7 @@ onBeforeMount(() => dataSetup())
 
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 지급 일자 </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 지급 일자</CFormLabel>
               <CCol sm="8">
                 <DatePicker
                   v-model="form.inter_pay2_date"
@@ -376,7 +376,7 @@ onBeforeMount(() => dataSetup())
 
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 지급 일자 </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 지급 일자</CFormLabel>
               <CCol sm="8">
                 <DatePicker
                   v-model="form.remain_pay_date"
@@ -392,7 +392,7 @@ onBeforeMount(() => dataSetup())
         <CRow class="mb-3">
           <CCol sm="12">
             <CRow>
-              <CFormLabel class="col-sm-2 col-form-label"> 입금 은행 </CFormLabel>
+              <CFormLabel class="col-sm-2 col-form-label"> 입금 은행</CFormLabel>
               <CCol sm="3">
                 <CFormInput
                   v-model="form.acc_bank"
@@ -426,7 +426,7 @@ onBeforeMount(() => dataSetup())
         <CRow class="mb-3">
           <CCol sm="12">
             <CRow>
-              <CFormLabel class="col-sm-2 col-form-label"> 특이사항 </CFormLabel>
+              <CFormLabel class="col-sm-2 col-form-label"> 특이사항</CFormLabel>
               <CCol sm="10">
                 <CFormTextarea v-model="form.note" rows="3" placeholder="특이사항" />
               </CCol>
@@ -437,7 +437,7 @@ onBeforeMount(() => dataSetup())
     </CModalBody>
 
     <CModalFooter>
-      <CButton type="button" color="light" @click="emit('close')"> 닫기 </CButton>
+      <CButton type="button" color="light" @click="emit('close')"> 닫기</CButton>
       <slot name="footer">
         <CButton type="submit" :color="contract ? 'success' : 'primary'" :disabled="formsCheck">
           저장

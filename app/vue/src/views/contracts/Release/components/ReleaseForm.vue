@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount, PropType } from 'vue'
+import { ref, reactive, computed, onBeforeMount, type PropType } from 'vue'
 import { write_contract } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
-import { Contractor, ContractRelease } from '@/store/types/contract'
+import { type Contractor, type ContractRelease } from '@/store/types/contract'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -118,7 +118,7 @@ onBeforeMount(() => formDataSet())
       <CRow class="mb-2">
         <CCol xs="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label"> 환불(예정)금액 </CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label"> 환불(예정)금액</CFormLabel>
             <CCol sm="8">
               <CFormInput
                 v-model.number="form.refund_amount"
@@ -133,7 +133,7 @@ onBeforeMount(() => formDataSet())
 
         <CCol xs="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label"> 거래은행(환불계좌) </CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label"> 거래은행(환불계좌)</CFormLabel>
             <CCol sm="8">
               <CFormInput
                 v-model="form.refund_account_bank"
@@ -149,7 +149,7 @@ onBeforeMount(() => formDataSet())
       <CRow class="mb-2">
         <CCol xs="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label"> 계좌번호(환불계좌) </CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label"> 계좌번호(환불계좌)</CFormLabel>
             <CCol sm="8">
               <CFormInput
                 v-model="form.refund_account_number"
@@ -163,7 +163,7 @@ onBeforeMount(() => formDataSet())
 
         <CCol xs="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label"> 예금주(환불계좌) </CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label"> 예금주(환불계좌)</CFormLabel>
             <CCol sm="8">
               <CFormInput
                 v-model="form.refund_account_depositor"
@@ -188,7 +188,7 @@ onBeforeMount(() => formDataSet())
 
         <CCol xs="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label"> 해지(환불)처리일 </CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label"> 해지(환불)처리일</CFormLabel>
             <CCol sm="8">
               <DatePicker
                 v-model="form.completion_date"
@@ -213,12 +213,12 @@ onBeforeMount(() => formDataSet())
     </CModalBody>
 
     <CModalFooter>
-      <CButton type="button" color="light" @click="emit('close')"> 닫기 </CButton>
+      <CButton type="button" color="light" @click="emit('close')"> 닫기</CButton>
       <slot name="footer">
         <CButton type="submit" :color="release ? 'success' : 'primary'" :disabled="formsCheck">
           저장
         </CButton>
-        <CButton v-if="release" type="button" color="danger" @click="deleteConfirm"> 삭제 </CButton>
+        <CButton v-if="release" type="button" color="danger" @click="deleteConfirm"> 삭제</CButton>
       </slot>
     </CModalFooter>
   </CForm>

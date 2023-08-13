@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin1'
-import { RouteLocationNormalizedLoaded as Loaded, useRoute, useRouter } from 'vue-router'
+import { type RouteLocationNormalizedLoaded as Loaded, useRoute, useRouter } from 'vue-router'
 import { useCompany } from '@/store/pinia/company'
-import { useDocument, PostFilter } from '@/store/pinia/document'
-import { AFile, Attatches, Link, Post, PatchPost } from '@/store/types/document'
+import { useDocument, type PostFilter } from '@/store/pinia/document'
+import {
+  type AFile,
+  type Attatches,
+  type Link,
+  type Post,
+  type PatchPost,
+} from '@/store/types/document'
 import { formUtility } from '@/utils/helper'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'

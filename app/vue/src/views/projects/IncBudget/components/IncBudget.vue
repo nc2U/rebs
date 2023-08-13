@@ -2,8 +2,8 @@
 import { ref, reactive, computed, onBeforeMount, inject } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { write_project } from '@/utils/pageAuth'
-import { ProjectAccountD2, ProjectAccountD3 } from '@/store/types/proCash'
-import { OGroup, UType } from './BudgetAddForm.vue'
+import { type ProjectAccountD2, type ProjectAccountD3 } from '@/store/types/proCash'
+import { type OGroup, type UType } from './BudgetAddForm.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 

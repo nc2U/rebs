@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted, onUpdated } from 'vue'
 import { useComCash } from '@/store/pinia/comCash'
-import { ProBankAcc } from '@/store/types/proCash'
+import { type ProBankAcc } from '@/store/types/proCash'
 import { write_project_cash } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -110,7 +110,7 @@ onUpdated(() => formDataSetup())
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 계좌별칭 </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 계좌별칭</CFormLabel>
               <CCol sm="8">
                 <CFormInput
                   v-model="form.alias_name"
@@ -123,7 +123,7 @@ onUpdated(() => formDataSetup())
           </CCol>
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 계좌번호 </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 계좌번호</CFormLabel>
               <CCol sm="8">
                 <CFormInput v-model="form.number" maxlength="30" placeholder="계좌번호" />
               </CCol>
@@ -172,7 +172,7 @@ onUpdated(() => formDataSetup())
                   color="success"
                   hide-details
                 />
-                <v-tooltip activator="parent" location="start"> 운영비용(전도금) 계좌" </v-tooltip>
+                <v-tooltip activator="parent" location="start"> 운영비용(전도금) 계좌"</v-tooltip>
               </CCol>
             </CRow>
           </CCol>
@@ -187,7 +187,7 @@ onUpdated(() => formDataSetup())
                   color="info"
                   hide-details
                 />
-                <v-tooltip activator="parent" location="start"> 용역비 직불 계좌 </v-tooltip>
+                <v-tooltip activator="parent" location="start"> 용역비 직불 계좌</v-tooltip>
               </CCol>
             </CRow>
           </CCol>

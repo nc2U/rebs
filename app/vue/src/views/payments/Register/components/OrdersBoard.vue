@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { computed, PropType } from 'vue'
+import { computed, type PropType } from 'vue'
 import { usePayment } from '@/store/pinia/payment'
-import { AllPayment, DownPay, PayOrder, Price } from '@/store/types/payment'
+import { type AllPayment, type DownPay, type PayOrder, type Price } from '@/store/types/payment'
 import { numFormat, getToday } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 import Order from '@/views/payments/Register/components/Order.vue'
@@ -118,7 +118,7 @@ const getCommits = (el: number | undefined) => {
 
     <CTableHead>
       <CTableRow class="text-right">
-        <CTableHeaderCell :color="TableSecondary" class="text-center"> 합계 </CTableHeaderCell>
+        <CTableHeaderCell :color="TableSecondary" class="text-center"> 합계</CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(thisPrice || 0) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(paidTotal) }}</CTableHeaderCell>

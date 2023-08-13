@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { reactive, computed, nextTick, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
-import { PostFilter, useDocument } from '@/store/pinia/document'
+import { type PostFilter, useDocument } from '@/store/pinia/document'
 import { numFormat } from '@/utils/baseMixins'
 import { bgLight } from '@/utils/cssMixins'
 
@@ -111,7 +111,7 @@ onBeforeMount(() => fetchProjectList())
         <strong> 문서 건수 조회 결과 : {{ numFormat(postCount, 0, 0) }} 건 </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
-        <CButton color="info" size="sm" @click="resetForm"> 검색조건 초기화 </CButton>
+        <CButton color="info" size="sm" @click="resetForm"> 검색조건 초기화</CButton>
       </CCol>
     </CRow>
   </CCallout>

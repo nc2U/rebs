@@ -2,8 +2,8 @@
 import { ref, reactive, computed, inject, onBeforeMount } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { write_project } from '@/utils/pageAuth'
-import { OrderGroup } from '@/store/types/contract'
-import { UnitType } from '@/store/types/project'
+import { type OrderGroup } from '@/store/types/contract'
+import { type UnitType } from '@/store/types/project'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 

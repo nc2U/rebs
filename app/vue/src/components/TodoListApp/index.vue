@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { useAccount } from '@/store/pinia/account'
-import { Todo as T } from '@/store/types/accounts'
+import type { Todo as T } from '@/store/types/accounts'
 import Todo from './Todo.vue'
 
 const todos = ref<T[]>([])
@@ -116,8 +116,8 @@ onBeforeMount(() => account.fetchTodoList())
       </span>
       <ul class="filters">
         <li v-for="(val, key) in filters" :key="key">
-          <a :class="{ selected: visibility === key }" @click.prevent="visibility = key">
-            {{ capitalize(key) }}
+          <a :class="{ selected: visibility === key }" @click.prevent="visibility = key as string">
+            {{ capitalize(key as string) }}
           </a>
         </li>
       </ul>

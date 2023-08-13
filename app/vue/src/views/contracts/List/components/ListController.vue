@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, watch, nextTick, onMounted } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
-import { useContract, ContFilter } from '@/store/pinia/contract'
+import { useContract, type ContFilter } from '@/store/pinia/contract'
 import { numFormat } from '@/utils/baseMixins'
 import { bgLight } from '@/utils/cssMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -200,7 +200,7 @@ onMounted(() => {
         </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
-        <CButton color="info" size="sm" @click="resetForm"> 검색조건 초기화 </CButton>
+        <CButton color="info" size="sm" @click="resetForm"> 검색조건 초기화</CButton>
       </CCol>
     </CRow>
   </CCallout>

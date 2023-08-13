@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref, watch } from 'vue'
 import { useProCash } from '@/store/pinia/proCash'
-import { BalanceByAccount } from '@/store/types/proCash'
+import { type BalanceByAccount } from '@/store/types/proCash'
 import { numFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 
@@ -113,7 +113,7 @@ const directBalance = (val: boolean) => emit('direct-balance', val)
       </CTableRow>
 
       <CTableRow :color="TableSecondary" class="text-right">
-        <CTableHeaderCell colspan="3" class="text-center"> 현금성 자산 계 </CTableHeaderCell>
+        <CTableHeaderCell colspan="3" class="text-center"> 현금성 자산 계</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(preBalance) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(dateIncSum) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(dateOutSum) }}</CTableHeaderCell>

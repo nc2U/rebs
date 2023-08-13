@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { ref, onMounted, computed, nextTick, PropType } from 'vue'
-import { ContFilter, useContract } from '@/store/pinia/contract'
-import { Contract } from '@/store/types/contract'
-import { PaymentPaid } from '@/store/types/proCash'
+import { ref, onMounted, computed, nextTick, type PropType } from 'vue'
+import { type ContFilter, useContract } from '@/store/pinia/contract'
+import { type Contract } from '@/store/types/contract'
+import { type PaymentPaid } from '@/store/types/proCash'
 import { write_payment } from '@/utils/pageAuth'
 import { numFormat } from '@/utils/baseMixins'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -84,7 +84,7 @@ const modalAction = () => {
                     aria-describedby="addon-wrapping"
                     @keydown.enter="searchCont"
                   />
-                  <CInputGroupText @click="searchCont"> 계약 건 찾기 </CInputGroupText>
+                  <CInputGroupText @click="searchCont"> 계약 건 찾기</CInputGroupText>
                 </CInputGroup>
               </CCol>
             </CRow>

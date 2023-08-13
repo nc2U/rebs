@@ -1,11 +1,11 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import {
-  UnitType,
-  UnitFloorType,
-  BuildingUnit,
-  AllHouseUnit,
-  HouseUnit,
+  type UnitType,
+  type UnitFloorType,
+  type BuildingUnit,
+  type AllHouseUnit,
+  type HouseUnit,
 } from '@/store/types/project'
 import api from '@/api'
 import { errorHandle, message } from '@/utils/helper'

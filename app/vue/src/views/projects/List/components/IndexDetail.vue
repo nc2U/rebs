@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { PropType, ref } from 'vue'
+import { type PropType, ref } from 'vue'
 import { write_project } from '@/utils/pageAuth'
 import { TableSecondary } from '@/utils/cssMixins'
-import { Project } from '@/store/types/project'
+import { type Project } from '@/store/types/project'
 import { numFormat } from '@/utils/baseMixins'
 import { areaM2PyFormat, ratioFormat } from '@/utils/areaMixins'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -44,7 +44,7 @@ const toUpdate = () => {
           </CTableHead>
           <CTableBody>
             <CTableRow>
-              <CTableHeaderCell scope="row" :color="TableSecondary"> 프로젝트명 </CTableHeaderCell>
+              <CTableHeaderCell scope="row" :color="TableSecondary"> 프로젝트명</CTableHeaderCell>
               <CTableDataCell>
                 <span>
                   {{ project.name }}
@@ -75,7 +75,7 @@ const toUpdate = () => {
               <CTableDataCell>
                 {{ project.area_usage }}
               </CTableDataCell>
-              <CTableHeaderCell scope="row" :color="TableSecondary"> 건축규모 </CTableHeaderCell>
+              <CTableHeaderCell scope="row" :color="TableSecondary"> 건축규모</CTableHeaderCell>
               <CTableDataCell>
                 {{ project.build_size }}
               </CTableDataCell>
@@ -114,33 +114,33 @@ const toUpdate = () => {
             </CTableRow>
 
             <CTableRow>
-              <CTableHeaderCell scope="row" :color="TableSecondary"> 지상연면적 </CTableHeaderCell>
+              <CTableHeaderCell scope="row" :color="TableSecondary"> 지상연면적</CTableHeaderCell>
               <CTableDataCell class="text-right pr-3">
                 {{ areaM2PyFormat(project.on_floor_area as number) }}
               </CTableDataCell>
-              <CTableHeaderCell scope="row" :color="TableSecondary"> 지하연면적 </CTableHeaderCell>
+              <CTableHeaderCell scope="row" :color="TableSecondary"> 지하연면적</CTableHeaderCell>
               <CTableDataCell class="text-right pr-3">
                 {{ areaM2PyFormat(project.under_floor_area as number) }}
               </CTableDataCell>
             </CTableRow>
 
             <CTableRow>
-              <CTableHeaderCell scope="row" :color="TableSecondary"> 총 연면적 </CTableHeaderCell>
+              <CTableHeaderCell scope="row" :color="TableSecondary"> 총 연면적</CTableHeaderCell>
               <CTableDataCell class="text-right pr-3">
                 {{ areaM2PyFormat(project.total_floor_area as number) }}
               </CTableDataCell>
-              <CTableHeaderCell scope="row" :color="TableSecondary"> 건축면적 </CTableHeaderCell>
+              <CTableHeaderCell scope="row" :color="TableSecondary"> 건축면적</CTableHeaderCell>
               <CTableDataCell class="text-right pr-3">
                 {{ areaM2PyFormat(project.build_area as number) }}
               </CTableDataCell>
             </CTableRow>
 
             <CTableRow>
-              <CTableHeaderCell scope="row" :color="TableSecondary"> 용적율 </CTableHeaderCell>
+              <CTableHeaderCell scope="row" :color="TableSecondary"> 용적율</CTableHeaderCell>
               <CTableDataCell class="text-right pr-3">
                 {{ ratioFormat(project.floor_area_ratio as number) }}
               </CTableDataCell>
-              <CTableHeaderCell scope="row" :color="TableSecondary"> 건폐율 </CTableHeaderCell>
+              <CTableHeaderCell scope="row" :color="TableSecondary"> 건폐율</CTableHeaderCell>
               <CTableDataCell class="text-right pr-3">
                 {{ ratioFormat(project.build_to_land_ratio as number) }}
               </CTableDataCell>

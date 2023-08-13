@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { useStore } from '@/store'
 import { useAccount } from '@/store/pinia/account'
+import type { User } from '@/store/types/accounts'
 import { directive as vFullscreen } from 'vue-fullscreen'
 import { logo } from '@/assets/brand/current-logo'
 import AppBreadcrumb from './AppBreadcrumb.vue'
@@ -76,7 +77,11 @@ const isAuthorized = computed(() => accountStore.isAuthorized)
         </CButtonGroup>
       </CHeaderNav>
       <CHeaderNav class="mr-4">
-        <AppHeaderDropdownAccnt v-if="isAuthorized" :user-info="userInfo" :profile="profile" />
+        <AppHeaderDropdownAccnt
+          v-if="isAuthorized"
+          :user-info="userInfo as User"
+          :profile="profile"
+        />
         <router-link v-else :to="{ name: 'Login' }" class="btn btn-outline-primary">
           로그인
         </router-link>

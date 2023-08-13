@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref, watch } from 'vue'
 import { useComCash } from '@/store/pinia/comCash'
-import { CashBook } from '@/store/types/comCash'
+import { type CashBook } from '@/store/types/comCash'
 import { numFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 
@@ -112,7 +112,7 @@ onBeforeMount(() => setData())
       </CTableRow>
 
       <CTableRow :color="TableSecondary" class="text-right">
-        <CTableHeaderCell colspan="3" class="text-center"> 합계 </CTableHeaderCell>
+        <CTableHeaderCell colspan="3" class="text-center"> 합계</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(dateIncTotal) }}</CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
@@ -184,7 +184,7 @@ onBeforeMount(() => setData())
       </CTableRow>
 
       <CTableRow :color="TableSecondary" class="text-right">
-        <CTableHeaderCell colspan="3" class="text-center"> 합계 </CTableHeaderCell>
+        <CTableHeaderCell colspan="3" class="text-center"> 합계</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(dateOutTotal) }}</CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>

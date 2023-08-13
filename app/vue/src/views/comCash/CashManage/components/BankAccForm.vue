@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount, PropType } from 'vue'
+import { ref, reactive, computed, onBeforeMount, type PropType } from 'vue'
 import { useCompany } from '@/store/pinia/company'
 import { useComCash } from '@/store/pinia/comCash'
-import { CompanyBank } from '@/store/types/comCash'
+import type { CompanyBank } from '@/store/types/comCash'
 import { write_company_cash } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -129,7 +129,7 @@ onBeforeMount(() => dataSetup())
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 계좌별칭 </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 계좌별칭</CFormLabel>
               <CCol sm="8">
                 <CFormInput
                   v-model="form.alias_name"
@@ -143,7 +143,7 @@ onBeforeMount(() => dataSetup())
           </CCol>
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 계좌번호 </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 계좌번호</CFormLabel>
               <CCol sm="8">
                 <CFormInput
                   v-model="form.number"

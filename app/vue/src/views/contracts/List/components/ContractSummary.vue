@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { computed, PropType } from 'vue'
+import { computed, type PropType } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
 import { useContract } from '@/store/pinia/contract'
 import { numFormat } from '@/utils/baseMixins'
 import { ratioFormat } from '@/utils/areaMixins'
 import { TableSecondary } from '@/utils/cssMixins'
-import { SubsSummary, ContSummary } from '@/store/types/contract'
-import { Project } from '@/store/types/project'
+import { type SubsSummary, type ContSummary } from '@/store/types/contract'
+import { type Project } from '@/store/types/project'
 
 const props = defineProps({
   project: { type: Object as PropType<Project>, default: null },
@@ -59,7 +59,7 @@ const contNum = (order: number | null, type?: number) => {
           {{ order.order_group_name }}
         </CTableHeaderCell>
 
-        <CTableHeaderCell v-if="orderGroupList.length > 1"> 합계 </CTableHeaderCell>
+        <CTableHeaderCell v-if="orderGroupList.length > 1"> 합계</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 
@@ -107,7 +107,7 @@ const contNum = (order: number | null, type?: number) => {
         <CTableDataCell class="text-center"> 합계</CTableDataCell>
         <CTableDataCell></CTableDataCell>
         <!-- 타입별 세대수 합계-->
-        <CTableDataCell> {{ numFormat(props.project.num_unit) }}세대 </CTableDataCell>
+        <CTableDataCell> {{ numFormat(props.project.num_unit ?? 0) }}세대</CTableDataCell>
         <!-- 청약 건수 타입별 합계-->
         <CTableDataCell>{{ numFormat(subsNum()) }}</CTableDataCell>
         <!--차수별 계약건수 타입별 합계-->
@@ -117,19 +117,19 @@ const contNum = (order: number | null, type?: number) => {
         </CTableDataCell>
         <!-- 차수별 타입별 계약건수 총계-->
         <CTableDataCell v-if="orderGroupList.length > 1">
-          {{ numFormat(contNum(null, null)) }}
+          {{ numFormat(contNum(null)) }}
         </CTableDataCell>
         <!-- 타입별 잔여세대 합계-->
         <CTableDataCell>
-          {{ numFormat(props.project.num_unit - contNum(null, null) - subsNum()) }}
+          {{ numFormat((props.project.num_unit ?? 0) - contNum(null) - subsNum()) }}
         </CTableDataCell>
         <!-- 타입별 계약율 합계-->
-        <CTableDataCell
-          >{{ ratioFormat((contNum(null, null) / props.project.num_unit) * 100) }}
+        <CTableDataCell>
+          {{ ratioFormat((contNum(null) / (props.project.num_unit ?? 1)) * 100) }}
         </CTableDataCell>
         <!-- 타입별 분양율(청약+계약) 합계-->
         <CTableDataCell>
-          {{ ratioFormat(((contNum(null, null) + subsNum()) / props.project.num_unit) * 100) }}
+          {{ ratioFormat(((contNum(null) + subsNum()) / (props.project.num_unit ?? 1)) * 100) }}
         </CTableDataCell>
       </CTableRow>
     </CTableBody>

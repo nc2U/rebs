@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { ref, computed, PropType } from 'vue'
+import { ref, computed, type PropType } from 'vue'
 import { useAccount } from '@/store/pinia/account'
-import { OrderGroup } from '@/store/types/contract'
+import { type OrderGroup } from '@/store/types/contract'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 defineProps({
@@ -12,7 +12,7 @@ defineProps({
 
 const emit = defineEmits(['on-order-select', 'on-type-select', 'cont-price-set'])
 
-const confirmModal = ref()
+const refConfirmModal = ref()
 
 const order = ref<number | null>(null)
 const type = ref<number | null>(null)
@@ -32,11 +32,11 @@ const onTypeSelect = (e: Event) => emit('on-type-select', (e.target as HTMLSelec
 const accStore = useAccount()
 const superAuth = computed(() => accStore.superAuth)
 
-const contPriceSet = () => confirmModal.value.callModal()
+const contPriceSet = () => refConfirmModal.value.callModal()
 
 const modalAction = () => {
   emit('cont-price-set')
-  confirmModal.value.close()
+  refConfirmModal.value.close()
 }
 </script>
 
@@ -45,7 +45,7 @@ const modalAction = () => {
     <CRow>
       <CCol md="4" class="mb-2">
         <CRow>
-          <CFormLabel for="sel1" class="col-sm-3 col-form-label"> 차수선택 </CFormLabel>
+          <CFormLabel for="sel1" class="col-sm-3 col-form-label"> 차수선택</CFormLabel>
           <CCol sm="9">
             <CFormSelect
               id="sel1"
@@ -64,7 +64,7 @@ const modalAction = () => {
 
       <CCol md="4" class="mb-2">
         <CRow>
-          <CFormLabel for="sel2" class="col-sm-3 col-form-label"> 타입선택 </CFormLabel>
+          <CFormLabel for="sel2" class="col-sm-3 col-form-label"> 타입선택</CFormLabel>
           <CCol sm="9">
             <CFormSelect id="sel2" v-model="type" :disabled="!order" @change="onTypeSelect">
               <option value="">---------</option>
@@ -94,7 +94,7 @@ const modalAction = () => {
     </CRow>
   </CCallout>
 
-  <ConfirmModal ref="confirmModal">
+  <ConfirmModal ref="refConfirmModal">
     <template #icon>
       <v-icon icon="mdi mdi-sync-alert" color="danger" class="mr-2" />
     </template>

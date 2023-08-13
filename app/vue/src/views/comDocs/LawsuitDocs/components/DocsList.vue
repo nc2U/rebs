@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import type { PropType } from 'vue'
 import { useDocument } from '@/store/pinia/document'
 import { TableSecondary } from '@/utils/cssMixins'
+import type { Post } from '@/store/types/document'
 import Docs from './Docs.vue'
 import Pagination from '@/components/Pagination'
 
 defineProps({
   company: { type: Number, default: null },
   page: { type: Number, default: 1 },
-  postList: { type: Array, default: () => [] },
+  postList: { type: Array as PropType<Post[]>, default: () => [] },
 })
 
 const emit = defineEmits(['sort-filter', 'page-select'])
@@ -45,7 +47,12 @@ const pageSelect = (page: number) => emit('page-select', page)
     </CTableHead>
 
     <CTableBody>
-      <Docs v-for="post in postList" :key="post.pk" :post="post" @sort-filter="sortFilter" />
+      <Docs
+        v-for="post in postList"
+        :key="post.pk as number"
+        :post="post"
+        @sort-filter="sortFilter"
+      />
     </CTableBody>
   </CTable>
 

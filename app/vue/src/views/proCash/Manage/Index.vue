@@ -4,7 +4,11 @@ import { pageTitle, navMenu } from '@/views/proCash/_menu/headermixin'
 import { useComCash } from '@/store/pinia/comCash'
 import { useProCash } from '@/store/pinia/proCash'
 import { useProject } from '@/store/pinia/project'
-import { CashBookFilter, ProBankAcc, ProjectCashBook as PrCashBook } from '@/store/types/proCash'
+import {
+  type CashBookFilter,
+  type ProBankAcc,
+  type ProjectCashBook as PrCashBook,
+} from '@/store/types/proCash'
 import { cutString } from '@/utils/baseMixins'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'

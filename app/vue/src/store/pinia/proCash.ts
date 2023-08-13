@@ -2,14 +2,14 @@ import api from '@/api'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { message, errorHandle } from '@/utils/helper'
-import { AccountSort } from '@/store/types/comCash'
+import { type AccountSort } from '@/store/types/comCash'
 import {
-  ProjectAccountD2,
-  ProjectAccountD3,
-  ProBankAcc,
-  BalanceByAccount,
-  ProjectCashBook,
-  CashBookFilter,
+  type ProjectAccountD2,
+  type ProjectAccountD3,
+  type ProBankAcc,
+  type BalanceByAccount,
+  type ProjectCashBook,
+  type CashBookFilter,
 } from '@/store/types/proCash'
 import { usePayment } from '@/store/pinia/payment'
 

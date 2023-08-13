@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { computed, PropType } from 'vue'
+import { computed, type PropType } from 'vue'
 import { numFormat } from '@/utils/baseMixins'
 import { useRouter } from 'vue-router'
-import { Contract } from '@/store/types/contract'
+import { type Contract } from '@/store/types/contract'
 
 const props = defineProps({
   contract: { type: Object as PropType<Contract>, required: true },
@@ -22,12 +22,12 @@ const router = useRouter()
     </CTableDataCell>
     <CTableDataCell>
       <router-link :to="{ name: '계약 등록 수정', query: { contractor } }">
-        {{ contract.contractor.name }}
+        {{ contract.contractor?.name }}
       </router-link>
     </CTableDataCell>
     <CTableDataCell>
       <CBadge :color="contract.contractor?.is_registed ? 'success' : 'danger'">
-        {{ contract.contractor.is_registed ? '인가완료' : '미 인 가' }}
+        {{ contract.contractor?.is_registed ? '인가완료' : '미 인 가' }}
       </CBadge>
     </CTableDataCell>
     <CTableDataCell>
@@ -46,9 +46,9 @@ const router = useRouter()
       class="text-left"
       :class="contract.keyunit?.houseunit !== null ? '' : 'text-danger'"
     >
-      {{ contract.keyunit.houseunit ? contract.keyunit.houseunit.__str__ : '미정' }}
+      {{ contract.keyunit?.houseunit ? contract.keyunit?.houseunit.__str__ : '미정' }}
     </CTableDataCell>
-    <CTableDataCell>{{ contract.contractor.contract_date }}</CTableDataCell>
+    <CTableDataCell>{{ contract.contractor?.contract_date }}</CTableDataCell>
     <CTableDataCell class="text-right">
       {{ numFormat(contract.contractprice?.price || 0) }}
     </CTableDataCell>
@@ -61,7 +61,7 @@ const router = useRouter()
     <CTableDataCell class="text-right">
       {{ numFormat(contract.total_paid) }}
     </CTableDataCell>
-    <CTableDataCell>{{ contract.contractor.contractorcontact.cell_phone }} </CTableDataCell>
+    <CTableDataCell>{{ contract.contractor?.contractorcontact?.cell_phone }}</CTableDataCell>
     <CTableDataCell>
       <CButton
         type="button"

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, reactive, ref } from 'vue'
 import { useAccount } from '@/store/pinia/account'
-import { Company } from '@/store/types/settings'
+import { type Company } from '@/store/types/settings'
 import { write_company_settings } from '@/utils/pageAuth'
-import { callAddress, AddressData } from '@/components/DaumPostcode/address'
+import { callAddress, type AddressData } from '@/components/DaumPostcode/address'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -126,7 +126,7 @@ onBeforeMount(() => formDataSetup())
   <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
     <CCardBody>
       <CRow class="mb-3">
-        <CFormLabel for="companyName" class="col-md-2 col-form-label"> 회사명 </CFormLabel>
+        <CFormLabel for="companyName" class="col-md-2 col-form-label"> 회사명</CFormLabel>
 
         <CCol md="4">
           <CFormInput
@@ -139,7 +139,7 @@ onBeforeMount(() => formDataSetup())
           <CFormFeedback invalid>회사명을 입력하세요.</CFormFeedback>
         </CCol>
 
-        <CFormLabel for="companyCeo" class="col-md-2 col-form-label"> 대표자명 </CFormLabel>
+        <CFormLabel for="companyCeo" class="col-md-2 col-form-label"> 대표자명</CFormLabel>
 
         <CCol md="4">
           <CFormInput
@@ -154,7 +154,7 @@ onBeforeMount(() => formDataSetup())
       </CRow>
 
       <CRow class="mb-3">
-        <CFormLabel for="taxNumber" class="col-md-2 col-form-label"> 사업자등록번호 </CFormLabel>
+        <CFormLabel for="taxNumber" class="col-md-2 col-form-label"> 사업자등록번호</CFormLabel>
         <CCol md="4">
           <input
             v-model="form.tax_number"
@@ -168,7 +168,7 @@ onBeforeMount(() => formDataSetup())
           />
           <CFormFeedback invalid>사업자등록번호를 입력하세요.</CFormFeedback>
         </CCol>
-        <CFormLabel for="orgNumber" class="col-md-2 col-form-label"> 법인등록번호 </CFormLabel>
+        <CFormLabel for="orgNumber" class="col-md-2 col-form-label"> 법인등록번호</CFormLabel>
         <CCol md="4">
           <input
             v-model="form.org_number"
@@ -185,7 +185,7 @@ onBeforeMount(() => formDataSetup())
       </CRow>
 
       <CRow class="mb-3">
-        <CFormLabel for="businessCond" class="col-md-2 col-form-label"> 업태 </CFormLabel>
+        <CFormLabel for="businessCond" class="col-md-2 col-form-label"> 업태</CFormLabel>
         <CCol md="4">
           <CFormInput
             v-model="form.business_cond"
@@ -196,7 +196,7 @@ onBeforeMount(() => formDataSetup())
           />
           <CFormFeedback invalid>업태를 입력하세요.</CFormFeedback>
         </CCol>
-        <CFormLabel for="businessEven" class="col-md-2 col-form-label"> 종목 </CFormLabel>
+        <CFormLabel for="businessEven" class="col-md-2 col-form-label"> 종목</CFormLabel>
         <CCol md="4">
           <CFormInput
             v-model="form.business_even"
@@ -210,7 +210,7 @@ onBeforeMount(() => formDataSetup())
       </CRow>
 
       <CRow class="mb-3">
-        <CFormLabel for="esDate" class="col-md-2 col-form-label"> 설립일자 </CFormLabel>
+        <CFormLabel for="esDate" class="col-md-2 col-form-label"> 설립일자</CFormLabel>
         <CCol md="4">
           <DatePicker
             v-model="form.es_date"
@@ -220,7 +220,7 @@ onBeforeMount(() => formDataSetup())
           />
           <CFormFeedback invalid>설립일자를 입력하세요.</CFormFeedback>
         </CCol>
-        <CFormLabel for="opDate" class="col-md-2 col-form-label"> 개업일자 </CFormLabel>
+        <CFormLabel for="opDate" class="col-md-2 col-form-label"> 개업일자</CFormLabel>
         <CCol md="4">
           <DatePicker
             v-model="form.op_date"
@@ -235,7 +235,7 @@ onBeforeMount(() => formDataSetup())
       <hr />
 
       <CRow>
-        <CFormLabel for="zipcode" class="col-md-2 col-form-label"> 회사주소 </CFormLabel>
+        <CFormLabel for="zipcode" class="col-md-2 col-form-label"> 회사주소</CFormLabel>
         <CCol md="4" xl="2" class="mb-3">
           <CInputGroup>
             <CFormInput
@@ -246,7 +246,7 @@ onBeforeMount(() => formDataSetup())
               required
               @focus="refPostCode.initiate()"
             />
-            <CInputGroupText @click="refPostCode.initiate()"> 우편번호 </CInputGroupText>
+            <CInputGroupText @click="refPostCode.initiate()"> 우편번호</CInputGroupText>
             <CFormFeedback invalid>우편번호를 입력하세요.</CFormFeedback>
           </CInputGroup>
         </CCol>
@@ -289,8 +289,8 @@ onBeforeMount(() => formDataSetup())
     </CCardBody>
 
     <CCardFooter class="text-right">
-      <CButton type="button" color="light" @click="emit('reset-form')"> 취소 </CButton>
-      <CButton v-if="company" type="button" color="danger" @click="deleteCompany"> 삭제 </CButton>
+      <CButton type="button" color="light" @click="emit('reset-form')"> 취소</CButton>
+      <CButton v-if="company" type="button" color="danger" @click="deleteCompany"> 삭제</CButton>
       <CButton type="submit" :color="btnClass" :disabled="formsCheck">
         <CIcon name="cil-check-circle" />
         저장
@@ -310,7 +310,7 @@ onBeforeMount(() => formDataSetup())
 
   <ConfirmModal ref="refConfirmModal">
     <template #header>회사정보</template>
-    <template #default> 회사정보 {{ confirmText }}을 진행하시겠습니까? </template>
+    <template #default> 회사정보 {{ confirmText }}을 진행하시겠습니까?</template>
     <template #footer>
       <CButton :color="btnClass" @click="modalAction">저장</CButton>
     </template>

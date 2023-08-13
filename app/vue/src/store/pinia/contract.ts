@@ -3,19 +3,19 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { message, errorHandle } from '@/utils/helper'
 import {
-  Contract,
-  SimpleCont,
-  Contractor,
-  SubsSummary,
-  ContSummary,
-  OrderGroup,
-  KeyUnit,
-  HouseUnit,
-  SalesPrice,
-  DownPayment,
-  Succession,
-  Buyer,
-  ContractRelease,
+  type Contract,
+  type SimpleCont,
+  type Contractor,
+  type SubsSummary,
+  type ContSummary,
+  type OrderGroup,
+  type KeyUnit,
+  type HouseUnit,
+  type SalesPrice,
+  type DownPayment,
+  type Succession,
+  type Buyer,
+  type ContractRelease,
 } from '@/store/types/contract'
 
 export interface ContFilter {
@@ -36,7 +36,7 @@ export interface ContFilter {
 export type UnitFilter = {
   project: number
   unit_type?: number
-  contract?: number | string
+  contract?: number
   available?: 'true' | ''
 }
 

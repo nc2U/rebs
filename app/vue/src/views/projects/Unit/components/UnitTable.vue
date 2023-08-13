@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
-import { HouseUnit } from '@/store/types/project'
+import { type HouseUnit } from '@/store/types/project'
 import Unit from '@/views/projects/Unit/components/Unit.vue'
 import UnitForm from './UnitForm.vue'
 
@@ -29,7 +29,7 @@ const onDelete = (payload: { pk: number; type: number }) => emit('on-delete', pa
 <template>
   <CContainer fluid>
     <CRow v-if="units.length === 0">
-      <CCol class="text-center p-5 text-danger"> 등록된 데이터가 없습니다. </CCol>
+      <CCol class="text-center p-5 text-danger"> 등록된 데이터가 없습니다.</CCol>
     </CRow>
 
     <CRow v-else>

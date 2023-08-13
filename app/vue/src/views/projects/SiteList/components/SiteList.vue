@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useSite } from '@/store/pinia/project_site'
 import { TableSecondary } from '@/utils/cssMixins'
-import { Site as S } from '@/store/types/project'
+import { type Site as S } from '@/store/types/project'
 import Site from '@/views/projects/SiteList/components/Site.vue'
 import Pagination from '@/components/Pagination'
 
@@ -10,7 +10,8 @@ defineProps({ isReturned: { type: Boolean } })
 const emit = defineEmits(['page-select', 'on-delete', 'multi-submit'])
 
 const siteStore = useSite()
-const siteList = computed(() => siteStore.getSiteList)
+// const siteList = computed<S[]>(() => siteStore.getSiteList)
+const siteList = computed<S[]>(() => siteStore.siteList)
 const siteCount = computed(() => siteStore.siteCount)
 
 const sitePages = (num: number) => Math.ceil(siteCount.value / num)
@@ -41,14 +42,14 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         <CTableHeaderCell rowspan="2" scope="col">지번</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">지목</CTableHeaderCell>
         <CTableHeaderCell colspan="2" scope="col">공부상 면적</CTableHeaderCell>
-        <CTableHeaderCell v-if="isReturned" colspan="2" scope="col"> 환지 면적 </CTableHeaderCell>
+        <CTableHeaderCell v-if="isReturned" colspan="2" scope="col"> 환지 면적</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">소유자 목록</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">비고</CTableHeaderCell>
       </CTableRow>
       <CTableRow class="text-center">
         <CTableHeaderCell scope="col">m<sup>2</sup></CTableHeaderCell>
         <CTableHeaderCell scope="col">평</CTableHeaderCell>
-        <CTableHeaderCell v-if="isReturned" scope="col"> m<sup>2</sup> </CTableHeaderCell>
+        <CTableHeaderCell v-if="isReturned" scope="col"> m<sup>2</sup></CTableHeaderCell>
         <CTableHeaderCell v-if="isReturned" scope="col">평</CTableHeaderCell>
       </CTableRow>
     </CTableHead>

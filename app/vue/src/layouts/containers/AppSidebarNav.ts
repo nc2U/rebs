@@ -1,6 +1,6 @@
 import { defineComponent, h, ref, resolveComponent, computed } from 'vue'
 import { useAccount } from '@/store/pinia/account'
-import { RouterLink, useRoute, RouteLocation } from 'vue-router'
+import { RouterLink, useRoute, type RouteLocation } from 'vue-router'
 
 import { CBadge, CNavGroup, CNavItem, CSidebarNav, CNavTitle } from '@coreui/vue'
 import { CIcon } from '@coreui/icons-vue'

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, watch } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
-import { BuildingUnit } from '@/store/types/project'
+import { type BuildingUnit } from '@/store/types/project'
 import { AlertLight } from '@/utils/cssMixins'
 import { write_project } from '@/utils/pageAuth'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -133,7 +133,7 @@ const modalAction = () => {
     <CRow>
       <CCol md="3" class="mb-2">
         <CRow>
-          <CFormLabel class="col-sm-4 col-form-label"> 동(건물)선택 </CFormLabel>
+          <CFormLabel class="col-sm-4 col-form-label"> 동(건물)선택</CFormLabel>
           <CCol sm="8">
             <CFormSelect v-model.number="form.building" :disabled="!project" @change="bldgSelect">
               <option value>---------</option>

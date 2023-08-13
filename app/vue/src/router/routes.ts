@@ -1,6 +1,6 @@
 import { useStore } from '@/store'
 import { hashCode } from '@/utils/helper'
-import { RouteRecordRaw } from 'vue-router'
+import { type RouteRecordRaw } from 'vue-router'
 
 /* Layout Containers */
 import DefaultLayout from '@/layouts/DefaultLayout.vue'

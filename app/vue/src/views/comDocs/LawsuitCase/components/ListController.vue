@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { reactive, computed, nextTick, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
-import { SuitCaseFilter, useDocument } from '@/store/pinia/document'
+import { type SuitCaseFilter, useDocument } from '@/store/pinia/document'
 import { numFormat } from '@/utils/baseMixins'
 import { bgLight } from '@/utils/cssMixins'
 import { courtChoices } from '@/views/comDocs/LawsuitCase/components/court'
@@ -105,7 +105,7 @@ onBeforeMount(() => fetchProjectList())
               placeholder="관할법원"
               autocomplete="label"
               :classes="{ search: 'form-control multiselect-search' }"
-              :add-option-on="['enter' | 'tab']"
+              :add-option-on="['enter', 'tab']"
               searchable
               @change="listFiltering(1)"
             />
@@ -118,7 +118,7 @@ onBeforeMount(() => fetchProjectList())
               placeholder="관련사건"
               autocomplete="label"
               :classes="{ search: 'form-control multiselect-search' }"
-              :add-option-on="['enter' | 'tab']"
+              :add-option-on="['enter', 'tab']"
               searchable
               @change="listFiltering(1)"
             />
@@ -172,7 +172,7 @@ onBeforeMount(() => fetchProjectList())
         <strong> 문서 건수 조회 결과 : {{ numFormat(suitcaseCount, 0, 0) }} 건 </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
-        <CButton color="info" size="sm" @click="resetForm"> 검색조건 초기화 </CButton>
+        <CButton color="info" size="sm" @click="resetForm"> 검색조건 초기화</CButton>
       </CCol>
     </CRow>
   </CCallout>

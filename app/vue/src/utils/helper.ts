@@ -1,4 +1,4 @@
-import { createToast, ToastType, Position, TransitionType } from 'mosha-vue-toastify'
+import { createToast, type ToastType, type Position, type TransitionType } from 'mosha-vue-toastify'
 
 export const message = (
   type: ToastType = 'success',
@@ -71,6 +71,7 @@ export const formUtility = {
         }
       } else if (typeof val === 'object' && !(val instanceof File)) {
         for (const key in val) {
+          // eslint-disable-next-line no-prototype-builtins
           if (val.hasOwnProperty(key)) {
             this.getFormData(val[key], formData, namespace ? `${namespace}[${key}]` : key)
           }

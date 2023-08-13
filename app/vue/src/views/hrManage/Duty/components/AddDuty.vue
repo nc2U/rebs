@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { AlertSecondary } from '@/utils/cssMixins'
 import { write_human_resource } from '@/utils/pageAuth'
-import { Duty } from '@/store/types/company'
+import { type Duty } from '@/store/types/company'
 import DutyForm from './DutyForm.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 

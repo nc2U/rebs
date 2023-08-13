@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount, PropType } from 'vue'
+import { ref, reactive, computed, onBeforeMount, type PropType } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { write_project } from '@/utils/pageAuth'
-import { BuildingUnit } from '@/store/types/project'
+import { type BuildingUnit } from '@/store/types/project'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 

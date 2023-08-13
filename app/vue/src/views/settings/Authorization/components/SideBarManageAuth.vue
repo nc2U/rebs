@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, nextTick, onMounted, onUpdated } from 'vue'
-import { UserAuth } from '@/views/settings/Authorization/Index.vue'
+import { type UserAuth } from '@/views/settings/Authorization/Index.vue'
 import { useStore } from '@/store'
 
 const props = defineProps({

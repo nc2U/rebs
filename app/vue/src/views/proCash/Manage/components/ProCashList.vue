@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { useProCash } from '@/store/pinia/proCash'
-import { ProBankAcc, ProjectCashBook } from '@/store/types/proCash'
+import { type ProBankAcc, type ProjectCashBook } from '@/store/types/proCash'
 import { TableSecondary } from '@/utils/cssMixins'
 import ProCash from '@/views/proCash/Manage/components/ProCash.vue'
 import Pagination from '@/components/Pagination'

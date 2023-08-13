@@ -2,7 +2,14 @@ import api from '@/api'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
-import { AllSite, Site, AllOwner, SiteOwner, Relation, SiteContract } from '@/store/types/project'
+import {
+  type AllSite,
+  type Site,
+  type AllOwner,
+  type SiteOwner,
+  type Relation,
+  type SiteContract,
+} from '@/store/types/project'
 
 export const useSite = defineStore('site', () => {
   const allSites = ref<AllSite[]>([])

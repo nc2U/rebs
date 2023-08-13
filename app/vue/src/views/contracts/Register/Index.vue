@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { ref, computed, watch, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin2'
-import { UnitFilter, useContract } from '@/store/pinia/contract'
-import { Contract } from '@/store/types/contract'
+import { type UnitFilter, useContract } from '@/store/pinia/contract'
+import type { Contract, Contractor } from '@/store/types/contract'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
 import { usePayment } from '@/store/pinia/payment'
@@ -17,8 +17,8 @@ const contForm = ref()
 const [route, router] = [useRoute(), useRouter()]
 
 const contStore = useContract()
-const contract = computed(() => contStore.contract)
-const contractor = computed(() => contStore.contractor)
+const contract = computed<Contract | null>(() => contStore.contract)
+const contractor = computed<Contractor | null>(() => contStore.contractor)
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
@@ -162,9 +162,9 @@ onBeforeMount(() => {
   <ContentBody>
     <ContractForm
       ref="contForm"
-      :project="project"
-      :contract="contract"
-      :contractor="contractor"
+      :project="project ?? undefined"
+      :contract="contract ?? undefined"
+      :contractor="contractor ?? undefined"
       :unit-set="unitSet"
       :is-union="isUnion"
       @type-select="typeSelect"

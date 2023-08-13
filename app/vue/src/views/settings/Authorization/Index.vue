@@ -2,7 +2,7 @@
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/settings/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
-import { User } from '@/store/types/accounts'
+import { type User } from '@/store/types/accounts'
 import { useAccount } from '@/store/pinia/account'
 import { write_auth_manage } from '@/utils/pageAuth'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -229,7 +229,7 @@ onBeforeMount(() => {
       <template #header>사용자 권한설정</template>
       <template #default>사용자 권한설정 저장을 진행하시겠습니까?</template>
       <template #footer>
-        <CButton :color="isStaffAuth ? 'success' : 'primary'" @click="modalAction"> 저장 </CButton>
+        <CButton :color="isStaffAuth ? 'success' : 'primary'" @click="modalAction"> 저장</CButton>
       </template>
     </ConfirmModal>
 

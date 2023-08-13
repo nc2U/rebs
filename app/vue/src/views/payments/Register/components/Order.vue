@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { computed, PropType } from 'vue'
-import { AllPayment, PayOrder } from '@/store/types/payment'
+import { computed, type PropType } from 'vue'
+import { type AllPayment, type PayOrder } from '@/store/types/payment'
 import { numFormat, getToday } from '@/utils/baseMixins'
 
 const props = defineProps({

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
-import { ProjectCashBook } from '@/store/types/proCash'
+import { type ProjectCashBook } from '@/store/types/proCash'
 import { AlertLight } from '@/utils/cssMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import PaymentForm from '@/views/payments/Register/components/PaymentForm.vue'

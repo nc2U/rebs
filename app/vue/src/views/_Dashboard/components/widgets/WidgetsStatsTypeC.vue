@@ -283,14 +283,14 @@ const tableItems = [
                   <CIcon name="cil-people" />
                 </CTableHeaderCell>
                 <CTableHeaderCell>User</CTableHeaderCell>
-                <CTableHeaderCell class="text-center">Country </CTableHeaderCell>
+                <CTableHeaderCell class="text-center">Country</CTableHeaderCell>
                 <CTableHeaderCell>Usage</CTableHeaderCell>
-                <CTableHeaderCell class="text-center">Payment Method </CTableHeaderCell>
+                <CTableHeaderCell class="text-center">Payment Method</CTableHeaderCell>
                 <CTableHeaderCell>Activity</CTableHeaderCell>
               </CTableRow>
             </CTableHead>
             <CTableBody>
-              <CTableRow v-for="item in tableItems" :key="item.name">
+              <CTableRow v-for="item in tableItems" :key="item.user.name">
                 <CTableDataCell class="text-center">
                   <CAvatar size="md" :src="item.avatar.src" :status="item.avatar.status" />
                 </CTableDataCell>

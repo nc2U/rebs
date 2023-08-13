@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { computed, PropType } from 'vue'
+import { computed, type PropType } from 'vue'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 import { useDocument } from '@/store/pinia/document'
-import { Post, Link, AFile } from '@/store/types/document'
+import { type Post, type Link, type AFile } from '@/store/types/document'
 import sanitizeHtml from 'sanitize-html'
 
 const props = defineProps({
@@ -60,7 +60,7 @@ const getFileName = (file: string) => {
         <small class="mr-3">작성자 : {{ post.user }}</small>
         <small class="mr-3">
           <v-icon icon="mdi-comment-text-multiple" size="small" />
-          <span class="ml-2">{{ post.comments.length || 0 }}</span>
+          <span class="ml-2">{{ post.comments?.length || 0 }}</span>
         </small>
         <small class="mr-3">
           <v-icon icon="mdi-eye" size="small" />
@@ -83,7 +83,7 @@ const getFileName = (file: string) => {
       <CCol class="text-right" md="3">
         <small>
           <v-icon icon="mdi-calendar-clock" size="small" />
-          <span class="ml-2">{{ timeFormat(post.created) }}</span>
+          <span class="ml-2">{{ timeFormat(post.created ?? '') }}</span>
         </small>
       </CCol>
     </CRow>
@@ -178,7 +178,7 @@ const getFileName = (file: string) => {
         <v-btn variant="tonal" size="small" :rounded="0" class="mr-1" @click="toSocial">
           스크랩
         </v-btn>
-        <v-btn variant="tonal" size="small" :rounded="0" @click="toSocial"> 신고 </v-btn>
+        <v-btn variant="tonal" size="small" :rounded="0" @click="toSocial"> 신고</v-btn>
       </CCol>
     </CRow>
 

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { AlertLight } from '@/utils/cssMixins'
-import { ProBankAcc, ProjectCashBook } from '@/store/types/proCash'
+import { type ProBankAcc, type ProjectCashBook } from '@/store/types/proCash'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ProCashForm from '@/views/proCash/Manage/components/ProCashForm.vue'
 
@@ -20,7 +20,7 @@ const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
 
 <template>
   <CAlert :color="AlertLight" variant="solid" class="text-right">
-    <CButton color="primary" :disabled="!project" @click="createConfirm"> 신규등록 </CButton>
+    <CButton color="primary" :disabled="!project" @click="createConfirm"> 신규등록</CButton>
   </CAlert>
 
   <FormModal ref="createFormModal" size="lg">

@@ -2,8 +2,8 @@
 import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import { useStore } from '@/store'
 import { useTagsView } from '@/store/pinia/tagsView'
-import { VisitedView } from '@/store/types/tagsView'
-import { useRoute, useRouter, RouteRecordRaw, RouteLocationMatched } from 'vue-router'
+import { type VisitedView } from '@/store/types/tagsView'
+import { useRoute, useRouter, type RouteRecordRaw, type RouteLocationMatched } from 'vue-router'
 
 const store = useStore()
 const dark = computed(() => store.theme === 'dark')

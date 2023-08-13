@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted, onUpdated, PropType } from 'vue'
+import { ref, reactive, computed, onMounted, onUpdated, type PropType } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { Post, Attatches, AFile } from '@/store/types/document'
+import type { Post, Attatches, AFile } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
 import { AlertSecondary } from '@/utils/cssMixins'
-import ToastEditor from '@/components/ToastEditor/index.vue'
+// import ToastEditor from '@/components/ToastEditor/index.vue'
 import FileUpload from '@/components/FileUpload.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -24,7 +24,7 @@ const refConfirmModal = ref()
 const attach = ref(true)
 const validated = ref(false)
 const form = reactive<Post & Attatches>({
-  pk: null,
+  pk: undefined,
   company: null,
   project: null,
   board: 2,
@@ -203,8 +203,9 @@ onUpdated(() => dataSetup())
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">내용</CFormLabel>
       <CCol md="10">
-        <VTextarea v-model="form.content" placeholder="본문 내용" />
+        10
         <!--        <ToastEditor v-model="form.content" placeholder="본문 내용" />-->
+        <v-textarea v-model="form.content" placeholder="본문 내용" />
       </CCol>
     </CRow>
 
@@ -272,13 +273,13 @@ onUpdated(() => dataSetup())
                   <CCol>
                     <CInputGroup>
                       변경 : &nbsp;
-                      <FileUpload
-                        :id="`post-file-${file.pk}`"
-                        v-model="form.oldFiles[i].newFile"
-                        size="sm"
-                        type="file"
-                        @input="enableStore"
-                      />
+                      <!--                      <FileUpload-->
+                      <!--                        :id="`post-file-${file.pk}`"-->
+                      <!--                        v-model="form.oldFiles[i].newFile"-->
+                      <!--                        size="sm"-->
+                      <!--                        type="file"-->
+                      <!--                        @input="enableStore"-->
+                      <!--                      />-->
                       <CInputGroupText id="basic-addon2" class="py-0">
                         <CFormCheck
                           :id="`del-file-${file.pk}`"
@@ -300,12 +301,12 @@ onUpdated(() => dataSetup())
         <CRow class="mb-2">
           <CCol>
             <CInputGroup v-for="fNum in newFileRange" :key="`fn-${fNum}`" class="mb-2">
-              <FileUpload
-                :id="`file-${fNum}`"
-                v-model="form.newFiles[fNum]"
-                type="file"
-                @input="enableStore"
-              />
+              <!--              <FileUpload-->
+              <!--                :id="`file-${fNum}`"-->
+              <!--                v-model="form.newFiles[fNum]"-->
+              <!--                type="file"-->
+              <!--                @input="enableStore"-->
+              <!--              />-->
               <CInputGroupText id="basic-addon2" @click="ctlFileNum(fNum)">
                 <v-icon
                   :icon="`mdi-${fNum + 1 < newFileNum ? 'minus' : 'plus'}-thick`"

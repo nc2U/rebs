@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { CompanyBank, CashBook } from '@/store/types/comCash'
+import type { CompanyBank, CashBook } from '@/store/types/comCash'
 import { AlertLight } from '@/utils/cssMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import CashForm from '@/views/comCash/CashManage/components/CashForm.vue'
@@ -22,7 +22,7 @@ const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
 
 <template>
   <CAlert :color="AlertLight" variant="solid" class="text-right">
-    <CButton color="primary" :disabled="!company" @click="createConfirm"> 신규등록 </CButton>
+    <CButton color="primary" :disabled="!company" @click="createConfirm"> 신규등록</CButton>
   </CAlert>
 
   <FormModal ref="createFormModal" size="lg">

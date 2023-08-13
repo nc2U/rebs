@@ -4,12 +4,12 @@ import { write_project } from '@/utils/pageAuth'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-export type typeSortType = {
+export type SortType = {
   value: '1' | '2' | '3' | '4' | '5' | '6'
   label: string
 }
 
-const typeSort = inject<typeSortType[]>('typeSort')
+const typeSort = inject<SortType[]>('typeSort')
 defineProps({ disabled: Boolean })
 const emit = defineEmits(['on-submit'])
 
@@ -115,7 +115,7 @@ const resetForm = () => {
               step="0.0001"
               :disabled="disabled"
             />
-            <CFormFeedback invalid> 전용면적을 소소점4자리 이하로 입력하세요. </CFormFeedback>
+            <CFormFeedback invalid> 전용면적을 소소점4자리 이하로 입력하세요.</CFormFeedback>
           </CCol>
 
           <CCol lg="2" class="mb-2">
@@ -127,7 +127,7 @@ const resetForm = () => {
               step="0.0001"
               :disabled="disabled"
             />
-            <CFormFeedback invalid> 공급면적을 소소점4자리 이하로 입력하세요. </CFormFeedback>
+            <CFormFeedback invalid> 공급면적을 소소점4자리 이하로 입력하세요.</CFormFeedback>
           </CCol>
           <CCol lg="2" class="mb-2">
             <CFormInput
@@ -138,7 +138,7 @@ const resetForm = () => {
               step="0.0001"
               :disabled="disabled"
             />
-            <CFormFeedback invalid> 계약면적을 소소점4자리 이하로 입력하세요. </CFormFeedback>
+            <CFormFeedback invalid> 계약면적을 소소점4자리 이하로 입력하세요.</CFormFeedback>
           </CCol>
 
           <CCol lg="2" class="mb-2">
@@ -162,7 +162,7 @@ const resetForm = () => {
           </CCol>
 
           <CCol lg="2" class="d-grid gap-2 d-lg-block mb-3">
-            <CButton color="primary" type="submit" :disabled="disabled"> 타입추가 </CButton>
+            <CButton color="primary" type="submit" :disabled="disabled"> 타입추가</CButton>
           </CCol>
         </CRow>
       </CCol>
@@ -171,7 +171,7 @@ const resetForm = () => {
 
   <ConfirmModal ref="refConfirmModal">
     <template #header> 타입 정보 등록</template>
-    <template #default> 프로젝트의 타입 정보 등록을 진행하시겠습니까? </template>
+    <template #default> 프로젝트의 타입 정보 등록을 진행하시겠습니까?</template>
     <template #footer>
       <CButton color="primary" @click="modalAction">저장</CButton>
     </template>

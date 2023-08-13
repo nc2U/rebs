@@ -2,10 +2,10 @@
 import { ref, reactive, computed, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { useSite } from '@/store/pinia/project_site'
-import { SimpleSite, SiteOwner } from '@/store/types/project'
+import { type SimpleSite, type SiteOwner } from '@/store/types/project'
 import { write_project } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
-import { AddressData, callAddress } from '@/components/DaumPostcode/address'
+import { type AddressData, callAddress } from '@/components/DaumPostcode/address'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -178,7 +178,7 @@ onBeforeMount(() => dataSetup())
         <CRow class="mb-3">
           <CCol sm="12">
             <CRow>
-              <CFormLabel class="col-sm-2 col-form-label"> 소유부지 </CFormLabel>
+              <CFormLabel class="col-sm-2 col-form-label"> 소유부지</CFormLabel>
               <CCol sm="10">
                 <Multiselect
                   v-model="form.sites"
@@ -211,7 +211,7 @@ onBeforeMount(() => dataSetup())
 
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 보조 연락처 </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 보조 연락처</CFormLabel>
               <CCol sm="8">
                 <input
                   v-model="form.phone2"
@@ -232,7 +232,7 @@ onBeforeMount(() => dataSetup())
               <CFormLabel class="col-sm-2 col-form-label">주소</CFormLabel>
               <CCol sm="3">
                 <CInputGroup>
-                  <CInputGroupText @click="refPostCode.initiate()"> 우편번호 </CInputGroupText>
+                  <CInputGroupText @click="refPostCode.initiate()"> 우편번호</CInputGroupText>
                   <CFormInput
                     v-model="form.zipcode"
                     v-maska
@@ -278,7 +278,7 @@ onBeforeMount(() => dataSetup())
         <CRow class="mb-3">
           <CCol sm="12">
             <CRow>
-              <CFormLabel class="col-sm-2 col-form-label"> 주요 상담 기록 </CFormLabel>
+              <CFormLabel class="col-sm-2 col-form-label"> 주요 상담 기록</CFormLabel>
               <CCol sm="10">
                 <CFormTextarea
                   v-model="form.counsel_record"
@@ -293,12 +293,12 @@ onBeforeMount(() => dataSetup())
     </CModalBody>
 
     <CModalFooter>
-      <CButton type="button" color="light" @click="$emit('close')"> 닫기 </CButton>
+      <CButton type="button" color="light" @click="$emit('close')"> 닫기</CButton>
       <slot name="footer">
         <CButton type="submit" :color="owner ? 'success' : 'primary'" :disabled="formsCheck">
           저장
         </CButton>
-        <CButton v-if="owner" type="button" color="danger" @click="deleteConfirm"> 삭제 </CButton>
+        <CButton v-if="owner" type="button" color="danger" @click="deleteConfirm"> 삭제</CButton>
       </slot>
     </CModalFooter>
 

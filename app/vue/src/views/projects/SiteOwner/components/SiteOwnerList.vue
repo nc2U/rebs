@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useSite } from '@/store/pinia/project_site'
-import { Relation, SiteOwner as Owner } from '@/store/types/project'
+import { type Relation, type SiteOwner as Owner } from '@/store/types/project'
 import { TableInfo, TableSuccess, TableSecondary } from '@/utils/cssMixins'
 import SiteOwner from '@/views/projects/SiteOwner/components/SiteOwner.vue'
 import Pagination from '@/components/Pagination'
@@ -38,8 +38,8 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 
     <CTableHead :color="TableSecondary">
       <CTableRow class="text-center">
-        <CTableHeaderCell colspan="5" :color="TableInfo"> 소유자 관련 정보 </CTableHeaderCell>
-        <CTableHeaderCell colspan="6" :color="TableSuccess"> 소유권 관련 정보 </CTableHeaderCell>
+        <CTableHeaderCell colspan="5" :color="TableInfo"> 소유자 관련 정보</CTableHeaderCell>
+        <CTableHeaderCell colspan="6" :color="TableSuccess"> 소유권 관련 정보</CTableHeaderCell>
       </CTableRow>
       <CTableRow class="text-center" align="middle">
         <CTableHeaderCell rowspan="2" scope="col">소유구분</CTableHeaderCell>
@@ -51,8 +51,8 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         <CTableHeaderCell colspan="2" scope="col">
           소유면적 <span v-if="isReturned">(환지면적 기준)</span>
         </CTableHeaderCell>
-        <CTableHeaderCell rowspan="2" scope="col"> 소유권 취득일 </CTableHeaderCell>
-        <CTableHeaderCell rowspan="2" colspan="2" scope="col"> 비고 </CTableHeaderCell>
+        <CTableHeaderCell rowspan="2" scope="col"> 소유권 취득일</CTableHeaderCell>
+        <CTableHeaderCell rowspan="2" colspan="2" scope="col"> 비고</CTableHeaderCell>
       </CTableRow>
       <CTableRow class="text-center">
         <CTableHeaderCell scope="col">m<sup>2</sup></CTableHeaderCell>

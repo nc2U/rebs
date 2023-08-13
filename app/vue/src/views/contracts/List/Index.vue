@@ -3,7 +3,7 @@ import { ref, computed, watch, onBeforeMount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
-import { useContract, ContFilter } from '@/store/pinia/contract'
+import { useContract, type ContFilter } from '@/store/pinia/contract'
 import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin1'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -106,7 +106,7 @@ onBeforeMount(() => {
 
 <template>
   <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect">
-    <ContractSummary :project="project" />
+    <ContractSummary :project="project ?? undefined" />
   </ContentHeader>
 
   <ContentBody>

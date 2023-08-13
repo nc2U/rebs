@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useProject } from '@/store/pinia/project'
-import { ProOutBudget } from '@/store/types/project'
+import { type ProOutBudget } from '@/store/types/project'
 import { TableSecondary } from '@/utils/cssMixins'
 import OutBudget from './OutBudget.vue'
 

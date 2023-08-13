@@ -2,14 +2,14 @@ import api from '@/api'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { message, errorHandle } from '@/utils/helper'
-import { CashBookFilter } from '@/store/types/proCash'
+import { type CashBookFilter } from '@/store/types/proCash'
 import {
-  Price,
-  PayOrder,
-  DownPay,
-  PaySumByType,
-  ContractNum,
-  AllPayment,
+  type Price,
+  type PayOrder,
+  type DownPay,
+  type PaySumByType,
+  type ContractNum,
+  type AllPayment,
 } from '@/store/types/payment'
 
 export type DownPayFilter = {

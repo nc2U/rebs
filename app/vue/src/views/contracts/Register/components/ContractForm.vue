@@ -1,17 +1,17 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, nextTick, watch, onMounted, onUpdated, PropType } from 'vue'
+import { ref, reactive, computed, nextTick, watch, onMounted, onUpdated, type PropType } from 'vue'
 import { useStore } from '@/store'
 import { useAccount } from '@/store/pinia/account'
 import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
 import { usePayment } from '@/store/pinia/payment'
 import { useProCash } from '@/store/pinia/proCash'
-import { PayOrder } from '@/store/types/payment'
-import { Payment, Contractor } from '@/store/types/contract'
+import { type PayOrder } from '@/store/types/payment'
+import { type Payment, type Contractor } from '@/store/types/contract'
 import { isValidate } from '@/utils/helper'
 import { numFormat, diffDate } from '@/utils/baseMixins'
 import { write_contract } from '@/utils/pageAuth'
-import { AddressData, callAddress } from '@/components/DaumPostcode/address'
+import { type AddressData, callAddress } from '@/components/DaumPostcode/address'
 import Multiselect from '@vueform/multiselect'
 import ContNavigation from './ContNavigation.vue'
 import ContController from './ContController.vue'
@@ -469,7 +469,7 @@ onUpdated(() => formDataSetup())
           <CFormFeedback invalid>유니트 타입을 선택하세요.</CFormFeedback>
         </CCol>
 
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> {{ contLabel }}코드 </CFormLabel>
+        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> {{ contLabel }}코드</CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <CFormSelect
             v-model.number="form.keyunit"
@@ -482,10 +482,10 @@ onUpdated(() => formDataSetup())
               {{ ku.label }}
             </option>
           </CFormSelect>
-          <CFormFeedback invalid> {{ contLabel }}코드를 선택하세요. </CFormFeedback>
+          <CFormFeedback invalid> {{ contLabel }}코드를 선택하세요.</CFormFeedback>
         </CCol>
 
-        <CFormLabel v-if="unitSet" class="col-md-2 col-lg-1 col-form-label"> 동호수 </CFormLabel>
+        <CFormLabel v-if="unitSet" class="col-md-2 col-lg-1 col-form-label"> 동호수</CFormLabel>
         <CCol v-if="unitSet" md="10" lg="2" class="mb-md-3 mb-lg-0">
           <Multiselect
             v-model.number="form.houseunit"
@@ -506,7 +506,7 @@ onUpdated(() => formDataSetup())
       <hr />
 
       <CRow class="mb-3">
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> {{ contLabel }}일자 </CFormLabel>
+        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> {{ contLabel }}일자</CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <DatePicker
             v-show="form.status === '1'"
@@ -524,7 +524,7 @@ onUpdated(() => formDataSetup())
           />
         </CCol>
 
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> {{ contLabel }}자명 </CFormLabel>
+        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> {{ contLabel }}자명</CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <CFormInput
             v-model="form.name"
@@ -533,10 +533,10 @@ onUpdated(() => formDataSetup())
             required
             :disabled="noStatus"
           />
-          <CFormFeedback invalid> {{ contLabel }}자명을 입력하세요. </CFormFeedback>
+          <CFormFeedback invalid> {{ contLabel }}자명을 입력하세요.</CFormFeedback>
         </CCol>
 
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 생년월일 </CFormLabel>
+        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 생년월일</CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <DatePicker
             v-model="form.birth_date"
@@ -588,7 +588,7 @@ onUpdated(() => formDataSetup())
       </CRow>
 
       <CRow class="mb-3">
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 휴대전화 </CFormLabel>
+        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 휴대전화</CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <input
             v-model="form.cell_phone"
@@ -603,7 +603,7 @@ onUpdated(() => formDataSetup())
           <CFormFeedback invalid>휴대전화번호를 입력하세요.</CFormFeedback>
         </CCol>
 
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 집전화 </CFormLabel>
+        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 집전화</CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <input
             v-model="form.home_phone"
@@ -616,7 +616,7 @@ onUpdated(() => formDataSetup())
           />
         </CCol>
 
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 기타 연락처 </CFormLabel>
+        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 기타 연락처</CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <input
             v-model="form.other_phone"
@@ -629,7 +629,7 @@ onUpdated(() => formDataSetup())
           />
         </CCol>
 
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 이메일 </CFormLabel>
+        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 이메일</CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
           <CFormInput
             v-model="form.email"
@@ -773,10 +773,10 @@ onUpdated(() => formDataSetup())
       </CRow>
 
       <CRow v-show="isContract" class="mb-0">
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 주민등록 주소 </CFormLabel>
+        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 주민등록 주소</CFormLabel>
         <CCol md="3" lg="2" class="mb-3 mb-lg-0">
           <CInputGroup>
-            <CInputGroupText @click="refPostCode.initiate(2)"> 우편번호 </CInputGroupText>
+            <CInputGroupText @click="refPostCode.initiate(2)"> 우편번호</CInputGroupText>
             <CFormInput
               v-model="form.id_zipcode"
               v-maska
@@ -826,10 +826,10 @@ onUpdated(() => formDataSetup())
       </CRow>
 
       <CRow v-show="isContract" class="mb-0">
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 우편수령 주소 </CFormLabel>
+        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 우편수령 주소</CFormLabel>
         <CCol md="3" lg="2" class="mb-3 mb-lg-0">
           <CInputGroup>
-            <CInputGroupText @click="refPostCode.initiate(3)"> 우편번호 </CInputGroupText>
+            <CInputGroupText @click="refPostCode.initiate(3)"> 우편번호</CInputGroupText>
             <CFormInput
               v-model="form.dm_zipcode"
               v-maska
@@ -853,7 +853,7 @@ onUpdated(() => formDataSetup())
             :disabled="!isContract"
             @focus="refPostCode.initiate(3)"
           />
-          <CFormFeedback invalid> 우편물 수령 주소를 입력하세요. </CFormFeedback>
+          <CFormFeedback invalid> 우편물 수령 주소를 입력하세요.</CFormFeedback>
         </CCol>
 
         <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
@@ -901,8 +901,8 @@ onUpdated(() => formDataSetup())
     </CCardBody>
 
     <CCardFooter class="text-right">
-      <CButton type="button" color="light" @click="formDataReset"> 취소 </CButton>
-      <CButton v-if="contract" type="button" color="danger" @click="deleteContract"> 삭제 </CButton>
+      <CButton type="button" color="light" @click="formDataReset"> 취소</CButton>
+      <CButton v-if="contract" type="button" color="danger" @click="deleteContract"> 삭제</CButton>
       <CButton
         type="submit"
         :color="contract ? 'success' : 'primary'"
@@ -930,7 +930,7 @@ onUpdated(() => formDataSetup())
       {{ contLabel }} 정보 {{ contract ? '수정등록' : '신규등록' }}을 진행하시겠습니까?
     </template>
     <template #footer>
-      <CButton :color="contract ? 'success' : 'primary'" @click="modalAction"> 저장 </CButton>
+      <CButton :color="contract ? 'success' : 'primary'" @click="modalAction"> 저장</CButton>
     </template>
   </ConfirmModal>
 

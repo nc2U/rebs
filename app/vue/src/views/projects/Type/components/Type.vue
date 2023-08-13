@@ -2,11 +2,11 @@
 import { ref, reactive, computed, onBeforeMount, inject } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { write_project } from '@/utils/pageAuth'
-import { typeSortType } from './TypeAddForm.vue'
+import { type SortType } from './TypeAddForm.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const typeSort = inject<typeSortType[]>('typeSort')
+const typeSort = inject<SortType[]>('typeSort')
 const props = defineProps({ type: { type: Object, required: true } })
 const emit = defineEmits(['on-update', 'on-delete'])
 

@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useCompany } from '@/store/pinia/company'
 import { TableSecondary } from '@/utils/cssMixins'
-import { Duty as DutyType } from '@/store/types/company'
+import { type Duty as DutyType } from '@/store/types/company'
 import Pagination from '@/components/Pagination'
 import Duty from './Duty.vue'
 

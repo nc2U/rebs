@@ -2,7 +2,7 @@
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { isValidate } from '@/utils/helper'
 import { write_human_resource } from '@/utils/pageAuth'
-import { Duty } from '@/store/types/company'
+import { type Duty } from '@/store/types/company'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
@@ -110,12 +110,12 @@ onBeforeMount(() => formDataSetup())
     </CModalBody>
 
     <CModalFooter>
-      <CButton type="button" color="light" @click="$emit('close')"> 닫기 </CButton>
+      <CButton type="button" color="light" @click="$emit('close')"> 닫기</CButton>
       <slot name="footer">
         <CButton type="submit" :color="duty ? 'success' : 'primary'" :disabled="formsCheck">
           저장
         </CButton>
-        <CButton v-if="duty" type="button" color="danger" @click="deleteConfirm"> 삭제 </CButton>
+        <CButton v-if="duty" type="button" color="danger" @click="deleteConfirm"> 삭제</CButton>
       </slot>
     </CModalFooter>
   </CForm>

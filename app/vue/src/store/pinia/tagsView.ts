@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { CachedViews, VisitedView } from '@/store/types/tagsView'
-import { RouteLocationNormalizedLoaded as RouteNormal } from 'vue-router'
+import { type CachedViews, type VisitedView } from '@/store/types/tagsView'
+import { type RouteLocationNormalizedLoaded as RouteNormal } from 'vue-router'
 
 export const useTagsView = defineStore('tags-view', () => {
   // state & getters

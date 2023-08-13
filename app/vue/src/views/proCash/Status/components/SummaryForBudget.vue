@@ -4,7 +4,7 @@ import { useProject } from '@/store/pinia/project'
 import { write_project_cash } from '@/utils/pageAuth'
 import { numFormat } from '@/utils/baseMixins'
 import { TableInfo, TableSecondary } from '@/utils/cssMixins'
-import { StatusOutBudget, ExecAmountToBudget as ExeBudget } from '@/store/types/project'
+import { type StatusOutBudget, type ExecAmountToBudget as ExeBudget } from '@/store/types/project'
 
 defineProps({ date: { type: String, default: '' } })
 
@@ -167,12 +167,12 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
       </CTableRow>
 
       <CTableRow :color="TableSecondary" class="text-right">
-        <CTableHeaderCell colspan="4" class="text-center"> 합계 </CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(sumTotal.totalBudget) }} </CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(sumTotal.preExecAmt) }} </CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(sumTotal.monthExecAmt) }} </CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(sumTotal.totalExecAmt) }} </CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(sumTotal.availableBudget) }} </CTableHeaderCell>
+        <CTableHeaderCell colspan="4" class="text-center"> 합계</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(sumTotal.totalBudget) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(sumTotal.preExecAmt) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(sumTotal.monthExecAmt) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(sumTotal.totalExecAmt) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(sumTotal.availableBudget) }}</CTableHeaderCell>
       </CTableRow>
     </CTableBody>
   </CTable>

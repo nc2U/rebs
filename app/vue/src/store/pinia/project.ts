@@ -4,11 +4,11 @@ import { defineStore } from 'pinia'
 import { useAccount } from '@/store/pinia/account'
 import { errorHandle, message } from '@/utils/helper'
 import {
-  Project,
-  ProIncBudget,
-  ProOutBudget,
-  StatusOutBudget,
-  ExecAmountToBudget,
+  type Project,
+  type ProIncBudget,
+  type ProOutBudget,
+  type StatusOutBudget,
+  type ExecAmountToBudget,
 } from '@/store/types/project'
 
 const accountStore = useAccount()

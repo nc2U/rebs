@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin1'
 import { useProject } from '@/store/pinia/project'
-import { Project } from '@/store/types/project'
+import { type Project } from '@/store/types/project'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import IndexForm from '@/views/projects/List/components/IndexForm.vue'

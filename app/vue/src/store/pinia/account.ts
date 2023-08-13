@@ -4,7 +4,7 @@ import { Buffer } from 'buffer'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
-import { User, StaffAuth, Profile, Todo } from '@/store/types/accounts'
+import { type User, type StaffAuth, type Profile, type Todo } from '@/store/types/accounts'
 
 type LoginUser = { email: string; password: string }
 

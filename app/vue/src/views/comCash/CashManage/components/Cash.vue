@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { ref, computed, PropType } from 'vue'
+import { ref, computed, type PropType } from 'vue'
 import { useStore } from '@/store'
 import { useAccount } from '@/store/pinia/account'
-import { CompanyBank, CashBook } from '@/store/types/comCash'
+import type { CompanyBank, CashBook } from '@/store/types/comCash'
 import { write_company_cash } from '@/utils/pageAuth'
 import { numFormat, cutString, diffDate } from '@/utils/baseMixins'
 import FormModal from '@/components/Modals/FormModal.vue'

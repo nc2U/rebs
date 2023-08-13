@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { start, close } from '@/utils/nprogress'
-import router from '@/router'
+import { start, close } from '../utils/nprogress'
+import router from '../router'
 
 const api = axios.create({
   baseURL: '/api/v1/',

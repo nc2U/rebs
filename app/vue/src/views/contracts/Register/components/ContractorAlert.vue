@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { computed, PropType } from 'vue'
+import { computed, type PropType } from 'vue'
 import { useRoute } from 'vue-router'
 import { useContract } from '@/store/pinia/contract'
-import { Contractor } from '@/store/types/contract'
+import { type Contractor } from '@/store/types/contract'
 
 const props = defineProps({
   isBlank: { type: Boolean, default: false },
@@ -58,7 +58,7 @@ const resumeForm = () => {
       <CCol class="text-right">
         <router-link v-if="!isBlank" to="">
           <v-icon icon="mdi mdi-close" @click="removeContractor" />
-          <v-tooltip activator="parent" location="start"> 계약자 선택 해제 </v-tooltip>
+          <v-tooltip activator="parent" location="start"> 계약자 선택 해제</v-tooltip>
         </router-link>
         <a v-else href="javascript:void(0)">
           <v-icon
@@ -68,7 +68,7 @@ const resumeForm = () => {
             class="rotate"
             @click="resumeForm"
           />
-          <v-tooltip activator="parent" location="start"> 계약자 정보 채우기 </v-tooltip>
+          <v-tooltip activator="parent" location="start"> 계약자 정보 채우기</v-tooltip>
         </a>
       </CCol>
     </CRow>

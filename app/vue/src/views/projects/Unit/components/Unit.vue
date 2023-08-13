@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { computed, PropType } from 'vue'
-import { SimpleUnit } from '@/store/types/project'
+import { computed, type PropType } from 'vue'
+import { type SimpleUnit } from '@/store/types/project'
 
 const props = defineProps({
   unit: { type: Object as PropType<SimpleUnit>, default: null },

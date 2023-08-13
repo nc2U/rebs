@@ -3,7 +3,7 @@ import { ref, reactive, computed, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { useSite } from '@/store/pinia/project_site'
 import { isValidate } from '@/utils/helper'
-import { Site } from '@/store/types/project'
+import { type Site } from '@/store/types/project'
 import { write_project } from '@/utils/pageAuth'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -121,7 +121,7 @@ onBeforeMount(() => dataSetup())
 
           <CCol v-if="!isReturned" sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 등기부 발급일 </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 등기부 발급일</CFormLabel>
               <CCol sm="8">
                 <DatePicker
                   v-model="form.dup_issue_date"
@@ -157,7 +157,7 @@ onBeforeMount(() => dataSetup())
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 공부상 면적 - m<sup>2</sup> </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 공부상 면적 - m<sup>2</sup></CFormLabel>
               <CCol sm="8">
                 <CFormInput
                   v-model.number="form.official_area"
@@ -189,7 +189,7 @@ onBeforeMount(() => dataSetup())
         <CRow v-if="isReturned" class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 환지 면적 - m<sup>2</sup> </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 환지 면적 - m<sup>2</sup></CFormLabel>
               <CCol sm="8">
                 <CFormInput
                   v-model.number="form.returned_area"
@@ -204,7 +204,7 @@ onBeforeMount(() => dataSetup())
 
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 등기부 발급일 </CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 등기부 발급일</CFormLabel>
               <CCol sm="8">
                 <DatePicker
                   v-model="form.dup_issue_date"
@@ -220,7 +220,7 @@ onBeforeMount(() => dataSetup())
         <CRow class="mb-3">
           <CCol sm="12">
             <CRow>
-              <CFormLabel class="col-sm-2 col-form-label"> 주요 권리 제한 사항 </CFormLabel>
+              <CFormLabel class="col-sm-2 col-form-label"> 주요 권리 제한 사항</CFormLabel>
               <CCol sm="10">
                 <CFormTextarea
                   v-model="form.rights_restrictions"
@@ -235,12 +235,12 @@ onBeforeMount(() => dataSetup())
     </CModalBody>
 
     <CModalFooter>
-      <CButton type="button" color="light" @click="$emit('close')"> 닫기 </CButton>
+      <CButton type="button" color="light" @click="$emit('close')"> 닫기</CButton>
       <slot name="footer">
         <CButton type="submit" :color="site ? 'success' : 'primary'" :disabled="formsCheck">
           저장
         </CButton>
-        <CButton v-if="site" type="button" color="danger" @click="deleteConfirm"> 삭제 </CButton>
+        <CButton v-if="site" type="button" color="danger" @click="deleteConfirm"> 삭제</CButton>
       </slot>
     </CModalFooter>
   </CForm>

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { useContract } from '@/store/pinia/contract'
-import { Succession } from '@/store/types/contract'
+import { type Succession } from '@/store/types/contract'
 import { AlertLight } from '@/utils/cssMixins'
 import { write_contract } from '@/utils/pageAuth'
 import FormModal from '@/components/Modals/FormModal.vue'
@@ -37,7 +37,7 @@ const onSubmit = (payload: Succession) => {
   </CAlert>
 
   <FormModal ref="successionFormModal" size="lg">
-    <template #header> 권리 의무 승계 {{ isSuccession ? '수정' : '신규' }} 등록 </template>
+    <template #header> 권리 의무 승계 {{ isSuccession ? '수정' : '신규' }} 등록</template>
     <template #default>
       <SuccessionForm
         :succession="isSuccession ? (succession as Succession) : undefined"

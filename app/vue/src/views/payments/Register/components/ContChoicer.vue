@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, nextTick, onMounted, PropType } from 'vue'
-import { Contract } from '@/store/types/contract'
+import { ref, reactive, computed, nextTick, onMounted, type PropType } from 'vue'
+import { type Contract } from '@/store/types/contract'
 import { useContract } from '@/store/pinia/contract'
 import { usePayment } from '@/store/pinia/payment'
 import TableTitleRow from '@/components/TableTitleRow.vue'
@@ -73,7 +73,7 @@ onMounted(() => pageInit())
                 aria-describedby="addon-wrapping"
                 @keydown.enter="listFiltering(1)"
               />
-              <CInputGroupText @click="listFiltering(1)"> 계약 건 찾기 </CInputGroupText>
+              <CInputGroupText @click="listFiltering(1)"> 계약 건 찾기</CInputGroupText>
             </CInputGroup>
           </CCol>
         </CRow>

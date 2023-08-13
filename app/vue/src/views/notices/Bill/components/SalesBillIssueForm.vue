@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, onMounted, onUpdated, PropType } from 'vue'
+import { ref, reactive, computed, watch, onMounted, onUpdated, type PropType } from 'vue'
 import { usePayment } from '@/store/pinia/payment'
-import { SalesBillIssue } from '@/store/types/notice'
+import { type SalesBillIssue } from '@/store/types/notice'
 import { write_notice } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
 import { getToday } from '@/utils/baseMixins'
-import { AddressData, callAddress } from '@/components/DaumPostcode/address'
+import { type AddressData, callAddress } from '@/components/DaumPostcode/address'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -337,7 +337,7 @@ onUpdated(() => formDataSetup())
 
         <CCol xs="12" sm="8" md="4" xl="2" class="mb-1">
           <CInputGroup>
-            <CInputGroupText @click="postCode.initiate()"> 우편번호 </CInputGroupText>
+            <CInputGroupText @click="postCode.initiate()"> 우편번호</CInputGroupText>
             <CFormInput
               v-model="form.zipcode"
               v-maska
@@ -416,7 +416,7 @@ onUpdated(() => formDataSetup())
 
   <ConfirmModal ref="refConfirmModal">
     <template #header> 수납 고지서 발행 정보</template>
-    <template #default> 수납 고지서 발행 정보 {{ confirmText }}을(를) 진행하시겠습니까? </template>
+    <template #default> 수납 고지서 발행 정보 {{ confirmText }}을(를) 진행하시겠습니까?</template>
     <template #footer>
       <CButton :color="btnClass" @click="modalAction">저장</CButton>
     </template>

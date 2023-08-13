@@ -3,16 +3,16 @@ import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useAccount } from '@/store/pinia/account'
 import { errorHandle, message } from '@/utils/helper'
-import { Company, Logo } from '@/store/types/settings'
+import { type Company, type Logo } from '@/store/types/settings'
 import {
-  Staff,
-  StaffFilter,
-  Department,
-  DepFilter,
-  Grade,
-  Position,
-  Duty,
-  ComFilter,
+  type Staff,
+  type StaffFilter,
+  type Department,
+  type DepFilter,
+  type Grade,
+  type Position,
+  type Duty,
+  type ComFilter,
 } from '@/store/types/company'
 
 const accountStore = useAccount()

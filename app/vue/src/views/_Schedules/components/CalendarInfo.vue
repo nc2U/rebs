@@ -1,7 +1,10 @@
 <script lang="ts" setup>
+import type { PropType } from 'vue'
+import type { Event } from '@/store/types/schedule'
+
 defineProps({
   calendarOptions: { type: Object, default: Function },
-  currentEvents: { type: Array, default: Function },
+  currentEvents: { type: Array as PropType<Event[]>, default: Function },
 })
 const emit = defineEmits(['weekends-toggle'])
 </script>
@@ -37,7 +40,7 @@ const emit = defineEmits(['weekends-toggle'])
         </h5>
         <ul>
           <li v-for="event in currentEvents" :key="event.id">
-            <b>{{ event.start.replace('T', ' ').replace(':00+09:00', '') }}</b>
+            <b>{{ event.start?.replace('T', ' ').replace(':00+09:00', '') }}</b>
             <i class="ml-2">{{ event.title }}</i>
           </li>
         </ul>

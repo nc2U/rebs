@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { TableSecondary } from '@/utils/cssMixins'
 import { useContract } from '@/store/pinia/contract'
-import { ContractRelease } from '@/store/types/contract'
+import { type ContractRelease } from '@/store/types/contract'
 import Pagination from '@/components/Pagination'
 import Release from '@/views/contracts/Release/components/Release.vue'
 

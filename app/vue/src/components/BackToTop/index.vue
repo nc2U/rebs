@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PropType, ref, onMounted, onBeforeUnmount } from 'vue'
+import { type PropType, ref, onMounted, onBeforeUnmount } from 'vue'
 
 const props = defineProps({
   visibilityHeight: { type: Number as PropType<number>, default: 400 },
@@ -24,14 +24,14 @@ const props = defineProps({
 })
 
 const visible = ref(false)
-const interval = ref<number | undefined>(undefined)
+const interval = ref<any>()
 const isMoving = ref(false)
 
-const handleScroll = () => (visible.value = window.pageYOffset > props.visibilityHeight)
+const handleScroll = () => (visible.value = window.scrollY > props.visibilityHeight)
 
 const backToTop = () => {
   if (isMoving.value) return
-  const start = window.pageYOffset
+  const start = window.scrollY
   let i = 0
   isMoving.value = true
   interval.value = setInterval(() => {
@@ -47,7 +47,7 @@ const backToTop = () => {
   }, 100)
 }
 
-const easeInOutQuad = (t, b, c, d) => {
+const easeInOutQuad = (t: number, b: number, c: number, d: number) => {
   if ((t /= d / 2) < 1) return (c / 2) * t * t + b
   return (-c / 2) * (--t * (t - 2) - 1) + b
 }

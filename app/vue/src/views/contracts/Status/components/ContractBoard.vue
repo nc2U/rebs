@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
 import Building from '@/views/contracts/Status/components/Building.vue'
 
-import { KeyUnit } from '@/store/types/project'
+import { type KeyUnit } from '@/store/types/project'
 
 export type SimpleUnit = {
   bldg: number

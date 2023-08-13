@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { useComCash } from '@/store/pinia/comCash'
-import { CompanyBank } from '@/store/types/comCash'
+import type { CompanyBank } from '@/store/types/comCash'
 import BankAccForm from './BankAccForm.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 

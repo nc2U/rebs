@@ -1,0 +1,413 @@
+// Here you can add other styles
+
+.bg-primary-lighten {
+  background: #ede3fe;
+}
+
+.bg-success-lighten {
+  background: #ebf5eb;
+}
+
+.bg-info-lighten {
+  background: #ebedef;
+}
+
+.bg-warning-lighten {
+  background: #fff2e6;
+}
+
+.bg-danger-lighten {
+  background: #fdebeb;
+}
+
+.dark-theme select > option {
+  background: #2f303a !important;
+}
+
+// NProgress css
+#nprogress .bar {
+  background: #61d766;
+  height: 1.2px;
+}
+
+// tinymce
+.dark-theme {
+  .tox-toolbar__primary {
+    background-color: #24252f !important;
+  }
+
+  body.mce-content-body {
+    background-color: #2f303a !important;
+  }
+}
+
+.btn-link {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.example {
+  &:not(:first-child) {
+    margin-top: 1.5rem;
+  }
+
+  .tab-content {
+    background-color: $light-50 !important;
+
+    @at-root .dark-theme & {
+      background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+  }
+
+  code[class*='language-'],
+  pre[class*='language-'] {
+    font-size: 0.875rem !important;
+  }
+
+  :not(pre) > code[class*='language-'],
+  pre[class*='language-'] {
+    background: transparent;
+  }
+
+  & + p,
+  & + h2,
+  & + h3,
+  & + h4,
+  & + h5,
+  & + h6 {
+    margin-top: 1.5rem;
+  }
+
+  // Components examples
+  .preview,
+  .preview .col {
+    + p {
+      margin-top: 2rem;
+    }
+
+    > .form-control {
+      + .form-control {
+        margin-top: 0.5rem;
+      }
+    }
+
+    > .nav + .nav,
+    > .alert + .alert,
+    > .navbar + .navbar,
+    > .progress + .progress {
+      margin-top: 1rem;
+    }
+
+    > .dropdown-menu {
+      position: static;
+      display: block;
+    }
+
+    > :last-child {
+      margin-bottom: 0;
+    }
+
+    // Images
+    > svg + svg,
+    > img + img {
+      margin-left: 0.5rem;
+    }
+
+    // Buttons
+    > .btn,
+    > .btn-group {
+      margin: 0.25rem 0.125rem;
+    }
+
+    > .btn-toolbar + .btn-toolbar {
+      margin-top: 0.5rem;
+    }
+
+    // List groups
+    > .list-group {
+      max-width: 400px;
+    }
+
+    > [class*='list-group-horizontal'] {
+      max-width: 100%;
+    }
+
+    // Navbars
+    .fixed-top,
+    .sticky-top {
+      position: static;
+      margin: -1rem -1rem 1rem;
+    }
+
+    .fixed-bottom {
+      position: static;
+      margin: 1rem -1rem -1rem;
+    }
+
+    @include media-breakpoint-up(sm) {
+      .fixed-top,
+      .sticky-top {
+        margin: -1.5rem -1.5rem 1rem;
+      }
+      .fixed-bottom {
+        margin: 1rem -1.5rem -1.5rem;
+      }
+    }
+
+    // Pagination
+    .pagination {
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+  }
+}
+
+.nav-link,
+.dropdown-item,
+a.page-link,
+.form-check-label {
+  cursor: pointer;
+}
+
+.col-form-label,
+.table-responsive th,
+.table-responsive td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.input-group > .input-group-text,
+.form-check-input {
+  cursor: pointer;
+}
+
+input[type='number'] {
+  text-align: right;
+}
+
+.form-label {
+  margin-bottom: 0;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-success,
+.btn-danger,
+.btn-warning,
+.btn-info {
+  color: $white;
+
+  &:hover {
+    color: $white;
+  }
+}
+
+.btn {
+  margin-right: ($spacer * 0.25) !important;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-left {
+  text-align: left;
+}
+
+// bootstrap spacing
+
+// margin
+.mt-0 {
+  margin-top: 0 !important;
+}
+
+.mt-1 {
+  margin-top: ($spacer * 0.25) !important;
+}
+
+.mt-2 {
+  margin-top: ($spacer * 0.5) !important;
+}
+
+.mt-3 {
+  margin-top: $spacer !important;
+}
+
+.mt-4 {
+  margin-top: ($spacer * 1.5) !important;
+}
+
+.mt-5 {
+  margin-top: ($spacer * 3) !important;
+}
+
+.mr-0 {
+  margin-right: 0 !important;
+}
+
+.mr-1 {
+  margin-right: ($spacer * 0.25) !important;
+}
+
+.mr-2 {
+  margin-right: ($spacer * 0.5) !important;
+}
+
+.mr-3 {
+  margin-right: $spacer !important;
+}
+
+.mr-4 {
+  margin-right: ($spacer * 1.5) !important;
+}
+
+.mr-5 {
+  margin-right: ($spacer * 3) !important;
+}
+
+.mb-0 {
+  margin-bottom: 0 !important;
+}
+
+.mb-1 {
+  margin-bottom: ($spacer * 0.25) !important;
+}
+
+.mb-2 {
+  margin-bottom: ($spacer * 0.5) !important;
+}
+
+.mb-3 {
+  margin-bottom: $spacer !important;
+}
+
+.mb-4 {
+  margin-bottom: ($spacer * 1.5) !important;
+}
+
+.mb-5 {
+  margin-bottom: ($spacer * 3) !important;
+}
+
+.ml-0 {
+  margin-left: 0 !important;
+}
+
+.ml-1 {
+  margin-left: ($spacer * 0.25) !important;
+}
+
+.ml-2 {
+  margin-left: ($spacer * 0.5) !important;
+}
+
+.ml-3 {
+  margin-left: $spacer !important;
+}
+
+.ml-4 {
+  margin-left: ($spacer * 1.5) !important;
+}
+
+.ml-5 {
+  margin-left: ($spacer * 3) !important;
+}
+
+// padding
+
+.pt-0 {
+  padding-top: 0 !important;
+}
+
+.pt-1 {
+  padding-top: ($spacer * 0.25) !important;
+}
+
+.pt-2 {
+  padding-top: ($spacer * 0.5) !important;
+}
+
+.pt-3 {
+  padding-top: $spacer !important;
+}
+
+.pt-4 {
+  padding-top: ($spacer * 1.5) !important;
+}
+
+.pt-5 {
+  padding-top: ($spacer * 3) !important;
+}
+
+.pr-0 {
+  padding-right: 0 !important;
+}
+
+.pr-1 {
+  padding-right: ($spacer * 0.25) !important;
+}
+
+.pr-2 {
+  padding-right: ($spacer * 0.5) !important;
+}
+
+.pr-3 {
+  padding-right: $spacer !important;
+}
+
+.pr-4 {
+  padding-right: ($spacer * 1.5) !important;
+}
+
+.pr-5 {
+  padding-right: ($spacer * 3) !important;
+}
+
+.pb-0 {
+  padding-bottom: 0 !important;
+}
+
+.pb-1 {
+  padding-bottom: ($spacer * 0.25) !important;
+}
+
+.pb-2 {
+  padding-bottom: ($spacer * 0.5) !important;
+}
+
+.pb-3 {
+  padding-bottom: $spacer !important;
+}
+
+.pb-4 {
+  padding-bottom: ($spacer * 1.5) !important;
+}
+
+.pb-5 {
+  padding-bottom: ($spacer * 3) !important;
+}
+
+.pl-0 {
+  padding-left: 0 !important;
+}
+
+.pl-1 {
+  padding-left: ($spacer * 0.25) !important;
+}
+
+.pl-2 {
+  padding-left: ($spacer * 0.5) !important;
+}
+
+.pl-3 {
+  padding-left: $spacer !important;
+}
+
+.pl-4 {
+  padding-left: ($spacer * 1.5) !important;
+}
+
+.pl-5 {
+  padding-left: ($spacer * 3) !important;
+}
