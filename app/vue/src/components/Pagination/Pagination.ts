@@ -1,4 +1,4 @@
-import { computed, defineComponent, h, ref, watch } from 'vue'
+import { computed, defineComponent, h, ref, watch, nextTick } from 'vue'
 
 import { CPagination } from '@coreui/vue'
 import { CPaginationItem } from '@coreui/vue'
@@ -247,7 +247,10 @@ const Pagination = defineComponent({
                 CPaginationItem,
                 {
                   onClick: () => {
-                    setPage(activePage.value - 1)
+                    nextTick(() => {
+                      if (activePage.value !== 1) setPage(activePage.value - 1)
+                      else return
+                    })
                   },
                   'aria-label': 'Go to previous page',
                   ...(activePage.value === 1 && {
@@ -304,7 +307,10 @@ const Pagination = defineComponent({
                 CPaginationItem,
                 {
                   onClick: () => {
-                    setPage(activePage.value + 1)
+                    nextTick(() => {
+                      if (activePage.value !== lastItem.value) setPage(activePage.value + 1)
+                      else return
+                    })
                   },
                   'aria-label': 'Go to next page',
                   ...(activePage.value === pages.value && {
