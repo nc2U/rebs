@@ -34,6 +34,7 @@
     "@toast-ui/editor-plugin-table-merged-cell": "^3.1.0",
     "@vueform/multiselect": "^2.6.2",
     "@vuepic/vue-datepicker": "^5.4.0",
+    "@vueup/vue-quill": "^1.2.0",
     "@vueuse/core": "^10.3.0",
     "axios": "^1.4.0",
     "buffer": "^6.0.3",
