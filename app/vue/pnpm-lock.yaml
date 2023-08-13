@@ -10,7 +10,7 @@ dependencies:
     version: 3.1.2(@popperjs/core@2.11.8)(postcss@8.4.27)
   '@coreui/coreui':
     specifier: ^4.2.6
-    version: 4.3.0(@popperjs/core@2.11.8)(postcss@8.4.27)
+    version: 4.2.6(@popperjs/core@2.11.8)(postcss@8.4.27)
   '@coreui/icons':
     specifier: ^3.0.1
     version: 3.0.1
@@ -22,7 +22,7 @@ dependencies:
     version: 2.0.2
   '@coreui/vue':
     specifier: ^4.10.0
-    version: 4.10.0(@coreui/coreui@4.3.0)(vue@3.3.4)
+    version: 4.10.0(@coreui/coreui@4.2.6)(vue@3.3.4)
   '@coreui/vue-chartjs':
     specifier: ^2.1.0
     version: 2.1.0(chart.js@3.9.1)(vue@3.3.4)
@@ -1638,15 +1638,15 @@ packages:
   /@coreui/chartjs@3.1.2(@popperjs/core@2.11.8)(postcss@8.4.27):
     resolution: {integrity: sha512-d3MGk3KZNAt29VRKP/XYiGmT56KTqtuOhLEg5HNwb7P7ZmEgOJoHxFHVCVE4I36hfgQCjZZVknsuk2ZTfF/2fw==}
     dependencies:
-      '@coreui/coreui': 4.3.0(@popperjs/core@2.11.8)(postcss@8.4.27)
+      '@coreui/coreui': 4.2.6(@popperjs/core@2.11.8)(postcss@8.4.27)
       chart.js: 3.9.1
     transitivePeerDependencies:
       - '@popperjs/core'
       - postcss
     dev: false
 
-  /@coreui/coreui@4.3.0(@popperjs/core@2.11.8)(postcss@8.4.27):
-    resolution: {integrity: sha512-2bx5E9YT17td4K7hZapudypSPx7a5jYg8NpSCTLRStPTWOBlL5XVF7fz3yUn2S6DQE1VmnbrXQpuS5LzmptRLQ==}
+  /@coreui/coreui@4.2.6(@popperjs/core@2.11.8)(postcss@8.4.27):
+    resolution: {integrity: sha512-h9j1BVnaDi9vSr1t0H8NL3hlDD4lU9kIdGLXn7g9k5iaFq5EDlRDcSBDer6lR2O4sIEl7W7YqTlevLxFC+1cIA==}
     peerDependencies:
       '@popperjs/core': ^2.11.6
     dependencies:
@@ -1682,13 +1682,13 @@ packages:
       vue: 3.3.4
     dev: false
 
-  /@coreui/vue@4.10.0(@coreui/coreui@4.3.0)(vue@3.3.4):
+  /@coreui/vue@4.10.0(@coreui/coreui@4.2.6)(vue@3.3.4):
     resolution: {integrity: sha512-caUvFn/ro/0Dc+dFl9Yj70/5SSaz35XHZnhfSuLkg7aieWCqPt8FWKpIYjcToHQv4TVCH/v8/1gTuwLntva+0g==}
     peerDependencies:
       '@coreui/coreui': ^4.2.6
       vue: ^3.2.21
     dependencies:
-      '@coreui/coreui': 4.3.0(@popperjs/core@2.11.8)(postcss@8.4.27)
+      '@coreui/coreui': 4.2.6(@popperjs/core@2.11.8)(postcss@8.4.27)
       vue: 3.3.4
     dev: false
 
@@ -4350,7 +4350,7 @@ packages:
       postcss: ^8.1.0
     dependencies:
       browserslist: 4.21.10
-      caniuse-lite: 1.0.30001519
+      caniuse-lite: 1.0.30001520
       fraction.js: 4.2.0
       normalize-range: 0.1.2
       picocolors: 1.0.0
@@ -4658,7 +4658,7 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001519
+      caniuse-lite: 1.0.30001520
       electron-to-chromium: 1.4.490
       node-releases: 2.0.13
       update-browserslist-db: 1.0.11(browserslist@4.21.10)
@@ -4754,13 +4754,13 @@ packages:
     resolution: {integrity: sha512-bsTwuIg/BZZK/vreVTYYbSWoe2F+71P7K5QGEX+pT250DZbfU1MQ5prOKpPR+LL6uWKK3KMwMCAS74QB3Um1uw==}
     dependencies:
       browserslist: 4.21.10
-      caniuse-lite: 1.0.30001519
+      caniuse-lite: 1.0.30001520
       lodash.memoize: 4.1.2
       lodash.uniq: 4.5.0
     dev: true
 
-  /caniuse-lite@1.0.30001519:
-    resolution: {integrity: sha512-0QHgqR+Jv4bxHMp8kZ1Kn8CH55OikjKJ6JmKkZYP1F3D7w+lnFXF70nG5eNfsZS89jadi5Ywy5UCSKLAglIRkg==}
+  /caniuse-lite@1.0.30001520:
+    resolution: {integrity: sha512-tahF5O9EiiTzwTUqAeFjIZbn4Dnqxzz7ktrgGlMYNLH43Ul26IgTMH/zvL3DG0lZxBYnlT04axvInszUsZULdA==}
     dev: true
 
   /case-sensitive-paths-webpack-plugin@2.4.0:
