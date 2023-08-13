@@ -1,0 +1,105 @@
+<script lang="ts" setup>
+import { ref, computed } from 'vue'
+import { useComCash } from '@/store/pinia/comCash'
+import type { CompanyBank, CashBook } from '@/store/types/comCash'
+import { TableSecondary } from '@/utils/cssMixins'
+import Cash from '@/views/comCash/CashManage/components/Cash.vue'
+import Pagination from '@/components/Pagination'
+import AccDepth from './AccDepth.vue'
+import BankAcc from './BankAcc.vue'
+
+const emit = defineEmits([
+  'page-select',
+  'multi-submit',
+  'on-delete',
+  'patch-d3-hide',
+  'patch-bank-hide',
+  'on-bank-update',
+])
+
+const refAccDepth = ref()
+const refBankAcc = ref()
+
+const comCashStore = useComCash()
+const cashesPages = computed(() => comCashStore.cashesPages)
+const cashBookList = computed(() => comCashStore.cashBookList)
+
+const pageSelect = (page: number) => emit('page-select', page)
+
+const multiSubmit = (payload: { formData: CashBook; sepData: CashBook | null }) =>
+  emit('multi-submit', payload)
+
+const onDelete = (pk: number) => emit('on-delete', pk)
+
+const patchD3Hide = (payload: { pk: number; is_hide: boolean }) => emit('patch-d3-hide', payload)
+
+const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
+</script>
+
+<template>
+  <CTable hover responsive align="middle">
+    <colgroup>
+      <col style="width: 8%" />
+      <col style="width: 5%" />
+      <col style="width: 5%" />
+      <col style="width: 9%" />
+      <col style="width: 15%" />
+      <col style="width: 11%" />
+      <col style="width: 10%" />
+      <col style="width: 10%" />
+      <col style="width: 10%" />
+      <col style="width: 11%" />
+      <col style="width: 6%" />
+    </colgroup>
+
+    <CTableHead>
+      <CTableRow :color="TableSecondary" class="text-center">
+        <CTableHeaderCell scope="col">거래일자</CTableHeaderCell>
+        <CTableHeaderCell scope="col">구분</CTableHeaderCell>
+        <CTableHeaderCell scope="col">계정</CTableHeaderCell>
+        <CTableHeaderCell scope="col">
+          세부계정
+          <a href="javascript:void(0)">
+            <CIcon name="cilCog" @click="refAccDepth.callModal()" />
+          </a>
+        </CTableHeaderCell>
+        <CTableHeaderCell scope="col">적요</CTableHeaderCell>
+        <CTableHeaderCell scope="col">거래처</CTableHeaderCell>
+        <CTableHeaderCell scope="col">
+          거래계좌
+          <a href="javascript:void(0)">
+            <CIcon name="cilCog" @click="refBankAcc.callModal()" />
+          </a>
+        </CTableHeaderCell>
+        <CTableHeaderCell scope="col">입금액</CTableHeaderCell>
+        <CTableHeaderCell scope="col">출금액</CTableHeaderCell>
+        <CTableHeaderCell scope="col">지출증빙</CTableHeaderCell>
+        <CTableHeaderCell scope="col">비고</CTableHeaderCell>
+      </CTableRow>
+    </CTableHead>
+
+    <CTableBody>
+      <Cash
+        v-for="cash in cashBookList"
+        :key="cash.pk as number"
+        :cash="cash"
+        @multi-submit="multiSubmit"
+        @on-delete="onDelete"
+        @patch-d3-hide="patchD3Hide"
+        @on-bank-update="onBankUpdate"
+      />
+    </CTableBody>
+  </CTable>
+
+  <Pagination
+    :active-page="1"
+    :limit="8"
+    :pages="cashesPages(15)"
+    class="mt-3"
+    @active-page-change="pageSelect"
+  />
+
+  <AccDepth ref="refAccDepth" @patch-d3-hide="patchD3Hide" />
+
+  <BankAcc ref="refBankAcc" @on-bank-update="onBankUpdate" />
+</template>

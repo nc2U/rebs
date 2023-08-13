@@ -1,0 +1,65 @@
+<script lang="ts" setup>
+import { type PropType, ref } from 'vue'
+import { type Site } from '@/store/types/project'
+import { numFormat } from '@/utils/baseMixins'
+import FormModal from '@/components/Modals/FormModal.vue'
+import SiteForm from './SiteForm.vue'
+
+defineProps({
+  site: { type: Object as PropType<Site>, required: true },
+  isReturned: { type: Boolean },
+})
+
+const emit = defineEmits(['multi-submit', 'on-delete'])
+
+const updateFormModal = ref()
+
+const showDetail = () => updateFormModal.value.callModal()
+const multiSubmit = (payload: Site) => emit('multi-submit', payload)
+const onDelete = (payload: { pk: number; project: number }) => emit('on-delete', payload)
+</script>
+
+<template>
+  <CTableRow class="text-center">
+    <CTableDataCell>{{ site.order }}</CTableDataCell>
+    <CTableDataCell>
+      {{ site.district }}
+    </CTableDataCell>
+    <CTableDataCell>
+      {{ site.lot_number }}
+    </CTableDataCell>
+    <CTableDataCell>
+      {{ site.site_purpose }}
+    </CTableDataCell>
+    <CTableDataCell class="text-right">
+      {{ numFormat(site.official_area, 2) }}
+    </CTableDataCell>
+    <CTableDataCell class="text-right" color="warning">
+      {{ numFormat((Number(site.official_area) || 0) * 0.3025, 2) }}
+    </CTableDataCell>
+    <CTableDataCell v-if="isReturned" class="text-right">
+      {{ numFormat(site.returned_area as number, 2) }}
+    </CTableDataCell>
+    <CTableDataCell v-if="isReturned" class="text-right" color="warning">
+      {{ numFormat((site.returned_area as number) * 0.3025, 2) }}
+    </CTableDataCell>
+    <CTableDataCell class="text-left">
+      {{ site.owners ? site.owners.join(', ') : '' }}
+    </CTableDataCell>
+    <CTableDataCell>
+      <CButton color="info" size="sm" @click="showDetail">확인</CButton>
+    </CTableDataCell>
+  </CTableRow>
+
+  <FormModal ref="updateFormModal" size="lg">
+    <template #header>사업 부지 등록</template>
+    <template #default>
+      <SiteForm
+        :site="site"
+        @multi-submit="multiSubmit"
+        @on-delete="onDelete"
+        @close="updateFormModal.close()"
+      />
+    </template>
+  </FormModal>
+</template>
