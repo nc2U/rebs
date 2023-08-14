@@ -52,7 +52,7 @@ const listFiltering = (payload: CashBookFilter) => {
   }
 }
 
-const excelSelect = '1'
+const excelSelect = ref('1')
 
 const excelUrl = computed(() => {
   const pj = project.value
@@ -249,7 +249,7 @@ onBeforeMount(() => {
           style="font-size: 0.8em"
           :disabled="!project"
         >
-          <v-radio label="전체(운영비용 포함)" value="1" />
+          <v-radio label="전체(운영비용 포함)" value="1" class="pr-3" />
         </v-radio-group>
       </TableTitleRow>
       <ProCashList
