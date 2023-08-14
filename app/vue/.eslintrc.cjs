@@ -21,5 +21,9 @@ module.exports = {
   ],
   parserOptions: {
     ecmaVersion: 'latest'
+  },
+  rules: {
+    'no-extra-boolean-cast': 'off',
+    'vue/multi-word-component-names': 'off'
   }
 }
