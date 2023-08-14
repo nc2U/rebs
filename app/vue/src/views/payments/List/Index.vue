@@ -154,6 +154,7 @@ onBeforeRouteLeave(() => {
           color="success"
           class="d-flex flex-row-reverse"
           style="font-size: 0.8em"
+          :disabled="!project"
         >
           <v-radio label="수납건별" value="1" class="pr-3" />
           <v-radio label="계약자별" value="2" />
