@@ -15,6 +15,7 @@
     "composite": true,
     "importHelpers": true,
     "baseUrl": ".",
+    "allowJs": true,
     "paths": {
       "@/*": [
         "./src/*"
