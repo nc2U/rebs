@@ -6,6 +6,7 @@ import vuetify from 'vite-plugin-vuetify'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: process.env.NODE_ENV === 'production' ? '/static/dist' : '/',
   build: {
     outDir: '../django/static/dist',
     emptyOutDir: true,
