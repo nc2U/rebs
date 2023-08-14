@@ -63,8 +63,7 @@ const theme = computed(() => {
 })
 
 const initiate = (formNum = 1) => {
-  ;(window as any)// { daum: { postcode: { load: (p: () => void) => void } } }
-  .daum.postcode
+  ;(window as any).daum.postcode // { daum: { postcode: { load: (p: () => void) => void } } }
     .load(() => {
       new // {
       //     daum: {
