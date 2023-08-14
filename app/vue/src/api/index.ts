@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { start, close } from '@/utils/nprogress'
 import router from '@/router'
+import { start, close } from '@/utils/nprogress'
 
 const api = axios.create({
   baseURL: '/api/v1/',
@@ -11,23 +11,23 @@ api.interceptors.request.use(
     start()
     return config
   },
-  err => Promise.reject(err),
+  error => Promise.reject(error),
 )
 
 api.interceptors.response.use(
-  res => {
+  response => {
     close()
-    return res
+    return response
   },
-  err => {
-    if (err.response.status == 401)
+  error => {
+    if (error.response.status == 401)
       return router
         .replace({
           name: 'Login',
           query: { redirect: router.currentRoute.value.fullPath },
         })
         .then(() => close())
-    return Promise.reject(err).then(() => close())
+    return Promise.reject(error).then(() => close())
   },
 )
 
