@@ -28,7 +28,7 @@ const onSubmit = (payload: Company) => {
   else onCreate(payload)
 }
 </script>
-comLength
+
 <template>
   <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" selector="CompanySelect" />
 

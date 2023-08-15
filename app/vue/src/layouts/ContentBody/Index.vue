@@ -3,12 +3,12 @@
     <slot name="header">
       <CCardHeader>
         <CIcon name="cil-notes" />
-        <strong class="pl-1"> {{ $route.meta.title || $route.name }}</strong>
+        <strong class="pl-1"> {{ $route?.meta.title ?? $route?.name }}</strong>
       </CCardHeader>
     </slot>
 
     <slot>
-      <CCardBody class="pb-5" style="height: 473px"> This page is under construction. </CCardBody>
+      <CCardBody class="pb-5" style="height: 473px"> This page is under construction.</CCardBody>
 
       <CCardFooter>&nbsp;</CCardFooter>
     </slot>

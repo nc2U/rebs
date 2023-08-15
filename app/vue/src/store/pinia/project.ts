@@ -11,9 +11,9 @@ import {
   type ExecAmountToBudget,
 } from '@/store/types/project'
 
-const accountStore = useAccount()
-
 export const useProject = defineStore('project', () => {
+  const accountStore = useAccount()
+
   // states & getters
   const projectList = ref<Project[]>([])
   const projectsCount = ref(0)

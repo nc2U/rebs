@@ -6,7 +6,6 @@
   "compilerOptions": {
     "composite": true,
     "noImplicitAny": false,
-    "allowJs": true,
     "lib": [],
     "types": [
       "node",

@@ -8,13 +8,12 @@ const router = createRouter({
   routes,
 })
 
-const isAuth = computed(() => useAccount().isAuthorized)
-
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(r => r.meta.auth))
+  if (to.matched.some(r => r.meta.auth)) {
+    const isAuth = computed(() => useAccount().isAuthorized)
     if (!isAuth.value) next({ name: 'Login', query: { redirect: to.fullPath } })
     else next()
-  else next()
+  } else next()
 })
 
 export default router
