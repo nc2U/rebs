@@ -1,16 +1,16 @@
 import { describe, it, expect } from 'vitest'
-import { shallowMount, mount } from '@vue/test-utils'
+import { shallowMount } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
 
 import Company from '../Index.vue'
 
 describe('Company app', () => {
   it('Company Index', () => {
-    const wrapper = mount(Company, {
+    const wrapper = shallowMount(Company, {
       global: {
         plugins: [createTestingPinia()],
       },
     })
-    console.log(wrapper.html())
+    expect(wrapper.find('content-header-stub').attributes('pagetitle')).toBe('환경 설정')
   })
 })
