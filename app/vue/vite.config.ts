@@ -4,6 +4,7 @@ import { defineConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url'
 
 import vuetify from 'vite-plugin-vuetify'
+import VuetifyPlugin from 'vite-plugin-vuetify'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -18,6 +19,7 @@ export default defineConfig({
     vuetify({
       autoImport: true,
     }),
+    VuetifyPlugin(),
   ],
   define: { 'process.env': {} },
   resolve: {
@@ -36,6 +38,13 @@ export default defineConfig({
         target: 'http://localhost',
         changeOrigin: true,
       },
+    },
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    deps: {
+      inline: ['vuetify'],
     },
   },
 })
