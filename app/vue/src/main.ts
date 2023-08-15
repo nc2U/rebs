@@ -14,9 +14,9 @@ import App from './App.vue'
 
 const app = createApp(App)
 app.use(createPinia())
-const account = useAccount()
+const accStore = useAccount()
 const cookie = Cookies.get('accessToken')
-const init = () => account.loginByToken(cookie)
+const init = () => accStore.loginByToken(cookie)
 
 init().then(() => {
   loadFonts().then(() => {
