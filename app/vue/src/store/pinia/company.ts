@@ -15,9 +15,9 @@ import {
   type ComFilter,
 } from '@/store/types/company'
 
-const accountStore = useAccount()
-
 export const useCompany = defineStore('company', () => {
+  const accountStore = useAccount()
+
   // states & getters
   const companyList = ref<Company[]>([])
   const company = ref<Company | null>(null)
