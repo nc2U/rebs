@@ -8,7 +8,7 @@
 
 - docker
 - docker-compose
-- node (with yarn)
+- node (with pnpm)
 
 ### Usage
 
@@ -96,19 +96,19 @@ docker-compose exec web python manage.py collectstatic
 ```bash
 cd ..
 cd app/vue3
-yarn
+pnpm i    # npm i (or) yarn
 ```
 
-Vue application development -> webpack dev server on.
+Vue application development -> node dev server on.
 
 ```bash
-yarn dev
+pnpm dev    # npm run dev (or) yarn dev
 ```
 
-or Vue application deploy -> yarn build
+or Vue application deploy -> node build
 
 ```bash
-yarn build
+pnpm build    # npm run build (or) yarn build
 ```
 
 #### Svelte (Single Page Application) Development
@@ -116,19 +116,19 @@ yarn build
 ```bash
 cd ..
 cd app/svelte
-yarn
+pnpm i      # npm i (or) yarn
 ```
 
-Svelte application development -> webpack dev server on.
+Svelte application development -> node dev server on.
 
 ```bash
-yarn dev
+pnpm dev    # npm run dev (or) yarn dev
 ```
 
-or Svelte application deploy -> yarn build
+or Svelte application deploy -> node build
 
 ```bash
-yarn build
+pnpm build    # npm run build (or) yarn build
 ```
 
 ## Or Deploy Using Kubernetes
