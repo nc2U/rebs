@@ -901,6 +901,9 @@ onUpdated(() => formDataSetup())
     </CCardBody>
 
     <CCardFooter class="text-right">
+      <CButton type="button" color="secondary" @click="$router.push({ name: '계약 내역 조회' })">
+        목록으로
+      </CButton>
       <CButton type="button" color="light" @click="formDataReset"> 취소</CButton>
       <CButton v-if="contract" type="button" color="danger" @click="deleteContract"> 삭제</CButton>
       <CButton
