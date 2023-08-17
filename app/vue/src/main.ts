@@ -12,20 +12,21 @@ import router from '@/router'
 import '@/styles/style.scss'
 import App from './App.vue'
 
+await loadFonts()
+
 const app = createApp(App)
-app.use(createPinia())
+const pinia = createPinia()
+app.use(pinia)
+
 const accStore = useAccount()
 const cookie = Cookies.get('accessToken')
-const init = () => accStore.loginByToken(cookie)
+const init = async () => accStore.loginByToken(cookie)
+await init()
 
-init().then(() => {
-  loadFonts().then(() => {
-    app.use(router)
-    app.use(vuetify)
-    app.use(CoreuiVue, [])
-    app.provide('icons', icons)
-    app.component('CIcon', CIcon)
-    app.directive('maska', vMaska)
-    app.mount('#app')
-  })
-})
+app.use(router)
+app.use(vuetify)
+app.use(CoreuiVue, [])
+app.provide('icons', icons)
+app.component('CIcon', CIcon)
+app.directive('mask', vMaska)
+app.mount('#app')
