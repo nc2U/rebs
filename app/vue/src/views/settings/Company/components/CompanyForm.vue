@@ -131,6 +131,7 @@ onBeforeMount(() => formDataSetup())
         <CCol md="4">
           <CFormInput
             v-model="form.name"
+            id="name"
             type="text"
             placeholder="회사명을 입력하세요"
             maxlength="30"
@@ -144,6 +145,7 @@ onBeforeMount(() => formDataSetup())
         <CCol md="4">
           <CFormInput
             v-model="form.ceo"
+            id="ceo"
             type="text"
             placeholder="대표자명을 입력하세요"
             maxlength="20"
@@ -158,6 +160,7 @@ onBeforeMount(() => formDataSetup())
         <CCol md="4">
           <input
             v-model="form.tax_number"
+            id="tax_number"
             v-maska
             data-maska="###-##-#####"
             type="text"
@@ -172,6 +175,7 @@ onBeforeMount(() => formDataSetup())
         <CCol md="4">
           <input
             v-model="form.org_number"
+            id="org_number"
             v-maska
             data-maska="######-#######"
             type="text"
@@ -189,6 +193,7 @@ onBeforeMount(() => formDataSetup())
         <CCol md="4">
           <CFormInput
             v-model="form.business_cond"
+            id="business_cond"
             type="text"
             placeholder="업태를 입력하세요"
             maxlength="20"
@@ -200,6 +205,7 @@ onBeforeMount(() => formDataSetup())
         <CCol md="4">
           <CFormInput
             v-model="form.business_even"
+            id="business_even"
             type="text"
             placeholder="종목을 입력하세요"
             maxlength="20"
@@ -214,6 +220,7 @@ onBeforeMount(() => formDataSetup())
         <CCol md="4">
           <DatePicker
             v-model="form.es_date"
+            id="es_date"
             maxlength="10"
             placeholder="설립일자를 입력하세요"
             required
@@ -224,6 +231,7 @@ onBeforeMount(() => formDataSetup())
         <CCol md="4">
           <DatePicker
             v-model="form.op_date"
+            id="op_date"
             maxlength="10"
             placeholder="개업일자를 입력하세요"
             required
@@ -240,6 +248,7 @@ onBeforeMount(() => formDataSetup())
           <CInputGroup>
             <CFormInput
               v-model="form.zipcode"
+              id="zipcode"
               type="text"
               placeholder="우편번호"
               maxlength="5"
@@ -256,6 +265,7 @@ onBeforeMount(() => formDataSetup())
         <CCol md="10" lg="4" class="mb-3">
           <CFormInput
             v-model="form.address1"
+            id="address1"
             type="text"
             placeholder="회사주소를 입력하세요"
             maxlength="35"
@@ -269,6 +279,7 @@ onBeforeMount(() => formDataSetup())
           <CFormInput
             ref="address2"
             v-model="form.address2"
+            id="address2"
             type="text"
             placeholder="상세주소를 입력하세요"
             maxlength="20"
@@ -279,6 +290,7 @@ onBeforeMount(() => formDataSetup())
         <CCol md="5" lg="3" class="mb-3">
           <CFormInput
             v-model="form.address3"
+            id="address3"
             type="text"
             placeholder="나머지 주소를 입력하세요"
             maxlength="20"
@@ -292,7 +304,7 @@ onBeforeMount(() => formDataSetup())
       <CButton type="button" color="light" @click="emit('reset-form')"> 취소</CButton>
       <CButton v-if="company" type="button" color="danger" @click="deleteCompany"> 삭제</CButton>
       <CButton type="submit" :color="btnClass" :disabled="formsCheck">
-        <CIcon name="cil-check-circle" />
+        <v-icon icon="mdi mdi-check-circle-outline" size="small" />
         저장
       </CButton>
     </CCardFooter>

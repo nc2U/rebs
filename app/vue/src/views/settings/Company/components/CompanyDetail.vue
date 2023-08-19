@@ -114,13 +114,13 @@ const toCreate = () => {
     <CRow class="justify-content-between">
       <CCol xs="auto">
         <CButton type="button" color="success" :disabled="!company" @click="toEdit">
-          <CIcon name="cil-check-circle" />
+          <v-icon icon="mdi mdi-check-circle-outline" size="small" />
           수정하기
         </CButton>
       </CCol>
       <CCol xs="auto">
         <CButton type="button" color="primary" @click="toCreate">
-          <CIcon name="cil-check-circle" />
+          <v-icon icon="mdi mdi-check-circle-outline" size="small" />
           등록하기
         </CButton>
       </CCol>
