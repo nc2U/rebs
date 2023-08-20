@@ -53,7 +53,7 @@ describe('Company app test', () => {
     expect(wrapper.html()).toContain('주소3')
   })
 
-  it('Company Form check', () => {
+  it('Company Form check', async () => {
     const wrapper = mount(CompanyForm, {
       props: {
         company,
@@ -63,15 +63,5 @@ describe('Company app test', () => {
       },
     })
     console.log(wrapper.html())
-
-    // const inputs = wrapper.findAll('cforminput')
-    // expect(inputs[0].attributes('modelvalue')).toBe(company.name)
-    // expect(inputs[1].attributes('modelvalue')).toBe(company.ceo)
-    // expect(inputs[2].attributes('modelvalue')).toBe(company.business_cond)
-    // expect(inputs[3].attributes('modelvalue')).toBe(company.business_even)
-    // expect(inputs[4].attributes('modelvalue')).toBe(company.zipcode)
-    // expect(inputs[5].attributes('modelvalue')).toBe(company.address1)
-    // expect(inputs[6].attributes('modelvalue')).toBe(company.address2)
-    // expect(inputs[7].attributes('modelvalue')).toBe(company.address3)
   })
 })
