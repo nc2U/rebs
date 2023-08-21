@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { type PropType, ref } from 'vue'
+import { computed, type PropType, ref } from 'vue'
 import { type Site } from '@/store/types/project'
 import { numFormat } from '@/utils/baseMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import SiteForm from './SiteForm.vue'
 
-defineProps({
+const props = defineProps({
   site: { type: Object as PropType<Site>, required: true },
   isReturned: { type: Boolean },
 })
@@ -13,6 +13,8 @@ defineProps({
 const emit = defineEmits(['multi-submit', 'on-delete'])
 
 const updateFormModal = ref()
+
+const owners = computed(() => props.site.owners ? props.site.owners.map(o => o.owner) : [])
 
 const showDetail = () => updateFormModal.value.callModal()
 const multiSubmit = (payload: Site) => emit('multi-submit', payload)
@@ -44,7 +46,7 @@ const onDelete = (payload: { pk: number; project: number }) => emit('on-delete',
       {{ numFormat((site.returned_area as number) * 0.3025, 2) }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      {{ site.owners ? site.owners.join(', ') : '' }}
+      {{ owners.length ? owners.join(', ') : '' }}
     </CTableDataCell>
     <CTableDataCell>
       <CButton color="info" size="sm" @click="showDetail">확인</CButton>
