@@ -27,7 +27,7 @@ init().then(() =>
     app.use(CoreuiVue, [])
     app.provide('icons', icons)
     app.component('CIcon', CIcon)
-    app.directive('mask', vMaska)
+    app.directive('maska', vMaska)
     app.mount('#app')
   }),
 )
