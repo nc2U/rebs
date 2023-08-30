@@ -63,7 +63,7 @@ const excelUrl = computed(() => {
   const d2 = dataFilter.value.pro_acc_d3 || ''
   const ba = dataFilter.value.bank_account || ''
   const q = dataFilter.value.search
-  return `/excel/p-cashbook/?project=${pj}&sdate=${sd}&edate=${ed}&sort=${st}&d1=${d1}&d2=${d2}&bank_acc=${ba}&q=${q}`
+  return `/excel/p-cashbook/?project=${ pj }&sdate=${ sd }&edate=${ ed }&sort=${ st }&d1=${ d1 }&d2=${ d2 }&bank_acc=${ ba }&q=${ q }`
 })
 
 const comCashStore = useComCash()
@@ -76,7 +76,7 @@ const fetchProAllAccD3List = () => proCashStore.fetchProAllAccD3List()
 
 const fetchProFormAccD2List = (sort?: number | null) => proCashStore.fetchProFormAccD2List(sort)
 const fetchProFormAccD3List = (d1?: number | null, sort?: number | null) =>
-  proCashStore.fetchProFormAccD3List(d1, sort)
+    proCashStore.fetchProFormAccD3List(d1, sort)
 
 const fetchProBankAccList = (projId: number) => proCashStore.fetchProBankAccList(projId)
 const fetchAllProBankAccList = (projId: number) => proCashStore.fetchAllProBankAccList(projId)
@@ -85,28 +85,28 @@ const fetchProjectCashList = (payload: CashBookFilter) => proCashStore.fetchProj
 const patchProBankAcc = (payload: ProBankAcc) => proCashStore.patchProBankAcc(payload)
 
 const createPrCashBook = (
-  payload: PrCashBook & { sepData: PrCashBook | null } & {
-    filters: CashBookFilter
-  },
+    payload: PrCashBook & { sepData: PrCashBook | null } & {
+      filters: CashBookFilter
+    },
 ) => proCashStore.createPrCashBook(payload)
 
 const updatePrCashBook = (
-  payload: PrCashBook & { sepData: PrCashBook | null } & {
-    filters: CashBookFilter
-  },
+    payload: PrCashBook & { sepData: PrCashBook | null } & {
+      filters: CashBookFilter
+    },
 ) => proCashStore.updatePrCashBook(payload)
 
 const deletePrCashBook = (
-  payload: { pk: number; project: number } & {
-    filters?: CashBookFilter
-  },
+    payload: { pk: number; project: number } & {
+      filters?: CashBookFilter
+    },
 ) => proCashStore.deletePrCashBook(payload)
 
 const chargeCreate = (
-  payload: PrCashBook & { sepData: PrCashBook | null } & {
-    filters: CashBookFilter
-  },
-  charge: number,
+    payload: PrCashBook & { sepData: PrCashBook | null } & {
+      filters: CashBookFilter
+    },
+    charge: number,
 ) => {
   payload.sort = 2
   payload.project_account_d2 = 9
@@ -122,9 +122,9 @@ const chargeCreate = (
 }
 
 const onCreate = (
-  payload: PrCashBook & { sepData: PrCashBook | null } & {
-    filters: CashBookFilter
-  } & { bank_account_to: null | number; charge: null | number },
+    payload: PrCashBook & { sepData: PrCashBook | null } & {
+      filters: CashBookFilter
+    } & { bank_account_to: null | number; charge: null | number },
 ) => {
   if (project.value) payload.project = project.value
   if (payload.sort === 3 && payload.bank_account_to) {
@@ -166,9 +166,9 @@ const onCreate = (
 }
 
 const onUpdate = (
-  payload: PrCashBook & { sepData: PrCashBook | null } & {
-    filters: CashBookFilter
-  },
+    payload: PrCashBook & { sepData: PrCashBook | null } & {
+      filters: CashBookFilter
+    },
 ) => updatePrCashBook(payload)
 
 const multiSubmit = (payload: {
@@ -189,7 +189,7 @@ const multiSubmit = (payload: {
 }
 
 const onDelete = (payload: { pk: number; project: number }) =>
-  deletePrCashBook({ ...{ filters: dataFilter.value }, ...payload })
+    deletePrCashBook({ ...{ filters: dataFilter.value }, ...payload })
 
 const onBankUpdate = (payload: ProBankAcc) => patchProBankAcc(payload)
 
@@ -223,40 +223,40 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect"/>
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ListController ref="listControl" @list-filtering="listFiltering" />
+      <ListController ref="listControl" @list-filtering="listFiltering"/>
       <AddProCash
-        :project="project as number"
-        @multi-submit="multiSubmit"
-        @on-bank-update="onBankUpdate"
+          :project="project"
+          @multi-submit="multiSubmit"
+          @on-bank-update="onBankUpdate"
       />
       <TableTitleRow
-        title="프로젝트 입출금 내역"
-        color="indigo"
-        excel
-        :disabled="!project"
-        :url="excelUrl"
+          title="프로젝트 입출금 내역"
+          color="indigo"
+          excel
+          :disabled="!project"
+          :url="excelUrl"
       >
         <v-radio-group
-          v-model="excelSelect"
-          inline
-          size="sm"
-          density="compact"
-          class="d-flex flex-row-reverse"
-          style="font-size: 0.8em"
-          :disabled="!project"
+            v-model="excelSelect"
+            inline
+            size="sm"
+            density="compact"
+            class="d-flex flex-row-reverse"
+            style="font-size: 0.8em"
+            :disabled="!project"
         >
-          <v-radio label="전체(운영비용 포함)" value="1" class="pr-3" />
+          <v-radio label="전체(운영비용 포함)" value="1" class="pr-3"/>
         </v-radio-group>
       </TableTitleRow>
       <ProCashList
-        @page-select="pageSelect"
-        @multi-submit="multiSubmit"
-        @on-delete="onDelete"
-        @on-bank-update="onBankUpdate"
+          @page-select="pageSelect"
+          @multi-submit="multiSubmit"
+          @on-delete="onDelete"
+          @on-bank-update="onBankUpdate"
       />
     </CCardBody>
 
