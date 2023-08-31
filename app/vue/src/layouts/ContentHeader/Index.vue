@@ -41,7 +41,7 @@ const projSelect = (proj: number | null) => {
 <template>
   <CCard class="mb-4 text-body">
     <CCardHeader>
-      <CIcon name="cil-justify-center" />
+      <v-icon icon="mdi mdi-text-box-check-outline" size="small" />
       <strong class="pl-1"> {{ pageTitle }}</strong>
     </CCardHeader>
 
