@@ -75,6 +75,7 @@ describe('ContentHeader Test', () => {
       },
     })
 
+    // Testing coding ing... here <------------------!!
     console.log(wrapper.html())
   })
 
