@@ -61,7 +61,7 @@ jobs:
       - run: cd app/vue && pnpm build
         if: ${{ always() }}
 
-      - run: pnpm test:unit
+      - run: cd app/vue && pnpm test:unit
 
       # data to server copy transfer
       - name: Copy django, etc data to CI/CD server
