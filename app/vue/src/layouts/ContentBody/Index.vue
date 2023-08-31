@@ -2,7 +2,7 @@
   <CCard class="mb-4 text-body">
     <slot name="header">
       <CCardHeader>
-        <CIcon name="cil-notes" />
+        <v-icon icon="mdi mdi-subtitles-outline" size="small" />
         <strong class="pl-1"> {{ $route?.meta.title ?? $route?.name }}</strong>
       </CCardHeader>
     </slot>

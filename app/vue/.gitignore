@@ -29,3 +29,7 @@ coverage
 
 # vue3 project
 */api/host.ts
+
+# vitepress
+**/.vitepress/cache
+.vite_opt_cache
