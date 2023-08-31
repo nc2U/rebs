@@ -51,23 +51,24 @@ jobs:
         if: steps.cache_vue.outputs.cache-hit != 'true'
         run: cd app/vue && pnpm i
 
-      #      - run: pnpm lint
-      #        # `if: ${{ always() }}`
-      #        # 만약 `pnpm lint`라는 곳에서 에러가 났을 경우 이후 build를 실행하지 않고 해당 workflow가 종료됨.
-      #        # `if: ${{ always() }}`라는 문법을 사용 시 `pnpm lint`라는 곳에서 에러가 나도
-      #        # 이후의 build까지 다 실행을 해보고 난 뒤 종료 하므로 모든 테스트 스크립트에 `if: ${{ always() }}`를 붙임.
-      #        if: ${{ always() }}
+      - run: pnpm lint
+        # `if: ${{ always() }}`
+        # 만약 `pnpm lint`라는 곳에서 에러가 났을 경우 이후 build를 실행하지 않고 해당 workflow가 종료됨.
+        # `if: ${{ always() }}`라는 문법을 사용 시 `pnpm lint`라는 곳에서 에러가 나도
+        # 이후의 build까지 다 실행을 해보고 난 뒤 종료 하므로 모든 테스트 스크립트에 `if: ${{ always() }}`를 붙임.
+        if: ${{ always() }}
 
       - name: Source Code Budild
         run: cd app/vue && pnpm build
         if: ${{ always() }}
 
-      - name: Vitest Unit Test
+      - name: Vue Unit Test using Vitest
         run: cd app/vue && pnpm test:unit
 
       # data to server copy transfer
       - name: Copy django, etc data to CI/CD server
         uses: appleboy/scp-action@master
+        if: ${{ always() }}
         with:
           host: ${{ secrets.CICD_HOST }}
           username: ${{ secrets.CICD_USERNAME }}
