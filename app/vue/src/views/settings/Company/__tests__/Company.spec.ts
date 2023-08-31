@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { shallowMount, mount } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
 import { createVuetify } from 'vuetify'
-import { CIcon } from '@coreui/icons-vue'
+import { vMaska } from 'maska'
 import CoreuiVue from '@coreui/vue'
 
 import Company from '../Index.vue'
@@ -41,9 +41,12 @@ describe('Company app test', () => {
   }
 
   it('Company Detail company date check...', async () => {
-    const wrapper = shallowMount(CompanyDetail, {
+    const wrapper = mount(CompanyDetail, {
       props: {
         company,
+      },
+      global: {
+        plugins: [createTestingPinia(), vuetify, CoreuiVue],
       },
     })
     expect(wrapper.html()).toContain('코리아 주식회사')
@@ -59,10 +62,12 @@ describe('Company app test', () => {
         company,
       },
       global: {
-        plugins: [vuetify, CoreuiVue, CIcon],
+        plugins: [vuetify, CoreuiVue],
+        directives: {
+          maska: vMaska,
+        },
       },
     })
-    console.log(wrapper.html())
 
     await wrapper.get('input[id=name]').setValue('korea inc.')
     await wrapper.get('input[id=ceo]').setValue('James')
@@ -78,7 +83,5 @@ describe('Company app test', () => {
     await wrapper.get('input[id=address3]').setValue('xyz')
 
     await wrapper.find('form').trigger('submit.prevent')
-
-    console.log(wrapper.emitted('on-submit'))
   })
 })

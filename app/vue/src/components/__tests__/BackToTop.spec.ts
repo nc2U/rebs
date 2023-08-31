@@ -16,7 +16,7 @@ describe('BackToTop', () => {
         transitionName: 'fade',
       },
     })
-    // console.log(wrapper.html())
+
     expect(wrapper.find('div').attributes('style')).toContain(
       'right: 50px; bottom: 50px; width: 46px; height: 46px;',
     )
