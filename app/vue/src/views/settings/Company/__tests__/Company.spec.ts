@@ -83,7 +83,5 @@ describe('Company app test', () => {
     await wrapper.get('input[id=address3]').setValue('xyz')
 
     await wrapper.find('form').trigger('submit.prevent')
-
-    console.log(wrapper.emitted('on-submit'))
   })
 })
