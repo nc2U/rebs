@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest'
 
 import { shallowMount } from '@vue/test-utils'
 import BackToTop from '../BackToTop/index.vue'
+import CoreuiVue from '@coreui/vue'
+import { CIcon } from '@coreui/icons-vue'
 
 describe('BackToTop', () => {
   it('BackToTop component', () => {
