@@ -34,7 +34,7 @@ onBeforeMount(() => {
         @clear="comClear"
       />
     </CCol>
-    <CCol v-if="comSelectList.length === 0" class="pl-0 align-middle">
+    <CCol v-if="!comSelectList.length" class="pl-0 align-middle">
       <v-icon
         icon="mdi mdi-plus-thick"
         color="primary"

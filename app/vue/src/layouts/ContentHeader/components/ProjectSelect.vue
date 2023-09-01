@@ -34,7 +34,7 @@ onBeforeMount(() => {
         @clear="projClear"
       />
     </CCol>
-    <CCol v-if="projSelectList.length === 0" class="pl-0 align-middle">
+    <CCol v-if="!projSelectList.length" class="pl-0 align-middle">
       <v-icon
         icon="mdi mdi-plus-thick"
         color="success"

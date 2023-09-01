@@ -1,7 +1,9 @@
 import { mount } from '@vue/test-utils'
 import { describe, it, expect, vi } from 'vitest'
-import { createTestingPinia } from '@pinia/testing'
 import { createVuetify } from 'vuetify'
+import { createTestingPinia } from '@pinia/testing'
+import { useCompany } from '@/store/pinia/company'
+import { useProject } from '@/store/pinia/project'
 
 import CoreuiVue from '@coreui/vue'
 import ContentHeader from '../ContentHeader/Index.vue'
@@ -90,6 +92,5 @@ describe('ContentHeader Test', () => {
     wrapper.find('multiselect-stub').trigger('select')
 
     expect(wrapper.emitted()).toHaveProperty('proj-select')
-    console.log(wrapper.html())
   })
 })
