@@ -74,9 +74,9 @@ describe('ContentHeader Test', () => {
         stubs: ['Multiselect'],
       },
     })
+    wrapper.find('multiselect-stub').trigger('select')
 
-    // Testing coding ing... here <------------------!!
-    console.log(wrapper.html())
+    expect(wrapper.emitted()).toHaveProperty('com-select')
   })
 
   it('project select test', () => {
@@ -87,6 +87,9 @@ describe('ContentHeader Test', () => {
       },
     })
 
+    wrapper.find('multiselect-stub').trigger('select')
+
+    expect(wrapper.emitted()).toHaveProperty('proj-select')
     console.log(wrapper.html())
   })
 })
