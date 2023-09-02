@@ -1,9 +1,7 @@
 import { mount } from '@vue/test-utils'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { createVuetify } from 'vuetify'
 import { createTestingPinia } from '@pinia/testing'
-import { useCompany } from '@/store/pinia/company'
-import { useProject } from '@/store/pinia/project'
 
 import CoreuiVue from '@coreui/vue'
 import ContentHeader from '../ContentHeader/Index.vue'
