@@ -316,15 +316,6 @@ const company_cash = {
       name: '본사 출납 관리',
       to: '/cashes/index',
     },
-    // {
-    //   component: 'CNavItem',
-    //   name: '채권 채무 관리',
-    //   to: '/cashes/debt',
-    //   badge: {
-    //     color: 'danger',
-    //     text: 'u.c',
-    //   },
-    // },
   ],
 }
 
