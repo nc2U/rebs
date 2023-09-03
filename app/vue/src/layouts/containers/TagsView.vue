@@ -10,7 +10,7 @@ const dark = computed(() => store.theme === 'dark')
 const btnColor = computed(() => (dark.value ? 'blue-grey' : ''))
 
 const [route, router] = [useRoute(), useRouter()]
-watch(route, () => {
+watch(route.path, () => {
   addTags()
   moveToCurrentTag()
 })
@@ -57,18 +57,19 @@ const filterAffixTags = (regRoutes: RouteLocationMatched[] | RouteRecordRaw[]) =
       }
     }
   })
+
   return affixedViews
 }
 
 const initTags = () => {
-  affixTags.value = filterAffixTags(route.matched)
+  affixTags.value = filterAffixTags(route?.matched ?? [])
   affixTags.value.forEach((tag: VisitedView) =>
     tag.meta.title ? tagsViewStore.addView(tag) : undefined,
   )
 }
 
 const addTags = () =>
-  route.meta.title && !route.meta.except
+  route?.meta.title && !route.meta.except
     ? tagsViewStore.addView({
         name: route.name,
         path: route.path,
