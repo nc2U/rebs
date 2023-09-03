@@ -5,7 +5,7 @@ import { createTestingPinia } from '@pinia/testing'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 
 describe('DefaultLayout', () => {
-  it('DefaultLayout chk?', () => {
+  it('DefaultLayout check', () => {
     const wrapper = shallowMount(DefaultLayout, {
       global: {
         plugins: [createTestingPinia()],
