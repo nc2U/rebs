@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
-import { describe, it, expect, vi } from 'vitest'
-import { createTestingPinia } from '@pinia/testing'
+import { describe, expect, it, vi } from 'vitest'
 import { createVuetify } from 'vuetify'
+import { createTestingPinia } from '@pinia/testing'
 
 import CoreuiVue from '@coreui/vue'
 import ContentHeader from '../ContentHeader/Index.vue'
@@ -74,9 +74,9 @@ describe('ContentHeader Test', () => {
         stubs: ['Multiselect'],
       },
     })
+    wrapper.find('multiselect-stub').trigger('select')
 
-    // Testing coding ing... here <------------------!!
-    console.log(wrapper.html())
+    expect(wrapper.emitted()).toHaveProperty('com-select')
   })
 
   it('project select test', () => {
@@ -87,6 +87,8 @@ describe('ContentHeader Test', () => {
       },
     })
 
-    console.log(wrapper.html())
+    wrapper.find('multiselect-stub').trigger('select')
+
+    expect(wrapper.emitted()).toHaveProperty('proj-select')
   })
 })

@@ -11,21 +11,15 @@ import avatar8 from '@/assets/images/avatars/8.jpg'
 
 const activeKey = ref(1)
 
-const updateActiveKey = (key: number) => {
-  activeKey.value = key
-}
-
 const store = useStore()
-
 const isDark = computed(() => store.theme === 'dark')
-
 const white = computed(() => (isDark.value ? 'dark-theme' : 'bg-white'))
-
 const light = computed(() => (isDark.value ? 'dark-theme' : 'bg-light'))
-
 const asideVisible = computed(() => store.asideVisible)
 
 const active = (key: number) => key === activeKey.value
+
+const updateActiveKey = (key: number) => (activeKey.value = key)
 </script>
 
 <template>
