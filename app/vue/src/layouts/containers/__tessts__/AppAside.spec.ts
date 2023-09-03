@@ -16,7 +16,7 @@ describe('AppAside Component Test', () => {
         stubs: ['CIcon'],
       },
       props: {
-        position: 'end',
+        position: 'fixed',
       },
     })
 

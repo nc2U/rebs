@@ -32,14 +32,17 @@ const isAuthorized = computed(() => accountStore.isAuthorized)
   <CHeader position="sticky" class="mb-4 pb-0">
     <CContainer fluid>
       <CHeaderToggler class="ps-1" @click="store.toggleSidebar">
-        <CIcon icon="cil-menu" size="lg" />
+        <v-icon icon="mdi mdi-view-headline" size="small" />
       </CHeaderToggler>
+
       <CHeaderBrand class="mx-auto d-lg-none" to="/">
         <CIcon :icon="logo" height="48" alt="Logo" />
       </CHeaderBrand>
+
       <CHeaderNav class="d-none d-lg-flex me-auto">
         <AppBreadcrumb />
       </CHeaderNav>
+
       <CHeaderNav class="ms-auto me-4">
         <CHeaderToggler v-fullscreen.teleport="options" class="d-none d-lg-block">
           <v-icon large :icon="screenIcon" />
@@ -47,6 +50,7 @@ const isAuthorized = computed(() => accountStore.isAuthorized)
             {{ screenGuide }}
           </v-tooltip>
         </CHeaderToggler>
+
         <CButtonGroup aria-label="Theme switch">
           <CFormCheck
             id="btn-light-theme"
@@ -61,6 +65,7 @@ const isAuthorized = computed(() => accountStore.isAuthorized)
               <CIcon icon="cil-sun" />
             </template>
           </CFormCheck>
+
           <CFormCheck
             id="btn-dark-theme"
             type="radio"
@@ -76,6 +81,7 @@ const isAuthorized = computed(() => accountStore.isAuthorized)
           </CFormCheck>
         </CButtonGroup>
       </CHeaderNav>
+
       <CHeaderNav class="mr-4">
         <AppHeaderDropdownAccnt
           v-if="isAuthorized"
@@ -86,11 +92,14 @@ const isAuthorized = computed(() => accountStore.isAuthorized)
           로그인
         </router-link>
       </CHeaderNav>
+
       <CHeaderToggler class="px-md-0 me-md-3">
-        <CIcon icon="cil-applications-settings" size="lg" @click="store.toggleAside" />
+        <v-icon icon="mdi mdi-apps" @click="store.toggleAside" />
       </CHeaderToggler>
     </CContainer>
+
     <CHeaderDivider class="mb-0" />
+
     <CContainer fluid class="px-3">
       <TagsView />
     </CContainer>

@@ -1,0 +1,32 @@
+import { describe, expect, it } from 'vitest'
+import { mount } from '@vue/test-utils'
+import { createTestingPinia } from '@pinia/testing'
+import { createVuetify } from 'vuetify'
+import CoreuiVue from '@coreui/vue'
+
+import AppHeader from '@/layouts/containers/AppHeader.vue'
+
+const vuetify = createVuetify()
+
+describe('AppHeader Component Test', () => {
+  it('should ', async () => {
+    const wrapper = mount(AppHeader, {
+      global: {
+        plugins: [createTestingPinia(), vuetify, CoreuiVue],
+        stubs: ['CIcon', 'c-header-brand', 'app-header-dropdown-accnt', 'router-link', 'tags-view'],
+      },
+    })
+
+    const buttons = wrapper.findAll('button')
+
+    expect(buttons[0].find('.mdi-view-headline').exists()).toBeTruthy()
+    expect(wrapper.find('nav[aria-label=breadcrumb]').exists()).toBeTruthy()
+    expect(wrapper.find('nav>ol').classes()).toContain('breadcrumb')
+    expect(buttons[1].find('.mdi-fullscreen').exists()).toBeTruthy()
+    expect(wrapper.findAll('input[name=theme-switch]')).toHaveLength(2)
+    expect(wrapper.find('app-header-dropdown-accnt-stub').exists()).toBeFalsy()
+    expect(wrapper.find('router-link-stub').exists()).toBeTruthy()
+    expect(buttons[2].find('.mdi-apps').exists()).toBeTruthy()
+    expect(wrapper.find('tags-view-stub').exists()).toBeTruthy()
+  })
+})
