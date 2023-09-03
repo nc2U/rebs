@@ -10,10 +10,13 @@ const dark = computed(() => store.theme === 'dark')
 const btnColor = computed(() => (dark.value ? 'blue-grey' : ''))
 
 const [route, router] = [useRoute(), useRouter()]
-watch(route.path, () => {
-  addTags()
-  moveToCurrentTag()
-})
+watch(
+  () => route.path,
+  () => {
+    addTags()
+    moveToCurrentTag()
+  },
+)
 
 const visible = ref(false)
 watch(visible, value =>
