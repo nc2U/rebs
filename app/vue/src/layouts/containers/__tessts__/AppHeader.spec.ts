@@ -19,7 +19,7 @@ describe('AppHeader Component Test', () => {
 
     const buttons = wrapper.findAll('button')
 
-    expect(buttons[0].find('.mdi-view-headline').exists()).toBeTruthy()
+    expect(buttons[0].find('.mdi-format-indent-decrease').exists()).toBeTruthy()
     expect(wrapper.find('nav[aria-label=breadcrumb]').exists()).toBeTruthy()
     expect(wrapper.find('nav>ol').classes()).toContain('breadcrumb')
     expect(buttons[1].find('.mdi-fullscreen').exists()).toBeTruthy()

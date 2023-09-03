@@ -26,13 +26,20 @@ const options = ref({
 const userInfo = computed(() => accountStore.userInfo)
 const profile = computed(() => accountStore.profile)
 const isAuthorized = computed(() => accountStore.isAuthorized)
+const isVisible = computed(() => store.sidebarVisible)
+const theme = computed(() => store.theme)
+
+const toggleSidebar = () => store.toggleSidebar()
+const toggleTheme = (theme: 'default' | 'dark') => store.toggleTheme(theme)
+const toggleAside = () => store.toggleAside()
 </script>
 
 <template>
   <CHeader position="sticky" class="mb-4 pb-0">
     <CContainer fluid>
-      <CHeaderToggler class="ps-1" @click="store.toggleSidebar">
-        <v-icon icon="mdi mdi-view-headline" size="small" />
+      <CHeaderToggler class="ps-1" @click="toggleSidebar">
+        <v-icon v-if="isVisible" icon="mdi mdi-format-indent-decrease" size="small" />
+        <v-icon v-else icon="mdi mdi-format-indent-increase" size="small" />
       </CHeaderToggler>
 
       <CHeaderBrand class="mx-auto d-lg-none" to="/">
@@ -58,8 +65,8 @@ const isAuthorized = computed(() => accountStore.isAuthorized)
             :button="{ color: 'primary' }"
             name="theme-switch"
             auto-complete="off"
-            :checked="store.theme === 'default'"
-            @change="() => store.toggleTheme('default')"
+            :checked="theme === 'default'"
+            @change="toggleTheme('default')"
           >
             <template #label>
               <CIcon icon="cil-sun" />
@@ -72,8 +79,8 @@ const isAuthorized = computed(() => accountStore.isAuthorized)
             :button="{ color: 'primary' }"
             name="theme-switch"
             auto-complete="off"
-            :checked="store.theme === 'dark'"
-            @change="() => store.toggleTheme('dark')"
+            :checked="theme === 'dark'"
+            @change="toggleTheme('dark')"
           >
             <template #label>
               <CIcon icon="cil-moon" />
@@ -94,7 +101,7 @@ const isAuthorized = computed(() => accountStore.isAuthorized)
       </CHeaderNav>
 
       <CHeaderToggler class="px-md-0 me-md-3">
-        <v-icon icon="mdi mdi-apps" @click="store.toggleAside" />
+        <v-icon icon="mdi mdi-apps" @click="toggleAside" size="small" />
       </CHeaderToggler>
     </CContainer>
 
