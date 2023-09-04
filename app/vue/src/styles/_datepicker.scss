@@ -1,6 +1,6 @@
 // DatePicker scss
 .dp__theme_dark {
-  --dp-background-color: #353641 !important; // #474850
+  --dp-background-color: #2F303B !important; // #474850
   --dp-border-color: #42434c !important;
   --dp-menu-border-color: #42434c !important;
 }
@@ -21,7 +21,7 @@
   --dp-cell-size: 30px; /*Width and height of calendar cell*/
   --dp-cell-padding: 3px; /*Padding in the cell*/
   --dp-common-padding: 6px; /*Common padding used*/
-  --dp-input-icon-padding: 32px; /*Padding on the left side of the input if icon is present*/
+  --dp-input-icon-padding: 30px; /*Padding on the left side of the input if icon is present*/
   --dp-input-padding: 6px 20px 6px 10px; /*Padding in the input*/
   --dp-menu-min-width: 220px; /*Adjust the min width of the menu*/
   --dp-row-maring: 2px 0; /*Adjust the spacing between rows in the calendar*/

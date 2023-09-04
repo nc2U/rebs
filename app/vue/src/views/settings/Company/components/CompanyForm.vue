@@ -246,6 +246,7 @@ onBeforeMount(() => formDataSetup())
         <CFormLabel for="zipcode" class="col-md-2 col-form-label"> 회사주소</CFormLabel>
         <CCol md="4" xl="2" class="mb-3">
           <CInputGroup>
+            <CInputGroupText @click="refPostCode.initiate()"> 우편번호</CInputGroupText>
             <CFormInput
               v-model="form.zipcode"
               id="zipcode"
@@ -255,14 +256,11 @@ onBeforeMount(() => formDataSetup())
               required
               @focus="refPostCode.initiate()"
             />
-            <CInputGroupText @click="refPostCode.initiate()"> 우편번호</CInputGroupText>
             <CFormFeedback invalid>우편번호를 입력하세요.</CFormFeedback>
           </CInputGroup>
         </CCol>
-      </CRow>
-      <CRow>
-        <CCol sm="2"></CCol>
-        <CCol md="10" lg="4" class="mb-3">
+
+        <CCol md="6" xl="4" class="mb-3">
           <CFormInput
             v-model="form.address1"
             id="address1"
@@ -274,8 +272,8 @@ onBeforeMount(() => formDataSetup())
           />
           <CFormFeedback invalid>회사주소를 입력하세요.</CFormFeedback>
         </CCol>
-        <CCol xs="2" class="d-none d-md-block d-lg-none"></CCol>
-        <CCol md="5" lg="3" class="mb-3">
+        <CCol xs="2" class="d-none d-md-block d-xl-none"></CCol>
+        <CCol md="5" lg="6" xl="2" class="mb-3">
           <CFormInput
             ref="address2"
             v-model="form.address2"
@@ -287,7 +285,7 @@ onBeforeMount(() => formDataSetup())
           />
           <CFormFeedback invalid>상세주소를 입력하세요.</CFormFeedback>
         </CCol>
-        <CCol md="5" lg="3" class="mb-3">
+        <CCol md="5" lg="4" xl="2" class="mb-3">
           <CFormInput
             v-model="form.address3"
             id="address3"
