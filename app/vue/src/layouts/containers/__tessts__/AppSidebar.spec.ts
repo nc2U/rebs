@@ -9,7 +9,7 @@ import AppSidebar from '@/layouts/containers/AppSidebar.vue'
 const vuetify = createVuetify()
 
 describe('AppSidebar Component Test', () => {
-  it('should ', () => {
+  it('sidebar brand, nav & toggler check', () => {
     const wrapper = mount(AppSidebar, {
       global: {
         plugins: [createTestingPinia(), vuetify, CoreuiVue],
@@ -21,9 +21,7 @@ describe('AppSidebar Component Test', () => {
 
     expect(brand.html()).toContain('sidebar-brand-full')
     expect(brand.html()).toContain('sidebar-brand-narrow')
-
     expect(wrapper.html()).toContain('app-sidebar-nav')
-
     expect(wrapper.find('button').classes()).toContain('sidebar-toggler')
   })
 })

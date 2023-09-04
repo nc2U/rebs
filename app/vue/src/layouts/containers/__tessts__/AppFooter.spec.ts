@@ -5,7 +5,7 @@ import CoreuiVue from '@coreui/vue'
 import AppFooter from '@/layouts/containers/AppFooter.vue'
 
 describe('AppFooter Component Test', () => {
-  it('should ', () => {
+  it('footer exists & 2 divs check', () => {
     const wrapper = mount(AppFooter, {
       global: {
         plugins: [CoreuiVue],

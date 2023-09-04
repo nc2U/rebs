@@ -9,7 +9,7 @@ import AppAside from '@/layouts/containers/AppAside.vue'
 const vuetify = createVuetify()
 
 describe('AppAside Component Test', () => {
-  it('should ', () => {
+  it('sidebar exsists check', () => {
     const wrapper = shallowMount(AppAside, {
       global: {
         plugins: [createTestingPinia(), vuetify, CoreuiVue],

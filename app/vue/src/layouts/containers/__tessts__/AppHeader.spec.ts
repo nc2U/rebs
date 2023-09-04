@@ -9,7 +9,7 @@ import AppHeader from '@/layouts/containers/AppHeader.vue'
 const vuetify = createVuetify()
 
 describe('AppHeader Component Test', () => {
-  it('should ', async () => {
+  it('Header components check', async () => {
     const wrapper = mount(AppHeader, {
       global: {
         plugins: [createTestingPinia(), vuetify, CoreuiVue],
