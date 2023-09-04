@@ -33,7 +33,7 @@
     "@fullcalendar/vue3": "^6.1.8",
     "@mdi/font": "^7.2.96",
     "@vueform/multiselect": "^2.6.2",
-    "@vuepic/vue-datepicker": "^5.4.0",
+    "@vuepic/vue-datepicker": "^6.0.3",
     "@vueup/vue-quill": "^1.2.0",
     "@vueuse/core": "^10.4.1",
     "axios": "^1.5.0",

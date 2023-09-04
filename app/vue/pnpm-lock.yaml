@@ -48,8 +48,8 @@ dependencies:
     specifier: ^2.6.2
     version: 2.6.2
   '@vuepic/vue-datepicker':
-    specifier: ^5.4.0
-    version: 5.4.0(vue@3.3.4)
+    specifier: ^6.0.3
+    version: 6.0.3(vue@3.3.4)
   '@vueup/vue-quill':
     specifier: ^1.2.0
     version: 1.2.0(vue@3.3.4)
@@ -1376,8 +1376,8 @@ packages:
     resolution: {integrity: sha512-4BFvXyzyi0Pqi/lsYdGwONsQy+ypiVzuQbmoDUlttTxuoujFtf9AdeHi1ZhfIorXG9BiysK1HcQSfYB6USgwfQ==}
     dev: false
 
-  /@vuepic/vue-datepicker@5.4.0(vue@3.3.4):
-    resolution: {integrity: sha512-9f1ZqRDfak/UmBbD81BdqMDpUku2YphTwQXG8DF6hsrjIXsq5sX7BWJB6LhyVgvX9QFrSyFIp4fsHE3UFofZ7A==}
+  /@vuepic/vue-datepicker@6.0.3(vue@3.3.4):
+    resolution: {integrity: sha512-LxUZfxEsu6sSti/3pdkYO6NxwhF8mXSUhuINWEXhDHnfi0kyDgAIbJPJPf32WJLyoXYbuevOJbSYhFt8FCxhlA==}
     engines: {node: '>=14'}
     peerDependencies:
       vue: '>=3.2.0'
