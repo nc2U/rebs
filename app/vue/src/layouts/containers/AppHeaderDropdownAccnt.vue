@@ -13,10 +13,7 @@ const props = defineProps({
 
 const refsTodoModal = ref()
 
-const router = useRouter()
-
 const avatarSrc = computed(() => (props.profile?.image ? props.profile?.image : ''))
-
 const avatarText = computed(() =>
   props.userInfo ? props.userInfo.username.substring(0, 1).toUpperCase() : 'A',
 )
@@ -29,6 +26,7 @@ const locationBlank = (url: string) => window.open(url, '_blank')
 const account = useAccount()
 const itemsCount = computed(() => account.myTodos.length)
 
+const router = useRouter()
 const logout = () => {
   account.logout()
   router.push({ name: 'Login' })
@@ -39,7 +37,7 @@ const logout = () => {
   <CDropdown>
     <CDropdownToggle class="py-0" color="link" :caret="false">
       <CAvatar
-        color="blue-grey-lighten-3"
+        color="secondary"
         text-color="white"
         size="md"
         :src="avatarSrc as string"
@@ -48,38 +46,46 @@ const logout = () => {
         {{ avatarText }}
       </CAvatar>
     </CDropdownToggle>
+
     <CDropdownMenu>
       <CDropdownHeader component="h6" class="fw-semibold py-2" :class="headerClass">
         {{ profile && profile.name ? profile.name : userInfo.username }}님
       </CDropdownHeader>
+
       <CDropdownItem @click="refsTodoModal.callModal()">
-        <CIcon icon="cil-task" />
+        <v-icon icon="mdi mdi-calendar-check-outline" size="small" />
         할일 관리
         <CBadge color="danger" size="sm" class="ms-auto">
           {{ itemsCount }}
         </CBadge>
       </CDropdownItem>
+
       <CDropdownHeader component="h6" class="fw-semibold py-2" :class="headerClass">
         Settings
       </CDropdownHeader>
+
       <CDropdownItem @click="router.push({ name: '프로필 관리' })">
-        <CIcon icon="cil-user" />
+        <v-icon icon="mdi mdi-account-outline" size="small" />
         프로필
       </CDropdownItem>
+
       <CDropdownItem v-if="userInfo.is_superuser" @click="locationBlank('/admin/')">
-        <CIcon icon="cil-settings" />
+        <v-icon icon="mdi mdi-cog-outline" size="small" />
         관리자 페이지
       </CDropdownItem>
+
       <CDropdownItem
-        v-if="userInfo.pk === 1"
+        v-if="userInfo.is_active"
         @click="locationBlank('https://nc2u.github.io/rebs/')"
       >
-        <CIcon icon="cil-description" />
+        <v-icon icon="mdi mdi-file-document-outline" size="small" />
         사용자 매뉴얼
       </CDropdownItem>
+
       <CDropdownDivider />
+
       <CDropdownItem style="cursor: pointer" @click="logout">
-        <CIcon icon="cil-lock-locked" />
+        <v-icon icon="mdi mdi-logout-variant" size="small" />
         로그아웃
       </CDropdownItem>
     </CDropdownMenu>
