@@ -29,15 +29,16 @@ const options = ref({ format: 'yyyy-MM-dd' })
     :text-input-options="options"
   >
     <template #input-icon>
-      <v-icon icon="mdi mdi-calendar-blank-outline" size="16" class="m-2" />
+      <v-icon icon="mdi mdi-calendar-blank-outline" class="m-2" size="16" />
     </template>
     <template #dp-input="{ value }">
       <input
         v-maska
         data-maska="####-##-##"
         :value="value"
-        class="form-control"
-        style="padding-left: 30px"
+        class="form-control dp__input dp__input_icon_pad"
+        aria-label="Datepicker input"
+        autocomplete="off"
         :placeholder="placeholder"
       />
     </template>
