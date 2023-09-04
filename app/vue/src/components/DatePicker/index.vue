@@ -45,9 +45,10 @@ const options = ref({ format: 'yyyy-MM-dd' })
         autocomplete="off"
         aria-label="Datepicker input"
         class="form-control dp__input dp__input_icon_pad"
-        @input="onInput"
         @keydown.enter="onEnter"
         @keydown.tab="onTab"
+        @keydown="onInput"
+        @keyup="onInput"
         @paste="onPaste"
         @blur="onBlur"
       />
