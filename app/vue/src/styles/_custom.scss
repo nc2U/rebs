@@ -20,25 +20,10 @@
   background: #fdebeb;
 }
 
-.dark-theme select > option {
-  background: #2f303a !important;
-}
-
 // NProgress css
 #nprogress .bar {
   background: #61d766;
   height: 1.2px;
-}
-
-// tinymce
-.dark-theme {
-  .tox-toolbar__primary {
-    background-color: #24252f !important;
-  }
-
-  body.mce-content-body {
-    background-color: #2f303a !important;
-  }
 }
 
 .btn-link {
@@ -53,10 +38,6 @@
 
   .tab-content {
     background-color: $light-50 !important;
-
-    @at-root .dark-theme & {
-      background-color: rgba(255, 255, 255, 0.1) !important;
-    }
   }
 
   code[class*='language-'],
