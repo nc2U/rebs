@@ -1,7 +1,6 @@
-import { computed, defineComponent, h, ref, watch, nextTick } from 'vue'
+import { computed, defineComponent, h, ref, watch } from 'vue'
 
-import { CPagination } from '@coreui/vue'
-import { CPaginationItem } from '@coreui/vue'
+import { CPagination, CPaginationItem } from '@coreui/vue'
 
 const Pagination = defineComponent({
   name: 'CSmartPagination',
@@ -235,11 +234,9 @@ const Pagination = defineComponent({
                 },
                 {
                   default: () =>
-                    typeof props.firstButton === 'string'
-                      ? h('span', {
-                          innerHTML: props.firstButton,
-                        })
-                      : props.firstButton,
+                    h('span', {
+                      innerHTML: props.firstButton,
+                    }),
                 },
               ),
             props.arrows &&
@@ -247,10 +244,8 @@ const Pagination = defineComponent({
                 CPaginationItem,
                 {
                   onClick: () => {
-                    nextTick(() => {
-                      if (activePage.value !== 1) setPage(activePage.value - 1)
-                      else return
-                    })
+                    if (activePage.value !== 1) setPage(activePage.value - 1)
+                    else return
                   },
                   'aria-label': 'Go to previous page',
                   ...(activePage.value === 1 && {
@@ -260,11 +255,9 @@ const Pagination = defineComponent({
                 },
                 {
                   default: () =>
-                    typeof props.previousButton === 'string'
-                      ? h('span', {
-                          innerHTML: props.previousButton,
-                        })
-                      : props.previousButton,
+                    h('span', {
+                      innerHTML: props.previousButton,
+                    }),
                 },
               ),
             beforeDots.value &&
@@ -307,10 +300,8 @@ const Pagination = defineComponent({
                 CPaginationItem,
                 {
                   onClick: () => {
-                    nextTick(() => {
-                      if (activePage.value !== lastItem.value) setPage(activePage.value + 1)
-                      else return
-                    })
+                    if (activePage.value !== lastItem.value) setPage(activePage.value + 1)
+                    else return
                   },
                   'aria-label': 'Go to next page',
                   ...(activePage.value === pages.value && {
@@ -320,11 +311,9 @@ const Pagination = defineComponent({
                 },
                 {
                   default: () =>
-                    typeof props.nextButton === 'string'
-                      ? h('span', {
-                          innerHTML: props.nextButton,
-                        })
-                      : props.nextButton,
+                    h('span', {
+                      innerHTML: props.nextButton,
+                    }),
                 },
               ),
             props.doubleArrows &&
@@ -342,11 +331,9 @@ const Pagination = defineComponent({
                 },
                 {
                   default: () =>
-                    typeof props.lastButton === 'string'
-                      ? h('span', {
-                          innerHTML: props.lastButton,
-                        })
-                      : props.lastButton,
+                    h('span', {
+                      innerHTML: props.lastButton,
+                    }),
                 },
               ),
           ],

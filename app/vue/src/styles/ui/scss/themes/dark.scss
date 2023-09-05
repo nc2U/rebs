@@ -1,8 +1,10 @@
-@import './../functions';
-@import './../variables';
-@import './../maps';
-@import './../mixins';
-@import './../utilities';
+@import "@coreui/coreui/scss/functions";
+@import "@coreui/coreui/scss/variables";
+@import "@coreui/coreui/scss/maps";
+@import "@coreui/coreui/scss/mixins";
+@import "./../mixins/theme";
+@import "@coreui/coreui/scss/utilities";
+
 
 $theme-name: 'dark-theme' !default;
 $theme-prefix: 'dark' !default;
@@ -22,9 +24,9 @@ $theme-prefix: 'dark' !default;
 
     @if (contrast-ratio($alert-background, $alert-color) < $min-contrast-ratio) {
       $alert-color: mix(
-        map-get($value, 'base-color'),
-        color-contrast($alert-background),
-        abs($alert-color-scale)
+                      map-get($value, 'base-color'),
+                      color-contrast($alert-background),
+                      abs($alert-color-scale)
       );
     }
     .alert-#{$state} {
@@ -66,5 +68,39 @@ $theme-prefix: 'dark' !default;
   }
 
   // Utilities
-  @import './../utilities/api';
+  @import "@coreui/coreui/scss/utilities/api";
+
+  // User Customizing
+  $form-switch-color: rgba($black, .25) !default;
+
+  .wrapper {
+    background-color: $bg-elevation-0 !important;
+  }
+
+  .breadcrumb-item.active {
+    color: $medium-emphasis-inverse;
+  }
+
+  .tab-content {
+    @at-root .dark-theme & {
+      background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+  }
+
+  .form-text {
+    color: $medium-emphasis-inverse;
+  }
+
+  select > option {
+    background: #2f303a !important;
+  }
+
+  // tinymce
+  .tox-toolbar__primary {
+    background-color: #24252f !important;
+  }
+
+  .mce-content-body {
+    background-color: #2f303a !important;
+  }
 }
