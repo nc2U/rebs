@@ -1,10 +1,8 @@
-@import "@coreui/coreui/scss/functions";
-@import "@coreui/coreui/scss/variables";
-@import "@coreui/coreui/scss/maps";
-@import "@coreui/coreui/scss/mixins";
-@import "./../mixins/theme";
-@import "@coreui/coreui/scss/utilities";
-
+@import './../functions';
+@import './../variables';
+@import './../maps';
+@import './../mixins';
+@import './../utilities';
 
 $theme-name: 'dark-theme' !default;
 $theme-prefix: 'dark' !default;
@@ -24,9 +22,9 @@ $theme-prefix: 'dark' !default;
 
     @if (contrast-ratio($alert-background, $alert-color) < $min-contrast-ratio) {
       $alert-color: mix(
-                      map-get($value, 'base-color'),
-                      color-contrast($alert-background),
-                      abs($alert-color-scale)
+        map-get($value, 'base-color'),
+        color-contrast($alert-background),
+        abs($alert-color-scale)
       );
     }
     .alert-#{$state} {
@@ -68,5 +66,5 @@ $theme-prefix: 'dark' !default;
   }
 
   // Utilities
-  @import "@coreui/coreui/scss/utilities/api";
+  @import './../utilities/api';
 }
