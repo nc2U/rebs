@@ -139,6 +139,7 @@ const Pagination = defineComponent({
     const activePage = ref(props.activePage)
     const limit = ref(props.limit)
     const pages = ref(props.pages)
+    const isItem = computed(() => !!Number(pages.value))
 
     watch(props, () => {
       activePage.value = props.activePage
@@ -224,7 +225,8 @@ const Pagination = defineComponent({
                 CPaginationItem,
                 {
                   onClick: () => {
-                    setPage(1)
+                    if (isItem.value) setPage(1)
+                    else return
                   },
                   'aria-label': 'Go to first page',
                   ...(activePage.value === 1 && {
@@ -244,7 +246,7 @@ const Pagination = defineComponent({
                 CPaginationItem,
                 {
                   onClick: () => {
-                    if (activePage.value !== 1) setPage(activePage.value - 1)
+                    if (isItem.value && activePage.value !== 1) setPage(activePage.value - 1)
                     else return
                   },
                   'aria-label': 'Go to previous page',
@@ -300,11 +302,12 @@ const Pagination = defineComponent({
                 CPaginationItem,
                 {
                   onClick: () => {
-                    if (activePage.value !== lastItem.value) setPage(activePage.value + 1)
+                    if (isItem.value && activePage.value !== lastItem.value)
+                      setPage(activePage.value + 1)
                     else return
                   },
                   'aria-label': 'Go to next page',
-                  ...(activePage.value === pages.value && {
+                  ...((!isItem.value || activePage.value === pages.value) && {
                     'aria-disabled': true,
                     disabled: true,
                   }),
@@ -321,10 +324,10 @@ const Pagination = defineComponent({
                 CPaginationItem,
                 {
                   onClick: () => {
-                    setPage(pages.value)
+                    if (isItem.value) setPage(pages.value)
                   },
                   'aria-label': 'Go to last page',
-                  ...(activePage.value === pages.value && {
+                  ...((!isItem.value || activePage.value === pages.value) && {
                     'aria-disabled': true,
                     disabled: true,
                   }),
