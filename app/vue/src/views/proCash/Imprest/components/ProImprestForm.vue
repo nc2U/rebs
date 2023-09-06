@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, nextTick, onBeforeMount, type PropType } from 'vue'
+import { ref, reactive, computed, nextTick, onBeforeMount, type PropType, inject } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { useProCash } from '@/store/pinia/proCash'
 import { isValidate } from '@/utils/helper'
@@ -14,6 +14,9 @@ import BankAcc from '../../Manage/components/BankAcc.vue'
 const props = defineProps({
   imprest: { type: Object as PropType<ProjectCashBook>, default: null },
 })
+
+const transfers = inject<number[]>('transfers')
+const cancels = inject<number[]>('cancels')
 
 const emit = defineEmits(['multi-submit', 'on-delete', 'close', 'on-bank-update'])
 
@@ -184,12 +187,12 @@ const sort_change = (event: Event) => {
     if (el.value === '1') form.outlay = null
     if (el.value === '2') form.income = null
     if (el.value === '3') {
-      form.project_account_d2 = 14
-      form.project_account_d3 = 71
+      form.project_account_d2 = transfers?.length ? transfers[0] : 14
+      form.project_account_d3 = transfers?.length ? transfers[1] : 71
       form.trader = ''
     } else if (el.value === '4') {
-      form.project_account_d2 = 15
-      form.project_account_d3 = 73
+      form.project_account_d2 = cancels?.length ? cancels[0] : 15
+      form.project_account_d3 = cancels?.length ? cancels[1] : 73
     } else {
       form.project_account_d2 = null
       form.project_account_d3 = null

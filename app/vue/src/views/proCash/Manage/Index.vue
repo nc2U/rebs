@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount } from 'vue'
+import { ref, computed, onBeforeMount, provide } from 'vue'
 import { pageTitle, navMenu } from '@/views/proCash/_menu/headermixin'
 import { useComCash } from '@/store/pinia/comCash'
 import { useProCash } from '@/store/pinia/proCash'
@@ -18,6 +18,13 @@ import TableTitleRow from '@/components/TableTitleRow.vue'
 import ProCashList from '@/views/proCash/Manage/components/ProCashList.vue'
 
 const listControl = ref()
+
+const bankFees = ref([11, 46]) // 은행수수료 d2(id), d3(id)
+const transferD3 = ref([71, 72]) // 대체 출금(id), 입금(id)
+const cancelD3 = ref([73, 74]) // 취소 출금(id), 입금(id)
+
+provide('transfers', [14, 71]) // 대체 d2(id), d3(id)
+provide('cancels', [15, 73]) // 취소 d2(id), d3(id)
 
 const dataFilter = ref<CashBookFilter>({
   page: 1,
@@ -109,8 +116,8 @@ const chargeCreate = (
   charge: number,
 ) => {
   payload.sort = 2
-  payload.project_account_d2 = 11
-  payload.project_account_d3 = 46
+  payload.project_account_d2 = bankFees.value[0]
+  payload.project_account_d3 = bankFees.value[1]
   payload.content = cutString(payload.content, 8) + ' - 이체수수료'
   payload.trader = '지급수수료'
   payload.outlay = charge
@@ -133,11 +140,11 @@ const onCreate = (
 
     inputData.sort = 2
     inputData.trader = '내부대체'
-    inputData.project_account_d3 = 71
+    inputData.project_account_d3 = transferD3.value[0]
     createPrCashBook({ ...inputData })
 
     inputData.sort = 1
-    inputData.project_account_d3 += 1
+    inputData.project_account_d3 = transferD3.value[1]
     inputData.income = inputData.outlay
     inputData.outlay = null
     inputData.bank_account = bank_account_to
@@ -149,11 +156,11 @@ const onCreate = (
   } else if (payload.sort === 4) {
     // 취소 거래일 때
     payload.sort = 2
-    payload.project_account_d3 = 73
+    payload.project_account_d3 = cancelD3.value[0]
     payload.evidence = '0'
     createPrCashBook(payload)
     payload.sort = 1
-    payload.project_account_d3 += 1
+    payload.project_account_d3 = cancelD3.value[1]
     payload.income = payload.outlay
     delete payload.outlay
     payload.evidence = ''
