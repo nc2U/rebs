@@ -87,12 +87,21 @@ $theme-prefix: 'dark' !default;
     }
   }
 
-  .breadcrumb a:link, .breadcrumb a:visited, .breadcrumb a:active {
+  .wrapper a:link:not(.v-btn,.nav-link),
+  .wrapper a:visited:not(.v-btn,.nav-link),
+  .wrapper a:active:not(.v-btn,.nav-link) {
     color: #A9A4DB !important;
   }
 
-  .body a:link, .body a:visited, .body a:active {
-    color: #A9A4DB !important;
+  input:not(.form-check-input), select,
+  textarea, .multiselect {
+    background: #474850 !important;
+  }
+
+  input:disabled:not(.form-check-input), select:disabled,
+  textarea:disabled,
+  .multiselect.is-disabled {
+    background: #2F303B !important;
   }
 
   .form-check-input[type=checkbox]:not(:checked),

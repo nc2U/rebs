@@ -884,7 +884,7 @@ onUpdated(() => formDataSetup())
             id="to-same"
             v-model="sameAddr"
             label="상동"
-            color="indigo-darken-3"
+            :color="isDark ? '#857DCC' : '#321FDB'"
             hide-details
             :disabled="!isContract || !form.id_zipcode"
             @click="toSame"
@@ -917,7 +917,7 @@ onUpdated(() => formDataSetup())
     </CCardFooter>
   </CForm>
 
-  <DaumPostcode ref="refPosCode" @address-callback="addressCallback" />
+  <DaumPostcode ref="refPostCode" @address-callback="addressCallback" />
 
   <ConfirmModal ref="refDelModal">
     <template #header>프로젝트정보 삭제</template>

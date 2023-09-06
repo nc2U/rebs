@@ -15,5 +15,5 @@ defineProps({
 
 <template>
   <!--  <input type="file" class="form-control" @change="onChange as any" />-->
-  <inpsut type="file" class="form-control" />
+  <input type="file" class="form-control" />
 </template>
