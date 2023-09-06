@@ -184,12 +184,12 @@ const sort_change = (event: Event) => {
     if (el.value === '1') form.outlay = null
     if (el.value === '2') form.income = null
     if (el.value === '3') {
-      form.project_account_d2 = 12
-      form.project_account_d3 = 67
+      form.project_account_d2 = 14
+      form.project_account_d3 = 71
       form.trader = ''
     } else if (el.value === '4') {
-      form.project_account_d2 = 13
-      form.project_account_d3 = 69
+      form.project_account_d2 = 15
+      form.project_account_d3 = 73
     } else {
       form.project_account_d2 = null
       form.project_account_d3 = null
