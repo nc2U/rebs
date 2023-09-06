@@ -87,6 +87,19 @@ $theme-prefix: 'dark' !default;
     }
   }
 
+  .breadcrumb a:link, .breadcrumb a:visited, .breadcrumb a:active {
+    color: #A9A4DB !important;
+  }
+
+  .body a:link, .body a:visited, .body a:active {
+    color: #A9A4DB !important;
+  }
+
+  .form-check-input[type=checkbox]:not(:checked),
+  .form-check-input[type=radio]:not(:checked) {
+    background-color: #FFFFFF !important;
+  }
+
   .form-text {
     color: $medium-emphasis-inverse;
   }

@@ -39,7 +39,7 @@ const excelUrl = computed(() => {
   const d3 = dataFilter.value.pro_acc_d3 || ''
   const ba = dataFilter.value.bank_account || ''
   const q = dataFilter.value.search
-  return `/excel/p-cashbook/?project=${ pj }&imp=1&sdate=${ sd }&edate=${ ed }&sort=${ st }&d2=${ d2 }&d3=${ d3 }&bank_acc=${ ba }&q=${ q }`
+  return `/excel/p-cashbook/?project=${pj}&imp=1&sdate=${sd}&edate=${ed}&sort=${st}&d2=${d2}&d3=${d3}&bank_acc=${ba}&q=${q}`
 })
 
 const projStore = useProject()
@@ -55,31 +55,31 @@ const fetchProAllAccD3List = () => pCashStore.fetchProAllAccD3List()
 
 const fetchProFormAccD2List = (sort?: number | null) => pCashStore.fetchProFormAccD2List(sort)
 const fetchProFormAccD3List = (d2?: number | null, sort?: number | null) =>
-    pCashStore.fetchProFormAccD3List(d2, sort)
+  pCashStore.fetchProFormAccD3List(d2, sort)
 
 const fetchProBankAccList = (projId: number) => pCashStore.fetchProBankAccList(projId)
 const fetchAllProBankAccList = (projId: number) => pCashStore.fetchAllProBankAccList(projId)
 const fetchProjectImprestList = (payload: CashBookFilter) =>
-    pCashStore.fetchProjectImprestList(payload)
+  pCashStore.fetchProjectImprestList(payload)
 
 const patchProBankAcc = (payload: ProBankAcc) => pCashStore.patchProBankAcc(payload)
 
 const createPrCashBook = (
-    payload: PrCashBook & { sepData: PrCashBook | null } & {
-      filters: CashBookFilter
-    },
+  payload: PrCashBook & { sepData: PrCashBook | null } & {
+    filters: CashBookFilter
+  },
 ) => pCashStore.createPrCashBook(payload)
 
 const updatePrImprestBook = (
-    payload: PrCashBook & { sepData: PrCashBook | null } & {
-      filters: CashBookFilter
-    },
+  payload: PrCashBook & { sepData: PrCashBook | null } & {
+    filters: CashBookFilter
+  },
 ) => pCashStore.updatePrImprestBook(payload)
 
 const deletePrImprestBook = (
-    payload: { pk: number; project: number } & {
-      filters?: CashBookFilter
-    },
+  payload: { pk: number; project: number } & {
+    filters?: CashBookFilter
+  },
 ) => pCashStore.deletePrImprestBook(payload)
 
 const pageSelect = (page: number) => {
@@ -97,14 +97,14 @@ const listFiltering = (payload: CashBookFilter) => {
 }
 
 const chargeCreate = (
-    payload: PrCashBook & { sepData: PrCashBook | null } & {
-      filters: CashBookFilter
-    },
-    charge: number,
+  payload: PrCashBook & { sepData: PrCashBook | null } & {
+    filters: CashBookFilter
+  },
+  charge: number,
 ) => {
   payload.sort = 2
-  payload.project_account_d2 = 9
-  payload.project_account_d3 = 43
+  payload.project_account_d2 = 11
+  payload.project_account_d3 = 46
   payload.content = cutString(payload.content, 8) + ' - 이체수수료'
   payload.trader = '지급수수료'
   payload.outlay = charge
@@ -116,13 +116,13 @@ const chargeCreate = (
 }
 
 const onCreate = (
-    payload: PrCashBook & { sepData: PrCashBook | null } & {
-      filters: CashBookFilter
-    } & {
-      bank_account_to: null | number
-      ba_is_imprest: boolean
-      charge: null | number
-    },
+  payload: PrCashBook & { sepData: PrCashBook | null } & {
+    filters: CashBookFilter
+  } & {
+    bank_account_to: null | number
+    ba_is_imprest: boolean
+    charge: null | number
+  },
 ) => {
   if (project.value) payload.project = project.value || null
   if (payload.sort === 3 && payload.bank_account_to) {
@@ -163,9 +163,9 @@ const onCreate = (
 }
 
 const onUpdate = (
-    payload: PrCashBook & { sepData: PrCashBook | null } & {
-      filters: CashBookFilter
-    },
+  payload: PrCashBook & { sepData: PrCashBook | null } & {
+    filters: CashBookFilter
+  },
 ) => updatePrImprestBook(payload)
 
 const multiSubmit = (payload: {
@@ -188,7 +188,7 @@ const multiSubmit = (payload: {
 }
 
 const onDelete = (payload: { pk: number; project: number }) =>
-    deletePrImprestBook({ ...{ filters: dataFilter.value }, ...payload })
+  deletePrImprestBook({ ...{ filters: dataFilter.value }, ...payload })
 
 const onBankUpdate = (payload: ProBankAcc) => patchProBankAcc(payload)
 
@@ -222,28 +222,28 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect"/>
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <ListController ref="listControl" @list-filtering="listFiltering"/>
+      <ListController ref="listControl" @list-filtering="listFiltering" />
       <AddProImprest
-          :project="project"
-          @multi-submit="multiSubmit"
-          @on-bank-update="onBankUpdate"
+        :project="project"
+        @multi-submit="multiSubmit"
+        @on-bank-update="onBankUpdate"
       />
       <TableTitleRow
-          title="운영비용(전도금) 사용 내역"
-          color="success"
-          excel
-          :url="excelUrl"
-          :disabled="!project"
+        title="운영비용(전도금) 사용 내역"
+        color="success"
+        excel
+        :url="excelUrl"
+        :disabled="!project"
       />
       <ProImprestList
-          @page-select="pageSelect"
-          @multi-submit="multiSubmit"
-          @on-delete="onDelete"
-          @on-bank-update="onBankUpdate"
+        @page-select="pageSelect"
+        @multi-submit="multiSubmit"
+        @on-delete="onDelete"
+        @on-bank-update="onBankUpdate"
       />
     </CCardBody>
 
