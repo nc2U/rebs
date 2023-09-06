@@ -5,7 +5,7 @@ import { createTestingPinia } from '@pinia/testing'
 import TodoListApp from '../TodoListApp/index.vue'
 
 describe('TodoListApp Component Test', () => {
-  it('should ', () => {
+  it('Todo list test', () => {
     const wrapper = shallowMount(TodoListApp, {
       global: {
         plugins: [createTestingPinia()],
