@@ -130,7 +130,7 @@ const onCreate = (
 
     inputData.sort = 2
     inputData.trader = '내부대체'
-    inputData.project_account_d3 = 67
+    inputData.project_account_d3 = 71
     createPrCashBook({ bank_account, ...inputData })
 
     inputData.sort = 1
@@ -146,7 +146,7 @@ const onCreate = (
   } else if (payload.sort === 4) {
     // 취소 거래일 때
     payload.sort = 2
-    payload.project_account_d3 = 69
+    payload.project_account_d3 = 73
     payload.evidence = '0'
     createPrCashBook(payload)
     payload.sort = 1
