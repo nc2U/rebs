@@ -118,7 +118,7 @@ onBeforeMount(() => {
           rounded="pill"
           flat
           class="text-blue-accent-4"
-          style="font-size: 0.95em"
+          style="font-size: 0.825em"
           @click="visible = !visible"
         >
           [엑셀 출력항목 선택]

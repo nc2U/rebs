@@ -1,7 +1,7 @@
 <template>
   <CCard class="mb-4">
     <CCardHeader>
-      <CIcon name="cil-notes" />
+      <v-icon icon="mdi mdi-subtitles-outline" size="small" />
       <strong class="pl-1"> Subpage Title</strong>
     </CCardHeader>
 
