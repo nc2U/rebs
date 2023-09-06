@@ -18,6 +18,7 @@ describe('Company app test', () => {
         plugins: [createTestingPinia()],
       },
     })
+
     expect(wrapper.find('content-header-stub').attributes('pagetitle')).toBe('환경 설정')
     expect(wrapper.find('content-header-stub').attributes('navmenu')).toBe(
       '회사 정보 관리,권한 설정 관리,프로필 관리',
@@ -49,6 +50,7 @@ describe('Company app test', () => {
         plugins: [createTestingPinia(), vuetify, CoreuiVue],
       },
     })
+    
     expect(wrapper.html()).toContain('코리아 주식회사')
     expect(wrapper.html()).toContain('홍길동')
     expect(wrapper.html()).toContain('주소1')
