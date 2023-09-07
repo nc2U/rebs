@@ -7,15 +7,18 @@ from .models import CompanyBankAccount, ProjectBankAccount, CashBook, ProjectCas
 
 
 class CompanyBankAccountAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'depart', 'bankcode', 'alias_name', 'number', 'holder', 'open_date', 'note', 'inactive')
-    list_display_links = ('alias_name',)
+    list_display = ('id', 'order', 'depart', 'bankcode', 'alias_name',
+                    'number', 'holder', 'open_date', 'note', 'inactive')
+    list_editable = ('order', 'number', 'inactive')
+    list_display_links = ('depart', 'bankcode')
     list_filter = ('depart', 'bankcode', 'holder')
 
 
 class ProjectBankAccountAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = (
-        'id', 'project', 'alias_name', 'bankcode', 'number', 'holder', 'open_date', 'note', 'inactive', 'directpay')
-    list_display_links = ('project', 'alias_name',)
+    list_display = ('id', 'order', 'project', 'alias_name', 'bankcode', 'number',
+                    'holder', 'open_date', 'note', 'inactive', 'directpay')
+    list_editable = ('order', 'number', 'inactive', 'directpay')
+    list_display_links = ('project', 'bankcode')
     list_filter = ('bankcode', 'holder')
 
 
