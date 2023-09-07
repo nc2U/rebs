@@ -98,6 +98,10 @@ $theme-prefix: 'dark' !default;
     background: #474850 !important;
   }
 
+  input:focus {
+    background: #474850 !important;
+  }
+
   input:disabled:not(.form-check-input), select:disabled,
   textarea:disabled,
   .multiselect.is-disabled {
