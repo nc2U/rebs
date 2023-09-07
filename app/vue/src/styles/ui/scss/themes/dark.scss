@@ -121,6 +121,10 @@ $theme-prefix: 'dark' !default;
     background: #2f303a !important;
   }
 
+  .v-window--show-arrows-on-hover {
+    color: #0C1021;
+  }
+
   // tinymce
   .tox-toolbar__primary {
     background-color: #24252f !important;
