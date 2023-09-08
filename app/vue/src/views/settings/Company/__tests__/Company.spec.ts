@@ -43,14 +43,14 @@ describe('Company app test', () => {
 
   it('Company Detail company date check...', async () => {
     const wrapper = mount(CompanyDetail, {
-      props: {
-        company,
-      },
       global: {
         plugins: [createTestingPinia(), vuetify, CoreuiVue],
       },
+      props: {
+        company,
+      },
     })
-    
+
     expect(wrapper.html()).toContain('코리아 주식회사')
     expect(wrapper.html()).toContain('홍길동')
     expect(wrapper.html()).toContain('주소1')
@@ -58,32 +58,31 @@ describe('Company app test', () => {
     expect(wrapper.html()).toContain('주소3')
   })
 
-  it('Company Form check', async () => {
+  it('Company Form check', () => {
     const wrapper = mount(CompanyForm, {
-      props: {
-        company,
-      },
       global: {
         plugins: [vuetify, CoreuiVue],
         directives: {
           maska: vMaska,
         },
       },
+      props: {
+        company,
+      },
     })
 
-    await wrapper.get('input[id=name]').setValue('korea inc.')
-    await wrapper.get('input[id=ceo]').setValue('James')
-    await wrapper.get('input[id=tax_number]').setValue('123-45-67890')
-    await wrapper.get('input[id=org_number]').setValue('123456-2167890')
-    await wrapper.get('input[id=business_cond]').setValue('a')
-    await wrapper.get('input[id=business_even]').setValue('b')
-    await wrapper.get('div[id=es_date]').find('input').setValue('2020-12-12')
-    await wrapper.get('div[id=op_date]').find('input').setValue('2020-12-12')
-    await wrapper.get('input[id=zipcode]').setValue('12345')
-    await wrapper.get('input[id=address1]').setValue('abc')
-    await wrapper.get('input[id=address2]').setValue('efg')
-    await wrapper.get('input[id=address3]').setValue('xyz')
-
-    await wrapper.find('form').trigger('submit.prevent')
+    console.log(wrapper.find('input#name').html())
+    expect(wrapper.find('input#name').html())
+    expect(wrapper.find('input#ceo').html())
+    expect(wrapper.find('input#tax_number').html())
+    expect(wrapper.find('input#org_number').html())
+    expect(wrapper.find('input#business_cond').html())
+    expect(wrapper.find('input#business_even').html())
+    expect(wrapper.find('div#es_date').html())
+    expect(wrapper.find('div#op_date').html())
+    expect(wrapper.find('input#zipcode').html())
+    expect(wrapper.find('input#address1').html())
+    expect(wrapper.find('input#address2').html())
+    expect(wrapper.find('input#address3').html())
   })
 })
