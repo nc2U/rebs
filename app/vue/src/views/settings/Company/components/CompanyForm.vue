@@ -90,8 +90,8 @@ const formsCheck = computed(() => {
     const d = form.org_number === props.company.org_number
     const e = form.business_cond === props.company.business_cond
     const f = form.business_even === props.company.business_even
-    const g = new Date(form.es_date).toString() === new Date(props.company.es_date).toString()
-    const h = new Date(form.op_date).toString() === new Date(props.company.op_date).toString()
+    const g = form.es_date === props.company.es_date
+    const h = form.op_date === props.company.op_date
     const i = form.zipcode === props.company.zipcode
     const j = form.address1 === props.company.address1
     const k = form.address2 === props.company.address2
