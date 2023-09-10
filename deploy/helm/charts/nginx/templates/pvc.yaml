@@ -5,13 +5,33 @@ metadata:
 spec:
   storageClassName: {{ include "nginx.fullname" . }}-static-{{ .Values.global.appMode }}
   accessModes:
-  {{- range .Values.volumes.staticAccessModes }}
+  {{- range .Values.volumes.RWMAccessModes }}
     - {{ . }}
   {{- end }}
   resources:
     requests:
     {{- if eq .Values.global.appMode "prod" }}
-      storage: {{ .Values.volumes.staticPvcStorageProd }}
+      storage: {{ .Values.volumes.staticStorageProd }}
     {{- else if eq .Values.global.appMode "dev" }}
-      storage: {{ .Values.volumes.staticPvcStorageDev }}
+      storage: {{ .Values.volumes.staticStorageDev }}
+    {{- end }}
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "nginx.fullname" . }}-media-{{ .Values.global.appMode }}-nfs-pvc
+spec:
+  storageClassName: {{ include "nginx.fullname" . }}-media-{{ .Values.global.appMode }}
+  accessModes:
+  {{- range .Values.volumes.RWMAccessModes }}
+    - {{ . }}
+  {{- end }}
+  resources:
+    requests:
+    {{- if eq .Values.global.appMode "prod" }}
+      storage: {{ .Values.volumes.mediaStorageProd }}
+    {{- else if eq .Values.global.appMode "dev" }}
+      storage: {{ .Values.volumes.mediaStorageDev }}
     {{- end }}
