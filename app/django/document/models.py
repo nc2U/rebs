@@ -363,15 +363,17 @@ class DisLike(models.Model):
 
 
 def get_image_name(instance, filename):
-    today = datetime.today().strftime('%y%m%d')
+    year = datetime.today().strftime('%Y')
+    month = datetime.today().strftime('%m')
     hash_value = hashlib.blake2b(digest_size=3).hexdigest()
-    return f"board/img/%Y/%m/[{filename}]_{today}_{hash_value}"
+    return f"board/img/{year}/{month}/[{filename}]_{hash_value}"
 
 
 def get_docs_name(instance, filename):
-    today = datetime.today().strftime('%y%m%d')
+    year = datetime.today().strftime('%Y')
+    month = datetime.today().strftime('%m')
     hash_value = hashlib.blake2b(digest_size=3).hexdigest()
-    return f"board/docs/%Y/%m/[{filename}]_{today}_{hash_value}"
+    return f"board/docs/{year}/{month}/[{filename}]_{hash_value}"
 
 
 class Link(models.Model):
