@@ -43,7 +43,7 @@ jobs:
           password: ${{ secrets.CICD_PASSWORD }}
           command: |
             cd ${{ secrets.NFS_PATH }}/dev/
-            sh ./volume/backups/mysql_chk.sh
+            sh ./volume/backups/dir_chk.sh
             helm upgrade ${{ secrets.DATABASE_USER }} ./deploy/helm --install -f ./deploy/helm/values-dev.yaml \
               --install -n dev-hrebs --create-namespace --history-max 5 --wait --timeout 10m \
               --set global.dbPassword=${{ secrets.DATABASE_PASSWORD }} \
