@@ -199,14 +199,14 @@ AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_REGION}.amazonaws.com
 AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400', }
 AWS_DEFAULT_ACL = 'public-read'
 
-DEFAULT_FILE_STORAGE = '_config.asset_storage.MediaStorage'
-
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'static'
 STATICFILES_DIRS = ('./_assets',)
 
-MEDIA_URL = 'https://%s/media/' % (
-    AWS_S3_CUSTOM_DOMAIN) if AWS_STORAGE_BUCKET_NAME else '/media/'  # 각 media 파일에 관한 URL prefix
+DEFAULT_FILE_STORAGE = '_config.asset_storage.MediaStorage'
+
+# 각 media 파일에 관한 URL prefix
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/' if AWS_STORAGE_BUCKET_NAME else 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'  # 업로드된 파일을 저장할 디렉토리 경로
 
 # Default primary key field type
