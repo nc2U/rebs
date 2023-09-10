@@ -250,7 +250,6 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'anon': '20/hour',
         'user': '5000/hour',
-        # 'special-scope': '30/hour',
     }
 }
 
@@ -286,7 +285,7 @@ MDEDITOR_CONFIGS = {
     'default': {
         'language': 'en',
         'width': '100%',  # Custom edit box width
-        'heigth': 500,  # Custom edit box height
+        'height': 500,  # Custom edit box height
         'toolbar': ["undo", "redo", "|",
                     "bold", "del", "italic", "quote", "ucwords", "uppercase", "lowercase", "|",
                     "h1", "h2", "h3", "h5", "h6", "|",
