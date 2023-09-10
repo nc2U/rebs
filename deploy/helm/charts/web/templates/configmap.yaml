@@ -3,7 +3,7 @@ data:
   DATABASE_NAME: "{{ .Release.Name }}"
   DATABASE_USER: "{{ .Release.Name }}"
   {{- with  .Values.imageConfigMaps }}
-  AWS_STORAGE_BUCKET_NAME: "{{ .awsStorageBucketName }}"
+{{/*  AWS_STORAGE_BUCKET_NAME: "{{ .awsStorageBucketName }}"*/}}
   DJANGO_SETTINGS_MODULE: "{{ .djangoSettingsModule }}"
   {{- end }}
 kind: ConfigMap
