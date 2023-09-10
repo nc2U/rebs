@@ -76,7 +76,11 @@ data:
         }
 
         location /static/ {
-            alias /static/;
+            alias /django/static/;
+        }
+
+        location /media/ {
+            alias /django/media/;
         }
     }
 

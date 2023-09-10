@@ -191,22 +191,22 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
-AWS_REGION = 'ap-northeast-2'
-AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_REGION}.amazonaws.com'
-AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400', }
-AWS_DEFAULT_ACL = 'public-read'
-
-DEFAULT_FILE_STORAGE = '_config.asset_storage.MediaStorage'
+# AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+# AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = None  # os.getenv('AWS_STORAGE_BUCKET_NAME')
+# AWS_REGION = 'ap-northeast-2'
+AWS_S3_CUSTOM_DOMAIN = ''  # f'{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_REGION}.amazonaws.com'
+# AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400', }
+# AWS_DEFAULT_ACL = 'public-read'
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'static'
 STATICFILES_DIRS = ('./_assets',)
 
-MEDIA_URL = 'https://%s/media/' % (
-    AWS_S3_CUSTOM_DOMAIN) if AWS_STORAGE_BUCKET_NAME else '/media/'  # 각 media 파일에 관한 URL prefix
+# DEFAULT_FILE_STORAGE = '_config.asset_storage.MediaStorage'
+
+# 각 media 파일에 관한 URL prefix
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/' if AWS_STORAGE_BUCKET_NAME else 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'  # 업로드된 파일을 저장할 디렉토리 경로
 
 # Default primary key field type
@@ -250,7 +250,6 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'anon': '20/hour',
         'user': '5000/hour',
-        # 'special-scope': '30/hour',
     }
 }
 
@@ -286,7 +285,7 @@ MDEDITOR_CONFIGS = {
     'default': {
         'language': 'en',
         'width': '100%',  # Custom edit box width
-        'heigth': 500,  # Custom edit box height
+        'height': 500,  # Custom edit box height
         'toolbar': ["undo", "redo", "|",
                     "bold", "del", "italic", "quote", "ucwords", "uppercase", "lowercase", "|",
                     "h1", "h2", "h3", "h5", "h6", "|",

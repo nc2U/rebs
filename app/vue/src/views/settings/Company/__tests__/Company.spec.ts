@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { shallowMount, mount } from '@vue/test-utils'
+import { shallowMount, mount, flushPromises } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
 import { createVuetify } from 'vuetify'
 import { vMaska } from 'maska'
@@ -29,8 +29,8 @@ describe('Company app test', () => {
     pk: 1,
     name: '코리아 주식회사',
     ceo: '홍길동',
-    tax_number: '1234',
-    org_number: '5678',
+    tax_number: '333-11-12345',
+    org_number: '567890-1234567',
     business_cond: 'abc',
     business_even: 'def',
     es_date: '2020-01-01',
@@ -58,7 +58,7 @@ describe('Company app test', () => {
     expect(wrapper.html()).toContain('주소3')
   })
 
-  it('Company Form check', () => {
+  it('Company Form check', async () => {
     const wrapper = mount(CompanyForm, {
       global: {
         plugins: [vuetify, CoreuiVue],
@@ -71,18 +71,47 @@ describe('Company app test', () => {
       },
     })
 
-    console.log(wrapper.find('input#name').html())
-    expect(wrapper.find('input#name').html())
-    expect(wrapper.find('input#ceo').html())
-    expect(wrapper.find('input#tax_number').html())
-    expect(wrapper.find('input#org_number').html())
-    expect(wrapper.find('input#business_cond').html())
-    expect(wrapper.find('input#business_even').html())
-    expect(wrapper.find('div#es_date').html())
-    expect(wrapper.find('div#op_date').html())
-    expect(wrapper.find('input#zipcode').html())
-    expect(wrapper.find('input#address1').html())
-    expect(wrapper.find('input#address2').html())
-    expect(wrapper.find('input#address3').html())
+    await flushPromises()
+
+    const inputs = wrapper.findAll('input')
+
+    expect(inputs[0].element.value).toBe('코리아 주식회사')
+    expect(inputs[1].element.value).toBe('홍길동')
+    expect(inputs[2].element.value).toBe('333-11-12345')
+    expect(inputs[3].element.value).toBe('567890-1234567')
+    expect(inputs[4].element.value).toBe('abc')
+    expect(inputs[5].element.value).toBe('def')
+    expect(inputs[6].element.value).toBe('2020-01-01')
+    expect(inputs[7].element.value).toBe('2020-01-02')
+    expect(inputs[8].element.value).toBe('12345')
+    expect(inputs[9].element.value).toBe('주소1')
+    expect(inputs[10].element.value).toBe('주소2')
+    expect(inputs[11].element.value).toBe('주소3')
+
+    await inputs[0].setValue('korea inc.')
+    await inputs[1].setValue('James')
+    await inputs[2].setValue('123-12-12345')
+    await inputs[3].setValue('123123-1231234')
+    await inputs[4].setValue('trade')
+    await inputs[5].setValue('trade, deal')
+    await inputs[6].setValue('2020-12-12')
+    await inputs[7].setValue('2020-12-13')
+    await inputs[8].setValue('12345')
+    await inputs[9].setValue('Incheun')
+    await inputs[10].setValue('Yeonsu')
+    await inputs[11].setValue('Convensia daero')
+
+    expect(inputs[0].element.value).toBe('korea inc.')
+    expect(inputs[1].element.value).toBe('James')
+    expect(inputs[2].element.value).toBe('123-12-12345')
+    expect(inputs[3].element.value).toBe('123123-1231234')
+    expect(inputs[4].element.value).toBe('trade')
+    expect(inputs[5].element.value).toBe('trade, deal')
+    expect(inputs[6].element.value).toBe('2020-12-12')
+    expect(inputs[7].element.value).toBe('2020-12-13')
+    expect(inputs[8].element.value).toBe('12345')
+    expect(inputs[9].element.value).toBe('Incheun')
+    expect(inputs[10].element.value).toBe('Yeonsu')
+    expect(inputs[11].element.value).toBe('Convensia daero')
   })
 })
