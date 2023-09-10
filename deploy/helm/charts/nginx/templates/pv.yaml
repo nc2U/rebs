@@ -48,8 +48,8 @@ spec:
     - nfsvers=4.1
   nfs:
   {{- if eq .Values.global.appMode "prod" }}
-    path: {{ .Values.global.nfsPath }}/prod/media
+    path: {{ .Values.global.nfsPath }}/prod/app/django/media
   {{- else if eq .Values.global.appMode "dev" }}
-    path: {{ .Values.global.nfsPath }}/dev/media
+    path: {{ .Values.global.nfsPath }}/dev/app/django/media
   {{- end }}
     server: {{ .Values.global.nfsServerHost }}
