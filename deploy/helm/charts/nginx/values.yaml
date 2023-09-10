@@ -69,7 +69,7 @@ volumes:
     - ReadWriteMany
   staticStorageProd: 500Mi
   staticStorageDev: 200Mi
-  mediaStorageProd: 2Gi
+  mediaStorageProd: 500Mi
   mediaStorageDev: 300Mi
 
 resources: { }
