@@ -68,7 +68,9 @@ spec:
               mountPath: /etc/nginx/conf.d
               readOnly: true
             - name: static
-              mountPath: /static
+              mountPath: /django/static
+            - name: media
+              mountPath: /django/media
             - name: tz-seoul
               mountPath: /etc/localtime
       volumes:
@@ -91,6 +93,9 @@ spec:
         - name: static
           persistentVolumeClaim:
             claimName: {{ include "nginx.fullname" . }}-static-{{ .Values.global.appMode }}-nfs-pvc
+        - name: media
+          persistentVolumeClaim:
+            claimName: {{ include "nginx.fullname" . }}-media-{{ .Values.global.appMode }}-nfs-pvc
         - name: tz-seoul
           hostPath:
             path: /usr/share/zoneinfo/Asia/Seoul
