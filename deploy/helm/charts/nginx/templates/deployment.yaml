@@ -34,8 +34,8 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           envFrom:
-          - configMapRef:
-              name: {{ include "nginx.fullname" . }}-config
+            - configMapRef:
+                name: {{ include "nginx.fullname" . }}-config
           ports:
             - name: http
               containerPort: 80
@@ -49,9 +49,9 @@ spec:
               host: {{ get $hosts "host" }}
               path: /
               port: {{ .Values.service.port }}
-              periodSeconds: 60
-              initialDelaySeconds: 30
-              failureThreshold: 2
+{{/*              periodSeconds: 60*/}}
+{{/*              initialDelaySeconds: 30*/}}
+{{/*              failureThreshold: 2*/}}
 {{/*          readinessProbe:*/}}
 {{/*            httpGet: # Http 리퀘스트 반환 값에 따라 체크함*/}}
 {{/*              host: {{ get $hosts "host" }}*/}}
@@ -60,40 +60,40 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-          - name: nginx-conf
-            mountPath: /etc/nginx/nginx.conf
-            readOnly: true
-            subPath: nginx.conf
-          - name: conf-d
-            mountPath: /etc/nginx/conf.d
-            readOnly: true
-          - name: static
-            mountPath: /static
-          - name: tz-seoul
-            mountPath: /etc/localtime
+            - name: nginx-conf
+              mountPath: /etc/nginx/nginx.conf
+              readOnly: true
+              subPath: nginx.conf
+            - name: conf-d
+              mountPath: /etc/nginx/conf.d
+              readOnly: true
+            - name: static
+              mountPath: /static
+            - name: tz-seoul
+              mountPath: /etc/localtime
       volumes:
-      - name: nginx-conf
-        configMap:
-          name: {{ include "nginx.fullname" . }}-config
-          items:
-          - key: NGINX.CONF
-            path: nginx.conf
-      - name: conf-d
-        configMap:
-          name: {{ include "nginx.fullname" . }}-config
-          items:
-          - key: LOG.CONF
-            path: log.conf
-          - key: UPSTREAM.CONF
-            path: upstream.conf
-          - key: PUBLIC.CONF
-            path: public.conf
-      - name: static
-        persistentVolumeClaim:
-          claimName: {{ include "nginx.fullname" . }}-static-{{ .Values.global.appMode }}-nfs-pvc
-      - name: tz-seoul
-        hostPath:
-          path: /usr/share/zoneinfo/Asia/Seoul
+        - name: nginx-conf
+          configMap:
+            name: {{ include "nginx.fullname" . }}-config
+            items:
+              - key: NGINX.CONF
+                path: nginx.conf
+        - name: conf-d
+          configMap:
+            name: {{ include "nginx.fullname" . }}-config
+            items:
+              - key: LOG.CONF
+                path: log.conf
+              - key: UPSTREAM.CONF
+                path: upstream.conf
+              - key: PUBLIC.CONF
+                path: public.conf
+        - name: static
+          persistentVolumeClaim:
+            claimName: {{ include "nginx.fullname" . }}-static-{{ .Values.global.appMode }}-nfs-pvc
+        - name: tz-seoul
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Seoul
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
