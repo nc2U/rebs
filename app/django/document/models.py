@@ -366,14 +366,14 @@ def get_image_name(instance, filename):
     year = datetime.today().strftime('%Y')
     month = datetime.today().strftime('%m')
     hash_value = hashlib.blake2b(digest_size=3).hexdigest()
-    return f"board/img/{year}/{month}/[{filename}]_{hash_value}"
+    return f"post/img/{year}/{month}/[{filename}]_{hash_value}"
 
 
-def get_docs_name(instance, filename):
+def get_file_name(instance, filename):
     year = datetime.today().strftime('%Y')
     month = datetime.today().strftime('%m')
     hash_value = hashlib.blake2b(digest_size=3).hexdigest()
-    return f"board/docs/{year}/{month}/[{filename}]_{hash_value}"
+    return f"post/docs/{year}/{month}/[{filename}]_{hash_value}"
 
 
 class Link(models.Model):
@@ -396,7 +396,7 @@ class Image(models.Model):
 
 class File(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물', related_name='files')
-    file = models.FileField(upload_to=get_docs_name, verbose_name='파일')
+    file = models.FileField(upload_to=get_file_name, verbose_name='파일')
     hit = models.PositiveIntegerField('다운로드수', default=0)
     created = models.DateTimeField(auto_now_add=True)
 
