@@ -1,4 +1,6 @@
 import hashlib
+from datetime import datetime
+
 from django.db import models
 from django.utils import timezone
 from django.core.mail import send_mail
@@ -100,9 +102,11 @@ class StaffAuth(models.Model):
 
 
 def get_image_filename(instance, filename):
+    year = datetime.today().strftime('%Y')
+    month = datetime.today().strftime('%m')
     username = instance.user
     hash_value = hashlib.md5().hexdigest()
-    return f"users/{username}_{hash_value}_{filename}"
+    return f"users/{year}/{month}/{username}_{hash_value}_{filename}"
 
 
 class Profile(models.Model):
