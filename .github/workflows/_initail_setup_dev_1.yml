@@ -39,7 +39,7 @@ jobs:
           password: ${{ secrets.NFS_PASS }}
           command: |
             cd ${{ secrets.NFS_PATH }}/dev/
-            sh ./volume/backups/dir_chk.sh
+            mkdir -p ./volume/mysql ./app/django/media
             rm -rf .git* README.md app/vue app/svelte deploy/docker*
 
       # Helm source to CI/CD server copy transfer
@@ -49,7 +49,7 @@ jobs:
           host: ${{ secrets.CICD_HOST }}
           username: ${{ secrets.CICD_USER }}
           password: ${{ secrets.CICD_PASS }}
-          source: 'deploy,volume/backups'
+          source: 'deploy'
           target: ${{ secrets.CICD_PATH }}/dev/
 
       # helm install or upgrade
@@ -61,7 +61,6 @@ jobs:
           password: ${{ secrets.CICD_PASS }}
           command: |
             cd ${{ secrets.CICD_PATH }}/dev/
-            sh ./volume/backups/dir_chk.sh
             helm upgrade ${{ secrets.DATABASE_USER }} ./deploy/helm -f ./deploy/helm/values-dev.yaml \
               --install -n dev-hrebs --create-namespace --history-max 5 --wait --timeout 10m \
               --set global.dbPassword=${{ secrets.DATABASE_PASS }} \

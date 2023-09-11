@@ -37,7 +37,7 @@ jobs:
           password: ${{ secrets.NFS_PASS }}
           command: |
             cd ${{ secrets.NFS_PATH }}/prod/
-            sh ./volume/backups/dir_chk.sh
+            mkdir -p ./volume/mysql ./app/django/media
             rm -rf .git* README.md app/vue app/svelte deploy/docker*
 
       # Source to CI/CD server copy transfer
@@ -47,10 +47,10 @@ jobs:
           host: ${{ secrets.CICD_HOST }}
           username: ${{ secrets.CICD_USER }}
           password: ${{ secrets.CICD_PASS }}
-          source: 'deploy,volume/backups'
+          source: 'deploy'
           target: ${{ secrets.CICD_PATH }}/prod/
 
-      # helm install or upgrade
+      # Helm source to CI/CD server copy transfer
       - name: SSH Remote Commands from ci/cd server
         uses: garygrossgarten/github-action-ssh@release
         with:
@@ -59,7 +59,6 @@ jobs:
           password: ${{ secrets.CICD_PASS }}
           command: |
             cd ${{ secrets.CICD_PATH }}/prod/
-            sh ./volume/backups/dir_chk.sh
             helm upgrade ${{ secrets.DATABASE_USER }} ./deploy/helm -f ./deploy/helm/values-prod.yaml \
               --install -n prod-hrebs --create-namespace --history-max 5 --wait --timeout 10m \
               --set global.dbPassword=${{ secrets.DATABASE_PASS }} \

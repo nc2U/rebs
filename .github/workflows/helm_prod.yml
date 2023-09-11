@@ -24,6 +24,17 @@ jobs:
       - name: Check out source code
         uses: actions/checkout@v3
 
+      # Necessary dir Check
+      - name: Django collectstatic & model migration
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          host: ${{ secrets.NFS_HOST }}
+          username: ${{ secrets.NFS_USER }}
+          password: ${{ secrets.NFS_PASS }}
+          command: |
+            cd ${{ secrets.NFS_PATH }}/prod/
+            mkdir -p ./volume/mysql ./app/django/media
+
       # Helm source to CI/CD server copy transfer
       - name: Copy helm, to CI/CD server
         uses: appleboy/scp-action@master
@@ -31,7 +42,7 @@ jobs:
           host: ${{ secrets.CICD_HOST }}
           username: ${{ secrets.CICD_USER }}
           password: ${{ secrets.CICD_PASS }}
-          source: 'deploy/helm,deploy/kubectl,volume/backups'
+          source: 'deploy/helm,deploy/kubectl'
           target: ${{ secrets.CICD_PATH }}/prod/
 
       # helm upgrade --> install
@@ -43,7 +54,6 @@ jobs:
           password: ${{ secrets.CICD_PASS }}
           command: |
             cd ${{ secrets.CICD_PATH }}/prod/
-            sh ./volume/backups/dir_chk.sh
             helm upgrade ${{ secrets.DATABASE_USER }} ./deploy/helm -f ./deploy/helm/values-prod.yaml \
               --install -n prod-hrebs --create-namespace --history-max 5 --wait --timeout 10m \
               --set global.dbPassword=${{ secrets.DATABASE_PASS }} \
