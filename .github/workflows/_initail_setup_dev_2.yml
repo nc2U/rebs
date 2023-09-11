@@ -17,6 +17,8 @@ jobs:
       # 레파지터리 체크 아웃
       - name: Check out source code
         uses: actions/checkout@v3
+        with:
+          ref: 'develop'
 
       # helm install or upgrade
       - name: SSH Remote Commands from ci/cd server
