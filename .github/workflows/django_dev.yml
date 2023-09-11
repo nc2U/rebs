@@ -25,18 +25,18 @@ jobs:
         with:
           ref: 'develop'
 
-      # data to server copy transfer
-      - name: Copy django, etc data to CI/CD server
+      # Source Django to server copy transfer
+      - name: Copy django, etc data to NFS server
         uses: appleboy/scp-action@master
         with:
-          host: ${{ secrets.CICD_HOST }}
-          username: ${{ secrets.CICD_USER }}
-          password: ${{ secrets.CICD_PASS }}
+          host: ${{ secrets.NFS_HOST }}
+          username: ${{ secrets.NFS_USER }}
+          password: ${{ secrets.NFS_PASS }}
           source: 'app/django'
-          target: '/mnt/nfs/dev'
+          target: ${{ secrets.NFS_PATH }}/dev/
 
       # web pod --> django model migrations & collectstatic
-      - name: django model migration & collectstatic
+      - name: Django collectstatic & model migration
         uses: garygrossgarten/github-action-ssh@release
         with:
           host: ${{ secrets.CICD_HOST }}

@@ -52,15 +52,15 @@ jobs:
       - run: cd app/svelte && pnpm build
         if: ${{ always() }}
 
-      # data to server copy transfer
-      - name: Copy django, etc data to CI/CD server
+      # Source to NFS server copy transfer
+      - name: Copy Svelte -> django static/dist (NFS server)
         uses: appleboy/scp-action@master
         with:
-          host: ${{ secrets.CICD_HOST }}
-          username: ${{ secrets.CICD_USER }}
-          password: ${{ secrets.CICD_PASS }}
+          host: ${{ secrets.NFS_HOST }}
+          username: ${{ secrets.NFS_USER }}
+          password: ${{ secrets.NFS_PASS }}
           source: 'app/django'
-          target: '/mnt/nfs/prod'
+          target: ${{ secrets.NFS_PATH }}/prod/
 
       # slack --> notification
       - name: Send slack when failed

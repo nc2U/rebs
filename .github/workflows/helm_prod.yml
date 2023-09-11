@@ -32,33 +32,33 @@ jobs:
           username: ${{ secrets.CICD_USER }}
           password: ${{ secrets.CICD_PASS }}
           source: 'deploy/helm,deploy/kubectl'
-          target: '/mnt/nfs/prod/'
+          target: ${{ secrets.NFS_PATH }}/prod/
 
       # helm upgrade --> install
-      - name: SSH Remote Commands from ci/cd server
-        uses: garygrossgarten/github-action-ssh@release
-        with:
-          host: ${{ secrets.CICD_HOST }}
-          username: ${{ secrets.CICD_USER }}
-          password: ${{ secrets.CICD_PASS }}
-          command: |
-            cd ${{ secrets.NFS_PATH }}/prod/
-            sh ./volume/backups/dir_chk.sh
-            helm upgrade ${{ secrets.DATABASE_USER }} ./deploy/helm -f ./deploy/helm/values-prod.yaml \
-              --install -n prod-hrebs --create-namespace --history-max 5 --wait --timeout 10m \
-              --set global.dbPassword=${{ secrets.DATABASE_PASS }} \
-              --set global.nfsPath=${{ secrets.NFS_PATH }} \
-              --set global.nfsServerHost=${{ secrets.CICD_HOST }} \
-              --set 'nginx.ingress.tls[0].hosts[0]'=${{ secrets.DOMAIN_NAME }} \
-              --set 'nginx.ingress.tls[0].hosts[1]'=www.${{ secrets.DOMAIN_NAME }} \
-              --set 'nginx.ingress.tls[0].hosts[2]'=api.${{ secrets.DOMAIN_NAME }} \
-              --set 'nginx.ingress.hosts[0].host'=${{ secrets.DOMAIN_NAME }} \
-              --set 'nginx.ingress.hosts[1].host'=www.${{ secrets.DOMAIN_NAME }} \
-              --set 'nginx.ingress.hosts[2].host'=api.${{ secrets.DOMAIN_NAME }} \
-              --set 'nginx.ingress.hosts[1].paths[0].path'=/ \
-              --set 'nginx.ingress.hosts[1].paths[0].pathType'=ImplementationSpecific \
-              --set 'nginx.ingress.hosts[2].paths[0].path'=/ \
-              --set 'nginx.ingress.hosts[2].paths[0].pathType'=ImplementationSpecific
+      #      - name: SSH Remote Commands from ci/cd server
+      #        uses: garygrossgarten/github-action-ssh@release
+      #        with:
+      #          host: ${{ secrets.CICD_HOST }}
+      #          username: ${{ secrets.CICD_USER }}
+      #          password: ${{ secrets.CICD_PASS }}
+      #          command: |
+      #            cd ${{ secrets.NFS_PATH }}/prod/
+      #            sh ./volume/backups/dir_chk.sh
+      #            helm upgrade ${{ secrets.DATABASE_USER }} ./deploy/helm -f ./deploy/helm/values-prod.yaml \
+      #              --install -n prod-hrebs --create-namespace --history-max 5 --wait --timeout 10m \
+      #              --set global.dbPassword=${{ secrets.DATABASE_PASS }} \
+      #              --set global.nfsPath=${{ secrets.NFS_PATH }} \
+      #              --set global.nfsServerHost=${{ secrets.CICD_HOST }} \
+      #              --set 'nginx.ingress.tls[0].hosts[0]'=${{ secrets.DOMAIN_NAME }} \
+      #              --set 'nginx.ingress.tls[0].hosts[1]'=www.${{ secrets.DOMAIN_NAME }} \
+      #              --set 'nginx.ingress.tls[0].hosts[2]'=api.${{ secrets.DOMAIN_NAME }} \
+      #              --set 'nginx.ingress.hosts[0].host'=${{ secrets.DOMAIN_NAME }} \
+      #              --set 'nginx.ingress.hosts[1].host'=www.${{ secrets.DOMAIN_NAME }} \
+      #              --set 'nginx.ingress.hosts[2].host'=api.${{ secrets.DOMAIN_NAME }} \
+      #              --set 'nginx.ingress.hosts[1].paths[0].path'=/ \
+      #              --set 'nginx.ingress.hosts[1].paths[0].pathType'=ImplementationSpecific \
+      #              --set 'nginx.ingress.hosts[2].paths[0].path'=/ \
+      #              --set 'nginx.ingress.hosts[2].paths[0].pathType'=ImplementationSpecific
 
       # slack --> notification
       - name: Send slack when failed
