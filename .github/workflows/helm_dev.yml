@@ -1,4 +1,4 @@
-name: Helm Update [_Dev]
+name: Helm Update [Dev]
 
 on:
   push:
