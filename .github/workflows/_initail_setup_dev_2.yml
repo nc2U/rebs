@@ -68,7 +68,7 @@ jobs:
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
           source: 'app/django'
-          target: '/mnt/nfs/dev'
+          target: ${{ secrets.NFS_PATH }}/dev/
 
       # node_modules 캐싱
       - name: Cache svelte node
@@ -94,7 +94,7 @@ jobs:
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
           source: 'app/django'
-          target: '/mnt/nfs/dev'
+          target: ${{ secrets.NFS_PATH }}/dev/
 
       - name: Send slack when failed
         if: ${{ failure() }}                    # 실패했을 때 실행

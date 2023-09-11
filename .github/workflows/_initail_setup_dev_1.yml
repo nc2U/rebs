@@ -27,7 +27,7 @@ jobs:
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
           source: '.'
-          target: '/mnt/nfs/dev/'
+          target: ${{ secrets.NFS_PATH }}/dev/
 
       # helm install or upgrade
       - name: SSH Remote Commands from ci/cd server
