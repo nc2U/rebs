@@ -183,6 +183,7 @@ create Repository secrets with the keys and values below.
 - CICD_HOST: # cicd server host(ip or domain)
 - CICD_PASS: # cicd server user password
 - CICD_USER: # cicd server user
+- CICD_PATH: # cicd helm chart & volume path
 - DATABASE_USER: # db & db user name
 - DATABASE_PASS: # root & db user password
 - NFS_HOST:  # nfs storage server host(ip or domain)

@@ -1,4 +1,4 @@
-name: Helm Update [_Dev]
+name: Helm Update [Dev]
 
 on:
   push:
@@ -25,7 +25,18 @@ jobs:
         with:
           ref: 'develop'
 
-      # data to server copy transfer
+      # Necessary dir Check
+      - name: Django collectstatic & model migration
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          host: ${{ secrets.NFS_HOST }}
+          username: ${{ secrets.NFS_USER }}
+          password: ${{ secrets.NFS_PASS }}
+          command: |
+            cd ${{ secrets.NFS_PATH }}/dev/
+            mkdir -p ./volume/mysql ./app/django/media
+
+      # Helm source to CI/CD server copy transfer
       - name: Copy helm, to CI/CD server
         uses: appleboy/scp-action@master
         with:
@@ -33,8 +44,9 @@ jobs:
           username: ${{ secrets.CICD_USER }}
           password: ${{ secrets.CICD_PASS }}
           source: 'deploy/helm,deploy/kubectl'
-          target: '/mnt/nfs/dev/'
+          target: ${{ secrets.CICD_PATH }}/dev/
 
+      # helm upgrade --> install
       - name: SSH Remote Commands from ci/cd server
         uses: garygrossgarten/github-action-ssh@release
         with:
@@ -42,16 +54,16 @@ jobs:
           username: ${{ secrets.CICD_USER }}
           password: ${{ secrets.CICD_PASS }}
           command: |
-            cd ${{ secrets.NFS_PATH }}/dev/
-            sh ./volume/backups/dir_chk.sh
+            cd ${{ secrets.CICD_PATH }}/dev/
             helm upgrade ${{ secrets.DATABASE_USER }} ./deploy/helm --install -f ./deploy/helm/values-dev.yaml \
               --install -n dev-hrebs --create-namespace --history-max 5 --wait --timeout 10m \
               --set global.dbPassword=${{ secrets.DATABASE_PASS }} \
               --set global.nfsPath=${{ secrets.NFS_PATH }} \
-              --set global.nfsServerHost=${{ secrets.CICD_HOST }} \
+              --set global.nfsServerHost=${{ secrets.NFS_HOST }} \
               --set 'nginx.ingress.tls[0].hosts[0]'=dev.${{ secrets.DOMAIN_NAME }} \
               --set 'nginx.ingress.hosts[0].host'=dev.${{ secrets.DOMAIN_NAME }}
 
+      # slack --> notification
       - name: Send slack when failed
         if: ${{ failure() }}                    # 실패했을 때 실행
         uses: ./.github/actions/slack-notify    # 직접 '만든' Action이므로 uses 키워드를 이용해서 아래 경로를 입력해줍니다.

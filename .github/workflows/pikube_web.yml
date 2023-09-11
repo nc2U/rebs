@@ -30,7 +30,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       # Web image 변화가 있으면 빌드 및 푸시
-      - name: pikube/web push Build and push
+      - name: Web image push Build and push
         uses: docker/build-push-action@v3
         with:
           context: "deploy/docker/python"

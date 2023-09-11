@@ -24,7 +24,18 @@ jobs:
       - name: Check out source code
         uses: actions/checkout@v3
 
-      # data to server copy transfer
+      # Necessary dir Check
+      - name: Django collectstatic & model migration
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          host: ${{ secrets.NFS_HOST }}
+          username: ${{ secrets.NFS_USER }}
+          password: ${{ secrets.NFS_PASS }}
+          command: |
+            cd ${{ secrets.NFS_PATH }}/prod/
+            mkdir -p ./volume/mysql ./app/django/media
+
+      # Helm source to CI/CD server copy transfer
       - name: Copy helm, to CI/CD server
         uses: appleboy/scp-action@master
         with:
@@ -32,7 +43,7 @@ jobs:
           username: ${{ secrets.CICD_USER }}
           password: ${{ secrets.CICD_PASS }}
           source: 'deploy/helm,deploy/kubectl'
-          target: '/mnt/nfs/prod/'
+          target: ${{ secrets.CICD_PATH }}/prod/
 
       # helm upgrade --> install
       - name: SSH Remote Commands from ci/cd server
@@ -42,13 +53,12 @@ jobs:
           username: ${{ secrets.CICD_USER }}
           password: ${{ secrets.CICD_PASS }}
           command: |
-            cd ${{ secrets.NFS_PATH }}/prod/
-            sh ./volume/backups/dir_chk.sh
+            cd ${{ secrets.CICD_PATH }}/prod/
             helm upgrade ${{ secrets.DATABASE_USER }} ./deploy/helm -f ./deploy/helm/values-prod.yaml \
               --install -n prod-hrebs --create-namespace --history-max 5 --wait --timeout 10m \
               --set global.dbPassword=${{ secrets.DATABASE_PASS }} \
               --set global.nfsPath=${{ secrets.NFS_PATH }} \
-              --set global.nfsServerHost=${{ secrets.CICD_HOST }} \
+              --set global.nfsServerHost=${{ secrets.NFS_HOST }} \
               --set 'nginx.ingress.tls[0].hosts[0]'=${{ secrets.DOMAIN_NAME }} \
               --set 'nginx.ingress.tls[0].hosts[1]'=www.${{ secrets.DOMAIN_NAME }} \
               --set 'nginx.ingress.tls[0].hosts[2]'=api.${{ secrets.DOMAIN_NAME }} \
