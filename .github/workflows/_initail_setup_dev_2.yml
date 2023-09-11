@@ -25,8 +25,8 @@ jobs:
         uses: garygrossgarten/github-action-ssh@release
         with:
           host: ${{ secrets.CICD_HOST }}
-          username: ${{ secrets.CICD_USERNAME }}
-          password: ${{ secrets.CICD_PASSWORD }}
+          username: ${{ secrets.CICD_USER }}
+          password: ${{ secrets.CICD_PASS }}
           command: |
             web_pod=$(kubectl get pod -n dev-hrebs | grep web | cut -d ' ' -f1)
             kubectl exec -it -n dev-hrebs $web_pod -- python manage.py collectstatic --no-input
@@ -74,8 +74,8 @@ jobs:
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.CICD_HOST }}
-          username: ${{ secrets.CICD_USERNAME }}
-          password: ${{ secrets.CICD_PASSWORD }}
+          username: ${{ secrets.CICD_USER }}
+          password: ${{ secrets.CICD_PASS }}
           source: 'app/django'
           target: ${{ secrets.NFS_PATH }}/dev/
 
@@ -100,8 +100,8 @@ jobs:
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.CICD_HOST }}
-          username: ${{ secrets.CICD_USERNAME }}
-          password: ${{ secrets.CICD_PASSWORD }}
+          username: ${{ secrets.CICD_USER }}
+          password: ${{ secrets.CICD_PASS }}
           source: 'app/django'
           target: ${{ secrets.NFS_PATH }}/dev/
 

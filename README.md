@@ -180,16 +180,17 @@ Use an existing GitHub account or create a new one and fork this project.
 Afterward, go to the Settings > Secrets and variables > Actions menu and click the 'New repository secret' button to
 create Repository secrets with the keys and values below.
 
-- CICD_HOST:
-- CICD_PASSWORD:
-- CICD_USERNAME:
-- DOMAIN_NAME:
-- NFS_PATH:
-- DATABASE_PASSWORD:
-- DATABASE_USER:
-- DOCKERHUB_TOKEN:
-- DOCKERHUB_USERNAME:
-- SLACK_INCOMING_URL:
+- CICD_HOST: # cicd server host(ip or domain)
+- CICD_PASS: # cicd server user password
+- CICD_USER: # cicd server user
+- DATABASE_USER: # db & db user name
+- DATABASE_PASS: # root & db user password
+- NFS_HOST:  # nfs storage server host(ip or domain)
+- NFS_PASS:  # nfs storage server user password
+- NFS_PATH:  # nfs storage server path (absolute path)
+- NFS_USER:  # nfs storage server user
+- DOMAIN_NANE: # domain address (for ingress)
+- SLACK_INCOMING_URL: # slack incoming url
 
 #### 2. Deploy
 
@@ -213,4 +214,4 @@ Click `_initial [Prod Step2]` at the bottom of all workflows in the action tab.
 - [Django](https://www.djangoproject.com)
 - [Django Rest Framework](https://www.django-rest-framework.org/)
 - [Node](https://nodejs.org/ko/)
-- [Yarn](https://yarnpkg.com/)
+- [pnpm](https://pnpm.io/)

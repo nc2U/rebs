@@ -71,8 +71,8 @@ jobs:
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.CICD_HOST }}
-          username: ${{ secrets.CICD_USERNAME }}
-          password: ${{ secrets.CICD_PASSWORD }}
+          username: ${{ secrets.CICD_USER }}
+          password: ${{ secrets.CICD_PASS }}
           source: 'app/django'
           target: '/mnt/nfs/dev'
 
