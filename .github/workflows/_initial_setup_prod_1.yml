@@ -23,8 +23,8 @@ jobs:
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.CICD_HOST }}
-          username: ${{ secrets.CICD_USERNAME }}
-          password: ${{ secrets.CICD_PASSWORD }}
+          username: ${{ secrets.CICD_USER }}
+          password: ${{ secrets.CICD_PASS }}
           source: '.'
           target: ${{ secrets.NFS_PATH }}/prod/
 
@@ -33,15 +33,15 @@ jobs:
         uses: garygrossgarten/github-action-ssh@release
         with:
           host: ${{ secrets.CICD_HOST }}
-          username: ${{ secrets.CICD_USERNAME }}
-          password: ${{ secrets.CICD_PASSWORD }}
+          username: ${{ secrets.CICD_USER }}
+          password: ${{ secrets.CICD_PASS }}
           command: |
             cd ${{ secrets.NFS_PATH }}/prod/
             sh ./volume/backups/dir_chk.sh
             rm -rf .git* README.md app/vue app/svelte deploy/docker*
             helm upgrade ${{ secrets.DATABASE_USER }} ./deploy/helm -f ./deploy/helm/values-prod.yaml \
               --install -n prod-hrebs --create-namespace --history-max 5 --wait --timeout 10m \
-              --set global.dbPassword=${{ secrets.DATABASE_PASSWORD }} \
+              --set global.dbPassword=${{ secrets.DATABASE_PASS }} \
               --set global.nfsPath=${{ secrets.NFS_PATH }} \
               --set global.nfsServerHost=${{ secrets.CICD_HOST }} \
               --set 'nginx.ingress.tls[0].hosts[0]'=${{ secrets.DOMAIN_NAME }} \
