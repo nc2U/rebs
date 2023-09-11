@@ -31,7 +31,7 @@ jobs:
           target: ${{ secrets.NFS_PATH }}/dev/
 
       # NFS server source cleanup
-      - name: SSH Remote Commands from NFS server
+      - name: NFS server source cleanup
         uses: garygrossgarten/github-action-ssh@release
         with:
           host: ${{ secrets.NFS_HOST }}

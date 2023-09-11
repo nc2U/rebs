@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v3
 
       # Necessary dir Check
-      - name: Django collectstatic & model migration
+      - name: mysql & media dir check
         uses: garygrossgarten/github-action-ssh@release
         with:
           host: ${{ secrets.NFS_HOST }}

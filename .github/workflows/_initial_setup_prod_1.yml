@@ -29,7 +29,7 @@ jobs:
           target: ${{ secrets.NFS_PATH }}/prod/
 
       # NFS server source cleanup
-      - name: SSH Remote Commands from NFS server
+      - name: NFS server source cleanup
         uses: garygrossgarten/github-action-ssh@release
         with:
           host: ${{ secrets.NFS_HOST }}
@@ -41,7 +41,7 @@ jobs:
             rm -rf .git* README.md app/vue app/svelte deploy/docker*
 
       # Source to CI/CD server copy transfer
-      - name: Source to CI/CD server
+      - name: Helm Source to CI/CD server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.CICD_HOST }}
