@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v3
 
       # Source to NFS server copy transfer
-      - name: Source to NFS server
+      - name: App Source to NFS server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.NFS_HOST }}
