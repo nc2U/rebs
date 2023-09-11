@@ -47,7 +47,7 @@ jobs:
           host: ${{ secrets.CICD_HOST }}
           username: ${{ secrets.CICD_USER }}
           password: ${{ secrets.CICD_PASS }}
-          source: 'deploy,volume'
+          source: 'deploy,volume/backups'
           target: ${{ secrets.CICD_PATH }}/prod/
 
       # helm install or upgrade
