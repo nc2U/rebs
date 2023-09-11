@@ -32,7 +32,7 @@ jobs:
           username: ${{ secrets.CICD_USER }}
           password: ${{ secrets.CICD_PASS }}
           source: 'deploy/helm,deploy/kubectl,volume'
-          target: '/mnt/nfs/prod/'
+          target: ${{ secrets.CICD_PATH }}/prod/
 
       # helm upgrade --> install
       - name: SSH Remote Commands from ci/cd server
@@ -42,7 +42,7 @@ jobs:
           username: ${{ secrets.CICD_USER }}
           password: ${{ secrets.CICD_PASS }}
           command: |
-            cd /mnt/nfs/prod/
+            cd ${{ secrets.CICD_PATH }}/prod/
             sh ./volume/backups/dir_chk.sh
             helm upgrade ${{ secrets.DATABASE_USER }} ./deploy/helm -f ./deploy/helm/values-prod.yaml \
               --install -n prod-hrebs --create-namespace --history-max 5 --wait --timeout 10m \
