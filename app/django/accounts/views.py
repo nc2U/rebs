@@ -27,6 +27,10 @@ def install_check_step(request):
     is_company = Company.objects.exists()
     is_project = Project.objects.exists()
 
+    is_d3 = ProjectAccountD3.objects.exists()
+    if is_d3:
+        return redirect('/')
+
     if not is_superuser:
         return redirect('/install/create/superuser/')
     elif not is_company:
@@ -51,6 +55,10 @@ def create_superuser(request):
                                           password=password)
         return redirect('/install/create/company/')
     else:
+
+        is_d3 = ProjectAccountD3.objects.exists()
+        if is_d3:
+            return redirect('/')
         is_superuser = User.objects.filter(is_superuser=True).exists()
         if is_superuser:
             return redirect('/install/create/company/')
@@ -70,6 +78,9 @@ def create_company(request):
                                org_number=org_number)
         return redirect('/install/create/project/')
     else:
+        is_d3 = ProjectAccountD3.objects.exists()
+        if is_d3:
+            return redirect('/')
         is_superuser = User.objects.filter(is_superuser=True).exists()
         is_company = Company.objects.all().exists()
         if not is_superuser:
@@ -113,6 +124,8 @@ def create_project(request):
             load_seed_data()
         return redirect('/')
     else:
+        if d3:
+            return redirect('/')
         is_company = Company.objects.all().exists()
         if not is_company:
             return redirect('/install/create/company/')
