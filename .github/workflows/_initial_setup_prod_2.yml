@@ -47,21 +47,21 @@ jobs:
         id: cache_vue
         with:
           path: ./app/vue/node_modules
-          key: yarn-packages-${{ hashFiles('**/yarn.lock') }}
+          key: pnpm-packages-${{ hashFiles('**/pnpm.lock') }}
 
       # node_modules 변화기 있으면 빌드
       - name: Install Dependencies
         if: steps.cache_vue.outputs.cache-hit != 'true'
-        run: cd app/vue && yarn
+        run: cd app/vue && pnpm i
 
-      #      - run: yarn lint
-      #        # `if: ${{ always() }} => ` 만약 `yarn lint`라는 곳에서 에러가 났을 경우
-      #        # 이후 build를 실행하지 않고 해당 workflow가 종료됨.
-      #        # ${{ always() }}라는 문법을 사용 시 `yarn lint`라는 곳에서 에러가 나도
-      #        # 이후의 build까지 다 실행을 해보고 난 뒤 종료 하므로 모든 테스트 스크립트에 ${{ always() }}를 붙임.
+      #      - run: pnpm lint
+      #        # `if: ${{ always() }}`
+      #        # 만약 `pnpm lint`라는 곳에서 에러가 났을 경우 이후 build를 실행하지 않고 해당 workflow가 종료됨.
+      #        # `if: ${{ always() }}`라는 문법을 사용 시 `pnpm lint`라는 곳에서 에러가 나도
+      #        # 이후의 build까지 다 실행을 해보고 난 뒤 종료 하므로 모든 테스트 스크립트에 `if: ${{ always() }}`를 붙임.
       #        if: ${{ always() }}
 
-      - run: cd app/vue && yarn build && yarn docs:build
+      - run: cd app/vue && pnpm build && pnpm docs:build
         if: ${{ always() }}
 
       - name: Docs Deploy
@@ -78,7 +78,7 @@ jobs:
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
           source: 'app/django'
-          target: '/mnt/nfs/prod'
+          target: ${{ secrets.NFS_PATH }}/prod/
 
       # node_modules 캐싱
       - name: Cache svelte node
@@ -86,14 +86,14 @@ jobs:
         id: cache_svelte
         with:
           path: ./app/svelte/node_modules
-          key: yarn-packages-${{ hashFiles('**/yarn.lock') }}
+          key: pnpm-packages-${{ hashFiles('**/pnpm.lock') }}
 
       # node_modules 변화기 있으면 빌드
       - name: Install Dependencies
         if: steps.cache_svelte.outputs.cache-hit != 'true'
-        run: cd app/svelte && yarn
+        run: cd app/svelte && pnpm i
 
-      - run: cd app/svelte && yarn build
+      - run: cd app/svelte && pnpm build
         if: ${{ always() }}
 
       # data to server copy transfer
@@ -104,7 +104,7 @@ jobs:
           username: ${{ secrets.CICD_USERNAME }}
           password: ${{ secrets.CICD_PASSWORD }}
           source: 'app/django'
-          target: '/mnt/nfs/prod'
+          target: ${{ secrets.NFS_PATH }}/prod/
 
       # slack --> notification
       - name: Send slack when failed
