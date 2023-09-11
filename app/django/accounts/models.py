@@ -105,7 +105,7 @@ def get_image_filename(instance, filename):
     year = datetime.today().strftime('%Y')
     month = datetime.today().strftime('%m')
     username = instance.user
-    hash_value = hashlib.md5().hexdigest()
+    hash_value = hashlib.blake2b(digest_size=3).hexdigest()
     return f"users/{year}/{month}/{username}_{hash_value}_{filename}"
 
 
