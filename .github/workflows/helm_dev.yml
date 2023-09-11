@@ -49,7 +49,7 @@ jobs:
               --install -n dev-hrebs --create-namespace --history-max 5 --wait --timeout 10m \
               --set global.dbPassword=${{ secrets.DATABASE_PASS }} \
               --set global.nfsPath=${{ secrets.NFS_PATH }} \
-              --set global.nfsServerHost=${{ secrets.CICD_HOST }} \
+              --set global.nfsServerHost=${{ secrets.NFS_HOST }} \
               --set 'nginx.ingress.tls[0].hosts[0]'=dev.${{ secrets.DOMAIN_NAME }} \
               --set 'nginx.ingress.hosts[0].host'=dev.${{ secrets.DOMAIN_NAME }}
 

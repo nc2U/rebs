@@ -5,8 +5,10 @@
 global:
   appMode: prod
   dbPassword: "{{ randAlphaNum 5 }}"
-  nfsPath: "nfs-path" # nfs volume path
   nfsServerHost: "nfs-server-host"
+  nfsPath: "nfs-path" # nfs volume path
+  cicdServerHost: "cicd-server-host"
+  cicdPath: "cicd-path" # cicd server path
 
 nameOverride: ""
 fullnameOverride: ""
