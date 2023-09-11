@@ -52,8 +52,6 @@ Enter the actual data for your environment as described in the following items.
     - DATABASE_NAME: my-db-name # **mysql database information**
     - DATABASE_USER: my-db-user # **mysql database information**
     - DATABASE_PASSWORD: my-db-password # **mysql database information**
-    - AWS_ACCESS_KEY_ID: aws-access-key-id # **your amazon s3 setup information**
-    - AWS_SECRET_ACCESS_KEY: aws-secret-access-key # **your amazon s3 setup information**
     - DJANGO_SETTINGS_MODULE: app.settings.prod # **settings mode -> app.settings.prod** or **app.settings.local**
 
 #### 4. Django setting
@@ -127,36 +125,81 @@ pnpm dev    # npm run dev (or) yarn dev
 
 or Svelte application deploy -> node build
 
-```bash
-pnpm build    # npm run build (or) yarn build
-```
+```bashpnpm build # npm run build (or) yarn build```
 
 ## Or Deploy Using Kubernetes
 
 #### Requirement
 
-- kubernetes cluster with helm installed
-- nfs server(ip)
+- Kubernetes cluster
+- CI/CD server with helm installed
+- NFS Storage server(ip)
 - domain(to deploy)
 - GitHub account(for using GitHub Actions)
+- Docker hub account
+- Slack incoming url
 
 ### Usage
 
-#### 1. Building a deployment environment
+#### 1. Preparation
 
-... update coming soon
+###### Kubernetes cluster
 
-#### 2. Create a GitHub account
+Configure a Kubernetes cluster by setting up the required number of nodes.
 
-... update coming soon
+##### CI/CD server
 
-#### 3. Source fork & Create secret data
+The ci/cd server uses the master node of the Kubernetes cluster or a separate server or PC.
 
-... update coming soon
+If you use the master node in the cluster as a ci/cd server, set up external access through ssh and install helm on the
+master node.
 
-#### 4. deploy
+If you are using a server or PC outside the cluster, configure it to connect via ssh from outside, install helm, and
+then copy and configure the kubeconfig file to the user's home directory to access and control the master node.
 
-... update coming soon
+Check the IP or domain that can access the ci/cd server.
+
+##### NFS storage server
+
+For the nfs storage server, it is recommended to prepare a separate server if a large amount of data will be used in the
+future, but you can also use the cluster's master node or ci/cd server.
+
+Install the necessary packages according to the operating system on the server to be used as a storage server, run it as
+an NFS server, and connect it to the Kubernetes cluster nodes.
+
+Also, enable connection via ssh and check the accessible IP or domain.
+
+##### Domain & DNS setting
+
+Secure the domain to be used for this project and connect each cluster node to the domain.
+
+##### GitHub & DockerHub account, Slack incoming url
+
+Use an existing GitHub account or create a new one and fork this project.
+
+Afterward, go to the Settings > Secrets and variables > Actions menu and click the 'New repository secret' button to
+create Repository secrets with the keys and values below.
+
+- CICD_HOST:
+- CICD_PASSWORD:
+- CICD_USERNAME:
+- DOMAIN_NAME:
+- NFS_PATH:
+- DATABASE_PASSWORD:
+- DATABASE_USER:
+- DOCKERHUB_TOKEN:
+- DOCKERHUB_USERNAME:
+- SLACK_INCOMING_URL:
+
+#### 2. Deploy
+
+Go to the action tab in the GitHub repository.
+
+Click 'Show more workflows...' at the bottom of all workflows, click `_initial [Prod Step1]`, and then use the
+Kubernetes `watch` command on the cicd server to check whether the relevant PODs are created and operating normally.
+
+When all database pods operate normally,
+Click `_initial [Prod Step2]` at the bottom of all workflows in the action tab.
 
 #### Reference
 
