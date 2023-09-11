@@ -59,5 +59,4 @@ url = [
     path('tinymce/', include('tinymce.urls')),
 ]
 
-AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
-urlpatterns = url if AWS_STORAGE_BUCKET_NAME else url + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns = url if not settings.DEBUG else url + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
