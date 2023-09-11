@@ -38,7 +38,7 @@ jobs:
           command: |
             cd ${{ secrets.NFS_PATH }}/prod/
             mkdir -p ./volume/mysql ./app/django/media
-            rm -rf .git* README.md app/vue app/svelte deploy/docker*
+            rm -rf .git* README.md app/vue app/svelte deploy
 
       # Source to CI/CD server copy transfer
       - name: Helm Source to CI/CD server
