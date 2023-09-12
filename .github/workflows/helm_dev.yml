@@ -54,8 +54,8 @@ jobs:
           username: ${{ secrets.CICD_USER }}
           password: ${{ secrets.CICD_PASS }}
           command: |
-            cd ${{ secrets.CICD_PATH }}/dev/
-            helm upgrade ${{ secrets.DATABASE_USER }} ./deploy/helm --install -f ./deploy/helm/values-dev.yaml \
+            cd ${{ secrets.CICD_PATH }}/dev/deploy/heml
+            helm upgrade ${{ secrets.DATABASE_USER }} . --install -f .values-dev.yaml \
               --install -n dev-hrebs --create-namespace --history-max 5 --wait --timeout 10m \
               --set global.dbPassword=${{ secrets.DATABASE_PASS }} \
               --set global.nfsPath=${{ secrets.NFS_PATH }} \
