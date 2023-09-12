@@ -25,16 +25,16 @@ jobs:
         with:
           ref: 'develop'
 
-      #      # Necessary dir Check
-      #      - name: mysql & media dir check
-      #        uses: garygrossgarten/github-action-ssh@release
-      #        with:
-      #          host: ${{ secrets.NFS_HOST }}
-      #          username: ${{ secrets.NFS_USER }}
-      #          password: ${{ secrets.NFS_PASS }}
-      #          command: |
-      #            cd ${{ secrets.NFS_PATH }}/dev/
-      #            mkdir -p ./volume/mysql ./app/django/media
+      # Necessary dir Check
+      - name: mysql & media dir check
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          host: ${{ secrets.NFS_HOST }}
+          username: ${{ secrets.NFS_USER }}
+          password: ${{ secrets.NFS_PASS }}
+          command: |
+            cd ${{ secrets.NFS_PATH }}/dev/
+            mkdir -p ./volume/mysql ./app/django/media
 
       # Helm source to CI/CD server copy transfer
       - name: Copy helm, to CI/CD server
