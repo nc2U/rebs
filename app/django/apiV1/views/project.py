@@ -48,8 +48,8 @@ class ExecAmountToBudgetViewSet(viewsets.ModelViewSet):
     filterset_fields = ('project',)
 
     def get_queryset(self):
-        date = self.request.query_params.get('date')
-        date = date if date else TODAY
+        request_date = self.request.query_params.get('date')
+        date = request_date if request_date else TODAY
         month_first = datetime(datetime.strptime(date, '%Y-%m-%d').year,
                                datetime.strptime(date, '%Y-%m-%d').month,
                                1).strftime('%Y-%m-%d')
@@ -59,7 +59,6 @@ class ExecAmountToBudgetViewSet(viewsets.ModelViewSet):
             .filter(is_separate=False,  # 상세 분리 기록 = False (중복 방지)
                     project_account_d3__d2__gte=8,  # 비용 계정 범위 시작
                     project_account_d3__d2__lte=13,  # 비용 계정 범위 종료
-                    bank_account__directpay=False,  # 용역비 직불계좌 = False
                     deal_date__lte=date)
 
         return queryset.annotate(acc_d3=F('project_account_d3')) \
