@@ -66,7 +66,7 @@ spec:
             failureThreshold: 2
           volumeMounts:
             - name: mysql-data
-              mountPath: /var/lib/mysql --user 1000
+              mountPath: /var/lib/mysql --user 999
             - name: init-sql
               mountPath: /docker-entrypoint-initdb.d
             - name: dump-backup
