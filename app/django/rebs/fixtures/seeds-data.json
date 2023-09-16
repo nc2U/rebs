@@ -3480,7 +3480,7 @@
       "d1": 5,
       "code": "610",
       "name": "토지비",
-      "description": "토지매입비 및 관련 부대비용"
+      "description": "토지비 및 매입 관련 부대비용"
     }
   },
   {
@@ -3489,7 +3489,7 @@
     "fields": {
       "d1": 5,
       "code": "620",
-      "name": "건축비",
+      "name": "공사비",
       "description": "건축 공사비"
     }
   },
@@ -3499,8 +3499,8 @@
     "fields": {
       "d1": 5,
       "code": "630",
-      "name": "판매비",
-      "description": "분양 광고 홍보비 등"
+      "name": "외주용역비",
+      "description": "건축 관련 외주 용역비"
     }
   },
   {
@@ -3509,8 +3509,8 @@
     "fields": {
       "d1": 5,
       "code": "640",
-      "name": "부대비",
-      "description": "기타 부대비용"
+      "name": "분양관련비",
+      "description": "분양 광고 홍보비 등"
     }
   },
   {
@@ -3518,9 +3518,9 @@
     "pk": 12,
     "fields": {
       "d1": 5,
-      "code": "660",
-      "name": "금융비",
-      "description": "대출 수수료, 이자 등"
+      "code": "650",
+      "name": "M/H 관련비",
+      "description": "M/H 건립운영비 등"
     }
   },
   {
@@ -3528,14 +3528,44 @@
     "pk": 13,
     "fields": {
       "d1": 5,
+      "code": "660",
+      "name": "제세 공과금/부담금",
+      "description": "제세공과금 및 부담금"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 14,
+    "fields": {
+      "d1": 5,
+      "code": "670",
+      "name": "제반비용",
+      "description": "운영비 등 기타 부대비용"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 15,
+    "fields": {
+      "d1": 5,
       "code": "680",
+      "name": "금융비용",
+      "description": "대출 수수료, 이자 등"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd2",
+    "pk": 16,
+    "fields": {
+      "d1": 5,
+      "code": "690",
       "name": "영업외 비용",
       "description": "영업외 비용, 원천세, 위약금 등 기타 손실"
     }
   },
   {
     "model": "rebs.projectaccountd2",
-    "pk": 14,
+    "pk": 17,
     "fields": {
       "d1": 6,
       "code": "510",
@@ -3545,12 +3575,12 @@
   },
   {
     "model": "rebs.projectaccountd2",
-    "pk": 15,
+    "pk": 18,
     "fields": {
       "d1": 7,
       "code": "410",
       "name": "취소",
-      "description": "거래 취소로 인한 출금 및 입금거래"
+      "description": "취소거래 취소로 인한 출금 및 입금거래"
     }
   },
   {
@@ -3813,8 +3843,8 @@
       "sort": 2,
       "d2": 8,
       "code": "611",
-      "name": "토지매입비",
-      "description": "토지매입비"
+      "name": "토지 매입비",
+      "description": "토지 매입비용"
     }
   },
   {
@@ -3824,8 +3854,8 @@
       "sort": 2,
       "d2": 8,
       "code": "612",
-      "name": "취등록세",
-      "description": "취등록세 등"
+      "name": "이전 등기비",
+      "description": "취등록세 및 법무사 비용 등"
     }
   },
   {
@@ -3835,8 +3865,8 @@
       "sort": 2,
       "d2": 8,
       "code": "613",
-      "name": "등기대행료(법무사)",
-      "description": "법무사 등기대행 용역비"
+      "name": "기타 토지비용",
+      "description": "매입관련 용역비 등"
     }
   },
   {
@@ -3846,8 +3876,8 @@
       "sort": 2,
       "d2": 8,
       "code": "614",
-      "name": "매입관련 용역비",
-      "description": "매입관련 용역비"
+      "name": "보유세",
+      "description": "재산세, 도시계획세, 지방교육세 등"
     }
   },
   {
@@ -3857,8 +3887,8 @@
       "sort": 2,
       "d2": 9,
       "code": "621",
-      "name": "직접공사비",
-      "description": "직접공사비"
+      "name": "도급 공사비",
+      "description": "건축 도급 공사비"
     }
   },
   {
@@ -3868,8 +3898,8 @@
       "sort": 2,
       "d2": 9,
       "code": "622",
-      "name": "소방공사비",
-      "description": "소방공사비 (직접공사비)"
+      "name": "소방 공사비",
+      "description": "소방 시설 공사비"
     }
   },
   {
@@ -3879,8 +3909,8 @@
       "sort": 2,
       "d2": 9,
       "code": "623",
-      "name": "각종 인입비",
-      "description": "각종 인입비"
+      "name": "외부 공사비",
+      "description": "단지 외부 건축허가조건이행공사비"
     }
   },
   {
@@ -3890,8 +3920,8 @@
       "sort": 2,
       "d2": 9,
       "code": "624",
-      "name": "예술장식품비",
-      "description": "예술장식품비"
+      "name": "이주 철거비",
+      "description": "이주 관련비용 및 철거 공사비"
     }
   },
   {
@@ -3899,10 +3929,10 @@
     "pk": 32,
     "fields": {
       "sort": 2,
-      "d2": 9,
-      "code": "625",
-      "name": "상하수도분담금",
-      "description": "상하수도분담금"
+      "d2": 10,
+      "code": "631",
+      "name": "인입 공사비",
+      "description": "각종 인입 공사비"
     }
   },
   {
@@ -3910,10 +3940,10 @@
     "pk": 33,
     "fields": {
       "sort": 2,
-      "d2": 9,
-      "code": "626",
-      "name": "이주철거비",
-      "description": "이주철거비"
+      "d2": 10,
+      "code": "632",
+      "name": "설계 용역비",
+      "description": "설계 관련 용역비"
     }
   },
   {
@@ -3921,10 +3951,10 @@
     "pk": 34,
     "fields": {
       "sort": 2,
-      "d2": 9,
-      "code": "627",
-      "name": "건축허가조건이행공사비",
-      "description": "건축허가조건이행공사비"
+      "d2": 10,
+      "code": "633",
+      "name": "감리 용역비",
+      "description": "감리 용역비 등"
     }
   },
   {
@@ -3932,10 +3962,10 @@
     "pk": 35,
     "fields": {
       "sort": 2,
-      "d2": 9,
-      "code": "628",
-      "name": "설계용역비",
-      "description": "설계용역비"
+      "d2": 10,
+      "code": "634",
+      "name": "기타 용역비",
+      "description": "인허가 관련 기타 용역비"
     }
   },
   {
@@ -3943,10 +3973,10 @@
     "pk": 36,
     "fields": {
       "sort": 2,
-      "d2": 9,
-      "code": "629",
-      "name": "감리용역비",
-      "description": "감리용역비"
+      "d2": 11,
+      "code": "641",
+      "name": "광고 홍보비",
+      "description": "언론피알, 광고 홍보비 등"
     }
   },
   {
@@ -3954,10 +3984,10 @@
     "pk": 37,
     "fields": {
       "sort": 2,
-      "d2": 9,
-      "code": "630",
-      "name": "기타용역비",
-      "description": "기타용역비"
+      "d2": 11,
+      "code": "642",
+      "name": "분양 수수료",
+      "description": "분양대행 용역 수수료"
     }
   },
   {
@@ -3965,10 +3995,10 @@
     "pk": 38,
     "fields": {
       "sort": 2,
-      "d2": 10,
-      "code": "631",
-      "name": "M/H 부지임차료",
-      "description": "M/H 부지임차료"
+      "d2": 11,
+      "code": "643",
+      "name": "상가분양 수수료",
+      "description": "단지내 상가 등 분양 수수료"
     }
   },
   {
@@ -3976,10 +4006,10 @@
     "pk": 39,
     "fields": {
       "sort": 2,
-      "d2": 10,
-      "code": "632",
-      "name": "M/H 건립/해체비",
-      "description": "M/H 건립/해체비"
+      "d2": 11,
+      "code": "644",
+      "name": "분양 예비비",
+      "description": "해지분 추가모집, 교체 관련 비용"
     }
   },
   {
@@ -3987,10 +4017,10 @@
     "pk": 40,
     "fields": {
       "sort": 2,
-      "d2": 10,
-      "code": "633",
-      "name": "M/H 운영비",
-      "description": "M/H 운영비"
+      "d2": 11,
+      "code": "645",
+      "name": "분양보증 수수료",
+      "description": "아파트, 상가 등 분양보증 수수료"
     }
   },
   {
@@ -3998,10 +4028,10 @@
     "pk": 41,
     "fields": {
       "sort": 2,
-      "d2": 10,
-      "code": "634",
-      "name": "분양보증 수수료(APT)",
-      "description": "분양보증 수수료(APT)"
+      "d2": 12,
+      "code": "651",
+      "name": "M/H 건립운영비",
+      "description": "M/H 건립/해체 및 운영비 등"
     }
   },
   {
@@ -4009,10 +4039,10 @@
     "pk": 42,
     "fields": {
       "sort": 2,
-      "d2": 10,
-      "code": "635",
-      "name": "분양보증 수수료(기타)",
-      "description": "분양보증 수수료(기타)"
+      "d2": 12,
+      "code": "652",
+      "name": "M/H 부지임차료",
+      "description": "M/H 부지 임차료 등 관련 비용"
     }
   },
   {
@@ -4020,10 +4050,10 @@
     "pk": 43,
     "fields": {
       "sort": 2,
-      "d2": 10,
-      "code": "636",
-      "name": "광고홍보비",
-      "description": "광고홍보비"
+      "d2": 13,
+      "code": "661",
+      "name": "상하수도 부담금",
+      "description": "상하수도 원인자 부담금"
     }
   },
   {
@@ -4031,10 +4061,10 @@
     "pk": 44,
     "fields": {
       "sort": 2,
-      "d2": 10,
-      "code": "637",
-      "name": "분양수수료",
-      "description": "분양수수료"
+      "d2": 13,
+      "code": "662",
+      "name": "보존 등기비",
+      "description": "보존등기비"
     }
   },
   {
@@ -4042,10 +4072,10 @@
     "pk": 45,
     "fields": {
       "sort": 2,
-      "d2": 10,
-      "code": "638",
-      "name": "분양 예비비",
-      "description": "해지분 추가모집, 교체 관련 비용"
+      "d2": 13,
+      "code": "663",
+      "name": "광역교통 부담금",
+      "description": "광역교통 시설 부담금"
     }
   },
   {
@@ -4053,10 +4083,10 @@
     "pk": 46,
     "fields": {
       "sort": 2,
-      "d2": 11,
-      "code": "641",
-      "name": "시행자 운영비",
-      "description": "시행자 운영비"
+      "d2": 13,
+      "code": "664",
+      "name": "미술 장식품비",
+      "description": "미술 장식품 설치비"
     }
   },
   {
@@ -4064,10 +4094,10 @@
     "pk": 47,
     "fields": {
       "sort": 2,
-      "d2": 11,
-      "code": "642",
-      "name": "신탁수수료",
-      "description": "신탁수수료"
+      "d2": 13,
+      "code": "665",
+      "name": "학교용지 부담금",
+      "description": "학교용지 부담금"
     }
   },
   {
@@ -4075,10 +4105,10 @@
     "pk": 48,
     "fields": {
       "sort": 2,
-      "d2": 11,
-      "code": "643",
-      "name": "입주관리비",
-      "description": "입주관리비"
+      "d2": 13,
+      "code": "666",
+      "name": "과밀 부담금",
+      "description": "과밀 부담금"
     }
   },
   {
@@ -4086,10 +4116,10 @@
     "pk": 49,
     "fields": {
       "sort": 2,
-      "d2": 11,
-      "code": "644",
-      "name": "예비비 및 민원처리비",
-      "description": "예비비 및 민원처리비"
+      "d2": 13,
+      "code": "667",
+      "name": "기반시설 설치비용",
+      "description": "기반시설 설치비용"
     }
   },
   {
@@ -4097,10 +4127,10 @@
     "pk": 50,
     "fields": {
       "sort": 2,
-      "d2": 11,
-      "code": "645",
-      "name": "업무대행료",
-      "description": "업무대행료"
+      "d2": 13,
+      "code": "668",
+      "name": "전용 부담금",
+      "description": "농지, 산지 전용 부담금 등"
     }
   },
   {
@@ -4108,10 +4138,10 @@
     "pk": 51,
     "fields": {
       "sort": 2,
-      "d2": 11,
-      "code": "651",
-      "name": "보존등기비",
-      "description": "보존등기비"
+      "d2": 13,
+      "code": "669",
+      "name": "기타 부담금",
+      "description": "기타 각종 부담금 등"
     }
   },
   {
@@ -4119,10 +4149,10 @@
     "pk": 52,
     "fields": {
       "sort": 2,
-      "d2": 11,
-      "code": "652",
-      "name": "광역교통시설분담금",
-      "description": "광역교통시설분담금"
+      "d2": 13,
+      "code": "609",
+      "name": "부가가치세",
+      "description": "부가가치세"
     }
   },
   {
@@ -4130,10 +4160,10 @@
     "pk": 53,
     "fields": {
       "sort": 2,
-      "d2": 11,
-      "code": "653",
-      "name": "학교용지분담금",
-      "description": "학교용지분담금"
+      "d2": 14,
+      "code": "671",
+      "name": "시행자 운영비",
+      "description": "시행사(조합) 운영비"
     }
   },
   {
@@ -4141,10 +4171,10 @@
     "pk": 54,
     "fields": {
       "sort": 2,
-      "d2": 11,
-      "code": "654",
-      "name": "재산세(종합토지세)",
-      "description": "재산세(종합토지세)"
+      "d2": 14,
+      "code": "672",
+      "name": "신탁비",
+      "description": "신탁 관련 수수료"
     }
   },
   {
@@ -4152,10 +4182,10 @@
     "pk": 55,
     "fields": {
       "sort": 2,
-      "d2": 11,
-      "code": "655",
-      "name": "지방교육세",
-      "description": "지방교육세"
+      "d2": 14,
+      "code": "673",
+      "name": "기타 사업비",
+      "description": "감평, 법무, 회계 비용 등"
     }
   },
   {
@@ -4163,10 +4193,10 @@
     "pk": 56,
     "fields": {
       "sort": 2,
-      "d2": 11,
-      "code": "656",
-      "name": "과밀부담금",
-      "description": "과밀부담금"
+      "d2": 14,
+      "code": "674",
+      "name": "예비비",
+      "description": "예비비 및 민원처리비 등"
     }
   },
   {
@@ -4174,10 +4204,10 @@
     "pk": 57,
     "fields": {
       "sort": 2,
-      "d2": 11,
-      "code": "657",
-      "name": "기반시설 설치비용",
-      "description": "기반시설 설치비용"
+      "d2": 14,
+      "code": "675",
+      "name": "업무대행비",
+      "description": "업무대행 용역 수수료"
     }
   },
   {
@@ -4185,10 +4215,10 @@
     "pk": 58,
     "fields": {
       "sort": 2,
-      "d2": 11,
-      "code": "658",
-      "name": "농지(산림)전용 부담금",
-      "description": "농지(산림)전용 부담금"
+      "d2": 15,
+      "code": "681",
+      "name": "B/L 수수료, 이자",
+      "description": "B/L 수수료 및 이자 비용"
     }
   },
   {
@@ -4196,10 +4226,10 @@
     "pk": 59,
     "fields": {
       "sort": 2,
-      "d2": 11,
-      "code": "659",
-      "name": "기타 부담금",
-      "description": "기타 부담금"
+      "d2": 15,
+      "code": "682",
+      "name": "P/F 수수료, 이자",
+      "description": "P/F 수수료 및 이자 비용"
     }
   },
   {
@@ -4207,10 +4237,10 @@
     "pk": 60,
     "fields": {
       "sort": 2,
-      "d2": 12,
-      "code": "661",
-      "name": "브리지 수수료",
-      "description": "브리지 수수료"
+      "d2": 15,
+      "code": "683",
+      "name": "중도금 무이자",
+      "description": "중도금 무이자 비용"
     }
   },
   {
@@ -4218,10 +4248,10 @@
     "pk": 61,
     "fields": {
       "sort": 2,
-      "d2": 12,
-      "code": "662",
-      "name": "브리지 이자",
-      "description": "브리지 이자"
+      "d2": 15,
+      "code": "684",
+      "name": "기타 금융비용",
+      "description": "기타 차입 관련 금융비용"
     }
   },
   {
@@ -4229,10 +4259,10 @@
     "pk": 62,
     "fields": {
       "sort": 2,
-      "d2": 12,
-      "code": "663",
-      "name": "PF대출 수수료",
-      "description": "PF대출 수수료"
+      "d2": 16,
+      "code": "691",
+      "name": "영업외 비용(원천세)",
+      "description": "원천세"
     }
   },
   {
@@ -4240,10 +4270,10 @@
     "pk": 63,
     "fields": {
       "sort": 2,
-      "d2": 12,
-      "code": "664",
-      "name": "PF대출 이자",
-      "description": "PF대출 이자"
+      "d2": 16,
+      "code": "692",
+      "name": "영업외 비용(기타잡손실)",
+      "description": "기타 잡손실"
     }
   },
   {
@@ -4251,10 +4281,10 @@
     "pk": 64,
     "fields": {
       "sort": 2,
-      "d2": 12,
-      "code": "666",
-      "name": "중도금 무이자",
-      "description": "중도금 무이자"
+      "d2": 16,
+      "code": "693",
+      "name": "영업외 비용(위약금)",
+      "description": "위약금 손실"
     }
   },
   {
@@ -4262,73 +4292,7 @@
     "pk": 65,
     "fields": {
       "sort": 2,
-      "d2": 6,
-      "code": "328",
-      "name": "중도금 후불제(대납)",
-      "description": "중도금 후불제(대납) 채권"
-    }
-  },
-  {
-    "model": "rebs.projectaccountd3",
-    "pk": 66,
-    "fields": {
-      "sort": 1,
-      "d2": 6,
-      "code": "323",
-      "name": "[회수]→중도금 후불제(대납)",
-      "description": "중도금 대납 이자 회수"
-    }
-  },
-  {
-    "model": "rebs.projectaccountd3",
-    "pk": 67,
-    "fields": {
-      "sort": 1,
-      "d2": 12,
-      "code": "666",
-      "name": "기타 금융비",
-      "description": "기타 금융비"
-    }
-  },
-  {
-    "model": "rebs.projectaccountd3",
-    "pk": 68,
-    "fields": {
-      "sort": 2,
-      "d2": 13,
-      "code": "681",
-      "name": "영업외 비용(원천세)",
-      "description": "원천세"
-    }
-  },
-  {
-    "model": "rebs.projectaccountd3",
-    "pk": 69,
-    "fields": {
-      "sort": 2,
-      "d2": 13,
-      "code": "682",
-      "name": "영업외 비용(기타잡손실)",
-      "description": "기타 잡손실"
-    }
-  },
-  {
-    "model": "rebs.projectaccountd3",
-    "pk": 70,
-    "fields": {
-      "sort": 2,
-      "d2": 13,
-      "code": "683",
-      "name": "영업외 비용(위약금비용)",
-      "description": "위약금 손실"
-    }
-  },
-  {
-    "model": "rebs.projectaccountd3",
-    "pk": 71,
-    "fields": {
-      "sort": 2,
-      "d2": 14,
+      "d2": 17,
       "code": "512",
       "name": "대체(출금)",
       "description": "계좌간 이체로 인한 출금 거래"
@@ -4336,10 +4300,10 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 72,
+    "pk": 66,
     "fields": {
-      "sort": 2,
-      "d2": 14,
+      "sort": 1,
+      "d2": 17,
       "code": "511",
       "name": "대체(입금)",
       "description": "계좌간 이체로 인한 입금 거래"
@@ -4347,10 +4311,10 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 73,
+    "pk": 67,
     "fields": {
       "sort": 2,
-      "d2": 15,
+      "d2": 18,
       "code": "412",
       "name": "거래취소(출금)",
       "description": "거래 취소로 인한 출금거래"
@@ -4358,10 +4322,10 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 74,
+    "pk": 68,
     "fields": {
       "sort": 1,
-      "d2": 15,
+      "d2": 18,
       "code": "411",
       "name": "거래취소(입금)",
       "description": "거래 취소로 인한 입금거래"
