@@ -58,7 +58,7 @@ class ExecAmountToBudgetViewSet(viewsets.ModelViewSet):
             .order_by('project_account_d3') \
             .filter(is_separate=False,  # 상세 분리 기록 = False (중복 방지)
                     project_account_d3__d2__gte=8,  # 비용 계정 범위 시작
-                    project_account_d3__d2__lte=13,  # 비용 계정 범위 종료
+                    project_account_d3__d2__lte=15,  # 비용 계정 범위 종료
                     deal_date__lte=date)
 
         return queryset.annotate(acc_d3=F('project_account_d3')) \
