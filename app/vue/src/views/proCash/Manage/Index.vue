@@ -19,12 +19,12 @@ import ProCashList from '@/views/proCash/Manage/components/ProCashList.vue'
 
 const listControl = ref()
 
-const bankFees = ref([14, 53]) // 은행수수료 d2(id), d3(id)
-const transferD3 = ref([65, 66]) // 대체 출금(id), 입금(id)
-const cancelD3 = ref([67, 68]) // 취소 출금(id), 입금(id)
+const bankFees = ref([14, 55]) // 은행수수료 d2(id), d3(id)
+const transferD3 = ref([67, 68]) // 대체 출금(id), 입금(id)
+const cancelD3 = ref([69, 70]) // 취소 출금(id), 입금(id)
 
-provide('transfers', [17, 65]) // 대체 d2(id), d3(id)
-provide('cancels', [18, 67]) // 취소 d2(id), d3(id)
+provide('transfers', [17, 67]) // 대체 출금 d2(id), d3(id)
+provide('cancels', [18, 69]) // 취소 출금 d2(id), d3(id)
 
 const dataFilter = ref<CashBookFilter>({
   page: 1,

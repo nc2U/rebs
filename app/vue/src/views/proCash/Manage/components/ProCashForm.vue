@@ -179,12 +179,12 @@ const sort_change = (event: Event) => {
     if (el.value === '1') form.outlay = null
     if (el.value === '2') form.income = null
     if (el.value === '3') {
-      form.project_account_d2 = (transfers ?? [17, 65])[0]
-      form.project_account_d3 = (transfers ?? [17, 65])[1]
+      form.project_account_d2 = (transfers ?? [17, 67])[0]
+      form.project_account_d3 = (transfers ?? [17, 67])[1]
       form.trader = ''
     } else if (el.value === '4') {
-      form.project_account_d2 = (cancels ?? [18, 67])[0]
-      form.project_account_d3 = (cancels ?? [18, 67])[1]
+      form.project_account_d2 = (cancels ?? [18, 69])[0]
+      form.project_account_d3 = (cancels ?? [18, 69])[1]
     } else {
       form.project_account_d2 = null
       form.project_account_d3 = null
@@ -217,7 +217,7 @@ const sepD1_change = () => {
 }
 
 watch(form, val => {
-  form.is_imprest = val.project_account_d3 === (transfers ?? [17, 65])[1] + 1 // 대체(입금)
+  form.is_imprest = val.project_account_d3 === (transfers ?? [17, 67])[1] + 1 // 대체(입금)
 })
 
 const accountStore = useAccount()
