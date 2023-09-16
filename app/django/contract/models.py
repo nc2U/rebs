@@ -5,7 +5,7 @@ from django.conf import settings
 class OrderGroup(models.Model):
     project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
     order_number = models.PositiveSmallIntegerField('차수')
-    SORT_CHOICES = (('1', '일반분양'), ('2', '조합모집'))
+    SORT_CHOICES = (('1', '조합모집'), ('2', '일반분양'))
     sort = models.CharField('구분', max_length=1, choices=SORT_CHOICES, default='1')
     order_group_name = models.CharField('차수명', max_length=20)
 
