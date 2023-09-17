@@ -25,14 +25,14 @@ jobs:
         uses: actions/checkout@v3
 
       # Necessary dir Check
-      - name: mysql & media dir check
+      - name: media dir check
         uses: garygrossgarten/github-action-ssh@release
         with:
           host: ${{ secrets.NFS_HOST }}
           username: ${{ secrets.NFS_USER }}
           password: ${{ secrets.NFS_PASS }}
           command: |
-            cd ${{ secrets.NFS_PATH }}/prod/
+            cd ${{ secrets.NFS_PATH }}/prod
             mkdir -p ./app/django/media
 
       # Helm source to CI/CD server copy transfer
