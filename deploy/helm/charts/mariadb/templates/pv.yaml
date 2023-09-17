@@ -19,11 +19,11 @@ spec:
     - nfsvers=4.1
   nfs:
     {{- if eq .Values.global.appMode "prod" }}
-    path: {{ .Values.global.cicdPath }}/prod/volume/mysql
+    path: {{ .Values.global.nfsPath }}/prod/volume/mysql
     {{- else if eq .Values.global.appMode "dev" }}
-    path: {{ .Values.global.cicdPath }}/dev/volume/mysql
+    path: {{ .Values.global.nfsPath }}/dev/volume/mysql
     {{- end }}
-    server: {{ .Values.global.cicdServerHost }}
+    server: {{ .Values.global.nfsServerHost }}
 ---
 apiVersion: v1
 kind: PersistentVolume
