@@ -37,7 +37,7 @@ jobs:
           password: ${{ secrets.NFS_PASS }}
           command: |
             cd ${{ secrets.NFS_PATH }}/prod/
-            mkdir -p ./volume/mysql ./app/django/media
+            mkdir -p ./app/django/media
             rm -rf .git* README.md app/vue app/svelte deploy
 
       # Source to CI/CD server copy transfer
@@ -58,7 +58,8 @@ jobs:
           username: ${{ secrets.CICD_USER }}
           password: ${{ secrets.CICD_PASS }}
           command: |
-            cd ${{ secrets.CICD_PATH }}/prod/deploy/helm && rm -rf ../docker*
+            cd ${{ secrets.CICD_PATH }}/prod/
+            mkdir -p ./volume/mysql && rm -rf ./deploy/docker* && cd deploy/helm
             helm upgrade ${{ secrets.DATABASE_USER }} . -f ./values-prod.yaml \
               --install -n prod-hrebs --create-namespace --history-max 5 --wait --timeout 10m \
               --set global.dbPassword=${{ secrets.DATABASE_PASS }} \
