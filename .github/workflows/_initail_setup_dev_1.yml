@@ -40,8 +40,8 @@ jobs:
           command: |
             cd ${{ secrets.NFS_PATH }}/dev/
             mkdir -p ./volume/mysql ./app/django/media
-            echo '${{ secrets.NFS_PASS }}' | sudo -S chmod -R 755 ./volume/mysql
-            echo '${{ secrets.NFS_PASS }}' | sudo -S chmod -R 755 ./app/django/media
+            echo '${{ secrets.NFS_PASS }}' | \
+            sudo -S chmod -R 755 ./volume/mysql ./app/django/media
             rm -rf .git* README.md app/vue app/svelte deploy
 
       # Helm source to CI/CD server copy transfer
@@ -67,8 +67,6 @@ jobs:
             helm upgrade ${{ secrets.DATABASE_USER }} . -f ./values-dev.yaml \
               --install -n dev-hrebs --create-namespace --history-max 5 --wait --timeout 10m \
               --set global.dbPassword=${{ secrets.DATABASE_PASS }} \
-              --set global.cicdPath=${{ secrets.CICD_PATH }} \
-              --set global.cicdServerHost=${{ secrets.CICD_HOST }} \
               --set global.nfsPath=${{ secrets.NFS_PATH }} \
               --set global.nfsServerHost=${{ secrets.NFS_HOST }} \
               --set 'nginx.ingress.tls[0].hosts[0]'=dev.${{ secrets.DOMAIN_NAME }} \
