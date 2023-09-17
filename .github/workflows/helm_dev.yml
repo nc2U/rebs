@@ -34,7 +34,8 @@ jobs:
           password: ${{ secrets.NFS_PASS }}
           command: |
             cd ${{ secrets.NFS_PATH }}/dev
-            mkdir -p ./app/django/media
+            mkdir -p ./volume/mysql ./app/django/media
+            echo '${{ secrets.NFS_PASS }}' | sudo -S chmod -R 755 ./volume/mysql
             echo '${{ secrets.NFS_PASS }}' | sudo -S chmod -R 755 ./app/django/media
 
       # Helm source to CI/CD server copy transfer

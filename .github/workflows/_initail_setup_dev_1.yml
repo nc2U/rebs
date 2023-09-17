@@ -39,7 +39,8 @@ jobs:
           password: ${{ secrets.NFS_PASS }}
           command: |
             cd ${{ secrets.NFS_PATH }}/dev/
-            mkdir -p ./app/django/media
+            mkdir -p ./volume/mysql ./app/django/media
+            echo '${{ secrets.NFS_PASS }}' | sudo -S chmod -R 755 ./volume/mysql
             echo '${{ secrets.NFS_PASS }}' | sudo -S chmod -R 755 ./app/django/media
             rm -rf .git* README.md app/vue app/svelte deploy
 
@@ -62,7 +63,7 @@ jobs:
           password: ${{ secrets.CICD_PASS }}
           command: |
             cd ${{ secrets.CICD_PATH }}/dev
-            mkdir -p ./volume/mysql && rm -rf ./deploy/docker* && cd deploy/helm
+            rm -rf ./deploy/docker* && cd deploy/helm
             helm upgrade ${{ secrets.DATABASE_USER }} . -f ./values-dev.yaml \
               --install -n dev-hrebs --create-namespace --history-max 5 --wait --timeout 10m \
               --set global.dbPassword=${{ secrets.DATABASE_PASS }} \
