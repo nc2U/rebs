@@ -62,13 +62,18 @@ const fetchPost = (pk: number) => docStore.fetchPost(pk)
 const fetchPostList = (payload: PostFilter) => docStore.fetchPostList(payload)
 const fetchCategoryList = (board: number) => docStore.fetchCategoryList(board)
 
-const createPost = (payload: { form: FormData }) => docStore.createPost(payload)
-const updatePost = (payload: { pk: number; form: FormData }) => docStore.updatePost(payload)
+const createPost = (payload: { form: Post }) => docStore.createPost(payload)
+const updatePost = (payload: { pk: number; form: Post }) => docStore.updatePost(payload)
 const patchPost = (payload: PatchPost) => docStore.patchPost(payload)
 const patchLink = (payload: Link) => docStore.patchLink(payload)
 const patchFile = (payload: AFile) => docStore.patchFile(payload)
 
-const [route, router] = [useRoute() as Loaded & { name: string }, useRouter()]
+const [route, router] = [
+  useRoute() as Loaded & {
+    name: string
+  },
+  useRouter(),
+]
 
 watch(route, val => {
   if (val.params.postId) fetchPost(Number(val.params.postId))
@@ -76,15 +81,18 @@ watch(route, val => {
 })
 
 const onSubmit = (payload: Post & Attatches) => {
-  const { pk, ...formData } = payload
-  formData.company = company.value || null
-  const form = formUtility.getFormData(
-    formData as Date | Array<{ [key: string]: string }> | { [key: string]: string } | File | string,
-  )
-
-  console.log(formData)
-  console.log(...form)
-
+  console.log(payload)
+  const { pk, ...form } = payload
+  form.company = company.value ?? null
+  // const { pk, ...formData } = payload
+  // formData.company = company.value || null
+  // const form = formUtility.getFormData(
+  //   formData as Date | Array<{ [key: string]: string }> | { [key: string]: string } | File | string,
+  // )
+  //
+  // console.log(formData)
+  // console.log(...form)
+  //
   if (pk) {
     updatePost({ pk, form })
     router.replace({
