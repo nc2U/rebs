@@ -83,7 +83,6 @@ INSTALLED_APPS += [  # app
     'payment.apps.PaymentConfig',
     'project.apps.ProjectConfig',
     'rebs.apps.RebsConfig',
-    'work_docs.apps.WorkDocsConfig',
     '_excel.apps.ExcelConfig',
     '_pdf.apps.PdfConfig',
 ]
@@ -96,7 +95,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = '_config.urls'
