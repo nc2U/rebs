@@ -3,6 +3,7 @@ from import_export.admin import ImportExportMixin
 from .models import Group, Board, Category, LawsuitCase, Post, Image, File, Link, Comment, Tag
 
 
+@admin.register(Group)
 class GroupAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'name')
     list_display_links = ('name',)
@@ -14,6 +15,7 @@ class CategoryInline(admin.TabularInline):
     extra = 1
 
 
+@admin.register(Board)
 class BoardAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'group', 'name', 'order', 'search_able')
     list_display_links = ('name',)
@@ -23,6 +25,7 @@ class BoardAdmin(ImportExportMixin, admin.ModelAdmin):
     inlines = (CategoryInline,)
 
 
+@admin.register(Category)
 class CategoryAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'board', 'name', 'parent', 'order')
     list_display_links = ('name',)
@@ -31,6 +34,7 @@ class CategoryAdmin(ImportExportMixin, admin.ModelAdmin):
     list_filter = ('board',)
 
 
+@admin.register(LawsuitCase)
 class LawsuitCaseAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('project', 'sort', 'level', '__str__', 'plaintiff', 'defendant', 'case_start_date')
     list_display_links = ('__str__',)
@@ -54,6 +58,7 @@ class CommentInline(admin.TabularInline):
     extra = 1
 
 
+@admin.register(Post)
 class PostAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'board', 'is_notice', 'project', 'category', 'title', 'execution_date')
     list_display_links = ('title',)
@@ -63,16 +68,9 @@ class PostAdmin(ImportExportMixin, admin.ModelAdmin):
     inlines = (LinkInline, FileInline, CommentInline)
 
 
+@admin.register(Tag)
 class TagAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'board', 'name')
     list_editable = ('name',)
     search_fields = ('name',)
     list_filter = ('board',)
-
-
-admin.site.register(Group, GroupAdmin)
-admin.site.register(Board, BoardAdmin)
-admin.site.register(Category, CategoryAdmin)
-admin.site.register(Post, PostAdmin)
-admin.site.register(Tag, TagAdmin)
-admin.site.register(LawsuitCase, LawsuitCaseAdmin)

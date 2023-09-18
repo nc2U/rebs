@@ -22,9 +22,9 @@ class ContractPriceInline(admin.StackedInline):
 
 class ContractAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'project', 'serial_number',
-                    'order_group', 'unit_type', 'user', 'activation')
+                    'order_group', 'unit_type', 'user', 'activation', 'created_at', 'updated_at')
     list_display_links = ('project', 'serial_number',)
-    list_filter = ('activation',)
+    list_filter = ('project', 'order_group', 'unit_type', 'activation')
     search_fields = ('serial_number',)
     inlines = [ContractorInline, ContractPriceInline]
 
@@ -40,11 +40,12 @@ class CContactInline(ImportExportMixin, admin.TabularInline):
 
 
 class ContactorAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'name', 'birth_date', 'gender', 'is_registed',
-                    'status', 'is_active', 'reservation_date', 'contract_date')
+    list_display = ('id', 'name', 'birth_date', 'gender', 'is_registed', 'status', 'is_active',
+                    'reservation_date', 'contract_date', 'created_at', 'updated_at')
     search_fields = ('name',)
     list_display_links = ('name',)
-    list_filter = ('contract_date', 'gender', 'is_registed', 'status')
+    list_filter = ('contract__order_group', 'contract__unit_type',
+                   'contract_date', 'gender', 'is_registed', 'status')
     list_editable = ('gender', 'is_registed', 'is_active')
     inlines = (CContactInline, CAdressInline)
 
