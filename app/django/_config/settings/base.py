@@ -58,7 +58,6 @@ INSTALLED_APPS += [  # plugin
     'django_markdown2',
     'mdeditor',
     'tinymce',
-    'django_quill',
     'storages',
     'mathfilters',
     'rest_framework',

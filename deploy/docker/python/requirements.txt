@@ -17,7 +17,6 @@ djangorestframework==3.14.0
 djangorestframework-simplejwt==5.2.2
 PyJWT==2.7.0
 django-allauth==0.54.0
-httpie==3.2.2
 django-filter==23.2
 django-crispy-forms==2.0
 crispy-bootstrap4==2022.1
