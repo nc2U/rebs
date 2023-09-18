@@ -208,7 +208,7 @@ export const useDocument = defineStore('document', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const createPost = (payload: { form: FormData }) =>
+  const createPost = (payload: { form: Post }) =>
     api
       .post(`/post/`, payload.form, {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -221,7 +221,7 @@ export const useDocument = defineStore('document', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
-  const updatePost = (payload: { pk: number; form: FormData }) =>
+  const updatePost = (payload: { pk: number; form: Post }) =>
     api
       .put(`/post/${payload.pk}/`, payload.form, {
         headers: { 'Content-Type': 'multipart/form-data' },
