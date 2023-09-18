@@ -71,10 +71,10 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ('pk', 'company', 'project', 'board', 'is_notice', 'proj_name', 'category', 'cate_name',
-                  'lawsuit', 'lawsuit_name', 'title', 'execution_date', 'is_hide_comment',
-                  'content', 'hit', 'blame', 'ip', 'device', 'secret', 'password', 'links',
-                  'files', 'comments', 'user', 'soft_delete', 'created', 'updated', 'is_new')
+        fields = ('pk', 'company', 'project', 'proj_name', 'board', 'is_notice', 'category',
+                  'cate_name', 'lawsuit', 'lawsuit_name', 'title', 'execution_date',
+                  'is_hide_comment', 'content', 'hit', 'blame', 'ip', 'device', 'secret', 'password',
+                  'links', 'files', 'comments', 'user', 'soft_delete', 'created', 'updated', 'is_new')
         read_only_fields = ('ip',)
 
     def to_python(self, value):
