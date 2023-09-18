@@ -66,6 +66,9 @@ class ProjectIncBudget(models.Model):
     quantity = models.PositiveSmallIntegerField(verbose_name='수량')
     budget = models.PositiveBigIntegerField(verbose_name='수입 예산')
 
+    def __str__(self):
+        return self.item_name
+
     class Meta:
         ordering = ('id', '-project')
         verbose_name = '02. 프로젝트 수입예산'
@@ -82,6 +85,9 @@ class ProjectOutBudget(models.Model):
     basis_calc = models.CharField('산출근거', max_length=255, blank=True, default='',
                                   help_text='사업수지표 항목 상 해당 금액의 산출 근거 기재')
     budget = models.PositiveBigIntegerField(verbose_name='지출 예산')
+
+    def __str__(self):
+        return self.account_d3.name
 
     class Meta:
         ordering = ('order', 'id', '-project')
