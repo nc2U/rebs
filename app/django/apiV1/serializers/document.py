@@ -111,20 +111,18 @@ class PostSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['ip'] = self.context.get('request').META.get('REMOTE_ADDR')
         post = Post.objects.create(**validated_data)
-        post.save()
 
         # Links 처리
         new_links = self.initial_data.get('newLinks')
         if new_links:
             for link in new_links:
-                link_object = Link(post=post, link=self.to_python(link))
-                link_object.save()
+                Link.objects.create(post=post, link=self.to_python(link))
 
-        # Files 처리
-        new_files = self.initial_data.get('newFiles')
-        if new_files:
-            for file in new_files:
-                File.objects.create(post=post, file=file)
+        # # Files 처리
+        # new_files = self.initial_data.get('newFiles')
+        # if new_files:
+        #     for file in new_files:
+        #         File.objects.create(post=post, file=file)
 
         return post
 
@@ -149,8 +147,7 @@ class PostSerializer(serializers.ModelSerializer):
         new_links = self.initial_data.get('newLinks')
         if new_links:
             for link in new_links:
-                link_object = Link(post=instance, link=self.to_python(link))
-                link_object.save()
+                Link.objects.create(post=instance, link=self.to_python(link))
 
         # Files 처리
         old_files = self.initial_data.get('files')
@@ -159,11 +156,11 @@ class PostSerializer(serializers.ModelSerializer):
                 file_object = File.objects.get(pk=file.get('pk'))
                 if file.get('del'):
                     file_object.delete()
-        #         elif file.get('newFile'):
-        #             file_object.file = file.get('newFile')
-        #             file_object.save()
+                elif file.get('newFile'):
+                    file_object.file = file.get('newFile')
+                    file_object.save()
 
-        # new_files = self.initial_data.get('newFiles')
+        # # new_files = self.initial_data.get('newFiles')
         # if new_files:
         #     for file in new_files:
         #         File.objects.create(post=instance, file=file)
