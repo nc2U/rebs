@@ -42,6 +42,7 @@ const form = reactive<Post>({
   secret: false,
   password: '',
   links: [],
+  files: [],
 })
 
 const attaches = reactive<Attatches>({
