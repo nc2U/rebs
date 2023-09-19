@@ -79,6 +79,9 @@ watch(route, val => {
 
 const onSubmit = (payload: Post & Attatches) => {
   console.log(payload)
+  console.log(payload.files)
+  if (payload.files?.length) for (const file of payload.files) console.log(file)
+
   if (company.value) {
     const { pk, ...form } = payload
     form.company = company.value
