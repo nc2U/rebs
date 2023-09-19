@@ -88,7 +88,6 @@ const onSubmit = (payload: Post & Attatches) => {
   if (company.value) {
     const { pk, ...form } = payload
     form.company = company.value
-    form.newFiles = newFiles.value
 
     // console.log(form)
 
@@ -97,8 +96,8 @@ const onSubmit = (payload: Post & Attatches) => {
     // for (const key in formData) {
     //   if (key !== 'project' && key !== 'lawsuit') form.append(key, formData[key] as string | Blob)
     // }
-    //
-    console.log(form.newLinks)
+
+    console.log(newFiles.value)
 
     if (pk) {
       updatePost({ pk, form })
