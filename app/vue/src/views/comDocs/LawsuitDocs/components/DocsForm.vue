@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted, onUpdated, type PropType } from 'vue'
 import { useRoute } from 'vue-router'
-import { type Post, type Attatches, type AFile } from '@/store/types/document'
+import type { Post, Attatches } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
 import { AlertSecondary } from '@/utils/cssMixins'
 import QuillEditor from '@/components/QuillEditor/index.vue'
@@ -106,7 +106,9 @@ const onSubmit = (event: Event) => {
 }
 
 const modalAction = () => {
-  emit('on-submit', { ...form })
+  const newLinks = attaches.newLinks
+  const newFiles = attaches.newFiles
+  emit('on-submit', { ...form, newLinks, newFiles })
   validated.value = false
   refConfirmModal.value.close()
 }
