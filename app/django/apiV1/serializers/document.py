@@ -122,10 +122,9 @@ class PostSerializer(serializers.ModelSerializer):
 
         # Files 처리
         new_files = self.initial_data.get('newFiles')
-        # if new_files:
-        #     for file in new_files:
-        #         file_object = File(post=post, file=file)
-        #         file_object.save()
+        if new_files:
+            for file in new_files:
+                File.objects.create(post=post, file=file)
 
         return post
 
@@ -154,7 +153,7 @@ class PostSerializer(serializers.ModelSerializer):
                 link_object.save()
 
         # Files 처리
-        old_files = self.initial_data.get('oldFiles')
+        old_files = self.initial_data.get('files')
         # if old_files:
         #     for file in old_files:
         #         file_object = File.objects.get(pk=file.get('pk'))
@@ -167,8 +166,7 @@ class PostSerializer(serializers.ModelSerializer):
         # new_files = self.initial_data.get('newFiles')
         # if new_files:
         #     for file in new_files:
-        #         file_object = File(post=instance, file=file)
-        #         file_object.save()
+        #         File.objects.create(post=instance, file=file)
 
         return instance
 
