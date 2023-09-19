@@ -5,7 +5,6 @@ import { type Post, type Attatches, type AFile } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
 import { AlertSecondary } from '@/utils/cssMixins'
 import QuillEditor from '@/components/QuillEditor/index.vue'
-import FileUpload from '@/components/FileUpload.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import Multiselect from '@vueform/multiselect'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -48,8 +47,6 @@ const form = reactive<Post>({
 })
 
 const attaches = reactive<Attatches>({
-  oldLinks: [],
-  oldFiles: [],
   newLinks: [],
   newFiles: [],
 })
@@ -67,29 +64,29 @@ const formsCheck = computed(() => {
   } else return false
 })
 
-// const range = (from: number, to: number): number[] =>
-//   from < to ? [from, ...range(from + 1, to)] : []
-//
-// const newLinkNum = ref(1)
-// const newLinkRange = computed(() => range(0, newLinkNum.value))
-//
-// const newFileNum = ref(1)
-// const newFileRange = computed(() => range(0, newFileNum.value))
-
 const sortName = computed(() => (props.post && props.post.project ? props.post.proj_name : '본사'))
 
 const route = useRoute()
 const btnClass = computed(() => (route.params.postId ? 'success' : 'primary'))
 
-// const ctlLinkNum = (n: number) => {
-//   if (n + 1 >= newLinkNum.value) newLinkNum.value = newLinkNum.value + 1
-//   else newLinkNum.value = newLinkNum.value - 1
-// }
-//
-// const ctlFileNum = (n: number) => {
-//   if (n + 1 >= newFileNum.value) newFileNum.value = newFileNum.value + 1
-//   else newFileNum.value = newFileNum.value - 1
-// }
+const range = (from: number, to: number): number[] =>
+  from < to ? [from, ...range(from + 1, to)] : []
+
+const newLinkNum = ref(1)
+const newLinkRange = computed(() => range(0, newLinkNum.value))
+
+const newFileNum = ref(1)
+const newFileRange = computed(() => range(0, newFileNum.value))
+
+const ctlLinkNum = (n: number) => {
+  if (n + 1 >= newLinkNum.value) newLinkNum.value = newLinkNum.value + 1
+  else newLinkNum.value = newLinkNum.value - 1
+}
+
+const ctlFileNum = (n: number) => {
+  if (n + 1 >= newFileNum.value) newFileNum.value = newFileNum.value + 1
+  else newFileNum.value = newFileNum.value - 1
+}
 
 const enableStore = (event: Event) => {
   const el = event.target as HTMLInputElement
@@ -220,7 +217,7 @@ onUpdated(() => dataSetup())
 
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">내용</CFormLabel>
-      <CCol md="10">
+      <CCol md="10 mb-5">
         <QuillEditor v-model:content="form.content" placeholder="본문 내용" />
       </CCol>
     </CRow>
@@ -253,24 +250,24 @@ onUpdated(() => dataSetup())
           </CAlert>
         </CRow>
 
-        <!--        <CRow class="mb-2">-->
-        <!--          <CCol>-->
-        <!--            <CInputGroup v-for="lNum in newLinkRange" :key="`ln-${lNum}`" class="mb-2">-->
-        <!--              <CFormInput-->
-        <!--                :id="`link-${lNum}`"-->
-        <!--                v-model="form.newLinks[lNum]"-->
-        <!--                placeholder="파일 링크"-->
-        <!--                @input="enableStore"-->
-        <!--              />-->
-        <!--              <CInputGroupText id="basic-addon1" @click="ctlLinkNum(lNum)">-->
-        <!--                <v-icon-->
-        <!--                  :icon="`mdi-${lNum + 1 < newLinkNum ? 'minus' : 'plus'}-thick`"-->
-        <!--                  :color="lNum + 1 < newLinkNum ? 'error' : 'primary'"-->
-        <!--                />-->
-        <!--              </CInputGroupText>-->
-        <!--            </CInputGroup>-->
-        <!--          </CCol>-->
-        <!--        </CRow>-->
+        <CRow class="mb-2">
+          <CCol>
+            <CInputGroup v-for="lNum in newLinkRange" :key="`ln-${lNum}`" class="mb-2">
+              <CFormInput
+                :id="`link-${lNum}`"
+                v-model="attaches.newLinks[lNum]"
+                placeholder="파일 링크"
+                @input="enableStore"
+              />
+              <CInputGroupText id="basic-addon1" @click="ctlLinkNum(lNum)">
+                <v-icon
+                  :icon="`mdi-${lNum + 1 < newLinkNum ? 'minus' : 'plus'}-thick`"
+                  :color="lNum + 1 < newLinkNum ? 'error' : 'primary'"
+                />
+              </CInputGroupText>
+            </CInputGroup>
+          </CCol>
+        </CRow>
       </CCol>
     </CRow>
 
@@ -315,24 +312,24 @@ onUpdated(() => dataSetup())
           </CAlert>
         </CRow>
 
-        <!--        <CRow class="mb-2">-->
-        <!--          <CCol>-->
-        <!--            <CInputGroup v-for="fNum in newFileRange" :key="`fn-${fNum}`" class="mb-2">-->
-        <!--              &lt;!&ndash;              <FileUpload&ndash;&gt;-->
-        <!--              &lt;!&ndash;                :id="`file-${fNum}`"&ndash;&gt;-->
-        <!--              &lt;!&ndash;                v-model="form.newFiles[fNum]"&ndash;&gt;-->
-        <!--              &lt;!&ndash;                type="file"&ndash;&gt;-->
-        <!--              &lt;!&ndash;                @input="enableStore"&ndash;&gt;-->
-        <!--              &lt;!&ndash;              />&ndash;&gt;-->
-        <!--              <CInputGroupText id="basic-addon2" @click="ctlFileNum(fNum)">-->
-        <!--                <v-icon-->
-        <!--                  :icon="`mdi-${fNum + 1 < newFileNum ? 'minus' : 'plus'}-thick`"-->
-        <!--                  :color="fNum + 1 < newFileNum ? 'error' : 'primary'"-->
-        <!--                />-->
-        <!--              </CInputGroupText>-->
-        <!--            </CInputGroup>-->
-        <!--          </CCol>-->
-        <!--        </CRow>-->
+        <CRow class="mb-2">
+          <CCol>
+            <CInputGroup v-for="fNum in newFileRange" :key="`fn-${fNum}`" class="mb-2">
+              <CFormInput
+                :id="`file-${fNum}`"
+                v-model="attaches.newFiles[fNum]"
+                type="file"
+                @input="enableStore"
+              />
+              <CInputGroupText id="basic-addon2" @click="ctlFileNum(fNum)">
+                <v-icon
+                  :icon="`mdi-${fNum + 1 < newFileNum ? 'minus' : 'plus'}-thick`"
+                  :color="fNum + 1 < newFileNum ? 'error' : 'primary'"
+                />
+              </CInputGroupText>
+            </CInputGroup>
+          </CCol>
+        </CRow>
       </CCol>
     </CRow>
 
