@@ -32,6 +32,8 @@ const postFilter = ref<PostFilter>({
   page: 1,
 })
 
+const newFiles = ref<File[]>([])
+
 const docsFilter = (payload: PostFilter) => {
   postFilter.value.is_com = payload.is_com
   if (!payload.is_com) postFilter.value.project = payload.project
@@ -80,10 +82,13 @@ watch(route, val => {
   else docStore.post = null
 })
 
+const fileUpload = (file: File) => newFiles.value.push(file)
+
 const onSubmit = (payload: Post & Attatches) => {
   console.log(payload)
-  console.log(payload.files?.length)
-  if (payload.files?.length) for (const file of payload.files) console.log(file)
+  console.log(newFiles.value)
+
+  // if (payload.files?.length) for (const file of payload.files) console.log(file)
 
   if (company.value) {
     const { pk, ...form } = payload
@@ -96,17 +101,17 @@ const onSubmit = (payload: Post & Attatches) => {
     //
     // console.log(formData)
     // console.log(...form)
-    //
-    if (pk) {
-      updatePost({ pk, form })
-      router.replace({
-        name: '본사 일반 문서 - 보기',
-        params: { postId: pk },
-      })
-    } else {
-      createPost({ form })
-      router.replace({ name: '본사 일반 문서' })
-    }
+
+    // if (pk) {
+    //   updatePost({ pk, form })
+    //   router.replace({
+    //     name: '본사 일반 문서 - 보기',
+    //     params: { postId: pk },
+    //   })
+    // } else {
+    //   createPost({ form })
+    //   router.replace({ name: '본사 일반 문서' })
+    // }
   }
 }
 
@@ -192,11 +197,16 @@ onBeforeMount(() => {
       </div>
 
       <div v-else-if="route.name.includes('작성')">
-        <DocsForm :category-list="categoryList" @on-submit="onSubmit" />
+        <DocsForm :category-list="categoryList" @file-upload="fileUpload" @on-submit="onSubmit" />
       </div>
 
       <div v-else-if="route.name.includes('수정')">
-        <DocsForm :category-list="categoryList" :post="post as Post" @on-submit="onSubmit" />
+        <DocsForm
+          :category-list="categoryList"
+          :post="post as Post"
+          @file-upload="fileUpload"
+          @on-submit="onSubmit"
+        />
       </div>
     </CCardBody>
 

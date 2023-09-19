@@ -14,7 +14,7 @@ const props = defineProps({
   post: { type: Object as PropType<Post>, default: null },
 })
 
-const emit = defineEmits(['on-submit', 'close'])
+const emit = defineEmits(['on-submit', 'file-upload', 'close'])
 
 const refDelModal = ref()
 const refAlertModal = ref()
@@ -91,6 +91,15 @@ const enableStore = (event: Event) => {
   attach.value = !el.value
 }
 
+const fileUpload = (event: Event) => {
+  enableStore(event)
+  const el = event.target as HTMLInputElement
+  if (el.files) {
+    const file = el.files[0]
+    emit('file-upload', file)
+  }
+}
+
 const onSubmit = (event: Event) => {
   if (write_company_docs.value) {
     const el = event.currentTarget as HTMLFormElement
@@ -105,8 +114,7 @@ const onSubmit = (event: Event) => {
 
 const modalAction = () => {
   const newLinks = attaches.newLinks
-  const newFiles = attaches.newFiles
-  emit('on-submit', { ...form, newLinks, newFiles })
+  emit('on-submit', { ...form, newLinks })
   validated.value = false
   refConfirmModal.value.close()
 }
@@ -277,7 +285,7 @@ onUpdated(() => dataSetup())
                         v-model="form.files[i].newFile"
                         size="sm"
                         type="file"
-                        @input="enableStore"
+                        @input="fileUpload"
                       />
                       <CInputGroupText id="basic-addon2" class="py-0">
                         <CFormCheck
@@ -286,7 +294,7 @@ onUpdated(() => dataSetup())
                           value="false"
                           label="삭제"
                           :disabled="!!form.files[i].newFile"
-                          @input="enableStore"
+                          @input="fileUpload"
                         />
                       </CInputGroupText>
                     </CInputGroup>
@@ -304,7 +312,7 @@ onUpdated(() => dataSetup())
                 :id="`file-${fNum}`"
                 v-model="attaches.newFiles[fNum]"
                 type="file"
-                @input="enableStore"
+                @input="fileUpload"
               />
               <CInputGroupText id="basic-addon2" @click="ctlFileNum(fNum)">
                 <v-icon

@@ -32,6 +32,8 @@ const caseFilter = ref<PostFilter>({
   page: 1,
 })
 
+const newFiles = ref<File[]>([])
+
 const listFiltering = (payload: PostFilter) => {
   caseFilter.value.is_com = payload.is_com
   if (!payload.is_com) caseFilter.value.project = payload.project
@@ -77,10 +79,13 @@ watch(route, val => {
   else docStore.post = null
 })
 
+const fileUpload = (file: File) => newFiles.value.push(file)
+
 const onSubmit = (payload: Post & Attatches) => {
   console.log(payload)
-  console.log(payload.files)
-  if (payload.files?.length) for (const file of payload.files) console.log(file)
+  console.log(newFiles.value)
+
+  // if (payload.files?.length) for (const file of payload.files) console.log(file)
 
   if (company.value) {
     const { pk, ...form } = payload
@@ -97,17 +102,17 @@ const onSubmit = (payload: Post & Attatches) => {
     //   )
     //
     //   console.log(formData, ...form)
-    //
-    if (pk) {
-      updatePost({ pk, form })
-      router.replace({
-        name: '본사 소송 문서 - 보기',
-        params: { postId: pk },
-      })
-    } else {
-      createPost({ form })
-      router.replace({ name: '본사 소송 문서' })
-    }
+
+    // if (pk) {
+    //   updatePost({ pk, form })
+    //   router.replace({
+    //     name: '본사 소송 문서 - 보기',
+    //     params: { postId: pk },
+    //   })
+    // } else {
+    //   createPost({ form })
+    //   router.replace({ name: '본사 소송 문서' })
+    // }
   }
 }
 
@@ -196,6 +201,7 @@ onBeforeMount(() => {
         <DocsForm
           :category-list="categoryList"
           :get-suit-case="getSuitCase"
+          @file-upload="fileUpload"
           @on-submit="onSubmit"
         />
       </div>
@@ -205,6 +211,7 @@ onBeforeMount(() => {
           :category-list="categoryList"
           :get-suit-case="getSuitCase"
           :post="post as Post"
+          @file-upload="fileUpload"
           @on-submit="onSubmit"
         />
       </div>
