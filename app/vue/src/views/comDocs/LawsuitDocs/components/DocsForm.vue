@@ -90,11 +90,11 @@ const btnClass = computed(() => (route.params.postId ? 'success' : 'primary'))
 //   if (n + 1 >= newFileNum.value) newFileNum.value = newFileNum.value + 1
 //   else newFileNum.value = newFileNum.value - 1
 // }
-//
-// const enableStore = (event: Event) => {
-//   const el = event.target as HTMLInputElement
-//   attach.value = !el.value
-// }
+
+const enableStore = (event: Event) => {
+  const el = event.target as HTMLInputElement
+  attach.value = !el.value
+}
 
 const onSubmit = (event: Event) => {
   if (write_company_docs) {
@@ -114,10 +114,10 @@ const modalAction = () => {
   refConfirmModal.value.close()
 }
 
-// const devideUri = (uri: string) => {
-//   const devidedUri = decodeURI(uri).split('media/')
-//   return [devidedUri[0] + 'media/', devidedUri[1]]
-// }
+const devideUri = (uri: string) => {
+  const devidedUri = decodeURI(uri).split('media/')
+  return [devidedUri[0] + 'media/', devidedUri[1]]
+}
 
 const dataSetup = () => {
   if (props.post) {
@@ -138,6 +138,8 @@ const dataSetup = () => {
     form.device = props.post.device
     form.secret = props.post.secret
     form.password = props.post.password
+    form.links = props.post.links
+    form.files = props.post.files
     // if (props.post.links) form.oldLinks = props.post.links
     // if (props.post.files) {
     //   form.oldFiles = props.post.files.map((file: AFile) => ({
@@ -226,30 +228,30 @@ onUpdated(() => dataSetup())
     <CRow>
       <CFormLabel for="title" class="col-md-2 col-form-label">링크</CFormLabel>
       <CCol md="10" lg="8" xl="6">
-        <!--        <CRow v-if="post && form.oldLinks.length">-->
-        <!--          <CAlert :color="AlertSecondary">-->
-        <!--            <CCol>-->
-        <!--              <CInputGroup v-for="(link, i) in form.oldLinks" :key="link.pk" class="mb-2">-->
-        <!--                <CFormInput-->
-        <!--                  :id="`post-link-${link.pk}`"-->
-        <!--                  v-model="form.oldLinks[i].link"-->
-        <!--                  size="sm"-->
-        <!--                  placeholder="파일 링크"-->
-        <!--                  @input="enableStore"-->
-        <!--                />-->
-        <!--                <CInputGroupText id="basic-addon1" class="py-0">-->
-        <!--                  <CFormCheck-->
-        <!--                    :id="`del-link-${link.pk}`"-->
-        <!--                    v-model="form.oldLinks[i].del"-->
-        <!--                    value="false"-->
-        <!--                    label="삭제"-->
-        <!--                    @input="enableStore"-->
-        <!--                  />-->
-        <!--                </CInputGroupText>-->
-        <!--              </CInputGroup>-->
-        <!--            </CCol>-->
-        <!--          </CAlert>-->
-        <!--        </CRow>-->
+        <CRow v-if="post && form.links?.length">
+          <CAlert :color="AlertSecondary">
+            <CCol>
+              <CInputGroup v-for="(link, i) in form.links" :key="link.pk" class="mb-2">
+                <CFormInput
+                  :id="`post-link-${link.pk}`"
+                  v-model="form.links[i].link"
+                  size="sm"
+                  placeholder="파일 링크"
+                  @input="enableStore"
+                />
+                <CInputGroupText id="basic-addon1" class="py-0">
+                  <CFormCheck
+                    :id="`del-link-${link.pk}`"
+                    v-model="form.links[i].del"
+                    value="false"
+                    label="삭제"
+                    @input="enableStore"
+                  />
+                </CInputGroupText>
+              </CInputGroup>
+            </CCol>
+          </CAlert>
+        </CRow>
 
         <!--        <CRow class="mb-2">-->
         <!--          <CCol>-->
@@ -275,43 +277,43 @@ onUpdated(() => dataSetup())
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">파일</CFormLabel>
       <CCol md="10" lg="8" xl="6">
-        <!--        <CRow v-if="post && form.oldFiles.length">-->
-        <!--          <CAlert :color="AlertSecondary">-->
-        <!--            <small>{{ devideUri(form.oldFiles[0].file)[0] }}</small>-->
-        <!--            <CCol v-for="(file, i) in form.oldFiles" :key="file.pk" xs="12" color="primary">-->
-        <!--              <small>-->
-        <!--                현재 :-->
-        <!--                <a :href="file.file" target="_blank">-->
-        <!--                  {{ devideUri(file.file)[1] }}-->
-        <!--                </a>-->
-        <!--                <CRow>-->
-        <!--                  <CCol>-->
-        <!--                    <CInputGroup>-->
-        <!--                      변경 : &nbsp;-->
-        <!--                      &lt;!&ndash;                      <FileUpload&ndash;&gt;-->
-        <!--                      &lt;!&ndash;                        :id="`post-file-${file.pk}`"&ndash;&gt;-->
-        <!--                      &lt;!&ndash;                        v-model="form.oldFiles[i].newFile"&ndash;&gt;-->
-        <!--                      &lt;!&ndash;                        size="sm"&ndash;&gt;-->
-        <!--                      &lt;!&ndash;                        type="file"&ndash;&gt;-->
-        <!--                      &lt;!&ndash;                        @input="enableStore"&ndash;&gt;-->
-        <!--                      &lt;!&ndash;                      />&ndash;&gt;-->
-        <!--                      <CInputGroupText id="basic-addon2" class="py-0">-->
-        <!--                        <CFormCheck-->
-        <!--                          :id="`del-file-${file.pk}`"-->
-        <!--                          v-model="form.oldFiles[i].del"-->
-        <!--                          value="false"-->
-        <!--                          label="삭제"-->
-        <!--                          :disabled="!!form.oldFiles[i].newFile"-->
-        <!--                          @input="enableStore"-->
-        <!--                        />-->
-        <!--                      </CInputGroupText>-->
-        <!--                    </CInputGroup>-->
-        <!--                  </CCol>-->
-        <!--                </CRow>-->
-        <!--              </small>-->
-        <!--            </CCol>-->
-        <!--          </CAlert>-->
-        <!--        </CRow>-->
+        <CRow v-if="post && form.files?.length">
+          <CAlert :color="AlertSecondary">
+            <small>{{ devideUri(form.files[0].file)[0] }}</small>
+            <CCol v-for="(file, i) in form.files" :key="file.pk" xs="12" color="primary">
+              <small>
+                현재 :
+                <a :href="file.file" target="_blank">
+                  {{ devideUri(file.file)[1] }}
+                </a>
+                <CRow>
+                  <CCol>
+                    <CInputGroup>
+                      변경 : &nbsp;
+                      <CFormInput
+                        :id="`post-file-${file.pk}`"
+                        v-model="form.files[i].newFile"
+                        size="sm"
+                        type="file"
+                        @input="enableStore"
+                      />
+                      <CInputGroupText id="basic-addon2" class="py-0">
+                        <CFormCheck
+                          :id="`del-file-${file.pk}`"
+                          v-model="form.files[i].del"
+                          value="false"
+                          label="삭제"
+                          :disabled="!!form.files[i].newFile"
+                          @input="enableStore"
+                        />
+                      </CInputGroupText>
+                    </CInputGroup>
+                  </CCol>
+                </CRow>
+              </small>
+            </CCol>
+          </CAlert>
+        </CRow>
 
         <!--        <CRow class="mb-2">-->
         <!--          <CCol>-->
