@@ -32,6 +32,8 @@ const caseFilter = ref<PostFilter>({
   page: 1,
 })
 
+const newFiles = ref<File[]>([])
+
 const listFiltering = (payload: PostFilter) => {
   caseFilter.value.is_com = payload.is_com
   if (!payload.is_com) caseFilter.value.project = payload.project
@@ -77,33 +79,34 @@ watch(route, val => {
   else docStore.post = null
 })
 
+const fileUpload = (file: File) => newFiles.value.push(file)
+
 const onSubmit = (payload: Post & Attatches) => {
-  console.log(payload)
-  // if (company.value) {
-  //   const { pk, ...formData } = payload
-  //   formData.company = company.value || null
-  //   const form = formUtility.getFormData(
-  //     formData as
-  //       | Date
-  //       | Array<{ [key: string]: string }>
-  //       | { [key: string]: string }
-  //       | File
-  //       | string,
-  //   )
-  //
-  //   console.log(formData, ...form)
-  //
-  //   if (pk) {
-  //     updatePost({ pk, form })
-  //     router.replace({
-  //       name: '본사 소송 문서 - 보기',
-  //       params: { postId: pk },
-  //     })
-  //   } else {
-  //     createPost({ form })
-  //     router.replace({ name: '본사 소송 문서' })
-  //   }
-  // }
+  if (company.value) {
+    const { pk, ...form } = payload
+    form.company = company.value
+
+    // console.log(form)
+
+    // const form = new FormData()
+    //
+    // for (const key in formData) {
+    //   if (key !== 'project' && key !== 'lawsuit') form.append(key, formData[key] as string | Blob)
+    // }
+
+    console.log(newFiles.value)
+    
+    if (pk) {
+      updatePost({ pk, form })
+      router.replace({
+        name: '본사 소송 문서 - 보기',
+        params: { postId: pk },
+      })
+    } else {
+      createPost({ form })
+      router.replace({ name: '본사 소송 문서' })
+    }
+  }
 }
 
 const postHit = (payload: PatchPost) => patchPost(payload)
@@ -191,6 +194,7 @@ onBeforeMount(() => {
         <DocsForm
           :category-list="categoryList"
           :get-suit-case="getSuitCase"
+          @file-upload="fileUpload"
           @on-submit="onSubmit"
         />
       </div>
@@ -200,6 +204,7 @@ onBeforeMount(() => {
           :category-list="categoryList"
           :get-suit-case="getSuitCase"
           :post="post as Post"
+          @file-upload="fileUpload"
           @on-submit="onSubmit"
         />
       </div>

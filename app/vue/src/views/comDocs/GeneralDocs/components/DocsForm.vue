@@ -1,11 +1,10 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted, onUpdated, type PropType } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { Post, Attatches, AFile } from '@/store/types/document'
+import type { Post, Link } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
 import { AlertSecondary } from '@/utils/cssMixins'
 import QuillEditor from '@/components/QuillEditor/index.vue'
-import FileUpload from '@/components/FileUpload.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -15,7 +14,7 @@ const props = defineProps({
   post: { type: Object as PropType<Post>, default: null },
 })
 
-const emit = defineEmits(['on-submit', 'close'])
+const emit = defineEmits(['on-submit', 'file-upload', 'close'])
 
 const refDelModal = ref()
 const refAlertModal = ref()
@@ -42,14 +41,10 @@ const form = reactive<Post>({
   secret: false,
   password: '',
   links: [],
+  files: [],
 })
 
-const attaches = reactive<Attatches>({
-  oldLinks: [],
-  oldFiles: [],
-  newLinks: [],
-  newFiles: [],
-})
+const newLinks = ref<Link[]>([])
 
 const formsCheck = computed(() => {
   if (props.post) {
@@ -64,35 +59,44 @@ const formsCheck = computed(() => {
   } else return false
 })
 
-// const range = (from: number, to: number): number[] =>
-//   from < to ? [from, ...range(from + 1, to)] : []
-//
-// const newLinkNum = ref(1)
-// const newLinkRange = computed(() => range(0, newLinkNum.value))
-//
-// const newFileNum = ref(1)
-// const newFileRange = computed(() => range(0, newFileNum.value))
-
 const sortName = computed(() => (props.post && props.post.project ? props.post.proj_name : '본사'))
 
 const [route, router] = [useRoute(), useRouter()]
 const btnClass = computed(() => (route.params.postId ? 'success' : 'primary'))
 
-// const ctlLinkNum = (n: number) => {
-//   if (n + 1 >= newLinkNum.value) newLinkNum.value = newLinkNum.value + 1
-//   else newLinkNum.value = newLinkNum.value - 1
-// }
-//
-// const ctlFileNum = (n: number) => {
-//   if (n + 1 >= newFileNum.value) newFileNum.value = newFileNum.value + 1
-//   else newFileNum.value = newFileNum.value - 1
-// }
-//
-// const enableStore = (event: Event) => {
-//   const el = event.target as HTMLInputElement
-//   attach.value = !el.value
-// }
-//
+const range = (from: number, to: number): number[] =>
+  from < to ? [from, ...range(from + 1, to)] : []
+
+const newLinkNum = ref(1)
+const newLinkRange = computed(() => range(0, newLinkNum.value))
+
+const newFileNum = ref(1)
+const newFileRange = computed(() => range(0, newFileNum.value))
+
+const ctlLinkNum = (n: number) => {
+  if (n + 1 >= newLinkNum.value) newLinkNum.value = newLinkNum.value + 1
+  else newLinkNum.value = newLinkNum.value - 1
+}
+
+const ctlFileNum = (n: number) => {
+  if (n + 1 >= newFileNum.value) newFileNum.value = newFileNum.value + 1
+  else newFileNum.value = newFileNum.value - 1
+}
+
+const enableStore = (event: Event) => {
+  const el = event.target as HTMLInputElement
+  attach.value = !el.value
+}
+
+const fileUpload = (event: Event) => {
+  enableStore(event)
+  const el = event.target as HTMLInputElement
+  if (el.files) {
+    const file = el.files[0]
+    emit('file-upload', file)
+  }
+}
+
 const onSubmit = (event: Event) => {
   if (write_company_docs.value) {
     const el = event.currentTarget as HTMLFormElement
@@ -106,15 +110,15 @@ const onSubmit = (event: Event) => {
 }
 
 const modalAction = () => {
-  emit('on-submit', { ...form })
+  emit('on-submit', { ...form, newLinks: newLinks.value })
   validated.value = false
   refConfirmModal.value.close()
 }
 
-// const devideUri = (uri: string) => {
-//   const devidedUri = decodeURI(uri).split('media/')
-//   return [devidedUri[0] + 'media/', devidedUri[1]]
-// }
+const devideUri = (uri: string) => {
+  const devidedUri = decodeURI(uri).split('media/')
+  return [devidedUri[0] + 'media/', devidedUri[1]]
+}
 
 const dataSetup = () => {
   if (props.post) {
@@ -135,6 +139,8 @@ const dataSetup = () => {
     form.device = props.post.device
     form.secret = props.post.secret
     form.password = props.post.password
+    form.links = props.post.links
+    form.files = props.post.files
     // if (props.post.links) form.oldLinks = props.post.links
     // if (props.post.files) {
     //   form.oldFiles = props.post.files.map((file: AFile) => ({
@@ -208,110 +214,106 @@ onUpdated(() => dataSetup())
     <CRow>
       <CFormLabel for="title" class="col-md-2 col-form-label">링크</CFormLabel>
       <CCol md="10" lg="8" xl="6">
-        <!--        <CRow v-if="post && form.oldLinks.length">-->
-        <!--          <CAlert :color="AlertSecondary">-->
-        <!--            <CCol>-->
-        <!--              <CInputGroup v-for="(link, i) in form.oldLinks" :key="link.pk" class="mb-2">-->
-        <!--                <CFormInput-->
-        <!--                  :id="`post-link-${link.pk}`"-->
-        <!--                  v-model="form.oldLinks[i].link"-->
-        <!--                  size="sm"-->
-        <!--                  placeholder="파일 링크"-->
-        <!--                  @input="enableStore"-->
-        <!--                />-->
-        <!--                <CInputGroupText id="basic-addon1" class="py-0">-->
-        <!--                  <CFormCheck-->
-        <!--                    :id="`del-link-${link.pk}`"-->
-        <!--                    v-model="form.oldLinks[i].del"-->
-        <!--                    label="삭제"-->
-        <!--                    @input="enableStore"-->
-        <!--                  />-->
-        <!--                </CInputGroupText>-->
-        <!--              </CInputGroup>-->
-        <!--            </CCol>-->
-        <!--          </CAlert>-->
-        <!--        </CRow>-->
+        <CRow v-if="post && form.links?.length">
+          <CAlert :color="AlertSecondary">
+            <CCol>
+              <CInputGroup v-for="(link, i) in form.links" :key="link.pk" class="mb-2">
+                <CFormInput
+                  :id="`post-link-${link.pk}`"
+                  v-model="form.links[i].link"
+                  size="sm"
+                  placeholder="파일 링크"
+                  @input="enableStore"
+                />
+                <CInputGroupText id="basic-addon1" class="py-0">
+                  <CFormCheck
+                    :id="`del-link-${link.pk}`"
+                    v-model="form.links[i].del"
+                    value="false"
+                    label="삭제"
+                    @input="enableStore"
+                  />
+                </CInputGroupText>
+              </CInputGroup>
+            </CCol>
+          </CAlert>
+        </CRow>
 
-        <!--        <CRow class="mb-2">-->
-        <!--          <CCol>-->
-        <!--            <CInputGroup v-for="lNum in newLinkRange" :key="`ln-${lNum}`" class="mb-2">-->
-        <!--              <CFormInput-->
-        <!--                :id="`link-${lNum}`"-->
-        <!--                v-model="form.newLinks[lNum]"-->
-        <!--                placeholder="파일 링크"-->
-        <!--                @input="enableStore"-->
-        <!--              />-->
-        <!--              <CInputGroupText id="basic-addon1" @click="ctlLinkNum(lNum)">-->
-        <!--                <v-icon-->
-        <!--                  :icon="`mdi-${lNum + 1 < newLinkNum ? 'minus' : 'plus'}-thick`"-->
-        <!--                  :color="lNum + 1 < newLinkNum ? 'error' : 'primary'"-->
-        <!--                />-->
-        <!--              </CInputGroupText>-->
-        <!--            </CInputGroup>-->
-        <!--          </CCol>-->
-        <!--        </CRow>-->
+        <CRow class="mb-2">
+          <CCol>
+            <CInputGroup v-for="lNum in newLinkRange" :key="`ln-${lNum}`" class="mb-2">
+              <CFormInput
+                :id="`link-${lNum}`"
+                v-model="newLinks[lNum]"
+                placeholder="파일 링크"
+                @input="enableStore"
+              />
+              <CInputGroupText id="basic-addon1" @click="ctlLinkNum(lNum)">
+                <v-icon
+                  :icon="`mdi-${lNum + 1 < newLinkNum ? 'minus' : 'plus'}-thick`"
+                  :color="lNum + 1 < newLinkNum ? 'error' : 'primary'"
+                />
+              </CInputGroupText>
+            </CInputGroup>
+          </CCol>
+        </CRow>
       </CCol>
     </CRow>
 
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">파일</CFormLabel>
       <CCol md="10" lg="8" xl="6">
-        <!--        <CRow v-if="post && form.oldFiles.length">-->
-        <!--          <CAlert :color="AlertSecondary">-->
-        <!--            <small>{{ devideUri(form.oldFiles[0].file)[0] }}</small>-->
-        <!--            <CCol v-for="(file, i) in form.oldFiles" :key="file.pk" xs="12" color="primary">-->
-        <!--              <small>-->
-        <!--                현재 :-->
-        <!--                <a :href="file.file" target="_blank">-->
-        <!--                  {{ devideUri(file.file)[1] }}-->
-        <!--                </a>-->
-        <!--                <CRow>-->
-        <!--                  <CCol>-->
-        <!--                    <CInputGroup>-->
-        <!--                      변경 : &nbsp;-->
-        <!--                      &lt;!&ndash;                      <FileUpload&ndash;&gt;-->
-        <!--                      &lt;!&ndash;                        :id="`post-file-${file.pk}`"&ndash;&gt;-->
-        <!--                      &lt;!&ndash;                        v-model="form.oldFiles[i].newFile"&ndash;&gt;-->
-        <!--                      &lt;!&ndash;                        size="sm"&ndash;&gt;-->
-        <!--                      &lt;!&ndash;                        type="file"&ndash;&gt;-->
-        <!--                      &lt;!&ndash;                        @input="enableStore"&ndash;&gt;-->
-        <!--                      &lt;!&ndash;                      />&ndash;&gt;-->
-        <!--                      <CInputGroupText id="basic-addon2" class="py-0">-->
-        <!--                        <CFormCheck-->
-        <!--                          :id="`del-file-${file.pk}`"-->
-        <!--                          v-model="form.oldFiles[i].del"-->
-        <!--                          value="false"-->
-        <!--                          label="삭제"-->
-        <!--                          :disabled="!!form.oldFiles[i].newFile"-->
-        <!--                          @input="enableStore"-->
-        <!--                        />-->
-        <!--                      </CInputGroupText>-->
-        <!--                    </CInputGroup>-->
-        <!--                  </CCol>-->
-        <!--                </CRow>-->
-        <!--              </small>-->
-        <!--            </CCol>-->
-        <!--          </CAlert>-->
-        <!--        </CRow>-->
+        <CRow v-if="post && form.files?.length">
+          <CAlert :color="AlertSecondary">
+            <small>{{ devideUri(form.files[0].file)[0] }}</small>
+            <CCol v-for="(file, i) in form.files" :key="file.pk" xs="12" color="primary">
+              <small>
+                현재 :
+                <a :href="file.file" target="_blank">
+                  {{ devideUri(file.file)[1] }}
+                </a>
+                <CRow>
+                  <CCol>
+                    <CInputGroup>
+                      변경 : &nbsp;
+                      <CFormInput
+                        :id="`post-file-${file.pk}`"
+                        v-model="form.files[i].newFile"
+                        size="sm"
+                        type="file"
+                        @input="fileUpload"
+                      />
+                      <CInputGroupText id="basic-addon2" class="py-0">
+                        <CFormCheck
+                          :id="`del-file-${file.pk}`"
+                          v-model="form.files[i].del"
+                          value="false"
+                          label="삭제"
+                          :disabled="!!form.files[i].newFile"
+                          @input="fileUpload"
+                        />
+                      </CInputGroupText>
+                    </CInputGroup>
+                  </CCol>
+                </CRow>
+              </small>
+            </CCol>
+          </CAlert>
+        </CRow>
 
-        <!--        <CRow class="mb-2">-->
-        <!--          <CCol>-->
-        <!--            <CInputGroup v-for="fNum in newFileRange" :key="`fn-${fNum}`" class="mb-2">-->
-        <!--              &lt;!&ndash;              <FileUpload&ndash;&gt;-->
-        <!--              &lt;!&ndash;                :id="`file-${fNum}`"&ndash;&gt;-->
-        <!--              &lt;!&ndash;                v-model="form.newFiles[fNum]"&ndash;&gt;-->
-        <!--              &lt;!&ndash;                type="file"&ndash;&gt;-->
-        <!--              &lt;!&ndash;                @input="enableStore"&ndash;&gt;-->
-        <!--              &lt;!&ndash;              />&ndash;&gt;-->
-        <!--              <CInputGroupText id="basic-addon2" @click="ctlFileNum(fNum)">-->
-        <!--                <v-icon-->
-        <!--                  :icon="`mdi-${fNum + 1 < newFileNum ? 'minus' : 'plus'}-thick`"-->
-        <!--                  :color="fNum + 1 < newFileNum ? 'error' : 'primary'"-->
-        <!--                />-->
-        <!--              </CInputGroupText>-->
-        <!--            </CInputGroup>-->
-        <!--          </CCol>-->
-        <!--        </CRow>-->
+        <CRow class="mb-2">
+          <CCol>
+            <CInputGroup v-for="fNum in newFileRange" :key="`fn-${fNum}`" class="mb-2">
+              <CFormInput :id="`file-${fNum}`" type="file" @input="fileUpload" />
+              <CInputGroupText id="basic-addon2" @click="ctlFileNum(fNum)">
+                <v-icon
+                  :icon="`mdi-${fNum + 1 < newFileNum ? 'minus' : 'plus'}-thick`"
+                  :color="fNum + 1 < newFileNum ? 'error' : 'primary'"
+                />
+              </CInputGroupText>
+            </CInputGroup>
+          </CCol>
+        </CRow>
       </CCol>
     </CRow>
 

@@ -101,8 +101,8 @@ export interface AFile {
 }
 
 export type Attatches = {
-  oldLinks: Link[]
-  oldFiles: AFile[]
+  // oldLinks: Link[]
+  // oldFiles: AFile[]
   newLinks: Link[]
   newFiles: string[] | File[]
 }

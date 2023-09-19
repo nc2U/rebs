@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin1'
+import { formUtility } from '@/utils/helper'
 import { type RouteLocationNormalizedLoaded as Loaded, useRoute, useRouter } from 'vue-router'
 import { useCompany } from '@/store/pinia/company'
 import { useDocument, type PostFilter } from '@/store/pinia/document'
@@ -11,7 +12,6 @@ import {
   type Post,
   type PatchPost,
 } from '@/store/types/document'
-import { formUtility } from '@/utils/helper'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
@@ -31,6 +31,8 @@ const postFilter = ref<PostFilter>({
   search: '',
   page: 1,
 })
+
+const newFiles = ref<File[]>([])
 
 const docsFilter = (payload: PostFilter) => {
   postFilter.value.is_com = payload.is_com
@@ -80,28 +82,33 @@ watch(route, val => {
   else docStore.post = null
 })
 
+const fileUpload = (file: File) => newFiles.value.push(file)
+
 const onSubmit = (payload: Post & Attatches) => {
-  console.log(payload)
-  const { pk, ...form } = payload
-  form.company = company.value ?? null
-  // const { pk, ...formData } = payload
-  // formData.company = company.value || null
-  // const form = formUtility.getFormData(
-  //   formData as Date | Array<{ [key: string]: string }> | { [key: string]: string } | File | string,
-  // )
-  //
-  // console.log(formData)
-  // console.log(...form)
-  //
-  if (pk) {
-    updatePost({ pk, form })
-    router.replace({
-      name: '본사 일반 문서 - 보기',
-      params: { postId: pk },
-    })
-  } else {
-    createPost({ form })
-    router.replace({ name: '본사 일반 문서' })
+  if (company.value) {
+    const { pk, ...form } = payload
+    form.company = company.value
+
+    // console.log(form)
+
+    // const form = new FormData()
+    //
+    // for (const key in formData) {
+    //   if (key !== 'project' && key !== 'lawsuit') form.append(key, formData[key] as string | Blob)
+    // }
+
+    console.log(newFiles.value)
+
+    if (pk) {
+      updatePost({ pk, form })
+      router.replace({
+        name: '본사 일반 문서 - 보기',
+        params: { postId: pk },
+      })
+    } else {
+      createPost({ form })
+      router.replace({ name: '본사 일반 문서' })
+    }
   }
 }
 
@@ -187,11 +194,16 @@ onBeforeMount(() => {
       </div>
 
       <div v-else-if="route.name.includes('작성')">
-        <DocsForm :category-list="categoryList" @on-submit="onSubmit" />
+        <DocsForm :category-list="categoryList" @file-upload="fileUpload" @on-submit="onSubmit" />
       </div>
 
       <div v-else-if="route.name.includes('수정')">
-        <DocsForm :category-list="categoryList" :post="post as Post" @on-submit="onSubmit" />
+        <DocsForm
+          :category-list="categoryList"
+          :post="post as Post"
+          @file-upload="fileUpload"
+          @on-submit="onSubmit"
+        />
       </div>
     </CCardBody>
 

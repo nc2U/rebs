@@ -1,11 +1,10 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted, onUpdated, type PropType } from 'vue'
 import { useRoute } from 'vue-router'
-import { type Post, type Attatches, type AFile } from '@/store/types/document'
+import type { Post, Link } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
 import { AlertSecondary } from '@/utils/cssMixins'
 import QuillEditor from '@/components/QuillEditor/index.vue'
-import FileUpload from '@/components/FileUpload.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import Multiselect from '@vueform/multiselect'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -17,7 +16,7 @@ const props = defineProps({
   post: { type: Object as PropType<Post>, default: null },
 })
 
-const emit = defineEmits(['on-submit', 'close'])
+const emit = defineEmits(['on-submit', 'file-upload', 'close'])
 
 const refDelModal = ref()
 const refConfirmModal = ref()
@@ -25,7 +24,7 @@ const refAlertModal = ref()
 
 const attach = ref(true)
 const validated = ref(false)
-const form = reactive<Post & Attatches>({
+const form = reactive<Post>({
   pk: undefined,
   company: null,
   project: null,
@@ -43,11 +42,11 @@ const form = reactive<Post & Attatches>({
   device: '',
   secret: false,
   password: '',
-  oldLinks: [],
-  oldFiles: [],
-  newLinks: [],
-  newFiles: [],
+  links: [],
+  files: [],
 })
+
+const newLinks = ref<Link[]>([])
 
 const formsCheck = computed(() => {
   if (props.post) {
@@ -62,6 +61,11 @@ const formsCheck = computed(() => {
   } else return false
 })
 
+const sortName = computed(() => (props.post && props.post.project ? props.post.proj_name : '본사'))
+
+const route = useRoute()
+const btnClass = computed(() => (route.params.postId ? 'success' : 'primary'))
+
 const range = (from: number, to: number): number[] =>
   from < to ? [from, ...range(from + 1, to)] : []
 
@@ -70,11 +74,6 @@ const newLinkRange = computed(() => range(0, newLinkNum.value))
 
 const newFileNum = ref(1)
 const newFileRange = computed(() => range(0, newFileNum.value))
-
-const sortName = computed(() => (props.post && props.post.project ? props.post.proj_name : '본사'))
-
-const route = useRoute()
-const btnClass = computed(() => (route.params.postId ? 'success' : 'primary'))
 
 const ctlLinkNum = (n: number) => {
   if (n + 1 >= newLinkNum.value) newLinkNum.value = newLinkNum.value + 1
@@ -91,6 +90,15 @@ const enableStore = (event: Event) => {
   attach.value = !el.value
 }
 
+const fileUpload = (event: Event) => {
+  enableStore(event)
+  const el = event.target as HTMLInputElement
+  if (el.files) {
+    const file = el.files[0]
+    emit('file-upload', file)
+  }
+}
+
 const onSubmit = (event: Event) => {
   if (write_company_docs) {
     const el = event.currentTarget as HTMLSelectElement
@@ -104,7 +112,7 @@ const onSubmit = (event: Event) => {
 }
 
 const modalAction = () => {
-  emit('on-submit', { ...form })
+  emit('on-submit', { ...form, newLinks: newLinks.value })
   validated.value = false
   refConfirmModal.value.close()
 }
@@ -133,15 +141,17 @@ const dataSetup = () => {
     form.device = props.post.device
     form.secret = props.post.secret
     form.password = props.post.password
-    if (props.post.links) form.oldLinks = props.post.links
-    if (props.post.files) {
-      form.oldFiles = props.post.files.map((file: AFile) => ({
-        pk: file.pk,
-        file: file.file,
-        newFile: '',
-        hit: file.hit,
-      }))
-    }
+    form.links = props.post.links
+    form.files = props.post.files
+    // if (props.post.links) form.oldLinks = props.post.links
+    // if (props.post.files) {
+    //   form.oldFiles = props.post.files.map((file: AFile) => ({
+    //     pk: file.pk,
+    //     file: file.file,
+    //     newFile: '',
+    //     hit: file.hit,
+    //   }))
+    // }
   }
 }
 
@@ -213,7 +223,7 @@ onUpdated(() => dataSetup())
 
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">내용</CFormLabel>
-      <CCol md="10">
+      <CCol md="10 mb-5">
         <QuillEditor v-model:content="form.content" placeholder="본문 내용" />
       </CCol>
     </CRow>
@@ -221,13 +231,13 @@ onUpdated(() => dataSetup())
     <CRow>
       <CFormLabel for="title" class="col-md-2 col-form-label">링크</CFormLabel>
       <CCol md="10" lg="8" xl="6">
-        <CRow v-if="post && form.oldLinks.length">
+        <CRow v-if="post && form.links?.length">
           <CAlert :color="AlertSecondary">
             <CCol>
-              <CInputGroup v-for="(link, i) in form.oldLinks" :key="link.pk" class="mb-2">
+              <CInputGroup v-for="(link, i) in form.links" :key="link.pk" class="mb-2">
                 <CFormInput
                   :id="`post-link-${link.pk}`"
-                  v-model="form.oldLinks[i].link"
+                  v-model="form.links[i].link"
                   size="sm"
                   placeholder="파일 링크"
                   @input="enableStore"
@@ -235,7 +245,7 @@ onUpdated(() => dataSetup())
                 <CInputGroupText id="basic-addon1" class="py-0">
                   <CFormCheck
                     :id="`del-link-${link.pk}`"
-                    v-model="form.oldLinks[i].del"
+                    v-model="form.links[i].del"
                     value="false"
                     label="삭제"
                     @input="enableStore"
@@ -251,7 +261,7 @@ onUpdated(() => dataSetup())
             <CInputGroup v-for="lNum in newLinkRange" :key="`ln-${lNum}`" class="mb-2">
               <CFormInput
                 :id="`link-${lNum}`"
-                v-model="form.newLinks[lNum]"
+                v-model="newLinks[lNum]"
                 placeholder="파일 링크"
                 @input="enableStore"
               />
@@ -270,10 +280,10 @@ onUpdated(() => dataSetup())
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">파일</CFormLabel>
       <CCol md="10" lg="8" xl="6">
-        <CRow v-if="post && form.oldFiles.length">
+        <CRow v-if="post && form.files?.length">
           <CAlert :color="AlertSecondary">
-            <small>{{ devideUri(form.oldFiles[0].file)[0] }}</small>
-            <CCol v-for="(file, i) in form.oldFiles" :key="file.pk" xs="12" color="primary">
+            <small>{{ devideUri(form.files[0].file)[0] }}</small>
+            <CCol v-for="(file, i) in form.files" :key="file.pk" xs="12" color="primary">
               <small>
                 현재 :
                 <a :href="file.file" target="_blank">
@@ -283,21 +293,21 @@ onUpdated(() => dataSetup())
                   <CCol>
                     <CInputGroup>
                       변경 : &nbsp;
-                      <!--                      <FileUpload-->
-                      <!--                        :id="`post-file-${file.pk}`"-->
-                      <!--                        v-model="form.oldFiles[i].newFile"-->
-                      <!--                        size="sm"-->
-                      <!--                        type="file"-->
-                      <!--                        @input="enableStore"-->
-                      <!--                      />-->
+                      <CFormInput
+                        :id="`post-file-${file.pk}`"
+                        v-model="form.files[i].newFile"
+                        size="sm"
+                        type="file"
+                        @input="fileUpload"
+                      />
                       <CInputGroupText id="basic-addon2" class="py-0">
                         <CFormCheck
                           :id="`del-file-${file.pk}`"
-                          v-model="form.oldFiles[i].del"
+                          v-model="form.files[i].del"
                           value="false"
                           label="삭제"
-                          :disabled="!!form.oldFiles[i].newFile"
-                          @input="enableStore"
+                          :disabled="!!form.files[i].newFile"
+                          @input="fileUpload"
                         />
                       </CInputGroupText>
                     </CInputGroup>
@@ -311,12 +321,7 @@ onUpdated(() => dataSetup())
         <CRow class="mb-2">
           <CCol>
             <CInputGroup v-for="fNum in newFileRange" :key="`fn-${fNum}`" class="mb-2">
-              <!--              <FileUpload-->
-              <!--                :id="`file-${fNum}`"-->
-              <!--                v-model="form.newFiles[fNum]"-->
-              <!--                type="file"-->
-              <!--                @input="enableStore"-->
-              <!--              />-->
+              <CFormInput :id="`file-${fNum}`" type="file" @input="fileUpload" />
               <CInputGroupText id="basic-addon2" @click="ctlFileNum(fNum)">
                 <v-icon
                   :icon="`mdi-${fNum + 1 < newFileNum ? 'minus' : 'plus'}-thick`"
