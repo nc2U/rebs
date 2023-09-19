@@ -118,11 +118,11 @@ class PostSerializer(serializers.ModelSerializer):
             for link in new_links:
                 Link.objects.create(post=post, link=self.to_python(link))
 
-        # # Files 처리
-        # new_files = self.initial_data.get('newFiles')
-        # if new_files:
-        #     for file in new_files:
-        #         File.objects.create(post=post, file=file)
+        # Files 처리
+        new_files = self.initial_data.get('newFiles')
+        if new_files:
+            for file in new_files:
+                File.objects.create(post=post, file=file)
 
         return post
 
@@ -160,10 +160,10 @@ class PostSerializer(serializers.ModelSerializer):
                     file_object.file = file.get('newFile')
                     file_object.save()
 
-        # # new_files = self.initial_data.get('newFiles')
-        # if new_files:
-        #     for file in new_files:
-        #         File.objects.create(post=instance, file=file)
+        new_files = self.initial_data.get('newFiles')
+        if new_files:
+            for file in new_files:
+                File.objects.create(post=instance, file=file)
 
         return instance
 

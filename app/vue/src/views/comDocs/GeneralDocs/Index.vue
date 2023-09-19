@@ -64,8 +64,8 @@ const fetchPost = (pk: number) => docStore.fetchPost(pk)
 const fetchPostList = (payload: PostFilter) => docStore.fetchPostList(payload)
 const fetchCategoryList = (board: number) => docStore.fetchCategoryList(board)
 
-const createPost = (payload: { formData: FormData }) => docStore.createPost(payload)
-const updatePost = (payload: { pk: number; formData: FormData }) => docStore.updatePost(payload)
+const createPost = (payload: { form: Post }) => docStore.createPost(payload)
+const updatePost = (payload: { pk: number; form: Post }) => docStore.updatePost(payload)
 const patchPost = (payload: PatchPost) => docStore.patchPost(payload)
 const patchLink = (payload: Link) => docStore.patchLink(payload)
 const patchFile = (payload: AFile) => docStore.patchFile(payload)
@@ -85,30 +85,31 @@ watch(route, val => {
 const fileUpload = (file: File) => newFiles.value.push(file)
 
 const onSubmit = (payload: Post & Attatches) => {
-  // if (payload.files?.length) for (const file of payload.files) console.log(file)
-
   if (company.value) {
     const { pk, ...form } = payload
     form.company = company.value
     form.newFiles = newFiles.value
-    console.log(form)
 
-    const formData = new FormData()
+    // console.log(form)
 
-    for (const key in form) formData.append(key, form[key] as string | Blob)
-
-    console.log(formData)
-
-    // if (pk) {
-    //   updatePost({ pk, formData })
-    //   router.replace({
-    //     name: '본사 일반 문서 - 보기',
-    //     params: { postId: pk },
-    //   })
-    // } else {
-    //   createPost({ formData })
-    //   router.replace({ name: '본사 일반 문서' })
+    // const form = new FormData()
+    //
+    // for (const key in formData) {
+    //   if (key !== 'project' && key !== 'lawsuit') form.append(key, formData[key] as string | Blob)
     // }
+    //
+    console.log(form.newLinks)
+
+    if (pk) {
+      updatePost({ pk, form })
+      router.replace({
+        name: '본사 일반 문서 - 보기',
+        params: { postId: pk },
+      })
+    } else {
+      createPost({ form })
+      router.replace({ name: '본사 일반 문서' })
+    }
   }
 }
 
