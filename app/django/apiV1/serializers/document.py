@@ -122,10 +122,10 @@ class PostSerializer(serializers.ModelSerializer):
 
         # Files 처리
         new_files = self.initial_data.get('newFiles')
-        if new_files:
-            for file in new_files:
-                file_object = File(post=post, file=file)
-                file_object.save()
+        # if new_files:
+        #     for file in new_files:
+        #         file_object = File(post=post, file=file)
+        #         file_object.save()
 
         return post
 
