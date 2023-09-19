@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin1'
+import { formUtility } from '@/utils/helper'
 import { type RouteLocationNormalizedLoaded as Loaded, useRoute, useRouter } from 'vue-router'
 import { useCompany } from '@/store/pinia/company'
 import { useDocument, type PostFilter } from '@/store/pinia/document'
@@ -11,7 +12,6 @@ import {
   type Post,
   type PatchPost,
 } from '@/store/types/document'
-import { formUtility } from '@/utils/helper'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
@@ -82,26 +82,28 @@ watch(route, val => {
 
 const onSubmit = (payload: Post & Attatches) => {
   console.log(payload)
-  const { pk, ...form } = payload
-  form.company = company.value ?? null
-  // const { pk, ...formData } = payload
-  // formData.company = company.value || null
-  // const form = formUtility.getFormData(
-  //   formData as Date | Array<{ [key: string]: string }> | { [key: string]: string } | File | string,
-  // )
-  //
-  // console.log(formData)
-  // console.log(...form)
-  //
-  if (pk) {
-    updatePost({ pk, form })
-    router.replace({
-      name: '본사 일반 문서 - 보기',
-      params: { postId: pk },
-    })
-  } else {
-    createPost({ form })
-    router.replace({ name: '본사 일반 문서' })
+  if (company.value) {
+    const { pk, ...form } = payload
+    form.company = company.value
+    // const { pk, ...formData } = payload
+    // formData.company = company.value || null
+    // const form = formUtility.getFormData(
+    //   formData as Date | Array<{ [key: string]: string }> | { [key: string]: string } | File | string,
+    // )
+    //
+    // console.log(formData)
+    // console.log(...form)
+    //
+    if (pk) {
+      updatePost({ pk, form })
+      router.replace({
+        name: '본사 일반 문서 - 보기',
+        params: { postId: pk },
+      })
+    } else {
+      createPost({ form })
+      router.replace({ name: '본사 일반 문서' })
+    }
   }
 }
 

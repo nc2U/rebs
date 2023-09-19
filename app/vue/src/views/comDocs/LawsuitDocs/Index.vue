@@ -79,31 +79,33 @@ watch(route, val => {
 
 const onSubmit = (payload: Post & Attatches) => {
   console.log(payload)
-  // if (company.value) {
-  //   const { pk, ...formData } = payload
-  //   formData.company = company.value || null
-  //   const form = formUtility.getFormData(
-  //     formData as
-  //       | Date
-  //       | Array<{ [key: string]: string }>
-  //       | { [key: string]: string }
-  //       | File
-  //       | string,
-  //   )
-  //
-  //   console.log(formData, ...form)
-  //
-  //   if (pk) {
-  //     updatePost({ pk, form })
-  //     router.replace({
-  //       name: '본사 소송 문서 - 보기',
-  //       params: { postId: pk },
-  //     })
-  //   } else {
-  //     createPost({ form })
-  //     router.replace({ name: '본사 소송 문서' })
-  //   }
-  // }
+  if (company.value) {
+    const { pk, ...form } = payload
+    form.company = company.value
+    //   const { pk, ...formData } = payload
+    //   formData.company = company.value || null
+    //   const form = formUtility.getFormData(
+    //     formData as
+    //       | Date
+    //       | Array<{ [key: string]: string }>
+    //       | { [key: string]: string }
+    //       | File
+    //       | string,
+    //   )
+    //
+    //   console.log(formData, ...form)
+    //
+    if (pk) {
+      updatePost({ pk, form })
+      router.replace({
+        name: '본사 소송 문서 - 보기',
+        params: { postId: pk },
+      })
+    } else {
+      createPost({ form })
+      router.replace({ name: '본사 소송 문서' })
+    }
+  }
 }
 
 const postHit = (payload: PatchPost) => patchPost(payload)
