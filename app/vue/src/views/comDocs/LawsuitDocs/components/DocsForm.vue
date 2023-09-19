@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted, onUpdated, type PropType } from 'vue'
 import { useRoute } from 'vue-router'
-import type { Post, Attatches } from '@/store/types/document'
+import type { Post, Link } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
 import { AlertSecondary } from '@/utils/cssMixins'
 import QuillEditor from '@/components/QuillEditor/index.vue'
@@ -46,10 +46,7 @@ const form = reactive<Post>({
   files: [],
 })
 
-const attaches = reactive<Attatches>({
-  newLinks: [],
-  newFiles: [],
-})
+const newLinks = ref<Link[]>([])
 
 const formsCheck = computed(() => {
   if (props.post) {
@@ -115,8 +112,7 @@ const onSubmit = (event: Event) => {
 }
 
 const modalAction = () => {
-  const newLinks = attaches.newLinks
-  emit('on-submit', { ...form, newLinks })
+  emit('on-submit', { ...form, newLinks: newLinks.value })
   validated.value = false
   refConfirmModal.value.close()
 }
@@ -265,7 +261,7 @@ onUpdated(() => dataSetup())
             <CInputGroup v-for="lNum in newLinkRange" :key="`ln-${lNum}`" class="mb-2">
               <CFormInput
                 :id="`link-${lNum}`"
-                v-model="attaches.newLinks[lNum]"
+                v-model="newLinks[lNum]"
                 placeholder="파일 링크"
                 @input="enableStore"
               />
@@ -325,12 +321,7 @@ onUpdated(() => dataSetup())
         <CRow class="mb-2">
           <CCol>
             <CInputGroup v-for="fNum in newFileRange" :key="`fn-${fNum}`" class="mb-2">
-              <CFormInput
-                :id="`file-${fNum}`"
-                v-model="attaches.newFiles[fNum]"
-                type="file"
-                @input="fileUpload"
-              />
+              <CFormInput :id="`file-${fNum}`" type="file" @input="fileUpload" />
               <CInputGroupText id="basic-addon2" @click="ctlFileNum(fNum)">
                 <v-icon
                   :icon="`mdi-${fNum + 1 < newFileNum ? 'minus' : 'plus'}-thick`"

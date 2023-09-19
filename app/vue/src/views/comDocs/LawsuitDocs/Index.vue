@@ -66,8 +66,8 @@ const fetchPostList = (payload: PostFilter) => docStore.fetchPostList(payload)
 const fetchCategoryList = (board: number) => docStore.fetchCategoryList(board)
 const fetchAllSuitCaseList = (payload: SuitCaseFilter) => docStore.fetchAllSuitCaseList(payload)
 
-const createPost = (payload: { form: Post }) => docStore.createPost(payload)
-const updatePost = (payload: { pk: number; form: Post }) => docStore.updatePost(payload)
+const createPost = (payload: { form: FormData }) => docStore.createPost(payload)
+const updatePost = (payload: { pk: number; form: FormData }) => docStore.updatePost(payload)
 const patchPost = (payload: PatchPost) => docStore.patchPost(payload)
 const patchLink = (payload: Link) => docStore.patchLink(payload)
 const patchFile = (payload: AFile) => docStore.patchFile(payload)
@@ -82,37 +82,30 @@ watch(route, val => {
 const fileUpload = (file: File) => newFiles.value.push(file)
 
 const onSubmit = (payload: Post & Attatches) => {
-  console.log(payload)
-  console.log(newFiles.value)
-
   // if (payload.files?.length) for (const file of payload.files) console.log(file)
 
   if (company.value) {
     const { pk, ...form } = payload
     form.company = company.value
-    //   const { pk, ...formData } = payload
-    //   formData.company = company.value || null
-    //   const form = formUtility.getFormData(
-    //     formData as
-    //       | Date
-    //       | Array<{ [key: string]: string }>
-    //       | { [key: string]: string }
-    //       | File
-    //       | string,
-    //   )
-    //
-    //   console.log(formData, ...form)
+    form.newFiles = newFiles.value
+    console.log(form)
 
-    // if (pk) {
-    //   updatePost({ pk, form })
-    //   router.replace({
-    //     name: '본사 소송 문서 - 보기',
-    //     params: { postId: pk },
-    //   })
-    // } else {
-    //   createPost({ form })
-    //   router.replace({ name: '본사 소송 문서' })
-    // }
+    const formData = new FormData()
+
+    for (const key in form) formData.append(key, form[key] as string | Blob)
+
+    console.log(formData)
+
+    if (pk) {
+      updatePost({ pk, formData })
+      router.replace({
+        name: '본사 소송 문서 - 보기',
+        params: { postId: pk },
+      })
+    } else {
+      createPost({ formData })
+      router.replace({ name: '본사 소송 문서' })
+    }
   }
 }
 
