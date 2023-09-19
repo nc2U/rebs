@@ -154,11 +154,11 @@ class PostSerializer(serializers.ModelSerializer):
 
         # Files 처리
         old_files = self.initial_data.get('files')
-        # if old_files:
-        #     for file in old_files:
-        #         file_object = File.objects.get(pk=file.get('pk'))
-        #         if file.get('del'):
-        #             file_object.delete()
+        if old_files:
+            for file in old_files:
+                file_object = File.objects.get(pk=file.get('pk'))
+                if file.get('del'):
+                    file_object.delete()
         #         elif file.get('newFile'):
         #             file_object.file = file.get('newFile')
         #             file_object.save()
