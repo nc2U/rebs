@@ -99,16 +99,16 @@ const onSubmit = (payload: Post & Attatches) => {
 
     console.log(formData)
 
-    if (pk) {
-      updatePost({ pk, formData })
-      router.replace({
-        name: '본사 일반 문서 - 보기',
-        params: { postId: pk },
-      })
-    } else {
-      createPost({ formData })
-      router.replace({ name: '본사 일반 문서' })
-    }
+    // if (pk) {
+    //   updatePost({ pk, formData })
+    //   router.replace({
+    //     name: '본사 일반 문서 - 보기',
+    //     params: { postId: pk },
+    //   })
+    // } else {
+    //   createPost({ formData })
+    //   router.replace({ name: '본사 일반 문서' })
+    // }
   }
 }
 
