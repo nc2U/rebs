@@ -362,18 +362,21 @@ class DisLike(models.Model):
         return f'{self.post.title} disliked by {self.user.name}'
 
 
-def get_image_name(instance, filename):
+def get_file_name(filename):
+    file, ext = filename.split('.')
     year = datetime.today().strftime('%Y')
     month = datetime.today().strftime('%m')
-    hash_value = hashlib.blake2b(digest_size=3).hexdigest()
-    return f"post/img/{year}/{month}/[{filename}]_{hash_value}"
+    h = hashlib.blake2b(digest_size=3)
+    h.update(bytes(f'{datetime.now().timestamp()}', 'utf-8'))
+    return f"{year}/{month}/{file}_{h.hexdigest()}_.{ext}"
 
 
-def get_file_name(instance, filename):
-    year = datetime.today().strftime('%Y')
-    month = datetime.today().strftime('%m')
-    hash_value = hashlib.blake2b(digest_size=3).hexdigest()
-    return f"post/docs/{year}/{month}/[{filename}]_{hash_value}"
+def get_img_path(instance, filename):
+    return f"post/img/{get_file_name(filename)}"
+
+
+def get_file_path(instance, filename):
+    return f"post/docs/{get_file_name(filename)}"
 
 
 class Link(models.Model):
@@ -387,7 +390,7 @@ class Link(models.Model):
 
 class Image(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물', related_name='images')
-    image = models.ImageField(upload_to=get_image_name, verbose_name='이미지')
+    image = models.ImageField(upload_to=get_img_path, verbose_name='이미지')
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -396,7 +399,7 @@ class Image(models.Model):
 
 class File(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물', related_name='files')
-    file = models.FileField(upload_to=get_file_name, verbose_name='파일')
+    file = models.FileField(upload_to=get_file_path, verbose_name='파일')
     hit = models.PositiveIntegerField('다운로드수', default=0)
     created = models.DateTimeField(auto_now_add=True)
 
