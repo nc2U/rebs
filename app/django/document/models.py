@@ -363,12 +363,13 @@ class DisLike(models.Model):
 
 
 def get_file_name(filename):
-    file, ext = filename.split('.')
+    file = filename.split('.')
+    ext = file.pop()
     year = datetime.today().strftime('%Y')
     month = datetime.today().strftime('%m')
     h = hashlib.blake2b(digest_size=3)
     h.update(bytes(f'{datetime.now().timestamp()}', 'utf-8'))
-    return f"{year}/{month}/{file}_{h.hexdigest()}_.{ext}"
+    return f"{year}/{month}/{''.join(file)}_{h.hexdigest()}_.{ext}"
 
 
 def get_img_path(instance, filename):
