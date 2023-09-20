@@ -55,7 +55,7 @@ jobs:
           password: ${{ secrets.CICD_PASS }}
           command: |
             cd ${{ secrets.CICD_PATH }}/prod
-            mkdir -p ./volume/mysql && cd deploy/helm
+            mkdir -p ./volume/mysql; chmod -R 755 ./volume/mysql; cd deploy/helm
             helm upgrade ${{ secrets.DATABASE_USER }} . -f ./values-prod.yaml \
               --install -n prod-hrebs --create-namespace --history-max 5 --wait --timeout 10m \
               --set global.dbPassword=${{ secrets.DATABASE_PASS }} \
