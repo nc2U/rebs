@@ -64,8 +64,8 @@ const fetchPost = (pk: number) => docStore.fetchPost(pk)
 const fetchPostList = (payload: PostFilter) => docStore.fetchPostList(payload)
 const fetchCategoryList = (board: number) => docStore.fetchCategoryList(board)
 
-const createPost = (payload: { form: Post }) => docStore.createPost(payload)
-const updatePost = (payload: { pk: number; form: Post }) => docStore.updatePost(payload)
+const createPost = (payload: { form: FormData }) => docStore.createPost(payload)
+const updatePost = (payload: { pk: number; form: FormData }) => docStore.updatePost(payload)
 const patchPost = (payload: PatchPost) => docStore.patchPost(payload)
 const patchLink = (payload: Link) => docStore.patchLink(payload)
 const patchFile = (payload: AFile) => docStore.patchFile(payload)
@@ -86,18 +86,22 @@ const fileUpload = (file: File) => newFiles.value.push(file)
 
 const onSubmit = (payload: Post & Attatches) => {
   if (company.value) {
-    const { pk, ...form } = payload
-    form.company = company.value
+    const { pk, ...getData } = payload
+    getData.company = company.value
+    getData.newFiles = newFiles.value
 
-    // console.log(form)
+    getData['newFiles'].forEach(file => console.log(file))
 
-    // const form = new FormData()
-    //
-    // for (const key in formData) {
-    //   if (key !== 'project' && key !== 'lawsuit') form.append(key, formData[key] as string | Blob)
-    // }
+    const form = new FormData()
 
-    console.log(newFiles.value)
+    for (const key in getData) {
+      if (key === 'links' || key === 'newLinks' || key === 'files' || key === 'newFiles') {
+        getData[key]?.forEach(val => form.append(key, val as string | Blob))
+      } else {
+        const formValue = getData[key] === null ? '' : getData[key]
+        form.append(key, formValue as string)
+      }
+    }
 
     if (pk) {
       updatePost({ pk, form })
