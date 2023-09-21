@@ -299,6 +299,7 @@ onUpdated(() => dataSetup())
                         size="sm"
                         type="file"
                         @input="fileChange($event, file.pk as number)"
+                        disabled
                       />
                       <CInputGroupText id="basic-addon2" class="py-0">
                         <input
