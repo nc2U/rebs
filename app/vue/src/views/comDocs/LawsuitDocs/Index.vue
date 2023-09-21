@@ -90,7 +90,9 @@ const onSubmit = (payload: Post & Attatches) => {
     const form = new FormData()
 
     for (const key in getData) {
-      if (key === 'links' || key === 'newLinks' || key === 'files' || key === 'newFiles') {
+      if (key === 'links' || key === 'files') {
+        getData[key]?.forEach(val => form.append(key, JSON.stringify(val) as any))
+      } else if (key === 'newLinks' || key === 'newFiles') {
         getData[key]?.forEach(val => form.append(key, val as any))
       } else {
         const formValue = getData[key] === null ? '' : getData[key]
