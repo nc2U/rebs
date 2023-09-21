@@ -101,10 +101,9 @@ export interface AFile {
 }
 
 export type Attatches = {
-  // oldLinks: Link[]
-  // oldFiles: AFile[]
   newLinks: Link[]
   newFiles: string[] | File[]
+  cngFiles: { pk: number; file: File }[]
 }
 
 export interface PatchPost {

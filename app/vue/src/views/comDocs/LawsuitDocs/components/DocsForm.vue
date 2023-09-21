@@ -90,12 +90,12 @@ const enableStore = (event: Event) => {
   attach.value = !el.value
 }
 
-const fileChange = (event: Event) => {
+const fileChange = (event: Event, pk: number) => {
   enableStore(event)
   const el = event.target as HTMLInputElement
   if (el.files) {
     const file = el.files[0]
-    emit('file-change', file)
+    emit('file-change', { pk, file })
   }
 }
 
@@ -152,15 +152,6 @@ const dataSetup = () => {
     form.password = props.post.password
     form.links = props.post.links
     form.files = props.post.files
-    // if (props.post.links) form.oldLinks = props.post.links
-    // if (props.post.files) {
-    //   form.oldFiles = props.post.files.map((file: AFile) => ({
-    //     pk: file.pk,
-    //     file: file.file,
-    //     newFile: '',
-    //     hit: file.hit,
-    //   }))
-    // }
   }
 }
 
@@ -307,7 +298,7 @@ onUpdated(() => dataSetup())
                         v-model="form.files[i].newFile"
                         size="sm"
                         type="file"
-                        @input="fileChange"
+                        @input="fileChange($event, file.pk as number)"
                       />
                       <CInputGroupText id="basic-addon2" class="py-0">
                         <input
