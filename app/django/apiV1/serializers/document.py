@@ -154,9 +154,13 @@ class PostSerializer(serializers.ModelSerializer):
         # Files 처리
         old_files = self.initial_data.getlist('files')
         if old_files:
+            # cng_files = self.initial_data.getlist('cngFiles')
             for json_file in old_files:
                 file = json.loads(json_file)
                 file_object = File.objects.get(pk=file.get('pk'))
+                # nf = [nf.get('file') for nf in cng_files if nf.get('pk') == file.get('pk')]
+                # if nf:
+                #     file['newFile'] = nf[0]
                 if file.get('del'):
                     file_object.delete()
                 elif file.get('newFile'):
