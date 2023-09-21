@@ -14,7 +14,7 @@ const props = defineProps({
   post: { type: Object as PropType<Post>, default: null },
 })
 
-const emit = defineEmits(['on-submit', 'file-upload', 'close'])
+const emit = defineEmits(['on-submit', 'file-upload', 'file-change', 'close'])
 
 const refDelModal = ref()
 const refAlertModal = ref()
@@ -86,6 +86,15 @@ const ctlFileNum = (n: number) => {
 const enableStore = (event: Event) => {
   const el = event.target as HTMLInputElement
   attach.value = !el.value
+}
+
+const fileChange = (event: Event) => {
+  enableStore(event)
+  const el = event.target as HTMLInputElement
+  if (el.files) {
+    const file = el.files[0]
+    emit('file-change', file)
+  }
 }
 
 const fileUpload = (event: Event) => {
@@ -281,17 +290,21 @@ onUpdated(() => dataSetup())
                         v-model="form.files[i].newFile"
                         size="sm"
                         type="file"
-                        @input="fileUpload"
+                        @input="fileChange"
                       />
                       <CInputGroupText id="basic-addon2" class="py-0">
-                        <CFormCheck
+                        <input
                           :id="`del-file-${file.pk}`"
                           v-model="form.files[i].del"
                           :value="true"
                           :disabled="!!form.files[i].newFile"
-                          @input="fileUpload"
-                          label="삭제"
+                          @input="enableStore"
+                          type="checkbox"
+                          class="form-check-input mr-1"
                         />
+                        <label :for="`del-file-${file.pk}`" class="form-label form-check-label">
+                          삭제
+                        </label>
                       </CInputGroupText>
                     </CInputGroup>
                   </CCol>
