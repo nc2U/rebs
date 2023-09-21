@@ -14,7 +14,7 @@ const props = defineProps({
   post: { type: Object as PropType<Post>, default: null },
 })
 
-const emit = defineEmits(['on-submit', 'file-upload', 'close'])
+const emit = defineEmits(['on-submit', 'file-upload', 'file-change', 'close'])
 
 const refDelModal = ref()
 const refAlertModal = ref()
@@ -88,6 +88,15 @@ const enableStore = (event: Event) => {
   attach.value = !el.value
 }
 
+const fileChange = (event: Event, pk: number) => {
+  enableStore(event)
+  const el = event.target as HTMLInputElement
+  if (el.files) {
+    const file = el.files[0]
+    emit('file-change', { pk, file })
+  }
+}
+
 const fileUpload = (event: Event) => {
   enableStore(event)
   const el = event.target as HTMLInputElement
@@ -141,15 +150,6 @@ const dataSetup = () => {
     form.password = props.post.password
     form.links = props.post.links
     form.files = props.post.files
-    // if (props.post.links) form.oldLinks = props.post.links
-    // if (props.post.files) {
-    //   form.oldFiles = props.post.files.map((file: AFile) => ({
-    //     pk: file.pk,
-    //     file: file.file,
-    //     newFile: '',
-    //     hit: file.hit,
-    //   }))
-    // }
   }
 }
 
@@ -229,9 +229,9 @@ onUpdated(() => dataSetup())
                   <CFormCheck
                     :id="`del-link-${link.pk}`"
                     v-model="form.links[i].del"
-                    value="false"
-                    label="삭제"
+                    :value="true"
                     @input="enableStore"
+                    label="삭제"
                   />
                 </CInputGroupText>
               </CInputGroup>
@@ -281,17 +281,22 @@ onUpdated(() => dataSetup())
                         v-model="form.files[i].newFile"
                         size="sm"
                         type="file"
-                        @input="fileUpload"
+                        @input="fileChange($event, file.pk as number)"
+                        disabled
                       />
                       <CInputGroupText id="basic-addon2" class="py-0">
-                        <CFormCheck
+                        <input
                           :id="`del-file-${file.pk}`"
                           v-model="form.files[i].del"
-                          value="false"
-                          label="삭제"
+                          :value="true"
                           :disabled="!!form.files[i].newFile"
-                          @input="fileUpload"
+                          @input="enableStore"
+                          type="checkbox"
+                          class="form-check-input mr-1"
                         />
+                        <label :for="`del-file-${file.pk}`" class="form-label form-check-label">
+                          삭제
+                        </label>
                       </CInputGroupText>
                     </CInputGroup>
                   </CCol>

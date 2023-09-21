@@ -1,3 +1,4 @@
+import json
 from django.db import transaction
 from django.core.exceptions import ValidationError
 from urllib.parse import urlsplit, urlunsplit
@@ -113,13 +114,13 @@ class PostSerializer(serializers.ModelSerializer):
         post = Post.objects.create(**validated_data)
 
         # Links 처리
-        new_links = self.initial_data.get('newLinks')
+        new_links = self.initial_data.getlist('newLinks')
         if new_links:
             for link in new_links:
                 Link.objects.create(post=post, link=self.to_python(link))
 
         # Files 처리
-        new_files = self.initial_data.get('newFiles')
+        new_files = self.initial_data.getlist('newFiles')
         if new_files:
             for file in new_files:
                 File.objects.create(post=post, file=file)
@@ -134,9 +135,10 @@ class PostSerializer(serializers.ModelSerializer):
         instance.save()
 
         # Links 처리
-        old_links = self.initial_data.get('links')
+        old_links = self.initial_data.getlist('links')
         if old_links:
-            for link in old_links:
+            for json_link in old_links:
+                link = json.loads(json_link)
                 link_object = Link.objects.get(pk=link.get('pk'))
                 if link.get('del'):
                     link_object.delete()
@@ -144,23 +146,28 @@ class PostSerializer(serializers.ModelSerializer):
                     link_object.link = self.to_python(link.get('link'))
                     link_object.save()
 
-        new_links = self.initial_data.get('newLinks')
+        new_links = self.initial_data.getlist('newLinks')
         if new_links:
             for link in new_links:
                 Link.objects.create(post=instance, link=self.to_python(link))
 
         # Files 처리
-        old_files = self.initial_data.get('files')
+        old_files = self.initial_data.getlist('files')
         if old_files:
-            for file in old_files:
+            # cng_files = self.initial_data.getlist('cngFiles')
+            for json_file in old_files:
+                file = json.loads(json_file)
                 file_object = File.objects.get(pk=file.get('pk'))
+                # nf = [nf.get('file') for nf in cng_files if nf.get('pk') == file.get('pk')]
+                # if nf:
+                #     file['newFile'] = nf[0]
                 if file.get('del'):
                     file_object.delete()
                 elif file.get('newFile'):
                     file_object.file = file.get('newFile')
                     file_object.save()
 
-        new_files = self.initial_data.get('newFiles')
+        new_files = self.initial_data.getlist('newFiles')
         if new_files:
             for file in new_files:
                 File.objects.create(post=instance, file=file)

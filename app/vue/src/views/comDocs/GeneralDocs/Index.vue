@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin1'
-import { formUtility } from '@/utils/helper'
 import { type RouteLocationNormalizedLoaded as Loaded, useRoute, useRouter } from 'vue-router'
 import { useCompany } from '@/store/pinia/company'
 import { useDocument, type PostFilter } from '@/store/pinia/document'
@@ -33,6 +32,7 @@ const postFilter = ref<PostFilter>({
 })
 
 const newFiles = ref<File[]>([])
+const changeFiles = ref<Array<{ pk: number; file: File }>>([])
 
 const docsFilter = (payload: PostFilter) => {
   postFilter.value.is_com = payload.is_com
@@ -64,8 +64,8 @@ const fetchPost = (pk: number) => docStore.fetchPost(pk)
 const fetchPostList = (payload: PostFilter) => docStore.fetchPostList(payload)
 const fetchCategoryList = (board: number) => docStore.fetchCategoryList(board)
 
-const createPost = (payload: { form: Post }) => docStore.createPost(payload)
-const updatePost = (payload: { pk: number; form: Post }) => docStore.updatePost(payload)
+const createPost = (payload: { form: FormData }) => docStore.createPost(payload)
+const updatePost = (payload: { pk: number; form: FormData }) => docStore.updatePost(payload)
 const patchPost = (payload: PatchPost) => docStore.patchPost(payload)
 const patchLink = (payload: Link) => docStore.patchLink(payload)
 const patchFile = (payload: AFile) => docStore.patchFile(payload)
@@ -82,22 +82,29 @@ watch(route, val => {
   else docStore.post = null
 })
 
+const fileChange = (payload: { pk: number; file: File }) => changeFiles.value.push(payload)
+
 const fileUpload = (file: File) => newFiles.value.push(file)
 
 const onSubmit = (payload: Post & Attatches) => {
   if (company.value) {
-    const { pk, ...form } = payload
-    form.company = company.value
+    const { pk, ...getData } = payload
+    getData.company = company.value
+    getData.newFiles = newFiles.value
+    getData.cngFiles = changeFiles.value
 
-    // console.log(form)
+    const form = new FormData()
 
-    // const form = new FormData()
-    //
-    // for (const key in formData) {
-    //   if (key !== 'project' && key !== 'lawsuit') form.append(key, formData[key] as string | Blob)
-    // }
-
-    console.log(newFiles.value)
+    for (const key in getData) {
+      if (key === 'links' || key === 'files') {
+        getData[key]?.forEach(val => form.append(key, JSON.stringify(val) as any))
+      } else if (key === 'newLinks' || key === 'newFiles' || key === 'cngFiles') {
+        getData[key]?.forEach(val => form.append(key, val as any))
+      } else {
+        const formValue = getData[key] === null ? '' : getData[key]
+        form.append(key, formValue as string)
+      }
+    }
 
     if (pk) {
       updatePost({ pk, form })
@@ -201,6 +208,7 @@ onBeforeMount(() => {
         <DocsForm
           :category-list="categoryList"
           :post="post as Post"
+          @file-change="fileChange"
           @file-upload="fileUpload"
           @on-submit="onSubmit"
         />
