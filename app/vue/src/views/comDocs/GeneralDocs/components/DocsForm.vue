@@ -229,9 +229,9 @@ onUpdated(() => dataSetup())
                   <CFormCheck
                     :id="`del-link-${link.pk}`"
                     v-model="form.links[i].del"
-                    value="true"
-                    label="삭제"
+                    :value="true"
                     @input="enableStore"
+                    label="삭제"
                   />
                 </CInputGroupText>
               </CInputGroup>
@@ -287,10 +287,10 @@ onUpdated(() => dataSetup())
                         <CFormCheck
                           :id="`del-file-${file.pk}`"
                           v-model="form.files[i].del"
-                          value="true"
-                          label="삭제"
+                          :value="true"
                           :disabled="!!form.files[i].newFile"
                           @input="fileUpload"
+                          label="삭제"
                         />
                       </CInputGroupText>
                     </CInputGroup>
