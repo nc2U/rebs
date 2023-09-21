@@ -90,13 +90,11 @@ const onSubmit = (payload: Post & Attatches) => {
     getData.company = company.value
     getData.newFiles = newFiles.value
 
-    getData['newFiles'].forEach(file => console.log(file))
-
     const form = new FormData()
 
     for (const key in getData) {
       if (key === 'links' || key === 'newLinks' || key === 'files' || key === 'newFiles') {
-        getData[key]?.forEach(val => form.append(key, val as string | Blob))
+        getData[key]?.forEach(val => form.append(key, val as any))
       } else {
         const formValue = getData[key] === null ? '' : getData[key]
         form.append(key, formValue as string)
