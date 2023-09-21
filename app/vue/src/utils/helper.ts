@@ -55,4 +55,3 @@ export const isValidate = (event: Event) => {
     return true
   } else return false
 }
-s
