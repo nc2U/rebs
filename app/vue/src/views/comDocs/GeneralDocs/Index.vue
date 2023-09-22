@@ -25,7 +25,7 @@ const postFilter = ref<PostFilter>({
   board: 2,
   category: null,
   is_com: false,
-  project: '',
+  project: null,
   ordering: '',
   search: '',
   page: 1,

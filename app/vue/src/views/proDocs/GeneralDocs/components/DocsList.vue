@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
+import type { Post } from '@/store/types/document'
 import { useDocument } from '@/store/pinia/document'
 import { TableSecondary } from '@/utils/cssMixins'
-import Docs from './Docs.vue'
 import Pagination from '@/components/Pagination'
-import type { Post } from '@/store/types/document'
+import Docs from './Docs.vue'
 
 defineProps({
   project: { type: Number, default: null },
@@ -65,7 +65,7 @@ const sortFilter = (project: number | null) => emit('sort-filter', project)
         color="primary"
         class="px-5"
         :disabled="!project"
-        @click="$router.push({ name: '본사 일반 문서 - 작성' })"
+        @click="$router.push({ name: '현장 일반 문서 - 작성' })"
       >
         등록하기
       </CButton>

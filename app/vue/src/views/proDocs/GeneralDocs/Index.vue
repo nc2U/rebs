@@ -21,6 +21,7 @@ import DocsForm from './components/DocsForm.vue'
 
 const fController = ref()
 const postFilter = ref<PostFilter>({
+  company: null,
   board: 2,
   category: null,
   is_com: false,
@@ -56,6 +57,7 @@ const pageSelect = (page: number) => {
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
+const company = computed(() => projStore.project?.company)
 
 const docStore = useDocument()
 const post = computed(() => docStore.post)
@@ -91,6 +93,7 @@ const fileUpload = (file: File) => newFiles.value.push(file)
 const onSubmit = (payload: Post & Attatches) => {
   if (project.value) {
     const { pk, ...getData } = payload
+    getData.company = company.value
     getData.project = project.value
     getData.newFiles = newFiles.value
     getData.cngFiles = cngFiles.value

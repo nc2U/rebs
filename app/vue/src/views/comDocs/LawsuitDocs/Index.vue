@@ -25,7 +25,7 @@ const caseFilter = ref<PostFilter>({
   board: 3,
   category: null,
   is_com: '',
-  project: '',
+  project: null,
   ordering: '',
   search: '',
   page: 1,

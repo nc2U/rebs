@@ -15,7 +15,7 @@ const docStore = useDocument()
 const getPrev = computed(() => docStore.getPrev)
 const getNext = computed(() => docStore.getNext)
 
-const sortName = computed(() => props.post?.proj_name || '본사')
+const sortName = computed(() => props.post?.proj_name || '프로젝트 명')
 
 const fetchLink = (pk: number) => docStore.fetchLink(pk)
 const fetchFile = (pk: number) => docStore.fetchFile(pk)
@@ -192,7 +192,7 @@ const getFileName = (file: string) => {
             :disabled="!getPrev"
             @click="
               $router.push({
-                name: '본사 일반 문서 - 보기',
+                name: '현장 일반 문서 - 보기',
                 params: { postId: getPrev },
               })
             "
@@ -204,7 +204,7 @@ const getFileName = (file: string) => {
             :disabled="!getNext"
             @click="
               $router.push({
-                name: '본사 일반 문서 - 보기',
+                name: '현장 일반 문서 - 보기',
                 params: { postId: getNext },
               })
             "
@@ -218,7 +218,7 @@ const getFileName = (file: string) => {
             color="success"
             @click="
               $router.push({
-                name: '본사 일반 문서 - 수정',
+                name: '현장 일반 문서 - 수정',
                 params: { postId: post.pk },
               })
             "
@@ -229,10 +229,10 @@ const getFileName = (file: string) => {
         </CButtonGroup>
       </CCol>
       <CCol class="text-right">
-        <CButton color="light" @click="$router.push({ name: '본사 일반 문서' })">
+        <CButton color="light" @click="$router.push({ name: '현장 일반 문서' })">
           목록으로
         </CButton>
-        <CButton color="primary" @click="$router.push({ name: '본사 일반 문서 - 작성' })">
+        <CButton color="primary" @click="$router.push({ name: '현장 일반 문서 - 작성' })">
           등록하기
         </CButton>
       </CCol>

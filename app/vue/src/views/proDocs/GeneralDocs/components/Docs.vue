@@ -9,7 +9,7 @@ const props = defineProps({
 
 const emit = defineEmits(['sort-filter'])
 
-const sortName = computed(() => props.post?.proj_name || '본사')
+const sortName = computed(() => props.post?.proj_name ?? '프로젝트 명')
 const sortColor = computed(() => (props.post?.project ? 'success' : 'info'))
 
 const sortFunc = () => emit('sort-filter', props.post?.project)
@@ -25,7 +25,7 @@ const sortFunc = () => emit('sort-filter', props.post?.project)
     </CTableDataCell>
     <CTableDataCell>{{ post.execution_date }}</CTableDataCell>
     <CTableDataCell class="text-left">
-      <router-link :to="{ name: '본사 일반 문서 - 보기', params: { postId: post.pk } }">
+      <router-link :to="{ name: '현장 일반 문서 - 보기', params: { postId: post.pk } }">
         {{ cutString(post.title, 30) }}
       </router-link>
       <CBadge v-if="post.is_new" color="warning" size="sm" class="ml-2"> new</CBadge>
