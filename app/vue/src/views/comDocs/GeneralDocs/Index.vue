@@ -32,7 +32,7 @@ const postFilter = ref<PostFilter>({
 })
 
 const newFiles = ref<File[]>([])
-const changeFiles = ref<
+const cngFiles = ref<
   {
     pk: number
     file: File
@@ -87,7 +87,7 @@ watch(route, val => {
   else docStore.post = null
 })
 
-const fileChange = (payload: { pk: number; file: File }) => changeFiles.value.push(payload)
+const fileChange = (payload: { pk: number; file: File }) => cngFiles.value.push(payload)
 
 const fileUpload = (file: File) => newFiles.value.push(file)
 
@@ -96,7 +96,7 @@ const onSubmit = (payload: Post & Attatches) => {
     const { pk, ...getData } = payload
     getData.company = company.value
     getData.newFiles = newFiles.value
-    getData.cngFiles = changeFiles.value
+    getData.cngFiles = cngFiles.value
 
     const form = new FormData()
 
@@ -104,23 +104,28 @@ const onSubmit = (payload: Post & Attatches) => {
       if (key === 'links' || key === 'files') {
         getData[key]?.forEach(val => form.append(key, JSON.stringify(val)))
       } else if (key === 'newLinks' || key === 'newFiles' || key === 'cngFiles') {
-        getData[key]?.forEach(val => form.append(key, val as string | Blob))
+        if (key === 'cngFiles') {
+          getData[key]?.forEach(val => {
+            form.append('cngPks', val.pk as any)
+            form.append('cngFiles', val.file as Blob)
+          })
+        } else getData[key]?.forEach(val => form.append(key, val as string | Blob))
       } else {
         const formValue = getData[key] === null ? '' : getData[key]
         form.append(key, formValue as string)
       }
     }
 
-    if (pk) {
-      updatePost({ pk, form })
-      router.replace({
-        name: '본사 일반 문서 - 보기',
-        params: { postId: pk },
-      })
-    } else {
-      createPost({ form })
-      router.replace({ name: '본사 일반 문서' })
-    }
+    // if (pk) {
+    //   updatePost({ pk, form })
+    //   router.replace({
+    //     name: '본사 일반 문서 - 보기',
+    //     params: { postId: pk },
+    //   })
+    // } else {
+    //   createPost({ form })
+    //   router.replace({ name: '본사 일반 문서' })
+    // }
   }
 }
 
