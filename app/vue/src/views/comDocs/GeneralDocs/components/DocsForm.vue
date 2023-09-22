@@ -93,7 +93,6 @@ const fileChange = (event: Event, pk: number) => {
   const el = event.target as HTMLInputElement
   if (el.files) {
     const file = el.files[0]
-    if (form.files) form.files.filter(f => f.pk === pk).map(f => (f.newFile = file))
     emit('file-change', { pk, file })
   }
 }
@@ -319,7 +318,6 @@ onUpdated(() => dataSetup())
             </CInputGroup>
           </CCol>
         </CRow>
-        {{ form.files }}
       </CCol>
     </CRow>
 
