@@ -164,10 +164,6 @@ const project_docs = {
     {
       component: 'CNavItem',
       name: '현장 일반 문서',
-      badge: {
-        color: 'warning',
-        text: 'building...',
-      },
       to: '/project-docs/general/posts',
     },
     {
