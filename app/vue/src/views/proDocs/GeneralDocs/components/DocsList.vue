@@ -7,7 +7,7 @@ import Pagination from '@/components/Pagination'
 import type { Post } from '@/store/types/document'
 
 defineProps({
-  company: { type: Number, default: null },
+  project: { type: Number, default: null },
   page: { type: Number, default: 1 },
   postList: { type: Array as PropType<Post[]>, default: () => [] },
 })
@@ -64,7 +64,7 @@ const sortFilter = (project: number | null) => emit('sort-filter', project)
       <CButton
         color="primary"
         class="px-5"
-        :disabled="!company"
+        :disabled="!project"
         @click="$router.push({ name: '본사 일반 문서 - 작성' })"
       >
         등록하기

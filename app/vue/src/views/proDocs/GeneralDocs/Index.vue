@@ -1,6 +1,6 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import { ref, computed, onBeforeMount, watch } from 'vue'
-import { pageTitle, navMenu } from '@/views/proDocs/_menu/headermixin1'
+import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin1'
 import { type RouteLocationNormalizedLoaded as Loaded, useRoute, useRouter } from 'vue-router'
 import { useProject } from '@/store/pinia/project'
 import { useDocument, type PostFilter } from '@/store/pinia/document'
@@ -21,11 +21,10 @@ import DocsForm from './components/DocsForm.vue'
 
 const fController = ref()
 const postFilter = ref<PostFilter>({
-  company: null,
   board: 2,
   category: null,
   is_com: false,
-  project: '',
+  project: null,
   ordering: '',
   search: '',
   page: 1,
@@ -40,8 +39,6 @@ const cngFiles = ref<
 >([])
 
 const docsFilter = (payload: PostFilter) => {
-  postFilter.value.is_com = payload.is_com
-  if (!payload.is_com) postFilter.value.project = payload.project
   postFilter.value.ordering = payload.ordering
   postFilter.value.search = payload.search
   if (project.value) fetchPostList({ ...postFilter.value })
@@ -119,12 +116,12 @@ const onSubmit = (payload: Post & Attatches) => {
     if (pk) {
       updatePost({ pk, form })
       router.replace({
-        name: '본사 일반 문서 - 보기',
+        name: '현장 일반 문서 - 보기',
         params: { postId: pk },
       })
     } else {
       createPost({ form })
-      router.replace({ name: '본사 일반 문서' })
+      router.replace({ name: '현장 일반 문서' })
     }
   }
 }
@@ -136,28 +133,27 @@ const fileHit = (payload: AFile) => patchFile(payload)
 const sortFilter = (project: number | null) => {
   fController.value.projectChange(project)
   postFilter.value.page = 1
-  if (project !== null) postFilter.value.project = project.toString()
+  if (project !== null) postFilter.value.project = project
   else postFilter.value.is_com = true
   docsFilter(postFilter.value)
 }
 
 const dataSetup = (pk: number, postId?: string | string[]) => {
   fetchPostList({
-    company: pk,
+    project: pk,
     board: 2,
     page: postFilter.value.page,
     category: postFilter.value.category,
   })
   if (postId) fetchPost(Number(postId))
-  postFilter.value.company = pk
+  postFilter.value.project = pk
 }
 
 const dataReset = () => {
-  projStore.project = null
   docStore.post = null
   docStore.postList = []
   docStore.postCount = 0
-  postFilter.value.project = null
+  postFilter.value.company = null
   router.replace({ name: '현장 일반 문서' })
 }
 
