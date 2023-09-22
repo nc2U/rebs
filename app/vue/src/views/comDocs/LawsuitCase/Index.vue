@@ -15,7 +15,7 @@ import CaseForm from './components/CaseForm.vue'
 const fController = ref()
 const caseFilter = ref<cFilter>({
   company: null,
-  project: '',
+  project: null,
   is_com: '',
   court: '',
   related_case: '',
@@ -27,7 +27,7 @@ const caseFilter = ref<cFilter>({
 
 const listFiltering = (payload: cFilter) => {
   caseFilter.value = payload
-  caseFilter.value.project = payload.is_com ? '' : payload.project
+  caseFilter.value.project = payload.is_com ? null : payload.project
   if (company.value) fetchSuitCaseList({ ...caseFilter.value })
 }
 
