@@ -26,6 +26,35 @@ const proDocs = {
           ? import('@/views/proDocs/GeneralDocs/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '현장 일반 문서', auth: true },
+      children: [
+        {
+          path: ':postId(\\d+)',
+          name: '현장 일반 문서 - 보기',
+          component: () =>
+            pageViewAuth.value
+              ? import('@/views/proDocs/GeneralDocs/Index.vue')
+              : import('@/views/_Accounts/NoAuth.vue'),
+          meta: { title: '현장 일반 문서', auth: true, except: true },
+        },
+        {
+          path: ':postId(\\d+)/update',
+          name: '현장 일반 문서 - 수정',
+          component: () =>
+            pageViewAuth.value
+              ? import('@/views/proDocs/GeneralDocs/Index.vue')
+              : import('@/views/_Accounts/NoAuth.vue'),
+          meta: { title: '현장 일반 문서', auth: true, except: true },
+        },
+        {
+          path: 'create',
+          name: '현장 일반 문서 - 작성',
+          component: () =>
+            pageViewAuth.value
+              ? import('@/views/proDocs/GeneralDocs/Index.vue')
+              : import('@/views/_Accounts/NoAuth.vue'),
+          meta: { title: '현장 일반 문서', auth: true, except: true },
+        },
+      ],
     },
     {
       path: 'official/letters',
