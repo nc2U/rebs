@@ -32,7 +32,12 @@ const postFilter = ref<PostFilter>({
 })
 
 const newFiles = ref<File[]>([])
-const changeFiles = ref<{ pk: number; file: File }[]>([])
+const changeFiles = ref<
+  {
+    pk: number
+    file: File
+  }[]
+>([])
 
 const docsFilter = (payload: PostFilter) => {
   postFilter.value.is_com = payload.is_com
@@ -97,9 +102,9 @@ const onSubmit = (payload: Post & Attatches) => {
 
     for (const key in getData) {
       if (key === 'links' || key === 'files') {
-        getData[key]?.forEach(val => form.append(key, JSON.stringify(val) as any))
+        getData[key]?.forEach(val => form.append(key, JSON.stringify(val)))
       } else if (key === 'newLinks' || key === 'newFiles' || key === 'cngFiles') {
-        getData[key]?.forEach(val => form.append(key, val as any))
+        getData[key]?.forEach(val => form.append(key, val as string | Blob))
       } else {
         const formValue = getData[key] === null ? '' : getData[key]
         form.append(key, formValue as string)
