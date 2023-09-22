@@ -157,11 +157,11 @@ const dataReset = () => {
   docStore.post = null
   docStore.postList = []
   docStore.postCount = 0
-  postFilter.value.company = null
-  router.replace({ name: '본사 일반 문서' })
+  postFilter.value.project = null
+  router.replace({ name: '현장 일반 문서' })
 }
 
-const comSelect = (target: number | null) => {
+const projSelect = (target: number | null) => {
   dataReset()
   if (!!target) dataSetup(target)
 }
@@ -173,12 +173,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    selector="CompanySelect"
-    @com-select="comSelect"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
 
   <ContentBody>
     <CCardBody class="pb-5">
