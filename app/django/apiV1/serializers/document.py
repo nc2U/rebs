@@ -154,18 +154,21 @@ class PostSerializer(serializers.ModelSerializer):
         # Files 처리
         old_files = self.initial_data.getlist('files')
         if old_files:
-            # cng_files = self.initial_data.getlist('cngFiles')
+            cng_pks = self.initial_data.getlist('cngPks')
+            cng_files = self.initial_data.getlist('cngFiles')
+            cng_maps = [(pk, cng_files[i]) for i, pk in enumerate(cng_pks)]
+
             for json_file in old_files:
                 file = json.loads(json_file)
                 file_object = File.objects.get(pk=file.get('pk'))
-                # nf = [nf.get('file') for nf in cng_files if nf.get('pk') == file.get('pk')]
-                # if nf:
-                #     file['newFile'] = nf[0]
+
                 if file.get('del'):
                     file_object.delete()
-                elif file.get('newFile'):
-                    file_object.file = file.get('newFile')
-                    file_object.save()
+
+                for cng_map in cng_maps:
+                    if int(file.get('pk')) == int(cng_map[0]):
+                        file_object.file = cng_map[1]
+                        file_object.save()
 
         new_files = self.initial_data.getlist('newFiles')
         if new_files:

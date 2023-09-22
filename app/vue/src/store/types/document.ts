@@ -95,7 +95,7 @@ export interface AFile {
   pk: null | number
   post?: number
   file: string
-  newFile?: string | File
+  newFile?: Blob
   hit: number
   del?: boolean
 }

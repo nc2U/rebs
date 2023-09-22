@@ -32,7 +32,12 @@ const postFilter = ref<PostFilter>({
 })
 
 const newFiles = ref<File[]>([])
-const changeFiles = ref<{ pk: number; file: File }[]>([])
+const cngFiles = ref<
+  {
+    pk: number
+    file: File
+  }[]
+>([])
 
 const docsFilter = (payload: PostFilter) => {
   postFilter.value.is_com = payload.is_com
@@ -82,7 +87,7 @@ watch(route, val => {
   else docStore.post = null
 })
 
-const fileChange = (payload: { pk: number; file: File }) => changeFiles.value.push(payload)
+const fileChange = (payload: { pk: number; file: File }) => cngFiles.value.push(payload)
 
 const fileUpload = (file: File) => newFiles.value.push(file)
 
@@ -91,15 +96,20 @@ const onSubmit = (payload: Post & Attatches) => {
     const { pk, ...getData } = payload
     getData.company = company.value
     getData.newFiles = newFiles.value
-    getData.cngFiles = changeFiles.value
+    getData.cngFiles = cngFiles.value
 
     const form = new FormData()
 
     for (const key in getData) {
       if (key === 'links' || key === 'files') {
-        getData[key]?.forEach(val => form.append(key, JSON.stringify(val) as any))
+        getData[key]?.forEach(val => form.append(key, JSON.stringify(val)))
       } else if (key === 'newLinks' || key === 'newFiles' || key === 'cngFiles') {
-        getData[key]?.forEach(val => form.append(key, val as any))
+        if (key === 'cngFiles') {
+          getData[key]?.forEach(val => {
+            form.append('cngPks', val.pk as any)
+            form.append('cngFiles', val.file as Blob)
+          })
+        } else getData[key]?.forEach(val => form.append(key, val as string | Blob))
       } else {
         const formValue = getData[key] === null ? '' : getData[key]
         form.append(key, formValue as string)
