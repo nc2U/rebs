@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount, watch } from 'vue'
-import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin1'
+import { pageTitle, navMenu } from '@/views/proDocs/_menu/headermixin1'
 import { type RouteLocationNormalizedLoaded as Loaded, useRoute, useRouter } from 'vue-router'
 import { useProject } from '@/store/pinia/project'
 import { useDocument, type PostFilter } from '@/store/pinia/document'
