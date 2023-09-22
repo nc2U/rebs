@@ -32,7 +32,7 @@ const caseFilter = ref<PostFilter>({
 })
 
 const newFiles = ref<File[]>([])
-const changeFiles = ref<Array<{ pk: number; file: File }>>([])
+const changeFiles = ref<{ pk: number; file: File }[]>([])
 
 const listFiltering = (payload: PostFilter) => {
   caseFilter.value.is_com = payload.is_com
