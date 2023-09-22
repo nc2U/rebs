@@ -156,10 +156,15 @@ class PostSerializer(serializers.ModelSerializer):
         if old_files:
             cng_pks = self.initial_data.getlist('cngPks')
             cng_files = self.initial_data.getlist('cngFiles')
-            # [(1, 'file1'), (2, 'file2')] 형태로 변환 후 아래 로직에서 파일 변경 로직 작성 요망
+            cng_maps = [(pk, cng_files[i]) for i, pk in cng_pks]  # 아래 로직에서 파일 변경 로직 작성 요망
             for json_file in old_files:
                 file = json.loads(json_file)
-                file_object = File.objects.get(pk=file.get('pk'))
+                pk = file.get('pk')
+                file_object = File.objects.get(pk=pk)
+                for m in cng_maps:
+                    if pk in m:
+                        file_object.file = m[1]
+                        file_object.save()
                 # nf = [nf.get('file') for nf in cng_files if nf.get('pk') == file.get('pk')]
                 # if nf:
                 #     file['newFile'] = nf[0]

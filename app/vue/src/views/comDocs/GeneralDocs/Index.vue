@@ -116,16 +116,16 @@ const onSubmit = (payload: Post & Attatches) => {
       }
     }
 
-    // if (pk) {
-    //   updatePost({ pk, form })
-    //   router.replace({
-    //     name: '본사 일반 문서 - 보기',
-    //     params: { postId: pk },
-    //   })
-    // } else {
-    //   createPost({ form })
-    //   router.replace({ name: '본사 일반 문서' })
-    // }
+    if (pk) {
+      updatePost({ pk, form })
+      router.replace({
+        name: '본사 일반 문서 - 보기',
+        params: { postId: pk },
+      })
+    } else {
+      createPost({ form })
+      router.replace({ name: '본사 일반 문서' })
+    }
   }
 }
 
