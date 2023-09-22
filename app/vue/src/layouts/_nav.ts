@@ -166,7 +166,7 @@ const project_docs = {
       name: '현장 일반 문서',
       badge: {
         color: 'warning',
-        text: 'link',
+        text: 'building...',
       },
       to: '/project-docs/general/posts',
     },
@@ -189,7 +189,7 @@ const project_docs = {
           name: '현장 소송 문서',
           badge: {
             color: 'warning',
-            text: 'link',
+            text: 'building...',
           },
           to: '/project-docs/lawsuit/posts',
         },
@@ -198,7 +198,7 @@ const project_docs = {
           name: '현장 소송 사건',
           badge: {
             color: 'warning',
-            text: 'link',
+            text: 'building...',
           },
           to: '/project-docs/lawsuit/case',
         },
