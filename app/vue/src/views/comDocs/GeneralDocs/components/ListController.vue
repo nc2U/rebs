@@ -10,13 +10,13 @@ const emit = defineEmits(['docs-filter'])
 
 const form = reactive<PostFilter>({
   is_com: false,
-  project: '',
+  project: null,
   ordering: '-created',
   search: '',
 })
 
 const formsCheck = computed(() => {
-  const a = form.project === ''
+  const a = form.project === null
   const b = form.is_com === false
   const c = form.ordering === '-created'
   const d = form.search === ''
@@ -37,14 +37,14 @@ const listFiltering = (page = 1) => {
 }
 
 const projectChange = (project: number | null) => {
-  if (project !== null) form.project = project.toString()
+  if (!!project) form.project = project
   else form.project = 'com'
 }
 
 defineExpose({ listFiltering, projectChange })
 
 const resetForm = () => {
-  form.project = ''
+  form.project = null
   form.is_com = false
   form.ordering = '-created'
   form.search = ''

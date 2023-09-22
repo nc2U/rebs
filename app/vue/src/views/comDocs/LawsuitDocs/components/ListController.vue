@@ -10,14 +10,14 @@ const emit = defineEmits(['list-filter'])
 
 const form = reactive<PostFilter>({
   is_com: '',
-  project: '',
+  project: null,
   ordering: '-created',
   search: '',
 })
 
 const formsCheck = computed(() => {
   const a = form.is_com === ''
-  const b = form.project === ''
+  const b = form.project === null
   const c = form.ordering === '-created'
   const d = form.search === ''
   return a && b && c && d
@@ -37,7 +37,7 @@ const listFiltering = (page = 1) => {
 }
 
 const projectChange = (project: number | null) => {
-  if (project !== null) form.project = project.toString()
+  if (project !== null) form.project = project
   else form.project = 'com'
 }
 
@@ -45,7 +45,7 @@ defineExpose({ listFiltering, projectChange })
 
 const resetForm = () => {
   form.is_com = ''
-  form.project = ''
+  form.project = null
   form.ordering = '-created'
   form.search = ''
   listFiltering(1)

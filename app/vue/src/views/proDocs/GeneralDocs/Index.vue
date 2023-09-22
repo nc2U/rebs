@@ -93,7 +93,7 @@ const fileUpload = (file: File) => newFiles.value.push(file)
 const onSubmit = (payload: Post & Attatches) => {
   if (project.value) {
     const { pk, ...getData } = payload
-    getData.company = company.value
+    getData.company = company.value as null | number
     getData.project = project.value
     getData.newFiles = newFiles.value
     getData.cngFiles = cngFiles.value
