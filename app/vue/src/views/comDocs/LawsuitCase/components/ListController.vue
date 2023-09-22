@@ -12,7 +12,7 @@ const emit = defineEmits(['list-filter'])
 
 const form = reactive<SuitCaseFilter>({
   is_com: '',
-  project: '',
+  project: null,
   court: '',
   related_case: '',
   sort: '',
@@ -23,7 +23,7 @@ const form = reactive<SuitCaseFilter>({
 
 const formsCheck = computed(() => {
   const a = form.is_com === ''
-  const b = form.project === ''
+  const b = form.project === null
   const c = form.court === ''
   const d = form.related_case === ''
   const e = form.sort === ''
@@ -67,7 +67,7 @@ defineExpose({
 
 const resetForm = () => {
   form.is_com = ''
-  form.project = ''
+  form.project = null
   form.court = ''
   form.related_case = ''
   form.sort = ''

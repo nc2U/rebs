@@ -25,7 +25,7 @@ const postFilter = ref<PostFilter>({
   board: 2,
   category: null,
   is_com: false,
-  project: '',
+  project: null,
   ordering: '',
   search: '',
   page: 1,
@@ -136,7 +136,7 @@ const fileHit = (payload: AFile) => patchFile(payload)
 const sortFilter = (project: number | null) => {
   fController.value.projectChange(project)
   postFilter.value.page = 1
-  if (project !== null) postFilter.value.project = project.toString()
+  if (project !== null) postFilter.value.project = project
   else postFilter.value.is_com = true
   docsFilter(postFilter.value)
 }

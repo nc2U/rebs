@@ -25,7 +25,7 @@ const caseFilter = ref<PostFilter>({
   board: 3,
   category: null,
   is_com: '',
-  project: '',
+  project: null,
   ordering: '',
   search: '',
   page: 1,
@@ -138,7 +138,7 @@ const fileHit = (payload: AFile) => patchFile(payload)
 const sortFilter = (project: number | null) => {
   fController.value.projectChange(project)
   caseFilter.value.page = 1
-  if (project !== null) caseFilter.value.project = project.toString()
+  if (project !== null) caseFilter.value.project = project
   else caseFilter.value.is_com = true
   listFiltering(caseFilter.value)
 }

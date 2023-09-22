@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { reactive, computed, nextTick, onBeforeMount } from 'vue'
-import { useProject } from '@/store/pinia/project'
+import { reactive, computed, nextTick } from 'vue'
 import { type PostFilter, useDocument } from '@/store/pinia/document'
 import { numFormat } from '@/utils/baseMixins'
 import { bgLight } from '@/utils/cssMixins'
@@ -9,26 +8,17 @@ defineProps({ tab: { type: Number, default: null } })
 const emit = defineEmits(['docs-filter'])
 
 const form = reactive<PostFilter>({
-  is_com: false,
-  project: null,
   ordering: '-created',
   search: '',
 })
 
-const formsCheck = computed(() => {
-  const a = form.project === null
-  const b = form.is_com === false
-  const c = form.ordering === '-created'
-  const d = form.search === ''
-  return a && b && c && d
-})
+const formsCheck = computed(() => form.ordering === '-created' && form.search === '')
 
 const documentStore = useDocument()
 const postCount = computed(() => documentStore.postCount)
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
-    form.is_com = form.project === 'com'
     emit('docs-filter', {
       ...{ page },
       ...form,
@@ -36,42 +26,20 @@ const listFiltering = (page = 1) => {
   })
 }
 
-const projectChange = (project: number | null) => {
-  if (!!project) form.project = project
-  else form.project = 'com'
-}
-
-defineExpose({ listFiltering, projectChange })
+defineExpose({ listFiltering })
 
 const resetForm = () => {
-  form.project = null
-  form.is_com = false
   form.ordering = '-created'
   form.search = ''
   listFiltering(1)
 }
-
-const projectStore = useProject()
-const projSelect = computed(() => projectStore.projSelect)
-const fetchProjectList = () => projectStore.fetchProjectList()
-onBeforeMount(() => fetchProjectList())
 </script>
 
 <template>
-  <CCallout color="primary" class="pb-0 mb-4" :class="bgLight">
+  <CCallout color="success" class="pb-0 mb-4" :class="bgLight">
     <CRow>
       <CCol lg="6">
         <CRow>
-          <CCol md="6" lg="5" xl="4" class="mb-3">
-            <CFormSelect v-model="form.project" @change="listFiltering(1)">
-              <option value="">전체 프로젝트</option>
-              <option value="com">본사</option>
-              <option v-for="proj in projSelect" :key="proj.value" :value="proj.value">
-                {{ proj.label }}
-              </option>
-            </CFormSelect>
-          </CCol>
-
           <CCol md="6" lg="5" xl="4" class="mb-3">
             <CFormSelect v-model="form.ordering" @change="listFiltering(1)">
               <option value="created">작성일자 오름차순</option>
@@ -116,3 +84,4 @@ onBeforeMount(() => fetchProjectList())
     </CRow>
   </CCallout>
 </template>
+s
