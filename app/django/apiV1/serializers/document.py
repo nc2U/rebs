@@ -154,7 +154,9 @@ class PostSerializer(serializers.ModelSerializer):
         # Files 처리
         old_files = self.initial_data.getlist('files')
         if old_files:
-            # cng_files = self.initial_data.getlist('cngFiles')
+            cng_pks = self.initial_data.getlist('cngPks')
+            cng_files = self.initial_data.getlist('cngFiles')
+            # [(1, 'file1'), (2, 'file2')] 형태로 변환 후 아래 로직에서 파일 변경 로직 작성 요망
             for json_file in old_files:
                 file = json.loads(json_file)
                 file_object = File.objects.get(pk=file.get('pk'))
