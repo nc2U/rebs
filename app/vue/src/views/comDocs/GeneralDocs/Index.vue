@@ -32,7 +32,7 @@ const postFilter = ref<PostFilter>({
 })
 
 const newFiles = ref<File[]>([])
-const changeFiles = ref<Array<{ pk: number; file: File }>>([])
+const changeFiles = ref<{ pk: number; file: File }[]>([])
 
 const docsFilter = (payload: PostFilter) => {
   postFilter.value.is_com = payload.is_com
