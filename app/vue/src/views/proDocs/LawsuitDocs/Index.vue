@@ -210,6 +210,7 @@ onBeforeMount(() => {
 
       <div v-else-if="route.name.includes('작성')">
         <DocsForm
+          :board-num="boardNumber"
           :category-list="categoryList"
           :view-route="mainViewName"
           @file-upload="fileUpload"
@@ -219,6 +220,7 @@ onBeforeMount(() => {
 
       <div v-else-if="route.name.includes('수정')">
         <DocsForm
+          :board-num="boardNumber"
           :category-list="categoryList"
           :post="post as Post"
           :view-route="mainViewName"
@@ -227,7 +229,6 @@ onBeforeMount(() => {
           @on-submit="onSubmit"
         />
       </div>
-      {{ mainViewName }}
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>

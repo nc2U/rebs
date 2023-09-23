@@ -10,6 +10,7 @@ import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
+  boardNum: { type: Number, default: 2 },
   categoryList: { type: Object, default: null },
   post: { type: Object as PropType<Post>, default: null },
   viewRoute: { type: String, required: true },
@@ -27,7 +28,7 @@ const form = reactive<Post>({
   pk: undefined,
   company: null,
   project: null,
-  board: 2,
+  board: props.boardNum,
   is_notice: false,
   category: null,
   lawsuit: null,
