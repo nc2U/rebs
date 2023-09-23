@@ -12,6 +12,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 const props = defineProps({
   getSuitCase: { type: Object, required: true },
   suitcase: { type: Object as PropType<SuitCase | null>, default: null },
+  viewRoute: { type: String, required: true },
 })
 const emit = defineEmits(['on-submit', 'close'])
 
@@ -249,9 +250,7 @@ onUpdated(() => dataSetup())
 
     <CRow>
       <CCol class="text-right">
-        <CButton color="light" @click="$router.push({ name: '본사 소송 사건' })">
-          목록으로
-        </CButton>
+        <CButton color="light" @click="$router.push({ name: `${viewRoute}` })"> 목록으로 </CButton>
         <CButton v-if="route.params.caseId" color="light" @click="$router.go(-1)"> 뒤로</CButton>
         <CButton :color="btnClass" type="submit" :disabled="formsCheck"> 저장하기</CButton>
       </CCol>
@@ -259,7 +258,7 @@ onUpdated(() => dataSetup())
   </CForm>
 
   <ConfirmModal ref="refDelModal">
-    <template #header> 본사 소송 사건</template>
+    <template #header> {{ viewRoute }}</template>
     <template #default>현재 삭제 기능이 구현되지 않았습니다.</template>
     <template #footer>
       <CButton color="danger" disabled>삭제</CButton>
@@ -267,8 +266,8 @@ onUpdated(() => dataSetup())
   </ConfirmModal>
 
   <ConfirmModal ref="refConfirmModal">
-    <template #header> 본사 소송 사건</template>
-    <template #default> 본사 소송 사건 저장을 진행하시겠습니까?</template>
+    <template #header> {{ viewRoute }}</template>
+    <template #default> {{ viewRoute }} 저장을 진행하시겠습니까?</template>
     <template #footer>
       <CButton :color="btnClass" @click="modalAction">저장</CButton>
     </template>

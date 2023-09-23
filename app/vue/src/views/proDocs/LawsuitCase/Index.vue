@@ -13,7 +13,6 @@ import CaseList from '@/components/LawSuitCase/CaseList.vue'
 import CaseForm from '@/components/LawSuitCase/CaseForm.vue'
 
 const fController = ref()
-const boardNumber = ref(3)
 const mainViewName = ref('현장 소송 사건')
 const caseFilter = ref<cFilter>({
   company: null,
@@ -142,6 +141,7 @@ onBeforeMount(() => {
           :company="company || undefined"
           :page="caseFilter.page"
           :case-list="suitcaseList"
+          :view-route="mainViewName"
           @page-select="pageSelect"
           @agency-filter="agencyFilter"
           @agency-search="agencySearch"
@@ -151,17 +151,18 @@ onBeforeMount(() => {
       </div>
 
       <div v-else-if="route.name.includes('보기')">
-        <CaseView :suitcase="suitcase as SuitCase" />
+        <CaseView :suitcase="suitcase as SuitCase" :view-route="mainViewName" />
       </div>
 
       <div v-else-if="route.name.includes('작성')">
-        <CaseForm :get-suit-case="getSuitCase" @on-submit="onSubmit" />
+        <CaseForm :get-suit-case="getSuitCase" :view-route="mainViewName" @on-submit="onSubmit" />
       </div>
 
       <div v-else-if="route.name.includes('수정')">
         <CaseForm
           :get-suit-case="getSuitCase"
           :suitcase="suitcase"
+          :view-route="mainViewName"
           @on-submit="onSubmit"
           @on-delete="onDelete"
         />

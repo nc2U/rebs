@@ -6,6 +6,7 @@ import { cutString } from '@/utils/baseMixins'
 
 const props = defineProps({
   suitCase: { type: Object as PropType<SuitCase>, default: null },
+  viewRoute: { type: String, required: true },
 })
 
 const emit = defineEmits(['agency-filter', 'agency-search', 'related-filter', 'sort-filter'])
@@ -69,7 +70,7 @@ const getCourt = (court: string | undefined) =>
       </CCol>
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      <router-link :to="{ name: '본사 소송 사건 - 보기', params: { caseId: suitCase.pk } }">
+      <router-link :to="{ name: `${viewRoute} - 보기`, params: { caseId: suitCase.pk } }">
         {{ cutString(suitCaseName, 28) }}
       </router-link>
     </CTableDataCell>

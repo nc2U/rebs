@@ -6,6 +6,7 @@ import { type SuitCase } from '@/store/types/document'
 
 defineProps({
   suitcase: { type: Object as PropType<SuitCase>, required: true },
+  viewRoute: { type: String, required: true },
 })
 
 const toPrint = () => alert('준비중!')
@@ -159,7 +160,7 @@ const getNext = 3
             :disabled="!getPrev"
             @click="
               $router.push({
-                name: '본사 소송 사건 - 보기',
+                name: `${viewRoute} - 보기`,
                 params: { caseId: getPrev },
               })
             "
@@ -171,7 +172,7 @@ const getNext = 3
             :disabled="!getNext"
             @click="
               $router.push({
-                name: '본사 소송 사건 - 보기',
+                name: `${viewRoute} - 보기`,
                 params: { caseId: getNext },
               })
             "
@@ -185,7 +186,7 @@ const getNext = 3
             color="success"
             @click="
               $router.push({
-                name: '본사 소송 사건 - 수정',
+                name: `${viewRoute} - 수정`,
                 params: { caseId: suitcase.pk },
               })
             "
@@ -196,10 +197,8 @@ const getNext = 3
         </CButtonGroup>
       </CCol>
       <CCol class="text-right">
-        <CButton color="light" @click="$router.push({ name: '본사 소송 사건' })">
-          목록으로
-        </CButton>
-        <CButton color="primary" @click="$router.push({ name: '본사 소송 사건 - 작성' })">
+        <CButton color="light" @click="$router.push({ name: `${viewRoute}` })"> 목록으로</CButton>
+        <CButton color="primary" @click="$router.push({ name: `${viewRoute} - 작성` })">
           등록하기
         </CButton>
       </CCol>
