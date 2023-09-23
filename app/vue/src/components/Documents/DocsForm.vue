@@ -12,6 +12,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 const props = defineProps({
   categoryList: { type: Object, default: null },
   post: { type: Object as PropType<Post>, default: null },
+  viewRoute: { type: String, required: true },
 })
 
 const emit = defineEmits(['on-submit', 'file-upload', 'file-change', 'close'])
@@ -323,7 +324,7 @@ onUpdated(() => dataSetup())
 
     <CRow>
       <CCol class="text-right">
-        <CButton color="light" @click="router.push({ name: '본사 일반 문서' })"> 목록으로</CButton>
+        <CButton color="light" @click="router.push({ name: `${viewRoute}` })"> 목록으로</CButton>
         <CButton v-if="route.params.postId" color="light" @click="router.go(-1)"> 뒤로</CButton>
         <CButton :color="btnClass" type="submit" :disabled="formsCheck"> 저장하기</CButton>
       </CCol>
@@ -331,7 +332,7 @@ onUpdated(() => dataSetup())
   </CForm>
 
   <ConfirmModal ref="refDelModal">
-    <template #header> 본사 일반 문서</template>
+    <template #header> {{ viewRoute }}</template>
     <template #default>현재 삭제 기능이 구현되지 않았습니다.</template>
     <template #footer>
       <CButton color="danger" disabled>삭제</CButton>
@@ -339,8 +340,8 @@ onUpdated(() => dataSetup())
   </ConfirmModal>
 
   <ConfirmModal ref="refConfirmModal">
-    <template #header> 본사 일반 문서</template>
-    <template #default> 본사 일반 문서 저장을 진행하시겠습니까?</template>
+    <template #header> {{ viewRoute }}</template>
+    <template #default> {{ viewRoute }} 저장을 진행하시겠습니까?</template>
     <template #footer>
       <CButton :color="btnClass" @click="modalAction">저장</CButton>
     </template>

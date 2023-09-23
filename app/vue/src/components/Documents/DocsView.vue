@@ -8,6 +8,7 @@ import sanitizeHtml from 'sanitize-html'
 const props = defineProps({
   category: { type: Number, default: undefined },
   post: { type: Object as PropType<Post>, default: null },
+  viewRoute: { type: String, required: true },
 })
 const emit = defineEmits(['post-hit', 'link-hit', 'file-hit'])
 
@@ -192,7 +193,7 @@ const getFileName = (file: string) => {
             :disabled="!getPrev"
             @click="
               $router.push({
-                name: '본사 일반 문서 - 보기',
+                name: `${viewRoute} - 보기`,
                 params: { postId: getPrev },
               })
             "
@@ -204,7 +205,7 @@ const getFileName = (file: string) => {
             :disabled="!getNext"
             @click="
               $router.push({
-                name: '본사 일반 문서 - 보기',
+                name: `${viewRoute} - 보기`,
                 params: { postId: getNext },
               })
             "
@@ -218,7 +219,7 @@ const getFileName = (file: string) => {
             color="success"
             @click="
               $router.push({
-                name: '본사 일반 문서 - 수정',
+                name: `${viewRoute} - 수정`,
                 params: { postId: post.pk },
               })
             "
@@ -229,10 +230,8 @@ const getFileName = (file: string) => {
         </CButtonGroup>
       </CCol>
       <CCol class="text-right">
-        <CButton color="light" @click="$router.push({ name: '본사 일반 문서' })">
-          목록으로
-        </CButton>
-        <CButton color="primary" @click="$router.push({ name: '본사 일반 문서 - 작성' })">
+        <CButton color="light" @click="$router.push({ name: `${viewRoute}` })"> 목록으로</CButton>
+        <CButton color="primary" @click="$router.push({ name: `${viewRoute} - 작성` })">
           등록하기
         </CButton>
       </CCol>

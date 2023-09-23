@@ -13,7 +13,6 @@ import {
 } from '@/store/types/document'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
-import ListController from './components/ListController.vue'
 import ListingProDocs from '@/components/Documents/ListingProDocs.vue'
 import CategoryTabs from '@/components/Documents/CategoryTabs.vue'
 import DocsList from '@/components/Documents/DocsList.vue'
@@ -21,6 +20,7 @@ import DocsView from '@/components/Documents/DocsView.vue'
 import DocsForm from '@/components/Documents/DocsForm.vue'
 
 const fController = ref()
+const mainViewName = ref('현장 소송 문서')
 const postFilter = ref<PostFilter>({
   company: null,
   board: 3,
@@ -177,7 +177,7 @@ onBeforeMount(() => {
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <div v-if="route.name === '현장 소송 문서'" class="pt-3">
+      <div v-if="route.name === `${mainViewName}`" class="pt-3">
         <ListingProDocs ref="fController" @docs-filter="docsFilter" />
 
         <CategoryTabs
@@ -190,7 +190,7 @@ onBeforeMount(() => {
           :project="project as number"
           :page="postFilter.page"
           :post-list="postList"
-          :view-route="'현장 소송 문서 - 보기'"
+          :view-route="mainViewName"
           @page-select="pageSelect"
           @sort-filter="sortFilter"
         />
@@ -200,6 +200,7 @@ onBeforeMount(() => {
         <DocsView
           :category="postFilter.category as number"
           :post="post as Post"
+          :view-route="mainViewName"
           @post-hit="postHit"
           @link-hit="linkHit"
           @file-hit="fileHit"
@@ -207,18 +208,25 @@ onBeforeMount(() => {
       </div>
 
       <div v-else-if="route.name.includes('작성')">
-        <DocsForm :category-list="categoryList" @file-upload="fileUpload" @on-submit="onSubmit" />
+        <DocsForm
+          :category-list="categoryList"
+          :view-route="mainViewName"
+          @file-upload="fileUpload"
+          @on-submit="onSubmit"
+        />
       </div>
 
       <div v-else-if="route.name.includes('수정')">
         <DocsForm
           :category-list="categoryList"
           :post="post as Post"
+          :view-route="mainViewName"
           @file-change="fileChange"
           @file-upload="fileUpload"
           @on-submit="onSubmit"
         />
       </div>
+      {{ mainViewName }}
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>

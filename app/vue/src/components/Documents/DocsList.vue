@@ -8,9 +8,10 @@ import Docs from './components/Docs.vue'
 
 defineProps({
   company: { type: Number, default: null },
+  project: { type: Number, default: null },
   page: { type: Number, default: 1 },
   postList: { type: Array as PropType<Post[]>, default: () => [] },
-  viewRoute: { type: String, default: '본사 일반 문서 - 보기' },
+  viewRoute: { type: String, required: true },
 })
 
 const emit = defineEmits(['page-select', 'sort-filter'])
@@ -71,8 +72,8 @@ const sortFilter = (project: number | null) => emit('sort-filter', project)
       <CButton
         color="primary"
         class="px-5"
-        :disabled="!company"
-        @click="$router.push({ name: '본사 일반 문서 - 작성' })"
+        :disabled="!company && !project"
+        @click="$router.push({ name: `${viewRoute} - 작성` })"
       >
         등록하기
       </CButton>
