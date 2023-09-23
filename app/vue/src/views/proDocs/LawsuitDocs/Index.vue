@@ -2,7 +2,7 @@
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/proDocs/_menu/headermixin2'
 import { type RouteLocationNormalizedLoaded as Loaded, useRoute, useRouter } from 'vue-router'
-import { useCompany } from '@/store/pinia/company'
+import { useProject } from '@/store/pinia/project'
 import { useDocument, type PostFilter } from '@/store/pinia/document'
 import {
   type AFile,
@@ -14,6 +14,7 @@ import {
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
+import ListingProDocs from '@/components/Documents/ListingProDocs.vue'
 import CategoryTabs from '@/components/Documents/CategoryTabs.vue'
 import DocsList from '@/components/Documents/DocsList.vue'
 import DocsView from '@/components/Documents/DocsView.vue'
@@ -22,7 +23,7 @@ import DocsForm from '@/components/Documents/DocsForm.vue'
 const fController = ref()
 const postFilter = ref<PostFilter>({
   company: null,
-  board: 2,
+  board: 3,
   category: null,
   is_com: false,
   project: null,
@@ -40,11 +41,9 @@ const cngFiles = ref<
 >([])
 
 const docsFilter = (payload: PostFilter) => {
-  postFilter.value.is_com = payload.is_com
-  if (!payload.is_com) postFilter.value.project = payload.project
   postFilter.value.ordering = payload.ordering
   postFilter.value.search = payload.search
-  if (company.value) fetchPostList({ ...postFilter.value })
+  if (project.value) fetchPostList({ ...postFilter.value })
 }
 
 const selectCate = (cate: number) => {
@@ -57,8 +56,9 @@ const pageSelect = (page: number) => {
   docsFilter(postFilter.value)
 }
 
-const comStore = useCompany()
-const company = computed(() => comStore.company?.pk)
+const projStore = useProject()
+const project = computed(() => projStore.project?.pk)
+const company = computed(() => projStore.project?.company)
 
 const docStore = useDocument()
 const post = computed(() => docStore.post)
@@ -92,9 +92,10 @@ const fileChange = (payload: { pk: number; file: File }) => cngFiles.value.push(
 const fileUpload = (file: File) => newFiles.value.push(file)
 
 const onSubmit = (payload: Post & Attatches) => {
-  if (company.value) {
+  if (project.value) {
     const { pk, ...getData } = payload
-    getData.company = company.value
+    getData.company = company.value as null | number
+    getData.project = project.value
     getData.newFiles = newFiles.value
     getData.cngFiles = cngFiles.value
 
@@ -119,12 +120,12 @@ const onSubmit = (payload: Post & Attatches) => {
     if (pk) {
       updatePost({ pk, form })
       router.replace({
-        name: '본사 일반 문서 - 보기',
+        name: '현장 소송 문서 - 보기',
         params: { postId: pk },
       })
     } else {
       createPost({ form })
-      router.replace({ name: '본사 일반 문서' })
+      router.replace({ name: '현장 소송 문서' })
     }
   }
 }
@@ -143,56 +144,50 @@ const sortFilter = (project: number | null) => {
 
 const dataSetup = (pk: number, postId?: string | string[]) => {
   fetchPostList({
-    company: pk,
-    board: 2,
+    project: pk,
+    board: 3,
     page: postFilter.value.page,
     category: postFilter.value.category,
   })
   if (postId) fetchPost(Number(postId))
-  postFilter.value.company = pk
+  postFilter.value.project = pk
 }
 
 const dataReset = () => {
-  comStore.company = null
   docStore.post = null
   docStore.postList = []
   docStore.postCount = 0
   postFilter.value.company = null
-  router.replace({ name: '본사 일반 문서' })
+  router.replace({ name: '현장 소송 문서' })
 }
 
-const comSelect = (target: number | null) => {
+const projSelect = (target: number | null) => {
   dataReset()
   if (!!target) dataSetup(target)
 }
 
 onBeforeMount(() => {
-  fetchCategoryList(2)
-  dataSetup(company.value || comStore.initComId, route.params?.postId)
+  fetchCategoryList(3)
+  dataSetup(project.value || projStore.initProjId, route.params?.postId)
 })
 </script>
 
 <template>
-  <ContentHeader
-    :page-title="pageTitle"
-    :nav-menu="navMenu"
-    selector="CompanySelect"
-    @com-select="comSelect"
-  />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
 
   <ContentBody>
     <CCardBody class="pb-5">
       <div v-if="route.name === '현장 소송 문서'" class="pt-3">
-        <ListController ref="fController" @docs-filter="docsFilter" />
+        <ListingProDocs ref="fController" @docs-filter="docsFilter" />
 
-        <!--        <CategoryTabs-->
-        <!--          :category="postFilter.category as number"-->
-        <!--          :category-list="categoryList"-->
-        <!--          @select-cate="selectCate"-->
-        <!--        />-->
+        <CategoryTabs
+          :category="postFilter.category as number"
+          :category-list="categoryList"
+          @select-cate="selectCate"
+        />
 
         <DocsList
-          :company="company as number"
+          :project="project as number"
           :page="postFilter.page"
           :post-list="postList"
           :view-route="'현장 소송 문서 - 보기'"
@@ -202,27 +197,27 @@ onBeforeMount(() => {
       </div>
 
       <div v-else-if="route.name.includes('보기')">
-        <!--        <DocsView-->
-        <!--          :category="postFilter.category as number"-->
-        <!--          :post="post as Post"-->
-        <!--          @post-hit="postHit"-->
-        <!--          @link-hit="linkHit"-->
-        <!--          @file-hit="fileHit"-->
-        <!--        />-->
+        <DocsView
+          :category="postFilter.category as number"
+          :post="post as Post"
+          @post-hit="postHit"
+          @link-hit="linkHit"
+          @file-hit="fileHit"
+        />
       </div>
 
       <div v-else-if="route.name.includes('작성')">
-        <!--        <DocsForm :category-list="categoryList" @file-upload="fileUpload" @on-submit="onSubmit" />-->
+        <DocsForm :category-list="categoryList" @file-upload="fileUpload" @on-submit="onSubmit" />
       </div>
 
       <div v-else-if="route.name.includes('수정')">
-        <!--        <DocsForm-->
-        <!--          :category-list="categoryList"-->
-        <!--          :post="post as Post"-->
-        <!--          @file-change="fileChange"-->
-        <!--          @file-upload="fileUpload"-->
-        <!--          @on-submit="onSubmit"-->
-        <!--        />-->
+        <DocsForm
+          :category-list="categoryList"
+          :post="post as Post"
+          @file-change="fileChange"
+          @file-upload="fileUpload"
+          @on-submit="onSubmit"
+        />
       </div>
     </CCardBody>
 
