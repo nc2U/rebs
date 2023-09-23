@@ -180,7 +180,7 @@ onUpdated(() => dataSetup())
   >
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">제목</CFormLabel>
-      <CCol md="8">
+      <CCol :md="boardNum === 3 ? 9 : 8">
         <CFormInput id="title" v-model="form.title" required placeholder="게시물 제목" />
       </CCol>
     </CRow>
@@ -189,7 +189,7 @@ onUpdated(() => dataSetup())
       <CFormLabel v-if="boardNum === 3" for="inputPassword" class="col-sm-2 col-form-label">
         사건번호 (사건번호 등록)
       </CFormLabel>
-      <CCol v-if="boardNum === 3" md="4">
+      <CCol v-if="boardNum === 3" md="3">
         <Multiselect
           v-model="form.lawsuit"
           :options="getSuitCase"

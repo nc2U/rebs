@@ -3,7 +3,7 @@ import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/proDocs/_menu/headermixin2'
 import { type RouteLocationNormalizedLoaded as Loaded, useRoute, useRouter } from 'vue-router'
 import { useProject } from '@/store/pinia/project'
-import { useDocument, type PostFilter } from '@/store/pinia/document'
+import { useDocument, type PostFilter, SuitCaseFilter } from '@/store/pinia/document'
 import {
   type AFile,
   type Attatches,
@@ -70,6 +70,7 @@ const getSuitCase = computed(() => docStore.getSuitCase)
 const fetchPost = (pk: number) => docStore.fetchPost(pk)
 const fetchPostList = (payload: PostFilter) => docStore.fetchPostList(payload)
 const fetchCategoryList = (board: number) => docStore.fetchCategoryList(board)
+const fetchAllSuitCaseList = (payload: SuitCaseFilter) => docStore.fetchAllSuitCaseList(payload)
 
 const createPost = (payload: { form: FormData }) => docStore.createPost(payload)
 const updatePost = (payload: { pk: number; form: FormData }) => docStore.updatePost(payload)
@@ -152,6 +153,7 @@ const dataSetup = (pk: number, postId?: string | string[]) => {
     category: postFilter.value.category,
   })
   if (postId) fetchPost(Number(postId))
+  fetchAllSuitCaseList({})
   postFilter.value.project = pk
 }
 
