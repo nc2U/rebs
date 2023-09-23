@@ -217,6 +217,7 @@ export const useDocument = defineStore('document', () => {
       .then(res =>
         fetchPostList({
           company: res.data.company,
+          project: res.data.project,
           board: res.data.board,
         }).then(() => message()),
       )

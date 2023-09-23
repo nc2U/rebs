@@ -8,10 +8,14 @@ import QuillEditor from '@/components/QuillEditor/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
+import Multiselect from '@vueform/multiselect'
 
 const props = defineProps({
-  categoryList: { type: Object, default: null },
+  boardNum: { type: Number, default: 2 },
+  categoryList: { type: Object, required: true },
+  getSuitCase: { type: Object, default: null },
   post: { type: Object as PropType<Post>, default: null },
+  viewRoute: { type: String, required: true },
 })
 
 const emit = defineEmits(['on-submit', 'file-upload', 'file-change', 'close'])
@@ -26,7 +30,7 @@ const form = reactive<Post>({
   pk: undefined,
   company: null,
   project: null,
-  board: 2,
+  board: props.boardNum,
   is_notice: false,
   category: null,
   lawsuit: null,
@@ -58,8 +62,6 @@ const formsCheck = computed(() => {
     return a && b && c && d && e && f && attach.value
   } else return false
 })
-
-const sortName = computed(() => (props.post && props.post.project ? props.post.proj_name : '본사'))
 
 const [route, router] = [useRoute(), useRouter()]
 const btnClass = computed(() => (route.params.postId ? 'success' : 'primary'))
@@ -161,9 +163,8 @@ onUpdated(() => dataSetup())
   <CRow class="mt-5">
     <CCol>
       <h5>
-        {{ sortName }}
         <v-icon icon="mdi-chevron-double-right" size="xs" />
-        일반 문서
+        {{ viewRoute }}
       </h5>
     </CCol>
   </CRow>
@@ -179,14 +180,36 @@ onUpdated(() => dataSetup())
   >
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">제목</CFormLabel>
-      <CCol md="8">
+      <CCol :md="boardNum === 3 ? 9 : 8">
         <CFormInput id="title" v-model="form.title" required placeholder="게시물 제목" />
       </CCol>
     </CRow>
 
     <CRow class="mb-3">
-      <CFormLabel for="category" class="col-sm-2 col-form-label"> 카테고리</CFormLabel>
-      <CCol md="3">
+      <CFormLabel v-if="boardNum === 3" for="inputPassword" class="col-sm-2 col-form-label">
+        사건번호 (사건번호 등록)
+      </CFormLabel>
+      <CCol v-if="boardNum === 3" md="3">
+        <Multiselect
+          v-model="form.lawsuit"
+          :options="getSuitCase"
+          placeholder="사건번호 선택"
+          autocomplete="label"
+          :classes="{ search: 'form-control multiselect-search' }"
+          :attrs="form.lawsuit ? {} : { required: true }"
+          :add-option-on="['enter', 'tab']"
+          searchable
+        />
+      </CCol>
+
+      <CFormLabel
+        for="category"
+        class="col-sm-2 col-form-label"
+        :class="{ 'col-lg-1': boardNum === 3 }"
+      >
+        카테고리
+      </CFormLabel>
+      <CCol :md="boardNum === 3 ? 2 : 3">
         <CFormSelect id="category" v-model="form.category" required>
           <option value="">카테고리 선택</option>
           <option v-for="cate in categoryList" :key="cate.pk" :value="cate.pk">
@@ -195,11 +218,17 @@ onUpdated(() => dataSetup())
         </CFormSelect>
       </CCol>
 
-      <CFormLabel for="inputPassword" class="col-sm-2 col-form-label"> 문서 시행일자</CFormLabel>
-      <CCol md="3">
-        <DatePicker v-model="form.execution_date" placeholder="문서 시행일자" />
+      <CFormLabel
+        for="inputPassword"
+        class="col-sm-2 col-form-label"
+        :class="{ 'col-lg-1': boardNum === 3 }"
+      >
+        문서 발행일자
+      </CFormLabel>
+      <CCol :md="boardNum === 3 ? 2 : 3">
+        <DatePicker v-model="form.execution_date" placeholder="문서 발행일자" />
       </CCol>
-      <CCol class="pt-2">
+      <CCol v-if="boardNum !== 3" class="pt-2">
         <CFormSwitch id="is_notice" v-model="form.is_notice" label="공지여부" />
       </CCol>
     </CRow>
@@ -323,7 +352,7 @@ onUpdated(() => dataSetup())
 
     <CRow>
       <CCol class="text-right">
-        <CButton color="light" @click="router.push({ name: '현장 일반 문서' })"> 목록으로</CButton>
+        <CButton color="light" @click="router.push({ name: `${viewRoute}` })"> 목록으로</CButton>
         <CButton v-if="route.params.postId" color="light" @click="router.go(-1)"> 뒤로</CButton>
         <CButton :color="btnClass" type="submit" :disabled="formsCheck"> 저장하기</CButton>
       </CCol>
@@ -331,7 +360,7 @@ onUpdated(() => dataSetup())
   </CForm>
 
   <ConfirmModal ref="refDelModal">
-    <template #header> 현장 일반 문서</template>
+    <template #header> {{ viewRoute }}</template>
     <template #default>현재 삭제 기능이 구현되지 않았습니다.</template>
     <template #footer>
       <CButton color="danger" disabled>삭제</CButton>
@@ -339,8 +368,8 @@ onUpdated(() => dataSetup())
   </ConfirmModal>
 
   <ConfirmModal ref="refConfirmModal">
-    <template #header> 현장 일반 문서</template>
-    <template #default> 현장 일반 문서 저장을 진행하시겠습니까?</template>
+    <template #header> {{ viewRoute }}</template>
+    <template #default> {{ viewRoute }} 저장을 진행하시겠습니까?</template>
     <template #footer>
       <CButton :color="btnClass" @click="modalAction">저장</CButton>
     </template>

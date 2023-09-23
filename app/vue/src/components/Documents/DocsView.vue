@@ -1,21 +1,24 @@
 <script lang="ts" setup>
 import { computed, type PropType } from 'vue'
-import { cutString, timeFormat } from '@/utils/baseMixins'
 import { useDocument } from '@/store/pinia/document'
+import { cutString, timeFormat } from '@/utils/baseMixins'
 import { type Post, type Link, type AFile } from '@/store/types/document'
 import sanitizeHtml from 'sanitize-html'
 
 const props = defineProps({
+  boardNum: { type: Number, default: 2 },
   category: { type: Number, default: undefined },
   post: { type: Object as PropType<Post>, default: null },
+  viewRoute: { type: String, required: true },
 })
+
 const emit = defineEmits(['post-hit', 'link-hit', 'file-hit'])
 
 const docStore = useDocument()
 const getPrev = computed(() => docStore.getPrev)
 const getNext = computed(() => docStore.getNext)
 
-const sortName = computed(() => props.post?.proj_name || '프로젝트 명')
+const sortName = computed(() => props.post?.proj_name || '본사 문서')
 
 const fetchLink = (pk: number) => docStore.fetchLink(pk)
 const fetchFile = (pk: number) => docStore.fetchFile(pk)
@@ -90,10 +93,10 @@ const getFileName = (file: string) => {
 
     <CRow class="mt-5 py-2 justify-content-between">
       <CCol md="5" lg="4" xl="3">
-        <table class="table table-bordered mt-2 mb-3">
+        <table v-if="boardNum !== 1" class="table table-bordered mt-2 mb-3">
           <tbody>
             <tr class="text-center">
-              <td class="p-2 bg-blue-grey-lighten-4">문서 시행일자</td>
+              <td class="p-2 bg-blue-grey-lighten-4">문서 발행일자</td>
               <td class="p-2">{{ post.execution_date }}</td>
             </tr>
           </tbody>
@@ -192,7 +195,7 @@ const getFileName = (file: string) => {
             :disabled="!getPrev"
             @click="
               $router.push({
-                name: '현장 일반 문서 - 보기',
+                name: `${viewRoute} - 보기`,
                 params: { postId: getPrev },
               })
             "
@@ -204,7 +207,7 @@ const getFileName = (file: string) => {
             :disabled="!getNext"
             @click="
               $router.push({
-                name: '현장 일반 문서 - 보기',
+                name: `${viewRoute} - 보기`,
                 params: { postId: getNext },
               })
             "
@@ -218,7 +221,7 @@ const getFileName = (file: string) => {
             color="success"
             @click="
               $router.push({
-                name: '현장 일반 문서 - 수정',
+                name: `${viewRoute} - 수정`,
                 params: { postId: post.pk },
               })
             "
@@ -229,10 +232,8 @@ const getFileName = (file: string) => {
         </CButtonGroup>
       </CCol>
       <CCol class="text-right">
-        <CButton color="light" @click="$router.push({ name: '현장 일반 문서' })">
-          목록으로
-        </CButton>
-        <CButton color="primary" @click="$router.push({ name: '현장 일반 문서 - 작성' })">
+        <CButton color="light" @click="$router.push({ name: `${viewRoute}` })"> 목록으로</CButton>
+        <CButton color="primary" @click="$router.push({ name: `${viewRoute} - 작성` })">
           등록하기
         </CButton>
       </CCol>
