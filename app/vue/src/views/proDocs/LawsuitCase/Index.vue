@@ -1,23 +1,173 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, computed, watch, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/proDocs/_menu/headermixin2'
+import { useProject } from '@/store/pinia/project'
+import { type RouteLocationNormalizedLoaded as LoadedRoute, useRoute, useRouter } from 'vue-router'
+import { type SuitCaseFilter as cFilter, useDocument } from '@/store/pinia/document'
+import { type SuitCase } from '@/store/types/document'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
+import ListController from '@/components/LawSuitCase/ListController.vue'
+import CaseView from '@/components/LawSuitCase/CaseView.vue'
+import CaseList from '@/components/LawSuitCase/CaseList.vue'
+import CaseForm from '@/components/LawSuitCase/CaseForm.vue'
 
-const msg = ref('')
+const fController = ref()
+const boardNumber = ref(3)
+const mainViewName = ref('현장 소송 사건')
+const caseFilter = ref<cFilter>({
+  company: null,
+  project: null,
+  is_com: '',
+  court: '',
+  related_case: '',
+  sort: '',
+  level: '',
+  search: '',
+  page: 1,
+})
+
+const listFiltering = (payload: cFilter) => {
+  caseFilter.value = payload
+  caseFilter.value.project = payload.is_com ? null : payload.project
+  if (company.value) fetchSuitCaseList({ ...caseFilter.value })
+}
+
+const pageSelect = (page: number) => {
+  caseFilter.value.page = page
+  listFiltering(caseFilter.value)
+}
+
+const projStore = useProject()
+const project = computed(() => projStore.project?.pk)
+const company = computed(() => projStore.project?.company)
+
+const docStore = useDocument()
+const suitcase = computed(() => docStore.suitcase)
+const suitcaseList = computed(() => docStore.suitcaseList)
+const getSuitCase = computed(() => docStore.getSuitCase)
+
+const fetchSuitCase = (pk: number) => docStore.fetchSuitCase(pk)
+const fetchSuitCaseList = (payload: cFilter) => docStore.fetchSuitCaseList(payload)
+const fetchAllSuitCaseList = (payload: cFilter) => docStore.fetchAllSuitCaseList(payload)
+
+const createSuitCase = (payload: SuitCase) => docStore.createSuitCase(payload)
+const updateSuitCase = (payload: SuitCase) => docStore.updateSuitCase(payload)
+const deleteSuitCase = (pk: number) => docStore.deleteSuitCase(pk)
+
+const [route, router] = [useRoute() as LoadedRoute & { name: string }, useRouter()]
+
+watch(route, val => {
+  if (val.params.caseId) fetchSuitCase(Number(val.params.caseId))
+  else docStore.suitcase = null
+})
+
+const onSubmit = (payload: SuitCase) => {
+  if (!!company.value)
+    if (payload.pk) {
+      updateSuitCase(payload)
+      router.replace({
+        name: `${mainViewName.value} - 보기`,
+        params: { caseId: payload.pk },
+      })
+    } else {
+      payload.company = company.value || null
+      createSuitCase(payload)
+      router.replace({ name: `${mainViewName.value}` })
+    }
+}
+
+const onDelete = (pk: number) => deleteSuitCase(pk)
+
+const agencyFilter = (court: string) => {
+  fController.value.courtChange(court)
+  caseFilter.value.page = 1
+  caseFilter.value.court = court
+  listFiltering(caseFilter.value)
+}
+const agencySearch = (agent: string) => {
+  fController.value.searchChange(agent)
+  caseFilter.value.page = 1
+  caseFilter.value.search = agent
+  listFiltering(caseFilter.value)
+}
+
+const relatedFilter = (related: number) => {
+  fController.value.relatedChange(related)
+  caseFilter.value.page = 1
+  caseFilter.value.related_case = related
+  listFiltering(caseFilter.value)
+}
+
+const sortFilter = (project: number | null) => {
+  fController.value.projectChange(project)
+  caseFilter.value.page = 1
+  if (project !== null) caseFilter.value.project = project
+  else caseFilter.value.is_com = true
+  listFiltering(caseFilter.value)
+}
+
+const dataSetup = (pk: number, caseId?: string | string[]) => {
+  fetchSuitCaseList({ company: pk, page: caseFilter.value.page })
+  if (caseId) fetchSuitCase(Number(caseId))
+}
+
+const dataReset = () => {
+  // comStore.company = null
+  docStore.suitcaseList = []
+  docStore.suitcaseCount = 0
+  router.replace({ name: `${mainViewName.value}` })
+}
+
+const projSelect = (target: number | null) => {
+  dataReset()
+  if (!!target) dataSetup(target)
+}
+
+onBeforeMount(() => {
+  fetchAllSuitCaseList({})
+  dataSetup(project.value || projStore.initProjId, route.params?.caseId)
+})
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
+
   <ContentBody>
-    <CCardBody>
-      {{ msg }}
-      <a href="/rebs/docs/project/lawsuit/case/" target="_blank">
-        구) 현장 소송 사건 관리 페이지 바로가기
-      </a>
-      <div style="height: 420px"></div>
+    <CCardBody class="pb-5">
+      <div v-if="route.name === `${mainViewName}`" class="pt-3">
+        <ListController ref="fController" @list-filter="listFiltering" />
+
+        <CaseList
+          :company="company || undefined"
+          :page="caseFilter.page"
+          :case-list="suitcaseList"
+          @page-select="pageSelect"
+          @agency-filter="agencyFilter"
+          @agency-search="agencySearch"
+          @related-filter="relatedFilter"
+          @sort-filter="sortFilter"
+        />
+      </div>
+
+      <div v-else-if="route.name.includes('보기')">
+        <CaseView :suitcase="suitcase as SuitCase" />
+      </div>
+
+      <div v-else-if="route.name.includes('작성')">
+        <CaseForm :get-suit-case="getSuitCase" @on-submit="onSubmit" />
+      </div>
+
+      <div v-else-if="route.name.includes('수정')">
+        <CaseForm
+          :get-suit-case="getSuitCase"
+          :suitcase="suitcase"
+          @on-submit="onSubmit"
+          @on-delete="onDelete"
+        />
+      </div>
     </CCardBody>
 
-    <CCardFooter class="text-right">&nbsp;</CCardFooter>
+    <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>
