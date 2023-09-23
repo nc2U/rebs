@@ -223,10 +223,10 @@ onUpdated(() => dataSetup())
         class="col-sm-2 col-form-label"
         :class="{ 'col-lg-1': boardNum === 3 }"
       >
-        문서 시행일자
+        문서 발행일자
       </CFormLabel>
       <CCol :md="boardNum === 3 ? 2 : 3">
-        <DatePicker v-model="form.execution_date" placeholder="문서 시행일자" />
+        <DatePicker v-model="form.execution_date" placeholder="문서 발행일자" />
       </CCol>
       <CCol v-if="boardNum !== 3" class="pt-2">
         <CFormSwitch id="is_notice" v-model="form.is_notice" label="공지여부" />

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/proDocs/_menu/headermixin2'
-import { type RouteLocationNormalizedLoaded as Loaded, useRoute, useRouter } from 'vue-router'
 import { useProject } from '@/store/pinia/project'
+import { type RouteLocationNormalizedLoaded as Loaded, useRoute, useRouter } from 'vue-router'
 import { useDocument, type PostFilter, SuitCaseFilter } from '@/store/pinia/document'
 import {
   type AFile,
@@ -202,6 +202,7 @@ onBeforeMount(() => {
 
       <div v-else-if="route.name.includes('보기')">
         <DocsView
+          :board-num="boardNumber"
           :category="postFilter.category as number"
           :post="post as Post"
           :view-route="mainViewName"

@@ -1,15 +1,17 @@
 <script lang="ts" setup>
 import { computed, type PropType } from 'vue'
-import { cutString, timeFormat } from '@/utils/baseMixins'
 import { useDocument } from '@/store/pinia/document'
+import { cutString, timeFormat } from '@/utils/baseMixins'
 import { type Post, type Link, type AFile } from '@/store/types/document'
 import sanitizeHtml from 'sanitize-html'
 
 const props = defineProps({
+  boardNum: { type: Number, default: 2 },
   category: { type: Number, default: undefined },
   post: { type: Object as PropType<Post>, default: null },
   viewRoute: { type: String, required: true },
 })
+
 const emit = defineEmits(['post-hit', 'link-hit', 'file-hit'])
 
 const docStore = useDocument()
@@ -91,10 +93,10 @@ const getFileName = (file: string) => {
 
     <CRow class="mt-5 py-2 justify-content-between">
       <CCol md="5" lg="4" xl="3">
-        <table class="table table-bordered mt-2 mb-3">
+        <table v-if="boardNum !== 1" class="table table-bordered mt-2 mb-3">
           <tbody>
             <tr class="text-center">
-              <td class="p-2 bg-blue-grey-lighten-4">문서 시행일자</td>
+              <td class="p-2 bg-blue-grey-lighten-4">문서 발행일자</td>
               <td class="p-2">{{ post.execution_date }}</td>
             </tr>
           </tbody>
