@@ -20,10 +20,11 @@ import DocsView from '@/components/Documents/DocsView.vue'
 import DocsForm from '@/components/Documents/DocsForm.vue'
 
 const fController = ref()
+const boardNumber = ref(3)
 const mainViewName = ref('현장 소송 문서')
 const postFilter = ref<PostFilter>({
   company: null,
-  board: 3,
+  board: boardNumber.value,
   category: null,
   is_com: false,
   project: null,
@@ -120,12 +121,12 @@ const onSubmit = (payload: Post & Attatches) => {
     if (pk) {
       updatePost({ pk, form })
       router.replace({
-        name: '현장 소송 문서 - 보기',
+        name: `${mainViewName.value} - 보기`,
         params: { postId: pk },
       })
     } else {
       createPost({ form })
-      router.replace({ name: '현장 소송 문서' })
+      router.replace({ name: `${mainViewName.value}` })
     }
   }
 }
@@ -145,7 +146,7 @@ const sortFilter = (project: number | null) => {
 const dataSetup = (pk: number, postId?: string | string[]) => {
   fetchPostList({
     project: pk,
-    board: 3,
+    board: boardNumber.value,
     page: postFilter.value.page,
     category: postFilter.value.category,
   })
@@ -158,7 +159,7 @@ const dataReset = () => {
   docStore.postList = []
   docStore.postCount = 0
   postFilter.value.company = null
-  router.replace({ name: '현장 소송 문서' })
+  router.replace({ name: `${mainViewName.value}` })
 }
 
 const projSelect = (target: number | null) => {
@@ -167,7 +168,7 @@ const projSelect = (target: number | null) => {
 }
 
 onBeforeMount(() => {
-  fetchCategoryList(3)
+  fetchCategoryList(boardNumber.value)
   dataSetup(project.value || projStore.initProjId, route.params?.postId)
 })
 </script>
