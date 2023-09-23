@@ -41,7 +41,7 @@ const cngFiles = ref<
   }[]
 >([])
 
-const docsFilter = (payload: PostFilter) => {
+const docsListFilter = (payload: PostFilter) => {
   postFilter.value.ordering = payload.ordering
   postFilter.value.search = payload.search
   if (project.value) fetchPostList({ ...postFilter.value })
@@ -49,12 +49,12 @@ const docsFilter = (payload: PostFilter) => {
 
 const selectCate = (cate: number) => {
   postFilter.value.category = cate
-  docsFilter(postFilter.value)
+  docsListFilter(postFilter.value)
 }
 
 const pageSelect = (page: number) => {
   postFilter.value.page = page
-  docsFilter(postFilter.value)
+  docsListFilter(postFilter.value)
 }
 
 const projStore = useProject()
@@ -65,6 +65,7 @@ const docStore = useDocument()
 const post = computed(() => docStore.post)
 const postList = computed(() => docStore.postList)
 const categoryList = computed(() => docStore.categoryList)
+const getSuitCase = computed(() => docStore.getSuitCase)
 
 const fetchPost = (pk: number) => docStore.fetchPost(pk)
 const fetchPostList = (payload: PostFilter) => docStore.fetchPostList(payload)
@@ -140,7 +141,7 @@ const sortFilter = (project: number | null) => {
   postFilter.value.page = 1
   if (project !== null) postFilter.value.project = project
   else postFilter.value.is_com = true
-  docsFilter(postFilter.value)
+  docsListFilter(postFilter.value)
 }
 
 const dataSetup = (pk: number, postId?: string | string[]) => {
@@ -179,7 +180,7 @@ onBeforeMount(() => {
   <ContentBody>
     <CCardBody class="pb-5">
       <div v-if="route.name === `${mainViewName}`" class="pt-3">
-        <ListingProDocs ref="fController" @docs-filter="docsFilter" />
+        <ListingProDocs ref="fController" @docs-filter="docsListFilter" />
 
         <CategoryTabs
           :category="postFilter.category as number"
@@ -211,6 +212,7 @@ onBeforeMount(() => {
       <div v-else-if="route.name.includes('작성')">
         <DocsForm
           :board-num="boardNumber"
+          :get-suit-case="getSuitCase"
           :category-list="categoryList"
           :view-route="mainViewName"
           @file-upload="fileUpload"
@@ -221,6 +223,7 @@ onBeforeMount(() => {
       <div v-else-if="route.name.includes('수정')">
         <DocsForm
           :board-num="boardNumber"
+          :get-suit-case="getSuitCase"
           :category-list="categoryList"
           :post="post as Post"
           :view-route="mainViewName"

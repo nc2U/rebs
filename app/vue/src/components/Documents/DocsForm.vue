@@ -8,10 +8,12 @@ import QuillEditor from '@/components/QuillEditor/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
+import Multiselect from '@vueform/multiselect'
 
 const props = defineProps({
   boardNum: { type: Number, default: 2 },
-  categoryList: { type: Object, default: null },
+  categoryList: { type: Object, required: true },
+  getSuitCase: { type: Object, default: null },
   post: { type: Object as PropType<Post>, default: null },
   viewRoute: { type: String, required: true },
 })
@@ -60,8 +62,6 @@ const formsCheck = computed(() => {
     return a && b && c && d && e && f && attach.value
   } else return false
 })
-
-const sortName = computed(() => (props.post && props.post.project ? props.post.proj_name : '본사'))
 
 const [route, router] = [useRoute(), useRouter()]
 const btnClass = computed(() => (route.params.postId ? 'success' : 'primary'))
@@ -163,9 +163,8 @@ onUpdated(() => dataSetup())
   <CRow class="mt-5">
     <CCol>
       <h5>
-        {{ sortName }}
         <v-icon icon="mdi-chevron-double-right" size="xs" />
-        일반 문서
+        {{ viewRoute }}
       </h5>
     </CCol>
   </CRow>
@@ -187,8 +186,30 @@ onUpdated(() => dataSetup())
     </CRow>
 
     <CRow class="mb-3">
-      <CFormLabel for="category" class="col-sm-2 col-form-label"> 카테고리</CFormLabel>
-      <CCol md="3">
+      <CFormLabel v-if="boardNum === 3" for="inputPassword" class="col-sm-2 col-form-label">
+        사건번호 (사건번호 등록)
+      </CFormLabel>
+      <CCol v-if="boardNum === 3" md="4">
+        <Multiselect
+          v-model="form.lawsuit"
+          :options="getSuitCase"
+          placeholder="사건번호 선택"
+          autocomplete="label"
+          :classes="{ search: 'form-control multiselect-search' }"
+          :attrs="form.lawsuit ? {} : { required: true }"
+          :add-option-on="['enter', 'tab']"
+          searchable
+        />
+      </CCol>
+
+      <CFormLabel
+        for="category"
+        class="col-sm-2 col-form-label"
+        :class="{ 'col-lg-1': boardNum === 3 }"
+      >
+        카테고리
+      </CFormLabel>
+      <CCol :md="boardNum === 3 ? 2 : 3">
         <CFormSelect id="category" v-model="form.category" required>
           <option value="">카테고리 선택</option>
           <option v-for="cate in categoryList" :key="cate.pk" :value="cate.pk">
@@ -197,11 +218,17 @@ onUpdated(() => dataSetup())
         </CFormSelect>
       </CCol>
 
-      <CFormLabel for="inputPassword" class="col-sm-2 col-form-label"> 문서 시행일자</CFormLabel>
-      <CCol md="3">
+      <CFormLabel
+        for="inputPassword"
+        class="col-sm-2 col-form-label"
+        :class="{ 'col-lg-1': boardNum === 3 }"
+      >
+        문서 시행일자
+      </CFormLabel>
+      <CCol :md="boardNum === 3 ? 2 : 3">
         <DatePicker v-model="form.execution_date" placeholder="문서 시행일자" />
       </CCol>
-      <CCol class="pt-2">
+      <CCol v-if="boardNum !== 3" class="pt-2">
         <CFormSwitch id="is_notice" v-model="form.is_notice" label="공지여부" />
       </CCol>
     </CRow>
