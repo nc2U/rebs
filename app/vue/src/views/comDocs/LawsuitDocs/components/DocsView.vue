@@ -16,7 +16,7 @@ const documentStore = useDocument()
 const getPrev = computed(() => documentStore.getPrev)
 const getNext = computed(() => documentStore.getNext)
 
-const sortName = computed(() => props.post?.proj_name || '본사')
+const sortName = computed(() => props.post?.proj_name || '본사 문서')
 
 const fetchLink = (pk: number) => documentStore.fetchLink(pk)
 const fetchFile = (pk: number) => documentStore.fetchFile(pk)
