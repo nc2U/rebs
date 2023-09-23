@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount, watch } from 'vue'
-import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin1'
+import { pageTitle, navMenu } from '@/views/proDocs/_menu/headermixin2'
 import { type RouteLocationNormalizedLoaded as Loaded, useRoute, useRouter } from 'vue-router'
 import { useCompany } from '@/store/pinia/company'
 import { useDocument, type PostFilter } from '@/store/pinia/document'
@@ -14,10 +14,10 @@ import {
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
-// import CategoryTabs from './components/CategoryTabs.vue'
-// import DocsList from './components/DocsList.vue'
-// import DocsView from './components/DocsView.vue'
-// import DocsForm from './components/DocsForm.vue'
+import CategoryTabs from '@/components/Documents/CategoryTabs.vue'
+import DocsList from '@/components/Documents/DocsList.vue'
+import DocsView from '@/components/Documents/DocsView.vue'
+import DocsForm from '@/components/Documents/DocsForm.vue'
 
 const fController = ref()
 const postFilter = ref<PostFilter>({
@@ -182,7 +182,7 @@ onBeforeMount(() => {
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <div v-if="route.name === '본사 일반 문서'" class="pt-3">
+      <div v-if="route.name === '현장 소송 문서'" class="pt-3">
         <ListController ref="fController" @docs-filter="docsFilter" />
 
         <!--        <CategoryTabs-->
@@ -191,13 +191,14 @@ onBeforeMount(() => {
         <!--          @select-cate="selectCate"-->
         <!--        />-->
 
-        <!--        <DocsList-->
-        <!--          :company="company as number"-->
-        <!--          :page="postFilter.page"-->
-        <!--          :post-list="postList"-->
-        <!--          @page-select="pageSelect"-->
-        <!--          @sort-filter="sortFilter"-->
-        <!--        />-->
+        <DocsList
+          :company="company as number"
+          :page="postFilter.page"
+          :post-list="postList"
+          :view-route="'현장 소송 문서 - 보기'"
+          @page-select="pageSelect"
+          @sort-filter="sortFilter"
+        />
       </div>
 
       <div v-else-if="route.name.includes('보기')">

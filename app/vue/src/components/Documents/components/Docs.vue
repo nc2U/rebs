@@ -4,6 +4,7 @@ import type { Post } from '@/store/types/document'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 
 const props = defineProps({
+  viewRoute: { type: String, default: '본사 일반 문서 - 보기' },
   post: { type: Object as PropType<Post>, default: null },
 })
 
@@ -25,7 +26,7 @@ const sortFunc = () => emit('sort-filter', props.post?.project)
     </CTableDataCell>
     <CTableDataCell>{{ post.execution_date }}</CTableDataCell>
     <CTableDataCell class="text-left">
-      <router-link :to="{ name: '본사 일반 문서 - 보기', params: { postId: post.pk } }">
+      <router-link :to="{ name: `${viewRoute}`, params: { postId: post.pk } }">
         {{ cutString(post.title, 30) }}
       </router-link>
       <CBadge v-if="post.is_new" color="warning" size="sm" class="ml-2"> new</CBadge>

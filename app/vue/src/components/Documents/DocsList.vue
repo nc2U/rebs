@@ -2,14 +2,15 @@
 import type { PropType } from 'vue'
 import { useDocument } from '@/store/pinia/document'
 import { TableSecondary } from '@/utils/cssMixins'
-import Docs from './Docs.vue'
-import Pagination from '@/components/Pagination'
 import type { Post } from '@/store/types/document'
+import Pagination from '@/components/Pagination'
+import Docs from './components/Docs.vue'
 
 defineProps({
   company: { type: Number, default: null },
   page: { type: Number, default: 1 },
   postList: { type: Array as PropType<Post[]>, default: () => [] },
+  viewRoute: { type: String, default: '본사 일반 문서 - 보기' },
 })
 
 const emit = defineEmits(['page-select', 'sort-filter'])
@@ -46,7 +47,13 @@ const sortFilter = (project: number | null) => emit('sort-filter', project)
     </CTableHead>
 
     <CTableBody>
-      <Docs v-for="post in postList" :key="post.pk" :post="post" @sort-filter="sortFilter" />
+      <Docs
+        v-for="post in postList"
+        :key="post.pk"
+        :post="post"
+        :view-route="viewRoute"
+        @sort-filter="sortFilter"
+      />
     </CTableBody>
   </CTable>
 
