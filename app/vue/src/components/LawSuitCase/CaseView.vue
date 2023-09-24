@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { type PropType } from 'vue'
+import { computed, type PropType } from 'vue'
 import { timeFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 import { type SuitCase } from '@/store/types/document'
 
-defineProps({
+const props = defineProps({
   suitcase: { type: Object as PropType<SuitCase>, required: true },
   viewRoute: { type: String, required: true },
 })
@@ -15,17 +15,26 @@ const toDelete = () => alert('준비중!')
 
 const getPrev = 1
 const getNext = 3
+
+const sortName = computed(() => props.suitcase?.proj_name || '본사 문서')
+const sortDesc = computed(() => props.suitcase.sort_desc)
+const levelDesc = computed(() => props.suitcase.level_desc)
 </script>
 
 <template>
   <div v-if="suitcase" class="m-0 p-0">
     <CRow class="mt-5">
-      <CCol>
+      <CCol md="8">
         <h5>
           {{ suitcase.court_desc }}
+          <v-icon icon="mdi-chevron-double-right" size="xs" />
           {{ suitcase.case_number }}
+          <v-icon icon="mdi-chevron-double-right" size="xs" />
           {{ suitcase.case_name }}
         </h5>
+      </CCol>
+      <CCol class="pt-1 text-right">
+        <span>[{{ sortName }}] [{{ sortDesc }}/{{ levelDesc }}]</span>
       </CCol>
     </CRow>
 

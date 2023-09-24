@@ -62,21 +62,19 @@ watch(route, val => {
 })
 
 const onSubmit = (payload: SuitCase) => {
-  if (!!project.value) {
-    payload.company = company.value as number | null
-    payload.project = project.value
-    console.log(payload)
-    if (payload.pk) {
-      updateSuitCase(payload)
-      router.replace({
-        name: `${mainViewName.value} - 보기`,
-        params: { caseId: payload.pk },
-      })
-    } else {
-      payload.company = company.value || null
-      createSuitCase(payload)
-      router.replace({ name: `${mainViewName.value}` })
-    }
+  payload.company = company.value as number | null
+  payload.project = project.value as number | null
+  console.log(payload)
+  if (payload.pk) {
+    updateSuitCase(payload)
+    router.replace({
+      name: `${mainViewName.value} - 보기`,
+      params: { caseId: payload.pk },
+    })
+  } else {
+    payload.company = company.value || null
+    createSuitCase(payload)
+    router.replace({ name: `${mainViewName.value}` })
   }
 }
 
