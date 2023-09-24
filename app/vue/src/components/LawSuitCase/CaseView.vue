@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { computed, type PropType } from 'vue'
-import { useDocument } from '@/store/pinia/document'
 import { timeFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 import { type SuitCase } from '@/store/types/document'
@@ -13,10 +12,6 @@ const props = defineProps({
 const toPrint = () => alert('준비중!')
 const toSocial = () => alert('준비중!')
 const toDelete = () => alert('준비중!')
-
-const docStore = useDocument()
-const getPrev = computed(() => docStore.getPrevSCase)
-const getNext = computed(() => docStore.getNextSCase)
 
 const sortName = computed(() => props.suitcase?.proj_name || '본사 문서')
 const sortDesc = computed(() => props.suitcase.sort_desc)
@@ -168,11 +163,11 @@ const levelDesc = computed(() => props.suitcase.level_desc)
         <CButtonGroup role="group" class="mr-3">
           <CButton
             color="light"
-            :disabled="!getPrev"
+            :disabled="!suitcase.prev_pk"
             @click="
               $router.push({
                 name: `${viewRoute} - 보기`,
-                params: { caseId: getPrev },
+                params: { caseId: suitcase.prev_pk },
               })
             "
           >
@@ -180,11 +175,11 @@ const levelDesc = computed(() => props.suitcase.level_desc)
           </CButton>
           <CButton
             color="light"
-            :disabled="!getNext"
+            :disabled="!suitcase.next_pk"
             @click="
               $router.push({
                 name: `${viewRoute} - 보기`,
-                params: { caseId: getNext },
+                params: { caseId: suitcase.next_pk },
               })
             "
           >

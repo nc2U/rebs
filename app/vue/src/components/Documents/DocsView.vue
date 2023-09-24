@@ -14,12 +14,9 @@ const props = defineProps({
 
 const emit = defineEmits(['post-hit', 'link-hit', 'file-hit'])
 
-const docStore = useDocument()
-const getPrev = computed(() => docStore.getPrev)
-const getNext = computed(() => docStore.getNext)
-
 const sortName = computed(() => props.post?.proj_name || '본사 문서')
 
+const docStore = useDocument()
 const fetchLink = (pk: number) => docStore.fetchLink(pk)
 const fetchFile = (pk: number) => docStore.fetchFile(pk)
 
@@ -192,11 +189,11 @@ const getFileName = (file: string) => {
         <CButtonGroup role="group" class="mr-3">
           <CButton
             color="light"
-            :disabled="!getPrev"
+            :disabled="!post.prev_pk"
             @click="
               $router.push({
                 name: `${viewRoute} - 보기`,
-                params: { postId: getPrev },
+                params: { postId: post.prev_pk },
               })
             "
           >
@@ -204,11 +201,11 @@ const getFileName = (file: string) => {
           </CButton>
           <CButton
             color="light"
-            :disabled="!getNext"
+            :disabled="!post.next_pk"
             @click="
               $router.push({
                 name: `${viewRoute} - 보기`,
-                params: { postId: getNext },
+                params: { postId: post.next_pk },
               })
             "
           >

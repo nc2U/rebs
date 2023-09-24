@@ -44,6 +44,8 @@ export interface SuitCase {
   summary: string
   user?: string
   created?: string
+  prev_pk: number | null
+  next_pk: number | null
 }
 
 export interface SimpleSuitCase {
@@ -81,6 +83,8 @@ export type Post = {
   created?: string
   updated?: string
   is_new?: boolean
+  prev_pk: number | null
+  next_pk: number | null
 }
 
 export interface Link {
