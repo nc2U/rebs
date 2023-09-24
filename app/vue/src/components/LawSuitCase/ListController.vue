@@ -4,15 +4,19 @@ import { useProject } from '@/store/pinia/project'
 import { type SuitCaseFilter, useDocument } from '@/store/pinia/document'
 import { numFormat } from '@/utils/baseMixins'
 import { bgLight } from '@/utils/cssMixins'
-import { courtChoices } from '@/views/comDocs/LawsuitCase/components/court'
+import { courtChoices } from './components/court'
 import Multiselect from '@vueform/multiselect'
 
-defineProps({ tab: { type: Number, default: null } })
+const props = defineProps({
+  tab: { type: Number, default: null },
+  comFrom: { type: Boolean, default: false },
+})
 const emit = defineEmits(['list-filter'])
 
 const form = reactive<SuitCaseFilter>({
-  is_com: 'unknown',
+  company: '',
   project: '',
+  is_com: 'unknown',
   court: '',
   related_case: '',
   sort: '',
@@ -35,7 +39,7 @@ const formsCheck = computed(() => {
 const projectStore = useProject()
 const projSelect = computed(() => projectStore.projSelect)
 
-// const fetchProjectList = () => projectStore.fetchProjectList()
+const fetchProjectList = () => projectStore.fetchProjectList()
 
 const documentStore = useDocument()
 const suitcaseCount = computed(() => documentStore.suitcaseCount)
@@ -44,9 +48,21 @@ const getSuitCase = computed(() => documentStore.getSuitCase)
 const listFiltering = (page = 1) => {
   nextTick(() => {
     form.page = page
-    // form.is_com = !form.project ? '' : form.project === 'com'
     emit('list-filter', { ...form })
   })
+}
+
+const firstSorting = (event: { target: { value: 'is_com' | number | null } }) => {
+  const val = event.target.value
+  if (val === null) form.is_com = 'unknown'
+  else if (val === 'is_com') {
+    form.is_com = true
+    form.project = ''
+  } else {
+    form.is_com = false
+    form.project = val
+  }
+  listFiltering(1)
 }
 
 const courtChange = (court: string) => (form.court = court)
@@ -81,7 +97,7 @@ const sortChange = () => {
   listFiltering(1)
 }
 
-// onBeforeMount(() => fetchProjectList())
+onBeforeMount(() => fetchProjectList())
 </script>
 
 <template>
@@ -89,15 +105,15 @@ const sortChange = () => {
     <CRow>
       <CCol lg="6">
         <CRow>
-          <!--          <CCol md="4" class="mb-3">-->
-          <!--            <CFormSelect v-model="form.project" @change="listFiltering(1)">-->
-          <!--              <option value="">전체 프로젝트</option>-->
-          <!--              <option value="com">본사</option>-->
-          <!--              <option v-for="proj in projSelect" :key="proj.value" :value="proj.value">-->
-          <!--                {{ proj.label }}-->
-          <!--              </option>-->
-          <!--            </CFormSelect>-->
-          <!--          </CCol>-->
+          <CCol v-if="comFrom" md="4" class="mb-3">
+            <CFormSelect v-model="form.project" @change="firstSorting">
+              <option value="">전체 프로젝트</option>
+              <option value="is_com">본사</option>
+              <option v-for="proj in projSelect" :key="proj.value" :value="proj.value">
+                {{ proj.label }}
+              </option>
+            </CFormSelect>
+          </CCol>
           <CCol md="4" class="mb-3">
             <Multiselect
               v-model="form.court"

@@ -17,7 +17,7 @@ const mainViewName = ref('본사 소송 사건')
 const caseFilter = ref<cFilter>({
   company: '',
   project: '',
-  is_com: '',
+  is_com: 'unknown',
   court: '',
   related_case: '',
   sort: '',
@@ -28,7 +28,7 @@ const caseFilter = ref<cFilter>({
 
 const listFiltering = (payload: cFilter) => {
   caseFilter.value = payload
-  caseFilter.value.project = payload.is_com ? null : payload.project
+  caseFilter.value.project = !!payload.is_com ? '' : payload.project
   if (company.value) fetchSuitCaseList({ ...caseFilter.value })
 }
 
@@ -141,7 +141,7 @@ onBeforeMount(() => {
   <ContentBody>
     <CCardBody class="pb-5">
       <div v-if="route.name === `${mainViewName}`" class="pt-3">
-        <ListController ref="fController" @list-filter="listFiltering" />
+        <ListController ref="fController" :com-from="true" @list-filter="listFiltering" />
 
         <CaseList
           :company="company || undefined"
