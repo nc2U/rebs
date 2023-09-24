@@ -34,13 +34,23 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
     related_case_name = serializers.SlugField(source='related_case', read_only=True)
     court_desc = serializers.CharField(source='get_court_display', read_only=True)
     user = serializers.SlugRelatedField(slug_field='username', read_only=True)
+    prev_pk = serializers.SerializerMethodField()
+    next_pk = serializers.SerializerMethodField()
 
     class Meta:
         model = LawsuitCase
-        fields = ('pk', 'company', 'project', 'proj_name', 'sort', 'sort_desc', 'level',
-                  'level_desc', 'related_case', 'related_case_name', 'court', 'court_desc',
-                  'other_agency', 'case_number', 'case_name', 'plaintiff', 'defendant',
-                  'related_debtor', 'case_start_date', 'summary', 'user', 'created')
+        fields = ('pk', 'company', 'project', 'proj_name', 'sort', 'sort_desc', 'level', 'level_desc',
+                  'related_case', 'related_case_name', 'court', 'court_desc', 'other_agency',
+                  'case_number', 'case_name', 'plaintiff', 'defendant', 'related_debtor',
+                  'case_start_date', 'summary', 'user', 'created', 'prev_pk', 'next_pk')
+
+    def get_prev_pk(self, obj):
+        previous_obj = LawsuitCase.objects.filter(pk__lt=obj.pk).order_by('-id').first()
+        return previous_obj.pk if previous_obj else None
+
+    def get_next_pk(self, obj):
+        next_obj = LawsuitCase.objects.filter(pk__gt=obj.pk).order_by('-id').first()
+        return next_obj.pk if next_obj else None
 
 
 class SimpleLawSuitCaseSerializer(serializers.ModelSerializer):
@@ -69,14 +79,24 @@ class PostSerializer(serializers.ModelSerializer):
     files = FilesInPostSerializer(many=True, read_only=True)
     comments = serializers.RelatedField(many=True, read_only=True)
     user = serializers.SlugRelatedField(slug_field='username', read_only=True)
+    prev_pk = serializers.SerializerMethodField()
+    next_pk = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
         fields = ('pk', 'company', 'project', 'proj_name', 'board', 'is_notice', 'category',
-                  'cate_name', 'lawsuit', 'lawsuit_name', 'title', 'execution_date',
-                  'is_hide_comment', 'content', 'hit', 'blame', 'ip', 'device', 'secret', 'password',
-                  'links', 'files', 'comments', 'user', 'soft_delete', 'created', 'updated', 'is_new')
+                  'cate_name', 'lawsuit', 'lawsuit_name', 'title', 'execution_date', 'is_hide_comment',
+                  'content', 'hit', 'blame', 'ip', 'device', 'secret', 'password', 'links', 'files',
+                  'comments', 'user', 'soft_delete', 'created', 'updated', 'is_new', 'prev_pk', 'next_pk')
         read_only_fields = ('ip',)
+
+    def get_prev_pk(self, obj):
+        previous_obj = LawsuitCase.objects.filter(pk__lt=obj.pk).order_by('-id').first()
+        return previous_obj.pk if previous_obj else None
+
+    def get_next_pk(self, obj):
+        next_obj = LawsuitCase.objects.filter(pk__gt=obj.pk).order_by('-id').first()
+        return next_obj.pk if next_obj else None
 
     def to_python(self, value):
 
