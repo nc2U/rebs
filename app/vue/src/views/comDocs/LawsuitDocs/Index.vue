@@ -13,19 +13,21 @@ import {
 } from '@/store/types/document'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
-import ListController from './components/ListController.vue'
-import CategoryTabs from './components/CategoryTabs.vue'
-import DocsView from './components/DocsView.vue'
-import DocsList from './components/DocsList.vue'
-import DocsForm from './components/DocsForm.vue'
+import ListingComDocs from '@/components/Documents/ListingComDocs.vue'
+import CategoryTabs from '@/components/Documents/CategoryTabs.vue'
+import DocsList from '@/components/Documents/DocsList.vue'
+import DocsView from '@/components/Documents/DocsView.vue'
+import DocsForm from '@/components/Documents/DocsForm.vue'
 
 const fController = ref()
-const caseFilter = ref<PostFilter>({
-  company: null,
-  board: 3,
-  category: null,
-  is_com: '',
-  project: null,
+const boardNumber = ref(3)
+const mainViewName = ref('본사 소송 문서')
+const postFilter = ref<PostFilter>({
+  company: '',
+  board: boardNumber.value,
+  category: '',
+  is_com: 'unknown',
+  project: '',
   ordering: '',
   search: '',
   page: 1,
@@ -40,21 +42,21 @@ const cngFiles = ref<
 >([])
 
 const listFiltering = (payload: PostFilter) => {
-  caseFilter.value.is_com = payload.is_com
-  if (!payload.is_com) caseFilter.value.project = payload.project
-  caseFilter.value.ordering = payload.ordering
-  caseFilter.value.search = payload.search
-  if (company.value) fetchPostList({ ...caseFilter.value })
+  postFilter.value.is_com = payload.is_com
+  if (!payload.is_com) postFilter.value.project = payload.project
+  postFilter.value.ordering = payload.ordering
+  postFilter.value.search = payload.search
+  if (company.value) fetchPostList({ ...postFilter.value })
 }
 
 const selectCate = (cate: number) => {
-  caseFilter.value.category = cate
-  listFiltering(caseFilter.value)
+  postFilter.value.category = cate
+  listFiltering(postFilter.value)
 }
 
 const pageSelect = (page: number) => {
-  caseFilter.value.page = page
-  listFiltering(caseFilter.value)
+  postFilter.value.page = page
+  listFiltering(postFilter.value)
 }
 
 const comStore = useCompany()
@@ -121,12 +123,12 @@ const onSubmit = (payload: Post & Attatches) => {
     if (pk) {
       updatePost({ pk, form })
       router.replace({
-        name: '본사 소송 문서 - 보기',
+        name: `${mainViewName.value} - 보기`,
         params: { postId: pk },
       })
     } else {
       createPost({ form })
-      router.replace({ name: '본사 소송 문서' })
+      router.replace({ name: `${mainViewName.value}` })
     }
   }
 }
@@ -137,30 +139,30 @@ const fileHit = (payload: AFile) => patchFile(payload)
 
 const sortFilter = (project: number | null) => {
   fController.value.projectChange(project)
-  caseFilter.value.page = 1
-  if (project !== null) caseFilter.value.project = project
-  else caseFilter.value.is_com = true
-  listFiltering(caseFilter.value)
+  postFilter.value.page = 1
+  if (project !== null) postFilter.value.project = project
+  else postFilter.value.is_com = true
+  listFiltering(postFilter.value)
 }
 
 const dataSetup = (pk: number, postId?: string | string[]) => {
   fetchPostList({
     company: pk,
-    board: 3,
-    page: caseFilter.value.page,
-    category: caseFilter.value.category,
+    board: boardNumber.value,
+    page: postFilter.value.page,
+    category: postFilter.value.category,
   })
   fetchAllSuitCaseList({})
   if (postId) fetchPost(Number(postId))
-  caseFilter.value.company = pk
+  postFilter.value.company = pk
 }
 const dataReset = () => {
   comStore.company = null
   docStore.post = null
   docStore.postList = []
   docStore.postCount = 0
-  caseFilter.value.company = null
-  router.replace({ name: '본사 소송 문서' })
+  postFilter.value.company = ''
+  router.replace({ name: `${mainViewName.value}` })
 }
 
 const comSelect = (target: number | null) => {
@@ -169,7 +171,7 @@ const comSelect = (target: number | null) => {
 }
 
 onBeforeMount(() => {
-  fetchCategoryList(3)
+  fetchCategoryList(boardNumber.value)
   dataSetup(company.value || comStore.initComId, route.params?.postId)
 })
 </script>
@@ -184,19 +186,20 @@ onBeforeMount(() => {
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <div v-if="route.name === '본사 소송 문서'" class="pt-3">
-        <ListController ref="fController" @list-filter="listFiltering" />
+      <div v-if="route.name === `${mainViewName}`" class="pt-3">
+        <ListingComDocs ref="fController" @list-filter="listFiltering" />
 
         <CategoryTabs
-          :category="caseFilter.category || undefined"
+          :category="postFilter.category || undefined"
           :category-list="categoryList"
           @select-cate="selectCate"
         />
 
         <DocsList
           :company="company || undefined"
-          :page="caseFilter.page"
+          :page="postFilter.page"
           :post-list="postList"
+          :view-route="mainViewName"
           @page-select="pageSelect"
           @sort-filter="sortFilter"
         />
@@ -204,8 +207,10 @@ onBeforeMount(() => {
 
       <div v-else-if="route.name.includes('보기')">
         <DocsView
-          :category="caseFilter.category as undefined"
+          :board-num="boardNumber"
+          :category="postFilter.category as undefined"
           :post="post as Post"
+          :view-route="mainViewName"
           @post-hit="postHit"
           @link-hit="linkHit"
           @file-hit="fileHit"
@@ -214,8 +219,10 @@ onBeforeMount(() => {
 
       <div v-else-if="route.name.includes('작성')">
         <DocsForm
+          :board-num="boardNumber"
           :category-list="categoryList"
           :get-suit-case="getSuitCase"
+          :view-route="mainViewName"
           @file-upload="fileUpload"
           @on-submit="onSubmit"
         />
@@ -223,9 +230,11 @@ onBeforeMount(() => {
 
       <div v-else-if="route.name.includes('수정')">
         <DocsForm
+          :board-num="boardNumber"
           :category-list="categoryList"
           :get-suit-case="getSuitCase"
           :post="post as Post"
+          :view-route="mainViewName"
           @file-change="fileChange"
           @file-upload="fileUpload"
           @on-submit="onSubmit"

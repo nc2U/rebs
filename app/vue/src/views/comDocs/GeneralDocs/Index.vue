@@ -13,7 +13,7 @@ import {
 } from '@/store/types/document'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
-import ListController from '@/components/Documents/ListingComDocs.vue'
+import ListingComDocs from '@/components/Documents/ListingComDocs.vue'
 import CategoryTabs from '@/components/Documents/CategoryTabs.vue'
 import DocsList from '@/components/Documents/DocsList.vue'
 import DocsView from '@/components/Documents/DocsView.vue'
@@ -26,7 +26,7 @@ const postFilter = ref<PostFilter>({
   company: '',
   board: boardNumber.value,
   category: '',
-  is_com: false,
+  is_com: 'unknown',
   project: '',
   ordering: '',
   search: '',
@@ -183,8 +183,8 @@ onBeforeMount(() => {
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <div v-if="route.name === '본사 일반 문서'" class="pt-3">
-        <ListController ref="fController" @docs-filter="docsFilter" />
+      <div v-if="route.name === `${mainViewName}`" class="pt-3">
+        <ListingComDocs ref="fController" @docs-filter="docsFilter" />
 
         <CategoryTabs
           :category="postFilter.category as number"
@@ -204,6 +204,7 @@ onBeforeMount(() => {
 
       <div v-else-if="route.name.includes('보기')">
         <DocsView
+          :board-num="boardNumber"
           :category="postFilter.category as number"
           :post="post as Post"
           :view-route="mainViewName"
@@ -215,6 +216,7 @@ onBeforeMount(() => {
 
       <div v-else-if="route.name.includes('작성')">
         <DocsForm
+          :board-num="boardNumber"
           :category-list="categoryList"
           :view-route="mainViewName"
           @file-upload="fileUpload"
@@ -224,6 +226,7 @@ onBeforeMount(() => {
 
       <div v-else-if="route.name.includes('수정')">
         <DocsForm
+          :board-num="boardNumber"
           :category-list="categoryList"
           :post="post as Post"
           :view-route="mainViewName"

@@ -116,12 +116,14 @@ const dataSetup = (pk: number, caseId?: string | string[]) => {
   caseFilter.value.project = pk ?? ''
   fetchSuitCaseList(caseFilter.value)
   if (caseId) fetchSuitCase(Number(caseId))
+  caseFilter.value.project = pk
 }
 
 const dataReset = () => {
   // comStore.company = null
   docStore.suitcaseList = []
   docStore.suitcaseCount = 0
+  caseFilter.value.project = ''
   router.replace({ name: `${mainViewName.value}` })
 }
 
