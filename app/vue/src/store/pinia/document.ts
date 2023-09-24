@@ -15,25 +15,25 @@ import {
 } from '@/store/types/document'
 
 export type SuitCaseFilter = {
-  company?: number | null
-  project?: number | null
+  company?: number | ''
+  project?: number | ''
   is_com?: 'unknown' | boolean
   court?: string
-  related_case?: number | null
-  sort?: '1' | '2' | '3' | '4' | '5' | null
-  level?: '1' | '2' | '3' | '4' | null
+  related_case?: number | ''
+  sort?: '1' | '2' | '3' | '4' | '5' | ''
+  level?: '1' | '2' | '3' | '4' | ''
   search?: string
   page?: number
 }
 
 export type PostFilter = {
-  company?: number | null
-  project?: number | null
+  company?: number | ''
+  project?: number | ''
   board?: number
   is_notice?: 'unknown' | boolean
   is_com?: 'unknown' | boolean
-  category?: number | null
-  lawsuit?: number | null
+  category?: number | ''
+  lawsuit?: number | ''
   ordering?: string
   search?: string
   page?: number
@@ -145,8 +145,8 @@ export const useDocument = defineStore('document', () => {
     api
       .post(`/suitcase/`, payload)
       .then(() =>
-        fetchAllSuitCaseList({ company: payload.company }).then(() =>
-          fetchSuitCaseList({ company: payload.company }).then(() => message()),
+        fetchAllSuitCaseList({ company: payload.company ?? '' }).then(() =>
+          fetchSuitCaseList({ company: payload.company ?? '' }).then(() => message()),
         ),
       )
       .catch(err => errorHandle(err.response.data))
