@@ -4,15 +4,19 @@ import { useProject } from '@/store/pinia/project'
 import { type SuitCaseFilter, useDocument } from '@/store/pinia/document'
 import { numFormat } from '@/utils/baseMixins'
 import { bgLight } from '@/utils/cssMixins'
-import { courtChoices } from '@/views/comDocs/LawsuitCase/components/court'
+import { courtChoices } from './components/court'
 import Multiselect from '@vueform/multiselect'
 
-defineProps({ tab: { type: Number, default: null } })
+const props = defineProps({
+  tab: { type: Number, default: null },
+  comFrom: { type: Boolean, default: false },
+})
 const emit = defineEmits(['list-filter'])
 
 const form = reactive<SuitCaseFilter>({
-  is_com: '',
-  project: null,
+  company: '',
+  project: '',
+  is_com: 'unknown',
   court: '',
   related_case: '',
   sort: '',
@@ -22,8 +26,8 @@ const form = reactive<SuitCaseFilter>({
 })
 
 const formsCheck = computed(() => {
-  const a = form.is_com === ''
-  const b = form.project === null
+  const a = form.is_com === 'unknown'
+  const b = form.project === ''
   const c = form.court === ''
   const d = form.related_case === ''
   const e = form.sort === ''
@@ -44,9 +48,21 @@ const getSuitCase = computed(() => documentStore.getSuitCase)
 const listFiltering = (page = 1) => {
   nextTick(() => {
     form.page = page
-    form.is_com = !form.project ? '' : form.project === 'com'
     emit('list-filter', { ...form })
   })
+}
+
+const firstSorting = (event: { target: { value: 'is_com' | number | null } }) => {
+  const val = event.target.value
+  if (val === null) form.is_com = 'unknown'
+  else if (val === 'is_com') {
+    form.is_com = true
+    form.project = ''
+  } else {
+    form.is_com = false
+    form.project = val
+  }
+  listFiltering(1)
 }
 
 const courtChange = (court: string) => (form.court = court)
@@ -54,7 +70,7 @@ const searchChange = (search: string) => (form.search = search)
 const relatedChange = (related: number) => (form.related_case = related)
 const projectChange = (project: number | null) => {
   if (project !== null) form.project = project
-  else form.project = 'com'
+  // else form.project = 'com'
 }
 
 defineExpose({
@@ -66,8 +82,8 @@ defineExpose({
 })
 
 const resetForm = () => {
-  form.is_com = ''
-  form.project = null
+  form.is_com = 'unknown'
+  form.project = ''
   form.court = ''
   form.related_case = ''
   form.sort = ''
@@ -89,10 +105,10 @@ onBeforeMount(() => fetchProjectList())
     <CRow>
       <CCol lg="6">
         <CRow>
-          <CCol md="4" class="mb-3">
-            <CFormSelect v-model="form.project" @change="listFiltering(1)">
+          <CCol v-if="comFrom" md="4" class="mb-3">
+            <CFormSelect v-model="form.project" @change="firstSorting">
               <option value="">전체 프로젝트</option>
-              <option value="com">본사</option>
+              <option value="is_com">본사</option>
               <option v-for="proj in projSelect" :key="proj.value" :value="proj.value">
                 {{ proj.label }}
               </option>

@@ -15,25 +15,25 @@ import {
 } from '@/store/types/document'
 
 export type SuitCaseFilter = {
-  company?: number | null
-  is_com?: '' | boolean
-  project?: null | 'com' | number
+  company?: number | ''
+  project?: number | ''
+  is_com?: 'unknown' | boolean
   court?: string
-  related_case?: '' | number
-  sort?: '' | '1' | '2' | '3' | '4' | '5'
-  level?: '' | '1' | '2' | '3' | '4'
+  related_case?: number | ''
+  sort?: '1' | '2' | '3' | '4' | '5' | ''
+  level?: '1' | '2' | '3' | '4' | ''
   search?: string
   page?: number
 }
 
 export type PostFilter = {
-  company?: number | null
+  company?: number | ''
+  project?: number | ''
   board?: number
-  is_notice?: boolean
-  is_com?: '' | boolean
-  project?: null | 'com' | number
-  category?: number | null
-  lawsuit?: number
+  is_notice?: 'unknown' | boolean
+  is_com?: 'unknown' | boolean
+  category?: number | ''
+  lawsuit?: number | ''
   ordering?: string
   search?: string
   page?: number
@@ -108,10 +108,10 @@ export const useDocument = defineStore('document', () => {
       .catch(err => errorHandle(err.response.data))
 
   const getQueryStr = (payload: SuitCaseFilter) => {
-    const { is_com, project, court, related_case, sort, level, search } = payload
+    const { project, is_com, court, related_case, sort, level, search } = payload
     let queryStr = ''
-    if (is_com) queryStr += `&is_com=${is_com}`
     if (project) queryStr += `&project=${project}`
+    if (is_com) queryStr += `&is_com=${is_com}`
     if (court) queryStr += `&court=${court}`
     if (related_case) queryStr += `&related_case=${related_case}`
     if (sort) queryStr += `&sort=${sort}`
@@ -121,11 +121,11 @@ export const useDocument = defineStore('document', () => {
   }
 
   const fetchSuitCaseList = (payload: SuitCaseFilter) => {
-    const page = payload.page || 1
-    const company = payload.company || ''
+    const page = payload.page ?? 1
+    const company = payload.company ?? ''
     const queryStr = getQueryStr(payload)
     return api
-      .get(`/suitcase/?company=${company}&page=${page}${queryStr}`)
+      .get(`/suitcase/?page=${page}&company=${company}${queryStr}`)
       .then(res => {
         suitcaseList.value = res.data.results
         suitcaseCount.value = res.data.count
@@ -133,23 +133,29 @@ export const useDocument = defineStore('document', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const fetchAllSuitCaseList = (payload: SuitCaseFilter) => {
+  const fetchAllSuitCaseList = async (payload: SuitCaseFilter) => {
     const queryStr = getQueryStr(payload)
-    return api
-      .get(`/all-suitcase/?company=${payload.company || ''}&${queryStr}`)
+    return await api
+      .get(`/all-suitcase/?company=${payload.company ?? ''}&${queryStr}`)
       .then(res => (allSuitCaseList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
 
-  const createSuitCase = (payload: SuitCase) =>
-    api
+  const createSuitCase = async (
+    payload: SuitCase & {
+      isProject?: boolean
+    },
+  ) => {
+    const retData: SuitCaseFilter = payload.isProject
+      ? { company: payload.company ?? '', is_com: false, project: payload.project ?? '' }
+      : { company: payload.company ?? '' }
+    return await api
       .post(`/suitcase/`, payload)
       .then(() =>
-        fetchAllSuitCaseList({ company: payload.company }).then(() =>
-          fetchSuitCaseList({ company: payload.company }).then(() => message()),
-        ),
+        fetchAllSuitCaseList(retData).then(() => fetchSuitCaseList(retData).then(() => message())),
       )
       .catch(err => errorHandle(err.response.data))
+  }
 
   const updateSuitCase = (payload: SuitCase) =>
     api
@@ -166,20 +172,6 @@ export const useDocument = defineStore('document', () => {
   const post = ref<Post | null>(null)
   const postList = ref<Post[]>([])
   const postCount = ref(0)
-
-  const postPkList = computed(() => postList.value.map(p => p.pk))
-  const postPk = computed(() => post.value?.pk || 0)
-  const postIndex = computed(() => postPkList.value.indexOf(postPk.value))
-
-  const getPrev = computed(() =>
-    postIndex.value && postIndex.value === postList.value.length
-      ? null
-      : postPkList.value[postIndex.value + 1],
-  )
-
-  const getNext = computed(() =>
-    postIndex.value && postIndex.value === 0 ? null : postPkList.value[postIndex.value - 1],
-  )
 
   const postPages = (itemsPerPage: number) => Math.ceil(postCount.value / itemsPerPage)
 
@@ -321,8 +313,6 @@ export const useDocument = defineStore('document', () => {
     post,
     postList,
     postCount,
-    getPrev,
-    getNext,
 
     postPages,
     fetchPost,

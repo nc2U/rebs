@@ -44,6 +44,8 @@ export interface SuitCase {
   summary: string
   user?: string
   created?: string
+  prev_pk?: number | null
+  next_pk?: number | null
 }
 
 export interface SimpleSuitCase {
@@ -55,7 +57,7 @@ export type Post = {
   [key: string]: undefined | number | number[] | null | string | boolean | Link[] | AFile[]
   pk?: number
   company: number | null
-  project: number | null | string
+  project: number | null
   board: number | null
   is_notice: boolean
   proj_name?: string | null
@@ -81,6 +83,8 @@ export type Post = {
   created?: string
   updated?: string
   is_new?: boolean
+  prev_pk?: number | null
+  next_pk?: number | null
 }
 
 export interface Link {

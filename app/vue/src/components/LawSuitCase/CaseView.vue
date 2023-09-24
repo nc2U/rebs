@@ -1,30 +1,37 @@
 <script lang="ts" setup>
-import { type PropType } from 'vue'
+import { computed, type PropType } from 'vue'
 import { timeFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 import { type SuitCase } from '@/store/types/document'
 
-defineProps({
+const props = defineProps({
   suitcase: { type: Object as PropType<SuitCase>, required: true },
+  viewRoute: { type: String, required: true },
 })
 
 const toPrint = () => alert('준비중!')
 const toSocial = () => alert('준비중!')
 const toDelete = () => alert('준비중!')
 
-const getPrev = 1
-const getNext = 3
+const sortName = computed(() => props.suitcase?.proj_name || '본사 문서')
+const sortDesc = computed(() => props.suitcase.sort_desc)
+const levelDesc = computed(() => props.suitcase.level_desc)
 </script>
 
 <template>
   <div v-if="suitcase" class="m-0 p-0">
     <CRow class="mt-5">
-      <CCol>
+      <CCol md="8">
         <h5>
           {{ suitcase.court_desc }}
+          <v-icon icon="mdi-chevron-double-right" size="xs" />
           {{ suitcase.case_number }}
+          <v-icon icon="mdi-chevron-double-right" size="xs" />
           {{ suitcase.case_name }}
         </h5>
+      </CCol>
+      <CCol class="pt-1 text-right">
+        <span>[{{ sortName }}] [{{ sortDesc }}/{{ levelDesc }}]</span>
       </CCol>
     </CRow>
 
@@ -156,11 +163,11 @@ const getNext = 3
         <CButtonGroup role="group" class="mr-3">
           <CButton
             color="light"
-            :disabled="!getPrev"
+            :disabled="!suitcase.prev_pk"
             @click="
               $router.push({
-                name: '본사 소송 사건 - 보기',
-                params: { caseId: getPrev },
+                name: `${viewRoute} - 보기`,
+                params: { caseId: suitcase.prev_pk },
               })
             "
           >
@@ -168,11 +175,11 @@ const getNext = 3
           </CButton>
           <CButton
             color="light"
-            :disabled="!getNext"
+            :disabled="!suitcase.next_pk"
             @click="
               $router.push({
-                name: '본사 소송 사건 - 보기',
-                params: { caseId: getNext },
+                name: `${viewRoute} - 보기`,
+                params: { caseId: suitcase.next_pk },
               })
             "
           >
@@ -185,7 +192,7 @@ const getNext = 3
             color="success"
             @click="
               $router.push({
-                name: '본사 소송 사건 - 수정',
+                name: `${viewRoute} - 수정`,
                 params: { caseId: suitcase.pk },
               })
             "
@@ -196,10 +203,8 @@ const getNext = 3
         </CButtonGroup>
       </CCol>
       <CCol class="text-right">
-        <CButton color="light" @click="$router.push({ name: '본사 소송 사건' })">
-          목록으로
-        </CButton>
-        <CButton color="primary" @click="$router.push({ name: '본사 소송 사건 - 작성' })">
+        <CButton color="light" @click="$router.push({ name: `${viewRoute}` })"> 목록으로</CButton>
+        <CButton color="primary" @click="$router.push({ name: `${viewRoute} - 작성` })">
           등록하기
         </CButton>
       </CCol>

@@ -10,13 +10,13 @@ const emit = defineEmits(['docs-filter'])
 
 const form = reactive<PostFilter>({
   is_com: false,
-  project: null,
+  project: '',
   ordering: '-created',
   search: '',
 })
 
 const formsCheck = computed(() => {
-  const a = form.project === null
+  const a = form.project === ''
   const b = form.is_com === false
   const c = form.ordering === '-created'
   const d = form.search === ''
@@ -28,7 +28,7 @@ const postCount = computed(() => documentStore.postCount)
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
-    form.is_com = form.project === 'com'
+    // form.is_com = form.project === 'com'
     emit('docs-filter', {
       ...{ page },
       ...form,
@@ -38,13 +38,13 @@ const listFiltering = (page = 1) => {
 
 const projectChange = (project: number | null) => {
   if (!!project) form.project = project
-  else form.project = 'com'
+  // else form.project = 'com'
 }
 
 defineExpose({ listFiltering, projectChange })
 
 const resetForm = () => {
-  form.project = null
+  form.project = ''
   form.is_com = false
   form.ordering = '-created'
   form.search = ''

@@ -23,11 +23,11 @@ const fController = ref()
 const boardNumber = ref(3)
 const mainViewName = ref('현장 소송 문서')
 const postFilter = ref<PostFilter>({
-  company: null,
+  company: '',
   board: boardNumber.value,
-  category: null,
+  category: '',
   is_com: false,
-  project: null,
+  project: '',
   ordering: '',
   search: '',
   page: 1,
@@ -153,7 +153,6 @@ const dataSetup = (pk: number, postId?: string | string[]) => {
     category: postFilter.value.category,
   })
   if (postId) fetchPost(Number(postId))
-  fetchAllSuitCaseList({})
   postFilter.value.project = pk
 }
 
@@ -161,7 +160,7 @@ const dataReset = () => {
   docStore.post = null
   docStore.postList = []
   docStore.postCount = 0
-  postFilter.value.company = null
+  postFilter.value.project = ''
   router.replace({ name: `${mainViewName.value}` })
 }
 
@@ -172,6 +171,7 @@ const projSelect = (target: number | null) => {
 
 onBeforeMount(() => {
   fetchCategoryList(boardNumber.value)
+  fetchAllSuitCaseList({ company: company.value ?? '', project: project.value, is_com: false })
   dataSetup(project.value || projStore.initProjId, route.params?.postId)
 })
 </script>

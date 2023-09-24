@@ -3,13 +3,14 @@ import type { PropType } from 'vue'
 import { useDocument } from '@/store/pinia/document'
 import { TableSecondary } from '@/utils/cssMixins'
 import type { SuitCase } from '@/store/types/document'
-import Case from './Case.vue'
 import Pagination from '@/components/Pagination'
+import Case from './components/Case.vue'
 
 defineProps({
   company: { type: Number, default: null },
   page: { type: Number, default: 1 },
   caseList: { type: Array as PropType<SuitCase[]>, default: () => [] },
+  viewRoute: { type: String, required: true },
 })
 
 const emit = defineEmits([
@@ -64,6 +65,7 @@ const pageSelect = (page: number) => emit('page-select', page)
         v-for="suitcase in caseList"
         :key="suitcase.pk as number"
         :suit-case="suitcase"
+        :view-route="viewRoute"
         @agency-filter="agencyFilter"
         @agency-search="agencySearch"
         @related-filter="relatedFilter"
@@ -87,7 +89,7 @@ const pageSelect = (page: number) => emit('page-select', page)
         color="primary"
         class="px-5"
         :disabled="!company"
-        @click="$router.push({ name: '본사 소송 사건 - 작성' })"
+        @click="$router.push({ name: `${viewRoute} - 작성` })"
       >
         등록하기
       </CButton>
