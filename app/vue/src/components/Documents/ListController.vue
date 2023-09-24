@@ -5,22 +5,27 @@ import { type PostFilter, useDocument } from '@/store/pinia/document'
 import { numFormat } from '@/utils/baseMixins'
 import { bgLight } from '@/utils/cssMixins'
 
-defineProps({ tab: { type: Number, default: null } })
+const props = defineProps({
+  tab: { type: Number, default: null },
+  comFrom: { type: Boolean, default: false },
+})
 const emit = defineEmits(['docs-filter'])
 
 const form = reactive<PostFilter>({
-  is_com: false,
+  company: '',
   project: '',
+  is_com: 'unknown',
   ordering: '-created',
   search: '',
 })
 
 const formsCheck = computed(() => {
-  const a = form.project === ''
-  const b = form.is_com === false
-  const c = form.ordering === '-created'
-  const d = form.search === ''
-  return a && b && c && d
+  const a = form.company === ''
+  const b = form.project === ''
+  const c = form.is_com === false
+  const d = form.ordering === '-created'
+  const e = form.search === ''
+  return a && b && c && d && e
 })
 
 const documentStore = useDocument()
@@ -35,6 +40,19 @@ const listFiltering = (page = 1) => {
   })
 }
 
+const firstSorting = (event: { target: { value: 'is_com' | number | null } }) => {
+  const val = event.target.value
+  if (val === null) form.is_com = 'unknown'
+  else if (val === 'is_com') {
+    form.is_com = true
+    form.project = ''
+  } else {
+    form.is_com = false
+    form.project = val
+  }
+  listFiltering(1)
+}
+
 const projectChange = (project: number | null) => {
   if (!!project) form.project = project
 }
@@ -42,6 +60,7 @@ const projectChange = (project: number | null) => {
 defineExpose({ listFiltering, projectChange })
 
 const resetForm = () => {
+  form.company = ''
   form.project = ''
   form.is_com = false
   form.ordering = '-created'
@@ -56,14 +75,14 @@ onBeforeMount(() => fetchProjectList())
 </script>
 
 <template>
-  <CCallout color="primary" class="pb-0 mb-4" :class="bgLight">
+  <CCallout :color="comFrom ? 'primary' : 'success'" class="pb-0 mb-4" :class="bgLight">
     <CRow>
       <CCol lg="6">
         <CRow>
-          <CCol md="6" lg="5" xl="4" class="mb-3">
-            <CFormSelect v-model="form.project" @change="listFiltering(1)">
+          <CCol v-if="comFrom" md="6" lg="5" xl="4" class="mb-3">
+            <CFormSelect v-model="form.project" @change="firstSorting">
               <option value="">전체 프로젝트</option>
-              <option value="com">본사</option>
+              <option value="is_com">본사</option>
               <option v-for="proj in projSelect" :key="proj.value" :value="proj.value">
                 {{ proj.label }}
               </option>

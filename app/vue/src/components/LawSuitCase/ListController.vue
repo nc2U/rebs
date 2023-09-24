@@ -101,14 +101,14 @@ onBeforeMount(() => fetchProjectList())
 </script>
 
 <template>
-  <CCallout color="primary" class="pb-0 mb-4" :class="bgLight">
+  <CCallout :color="comFrom ? 'primary' : 'success'" class="pb-0 mb-4" :class="bgLight">
     <CRow>
       <CCol lg="6">
         <CRow>
           <CCol v-if="comFrom" md="4" class="mb-3">
             <CFormSelect v-model="form.project" @change="firstSorting">
               <option value="">전체 프로젝트</option>
-              <option value="is_com">본사</option>
+              <option value="">본사</option>
               <option v-for="proj in projSelect" :key="proj.value" :value="proj.value">
                 {{ proj.label }}
               </option>
