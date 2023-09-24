@@ -108,8 +108,9 @@ export const useDocument = defineStore('document', () => {
       .catch(err => errorHandle(err.response.data))
 
   const getQueryStr = (payload: SuitCaseFilter) => {
-    const { is_com, court, related_case, sort, level, search } = payload
+    const { project, is_com, court, related_case, sort, level, search } = payload
     let queryStr = ''
+    if (project) queryStr += `&project=${project}`
     if (is_com) queryStr += `&is_com=${is_com}`
     if (court) queryStr += `&court=${court}`
     if (related_case) queryStr += `&related_case=${related_case}`
@@ -122,10 +123,9 @@ export const useDocument = defineStore('document', () => {
   const fetchSuitCaseList = (payload: SuitCaseFilter) => {
     const page = payload.page ?? 1
     const company = payload.company ?? ''
-    const project = payload.project ?? ''
     const queryStr = getQueryStr(payload)
     return api
-      .get(`/suitcase/?page=${page}&company=${company}&project=${project}${queryStr}`)
+      .get(`/suitcase/?page=${page}&company=${company}${queryStr}`)
       .then(res => {
         suitcaseList.value = res.data.results
         suitcaseCount.value = res.data.count
@@ -136,7 +136,7 @@ export const useDocument = defineStore('document', () => {
   const fetchAllSuitCaseList = (payload: SuitCaseFilter) => {
     const queryStr = getQueryStr(payload)
     return api
-      .get(`/all-suitcase/?company=${payload.company || ''}&${queryStr}`)
+      .get(`/all-suitcase/?company=${payload.company ?? ''}&${queryStr}`)
       .then(res => (allSuitCaseList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }

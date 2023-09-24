@@ -27,8 +27,9 @@ const caseFilter = ref<cFilter>({
 })
 
 const listFiltering = (payload: cFilter) => {
+  payload.is_com = false
+  payload.project = project.value ?? ''
   caseFilter.value = payload
-  // caseFilter.value.project = payload.is_com ? 'unknown' : payload.project
   if (company.value) fetchSuitCaseList({ ...caseFilter.value })
 }
 
@@ -128,8 +129,10 @@ const projSelect = (target: number | null) => {
 }
 
 onBeforeMount(() => {
-  fetchAllSuitCaseList({})
-  dataSetup(project.value || projStore.initProjId, route.params?.caseId)
+  const com = company.value ?? ''
+  const proj = project.value || projStore.initProjId
+  fetchAllSuitCaseList({ company: com, is_com: false, project: proj })
+  dataSetup(proj, route.params?.caseId)
 })
 </script>
 
