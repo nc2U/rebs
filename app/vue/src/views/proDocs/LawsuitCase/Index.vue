@@ -62,7 +62,10 @@ watch(route, val => {
 })
 
 const onSubmit = (payload: SuitCase) => {
-  if (!!company.value)
+  if (!!project.value) {
+    payload.company = company.value as number | null
+    payload.project = project.value
+    console.log(payload)
     if (payload.pk) {
       updateSuitCase(payload)
       router.replace({
@@ -74,6 +77,7 @@ const onSubmit = (payload: SuitCase) => {
       createSuitCase(payload)
       router.replace({ name: `${mainViewName.value}` })
     }
+  }
 }
 
 const onDelete = (pk: number) => deleteSuitCase(pk)
