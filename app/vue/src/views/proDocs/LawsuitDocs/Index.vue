@@ -13,7 +13,7 @@ import {
 } from '@/store/types/document'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
-import ListingProDocs from '@/components/Documents/ListingProDocs.vue'
+import ListController from '@/components/Documents/ListController.vue'
 import CategoryTabs from '@/components/Documents/CategoryTabs.vue'
 import DocsList from '@/components/Documents/DocsList.vue'
 import DocsView from '@/components/Documents/DocsView.vue'
@@ -182,7 +182,7 @@ onBeforeMount(() => {
   <ContentBody>
     <CCardBody class="pb-5">
       <div v-if="route.name === `${mainViewName}`" class="pt-3">
-        <ListingProDocs ref="fController" @docs-filter="docsListFilter" />
+        <ListController ref="fController" @docs-filter="docsListFilter" />
 
         <CategoryTabs
           :category="postFilter.category as number"
