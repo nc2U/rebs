@@ -7,7 +7,7 @@ import { bgLight } from '@/utils/cssMixins'
 import { courtChoices } from './components/court'
 import Multiselect from '@vueform/multiselect'
 
-const props = defineProps({
+defineProps({
   tab: { type: Number, default: null },
   comFrom: { type: Boolean, default: false },
 })
@@ -108,7 +108,7 @@ onBeforeMount(() => fetchProjectList())
           <CCol v-if="comFrom" md="4" class="mb-3">
             <CFormSelect v-model="form.project" @change="firstSorting">
               <option value="">전체 프로젝트</option>
-              <option value="">본사</option>
+              <option value="is_com">본사</option>
               <option v-for="proj in projSelect" :key="proj.value" :value="proj.value">
                 {{ proj.label }}
               </option>
