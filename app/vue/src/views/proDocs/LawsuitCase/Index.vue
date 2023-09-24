@@ -15,9 +15,9 @@ import CaseForm from '@/components/LawSuitCase/CaseForm.vue'
 const fController = ref()
 const mainViewName = ref('현장 소송 사건')
 const caseFilter = ref<cFilter>({
-  company: null,
-  project: null,
-  is_com: '',
+  company: '',
+  project: '',
+  is_com: false,
   court: '',
   related_case: '',
   sort: '',
@@ -28,7 +28,7 @@ const caseFilter = ref<cFilter>({
 
 const listFiltering = (payload: cFilter) => {
   caseFilter.value = payload
-  caseFilter.value.project = payload.is_com ? null : payload.project
+  // caseFilter.value.project = payload.is_com ? 'unknown' : payload.project
   if (company.value) fetchSuitCaseList({ ...caseFilter.value })
 }
 
@@ -62,9 +62,9 @@ watch(route, val => {
 })
 
 const onSubmit = (payload: SuitCase) => {
-  payload.company = company.value as number | null
-  payload.project = project.value as number | null
-  console.log(payload)
+  payload.company = company.value ?? null
+  payload.project = project.value ?? null
+
   if (payload.pk) {
     updateSuitCase(payload)
     router.replace({
@@ -109,7 +109,9 @@ const sortFilter = (project: number | null) => {
 }
 
 const dataSetup = (pk: number, caseId?: string | string[]) => {
-  fetchSuitCaseList({ company: pk, page: caseFilter.value.page })
+  caseFilter.value.company = company.value ?? ''
+  caseFilter.value.project = pk ?? ''
+  fetchSuitCaseList(caseFilter.value)
   if (caseId) fetchSuitCase(Number(caseId))
 }
 

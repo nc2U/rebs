@@ -11,8 +11,8 @@ defineProps({ tab: { type: Number, default: null } })
 const emit = defineEmits(['list-filter'])
 
 const form = reactive<SuitCaseFilter>({
-  is_com: '',
-  project: null,
+  is_com: 'unknown',
+  project: '',
   court: '',
   related_case: '',
   sort: '',
@@ -22,8 +22,8 @@ const form = reactive<SuitCaseFilter>({
 })
 
 const formsCheck = computed(() => {
-  const a = form.is_com === ''
-  const b = form.project === null
+  const a = form.is_com === 'unknown'
+  const b = form.project === ''
   const c = form.court === ''
   const d = form.related_case === ''
   const e = form.sort === ''
@@ -35,7 +35,7 @@ const formsCheck = computed(() => {
 const projectStore = useProject()
 const projSelect = computed(() => projectStore.projSelect)
 
-const fetchProjectList = () => projectStore.fetchProjectList()
+// const fetchProjectList = () => projectStore.fetchProjectList()
 
 const documentStore = useDocument()
 const suitcaseCount = computed(() => documentStore.suitcaseCount)
@@ -44,7 +44,7 @@ const getSuitCase = computed(() => documentStore.getSuitCase)
 const listFiltering = (page = 1) => {
   nextTick(() => {
     form.page = page
-    form.is_com = !form.project ? '' : form.project === 'com'
+    // form.is_com = !form.project ? '' : form.project === 'com'
     emit('list-filter', { ...form })
   })
 }
@@ -54,7 +54,7 @@ const searchChange = (search: string) => (form.search = search)
 const relatedChange = (related: number) => (form.related_case = related)
 const projectChange = (project: number | null) => {
   if (project !== null) form.project = project
-  else form.project = 'com'
+  // else form.project = 'com'
 }
 
 defineExpose({
@@ -66,8 +66,8 @@ defineExpose({
 })
 
 const resetForm = () => {
-  form.is_com = ''
-  form.project = null
+  form.is_com = 'unknown'
+  form.project = ''
   form.court = ''
   form.related_case = ''
   form.sort = ''
@@ -81,7 +81,7 @@ const sortChange = () => {
   listFiltering(1)
 }
 
-onBeforeMount(() => fetchProjectList())
+// onBeforeMount(() => fetchProjectList())
 </script>
 
 <template>
@@ -89,15 +89,15 @@ onBeforeMount(() => fetchProjectList())
     <CRow>
       <CCol lg="6">
         <CRow>
-          <CCol md="4" class="mb-3">
-            <CFormSelect v-model="form.project" @change="listFiltering(1)">
-              <option value="">전체 프로젝트</option>
-              <option value="com">본사</option>
-              <option v-for="proj in projSelect" :key="proj.value" :value="proj.value">
-                {{ proj.label }}
-              </option>
-            </CFormSelect>
-          </CCol>
+          <!--          <CCol md="4" class="mb-3">-->
+          <!--            <CFormSelect v-model="form.project" @change="listFiltering(1)">-->
+          <!--              <option value="">전체 프로젝트</option>-->
+          <!--              <option value="com">본사</option>-->
+          <!--              <option v-for="proj in projSelect" :key="proj.value" :value="proj.value">-->
+          <!--                {{ proj.label }}-->
+          <!--              </option>-->
+          <!--            </CFormSelect>-->
+          <!--          </CCol>-->
           <CCol md="4" class="mb-3">
             <Multiselect
               v-model="form.court"
