@@ -81,7 +81,16 @@ const levelDesc = computed(() => props.suitcase.level_desc)
               <CTableHeaderCell class="text-center" :color="TableSecondary">
                 관련 사건
               </CTableHeaderCell>
-              <CTableDataCell>{{ suitcase.related_case_name }}</CTableDataCell>
+              <CTableDataCell>
+                <router-link
+                  :to="{
+                    name: `${viewRoute} - 보기`,
+                    params: { caseId: `${suitcase.related_case}` },
+                  }"
+                >
+                  {{ suitcase.related_case_name }}
+                </router-link>
+              </CTableDataCell>
             </CTableRow>
             <CTableRow>
               <CTableHeaderCell class="text-center" :color="TableSecondary">
