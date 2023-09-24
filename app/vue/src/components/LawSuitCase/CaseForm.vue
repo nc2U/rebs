@@ -3,7 +3,7 @@ import { ref, reactive, computed, onMounted, onUpdated, type PropType } from 'vu
 import { useRoute } from 'vue-router'
 import { type SuitCase } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
-import { courtChoices } from '@/views/comDocs/LawsuitCase/components/court'
+import { courtChoices } from './components/court'
 import Multiselect from '@vueform/multiselect'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -250,7 +250,7 @@ onUpdated(() => dataSetup())
 
     <CRow>
       <CCol class="text-right">
-        <CButton color="light" @click="$router.push({ name: `${viewRoute}` })"> 목록으로 </CButton>
+        <CButton color="light" @click="$router.push({ name: `${viewRoute}` })"> 목록으로</CButton>
         <CButton v-if="route.params.caseId" color="light" @click="$router.go(-1)"> 뒤로</CButton>
         <CButton :color="btnClass" type="submit" :disabled="formsCheck"> 저장하기</CButton>
       </CCol>
