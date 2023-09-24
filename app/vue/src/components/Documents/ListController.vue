@@ -9,7 +9,7 @@ const props = defineProps({
   tab: { type: Number, default: null },
   comFrom: { type: Boolean, default: false },
 })
-const emit = defineEmits(['docs-filter'])
+const emit = defineEmits(['list-filter'])
 
 const form = reactive<PostFilter>({
   company: '',
@@ -33,7 +33,7 @@ const postCount = computed(() => documentStore.postCount)
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
-    emit('docs-filter', {
+    emit('list-filter', {
       ...{ page },
       ...form,
     })

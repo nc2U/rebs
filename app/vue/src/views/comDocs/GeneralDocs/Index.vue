@@ -24,10 +24,10 @@ const boardNumber = ref(2)
 const mainViewName = ref('본사 일반 문서')
 const postFilter = ref<PostFilter>({
   company: '',
-  board: boardNumber.value,
-  category: '',
-  is_com: 'unknown',
   project: '',
+  board: boardNumber.value,
+  is_com: 'unknown',
+  category: '',
   ordering: '',
   search: '',
   page: 1,
@@ -41,9 +41,10 @@ const cngFiles = ref<
   }[]
 >([])
 
-const docsFilter = (payload: PostFilter) => {
+const listFiltering = (payload: PostFilter) => {
+  postFilter.value.company = payload.company ?? ''
+  postFilter.value.project = !!payload.is_com ? '' : payload.project
   postFilter.value.is_com = payload.is_com
-  if (!payload.is_com) postFilter.value.project = payload.project
   postFilter.value.ordering = payload.ordering
   postFilter.value.search = payload.search
   if (company.value) fetchPostList({ ...postFilter.value })
@@ -51,12 +52,12 @@ const docsFilter = (payload: PostFilter) => {
 
 const selectCate = (cate: number) => {
   postFilter.value.category = cate
-  docsFilter(postFilter.value)
+  listFiltering(postFilter.value)
 }
 
 const pageSelect = (page: number) => {
   postFilter.value.page = page
-  docsFilter(postFilter.value)
+  listFiltering(postFilter.value)
 }
 
 const comStore = useCompany()
@@ -136,11 +137,11 @@ const linkHit = (payload: Link) => patchLink(payload)
 const fileHit = (payload: AFile) => patchFile(payload)
 
 const sortFilter = (project: number | null) => {
-  fController.value.projectChange(project)
+  fController.value.projectChange(project ?? 'is_com')
   postFilter.value.page = 1
   if (project !== null) postFilter.value.project = project
   else postFilter.value.is_com = true
-  docsFilter(postFilter.value)
+  listFiltering(postFilter.value)
 }
 
 const dataSetup = (pk: number, postId?: string | string[]) => {
@@ -184,7 +185,7 @@ onBeforeMount(() => {
   <ContentBody>
     <CCardBody class="pb-5">
       <div v-if="route.name === `${mainViewName}`" class="pt-3">
-        <ListController ref="fController" :com-from="true" @docs-filter="docsFilter" />
+        <ListController ref="fController" :com-from="true" @list-filter="listFiltering" />
 
         <CategoryTabs
           :category="postFilter.category as number"
