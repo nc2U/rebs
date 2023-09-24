@@ -99,6 +99,20 @@ export const useDocument = defineStore('document', () => {
     })),
   )
 
+  const casePkList = computed(() => allSuitCaseList.value.map(p => p.pk))
+  const casePk = computed(() => suitcase.value?.pk || 0)
+  const caseIndex = computed(() => casePkList.value.indexOf(casePk.value))
+
+  const getPrevSCase = computed(() =>
+    caseIndex.value && caseIndex.value === suitcaseList.value.length
+      ? null
+      : casePkList.value[caseIndex.value + 1],
+  )
+
+  const getNextSCase = computed(() =>
+    caseIndex.value && caseIndex.value === 0 ? null : casePkList.value[caseIndex.value - 1],
+  )
+
   const casePages = (itemsPerPage: number) => Math.ceil(suitcaseCount.value / itemsPerPage)
 
   const fetchSuitCase = (pk: number) =>
@@ -311,6 +325,8 @@ export const useDocument = defineStore('document', () => {
     suitcaseList,
     suitcaseCount,
     getSuitCase,
+    getPrevSCase,
+    getNextSCase,
 
     casePages,
     fetchSuitCase,

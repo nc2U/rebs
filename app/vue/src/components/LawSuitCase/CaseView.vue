@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, type PropType } from 'vue'
+import { useDocument } from '@/store/pinia/document'
 import { timeFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 import { type SuitCase } from '@/store/types/document'
@@ -13,8 +14,9 @@ const toPrint = () => alert('준비중!')
 const toSocial = () => alert('준비중!')
 const toDelete = () => alert('준비중!')
 
-const getPrev = 1
-const getNext = 3
+const docStore = useDocument()
+const getPrev = computed(() => docStore.getPrevSCase)
+const getNext = computed(() => docStore.getNextSCase)
 
 const sortName = computed(() => props.suitcase?.proj_name || '본사 문서')
 const sortDesc = computed(() => props.suitcase.sort_desc)
