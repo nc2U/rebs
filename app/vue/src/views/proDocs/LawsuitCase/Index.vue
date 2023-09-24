@@ -51,7 +51,8 @@ const fetchSuitCase = (pk: number) => docStore.fetchSuitCase(pk)
 const fetchSuitCaseList = (payload: cFilter) => docStore.fetchSuitCaseList(payload)
 const fetchAllSuitCaseList = (payload: cFilter) => docStore.fetchAllSuitCaseList(payload)
 
-const createSuitCase = (payload: SuitCase) => docStore.createSuitCase(payload)
+const createSuitCase = (payload: SuitCase & { isProject?: boolean }) =>
+  docStore.createSuitCase(payload)
 const updateSuitCase = (payload: SuitCase) => docStore.updateSuitCase(payload)
 const deleteSuitCase = (pk: number) => docStore.deleteSuitCase(pk)
 
@@ -62,7 +63,7 @@ watch(route, val => {
   else docStore.suitcase = null
 })
 
-const onSubmit = (payload: SuitCase) => {
+const onSubmit = (payload: SuitCase & { isProject?: boolean }) => {
   payload.company = company.value ?? null
   payload.project = project.value ?? null
 
@@ -74,6 +75,7 @@ const onSubmit = (payload: SuitCase) => {
     })
   } else {
     payload.company = company.value || null
+    payload.isProject = true
     createSuitCase(payload)
     router.replace({ name: `${mainViewName.value}` })
   }

@@ -133,23 +133,25 @@ export const useDocument = defineStore('document', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const fetchAllSuitCaseList = (payload: SuitCaseFilter) => {
+  const fetchAllSuitCaseList = async (payload: SuitCaseFilter) => {
     const queryStr = getQueryStr(payload)
-    return api
+    return await api
       .get(`/all-suitcase/?company=${payload.company ?? ''}&${queryStr}`)
       .then(res => (allSuitCaseList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
 
-  const createSuitCase = (payload: SuitCase) =>
-    api
+  const createSuitCase = async (payload: SuitCase & { isProject?: boolean }) => {
+    const retData: SuitCaseFilter = payload.isProject
+      ? { company: payload.company ?? '', is_com: false, project: payload.project ?? '' }
+      : { company: payload.company ?? '' }
+    return await api
       .post(`/suitcase/`, payload)
       .then(() =>
-        fetchAllSuitCaseList({ company: payload.company ?? '' }).then(() =>
-          fetchSuitCaseList({ company: payload.company ?? '' }).then(() => message()),
-        ),
+        fetchAllSuitCaseList(retData).then(() => fetchSuitCaseList(retData).then(() => message())),
       )
       .catch(err => errorHandle(err.response.data))
+  }
 
   const updateSuitCase = (payload: SuitCase) =>
     api
