@@ -71,7 +71,10 @@ const resetForm = () => {
 const projectStore = useProject()
 const projSelect = computed(() => projectStore.projSelect)
 const fetchProjectList = () => projectStore.fetchProjectList()
-onBeforeMount(() => fetchProjectList())
+onBeforeMount(() => {
+  fetchProjectList()
+  if (props.comFrom) form.project = 'is_com'
+})
 </script>
 
 <template>

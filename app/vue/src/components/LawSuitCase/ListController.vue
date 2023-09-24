@@ -7,7 +7,7 @@ import { bgLight } from '@/utils/cssMixins'
 import { courtChoices } from './components/court'
 import Multiselect from '@vueform/multiselect'
 
-defineProps({
+const props = defineProps({
   tab: { type: Number, default: null },
   comFrom: { type: Boolean, default: false },
 })
@@ -97,7 +97,10 @@ const sortChange = () => {
   listFiltering(1)
 }
 
-onBeforeMount(() => fetchProjectList())
+onBeforeMount(() => {
+  fetchProjectList()
+  if (props.comFrom) form.project = 'is_com'
+})
 </script>
 
 <template>

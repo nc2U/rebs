@@ -26,7 +26,7 @@ const postFilter = ref<PostFilter>({
   company: '',
   project: '',
   board: boardNumber.value,
-  is_com: 'unknown',
+  is_com: true,
   category: '',
   ordering: '',
   search: '',
@@ -151,7 +151,7 @@ const dataSetup = (pk: number, postId?: string | string[]) => {
     company: pk,
     board: boardNumber.value,
     page: postFilter.value.page,
-    category: postFilter.value.category,
+    is_com: postFilter.value.is_com,
   })
   fetchAllSuitCaseList({})
   if (postId) fetchPost(Number(postId))
