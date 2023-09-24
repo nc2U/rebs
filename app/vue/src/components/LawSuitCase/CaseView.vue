@@ -13,7 +13,7 @@ const toPrint = () => alert('준비중!')
 const toSocial = () => alert('준비중!')
 const toDelete = () => alert('준비중!')
 
-const sortName = computed(() => props.suitcase?.proj_name || '본사 문서')
+const sortName = computed(() => props.suitcase?.proj_name || '본사')
 const sortDesc = computed(() => props.suitcase.sort_desc)
 const levelDesc = computed(() => props.suitcase.level_desc)
 </script>
@@ -31,7 +31,10 @@ const levelDesc = computed(() => props.suitcase.level_desc)
         </h5>
       </CCol>
       <CCol class="pt-1 text-right">
-        <span>[{{ sortName }}] [{{ sortDesc }}/{{ levelDesc }}]</span>
+        [<span>{{ sortName }}</span
+        >] [<span>{{ sortDesc }}</span>
+        <span v-if="levelDesc !== '신청/집행'">/{{ levelDesc }}</span
+        >]
       </CCol>
     </CRow>
 
