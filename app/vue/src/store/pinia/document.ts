@@ -16,24 +16,24 @@ import {
 
 export type SuitCaseFilter = {
   company?: number | null
-  is_com?: '' | boolean
-  project?: null | 'com' | number
+  project?: number | null
+  is_com?: 'unknown' | boolean
   court?: string
-  related_case?: '' | number
-  sort?: '' | '1' | '2' | '3' | '4' | '5'
-  level?: '' | '1' | '2' | '3' | '4'
+  related_case?: number | null
+  sort?: '1' | '2' | '3' | '4' | '5' | null
+  level?: '1' | '2' | '3' | '4' | null
   search?: string
   page?: number
 }
 
 export type PostFilter = {
   company?: number | null
+  project?: number | null
   board?: number
-  is_notice?: boolean
-  is_com?: '' | boolean
-  project?: null | 'com' | number
+  is_notice?: 'unknown' | boolean
+  is_com?: 'unknown' | boolean
   category?: number | null
-  lawsuit?: number
+  lawsuit?: number | null
   ordering?: string
   search?: string
   page?: number
