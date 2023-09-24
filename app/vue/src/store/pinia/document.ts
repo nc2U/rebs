@@ -99,20 +99,6 @@ export const useDocument = defineStore('document', () => {
     })),
   )
 
-  const casePkList = computed(() => allSuitCaseList.value.map(p => p.pk))
-  const casePk = computed(() => suitcase.value?.pk || 0)
-  const caseIndex = computed(() => casePkList.value.indexOf(casePk.value))
-
-  const getPrevSCase = computed(() =>
-    caseIndex.value && caseIndex.value === suitcaseList.value.length
-      ? null
-      : casePkList.value[caseIndex.value + 1],
-  )
-
-  const getNextSCase = computed(() =>
-    caseIndex.value && caseIndex.value === 0 ? null : casePkList.value[caseIndex.value - 1],
-  )
-
   const casePages = (itemsPerPage: number) => Math.ceil(suitcaseCount.value / itemsPerPage)
 
   const fetchSuitCase = (pk: number) =>
@@ -155,7 +141,11 @@ export const useDocument = defineStore('document', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const createSuitCase = async (payload: SuitCase & { isProject?: boolean }) => {
+  const createSuitCase = async (
+    payload: SuitCase & {
+      isProject?: boolean
+    },
+  ) => {
     const retData: SuitCaseFilter = payload.isProject
       ? { company: payload.company ?? '', is_com: false, project: payload.project ?? '' }
       : { company: payload.company ?? '' }
@@ -182,20 +172,6 @@ export const useDocument = defineStore('document', () => {
   const post = ref<Post | null>(null)
   const postList = ref<Post[]>([])
   const postCount = ref(0)
-
-  const postPkList = computed(() => postList.value.map(p => p.pk))
-  const postPk = computed(() => post.value?.pk || 0)
-  const postIndex = computed(() => postPkList.value.indexOf(postPk.value))
-
-  const getPrev = computed(() =>
-    postIndex.value && postIndex.value === postList.value.length
-      ? null
-      : postPkList.value[postIndex.value + 1],
-  )
-
-  const getNext = computed(() =>
-    postIndex.value && postIndex.value === 0 ? null : postPkList.value[postIndex.value - 1],
-  )
 
   const postPages = (itemsPerPage: number) => Math.ceil(postCount.value / itemsPerPage)
 
@@ -325,8 +301,6 @@ export const useDocument = defineStore('document', () => {
     suitcaseList,
     suitcaseCount,
     getSuitCase,
-    getPrevSCase,
-    getNextSCase,
 
     casePages,
     fetchSuitCase,
@@ -339,8 +313,6 @@ export const useDocument = defineStore('document', () => {
     post,
     postList,
     postCount,
-    getPrev,
-    getNext,
 
     postPages,
     fetchPost,
