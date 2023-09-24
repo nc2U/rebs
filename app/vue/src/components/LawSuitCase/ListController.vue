@@ -7,7 +7,7 @@ import { bgLight } from '@/utils/cssMixins'
 import { courtChoices } from './components/court'
 import Multiselect from '@vueform/multiselect'
 
-const props = defineProps({
+defineProps({
   tab: { type: Number, default: null },
   comFrom: { type: Boolean, default: false },
 })
@@ -101,7 +101,7 @@ onBeforeMount(() => fetchProjectList())
 </script>
 
 <template>
-  <CCallout color="primary" class="pb-0 mb-4" :class="bgLight">
+  <CCallout :color="comFrom ? 'primary' : 'success'" class="pb-0 mb-4" :class="bgLight">
     <CRow>
       <CCol lg="6">
         <CRow>
