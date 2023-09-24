@@ -188,10 +188,6 @@ const project_docs = {
         {
           component: 'CNavItem',
           name: '현장 소송 사건',
-          badge: {
-            color: 'warning',
-            text: 'building...',
-          },
           to: '/project-docs/lawsuit/case',
         },
       ],
