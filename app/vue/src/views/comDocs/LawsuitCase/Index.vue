@@ -17,7 +17,7 @@ const mainViewName = ref('본사 소송 사건')
 const caseFilter = ref<cFilter>({
   company: '',
   project: '',
-  is_com: 'unknown',
+  is_com: true,
   court: '',
   related_case: '',
   sort: '',
@@ -106,7 +106,7 @@ const sortFilter = (project: number | null) => {
 }
 
 const dataSetup = (pk: number, caseId?: string | string[]) => {
-  fetchSuitCaseList({ company: pk, page: caseFilter.value.page })
+  fetchSuitCaseList({ company: pk, is_com: true, page: caseFilter.value.page })
   if (caseId) fetchSuitCase(Number(caseId))
   caseFilter.value.company = pk
 }
