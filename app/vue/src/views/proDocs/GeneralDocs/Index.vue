@@ -23,11 +23,11 @@ const fController = ref()
 const boardNumber = ref(2)
 const mainViewName = ref('현장 일반 문서')
 const postFilter = ref<PostFilter>({
-  company: null,
+  company: '',
   board: boardNumber.value,
-  category: null,
+  category: '',
   is_com: false,
-  project: null,
+  project: '',
   ordering: '',
   search: '',
   page: 1,
@@ -158,7 +158,7 @@ const dataReset = () => {
   docStore.post = null
   docStore.postList = []
   docStore.postCount = 0
-  postFilter.value.company = null
+  postFilter.value.company = ''
   router.replace({ name: `${mainViewName.value}` })
 }
 

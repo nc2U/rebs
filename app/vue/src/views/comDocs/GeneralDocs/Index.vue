@@ -13,19 +13,21 @@ import {
 } from '@/store/types/document'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
-import ListController from './components/ListController.vue'
-import CategoryTabs from './components/CategoryTabs.vue'
-import DocsList from './components/DocsList.vue'
-import DocsView from './components/DocsView.vue'
-import DocsForm from './components/DocsForm.vue'
+import ListController from '@/components/Documents/ListingComDocs.vue'
+import CategoryTabs from '@/components/Documents/CategoryTabs.vue'
+import DocsList from '@/components/Documents/DocsList.vue'
+import DocsView from '@/components/Documents/DocsView.vue'
+import DocsForm from '@/components/Documents/DocsForm.vue'
 
 const fController = ref()
+const boardNumber = ref(2)
+const mainViewName = ref('본사 일반 문서')
 const postFilter = ref<PostFilter>({
-  company: null,
-  board: 2,
-  category: null,
+  company: '',
+  board: boardNumber.value,
+  category: '',
   is_com: false,
-  project: null,
+  project: '',
   ordering: '',
   search: '',
   page: 1,
@@ -119,12 +121,12 @@ const onSubmit = (payload: Post & Attatches) => {
     if (pk) {
       updatePost({ pk, form })
       router.replace({
-        name: '본사 일반 문서 - 보기',
+        name: `${mainViewName.value} - 보기`,
         params: { postId: pk },
       })
     } else {
       createPost({ form })
-      router.replace({ name: '본사 일반 문서' })
+      router.replace({ name: `${mainViewName.value}` })
     }
   }
 }
@@ -144,7 +146,7 @@ const sortFilter = (project: number | null) => {
 const dataSetup = (pk: number, postId?: string | string[]) => {
   fetchPostList({
     company: pk,
-    board: 2,
+    board: boardNumber.value,
     page: postFilter.value.page,
     category: postFilter.value.category,
   })
@@ -153,12 +155,11 @@ const dataSetup = (pk: number, postId?: string | string[]) => {
 }
 
 const dataReset = () => {
-  comStore.company = null
   docStore.post = null
   docStore.postList = []
   docStore.postCount = 0
-  postFilter.value.company = null
-  router.replace({ name: '본사 일반 문서' })
+  postFilter.value.company = ''
+  router.replace({ name: `${mainViewName.value}` })
 }
 
 const comSelect = (target: number | null) => {
@@ -167,7 +168,7 @@ const comSelect = (target: number | null) => {
 }
 
 onBeforeMount(() => {
-  fetchCategoryList(2)
+  fetchCategoryList(boardNumber.value)
   dataSetup(company.value || comStore.initComId, route.params?.postId)
 })
 </script>
@@ -195,6 +196,7 @@ onBeforeMount(() => {
           :company="company as number"
           :page="postFilter.page"
           :post-list="postList"
+          :view-route="mainViewName"
           @page-select="pageSelect"
           @sort-filter="sortFilter"
         />
@@ -204,6 +206,7 @@ onBeforeMount(() => {
         <DocsView
           :category="postFilter.category as number"
           :post="post as Post"
+          :view-route="mainViewName"
           @post-hit="postHit"
           @link-hit="linkHit"
           @file-hit="fileHit"
@@ -211,13 +214,19 @@ onBeforeMount(() => {
       </div>
 
       <div v-else-if="route.name.includes('작성')">
-        <DocsForm :category-list="categoryList" @file-upload="fileUpload" @on-submit="onSubmit" />
+        <DocsForm
+          :category-list="categoryList"
+          :view-route="mainViewName"
+          @file-upload="fileUpload"
+          @on-submit="onSubmit"
+        />
       </div>
 
       <div v-else-if="route.name.includes('수정')">
         <DocsForm
           :category-list="categoryList"
           :post="post as Post"
+          :view-route="mainViewName"
           @file-change="fileChange"
           @file-upload="fileUpload"
           @on-submit="onSubmit"
