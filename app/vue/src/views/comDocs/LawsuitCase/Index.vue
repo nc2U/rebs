@@ -7,15 +7,16 @@ import { type SuitCaseFilter as cFilter, useDocument } from '@/store/pinia/docum
 import { type SuitCase } from '@/store/types/document'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
-import ListController from './components/ListController.vue'
-import CaseView from './components/CaseView.vue'
-import CaseList from './components/CaseList.vue'
-import CaseForm from './components/CaseForm.vue'
+import ListController from '@/components/LawSuitCase/ListController.vue'
+import CaseView from '@/components/LawSuitCase/CaseView.vue'
+import CaseList from '@/components/LawSuitCase/CaseList.vue'
+import CaseForm from '@/components/LawSuitCase/CaseForm.vue'
 
 const fController = ref()
+const mainViewName = ref('본사 소송 사건')
 const caseFilter = ref<cFilter>({
-  company: null,
-  project: null,
+  company: '',
+  project: '',
   is_com: '',
   court: '',
   related_case: '',
@@ -64,13 +65,13 @@ const onSubmit = (payload: SuitCase) => {
     if (payload.pk) {
       updateSuitCase(payload)
       router.replace({
-        name: '본사 소송 사건 - 보기',
+        name: `${mainViewName.value} - 보기`,
         params: { caseId: payload.pk },
       })
     } else {
       payload.company = company.value || null
       createSuitCase(payload)
-      router.replace({ name: '본사 소송 사건' })
+      router.replace({ name: `${mainViewName.value}` })
     }
 }
 
@@ -107,13 +108,15 @@ const sortFilter = (project: number | null) => {
 const dataSetup = (pk: number, caseId?: string | string[]) => {
   fetchSuitCaseList({ company: pk, page: caseFilter.value.page })
   if (caseId) fetchSuitCase(Number(caseId))
+  caseFilter.value.company = pk
 }
 
 const dataReset = () => {
-  comStore.company = null
+  // comStore.company = null
   docStore.suitcaseList = []
   docStore.suitcaseCount = 0
-  router.replace({ name: '본사 소송 사건' })
+  caseFilter.value.company = ''
+  router.replace({ name: `${mainViewName.value}` })
 }
 
 const comSelect = (target: number | null) => {
@@ -137,13 +140,14 @@ onBeforeMount(() => {
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <div v-if="route.name === '본사 소송 사건'" class="pt-3">
+      <div v-if="route.name === `${mainViewName}`" class="pt-3">
         <ListController ref="fController" @list-filter="listFiltering" />
 
         <CaseList
           :company="company || undefined"
           :page="caseFilter.page"
           :case-list="suitcaseList"
+          :view-route="mainViewName"
           @page-select="pageSelect"
           @agency-filter="agencyFilter"
           @agency-search="agencySearch"
@@ -153,17 +157,18 @@ onBeforeMount(() => {
       </div>
 
       <div v-else-if="route.name.includes('보기')">
-        <CaseView :suitcase="suitcase as SuitCase" />
+        <CaseView :suitcase="suitcase as SuitCase" :view-route="mainViewName" />
       </div>
 
       <div v-else-if="route.name.includes('작성')">
-        <CaseForm :get-suit-case="getSuitCase" @on-submit="onSubmit" />
+        <CaseForm :get-suit-case="getSuitCase" :view-route="mainViewName" @on-submit="onSubmit" />
       </div>
 
       <div v-else-if="route.name.includes('수정')">
         <CaseForm
           :get-suit-case="getSuitCase"
           :suitcase="suitcase"
+          :view-route="mainViewName"
           @on-submit="onSubmit"
           @on-delete="onDelete"
         />

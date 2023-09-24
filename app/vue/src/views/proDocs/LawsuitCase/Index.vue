@@ -120,7 +120,7 @@ const dataSetup = (pk: number, caseId?: string | string[]) => {
 }
 
 const dataReset = () => {
-  // comStore.company = null
+  // projStore.project = null
   docStore.suitcaseList = []
   docStore.suitcaseCount = 0
   caseFilter.value.project = ''
