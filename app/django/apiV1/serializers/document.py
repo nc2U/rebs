@@ -43,7 +43,7 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
                   'level_desc', 'related_case', 'related_case_name', 'court', 'court_desc',
                   'other_agency', 'case_number', 'case_name', 'plaintiff', 'plaintiff_attorney',
                   'defendant', 'defendant_attorney', 'related_debtor', 'case_start_date',
-                  'summary', 'user', 'created', 'prev_pk', 'next_pk')
+                  'case_end_date', 'summary', 'user', 'created', 'prev_pk', 'next_pk')
 
     def get_prev_pk(self, obj):
         previous_obj = LawsuitCase.objects.filter(pk__lt=obj.pk).order_by('-id').first()
