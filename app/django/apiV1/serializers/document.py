@@ -38,6 +38,7 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
     user = serializers.SlugRelatedField(slug_field='username', read_only=True)
     prev_pk = serializers.SerializerMethodField()
     next_pk = serializers.SerializerMethodField()
+    page = serializers.SerializerMethodField()
 
     class Meta:
         model = LawsuitCase
@@ -45,7 +46,7 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
                   'level_desc', 'related_case', 'related_case_name', 'court', 'court_desc',
                   'other_agency', 'case_number', 'case_name', 'plaintiff', 'plaintiff_attorney',
                   'defendant', 'defendant_attorney', 'related_debtor', 'case_start_date',
-                  'case_end_date', 'summary', 'user', 'created', 'prev_pk', 'next_pk')
+                  'case_end_date', 'summary', 'user', 'created', 'prev_pk', 'next_pk', 'page')
 
     def get_collection(self):
         queryset = LawsuitCase.objects.all()
@@ -84,6 +85,9 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
         next_obj = self.get_collection().filter(pk__gt=obj.pk).order_by('id').first()
         return next_obj.pk if next_obj else None
 
+    def get_page(self, obj):
+        return self.context.get('current_page')
+
 
 class SimpleLawSuitCaseSerializer(serializers.ModelSerializer):
     class Meta:
@@ -113,13 +117,14 @@ class PostSerializer(serializers.ModelSerializer):
     user = serializers.SlugRelatedField(slug_field='username', read_only=True)
     prev_pk = serializers.SerializerMethodField()
     next_pk = serializers.SerializerMethodField()
+    page = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
         fields = ('pk', 'company', 'project', 'proj_name', 'board', 'is_notice', 'category',
                   'cate_name', 'lawsuit', 'lawsuit_name', 'title', 'execution_date', 'is_hide_comment',
                   'content', 'hit', 'blame', 'ip', 'device', 'secret', 'password', 'links', 'files',
-                  'comments', 'user', 'soft_delete', 'created', 'updated', 'is_new', 'prev_pk', 'next_pk')
+                  'comments', 'user', 'soft_delete', 'created', 'updated', 'is_new', 'prev_pk', 'next_pk', 'page')
         read_only_fields = ('ip',)
 
     def get_collection(self):
@@ -156,6 +161,9 @@ class PostSerializer(serializers.ModelSerializer):
     def get_next_pk(self, obj):
         next_obj = self.get_collection().filter(pk__gt=obj.pk).order_by('id').first()
         return next_obj.pk if next_obj else None
+
+    def get_page(self, obj):
+        return self.context.get('current_page')
 
     def to_python(self, value):
 

@@ -61,6 +61,13 @@ class LawSuitCaseViewSet(LawSuitCaseBase):
             queryset = queryset.filter(Q(pk=related) | Q(related_case=related))
         return queryset
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        # Calculate the current page based on query parameters
+        page = self.request.query_params.get('page')
+        context['current_page'] = int(page) if page else 1
+        return context
+
 
 class AllLawSuitCaseViewSet(LawSuitCaseViewSet):
     serializer_class = SimpleLawSuitCaseSerializer
@@ -84,6 +91,13 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        # Calculate the current page based on query parameters
+        page = self.request.query_params.get('page')
+        context['current_page'] = int(page) if page else 1
+        return context
 
 
 # class LikeViewSet(viewsets.ModelViewSet):
