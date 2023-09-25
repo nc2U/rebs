@@ -166,7 +166,7 @@ onBeforeMount(() => {
               <option v-if="!form.sort || form.sort === '2'" value="4">고소/수사</option>
               <option v-if="!form.sort || form.sort === '4'" value="5">신청</option>
               <option v-if="!form.sort || form.sort === '4'" value="6">항고/이의</option>
-              <option v-if="!form.sort || form.sort === '5'" value="7">집행</option>
+              <option v-if="!form.sort || form.sort === '5'" value="7">압류/추심</option>
             </CFormSelect>
           </CCol>
         </CRow>
