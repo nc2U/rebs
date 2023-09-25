@@ -46,7 +46,9 @@ class LawSuitCaseBase(viewsets.ModelViewSet):
     serializer_class = LawSuitCaseSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filterset_class = LawSuitCaseFilterSet
-    search_fields = ('other_agency', 'case_number', 'case_name', 'plaintiff', 'defendant', 'case_start_date', 'summary')
+    search_fields = ('other_agency', 'case_number', 'case_name',
+                     'plaintiff', 'defendant', 'case_start_date',
+                     'case_end_date', 'summary')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -71,7 +73,7 @@ class PostFilterSet(FilterSet):
 
     class Meta:
         model = Post
-        fields = ('company', 'project', 'board', 'is_notice', 'is_com', 'category', 'lawsuit')
+        fields = ('company', 'project', 'is_com', 'board', 'is_notice', 'category', 'lawsuit')
 
 
 class PostViewSet(viewsets.ModelViewSet):
