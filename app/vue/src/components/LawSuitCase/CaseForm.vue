@@ -187,6 +187,9 @@ onUpdated(() => dataSetup())
       <CFormLabel for="related_debtor" class="col-md-2 col-form-label"> 제3채무자</CFormLabel>
       <CCol md="4">
         <CFormInput id="related_debtor" v-model="form.related_debtor" placeholder="제3채무자" />
+        <small class="text-blue-grey-lighten-2">
+          압류/가압류 등 신청/집행 사건에서 제3채무자가 있는 경우 기재
+        </small>
       </CCol>
     </CRow>
 
