@@ -236,7 +236,6 @@ onUpdated(() => dataSetup())
           id="plaintiff_attorney"
           v-model="form.plaintiff_attorney"
           placeholder="원고측 대리인"
-          required
         />
       </CCol>
 
@@ -248,7 +247,6 @@ onUpdated(() => dataSetup())
           id="defendant_attorney"
           v-model="form.defendant_attorney"
           placeholder="피고측 대리인"
-          required
         />
       </CCol>
     </CRow>
