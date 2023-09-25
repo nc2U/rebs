@@ -1,13 +1,30 @@
 <script lang="ts" setup>
-import { computed, type PropType } from 'vue'
+import { ref, computed, watch, type PropType } from 'vue'
 import { timeFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 import { type SuitCase } from '@/store/types/document'
 
 const props = defineProps({
   suitcase: { type: Object as PropType<SuitCase>, required: true },
+  getCaseNav: {
+    type: Object as PropType<
+      {
+        pk: number | null
+        prev_pk: number | null | undefined
+        next_pk: number | null | undefined
+        page: number
+      }[]
+    >,
+    required: true,
+  },
   viewRoute: { type: String, required: true },
 })
+
+const emit = defineEmits(['case-renewal'])
+
+const page = ref(1)
+const prev = ref()
+const next = ref()
 
 const toPrint = () => alert('준비중!')
 const toSocial = () => alert('준비중!')
@@ -16,6 +33,18 @@ const toDelete = () => alert('준비중!')
 const sortName = computed(() => props.suitcase?.proj_name || '본사')
 const sortDesc = computed(() => props.suitcase.sort_desc)
 const levelDesc = computed(() => props.suitcase.level_desc)
+
+watch(props, async n => {
+  if (n.getCaseNav[0].page !== page.value) {
+    page.value = n.getCaseNav[0].page
+    emit('case-renewal', n.getCaseNav[0].page)
+  }
+
+  if (n.suitcase) {
+    prev.value = n.getCaseNav.filter(c => c.pk == n.suitcase.pk).map(c => c.prev_pk)[0]
+    next.value = n.getCaseNav.filter(c => c.pk == n.suitcase.pk).map(c => c.next_pk)[0]
+  }
+})
 </script>
 
 <template>
@@ -192,11 +221,11 @@ const levelDesc = computed(() => props.suitcase.level_desc)
         <CButtonGroup role="group" class="mr-3">
           <CButton
             color="light"
-            :disabled="!suitcase.prev_pk"
+            :disabled="!prev"
             @click="
               $router.push({
                 name: `${viewRoute} - 보기`,
-                params: { caseId: suitcase.prev_pk },
+                params: { caseId: prev },
               })
             "
           >
@@ -204,11 +233,11 @@ const levelDesc = computed(() => props.suitcase.level_desc)
           </CButton>
           <CButton
             color="light"
-            :disabled="!suitcase.next_pk"
+            :disabled="!next"
             @click="
               $router.push({
                 name: `${viewRoute} - 보기`,
-                params: { caseId: suitcase.next_pk },
+                params: { caseId: next },
               })
             "
           >

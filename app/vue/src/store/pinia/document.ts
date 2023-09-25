@@ -98,6 +98,14 @@ export const useDocument = defineStore('document', () => {
         .replace('대법원', '대법'),
     })),
   )
+  const getCaseNav = computed(() =>
+    suitcaseList.value.map(s => ({
+      pk: s.pk,
+      prev_pk: s.prev_pk,
+      next_pk: s.next_pk,
+      page: s.page as number,
+    })),
+  )
 
   const casePages = (itemsPerPage: number) => Math.ceil(suitcaseCount.value / itemsPerPage)
 
@@ -301,6 +309,7 @@ export const useDocument = defineStore('document', () => {
     suitcaseList,
     suitcaseCount,
     getSuitCase,
+    getCaseNav,
 
     casePages,
     fetchSuitCase,

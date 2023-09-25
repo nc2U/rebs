@@ -44,6 +44,7 @@ const docStore = useDocument()
 const suitcase = computed(() => docStore.suitcase)
 const suitcaseList = computed(() => docStore.suitcaseList)
 const getSuitCase = computed(() => docStore.getSuitCase)
+const getCaseNav = computed(() => docStore.getCaseNav)
 
 const fetchSuitCase = (pk: number) => docStore.fetchSuitCase(pk)
 const fetchSuitCaseList = (payload: cFilter) => docStore.fetchSuitCaseList(payload)
@@ -124,6 +125,11 @@ const comSelect = (target: number | null) => {
   if (!!target) dataSetup(target)
 }
 
+const caseRenewal = (page: number) => {
+  caseFilter.value.page = page
+  fetchSuitCaseList(caseFilter.value)
+}
+
 onBeforeMount(() => {
   fetchAllSuitCaseList({})
   dataSetup(company.value || comStore.initComId, route.params?.caseId)
@@ -157,7 +163,12 @@ onBeforeMount(() => {
       </div>
 
       <div v-else-if="route.name.includes('보기')">
-        <CaseView :suitcase="suitcase as SuitCase" :view-route="mainViewName" />
+        <CaseView
+          :suitcase="suitcase as SuitCase"
+          :get-case-nav="getCaseNav"
+          :view-route="mainViewName"
+          @case-renewal="caseRenewal"
+        />
       </div>
 
       <div v-else-if="route.name.includes('작성')">
