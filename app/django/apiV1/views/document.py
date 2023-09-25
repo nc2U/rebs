@@ -1,4 +1,3 @@
-from django.db.models import Q
 from rest_framework import viewsets
 from django_filters import BooleanFilter
 from django_filters.rest_framework import FilterSet
