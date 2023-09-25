@@ -53,13 +53,15 @@ const formsCheck = computed(() => {
     const h = form.case_number === props.suitcase.case_number
     const i = form.case_name === props.suitcase.case_name
     const j = form.plaintiff === props.suitcase.plaintiff
-    const k = form.defendant === props.suitcase.defendant
-    const l = form.related_debtor === props.suitcase.related_debtor
-    const m = form.case_start_date === props.suitcase.case_start_date
-    const n = form.summary === props.suitcase.summary
+    const k = form.plaintiff_attorney === props.suitcase.plaintiff_attorney
+    const l = form.defendant === props.suitcase.defendant
+    const m = form.defendant_attorney === props.suitcase.defendant_attorney
+    const n = form.related_debtor === props.suitcase.related_debtor
+    const o = form.case_start_date === props.suitcase.case_start_date
+    const p = form.summary === props.suitcase.summary
 
-    const group1 = a && b && c && d && e && f && g
-    const group2 = h && i && j && k && l && m && n
+    const group1 = a && b && c && d && e && f && g && h
+    const group2 = i && j && k && l && m && n && o && p
     return group1 && group2
   } else return false
 })
