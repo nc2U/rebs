@@ -43,6 +43,7 @@ export interface SuitCase {
   defendant_attorney: string
   related_debtor: string
   case_start_date: string | null
+  case_end_date: string | null
   summary: string
   user?: string
   created?: string
