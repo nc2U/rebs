@@ -160,13 +160,13 @@ onBeforeMount(() => {
           <CCol md="4" lg="6" class="mb-3">
             <CFormSelect v-model="form.level" @change="listFiltering(1)">
               <option value="">사건심급 선택</option>
-              <option v-if="!form.sort || form.sort !== '5'" value="1">1심</option>
-              <option v-if="!form.sort || form.sort !== '5'" value="2">2심</option>
-              <option v-if="!form.sort || form.sort !== '5'" value="3">3심</option>
+              <option v-if="!form.sort || form.sort <= '3'" value="1">1심</option>
+              <option v-if="!form.sort || form.sort <= '3'" value="2">2심</option>
+              <option v-if="!form.sort || form.sort <= '3'" value="3">3심</option>
               <option v-if="!form.sort || form.sort === '2'" value="4">고소/수사</option>
-              <option v-if="!form.sort || form.sort === '5'" value="5">신청</option>
-              <option v-if="!form.sort || form.sort === '6'" value="6">항고/이의</option>
-              <option v-if="!form.sort || form.sort === '7'" value="7">집행</option>
+              <option v-if="!form.sort || form.sort === '4'" value="5">신청</option>
+              <option v-if="!form.sort || form.sort === '4'" value="6">항고/이의</option>
+              <option v-if="!form.sort || form.sort === '5'" value="7">집행</option>
             </CFormSelect>
           </CCol>
         </CRow>

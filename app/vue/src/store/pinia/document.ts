@@ -21,7 +21,7 @@ export type SuitCaseFilter = {
   court?: string
   related_case?: number | ''
   sort?: '1' | '2' | '3' | '4' | '5' | ''
-  level?: '1' | '2' | '3' | '4' | ''
+  level?: '1' | '2' | '3' | '4' | '5' | '6' | '7' | ''
   search?: string
   page?: number
 }

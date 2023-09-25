@@ -141,8 +141,8 @@ onUpdated(() => dataSetup())
           <option value="1">민사</option>
           <option value="2">형사</option>
           <option value="3">행정</option>
-          <option value="4">가사</option>
-          <option value="5">신청/집행</option>
+          <option value="4">신청</option>
+          <option value="5">집행</option>
         </CFormSelect>
       </CCol>
 
@@ -150,11 +150,13 @@ onUpdated(() => dataSetup())
       <CCol md="4">
         <CFormSelect id="level" v-model="form.level" required>
           <option value="">사건심급 선택</option>
-          <option value="1">1심</option>
-          <option value="2">2심</option>
-          <option value="3">3심</option>
-          <option value="4">수사</option>
-          <option value="5">신청/집행</option>
+          <option v-if="!form.sort || form.sort <= '3'" value="1">1심</option>
+          <option v-if="!form.sort || form.sort <= '3'" value="2">2심</option>
+          <option v-if="!form.sort || form.sort <= '3'" value="3">3심</option>
+          <option v-if="!form.sort || form.sort === '2'" value="4">고소/수사</option>
+          <option v-if="!form.sort || form.sort === '4'" value="5">신청</option>
+          <option v-if="!form.sort || form.sort === '4'" value="6">항고/이의</option>
+          <option v-if="!form.sort || form.sort === '5'" value="7">집행</option>
         </CFormSelect>
       </CCol>
     </CRow>

@@ -31,10 +31,7 @@ const levelDesc = computed(() => props.suitcase.level_desc)
         </h5>
       </CCol>
       <CCol class="pt-1 text-right">
-        [<span>{{ sortName }}</span
-        >] [<span>{{ sortDesc }}</span>
-        <span v-if="levelDesc !== '신청/집행'">/{{ levelDesc }}</span
-        >]
+        <span>[{{ sortName }}] [{{ sortDesc }}/{{ levelDesc }}]</span>
       </CCol>
     </CRow>
 
