@@ -57,44 +57,6 @@ const proDocs = {
       ],
     },
     {
-      path: 'official/letters',
-      name: '현장 공문 발송',
-      component: () =>
-        pageViewAuth.value
-          ? import('@/views/proDocs/OfficialLetter/Index.vue')
-          : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '현장 공문 발송', auth: true },
-      children: [
-        {
-          path: ':postId(\\d+)',
-          name: '현장 공문 발송 - 보기',
-          component: () =>
-            pageViewAuth.value
-              ? import('@/views/proDocs/OfficialLetter/Index.vue')
-              : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '현장 공문 발송', auth: true, except: true },
-        },
-        {
-          path: ':postId(\\d+)/update',
-          name: '현장 공문 발송 - 수정',
-          component: () =>
-            pageViewAuth.value
-              ? import('@/views/proDocs/OfficialLetter/Index.vue')
-              : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '현장 공문 발송', auth: true, except: true },
-        },
-        {
-          path: 'create',
-          name: '현장 공문 발송 - 작성',
-          component: () =>
-            pageViewAuth.value
-              ? import('@/views/proDocs/OfficialLetter/Index.vue')
-              : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '현장 공문 발송', auth: true, except: true },
-        },
-      ],
-    },
-    {
       path: 'lawsuit/posts',
       name: '현장 소송 문서',
       component: () =>

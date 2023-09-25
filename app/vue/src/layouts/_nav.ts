@@ -168,29 +168,13 @@ const project_docs = {
     },
     {
       component: 'CNavItem',
-      name: '현장 공문 발송',
-      to: '/project-docs/official/letters',
-      badge: {
-        color: 'danger',
-        text: 'u.c',
-      },
+      name: '현장 소송 문서',
+      to: '/project-docs/lawsuit/posts',
     },
     {
       component: 'CNavItem',
-      name: '현장 소송 관리',
-      icon: 'cil-library-building',
-      items: [
-        {
-          component: 'CNavItem',
-          name: '현장 소송 문서',
-          to: '/project-docs/lawsuit/posts',
-        },
-        {
-          component: 'CNavItem',
-          name: '현장 소송 사건',
-          to: '/project-docs/lawsuit/case',
-        },
-      ],
+      name: '현장 소송 사건',
+      to: '/project-docs/lawsuit/case',
     },
   ],
 }
