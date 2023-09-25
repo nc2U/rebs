@@ -38,6 +38,7 @@ const form = reactive<SuitCase>({
   defendant_attorney: '',
   related_debtor: '',
   case_start_date: '',
+  case_end_date: '',
   summary: '',
 })
 
@@ -58,10 +59,11 @@ const formsCheck = computed(() => {
     const m = form.defendant_attorney === props.suitcase.defendant_attorney
     const n = form.related_debtor === props.suitcase.related_debtor
     const o = form.case_start_date === props.suitcase.case_start_date
-    const p = form.summary === props.suitcase.summary
+    const p = form.case_end_date === props.suitcase.case_end_date
+    const q = form.summary === props.suitcase.summary
 
     const group1 = a && b && c && d && e && f && g && h
-    const group2 = i && j && k && l && m && n && o && p
+    const group2 = i && j && k && l && m && n && o && p && q
     return group1 && group2
   } else return false
 })
@@ -109,6 +111,7 @@ const dataSetup = () => {
     form.defendant_attorney = props.suitcase.defendant_attorney
     form.related_debtor = props.suitcase.related_debtor
     form.case_start_date = props.suitcase.case_start_date
+    form.case_end_date = props.suitcase.case_end_date
     form.summary = props.suitcase.summary
   }
 }
@@ -179,6 +182,13 @@ onUpdated(() => dataSetup())
         />
         <small class="text-blue-grey-lighten-2">
           본안 사건인 경우 원심 사건, 신청/집행 사건인 경우 관련 본안 사건 지정
+        </small>
+      </CCol>
+      <CFormLabel for="related_debtor" class="col-md-2 col-form-label"> 제3채무자</CFormLabel>
+      <CCol md="4">
+        <CFormInput id="related_debtor" v-model="form.related_debtor" placeholder="제3채무자" />
+        <small class="text-blue-grey-lighten-2">
+          압류/가압류 등 신청/집행 사건에서 제3채무자가 있는 경우 기재
         </small>
       </CCol>
     </CRow>
@@ -256,20 +266,14 @@ onUpdated(() => dataSetup())
     </CRow>
 
     <CRow class="mb-3">
-      <CFormLabel for="related_debtor" class="col-md-2 col-form-label"> 제3채무자</CFormLabel>
+      <CFormLabel for="case_start_date" class="col-md-2 col-form-label"> 사건개시일</CFormLabel>
       <CCol md="4">
-        <CFormInput id="related_debtor" v-model="form.related_debtor" placeholder="제3채무자" />
+        <DatePicker id="case_start_date" v-model="form.case_start_date" placeholder="사건개시일" />
       </CCol>
 
-      <CFormLabel for="case_start_date" class="col-md-2 col-form-label">
-        사건개시(결정)일
-      </CFormLabel>
+      <CFormLabel for="case_end_date" class="col-md-2 col-form-label"> 사건종결일</CFormLabel>
       <CCol md="4">
-        <DatePicker
-          id="case_start_date"
-          v-model="form.case_start_date"
-          placeholder="사건개시(결정)일"
-        />
+        <DatePicker id="case_end_date" v-model="form.case_end_date" placeholder="사건종결일" />
       </CCol>
     </CRow>
 
