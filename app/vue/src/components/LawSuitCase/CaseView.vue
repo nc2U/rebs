@@ -1,50 +1,38 @@
 <script lang="ts" setup>
-import { ref, computed, watch, type PropType } from 'vue'
+import { ref, computed, type PropType, onBeforeMount } from 'vue'
 import { timeFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 import { type SuitCase } from '@/store/types/document'
+import { useDocument } from '@/store/pinia/document'
+import { useRoute } from 'vue-router'
 
 const props = defineProps({
   suitcase: { type: Object as PropType<SuitCase>, required: true },
-  getCaseNav: {
-    type: Object as PropType<
-      {
-        pk: number | null
-        prev_pk: number | null | undefined
-        next_pk: number | null | undefined
-        page: number
-      }[]
-    >,
-    required: true,
-  },
   viewRoute: { type: String, required: true },
 })
 
 const emit = defineEmits(['case-renewal'])
-
 const page = ref(1)
-const prev = ref()
-const next = ref()
 
-const toPrint = () => alert('준비중!')
-const toSocial = () => alert('준비중!')
-const toDelete = () => alert('준비중!')
+const route = useRoute()
 
 const sortName = computed(() => props.suitcase?.proj_name || '본사')
 const sortDesc = computed(() => props.suitcase.sort_desc)
 const levelDesc = computed(() => props.suitcase.level_desc)
 
-watch(props, async n => {
-  if (n.getCaseNav[0].page !== page.value) {
-    page.value = n.getCaseNav[0].page
-    emit('case-renewal', n.getCaseNav[0].page)
-  }
+const docStore = useDocument()
+const getCaseNav = computed(() => docStore.getCaseNav)
 
-  if (n.suitcase) {
-    prev.value = n.getCaseNav.filter(c => c.pk == n.suitcase.pk).map(c => c.prev_pk)[0]
-    next.value = n.getCaseNav.filter(c => c.pk == n.suitcase.pk).map(c => c.next_pk)[0]
-  }
-})
+const toPrint = () => alert('준비중!')
+const toSocial = () => alert('준비중!')
+const toDelete = () => alert('준비중!')
+
+const prev = computed(
+  () => getCaseNav.value.filter(c => (c.pk = route.params.caseId)).map(c => c.prev_pk)[0],
+)
+const next = computed(
+  () => getCaseNav.value.filter(c => (c.pk = route.params.caseId)).map(c => c.next_pk)[0],
+)
 </script>
 
 <template>
