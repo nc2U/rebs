@@ -33,7 +33,9 @@ const form = reactive<SuitCase>({
   case_number: '',
   case_name: '',
   plaintiff: '',
+  plaintiff_attorney: '',
   defendant: '',
+  defendant_attorney: '',
   related_debtor: '',
   case_start_date: '',
   summary: '',
@@ -220,6 +222,32 @@ onUpdated(() => dataSetup())
       <CFormLabel for="defendant" class="col-md-2 col-form-label"> 피고(피신청인)</CFormLabel>
       <CCol md="4">
         <CFormInput id="defendant" v-model="form.defendant" placeholder="피고(피신청인)" required />
+      </CCol>
+    </CRow>
+
+    <CRow class="mb-3">
+      <CFormLabel for="plaintiff_attorney" class="col-md-2 col-form-label">
+        원고측 대리인
+      </CFormLabel>
+      <CCol md="4">
+        <CFormInput
+          id="plaintiff_attorney"
+          v-model="form.plaintiff_attorney"
+          placeholder="원고측 대리인"
+          required
+        />
+      </CCol>
+
+      <CFormLabel for="defendant_attorney" class="col-md-2 col-form-label">
+        피고측 대리인
+      </CFormLabel>
+      <CCol md="4">
+        <CFormInput
+          id="defendant_attorney"
+          v-model="form.defendant_attorney"
+          placeholder="피고측 대리인"
+          required
+        />
       </CCol>
     </CRow>
 
