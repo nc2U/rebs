@@ -124,7 +124,7 @@ const levelDesc = computed(() => props.suitcase.level_desc)
             </CTableRow>
             <CTableRow>
               <CTableHeaderCell class="text-center" :color="TableSecondary">
-                원고 (신청인)
+                원고 (채권자)
               </CTableHeaderCell>
               <CTableDataCell>{{ suitcase.plaintiff }}</CTableDataCell>
 
@@ -135,7 +135,7 @@ const levelDesc = computed(() => props.suitcase.level_desc)
             </CTableRow>
             <CTableRow>
               <CTableHeaderCell class="text-center" :color="TableSecondary">
-                피고 (피신청인)
+                피고 (채무자)
               </CTableHeaderCell>
               <CTableDataCell>{{ suitcase.defendant }}</CTableDataCell>
 
