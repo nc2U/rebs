@@ -100,6 +100,12 @@ const levelDesc = computed(() => props.suitcase.level_desc)
             </CTableRow>
             <CTableRow>
               <CTableHeaderCell class="text-center" :color="TableSecondary">
+                제3 채무자
+              </CTableHeaderCell>
+              <CTableDataCell colspan="4">{{ suitcase.related_debtor }}</CTableDataCell>
+            </CTableRow>
+            <CTableRow>
+              <CTableHeaderCell class="text-center" :color="TableSecondary">
                 관할 법원
               </CTableHeaderCell>
               <CTableDataCell colspan="4">{{ suitcase.court_desc }}</CTableDataCell>
@@ -146,15 +152,13 @@ const levelDesc = computed(() => props.suitcase.level_desc)
             </CTableRow>
             <CTableRow>
               <CTableHeaderCell class="text-center" :color="TableSecondary">
-                제3 채무자
-              </CTableHeaderCell>
-              <CTableDataCell colspan="4">{{ suitcase.related_debtor }}</CTableDataCell>
-            </CTableRow>
-            <CTableRow>
-              <CTableHeaderCell class="text-center" :color="TableSecondary">
                 사건 개시일
               </CTableHeaderCell>
-              <CTableDataCell colspan="4">{{ suitcase.case_start_date }}</CTableDataCell>
+              <CTableDataCell>{{ suitcase.case_start_date }}</CTableDataCell>
+              <CTableHeaderCell class="text-center" :color="TableSecondary">
+                사건 종결일
+              </CTableHeaderCell>
+              <CTableDataCell>{{ suitcase.case_end_date }}</CTableDataCell>
             </CTableRow>
             <CTableRow>
               <CTableHeaderCell class="text-center" :color="TableSecondary">
