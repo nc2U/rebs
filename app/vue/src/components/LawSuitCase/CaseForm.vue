@@ -104,7 +104,9 @@ const dataSetup = () => {
     form.case_number = props.suitcase.case_number
     form.case_name = props.suitcase.case_name
     form.plaintiff = props.suitcase.plaintiff
+    form.plaintiff_attorney = props.suitcase.plaintiff_attorney
     form.defendant = props.suitcase.defendant
+    form.defendant_attorney = props.suitcase.defendant_attorney
     form.related_debtor = props.suitcase.related_debtor
     form.case_start_date = props.suitcase.case_start_date
     form.summary = props.suitcase.summary
