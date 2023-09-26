@@ -7,14 +7,14 @@ import { useDocument } from '@/store/pinia/document'
 import { useRoute } from 'vue-router'
 
 const props = defineProps({
-  initPage: { type: Number, default: 1 },
+  initPage: { type: Number, required: true },
   maxPage: { type: Number, default: 3 },
   suitcase: { type: Object as PropType<SuitCase>, required: true },
   viewRoute: { type: String, required: true },
 })
 
 const emit = defineEmits(['case-renewal'])
-const page = ref<number | null>()
+const page = ref<number>()
 const prev = ref()
 const next = ref()
 
@@ -35,28 +35,23 @@ const toSocial = () => alert('준비중!')
 const toDelete = () => alert('준비중!')
 
 watch(
-  () => page,
-  newPage => emit('case-renewal', newPage),
-)
-
-watch(
-  () => props.suitcase,
-  nCase => {
-    console.log(nCase.page)
-    // const last = getCaseNav.value.length - 1
-    // const prevPage = nCase.page ?? 1 >= 2 ? (nCase.page ?? 1) - 1 : null
-    // const nextPage = nCase.page ?? 1 < props.maxPage ? (nCase.page ?? 1) + 1 : props.maxPage
-    // if (prevPage && nCase.pk === getCaseNav.value[0].pk) emit('case-renewal', prevPage)
-    // if (nextPage < props.maxPage && nCase.pk === getCaseNav.value[last].pk)
-    //   emit('case-renewal', nextPage)
-  },
-)
-
-watch(
   () => route.params.caseId,
   async newId => {
     prev.value = getPrev(Number(newId))
     next.value = getNext(Number(newId))
+
+    if (Number(newId) === getCaseNav.value[0].pk)
+      if (page.value && page.value > 1) {
+        page.value -= 1
+        emit('case-renewal', page.value)
+      }
+
+    const last = getCaseNav.value.length - 1
+    if (Number(newId) === getCaseNav.value[last].pk)
+      if (page.value && page.value < props.maxPage) {
+        page.value += 1
+        emit('case-renewal', page.value)
+      }
   },
 )
 
@@ -64,7 +59,7 @@ onBeforeMount(() => {
   const caseId = Number(route.params.caseId)
   prev.value = getPrev(caseId)
   next.value = getNext(caseId)
-  page.value = props.initPage
+  if (!page.value) page.value = props.initPage
 })
 </script>
 
@@ -86,7 +81,7 @@ onBeforeMount(() => {
     </CRow>
 
     <hr />
-    {{ getCaseNav }}
+
     <CRow class="text-blue-grey">
       <CCol>
         <small class="mr-3">작성자 : {{ suitcase.user }}</small>
@@ -234,9 +229,9 @@ onBeforeMount(() => {
         <v-btn variant="tonal" size="small" :rounded="0" @click="toSocial"> 신고</v-btn>
       </CCol>
     </CRow>
-
+    {{ page }}
     <hr />
-
+    {{ getCaseNav }}
     <CRow class="py-4">
       <CCol>
         <CButtonGroup role="group" class="mr-3">
@@ -265,7 +260,7 @@ onBeforeMount(() => {
             다음글
           </CButton>
         </CButtonGroup>
-
+        {{ prev }} | {{ next }}
         <CButtonGroup role="group">
           <CButton
             color="success"
@@ -282,7 +277,9 @@ onBeforeMount(() => {
         </CButtonGroup>
       </CCol>
       <CCol class="text-right">
-        <CButton color="light" @click="$router.push({ name: `${viewRoute}` })"> 목록으로</CButton>
+        <CButton color="light" @click="$router.push({ name: `${viewRoute}`, query: { page } })">
+          목록으로
+        </CButton>
         <CButton color="primary" @click="$router.push({ name: `${viewRoute} - 작성` })">
           등록하기
         </CButton>
