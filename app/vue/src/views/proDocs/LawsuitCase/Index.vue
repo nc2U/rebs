@@ -169,6 +169,7 @@ onBeforeMount(() => {
       <div v-else-if="route.name.includes('보기')">
         <CaseView
           :init-page="caseFilter.page as number"
+          :max-page="3"
           :suitcase="suitcase as SuitCase"
           :view-route="mainViewName"
           @case-renewal="caseRenewal"
