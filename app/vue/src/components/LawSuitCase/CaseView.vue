@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, type PropType, onBeforeMount } from 'vue'
+import { ref, computed, type PropType, watch, onBeforeMount } from 'vue'
 import { timeFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 import { type SuitCase } from '@/store/types/document'
@@ -7,12 +7,16 @@ import { useDocument } from '@/store/pinia/document'
 import { useRoute } from 'vue-router'
 
 const props = defineProps({
+  initPage: { type: Number, default: 1 },
+  maxPage: { type: Number, default: 3 },
   suitcase: { type: Object as PropType<SuitCase>, required: true },
   viewRoute: { type: String, required: true },
 })
 
 const emit = defineEmits(['case-renewal'])
-const page = ref(1)
+const page = ref<number | null>()
+const prev = ref()
+const next = ref()
 
 const route = useRoute()
 
@@ -23,16 +27,45 @@ const levelDesc = computed(() => props.suitcase.level_desc)
 const docStore = useDocument()
 const getCaseNav = computed(() => docStore.getCaseNav)
 
+const getPrev = (pk: number) => getCaseNav.value.filter(c => c.pk === pk).map(c => c.prev_pk)[0]
+const getNext = (pk: number) => getCaseNav.value.filter(c => c.pk === pk).map(c => c.next_pk)[0]
+
 const toPrint = () => alert('준비중!')
 const toSocial = () => alert('준비중!')
 const toDelete = () => alert('준비중!')
 
-const prev = computed(
-  () => getCaseNav.value.filter(c => (c.pk = route.params.caseId)).map(c => c.prev_pk)[0],
+watch(
+  () => page,
+  newPage => emit('case-renewal', newPage),
 )
-const next = computed(
-  () => getCaseNav.value.filter(c => (c.pk = route.params.caseId)).map(c => c.next_pk)[0],
+
+watch(
+  () => props.suitcase,
+  nCase => {
+    console.log(nCase.page)
+    // const last = getCaseNav.value.length - 1
+    // const prevPage = nCase.page ?? 1 >= 2 ? (nCase.page ?? 1) - 1 : null
+    // const nextPage = nCase.page ?? 1 < props.maxPage ? (nCase.page ?? 1) + 1 : props.maxPage
+    // if (prevPage && nCase.pk === getCaseNav.value[0].pk) emit('case-renewal', prevPage)
+    // if (nextPage < props.maxPage && nCase.pk === getCaseNav.value[last].pk)
+    //   emit('case-renewal', nextPage)
+  },
 )
+
+watch(
+  () => route.params.caseId,
+  async newId => {
+    prev.value = getPrev(Number(newId))
+    next.value = getNext(Number(newId))
+  },
+)
+
+onBeforeMount(() => {
+  const caseId = Number(route.params.caseId)
+  prev.value = getPrev(caseId)
+  next.value = getNext(caseId)
+  page.value = props.initPage
+})
 </script>
 
 <template>
@@ -53,7 +86,7 @@ const next = computed(
     </CRow>
 
     <hr />
-
+    {{ getCaseNav }}
     <CRow class="text-blue-grey">
       <CCol>
         <small class="mr-3">작성자 : {{ suitcase.user }}</small>
