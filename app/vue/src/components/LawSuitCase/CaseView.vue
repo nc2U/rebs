@@ -14,9 +14,10 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['case-renewal'])
-const page = ref<number>()
-const prev = ref()
-const next = ref()
+
+const page = ref<number | null>()
+const prev = ref<number | null>()
+const next = ref<number | null>()
 
 const route = useRoute()
 
@@ -43,6 +44,7 @@ watch(
     if (Number(newId) === getCaseNav.value[0].pk)
       if (page.value && page.value > 1) {
         page.value -= 1
+        alert(page.value)
         emit('case-renewal', page.value)
       }
 
@@ -50,6 +52,7 @@ watch(
     if (Number(newId) === getCaseNav.value[last].pk)
       if (page.value && page.value < props.maxPage) {
         page.value += 1
+        alert(page.value)
         emit('case-renewal', page.value)
       }
   },
