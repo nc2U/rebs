@@ -66,14 +66,14 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
         queryset = queryset.filter(level=level) if level else queryset
         queryset = queryset.filter(court=court) if court else queryset
         queryset = queryset.filter(
-            Q(other_agency=search) |
-            Q(case_number=search) |
-            Q(case_name=search) |
-            Q(plaintiff=search) |
-            Q(defendant=search) |
-            Q(case_start_date=search) |
-            Q(case_end_date=search) |
-            Q(summary=search)
+            Q(other_agency__icontains=search) |
+            Q(case_number__icontains=search) |
+            Q(case_name__icontains=search) |
+            Q(plaintiff__icontains=search) |
+            Q(defendant__icontains=search) |
+            Q(case_start_date__icontains=search) |
+            Q(case_end_date__icontains=search) |
+            Q(summary__icontains=search)
         ) if search else queryset
         return queryset
 
@@ -82,7 +82,7 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
         return prev_obj.pk if prev_obj else None
 
     def get_next_pk(self, obj):
-        next_obj = self.get_collection().filter(pk__gt=obj.pk).order_by('id').first()
+        next_obj = self.get_collection().filter(pk__gt=obj.pk).order_by('case_start_date', 'id').first()
         return next_obj.pk if next_obj else None
 
     def get_page(self, obj):

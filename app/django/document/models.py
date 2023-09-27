@@ -305,7 +305,7 @@ class LawsuitCase(models.Model):
         return f'{agency} {self.case_number} {self.case_name}'
 
     class Meta:
-        ordering = ['-id']
+        ordering = ['-case_start_date', '-id']
         verbose_name = '04. 소송사건 관리'
         verbose_name_plural = '04. 소송사건 관리'
 
