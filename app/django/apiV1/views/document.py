@@ -1,4 +1,3 @@
-from django.db.models import Q
 from rest_framework import viewsets
 from django_filters import BooleanFilter
 from django_filters.rest_framework import FilterSet
@@ -46,7 +45,9 @@ class LawSuitCaseBase(viewsets.ModelViewSet):
     serializer_class = LawSuitCaseSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filterset_class = LawSuitCaseFilterSet
-    search_fields = ('other_agency', 'case_number', 'case_name', 'plaintiff', 'defendant', 'case_start_date', 'summary')
+    search_fields = ('other_agency', 'case_number', 'case_name',
+                     'plaintiff', 'defendant', 'case_start_date',
+                     'case_end_date', 'summary')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -60,6 +61,13 @@ class LawSuitCaseViewSet(LawSuitCaseBase):
             queryset = queryset.filter(Q(pk=related) | Q(related_case=related))
         return queryset
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        # Calculate the current page based on query parameters
+        page = self.request.query_params.get('page')
+        context['current_page'] = int(page) if page else 1
+        return context
+
 
 class AllLawSuitCaseViewSet(LawSuitCaseViewSet):
     serializer_class = SimpleLawSuitCaseSerializer
@@ -71,7 +79,7 @@ class PostFilterSet(FilterSet):
 
     class Meta:
         model = Post
-        fields = ('company', 'project', 'board', 'is_notice', 'is_com', 'category', 'lawsuit')
+        fields = ('company', 'project', 'is_com', 'board', 'is_notice', 'category', 'lawsuit')
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -83,6 +91,13 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        # Calculate the current page based on query parameters
+        page = self.request.query_params.get('page')
+        context['current_page'] = int(page) if page else 1
+        return context
 
 
 # class LikeViewSet(viewsets.ModelViewSet):

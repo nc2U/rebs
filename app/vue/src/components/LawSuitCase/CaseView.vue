@@ -1,21 +1,69 @@
 <script lang="ts" setup>
-import { computed, type PropType } from 'vue'
+import { ref, computed, type PropType, watch, onBeforeMount } from 'vue'
 import { timeFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 import { type SuitCase } from '@/store/types/document'
+import { useDocument } from '@/store/pinia/document'
+import { useRoute } from 'vue-router'
 
 const props = defineProps({
+  initPage: { type: Number, required: true },
+  maxPage: { type: Number, default: 3 },
   suitcase: { type: Object as PropType<SuitCase>, required: true },
   viewRoute: { type: String, required: true },
 })
+
+const emit = defineEmits(['case-renewal'])
+
+const page = ref<number | null>()
+const prev = ref<number | null>()
+const next = ref<number | null>()
+
+const route = useRoute()
+
+const sortName = computed(() => props.suitcase?.proj_name || '본사')
+const sortDesc = computed(() => props.suitcase.sort_desc)
+const levelDesc = computed(() => props.suitcase.level_desc)
+
+const docStore = useDocument()
+const getCaseNav = computed(() => docStore.getCaseNav)
+
+const getPrev = (pk: number) => getCaseNav.value.filter(c => c.pk === pk).map(c => c.prev_pk)[0]
+const getNext = (pk: number) => getCaseNav.value.filter(c => c.pk === pk).map(c => c.next_pk)[0]
 
 const toPrint = () => alert('준비중!')
 const toSocial = () => alert('준비중!')
 const toDelete = () => alert('준비중!')
 
-const sortName = computed(() => props.suitcase?.proj_name || '본사')
-const sortDesc = computed(() => props.suitcase.sort_desc)
-const levelDesc = computed(() => props.suitcase.level_desc)
+watch(
+  () => route.params.caseId,
+  async newId => {
+    prev.value = getPrev(Number(newId))
+    next.value = getNext(Number(newId))
+
+    if (Number(newId) === getCaseNav.value[0].pk)
+      if (page.value && page.value > 1) {
+        page.value -= 1
+        alert(page.value)
+        emit('case-renewal', page.value)
+      }
+
+    const last = getCaseNav.value.length - 1
+    if (Number(newId) === getCaseNav.value[last].pk)
+      if (page.value && page.value < props.maxPage) {
+        page.value += 1
+        alert(page.value)
+        emit('case-renewal', page.value)
+      }
+  },
+)
+
+onBeforeMount(() => {
+  const caseId = Number(route.params.caseId)
+  prev.value = getPrev(caseId)
+  next.value = getNext(caseId)
+  if (!page.value) page.value = props.initPage
+})
 </script>
 
 <template>
@@ -184,19 +232,19 @@ const levelDesc = computed(() => props.suitcase.level_desc)
         <v-btn variant="tonal" size="small" :rounded="0" @click="toSocial"> 신고</v-btn>
       </CCol>
     </CRow>
-
+    {{ page }}
     <hr />
-
+    {{ getCaseNav }}
     <CRow class="py-4">
       <CCol>
         <CButtonGroup role="group" class="mr-3">
           <CButton
             color="light"
-            :disabled="!suitcase.prev_pk"
+            :disabled="!prev"
             @click="
               $router.push({
                 name: `${viewRoute} - 보기`,
-                params: { caseId: suitcase.prev_pk },
+                params: { caseId: prev },
               })
             "
           >
@@ -204,18 +252,18 @@ const levelDesc = computed(() => props.suitcase.level_desc)
           </CButton>
           <CButton
             color="light"
-            :disabled="!suitcase.next_pk"
+            :disabled="!next"
             @click="
               $router.push({
                 name: `${viewRoute} - 보기`,
-                params: { caseId: suitcase.next_pk },
+                params: { caseId: next },
               })
             "
           >
             다음글
           </CButton>
         </CButtonGroup>
-
+        {{ prev }} | {{ next }}
         <CButtonGroup role="group">
           <CButton
             color="success"
@@ -232,7 +280,9 @@ const levelDesc = computed(() => props.suitcase.level_desc)
         </CButtonGroup>
       </CCol>
       <CCol class="text-right">
-        <CButton color="light" @click="$router.push({ name: `${viewRoute}` })"> 목록으로</CButton>
+        <CButton color="light" @click="$router.push({ name: `${viewRoute}`, query: { page } })">
+          목록으로
+        </CButton>
         <CButton color="primary" @click="$router.push({ name: `${viewRoute} - 작성` })">
           등록하기
         </CButton>

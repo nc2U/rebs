@@ -63,6 +63,11 @@ watch(route, val => {
   else docStore.suitcase = null
 })
 
+const caseRenewal = (page: number) => {
+  caseFilter.value.page = page
+  fetchSuitCaseList(caseFilter.value)
+}
+
 const onSubmit = (payload: SuitCase & { isProject?: boolean }) => {
   payload.company = company.value ?? null
   payload.project = project.value ?? null
@@ -162,7 +167,13 @@ onBeforeMount(() => {
       </div>
 
       <div v-else-if="route.name.includes('보기')">
-        <CaseView :suitcase="suitcase as SuitCase" :view-route="mainViewName" />
+        <CaseView
+          :init-page="caseFilter.page as number"
+          :max-page="3"
+          :suitcase="suitcase as SuitCase"
+          :view-route="mainViewName"
+          @case-renewal="caseRenewal"
+        />
       </div>
 
       <div v-else-if="route.name.includes('작성')">

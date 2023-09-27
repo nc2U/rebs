@@ -2,6 +2,8 @@ import json
 from django.db import transaction
 from django.core.exceptions import ValidationError
 from urllib.parse import urlsplit, urlunsplit
+
+from django.db.models import Q
 from rest_framework import serializers
 
 from document.models import (Group, Board, Category, LawsuitCase, Post,
@@ -36,6 +38,7 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
     user = serializers.SlugRelatedField(slug_field='username', read_only=True)
     prev_pk = serializers.SerializerMethodField()
     next_pk = serializers.SerializerMethodField()
+    page = serializers.SerializerMethodField()
 
     class Meta:
         model = LawsuitCase
@@ -43,15 +46,47 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
                   'level_desc', 'related_case', 'related_case_name', 'court', 'court_desc',
                   'other_agency', 'case_number', 'case_name', 'plaintiff', 'plaintiff_attorney',
                   'defendant', 'defendant_attorney', 'related_debtor', 'case_start_date',
-                  'case_end_date', 'summary', 'user', 'created', 'prev_pk', 'next_pk')
+                  'case_end_date', 'summary', 'user', 'created', 'prev_pk', 'next_pk', 'page')
+
+    def get_collection(self):
+        queryset = LawsuitCase.objects.all()
+        query = self.context['request'].query_params
+        company = query.get('company')
+        project = query.get('project')
+        is_com = query.get('is_com')
+        sort = query.get('sort')
+        level = query.get('level')
+        court = query.get('court')
+        search = query.get('search')
+        queryset = queryset.filter(company_id=company) if company else queryset
+        queryset = queryset.filter(project_id=project) if project else queryset
+        queryset = queryset.filter(project__isnull=True) if is_com == 'true' else queryset
+        queryset = queryset.filter(company__isnull=True) if is_com == 'false' else queryset
+        queryset = queryset.filter(sort=sort) if sort else queryset
+        queryset = queryset.filter(level=level) if level else queryset
+        queryset = queryset.filter(court=court) if court else queryset
+        queryset = queryset.filter(
+            Q(other_agency__icontains=search) |
+            Q(case_number__icontains=search) |
+            Q(case_name__icontains=search) |
+            Q(plaintiff__icontains=search) |
+            Q(defendant__icontains=search) |
+            Q(case_start_date__icontains=search) |
+            Q(case_end_date__icontains=search) |
+            Q(summary__icontains=search)
+        ) if search else queryset
+        return queryset
 
     def get_prev_pk(self, obj):
-        previous_obj = LawsuitCase.objects.filter(pk__lt=obj.pk).order_by('-id').first()
-        return previous_obj.pk if previous_obj else None
+        prev_obj = self.get_collection().filter(pk__lt=obj.pk).first()
+        return prev_obj.pk if prev_obj else None
 
     def get_next_pk(self, obj):
-        next_obj = LawsuitCase.objects.filter(pk__gt=obj.pk).order_by('-id').first()
+        next_obj = self.get_collection().filter(pk__gt=obj.pk).order_by('case_start_date', 'id').first()
         return next_obj.pk if next_obj else None
+
+    def get_page(self, obj):
+        return self.context.get('current_page')
 
 
 class SimpleLawSuitCaseSerializer(serializers.ModelSerializer):
@@ -82,22 +117,53 @@ class PostSerializer(serializers.ModelSerializer):
     user = serializers.SlugRelatedField(slug_field='username', read_only=True)
     prev_pk = serializers.SerializerMethodField()
     next_pk = serializers.SerializerMethodField()
+    page = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
         fields = ('pk', 'company', 'project', 'proj_name', 'board', 'is_notice', 'category',
                   'cate_name', 'lawsuit', 'lawsuit_name', 'title', 'execution_date', 'is_hide_comment',
                   'content', 'hit', 'blame', 'ip', 'device', 'secret', 'password', 'links', 'files',
-                  'comments', 'user', 'soft_delete', 'created', 'updated', 'is_new', 'prev_pk', 'next_pk')
+                  'comments', 'user', 'soft_delete', 'created', 'updated', 'is_new', 'prev_pk', 'next_pk', 'page')
         read_only_fields = ('ip',)
 
+    def get_collection(self):
+        queryset = Post.objects.all()
+        query = self.context['request'].query_params
+        company = query.get('company')
+        project = query.get('project')
+        is_com = query.get('is_com')
+        board = query.get('board')
+        is_notice = True if query.get('is_notice') == 'true' else False
+        category = query.get('category')
+        lawsuit = query.get('lawsuit')
+        search = query.get('search')
+        queryset = queryset.filter(company_id=company) if company else queryset
+        queryset = queryset.filter(project_id=project) if project else queryset
+        queryset = queryset.filter(project__isnull=True) if is_com == 'true' else queryset
+        queryset = queryset.filter(project__isnull=False) if is_com == 'false' else queryset
+        queryset = queryset.filter(board_id=board) if board else queryset
+        queryset = queryset.filter(is_notice=True) if is_notice == 'true' else queryset
+        queryset = queryset.filter(is_notice=False) if is_notice == 'false' else queryset
+        queryset = queryset.filter(category_id=category) if category else queryset
+        queryset = queryset.filter(lawsuit_id=lawsuit) if lawsuit else queryset
+        queryset = queryset.filter(
+            Q(title=search) |
+            Q(content=search) |
+            Q(user__username=search)
+        ) if search else queryset
+        return queryset
+
     def get_prev_pk(self, obj):
-        previous_obj = LawsuitCase.objects.filter(pk__lt=obj.pk).order_by('-id').first()
-        return previous_obj.pk if previous_obj else None
+        prev_obj = self.get_collection().filter(pk__lt=obj.pk).first()
+        return prev_obj.pk if prev_obj else None
 
     def get_next_pk(self, obj):
-        next_obj = LawsuitCase.objects.filter(pk__gt=obj.pk).order_by('-id').first()
+        next_obj = self.get_collection().filter(pk__gt=obj.pk).order_by('id').first()
         return next_obj.pk if next_obj else None
+
+    def get_page(self, obj):
+        return self.context.get('current_page')
 
     def to_python(self, value):
 

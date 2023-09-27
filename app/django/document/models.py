@@ -305,7 +305,7 @@ class LawsuitCase(models.Model):
         return f'{agency} {self.case_number} {self.case_name}'
 
     class Meta:
-        ordering = ['-id']
+        ordering = ['-case_start_date', '-id']
         verbose_name = '04. 소송사건 관리'
         verbose_name_plural = '04. 소송사건 관리'
 
@@ -342,7 +342,7 @@ class Post(models.Model):
         return today < new_period.strftime('%Y-%m-%d %H:%M')
 
     class Meta:
-        ordering = ['-created']
+        ordering = ['-id']
         verbose_name = '05. 게시물 관리'
         verbose_name_plural = '05. 게시물 관리'
 
