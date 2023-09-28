@@ -10,11 +10,10 @@ const props = defineProps({
   suitcase: { type: Object as PropType<SuitCase>, required: true },
   viewRoute: { type: String, required: true },
   currPage: { type: Number, required: true },
-  maxPage: { type: Number, required: true },
 })
 
 const emit = defineEmits(['cases-renewal'])
-
+const cPage = ref<number | null>()
 const prev = ref<number | null>()
 const next = ref<number | null>()
 
@@ -35,20 +34,13 @@ const toSocial = () => alert('준비중!')
 const toDelete = () => alert('준비중!')
 
 watch(
-  () => route.params.caseId,
-  async newId => {
-    // if (Number(newId) === getCaseNav.value[0].pk)
-    //   if (props.currPage && props.currPage > 1) {
-    //     // pageList 첫번째 페이지일때 + 전체 1면이 아니면
-    //     emit('cases-renewal', props.currPage - 1)
-    //   }
-    //
-    // const last = getCaseNav.value.length - 1
-    // if (Number(newId) === getCaseNav.value[last].pk)
-    //   if (props.currPage && props.currPage < props.maxPage) {
-    //     // pageList 마지막 페이지일때 + 전체 마지막 면이 아니면
-    //     emit('cases-renewal', props.currPage + 1)
-    //   }
+  () => getCaseNav.value,
+  () => {
+    const caseId = Number(route.params.caseId)
+    if (caseId) {
+      prev.value = getPrev(caseId)
+      next.value = getNext(caseId)
+    }
   },
 )
 
@@ -58,30 +50,19 @@ onBeforeRouteUpdate((to, from) => {
 
   const last = getCaseNav.value.length - 1
   const getLast = getCaseNav.value[last]
-  if (getLast.pk === fromCaseId && getLast.prev_pk === toCaseId) {
-    alert(`>>> ${props.currPage + 1}`)
+  if (getLast.pk === fromCaseId && getLast.prev_pk === toCaseId)
+    // 다음 페이지 목록으로
     emit('cases-renewal', props.currPage + 1)
-  }
-
-  ////////////////////////////////////////////////////
 
   const getFirst = getCaseNav.value[0]
-  // if (getFirst.pk === fromCaseId && fromCaseId > 1 && !prev.value) {
-  //   alert('<<<')
-  //   emit('cases-renewal', props.currPage - 1)
-  // }
-
-  ///////////////////////////////////////////////////
+  if (getFirst.pk === fromCaseId && getFirst.next_pk === toCaseId)
+    // 이전 페이지 목록으로
+    emit('cases-renewal', props.currPage - 1)
 
   if (toCaseId) {
-    console.log('to --->', toCaseId)
     prev.value = getPrev(toCaseId)
     next.value = getNext(toCaseId)
   }
-
-  console.log('prev =>', prev.value, 'next =>', next.value)
-  console.log('form =>', fromCaseId, 'to =>', toCaseId)
-  console.log(getCaseNav.value)
 })
 
 onBeforeMount(() => {
@@ -90,6 +71,7 @@ onBeforeMount(() => {
     prev.value = getPrev(caseId)
     next.value = getNext(caseId)
   }
+  cPage.value = props.currPage
 })
 </script>
 
@@ -259,9 +241,9 @@ onBeforeMount(() => {
         <v-btn variant="tonal" size="small" :rounded="0" @click="toSocial"> 신고</v-btn>
       </CCol>
     </CRow>
-    {{ currPage }} ----- | {{ prev }} | {{ next }} |
+
     <hr />
-    {{ getCaseNav }}
+
     <CRow class="py-4">
       <CCol>
         <CButtonGroup role="group" class="mr-3">
