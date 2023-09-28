@@ -13,11 +13,9 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['cases-renewal'])
-const cPage = ref<number | null>()
+
 const prev = ref<number | null>()
 const next = ref<number | null>()
-
-const route = useRoute()
 
 const sortName = computed(() => props.suitcase?.proj_name || '본사')
 const sortDesc = computed(() => props.suitcase.sort_desc)
@@ -32,6 +30,8 @@ const getNext = (pk: number) => getCaseNav.value.filter(c => c.pk === pk).map(c 
 const toPrint = () => alert('준비중!')
 const toSocial = () => alert('준비중!')
 const toDelete = () => alert('준비중!')
+
+const route = useRoute()
 
 watch(
   () => getCaseNav.value,
@@ -71,7 +71,6 @@ onBeforeMount(() => {
     prev.value = getPrev(caseId)
     next.value = getNext(caseId)
   }
-  cPage.value = props.currPage
 })
 </script>
 

@@ -179,6 +179,13 @@ export const useDocument = defineStore('document', () => {
   const post = ref<Post | null>(null)
   const postList = ref<Post[]>([])
   const postCount = ref(0)
+  const getPostNav = computed(() =>
+    postList.value.map(p => ({
+      pk: p.pk,
+      prev_pk: p.prev_pk,
+      next_pk: p.next_pk,
+    })),
+  )
 
   const postPages = (itemsPerPage: number) => Math.ceil(postCount.value / itemsPerPage)
 
@@ -321,6 +328,7 @@ export const useDocument = defineStore('document', () => {
     post,
     postList,
     postCount,
+    getPostNav,
 
     postPages,
     fetchPost,
