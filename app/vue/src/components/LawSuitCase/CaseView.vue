@@ -4,7 +4,7 @@ import { timeFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 import { type SuitCase } from '@/store/types/document'
 import { useDocument } from '@/store/pinia/document'
-import { onBeforeRouteLeave, onBeforeRouteUpdate, useRoute } from 'vue-router'
+import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 
 const props = defineProps({
   suitcase: { type: Object as PropType<SuitCase>, required: true },
@@ -56,24 +56,40 @@ onBeforeRouteUpdate((to, from) => {
   const fromCaseId = from.params.caseId ? Number(from.params.caseId) : null
   const toCaseId = to.params.caseId ? Number(to.params.caseId) : null
 
+  const last = getCaseNav.value.length - 1
+  const getLast = getCaseNav.value[last]
+  if (getLast.pk === fromCaseId && getLast.prev_pk === toCaseId) {
+    alert(`>>> ${props.currPage + 1}`)
+    emit('cases-renewal', props.currPage + 1)
+  }
+
+  ////////////////////////////////////////////////////
+
+  const getFirst = getCaseNav.value[0]
+  // if (getFirst.pk === fromCaseId && fromCaseId > 1 && !prev.value) {
+  //   alert('<<<')
+  //   emit('cases-renewal', props.currPage - 1)
+  // }
+
+  ///////////////////////////////////////////////////
+
   if (toCaseId) {
+    console.log('to --->', toCaseId)
     prev.value = getPrev(toCaseId)
     next.value = getNext(toCaseId)
   }
 
+  console.log('prev =>', prev.value, 'next =>', next.value)
   console.log('form =>', fromCaseId, 'to =>', toCaseId)
   console.log(getCaseNav.value)
-
-  const getFirst = getCaseNav.value[0].pk
-  const last = getCaseNav.value.length - 1
-  const getLast = getCaseNav.value[last].pk
-  if (1 === 1) console.log('a')
 })
 
 onBeforeMount(() => {
   const caseId = Number(route.params.caseId)
-  prev.value = getPrev(caseId)
-  next.value = getNext(caseId)
+  if (caseId) {
+    prev.value = getPrev(caseId)
+    next.value = getNext(caseId)
+  }
 })
 </script>
 
