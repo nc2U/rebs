@@ -142,7 +142,7 @@ onBeforeMount(() => {
 
     <CRow class="mt-5 py-2 justify-content-between">
       <CCol md="5" lg="4" xl="3">
-        <table v-if="boardNum !== 1" class="table table-bordered mt-2 mb-3">
+        <table v-if="boardNum !== 1 && post.execution_date" class="table table-bordered mt-2 mb-3">
           <tbody>
             <tr class="text-center">
               <td class="p-2 bg-blue-grey-lighten-4">문서 발행일자</td>

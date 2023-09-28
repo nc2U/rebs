@@ -88,6 +88,11 @@ watch(route, val => {
   else docStore.post = null
 })
 
+const postsRenewal = (page: number) => {
+  postFilter.value.page = page
+  fetchPostList(postFilter.value)
+}
+
 const fileChange = (payload: { pk: number; file: File }) => cngFiles.value.push(payload)
 
 const fileUpload = (file: File) => newFiles.value.push(file)
@@ -206,6 +211,7 @@ onBeforeMount(() => {
           @post-hit="postHit"
           @link-hit="linkHit"
           @file-hit="fileHit"
+          @posts-renewal="postsRenewal"
         />
       </div>
 
