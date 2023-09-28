@@ -6,26 +6,25 @@ import { numFormat } from '@/utils/baseMixins'
 import { bgLight } from '@/utils/cssMixins'
 
 const props = defineProps({
-  tab: { type: Number, default: null },
   comFrom: { type: Boolean, default: false },
+  postFilter: { type: Object, required: true },
 })
 const emit = defineEmits(['list-filter'])
 
 const form = reactive<PostFilter>({
   company: '',
   project: '',
-  is_com: 'unknown',
+  is_com: props.comFrom,
   ordering: '-created',
   search: '',
 })
 
 const formsCheck = computed(() => {
-  const a = form.company === ''
+  const a = form.is_com === !!props.comFrom
   const b = form.project === ''
-  const c = form.is_com === false
-  const d = form.ordering === '-created'
-  const e = form.search === ''
-  return a && b && c && d && e
+  const c = form.ordering === '-created'
+  const d = form.search === ''
+  return a && b && c && d
 })
 
 const documentStore = useDocument()
@@ -40,13 +39,10 @@ const listFiltering = (page = 1) => {
   })
 }
 
-const firstSorting = (event: { target: { value: 'is_com' | number | null } }) => {
+const firstSorting = (event: { target: { value: number | null } }) => {
   const val = event.target.value
-  if (val === null) form.is_com = 'unknown'
-  else if (val === 'is_com') {
-    form.is_com = true
-    form.project = ''
-  } else {
+  if (!val) form.is_com = props.comFrom ?? true
+  else {
     form.is_com = false
     form.project = val
   }
@@ -60,9 +56,8 @@ const projectChange = (project: number | null) => {
 defineExpose({ listFiltering, projectChange })
 
 const resetForm = () => {
-  form.company = ''
+  form.is_com = !!props.comFrom
   form.project = ''
-  form.is_com = false
   form.ordering = '-created'
   form.search = ''
   listFiltering(1)
@@ -73,7 +68,14 @@ const projSelect = computed(() => projectStore.projSelect)
 const fetchProjectList = () => projectStore.fetchProjectList()
 onBeforeMount(() => {
   fetchProjectList()
-  if (props.comFrom) form.project = 'is_com'
+  if (props.postFilter) {
+    form.company = props.postFilter.company
+    form.project = props.postFilter.project
+    form.is_com = props.postFilter.is_com
+    form.ordering = props.postFilter.ordering
+    form.search = props.postFilter.search
+    form.page = props.postFilter.page
+  }
 })
 </script>
 
@@ -84,8 +86,7 @@ onBeforeMount(() => {
         <CRow>
           <CCol v-if="comFrom" md="6" lg="5" xl="4" class="mb-3">
             <CFormSelect v-model="form.project" @change="firstSorting">
-              <option value="">전체 프로젝트</option>
-              <option value="is_com">본사</option>
+              <option value="">본사</option>
               <option v-for="proj in projSelect" :key="proj.value" :value="proj.value">
                 {{ proj.label }}
               </option>

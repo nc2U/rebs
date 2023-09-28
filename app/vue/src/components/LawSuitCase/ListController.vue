@@ -26,13 +26,14 @@ const form = reactive<SuitCaseFilter>({
 })
 
 const formsCheck = computed(() => {
-  const a = form.project === ''
-  const b = form.court === ''
-  const c = form.related_case === ''
-  const d = form.sort === ''
-  const e = form.level === ''
-  const f = form.search === ''
-  return a && b && c && d && e && f
+  const a = form.is_com === !!props.comFrom
+  const b = form.project === ''
+  const c = form.court === ''
+  const d = form.related_case === ''
+  const e = form.sort === ''
+  const f = form.level === ''
+  const g = form.search === ''
+  return a && b && c && d && e && f && g
 })
 
 const projectStore = useProject()

@@ -185,7 +185,12 @@ onBeforeMount(() => {
   <ContentBody>
     <CCardBody class="pb-5">
       <div v-if="route.name === `${mainViewName}`" class="pt-3">
-        <ListController ref="fController" :com-from="true" @list-filter="listFiltering" />
+        <ListController
+          ref="fController"
+          :com-from="true"
+          :post-filter="postFilter"
+          @list-filter="listFiltering"
+        />
 
         <CategoryTabs
           :category="postFilter.category as number"
