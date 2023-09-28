@@ -50,12 +50,12 @@ onBeforeRouteUpdate((to, from) => {
 
   const last = getCaseNav.value.length - 1
   const getLast = getCaseNav.value[last]
-  if (getLast.pk === fromCaseId && getLast.prev_pk === toCaseId)
+  if (toCaseId && getLast.pk === fromCaseId && getLast.prev_pk === toCaseId)
     // 다음 페이지 목록으로
     emit('cases-renewal', props.currPage + 1)
 
   const getFirst = getCaseNav.value[0]
-  if (getFirst.pk === fromCaseId && getFirst.next_pk === toCaseId)
+  if (toCaseId && getFirst.pk === fromCaseId && getFirst.next_pk === toCaseId)
     // 이전 페이지 목록으로
     emit('cases-renewal', props.currPage - 1)
 
@@ -272,7 +272,7 @@ onBeforeMount(() => {
             다음
           </CButton>
         </CButtonGroup>
-        {{ prev }} | {{ next }}
+
         <CButtonGroup role="group">
           <CButton
             color="success"
