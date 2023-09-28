@@ -7,6 +7,7 @@ import Multiselect from '@vueform/multiselect'
     mode="tags"
     autocomplete="label"
     :classes="{
+      caret: 'multiselect-caret mr-4',
       search: 'form-control multiselect-search',
       tagsSearch: 'form-control multiselect-tags-search',
     }"

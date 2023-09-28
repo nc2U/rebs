@@ -3,22 +3,24 @@
   --ms-bg: #474850 !important;
   --ms-dropdown-bg: #353641 !important;
   --ms-option-bg-pointed: #f3f4f6 !important;
+  --ms-border-color: #D1D5DB;
+  --ms-placeholder-color: #B5B6B9;
 }
 
 :root {
   // multi-select
   --ms-font-size: 0.875rem;
-  --ms-line-height: 1.375;
+  --ms-line-height: 1.2;
   --ms-bg: #ffffff;
   --ms-bg-disabled: #f3f4f6;
-  --ms-border-color: #aaaeb7; // #D1D5DB;
+  --ms-border-color: #D8DBE0; // #D1D5DB;
   --ms-border-width: 1px;
   --ms-radius: 6px;
   --ms-py: 0.48rem;
   --ms-px: 0.875rem;
   --ms-ring-width: 4px;
   --ms-ring-color: #ccc7f8; // #10B98130;
-  --ms-placeholder-color: #9ca3af;
+  --ms-placeholder-color: #6F7784;
   --ms-max-height: 10rem;
 
   --ms-spinner-color: #10b981;
