@@ -28,7 +28,7 @@ const postFilter = ref<PostFilter>({
   board: boardNumber.value,
   is_com: true,
   category: '',
-  ordering: '',
+  ordering: '-created',
   search: '',
   page: 1,
 })

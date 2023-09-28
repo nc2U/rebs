@@ -21,9 +21,9 @@ const form = reactive<PostFilter>({
 
 const formsCheck = computed(() => {
   const a = form.is_com === !!props.comFrom
-  const b = form.project === ''
-  const c = form.ordering === '-created'
-  const d = form.search === ''
+  const b = form.project === props.postFilter.project
+  const c = form.ordering === props.postFilter.ordering
+  const d = form.search === props.postFilter.search
   return a && b && c && d
 })
 
