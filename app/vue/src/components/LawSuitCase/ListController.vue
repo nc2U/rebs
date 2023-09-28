@@ -16,7 +16,7 @@ const emit = defineEmits(['list-filter'])
 const form = reactive<SuitCaseFilter>({
   company: '',
   project: '',
-  is_com: 'unknown',
+  is_com: props.comFrom,
   court: '',
   related_case: '',
   sort: '',
@@ -26,14 +26,13 @@ const form = reactive<SuitCaseFilter>({
 })
 
 const formsCheck = computed(() => {
-  // const a = form.company === ''
-  const b = form.project === ''
-  const c = form.court === ''
-  const d = form.related_case === ''
-  const e = form.sort === ''
-  const f = form.level === ''
-  const g = form.search === ''
-  return b && c && d && e && f && g
+  const a = form.project === ''
+  const b = form.court === ''
+  const c = form.related_case === ''
+  const d = form.sort === ''
+  const e = form.level === ''
+  const f = form.search === ''
+  return a && b && c && d && e && f
 })
 
 const projectStore = useProject()
@@ -52,13 +51,10 @@ const listFiltering = (page = 1) => {
   })
 }
 
-const firstSorting = (event: { target: { value: 'is_com' | number | null } }) => {
+const firstSorting = (event: { target: { value: number | null } }) => {
   const val = event.target.value
-  if (val === null) form.is_com = 'unknown'
-  else if (val === 'is_com') {
-    form.is_com = true
-    form.project = ''
-  } else {
+  if (!val) form.is_com = props.comFrom ?? true
+  else {
     form.is_com = false
     form.project = val
   }
@@ -119,7 +115,7 @@ onBeforeMount(() => {
         <CRow>
           <CCol v-if="comFrom" md="4" class="mb-3">
             <CFormSelect v-model="form.project" @change="firstSorting">
-              <option value="is_com">본사</option>
+              <option value="">본사</option>
               <option v-for="proj in projSelect" :key="proj.value" :value="proj.value">
                 {{ proj.label }}
               </option>
