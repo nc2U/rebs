@@ -8,8 +8,8 @@ import { courtChoices } from './components/court'
 import Multiselect from '@vueform/multiselect'
 
 const props = defineProps({
-  tab: { type: Number, default: null },
   comFrom: { type: Boolean, default: false },
+  caseFilter: { type: Object, required: true },
 })
 const emit = defineEmits(['list-filter'])
 
@@ -26,14 +26,14 @@ const form = reactive<SuitCaseFilter>({
 })
 
 const formsCheck = computed(() => {
-  const a = form.is_com === 'unknown'
+  // const a = form.company === ''
   const b = form.project === ''
   const c = form.court === ''
   const d = form.related_case === ''
   const e = form.sort === ''
   const f = form.level === ''
   const g = form.search === ''
-  return a && b && c && d && e && f && g
+  return b && c && d && e && f && g
 })
 
 const projectStore = useProject()
@@ -82,7 +82,7 @@ defineExpose({
 })
 
 const resetForm = () => {
-  form.is_com = 'unknown'
+  form.is_com = !!props.comFrom
   form.project = ''
   form.court = ''
   form.related_case = ''
@@ -99,7 +99,16 @@ const sortChange = () => {
 
 onBeforeMount(() => {
   fetchProjectList()
-  if (props.comFrom) form.project = 'is_com'
+  if (props.caseFilter) {
+    form.company = props.caseFilter.company
+    form.project = props.caseFilter.project
+    form.court = props.caseFilter.court
+    form.related_case = props.caseFilter.related_case
+    form.sort = props.caseFilter.sort
+    form.level = props.caseFilter.level
+    form.search = props.caseFilter.search
+    form.page = props.caseFilter.page
+  }
 })
 </script>
 
@@ -110,7 +119,6 @@ onBeforeMount(() => {
         <CRow>
           <CCol v-if="comFrom" md="4" class="mb-3">
             <CFormSelect v-model="form.project" @change="firstSorting">
-              <option value="">전체 프로젝트</option>
               <option value="is_com">본사</option>
               <option v-for="proj in projSelect" :key="proj.value" :value="proj.value">
                 {{ proj.label }}

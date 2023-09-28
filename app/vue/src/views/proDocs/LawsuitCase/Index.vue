@@ -151,7 +151,7 @@ onBeforeMount(() => {
   <ContentBody>
     <CCardBody class="pb-5">
       <div v-if="route.name === `${mainViewName}`" class="pt-3">
-        <ListController ref="fController" @list-filter="listFiltering" />
+        <ListController ref="fController" :case-filter="caseFilter" @list-filter="listFiltering" />
 
         <CaseList
           :company="company || undefined"
