@@ -28,7 +28,7 @@ const postFilter = ref<PostFilter>({
   board: boardNumber.value,
   is_com: true,
   category: '',
-  ordering: '',
+  ordering: '-created',
   search: '',
   page: 1,
 })
@@ -214,6 +214,7 @@ onBeforeMount(() => {
           :category="postFilter.category as number"
           :post="post as Post"
           :view-route="mainViewName"
+          :curr-page="postFilter.page ?? 1"
           @post-hit="postHit"
           @link-hit="linkHit"
           @file-hit="fileHit"

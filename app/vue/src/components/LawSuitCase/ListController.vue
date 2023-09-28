@@ -27,12 +27,12 @@ const form = reactive<SuitCaseFilter>({
 
 const formsCheck = computed(() => {
   const a = form.is_com === !!props.comFrom
-  const b = form.project === ''
-  const c = form.court === ''
-  const d = form.related_case === ''
-  const e = form.sort === ''
-  const f = form.level === ''
-  const g = form.search === ''
+  const b = form.project === props.caseFilter.project
+  const c = form.court === props.caseFilter.court
+  const d = form.related_case === props.caseFilter.related_case
+  const e = form.sort === props.caseFilter.sort
+  const f = form.level === props.caseFilter.level
+  const g = form.search === props.caseFilter.search
   return a && b && c && d && e && f && g
 })
 

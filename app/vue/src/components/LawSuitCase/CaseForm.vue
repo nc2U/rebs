@@ -37,8 +37,8 @@ const form = reactive<SuitCase>({
   defendant: '',
   defendant_attorney: '',
   related_debtor: '',
-  case_start_date: '',
-  case_end_date: '',
+  case_start_date: null,
+  case_end_date: null,
   summary: '',
 })
 

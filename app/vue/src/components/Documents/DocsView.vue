@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { computed, type PropType, ref } from 'vue'
+import { ref, computed, watch, onBeforeMount, type PropType } from 'vue'
 import { useDocument } from '@/store/pinia/document'
+import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 import { type Post, type Link, type AFile } from '@/store/types/document'
 import sanitizeHtml from 'sanitize-html'
@@ -11,10 +12,9 @@ const props = defineProps({
   post: { type: Object as PropType<Post>, default: null },
   viewRoute: { type: String, required: true },
   currPage: { type: Number, required: true },
-  maxPage: { type: Number, required: true },
 })
 
-const emit = defineEmits(['post-hit', 'link-hit', 'file-hit'])
+const emit = defineEmits(['post-hit', 'link-hit', 'file-hit', 'posts-renewal'])
 
 const prev = ref<number | null>()
 const next = ref<number | null>()
@@ -22,6 +22,11 @@ const next = ref<number | null>()
 const sortName = computed(() => props.post?.proj_name || '본사 문서')
 
 const docStore = useDocument()
+const getPostNav = computed(() => docStore.getPostNav)
+
+const getPrev = (pk: number) => getPostNav.value.filter(p => p.pk === pk).map(p => p.prev_pk)[0]
+const getNext = (pk: number) => getPostNav.value.filter(p => p.pk === pk).map(p => p.next_pk)[0]
+
 const fetchLink = (pk: number) => docStore.fetchLink(pk)
 const fetchFile = (pk: number) => docStore.fetchFile(pk)
 
@@ -45,6 +50,48 @@ const getFileName = (file: string) => {
   if (file) return decodeURI(file.split('/').slice(-1)[0])
   else return
 }
+
+const route = useRoute()
+
+watch(
+  () => getPostNav.value,
+  () => {
+    const postId = Number(route.params.postId)
+    if (postId) {
+      prev.value = getPrev(postId)
+      next.value = getNext(postId)
+    }
+  },
+)
+
+onBeforeRouteUpdate((to, from) => {
+  const fromPostId = from.params.postId ? Number(from.params.postId) : null
+  const toPostId = to.params.postId ? Number(to.params.postId) : null
+
+  const last = getPostNav.value.length - 1
+  const getLast = getPostNav.value[last]
+  if (toPostId && getLast.pk === fromPostId && getLast.prev_pk === toPostId)
+    // 다음 페이지 목록으로
+    emit('posts-renewal', props.currPage + 1)
+
+  const getFirst = getPostNav.value[0]
+  if (toPostId && getFirst.pk === fromPostId && getFirst.next_pk === toPostId)
+    // 이전 페이지 목록으로
+    emit('posts-renewal', props.currPage - 1)
+
+  if (toPostId) {
+    prev.value = getPrev(toPostId)
+    next.value = getNext(toPostId)
+  }
+})
+
+onBeforeMount(() => {
+  const postId = Number(route.params.postId)
+  if (postId) {
+    prev.value = getPrev(postId)
+    next.value = getNext(postId)
+  }
+})
 </script>
 
 <template>
@@ -194,11 +241,11 @@ const getFileName = (file: string) => {
         <CButtonGroup role="group" class="mr-3">
           <CButton
             color="light"
-            :disabled="!post.prev_pk"
+            :disabled="!prev"
             @click="
               $router.push({
                 name: `${viewRoute} - 보기`,
-                params: { postId: post.prev_pk },
+                params: { postId: prev },
               })
             "
           >
@@ -206,11 +253,11 @@ const getFileName = (file: string) => {
           </CButton>
           <CButton
             color="light"
-            :disabled="!post.next_pk"
+            :disabled="!next"
             @click="
               $router.push({
                 name: `${viewRoute} - 보기`,
-                params: { postId: post.next_pk },
+                params: { postId: next },
               })
             "
           >

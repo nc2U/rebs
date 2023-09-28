@@ -28,7 +28,7 @@ const postFilter = ref<PostFilter>({
   category: '',
   is_com: false,
   project: '',
-  ordering: '',
+  ordering: '-created',
   search: '',
   page: 1,
 })
@@ -189,7 +189,7 @@ onBeforeMount(() => {
 
         <DocsList
           :project="project as number"
-          :page="postFilter.page"
+          :page="postFilter.page ?? 1"
           :post-list="postList"
           :view-route="mainViewName"
           @page-select="pageSelect"
@@ -202,6 +202,7 @@ onBeforeMount(() => {
           :category="postFilter.category as number"
           :post="post as Post"
           :view-route="mainViewName"
+          :curr-page="postFilter.page ?? 1"
           @post-hit="postHit"
           @link-hit="linkHit"
           @file-hit="fileHit"
