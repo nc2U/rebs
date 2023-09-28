@@ -14,7 +14,7 @@ const emit = defineEmits(['multi-submit', 'on-delete'])
 
 const updateFormModal = ref()
 
-const owners = computed(() => props.site.owners ? props.site.owners.map(o => o.owner) : [])
+const owners = computed(() => (props.site.owners ? props.site.owners.map(o => o.owner) : []))
 
 const showDetail = () => updateFormModal.value.callModal()
 const multiSubmit = (payload: Site) => emit('multi-submit', payload)

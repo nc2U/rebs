@@ -1,10 +1,9 @@
-@import "@coreui/coreui/scss/functions";
-@import "@coreui/coreui/scss/variables";
-@import "@coreui/coreui/scss/maps";
-@import "@coreui/coreui/scss/mixins";
-@import "./../mixins/theme";
-@import "@coreui/coreui/scss/utilities";
-
+@import '@coreui/coreui/scss/functions';
+@import '@coreui/coreui/scss/variables';
+@import '@coreui/coreui/scss/maps';
+@import '@coreui/coreui/scss/mixins';
+@import './../mixins/theme';
+@import '@coreui/coreui/scss/utilities';
 
 $theme-name: 'dark-theme' !default;
 $theme-prefix: 'dark' !default;
@@ -24,9 +23,9 @@ $theme-prefix: 'dark' !default;
 
     @if (contrast-ratio($alert-background, $alert-color) < $min-contrast-ratio) {
       $alert-color: mix(
-                      map-get($value, 'base-color'),
-                      color-contrast($alert-background),
-                      abs($alert-color-scale)
+        map-get($value, 'base-color'),
+        color-contrast($alert-background),
+        abs($alert-color-scale)
       );
     }
     .alert-#{$state} {
@@ -68,10 +67,10 @@ $theme-prefix: 'dark' !default;
   }
 
   // Utilities
-  @import "@coreui/coreui/scss/utilities/api";
+  @import '@coreui/coreui/scss/utilities/api';
 
   // User Customizing
-  $form-switch-color: rgba($black, .25) !default;
+  $form-switch-color: rgba($black, 0.25) !default;
 
   .wrapper {
     background-color: $bg-elevation-0 !important;
@@ -87,14 +86,17 @@ $theme-prefix: 'dark' !default;
     }
   }
 
-  .wrapper a:link:not(.v-btn,.nav-link),
-  .wrapper a:visited:not(.v-btn,.nav-link),
-  .wrapper a:active:not(.v-btn,.nav-link) {
-    color: #A9A4DB !important;
+  .wrapper a:link:not(.v-btn, .nav-link),
+  .wrapper a:visited:not(.v-btn, .nav-link),
+  .wrapper a:active:not(.v-btn, .nav-link) {
+    color: #a9a4db !important;
   }
 
-  input:not(.form-check-input), select,
-  textarea, .multiselect, .ql-editor {
+  input:not(.form-check-input),
+  select,
+  textarea,
+  .multiselect,
+  .ql-editor {
     background: #474850 !important;
   }
 
@@ -102,15 +104,16 @@ $theme-prefix: 'dark' !default;
     background: #474850 !important;
   }
 
-  input:disabled:not(.form-check-input), select:disabled,
+  input:disabled:not(.form-check-input),
+  select:disabled,
   textarea:disabled,
   .multiselect.is-disabled {
-    background: #2F303B !important;
+    background: #2f303b !important;
   }
 
-  .form-check-input[type=checkbox]:not(:checked),
-  .form-check-input[type=radio]:not(:checked) {
-    background-color: #FFFFFF !important;
+  .form-check-input[type='checkbox']:not(:checked),
+  .form-check-input[type='radio']:not(:checked) {
+    background-color: #ffffff !important;
   }
 
   .form-text {
@@ -122,7 +125,7 @@ $theme-prefix: 'dark' !default;
   }
 
   .v-window--show-arrows-on-hover {
-    color: #0C1021;
+    color: #0c1021;
   }
 
   // tinymce
