@@ -4,18 +4,17 @@ import { timeFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 import { type SuitCase } from '@/store/types/document'
 import { useDocument } from '@/store/pinia/document'
-import { useRoute } from 'vue-router'
+import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 
 const props = defineProps({
-  initPage: { type: Number, required: true },
-  maxPage: { type: Number, default: 3 },
   suitcase: { type: Object as PropType<SuitCase>, required: true },
   viewRoute: { type: String, required: true },
+  currPage: { type: Number, required: true },
+  maxPage: { type: Number, required: true },
 })
 
-const emit = defineEmits(['case-renewal'])
+const emit = defineEmits(['cases-renewal'])
 
-const page = ref<number | null>()
 const prev = ref<number | null>()
 const next = ref<number | null>()
 
@@ -38,31 +37,59 @@ const toDelete = () => alert('준비중!')
 watch(
   () => route.params.caseId,
   async newId => {
-    prev.value = getPrev(Number(newId))
-    next.value = getNext(Number(newId))
-
-    if (Number(newId) === getCaseNav.value[0].pk)
-      if (page.value && page.value > 1) {
-        page.value -= 1
-        alert(page.value)
-        emit('case-renewal', page.value)
-      }
-
-    const last = getCaseNav.value.length - 1
-    if (Number(newId) === getCaseNav.value[last].pk)
-      if (page.value && page.value < props.maxPage) {
-        page.value += 1
-        alert(page.value)
-        emit('case-renewal', page.value)
-      }
+    // if (Number(newId) === getCaseNav.value[0].pk)
+    //   if (props.currPage && props.currPage > 1) {
+    //     // pageList 첫번째 페이지일때 + 전체 1면이 아니면
+    //     emit('cases-renewal', props.currPage - 1)
+    //   }
+    //
+    // const last = getCaseNav.value.length - 1
+    // if (Number(newId) === getCaseNav.value[last].pk)
+    //   if (props.currPage && props.currPage < props.maxPage) {
+    //     // pageList 마지막 페이지일때 + 전체 마지막 면이 아니면
+    //     emit('cases-renewal', props.currPage + 1)
+    //   }
   },
 )
 
+onBeforeRouteUpdate((to, from) => {
+  const fromCaseId = from.params.caseId ? Number(from.params.caseId) : null
+  const toCaseId = to.params.caseId ? Number(to.params.caseId) : null
+
+  const last = getCaseNav.value.length - 1
+  const getLast = getCaseNav.value[last]
+  if (getLast.pk === fromCaseId && getLast.prev_pk === toCaseId) {
+    alert(`>>> ${props.currPage + 1}`)
+    emit('cases-renewal', props.currPage + 1)
+  }
+
+  ////////////////////////////////////////////////////
+
+  const getFirst = getCaseNav.value[0]
+  // if (getFirst.pk === fromCaseId && fromCaseId > 1 && !prev.value) {
+  //   alert('<<<')
+  //   emit('cases-renewal', props.currPage - 1)
+  // }
+
+  ///////////////////////////////////////////////////
+
+  if (toCaseId) {
+    console.log('to --->', toCaseId)
+    prev.value = getPrev(toCaseId)
+    next.value = getNext(toCaseId)
+  }
+
+  console.log('prev =>', prev.value, 'next =>', next.value)
+  console.log('form =>', fromCaseId, 'to =>', toCaseId)
+  console.log(getCaseNav.value)
+})
+
 onBeforeMount(() => {
   const caseId = Number(route.params.caseId)
-  prev.value = getPrev(caseId)
-  next.value = getNext(caseId)
-  if (!page.value) page.value = props.initPage
+  if (caseId) {
+    prev.value = getPrev(caseId)
+    next.value = getNext(caseId)
+  }
 })
 </script>
 
@@ -232,7 +259,7 @@ onBeforeMount(() => {
         <v-btn variant="tonal" size="small" :rounded="0" @click="toSocial"> 신고</v-btn>
       </CCol>
     </CRow>
-    {{ page }} ----- | {{ prev }} | {{ next }} |
+    {{ currPage }} ----- | {{ prev }} | {{ next }} |
     <hr />
     {{ getCaseNav }}
     <CRow class="py-4">

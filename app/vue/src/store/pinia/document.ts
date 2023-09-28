@@ -103,7 +103,6 @@ export const useDocument = defineStore('document', () => {
       pk: s.pk,
       prev_pk: s.prev_pk,
       next_pk: s.next_pk,
-      page: s.page as number,
     })),
   )
 

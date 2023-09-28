@@ -8,7 +8,7 @@ import Case from './components/Case.vue'
 
 defineProps({
   company: { type: Number, default: null },
-  page: { type: Number, default: 1 },
+  page: { type: Number, required: true },
   caseList: { type: Array as PropType<SuitCase[]>, default: () => [] },
   viewRoute: { type: String, required: true },
 })
