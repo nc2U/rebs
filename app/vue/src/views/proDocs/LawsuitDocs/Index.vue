@@ -28,7 +28,7 @@ const postFilter = ref<PostFilter>({
   category: '',
   is_com: false,
   project: '',
-  ordering: '',
+  ordering: '-created',
   search: '',
   page: 1,
 })
