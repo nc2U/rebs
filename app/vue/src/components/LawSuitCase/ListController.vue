@@ -8,15 +8,15 @@ import { courtChoices } from './components/court'
 import Multiselect from '@vueform/multiselect'
 
 const props = defineProps({
-  tab: { type: Number, default: null },
   comFrom: { type: Boolean, default: false },
+  caseFilter: { type: Object, required: true },
 })
 const emit = defineEmits(['list-filter'])
 
 const form = reactive<SuitCaseFilter>({
   company: '',
   project: '',
-  is_com: 'unknown',
+  is_com: props.comFrom,
   court: '',
   related_case: '',
   sort: '',
@@ -26,7 +26,7 @@ const form = reactive<SuitCaseFilter>({
 })
 
 const formsCheck = computed(() => {
-  const a = form.is_com === 'unknown'
+  const a = form.is_com === !!props.comFrom
   const b = form.project === ''
   const c = form.court === ''
   const d = form.related_case === ''
@@ -52,13 +52,10 @@ const listFiltering = (page = 1) => {
   })
 }
 
-const firstSorting = (event: { target: { value: 'is_com' | number | null } }) => {
+const firstSorting = (event: { target: { value: number | null } }) => {
   const val = event.target.value
-  if (val === null) form.is_com = 'unknown'
-  else if (val === 'is_com') {
-    form.is_com = true
-    form.project = ''
-  } else {
+  if (!val) form.is_com = props.comFrom ?? true
+  else {
     form.is_com = false
     form.project = val
   }
@@ -82,7 +79,7 @@ defineExpose({
 })
 
 const resetForm = () => {
-  form.is_com = 'unknown'
+  form.is_com = !!props.comFrom
   form.project = ''
   form.court = ''
   form.related_case = ''
@@ -99,7 +96,16 @@ const sortChange = () => {
 
 onBeforeMount(() => {
   fetchProjectList()
-  if (props.comFrom) form.project = 'is_com'
+  if (props.caseFilter) {
+    form.company = props.caseFilter.company
+    form.project = props.caseFilter.project
+    form.court = props.caseFilter.court
+    form.related_case = props.caseFilter.related_case
+    form.sort = props.caseFilter.sort
+    form.level = props.caseFilter.level
+    form.search = props.caseFilter.search
+    form.page = props.caseFilter.page
+  }
 })
 </script>
 
@@ -110,8 +116,7 @@ onBeforeMount(() => {
         <CRow>
           <CCol v-if="comFrom" md="4" class="mb-3">
             <CFormSelect v-model="form.project" @change="firstSorting">
-              <option value="">전체 프로젝트</option>
-              <option value="is_com">본사</option>
+              <option value="">본사</option>
               <option v-for="proj in projSelect" :key="proj.value" :value="proj.value">
                 {{ proj.label }}
               </option>

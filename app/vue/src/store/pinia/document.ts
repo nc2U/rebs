@@ -17,7 +17,7 @@ import {
 export type SuitCaseFilter = {
   company?: number | ''
   project?: number | '' | 'is_com'
-  is_com?: 'unknown' | boolean
+  is_com?: boolean
   court?: string
   related_case?: number | ''
   sort?: '1' | '2' | '3' | '4' | '5' | ''
@@ -31,7 +31,7 @@ export type PostFilter = {
   project?: number | '' | 'is_com'
   board?: number
   is_notice?: 'unknown' | boolean
-  is_com?: 'unknown' | boolean
+  is_com?: boolean
   category?: number | ''
   lawsuit?: number | ''
   ordering?: string

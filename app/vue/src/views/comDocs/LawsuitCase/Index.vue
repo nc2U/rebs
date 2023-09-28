@@ -44,7 +44,6 @@ const docStore = useDocument()
 const suitcase = computed(() => docStore.suitcase)
 const suitcaseList = computed(() => docStore.suitcaseList)
 const getSuitCase = computed(() => docStore.getSuitCase)
-const getCaseNav = computed(() => docStore.getCaseNav)
 
 const fetchSuitCase = (pk: number) => docStore.fetchSuitCase(pk)
 const fetchSuitCaseList = (payload: cFilter) => docStore.fetchSuitCaseList(payload)
@@ -147,7 +146,12 @@ onBeforeMount(() => {
   <ContentBody>
     <CCardBody class="pb-5">
       <div v-if="route.name === `${mainViewName}`" class="pt-3">
-        <ListController ref="fController" :com-from="true" @list-filter="listFiltering" />
+        <ListController
+          ref="fController"
+          :com-from="true"
+          :case-filter="caseFilter"
+          @list-filter="listFiltering"
+        />
 
         <CaseList
           :company="company || undefined"
