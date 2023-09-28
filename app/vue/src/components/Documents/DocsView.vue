@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import { computed, type PropType, ref } from 'vue'
+import { ref, computed, watch, onBeforeMount, type PropType } from 'vue'
 import { useDocument } from '@/store/pinia/document'
+import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 import { type Post, type Link, type AFile } from '@/store/types/document'
 import sanitizeHtml from 'sanitize-html'
-import { useRoute, onBeforeRouteUpdate } from 'vue-router'
-import { onBeforeMount, watch } from 'vue/dist/vue'
 
 const props = defineProps({
   boardNum: { type: Number, default: 2 },
