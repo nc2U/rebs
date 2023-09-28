@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, type PropType } from 'vue'
+import { computed, type PropType, ref } from 'vue'
 import { useDocument } from '@/store/pinia/document'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 import { type Post, type Link, type AFile } from '@/store/types/document'
@@ -10,9 +10,14 @@ const props = defineProps({
   category: { type: Number, default: undefined },
   post: { type: Object as PropType<Post>, default: null },
   viewRoute: { type: String, required: true },
+  currPage: { type: Number, required: true },
+  maxPage: { type: Number, required: true },
 })
 
 const emit = defineEmits(['post-hit', 'link-hit', 'file-hit'])
+
+const prev = ref<number | null>()
+const next = ref<number | null>()
 
 const sortName = computed(() => props.post?.proj_name || '본사 문서')
 
