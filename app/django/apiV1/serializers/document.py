@@ -78,11 +78,13 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
         return queryset
 
     def get_prev_pk(self, obj):
-        prev_obj = self.get_collection().filter(pk__lt=obj.pk).first()
+        prev_obj = (self.get_collection()
+                    .filter(case_start_date__lt=obj.case_start_date).first())
         return prev_obj.pk if prev_obj else None
 
     def get_next_pk(self, obj):
-        next_obj = self.get_collection().filter(pk__gt=obj.pk).order_by('case_start_date', 'id').first()
+        next_obj = (self.get_collection().order_by('case_start_date', 'id')
+                    .filter(case_start_date__gt=obj.case_start_date).first())
         return next_obj.pk if next_obj else None
 
     def get_page(self, obj):

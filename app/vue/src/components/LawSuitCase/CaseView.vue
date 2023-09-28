@@ -232,7 +232,7 @@ onBeforeMount(() => {
         <v-btn variant="tonal" size="small" :rounded="0" @click="toSocial"> 신고</v-btn>
       </CCol>
     </CRow>
-    {{ page }}
+    {{ page }} ----- | {{ prev }} | {{ next }} |
     <hr />
     {{ getCaseNav }}
     <CRow class="py-4">
@@ -248,7 +248,7 @@ onBeforeMount(() => {
               })
             "
           >
-            이전글
+            이전
           </CButton>
           <CButton
             color="light"
@@ -260,7 +260,7 @@ onBeforeMount(() => {
               })
             "
           >
-            다음글
+            다음
           </CButton>
         </CButtonGroup>
         {{ prev }} | {{ next }}
@@ -280,9 +280,7 @@ onBeforeMount(() => {
         </CButtonGroup>
       </CCol>
       <CCol class="text-right">
-        <CButton color="light" @click="$router.push({ name: `${viewRoute}`, query: { page } })">
-          목록으로
-        </CButton>
+        <CButton color="light" @click="$router.push({ name: `${viewRoute}` })"> 목록으로</CButton>
         <CButton color="primary" @click="$router.push({ name: `${viewRoute} - 작성` })">
           등록하기
         </CButton>
