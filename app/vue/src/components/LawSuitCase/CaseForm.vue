@@ -176,7 +176,10 @@ onUpdated(() => dataSetup())
           :options="getSuitCase"
           placeholder="관련 사건"
           autocomplete="label"
-          :classes="{ search: 'form-control multiselect-search' }"
+          :classes="{
+            search: 'form-control multiselect-search',
+            caret: 'multiselect-caret mr-4',
+          }"
           :add-option-on="['enter', 'tab']"
           searchable
         />
@@ -201,7 +204,10 @@ onUpdated(() => dataSetup())
           :options="courtChoices"
           placeholder="법원 선택"
           autocomplete="label"
-          :classes="{ search: 'form-control multiselect-search' }"
+          :classes="{
+            search: 'form-control multiselect-search',
+            caret: 'multiselect-caret mr-4',
+          }"
           :attrs="form.court || form.other_agency ? {} : { required: true }"
           :add-option-on="['enter', 'tab']"
           searchable
