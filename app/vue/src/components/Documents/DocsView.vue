@@ -52,43 +52,44 @@ const getFileName = (file: string) => {
 }
 
 const route = useRoute()
+
 watch(
   () => getPostNav.value,
   () => {
-    const caseId = Number(route.params.caseId)
-    if (caseId) {
-      prev.value = getPrev(caseId)
-      next.value = getNext(caseId)
+    const postId = Number(route.params.postId)
+    if (postId) {
+      prev.value = getPrev(postId)
+      next.value = getNext(postId)
     }
   },
 )
 
 onBeforeRouteUpdate((to, from) => {
-  const fromCaseId = from.params.caseId ? Number(from.params.caseId) : null
-  const toCaseId = to.params.caseId ? Number(to.params.caseId) : null
+  const fromPostId = from.params.postId ? Number(from.params.postId) : null
+  const toPostId = to.params.postId ? Number(to.params.postId) : null
 
   const last = getPostNav.value.length - 1
   const getLast = getPostNav.value[last]
-  if (toCaseId && getLast.pk === fromCaseId && getLast.prev_pk === toCaseId)
+  if (toPostId && getLast.pk === fromPostId && getLast.prev_pk === toPostId)
     // 다음 페이지 목록으로
     emit('posts-renewal', props.currPage + 1)
 
   const getFirst = getPostNav.value[0]
-  if (toCaseId && getFirst.pk === fromCaseId && getFirst.next_pk === toCaseId)
+  if (toPostId && getFirst.pk === fromPostId && getFirst.next_pk === toPostId)
     // 이전 페이지 목록으로
     emit('posts-renewal', props.currPage - 1)
 
-  if (toCaseId) {
-    prev.value = getPrev(toCaseId)
-    next.value = getNext(toCaseId)
+  if (toPostId) {
+    prev.value = getPrev(toPostId)
+    next.value = getNext(toPostId)
   }
 })
 
 onBeforeMount(() => {
-  const caseId = Number(route.params.caseId)
-  if (caseId) {
-    prev.value = getPrev(caseId)
-    next.value = getNext(caseId)
+  const postId = Number(route.params.postId)
+  if (postId) {
+    prev.value = getPrev(postId)
+    next.value = getNext(postId)
   }
 })
 </script>
@@ -240,11 +241,11 @@ onBeforeMount(() => {
         <CButtonGroup role="group" class="mr-3">
           <CButton
             color="light"
-            :disabled="!post.prev_pk"
+            :disabled="!prev"
             @click="
               $router.push({
                 name: `${viewRoute} - 보기`,
-                params: { postId: post.prev_pk },
+                params: { postId: prev },
               })
             "
           >
@@ -252,11 +253,11 @@ onBeforeMount(() => {
           </CButton>
           <CButton
             color="light"
-            :disabled="!post.next_pk"
+            :disabled="!next"
             @click="
               $router.push({
                 name: `${viewRoute} - 보기`,
-                params: { postId: post.next_pk },
+                params: { postId: next },
               })
             "
           >
