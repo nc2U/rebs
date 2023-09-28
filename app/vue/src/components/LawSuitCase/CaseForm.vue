@@ -268,7 +268,12 @@ onUpdated(() => dataSetup())
     <CRow class="mb-3">
       <CFormLabel for="case_start_date" class="col-md-2 col-form-label"> 사건개시일</CFormLabel>
       <CCol md="4">
-        <DatePicker id="case_start_date" v-model="form.case_start_date" placeholder="사건개시일" />
+        <DatePicker
+          id="case_start_date"
+          v-model="form.case_start_date"
+          placeholder="사건개시일"
+          required
+        />
       </CCol>
 
       <CFormLabel for="case_end_date" class="col-md-2 col-form-label"> 사건종결일</CFormLabel>
