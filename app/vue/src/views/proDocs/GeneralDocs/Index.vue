@@ -189,7 +189,7 @@ onBeforeMount(() => {
 
         <DocsList
           :project="project as number"
-          :page="postFilter.page"
+          :page="postFilter.page ?? 1"
           :post-list="postList"
           :view-route="mainViewName"
           @page-select="pageSelect"
@@ -202,6 +202,8 @@ onBeforeMount(() => {
           :category="postFilter.category as number"
           :post="post as Post"
           :view-route="mainViewName"
+          :curr-page="postFilter.page ?? 1"
+          :max-page="3"
           @post-hit="postHit"
           @link-hit="linkHit"
           @file-hit="fileHit"

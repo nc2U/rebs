@@ -18,6 +18,7 @@ import CategoryTabs from '@/components/Documents/CategoryTabs.vue'
 import DocsList from '@/components/Documents/DocsList.vue'
 import DocsView from '@/components/Documents/DocsView.vue'
 import DocsForm from '@/components/Documents/DocsForm.vue'
+import CaseView from '@/components/LawSuitCase/CaseView.vue'
 
 const fController = ref()
 const boardNumber = ref(2)
@@ -214,6 +215,8 @@ onBeforeMount(() => {
           :category="postFilter.category as number"
           :post="post as Post"
           :view-route="mainViewName"
+          :curr-page="postFilter.page ?? 1"
+          :max-page="3"
           @post-hit="postHit"
           @link-hit="linkHit"
           @file-hit="fileHit"

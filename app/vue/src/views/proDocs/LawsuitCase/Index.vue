@@ -155,7 +155,7 @@ onBeforeMount(() => {
 
         <CaseList
           :company="company || undefined"
-          :page="caseFilter.page as number"
+          :page="caseFilter.page ?? 1"
           :case-list="suitcaseList"
           :view-route="mainViewName"
           @page-select="pageSelect"
@@ -168,7 +168,7 @@ onBeforeMount(() => {
 
       <div v-else-if="route.name.includes('보기')">
         <CaseView
-          :curr-page="caseFilter.page as number"
+          :curr-page="caseFilter.page ?? 1"
           :max-page="3"
           :suitcase="suitcase as SuitCase"
           :view-route="mainViewName"
