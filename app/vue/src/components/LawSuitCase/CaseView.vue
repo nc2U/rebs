@@ -79,7 +79,7 @@ onBeforeMount(() => {
     <CRow class="mt-5">
       <CCol md="8">
         <h5>
-          {{ suitcase.court_desc }}
+          {{ suitcase.court_desc || suitcase.other_agency }}
           <v-icon icon="mdi-chevron-double-right" size="xs" />
           {{ suitcase.case_number }}
           <v-icon icon="mdi-chevron-double-right" size="xs" />
