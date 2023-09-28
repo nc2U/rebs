@@ -218,7 +218,6 @@ onBeforeMount(() => {
           :post="post as Post"
           :view-route="mainViewName"
           :curr-page="postFilter.page ?? 1"
-          :max-page="3"
           @post-hit="postHit"
           @link-hit="linkHit"
           @file-hit="fileHit"
