@@ -225,7 +225,7 @@ onUpdated(() => dataSetup())
           id="other_agency"
           v-model="form.other_agency"
           maxlength="30"
-          placeholder="기타 처리기관"
+          placeholder="법원 외 사건 처리기관"
         />
         <small class="text-blue-grey-lighten-2">
           사건 유형이 기소 전 형사 사건인 경우 해당 수사기관을 기재
