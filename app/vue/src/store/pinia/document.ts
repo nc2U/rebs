@@ -18,9 +18,9 @@ export type SuitCaseFilter = {
   company?: number | ''
   project?: number | ''
   is_com?: boolean
-  in_progress?: boolean
   court?: string
   related_case?: number | ''
+  in_progress?: boolean | ''
   sort?: '1' | '2' | '3' | '4' | '5' | ''
   level?: '1' | '2' | '3' | '4' | '5' | '6' | '7' | ''
   search?: string
@@ -31,7 +31,7 @@ export type PostFilter = {
   company?: number | ''
   project?: number | ''
   board?: number
-  is_notice?: 'unknown' | boolean
+  is_notice?: boolean | ''
   is_com?: boolean
   category?: number | ''
   lawsuit?: number | ''

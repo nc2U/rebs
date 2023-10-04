@@ -19,6 +19,7 @@ const form = reactive<SuitCaseFilter>({
   is_com: props.comFrom,
   court: '',
   related_case: '',
+  in_progress: '',
   sort: '',
   level: '',
   search: '',
@@ -30,10 +31,11 @@ const formsCheck = computed(() => {
   const b = !!props.comFrom ? form.project === '' : true
   const c = form.court === ''
   const d = form.related_case === ''
-  const e = form.sort === ''
-  const f = form.level === ''
-  const g = form.search === ''
-  return a && b && c && d && e && f && g
+  const e = form.in_progress === ''
+  const f = form.sort === ''
+  const g = form.level === ''
+  const h = form.search === ''
+  return a && b && c && d && e && f && g && h
 })
 
 const projectStore = useProject()
@@ -65,10 +67,7 @@ const firstSorting = (event: { target: { value: number | null } }) => {
 const courtChange = (court: string) => (form.court = court)
 const searchChange = (search: string) => (form.search = search)
 const relatedChange = (related: number) => (form.related_case = related)
-const projectChange = (project: number | null) => {
-  if (project !== null) form.project = project
-  // else form.project = 'com'
-}
+const projectChange = (project: number | null) => (form.project = project ?? '')
 
 defineExpose({
   listFiltering,
@@ -83,6 +82,7 @@ const resetForm = () => {
   form.project = ''
   form.court = ''
   form.related_case = ''
+  form.in_progress = ''
   form.sort = ''
   form.level = ''
   form.search = ''
@@ -101,6 +101,7 @@ onBeforeMount(() => {
     form.project = props.caseFilter.project
     form.court = props.caseFilter.court
     form.related_case = props.caseFilter.related_case
+    form.in_progress = props.caseFilter.in_progress
     form.sort = props.caseFilter.sort
     form.level = props.caseFilter.level
     form.search = props.caseFilter.search

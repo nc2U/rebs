@@ -20,6 +20,7 @@ const caseFilter = ref<cFilter>({
   is_com: false,
   court: '',
   related_case: '',
+  in_progress: '',
   sort: '',
   level: '',
   search: '',
