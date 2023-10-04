@@ -113,9 +113,9 @@ onBeforeMount(() => {
 <template>
   <CCallout :color="comFrom ? 'primary' : 'success'" class="pb-0 mb-4" :class="bgLight">
     <CRow>
-      <CCol lg="6">
+      <CCol :lg="comFrom ? 6 : 4">
         <CRow>
-          <CCol v-if="comFrom" md="4" class="mb-3">
+          <CCol v-if="comFrom" :md="comFrom ? 4 : 6" class="mb-3">
             <CFormSelect v-model="form.project" @change="firstSorting">
               <option value="">본사</option>
               <option v-for="proj in projSelect" :key="proj.value" :value="proj.value">
@@ -123,7 +123,7 @@ onBeforeMount(() => {
               </option>
             </CFormSelect>
           </CCol>
-          <CCol md="4" class="mb-3">
+          <CCol :md="comFrom ? 4 : 6" class="mb-3">
             <Multiselect
               v-model="form.court"
               :options="courtChoices"
@@ -136,7 +136,7 @@ onBeforeMount(() => {
             />
           </CCol>
 
-          <CCol md="4" class="mb-3">
+          <CCol :md="comFrom ? 4 : 6" class="mb-3">
             <Multiselect
               v-model="form.related_case"
               :options="getSuitCase"
@@ -151,9 +151,9 @@ onBeforeMount(() => {
         </CRow>
       </CCol>
 
-      <CCol lg="4">
+      <CCol :lg="comFrom ? 4 : 6">
         <CRow>
-          <CCol md="4" lg="6" class="mb-3">
+          <CCol md="4" class="mb-3">
             <CFormSelect v-model="form.sort" @change="sortChange">
               <option value="">사건유형 선택</option>
               <option value="1">민사</option>
@@ -163,7 +163,7 @@ onBeforeMount(() => {
               <option value="5">집행</option>
             </CFormSelect>
           </CCol>
-          <CCol md="4" lg="6" class="mb-3">
+          <CCol md="4" class="mb-3">
             <CFormSelect v-model="form.level" @change="listFiltering(1)">
               <option value="">사건심급 선택</option>
               <option v-if="!form.sort || form.sort <= '3'" value="1">1심</option>
@@ -174,6 +174,13 @@ onBeforeMount(() => {
               <option v-if="!form.sort || form.sort === '4'" value="6">항고/이의</option>
               <option v-if="!form.sort || form.sort === '5'" value="7">압류/추심</option>
               <option v-if="!form.sort || form.sort === '5'" value="8">정지/이의</option>
+            </CFormSelect>
+          </CCol>
+          <CCol md="4" class="mb-3">
+            <CFormSelect v-model="form.in_progress">
+              <option value="">전체 사건</option>
+              <option :value="true">진행 사건</option>
+              <option :value="false">종결 사건</option>
             </CFormSelect>
           </CCol>
         </CRow>
