@@ -1286,7 +1286,7 @@ packages:
       '@vue/shared': 3.3.4
       estree-walker: 2.0.2
       magic-string: 0.30.2
-      postcss: 8.4.27
+      postcss: 8.4.31
       source-map-js: 1.0.2
 
   /@vue/compiler-ssr@3.3.4:
@@ -4409,14 +4409,6 @@ packages:
       cssesc: 3.0.0
       util-deprecate: 1.0.2
 
-  /postcss@8.4.27:
-    resolution: {integrity: sha512-gY/ACJtJPSmUFPDCHtX78+01fHa64FaU4zaaWfuh1MhGJISufJAH4cun6k/8fwsHYeK4UQmENQK+tRLCFJE8JQ==}
-    engines: {node: ^10 || ^12 || >=14}
-    dependencies:
-      nanoid: 3.3.6
-      picocolors: 1.0.0
-      source-map-js: 1.0.2
-
   /postcss@8.4.31:
     resolution: {integrity: sha512-PS08Iboia9mts/2ygV3eLpY5ghnUcfLV/EXTOW1E2qYxJKGGBUtNjN76FYHnMs36RmARn41bC0AZmn+rR0OVpQ==}
     engines: {node: ^10 || ^12 || >=14}
@@ -4424,7 +4416,6 @@ packages:
       nanoid: 3.3.6
       picocolors: 1.0.0
       source-map-js: 1.0.2
-    dev: false
 
   /preact@10.12.1:
     resolution: {integrity: sha512-l8386ixSsBdbreOAkqtrwqHwdvR35ID8c3rKPa8lCWuO86dBi32QWHV4vfsZK1utLLFMvw+Z5Ad4XLkZzchscg==}
@@ -4709,7 +4700,7 @@ packages:
       htmlparser2: 8.0.2
       is-plain-object: 5.0.0
       parse-srcset: 1.0.2
-      postcss: 8.4.27
+      postcss: 8.4.31
     dev: true
 
   /sass-loader@13.3.2(sass@1.68.0)(webpack@5.88.2):
@@ -5433,7 +5424,7 @@ packages:
     dependencies:
       '@types/node': 18.18.3
       esbuild: 0.18.20
-      postcss: 8.4.27
+      postcss: 8.4.31
       rollup: 3.28.0
       sass: 1.68.0
     optionalDependencies:
