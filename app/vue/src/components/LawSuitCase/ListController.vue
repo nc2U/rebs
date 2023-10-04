@@ -19,9 +19,9 @@ const form = reactive<SuitCaseFilter>({
   is_com: props.comFrom,
   court: '',
   related_case: '',
-  in_progress: '',
   sort: '',
   level: '',
+  in_progress: '',
   search: '',
   page: 1,
 })
@@ -31,9 +31,9 @@ const formsCheck = computed(() => {
   const b = !!props.comFrom ? form.project === '' : true
   const c = form.court === ''
   const d = form.related_case === ''
-  const e = form.in_progress === ''
-  const f = form.sort === ''
-  const g = form.level === ''
+  const e = form.sort === ''
+  const f = form.level === ''
+  const g = form.in_progress === ''
   const h = form.search === ''
   return a && b && c && d && e && f && g && h
 })
@@ -82,9 +82,9 @@ const resetForm = () => {
   form.project = ''
   form.court = ''
   form.related_case = ''
-  form.in_progress = ''
   form.sort = ''
   form.level = ''
+  form.in_progress = ''
   form.search = ''
   listFiltering(1)
 }
@@ -101,9 +101,9 @@ onBeforeMount(() => {
     form.project = props.caseFilter.project
     form.court = props.caseFilter.court
     form.related_case = props.caseFilter.related_case
-    form.in_progress = props.caseFilter.in_progress
     form.sort = props.caseFilter.sort
     form.level = props.caseFilter.level
+    form.in_progress = props.caseFilter.in_progress
     form.search = props.caseFilter.search
     form.page = props.caseFilter.page
   }

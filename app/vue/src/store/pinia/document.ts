@@ -20,9 +20,9 @@ export type SuitCaseFilter = {
   is_com?: boolean
   court?: string
   related_case?: number | ''
-  in_progress?: boolean | ''
   sort?: '1' | '2' | '3' | '4' | '5' | ''
   level?: '1' | '2' | '3' | '4' | '5' | '6' | '7' | ''
+  in_progress?: boolean | ''
   search?: string
   page?: number
 }
