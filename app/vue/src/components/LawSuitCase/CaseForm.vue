@@ -164,6 +164,7 @@ onUpdated(() => dataSetup())
           <option v-if="!form.sort || form.sort === '4'" value="5">신청</option>
           <option v-if="!form.sort || form.sort === '4'" value="6">항고/이의</option>
           <option v-if="!form.sort || form.sort === '5'" value="7">압류/추심</option>
+          <option v-if="!form.sort || form.sort === '5'" value="8">정지/이의</option>
         </CFormSelect>
       </CCol>
     </CRow>
@@ -184,7 +185,7 @@ onUpdated(() => dataSetup())
           searchable
         />
         <small class="text-blue-grey-lighten-2">
-          본안 사건인 경우 원심 사건, 신청/집행 사건인 경우 관련 본안 사건 지정
+          본안 사건인 경우 원심(1심) 사건, 신청/집행 사건인 경우 관련 본안 사건 지정
         </small>
       </CCol>
       <CFormLabel for="related_debtor" class="col-md-2 col-form-label"> 제3채무자</CFormLabel>
@@ -225,7 +226,7 @@ onUpdated(() => dataSetup())
           id="other_agency"
           v-model="form.other_agency"
           maxlength="30"
-          placeholder="기타 처리기관"
+          placeholder="법원 외 사건 처리기관"
         />
         <small class="text-blue-grey-lighten-2">
           사건 유형이 기소 전 형사 사건인 경우 해당 수사기관을 기재
@@ -258,24 +259,24 @@ onUpdated(() => dataSetup())
     </CRow>
 
     <CRow class="mb-3">
-      <CFormLabel for="plaintiff" class="col-md-2 col-form-label"> 원고(신청인)</CFormLabel>
+      <CFormLabel for="plaintiff" class="col-md-2 col-form-label"> 원고(채권자)</CFormLabel>
       <CCol md="4">
         <CFormInput
           id="plaintiff"
           v-model="form.plaintiff"
           maxlength="30"
-          placeholder="원고(신청인)"
+          placeholder="원고(채권자)"
           required
         />
       </CCol>
 
-      <CFormLabel for="defendant" class="col-md-2 col-form-label"> 피고(피신청인)</CFormLabel>
+      <CFormLabel for="defendant" class="col-md-2 col-form-label"> 피고(채무자)</CFormLabel>
       <CCol md="4">
         <CFormInput
           id="defendant"
           v-model="form.defendant"
           maxlength="30"
-          placeholder="피고(피신청인)"
+          placeholder="피고(채무자)"
           required
         />
       </CCol>
