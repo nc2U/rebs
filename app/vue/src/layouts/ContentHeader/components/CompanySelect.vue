@@ -9,7 +9,7 @@ const comStore = useCompany()
 const company = computed(() => comStore.company?.pk)
 const comSelectList = computed(() => comStore.comSelect)
 
-const comSelect = (com: number) => emit('com-select', com)
+const comSelect = (e: { originalEvent: Event; value: any; option: any }) => emit('com-select', e)
 const comClear = () => emit('com-select', null)
 
 onBeforeMount(() => {

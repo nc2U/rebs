@@ -9,7 +9,7 @@ const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
 const projSelectList = computed(() => projStore.projSelect)
 
-const projSelect = (proj: number) => emit('proj-select', proj)
+const projSelect = (e: { originalEvent: Event; value: any; option: any }) => emit('proj-select', e)
 const projClear = () => emit('proj-select', null)
 
 onBeforeMount(() => {
