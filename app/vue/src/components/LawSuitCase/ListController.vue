@@ -177,7 +177,7 @@ onBeforeMount(() => {
             </CFormSelect>
           </CCol>
           <CCol md="4" class="mb-3">
-            <CFormSelect v-model="form.in_progress">
+            <CFormSelect v-model="form.in_progress" @change="listFiltering(1)">
               <option value="">전체 사건</option>
               <option :value="true">진행 사건</option>
               <option :value="false">종결 사건</option>
