@@ -34,10 +34,11 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
 class LawSuitCaseFilterSet(FilterSet):
     is_com = BooleanFilter(field_name='project', lookup_expr='isnull', label='본사')
+    in_progress = BooleanFilter(field_name='case_end_date', lookup_expr='isnull', label='진행중')
 
     class Meta:
         model = LawsuitCase
-        fields = ('company', 'is_com', 'project', 'sort', 'level', 'court')
+        fields = ('company', 'is_com', 'project', 'sort', 'level', 'court', 'in_progress')
 
 
 class LawSuitCaseBase(viewsets.ModelViewSet):

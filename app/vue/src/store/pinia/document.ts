@@ -18,6 +18,7 @@ export type SuitCaseFilter = {
   company?: number | ''
   project?: number | ''
   is_com?: boolean
+  in_progress?: boolean
   court?: string
   related_case?: number | ''
   sort?: '1' | '2' | '3' | '4' | '5' | ''
@@ -115,10 +116,11 @@ export const useDocument = defineStore('document', () => {
       .catch(err => errorHandle(err.response.data))
 
   const getQueryStr = (payload: SuitCaseFilter) => {
-    const { project, is_com, court, related_case, sort, level, search } = payload
+    const { project, is_com, in_progress, court, related_case, sort, level, search } = payload
     let queryStr = ''
     if (project) queryStr += `&project=${project}`
-    if (is_com) queryStr += `&is_com=${is_com}`
+    queryStr += `&is_com=${is_com ?? ''}`
+    queryStr += `&in_progress=${in_progress ?? ''}`
     if (court) queryStr += `&court=${court}`
     if (related_case) queryStr += `&related_case=${related_case}`
     if (sort) queryStr += `&sort=${sort}`
