@@ -15,14 +15,14 @@ const form = reactive<PostFilter>({
   company: '',
   project: '',
   is_com: props.comFrom,
-  ordering: '-created',
+  ordering: '-id',
   search: '',
 })
 
 const formsCheck = computed(() => {
   const a = form.is_com === !!props.comFrom
   const b = !!props.comFrom ? form.project === '' : true
-  const c = form.ordering === ''
+  const c = form.ordering === '-id'
   const d = form.search === ''
   return a && b && c && d
 })
@@ -58,7 +58,7 @@ defineExpose({ listFiltering, projectChange })
 const resetForm = () => {
   form.is_com = !!props.comFrom
   form.project = ''
-  form.ordering = '-created'
+  form.ordering = '-id'
   form.search = ''
   listFiltering(1)
 }
