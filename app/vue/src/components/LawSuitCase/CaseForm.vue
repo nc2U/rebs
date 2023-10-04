@@ -184,7 +184,7 @@ onUpdated(() => dataSetup())
           searchable
         />
         <small class="text-blue-grey-lighten-2">
-          본안 사건인 경우 원심 사건, 신청/집행 사건인 경우 관련 본안 사건 지정
+          본안 사건인 경우 원심(1심) 사건, 신청/집행 사건인 경우 관련 본안 사건 지정
         </small>
       </CCol>
       <CFormLabel for="related_debtor" class="col-md-2 col-form-label"> 제3채무자</CFormLabel>
