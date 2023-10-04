@@ -49,9 +49,7 @@ const firstSorting = (event: { target: { value: number | null } }) => {
   listFiltering(1)
 }
 
-const projectChange = (project: number | null) => {
-  if (!!project) form.project = project
-}
+const projectChange = (project: number | null) => (form.project = project ?? '')
 
 defineExpose({ listFiltering, projectChange })
 
