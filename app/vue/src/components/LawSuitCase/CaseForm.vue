@@ -189,7 +189,12 @@ onUpdated(() => dataSetup())
       </CCol>
       <CFormLabel for="related_debtor" class="col-md-2 col-form-label"> 제3채무자</CFormLabel>
       <CCol md="4">
-        <CFormInput id="related_debtor" v-model="form.related_debtor" placeholder="제3채무자" />
+        <CFormInput
+          id="related_debtor"
+          v-model="form.related_debtor"
+          maxlength="30"
+          placeholder="제3채무자"
+        />
         <small class="text-blue-grey-lighten-2">
           압류/가압류 등 집행(압류/추심) 사건에서 제3채무자가 있는 경우 기재
         </small>
@@ -216,7 +221,12 @@ onUpdated(() => dataSetup())
 
       <CFormLabel for="other_agency" class="col-md-2 col-form-label"> 기타 처리기관</CFormLabel>
       <CCol md="4">
-        <CFormInput id="other_agency" v-model="form.other_agency" placeholder="기타 처리기관" />
+        <CFormInput
+          id="other_agency"
+          v-model="form.other_agency"
+          maxlength="30"
+          placeholder="기타 처리기관"
+        />
         <small class="text-blue-grey-lighten-2">
           사건 유형이 기소 전 형사 사건인 경우 해당 수사기관을 기재
         </small>
@@ -226,24 +236,48 @@ onUpdated(() => dataSetup())
     <CRow class="mb-3">
       <CFormLabel for="case_number" class="col-md-2 col-form-label"> 사건번호</CFormLabel>
       <CCol md="4">
-        <CFormInput id="case_number" v-model="form.case_number" placeholder="사건번호" required />
+        <CFormInput
+          id="case_number"
+          v-model="form.case_number"
+          maxlength="20"
+          placeholder="사건번호"
+          required
+        />
       </CCol>
 
       <CFormLabel for="case_name" class="col-md-2 col-form-label"> 사건명</CFormLabel>
       <CCol md="4">
-        <CFormInput id="case_name" v-model="form.case_name" placeholder="사건명" required />
+        <CFormInput
+          id="case_name"
+          v-model="form.case_name"
+          maxlength="30"
+          placeholder="사건명"
+          required
+        />
       </CCol>
     </CRow>
 
     <CRow class="mb-3">
       <CFormLabel for="plaintiff" class="col-md-2 col-form-label"> 원고(신청인)</CFormLabel>
       <CCol md="4">
-        <CFormInput id="plaintiff" v-model="form.plaintiff" placeholder="원고(신청인)" required />
+        <CFormInput
+          id="plaintiff"
+          v-model="form.plaintiff"
+          maxlength="30"
+          placeholder="원고(신청인)"
+          required
+        />
       </CCol>
 
       <CFormLabel for="defendant" class="col-md-2 col-form-label"> 피고(피신청인)</CFormLabel>
       <CCol md="4">
-        <CFormInput id="defendant" v-model="form.defendant" placeholder="피고(피신청인)" required />
+        <CFormInput
+          id="defendant"
+          v-model="form.defendant"
+          maxlength="30"
+          placeholder="피고(피신청인)"
+          required
+        />
       </CCol>
     </CRow>
 
@@ -255,6 +289,7 @@ onUpdated(() => dataSetup())
         <CFormInput
           id="plaintiff_attorney"
           v-model="form.plaintiff_attorney"
+          maxlength="50"
           placeholder="원고측 대리인"
         />
       </CCol>
@@ -266,6 +301,7 @@ onUpdated(() => dataSetup())
         <CFormInput
           id="defendant_attorney"
           v-model="form.defendant_attorney"
+          maxlength="50"
           placeholder="피고측 대리인"
         />
       </CCol>
