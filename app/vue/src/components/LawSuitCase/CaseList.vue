@@ -35,15 +35,16 @@ const pageSelect = (page: number) => emit('page-select', page)
 <template>
   <CTable hover responsive align="middle" class="mt-5">
     <colgroup>
-      <col style="width: 9%" />
       <col style="width: 7%" />
-      <col style="width: 7%" />
+      <col style="width: 5%" />
+      <col style="width: 6%" />
+      <col style="width: 8%" />
       <col style="width: 9%" />
-      <col style="width: 10%" />
-      <col style="width: 19%" />
+      <col style="width: 15%" />
       <col style="width: 13%" />
       <col style="width: 13%" />
-      <col style="width: 13%" />
+      <col style="width: 12%" />
+      <col style="width: 11%" />
     </colgroup>
 
     <CTableHead>
@@ -54,9 +55,10 @@ const pageSelect = (page: number) => emit('page-select', page)
         <CTableHeaderCell scope="col">관할법원 / 처리기관</CTableHeaderCell>
         <CTableHeaderCell scope="col">관련사건</CTableHeaderCell>
         <CTableHeaderCell scope="col">사건명</CTableHeaderCell>
-        <CTableHeaderCell scope="col">원고 / 신청인</CTableHeaderCell>
-        <CTableHeaderCell scope="col">피고 / 피신청인</CTableHeaderCell>
+        <CTableHeaderCell scope="col">원고 (채권자)</CTableHeaderCell>
+        <CTableHeaderCell scope="col">피고 (채무자)</CTableHeaderCell>
         <CTableHeaderCell scope="col">제3채무자</CTableHeaderCell>
+        <CTableHeaderCell scope="col">종결일자</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 

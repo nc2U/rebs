@@ -44,14 +44,14 @@ const getCourt = (court: string | undefined) =>
 
 <template>
   <CTableRow v-if="suitCase" class="text-center">
-    <CTableDataCell class="text-left">
+    <CTableDataCell>
       <a href="javascript:void(0);" @click="sortFunc">
         <CBadge :color="sortColor" shape="rounded-pill">{{ sortName }}</CBadge>
       </a>
     </CTableDataCell>
     <CTableDataCell>{{ suitCase.sort_desc }}</CTableDataCell>
     <CTableDataCell>{{ suitCase.level_desc }}</CTableDataCell>
-    <CTableDataCell class="text-left">
+    <CTableDataCell>
       <span v-if="suitCase.court_desc || suitCase.other_agency">
         <a href="javascript:void(0);" @click="agencyFunc">
           <CBadge :color="courtColor" shape="rounded-pill">
@@ -71,11 +71,12 @@ const getCourt = (court: string | undefined) =>
     </CTableDataCell>
     <CTableDataCell class="text-left">
       <router-link :to="{ name: `${viewRoute} - 보기`, params: { caseId: suitCase.pk } }">
-        {{ cutString(suitCaseName, 28) }}
+        {{ cutString(suitCaseName, 30) }}
       </router-link>
     </CTableDataCell>
-    <CTableDataCell>{{ suitCase.plaintiff }}</CTableDataCell>
-    <CTableDataCell>{{ suitCase.defendant }}</CTableDataCell>
-    <CTableDataCell>{{ suitCase.related_debtor }}</CTableDataCell>
+    <CTableDataCell>{{ cutString(suitCase.plaintiff, 20) }}</CTableDataCell>
+    <CTableDataCell>{{ cutString(suitCase.defendant, 20) }}</CTableDataCell>
+    <CTableDataCell>{{ cutString(suitCase.related_debtor, 20) }}</CTableDataCell>
+    <CTableDataCell>{{ suitCase.case_end_date }}</CTableDataCell>
   </CTableRow>
 </template>
