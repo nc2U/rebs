@@ -258,24 +258,24 @@ onUpdated(() => dataSetup())
     </CRow>
 
     <CRow class="mb-3">
-      <CFormLabel for="plaintiff" class="col-md-2 col-form-label"> 원고(신청인)</CFormLabel>
+      <CFormLabel for="plaintiff" class="col-md-2 col-form-label"> 원고(채권자)</CFormLabel>
       <CCol md="4">
         <CFormInput
           id="plaintiff"
           v-model="form.plaintiff"
           maxlength="30"
-          placeholder="원고(신청인)"
+          placeholder="원고(채권자)"
           required
         />
       </CCol>
 
-      <CFormLabel for="defendant" class="col-md-2 col-form-label"> 피고(피신청인)</CFormLabel>
+      <CFormLabel for="defendant" class="col-md-2 col-form-label"> 피고(채무자)</CFormLabel>
       <CCol md="4">
         <CFormInput
           id="defendant"
           v-model="form.defendant"
           maxlength="30"
-          placeholder="피고(피신청인)"
+          placeholder="피고(채무자)"
           required
         />
       </CCol>
