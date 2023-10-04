@@ -7,10 +7,10 @@ settings:
 dependencies:
   '@coreui/chartjs':
     specifier: ^3.1.2
-    version: 3.1.2(@popperjs/core@2.11.8)(postcss@8.4.29)
+    version: 3.1.2(@popperjs/core@2.11.8)(postcss@8.4.31)
   '@coreui/coreui':
     specifier: ^4.3.0
-    version: 4.3.0(@popperjs/core@2.11.8)(postcss@8.4.29)
+    version: 4.3.0(@popperjs/core@2.11.8)(postcss@8.4.31)
   '@coreui/icons':
     specifier: ^3.0.1
     version: 3.0.1
@@ -381,23 +381,23 @@ packages:
     dev: true
     optional: true
 
-  /@coreui/chartjs@3.1.2(@popperjs/core@2.11.8)(postcss@8.4.29):
+  /@coreui/chartjs@3.1.2(@popperjs/core@2.11.8)(postcss@8.4.31):
     resolution: {integrity: sha512-d3MGk3KZNAt29VRKP/XYiGmT56KTqtuOhLEg5HNwb7P7ZmEgOJoHxFHVCVE4I36hfgQCjZZVknsuk2ZTfF/2fw==}
     dependencies:
-      '@coreui/coreui': 4.3.0(@popperjs/core@2.11.8)(postcss@8.4.29)
+      '@coreui/coreui': 4.3.0(@popperjs/core@2.11.8)(postcss@8.4.31)
       chart.js: 3.9.1
     transitivePeerDependencies:
       - '@popperjs/core'
       - postcss
     dev: false
 
-  /@coreui/coreui@4.3.0(@popperjs/core@2.11.8)(postcss@8.4.29):
+  /@coreui/coreui@4.3.0(@popperjs/core@2.11.8)(postcss@8.4.31):
     resolution: {integrity: sha512-2bx5E9YT17td4K7hZapudypSPx7a5jYg8NpSCTLRStPTWOBlL5XVF7fz3yUn2S6DQE1VmnbrXQpuS5LzmptRLQ==}
     peerDependencies:
       '@popperjs/core': ^2.11.6
     dependencies:
       '@popperjs/core': 2.11.8
-      postcss-combine-duplicated-selectors: 10.0.3(postcss@8.4.29)
+      postcss-combine-duplicated-selectors: 10.0.3(postcss@8.4.31)
     transitivePeerDependencies:
       - postcss
     dev: false
@@ -434,7 +434,7 @@ packages:
       '@coreui/coreui': ^4.2.6
       vue: ^3.2.21
     dependencies:
-      '@coreui/coreui': 4.3.0(@popperjs/core@2.11.8)(postcss@8.4.29)
+      '@coreui/coreui': 4.3.0(@popperjs/core@2.11.8)(postcss@8.4.31)
       vue: 3.3.4
     dev: false
 
@@ -1240,7 +1240,7 @@ packages:
       '@vue/shared': 3.3.4
       estree-walker: 2.0.2
       magic-string: 0.30.2
-      postcss: 8.4.27
+      postcss: 8.4.31
       source-map-js: 1.0.2
 
   /@vue/compiler-ssr@3.3.4:
@@ -4346,13 +4346,13 @@ packages:
       pathe: 1.1.1
     dev: true
 
-  /postcss-combine-duplicated-selectors@10.0.3(postcss@8.4.29):
+  /postcss-combine-duplicated-selectors@10.0.3(postcss@8.4.31):
     resolution: {integrity: sha512-IP0BmwFloCskv7DV7xqvzDXqMHpwdczJa6ZvIW8abgHdcIHs9mCJX2ltFhu3EwA51ozp13DByng30+Ke+eIExA==}
     engines: {node: ^10.0.0 || ^12.0.0 || >=14.0.0}
     peerDependencies:
       postcss: ^8.1.0
     dependencies:
-      postcss: 8.4.29
+      postcss: 8.4.31
       postcss-selector-parser: 6.0.13
     dev: false
 
@@ -4363,22 +4363,13 @@ packages:
       cssesc: 3.0.0
       util-deprecate: 1.0.2
 
-  /postcss@8.4.27:
-    resolution: {integrity: sha512-gY/ACJtJPSmUFPDCHtX78+01fHa64FaU4zaaWfuh1MhGJISufJAH4cun6k/8fwsHYeK4UQmENQK+tRLCFJE8JQ==}
+  /postcss@8.4.31:
+    resolution: {integrity: sha512-PS08Iboia9mts/2ygV3eLpY5ghnUcfLV/EXTOW1E2qYxJKGGBUtNjN76FYHnMs36RmARn41bC0AZmn+rR0OVpQ==}
     engines: {node: ^10 || ^12 || >=14}
     dependencies:
       nanoid: 3.3.6
       picocolors: 1.0.0
       source-map-js: 1.0.2
-
-  /postcss@8.4.29:
-    resolution: {integrity: sha512-cbI+jaqIeu/VGqXEarWkRCCffhjgXc0qjBtXpqJhTBohMUjUQnbBr0xqX3vEKudc4iviTewcJo5ajcec5+wdJw==}
-    engines: {node: ^10 || ^12 || >=14}
-    dependencies:
-      nanoid: 3.3.6
-      picocolors: 1.0.0
-      source-map-js: 1.0.2
-    dev: false
 
   /preact@10.12.1:
     resolution: {integrity: sha512-l8386ixSsBdbreOAkqtrwqHwdvR35ID8c3rKPa8lCWuO86dBi32QWHV4vfsZK1utLLFMvw+Z5Ad4XLkZzchscg==}
@@ -4663,7 +4654,7 @@ packages:
       htmlparser2: 8.0.2
       is-plain-object: 5.0.0
       parse-srcset: 1.0.2
-      postcss: 8.4.27
+      postcss: 8.4.31
     dev: true
 
   /sass-loader@13.3.2(sass@1.66.1)(webpack@5.88.2):
@@ -5387,7 +5378,7 @@ packages:
     dependencies:
       '@types/node': 18.17.14
       esbuild: 0.18.20
-      postcss: 8.4.27
+      postcss: 8.4.31
       rollup: 3.28.0
       sass: 1.66.1
     optionalDependencies:
