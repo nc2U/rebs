@@ -18,6 +18,7 @@ export type SuitCaseFilter = {
   company?: number | ''
   project?: number | ''
   is_com?: boolean
+  in_progress?: boolean
   court?: string
   related_case?: number | ''
   sort?: '1' | '2' | '3' | '4' | '5' | ''
