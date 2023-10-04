@@ -15,15 +15,15 @@ const form = reactive<PostFilter>({
   company: '',
   project: '',
   is_com: props.comFrom,
-  ordering: '-created',
+  ordering: '-id',
   search: '',
 })
 
 const formsCheck = computed(() => {
   const a = form.is_com === !!props.comFrom
-  const b = form.project === props.postFilter.project
-  const c = form.ordering === props.postFilter.ordering
-  const d = form.search === props.postFilter.search
+  const b = !!props.comFrom ? form.project === '' : true
+  const c = form.ordering === '-id'
+  const d = form.search === ''
   return a && b && c && d
 })
 
@@ -58,7 +58,7 @@ defineExpose({ listFiltering, projectChange })
 const resetForm = () => {
   form.is_com = !!props.comFrom
   form.project = ''
-  form.ordering = '-created'
+  form.ordering = '-id'
   form.search = ''
   listFiltering(1)
 }
@@ -93,16 +93,16 @@ onBeforeMount(() => {
             </CFormSelect>
           </CCol>
 
-          <CCol md="6" lg="5" xl="4" class="mb-3">
-            <CFormSelect v-model="form.ordering" @change="listFiltering(1)">
-              <option value="created">작성일자 오름차순</option>
-              <option value="-created">작성일자 내림차순</option>
-              <option value="execution_date">시행일자 오름차순</option>
-              <option value="-execution_date">시행일자 내림차순</option>
-              <option value="-hit">조회수 오름차순</option>
-              <option value="hit">조회수 내림차순</option>
-            </CFormSelect>
-          </CCol>
+          <!--          <CCol md="6" lg="5" xl="4" class="mb-3">-->
+          <!--            <CFormSelect v-model="form.ordering" @change="listFiltering(1)">-->
+          <!--              <option value="created">작성일자 오름차순</option>-->
+          <!--              <option value="-created">작성일자 내림차순</option>-->
+          <!--              <option value="execution_date">시행일자 오름차순</option>-->
+          <!--              <option value="-execution_date">시행일자 내림차순</option>-->
+          <!--              <option value="-hit">조회수 오름차순</option>-->
+          <!--              <option value="hit">조회수 내림차순</option>-->
+          <!--            </CFormSelect>-->
+          <!--          </CCol>-->
         </CRow>
       </CCol>
 
