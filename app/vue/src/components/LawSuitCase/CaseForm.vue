@@ -10,6 +10,7 @@ import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
+  sortName: { type: String, default: '【본사】' },
   getSuitCase: { type: Object, required: true },
   suitcase: { type: Object as PropType<SuitCase | null>, default: null },
   viewRoute: { type: String, required: true },
@@ -67,10 +68,6 @@ const formsCheck = computed(() => {
     return group1 && group2
   } else return false
 })
-
-const sortName = computed(() =>
-  props.suitcase && props.suitcase.project ? props.suitcase.proj_name : '본사',
-)
 
 const route = useRoute()
 const btnClass = computed(() => (route.params.caseId ? 'success' : 'primary'))

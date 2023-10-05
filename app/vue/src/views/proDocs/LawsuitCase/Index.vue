@@ -41,6 +41,7 @@ const pageSelect = (page: number) => {
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
+const projName = computed(() => projStore.project?.name)
 const company = computed(() => projStore.project?.company)
 
 const docStore = useDocument()
@@ -177,11 +178,17 @@ onBeforeMount(() => {
       </div>
 
       <div v-else-if="route.name.includes('작성')">
-        <CaseForm :get-suit-case="getSuitCase" :view-route="mainViewName" @on-submit="onSubmit" />
+        <CaseForm
+          :sort-name="projName"
+          :get-suit-case="getSuitCase"
+          :view-route="mainViewName"
+          @on-submit="onSubmit"
+        />
       </div>
 
       <div v-else-if="route.name.includes('수정')">
         <CaseForm
+          :sort-name="projName"
           :get-suit-case="getSuitCase"
           :suitcase="suitcase"
           :view-route="mainViewName"
