@@ -11,6 +11,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 import Multiselect from '@vueform/multiselect'
 
 const props = defineProps({
+  sortName: { type: String, default: '【본사】' },
   boardNum: { type: Number, default: 2 },
   categoryList: { type: Object, required: true },
   getSuitCase: { type: Object, default: null },
@@ -163,8 +164,9 @@ onUpdated(() => dataSetup())
   <CRow class="mt-5">
     <CCol>
       <h5>
+        {{ sortName }}
         <v-icon icon="mdi-chevron-double-right" size="xs" />
-        {{ viewRoute }}
+        {{ viewRoute.substring(3) }}
       </h5>
     </CCol>
   </CRow>
