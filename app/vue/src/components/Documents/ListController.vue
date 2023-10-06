@@ -51,8 +51,6 @@ const firstSorting = (event: { target: { value: number | null } }) => {
 
 const projectChange = (project: number | null) => (form.project = project ?? '')
 
-defineExpose({ listFiltering, projectChange })
-
 const resetForm = () => {
   form.is_com = !!props.comFrom
   form.project = ''
@@ -60,6 +58,8 @@ const resetForm = () => {
   form.search = ''
   listFiltering(1)
 }
+
+defineExpose({ listFiltering, projectChange, resetForm })
 
 const projectStore = useProject()
 const projSelect = computed(() => projectStore.projSelect)
