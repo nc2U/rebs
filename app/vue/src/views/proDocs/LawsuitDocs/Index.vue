@@ -4,13 +4,7 @@ import { pageTitle, navMenu } from '@/views/proDocs/_menu/headermixin1'
 import { useProject } from '@/store/pinia/project'
 import { type RouteLocationNormalizedLoaded as Loaded, useRoute, useRouter } from 'vue-router'
 import { useDocument, type PostFilter, type SuitCaseFilter } from '@/store/pinia/document'
-import {
-  type AFile,
-  type Attatches,
-  type Link,
-  type Post,
-  type PatchPost,
-} from '@/store/types/document'
+import type { AFile, Attatches, Link, Post, PatchPost } from '@/store/types/document'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from '@/components/Documents/ListController.vue'
