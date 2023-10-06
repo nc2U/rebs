@@ -64,8 +64,8 @@ const linkHit = async (pk: number) => {
 }
 const fileHit = async (pk: number) => {
   const file = (await fetchFile(pk)) as AFile
-  file.hit = (file.hit as number) + 1
-  await patchFile(file)
+  const hit = (file.hit as number) + 1
+  await patchFile({ pk, hit })
 }
 
 const [route, router] = [useRoute() as LoadedRoute & { name: string }, useRouter()]
