@@ -230,7 +230,7 @@ onBeforeMount(() => {
                 사건 관련 문서
               </CTableHeaderCell>
               <CTableDataCell colspan="4">
-                <h6>링크</h6>
+                <h6 v-if="suitcase.links?.length">링크</h6>
                 <ul>
                   <li v-for="(sc, i) in suitcase.links" :key="i">
                     ▪︎
