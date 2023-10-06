@@ -4,7 +4,7 @@ import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin2'
 import { type RouteLocationNormalizedLoaded as LoadedRoute, useRoute, useRouter } from 'vue-router'
 import { useCompany } from '@/store/pinia/company'
 import { type SuitCaseFilter as cFilter, useDocument } from '@/store/pinia/document'
-import { type SuitCase } from '@/store/types/document'
+import type { AFile, Link, SuitCase } from '@/store/types/document'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from '@/components/LawSuitCase/ListController.vue'
@@ -46,6 +46,7 @@ const suitcase = computed(() => docStore.suitcase)
 const suitcaseList = computed(() => docStore.suitcaseList)
 const getSuitCase = computed(() => docStore.getSuitCase)
 
+const fetchFile = (pk: number) => docStore.fetchFile(pk)
 const fetchSuitCase = (pk: number) => docStore.fetchSuitCase(pk)
 const fetchSuitCaseList = (payload: cFilter) => docStore.fetchSuitCaseList(payload)
 const fetchAllSuitCaseList = (payload: cFilter) => docStore.fetchAllSuitCaseList(payload)
@@ -53,6 +54,14 @@ const fetchAllSuitCaseList = (payload: cFilter) => docStore.fetchAllSuitCaseList
 const createSuitCase = (payload: SuitCase) => docStore.createSuitCase(payload)
 const updateSuitCase = (payload: SuitCase) => docStore.updateSuitCase(payload)
 const deleteSuitCase = (pk: number) => docStore.deleteSuitCase(pk)
+const patchLink = (payload: Link) => docStore.patchLink(payload)
+const patchFile = (payload: AFile) => docStore.patchFile(payload)
+const linkHit = (payload: Link) => patchLink(payload)
+const fileHit = async (pk: number) => {
+  const file = (await fetchFile(pk)) as AFile
+  const hit = (file.hit as number) + 1
+  await patchFile({ pk, hit })
+}
 
 const [route, router] = [useRoute() as LoadedRoute & { name: string }, useRouter()]
 
@@ -172,6 +181,8 @@ onBeforeMount(() => {
           :curr-page="caseFilter.page ?? 1"
           :suitcase="suitcase as SuitCase"
           :view-route="mainViewName"
+          @link-hit="linkHit"
+          @file-hit="fileHit"
           @case-renewal="caseRenewal"
         />
       </div>
