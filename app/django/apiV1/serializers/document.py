@@ -42,6 +42,7 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
     related_case_name = serializers.SlugField(source='related_case', read_only=True)
     court_desc = serializers.CharField(source='get_court_display', read_only=True)
     user = serializers.SlugRelatedField(slug_field='username', read_only=True)
+    links = serializers.SerializerMethodField(read_only=True)
     files = serializers.SerializerMethodField(read_only=True)
     prev_pk = serializers.SerializerMethodField(read_only=True)
     next_pk = serializers.SerializerMethodField(read_only=True)
@@ -51,10 +52,20 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
         fields = ('pk', 'company', 'project', 'proj_name', 'sort', 'sort_desc', 'level',
                   'level_desc', 'related_case', 'related_case_name', 'court', 'court_desc',
                   'other_agency', 'case_number', 'case_name', 'plaintiff', 'plaintiff_attorney',
-                  'defendant', 'defendant_attorney', 'related_debtor', 'case_start_date',
-                  'case_end_date', 'summary', 'user', 'files', 'created', 'prev_pk', 'next_pk')
+                  'defendant', 'defendant_attorney', 'related_debtor', 'case_start_date', 'case_end_date',
+                  'summary', 'user', 'links', 'files', 'created', 'prev_pk', 'next_pk')
 
-    def get_files(self, obj):
+    @staticmethod
+    def get_links(obj):
+        links = []
+        posts = Post.objects.filter(lawsuit=obj)
+        for post in posts:
+            for link in post.links.values():
+                links.append({'pk': link.get('id'), 'link': link.get('link')})
+        return links
+
+    @staticmethod
+    def get_files(obj):
         files = []
         posts = Post.objects.filter(lawsuit=obj)
         for post in posts:
