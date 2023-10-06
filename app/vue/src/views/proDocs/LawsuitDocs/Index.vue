@@ -132,7 +132,7 @@ const onSubmit = (payload: Post & Attatches) => {
         params: { postId: pk },
       })
     } else {
-      createPost({ form })
+      createPost({ form, ...{ isProject: true } })
       router.replace({ name: `${mainViewName.value}` })
     }
   }
