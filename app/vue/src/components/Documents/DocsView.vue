@@ -36,13 +36,13 @@ const toDelete = () => alert('준비중!')
 
 const linkHitUp = async (pk: number) => {
   const link = (await fetchLink(pk)) as Link
-  link.hit = link.hit + 1
+  link.hit = (link.hit as number) + 1
   emit('link-hit', link)
 }
 
 const fileHitUp = async (pk: number) => {
   const file = (await fetchFile(pk)) as AFile
-  const hit = file.hit + 1
+  const hit = (file.hit as number) + 1
   emit('file-hit', { pk, hit })
 }
 

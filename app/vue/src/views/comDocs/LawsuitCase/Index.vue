@@ -46,6 +46,7 @@ const suitcase = computed(() => docStore.suitcase)
 const suitcaseList = computed(() => docStore.suitcaseList)
 const getSuitCase = computed(() => docStore.getSuitCase)
 
+const fetchLink = (pk: number) => docStore.fetchLink(pk)
 const fetchFile = (pk: number) => docStore.fetchFile(pk)
 const fetchSuitCase = (pk: number) => docStore.fetchSuitCase(pk)
 const fetchSuitCaseList = (payload: cFilter) => docStore.fetchSuitCaseList(payload)
@@ -56,11 +57,15 @@ const updateSuitCase = (payload: SuitCase) => docStore.updateSuitCase(payload)
 const deleteSuitCase = (pk: number) => docStore.deleteSuitCase(pk)
 const patchLink = (payload: Link) => docStore.patchLink(payload)
 const patchFile = (payload: AFile) => docStore.patchFile(payload)
-const linkHit = (payload: Link) => patchLink(payload)
+const linkHit = async (pk: number) => {
+  const link = (await fetchLink(pk)) as Link
+  link.hit = (link.hit as number) + 1
+  await patchLink(link)
+}
 const fileHit = async (pk: number) => {
   const file = (await fetchFile(pk)) as AFile
-  const hit = (file.hit as number) + 1
-  await patchFile({ pk, hit })
+  file.hit = (file.hit as number) + 1
+  await patchFile(file)
 }
 
 const [route, router] = [useRoute() as LoadedRoute & { name: string }, useRouter()]
@@ -122,7 +127,6 @@ const dataSetup = (pk: number, caseId?: string | string[]) => {
 }
 
 const dataReset = () => {
-  // comStore.company = null
   docStore.suitcaseList = []
   docStore.suitcaseCount = 0
   caseFilter.value.company = ''
