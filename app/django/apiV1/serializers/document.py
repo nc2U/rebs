@@ -1,4 +1,6 @@
 import json
+
+from django.conf import settings
 from django.db import transaction
 from django.core.exceptions import ValidationError
 from urllib.parse import urlsplit, urlunsplit
@@ -70,7 +72,7 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
         posts = Post.objects.filter(lawsuit=obj)
         for post in posts:
             for file in post.files.values():
-                files.append({'pk': file.get('id'), 'file': 'media/' + file.get('file')})
+                files.append({'pk': file.get('id'), 'file': settings.MEDIA_URL + file.get('file')})
         return files
 
     def get_collection(self):
