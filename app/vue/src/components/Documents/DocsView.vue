@@ -174,7 +174,7 @@ onBeforeMount(() => {
                 class="d-flex justify-content-between align-items-center"
               >
                 <a :href="f.file" target="_blank" @click="fileHitUp(f.pk as number)">
-                  {{ cutString(getFileName(f.file), 29) }}
+                  {{ cutString(getFileName(f.file ?? ''), 30) }}
                 </a>
                 <small>
                   다운로드 :

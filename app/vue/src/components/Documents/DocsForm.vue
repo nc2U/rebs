@@ -296,12 +296,12 @@ onUpdated(() => dataSetup())
       <CCol md="10" lg="8" xl="6">
         <CRow v-if="post && form.files?.length">
           <CAlert :color="AlertSecondary">
-            <small>{{ devideUri(form.files[0].file)[0] }}</small>
+            <small>{{ devideUri(form.files[0].file ?? ' ')[0] }}</small>
             <CCol v-for="(file, i) in form.files" :key="file.pk" xs="12" color="primary">
               <small>
                 현재 :
                 <a :href="file.file" target="_blank">
-                  {{ devideUri(file.file)[1] }}
+                  {{ devideUri(file.file ?? ' ')[1] }}
                 </a>
                 <CRow>
                   <CCol>
