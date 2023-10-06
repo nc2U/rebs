@@ -68,6 +68,8 @@ const post = computed(() => docStore.post)
 const postList = computed(() => docStore.postList)
 const categoryList = computed(() => docStore.categoryList)
 
+const fetchLink = (pk: number) => docStore.fetchLink(pk)
+const fetchFile = (pk: number) => docStore.fetchFile(pk)
 const fetchPost = (pk: number) => docStore.fetchPost(pk)
 const fetchPostList = (payload: PostFilter) => docStore.fetchPostList(payload)
 const fetchCategoryList = (board: number) => docStore.fetchCategoryList(board)
@@ -139,8 +141,16 @@ const onSubmit = async (payload: Post & Attatches) => {
 }
 
 const postHit = (payload: PatchPost) => patchPost(payload)
-const linkHit = (payload: Link) => patchLink(payload)
-const fileHit = (payload: AFile) => patchFile(payload)
+const linkHit = async (pk: number) => {
+  const link = (await fetchLink(pk)) as Link
+  link.hit = (link.hit as number) + 1
+  await patchLink(link)
+}
+const fileHit = async (pk: number) => {
+  const file = (await fetchFile(pk)) as AFile
+  file.hit = (file.hit as number) + 1
+  await patchFile(file)
+}
 
 const sortFilter = (project: number | null) => {
   fController.value.projectChange(project ?? 'is_com')
