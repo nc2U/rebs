@@ -4,13 +4,7 @@ import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin2'
 import { type RouteLocationNormalizedLoaded as LoadedRoute, useRoute, useRouter } from 'vue-router'
 import { useCompany } from '@/store/pinia/company'
 import { type PostFilter, type SuitCaseFilter, useDocument } from '@/store/pinia/document'
-import {
-  type AFile,
-  type Attatches,
-  type Link,
-  type PatchPost,
-  type Post,
-} from '@/store/types/document'
+import type { AFile, Attatches, Link, PatchPost, Post } from '@/store/types/document'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from '@/components/Documents/ListController.vue'
@@ -69,6 +63,8 @@ const postList = computed(() => docStore.postList)
 const categoryList = computed(() => docStore.categoryList)
 const getSuitCase = computed(() => docStore.getSuitCase)
 
+const fetchLink = (pk: number) => docStore.fetchLink(pk)
+const fetchFile = (pk: number) => docStore.fetchFile(pk)
 const fetchPost = (pk: number) => docStore.fetchPost(pk)
 const fetchPostList = (payload: PostFilter) => docStore.fetchPostList(payload)
 const fetchCategoryList = (board: number) => docStore.fetchCategoryList(board)
@@ -140,8 +136,16 @@ const onSubmit = async (payload: Post & Attatches) => {
 }
 
 const postHit = (payload: PatchPost) => patchPost(payload)
-const linkHit = (payload: Link) => patchLink(payload)
-const fileHit = (payload: AFile) => patchFile(payload)
+const linkHit = async (pk: number) => {
+  const link = (await fetchLink(pk)) as Link
+  link.hit = (link.hit as number) + 1
+  await patchLink(link)
+}
+const fileHit = async (pk: number) => {
+  const file = (await fetchFile(pk)) as AFile
+  file.hit = (file.hit as number) + 1
+  await patchFile(file)
+}
 
 const sortFilter = (project: number | null) => {
   fController.value.projectChange(project ?? 'is_com')

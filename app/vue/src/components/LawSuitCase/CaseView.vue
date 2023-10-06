@@ -2,7 +2,7 @@
 import { ref, computed, type PropType, watch, onBeforeMount } from 'vue'
 import { timeFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
-import { type SuitCase } from '@/store/types/document'
+import type { SuitCase } from '@/store/types/document'
 import { useDocument } from '@/store/pinia/document'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 
@@ -12,7 +12,7 @@ const props = defineProps({
   currPage: { type: Number, required: true },
 })
 
-const emit = defineEmits(['cases-renewal'])
+const emit = defineEmits(['cases-renewal', 'link-hit', 'file-hit'])
 
 const prev = ref<number | null>()
 const next = ref<number | null>()
@@ -26,6 +26,9 @@ const getCaseNav = computed(() => docStore.getCaseNav)
 
 const getPrev = (pk: number) => getCaseNav.value.filter(c => c.pk === pk).map(c => c.prev_pk)[0]
 const getNext = (pk: number) => getCaseNav.value.filter(c => c.pk === pk).map(c => c.next_pk)[0]
+
+const linkHitUp = async (pk: number) => emit('link-hit', pk)
+const fileHitUp = async (pk: number) => emit('file-hit', pk)
 
 const toPrint = () => alert('준비중!')
 const toSocial = () => alert('준비중!')
@@ -227,12 +230,22 @@ onBeforeMount(() => {
                 사건 관련 문서
               </CTableHeaderCell>
               <CTableDataCell colspan="4">
+                <h6 v-if="suitcase.links?.length">링크</h6>
+                <ul>
+                  <li v-for="(sc, i) in suitcase.links" :key="i">
+                    ▪︎
+                    <a :href="sc.link" target="_blank" @click="linkHitUp(sc.pk)">
+                      {{ sc.link }}
+                    </a>
+                  </li>
+                </ul>
+                <h6 v-if="suitcase.files?.length">파일</h6>
                 <ul>
                   <li v-for="(sc, i) in suitcase.files" :key="i">
                     ▪︎
-                    <router-link :to="sc">
-                      {{ sc.split('/').pop() }}
-                    </router-link>
+                    <a :href="sc.file" target="_blank" @click="fileHitUp(sc.pk)">
+                      {{ sc.file.split('/').pop() }}
+                    </a>
                   </li>
                 </ul>
               </CTableDataCell>

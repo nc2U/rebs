@@ -46,7 +46,8 @@ export interface SuitCase {
   case_end_date: string | null
   summary: string
   user?: string
-  files?: string[]
+  links?: Array<{ pk: number; link: string }>
+  files?: Array<{ pk: number; file: string }>
   created?: string
   prev_pk?: number | null
   next_pk?: number | null

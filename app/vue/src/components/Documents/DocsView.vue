@@ -27,24 +27,12 @@ const getPostNav = computed(() => docStore.getPostNav)
 const getPrev = (pk: number) => getPostNav.value.filter(p => p.pk === pk).map(p => p.prev_pk)[0]
 const getNext = (pk: number) => getPostNav.value.filter(p => p.pk === pk).map(p => p.next_pk)[0]
 
-const fetchLink = (pk: number) => docStore.fetchLink(pk)
-const fetchFile = (pk: number) => docStore.fetchFile(pk)
-
 const toPrint = () => alert('준비중!')
 const toSocial = () => alert('준비중!')
 const toDelete = () => alert('준비중!')
 
-const linkHitUp = async (pk: number) => {
-  const link = (await fetchLink(pk)) as Link
-  link.hit = link.hit + 1
-  emit('link-hit', link)
-}
-
-const fileHitUp = async (pk: number) => {
-  const file = (await fetchFile(pk)) as AFile
-  const hit = file.hit + 1
-  emit('file-hit', { pk, hit })
-}
+const linkHitUp = async (pk: number) => emit('link-hit', pk)
+const fileHitUp = async (pk: number) => emit('file-hit', pk)
 
 const getFileName = (file: string) => {
   if (file) return decodeURI(file.split('/').slice(-1)[0])
