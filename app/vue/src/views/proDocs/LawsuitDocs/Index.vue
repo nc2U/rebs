@@ -245,7 +245,6 @@ onBeforeMount(() => {
           @on-submit="onSubmit"
         />
       </div>
-      <button class="btn btn-dark" @click="resetFilter">aa</button>
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
