@@ -156,8 +156,8 @@ export const useDocument = defineStore('document', () => {
     },
   ) => {
     const retData: SuitCaseFilter = payload.isProject
-      ? { company: payload.company ?? '', is_com: false, project: payload.project ?? '' }
-      : { company: payload.company ?? '' }
+      ? { company: payload.company ?? '', is_com: false, project: payload.project ?? '', page: 1 }
+      : { company: payload.company ?? '', is_com: true, page: 1 }
     return await api
       .post(`/suitcase/`, payload)
       .then(() =>
@@ -197,7 +197,7 @@ export const useDocument = defineStore('document', () => {
       .then(res => (post.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const fetchPostList = (payload: PostFilter) => {
+  const fetchPostList = async (payload: PostFilter) => {
     const { board, page } = payload
     let url = `/post/?board=${board}&page=${page || 1}`
     if (payload.company) url += `&company=${payload.company}`
@@ -208,7 +208,7 @@ export const useDocument = defineStore('document', () => {
     if (payload.ordering) url += `&ordering=${payload.ordering}`
     if (payload.search) url += `&search=${payload.search}`
 
-    return api
+    return await api
       .get(url)
       .then(res => {
         postList.value = res.data.results
@@ -217,7 +217,7 @@ export const useDocument = defineStore('document', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const createPost = (payload: { form: FormData }) =>
+  const createPost = (payload: { form: FormData } & { isProject?: boolean }) =>
     api
       .post(`/post/`, payload.form, {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -227,6 +227,8 @@ export const useDocument = defineStore('document', () => {
           company: res.data.company,
           project: res.data.project,
           board: res.data.board,
+          is_com: !payload.isProject,
+          page: 1,
         }).then(() => message()),
       )
       .catch(err => errorHandle(err.response.data))
