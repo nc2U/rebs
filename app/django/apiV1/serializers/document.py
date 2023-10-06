@@ -59,7 +59,7 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
         posts = Post.objects.filter(lawsuit=obj)
         for post in posts:
             for file in post.files.values():
-                files.append(file.get('file'))
+                files.append({'pk': file.get('id'), 'file': file.get('file')})
         return files
 
     def get_collection(self):
