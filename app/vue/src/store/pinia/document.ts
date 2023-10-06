@@ -197,7 +197,7 @@ export const useDocument = defineStore('document', () => {
       .then(res => (post.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const fetchPostList = (payload: PostFilter) => {
+  const fetchPostList = async (payload: PostFilter) => {
     const { board, page } = payload
     let url = `/post/?board=${board}&page=${page || 1}`
     if (payload.company) url += `&company=${payload.company}`
@@ -208,7 +208,7 @@ export const useDocument = defineStore('document', () => {
     if (payload.ordering) url += `&ordering=${payload.ordering}`
     if (payload.search) url += `&search=${payload.search}`
 
-    return api
+    return await api
       .get(url)
       .then(res => {
         postList.value = res.data.results
@@ -217,9 +217,8 @@ export const useDocument = defineStore('document', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const createPost = async (payload: { form: FormData } & { isProject?: boolean }) => {
-    const is_com: boolean = !payload.isProject
-    return await api
+  const createPost = (payload: { form: FormData } & { isProject?: boolean }) =>
+    api
       .post(`/post/`, payload.form, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
@@ -228,12 +227,11 @@ export const useDocument = defineStore('document', () => {
           company: res.data.company,
           project: res.data.project,
           board: res.data.board,
-          is_com,
+          is_com: !payload.isProject,
           page: 1,
         }).then(() => message()),
       )
       .catch(err => errorHandle(err.response.data))
-  }
 
   const updatePost = (payload: { pk: number; form: FormData }) =>
     api
