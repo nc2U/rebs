@@ -222,6 +222,21 @@ onBeforeMount(() => {
               </CTableHeaderCell>
               <CTableDataCell colspan="4">{{ suitcase.summary }}</CTableDataCell>
             </CTableRow>
+            <CTableRow>
+              <CTableHeaderCell class="text-center" :color="TableSecondary">
+                사건 관련 문서
+              </CTableHeaderCell>
+              <CTableDataCell colspan="4">
+                <ul>
+                  <li v-for="(sc, i) in suitcase.files" :key="i">
+                    ▪︎
+                    <router-link :to="sc">
+                      {{ sc.split('/').pop() }}
+                    </router-link>
+                  </li>
+                </ul>
+              </CTableDataCell>
+            </CTableRow>
           </CTableBody>
         </CTable>
       </CCol>
