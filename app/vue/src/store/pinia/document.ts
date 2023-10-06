@@ -156,8 +156,8 @@ export const useDocument = defineStore('document', () => {
     },
   ) => {
     const retData: SuitCaseFilter = payload.isProject
-      ? { company: payload.company ?? '', is_com: false, project: payload.project ?? '' }
-      : { company: payload.company ?? '' }
+      ? { company: payload.company ?? '', is_com: false, project: payload.project ?? '', page: 1 }
+      : { company: payload.company ?? '', is_com: true, page: 1 }
     return await api
       .post(`/suitcase/`, payload)
       .then(() =>
@@ -217,7 +217,7 @@ export const useDocument = defineStore('document', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const createPost = (payload: { form: FormData }) =>
+  const createPost = (payload: { form: FormData } & { isProject?: boolean }) =>
     api
       .post(`/post/`, payload.form, {
         headers: { 'Content-Type': 'multipart/form-data' },
