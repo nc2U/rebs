@@ -103,7 +103,7 @@ export interface Link {
 export interface AFile {
   pk: null | number
   post?: number
-  file: string
+  file?: string
   newFile?: Blob
   hit: number
   del?: boolean
