@@ -69,14 +69,6 @@ const searchChange = (search: string) => (form.search = search)
 const relatedChange = (related: number) => (form.related_case = related)
 const projectChange = (project: number | null) => (form.project = project ?? '')
 
-defineExpose({
-  listFiltering,
-  courtChange,
-  searchChange,
-  relatedChange,
-  projectChange,
-})
-
 const resetForm = () => {
   form.is_com = !!props.comFrom
   form.project = ''
@@ -88,6 +80,15 @@ const resetForm = () => {
   form.search = ''
   listFiltering(1)
 }
+
+defineExpose({
+  listFiltering,
+  courtChange,
+  searchChange,
+  relatedChange,
+  projectChange,
+  resetForm,
+})
 
 const sortChange = () => {
   form.level = ''

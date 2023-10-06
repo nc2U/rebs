@@ -99,7 +99,7 @@ const fileChange = (payload: { pk: number; file: File }) => cngFiles.value.push(
 
 const fileUpload = (file: File) => newFiles.value.push(file)
 
-const onSubmit = (payload: Post & Attatches) => {
+const onSubmit = async (payload: Post & Attatches) => {
   if (project.value) {
     const { pk, ...getData } = payload
     getData.company = company.value as null | number
@@ -126,14 +126,15 @@ const onSubmit = (payload: Post & Attatches) => {
     }
 
     if (pk) {
-      updatePost({ pk, form })
-      router.replace({
+      await updatePost({ pk, form })
+      await router.replace({
         name: `${mainViewName.value} - 보기`,
         params: { postId: pk },
       })
     } else {
-      createPost({ form, ...{ isProject: true } })
-      router.replace({ name: `${mainViewName.value}` })
+      await createPost({ form, ...{ isProject: true } })
+      await router.replace({ name: `${mainViewName.value}` })
+      fController.value.resetForm()
     }
   }
 }
@@ -244,6 +245,7 @@ onBeforeMount(() => {
           @on-submit="onSubmit"
         />
       </div>
+      <button class="btn btn-dark" @click="resetFilter">aa</button>
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
