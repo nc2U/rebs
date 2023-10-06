@@ -5,6 +5,7 @@ from urllib.parse import urlsplit, urlunsplit
 
 from django.db.models import Q
 from rest_framework import serializers
+from rest_framework.settings import api_settings
 
 from document.models import (Group, Board, Category, LawsuitCase, Post,
                              Like, DisLike, Image, Link, File, Comment, Tag)
@@ -64,13 +65,12 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
                 links.append({'pk': link.get('id'), 'link': link.get('link')})
         return links
 
-    @staticmethod
-    def get_files(obj):
+    def get_files(self, obj):
         files = []
         posts = Post.objects.filter(lawsuit=obj)
         for post in posts:
             for file in post.files.values():
-                files.append({'pk': file.get('id'), 'file': file.get('file')})
+                files.append({'pk': file.get('id'), 'file': 'media/' + file.get('file')})
         return files
 
     def get_collection(self):
