@@ -7,6 +7,7 @@ import { type SuitCaseFilter as cFilter, useDocument } from '@/store/pinia/docum
 import type { AFile, Link, SuitCase } from '@/store/types/document'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
+import TableTitleRow from '@/components/TableTitleRow.vue'
 import ListController from '@/components/LawSuitCase/ListController.vue'
 import CaseView from '@/components/LawSuitCase/CaseView.vue'
 import CaseList from '@/components/LawSuitCase/CaseList.vue'
@@ -26,6 +27,8 @@ const caseFilter = ref<cFilter>({
   search: '',
   page: 1,
 })
+
+const excelUrl = computed(() => `excel/suitcase/`)
 
 const listFiltering = (payload: cFilter) => {
   caseFilter.value = payload
@@ -166,6 +169,8 @@ onBeforeMount(() => {
           :case-filter="caseFilter"
           @list-filter="listFiltering"
         />
+
+        <TableTitleRow title="본사 소송 사건 목록" excel :url="excelUrl" :disabled="!company" />
 
         <CaseList
           :company="company || undefined"

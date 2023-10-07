@@ -28,7 +28,7 @@ const caseFilter = ref<cFilter>({
   page: 1,
 })
 
-const excelUrl = '#'
+const excelUrl = computed(() => `excel/suitcase/`)
 
 const listFiltering = (payload: cFilter) => {
   payload.is_com = false
@@ -171,7 +171,7 @@ onBeforeMount(() => {
       <div v-if="route.name === `${mainViewName}`" class="pt-3">
         <ListController ref="fController" :case-filter="caseFilter" @list-filter="listFiltering" />
 
-        <TableTitleRow title="소송 사건 목록" excel :url="excelUrl" :disabled="!project" />
+        <TableTitleRow title="현장 소송 사건 목록" excel :url="excelUrl" :disabled="!project" />
 
         <CaseList
           :company="company || undefined"
