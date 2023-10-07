@@ -6,24 +6,25 @@
 # Copyright 2013-2020, John McNamara, jmcnamara@cpan.org
 #
 import io
-import xlwt
 import json
-import xlsxwriter
 from datetime import datetime
 
+import xlsxwriter
+import xlwt
 from django.core import serializers
-from django.http import HttpResponse
-from django.views.generic import View
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q, F, Max, Sum, Count, When, Case
+from django.http import HttpResponse
+from django.views.generic import View
 
-from company.models import Company, Staff, Department, JobGrade, Position, DutyTitle
-from project.models import Project, ProjectIncBudget, ProjectOutBudget, Site, SiteOwner, SiteContract
-from items.models import UnitType, KeyUnit, BuildingUnit, HouseUnit
-from contract.models import Contract, Contractor, Succession, ContractorRelease, OrderGroup
 from cash.models import CashBook, ProjectCashBook
-from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
+from company.models import Company, Staff, Department, JobGrade, Position, DutyTitle
+from contract.models import Contract, Succession, ContractorRelease, OrderGroup
+from document.models import LawsuitCase
+from items.models import UnitType, BuildingUnit, HouseUnit
 from notice.models import SalesBillIssue
+from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
+from project.models import Project, ProjectIncBudget, ProjectOutBudget, Site, SiteOwner, SiteContract
 
 TODAY = datetime.today().strftime('%Y-%m-%d')
 
@@ -3282,6 +3283,195 @@ def export_cashbook_xls(request):
     return response
 
 
+class ExportSuitCase(View):
+    """현장 소송 사건 목록"""
+
+    @staticmethod
+    def get(request):
+        # Create an in-memory output file for the new workbook.
+        output = io.BytesIO()
+
+        # Even though the final file will be in memory the module uses temp
+        # files during assembly for efficiency. To avoid this on servers that
+        # don't allow temp files, for example the Google APP Engine, set the
+        # 'in_memory' Workbook() constructor option as shown in the docs.
+        workbook = xlsxwriter.Workbook(output)
+        worksheet = workbook.add_worksheet('소송 목록')
+
+        worksheet.set_default_row(20)  # 기본 행 높이
+
+        # data start --------------------------------------------- #
+        com_id = request.GET.get('company')
+        company = Company.objects.get(pk=com_id) if com_id else None
+        proj_id = request.GET.get('project')
+        project = Project.objects.get(pk=proj_id) if proj_id else None
+
+        # title_list
+        header_src = [[],
+                      ['구분', 'project', 20],
+                      ['종류', 'sort', 10],
+                      ['심급', 'level', 10],
+                      ['관련사건', 'related_case', 16],
+                      ['처리기관', 'other_agency', 15],
+                      ['관할법원', 'court', 22],
+                      ['사건번호', 'case_number', 16],
+                      ['사건명', 'case_name', 25],
+                      ['원고(채권자)', 'plaintiff', 25],
+                      ['원고측대리인', 'plaintiff_attorney', 45],
+                      ['피고(채무자)', 'defendant', 25],
+                      ['피고측대리인', 'defendant_attorney', 45],
+                      ['제3채무자', 'related_debtor', 20],
+                      ['사건개시일', 'case_start_date', 14],
+                      ['사건종결일', 'case_end_date', 14],
+                      ['개요 및 경과', 'summary', 45]]
+
+        titles = ['No']  # header titles
+        params = []  # ORM 추출 field
+        widths = [7]  # No. 컬럼 넓이
+
+        for el in header_src:
+            if el:
+                titles.append(el[0])
+                params.append(el[1])
+                widths.append(el[2])
+
+        # 1. Title
+        row_num = 0
+        worksheet.set_row(row_num, 50)
+        title_format = workbook.add_format()
+        title_format.set_bold()
+        title_format.set_font_size(18)
+        title_format.set_align('vcenter')
+        worksheet.merge_range(row_num, 0, row_num, len(header_src) - 1,
+                              str(project if project else company) + ' 소송사건 목록',
+                              title_format)
+
+        # 2. Pre Header - Date
+        row_num = 1
+        worksheet.set_row(row_num, 18)
+        worksheet.write(row_num, len(header_src) - 1, TODAY + ' 현재', workbook.add_format({'align': 'right'}))
+
+        # 3. Header - 1
+        row_num = 2
+        worksheet.set_row(row_num, 20, workbook.add_format({'bold': True}))
+
+        h_format = workbook.add_format()
+        h_format.set_bold()
+        h_format.set_border()
+        h_format.set_align('center')
+        h_format.set_align('vcenter')
+        h_format.set_bg_color('#eeeeee')
+
+        # Adjust the column width.
+        for i, col_width in enumerate(widths):
+            worksheet.set_column(i, i, col_width)
+
+        # Write header - 1
+        for col_num, title in enumerate(titles):
+            worksheet.write(row_num, col_num, title, h_format)
+
+        # 4. Body
+        # Get some data to write to the spreadsheet.
+        obj_list = LawsuitCase.objects.filter(company=company)
+
+        is_com = request.GET.get('is_com')
+        sort = request.GET.get('sort')
+        level = request.GET.get('level')
+        court = request.GET.get('court')
+        in_progress = request.GET.get('in_progress')
+
+        obj_list = obj_list.filter(project__isnull=True) if is_com == 'true' else obj_list
+        obj_list = obj_list.filter(project=project) if project and is_com == 'false' else obj_list
+        obj_list = obj_list.filter(case_end_date__isnull=True) if in_progress == 'true' else obj_list
+        obj_list = obj_list.filter(case_end_date__isnull=False) if in_progress == 'false' else obj_list
+        obj_list = obj_list.filter(sort=sort) if sort else obj_list
+        obj_list = obj_list.filter(level=level) if level else obj_list
+        obj_list = obj_list.filter(court=court) if court else obj_list
+
+        search = request.GET.get('search')
+        if search:
+            obj_list = obj_list.filter(
+                Q(other_agency__icontains=search) |
+                Q(case_number__icontains=search) |
+                Q(case_name__icontains=search) |
+                Q(plaintiff__icontains=search) |
+                Q(defendant__icontains=search) |
+                Q(case_start_date__icontains=search) |
+                Q(case_end_date__icontains=search) |
+                Q(summary__icontains=search))
+
+        data = obj_list.values_list(*params)
+
+        b_format = workbook.add_format()
+        b_format.set_border()
+        b_format.set_align('center')
+        b_format.set_align('vcenter')
+        b_format.set_num_format('yyyy-mm-dd')
+
+        body_format = {
+            'border': True,
+            'valign': 'vcenter',
+            'num_format': '#,##0'
+        }
+
+        # Turn off some of the warnings:
+        # worksheet.ignore_errors({'number_stored_as_text': 'F:G'})
+
+        def get_proj_name(pk):
+            proj = Project.objects.get(pk=pk)
+            return proj.name
+
+        def get_related_case(pk):
+            rs_case = LawsuitCase.objects.get(pk=pk)
+            return rs_case.case_number
+
+        # Write body
+        for i, row in enumerate(data):
+            row = list(row)
+            row_num += 1
+            row.insert(0, i + 1)
+            for col_num, cell_data in enumerate(row):
+                if col_num == 1:
+                    cell_data = get_proj_name(cell_data) if cell_data else '본사'
+                elif col_num == 2:
+                    cell_data = list(filter(lambda x: x[0] == cell_data, LawsuitCase.SORT_CHOICES))[0][1]
+                elif col_num == 3:
+                    cell_data = list(filter(lambda x: x[0] == cell_data, LawsuitCase.LEVEL_CHOICES))[0][1]
+                elif col_num == 4:
+                    cell_data = get_related_case(cell_data) if cell_data else ''
+                elif col_num == 6:
+                    cell_data = list(filter(lambda x: x[0] == cell_data, LawsuitCase.COURT_CHOICES))[0][1] \
+                        if cell_data else ''
+                if col_num < 7 or col_num in (14, 15):
+                    if col_num in (14, 15):
+                        body_format['num_format'] = 'yyyy-mm-dd'
+                    else:
+                        body_format['num_format'] = '#,##0'
+                    body_format['align'] = 'center'
+                    bformat = workbook.add_format(body_format)
+                    worksheet.write(row_num, col_num, cell_data, bformat)
+                else:
+                    body_format['align'] = 'left'
+                    bformat = workbook.add_format(body_format)
+                    worksheet.write(row_num, col_num, cell_data, bformat)
+
+        # data finish -------------------------------------------- #
+
+        # Close the workbook before sending the data.
+        workbook.close()
+
+        # Rewind the buffer.
+        output.seek(0)
+
+        # Set up the Http response.
+        filename = f'{TODAY}-suitcase.xlsx'
+        file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        response = HttpResponse(output, content_type=file_format)
+        response['Content-Disposition'] = f'attachment; filename={filename}'
+
+        return response
+
+
 class ExportStaffs(View):
     """직원 목록 정보"""
 
@@ -4025,7 +4215,7 @@ class ExportExamples(View):
         title_format.set_bold()
         title_format.set_font_size(18)
         title_format.set_align('vcenter')
-        worksheet.merge_range(row_num, 0, row_num, len(header_src) - 1, str(project) + ' 권리의무승계 목록', title_format)
+        worksheet.merge_range(row_num, 0, row_num, len(header_src) - 1, '시트 헤더 타이틀', title_format)
 
         # 2. Pre Header - Date
         row_num = 1

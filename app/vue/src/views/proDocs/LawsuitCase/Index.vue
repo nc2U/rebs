@@ -7,6 +7,7 @@ import { type SuitCaseFilter as cFilter, useDocument } from '@/store/pinia/docum
 import type { AFile, Link, SuitCase } from '@/store/types/document'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
+import TableTitleRow from '@/components/TableTitleRow.vue'
 import ListController from '@/components/LawSuitCase/ListController.vue'
 import CaseView from '@/components/LawSuitCase/CaseView.vue'
 import CaseList from '@/components/LawSuitCase/CaseList.vue'
@@ -26,6 +27,12 @@ const caseFilter = ref<cFilter>({
   search: '',
   page: 1,
 })
+
+const excelFilter = computed(
+  () =>
+    `is_com=false&project=${project.value}&sort=${caseFilter.value.sort}&level=${caseFilter.value.level}&court=${caseFilter.value.court}&in_progress=${caseFilter.value.in_progress}&search=${caseFilter.value.search}`,
+)
+const excelUrl = computed(() => `excel/suitcases/?company=${company.value}&${excelFilter.value}`)
 
 const listFiltering = (payload: cFilter) => {
   payload.is_com = false
@@ -141,7 +148,6 @@ const dataSetup = (pk: number, caseId?: string | string[]) => {
 }
 
 const dataReset = () => {
-  // projStore.project = null
   docStore.suitcaseList = []
   docStore.suitcaseCount = 0
   caseFilter.value.project = ''
@@ -168,6 +174,8 @@ onBeforeMount(() => {
     <CCardBody class="pb-5">
       <div v-if="route.name === `${mainViewName}`" class="pt-3">
         <ListController ref="fController" :case-filter="caseFilter" @list-filter="listFiltering" />
+
+        <TableTitleRow title="현장 소송 사건 목록" excel :url="excelUrl" :disabled="!project" />
 
         <CaseList
           :company="company || undefined"
