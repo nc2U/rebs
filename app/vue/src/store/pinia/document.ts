@@ -129,11 +129,11 @@ export const useDocument = defineStore('document', () => {
     return queryStr
   }
 
-  const fetchSuitCaseList = (payload: SuitCaseFilter) => {
+  const fetchSuitCaseList = async (payload: SuitCaseFilter) => {
     const page = payload.page ?? 1
     const company = payload.company ?? ''
     const queryStr = getQueryStr(payload)
-    return api
+    return await api
       .get(`/suitcase/?page=${page}&company=${company}${queryStr}`)
       .then(res => {
         suitcaseList.value = res.data.results
