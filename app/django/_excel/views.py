@@ -3313,22 +3313,22 @@ class ExportSuitCase(View):
 
         # title_list
         header_src = [[],
-                      ['구분', 'project', 10],
+                      ['구분', 'project', 20],
                       ['종류', 'sort', 10],
                       ['심급', 'level', 10],
-                      ['관련사건', 'related_case', 15],
+                      ['관련사건', 'related_case', 16],
                       ['처리기관', 'other_agency', 15],
-                      ['관할법원', 'court', 15],
+                      ['관할법원', 'court', 22],
                       ['사건번호', 'case_number', 16],
-                      ['사건명', 'case_name', 18],
-                      ['원고(채권자)', 'plaintiff', 18],
-                      ['원고측대리인', 'plaintiff_attorney', 20],
-                      ['피고(채무자)', 'defendant', 18],
-                      ['피고측대리인', 'defendant_attorney', 20],
-                      ['제3채무자', 'related_debtor', 16],
-                      ['사건개시일', 'case_start_date', 13],
-                      ['사건종결일', 'case_end_date', 13],
-                      ['개요 및 경과', 'summary', 25]]
+                      ['사건명', 'case_name', 25],
+                      ['원고(채권자)', 'plaintiff', 25],
+                      ['원고측대리인', 'plaintiff_attorney', 45],
+                      ['피고(채무자)', 'defendant', 25],
+                      ['피고측대리인', 'defendant_attorney', 45],
+                      ['제3채무자', 'related_debtor', 20],
+                      ['사건개시일', 'case_start_date', 14],
+                      ['사건종결일', 'case_end_date', 14],
+                      ['개요 및 경과', 'summary', 45]]
 
         titles = ['No']  # header titles
         params = []  # ORM 추출 field
@@ -3396,14 +3396,43 @@ class ExportSuitCase(View):
         # Turn off some of the warnings:
         # worksheet.ignore_errors({'number_stored_as_text': 'F:G'})
 
+        def get_proj_name(pk):
+            proj = Project.objects.get(pk=pk)
+            return proj.name
+
+        def get_related_case(pk):
+            rs_case = LawsuitCase.objects.get(pk=pk)
+            return rs_case.case_number
+
         # Write body
         for i, row in enumerate(data):
             row = list(row)
             row_num += 1
             row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
-                bformat = workbook.add_format(body_format)
-                worksheet.write(row_num, col_num, cell_data, bformat)
+                if col_num == 1:
+                    cell_data = get_proj_name(cell_data) if cell_data else '본사'
+                elif col_num == 2:
+                    cell_data = list(filter(lambda x: x[0] == cell_data, LawsuitCase.SORT_CHOICES))[0][1]
+                elif col_num == 3:
+                    cell_data = list(filter(lambda x: x[0] == cell_data, LawsuitCase.LEVEL_CHOICES))[0][1]
+                elif col_num == 4:
+                    cell_data = get_related_case(cell_data) if cell_data else ''
+                elif col_num == 6:
+                    cell_data = list(filter(lambda x: x[0] == cell_data, LawsuitCase.COURT_CHOICES))[0][1] \
+                        if cell_data else ''
+                if col_num < 7 or col_num in (14, 15):
+                    if col_num in (14, 15):
+                        body_format['num_format'] = 'yyyy-mm-dd'
+                    else:
+                        body_format['num_format'] = '#,##0'
+                    body_format['align'] = 'center'
+                    bformat = workbook.add_format(body_format)
+                    worksheet.write(row_num, col_num, cell_data, bformat)
+                else:
+                    body_format['align'] = 'left'
+                    bformat = workbook.add_format(body_format)
+                    worksheet.write(row_num, col_num, cell_data, bformat)
 
         # data finish -------------------------------------------- #
 
