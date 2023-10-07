@@ -67,7 +67,8 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
                 links.append({'pk': link.get('id'), 'link': link.get('link')})
         return links
 
-    def get_files(self, obj):
+    @staticmethod
+    def get_files(obj):
         files = []
         posts = Post.objects.filter(lawsuit=obj)
         for post in posts:
