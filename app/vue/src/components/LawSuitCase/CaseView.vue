@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { ref, computed, type PropType, watch, onBeforeMount } from 'vue'
-import { timeFormat } from '@/utils/baseMixins'
-import { TableSecondary } from '@/utils/cssMixins'
-import type { SuitCase } from '@/store/types/document'
-import { useDocument } from '@/store/pinia/document'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
+import { useDocument } from '@/store/pinia/document'
+import { timeFormat } from '@/utils/baseMixins'
+import type { SuitCase } from '@/store/types/document'
+import { TableSecondary } from '@/utils/cssMixins'
 
 const props = defineProps({
   suitcase: { type: Object as PropType<SuitCase>, required: true },
@@ -268,9 +268,9 @@ onBeforeMount(() => {
         <v-btn variant="tonal" size="small" :rounded="0" @click="toSocial"> 신고</v-btn>
       </CCol>
     </CRow>
-
+    {{ getCaseNav }}
     <hr />
-
+    {{ prev }} | {{ next }}
     <CRow class="py-4">
       <CCol>
         <CButtonGroup role="group" class="mr-3">

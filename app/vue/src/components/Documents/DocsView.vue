@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { ref, computed, watch, onBeforeMount, type PropType } from 'vue'
+import { computed, onBeforeMount, type PropType, ref, watch } from 'vue'
+import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
-import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { cutString, timeFormat } from '@/utils/baseMixins'
-import { type Post, type Link, type AFile } from '@/store/types/document'
+import { type Post } from '@/store/types/document'
 import sanitizeHtml from 'sanitize-html'
 
 const props = defineProps({
@@ -27,12 +27,12 @@ const getPostNav = computed(() => docStore.getPostNav)
 const getPrev = (pk: number) => getPostNav.value.filter(p => p.pk === pk).map(p => p.prev_pk)[0]
 const getNext = (pk: number) => getPostNav.value.filter(p => p.pk === pk).map(p => p.next_pk)[0]
 
+const linkHitUp = async (pk: number) => emit('link-hit', pk)
+const fileHitUp = async (pk: number) => emit('file-hit', pk)
+
 const toPrint = () => alert('준비중!')
 const toSocial = () => alert('준비중!')
 const toDelete = () => alert('준비중!')
-
-const linkHitUp = async (pk: number) => emit('link-hit', pk)
-const fileHitUp = async (pk: number) => emit('file-hit', pk)
 
 const getFileName = (file: string) => {
   if (file) return decodeURI(file.split('/').slice(-1)[0])
