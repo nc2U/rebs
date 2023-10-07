@@ -3282,6 +3282,144 @@ def export_cashbook_xls(request):
     return response
 
 
+class ExportSuitCase(View):
+    """현장 소송 사건 목록"""
+
+    @staticmethod
+    def get(request):
+        # Create an in-memory output file for the new workbook.
+        output = io.BytesIO()
+
+        # Even though the final file will be in memory the module uses temp
+        # files during assembly for efficiency. To avoid this on servers that
+        # don't allow temp files, for example the Google APP Engine, set the
+        # 'in_memory' Workbook() constructor option as shown in the docs.
+        workbook = xlsxwriter.Workbook(output)
+        worksheet = workbook.add_worksheet('소송 목록')
+
+        worksheet.set_default_row(20)  # 기본 행 높이
+
+        # data start --------------------------------------------- #
+        com_id = request.GET.get('company')
+        company = Company.objects.get(pk=com_id) if com_id else None
+        is_com = request.GET.get('is_com')
+        proj_id = request.GET.get('project')
+        project = Project.objects.get(pk=proj_id) if proj_id else None
+        sort = request.GET.get('sort')
+        level = request.GET.get('level')
+        court = request.GET.get('court')
+        in_progress = request.GET.get('in_progress')
+
+        # title_list
+        header_src = [[],
+                      ['구분', 'project', 10],
+                      ['종류', 'sort', 10],
+                      ['심급', 'level', 10],
+                      ['관할법원', 'court', 10],
+                      ['처리기관', 'other_agency', 10],
+                      ['관련사건', 'related_case', 10],
+                      ['사건번호', 'case_number', 10],
+                      ['사건명', 'case_name', 10],
+                      ['원고(채권자)', 'plaintiff', 10],
+                      ['원고측대리인', 'plaintiff_attorney', 10],
+                      ['피고(채무자)', 'defendant', 10],
+                      ['피고측대리인', 'defendant_attorney', 10],
+                      ['제3채무자', 'related_debtor', 10],
+                      ['사건개시일', 'case_start_date', 10],
+                      ['사건종결일', 'case_end_date', 10],
+                      ['개요 및 경과', 'summary', 10]]
+
+        titles = ['No']  # header titles
+        params = []  # ORM 추출 field
+        widths = [7]  # No. 컬럼 넓이
+
+        for el in header_src:
+            if el:
+                titles.append(el[0])
+                params.append(el[1])
+                widths.append(el[2])
+
+        # 1. Title
+        row_num = 0
+        worksheet.set_row(row_num, 50)
+        title_format = workbook.add_format()
+        title_format.set_bold()
+        title_format.set_font_size(18)
+        title_format.set_align('vcenter')
+        worksheet.merge_range(row_num, 0, row_num, len(header_src) - 1, (project if project else company) + ' 소송사건 목록',
+                              title_format)
+
+        # 2. Pre Header - Date
+        row_num = 1
+        worksheet.set_row(row_num, 18)
+        worksheet.write(row_num, len(header_src) - 1, TODAY + ' 현재', workbook.add_format({'align': 'right'}))
+
+        # 3. Header - 1
+        row_num = 2
+        worksheet.set_row(row_num, 20, workbook.add_format({'bold': True}))
+
+        h_format = workbook.add_format()
+        h_format.set_bold()
+        h_format.set_border()
+        h_format.set_align('center')
+        h_format.set_align('vcenter')
+        h_format.set_bg_color('#eeeeee')
+
+        # Adjust the column width.
+        for i, col_width in enumerate(widths):
+            worksheet.set_column(i, i, col_width)
+
+        # Write header - 1
+        for col_num, title in enumerate(titles):
+            worksheet.write(row_num, col_num, title, h_format)
+
+        # 4. Body
+        # Get some data to write to the spreadsheet.
+        obj_list = Contract.objects.filter(project=project)
+
+        data = obj_list.values_list(*params)
+
+        b_format = workbook.add_format()
+        b_format.set_border()
+        b_format.set_align('center')
+        b_format.set_align('vcenter')
+        b_format.set_num_format('yyyy-mm-dd')
+
+        body_format = {
+            'border': True,
+            'valign': 'vcenter',
+            'num_format': '#,##0'
+        }
+
+        # Turn off some of the warnings:
+        # worksheet.ignore_errors({'number_stored_as_text': 'F:G'})
+
+        # Write body
+        for i, row in enumerate(data):
+            row = list(row)
+            row_num += 1
+            row.insert(0, i + 1)
+            for col_num, cell_data in enumerate(row):
+                bformat = workbook.add_format(body_format)
+                worksheet.write(row_num, col_num, cell_data, bformat)
+
+        # data finish -------------------------------------------- #
+
+        # Close the workbook before sending the data.
+        workbook.close()
+
+        # Rewind the buffer.
+        output.seek(0)
+
+        # Set up the Http response.
+        filename = f'{TODAY}-suitcase.xlsx'
+        file_format = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        response = HttpResponse(output, content_type=file_format)
+        response['Content-Disposition'] = f'attachment; filename={filename}'
+
+        return response
+
+
 class ExportStaffs(View):
     """직원 목록 정보"""
 
@@ -4025,7 +4163,7 @@ class ExportExamples(View):
         title_format.set_bold()
         title_format.set_font_size(18)
         title_format.set_align('vcenter')
-        worksheet.merge_range(row_num, 0, row_num, len(header_src) - 1, str(project) + ' 권리의무승계 목록', title_format)
+        worksheet.merge_range(row_num, 0, row_num, len(header_src) - 1, '시트 헤더 타이틀', title_format)
 
         # 2. Pre Header - Date
         row_num = 1
