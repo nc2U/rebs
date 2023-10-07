@@ -3303,13 +3303,8 @@ class ExportSuitCase(View):
         # data start --------------------------------------------- #
         com_id = request.GET.get('company')
         company = Company.objects.get(pk=com_id) if com_id else None
-        is_com = request.GET.get('is_com')
         proj_id = request.GET.get('project')
         project = Project.objects.get(pk=proj_id) if proj_id else None
-        sort = request.GET.get('sort')
-        level = request.GET.get('level')
-        court = request.GET.get('court')
-        in_progress = request.GET.get('in_progress')
 
         # title_list
         header_src = [[],
@@ -3378,6 +3373,32 @@ class ExportSuitCase(View):
         # 4. Body
         # Get some data to write to the spreadsheet.
         obj_list = LawsuitCase.objects.filter(company=company)
+
+        is_com = request.GET.get('is_com')
+        sort = request.GET.get('sort')
+        level = request.GET.get('level')
+        court = request.GET.get('court')
+        in_progress = request.GET.get('in_progress')
+
+        obj_list = obj_list.filter(project__isnull=True) if is_com == 'true' else obj_list
+        obj_list = obj_list.filter(project=project) if project and is_com == 'false' else obj_list
+        obj_list = obj_list.filter(case_end_date__isnull=True) if in_progress == 'true' else obj_list
+        obj_list = obj_list.filter(case_end_date__isnull=False) if in_progress == 'false' else obj_list
+        obj_list = obj_list.filter(sort=sort) if sort else obj_list
+        obj_list = obj_list.filter(level=level) if level else obj_list
+        obj_list = obj_list.filter(court=court) if court else obj_list
+
+        search = request.GET.get('search')
+        if search:
+            obj_list = obj_list.filter(
+                Q(other_agency__icontains=search) |
+                Q(case_number__icontains=search) |
+                Q(case_name__icontains=search) |
+                Q(plaintiff__icontains=search) |
+                Q(defendant__icontains=search) |
+                Q(case_start_date__icontains=search) |
+                Q(case_end_date__icontains=search) |
+                Q(summary__icontains=search))
 
         data = obj_list.values_list(*params)
 

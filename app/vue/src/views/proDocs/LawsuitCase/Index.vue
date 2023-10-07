@@ -28,7 +28,11 @@ const caseFilter = ref<cFilter>({
   page: 1,
 })
 
-const excelUrl = computed(() => `excel/suitcases/?company=${company.value}`)
+const excelFilter = computed(
+  () =>
+    `is_com=false&project=${project.value}&sort=${caseFilter.value.sort}&level=${caseFilter.value.level}&court=${caseFilter.value.court}&in_progress=${caseFilter.value.in_progress}&search=${caseFilter.value.search}`,
+)
+const excelUrl = computed(() => `excel/suitcases/?company=${company.value}&${excelFilter.value}`)
 
 const listFiltering = (payload: cFilter) => {
   payload.is_com = false
