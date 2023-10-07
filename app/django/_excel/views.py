@@ -6,24 +6,25 @@
 # Copyright 2013-2020, John McNamara, jmcnamara@cpan.org
 #
 import io
-import xlwt
 import json
-import xlsxwriter
 from datetime import datetime
 
+import xlsxwriter
+import xlwt
 from django.core import serializers
-from django.http import HttpResponse
-from django.views.generic import View
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q, F, Max, Sum, Count, When, Case
+from django.http import HttpResponse
+from django.views.generic import View
 
-from company.models import Company, Staff, Department, JobGrade, Position, DutyTitle
-from project.models import Project, ProjectIncBudget, ProjectOutBudget, Site, SiteOwner, SiteContract
-from items.models import UnitType, KeyUnit, BuildingUnit, HouseUnit
-from contract.models import Contract, Contractor, Succession, ContractorRelease, OrderGroup
 from cash.models import CashBook, ProjectCashBook
-from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
+from company.models import Company, Staff, Department, JobGrade, Position, DutyTitle
+from contract.models import Contract, Succession, ContractorRelease, OrderGroup
+from document.models import LawsuitCase
+from items.models import UnitType, BuildingUnit, HouseUnit
 from notice.models import SalesBillIssue
+from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
+from project.models import Project, ProjectIncBudget, ProjectOutBudget, Site, SiteOwner, SiteContract
 
 TODAY = datetime.today().strftime('%Y-%m-%d')
 
@@ -3346,7 +3347,8 @@ class ExportSuitCase(View):
         title_format.set_bold()
         title_format.set_font_size(18)
         title_format.set_align('vcenter')
-        worksheet.merge_range(row_num, 0, row_num, len(header_src) - 1, (project if project else company) + ' 소송사건 목록',
+        worksheet.merge_range(row_num, 0, row_num, len(header_src) - 1,
+                              str(project if project else company) + ' 소송사건 목록',
                               title_format)
 
         # 2. Pre Header - Date
@@ -3375,7 +3377,7 @@ class ExportSuitCase(View):
 
         # 4. Body
         # Get some data to write to the spreadsheet.
-        obj_list = Contract.objects.filter(project=project)
+        obj_list = LawsuitCase.objects.filter(company=company)
 
         data = obj_list.values_list(*params)
 
