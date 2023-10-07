@@ -3316,19 +3316,19 @@ class ExportSuitCase(View):
                       ['구분', 'project', 10],
                       ['종류', 'sort', 10],
                       ['심급', 'level', 10],
-                      ['관할법원', 'court', 10],
-                      ['처리기관', 'other_agency', 10],
-                      ['관련사건', 'related_case', 10],
-                      ['사건번호', 'case_number', 10],
-                      ['사건명', 'case_name', 10],
-                      ['원고(채권자)', 'plaintiff', 10],
-                      ['원고측대리인', 'plaintiff_attorney', 10],
-                      ['피고(채무자)', 'defendant', 10],
-                      ['피고측대리인', 'defendant_attorney', 10],
-                      ['제3채무자', 'related_debtor', 10],
-                      ['사건개시일', 'case_start_date', 10],
-                      ['사건종결일', 'case_end_date', 10],
-                      ['개요 및 경과', 'summary', 10]]
+                      ['관련사건', 'related_case', 15],
+                      ['처리기관', 'other_agency', 15],
+                      ['관할법원', 'court', 15],
+                      ['사건번호', 'case_number', 16],
+                      ['사건명', 'case_name', 18],
+                      ['원고(채권자)', 'plaintiff', 18],
+                      ['원고측대리인', 'plaintiff_attorney', 20],
+                      ['피고(채무자)', 'defendant', 18],
+                      ['피고측대리인', 'defendant_attorney', 20],
+                      ['제3채무자', 'related_debtor', 16],
+                      ['사건개시일', 'case_start_date', 13],
+                      ['사건종결일', 'case_end_date', 13],
+                      ['개요 및 경과', 'summary', 25]]
 
         titles = ['No']  # header titles
         params = []  # ORM 추출 field
