@@ -22,7 +22,6 @@ const sortDesc = computed(() => props.suitcase.sort_desc)
 const levelDesc = computed(() => props.suitcase.level_desc)
 
 const docStore = useDocument()
-const suitcaseList = computed(() => docStore.suitcaseList)
 const getCaseNav = computed(() => docStore.getCaseNav)
 
 const getPrev = (pk: number) => getCaseNav.value.filter(c => c.pk === pk).map(c => c.prev_pk)[0]
