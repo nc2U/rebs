@@ -105,7 +105,7 @@
     "pk": 7,
     "fields": {
       "board": 2,
-      "name": "기타",
+      "name": "인허가/기타",
       "parent": null,
       "order": 7
     }
@@ -125,7 +125,7 @@
     "pk": 9,
     "fields": {
       "board": 3,
-      "name": "판결/결정문",
+      "name": "원고제출문서",
       "parent": null,
       "order": 2
     }
@@ -135,7 +135,7 @@
     "pk": 10,
     "fields": {
       "board": 3,
-      "name": "기타제출문서",
+      "name": "피고제출문서",
       "parent": null,
       "order": 3
     }
@@ -148,6 +148,16 @@
       "name": "기타수신문서",
       "parent": null,
       "order": 4
+    }
+  },
+  {
+    "model": "document.category",
+    "pk": 12,
+    "fields": {
+      "board": 3,
+      "name": "판결/결정문",
+      "parent": null,
+      "order": 5
     }
   },
   {

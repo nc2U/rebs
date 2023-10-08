@@ -2,16 +2,16 @@ import api from '@/api'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { message, errorHandle } from '@/utils/helper'
-import {
-  type Group,
-  type Board,
-  type Category,
-  type AFile,
-  type Link,
-  type PatchPost,
-  type SuitCase,
-  type SimpleSuitCase,
-  type Post,
+import type {
+  Group,
+  Board,
+  Category,
+  AFile,
+  Link,
+  PatchPost,
+  SuitCase,
+  SimpleSuitCase,
+  Post,
 } from '@/store/types/document'
 
 export type SuitCaseFilter = {
@@ -129,11 +129,11 @@ export const useDocument = defineStore('document', () => {
     return queryStr
   }
 
-  const fetchSuitCaseList = (payload: SuitCaseFilter) => {
+  const fetchSuitCaseList = async (payload: SuitCaseFilter) => {
     const page = payload.page ?? 1
     const company = payload.company ?? ''
     const queryStr = getQueryStr(payload)
-    return api
+    return await api
       .get(`/suitcase/?page=${page}&company=${company}${queryStr}`)
       .then(res => {
         suitcaseList.value = res.data.results
