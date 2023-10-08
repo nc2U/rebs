@@ -80,18 +80,23 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
         company = query.get('company')
         project = query.get('project')
         is_com = query.get('is_com')
+        court = query.get('court')
+        related_case = query.get('related_case')
         sort = query.get('sort')
         level = query.get('level')
-        court = query.get('court')
+        in_progress = query.get('in_progress')
         search = query.get('search')
 
         queryset = queryset.filter(company_id=company) if company else queryset
         queryset = queryset.filter(project_id=project) if project else queryset
         queryset = queryset.filter(project__isnull=True) if is_com == 'true' else queryset
         queryset = queryset.filter(project__isnull=False) if is_com == 'false' else queryset
+        queryset = queryset.filter(court=court) if court else queryset
+        queryset = queryset.filter(related_case_id=related_case) if related_case else queryset
         queryset = queryset.filter(sort=sort) if sort else queryset
         queryset = queryset.filter(level=level) if level else queryset
-        queryset = queryset.filter(court=court) if court else queryset
+        queryset = queryset.filter(case_end_date__isnull=True) if in_progress == 'true' else queryset
+        queryset = queryset.filter(case_end_date__isnull=False) if in_progress == 'false' else queryset
         queryset = queryset.filter(
             Q(other_agency__icontains=search) |
             Q(case_number__icontains=search) |
