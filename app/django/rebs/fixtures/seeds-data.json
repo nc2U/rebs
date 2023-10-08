@@ -105,7 +105,7 @@
     "pk": 7,
     "fields": {
       "board": 2,
-      "name": "기타",
+      "name": "인허가/기타",
       "parent": null,
       "order": 7
     }
