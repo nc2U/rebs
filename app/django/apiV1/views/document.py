@@ -1,13 +1,10 @@
-from rest_framework import viewsets
 from django_filters import BooleanFilter
 from django_filters.rest_framework import FilterSet
+from rest_framework import viewsets
 
+from ..pagination import PageNumberPaginationThreeThousand
 from ..permission import *
 from ..serializers.document import *
-from ..pagination import PageNumberPaginationThreeThousand
-
-from document.models import (Group, Board, Category, LawsuitCase, Post,
-                             Like, DisLike, Image, Link, File, Comment, Tag)
 
 
 # Document --------------------------------------------------------------------------

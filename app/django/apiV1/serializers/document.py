@@ -1,13 +1,11 @@
 import json
-
-from django.conf import settings
-from django.db import transaction
-from django.core.exceptions import ValidationError
 from urllib.parse import urlsplit, urlunsplit
 
+from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.db import transaction
 from django.db.models import Q
 from rest_framework import serializers
-from rest_framework.settings import api_settings
 
 from document.models import (Group, Board, Category, LawsuitCase, Post,
                              Like, DisLike, Image, Link, File, Comment, Tag)
@@ -86,10 +84,11 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
         level = query.get('level')
         court = query.get('court')
         search = query.get('search')
+
         queryset = queryset.filter(company_id=company) if company else queryset
         queryset = queryset.filter(project_id=project) if project else queryset
         queryset = queryset.filter(project__isnull=True) if is_com == 'true' else queryset
-        queryset = queryset.filter(company__isnull=True) if is_com == 'false' else queryset
+        queryset = queryset.filter(project__isnull=False) if is_com == 'false' else queryset
         queryset = queryset.filter(sort=sort) if sort else queryset
         queryset = queryset.filter(level=level) if level else queryset
         queryset = queryset.filter(court=court) if court else queryset
@@ -103,6 +102,7 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
             Q(case_end_date__icontains=search) |
             Q(summary__icontains=search)
         ) if search else queryset
+
         return queryset
 
     def get_prev_pk(self, obj):
