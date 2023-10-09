@@ -31,20 +31,22 @@ const linkHitUp = async (pk: number) => emit('link-hit', pk)
 const fileHitUp = async (pk: number) => emit('file-hit', pk)
 
 const toPrint = () => alert('준비중!')
+const toDownload = () => window.open(`excel/suitcase/?pk=${ route.params.caseId }`, 'blank')
+
 const toSocial = () => alert('준비중!')
 const toDelete = () => alert('준비중!')
 
 const route = useRoute()
 
 watch(
-  () => getCaseNav.value,
-  () => {
-    const caseId = Number(route.params.caseId)
-    if (caseId) {
-      prev.value = getPrev(caseId)
-      next.value = getNext(caseId)
-    }
-  },
+    () => getCaseNav.value,
+    () => {
+      const caseId = Number(route.params.caseId)
+      if (caseId) {
+        prev.value = getPrev(caseId)
+        next.value = getNext(caseId)
+      }
+    },
 )
 
 onBeforeRouteUpdate((to, from) => {
@@ -54,12 +56,12 @@ onBeforeRouteUpdate((to, from) => {
   const last = getCaseNav.value.length - 1
   const getLast = getCaseNav.value[last]
   if (toCaseId && getLast.pk === fromCaseId && getLast.prev_pk === toCaseId)
-    // 다음 페이지 목록으로
+      // 다음 페이지 목록으로
     emit('cases-renewal', props.currPage + 1)
 
   const getFirst = getCaseNav.value[0]
   if (toCaseId && getFirst.pk === fromCaseId && getFirst.next_pk === toCaseId)
-    // 이전 페이지 목록으로
+      // 이전 페이지 목록으로
     emit('cases-renewal', props.currPage - 1)
 
   if (toCaseId) {
@@ -83,9 +85,9 @@ onBeforeMount(() => {
       <CCol md="8">
         <h5>
           {{ suitcase.court_desc || suitcase.other_agency }}
-          <v-icon icon="mdi-chevron-double-right" size="xs" />
+          <v-icon icon="mdi-chevron-double-right" size="xs"/>
           {{ suitcase.case_number }}
-          <v-icon icon="mdi-chevron-double-right" size="xs" />
+          <v-icon icon="mdi-chevron-double-right" size="xs"/>
           {{ suitcase.case_name }}
         </h5>
       </CCol>
@@ -94,20 +96,24 @@ onBeforeMount(() => {
       </CCol>
     </CRow>
 
-    <hr />
+    <hr/>
 
     <CRow class="text-blue-grey">
       <CCol>
         <small class="mr-3">작성자 : {{ suitcase.user }}</small>
         <small class="mr-3 print" @click="toPrint">
-          <v-icon icon="mdi-printer" size="small" />
+          <v-icon icon="mdi-printer" size="small"/>
           <span class="ml-2">프린트</span>
+        </small>
+        <small class="mr-3 print" @click="toDownload">
+          <v-icon icon="mdi-microsoft-excel" size="small"/>
+          <span class="ml-2">다운로드</span>
         </small>
       </CCol>
 
       <CCol class="text-right" md="3">
         <small>
-          <v-icon icon="mdi-calendar-clock" size="small" />
+          <v-icon icon="mdi-calendar-clock" size="small"/>
           <span class="ml-2">{{ timeFormat(suitcase.created ?? '') }}</span>
         </small>
       </CCol>
@@ -117,10 +123,10 @@ onBeforeMount(() => {
       <CCol md="10 py-5">
         <CTable bordered responsive align="middle">
           <colgroup>
-            <col style="width: 25%" />
-            <col style="width: 30%" />
-            <col style="width: 15%" />
-            <col style="width: 30%" />
+            <col style="width: 25%"/>
+            <col style="width: 30%"/>
+            <col style="width: 15%"/>
+            <col style="width: 30%"/>
           </colgroup>
           <CTableHead>
             <CTableRow class="text-center" :color="TableSecondary">
@@ -148,7 +154,7 @@ onBeforeMount(() => {
               </CTableHeaderCell>
               <CTableDataCell colspan="4">
                 <router-link
-                  :to="{
+                    :to="{
                     name: `${viewRoute} - 보기`,
                     params: { caseId: `${suitcase.related_case}` },
                   }"
@@ -257,9 +263,9 @@ onBeforeMount(() => {
 
     <CRow class="mt-2 px-3">
       <CCol class="text-grey-darken-1 pt-2 social">
-        <v-icon icon="mdi-facebook" class="mr-2" @click="toSocial" />
-        <v-icon icon="mdi-twitter" class="mr-2" @click="toSocial" />
-        <v-icon icon="mdi-instagram" class="mr-2" @click="toSocial" />
+        <v-icon icon="mdi-facebook" class="mr-2" @click="toSocial"/>
+        <v-icon icon="mdi-twitter" class="mr-2" @click="toSocial"/>
+        <v-icon icon="mdi-instagram" class="mr-2" @click="toSocial"/>
       </CCol>
       <CCol class="text-right">
         <v-btn variant="tonal" size="small" :rounded="0" class="mr-1" @click="toSocial">
@@ -269,15 +275,15 @@ onBeforeMount(() => {
       </CCol>
     </CRow>
 
-    <hr />
+    <hr/>
 
     <CRow class="py-4">
       <CCol>
         <CButtonGroup role="group" class="mr-3">
           <CButton
-            color="light"
-            :disabled="!prev"
-            @click="
+              color="light"
+              :disabled="!prev"
+              @click="
               $router.push({
                 name: `${viewRoute} - 보기`,
                 params: { caseId: prev },
@@ -287,9 +293,9 @@ onBeforeMount(() => {
             이전
           </CButton>
           <CButton
-            color="light"
-            :disabled="!next"
-            @click="
+              color="light"
+              :disabled="!next"
+              @click="
               $router.push({
                 name: `${viewRoute} - 보기`,
                 params: { caseId: next },
@@ -302,8 +308,8 @@ onBeforeMount(() => {
 
         <CButtonGroup role="group">
           <CButton
-            color="success"
-            @click="
+              color="success"
+              @click="
               $router.push({
                 name: `${viewRoute} - 수정`,
                 params: { caseId: suitcase.pk },
