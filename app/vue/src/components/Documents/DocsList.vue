@@ -39,7 +39,7 @@ const sortFilter = (project: number | null) => emit('sort-filter', project)
       <CTableRow :color="TableSecondary" class="text-center border-top-1">
         <CTableHeaderCell scope="col">번호</CTableHeaderCell>
         <CTableHeaderCell scope="col">구분</CTableHeaderCell>
-        <CTableHeaderCell scope="col">문서 시행일자</CTableHeaderCell>
+        <CTableHeaderCell scope="col">문서 발행일자</CTableHeaderCell>
         <CTableHeaderCell scope="col">문서 제목</CTableHeaderCell>
         <CTableHeaderCell scope="col">등록자</CTableHeaderCell>
         <CTableHeaderCell scope="col">등록일시</CTableHeaderCell>
