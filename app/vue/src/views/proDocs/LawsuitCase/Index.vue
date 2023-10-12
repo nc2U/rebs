@@ -141,10 +141,10 @@ const sortFilter = (project: number | null) => {
 
 const dataSetup = (pk: number, caseId?: string | string[]) => {
   caseFilter.value.company = company.value ?? ''
-  caseFilter.value.project = pk ?? ''
+  caseFilter.value.project = pk
+  fetchAllSuitCaseList({ company: company.value ?? '', is_com: false, project: pk })
   fetchSuitCaseList(caseFilter.value)
   if (caseId) fetchSuitCase(Number(caseId))
-  caseFilter.value.project = pk
 }
 
 const dataReset = () => {
@@ -160,9 +160,7 @@ const projSelect = (target: number | null) => {
 }
 
 onBeforeMount(() => {
-  const com = company.value ?? ''
   const proj = project.value || projStore.initProjId
-  fetchAllSuitCaseList({ company: com, is_com: false, project: proj })
   dataSetup(proj, route.params?.caseId)
 })
 </script>

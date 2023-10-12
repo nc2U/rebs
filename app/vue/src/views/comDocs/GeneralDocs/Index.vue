@@ -155,6 +155,7 @@ const sortFilter = (project: number | null) => {
 }
 
 const dataSetup = (pk: number, postId?: string | string[]) => {
+  fetchCategoryList(boardNumber.value)
   fetchPostList({
     company: pk,
     board: boardNumber.value,
@@ -178,10 +179,7 @@ const comSelect = (target: number | null) => {
   if (!!target) dataSetup(target)
 }
 
-onBeforeMount(() => {
-  fetchCategoryList(boardNumber.value)
-  dataSetup(company.value || comStore.initComId, route.params?.postId)
-})
+onBeforeMount(() => dataSetup(company.value || comStore.initComId, route.params?.postId))
 </script>
 
 <template>

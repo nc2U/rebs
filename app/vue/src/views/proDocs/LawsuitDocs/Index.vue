@@ -156,6 +156,9 @@ const sortFilter = (project: number | null) => {
 }
 
 const dataSetup = (pk: number, postId?: string | string[]) => {
+  postFilter.value.project = pk
+  fetchCategoryList(boardNumber.value)
+  fetchAllSuitCaseList({ company: company.value ?? '', project: pk, is_com: false })
   fetchPostList({
     project: pk,
     board: boardNumber.value,
@@ -163,7 +166,6 @@ const dataSetup = (pk: number, postId?: string | string[]) => {
     category: postFilter.value.category,
   })
   if (postId) fetchPost(Number(postId))
-  postFilter.value.project = pk
 }
 
 const dataReset = () => {
@@ -179,11 +181,7 @@ const projSelect = (target: number | null) => {
   if (!!target) dataSetup(target)
 }
 
-onBeforeMount(() => {
-  fetchCategoryList(boardNumber.value)
-  fetchAllSuitCaseList({ company: company.value ?? '', project: project.value, is_com: false })
-  dataSetup(project.value || projStore.initProjId, route.params?.postId)
-})
+onBeforeMount(() => dataSetup(project.value || projStore.initProjId, route.params?.postId))
 </script>
 
 <template>

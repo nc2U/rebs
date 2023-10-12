@@ -162,7 +162,8 @@ const dataSetup = (pk: number, postId?: string | string[]) => {
     page: postFilter.value.page,
     is_com: postFilter.value.is_com,
   })
-  fetchAllSuitCaseList({})
+  fetchCategoryList(boardNumber.value)
+  fetchAllSuitCaseList({ is_com: true })
   if (postId) fetchPost(Number(postId))
   postFilter.value.company = pk
 }
@@ -180,10 +181,7 @@ const comSelect = (target: number | null) => {
   if (target) dataSetup(target)
 }
 
-onBeforeMount(() => {
-  fetchCategoryList(boardNumber.value)
-  dataSetup(company.value || comStore.initComId, route.params?.postId)
-})
+onBeforeMount(() => dataSetup(company.value || comStore.initComId, route.params?.postId))
 </script>
 
 <template>
