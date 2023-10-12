@@ -128,6 +128,7 @@ const sortFilter = (project: number | null) => {
 }
 
 const dataSetup = (pk: number, caseId?: string | string[]) => {
+  fetchAllSuitCaseList({ is_com: true })
   fetchSuitCaseList({ company: pk, is_com: true, in_progress: true, page: caseFilter.value.page })
   if (caseId) fetchSuitCase(Number(caseId))
   caseFilter.value.company = pk
@@ -150,10 +151,7 @@ const caseRenewal = (page: number) => {
   fetchSuitCaseList(caseFilter.value)
 }
 
-onBeforeMount(() => {
-  fetchAllSuitCaseList({ is_com: true })
-  dataSetup(company.value || comStore.initComId, route.params?.caseId)
-})
+onBeforeMount(() => dataSetup(company.value || comStore.initComId, route.params?.caseId))
 </script>
 
 <template>
