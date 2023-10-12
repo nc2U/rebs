@@ -132,6 +132,8 @@ const onSubmit = async (payload: Post & Attatches) => {
       await router.replace({ name: `${mainViewName.value}` })
       fController.value.resetForm()
     }
+    newFiles.value = []
+    cngFiles.value = []
   }
 }
 
