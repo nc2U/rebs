@@ -27,9 +27,9 @@ class BoardAdmin(ImportExportMixin, admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'board', 'name', 'parent', 'order')
+    list_display = ('id', 'board', 'color', 'name', 'parent', 'order')
     list_display_links = ('name',)
-    list_editable = ('board', 'parent', 'order')
+    list_editable = ('board', 'color', 'parent', 'order')
     search_fields = ('name',)
     list_filter = ('board',)
 
