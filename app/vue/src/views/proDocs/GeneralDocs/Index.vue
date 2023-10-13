@@ -121,7 +121,7 @@ const onSubmit = async (payload: Post & Attatches) => {
     }
 
     if (pk) {
-      await updatePost({ pk, form })
+      await updatePost({ pk, form, ...{ isProject: true } })
       await router.replace({
         name: `${mainViewName.value} - 보기`,
         params: { postId: pk },

@@ -233,12 +233,20 @@ export const useDocument = defineStore('document', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
-  const updatePost = (payload: { pk: number; form: FormData }) =>
+  const updatePost = (payload: { pk: number; form: FormData } & { isProject?: boolean }) =>
     api
       .put(`/post/${payload.pk}/`, payload.form, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
-      .then(res => fetchPost(res.data.pk).then(() => message()))
+      .then(res =>
+        fetchPostList({
+          company: res.data.company,
+          project: res.data.project,
+          board: res.data.board,
+          is_com: !payload.isProject,
+          page: 1,
+        }).then(() => fetchPost(res.data.pk).then(() => message())),
+      )
       .catch(err => errorHandle(err.response.data))
 
   const patchPost = (payload: PatchPost) =>
