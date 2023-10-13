@@ -59,10 +59,15 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_links(obj):
         links = []
-        posts = Post.objects.filter(lawsuit=obj)
+        posts = obj.post_set.all().order_by('id')
         for post in posts:
+            category = Category.objects.get(pk=post.category.id)
+            category_data = {'name': category.name}
             for link in post.links.values():
-                links.append({'pk': link.get('id'), 'link': link.get('link')})
+                links.append({
+                    'pk': link.get('id'),
+                    'category': category_data.get('name'),
+                    'link': link.get('link')})
         return links
 
     @staticmethod
@@ -76,8 +81,7 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
                 files.append({
                     'pk': file.get('id'),
                     'category': category_data.get('name'),
-                    'file': settings.MEDIA_URL + file.get('file')
-                })
+                    'file': settings.MEDIA_URL + file.get('file')})
         return files
 
     def get_collection(self):
