@@ -36,7 +36,7 @@ class Board(models.Model):
 
 class Category(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE, verbose_name='게시판')
-    color = models.CharField('색상', max_length=10, null=True, blank=True)
+    color = models.CharField('색상', max_length=21, null=True, blank=True)
     name = models.CharField('이름', max_length=100)
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='상위 카테고리')
     order = models.PositiveSmallIntegerField('정렬 순서', default=0)
