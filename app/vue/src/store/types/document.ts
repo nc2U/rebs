@@ -16,6 +16,7 @@ export interface Board {
 export interface Category {
   pk: number | null
   board: number | null
+  color: string | null
   name: string
   parent: number | null
   order: number | null

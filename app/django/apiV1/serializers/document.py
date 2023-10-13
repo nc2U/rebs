@@ -27,7 +27,7 @@ class BoardSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ('pk', 'board', 'name', 'parent', 'order')
+        fields = ('pk', 'board', 'color', 'name', 'parent', 'order')
 
 
 class FilesInLawSuitCaseSerializer(serializers.ModelSerializer):
