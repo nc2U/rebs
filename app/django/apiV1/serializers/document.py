@@ -248,7 +248,10 @@ class PostSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         validated_data['ip'] = self.context.get('request').META.get('REMOTE_ADDR')
         instance.__dict__.update(**validated_data)
+        instance.project = validated_data.get('project', instance.project)
+        instance.board = validated_data.get('board', instance.board)
         instance.category = validated_data.get('category', instance.category)
+        instance.lawsuit = validated_data.get('lawsuit', instance.lawsuit)
         instance.save()
 
         # Links 처리
