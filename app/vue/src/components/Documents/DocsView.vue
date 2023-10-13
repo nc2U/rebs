@@ -133,7 +133,7 @@ onBeforeMount(() => {
         <table v-if="boardNum !== 1 && post.execution_date" class="table table-bordered mt-2 mb-3">
           <tbody>
             <tr v-if="post.lawsuit">
-              <td class="p-2 bg-blue-grey-lighten-4">관련사건</td>
+              <td class="p-2 bg-blue-grey-lighten-4 text-center">관련사건</td>
               <td class="p-2">
                 <router-link
                   :to="{ name: '현장 소송 사건 - 보기', params: { caseId: post.lawsuit } }"
@@ -143,7 +143,7 @@ onBeforeMount(() => {
               </td>
             </tr>
             <tr>
-              <td class="p-2 bg-blue-grey-lighten-4">발행일자</td>
+              <td class="p-2 bg-blue-grey-lighten-4 text-center">발행일자</td>
               <td class="p-2">{{ post.execution_date }}</td>
             </tr>
           </tbody>
