@@ -70,8 +70,14 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
         files = []
         posts = obj.post_set.all().order_by('id')
         for post in posts:
+            category = Category.objects.get(pk=post.category.id)
+            category_data = {'name': category.name}
             for file in post.files.values():
-                files.append({'pk': file.get('id'), 'file': settings.MEDIA_URL + file.get('file')})
+                files.append({
+                    'pk': file.get('id'),
+                    'category': category_data.get('name'),
+                    'file': settings.MEDIA_URL + file.get('file')
+                })
         return files
 
     def get_collection(self):
