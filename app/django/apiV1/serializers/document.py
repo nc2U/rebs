@@ -180,9 +180,12 @@ class PostSerializer(serializers.ModelSerializer):
         queryset = queryset.filter(category_id=category) if category else queryset
         queryset = queryset.filter(lawsuit_id=lawsuit) if lawsuit else queryset
         queryset = queryset.filter(
-            Q(title=search) |
-            Q(content=search) |
-            Q(user__username=search)
+            Q(lawsuit__case_number__icontains=search) |
+            Q(lawsuit__case_name__icontains=search) |
+            Q(title__icontains=search) |
+            Q(content__icontains=search) |
+            Q(files__file__icontains=search) |
+            Q(user__username__icontains=search)
         ) if search else queryset
 
         return queryset
