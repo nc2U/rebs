@@ -62,11 +62,12 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
         posts = obj.post_set.all().order_by('id')
         for post in posts:
             category = Category.objects.get(pk=post.category.id)
-            category_data = {'name': category.name}
+            category_data = {'color': category.color, 'name': category.name}
             for link in post.links.values():
                 links.append({
                     'pk': link.get('id'),
-                    'category': category_data.get('name'),
+                    'category': {'name': category_data.get('name'),
+                                 'color': category_data.get('color')},
                     'link': link.get('link')})
         return links
 
@@ -76,11 +77,12 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
         posts = obj.post_set.all().order_by('id')
         for post in posts:
             category = Category.objects.get(pk=post.category.id)
-            category_data = {'name': category.name}
+            category_data = {'color': category.color, 'name': category.name}
             for file in post.files.values():
                 files.append({
                     'pk': file.get('id'),
-                    'category': category_data.get('name'),
+                    'category': {'name': category_data.get('name'),
+                                 'color': category_data.get('color')},
                     'file': settings.MEDIA_URL + file.get('file')})
         return files
 
