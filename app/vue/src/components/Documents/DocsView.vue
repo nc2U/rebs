@@ -129,11 +129,21 @@ onBeforeMount(() => {
     </CRow>
 
     <CRow class="mt-5 py-2 justify-content-between">
-      <CCol md="5" lg="4" xl="3">
+      <CCol md="7" lg="6" xl="5">
         <table v-if="boardNum !== 1 && post.execution_date" class="table table-bordered mt-2 mb-3">
           <tbody>
-            <tr class="text-center">
-              <td class="p-2 bg-blue-grey-lighten-4">문서 발행일자</td>
+            <tr v-if="post.lawsuit">
+              <td class="p-2 bg-blue-grey-lighten-4">관련사건</td>
+              <td class="p-2">
+                <router-link
+                  :to="{ name: '현장 소송 사건 - 보기', params: { caseId: post.lawsuit } }"
+                >
+                  {{ post.lawsuit_name }}
+                </router-link>
+              </td>
+            </tr>
+            <tr>
+              <td class="p-2 bg-blue-grey-lighten-4">발행일자</td>
               <td class="p-2">{{ post.execution_date }}</td>
             </tr>
           </tbody>
@@ -174,7 +184,7 @@ onBeforeMount(() => {
                 class="d-flex justify-content-between align-items-center"
               >
                 <a :href="f.file" target="_blank" @click="fileHitUp(f.pk as number)">
-                  {{ cutString(getFileName(f.file ?? ''), 30) }}
+                  {{ cutString(getFileName(f.file ?? ''), 45) }}
                 </a>
                 <small>
                   다운로드 :
