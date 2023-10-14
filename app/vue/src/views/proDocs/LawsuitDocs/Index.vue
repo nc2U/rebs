@@ -192,7 +192,12 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId, route.param
   <ContentBody>
     <CCardBody class="pb-5">
       <div v-if="route.name === `${mainViewName}`" class="pt-3">
-        <ListController ref="fController" :post-filter="postFilter" @list-filter="docsListFilter" />
+        <ListController
+          ref="fController"
+          :case-docs="true"
+          :post-filter="postFilter"
+          @list-filter="docsListFilter"
+        />
 
         <CategoryTabs
           :category="postFilter.category as number"

@@ -7,6 +7,7 @@ import { bgLight } from '@/utils/cssMixins'
 
 const props = defineProps({
   comFrom: { type: Boolean, default: false },
+  caseDocs: { type: Boolean, default: false },
   postFilter: { type: Object, required: true },
 })
 const emit = defineEmits(['list-filter'])
@@ -91,32 +92,28 @@ onBeforeMount(() => {
             </CFormSelect>
           </CCol>
 
-          <!--          <CCol md="6" lg="5" xl="4" class="mb-3">-->
-          <!--            <CFormSelect v-model="form.ordering" @change="listFiltering(1)">-->
-          <!--              <option value="created">작성일자 오름차순</option>-->
-          <!--              <option value="-created">작성일자 내림차순</option>-->
-          <!--              <option value="execution_date">시행일자 오름차순</option>-->
-          <!--              <option value="-execution_date">시행일자 내림차순</option>-->
-          <!--              <option value="-hit">조회수 오름차순</option>-->
-          <!--              <option value="hit">조회수 내림차순</option>-->
-          <!--            </CFormSelect>-->
-          <!--          </CCol>-->
+          <CCol md="6" lg="5" xl="4" class="mb-3">
+            <!--            <CFormSelect v-model="form.ordering" @change="listFiltering(1)">-->
+            <!--              <option value="created">작성일자 오름차순</option>-->
+            <!--              <option value="-created">작성일자 내림차순</option>-->
+            <!--              <option value="execution_date">시행일자 오름차순</option>-->
+            <!--              <option value="-execution_date">시행일자 내림차순</option>-->
+            <!--              <option value="-hit">조회수 오름차순</option>-->
+            <!--              <option value="hit">조회수 내림차순</option>-->
+            <!--            </CFormSelect>-->
+          </CCol>
         </CRow>
       </CCol>
 
       <CCol lg="6">
         <CRow class="justify-content-md-end">
-          <CCol md="6" lg="5" xl="4" class="mb-3">
-            <CFormSelect>
-              <option value="">제목+내용+작성자</option>
-            </CFormSelect>
-          </CCol>
-
           <CCol md="6" lg="5" class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.search"
-                placeholder="Search"
+                :placeholder="`제목, 내용, 첨부링크, 첨부파일명, 작성자${
+                  caseDocs ? ', 사건번호(명)' : ''
+                }`"
                 @keydown.enter="listFiltering(1)"
               />
               <CInputGroupText @click="listFiltering(1)">검색</CInputGroupText>
