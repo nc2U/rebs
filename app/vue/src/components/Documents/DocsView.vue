@@ -8,6 +8,7 @@ import sanitizeHtml from 'sanitize-html'
 
 const props = defineProps({
   boardNum: { type: Number, default: 2 },
+  heatedPage: { type: Array as PropType<number[]>, default: () => [] },
   reOrder: { type: Boolean, default: false },
   category: { type: Number, default: undefined },
   post: { type: Object as PropType<Post>, default: null },
@@ -82,7 +83,7 @@ onBeforeMount(() => {
 })
 
 onMounted(() => {
-  if (postId.value) {
+  if (postId.value && !props.heatedPage?.includes(postId.value)) {
     emit('post-hit', postId.value)
   }
 })

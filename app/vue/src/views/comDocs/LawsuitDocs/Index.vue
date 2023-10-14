@@ -27,6 +27,8 @@ const postFilter = ref<PostFilter>({
   page: 1,
 })
 
+const heatedPage = ref<number[]>([])
+
 const newFiles = ref<File[]>([])
 const cngFiles = ref<
   {
@@ -138,9 +140,12 @@ const onSubmit = async (payload: Post & Attatches) => {
 }
 
 const postHit = async (pk: number) => {
-  const hitPost = await fetchPost(pk)
-  const hit = hitPost.hit + 1
-  await patchPost({ pk, hit })
+  if (!heatedPage.value.includes(pk)) {
+    heatedPage.value.push(pk)
+    const hitPost = await fetchPost(pk)
+    const hit = hitPost.hit + 1
+    await patchPost({ pk, hit })
+  }
 }
 const linkHit = async (pk: number) => {
   const link = (await fetchLink(pk)) as Link
@@ -228,6 +233,7 @@ onBeforeMount(() => dataSetup(company.value || comStore.initComId, route.params?
       <div v-else-if="route.name.includes('보기')">
         <DocsView
           :board-num="boardNumber"
+          :heated-page="heatedPage"
           :re-order="postFilter.ordering !== '-created'"
           :category="postFilter.category as undefined"
           :post="post as Post"
