@@ -224,6 +224,7 @@ onBeforeMount(() => dataSetup(company.value || comStore.initComId, route.params?
       <div v-else-if="route.name.includes('보기')">
         <DocsView
           :board-num="boardNumber"
+          :re-order="postFilter.ordering !== '-created'"
           :category="postFilter.category as undefined"
           :post="post as Post"
           :view-route="mainViewName"

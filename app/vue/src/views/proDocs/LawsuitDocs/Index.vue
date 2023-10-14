@@ -218,6 +218,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId, route.param
       <div v-else-if="route.name.includes('보기')">
         <DocsView
           :board-num="boardNumber"
+          :re-order="postFilter.ordering !== '-created'"
           :category="postFilter.category as number"
           :post="post as Post"
           :view-route="mainViewName"
