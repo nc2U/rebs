@@ -45,6 +45,7 @@
     "pk": 1,
     "fields": {
       "board": 2,
+      "color": "#9575CD",
       "name": "발송공문",
       "parent": null,
       "order": 1
@@ -55,6 +56,7 @@
     "pk": 2,
     "fields": {
       "board": 2,
+      "color": "#558B2F",
       "name": "수신공문",
       "parent": null,
       "order": 2
@@ -65,6 +67,7 @@
     "pk": 3,
     "fields": {
       "board": 2,
+      "color": "#5C6BC0",
       "name": "결재/회의/보고서",
       "parent": null,
       "order": 3
@@ -75,6 +78,7 @@
     "pk": 4,
     "fields": {
       "board": 2,
+      "color": "#43A047",
       "name": "계약서/협약서",
       "parent": null,
       "order": 4
@@ -85,6 +89,7 @@
     "pk": 5,
     "fields": {
       "board": 2,
+      "color": "#8D6E63",
       "name": "고시/공고",
       "parent": null,
       "order": 5
@@ -95,6 +100,7 @@
     "pk": 6,
     "fields": {
       "board": 2,
+      "color": "#607D8B",
       "name": "내규/서식",
       "parent": null,
       "order": 6
@@ -105,6 +111,7 @@
     "pk": 7,
     "fields": {
       "board": 2,
+      "color": "#9E9E9E",
       "name": "인허가/기타",
       "parent": null,
       "order": 7
@@ -115,6 +122,7 @@
     "pk": 8,
     "fields": {
       "board": 3,
+      "color": "#A1887F",
       "name": "소장/신청서",
       "parent": null,
       "order": 1
@@ -125,6 +133,7 @@
     "pk": 9,
     "fields": {
       "board": 3,
+      "color": "#9E9D24",
       "name": "원고제출문서",
       "parent": null,
       "order": 2
@@ -135,6 +144,7 @@
     "pk": 10,
     "fields": {
       "board": 3,
+      "color": "#689F38",
       "name": "피고제출문서",
       "parent": null,
       "order": 3
@@ -145,6 +155,7 @@
     "pk": 11,
     "fields": {
       "board": 3,
+      "color": "#9E9E9E",
       "name": "기타수신문서",
       "parent": null,
       "order": 4
@@ -155,9 +166,21 @@
     "pk": 12,
     "fields": {
       "board": 3,
-      "name": "판결/결정문",
+      "color": "#66BB6A",
+      "name": "사건위임계약",
       "parent": null,
       "order": 5
+    }
+  },
+  {
+    "model": "document.category",
+    "pk": 13,
+    "fields": {
+      "board": 3,
+      "color": "#9575CD",
+      "name": "판결/결정문",
+      "parent": null,
+      "order": 6
     }
   },
   {
