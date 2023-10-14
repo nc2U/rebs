@@ -270,46 +270,49 @@ class PostSerializer(serializers.ModelSerializer):
         instance.lawsuit = validated_data.get('lawsuit', instance.lawsuit)
         instance.save()
 
-        # Links 처리
-        old_links = self.initial_data.getlist('links')
-        if old_links:
-            for json_link in old_links:
-                link = json.loads(json_link)
-                link_object = Link.objects.get(pk=link.get('pk'))
-                if link.get('del'):
-                    link_object.delete()
-                else:
-                    link_object.link = self.to_python(link.get('link'))
-                    link_object.save()
+        try:
+            # Links 처리
+            old_links = self.initial_data.getlist('links')
+            if old_links:
+                for json_link in old_links:
+                    link = json.loads(json_link)
+                    link_object = Link.objects.get(pk=link.get('pk'))
+                    if link.get('del'):
+                        link_object.delete()
+                    else:
+                        link_object.link = self.to_python(link.get('link'))
+                        link_object.save()
 
-        new_links = self.initial_data.getlist('newLinks')
-        if new_links:
-            for link in new_links:
-                Link.objects.create(post=instance, link=self.to_python(link))
+            new_links = self.initial_data.getlist('newLinks')
+            if new_links:
+                for link in new_links:
+                    Link.objects.create(post=instance, link=self.to_python(link))
 
-        # Files 처리
-        old_files = self.initial_data.getlist('files')
-        if old_files:
-            cng_pks = self.initial_data.getlist('cngPks')
-            cng_files = self.initial_data.getlist('cngFiles')
-            cng_maps = [(pk, cng_files[i]) for i, pk in enumerate(cng_pks)]
+            # Files 처리
+            old_files = self.initial_data.getlist('files')
+            if old_files:
+                cng_pks = self.initial_data.getlist('cngPks')
+                cng_files = self.initial_data.getlist('cngFiles')
+                cng_maps = [(pk, cng_files[i]) for i, pk in enumerate(cng_pks)]
 
-            for json_file in old_files:
-                file = json.loads(json_file)
-                file_object = File.objects.get(pk=file.get('pk'))
+                for json_file in old_files:
+                    file = json.loads(json_file)
+                    file_object = File.objects.get(pk=file.get('pk'))
 
-                if file.get('del'):
-                    file_object.delete()
+                    if file.get('del'):
+                        file_object.delete()
 
-                for cng_map in cng_maps:
-                    if int(file.get('pk')) == int(cng_map[0]):
-                        file_object.file = cng_map[1]
-                        file_object.save()
+                    for cng_map in cng_maps:
+                        if int(file.get('pk')) == int(cng_map[0]):
+                            file_object.file = cng_map[1]
+                            file_object.save()
 
-        new_files = self.initial_data.getlist('newFiles')
-        if new_files:
-            for file in new_files:
-                File.objects.create(post=instance, file=file)
+            new_files = self.initial_data.getlist('newFiles')
+            if new_files:
+                for file in new_files:
+                    File.objects.create(post=instance, file=file)
+        except AttributeError:
+            pass
 
         return instance
 
