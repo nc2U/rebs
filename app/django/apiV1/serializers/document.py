@@ -196,6 +196,7 @@ class PostSerializer(serializers.ModelSerializer):
             Q(lawsuit__case_name__icontains=search) |
             Q(title__icontains=search) |
             Q(content__icontains=search) |
+            Q(links__link__icontains=search) |
             Q(files__file__icontains=search) |
             Q(user__username__icontains=search)
         ) if search else queryset
@@ -203,11 +204,11 @@ class PostSerializer(serializers.ModelSerializer):
         return queryset
 
     def get_prev_pk(self, obj):
-        prev_obj = self.get_collection().filter(pk__lt=obj.pk).first()
+        prev_obj = self.get_collection().filter(created__lt=obj.created).first()
         return prev_obj.pk if prev_obj else None
 
     def get_next_pk(self, obj):
-        next_obj = self.get_collection().filter(pk__gt=obj.pk).order_by('id').first()
+        next_obj = self.get_collection().filter(created__gt=obj.created).order_by('created').first()
         return next_obj.pk if next_obj else None
 
     def to_python(self, value):

@@ -22,7 +22,7 @@ const postFilter = ref<PostFilter>({
   board: boardNumber.value,
   is_com: true,
   category: '',
-  ordering: '-id',
+  ordering: '-created',
   search: '',
   page: 1,
 })
@@ -200,6 +200,7 @@ onBeforeMount(() => dataSetup(company.value || comStore.initComId, route.params?
         <ListController
           ref="fController"
           :com-from="true"
+          :case-docs="true"
           :post-filter="postFilter"
           @list-filter="listFiltering"
         />
@@ -223,6 +224,7 @@ onBeforeMount(() => dataSetup(company.value || comStore.initComId, route.params?
       <div v-else-if="route.name.includes('보기')">
         <DocsView
           :board-num="boardNumber"
+          :re-order="postFilter.ordering !== '-created'"
           :category="postFilter.category as undefined"
           :post="post as Post"
           :view-route="mainViewName"

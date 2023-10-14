@@ -22,7 +22,7 @@ const postFilter = ref<PostFilter>({
   category: '',
   is_com: false,
   project: '',
-  ordering: '-id',
+  ordering: '-created',
   search: '',
   page: 1,
 })
@@ -192,7 +192,12 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId, route.param
   <ContentBody>
     <CCardBody class="pb-5">
       <div v-if="route.name === `${mainViewName}`" class="pt-3">
-        <ListController ref="fController" :post-filter="postFilter" @list-filter="docsListFilter" />
+        <ListController
+          ref="fController"
+          :case-docs="true"
+          :post-filter="postFilter"
+          @list-filter="docsListFilter"
+        />
 
         <CategoryTabs
           :category="postFilter.category as number"
@@ -213,6 +218,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId, route.param
       <div v-else-if="route.name.includes('보기')">
         <DocsView
           :board-num="boardNumber"
+          :re-order="postFilter.ordering !== '-created'"
           :category="postFilter.category as number"
           :post="post as Post"
           :view-route="mainViewName"

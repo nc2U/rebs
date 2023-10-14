@@ -8,6 +8,7 @@ import sanitizeHtml from 'sanitize-html'
 
 const props = defineProps({
   boardNum: { type: Number, default: 2 },
+  reOrder: { type: Boolean, default: false },
   category: { type: Number, default: undefined },
   post: { type: Object as PropType<Post>, default: null },
   viewRoute: { type: String, required: true },
@@ -239,7 +240,7 @@ onBeforeMount(() => {
         <CButtonGroup role="group" class="mr-3">
           <CButton
             color="light"
-            :disabled="!prev"
+            :disabled="!prev || reOrder"
             @click="
               $router.push({
                 name: `${viewRoute} - 보기`,
@@ -251,7 +252,7 @@ onBeforeMount(() => {
           </CButton>
           <CButton
             color="light"
-            :disabled="!next"
+            :disabled="!next || reOrder"
             @click="
               $router.push({
                 name: `${viewRoute} - 보기`,
