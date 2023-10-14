@@ -345,7 +345,7 @@ class Post(models.Model):
         return today < new_period.strftime('%Y-%m-%d %H:%M')
 
     class Meta:
-        ordering = ['-id']
+        ordering = ['-created']
         verbose_name = '05. 게시물 관리'
         verbose_name_plural = '05. 게시물 관리'
 
@@ -433,7 +433,7 @@ class Comment(models.Model):
         return f"{self.post} -> {self.content}"
 
     class Meta:
-        ordering = ['-id']
+        ordering = ['-created']
 
 
 class Tag(models.Model):
