@@ -196,6 +196,7 @@ class PostSerializer(serializers.ModelSerializer):
             Q(lawsuit__case_name__icontains=search) |
             Q(title__icontains=search) |
             Q(content__icontains=search) |
+            Q(links__link__icontains=search) |
             Q(files__file__icontains=search) |
             Q(user__username__icontains=search)
         ) if search else queryset

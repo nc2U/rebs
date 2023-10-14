@@ -78,7 +78,9 @@ class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filterset_class = PostFilterSet
-    search_fields = ('lawsuit__case_number', 'lawsuit__case_name', 'title', 'content', 'files__file', 'user__username')
+    search_fields = (
+        'lawsuit__case_number', 'lawsuit__case_name', 'title',
+        'content', 'links__link', 'files__file', 'user__username')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
