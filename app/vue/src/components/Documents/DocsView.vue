@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, type PropType, ref, watch } from 'vue'
+import { ref, computed, watch, onBeforeMount, onMounted, type PropType } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
 import { cutString, timeFormat } from '@/utils/baseMixins'
@@ -21,6 +21,7 @@ const prev = ref<number | null>()
 const next = ref<number | null>()
 
 const sortName = computed(() => props.post?.proj_name || '본사 문서')
+const postId = computed(() => Number(route.params.postId))
 
 const docStore = useDocument()
 const getPostNav = computed(() => docStore.getPostNav)
@@ -45,10 +46,9 @@ const route = useRoute()
 watch(
   () => getPostNav.value,
   () => {
-    const postId = Number(route.params.postId)
-    if (postId) {
-      prev.value = getPrev(postId)
-      next.value = getNext(postId)
+    if (postId.value) {
+      prev.value = getPrev(postId.value)
+      next.value = getNext(postId.value)
     }
   },
 )
@@ -75,10 +75,15 @@ onBeforeRouteUpdate((to, from) => {
 })
 
 onBeforeMount(() => {
-  const postId = Number(route.params.postId)
-  if (postId) {
-    prev.value = getPrev(postId)
-    next.value = getNext(postId)
+  if (postId.value) {
+    prev.value = getPrev(postId.value)
+    next.value = getNext(postId.value)
+  }
+})
+
+onMounted(() => {
+  if (postId.value) {
+    emit('post-hit', postId.value)
   }
 })
 </script>

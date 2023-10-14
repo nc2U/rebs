@@ -137,7 +137,11 @@ const onSubmit = async (payload: Post & Attatches) => {
   }
 }
 
-const postHit = (payload: PatchPost) => patchPost(payload)
+const postHit = async (pk: number) => {
+  const hitPost = await fetchPost(pk)
+  const hit = hitPost.hit + 1
+  await patchPost({ pk, hit })
+}
 const linkHit = async (pk: number) => {
   const link = (await fetchLink(pk)) as Link
   link.hit = (link.hit as number) + 1
