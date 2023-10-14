@@ -27,6 +27,8 @@ const postFilter = ref<PostFilter>({
   page: 1,
 })
 
+const heatedPage = ref<number[]>([])
+
 const newFiles = ref<File[]>([])
 const cngFiles = ref<
   {
@@ -71,7 +73,7 @@ const fetchAllSuitCaseList = (payload: SuitCaseFilter) => docStore.fetchAllSuitC
 
 const createPost = (payload: { form: FormData }) => docStore.createPost(payload)
 const updatePost = (payload: { pk: number; form: FormData }) => docStore.updatePost(payload)
-const patchPost = (payload: PatchPost) => docStore.patchPost(payload)
+const patchPost = (payload: PatchPost & { isProject: boolean }) => docStore.patchPost(payload)
 const patchLink = (payload: Link) => docStore.patchLink(payload)
 const patchFile = (payload: AFile) => docStore.patchFile(payload)
 
@@ -137,7 +139,14 @@ const onSubmit = async (payload: Post & Attatches) => {
   }
 }
 
-const postHit = (payload: PatchPost) => patchPost(payload)
+const postHit = async (pk: number) => {
+  if (!heatedPage.value.includes(pk)) {
+    heatedPage.value.push(pk)
+    const hitPost = await fetchPost(pk)
+    const hit = hitPost.hit + 1
+    await patchPost({ pk, hit, isProject: true })
+  }
+}
 const linkHit = async (pk: number) => {
   const link = (await fetchLink(pk)) as Link
   link.hit = (link.hit as number) + 1
@@ -218,6 +227,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId, route.param
       <div v-else-if="route.name.includes('보기')">
         <DocsView
           :board-num="boardNumber"
+          :heated-page="heatedPage"
           :re-order="postFilter.ordering !== '-created'"
           :category="postFilter.category as number"
           :post="post as Post"

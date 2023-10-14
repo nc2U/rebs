@@ -249,10 +249,18 @@ export const useDocument = defineStore('document', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
-  const patchPost = (payload: PatchPost) =>
+  const patchPost = (payload: PatchPost & { isProject?: boolean }) =>
     api
       .patch(`/post/${payload.pk}/`, payload)
-      .then(res => fetchPost(res.data.pk))
+      .then(res =>
+        fetchPostList({
+          company: res.data.company,
+          project: res.data.project,
+          board: res.data.board,
+          is_com: !payload.isProject,
+          page: 1,
+        }).then(() => fetchPost(res.data.pk)),
+      )
       .catch(err => errorHandle(err.response.data))
 
   const deletePost = () => 4
