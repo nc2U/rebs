@@ -19,7 +19,7 @@ const suitCaseName = computed(() => {
 const store = useStore()
 const sortName = computed(() => props.suitCase?.proj_name || '본사 문서')
 const sortColor = computed(() => (props.suitCase?.project ? 'success' : 'info'))
-const courtColor = computed(() => (store.theme !== 'dark' ? 'dark' : 'default'))
+const courtColor = computed(() => (store.theme !== 'dark' ? 'secondary' : 'default'))
 const agencyName = computed(() => {
   const agency = props.suitCase?.court_desc || props.suitCase?.other_agency
   return agency ? getCourt(agency) : ''
@@ -44,19 +44,17 @@ const getCourt = (court: string | undefined) =>
 
 <template>
   <CTableRow v-if="suitCase" class="text-center">
-    <CTableDataCell>
+    <CTableDataCell class="text-left pl-4">
       <a href="javascript:void(0);" @click="sortFunc">
-        <CBadge :color="sortColor" shape="rounded-pill">{{ sortName }}</CBadge>
+        <v-badge :color="sortColor" :content="sortName" style="margin-bottom: 7px" />
       </a>
     </CTableDataCell>
     <CTableDataCell>{{ suitCase.sort_desc }}</CTableDataCell>
     <CTableDataCell>{{ suitCase.level_desc }}</CTableDataCell>
-    <CTableDataCell>
+    <CTableDataCell class="text-left pl-4">
       <span v-if="suitCase.court_desc || suitCase.other_agency">
         <a href="javascript:void(0);" @click="agencyFunc">
-          <CBadge :color="courtColor" shape="rounded-pill">
-            {{ agencyName }}
-          </CBadge>
+          <v-badge :content="agencyName" :color="courtColor" style="margin-bottom: 7px" />
         </a>
       </span>
     </CTableDataCell>

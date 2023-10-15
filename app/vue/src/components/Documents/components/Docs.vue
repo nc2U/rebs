@@ -21,7 +21,7 @@ const sortFunc = () => emit('sort-filter', props.post?.project)
     <CTableDataCell>{{ post.pk }}</CTableDataCell>
     <CTableDataCell class="text-left">
       <a href="javascript:void(0);" @click="sortFunc">
-        <CBadge :color="sortColor" shape="rounded-pill">{{ sortName }}</CBadge>
+        <v-badge :color="sortColor" :content="sortName" class="mx-1" style="margin-bottom: 7px" />
       </a>
     </CTableDataCell>
     <CTableDataCell>{{ post.execution_date }}</CTableDataCell>
@@ -29,7 +29,7 @@ const sortFunc = () => emit('sort-filter', props.post?.project)
       <router-link :to="{ name: `${viewRoute} - 보기`, params: { postId: post.pk } }">
         {{ cutString(post.title, 30) }}
       </router-link>
-      <CBadge v-if="post.is_new" color="warning" size="sm" class="ml-2"> new</CBadge>
+      <CBadge v-if="post.is_new" color="warning" size="sm" class="ml-2">new</CBadge>
     </CTableDataCell>
     <CTableDataCell>{{ post.user }}</CTableDataCell>
     <CTableDataCell>{{ timeFormat(post.created ?? '') }}</CTableDataCell>
