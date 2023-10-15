@@ -39,7 +39,6 @@ const cngFiles = ref<
 >([])
 
 const listFiltering = (payload: PostFilter) => {
-  postFilter.value.company = payload.company ?? ''
   postFilter.value.project = !!payload.is_com ? '' : payload.project
   postFilter.value.is_com = payload.is_com
   postFilter.value.lawsuit = payload.lawsuit

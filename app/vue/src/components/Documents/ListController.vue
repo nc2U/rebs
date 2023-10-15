@@ -115,7 +115,7 @@ onBeforeMount(() => {
             <Multiselect
               v-model="form.lawsuit"
               :options="getSuitCase"
-              placeholder="관련사건"
+              placeholder="사건번호"
               autocomplete="label"
               :classes="{ search: 'form-control multiselect-search' }"
               :add-option-on="['enter', 'tab']"
