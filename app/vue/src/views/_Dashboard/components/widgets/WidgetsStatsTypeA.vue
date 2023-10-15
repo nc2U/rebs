@@ -5,7 +5,7 @@ import { CChart } from '@coreui/vue-chartjs'
 <template>
   <CCol>
     <CRow>
-      <CCol xs="6">
+      <CCol xs="12" md="6" lg="3">
         <CWidgetStatsA class="mb-4" color="primary">
           <template #value>
             26K
@@ -86,7 +86,7 @@ import { CChart } from '@coreui/vue-chartjs'
           </template>
         </CWidgetStatsA>
       </CCol>
-      <CCol :xs="6">
+      <CCol xs="12" md="6" lg="3">
         <CWidgetStatsA class="mb-4" color="info">
           <template #value
             >$6.200
@@ -166,9 +166,7 @@ import { CChart } from '@coreui/vue-chartjs'
           </template>
         </CWidgetStatsA>
       </CCol>
-    </CRow>
-    <CRow>
-      <CCol :xs="6">
+      <CCol xs="12" md="6" lg="3">
         <CWidgetStatsA class="mb-4" color="warning">
           <template #value
             >2.49%
@@ -235,7 +233,7 @@ import { CChart } from '@coreui/vue-chartjs'
           </template>
         </CWidgetStatsA>
       </CCol>
-      <CCol :xs="6">
+      <CCol xs="12" md="6" lg="3">
         <CWidgetStatsA class="mb-4" color="danger">
           <template #value
             >44K

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import TodoListApp from '@/components/TodoListApp/index.vue'
 import MainCarousel from './components/MainCarousel.vue'
 import WidgetsStatsA from './components/widgets/WidgetsStatsTypeA.vue'
 import WidgetsStatsB from './components/widgets/WidgetsStatsTypeB.vue'
@@ -13,20 +12,30 @@ import WidgetsStatsD from './components/widgets/WidgetsStatsTypeD.vue'
       <CCol xl="11" xxl="10">
         <MainCarousel />
       </CCol>
+    </CRow>
+    <CRow>
       <CCol xl="11" xxl="10">
         <CRow>
-          <CCol lg="6">
-            <TodoListApp />
-          </CCol>
-          <CCol lg="6">
+          <CCol lg="12">
             <WidgetsStatsA />
           </CCol>
         </CRow>
       </CCol>
     </CRow>
-
-    <WidgetsStatsB />
-    <WidgetsStatsD />
-    <WidgetsStatsC />
+    <CRow>
+      <CCol>
+        <WidgetsStatsB />
+      </CCol>
+    </CRow>
+    <CRow>
+      <CCol>
+        <WidgetsStatsD />
+      </CCol>
+    </CRow>
+    <CRow>
+      <CCol>
+        <WidgetsStatsC />
+      </CCol>
+    </CRow>
   </CContainer>
 </template>
