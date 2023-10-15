@@ -22,6 +22,7 @@ const postFilter = ref<PostFilter>({
   board: boardNumber.value,
   is_com: true,
   category: '',
+  lawsuit: '',
   ordering: '-created',
   search: '',
   page: 1,
@@ -41,6 +42,7 @@ const listFiltering = (payload: PostFilter) => {
   postFilter.value.company = payload.company ?? ''
   postFilter.value.project = !!payload.is_com ? '' : payload.project
   postFilter.value.is_com = payload.is_com
+  postFilter.value.lawsuit = payload.lawsuit
   postFilter.value.ordering = payload.ordering
   postFilter.value.search = payload.search
   if (company.value) fetchPostList({ ...postFilter.value })
@@ -209,7 +211,7 @@ onBeforeMount(() => dataSetup(company.value || comStore.initComId, route.params?
         <ListController
           ref="fController"
           :com-from="true"
-          :case-docs="true"
+          :get-suit-case="getSuitCase"
           :post-filter="postFilter"
           @list-filter="listFiltering"
         />

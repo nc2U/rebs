@@ -22,6 +22,7 @@ const postFilter = ref<PostFilter>({
   category: '',
   is_com: false,
   project: '',
+  lawsuit: '',
   ordering: '-created',
   search: '',
   page: 1,
@@ -38,6 +39,7 @@ const cngFiles = ref<
 >([])
 
 const docsListFilter = (payload: PostFilter) => {
+  postFilter.value.lawsuit = payload.lawsuit
   postFilter.value.ordering = payload.ordering
   postFilter.value.search = payload.search
   if (project.value) fetchPostList({ ...postFilter.value })
@@ -203,7 +205,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId, route.param
       <div v-if="route.name === `${mainViewName}`" class="pt-3">
         <ListController
           ref="fController"
-          :case-docs="true"
+          :get-suit-case="getSuitCase"
           :post-filter="postFilter"
           @list-filter="docsListFilter"
         />

@@ -4,10 +4,11 @@ import { useProject } from '@/store/pinia/project'
 import { type PostFilter, useDocument } from '@/store/pinia/document'
 import { numFormat } from '@/utils/baseMixins'
 import { bgLight } from '@/utils/cssMixins'
+import Multiselect from '@vueform/multiselect'
 
 const props = defineProps({
   comFrom: { type: Boolean, default: false },
-  caseDocs: { type: Boolean, default: false },
+  getSuitCase: { type: Object, default: null },
   postFilter: { type: Object, required: true },
 })
 const emit = defineEmits(['list-filter'])
@@ -16,6 +17,7 @@ const form = reactive<PostFilter>({
   company: '',
   project: '',
   is_com: props.comFrom,
+  lawsuit: '',
   ordering: '-created',
   search: '',
 })
@@ -23,9 +25,10 @@ const form = reactive<PostFilter>({
 const formsCheck = computed(() => {
   const a = form.is_com === !!props.comFrom
   const b = !!props.comFrom ? form.project === '' : true
-  const c = form.ordering === '-created'
-  const d = form.search === ''
-  return a && b && c && d
+  const c = 1 === 1
+  const d = form.ordering === '-created'
+  const e = form.search === ''
+  return a && b && c && d && e
 })
 
 const documentStore = useDocument()
@@ -55,6 +58,7 @@ const projectChange = (project: number | null) => (form.project = project ?? '')
 const resetForm = () => {
   form.is_com = !!props.comFrom
   form.project = ''
+  form.lawsuit = ''
   form.ordering = '-created'
   form.search = ''
   listFiltering(1)
@@ -107,12 +111,24 @@ onBeforeMount(() => {
 
       <CCol lg="6">
         <CRow class="justify-content-md-end">
+          <CCol v-if="getSuitCase" md="6" lg="5" class="mb-3">
+            <Multiselect
+              v-model="form.lawsuit"
+              :options="getSuitCase"
+              placeholder="관련사건"
+              autocomplete="label"
+              :classes="{ search: 'form-control multiselect-search' }"
+              :add-option-on="['enter', 'tab']"
+              searchable
+              @change="listFiltering(1)"
+            />
+          </CCol>
           <CCol md="6" lg="5" class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.search"
                 :placeholder="`제목, 내용, 첨부링크, 첨부파일명, 작성자${
-                  caseDocs ? ', 사건번호(명)' : ''
+                  getSuitCase ? ', 사건번호(명)' : ''
                 }`"
                 @keydown.enter="listFiltering(1)"
               />
