@@ -38,7 +38,11 @@ const sortFunc = () => emit('sort-filter', props.suitCase?.project)
 const relatedFilter = () => emit('related-filter', props.suitCase?.related_case)
 const getCourt = (court: string | undefined) =>
   court
-    ? court.replace('지방법원', '지법').replace('고등법원', '고법').replace('대법원', '대법')
+    ? court
+        .replace('지방법원', '지법')
+        .replace('고등법원', '고법')
+        .replace('대법원', '대법')
+        .replace('재판부', '')
     : ''
 </script>
 
