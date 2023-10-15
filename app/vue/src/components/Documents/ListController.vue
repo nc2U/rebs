@@ -25,7 +25,7 @@ const form = reactive<PostFilter>({
 const formsCheck = computed(() => {
   const a = form.is_com === !!props.comFrom
   const b = !!props.comFrom ? form.project === '' : true
-  const c = form.lawsuit === ''
+  const c = !form.lawsuit
   const d = form.ordering === '-created'
   const e = form.search === ''
   return a && b && c && d && e
@@ -83,6 +83,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
+  {{ form }}
   <CCallout :color="comFrom ? 'primary' : 'success'" class="pb-0 mb-4" :class="bgLight">
     <CRow>
       <CCol lg="6">
