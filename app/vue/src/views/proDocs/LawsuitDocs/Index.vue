@@ -17,11 +17,11 @@ const fController = ref()
 const boardNumber = ref(3)
 const mainViewName = ref('현장 소송 문서')
 const postFilter = ref<PostFilter>({
-  company: '',
   board: boardNumber.value,
   category: '',
   is_com: false,
   project: '',
+  lawsuit: '',
   ordering: '-created',
   search: '',
   page: 1,
@@ -37,7 +37,8 @@ const cngFiles = ref<
   }[]
 >([])
 
-const docsListFilter = (payload: PostFilter) => {
+const listFiltering = (payload: PostFilter) => {
+  postFilter.value.lawsuit = payload.lawsuit
   postFilter.value.ordering = payload.ordering
   postFilter.value.search = payload.search
   if (project.value) fetchPostList({ ...postFilter.value })
@@ -45,12 +46,12 @@ const docsListFilter = (payload: PostFilter) => {
 
 const selectCate = (cate: number) => {
   postFilter.value.category = cate
-  docsListFilter(postFilter.value)
+  listFiltering(postFilter.value)
 }
 
 const pageSelect = (page: number) => {
   postFilter.value.page = page
-  docsListFilter(postFilter.value)
+  listFiltering(postFilter.value)
 }
 
 const projStore = useProject()
@@ -163,7 +164,7 @@ const sortFilter = (project: number | null) => {
   postFilter.value.page = 1
   if (project !== null) postFilter.value.project = project
   else postFilter.value.is_com = true
-  docsListFilter(postFilter.value)
+  listFiltering(postFilter.value)
 }
 
 const dataSetup = (pk: number, postId?: string | string[]) => {
@@ -203,9 +204,9 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId, route.param
       <div v-if="route.name === `${mainViewName}`" class="pt-3">
         <ListController
           ref="fController"
-          :case-docs="true"
+          :get-suit-case="getSuitCase"
           :post-filter="postFilter"
-          @list-filter="docsListFilter"
+          @list-filter="listFiltering"
         />
 
         <CategoryTabs
