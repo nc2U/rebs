@@ -48,13 +48,13 @@ const getCourt = (court: string | undefined) =>
 <template>
   <CTableRow v-if="suitCase" class="text-center">
     <CTableDataCell class="text-left pl-4">
-      <v-badge :color="sortColor" :content="sortName" style="margin-bottom: 7px" />
+      <v-badge :color="sortColor" :content="sortName" offset-x="5" offset-y="-7" />
     </CTableDataCell>
     <CTableDataCell>{{ suitCase.sort_desc }}</CTableDataCell>
     <CTableDataCell>{{ suitCase.level_desc }}</CTableDataCell>
     <CTableDataCell class="text-left pl-4">
       <span v-if="suitCase.court_desc || suitCase.other_agency">
-        <v-badge :content="agencyName" :color="courtColor" style="margin-bottom: 7px" />
+        <v-badge :content="agencyName" :color="courtColor" offset-y="-7" />
       </span>
     </CTableDataCell>
     <CTableDataCell>
