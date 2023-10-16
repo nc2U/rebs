@@ -181,9 +181,9 @@ onBeforeMount(() => {
 
       <div v-else-if="route.name.includes('보기')">
         <CaseView
-          :curr-page="caseFilter.page ?? 1"
           :suitcase="suitcase as SuitCase"
           :view-route="mainViewName"
+          :curr-page="caseFilter.page ?? 1"
           @link-hit="linkHit"
           @file-hit="fileHit"
           @cases-renewal="casesRenewal"
