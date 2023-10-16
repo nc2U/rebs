@@ -14,13 +14,12 @@ defineProps({
   viewRoute: { type: String, required: true },
 })
 
-const emit = defineEmits(['page-select', 'sort-filter'])
+const emit = defineEmits(['page-select'])
 
 const documentStore = useDocument()
 
 const postPages = (num: number) => documentStore.postPages(num)
 const pageSelect = (page: number) => emit('page-select', page)
-const sortFilter = (project: number | null) => emit('sort-filter', project)
 </script>
 
 <template>
@@ -48,13 +47,7 @@ const sortFilter = (project: number | null) => emit('sort-filter', project)
     </CTableHead>
 
     <CTableBody>
-      <Docs
-        v-for="post in postList"
-        :key="post.pk"
-        :post="post"
-        :view-route="viewRoute"
-        @sort-filter="sortFilter"
-      />
+      <Docs v-for="post in postList" :key="post.pk" :post="post" :view-route="viewRoute" />
     </CTableBody>
   </CTable>
 

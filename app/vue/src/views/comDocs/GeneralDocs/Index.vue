@@ -156,14 +156,6 @@ const fileHit = async (pk: number) => {
   await patchFile({ pk, hit })
 }
 
-const sortFilter = (project: number | null) => {
-  fController.value.projectChange(project ?? 'is_com')
-  postFilter.value.page = 1
-  if (project !== null) postFilter.value.project = project
-  else postFilter.value.is_com = true
-  listFiltering(postFilter.value)
-}
-
 const dataSetup = (pk: number, postId?: string | string[]) => {
   fetchCategoryList(boardNumber.value)
   fetchPostList({
@@ -222,7 +214,6 @@ onBeforeMount(() => dataSetup(company.value || comStore.initComId, route.params?
           :post-list="postList"
           :view-route="mainViewName"
           @page-select="pageSelect"
-          @sort-filter="sortFilter"
         />
       </div>
 

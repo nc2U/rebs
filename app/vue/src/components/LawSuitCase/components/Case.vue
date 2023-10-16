@@ -9,7 +9,7 @@ const props = defineProps({
   viewRoute: { type: String, required: true },
 })
 
-const emit = defineEmits(['agency-filter', 'agency-search', 'related-filter', 'sort-filter'])
+const emit = defineEmits(['agency-filter', 'agency-search', 'related-filter'])
 
 const suitCaseName = computed(() => {
   const sCase = props.suitCase
@@ -34,7 +34,6 @@ const agencyFunc = () => {
     : emit('agency-search', props.suitCase.other_agency)
 }
 
-const sortFunc = () => emit('sort-filter', props.suitCase?.project)
 const relatedFilter = () => emit('related-filter', props.suitCase?.related_case)
 const getCourt = (court: string | undefined) =>
   court
@@ -57,9 +56,7 @@ const getCourt = (court: string | undefined) =>
     <CTableDataCell>{{ suitCase.level_desc }}</CTableDataCell>
     <CTableDataCell class="text-left pl-4">
       <span v-if="suitCase.court_desc || suitCase.other_agency">
-        <a href="javascript:void(0);" @click="agencyFunc">
-          <v-badge :content="agencyName" :color="courtColor" style="margin-bottom: 7px" />
-        </a>
+        <v-badge :content="agencyName" :color="courtColor" style="margin-bottom: 7px" />
       </span>
     </CTableDataCell>
     <CTableDataCell>

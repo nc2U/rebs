@@ -13,20 +13,13 @@ defineProps({
   viewRoute: { type: String, required: true },
 })
 
-const emit = defineEmits([
-  'page-select',
-  'agency-filter',
-  'agency-search',
-  'related-filter',
-  'sort-filter',
-])
+const emit = defineEmits(['page-select', 'agency-filter', 'agency-search', 'related-filter'])
 
 const documentStore = useDocument()
 
 const agencyFilter = (court: string) => emit('agency-filter', court)
 const agencySearch = (agent: string) => emit('agency-search', agent)
 const relatedFilter = (related: number) => emit('related-filter', related)
-const sortFilter = (project: number | null) => emit('sort-filter', project)
 
 const casePages = (num: number) => documentStore.casePages(num)
 const pageSelect = (page: number) => emit('page-select', page)
@@ -71,7 +64,6 @@ const pageSelect = (page: number) => emit('page-select', page)
         @agency-filter="agencyFilter"
         @agency-search="agencySearch"
         @related-filter="relatedFilter"
-        @sort-filter="sortFilter"
       />
     </CTableBody>
   </CTable>

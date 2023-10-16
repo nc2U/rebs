@@ -8,21 +8,15 @@ const props = defineProps({
   viewRoute: { type: String, required: true },
 })
 
-const emit = defineEmits(['sort-filter'])
-
 const sortName = computed(() => props.post?.proj_name || '본사 문서')
 const sortColor = computed(() => (props.post?.project ? 'success' : 'info'))
-
-const sortFunc = () => emit('sort-filter', props.post?.project)
 </script>
 
 <template>
   <CTableRow v-if="post" class="text-center">
     <CTableDataCell>{{ post.pk }}</CTableDataCell>
     <CTableDataCell class="text-left">
-      <a href="javascript:void(0);" @click="sortFunc">
-        <v-badge :color="sortColor" :content="sortName" class="mx-1" style="margin-bottom: 7px" />
-      </a>
+      <v-badge :color="sortColor" :content="sortName" class="mx-1" style="margin-bottom: 7px" />
     </CTableDataCell>
     <CTableDataCell>{{ post.execution_date }}</CTableDataCell>
     <CTableDataCell class="text-left">

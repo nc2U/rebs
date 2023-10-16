@@ -131,14 +131,6 @@ const relatedFilter = (related: number) => {
   listFiltering(caseFilter.value)
 }
 
-const sortFilter = (project: number | null) => {
-  fController.value.projectChange(project)
-  caseFilter.value.page = 1
-  if (project !== null) caseFilter.value.project = project
-  else caseFilter.value.is_com = true
-  listFiltering(caseFilter.value)
-}
-
 const dataSetup = (pk: number, caseId?: string | string[]) => {
   caseFilter.value.company = company.value ?? ''
   caseFilter.value.project = pk
@@ -184,7 +176,6 @@ onBeforeMount(() => {
           @agency-filter="agencyFilter"
           @agency-search="agencySearch"
           @related-filter="relatedFilter"
-          @sort-filter="sortFilter"
         />
       </div>
 

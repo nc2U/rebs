@@ -119,14 +119,6 @@ const relatedFilter = (related: number) => {
   listFiltering(caseFilter.value)
 }
 
-const sortFilter = (project: number | null) => {
-  fController.value.projectChange(project)
-  caseFilter.value.page = 1
-  if (project !== null) caseFilter.value.project = project
-  else caseFilter.value.is_com = true
-  listFiltering(caseFilter.value)
-}
-
 const dataSetup = (pk: number, caseId?: string | string[]) => {
   fetchAllSuitCaseList({ is_com: true })
   fetchSuitCaseList({ company: pk, is_com: true, in_progress: true, page: caseFilter.value.page })
@@ -183,7 +175,6 @@ onBeforeMount(() => dataSetup(company.value || comStore.initComId, route.params?
           @agency-filter="agencyFilter"
           @agency-search="agencySearch"
           @related-filter="relatedFilter"
-          @sort-filter="sortFilter"
         />
       </div>
 
