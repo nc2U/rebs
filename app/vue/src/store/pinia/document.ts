@@ -217,7 +217,13 @@ export const useDocument = defineStore('document', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const createPost = (payload: { form: FormData } & { isProject?: boolean }) =>
+  const createPost = (
+    payload: {
+      form: FormData
+    } & {
+      isProject?: boolean
+    },
+  ) =>
     api
       .post(`/post/`, payload.form, {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -233,7 +239,14 @@ export const useDocument = defineStore('document', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
-  const updatePost = (payload: { pk: number; form: FormData } & { isProject?: boolean }) =>
+  const updatePost = (
+    payload: {
+      pk: number
+      form: FormData
+    } & {
+      isProject?: boolean
+    },
+  ) =>
     api
       .put(`/post/${payload.pk}/`, payload.form, {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -249,19 +262,22 @@ export const useDocument = defineStore('document', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
-  const patchPost = (payload: PatchPost & { isProject?: boolean }) =>
-    api
-      .patch(`/post/${payload.pk}/`, payload)
+  const patchPost = async (
+    payload: PatchPost & {
+      filter?: PostFilter
+    },
+  ) => {
+    const { filter, ...data } = payload
+    return await api
+      .patch(`/post/${data.pk}/`, data)
       .then(res =>
         fetchPostList({
           company: res.data.company,
-          project: res.data.project,
-          board: res.data.board,
-          is_com: !payload.isProject,
-          page: 1,
+          ...filter,
         }).then(() => fetchPost(res.data.pk)),
       )
       .catch(err => errorHandle(err.response.data))
+  }
 
   const deletePost = () => 4
 

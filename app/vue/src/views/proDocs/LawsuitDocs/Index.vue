@@ -30,12 +30,7 @@ const postFilter = ref<PostFilter>({
 const heatedPage = ref<number[]>([])
 
 const newFiles = ref<File[]>([])
-const cngFiles = ref<
-  {
-    pk: number
-    file: File
-  }[]
->([])
+const cngFiles = ref<{ pk: number; file: File }[]>([])
 
 const listFiltering = (payload: PostFilter) => {
   postFilter.value.lawsuit = payload.lawsuit
@@ -74,16 +69,11 @@ const fetchAllSuitCaseList = (payload: SuitCaseFilter) => docStore.fetchAllSuitC
 
 const createPost = (payload: { form: FormData }) => docStore.createPost(payload)
 const updatePost = (payload: { pk: number; form: FormData }) => docStore.updatePost(payload)
-const patchPost = (payload: PatchPost & { isProject: boolean }) => docStore.patchPost(payload)
+const patchPost = (payload: PatchPost & { filter: PostFilter }) => docStore.patchPost(payload)
 const patchLink = (payload: Link) => docStore.patchLink(payload)
 const patchFile = (payload: AFile) => docStore.patchFile(payload)
 
-const [route, router] = [
-  useRoute() as Loaded & {
-    name: string
-  },
-  useRouter(),
-]
+const [route, router] = [useRoute() as Loaded & { name: string }, useRouter()]
 
 watch(route, val => {
   if (val.params.postId) fetchPost(Number(val.params.postId))
@@ -145,7 +135,7 @@ const postHit = async (pk: number) => {
     heatedPage.value.push(pk)
     const hitPost = await fetchPost(pk)
     const hit = hitPost.hit + 1
-    await patchPost({ pk, hit, isProject: true })
+    await patchPost({ pk, hit, filter: postFilter.value })
   }
 }
 const linkHit = async (pk: number) => {
@@ -163,12 +153,7 @@ const dataSetup = (pk: number, postId?: string | string[]) => {
   postFilter.value.project = pk
   fetchCategoryList(boardNumber.value)
   fetchAllSuitCaseList({ company: company.value ?? '', project: pk, is_com: false })
-  fetchPostList({
-    project: pk,
-    board: boardNumber.value,
-    page: postFilter.value.page,
-    category: postFilter.value.category,
-  })
+  fetchPostList(postFilter.value)
   if (postId) fetchPost(Number(postId))
 }
 
