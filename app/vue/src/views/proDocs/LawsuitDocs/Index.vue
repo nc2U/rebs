@@ -30,12 +30,7 @@ const postFilter = ref<PostFilter>({
 const heatedPage = ref<number[]>([])
 
 const newFiles = ref<File[]>([])
-const cngFiles = ref<
-  {
-    pk: number
-    file: File
-  }[]
->([])
+const cngFiles = ref<{ pk: number; file: File }[]>([])
 
 const listFiltering = (payload: PostFilter) => {
   postFilter.value.lawsuit = payload.lawsuit
@@ -78,12 +73,7 @@ const patchPost = (payload: PatchPost & { isProject: boolean }) => docStore.patc
 const patchLink = (payload: Link) => docStore.patchLink(payload)
 const patchFile = (payload: AFile) => docStore.patchFile(payload)
 
-const [route, router] = [
-  useRoute() as Loaded & {
-    name: string
-  },
-  useRouter(),
-]
+const [route, router] = [useRoute() as Loaded & { name: string }, useRouter()]
 
 watch(route, val => {
   if (val.params.postId) fetchPost(Number(val.params.postId))
@@ -163,12 +153,7 @@ const dataSetup = (pk: number, postId?: string | string[]) => {
   postFilter.value.project = pk
   fetchCategoryList(boardNumber.value)
   fetchAllSuitCaseList({ company: company.value ?? '', project: pk, is_com: false })
-  fetchPostList({
-    project: pk,
-    board: boardNumber.value,
-    page: postFilter.value.page,
-    category: postFilter.value.category,
-  })
+  fetchPostList(postFilter.value)
   if (postId) fetchPost(Number(postId))
 }
 
@@ -200,7 +185,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId, route.param
           :post-filter="postFilter"
           @list-filter="listFiltering"
         />
-
+        {{ postFilter }}
         <CategoryTabs
           :category="postFilter.category as number"
           :category-list="categoryList"

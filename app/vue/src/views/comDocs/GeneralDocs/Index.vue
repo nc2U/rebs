@@ -157,15 +157,10 @@ const fileHit = async (pk: number) => {
 }
 
 const dataSetup = (pk: number, postId?: string | string[]) => {
-  fetchCategoryList(boardNumber.value)
-  fetchPostList({
-    company: pk,
-    board: boardNumber.value,
-    page: postFilter.value.page,
-    is_com: postFilter.value.is_com,
-  })
-  if (postId) fetchPost(Number(postId))
   postFilter.value.company = pk
+  fetchCategoryList(boardNumber.value)
+  fetchPostList(postFilter.value)
+  if (postId) fetchPost(Number(postId))
 }
 
 const dataReset = () => {

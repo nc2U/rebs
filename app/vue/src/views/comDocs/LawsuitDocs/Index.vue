@@ -160,16 +160,11 @@ const fileHit = async (pk: number) => {
 }
 
 const dataSetup = (pk: number, postId?: string | string[]) => {
-  fetchPostList({
-    company: pk,
-    board: boardNumber.value,
-    page: postFilter.value.page,
-    is_com: postFilter.value.is_com,
-  })
+  postFilter.value.company = pk
   fetchCategoryList(boardNumber.value)
   fetchAllSuitCaseList({ is_com: true })
+  fetchPostList(postFilter.value)
   if (postId) fetchPost(Number(postId))
-  postFilter.value.company = pk
 }
 const dataReset = () => {
   comStore.company = null

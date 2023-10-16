@@ -120,10 +120,10 @@ const relatedFilter = (related: number) => {
 }
 
 const dataSetup = (pk: number, caseId?: string | string[]) => {
-  fetchAllSuitCaseList({ is_com: true })
-  fetchSuitCaseList({ company: pk, is_com: true, in_progress: true, page: caseFilter.value.page })
-  if (caseId) fetchSuitCase(Number(caseId))
   caseFilter.value.company = pk
+  fetchAllSuitCaseList({ is_com: true })
+  fetchSuitCaseList(caseFilter.value)
+  if (caseId) fetchSuitCase(Number(caseId))
 }
 
 const dataReset = () => {

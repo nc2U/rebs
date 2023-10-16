@@ -29,12 +29,7 @@ const postFilter = ref<PostFilter>({
 const heatedPage = ref<number[]>([])
 
 const newFiles = ref<File[]>([])
-const cngFiles = ref<
-  {
-    pk: number
-    file: File
-  }[]
->([])
+const cngFiles = ref<{ pk: number; file: File }[]>([])
 
 const listFiltering = (payload: PostFilter) => {
   postFilter.value.ordering = payload.ordering
@@ -74,12 +69,7 @@ const patchPost = (payload: PatchPost & { isProject: boolean }) => docStore.patc
 const patchLink = (payload: Link) => docStore.patchLink(payload)
 const patchFile = (payload: AFile) => docStore.patchFile(payload)
 
-const [route, router] = [
-  useRoute() as Loaded & {
-    name: string
-  },
-  useRouter(),
-]
+const [route, router] = [useRoute() as Loaded & { name: string }, useRouter()]
 
 watch(route, val => {
   if (val.params.postId) fetchPost(Number(val.params.postId))
@@ -157,15 +147,10 @@ const fileHit = async (pk: number) => {
 }
 
 const dataSetup = (pk: number, postId?: string | string[]) => {
-  fetchCategoryList(boardNumber.value)
-  fetchPostList({
-    project: pk,
-    board: boardNumber.value,
-    page: postFilter.value.page,
-    category: postFilter.value.category,
-  })
-  if (postId) fetchPost(Number(postId))
   postFilter.value.project = pk
+  fetchCategoryList(boardNumber.value)
+  fetchPostList(postFilter.value)
+  if (postId) fetchPost(Number(postId))
 }
 
 const dataReset = () => {
