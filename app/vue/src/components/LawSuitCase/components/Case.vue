@@ -48,9 +48,7 @@ const getCourt = (court: string | undefined) =>
 <template>
   <CTableRow v-if="suitCase" class="text-center">
     <CTableDataCell class="text-left pl-4">
-      <a href="javascript:void(0);" @click="sortFunc">
-        <v-badge :color="sortColor" :content="sortName" style="margin-bottom: 7px" />
-      </a>
+      <v-badge :color="sortColor" :content="sortName" style="margin-bottom: 7px" />
     </CTableDataCell>
     <CTableDataCell>{{ suitCase.sort_desc }}</CTableDataCell>
     <CTableDataCell>{{ suitCase.level_desc }}</CTableDataCell>
