@@ -23,7 +23,7 @@ const caseFilter = ref<cFilter>({
   related_case: '',
   sort: '',
   level: '',
-  in_progress: true,
+  in_progress: '',
   search: '',
   page: 1,
 })

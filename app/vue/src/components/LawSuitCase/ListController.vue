@@ -21,7 +21,7 @@ const form = reactive<SuitCaseFilter>({
   related_case: '',
   sort: '',
   level: '',
-  in_progress: true,
+  in_progress: '',
   search: '',
   page: 1,
 })
@@ -33,7 +33,7 @@ const formsCheck = computed(() => {
   const d = form.related_case === ''
   const e = form.sort === ''
   const f = form.level === ''
-  const g = form.in_progress === true
+  const g = form.in_progress === ''
   const h = form.search === ''
   return a && b && c && d && e && f && g && h
 })
@@ -76,7 +76,7 @@ const resetForm = () => {
   form.related_case = ''
   form.sort = ''
   form.level = ''
-  form.in_progress = true
+  form.in_progress = ''
   form.search = ''
   listFiltering(1)
 }
