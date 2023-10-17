@@ -46,6 +46,7 @@ const listFiltering = (payload: PostFilter) => {
 }
 
 const selectCate = (cate: number) => {
+  postFilter.value.page = 1
   postFilter.value.category = cate
   listFiltering(postFilter.value)
 }
