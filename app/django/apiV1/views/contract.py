@@ -42,7 +42,14 @@ class ContractViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filterset_class = ContractFilter
     search_fields = ('serial_number', 'contractor__name', 'contractor__note',
-                     'contractor__contractorcontact__cell_phone')
+                     'contractor__contractorcontact__cell_phone',
+                     'contractor__contractorcontact__email',
+                     'contractor__contractoraddress__id_address1',
+                     'contractor__contractoraddress__id_address2',
+                     'contractor__contractoraddress__id_address3',
+                     'contractor__contractoraddress__dm_address1',
+                     'contractor__contractoraddress__dm_address2',
+                     'contractor__contractoraddress__dm_address3')
     ordering_fields = ('created_at', 'contractor__contract_date',
                        'serial_number', 'contractor__name')
 
