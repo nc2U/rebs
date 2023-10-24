@@ -22,7 +22,7 @@ const contorPk = computed(() =>
 const status = computed(() =>
   isContract.value ? props.unit.key_unit.contract?.contractor.status : '',
 )
-const isHold = computed(() => (isContract.value ? props.unit.is_hold : ''))
+const isHold = computed(() => props.unit?.is_hold || '')
 </script>
 
 <template>
@@ -62,6 +62,10 @@ const isHold = computed(() => (isContract.value ? props.unit.is_hold : ''))
         >
           {{ contorName }}
         </router-link>
+      </span>
+      <span v-if="isHold">
+        HOLD
+        <v-tooltip activator="parent" location="top">{{ unit.hold_reason }}</v-tooltip>
       </span>
     </div>
   </div>

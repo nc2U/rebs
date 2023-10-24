@@ -163,6 +163,7 @@ export const useProjectData = defineStore('projectData', () => {
           line: u.bldg_line,
           floor: u.floor_no,
           is_hold: u.is_hold,
+          hold_reason: u.hold_reason,
         }))
       : [],
   )

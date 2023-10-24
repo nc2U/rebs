@@ -13,6 +13,7 @@ export type SimpleUnit = {
   line: number
   floor: number
   is_hold: boolean
+  hold_reason: string
 }
 
 const pDataStore = useProjectData()
