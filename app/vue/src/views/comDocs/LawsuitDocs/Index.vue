@@ -214,6 +214,7 @@ onBeforeMount(() => dataSetup(company.value || comStore.initComId, route.params?
           :page="postFilter.page ?? 1"
           :post-list="postList"
           :view-route="mainViewName"
+          :is-lawsuit="true"
           @page-select="pageSelect"
         />
       </div>

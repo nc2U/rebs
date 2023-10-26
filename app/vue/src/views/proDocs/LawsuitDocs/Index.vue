@@ -118,12 +118,12 @@ const onSubmit = async (payload: Post & Attatches) => {
     if (pk) {
       await updatePost({ pk, form, ...{ isProject: true } })
       await router.replace({
-        name: `${ mainViewName.value } - 보기`,
+        name: `${mainViewName.value} - 보기`,
         params: { postId: pk },
       })
     } else {
       await createPost({ form, ...{ isProject: true } })
-      await router.replace({ name: `${ mainViewName.value }` })
+      await router.replace({ name: `${mainViewName.value}` })
       fController.value.resetForm()
     }
     newFiles.value = []
@@ -163,7 +163,7 @@ const dataReset = () => {
   docStore.postList = []
   docStore.postCount = 0
   postFilter.value.project = ''
-  router.replace({ name: `${ mainViewName.value }` })
+  router.replace({ name: `${mainViewName.value}` })
 }
 
 const projSelect = (target: number | null) => {
@@ -175,72 +175,73 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId, route.param
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect"/>
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
 
   <ContentBody>
     <CCardBody class="pb-5">
       <div v-if="route.name === `${mainViewName}`" class="pt-3">
         <ListController
-            ref="fController"
-            :get-suit-case="getSuitCase"
-            :post-filter="postFilter"
-            @list-filter="listFiltering"
+          ref="fController"
+          :get-suit-case="getSuitCase"
+          :post-filter="postFilter"
+          @list-filter="listFiltering"
         />
 
         <CategoryTabs
-            :category="postFilter.category as number"
-            :category-list="categoryList"
-            @select-cate="selectCate"
+          :category="postFilter.category as number"
+          :category-list="categoryList"
+          @select-cate="selectCate"
         />
 
         <DocsList
-            :project="project as number"
-            :page="postFilter.page ?? 1"
-            :post-list="postList"
-            :view-route="mainViewName"
-            @page-select="pageSelect"
+          :project="project as number"
+          :page="postFilter.page ?? 1"
+          :post-list="postList"
+          :view-route="mainViewName"
+          :is-lawsuit="true"
+          @page-select="pageSelect"
         />
       </div>
 
       <div v-else-if="route.name.includes('보기')">
         <DocsView
-            :board-num="boardNumber"
-            :heated-page="heatedPage"
-            :re-order="postFilter.ordering !== '-created'"
-            :category="postFilter.category as number"
-            :post="post as Post"
-            :view-route="mainViewName"
-            :curr-page="postFilter.page ?? 1"
-            @post-hit="postHit"
-            @link-hit="linkHit"
-            @file-hit="fileHit"
-            @posts-renewal="postsRenewal"
+          :board-num="boardNumber"
+          :heated-page="heatedPage"
+          :re-order="postFilter.ordering !== '-created'"
+          :category="postFilter.category as number"
+          :post="post as Post"
+          :view-route="mainViewName"
+          :curr-page="postFilter.page ?? 1"
+          @post-hit="postHit"
+          @link-hit="linkHit"
+          @file-hit="fileHit"
+          @posts-renewal="postsRenewal"
         />
       </div>
 
       <div v-else-if="route.name.includes('작성')">
         <DocsForm
-            :sort-name="projName"
-            :board-num="boardNumber"
-            :get-suit-case="getSuitCase"
-            :category-list="categoryList"
-            :view-route="mainViewName"
-            @file-upload="fileUpload"
-            @on-submit="onSubmit"
+          :sort-name="projName"
+          :board-num="boardNumber"
+          :get-suit-case="getSuitCase"
+          :category-list="categoryList"
+          :view-route="mainViewName"
+          @file-upload="fileUpload"
+          @on-submit="onSubmit"
         />
       </div>
 
       <div v-else-if="route.name.includes('수정')">
         <DocsForm
-            :sort-name="projName"
-            :board-num="boardNumber"
-            :get-suit-case="getSuitCase"
-            :category-list="categoryList"
-            :post="post as Post"
-            :view-route="mainViewName"
-            @file-change="fileChange"
-            @file-upload="fileUpload"
-            @on-submit="onSubmit"
+          :sort-name="projName"
+          :board-num="boardNumber"
+          :get-suit-case="getSuitCase"
+          :category-list="categoryList"
+          :post="post as Post"
+          :view-route="mainViewName"
+          @file-change="fileChange"
+          @file-upload="fileUpload"
+          @on-submit="onSubmit"
         />
       </div>
     </CCardBody>

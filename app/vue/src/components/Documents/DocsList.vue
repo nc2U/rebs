@@ -12,6 +12,7 @@ defineProps({
   page: { type: Number, default: 1 },
   postList: { type: Array as PropType<Post[]>, default: () => [] },
   viewRoute: { type: String, required: true },
+  isLawsuit: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['page-select'])
@@ -24,7 +25,17 @@ const pageSelect = (page: number) => emit('page-select', page)
 
 <template>
   <CTable hover responsive align="middle">
-    <colgroup>
+    <colgroup v-if="isLawsuit">
+      <col style="width: 8%" />
+      <col style="width: 10%" />
+      <col style="width: 9%" />
+      <col style="width: 20%" />
+      <col style="width: 27%" />
+      <col style="width: 9%" />
+      <col style="width: 12%" />
+      <col style="width: 8%" />
+    </colgroup>
+    <colgroup v-else>
       <col style="width: 8%" />
       <col style="width: 10%" />
       <col style="width: 11%" />
@@ -39,6 +50,7 @@ const pageSelect = (page: number) => emit('page-select', page)
         <CTableHeaderCell scope="col">번호</CTableHeaderCell>
         <CTableHeaderCell scope="col">구분</CTableHeaderCell>
         <CTableHeaderCell scope="col">문서 발행일자</CTableHeaderCell>
+        <CTableHeaderCell v-if="isLawsuit" scope="col">사건명</CTableHeaderCell>
         <CTableHeaderCell scope="col">문서 제목</CTableHeaderCell>
         <CTableHeaderCell scope="col">등록자</CTableHeaderCell>
         <CTableHeaderCell scope="col">등록일시</CTableHeaderCell>
@@ -47,7 +59,13 @@ const pageSelect = (page: number) => emit('page-select', page)
     </CTableHead>
 
     <CTableBody>
-      <Docs v-for="post in postList" :key="post.pk" :post="post" :view-route="viewRoute" />
+      <Docs
+        v-for="post in postList"
+        :key="post.pk"
+        :post="post"
+        :view-route="viewRoute"
+        :is-lawsuit="isLawsuit"
+      />
     </CTableBody>
   </CTable>
 
