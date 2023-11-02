@@ -63,7 +63,8 @@ jobs:
           password: ${{ secrets.CICD_PASS }}
           command: |
             cd ${{ secrets.CICD_PATH }}/dev
-            mkdir -p ./volume/mysql && rm -rf ./deploy/docker* && cd deploy/helm
+            mkdir -p ./volume/mysql && chmod -R 755 ./volume/mysql && \
+            rm -rf ./deploy/docker* && cd deploy/helm
             helm upgrade ${{ secrets.DATABASE_USER }} . -f ./values-dev.yaml \
               --install -n dev-hrebs --create-namespace --history-max 5 --wait --timeout 10m \
               --set global.dbPassword=${{ secrets.DATABASE_PASS }} \
