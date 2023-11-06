@@ -2,7 +2,10 @@ import axios from 'axios'
 import router from '@/router'
 import { start, close } from '@/utils/nprogress'
 
-export const silentApi = axios.create({ baseURL: '/api/v1/' })
+const silentApi = axios.create({ baseURL: '/api/v1/' })
+
+silentApi.defaults.xsrfCookieName = 'csrftoken'
+silentApi.defaults.xsrfHeaderName = 'X-CSRFToken'
 
 const api = axios.create({
   baseURL: '/api/v1/',
