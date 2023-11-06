@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import MainCarousel from './components/MainCarousel.vue'
-import WidgetsStatsA from './components/widgets/WidgetsStatsTypeA.vue'
+import WiseWord from '@/views/_Dashboard/components/WiseWord.vue'
 import WidgetsStatsB from './components/widgets/WidgetsStatsTypeB.vue'
 import WidgetsStatsC from './components/widgets/WidgetsStatsTypeC.vue'
 import WidgetsStatsD from './components/widgets/WidgetsStatsTypeD.vue'
@@ -17,7 +17,7 @@ import WidgetsStatsD from './components/widgets/WidgetsStatsTypeD.vue'
       <CCol xl="11" xxl="10">
         <CRow>
           <CCol lg="12">
-            <WidgetsStatsA />
+            <WiseWord />
           </CCol>
         </CRow>
       </CCol>

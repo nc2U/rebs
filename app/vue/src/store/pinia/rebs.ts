@@ -1,0 +1,41 @@
+import { ref } from 'vue'
+import { defineStore } from 'pinia'
+import api, { silentApi } from '@/api'
+
+export type WiseWord = {
+  pk: number
+  saying_ko: string
+  saying_en: string
+  spoked_by: string
+}
+
+export const useRebs = defineStore('rebs', () => {
+  // states
+  const wiseWordsList = ref<WiseWord[]>([])
+  const wiseWordsCount = ref<number>(0)
+  const wiseWord = ref<WiseWord | null>(null)
+
+  // actions
+  const fetchWiseWordsList = () =>
+    api
+      .get('wise-say')
+      .then(res => {
+        wiseWordsList.value = res.data.results
+        wiseWordsCount.value = res.data.count
+      })
+      .catch(err => console.log(err.response.data))
+
+  const fetchWiseWord = (pk: number) =>
+    silentApi
+      .get(`/wise-say/${pk}`)
+      .then(res => (wiseWord.value = res.data))
+      .catch(err => console.log(err.response.data))
+
+  return {
+    wiseWordsList,
+    wiseWordsCount,
+    wiseWord,
+    fetchWiseWordsList,
+    fetchWiseWord,
+  }
+})
