@@ -33,7 +33,9 @@ const getPk = (max: number) => Math.floor(Math.random() * max)
 onBeforeMount(() => {
   fetchWiseWordsList().then(() => {
     fetchWiseWord(getPk(wiseWordsCount.value))
-    setInterval(() => fetchWiseWord(getPk(wiseWordsCount.value)), 90000)
+    setInterval(() => {
+      fetchWiseWord(getPk(wiseWordsCount.value))
+    }, 90000)
   })
 })
 </script>
@@ -47,3 +49,15 @@ onBeforeMount(() => {
     />
   </v-defaults-provider>
 </template>
+
+<style lang="scss" scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
