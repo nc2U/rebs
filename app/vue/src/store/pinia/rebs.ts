@@ -1,6 +1,6 @@
+import api from '@/api'
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import api, { silentApi } from '@/api'
 
 export type WiseWord = {
   pk: number
@@ -26,7 +26,7 @@ export const useRebs = defineStore('rebs', () => {
       .catch(err => console.log(err.response.data))
 
   const fetchWiseWord = (pk: number) =>
-    silentApi
+    api
       .get(`/wise-say/${pk}/`)
       .then(res => (wiseWord.value = res.data))
       .catch(err => console.log(err.response.data))

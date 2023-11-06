@@ -2,8 +2,6 @@ import axios from 'axios'
 import router from '@/router'
 import { start, close } from '@/utils/nprogress'
 
-export const silentApi = axios.create({ baseURL: '/api/v1/' })
-
 const api = axios.create({
   baseURL: '/api/v1/',
 })
