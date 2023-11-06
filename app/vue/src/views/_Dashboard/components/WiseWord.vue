@@ -6,7 +6,7 @@ import { useRebs } from '@/store/pinia/rebs'
 const store = useStore()
 const isDark = computed(() => store.theme === 'dark')
 
-const bgColor = computed(() => (isDark.value ? 'success' : 'indigo-lighten-5'))
+const bgColor = computed(() => (isDark.value ? 'success' : 'light'))
 
 const defaults = ref({
   global: {
@@ -18,7 +18,7 @@ const defaults = ref({
 })
 
 watch(isDark, nVal => {
-  defaults.value.VCard.color = nVal ? 'success' : 'indigo-lighten-5'
+  defaults.value.VCard.color = nVal ? 'success' : 'light'
 })
 
 const rebsStore = useRebs()
@@ -48,15 +48,3 @@ onBeforeMount(async () => {
     />
   </v-defaults-provider>
 </template>
-
-<style lang="scss" scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-</style>
