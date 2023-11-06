@@ -18,7 +18,7 @@ export const useRebs = defineStore('rebs', () => {
   // actions
   const fetchWiseWordsList = () =>
     api
-      .get('wise-say')
+      .get('wise-say/')
       .then(res => {
         wiseWordsList.value = res.data.results
         wiseWordsCount.value = res.data.count
@@ -27,7 +27,7 @@ export const useRebs = defineStore('rebs', () => {
 
   const fetchWiseWord = (pk: number) =>
     silentApi
-      .get(`/wise-say/${pk}`)
+      .get(`/wise-say/${pk}/`)
       .then(res => (wiseWord.value = res.data))
       .catch(err => console.log(err.response.data))
 

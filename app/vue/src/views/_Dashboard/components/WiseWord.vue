@@ -30,13 +30,12 @@ const fetchWiseWord = (pk: number) => rebsStore.fetchWiseWord(pk)
 
 const getPk = (max: number) => Math.floor(Math.random() * max)
 
-onBeforeMount(() => {
-  fetchWiseWordsList().then(() => {
+onBeforeMount(async () => {
+  await fetchWiseWordsList()
+  await fetchWiseWord(getPk(wiseWordsCount.value))
+  setInterval(() => {
     fetchWiseWord(getPk(wiseWordsCount.value))
-    setInterval(() => {
-      fetchWiseWord(getPk(wiseWordsCount.value))
-    }, 90000)
-  })
+  }, 90000)
 })
 </script>
 
