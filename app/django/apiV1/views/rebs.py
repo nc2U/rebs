@@ -63,4 +63,4 @@ class ProjectAccountD3ViewSet(viewsets.ModelViewSet):
 class WiseSayViewSet(viewsets.ModelViewSet):
     queryset = WiseSaying.objects.all()
     serializer_class = WiseSaySerializer
-    permissions_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permissions_classes = (permissions.IsAuthenticatedOrReadOnly, IsStaffOrReadOnly)
