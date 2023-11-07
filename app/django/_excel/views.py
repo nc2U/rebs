@@ -701,6 +701,7 @@ class ExportUnitStatus(View):
         max_floor_range = range(0, floor_no__max)
         unit_numbers = HouseUnit.objects.filter(building_unit__project=project)
         dong_obj = BuildingUnit.objects.filter(project=project).values('name')
+        is_contor = True if request.GET.get('iscontor') == 'true' else False
 
         # 1. Title
         row_num = 0
@@ -774,7 +775,7 @@ class ExportUnitStatus(View):
                                 status_format['font_color'] = 'black'
                             else:
                                 status_format['bg_color'] = 'white'
-                            cont = unit.key_unit.contract.contractor.name if unit.key_unit else ''
+                            cont = unit.key_unit.contract.contractor.name if unit.key_unit and is_contor else ''
                             status_formats = workbook.add_format(status_format)
                             worksheet.write(row_num + 1, col_num, cont, status_formats)
                     col_num += 1
