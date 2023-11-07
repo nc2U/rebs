@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount } from 'vue'
+import { ref, computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin1'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
@@ -23,7 +23,10 @@ const fetchContractList = (payload: { project: number }) => contStore.fetchContr
 const fetchSubsSummaryList = (projId: number) => contStore.fetchSubsSummaryList(projId)
 const fetchContSummaryList = (projId: number) => contStore.fetchContSummaryList(projId)
 
-const excelUrl = computed(() => (project.value ? `excel/status/?project=${project.value}` : ''))
+const isContor = ref(true)
+const excelUrl = computed(() =>
+  project.value ? `excel/status/?project=${project.value}&iscontor=${isContor.value}` : '',
+)
 
 const dataSetup = (pk: number) => {
   fetchTypeList(pk)
@@ -57,7 +60,17 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
   <ContentBody>
     <CCardBody class="pb-5">
       <ContSummary />
-      <TableTitleRow excel :url="excelUrl" :disabled="!project" />
+      <TableTitleRow excel :url="excelUrl" :disabled="!project">
+        <v-checkbox
+          label="계약자명 포함"
+          v-model="isContor"
+          class="d-flex flex-row-reverse"
+          density="compact"
+          color="indigo"
+          style="font-size: 0.8em"
+          :disabled="!project"
+        />
+      </TableTitleRow>
       <v-divider color="grey" class="my-0" />
       <ContractBoard />
     </CCardBody>
