@@ -23,7 +23,7 @@ const fetchContractList = (payload: { project: number }) => contStore.fetchContr
 const fetchSubsSummaryList = (projId: number) => contStore.fetchSubsSummaryList(projId)
 const fetchContSummaryList = (projId: number) => contStore.fetchContSummaryList(projId)
 
-const isContor = ref(true)
+const isContor = ref<boolean>(false)
 const excelUrl = computed(() =>
   project.value ? `excel/status/?project=${project.value}&iscontor=${isContor.value}` : '',
 )
@@ -61,15 +61,15 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
     <CCardBody class="pb-5">
       <ContSummary />
       <TableTitleRow excel :url="excelUrl" :disabled="!project">
-        <v-checkbox
-          label="계약자명 포함"
-          v-model="isContor"
-          class="d-flex flex-row-reverse"
-          density="compact"
-          color="indigo"
-          style="font-size: 0.8em"
-          :disabled="!project"
-        />
+        <div class="p-1">
+          <CFormSwitch
+            id="flexCheckDefault"
+            v-model="isContor"
+            label="계약자명 표시"
+            style="font-size: 0.825em"
+            :disabled="!project"
+          />
+        </div>
       </TableTitleRow>
       <v-divider color="grey" class="my-0" />
       <ContractBoard />
