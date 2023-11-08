@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, type PropType } from 'vue'
+import { computed, inject, type PropType } from 'vue'
 import { type SimpleUnit } from './ContractBoard.vue'
 
 const props = defineProps({
@@ -10,6 +10,8 @@ const props = defineProps({
   maxPiloti: { type: Number, default: 1 },
   firstLine: { type: Number, default: 1 },
 })
+
+const isContor = inject('isContor')
 
 const isPiloti = computed(() => !props.unit && props.floor < props.maxPiloti)
 const isContract = computed(() => !!props.unit?.key_unit?.contract)
@@ -60,7 +62,9 @@ const isHold = computed(() => props.unit?.is_hold || '')
             query: { contractor: contorPk },
           }"
         >
-          {{ contorName }}
+          <span v-show="isContor">
+            {{ contorName }}
+          </span>
         </router-link>
       </span>
       <span v-if="isHold">
