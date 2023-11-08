@@ -68,6 +68,12 @@ class ContNumByTypeSerializer(serializers.ModelSerializer):
         fields = ('unit_type', 'num_cont')
 
 
+# class PaidByContSummarySerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Contract
+#         fields = '__all__'
+
+
 class SalesPriceSerializer(serializers.ModelSerializer):
     class Meta:
         model = SalesPriceByGT

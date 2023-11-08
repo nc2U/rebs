@@ -57,6 +57,9 @@ class PaymentSummaryViewSet(viewsets.ModelViewSet):
 
 
 class ContNumByTypeViewSet(viewsets.ModelViewSet):
+    """
+    타입별 계약 건수
+    """
     serializer_class = ContNumByTypeSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     filterset_fields = ('project',)
@@ -65,6 +68,16 @@ class ContNumByTypeViewSet(viewsets.ModelViewSet):
         return Contract.objects.filter(activation=True, contractor__status=2) \
             .values('unit_type') \
             .annotate(num_cont=Count('unit_type'))
+
+
+# class PaidByContSummaryViewSet(viewsets.ModelViewSet):
+#     """
+#     계약건 및 회차별 완납자 수, 통계
+#     """
+#     queryset = Contract.objects.filter(activation=True, contractor__status=2)
+#     serializer_class = PaidByContSummarySerializer
+#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+#     filterset_fields = ('project',)
 
 
 class SalesPriceViewSet(viewsets.ModelViewSet):

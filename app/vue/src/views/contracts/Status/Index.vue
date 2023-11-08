@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount } from 'vue'
+import { ref, computed, onBeforeMount, provide } from 'vue'
 import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin1'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
@@ -23,10 +23,12 @@ const fetchContractList = (payload: { project: number }) => contStore.fetchContr
 const fetchSubsSummaryList = (projId: number) => contStore.fetchSubsSummaryList(projId)
 const fetchContSummaryList = (projId: number) => contStore.fetchContSummaryList(projId)
 
-const isContor = ref<boolean>(false)
+const isContor = ref<boolean>(true)
 const excelUrl = computed(() =>
   project.value ? `excel/status/?project=${project.value}&iscontor=${isContor.value}` : '',
 )
+
+provide('isContor', isContor)
 
 const dataSetup = (pk: number) => {
   fetchTypeList(pk)
