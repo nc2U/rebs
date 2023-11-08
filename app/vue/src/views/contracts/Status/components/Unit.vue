@@ -55,21 +55,23 @@ const isHold = computed(() => props.unit?.is_hold || '')
         hold: isHold,
       }"
     >
-      <span v-if="unit && unit.key_unit && unit.key_unit.contract">
-        <router-link
-          :to="{
-            name: '계약 등록 수정',
-            query: { contractor: contorPk },
-          }"
-        >
-          <span v-show="isContor">
+      <span v-show="isContor">
+        <span v-if="unit && unit.key_unit && unit.key_unit.contract">
+          <router-link
+            :to="{
+              name: '계약 등록 수정',
+              query: { contractor: contorPk },
+            }"
+          >
             {{ contorName }}
-          </span>
-        </router-link>
-      </span>
-      <span v-if="isHold">
-        HOLD
-        <v-tooltip activator="parent" location="top">{{ unit.hold_reason }}</v-tooltip>
+          </router-link>
+        </span>
+        <span v-if="isHold">
+          HOLD
+          <v-tooltip activator="parent" location="top">
+            {{ unit.hold_reason }}
+          </v-tooltip>
+        </span>
       </span>
     </div>
   </div>
