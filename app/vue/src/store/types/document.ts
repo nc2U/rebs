@@ -40,8 +40,10 @@ export interface SuitCase {
   case_name: string
   plaintiff: string
   plaintiff_attorney: string
+  plaintiff_value: number | null
   defendant: string
   defendant_attorney: string
+  defendant_value: number | null
   related_debtor: string
   case_start_date: string | null
   case_end_date: string | null

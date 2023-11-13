@@ -194,20 +194,31 @@ onBeforeMount(() => {
               <CTableDataCell>{{ suitcase.plaintiff }}</CTableDataCell>
 
               <CTableHeaderCell class="text-center" :color="TableSecondary">
-                원고측 대리인
-              </CTableHeaderCell>
-              <CTableDataCell>{{ suitcase.plaintiff_attorney }}</CTableDataCell>
-            </CTableRow>
-            <CTableRow>
-              <CTableHeaderCell class="text-center" :color="TableSecondary">
                 피고 (채무자)
               </CTableHeaderCell>
               <CTableDataCell>{{ suitcase.defendant }}</CTableDataCell>
+            </CTableRow>
+            <CTableRow>
+              <CTableHeaderCell class="text-center" :color="TableSecondary">
+                원고측 대리인
+              </CTableHeaderCell>
+              <CTableDataCell>{{ suitcase.plaintiff_attorney }}</CTableDataCell>
 
               <CTableHeaderCell class="text-center" :color="TableSecondary">
                 피고측 대리인
               </CTableHeaderCell>
               <CTableDataCell>{{ suitcase.defendant_attorney }}</CTableDataCell>
+            </CTableRow>
+            <CTableRow>
+              <CTableHeaderCell class="text-center" :color="TableSecondary">
+                원고 소가
+              </CTableHeaderCell>
+              <CTableDataCell>{{ suitcase.plaintiff_value }}</CTableDataCell>
+
+              <CTableHeaderCell class="text-center" :color="TableSecondary">
+                피고 소가
+              </CTableHeaderCell>
+              <CTableDataCell>{{ suitcase.defendant_value }}</CTableDataCell>
             </CTableRow>
             <CTableRow>
               <CTableHeaderCell class="text-center" :color="TableSecondary">
