@@ -2,7 +2,7 @@
 import { ref, computed, type PropType, watch, onBeforeMount } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
-import { timeFormat } from '@/utils/baseMixins'
+import { timeFormat, numFormat } from '@/utils/baseMixins'
 import type { SuitCase } from '@/store/types/document'
 import { TableSecondary } from '@/utils/cssMixins'
 
@@ -194,20 +194,31 @@ onBeforeMount(() => {
               <CTableDataCell>{{ suitcase.plaintiff }}</CTableDataCell>
 
               <CTableHeaderCell class="text-center" :color="TableSecondary">
-                원고측 대리인
-              </CTableHeaderCell>
-              <CTableDataCell>{{ suitcase.plaintiff_attorney }}</CTableDataCell>
-            </CTableRow>
-            <CTableRow>
-              <CTableHeaderCell class="text-center" :color="TableSecondary">
                 피고 (채무자)
               </CTableHeaderCell>
               <CTableDataCell>{{ suitcase.defendant }}</CTableDataCell>
+            </CTableRow>
+            <CTableRow>
+              <CTableHeaderCell class="text-center" :color="TableSecondary">
+                원고측 대리인
+              </CTableHeaderCell>
+              <CTableDataCell>{{ suitcase.plaintiff_attorney }}</CTableDataCell>
 
               <CTableHeaderCell class="text-center" :color="TableSecondary">
                 피고측 대리인
               </CTableHeaderCell>
               <CTableDataCell>{{ suitcase.defendant_attorney }}</CTableDataCell>
+            </CTableRow>
+            <CTableRow>
+              <CTableHeaderCell class="text-center" :color="TableSecondary">
+                원고 소가(원)
+              </CTableHeaderCell>
+              <CTableDataCell>{{ numFormat(suitcase.plaintiff_value ?? 0) }}</CTableDataCell>
+
+              <CTableHeaderCell class="text-center" :color="TableSecondary">
+                피고 소가(원)
+              </CTableHeaderCell>
+              <CTableDataCell>{{ numFormat(suitcase.defendant_value ?? 0) }}</CTableDataCell>
             </CTableRow>
             <CTableRow>
               <CTableHeaderCell class="text-center" :color="TableSecondary">

@@ -35,8 +35,10 @@ const form = reactive<SuitCase>({
   case_name: '',
   plaintiff: '',
   plaintiff_attorney: '',
+  plaintiff_value: null,
   defendant: '',
   defendant_attorney: '',
+  defendant_value: null,
   related_debtor: '',
   case_start_date: null,
   case_end_date: null,
@@ -56,15 +58,17 @@ const formsCheck = computed(() => {
     const i = form.case_name === props.suitcase.case_name
     const j = form.plaintiff === props.suitcase.plaintiff
     const k = form.plaintiff_attorney === props.suitcase.plaintiff_attorney
-    const l = form.defendant === props.suitcase.defendant
-    const m = form.defendant_attorney === props.suitcase.defendant_attorney
-    const n = form.related_debtor === props.suitcase.related_debtor
-    const o = form.case_start_date === props.suitcase.case_start_date
-    const p = form.case_end_date === props.suitcase.case_end_date
-    const q = form.summary === props.suitcase.summary
+    const l = form.plaintiff_value === props.suitcase.plaintiff_value
+    const m = form.defendant === props.suitcase.defendant
+    const n = form.defendant_attorney === props.suitcase.defendant_attorney
+    const o = form.defendant_value === props.suitcase.defendant_value
+    const p = form.related_debtor === props.suitcase.related_debtor
+    const q = form.case_start_date === props.suitcase.case_start_date
+    const r = form.case_end_date === props.suitcase.case_end_date
+    const s = form.summary === props.suitcase.summary
 
-    const group1 = a && b && c && d && e && f && g && h
-    const group2 = i && j && k && l && m && n && o && p && q
+    const group1 = a && b && c && d && e && f && g && h && i && j
+    const group2 = k && l && m && n && o && p && q && r && s
     return group1 && group2
   } else return false
 })
@@ -104,8 +108,10 @@ const dataSetup = () => {
     form.case_name = props.suitcase.case_name
     form.plaintiff = props.suitcase.plaintiff
     form.plaintiff_attorney = props.suitcase.plaintiff_attorney
+    form.plaintiff_value = props.suitcase.plaintiff_value
     form.defendant = props.suitcase.defendant
     form.defendant_attorney = props.suitcase.defendant_attorney
+    form.defendant_value = props.suitcase.defendant_value
     form.related_debtor = props.suitcase.related_debtor
     form.case_start_date = props.suitcase.case_start_date
     form.case_end_date = props.suitcase.case_end_date
@@ -301,6 +307,30 @@ onUpdated(() => dataSetup())
           v-model="form.defendant_attorney"
           maxlength="50"
           placeholder="피고측 대리인"
+        />
+      </CCol>
+    </CRow>
+
+    <CRow class="mb-3">
+      <CFormLabel for="plaintiff_attorney" class="col-md-2 col-form-label"> 원고 소가</CFormLabel>
+      <CCol md="4">
+        <CFormInput
+          id="plaintiff_value"
+          v-model.number="form.plaintiff_value"
+          type="number"
+          min="0"
+          placeholder="원고 소가"
+        />
+      </CCol>
+
+      <CFormLabel for="defendant_attorney" class="col-md-2 col-form-label"> 피고 소가</CFormLabel>
+      <CCol md="4">
+        <CFormInput
+          id="defendant_value"
+          v-model.number="form.defendant_value"
+          type="number"
+          min="0"
+          placeholder="피고 소가"
         />
       </CCol>
     </CRow>
