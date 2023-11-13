@@ -2,7 +2,7 @@
 import { ref, computed, type PropType, watch, onBeforeMount } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
-import { timeFormat } from '@/utils/baseMixins'
+import { timeFormat, numFormat } from '@/utils/baseMixins'
 import type { SuitCase } from '@/store/types/document'
 import { TableSecondary } from '@/utils/cssMixins'
 
@@ -211,14 +211,14 @@ onBeforeMount(() => {
             </CTableRow>
             <CTableRow>
               <CTableHeaderCell class="text-center" :color="TableSecondary">
-                원고 소가
+                원고 소가(원)
               </CTableHeaderCell>
-              <CTableDataCell>{{ suitcase.plaintiff_value }}</CTableDataCell>
+              <CTableDataCell>{{ numFormat(suitcase.plaintiff_value ?? 0) }}</CTableDataCell>
 
               <CTableHeaderCell class="text-center" :color="TableSecondary">
-                피고 소가
+                피고 소가(원)
               </CTableHeaderCell>
-              <CTableDataCell>{{ suitcase.defendant_value }}</CTableDataCell>
+              <CTableDataCell>{{ numFormat(suitcase.defendant_value ?? 0) }}</CTableDataCell>
             </CTableRow>
             <CTableRow>
               <CTableHeaderCell class="text-center" :color="TableSecondary">
