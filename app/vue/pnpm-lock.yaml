@@ -57,8 +57,8 @@ dependencies:
     specifier: ^10.4.1
     version: 10.4.1(vue@3.3.4)
   axios:
-    specifier: ^1.5.1
-    version: 1.5.1
+    specifier: ^1.6.0
+    version: 1.6.0
   buffer:
     specifier: ^6.0.3
     version: 6.0.3
@@ -192,7 +192,7 @@ devDependencies:
     version: 1.0.2(vite@4.4.10)(vue@3.3.4)(vuetify@3.3.20)
   vitepress:
     specifier: 1.0.0-rc.4
-    version: 1.0.0-rc.4(@algolia/client-search@4.20.0)(@types/node@18.18.3)(axios@1.5.1)(nprogress@0.2.0)(sass@1.68.0)(search-insights@2.8.3)
+    version: 1.0.0-rc.4(@algolia/client-search@4.20.0)(@types/node@18.18.3)(axios@1.6.0)(nprogress@0.2.0)(sass@1.68.0)(search-insights@2.8.3)
   vitest:
     specifier: ^0.33.0
     version: 0.33.0(jsdom@22.1.0)(sass@1.68.0)
@@ -1477,7 +1477,7 @@ packages:
       - '@vue/composition-api'
       - vue
 
-  /@vueuse/integrations@10.3.0(axios@1.5.1)(focus-trap@7.5.2)(nprogress@0.2.0)(vue@3.3.4):
+  /@vueuse/integrations@10.3.0(axios@1.6.0)(focus-trap@7.5.2)(nprogress@0.2.0)(vue@3.3.4):
     resolution: {integrity: sha512-Jgiv7oFyIgC6BxmDtiyG/fxyGysIds00YaY7sefwbhCZ2/tjEx1W/1WcsISSJPNI30in28+HC2J4uuU8184ekg==}
     peerDependencies:
       async-validator: '*'
@@ -1520,7 +1520,7 @@ packages:
     dependencies:
       '@vueuse/core': 10.3.0(vue@3.3.4)
       '@vueuse/shared': 10.3.0(vue@3.3.4)
-      axios: 1.5.1
+      axios: 1.6.0
       focus-trap: 7.5.2
       nprogress: 0.2.0
       vue-demi: 0.14.5(vue@3.3.4)
@@ -1892,8 +1892,8 @@ packages:
       - debug
     dev: true
 
-  /axios@1.5.1:
-    resolution: {integrity: sha512-Q28iYCWzNHjAm+yEAot5QaAMxhMghWLFVf7rRdwhUI+c2jix2DUXjAHXVi+s1ibs3mjPO/cCgbA++3BjD0vP/A==}
+  /axios@1.6.0:
+    resolution: {integrity: sha512-EZ1DYihju9pwVB+jg67ogm+Tmqc6JmhamRN6I4Zt8DfZu5lbcQGw3ozH9lFejSJgs/ibaef3A9PMXPLeefFGJg==}
     dependencies:
       follow-redirects: 1.15.2(debug@4.3.4)
       form-data: 4.0.0
@@ -5430,7 +5430,7 @@ packages:
     optionalDependencies:
       fsevents: 2.3.3
 
-  /vitepress@1.0.0-rc.4(@algolia/client-search@4.20.0)(@types/node@18.18.3)(axios@1.5.1)(nprogress@0.2.0)(sass@1.68.0)(search-insights@2.8.3):
+  /vitepress@1.0.0-rc.4(@algolia/client-search@4.20.0)(@types/node@18.18.3)(axios@1.6.0)(nprogress@0.2.0)(sass@1.68.0)(search-insights@2.8.3):
     resolution: {integrity: sha512-JCQ89Bm6ECUTnyzyas3JENo00UDJeK8q1SUQyJYou+4Yz5BKEc/F3O21cu++DnUT2zXc0kvQ2Aj4BZCc/nioXQ==}
     hasBin: true
     dependencies:
@@ -5439,7 +5439,7 @@ packages:
       '@vitejs/plugin-vue': 4.4.0(vite@4.4.10)(vue@3.3.4)
       '@vue/devtools-api': 6.5.0
       '@vueuse/core': 10.4.1(vue@3.3.4)
-      '@vueuse/integrations': 10.3.0(axios@1.5.1)(focus-trap@7.5.2)(nprogress@0.2.0)(vue@3.3.4)
+      '@vueuse/integrations': 10.3.0(axios@1.6.0)(focus-trap@7.5.2)(nprogress@0.2.0)(vue@3.3.4)
       body-scroll-lock: 4.0.0-beta.0
       focus-trap: 7.5.2
       mark.js: 8.11.1
