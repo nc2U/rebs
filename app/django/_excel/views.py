@@ -3319,8 +3319,10 @@ class ExportSuitCases(View):
                       ['사건명', 'case_name', 25],
                       ['원고(채권자)', 'plaintiff', 25],
                       ['원고측대리인', 'plaintiff_attorney', 45],
+                      ['원고 소가', 'plaintiff_value', 20],
                       ['피고(채무자)', 'defendant', 25],
                       ['피고측대리인', 'defendant_attorney', 45],
+                      ['피고 소가', 'defendant_value', 20],
                       ['제3채무자', 'related_debtor', 20],
                       ['사건개시일', 'case_start_date', 14],
                       ['사건종결일', 'case_end_date', 14],
@@ -3443,8 +3445,8 @@ class ExportSuitCases(View):
                 elif col_num == 6:
                     cell_data = list(filter(lambda x: x[0] == cell_data, LawsuitCase.COURT_CHOICES))[0][1] \
                         if cell_data else ''
-                if col_num < 7 or col_num in (14, 15):
-                    if col_num in (14, 15):
+                if col_num < 7 or col_num in (16, 17):
+                    if col_num in (16, 17):
                         body_format['num_format'] = 'yyyy-mm-dd'
                     else:
                         body_format['num_format'] = '#,##0'
@@ -3585,6 +3587,7 @@ class ExportSuitCase(View):
         worksheet.write(row_num, 3, str(obj.defendant_attorney), b_format)
 
         row_num = 12
+        b_format['num_format'] = '#,##0'
         worksheet.write(row_num, 0, '원고 소가', h_format)
         worksheet.write(row_num, 1, str(obj.plaintiff_value), b_format)
         worksheet.write(row_num, 2, '피고 소가', h_format)
@@ -3595,6 +3598,7 @@ class ExportSuitCase(View):
         worksheet.merge_range(row_num, 1, row_num, 3, str(obj.related_debtor), b_format)
 
         row_num = 14
+        b_format['num_format'] = 'yyyy-mm-dd'
         worksheet.write(row_num, 0, '사건개시일', h_format)
         worksheet.write(row_num, 1, str(obj.case_start_date), b_format)
         worksheet.write(row_num, 2, '사건종결일', h_format)
