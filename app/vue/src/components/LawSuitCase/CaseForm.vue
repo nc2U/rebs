@@ -35,10 +35,10 @@ const form = reactive<SuitCase>({
   case_name: '',
   plaintiff: '',
   plaintiff_attorney: '',
-  plaintiff_value: null,
+  plaintiff_case_price: null,
   defendant: '',
   defendant_attorney: '',
-  defendant_value: null,
+  defendant_case_price: null,
   related_debtor: '',
   case_start_date: null,
   case_end_date: null,
@@ -58,10 +58,10 @@ const formsCheck = computed(() => {
     const i = form.case_name === props.suitcase.case_name
     const j = form.plaintiff === props.suitcase.plaintiff
     const k = form.plaintiff_attorney === props.suitcase.plaintiff_attorney
-    const l = form.plaintiff_value === props.suitcase.plaintiff_value
+    const l = form.plaintiff_case_price === props.suitcase.plaintiff_case_price
     const m = form.defendant === props.suitcase.defendant
     const n = form.defendant_attorney === props.suitcase.defendant_attorney
-    const o = form.defendant_value === props.suitcase.defendant_value
+    const o = form.defendant_case_price === props.suitcase.defendant_case_price
     const p = form.related_debtor === props.suitcase.related_debtor
     const q = form.case_start_date === props.suitcase.case_start_date
     const r = form.case_end_date === props.suitcase.case_end_date
@@ -108,10 +108,10 @@ const dataSetup = () => {
     form.case_name = props.suitcase.case_name
     form.plaintiff = props.suitcase.plaintiff
     form.plaintiff_attorney = props.suitcase.plaintiff_attorney
-    form.plaintiff_value = props.suitcase.plaintiff_value
+    form.plaintiff_case_price = props.suitcase.plaintiff_case_price
     form.defendant = props.suitcase.defendant
     form.defendant_attorney = props.suitcase.defendant_attorney
-    form.defendant_value = props.suitcase.defendant_value
+    form.defendant_case_price = props.suitcase.defendant_case_price
     form.related_debtor = props.suitcase.related_debtor
     form.case_start_date = props.suitcase.case_start_date
     form.case_end_date = props.suitcase.case_end_date
@@ -315,8 +315,8 @@ onUpdated(() => dataSetup())
       <CFormLabel for="plaintiff_attorney" class="col-md-2 col-form-label"> 원고 소가</CFormLabel>
       <CCol md="4">
         <CFormInput
-          id="plaintiff_value"
-          v-model.number="form.plaintiff_value"
+          id="plaintiff_case_price"
+          v-model.number="form.plaintiff_case_price"
           type="number"
           min="0"
           placeholder="원고 소가"
@@ -326,8 +326,8 @@ onUpdated(() => dataSetup())
       <CFormLabel for="defendant_attorney" class="col-md-2 col-form-label"> 피고 소가</CFormLabel>
       <CCol md="4">
         <CFormInput
-          id="defendant_value"
-          v-model.number="form.defendant_value"
+          id="defendant_case_price"
+          v-model.number="form.defendant_case_price"
           type="number"
           min="0"
           placeholder="피고 소가"
