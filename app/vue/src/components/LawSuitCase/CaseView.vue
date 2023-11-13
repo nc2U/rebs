@@ -213,12 +213,12 @@ onBeforeMount(() => {
               <CTableHeaderCell class="text-center" :color="TableSecondary">
                 원고 소가(원)
               </CTableHeaderCell>
-              <CTableDataCell>{{ numFormat(suitcase.plaintiff_value ?? 0) }}</CTableDataCell>
+              <CTableDataCell>{{ numFormat(suitcase.plaintiff_case_price ?? 0) }}</CTableDataCell>
 
               <CTableHeaderCell class="text-center" :color="TableSecondary">
                 피고 소가(원)
               </CTableHeaderCell>
-              <CTableDataCell>{{ numFormat(suitcase.defendant_value ?? 0) }}</CTableDataCell>
+              <CTableDataCell>{{ numFormat(suitcase.defendant_case_price ?? 0) }}</CTableDataCell>
             </CTableRow>
             <CTableRow>
               <CTableHeaderCell class="text-center" :color="TableSecondary">

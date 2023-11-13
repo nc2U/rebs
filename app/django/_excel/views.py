@@ -3319,10 +3319,10 @@ class ExportSuitCases(View):
                       ['사건명', 'case_name', 25],
                       ['원고(채권자)', 'plaintiff', 25],
                       ['원고측대리인', 'plaintiff_attorney', 45],
-                      ['원고 소가', 'plaintiff_value', 20],
+                      ['원고 소가', 'plaintiff_case_price', 20],
                       ['피고(채무자)', 'defendant', 25],
                       ['피고측대리인', 'defendant_attorney', 45],
-                      ['피고 소가', 'defendant_value', 20],
+                      ['피고 소가', 'defendant_case_price', 20],
                       ['제3채무자', 'related_debtor', 20],
                       ['사건개시일', 'case_start_date', 14],
                       ['사건종결일', 'case_end_date', 14],
@@ -3596,9 +3596,9 @@ class ExportSuitCase(View):
 
         row_num = 12
         worksheet.write(row_num, 0, '원고 소가', h_format)
-        worksheet.write(row_num, 1, obj.plaintiff_value, c_format)
+        worksheet.write(row_num, 1, obj.plaintiff_case_price, c_format)
         worksheet.write(row_num, 2, '피고 소가', h_format)
-        worksheet.write(row_num, 3, obj.defendant_value, c_format)
+        worksheet.write(row_num, 3, obj.defendant_case_price, c_format)
 
         row_num = 13
         worksheet.write(row_num, 0, '제3채무자', h_format)
