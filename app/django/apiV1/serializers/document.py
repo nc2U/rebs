@@ -52,8 +52,8 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
         model = LawsuitCase
         fields = ('pk', 'company', 'project', 'proj_name', 'sort', 'sort_desc', 'level', 'level_desc',
                   'related_case', 'related_case_name', 'court', 'court_desc', 'other_agency',
-                  'case_number', 'case_name', 'plaintiff', 'plaintiff_attorney', 'plaintiff_value',
-                  'defendant', 'defendant_attorney', 'defendant_value', 'related_debtor', 'case_start_date',
+                  'case_number', 'case_name', 'plaintiff', 'plaintiff_attorney', 'plaintiff_case_price',
+                  'defendant', 'defendant_attorney', 'defendant_case_price', 'related_debtor', 'case_start_date',
                   'case_end_date', 'summary', 'user', 'links', 'files', 'created', 'prev_pk', 'next_pk')
 
     @staticmethod
