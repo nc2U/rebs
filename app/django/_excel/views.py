@@ -3576,25 +3576,31 @@ class ExportSuitCase(View):
         worksheet.write(row_num, 0, '원고(채권자)', h_format)
         worksheet.write(row_num, 1, str(obj.plaintiff), b_format)
         worksheet.write(row_num, 2, '피고(채무자)', h_format)
-        worksheet.write(row_num, 3, str(obj.plaintiff_attorney), b_format)
+        worksheet.write(row_num, 3, str(obj.defendant), b_format)
 
         row_num = 11
-        worksheet.write(row_num, 0, '피고(채무자)', h_format)
-        worksheet.write(row_num, 1, str(obj.defendant), b_format)
-        worksheet.write(row_num, 2, '피고(채무자)', h_format)
+        worksheet.write(row_num, 0, '원고측 대리인', h_format)
+        worksheet.write(row_num, 1, str(obj.plaintiff_attorney), b_format)
+        worksheet.write(row_num, 2, '피고측 대리인', h_format)
         worksheet.write(row_num, 3, str(obj.defendant_attorney), b_format)
 
         row_num = 12
+        worksheet.write(row_num, 0, '원고 소가', h_format)
+        worksheet.write(row_num, 1, str(obj.plaintiff_value), b_format)
+        worksheet.write(row_num, 2, '피고 소가', h_format)
+        worksheet.write(row_num, 3, str(obj.defendant_value), b_format)
+
+        row_num = 13
         worksheet.write(row_num, 0, '제3채무자', h_format)
         worksheet.merge_range(row_num, 1, row_num, 3, str(obj.related_debtor), b_format)
 
-        row_num = 13
+        row_num = 14
         worksheet.write(row_num, 0, '사건개시일', h_format)
         worksheet.write(row_num, 1, str(obj.case_start_date), b_format)
         worksheet.write(row_num, 2, '사건종결일', h_format)
         worksheet.write(row_num, 3, str(obj.case_end_date) if obj.case_end_date else '', b_format)
 
-        row_num = 14
+        row_num = 15
         worksheet.write(row_num, 0, '개요 및 경과', h_format)
         worksheet.merge_range(row_num, 1, row_num, 3, str(obj.summary), b_format)
 
