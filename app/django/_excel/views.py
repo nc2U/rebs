@@ -3534,6 +3534,14 @@ class ExportSuitCase(View):
         b_format.set_align('vcenter')
         b_format.set_num_format('yyyy-mm-dd')
 
+        c_format = workbook.add_format()
+        c_format.set_border()
+        c_format.set_align('vcenter')
+        c_format.set_num_format('#,##0')
+
+        # Turn off the warnings:
+        worksheet.ignore_errors({'number_stored_as_text': 'B:D'})
+
         # table header
         row_num = 2
         worksheet.write(row_num, 0, '구분', h_format)
@@ -3587,18 +3595,16 @@ class ExportSuitCase(View):
         worksheet.write(row_num, 3, str(obj.defendant_attorney), b_format)
 
         row_num = 12
-        b_format['num_format'] = '#,##0'
         worksheet.write(row_num, 0, '원고 소가', h_format)
-        worksheet.write(row_num, 1, str(obj.plaintiff_value), b_format)
+        worksheet.write(row_num, 1, obj.plaintiff_value, c_format)
         worksheet.write(row_num, 2, '피고 소가', h_format)
-        worksheet.write(row_num, 3, str(obj.defendant_value), b_format)
+        worksheet.write(row_num, 3, obj.defendant_value, c_format)
 
         row_num = 13
         worksheet.write(row_num, 0, '제3채무자', h_format)
         worksheet.merge_range(row_num, 1, row_num, 3, str(obj.related_debtor), b_format)
 
         row_num = 14
-        b_format['num_format'] = 'yyyy-mm-dd'
         worksheet.write(row_num, 0, '사건개시일', h_format)
         worksheet.write(row_num, 1, str(obj.case_start_date), b_format)
         worksheet.write(row_num, 2, '사건종결일', h_format)
