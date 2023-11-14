@@ -994,6 +994,10 @@ class ExportPayments(View):
             ['입금자', 'trader', 20]
         ]
 
+        if project.is_unit_set:
+            header_src.insert(4, ['동', 'contract__keyunit__houseunit__building_unit__name', 7])
+            header_src.insert(5, ['호수', 'contract__keyunit__houseunit__name', 7])
+
         # 1. Title
         row_num = 0
         worksheet.set_row(row_num, 50)
@@ -1033,11 +1037,13 @@ class ExportPayments(View):
         for i, col_width in enumerate(widths):
             worksheet.set_column(i, i, col_width)
 
+        us_cnt = 2 if project.is_unit_set else 0  # 동호 지정 시 추가 열 수 계산
+
         # Write header - 1
         for col_num, title in enumerate(titles):
-            if col_num == 5:
+            if col_num == 5 + us_cnt:
                 worksheet.merge_range(row_num, col_num, row_num, col_num + 2, '건별 수납 정보', h_format)
-            elif col_num in [6, 7]:
+            elif col_num in [6 + us_cnt, 7 + us_cnt]:
                 pass
             else:
                 worksheet.write(row_num, col_num, title, h_format)
@@ -1045,7 +1051,7 @@ class ExportPayments(View):
         # Write Header - 2
         row_num = 3
         for col_num, title in enumerate(titles):
-            if col_num in [5, 6, 7]:
+            if col_num in [5 + us_cnt, 6 + us_cnt, 7 + us_cnt]:
                 worksheet.write(row_num, col_num, title, h_format)
             else:
                 worksheet.merge_range(row_num - 1, col_num, row_num, col_num, title, h_format)
@@ -1080,7 +1086,7 @@ class ExportPayments(View):
         data = obj_list.values_list(*params)
 
         # Turn off the warnings:
-        worksheet.ignore_errors({'number_stored_as_text': 'C:D'})
+        worksheet.ignore_errors({'number_stored_as_text': 'C:F'})
 
         # Default CSS setting
         body_format = {
@@ -1149,7 +1155,17 @@ class ExportPaymentsByCont(View):
             .order_by('-installment_order').first().installment_order.id
         pay_orders = InstallmentPaymentOrder.objects.filter(project=project, id__lte=max_order)
 
-        col_cnt = 7 + (len(pay_orders) * 2)  # 기본 컬럼수 + 납부회차 * 2
+        # 현재 납부 회차 구하기
+        bill_data = SalesBillIssue.objects.get(project=project)
+        try:
+            now_order = bill_data.now_payment_order
+            pay_orders = pay_orders.filter(pay_code__lte=now_order.pay_code)
+        except SalesBillIssue.DoesNotExist:
+            now_order = pay_orders.first()
+
+        add_order_cols = now_order.pay_code * 2  # 납부회차 * 2
+
+        col_cnt = 7 + add_order_cols  # 기본 컬럼수 + 납부회차 * 2
         is_us_cn = 2 if project.is_unit_set else 0  # 동호 표시할 경우 2라인 추가
         if project.is_unit_set:
             col_cnt += is_us_cn
@@ -1188,7 +1204,7 @@ class ExportPaymentsByCont(View):
             elif i == 3:
                 worksheet.merge_range(row_num, i, row_num, i + 2 + is_us_cn, '가입 세부사항', h_format)
             elif i == 6 + is_us_cn:
-                worksheet.merge_range(row_num, i, row_num, i + 9, '분양대금 납부내역', h_format)
+                worksheet.merge_range(row_num, i, row_num, i + 1 + add_order_cols, '분양대금 납부내역', h_format)
 
         # title_list
         header_src = [
@@ -1237,7 +1253,7 @@ class ExportPaymentsByCont(View):
         sum_col = None  # 기납부총액 컬럼 위치
 
         for col_num, title in enumerate(titles):  # 헤더 줄 제목 세팅
-            if col_num < 7 + is_us_cn or col_num == 15 + is_us_cn:
+            if col_num < 7 + is_us_cn or col_num == col_cnt:
                 worksheet.merge_range(row_num, col_num, row_num + 1, col_num, title, h_format)
             else:
                 if col_num % 2 == 1:
@@ -1254,7 +1270,7 @@ class ExportPaymentsByCont(View):
         worksheet.set_row(row_num, 23)
 
         for col_num in range(col_cnt):
-            if col_num <= 7 + is_us_cn or col_num <= 14 + is_us_cn:
+            if col_num <= 7 + is_us_cn or col_num < col_cnt:
                 worksheet.write(row_num, col_num, ('금액', '거래일')[col_num % 2], h_format)
                 if col_num % 2:
                     date_col.append(col_num)
@@ -1293,13 +1309,6 @@ class ExportPaymentsByCont(View):
                                                    deal_date__lte=date,
                                                    contract__isnull=False)
         paid_dict = paid_data.values_list(*paid_params)
-
-        # 현재 납부 회차 구하기
-        bill_data = SalesBillIssue.objects.get(project=project)
-        try:
-            now_order = bill_data.now_payment_order
-        except SalesBillIssue.DoesNotExist:
-            now_order = pay_orders.first()
 
         # 계약금 분납 횟수
         down_num = pay_orders.filter(pay_sort='1').count()
@@ -1360,7 +1369,7 @@ class ExportPaymentsByCont(View):
                 unpaid_amt = due_amt_sum - paid_sum if due_amt_sum > paid_sum else 0
                 next_col += 1
 
-            row.insert(next_col + len(pay_orders) + 1, unpaid_amt)  # 미납 내역 상입
+            row.insert(next_col + len(pay_orders) + 1, unpaid_amt)  # 미납 내역 삽입
 
             row[0] = i + 1  # pk 대신 순서 삽입
 
