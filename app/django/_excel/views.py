@@ -1036,7 +1036,7 @@ class ExportPayments(View):
         # Write header - 1
         for col_num, title in enumerate(titles):
             if col_num == 5:
-                worksheet.merge_range(row_num, col_num, row_num, col_num + 2, '환불 계좌', h_format)
+                worksheet.merge_range(row_num, col_num, row_num, col_num + 2, '건별 수납 정보', h_format)
             elif col_num in [6, 7]:
                 pass
             else:
