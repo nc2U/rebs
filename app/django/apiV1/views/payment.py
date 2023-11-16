@@ -66,7 +66,7 @@ class ContNumByTypeViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Contract.objects.filter(activation=True, contractor__status=2) \
-            .values('unit_type') \
+            .values('order_group', 'unit_type') \
             .annotate(num_cont=Count('unit_type'))
 
 

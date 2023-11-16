@@ -60,12 +60,13 @@ class PaymentSummarySerializer(serializers.ModelSerializer):
 
 
 class ContNumByTypeSerializer(serializers.ModelSerializer):
+    order_group = serializers.IntegerField()
     unit_type = serializers.IntegerField()
     num_cont = serializers.IntegerField()
 
     class Meta:
         model = UnitType
-        fields = ('unit_type', 'num_cont')
+        fields = ('order_group', 'unit_type', 'num_cont')
 
 
 # class PaidByContSummarySerializer(serializers.ModelSerializer):
