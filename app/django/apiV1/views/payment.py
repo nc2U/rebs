@@ -74,10 +74,14 @@ class ContNumByTypeViewSet(viewsets.ModelViewSet):
 #     """
 #     계약건 및 회차별 완납자 수, 통계
 #     """
-#     queryset = Contract.objects.filter(activation=True, contractor__status=2)
 #     serializer_class = PaidByContSummarySerializer
 #     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 #     filterset_fields = ('project',)
+#
+#     def get_queryset(self):
+#         return Contract.objects.filter(activation=True, contractor__status=2) \
+#             .values('order_group', 'unit_type') \
+#             .annotate(num_cont=Count('unit_type'))
 
 
 class SalesPriceViewSet(viewsets.ModelViewSet):
