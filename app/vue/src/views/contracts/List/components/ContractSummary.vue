@@ -18,7 +18,7 @@ const projectDataStore = useProjectData()
 const orderGroupList = computed(() => contractStore.orderGroupList)
 const subsSummaryList = computed(() => contractStore.subsSummaryList)
 const contSummaryList = computed(() => contractStore.contSummaryList)
-const unitTypeList = computed(() => projectDataStore.unitTypeList.filter(t => t.sort < '5'))
+const unitTypeList = computed(() => projectDataStore.unitTypeList)
 
 const subsNum = (type?: number) => {
   // 청약 수
@@ -49,7 +49,7 @@ const contNum = (order: number | null, type?: number) => {
         <CTableHeaderCell :colspan="orderGroupList.length === 1 ? 1 : orderGroupList.length + 1">
           계약건수
         </CTableHeaderCell>
-        <CTableHeaderCell rowspan="2">잔여세대</CTableHeaderCell>
+        <CTableHeaderCell rowspan="2">잔여세대(실)</CTableHeaderCell>
         <CTableHeaderCell rowspan="2">계약율</CTableHeaderCell>
         <CTableHeaderCell rowspan="2">분양율(청약+계약)</CTableHeaderCell>
       </CTableRow>
@@ -65,6 +65,7 @@ const contNum = (order: number | null, type?: number) => {
 
     <CTableBody v-if="props.project">
       <CTableRow v-for="(type, i) in unitTypeList" :key="i" class="text-right" align="middle">
+        <!-- 프로젝트명 -->
         <CTableHeaderCell
           v-if="props.project && i === 0"
           class="text-center"
@@ -72,13 +73,16 @@ const contNum = (order: number | null, type?: number) => {
         >
           {{ props.project.name }}
         </CTableHeaderCell>
+        <!--  타입 -->
         <CTableDataCell class="text-left pl-2">
           <CIcon name="cibDiscover" :style="'color:' + type.color" size="sm" />
           {{ type.name }}
         </CTableDataCell>
         <!--  타입별 세대수 -->
-        <CTableDataCell>{{ numFormat(type.num_unit) }}세대</CTableDataCell>
-        <!-- 차수별 타입별 청약건수-->
+        <CTableDataCell>
+          {{ numFormat(type.num_unit) }}{{ type.sort === '1' ? '세대' : '실' }}
+        </CTableDataCell>
+        <!-- 타입별 청약건수-->
         <CTableDataCell>{{ numFormat(subsNum(type.pk)) }}</CTableDataCell>
         <!-- 차수별 타입별 계약건수-->
         <CTableDataCell v-for="order in orderGroupList" :key="order.pk">
