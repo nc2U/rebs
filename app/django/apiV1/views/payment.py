@@ -56,18 +56,18 @@ class PaymentSummaryViewSet(viewsets.ModelViewSet):
             .annotate(paid_sum=Sum('income'))
 
 
-class ContNumByTypeViewSet(viewsets.ModelViewSet):
-    """
-    타입별 계약 건수
-    """
-    serializer_class = ContNumByTypeSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-    filterset_fields = ('project',)
-
-    def get_queryset(self):
-        return Contract.objects.filter(activation=True, contractor__status=2) \
-            .values('order_group', 'unit_type') \
-            .annotate(num_cont=Count('unit_type'))
+# class ContNumByTypeViewSet(viewsets.ModelViewSet):
+#     """
+#     타입별 계약 건수
+#     """
+#     serializer_class = ContNumByTypeSerializer
+#     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+#     filterset_fields = ('project',)
+#
+#     def get_queryset(self):
+#         return Contract.objects.filter(activation=True, contractor__status=2) \
+#             .values('order_group', 'unit_type') \
+#             .annotate(num_cont=Count('unit_type'))
 
 
 # class PaidByContSummaryViewSet(viewsets.ModelViewSet):

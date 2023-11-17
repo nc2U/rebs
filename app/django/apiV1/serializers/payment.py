@@ -59,14 +59,14 @@ class PaymentSummarySerializer(serializers.ModelSerializer):
         fields = ('order_group', 'unit_type', 'paid_sum')
 
 
-class ContNumByTypeSerializer(serializers.ModelSerializer):
-    order_group = serializers.IntegerField()
-    unit_type = serializers.IntegerField()
-    num_cont = serializers.IntegerField()
-
-    class Meta:
-        model = UnitType
-        fields = ('order_group', 'unit_type', 'num_cont')
+# class ContNumByTypeSerializer(serializers.ModelSerializer):
+#     order_group = serializers.IntegerField()
+#     unit_type = serializers.IntegerField()
+#     num_cont = serializers.IntegerField()
+#
+#     class Meta:
+#         model = UnitType
+#         fields = ('order_group', 'unit_type', 'num_cont')
 
 
 # class PaidByContSummarySerializer(serializers.ModelSerializer):
