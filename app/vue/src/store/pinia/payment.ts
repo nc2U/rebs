@@ -29,12 +29,12 @@ export const usePayment = defineStore('payment', () => {
   const priceList = ref<Price[]>([])
 
   // actions
-  const fetchPriceList = (payload: PriceFilter) => {
+  const fetchPriceList = async (payload: PriceFilter) => {
     const project = payload.project || ''
     const order_group = payload.order_group || ''
     const unit_type = payload.unit_type || ''
 
-    return api
+    return await api
       .get(`/price/?project=${project}&order_group=${order_group}&unit_type=${unit_type}`)
       .then(res => (priceList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
@@ -111,11 +111,11 @@ export const usePayment = defineStore('payment', () => {
   const downPayList = ref<DownPay[]>([])
 
   // actions
-  const fetchDownPayList = (payload: DownPayFilter) => {
+  const fetchDownPayList = async (payload: DownPayFilter) => {
     let url = `/down-payment/?project=${payload.project}`
     if (payload.order_group) url += `&order_group=${payload.order_group}`
     if (payload.unit_type) url += `&unit_type=${payload.unit_type}`
-    return api
+    return await api
       .get(url)
       .then(res => (downPayList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
@@ -167,7 +167,7 @@ export const usePayment = defineStore('payment', () => {
   const paymentsCount = ref<number>(0)
 
   // actions
-  const fetchPaymentList = (payload: CashBookFilter) => {
+  const fetchPaymentList = async (payload: CashBookFilter) => {
     const { project } = payload
     let url = `/payment/?project=${project}`
     if (payload.from_date) url += `&from_deal_date=${payload.from_date}`
@@ -183,7 +183,7 @@ export const usePayment = defineStore('payment', () => {
     if (payload.search) url += `&search=${payload.search}`
     const page = payload.page ? payload.page : 1
     if (payload.page) url += `&page=${page}`
-    return api
+    return await api
       .get(url)
       .then(res => {
         paymentList.value = res.data.results
@@ -192,12 +192,12 @@ export const usePayment = defineStore('payment', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const fetchAllPaymentList = (payload: CashBookFilter) => {
+  const fetchAllPaymentList = async (payload: CashBookFilter) => {
     const { project } = payload
     let url = `/all-payment/?project=${project}`
     if (payload.contract) url += `&contract=${payload.contract}`
     if (payload.ordering) url += `&ordering=${payload.ordering}`
-    return api
+    return await api
       .get(url)
       .then(res => (AllPaymentList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
