@@ -72,7 +72,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 class StaffAuth(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     company = models.ForeignKey('company.Company', on_delete=models.PROTECT, verbose_name='회사정보')
-    is_staff = models.BooleanField('관리자로 승인', default=False, help_text='회사 직원(관리자) 승인 여부')
+    is_staff = models.BooleanField('관리자로 승인', default=False, help_text='외부 관계자가 아닌 회사 직원(관리자)일 경우 승인')
     allowed_projects = models.ManyToManyField('project.Project', related_name='allowed_projects',
                                               blank=True, verbose_name='허용 프로젝트',
                                               help_text='사용자가 조회 및 관리할 수 있는 프로젝트들을 선택합니다.')

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { ref, computed, onBeforeMount } from 'vue'
 import { useStore } from '@/store'
+import { useCompany } from '@/store/pinia/company'
 import avatar2 from '@/assets/images/avatars/2.jpg'
 import avatar3 from '@/assets/images/avatars/3.jpg'
 import avatar4 from '@/assets/images/avatars/4.jpg'
@@ -20,6 +21,12 @@ const asideVisible = computed(() => store.asideVisible)
 const active = (key: number) => key === activeKey.value
 
 const updateActiveKey = (key: number) => (activeKey.value = key)
+
+const comStore = useCompany()
+onBeforeMount(async () => {
+  const company = await comStore.fetchCompany(comStore.initComId)
+  if (company) document.title = company.name + ' :: Rebs'
+})
 </script>
 
 <template>
