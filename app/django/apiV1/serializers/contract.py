@@ -59,14 +59,15 @@ class ContPriceInContractSerializer(serializers.ModelSerializer):
 
 
 class ContractorInContractSerializer(serializers.ModelSerializer):
+    qualification = serializers.CharField(source='get_qualification_display', read_only=True)
     contractoraddress = AddressInContractorSerializer()
     contractorcontact = ContactInContractorSerializer()
 
     class Meta:
         model = Contractor
         fields = ('pk', 'name', 'birth_date', 'gender', 'is_registed',
-                  'contractoraddress', 'contractorcontact', 'status',
-                  'reservation_date', 'contract_date', 'is_active', 'note')
+                  'qualification', 'contractoraddress', 'contractorcontact',
+                  'status', 'reservation_date', 'contract_date', 'is_active', 'note')
 
 
 def get_cont_price(instance, houseunit=None):
@@ -598,14 +599,16 @@ class SuccessionInContractorSerializer(serializers.ModelSerializer):
 
 
 class ContractorSerializer(serializers.ModelSerializer):
+    qualifi_display = serializers.CharField(source='get_qualification_display', read_only=True)
     successions = SuccessionInContractorSerializer(many=True, read_only=True)
     contractorrelease = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Contractor
         fields = ('pk', 'contract', 'name', '__str__', 'birth_date', 'gender',
-                  'is_registed', 'status', 'reservation_date', 'contract_date',
-                  'is_active', 'note', 'successions', 'contractorrelease')
+                  'is_registed', 'qualification', 'qualifi_display', 'status',
+                  'reservation_date', 'contract_date', 'is_active', 'note',
+                  'successions', 'contractorrelease')
 
 
 class ContractorAddressSerializer(serializers.ModelSerializer):
