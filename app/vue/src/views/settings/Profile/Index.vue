@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount } from 'vue'
+import { ref, computed } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { pageTitle, navMenu } from '@/views/settings/_menu/headermixin'
 import { type Profile } from '@/store/types/accounts'
@@ -13,6 +13,7 @@ const profile = computed(() => accStore.profile)
 const isStaff = computed(
   () => useAccount().superAuth || Number(useAccount().staffAuth?.is_staff || null),
 )
+const profileNav = isStaff.value ? navMenu : ['프로필 관리']
 
 const fileUpload = (img: File) => (image.value = img)
 
@@ -34,14 +35,10 @@ const onSubmit = (payload: Profile & { image: File | string | null }) => {
   if (pk) patchProfile({ ...{ pk }, ...{ form } })
   else createProfile(form)
 }
-
-onBeforeMount(() => {
-  if (!isStaff.value) navMenu.splice(0, 2)
-})
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" selector="CompanySelect" />
+  <ContentHeader :page-title="pageTitle" :nav-menu="profileNav" selector="CompanySelect" />
 
   <ContentBody>
     <ProfileForm
