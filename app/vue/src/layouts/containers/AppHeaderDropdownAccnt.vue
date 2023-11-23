@@ -75,7 +75,7 @@ const logout = () => {
       </CDropdownItem>
 
       <CDropdownItem
-        v-if="userInfo.is_active"
+        v-if="userInfo.is_superuser"
         @click="locationBlank('https://nc2u.github.io/rebs/')"
       >
         <v-icon icon="mdi mdi-file-document-outline" size="small" />
