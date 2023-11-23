@@ -290,6 +290,7 @@ class ContractSetSerializer(serializers.ModelSerializer):
         contractor_birth_date = self.initial_data.get('birth_date')
         contractor_gender = self.initial_data.get('gender')
         contractor_is_registed = self.initial_data.get('is_registed')
+        contractor_qualification = self.initial_data.get('qualification')
         contractor_status = self.initial_data.get('status')
         contractor_reservation_date = self.initial_data.get('reservation_date')
         contractor_contract_date = self.initial_data.get('contract_date')
@@ -300,6 +301,7 @@ class ContractSetSerializer(serializers.ModelSerializer):
                                 birth_date=contractor_birth_date,
                                 gender=contractor_gender,
                                 is_registed=contractor_is_registed,
+                                qualification=contractor_qualification,
                                 status=contractor_status,
                                 reservation_date=contractor_reservation_date,
                                 contract_date=contractor_contract_date,
@@ -465,6 +467,7 @@ class ContractSetSerializer(serializers.ModelSerializer):
         contractor_birth_date = self.initial_data.get('birth_date')
         contractor_gender = self.initial_data.get('gender')
         contractor_is_registed = self.initial_data.get('is_registed')
+        contractor_qualification = self.initial_data.get('qualification')
         contractor_status = self.initial_data.get('status')
         contractor_reservation_date = self.initial_data.get('reservation_date')
         contractor_contract_date = self.initial_data.get('contract_date')
@@ -475,6 +478,7 @@ class ContractSetSerializer(serializers.ModelSerializer):
         contractor.birth_date = contractor_birth_date
         contractor.gender = contractor_gender
         contractor.is_registed = contractor_is_registed
+        contractor.qualification = contractor_qualification
         contractor.status = contractor_status
         contractor.reservation_date = contractor_reservation_date
         contractor.contract_date = contractor_contract_date
