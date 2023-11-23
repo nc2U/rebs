@@ -44,7 +44,7 @@ const onSubmit = (event: Event) => {
       <CFormInput
         v-model="form.username"
         autocomplete="username"
-        placeholder="아이디를 입력해주세요"
+        placeholder="이름을 입력해주세요"
         required
       />
       <CFormFeedback invalid>아이디를 입력하세요.</CFormFeedback>
