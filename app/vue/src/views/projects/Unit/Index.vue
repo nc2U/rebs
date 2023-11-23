@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed, onBeforeMount } from 'vue'
+import { onBeforeRouteLeave } from 'vue-router'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
 import { useProject } from '@/store/pinia/project'
 import { type HouseUnit } from '@/store/types/project'
@@ -152,6 +153,8 @@ onBeforeMount(() => {
   dataSetup(project.value || projStore.initProjId)
   pDataStore.houseUnitList = []
 })
+
+onBeforeRouteLeave(() => dataReset())
 </script>
 
 <template>
