@@ -3,7 +3,7 @@ import { ref, onMounted, watch } from 'vue'
 import CropperModal from './CropperModal.vue'
 
 const props = defineProps({
-  image: { type: String, default: '/static/dist/img/NoImage.jpeg' },
+  image: { type: String, default: '' },
 })
 
 const emit = defineEmits(['file-upload'])
@@ -51,11 +51,7 @@ watch(props, val => {
   }
 })
 
-onMounted(() => {
-  if (props.image) {
-    imgUrl.value = props.image
-  }
-})
+onMounted(() => (imgUrl.value = props.image || '/static/dist/img/NoImage.jpeg'))
 </script>
 
 <template>
