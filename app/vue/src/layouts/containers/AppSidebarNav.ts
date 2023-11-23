@@ -19,6 +19,9 @@ type Item = {
   name?: string
   to?: string
 }
+const isStaff = computed(
+  () => useAccount().superAuth || Number(useAccount().staffAuth?.is_staff || null),
+)
 
 const isCash = computed(
   () => useAccount().superAuth || Number(useAccount().staffAuth?.company_cash || null),
@@ -58,7 +61,7 @@ const AppSidebarNav = defineComponent({
     CNavTitle,
   },
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  setup() {
+  setup: function () {
     const route = useRoute()
     const firstRender = ref(true)
 
@@ -124,7 +127,10 @@ const AppSidebarNav = defineComponent({
         : h(resolveComponent(item.component), {}, () => item.name)
     }
 
-    if (!isCash.value) nav.splice(10, 1)
+    if (!isStaff.value) {
+      nav[14]?.items.splice(0, 1)
+      nav.splice(9, 4)
+    } else if (!isCash.value) nav.splice(10, 1)
 
     return () =>
       h(
