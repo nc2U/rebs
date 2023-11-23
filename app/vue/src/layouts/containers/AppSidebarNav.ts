@@ -128,7 +128,7 @@ const AppSidebarNav = defineComponent({
     }
 
     if (!isStaff.value) {
-      nav[14]?.items.splice(0, 1)
+      // nav[14]?.items.splice(0, 1)
       nav.splice(9, 4)
     } else if (!isCash.value) nav.splice(10, 1)
 
