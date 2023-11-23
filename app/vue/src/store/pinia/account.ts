@@ -77,10 +77,7 @@ export const useAccount = defineStore('account', () => {
         setUser(res.data)
         message('info', '', '로그인 성공 알림!', 2000, 'top-center', 'bounce')
       })
-      .catch(err => {
-        console.log(err.response)
-        if (err.response.status === 401) message('warning', '', err.response.data.detail)
-      })
+      .catch(() => message('warning', '', '이메일 또는 비밀번호를 확인하여 주세요.'))
   }
 
   const loginByToken = (token?: string) => {
