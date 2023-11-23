@@ -64,7 +64,7 @@ class Contractor(models.Model):
     gender = models.CharField('성별', max_length=1, choices=GENDER_CHOICES, blank=True)
     is_registed = models.BooleanField('인가등록여부', default=False)
     QUALI_CHOICES = (('1', '미인가'), ('2', '인가'), ('3', '부적격'))
-    qualification = models.CharField('등록상태', max_length=1, choices=QUALI_CHOICES)
+    qualification = models.CharField('등록상태', max_length=1, choices=QUALI_CHOICES, default='1')
     STATUS_CHOICES = (('1', '청약'), ('2', '계약'), ('3', '청약 해지'), ('4', '계약 해지'), ('5', '양도 승계'))
     status = models.CharField('계약상태', max_length=1, choices=STATUS_CHOICES)
     reservation_date = models.DateField('청약일자', null=True, blank=True)
