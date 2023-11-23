@@ -5,4 +5,4 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-CSRF_TRUSTED_ORIGINS = ['localhost', 'localhost:8000', 'localhost:8888', 'localhost:5173']
+CSRF_TRUSTED_ORIGINS = ['http://localhost', 'http://localhost:8000', 'http://localhost:8888', 'http://localhost:5173']
