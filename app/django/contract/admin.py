@@ -44,8 +44,8 @@ class ContactorAdmin(ImportExportMixin, admin.ModelAdmin):
                     'is_active', 'reservation_date', 'contract_date', 'created_at', 'updated_at')
     search_fields = ('name',)
     list_display_links = ('name',)
-    list_filter = ('contract__order_group', 'contract__unit_type',
-                   'contract_date', 'gender', 'is_registed', 'status')
+    list_filter = ('contract__order_group', 'contract__unit_type', 'contract_date',
+                   'gender', 'is_registed', 'qualification', 'status')
     list_editable = ('gender', 'is_registed', 'qualification', 'is_active')
     inlines = (CContactInline, CAdressInline)
 
