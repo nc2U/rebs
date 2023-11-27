@@ -59,14 +59,14 @@ class ContPriceInContractSerializer(serializers.ModelSerializer):
 
 
 class ContractorInContractSerializer(serializers.ModelSerializer):
-    qualification = serializers.CharField(source='get_qualification_display', read_only=True)
+    qualifi_display = serializers.CharField(source='get_qualification_display', read_only=True)
     contractoraddress = AddressInContractorSerializer()
     contractorcontact = ContactInContractorSerializer()
 
     class Meta:
         model = Contractor
         fields = ('pk', 'name', 'birth_date', 'gender', 'is_registed',
-                  'qualification', 'contractoraddress', 'contractorcontact',
+                  'qualification', 'qualifi_display', 'contractoraddress', 'contractorcontact',
                   'status', 'reservation_date', 'contract_date', 'is_active', 'note')
 
 

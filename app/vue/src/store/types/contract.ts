@@ -55,7 +55,8 @@ interface ContractorInContract {
   pk: number
   name: string
   is_registed: boolean
-  qualification: '미인가' | '인가' | '부적격'
+  qualification: '1' | '2' | '3'
+  qualifi_display: '미인가' | '인가' | '부적격'
   contractoraddress: ContractorAddress | null
   contractorcontact: ContractorContact | null
   status: string
@@ -135,6 +136,8 @@ export interface Contractor {
   birth_date: string | null
   gender: string
   is_registed: boolean
+  qualification: '1' | '2' | '3'
+  qualifi_display?: '미인가' | '인가' | '부적격'
   status: string
   reservation_date: string | null
   contract_date: string | null
