@@ -26,7 +26,7 @@ class ContractFilter(FilterSet):
     keyunit__houseunit__building_unit = ModelChoiceFilter(queryset=BuildingUnit.objects.all(), label='동(건물)')
     contractor__status = ChoiceFilter(field_name='contractor__status', choices=Contractor.STATUS_CHOICES, label='현재상태')
     contractor__qualification = ChoiceFilter(field_name='contractor__qualification',
-                                             choices=Contractor.QUALI_CHOICES, label='등록상태')
+                                             choices=Contractor.QUA_CHOICES, label='등록상태')
     from_contract_date = DateFilter(field_name='contractor__contract_date', lookup_expr='gte', label='계약일자부터')
     to_contract_date = DateFilter(field_name='contractor__contract_date', lookup_expr='lte', label='계약일자까지')
 
