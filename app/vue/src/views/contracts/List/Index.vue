@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { ref, computed, watch, onBeforeMount } from 'vue'
+import { computed, onBeforeMount, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
-import { useContract, type ContFilter } from '@/store/pinia/contract'
-import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin1'
+import { type ContFilter, useContract } from '@/store/pinia/contract'
+import { navMenu, pageTitle } from '@/views/contracts/_menu/headermixin1'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContractSummary from './components/ContractSummary.vue'
@@ -65,8 +65,7 @@ const onContFiltering = (payload: ContFilter) => {
   } = payload
   payload.project = project.value?.pk
   const is_unit = null_unit ? '1' : ''
-  const qua = qualification
-  filteredStr.value = `&status=${status}&group=${order_group}&type=${unit_type}&dong=${building}&is_null=${is_unit}&qua=${qua}&status=${status}&sdate=${from_date}&edate=${to_date}&q=${search}`
+  filteredStr.value = `&status=${status}&group=${order_group}&type=${unit_type}&dong=${building}&is_null=${is_unit}&qua=${qualification}&status=${status}&sdate=${from_date}&edate=${to_date}&q=${search}`
   if (payload.project) fetchContractList(payload)
 }
 const setItems = (arr: string[]) => (printItems.value = arr)
