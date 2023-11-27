@@ -10,6 +10,7 @@ export interface SimpleCont {
 export interface Contract {
   pk: number
   project: number
+  order_group_sort: '1' | '2' // '조합모집' | '일반분양'
   order_group: number
   unit_type: number
   serial_number: string

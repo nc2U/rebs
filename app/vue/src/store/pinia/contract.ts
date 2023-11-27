@@ -55,7 +55,7 @@ export const useContract = defineStore('contract', () => {
       .then(res => (contract.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const fetchContractList = (payload: ContFilter) => {
+  const fetchContractList = async (payload: ContFilter) => {
     const status = payload.status || '2'
     let url = `/contract-set/?project=${payload.project}&activation=true&contractor__status=${status}`
     if (payload.order_group) url += `&order_group=${payload.order_group}`
@@ -70,7 +70,7 @@ export const useContract = defineStore('contract', () => {
     const page = payload.page ? payload.page : 1
     url += `&ordering=${ordering}&page=${page}`
 
-    return api
+    return await api
       .get(url)
       .then(res => {
         contractList.value = res.data.results
@@ -195,19 +195,19 @@ export const useContract = defineStore('contract', () => {
   const downPaymentList = ref<DownPayment[]>([])
 
   // actions
-  const fetchKeyUnitList = (payload: UnitFilter) => {
+  const fetchKeyUnitList = async (payload: UnitFilter) => {
     const { project } = payload
     const unit_type = payload.unit_type || ''
     const contract = payload.contract || ''
     const available = payload.available || ''
-    return api
+    return await api
       .get(
         `/key-unit/?project=${project}&unit_type=${unit_type}&contract=${contract}&available=${available}`,
       )
       .then(res => (keyUnitList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
-  const fetchHouseUnitList = (payload: {
+  const fetchHouseUnitList = async (payload: {
     project: number
     unit_type?: number
     contract?: number
@@ -217,12 +217,12 @@ export const useContract = defineStore('contract', () => {
     if (payload.unit_type) url += `&unit_type=${payload.unit_type}`
     if (payload.contract) url += `&contract=${payload.contract}`
 
-    return api
+    return await api
       .get(url)
       .then(res => (houseUnitList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
-  const fetchSalePriceList = (payload: {
+  const fetchSalePriceList = async (payload: {
     project: number
     order_group?: number
     unit_type?: number
@@ -232,12 +232,12 @@ export const useContract = defineStore('contract', () => {
     if (payload.order_group) url += `&order_group=${payload.order_group}`
     if (payload.unit_type) url += `&unit_type=${payload.unit_type}`
 
-    return api
+    return await api
       .get(url)
       .then(res => (salesPriceList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
-  const fetchDownPayList = (payload: {
+  const fetchDownPayList = async (payload: {
     project: number
     order_group?: number
     unit_type?: number
@@ -247,7 +247,7 @@ export const useContract = defineStore('contract', () => {
     if (payload.order_group) url += `&order_group=${payload.order_group}`
     if (payload.unit_type) url += `&unit_type=${payload.unit_type}`
 
-    return api
+    return await api
       .get(url)
       .then(res => (downPaymentList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
@@ -276,9 +276,11 @@ export const useContract = defineStore('contract', () => {
       })
       .catch(err => errorHandle(err.response.data))
 
-  const patchSuccession = (payload: Succession & Buyer & { project: number; page: number }) => {
+  const patchSuccession = async (
+    payload: Succession & Buyer & { project: number; page: number },
+  ) => {
     const { pk, project, page, ...dbData } = payload
-    return api
+    return await api
       .put(`/succession/${pk}/`, dbData)
       .then(res =>
         fetchSuccessionList(project, page).then(() =>
@@ -305,9 +307,9 @@ export const useContract = defineStore('contract', () => {
       .then(res => (buyerList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const createBuyer = (payload: Succession & Buyer & { project: number }) => {
+  const createBuyer = async (payload: Succession & Buyer & { project: number }) => {
     const { project, ...dbData } = payload
-    return api
+    return await api
       .post(`/succession-buyer/`, dbData)
       .then(() => fetchSuccessionList(project).then(() => message()))
       .catch(err => errorHandle(err.response.data))
