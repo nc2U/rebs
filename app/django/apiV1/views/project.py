@@ -1,15 +1,14 @@
 from datetime import datetime
+
 from django.db.models import Sum, F, Case, When
 from rest_framework import viewsets
 
-from ..permission import *
-from ..pagination import *
-from ..serializers.project import *
-
+from cash.models import ProjectCashBook
 from project.models import (Project, ProjectIncBudget, ProjectOutBudget,
                             Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
-
-from cash.models import BankCode, CompanyBankAccount, ProjectBankAccount, CashBook, ProjectCashBook
+from ..pagination import *
+from ..permission import *
+from ..serializers.project import *
 
 TODAY = datetime.today().strftime('%Y-%m-%d')
 
@@ -18,14 +17,14 @@ TODAY = datetime.today().strftime('%Y-%m-%d')
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
-    permission_classes = (permissions.IsAuthenticated, IsSuperUserOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
 
 
 class ProjectIncBudgetViewSet(viewsets.ModelViewSet):
     queryset = ProjectIncBudget.objects.all()
     serializer_class = ProjectIncBudgetSerializer
     pagination_class = PageNumberPaginationFifty
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     filterset_fields = ('project', 'unit_type__sort')
 
 
@@ -33,7 +32,7 @@ class ProjectOutBudgetViewSet(viewsets.ModelViewSet):
     queryset = ProjectOutBudget.objects.all()
     serializer_class = ProjectOutBudgetSerializer
     pagination_class = PageNumberPaginationFifty
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     filterset_fields = ('project',)
 
 
@@ -44,7 +43,7 @@ class StatusOutBudgetViewSet(ProjectOutBudgetViewSet):
 class ExecAmountToBudgetViewSet(viewsets.ModelViewSet):
     serializer_class = ExecAmountToBudget
     pagination_class = PageNumberPaginationFifty
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     filterset_fields = ('project',)
 
     def get_queryset(self):
@@ -72,7 +71,7 @@ class ExecAmountToBudgetViewSet(viewsets.ModelViewSet):
 
 class TotalSiteAreaViewSet(viewsets.ModelViewSet):
     serializer_class = TotalSiteAreaSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     filterset_fields = ('project',)
 
     def get_queryset(self):
@@ -84,7 +83,7 @@ class TotalSiteAreaViewSet(viewsets.ModelViewSet):
 class SiteViewSet(viewsets.ModelViewSet):
     queryset = Site.objects.all()
     serializer_class = SiteSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     filterset_fields = ('project',)
     search_fields = ('district', 'lot_number', 'site_purpose', 'owners__owner')
 
@@ -99,7 +98,7 @@ class AllSiteViewSet(SiteViewSet):
 
 class TotalOwnerAreaViewSet(viewsets.ModelViewSet):
     serializer_class = TotalOwnerAreaSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     filterset_fields = ('project',)
 
     def get_queryset(self):
@@ -110,7 +109,7 @@ class TotalOwnerAreaViewSet(viewsets.ModelViewSet):
 class SiteOwnerViewSet(viewsets.ModelViewSet):
     queryset = SiteOwner.objects.all()
     serializer_class = SiteOwnerSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     filterset_fields = ('project', 'own_sort')
     search_fields = ('owner', 'phone1', 'phone2', 'sites__lot_number', 'counsel_record')
 
@@ -128,12 +127,12 @@ class AllOwnerViewSet(SiteOwnerViewSet):
 class SiteRelationViewSet(viewsets.ModelViewSet):
     queryset = SiteOwnshipRelationship.objects.all()
     serializer_class = SiteOwnshipRelationshipSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
 
 
 class TotalContractedAreaViewSet(viewsets.ModelViewSet):
     serializer_class = TotalContractedAreaSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     filterset_fields = ('project',)
 
     def get_queryset(self):
@@ -144,7 +143,7 @@ class TotalContractedAreaViewSet(viewsets.ModelViewSet):
 class SiteContractViewSet(viewsets.ModelViewSet):
     queryset = SiteContract.objects.all()
     serializer_class = SiteContractSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     filterset_fields = ('project', 'owner__own_sort')
     search_fields = ('owner__owner', 'owner__phone1', 'acc_bank', 'acc_owner', 'note')
 

@@ -9,8 +9,10 @@ const props = defineProps({
 })
 
 const contractor = computed(() => props.contract?.contractor?.pk)
-
 const router = useRouter()
+
+const getColor = (q: '미인가' | '인가' | '부적격') =>
+  ({ 미인가: 'warning', 인가: 'success', 부적격: 'danger' })[q]
 </script>
 
 <template>
@@ -26,8 +28,8 @@ const router = useRouter()
       </router-link>
     </CTableDataCell>
     <CTableDataCell>
-      <CBadge :color="contract.contractor?.is_registed ? 'success' : 'danger'">
-        {{ contract.contractor?.is_registed ? '인가완료' : '미 인 가' }}
+      <CBadge :color="getColor(contract.contractor?.qualifi_display ?? '미인가')">
+        {{ contract.contractor?.qualifi_display ?? '미인가' }}
       </CBadge>
     </CTableDataCell>
     <CTableDataCell>

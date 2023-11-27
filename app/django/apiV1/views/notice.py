@@ -10,7 +10,7 @@ class BillIssueViewSet(viewsets.ModelViewSet):
     queryset = SalesBillIssue.objects.all()
     serializer_class = SallesBillIssueSerializer
     filterset_fields = ('project',)
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

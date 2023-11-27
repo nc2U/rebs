@@ -59,14 +59,15 @@ class ContPriceInContractSerializer(serializers.ModelSerializer):
 
 
 class ContractorInContractSerializer(serializers.ModelSerializer):
+    qualifi_display = serializers.CharField(source='get_qualification_display', read_only=True)
     contractoraddress = AddressInContractorSerializer()
     contractorcontact = ContactInContractorSerializer()
 
     class Meta:
         model = Contractor
         fields = ('pk', 'name', 'birth_date', 'gender', 'is_registed',
-                  'contractoraddress', 'contractorcontact', 'status',
-                  'reservation_date', 'contract_date', 'is_active', 'note')
+                  'qualification', 'qualifi_display', 'contractoraddress', 'contractorcontact',
+                  'status', 'reservation_date', 'contract_date', 'is_active', 'note')
 
 
 def get_cont_price(instance, houseunit=None):
@@ -289,6 +290,7 @@ class ContractSetSerializer(serializers.ModelSerializer):
         contractor_birth_date = self.initial_data.get('birth_date')
         contractor_gender = self.initial_data.get('gender')
         contractor_is_registed = self.initial_data.get('is_registed')
+        contractor_qualification = self.initial_data.get('qualification')
         contractor_status = self.initial_data.get('status')
         contractor_reservation_date = self.initial_data.get('reservation_date')
         contractor_contract_date = self.initial_data.get('contract_date')
@@ -299,6 +301,7 @@ class ContractSetSerializer(serializers.ModelSerializer):
                                 birth_date=contractor_birth_date,
                                 gender=contractor_gender,
                                 is_registed=contractor_is_registed,
+                                qualification=contractor_qualification,
                                 status=contractor_status,
                                 reservation_date=contractor_reservation_date,
                                 contract_date=contractor_contract_date,
@@ -464,6 +467,7 @@ class ContractSetSerializer(serializers.ModelSerializer):
         contractor_birth_date = self.initial_data.get('birth_date')
         contractor_gender = self.initial_data.get('gender')
         contractor_is_registed = self.initial_data.get('is_registed')
+        contractor_qualification = self.initial_data.get('qualification')
         contractor_status = self.initial_data.get('status')
         contractor_reservation_date = self.initial_data.get('reservation_date')
         contractor_contract_date = self.initial_data.get('contract_date')
@@ -474,6 +478,7 @@ class ContractSetSerializer(serializers.ModelSerializer):
         contractor.birth_date = contractor_birth_date
         contractor.gender = contractor_gender
         contractor.is_registed = contractor_is_registed
+        contractor.qualification = contractor_qualification
         contractor.status = contractor_status
         contractor.reservation_date = contractor_reservation_date
         contractor.contract_date = contractor_contract_date
@@ -598,14 +603,16 @@ class SuccessionInContractorSerializer(serializers.ModelSerializer):
 
 
 class ContractorSerializer(serializers.ModelSerializer):
+    qualifi_display = serializers.CharField(source='get_qualification_display', read_only=True)
     successions = SuccessionInContractorSerializer(many=True, read_only=True)
     contractorrelease = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Contractor
         fields = ('pk', 'contract', 'name', '__str__', 'birth_date', 'gender',
-                  'is_registed', 'status', 'reservation_date', 'contract_date',
-                  'is_active', 'note', 'successions', 'contractorrelease')
+                  'is_registed', 'qualification', 'qualifi_display', 'status',
+                  'reservation_date', 'contract_date', 'is_active', 'note',
+                  'successions', 'contractorrelease')
 
 
 class ContractorAddressSerializer(serializers.ModelSerializer):

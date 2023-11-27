@@ -17,6 +17,7 @@ TODAY = datetime.today().strftime('%Y-%m-%d')
 # Cash --------------------------------------------------------------------------
 class BankCodeViewSet(viewsets.ModelViewSet):
     queryset = BankCode.objects.all()
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
     pagination_class = PageNumberPaginationFifty
     serializer_class = BankCodeSerializer
 
@@ -94,14 +95,14 @@ class ProjectBankAccountViewSet(viewsets.ModelViewSet):
     queryset = ProjectBankAccount.objects.all()
     serializer_class = ProjectBankAccountSerializer
     pagination_class = PageNumberPaginationFifty
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     filterset_fields = ('project', 'is_hide', 'inactive', 'directpay', 'is_imprest')
 
 
 class PrBalanceByAccountViewSet(viewsets.ModelViewSet):
     serializer_class = PrBalanceByAccountSerializer
     pagination_class = PageNumberPaginationOneHundred
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     filterset_fields = ('project', 'bank_account__directpay')
 
     def get_queryset(self):
@@ -145,7 +146,7 @@ class ProjectCashBookFilterSet(FilterSet):
 class ProjectCashBookViewSet(viewsets.ModelViewSet):
     queryset = ProjectCashBook.objects.filter(Q(is_imprest=False) | Q(project_account_d3=63, income__isnull=True))
     serializer_class = ProjectCashBookSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     pagination_class = PageNumberPaginationFifteen
     filterset_class = ProjectCashBookFilterSet
     search_fields = ('contract__contractor__name', 'content', 'trader', 'note')
