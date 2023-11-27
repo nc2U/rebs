@@ -580,9 +580,9 @@ onUpdated(() => formDataSetup())
         <CCol v-if="isContract && isUnion && contract.order_group_sort === '1'" xs="6" lg="2">
           <CFormSelect v-model="form.qualification" required :disabled="!isContract">
             <option value="">---------</option>
-            <option value="1">미인가</option>
-            <option value="2">인가</option>
-            <option value="3">부적격</option>
+            <option value="2">미인가</option>
+            <option value="3">인가</option>
+            <option value="4">부적격</option>
           </CFormSelect>
           <CFormFeedback invalid> 등록상태를 선택하세요.</CFormFeedback>
         </CCol>

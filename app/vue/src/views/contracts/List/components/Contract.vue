@@ -11,8 +11,8 @@ const props = defineProps({
 const contractor = computed(() => props.contract?.contractor?.pk)
 const router = useRouter()
 
-const getColor = (q: '1' | '2' | '3' | undefined) =>
-  q ? { '1': 'warning', '2': 'success', '3': 'danger' }[q] : ''
+const getColor = (q: '1' | '2' | '3' | '4' | undefined) =>
+  q ? { '1': '', '2': 'warning', '3': 'success', '4': 'danger' }[q] : ''
 </script>
 
 <template>
