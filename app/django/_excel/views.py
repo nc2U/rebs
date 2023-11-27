@@ -153,7 +153,7 @@ class ExportContracts(View):
         type = request.GET.get('type')
         dong = request.GET.get('dong')
         is_null = request.GET.get('is_null')
-        qua = request.GET.get('qua')
+        quali = request.GET.get('quali')
         sdate = request.GET.get('sdate')
         edate = request.GET.get('edate')
         q = request.GET.get('q')
@@ -164,7 +164,7 @@ class ExportContracts(View):
         queryset = queryset.filter(keyunit__houseunit__building_unit=dong) if dong else queryset
         null_qry = True if is_null == '1' else False
         queryset = queryset.filter(keyunit__houseunit__isnull=null_qry) if is_null else queryset
-        queryset = queryset.filter(contractor__qualification=qua) if qua else queryset
+        queryset = queryset.filter(contractor__qualification=quali) if quali else queryset
         queryset = queryset.filter(contractor__contract_date__gte=sdate) if sdate else queryset
         queryset = queryset.filter(contractor__contract_date__lte=edate) if edate else queryset
         queryset = queryset.filter(
@@ -192,7 +192,7 @@ class ExportContracts(View):
         for col_num, title in enumerate(titles):
             if title in ('생년월일', f'{t_name}일자'):
                 is_date.append(col_num)
-            if title == '인가여부':
+            if title == '등록상태':
                 reg_col = col_num
             if title == '납입금액합계':
                 is_num.append(col_num)
@@ -205,6 +205,8 @@ class ExportContracts(View):
                                                    income__isnull=False,
                                                    contract__activation=True)
         paid_dict = paid_data.values_list(*paid_params)
+
+        quali_str = {'1': '일반분양', '2': '미인가', '3': '인가', '4': '부적격', }
 
         for i, row in enumerate(data):
             row_num += 1
@@ -230,7 +232,7 @@ class ExportContracts(View):
                     body_format['num_format'] = 'yyyy-mm-dd'
 
                 # 인가 여부 데이터 치환
-                cell_value = ('미인가', '인가')[int(cell_data)] if reg_col == col_num else cell_data
+                cell_value = quali_str.get(cell_data, '') if reg_col == col_num else cell_data
 
                 bf = workbook.add_format(body_format)
 
