@@ -55,8 +55,8 @@ export interface ContPrice {
 interface ContractorInContract {
   pk: number
   name: string
-  qualification: '1' | '2' | '3'
-  qualifi_display: '미인가' | '인가' | '부적격'
+  qualification: '1' | '2' | '3' | '4'
+  qualifi_display: '일반분양' | '미인가' | '인가' | '부적격'
   contractoraddress: ContractorAddress | null
   contractorcontact: ContractorContact | null
   status: string
@@ -135,8 +135,8 @@ export interface Contractor {
   __str__: string
   birth_date: string | null
   gender: string
-  qualification: '1' | '2' | '3'
-  qualifi_display?: '미인가' | '인가' | '부적격'
+  qualification: '1' | '2' | '3' | '4'
+  qualifi_display?: '일반분양' | '미인가' | '인가' | '부적격'
   status: string
   reservation_date: string | null
   contract_date: string | null

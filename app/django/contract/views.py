@@ -545,7 +545,8 @@ class ContractorReleaseRegister(LoginRequiredMixin, ListView, FormView):
                         pc.save()
 
                     # 6. 최종 해지상태로 변경
-                    contractor.qualification = '1'  # 인가 등록 취소
+                    if contractor.qualification == '3':
+                        contractor.qualification = '2'  # 인가 등록 취소
                     contractor.status = '4'  # 해지 상태로 변경
                     contractor.user = request.user  # 해지 등록 작업자
                     contractor.save()
