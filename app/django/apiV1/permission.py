@@ -45,6 +45,20 @@ class IsStaffOrReadOnly(permissions.BasePermission):
                     return False
 
 
+class IsProjectStaffOrReadOnly(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        else:
+            if request.user.is_superuser or request.user.staffauth.is_staff:
+                return True
+            else:
+                try:
+                    return request.user.staffauth.is_project_staff
+                except StaffAuth.DoesNotExist:
+                    return False
+
+
 class IsOwnerOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
