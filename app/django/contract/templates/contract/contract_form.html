@@ -210,11 +210,11 @@
                                                         {% endfor %}
                                                         {{ form.gender.errors }}
                                                         <span class="ml-4">
-                                                            {{ form.is_registed|add_class:"form-check-input input-sm" }}
-                                                        <label for="{{ form.is_registed.id_for_label }}"
-                                                               class="form-check-label">{{ form.is_registed.label }}</label>
+                                                            {{ form.qualification|add_class:"form-check-input input-sm" }}
+                                                        <label for="{{ form.qualification.id_for_label }}"
+                                                               class="form-check-label">{{ form.qualification.label }}</label>
                                                         </span>
-                                                        {{ form.is_registed.errors }}
+                                                        {{ form.qualification.errors }}
                                                     </div>
                                                 </div>
                                             {% endif %}

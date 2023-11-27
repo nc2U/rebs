@@ -25,7 +25,7 @@ export interface ContFilter {
   building?: string
   status?: string
   null_unit?: boolean
-  registed?: string
+  qualification?: string
   ordering?: string
   from_date?: string
   to_date?: string
@@ -62,7 +62,7 @@ export const useContract = defineStore('contract', () => {
     if (payload.unit_type) url += `&unit_type=${payload.unit_type}`
     if (payload.building) url += `&keyunit__houseunit__building_unit=${payload.building}`
     if (payload.null_unit) url += '&houseunit__isnull=true'
-    if (payload.registed) url += `&contractor__is_registed=${payload.registed}`
+    if (payload.qualification) url += `&contractor__qualification=${payload.qualification}`
     if (payload.from_date) url += `&from_contract_date=${payload.from_date}`
     if (payload.to_date) url += `&to_contract_date=${payload.to_date}`
     if (payload.search) url += `&search=${payload.search}`

@@ -67,7 +67,6 @@ const form = reactive({
   name: '', // 7
   birth_date: null as string | null, // 8
   gender: '', // 9
-  is_registed: false, // 10
   qualification: '',
   status: null as null | string, // 1
   reservation_date: null as string | null, // 6-1
@@ -276,7 +275,6 @@ const formsCheck = computed(() => {
     const g = form.name === props.contractor.name
     const h = form.birth_date === props.contractor.birth_date
     const i = form.gender === props.contractor?.gender
-    const jj = form.is_registed === props.contractor?.is_registed
     const j = form.qualification === props.contractor?.qualification
     const k = form.cell_phone === contact.cell_phone
     const l = form.home_phone === contact?.home_phone
@@ -298,7 +296,7 @@ const formsCheck = computed(() => {
     const b1 = form.note === props.contract.contractor.note
 
     const cond1 = a && b && c && d && e && f && g && h && i
-    const cond2 = j && jj && k && l && m && n && o && p && q && r && s
+    const cond2 = j && k && l && m && n && o && p && q && r && s
     const cond3 = t && u && v && w && x && y && z && a1 && b1
     return cond1 && cond2 && cond3
   } else return false
@@ -317,7 +315,6 @@ const formDataReset = () => {
   form.name = ''
   form.birth_date = null
   form.gender = ''
-  form.is_registed = false
   form.qualification = ''
   form.status = ''
   form.reservation_date = null
@@ -366,7 +363,6 @@ const formDataSetup = () => {
     form.name = props.contract.contractor.name
     form.birth_date = props.contract.contractor.birth_date
     form.gender = props.contract.contractor.gender // 9
-    form.is_registed = props.contract.contractor.is_registed // 10
     form.qualification = props.contract.contractor.qualification // 10
     form.status = props.contract.contractor.status
     form.reservation_date = props.contractor.reservation_date
@@ -581,13 +577,7 @@ onUpdated(() => formDataSetup())
           <CFormFeedback invalid>성별을 선택하세요.</CFormFeedback>
         </CCol>
 
-        <CCol v-show="isContract && isUnion" xs="6" lg="2">
-          <!--          <CFormSwitch-->
-          <!--            id="is_registed"-->
-          <!--            v-model="form.is_registed"-->
-          <!--            label="인가등록여부"-->
-          <!--            :disabled="!isContract"-->
-          <!--          />-->
+        <CCol v-if="isContract && isUnion && contract.order_group_sort === '1'" xs="6" lg="2">
           <CFormSelect v-model="form.qualification" required :disabled="!isContract">
             <option value="">---------</option>
             <option value="1">미인가</option>

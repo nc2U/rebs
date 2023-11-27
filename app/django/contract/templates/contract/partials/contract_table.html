@@ -83,8 +83,8 @@
                 <td class="text-center">{{ object.payments.first.installment_order }}</td>
                 <td class="text-right">{{ object.payments.first.income|intcomma }}</td>
                 <td class="pl-5">
-                    <i class="mdi mdi-circle text-{% if object.contractor.is_registed %}success{% else %}danger{% endif %}"></i>
-                    {% if object.contractor.is_registed %}인가{% else %}미인가{% endif %}
+                    <i class="mdi mdi-circle text-{% if object.contractor.qualification== '2' %}success{% else %}danger{% endif %}"></i>
+                    {{ object.contractor.qualification }}
                 </td>
                 <td class="text-center">{{ object.contractor.contractorcontact.cell_phone }}</td>
                 <td class="text-center">{{ object.contractor.contractoraddress.dm_address1|truncatewords:"2" }}</td>
