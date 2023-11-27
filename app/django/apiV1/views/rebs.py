@@ -13,7 +13,7 @@ from rebs.models import (AccountSort, AccountSubD1, AccountSubD2, AccountSubD3,
 class CalendarScheduleViewSet(viewsets.ModelViewSet):
     queryset = CalendarSchedule.objects.all()
     serializer_class = CalendarScheduleSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     pagination_class = PageNumberPaginationOneHundred
     search_fields = ('start_date', 'start_time', 'end_date', 'end_time')
 
@@ -63,4 +63,4 @@ class ProjectAccountD3ViewSet(viewsets.ModelViewSet):
 class WiseSayViewSet(viewsets.ModelViewSet):
     queryset = WiseSaying.objects.all()
     serializer_class = WiseSaySerializer
-    permissions_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permissions_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)

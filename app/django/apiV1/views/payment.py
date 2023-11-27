@@ -20,6 +20,7 @@ TODAY = datetime.today().strftime('%Y-%m-%d')
 
 class PaymentViewSet(ProjectCashBookViewSet):
     serializer_class = PaymentSerializer
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     pagination_class = PageNumberPaginationTen
 
     def get_queryset(self):
@@ -41,7 +42,7 @@ class PaymentSumFilterSet(FilterSet):
 
 class PaymentSummaryViewSet(viewsets.ModelViewSet):
     serializer_class = PaymentSummarySerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     filterset_class = PaymentSumFilterSet
 
     def get_queryset(self):
@@ -88,14 +89,14 @@ class SalesPriceViewSet(viewsets.ModelViewSet):
     queryset = SalesPriceByGT.objects.all()
     serializer_class = SalesPriceSerializer
     pagination_class = PageNumberPaginationFifty
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     filterset_fields = ('project', 'order_group', 'unit_type')
 
 
 class InstallmentOrderViewSet(viewsets.ModelViewSet):
     queryset = InstallmentPaymentOrder.objects.all()
     serializer_class = InstallmentOrderSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     pagination_class = PageNumberPaginationTwenty
     filterset_fields = ('project', 'pay_sort', 'is_pm_cost')
     search_fields = ('pay_name', 'alias_name')
@@ -104,7 +105,7 @@ class InstallmentOrderViewSet(viewsets.ModelViewSet):
 class DownPaymentViewSet(viewsets.ModelViewSet):
     queryset = DownPayment.objects.all()
     serializer_class = DownPaymentSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     pagination_class = PageNumberPaginationTwenty
     filterset_fields = ('project', 'order_group', 'unit_type')
 
@@ -112,4 +113,4 @@ class DownPaymentViewSet(viewsets.ModelViewSet):
 class OverDueRuleViewSet(viewsets.ModelViewSet):
     queryset = OverDueRule.objects.all()
     serializer_class = OverDueRuleSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)

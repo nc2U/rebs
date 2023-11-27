@@ -11,13 +11,13 @@ from accounts.models import User, StaffAuth, Profile, Todo
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
 class StaffAuthViewSet(viewsets.ModelViewSet):
     queryset = StaffAuth.objects.all()
     serializer_class = StaffAuthInUserSerializer
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
 
 class ProfileViewSet(viewsets.ModelViewSet):

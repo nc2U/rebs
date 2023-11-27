@@ -17,7 +17,7 @@ TODAY = datetime.today().strftime('%Y-%m-%d')
 class UnitTypeViewSet(viewsets.ModelViewSet):
     queryset = UnitType.objects.all()
     serializer_class = UnitTypeSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     filterset_fields = ('project', 'sort')
     search_fields = ('name',)
 
@@ -26,7 +26,7 @@ class UnitFloorTypeViewSet(viewsets.ModelViewSet):
     queryset = UnitFloorType.objects.all()
     serializer_class = UnitFloorTypeSerializer
     pagination_class = PageNumberPaginationFifty
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     filterset_fields = ('project', 'sort')
     search_fields = ('alias_name',)
 
@@ -42,14 +42,14 @@ class KeyUnitListFilterSet(FilterSet):
 class KeyUnitViewSet(viewsets.ModelViewSet):
     queryset = KeyUnit.objects.all()
     serializer_class = KeyUnitSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     filterset_class = KeyUnitListFilterSet
 
 
 class BuildingUnitViewSet(viewsets.ModelViewSet):
     queryset = BuildingUnit.objects.all()
     serializer_class = BuildingUnitSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     filterset_fields = ('project',)
     search_fields = ('name',)
 
@@ -57,7 +57,7 @@ class BuildingUnitViewSet(viewsets.ModelViewSet):
 class HouseUnitViewSet(viewsets.ModelViewSet):
     queryset = HouseUnit.objects.all()
     serializer_class = HouseUnitSerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     filterset_fields = ('building_unit__project', 'unit_type__sort', 'unit_type',
                         'floor_type', 'building_unit', 'is_hold')
     search_fields = ('hold_reason',)
@@ -92,6 +92,6 @@ class AllHouseUnitViewSet(HouseUnitViewSet):
 class HouseUnitSummaryViewSet(viewsets.ModelViewSet):
     queryset = HouseUnit.objects.all()
     serializer_class = HouseUnitSummarySerializer
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     filterset_fields = ('building_unit__project', 'unit_type',
                         'floor_type', 'building_unit', 'is_hold')
