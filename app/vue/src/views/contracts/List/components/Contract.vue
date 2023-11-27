@@ -11,8 +11,8 @@ const props = defineProps({
 const contractor = computed(() => props.contract?.contractor?.pk)
 const router = useRouter()
 
-const getColor = (q: '미인가' | '인가' | '부적격') =>
-  ({ 미인가: 'warning', 인가: 'success', 부적격: 'danger' })[q]
+const getColor = (q: '1' | '2' | '3' | undefined) =>
+  q ? { '1': 'warning', '2': 'success', '3': 'danger' }[q] : ''
 </script>
 
 <template>
@@ -28,8 +28,8 @@ const getColor = (q: '미인가' | '인가' | '부적격') =>
       </router-link>
     </CTableDataCell>
     <CTableDataCell>
-      <CBadge :color="getColor(contract.contractor?.qualifi_display ?? '미인가')">
-        {{ contract.contractor?.qualifi_display ?? '미인가' }}
+      <CBadge :color="getColor(contract.contractor?.qualification)">
+        {{ contract.order_group_sort === '1' ? contract.contractor?.qualifi_display : '' }}
       </CBadge>
     </CTableDataCell>
     <CTableDataCell>

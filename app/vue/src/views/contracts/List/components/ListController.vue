@@ -18,7 +18,7 @@ const form = reactive<ContFilter>({
   unit_type: '',
   null_unit: false,
   building: '',
-  registed: '',
+  qualification: '',
   ordering: '-created_at',
   search: '',
 })
@@ -29,7 +29,7 @@ const formsCheck = computed(() => {
   const c = form.unit_type === ''
   const d = form.null_unit === false
   const e = form.building === ''
-  const f = form.registed === ''
+  const f = form.qualification === ''
   const g = !from_date.value
   const h = !to_date.value
   const i = form.ordering === '-created_at'
@@ -71,7 +71,7 @@ const resetForm = () => {
   form.unit_type = ''
   form.null_unit = false
   form.building = ''
-  form.registed = ''
+  form.qualification = ''
   from_date.value = ''
   to_date.value = ''
   form.ordering = '-created_at'
@@ -133,10 +133,11 @@ onMounted(() => {
           </CCol>
 
           <CCol md="4" xl="2" class="mb-3">
-            <CFormSelect v-model="form.registed" @change="listFiltering(1)">
-              <option value="">인가 구분</option>
-              <option value="true">인가</option>
-              <option value="false">미인가</option>
+            <CFormSelect v-model="form.qualification" @change="listFiltering(1)">
+              <option value="">등록상태</option>
+              <option value="1">인가</option>
+              <option value="2">미인가</option>
+              <option value="3">부적격</option>
             </CFormSelect>
           </CCol>
         </CRow>

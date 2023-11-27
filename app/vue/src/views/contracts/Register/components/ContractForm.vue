@@ -581,13 +581,7 @@ onUpdated(() => formDataSetup())
           <CFormFeedback invalid>성별을 선택하세요.</CFormFeedback>
         </CCol>
 
-        <CCol v-show="isContract && isUnion" xs="6" lg="2">
-          <!--          <CFormSwitch-->
-          <!--            id="is_registed"-->
-          <!--            v-model="form.is_registed"-->
-          <!--            label="인가등록여부"-->
-          <!--            :disabled="!isContract"-->
-          <!--          />-->
+        <CCol v-if="isContract && isUnion && contract.order_group_sort === '1'" xs="6" lg="2">
           <CFormSelect v-model="form.qualification" required :disabled="!isContract">
             <option value="">---------</option>
             <option value="1">미인가</option>
