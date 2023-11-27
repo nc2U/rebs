@@ -55,6 +55,7 @@ interface ContractorInContract {
   pk: number
   name: string
   is_registed: boolean
+  qualification: '미인가' | '인가' | '부적격'
   contractoraddress: ContractorAddress | null
   contractorcontact: ContractorContact | null
   status: string

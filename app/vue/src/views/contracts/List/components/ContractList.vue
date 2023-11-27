@@ -36,7 +36,7 @@ const pageSelect = (page: number) => emit('page-select', page)
       <CTableRow :color="TableSecondary" class="text-center">
         <CTableHeaderCell scope="col">일련번호</CTableHeaderCell>
         <CTableHeaderCell scope="col">계약자</CTableHeaderCell>
-        <CTableHeaderCell scope="col">인가 등록여부</CTableHeaderCell>
+        <CTableHeaderCell scope="col">등록상태</CTableHeaderCell>
         <CTableHeaderCell scope="col">차수</CTableHeaderCell>
         <CTableHeaderCell scope="col">타입</CTableHeaderCell>
         <CTableHeaderCell scope="col">동호수</CTableHeaderCell>

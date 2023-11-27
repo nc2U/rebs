@@ -27,7 +27,7 @@ const router = useRouter()
     </CTableDataCell>
     <CTableDataCell>
       <CBadge :color="contract.contractor?.is_registed ? 'success' : 'danger'">
-        {{ contract.contractor?.is_registed ? '인가완료' : '미 인 가' }}
+        {{ contract.contractor?.qualification ?? '미인가' }}
       </CBadge>
     </CTableDataCell>
     <CTableDataCell>
