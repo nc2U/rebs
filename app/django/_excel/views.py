@@ -153,7 +153,7 @@ class ExportContracts(View):
         type = request.GET.get('type')
         dong = request.GET.get('dong')
         is_null = request.GET.get('is_null')
-        reg = request.GET.get('reg')
+        qua = request.GET.get('qua')
         sdate = request.GET.get('sdate')
         edate = request.GET.get('edate')
         q = request.GET.get('q')
@@ -164,7 +164,7 @@ class ExportContracts(View):
         queryset = queryset.filter(keyunit__houseunit__building_unit=dong) if dong else queryset
         null_qry = True if is_null == '1' else False
         queryset = queryset.filter(keyunit__houseunit__isnull=null_qry) if is_null else queryset
-        queryset = queryset.filter(contractor__qualification=reg) if reg else queryset
+        queryset = queryset.filter(contractor__qualification=qua) if qua else queryset
         queryset = queryset.filter(contractor__contract_date__gte=sdate) if sdate else queryset
         queryset = queryset.filter(contractor__contract_date__lte=edate) if edate else queryset
         queryset = queryset.filter(

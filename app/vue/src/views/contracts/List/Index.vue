@@ -58,15 +58,15 @@ const onContFiltering = (payload: ContFilter) => {
     building,
     status,
     null_unit,
-    registed,
+    qualification,
     from_date,
     to_date,
     search,
   } = payload
   payload.project = project.value?.pk
   const is_unit = null_unit ? '1' : ''
-  const reg = registed === 'true' ? '1' : ''
-  filteredStr.value = `&status=${status}&group=${order_group}&type=${unit_type}&dong=${building}&is_null=${is_unit}&reg=${reg}&status=${status}&sdate=${from_date}&edate=${to_date}&q=${search}`
+  const qua = qualification
+  filteredStr.value = `&status=${status}&group=${order_group}&type=${unit_type}&dong=${building}&is_null=${is_unit}&qua=${qua}&status=${status}&sdate=${from_date}&edate=${to_date}&q=${search}`
   if (payload.project) fetchContractList(payload)
 }
 const setItems = (arr: string[]) => (printItems.value = arr)
