@@ -860,7 +860,8 @@ class ContractorReleaseSerializer(serializers.ModelSerializer):
                 payment.save()
 
             # 6. 최종 해지상태로 변경
-            contractor.qualification = '1'  # 인가 등록 취소
+            if contractor.qualification == '3':
+                contractor.qualification = '2'  # 인가 등록 취소
             contractor.is_active = False  # 비활성 상태로 변경
             contractor.status = '4'  # 해지 상태로 변경
             contractor.save()
