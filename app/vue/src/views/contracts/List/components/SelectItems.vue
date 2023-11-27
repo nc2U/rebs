@@ -46,7 +46,7 @@ onMounted(() => {
         <v-checkbox-btn
           id="printItems2"
           v-model="printItems"
-          label="인가여부"
+          label="등록상태"
           value="3"
           color="indigo"
           inline
