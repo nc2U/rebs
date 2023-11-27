@@ -199,6 +199,7 @@ class ProjectCashBookIncsInContractSerializer(serializers.ModelSerializer):
 
 
 class ContractSetSerializer(serializers.ModelSerializer):
+    order_group_sort = serializers.SerializerMethodField(read_only=True)
     keyunit = KeyUnitInContractSerializer(read_only=True)
     contractprice = ContPriceInContractSerializer(read_only=True)
     contractor = ContractorInContractSerializer(read_only=True)
@@ -210,9 +211,13 @@ class ContractSetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Contract
-        fields = ('pk', 'project', 'order_group', 'unit_type', 'serial_number',
+        fields = ('pk', 'project', 'order_group_sort', 'order_group', 'unit_type', 'serial_number',
                   'activation', 'keyunit', 'contractprice', 'contractor', 'payments',
                   'last_paid_order', 'total_paid', 'order_group_desc', 'unit_type_desc')
+
+    @staticmethod
+    def get_order_group_sort(obj):
+        return obj.order_group.sort
 
     @staticmethod
     def get_payment_list(instance):
