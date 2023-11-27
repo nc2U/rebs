@@ -48,9 +48,9 @@ class ContractLV(LoginRequiredMixin, ListView):
             contract = contract.filter(contractor__contractorrelease__status=self.request.GET.get('status'))
         if self.request.GET.get('null'):
             contract = contract.filter(keyunit__houseunit__isnull=True)
-        if self.request.GET.get('register'):
-            result = True if self.request.GET.get('register') == '1' else False
-            contract = contract.filter(contractor__is_registed=result)
+        # if self.request.GET.get('register'):
+        #     result = True if self.request.GET.get('register') == '1' else False
+        #     contract = contract.filter(contractor__qualification=result)
         order_list = ['-created_at', 'created_at', '-contractor__contract_date',
                       'contractor__contract_date', '-serial_number',
                       'serial_number', '-contractor__name', 'contractor__name']
@@ -188,7 +188,7 @@ class ContractRegisterView(LoginRequiredMixin, FormView):
             initial['name'] = contractor.name
             initial['birth_date'] = contractor.birth_date
             initial['gender'] = contractor.gender
-            initial['is_registed'] = contractor.is_registed
+            initial['qualification'] = contractor.qualification
             initial['reservation_date'] = contractor.reservation_date
             initial['contract_date'] = contractor.contract_date
             initial['note'] = contractor.note
@@ -325,7 +325,7 @@ class ContractRegisterView(LoginRequiredMixin, FormView):
                                             name=form.cleaned_data.get('name'),
                                             birth_date=form.cleaned_data.get('birth_date'),
                                             gender=form.cleaned_data.get('gender'),
-                                            is_registed=form.cleaned_data.get('is_registed'),
+                                            qualification=form.cleaned_data.get('qualification'),
                                             status=self.request.POST.get('task'),
                                             reservation_date=form.cleaned_data.get('reservation_date'),
                                             contract_date=form.cleaned_data.get('contract_date'),
@@ -336,7 +336,7 @@ class ContractRegisterView(LoginRequiredMixin, FormView):
                     contractor.name = form.cleaned_data.get('name')
                     contractor.birth_date = form.cleaned_data.get('birth_date')
                     contractor.gender = form.cleaned_data.get('gender')
-                    contractor.is_registed = form.cleaned_data.get('is_registed')
+                    contractor.qualification = form.cleaned_data.get('qualification')
                     contractor.status = form.cleaned_data.get('task')
                     contractor.reservation_date = form.cleaned_data.get('reservation_date')
                     contractor.contract_date = form.cleaned_data.get('contract_date')
@@ -545,7 +545,7 @@ class ContractorReleaseRegister(LoginRequiredMixin, ListView, FormView):
                         pc.save()
 
                     # 6. 최종 해지상태로 변경
-                    contractor.is_registed = False  # 인가 등록 여부
+                    contractor.qualification = '1'  # 인가 등록 취소
                     contractor.status = '4'  # 해지 상태로 변경
                     contractor.user = request.user  # 해지 등록 작업자
                     contractor.save()

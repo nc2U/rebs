@@ -25,7 +25,6 @@ class ContractFilter(FilterSet):
     houseunit__isnull = BooleanFilter(field_name='keyunit__houseunit', lookup_expr='isnull', label='동호미지정 여부')
     keyunit__houseunit__building_unit = ModelChoiceFilter(queryset=BuildingUnit.objects.all(), label='동(건물)')
     contractor__status = ChoiceFilter(field_name='contractor__status', choices=Contractor.STATUS_CHOICES, label='현재상태')
-    contractor__is_registed = BooleanFilter(field_name='contractor__is_registed', label='인가등록여부')
     contractor__qualification = ChoiceFilter(field_name='contractor__qualification',
                                              choices=Contractor.QUALI_CHOICES, label='등록상태')
     from_contract_date = DateFilter(field_name='contractor__contract_date', lookup_expr='gte', label='계약일자부터')
@@ -34,7 +33,7 @@ class ContractFilter(FilterSet):
     class Meta:
         model = Contract
         fields = ('project', 'order_group', 'activation', 'unit_type', 'houseunit__isnull',
-                  'keyunit__houseunit__building_unit', 'contractor__status', 'contractor__is_registed',
+                  'keyunit__houseunit__building_unit', 'contractor__status',
                   'contractor__qualification', 'from_contract_date', 'to_contract_date')
 
 
@@ -107,8 +106,7 @@ class ContractorViewSet(viewsets.ModelViewSet):
     queryset = Contractor.objects.all()
     serializer_class = ContractorSerializer
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
-    filterset_fields = ('contract__project', 'gender', 'is_registed',
-                        'qualification', 'status', 'is_active')
+    filterset_fields = ('contract__project', 'gender', 'qualification', 'status', 'is_active')
     search_fields = ('name', 'note', 'contract__serial_number')
 
     def perform_create(self, serializer):

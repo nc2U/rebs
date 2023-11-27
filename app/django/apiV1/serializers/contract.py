@@ -65,9 +65,9 @@ class ContractorInContractSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Contractor
-        fields = ('pk', 'name', 'birth_date', 'gender', 'is_registed',
-                  'qualification', 'qualifi_display', 'contractoraddress', 'contractorcontact',
-                  'status', 'reservation_date', 'contract_date', 'is_active', 'note')
+        fields = ('pk', 'name', 'birth_date', 'gender', 'qualification', 'qualifi_display',
+                  'contractoraddress', 'contractorcontact', 'status',
+                  'reservation_date', 'contract_date', 'is_active', 'note')
 
 
 def get_cont_price(instance, houseunit=None):
@@ -294,7 +294,6 @@ class ContractSetSerializer(serializers.ModelSerializer):
         contractor_name = self.initial_data.get('name')
         contractor_birth_date = self.initial_data.get('birth_date')
         contractor_gender = self.initial_data.get('gender')
-        contractor_is_registed = self.initial_data.get('is_registed')
         contractor_qualification = self.initial_data.get('qualification')
         contractor_status = self.initial_data.get('status')
         contractor_reservation_date = self.initial_data.get('reservation_date')
@@ -305,7 +304,6 @@ class ContractSetSerializer(serializers.ModelSerializer):
                                 name=contractor_name,
                                 birth_date=contractor_birth_date,
                                 gender=contractor_gender,
-                                is_registed=contractor_is_registed,
                                 qualification=contractor_qualification,
                                 status=contractor_status,
                                 reservation_date=contractor_reservation_date,
@@ -471,7 +469,6 @@ class ContractSetSerializer(serializers.ModelSerializer):
         contractor_name = self.initial_data.get('name')
         contractor_birth_date = self.initial_data.get('birth_date')
         contractor_gender = self.initial_data.get('gender')
-        contractor_is_registed = self.initial_data.get('is_registed')
         contractor_qualification = self.initial_data.get('qualification')
         contractor_status = self.initial_data.get('status')
         contractor_reservation_date = self.initial_data.get('reservation_date')
@@ -482,7 +479,6 @@ class ContractSetSerializer(serializers.ModelSerializer):
         contractor.name = contractor_name
         contractor.birth_date = contractor_birth_date
         contractor.gender = contractor_gender
-        contractor.is_registed = contractor_is_registed
         contractor.qualification = contractor_qualification
         contractor.status = contractor_status
         contractor.reservation_date = contractor_reservation_date
@@ -615,9 +611,8 @@ class ContractorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contractor
         fields = ('pk', 'contract', 'name', '__str__', 'birth_date', 'gender',
-                  'is_registed', 'qualification', 'qualifi_display', 'status',
-                  'reservation_date', 'contract_date', 'is_active', 'note',
-                  'successions', 'contractorrelease')
+                  'qualification', 'qualifi_display', 'status', 'reservation_date',
+                  'contract_date', 'is_active', 'note', 'successions', 'contractorrelease')
 
 
 class ContractorAddressSerializer(serializers.ModelSerializer):
@@ -865,7 +860,7 @@ class ContractorReleaseSerializer(serializers.ModelSerializer):
                 payment.save()
 
             # 6. 최종 해지상태로 변경
-            contractor.is_registed = False  # 인가 등록 취소
+            contractor.qualification = '1'  # 인가 등록 취소
             contractor.is_active = False  # 비활성 상태로 변경
             contractor.status = '4'  # 해지 상태로 변경
             contractor.save()

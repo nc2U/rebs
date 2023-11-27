@@ -81,7 +81,7 @@ class ExportContracts(View):
         header_src = [[],
                       ['일련번호', 'serial_number', 10],
                       [f'{t_name}자', 'contractor__name', 10],
-                      ['인가여부', 'contractor__is_registed', 8],
+                      ['등록상태', 'contractor__qualification', 8],
                       ['차수', 'order_group__order_group_name', 10],
                       ['타입', 'keyunit__unit_type__name', 7],
                       ['동', 'keyunit__houseunit__building_unit__name', 7],
@@ -164,8 +164,7 @@ class ExportContracts(View):
         queryset = queryset.filter(keyunit__houseunit__building_unit=dong) if dong else queryset
         null_qry = True if is_null == '1' else False
         queryset = queryset.filter(keyunit__houseunit__isnull=null_qry) if is_null else queryset
-        reg_qry = True if reg == '1' else False
-        queryset = queryset.filter(contractor__is_registed=reg_qry) if reg else queryset
+        queryset = queryset.filter(contractor__qualification=reg) if reg else queryset
         queryset = queryset.filter(contractor__contract_date__gte=sdate) if sdate else queryset
         queryset = queryset.filter(contractor__contract_date__lte=edate) if edate else queryset
         queryset = queryset.filter(
