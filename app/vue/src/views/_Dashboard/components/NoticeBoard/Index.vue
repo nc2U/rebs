@@ -14,7 +14,7 @@ const items = ref([1, 2, 3, 4, 5, 6, 7, 8])
             <tr class="bg-secondary">
               <th class="text-left">
                 <v-btn variant="text" icon="mdi-menu" />
-                {{ msg }}
+                <span class="text-capitalize">{{ msg }}</span>
               </th>
               <th class="text-right">
                 더보기
