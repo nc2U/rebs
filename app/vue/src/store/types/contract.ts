@@ -102,7 +102,7 @@ export interface OrderGroup {
   pk: number
   project: number
   order_number: number
-  sort: '1' | '2'
+  sort: '1' | '2' // '조합모집' | '일반분양'
   sort_desc: string
   order_group_name: string
 }

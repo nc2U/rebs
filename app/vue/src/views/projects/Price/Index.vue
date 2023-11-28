@@ -66,7 +66,7 @@ const deletePrice = (payload: PriceFilter & { pk: number }) => payStore.deletePr
 const orderSelect = (order: number) => {
   order_group.value = order // order_group pk 값 할당
   const sort = orderGroupList.value.filter(o => o.pk == order).map(o => o.sort)[0]
-  if (project.value) fetchTypeList(project.value, sort === '2' ? '1' : undefined)
+  if (project.value) fetchTypeList(project.value, sort !== '1' ? undefined : '1')
   priceMessage.value = !order
     ? '공급가격을 입력하기 위해 [차수 정보]를 선택하여 주십시요.'
     : '공급가격을 입력하기 위해 [타입 정보]를 선택하여 주십시요.'
