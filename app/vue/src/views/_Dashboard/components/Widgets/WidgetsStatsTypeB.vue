@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import MainChartExample from '@/views/_Dashboard/components/charts/MainChartExample.vue'
+import MainChartExample from '@/views/_Dashboard/components/Charts/MainChartExample.vue'
 </script>
 
 <template>
@@ -18,7 +18,7 @@ import MainChartExample from '@/views/_Dashboard/components/charts/MainChartExam
               </CButton>
               <CButtonGroup class="float-end me-3" role="group" aria-label="Basic outlined example">
                 <CButton color="secondary" variant="outline">Day</CButton>
-                <CButton color="secondary" variant="outline" active>Month </CButton>
+                <CButton color="secondary" variant="outline" active>Month</CButton>
                 <CButton color="secondary" variant="outline">Year</CButton>
               </CButtonGroup>
             </CCol>
