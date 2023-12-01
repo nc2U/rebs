@@ -272,15 +272,19 @@ const onSubmit = (event: Event) => {
 
     if (write_company_cash.value) {
       if (props.cash) {
-        if (allowedPeriod.value) emit('multi-submit', payload)
-        else
+        if (allowedPeriod.value) {
+          emit('multi-submit', payload)
+          emit('close')
+        } else
           refAlertModal.value.callModal(
             null,
             '거래일로부터 30일이 경과한 건은 수정할 수 없습니다. 관리자에게 문의바랍니다.',
           )
-      } else emit('multi-submit', payload)
+      } else {
+        emit('multi-submit', payload)
+        emit('close')
+      }
     } else refAlertModal.value.callModal()
-    emit('close')
   }
 }
 
