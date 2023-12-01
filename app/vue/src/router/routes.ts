@@ -35,18 +35,8 @@ const routes: Array<RouteRecordRaw> = [
         children: [
           {
             path: 'notices',
-            name: '공지 게시판',
-            component: () => import('@/views/_Dashboard/components/NoticeBoard/FullList.vue'),
-          },
-          {
-            path: `notices/view/`,
-            name: 'dash-noti-view',
-            component: () => import('@/views/_Dashboard/components/NoticeBoard/NoticeView.vue'),
-          },
-          {
-            path: 'notices/form',
-            name: 'dash-noti-form',
-            component: () => import('@/views/_Dashboard/components/NoticeBoard/NoticeForm.vue'),
+            name: '공지 사항',
+            component: () => import('@/views/_Dashboard/components/NoticeBoard/Index.vue'),
           },
         ],
       },

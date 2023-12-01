@@ -1,7 +1,7 @@
 <script lang="ts" setup="">
 import { ref } from 'vue'
 
-const msg = ref('공지 게시판')
+const msg = ref('공지 사항')
 const items = ref([1, 2, 3, 4, 5, 6, 7, 8])
 </script>
 
@@ -17,7 +17,7 @@ const items = ref([1, 2, 3, 4, 5, 6, 7, 8])
                 <span class="text-capitalize">{{ msg }}</span>
               </th>
               <th class="text-right">
-                <router-link :to="{ name: '공지 게시판' }">더보기</router-link>
+                <router-link :to="{ name: '공지 사항' }">더보기</router-link>
                 <v-icon icon="mdi-chevron-right" />
               </th>
             </tr>
