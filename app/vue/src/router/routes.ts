@@ -32,6 +32,23 @@ const routes: Array<RouteRecordRaw> = [
         // which is lazy-loaded when the route is visited.
         component: () => import(/* webpackChunkName: "dashboard" */ '@/views/_Dashboard/Index.vue'),
         meta: { title: '대 시 보 드', auth: true, affix: true },
+        children: [
+          {
+            path: 'notices',
+            name: '공지 게시판',
+            component: () => import('@/views/_Dashboard/components/NoticeBoard/FullList.vue'),
+          },
+          {
+            path: `notices/view/`,
+            name: 'dash-noti-view',
+            component: () => import('@/views/_Dashboard/components/NoticeBoard/NoticeView.vue'),
+          },
+          {
+            path: 'notices/form',
+            name: 'dash-noti-form',
+            component: () => import('@/views/_Dashboard/components/NoticeBoard/NoticeForm.vue'),
+          },
+        ],
       },
       {
         path: 'schedule',
