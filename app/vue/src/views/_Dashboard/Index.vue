@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import MainCarousel from './components/MainCarousel.vue'
 import WiseWord from '@/views/_Dashboard/components/WiseWord.vue'
-import NoticeBoard from './components/NoticeBoard/Index.vue'
+import NoticeBoard from './components/NoticeBoard/ListComp.vue'
+import WidgetsStatsA from './components/Widgets/WidgetsStatsTypeA.vue'
 import WidgetsStatsB from './components/Widgets/WidgetsStatsTypeB.vue'
 import WidgetsStatsC from './components/Widgets/WidgetsStatsTypeC.vue'
-import WidgetsStatsD from './components/Widgets/WidgetsStatsTypeD.vue'
 </script>
 
 <template>
@@ -33,7 +33,7 @@ import WidgetsStatsD from './components/Widgets/WidgetsStatsTypeD.vue'
     </CRow>
     <CRow>
       <CCol>
-        <WidgetsStatsD />
+        <WidgetsStatsA />
       </CCol>
     </CRow>
     <CRow>

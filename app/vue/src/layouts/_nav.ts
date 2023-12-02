@@ -4,8 +4,8 @@ const dashboard = {
   to: '/dashboard',
   icon: 'cil-speedometer',
   badge: {
-    color: 'danger',
-    text: 'u.c',
+    color: 'warning',
+    text: 'ing..',
   },
 }
 

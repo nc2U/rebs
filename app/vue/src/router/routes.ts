@@ -34,6 +34,12 @@ const routes: Array<RouteRecordRaw> = [
         meta: { title: '대 시 보 드', auth: true, affix: true },
       },
       {
+        path: 'dashboard/notices',
+        name: '공지 사항',
+        component: () => import('@/views/_Dashboard/components/NoticeBoard/Index.vue'),
+        meta: { title: '대 시 보 드', auth: true, affix: true },
+      },
+      {
         path: 'schedule',
         name: '일 정 관 리',
         component: () => import(/* webpackChunkName: "schedule" */ '@/views/_Schedules/index.vue'),
