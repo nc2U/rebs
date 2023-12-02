@@ -32,13 +32,12 @@ const routes: Array<RouteRecordRaw> = [
         // which is lazy-loaded when the route is visited.
         component: () => import(/* webpackChunkName: "dashboard" */ '@/views/_Dashboard/Index.vue'),
         meta: { title: '대 시 보 드', auth: true, affix: true },
-        children: [
-          {
-            path: 'notices',
-            name: '공지 사항',
-            component: () => import('@/views/_Dashboard/components/NoticeBoard/Index.vue'),
-          },
-        ],
+      },
+      {
+        path: 'dashboard/notices',
+        name: '공지 사항',
+        component: () => import('@/views/_Dashboard/components/NoticeBoard/Index.vue'),
+        meta: { title: '대 시 보 드', auth: true, affix: true },
       },
       {
         path: 'schedule',
