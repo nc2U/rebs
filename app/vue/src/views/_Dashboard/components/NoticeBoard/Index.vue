@@ -1,15 +1,26 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import ListController from './components/ListController.vue'
+import CategoryTabs from './components/CategoryTabs.vue'
+import NoticeList from './components/NoticeList.vue'
+import NoticeView from './components/NoticeView.vue'
 
-const msg = ref('Full list!')
+const msg = ref('공지 사항')
+
+const postFilter = ref({})
+const postList = ref([])
 </script>
 
 <template>
   <CContainer fluid>
-    <CRow>
-      <CCol xl="11" xxl="10">
-        {{ msg }}
-      </CCol>
-    </CRow>
+    <CCard>
+      <CCardBody>
+        <h5>{{ msg }}</h5>
+        <hr />
+        <ListController :post-filter="postFilter" />
+        <CategoryTabs />
+        <NoticeList :post-list="postList" />
+      </CCardBody>
+    </CCard>
   </CContainer>
 </template>
