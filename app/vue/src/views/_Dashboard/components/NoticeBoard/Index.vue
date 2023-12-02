@@ -7,7 +7,10 @@ import NoticeView from './components/NoticeView.vue'
 
 const msg = ref('공지 사항')
 
-const postFilter = ref({})
+const postFilter = ref({
+  ordering: '-created',
+  search: '',
+})
 const postList = ref([])
 </script>
 
