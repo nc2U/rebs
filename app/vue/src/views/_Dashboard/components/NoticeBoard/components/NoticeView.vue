@@ -20,7 +20,6 @@ const emit = defineEmits(['post-hit', 'link-hit', 'file-hit', 'posts-renewal'])
 const prev = ref<number | null>()
 const next = ref<number | null>()
 
-const sortName = computed(() => props.post?.proj_name || '본사 문서')
 const postId = computed(() => Number(route.params.postId))
 
 const docStore = useDocument()
@@ -95,7 +94,7 @@ onMounted(() => {
         <h5>{{ post.title }}</h5>
       </CCol>
       <CCol class="pt-1 text-right">
-        <span>[{{ sortName }}] [{{ post.cate_name }}]</span>
+        <span>[{{ post.cate_name }}]</span>
       </CCol>
     </CRow>
 
