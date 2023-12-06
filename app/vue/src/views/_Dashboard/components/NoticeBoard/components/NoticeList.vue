@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PropType } from 'vue'
+import { type PropType, inject } from 'vue'
 import { useDocument } from '@/store/pinia/document'
 import { TableSecondary } from '@/utils/cssMixins'
 import type { Post } from '@/store/types/document'
@@ -12,6 +12,8 @@ defineProps({
 })
 
 const emit = defineEmits(['page-select'])
+
+const userInfo = inject('userInfo')
 
 const documentStore = useDocument()
 
@@ -59,7 +61,12 @@ const pageSelect = (page: number) => emit('page-select', page)
       />
     </CCol>
     <CCol lg="4" class="text-right pt-3">
-      <CButton color="primary" class="px-5" @click="$router.push({ name: `공지 사항 - 작성` })">
+      <CButton
+        v-if="userInfo?.is_superuser"
+        color="primary"
+        class="px-5"
+        @click="$router.push({ name: `공지 사항 - 작성` })"
+      >
         등록하기
       </CButton>
     </CCol>
