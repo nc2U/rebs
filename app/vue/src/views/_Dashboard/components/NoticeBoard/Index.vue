@@ -26,8 +26,8 @@ const postList = ref([])
         <ListController v-if="route.name === '공지 사항'" :post-filter="postFilter" />
         <CategoryTabs v-if="route.name === '공지 사항'" />
         <NoticeList v-if="route.name === '공지 사항'" :post-list="postList" />
-        <NoticeView v-else-if="route.name.includes('보기')" :curr-page="1" view-route="공지 사항" />
-        <NoticeForm v-else-if="route.name.includes('작성')" view-route="" />
+        <NoticeView v-else-if="route.name.includes('보기')" view-route="공지 사항" :curr-page="1" />
+        <NoticeForm v-else-if="route.name.includes('작성')" view-route="공지 사항" />
       </CCardBody>
     </CCard>
   </CContainer>

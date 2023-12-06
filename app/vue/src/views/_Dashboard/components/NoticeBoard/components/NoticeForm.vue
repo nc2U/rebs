@@ -12,6 +12,7 @@ import Multiselect from '@vueform/multiselect'
 
 const props = defineProps({
   post: { type: Object as PropType<Post>, default: null },
+  viewRoute: { type: String, required: true },
 })
 
 const emit = defineEmits(['on-submit', 'file-upload', 'file-change', 'close'])
