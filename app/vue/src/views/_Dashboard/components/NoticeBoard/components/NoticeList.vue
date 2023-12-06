@@ -2,6 +2,7 @@
 import { type PropType, inject } from 'vue'
 import { useDocument } from '@/store/pinia/document'
 import { TableSecondary } from '@/utils/cssMixins'
+import type { User } from '@/store/types/accounts'
 import type { Post } from '@/store/types/document'
 import Pagination from '@/components/Pagination'
 import Notice from './Notice.vue'
@@ -13,7 +14,7 @@ defineProps({
 
 const emit = defineEmits(['page-select'])
 
-const userInfo = inject('userInfo')
+const userInfo = inject('userInfo') as User
 
 const documentStore = useDocument()
 
@@ -65,7 +66,7 @@ const pageSelect = (page: number) => emit('page-select', page)
         돌아가기
       </CButton>
       <CButton
-        v-if="!!userInfo?.is_superuser"
+        v-if="userInfo.is_superuser"
         color="primary"
         class="px-5"
         @click="$router.push({ name: `공지 사항 - 작성` })"
