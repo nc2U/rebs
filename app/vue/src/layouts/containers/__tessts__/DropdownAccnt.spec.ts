@@ -67,9 +67,14 @@ describe('AppHeaderDropdownAccnt Component Test', () => {
 
     await wrapper.setProps({
       userInfo: {
+        pk: 1,
+        email: 'admin@mail.com',
         username: 'admin',
         is_active: true,
         is_superuser: true,
+        date_joined: '2022-01-30T19:16:53+09:00',
+        staffauth: null,
+        profile: null,
       },
     })
 

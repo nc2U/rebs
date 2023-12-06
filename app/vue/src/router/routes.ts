@@ -38,6 +38,26 @@ const routes: Array<RouteRecordRaw> = [
         name: '공지 사항',
         component: () => import('@/views/_Dashboard/components/NoticeBoard/Index.vue'),
         meta: { title: '대 시 보 드', auth: true, affix: true },
+        children: [
+          {
+            path: ':postId(\\d+)',
+            name: '공지 사항 - 보기',
+            component: () =>
+              import('@/views/_Dashboard/components/NoticeBoard/components/NoticeView.vue'),
+          },
+          {
+            path: ':postId(\\d+)/update',
+            name: '공지 사항 - 수정',
+            component: () =>
+              import('@/views/_Dashboard/components/NoticeBoard/components/NoticeForm.vue'),
+          },
+          {
+            path: 'create',
+            name: '공지 사항 - 작성',
+            component: () =>
+              import('@/views/_Dashboard/components/NoticeBoard/components/NoticeForm.vue'),
+          },
+        ],
       },
       {
         path: 'schedule',

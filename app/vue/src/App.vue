@@ -1,9 +1,12 @@
 <script lang="ts" setup>
-import { onMounted, watch } from 'vue'
+import { onMounted, provide, watch } from 'vue'
+import { useAccount } from '@/store/pinia/account'
 import { useStore } from '@/store'
 
-const store = useStore()
+const accStore = useAccount()
+provide('userInfo', accStore.userInfo)
 
+const store = useStore()
 watch(store, () => {
   store.theme === 'dark'
     ? document.body.classList.add('dark-theme')

@@ -7,7 +7,6 @@ import { type Post } from '@/store/types/document'
 import sanitizeHtml from 'sanitize-html'
 
 const props = defineProps({
-  boardNum: { type: Number, default: 2 },
   heatedPage: { type: Array as PropType<number[]>, default: () => [] },
   reOrder: { type: Boolean, default: false },
   category: { type: Number, default: undefined },
@@ -21,7 +20,6 @@ const emit = defineEmits(['post-hit', 'link-hit', 'file-hit', 'posts-renewal'])
 const prev = ref<number | null>()
 const next = ref<number | null>()
 
-const sortName = computed(() => props.post?.proj_name || '본사 문서')
 const postId = computed(() => Number(route.params.postId))
 
 const docStore = useDocument()
@@ -96,7 +94,7 @@ onMounted(() => {
         <h5>{{ post.title }}</h5>
       </CCol>
       <CCol class="pt-1 text-right">
-        <span>[{{ sortName }}] [{{ post.cate_name }}]</span>
+        <span>[{{ post.cate_name }}]</span>
       </CCol>
     </CRow>
 
@@ -136,26 +134,7 @@ onMounted(() => {
     </CRow>
 
     <CRow class="mt-5 py-2 justify-content-between">
-      <CCol md="7" lg="6" xl="5">
-        <table v-if="boardNum !== 1 && post.execution_date" class="table table-bordered mt-2 mb-3">
-          <tbody>
-            <tr v-if="post.lawsuit">
-              <td class="p-2 bg-blue-grey-lighten-4 text-center">관련사건</td>
-              <td class="p-2">
-                <router-link
-                  :to="{ name: '현장 소송 사건 - 보기', params: { caseId: post.lawsuit } }"
-                >
-                  {{ post.lawsuit_name }}
-                </router-link>
-              </td>
-            </tr>
-            <tr>
-              <td class="p-2 bg-blue-grey-lighten-4 text-center">발행일자</td>
-              <td class="p-2">{{ post.execution_date }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </CCol>
+      <CCol md="7" lg="6" xl="5"></CCol>
 
       <CCol md="7" lg="6" xl="5">
         <CRow v-if="!!post.links && post.links.length" class="mb-3">
