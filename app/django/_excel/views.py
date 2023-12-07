@@ -87,8 +87,11 @@ class ExportContracts(View):
                       ['동', 'keyunit__houseunit__building_unit__name', 7],
                       ['호수', 'keyunit__houseunit__name', 7],
                       [f'{t_name}일자', 'contractor__contract_date', 12],
-                      ['공급가액', 'contract__contractprice__price', 12],
-                      ['납입금액합계', '', 12],
+                      ['공급가액', 'contractor__contract__contractprice__price', 12],
+                      ['납입금합계', '', 12],
+                      ['회당계약금', 'contractor__contract__contractprice__down_pay', 11],
+                      ['회당중도금', 'contractor__contract__contractprice__down_pay', 11],
+                      ['회당잔금', 'contractor__contract__contractprice__down_pay', 12],
                       ['생년월일', 'contractor__birth_date', 12],
                       ['연락처[1]', 'contractor__contractorcontact__cell_phone', 14],
                       ['연락처[2]', 'contractor__contractorcontact__home_phone', 14],
@@ -184,10 +187,10 @@ class ExportContracts(View):
         data = queryset.values_list(*params)
 
         is_date = []  # ('생년월일', '계약일자')
-        is_left = []
-        is_num = []
-        reg_col = None
-        sum_col = None
+        is_left = []  # ('주소', '비고')
+        is_num = []  # ('공급가액', '납입금합계', '회당계약금', '회당중도금', '회장잔금')
+        reg_col = None  # ('등록상태',)
+        sum_col = None  # 납입금합계 컬럼 위치
 
         # Write body
         for col_num, title in enumerate(titles):
@@ -195,9 +198,10 @@ class ExportContracts(View):
                 is_date.append(col_num)
             if title == '등록상태':
                 reg_col = col_num
-            if title == '납입금액합계':
+            if title in ('공급가액', '납입금합계', '회당계약금', '회당중도금', '회당잔금'):
                 is_num.append(col_num)
-                sum_col = col_num
+                if title == '납입금합계':
+                    sum_col = col_num
             if title in ('', '비고'):
                 is_left.append(col_num)
 
@@ -224,7 +228,7 @@ class ExportContracts(View):
                 if col_num == 0:
                     body_format['align'] = 'center'
                     body_format['num_format'] = '#,##0'
-                elif col_num == sum_col:
+                elif col_num in is_num:
                     body_format['num_format'] = 41
                 elif col_num in is_left:
                     body_format['align'] = 'left'
