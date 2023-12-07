@@ -23,11 +23,6 @@ const getColor = (q: '1' | '2' | '3' | '4' | undefined) =>
       </router-link>
     </CTableDataCell>
     <CTableDataCell>
-      <router-link :to="{ name: '계약 등록 수정', query: { contractor } }">
-        {{ contract.contractor?.name }}
-      </router-link>
-    </CTableDataCell>
-    <CTableDataCell>
       <CBadge :color="getColor(contract.contractor?.qualification)">
         {{ contract.order_group_sort === '1' ? contract.contractor?.qualifi_display : '' }}
       </CBadge>
@@ -44,11 +39,18 @@ const getColor = (q: '1' | '2' | '3' | '4' | undefined) =>
       />
       {{ contract.unit_type_desc.name }}
     </CTableDataCell>
+    <CTableDataCell>
+      <router-link :to="{ name: '계약 등록 수정', query: { contractor } }">
+        {{ contract.contractor?.name }}
+      </router-link>
+    </CTableDataCell>
     <CTableDataCell
       class="text-left"
       :class="contract.keyunit?.houseunit !== null ? '' : 'text-danger'"
     >
-      {{ contract.keyunit?.houseunit ? contract.keyunit?.houseunit.__str__ : '미정' }}
+      <router-link :to="{ name: '계약 등록 수정', query: { contractor } }">
+        {{ contract.keyunit?.houseunit ? contract.keyunit?.houseunit.__str__ : '미정' }}
+      </router-link>
     </CTableDataCell>
     <CTableDataCell>{{ contract.contractor?.contract_date }}</CTableDataCell>
     <CTableDataCell class="text-right">
