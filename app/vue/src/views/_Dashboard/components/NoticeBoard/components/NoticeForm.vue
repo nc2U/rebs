@@ -169,24 +169,27 @@ onUpdated(() => dataSetup())
       <CCol md="8">
         <CFormInput id="title" v-model="form.title" required placeholder="게시물 제목" />
       </CCol>
-    </CRow>
-
-    <CRow class="mb-3">
-      <CFormLabel for="category" class="col-sm-2 col-form-label"> 카테고리</CFormLabel>
-      <CCol md="3">
-        <CFormSelect id="category" v-model="form.category" required>
-          <option value="">카테고리 선택</option>
-          <!--          <option v-for="cate in categoryList" :key="cate.pk" :value="cate.pk">-->
-          <!--            {{ cate.name }}-->
-          <!--          </option>-->
-        </CFormSelect>
-      </CCol>
-
-      <CFormLabel for="inputPassword" class="col-sm-2 col-form-label"> 문서 발행일자</CFormLabel>
-      <CCol md="3">
-        <DatePicker v-model="form.execution_date" placeholder="문서 발행일자" />
+      <CCol md="2">
+        <v-checkbox-btn label="공지글" />
       </CCol>
     </CRow>
+
+    <!--    <CRow class="mb-3">-->
+    <!--      <CFormLabel for="category" class="col-sm-2 col-form-label"> 카테고리</CFormLabel>-->
+    <!--      <CCol md="3">-->
+    <!--        <CFormSelect id="category" v-model="form.category" required>-->
+    <!--          <option value="">카테고리 선택</option>-->
+    <!--          &lt;!&ndash;          <option v-for="cate in categoryList" :key="cate.pk" :value="cate.pk">&ndash;&gt;-->
+    <!--          &lt;!&ndash;            {{ cate.name }}&ndash;&gt;-->
+    <!--          &lt;!&ndash;          </option>&ndash;&gt;-->
+    <!--        </CFormSelect>-->
+    <!--      </CCol>-->
+
+    <!--      <CFormLabel for="inputPassword" class="col-sm-2 col-form-label"> 문서 발행일자</CFormLabel>-->
+    <!--      <CCol md="3">-->
+    <!--        <DatePicker v-model="form.execution_date" placeholder="문서 발행일자" />-->
+    <!--      </CCol>-->
+    <!--    </CRow>-->
 
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">내용</CFormLabel>
