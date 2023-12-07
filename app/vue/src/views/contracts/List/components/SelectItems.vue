@@ -89,7 +89,7 @@ onMounted(() => {
         <v-checkbox-btn
           id="printItems9"
           v-model="printItems"
-          label="납입금액합계"
+          label="공급가액"
           value="9"
           color="indigo"
           hide-details
@@ -97,7 +97,7 @@ onMounted(() => {
         <v-checkbox-btn
           id="printItems10"
           v-model="printItems"
-          label="생년월일"
+          label="납입금액합계"
           value="10"
           color="indigo"
           hide-details
@@ -105,7 +105,7 @@ onMounted(() => {
         <v-checkbox-btn
           id="printItems11"
           v-model="printItems"
-          label="연락처[1]"
+          label="생년월일"
           value="11"
           color="indigo"
           hide-details
@@ -113,7 +113,7 @@ onMounted(() => {
         <v-checkbox-btn
           id="printItems12"
           v-model="printItems"
-          label="연락처[2]"
+          label="연락처[1]"
           value="12"
           color="indigo"
           hide-details
@@ -121,7 +121,7 @@ onMounted(() => {
         <v-checkbox-btn
           id="printItems13"
           v-model="printItems"
-          label="연락처[3]"
+          label="연락처[2]"
           value="13"
           color="indigo"
           hide-details
@@ -129,7 +129,7 @@ onMounted(() => {
         <v-checkbox-btn
           id="printItems14"
           v-model="printItems"
-          label="이메일"
+          label="연락처[3]"
           value="14"
           color="indigo"
           hide-details
@@ -137,24 +137,32 @@ onMounted(() => {
         <v-checkbox-btn
           id="printItems15"
           v-model="printItems"
-          label="주소[등본]"
-          value="15-16-17-18"
+          label="이메일"
+          value="15"
           color="indigo"
           hide-details
         />
         <v-checkbox-btn
-          id="printItems19"
+          id="printItems16"
+          v-model="printItems"
+          label="주소[등본]"
+          value="16-17-18-19"
+          color="indigo"
+          hide-details
+        />
+        <v-checkbox-btn
+          id="printItems20"
           v-model="printItems"
           label="주소[우편]"
-          value="19-20-21-22"
+          value="20-21-22-23"
           color="indigo"
           hide-details
         />
         <v-checkbox-btn
-          id="printItems23"
+          id="printItems24"
           v-model="printItems"
           label="비고"
-          value="23"
+          value="24"
           color="indigo"
           hide-details
         />
