@@ -180,7 +180,7 @@ onUpdated(() => dataSetup())
       <CCol md="3">
         <CFormSelect id="category" v-model="form.category">
           <option value="">카테고리 선택</option>
-          <option v-for="cate in categoryList" :key="cate.pk" :value="cate.pk">
+          <option v-for="cate in categoryList" :key="cate.pk ?? 0" :value="cate.pk ?? 0">
             {{ cate.name }}
           </option>
         </CFormSelect>
