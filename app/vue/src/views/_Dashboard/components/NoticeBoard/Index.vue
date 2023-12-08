@@ -54,6 +54,7 @@ const company = computed(() => comStore.company?.pk)
 const docStore = useDocument()
 const post = computed(() => docStore.post)
 const postList = computed(() => docStore.postList)
+const noticeList = computed(() => docStore.noticeList)
 const categoryList = computed(() => docStore.categoryList)
 
 const fetchLink = (pk: number) => docStore.fetchLink(pk)
@@ -182,6 +183,7 @@ onBeforeMount(() => dataSetup(company.value ?? comStore.initComId, route.params?
           <NoticeList
             :company="company as number"
             :page="postFilter.page"
+            :notice-list="noticeList"
             :post-list="postList"
             :view-route="mainViewName"
             @page-select="pageSelect"
