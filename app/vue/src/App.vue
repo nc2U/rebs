@@ -1,10 +1,16 @@
 <script lang="ts" setup>
-import { onMounted, provide, watch } from 'vue'
-import { useAccount } from '@/store/pinia/account'
+import { computed, provide, watch, onMounted } from 'vue'
 import { useStore } from '@/store'
+import { useAccount } from '@/store/pinia/account'
+import { useCompany } from '@/store/pinia/company'
 
 const accStore = useAccount()
+
+const comStore = useCompany()
+const company = computed(() => comStore.company?.pk)
+
 provide('userInfo', accStore.userInfo)
+provide('comStore', comStore)
 
 const store = useStore()
 watch(store, () => {
@@ -13,11 +19,12 @@ watch(store, () => {
     : document.body.classList.remove('dark-theme')
 })
 
-onMounted(() =>
+onMounted(() => {
   store.theme === 'dark'
     ? document.body.classList.add('dark-theme')
-    : document.body.classList.remove('dark-theme'),
-)
+    : document.body.classList.remove('dark-theme')
+  comStore.fetchCompany(company.value || comStore.initComId)
+})
 </script>
 
 <template>

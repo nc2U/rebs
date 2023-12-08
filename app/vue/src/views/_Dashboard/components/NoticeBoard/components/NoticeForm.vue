@@ -1,16 +1,17 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted, onUpdated, type PropType } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { Post, Link } from '@/store/types/document'
+import type { Post, Link, Category } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
 import { AlertSecondary } from '@/utils/cssMixins'
 import QuillEditor from '@/components/QuillEditor/index.vue'
-import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import Multiselect from '@vueform/multiselect'
+// import DatePicker from '@/components/DatePicker/index.vue'
 
 const props = defineProps({
+  categoryList: { type: Object as PropType<Category[]>, default: () => [] },
   post: { type: Object as PropType<Post>, default: null },
   viewRoute: { type: String, required: true },
 })
@@ -170,26 +171,26 @@ onUpdated(() => dataSetup())
         <CFormInput id="title" v-model="form.title" required placeholder="게시물 제목" />
       </CCol>
       <CCol md="2">
-        <v-checkbox-btn label="공지글" />
+        <v-checkbox-btn v-model="form.is_notice" label="공지글" />
       </CCol>
     </CRow>
 
-    <!--    <CRow class="mb-3">-->
-    <!--      <CFormLabel for="category" class="col-sm-2 col-form-label"> 카테고리</CFormLabel>-->
-    <!--      <CCol md="3">-->
-    <!--        <CFormSelect id="category" v-model="form.category" required>-->
-    <!--          <option value="">카테고리 선택</option>-->
-    <!--          &lt;!&ndash;          <option v-for="cate in categoryList" :key="cate.pk" :value="cate.pk">&ndash;&gt;-->
-    <!--          &lt;!&ndash;            {{ cate.name }}&ndash;&gt;-->
-    <!--          &lt;!&ndash;          </option>&ndash;&gt;-->
-    <!--        </CFormSelect>-->
-    <!--      </CCol>-->
+    <CRow class="mb-3">
+      <CFormLabel for="category" class="col-sm-2 col-form-label"> 카테고리</CFormLabel>
+      <CCol md="3">
+        <CFormSelect id="category" v-model="form.category">
+          <option value="">카테고리 선택</option>
+          <option v-for="cate in categoryList" :key="cate.pk ?? 0" :value="cate.pk ?? 0">
+            {{ cate.name }}
+          </option>
+        </CFormSelect>
+      </CCol>
 
-    <!--      <CFormLabel for="inputPassword" class="col-sm-2 col-form-label"> 문서 발행일자</CFormLabel>-->
-    <!--      <CCol md="3">-->
-    <!--        <DatePicker v-model="form.execution_date" placeholder="문서 발행일자" />-->
-    <!--      </CCol>-->
-    <!--    </CRow>-->
+      <!--      <CFormLabel for="inputPassword" class="col-sm-2 col-form-label"> 문서 발행일자</CFormLabel>-->
+      <!--      <CCol md="3">-->
+      <!--        <DatePicker v-model="form.execution_date" placeholder="문서 발행일자" />-->
+      <!--      </CCol>-->
+    </CRow>
 
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">내용</CFormLabel>

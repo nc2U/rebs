@@ -5,10 +5,12 @@ import { TableSecondary } from '@/utils/cssMixins'
 import type { User } from '@/store/types/accounts'
 import type { Post } from '@/store/types/document'
 import Pagination from '@/components/Pagination'
+import TopNotice from './TopNotice.vue'
 import Notice from './Notice.vue'
 
 defineProps({
   page: { type: Number, default: 1 },
+  noticeList: { type: Array as PropType<Post[]>, default: () => [] },
   postList: { type: Array as PropType<Post[]>, default: () => [] },
 })
 
@@ -26,8 +28,6 @@ const pageSelect = (page: number) => emit('page-select', page)
   <CTable hover responsive align="middle">
     <colgroup>
       <col style="width: 8%" />
-      <col style="width: 10%" />
-      <col style="width: 11%" />
       <col style="width: 34%" />
       <col style="width: 12%" />
       <col style="width: 15%" />
@@ -37,9 +37,7 @@ const pageSelect = (page: number) => emit('page-select', page)
     <CTableHead>
       <CTableRow :color="TableSecondary" class="text-center border-top-1">
         <CTableHeaderCell scope="col">번호</CTableHeaderCell>
-        <CTableHeaderCell scope="col">구분</CTableHeaderCell>
-        <CTableHeaderCell scope="col">문서 발행일자</CTableHeaderCell>
-        <CTableHeaderCell scope="col">문서 제목</CTableHeaderCell>
+        <CTableHeaderCell scope="col">제목</CTableHeaderCell>
         <CTableHeaderCell scope="col">등록자</CTableHeaderCell>
         <CTableHeaderCell scope="col">등록일시</CTableHeaderCell>
         <CTableHeaderCell scope="col">조회수</CTableHeaderCell>
@@ -47,6 +45,7 @@ const pageSelect = (page: number) => emit('page-select', page)
     </CTableHead>
 
     <CTableBody>
+      <TopNotice v-for="notice in noticeList" :key="notice.pk" :post="notice" />
       <Notice v-for="post in postList" :key="post.pk" :post="post" />
     </CTableBody>
   </CTable>
@@ -63,10 +62,10 @@ const pageSelect = (page: number) => emit('page-select', page)
     </CCol>
     <CCol lg="4" class="text-right pt-3">
       <CButton color="light" class="px-5" @click="$router.push({ name: `대 시 보 드` })">
-        TO HOME
+        홈으로
       </CButton>
       <CButton
-        v-if="userInfo.is_superuser"
+        v-if="userInfo?.is_superuser"
         color="primary"
         class="px-5"
         @click="$router.push({ name: `공지 사항 - 작성` })"

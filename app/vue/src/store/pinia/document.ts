@@ -180,6 +180,7 @@ export const useDocument = defineStore('document', () => {
 
   const post = ref<Post | null>(null)
   const postList = ref<Post[]>([])
+  const noticeList = ref<Post[]>([])
   const postCount = ref(0)
   const getPostNav = computed(() =>
     postList.value.map(p => ({
@@ -197,6 +198,8 @@ export const useDocument = defineStore('document', () => {
       .then(res => (post.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
+  const devPost = (payload: Post[], isNoti = true) => payload.filter(p => p.is_notice === isNoti)
+
   const fetchPostList = async (payload: PostFilter) => {
     const { board, page } = payload
     let url = `/post/?board=${board}&page=${page || 1}`
@@ -211,7 +214,8 @@ export const useDocument = defineStore('document', () => {
     return await api
       .get(url)
       .then(res => {
-        postList.value = res.data.results
+        noticeList.value = devPost(res.data.results)
+        postList.value = devPost(res.data.results, false)
         postCount.value = res.data.count
       })
       .catch(err => errorHandle(err.response.data))
@@ -363,6 +367,7 @@ export const useDocument = defineStore('document', () => {
 
     post,
     postList,
+    noticeList,
     postCount,
     getPostNav,
 
