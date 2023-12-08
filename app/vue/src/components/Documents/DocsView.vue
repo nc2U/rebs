@@ -95,7 +95,7 @@ onMounted(() => {
       <CCol md="8">
         <h5>{{ post.title }}</h5>
       </CCol>
-      <CCol class="pt-1 text-right">
+      <CCol v-if="post.cate_name" class="pt-1 text-right">
         <span>[{{ sortName }}] [{{ post.cate_name }}]</span>
       </CCol>
     </CRow>
