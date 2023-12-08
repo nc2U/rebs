@@ -1,9 +1,10 @@
 <script lang="ts" setup="">
 import { ref } from 'vue'
-
-const msg = ref('Comments')
+import CommentList from './components/CommentList.vue'
+import CommentForm from './components/CommentForm.vue'
 </script>
 
 <template>
-  <div>{{ msg }}</div>
+  <CommentList />
+  <CommentForm />
 </template>
