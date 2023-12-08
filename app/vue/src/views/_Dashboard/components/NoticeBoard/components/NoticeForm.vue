@@ -7,8 +7,6 @@ import { AlertSecondary } from '@/utils/cssMixins'
 import QuillEditor from '@/components/QuillEditor/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import Multiselect from '@vueform/multiselect'
-// import DatePicker from '@/components/DatePicker/index.vue'
 
 const props = defineProps({
   categoryList: { type: Object as PropType<Category[]>, default: () => [] },

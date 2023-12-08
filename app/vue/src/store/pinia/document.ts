@@ -200,9 +200,15 @@ export const useDocument = defineStore('document', () => {
 
   const devPost = (payload: Post[], isNoti = true) => payload.filter(p => p.is_notice === isNoti)
 
+  const fetchNoticeList = (board: number | undefined) =>
+    api
+      .get(`/post/?board=${board}&is_notice=true`)
+      .then(res => (noticeList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
   const fetchPostList = async (payload: PostFilter) => {
     const { board, page } = payload
-    let url = `/post/?board=${board}&page=${page || 1}`
+    let url = `/post/?board=${board}&page=${page || 1}&is_notice=false`
     if (payload.company) url += `&company=${payload.company}`
     if (payload.is_com) url += `&is_com=${payload.is_com}`
     if (payload.project) url += `&project=${payload.project}`
@@ -210,12 +216,12 @@ export const useDocument = defineStore('document', () => {
     if (payload.lawsuit) url += `&lawsuit=${payload.lawsuit}`
     if (payload.ordering) url += `&ordering=${payload.ordering}`
     if (payload.search) url += `&search=${payload.search}`
+    await fetchNoticeList(board)
 
     return await api
       .get(url)
       .then(res => {
-        noticeList.value = devPost(res.data.results)
-        postList.value = devPost(res.data.results, false)
+        postList.value = res.data.results
         postCount.value = res.data.count
       })
       .catch(err => errorHandle(err.response.data))

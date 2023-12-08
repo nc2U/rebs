@@ -1,8 +1,13 @@
 <script lang="ts" setup="">
-import { ref } from 'vue'
+import { type PropType } from 'vue'
+import type { Post } from '@/store/types/document'
+import { cutString, timeFormat } from '@/utils/baseMixins'
 
-const msg = ref('공지 사항')
-const items = ref([1, 2, 3, 4, 5, 6, 7, 8])
+defineProps({
+  mainViewName: { type: String, default: '공지 사항' },
+  noticeList: { type: Array as PropType<Post[]>, default: () => [] },
+  postList: { type: Array as PropType<Post[]>, default: () => [] },
+})
 </script>
 
 <template>
@@ -14,19 +19,37 @@ const items = ref([1, 2, 3, 4, 5, 6, 7, 8])
             <tr class="bg-secondary">
               <th class="text-left">
                 <v-btn variant="text" icon="mdi-menu" />
-                <span class="text-capitalize">{{ msg }}</span>
+                <span class="text-capitalize">{{ mainViewName }}</span>
               </th>
               <th class="text-right">
-                <router-link :to="{ name: '공지 사항' }">더보기</router-link>
+                <router-link :to="{ name: mainViewName }">더보기</router-link>
                 <v-icon icon="mdi-chevron-right" />
               </th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in items" :key="item">
-              <td>{{ item }}</td>
-              <td class="text-right">{{ '11-02' }}</td>
+            <tr v-for="item in noticeList" :key="item.pk ?? 0">
+              <td class="pl-5">
+                <router-link :to="{ name: `${mainViewName} - 보기`, params: { postId: item.pk } }">
+                  {{ cutString(item.title, 32) }}
+                </router-link>
+              </td>
+              <td class="text-right pr-5">{{ timeFormat(item.created ?? '').substring(0, 10) }}</td>
             </tr>
+            <template v-for="(item, i) in postList" :key="item.pk ?? 0">
+              <tr v-if="(noticeList.length ?? 0) + i <= 7">
+                <td class="pl-5">
+                  <router-link
+                    :to="{ name: `${mainViewName} - 보기`, params: { postId: item.pk } }"
+                  >
+                    {{ cutString(item.title, 32) }}
+                  </router-link>
+                </td>
+                <td class="text-right pr-5">
+                  {{ timeFormat(item.created ?? '').substring(0, 10) }}
+                </td>
+              </tr>
+            </template>
           </tbody>
         </v-table>
       </v-card>
