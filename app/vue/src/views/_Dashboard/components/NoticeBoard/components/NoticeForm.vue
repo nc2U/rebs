@@ -5,10 +5,10 @@ import type { Post, Link } from '@/store/types/document'
 import { write_company_docs } from '@/utils/pageAuth'
 import { AlertSecondary } from '@/utils/cssMixins'
 import QuillEditor from '@/components/QuillEditor/index.vue'
-import DatePicker from '@/components/DatePicker/index.vue'
+// import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import Multiselect from '@vueform/multiselect'
+// import Multiselect from '@vueform/multiselect'
 
 const props = defineProps({
   post: { type: Object as PropType<Post>, default: null },
