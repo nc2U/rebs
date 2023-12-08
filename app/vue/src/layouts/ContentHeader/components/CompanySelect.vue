@@ -1,21 +1,17 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount } from 'vue'
-import { useCompany } from '@/store/pinia/company'
+import { computed, inject, onBeforeMount } from 'vue'
 import Multiselect from '@vueform/multiselect'
 
 const emit = defineEmits(['com-select'])
 
-const comStore = useCompany()
+const comStore = inject('comStore') as any
 const company = computed(() => comStore.company?.pk)
 const comSelectList = computed(() => comStore.comSelect)
 
 const comSelect = (e: { originalEvent: Event; value: any; option: any }) => emit('com-select', e)
 const comClear = () => emit('com-select', null)
 
-onBeforeMount(() => {
-  comStore.fetchCompanyList()
-  comStore.fetchCompany(company.value || comStore.initComId)
-})
+onBeforeMount(() => comStore.fetchCompanyList())
 </script>
 
 <template>
