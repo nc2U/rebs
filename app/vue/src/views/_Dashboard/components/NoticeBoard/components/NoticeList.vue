@@ -66,7 +66,7 @@ const pageSelect = (page: number) => emit('page-select', page)
         TO HOME
       </CButton>
       <CButton
-        v-if="userInfo.is_superuser"
+        v-if="userInfo?.is_superuser"
         color="primary"
         class="px-5"
         @click="$router.push({ name: `공지 사항 - 작성` })"
