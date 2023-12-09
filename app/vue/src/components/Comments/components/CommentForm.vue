@@ -68,8 +68,8 @@ const onSubmit = () => alert('submitted!')
         />
 
         <v-col class="text-right pt-3">
-          <v-btn type="submit" color="primary" tonal size="large" :disabled="!form.content"
-            >댓글등록
+          <v-btn type="submit" color="primary" tonal size="large" :disabled="!form.content">
+            댓글등록
           </v-btn>
         </v-col>
       </v-row>
