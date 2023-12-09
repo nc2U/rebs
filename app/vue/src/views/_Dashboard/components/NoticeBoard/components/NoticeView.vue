@@ -248,7 +248,6 @@ onMounted(() => {
           </CButton>
         </CButtonGroup>
       </CCol>
-      {{ post }}
       <CCol class="text-right">
         <CButtonGroup role="group">
           <CButton
@@ -256,7 +255,7 @@ onMounted(() => {
             @click="
               $router.push({
                 name: `${viewRoute} - 수정`,
-                params: { postId: post.pk },
+                params: { postId: post?.pk },
               })
             "
           >
