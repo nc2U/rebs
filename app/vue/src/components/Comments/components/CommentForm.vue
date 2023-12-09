@@ -20,7 +20,7 @@ const falseRemove = () =>
     if (form.value.secret) form.value.password = ''
   })
 
-const onSubmit = () => alert('submitted!')
+const onSubmit = () => alert('댓글 기능 구현 작업 진행 중!')
 </script>
 
 <template>
