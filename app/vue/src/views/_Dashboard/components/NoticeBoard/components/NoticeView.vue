@@ -5,6 +5,7 @@ import { useDocument } from '@/store/pinia/document'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 import { type Post } from '@/store/types/document'
 import sanitizeHtml from 'sanitize-html'
+import Comments from '@/components/Comments/Index.vue'
 
 const props = defineProps({
   heatedPage: { type: Array as PropType<number[]>, default: () => [] },
@@ -204,7 +205,7 @@ onMounted(() => {
       </CCol>
     </CRow>
 
-    <CRow class="mt-2 px-3">
+    <CRow class="my-3 px-3">
       <CCol class="text-grey-darken-1 pt-2 social">
         <v-icon icon="mdi-facebook" class="mr-2" @click="toSocial" />
         <v-icon icon="mdi-twitter" class="mr-2" @click="toSocial" />
@@ -218,9 +219,7 @@ onMounted(() => {
       </CCol>
     </CRow>
 
-    <hr />
-
-    <CRow class="py-4">
+    <CRow class="py-2">
       <CCol>
         <CButtonGroup role="group" class="mr-3">
           <CButton
@@ -248,29 +247,29 @@ onMounted(() => {
             다음글
           </CButton>
         </CButtonGroup>
-
+      </CCol>
+      <CCol class="text-right">
         <CButtonGroup role="group">
           <CButton
             color="success"
             @click="
               $router.push({
                 name: `${viewRoute} - 수정`,
-                params: { postId: post.pk },
+                params: { postId: post?.pk },
               })
             "
           >
             수정
           </CButton>
           <CButton color="danger" @click="toDelete">삭제</CButton>
+          <CButton color="secondary" @click="$router.push({ name: `${viewRoute}` })"> 목록</CButton>
         </CButtonGroup>
       </CCol>
-      <CCol class="text-right">
-        <CButton color="light" @click="$router.push({ name: `${viewRoute}` })"> 목록으로</CButton>
-        <CButton color="primary" @click="$router.push({ name: `${viewRoute} - 작성` })">
-          등록하기
-        </CButton>
-      </CCol>
     </CRow>
+
+    <hr />
+
+    <Comments />
   </div>
 </template>
 

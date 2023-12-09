@@ -5,11 +5,11 @@ import { useAccount } from '@/store/pinia/account'
 import { useCompany } from '@/store/pinia/company'
 
 const accStore = useAccount()
+const userInfo = computed(() => accStore.userInfo)
+provide('userInfo', userInfo)
 
 const comStore = useCompany()
 const company = computed(() => comStore.company?.pk)
-
-provide('userInfo', accStore.userInfo)
 provide('comStore', comStore)
 
 const store = useStore()
