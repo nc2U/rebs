@@ -248,6 +248,7 @@ onMounted(() => {
           </CButton>
         </CButtonGroup>
       </CCol>
+      {{ post }}
       <CCol class="text-right">
         <CButtonGroup role="group">
           <CButton
