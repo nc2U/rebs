@@ -151,13 +151,22 @@ class FilesInPostSerializer(serializers.ModelSerializer):
         fields = ('pk', 'post', 'file', 'hit')
 
 
+class CommentInPostSerializer(serializers.ModelSerializer):
+    user = serializers.SlugRelatedField(slug_field='username', read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = ('pk', 'post', 'content', 'like', 'dislike', 'blame',
+                  'secret', 'password', 'user', 'soft_delete')
+
+
 class PostSerializer(serializers.ModelSerializer):
     proj_name = serializers.SlugField(source='project', read_only=True)
     cate_name = serializers.SlugField(source='category', read_only=True)
     lawsuit_name = serializers.SlugField(source='lawsuit', read_only=True)
     links = LinksInPostSerializer(many=True, read_only=True)
     files = FilesInPostSerializer(many=True, read_only=True)
-    comments = serializers.RelatedField(many=True, read_only=True)
+    comments = CommentInPostSerializer(many=True, read_only=True)
     user = serializers.SlugRelatedField(slug_field='username', read_only=True)
     prev_pk = serializers.SerializerMethodField()
     next_pk = serializers.SerializerMethodField()
@@ -352,9 +361,8 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = (
-            'pk', 'post', 'content', 'like', 'dislike', 'blame', 'ip',
-            'device', 'secret', 'password', 'user', 'soft_delete')
+        fields = ('pk', 'post', 'content', 'like', 'dislike', 'blame', 'ip',
+                  'device', 'secret', 'password', 'user', 'soft_delete')
 
 
 class TagSerializer(serializers.ModelSerializer):
