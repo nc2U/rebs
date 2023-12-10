@@ -16,11 +16,11 @@ defineProps({
 
 const emit = defineEmits(['page-select'])
 
-const userInfo = inject('userInfo') as User
+const userInfo = inject<User>('userInfo')
 
-const documentStore = useDocument()
+const docStore = useDocument()
+const postPages = (num: number) => docStore.postPages(num)
 
-const postPages = (num: number) => documentStore.postPages(num)
 const pageSelect = (page: number) => emit('page-select', page)
 </script>
 
