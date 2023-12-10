@@ -140,7 +140,7 @@ export interface PatchPost {
 }
 
 export interface Comment {
-  pk: number
+  pk?: number
   post: number
   content: string
   like: number

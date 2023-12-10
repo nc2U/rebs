@@ -326,13 +326,13 @@ export const useDocument = defineStore('document', () => {
 
   const fetchComment = (pk: number) =>
     api
-      .get(`/comment/${pk}`)
+      .get(`/comment/${pk}/`)
       .then(res => (comment.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
   const fetchCommentList = () =>
     api
-      .get(`/comment`)
+      .get(`/comment/`)
       .then(res => {
         commentList.value = res.data.results
         commentCount.value = res.data.count
@@ -341,19 +341,19 @@ export const useDocument = defineStore('document', () => {
 
   const createComment = (payload: Comment) =>
     api
-      .post(`/comment`, payload)
+      .post(`/comment/`, payload)
       .then(() => fetchCommentList().then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
   const patchComment = (payload: Comment) =>
     api
-      .patch(`/comment/${payload.pk}`, payload)
+      .patch(`/comment/${payload.pk}/`, payload)
       .then(res => fetchComment(res.data.pk).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
   const deleteComment = (pk: number) =>
     api
-      .delete(`/comment/${pk}`)
+      .delete(`/comment/${pk}/`)
       .then(() => fetchCommentList().then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
