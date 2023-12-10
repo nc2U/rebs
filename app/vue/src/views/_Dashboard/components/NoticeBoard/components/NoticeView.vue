@@ -269,7 +269,7 @@ onMounted(() => {
 
     <hr />
 
-    <Comments :comments="post.comments" />
+    <Comments :post="post.pk" :comments="post.comments" />
   </div>
 </template>
 

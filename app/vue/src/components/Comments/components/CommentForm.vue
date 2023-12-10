@@ -5,9 +5,10 @@ const emit = defineEmits(['on-submit'])
 
 const show1 = ref(false)
 const form = ref({
+  pk: null,
   content: '',
-  password: '',
   secret: false,
+  password: '',
 })
 
 const passwordRules = ref([
