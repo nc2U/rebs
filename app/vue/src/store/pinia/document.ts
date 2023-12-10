@@ -12,7 +12,7 @@ import type {
   SuitCase,
   SimpleSuitCase,
   Post,
-  Comment,
+  Comment as Cm,
 } from '@/store/types/document'
 
 export type SuitCaseFilter = {
@@ -199,8 +199,6 @@ export const useDocument = defineStore('document', () => {
       .then(res => (post.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const devPost = (payload: Post[], isNoti = true) => payload.filter(p => p.is_notice === isNoti)
-
   const fetchNoticeList = (board: number | undefined) =>
     api
       .get(`/post/?board=${board}&is_notice=true`)
@@ -320,8 +318,8 @@ export const useDocument = defineStore('document', () => {
       .then(res => fetchPost(res.data.post))
       .catch(err => errorHandle(err.response.data))
 
-  const comment = ref<Comment | null>(null)
-  const commentList = ref<Comment[]>([])
+  const comment = ref<Cm | null>(null)
+  const commentList = ref<Cm[]>([])
   const commentCount = ref(0)
 
   const fetchComment = (pk: number) =>
@@ -339,13 +337,13 @@ export const useDocument = defineStore('document', () => {
       })
       .catch(err => errorHandle(err.response.data))
 
-  const createComment = (payload: Comment) =>
+  const createComment = (payload: Cm) =>
     api
       .post(`/comment/`, payload)
       .then(() => fetchCommentList().then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
-  const patchComment = (payload: Comment) =>
+  const patchComment = (payload: Cm) =>
     api
       .patch(`/comment/${payload.pk}/`, payload)
       .then(res => fetchComment(res.data.pk).then(() => message()))
