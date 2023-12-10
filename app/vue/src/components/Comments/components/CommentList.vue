@@ -4,15 +4,15 @@ import type { Comment as Cm } from '@/store/types/document'
 import Comment from './Comment.vue'
 
 defineProps({
-  commentList: { type: Array as PropType<Cm[]>, default: () => [] },
+  comments: { type: Array as PropType<Cm[]>, default: () => [] },
 })
 </script>
 
 <template>
-  <div v-if="commentList.length">
-    <h5 class="my-4 ml-4">{{ commentList.length }} Comments</h5>
+  <div v-if="comments.length">
+    <h5 class="my-4 ml-4">{{ comments.length }} Comments</h5>
     <ul class="comments mx-5 mb-4">
-      <li v-for="comment in commentList" :key="comment.pk">
+      <li v-for="comment in comments" :key="comment.pk">
         <Comment :comment="comment" />
       </li>
     </ul>
