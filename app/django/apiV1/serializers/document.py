@@ -156,8 +156,9 @@ class CommentInPostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('pk', 'post', 'content', 'like', 'dislike', 'blame',
-                  'secret', 'password', 'user', 'soft_delete')
+        fields = ('pk', 'post', 'content', 'like', 'dislike', 'blame', 'ip',
+                  'device', 'secret', 'password', 'user', 'soft_delete')
+        read_only_fields = ('ip',)
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -354,15 +355,6 @@ class FileSerializer(serializers.ModelSerializer):
     class Meta:
         model = File
         fields = ('pk', 'post', 'file', 'hit')
-
-
-class CommentSerializer(serializers.ModelSerializer):
-    user = serializers.SlugRelatedField(slug_field='username', read_only=True)
-
-    class Meta:
-        model = Comment
-        fields = ('pk', 'post', 'content', 'like', 'dislike', 'blame', 'ip',
-                  'device', 'secret', 'password', 'user', 'soft_delete')
 
 
 class TagSerializer(serializers.ModelSerializer):
