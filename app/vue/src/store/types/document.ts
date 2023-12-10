@@ -159,6 +159,6 @@ export interface Comment {
   device: string
   secret: boolean
   password: string
-  user: string
+  user: { pk: number; username: string }
   soft_delete: string | null
 }
