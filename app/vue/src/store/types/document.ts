@@ -138,3 +138,18 @@ export interface PatchPost {
   password?: string
   soft_delete?: string | null
 }
+
+export interface Comment {
+  pk: number
+  post: number
+  content: string
+  like: number
+  dislike: number
+  blame: number
+  ip: string
+  device: string
+  secret: boolean
+  password: string
+  user: number
+  soft_delete: string | null
+}
