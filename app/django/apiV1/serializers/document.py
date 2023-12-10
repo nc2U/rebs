@@ -7,6 +7,7 @@ from django.db import transaction
 from django.db.models import Q
 from rest_framework import serializers
 
+from accounts.models import User
 from document.models import (Group, Board, Category, LawsuitCase, Post,
                              Like, DisLike, Image, Link, File, Comment, Tag)
 
@@ -151,8 +152,14 @@ class FilesInPostSerializer(serializers.ModelSerializer):
         fields = ('pk', 'post', 'file', 'hit')
 
 
+class UserInCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('pk', 'username')
+
+
 class CommentInPostSerializer(serializers.ModelSerializer):
-    user = serializers.SlugRelatedField(slug_field='username', read_only=True)
+    user = UserInCommentSerializer(read_only=True)
 
     class Meta:
         model = Comment
