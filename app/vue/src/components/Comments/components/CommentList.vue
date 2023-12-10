@@ -1,16 +1,19 @@
 <script lang="ts" setup="">
-import { ref } from 'vue'
+import type { PropType } from 'vue'
+import type { Comment as Cm } from '@/store/types/document'
 import Comment from './Comment.vue'
 
-const commentLength = ref(3)
+defineProps({
+  comments: { type: Array as PropType<Cm[]>, default: () => [] },
+})
 </script>
 
 <template>
-  <div v-if="commentLength">
-    <h5 class="my-4 ml-4">{{ commentLength }} Comments</h5>
+  <div v-if="comments.length">
+    <h5 class="my-4 ml-4">{{ comments.length }} Comments</h5>
     <ul class="comments mx-5 mb-4">
-      <li v-for="i in commentLength" :key="i">
-        <Comment />
+      <li v-for="comment in comments" :key="comment.pk">
+        <Comment :comment="comment" />
       </li>
     </ul>
   </div>

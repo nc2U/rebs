@@ -11,7 +11,7 @@ const props = defineProps({
   heatedPage: { type: Array as PropType<number[]>, default: () => [] },
   reOrder: { type: Boolean, default: false },
   category: { type: Number, default: undefined },
-  post: { type: Object as PropType<Post>, default: null },
+  post: { type: Object as PropType<Post>, required: true },
   viewRoute: { type: String, required: true },
   currPage: { type: Number, required: true },
 })
@@ -269,7 +269,7 @@ onMounted(() => {
 
     <hr />
 
-    <Comments />
+    <Comments :comments="post.comments" />
   </div>
 </template>
 

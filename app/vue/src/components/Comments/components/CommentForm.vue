@@ -1,6 +1,8 @@
 <script lang="ts" setup="">
 import { ref, nextTick } from 'vue'
 
+const emit = defineEmits(['on-submit'])
+
 const show1 = ref(false)
 const form = ref({
   content: '',
@@ -20,7 +22,7 @@ const falseRemove = () =>
     if (form.value.secret) form.value.password = ''
   })
 
-const onSubmit = () => alert('댓글 기능 구현 작업 진행 중!')
+const onSubmit = () => emit('on-submit', form.value)
 </script>
 
 <template>

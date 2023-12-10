@@ -62,7 +62,16 @@ export interface SimpleSuitCase {
 }
 
 export type Post = {
-  [key: string]: undefined | number | number[] | null | string | boolean | Link[] | AFile[]
+  [key: string]:
+    | undefined
+    | number
+    | number[]
+    | null
+    | string
+    | boolean
+    | Link[]
+    | AFile[]
+    | Comment[]
   pk?: number
   company: number | null
   project: number | null
@@ -85,7 +94,7 @@ export type Post = {
   password: string
   links?: Link[]
   files?: AFile[]
-  comments?: number[]
+  comments?: Comment[]
   user?: number | null
   soft_delete?: string | null
   created?: string
@@ -137,4 +146,19 @@ export interface PatchPost {
   secret?: boolean
   password?: string
   soft_delete?: string | null
+}
+
+export interface Comment {
+  pk?: number
+  post: number
+  content: string
+  like: number
+  dislike: number
+  blame: number
+  ip: string
+  device: string
+  secret: boolean
+  password: string
+  user: string
+  soft_delete: string | null
 }

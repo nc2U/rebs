@@ -12,6 +12,7 @@ import type {
   SuitCase,
   SimpleSuitCase,
   Post,
+  Comment as Cm,
 } from '@/store/types/document'
 
 export type SuitCaseFilter = {
@@ -198,8 +199,6 @@ export const useDocument = defineStore('document', () => {
       .then(res => (post.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const devPost = (payload: Post[], isNoti = true) => payload.filter(p => p.is_notice === isNoti)
-
   const fetchNoticeList = (board: number | undefined) =>
     api
       .get(`/post/?board=${board}&is_notice=true`)
@@ -319,12 +318,42 @@ export const useDocument = defineStore('document', () => {
       .then(res => fetchPost(res.data.post))
       .catch(err => errorHandle(err.response.data))
 
-  const comment = ref(null)
+  const comment = ref<Cm | null>(null)
+  const commentList = ref<Cm[]>([])
+  const commentCount = ref(0)
 
-  const fetchComment = () => 1
-  const createComment = () => 2
-  const updateComment = () => 3
-  const deleteComment = () => 4
+  const fetchComment = (pk: number) =>
+    api
+      .get(`/comment/${pk}/`)
+      .then(res => (comment.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchCommentList = () =>
+    api
+      .get(`/comment/`)
+      .then(res => {
+        commentList.value = res.data.results
+        commentCount.value = res.data.count
+      })
+      .catch(err => errorHandle(err.response.data))
+
+  const createComment = (payload: Cm) =>
+    api
+      .post(`/comment/`, payload)
+      .then(() => fetchCommentList().then(() => message()))
+      .catch(err => errorHandle(err.response.data))
+
+  const patchComment = (payload: Cm) =>
+    api
+      .patch(`/comment/${payload.pk}/`, payload)
+      .then(res => fetchComment(res.data.pk).then(() => message()))
+      .catch(err => errorHandle(err.response.data))
+
+  const deleteComment = (pk: number) =>
+    api
+      .delete(`/comment/${pk}/`)
+      .then(() => fetchCommentList().then(() => message()))
+      .catch(err => errorHandle(err.response.data))
 
   const tag = ref(null)
 
@@ -394,10 +423,13 @@ export const useDocument = defineStore('document', () => {
     patchFile,
 
     comment,
+    commentList,
+    commentCount,
 
     fetchComment,
+    fetchCommentList,
     createComment,
-    updateComment,
+    patchComment,
     deleteComment,
 
     tag,
