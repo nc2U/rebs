@@ -1,5 +1,5 @@
 <script lang="ts" setup="">
-import { computed, inject, type PropType } from 'vue'
+import { inject, type PropType } from 'vue'
 import type { User } from '@/store/types/accounts'
 import type { Comment as Cm } from '@/store/types/document'
 
