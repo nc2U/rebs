@@ -152,6 +152,7 @@ export interface Comment {
   pk?: number
   post: number
   content: string
+  parent: number | null
   like: number
   dislike: number
   blame: number
