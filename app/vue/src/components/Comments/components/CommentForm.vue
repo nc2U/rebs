@@ -5,6 +5,7 @@ import type { Comment as Cm } from '@/store/types/document'
 const props = defineProps({
   post: { type: Number, required: true },
   comment: { type: Object as PropType<Cm>, default: null },
+  parent: { type: Number, default: null },
 })
 const emit = defineEmits(['on-submit'])
 
@@ -13,7 +14,7 @@ const form = reactive<Cm>({
   pk: undefined,
   post: props.post,
   content: '',
-  parent: null as number | null,
+  parent: props.parent,
   secret: false,
   password: '',
 })
@@ -99,7 +100,13 @@ onMounted(() => {
         />
 
         <v-col class="text-right pt-3">
-          <v-btn type="submit" color="primary" tonal size="large" :disabled="!form.content">
+          <v-btn
+            type="submit"
+            :color="!comment ? 'primary' : 'success'"
+            tonal
+            size="large"
+            :disabled="!form.content"
+          >
             댓글등록
           </v-btn>
         </v-col>
