@@ -17,7 +17,7 @@ watch(props, val => {
   }
 })
 
-const emit = defineEmits(['vision-toggle'])
+const emit = defineEmits(['vision-toggle', 'on-submit'])
 
 const userInfo = inject<User>('userInfo')
 
@@ -42,6 +42,8 @@ const toModify = () => {
   emit('vision-toggle', { num: props.comment?.pk as number, sts: !isEditing.value })
 }
 const toDelete = () => alert('delete')
+
+const onSubmit = (payload: Cm) => emit('on-submit', payload)
 </script>
 
 <template>
@@ -73,10 +75,16 @@ const toDelete = () => alert('delete')
 
     <p v-if="!formShow || (!isReplying && !isEditing)">{{ comment?.content }}</p>
     <p v-else-if="isReplying">
-      <CommentForm :post="comment?.post as number" :parent="comment?.pk as number" />
+      <!-- 답변시 -->
+      <CommentForm
+        :post="comment?.post as number"
+        :parent="comment?.pk as number"
+        @on-submit="onSubmit"
+      />
     </p>
     <p v-else>
-      <CommentForm :post="comment?.post as number" :comment="comment" />
+      <!-- 수정시 -->
+      <CommentForm :post="comment?.post as number" :comment="comment" @on-submit="onSubmit" />
     </p>
   </div>
 </template>

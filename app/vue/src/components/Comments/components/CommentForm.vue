@@ -1,5 +1,5 @@
 <script lang="ts" setup="">
-import { nextTick, onMounted, type PropType, reactive, ref } from 'vue'
+import { nextTick, onMounted, onUpdated, type PropType, reactive, ref } from 'vue'
 import type { Comment as Cm } from '@/store/types/document'
 
 const props = defineProps({
@@ -44,7 +44,7 @@ const formReset = () => {
   form.password = ''
 }
 
-onMounted(() => {
+const formSet = () => {
   if (props.comment) {
     form.pk = props.comment.pk
     form.content = props.comment.content
@@ -52,7 +52,10 @@ onMounted(() => {
     form.secret = props.comment.secret
     form.password = props.comment.password
   }
-})
+}
+
+onMounted(() => formSet())
+onUpdated(() => formSet())
 </script>
 
 <template>
