@@ -1,12 +1,19 @@
 <script lang="ts" setup="">
-import { ref, nextTick } from 'vue'
+import { nextTick, onMounted, type PropType, reactive, ref } from 'vue'
+import type { Comment as Cm } from '@/store/types/document'
 
+const props = defineProps({
+  post: { type: Number, required: true },
+  comment: { type: Object as PropType<Cm>, default: null },
+})
 const emit = defineEmits(['on-submit'])
 
 const show1 = ref(false)
-const form = ref({
-  pk: null,
+const form = reactive<Cm>({
+  pk: undefined,
+  post: props.post,
   content: '',
+  parent: null as number | null,
   secret: false,
   password: '',
 })
@@ -20,10 +27,20 @@ const passwordRules = ref([
 
 const falseRemove = () =>
   nextTick(() => {
-    if (form.value.secret) form.value.password = ''
+    if (form.secret) form.password = ''
   })
 
-const onSubmit = () => emit('on-submit', form.value)
+const onSubmit = () => emit('on-submit', form)
+
+onMounted(() => {
+  if (props.comment) {
+    form.pk = props.comment.pk
+    form.content = props.comment.content
+    form.parent = props.comment.parent
+    form.secret = props.comment.secret
+    form.password = props.comment.password
+  }
+})
 </script>
 
 <template>

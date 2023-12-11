@@ -152,13 +152,13 @@ export interface Comment {
   pk?: number
   post: number
   content: string
-  like: number
-  dislike: number
-  blame: number
-  ip: string
-  device: string
+  parent: number | null
+  like?: number
+  dislike?: number
+  blame?: number
+  ip?: string
+  device?: string
   secret: boolean
   password: string
-  user: { pk: number; username: string }
-  soft_delete: string | null
+  user?: { pk: number; username: string }
 }

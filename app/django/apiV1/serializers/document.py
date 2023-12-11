@@ -163,8 +163,8 @@ class CommentInPostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('pk', 'post', 'content', 'like', 'dislike', 'blame', 'ip',
-                  'device', 'secret', 'password', 'user', 'soft_delete')
+        fields = ('pk', 'post', 'content', 'parent', 'like', 'dislike',
+                  'blame', 'ip', 'device', 'secret', 'password', 'user')
         read_only_fields = ('ip',)
 
 
