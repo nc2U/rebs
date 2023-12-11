@@ -160,5 +160,4 @@ export interface Comment {
   secret: boolean
   password: string
   user: { pk: number; username: string }
-  soft_delete: string | null
 }
