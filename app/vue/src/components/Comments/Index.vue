@@ -5,7 +5,7 @@ import type { Comment } from '@/store/types/document'
 import CommentList from './components/CommentList.vue'
 import CommentForm from './components/CommentForm.vue'
 
-const props = defineProps({
+defineProps({
   post: { type: Number, required: true },
   comments: { type: Array as PropType<Comment[]>, default: () => [] },
 })
@@ -15,8 +15,6 @@ const createComment = (payload: Comment) => docStore.createComment(payload)
 const patchComment = (payload: Comment) => docStore.patchComment(payload)
 
 const onSubmit = (payload: Comment) => {
-  payload.post = props.post
-
   if (!payload?.pk) createComment(payload)
   else patchComment(payload)
 }
@@ -24,5 +22,5 @@ const onSubmit = (payload: Comment) => {
 
 <template>
   <CommentList :comments="comments" />
-  <CommentForm @on-submit="onSubmit" />
+  <CommentForm :post="post" @on-submit="onSubmit" />
 </template>

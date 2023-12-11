@@ -153,12 +153,12 @@ export interface Comment {
   post: number
   content: string
   parent: number | null
-  like: number
-  dislike: number
-  blame: number
-  ip: string
-  device: string
+  like?: number
+  dislike?: number
+  blame?: number
+  ip?: string
+  device?: string
   secret: boolean
   password: string
-  user: { pk: number; username: string }
+  user?: { pk: number; username: string }
 }
