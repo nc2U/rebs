@@ -107,25 +107,25 @@ onMounted(() => {
     <CRow class="text-blue-grey">
       <CCol>
         <small class="mr-3">작성자 : {{ post.user }}</small>
-        <small class="mr-3">
-          <v-icon icon="mdi-comment-text-multiple" size="small" />
-          <span class="ml-2">{{ post.comments?.length || 0 }}</span>
+        <small class="mr-2">
+          <v-icon icon="mdi-comment-text-multiple" size="sm" />
+          <span class="ml-1">{{ post.comments?.length ?? 0 }}</span>
         </small>
-        <small class="mr-3">
-          <v-icon icon="mdi-eye" size="small" />
-          <span class="ml-2">{{ post.hit }}</span>
+        <small class="mr-2">
+          <v-icon icon="mdi-eye" size="sm" />
+          <span class="ml-1">{{ post.hit }}</span>
         </small>
-        <small class="mr-3">
-          <v-icon icon="mdi-thumb-up" size="small" />
-          <span class="ml-2">{{ 0 }}</span>
+        <small class="mr-2">
+          <v-icon icon="mdi-thumb-up" size="sm" />
+          <span class="ml-1">{{ 0 }}</span>
         </small>
-        <small class="mr-3">
-          <v-icon icon="mdi-thumb-down" size="small" />
-          <span class="ml-2">{{ 0 }}</span>
+        <small class="mr-2">
+          <v-icon icon="mdi-thumb-down" size="sm" />
+          <span class="ml-1">{{ 0 }}</span>
         </small>
-        <small class="mr-3 print" @click="toPrint">
-          <v-icon icon="mdi-printer" size="small" />
-          <span class="ml-2">프린트</span>
+        <small class="mr-2 text-btn" @click="toPrint">
+          <v-icon icon="mdi-printer" size="sm" />
+          <span class="ml-1">프린트</span>
         </small>
       </CCol>
 
@@ -277,14 +277,6 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.print {
-  cursor: pointer;
-}
-
-.print:hover {
-  color: darkslateblue;
-}
-
 .social i {
   cursor: pointer;
 }

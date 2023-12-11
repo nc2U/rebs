@@ -392,3 +392,14 @@ input[type='number'] {
 .pl-5 {
   padding-left: ($spacer * 3) !important;
 }
+
+.text-btn {
+  font-size: 0.9em;
+  color: #607d8b;
+  cursor: pointer;
+}
+
+.text-btn:hover {
+  color: #52647c;
+  text-decoration: underline;
+}
