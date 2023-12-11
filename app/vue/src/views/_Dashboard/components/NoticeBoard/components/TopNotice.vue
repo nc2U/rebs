@@ -18,6 +18,9 @@ defineProps({
         {{ cutString(post.title, 32) }}
       </router-link>
       <CBadge v-if="post.is_new" color="warning" size="sm" class="ml-2">new</CBadge>
+      <CBadge v-if="post.comments?.length" color="warning" size="sm" class="ml-1">
+        +{{ post.comments.length }}
+      </CBadge>
     </CTableDataCell>
     <CTableDataCell>{{ post.user }}</CTableDataCell>
     <CTableDataCell>{{ timeFormat(post.created ?? '') }}</CTableDataCell>

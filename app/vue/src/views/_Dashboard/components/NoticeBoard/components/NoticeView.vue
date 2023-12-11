@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, watch, onBeforeMount, onMounted, type PropType } from 'vue'
+import { computed, onBeforeMount, onMounted, type PropType, ref, watch } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
 import { cutString, timeFormat } from '@/utils/baseMixins'
@@ -54,23 +54,26 @@ watch(
 )
 
 onBeforeRouteUpdate((to, from) => {
-  const fromPostId = from.params.postId ? Number(from.params.postId) : null
-  const toPostId = to.params.postId ? Number(to.params.postId) : null
+  const toRoute = (to.name ?? '') as string
+  if (toRoute.includes('보기')) {
+    const fromPostId = from.params.postId ? Number(from.params.postId) : null
+    const toPostId = to.params.postId ? Number(to.params.postId) : null
 
-  const last = getPostNav.value.length - 1
-  const getLast = getPostNav.value[last]
-  if (toPostId && getLast.pk === fromPostId && getLast.prev_pk === toPostId)
-    // 다음 페이지 목록으로
-    emit('posts-renewal', props.currPage + 1)
+    const last = getPostNav.value.length - 1
+    const getLast = getPostNav.value[last]
+    if (toPostId && getLast.pk === fromPostId && getLast.prev_pk === toPostId)
+      // 다음 페이지 목록으로
+      emit('posts-renewal', props.currPage + 1)
 
-  const getFirst = getPostNav.value[0]
-  if (toPostId && getFirst.pk === fromPostId && getFirst.next_pk === toPostId)
-    // 이전 페이지 목록으로
-    emit('posts-renewal', props.currPage - 1)
+    const getFirst = getPostNav.value[0]
+    if (toPostId && getFirst.pk === fromPostId && getFirst.next_pk === toPostId)
+      // 이전 페이지 목록으로
+      emit('posts-renewal', props.currPage - 1)
 
-  if (toPostId) {
-    prev.value = getPrev(toPostId)
-    next.value = getNext(toPostId)
+    if (toPostId) {
+      prev.value = getPrev(toPostId)
+      next.value = getNext(toPostId)
+    }
   }
 })
 
