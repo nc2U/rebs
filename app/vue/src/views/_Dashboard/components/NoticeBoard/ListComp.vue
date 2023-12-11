@@ -30,6 +30,13 @@ defineProps({
           <tbody>
             <tr v-for="item in noticeList" :key="item.pk ?? 0">
               <td class="pl-5">
+                <v-badge
+                  v-if="item.is_notice"
+                  color="primary"
+                  content="!"
+                  offset-x="20"
+                  offset-y="-7"
+                />
                 <router-link :to="{ name: `${mainViewName} - 보기`, params: { postId: item.pk } }">
                   {{ cutString(item.title, 32) }}
                 </router-link>
