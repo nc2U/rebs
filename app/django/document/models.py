@@ -434,9 +434,6 @@ class Comment(models.Model):
     def __str__(self):
         return f"{self.post} -> {self.content}"
 
-    class Meta:
-        ordering = ['-created']
-
 
 class Tag(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE, verbose_name='게시판')

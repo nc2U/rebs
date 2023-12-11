@@ -30,9 +30,20 @@ defineProps({
           <tbody>
             <tr v-for="item in noticeList" :key="item.pk ?? 0">
               <td class="pl-5">
+                <v-badge
+                  v-if="item.is_notice"
+                  color="primary"
+                  content="!"
+                  offset-x="20"
+                  offset-y="-7"
+                />
                 <router-link :to="{ name: `${mainViewName} - 보기`, params: { postId: item.pk } }">
                   {{ cutString(item.title, 32) }}
                 </router-link>
+                <CBadge v-if="item.is_new" color="warning" size="sm" class="ml-2">new</CBadge>
+                <CBadge v-if="item.comments?.length" color="warning" size="sm" class="ml-1">
+                  +{{ item.comments.length }}
+                </CBadge>
               </td>
               <td class="text-right pr-5">{{ timeFormat(item.created ?? '').substring(0, 10) }}</td>
             </tr>
@@ -44,6 +55,10 @@ defineProps({
                   >
                     {{ cutString(item.title, 32) }}
                   </router-link>
+                  <CBadge v-if="item.is_new" color="warning" size="sm" class="ml-2">new</CBadge>
+                  <CBadge v-if="item.comments?.length" color="warning" size="sm" class="ml-1">
+                    +{{ item.comments.length }}
+                  </CBadge>
                 </td>
                 <td class="text-right pr-5">
                   {{ timeFormat(item.created ?? '').substring(0, 10) }}

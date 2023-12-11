@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, watch, onBeforeMount, onMounted, type PropType } from 'vue'
+import { computed, onBeforeMount, onMounted, type PropType, ref, watch } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
 import { cutString, timeFormat } from '@/utils/baseMixins'
@@ -55,23 +55,26 @@ watch(
 )
 
 onBeforeRouteUpdate((to, from) => {
-  const fromPostId = from.params.postId ? Number(from.params.postId) : null
-  const toPostId = to.params.postId ? Number(to.params.postId) : null
+  const toRoute = (to.name ?? '') as string
+  if (toRoute.includes('보기')) {
+    const fromPostId = from.params.postId ? Number(from.params.postId) : null
+    const toPostId = to.params.postId ? Number(to.params.postId) : null
 
-  const last = getPostNav.value.length - 1
-  const getLast = getPostNav.value[last]
-  if (toPostId && getLast.pk === fromPostId && getLast.prev_pk === toPostId)
-    // 다음 페이지 목록으로
-    emit('posts-renewal', props.currPage + 1)
+    const last = getPostNav.value.length - 1
+    const getLast = getPostNav.value[last]
+    if (toPostId && getLast.pk === fromPostId && getLast.prev_pk === toPostId)
+      // 다음 페이지 목록으로
+      emit('posts-renewal', props.currPage + 1)
 
-  const getFirst = getPostNav.value[0]
-  if (toPostId && getFirst.pk === fromPostId && getFirst.next_pk === toPostId)
-    // 이전 페이지 목록으로
-    emit('posts-renewal', props.currPage - 1)
+    const getFirst = getPostNav.value[0]
+    if (toPostId && getFirst.pk === fromPostId && getFirst.next_pk === toPostId)
+      // 이전 페이지 목록으로
+      emit('posts-renewal', props.currPage - 1)
 
-  if (toPostId) {
-    prev.value = getPrev(toPostId)
-    next.value = getNext(toPostId)
+    if (toPostId) {
+      prev.value = getPrev(toPostId)
+      next.value = getNext(toPostId)
+    }
   }
 })
 
@@ -105,25 +108,25 @@ onMounted(() => {
     <CRow class="text-blue-grey">
       <CCol>
         <small class="mr-3">작성자 : {{ post.user }}</small>
-        <small class="mr-3">
-          <v-icon icon="mdi-comment-text-multiple" size="small" />
-          <span class="ml-2">{{ post.comments?.length || 0 }}</span>
+        <small class="mr-2">
+          <v-icon icon="mdi-comment-text-multiple" size="sm" />
+          <span class="ml-1">{{ post.comments?.length || 0 }}</span>
         </small>
-        <small class="mr-3">
-          <v-icon icon="mdi-eye" size="small" />
-          <span class="ml-2">{{ post.hit }}</span>
+        <small class="mr-2">
+          <v-icon icon="mdi-eye" size="sm" />
+          <span class="ml-1">{{ post.hit }}</span>
         </small>
-        <small class="mr-3">
-          <v-icon icon="mdi-thumb-up" size="small" />
-          <span class="ml-2">{{ 0 }}</span>
+        <small class="mr-2">
+          <v-icon icon="mdi-thumb-up" size="sm" />
+          <span class="ml-1">{{ 0 }}</span>
         </small>
-        <small class="mr-3">
-          <v-icon icon="mdi-thumb-down" size="small" />
-          <span class="ml-2">{{ 0 }}</span>
+        <small class="mr-2">
+          <v-icon icon="mdi-thumb-down" size="sm" />
+          <span class="ml-1">{{ 0 }}</span>
         </small>
-        <small class="mr-3 print" @click="toPrint">
-          <v-icon icon="mdi-printer" size="small" />
-          <span class="ml-2">프린트</span>
+        <small class="mr-2 text-btn" @click="toPrint">
+          <v-icon icon="mdi-printer" size="sm" />
+          <span class="ml-1">프린트</span>
         </small>
       </CCol>
 
@@ -292,14 +295,6 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.print {
-  cursor: pointer;
-}
-
-.print:hover {
-  color: darkslateblue;
-}
-
 .social i {
   cursor: pointer;
 }
