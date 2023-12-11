@@ -30,7 +30,18 @@ const falseRemove = () =>
     if (form.secret) form.password = ''
   })
 
-const onSubmit = () => emit('on-submit', form)
+const onSubmit = () => {
+  emit('on-submit', form)
+  formReset()
+}
+
+const formReset = () => {
+  form.pk = undefined
+  form.content = ''
+  form.parent = null
+  form.secret = false
+  form.password = ''
+}
 
 onMounted(() => {
   if (props.comment) {

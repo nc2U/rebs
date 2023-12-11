@@ -1,5 +1,6 @@
 <script lang="ts" setup="">
 import { inject, type PropType } from 'vue'
+import { timeFormat } from '@/utils/baseMixins'
 import type { User } from '@/store/types/accounts'
 import type { Comment as Cm } from '@/store/types/document'
 
@@ -11,7 +12,7 @@ const userInfo = inject<User>('userInfo')
 <template>
   <div class="comment-item border-bottom-1">
     <strong>{{ comment?.user?.username }}</strong>
-    <small class="ml-2">2023-12-09 09:00:00</small>
+    <small class="ml-2">{{ timeFormat(comment?.updated ?? '') }}</small>
     <small class="ml-2">추천 0 비추 0 신고</small>
     <small class="ml-2">답변</small>
     <template v-if="userInfo?.pk === props.comment?.user?.pk">

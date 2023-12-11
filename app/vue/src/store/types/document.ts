@@ -161,4 +161,5 @@ export interface Comment {
   secret: boolean
   password: string
   user?: { pk: number; username: string }
+  updated?: string
 }
