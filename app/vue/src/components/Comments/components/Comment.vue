@@ -1,6 +1,6 @@
 <script lang="ts" setup="">
 import { inject, type PropType } from 'vue'
-import { timeFormat } from '@/utils/baseMixins'
+import { timeFormat, elapsedTime } from '@/utils/baseMixins'
 import type { User } from '@/store/types/accounts'
 import type { Comment as Cm } from '@/store/types/document'
 
@@ -23,7 +23,7 @@ const toDelete = () => alert('delete')
 <template>
   <div class="comment-item text-black-50">
     <strong>{{ comment?.user?.username }}</strong>
-    <small class="ml-2">{{ timeFormat(comment?.updated ?? '') }}</small>
+    <small class="ml-2">{{ elapsedTime(comment?.updated ?? '') }}</small>
     <small class="ml-2 text-btn" @click="toLike">
       <v-icon icon="mdi mdi-thumb-up" size="xs" />
       추천 {{ comment?.like ?? 0 }}
