@@ -346,7 +346,7 @@ export const useDocument = defineStore('document', () => {
   const patchComment = (payload: Cm) =>
     api
       .patch(`/comment/${payload.pk}/`, payload)
-      .then(res => fetchComment(res.data.pk).then(() => message()))
+      .then(res => fetchPost(res.data.post).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
   const deleteComment = (pk: number) =>

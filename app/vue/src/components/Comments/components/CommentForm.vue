@@ -1,10 +1,11 @@
 <script lang="ts" setup="">
-import { nextTick, onMounted, type PropType, reactive, ref } from 'vue'
+import { nextTick, onMounted, onUpdated, type PropType, reactive, ref } from 'vue'
 import type { Comment as Cm } from '@/store/types/document'
 
 const props = defineProps({
   post: { type: Number, required: true },
   comment: { type: Object as PropType<Cm>, default: null },
+  parent: { type: Number, default: null },
 })
 const emit = defineEmits(['on-submit'])
 
@@ -13,7 +14,7 @@ const form = reactive<Cm>({
   pk: undefined,
   post: props.post,
   content: '',
-  parent: null as number | null,
+  parent: props.parent,
   secret: false,
   password: '',
 })
@@ -43,7 +44,7 @@ const formReset = () => {
   form.password = ''
 }
 
-onMounted(() => {
+const formSet = () => {
   if (props.comment) {
     form.pk = props.comment.pk
     form.content = props.comment.content
@@ -51,7 +52,10 @@ onMounted(() => {
     form.secret = props.comment.secret
     form.password = props.comment.password
   }
-})
+}
+
+onMounted(() => formSet())
+onUpdated(() => formSet())
 </script>
 
 <template>
@@ -99,7 +103,13 @@ onMounted(() => {
         />
 
         <v-col class="text-right pt-3">
-          <v-btn type="submit" color="primary" tonal size="large" :disabled="!form.content">
+          <v-btn
+            type="submit"
+            :color="!comment ? 'primary' : 'success'"
+            tonal
+            size="large"
+            :disabled="!form.content"
+          >
             댓글등록
           </v-btn>
         </v-col>
