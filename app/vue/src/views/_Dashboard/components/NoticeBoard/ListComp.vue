@@ -40,6 +40,10 @@ defineProps({
                 <router-link :to="{ name: `${mainViewName} - 보기`, params: { postId: item.pk } }">
                   {{ cutString(item.title, 32) }}
                 </router-link>
+                <CBadge v-if="item.is_new" color="warning" size="sm" class="ml-2">new</CBadge>
+                <CBadge v-if="item.comments?.length" color="warning" size="sm" class="ml-1">
+                  +{{ item.comments.length }}
+                </CBadge>
               </td>
               <td class="text-right pr-5">{{ timeFormat(item.created ?? '').substring(0, 10) }}</td>
             </tr>
@@ -51,6 +55,10 @@ defineProps({
                   >
                     {{ cutString(item.title, 32) }}
                   </router-link>
+                  <CBadge v-if="item.is_new" color="warning" size="sm" class="ml-2">new</CBadge>
+                  <CBadge v-if="item.comments?.length" color="warning" size="sm" class="ml-1">
+                    +{{ item.comments.length }}
+                  </CBadge>
                 </td>
                 <td class="text-right pr-5">
                   {{ timeFormat(item.created ?? '').substring(0, 10) }}
