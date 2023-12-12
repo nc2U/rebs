@@ -165,13 +165,13 @@ class RecursiveCommentSerializer(serializers.Serializer):
 
 
 class CommentInPostSerializer(serializers.ModelSerializer):
-    replies = serializers.SerializerMethodField()
+    replies = serializers.SerializerMethodField(read_only=True)
     user = UserInCommentSerializer(read_only=True)
 
     class Meta:
         model = Comment
-        fields = ('pk', 'post', 'content', 'replies', 'like', 'dislike', 'blame',
-                  'ip', 'device', 'secret', 'password', 'user', 'updated')
+        fields = ('pk', 'post', 'content', 'replies', 'like', 'dislike',
+                  'blame', 'ip', 'device', 'secret', 'user', 'updated')
         read_only_fields = ('ip',)
 
     def get_replies(self, instance):

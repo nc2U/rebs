@@ -15,7 +15,6 @@ const form = reactive<Cm>({
   content: '',
   parent: props.parent,
   secret: false,
-  password: '',
 })
 
 const onSubmit = () => {
@@ -28,7 +27,6 @@ const formReset = () => {
   form.content = ''
   form.parent = null
   form.secret = false
-  form.password = ''
 }
 
 const formSet = () => {
@@ -37,7 +35,6 @@ const formSet = () => {
     form.content = props.comment.content
     form.parent = props.comment.parent
     form.secret = props.comment.secret
-    form.password = props.comment.password
   }
 }
 
