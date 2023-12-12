@@ -333,7 +333,7 @@ export const useDocument = defineStore('document', () => {
 
   const fetchCommentList = (post: number) =>
     api
-      .get(`/comment/?post=${post}`)
+      .get(`/comment/?post=${post}&is_comment=true`)
       .then(res => {
         commentList.value = res.data.results
         commentCount.value = res.data.count
