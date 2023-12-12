@@ -48,7 +48,7 @@ const onSubmit = (payload: Cm) => emit('on-submit', payload)
 </script>
 
 <template>
-  <div>
+  <div class="text-50">
     <strong>{{ comment?.user?.username }}</strong>
     <small class="ml-2">{{ elapsedTime(comment?.updated ?? '') }}</small>
     <small class="ml-2 text-btn" @click="toLike">
