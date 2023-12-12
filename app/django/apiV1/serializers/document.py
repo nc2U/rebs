@@ -158,12 +158,6 @@ class UserInCommentSerializer(serializers.ModelSerializer):
         fields = ('pk', 'username')
 
 
-class RecursiveCommentSerializer(serializers.Serializer):
-    def to_representation(self, instance):
-        serializer = self.parent.parent.__class__(instance, context=self.context)
-        return serializer.data
-
-
 class PostSerializer(serializers.ModelSerializer):
     proj_name = serializers.SlugField(source='project', read_only=True)
     cate_name = serializers.SlugField(source='category', read_only=True)
@@ -179,7 +173,7 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ('pk', 'company', 'project', 'proj_name', 'board', 'is_notice', 'category',
                   'cate_name', 'lawsuit', 'lawsuit_name', 'title', 'execution_date', 'is_hide_comment',
                   'content', 'hit', 'blame', 'ip', 'device', 'secret', 'password', 'links', 'files',
-                  'user', 'soft_delete', 'created', 'updated', 'is_new', 'prev_pk', 'next_pk')
+                  'comments', 'user', 'soft_delete', 'created', 'updated', 'is_new', 'prev_pk', 'next_pk')
         read_only_fields = ('ip',)
 
     def get_collection(self):
