@@ -328,9 +328,9 @@ export const useDocument = defineStore('document', () => {
       .then(res => (comment.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const fetchCommentList = () =>
+  const fetchCommentList = (post: number) =>
     api
-      .get(`/comment/`)
+      .get(`/comment/?post=${post}`)
       .then(res => {
         commentList.value = res.data.results
         commentCount.value = res.data.count
@@ -340,19 +340,19 @@ export const useDocument = defineStore('document', () => {
   const createComment = (payload: Cm) =>
     api
       .post(`/comment/`, payload)
-      .then(res => fetchPost(res.data.post).then(() => message()))
+      .then(res => fetchCommentList(res.data.post).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
   const patchComment = (payload: Cm) =>
     api
       .patch(`/comment/${payload.pk}/`, payload)
-      .then(res => fetchPost(res.data.post).then(() => message()))
+      .then(res => fetchCommentList(res.data.post).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
-  const deleteComment = (pk: number) =>
+  const deleteComment = (payload: { pk: number; post: number }) =>
     api
-      .delete(`/comment/${pk}/`)
-      .then(() => fetchCommentList().then(() => message()))
+      .delete(`/comment/${payload.pk}/`)
+      .then(() => fetchCommentList(payload.post).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
   const tag = ref(null)

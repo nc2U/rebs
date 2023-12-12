@@ -94,7 +94,7 @@ export type Post = {
   password: string
   links?: Link[]
   files?: AFile[]
-  comments?: Comment[]
+  comments?: number[]
   user?: number | null
   soft_delete?: string | null
   created?: string
