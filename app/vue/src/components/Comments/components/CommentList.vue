@@ -1,5 +1,5 @@
 <script lang="ts" setup="">
-import { computed, type PropType } from 'vue'
+import { ref, computed, type PropType } from 'vue'
 import { useDocument } from '@/store/pinia/document'
 import type { Comment as Cm } from '@/store/types/document'
 import Comment from './Comment.vue'
@@ -22,7 +22,9 @@ const onSubmit = (payload: Cm) => {
 }
 
 const pageSelect = (page: number) => emit('page-select', page)
-const commentPages = (itemsPerPage: number) => Math.ceil(commentCount.value / itemsPerPage)
+
+const itemsPerPage = ref(10)
+const commentPages = (pages: number) => Math.ceil(commentCount.value / pages)
 </script>
 
 <template>
@@ -73,12 +75,15 @@ const commentPages = (itemsPerPage: number) => Math.ceil(commentCount.value / it
       </ul>
     </ul>
 
-    <Pagination
-      :active-page="1"
-      :limit="8"
-      :pages="commentPages(10)"
-      class="mt-3"
-      @active-page-change="pageSelect"
-    />
+    <div v-if="commentCount > itemsPerPage">
+      <Pagination
+        :active-page="1"
+        :limit="8"
+        :pages="commentPages(itemsPerPage)"
+        class="mt-3"
+        align="end"
+        @active-page-change="pageSelect"
+      />
+    </div>
   </div>
 </template>

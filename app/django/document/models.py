@@ -434,7 +434,7 @@ class Comment(models.Model):
         return f"{self.post} -> {self.content}"
 
     class Meta:
-        ordering = ['created']
+        ordering = ['-created']
 
 
 class Tag(models.Model):
