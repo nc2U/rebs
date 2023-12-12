@@ -122,6 +122,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.filter(parent=None)
     serializer_class = CommentSerializer
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
+    filterset_fields = ('user', 'post')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
