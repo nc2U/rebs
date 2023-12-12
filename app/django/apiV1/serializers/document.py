@@ -174,7 +174,7 @@ class PostSerializer(serializers.ModelSerializer):
                   'cate_name', 'lawsuit', 'lawsuit_name', 'title', 'execution_date', 'is_hide_comment',
                   'content', 'hit', 'blame', 'ip', 'device', 'secret', 'password', 'links', 'files',
                   'comments', 'user', 'soft_delete', 'created', 'updated', 'is_new', 'prev_pk', 'next_pk')
-        read_only_fields = ('ip',)
+        read_only_fields = ('ip', 'comments')
 
     def get_collection(self):
         queryset = Post.objects.all()
