@@ -153,6 +153,7 @@ export interface Comment {
   post: number
   content: string
   parent: number | null
+  replies: Comment[]
   like?: number
   dislike?: number
   blame?: number
