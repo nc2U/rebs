@@ -158,14 +158,26 @@ class UserInCommentSerializer(serializers.ModelSerializer):
         fields = ('pk', 'username')
 
 
+class RecursiveCommentSerializer(serializers.Serializer):
+    def to_representation(self, instance):
+        serializer = self.parent.parent.__class__(instance, context=self.context)
+        return serializer.data
+
+
 class CommentInPostSerializer(serializers.ModelSerializer):
+    replies = serializers.SerializerMethodField()
     user = UserInCommentSerializer(read_only=True)
 
     class Meta:
         model = Comment
-        fields = ('pk', 'post', 'content', 'parent', 'like', 'dislike', 'blame',
+        fields = ('pk', 'post', 'content', 'replies', 'like', 'dislike', 'blame',
                   'ip', 'device', 'secret', 'password', 'user', 'updated')
         read_only_fields = ('ip',)
+
+    def get_replies(self, instance):
+        serializer = self.__class__(instance.replies, many=True)
+        serializer.bind('', self)
+        return serializer.data
 
 
 class PostSerializer(serializers.ModelSerializer):

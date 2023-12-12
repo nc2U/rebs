@@ -419,7 +419,7 @@ class File(models.Model):
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name='게시물', related_name='comments')
     content = models.TextField('내용')
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')
     like = models.PositiveIntegerField('추천', default=0)
     dislike = models.PositiveIntegerField('비추천', default=0)
     blame = models.PositiveSmallIntegerField('신고', default=0)
