@@ -75,7 +75,12 @@ const onSubmit = (payload: Cm) => emit('on-submit', payload)
       <small class="ml-1 text-btn" @click="toDelete">삭제</small>
     </template>
 
-    <p v-if="!(formShow && isEditing)">{{ comment?.content }}</p>
+    <p v-if="!(formShow && isEditing)">
+      <CBadge v-if="comment.secret" color="warning" class="mr-1">비밀글입니다</CBadge>
+      <span v-show="!comment.secret || userInfo?.is_superuser || userInfo?.pk === comment.user?.pk">
+        {{ comment?.content }}
+      </span>
+    </p>
     <p v-if="formShow && isEditing">
       <!-- 수정시 -->
       <CommentForm :post="comment?.post as number" :comment="comment" @on-submit="onSubmit" />
