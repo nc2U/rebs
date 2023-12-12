@@ -1,5 +1,5 @@
 <script lang="ts" setup="">
-import { nextTick, onMounted, onUpdated, type PropType, reactive, ref } from 'vue'
+import { nextTick, onMounted, onUpdated, type PropType, reactive } from 'vue'
 import type { Comment as Cm } from '@/store/types/document'
 
 const props = defineProps({
@@ -9,7 +9,7 @@ const props = defineProps({
 })
 const emit = defineEmits(['on-submit'])
 
-const show1 = ref(false)
+// const show1 = ref(false)
 const form = reactive<Cm>({
   pk: undefined,
   post: props.post,
@@ -19,12 +19,12 @@ const form = reactive<Cm>({
   password: '',
 })
 
-const passwordRules = ref([
-  (value: string) => {
-    if (value?.length >= 2) return true
-    return 'Password must be at least 2 characters.'
-  },
-])
+// const passwordRules = ref([
+//   (value: string) => {
+//     if (value?.length >= 2) return true
+//     return 'Password must be at least 2 characters.'
+//   },
+// ])
 
 const falseRemove = () =>
   nextTick(() => {
@@ -75,24 +75,24 @@ onUpdated(() => formSet())
         required
       />
       <v-row>
-        <v-col class="d-flex" md="3">
-          <v-text-field
-            label="password"
-            v-model="form.password"
-            :rules="passwordRules"
-            :type="show1 ? 'text' : 'password'"
-            auto-grow
-            variant="outlined"
-            color="grey-lighten-1"
-            base-color="grey-lighten-1"
-            bg-color="white"
-            shaped
-            hide-details
-            :disabled="!form.secret"
-            :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-            @click:append="show1 = !show1"
-          />
-        </v-col>
+        <!--        <v-col class="d-flex" md="3">-->
+        <!--          <v-text-field-->
+        <!--            label="password"-->
+        <!--            v-model="form.password"-->
+        <!--            :rules="passwordRules"-->
+        <!--            :type="show1 ? 'text' : 'password'"-->
+        <!--            auto-grow-->
+        <!--            variant="outlined"-->
+        <!--            color="grey-lighten-1"-->
+        <!--            base-color="grey-lighten-1"-->
+        <!--            bg-color="white"-->
+        <!--            shaped-->
+        <!--            hide-details-->
+        <!--            :disabled="!form.secret"-->
+        <!--            :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"-->
+        <!--            @click:append="show1 = !show1"-->
+        <!--          />-->
+        <!--        </v-col>-->
         <v-checkbox
           label="Secret"
           v-model="form.secret"
