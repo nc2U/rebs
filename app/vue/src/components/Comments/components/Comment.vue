@@ -6,12 +6,13 @@ import type { Comment as Cm } from '@/store/types/document'
 import CommentForm from './CommentForm.vue'
 
 const props = defineProps({
-  formShow: { type: Boolean, default: true },
+  formShow: { type: Boolean, default: true }, // 현재 댓글과 편집 폼 댓글이 동일한지 여부
   comment: { type: Object as PropType<Cm>, default: null },
 })
 
 watch(props, val => {
   if (!val.formShow) {
+    // 현재 편집폼이 아니면 초기화
     isReplying.value = false
     isEditing.value = false
   }
@@ -73,8 +74,8 @@ const onSubmit = (payload: Cm) => emit('on-submit', payload)
       <small class="ml-1 text-btn" @click="toDelete">삭제</small>
     </template>
 
-    <p v-if="!formShow || (!isReplying && !isEditing)">{{ comment?.content }}</p>
-    <p v-else-if="isReplying">
+    <p>{{ comment?.content }}</p>
+    <p v-if="formShow && isReplying">
       <!-- 답변시 -->
       <CommentForm
         :post="comment?.post as number"
@@ -82,7 +83,7 @@ const onSubmit = (payload: Cm) => emit('on-submit', payload)
         @on-submit="onSubmit"
       />
     </p>
-    <p v-else>
+    <p v-if="formShow && isEditing">
       <!-- 수정시 -->
       <CommentForm :post="comment?.post as number" :comment="comment" @on-submit="onSubmit" />
     </p>
