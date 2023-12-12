@@ -74,7 +74,11 @@ const onSubmit = (payload: Cm) => emit('on-submit', payload)
       <small class="ml-1 text-btn" @click="toDelete">삭제</small>
     </template>
 
-    <p>{{ comment?.content }}</p>
+    <p v-if="!(formShow && isEditing)">{{ comment?.content }}</p>
+    <p v-if="formShow && isEditing">
+      <!-- 수정시 -->
+      <CommentForm :post="comment?.post as number" :comment="comment" @on-submit="onSubmit" />
+    </p>
     <p v-if="formShow && isReplying">
       <!-- 답변시 -->
       <CommentForm
@@ -82,10 +86,6 @@ const onSubmit = (payload: Cm) => emit('on-submit', payload)
         :parent="comment?.pk as number"
         @on-submit="onSubmit"
       />
-    </p>
-    <p v-if="formShow && isEditing">
-      <!-- 수정시 -->
-      <CommentForm :post="comment?.post as number" :comment="comment" @on-submit="onSubmit" />
     </p>
   </div>
 </template>
