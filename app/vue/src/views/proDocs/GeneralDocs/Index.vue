@@ -131,8 +131,8 @@ const onSubmit = async (payload: Post & Attatches) => {
 const postHit = async (pk: number) => {
   if (!heatedPage.value.includes(pk)) {
     heatedPage.value.push(pk)
-    const hitPost = await fetchPost(pk)
-    const hit = hitPost.hit + 1
+    await fetchPost(pk)
+    const hit = (post.value?.hit ?? 0) + 1
     await patchPost({ pk, hit, filter: postFilter.value })
   }
 }

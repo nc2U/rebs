@@ -1,13 +1,18 @@
 <script lang="ts" setup="">
-import type { PropType } from 'vue'
+import { computed, type PropType } from 'vue'
+import { useDocument } from '@/store/pinia/document'
 import type { Comment as Cm } from '@/store/types/document'
 import Comment from './Comment.vue'
+import Pagination from '@/components/Pagination'
 
 defineProps({
   actForm: { type: Number, default: undefined },
   comments: { type: Array as PropType<Cm[]>, default: () => [] },
 })
-const emit = defineEmits(['vision-toggle', 'on-submit', 'form-reset'])
+const emit = defineEmits(['vision-toggle', 'on-submit', 'form-reset', 'page-select'])
+
+const docStore = useDocument()
+const commentCount = computed(() => docStore.commentCount)
 
 const visionToggle = (payload: { num: number; sts: boolean }) => emit('vision-toggle', payload)
 
@@ -15,11 +20,14 @@ const onSubmit = (payload: Cm) => {
   emit('on-submit', payload)
   emit('form-reset')
 }
+
+const pageSelect = (page: number) => emit('page-select', page)
+const commentPages = (itemsPerPage: number) => Math.ceil(commentCount.value / itemsPerPage)
 </script>
 
 <template>
-  <div v-if="comments.length">
-    <h5 class="my-4 ml-4">{{ comments.length }} Comments</h5>
+  <div v-if="commentCount">
+    <h5 class="my-4 ml-4">{{ commentCount }} Comments</h5>
     <ul v-for="cmt1 in comments" :key="cmt1.pk" class="comments ml-5 mb-4">
       <Comment
         :form-show="actForm === cmt1.pk"
@@ -64,5 +72,13 @@ const onSubmit = (payload: Cm) => {
         </ul>
       </ul>
     </ul>
+
+    <Pagination
+      :active-page="1"
+      :limit="8"
+      :pages="commentPages(10)"
+      class="mt-3"
+      @active-page-change="pageSelect"
+    />
   </div>
 </template>
