@@ -8,6 +8,7 @@ import CommentForm from './CommentForm.vue'
 const props = defineProps({
   formShow: { type: Boolean, default: true }, // 현재 댓글과 편집 폼 댓글이 동일한지 여부
   comment: { type: Object as PropType<Cm>, default: null },
+  lastDepth: { type: Boolean, default: false },
 })
 
 watch(props, val => {
@@ -48,7 +49,7 @@ const onSubmit = (payload: Cm) => emit('on-submit', payload)
 </script>
 
 <template>
-  <div class="text-50">
+  <li class="text-50">
     <strong>{{ comment?.user?.username }}</strong>
     <small class="ml-2">{{ elapsedTime(comment?.updated ?? '') }}</small>
     <small class="ml-2 text-btn" @click="toLike">
@@ -63,7 +64,7 @@ const onSubmit = (payload: Cm) => emit('on-submit', payload)
       <v-icon icon="mdi mdi-bell" size="xs" />
       <v-tooltip activator="parent" location="end">신고하기</v-tooltip>
     </small>
-    <small class="ml-2 text-btn" @click="toReply">
+    <small v-if="!lastDepth" class="ml-2 text-btn" @click="toReply">
       {{ !isReplying ? '답변' : '취소' }}
     </small>
     <template v-if="userInfo?.pk === props.comment?.user?.pk">
@@ -87,5 +88,11 @@ const onSubmit = (payload: Cm) => emit('on-submit', payload)
         @on-submit="onSubmit"
       />
     </p>
-  </div>
+  </li>
 </template>
+
+<style lang="scss" scoped>
+li {
+  list-style-type: none;
+}
+</style>
