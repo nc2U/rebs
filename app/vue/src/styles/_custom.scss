@@ -404,6 +404,17 @@ input[type='number'] {
   text-decoration: underline;
 }
 
+.icon-btn {
+  font-size: 1em;
+  color: #607d8b;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  font-size: 1.1em;
+  color: #52647c;
+}
+
 .text-50 {
   color: #7F7F8A;
 }
