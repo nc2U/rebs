@@ -352,22 +352,9 @@ class Post(models.Model):
         verbose_name_plural = '05. 게시물 관리'
 
 
-class Like(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes')
-    liked = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f'{self.post.title} liked by {self.user.name}'
-
-
-class DisLike(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='dislikes')
-    disliked = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f'{self.post.title} disliked by {self.user.name}'
+class PostLike(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='post_users')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_likes')
 
 
 def get_file_name(filename):
@@ -420,8 +407,6 @@ class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name='게시물', related_name='comments')
     content = models.TextField('내용')
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')
-    like = models.PositiveIntegerField('추천', default=0)
-    dislike = models.PositiveIntegerField('비추천', default=0)
     blame = models.PositiveSmallIntegerField('신고', default=0)
     ip = models.GenericIPAddressField('아이피', null=True, blank=True)
     device = models.CharField('등록기기', max_length=10, blank=True)
@@ -435,6 +420,11 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['-created']
+
+
+class CommentLike(models.Model):
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='comment_likes')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comment_users')
 
 
 class Tag(models.Model):

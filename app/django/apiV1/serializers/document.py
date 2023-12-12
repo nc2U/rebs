@@ -8,8 +8,8 @@ from django.db.models import Q
 from rest_framework import serializers
 
 from accounts.models import User
-from document.models import (Group, Board, Category, LawsuitCase, Post,
-                             Like, DisLike, Image, Link, File, Comment, Tag)
+from document.models import (Group, Board, Category, LawsuitCase, Post, PostLike,
+                             Image, Link, File, Comment, CommentLike, Tag)
 
 
 # Document --------------------------------------------------------------------------
@@ -323,16 +323,10 @@ class PostSerializer(serializers.ModelSerializer):
         return instance
 
 
-class LikeSerializer(serializers.ModelSerializer):
+class PostLikeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Like
-        fields = ('pk', 'user', 'post')
-
-
-class DisLikeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DisLike
-        fields = ('pk', 'user', 'post')
+        model = PostLike
+        fields = ('pk', 'post', 'user')
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -359,14 +353,20 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('pk', 'post', 'content', 'parent', 'replies', 'like', 'dislike',
-                  'blame', 'ip', 'device', 'secret', 'user', 'updated')
+        fields = ('pk', 'post', 'content', 'parent', 'replies', 'blame',
+                  'ip', 'device', 'secret', 'user', 'updated')
         read_only_fields = ('ip',)
 
     def get_replies(self, instance):
         serializer = self.__class__(instance.replies, many=True)
         serializer.bind('', self)
         return serializer.data
+
+
+class CommentLikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CommentLike
+        fields = ('pk', 'comment', 'user')
 
 
 class TagSerializer(serializers.ModelSerializer):

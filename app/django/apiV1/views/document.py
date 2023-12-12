@@ -86,16 +86,9 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-# class LikeViewSet(viewsets.ModelViewSet):
-#     queryset = Like.objects.all()
-#     serializer_class = LikeSerializer
-#     permission_classes = (permissions.IsAuthenticated,)
-#     filterset_fields = ('user', 'post')
-#
-#
-# class DisLikeViewSet(viewsets.ModelViewSet):
-#     queryset = DisLike.objects.all()
-#     serializer_class = DisLikeSerializer
+# class PostLikeViewSet(viewsets.ModelViewSet):
+#     queryset = PostLike.objects.all()
+#     serializer_class = PostLikeSerializer
 #     permission_classes = (permissions.IsAuthenticated,)
 #     filterset_fields = ('user', 'post')
 
@@ -134,6 +127,13 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+# class CommentLikeViewSet(viewsets.ModelViewSet):
+#     queryset = CommentLike.objects.all()
+#     serializer_class = CommentLikeSerializer
+#     permission_classes = (permissions.IsAuthenticated,)
+#     filterset_fields = ('user', 'comment')
 
 
 class TagViewSet(viewsets.ModelViewSet):
