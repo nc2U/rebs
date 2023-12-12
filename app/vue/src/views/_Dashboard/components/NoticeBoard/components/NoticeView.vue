@@ -24,6 +24,7 @@ const next = ref<number | null>()
 const postId = computed(() => Number(route.params.postId))
 
 const docStore = useDocument()
+const commentList = computed(() => docStore.commentList)
 const getPostNav = computed(() => docStore.getPostNav)
 
 const getPrev = (pk: number) => getPostNav.value.filter(p => p.pk === pk).map(p => p.prev_pk)[0]
@@ -272,7 +273,7 @@ onMounted(() => {
 
     <hr />
 
-    <Comments :post="post.pk as number" :comments="post.comments" />
+    <Comments :post="post.pk as number" :comments="commentList" />
   </div>
 </template>
 

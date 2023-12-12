@@ -419,14 +419,13 @@ class File(models.Model):
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name='게시물', related_name='comments')
     content = models.TextField('내용')
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')
     like = models.PositiveIntegerField('추천', default=0)
     dislike = models.PositiveIntegerField('비추천', default=0)
     blame = models.PositiveSmallIntegerField('신고', default=0)
     ip = models.GenericIPAddressField('아이피', null=True, blank=True)
     device = models.CharField('등록기기', max_length=10, blank=True)
     secret = models.BooleanField('비밀글', default=False)
-    password = models.CharField('패스워드', max_length=255, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='등록자')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -435,7 +434,7 @@ class Comment(models.Model):
         return f"{self.post} -> {self.content}"
 
     class Meta:
-        ordering = ['created']
+        ordering = ['-created']
 
 
 class Tag(models.Model):

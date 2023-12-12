@@ -5,7 +5,7 @@ import type { Comment } from '@/store/types/document'
 import CommentList from './components/CommentList.vue'
 import CommentForm from './components/CommentForm.vue'
 
-defineProps({
+const props = defineProps({
   post: { type: Number, required: true },
   comments: { type: Array as PropType<Comment[]>, default: () => [] },
 })
@@ -31,6 +31,8 @@ const visionToggle = (payload: { num: number; sts: boolean }) => {
   formVision.value = payload.sts
   if (!payload.sts) actForm.value = payload.num
 }
+
+const pageSelect = (page: number) => docStore.fetchCommentList(props.post, page)
 </script>
 
 <template>
@@ -40,6 +42,7 @@ const visionToggle = (payload: { num: number; sts: boolean }) => {
     @vision-toggle="visionToggle"
     @on-submit="onSubmit"
     @form-reset="formReset"
+    @page-select="pageSelect"
   />
   <div v-show="formVision">
     <CommentForm :form-vision="formVision" :post="post" @on-submit="onSubmit" />

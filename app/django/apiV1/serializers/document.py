@@ -158,23 +158,12 @@ class UserInCommentSerializer(serializers.ModelSerializer):
         fields = ('pk', 'username')
 
 
-class CommentInPostSerializer(serializers.ModelSerializer):
-    user = UserInCommentSerializer(read_only=True)
-
-    class Meta:
-        model = Comment
-        fields = ('pk', 'post', 'content', 'parent', 'like', 'dislike', 'blame',
-                  'ip', 'device', 'secret', 'password', 'user', 'updated')
-        read_only_fields = ('ip',)
-
-
 class PostSerializer(serializers.ModelSerializer):
     proj_name = serializers.SlugField(source='project', read_only=True)
     cate_name = serializers.SlugField(source='category', read_only=True)
     lawsuit_name = serializers.SlugField(source='lawsuit', read_only=True)
     links = LinksInPostSerializer(many=True, read_only=True)
     files = FilesInPostSerializer(many=True, read_only=True)
-    comments = CommentInPostSerializer(many=True, read_only=True)
     user = serializers.SlugRelatedField(slug_field='username', read_only=True)
     prev_pk = serializers.SerializerMethodField()
     next_pk = serializers.SerializerMethodField()
@@ -185,7 +174,7 @@ class PostSerializer(serializers.ModelSerializer):
                   'cate_name', 'lawsuit', 'lawsuit_name', 'title', 'execution_date', 'is_hide_comment',
                   'content', 'hit', 'blame', 'ip', 'device', 'secret', 'password', 'links', 'files',
                   'comments', 'user', 'soft_delete', 'created', 'updated', 'is_new', 'prev_pk', 'next_pk')
-        read_only_fields = ('ip',)
+        read_only_fields = ('ip', 'comments')
 
     def get_collection(self):
         queryset = Post.objects.all()
@@ -362,6 +351,22 @@ class FileSerializer(serializers.ModelSerializer):
     class Meta:
         model = File
         fields = ('pk', 'post', 'file', 'hit')
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    replies = serializers.SerializerMethodField(read_only=True)
+    user = UserInCommentSerializer(read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = ('pk', 'post', 'content', 'parent', 'replies', 'like', 'dislike',
+                  'blame', 'ip', 'device', 'secret', 'user', 'updated')
+        read_only_fields = ('ip',)
+
+    def get_replies(self, instance):
+        serializer = self.__class__(instance.replies, many=True)
+        serializer.bind('', self)
+        return serializer.data
 
 
 class TagSerializer(serializers.ModelSerializer):

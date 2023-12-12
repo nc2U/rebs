@@ -118,10 +118,19 @@ class FileViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
 
 
+class CommentFilterSet(FilterSet):
+    is_comment = BooleanFilter(field_name='parent', lookup_expr='isnull', label='댓글')
+
+    class Meta:
+        model = Comment
+        fields = ('user', 'post', 'is_comment')
+
+
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
-    serializer_class = CommentInPostSerializer
+    serializer_class = CommentSerializer
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
+    filterset_class = CommentFilterSet
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

@@ -94,7 +94,7 @@ export type Post = {
   password: string
   links?: Link[]
   files?: AFile[]
-  comments?: Comment[]
+  comments?: number[]
   user?: number | null
   soft_delete?: string | null
   created?: string
@@ -153,13 +153,13 @@ export interface Comment {
   post: number
   content: string
   parent: number | null
+  replies?: Comment[]
   like?: number
   dislike?: number
   blame?: number
   ip?: string
   device?: string
   secret: boolean
-  password: string
   user?: { pk: number; username: string }
   updated?: string
 }
