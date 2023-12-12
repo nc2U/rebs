@@ -120,7 +120,7 @@ class FileViewSet(viewsets.ModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.filter(parent=None)
-    serializer_class = CommentInPostSerializer
+    serializer_class = CommentSerializer
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
 
     def perform_create(self, serializer):
