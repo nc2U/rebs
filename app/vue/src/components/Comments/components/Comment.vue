@@ -51,14 +51,13 @@ const onSubmit = (payload: Cm) => emit('on-submit', payload)
 <template>
   <li class="text-50">
     <strong>{{ comment?.user?.username }}</strong>
-    <small class="ml-2">{{ elapsedTime(comment?.updated ?? '') }}</small>
-    <small class="ml-2 text-btn" @click="toLike">
-      <v-icon icon="mdi mdi-thumb-up" size="xs" />
-      추천 {{ comment?.like ?? 0 }}
+    <small class="ml-2">
+      <v-icon icon="mdi-clock-time-four-outline" size="sm" />
+      {{ elapsedTime(comment?.updated ?? '') }}
     </small>
-    <small class="ml-1 text-btn" @click="toDisLike">
-      <v-icon icon="mdi mdi-thumb-down" size="xs" />
-      비추 {{ comment?.dislike ?? 0 }}
+    <small class="ml-2" @click="toLike">
+      <v-icon :icon="`mdi-heart-outline`" size="sm" class="mr-1 icon-btn" />
+      좋아요 {{ comment?.like ?? 0 }}
     </small>
     <small class="ml-2 text-btn" @click="toBlame">
       <v-icon icon="mdi mdi-bell" size="xs" />
@@ -67,7 +66,7 @@ const onSubmit = (payload: Cm) => emit('on-submit', payload)
     <small v-if="!lastDepth" class="ml-2 text-btn" @click="toReply">
       {{ !isReplying ? '답변' : '취소' }}
     </small>
-    <template v-if="userInfo?.pk === props.comment?.user?.pk">
+    <template v-if="!comment.replies?.length && userInfo?.pk === props.comment?.user?.pk">
       <!--    해당 본인 작성글이고 댓글에 대댓글이 없을 경우 수정/삭제 활성-->
       <small class="ml-1 text-btn" @click="toModify">
         {{ !isEditing ? '수정' : '취소' }}
