@@ -340,13 +340,17 @@ export const useDocument = defineStore('document', () => {
   const createComment = (payload: Cm) =>
     api
       .post(`/comment/`, payload)
-      .then(res => fetchCommentList(res.data.post).then(() => message()))
+      .then(res =>
+        fetchCommentList(res.data.post).then(() => fetchPost(res.data.post).then(() => message())),
+      )
       .catch(err => errorHandle(err.response.data))
 
   const patchComment = (payload: Cm) =>
     api
       .patch(`/comment/${payload.pk}/`, payload)
-      .then(res => fetchCommentList(res.data.post).then(() => message()))
+      .then(res =>
+        fetchCommentList(res.data.post).then(() => fetchPost(res.data.post).then(() => message())),
+      )
       .catch(err => errorHandle(err.response.data))
 
   const deleteComment = (payload: { pk: number; post: number }) =>
