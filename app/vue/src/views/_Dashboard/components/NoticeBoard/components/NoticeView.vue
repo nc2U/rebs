@@ -82,7 +82,6 @@ onBeforeMount(() => {
   if (postId.value) {
     prev.value = getPrev(postId.value)
     next.value = getNext(postId.value)
-    docStore.fetchCommentList(postId.value)
   }
 })
 
