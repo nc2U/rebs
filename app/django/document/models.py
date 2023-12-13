@@ -353,8 +353,11 @@ class Post(models.Model):
 
 
 class PostLike(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='post_users')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_likes')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='post_users')
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['post', 'user'], name='user_post_like')]
 
 
 def get_file_name(filename):
@@ -425,6 +428,9 @@ class Comment(models.Model):
 class CommentLike(models.Model):
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='comment_likes')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comment_users')
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['comment', 'user'], name='user_comment_like')]
 
 
 class Tag(models.Model):
