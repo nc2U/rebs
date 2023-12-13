@@ -90,7 +90,7 @@ class PostViewSet(viewsets.ModelViewSet):
 #     queryset = PostLike.objects.all()
 #     serializer_class = PostLikeSerializer
 #     permission_classes = (permissions.IsAuthenticated,)
-#     filterset_fields = ('user', 'post')
+#     filterset_fields = ('post', 'user')
 
 
 class ImageViewSet(viewsets.ModelViewSet):
@@ -133,7 +133,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 #     queryset = CommentLike.objects.all()
 #     serializer_class = CommentLikeSerializer
 #     permission_classes = (permissions.IsAuthenticated,)
-#     filterset_fields = ('user', 'comment')
+#     filterset_fields = ('comment', 'user')
 
 
 class TagViewSet(viewsets.ModelViewSet):

@@ -1,4 +1,4 @@
-<script lang="ts" setup="">
+<script lang="ts" setup>
 import { reactive, onMounted, onUpdated, type PropType } from 'vue'
 import type { Comment as Cm } from '@/store/types/document'
 
