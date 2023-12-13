@@ -29,7 +29,7 @@ const commentPages = (pages: number) => Math.ceil(commentCount.value / pages)
 
 <template>
   <div v-if="commentCount">
-    <h5 class="my-4 ml-4">{{ commentCount }} Comments</h5>
+    <h5 class="my-4 ml-4">{{ commentCount }} Comment{{ commentCount > 1 ? 's' : '' }}</h5>
     <ul v-for="cmt1 in comments" :key="cmt1.pk" class="comments ml-5 mb-4">
       <Comment
         :form-show="actForm === cmt1.pk"
