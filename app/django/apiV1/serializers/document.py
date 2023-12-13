@@ -8,8 +8,8 @@ from django.db.models import Q
 from rest_framework import serializers
 
 from accounts.models import User
-from document.models import (Group, Board, Category, LawsuitCase, Post, PostLike,
-                             Image, Link, File, Comment, CommentLike, Tag)
+from document.models import (Group, Board, Category, LawsuitCase,
+                             Post, Image, Link, File, Comment, Tag)
 
 
 # Document --------------------------------------------------------------------------
@@ -323,10 +323,10 @@ class PostSerializer(serializers.ModelSerializer):
         return instance
 
 
-class PostLikeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PostLike
-        fields = ('pk', 'post', 'user')
+# class PostLikeSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = PostLike
+#         fields = ('pk', 'post', 'user')
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -363,10 +363,10 @@ class CommentSerializer(serializers.ModelSerializer):
         return serializer.data
 
 
-class CommentLikeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CommentLike
-        fields = ('pk', 'comment', 'user')
+# class CommentLikeSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = CommentLike
+#         fields = ('pk', 'comment', 'user')
 
 
 class TagSerializer(serializers.ModelSerializer):

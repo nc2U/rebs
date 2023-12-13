@@ -106,12 +106,10 @@ router.register(r'category', document.CategoryViewSet)
 router.register(r'suitcase', document.LawSuitCaseViewSet)
 router.register(r'all-suitcase', document.AllLawSuitCaseViewSet, basename='all-suitcase')
 router.register(r'post', document.PostViewSet)
-router.register(r'post-like', document.PostLikeViewSet)
 router.register(r'link', document.LinkViewSet)
 router.register(r'image', document.ImageViewSet)
 router.register(r'file', document.FileViewSet)
 router.register(r'comment', document.CommentViewSet)
-router.register(r'comment-like', document.CommentLikeViewSet)
 router.register(r'tag', document.TagViewSet)
 
 urlpatterns = router.urls

@@ -86,11 +86,11 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-class PostLikeViewSet(viewsets.ModelViewSet):
-    queryset = PostLike.objects.all()
-    serializer_class = PostLikeSerializer
-    permission_classes = (permissions.IsAuthenticated,)
-    filterset_fields = ('post', 'user')
+# class PostLikeViewSet(viewsets.ModelViewSet):
+#     queryset = PostLike.objects.all()
+#     serializer_class = PostLikeSerializer
+#     permission_classes = (permissions.IsAuthenticated,)
+#     filterset_fields = ('post', 'user')
 
 
 class ImageViewSet(viewsets.ModelViewSet):
@@ -129,11 +129,11 @@ class CommentViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-class CommentLikeViewSet(viewsets.ModelViewSet):
-    queryset = CommentLike.objects.all()
-    serializer_class = CommentLikeSerializer
-    permission_classes = (permissions.IsAuthenticated,)
-    filterset_fields = ('comment', 'user')
+# class CommentLikeViewSet(viewsets.ModelViewSet):
+#     queryset = CommentLike.objects.all()
+#     serializer_class = CommentLikeSerializer
+#     permission_classes = (permissions.IsAuthenticated,)
+#     filterset_fields = ('comment', 'user')
 
 
 class TagViewSet(viewsets.ModelViewSet):

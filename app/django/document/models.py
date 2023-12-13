@@ -328,6 +328,7 @@ class Post(models.Model):
     content = HTMLField('내용', blank=True)
     is_hide_comment = models.BooleanField('댓글숨기기', default=False)
     hit = models.PositiveIntegerField('조회수', default=0)
+    like = models.PositiveIntegerField('좋아요', default=0)
     blame = models.PositiveSmallIntegerField('신고', default=0)
     ip = models.GenericIPAddressField('아이피', null=True, blank=True)
     device = models.CharField('등록기기', max_length=10, blank=True)
@@ -352,12 +353,12 @@ class Post(models.Model):
         verbose_name_plural = '05. 게시물 관리'
 
 
-class PostLike(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_likes')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='post_users')
-
-    class Meta:
-        constraints = [models.UniqueConstraint(fields=['post', 'user'], name='user_post_like')]
+# class PostLike(models.Model):
+#     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_likes')
+#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='post_users')
+#
+#     class Meta:
+#         constraints = [models.UniqueConstraint(fields=['post', 'user'], name='user_post_like')]
 
 
 def get_file_name(filename):
@@ -410,6 +411,7 @@ class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name='게시물', related_name='comments')
     content = models.TextField('내용')
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')
+    like = models.PositiveIntegerField('좋아요', default=0)
     blame = models.PositiveSmallIntegerField('신고', default=0)
     ip = models.GenericIPAddressField('아이피', null=True, blank=True)
     device = models.CharField('등록기기', max_length=10, blank=True)
@@ -425,12 +427,12 @@ class Comment(models.Model):
         ordering = ['-created']
 
 
-class CommentLike(models.Model):
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='comment_likes')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comment_users')
-
-    class Meta:
-        constraints = [models.UniqueConstraint(fields=['comment', 'user'], name='user_comment_like')]
+# class CommentLike(models.Model):
+#     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='comment_likes')
+#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comment_users')
+#
+#     class Meta:
+#         constraints = [models.UniqueConstraint(fields=['comment', 'user'], name='user_comment_like')]
 
 
 class Tag(models.Model):

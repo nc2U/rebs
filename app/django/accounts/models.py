@@ -10,6 +10,8 @@ from django.contrib.auth.models import UserManager, PermissionsMixin
 
 from django.contrib.auth.validators import UnicodeUsernameValidator
 
+from document.models import Post, Comment
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     """
@@ -116,6 +118,8 @@ class Profile(models.Model):
     birth_date = models.DateField('생년월일', null=True, blank=True)
     cell_phone = models.CharField('휴대폰', max_length=13, blank=True)
     image = models.ImageField(upload_to=get_image_filename, null=True, blank=True, verbose_name='프로필 이미지')
+    like_post = models.ManyToManyField(Post, blank=True, related_name='post_like_users')
+    like_comment = models.ManyToManyField(Comment, blank=True, related_name='comment_like_users')
 
     def __str__(self):
         return self.name
