@@ -1,4 +1,4 @@
-<script lang="ts" setup="">
+<script lang="ts" setup>
 import { ref, inject, type ComputedRef, type PropType, watch } from 'vue'
 import { elapsedTime } from '@/utils/baseMixins'
 import type { User } from '@/store/types/accounts'
@@ -31,8 +31,7 @@ const toBlame = () => {
     alert('ok!')
 }
 
-const toLike = () =>
-  emit('to-like', { comment: props.comment.pk, user: userInfo?.value.pk, like: false })
+const toLike = () => emit('to-like', { pk: props.comment.pk, user: userInfo?.value.pk })
 const toReply = () => {
   isEditing.value = false
   isReplying.value = !isReplying.value

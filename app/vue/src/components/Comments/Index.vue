@@ -1,4 +1,4 @@
-<script lang="ts" setup="">
+<script lang="ts" setup>
 import { ref, type PropType } from 'vue'
 import { useDocument } from '@/store/pinia/document'
 import type { Comment } from '@/store/types/document'
@@ -17,7 +17,7 @@ const docStore = useDocument()
 const createComment = (payload: Comment) => docStore.createComment(payload)
 const patchComment = (payload: Comment) => docStore.patchComment(payload)
 
-const toLike = (payload: { comment: number; user: number; like: boolean }) => alert(payload.user)
+const toLike = (payload: { pk: number; user: number }) => alert(payload.user)
 
 const onSubmit = (payload: Comment) => {
   console.log(payload)

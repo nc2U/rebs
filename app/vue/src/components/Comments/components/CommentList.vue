@@ -1,4 +1,4 @@
-<script lang="ts" setup="">
+<script lang="ts" setup>
 import { ref, computed, type PropType } from 'vue'
 import { useDocument } from '@/store/pinia/document'
 import type { Comment as Cm } from '@/store/types/document'
@@ -16,8 +16,7 @@ const commentCount = computed(() => docStore.commentCount)
 
 const visionToggle = (payload: { num: number; sts: boolean }) => emit('vision-toggle', payload)
 
-const toLike = (payload: { comment: number; user: number; like: boolean }) =>
-  emit('to-like', payload)
+const toLike = (payload: { pk: number; user: number }) => emit('to-like', payload)
 
 const onSubmit = (payload: Cm) => {
   emit('on-submit', payload)
