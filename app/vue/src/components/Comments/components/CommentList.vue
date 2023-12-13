@@ -9,12 +9,15 @@ defineProps({
   actForm: { type: Number, default: undefined },
   comments: { type: Array as PropType<Cm[]>, default: () => [] },
 })
-const emit = defineEmits(['vision-toggle', 'on-submit', 'form-reset', 'page-select'])
+const emit = defineEmits(['vision-toggle', 'to-like', 'on-submit', 'form-reset', 'page-select'])
 
 const docStore = useDocument()
 const commentCount = computed(() => docStore.commentCount)
 
 const visionToggle = (payload: { num: number; sts: boolean }) => emit('vision-toggle', payload)
+
+const toLike = (payload: { comment: number; user: number; like: boolean }) =>
+  emit('to-like', payload)
 
 const onSubmit = (payload: Cm) => {
   emit('on-submit', payload)
@@ -35,6 +38,7 @@ const commentPages = (pages: number) => Math.ceil(commentCount.value / pages)
         :form-show="actForm === cmt1.pk"
         :comment="cmt1"
         @vision-toggle="visionToggle"
+        @to-like="toLike"
         @on-submit="onSubmit"
       />
 
@@ -43,6 +47,7 @@ const commentPages = (pages: number) => Math.ceil(commentCount.value / pages)
           :form-show="actForm === cmt2.pk"
           :comment="cmt2"
           @vision-toggle="visionToggle"
+          @to-like="toLike"
           @on-submit="onSubmit"
         />
 
@@ -51,6 +56,7 @@ const commentPages = (pages: number) => Math.ceil(commentCount.value / pages)
             :form-show="actForm === cmt3.pk"
             :comment="cmt3"
             @vision-toggle="visionToggle"
+            @to-like="toLike"
             @on-submit="onSubmit"
           />
 
@@ -59,6 +65,7 @@ const commentPages = (pages: number) => Math.ceil(commentCount.value / pages)
               :form-show="actForm === cmt4.pk"
               :comment="cmt4"
               @vision-toggle="visionToggle"
+              @to-like="toLike"
               @on-submit="onSubmit"
             />
             <ul v-for="cmt5 in cmt4.replies" :key="cmt5.pk" class="comments ml-5 mb-4">
@@ -67,6 +74,7 @@ const commentPages = (pages: number) => Math.ceil(commentCount.value / pages)
                 :comment="cmt5"
                 :last-depth="true"
                 @vision-toggle="visionToggle"
+                @to-like="toLike"
                 @on-submit="onSubmit"
               />
             </ul>

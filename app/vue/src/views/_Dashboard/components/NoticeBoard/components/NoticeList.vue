@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type PropType, inject } from 'vue'
+import { type ComputedRef, type PropType, inject } from 'vue'
 import { useDocument } from '@/store/pinia/document'
 import { TableSecondary } from '@/utils/cssMixins'
 import type { User } from '@/store/types/accounts'
@@ -16,7 +16,7 @@ defineProps({
 
 const emit = defineEmits(['page-select'])
 
-const userInfo = inject<User>('userInfo')
+const userInfo = inject<ComputedRef<User>>('userInfo')
 
 const docStore = useDocument()
 const postPages = (num: number) => docStore.postPages(num)

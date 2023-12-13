@@ -17,6 +17,8 @@ const docStore = useDocument()
 const createComment = (payload: Comment) => docStore.createComment(payload)
 const patchComment = (payload: Comment) => docStore.patchComment(payload)
 
+const toLike = (payload: { comment: number; user: number; like: boolean }) => alert(payload.user)
+
 const onSubmit = (payload: Comment) => {
   console.log(payload)
   if (!payload?.pk) createComment(payload)
@@ -40,6 +42,7 @@ const pageSelect = (page: number) => docStore.fetchCommentList(props.post, page)
     :act-form="actForm"
     :comments="comments"
     @vision-toggle="visionToggle"
+    @to-like="toLike"
     @on-submit="onSubmit"
     @form-reset="formReset"
     @page-select="pageSelect"

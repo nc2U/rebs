@@ -1,5 +1,5 @@
 <script lang="ts" setup="">
-import { ref, inject, type PropType, watch } from 'vue'
+import { ref, inject, type ComputedRef, type PropType, watch } from 'vue'
 import { elapsedTime } from '@/utils/baseMixins'
 import type { User } from '@/store/types/accounts'
 import type { Comment as Cm } from '@/store/types/document'
@@ -19,9 +19,9 @@ watch(props, val => {
   }
 })
 
-const emit = defineEmits(['vision-toggle', 'on-submit'])
+const emit = defineEmits(['vision-toggle', 'to-like', 'on-submit'])
 
-const userInfo = inject<User>('userInfo')
+const userInfo = inject<ComputedRef<User>>('userInfo')
 
 const isReplying = ref<boolean>(false)
 const isEditing = ref<boolean>(false)
@@ -31,8 +31,8 @@ const toBlame = () => {
     alert('ok!')
 }
 
-const toLike = () => alert('reply')
-const toDisLike = () => alert('reply')
+const toLike = () =>
+  emit('to-like', { comment: props.comment.pk, user: userInfo?.value.pk, like: false })
 const toReply = () => {
   isEditing.value = false
   isReplying.value = !isReplying.value
@@ -55,8 +55,8 @@ const onSubmit = (payload: Cm) => emit('on-submit', payload)
       <v-icon icon="mdi-clock-time-four-outline" size="sm" />
       {{ elapsedTime(comment?.updated ?? '') }}
     </small>
-    <small class="ml-2" @click="toLike">
-      <v-icon :icon="`mdi-heart-outline`" size="sm" class="mr-1 icon-btn" />
+    <small class="ml-2">
+      <v-icon :icon="`mdi-heart-outline`" @click="toLike" size="sm" class="mr-1 icon-btn" />
       좋아요 {{ comment?.like ?? 0 }}
     </small>
     <small class="ml-2 text-btn" @click="toBlame">
