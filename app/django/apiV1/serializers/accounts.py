@@ -42,7 +42,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ('pk', 'user', 'name', 'birth_date', 'cell_phone', 'image')
+        fields = ('pk', 'user', 'name', 'birth_date',
+                  'cell_phone', 'image', 'like_post', 'like_comment')
 
 
 class TodoSerializer(serializers.ModelSerializer):

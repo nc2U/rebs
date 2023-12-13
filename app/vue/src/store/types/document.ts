@@ -87,6 +87,7 @@ export type Post = {
   content: string
   is_hide_comment: boolean
   hit: number
+  like?: number
   blame: number
   ip: string | null
   device: string
