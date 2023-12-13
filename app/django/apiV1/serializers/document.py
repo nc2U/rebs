@@ -172,7 +172,7 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ('pk', 'company', 'project', 'proj_name', 'board', 'is_notice', 'category',
                   'cate_name', 'lawsuit', 'lawsuit_name', 'title', 'execution_date', 'is_hide_comment',
-                  'content', 'hit', 'blame', 'ip', 'device', 'secret', 'password', 'links', 'files',
+                  'content', 'hit', 'like', 'blame', 'ip', 'device', 'secret', 'password', 'links', 'files',
                   'comments', 'user', 'soft_delete', 'created', 'updated', 'is_new', 'prev_pk', 'next_pk')
         read_only_fields = ('ip', 'comments')
 
@@ -353,8 +353,8 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('pk', 'post', 'content', 'parent', 'replies', 'blame',
-                  'ip', 'device', 'secret', 'user', 'updated')
+        fields = ('pk', 'post', 'content', 'parent', 'replies', 'like',
+                  'blame', 'ip', 'device', 'secret', 'user', 'updated')
         read_only_fields = ('ip',)
 
     def get_replies(self, instance):
