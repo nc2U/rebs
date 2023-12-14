@@ -23,7 +23,9 @@ const emit = defineEmits(['vision-toggle', 'to-like', 'on-submit'])
 
 const userInfo = inject<ComputedRef<User>>('userInfo')
 
-const isLike = computed(() => userInfo?.value.profile?.like_comment.includes(props.comment.pk ?? 0))
+const isLike = computed(
+  () => userInfo?.value.profile?.like_comments.includes(props.comment.pk ?? 0),
+)
 
 const isReplying = ref<boolean>(false)
 const isEditing = ref<boolean>(false)
@@ -33,7 +35,7 @@ const toBlame = () => {
     alert('ok!')
 }
 
-const toLike = () => emit('to-like', { pk: props.comment.pk, like: isLike.value })
+const toLike = () => emit('to-like', props.comment.pk)
 
 const toReply = () => {
   isEditing.value = false
@@ -57,7 +59,7 @@ const onSubmit = (payload: Cm) => emit('on-submit', payload)
     <strong>{{ comment?.user?.username }}</strong>
     <small class="ml-2">
       <v-icon icon="mdi-clock-time-four-outline" size="sm" />
-      {{ elapsedTime(comment?.updated ?? '') }}
+      {{ elapsedTime(comment?.created ?? '') }}
     </small>
     <small class="ml-2">
       <v-icon
@@ -87,7 +89,7 @@ const onSubmit = (payload: Cm) => emit('on-submit', payload)
     <p v-if="!(formShow && isEditing)">
       <CBadge v-if="comment.secret" color="warning" class="mr-1">비밀글입니다</CBadge>
       <span v-show="!comment.secret || userInfo?.is_superuser || userInfo?.pk === comment.user?.pk">
-        {{ comment?.content }}
+        {{ comment?.content }} | {{ userInfo?.profile }}
       </span>
     </p>
     <p v-if="formShow && isEditing">
