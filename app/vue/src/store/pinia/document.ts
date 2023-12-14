@@ -291,6 +291,14 @@ export const useDocument = defineStore('document', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
+  const patchPostLike = async (payload: { pk: number; like: boolean }) => {
+    const { pk, like } = payload
+    return await api
+      .patch(`/post-like/${pk}/`, like)
+      .then(() => fetchPost(pk))
+      .catch(err => errorHandle(err.response.data))
+  }
+
   const deletePost = () => 4
 
   const link = ref<Link | null>(null)
@@ -352,10 +360,18 @@ export const useDocument = defineStore('document', () => {
       .then(res => fetchPost(res.data.post).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
+  const patchCommentLike = async (payload: { pk: number; like: boolean }) => {
+    const { pk, like } = payload
+    return await api
+      .patch(`/comment-like/${pk}/`, like)
+      .then(() => fetchComment(pk))
+      .catch(err => errorHandle(err.response.data))
+  }
+
   const deleteComment = (payload: { pk: number; post: number }) =>
     api
       .delete(`/comment/${payload.pk}/`)
-      .then(res => fetchPost(payload.post).then(() => message()))
+      .then(() => fetchPost(payload.post).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
   const tag = ref(null)
@@ -415,6 +431,7 @@ export const useDocument = defineStore('document', () => {
     createPost,
     updatePost,
     patchPost,
+    patchPostLike,
     deletePost,
 
     link,
@@ -433,6 +450,7 @@ export const useDocument = defineStore('document', () => {
     fetchCommentList,
     createComment,
     patchComment,
+    patchCommentLike,
     deleteComment,
 
     tag,

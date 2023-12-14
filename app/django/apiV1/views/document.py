@@ -86,11 +86,10 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-# class PostLikeViewSet(viewsets.ModelViewSet):
-#     queryset = PostLike.objects.all()
-#     serializer_class = PostLikeSerializer
-#     permission_classes = (permissions.IsAuthenticated,)
-#     filterset_fields = ('post', 'user')
+class PostLikeViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostLikeSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
 
 class ImageViewSet(viewsets.ModelViewSet):
