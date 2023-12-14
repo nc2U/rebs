@@ -162,5 +162,5 @@ export interface Comment {
   device?: string
   secret: boolean
   user?: { pk: number; username: string }
-  updated?: string
+  created?: string
 }
