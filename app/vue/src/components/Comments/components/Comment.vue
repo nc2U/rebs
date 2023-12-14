@@ -33,17 +33,21 @@ const toBlame = () => {
     alert('ok!')
 }
 
-const toLike = () => emit('to-like', { pk: props.comment.pk, user: userInfo?.value.pk })
+const toLike = () =>
+  emit('to-like', { pk: props.comment.pk, user: userInfo?.value.pk, like: isLike.value })
+
 const toReply = () => {
   isEditing.value = false
   isReplying.value = !isReplying.value
   emit('vision-toggle', { num: props.comment?.pk as number, sts: !isReplying.value })
 }
+
 const toModify = () => {
   isReplying.value = false
   isEditing.value = !isEditing.value
   emit('vision-toggle', { num: props.comment?.pk as number, sts: !isEditing.value })
 }
+
 const toDelete = () => alert('delete')
 
 const onSubmit = (payload: Cm) => emit('on-submit', payload)
