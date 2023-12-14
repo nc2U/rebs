@@ -4,10 +4,16 @@ import { useAccount } from '@/store/pinia/account'
 import { bgLight } from '@/utils/cssMixins'
 import Multiselect from '@vueform/multiselect'
 
-const props = defineProps({ selUser: { type: Number, default: null } })
-const emit = defineEmits(['select-user'])
+const props = defineProps({
+  selUser: { type: Number, default: null },
+  isStaff: { type: Boolean, default: false },
+  isProjectStaff: { type: Boolean, default: false },
+})
+const emit = defineEmits(['select-user', 'change-staff', 'change-pro-staff'])
 
 const userId = ref<number | null>(null)
+const is_staff = ref(false)
+const is_project_staff = ref(false)
 
 const accountStore = useAccount()
 const userInfo = computed(() => accountStore.userInfo)
@@ -32,6 +38,9 @@ watch(
     else userId.value = null
   },
 )
+
+const changeStaff = (e: Event) => emit('change-staff', e.target)
+const changeProStaff = (e: Event) => emit('change-pro-staff', e.target)
 </script>
 
 <template>
@@ -53,6 +62,22 @@ watch(
             />
           </CCol>
         </CRow>
+      </CCol>
+      <CCol class="pt-2">
+        <CFormSwitch
+          v-model="is_staff"
+          label="본사 관리자로 승인(프로젝트 관리 가능)"
+          @change="changeStaff"
+          id="is_staff"
+        />
+      </CCol>
+      <CCol class="pt-2">
+        <CFormSwitch
+          v-model="is_project_staff"
+          label="프로젝트 관리자로 승인"
+          @change="changeProStaff"
+          id="is_project_staff"
+        />
       </CCol>
     </CRow>
   </CCallout>

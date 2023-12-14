@@ -16,9 +16,10 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 const refAlertModal = ref()
 const refConfirmModal = ref()
 
-const comInfo = ref<{ company: number | null; is_staff: boolean }>({
+const comInfo = ref<{ company: number | null; is_staff: boolean; is_project_staff: boolean }>({
   company: null,
-  is_staff: true,
+  is_staff: false,
+  is_project_staff: false,
 })
 
 const projectAuth = ref({
@@ -194,13 +195,23 @@ onBeforeMount(() => {
   comInfo.value.company = comId.value || comStore.initComId
   if (accStore?.userInfo) selectUser(accStore.userInfo.pk as number)
 })
+
+const changeStaff = (val: boolean) => alert(val)
+const changeProStaff = (val: boolean) => alert(val)
 </script>
 
 <template>
   <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" selector="CompanySelect" />
   <ContentBody>
     <CCardBody>
-      <UserSelect :sel-user="user?.pk" @select-user="selectUser" />
+      <UserSelect
+        :sel-user="user?.pk"
+        :is-staff="comInfo.is_staff"
+        :is-project-staff="comInfo.is_project_staff"
+        @change-staff="changeStaff"
+        @change-pro-staff="changeProStaff"
+        @select-user="selectUser"
+      />
       <ProjectManageAuth
         :user="user as User"
         @get-allowed="getAllowed"
