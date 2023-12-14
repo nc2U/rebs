@@ -129,11 +129,10 @@ class CommentViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-# class CommentLikeViewSet(viewsets.ModelViewSet):
-#     queryset = CommentLike.objects.all()
-#     serializer_class = CommentLikeSerializer
-#     permission_classes = (permissions.IsAuthenticated,)
-#     filterset_fields = ('comment', 'user')
+class CommentLikeViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentLikeSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
 
 class TagViewSet(viewsets.ModelViewSet):
