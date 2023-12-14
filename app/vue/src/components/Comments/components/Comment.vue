@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, inject, type ComputedRef, type PropType, watch } from 'vue'
+import { ref, inject, type ComputedRef, type PropType, watch, computed } from 'vue'
 import { elapsedTime } from '@/utils/baseMixins'
 import type { User } from '@/store/types/accounts'
 import type { Comment as Cm } from '@/store/types/document'
@@ -22,6 +22,8 @@ watch(props, val => {
 const emit = defineEmits(['vision-toggle', 'to-like', 'on-submit'])
 
 const userInfo = inject<ComputedRef<User>>('userInfo')
+
+const isLike = computed(() => userInfo?.value.profile?.like_comment.includes(props.comment.pk ?? 0))
 
 const isReplying = ref<boolean>(false)
 const isEditing = ref<boolean>(false)
@@ -55,8 +57,14 @@ const onSubmit = (payload: Cm) => emit('on-submit', payload)
       {{ elapsedTime(comment?.updated ?? '') }}
     </small>
     <small class="ml-2">
-      <v-icon :icon="`mdi-heart-outline`" @click="toLike" size="sm" class="mr-1 icon-btn" />
-      좋아요 {{ comment?.like ?? 0 }}
+      <v-icon
+        :icon="isLike ? 'mdi-heart' : 'mdi-heart-outline'"
+        @click="toLike"
+        size="sm"
+        class="icon-btn"
+      />
+      {{ !isLike ? '좋아요' : '취소' }}
+      {{ comment?.like ?? 0 }}
     </small>
     <small class="ml-2 text-btn" @click="toBlame">
       <v-icon icon="mdi mdi-bell" size="xs" />
