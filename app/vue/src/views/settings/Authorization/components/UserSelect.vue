@@ -12,8 +12,8 @@ const props = defineProps({
 const emit = defineEmits(['select-user', 'change-staff', 'change-pro-staff'])
 
 const userId = ref<number | null>(null)
-const is_staff = ref(false)
-const is_project_staff = ref(false)
+const staff = ref(false)
+const projectStaff = ref(false)
 
 const accountStore = useAccount()
 const userInfo = computed(() => accountStore.userInfo)
@@ -39,8 +39,32 @@ watch(
   },
 )
 
-const changeStaff = (e: Event) => emit('change-staff', e.target)
-const changeProStaff = (e: Event) => emit('change-pro-staff', e.target)
+watch(
+  () => props.isStaff,
+  nVal => (staff.value = nVal),
+)
+
+watch(
+  () => props.isProjectStaff,
+  nVal => (projectStaff.value = nVal),
+)
+
+const changeStaff = () =>
+  nextTick(() => {
+    projectStaff.value = !staff.value
+    emit('change-staff', staff.value)
+  })
+
+const changeProStaff = () =>
+  nextTick(() => {
+    staff.value = !projectStaff.value
+    emit('change-pro-staff', projectStaff.value)
+  })
+
+onBeforeMount(() => {
+  if (props.isStaff) staff.value = props.isStaff
+  if (props.isProjectStaff) projectStaff.value = props.isProjectStaff
+})
 </script>
 
 <template>
@@ -65,7 +89,7 @@ const changeProStaff = (e: Event) => emit('change-pro-staff', e.target)
       </CCol>
       <CCol class="pt-2">
         <CFormSwitch
-          v-model="is_staff"
+          v-model="staff"
           label="본사 관리자로 승인(프로젝트 관리 가능)"
           @change="changeStaff"
           id="is_staff"
@@ -73,7 +97,7 @@ const changeProStaff = (e: Event) => emit('change-pro-staff', e.target)
       </CCol>
       <CCol class="pt-2">
         <CFormSwitch
-          v-model="is_project_staff"
+          v-model="projectStaff"
           label="프로젝트 관리자로 승인"
           @change="changeProStaff"
           id="is_project_staff"

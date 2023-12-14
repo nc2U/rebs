@@ -16,16 +16,20 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 const refAlertModal = ref()
 const refConfirmModal = ref()
 
-const comInfo = ref<{ company: number | null; is_staff: boolean; is_project_staff: boolean }>({
+const comInfo = ref<{ company: number | null; is_staff: boolean }>({
   company: null,
   is_staff: false,
-  is_project_staff: false,
 })
 
+const changeStaff = (val: boolean) => (comInfo.value.is_staff = val)
+
 const projectAuth = ref({
-  assigned_project: null as number | null,
+  is_project_staff: false,
   allowed_projects: [] as number[],
+  assigned_project: null as number | null,
 })
+
+const changeProStaff = (val: boolean) => (projectAuth.value.is_project_staff = val)
 
 type Auth = '0' | '1' | '2'
 export type UserAuth = {
@@ -64,8 +68,8 @@ const formsCheck = computed(() => {
     const sa = user.value.staffauth
 
     if (!!sa) {
-      const a = pa.assigned_project === sa?.assigned_project
-      const b = JSON.stringify(pa.allowed_projects) === JSON.stringify(sa.allowed_projects)
+      const a = JSON.stringify(pa.allowed_projects) === JSON.stringify(sa.allowed_projects)
+      const b = pa.assigned_project === sa?.assigned_project
       const c = ma.contract === sa.contract
       const d = ma.payment === sa.payment
       const e = ma.notice === sa.notice
@@ -80,8 +84,8 @@ const formsCheck = computed(() => {
 
       return a && b && c && d && e && f && g && h && i && j && k && l && m
     } else {
-      const a = pa.assigned_project === null
-      const b = JSON.stringify(pa.allowed_projects) === JSON.stringify([])
+      const a = JSON.stringify(pa.allowed_projects) === JSON.stringify([])
+      const b = pa.assigned_project === null
       const c = ma.contract === '0'
       const d = ma.payment === '0'
       const e = ma.notice === '0'
@@ -123,6 +127,8 @@ const getAssigned = (payload: number | null) => (projectAuth.value.assigned_proj
 const selectAuth = (payload: UserAuth) => (menuAuth.value = payload)
 
 const authReset = () => {
+  comInfo.value.is_staff = false
+  projectAuth.value.is_project_staff = false
   projectAuth.value.assigned_project = null
   projectAuth.value.allowed_projects = []
   menuAuth.value.pk = undefined
@@ -160,6 +166,8 @@ watch(
   nVal => {
     const sa = nVal?.staffauth
     if (nVal && sa) {
+      comInfo.value.is_staff = sa.is_staff
+      projectAuth.value.is_project_staff = sa.is_project_staff
       projectAuth.value.assigned_project = sa.assigned_project
       projectAuth.value.allowed_projects = sa.allowed_projects
       menuAuth.value.pk = sa.pk
@@ -195,9 +203,6 @@ onBeforeMount(() => {
   comInfo.value.company = comId.value || comStore.initComId
   if (accStore?.userInfo) selectUser(accStore.userInfo.pk as number)
 })
-
-const changeStaff = (val: boolean) => alert(val)
-const changeProStaff = (val: boolean) => alert(val)
 </script>
 
 <template>
@@ -207,7 +212,7 @@ const changeProStaff = (val: boolean) => alert(val)
       <UserSelect
         :sel-user="user?.pk"
         :is-staff="comInfo.is_staff"
-        :is-project-staff="comInfo.is_project_staff"
+        :is-project-staff="projectAuth.is_project_staff"
         @change-staff="changeStaff"
         @change-pro-staff="changeProStaff"
         @select-user="selectUser"

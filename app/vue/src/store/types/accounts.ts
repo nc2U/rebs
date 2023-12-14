@@ -21,8 +21,9 @@ export interface StaffAuth {
   user?: number
   company: number | null
   is_staff: boolean
-  assigned_project: number | null
+  is_project_staff: boolean
   allowed_projects: number[]
+  assigned_project: number | null
   contract: Auth
   payment: Auth
   notice: Auth
