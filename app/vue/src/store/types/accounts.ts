@@ -6,7 +6,12 @@ export declare interface User {
   is_superuser: boolean
   date_joined: string
   staffauth: StaffAuth | null
-  profile: number | null
+  profile: null | {
+    pk: number
+    name: string
+    like_post: number[]
+    like_comment: number[]
+  }
 }
 
 type Auth = '0' | '1' | '2'
