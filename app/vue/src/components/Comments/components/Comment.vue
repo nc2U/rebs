@@ -33,8 +33,7 @@ const toBlame = () => {
     alert('ok!')
 }
 
-const toLike = () =>
-  emit('to-like', { pk: props.comment.pk, user: userInfo?.value.pk, like: isLike.value })
+const toLike = () => emit('to-like', { pk: props.comment.pk, like: isLike.value })
 
 const toReply = () => {
   isEditing.value = false

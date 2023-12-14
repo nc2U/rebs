@@ -16,7 +16,7 @@ const commentCount = computed(() => docStore.commentCount)
 
 const visionToggle = (payload: { num: number; sts: boolean }) => emit('vision-toggle', payload)
 
-const toLike = (payload: { pk: number; user: number; like: boolean }) => emit('to-like', payload)
+const toLike = (payload: { pk: number; like: boolean }) => emit('to-like', payload)
 
 const onSubmit = (payload: Cm) => {
   emit('on-submit', payload)

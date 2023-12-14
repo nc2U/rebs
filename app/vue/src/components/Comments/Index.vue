@@ -17,7 +17,7 @@ const docStore = useDocument()
 const createComment = (payload: Comment) => docStore.createComment(payload)
 const patchComment = (payload: Comment) => docStore.patchComment(payload)
 
-const toLike = (payload: { pk: number; user: number; like: boolean }) => {
+const toLike = (payload: { pk: number; like: boolean }) => {
   if (payload.like) {
     alert('취소 로직 실행!')
     // profile patch -> like_comment -> pk 제거
