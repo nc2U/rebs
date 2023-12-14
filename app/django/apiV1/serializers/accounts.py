@@ -12,6 +12,12 @@ class StaffAuthInUserSerializer(serializers.ModelSerializer):
                   'company_cash', 'company_docs', 'human_resource', 'company_settings', 'auth_manage')
 
 
+class ProfileInUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ('pk', 'name', 'like_post', 'like_comment')
+
+
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         write_only=True,
@@ -20,7 +26,7 @@ class UserSerializer(serializers.ModelSerializer):
         style={'input_type': 'password', 'placeholder': '비밀번호'}
     )
     staffauth = StaffAuthInUserSerializer(read_only=True)
-    profile = serializers.ReadOnlyField(source='profile.pk')
+    profile = ProfileInUserSerializer(read_only=True)
 
     class Meta:
         model = User
