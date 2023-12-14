@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import serializers
 
 from accounts.models import User, StaffAuth, Profile, Todo
@@ -7,9 +8,30 @@ from accounts.models import User, StaffAuth, Profile, Todo
 class StaffAuthInUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = StaffAuth
-        fields = ('pk', 'user', 'company', 'is_staff', 'assigned_project', 'allowed_projects',
-                  'contract', 'payment', 'notice', 'project_cash', 'project_docs', 'project',
-                  'company_cash', 'company_docs', 'human_resource', 'company_settings', 'auth_manage')
+        fields = ('pk', 'user', 'company', 'is_staff', 'is_project_staff',
+                  'allowed_projects', 'assigned_project', 'contract', 'payment',
+                  'notice', 'project_cash', 'project_docs', 'project', 'company_cash',
+                  'company_docs', 'human_resource', 'company_settings', 'auth_manage')
+
+    # @transaction.atomic
+    # def create(self, validated_data):
+    #     # 1. 권한정보 테이블 입력
+    #     staff_auth = StaffAuth.objects.create(**validated_data)
+    #     staff_auth.save()
+    #
+    #     # 2. 프로필 정보가 있는지 확인 후 없으면 기본 프로필 생성
+    #     try:
+    #         Profile.objects.get(user=validated_data['user'])
+    #     except Profile.DoesNotExist:
+    #         empty_profile = Profile(user=staff_auth.user)
+    #         empty_profile.save()
+    #     return staff_auth
+
+
+class ProfileInUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ('pk', 'name', 'like_post', 'like_comment')
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -20,7 +42,7 @@ class UserSerializer(serializers.ModelSerializer):
         style={'input_type': 'password', 'placeholder': '비밀번호'}
     )
     staffauth = StaffAuthInUserSerializer(read_only=True)
-    profile = serializers.ReadOnlyField(source='profile.pk')
+    profile = ProfileInUserSerializer(read_only=True)
 
     class Meta:
         model = User
@@ -42,7 +64,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ('pk', 'user', 'name', 'birth_date', 'cell_phone', 'image')
+        fields = ('pk', 'user', 'name', 'birth_date',
+                  'cell_phone', 'image', 'like_post', 'like_comment')
 
 
 class TodoSerializer(serializers.ModelSerializer):

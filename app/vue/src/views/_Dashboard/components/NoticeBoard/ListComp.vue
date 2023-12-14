@@ -45,7 +45,7 @@ defineProps({
                   +{{ item.comments.length }}
                 </CBadge>
               </td>
-              <td class="text-right pr-5">{{ timeFormat(item.created ?? '').substring(0, 10) }}</td>
+              <td class="text-right pr-4">{{ timeFormat(item.created ?? '').substring(0, 10) }}</td>
             </tr>
             <template v-for="(item, i) in postList" :key="item.pk ?? 0">
               <tr v-if="(noticeList.length ?? 0) + i <= 7">
@@ -60,7 +60,7 @@ defineProps({
                     +{{ item.comments.length }}
                   </CBadge>
                 </td>
-                <td class="text-right pr-5">
+                <td class="text-right pr-4">
                   {{ timeFormat(item.created ?? '').substring(0, 10) }}
                 </td>
               </tr>

@@ -18,13 +18,18 @@ const refConfirmModal = ref()
 
 const comInfo = ref<{ company: number | null; is_staff: boolean }>({
   company: null,
-  is_staff: true,
+  is_staff: false,
 })
 
+const changeStaff = (val: boolean) => (comInfo.value.is_staff = val)
+
 const projectAuth = ref({
-  assigned_project: null as number | null,
+  is_project_staff: false,
   allowed_projects: [] as number[],
+  assigned_project: null as number | null,
 })
+
+const changeProStaff = (val: boolean) => (projectAuth.value.is_project_staff = val)
 
 type Auth = '0' | '1' | '2'
 export type UserAuth = {
@@ -63,37 +68,41 @@ const formsCheck = computed(() => {
     const sa = user.value.staffauth
 
     if (!!sa) {
-      const a = pa.assigned_project === sa?.assigned_project
-      const b = JSON.stringify(pa.allowed_projects) === JSON.stringify(sa.allowed_projects)
-      const c = ma.contract === sa.contract
-      const d = ma.payment === sa.payment
-      const e = ma.notice === sa.notice
-      const f = ma.project_cash === sa.project_cash
-      const g = ma.project_docs === sa.project_docs
-      const h = ma.project === sa.project
-      const i = ma.company_cash === sa.company_cash
-      const j = ma.company_docs === sa.company_docs
-      const k = ma.human_resource === sa.human_resource
-      const l = ma.company_settings === sa.company_settings
-      const m = ma.auth_manage === sa.auth_manage
+      const a = comInfo.value.is_staff === sa.is_staff
+      const b = pa.is_project_staff === sa.is_project_staff
+      const c = JSON.stringify(pa.allowed_projects) === JSON.stringify(sa.allowed_projects)
+      const d = pa.assigned_project === sa?.assigned_project
+      const e = ma.contract === sa.contract
+      const f = ma.payment === sa.payment
+      const g = ma.notice === sa.notice
+      const h = ma.project_cash === sa.project_cash
+      const i = ma.project_docs === sa.project_docs
+      const j = ma.project === sa.project
+      const k = ma.company_cash === sa.company_cash
+      const l = ma.company_docs === sa.company_docs
+      const m = ma.human_resource === sa.human_resource
+      const n = ma.company_settings === sa.company_settings
+      const o = ma.auth_manage === sa.auth_manage
 
-      return a && b && c && d && e && f && g && h && i && j && k && l && m
+      return a && b && c && d && e && f && g && h && i && j && k && l && m && n && o
     } else {
-      const a = pa.assigned_project === null
-      const b = JSON.stringify(pa.allowed_projects) === JSON.stringify([])
-      const c = ma.contract === '0'
-      const d = ma.payment === '0'
-      const e = ma.notice === '0'
-      const f = ma.project_cash === '0'
-      const g = ma.project_docs === '0'
-      const h = ma.project === '0'
-      const i = ma.company_cash === '0'
-      const j = ma.company_docs === '0'
-      const k = ma.human_resource === '0'
-      const l = ma.company_settings === '0'
-      const m = ma.auth_manage === '0'
+      const a = comInfo.value.is_staff === false
+      const b = pa.is_project_staff === false
+      const c = JSON.stringify(pa.allowed_projects) === JSON.stringify([])
+      const d = pa.assigned_project === null
+      const e = ma.contract === '0'
+      const f = ma.payment === '0'
+      const g = ma.notice === '0'
+      const h = ma.project_cash === '0'
+      const i = ma.project_docs === '0'
+      const j = ma.project === '0'
+      const k = ma.company_cash === '0'
+      const l = ma.company_docs === '0'
+      const m = ma.human_resource === '0'
+      const n = ma.company_settings === '0'
+      const o = ma.auth_manage === '0'
 
-      return a && b && c && d && e && f && g && h && i && j && k && l && m
+      return a && b && c && d && e && f && g && h && i && j && k && l && m && n && o
     }
   } else return true
 })
@@ -122,6 +131,8 @@ const getAssigned = (payload: number | null) => (projectAuth.value.assigned_proj
 const selectAuth = (payload: UserAuth) => (menuAuth.value = payload)
 
 const authReset = () => {
+  comInfo.value.is_staff = false
+  projectAuth.value.is_project_staff = false
   projectAuth.value.assigned_project = null
   projectAuth.value.allowed_projects = []
   menuAuth.value.pk = undefined
@@ -159,6 +170,8 @@ watch(
   nVal => {
     const sa = nVal?.staffauth
     if (nVal && sa) {
+      comInfo.value.is_staff = sa.is_staff
+      projectAuth.value.is_project_staff = sa.is_project_staff
       projectAuth.value.assigned_project = sa.assigned_project
       projectAuth.value.allowed_projects = sa.allowed_projects
       menuAuth.value.pk = sa.pk
@@ -200,7 +213,14 @@ onBeforeMount(() => {
   <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" selector="CompanySelect" />
   <ContentBody>
     <CCardBody>
-      <UserSelect :sel-user="user?.pk" @select-user="selectUser" />
+      <UserSelect
+        :sel-user="user?.pk"
+        :is-staff="comInfo.is_staff"
+        :is-project-staff="projectAuth.is_project_staff"
+        @change-staff="changeStaff"
+        @change-pro-staff="changeProStaff"
+        @select-user="selectUser"
+      />
       <ProjectManageAuth
         :user="user as User"
         @get-allowed="getAllowed"

@@ -7,7 +7,7 @@ from django.db import transaction
 from django.db.models import Q
 from rest_framework import serializers
 
-from accounts.models import User
+from accounts.models import User, Profile
 from document.models import (Group, Board, Category, LawsuitCase,
                              Post, Image, Link, File, Comment, Tag)
 
@@ -363,10 +363,26 @@ class CommentSerializer(serializers.ModelSerializer):
         return serializer.data
 
 
-# class CommentLikeSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = CommentLike
-#         fields = ('pk', 'comment', 'user')
+class CommentLikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('pk', 'like')
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        user = self.context['request'].user
+        profile = Profile.objects.get(user=user)
+        is_like = self.initial_data.get('like', False)
+
+        if is_like:
+            instance.like += 1
+            profile.like_comment.add(instance)
+        else:
+            instance.like -= 1
+            profile.like_comment.remove(instance)
+        instance.save()
+
+        return instance
 
 
 class TagSerializer(serializers.ModelSerializer):

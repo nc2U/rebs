@@ -6,7 +6,12 @@ export declare interface User {
   is_superuser: boolean
   date_joined: string
   staffauth: StaffAuth | null
-  profile: number | null
+  profile: null | {
+    pk: number
+    name: string
+    like_post: number[]
+    like_comment: number[]
+  }
 }
 
 type Auth = '0' | '1' | '2'
@@ -16,8 +21,9 @@ export interface StaffAuth {
   user?: number
   company: number | null
   is_staff: boolean
-  assigned_project: number | null
+  is_project_staff: boolean
   allowed_projects: number[]
+  assigned_project: number | null
   contract: Auth
   payment: Auth
   notice: Auth
@@ -32,13 +38,15 @@ export interface StaffAuth {
 }
 
 export type Profile = {
-  [key: string]: undefined | number | null | string | File
+  [key: string]: undefined | number | number[] | null | string | File
   pk?: number | null
   user?: number | null
   name: string
   birth_date: string
   cell_phone: string
   image: File | string | null
+  like_post?: number[]
+  like_comment?: number[]
 }
 
 export interface Todo {

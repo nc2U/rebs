@@ -28,13 +28,13 @@ const wiseWordsCount = computed(() => rebsStore.wiseWordsCount)
 const fetchWiseWordsList = () => rebsStore.fetchWiseWordsList()
 const fetchWiseWord = (pk: number) => rebsStore.fetchWiseWord(pk)
 
-const getPk = (max: number) => Math.floor(Math.random() * max)
+const getPk = (max: number) => Math.floor(Math.random() * (max - 1) + 1)
 
 onBeforeMount(async () => {
   await fetchWiseWordsList()
-  await fetchWiseWord(getPk(wiseWordsCount.value))
+  await fetchWiseWord(getPk(wiseWordsCount.value + 1))
   setInterval(() => {
-    fetchWiseWord(getPk(wiseWordsCount.value))
+    fetchWiseWord(getPk(wiseWordsCount.value + 1))
   }, 90000)
 })
 </script>

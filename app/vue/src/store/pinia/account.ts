@@ -65,9 +65,9 @@ export const useAccount = defineStore('account', () => {
     fetchTodoList().then(() => fetchProfile())
   }
 
-  const login = (payload: LoginUser) => {
+  const login = async (payload: LoginUser) => {
     Cookies.remove('accessToken')
-    return api
+    return await api
       .post('/token/', payload)
       .then(res => {
         setToken(res.data.access)
@@ -80,10 +80,10 @@ export const useAccount = defineStore('account', () => {
       .catch(() => message('warning', '', '이메일 또는 비밀번호를 확인하여 주세요.'))
   }
 
-  const loginByToken = (token?: string) => {
+  const loginByToken = async (token?: string) => {
     if (token) {
       setToken(token)
-      return api
+      return await api
         .get(`/user/${extractId(token)}/`)
         .then(res => setUser(res.data))
         .catch(() => {
@@ -107,9 +107,9 @@ export const useAccount = defineStore('account', () => {
     message('info', '', '로그아웃 완료 알림!')
   }
 
-  const createAuth = (payload: StaffAuth, userPk: number) => {
+  const createAuth = async (payload: StaffAuth, userPk: number) => {
     payload.user = userPk
-    return api
+    return await api
       .post(`/staff-auth/`, payload)
       .then(() => {
         return api.get(`/user/${userPk}/`).then(() => fetchUser(userPk).then(() => message()))
@@ -117,9 +117,9 @@ export const useAccount = defineStore('account', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const patchAuth = (payload: StaffAuth, userPk: number) => {
+  const patchAuth = async (payload: StaffAuth, userPk: number) => {
     const { pk, ...authData } = payload
-    return api
+    return await api
       .patch(`/staff-auth/${pk}/`, authData)
       .then(() => {
         return api.get(`/user/${userPk}/`).then(() => fetchUser(userPk).then(() => message()))
@@ -127,17 +127,19 @@ export const useAccount = defineStore('account', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const fetchProfile = () =>
-    userInfo.value?.profile
-      ? api
-          .get(`/profile/${userInfo.value?.profile}/`)
+  const fetchProfile = async () => {
+    const profilePk = userInfo.value?.profile?.pk ?? null
+    return profilePk
+      ? await api
+          .get(`/profile/${profilePk}/`)
           .then(res => (profile.value = res.data))
           .catch(err => errorHandle(err.response.data))
       : null
+  }
 
-  const createProfile = (payload: FormData) => {
+  const createProfile = async (payload: FormData) => {
     api.defaults.headers.post['Content-Type'] = 'multipart/form-data'
-    return api
+    return await api
       .post(`/profile/`, payload)
       .then(() => {
         const cookedToken = Cookies.get('accessToken')
@@ -146,10 +148,10 @@ export const useAccount = defineStore('account', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const patchProfile = (payload: { pk: number; form: FormData }) => {
+  const patchProfile = async (payload: { pk: number; form: FormData }) => {
     const { pk, form } = payload
     api.defaults.headers.patch['Content-Type'] = 'multipart/form-data'
-    return api
+    return await api
       .patch(`/profile/${pk}/`, form)
       .then(() => {
         const cookedToken = Cookies.get('accessToken')
@@ -158,9 +160,9 @@ export const useAccount = defineStore('account', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const fetchTodoList = () => {
+  const fetchTodoList = async () => {
     const url = userInfo.value ? `/todo/?user=${userInfo.value.pk}&soft_deleted=false` : '/todo/'
-    return api
+    return await api
       .get(url)
       .then(res => {
         todoList.value = res.data.results

@@ -110,6 +110,7 @@ router.register(r'link', document.LinkViewSet)
 router.register(r'image', document.ImageViewSet)
 router.register(r'file', document.FileViewSet)
 router.register(r'comment', document.CommentViewSet)
+router.register(r'comment-like', document.CommentLikeViewSet)
 router.register(r'tag', document.TagViewSet)
 
 urlpatterns = router.urls

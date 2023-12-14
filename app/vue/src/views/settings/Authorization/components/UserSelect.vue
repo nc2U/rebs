@@ -4,10 +4,16 @@ import { useAccount } from '@/store/pinia/account'
 import { bgLight } from '@/utils/cssMixins'
 import Multiselect from '@vueform/multiselect'
 
-const props = defineProps({ selUser: { type: Number, default: null } })
-const emit = defineEmits(['select-user'])
+const props = defineProps({
+  selUser: { type: Number, default: null },
+  isStaff: { type: Boolean, default: false },
+  isProjectStaff: { type: Boolean, default: false },
+})
+const emit = defineEmits(['select-user', 'change-staff', 'change-pro-staff'])
 
 const userId = ref<number | null>(null)
+const staff = ref(false)
+const projectStaff = ref(false)
 
 const accountStore = useAccount()
 const userInfo = computed(() => accountStore.userInfo)
@@ -32,6 +38,33 @@ watch(
     else userId.value = null
   },
 )
+
+watch(
+  () => props.isStaff,
+  nVal => (staff.value = nVal),
+)
+
+watch(
+  () => props.isProjectStaff,
+  nVal => (projectStaff.value = nVal),
+)
+
+const changeStaff = () =>
+  nextTick(() => {
+    projectStaff.value = !staff.value
+    emit('change-staff', staff.value)
+  })
+
+const changeProStaff = () =>
+  nextTick(() => {
+    staff.value = !projectStaff.value
+    emit('change-pro-staff', projectStaff.value)
+  })
+
+onBeforeMount(() => {
+  if (props.isStaff) staff.value = props.isStaff
+  if (props.isProjectStaff) projectStaff.value = props.isProjectStaff
+})
 </script>
 
 <template>
@@ -53,6 +86,22 @@ watch(
             />
           </CCol>
         </CRow>
+      </CCol>
+      <CCol class="pt-2">
+        <CFormSwitch
+          v-model="staff"
+          label="본사 관리자 (프로젝트 관리 가능)"
+          @change="changeStaff"
+          id="is_staff"
+        />
+      </CCol>
+      <CCol class="pt-2">
+        <CFormSwitch
+          v-model="projectStaff"
+          label="프로젝트 관리자"
+          @change="changeProStaff"
+          id="is_project_staff"
+        />
       </CCol>
     </CRow>
   </CCallout>
