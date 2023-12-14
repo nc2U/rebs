@@ -23,7 +23,9 @@ const emit = defineEmits(['vision-toggle', 'to-like', 'on-submit'])
 
 const userInfo = inject<ComputedRef<User>>('userInfo')
 
-const isLike = computed(() => userInfo?.value.profile?.like_comment.includes(props.comment.pk ?? 0))
+const isLike = computed(
+  () => userInfo?.value.profile?.like_comments.includes(props.comment.pk ?? 0),
+)
 
 const isReplying = ref<boolean>(false)
 const isEditing = ref<boolean>(false)
