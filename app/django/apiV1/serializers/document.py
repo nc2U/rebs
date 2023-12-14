@@ -369,7 +369,7 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ('pk', 'post', 'content', 'parent', 'replies', 'like',
-                  'blame', 'ip', 'device', 'secret', 'user', 'updated')
+                  'blame', 'ip', 'device', 'secret', 'user', 'created')
         read_only_fields = ('ip',)
 
     def get_replies(self, instance):
@@ -387,8 +387,8 @@ class CommentLikeSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         user = self.context['request'].user
         profile = Profile.objects.get(user=user)
-        is_like = False if self.initial_data.get('like') == 'false' else True
-        if not is_like:
+        is_like = True if self.initial_data.get('like') == 'true' else False
+        if is_like:
             instance.like += 1
             profile.like_comments.add(instance)
         else:
