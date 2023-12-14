@@ -333,7 +333,7 @@ class PostLikeSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         profile = Profile.objects.get(user=user)
         is_like = self.initial_data.get('like', False)
-        if is_like:
+        if is_like == 'true':
             instance.like += 1
             profile.like_post.add(instance)
         else:

@@ -16,18 +16,10 @@ const actForm = ref<number | undefined>(undefined)
 const docStore = useDocument()
 const createComment = (payload: Comment) => docStore.createComment(payload)
 const patchComment = (payload: Comment) => docStore.patchComment(payload)
+const patchCommentLike = (payload: { pk: number; like: boolean }) =>
+  docStore.patchCommentLike(payload)
 
-const toLike = (payload: { pk: number; like: boolean }) => {
-  if (payload.like) {
-    alert('취소 로직 실행!')
-    // profile patch -> like_comment -> pk 제거
-    // comment -> like -= 1
-  } else {
-    alert('좋아요 로직 실행')
-    // profile patch -> like_comment -> pk 추가
-    // comment -> like += 1
-  }
-}
+const toLike = (payload: { pk: number; like: boolean }) => patchCommentLike(payload)
 
 const onSubmit = (payload: Comment) => {
   console.log(payload)
