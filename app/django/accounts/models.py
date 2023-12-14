@@ -100,6 +100,7 @@ class StaffAuth(models.Model):
         return f'{self.user} :: 권한'
 
     class Meta:
+        ordering = ('-id',)
         verbose_name = '스태프 권한'
         verbose_name_plural = '스태프 권한'
 
@@ -125,6 +126,7 @@ class Profile(models.Model):
         return self.name
 
     class Meta:
+        ordering = ('-id',)
         verbose_name = '사용자 프로필'
         verbose_name_plural = '사용자 프로필'
 
@@ -141,4 +143,4 @@ class Todo(models.Model):
         return self.title
 
     class Meta:
-        ordering = ['id']
+        ordering = ('id',)

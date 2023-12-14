@@ -102,6 +102,7 @@ onBeforeMount(() => {
           @change="changeProStaff"
           id="is_project_staff"
         />
+        {{ staff }} - {{ projectStaff }}
       </CCol>
     </CRow>
   </CCallout>
