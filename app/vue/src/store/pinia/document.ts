@@ -360,11 +360,16 @@ export const useDocument = defineStore('document', () => {
       .then(res => fetchPost(res.data.post).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
-  const patchCommentLike = async (payload: { pk: number; like: boolean }) => {
-    const { pk, like } = payload
+  const patchCommentLike = async (payload: {
+    pk: number
+    like: boolean
+    post: number
+    page?: number
+  }) => {
+    const { pk, like, post, page } = payload
     return await api
       .patch(`/comment-like/${pk}/`, like)
-      .then(() => fetchComment(pk))
+      .then(() => fetchCommentList(post, page))
       .catch(err => errorHandle(err.response.data))
   }
 

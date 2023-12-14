@@ -87,7 +87,7 @@ const onSubmit = (payload: Cm) => emit('on-submit', payload)
     <p v-if="!(formShow && isEditing)">
       <CBadge v-if="comment.secret" color="warning" class="mr-1">비밀글입니다</CBadge>
       <span v-show="!comment.secret || userInfo?.is_superuser || userInfo?.pk === comment.user?.pk">
-        {{ comment?.content }}
+        {{ comment?.content }} -> {{ userInfo.profile }}
       </span>
     </p>
     <p v-if="formShow && isEditing">

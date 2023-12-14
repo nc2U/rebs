@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ref, type PropType } from 'vue'
+import { ref, type PropType, inject } from 'vue'
+import { useAccount } from '@/store/pinia/account'
 import { useDocument } from '@/store/pinia/document'
 import type { Comment } from '@/store/types/document'
 import CommentList from './components/CommentList.vue'
@@ -13,13 +14,18 @@ const props = defineProps({
 const formVision = ref<boolean>(true)
 const actForm = ref<number | undefined>(undefined)
 
+const userInfo = inject('userInfo')
+const accStore = useAccount()
 const docStore = useDocument()
 const createComment = (payload: Comment) => docStore.createComment(payload)
 const patchComment = (payload: Comment) => docStore.patchComment(payload)
-const patchCommentLike = (payload: { pk: number; like: boolean }) =>
+const patchCommentLike = (payload: { pk: number; like: boolean; post: number; page?: number }) =>
   docStore.patchCommentLike(payload)
 
-const toLike = (payload: { pk: number; like: boolean }) => patchCommentLike(payload)
+const toLike = (payload: { pk: number; like: boolean; post: number; page?: number }) =>
+  patchCommentLike({ ...{ post: props.post }, ...payload }).then(() =>
+    accStore.setUser(userInfo.value),
+  )
 
 const onSubmit = (payload: Comment) => {
   console.log(payload)
