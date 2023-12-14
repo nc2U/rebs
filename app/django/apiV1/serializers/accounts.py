@@ -11,6 +11,19 @@ class StaffAuthInUserSerializer(serializers.ModelSerializer):
                   'contract', 'payment', 'notice', 'project_cash', 'project_docs', 'project',
                   'company_cash', 'company_docs', 'human_resource', 'company_settings', 'auth_manage')
 
+    def create(self, validated_data):
+        # 1. 권한정보 테이블 입력
+        staff_auth = StaffAuth.objects.create(**validated_data)
+        staff_auth.save()
+
+        # 2. 프로필 정보가 있는지 확인 후 없으면 기본 프로필 생성
+        try:
+            Profile.objects.get(user=validated_data['user'])
+        except Profile.DoesNotExist:
+            empty_profile = Profile(user=staff_auth.user)
+            empty_profile.save()
+        return staff_auth
+
 
 class ProfileInUserSerializer(serializers.ModelSerializer):
     class Meta:
