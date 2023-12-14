@@ -332,14 +332,14 @@ class PostLikeSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         user = self.context['request'].user
         profile = Profile.objects.get(user=user)
-        is_like = False if self.initial_data.get('like') == 'false' else True
-        if not is_like:
-            instance.like += 1
-            profile.like_posts.add(instance)
-        else:
+
+        if profile.like_posts.filter(pk=instance.pk).exists():
             if instance.like > 0:
                 instance.like -= 1
                 profile.like_posts.remove(instance)
+        else:
+            instance.like += 1
+            profile.like_posts.add(instance)
         instance.save()
         return instance
 
@@ -387,14 +387,14 @@ class CommentLikeSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         user = self.context['request'].user
         profile = Profile.objects.get(user=user)
-        is_like = True if self.initial_data.get('like') == 'true' else False
-        if is_like:
-            instance.like += 1
-            profile.like_comments.add(instance)
-        else:
+
+        if profile.like_comments.filter(pk=instance.pk).exists():
             if instance.like > 0:
                 instance.like -= 1
                 profile.like_comments.remove(instance)
+        else:
+            instance.like += 1
+            profile.like_comments.add(instance)
         instance.save()
         return instance
 
