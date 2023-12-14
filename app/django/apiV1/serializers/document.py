@@ -323,10 +323,24 @@ class PostSerializer(serializers.ModelSerializer):
         return instance
 
 
-# class PostLikeSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = PostLike
-#         fields = ('pk', 'post', 'user')
+class PostLikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ('pk', 'like')
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        user = self.context['request'].user
+        profile = Profile.objects.get(user=user)
+        is_like = self.initial_data.get('like', False)
+        if is_like:
+            instance.like += 1
+            profile.like_post.add(instance)
+        else:
+            instance.like -= 1
+            profile.like_post.remove(instance)
+        instance.save()
+        return instance
 
 
 class ImageSerializer(serializers.ModelSerializer):
