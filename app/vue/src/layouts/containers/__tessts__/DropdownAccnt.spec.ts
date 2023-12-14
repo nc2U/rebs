@@ -56,6 +56,8 @@ describe('AppHeaderDropdownAccnt Component Test', () => {
         birth_date: '',
         cell_phone: '',
         image: null,
+        like_post: [],
+        like_comment: [],
       },
     })
 
