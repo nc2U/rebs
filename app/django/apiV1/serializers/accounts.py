@@ -1,5 +1,7 @@
 from django.db import transaction
 from rest_framework import serializers
+from rest_framework.serializers import raise_errors_on_nested_writes
+from rest_framework.utils import model_meta
 
 from accounts.models import User, StaffAuth, Profile, Todo
 
@@ -13,19 +15,25 @@ class StaffAuthInUserSerializer(serializers.ModelSerializer):
                   'notice', 'project_cash', 'project_docs', 'project', 'company_cash',
                   'company_docs', 'human_resource', 'company_settings', 'auth_manage')
 
-    # @transaction.atomic
-    # def create(self, validated_data):
-    #     # 1. 권한정보 테이블 입력
-    #     staff_auth = StaffAuth.objects.create(**validated_data)
-    #     staff_auth.save()
-    #
-    #     # 2. 프로필 정보가 있는지 확인 후 없으면 기본 프로필 생성
-    #     try:
-    #         Profile.objects.get(user=validated_data['user'])
-    #     except Profile.DoesNotExist:
-    #         empty_profile = Profile(user=staff_auth.user)
-    #         empty_profile.save()
-    #     return staff_auth
+    @transaction.atomic
+    def create(self, validated_data):
+        # 1. 권한정보 테이블 입력
+        many_to_many = {'allowed_projects': validated_data.pop('allowed_projects')}
+        instance = StaffAuth.objects.create(**validated_data)
+
+        # Save many-to-many relationships after the instance is created.
+        for field_name, value in many_to_many.items():
+            field = getattr(instance, field_name)
+            field.set(value)
+
+        # 2. 프로필 정보가 있는지 확인 후 없으면 기본 프로필 생성
+        try:
+            Profile.objects.get(user=validated_data['user'])
+        except Profile.DoesNotExist:
+            empty_profile = Profile(user=instance.user)
+            empty_profile.save()
+
+        return instance
 
 
 class ProfileInUserSerializer(serializers.ModelSerializer):
