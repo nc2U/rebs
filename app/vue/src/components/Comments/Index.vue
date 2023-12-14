@@ -16,10 +16,11 @@ const actForm = ref<number | undefined>(undefined)
 const docStore = useDocument()
 const createComment = (payload: Comment) => docStore.createComment(payload)
 const patchComment = (payload: Comment) => docStore.patchComment(payload)
-const patchCommentLike = (payload: { pk: number; like: boolean }) =>
+const patchCommentLike = (payload: { pk: number; like: boolean; post: number; page?: number }) =>
   docStore.patchCommentLike(payload)
 
-const toLike = (payload: { pk: number; like: boolean }) => patchCommentLike(payload)
+const toLike = (payload: { pk: number; like: boolean; post: number; page?: number }) =>
+  patchCommentLike({ ...{ post: props.post }, ...payload })
 
 const onSubmit = (payload: Comment) => {
   console.log(payload)
