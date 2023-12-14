@@ -44,8 +44,8 @@ export type Profile = {
   birth_date: string
   cell_phone: string
   image: File | string | null
-  like_post: number[]
-  like_comment: number[]
+  like_post?: number[]
+  like_comment?: number[]
 }
 
 export interface Todo {
