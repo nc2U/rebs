@@ -7,10 +7,10 @@ from .forms import UserCreationForm, UserChangeForm
 from .models import User, StaffAuth, Profile, Todo
 
 
-# class StaffAuthInline(admin.StackedInline):
-#     model = StaffAuth
-#
-#
+class StaffAuthInline(admin.StackedInline):
+    model = StaffAuth
+
+
 # class ProfileInline(admin.StackedInline):
 #     model = Profile
 #
@@ -45,7 +45,7 @@ class UserAdmin(ImportExportMixin, BaseUserAdmin):
     search_fields = ('email', 'username')
     ordering = ('-date_joined',)
     filter_horizontal = ()
-    # inlines = (StaffAuthInline, ProfileInline, TodosInline)
+    inlines = (StaffAuthInline,)  # ProfileInline, TodosInline)
 
 
 # Now register the new UserAdmin...

@@ -8,9 +8,10 @@ from accounts.models import User, StaffAuth, Profile, Todo
 class StaffAuthInUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = StaffAuth
-        fields = ('pk', 'user', 'company', 'is_staff', 'is_project_staff', 'allowed_projects', 'assigned_project',
-                  'contract', 'payment', 'notice', 'project_cash', 'project_docs', 'project',
-                  'company_cash', 'company_docs', 'human_resource', 'company_settings', 'auth_manage')
+        fields = ('pk', 'user', 'company', 'is_staff', 'is_project_staff',
+                  'allowed_projects', 'assigned_project', 'contract', 'payment',
+                  'notice', 'project_cash', 'project_docs', 'project', 'company_cash',
+                  'company_docs', 'human_resource', 'company_settings', 'auth_manage')
 
     # @transaction.atomic
     # def create(self, validated_data):
