@@ -353,14 +353,6 @@ class Post(models.Model):
         verbose_name_plural = '05. 게시물 관리'
 
 
-# class PostLike(models.Model):
-#     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_likes')
-#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='post_users')
-#
-#     class Meta:
-#         constraints = [models.UniqueConstraint(fields=['post', 'user'], name='user_post_like')]
-
-
 def get_file_name(filename):
     file = filename.split('.')
     ext = file.pop()
@@ -425,14 +417,6 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['-created']
-
-
-# class CommentLike(models.Model):
-#     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='comment_likes')
-#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comment_users')
-#
-#     class Meta:
-#         constraints = [models.UniqueConstraint(fields=['comment', 'user'], name='user_comment_like')]
 
 
 class Tag(models.Model):

@@ -373,7 +373,6 @@ class CommentLikeSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         profile = Profile.objects.get(user=user)
         is_like = self.initial_data.get('like', False)
-
         if is_like:
             instance.like += 1
             profile.like_comment.add(instance)
@@ -381,7 +380,6 @@ class CommentLikeSerializer(serializers.ModelSerializer):
             instance.like -= 1
             profile.like_comment.remove(instance)
         instance.save()
-
         return instance
 
 
