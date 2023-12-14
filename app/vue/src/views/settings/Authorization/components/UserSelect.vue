@@ -90,7 +90,7 @@ onBeforeMount(() => {
       <CCol class="pt-2">
         <CFormSwitch
           v-model="staff"
-          label="본사 관리자로 승인(프로젝트 관리 가능)"
+          label="본사 관리자 (프로젝트 관리 가능)"
           @change="changeStaff"
           id="is_staff"
         />
@@ -98,7 +98,7 @@ onBeforeMount(() => {
       <CCol class="pt-2">
         <CFormSwitch
           v-model="projectStaff"
-          label="프로젝트 관리자로 승인"
+          label="프로젝트 관리자"
           @change="changeProStaff"
           id="is_project_staff"
         />

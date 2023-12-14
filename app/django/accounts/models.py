@@ -74,15 +74,15 @@ class User(AbstractBaseUser, PermissionsMixin):
 class StaffAuth(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     company = models.ForeignKey('company.Company', on_delete=models.PROTECT, verbose_name='회사정보')
-    is_staff = models.BooleanField('본사 관리자로 승인', default=False, help_text='외부 관계자가 아닌 본사 직원(관리자)일 경우 승인')
-    is_project_staff = models.BooleanField('프로젝트 관리자로 승인', default=False, help_text='본사 직원 외 프로젝트 관리 직원(관리자)일 경우 승인')
+    is_staff = models.BooleanField('본사 관리자', default=False, help_text='외부 관계자가 아닌 본사 직원(관리자)일 경우 선택')
+    is_project_staff = models.BooleanField('프로젝트 관리자', default=False, help_text='본사 직원 외 프로젝트 관리 직원(관리자)일 경우 선택')
     allowed_projects = models.ManyToManyField('project.Project', related_name='allowed_projects',
                                               blank=True, verbose_name='허용 프로젝트',
                                               help_text='사용자가 조회 및 관리할 수 있는 프로젝트들을 선택합니다.')
     assigned_project = models.ForeignKey('project.Project',
                                          on_delete=models.SET_NULL, null=True,
                                          blank=True, verbose_name='담당 메인 프로젝트',
-                                         help_text='사용자의 각 화면에서 선택한 프로젝트를 기본 프로젝트로 보여줍니다.')
+                                         help_text='선택한 프로젝트를 사용자의 각 화면에서 기본 프로젝트로 보여줍니다.')
     AUTH_CHOICE = (('0', '권한없음'), ('1', '읽기권한'), ('2', '쓰기권한'))
     contract = models.CharField('분양 계약 관리', max_length=1, choices=AUTH_CHOICE, default='0')
     payment = models.CharField('분양 수납 관리', max_length=1, choices=AUTH_CHOICE, default='0')
