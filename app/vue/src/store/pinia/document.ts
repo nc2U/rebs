@@ -293,13 +293,11 @@ export const useDocument = defineStore('document', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const patchPostLike = async (payload: { pk: number; like: boolean }) => {
-    const { pk, like } = payload
-    return await api
-      .patch(`/post-like/${pk}/`, like)
+  const patchPostLike = (pk: number) =>
+    api
+      .patch(`/post-like/${pk}/`, { pk })
       .then(() => accStore.fetchProfile().then(() => fetchPost(pk)))
       .catch(err => errorHandle(err.response.data))
-  }
 
   const deletePost = () => 4
 
