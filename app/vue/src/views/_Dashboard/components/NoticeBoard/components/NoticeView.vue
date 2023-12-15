@@ -200,6 +200,7 @@ onMounted(() => {
       <CCol class="text-center">
         <v-btn @click="toLike" variant="outlined" icon="true" color="grey" size="small">
           <v-icon :icon="isLike ? 'mdi-heart' : 'mdi-heart-outline'" size="small" />
+          <v-tooltip activator="parent" location="end">좋아요</v-tooltip>
         </v-btn>
       </CCol>
     </CRow>
