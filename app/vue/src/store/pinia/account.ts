@@ -34,6 +34,8 @@ export const useAccount = defineStore('account', () => {
   const getUsers = computed(() =>
     usersList.value.map((u: User) => ({ value: u.pk, label: u.username })),
   )
+  const likePosts = computed(() => profile.value?.like_posts)
+  const likeComments = computed(() => profile.value?.like_comments)
 
   // actions
   const fetchUsersList = () =>
@@ -218,6 +220,8 @@ export const useAccount = defineStore('account', () => {
     isAuthorized,
     myTodos,
     getUsers,
+    likePosts,
+    likeComments,
 
     fetchUsersList,
     fetchUser,

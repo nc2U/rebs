@@ -14,6 +14,7 @@ import type {
   Post,
   Comment as Cm,
 } from '@/store/types/document'
+import { useAccount } from '@/store/pinia/account'
 
 export type SuitCaseFilter = {
   company?: number | ''
@@ -179,6 +180,7 @@ export const useDocument = defineStore('document', () => {
       .then(() => fetchAllSuitCaseList({}).then(() => fetchSuitCaseList({}).then(() => message())))
       .catch(err => errorHandle(err.response.data))
 
+  const accStore = useAccount()
   const post = ref<Post | null>(null)
   const postList = ref<Post[]>([])
   const noticeList = ref<Post[]>([])
@@ -295,7 +297,7 @@ export const useDocument = defineStore('document', () => {
     const { pk, like } = payload
     return await api
       .patch(`/post-like/${pk}/`, like)
-      .then(() => fetchPost(pk))
+      .then(() => accStore.fetchProfile().then(() => fetchPost(pk)))
       .catch(err => errorHandle(err.response.data))
   }
 
@@ -363,7 +365,7 @@ export const useDocument = defineStore('document', () => {
   const patchCommentLike = (pk: number, post: number, page = 1) =>
     api
       .patch(`/comment-like/${pk}/`, { pk })
-      .then(() => fetchCommentList(post, page))
+      .then(() => accStore.fetchProfile().then(() => fetchCommentList(post, page)))
       .catch(err => errorHandle(err.response.data))
 
   const deleteComment = (payload: { pk: number; post: number }) =>
