@@ -12,11 +12,12 @@ const props = defineProps({
   reOrder: { type: Boolean, default: false },
   category: { type: Number, default: undefined },
   post: { type: Object as PropType<Post>, default: null },
+  likePosts: { type: Array as PropType<number[]>, default: () => [] },
   viewRoute: { type: String, required: true },
   currPage: { type: Number, required: true },
 })
 
-const emit = defineEmits(['post-hit', 'link-hit', 'file-hit', 'posts-renewal'])
+const emit = defineEmits(['to-like', 'post-hit', 'link-hit', 'file-hit', 'posts-renewal'])
 
 const prev = ref<number | null>()
 const next = ref<number | null>()
@@ -29,6 +30,9 @@ const getPostNav = computed(() => docStore.getPostNav)
 
 const getPrev = (pk: number) => getPostNav.value.filter(p => p.pk === pk).map(p => p.prev_pk)[0]
 const getNext = (pk: number) => getPostNav.value.filter(p => p.pk === pk).map(p => p.next_pk)[0]
+
+const isLike = computed(() => props.likePosts.includes(props.post.pk ?? 0))
+const toLike = () => emit('to-like', props.post.pk)
 
 const linkHitUp = async (pk: number) => emit('link-hit', pk)
 const fileHitUp = async (pk: number) => emit('file-hit', pk)
@@ -117,12 +121,8 @@ onMounted(() => {
           <span class="ml-1">{{ post.hit }}</span>
         </small>
         <small class="mr-2">
-          <v-icon icon="mdi-thumb-up" size="sm" />
-          <span class="ml-1">{{ 0 }}</span>
-        </small>
-        <small class="mr-2">
-          <v-icon icon="mdi-thumb-down" size="sm" />
-          <span class="ml-1">{{ 0 }}</span>
+          <v-icon icon="mdi-heart" size="sm" />
+          <span class="ml-1">{{ post.like }}</span>
         </small>
         <small class="mr-2 text-btn" @click="toPrint">
           <v-icon icon="mdi-printer" size="sm" />
@@ -216,14 +216,9 @@ onMounted(() => {
     </CRow>
 
     <CRow class="py-3">
-      <CCol class="text-right pr-1">
-        <v-btn variant="outlined" icon="true" color="grey" size="small">
-          <v-icon icon="mdi-thumb-up" size="small" />
-        </v-btn>
-      </CCol>
-      <CCol class="pl-1 text-body">
-        <v-btn variant="outlined" icon="true" color="grey" size="small">
-          <v-icon icon="mdi-thumb-down" size="small" />
+      <CCol class="text-center">
+        <v-btn @click="toLike" variant="outlined" icon="true" color="grey" size="small">
+          <v-icon :icon="isLike ? 'mdi-heart' : 'mdi-heart-outline'" size="small" />
         </v-btn>
       </CCol>
     </CRow>

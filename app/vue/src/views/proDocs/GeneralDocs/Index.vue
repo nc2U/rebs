@@ -2,6 +2,7 @@
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/proDocs/_menu/headermixin1'
 import { type RouteLocationNormalizedLoaded as Loaded, useRoute, useRouter } from 'vue-router'
+import { useAccount } from '@/store/pinia/account'
 import { useProject } from '@/store/pinia/project'
 import { useDocument, type PostFilter } from '@/store/pinia/document'
 import type { AFile, Attatches, Link, Post, PatchPost } from '@/store/types/document'
@@ -53,6 +54,9 @@ const project = computed(() => projStore.project?.pk)
 const projName = computed(() => projStore.project?.name)
 const company = computed(() => projStore.project?.company)
 
+const accStore = useAccount()
+const likePosts = computed(() => accStore.likePosts)
+
 const docStore = useDocument()
 const post = computed(() => docStore.post)
 const postList = computed(() => docStore.postList)
@@ -69,6 +73,7 @@ const updatePost = (payload: { pk: number; form: FormData }) => docStore.updateP
 const patchPost = (payload: PatchPost & { filter: PostFilter }) => docStore.patchPost(payload)
 const patchLink = (payload: Link) => docStore.patchLink(payload)
 const patchFile = (payload: AFile) => docStore.patchFile(payload)
+const patchPostLike = (pk: number) => docStore.patchPostLike(pk)
 
 const [route, router] = [useRoute() as Loaded & { name: string }, useRouter()]
 
@@ -76,6 +81,8 @@ watch(route, val => {
   if (val.params.postId) fetchPost(Number(val.params.postId))
   else docStore.post = null
 })
+
+const toLike = (pk: number) => patchPostLike(pk)
 
 const postsRenewal = (page: number) => {
   postFilter.value.page = page
@@ -200,8 +207,10 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId, route.param
           :re-order="postFilter.ordering !== '-created'"
           :category="postFilter.category as number"
           :post="post as Post"
+          :like-posts="likePosts"
           :view-route="mainViewName"
           :curr-page="postFilter.page ?? 1"
+          @to-like="toLike"
           @post-hit="postHit"
           @link-hit="linkHit"
           @file-hit="fileHit"
