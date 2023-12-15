@@ -8,6 +8,7 @@ import Pagination from '@/components/Pagination'
 defineProps({
   actForm: { type: Number, default: undefined },
   comments: { type: Array as PropType<Cm[]>, default: () => [] },
+  likeComments: { type: Array as PropType<number[]>, default: () => [] },
 })
 const emit = defineEmits(['vision-toggle', 'to-like', 'on-submit', 'form-reset', 'page-select'])
 
@@ -36,6 +37,7 @@ const commentPages = (pages: number) => Math.ceil(commentCount.value / pages)
       <Comment
         :form-show="actForm === cmt1.pk"
         :comment="cmt1"
+        :like-comments="likeComments"
         @vision-toggle="visionToggle"
         @to-like="toLike"
         @on-submit="onSubmit"
@@ -45,6 +47,7 @@ const commentPages = (pages: number) => Math.ceil(commentCount.value / pages)
         <Comment
           :form-show="actForm === cmt2.pk"
           :comment="cmt2"
+          :like-comments="likeComments"
           @vision-toggle="visionToggle"
           @to-like="toLike"
           @on-submit="onSubmit"
@@ -54,6 +57,7 @@ const commentPages = (pages: number) => Math.ceil(commentCount.value / pages)
           <Comment
             :form-show="actForm === cmt3.pk"
             :comment="cmt3"
+            :like-comments="likeComments"
             @vision-toggle="visionToggle"
             @to-like="toLike"
             @on-submit="onSubmit"
@@ -63,6 +67,7 @@ const commentPages = (pages: number) => Math.ceil(commentCount.value / pages)
             <Comment
               :form-show="actForm === cmt4.pk"
               :comment="cmt4"
+              :like-comments="likeComments"
               @vision-toggle="visionToggle"
               @to-like="toLike"
               @on-submit="onSubmit"
@@ -71,6 +76,7 @@ const commentPages = (pages: number) => Math.ceil(commentCount.value / pages)
               <Comment
                 :form-show="actForm === cmt5.pk"
                 :comment="cmt5"
+                :like-comments="likeComments"
                 :last-depth="true"
                 @vision-toggle="visionToggle"
                 @to-like="toLike"

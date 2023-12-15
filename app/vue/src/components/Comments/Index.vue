@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ref, type PropType } from 'vue'
+import { ref, type PropType, computed } from 'vue'
+import { useAccount } from '@/store/pinia/account'
 import { useDocument } from '@/store/pinia/document'
 import type { Comment } from '@/store/types/document'
 import CommentList from './components/CommentList.vue'
@@ -12,6 +13,9 @@ const props = defineProps({
 
 const formVision = ref<boolean>(true)
 const actForm = ref<number | undefined>(undefined)
+
+const accStore = useAccount()
+const likeComments = computed(() => accStore.likeComments)
 
 const docStore = useDocument()
 const createComment = (payload: Comment) => docStore.createComment(payload)
@@ -43,6 +47,7 @@ const pageSelect = (page: number) => docStore.fetchCommentList(props.post, page)
   <CommentList
     :act-form="actForm"
     :comments="comments"
+    :like-comments="likeComments"
     @vision-toggle="visionToggle"
     @to-like="toLike"
     @on-submit="onSubmit"

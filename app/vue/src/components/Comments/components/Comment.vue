@@ -8,6 +8,7 @@ import CommentForm from './CommentForm.vue'
 const props = defineProps({
   formShow: { type: Boolean, default: true }, // 현재 댓글과 편집 폼 댓글이 동일한지 여부
   comment: { type: Object as PropType<Cm>, default: null },
+  likeComments: { type: Array as PropType<number[]>, default: () => [] },
   lastDepth: { type: Boolean, default: false },
 })
 
@@ -23,9 +24,7 @@ const emit = defineEmits(['vision-toggle', 'to-like', 'on-submit'])
 
 const userInfo = inject<ComputedRef<User>>('userInfo')
 
-const isLike = computed(
-  () => userInfo?.value.profile?.like_comments.includes(props.comment.pk ?? 0),
-)
+const isLike = computed(() => props.likeComments.includes(props.comment.pk ?? 0))
 
 const isReplying = ref<boolean>(false)
 const isEditing = ref<boolean>(false)
@@ -89,7 +88,7 @@ const onSubmit = (payload: Cm) => emit('on-submit', payload)
     <p v-if="!(formShow && isEditing)">
       <CBadge v-if="comment.secret" color="warning" class="mr-1">비밀글입니다</CBadge>
       <span v-show="!comment.secret || userInfo?.is_superuser || userInfo?.pk === comment.user?.pk">
-        {{ comment?.content }} | {{ userInfo?.profile }}
+        {{ comment?.content }}
       </span>
     </p>
     <p v-if="formShow && isEditing">
