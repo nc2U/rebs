@@ -39,7 +39,7 @@ class StaffAuthInUserSerializer(serializers.ModelSerializer):
 class ProfileInUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ('pk', 'name', 'like_posts', 'like_comments')
+        fields = ('pk', 'name', 'birth_date', 'cell_phone')
 
 
 class UserSerializer(serializers.ModelSerializer):

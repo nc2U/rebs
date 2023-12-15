@@ -9,8 +9,8 @@ export declare interface User {
   profile: null | {
     pk: number
     name: string
-    like_posts: number[]
-    like_comments: number[]
+    birth_date: string
+    cell_phone: string
   }
 }
 
