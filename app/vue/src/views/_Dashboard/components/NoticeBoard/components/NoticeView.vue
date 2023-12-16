@@ -1,9 +1,18 @@
 <script lang="ts" setup>
-import { computed, type ComputedRef, inject, onBeforeMount, onMounted, type PropType, ref, watch } from 'vue'
+import {
+  computed,
+  type ComputedRef,
+  inject,
+  onBeforeMount,
+  onMounted,
+  type PropType,
+  ref,
+  watch,
+} from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
 import { cutString, timeFormat } from '@/utils/baseMixins'
-import type { User } from "@/store/types/accounts";
+import type { User } from '@/store/types/accounts'
 import type { Post } from '@/store/types/document'
 import sanitizeHtml from 'sanitize-html'
 import Comments from '@/components/Comments/Index.vue'
@@ -53,13 +62,13 @@ const getFileName = (file: string) => {
 const route = useRoute()
 
 watch(
-    () => getPostNav.value,
-    () => {
-      if (postId.value) {
-        prev.value = getPrev(postId.value)
-        next.value = getNext(postId.value)
-      }
-    },
+  () => getPostNav.value,
+  () => {
+    if (postId.value) {
+      prev.value = getPrev(postId.value)
+      next.value = getNext(postId.value)
+    }
+  },
 )
 
 onBeforeRouteUpdate((to, from) => {
@@ -71,12 +80,12 @@ onBeforeRouteUpdate((to, from) => {
     const last = getPostNav.value.length - 1
     const getLast = getPostNav.value[last]
     if (toPostId && getLast.pk === fromPostId && getLast.prev_pk === toPostId)
-        // 다음 페이지 목록으로
+      // 다음 페이지 목록으로
       emit('posts-renewal', props.currPage + 1)
 
     const getFirst = getPostNav.value[0]
     if (toPostId && getFirst.pk === fromPostId && getFirst.next_pk === toPostId)
-        // 이전 페이지 목록으로
+      // 이전 페이지 목록으로
       emit('posts-renewal', props.currPage - 1)
 
     if (toPostId) {
@@ -111,32 +120,32 @@ onMounted(() => {
       </CCol>
     </CRow>
 
-    <hr/>
+    <hr />
 
     <CRow class="text-blue-grey">
       <CCol>
         <small class="mr-3">작성자 : {{ post.user }}</small>
         <small class="mr-2">
-          <v-icon icon="mdi-comment-text-multiple" size="sm"/>
+          <v-icon icon="mdi-comment-text-multiple" size="sm" />
           <span class="ml-1">{{ post.comments?.length ?? 0 }}</span>
         </small>
         <small class="mr-2">
-          <v-icon icon="mdi-eye" size="sm"/>
+          <v-icon icon="mdi-eye" size="sm" />
           <span class="ml-1">{{ post.hit }}</span>
         </small>
         <small class="mr-2">
-          <v-icon icon="mdi-heart" size="sm"/>
+          <v-icon icon="mdi-heart" size="sm" />
           <span class="ml-1">{{ post.like }}</span>
         </small>
         <small class="mr-2 text-btn" @click="toPrint">
-          <v-icon icon="mdi-printer" size="sm"/>
+          <v-icon icon="mdi-printer" size="sm" />
           <span class="ml-1">프린트</span>
         </small>
       </CCol>
 
       <CCol class="text-right" md="3">
         <small>
-          <v-icon icon="mdi-calendar-clock" size="small"/>
+          <v-icon icon="mdi-calendar-clock" size="small" />
           <span class="ml-2">{{ timeFormat(post.created ?? '') }}</span>
         </small>
       </CCol>
@@ -151,9 +160,9 @@ onMounted(() => {
             <CListGroup>
               <CListGroupItem>Link</CListGroupItem>
               <CListGroupItem
-                  v-for="l in post.links"
-                  :key="l.pk"
-                  class="d-flex justify-content-between align-items-center"
+                v-for="l in post.links"
+                :key="l.pk"
+                class="d-flex justify-content-between align-items-center"
               >
                 <a :href="l.link" target="_blank" @click="linkHitUp(l.pk as number)">
                   {{ cutString(l.link, 45) }}
@@ -174,9 +183,9 @@ onMounted(() => {
             <CListGroup>
               <CListGroupItem>File</CListGroupItem>
               <CListGroupItem
-                  v-for="f in post.files"
-                  :key="f.pk"
-                  class="d-flex justify-content-between align-items-center"
+                v-for="f in post.files"
+                :key="f.pk"
+                class="d-flex justify-content-between align-items-center"
               >
                 <a :href="f.file" target="_blank" @click="fileHitUp(f.pk as number)">
                   {{ cutString(getFileName(f.file ?? ''), 45) }}
@@ -196,14 +205,14 @@ onMounted(() => {
 
     <CRow class="my-5 p-3">
       <CCol>
-        <div v-html="sanitizeHtml(post.content)"/>
+        <div v-html="sanitizeHtml(post.content)" />
       </CCol>
     </CRow>
 
     <CRow class="py-3">
       <CCol class="text-center">
         <v-btn @click="toLike" variant="outlined" icon="true" color="grey" size="small">
-          <v-icon :icon="isLike ? 'mdi-heart' : 'mdi-heart-outline'" size="small"/>
+          <v-icon :icon="isLike ? 'mdi-heart' : 'mdi-heart-outline'" size="small" />
           <v-tooltip activator="parent" location="end">좋아요</v-tooltip>
         </v-btn>
       </CCol>
@@ -211,9 +220,9 @@ onMounted(() => {
 
     <CRow class="my-3 px-3">
       <CCol class="text-grey-darken-1 pt-2 social">
-        <v-icon icon="mdi-facebook" class="mr-2" @click="toSocial"/>
-        <v-icon icon="mdi-twitter" class="mr-2" @click="toSocial"/>
-        <v-icon icon="mdi-instagram" class="mr-2" @click="toSocial"/>
+        <v-icon icon="mdi-facebook" class="mr-2" @click="toSocial" />
+        <v-icon icon="mdi-twitter" class="mr-2" @click="toSocial" />
+        <v-icon icon="mdi-instagram" class="mr-2" @click="toSocial" />
       </CCol>
       <CCol class="text-right">
         <v-btn variant="tonal" size="small" :rounded="0" class="mr-1" @click="toSocial">
@@ -227,9 +236,9 @@ onMounted(() => {
       <CCol>
         <CButtonGroup role="group" class="mr-3">
           <CButton
-              color="light"
-              :disabled="!prev || reOrder"
-              @click="
+            color="light"
+            :disabled="!prev || reOrder"
+            @click="
               $router.push({
                 name: `${viewRoute} - 보기`,
                 params: { postId: prev },
@@ -239,9 +248,9 @@ onMounted(() => {
             이전글
           </CButton>
           <CButton
-              color="light"
-              :disabled="!next || reOrder"
-              @click="
+            color="light"
+            :disabled="!next || reOrder"
+            @click="
               $router.push({
                 name: `${viewRoute} - 보기`,
                 params: { postId: next },
@@ -255,9 +264,9 @@ onMounted(() => {
       <CCol class="text-right">
         <CButtonGroup role="group">
           <CButton
-              v-if="writeAuth"
-              color="success"
-              @click="
+            v-if="writeAuth"
+            color="success"
+            @click="
               $router.push({
                 name: `${viewRoute} - 수정`,
                 params: { postId: post?.pk },
@@ -272,9 +281,9 @@ onMounted(() => {
       </CCol>
     </CRow>
 
-    <hr/>
+    <hr />
 
-    <Comments :post="post.pk as number" :comments="commentList"/>
+    <Comments :post="post.pk as number" :comments="commentList" />
   </div>
 </template>
 

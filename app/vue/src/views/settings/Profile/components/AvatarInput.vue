@@ -27,8 +27,7 @@ const loadFile = (payload: Event) => {
     reader.readAsDataURL(img) // 주소 데이터화
     reader.onload = e => {
       modalImg.value = e.target?.result // 크로퍼에 할당
-      if (!!modalImg.value)
-        cropModal.value.visible = true
+      if (!!modalImg.value) cropModal.value.visible = true
     }
   }
 }
@@ -38,9 +37,7 @@ const transAvatarInput = (img: File) => {
   emit('trans-profile-form', img) // 크롭된 이미지
   const reader = new FileReader()
   reader.readAsDataURL(img) // 주소 데이터화
-  reader.onload = e =>
-      imgSource.value = String(e.target?.result) // 화면 표시 이미지 변경
-
+  reader.onload = e => (imgSource.value = String(e.target?.result)) // 화면 표시 이미지 변경
 }
 
 const delModalImg = () => (modalImg.value = null)
@@ -59,22 +56,22 @@ onMounted(() => (imgSource.value = props.image || '/static/dist/img/NoImage.jpeg
     <CCol>
       <h6>프로필 이미지</h6>
       <input
-          id="file"
-          type="file"
-          class="form-control"
-          accept="image/*"
-          style="display: none"
-          @change="loadFile"
+        id="file"
+        type="file"
+        class="form-control"
+        accept="image/*"
+        style="display: none"
+        @change="loadFile"
       />
       <CRow class="relative inline-block">
         <CCol>
           <CDropdown placement="bottom-start">
             <CDropdownToggle class="py-0 btn-link" :caret="false">
-              <CImage rounded thumbnail fluid :src="imgSource"/>
+              <CImage rounded thumbnail fluid :src="imgSource" />
               <CCol
-                  class="bg-white text-high-emphasis position-absolute rounded-2 px-2 py-1 left-0 bottom-0 ml-1 mb-1 border"
+                class="bg-white text-high-emphasis position-absolute rounded-2 px-2 py-1 left-0 bottom-0 ml-1 mb-1 border"
               >
-                <CIcon name="cilPencil"/>
+                <CIcon name="cilPencil" />
                 Edit
               </CCol>
             </CDropdownToggle>
@@ -88,10 +85,10 @@ onMounted(() => (imgSource.value = props.image || '/static/dist/img/NoImage.jpeg
   </CRow>
 
   <CropperModal
-      ref="cropModal"
-      :modal-img="modalImg"
-      @image-del="delModalImg"
-      @trans-avatar-input="transAvatarInput"
+    ref="cropModal"
+    :modal-img="modalImg"
+    @image-del="delModalImg"
+    @trans-avatar-input="transAvatarInput"
   />
 </template>
 

@@ -10,7 +10,7 @@ import ProfileForm from '@/views/settings/Profile/components/ProfileForm.vue'
 const accStore = useAccount()
 const profile = computed(() => accStore.profile)
 const isStaff = computed(
-    () => useAccount().superAuth || Number(useAccount().staffAuth?.is_staff || null),
+  () => useAccount().superAuth || Number(useAccount().staffAuth?.is_staff || null),
 )
 const profileNav = isStaff.value ? navMenu : ['프로필 관리']
 
@@ -28,8 +28,7 @@ const onSubmit = (payload: Profile) => {
 
   const form = new FormData()
 
-  for (const key in formData)
-    form.append(key, formData[key] as string | Blob)
+  for (const key in formData) form.append(key, formData[key] as string | Blob)
 
   if (pk) patchProfile({ ...{ pk }, ...{ form } })
   else createProfile(form)
@@ -37,13 +36,9 @@ const onSubmit = (payload: Profile) => {
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="profileNav" selector="CompanySelect"/>
+  <ContentHeader :page-title="pageTitle" :nav-menu="profileNav" selector="CompanySelect" />
 
   <ContentBody>
-    <ProfileForm
-        ref="profile"
-        :profile="profile as Profile"
-        @on-submit="onSubmit"
-    />
+    <ProfileForm ref="profile" :profile="profile as Profile" @on-submit="onSubmit" />
   </ContentBody>
 </template>
