@@ -3,12 +3,12 @@ import { ref, onMounted, watch } from 'vue'
 import CropperModal from './CropperModal.vue'
 
 const props = defineProps({
-  image: { type: String, default: '' },
+  image: { type: String, default: '/static/dist/img/NoImage.jpeg' },
 })
 
 const emit = defineEmits(['trans-profile-form'])
 
-const imgUrl = ref('') // 화면에 표시되는 이미지 소스
+const imgSource = ref('') // 화면에 표시되는 이미지 소스
 
 const modalImg = ref()
 const cropModal = ref()
@@ -24,12 +24,11 @@ const loadFile = (payload: Event) => {
   if (inputEl.files) {
     const img = inputEl.files[0] // 원본 이미지
     const reader = new FileReader()
-    reader.readAsDataURL(img) // 데이터화
+    reader.readAsDataURL(img) // 주소 데이터화
     reader.onload = e => {
       modalImg.value = e.target?.result // 크로퍼에 할당
-      if (!!modalImg.value) {
+      if (!!modalImg.value)
         cropModal.value.visible = true
-      }
     }
   }
 }
@@ -38,22 +37,21 @@ const transAvatarInput = (img: File) => {
   // cropperModal에서 이미지 크롭(submit) 시 동작
   emit('trans-profile-form', img) // 크롭된 이미지
   const reader = new FileReader()
-  reader.readAsDataURL(img) // 데이터화
-  reader.onload = e => {
-    // image to data => imgUrl.value 저장
-    imgUrl.value = String(e.target?.result) // 화면 표시 이미지 변경
-  }
+  reader.readAsDataURL(img) // 주소 데이터화
+  reader.onload = e =>
+      imgSource.value = String(e.target?.result) // 화면 표시 이미지 변경
+
 }
 
 const delModalImg = () => (modalImg.value = null)
 
 watch(props, val => {
   if (val) {
-    imgUrl.value = val.image
+    imgSource.value = val.image
   }
 })
 
-onMounted(() => (imgUrl.value = props.image || '/static/dist/img/NoImage.jpeg'))
+onMounted(() => (imgSource.value = props.image || '/static/dist/img/NoImage.jpeg'))
 </script>
 
 <template>
@@ -72,7 +70,7 @@ onMounted(() => (imgUrl.value = props.image || '/static/dist/img/NoImage.jpeg'))
         <CCol>
           <CDropdown placement="bottom-start">
             <CDropdownToggle class="py-0 btn-link" :caret="false">
-              <CImage rounded thumbnail fluid :src="imgUrl"/>
+              <CImage rounded thumbnail fluid :src="imgSource"/>
               <CCol
                   class="bg-white text-high-emphasis position-absolute rounded-2 px-2 py-1 left-0 bottom-0 ml-1 mb-1 border"
               >
