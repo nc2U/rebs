@@ -73,15 +73,63 @@ const toPrint = () => {
     printWindow.close()
   }
 }
-const toSocial = () => alert('준비중!')
-const toDelete = () => alert('준비중!')
+
+const route = useRoute()
+
+const sendUrl = `${window.location.host}${route.fullPath}`
+
+const shareFacebook = () => window.open(`https://facebook.com/share/share.php?u=${sendUrl}`)
+
+const shareTwitter = () => window.open(`https://twitter.com/intent/tweet?text=&url=${sendUrl}`)
+
+const shareKakaoTalk = () => {
+  // 카카오링크 버튼 생성
+  ;(window as any).Kakao.Share.createDefaultButton({
+    container: '#kakaotalk-sharing-btn',
+    objectType: 'feed',
+    content: {
+      title: '주식회사 바램디앤씨',
+      description: `#공지사항 #${props.post?.title}`,
+      imageUrl: 'https://brdnc.co.kr/static/dist/img/icons/ms-icon-310x310.png',
+      link: {
+        // [내 애플리케이션] > [플랫폼] 에서 등록한 사이트 도메인과 일치해야 함
+        mobileWebUrl: sendUrl,
+        webUrl: sendUrl,
+      },
+    },
+    social: {
+      likeCount: props.post.like,
+      commentCount: props.post.comments?.length ?? 0,
+      // sharedCount: 45,
+    },
+    buttons: [
+      {
+        title: '웹으로 보기',
+        link: {
+          mobileWebUrl: sendUrl,
+          webUrl: sendUrl,
+        },
+      },
+      {
+        title: '앱으로 보기',
+        link: {
+          mobileWebUrl: sendUrl,
+          webUrl: sendUrl,
+        },
+      },
+    ],
+  })
+}
+
+const toScrape = () => alert('스크랩 기능 중비중!')
+const toBlame = () => alert('신고 기능 준비중!')
 
 const getFileName = (file: string) => {
   if (file) return decodeURI(file.split('/').slice(-1)[0])
   else return
 }
 
-const route = useRoute()
+const toDelete = () => alert('삭제 기능 준비중!')
 
 watch(
   () => getPostNav.value,
@@ -242,15 +290,26 @@ onMounted(() => {
 
     <CRow class="my-3 px-3">
       <CCol class="text-grey-darken-1 pt-2 social">
-        <v-icon icon="mdi-facebook" class="mr-2" @click="toSocial" />
-        <v-icon icon="mdi-twitter" class="mr-2" @click="toSocial" />
-        <v-icon icon="mdi-instagram" class="mr-2" @click="toSocial" />
+        <a
+          id="kakaotalk-sharing-btn"
+          href="javascript:void(0)"
+          @click="shareKakaoTalk"
+          class="mr-2"
+        >
+          <img
+            src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
+            alt="카카오톡 공유 보내기 버튼"
+            width="20px;"
+          />
+        </a>
+        <v-icon icon="mdi-facebook" class="mr-2" @click="shareFacebook" />
+        <v-icon icon="mdi-twitter" class="mr-2" @click="shareTwitter" />
       </CCol>
       <CCol class="text-right">
-        <v-btn variant="tonal" size="small" :rounded="0" class="mr-1" @click="toSocial">
+        <v-btn variant="tonal" size="small" :rounded="0" class="mr-1" @click="toScrape">
           스크랩
         </v-btn>
-        <v-btn variant="tonal" size="small" :rounded="0" @click="toSocial"> 신고</v-btn>
+        <v-btn variant="tonal" size="small" :rounded="0" @click="toBlame"> 신고</v-btn>
       </CCol>
     </CRow>
 
