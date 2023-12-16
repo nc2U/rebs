@@ -162,7 +162,8 @@ onMounted(() => formDataSetup())
           </CRow>
         </CCol>
         <CCol md="6">
-          <AvatarInput ref="avatar" :image="profile.image as string" @trans-profile-form="transProfileForm"/>
+          <AvatarInput ref="avatar" :image="profile && profile.image || '/static/dist/img/NoImage.jpeg'"
+                       @trans-profile-form="transProfileForm"/>
         </CCol>
       </CRow>
     </CCardBody>
