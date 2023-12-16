@@ -11,7 +11,7 @@ const props = defineProps({
   profile: { type: Object, default: null },
 })
 
-const emit = defineEmits(['trans-index', 'on-submit', 'reset-form'])
+const emit = defineEmits(['on-submit', 'reset-form'])
 
 const refAlertModal = ref()
 const refConfirmModal = ref()
@@ -22,7 +22,7 @@ const form = reactive<Profile>({
   name: '',
   birth_date: '',
   cell_phone: '',
-  image: '',
+  image: undefined,
 })
 
 const validated = ref(false)
@@ -43,10 +43,8 @@ const formsCheck = computed(() => {
 const confirmText = computed(() => (props.profile?.pk ? '변경' : '등록'))
 const btnClass = computed(() => (props.profile?.pk ? 'success' : 'primary'))
 
-const transForm = (img: File) => {
-  form.image = img.name
-  emit('trans-index', img)
-}
+const transProfileForm = (img: File) => form.image = img
+
 
 const onSubmit = (event: Event) => {
   if (userInfo.value) {
@@ -76,7 +74,7 @@ const formDataReset = () => {
   form.name = ''
   form.birth_date = ''
   form.cell_phone = ''
-  form.image = ''
+  form.image = undefined
 }
 
 const formDataSetup = () => {
@@ -86,7 +84,6 @@ const formDataSetup = () => {
     form.name = props.profile.name
     form.birth_date = props.profile.birth_date
     form.cell_phone = props.profile.cell_phone
-    form.image = props.profile.image
   }
 }
 
@@ -165,7 +162,7 @@ onMounted(() => formDataSetup())
           </CRow>
         </CCol>
         <CCol md="6">
-          <AvatarInput ref="avatar" :image="form.image as string" @trans-profile-form="transForm"/>
+          <AvatarInput ref="avatar" :image="profile.image as string" @trans-profile-form="transProfileForm"/>
         </CCol>
       </CRow>
     </CCardBody>

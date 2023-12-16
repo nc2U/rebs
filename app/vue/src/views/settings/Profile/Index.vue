@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { pageTitle, navMenu } from '@/views/settings/_menu/headermixin'
 import { type Profile } from '@/store/types/accounts'
@@ -7,7 +7,6 @@ import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ProfileForm from '@/views/settings/Profile/components/ProfileForm.vue'
 
-const image = ref<File | string | null>(null)
 const accStore = useAccount()
 const profile = computed(() => accStore.profile)
 const isStaff = computed(
@@ -15,14 +14,13 @@ const isStaff = computed(
 )
 const profileNav = isStaff.value ? navMenu : ['프로필 관리']
 
-const transForm = (img: File) => (image.value = img)
-
 const createProfile = (payload: FormData) => accStore.createProfile(payload)
 const patchProfile = (payload: { pk: number; form: FormData }) => accStore.patchProfile(payload)
 
 const onSubmit = (payload: Profile) => {
-  if (image.value) payload.image = image.value
-  else if (payload.pk) delete payload.image
+  if (!payload.image) delete payload.image
+
+  console.log(payload)
 
   const { pk, ...formData } = payload
   if (!formData.user && accStore.userInfo) formData.user = accStore.userInfo.pk
@@ -45,7 +43,6 @@ const onSubmit = (payload: Profile) => {
     <ProfileForm
         ref="profile"
         :profile="profile as Profile"
-        @trans-index="transForm"
         @on-submit="onSubmit"
     />
   </ContentBody>
