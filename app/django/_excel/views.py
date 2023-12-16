@@ -3324,7 +3324,6 @@ class ExportSuitCases(View):
 
         # title_list
         header_src = [[],
-                      ['구분', 'project', 20],
                       ['종류', 'sort', 10],
                       ['심급', 'level', 10],
                       ['관련사건', 'related_case', 16],
@@ -3435,10 +3434,6 @@ class ExportSuitCases(View):
         # Turn off some of the warnings:
         # worksheet.ignore_errors({'number_stored_as_text': 'F:G'})
 
-        def get_proj_name(pk):
-            proj = Project.objects.get(pk=pk)
-            return proj.name
-
         def get_related_case(pk):
             rs_case = LawsuitCase.objects.get(pk=pk)
             return rs_case.case_number
@@ -3450,18 +3445,16 @@ class ExportSuitCases(View):
             row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
                 if col_num == 1:
-                    cell_data = get_proj_name(cell_data) if cell_data else '본사'
-                elif col_num == 2:
                     cell_data = list(filter(lambda x: x[0] == cell_data, LawsuitCase.SORT_CHOICES))[0][1]
-                elif col_num == 3:
+                elif col_num == 2:
                     cell_data = list(filter(lambda x: x[0] == cell_data, LawsuitCase.LEVEL_CHOICES))[0][1]
-                elif col_num == 4:
+                elif col_num == 3:
                     cell_data = get_related_case(cell_data) if cell_data else ''
-                elif col_num == 6:
+                elif col_num == 5:
                     cell_data = list(filter(lambda x: x[0] == cell_data, LawsuitCase.COURT_CHOICES))[0][1] \
                         if cell_data else ''
-                if col_num < 7 or col_num in (16, 17):
-                    if col_num in (16, 17):
+                if col_num < 6 or col_num in (15, 16):
+                    if col_num in (15, 16):
                         body_format['num_format'] = 'yyyy-mm-dd'
                     else:
                         body_format['num_format'] = '#,##0'
@@ -3563,39 +3556,39 @@ class ExportSuitCase(View):
         worksheet.merge_range(row_num, 1, row_num, 3, '내용', h_format)
 
         row_num = 3
+        worksheet.write(row_num, 0, '사건 번호', h_format)
+        worksheet.merge_range(row_num, 1, row_num, 3, str(obj.case_number), b_format)
+
+        row_num = 4
+        worksheet.write(row_num, 0, '사건명', h_format)
+        worksheet.merge_range(row_num, 1, row_num, 3, str(obj.case_name), b_format)
+
+        row_num = 5
         worksheet.write(row_num, 0, '유형', h_format)
         worksheet.merge_range(row_num, 1, row_num, 3,
                               list(filter(lambda x: x[0] == obj.sort, LawsuitCase.SORT_CHOICES))[0][1],
                               b_format)
 
-        row_num = 4
+        row_num = 6
         worksheet.write(row_num, 0, '심급', h_format)
         worksheet.merge_range(row_num, 1, row_num, 3,
                               list(filter(lambda x: x[0] == obj.level, LawsuitCase.LEVEL_CHOICES))[0][1],
                               b_format)
 
-        row_num = 5
+        row_num = 7
         worksheet.write(row_num, 0, '관련 사건', h_format)
         worksheet.merge_range(row_num, 1, row_num, 3, str(obj.related_case), b_format)
 
-        row_num = 6
+        row_num = 8
         worksheet.write(row_num, 0, '관할 법원', h_format)
         worksheet.merge_range(row_num, 1, row_num, 3,
                               list(filter(lambda x: x[0] == obj.court, LawsuitCase.COURT_CHOICES))[0][1] \
                                   if obj.court else '',
                               b_format)
 
-        row_num = 7
+        row_num = 9
         worksheet.write(row_num, 0, '처리기관', h_format)
         worksheet.merge_range(row_num, 1, row_num, 3, str(obj.other_agency), b_format)
-
-        row_num = 8
-        worksheet.write(row_num, 0, '사건 번호', h_format)
-        worksheet.merge_range(row_num, 1, row_num, 3, str(obj.case_number), b_format)
-
-        row_num = 9
-        worksheet.write(row_num, 0, '사건명', h_format)
-        worksheet.merge_range(row_num, 1, row_num, 3, str(obj.case_name), b_format)
 
         row_num = 10
         worksheet.write(row_num, 0, '원고(채권자)', h_format)
