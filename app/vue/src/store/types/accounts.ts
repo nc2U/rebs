@@ -44,7 +44,7 @@ export type Profile = {
   name: string
   birth_date: string
   cell_phone: string
-  image: File | string | null
+  image?: File | string | null
   like_posts?: number[]
   like_comments?: number[]
 }

@@ -11,7 +11,7 @@ const props = defineProps({
   profile: { type: Object, default: null },
 })
 
-const emit = defineEmits(['file-upload', 'on-submit', 'reset-form'])
+const emit = defineEmits(['on-submit', 'reset-form'])
 
 const refAlertModal = ref()
 const refConfirmModal = ref()
@@ -22,7 +22,7 @@ const form = reactive<Profile>({
   name: '',
   birth_date: '',
   cell_phone: '',
-  image: '',
+  image: undefined,
 })
 
 const validated = ref(false)
@@ -43,10 +43,8 @@ const formsCheck = computed(() => {
 const confirmText = computed(() => (props.profile?.pk ? '변경' : '등록'))
 const btnClass = computed(() => (props.profile?.pk ? 'success' : 'primary'))
 
-const fileUpload = (img: File) => {
-  form.image = img.name
-  emit('file-upload', img)
-}
+const transProfileForm = (img: File) => form.image = img
+
 
 const onSubmit = (event: Event) => {
   if (userInfo.value) {
@@ -76,7 +74,7 @@ const formDataReset = () => {
   form.name = ''
   form.birth_date = ''
   form.cell_phone = ''
-  form.image = ''
+  form.image = undefined
 }
 
 const formDataSetup = () => {
@@ -86,7 +84,6 @@ const formDataSetup = () => {
     form.name = props.profile.name
     form.birth_date = props.profile.birth_date
     form.cell_phone = props.profile.cell_phone
-    form.image = props.profile.image
   }
 }
 
@@ -95,11 +92,11 @@ onMounted(() => formDataSetup())
 
 <template>
   <CForm
-    class="needs-validation"
-    novalidate
-    :validated="validated"
-    enctype="multipart/form-data"
-    @submit.prevent="onSubmit"
+      class="needs-validation"
+      novalidate
+      :validated="validated"
+      enctype="multipart/form-data"
+      @submit.prevent="onSubmit"
   >
     <CCardBody>
       <CRow class="flex-md-row flex-column-reverse">
@@ -117,7 +114,7 @@ onMounted(() => formDataSetup())
             <CCol md="8">{{ userInfo?.email || '' }}</CCol>
           </CRow>
 
-          <hr />
+          <hr/>
 
           <CRow class="mb-3">
             <h6>사용자 프로필</h6>
@@ -125,11 +122,11 @@ onMounted(() => formDataSetup())
 
             <CCol md="8">
               <CFormInput
-                v-model="form.name"
-                type="text"
-                placeholder="성명을 입력하세요"
-                maxlength="20"
-                required
+                  v-model="form.name"
+                  type="text"
+                  placeholder="성명을 입력하세요"
+                  maxlength="20"
+                  required
               />
               <CFormFeedback invalid>성명을 입력하세요.</CFormFeedback>
             </CCol>
@@ -139,9 +136,9 @@ onMounted(() => formDataSetup())
 
             <CCol md="8">
               <DatePicker
-                v-model="form.birth_date"
-                placeholder="생년월일을 입력하세요"
-                maxlength="10"
+                  v-model="form.birth_date"
+                  placeholder="생년월일을 입력하세요"
+                  maxlength="10"
               />
               <CFormFeedback invalid>생년월일을 입력하세요.</CFormFeedback>
             </CCol>
@@ -152,20 +149,21 @@ onMounted(() => formDataSetup())
 
             <CCol md="8">
               <input
-                v-model="form.cell_phone"
-                v-maska
-                data-maska="['###-###-####', '###-####-####']"
-                type="text"
-                class="form-control"
-                placeholder="휴대전화를 입력하세요"
-                maxlength="13"
+                  v-model="form.cell_phone"
+                  v-maska
+                  data-maska="['###-###-####', '###-####-####']"
+                  type="text"
+                  class="form-control"
+                  placeholder="휴대전화를 입력하세요"
+                  maxlength="13"
               />
               <CFormFeedback invalid>휴대전화를 입력하세요.</CFormFeedback>
             </CCol>
           </CRow>
         </CCol>
         <CCol md="6">
-          <AvatarInput ref="avatar" :image="form.image as string" @file-upload="fileUpload" />
+          <AvatarInput ref="avatar" :image="profile && profile.image || '/static/dist/img/NoImage.jpeg'"
+                       @trans-profile-form="transProfileForm"/>
         </CCol>
       </CRow>
     </CCardBody>
@@ -173,7 +171,7 @@ onMounted(() => formDataSetup())
     <CCardFooter class="text-right">
       <CButton type="button" color="light" @click="formDataReset"> 취소</CButton>
       <CButton type="submit" :color="btnClass" :disabled="formsCheck">
-        <CIcon name="cil-check-circle" />
+        <CIcon name="cil-check-circle"/>
         {{ confirmText }}
       </CButton>
     </CCardFooter>
@@ -189,5 +187,5 @@ onMounted(() => formDataSetup())
     </template>
   </ConfirmModal>
 
-  <AlertModal ref="refAlertModal" />
+  <AlertModal ref="refAlertModal"/>
 </template>

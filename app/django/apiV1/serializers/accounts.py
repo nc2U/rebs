@@ -66,7 +66,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(use_url=True, required=False)
+    image = serializers.ImageField(use_url=True, allow_empty_file=False, required=False)
 
     class Meta:
         model = Profile

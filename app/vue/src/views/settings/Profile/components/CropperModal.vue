@@ -10,7 +10,7 @@ export default defineComponent({
   props: {
     modalImg: { type: String, default: undefined },
   },
-  emits: ['image-del', 'file-upload'],
+  emits: ['image-del', 'trans-avatar-input'],
   setup(props, ctx) {
     const visible = ref(false)
     const cropper = ref()
@@ -25,7 +25,7 @@ export default defineComponent({
       if (canvas) {
         canvas.toBlob((blob: Blob) => {
           const img = new File([blob], 'profile.png', { type: blob.type })
-          ctx.emit('file-upload', img)
+          ctx.emit('trans-avatar-input', img)
         })
       }
       close()
@@ -49,24 +49,24 @@ export default defineComponent({
   <CModal :visible="visible" @close="() => close">
     <CModalHeader :close-button="false">
       <CModalTitle component="h6"> Crop your new profile picture</CModalTitle>
-      <CButton type="button" aria-label="Close" class="btn btn-close" @click="close" />
+      <CButton type="button" aria-label="Close" class="btn btn-close" @click="close"/>
     </CModalHeader>
     <CModalBody>
       <cropper
-        ref="cropper"
-        class="cropper"
-        :stencil-component="$options.components?.CircleStencil"
-        :default-size="{
+          ref="cropper"
+          class="cropper"
+          :stencil-component="$options.components?.CircleStencil"
+          :default-size="{
           width: 1000,
           height: 1000,
         }"
-        :src="modalImg"
+          :src="modalImg"
       />
     </CModalBody>
     <CModalFooter class="d-grid gap-2">
       <CButton color="success" @click="crop"> Set new profile picture</CButton>
     </CModalFooter>
-    <CircleStencil v-if="false" />
+    <CircleStencil v-if="false"/>
   </CModal>
 </template>
 
