@@ -50,11 +50,11 @@ class IsProjectStaffOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
         else:
-            if request.user.is_superuser or request.user.staffauth.is_staff:
+            if request.user.is_superuser:
                 return True
             else:
                 try:
-                    return request.user.staffauth.is_project_staff
+                    return request.user.staffauth.is_staff or request.user.staffauth.is_project_staff
                 except StaffAuth.DoesNotExist:
                     return False
 
