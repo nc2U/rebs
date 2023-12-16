@@ -6,9 +6,9 @@ const props = defineProps({
   image: { type: String, default: '' },
 })
 
-const emit = defineEmits(['trans-form'])
+const emit = defineEmits(['trans-profile-form'])
 
-const imgUrl = ref('')
+const imgUrl = ref('') // 화면에 표시되는 이미지 소스
 
 const modalImg = ref()
 const cropModal = ref()
@@ -19,14 +19,14 @@ const browse = () => {
 }
 
 const loadFile = (payload: Event) => {
+  // 이미지 선택 시 동작 -> 원본이미지를 데이터화해서 cropperModal로 로드
   const inputEl = payload.target as HTMLInputElement
   if (inputEl.files) {
-    const img = inputEl.files[0]
-    emit('trans-form', img)
+    const img = inputEl.files[0] // 원본 이미지
     const reader = new FileReader()
-    reader.readAsDataURL(img)
+    reader.readAsDataURL(img) // 데이터화
     reader.onload = e => {
-      modalImg.value = e.target?.result
+      modalImg.value = e.target?.result // 크로퍼에 할당
       if (!!modalImg.value) {
         cropModal.value.visible = true
       }
@@ -34,12 +34,14 @@ const loadFile = (payload: Event) => {
   }
 }
 
-const transForm = (img: File) => {
-  emit('trans-form', img)
+const transAvatarInput = (img: File) => {
+  // cropperModal에서 이미지 크롭(submit) 시 동작
+  emit('trans-profile-form', img) // 크롭된 이미지
   const reader = new FileReader()
-  reader.readAsDataURL(img)
+  reader.readAsDataURL(img) // 데이터화
   reader.onload = e => {
-    imgUrl.value = String(e.target?.result)
+    // image to data => imgUrl.value 저장
+    imgUrl.value = String(e.target?.result) // 화면 표시 이미지 변경
   }
 }
 
@@ -91,7 +93,7 @@ onMounted(() => (imgUrl.value = props.image || '/static/dist/img/NoImage.jpeg'))
       ref="cropModal"
       :modal-img="modalImg"
       @image-del="delModalImg"
-      @trans-form="transForm"
+      @trans-avatar-input="transAvatarInput"
   />
 </template>
 

@@ -45,7 +45,7 @@ const onSubmit = (payload: Profile) => {
     <ProfileForm
         ref="profile"
         :profile="profile as Profile"
-        @trans-form="transForm"
+        @trans-index="transForm"
         @on-submit="onSubmit"
     />
   </ContentBody>

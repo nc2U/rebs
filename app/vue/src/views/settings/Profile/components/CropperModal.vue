@@ -10,7 +10,7 @@ export default defineComponent({
   props: {
     modalImg: { type: String, default: undefined },
   },
-  emits: ['image-del', 'trans-form'],
+  emits: ['image-del', 'trans-avatar-input'],
   setup(props, ctx) {
     const visible = ref(false)
     const cropper = ref()
@@ -25,7 +25,7 @@ export default defineComponent({
       if (canvas) {
         canvas.toBlob((blob: Blob) => {
           const img = new File([blob], 'profile.png', { type: blob.type })
-          ctx.emit('trans-form', img)
+          ctx.emit('trans-avatar-input', img)
         })
       }
       close()

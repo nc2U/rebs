@@ -11,7 +11,7 @@ const props = defineProps({
   profile: { type: Object, default: null },
 })
 
-const emit = defineEmits(['trans-form', 'on-submit', 'reset-form'])
+const emit = defineEmits(['trans-index', 'on-submit', 'reset-form'])
 
 const refAlertModal = ref()
 const refConfirmModal = ref()
@@ -45,7 +45,7 @@ const btnClass = computed(() => (props.profile?.pk ? 'success' : 'primary'))
 
 const transForm = (img: File) => {
   form.image = img.name
-  emit('trans-form', img)
+  emit('trans-index', img)
 }
 
 const onSubmit = (event: Event) => {
@@ -165,7 +165,7 @@ onMounted(() => formDataSetup())
           </CRow>
         </CCol>
         <CCol md="6">
-          <AvatarInput ref="avatar" :image="form.image as string" @trans-form="transForm"/>
+          <AvatarInput ref="avatar" :image="form.image as string" @trans-profile-form="transForm"/>
         </CCol>
       </CRow>
     </CCardBody>
