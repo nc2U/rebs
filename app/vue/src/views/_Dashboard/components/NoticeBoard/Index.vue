@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, inject, watch, onBeforeMount } from 'vue'
+import { ref, computed, inject, watch, onBeforeMount, type ComputedRef } from 'vue'
 import { type RouteLocationNormalizedLoaded as Loaded, useRoute, useRouter } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
 import ListController from './components/ListController.vue'
@@ -9,6 +9,7 @@ import { type PostFilter, useDocument } from '@/store/pinia/document'
 import NoticeList from './components/NoticeList.vue'
 import NoticeView from './components/NoticeView.vue'
 import NoticeForm from '@/views/_Dashboard/components/NoticeBoard/components/NoticeForm.vue'
+import type { User } from "@/store/types/accounts";
 
 const lController = ref()
 const boardNumber = ref(1)
@@ -23,13 +24,16 @@ const postFilter = ref<PostFilter>({
   page: 1,
 })
 
+const userInfo = inject<ComputedRef<User>>('userInfo')
+const writeAuth = computed(() => userInfo?.value.is_superuser || userInfo?.value.staffauth?.is_staff)
+
 const heatedPage = ref<number[]>([])
 const newFiles = ref<File[]>([])
 const cngFiles = ref<
-  {
-    pk: number
-    file: File
-  }[]
+    {
+      pk: number
+      file: File
+    }[]
 >([])
 
 const listFiltering = (payload: PostFilter) => {
@@ -146,12 +150,12 @@ const onSubmit = async (payload: Post & Attatches) => {
     if (pk) {
       await updatePost({ pk, form })
       await router.replace({
-        name: `${mainViewName.value} - 보기`,
+        name: `${ mainViewName.value } - 보기`,
         params: { postId: pk },
       })
     } else {
       await createPost({ form })
-      await router.replace({ name: `${mainViewName.value}` })
+      await router.replace({ name: `${ mainViewName.value }` })
       lController.value.resetForm()
     }
     newFiles.value = []
@@ -174,66 +178,68 @@ onBeforeMount(() => dataSetup(company.value ?? comStore.initComId, route.params?
     <CCard>
       <CCardBody>
         <h5>{{ mainViewName }}</h5>
-        <hr />
+        <hr/>
         <div v-if="route.name === mainViewName">
           <ListController
-            ref="lController"
-            :com-from="true"
-            :post-filter="postFilter"
-            @list-filter="listFiltering"
+              ref="lController"
+              :com-from="true"
+              :post-filter="postFilter"
+              @list-filter="listFiltering"
           />
           <CategoryTabs
-            :category="postFilter.category as number"
-            :category-list="categoryList"
-            @select-cate="selectCate"
+              :category="postFilter.category as number"
+              :category-list="categoryList"
+              @select-cate="selectCate"
           />
           <NoticeList
-            :company="company as number"
-            :page="postFilter.page"
-            :notice-list="noticeList"
-            :post-list="postList"
-            :view-route="mainViewName"
-            @page-select="pageSelect"
+              :company="company as number"
+              :page="postFilter.page"
+              :notice-list="noticeList"
+              :post-list="postList"
+              :view-route="mainViewName"
+              :write-auth="writeAuth"
+              @page-select="pageSelect"
           />
         </div>
 
         <div v-else-if="route.name.includes('보기')">
           <NoticeView
-            :board-num="boardNumber"
-            :heated-page="heatedPage"
-            :re-order="postFilter.ordering !== '-created'"
-            :category="postFilter.category as number"
-            :post="post as Post"
-            :like-posts="likePosts"
-            :view-route="mainViewName"
-            :curr-page="postFilter.page ?? 1"
-            @to-like="toLike"
-            @post-hit="postHit"
-            @link-hit="linkHit"
-            @file-hit="fileHit"
-            @posts-renewal="postsRenewal"
+              :board-num="boardNumber"
+              :heated-page="heatedPage"
+              :re-order="postFilter.ordering !== '-created'"
+              :category="postFilter.category as number"
+              :post="post as Post"
+              :like-posts="likePosts"
+              :view-route="mainViewName"
+              :curr-page="postFilter.page ?? 1"
+              :write-auth="writeAuth"
+              @to-like="toLike"
+              @post-hit="postHit"
+              @link-hit="linkHit"
+              @file-hit="fileHit"
+              @posts-renewal="postsRenewal"
           />
         </div>
 
         <div v-else-if="route.name.includes('작성')">
           <NoticeForm
-            :board-num="boardNumber"
-            :category-list="categoryList"
-            :view-route="mainViewName"
-            @file-upload="fileUpload"
-            @on-submit="onSubmit"
+              :board-num="boardNumber"
+              :category-list="categoryList"
+              :view-route="mainViewName"
+              @file-upload="fileUpload"
+              @on-submit="onSubmit"
           />
         </div>
 
         <div v-else-if="route.name.includes('수정')">
           <NoticeForm
-            :board-num="boardNumber"
-            :category-list="categoryList"
-            :post="post as Post"
-            :view-route="mainViewName"
-            @file-change="fileChange"
-            @file-upload="fileUpload"
-            @on-submit="onSubmit"
+              :board-num="boardNumber"
+              :category-list="categoryList"
+              :post="post as Post"
+              :view-route="mainViewName"
+              @file-change="fileChange"
+              @file-upload="fileUpload"
+              @on-submit="onSubmit"
           />
         </div>
       </CCardBody>

@@ -16,6 +16,7 @@ const props = defineProps({
   likePosts: { type: Array as PropType<number[]>, default: () => [] },
   viewRoute: { type: String, required: true },
   currPage: { type: Number, required: true },
+  writeAuth: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['to-like', 'post-hit', 'link-hit', 'file-hit', 'posts-renewal'])
@@ -254,6 +255,7 @@ onMounted(() => {
       <CCol class="text-right">
         <CButtonGroup role="group">
           <CButton
+              v-if="writeAuth"
               color="success"
               @click="
               $router.push({
@@ -264,7 +266,7 @@ onMounted(() => {
           >
             수정
           </CButton>
-          <CButton color="danger" @click="toDelete">삭제</CButton>
+          <CButton v-if="writeAuth" color="danger" @click="toDelete">삭제</CButton>
           <CButton color="secondary" @click="$router.push({ name: `${viewRoute}` })"> 목록</CButton>
         </CButtonGroup>
       </CCol>
