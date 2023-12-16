@@ -11,7 +11,7 @@ const image = ref<File | string | null>(null)
 const accStore = useAccount()
 const profile = computed(() => accStore.profile)
 const isStaff = computed(
-  () => useAccount().superAuth || Number(useAccount().staffAuth?.is_staff || null),
+    () => useAccount().superAuth || Number(useAccount().staffAuth?.is_staff || null),
 )
 const profileNav = isStaff.value ? navMenu : ['프로필 관리']
 
@@ -20,8 +20,10 @@ const fileUpload = (img: File) => (image.value = img)
 const createProfile = (payload: FormData) => accStore.createProfile(payload)
 const patchProfile = (payload: { pk: number; form: FormData }) => accStore.patchProfile(payload)
 
-const onSubmit = (payload: Profile & { image: File | string | null }) => {
+const onSubmit = (payload: Profile) => {
   if (image.value) payload.image = image.value
+  else if (payload.pk) delete payload.image
+
   const { pk, ...formData } = payload
   if (!formData.user && accStore.userInfo) formData.user = accStore.userInfo.pk
   if (!formData.birth_date) formData.birth_date = ''
@@ -38,14 +40,14 @@ const onSubmit = (payload: Profile & { image: File | string | null }) => {
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="profileNav" selector="CompanySelect" />
+  <ContentHeader :page-title="pageTitle" :nav-menu="profileNav" selector="CompanySelect"/>
 
   <ContentBody>
     <ProfileForm
-      ref="profile"
-      :profile="profile as Profile"
-      @file-upload="fileUpload"
-      @on-submit="onSubmit"
+        ref="profile"
+        :profile="profile as Profile"
+        @file-upload="fileUpload"
+        @on-submit="onSubmit"
     />
   </ContentBody>
 </template>
