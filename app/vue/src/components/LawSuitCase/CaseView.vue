@@ -58,9 +58,48 @@ const toDownload = () => window.open(`excel/suitcase/?pk=${route.params.caseId}`
 
 const route = useRoute()
 
-const shareFacebook = () => 1
-const shareTwitter = () => 1
-const shareKakaoTalk = () => 1
+const sendUrl = `${window.location.host}${route.fullPath}`
+
+const shareFacebook = () => window.open(`https://facebook.com/share/share.php?u=${sendUrl}`)
+const shareTwitter = () => window.open(`https://twitter.com/intent/tweet?text=&url=${sendUrl}`)
+const shareKakaoTalk = () => {
+  // 카카오링크 버튼 생성
+  ;(window as any).Kakao.Share.createDefaultButton({
+    container: '#kakaotalk-sharing-btn',
+    objectType: 'feed',
+    content: {
+      title: '주식회사 바램디앤씨',
+      description: `#공지사항 #${props.post?.title}`,
+      imageUrl: 'https://brdnc.co.kr/static/dist/img/icons/ms-icon-310x310.png',
+      link: {
+        // [내 애플리케이션] > [플랫폼] 에서 등록한 사이트 도메인과 일치해야 함
+        mobileWebUrl: sendUrl,
+        webUrl: sendUrl,
+      },
+    },
+    // social: {
+    //   // likeCount: props.suitcase.like,
+    //   // commentCount: props.suitcase.comments?.length ?? 0,
+    //   // sharedCount: 45,
+    // },
+    buttons: [
+      {
+        title: '웹으로 보기',
+        link: {
+          mobileWebUrl: sendUrl,
+          webUrl: sendUrl,
+        },
+      },
+      {
+        title: '앱으로 보기',
+        link: {
+          mobileWebUrl: sendUrl,
+          webUrl: sendUrl,
+        },
+      },
+    ],
+  })
+}
 
 const toScrape = () => alert('스크랩 기능 중비중!')
 const toBlame = () => alert('신고 기능 준비중!')
@@ -319,9 +358,20 @@ onBeforeMount(() => {
 
     <CRow class="mt-2 px-3">
       <CCol class="text-grey-darken-1 pt-2 social">
+        <a
+          id="kakaotalk-sharing-btn"
+          href="javascript:void(0)"
+          @click="shareKakaoTalk"
+          class="mr-2"
+        >
+          <img
+            src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
+            alt="카카오톡 공유 보내기 버튼"
+            width="20px;"
+          />
+        </a>
         <v-icon icon="mdi-facebook" class="mr-2" @click="shareFacebook" />
         <v-icon icon="mdi-twitter" class="mr-2" @click="shareTwitter" />
-        <v-icon icon="mdi-message-badge" class="mr-2" @click="shareKakaoTalk" />
       </CCol>
       <CCol class="text-right">
         <v-btn variant="tonal" size="small" :rounded="0" class="mr-1" @click="toScrape">
