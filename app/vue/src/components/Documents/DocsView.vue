@@ -37,7 +37,29 @@ const toLike = () => emit('to-like', props.post.pk)
 const linkHitUp = async (pk: number) => emit('link-hit', pk)
 const fileHitUp = async (pk: number) => emit('file-hit', pk)
 
-const toPrint = () => alert('준비중!')
+const toPrint = () => {
+  // Clone the specific area to be printed
+  const printContent: any = document.getElementById('print-area')?.cloneNode(true)
+
+  // Create a new window for printing
+  const printWindow = window.open('', '_blank')
+  if (printWindow) {
+    printWindow.document.open()
+
+    // Add the cloned content to the new window
+    printWindow.document.write('<html><head><title>Print</title></head><body>')
+    printWindow.document.write(printContent?.innerHTML)
+    printWindow.document.write('</body></html>')
+
+    // Close the document for writing
+    printWindow.document.close()
+
+    // Print the new window
+    printWindow.print()
+    // Close the new window after printing
+    printWindow.close()
+  }
+}
 const toSocial = () => alert('준비중!')
 const toDelete = () => alert('준비중!')
 
@@ -209,7 +231,7 @@ onMounted(() => {
       </CCol>
     </CRow>
 
-    <CRow class="my-5 p-3">
+    <CRow class="my-5 p-3" id="print-area">
       <CCol>
         <div v-html="sanitizeHtml(post.content)" />
       </CCol>
