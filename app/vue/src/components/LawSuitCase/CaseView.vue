@@ -30,7 +30,29 @@ const getNext = (pk: number) => getCaseNav.value.filter(c => c.pk === pk).map(c 
 const linkHitUp = async (pk: number) => emit('link-hit', pk)
 const fileHitUp = async (pk: number) => emit('file-hit', pk)
 
-const toPrint = () => alert('준비중!')
+const toPrint = () => {
+  // Clone the specific area to be printed
+  const printContent: any = document.getElementById('print-area')?.cloneNode(true)
+
+  // Create a new window for printing
+  const printWindow = window.open('', '_blank')
+  if (printWindow) {
+    printWindow.document.open()
+
+    // Add the cloned content to the new window
+    printWindow.document.write('<html><head><title>Print</title></head><body>')
+    printWindow.document.write(printContent?.innerHTML)
+    printWindow.document.write('</body></html>')
+
+    // Close the document for writing
+    printWindow.document.close()
+
+    // Print the new window
+    printWindow.print()
+    // Close the new window after printing
+    printWindow.close()
+  }
+}
 const toDownload = () => window.open(`excel/suitcase/?pk=${route.params.caseId}`, 'blank')
 
 const toSocial = () => alert('준비중!')
@@ -101,11 +123,11 @@ onBeforeMount(() => {
     <CRow class="text-blue-grey">
       <CCol>
         <small class="mr-3">작성자 : {{ suitcase.user }}</small>
-        <small class="mr-3 print" @click="toPrint">
+        <small class="mr-3 text-btn" @click="toPrint">
           <v-icon icon="mdi-printer" size="small" />
           <span class="ml-2">프린트</span>
         </small>
-        <small class="mr-3 print" @click="toDownload">
+        <small class="mr-3 text-btn" @click="toDownload">
           <v-icon icon="mdi-microsoft-excel" size="small" />
           <span class="ml-2">다운로드</span>
         </small>
@@ -119,7 +141,7 @@ onBeforeMount(() => {
       </CCol>
     </CRow>
 
-    <CRow class="justify-content-center">
+    <CRow class="justify-content-center" id="print-area">
       <CCol md="10 py-5">
         <CTable bordered responsive align="middle">
           <colgroup>
@@ -136,6 +158,18 @@ onBeforeMount(() => {
           </CTableHead>
 
           <CTableBody>
+            <CTableRow>
+              <CTableHeaderCell class="text-center" :color="TableSecondary">
+                사건 번호
+              </CTableHeaderCell>
+              <CTableDataCell colspan="4">{{ suitcase.case_number }}</CTableDataCell>
+            </CTableRow>
+            <CTableRow>
+              <CTableHeaderCell class="text-center" :color="TableSecondary">
+                사건 명
+              </CTableHeaderCell>
+              <CTableDataCell colspan="4">{{ suitcase.case_name }}</CTableDataCell>
+            </CTableRow>
             <CTableRow>
               <CTableHeaderCell class="text-center" :color="TableSecondary">
                 유 형
@@ -174,18 +208,6 @@ onBeforeMount(() => {
                 기타 처리기관
               </CTableHeaderCell>
               <CTableDataCell colspan="4">{{ suitcase.other_agency }}</CTableDataCell>
-            </CTableRow>
-            <CTableRow>
-              <CTableHeaderCell class="text-center" :color="TableSecondary">
-                사건 번호
-              </CTableHeaderCell>
-              <CTableDataCell colspan="4">{{ suitcase.case_number }}</CTableDataCell>
-            </CTableRow>
-            <CTableRow>
-              <CTableHeaderCell class="text-center" :color="TableSecondary">
-                사건 명
-              </CTableHeaderCell>
-              <CTableDataCell colspan="4">{{ suitcase.case_name }}</CTableDataCell>
             </CTableRow>
             <CTableRow>
               <CTableHeaderCell class="text-center" :color="TableSecondary">
@@ -359,14 +381,6 @@ onBeforeMount(() => {
 </template>
 
 <style lang="scss" scoped>
-.print {
-  cursor: pointer;
-}
-
-.print:hover {
-  color: darkslateblue;
-}
-
 .social i {
   cursor: pointer;
 }
