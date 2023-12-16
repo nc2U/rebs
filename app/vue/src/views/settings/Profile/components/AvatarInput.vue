@@ -6,7 +6,7 @@ const props = defineProps({
   image: { type: String, default: '' },
 })
 
-const emit = defineEmits(['file-upload'])
+const emit = defineEmits(['trans-form'])
 
 const imgUrl = ref('')
 
@@ -22,7 +22,7 @@ const loadFile = (payload: Event) => {
   const inputEl = payload.target as HTMLInputElement
   if (inputEl.files) {
     const img = inputEl.files[0]
-    emit('file-upload', img)
+    emit('trans-form', img)
     const reader = new FileReader()
     reader.readAsDataURL(img)
     reader.onload = e => {
@@ -34,8 +34,8 @@ const loadFile = (payload: Event) => {
   }
 }
 
-const fileUpload = (img: File) => {
-  emit('file-upload', img)
+const transForm = (img: File) => {
+  emit('trans-form', img)
   const reader = new FileReader()
   reader.readAsDataURL(img)
   reader.onload = e => {
@@ -59,22 +59,22 @@ onMounted(() => (imgUrl.value = props.image || '/static/dist/img/NoImage.jpeg'))
     <CCol>
       <h6>프로필 이미지</h6>
       <input
-        id="file"
-        type="file"
-        class="form-control"
-        accept="image/*"
-        style="display: none"
-        @change="loadFile"
+          id="file"
+          type="file"
+          class="form-control"
+          accept="image/*"
+          style="display: none"
+          @change="loadFile"
       />
       <CRow class="relative inline-block">
         <CCol>
           <CDropdown placement="bottom-start">
             <CDropdownToggle class="py-0 btn-link" :caret="false">
-              <CImage rounded thumbnail fluid :src="imgUrl" />
+              <CImage rounded thumbnail fluid :src="imgUrl"/>
               <CCol
-                class="bg-white text-high-emphasis position-absolute rounded-2 px-2 py-1 left-0 bottom-0 ml-1 mb-1 border"
+                  class="bg-white text-high-emphasis position-absolute rounded-2 px-2 py-1 left-0 bottom-0 ml-1 mb-1 border"
               >
-                <CIcon name="cilPencil" />
+                <CIcon name="cilPencil"/>
                 Edit
               </CCol>
             </CDropdownToggle>
@@ -88,10 +88,10 @@ onMounted(() => (imgUrl.value = props.image || '/static/dist/img/NoImage.jpeg'))
   </CRow>
 
   <CropperModal
-    ref="cropModal"
-    :modal-img="modalImg"
-    @image-del="delModalImg"
-    @file-upload="fileUpload"
+      ref="cropModal"
+      :modal-img="modalImg"
+      @image-del="delModalImg"
+      @trans-form="transForm"
   />
 </template>
 

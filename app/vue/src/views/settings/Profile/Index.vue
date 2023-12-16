@@ -15,7 +15,7 @@ const isStaff = computed(
 )
 const profileNav = isStaff.value ? navMenu : ['프로필 관리']
 
-const fileUpload = (img: File) => (image.value = img)
+const transForm = (img: File) => (image.value = img)
 
 const createProfile = (payload: FormData) => accStore.createProfile(payload)
 const patchProfile = (payload: { pk: number; form: FormData }) => accStore.patchProfile(payload)
@@ -45,7 +45,7 @@ const onSubmit = (payload: Profile) => {
     <ProfileForm
         ref="profile"
         :profile="profile as Profile"
-        @file-upload="fileUpload"
+        @trans-form="transForm"
         @on-submit="onSubmit"
     />
   </ContentBody>
