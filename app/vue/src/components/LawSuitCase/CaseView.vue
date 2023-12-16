@@ -69,7 +69,7 @@ const shareKakaoTalk = () => {
     objectType: 'feed',
     content: {
       title: '주식회사 바램디앤씨',
-      description: `#공지사항 #${props.post?.title}`,
+      description: `#공지사항 #${props.suitcase?.case_number}`,
       imageUrl: 'https://brdnc.co.kr/static/dist/img/icons/ms-icon-310x310.png',
       link: {
         // [내 애플리케이션] > [플랫폼] 에서 등록한 사이트 도메인과 일치해야 함
