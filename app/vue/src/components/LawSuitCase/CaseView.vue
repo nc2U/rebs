@@ -55,7 +55,14 @@ const toPrint = () => {
 }
 const toDownload = () => window.open(`excel/suitcase/?pk=${route.params.caseId}`, 'blank')
 
-const toSocial = () => alert('준비중!')
+const shareFacebook = () => 1
+const shareTwitter = () => 1
+const shareInstagram = () => 1
+const shareKakaoTalk = () => 1
+
+const toScrape = () => alert('스크랩 기능 중비중!')
+const toBlame = () => alert('신고 기능 준비중!')
+
 const toDelete = () => alert('준비중!')
 
 const route = useRoute()
@@ -312,15 +319,16 @@ onBeforeMount(() => {
 
     <CRow class="mt-2 px-3">
       <CCol class="text-grey-darken-1 pt-2 social">
-        <v-icon icon="mdi-facebook" class="mr-2" @click="toSocial" />
-        <v-icon icon="mdi-twitter" class="mr-2" @click="toSocial" />
-        <v-icon icon="mdi-instagram" class="mr-2" @click="toSocial" />
+        <v-icon icon="mdi-facebook" class="mr-2" @click="shareFacebook" />
+        <v-icon icon="mdi-twitter" class="mr-2" @click="shareTwitter" />
+        <v-icon icon="mdi-instagram" class="mr-2" @click="shareInstagram" />
+        <v-icon icon="mdi-message-badge" class="mr-2" @click="shareKakaoTalk" />
       </CCol>
       <CCol class="text-right">
-        <v-btn variant="tonal" size="small" :rounded="0" class="mr-1" @click="toSocial">
+        <v-btn variant="tonal" size="small" :rounded="0" class="mr-1" @click="toScrape">
           스크랩
         </v-btn>
-        <v-btn variant="tonal" size="small" :rounded="0" @click="toSocial"> 신고</v-btn>
+        <v-btn variant="tonal" size="small" :rounded="0" @click="toBlame"> 신고</v-btn>
       </CCol>
     </CRow>
 
