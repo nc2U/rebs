@@ -60,9 +60,11 @@ const toPrint = () => {
     printWindow.close()
   }
 }
+
+const route = useRoute()
+
 const shareFacebook = () => 1
 const shareTwitter = () => 1
-const shareInstagram = () => 1
 const shareKakaoTalk = () => 1
 
 const toScrape = () => alert('스크랩 기능 중비중!')
@@ -74,8 +76,6 @@ const getFileName = (file: string) => {
 }
 
 const toDelete = () => alert('삭제 기능 준비중!')
-
-const route = useRoute()
 
 watch(
   () => getPostNav.value,
@@ -257,7 +257,6 @@ onMounted(() => {
       <CCol class="text-grey-darken-1 pt-2 social">
         <v-icon icon="mdi-facebook" class="mr-2" @click="shareFacebook" />
         <v-icon icon="mdi-twitter" class="mr-2" @click="shareTwitter" />
-        <v-icon icon="mdi-instagram" class="mr-2" @click="shareInstagram" />
         <v-icon icon="mdi-message-badge" class="mr-2" @click="shareKakaoTalk" />
       </CCol>
       <CCol class="text-right">
