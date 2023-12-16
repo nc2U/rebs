@@ -121,7 +121,7 @@ class CommentFilterSet(FilterSet):
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
+    permission_classes = (permissions.IsAuthenticated,)
     filterset_class = CommentFilterSet
 
     def perform_create(self, serializer):
