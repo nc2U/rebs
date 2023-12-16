@@ -30,9 +30,8 @@ const onSubmit = (payload: Profile) => {
 
   const form = new FormData()
 
-  for (const key in formData) {
+  for (const key in formData)
     form.append(key, formData[key] as string | Blob)
-  }
 
   if (pk) patchProfile({ ...{ pk }, ...{ form } })
   else createProfile(form)
