@@ -69,6 +69,7 @@ export type Post = {
     | null
     | string
     | boolean
+    | { pk: number; username: string }
     | Link[]
     | AFile[]
     | Comment[]
@@ -96,7 +97,7 @@ export type Post = {
   links?: Link[]
   files?: AFile[]
   comments?: number[]
-  user?: number | null
+  user?: { pk: number; username: string }
   soft_delete?: string | null
   created?: string
   updated?: string
