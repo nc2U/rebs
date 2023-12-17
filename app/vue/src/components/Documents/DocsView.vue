@@ -15,7 +15,7 @@ const props = defineProps({
   likePosts: { type: Array as PropType<number[]>, default: () => [] },
   viewRoute: { type: String, required: true },
   currPage: { type: Number, required: true },
-  writeAuth: { type: Boolean, default: false },
+  writeAuth: { type: Boolean, default: true },
 })
 
 const emit = defineEmits(['to-like', 'post-hit', 'link-hit', 'file-hit', 'posts-renewal'])

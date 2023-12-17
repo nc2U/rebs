@@ -13,7 +13,7 @@ defineProps({
   postList: { type: Array as PropType<Post[]>, default: () => [] },
   viewRoute: { type: String, required: true },
   isLawsuit: { type: Boolean, default: false },
-  writeAuth: { type: Boolean, default: false },
+  writeAuth: { type: Boolean, default: true },
 })
 
 const emit = defineEmits(['page-select'])

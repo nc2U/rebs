@@ -12,6 +12,7 @@ const props = defineProps({
   categoryList: { type: Object as PropType<Category[]>, default: () => [] },
   post: { type: Object as PropType<Post>, default: null },
   viewRoute: { type: String, required: true },
+  writeAuth: { type: Boolean, default: true },
 })
 
 const emit = defineEmits(['on-submit', 'file-upload', 'file-change', 'close'])

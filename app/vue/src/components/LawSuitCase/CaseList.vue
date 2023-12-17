@@ -11,7 +11,7 @@ defineProps({
   page: { type: Number, required: true },
   caseList: { type: Array as PropType<SuitCase[]>, default: () => [] },
   viewRoute: { type: String, required: true },
-  writeAuth: { type: Boolean, default: false },
+  writeAuth: { type: Boolean, default: true },
 })
 
 const emit = defineEmits(['page-select', 'agency-filter', 'agency-search', 'related-filter'])

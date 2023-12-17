@@ -17,6 +17,7 @@ const props = defineProps({
   getSuitCase: { type: Object, default: null },
   post: { type: Object as PropType<Post>, default: null },
   viewRoute: { type: String, required: true },
+  writeAuth: { type: Boolean, default: true },
 })
 
 const emit = defineEmits(['on-submit', 'file-upload', 'file-change', 'close'])

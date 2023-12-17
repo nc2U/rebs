@@ -14,6 +14,7 @@ const props = defineProps({
   getSuitCase: { type: Object, required: true },
   suitcase: { type: Object as PropType<SuitCase | null>, default: null },
   viewRoute: { type: String, required: true },
+  writeAuth: { type: Boolean, default: true },
 })
 const emit = defineEmits(['on-submit', 'close'])
 
