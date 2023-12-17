@@ -149,9 +149,8 @@ const deleteConfirm = () => refDelModal.value.callModal()
 
 const toDelete = () => {
   refDelModal.value.close()
-  if (props.post.comments?.length >= 5)
-    refAlertModal.value.callModal('', '5개 이상의 댓글이 달린 게시물은 삭제할 수 없습니다.')
-  else alert('삭제 기능 준비중!')
+  if (userInfo?.value.is_superuser || props.post.comments?.length < 5) alert('삭제 기능 준비중!')
+  else refAlertModal.value.callModal('', '5개 이상의 댓글이 달린 게시물은 삭제할 수 없습니다.')
 }
 
 watch(
