@@ -164,7 +164,7 @@ class PostSerializer(serializers.ModelSerializer):
     lawsuit_name = serializers.SlugField(source='lawsuit', read_only=True)
     links = LinksInPostSerializer(many=True, read_only=True)
     files = FilesInPostSerializer(many=True, read_only=True)
-    user = serializers.SlugRelatedField(slug_field='username', read_only=True)
+    user = UserInCommentSerializer(read_only=True)
     prev_pk = serializers.SerializerMethodField()
     next_pk = serializers.SerializerMethodField()
 
