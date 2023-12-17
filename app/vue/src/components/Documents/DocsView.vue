@@ -9,12 +9,14 @@ import {
   ref,
   watch,
 } from 'vue'
-import { onBeforeRouteUpdate, useRoute } from 'vue-router'
+import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 import { type Post } from '@/store/types/document'
 import sanitizeHtml from 'sanitize-html'
 import type { User } from '@/store/types/accounts'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const props = defineProps({
   boardNum: { type: Number, default: 2 },
@@ -29,6 +31,9 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['to-like', 'post-hit', 'link-hit', 'file-hit', 'posts-renewal'])
+
+const refDelModal = ref()
+const refAlertModal = ref()
 
 const userInfo = inject<ComputedRef<User>>('userInfo')
 const editAuth = computed(
@@ -77,7 +82,7 @@ const toPrint = () => {
   }
 }
 
-const route = useRoute()
+const [route, router] = [useRoute(), useRouter()]
 
 const sendUrl = `${window.location.host}${route.fullPath}`
 
@@ -130,7 +135,24 @@ const getFileName = (file: string) => {
   else return
 }
 
-const toDelete = () => alert('삭제 기능 준비중!')
+const toEdit = () => {
+  if (props.post.comments?.length >= 5)
+    refAlertModal.value.callModal('', '5개 이상의 댓글이 달린 게시물은 수정할 수 없습니다.')
+  else
+    router.push({
+      name: `${props.viewRoute} - 수정`,
+      params: { postId: props.post?.pk },
+    })
+}
+
+const deleteConfirm = () => refDelModal.value.callModal()
+
+const toDelete = () => {
+  refDelModal.value.close()
+  if (props.post.comments?.length >= 5)
+    refAlertModal.value.callModal('', '5개 이상의 댓글이 달린 게시물은 삭제할 수 없습니다.')
+  else alert('삭제 기능 준비중!')
+}
 
 watch(
   () => getPostNav.value,
@@ -351,7 +373,7 @@ onMounted(() => {
           >
             수정
           </CButton>
-          <CButton v-if="editAuth" color="danger" :disabled="!writeAuth" @click="toDelete">
+          <CButton v-if="editAuth" color="danger" :disabled="!writeAuth" @click="deleteConfirm">
             삭제
           </CButton>
           <CButton color="secondary" @click="$router.push({ name: `${viewRoute}` })"> 목록</CButton>
@@ -392,6 +414,16 @@ onMounted(() => {
       </CCol>
     </CRow>
   </div>
+
+  <AlertModal ref="refAlertModal" />
+
+  <ConfirmModal ref="refDelModal">
+    <template #header>알림</template>
+    <template #default>한번 삭제한 자료는 복구할 수 없습니다. 정말 삭제하시겠습니까?</template>
+    <template #footer>
+      <CButton color="danger" @click="toDelete">삭제</CButton>
+    </template>
+  </ConfirmModal>
 </template>
 
 <style lang="scss" scoped>
