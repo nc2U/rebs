@@ -451,7 +451,13 @@ export const useProCash = defineStore('proCash', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const proCashCalc = ref()
+  const proCashCalc = ref<
+    {
+      project: number
+      calculated: string
+      user: { pk: number; username: string }
+    }[]
+  >([])
 
   const fetchProCashCalc = (com: number) =>
     api
@@ -471,7 +477,7 @@ export const useProCash = defineStore('proCash', () => {
       .then(res => fetchProCashCalc(res.data.project).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
-  const proLastDeal = ref<string | null>(null)
+  const proLastDeal = ref<{ deal_date: string }[]>([])
   const fetchProLastDeal = (proj: number) =>
     api
       .get(`/com-last-deal/?project=${proj}/`)

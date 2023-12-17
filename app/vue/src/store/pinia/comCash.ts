@@ -255,7 +255,13 @@ export const useComCash = defineStore('comCash', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const comCashCalc = ref()
+  const comCashCalc = ref<
+    {
+      company: number
+      calculated: string
+      user: { pk: number; username: string }
+    }[]
+  >([])
 
   const fetchComCashCalc = (com: number) =>
     api
@@ -275,7 +281,7 @@ export const useComCash = defineStore('comCash', () => {
       .then(res => fetchComCashCalc(res.data.company).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
-  const comLastDeal = ref<string | null>(null)
+  const comLastDeal = ref<{ deal_date: string }[]>([])
   const fetchComLastDeal = (com: number) =>
     api
       .get(`/com-last-deal/?company=${com}/`)
