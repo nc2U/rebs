@@ -454,10 +454,8 @@ export const useProCash = defineStore('proCash', () => {
   const proCashCalc = ref()
 
   const fetchProCashCalc = (com: number) =>
-    api
-      .get(`/pro-cash-calc/${com}/`)
-      .then(res => (proCashCalc.value = res.data))
-      .catch(err => errorHandle(err.response.data))
+    api.get(`/pro-cash-calc/${com}/`).then(res => (proCashCalc.value = res.data))
+  // .catch(err => errorHandle(err.response.data))
 
   const createProCashCalc = (payload: ProCalculated) =>
     api
@@ -469,6 +467,13 @@ export const useProCash = defineStore('proCash', () => {
     api
       .patch(`/pro-cash-calc/${payload.pk}/`, payload)
       .then(res => fetchProCashCalc(res.data.project).then(() => message()))
+      .catch(err => errorHandle(err.response.data))
+
+  const proLastDeal = ref<string | null>(null)
+  const fetchProLastDeal = (proj: number) =>
+    api
+      .get(`/com-last-deal/?project=${proj}/`)
+      .then(res => (proLastDeal.value = res.data.results[0]))
       .catch(err => errorHandle(err.response.data))
 
   return {
@@ -526,5 +531,8 @@ export const useProCash = defineStore('proCash', () => {
     fetchProCashCalc,
     createProCashCalc,
     patchProCashCalc,
+
+    proLastDeal,
+    fetchProLastDeal,
   }
 })

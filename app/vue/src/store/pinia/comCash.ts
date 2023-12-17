@@ -258,10 +258,8 @@ export const useComCash = defineStore('comCash', () => {
   const comCashCalc = ref()
 
   const fetchComCashCalc = (com: number) =>
-    api
-      .get(`/com-cash-calc/${com}/`)
-      .then(res => (comCashCalc.value = res.data))
-      .catch(err => errorHandle(err.response.data))
+    api.get(`/com-cash-calc/${com}/`).then(res => (comCashCalc.value = res.data))
+  // .catch(err => errorHandle(err.response.data))
 
   const createComCashCalc = (payload: ComCalculated) =>
     api
@@ -273,6 +271,13 @@ export const useComCash = defineStore('comCash', () => {
     api
       .patch(`/com-cash-calc/${payload.pk}/`, payload)
       .then(res => fetchComCashCalc(res.data.company).then(() => message()))
+      .catch(err => errorHandle(err.response.data))
+
+  const comLastDeal = ref<string | null>(null)
+  const fetchComLastDeal = (com: number) =>
+    api
+      .get(`/com-last-deal/?company=${com}/`)
+      .then(res => (comLastDeal.value = res.data.results[0]))
       .catch(err => errorHandle(err.response.data))
 
   return {
@@ -324,5 +329,8 @@ export const useComCash = defineStore('comCash', () => {
     comCashCalc,
     createComCashCalc,
     patchComCashCalc,
+
+    comLastDeal,
+    fetchComLastDeal,
   }
 })
