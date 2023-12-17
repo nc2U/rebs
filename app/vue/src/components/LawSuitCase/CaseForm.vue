@@ -2,7 +2,6 @@
 import { ref, reactive, computed, onMounted, onUpdated, type PropType } from 'vue'
 import { useRoute } from 'vue-router'
 import { type SuitCase } from '@/store/types/document'
-import { write_company_docs } from '@/utils/pageAuth'
 import { courtChoices } from './components/court'
 import Multiselect from '@vueform/multiselect'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -78,7 +77,7 @@ const route = useRoute()
 const btnClass = computed(() => (route.params.caseId ? 'success' : 'primary'))
 
 const onSubmit = (event: Event) => {
-  if (write_company_docs) {
+  if (props.writeAuth) {
     const el = event.currentTarget as HTMLFormElement
     if (!el.checkValidity()) {
       event.preventDefault()
