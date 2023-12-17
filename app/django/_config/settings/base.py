@@ -68,7 +68,6 @@ INSTALLED_APPS += [  # plugin
     'django_filters',
     'crispy_forms',
     'crispy_bootstrap4',
-    'safedelete',
 ]
 
 INSTALLED_APPS += [  # app
