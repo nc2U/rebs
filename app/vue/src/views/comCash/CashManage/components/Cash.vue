@@ -12,6 +12,7 @@ import CashForm from '@/views/comCash/CashManage/components/CashForm.vue'
 
 const props = defineProps({
   cash: { type: Object as PropType<CashBook>, required: true },
+  calculated: { type: String, default: '2000-01-01' },
 })
 
 const emit = defineEmits(['multi-submit', 'on-delete', 'patch-d3-hide', 'on-bank-update'])
@@ -38,6 +39,11 @@ const accountStore = useAccount()
 const allowedPeriod = computed(
   () => accountStore.superAuth || (props.cash?.deal_date && diffDate(props.cash.deal_date) <= 30),
 )
+const allowdEdit = computed(() => {
+  const dealDate = new Date(props.cash?.deal_date)
+  const calcDate = new Date(props.calculated)
+  return dealDate <= calcDate
+})
 
 const showDetail = () => updateFormModal.value.callModal()
 
@@ -72,7 +78,7 @@ const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
     :color="rowColor"
     :style="cash.is_separate ? 'font-weight: bold;' : ''"
   >
-    <CTableDataCell>{{ cash.deal_date }}</CTableDataCell>
+    <CTableDataCell>{{ cash.deal_date }}/{{ calculated }}</CTableDataCell>
     <CTableDataCell :class="sortClass">
       {{ cash.sort_desc }}
     </CTableDataCell>
@@ -105,7 +111,7 @@ const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
     </CTableDataCell>
     <CTableDataCell>{{ cash.evidence_desc }}</CTableDataCell>
     <CTableDataCell>
-      <CButton color="info" size="sm" @click="showDetail">확인</CButton>
+      <CButton color="info" size="sm" @click="showDetail" :disabled="allowdEdit"> 확인</CButton>
     </CTableDataCell>
   </CTableRow>
 

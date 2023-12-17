@@ -122,7 +122,7 @@ onBeforeMount(() => {
       <StatusByAccount v-if="compName === 'StatusByAccount'" :date="date" />
 
       <CashListByDate v-if="compName === 'CashListByDate'" :date="date" />
-
+      {{ comCashCalc }}
       <Calculated :is-calculated="isCalculated" @to-calculate="checkBalance" />
     </CCardBody>
 
