@@ -85,10 +85,7 @@ class CompanyCashCalcViewSet(viewsets.ModelViewSet):
     queryset = CompanyCashBookCalculation.objects.all()
     serializer_class = CompanyCashCalcSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-    def get_queryset(self):
-        company = self.request.query_params.get('company')
-        return CompanyCashBookCalculation.objects.filter(company_id=company)[:1]
+    filterset_fields = ('company',)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -182,10 +179,7 @@ class ProjectCashCalcViewSet(viewsets.ModelViewSet):
     queryset = ProjectCashBookCalculation.objects.all()
     serializer_class = ProjectCashCalcSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
-
-    def get_queryset(self):
-        project = self.request.query_params.get('project')
-        return ProjectCashBookCalculation.objects.filter(project_id=project)[:1]
+    filterset_fields = ('project',)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
