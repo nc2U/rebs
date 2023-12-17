@@ -10,6 +10,7 @@ const props = defineProps({
   suitcase: { type: Object as PropType<SuitCase>, required: true },
   viewRoute: { type: String, required: true },
   currPage: { type: Number, required: true },
+  writeAuth: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['cases-renewal', 'link-hit', 'file-hit'])

@@ -43,12 +43,7 @@ const pageSelect = (page: number) => emit('page-select', page)
     </CTableHead>
 
     <CTableBody>
-      <TopNotice
-        v-for="notice in noticeList"
-        :key="notice.pk"
-        :post="notice"
-        :write-auth="writeAuth"
-      />
+      <TopNotice v-for="notice in noticeList" :key="notice.pk" :post="notice" />
       <Notice v-for="post in postList" :key="post.pk" :post="post" />
     </CTableBody>
   </CTable>

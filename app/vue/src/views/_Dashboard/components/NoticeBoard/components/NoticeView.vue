@@ -32,7 +32,6 @@ const emit = defineEmits(['to-like', 'post-hit', 'link-hit', 'file-hit', 'posts-
 
 const userInfo = inject<ComputedRef<User>>('userInfo')
 const isOwn = computed(() => props.post.user?.pk === userInfo?.value.pk)
-const postAuth = computed(() => userInfo?.value.is_superuser || (props.writeAuth && isOwn.value))
 
 const prev = ref<number | null>()
 const next = ref<number | null>()
@@ -315,6 +314,12 @@ onMounted(() => {
       </CCol>
     </CRow>
 
+    <hr />
+
+    <Comments :post="post.pk as number" :comments="commentList" />
+
+    <hr />
+
     <CRow class="py-2">
       <CCol>
         <CButtonGroup role="group">
@@ -364,10 +369,6 @@ onMounted(() => {
         </CButton>
       </CCol>
     </CRow>
-
-    <hr />
-
-    <Comments :post="post.pk as number" :comments="commentList" />
   </div>
 </template>
 

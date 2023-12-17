@@ -11,6 +11,7 @@ defineProps({
   page: { type: Number, required: true },
   caseList: { type: Array as PropType<SuitCase[]>, default: () => [] },
   viewRoute: { type: String, required: true },
+  writeAuth: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['page-select', 'agency-filter', 'agency-search', 'related-filter'])
@@ -80,6 +81,7 @@ const pageSelect = (page: number) => emit('page-select', page)
     </CCol>
     <CCol lg="4" class="text-right pt-3">
       <CButton
+        v-if="writeAuth"
         color="primary"
         class="px-5"
         :disabled="!company"
