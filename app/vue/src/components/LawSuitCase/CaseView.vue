@@ -23,7 +23,7 @@ const refAlertModal = ref()
 
 const userInfo = inject<ComputedRef<User>>('userInfo')
 const editAuth = computed(
-  () => userInfo?.value?.is_superuser || props.suitcase.user?.pk === userInfo?.value.pk,
+  () => userInfo?.value?.is_superuser || props.suitcase.user?.pk === userInfo?.value?.pk,
 )
 
 const prev = ref<number | null>()
