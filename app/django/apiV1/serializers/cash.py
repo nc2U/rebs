@@ -1,7 +1,8 @@
 from django.db import transaction
 from rest_framework import serializers
 
-from cash.models import BankCode, CompanyBankAccount, ProjectBankAccount, CashBook, ProjectCashBook
+from cash.models import BankCode, CompanyBankAccount, ProjectBankAccount, CashBook, ProjectCashBook, \
+    CompanyCashBookCalculation, ProjectCashBookCalculation
 from rebs.models import AccountSort, AccountSubD1, AccountSubD2, AccountSubD3, ProjectAccountD2, ProjectAccountD3
 
 
@@ -185,6 +186,12 @@ class CashBookSerializer(serializers.ModelSerializer):
         return instance
 
 
+class CompanyCashBookCalcSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CompanyCashBookCalculation
+        fields = ('company', 'calculated')
+
+
 class ProjectBankAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectBankAccount
@@ -337,3 +344,9 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
                 sep_pr_cashbook.deal_date = instance.deal_date
                 sep_pr_cashbook.save()
         return instance
+
+
+class ProjectCashBookCalcSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectCashBookCalculation
+        fields = ('project', 'calculated')

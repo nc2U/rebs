@@ -81,6 +81,15 @@ class CashBookViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
+class CompanyCashCalcViewSet(viewsets.ModelViewSet):
+    queryset = CompanyCashBookCalculation.objects.all()
+    serializer_class = CompanyCashBookCalcSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
 class DateCashBookViewSet(CashBookViewSet):
     pagination_class = PageNumberPaginationTwoHundred
 
@@ -150,6 +159,15 @@ class ProjectCashBookViewSet(viewsets.ModelViewSet):
     pagination_class = PageNumberPaginationFifteen
     filterset_class = ProjectCashBookFilterSet
     search_fields = ('contract__contractor__name', 'content', 'trader', 'note')
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class ProjectCashCalcViewSet(viewsets.ModelViewSet):
+    queryset = ProjectCashBookCalculation.objects.all()
+    serializer_class = ProjectCashBookCalcSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
