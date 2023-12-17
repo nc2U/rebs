@@ -4,6 +4,7 @@ import { useProject } from '@/store/pinia/project'
 import { useProCash } from '@/store/pinia/proCash'
 import { getToday } from '@/utils/baseMixins'
 import { pageTitle, navMenu } from '@/views/proCash/_menu/headermixin'
+import type { ProCalculated } from '@/store/types/proCash'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import DateChoicer from '@/views/proCash/Status/components/DateChoicer.vue'
@@ -36,11 +37,14 @@ const fetchBalanceByAccList = (payload: { project: number; direct?: string; date
   pCashStore.fetchBalanceByAccList(payload)
 const fetchDateCashBookList = (payload: { project: number; date: string }) =>
   pCashStore.fetchDateCashBookList(payload)
+
+const createProCashCalc = (payload: ProCalculated) => pCashStore.createProCashCalc(payload)
+const patchProCashCalc = (payload: ProCalculated) => pCashStore.patchProCashCalc(payload)
 const fetchProCashCalc = (proj: number) => pCashStore.fetchProCashCalc(proj)
 const fetchProLastDeal = (proj: number) => pCashStore.fetchProLastDeal(proj)
 
-const proCashCalc = computed(() => pCashStore.proCashCalc[0]) // 최종 정산 일자
-const proLastDeal = computed(() => pCashStore.proLastDeal[0]) // 최종 거래 일자
+const proCashCalc = computed(() => (!!pCashStore.proCashCalc ? pCashStore.proCashCalc : null)) // 최종 정산 일자
+const proLastDeal = computed(() => pCashStore.proLastDeal) // 최종 거래 일자
 
 const isCalculated = computed(
   () => !!proCashCalc.value && proCashCalc.value.calculated >= proLastDeal.value.deal_date,
@@ -92,7 +96,11 @@ const directBalance = (val: boolean) => {
     })
 }
 
-const checkBalance = () => alert('ok checked!')
+const checkBalance = (payload: ProCalculated) => {
+  payload = { project: project.value, calculated: proLastDeal.value?.deal_date }
+  if (!!proCashCalc.value) patchProCashCalc({ ...{ pk: proCashCalc.value.pk }, ...payload })
+  else alert('create') // createProCashCalc(payload)
+}
 
 const dataSetup = (pk: number) => {
   fetchStatusOutBudgetList(pk)
@@ -143,6 +151,7 @@ onBeforeMount(() => {
         @direct-balance="directBalance"
       />
       <CashListByDate v-if="compName === 'CashListByDate'" :date="date" />
+
       <SummaryForBudget
         v-if="compName === 'SummaryForBudget'"
         :date="date"

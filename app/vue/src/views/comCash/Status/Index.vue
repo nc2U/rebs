@@ -4,6 +4,7 @@ import { pageTitle, navMenu } from '@/views/comCash/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
 import { useComCash } from '@/store/pinia/comCash'
 import { getToday } from '@/utils/baseMixins'
+import type { ComCalculated } from '@/store/types/comCash'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import DateChoicer from '@/views/comCash/Status/components/DateChoicer.vue'
@@ -31,11 +32,13 @@ const fetchComBalanceByAccList = (com: { company: number; date: string }) =>
 const fetchDateCashBookList = (payload: { company: number; date: string }) =>
   cashStore.fetchDateCashBookList(payload)
 
+const createComCashCalc = (payload: ComCalculated) => cashStore.createComCashCalc(payload)
+const patchComCashCalc = (payload: ComCalculated) => cashStore.patchComCashCalc(payload)
 const fetchComCashCalc = (com: number) => cashStore.fetchComCashCalc(com)
 const fetchComLastDeal = (com: number) => cashStore.fetchComLastDeal(com)
 
-const comCashCalc = computed(() => cashStore.comCashCalc[0]) // 최종 정산 일자
-const comLastDeal = computed(() => cashStore.comLastDeal[0]) // 최종 거래 일자
+const comCashCalc = computed(() => (!!cashStore.comCashCalc ? cashStore.comCashCalc : null)) // 최종 정산 일자
+const comLastDeal = computed(() => cashStore.comLastDeal) // 최종 거래 일자
 
 const isCalculated = computed(
   () => !!comCashCalc.value && comCashCalc.value.calculated >= comLastDeal.value.deal_date,
@@ -65,7 +68,11 @@ const setDate = (dt: string) => {
   }
 }
 
-const checkBalance = () => alert('ok checked!')
+const checkBalance = (payload: ComCalculated) => {
+  payload = { company: company.value, calculated: comLastDeal.value?.deal_date }
+  if (!!comCashCalc.value) patchComCashCalc({ ...{ pk: comCashCalc.value.pk }, ...payload })
+  else createComCashCalc(payload)
+}
 
 const dataSetup = (pk: number) => {
   fetchComBankAccList(pk)
@@ -113,6 +120,7 @@ onBeforeMount(() => {
       <TableTitleRow excel :url="excelUrl" :disabled="!company" />
 
       <StatusByAccount v-if="compName === 'StatusByAccount'" :date="date" />
+
       <CashListByDate v-if="compName === 'CashListByDate'" :date="date" />
 
       <Calculated :is-calculated="isCalculated" @to-calculate="checkBalance" />
