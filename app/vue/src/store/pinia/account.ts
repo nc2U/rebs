@@ -29,13 +29,13 @@ export const useAccount = defineStore('account', () => {
   const superAuth = computed(() => userInfo.value?.is_superuser)
   const staffAuth = computed(() => (userInfo.value?.staffauth ? userInfo.value.staffauth : null))
 
-  const writeComDocs = computed(() => superAuth.value || staffAuth.value.company_docs == '2')
+  const writeComDocs = computed(() => superAuth.value || staffAuth.value?.company_docs == '2')
   const writeProDocs = computed(
-    () => superAuth.value || writeComDocs.value || staffAuth.value.project_docs == '2',
+    () => superAuth.value || writeComDocs.value || staffAuth.value?.project_docs == '2',
   )
-  const writeComCash = computed(() => superAuth.value || staffAuth.value.company_cash == '2')
+  const writeComCash = computed(() => superAuth.value || staffAuth.value?.company_cash == '2')
   const writeProCash = computed(
-    () => superAuth.value || writeComCash.value || staffAuth.value.project_cash == '2',
+    () => superAuth.value || writeComCash.value || staffAuth.value?.project_cash == '2',
   )
 
   const myTodos = computed(() =>

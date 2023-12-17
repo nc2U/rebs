@@ -145,7 +145,7 @@ const getFileName = (file: string) => {
 }
 
 const toEdit = () => {
-  if (props.post.comments?.length >= 5)
+  if (props.post.comments?.length ?? 0 >= 5)
     refAlertModal.value.callModal('', '5개 이상의 댓글이 달린 게시물은 수정할 수 없습니다.')
   else
     router.push({
@@ -158,7 +158,7 @@ const deleteConfirm = () => refDelModal.value.callModal()
 
 const toDelete = () => {
   refDelModal.value.close()
-  if (userInfo?.value.is_superuser || props.post.comments?.length < 5)
+  if ((userInfo?.value.is_superuser || props.post.comments?.length) ?? 0 < 5)
     emit('post-delete', props.post.pk)
   else refAlertModal.value.callModal('', '5개 이상의 댓글이 달린 게시물은 삭제할 수 없습니다.')
 }
@@ -226,7 +226,7 @@ onMounted(() => {
 
     <CRow class="text-blue-grey">
       <CCol>
-        <small class="mr-3">작성자 : {{ post.user.username }}</small>
+        <small class="mr-3">작성자 : {{ post.user?.username }}</small>
         <small class="mr-2">
           <v-icon icon="mdi-comment-text-multiple" size="sm" />
           <span class="ml-1">{{ post.comments?.length ?? 0 }}</span>

@@ -23,7 +23,7 @@ const refAlertModal = ref()
 
 const userInfo = inject<ComputedRef<User>>('userInfo')
 const editAuth = computed(
-  () => userInfo?.value.is_superuser || props.post.user?.pk === userInfo?.value.pk,
+  () => userInfo?.value.is_superuser || props.suitcase.user?.pk === userInfo?.value.pk,
 )
 
 const prev = ref<number | null>()
@@ -117,22 +117,17 @@ const toScrape = () => alert('스크랩 기능 중비중!')
 const toBlame = () => alert('신고 기능 준비중!')
 
 const toEdit = () => {
-  if (props.post.comments?.length >= 5)
-    refAlertModal.value.callModal('', '5개 이상의 댓글이 달린 게시물은 수정할 수 없습니다.')
-  else
-    router.push({
-      name: `${props.viewRoute} - 수정`,
-      params: { postId: props.post?.pk },
-    })
+  router.push({
+    name: `${props.viewRoute} - 수정`,
+    params: { postId: props.suitcase?.pk },
+  })
 }
 
 const deleteConfirm = () => refDelModal.value.callModal()
 
 const toDelete = () => {
   refDelModal.value.close()
-  if (userInfo?.value.is_superuser || props.post.comments?.length < 5)
-    emit('post-delete', props.post.pk)
-  else refAlertModal.value.callModal('', '5개 이상의 댓글이 달린 게시물은 삭제할 수 없습니다.')
+  emit('post-delete', props.suitcase.pk)
 }
 
 watch(
@@ -197,7 +192,7 @@ onBeforeMount(() => {
 
     <CRow class="text-blue-grey">
       <CCol>
-        <small class="mr-3">작성자 : {{ suitcase.user }}</small>
+        <small class="mr-3">작성자 : {{ suitcase.user?.username }}</small>
         <small class="mr-3 text-btn" @click="toPrint">
           <v-icon icon="mdi-printer" size="small" />
           <span class="ml-2">프린트</span>
@@ -415,17 +410,7 @@ onBeforeMount(() => {
     <CRow class="py-4">
       <CCol>
         <CButtonGroup role="group">
-          <CButton
-            v-if="editAuth"
-            color="success"
-            :disabled="!writeAuth"
-            @click="
-              $router.push({
-                name: `${viewRoute} - 수정`,
-                params: { caseId: suitcase.pk },
-              })
-            "
-          >
+          <CButton v-if="editAuth" color="success" :disabled="!writeAuth" @click="toEdit">
             수정
           </CButton>
           <CButton v-if="editAuth" color="danger" :disabled="!writeAuth" @click="deleteConfirm">
