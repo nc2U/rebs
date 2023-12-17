@@ -335,9 +335,9 @@ class Post(models.Model):
     secret = models.BooleanField('비밀글', default=False)
     password = models.CharField('패스워드', max_length=255, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
-    soft_delete = models.DateTimeField('휴지통', null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    deleted = models.DateTimeField('휴지통', null=True, blank=True, default=None)
 
     def __str__(self):
         return self.title
@@ -351,6 +351,14 @@ class Post(models.Model):
         ordering = ['-created']
         verbose_name = '05. 게시물 관리'
         verbose_name_plural = '05. 게시물 관리'
+
+    def delete(self, using=None, keep_parents=False):
+        self.deleted = datetime.now()
+        self.save(update_fields=['deleted'])
+
+    def restore(self):
+        self.deleted = None
+        self.save(update_fields=['deleted'])
 
 
 def get_file_name(filename):

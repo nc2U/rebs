@@ -9,13 +9,15 @@ import {
   ref,
   watch,
 } from 'vue'
-import { onBeforeRouteUpdate, useRoute } from 'vue-router'
+import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 import type { User } from '@/store/types/accounts'
 import type { Post } from '@/store/types/document'
 import sanitizeHtml from 'sanitize-html'
 import Comments from '@/components/Comments/Index.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const props = defineProps({
   heatedPage: { type: Array as PropType<number[]>, default: () => [] },
@@ -25,12 +27,25 @@ const props = defineProps({
   likePosts: { type: Array as PropType<number[]>, default: () => [] },
   viewRoute: { type: String, required: true },
   currPage: { type: Number, required: true },
-  writeAuth: { type: Boolean, default: false },
+  writeAuth: { type: Boolean, default: true },
 })
 
-const emit = defineEmits(['to-like', 'post-hit', 'link-hit', 'file-hit', 'posts-renewal'])
+const emit = defineEmits([
+  'to-like',
+  'post-hit',
+  'link-hit',
+  'file-hit',
+  'posts-renewal',
+  'post-delete',
+])
+
+const refDelModal = ref()
+const refAlertModal = ref()
 
 const userInfo = inject<ComputedRef<User>>('userInfo')
+const editAuth = computed(
+  () => userInfo?.value.is_superuser || props.post.user?.pk === userInfo?.value.pk,
+)
 
 const prev = ref<number | null>()
 const next = ref<number | null>()
@@ -74,7 +89,7 @@ const toPrint = () => {
   }
 }
 
-const route = useRoute()
+const [route, router] = [useRoute(), useRouter()]
 
 const sendUrl = `${window.location.host}${route.fullPath}`
 
@@ -129,7 +144,24 @@ const getFileName = (file: string) => {
   else return
 }
 
-const toDelete = () => alert('삭제 기능 준비중!')
+const toEdit = () => {
+  if (props.post.comments?.length ?? 0 >= 5)
+    refAlertModal.value.callModal('', '5개 이상의 댓글이 달린 게시물은 수정할 수 없습니다.')
+  else
+    router.push({
+      name: `${props.viewRoute} - 수정`,
+      params: { postId: props.post?.pk },
+    })
+}
+
+const deleteConfirm = () => refDelModal.value.callModal()
+
+const toDelete = () => {
+  refDelModal.value.close()
+  if ((userInfo?.value.is_superuser || props.post.comments?.length) ?? 0 < 5)
+    emit('post-delete', props.post.pk)
+  else refAlertModal.value.callModal('', '5개 이상의 댓글이 달린 게시물은 삭제할 수 없습니다.')
+}
 
 watch(
   () => getPostNav.value,
@@ -194,7 +226,7 @@ onMounted(() => {
 
     <CRow class="text-blue-grey">
       <CCol>
-        <small class="mr-3">작성자 : {{ post.user }}</small>
+        <small class="mr-3">작성자 : {{ post.user?.username }}</small>
         <small class="mr-2">
           <v-icon icon="mdi-comment-text-multiple" size="sm" />
           <span class="ml-1">{{ post.comments?.length ?? 0 }}</span>
@@ -313,9 +345,22 @@ onMounted(() => {
       </CCol>
     </CRow>
 
+    <hr />
+
+    <Comments :post="post.pk as number" :comments="commentList" />
+
+    <hr />
+
     <CRow class="py-2">
       <CCol>
-        <CButtonGroup role="group" class="mr-3">
+        <CButtonGroup role="group">
+          <CButton v-if="editAuth" color="success" :disabled="!writeAuth" @click="toEdit">
+            수정
+          </CButton>
+          <CButton v-if="editAuth" color="danger" :disabled="!writeAuth" @click="deleteConfirm">
+            삭제
+          </CButton>
+          <CButton color="secondary" @click="$router.push({ name: `${viewRoute}` })"> 목록</CButton>
           <CButton
             color="light"
             :disabled="!prev || reOrder"
@@ -326,7 +371,7 @@ onMounted(() => {
               })
             "
           >
-            이전글
+            이전
           </CButton>
           <CButton
             color="light"
@@ -338,34 +383,31 @@ onMounted(() => {
               })
             "
           >
-            다음글
+            다음
           </CButton>
         </CButtonGroup>
       </CCol>
       <CCol class="text-right">
-        <CButtonGroup role="group">
-          <CButton
-            v-if="writeAuth"
-            color="success"
-            @click="
-              $router.push({
-                name: `${viewRoute} - 수정`,
-                params: { postId: post?.pk },
-              })
-            "
-          >
-            수정
-          </CButton>
-          <CButton v-if="writeAuth" color="danger" @click="toDelete">삭제</CButton>
-          <CButton color="secondary" @click="$router.push({ name: `${viewRoute}` })"> 목록</CButton>
-        </CButtonGroup>
+        <CButton
+          color="primary"
+          :disabled="!writeAuth"
+          @click="$router.push({ name: `${viewRoute} - 작성` })"
+        >
+          신규등록
+        </CButton>
       </CCol>
     </CRow>
-
-    <hr />
-
-    <Comments :post="post.pk as number" :comments="commentList" />
   </div>
+
+  <AlertModal ref="refAlertModal" />
+
+  <ConfirmModal ref="refDelModal">
+    <template #header>알림</template>
+    <template #default>한번 삭제한 자료는 복구할 수 없습니다. 정말 삭제하시겠습니까?</template>
+    <template #footer>
+      <CButton color="danger" @click="toDelete">삭제</CButton>
+    </template>
+  </ConfirmModal>
 </template>
 
 <style lang="scss" scoped>

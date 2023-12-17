@@ -299,7 +299,11 @@ export const useDocument = defineStore('document', () => {
       .then(() => accStore.fetchProfile().then(() => fetchPost(pk)))
       .catch(err => errorHandle(err.response.data))
 
-  const deletePost = () => 4
+  const deletePost = (pk: number) =>
+    api
+      .delete(`/post/${pk}/`)
+      .then(() => message('warning'))
+      .catch(err => errorHandle(err.response.data))
 
   const link = ref<Link | null>(null)
 

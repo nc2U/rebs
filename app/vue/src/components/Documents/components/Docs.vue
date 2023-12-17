@@ -29,7 +29,7 @@ const sortColor = computed(() => (props.post?.project ? 'success' : 'info'))
       </router-link>
       <CBadge v-if="post.is_new" color="warning" size="sm" class="ml-2">new</CBadge>
     </CTableDataCell>
-    <CTableDataCell>{{ post.user }}</CTableDataCell>
+    <CTableDataCell>{{ post.user?.username }}</CTableDataCell>
     <CTableDataCell>{{ timeFormat(post.created ?? '') }}</CTableDataCell>
     <CTableDataCell>{{ post.hit }}</CTableDataCell>
   </CTableRow>

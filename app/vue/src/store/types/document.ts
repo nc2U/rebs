@@ -22,6 +22,11 @@ export interface Category {
   order: number | null
 }
 
+interface SimpleUser {
+  pk: number
+  username: string
+}
+
 export interface SuitCase {
   pk: number | null
   company: number | null
@@ -48,7 +53,7 @@ export interface SuitCase {
   case_start_date: string | null
   case_end_date: string | null
   summary: string
-  user?: string
+  user?: SimpleUser
   links?: Array<{ pk: number; category: { name: string; color?: string }; link: string }>
   files?: Array<{ pk: number; category: { name: string; color?: string }; file: string }>
   created?: string
@@ -69,6 +74,7 @@ export type Post = {
     | null
     | string
     | boolean
+    | SimpleUser
     | Link[]
     | AFile[]
     | Comment[]
@@ -96,8 +102,7 @@ export type Post = {
   links?: Link[]
   files?: AFile[]
   comments?: number[]
-  user?: number | null
-  soft_delete?: string | null
+  user?: SimpleUser
   created?: string
   updated?: string
   is_new?: boolean
@@ -161,6 +166,6 @@ export interface Comment {
   ip?: string
   device?: string
   secret: boolean
-  user?: { pk: number; username: string }
+  user?: SimpleUser
   created?: string
 }

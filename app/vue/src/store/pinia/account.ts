@@ -25,9 +25,19 @@ export const useAccount = defineStore('account', () => {
   const todoList = ref<Todo[]>([])
 
   // getters
+  const isAuthorized = computed(() => !!accessToken.value && !!userInfo.value)
   const superAuth = computed(() => userInfo.value?.is_superuser)
   const staffAuth = computed(() => (userInfo.value?.staffauth ? userInfo.value.staffauth : null))
-  const isAuthorized = computed(() => !!accessToken.value && !!userInfo.value)
+
+  const writeComDocs = computed(() => superAuth.value || staffAuth.value?.company_docs == '2')
+  const writeProDocs = computed(
+    () => superAuth.value || writeComDocs.value || staffAuth.value?.project_docs == '2',
+  )
+  const writeComCash = computed(() => superAuth.value || staffAuth.value?.company_cash == '2')
+  const writeProCash = computed(
+    () => superAuth.value || writeComCash.value || staffAuth.value?.project_cash == '2',
+  )
+
   const myTodos = computed(() =>
     todoList.value.filter(todo => !todo.soft_deleted && todo.user === userInfo.value?.pk),
   )
@@ -215,9 +225,13 @@ export const useAccount = defineStore('account', () => {
     profile,
     todoList,
 
+    isAuthorized,
     superAuth,
     staffAuth,
-    isAuthorized,
+    writeComDocs,
+    writeProDocs,
+    writeComCash,
+    writeProCash,
     myTodos,
     getUsers,
     likePosts,

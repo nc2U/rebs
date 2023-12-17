@@ -54,7 +54,7 @@ const pageSelect = (page: number) => docStore.fetchCommentList(props.post, page)
     @form-reset="formReset"
     @page-select="pageSelect"
   />
-  <div v-show="formVision">
+  <div v-show="formVision" class="pt-1">
     <CommentForm :form-vision="formVision" :post="post" @on-submit="onSubmit" />
   </div>
 </template>

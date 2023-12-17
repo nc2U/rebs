@@ -11,7 +11,7 @@ defineProps({
   page: { type: Number, default: 1 },
   noticeList: { type: Array as PropType<Post[]>, default: () => [] },
   postList: { type: Array as PropType<Post[]>, default: () => [] },
-  writeAuth: { type: Boolean, default: false },
+  writeAuth: { type: Boolean, default: true },
 })
 
 const emit = defineEmits(['page-select'])
@@ -43,12 +43,7 @@ const pageSelect = (page: number) => emit('page-select', page)
     </CTableHead>
 
     <CTableBody>
-      <TopNotice
-        v-for="notice in noticeList"
-        :key="notice.pk"
-        :post="notice"
-        :write-auth="writeAuth"
-      />
+      <TopNotice v-for="notice in noticeList" :key="notice.pk" :post="notice" />
       <Notice v-for="post in postList" :key="post.pk" :post="post" />
     </CTableBody>
   </CTable>

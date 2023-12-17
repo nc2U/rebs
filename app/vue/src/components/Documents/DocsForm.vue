@@ -2,7 +2,6 @@
 import { ref, reactive, computed, onMounted, onUpdated, type PropType } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { Post, Link } from '@/store/types/document'
-import { write_company_docs } from '@/utils/pageAuth'
 import { AlertSecondary } from '@/utils/cssMixins'
 import QuillEditor from '@/components/QuillEditor/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -17,6 +16,7 @@ const props = defineProps({
   getSuitCase: { type: Object, default: null },
   post: { type: Object as PropType<Post>, default: null },
   viewRoute: { type: String, required: true },
+  writeAuth: { type: Boolean, default: true },
 })
 
 const emit = defineEmits(['on-submit', 'file-upload', 'file-change', 'close'])
@@ -110,7 +110,7 @@ const fileUpload = (event: Event) => {
 }
 
 const onSubmit = (event: Event) => {
-  if (write_company_docs.value) {
+  if (props.writeAuth) {
     const el = event.currentTarget as HTMLFormElement
     if (!el.checkValidity()) {
       event.preventDefault()

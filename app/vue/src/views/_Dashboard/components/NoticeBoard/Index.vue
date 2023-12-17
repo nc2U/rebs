@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, inject, watch, onBeforeMount, type ComputedRef } from 'vue'
+import { ref, computed, inject, watch, onBeforeMount } from 'vue'
 import { type RouteLocationNormalizedLoaded as Loaded, useRoute, useRouter } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
 import ListController from './components/ListController.vue'
@@ -9,7 +9,6 @@ import { type PostFilter, useDocument } from '@/store/pinia/document'
 import NoticeList from './components/NoticeList.vue'
 import NoticeView from './components/NoticeView.vue'
 import NoticeForm from '@/views/_Dashboard/components/NoticeBoard/components/NoticeForm.vue'
-import type { User } from '@/store/types/accounts'
 
 const lController = ref()
 const boardNumber = ref(1)
@@ -23,11 +22,6 @@ const postFilter = ref<PostFilter>({
   search: '',
   page: 1,
 })
-
-const userInfo = inject<ComputedRef<User>>('userInfo')
-const writeAuth = computed(
-  () => userInfo?.value.is_superuser || userInfo?.value.staffauth?.is_staff,
-)
 
 const heatedPage = ref<number[]>([])
 const newFiles = ref<File[]>([])
@@ -60,6 +54,7 @@ const company = computed(() => comStore.company?.pk)
 
 const accStore = useAccount()
 const likePosts = computed(() => accStore.likePosts)
+const writeAuth = computed(() => accStore.writeComDocs)
 
 const docStore = useDocument()
 const post = computed(() => docStore.post)
@@ -79,6 +74,7 @@ const patchPost = (payload: PatchPost & { filter: PostFilter }) => docStore.patc
 const patchLink = (payload: Link) => docStore.patchLink(payload)
 const patchFile = (payload: AFile) => docStore.patchFile(payload)
 const patchPostLike = (pk: number) => docStore.patchPostLike(pk)
+const deletePost = (pk: number) => docStore.deletePost(pk)
 
 const [route, router] = [
   useRoute() as Loaded & {
@@ -123,8 +119,6 @@ const fileHit = async (pk: number) => {
 }
 
 const onSubmit = async (payload: Post & Attatches) => {
-  console.log(payload)
-
   if (company.value) {
     const { pk, ...getData } = payload
     getData.company = company.value
@@ -164,6 +158,9 @@ const onSubmit = async (payload: Post & Attatches) => {
     cngFiles.value = []
   }
 }
+
+const postDelete = (pk: number) =>
+  deletePost(pk).then(() => router.replace({ name: `${mainViewName.value}` }))
 
 const dataSetup = (pk: number, postId?: string | string[]) => {
   postFilter.value.company = pk
@@ -220,6 +217,7 @@ onBeforeMount(() => dataSetup(company.value ?? comStore.initComId, route.params?
             @link-hit="linkHit"
             @file-hit="fileHit"
             @posts-renewal="postsRenewal"
+            @post-delete="postDelete"
           />
         </div>
 
@@ -228,6 +226,7 @@ onBeforeMount(() => dataSetup(company.value ?? comStore.initComId, route.params?
             :board-num="boardNumber"
             :category-list="categoryList"
             :view-route="mainViewName"
+            :write-auth="writeAuth"
             @file-upload="fileUpload"
             @on-submit="onSubmit"
           />
@@ -239,6 +238,7 @@ onBeforeMount(() => dataSetup(company.value ?? comStore.initComId, route.params?
             :category-list="categoryList"
             :post="post as Post"
             :view-route="mainViewName"
+            :write-auth="writeAuth"
             @file-change="fileChange"
             @file-upload="fileUpload"
             @on-submit="onSubmit"

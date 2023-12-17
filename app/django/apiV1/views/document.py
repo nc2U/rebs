@@ -74,7 +74,7 @@ class PostFilterSet(FilterSet):
 
 
 class PostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.all()
+    queryset = Post.objects.filter(deleted=None)
     serializer_class = PostSerializer
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     filterset_class = PostFilterSet

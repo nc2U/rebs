@@ -13,6 +13,7 @@ defineProps({
   postList: { type: Array as PropType<Post[]>, default: () => [] },
   viewRoute: { type: String, required: true },
   isLawsuit: { type: Boolean, default: false },
+  writeAuth: { type: Boolean, default: true },
 })
 
 const emit = defineEmits(['page-select'])
@@ -81,6 +82,7 @@ const pageSelect = (page: number) => emit('page-select', page)
     </CCol>
     <CCol lg="4" class="text-right pt-3">
       <CButton
+        v-if="writeAuth"
         color="primary"
         class="px-5"
         :disabled="!company && !project"

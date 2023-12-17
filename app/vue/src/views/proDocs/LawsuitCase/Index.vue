@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, watch, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/proDocs/_menu/headermixin1'
+import { useAccount } from '@/store/pinia/account'
 import { useProject } from '@/store/pinia/project'
 import { type RouteLocationNormalizedLoaded as LoadedRoute, useRoute, useRouter } from 'vue-router'
 import { type SuitCaseFilter as cFilter, useDocument } from '@/store/pinia/document'
@@ -45,6 +46,9 @@ const pageSelect = (page: number) => {
   caseFilter.value.page = page
   listFiltering(caseFilter.value)
 }
+
+const accStore = useAccount()
+const writeAuth = computed(() => accStore.writeProDocs)
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
@@ -172,6 +176,7 @@ onBeforeMount(() => {
           :page="caseFilter.page ?? 1"
           :case-list="suitcaseList"
           :view-route="mainViewName"
+          :write-auth="writeAuth"
           @page-select="pageSelect"
           @agency-filter="agencyFilter"
           @agency-search="agencySearch"
@@ -184,6 +189,7 @@ onBeforeMount(() => {
           :suitcase="suitcase as SuitCase"
           :view-route="mainViewName"
           :curr-page="caseFilter.page ?? 1"
+          :write-auth="writeAuth"
           @link-hit="linkHit"
           @file-hit="fileHit"
           @cases-renewal="casesRenewal"
@@ -195,6 +201,7 @@ onBeforeMount(() => {
           :sort-name="projName"
           :get-suit-case="getSuitCase"
           :view-route="mainViewName"
+          :write-auth="writeAuth"
           @on-submit="onSubmit"
         />
       </div>
@@ -205,6 +212,7 @@ onBeforeMount(() => {
           :get-suit-case="getSuitCase"
           :suitcase="suitcase"
           :view-route="mainViewName"
+          :write-auth="writeAuth"
           @on-submit="onSubmit"
           @on-delete="onDelete"
         />
