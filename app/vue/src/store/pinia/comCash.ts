@@ -265,7 +265,7 @@ export const useComCash = defineStore('comCash', () => {
 
   const fetchComCashCalc = (com: number) =>
     api
-      .get(`/com-cash-calc/?company=${com}/`)
+      .get(`/com-cash-calc/?company=${com}`)
       .then(res => (comCashCalc.value = res.data.results[0]))
       .catch(err => errorHandle(err.response.data))
 
@@ -284,7 +284,7 @@ export const useComCash = defineStore('comCash', () => {
   const comLastDeal = ref<{ deal_date: string }[]>([])
   const fetchComLastDeal = (com: number) =>
     api
-      .get(`/com-last-deal/?company=${com}/`)
+      .get(`/com-last-deal/?company=${com}`)
       .then(res => (comLastDeal.value = res.data.results[0]))
       .catch(err => errorHandle(err.response.data))
 
@@ -335,6 +335,7 @@ export const useComCash = defineStore('comCash', () => {
     deleteCashBook,
 
     comCashCalc,
+    fetchComCashCalc,
     createComCashCalc,
     patchComCashCalc,
 
