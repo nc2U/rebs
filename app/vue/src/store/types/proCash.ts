@@ -127,5 +127,5 @@ export interface ProCalculated {
   pk?: number
   project: number
   calculated: string
-  user: { pk: number; username: string }
+  user?: { pk: number; username: string }
 }

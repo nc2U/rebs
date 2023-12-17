@@ -467,7 +467,7 @@ export const useProCash = defineStore('proCash', () => {
 
   const createProCashCalc = (payload: ProCalculated) =>
     api
-      .post(`/pro-cash-calc`, payload)
+      .post(`/pro-cash-calc/`, payload)
       .then(res => fetchProCashCalc(res.data.project).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
