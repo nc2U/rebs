@@ -1,6 +1,9 @@
 from django.db import models
 from django.conf import settings
 
+from company.models import Company
+from project.models import Project
+
 
 class BankCode(models.Model):
     code = models.CharField(max_length=3, unique=True)
@@ -139,3 +142,19 @@ class ProjectCashBook(models.Model):
         ordering = ['-deal_date', '-id']
         verbose_name = '04. 프로젝트 입출금거래'
         verbose_name_plural = '04. 프로젝트 입출금거래'
+
+
+class CompanyCashBookCalculation(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, verbose_name='회사')
+    calculated = models.DateTimeField('정산일', null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.company} 결산일 : {self.calculated}'
+
+
+class ProjectCashBookCalculation(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, verbose_name='프로젝트')
+    calculated = models.DateTimeField('정산일', null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.project} 결산일 : {self.calculated}'
