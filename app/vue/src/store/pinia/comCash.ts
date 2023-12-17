@@ -258,8 +258,10 @@ export const useComCash = defineStore('comCash', () => {
   const comCashCalc = ref()
 
   const fetchComCashCalc = (com: number) =>
-    api.get(`/com-cash-calc/${com}/`).then(res => (comCashCalc.value = res.data))
-  // .catch(err => errorHandle(err.response.data))
+    api
+      .get(`/com-cash-calc/?company=${com}/`)
+      .then(res => (comCashCalc.value = res.data.results[0]))
+      .catch(err => errorHandle(err.response.data))
 
   const createComCashCalc = (payload: ComCalculated) =>
     api

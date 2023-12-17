@@ -454,8 +454,10 @@ export const useProCash = defineStore('proCash', () => {
   const proCashCalc = ref()
 
   const fetchProCashCalc = (com: number) =>
-    api.get(`/pro-cash-calc/${com}/`).then(res => (proCashCalc.value = res.data))
-  // .catch(err => errorHandle(err.response.data))
+    api
+      .get(`/pro-cash-calc/?company=${com}/`)
+      .then(res => (proCashCalc.value = res.data.results[0]))
+      .catch(err => errorHandle(err.response.data))
 
   const createProCashCalc = (payload: ProCalculated) =>
     api
