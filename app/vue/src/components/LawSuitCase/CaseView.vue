@@ -16,7 +16,7 @@ const props = defineProps({
   writeAuth: { type: Boolean, default: true },
 })
 
-const emit = defineEmits(['cases-renewal', 'link-hit', 'file-hit'])
+const emit = defineEmits(['cases-renewal', 'link-hit', 'file-hit', 'post-delete'])
 
 const refDelModal = ref()
 const refAlertModal = ref()
@@ -130,7 +130,8 @@ const deleteConfirm = () => refDelModal.value.callModal()
 
 const toDelete = () => {
   refDelModal.value.close()
-  if (userInfo?.value.is_superuser || props.post.comments?.length < 5) alert('삭제 기능 준비중!')
+  if (userInfo?.value.is_superuser || props.post.comments?.length < 5)
+    emit('post-delete', props.post.pk)
   else refAlertModal.value.callModal('', '5개 이상의 댓글이 달린 게시물은 삭제할 수 없습니다.')
 }
 

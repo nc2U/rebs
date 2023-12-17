@@ -74,6 +74,7 @@ const patchPost = (payload: PatchPost & { filter: PostFilter }) => docStore.patc
 const patchLink = (payload: Link) => docStore.patchLink(payload)
 const patchFile = (payload: AFile) => docStore.patchFile(payload)
 const patchPostLike = (pk: number) => docStore.patchPostLike(pk)
+const deletePost = (pk: number) => docStore.deletePost(pk)
 
 const [route, router] = [
   useRoute() as Loaded & {
@@ -118,8 +119,6 @@ const fileHit = async (pk: number) => {
 }
 
 const onSubmit = async (payload: Post & Attatches) => {
-  console.log(payload)
-
   if (company.value) {
     const { pk, ...getData } = payload
     getData.company = company.value
@@ -159,6 +158,9 @@ const onSubmit = async (payload: Post & Attatches) => {
     cngFiles.value = []
   }
 }
+
+const postDelete = (pk: number) =>
+  deletePost(pk).then(() => router.replace({ name: `${mainViewName.value}` }))
 
 const dataSetup = (pk: number, postId?: string | string[]) => {
   postFilter.value.company = pk
@@ -215,6 +217,7 @@ onBeforeMount(() => dataSetup(company.value ?? comStore.initComId, route.params?
             @link-hit="linkHit"
             @file-hit="fileHit"
             @posts-renewal="postsRenewal"
+            @post-delete="postDelete"
           />
         </div>
 

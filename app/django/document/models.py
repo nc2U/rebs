@@ -337,7 +337,7 @@ class Post(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    deleted = models.DateTimeField('휴지통', null=True, default=None)
+    deleted = models.DateTimeField('휴지통', null=True, blank=True, default=None)
 
     def __str__(self):
         return self.title
