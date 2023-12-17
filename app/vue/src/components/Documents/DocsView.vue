@@ -1,10 +1,20 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, onMounted, type PropType, ref, watch } from 'vue'
+import {
+  computed,
+  type ComputedRef,
+  inject,
+  onBeforeMount,
+  onMounted,
+  type PropType,
+  ref,
+  watch,
+} from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 import { type Post } from '@/store/types/document'
 import sanitizeHtml from 'sanitize-html'
+import type { User } from '@/store/types/accounts'
 
 const props = defineProps({
   boardNum: { type: Number, default: 2 },
@@ -19,6 +29,11 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['to-like', 'post-hit', 'link-hit', 'file-hit', 'posts-renewal'])
+
+const userInfo = inject<ComputedRef<User>>('userInfo')
+const editAuth = computed(
+  () => userInfo?.value.is_superuser || props.post.user?.pk === userInfo?.value.pk,
+)
 
 const prev = ref<number | null>()
 const next = ref<number | null>()
@@ -324,7 +339,9 @@ onMounted(() => {
       <CCol>
         <CButtonGroup role="group">
           <CButton
+            v-if="editAuth"
             color="success"
+            :disabled="!writeAuth"
             @click="
               $router.push({
                 name: `${viewRoute} - 수정`,
@@ -334,7 +351,9 @@ onMounted(() => {
           >
             수정
           </CButton>
-          <CButton color="danger" @click="toDelete">삭제</CButton>
+          <CButton v-if="editAuth" color="danger" :disabled="!writeAuth" @click="toDelete">
+            삭제
+          </CButton>
           <CButton color="secondary" @click="$router.push({ name: `${viewRoute}` })"> 목록</CButton>
           <CButton
             color="light"
@@ -363,7 +382,11 @@ onMounted(() => {
         </CButtonGroup>
       </CCol>
       <CCol class="text-right">
-        <CButton color="primary" @click="$router.push({ name: `${viewRoute} - 작성` })">
+        <CButton
+          color="primary"
+          :disabled="!writeAuth"
+          @click="$router.push({ name: `${viewRoute} - 작성` })"
+        >
           신규등록
         </CButton>
       </CCol>

@@ -31,7 +31,9 @@ const props = defineProps({
 const emit = defineEmits(['to-like', 'post-hit', 'link-hit', 'file-hit', 'posts-renewal'])
 
 const userInfo = inject<ComputedRef<User>>('userInfo')
-const isOwn = computed(() => props.post.user?.pk === userInfo?.value.pk)
+const editAuth = computed(
+  () => userInfo?.value.is_superuser || props.post.user?.pk === userInfo?.value.pk,
+)
 
 const prev = ref<number | null>()
 const next = ref<number | null>()
@@ -324,8 +326,9 @@ onMounted(() => {
       <CCol>
         <CButtonGroup role="group">
           <CButton
-            v-if="postAuth"
+            v-if="editAuth"
             color="success"
+            :disabled="!writeAuth"
             @click="
               $router.push({
                 name: `${viewRoute} - 수정`,
@@ -335,7 +338,9 @@ onMounted(() => {
           >
             수정
           </CButton>
-          <CButton v-if="postAuth" color="danger" @click="toDelete"> 삭제</CButton>
+          <CButton v-if="editAuth" color="danger" :disabled="!writeAuth" @click="toDelete">
+            삭제
+          </CButton>
           <CButton color="secondary" @click="$router.push({ name: `${viewRoute}` })"> 목록</CButton>
           <CButton
             color="light"
@@ -364,7 +369,11 @@ onMounted(() => {
         </CButtonGroup>
       </CCol>
       <CCol class="text-right">
-        <CButton color="primary" @click="$router.push({ name: `${viewRoute} - 작성` })">
+        <CButton
+          color="primary"
+          :disabled="!writeAuth"
+          @click="$router.push({ name: `${viewRoute} - 작성` })"
+        >
           신규등록
         </CButton>
       </CCol>
