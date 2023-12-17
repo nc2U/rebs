@@ -12,6 +12,7 @@ import TableTitleRow from '@/components/TableTitleRow.vue'
 import StatusByAccount from '@/views/proCash/Status/components/StatusByAccount.vue'
 import CashListByDate from '@/views/proCash/Status/components/CashListByDate.vue'
 import SummaryForBudget from '@/views/proCash/Status/components/SummaryForBudget.vue'
+import Calculated from '@/views/proCash/Status/components/Calculated.vue'
 
 const date = ref(getToday())
 const direct = ref('0')
@@ -35,6 +36,15 @@ const fetchBalanceByAccList = (payload: { project: number; direct?: string; date
   pCashStore.fetchBalanceByAccList(payload)
 const fetchDateCashBookList = (payload: { project: number; date: string }) =>
   pCashStore.fetchDateCashBookList(payload)
+const fetchProCashCalc = (proj: number) => pCashStore.fetchProCashCalc(proj)
+const fetchProLastDeal = (proj: number) => pCashStore.fetchProLastDeal(proj)
+
+const proCashCalc = computed(() => pCashStore.proCashCalc[0]) // 최종 정산 일자
+const proLastDeal = computed(() => pCashStore.proLastDeal[0]) // 최종 거래 일자
+
+const isCalculated = computed(
+  () => !!proCashCalc.value && proCashCalc.value.calculated >= proLastDeal.value.deal_date,
+) // 최종 정산 일자 이후에 거래 기록이 없음 === true
 
 const excelUrl = computed(() => {
   const comp = compName.value
@@ -82,12 +92,16 @@ const directBalance = (val: boolean) => {
     })
 }
 
+const checkBalance = () => alert('ok checked!')
+
 const dataSetup = (pk: number) => {
   fetchStatusOutBudgetList(pk)
   fetchExecAmountList(pk, date.value)
   fetchProBankAccList(pk)
   fetchBalanceByAccList({ project: pk, date: date.value })
   fetchDateCashBookList({ project: pk, date: date.value })
+  fetchProCashCalc(pk)
+  fetchProLastDeal(pk)
 }
 
 const dataReset = () => {
@@ -96,6 +110,8 @@ const dataReset = () => {
   pCashStore.proBankAccountList = []
   pCashStore.balanceByAccList = []
   pCashStore.proDateCashBook = []
+  pCashStore.proCashCalc = []
+  pCashStore.proLastDeal = []
 }
 
 const projSelect = (target: number | null) => {
@@ -132,6 +148,8 @@ onBeforeMount(() => {
         :date="date"
         @patch-budget="patchBudget"
       />
+
+      <Calculated :is-calculated="isCalculated" @to-calculate="checkBalance" />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>

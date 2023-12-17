@@ -11,6 +11,7 @@ import TabSelect from '@/views/comCash/Status/components/TabSelect.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import StatusByAccount from '@/views/comCash/Status/components/StatusByAccount.vue'
 import CashListByDate from '@/views/comCash/Status/components/CashListByDate.vue'
+import Calculated from '@/views/comCash/Status/components/Calculated.vue'
 
 const date = ref(getToday())
 const compName = ref('StatusByAccount')
@@ -29,6 +30,16 @@ const fetchComBalanceByAccList = (com: { company: number; date: string }) =>
   cashStore.fetchComBalanceByAccList(com)
 const fetchDateCashBookList = (payload: { company: number; date: string }) =>
   cashStore.fetchDateCashBookList(payload)
+
+const fetchComCashCalc = (com: number) => cashStore.fetchComCashCalc(com)
+const fetchComLastDeal = (com: number) => cashStore.fetchComLastDeal(com)
+
+const comCashCalc = computed(() => cashStore.comCashCalc[0]) // 최종 정산 일자
+const comLastDeal = computed(() => cashStore.comLastDeal[0]) // 최종 거래 일자
+
+const isCalculated = computed(
+  () => !!comCashCalc.value && comCashCalc.value.calculated >= comLastDeal.value.deal_date,
+) // 최종 정산 일자 이후에 거래 기록이 없음 === true
 
 const excelUrl = computed(() => {
   const comp = compName.value
@@ -54,16 +65,22 @@ const setDate = (dt: string) => {
   }
 }
 
+const checkBalance = () => alert('ok checked!')
+
 const dataSetup = (pk: number) => {
   fetchComBankAccList(pk)
   fetchComBalanceByAccList({ company: pk, date: date.value })
   fetchDateCashBookList({ company: pk, date: date.value })
+  fetchComCashCalc(pk)
+  fetchComLastDeal(pk)
 }
 
 const dataReset = () => {
   cashStore.comBankList = []
   cashStore.comBalanceByAccList = []
   cashStore.dateCashBook = []
+  cashStore.comCashCalc = []
+  cashStore.comLastDeal = []
 }
 
 const comSelect = (target: number | null) => {
@@ -97,6 +114,8 @@ onBeforeMount(() => {
 
       <StatusByAccount v-if="compName === 'StatusByAccount'" :date="date" />
       <CashListByDate v-if="compName === 'CashListByDate'" :date="date" />
+
+      <Calculated :is-calculated="isCalculated" @to-calculate="checkBalance" />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>
