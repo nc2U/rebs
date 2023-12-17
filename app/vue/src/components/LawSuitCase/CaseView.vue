@@ -425,8 +425,13 @@ onBeforeMount(() => {
           관리
           <v-menu activator="parent" open-on-hover>
             <v-list density="compact">
-              <v-list-item v-for="(item, index) in items" :key="index" :value="index">
-                <v-list-item-title style="font-size: 0.9em" @click="toManage(index + 1)">
+              <v-list-item
+                v-for="(item, index) in items"
+                :key="index"
+                :value="index"
+                @click="toManage(index + 1)"
+              >
+                <v-list-item-title style="font-size: 0.9em">
                   <v-icon :icon="`mdi-${item.icon}`" size="sm" />
                   {{ item.title }}
                 </v-list-item-title>
