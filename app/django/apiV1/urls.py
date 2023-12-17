@@ -79,11 +79,13 @@ router.register(r'company-bank-account', cash.ComBankAccountViewSet)
 router.register(r'balance-by-acc', cash.BalanceByAccountViewSet, basename='balance-by-acc')  # only list
 router.register(r'cashbook', cash.CashBookViewSet)
 router.register(r'com-cash-calc', cash.CompanyCashCalcViewSet)
+router.register(r'com-last-deal', cash.CompanyLastDealDateViewSet)
 router.register(r'date-cashbook', cash.DateCashBookViewSet, basename='date-cashbook')  # only list
 router.register(r'project-bank-account', cash.ProjectBankAccountViewSet)
 router.register(r'pr-balance-by-acc', cash.PrBalanceByAccountViewSet, basename='pr-balance-by-acc')  # only list
 router.register(r'project-cashbook', cash.ProjectCashBookViewSet)
 router.register(r'pro-cash-calc', cash.ProjectCashCalcViewSet)
+router.register(r'pro-last-deal', cash.ProjectLastDealDateViewSet)
 router.register(r'pr-date-cashbook', cash.ProjectDateCashBookViewSet, basename='pr-date-cashbook')  # only list
 router.register(r'project-imprest', cash.ProjectImprestViewSet, basename='pr-imprest')  # only list
 # contract

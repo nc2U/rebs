@@ -195,6 +195,12 @@ class CompanyCashCalcSerializer(serializers.ModelSerializer):
         fields = ('company', 'calculated', 'user')
 
 
+class CompanyLastDealDateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CashBook
+        fields = ('deal_date',)
+
+
 class ProjectBankAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectBankAccount
@@ -355,3 +361,9 @@ class ProjectCashCalcSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectCashBookCalculation
         fields = ('project', 'calculated', 'user')
+
+
+class ProjectLastDealDateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectCashBook
+        fields = ('deal_date',)
