@@ -321,34 +321,6 @@ onMounted(() => {
 
     <CRow class="py-2">
       <CCol>
-        <CButtonGroup role="group" class="mr-3">
-          <CButton
-            color="light"
-            :disabled="!prev || reOrder"
-            @click="
-              $router.push({
-                name: `${viewRoute} - 보기`,
-                params: { postId: prev },
-              })
-            "
-          >
-            이전글
-          </CButton>
-          <CButton
-            color="light"
-            :disabled="!next || reOrder"
-            @click="
-              $router.push({
-                name: `${viewRoute} - 보기`,
-                params: { postId: next },
-              })
-            "
-          >
-            다음글
-          </CButton>
-        </CButtonGroup>
-      </CCol>
-      <CCol class="text-right">
         <CButtonGroup role="group">
           <CButton
             color="success"
@@ -363,7 +335,36 @@ onMounted(() => {
           </CButton>
           <CButton color="danger" @click="toDelete">삭제</CButton>
           <CButton color="secondary" @click="$router.push({ name: `${viewRoute}` })"> 목록</CButton>
+          <CButton
+            color="light"
+            :disabled="!prev || reOrder"
+            @click="
+              $router.push({
+                name: `${viewRoute} - 보기`,
+                params: { postId: prev },
+              })
+            "
+          >
+            이전
+          </CButton>
+          <CButton
+            color="light"
+            :disabled="!next || reOrder"
+            @click="
+              $router.push({
+                name: `${viewRoute} - 보기`,
+                params: { postId: next },
+              })
+            "
+          >
+            다음
+          </CButton>
         </CButtonGroup>
+      </CCol>
+      <CCol class="text-right">
+        <CButton color="primary" @click="$router.push({ name: `${viewRoute} - 작성` })">
+          신규등록
+        </CButton>
       </CCol>
     </CRow>
   </div>

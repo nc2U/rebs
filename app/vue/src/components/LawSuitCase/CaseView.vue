@@ -385,7 +385,20 @@ onBeforeMount(() => {
 
     <CRow class="py-4">
       <CCol>
-        <CButtonGroup role="group" class="mr-3">
+        <CButtonGroup role="group">
+          <CButton
+            color="success"
+            @click="
+              $router.push({
+                name: `${viewRoute} - 수정`,
+                params: { caseId: suitcase.pk },
+              })
+            "
+          >
+            수정
+          </CButton>
+          <CButton color="danger" @click="toDelete">삭제</CButton>
+          <CButton color="light" @click="$router.push({ name: `${viewRoute}` })"> 목록</CButton>
           <CButton
             color="light"
             :disabled="!prev"
@@ -411,26 +424,10 @@ onBeforeMount(() => {
             다음
           </CButton>
         </CButtonGroup>
-
-        <CButtonGroup role="group">
-          <CButton
-            color="success"
-            @click="
-              $router.push({
-                name: `${viewRoute} - 수정`,
-                params: { caseId: suitcase.pk },
-              })
-            "
-          >
-            수정
-          </CButton>
-          <CButton color="danger" @click="toDelete">삭제</CButton>
-        </CButtonGroup>
       </CCol>
       <CCol class="text-right">
-        <CButton color="light" @click="$router.push({ name: `${viewRoute}` })"> 목록으로</CButton>
         <CButton color="primary" @click="$router.push({ name: `${viewRoute} - 작성` })">
-          등록하기
+          신규등록
         </CButton>
       </CCol>
     </CRow>

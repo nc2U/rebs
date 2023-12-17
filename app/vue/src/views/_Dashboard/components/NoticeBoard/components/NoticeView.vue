@@ -31,6 +31,8 @@ const props = defineProps({
 const emit = defineEmits(['to-like', 'post-hit', 'link-hit', 'file-hit', 'posts-renewal'])
 
 const userInfo = inject<ComputedRef<User>>('userInfo')
+const isOwn = computed(() => props.post.user?.pk === userInfo?.value.pk)
+const postAuth = computed(() => userInfo?.value.is_superuser || (props.writeAuth && isOwn.value))
 
 const prev = ref<number | null>()
 const next = ref<number | null>()
@@ -194,7 +196,7 @@ onMounted(() => {
 
     <CRow class="text-blue-grey">
       <CCol>
-        <small class="mr-3">작성자 : {{ post.user }}</small>
+        <small class="mr-3">작성자 : {{ post.user.username }}</small>
         <small class="mr-2">
           <v-icon icon="mdi-comment-text-multiple" size="sm" />
           <span class="ml-1">{{ post.comments?.length ?? 0 }}</span>
@@ -315,7 +317,21 @@ onMounted(() => {
 
     <CRow class="py-2">
       <CCol>
-        <CButtonGroup role="group" class="mr-3">
+        <CButtonGroup role="group">
+          <CButton
+            v-if="postAuth"
+            color="success"
+            @click="
+              $router.push({
+                name: `${viewRoute} - 수정`,
+                params: { postId: post?.pk },
+              })
+            "
+          >
+            수정
+          </CButton>
+          <CButton v-if="postAuth" color="danger" @click="toDelete"> 삭제</CButton>
+          <CButton color="secondary" @click="$router.push({ name: `${viewRoute}` })"> 목록</CButton>
           <CButton
             color="light"
             :disabled="!prev || reOrder"
@@ -326,7 +342,7 @@ onMounted(() => {
               })
             "
           >
-            이전글
+            이전
           </CButton>
           <CButton
             color="light"
@@ -338,27 +354,14 @@ onMounted(() => {
               })
             "
           >
-            다음글
+            다음
           </CButton>
         </CButtonGroup>
       </CCol>
       <CCol class="text-right">
-        <CButtonGroup role="group">
-          <CButton
-            v-if="writeAuth"
-            color="success"
-            @click="
-              $router.push({
-                name: `${viewRoute} - 수정`,
-                params: { postId: post?.pk },
-              })
-            "
-          >
-            수정
-          </CButton>
-          <CButton v-if="writeAuth" color="danger" @click="toDelete">삭제</CButton>
-          <CButton color="secondary" @click="$router.push({ name: `${viewRoute}` })"> 목록</CButton>
-        </CButtonGroup>
+        <CButton color="primary" @click="$router.push({ name: `${viewRoute} - 작성` })">
+          신규등록
+        </CButton>
       </CCol>
     </CRow>
 

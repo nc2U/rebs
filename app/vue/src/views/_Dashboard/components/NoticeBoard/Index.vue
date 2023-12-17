@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, inject, watch, onBeforeMount, type ComputedRef } from 'vue'
+import { ref, computed, inject, watch, onBeforeMount } from 'vue'
 import { type RouteLocationNormalizedLoaded as Loaded, useRoute, useRouter } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
 import ListController from './components/ListController.vue'
@@ -9,7 +9,6 @@ import { type PostFilter, useDocument } from '@/store/pinia/document'
 import NoticeList from './components/NoticeList.vue'
 import NoticeView from './components/NoticeView.vue'
 import NoticeForm from '@/views/_Dashboard/components/NoticeBoard/components/NoticeForm.vue'
-import type { User } from '@/store/types/accounts'
 
 const lController = ref()
 const boardNumber = ref(1)
@@ -23,11 +22,6 @@ const postFilter = ref<PostFilter>({
   search: '',
   page: 1,
 })
-
-const userInfo = inject<ComputedRef<User>>('userInfo')
-const writeAuth = computed(
-  () => userInfo?.value.is_superuser || userInfo?.value.staffauth?.is_staff,
-)
 
 const heatedPage = ref<number[]>([])
 const newFiles = ref<File[]>([])
@@ -199,7 +193,6 @@ onBeforeMount(() => dataSetup(company.value ?? comStore.initComId, route.params?
             :notice-list="noticeList"
             :post-list="postList"
             :view-route="mainViewName"
-            :write-auth="writeAuth"
             @page-select="pageSelect"
           />
         </div>
@@ -214,7 +207,6 @@ onBeforeMount(() => dataSetup(company.value ?? comStore.initComId, route.params?
             :like-posts="likePosts"
             :view-route="mainViewName"
             :curr-page="postFilter.page ?? 1"
-            :write-auth="writeAuth"
             @to-like="toLike"
             @post-hit="postHit"
             @link-hit="linkHit"
