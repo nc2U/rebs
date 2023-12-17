@@ -54,6 +54,7 @@ const company = computed(() => comStore.company?.pk)
 
 const accStore = useAccount()
 const likePosts = computed(() => accStore.likePosts)
+const writeAuth = computed(() => accStore.writeComDocs)
 
 const docStore = useDocument()
 const post = computed(() => docStore.post)
@@ -193,6 +194,7 @@ onBeforeMount(() => dataSetup(company.value ?? comStore.initComId, route.params?
             :notice-list="noticeList"
             :post-list="postList"
             :view-route="mainViewName"
+            :write-auth="writeAuth"
             @page-select="pageSelect"
           />
         </div>
@@ -207,6 +209,7 @@ onBeforeMount(() => dataSetup(company.value ?? comStore.initComId, route.params?
             :like-posts="likePosts"
             :view-route="mainViewName"
             :curr-page="postFilter.page ?? 1"
+            :write-auth="writeAuth"
             @to-like="toLike"
             @post-hit="postHit"
             @link-hit="linkHit"
@@ -220,6 +223,7 @@ onBeforeMount(() => dataSetup(company.value ?? comStore.initComId, route.params?
             :board-num="boardNumber"
             :category-list="categoryList"
             :view-route="mainViewName"
+            :write-auth="writeAuth"
             @file-upload="fileUpload"
             @on-submit="onSubmit"
           />
@@ -231,6 +235,7 @@ onBeforeMount(() => dataSetup(company.value ?? comStore.initComId, route.params?
             :category-list="categoryList"
             :post="post as Post"
             :view-route="mainViewName"
+            :write-auth="writeAuth"
             @file-change="fileChange"
             @file-upload="fileUpload"
             @on-submit="onSubmit"

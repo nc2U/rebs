@@ -2,6 +2,7 @@
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin2'
 import { type RouteLocationNormalizedLoaded as LoadedRoute, useRoute, useRouter } from 'vue-router'
+import { useAccount } from '@/store/pinia/account'
 import { useCompany } from '@/store/pinia/company'
 import { type SuitCaseFilter as cFilter, useDocument } from '@/store/pinia/document'
 import type { AFile, Link, SuitCase } from '@/store/types/document'
@@ -44,6 +45,9 @@ const pageSelect = (page: number) => {
   caseFilter.value.page = page
   listFiltering(caseFilter.value)
 }
+
+const accStore = useAccount()
+const writeAuth = computed(() => accStore.writeComDocs)
 
 const comStore = useCompany()
 const company = computed(() => comStore.company?.pk)
@@ -171,6 +175,7 @@ onBeforeMount(() => dataSetup(company.value || comStore.initComId, route.params?
           :page="caseFilter.page ?? 1"
           :case-list="suitcaseList"
           :view-route="mainViewName"
+          :write-auth="writeAuth"
           @page-select="pageSelect"
           @agency-filter="agencyFilter"
           @agency-search="agencySearch"
@@ -183,6 +188,7 @@ onBeforeMount(() => dataSetup(company.value || comStore.initComId, route.params?
           :curr-page="caseFilter.page ?? 1"
           :suitcase="suitcase as SuitCase"
           :view-route="mainViewName"
+          :write-auth="writeAuth"
           @link-hit="linkHit"
           @file-hit="fileHit"
           @case-renewal="caseRenewal"
@@ -190,7 +196,12 @@ onBeforeMount(() => dataSetup(company.value || comStore.initComId, route.params?
       </div>
 
       <div v-else-if="route.name.includes('작성')">
-        <CaseForm :get-suit-case="getSuitCase" :view-route="mainViewName" @on-submit="onSubmit" />
+        <CaseForm
+          :get-suit-case="getSuitCase"
+          :view-route="mainViewName"
+          :write-auth="writeAuth"
+          @on-submit="onSubmit"
+        />
       </div>
 
       <div v-else-if="route.name.includes('수정')">
@@ -198,6 +209,7 @@ onBeforeMount(() => dataSetup(company.value || comStore.initComId, route.params?
           :get-suit-case="getSuitCase"
           :suitcase="suitcase"
           :view-route="mainViewName"
+          :write-auth="writeAuth"
           @on-submit="onSubmit"
           @on-delete="onDelete"
         />

@@ -58,6 +58,7 @@ const company = computed(() => projStore.project?.company)
 
 const accStore = useAccount()
 const likePosts = computed(() => accStore.likePosts)
+const writeAuth = computed(() => accStore.writeProDocs)
 
 const docStore = useDocument()
 const post = computed(() => docStore.post)
@@ -206,6 +207,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId, route.param
           :post-list="postList"
           :view-route="mainViewName"
           :is-lawsuit="true"
+          :write-auth="writeAuth"
           @page-select="pageSelect"
         />
       </div>
@@ -220,6 +222,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId, route.param
           :like-posts="likePosts"
           :view-route="mainViewName"
           :curr-page="postFilter.page ?? 1"
+          :write-auth="writeAuth"
           @to-like="toLike"
           @post-hit="postHit"
           @link-hit="linkHit"
@@ -235,6 +238,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId, route.param
           :get-suit-case="getSuitCase"
           :category-list="categoryList"
           :view-route="mainViewName"
+          :write-auth="writeAuth"
           @file-upload="fileUpload"
           @on-submit="onSubmit"
         />
@@ -248,6 +252,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId, route.param
           :category-list="categoryList"
           :post="post as Post"
           :view-route="mainViewName"
+          :write-auth="writeAuth"
           @file-change="fileChange"
           @file-upload="fileUpload"
           @on-submit="onSubmit"
