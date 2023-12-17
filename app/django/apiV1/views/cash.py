@@ -83,7 +83,7 @@ class CashBookViewSet(viewsets.ModelViewSet):
 
 class CompanyCashCalcViewSet(viewsets.ModelViewSet):
     queryset = CompanyCashBookCalculation.objects.all()
-    serializer_class = CompanyCashBookCalcSerializer
+    serializer_class = CompanyCashCalcSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
     def perform_create(self, serializer):
@@ -166,7 +166,7 @@ class ProjectCashBookViewSet(viewsets.ModelViewSet):
 
 class ProjectCashCalcViewSet(viewsets.ModelViewSet):
     queryset = ProjectCashBookCalculation.objects.all()
-    serializer_class = ProjectCashBookCalcSerializer
+    serializer_class = ProjectCashCalcSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
 
     def perform_create(self, serializer):
