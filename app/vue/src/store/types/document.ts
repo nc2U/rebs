@@ -98,7 +98,6 @@ export type Post = {
   files?: AFile[]
   comments?: number[]
   user?: { pk: number; username: string }
-  soft_delete?: string | null
   created?: string
   updated?: string
   is_new?: boolean
