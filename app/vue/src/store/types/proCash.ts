@@ -122,3 +122,10 @@ interface ContractInPayment {
   serial_number: string
   contractor: string
 }
+
+export interface ProCalculated {
+  pk?: number
+  project: number
+  calculated: string
+  user: { pk: number; username: string }
+}

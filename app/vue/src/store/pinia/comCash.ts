@@ -12,6 +12,7 @@ import {
   type BalanceByAccount,
   type CashBook,
   type SepItems,
+  type ComCalculated,
 } from '@/store/types/comCash'
 
 export type DataFilter = {
@@ -254,6 +255,26 @@ export const useComCash = defineStore('comCash', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
+  const comCashCalc = ref()
+
+  const fetchComCashCalc = (com: number) =>
+    api
+      .get(`/com-cash-calc/${com}/`)
+      .then(res => (comCashCalc.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
+  const createComCashCalc = (payload: ComCalculated) =>
+    api
+      .post(`/com-cash-calc`, payload)
+      .then(res => fetchComCashCalc(res.data.company).then(() => message()))
+      .catch(err => errorHandle(err.response.data))
+
+  const patchComCashCalc = (payload: ComCalculated) =>
+    api
+      .patch(`/com-cash-calc/${payload.pk}/`, payload)
+      .then(res => fetchComCashCalc(res.data.company).then(() => message()))
+      .catch(err => errorHandle(err.response.data))
+
   return {
     bankCodeList,
     fetchBankCodeList,
@@ -299,5 +320,9 @@ export const useComCash = defineStore('comCash', () => {
     createCashBook,
     updateCashBook,
     deleteCashBook,
+
+    comCashCalc,
+    createComCashCalc,
+    patchComCashCalc,
   }
 })

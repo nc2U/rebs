@@ -98,3 +98,10 @@ export interface SepItems {
   evidence: '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | ''
   note: string
 }
+
+export interface ComCalculated {
+  pk?: number
+  company: number
+  calculated: string
+  user: { pk: number; username: string }
+}
