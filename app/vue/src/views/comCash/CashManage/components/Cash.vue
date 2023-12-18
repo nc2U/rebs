@@ -38,8 +38,8 @@ const rowColor = computed(() => {
 const accountStore = useAccount()
 const allowedPeriod = computed(
   () =>
-    // accountStore.superAuth ||
-    props.cash?.deal_date && diffDate(props.cash.deal_date, new Date(props.calculated)) <= 10,
+    accountStore.superAuth ||
+    (props.cash?.deal_date && diffDate(props.cash.deal_date, new Date(props.calculated)) <= 10),
 )
 
 const showDetail = () => updateFormModal.value.callModal()
