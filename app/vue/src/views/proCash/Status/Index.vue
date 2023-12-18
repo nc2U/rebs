@@ -13,7 +13,7 @@ import TableTitleRow from '@/components/TableTitleRow.vue'
 import StatusByAccount from '@/views/proCash/Status/components/StatusByAccount.vue'
 import CashListByDate from '@/views/proCash/Status/components/CashListByDate.vue'
 import SummaryForBudget from '@/views/proCash/Status/components/SummaryForBudget.vue'
-import Calculated from '@/views/proCash/Status/components/Calculated.vue'
+import Calculated from '@/views/comCash/Status/components/Calculated.vue'
 
 const date = ref(getToday())
 const direct = ref('0')
