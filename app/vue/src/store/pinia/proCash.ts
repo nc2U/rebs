@@ -462,7 +462,7 @@ export const useProCash = defineStore('proCash', () => {
   const fetchProCashCalc = (com: number) =>
     api
       .get(`/pro-cash-calc/?company=${com}`)
-      .then(res => (proCashCalc.value = res.data.results[0]))
+      .then(res => (proCashCalc.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
   const createProCashCalc = (payload: ProCalculated) =>
@@ -481,8 +481,11 @@ export const useProCash = defineStore('proCash', () => {
   const fetchProLastDeal = (proj: number) =>
     api
       .get(`/pro-last-deal/?project=${proj}`)
-      .then(res => (proLastDeal.value = res.data.results[0]))
+      .then(res => (proLastDeal.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
+
+  const proCalculated = computed(() => (proCashCalc.value.length ? proCashCalc.value[0] : null))
+  const proLastDealDate = computed(() => (proLastDeal.value.length ? proLastDeal.value[0] : null))
 
   return {
     sortList,
@@ -536,11 +539,13 @@ export const useProCash = defineStore('proCash', () => {
     getImpBankAccs,
 
     proCashCalc,
+    proCalculated,
     fetchProCashCalc,
     createProCashCalc,
     patchProCashCalc,
 
     proLastDeal,
+    proLastDealDate,
     fetchProLastDeal,
   }
 })
