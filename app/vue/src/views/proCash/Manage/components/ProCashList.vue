@@ -16,6 +16,7 @@ const refBankAcc = ref()
 const proCashStore = useProCash()
 const proCashPages = computed(() => proCashStore.proCashPages)
 const proCashBookList = computed(() => proCashStore.proCashBookList)
+const proCalculated = computed(() => proCashStore.proCalculated) // 최종 정산 일자
 
 const pageSelect = (page: number) => emit('page-select', page)
 
@@ -74,6 +75,7 @@ const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
         v-for="proCash in proCashBookList"
         :key="proCash.pk as number"
         :pro-cash="proCash"
+        :calculated="proCalculated?.calculated"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
         @on-bank-update="onBankUpdate"

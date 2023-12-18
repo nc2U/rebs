@@ -70,6 +70,7 @@ const updateCashBook = (
 const deleteCashBook = (payload: CashBook & { filters: Filter }) =>
   cashStore.deleteCashBook(payload)
 const patchAccD3 = (payload: { pk: number; is_hide: boolean }) => cashStore.patchAccD3(payload)
+const fetchComCashCalc = (com: number) => cashStore.fetchComCashCalc(com)
 
 const pageSelect = (page: number) => listControl.value.listFiltering(page)
 
@@ -175,6 +176,7 @@ const dataSetup = (pk: number) => {
   fetchComBankAccList(pk)
   fetchAllComBankAccList(pk)
   fetchCashBookList({ company: pk })
+  fetchComCashCalc(pk)
   dataFilter.value.company = pk
 }
 

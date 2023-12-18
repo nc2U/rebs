@@ -88,6 +88,7 @@ const deletePrImprestBook = (
     filters?: CashBookFilter
   },
 ) => pCashStore.deletePrImprestBook(payload)
+const fetchProCashCalc = (proj: number) => pCashStore.fetchProCashCalc(proj)
 
 const pageSelect = (page: number) => {
   dataFilter.value.page = page
@@ -203,6 +204,7 @@ const dataSetup = (pk: number) => {
   fetchProBankAccList(pk)
   fetchAllProBankAccList(pk)
   fetchProjectImprestList({ project: pk })
+  fetchProCashCalc(pk)
 }
 
 const dataReset = () => {

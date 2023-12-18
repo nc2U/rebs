@@ -1,13 +1,15 @@
 <script lang="ts" setup>
 import { ref, computed, type PropType } from 'vue'
 import { useStore } from '@/store'
-import { numFormat, cutString } from '@/utils/baseMixins'
+import { useAccount } from '@/store/pinia/account'
+import { numFormat, cutString, diffDate } from '@/utils/baseMixins'
 import { type ProBankAcc, type ProjectCashBook } from '@/store/types/proCash'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ProImprestForm from '@/views/proCash/Imprest/components/ProImprestForm.vue'
 
 const props = defineProps({
   imprest: { type: Object as PropType<ProjectCashBook>, required: true },
+  calculated: { type: String, default: '2000-01-01' },
 })
 
 const emit = defineEmits(['multi-submit', 'on-delete', 'on-bank-update'])
@@ -29,6 +31,14 @@ const rowColor = computed(() => {
   color = props.imprest?.separated ? 'secondary' : color
   return color
 })
+
+const accountStore = useAccount()
+const allowedPeriod = computed(
+  () =>
+    accountStore.superAuth ||
+    (props.imprest?.deal_date &&
+      diffDate(props.imprest.deal_date, new Date(props.calculated)) <= 10),
+)
 
 const showDetail = () => updateFormModal.value.callModal()
 
@@ -82,7 +92,7 @@ const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
     </CTableDataCell>
     <CTableDataCell>{{ imprest.evidence_desc }}</CTableDataCell>
     <CTableDataCell>
-      <CButton color="info" size="sm" @click="showDetail">확인</CButton>
+      <CButton color="info" size="sm" @click="showDetail" :disabled="!allowedPeriod">확인</CButton>
     </CTableDataCell>
   </CTableRow>
 

@@ -16,6 +16,7 @@ const refBankAcc = ref()
 const proCashStore = useProCash()
 const proImprestList = computed(() => proCashStore.proImprestList)
 const proImprestPages = computed(() => proCashStore.proImprestPages)
+const proCalculated = computed(() => proCashStore.proCalculated) // 최종 정산 일자
 
 const pageSelect = (page: number) => emit('page-select', page)
 
@@ -74,6 +75,7 @@ const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
         v-for="imprest in proImprestList"
         :key="imprest.pk as number"
         :imprest="imprest"
+        :calculated="proCalculated?.calculated"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
         @on-bank-update="onBankUpdate"
