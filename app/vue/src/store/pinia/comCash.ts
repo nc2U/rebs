@@ -266,7 +266,7 @@ export const useComCash = defineStore('comCash', () => {
   const fetchComCashCalc = (com: number) =>
     api
       .get(`/com-cash-calc/?company=${com}`)
-      .then(res => (comCashCalc.value = res.data.results[0]))
+      .then(res => (comCashCalc.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
   const createComCashCalc = (payload: ComCalculated) =>
@@ -285,8 +285,11 @@ export const useComCash = defineStore('comCash', () => {
   const fetchComLastDeal = (com: number) =>
     api
       .get(`/com-last-deal/?company=${com}`)
-      .then(res => (comLastDeal.value = res.data.results[0]))
+      .then(res => (comLastDeal.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
+
+  const comCalculated = computed(() => (comCashCalc.value.length ? comCashCalc.value[0] : null))
+  const comLastDealDate = computed(() => (comLastDeal.value.length ? comLastDeal.value[0] : null))
 
   return {
     bankCodeList,
@@ -334,12 +337,12 @@ export const useComCash = defineStore('comCash', () => {
     updateCashBook,
     deleteCashBook,
 
-    comCashCalc,
+    comCalculated,
     fetchComCashCalc,
     createComCashCalc,
     patchComCashCalc,
 
-    comLastDeal,
+    comLastDealDate,
     fetchComLastDeal,
   }
 })
