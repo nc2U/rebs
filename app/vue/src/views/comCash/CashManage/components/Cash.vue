@@ -37,13 +37,10 @@ const rowColor = computed(() => {
 
 const accountStore = useAccount()
 const allowedPeriod = computed(
-  () => accountStore.superAuth || (props.cash?.deal_date && diffDate(props.cash.deal_date) <= 30),
+  () =>
+    // accountStore.superAuth ||
+    props.cash?.deal_date && diffDate(props.cash.deal_date, new Date(props.calculated)) <= 10,
 )
-const allowdEdit = computed(() => {
-  const dealDate = new Date(props.cash?.deal_date)
-  const calcDate = new Date(props.calculated)
-  return dealDate <= calcDate
-})
 
 const showDetail = () => updateFormModal.value.callModal()
 
@@ -111,7 +108,7 @@ const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
     </CTableDataCell>
     <CTableDataCell>{{ cash.evidence_desc }}</CTableDataCell>
     <CTableDataCell>
-      <CButton color="info" size="sm" @click="showDetail" :disabled="allowdEdit"> 확인</CButton>
+      <CButton color="info" size="sm" @click="showDetail" :disabled="!allowedPeriod"> 확인</CButton>
     </CTableDataCell>
   </CTableRow>
 
