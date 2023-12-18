@@ -108,6 +108,7 @@ const deletePrCashBook = (
     filters?: CashBookFilter
   },
 ) => proCashStore.deletePrCashBook(payload)
+const fetchProCashCalc = (proj: number) => proCashStore.fetchProCashCalc(proj)
 
 const chargeCreate = (
   payload: PrCashBook & { sepData: PrCashBook | null } & {
@@ -204,6 +205,7 @@ const dataSetup = (pk: number) => {
   fetchProBankAccList(pk)
   fetchAllProBankAccList(pk)
   fetchProjectCashList({ project: pk })
+  fetchProCashCalc(pk)
 }
 
 const dataReset = () => {
