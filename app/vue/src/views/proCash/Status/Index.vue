@@ -163,7 +163,11 @@ onBeforeMount(() => {
         @patch-budget="patchBudget"
       />
 
-      <Calculated :is-calculated="isCalculated" @to-calculate="checkBalance" />
+      <Calculated
+        :calc-date="proCalculated?.calculated"
+        :is-calculated="isCalculated"
+        @to-calculate="checkBalance"
+      />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>

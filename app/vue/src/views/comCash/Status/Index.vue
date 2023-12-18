@@ -128,7 +128,11 @@ onBeforeMount(() => {
 
       <CashListByDate v-if="compName === 'CashListByDate'" :date="date" />
 
-      <Calculated :is-calculated="isCalculated" @to-calculate="checkBalance" />
+      <Calculated
+        :calc-date="comCalculated?.calculated"
+        :is-calculated="isCalculated"
+        @to-calculate="checkBalance"
+      />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>

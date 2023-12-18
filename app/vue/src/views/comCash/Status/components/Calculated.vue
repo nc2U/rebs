@@ -2,7 +2,10 @@
 import { ref } from 'vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
-defineProps({ isCalculated: { type: Boolean, default: false } })
+defineProps({
+  calcDate: { type: String, default: null },
+  isCalculated: { type: Boolean, default: false },
+})
 const emit = defineEmits(['to-calculate'])
 
 const refConfirmModal = ref()
@@ -17,6 +20,7 @@ const modalAction = () => {
 
 <template>
   <CAlert :color="isCalculated ? 'success' : 'warning'" class="text-right">
+    <span v-if="calcDate" class="mr-3">[정산일 : {{ calcDate }}]</span>
     <v-btn v-if="isCalculated" color="success" size="x-large" disabled> 잔고정산 확인완료</v-btn>
     <v-btn v-else color="warning" size="x-large" @click="toCalculated"> 당일잔고 정산확인</v-btn>
   </CAlert>
