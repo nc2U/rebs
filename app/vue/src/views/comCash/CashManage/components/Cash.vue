@@ -78,7 +78,7 @@ const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
     :color="rowColor"
     :style="cash.is_separate ? 'font-weight: bold;' : ''"
   >
-    <CTableDataCell>{{ cash.deal_date }}/{{ calculated }}</CTableDataCell>
+    <CTableDataCell>{{ cash.deal_date }}</CTableDataCell>
     <CTableDataCell :class="sortClass">
       {{ cash.sort_desc }}
     </CTableDataCell>
