@@ -2,8 +2,18 @@
 import { ref } from 'vue'
 
 const visible = ref(false)
+const headerMessage = ref('알림')
+const bodyMessage = ref('')
+const headIcon = ref('mdi-arrow-right-bold-box')
+const headerColor = ref('indigo-lighten-2')
 
-const callModal = () => (visible.value = true)
+const callModal = (head?: string, body?: string, icon?: string, color = 'indigo-lighten-2') => {
+  if (head) headerMessage.value = head
+  if (body) bodyMessage.value = body
+  if (icon) headIcon.value = icon
+  if (color) headerColor.value = color
+  visible.value = true
+}
 const close = () => (visible.value = false)
 defineExpose({ callModal, close })
 </script>
@@ -18,15 +28,18 @@ defineExpose({ callModal, close })
     <CModalHeader class="text-body">
       <CModalTitle>
         <slot name="icon">
-          <v-icon icon="mdi mdi-arrow-right-bold-box" color="blue-darken-3" class="mr-2" />
+          <v-icon :icon="headIcon" :color="headerColor" class="mr-2" />
         </slot>
-        <slot name="header">Title</slot>
+        <slot name="header">{{ headerMessage }}</slot>
       </CModalTitle>
     </CModalHeader>
     <CModalBody class="text-body" style="line-height: 26px">
       <slot>
-        Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,
-        egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
+        {{
+          bodyMessage ||
+          'Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in,\n' +
+            'egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.'
+        }}
       </slot>
     </CModalBody>
     <CModalFooter>
