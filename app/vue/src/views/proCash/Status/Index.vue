@@ -52,6 +52,17 @@ const isCalculated = computed(
     proCalculated.value.calculated >= (proLastDealDate.value?.deal_date ?? 0),
 ) // 최종 정산 일자 이후에 거래 기록이 없음 === true
 
+const checkBalance = (payload: ProCalculated) => {
+  payload = { project: project.value, calculated: proLastDealDate.value?.deal_date }
+  if (!!proCalculated.value)
+    console.log('update!', {
+      ...{ pk: proCalculated.value.pk },
+      ...payload,
+    })
+  // patchProCashCalc({ ...{ pk: proCashCalc.value.pk }, ...payload })
+  else console.log('create!', payload) // createProCashCalc(payload)
+}
+
 const excelUrl = computed(() => {
   const comp = compName.value
   const pj = project.value
@@ -96,17 +107,6 @@ const directBalance = (val: boolean) => {
       direct: direct.value,
       date: date.value,
     })
-}
-
-const checkBalance = (payload: ProCalculated) => {
-  payload = { project: project.value, calculated: proLastDealDate.value?.deal_date }
-  if (!!proCalculated.value)
-    console.log('update!', {
-      ...{ pk: proCalculated.value.pk },
-      ...payload,
-    })
-  // patchProCashCalc({ ...{ pk: proCashCalc.value.pk }, ...payload })
-  else console.log('create!', payload) // createProCashCalc(payload)
 }
 
 const dataSetup = (pk: number) => {

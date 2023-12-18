@@ -46,6 +46,16 @@ const isCalculated = computed(
     comCalculated.value.calculated >= (comLastDealDate.value?.deal_date ?? 0),
 ) // 최종 정산 일자 이후에 거래 기록이 없음 === true
 
+const checkBalance = (payload: ComCalculated) => {
+  payload = {
+    company: company.value as number,
+    calculated: comLastDealDate.value?.deal_date as string,
+  }
+  if (!!comCalculated.value)
+    alert('edit') // patchComCashCalc({ ...{ pk: comCalculated.value.pk }, ...payload })
+  else alert('create') // createComCashCalc(payload)
+}
+
 const excelUrl = computed(() => {
   const comp = compName.value
   let url = ''
@@ -68,15 +78,6 @@ const setDate = (dt: string) => {
     fetchComBalanceByAccList({ company: company.value, date: dt })
     fetchDateCashBookList({ company: company.value, date: dt })
   }
-}
-
-const checkBalance = (payload: ComCalculated) => {
-  payload = {
-    company: company.value as number,
-    calculated: comLastDealDate.value?.deal_date as string,
-  }
-  if (!!comCalculated.value) patchComCashCalc({ ...{ pk: comCalculated.value.pk }, ...payload })
-  else createComCashCalc(payload)
 }
 
 const dataSetup = (pk: number) => {
