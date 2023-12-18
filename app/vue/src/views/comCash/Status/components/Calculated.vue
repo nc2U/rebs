@@ -17,7 +17,7 @@ const modalAction = () => {
 
 <template>
   <CAlert :color="isCalculated ? 'success' : 'warning'" class="text-right">
-    <v-btn v-if="isCalculated" size="x-large" disabled="">잔고 확인 완료</v-btn>
+    <v-btn v-if="isCalculated" size="x-large" :disabled="true">잔고 확인 완료</v-btn>
     <v-btn v-else color="warning" size="x-large" @click="toCalculated">금일 잔고 확인</v-btn>
   </CAlert>
 

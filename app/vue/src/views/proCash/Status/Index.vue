@@ -43,11 +43,13 @@ const patchProCashCalc = (payload: ProCalculated) => pCashStore.patchProCashCalc
 const fetchProCashCalc = (proj: number) => pCashStore.fetchProCashCalc(proj)
 const fetchProLastDeal = (proj: number) => pCashStore.fetchProLastDeal(proj)
 
-const proCashCalc = computed(() => (!!pCashStore.proCashCalc ? pCashStore.proCashCalc : null)) // 최종 정산 일자
-const proLastDeal = computed(() => pCashStore.proLastDeal) // 최종 거래 일자
+const proCalculated = computed(() => pCashStore.proCalculated) // 최종 정산 일자
+const proLastDealDate = computed(() => pCashStore.proLastDealDate) // 최종 거래 일자
 
 const isCalculated = computed(
-  () => !!proCashCalc.value && proCashCalc.value.calculated >= proLastDeal.value.deal_date,
+  () =>
+    !!proCalculated.value &&
+    proCalculated.value.calculated >= (proLastDealDate.value?.deal_date ?? 0),
 ) // 최종 정산 일자 이후에 거래 기록이 없음 === true
 
 const excelUrl = computed(() => {
@@ -97,9 +99,14 @@ const directBalance = (val: boolean) => {
 }
 
 const checkBalance = (payload: ProCalculated) => {
-  payload = { project: project.value, calculated: proLastDeal.value?.deal_date }
-  if (!!proCashCalc.value) patchProCashCalc({ ...{ pk: proCashCalc.value.pk }, ...payload })
-  else alert('create') // createProCashCalc(payload)
+  payload = { project: project.value, calculated: proLastDealDate.value?.deal_date }
+  if (!!proCalculated.value)
+    console.log('update!', {
+      ...{ pk: proCalculated.value.pk },
+      ...payload,
+    })
+  // patchProCashCalc({ ...{ pk: proCashCalc.value.pk }, ...payload })
+  else console.log('create!', payload) // createProCashCalc(payload)
 }
 
 const dataSetup = (pk: number) => {

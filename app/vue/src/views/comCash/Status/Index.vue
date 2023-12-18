@@ -37,11 +37,13 @@ const patchComCashCalc = (payload: ComCalculated) => cashStore.patchComCashCalc(
 const fetchComCashCalc = (com: number) => cashStore.fetchComCashCalc(com)
 const fetchComLastDeal = (com: number) => cashStore.fetchComLastDeal(com)
 
-const comCashCalc = computed(() => (!!cashStore.comCashCalc ? cashStore.comCashCalc : null)) // 최종 정산 일자
-const comLastDeal = computed(() => cashStore.comLastDeal) // 최종 거래 일자
+const comCalculated = computed(() => cashStore.comCalculated) // 최종 정산 일자
+const comLastDealDate = computed(() => cashStore.comLastDealDate) // 최종 거래 일자
 
 const isCalculated = computed(
-  () => !!comCashCalc.value && comCashCalc.value.calculated >= comLastDeal.value.deal_date,
+  () =>
+    !!comCalculated.value &&
+    comCalculated.value.calculated >= (comLastDealDate.value?.deal_date ?? 0),
 ) // 최종 정산 일자 이후에 거래 기록이 없음 === true
 
 const excelUrl = computed(() => {
@@ -69,8 +71,11 @@ const setDate = (dt: string) => {
 }
 
 const checkBalance = (payload: ComCalculated) => {
-  payload = { company: company.value, calculated: comLastDeal.value?.deal_date }
-  if (!!comCashCalc.value) patchComCashCalc({ ...{ pk: comCashCalc.value.pk }, ...payload })
+  payload = {
+    company: company.value as number,
+    calculated: comLastDealDate.value?.deal_date as string,
+  }
+  if (!!comCalculated.value) patchComCashCalc({ ...{ pk: comCalculated.value.pk }, ...payload })
   else createComCashCalc(payload)
 }
 

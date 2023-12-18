@@ -23,7 +23,9 @@ const refBankAcc = ref()
 const comCashStore = useComCash()
 const cashesPages = computed(() => comCashStore.cashesPages)
 const cashBookList = computed(() => comCashStore.cashBookList)
-const comCashCalc = computed(() => (!!comCashStore.comCashCalc ? comCashStore.comCashCalc : null)) // 최종 정산 일자
+const comCashCalc = computed(() =>
+  !!comCashStore.comCashCalc ? comCashStore.comCashCalc[0] : null,
+) // 최종 정산 일자
 
 const pageSelect = (page: number) => emit('page-select', page)
 
