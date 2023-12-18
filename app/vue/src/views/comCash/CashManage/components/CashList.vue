@@ -23,6 +23,7 @@ const refBankAcc = ref()
 const comCashStore = useComCash()
 const cashesPages = computed(() => comCashStore.cashesPages)
 const cashBookList = computed(() => comCashStore.cashBookList)
+const comCalculated = computed(() => comCashStore.comCalculated) // 최종 정산 일자
 
 const pageSelect = (page: number) => emit('page-select', page)
 
@@ -83,6 +84,7 @@ const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
         v-for="cash in cashBookList"
         :key="cash.pk as number"
         :cash="cash"
+        :calculated="comCalculated?.calculated"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
         @patch-d3-hide="patchD3Hide"

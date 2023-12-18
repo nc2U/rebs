@@ -12,6 +12,7 @@ import {
   type BalanceByAccount,
   type CashBook,
   type SepItems,
+  type ComCalculated,
 } from '@/store/types/comCash'
 
 export type DataFilter = {
@@ -254,6 +255,36 @@ export const useComCash = defineStore('comCash', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
+  const comCashCalc = ref<ComCalculated[]>([])
+
+  const fetchComCashCalc = (com: number) =>
+    api
+      .get(`/com-cash-calc/?company=${com}`)
+      .then(res => (comCashCalc.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
+  const createComCashCalc = (payload: ComCalculated) =>
+    api
+      .post(`/com-cash-calc/`, payload)
+      .then(res => fetchComCashCalc(res.data.company).then(() => message()))
+      .catch(err => errorHandle(err.response.data))
+
+  const patchComCashCalc = (payload: ComCalculated) =>
+    api
+      .patch(`/com-cash-calc/${payload.pk}/`, payload)
+      .then(res => fetchComCashCalc(res.data.company).then(() => message()))
+      .catch(err => errorHandle(err.response.data))
+
+  const comLastDeal = ref<{ deal_date: string }[]>([])
+  const fetchComLastDeal = (com: number) =>
+    api
+      .get(`/com-last-deal/?company=${com}`)
+      .then(res => (comLastDeal.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
+  const comCalculated = computed(() => (comCashCalc.value.length ? comCashCalc.value[0] : null))
+  const comLastDealDate = computed(() => (comLastDeal.value.length ? comLastDeal.value[0] : null))
+
   return {
     bankCodeList,
     fetchBankCodeList,
@@ -299,5 +330,15 @@ export const useComCash = defineStore('comCash', () => {
     createCashBook,
     updateCashBook,
     deleteCashBook,
+
+    comCashCalc,
+    comCalculated,
+    fetchComCashCalc,
+    createComCashCalc,
+    patchComCashCalc,
+
+    comLastDeal,
+    comLastDealDate,
+    fetchComLastDeal,
   }
 })

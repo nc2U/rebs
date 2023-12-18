@@ -81,6 +81,26 @@ class CashBookViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
+class CompanyCashCalcViewSet(viewsets.ModelViewSet):
+    queryset = CompanyCashBookCalculation.objects.all()
+    serializer_class = CompanyCashCalcSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filterset_fields = ('company',)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class CompanyLastDealDateViewSet(viewsets.ModelViewSet):
+    queryset = CashBook.objects.all()
+    serializer_class = CompanyLastDealDateSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+
+    def get_queryset(self):
+        company = self.request.query_params.get('company')
+        return CashBook.objects.filter(company_id=company).order_by('-deal_date')[:1]
+
+
 class DateCashBookViewSet(CashBookViewSet):
     pagination_class = PageNumberPaginationTwoHundred
 
@@ -153,6 +173,26 @@ class ProjectCashBookViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class ProjectCashCalcViewSet(viewsets.ModelViewSet):
+    queryset = ProjectCashBookCalculation.objects.all()
+    serializer_class = ProjectCashCalcSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    filterset_fields = ('project',)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class ProjectLastDealDateViewSet(viewsets.ModelViewSet):
+    queryset = ProjectCashBook.objects.all()
+    serializer_class = ProjectLastDealDateSerializer
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+
+    def get_queryset(self):
+        project = self.request.query_params.get('project')
+        return ProjectCashBook.objects.filter(project_id=project).order_by('-deal_date')[:1]
 
 
 class ProjectDateCashBookViewSet(ProjectCashBookViewSet):

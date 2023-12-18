@@ -4,6 +4,7 @@ import { useProject } from '@/store/pinia/project'
 import { useProCash } from '@/store/pinia/proCash'
 import { getToday } from '@/utils/baseMixins'
 import { pageTitle, navMenu } from '@/views/proCash/_menu/headermixin'
+import type { ProCalculated } from '@/store/types/proCash'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import DateChoicer from '@/views/proCash/Status/components/DateChoicer.vue'
@@ -12,6 +13,7 @@ import TableTitleRow from '@/components/TableTitleRow.vue'
 import StatusByAccount from '@/views/proCash/Status/components/StatusByAccount.vue'
 import CashListByDate from '@/views/proCash/Status/components/CashListByDate.vue'
 import SummaryForBudget from '@/views/proCash/Status/components/SummaryForBudget.vue'
+import Calculated from '@/views/comCash/Status/components/Calculated.vue'
 
 const date = ref(getToday())
 const direct = ref('0')
@@ -35,6 +37,29 @@ const fetchBalanceByAccList = (payload: { project: number; direct?: string; date
   pCashStore.fetchBalanceByAccList(payload)
 const fetchDateCashBookList = (payload: { project: number; date: string }) =>
   pCashStore.fetchDateCashBookList(payload)
+
+const createProCashCalc = (payload: ProCalculated) => pCashStore.createProCashCalc(payload)
+const patchProCashCalc = (payload: ProCalculated) => pCashStore.patchProCashCalc(payload)
+const fetchProCashCalc = (proj: number) => pCashStore.fetchProCashCalc(proj)
+const fetchProLastDeal = (proj: number) => pCashStore.fetchProLastDeal(proj)
+
+const proCalculated = computed(() => pCashStore.proCalculated) // 최종 정산 일자
+const proLastDealDate = computed(() => pCashStore.proLastDealDate) // 최종 거래 일자
+
+const isCalculated = computed(
+  () =>
+    !!proCalculated.value &&
+    proCalculated.value.calculated >= (proLastDealDate.value?.deal_date ?? 0),
+) // 최종 정산 일자 이후에 거래 기록이 없음 === true
+
+const checkBalance = () => {
+  const payload = {
+    project: project.value as number,
+    calculated: proLastDealDate.value?.deal_date as string,
+  }
+  if (!!proCalculated.value) patchProCashCalc({ ...{ pk: proCalculated.value.pk }, ...payload })
+  else createProCashCalc(payload)
+}
 
 const excelUrl = computed(() => {
   const comp = compName.value
@@ -88,6 +113,8 @@ const dataSetup = (pk: number) => {
   fetchProBankAccList(pk)
   fetchBalanceByAccList({ project: pk, date: date.value })
   fetchDateCashBookList({ project: pk, date: date.value })
+  fetchProCashCalc(pk)
+  fetchProLastDeal(pk)
 }
 
 const dataReset = () => {
@@ -96,6 +123,8 @@ const dataReset = () => {
   pCashStore.proBankAccountList = []
   pCashStore.balanceByAccList = []
   pCashStore.proDateCashBook = []
+  pCashStore.proCashCalc = []
+  pCashStore.proLastDeal = []
 }
 
 const projSelect = (target: number | null) => {
@@ -127,11 +156,14 @@ onBeforeMount(() => {
         @direct-balance="directBalance"
       />
       <CashListByDate v-if="compName === 'CashListByDate'" :date="date" />
+
       <SummaryForBudget
         v-if="compName === 'SummaryForBudget'"
         :date="date"
         @patch-budget="patchBudget"
       />
+
+      <Calculated :is-calculated="isCalculated" @to-calculate="checkBalance" />
     </CCardBody>
 
     <CCardFooter>&nbsp;</CCardFooter>

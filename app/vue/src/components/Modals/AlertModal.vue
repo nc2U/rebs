@@ -3,10 +3,14 @@ import { ref } from 'vue'
 
 const headMessage = ref('')
 const bodyMessage = ref('')
+const headIcon = ref('mdi-alert-circle')
+const headColor = ref('indigo-lighten-2')
 const visible = ref(false)
-const callModal = (head?: string, body?: string) => {
+const callModal = (head?: string, body?: string, icon?: string, color = 'indigo-lighten-2') => {
   if (head) headMessage.value = head
   if (body) bodyMessage.value = body
+  if (icon) headIcon.value = icon
+  if (color) headColor.value = color
   visible.value = true
 }
 const close = () => (visible.value = false)
@@ -23,12 +27,12 @@ defineExpose({ callModal, close })
     <CModalHeader class="text-body">
       <CModalTitle>
         <slot name="icon">
-          <v-icon icon="mdi mdi-alert-circle" color="indigo-lighten-2" class="mr-2" />
+          <v-icon :icon="headIcon" :color="headColor" class="mr-2" />
         </slot>
         <slot name="header"> {{ headMessage || ' 알림' }}</slot>
       </CModalTitle>
     </CModalHeader>
-    <CModalBody class="text-body">
+    <CModalBody class="text-body" style="line-height: 26px">
       <slot>
         {{
           bodyMessage ||

@@ -10,6 +10,7 @@ import {
   type BalanceByAccount,
   type ProjectCashBook,
   type CashBookFilter,
+  type ProCalculated,
 } from '@/store/types/proCash'
 import { usePayment } from '@/store/pinia/payment'
 
@@ -450,6 +451,36 @@ export const useProCash = defineStore('proCash', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
+  const proCashCalc = ref<ProCalculated[]>([])
+
+  const fetchProCashCalc = (com: number) =>
+    api
+      .get(`/pro-cash-calc/?company=${com}`)
+      .then(res => (proCashCalc.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
+  const createProCashCalc = (payload: ProCalculated) =>
+    api
+      .post(`/pro-cash-calc/`, payload)
+      .then(res => fetchProCashCalc(res.data.project).then(() => message()))
+      .catch(err => errorHandle(err.response.data))
+
+  const patchProCashCalc = (payload: ProCalculated) =>
+    api
+      .patch(`/pro-cash-calc/${payload.pk}/`, payload)
+      .then(res => fetchProCashCalc(res.data.project).then(() => message()))
+      .catch(err => errorHandle(err.response.data))
+
+  const proLastDeal = ref<{ deal_date: string }[]>([])
+  const fetchProLastDeal = (proj: number) =>
+    api
+      .get(`/pro-last-deal/?project=${proj}`)
+      .then(res => (proLastDeal.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
+  const proCalculated = computed(() => (proCashCalc.value.length ? proCashCalc.value[0] : null))
+  const proLastDealDate = computed(() => (proLastDeal.value.length ? proLastDeal.value[0] : null))
+
   return {
     sortList,
     fetchProAccSortList,
@@ -500,5 +531,15 @@ export const useProCash = defineStore('proCash', () => {
     deletePrImprestBook,
     imprestBAccount,
     getImpBankAccs,
+
+    proCashCalc,
+    proCalculated,
+    fetchProCashCalc,
+    createProCashCalc,
+    patchProCashCalc,
+
+    proLastDeal,
+    proLastDealDate,
+    fetchProLastDeal,
   }
 })
