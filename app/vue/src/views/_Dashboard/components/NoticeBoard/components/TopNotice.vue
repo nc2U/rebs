@@ -22,7 +22,7 @@ defineProps({
         +{{ post.comments.length }}
       </CBadge>
     </CTableDataCell>
-    <CTableDataCell>{{ post.user.username }}</CTableDataCell>
+    <CTableDataCell>{{ post.user?.username }}</CTableDataCell>
     <CTableDataCell>{{ timeFormat(post.created ?? '') }}</CTableDataCell>
     <CTableDataCell>{{ post.hit }}</CTableDataCell>
   </CTableRow>
