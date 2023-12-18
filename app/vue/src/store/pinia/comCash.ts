@@ -255,13 +255,7 @@ export const useComCash = defineStore('comCash', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const comCashCalc = ref<
-    {
-      company: number
-      calculated: string
-      user: { pk: number; username: string }
-    }[]
-  >([])
+  const comCashCalc = ref<ComCalculated[]>([])
 
   const fetchComCashCalc = (com: number) =>
     api
@@ -337,11 +331,13 @@ export const useComCash = defineStore('comCash', () => {
     updateCashBook,
     deleteCashBook,
 
+    comCashCalc,
     comCalculated,
     fetchComCashCalc,
     createComCashCalc,
     patchComCashCalc,
 
+    comLastDeal,
     comLastDealDate,
     fetchComLastDeal,
   }

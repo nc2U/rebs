@@ -451,13 +451,7 @@ export const useProCash = defineStore('proCash', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const proCashCalc = ref<
-    {
-      project: number
-      calculated: string
-      user: { pk: number; username: string }
-    }[]
-  >([])
+  const proCashCalc = ref<ProCalculated[]>([])
 
   const fetchProCashCalc = (com: number) =>
     api
