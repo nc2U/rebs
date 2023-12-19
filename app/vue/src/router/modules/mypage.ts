@@ -19,7 +19,7 @@ const myPage = {
     {
       path: 'todo-list',
       name: '할일 관리',
-      component: () => import('@/views/_MyPage/TodoList/Index.vue'),
+      component: () => import('@/views/_MyPage/MyTodoList/Index.vue'),
       meta: { title: '할일 관리', auth: true, except: true },
     },
     {
