@@ -102,13 +102,13 @@ onMounted(() => formDataSetup())
         <CCol md="4">
           <CRow class="mb-3">
             <h6>사용자 계정</h6>
-            <CFormLabel for="companyCeo" class="col-sm-4 col-form-label"> 아이디</CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label"> 아이디</CFormLabel>
 
             <CCol sm="8">{{ userInfo?.username || '' }}</CCol>
           </CRow>
 
           <CRow class="mb-3">
-            <CFormLabel for="companyName" class="col-sm-4 col-form-label"> 이메일 주소</CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label"> 이메일 주소</CFormLabel>
 
             <CCol sm="8">{{ userInfo?.email || '' }}</CCol>
           </CRow>
@@ -117,7 +117,7 @@ onMounted(() => formDataSetup())
 
           <CRow class="mb-3">
             <h6>사용자 프로필</h6>
-            <CFormLabel for="companyName" class="col-sm-4 col-form-label"> 성명</CFormLabel>
+            <CFormLabel for="name" class="col-sm-4 col-form-label"> 성명</CFormLabel>
 
             <CCol sm="8">
               <CFormInput
@@ -125,26 +125,28 @@ onMounted(() => formDataSetup())
                 type="text"
                 placeholder="성명을 입력하세요"
                 maxlength="20"
+                id="name"
                 required
               />
               <CFormFeedback invalid>성명을 입력하세요.</CFormFeedback>
             </CCol>
           </CRow>
           <CRow class="mb-3">
-            <CFormLabel for="companyCeo" class="col-sm-4 col-form-label"> 생년월일</CFormLabel>
+            <CFormLabel for="birth_date" class="col-sm-4 col-form-label"> 생년월일</CFormLabel>
 
             <CCol sm="8">
               <DatePicker
                 v-model="form.birth_date"
                 placeholder="생년월일을 입력하세요"
                 maxlength="10"
+                id="birth_date"
               />
               <CFormFeedback invalid>생년월일을 입력하세요.</CFormFeedback>
             </CCol>
           </CRow>
 
           <CRow class="mb-3">
-            <CFormLabel for="companyCeo" class="col-sm-4 col-form-label"> 휴대전화</CFormLabel>
+            <CFormLabel for="cell_phone" class="col-sm-4 col-form-label"> 휴대전화</CFormLabel>
 
             <CCol sm="8">
               <input
@@ -155,6 +157,7 @@ onMounted(() => formDataSetup())
                 class="form-control"
                 placeholder="휴대전화를 입력하세요"
                 maxlength="13"
+                id="cell_phone"
               />
               <CFormFeedback invalid>휴대전화를 입력하세요.</CFormFeedback>
             </CCol>
