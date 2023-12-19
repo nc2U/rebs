@@ -12,9 +12,11 @@ import TodoListApp from '@/components/TodoListApp/index.vue'
   <ContentBody>
     <CCardBody>
       <CRow>
-        <CCol class="text-left">
+        <CCol class="text-left pt-5" lg="12" xl="4">
           <TodoListApp />
         </CCol>
+        <CCol lg="12" xl="4" />
+        <CCol lg="12" xl="4" />
       </CRow>
     </CCardBody>
   </ContentBody>
