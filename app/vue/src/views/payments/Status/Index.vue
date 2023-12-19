@@ -74,7 +74,5 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
       <TableTitleRow excel :url="excelUrl" :disabled="!project" />
       <PaymentStatus :date="date" />
     </CCardBody>
-
-    <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>

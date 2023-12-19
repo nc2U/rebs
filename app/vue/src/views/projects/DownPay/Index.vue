@@ -70,7 +70,5 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
       <DownPayAddForm :disabled="!project" @on-submit="onCreateDownPay" />
       <DownPayFormList @on-update="onUpdateDownPay" @on-delete="onDeleteDownPay" />
     </CCardBody>
-
-    <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>

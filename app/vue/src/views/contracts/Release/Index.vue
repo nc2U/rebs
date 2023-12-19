@@ -118,7 +118,5 @@ onBeforeMount(() => {
       />
       <ReleaseList @page-select="pageSelect" @get-release="getRelease" @on-submit="onSubmit" />
     </CCardBody>
-
-    <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>

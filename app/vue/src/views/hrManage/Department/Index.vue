@@ -106,7 +106,5 @@ onMounted(() => dataSetup(company.value || comStore.initComId))
       <TableTitleRow title="부서 목록" excel :url="excelUrl" :disabled="!company" />
       <DepartmentList @multi-submit="multiSubmit" @on-delete="onDelete" @page-select="pageSelect" />
     </CCardBody>
-
-    <CCardFooter class="text-right">&nbsp;</CCardFooter>
   </ContentBody>
 </template>

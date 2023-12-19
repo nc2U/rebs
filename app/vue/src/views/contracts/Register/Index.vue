@@ -173,5 +173,9 @@ onBeforeMount(() => {
       @resume-form="resumeForm"
       @search-contractor="searchContractor"
     />
+
+    <template #footer>
+      <div style="display: none"></div>
+    </template>
   </ContentBody>
 </template>

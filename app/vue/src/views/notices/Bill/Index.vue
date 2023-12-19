@@ -167,7 +167,5 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
         @all-un-checked="allUnChecked"
       />
     </CCardBody>
-
-    <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>

@@ -52,7 +52,5 @@ onBeforeMount(() => fetchTypeList(project.value || projStore.initProjId))
       <TypeAddForm :disabled="!project" @on-submit="onSubmit" />
       <TypeFormList @on-update="onUpdateType" @on-delete="onDeleteType" />
     </CCardBody>
-
-    <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>

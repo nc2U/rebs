@@ -9,8 +9,11 @@
 
     <slot>
       <CCardBody class="pb-5" style="height: 473px"> This page is under construction.</CCardBody>
+    </slot>
 
+    <slot name="footer">
       <CCardFooter>&nbsp;</CCardFooter>
     </slot>
   </CCard>
 </template>
+<script setup lang="ts"></script>

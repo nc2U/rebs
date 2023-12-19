@@ -259,7 +259,5 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId, route.param
         />
       </div>
     </CCardBody>
-
-    <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>

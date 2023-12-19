@@ -143,6 +143,5 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
         @on-delete="onDeletePrice"
       />
     </CCardBody>
-    <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>

@@ -203,7 +203,5 @@ onBeforeRouteLeave(() => {
         </CCol>
       </CRow>
     </CCardBody>
-
-    <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>

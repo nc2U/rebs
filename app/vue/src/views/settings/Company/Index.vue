@@ -48,5 +48,9 @@ const onSubmit = (payload: Company) => {
       @on-submit="onSubmit"
       @reset-form="resetForm"
     />
+
+    <template #footer>
+      <div style="display: none"></div>
+    </template>
   </ContentBody>
 </template>

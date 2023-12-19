@@ -40,5 +40,9 @@ const onSubmit = (payload: Profile) => {
 
   <ContentBody>
     <ProfileForm ref="profile" :profile="profile as Profile" @on-submit="onSubmit" />
+
+    <template #footer>
+      <div style="display: none"></div>
+    </template>
   </ContentBody>
 </template>

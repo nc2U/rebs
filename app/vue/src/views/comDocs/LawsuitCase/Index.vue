@@ -215,7 +215,5 @@ onBeforeMount(() => dataSetup(company.value || comStore.initComId, route.params?
         />
       </div>
     </CCardBody>
-
-    <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>
