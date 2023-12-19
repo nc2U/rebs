@@ -79,7 +79,7 @@ const routes: Array<RouteRecordRaw> = [
         path: 'mypage',
         name: '마이페이지',
         component: () => import(/* webpackChunkName: "dashboard" */ '@/views/_MyPage/Index.vue'),
-        meta: { title: '마이페이지', auth: true, affix: true },
+        meta: { title: '마이페이지', auth: true },
       },
       {
         path: '/:pathMatch(.*)*',
