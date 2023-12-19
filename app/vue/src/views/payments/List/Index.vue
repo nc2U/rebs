@@ -164,7 +164,5 @@ onBeforeRouteLeave(() => {
         @page-select="pageSelect"
       />
     </CCardBody>
-
-    <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>

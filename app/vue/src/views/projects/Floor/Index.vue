@@ -44,7 +44,5 @@ onBeforeMount(() => fetchFloorTypeList(project.value || projStore.initProjId))
       <FloorAddForm :disabled="!project" @on-submit="onSubmit" />
       <FloorFormList @on-update="onUpdateFloor" @on-delete="onDeleteFloor" />
     </CCardBody>
-
-    <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>

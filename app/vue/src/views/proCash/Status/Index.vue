@@ -169,7 +169,5 @@ onBeforeMount(() => {
         @to-calculate="checkBalance"
       />
     </CCardBody>
-
-    <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>

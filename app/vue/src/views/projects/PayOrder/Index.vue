@@ -44,7 +44,5 @@ onBeforeMount(() => fetchPayOrderList(project.value || projStore.initProjId))
       <PayOrderAddForm :disabled="!project" @on-submit="onSubmit" />
       <PayOrderFormList @on-update="onUpdatePayOrder" @on-delete="onDeletePayOrder" />
     </CCardBody>
-
-    <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>

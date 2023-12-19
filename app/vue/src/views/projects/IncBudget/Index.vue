@@ -87,7 +87,5 @@ onBeforeMount(() => {
       <BudgetAddForm :disabled="!project" @on-submit="onSubmit" />
       <BudgetFormList @on-update="onUpdateBudget" @on-delete="onDeleteBudget" />
     </CCardBody>
-
-    <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>

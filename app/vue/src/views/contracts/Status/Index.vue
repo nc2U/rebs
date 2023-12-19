@@ -76,7 +76,5 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
       <v-divider color="grey" class="my-0" />
       <ContractBoard />
     </CCardBody>
-
-    <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>

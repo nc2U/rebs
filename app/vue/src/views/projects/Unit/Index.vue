@@ -170,8 +170,6 @@ onBeforeRouteLeave(() => dataReset())
       />
       <UnitTable :bldg-name="bldgName" @on-update="onUpdate" @on-delete="onDelete" />
     </CCardBody>
-
-    <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 
   <AlertModal ref="alertModal" />

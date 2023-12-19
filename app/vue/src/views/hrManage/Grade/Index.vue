@@ -95,7 +95,5 @@ onMounted(() => dataSetup(company.value || comStore.initComId))
       <TableTitleRow title="직급 목록" excel :url="excelUrl" :disabled="!company" />
       <GradeList @multi-submit="multiSubmit" @on-delete="onDelete" @page-select="pageSelect" />
     </CCardBody>
-
-    <CCardFooter class="text-right">&nbsp;</CCardFooter>
   </ContentBody>
 </template>

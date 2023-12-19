@@ -239,7 +239,5 @@ onBeforeMount(() => {
         @on-bank-update="onBankUpdate"
       />
     </CCardBody>
-
-    <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>

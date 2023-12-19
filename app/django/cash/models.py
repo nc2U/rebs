@@ -145,7 +145,7 @@ class ProjectCashBook(models.Model):
 
 
 class CompanyCashBookCalculation(models.Model):
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, verbose_name='회사')
+    company = models.OneToOneField(Company, on_delete=models.CASCADE, unique=True, verbose_name='회사')
     calculated = models.DateField('정산일', null=True, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
 
@@ -154,7 +154,7 @@ class CompanyCashBookCalculation(models.Model):
 
 
 class ProjectCashBookCalculation(models.Model):
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, verbose_name='프로젝트')
+    project = models.OneToOneField(Project, on_delete=models.CASCADE, unique=True, verbose_name='프로젝트')
     calculated = models.DateField('정산일', null=True, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
 

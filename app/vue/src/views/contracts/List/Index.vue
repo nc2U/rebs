@@ -126,6 +126,5 @@ onBeforeMount(() => {
       <SelectItems :visible="visible" :unit-set="unitSet" @print-items="setItems" />
       <ContractList @page-select="pageSelect" />
     </CCardBody>
-    <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>

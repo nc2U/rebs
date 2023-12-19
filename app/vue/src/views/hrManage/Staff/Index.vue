@@ -131,7 +131,5 @@ onMounted(() => {
       <TableTitleRow title="직원 목록" excel :url="excelUrl" :disabled="!company" />
       <StaffList @multi-submit="multiSubmit" @on-delete="onDelete" @page-select="pageSelect" />
     </CCardBody>
-
-    <CCardFooter class="text-right">&nbsp;</CCardFooter>
   </ContentBody>
 </template>

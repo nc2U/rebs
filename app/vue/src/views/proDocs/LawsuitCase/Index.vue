@@ -218,7 +218,5 @@ onBeforeMount(() => {
         />
       </div>
     </CCardBody>
-
-    <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>

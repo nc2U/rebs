@@ -45,7 +45,5 @@ onBeforeMount(() => fetchOrderGroupList(project.value || projStore.initProjId))
       <OrderAddForm :disabled="!project" @on-submit="onSubmit" />
       <OrderFormList @on-update="onUpdateOrder" @on-delete="onDeleteOrder" />
     </CCardBody>
-
-    <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>

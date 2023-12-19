@@ -14,7 +14,5 @@ const msg = ref(pageTitle)
       {{ msg }}
       <div style="height: 420px"></div>
     </CCardBody>
-
-    <CCardFooter class="text-right">&nbsp;</CCardFooter>
   </ContentBody>
 </template>

@@ -233,17 +233,19 @@ onBeforeMount(() => {
       />
     </CCardBody>
 
-    <CCardFooter class="text-right">
-      <CButton
-        type="button"
-        :color="isStaffAuth ? 'success' : 'primary'"
-        :disabled="!comId || formsCheck"
-        @click="onSubmit"
-      >
-        <CIcon name="cil-check-circle" />
-        저장
-      </CButton>
-    </CCardFooter>
+    <template #footer>
+      <CCardFooter class="text-right">
+        <CButton
+          type="button"
+          :color="isStaffAuth ? 'success' : 'primary'"
+          :disabled="!comId || formsCheck"
+          @click="onSubmit"
+        >
+          <CIcon name="cil-check-circle" />
+          저장
+        </CButton>
+      </CCardFooter>
+    </template>
 
     <ConfirmModal ref="refConfirmModal">
       <template #header>사용자 권한설정</template>

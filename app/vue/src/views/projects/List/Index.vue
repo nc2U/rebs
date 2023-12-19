@@ -48,5 +48,9 @@ const toSubmit = (payload: Project) => {
       @to-submit="toSubmit"
       @reset-form="resetForm"
     />
+
+    <template #footer>
+      <div style="display: none"></div>
+    </template>
   </ContentBody>
 </template>

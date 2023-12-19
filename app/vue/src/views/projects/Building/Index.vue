@@ -44,7 +44,5 @@ onBeforeMount(() => fetchBuildingList(project.value || projStore.initProjId))
       <BuildingAddForm :disabled="!project" @on-submit="onCreateBuilding" />
       <BuildingFormList @on-update="onUpdateBuilding" @on-delete="onDeleteBuilding" />
     </CCardBody>
-
-    <CCardFooter>&nbsp;</CCardFooter>
   </ContentBody>
 </template>
