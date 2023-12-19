@@ -16,6 +16,7 @@ import comCash from '@/router/modules/comCash'
 import comDocs from '@/router/modules/comDocs'
 import hrManage from '@/router/modules/hrManage'
 import settings from '@/router/modules/settings'
+import myPage from '@/router/modules/mypage'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -75,12 +76,7 @@ const routes: Array<RouteRecordRaw> = [
       comDocs,
       hrManage,
       settings,
-      {
-        path: 'mypage',
-        name: '마이페이지',
-        component: () => import(/* webpackChunkName: "dashboard" */ '@/views/_MyPage/Index.vue'),
-        meta: { title: '마이페이지', auth: true },
-      },
+      myPage,
       {
         path: '/:pathMatch(.*)*',
         name: 'NotFound',
