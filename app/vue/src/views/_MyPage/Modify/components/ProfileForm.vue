@@ -102,24 +102,24 @@ onMounted(() => formDataSetup())
         <CCol md="4">
           <CRow class="mb-3">
             <h6>사용자 계정</h6>
-            <CFormLabel for="companyCeo" class="col-md-4 col-form-label"> 아이디</CFormLabel>
+            <CFormLabel for="companyCeo" class="col-sm-4 col-form-label"> 아이디</CFormLabel>
 
-            <CCol md="8">{{ userInfo?.username || '' }}</CCol>
+            <CCol sm="8">{{ userInfo?.username || '' }}</CCol>
           </CRow>
 
           <CRow class="mb-3">
-            <CFormLabel for="companyName" class="col-md-4 col-form-label"> 이메일 주소</CFormLabel>
+            <CFormLabel for="companyName" class="col-sm-4 col-form-label"> 이메일 주소</CFormLabel>
 
-            <CCol md="8">{{ userInfo?.email || '' }}</CCol>
+            <CCol sm="8">{{ userInfo?.email || '' }}</CCol>
           </CRow>
 
-          <v-divider />
+          <v-divider class="my-4" />
 
           <CRow class="mb-3">
             <h6>사용자 프로필</h6>
-            <CFormLabel for="companyName" class="col-md-4 col-form-label"> 성명</CFormLabel>
+            <CFormLabel for="companyName" class="col-sm-4 col-form-label"> 성명</CFormLabel>
 
-            <CCol md="8">
+            <CCol sm="8">
               <CFormInput
                 v-model="form.name"
                 type="text"
@@ -131,9 +131,9 @@ onMounted(() => formDataSetup())
             </CCol>
           </CRow>
           <CRow class="mb-3">
-            <CFormLabel for="companyCeo" class="col-md-4 col-form-label"> 생년월일</CFormLabel>
+            <CFormLabel for="companyCeo" class="col-sm-4 col-form-label"> 생년월일</CFormLabel>
 
-            <CCol md="8">
+            <CCol sm="8">
               <DatePicker
                 v-model="form.birth_date"
                 placeholder="생년월일을 입력하세요"
@@ -144,9 +144,9 @@ onMounted(() => formDataSetup())
           </CRow>
 
           <CRow class="mb-3">
-            <CFormLabel for="companyCeo" class="col-md-4 col-form-label"> 휴대전화</CFormLabel>
+            <CFormLabel for="companyCeo" class="col-sm-4 col-form-label"> 휴대전화</CFormLabel>
 
-            <CCol md="8">
+            <CCol sm="8">
               <input
                 v-model="form.cell_phone"
                 v-maska

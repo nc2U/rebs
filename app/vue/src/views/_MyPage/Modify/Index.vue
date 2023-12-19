@@ -5,7 +5,7 @@ import { pageTitle, navMenu } from '@/views/_MyPage/_menu/headermixin'
 import { type Profile } from '@/store/types/accounts'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
-import ProfileForm from '@/views/settings/Profile/components/ProfileForm.vue'
+import ProfileForm from '@/views/_MyPage/Modify/components/ProfileForm.vue'
 
 const accStore = useAccount()
 const profile = computed(() => accStore.profile)

@@ -16,35 +16,35 @@ const userInfo = computed(() => accountStore.userInfo)
       <CCol md="4">
         <CRow class="mb-3">
           <h6>사용자 계정</h6>
-          <CFormLabel for="companyCeo" class="col-md-4 col-form-label"> 아이디</CFormLabel>
+          <CFormLabel for="companyCeo" class="col-sm-4 col-form-label"> 아이디</CFormLabel>
 
-          <CCol md="8">{{ userInfo?.username || '' }}</CCol>
+          <CCol sm="8">{{ userInfo?.username || '' }}</CCol>
         </CRow>
 
         <CRow class="mb-3">
-          <CFormLabel for="companyName" class="col-md-4 col-form-label"> 이메일 주소</CFormLabel>
+          <CFormLabel for="companyName" class="col-sm-4 col-form-label"> 이메일 주소</CFormLabel>
 
-          <CCol md="8">{{ userInfo?.email || '' }}</CCol>
+          <CCol sm="8">{{ userInfo?.email || '' }}</CCol>
         </CRow>
 
-        <v-divider />
+        <v-divider class="my-4" />
 
         <CRow class="mb-3">
           <h6>사용자 프로필</h6>
-          <CFormLabel for="companyName" class="col-md-4 col-form-label"> 성명</CFormLabel>
+          <CFormLabel for="companyName" class="col-sm-4 col-form-label"> 성명</CFormLabel>
 
-          <CCol md="8">{{ userInfo?.profile?.name || '' }}</CCol>
+          <CCol sm="8">{{ userInfo?.profile?.name || '' }}</CCol>
         </CRow>
         <CRow class="mb-3">
-          <CFormLabel for="companyCeo" class="col-md-4 col-form-label"> 생년월일</CFormLabel>
+          <CFormLabel for="companyCeo" class="col-sm-4 col-form-label"> 생년월일</CFormLabel>
 
-          <CCol md="8">{{ userInfo?.profile?.birth_date || '' }}</CCol>
+          <CCol sm="8">{{ userInfo?.profile?.birth_date || '' }}</CCol>
         </CRow>
 
         <CRow class="mb-3">
-          <CFormLabel for="companyCeo" class="col-md-4 col-form-label"> 휴대전화</CFormLabel>
+          <CFormLabel for="companyCeo" class="col-sm-4 col-form-label"> 휴대전화</CFormLabel>
 
-          <CCol md="8">{{ userInfo?.profile?.cell_phone || '' }}</CCol>
+          <CCol sm="8">{{ userInfo?.profile?.cell_phone || '' }}</CCol>
         </CRow>
       </CCol>
       <CCol md="8"></CCol>
