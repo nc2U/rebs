@@ -6,7 +6,7 @@ import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" selector="CompanySelect" />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
     <CCardBody> a</CCardBody>

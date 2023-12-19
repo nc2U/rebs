@@ -16,7 +16,7 @@ defineProps({
   },
   selector: {
     type: String,
-    default: 'ProjectSelect',
+    default: '',
   },
 })
 

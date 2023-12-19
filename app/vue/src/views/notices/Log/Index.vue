@@ -8,7 +8,7 @@ const msg = ref(pageTitle)
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" selector="ProjectSelect" />
   <ContentBody>
     <CCardBody>
       {{ msg }}
