@@ -307,7 +307,7 @@ onUpdated(() => dataSetup())
       </CCol>
     </CRow>
 
-    <hr />
+    <v-divider />
 
     <CRow>
       <CCol class="text-right">

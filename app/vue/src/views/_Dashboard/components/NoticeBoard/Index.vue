@@ -177,7 +177,9 @@ onBeforeMount(() => dataSetup(company.value ?? comStore.initComId, route.params?
     <CCard>
       <CCardBody>
         <h5>{{ mainViewName }}</h5>
-        <hr />
+
+        <v-divider />
+
         <div v-if="route.name === mainViewName">
           <ListController
             ref="lController"

@@ -590,7 +590,9 @@ onBeforeMount(() => formDataSetup())
             </CCol>
           </CRow>
         </div>
-        <hr />
+
+        <v-divider />
+
         <CRow class="mb-3">
           <CCol sm="1"></CCol>
           <CCol sm="11">

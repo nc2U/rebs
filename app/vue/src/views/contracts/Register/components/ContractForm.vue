@@ -411,7 +411,9 @@ onUpdated(() => formDataSetup())
         :contractor="contractor"
         @resume-form="resumeForm"
       />
-      <hr />
+
+      <v-divider />
+
       <CRow class="mb-3">
         <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 구분</CFormLabel>
         <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
@@ -503,7 +505,7 @@ onUpdated(() => formDataSetup())
         </CCol>
       </CRow>
 
-      <hr />
+      <v-divider />
 
       <CRow class="mb-3">
         <CFormLabel class="col-md-2 col-lg-1 col-form-label"> {{ contLabel }}일자</CFormLabel>

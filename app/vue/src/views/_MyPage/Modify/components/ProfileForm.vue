@@ -99,7 +99,7 @@ onMounted(() => formDataSetup())
   >
     <CCardBody>
       <CRow class="flex-md-row flex-column-reverse">
-        <CCol md="6">
+        <CCol md="4">
           <CRow class="mb-3">
             <h6>사용자 계정</h6>
             <CFormLabel for="companyCeo" class="col-md-4 col-form-label"> 아이디</CFormLabel>
@@ -113,7 +113,7 @@ onMounted(() => formDataSetup())
             <CCol md="8">{{ userInfo?.email || '' }}</CCol>
           </CRow>
 
-          <hr />
+          <v-divider />
 
           <CRow class="mb-3">
             <h6>사용자 프로필</h6>
@@ -160,7 +160,7 @@ onMounted(() => formDataSetup())
             </CCol>
           </CRow>
         </CCol>
-        <CCol md="6">
+        <CCol md="8">
           <AvatarInput
             ref="avatar"
             :image="(profile && profile.image) || '/static/dist/img/NoImage.jpeg'"

@@ -233,7 +233,7 @@ onMounted(() => {
       </CCol>
     </CRow>
 
-    <hr />
+    <v-divider />
 
     <CRow class="text-blue-grey">
       <CCol>
@@ -399,7 +399,7 @@ onMounted(() => {
       </CCol>
     </CRow>
 
-    <hr />
+    <v-divider />
 
     <CRow class="py-2">
       <CCol>

@@ -240,7 +240,7 @@ onBeforeMount(() => formDataSetup())
         </CCol>
       </CRow>
 
-      <hr />
+      <v-divider />
 
       <CRow>
         <CFormLabel for="zipcode" class="col-md-2 col-form-label"> 회사주소</CFormLabel>

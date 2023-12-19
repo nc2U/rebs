@@ -168,7 +168,9 @@ onBeforeMount(async () => {
             incididunt...
           </small>
         </div>
-        <hr />
+
+        <v-divider />
+
         <div class="message">
           <div class="py-3 pb-5 me-3 float-start">
             <CAvatar :src="avatar7" status="success" size="md" />
@@ -183,7 +185,9 @@ onBeforeMount(async () => {
             incididunt...
           </small>
         </div>
-        <hr />
+
+        <v-divider />
+
         <div class="message">
           <div class="py-3 pb-5 me-3 float-start">
             <CAvatar :src="avatar7" status="success" size="md" />
@@ -198,7 +202,9 @@ onBeforeMount(async () => {
             incididunt...
           </small>
         </div>
-        <hr />
+
+        <v-divider />
+
         <div class="message">
           <div class="py-3 pb-5 me-3 float-start">
             <CAvatar :src="avatar7" status="success" size="md" />
@@ -213,7 +219,9 @@ onBeforeMount(async () => {
             incididunt...
           </small>
         </div>
-        <hr />
+
+        <v-divider />
+
         <div class="message">
           <div class="py-3 pb-5 me-3 float-start">
             <CAvatar :src="avatar7" status="success" size="md" />
@@ -263,7 +271,9 @@ onBeforeMount(async () => {
             <CFormSwitch id="Option4" size="lg" label="Option 4" default-checked />
           </div>
         </div>
-        <hr />
+
+        <v-divider />
+
         <h6>System Utilization</h6>
         <div class="text-uppercase mb-1 mt-4">
           <small>

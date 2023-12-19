@@ -242,7 +242,8 @@ onBeforeMount(() => formDataSet())
         </CCol>
       </CRow>
 
-      <hr />
+      <v-divider />
+
       <h6 class="pb-2">◼︎ 양{{ done ? '도' : '수' }}계약자 인적사항</h6>
 
       <CRow class="mb-2">
@@ -498,7 +499,7 @@ onBeforeMount(() => formDataSet())
         </CCol>
       </CRow>
 
-      <hr />
+      <v-divider />
 
       <CRow class="mb-2">
         <CCol xs="6">

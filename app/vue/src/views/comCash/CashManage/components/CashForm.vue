@@ -631,7 +631,8 @@ onBeforeMount(() => dataSetup())
           </CRow>
         </div>
 
-        <hr />
+        <v-divider />
+
         <CRow class="mb-3">
           <CCol sm="1" />
           <CCol sm="11">

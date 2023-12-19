@@ -113,7 +113,7 @@ onMounted(() => formDataSetup())
             <CCol md="8">{{ userInfo?.email || '' }}</CCol>
           </CRow>
 
-          <hr />
+          <v-divider />
 
           <CRow class="mb-3">
             <h6>사용자 프로필</h6>
