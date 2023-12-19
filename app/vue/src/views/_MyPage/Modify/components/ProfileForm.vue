@@ -97,7 +97,7 @@ onMounted(() => formDataSetup())
     enctype="multipart/form-data"
     @submit.prevent="onSubmit"
   >
-    <CCardBody>
+    <CCardBody class="p-5">
       <CRow class="flex-md-row flex-column-reverse">
         <CCol md="4">
           <CRow class="mb-3">

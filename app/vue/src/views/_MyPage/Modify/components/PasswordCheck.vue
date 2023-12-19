@@ -7,9 +7,9 @@ const onSubmit = () => alert('submitted! (구현 중!)')
 </script>
 
 <template>
-  <CCardBody>
+  <CCardBody class="p-5">
     <CRow>
-      <CCol class="mt-5"><h5>회원 비밀번호 확인</h5></CCol>
+      <CCol><h5>회원 비밀번호 확인</h5></CCol>
     </CRow>
 
     <v-divider />

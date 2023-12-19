@@ -9,6 +9,6 @@ import ContentHeader from '@/layouts/ContentHeader/Index.vue'
   <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
-    <CCardBody> 내 작성글 구현 중! </CCardBody>
+    <CCardBody class="p-5"> 내 작성글 구현 중!</CCardBody>
   </ContentBody>
 </template>

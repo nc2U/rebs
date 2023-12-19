@@ -9,6 +9,6 @@ import ContentHeader from '@/layouts/ContentHeader/Index.vue'
   <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
-    <CCardBody> 탈퇴 하기 구현 중! </CCardBody>
+    <CCardBody class="p-5"> 탈퇴 하기 구현 중!</CCardBody>
   </ContentBody>
 </template>
