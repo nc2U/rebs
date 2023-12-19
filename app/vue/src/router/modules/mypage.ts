@@ -17,6 +17,12 @@ const myPage = {
       meta: { title: '내 정보', auth: true, except: true },
     },
     {
+      path: 'todo-list',
+      name: '할일 관리',
+      component: () => import('@/views/_MyPage/TodoList/Index.vue'),
+      meta: { title: '할일 관리', auth: true, except: true },
+    },
+    {
       path: 'own-post',
       name: '내 작성글',
       component: () => import('@/views/_MyPage/OwnPost/Index.vue'),
