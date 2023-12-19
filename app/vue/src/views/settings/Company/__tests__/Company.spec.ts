@@ -21,7 +21,7 @@ describe('Company app test', () => {
 
     expect(wrapper.find('content-header-stub').attributes('pagetitle')).toBe('환경 설정')
     expect(wrapper.find('content-header-stub').attributes('navmenu')).toBe(
-      '회사 정보 관리,권한 설정 관리,프로필 관리',
+      '회사 정보 관리,권한 설정 관리',
     )
   })
 

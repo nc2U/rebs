@@ -231,7 +231,7 @@ watch(
           </CCol>
         </CRow>
 
-        <hr />
+        <v-divider />
 
         <CRow class="mb-3">
           <CCol sm="6">
@@ -333,7 +333,7 @@ watch(
           </CCol>
         </CRow>
 
-        <hr />
+        <v-divider />
 
         <CRow class="mt-3">
           <CCol sm="6"></CCol>

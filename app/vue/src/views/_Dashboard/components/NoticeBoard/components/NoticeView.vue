@@ -235,7 +235,7 @@ onMounted(() => {
       </CCol>
     </CRow>
 
-    <hr />
+    <v-divider />
 
     <CRow class="text-blue-grey">
       <CCol>
@@ -382,11 +382,11 @@ onMounted(() => {
       </CCol>
     </CRow>
 
-    <hr />
+    <v-divider />
 
     <Comments :post="post.pk as number" :comments="commentList" />
 
-    <hr />
+    <v-divider />
 
     <CRow class="py-2">
       <CCol>

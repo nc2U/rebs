@@ -63,10 +63,9 @@ const logout = () => {
       <CDropdownHeader component="h6" class="fw-semibold py-2" :class="headerClass">
         Settings
       </CDropdownHeader>
-
-      <CDropdownItem @click="router.push({ name: '프로필 관리' })">
+      <CDropdownItem @click="router.push({ name: '마이페이지' })">
         <v-icon icon="mdi mdi-account-outline" size="small" />
-        프로필
+        마이페이지
       </CDropdownItem>
 
       <CDropdownItem v-if="userInfo.is_superuser" @click="locationBlank('/admin/')">

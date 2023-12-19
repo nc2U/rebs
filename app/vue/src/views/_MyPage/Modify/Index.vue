@@ -1,18 +1,14 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useAccount } from '@/store/pinia/account'
-import { pageTitle, navMenu } from '@/views/settings/_menu/headermixin'
+import { pageTitle, navMenu } from '@/views/_MyPage/_menu/headermixin'
 import { type Profile } from '@/store/types/accounts'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
-import ProfileForm from '@/views/settings/Profile/components/ProfileForm.vue'
+import ProfileForm from '@/views/_MyPage/Modify/components/ProfileForm.vue'
 
 const accStore = useAccount()
 const profile = computed(() => accStore.profile)
-const isStaff = computed(
-  () => useAccount().superAuth || Number(useAccount().staffAuth?.is_staff || null),
-)
-const profileNav = isStaff.value ? navMenu : ['프로필 관리']
 
 const createProfile = (payload: FormData) => accStore.createProfile(payload)
 const patchProfile = (payload: { pk: number; form: FormData }) => accStore.patchProfile(payload)
@@ -36,7 +32,7 @@ const onSubmit = (payload: Profile) => {
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="profileNav" selector="CompanySelect" />
+  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
     <ProfileForm ref="profile" :profile="profile as Profile" @on-submit="onSubmit" />

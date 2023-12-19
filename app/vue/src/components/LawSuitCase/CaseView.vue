@@ -201,7 +201,7 @@ onBeforeMount(() => {
       </CCol>
     </CRow>
 
-    <hr />
+    <v-divider />
 
     <CRow class="text-blue-grey">
       <CCol>
@@ -442,7 +442,7 @@ onBeforeMount(() => {
       </CCol>
     </CRow>
 
-    <hr />
+    <v-divider />
 
     <CRow class="py-4">
       <CCol>

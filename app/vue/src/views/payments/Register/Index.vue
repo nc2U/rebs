@@ -175,7 +175,12 @@ onBeforeRouteLeave(() => {
 </script>
 
 <template>
-  <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" @proj-select="projSelect" />
+  <ContentHeader
+    :page-title="pageTitle"
+    :nav-menu="navMenu"
+    selector="ProjectSelect"
+    @proj-select="projSelect"
+  />
 
   <ContentBody>
     <CCardBody class="pb-5">
