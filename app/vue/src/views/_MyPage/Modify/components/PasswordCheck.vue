@@ -20,14 +20,14 @@ const onSubmit = () => alert('submitted! (구현 중!)')
       :validated="validated"
       @submit.prevent="onSubmit"
     >
-      <CRow class="my-4">
-        <CFormLabel class="col-sm-2 col-form-label">아이디</CFormLabel>
-        <CCol sm="4">admin</CCol>
+      <CRow class="pt-3 mb-3">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label">아이디</CFormLabel>
+        <CCol sm="6" lg="4" xl="3" class="pt-2">admin</CCol>
       </CRow>
 
       <CRow class="my-3">
-        <CFormLabel class="col-sm-2 col-form-label">패스워드</CFormLabel>
-        <CCol sm="4">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label">패스워드</CFormLabel>
+        <CCol sm="6" lg="4" xl="3">
           <CFormInput
             type="password"
             placeholder="패스워드 입력"
@@ -38,9 +38,9 @@ const onSubmit = () => alert('submitted! (구현 중!)')
         </CCol>
       </CRow>
       <CRow class="mb-3">
-        <CCol class="col-sm-2"></CCol>
-        <CCol sm="4" class="text-right">
-          <CButton type="submit" color="warning">비밀번호 확인</CButton>
+        <CCol class="col-sm-2 col-lg-1"></CCol>
+        <CCol sm="6" lg="4" xl="3" class="text-right">
+          <CButton type="submit" color="info">비밀번호 확인</CButton>
         </CCol>
       </CRow>
     </CForm>
