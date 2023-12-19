@@ -4,7 +4,7 @@ from import_export.admin import ImportExportMixin
 
 
 class SalesBillIssue(ImportExportMixin, models.Model):
-    project = models.OneToOneField('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
+    project = models.OneToOneField('project.Project', on_delete=models.CASCADE, unique=True, verbose_name='프로젝트')
     now_payment_order = models.ForeignKey('payment.InstallmentPaymentOrder', on_delete=models.SET_NULL,
                                           null=True, blank=True, verbose_name='현재 발행회차')
     host_name = models.CharField('시행자명', max_length=20)
