@@ -42,12 +42,6 @@ const settings = {
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '권한 설정 관리', auth: true },
     },
-    {
-      path: 'profile',
-      name: '프로필 관리',
-      component: () => import('@/views/settings/Profile/Index.vue'),
-      meta: { title: '프로필 관리', auth: true },
-    },
   ],
 }
 

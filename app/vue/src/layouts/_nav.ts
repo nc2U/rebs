@@ -389,11 +389,6 @@ const settings = {
       name: '권한 설정 관리',
       to: '/settings/authorization',
     },
-    {
-      component: 'CNavItem',
-      name: '프로필 관리',
-      to: '/settings/profile',
-    },
   ],
 }
 
