@@ -38,6 +38,9 @@ Check what must be defined in docker-compose.yml file.
     - DATABASE_NAME
     - DATABASE_USER
     - DATABASE_PASSWORD
+    - EMAIL_HOST
+    - EMAIL_HOST_USER
+    - EMAIL_HOST_PASSWORD
     - DJANGO_SETTINGS_MODULE
 
 Enter the actual data for your environment as described in the following items.
@@ -52,6 +55,9 @@ Enter the actual data for your environment as described in the following items.
     - DATABASE_NAME: my-db-name # **mysql database information**
     - DATABASE_USER: my-db-user # **mysql database information**
     - DATABASE_PASSWORD: my-db-password # **mysql database information**
+    - EMAIL_HOST: **your-smtp-server.com**
+    - EMAIL_HOST_USER: **your-email@example.com**
+    - EMAIL_HOST_PASSWORD: **your-email-password**
     - DJANGO_SETTINGS_MODULE: app.settings.prod # **settings mode -> app.settings.prod** or **app.settings.local**
 
 #### 4. Django setting
@@ -182,15 +188,20 @@ create Repository secrets with the keys and values below.
 
 - CICD_HOST: # cicd server host(ip or domain)
 - CICD_PASS: # cicd server user password
-- CICD_USER: # cicd server user
 - CICD_PATH: # cicd helm chart & volume path
-- DATABASE_USER: # db & db user name
+- CICD_USER: # cicd server user
 - DATABASE_PASS: # root & db user password
+- DATABASE_USER: # db & db user name
+- DOCKERHUB_TOKEN: # docker hub user password (If you manage your images in your own Docker hub)
+- DOCKERHUB_USER: # docker hub user id (If you manage your images in your own Docker hub)
+- DOMAIN_NANE: # domain address (for ingress)
+- EMAIL_HOST: # your-smtp-server.com
+- EMAIL_HOST_PASSWORD: # your-email-password
+- EMAIL_HOST_USER: # your-email@example.com
 - NFS_HOST:  # nfs storage server host(ip or domain)
 - NFS_PASS:  # nfs storage server user password
 - NFS_PATH:  # nfs storage server path (absolute path)
 - NFS_USER:  # nfs storage server user
-- DOMAIN_NANE: # domain address (for ingress)
 - SLACK_INCOMING_URL: # slack incoming url
 
 #### 2. Deploy
