@@ -18,6 +18,12 @@ const passChecked = computed(() => accStore.passChecked)
 
 const checkPassword = (payload: { email: string; password: string }) =>
   accStore.checkPassword(payload)
+const changePassword = (payload: {
+  pk: number
+  old_password: string
+  new_password: string
+  confirm_password: string
+}) => accStore.changePassword(payload)
 const createProfile = (payload: FormData) => accStore.createProfile(payload)
 const patchProfile = (payload: { pk: number; form: FormData }) => accStore.patchProfile(payload)
 
@@ -26,7 +32,20 @@ const checkPass = (password: string) => {
   checkPassword({ email, password })
 }
 
-const passwordChange = () => (passChangeVue.value = true)
+const changePass = (payload: {
+  pk: number
+  old_password: string
+  new_password: string
+  confirm_password: string
+}) => {
+  if (userInfo.value) {
+    payload.pk = userInfo.value.pk as number
+    console.log(payload)
+    changePassword(payload)
+  }
+}
+
+const callPassVue = () => (passChangeVue.value = true)
 
 const onSubmit = (payload: Profile) => {
   if (!payload.image) delete payload.image
@@ -48,14 +67,14 @@ const onSubmit = (payload: Profile) => {
   <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
-    <PasswordChange v-if="passChangeVue" />
+    <PasswordChange v-if="passChangeVue" @change-password="changePass" />
     <PasswordCheck v-else-if="!passChecked" @check-password="checkPass" />
     <ProfileForm
       v-else
       ref="profile"
       :user-info="userInfo"
       :profile="profile as Profile"
-      @pass-change="passwordChange"
+      @pass-change="callPassVue"
       @on-submit="onSubmit"
     />
 

@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
 
-// const emit = defineEmits(['check-password'])
+const emit = defineEmits(['change-password'])
 
 const validated = ref(false)
 
 const form = reactive({
-  password: '',
+  old_password: '',
   new_password: '',
   confirm_password: '',
 })
@@ -18,7 +18,7 @@ const onSubmit = (event: Event) => {
     event.stopPropagation()
 
     validated.value = true
-  } else alert('ok!') // emit('check-password', password.value)
+  } else emit('change-password', form)
 }
 </script>
 
@@ -45,7 +45,7 @@ const onSubmit = (event: Event) => {
         <CFormLabel class="col-sm-2 col-lg-1 col-form-label">현재비밀번호</CFormLabel>
         <CCol sm="6" lg="4" xl="3">
           <CFormInput
-            v-model="form.password"
+            v-model="form.old_password"
             type="password"
             required
             placeholder="현재 패스워드"
