@@ -1,6 +1,5 @@
-from django.db import transaction, IntegrityError
-from rest_framework import serializers, status
-from rest_framework.response import Response
+from django.db import transaction
+from rest_framework import serializers
 
 from accounts.models import User, StaffAuth, Profile, Todo
 
@@ -101,3 +100,7 @@ class TodoSerializer(serializers.ModelSerializer):
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(max_length=128, write_only=True, required=True)
     new_password = serializers.CharField(max_length=128, write_only=True, required=True)
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
