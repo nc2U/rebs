@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 
-const emit = defineEmits(['on-submit'])
+const emit = defineEmits(['check-password'])
 
 const validated = ref(false)
 const password = ref('')
@@ -13,7 +13,7 @@ const onSubmit = (event: Event) => {
     event.stopPropagation()
 
     validated.value = true
-  } else emit('on-submit', password.value)
+  } else emit('check-password', password.value)
 }
 </script>
 
