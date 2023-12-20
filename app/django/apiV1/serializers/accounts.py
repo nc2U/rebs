@@ -53,7 +53,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('pk', 'email', 'username', 'is_active', 'is_superuser',
-                  'date_joined', 'password', 'staffauth', 'profile')
+                  'date_joined', 'password', 'staffauth', 'profile', 'last_login')
 
     def save(self):
         instance = User(email=self.validated_data['email'],

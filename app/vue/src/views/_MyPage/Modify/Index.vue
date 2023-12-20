@@ -9,7 +9,7 @@ import PasswordCheck from '@/views/_MyPage/Modify/components/PasswordCheck.vue'
 import ProfileForm from '@/views/_MyPage/Modify/components/ProfileForm.vue'
 import PasswordChange from '@/views/_MyPage/Modify/components/PasswordChange.vue'
 
-const passChange = ref(false)
+const passChangeVue = ref(false)
 
 const accStore = useAccount()
 const userInfo = computed(() => accStore.userInfo)
@@ -26,7 +26,7 @@ const checkPass = (password: string) => {
   checkPassword({ email, password })
 }
 
-const passwordChange = () => (passChange.value = true)
+const passwordChange = () => (passChangeVue.value = true)
 
 const onSubmit = (payload: Profile) => {
   if (!payload.image) delete payload.image
@@ -48,7 +48,7 @@ const onSubmit = (payload: Profile) => {
   <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
-    <PasswordChange v-if="passChange" />
+    <PasswordChange v-if="passChangeVue" />
     <PasswordCheck v-else-if="!passChecked" @check-password="checkPass" />
     <ProfileForm
       v-else
