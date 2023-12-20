@@ -120,4 +120,5 @@ router.register(r'comment-like', document.CommentLikeViewSet)
 router.register(r'tag', document.TagViewSet)
 
 urlpatterns = router.urls
-urlpatterns += [path('check-pass/', accounts.CheckPasswordView.as_view(), name='check-pass')]
+urlpatterns += [path('check-password/', accounts.CheckPasswordView.as_view(), name='check-password')]
+# urlpatterns += [path('change-password/<int:pk>/', accounts.ChangePasswordView.as_view(), name='change-password')]

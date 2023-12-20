@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate
 from rest_framework import viewsets, status
+from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -63,3 +64,8 @@ class CheckPasswordView(APIView):
         else:
             # Password is correct
             return Response({'detail': 'Password incorrect.'}, status=status.HTTP_400_BAD_REQUEST)
+
+# class ChangePasswordView(RetrieveUpdateAPIView):
+#     queryset = User.objects.all()
+#     serializer_class = ChangePasswordSerializer
+#     permission_classes = (permissions.IsAuthenticated,)
