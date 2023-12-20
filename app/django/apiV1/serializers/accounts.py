@@ -73,6 +73,23 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ('pk', 'user', 'name', 'birth_date',
                   'cell_phone', 'image', 'like_posts', 'like_comments')
 
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        instance.__dict__.update(**validated_data)
+        instance.save()
+
+        user = self.context['request'].user
+        email = instance.user.email
+        new_email = self.initial_data.get('email')
+        if email != new_email:
+            user.email = new_email
+            try:
+                user.save()
+            except:
+                pass
+
+        return instance
+
 
 class TodoSerializer(serializers.ModelSerializer):
     class Meta:
