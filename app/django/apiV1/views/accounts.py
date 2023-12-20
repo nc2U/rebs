@@ -1,4 +1,8 @@
-from rest_framework import viewsets
+from django.contrib.auth import authenticate
+from rest_framework import viewsets, status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from ..permission import *
 from ..pagination import *
@@ -40,3 +44,22 @@ class TodoViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class CheckPasswordView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        password = request.data.get('password', None)
+
+        if not password:
+            return Response({'detail': 'Password not provided.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = authenticate(email=request.data.get('email'), password=password)
+
+        if user is not None:
+            # Password is correct
+            return Response({'detail': 'Password correct.'}, status=status.HTTP_200_OK)
+        else:
+            # Password is correct
+            return Response({'detail': 'Password incorrect.'}, status=status.HTTP_400_BAD_REQUEST)

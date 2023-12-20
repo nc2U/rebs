@@ -1,3 +1,4 @@
+from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from .views import accounts
@@ -119,3 +120,4 @@ router.register(r'comment-like', document.CommentLikeViewSet)
 router.register(r'tag', document.TagViewSet)
 
 urlpatterns = router.urls
+urlpatterns += [path('check-pass/', accounts.CheckPasswordView.as_view(), name='check-pass')]
