@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 
+defineProps({ username: { type: String, default: '' } })
 const emit = defineEmits(['check-password'])
 
 const validated = ref(false)
@@ -33,7 +34,7 @@ const onSubmit = (event: Event) => {
     >
       <CRow class="pt-3 mb-3">
         <CFormLabel class="col-sm-2 col-lg-1 col-form-label">아이디</CFormLabel>
-        <CCol sm="6" lg="4" xl="3" class="pt-2">admin</CCol>
+        <CCol sm="6" lg="4" xl="3" class="pt-2">{{ username }}</CCol>
       </CRow>
 
       <CRow class="my-3">

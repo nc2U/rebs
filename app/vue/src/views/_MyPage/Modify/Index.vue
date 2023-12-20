@@ -68,7 +68,11 @@ const onSubmit = (payload: Profile) => {
 
   <ContentBody>
     <PasswordChange v-if="passChangeVue" @change-password="changePass" />
-    <PasswordCheck v-else-if="!passChecked" @check-password="checkPass" />
+    <PasswordCheck
+      v-else-if="!passChecked"
+      :username="userInfo?.username"
+      @check-password="checkPass"
+    />
     <ProfileForm
       v-else
       ref="profile"
