@@ -23,7 +23,20 @@ const checkPass = (password: string) => {
   checkPassword({ email, password })
 }
 
-const onSubmit = () => 1
+const onSubmit = (payload: Profile) => {
+  if (!payload.image) delete payload.image
+
+  const { pk, ...formData } = payload
+  if (!formData.user && accStore.userInfo) formData.user = accStore.userInfo.pk
+  if (!formData.birth_date) formData.birth_date = ''
+
+  const form = new FormData()
+
+  for (const key in formData) form.append(key, formData[key] as string | Blob)
+
+  if (pk) patchProfile({ ...{ pk }, ...{ form } })
+  else createProfile(form)
+}
 </script>
 
 <template>
