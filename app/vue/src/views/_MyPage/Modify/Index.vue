@@ -44,7 +44,13 @@ const onSubmit = (payload: Profile) => {
 
   <ContentBody>
     <PasswordCheck v-if="!passChecked" @check-password="checkPass" />
-    <ProfileForm v-else ref="profile" :profile="profile as Profile" @on-submit="onSubmit" />
+    <ProfileForm
+      v-else
+      ref="profile"
+      :user-info="userInfo"
+      :profile="profile as Profile"
+      @on-submit="onSubmit"
+    />
 
     <template #footer>
       <small v-if="passChecked" />

@@ -1,0 +1,91 @@
+<script lang="ts" setup>
+import { ref, reactive } from 'vue'
+
+// const emit = defineEmits(['check-password'])
+
+const validated = ref(false)
+
+const form = reactive({
+  password: '',
+  new_password: '',
+  confirm_password: '',
+})
+
+const onSubmit = (event: Event) => {
+  const e = event.currentTarget as HTMLInputElement
+  if (!e.checkValidity()) {
+    event.preventDefault()
+    event.stopPropagation()
+
+    validated.value = true
+  } else alert('ok!') // emit('check-password', password.value)
+}
+</script>
+
+<template>
+  <CCardBody class="p-5">
+    <CRow>
+      <CCol><h5>회원 비밀번호 변경</h5></CCol>
+    </CRow>
+
+    <v-divider />
+
+    <CForm
+      class="needs-validation px-5"
+      novalidate
+      :validated="validated"
+      @submit.prevent="onSubmit"
+    >
+      <CRow class="pt-3 mb-3">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label">아이디</CFormLabel>
+        <CCol sm="6" lg="4" xl="3" class="pt-2">admin</CCol>
+      </CRow>
+
+      <CRow class="my-3">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label">현재비밀번호</CFormLabel>
+        <CCol sm="6" lg="4" xl="3">
+          <CFormInput
+            v-model="form.password"
+            type="password"
+            required
+            placeholder="현재 패스워드"
+            aria-label="password"
+            aria-describedby="password"
+          />
+        </CCol>
+      </CRow>
+      <CRow class="my-3">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label">새로운비밀번호</CFormLabel>
+        <CCol sm="6" lg="4" xl="3">
+          <CFormInput
+            v-model="form.new_password"
+            type="password"
+            required
+            placeholder="새로운 패스워드"
+            aria-label="password"
+            aria-describedby="password"
+          />
+        </CCol>
+      </CRow>
+      <CRow class="my-3">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label">재입력</CFormLabel>
+        <CCol sm="6" lg="4" xl="3">
+          <CFormInput
+            v-model="form.confirm_password"
+            type="password"
+            required
+            placeholder="패스워드 재입력"
+            aria-label="password"
+            aria-describedby="password"
+          />
+        </CCol>
+      </CRow>
+      <CRow class="mb-3">
+        <CCol class="col-sm-2 col-lg-1"></CCol>
+        <CCol sm="6" lg="4" xl="3" class="text-right">
+          <CButton type="submit" color="success">수정하기</CButton>
+        </CCol>
+      </CRow>
+    </CForm>
+  </CCardBody>
+</template>
