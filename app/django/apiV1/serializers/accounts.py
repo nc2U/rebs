@@ -1,6 +1,5 @@
 from django.db import transaction, IntegrityError
 from rest_framework import serializers, status
-from django.contrib.auth.password_validation import validate_password
 from rest_framework.response import Response
 
 from accounts.models import User, StaffAuth, Profile, Todo
@@ -81,15 +80,14 @@ class ProfileSerializer(serializers.ModelSerializer):
         instance.__dict__.update(**validated_data)
         instance.save()
 
-        user = self.context['request'].user
-        email = instance.user.email
+        user = instance.user
+        email = user.email
         new_email = self.initial_data.get('email')
         if email != new_email:
+            if User.objects.filter(email=new_email).exists():
+                raise serializers.ValidationError({'email': '이미 등록된 이메일입니다.'})
             user.email = new_email
-            try:
-                user.save()
-            except IntegrityError:
-                pass  # return Response({'status': False}, status=status.HTTP_400_BAD_REQUEST)
+            user.save()
 
         return instance
 
