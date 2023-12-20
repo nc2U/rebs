@@ -97,42 +97,7 @@ class TodoSerializer(serializers.ModelSerializer):
         model = Todo
         fields = ('pk', 'user', 'title', 'completed', 'soft_deleted')
 
-# class ChangePasswordSerializer(serializers.ModelSerializer):
-#     old_password = serializers.CharField(max_length=128, write_only=True, required=True)
-#     new_password = serializers.CharField(max_length=128, write_only=True, required=True)
-#     confirm_password = serializers.CharField(max_length=128, write_only=True, required=True)
-#
-#     class Meta:
-#         model = User
-#         fields = ('pk', 'username', 'password', 'old_password', 'new_password', 'confirm_password')
-#         extra_kwargs = {
-#             "password": {"write_only": True},
-#         }
-#
-#     def update(self, instance, validated_data):
-#         instance.password = validated_data.get('password', instance.password)
-#
-#         old_password = self.initial_data.get('old_password')
-#         new_password = self.initial_data.get('new_password')
-#         confirm_password = self.initial_data.get('confirm_password')
-#
-#         # if not old_password:
-#         #     raise serializers.ValidationError({'old_password': 'not found'})
-#         #
-#         # if not new_password:
-#         #     raise serializers.ValidationError({'new_password': 'not found'})
-#
-#         # if not instance.check_password(old_password):
-#         #     raise serializers.ValidationError({'old_password': 'wrong password'})
-#         #
-#         # if new_password != confirm_password:
-#         #     raise serializers.ValidationError({'passwords': 'passwords do not match'})
-#
-#         if new_password == confirm_password:
-#             # instance.password = new_password
-#             print(instance.password)
-#             instance.set_password(new_password)
-#             print(instance.password)
-#             instance.save()
-#             return instance
-#         return instance
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(max_length=128, write_only=True, required=True)
+    new_password = serializers.CharField(max_length=128, write_only=True, required=True)

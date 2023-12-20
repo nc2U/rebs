@@ -1,4 +1,5 @@
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, update_session_auth_hash
+from django.contrib.auth.hashers import check_password
 from rest_framework import viewsets, status
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -65,7 +66,27 @@ class CheckPasswordView(APIView):
             # Password is correct
             return Response({'detail': 'Password incorrect.'}, status=status.HTTP_400_BAD_REQUEST)
 
-# class ChangePasswordView(RetrieveUpdateAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = ChangePasswordSerializer
-#     permission_classes = (permissions.IsAuthenticated,)
+
+class ChangePasswordView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    @staticmethod
+    def post(request, *args, **kwargs):
+        serializer = ChangePasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            # Check if the old password is correct
+            old_password = serializer.validated_data.get('old_password')
+            if not check_password(old_password, request.user.password):
+                return Response({'detail': '패스워드를 맞지 않습니다.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Update the password
+            new_password = serializer.validated_data.get('new_password')
+            request.user.set_password(new_password)
+            request.user.save()
+
+            # Update the user's session to prevent the user from being logged out
+            update_session_auth_hash(request, request.user)
+
+            return Response({'detail': '패스워드가 변경되었습니다.'}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
