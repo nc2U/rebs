@@ -23,6 +23,7 @@ export const useAccount = defineStore('account', () => {
   const userInfo = ref<User | null>(null)
   const profile = ref<Profile | null>(null)
   const todoList = ref<Todo[]>([])
+  const passChecked = ref(false)
 
   // getters
   const isAuthorized = computed(() => !!accessToken.value && !!userInfo.value)
@@ -119,9 +120,11 @@ export const useAccount = defineStore('account', () => {
     message('info', '', '로그아웃 완료 알림!')
   }
 
-  const passwordCheck = async (payload: LoginUser) => {
-    return message('warning', '', '비밀번호를 확인하여 주세요.')
-  }
+  const checkPassword = async (payload: LoginUser) =>
+    api
+      .post(`/check-pass/`, payload)
+      .then(() => (passChecked.value = true))
+      .catch(() => message('warning', '', '비밀번호를 확인하여 주세요.'))
 
   const createAuth = async (payload: StaffAuth, userPk: number) => {
     payload.user = userPk
@@ -228,6 +231,7 @@ export const useAccount = defineStore('account', () => {
     userInfo,
     profile,
     todoList,
+    passChecked,
 
     isAuthorized,
     superAuth,
@@ -247,7 +251,7 @@ export const useAccount = defineStore('account', () => {
     login,
     loginByToken,
     logout,
-    passwordCheck,
+    checkPassword,
 
     createAuth,
     patchAuth,
