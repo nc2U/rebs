@@ -1,24 +1,25 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted } from 'vue'
-import { useAccount } from '@/store/pinia/account'
-import { type Profile } from '@/store/types/accounts'
+import { ref, reactive, computed, onMounted, type PropType } from 'vue'
+import { type Profile, type User } from '@/store/types/accounts'
 import DatePicker from '@/components/DatePicker/index.vue'
 import AvatarInput from './AvatarInput.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
+  userInfo: { type: Object as PropType<User | null>, default: null },
   profile: { type: Object, default: null },
 })
 
-const emit = defineEmits(['on-submit', 'reset-form'])
+const emit = defineEmits(['pass-change', 'on-submit', 'reset-form'])
 
 const refAlertModal = ref()
 const refConfirmModal = ref()
 
-const form = reactive<Profile>({
+const form = reactive<Profile & { email: string }>({
   pk: null,
   user: null,
+  email: '',
   name: '',
   birth_date: '',
   cell_phone: '',
@@ -27,26 +28,26 @@ const form = reactive<Profile>({
 
 const validated = ref(false)
 
-const accountStore = useAccount()
-const userInfo = computed(() => accountStore.userInfo)
-
 const formsCheck = computed(() => {
-  if (props.profile) {
-    const a = form.name === props.profile.name
-    const b = form.birth_date === props.profile.birth_date
-    const c = form.cell_phone === props.profile.cell_phone
-    const d = !form.image || form.image === props.profile.image
-    return a && b && c && d
+  if (props.userInfo && props.profile) {
+    const a = form.email === props.userInfo.email
+    const b = form.name === props.profile.name
+    const c = form.birth_date === props.profile.birth_date
+    const d = form.cell_phone === props.profile.cell_phone
+    const e = !form.image || form.image === props.profile.image
+    return a && b && c && d && e
   } else return false
 })
 
 const confirmText = computed(() => (props.profile?.pk ? '변경' : '등록'))
 const btnClass = computed(() => (props.profile?.pk ? 'success' : 'primary'))
 
+const passChange = () => emit('pass-change')
+
 const transProfileForm = (img: File) => (form.image = img)
 
 const onSubmit = (event: Event) => {
-  if (userInfo.value) {
+  if (props.userInfo) {
     const e = event.currentTarget as HTMLSelectElement
     if (!e.checkValidity()) {
       event.preventDefault()
@@ -70,6 +71,7 @@ const modalAction = () => {
 const formDataReset = () => {
   form.pk = null
   form.user = null
+  form.email = ''
   form.name = ''
   form.birth_date = ''
   form.cell_phone = ''
@@ -77,8 +79,9 @@ const formDataReset = () => {
 }
 
 const formDataSetup = () => {
-  if (props.profile) {
+  if (props.userInfo && props.profile) {
     form.pk = props.profile.pk
+    form.email = props.userInfo.email
     form.user = props.profile.user
     form.name = props.profile.name
     form.birth_date = props.profile.birth_date
@@ -104,13 +107,31 @@ onMounted(() => formDataSetup())
             <h6>사용자 계정</h6>
             <CFormLabel class="col-sm-4 col-form-label"> 아이디</CFormLabel>
 
-            <CCol sm="8">{{ userInfo?.username || '' }}</CCol>
+            <CCol sm="8">{{ userInfo?.username ?? '' }}</CCol>
           </CRow>
 
           <CRow class="mb-3">
             <CFormLabel class="col-sm-4 col-form-label"> 이메일 주소</CFormLabel>
 
-            <CCol sm="8">{{ userInfo?.email || '' }}</CCol>
+            <CCol sm="8">
+              <CFormInput
+                v-model="form.email"
+                type="email"
+                placeholder="이메일을 입력하세요"
+                maxlength="50"
+                id="email"
+                required
+              />
+              <CFormFeedback invalid>이메일을 입력하세요.</CFormFeedback>
+            </CCol>
+          </CRow>
+
+          <CRow class="mb-3">
+            <CFormLabel class="col-sm-4 col-form-label"> 패스워드</CFormLabel>
+
+            <CCol sm="8">
+              <CButton type="button" @click="passChange" color="secondary">패스워드 변경</CButton>
+            </CCol>
           </CRow>
 
           <v-divider class="my-4" />

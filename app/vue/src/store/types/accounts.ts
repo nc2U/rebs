@@ -12,6 +12,7 @@ export declare interface User {
     birth_date: string
     cell_phone: string
   }
+  last_login: string | null
 }
 
 type Auth = '0' | '1' | '2'

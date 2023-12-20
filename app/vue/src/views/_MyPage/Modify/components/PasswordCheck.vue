@@ -1,9 +1,21 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 
-const validated = ref()
+defineProps({ username: { type: String, default: '' } })
+const emit = defineEmits(['check-password'])
 
-const onSubmit = () => alert('submitted! (구현 중!)')
+const validated = ref(false)
+const password = ref('')
+
+const onSubmit = (event: Event) => {
+  const e = event.currentTarget as HTMLInputElement
+  if (!e.checkValidity()) {
+    event.preventDefault()
+    event.stopPropagation()
+
+    validated.value = true
+  } else emit('check-password', password.value)
+}
 </script>
 
 <template>
@@ -22,14 +34,16 @@ const onSubmit = () => alert('submitted! (구현 중!)')
     >
       <CRow class="pt-3 mb-3">
         <CFormLabel class="col-sm-2 col-lg-1 col-form-label">아이디</CFormLabel>
-        <CCol sm="6" lg="4" xl="3" class="pt-2">admin</CCol>
+        <CCol sm="6" lg="4" xl="3" class="pt-2">{{ username }}</CCol>
       </CRow>
 
       <CRow class="my-3">
         <CFormLabel class="col-sm-2 col-lg-1 col-form-label">패스워드</CFormLabel>
         <CCol sm="6" lg="4" xl="3">
           <CFormInput
+            v-model="password"
             type="password"
+            required
             placeholder="패스워드 입력"
             aria-label="password"
             aria-describedby="password"

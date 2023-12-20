@@ -53,7 +53,8 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('pk', 'email', 'username', 'is_active', 'is_superuser',
-                  'date_joined', 'password', 'staffauth', 'profile')
+                  'date_joined', 'password', 'staffauth', 'profile', 'last_login')
+        read_only_fields = ('date_joined', 'last_login')
 
     def save(self):
         instance = User(email=self.validated_data['email'],
@@ -73,8 +74,33 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ('pk', 'user', 'name', 'birth_date',
                   'cell_phone', 'image', 'like_posts', 'like_comments')
 
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        instance.__dict__.update(**validated_data)
+        instance.save()
+
+        user = instance.user
+        email = user.email
+        new_email = self.initial_data.get('email')
+        if email != new_email:
+            if User.objects.filter(email=new_email).exists():
+                raise serializers.ValidationError({'email': '이미 등록된 이메일입니다.'})
+            user.email = new_email
+            user.save()
+
+        return instance
+
 
 class TodoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Todo
         fields = ('pk', 'user', 'title', 'completed', 'soft_deleted')
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(max_length=128, write_only=True, required=True)
+    new_password = serializers.CharField(max_length=128, write_only=True, required=True)
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
