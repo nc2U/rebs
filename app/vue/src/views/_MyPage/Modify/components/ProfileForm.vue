@@ -11,7 +11,7 @@ const props = defineProps({
   profile: { type: Object, default: null },
 })
 
-const emit = defineEmits(['on-submit', 'reset-form'])
+const emit = defineEmits(['pass-change', 'on-submit', 'reset-form'])
 
 const refAlertModal = ref()
 const refConfirmModal = ref()
@@ -41,6 +41,8 @@ const formsCheck = computed(() => {
 
 const confirmText = computed(() => (props.profile?.pk ? '변경' : '등록'))
 const btnClass = computed(() => (props.profile?.pk ? 'success' : 'primary'))
+
+const passChange = () => emit('pass-change')
 
 const transProfileForm = (img: File) => (form.image = img)
 
@@ -128,7 +130,7 @@ onMounted(() => formDataSetup())
             <CFormLabel class="col-sm-4 col-form-label"> 패스워드</CFormLabel>
 
             <CCol sm="8">
-              <CButton type="button" color="secondary">패스워드 변경</CButton>
+              <CButton type="button" @click="passChange" color="secondary">패스워드 변경</CButton>
             </CCol>
           </CRow>
 

@@ -7,6 +7,9 @@ import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import PasswordCheck from '@/views/_MyPage/Modify/components/PasswordCheck.vue'
 import ProfileForm from '@/views/_MyPage/Modify/components/ProfileForm.vue'
+import PasswordChange from '@/views/_MyPage/Modify/components/PasswordChange.vue'
+
+const passChange = ref(false)
 
 const accStore = useAccount()
 const userInfo = computed(() => accStore.userInfo)
@@ -22,6 +25,8 @@ const checkPass = (password: string) => {
   const email = userInfo.value?.email ?? ''
   checkPassword({ email, password })
 }
+
+const passwordChange = () => (passChange.value = true)
 
 const onSubmit = (payload: Profile) => {
   if (!payload.image) delete payload.image
@@ -43,12 +48,14 @@ const onSubmit = (payload: Profile) => {
   <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
-    <PasswordCheck v-if="!passChecked" @check-password="checkPass" />
+    <PasswordChange v-if="passChange" />
+    <PasswordCheck v-else-if="!passChecked" @check-password="checkPass" />
     <ProfileForm
       v-else
       ref="profile"
       :user-info="userInfo"
       :profile="profile as Profile"
+      @pass-change="passwordChange"
       @on-submit="onSubmit"
     />
 
