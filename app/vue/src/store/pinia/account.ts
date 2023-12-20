@@ -135,6 +135,12 @@ export const useAccount = defineStore('account', () => {
       })
       .catch(err => errorHandle(err.response.data))
 
+  const resetPassword = (payload: { email: string }) =>
+    api
+      .post('reset-password', payload)
+      .then(res => console.log(res.data))
+      .catch(err => errorHandle(err.response.data))
+
   const createAuth = async (payload: StaffAuth, userPk: number) => {
     payload.user = userPk
     return await api
@@ -262,6 +268,7 @@ export const useAccount = defineStore('account', () => {
     logout,
     checkPassword,
     changePassword,
+    resetPassword,
 
     createAuth,
     patchAuth,
