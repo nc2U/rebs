@@ -120,7 +120,7 @@ export const useAccount = defineStore('account', () => {
   }
 
   const passwordCheck = async (payload: LoginUser) => {
-    return true
+    return message('warning', '', '비밀번호를 확인하여 주세요.')
   }
 
   const createAuth = async (payload: StaffAuth, userPk: number) => {

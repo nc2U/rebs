@@ -20,7 +20,7 @@ const patchProfile = (payload: { pk: number; form: FormData }) => accStore.patch
 const onSubmit = (password: string) => {
   const email = userInfo.value?.email
   console.log({ email, password })
-  // passwordCheck({ email, password })
+  passwordCheck({ email, password })
 }
 
 const formVisible = computed(() => (passCheck.value ? 'none' : 'block'))
