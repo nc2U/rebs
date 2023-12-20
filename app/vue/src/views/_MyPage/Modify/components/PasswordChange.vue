@@ -4,6 +4,7 @@ import { ref, reactive } from 'vue'
 const emit = defineEmits(['change-password'])
 
 const validated = ref(false)
+const confirm_message = ref('비밀번호를 한번 더 입력하세요.')
 
 const form = reactive({
   old_password: '',
@@ -18,7 +19,10 @@ const onSubmit = (event: Event) => {
     event.stopPropagation()
 
     validated.value = true
-  } else emit('change-password', form)
+  } else {
+    if (form.new_password === form.confirm_password) emit('change-password', form)
+    else alert('비밀번호가 서로 다릅니다.')
+  }
 }
 </script>
 
@@ -52,6 +56,7 @@ const onSubmit = (event: Event) => {
             aria-label="password"
             aria-describedby="password"
           />
+          <CFormFeedback invalid>현재 비밀번호를 입력하세요.</CFormFeedback>
         </CCol>
       </CRow>
       <CRow class="my-3">
@@ -65,6 +70,7 @@ const onSubmit = (event: Event) => {
             aria-label="password"
             aria-describedby="password"
           />
+          <CFormFeedback invalid>새로운 비밀번호를 입력하세요.</CFormFeedback>
         </CCol>
       </CRow>
       <CRow class="my-3">
@@ -78,6 +84,7 @@ const onSubmit = (event: Event) => {
             aria-label="password"
             aria-describedby="password"
           />
+          <CFormFeedback invalid>비밀번호를 한번 더 입력하세요.</CFormFeedback>
         </CCol>
       </CRow>
       <CRow class="mb-3">

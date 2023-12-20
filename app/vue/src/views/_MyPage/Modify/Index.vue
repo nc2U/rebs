@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
 import { useAccount } from '@/store/pinia/account'
+import { useRouter } from 'vue-router'
 import { pageTitle, navMenu } from '@/views/_MyPage/_menu/headermixin'
 import { type Profile } from '@/store/types/accounts'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -18,12 +19,8 @@ const passChecked = computed(() => accStore.passChecked)
 
 const checkPassword = (payload: { email: string; password: string }) =>
   accStore.checkPassword(payload)
-const changePassword = (payload: {
-  pk: number
-  old_password: string
-  new_password: string
-  confirm_password: string
-}) => accStore.changePassword(payload)
+const changePassword = (payload: { old_password: string; new_password: string }) =>
+  accStore.changePassword(payload)
 const createProfile = (payload: FormData) => accStore.createProfile(payload)
 const patchProfile = (payload: { pk: number; form: FormData }) => accStore.patchProfile(payload)
 
@@ -32,17 +29,13 @@ const checkPass = (password: string) => {
   checkPassword({ email, password })
 }
 
-const changePass = (payload: {
-  pk: number
-  old_password: string
-  new_password: string
-  confirm_password: string
-}) => {
-  if (userInfo.value) {
-    payload.pk = userInfo.value.pk as number
-    console.log(payload)
-    changePassword(payload)
-  }
+const router = useRouter()
+
+const changePass = async (payload: { old_password: string; new_password: string }) => {
+  if (await changePassword(payload))
+    setTimeout(() => {
+      router.push({ name: 'Login' })
+    }, 1000)
 }
 
 const callPassVue = () => (passChangeVue.value = true)

@@ -126,15 +126,13 @@ export const useAccount = defineStore('account', () => {
       .then(() => (passChecked.value = true))
       .catch(() => message('warning', '', '비밀번호를 확인하여 주세요.'))
 
-  const changePassword = (payload: {
-    pk: number
-    old_password: string
-    new_password: string
-    confirm_password: string
-  }) =>
+  const changePassword = (payload: { old_password: string; new_password: string }) =>
     api
-      .patch(`/change-password/${payload.pk}/`)
-      .then(() => message())
+      .post(`/change-password/`, payload)
+      .then(res => {
+        message('success', '', res.data.detail)
+        return res.data
+      })
       .catch(err => errorHandle(err.response.data))
 
   const createAuth = async (payload: StaffAuth, userPk: number) => {
