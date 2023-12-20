@@ -120,11 +120,22 @@ export const useAccount = defineStore('account', () => {
     message('info', '', '로그아웃 완료 알림!')
   }
 
-  const checkPassword = async (payload: LoginUser) =>
+  const checkPassword = (payload: LoginUser) =>
     api
-      .post(`/check-pass/`, payload)
+      .post(`/check-password/`, payload)
       .then(() => (passChecked.value = true))
       .catch(() => message('warning', '', '비밀번호를 확인하여 주세요.'))
+
+  const changePassword = (payload: {
+    pk: number
+    old_password: string
+    new_password: string
+    confirm_password: string
+  }) =>
+    api
+      .patch(`/change-password/${payload.pk}/`)
+      .then(() => message())
+      .catch(err => errorHandle(err.response.data))
 
   const createAuth = async (payload: StaffAuth, userPk: number) => {
     payload.user = userPk
@@ -252,6 +263,7 @@ export const useAccount = defineStore('account', () => {
     loginByToken,
     logout,
     checkPassword,
+    changePassword,
 
     createAuth,
     patchAuth,
