@@ -40,6 +40,7 @@ describe('AppHeaderDropdownAccnt Component Test', () => {
           date_joined: '2022-01-30T19:16:53+09:00',
           staffauth: null,
           profile: null,
+          last_login: '2023-01-30T19:16:53+09:00',
         },
         profile: null,
       },
@@ -75,6 +76,7 @@ describe('AppHeaderDropdownAccnt Component Test', () => {
         date_joined: '2022-01-30T19:16:53+09:00',
         staffauth: null,
         profile: null,
+        last_login: '2023-01-30T19:16:53+09:00',
       },
     })
 
