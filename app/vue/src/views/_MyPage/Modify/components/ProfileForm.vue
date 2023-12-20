@@ -7,7 +7,7 @@ import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
-  userInfo: { type: Object as PropType<User>, default: null },
+  userInfo: { type: Object as PropType<User | null>, default: null },
   profile: { type: Object, default: null },
 })
 
