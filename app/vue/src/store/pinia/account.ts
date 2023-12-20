@@ -119,6 +119,10 @@ export const useAccount = defineStore('account', () => {
     message('info', '', '로그아웃 완료 알림!')
   }
 
+  const passwordCheck = async (payload: LoginUser) => {
+    return true
+  }
+
   const createAuth = async (payload: StaffAuth, userPk: number) => {
     payload.user = userPk
     return await api
@@ -243,6 +247,7 @@ export const useAccount = defineStore('account', () => {
     login,
     loginByToken,
     logout,
+    passwordCheck,
 
     createAuth,
     patchAuth,

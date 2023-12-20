@@ -10,26 +10,17 @@ import ProfileForm from '@/views/_MyPage/Modify/components/ProfileForm.vue'
 
 const passCheck = ref(false)
 const accStore = useAccount()
+const userInfo = computed(() => accStore.userInfo)
 const profile = computed(() => accStore.profile)
 
+const passwordCheck = (payload: any) => accStore.passwordCheck(payload)
 const createProfile = (payload: FormData) => accStore.createProfile(payload)
 const patchProfile = (payload: { pk: number; form: FormData }) => accStore.patchProfile(payload)
 
-const onSubmit = (payload: Profile) => {
-  if (!payload.image) delete payload.image
-
-  console.log(payload)
-
-  const { pk, ...formData } = payload
-  if (!formData.user && accStore.userInfo) formData.user = accStore.userInfo.pk
-  if (!formData.birth_date) formData.birth_date = ''
-
-  const form = new FormData()
-
-  for (const key in formData) form.append(key, formData[key] as string | Blob)
-
-  if (pk) patchProfile({ ...{ pk }, ...{ form } })
-  else createProfile(form)
+const onSubmit = (password: string) => {
+  const email = userInfo.value?.email
+  console.log({ email, password })
+  // passwordCheck({ email, password })
 }
 
 const formVisible = computed(() => (passCheck.value ? 'none' : 'block'))
@@ -39,7 +30,7 @@ const formVisible = computed(() => (passCheck.value ? 'none' : 'block'))
   <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
-    <PasswordCheck v-if="!passCheck" />
+    <PasswordCheck v-if="!passCheck" @on-submit="onSubmit" />
     <ProfileForm v-else ref="profile" :profile="profile as Profile" @on-submit="onSubmit" />
 
     <template #footer>
