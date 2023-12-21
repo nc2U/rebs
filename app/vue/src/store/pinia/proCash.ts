@@ -52,9 +52,9 @@ export const useProCash = defineStore('proCash', () => {
 
   const formAccD3List = ref<ProjectAccountD3[]>([])
 
-  const fetchProFormAccD3List = (d2: number | null = null, sort: number | null = null) => {
+  const fetchProFormAccD3List = async (d2: number | null = null, sort: number | null = null) => {
     const uri = `?sort=${sort || ''}&d2=${d2 || ''}`
-    return api
+    return await api
       .get(`/project-account-depth3/${uri}`)
       .then(res => (formAccD3List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
@@ -125,11 +125,15 @@ export const useProCash = defineStore('proCash', () => {
 
   const balanceByAccList = ref<BalanceByAccount[]>([])
 
-  const fetchBalanceByAccList = (payload: { project: number; direct?: string; date?: string }) => {
+  const fetchBalanceByAccList = async (payload: {
+    project: number
+    direct?: string
+    date?: string
+  }) => {
     const { project, date, direct = '0' } = payload
     let url = `/pr-balance-by-acc/?project=${project}&bank_account__directpay=${direct}`
     if (date) url += `&date=${date}`
-    return api
+    return await api
       .get(url)
       .then(res => (balanceByAccList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
@@ -137,10 +141,10 @@ export const useProCash = defineStore('proCash', () => {
 
   const proDateCashBook = ref<ProjectCashBook[]>([])
 
-  const fetchDateCashBookList = (payload: { project: number; date: string }) => {
+  const fetchDateCashBookList = async (payload: { project: number; date: string }) => {
     const { project, date } = payload
     const url = `/pr-date-cashbook/?project=${project}&date=${date}`
-    return api
+    return await api
       .get(url)
       .then(res => (proDateCashBook.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
@@ -163,12 +167,12 @@ export const useProCash = defineStore('proCash', () => {
     return url
   }
 
-  const fetchProjectCashList = (payload: CashBookFilter) => {
+  const fetchProjectCashList = async (payload: CashBookFilter) => {
     const { project } = payload
     let url = `/project-cashbook/?project=${project}`
     url += getUrl(payload)
 
-    return api
+    return await api
       .get(url)
       .then(res => {
         proCashBookList.value = res.data.results
@@ -256,7 +260,7 @@ export const useProCash = defineStore('proCash', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const patchPrCashBook = (
+  const patchPrCashBook = async (
     payload: ProjectCashBook & { isPayment?: boolean } & {
       filters: CashBookFilter
     },
@@ -264,7 +268,7 @@ export const useProCash = defineStore('proCash', () => {
     const cont = payload.contract
     const { pk, isPayment, filters, ...formData } = payload
     if (formData.rmCont) formData.contract = null
-    return api
+    return await api
       .patch(`/project-cashbook/${pk}/`, formData)
       .then(res => {
         if (isPayment) {
@@ -334,12 +338,12 @@ export const useProCash = defineStore('proCash', () => {
   const proImprestList = ref<ProjectCashBook[]>([])
   const proImprestCount = ref<number>(0)
 
-  const fetchProjectImprestList = (payload: CashBookFilter) => {
+  const fetchProjectImprestList = async (payload: CashBookFilter) => {
     const { project } = payload
     let url = `/project-imprest/?project=${project}`
     url += getUrl(payload)
 
-    return api
+    return await api
       .get(url)
       .then(res => {
         proImprestList.value = res.data.results

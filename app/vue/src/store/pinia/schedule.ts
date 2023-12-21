@@ -33,17 +33,17 @@ export const useSchedule = defineStore('schedule', () => {
   })
 
   // actions
-  const fetchScheduleList = (month?: string) => {
+  const fetchScheduleList = async (month?: string) => {
     const mon = month ? month : new Date().toISOString().slice(0, 7)
-    return api
+    return await api
       .get(`/schedule/?search=${mon}`)
       .then(res => (scheduleList.value = res.data.results))
       .catch(err => errorHandle(err.response))
   }
 
-  const createSchedule = (payload: Event) => {
+  const createSchedule = async (payload: Event) => {
     const eventData = transform(payload)
-    return api
+    return await api
       .post('/schedule/', eventData)
       .then(res =>
         fetchScheduleList(res.data.start_date.substring(0, 7))
@@ -59,10 +59,10 @@ export const useSchedule = defineStore('schedule', () => {
       .then(res => (schedule.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const updateSchedule = (payload: { pk: string; data: Event }) => {
+  const updateSchedule = async (payload: { pk: string; data: Event }) => {
     const { pk, data } = payload
     const eventData = transform(data)
-    return api
+    return await api
       .put(`/schedule/${pk}/`, eventData)
       .then(res =>
         fetchScheduleList(res.data.start_date.substring(0, 7))

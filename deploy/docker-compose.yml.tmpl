@@ -34,6 +34,7 @@ services:
       EMAIL_HOST: your-smtp-server.com # 실제 데이터로 수정
       EMAIL_HOST_USER: your-email@example.com # 실제 데이터로 수정
       EMAIL_HOST_PASSWORD: your-email-password # 실제 데이터로 수정
+      DEFAULT_FROM_EMAIL: sender name <your@djangoapp.com> # 실제 데이터로 수정
       DJANGO_SETTINGS_MODULE: _config.settings.local # Django settings 모드 지정 (.local or .prod)
     depends_on:
       - master

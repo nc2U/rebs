@@ -185,11 +185,11 @@ export const useProjectData = defineStore('projectData', () => {
   const numUnitByType = ref(0)
 
   // actions
-  const fetchHouseUnitList = (project: number, bldg?: number) => {
+  const fetchHouseUnitList = async (project: number, bldg?: number) => {
     if (houseUnitList.value.length === 0) isLoading.value = true
     let apiUri = `/all-house-unit/?building_unit__project=${project}`
     if (bldg) apiUri += `&building_unit=${bldg}`
-    return api
+    return await api
       .get(apiUri)
       .then(res => {
         houseUnitList.value = res.data.results
@@ -219,17 +219,17 @@ export const useProjectData = defineStore('projectData', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const updateUnit = (payload: HouseUnit) => {
+  const updateUnit = async (payload: HouseUnit) => {
     const { pk, project, ...unitData } = payload
-    return api
+    return await api
       .put(`/house-unit/${pk}/`, unitData)
       .then(res => fetchNumUnitByType(project, res.data.unit_type).then(() => message()))
       .catch(err => errorHandle(err.response.data))
   }
 
-  const patchUnit = (payload: HouseUnit & { bldg: number }) => {
+  const patchUnit = async (payload: HouseUnit & { bldg: number }) => {
     const { pk, project, bldg, ...unitData } = payload
-    return api
+    return await api
       .put(`/house-unit/${pk}/`, unitData)
       .then(() => fetchHouseUnitList(project, bldg).then(() => message()))
       .catch(err => errorHandle(err.response.data))

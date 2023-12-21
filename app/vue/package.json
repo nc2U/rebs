@@ -45,11 +45,11 @@
     "nprogress": "^0.2.0",
     "pinia": "^2.1.7",
     "roboto-fontface": "^0.10.0",
-    "vue": "^3.3.12",
+    "vue": "^3.3.13",
     "vue-advanced-cropper": "^2.8.8",
     "vue-fullscreen": "^2.6.1",
     "vue-router": "^4.2.5",
-    "vuetify": "^3.4.7",
+    "vuetify": "^3.4.8",
     "webfontloader": "^1.6.28"
   },
   "devDependencies": {
