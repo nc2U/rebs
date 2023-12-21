@@ -145,9 +145,7 @@ export const useAccount = defineStore('account', () => {
     payload.user = userPk
     return await api
       .post(`/staff-auth/`, payload)
-      .then(() => {
-        return api.get(`/user/${userPk}/`).then(() => fetchUser(userPk).then(() => message()))
-      })
+      .then(() => api.get(`/user/${userPk}/`).then(() => fetchUser(userPk).then(() => message())))
       .catch(err => errorHandle(err.response.data))
   }
 
@@ -155,9 +153,7 @@ export const useAccount = defineStore('account', () => {
     const { pk, ...authData } = payload
     return await api
       .patch(`/staff-auth/${pk}/`, authData)
-      .then(() => {
-        return api.get(`/user/${userPk}/`).then(() => fetchUser(userPk).then(() => message()))
-      })
+      .then(() => api.get(`/user/${userPk}/`).then(() => fetchUser(userPk).then(() => message())))
       .catch(err => errorHandle(err.response.data))
   }
 
