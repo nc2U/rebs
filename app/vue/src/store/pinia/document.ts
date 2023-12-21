@@ -195,7 +195,7 @@ export const useDocument = defineStore('document', () => {
 
   const postPages = (itemsPerPage: number) => Math.ceil(postCount.value / itemsPerPage)
 
-  const fetchPost = (pk: number) =>
+  const fetchPost = async (pk: number) =>
     api
       .get(`/post/${pk}/`)
       .then(res => {

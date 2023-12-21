@@ -70,9 +70,9 @@ export const useComCash = defineStore('comCash', () => {
       .then(res => (listAccD3List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const patchAccD3 = (payload: { pk: number; is_hide: boolean }) => {
+  const patchAccD3 = async (payload: { pk: number; is_hide: boolean }) => {
     const { pk, ...hideData } = payload
-    return api
+    return await api
       .patch(`/account-depth3/${pk}/`, hideData)
       .then(() => {
         fetchAllAccD3List().then(() => fetchFormAccD3List(null, null, null).then(() => message()))
@@ -82,9 +82,9 @@ export const useComCash = defineStore('comCash', () => {
 
   const formAccD1List = ref<AccountD1[]>([])
 
-  const fetchFormAccD1List = (sort: number | null) => {
+  const fetchFormAccD1List = async (sort: number | null) => {
     const uSort = sort ? `?sorts=${sort}` : ''
-    return api
+    return await api
       .get(`/account-depth1/${uSort}`)
       .then(res => (formAccD1List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
@@ -92,10 +92,10 @@ export const useComCash = defineStore('comCash', () => {
 
   const formAccD2List = ref<AccountD2[]>([])
 
-  const fetchFormAccD2List = (sort: number | null, d1: number | null) => {
+  const fetchFormAccD2List = async (sort: number | null, d1: number | null) => {
     const uSort = sort ? `d1__sorts=${sort}` : ''
     const uD1 = d1 ? `&d1=${d1}` : ''
-    return api
+    return await api
       .get(`/account-depth2/?${uSort}${uD1}`)
       .then(res => (formAccD2List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
@@ -103,11 +103,11 @@ export const useComCash = defineStore('comCash', () => {
 
   const formAccD3List = ref<AccountD3[]>([])
 
-  const fetchFormAccD3List = (sort: number | null, d1: number | null, d2: number | null) => {
+  const fetchFormAccD3List = async (sort: number | null, d1: number | null, d2: number | null) => {
     const uSort = sort ? `sort=${sort}` : ''
     const uD1 = d1 ? `&d2__d1=${d1}` : ''
     const uD2 = d2 ? `&d2=${d2}` : ''
-    return api
+    return await api
       .get(`/account-depth3/?${uSort}${uD1}${uD2}&is_hide=false`)
       .then(res => (formAccD3List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
@@ -175,10 +175,10 @@ export const useComCash = defineStore('comCash', () => {
 
   const comBalanceByAccList = ref<BalanceByAccount[]>([])
 
-  const fetchComBalanceByAccList = (payload: { company: number; date: string }) => {
+  const fetchComBalanceByAccList = async (payload: { company: number; date: string }) => {
     const { company, date } = payload
     const dateUri = date ? `&date=${date}` : ''
-    return api
+    return await api
       .get(`/balance-by-acc/?company=${company}${dateUri}`)
       .then(res => (comBalanceByAccList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
@@ -186,9 +186,9 @@ export const useComCash = defineStore('comCash', () => {
 
   const dateCashBook = ref<CashBook[]>([])
 
-  const fetchDateCashBookList = (payload: { company: number; date: string }) => {
+  const fetchDateCashBookList = async (payload: { company: number; date: string }) => {
     const { company, date } = payload
-    return api
+    return await api
       .get(`/date-cashbook/?company=${company}&date=${date}`)
       .then(res => (dateCashBook.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
@@ -199,7 +199,7 @@ export const useComCash = defineStore('comCash', () => {
 
   const cashesPages = (itemsPerPage: number) => Math.ceil(cashBookCount.value / itemsPerPage)
 
-  const fetchCashBookList = (payload: DataFilter) => {
+  const fetchCashBookList = async (payload: DataFilter) => {
     const { company } = payload
     let url = `/cashbook/?company=${company}`
     if (payload.from_date) url += `&from_deal_date=${payload.from_date}`
@@ -213,7 +213,7 @@ export const useComCash = defineStore('comCash', () => {
     const page = payload.page ? payload.page : 1
     if (payload.page) url += `&page=${page}`
 
-    return api
+    return await api
       .get(url)
       .then(res => {
         cashBookList.value = res.data.results
@@ -228,11 +228,11 @@ export const useComCash = defineStore('comCash', () => {
       .then(res => fetchCashBookList({ company: res.data.company }).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
-  const updateCashBook = (
+  const updateCashBook = async (
     payload: CashBook & { sepData: SepItems | null } & { filters: DataFilter },
   ) => {
     const { filters, ...formData } = payload
-    return api
+    return await api
       .put(`/cashbook/${formData.pk}/`, formData)
       .then(res =>
         fetchCashBookList({
@@ -243,9 +243,9 @@ export const useComCash = defineStore('comCash', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const deleteCashBook = (payload: CashBook & { filters: DataFilter }) => {
+  const deleteCashBook = async (payload: CashBook & { filters: DataFilter }) => {
     const { pk, filters, company } = payload
-    return api
+    return await api
       .delete(`/cashbook/${pk}/`)
       .then(() =>
         fetchCashBookList({ company, ...filters }).then(() =>

@@ -100,7 +100,7 @@ export const useCompany = defineStore('company', () => {
   // actions
   const staffPages = (itemsPerPage: number) => Math.ceil(staffsCount.value / itemsPerPage)
 
-  const fetchStaffList = (payload: StaffFilter) => {
+  const fetchStaffList = async (payload: StaffFilter) => {
     const {
       page = 1,
       com = 1,
@@ -114,7 +114,7 @@ export const useCompany = defineStore('company', () => {
     } = payload
     const qStr = `?page=${page}&company=${com}&sort=${sort}&department=${dep}&grade=${gra}&position=${pos}&duty=${dut}&status=${sts}&search=${q}`
 
-    return api
+    return await api
       .get(`/staff/${qStr}`)
       .then(res => {
         staffList.value = res.data.results
@@ -184,11 +184,11 @@ export const useCompany = defineStore('company', () => {
   // actions
   const departmentPages = (itemsPerPage: number) => Math.ceil(departmentsCount.value / itemsPerPage)
 
-  const fetchDepartmentList = (payload: DepFilter) => {
+  const fetchDepartmentList = async (payload: DepFilter) => {
     const { page = 1, com = 1, upp = '', q = '' } = payload
     const queryStr = `?page=${page}&company=${com}&upper_depart=${upp}&search=${q}`
 
-    return api
+    return await api
       .get(`/department/${queryStr}`)
       .then(res => {
         departmentList.value = res.data.results
@@ -264,10 +264,10 @@ export const useCompany = defineStore('company', () => {
   // actions
   const gradePages = (itemsPerPage: number) => Math.ceil(gradesCount.value / itemsPerPage)
 
-  const fetchGradeList = (payload: ComFilter) => {
+  const fetchGradeList = async (payload: ComFilter) => {
     const { page = 1, com = 1, q = '' } = payload
     const queryStr = `?page=${page}&company=${com}&search=${q}`
-    return api
+    return await api
       .get(`/grade/${queryStr}`)
       .then(res => {
         gradeList.value = res.data.results
@@ -339,10 +339,10 @@ export const useCompany = defineStore('company', () => {
   // actions
   const positionPages = (itemsPerPage: number) => Math.ceil(positionsCount.value / itemsPerPage)
 
-  const fetchPositionList = (payload: ComFilter) => {
+  const fetchPositionList = async (payload: ComFilter) => {
     const { page = 1, com = 1, q = '' } = payload
     const queryStr = `?page=${page}&company=${com}&search=${q}`
-    return api
+    return await api
       .get(`/position/${queryStr}`)
       .then(res => {
         positionList.value = res.data.results
@@ -418,10 +418,10 @@ export const useCompany = defineStore('company', () => {
   // actions
   const dutyPages = (itemsPerPage: number) => Math.ceil(dutysCount.value / itemsPerPage)
 
-  const fetchDutyList = (payload: ComFilter) => {
+  const fetchDutyList = async (payload: ComFilter) => {
     const { page = 1, com = 1, q = '' } = payload
     const queryStr = `?page=${page}&company=${com}&search=${q}`
-    return api
+    return await api
       .get(`/duty-title/${queryStr}`)
       .then(res => {
         dutyList.value = res.data.results
