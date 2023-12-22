@@ -16,6 +16,10 @@ const onSubmit = (event: Event) => {
     validated.value = true
   } else emit('remove-confirm', password.value)
 }
+
+const passReset = () => (password.value = '')
+const getPass = () => password.value
+defineExpose({ passReset, getPass })
 </script>
 
 <template>

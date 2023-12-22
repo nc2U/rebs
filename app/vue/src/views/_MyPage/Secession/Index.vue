@@ -8,7 +8,7 @@ import PasswordCheck from '@/views/_MyPage/Secession/components/PasswordCheck.vu
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const refConfirmModal = ref()
-const removePass = ref('')
+const refPassCheck = ref()
 
 const accStore = useAccount()
 const userInfo = computed(() => accStore.userInfo)
@@ -17,20 +17,20 @@ const passChecked = computed(() => accStore.passChecked)
 const checkPassword = (payload: { email: string; password: string }) =>
   accStore.checkPassword(payload)
 
-const removeConfirm = (password: string) => {
-  removePass.value = password
+const removeConfirm = () => {
   refConfirmModal.value.callModal('', '', '', 'danger')
 }
 
 const modalAction = () => {
   const email = userInfo.value?.email ?? ''
-  checkPassword({ email, password: removePass.value })
+  checkPassword({ email, password: refPassCheck.value.getPass() })
   refConfirmModal.value.close()
 }
 
 watch(passChecked, nVal => {
   if (nVal) {
     alert('탈퇴 로직 진행!!')
+    refPassCheck.value.passReset()
     accStore.passChecked = false
   }
 })
@@ -40,7 +40,11 @@ watch(passChecked, nVal => {
   <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
-    <PasswordCheck :username="userInfo?.username" @remove-confirm="removeConfirm" />
+    <PasswordCheck
+      ref="refPassCheck"
+      :username="userInfo?.username"
+      @remove-confirm="removeConfirm"
+    />
   </ContentBody>
 
   <ConfirmModal ref="refConfirmModal">
