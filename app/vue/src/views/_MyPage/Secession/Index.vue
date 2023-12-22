@@ -29,7 +29,7 @@ const modalAction = () => {
 
 watch(passChecked, nVal => {
   if (nVal) {
-    alert('탈퇴 로직 진행!!')
+    alert('탈퇴 로직 진행 --> 준비중!!')
     refPassCheck.value.passReset()
     accStore.passChecked = false
   }
