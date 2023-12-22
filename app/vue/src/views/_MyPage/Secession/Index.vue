@@ -1,80 +1,57 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useAccount } from '@/store/pinia/account'
-import { useRouter } from 'vue-router'
 import { pageTitle, navMenu } from '@/views/_MyPage/_menu/headermixin'
-import { type Profile } from '@/store/types/accounts'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import PasswordCheck from '@/views/_MyPage/Secession/components/PasswordCheck.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
-const passChangeVue = ref(false)
+const refConfirmModal = ref()
+const removePass = ref('')
 
 const accStore = useAccount()
 const userInfo = computed(() => accStore.userInfo)
-const profile = computed(() => accStore.profile)
 const passChecked = computed(() => accStore.passChecked)
 
 const checkPassword = (payload: { email: string; password: string }) =>
   accStore.checkPassword(payload)
-const changePassword = (payload: { old_password: string; new_password: string }) =>
-  accStore.changePassword(payload)
-const createProfile = (payload: FormData) => accStore.createProfile(payload)
-const patchProfile = (payload: { pk: number; form: FormData }) => accStore.patchProfile(payload)
 
-const checkPass = (password: string) => {
+const removeConfirm = (password: string) => {
+  removePass.value = password
+  refConfirmModal.value.callModal('', '', '', 'danger')
+}
+
+const modalAction = () => {
   const email = userInfo.value?.email ?? ''
-  checkPassword({ email, password })
+  checkPassword({ email, password: removePass.value })
+  refConfirmModal.value.close()
 }
 
-const router = useRouter()
-
-const changePass = async (payload: { old_password: string; new_password: string }) => {
-  if (await changePassword(payload))
-    setTimeout(() => {
-      router.push({ name: 'Login' })
-    }, 1000)
-}
-
-const callPassVue = () => (passChangeVue.value = true)
-
-const onSubmit = (payload: Profile) => {
-  if (!payload.image) delete payload.image
-
-  const { pk, ...formData } = payload
-  if (!formData.user && accStore.userInfo) formData.user = accStore.userInfo.pk
-  if (!formData.birth_date) formData.birth_date = ''
-
-  const form = new FormData()
-
-  for (const key in formData) form.append(key, formData[key] as string | Blob)
-
-  if (pk) patchProfile({ ...{ pk }, ...{ form } })
-  else createProfile(form)
-}
+watch(passChecked, nVal => {
+  if (nVal) {
+    alert('탈퇴 로직 진행!!')
+    accStore.passChecked = false
+  }
+})
 </script>
 
 <template>
   <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
-    <PasswordChange v-if="passChangeVue" @change-password="changePass" />
-    <PasswordCheck
-      v-else-if="!passChecked"
-      :username="userInfo?.username"
-      @check-password="checkPass"
-    />
-    <ProfileForm
-      v-else
-      ref="profile"
-      :user-info="userInfo"
-      :profile="profile as Profile"
-      @pass-change="callPassVue"
-      @on-submit="onSubmit"
-    />
-
-    <template #footer>
-      <small v-if="passChecked" />
-    </template>
+    <PasswordCheck :username="userInfo?.username" @remove-confirm="removeConfirm" />
   </ContentBody>
+
+  <ConfirmModal ref="refConfirmModal">
+    <template #header> 멤버 영구 탈퇴</template>
+    <template #default>
+      정말 멤버 탈퇴를 진행하시겠습니까?<br />
+      탈퇴한 회원정보는 복구할 수 없으므로 신중히 선택하여 주십시요. <br />
+      획인을 누르면 탈퇴가 진행됩니다.
+    </template>
+    <template #footer>
+      <CButton color="danger" @click="modalAction"> 확인</CButton>
+    </template>
+  </ConfirmModal>
 </template>

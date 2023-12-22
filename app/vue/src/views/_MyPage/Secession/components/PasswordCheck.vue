@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 
 defineProps({ username: { type: String, default: '' } })
-const emit = defineEmits(['check-password'])
+const emit = defineEmits(['remove-confirm'])
 
 const validated = ref(false)
 const password = ref('')
@@ -14,7 +14,7 @@ const onSubmit = (event: Event) => {
     event.stopPropagation()
 
     validated.value = true
-  } else emit('check-password', password.value)
+  } else emit('remove-confirm', password.value)
 }
 </script>
 
@@ -60,7 +60,7 @@ const onSubmit = (event: Event) => {
       <CRow class="mb-3">
         <CCol class="col-sm-2 col-lg-1"></CCol>
         <CCol sm="6" lg="4" xl="3" class="text-right">
-          <CButton type="submit" color="danger">비밀번호 확인</CButton>
+          <CButton type="submit" color="danger">확인</CButton>
         </CCol>
       </CRow>
     </CForm>
