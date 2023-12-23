@@ -351,8 +351,8 @@ export const useDocument = defineStore('document', () => {
 
   const fetchCommentList = async (payload: { post?: number; user?: number; page?: number }) => {
     const { post, user, page } = payload
-    let url = `/comment/?is_comment=true&page=${page ?? 1}`
-    url = post ? `${url}&post=${post}` : url
+    let url = `/comment/?page=${page ?? 1}`
+    url = post ? `${url}&post=${post}&is_comment=true` : url
     url = user ? `${url}&user=${user}` : url
 
     return await api
