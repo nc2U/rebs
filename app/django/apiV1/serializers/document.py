@@ -160,6 +160,7 @@ class FilesInPostSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     proj_name = serializers.SlugField(source='project', read_only=True)
+    board_name = serializers.SlugField(source='board', read_only=True)
     cate_name = serializers.SlugField(source='category', read_only=True)
     lawsuit_name = serializers.SlugField(source='lawsuit', read_only=True)
     links = LinksInPostSerializer(many=True, read_only=True)
@@ -170,7 +171,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ('pk', 'company', 'project', 'proj_name', 'board', 'is_notice', 'category',
+        fields = ('pk', 'company', 'project', 'proj_name', 'board', 'board_name', 'is_notice', 'category',
                   'cate_name', 'lawsuit', 'lawsuit_name', 'title', 'execution_date', 'is_hide_comment',
                   'content', 'hit', 'like', 'blame', 'ip', 'device', 'secret', 'password', 'links', 'files',
                   'comments', 'user', 'created', 'updated', 'is_new', 'prev_pk', 'next_pk')
