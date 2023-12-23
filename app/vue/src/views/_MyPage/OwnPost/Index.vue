@@ -25,6 +25,11 @@ const listFiltering = (payload: PostFilter) => {
   fetchPostList({ ...postFilter.value })
 }
 
+const pageSelect = (page: number) => {
+  postFilter.value.page = page
+  listFiltering(postFilter.value)
+}
+
 const docStore = useDocument()
 const postList = computed(() => docStore.postList)
 
@@ -46,7 +51,7 @@ onBeforeMount(() => dataSetup(userInfo?.value.pk as number))
       <div class="pt-3">
         <ListController ref="fController" :post-filter="postFilter" @list-filter="listFiltering" />
 
-        <PostList :post-list="postList" :view-route="mainViewName" />
+        <PostList :post-list="postList" :view-route="mainViewName" @page-select="pageSelect" />
       </div>
     </CCardBody>
   </ContentBody>
