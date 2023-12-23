@@ -363,7 +363,14 @@ class FileSerializer(serializers.ModelSerializer):
         fields = ('pk', 'post', 'file', 'hit')
 
 
+class SimplePostInCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ('pk', 'company', 'project', 'board')
+
+
 class CommentSerializer(serializers.ModelSerializer):
+    post = SimplePostInCommentSerializer(read_only=True)
     replies = serializers.SerializerMethodField(read_only=True)
     user = UserInDocumentsSerializer(read_only=True)
 
