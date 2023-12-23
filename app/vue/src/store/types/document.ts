@@ -82,6 +82,7 @@ export type Post = {
   company: number | null
   project: number | null
   board: number | null
+  board_name?: string
   is_notice: boolean
   proj_name?: string | null
   category: number | null
