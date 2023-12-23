@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 
 defineProps({ username: { type: String, default: '' } })
-const emit = defineEmits(['check-password'])
+const emit = defineEmits(['remove-confirm'])
 
 const validated = ref(false)
 const password = ref('')
@@ -14,8 +14,12 @@ const onSubmit = (event: Event) => {
     event.stopPropagation()
 
     validated.value = true
-  } else emit('check-password', password.value)
+  } else emit('remove-confirm', password.value)
 }
+
+const passReset = () => (password.value = '')
+const getPass = () => password.value
+defineExpose({ passReset, getPass })
 </script>
 
 <template>
@@ -25,6 +29,12 @@ const onSubmit = (event: Event) => {
     </CRow>
 
     <v-divider />
+
+    <CAlert color="danger">
+      회원 탈퇴를 위한 패스워드 입력페이지입니다.<br />
+      패스워드를 입력하시면 회원탈퇴가 진행됩니다. <br />
+      탈퇴한 회원정보는 복구할 수 없으므로, 신중히 선택하여 주시기 바랍니다.
+    </CAlert>
 
     <CForm
       class="needs-validation px-5"
@@ -54,7 +64,7 @@ const onSubmit = (event: Event) => {
       <CRow class="mb-3">
         <CCol class="col-sm-2 col-lg-1"></CCol>
         <CCol sm="6" lg="4" xl="3" class="text-right">
-          <CButton type="submit" color="info">확인</CButton>
+          <CButton type="submit" color="danger">확인</CButton>
         </CCol>
       </CRow>
     </CForm>
