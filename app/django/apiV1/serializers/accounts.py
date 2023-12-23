@@ -82,11 +82,14 @@ class ProfileSerializer(serializers.ModelSerializer):
         user = instance.user
         email = user.email
         new_email = self.initial_data.get('email')
-        if email != new_email:
+        if new_email and email != new_email:
             if User.objects.filter(email=new_email).exists():
                 raise serializers.ValidationError({'email': '이미 등록된 이메일입니다.'})
             user.email = new_email
-            user.save()
+        is_active = self.initial_data.get('is_active')
+        if is_active is not None:
+            user.is_active = False
+        user.save()
 
         return instance
 

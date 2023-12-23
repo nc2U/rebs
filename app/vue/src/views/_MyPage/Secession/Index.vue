@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue'
-import { useAccount } from '@/store/pinia/account'
 import { pageTitle, navMenu } from '@/views/_MyPage/_menu/headermixin'
+import { message } from '@/utils/helper'
+import { useAccount } from '@/store/pinia/account'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import PasswordCheck from '@/views/_MyPage/Secession/components/PasswordCheck.vue'
@@ -16,10 +17,9 @@ const passChecked = computed(() => accStore.passChecked)
 
 const checkPassword = (payload: { email: string; password: string }) =>
   accStore.checkPassword(payload)
+const patchProfile = (payload: { pk: number; form: FormData }) => accStore.patchProfile(payload)
 
-const removeConfirm = () => {
-  refConfirmModal.value.callModal('', '', '', 'danger')
-}
+const removeConfirm = () => refConfirmModal.value.callModal('', '', '', 'danger')
 
 const modalAction = () => {
   const email = userInfo.value?.email ?? ''
@@ -29,11 +29,20 @@ const modalAction = () => {
 
 watch(passChecked, nVal => {
   if (nVal) {
-    alert('탈퇴 로직 진행 --> 준비중!!')
+    removeUser()
     refPassCheck.value.passReset()
     accStore.passChecked = false
   }
 })
+
+const removeUser = () => {
+  const pk = userInfo.value?.profile?.pk as number
+  const form = new FormData()
+  form.append('is_active', 'false')
+  console.log(userInfo.value)
+  patchProfile({ pk, form })
+  message('danger', '', '사용자 계정이 삭제(비활성화) 되었습니다.', 5000)
+}
 </script>
 
 <template>
