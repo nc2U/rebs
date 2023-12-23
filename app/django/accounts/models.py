@@ -131,6 +131,13 @@ class Profile(models.Model):
         verbose_name_plural = '사용자 프로필'
 
 
+class Scraper(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    title = models.CharField('스크랩 타이틀', max_length=50, blank=True, default='')
+    created = models.DateTimeField('보관일', auto_now_add=True)
+
+
 class Todo(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='todos')
     title = models.CharField('할일내용', max_length=50)
