@@ -158,10 +158,10 @@ export interface PatchPost {
 export interface Comment {
   pk?: number
   post: {
-    pk: number
+    pk?: number
     company: number | null
     project: number | null
-    board: number
+    board: number | null
   }
   content: string
   parent: number | null

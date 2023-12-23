@@ -9,7 +9,7 @@ const props = defineProps({
 })
 const emit = defineEmits(['on-submit'])
 
-const form = reactive<Cm>({
+const form = reactive<any>({
   pk: undefined,
   post: props.post,
   content: '',

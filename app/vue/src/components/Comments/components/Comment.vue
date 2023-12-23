@@ -93,12 +93,12 @@ const onSubmit = (payload: Cm) => emit('on-submit', payload)
     </p>
     <p v-if="formShow && isEditing">
       <!-- 수정시 -->
-      <CommentForm :post="comment?.post as number" :comment="comment" @on-submit="onSubmit" />
+      <CommentForm :post="comment?.post.pk as number" :comment="comment" @on-submit="onSubmit" />
     </p>
     <p v-if="formShow && isReplying">
       <!-- 답변시 -->
       <CommentForm
-        :post="comment?.post as number"
+        :post="comment?.post.pk as number"
         :parent="comment?.pk as number"
         @on-submit="onSubmit"
       />
