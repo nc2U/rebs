@@ -201,7 +201,7 @@ export const useDocument = defineStore('document', () => {
       .get(`/post/${pk}/`)
       .then(res => {
         post.value = res.data
-        fetchCommentList(pk)
+        fetchCommentList({ post: pk })
       })
       .catch(err => errorHandle(err.response.data))
 
@@ -349,14 +349,20 @@ export const useDocument = defineStore('document', () => {
       .then(res => (comment.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const fetchCommentList = (post: number, page = 1) =>
-    api
-      .get(`/comment/?post=${post}&is_comment=true&page=${page}`)
+  const fetchCommentList = async (payload: { post?: number; user?: number; page?: number }) => {
+    const { post, user, page } = payload
+    let url = `/comment/?is_comment=true&page=${page ?? 1}`
+    url = post ? `${url}&post=${post}` : url
+    url = user ? `${url}&user=${user}` : url
+
+    return await api
+      .get(url)
       .then(res => {
         commentList.value = res.data.results
         commentCount.value = res.data.count
       })
       .catch(err => errorHandle(err.response.data))
+  }
 
   const createComment = (payload: Cm) =>
     api
@@ -373,7 +379,7 @@ export const useDocument = defineStore('document', () => {
   const patchCommentLike = (pk: number, post: number, page = 1) =>
     api
       .patch(`/comment-like/${pk}/`, { pk })
-      .then(() => accStore.fetchProfile().then(() => fetchCommentList(post, page)))
+      .then(() => accStore.fetchProfile().then(() => fetchCommentList({ post, page })))
       .catch(err => errorHandle(err.response.data))
 
   const deleteComment = (payload: { pk: number; post: number }) =>
