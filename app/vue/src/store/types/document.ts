@@ -157,7 +157,12 @@ export interface PatchPost {
 
 export interface Comment {
   pk?: number
-  post: number
+  post: {
+    pk: number
+    company: number | null
+    project: number | null
+    board: number
+  }
   content: string
   parent: number | null
   replies?: Comment[]
