@@ -82,6 +82,7 @@ export type Post = {
   company: number | null
   project: number | null
   board: number | null
+  board_name?: string
   is_notice: boolean
   proj_name?: string | null
   category: number | null
@@ -156,7 +157,12 @@ export interface PatchPost {
 
 export interface Comment {
   pk?: number
-  post: number
+  post: {
+    pk: number
+    company: number | null
+    project: number | null
+    board: number
+  }
   content: string
   parent: number | null
   replies?: Comment[]

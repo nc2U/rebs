@@ -70,7 +70,7 @@ class PostFilterSet(FilterSet):
 
     class Meta:
         model = Post
-        fields = ('company', 'project', 'is_com', 'board', 'is_notice', 'category', 'lawsuit')
+        fields = ('company', 'project', 'is_com', 'board', 'is_notice', 'category', 'lawsuit', 'user')
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -115,7 +115,7 @@ class CommentFilterSet(FilterSet):
 
     class Meta:
         model = Comment
-        fields = ('user', 'post', 'is_comment')
+        fields = ('user', 'post', 'is_comment', 'user')
 
 
 class CommentViewSet(viewsets.ModelViewSet):

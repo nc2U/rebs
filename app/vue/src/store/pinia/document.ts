@@ -37,6 +37,7 @@ export type PostFilter = {
   is_com?: boolean
   category?: number | ''
   lawsuit?: number | ''
+  user?: number | ''
   ordering?: string
   search?: string
   page?: number
@@ -200,24 +201,29 @@ export const useDocument = defineStore('document', () => {
       .get(`/post/${pk}/`)
       .then(res => {
         post.value = res.data
-        fetchCommentList(pk)
+        fetchCommentList({ post: pk })
       })
       .catch(err => errorHandle(err.response.data))
 
-  const fetchNoticeList = (board: number | undefined) =>
-    api
-      .get(`/post/?board=${board}&is_notice=true`)
+  const fetchNoticeList = async (board: number | undefined) => {
+    let url = `/post/?is_notice=true`
+    url = board ? `${url}&board=${board}` : url
+    return await api
+      .get(url)
       .then(res => (noticeList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
+  }
 
   const fetchPostList = async (payload: PostFilter) => {
     const { board, page } = payload
-    let url = `/post/?board=${board}&page=${page || 1}&is_notice=false`
+    let url = `/post/?page=${page ?? 1}&is_notice=false`
+    if (payload.board) url += `&board=${board}`
     if (payload.company) url += `&company=${payload.company}`
     if (payload.is_com) url += `&is_com=${payload.is_com}`
     if (payload.project) url += `&project=${payload.project}`
     if (payload.category) url += `&category=${payload.category}`
     if (payload.lawsuit) url += `&lawsuit=${payload.lawsuit}`
+    if (payload.user) url += `&user=${payload.user}`
     if (payload.ordering) url += `&ordering=${payload.ordering}`
     if (payload.search) url += `&search=${payload.search}`
     await fetchNoticeList(board)
@@ -343,14 +349,20 @@ export const useDocument = defineStore('document', () => {
       .then(res => (comment.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const fetchCommentList = (post: number, page = 1) =>
-    api
-      .get(`/comment/?post=${post}&is_comment=true&page=${page}`)
+  const fetchCommentList = async (payload: { post?: number; user?: number; page?: number }) => {
+    const { post, user, page } = payload
+    let url = `/comment/?page=${page ?? 1}`
+    url = post ? `${url}&post=${post}&is_comment=true` : url
+    url = user ? `${url}&user=${user}` : url
+
+    return await api
+      .get(url)
       .then(res => {
         commentList.value = res.data.results
         commentCount.value = res.data.count
       })
       .catch(err => errorHandle(err.response.data))
+  }
 
   const createComment = (payload: Cm) =>
     api
@@ -367,7 +379,7 @@ export const useDocument = defineStore('document', () => {
   const patchCommentLike = (pk: number, post: number, page = 1) =>
     api
       .patch(`/comment-like/${pk}/`, { pk })
-      .then(() => accStore.fetchProfile().then(() => fetchCommentList(post, page)))
+      .then(() => accStore.fetchProfile().then(() => fetchCommentList({ post, page })))
       .catch(err => errorHandle(err.response.data))
 
   const deleteComment = (payload: { pk: number; post: number }) =>

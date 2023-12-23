@@ -40,7 +40,7 @@ const visionToggle = (payload: { num: number; sts: boolean }) => {
   if (!payload.sts) actForm.value = payload.num
 }
 
-const pageSelect = (page: number) => docStore.fetchCommentList(props.post, page)
+const pageSelect = (page: number) => docStore.fetchCommentList({ post: props.post, page })
 </script>
 
 <template>

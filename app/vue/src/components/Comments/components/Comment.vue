@@ -54,7 +54,7 @@ const onSubmit = (payload: Cm) => emit('on-submit', payload)
 </script>
 
 <template>
-  <li class="text-50">
+  <li class="text-50" :id="`comment_${comment.pk}`">
     <strong>{{ comment?.user?.username }}</strong>
     <small class="ml-2">
       <v-icon icon="mdi-clock-time-four-outline" size="sm" />
