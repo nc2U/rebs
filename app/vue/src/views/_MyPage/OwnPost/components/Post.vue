@@ -16,6 +16,7 @@ const whichBoard = computed(() => {
     else if (!!props.post?.project)
       if (props.post.board === 2) return '현장 일반 문서'
       else if (props.post.board === 3) return '현장 소송 문서'
+  return '공지 사항'
 })
 </script>
 
