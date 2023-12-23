@@ -15,8 +15,6 @@ import { cutString, timeFormat } from '@/utils/baseMixins'
 import { type Post } from '@/store/types/document'
 import sanitizeHtml from 'sanitize-html'
 import type { User } from '@/store/types/accounts'
-import AlertModal from '@/components/Modals/AlertModal.vue'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const props = defineProps({
   boardNum: { type: Number, default: 2 },
@@ -39,13 +37,7 @@ const emit = defineEmits([
   'post-delete',
 ])
 
-const refDelModal = ref()
-const refAlertModal = ref()
-
 const userInfo = inject<ComputedRef<User>>('userInfo')
-const editAuth = computed(
-  () => userInfo?.value?.is_superuser || props.post.user?.pk === userInfo?.value?.pk,
-)
 
 const prev = ref<number | null>()
 const next = ref<number | null>()
@@ -89,7 +81,7 @@ const toPrint = () => {
   }
 }
 
-const [route, router] = [useRoute(), useRouter()]
+const route = useRoute()
 
 const sendUrl = `${window.location.host}${route.fullPath}`
 
@@ -155,25 +147,6 @@ const getFileName = (file: string) => {
   else return
 }
 
-const toEdit = () => {
-  if (props.post.comments?.length ?? 0 >= 5)
-    refAlertModal.value.callModal('', '5개 이상의 댓글이 달린 게시물은 수정할 수 없습니다.')
-  else
-    router.push({
-      name: `${props.viewRoute} - 수정`,
-      params: { postId: props.post?.pk },
-    })
-}
-
-const deleteConfirm = () => refDelModal.value.callModal()
-
-const toDelete = () => {
-  refDelModal.value.close()
-  if ((userInfo?.value.is_superuser || props.post.comments?.length) ?? 0 < 5)
-    emit('post-delete', props.post.pk)
-  else refAlertModal.value.callModal('', '5개 이상의 댓글이 달린 게시물은 삭제할 수 없습니다.')
-}
-
 watch(
   () => getPostNav.value,
   () => {
@@ -237,7 +210,7 @@ onMounted(() => {
 
     <CRow class="text-blue-grey">
       <CCol>
-        <small class="mr-3">작성자 : {{ post.user }}</small>
+        <small class="mr-3">작성자 : {{ post.user?.username }}</small>
         <small class="mr-2">
           <v-icon icon="mdi-comment-text-multiple" size="sm" />
           <span class="ml-1">{{ post.comments?.length || 0 }}</span>
@@ -265,26 +238,7 @@ onMounted(() => {
     </CRow>
 
     <CRow class="mt-5 py-2 justify-content-between">
-      <CCol md="7" lg="6" xl="5">
-        <table v-if="boardNum !== 1 && post.execution_date" class="table table-bordered mt-2 mb-3">
-          <tbody>
-            <tr v-if="post.lawsuit">
-              <td class="p-2 bg-blue-grey-lighten-4 text-center">관련사건</td>
-              <td class="p-2">
-                <router-link
-                  :to="{ name: '현장 소송 사건 - 보기', params: { caseId: post.lawsuit } }"
-                >
-                  {{ post.lawsuit_name }}
-                </router-link>
-              </td>
-            </tr>
-            <tr>
-              <td class="p-2 bg-blue-grey-lighten-4 text-center">발행일자</td>
-              <td class="p-2">{{ post.execution_date }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </CCol>
+      <CCol md="7" lg="6" xl="5"></CCol>
 
       <CCol md="7" lg="6" xl="5">
         <CRow v-if="!!post.links && post.links.length" class="mb-3">
@@ -404,22 +358,6 @@ onMounted(() => {
     <CRow class="py-2">
       <CCol>
         <CButtonGroup role="group">
-          <CButton
-            v-if="editAuth"
-            color="success"
-            :disabled="!writeAuth"
-            @click="
-              $router.push({
-                name: `${viewRoute} - 수정`,
-                params: { postId: post.pk },
-              })
-            "
-          >
-            수정
-          </CButton>
-          <CButton v-if="editAuth" color="danger" :disabled="!writeAuth" @click="deleteConfirm">
-            삭제
-          </CButton>
           <CButton color="secondary" @click="$router.push({ name: `${viewRoute}` })"> 목록</CButton>
           <CButton
             color="light"
@@ -447,27 +385,9 @@ onMounted(() => {
           </CButton>
         </CButtonGroup>
       </CCol>
-      <CCol class="text-right">
-        <CButton
-          color="primary"
-          :disabled="!writeAuth"
-          @click="$router.push({ name: `${viewRoute} - 작성` })"
-        >
-          신규등록
-        </CButton>
-      </CCol>
+      <CCol class="text-right"></CCol>
     </CRow>
   </div>
-
-  <AlertModal ref="refAlertModal" />
-
-  <ConfirmModal ref="refDelModal">
-    <template #header>알림</template>
-    <template #default>한번 삭제한 자료는 복구할 수 없습니다. 정말 삭제하시겠습니까?</template>
-    <template #footer>
-      <CButton color="danger" @click="toDelete">삭제</CButton>
-    </template>
-  </ConfirmModal>
 </template>
 
 <style lang="scss" scoped>

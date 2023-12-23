@@ -237,7 +237,7 @@ onMounted(() => {
 
     <CRow class="text-blue-grey">
       <CCol>
-        <small class="mr-3">작성자 : {{ post.user }}</small>
+        <small class="mr-3">작성자 : {{ post.user?.username }}</small>
         <small class="mr-2">
           <v-icon icon="mdi-comment-text-multiple" size="sm" />
           <span class="ml-1">{{ post.comments?.length || 0 }}</span>
