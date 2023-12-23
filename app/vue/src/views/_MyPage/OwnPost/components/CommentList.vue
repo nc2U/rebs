@@ -4,25 +4,13 @@ import { useDocument } from '@/store/pinia/document'
 import type { Comment as Cm } from '@/store/types/document'
 import Comment from './Comment.vue'
 import Pagination from '@/components/Pagination'
+import { TableSecondary } from '@/utils/cssMixins'
 
-defineProps({
-  actForm: { type: Number, default: undefined },
-  comments: { type: Array as PropType<Cm[]>, default: () => [] },
-  likeComments: { type: Array as PropType<number[]>, default: () => [] },
-})
+defineProps({ comments: { type: Array as PropType<Cm[]>, default: () => [] } })
 const emit = defineEmits(['vision-toggle', 'to-like', 'on-submit', 'form-reset', 'page-select'])
 
 const docStore = useDocument()
 const commentCount = computed(() => docStore.commentCount)
-
-const visionToggle = (payload: { num: number; sts: boolean }) => emit('vision-toggle', payload)
-
-const toLike = (pk: number) => emit('to-like', pk)
-
-const onSubmit = (payload: Cm) => {
-  emit('on-submit', payload)
-  emit('form-reset')
-}
 
 const pageSelect = (page: number) => emit('page-select', page)
 
@@ -31,64 +19,28 @@ const commentPages = (pages: number) => Math.ceil(commentCount.value / pages)
 </script>
 
 <template>
-  <div v-if="commentCount">
-    <h5 class="my-4 ml-4">{{ commentCount }} Comment{{ commentCount > 1 ? 's' : '' }}</h5>
-    <ul v-for="cmt1 in comments" :key="cmt1.pk" class="comments ml-5 mb-3">
-      <Comment
-        :form-show="actForm === cmt1.pk"
-        :comment="cmt1"
-        :like-comments="likeComments"
-        @vision-toggle="visionToggle"
-        @to-like="toLike"
-        @on-submit="onSubmit"
-      />
+  <CTable hover responsive align="middle">
+    <colgroup>
+      <col style="width: 20%" />
+      <col style="width: 50%" />
+      <col style="width: 30%" />
+    </colgroup>
 
-      <ul v-for="cmt2 in cmt1.replies" :key="cmt2.pk" class="comments ml-5 mb-3">
-        <Comment
-          :form-show="actForm === cmt2.pk"
-          :comment="cmt2"
-          :like-comments="likeComments"
-          @vision-toggle="visionToggle"
-          @to-like="toLike"
-          @on-submit="onSubmit"
-        />
+    <CTableHead>
+      <CTableRow :color="TableSecondary" class="text-center border-top-1">
+        <CTableHeaderCell scope="col">번호</CTableHeaderCell>
+        <CTableHeaderCell scope="col">내용</CTableHeaderCell>
+        <CTableHeaderCell scope="col">등록일시</CTableHeaderCell>
+      </CTableRow>
+    </CTableHead>
 
-        <ul v-for="cmt3 in cmt2.replies" :key="cmt3.pk" class="comments ml-5 mb-3">
-          <Comment
-            :form-show="actForm === cmt3.pk"
-            :comment="cmt3"
-            :like-comments="likeComments"
-            @vision-toggle="visionToggle"
-            @to-like="toLike"
-            @on-submit="onSubmit"
-          />
+    <CTableBody>
+      <Comment v-for="cmt in comments" :key="cmt.pk" :comment="cmt" />
+    </CTableBody>
+  </CTable>
 
-          <ul v-for="cmt4 in cmt3.replies" :key="cmt4.pk" class="comments ml-5 mb-3">
-            <Comment
-              :form-show="actForm === cmt4.pk"
-              :comment="cmt4"
-              :like-comments="likeComments"
-              @vision-toggle="visionToggle"
-              @to-like="toLike"
-              @on-submit="onSubmit"
-            />
-            <ul v-for="cmt5 in cmt4.replies" :key="cmt5.pk" class="comments ml-5 mb-3">
-              <Comment
-                :form-show="actForm === cmt5.pk"
-                :comment="cmt5"
-                :like-comments="likeComments"
-                :last-depth="true"
-                @vision-toggle="visionToggle"
-                @to-like="toLike"
-                @on-submit="onSubmit"
-              />
-            </ul>
-          </ul>
-        </ul>
-      </ul>
-    </ul>
-
-    <div v-if="commentCount > itemsPerPage">
+  <CRow v-if="commentCount > itemsPerPage" class="flex-lg-row flex-column-reverse">
+    <CCol lg="8">
       <Pagination
         :active-page="1"
         :limit="8"
@@ -97,6 +49,6 @@ const commentPages = (pages: number) => Math.ceil(commentCount.value / pages)
         align="end"
         @active-page-change="pageSelect"
       />
-    </div>
-  </div>
+    </CCol>
+  </CRow>
 </template>
