@@ -37,6 +37,7 @@ export type PostFilter = {
   is_com?: boolean
   category?: number | ''
   lawsuit?: number | ''
+  user?: number | ''
   ordering?: string
   search?: string
   page?: number
@@ -204,15 +205,19 @@ export const useDocument = defineStore('document', () => {
       })
       .catch(err => errorHandle(err.response.data))
 
-  const fetchNoticeList = (board: number | undefined) =>
-    api
-      .get(`/post/?board=${board}&is_notice=true`)
+  const fetchNoticeList = async (board: number | undefined) => {
+    let url = `/post/?is_notice=true`
+    url = board ? `${url}&board=${board}` : url
+    return await api
+      .get(url)
       .then(res => (noticeList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
+  }
 
   const fetchPostList = async (payload: PostFilter) => {
     const { board, page } = payload
-    let url = `/post/?board=${board}&page=${page || 1}&is_notice=false`
+    let url = `/post/?page=${page ?? 1}&is_notice=false`
+    if (payload.board) url += `&board=${board}`
     if (payload.company) url += `&company=${payload.company}`
     if (payload.is_com) url += `&is_com=${payload.is_com}`
     if (payload.project) url += `&project=${payload.project}`
