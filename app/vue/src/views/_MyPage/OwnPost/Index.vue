@@ -7,8 +7,10 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ListController from '@/views/_MyPage/OwnPost/components/ListController.vue'
 import PostList from '@/views/_MyPage/OwnPost/components/PostList.vue'
+// import CommentList from '@/views/_MyPage/OwnPost/components/CommentList.vue'
 
 const mainViewName = ref('내 작성글')
+const sort = ref<'post' | 'comment'>('post')
 const userInfo = inject<ComputedRef<User>>('userInfo')
 
 const postFilter = ref<PostFilter>({
@@ -49,9 +51,54 @@ onBeforeMount(() => dataSetup(userInfo?.value.pk as number))
   <ContentBody>
     <CCardBody class="pb-5">
       <div class="pt-3">
-        <ListController ref="fController" :post-filter="postFilter" @list-filter="listFiltering" />
+        <ListController
+          ref="fController"
+          :sort="sort"
+          :post-filter="postFilter"
+          @list-filter="listFiltering"
+        />
 
-        <PostList :post-list="postList" :view-route="mainViewName" @page-select="pageSelect" />
+        <CRow class="pb-2">
+          <CCol sm="12" lg="9" xl="6">
+            <CRow>
+              <CCol class="d-grid gap-2 pr-0">
+                <CFormCheck
+                  v-model="sort"
+                  value="post"
+                  :button="{
+                    color: 'primary',
+                    variant: 'outline',
+                    shape: 'rounded-0',
+                  }"
+                  type="radio"
+                  name="options-outlined"
+                  id="primary-outlined"
+                  label="원글"
+                />
+              </CCol>
+              <CCol class="d-grid gap-2 pl-0">
+                <CFormCheck
+                  v-model="sort"
+                  value="comment"
+                  :button="{ color: 'success', variant: 'outline', shape: 'rounded-0' }"
+                  type="radio"
+                  name="options-outlined"
+                  id="success-outlined"
+                  label="댓글"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
+
+        <PostList
+          v-if="sort === 'post'"
+          :post-list="postList"
+          :view-route="mainViewName"
+          @page-select="pageSelect"
+        />
+
+        <!--        <CommentList v-if="sort === 'comment'" />-->
       </div>
     </CCardBody>
   </ContentBody>

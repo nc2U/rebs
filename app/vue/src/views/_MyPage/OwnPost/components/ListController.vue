@@ -5,6 +5,7 @@ import { numFormat } from '@/utils/baseMixins'
 import { bgLight } from '@/utils/cssMixins'
 
 const props = defineProps({
+  sort: { type: String, default: 'post' },
   postFilter: { type: Object, required: true },
 })
 const emit = defineEmits(['list-filter'])
@@ -55,7 +56,11 @@ onBeforeMount(() => {
       <CCol lg="6">
         <CRow>
           <CCol md="6" lg="5" xl="4" class="mb-3">
-            <CFormSelect v-model="form.ordering" @change="listFiltering(1)">
+            <CFormSelect
+              v-model="form.ordering"
+              @change="listFiltering(1)"
+              :disabled="sort !== 'post'"
+            >
               <option value="created">작성일자 오름차순</option>
               <option value="-created">작성일자 내림차순</option>
               <option value="execution_date">발행일자 오름차순</option>
@@ -75,6 +80,7 @@ onBeforeMount(() => {
                 v-model="form.search"
                 placeholder="제목, 내용, 첨부링크, 첨부파일명, 작성자"
                 @keydown.enter="listFiltering(1)"
+                :disabled="sort !== 'post'"
               />
               <CInputGroupText @click="listFiltering(1)">검색</CInputGroupText>
             </CInputGroup>
