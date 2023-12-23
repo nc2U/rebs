@@ -115,7 +115,7 @@ class CommentFilterSet(FilterSet):
 
     class Meta:
         model = Comment
-        fields = ('user', 'post', 'is_comment')
+        fields = ('user', 'post', 'is_comment', 'user')
 
 
 class CommentViewSet(viewsets.ModelViewSet):
