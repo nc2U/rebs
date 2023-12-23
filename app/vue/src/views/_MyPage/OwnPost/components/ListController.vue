@@ -1,38 +1,27 @@
 <script lang="ts" setup>
 import { reactive, computed, nextTick, onBeforeMount } from 'vue'
-import { useProject } from '@/store/pinia/project'
 import { type PostFilter, useDocument } from '@/store/pinia/document'
 import { numFormat } from '@/utils/baseMixins'
 import { bgLight } from '@/utils/cssMixins'
-import Multiselect from '@vueform/multiselect'
 
 const props = defineProps({
-  comFrom: { type: Boolean, default: false },
-  getSuitCase: { type: Object, default: null },
   postFilter: { type: Object, required: true },
 })
 const emit = defineEmits(['list-filter'])
 
 const form = reactive<PostFilter>({
-  company: '',
-  project: '',
-  is_com: props.comFrom,
-  lawsuit: '',
   ordering: '-created',
   search: '',
 })
 
 const formsCheck = computed(() => {
-  const a = form.is_com === !!props.comFrom
-  const b = !!props.comFrom ? form.project === '' : true
-  const c = !form.lawsuit
-  const d = form.ordering === '-created'
-  const e = form.search === ''
-  return a && b && c && d && e
+  const a = form.ordering === '-created'
+  const b = form.search === ''
+  return a && b
 })
 
-const documentStore = useDocument()
-const postCount = computed(() => documentStore.postCount)
+const docStore = useDocument()
+const postCount = computed(() => docStore.postCount)
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
@@ -43,38 +32,16 @@ const listFiltering = (page = 1) => {
   })
 }
 
-const firstSorting = (event: { target: { value: number | null } }) => {
-  const val = event.target.value
-  if (!val) form.is_com = props.comFrom ?? true
-  else {
-    form.is_com = false
-    form.project = val
-  }
-  listFiltering(1)
-}
-
-const projectChange = (project: number | null) => (form.project = project ?? '')
-
 const resetForm = () => {
-  form.is_com = !!props.comFrom
-  form.project = ''
-  form.lawsuit = ''
   form.ordering = '-created'
   form.search = ''
   listFiltering(1)
 }
 
-defineExpose({ listFiltering, projectChange, resetForm })
+defineExpose({ listFiltering, resetForm })
 
-const projectStore = useProject()
-const projSelect = computed(() => projectStore.projSelect)
-const fetchProjectList = () => projectStore.fetchProjectList()
 onBeforeMount(() => {
-  fetchProjectList()
   if (props.postFilter) {
-    form.company = props.postFilter.company
-    form.project = props.postFilter.project
-    form.is_com = props.postFilter.is_com
     form.ordering = props.postFilter.ordering
     form.search = props.postFilter.search
     form.page = props.postFilter.page
@@ -83,19 +50,10 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <CCallout :color="comFrom ? 'primary' : 'success'" class="pb-0 mb-4" :class="bgLight">
+  <CCallout color="secondary" class="pb-0 mb-4" :class="bgLight">
     <CRow>
       <CCol lg="6">
         <CRow>
-          <CCol v-if="comFrom" md="6" lg="5" xl="4" class="mb-3">
-            <CFormSelect v-model="form.project" @change="firstSorting">
-              <option value="">본사</option>
-              <option v-for="proj in projSelect" :key="proj.value" :value="proj.value">
-                {{ proj.label }}
-              </option>
-            </CFormSelect>
-          </CCol>
-
           <CCol md="6" lg="5" xl="4" class="mb-3">
             <CFormSelect v-model="form.ordering" @change="listFiltering(1)">
               <option value="created">작성일자 오름차순</option>
@@ -111,25 +69,11 @@ onBeforeMount(() => {
 
       <CCol lg="6">
         <CRow class="justify-content-md-end">
-          <CCol v-if="getSuitCase" md="6" lg="5" class="mb-3">
-            <Multiselect
-              v-model="form.lawsuit"
-              :options="getSuitCase"
-              placeholder="사건번호"
-              autocomplete="label"
-              :classes="{ search: 'form-control multiselect-search' }"
-              :add-option-on="['enter', 'tab']"
-              searchable
-              @change="listFiltering(1)"
-            />
-          </CCol>
           <CCol md="6" lg="5" class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.search"
-                :placeholder="`제목, 내용, 첨부링크, 첨부파일명, 작성자${
-                  getSuitCase ? ', 사건번호(명)' : ''
-                }`"
+                placeholder="제목, 내용, 첨부링크, 첨부파일명, 작성자"
                 @keydown.enter="listFiltering(1)"
               />
               <CInputGroupText @click="listFiltering(1)">검색</CInputGroupText>

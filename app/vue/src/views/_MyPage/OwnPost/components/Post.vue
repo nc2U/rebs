@@ -20,6 +20,5 @@ defineProps({
       <CBadge v-if="post.is_new" color="warning" size="sm" class="ml-2">new</CBadge>
     </CTableDataCell>
     <CTableDataCell>{{ timeFormat(post.created ?? '') }}</CTableDataCell>
-    <CTableDataCell>{{ post.hit }}</CTableDataCell>
   </CTableRow>
 </template>

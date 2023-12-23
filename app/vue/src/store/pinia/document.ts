@@ -223,6 +223,7 @@ export const useDocument = defineStore('document', () => {
     if (payload.project) url += `&project=${payload.project}`
     if (payload.category) url += `&category=${payload.category}`
     if (payload.lawsuit) url += `&lawsuit=${payload.lawsuit}`
+    if (payload.user) url += `&user=${payload.user}`
     if (payload.ordering) url += `&ordering=${payload.ordering}`
     if (payload.search) url += `&search=${payload.search}`
     await fetchNoticeList(board)
