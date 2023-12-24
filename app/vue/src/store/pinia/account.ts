@@ -233,7 +233,11 @@ export const useAccount = defineStore('account', () => {
   const deleteScrape = (pk: number) =>
     api
       .delete(`/scrape/${pk}/`)
-      .then(() => fetchScrapeList().then(() => message('warning')))
+      .then(() =>
+        fetchScrapeList().then(() =>
+          message('warning', '', '해당 포스트 스크랩을 취소하였습니다.'),
+        ),
+      )
       .catch(err => errorHandle(err.response.data))
 
   // states

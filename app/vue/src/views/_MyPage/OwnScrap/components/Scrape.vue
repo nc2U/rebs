@@ -59,6 +59,7 @@ onBeforeMount(() => {
             placeholder="스크랩 제목을 입력하세요"
             aria-label="Alias title"
             :aria-describedby="`alias-title-${scrape.pk}`"
+            @keydown.enter="patchTitle"
           />
           <CButton @click="patchTitle" type="button" color="info" :id="`alias-title-${scrape.pk}`">
             저장

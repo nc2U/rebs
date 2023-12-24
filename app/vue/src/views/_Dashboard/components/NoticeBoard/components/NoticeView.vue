@@ -142,17 +142,17 @@ const toScrape = () => {
     refAlertModal.value.callModal('', '이미 이 포스트를 스크랩 하였습니다.')
   else emit('post-scrape', props.post.pk)
 }
-const toBlame = () => alert('신고 기능 준비중!')
+// const toBlame = () => alert('신고 기능 준비중!')
 
 const items = ref([
-  { title: '복사하기', icon: 'content-copy', func: 'toBlame' },
-  { title: '이동하기', icon: 'folder-arrow-right', func: 'toBlame' },
-  { title: '카테고리변경', icon: 'tag-multiple', func: 'toBlame' },
-  { title: '비밀글로', icon: 'lock', func: 'toBlame' },
-  { title: '댓글감춤', icon: 'comment-off', func: 'toBlame' },
-  { title: '공지올림', icon: 'bullhorn-variant', func: 'toBlame' },
-  { title: '블라인드처리', icon: 'eye-off', func: 'toBlame' },
-  { title: '휴지통으로', icon: 'trash-can', func: 'toBlame' },
+  { title: '복사하기', icon: 'content-copy', func: 'toManage' },
+  { title: '이동하기', icon: 'folder-arrow-right', func: 'toManage' },
+  { title: '카테고리변경', icon: 'tag-multiple', func: 'toManage' },
+  { title: '비밀글로', icon: 'lock', func: 'toManage' },
+  { title: '댓글감춤', icon: 'comment-off', func: 'toManage' },
+  { title: '공지올림', icon: 'bullhorn-variant', func: 'toManage' },
+  { title: '블라인드처리', icon: 'eye-off', func: 'toManage' },
+  { title: '휴지통으로', icon: 'trash-can', func: 'toManage' },
 ])
 
 const toManage = (i: number) => alert(`${i} - 관리 기능 준비중!`)
@@ -366,7 +366,7 @@ onMounted(() => {
         >
           스크랩 {{ post.is_scraped ? '+1' : '' }}
         </v-btn>
-        <v-btn variant="tonal" size="small" :rounded="0" class="mr-1" @click="toBlame"> 신고</v-btn>
+        <!--        <v-btn variant="tonal" size="small" :rounded="0" class="mr-1" @click="toBlame"> 신고</v-btn>-->
         <v-btn
           v-if="userInfo?.is_superuser"
           prepend-icon="mdi-cog"
