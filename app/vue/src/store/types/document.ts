@@ -43,6 +43,7 @@ export interface SuitCase {
   other_agency: string
   case_number: string
   case_name: string
+  __str__?: string
   plaintiff: string
   plaintiff_attorney: string
   plaintiff_case_price: number | null
