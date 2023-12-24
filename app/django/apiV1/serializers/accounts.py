@@ -110,6 +110,13 @@ class ScrapeSerializer(serializers.ModelSerializer):
         model = Scrape
         fields = ('pk', 'user', 'post', 'title', 'created')
 
+    def create(self, validated_data):
+        post = self.initial_data.get('post')
+        user = validated_data.get('user')
+        scrape = Scrape(post_id=post, user=user)
+        scrape.save()
+        return scrape
+
 
 class TodoSerializer(serializers.ModelSerializer):
     class Meta:
