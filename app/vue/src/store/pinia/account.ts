@@ -206,9 +206,9 @@ export const useAccount = defineStore('account', () => {
       .then(res => (scrape.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const fetchScrapeList = () =>
+  const fetchScrapeList = (page = 1) =>
     api
-      .get(`/scrape/?user=${userInfo.value?.pk ?? ''}`)
+      .get(`/scrape/?user=${userInfo.value?.pk ?? ''}&page=${page}`)
       .then(res => {
         scrapeList.value = res.data.results
         scrapeCount.value = res.data.count

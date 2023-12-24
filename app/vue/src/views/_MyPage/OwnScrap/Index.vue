@@ -7,18 +7,25 @@ import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ScrapeList from '@/views/_MyPage/OwnScrap/components/ScrapeList.vue'
 
 const mainViewName = ref('스크랩')
+const page = ref<number>(1)
 
 const accStore = useAccount()
 const scrapeList = computed(() => accStore.scrapeList)
+const scrapeCount = computed(() => accStore.scrapeCount)
 
-const fetchScrapeList = () => accStore.fetchScrapeList()
+const fetchScrapeList = (page?: number) => accStore.fetchScrapeList(page)
 const patchScrape = (pk: number, title: string) => accStore.patchScrape(pk, title)
 const deleteScrape = (pk: number) => accStore.deleteScrape(pk)
 
 const patchTitle = (pk: number, title: string) => patchScrape(pk, title)
 const delScrape = (pk: number) => deleteScrape(pk)
 
-onBeforeMount(() => fetchScrapeList())
+const pageSelect = (p: number) => {
+  page.value = p
+  fetchScrapeList(p)
+}
+
+onBeforeMount(() => fetchScrapeList(page.value))
 </script>
 
 <template>
@@ -29,9 +36,12 @@ onBeforeMount(() => fetchScrapeList())
       <div class="pt-3">
         <ScrapeList
           :scrape-list="scrapeList"
+          :scrape-count="scrapeCount"
           :view-route="mainViewName"
+          :page="page"
           @patch-title="patchTitle"
           @del-scrape="delScrape"
+          @page-select="pageSelect"
         />
       </div>
     </CCardBody>

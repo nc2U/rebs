@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
-import { useAccount } from '@/store/pinia/account'
+import { numFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
+import { useAccount } from '@/store/pinia/account'
 import type { Scrape as S } from '@/store/types/accounts'
-import Pagination from '@/components/Pagination'
 import Scrape from './Scrape.vue'
+import Pagination from '@/components/Pagination'
 
 defineProps({
-  page: { type: Number, default: 1 },
   scrapeList: { type: Array as PropType<S[]>, default: () => [] },
+  scrapeCount: { type: Number, default: 0 },
   viewRoute: { type: String, required: true },
+  page: { type: Number, default: 1 },
 })
 
 const emit = defineEmits(['page-select', 'patch-title', 'del-scrape'])
@@ -23,7 +25,7 @@ const delScrape = (pk: number) => emit('del-scrape', pk)
 </script>
 
 <template>
-  <h5>스크랩 : 총 20건</h5>
+  <h5>스크랩 : 총 {{ numFormat(scrapeCount) }}건</h5>
 
   <v-divider />
 
