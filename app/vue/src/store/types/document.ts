@@ -104,6 +104,7 @@ export type Post = {
   files?: AFile[]
   comments?: number[]
   user?: SimpleUser
+  is_scraped?: false
   created?: string
   updated?: string
   is_new?: boolean
