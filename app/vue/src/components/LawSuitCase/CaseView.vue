@@ -52,7 +52,7 @@ const toPrint = () => {
     printWindow.document.open()
 
     // Add the cloned content to the new window
-    printWindow.document.write('<html><head><title>Print</title></head><body>')
+    printWindow.document.write(`<html><head><title>${props.suitcase?.__str__}</title></head><body>`)
     printWindow.document.write(printContent?.innerHTML)
     printWindow.document.write('</body></html>')
 
