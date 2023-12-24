@@ -53,7 +53,13 @@ export type Profile = {
 export interface Scrape {
   pk?: number
   user: number
-  post: number
+  post: {
+    pk: number
+    board: number
+    board_name: string
+    project: number | null
+    title: string
+  }
   title: string
   created: string
 }

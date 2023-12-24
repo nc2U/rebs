@@ -196,8 +196,10 @@ export const useAccount = defineStore('account', () => {
   // states
   const scrape = ref<Scrape | null>(null)
   const scrapeList = ref<Scrape[]>([])
+  const scrapeCount = ref(0)
 
   // actions
+  const scrapePages = (itemsPerPage: number) => Math.ceil(scrapeCount.value / itemsPerPage)
   const fetchScrape = (pk: number) =>
     api
       .get(`/scraper/${pk}/`)
@@ -207,7 +209,10 @@ export const useAccount = defineStore('account', () => {
   const fetchScrapeList = () =>
     api
       .get(`/scraper/?user=${userInfo.value?.pk ?? ''}`)
-      .then(res => (scrapeList.value = res.data.results))
+      .then(res => {
+        scrapeList.value = res.data.results
+        scrapeCount.value = res.data.count
+      })
       .catch(err => errorHandle(err.response.data))
 
   const patchScrape = (pk: number, title: string) =>
@@ -316,7 +321,9 @@ export const useAccount = defineStore('account', () => {
 
     scrape,
     scrapeList,
+    scrapeCount,
 
+    scrapePages,
     fetchScrape,
     fetchScrapeList,
     patchScrape,

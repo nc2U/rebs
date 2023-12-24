@@ -1,26 +1,20 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
-import { useDocument } from '@/store/pinia/document'
+import { useAccount } from '@/store/pinia/account'
 import { TableSecondary } from '@/utils/cssMixins'
-import type { Post as P } from '@/store/types/document'
+import type { Scrape as S } from '@/store/types/accounts'
 import Pagination from '@/components/Pagination'
-import Post from './Post.vue'
 
 defineProps({
-  company: { type: Number, default: null },
-  project: { type: Number, default: null },
   page: { type: Number, default: 1 },
-  postList: { type: Array as PropType<P[]>, default: () => [] },
+  scrapeList: { type: Array as PropType<S[]>, default: () => [] },
   viewRoute: { type: String, required: true },
-  isLawsuit: { type: Boolean, default: false },
-  writeAuth: { type: Boolean, default: true },
 })
 
 const emit = defineEmits(['page-select'])
 
-const documentStore = useDocument()
-
-const postPages = (num: number) => documentStore.postPages(num)
+const accStore = useAccount()
+const scrapePages = (pages: number) => accStore.scrapePages(pages)
 const pageSelect = (page: number) => emit('page-select', page)
 </script>
 
@@ -51,22 +45,23 @@ const pageSelect = (page: number) => emit('page-select', page)
     </CTableHead>
 
     <CTableBody>
-      <Post
-        v-for="post in postList"
-        :key="post.pk"
-        :post="post"
+      <Scrape
+        v-for="scrape in scrapeList"
+        :key="scrape.pk"
+        :scrape="scrape"
         :view-route="viewRoute"
-        :is-lawsuit="isLawsuit"
       />
     </CTableBody>
   </CTable>
+
+  {{ scrapeList }}
 
   <CRow class="flex-lg-row flex-column-reverse">
     <CCol lg="8">
       <Pagination
         :active-page="page"
         :limit="8"
-        :pages="postPages(10)"
+        :pages="scrapePages(10)"
         class="mt-3"
         @active-page-change="pageSelect"
       />
