@@ -13,8 +13,10 @@ const scrapeList = computed(() => accStore.scrapeList)
 
 const fetchScrapeList = () => accStore.fetchScrapeList()
 const patchScrape = (pk: number, title: string) => accStore.patchScrape(pk, title)
+const deleteScrape = (pk: number) => accStore.deleteScrape(pk)
 
 const patchTitle = (pk: number, title: string) => patchScrape(pk, title)
+const delScrape = (pk: number) => deleteScrape(pk)
 
 onBeforeMount(() => fetchScrapeList())
 </script>
@@ -29,6 +31,7 @@ onBeforeMount(() => fetchScrapeList())
           :scrape-list="scrapeList"
           :view-route="mainViewName"
           @patch-title="patchTitle"
+          @del-scrape="delScrape"
         />
       </div>
     </CCardBody>

@@ -12,13 +12,14 @@ defineProps({
   viewRoute: { type: String, required: true },
 })
 
-const emit = defineEmits(['page-select', 'patch-title'])
+const emit = defineEmits(['page-select', 'patch-title', 'del-scrape'])
 
 const accStore = useAccount()
 const scrapePages = (pages: number) => accStore.scrapePages(pages)
 const pageSelect = (page: number) => emit('page-select', page)
 
 const patchTitle = (pk: number, title: string) => emit('patch-title', pk, title)
+const delScrape = (pk: number) => emit('del-scrape', pk)
 </script>
 
 <template>
@@ -54,6 +55,7 @@ const patchTitle = (pk: number, title: string) => emit('patch-title', pk, title)
         :scrape="scrape"
         :view-route="viewRoute"
         @patch-title="patchTitle"
+        @del-scrape="delScrape"
       />
     </CTableBody>
   </CTable>
