@@ -24,7 +24,10 @@ const viewRoute = computed(() => {
   return '공지 사항'
 })
 
-const patchTitle = () => emit('patch-title', props.scrape.pk, scrapeTitle.value)
+const patchTitle = () => {
+  emit('patch-title', props.scrape.pk, scrapeTitle.value)
+  titleEdit.value = false
+}
 
 onBeforeMount(() => {
   if (props.scrape?.title) scrapeTitle.value = props.scrape.title

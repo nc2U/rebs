@@ -215,6 +215,12 @@ export const useAccount = defineStore('account', () => {
       })
       .catch(err => errorHandle(err.response.data))
 
+  const createScrape = (payload: { post: number }) =>
+    api
+      .post('/scrape/', payload)
+      .then(() => message())
+      .catch(err => errorHandle(err.response.data))
+
   const patchScrape = (pk: number, title: string) =>
     api
       .patch(`/scrape/${pk}/`, { title })
@@ -326,6 +332,7 @@ export const useAccount = defineStore('account', () => {
     scrapePages,
     fetchScrape,
     fetchScrapeList,
+    createScrape,
     patchScrape,
     deleteScrape,
 
