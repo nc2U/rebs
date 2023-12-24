@@ -22,7 +22,7 @@ onBeforeMount(() => fetchScrapeList())
   <ContentBody>
     <CCardBody class="pb-5">
       <div class="pt-3">
-        <ScrapeList :scrpae-list="scrapeList" :view-route="mainViewName" />
+        <ScrapeList :scrape-list="scrapeList" :view-route="mainViewName" />
       </div>
     </CCardBody>
   </ContentBody>

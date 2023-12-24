@@ -4,6 +4,7 @@ import { useAccount } from '@/store/pinia/account'
 import { TableSecondary } from '@/utils/cssMixins'
 import type { Scrape as S } from '@/store/types/accounts'
 import Pagination from '@/components/Pagination'
+import Scrape from './Scrape.vue'
 
 defineProps({
   page: { type: Number, default: 1 },
@@ -53,8 +54,6 @@ const pageSelect = (page: number) => emit('page-select', page)
       />
     </CTableBody>
   </CTable>
-
-  {{ scrapeList }}
 
   <CRow class="flex-lg-row flex-column-reverse">
     <CCol lg="8">
