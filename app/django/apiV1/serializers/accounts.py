@@ -1,7 +1,7 @@
 from django.db import transaction
 from rest_framework import serializers
 
-from accounts.models import User, StaffAuth, Profile, Todo
+from accounts.models import User, StaffAuth, Profile, Todo, Scraper
 
 
 # Accounts --------------------------------------------------------------------------
@@ -92,6 +92,12 @@ class ProfileSerializer(serializers.ModelSerializer):
         user.save()
 
         return instance
+
+
+class ScraperSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Scraper
+        fields = ('pk', 'user', 'post', 'title', 'created')
 
 
 class TodoSerializer(serializers.ModelSerializer):

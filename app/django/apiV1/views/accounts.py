@@ -39,6 +39,17 @@ class ProfileViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
+class ScraperViewSet(viewsets.ModelViewSet):
+    queryset = Scraper.objects.all()
+    serializer_class = ScraperSerializer
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOnly)
+    filterset_fields = ('user',)
+    search_fields = ('title', 'post__title', 'post__content')
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
 class TodoViewSet(viewsets.ModelViewSet):
     queryset = Todo.objects.all()
     serializer_class = TodoSerializer
