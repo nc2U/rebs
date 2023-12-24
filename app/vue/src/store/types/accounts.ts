@@ -50,6 +50,20 @@ export type Profile = {
   like_comments?: number[]
 }
 
+export interface Scrape {
+  pk?: number
+  user: number
+  post: {
+    pk: number
+    board: number
+    board_name: string
+    project: number | null
+    title: string
+  }
+  title: string
+  created: string
+}
+
 export interface Todo {
   pk?: number
   user?: number

@@ -19,6 +19,7 @@ router = DefaultRouter()
 router.register(r'user', accounts.UserViewSet)
 router.register(r'staff-auth', accounts.StaffAuthViewSet)
 router.register(r'profile', accounts.ProfileViewSet)
+router.register(r'scrape', accounts.ScrapeViewSet)
 router.register(r'todo', accounts.TodoViewSet)
 # company
 router.register(r'company', company.CompanyViewSet)

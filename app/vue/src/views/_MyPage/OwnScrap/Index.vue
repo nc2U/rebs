@@ -1,21 +1,22 @@
 <script lang="ts" setup="">
-import { computed, type ComputedRef, inject, onBeforeMount, ref } from 'vue'
-import { pageTitle, navMenu } from '@/views/_MyPage/_menu/headermixin'
-import type { User } from '@/store/types/accounts'
-import { type PostFilter, useDocument } from '@/store/pinia/document'
+import { computed, onBeforeMount, ref } from 'vue'
+import { navMenu, pageTitle } from '@/views/_MyPage/_menu/headermixin'
+import { useAccount } from '@/store/pinia/account'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
-import PostList from '@/views/_MyPage/OwnScrap/components/PostList.vue'
+import ScrapeList from '@/views/_MyPage/OwnScrap/components/ScrapeList.vue'
 
 const mainViewName = ref('스크랩')
-const userInfo = inject<ComputedRef<User>>('userInfo')
 
-const docStore = useDocument()
-const postList = computed(() => docStore.postList)
+const accStore = useAccount()
+const scrapeList = computed(() => accStore.scrapeList)
 
-const fetchPostList = (payload: PostFilter) => docStore.fetchPostList(payload)
+const fetchScrapeList = () => accStore.fetchScrapeList()
+const patchScrape = (pk: number, title: string) => accStore.patchScrape(pk, title)
 
-onBeforeMount(() => fetchPostList({ user: userInfo?.value.pk }))
+const patchTitle = (pk: number, title: string) => patchScrape(pk, title)
+
+onBeforeMount(() => fetchScrapeList())
 </script>
 
 <template>
@@ -24,7 +25,11 @@ onBeforeMount(() => fetchPostList({ user: userInfo?.value.pk }))
   <ContentBody>
     <CCardBody class="pb-5">
       <div class="pt-3">
-        <PostList :post-list="postList" :view-route="mainViewName" />
+        <ScrapeList
+          :scrape-list="scrapeList"
+          :view-route="mainViewName"
+          @patch-title="patchTitle"
+        />
       </div>
     </CCardBody>
   </ContentBody>
