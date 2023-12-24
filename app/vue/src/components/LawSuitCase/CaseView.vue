@@ -113,22 +113,6 @@ const shareKakaoTalk = () => {
   })
 }
 
-const toScrape = () => alert('스크랩 기능 중비중!')
-const toBlame = () => alert('신고 기능 준비중!')
-
-const items = ref([
-  { title: '복사하기', icon: 'content-copy', func: 'toBlame' },
-  { title: '이동하기', icon: 'folder-arrow-right', func: 'toBlame' },
-  { title: '카테고리변경', icon: 'tag-multiple', func: 'toBlame' },
-  { title: '비밀글로', icon: 'lock', func: 'toBlame' },
-  { title: '댓글감춤', icon: 'comment-off', func: 'toBlame' },
-  { title: '공지올림', icon: 'bullhorn-variant', func: 'toBlame' },
-  { title: '블라인드처리', icon: 'eye-off', func: 'toBlame' },
-  { title: '휴지통으로', icon: 'trash-can', func: 'toBlame' },
-])
-
-const toManage = (i: number) => alert(`${i} - 관리 기능 준비중!`)
-
 const toEdit = () => {
   router.push({
     name: `${props.viewRoute} - 수정`,
@@ -409,36 +393,6 @@ onBeforeMount(() => {
         </a>
         <v-icon icon="mdi-facebook" class="mr-2" @click="shareFacebook" />
         <v-icon icon="mdi-twitter" class="mr-2" @click="shareTwitter" />
-      </CCol>
-      <CCol class="text-right">
-        <v-btn variant="tonal" size="small" :rounded="0" class="mr-1" @click="toScrape">
-          스크랩
-        </v-btn>
-        <v-btn variant="tonal" size="small" :rounded="0" class="mr-1" @click="toBlame"> 신고</v-btn>
-        <v-btn
-          v-if="userInfo?.is_superuser"
-          prepend-icon="mdi-cog"
-          variant="tonal"
-          size="small"
-          :rounded="0"
-        >
-          관리
-          <v-menu activator="parent" open-on-hover>
-            <v-list density="compact">
-              <v-list-item
-                v-for="(item, index) in items"
-                :key="index"
-                :value="index"
-                @click="toManage(index + 1)"
-              >
-                <v-list-item-title style="font-size: 0.9em">
-                  <v-icon :icon="`mdi-${item.icon}`" size="sm" />
-                  {{ item.title }}
-                </v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </v-btn>
       </CCol>
     </CRow>
 
