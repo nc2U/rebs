@@ -4,7 +4,7 @@ import { Buffer } from 'buffer'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
-import { type User, type StaffAuth, type Profile, type Todo } from '@/store/types/accounts'
+import type { User, StaffAuth, Profile, Scrape, Todo } from '@/store/types/accounts'
 
 type LoginUser = { email: string; password: string }
 
@@ -17,36 +17,17 @@ const extractId = (token: string) => {
 
 export const useAccount = defineStore('account', () => {
   // states
-  const usersList = ref<User[]>([])
   const user = ref<User | null>(null)
-  const accessToken = ref<string>('')
   const userInfo = ref<User | null>(null)
-  const profile = ref<Profile | null>(null)
-  const todoList = ref<Todo[]>([])
+  const usersList = ref<User[]>([])
+  const accessToken = ref<string>('')
   const passChecked = ref(false)
 
   // getters
-  const isAuthorized = computed(() => !!accessToken.value && !!userInfo.value)
-  const superAuth = computed(() => userInfo.value?.is_superuser)
-  const staffAuth = computed(() => (userInfo.value?.staffauth ? userInfo.value.staffauth : null))
-
-  const writeComDocs = computed(() => superAuth.value || staffAuth.value?.company_docs == '2')
-  const writeProDocs = computed(
-    () => superAuth.value || writeComDocs.value || staffAuth.value?.project_docs == '2',
-  )
-  const writeComCash = computed(() => superAuth.value || staffAuth.value?.company_cash == '2')
-  const writeProCash = computed(
-    () => superAuth.value || writeComCash.value || staffAuth.value?.project_cash == '2',
-  )
-
-  const myTodos = computed(() =>
-    todoList.value.filter(todo => !todo.soft_deleted && todo.user === userInfo.value?.pk),
-  )
   const getUsers = computed(() =>
     usersList.value.map((u: User) => ({ value: u.pk, label: u.username })),
   )
-  const likePosts = computed(() => profile.value?.like_posts)
-  const likeComments = computed(() => profile.value?.like_comments)
+  const isAuthorized = computed(() => !!accessToken.value && !!userInfo.value)
 
   // actions
   const fetchUsersList = () =>
@@ -141,6 +122,20 @@ export const useAccount = defineStore('account', () => {
       .then(res => console.log(res.data))
       .catch(err => errorHandle(err.response.data))
 
+  // getters
+  const superAuth = computed(() => userInfo.value?.is_superuser)
+  const staffAuth = computed(() => (userInfo.value?.staffauth ? userInfo.value.staffauth : null))
+
+  const writeComDocs = computed(() => superAuth.value || staffAuth.value?.company_docs == '2')
+  const writeProDocs = computed(
+    () => superAuth.value || writeComDocs.value || staffAuth.value?.project_docs == '2',
+  )
+  const writeComCash = computed(() => superAuth.value || staffAuth.value?.company_cash == '2')
+  const writeProCash = computed(
+    () => superAuth.value || writeComCash.value || staffAuth.value?.project_cash == '2',
+  )
+
+  // actions
   const createAuth = async (payload: StaffAuth, userPk: number) => {
     payload.user = userPk
     return await api
@@ -157,6 +152,14 @@ export const useAccount = defineStore('account', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
+  // states
+  const profile = ref<Profile | null>(null)
+
+  // getters
+  const likePosts = computed(() => profile.value?.like_posts)
+  const likeComments = computed(() => profile.value?.like_comments)
+
+  // actions
   const fetchProfile = async () => {
     const profilePk = userInfo.value?.profile?.pk ?? null
     return profilePk
@@ -189,6 +192,43 @@ export const useAccount = defineStore('account', () => {
       })
       .catch(err => errorHandle(err.response.data))
   }
+
+  // states
+  const scrape = ref<Scrape | null>(null)
+  const scrapeList = ref<Scrape[]>([])
+
+  // actions
+  const fetchScrape = (pk: number) =>
+    api
+      .get(`/scraper/${pk}/`)
+      .then(res => (scrape.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchScrapeList = () =>
+    api
+      .get(`/scraper/?user=${userInfo.value?.pk ?? ''}`)
+      .then(res => (scrapeList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
+  const patchScrape = (pk: number, title: string) =>
+    api
+      .patch(`/scrape/${pk}/`, { title })
+      .then(() => fetchScrapeList().then(() => message()))
+      .catch(err => errorHandle(err.response.data))
+
+  const deleteScrape = (pk: number) =>
+    api
+      .delete(`/scrape/${pk}/`)
+      .then(() => fetchScrapeList().then(() => message('warning')))
+      .catch(err => errorHandle(err.response.data))
+
+  // states
+  const todoList = ref<Todo[]>([])
+
+  // getters
+  const myTodos = computed(() =>
+    todoList.value.filter(todo => !todo.soft_deleted && todo.user === userInfo.value?.pk),
+  )
 
   const fetchTodoList = async () => {
     const url = userInfo.value ? `/todo/?user=${userInfo.value.pk}&soft_deleted=false` : '/todo/'
@@ -238,23 +278,12 @@ export const useAccount = defineStore('account', () => {
 
   return {
     user,
-    accessToken,
     userInfo,
-    profile,
-    todoList,
+    accessToken,
     passChecked,
 
-    isAuthorized,
-    superAuth,
-    staffAuth,
-    writeComDocs,
-    writeProDocs,
-    writeComCash,
-    writeProCash,
-    myTodos,
     getUsers,
-    likePosts,
-    likeComments,
+    isAuthorized,
 
     fetchUsersList,
     fetchUser,
@@ -266,12 +295,35 @@ export const useAccount = defineStore('account', () => {
     changePassword,
     resetPassword,
 
+    superAuth,
+    staffAuth,
+    writeComDocs,
+    writeProDocs,
+    writeComCash,
+    writeProCash,
+
     createAuth,
     patchAuth,
+
+    profile,
+
+    likePosts,
+    likeComments,
 
     fetchProfile,
     createProfile,
     patchProfile,
+
+    scrape,
+    scrapeList,
+
+    fetchScrape,
+    fetchScrapeList,
+    patchScrape,
+    deleteScrape,
+
+    todoList,
+    myTodos,
 
     fetchTodoList,
     createTodo,
