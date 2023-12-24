@@ -120,7 +120,10 @@ const fileHit = async (pk: number) => {
   await patchFile({ pk, hit })
 }
 
-const postScrape = (post: number) => createScrape({ post, user: accStore.userInfo.pk }) // 스크랩 추가
+const postScrape = (post: number) => {
+  const user = accStore.userInfo?.pk as number
+  createScrape({ post, user }) // 스크랩 추가
+}
 
 const onSubmit = async (payload: Post & Attatches) => {
   if (company.value) {

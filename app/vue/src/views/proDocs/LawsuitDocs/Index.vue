@@ -13,6 +13,7 @@ import CategoryTabs from '@/components/Documents/CategoryTabs.vue'
 import DocsList from '@/components/Documents/DocsList.vue'
 import DocsView from '@/components/Documents/DocsView.vue'
 import DocsForm from '@/components/Documents/DocsForm.vue'
+import NoticeView from '@/views/_Dashboard/components/NoticeBoard/components/NoticeView.vue'
 
 const fController = ref()
 const boardNumber = ref(3)
@@ -60,6 +61,8 @@ const accStore = useAccount()
 const likePosts = computed(() => accStore.likePosts)
 const writeAuth = computed(() => accStore.writeProDocs)
 
+const createScrape = (payload: { post: number; user: number }) => accStore.createScrape(payload)
+
 const docStore = useDocument()
 const post = computed(() => docStore.post)
 const postList = computed(() => docStore.postList)
@@ -96,6 +99,11 @@ const postsRenewal = (page: number) => {
 const fileChange = (payload: { pk: number; file: File }) => cngFiles.value.push(payload)
 
 const fileUpload = (file: File) => newFiles.value.push(file)
+
+const postScrape = (post: number) => {
+  const user = accStore.userInfo?.pk as number
+  createScrape({ post, user }) // 스크랩 추가
+}
 
 const onSubmit = async (payload: Post & Attatches) => {
   if (project.value) {
@@ -232,6 +240,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId, route.param
           @post-hit="postHit"
           @link-hit="linkHit"
           @file-hit="fileHit"
+          @post-scrape="postScrape"
           @posts-renewal="postsRenewal"
         />
       </div>
