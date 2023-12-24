@@ -137,6 +137,10 @@ class Scrape(models.Model):
     title = models.CharField('스크랩 타이틀', max_length=50, blank=True, default='')
     created = models.DateTimeField('보관일', auto_now_add=True)
 
+    class Meta:
+        verbose_name = '스크랩'
+        verbose_name_plural = '스크랩'
+
 
 class Todo(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='todos')
