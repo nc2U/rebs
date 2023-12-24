@@ -4,7 +4,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
 
 from .forms import UserCreationForm, UserChangeForm
-from .models import User, StaffAuth, Profile, Todo, Scraper
+from .models import User, StaffAuth, Profile, Todo, Scrape
 
 
 # class StaffAuthInline(admin.StackedInline):
@@ -48,11 +48,11 @@ class UserAdmin(ImportExportMixin, BaseUserAdmin):
     # inlines = (StaffAuthInline, ProfileInline, TodosInline)
 
 
-class ScraperAdmin(ImportExportMixin, admin.ModelAdmin):
+class ScrapeAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('pk', 'user', 'post', 'title', 'created')
     list_display_links = ('user', 'post')
 
 
 # Now register the new UserAdmin...
 admin.site.register(User, UserAdmin)
-admin.site.register(Scraper, ScraperAdmin)
+admin.site.register(Scrape, ScrapeAdmin)

@@ -12,6 +12,9 @@ const accStore = useAccount()
 const scrapeList = computed(() => accStore.scrapeList)
 
 const fetchScrapeList = () => accStore.fetchScrapeList()
+const patchScrape = (pk: number, title: string) => accStore.patchScrape(pk, title)
+
+const patchTitle = (pk: number, title: string) => patchScrape(pk, title)
 
 onBeforeMount(() => fetchScrapeList())
 </script>
@@ -22,7 +25,11 @@ onBeforeMount(() => fetchScrapeList())
   <ContentBody>
     <CCardBody class="pb-5">
       <div class="pt-3">
-        <ScrapeList :scrape-list="scrapeList" :view-route="mainViewName" />
+        <ScrapeList
+          :scrape-list="scrapeList"
+          :view-route="mainViewName"
+          @patch-title="patchTitle"
+        />
       </div>
     </CCardBody>
   </ContentBody>

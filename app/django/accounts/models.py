@@ -131,7 +131,7 @@ class Profile(models.Model):
         verbose_name_plural = '사용자 프로필'
 
 
-class Scraper(models.Model):
+class Scrape(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     title = models.CharField('스크랩 타이틀', max_length=50, blank=True, default='')

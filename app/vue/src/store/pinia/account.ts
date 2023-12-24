@@ -202,13 +202,13 @@ export const useAccount = defineStore('account', () => {
   const scrapePages = (itemsPerPage: number) => Math.ceil(scrapeCount.value / itemsPerPage)
   const fetchScrape = (pk: number) =>
     api
-      .get(`/scraper/${pk}/`)
+      .get(`/scrape/${pk}/`)
       .then(res => (scrape.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
   const fetchScrapeList = () =>
     api
-      .get(`/scraper/?user=${userInfo.value?.pk ?? ''}`)
+      .get(`/scrape/?user=${userInfo.value?.pk ?? ''}`)
       .then(res => {
         scrapeList.value = res.data.results
         scrapeCount.value = res.data.count

@@ -39,9 +39,9 @@ class ProfileViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-class ScraperViewSet(viewsets.ModelViewSet):
-    queryset = Scraper.objects.all()
-    serializer_class = ScraperSerializer
+class ScrapeViewSet(viewsets.ModelViewSet):
+    queryset = Scrape.objects.all()
+    serializer_class = ScrapeSerializer
     permission_classes = (permissions.IsAuthenticated, IsOwnerOnly)
     filterset_fields = ('user',)
     search_fields = ('title', 'post__title', 'post__content')
