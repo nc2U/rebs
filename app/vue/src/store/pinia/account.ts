@@ -5,6 +5,7 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
 import type { User, StaffAuth, Profile, Scrape, Todo } from '@/store/types/accounts'
+import { useDocument } from '@/store/pinia/document'
 
 type LoginUser = { email: string; password: string }
 
@@ -215,10 +216,12 @@ export const useAccount = defineStore('account', () => {
       })
       .catch(err => errorHandle(err.response.data))
 
-  const createScrape = (payload: { post: number }) =>
+  const docStore = useDocument()
+
+  const createScrape = (payload: { post: number; user: number }) =>
     api
       .post('/scrape/', payload)
-      .then(() => message())
+      .then(() => docStore.fetchPost(payload.post))
       .catch(err => errorHandle(err.response.data))
 
   const patchScrape = (pk: number, title: string) =>

@@ -42,7 +42,7 @@ onBeforeMount(() => {
 
 <template>
   <CTableRow v-if="scrape" class="text-center">
-    <CTableDataCell>{{ scrape.pk }}</CTableDataCell>
+    <CTableDataCell>{{ scrape.post.pk }}</CTableDataCell>
     <CTableDataCell>
       <router-link :to="{ name: viewRoute }">{{ scrape.post.board_name }}</router-link>
     </CTableDataCell>

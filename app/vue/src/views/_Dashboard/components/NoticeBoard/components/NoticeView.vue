@@ -35,6 +35,7 @@ const emit = defineEmits([
   'post-hit',
   'link-hit',
   'file-hit',
+  'post-scrape',
   'posts-renewal',
   'post-delete',
 ])
@@ -136,7 +137,11 @@ const shareKakaoTalk = () => {
   })
 }
 
-const toScrape = () => alert('스크랩 기능 중비중!')
+const toScrape = () => {
+  if (props.post.is_scraped)
+    refAlertModal.value.callModal('', '이미 이 포스트를 스크랩 하였습니다.')
+  else emit('post-scrape', props.post.pk)
+}
 const toBlame = () => alert('신고 기능 준비중!')
 
 const items = ref([
@@ -351,8 +356,15 @@ onMounted(() => {
         <v-icon icon="mdi-twitter" class="mr-2" @click="shareTwitter" />
       </CCol>
       <CCol class="text-right">
-        <v-btn variant="tonal" size="small" :rounded="0" class="mr-1" @click="toScrape">
-          스크랩
+        <v-btn
+          variant="tonal"
+          :color="post.is_scraped ? 'primary' : ''"
+          size="small"
+          :rounded="0"
+          class="mr-1"
+          @click="toScrape"
+        >
+          스크랩 {{ post.is_scraped ? '+1' : '' }}
         </v-btn>
         <v-btn variant="tonal" size="small" :rounded="0" class="mr-1" @click="toBlame"> 신고</v-btn>
         <v-btn

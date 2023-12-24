@@ -166,15 +166,16 @@ class PostSerializer(serializers.ModelSerializer):
     links = LinksInPostSerializer(many=True, read_only=True)
     files = FilesInPostSerializer(many=True, read_only=True)
     user = UserInDocumentsSerializer(read_only=True)
-    prev_pk = serializers.SerializerMethodField()
-    next_pk = serializers.SerializerMethodField()
+    is_scraped = serializers.SerializerMethodField(read_only=True)
+    prev_pk = serializers.SerializerMethodField(read_only=True)
+    next_pk = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Post
         fields = ('pk', 'company', 'project', 'proj_name', 'board', 'board_name', 'is_notice', 'category',
                   'cate_name', 'lawsuit', 'lawsuit_name', 'title', 'execution_date', 'is_hide_comment',
                   'content', 'hit', 'like', 'blame', 'ip', 'device', 'secret', 'password', 'links', 'files',
-                  'comments', 'user', 'created', 'updated', 'is_new', 'prev_pk', 'next_pk')
+                  'comments', 'user', 'is_scraped', 'created', 'updated', 'is_new', 'prev_pk', 'next_pk')
         read_only_fields = ('ip', 'comments')
 
     def get_collection(self):
@@ -209,6 +210,12 @@ class PostSerializer(serializers.ModelSerializer):
         ) if search else queryset
 
         return queryset
+
+    def get_is_scraped(self, obj):
+        user = self.context['request'].user
+        scrapes = obj.scrape_set.all()
+        users = [s.user for s in scrapes]
+        return user in users
 
     def get_prev_pk(self, obj):
         prev_obj = self.get_collection().filter(created__lt=obj.created).first()

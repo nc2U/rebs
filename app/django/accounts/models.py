@@ -137,6 +137,9 @@ class Scrape(models.Model):
     title = models.CharField('스크랩 타이틀', max_length=50, blank=True, default='')
     created = models.DateTimeField('보관일', auto_now_add=True)
 
+    def __str__(self):
+        return self.title if self.title else self.post.title
+
     class Meta:
         verbose_name = '스크랩'
         verbose_name_plural = '스크랩'
