@@ -56,6 +56,8 @@ const accStore = useAccount()
 const likePosts = computed(() => accStore.likePosts)
 const writeAuth = computed(() => accStore.writeComDocs)
 
+const createScrape = (payload: { post: number; user: number }) => accStore.createScrape(payload)
+
 const docStore = useDocument()
 const post = computed(() => docStore.post)
 const postList = computed(() => docStore.postList)
@@ -117,6 +119,8 @@ const fileHit = async (pk: number) => {
   const hit = (file.hit as number) + 1
   await patchFile({ pk, hit })
 }
+
+const postScrape = (post: number) => createScrape({ post, user: accStore.userInfo.pk }) // 스크랩 추가
 
 const onSubmit = async (payload: Post & Attatches) => {
   if (company.value) {
@@ -218,6 +222,7 @@ onBeforeMount(() => dataSetup(company.value ?? comStore.initComId, route.params?
             @post-hit="postHit"
             @link-hit="linkHit"
             @file-hit="fileHit"
+            @post-scrape="postScrape"
             @posts-renewal="postsRenewal"
             @post-delete="postDelete"
           />
