@@ -7,17 +7,17 @@ global:
 
 nginx:
   replicaCount: 1
-
+  
   service:
     port: 8881
-
+  
   ingress:
     hosts:
-      - host: "host-path" # Host address
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
+    - host: "host-path" # Host address
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
     tls:
-      - secretName: web-dev-kr-cert
-        hosts:
-          - "host-path" # Host address
+    - secretName: web-dev-kr-tls
+      hosts:
+      - "host-path" # Host address

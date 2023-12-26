@@ -5,14 +5,14 @@
 nginx:
   ingress:
     hosts:
-      - host: "host-path" # Host address
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
+    - host: "host-path" # Host address
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
     tls:
-      - secretName: web-prod-kr-cert
-        hosts:
-          - "host-path" # Host address
+    - secretName: web-prod-kr-tls
+      hosts:
+      - "host-path" # Host address
 
 web:
   imageConfigMaps:

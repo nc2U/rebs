@@ -24,7 +24,7 @@ nginx:
   service:
     type: LoadBalancer
     port: 8880
-
+  
   ingress:
     enabled: true
     className: nginx
@@ -36,11 +36,11 @@ nginx:
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/proxy-body-size: "100M"
     hosts:
-      - host: "host-path" # Host address
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
+    - host: "host-path" # Host address
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
     tls:
-      - secretName: web-dev-kr-cert
-        hosts:
-          - "host-path" # Host address
+    - secretName: web-dev-kr-tls
+      hosts:
+      - "host-path" # Host address

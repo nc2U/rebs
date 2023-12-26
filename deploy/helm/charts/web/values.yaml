@@ -17,7 +17,7 @@ fullnameOverride: "web"
 imageConfigMaps:
   #  awsStorageBucketName: ""
   djangoSettingsModule: _config.settings.local
-
+  
   #imageSecrets:
   ##  awsAccessKeyId: # QUtJQTRTTENFQ1hUV042RFNNTEs=
   ##  awsSecretAccessKey: # eHBIYzR4OGhsYXBkSzBGbGlQVjF6WlZxUXV6cHZyeWlQbjFFU29tOA==
@@ -55,10 +55,10 @@ ingress:
   # kubernetes.io/ingress.class: nginx
   # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
+  - host: chart-example.local
+    paths:
+    - path: /
+      pathType: ImplementationSpecific
   tls: [ ]
   #  - secretName: chart-example-tls
   #    hosts:
@@ -66,7 +66,7 @@ ingress:
 
 volumes:
   djangoAccessModes:
-    - ReadWriteMany
+  - ReadWriteMany
   djangoPvStorageProd: 10Gi
   djangoPvStorageDev: 400Mi
   djangoPvcStorageProd: 10Gi

@@ -54,10 +54,10 @@ ingress:
   annotations: { }
   # - kubernetes.io/tls-acme: "true"
   hosts:
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
+  - host: chart-example.local
+    paths:
+    - path: /
+      pathType: ImplementationSpecific
   tls: [ ]
   #  - secretName: chart-example-tls
   #    hosts:
@@ -65,7 +65,7 @@ ingress:
 
 volumes:
   RWMAccessModes:
-    - ReadWriteMany
+  - ReadWriteMany
   staticStorageProd: 500Mi
   staticStorageDev: 200Mi
   mediaStorageProd: 500Mi
