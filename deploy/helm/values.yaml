@@ -27,9 +27,8 @@ nginx:
 
   ingress:
     enabled: true
-    className: ""
+    className: nginx
     annotations:
-      kubernetes.io/ingress.class: nginx
       kubernetes.io/tls-acme: "true"
       cert-manager.io/cluster-issuer: letsencrypt-issuer
       nginx.ingress.kubernetes.io/rewrite-target: /
