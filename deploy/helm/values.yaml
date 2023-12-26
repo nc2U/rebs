@@ -41,6 +41,6 @@ nginx:
           - path: /
             pathType: ImplementationSpecific
     tls:
-      - secretName: web-devbox-kr-cert
+      - secretName: web-dev-kr-cert
         hosts:
           - "host-path" # Host address
