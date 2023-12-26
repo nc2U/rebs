@@ -30,7 +30,7 @@ nginx:
     className: nginx
     annotations:
       kubernetes.io/tls-acme: "true"
-      cert-manager.io/cluster-issuer: letsencrypt-issuer
+      cert-manager.io/issuer: "letsencrypt-prod"
       nginx.ingress.kubernetes.io/rewrite-target: /
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
