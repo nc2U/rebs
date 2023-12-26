@@ -1,18 +1,18 @@
 apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
+kind: Issuer
 metadata:
-  name: letsencrypt-issuer
+  name: letsencrypt-prod
 spec:
-  acme: # Automated Certificate Management Environment
-    # The ACME server URL, 어떤 acme 서버를 사용할 지 지정 (아래 예제는 let's encrypt의 CA)
+  acme:
+    # The ACME server URL
     server: https://acme-v02.api.letsencrypt.org/directory
     # Email address used for ACME registration
-    email: abc@defg.com # 사용자 이메일 주소 기재
+    email: user@example.com # <--- modify
     # Name of a secret used to store the ACME account private key
-    privateKeySecretRef: # 사용자의 개인키를 저장할 Secret 리소스 이름을 지정
-      name: issuer-key
+    privateKeySecretRef:
+      name: letsencrypt-prod
     # Enable the HTTP-01 challenge provider
-    solvers: # 도메인 주소에 대한 소유권 증명을 위한 방법 선택
-      - http01: # http 요청을 통한 도메인 주소 소유권 증명 방법 사용
-          ingress: # 이 때 사용할 ingress 컨트롤러 지정
-            class: nginx # 자신의 ingress 컨트롤러 타입 기재
+    solvers:
+      - http01:
+          ingress:
+            ingressClassName: nginx # <--- modify
