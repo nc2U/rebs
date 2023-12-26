@@ -19,8 +19,8 @@ imageConfigMaps:
   djangoSettingsModule: _config.settings.local
   
   #imageSecrets:
-  ##  awsAccessKeyId: # QUtJQTRTTENFQ1hUV042RFNNTEs=
-  ##  awsSecretAccessKey: # eHBIYzR4OGhsYXBkSzBGbGlQVjF6WlZxUXV6cHZyeWlQbjFFU29tOA==
+  ##  awsAccessKeyId:
+  ##  awsSecretAccessKey:
 
 serviceAccount:
   # Specifies whether a service account should be created
