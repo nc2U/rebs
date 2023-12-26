@@ -43,12 +43,12 @@ spec:
             - name: https
               containerPort: 443
               protocol: TCP
-          livenessProbe:
-            {{- $hosts := .Values.ingress.hosts | first -}}
-            httpGet: # Http 리퀘스트 반환 값에 따라 체크함
-              host: {{ get $hosts "host" }}
-              path: /
-              port: {{ .Values.service.port }}
+{{/*          livenessProbe:*/}}
+{{/*            {{- $hosts := .Values.ingress.hosts | first -}}*/}}
+{{/*            httpGet: # Http 리퀘스트 반환 값에 따라 체크함*/}}
+{{/*              host: {{ get $hosts "host" }}*/}}
+{{/*              path: /*/}}
+{{/*              port: {{ .Values.service.port }}*/}}
 {{/*              periodSeconds: 60*/}}
 {{/*              initialDelaySeconds: 30*/}}
 {{/*              failureThreshold: 2*/}}
