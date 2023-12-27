@@ -57,35 +57,29 @@ jobs:
           cd ${{ secrets.CICD_PATH }}/prod
           mkdir -p ./volume/mysql; cd deploy/helm
           helm upgrade ${{ secrets.DATABASE_USER }} . -f ./values-prod.yaml \
-            --install -n prod-hrebs --create-namespace --history-max 5 --wait --timeout 10m \
-            --set global.dbPassword=${{ secrets.DATABASE_PASS }} \
-            --set global.cicdPath=${{ secrets.CICD_PATH }} \
-            --set global.cicdServerHost=${{ secrets.CICD_HOST }} \
-            --set global.nfsPath=${{ secrets.NFS_PATH }} \
-            --set global.nfsServerHost=${{ secrets.NFS_HOST }} \
-            --set global.emailHost=${{ secrets.EMAIL_HOST }} \
-            --set global.emailHostUser=${{ secrets.EMAIL_HOST_USER }} \
-            --set global.emailHostPassword=${{ secrets.EMAIL_HOST_PASSWORD }} \
-            --set 'nginx.ingress.tls[0].hosts[0]'=${{ secrets.DOMAIN_NAME }} \
-            --set 'nginx.ingress.tls[0].hosts[1]'=www.${{ secrets.DOMAIN_NAME }} \
-            --set 'nginx.ingress.tls[0].hosts[2]'=api.${{ secrets.DOMAIN_NAME }} \
-            --set 'nginx.ingress.tls[0].hosts[3]'=info.${{ secrets.DOMAIN_NAME }} \
-            --set 'nginx.ingress.tls[0].hosts[4]'=mail.${{ secrets.DOMAIN_NAME }} \
-            --set 'nginx.ingress.hosts[0].host'=${{ secrets.DOMAIN_NAME }} \
-            --set 'nginx.ingress.hosts[1].host'=www.${{ secrets.DOMAIN_NAME }} \
-            --set 'nginx.ingress.hosts[2].host'=api.${{ secrets.DOMAIN_NAME }} \
-            --set 'nginx.ingress.hosts[3].host'=info.${{ secrets.DOMAIN_NAME }} \
-            --set 'nginx.ingress.hosts[4].host'=mail.${{ secrets.DOMAIN_NAME }} \
-            --set 'nginx.ingress.hosts[0].paths[0].path'=/ \
-            --set 'nginx.ingress.hosts[0].paths[0].pathType'=ImplementationSpecific \
-            --set 'nginx.ingress.hosts[1].paths[0].path'=/ \
-            --set 'nginx.ingress.hosts[1].paths[0].pathType'=ImplementationSpecific \
-            --set 'nginx.ingress.hosts[2].paths[0].path'=/ \
-            --set 'nginx.ingress.hosts[2].paths[0].pathType'=ImplementationSpecific \
-            --set 'nginx.ingress.hosts[3].paths[0].path'=/ \
-            --set 'nginx.ingress.hosts[3].paths[0].pathType'=ImplementationSpecific \
-            --set 'nginx.ingress.hosts[4].paths[0].path'=/ \
-            --set 'nginx.ingress.hosts[4].paths[0].pathType'=ImplementationSpecific
+          --install -n prod-hrebs --create-namespace --history-max 5 --wait --timeout 10m \
+          --set global.dbPassword=${{ secrets.DATABASE_PASS }} \
+          --set global.cicdPath=${{ secrets.CICD_PATH }} \
+          --set global.cicdServerHost=${{ secrets.CICD_HOST }} \
+          --set global.nfsPath=${{ secrets.NFS_PATH }} \
+          --set global.nfsServerHost=${{ secrets.NFS_HOST }} \
+          --set global.emailHost=${{ secrets.EMAIL_HOST }} \
+          --set global.emailHostUser=${{ secrets.EMAIL_HOST_USER }} \
+          --set global.emailHostPassword=${{ secrets.EMAIL_HOST_PASSWORD }} \
+          --set 'nginx.ingress.tls[0].hosts[0]'=${{ secrets.DOMAIN_NAME }} \
+          --set 'nginx.ingress.tls[0].hosts[1]'=www.${{ secrets.DOMAIN_NAME }} \
+          --set 'nginx.ingress.hosts[0].host'=${{ secrets.DOMAIN_NAME }} \
+          --set 'nginx.ingress.hosts[1].host'=www.${{ secrets.DOMAIN_NAME }} \
+          --set 'nginx.ingress.hosts[0].paths[0].path'=/ \
+          --set 'nginx.ingress.hosts[0].paths[0].pathType'=ImplementationSpecific \
+          --set 'nginx.ingress.hosts[1].paths[0].path'=/ \
+          --set 'nginx.ingress.hosts[1].paths[0].pathType'=ImplementationSpecific
+    #            --set 'nginx.ingress.hosts[2].paths[0].path'=/ \
+    #            --set 'nginx.ingress.hosts[2].paths[0].pathType'=ImplementationSpecific \
+    #            --set 'nginx.ingress.hosts[3].paths[0].path'=/ \
+    #            --set 'nginx.ingress.hosts[3].paths[0].pathType'=ImplementationSpecific \
+    #            --set 'nginx.ingress.hosts[4].paths[0].path'=/ \
+    #            --set 'nginx.ingress.hosts[4].paths[0].pathType'=ImplementationSpecific
     
     # slack --> notification
     - name: Send slack when failed
