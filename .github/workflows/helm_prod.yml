@@ -85,8 +85,8 @@ jobs:
           --set 'nginx.ingress.hosts[3].paths[0].path'=/ \
           --set 'nginx.ingress.hosts[3].paths[0].pathType'=ImplementationSpecific \
           --set 'nginx.ingress.hosts[4].paths[0].path'=/ \
-          --set 'nginx.ingress.hosts[4].paths[0].pathType'=ImplementationSpecific \
-          --set 'nginx.ingress.hosts[4].paths[0].backend.service.port.number'=5001
+          --set 'nginx.ingress.hosts[4].paths[0].pathType'=Prefix \
+          --set 'nginx.ingress.hosts[4].paths[0].backend.service.port.number'=5000
     
     # slack --> notification
     - name: Send slack when failed
