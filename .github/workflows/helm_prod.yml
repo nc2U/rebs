@@ -70,11 +70,12 @@ jobs:
             --set 'nginx.ingress.tls[0].hosts[1]'=www.${{ secrets.DOMAIN_NAME }} \
             --set 'nginx.ingress.tls[0].hosts[2]'=mail.${{ secrets.DOMAIN_NAME }} \
             --set 'nginx.ingress.tls[0].hosts[3]'=api.${{ secrets.DOMAIN_NAME }} \
-            --set 'nginx.ingress.tls[0].hosts[4]'=docs.${{ secrets.DOMAIN_NAME }} \
+            --set 'nginx.ingress.tls[0].hosts[4]'=kube.${{ secrets.DOMAIN_NAME }} \
             --set 'nginx.ingress.hosts[0].host'=${{ secrets.DOMAIN_NAME }} \
             --set 'nginx.ingress.hosts[1].host'=www.${{ secrets.DOMAIN_NAME }} \
             --set 'nginx.ingress.hosts[2].host'=mail.${{ secrets.DOMAIN_NAME }} \
             --set 'nginx.ingress.hosts[3].host'=api.${{ secrets.DOMAIN_NAME }} \
+            --set 'nginx.ingress.hosts[4].host'=kube.${{ secrets.DOMAIN_NAME }} \
             --set 'nginx.ingress.hosts[0].paths[0].path'=/ \
             --set 'nginx.ingress.hosts[0].paths[0].pathType'=ImplementationSpecific \
             --set 'nginx.ingress.hosts[1].paths[0].path'=/ \
@@ -82,7 +83,9 @@ jobs:
             --set 'nginx.ingress.hosts[2].paths[0].path'=/ \
             --set 'nginx.ingress.hosts[2].paths[0].pathType'=ImplementationSpecific \
             --set 'nginx.ingress.hosts[3].paths[0].path'=/ \
-            --set 'nginx.ingress.hosts[3].paths[0].pathType'=ImplementationSpecific
+            --set 'nginx.ingress.hosts[3].paths[0].pathType'=ImplementationSpecific \
+            --set 'nginx.ingress.hosts[4].paths[0].path'=/ \
+            --set 'nginx.ingress.hosts[4].paths[0].pathType'=ImplementationSpecific
     
     # slack --> notification
     - name: Send slack when failed
@@ -90,7 +93,7 @@ jobs:
       uses: ./.github/actions/slack-notify    # 직접 '만든' Action이므로 uses 키워드를 이용해서 아래 경로를 입력해줍니다.
       with:
         slack_incoming_url: ${{ secrets.SLACK_INCOMING_URL }}
-    
+
     - name: Send slack if completed
       if: ${{ success() }}                    # 성공할 때만 실행
       uses: ./.github/actions/slack-notify
