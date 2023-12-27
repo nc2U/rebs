@@ -10,7 +10,7 @@ nginx:
       - path: /
         pathType: ImplementationSpecific
     tls:
-    - secretName: letsencrypt-prod
+    - secretName: cert-prod-tls
       hosts:
       - "host-path" # Host address
 
