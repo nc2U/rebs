@@ -30,7 +30,7 @@ nginx:
     className: nginx
     annotations:
       kubernetes.io/tls-acme: "true"
-      cert-manager.io/issuer: "letsencrypt-prod1"
+      cert-manager.io/issuer: "letsencrypt-prod"
       nginx.ingress.kubernetes.io/rewrite-target: /
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -44,3 +44,4 @@ nginx:
     - secretName: web-dev-kr-tls
       hosts:
       - "host-path" # Host address
+
