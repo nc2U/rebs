@@ -10,7 +10,7 @@ nginx:
       - path: /
         pathType: ImplementationSpecific
     tls:
-    - secretName: web-prod-kr-tls
+    - secretName: webweb-devbox-kr-cert
       hosts:
       - "host-path" # Host address
 
