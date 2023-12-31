@@ -129,5 +129,5 @@ class ChangePasswordSerializer(serializers.Serializer):
     new_password = serializers.CharField(max_length=128, write_only=True, required=True)
 
 
-class ResetPasswordSerializer(serializers.Serializer):
+class PasswordResetSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)

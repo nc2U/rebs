@@ -1,4 +1,7 @@
+import base64
+
 from allauth.account.forms import default_token_generator
+from allauth.account.views import login
 from django.conf import settings
 from django.contrib.auth import authenticate, update_session_auth_hash
 from django.contrib.auth.hashers import check_password
@@ -104,34 +107,64 @@ class ChangePasswordView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ResetPasswordView(APIView):
+class PasswordResetRequestView(APIView):
     permission_classes = (permissions.AllowAny,)
 
     @staticmethod
     def post(request, *args, **kwargs):
-        serializer = ResetPasswordSerializer(data=request.data)
+        serializer = PasswordResetSerializer(data=request.data)
         if serializer.is_valid():
             # Find the user with the given email
             email = serializer.validated_data.get('email')
             try:
                 user = User.objects.get(email=email)
             except User.DoesNotExist:
-                return Response({'detail': '입력한 이메일이 등록된 이메일과 같지 않습니다.'}, status=status.HTTP_400_BAD_REQUEST)
-
-            scheme = 'http' if settings.DEBUG else 'https'
+                return Response({'detail': '입력한 이메일로 등록된 사용자가 존재하지 않습니다.'}, status=status.HTTP_400_BAD_REQUEST)
 
             # Generate a password reset token
             token = default_token_generator.make_token(user)
 
             # Create a password reset link
             uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+
+            scheme = 'http' if settings.DEBUG else 'https'
             reset_link = f'{scheme}://{request.get_host()}/#/accounts/pass-reset?uidb64={uidb64}&token={token}'
 
             # Send the password reset email
             subject = f'[Rebs] {user.username}님 계정 비밀번호 초기화 링크 안내드립니다.'
             message = f'비밀번호를 재설정 하기 위해서 다음 링크를 클릭 하세요.: {reset_link}'
-            send_mail(subject, message, 'info@brdnc.co.kr', [email])
+            send_mail(subject, message, 'info@brdnc.co.kr', [email], fail_silently=False)
 
             return Response({'detail': '비밀번호 재설정을 위한 이메일을 발송했습니다.'}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PasswordResetConfirmView(APIView):
+    # permission_classes = (permissions.AllowAny,)
+
+    def post(self, request, *args, **kwargs):
+        user_id = kwargs.get('user_id')
+        while len(user_id) % 4 != 0:
+            user_id += '='
+        user_id = base64.b64decode(user_id, validate=True).decode('utf-8')
+        token = kwargs.get('token')
+
+        try:
+            user = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return Response({'detail': 'User not found.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if default_token_generator.check_token(user, token):
+            # Token is valid, perform password reset
+            new_password = request.data.get('new_password')
+            user.set_password(new_password)
+            user.save()
+
+            # Log the user in with the new password
+            authenticated_user = authenticate(username=user.username, password=new_password)
+            login(request, authenticated_user)
+
+            return Response({'detail': 'Password reset successful'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'detail': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)

@@ -7,11 +7,11 @@ import FindPassword from '@/views/_Accounts/components/FindPassword.vue'
 import SocialLogin from '@/views/_Accounts/components/SocialLogin.vue'
 
 const formName = ref('login')
-const account = useAccount()
+const accStore = useAccount()
 const router = useRouter()
 
 const onSubmit = (payload: { email: string; password: string; redirect: string }) => {
-  account.login(payload).then(() => {
+  accStore.login(payload).then(() => {
     if (payload.redirect) router.push({ path: payload.redirect })
     else router.push({ name: 'Home' })
   })
@@ -22,7 +22,7 @@ const findPass = () => (formName.value = 'pass')
 
 const passwordReset = (payload: { email: string }) => {
   if (confirm('이메일 전송을 진행하시겠습니까?')) {
-    account.resetPassword(payload)
+    accStore.passReset(payload)
     formName.value = 'login'
   }
 }

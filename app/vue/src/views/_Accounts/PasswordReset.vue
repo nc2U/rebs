@@ -3,17 +3,24 @@ import { ref, onBeforeMount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import ResetForm from '@/views/_Accounts/components/ResetForm.vue'
 import SocialLogin from '@/views/_Accounts/components/SocialLogin.vue'
+import { useAccount } from '@/store/pinia/account'
 
 const uidb64 = ref('')
 const token = ref('')
 
+const accStore = useAccount()
 const [route, router] = [useRoute(), useRouter()]
 
-const onSubmit = (password: string) => {
-  console.log(password)
-  alert(password)
+const onSubmit = async (new_password: string) => {
+  const payload = {
+    user_id: uidb64.value,
+    token: token.value,
+    new_password,
+  }
+  console.log(payload)
+  accStore.passResetConfirm(payload)
 
-  router.push({ name: 'Login' })
+  await router.push({ name: 'Home' })
 }
 
 onBeforeMount(() => {

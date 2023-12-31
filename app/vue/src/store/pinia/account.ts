@@ -117,14 +117,25 @@ export const useAccount = defineStore('account', () => {
       })
       .catch(err => errorHandle(err.response.data))
 
-  const resetPassword = (payload: { email: string }) =>
+  const passReset = (payload: { email: string }) =>
     api
-      .post('reset-password/', payload)
+      .post('password-reset/', payload)
       .then(res => {
         console.log(res.data)
         message(undefined, '', '비밀번호 재설정을 위한 이메일을 발송했습니다.')
       })
       .catch(err => errorHandle(err.response.data))
+
+  const passResetConfirm = (payload: { user_id: string; token: string; new_password: string }) => {
+    const { user_id, token, new_password } = payload
+    api
+      .post(`/password-reset-confirm/${user_id}/${token}/`, { new_password })
+      .then(res => {
+        console.log(res.data)
+        message()
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
 
   // getters
   const superAuth = computed(() => userInfo.value?.is_superuser)
@@ -314,7 +325,8 @@ export const useAccount = defineStore('account', () => {
     logout,
     checkPassword,
     changePassword,
-    resetPassword,
+    passReset,
+    passResetConfirm,
 
     superAuth,
     staffAuth,
