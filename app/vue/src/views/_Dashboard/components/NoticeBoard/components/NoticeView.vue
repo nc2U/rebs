@@ -38,6 +38,14 @@ const emit = defineEmits([
   'post-scrape',
   'posts-renewal',
   'post-delete',
+  'copy-post',
+  'move-post',
+  'change-category',
+  'to-secret-post',
+  'hide-comments',
+  'to-notice-up',
+  'to-blind',
+  'to-trash-can',
 ])
 
 const refDelModal = ref()
@@ -155,7 +163,17 @@ const items = ref([
   { title: '휴지통으로', icon: 'trash-can', func: 'toManage' },
 ])
 
-const toManage = (i: number) => alert(`${i} - 관리 기능 준비중!`)
+const toManage = (i: number) => {
+  if (i === 1) emit('copy-post')
+  else if (i === 2) emit('move-post')
+  else if (i === 3) emit('change-category')
+  else if (i === 4) emit('to-secret-post')
+  else if (i === 5) emit('hide-comments')
+  else if (i === 6) emit('to-notice-up')
+  else if (i === 7) emit('to-blind')
+  else if (i === 8) emit('to-trash-can')
+  else alert('비정상적 접근입니다.')
+}
 
 const getFileName = (file: string) => {
   if (file) return decodeURI(file.split('/').slice(-1)[0])

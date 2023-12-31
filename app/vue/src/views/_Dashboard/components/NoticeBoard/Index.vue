@@ -1,11 +1,21 @@
 <script lang="ts" setup>
 import { ref, computed, inject, watch, onBeforeMount } from 'vue'
-import { type RouteLocationNormalizedLoaded as Loaded, useRoute, useRouter } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
-import ListController from './components/ListController.vue'
-import CategoryTabs from './components/CategoryTabs.vue'
+import { type RouteLocationNormalizedLoaded as Loaded, useRoute, useRouter } from 'vue-router'
+import {
+  copyPost,
+  movePost,
+  changeCategory,
+  toSecretPost,
+  hideComments,
+  toNoticeUp,
+  toBlind,
+  toTrashCan,
+} from '@/utils/postMixins'
 import type { AFile, Attatches, Link, PatchPost, Post } from '@/store/types/document'
 import { type PostFilter, useDocument } from '@/store/pinia/document'
+import CategoryTabs from './components/CategoryTabs.vue'
+import ListController from './components/ListController.vue'
 import NoticeList from './components/NoticeList.vue'
 import NoticeView from './components/NoticeView.vue'
 import NoticeForm from '@/views/_Dashboard/components/NoticeBoard/components/NoticeForm.vue'
@@ -228,6 +238,14 @@ onBeforeMount(() => dataSetup(company.value ?? comStore.initComId, route.params?
             @post-scrape="postScrape"
             @posts-renewal="postsRenewal"
             @post-delete="postDelete"
+            @copy-post="copyPost"
+            @move-post="movePost"
+            @change-category="changeCategory"
+            @to-secret-post="toSecretPost"
+            @hide-comments="hideComments"
+            @to-notice-up="toNoticeUp"
+            @to-blind="toBlind"
+            @to-trash-can="toTrashCan"
           />
         </div>
 
