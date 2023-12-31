@@ -1,4 +1,5 @@
 from allauth.account.forms import default_token_generator
+from django.conf import settings
 from django.contrib.auth import authenticate, update_session_auth_hash
 from django.contrib.auth.hashers import check_password
 from django.core.mail import send_mail
@@ -117,12 +118,14 @@ class ResetPasswordView(APIView):
             except User.DoesNotExist:
                 return Response({'detail': '입력한 이메일이 등록된 이메일과 같지 않습니다.'}, status=status.HTTP_400_BAD_REQUEST)
 
+            scheme = 'http' if settings.DEBUG else 'https'
+
             # Generate a password reset token
             token = default_token_generator.make_token(user)
 
             # Create a password reset link
             uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
-            reset_link = f'https://{request.get_host()}/#/accounts/pass-reset?uidb64={uidb64}&token={token}'
+            reset_link = f'{scheme}://{request.get_host()}/#/accounts/pass-reset?uidb64={uidb64}&token={token}'
 
             # Send the password reset email
             subject = f'[Rebs] {user.username}님 계정 비밀번호 초기화 링크 안내드립니다.'

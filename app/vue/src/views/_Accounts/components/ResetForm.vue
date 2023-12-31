@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 
 const emit = defineEmits(['on-submit'])
 
-const form = ref({
+const form = reactive({
   password: '',
   passwordConfirm: '',
 })
@@ -18,7 +18,7 @@ const onSubmit = (event: Event) => {
 
     validated.value = true
   } else {
-    emit('on-submit', form.value)
+    if (form.password === form.passwordConfirm) emit('on-submit', form)
     validated.value = false
   }
 }
