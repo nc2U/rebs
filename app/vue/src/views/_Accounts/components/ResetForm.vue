@@ -44,10 +44,10 @@ const onSubmit = (event: Event) => {
         v-model="form.password"
         type="password"
         autocomplete="password"
-        placeholder="비밀번호를 입력해주세요"
+        placeholder="새 비밀번호 입력"
         required
       />
-      <CFormFeedback invalid>비밀번호를 입력하세요.</CFormFeedback>
+      <CFormFeedback invalid>새로운 비밀번호를 입력하세요.</CFormFeedback>
     </CInputGroup>
 
     <CInputGroup class="mb-4">
@@ -58,7 +58,7 @@ const onSubmit = (event: Event) => {
         v-model="form.passwordConfirm"
         type="password"
         autocomplete="password-confirm"
-        placeholder="비밀번호 확인"
+        placeholder="새 비밀번호 확인"
         required
       />
       <CFormFeedback invalid>비밀번호를 한번 더 입력하세요.</CFormFeedback>

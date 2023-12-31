@@ -2,6 +2,7 @@
 import { useRouter } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
 import ResetForm from '@/views/_Accounts/components/ResetForm.vue'
+import SocialLogin from '@/views/_Accounts/components/SocialLogin.vue'
 
 const account = useAccount()
 const router = useRouter()
@@ -28,16 +29,8 @@ const passwordReset = (payload: { email: string }) => {
           <CCard class="p-4">
             <CCardBody class="text-body">
               <ResetForm @on-submit="passwordReset" />
-              <!--              <CRow>-->
-              <!--                <CCol xs="12" class="mt-3">-->
-              <!--                  <p class="text-medium-emphasis">Sign with</p>-->
-              <!--                </CCol>-->
-              <!--                                <CCol xs="12">-->
-              <!--                                  <CIcon icon="cib-google" height="25" class="text-medium-emphasis mr-2"></CIcon>-->
-              <!--                                  <CIcon icon="cib-github" height="25" class="text-medium-emphasis mr-2"></CIcon>-->
-              <!--                                  <CIcon icon="cib-facebook" height="25" class="text-medium-emphasis"></CIcon>-->
-              <!--                                </CCol>-->
-              <!--              </CRow>-->
+
+              <SocialLogin />
             </CCardBody>
           </CCard>
         </CCol>

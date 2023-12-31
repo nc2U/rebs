@@ -2,6 +2,7 @@
 import router from '@/router'
 import { useAccount } from '@/store/pinia/account'
 import RegisterForm from './components/RegisterForm.vue'
+import SocialLogin from '@/views/_Accounts/components/SocialLogin.vue'
 
 interface SignUser {
   email: string
@@ -25,16 +26,8 @@ const onSubmit = (payload: SignUser) => {
           <CCard class="mx-4 p-4">
             <CCardBody class="text-body">
               <RegisterForm @on-submit="onSubmit" />
-              <CRow>
-                <CCol xs="12" class="mt-3">
-                  <p class="text-medium-emphasis">Sign up using</p>
-                </CCol>
-                <CCol xs="12">
-                  <CIcon icon="cib-google" height="25" class="text-medium-emphasis mr-2"> </CIcon>
-                  <CIcon icon="cib-github" height="25" class="text-medium-emphasis mr-2"> </CIcon>
-                  <CIcon icon="cib-facebook" height="25" class="text-medium-emphasis"> </CIcon>
-                </CCol>
-              </CRow>
+
+              <SocialLogin />
             </CCardBody>
           </CCard>
         </CCol>
