@@ -128,7 +128,7 @@ class PasswordResetRequestView(APIView):
             uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
 
             scheme = 'http' if settings.DEBUG else 'https'
-            reset_link = f'{scheme}://{request.get_host()}/#/accounts/pass-reset?uidb64={uidb64}&token={token}'
+            reset_link = f'{scheme}://{request.get_host()}/#/accounts/pass-reset/?uidb64={uidb64}&token={token}'
 
             # Send the password reset email
             subject = f'[Rebs] {user.username}님 계정 비밀번호 초기화 링크 안내드립니다.'
@@ -141,7 +141,7 @@ class PasswordResetRequestView(APIView):
 
 
 class PasswordResetConfirmView(APIView):
-    # permission_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.AllowAny,)
 
     def post(self, request, *args, **kwargs):
         user_id = kwargs.get('user_id')

@@ -124,5 +124,5 @@ urlpatterns = router.urls
 urlpatterns += [path('check-password/', accounts.CheckPasswordView.as_view(), name='check-password')]
 urlpatterns += [path('change-password/', accounts.ChangePasswordView.as_view(), name='change-password')]
 urlpatterns += [path('password-reset/', accounts.PasswordResetRequestView.as_view(), name='password-reset')]
-urlpatterns += [path('password-reset-confirm/<int:user_id>/<str:token>/',
+urlpatterns += [path('password-reset-confirm/<str:user_id>/<str:token>/',
                      accounts.PasswordResetConfirmView.as_view(), name='password-reset-confirm')]

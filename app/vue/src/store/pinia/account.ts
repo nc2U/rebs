@@ -6,6 +6,7 @@ import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
 import type { User, StaffAuth, Profile, Scrape, Todo } from '@/store/types/accounts'
 import { useDocument } from '@/store/pinia/document'
+import type { LocationQueryValue } from 'vue-router'
 
 type LoginUser = { email: string; password: string }
 
@@ -126,7 +127,11 @@ export const useAccount = defineStore('account', () => {
       })
       .catch(err => errorHandle(err.response.data))
 
-  const passResetConfirm = (payload: { user_id: string; token: string; new_password: string }) => {
+  const passResetConfirm = (payload: {
+    user_id: LocationQueryValue | LocationQueryValue[]
+    token: LocationQueryValue | LocationQueryValue[]
+    new_password: string
+  }) => {
     const { user_id, token, new_password } = payload
     api
       .post(`/password-reset-confirm/${user_id}/${token}/`, { new_password })

@@ -1,20 +1,16 @@
 <script lang="ts" setup>
-import { ref, onBeforeMount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import ResetForm from '@/views/_Accounts/components/ResetForm.vue'
 import SocialLogin from '@/views/_Accounts/components/SocialLogin.vue'
 import { useAccount } from '@/store/pinia/account'
-
-const uidb64 = ref('')
-const token = ref('')
 
 const accStore = useAccount()
 const [route, router] = [useRoute(), useRouter()]
 
 const onSubmit = async (new_password: string) => {
   const payload = {
-    user_id: uidb64.value,
-    token: token.value,
+    user_id: route.query.uidb64,
+    token: route.query.token,
     new_password,
   }
   console.log(payload)
@@ -22,11 +18,6 @@ const onSubmit = async (new_password: string) => {
 
   await router.push({ name: 'Home' })
 }
-
-onBeforeMount(() => {
-  if (route.query.uidb64) uidb64.value = route.query.uidb64 as string
-  if (route.query.token) token.value = route.query.token as string
-})
 </script>
 
 <template>
@@ -39,6 +30,8 @@ onBeforeMount(() => {
               <ResetForm @on-submit="onSubmit" />
 
               <SocialLogin />
+
+              {{ route.query }}
             </CCardBody>
           </CCard>
         </CCol>

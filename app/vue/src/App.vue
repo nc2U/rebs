@@ -23,7 +23,7 @@ onMounted(() => {
   store.theme === 'dark'
     ? document.body.classList.add('dark-theme')
     : document.body.classList.remove('dark-theme')
-  comStore.fetchCompany(company.value || comStore.initComId)
+  if (accStore.isAuthorized) comStore.fetchCompany(company.value || comStore.initComId)
 })
 </script>
 
