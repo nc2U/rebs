@@ -14,7 +14,7 @@ const onSubmit = (event: Event) => {
 
     validated.value = true
   } else {
-    emit('on-submit', email.value)
+    emit('on-submit', { email: email.value })
     validated.value = false
   }
 }

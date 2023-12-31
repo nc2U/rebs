@@ -85,7 +85,7 @@ const onSubmit = (event: Event) => {
         v-model="form.passwordConfirm"
         type="password"
         autocomplete="password-confirm"
-        placeholder="비밀번호를 한번 더 입력해주세요"
+        placeholder="비밀번호 확인"
         required
       />
       <CFormFeedback invalid>비밀번호를 한번 더 입력하세요.</CFormFeedback>

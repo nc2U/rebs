@@ -119,8 +119,8 @@ export const useAccount = defineStore('account', () => {
 
   const resetPassword = (payload: { email: string }) =>
     api
-      .post('reset-password', payload)
-      .then(res => console.log(res.data))
+      .post('reset-password/', payload)
+      .then(() => message(undefined, '', '비밀번호 재설정 이메일을 발송했습니다.'))
       .catch(err => errorHandle(err.response.data))
 
   // getters

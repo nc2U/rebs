@@ -19,7 +19,12 @@ const onSubmit = (payload: { email: string; password: string; redirect: string }
 const toLogin = () => (formName.value = 'login')
 const findPass = () => (formName.value = 'pass')
 
-const passwordReset = (email: string) => alert(email)
+const passwordReset = (payload: { email: string }) => {
+  if (confirm('이메일 전송을 진행하시겠습니까?')) {
+    account.resetPassword(payload)
+    formName.value = 'login'
+  }
+}
 </script>
 
 <template>
@@ -29,12 +34,7 @@ const passwordReset = (email: string) => alert(email)
         <CCol md="8" lg="6" xl="4">
           <CCard class="p-4">
             <CCardBody class="text-body">
-              <LoginForm
-                v-if="formName === 'login'"
-                @on-submit="onSubmit"
-                @find-email="findEmail"
-                @find-pass="findPass"
-              />
+              <LoginForm v-if="formName === 'login'" @on-submit="onSubmit" @find-pass="findPass" />
 
               <FindPassword
                 v-else-if="formName === 'pass'"
