@@ -89,7 +89,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/accounts/login',
     name: 'Login',
     component: () => import('@/views/_Accounts/Login.vue'),
-    meta: { title: '로그인', except: true },
+    meta: { title: '로그인', auth: false, except: true },
   },
   {
     path: '/accounts/register',
@@ -111,13 +111,13 @@ const routes: Array<RouteRecordRaw> = [
     path: '/accounts/register-code',
     name: 'RegisterCode',
     component: () => import('@/views/_Accounts/RegisterCode.vue'),
-    meta: { title: '코드입력', except: true },
+    meta: { title: '코드입력', auth: false, except: true },
   },
   {
     path: '/accounts/pass-reset',
     name: 'pass-reset',
     component: () => import('@/views/_Accounts/PasswordReset.vue'),
-    meta: { title: '비밀번호 재설정', except: true },
+    meta: { title: '비밀번호 재설정', auth: false, except: true },
   },
 ]
 
