@@ -1,8 +1,11 @@
 <script lang="ts" setup>
-import { useAccount } from '@/store/pinia/account'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAccount } from '@/store/pinia/account'
 import LoginForm from './components/LoginForm.vue'
+import FindPassword from '@/views/_Accounts/components/FindPassword.vue'
 
+const formName = ref('login')
 const account = useAccount()
 const router = useRouter()
 
@@ -12,6 +15,12 @@ const onSubmit = (payload: { email: string; password: string; redirect: string }
     else router.push({ name: 'Home' })
   })
 }
+
+const toLogin = () => (formName.value = 'login')
+
+const findEmail = () => (formName.value = 'mail')
+
+const findPass = () => (formName.value = 'pass')
 </script>
 
 <template>
@@ -21,15 +30,22 @@ const onSubmit = (payload: { email: string; password: string; redirect: string }
         <CCol md="8" lg="6" xl="4">
           <CCard class="p-4">
             <CCardBody class="text-body">
-              <LoginForm @on-submit="onSubmit" />
+              <LoginForm
+                v-if="formName === 'login'"
+                @on-submit="onSubmit"
+                @find-email="findEmail"
+                @find-pass="findPass"
+              />
+
+              <FindPassword v-else-if="formName === 'pass'" @to-login="toLogin" />
               <CRow>
                 <CCol xs="12" class="mt-3">
                   <p class="text-medium-emphasis">Sign with</p>
                 </CCol>
                 <CCol xs="12">
-                  <CIcon icon="cib-google" height="25" class="text-medium-emphasis mr-2"> </CIcon>
-                  <CIcon icon="cib-github" height="25" class="text-medium-emphasis mr-2"> </CIcon>
-                  <CIcon icon="cib-facebook" height="25" class="text-medium-emphasis"> </CIcon>
+                  <CIcon icon="cib-google" height="25" class="text-medium-emphasis mr-2"></CIcon>
+                  <CIcon icon="cib-github" height="25" class="text-medium-emphasis mr-2"></CIcon>
+                  <CIcon icon="cib-facebook" height="25" class="text-medium-emphasis"></CIcon>
                 </CCol>
               </CRow>
             </CCardBody>

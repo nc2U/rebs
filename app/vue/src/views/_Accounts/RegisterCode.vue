@@ -69,7 +69,7 @@ const onSubmit = (event: Event) => {
                 </CRow>
                 <CRow>
                   <CCol class="d-grid gap-2 mb-2">
-                    <CButton class="btn btn-primary" type="submit"> 제출하기 </CButton>
+                    <CButton size="lg" class="btn btn-primary" type="submit"> 제출하기</CButton>
                   </CCol>
                 </CRow>
               </CForm>
@@ -86,7 +86,7 @@ const onSubmit = (event: Event) => {
               <CRow>
                 <CCol>
                   <p>
-                    <router-link :to="{ name: 'Login' }"> 로그인 화면으로 돌아가기 </router-link>
+                    <router-link :to="{ name: 'Login' }"> 로그인 화면으로 돌아가기</router-link>
                   </p>
                 </CCol>
               </CRow>

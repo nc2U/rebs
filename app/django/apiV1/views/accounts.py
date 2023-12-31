@@ -120,12 +120,12 @@ class ResetPasswordView(APIView):
 
             # Create a password reset link
             uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
-            reset_link = f'https://brdnc.co.kr/api/v1/reset-password/{uidb64}/{token}/'
+            reset_link = f'/api/v1/reset-password/{uidb64}/{token}/'
 
             # Send the password reset email
             subject = 'Password Reset'
             message = f'Click the following link to reset your password: {reset_link}'
-            send_mail(subject, message, 'kube.art@brdnc.co.kr', [user.email])
+            send_mail(subject, message, 'info@brdnc.co.kr', [user.email])
 
             return Response({'detail': 'Password reset email sent successfully.'}, status=status.HTTP_200_OK)
 

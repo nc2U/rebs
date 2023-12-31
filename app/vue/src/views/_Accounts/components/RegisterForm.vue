@@ -92,15 +92,17 @@ const onSubmit = (event: Event) => {
     </CInputGroup>
 
     <CRow>
-      <CCol>
+      <CCol class="d-grid">
+        <CButton type="submit" size="lg" color="primary">회원 가입</CButton>
+      </CCol>
+    </CRow>
+
+    <CRow>
+      <CCol class="text-right">
         <CButton type="button" color="link" class="px-0" @click="$router.push({ name: 'Login' })">
           로그인하러 가기
         </CButton>
       </CCol>
     </CRow>
-
-    <div class="d-grid">
-      <CButton type="submit" color="primary">회원 가입</CButton>
-    </div>
   </CForm>
 </template>
