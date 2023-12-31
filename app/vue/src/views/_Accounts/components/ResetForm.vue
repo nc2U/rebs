@@ -71,7 +71,14 @@ const onSubmit = (event: Event) => {
     </CRow>
     <CRow>
       <CCol class="text-right">
-        <CButton type="button" color="link" class="px-0"> 로그인 화면으로</CButton>
+        <CButton
+          type="button"
+          color="link"
+          class="px-0"
+          @click="$router.replace({ name: 'Login' })"
+        >
+          로그인 화면으로
+        </CButton>
       </CCol>
     </CRow>
   </CForm>
