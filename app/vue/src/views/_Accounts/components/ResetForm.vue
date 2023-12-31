@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
+import { message } from '@/utils/helper'
 
 const emit = defineEmits(['on-submit'])
 
@@ -18,8 +19,10 @@ const onSubmit = (event: Event) => {
 
     validated.value = true
   } else {
-    if (form.password === form.passwordConfirm) emit('on-submit', form)
-    validated.value = false
+    if (form.password === form.passwordConfirm) {
+      emit('on-submit', form.password)
+      validated.value = false
+    } else message('warning', '', '입력하신 비밀번호가 서로 같지 않습니다.')
   }
 }
 </script>

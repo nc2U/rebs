@@ -1,24 +1,25 @@
 <script lang="ts" setup>
-import { useRouter } from 'vue-router'
-import { useAccount } from '@/store/pinia/account'
+import { ref, onBeforeMount } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import ResetForm from '@/views/_Accounts/components/ResetForm.vue'
 import SocialLogin from '@/views/_Accounts/components/SocialLogin.vue'
 
-const account = useAccount()
-const router = useRouter()
+const uidb64 = ref('')
+const token = ref('')
 
-const onSubmit = (payload: { email: string; password: string; redirect: string }) => {
-  account.login(payload).then(() => {
-    if (payload.redirect) router.push({ path: payload.redirect })
-    else router.push({ name: 'Home' })
-  })
+const [route, router] = [useRoute(), useRouter()]
+
+const onSubmit = (password: string) => {
+  console.log(password)
+  alert(password)
+
+  router.push({ name: 'Login' })
 }
 
-const passwordReset = (payload: { email: string }) => {
-  if (confirm('이메일 전송을 진행하시겠습니까?')) {
-    account.resetPassword(payload)
-  }
-}
+onBeforeMount(() => {
+  if (route.query.uidb64) uidb64.value = route.query.uidb64 as string
+  if (route.query.token) token.value = route.query.token as string
+})
 </script>
 
 <template>
@@ -28,7 +29,7 @@ const passwordReset = (payload: { email: string }) => {
         <CCol md="8" lg="6" xl="4">
           <CCard class="p-4">
             <CCardBody class="text-body">
-              <ResetForm @on-submit="passwordReset" />
+              <ResetForm @on-submit="onSubmit" />
 
               <SocialLogin />
             </CCardBody>
