@@ -9,10 +9,10 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(r => !r.meta.auth)) {
+  if (to.matched.some(r => r.meta.auth)) {
     const isAuth = computed(() => useAccount().isAuthorized)
-    if (!isAuth.value) next({ name: 'Login', query: { redirect: to.fullPath } })
-    else next()
+    if (isAuth.value) next()
+    else next({ name: 'Login', query: { redirect: to.fullPath } })
   } else next()
 })
 
