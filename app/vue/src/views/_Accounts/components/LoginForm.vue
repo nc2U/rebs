@@ -48,6 +48,7 @@ onMounted(() => (redirect.value = route.query?.redirect))
       </CInputGroupText>
       <CFormInput
         v-model="email"
+        type="email"
         auto-complete="username email"
         placeholder="이메일주소를 입력해주세요"
         required

@@ -17,10 +17,9 @@ const onSubmit = (payload: { email: string; password: string; redirect: string }
 }
 
 const toLogin = () => (formName.value = 'login')
-
-const findEmail = () => (formName.value = 'mail')
-
 const findPass = () => (formName.value = 'pass')
+
+const passwordReset = (email: string) => alert(email)
 </script>
 
 <template>
@@ -37,7 +36,11 @@ const findPass = () => (formName.value = 'pass')
                 @find-pass="findPass"
               />
 
-              <FindPassword v-else-if="formName === 'pass'" @to-login="toLogin" />
+              <FindPassword
+                v-else-if="formName === 'pass'"
+                @on-submit="passwordReset"
+                @to-login="toLogin"
+              />
               <CRow>
                 <CCol xs="12" class="mt-3">
                   <p class="text-medium-emphasis">Sign with</p>

@@ -14,9 +14,7 @@ const onSubmit = (event: Event) => {
 
     validated.value = true
   } else {
-    emit('on-submit', {
-      email: email.value,
-    })
+    emit('on-submit', email.value)
     validated.value = false
   }
 }
@@ -41,11 +39,12 @@ const toLogin = () => emit('to-login')
       </CInputGroupText>
       <CFormInput
         v-model="email"
+        type="email"
         auto-complete="username email"
         placeholder="이메일주소를 입력해주세요"
         required
       />
-      <CFormFeedback invalid>이메일을 입력하세요.</CFormFeedback>
+      <CFormFeedback invalid>가입 시 등록한 이메일을 입력하세요.</CFormFeedback>
     </CInputGroup>
 
     <CRow>
