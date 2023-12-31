@@ -104,6 +104,8 @@ class ChangePasswordView(APIView):
 
 
 class ResetPasswordView(APIView):
+    permission_classes = (permissions.AllowAny,)
+
     @staticmethod
     def post(request, *args, **kwargs):
         serializer = ResetPasswordSerializer(data=request.data)
@@ -113,20 +115,20 @@ class ResetPasswordView(APIView):
             try:
                 user = User.objects.get(email=email)
             except User.DoesNotExist:
-                return Response({'detail': 'No user found with this email.'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'detail': '입력한 이메일이 등록된 이메일과 같지 않습니다.'}, status=status.HTTP_400_BAD_REQUEST)
 
             # Generate a password reset token
             token = default_token_generator.make_token(user)
 
             # Create a password reset link
             uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
-            reset_link = f'https://brdnc.co.kr/api/v1/reset-password/{uidb64}/{token}/'
+            reset_link = f'https://brdnc.co.kr/#/accounts/pass-reset?uidb64={uidb64}&token={token}'
 
             # Send the password reset email
-            subject = 'Password Reset'
-            message = f'Click the following link to reset your password: {reset_link}'
-            send_mail(subject, message, 'kube.art@brdnc.co.kr', [user.email])
+            subject = f'[Rebs] {user.username}님 계정 비밀번호 초기화 링크 안내드립니다.'
+            message = f'비밀번호를 재설정 하기 위해서 다음 링크를 클릭 하세요.: {reset_link}'
+            send_mail(subject, message, 'info@brdnc.co.kr', [email])
 
-            return Response({'detail': 'Password reset email sent successfully.'}, status=status.HTTP_200_OK)
+            return Response({'detail': '비밀번호 재설정을 위한 이메일을 발송했습니다.'}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

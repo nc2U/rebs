@@ -113,6 +113,12 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('@/views/_Accounts/RegisterCode.vue'),
     meta: { title: '코드입력', except: true },
   },
+  {
+    path: '/accounts/pass-reset',
+    name: 'pass-reset',
+    component: () => import('@/views/_Accounts/PasswordReset.vue'),
+    meta: { title: '비밀번호 재설정', except: true },
+  },
 ]
 
 export default routes

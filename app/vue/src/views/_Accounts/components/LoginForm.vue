@@ -3,16 +3,12 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 const [route, router] = [useRoute(), useRouter()]
-const emit = defineEmits(['onSubmit'])
+const emit = defineEmits(['on-submit', 'find-email', 'find-pass'])
 
 const email = ref('')
 const password = ref('')
 const redirect = ref()
 const validated = ref(false)
-
-onMounted(() => {
-  redirect.value = route.query?.redirect
-})
 
 const onSubmit = (event: Event) => {
   const el = event.currentTarget as HTMLInputElement
@@ -22,7 +18,7 @@ const onSubmit = (event: Event) => {
 
     validated.value = true
   } else {
-    emit('onSubmit', {
+    emit('on-submit', {
       email: email.value,
       password: password.value,
       redirect: redirect.value,
@@ -35,9 +31,11 @@ const toRegister = () => {
   router.push({ name: 'Register' })
 }
 
-const toFindAccount = () => {
-  alert('준비중!')
-}
+const toFindEmail = () => emit('find-email')
+
+const toFindPassword = () => emit('find-pass')
+
+onMounted(() => (redirect.value = route.query?.redirect))
 </script>
 
 <template>
@@ -50,6 +48,7 @@ const toFindAccount = () => {
       </CInputGroupText>
       <CFormInput
         v-model="email"
+        type="email"
         auto-complete="username email"
         placeholder="이메일주소를 입력해주세요"
         required
@@ -70,18 +69,18 @@ const toFindAccount = () => {
       <CFormFeedback invalid>비밀번호를 입력하세요.</CFormFeedback>
     </CInputGroup>
     <CRow>
-      <CCol xs="6">
-        <CButton type="button" color="link" class="px-0" @click="toFindAccount">
-          아이디 | 비밀번호 찾기
+      <CCol xs="7">
+        <CButton type="button" color="link" class="px-0" @click="toFindPassword">
+          비밀번호 찾기
         </CButton>
       </CCol>
       <CCol class="text-right">
         <CButton type="button" color="link" class="px-0" @click="toRegister">
-          회원가입하러 가기
+          회원가입 하기
         </CButton>
       </CCol>
       <CCol xs="12" class="d-grid">
-        <CButton color="primary" class="px-4" type="submit">로그인</CButton>
+        <CButton color="primary" size="lg" class="px-4" type="submit">로그인</CButton>
       </CCol>
     </CRow>
   </CForm>

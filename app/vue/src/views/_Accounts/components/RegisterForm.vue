@@ -85,22 +85,24 @@ const onSubmit = (event: Event) => {
         v-model="form.passwordConfirm"
         type="password"
         autocomplete="password-confirm"
-        placeholder="비밀번호를 한번 더 입력해주세요"
+        placeholder="비밀번호 확인"
         required
       />
       <CFormFeedback invalid>비밀번호를 한번 더 입력하세요.</CFormFeedback>
     </CInputGroup>
 
     <CRow>
-      <CCol>
+      <CCol class="d-grid">
+        <CButton type="submit" size="lg" color="primary">회원 가입</CButton>
+      </CCol>
+    </CRow>
+
+    <CRow>
+      <CCol class="text-right">
         <CButton type="button" color="link" class="px-0" @click="$router.push({ name: 'Login' })">
           로그인하러 가기
         </CButton>
       </CCol>
     </CRow>
-
-    <div class="d-grid">
-      <CButton type="submit" color="primary">회원 가입</CButton>
-    </div>
   </CForm>
 </template>
