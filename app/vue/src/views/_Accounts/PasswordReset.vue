@@ -30,8 +30,6 @@ const onSubmit = async (new_password: string) => {
               <ResetForm @on-submit="onSubmit" />
 
               <SocialLogin />
-
-              {{ route.query }}
             </CCardBody>
           </CCard>
         </CCol>

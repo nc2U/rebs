@@ -21,10 +21,8 @@ const toLogin = () => (formName.value = 'login')
 const findPass = () => (formName.value = 'pass')
 
 const passwordReset = (payload: { email: string }) => {
-  if (confirm('이메일 전송을 진행하시겠습니까?')) {
-    accStore.passReset(payload)
-    formName.value = 'login'
-  }
+  accStore.passReset(payload)
+  formName.value = 'login'
 }
 </script>
 
