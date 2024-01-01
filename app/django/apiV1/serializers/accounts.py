@@ -34,6 +34,12 @@ class StaffAuthInUserSerializer(serializers.ModelSerializer):
             empty_profile = Profile(user=instance.user)
             empty_profile.save()
 
+        # 3. 멤버 승인 및 권한 부여 확인 메일 보내기
+        subject = f'[Rebs] {instance.user.username}님 회원가입이 관리자에게 승인 되었습니다.'
+        message = (f'이 메일은 [Rebs]회원가입에 대해 관리자에게 승인 후 발송되는 메일입니다. \n\n'
+                   f'가입 시 등록한 이메일 계정으로 로그인 후 이용하시기 바랍니다.')
+        send_mail(subject, message, settings.EMAIL_DEFAULT_SENDER, [instance.user.email])
+
         return instance
 
 
