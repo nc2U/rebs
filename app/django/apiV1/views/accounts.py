@@ -183,6 +183,7 @@ class PasswordResetConfirmView(APIView):
             return Response({'detail': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-class PasswordResetTokenViewSet(viewsets.GenericViewSet):
+class PasswordResetTokenViewSet(viewsets.ModelViewSet):
     queryset = PasswordResetToken.objects.all()
     serializer_class = PasswordResetTokenSerializer
+    permission_classes = (permissions.AllowAny,)
