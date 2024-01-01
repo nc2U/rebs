@@ -133,7 +133,7 @@ class PasswordResetSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
 
 
-class PasswordResetTokenSerializer(serializers.Serializer):
+class PasswordResetTokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = PasswordResetToken
-        fields = ('pk', 'user', 'token', 'update', 'is_expired')
+        fields = ('pk', 'user', 'token', 'updated', 'is_expired')
