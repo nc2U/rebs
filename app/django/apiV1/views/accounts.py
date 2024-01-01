@@ -24,7 +24,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     pagination_class = PageNumberPaginationThreeThousand
-    permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    permission_classes = (permissions.AllowAny,)
 
 
 class StaffAuthViewSet(viewsets.ModelViewSet):
