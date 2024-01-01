@@ -41,6 +41,7 @@ Check what must be defined in docker-compose.yml file.
     - EMAIL_HOST
     - EMAIL_HOST_USER
     - EMAIL_HOST_PASSWORD
+    - EMAIL_DEFAULT_SENDER
     - DJANGO_SETTINGS_MODULE
 
 Enter the actual data for your environment as described in the following items.
@@ -56,8 +57,9 @@ Enter the actual data for your environment as described in the following items.
     - DATABASE_USER: my-db-user # **mysql database information**
     - DATABASE_PASSWORD: my-db-password # **mysql database information**
     - EMAIL_HOST: **your-smtp-server.com**
-    - EMAIL_HOST_USER: **your-email@example.com**
-    - EMAIL_HOST_PASSWORD: **your-email-password**
+    - EMAIL_HOST_USER: **your-access-id-or-email**
+    - EMAIL_HOST_PASSWORD: **your-access-password**
+    - EMAIL_DEFAULT_SENDER: **your-email@example.com**
     - DJANGO_SETTINGS_MODULE: app.settings.prod # **settings mode -> app.settings.prod** or **app.settings.local**
 
 #### 4. Django setting
@@ -195,9 +197,10 @@ create Repository secrets with the keys and values below.
 - DOCKERHUB_TOKEN: # docker hub user password (If you manage your images in your own Docker hub)
 - DOCKERHUB_USER: # docker hub user id (If you manage your images in your own Docker hub)
 - DOMAIN_NANE: # domain address (for ingress)
+- EMAIL_DEFAULT_SENDER: # your-email@example.com
 - EMAIL_HOST: # your-smtp-server.com
-- EMAIL_HOST_PASSWORD: # your-email-password
-- EMAIL_HOST_USER: # your-email@example.com
+- EMAIL_HOST_PASSWORD: # your-access-password
+- EMAIL_HOST_USER: # your-access-id-or-email
 - NFS_HOST:  # nfs storage server host(ip or domain)
 - NFS_PASS:  # nfs storage server user password
 - NFS_PATH:  # nfs storage server path (absolute path)
