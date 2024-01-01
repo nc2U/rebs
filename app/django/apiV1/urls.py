@@ -21,6 +21,7 @@ router.register(r'staff-auth', accounts.StaffAuthViewSet)
 router.register(r'profile', accounts.ProfileViewSet)
 router.register(r'scrape', accounts.ScrapeViewSet)
 router.register(r'todo', accounts.TodoViewSet)
+router.register(r'pass-reset-token', accounts.PasswordResetTokenViewSet)
 # company
 router.register(r'company', company.CompanyViewSet)
 router.register(r'logo', company.LogoViewSet)

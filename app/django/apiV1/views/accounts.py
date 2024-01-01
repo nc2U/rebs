@@ -63,6 +63,7 @@ class TodoViewSet(viewsets.ModelViewSet):
 
 
 class CheckPasswordView(APIView):
+    """비밀번호가 맞는지 체크하는 API"""
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
@@ -82,6 +83,7 @@ class CheckPasswordView(APIView):
 
 
 class ChangePasswordView(APIView):
+    """종전 비밀번호를 확인 한 후 비밀번호를 변경하는 API"""
     permission_classes = (permissions.IsAuthenticated,)
 
     @staticmethod
@@ -107,6 +109,7 @@ class ChangePasswordView(APIView):
 
 
 class PasswordResetRequestView(APIView):
+    """비밀번호 분실 시 재설정 링크를 요청하는 API"""
     permission_classes = (permissions.AllowAny,)
 
     @staticmethod
@@ -146,6 +149,7 @@ class PasswordResetRequestView(APIView):
 
 
 class PasswordResetConfirmView(APIView):
+    """비밀번호 재설정 링크를 통해서 비밀번호를 재설정하는 API"""
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, *args, **kwargs):
@@ -177,3 +181,8 @@ class PasswordResetConfirmView(APIView):
                 return Response({'detail': 'This token was expired'}, status=status.HTTP_401_UNAUTHORIZED)
         else:
             return Response({'detail': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class PasswordResetTokenViewSet(viewsets.GenericViewSet):
+    queryset = PasswordResetToken.objects.all()
+    serializer_class = PasswordResetTokenSerializer

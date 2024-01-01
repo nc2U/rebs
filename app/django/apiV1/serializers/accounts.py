@@ -1,7 +1,7 @@
 from django.db import transaction
 from rest_framework import serializers
 
-from accounts.models import User, StaffAuth, Profile, Todo, Scrape
+from accounts.models import User, StaffAuth, Profile, Todo, Scrape, PasswordResetToken
 from document.models import Post
 
 
@@ -131,3 +131,9 @@ class ChangePasswordSerializer(serializers.Serializer):
 
 class PasswordResetSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
+
+
+class PasswordResetTokenSerializer(serializers.Serializer):
+    class Meta:
+        model = PasswordResetToken
+        fields = ('pk', 'user', 'token', 'update', 'is_expired')
