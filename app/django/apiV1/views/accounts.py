@@ -161,9 +161,9 @@ class PasswordResetConfirmView(APIView):
             user.set_password(new_password)
             user.save()
 
-            # Log the user in with the new password
-            authenticated_user = authenticate(username=user.username, password=new_password)
-            login(request, authenticated_user)
+            # # Log the user in with the new password
+            # authenticated_user = authenticate(username=user.username, password=new_password)
+            # login(request, authenticated_user)
 
             return Response({'detail': 'Password reset successful'}, status=status.HTTP_200_OK)
         else:
