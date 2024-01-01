@@ -1,3 +1,4 @@
+from django.core.mail import send_mail
 from django.db import transaction
 from rest_framework import serializers
 
@@ -57,14 +58,27 @@ class UserSerializer(serializers.ModelSerializer):
                   'date_joined', 'password', 'staffauth', 'profile', 'last_login')
         read_only_fields = ('date_joined', 'last_login')
 
-    def save(self):
-        instance = User(email=self.validated_data['email'],
-                        username=self.validated_data['username'])
-        password = self.validated_data['password']
-        instance.set_password(password)
+    def create(self, validated_data):
+        user = User(email=validated_data['email'],
+                    username=validated_data['username'])
+        password = validated_data['password']
+        user.set_password(password)
+
+        # 회원가입 환영 메일 보내기
+        subject = f'[Rebs] {user.username}님 회원가입을 환영합니다.'
+        message = (f'이 사이트는 업무용 시스템으로 회원가입 후 사이트 이용을 위해서는 관리자의 승인이 필요합니다. <br />'
+                   f'관리자의 승인을 기다리거나 승인을 요청할 수 있습니다.')
+        send_mail(subject, message, 'info@brdnc.co.kr',
+                  [user.email], fail_silently=False)
+
+        user.save()
+        return user
+
+    def update(self, instance, validated_data):
+        instance.__dict__.update(validated_data)
+        instance.set_password(validated_data['password'])
         instance.save()
-        self.instance = instance
-        return self.instance
+        return instance
 
 
 class ProfileSerializer(serializers.ModelSerializer):

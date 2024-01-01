@@ -4,6 +4,7 @@ data:
   DATABASE_USER: "{{ .Release.Name }}"
   EMAIL_HOST: "{{ .Values.global.emailHost }}"
   EMAIL_HOST_USER: "{{ .Values.global.emailHostUser }}"
+  EMAIL_DEFAULT_SENDER: "{{ .Values.global.emailDefaultSender }}"
   {{- with  .Values.imageConfigMaps }}
 {{/*  AWS_STORAGE_BUCKET_NAME: "{{ .awsStorageBucketName }}"*/}}
   DJANGO_SETTINGS_MODULE: "{{ .djangoSettingsModule }}"
