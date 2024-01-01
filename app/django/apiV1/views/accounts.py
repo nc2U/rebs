@@ -1,7 +1,6 @@
 import base64
 
 from allauth.account.forms import default_token_generator
-from allauth.account.views import login
 from django.conf import settings
 from django.contrib.auth import authenticate, update_session_auth_hash
 from django.contrib.auth.hashers import check_password
@@ -17,7 +16,7 @@ from ..permission import *
 from ..pagination import *
 from ..serializers.accounts import *
 
-from accounts.models import User, StaffAuth, Profile, Todo
+from accounts.models import User, StaffAuth, Profile, Todo, PasswordResetToken
 
 
 # Accounts --------------------------------------------------------------------------
@@ -123,6 +122,12 @@ class PasswordResetRequestView(APIView):
 
             # Generate a password reset token
             token = default_token_generator.make_token(user)
+            try:
+                token_db = PasswordResetToken.objects.get(user=user)
+                token_db.token = token
+            except PasswordResetToken.DoesNotExist:
+                token_db = PasswordResetToken(user=user, token=token)
+            token_db.save()
 
             # Create a password reset link
             uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
@@ -156,15 +161,19 @@ class PasswordResetConfirmView(APIView):
             return Response({'detail': 'User not found.'}, status=status.HTTP_400_BAD_REQUEST)
 
         if default_token_generator.check_token(user, token):
-            # Token is valid, perform password reset
-            new_password = request.data.get('new_password')
-            user.set_password(new_password)
-            user.save()
+            token_db = PasswordResetToken.objects.get(user=user)
+            if not token_db.is_expired():
+                # Token is valid, perform password reset
+                new_password = request.data.get('new_password')
+                user.set_password(new_password)
+                user.save()
 
-            # Log the user in with the new password
-            authenticated_user = authenticate(username=user.username, password=new_password)
-            login(request, authenticated_user)
+                # # Log the user in with the new password
+                # authenticated_user = authenticate(username=user.username, password=new_password)
+                # login(request, authenticated_user)
 
-            return Response({'detail': 'Password reset successful'}, status=status.HTTP_200_OK)
+                return Response({'detail': 'Password reset successful'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'detail': 'This token was expired'}, status=status.HTTP_401_UNAUTHORIZED)
         else:
             return Response({'detail': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)

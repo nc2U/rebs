@@ -137,7 +137,7 @@ export const useAccount = defineStore('account', () => {
       .post(`/password-reset-confirm/${user_id}/${token}/`, { new_password })
       .then(res => {
         console.log(res.data)
-        message()
+        message('success', '', '비밀번호가 재설정을 성공하였습니다.')
       })
       .catch(err => errorHandle(err.response.data))
   }

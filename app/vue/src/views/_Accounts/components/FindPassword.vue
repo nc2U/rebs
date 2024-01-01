@@ -31,7 +31,8 @@ const toLogin = () => emit('to-login')
     <v-divider />
     <p class="text-muted mb-4">
       가입하신 이메일 주소를 입력해 주세요.<br />
-      이메일 주소로 비밀번호를 재설정할 수 있는 이메일을 보내드립니다.
+      이메일 주소로 비밀번호를 재설정할 수 있는 이메일을 보내드립니다.<br />
+      발송된 이메일의 비밀번호 재설정은 10분 간 유효합니다.
     </p>
     <CInputGroup class="mb-3">
       <CInputGroupText>
