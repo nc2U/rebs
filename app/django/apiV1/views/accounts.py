@@ -2,9 +2,9 @@ import base64
 
 from allauth.account.forms import default_token_generator
 from django.conf import settings
+from django.core.mail import send_mail
 from django.contrib.auth import authenticate, update_session_auth_hash
 from django.contrib.auth.hashers import check_password
-from django.core.mail import send_mail
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from rest_framework import viewsets, status
@@ -141,7 +141,7 @@ class PasswordResetRequestView(APIView):
             # Send the password reset email
             subject = f'[Rebs] {user.username}님 계정 비밀번호 초기화 링크 안내드립니다.'
             message = f'비밀번호를 재설정 하기 위해서 다음 링크를 클릭 하세요.: {reset_link}'
-            send_mail(subject, message, 'info@brdnc.co.kr', [email], fail_silently=False)
+            send_mail(subject, message, settings.EMAIL_DEFAULT_SENDER, [email])
 
             return Response({'detail': '비밀번호 재설정을 위한 이메일을 발송했습니다.'}, status=status.HTTP_200_OK)
 
