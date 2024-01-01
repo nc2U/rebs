@@ -67,8 +67,9 @@ class UserSerializer(serializers.ModelSerializer):
 
         # 회원가입 환영 메일 보내기
         subject = f'[Rebs] {user.username}님 회원가입을 환영합니다.'
-        message = (f'이 사이트는 업무용 시스템으로 회원가입 후 사이트 이용을 위해서는 관리자의 승인이 필요합니다. <br />'
-                   f'관리자의 승인을 기다리거나 승인을 요청할 수 있습니다.')
+        message = (f'이 메일은 [Rebs]회원가입에 따라 발송되는 메일입니다. \n\n'
+                   f'이 사이트는 업무용 시스템으로 회원가입 후 사이트 이용을 위해서는 관리자의 승인이 필요합니다. \n'
+                   f'관리자의 승인을 기다리거나 관리자({settings.EMAIL_DEFAULT_SENDER})에게 승인을 요청할 수 있습니다.')
         send_mail(subject, message, settings.EMAIL_DEFAULT_SENDER, [user.email])
 
         user.save()
