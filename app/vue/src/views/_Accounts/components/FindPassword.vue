@@ -70,7 +70,7 @@ const toLogin = () => emit('to-login')
     <template #header>비밀번호 재설정 확인</template>
     <template #default> 비밀번호 재설정을 위한 이메일을 전송하시겠습니까?</template>
     <template #footer>
-      <CButton color="primary" @click="modalAction"> 확인</CButton>
+      <CButton color="danger" @click="modalAction"> 확인</CButton>
     </template>
   </ConfirmModal>
 </template>
