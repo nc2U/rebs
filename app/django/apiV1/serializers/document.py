@@ -173,10 +173,11 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ('pk', 'company', 'project', 'proj_name', 'board', 'board_name', 'is_notice', 'category',
-                  'cate_name', 'lawsuit', 'lawsuit_name', 'title', 'execution_date', 'is_hide_comment',
-                  'content', 'hit', 'like', 'blame', 'ip', 'device', 'secret', 'password', 'links', 'files',
-                  'comments', 'user', 'is_scraped', 'created', 'updated', 'is_new', 'prev_pk', 'next_pk')
+        fields = ('pk', 'company', 'project', 'proj_name', 'board', 'board_name', 'category',
+                  'cate_name', 'lawsuit', 'lawsuit_name', 'title', 'execution_date', 'content',
+                  'hit', 'like', 'blame', 'ip', 'device', 'is_secret', 'password', 'is_hide_comment',
+                  'is_notice', 'is_blind', 'deleted', 'links', 'files', 'comments', 'user', 'is_scraped',
+                  'created', 'updated', 'is_new', 'prev_pk', 'next_pk')
         read_only_fields = ('ip', 'comments')
 
     def get_collection(self):
