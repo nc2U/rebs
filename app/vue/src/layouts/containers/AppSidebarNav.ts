@@ -128,9 +128,11 @@ const AppSidebarNav = defineComponent({
     }
 
     if (!isStaff.value) {
-      ;(nav as any)[14].items.splice(0, 2)
-      nav.splice(9, 4)
-    } else if (!isCash.value) nav.splice(10, 1)
+      // 본사 관리직원 권한이 없으면
+      nav.splice(9, 6) // 본사관련 및 환경설정 메뉴 제외
+    }
+    // 본사 자금관리 권한 없으면 자금관리 메뉴 제외
+    else if (!isCash.value) nav.splice(10, 1)
 
     return () =>
       h(
