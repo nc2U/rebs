@@ -17,6 +17,7 @@ const projectStaff = ref(false)
 
 const accountStore = useAccount()
 const userInfo = computed(() => accountStore.userInfo)
+const superAuth = computed(() => accountStore.superAuth)
 const getUsers = computed(() => accountStore.getUsers)
 
 const allowGetUsers = computed(() =>
@@ -93,6 +94,7 @@ onBeforeMount(() => {
           label="본사 관리자 (프로젝트 관리 가능)"
           @change="changeStaff"
           id="is_staff"
+          :disabled="!superAuth"
         />
       </CCol>
       <CCol class="pt-2">
@@ -101,6 +103,7 @@ onBeforeMount(() => {
           label="프로젝트 관리자"
           @change="changeProStaff"
           id="is_project_staff"
+          :disabled="!superAuth"
         />
       </CCol>
     </CRow>

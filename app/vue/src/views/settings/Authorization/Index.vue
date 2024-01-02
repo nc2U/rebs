@@ -21,7 +21,10 @@ const comInfo = ref<{ company: number | null; is_staff: boolean }>({
   is_staff: false,
 })
 
-const changeStaff = (val: boolean) => (comInfo.value.is_staff = val)
+const changeStaff = (val: boolean) => {
+  comInfo.value.is_staff = val
+  projectAuth.value.is_project_staff = !val
+}
 
 const projectAuth = ref({
   is_project_staff: false,
@@ -29,7 +32,10 @@ const projectAuth = ref({
   assigned_project: null as number | null,
 })
 
-const changeProStaff = (val: boolean) => (projectAuth.value.is_project_staff = val)
+const changeProStaff = (val: boolean) => {
+  projectAuth.value.is_project_staff = val
+  comInfo.value.is_staff = !val
+}
 
 type Auth = '0' | '1' | '2'
 export type UserAuth = {
