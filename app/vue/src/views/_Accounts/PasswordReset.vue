@@ -43,7 +43,15 @@ onBeforeMount(() => fetchResetTokenList(uid.value))
           <CCard class="p-4">
             <CCardBody v-if="isExpired" class="text-center text-danger">
               <h2>This Token was Expired!</h2>
-              <span class="text-muted">비밀번호 재설정 가능 시간이 만료되었습니다.</span>
+              <div class="text-left pt-3">
+                <p class="text-muted">
+                  이 토큰의 비밀번호 재설정 가능시간이 만료되었습니다. 비밀번호를 재설정 하려면 다시
+                  요청해 주십시요.
+                </p>
+              </div>
+              <div class="text-right pt-2">
+                <router-link :to="{ name: 'Login' }">To Login</router-link>
+              </div>
             </CCardBody>
             <CCardBody v-else class="text-body">
               <ResetForm @on-submit="onSubmit" />
