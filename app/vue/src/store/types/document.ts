@@ -92,9 +92,9 @@ export type Post = {
   title: string
   execution_date: string | null
   content: string
-  hit: number
+  hit?: number
   like?: number
-  blame: number
+  blame?: number
   ip: string | null
   device: string
   is_secret: boolean
@@ -102,7 +102,7 @@ export type Post = {
   is_hide_comment: boolean
   is_notice: boolean
   is_blind: boolean
-  deleted: string | null
+  deleted?: string | null
   links?: Link[]
   files?: AFile[]
   comments?: number[]
