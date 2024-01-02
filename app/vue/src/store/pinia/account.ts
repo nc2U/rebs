@@ -121,10 +121,7 @@ export const useAccount = defineStore('account', () => {
   const passReset = (payload: { email: string }) =>
     api
       .post('password-reset/', payload)
-      .then(res => {
-        console.log(res.data)
-        message(undefined, '', '비밀번호 재설정을 위한 이메일을 발송했습니다.')
-      })
+      .then(res => message(undefined, '', '비밀번호 초기화 안내메일을 발송했습니다.'))
       .catch(err => errorHandle(err.response.data))
 
   const passResetConfirm = (payload: {
@@ -135,10 +132,7 @@ export const useAccount = defineStore('account', () => {
     const { user_id, token, new_password } = payload
     api
       .post(`/password-reset-confirm/${user_id}/${token}/`, { new_password })
-      .then(res => {
-        console.log(res.data)
-        message('success', '', '비밀번호를 성공적으로 재설정하였습니다.')
-      })
+      .then(res => message('success', '', '비밀번호를 성공적으로 재설정하였습니다.'))
       .catch(err => errorHandle(err.response.data))
   }
 

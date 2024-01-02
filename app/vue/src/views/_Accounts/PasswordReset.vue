@@ -26,9 +26,7 @@ const onSubmit = async (new_password: string) => {
     token: route.query.token,
     new_password,
   }
-  console.log(payload)
   accStore.passResetConfirm(payload)
-
   await router.push({ name: 'Home' })
 }
 
