@@ -14,7 +14,7 @@ import { useDocument } from '@/store/pinia/document'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 import type { User } from '@/store/types/accounts'
 import type { Post } from '@/store/types/document'
-import { items, toPostBlame, toPostManage } from '@/utils/postMixins'
+import { postManageItems, toPostBlame, toPostManage } from '@/utils/postMixins'
 import sanitizeHtml from 'sanitize-html'
 import Comments from '@/components/Comments/Index.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -144,7 +144,21 @@ const toScrape = () => {
     refAlertModal.value.callModal('', '이미 이 포스트를 스크랩 하였습니다.')
   else emit('post-scrape', props.post.pk)
 }
+
 // const toBlame = () => alert('신고 기능 준비중!')
+
+const toManage = (fn: number) => {
+  const brd = props.post?.board
+  const cate = props.post?.category
+  const post = props.post.pk
+  let state = false
+  if (fn === 4) state = props.post.is_secret // is_secret
+  else if (fn === 5) state = props.post.is_hide_comment
+  else if (fn === 6) state = props.post.is_notice // is_notice
+  else if (fn === 7) state = props.post.is_blind // is_blind
+  else if (fn === 8) state = !!props.post.deleted // is_soft_deleted
+  toPostManage(fn, brd as number, cate, post as number, state)
+}
 
 const getFileName = (file: string) => {
   if (file) return decodeURI(file.split('/').slice(-1)[0])
@@ -369,10 +383,10 @@ onMounted(() => {
           <v-menu activator="parent" open-on-hover>
             <v-list density="compact">
               <v-list-item
-                v-for="(item, index) in items"
+                v-for="(item, index) in postManageItems"
                 :key="index"
                 :value="index"
-                @click="toPostManage(index + 1, post.pk as number)"
+                @click="toManage(index + 1)"
               >
                 <v-list-item-title style="font-size: 0.9em">
                   <v-icon :icon="`mdi-${item.icon}`" size="sm" />

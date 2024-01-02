@@ -13,6 +13,7 @@ import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 import { type Post } from '@/store/types/document'
+import { postManageItems, toPostBlame, toPostManage } from '@/utils/postMixins'
 import sanitizeHtml from 'sanitize-html'
 import type { User } from '@/store/types/accounts'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -140,18 +141,21 @@ const toScrape = () => {
     refAlertModal.value.callModal('', '이미 이 포스트를 스크랩 하였습니다.')
   else emit('post-scrape', props.post.pk)
 }
+
 // const toBlame = () => alert('신고 기능 준비중!')
 
-const items = ref([
-  { title: '복사하기', icon: 'content-copy', func: 'toManage' },
-  { title: '이동하기', icon: 'folder-arrow-right', func: 'toManage' },
-  { title: '카테고리변경', icon: 'tag-multiple', func: 'toManage' },
-  { title: '비밀글로', icon: 'lock', func: 'toManage' },
-  { title: '댓글감춤', icon: 'comment-off', func: 'toManage' },
-  { title: '공지올림', icon: 'bullhorn-variant', func: 'toManage' },
-  { title: '블라인드처리', icon: 'eye-off', func: 'toManage' },
-  { title: '휴지통으로', icon: 'trash-can', func: 'toManage' },
-])
+const toManage = (fn: number) => {
+  const brd = props.post?.board
+  const cate = props.post?.category
+  const post = props.post.pk
+  let state = false
+  if (fn === 4) state = props.post.is_secret // is_secret
+  else if (fn === 5) state = props.post.is_hide_comment
+  else if (fn === 6) state = props.post.is_notice // is_notice
+  else if (fn === 7) state = props.post.is_blind // is_blind
+  else if (fn === 8) state = !!props.post.deleted // is_soft_deleted
+  toPostManage(fn, brd as number, cate, post as number, state)
+}
 
 const toManage = (i: number) => alert(`${i} - 관리 기능 준비중!`)
 
@@ -395,7 +399,7 @@ onMounted(() => {
           <v-menu activator="parent" open-on-hover>
             <v-list density="compact">
               <v-list-item
-                v-for="(item, index) in items"
+                v-for="(item, index) in postManageItems"
                 :key="index"
                 :value="index"
                 @click="toManage(index + 1)"
