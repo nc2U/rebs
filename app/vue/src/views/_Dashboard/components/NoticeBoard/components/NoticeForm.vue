@@ -27,19 +27,18 @@ const form = reactive<Post>({
   company: null,
   project: null,
   board: 1,
-  is_notice: false,
   category: null,
   lawsuit: null,
   title: '',
   execution_date: null,
   content: '',
-  is_hide_comment: false,
-  hit: 0,
-  blame: 0,
   ip: null,
   device: '',
-  secret: false,
+  is_secret: false,
   password: '',
+  is_hide_comment: false,
+  is_notice: false,
+  is_blind: false,
   links: [],
   files: [],
 })
@@ -48,12 +47,12 @@ const newLinks = ref<Link[]>([])
 
 const formsCheck = computed(() => {
   if (props.post) {
-    const a = form.is_notice === props.post.is_notice
-    const b = form.category === props.post.category
-    const c = form.lawsuit === props.post.lawsuit
-    const d = form.title === props.post.title
-    const e = form.execution_date === props.post.execution_date
-    const f = form.content === props.post.content
+    const a = form.category === props.post.category
+    const b = form.lawsuit === props.post.lawsuit
+    const c = form.title === props.post.title
+    const d = form.execution_date === props.post.execution_date
+    const e = form.content === props.post.content
+    const f = form.is_notice === props.post.is_notice
 
     return a && b && c && d && e && f && attach.value
   } else return false
@@ -133,19 +132,21 @@ const dataSetup = () => {
     form.company = props.post.company
     form.project = props.post.project
     form.board = props.post.board
-    form.is_notice = props.post.is_notice
     form.category = props.post.category
     form.lawsuit = props.post.lawsuit
     form.title = props.post.title
     form.execution_date = props.post.execution_date
     form.content = props.post.content
-    form.is_hide_comment = props.post.is_hide_comment
-    form.hit = props.post.hit
-    form.blame = props.post.blame
-    form.blame = props.post.blame
+    // form.hit = props.post.hit
+    // form.blame = props.post.blame
+    // form.blame = props.post.blame
+    form.ip = props.post.ip
     form.device = props.post.device
-    form.secret = props.post.secret
+    form.is_secret = props.post.is_secret
     form.password = props.post.password
+    form.is_hide_comment = props.post.is_hide_comment
+    form.is_notice = props.post.is_notice
+    form.is_blind = props.post.is_blind
     form.links = props.post.links
     form.files = props.post.files
   }

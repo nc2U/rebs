@@ -82,25 +82,27 @@ export type Post = {
   pk?: number
   company: number | null
   project: number | null
+  proj_name?: string
   board: number | null
   board_name?: string
-  is_notice: boolean
-  proj_name?: string | null
   category: number | null
-  cate_name?: string | null
+  cate_name?: string
   lawsuit: number | null | string
-  lawsuit_name?: string | null
+  lawsuit_name?: string
   title: string
   execution_date: string | null
   content: string
-  is_hide_comment: boolean
   hit: number
   like?: number
   blame: number
   ip: string | null
   device: string
-  secret: boolean
+  is_secret: boolean
   password: string
+  is_hide_comment: boolean
+  is_notice: boolean
+  is_blind: boolean
+  deleted: string | null
   links?: Link[]
   files?: AFile[]
   comments?: number[]
