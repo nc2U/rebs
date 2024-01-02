@@ -145,8 +145,6 @@ const toScrape = () => {
   else emit('post-scrape', props.post.pk)
 }
 
-// const toBlame = () => alert('신고 기능 준비중!')
-
 const toManage = (fn: number) => {
   const brd = props.post?.board
   const cate = props.post?.category
@@ -369,7 +367,13 @@ onMounted(() => {
         >
           스크랩 {{ post.is_scraped ? '+1' : '' }}
         </v-btn>
-        <v-btn variant="tonal" size="small" :rounded="0" class="mr-1" @click="toPostBlame">
+        <v-btn
+          variant="tonal"
+          size="small"
+          :rounded="0"
+          class="mr-1"
+          @click="toPostBlame(post.pk as number)"
+        >
           신고
         </v-btn>
         <v-btn

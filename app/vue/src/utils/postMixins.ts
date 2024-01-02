@@ -54,7 +54,7 @@ const toTrashCan = (post: number, state: boolean) => {
   }
 }
 
-export const toPostBlame = (pk: number) => alert('mixin - 준비중!')
+export const toPostBlame = (pk: number) => alert('mixin - 준비중! - ' + pk)
 
 export const toPostManage = (
   f: number,

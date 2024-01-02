@@ -142,8 +142,6 @@ const toScrape = () => {
   else emit('post-scrape', props.post.pk)
 }
 
-// const toBlame = () => alert('신고 기능 준비중!')
-
 const toManage = (fn: number) => {
   const brd = props.post?.board
   const cate = props.post?.category
@@ -156,8 +154,6 @@ const toManage = (fn: number) => {
   else if (fn === 8) state = !!props.post.deleted // is_soft_deleted
   toPostManage(fn, brd as number, cate, post as number, state)
 }
-
-const toManage = (i: number) => alert(`${i} - 관리 기능 준비중!`)
 
 const getFileName = (file: string) => {
   if (file) return decodeURI(file.split('/').slice(-1)[0])
@@ -387,7 +383,15 @@ onMounted(() => {
         >
           스크랩 {{ post.is_scraped ? '+1' : '' }}
         </v-btn>
-        <!--        <v-btn variant="tonal" size="small" :rounded="0" class="mr-1" @click="toBlame"> 신고</v-btn>-->
+        <v-btn
+          variant="tonal"
+          size="small"
+          :rounded="0"
+          class="mr-1"
+          @click="toPostBlame(post.pk as number)"
+        >
+          신고
+        </v-btn>
         <v-btn
           v-if="userInfo?.is_superuser"
           prepend-icon="mdi-cog"
