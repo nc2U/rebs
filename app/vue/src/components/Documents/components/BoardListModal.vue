@@ -1,18 +1,21 @@
 <script lang="ts" setup>
 import { ref, type PropType } from 'vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
 import type { Board } from '@/store/types/document'
+import AlertModal from '@/components/Modals/AlertModal.vue'
 
-defineProps({
+const props = defineProps({
   boardList: { type: Array as PropType<Board[]>, default: () => [] },
   isCopy: { type: Boolean, default: false },
 })
 
-// defineEmits(['patch-d3-hide'])
+const emit = defineEmits(['copy-post', 'move-post'])
 
 const refListModal = ref()
 
-// const patchD3Hide = (pk: number, is_hide: boolean) => emit('patch-d3-hide', { pk, is_hide })
+const onSubmit = () => {
+  if (props.isCopy) emit('copy-post')
+  else emit('move-post')
+}
 
 const callModal = () => refListModal.value.callModal()
 
@@ -27,6 +30,9 @@ defineExpose({ callModal })
         <CListGroupItem> aaa</CListGroupItem>
       </CListGroup>
     </template>
-    <template #footer> </template>
+    <template #footer>
+      <CButton color="danger" @click="onSubmit">게시물 {{ isCopy ? '복사' : '이동' }}</CButton>
+      <CButton color="light" @click="refListModal.close()">닫기</CButton>
+    </template>
   </AlertModal>
 </template>

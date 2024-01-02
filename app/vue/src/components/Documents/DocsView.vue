@@ -18,6 +18,8 @@ import sanitizeHtml from 'sanitize-html'
 import type { User } from '@/store/types/accounts'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import BoardListModal from '@/components/Documents/components/BoardListModal.vue'
+import CateListModal from '@/components/Documents/components/CateListModal.vue'
 
 const props = defineProps({
   boardNum: { type: Number, default: 2 },
@@ -43,6 +45,9 @@ const emit = defineEmits([
 
 const refDelModal = ref()
 const refAlertModal = ref()
+const refBoardListModal = ref()
+const isCopy = ref(false)
+const refCateListModal = ref()
 
 const userInfo = inject<ComputedRef<User>>('userInfo')
 const editAuth = computed(
@@ -147,13 +152,29 @@ const toManage = (fn: number) => {
   const cate = props.post?.category
   const post = props.post.pk
   let state = false
-  if (fn === 4) state = props.post.is_secret // is_secret
-  else if (fn === 5) state = props.post.is_hide_comment
-  else if (fn === 6) state = props.post.is_notice // is_notice
-  else if (fn === 7) state = props.post.is_blind // is_blind
-  else if (fn === 8) state = !!props.post.deleted // is_soft_deleted
-  toPostManage(fn, brd as number, cate, post as number, state)
+  if (fn < 4) {
+    if (fn === 1) {
+      isCopy.value = true
+      refBoardListModal.value.callModal()
+    } else if (fn === 2) {
+      isCopy.value = false
+      refBoardListModal.value.callModal()
+    } else if (fn === 3) {
+      refCateListModal.value.callModal()
+    }
+  } else {
+    if (fn === 4) state = props.post.is_secret // is_secret
+    else if (fn === 5) state = props.post.is_hide_comment
+    else if (fn === 6) state = props.post.is_notice // is_notice
+    else if (fn === 7) state = props.post.is_blind // is_blind
+    else if (fn === 8) state = !!props.post.deleted // is_soft_deleted
+    toPostManage(fn, brd as number, cate, post as number, state)
+  }
 }
+
+const copyPost = () => alert('게시물 복사!')
+const movePost = () => alert('게시물 이동!')
+const changeCate = () => alert('카테고리 변경!')
 
 const getFileName = (file: string) => {
   if (file) return decodeURI(file.split('/').slice(-1)[0])
@@ -488,6 +509,16 @@ onMounted(() => {
       <CButton color="danger" @click="toDelete">삭제</CButton>
     </template>
   </ConfirmModal>
+
+  <BoardListModal
+    ref="refBoardListModal"
+    :board-list="[]"
+    :is-copy="isCopy"
+    @capy-post="copyPost"
+    @move-post="movePost"
+  />
+
+  <CateListModal ref="refCateListModal" :category-list="[]" @change-cate="changeCate" />
 </template>
 
 <style lang="scss" scoped>

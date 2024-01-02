@@ -11,20 +11,20 @@ export const postManageItems = ref([
   { title: '휴지통으로', icon: 'trash-can' },
 ])
 
-const copyPost = (brd: number, post: number) => {
-  // 게시판 목록 모달 띄우기
-  alert('게시판 목록(라디오) -> 복사 버튼' + brd + post)
-}
-
-const movePost = (brd: number, post: number) => {
-  // 게시판 목록 모달 띄우기
-  alert('게시판 목록(라디오) -> 이동 버튼' + brd + post)
-}
-
-const changeCategory = (brd: number, cate: number | null, post: number) => {
-  // 게시판별 카테고리 목록 모달 띄우기
-  alert(brd + '카테고리 모달' + brd + cate + post)
-}
+// const copyPost = (brd: number, post: number) => {
+//   // 게시판 목록 모달 띄우기
+//   alert('게시판 목록(라디오) -> 복사 버튼' + brd + post)
+// }
+//
+// const movePost = (brd: number, post: number) => {
+//   // 게시판 목록 모달 띄우기
+//   alert('게시판 목록(라디오) -> 이동 버튼' + brd + post)
+// }
+//
+// const changeCategory = (brd: number, cate: number | null, post: number) => {
+//   // 게시판별 카테고리 목록 모달 띄우기
+//   alert(brd + '카테고리 모달' + brd + cate + post)
+// }
 
 const toSecretPost = (post: number, state: boolean) => {
   if (!state) alert('이 게시글을 비밀글로 변경하였습니다.')
@@ -63,9 +63,9 @@ export const toPostManage = (
   post: number,
   state = false,
 ) => {
-  if (f === 1) return copyPost(brd, post)
-  if (f === 2) return movePost(brd, post)
-  if (f === 3) return changeCategory(brd, cate, post)
+  // if (f === 1) return copyPost(brd, post)
+  // if (f === 2) return movePost(brd, post)
+  // if (f === 3) return changeCategory(brd, cate, post)
   if (f === 4) return toSecretPost(post, state)
   if (f === 5) return hideComments(post, state)
   if (f === 6) return toNoticeUp(post, state)

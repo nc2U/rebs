@@ -7,11 +7,13 @@ defineProps({
   categoryList: { type: Array as PropType<Category[]>, default: () => [] },
 })
 
-// defineEmits(['patch-d3-hide'])
+const emit = defineEmits(['change-cate'])
 
 const refListModal = ref()
 
-// const patchD3Hide = (pk: number, is_hide: boolean) => emit('patch-d3-hide', { pk, is_hide })
+const onSubmit = () => {
+  emit('change-cate')
+}
 
 const callModal = () => refListModal.value.callModal()
 
@@ -20,12 +22,15 @@ defineExpose({ callModal })
 
 <template>
   <AlertModal ref="refListModal" size="lg">
-    <template #header> 계정 분류 보기</template>
+    <template #header> 카테고리 변경</template>
     <template #default>
-      <CListGroup v-for="cate in categoryList" :key="cate.pk" :item-key="cate.pk">
+      <CListGroup v-for="obj in categoryList" :key="obj.pk" :item-key="obj.pk">
         <CListGroupItem> aaa</CListGroupItem>
       </CListGroup>
     </template>
-    <template #footer></template>
+    <template #footer>
+      <CButton color="danger" @click="onSubmit"> 카테고리 변경</CButton>
+      <CButton color="light" @click="refListModal.close()">닫기</CButton>
+    </template>
   </AlertModal>
 </template>
