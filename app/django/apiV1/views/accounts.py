@@ -187,3 +187,4 @@ class PasswordResetTokenViewSet(viewsets.ModelViewSet):
     queryset = PasswordResetToken.objects.all()
     serializer_class = PasswordResetTokenSerializer
     permission_classes = (permissions.AllowAny,)
+    filterset_fields = ('user', 'token')

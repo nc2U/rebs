@@ -142,6 +142,27 @@ export const useAccount = defineStore('account', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
+  const resetTokenList = ref<
+    {
+      pk: number
+      user: number
+      token: string
+      updated: string
+      is_expired: boolean
+    }[]
+  >([])
+  const fetchResetTokenList = (user: number) =>
+    api
+      .get(`/pass-reset-token/?user=${user}`)
+      .then(res => (resetTokenList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
+  // const fetchResetToken = (pk: number) =>
+  //   api
+  //     .get(`/pass-reset-token/${pk}/`)
+  //     .then(res => (resetToken.value = res.data))
+  //     .catch(err => errorHandle(err.response.data))
+
   // getters
   const superAuth = computed(() => userInfo.value?.is_superuser)
   const staffAuth = computed(() => (userInfo.value?.staffauth ? userInfo.value.staffauth : null))
@@ -332,6 +353,9 @@ export const useAccount = defineStore('account', () => {
     changePassword,
     passReset,
     passResetConfirm,
+
+    resetTokenList,
+    fetchResetTokenList,
 
     superAuth,
     staffAuth,
