@@ -14,6 +14,7 @@ import { useDocument } from '@/store/pinia/document'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 import type { User } from '@/store/types/accounts'
 import type { Post } from '@/store/types/document'
+import { items, toPostBlame, toPostManage } from '@/utils/postMixins'
 import sanitizeHtml from 'sanitize-html'
 import Comments from '@/components/Comments/Index.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -38,14 +39,7 @@ const emit = defineEmits([
   'post-scrape',
   'posts-renewal',
   'post-delete',
-  'copy-post',
-  'move-post',
-  'change-category',
-  'to-secret-post',
-  'hide-comments',
-  'to-notice-up',
-  'to-blind',
-  'to-trash-can',
+  'to-manage',
 ])
 
 const refDelModal = ref()
@@ -151,29 +145,6 @@ const toScrape = () => {
   else emit('post-scrape', props.post.pk)
 }
 // const toBlame = () => alert('신고 기능 준비중!')
-
-const items = ref([
-  { title: '복사하기', icon: 'content-copy', func: 'toManage' },
-  { title: '이동하기', icon: 'folder-arrow-right', func: 'toManage' },
-  { title: '카테고리변경', icon: 'tag-multiple', func: 'toManage' },
-  { title: '비밀글로', icon: 'lock', func: 'toManage' },
-  { title: '댓글감춤', icon: 'comment-off', func: 'toManage' },
-  { title: '공지올림', icon: 'bullhorn-variant', func: 'toManage' },
-  { title: '블라인드처리', icon: 'eye-off', func: 'toManage' },
-  { title: '휴지통으로', icon: 'trash-can', func: 'toManage' },
-])
-
-const toManage = (i: number) => {
-  if (i === 1) emit('copy-post')
-  else if (i === 2) emit('move-post')
-  else if (i === 3) emit('change-category')
-  else if (i === 4) emit('to-secret-post')
-  else if (i === 5) emit('hide-comments')
-  else if (i === 6) emit('to-notice-up')
-  else if (i === 7) emit('to-blind')
-  else if (i === 8) emit('to-trash-can')
-  else alert('비정상적 접근입니다.')
-}
 
 const getFileName = (file: string) => {
   if (file) return decodeURI(file.split('/').slice(-1)[0])
@@ -384,7 +355,9 @@ onMounted(() => {
         >
           스크랩 {{ post.is_scraped ? '+1' : '' }}
         </v-btn>
-        <!--        <v-btn variant="tonal" size="small" :rounded="0" class="mr-1" @click="toBlame"> 신고</v-btn>-->
+        <v-btn variant="tonal" size="small" :rounded="0" class="mr-1" @click="toPostBlame">
+          신고
+        </v-btn>
         <v-btn
           v-if="userInfo?.is_superuser"
           prepend-icon="mdi-cog"
@@ -399,7 +372,7 @@ onMounted(() => {
                 v-for="(item, index) in items"
                 :key="index"
                 :value="index"
-                @click="toManage(index + 1)"
+                @click="toPostManage(index + 1, post.pk as number)"
               >
                 <v-list-item-title style="font-size: 0.9em">
                   <v-icon :icon="`mdi-${item.icon}`" size="sm" />

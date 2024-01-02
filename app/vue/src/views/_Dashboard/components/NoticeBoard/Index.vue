@@ -2,16 +2,6 @@
 import { ref, computed, inject, watch, onBeforeMount } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { type RouteLocationNormalizedLoaded as Loaded, useRoute, useRouter } from 'vue-router'
-import {
-  copyPost,
-  movePost,
-  changeCategory,
-  toSecretPost,
-  hideComments,
-  toNoticeUp,
-  toBlind,
-  toTrashCan,
-} from '@/utils/postMixins'
 import type { AFile, Attatches, Link, PatchPost, Post } from '@/store/types/document'
 import { type PostFilter, useDocument } from '@/store/pinia/document'
 import CategoryTabs from './components/CategoryTabs.vue'
@@ -238,14 +228,6 @@ onBeforeMount(() => dataSetup(company.value ?? comStore.initComId, route.params?
             @post-scrape="postScrape"
             @posts-renewal="postsRenewal"
             @post-delete="postDelete"
-            @copy-post="copyPost"
-            @move-post="movePost"
-            @change-category="changeCategory"
-            @to-secret-post="toSecretPost"
-            @hide-comments="hideComments"
-            @to-notice-up="toNoticeUp"
-            @to-blind="toBlind"
-            @to-trash-can="toTrashCan"
           />
         </div>
 
