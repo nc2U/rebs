@@ -103,23 +103,24 @@ def get_pay_amount(instance, price):
     # ### 회차 데이터
     install_order = InstallmentPaymentOrder.objects.filter(project=instance.project)
 
-    downs = install_order.filter(pay_sort='1')  # 계약금 분류 회차
-    middles = install_order.filter(pay_sort='2')  # 중도금 분류 회차
-    remains = install_order.filter(pay_sort='3')  # 잔금 분류 회차
+    downs = install_order.filter(pay_sort='1')  # 계약금 분류 회차 리스트
+    middles = install_order.filter(pay_sort='2')  # 중도금 분류 회차 리스트
+    remains = install_order.filter(pay_sort='3')  # 잔금 분류 회차 리스트
 
     down_num = len(downs.distinct().values_list('pay_code'))  # 계약금 분납 회수
     middle_num = len(middles.distinct().values_list('pay_code'))  # 중도금 분납 회수
+    remain_num = len(remains.distinct().values_list('pay_code'))  # 잔금 분납 회수
 
-    down_ratio = downs.first().pay_ratio / 100 if downs.first().pay_ratio else 0.1  # 회차별 계약금 비율
-    middle_ratio = middles.first().pay_ratio / 100 if middles.first().pay_ratio else 0.1  # 회차별 중도금 비율
+    down_ratio = downs.first().pay_ratio / 100 if downs.first().pay_ratio else 0.1  # 회차별 계약금 비율(기본값 10%)
+    middle_ratio = middles.first().pay_ratio / 100 if middles.first().pay_ratio else 0.1  # 회차별 중도금 비율(기본값 10%)
 
     try:
         down_data = DownPayment.objects.get(order_group=instance.order_group,
                                             unit_type=instance.unit_type)  # 현재 차수 및 타입의 계약금 데이터
-        down = down_data.payment_amount  # 회차별 계약금 금액
+        down = down_data.payment_amount  # 계약금 데이터가 있으면 해당 데이터가 회차별 계약금 금액
     except DownPayment.DoesNotExist:
-        down = price * down_ratio / down_num  # 계약금 데이터 없을 경우 회차별 계약금 금액
-    remain = price - (price * middle_ratio * middle_num) - (down * down_num)  # 계약금/중도금 공제 잔금액
+        down = price * down_ratio  # 계약금 데이터 없을 경우 회차별 계약금 금액
+    remain = (price - (price * middle_ratio * middle_num) - (down * down_num)) / remain_num  # 계약금/중도금 공제 잔금액
 
     middle = price * middle_ratio
     return down, middle, remain

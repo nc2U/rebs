@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount } from 'vue'
+import { ref, reactive, computed, onBeforeMount, nextTick } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { write_project } from '@/utils/pageAuth'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -13,9 +13,10 @@ const form = reactive({
   pay_sort: '',
   pay_code: null as string | null,
   pay_time: null as string | null,
+  pay_ratio: null,
+  is_pm_cost: false,
   pay_name: '',
   alias_name: '',
-  is_pm_cost: false,
   pay_due_date: null as string | null,
   extra_due_date: null as string | null,
 })
@@ -27,17 +28,23 @@ const formsCheck = computed(() => {
   const a = form.pay_sort === props.payOrder.pay_sort
   const b = form.pay_code === props.payOrder.pay_code
   const c = form.pay_time === props.payOrder.pay_time
-  const d = form.pay_name === props.payOrder.pay_name
-  const e = form.alias_name === props.payOrder.alias_name
-  const f = form.is_pm_cost === props.payOrder.is_pm_cost
-  const g = form.pay_due_date === props.payOrder.pay_due_date
-  const h = form.extra_due_date === props.payOrder.extra_due_date
-  return a && b && c && d && e && f && g && h
+  const d = form.pay_ratio === props.payOrder.pay_ratio
+  const e = form.is_pm_cost === props.payOrder.is_pm_cost
+  const f = form.pay_name === props.payOrder.pay_name
+  const g = form.alias_name === props.payOrder.alias_name
+  const h = form.pay_due_date === props.payOrder.pay_due_date
+  const i = form.extra_due_date === props.payOrder.extra_due_date
+  return a && b && c && d && e && f && g && h && i
 })
 
 const formCheck = (bool: boolean) => {
   if (bool) onUpdatePayOrder()
   return
+}
+const remainChk = () => {
+  nextTick(() => {
+    if (form.pay_sort === '3') form.pay_ratio = null
+  })
 }
 const onUpdatePayOrder = () => {
   if (write_project.value) {
@@ -64,9 +71,10 @@ const dataSetup = () => {
   form.pay_sort = props.payOrder.pay_sort
   form.pay_code = props.payOrder.pay_code
   form.pay_time = props.payOrder.pay_time
+  form.pay_ratio = props.payOrder.pay_ratio
+  form.is_pm_cost = props.payOrder.is_pm_cost
   form.pay_name = props.payOrder.pay_name
   form.alias_name = props.payOrder.alias_name
-  form.is_pm_cost = props.payOrder.is_pm_cost
   form.pay_due_date = props.payOrder.pay_due_date
   form.extra_due_date = props.payOrder.extra_due_date
 }
@@ -77,7 +85,7 @@ onBeforeMount(() => dataSetup())
 <template>
   <CTableRow>
     <CTableDataCell>
-      <CFormSelect v-model="form.pay_sort" required>
+      <CFormSelect v-model="form.pay_sort" required @change="remainChk">
         <option value="">종류선택</option>
         <option value="1">계약금</option>
         <option value="2">중도금</option>
@@ -102,6 +110,17 @@ onBeforeMount(() => dataSetup())
         min="0"
         required
         @keypress.enter="formCheck(form.pay_time !== payOrder.pay_time)"
+      />
+    </CTableDataCell>
+
+    <CTableDataCell>
+      <CFormInput
+        v-model.number="form.pay_ratio"
+        placeholder="납부비율"
+        type="number"
+        min="0"
+        @keypress.enter="formCheck(form.pay_ratio !== payOrder.pay_ratio)"
+        :disabled="form.pay_sort === '3'"
       />
     </CTableDataCell>
 

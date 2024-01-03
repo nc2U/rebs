@@ -17,21 +17,23 @@ const onDeletePayOrder = (pk: number) => emit('on-delete', pk)
 <template>
   <CTable hover responsive>
     <colgroup>
-      <col style="width: 11%" />
-      <col style="width: 11%" />
-      <col style="width: 11%" />
-      <col style="width: 11%" />
-      <col style="width: 11%" />
-      <col style="width: 11%" />
-      <col style="width: 11%" />
-      <col style="width: 11%" />
-      <col style="width: 12%" />
+      <col style="width: 10%" />
+      <col style="width: 10%" />
+      <col style="width: 10%" />
+      <col style="width: 10%" />
+      <col style="width: 10%" />
+      <col style="width: 10%" />
+      <col style="width: 10%" />
+      <col style="width: 10%" />
+      <col style="width: 10%" />
+      <col style="width: 10%" />
     </colgroup>
     <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>종류</CTableHeaderCell>
         <CTableHeaderCell>납입회차 코드</CTableHeaderCell>
         <CTableHeaderCell>납부순서</CTableHeaderCell>
+        <CTableHeaderCell>납부비율(%)</CTableHeaderCell>
         <CTableHeaderCell>PM용역비 여부</CTableHeaderCell>
         <CTableHeaderCell>납부회차명</CTableHeaderCell>
         <CTableHeaderCell>회차 별칭</CTableHeaderCell>
