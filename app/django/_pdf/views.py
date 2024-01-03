@@ -1,18 +1,18 @@
-from itertools import accumulate
-from django.views.generic import View
-from django.core.exceptions import ObjectDoesNotExist
-# --------------------------------------------------------
 from datetime import date, datetime, timedelta
+from itertools import accumulate
+# --------------------------------------------------------
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.storage import FileSystemStorage
+from django.db.models import Sum
 from django.http import HttpResponse
 from django.template.loader import render_to_string
+from django.views.generic import View
 from weasyprint import HTML
 
-from django.db.models import Sum
+from cash.models import ProjectCashBook
 from contract.models import Contract
 from notice.models import SalesBillIssue
-from cash.models import ProjectCashBook
-from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
+from payment.models import InstallmentPaymentOrder
 
 TODAY = date.today()
 
@@ -476,16 +476,16 @@ class PdfExportPayments(View):
         context['unit'] = unit
 
         # 1. 이 계약 건 분양가격 (계약금, 중도금, 잔금 약정액)
-        cont_price = contract.contractprice
-        down = cont_price.down_pay
-        middle = cont_price.middle_pay
-        remain = cont_price.remain_pay
+        cont_price = contract.contractprice  # 공급가격
+        down = cont_price.down_pay  # 계약금
+        middle = cont_price.middle_pay  # 중도금
+        remain = cont_price.remain_pay  # 잔금
 
         context['price'] = cont_price.price if unit else '동호 지정 후 고지'  # 이 건 분양가격
         amount = {'1': down, '2': middle, '3': remain}
 
         # 2. 요약 테이블 데이터
-        context['due_amount'] = self.get_due_amount(inspay_orders, contract, amount)
+        context['due_amount'] = self.get_due_amount(inspay_orders, contract, amount)  # 약정금 누계
         context['now_order'] = self.get_now_order(contract, inspay_orders)
 
         # 2. 간단 차수 정보
@@ -633,7 +633,9 @@ class PdfExportPayments(View):
         return due_date
 
     def get_due_amount(self, inspay_orders, contract, amount):
+        """약정금 누계 계산 함수"""
         total_amounts = 0
+        # 약정회차 리스트
         due_orders = list(filter(lambda x: x.pay_code <= self.get_now_order(contract, inspay_orders)[0], inspay_orders))
         for ord in due_orders:
             total_amounts += amount[ord.pay_sort]
