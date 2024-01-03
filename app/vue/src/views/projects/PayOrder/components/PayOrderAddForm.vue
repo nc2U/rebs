@@ -17,9 +17,10 @@ const form = reactive({
   pay_sort: '',
   pay_code: null as string | null,
   pay_time: null as string | null,
+  is_pm_cost: false,
+  pay_ratio: null,
   pay_name: '',
   alias_name: '',
-  is_pm_cost: false,
   pay_due_date: null as string | null,
   extra_due_date: null as string | null,
 })
@@ -52,9 +53,10 @@ const resetForm = () => {
   form.pay_sort = ''
   form.pay_code = null
   form.pay_time = null
+  form.is_pm_cost = false
+  form.pay_ratio = null
   form.pay_name = ''
   form.alias_name = ''
-  form.is_pm_cost = false
   form.pay_due_date = null
   form.extra_due_date = null
 }
@@ -103,13 +105,23 @@ const resetForm = () => {
             <!--          등록한다.-->
             <!--        </CFormText>-->
           </CCol>
-          <CCol md="3" class="mb-2">
+          <CCol md="2" class="mb-2">
             <CRow>
-              <CFormLabel class="col-md-8 col-form-label"> PM용역비 여부 </CFormLabel>
+              <CFormLabel class="col-md-8 col-form-label"> PM용역비 여부</CFormLabel>
               <CCol md="1" class="pt-2">
                 <CFormSwitch v-model="form.is_pm_cost" :checked="false" :disabled="disabled" />
               </CCol>
             </CRow>
+          </CCol>
+          <CCol md="2" class="mb-2">
+            <CFormInput
+              v-model="form.pay_ratio"
+              maxlength="20"
+              type="number"
+              placeholder="납부비율"
+              required
+              :disabled="disabled"
+            />
           </CCol>
         </CRow>
       </CCol>
@@ -163,7 +175,7 @@ const resetForm = () => {
       <CCol xl="1">
         <CRow>
           <CCol md="12" class="d-grid gap-2 d-lg-block mb-3">
-            <CButton color="primary" type="submit" :disabled="disabled"> 회차추가 </CButton>
+            <CButton color="primary" type="submit" :disabled="disabled"> 회차추가</CButton>
           </CCol>
         </CRow>
       </CCol>
@@ -172,7 +184,7 @@ const resetForm = () => {
 
   <ConfirmModal ref="refConfirmModal">
     <template #header> 층별 타입 등록</template>
-    <template #default> 프로젝트의 층별 범위 타입 정보 등록을 진행하시겠습니까? </template>
+    <template #default> 프로젝트의 층별 범위 타입 정보 등록을 진행하시겠습니까?</template>
     <template #footer>
       <CButton color="primary" @click="modalAction">저장</CButton>
     </template>
