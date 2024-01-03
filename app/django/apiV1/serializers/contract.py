@@ -112,7 +112,6 @@ def get_pay_amount(instance, price):
 
     down_ratio = downs.first().pay_ratio / 100 if downs.first().pay_ratio else 0.1  # 회차별 계약금 비율
     middle_ratio = middles.first().pay_ratio / 100 if middles.first().pay_ratio else 0.1  # 회차별 중도금 비율
-    remain_ratio = remains.first().pay_ratio / 100 if remains.first().pay_ratio else 0.1  # 회차별 잔금 비율
 
     try:
         down_data = DownPayment.objects.get(order_group=instance.order_group,
