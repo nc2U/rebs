@@ -118,10 +118,9 @@ def get_pay_amount(instance, price):
         down_data = DownPayment.objects.get(order_group=instance.order_group,
                                             unit_type=instance.unit_type)  # 현재 차수 및 타입의 계약금 데이터
         down = down_data.payment_amount  # 회차별 계약금 금액
-        remain = price - (price * middle_ratio * middle_num) - (down * down_num)  # 계약금/중도금 공제 잔금액
     except DownPayment.DoesNotExist:
         down = price * down_ratio / down_num  # 계약금 데이터 없을 경우 회차별 계약금 금액
-        remain = down * remain_ratio  # 계약금 데이터 없을 경우 잔금
+    remain = price - (price * middle_ratio * middle_num) - (down * down_num)  # 계약금/중도금 공제 잔금액
 
     middle = price * middle_ratio
     return down, middle, remain
