@@ -214,7 +214,7 @@ onBeforeRouteLeave(() => {
           :disabled="!project"
         >
           <v-radio label="일반내역" value="1" class="pr-3" />
-          <v-radio label="확인증명" value="2" />
+          <v-radio label="담당확인" value="2" />
         </v-radio-group>
       </TableTitleRow>
       <CRow>
