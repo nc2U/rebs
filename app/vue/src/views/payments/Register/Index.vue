@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import Cookies from 'js-cookie'
 import { ref, computed, onBeforeMount, onMounted, onUpdated, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/payments/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
@@ -19,13 +20,15 @@ import TableTitleRow from '@/components/TableTitleRow.vue'
 
 const paymentId = ref<string>('')
 
-const pdfSelect = ref('1')
+const pdfPayConf = ref(Cookies.get('pdfPayConf') ?? '1')
+
+watch(pdfPayConf, newVal => Cookies.set('pdfPayConf', newVal))
 
 const paymentUrl = computed(() => {
   const url = '/pdf/payments/'
   const proj = project.value ?? ''
   const cont = contract.value?.pk ?? ''
-  return `${url}?project=${proj}&contract=${cont}&sel=${pdfSelect.value}`
+  return `${url}?project=${proj}&contract=${cont}&sel=${pdfPayConf.value}`
 })
 
 const projStore = useProject()
@@ -204,7 +207,7 @@ onBeforeRouteLeave(() => {
       />
       <TableTitleRow :disabled="!project || !contract" pdf :url="paymentUrl">
         <v-radio-group
-          v-model="pdfSelect"
+          v-model="pdfPayConf"
           inline
           size="sm"
           density="compact"

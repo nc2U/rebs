@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import Cookies from 'js-cookie'
+import { ref, watch } from 'vue'
 import { AlertSecondary } from '@/utils/cssMixins'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
@@ -10,8 +11,19 @@ const props = defineProps({
 
 const refAlertModal = ref()
 
-const noPrice = ref(false)
-const noLate = ref(false)
+const noPrice = ref(Boolean(Cookies.get('noPrice')) ?? false)
+
+watch(noPrice, newVal => {
+  const val = newVal ? '1' : ''
+  Cookies.set('noPrice', val)
+})
+
+const noLate = ref(Boolean(Cookies.get('noLate')) ?? false)
+
+watch(noLate, newVal => {
+  const val = newVal ? '1' : ''
+  Cookies.set('noLate', val)
+})
 
 const printBill = () => {
   const { is_bill_issue } = props.printData

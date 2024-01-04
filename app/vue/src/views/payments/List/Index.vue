@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount } from 'vue'
+import Cookies from 'js-cookie'
+import { ref, computed, onBeforeMount, watch } from 'vue'
 import { navMenu, pageTitle } from '@/views/payments/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
@@ -90,9 +91,11 @@ const byContract = computed(() =>
     : '',
 )
 
-const excelSelect = ref('1') // 다운로드할 파일 선택
+const paymentBy = ref(Cookies.get('paymentBy') ?? '1') // 다운로드할 파일 선택
 
-const excelUrl = computed(() => (excelSelect.value === '1' ? byPayment.value : byContract.value))
+watch(paymentBy, newVal => Cookies.set('paymentBy', newVal))
+
+const excelUrl = computed(() => (paymentBy.value === '1' ? byPayment.value : byContract.value))
 
 const dataSetup = (pk: number) => {
   fetchOrderGroupList(pk)
@@ -144,12 +147,12 @@ onBeforeRouteLeave(() => {
     <CCardBody class="pb-5">
       <ListController
         ref="listControl"
-        :by-cont="excelSelect === '2'"
+        :by-cont="paymentBy === '2'"
         @payment-filtering="listFiltering"
       />
       <TableTitleRow excel :url="excelUrl" :disabled="!project">
         <v-radio-group
-          v-model="excelSelect"
+          v-model="paymentBy"
           inline
           size="sm"
           density="compact"
