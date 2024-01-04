@@ -575,7 +575,7 @@ class PdfExportPayments(View):
             contract=contract
         ).order_by('deal_date', 'id')  # 해당 계약 건 납부 데이터
 
-        paid_list = paid_list if paid_list else []
+        # paid_list = paid_list if paid_list else []
         pay_list = [p.income for p in paid_list]
         paid_sum_list = list(accumulate(pay_list))
         paid_dict_list = []
