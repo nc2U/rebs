@@ -10,10 +10,21 @@
         </tr>
         <tr>
             <td colspan="2"></td>
-            <td class="center" style="padding: 0; letter-spacing: 1.2em;"><h1>분양대금납부확인서/{{ pdfSelect }}</h1></td>
-            <td class="{% if pdfSelect == '1' %}ba{% endif %} center" style="padding: 0;">
-                {% if pdfSelect == '1' %}직인생략{% endif %}
-            </td>
+            <td rowspan="2" class="center" style="padding: 0; letter-spacing: 1.2em;"><h1>분양대금납부확인서</h1></td>
+            {% if pdfSelect == '1' %}
+                <td rowspan="2" class="ba center" style="padding: 0;">직인생략</td>
+            {% elif pdfSelect == '2' %}
+                <td class="ba center" style="padding: 0;">납부확인</td>
+            {% endif %}
+
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan="2"></td>
+            {% if pdfSelect == '2' %}
+                <td class="ba" style="padding: 0;"></td>
+            {% endif %}
+
             <td></td>
         </tr>
         <tr>
