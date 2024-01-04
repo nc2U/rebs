@@ -13,6 +13,7 @@ import TableTitleRow from '@/components/TableTitleRow.vue'
 import StatusByAccount from '@/views/comCash/Status/components/StatusByAccount.vue'
 import CashListByDate from '@/views/comCash/Status/components/CashListByDate.vue'
 import Calculated from '@/views/comCash/Status/components/Calculated.vue'
+import Cookies from 'js-cookie'
 
 const date = ref(getToday())
 const compName = ref('StatusByAccount')
@@ -63,13 +64,12 @@ const excelUrl = computed(() => {
   return `${url}&date=${date.value}`
 })
 
-const showTab = (num: number) => {
-  const comp: { [key: number]: string } = {
-    1: 'StatusByAccount',
-    2: 'CashListByDate',
-  }
-  compName.value = comp[num]
+const comp: { [key: number]: string } = {
+  1: 'StatusByAccount',
+  2: 'CashListByDate',
 }
+
+const showTab = (num: number) => (compName.value = comp[num])
 
 const setDate = (dt: string) => {
   date.value = dt
@@ -106,6 +106,7 @@ onBeforeMount(() => {
   fetchAllAccD2List()
   fetchAllAccD3List()
   dataSetup(company.value || comStore.initComId)
+  compName.value = comp[Number(Cookies.get('comCashStatus'))]
 })
 </script>
 

@@ -14,6 +14,7 @@ import StatusByAccount from '@/views/proCash/Status/components/StatusByAccount.v
 import CashListByDate from '@/views/proCash/Status/components/CashListByDate.vue'
 import SummaryForBudget from '@/views/proCash/Status/components/SummaryForBudget.vue'
 import Calculated from '@/views/comCash/Status/components/Calculated.vue'
+import Cookies from 'js-cookie'
 
 const date = ref(getToday())
 const direct = ref('0')
@@ -74,14 +75,13 @@ const excelUrl = computed(() => {
   return `${url}`
 })
 
-const showTab = (num: number) => {
-  const comp: { [key: number]: string } = {
-    1: 'StatusByAccount',
-    2: 'CashListByDate',
-    3: 'SummaryForBudget',
-  }
-  compName.value = comp[num]
+const comp: { [key: number]: string } = {
+  1: 'StatusByAccount',
+  2: 'CashListByDate',
+  3: 'SummaryForBudget',
 }
+
+const showTab = (num: number) => (compName.value = comp[num])
 
 const setDate = (dt: string) => {
   date.value = dt
@@ -136,6 +136,7 @@ onBeforeMount(() => {
   fetchProAllAccD2List()
   fetchProAllAccD3List()
   dataSetup(project.value || projStore.initProjId)
+  compName.value = comp[Number(Cookies.get('proCashStatus'))]
 })
 </script>
 
