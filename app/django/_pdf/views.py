@@ -464,6 +464,7 @@ class PdfExportPayments(View):
         # 계약 건 객체
         cont_id = request.GET.get('contract')
         context['contract'] = contract = self.get_contract(cont_id)
+        context['pdfSelect'] = request.GET.get('sel')
 
         inspay_orders = InstallmentPaymentOrder.objects.filter(project=project)  # 전체 납부회차 리스트
 
