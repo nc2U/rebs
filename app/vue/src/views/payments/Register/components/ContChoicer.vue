@@ -3,24 +3,17 @@ import { ref, reactive, computed, nextTick, onMounted, type PropType } from 'vue
 import { type Contract } from '@/store/types/contract'
 import { useContract } from '@/store/pinia/contract'
 import { usePayment } from '@/store/pinia/payment'
-import TableTitleRow from '@/components/TableTitleRow.vue'
 
-const props = defineProps({
+defineProps({
   project: { type: Number, default: null },
   contract: { type: Object as PropType<Contract>, default: null },
+  paymentUrl: { type: String, default: '' },
 })
 
 const emit = defineEmits(['list-filtering', 'get-contract'])
 
 const contractStore = useContract()
 const contractList = computed(() => contractStore.contractList)
-
-const paymentUrl = computed(() => {
-  const url = '/pdf/payments/'
-  const project = props.project ? props.project : ''
-  const contract = props.contract ? props.contract.pk : ''
-  return `${url}?project=${project}&contract=${contract}`
-})
 
 const form = reactive({ search: '' })
 const msg = ref('')
@@ -136,5 +129,4 @@ onMounted(() => pageInit())
       </CCol>
     </CRow>
   </CAlert>
-  <TableTitleRow :disabled="!project || !contract" pdf :url="paymentUrl" />
 </template>

@@ -15,8 +15,18 @@ import ContChoicer from '@/views/payments/Register/components/ContChoicer.vue'
 import PaymentListAll from '@/views/payments/Register/components/PaymentListAll.vue'
 import OrdersBoard from '@/views/payments/Register/components/OrdersBoard.vue'
 import CreateButton from '@/views/payments/Register/components/CreateButton.vue'
+import TableTitleRow from '@/components/TableTitleRow.vue'
 
 const paymentId = ref<string>('')
+
+const pdfSelect = ref('1')
+
+const paymentUrl = computed(() => {
+  const url = '/pdf/payments/'
+  const proj = project.value ?? ''
+  const cont = contract.value?.pk ?? ''
+  return `${url}?project=${proj}&contract=${cont}&sel=${pdfSelect.value}`
+})
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
@@ -188,9 +198,25 @@ onBeforeRouteLeave(() => {
         ref="listControl"
         :project="project || undefined"
         :contract="contract as Contract"
+        :payment-url="paymentUrl"
         @list-filtering="onContFiltering"
         @get-contract="getContract"
       />
+      <TableTitleRow :disabled="!project || !contract" pdf :url="paymentUrl">
+        <v-radio-group
+          v-model="pdfSelect"
+          inline
+          size="sm"
+          density="compact"
+          color="success"
+          class="d-flex flex-row-reverse"
+          style="font-size: 0.8em"
+          :disabled="!project"
+        >
+          <v-radio label="일반내역" value="1" class="pr-3" />
+          <v-radio label="확인증명" value="2" />
+        </v-radio-group>
+      </TableTitleRow>
       <CRow>
         <CCol lg="7">
           <PaymentListAll
