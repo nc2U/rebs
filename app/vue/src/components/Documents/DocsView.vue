@@ -410,7 +410,14 @@ onMounted(() => {
         >
           스크랩 {{ post.scrape ? `+${post.scrape}` : '' }}
         </v-btn>
-        <v-btn variant="tonal" size="small" :rounded="0" class="mr-1" @click="blameConfirm">
+        <v-btn
+          variant="tonal"
+          :color="post.my_blame ? 'primary' : ''"
+          size="small"
+          :rounded="0"
+          class="mr-1"
+          @click="blameConfirm"
+        >
           신고
         </v-btn>
         <v-btn
@@ -503,11 +510,12 @@ onMounted(() => {
   <ConfirmModal ref="refBlameModal">
     <template #header>알림</template>
     <template #default>
-      이 게시글을 신고하시겠습니까?<br /><br />
-      한 번 신고하신 후에는 취소가 불가능합니다.
+      이 게시글을 신고 {{ post.my_blame ? '를 취소' : '' }} 하시겠습니까?<br /><br />
     </template>
     <template #footer>
-      <CButton color="danger" @click="blameAction">신고</CButton>
+      <CButton :color="post.my_blame ? 'secondary' : 'danger'" @click="blameAction">
+        {{ post.my_blame ? '취소' : '신고' }}
+      </CButton>
     </template>
   </ConfirmModal>
 
