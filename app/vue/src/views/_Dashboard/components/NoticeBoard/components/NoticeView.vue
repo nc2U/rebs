@@ -497,7 +497,7 @@ onMounted(() => {
 
   <BoardListModal
     ref="refBoardListModal"
-    :now-board="post?.board"
+    :now-board="post?.board ?? undefined"
     :board-list="boardList"
     :is-copy="isCopy"
     @copy-post="copyPost"
@@ -506,7 +506,7 @@ onMounted(() => {
 
   <CateListModal
     ref="refCateListModal"
-    :now-cate="post?.category"
+    :now-cate="post?.category ?? undefined"
     :category-list="categoryList"
     @change-cate="changeCate"
   />
