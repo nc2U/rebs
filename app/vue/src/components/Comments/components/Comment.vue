@@ -24,8 +24,6 @@ const emit = defineEmits(['vision-toggle', 'to-like', 'on-submit'])
 
 const userInfo = inject<ComputedRef<User>>('userInfo')
 
-const isLike = computed(() => props.likeComments.includes(props.comment.pk ?? 0))
-
 const isReplying = ref<boolean>(false)
 const isEditing = ref<boolean>(false)
 
@@ -60,21 +58,32 @@ const onSubmit = (payload: Cm) => emit('on-submit', payload)
       <v-icon icon="mdi-clock-time-four-outline" size="sm" />
       {{ elapsedTime(comment?.created ?? '') }}
     </small>
-    <small class="ml-2">
+    <small class="ml-3 text-btn" @click="toLike">
       <v-icon
-        :icon="isLike ? 'mdi-heart' : 'mdi-heart-outline'"
-        @click="toLike"
+        :icon="comment.my_like ? 'mdi-heart' : 'mdi-heart-outline'"
         size="sm"
         class="icon-btn"
       />
-      {{ !isLike ? '좋아요' : '취소' }}
+      <v-tooltip activator="parent" location="top">
+        {{ !comment.my_like ? '좋아요' : '취소' }}
+      </v-tooltip>
       {{ comment?.like ?? 0 }}
     </small>
-    <small class="ml-2 text-btn" @click="toBlame">
-      <v-icon icon="mdi mdi-bell" size="xs" />
-      <v-tooltip activator="parent" location="end">신고하기</v-tooltip>
+
+    <small class="ml-3 text-btn" @click="toBlame">
+      <v-icon
+        :icon="comment.my_blame ? 'mdi-bell' : 'mdi-bell-outline'"
+        size="xs"
+        class="icon-btn"
+      />
+      <!--      신고-->
+      <v-tooltip activator="parent" location="top">
+        {{ !comment.my_blame ? '신고' : '취소' }}
+      </v-tooltip>
+      {{ comment.blame ?? 0 }}
     </small>
-    <small v-if="!lastDepth" class="ml-2 text-btn" @click="toReply">
+
+    <small v-if="!lastDepth" class="ml-3 text-btn" @click="toReply">
       {{ !isReplying ? '답변' : '취소' }}
     </small>
     <template v-if="!comment.replies?.length && userInfo?.pk === props.comment?.user?.pk">
