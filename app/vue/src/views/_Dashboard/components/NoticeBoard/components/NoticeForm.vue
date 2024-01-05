@@ -170,7 +170,7 @@ onUpdated(() => dataSetup())
         <CFormInput id="title" v-model="form.title" required placeholder="게시물 제목" />
       </CCol>
       <CCol md="2">
-        <v-checkbox-btn v-model="form.is_notice" label="공지글" />
+        <!--        <v-checkbox-btn v-model="form.is_notice" label="공지글" />-->
       </CCol>
     </CRow>
 
@@ -183,6 +183,14 @@ onUpdated(() => dataSetup())
             {{ cate.name }}
           </option>
         </CFormSelect>
+      </CCol>
+
+      <CCol md="2">
+        <v-checkbox-btn v-model="form.is_notice" label="공지글" />
+      </CCol>
+
+      <CCol md="2">
+        <v-checkbox-btn v-model="form.is_secret" label="비밀글" />
       </CCol>
 
       <!--      <CFormLabel for="inputPassword" class="col-sm-2 col-form-label"> 문서 발행일자</CFormLabel>-->

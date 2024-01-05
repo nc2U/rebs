@@ -186,6 +186,9 @@ onUpdated(() => dataSetup())
       <CCol :md="boardNum === 3 ? 9 : 8">
         <CFormInput id="title" v-model="form.title" required placeholder="게시물 제목" />
       </CCol>
+      <CCol v-if="boardNum !== 3">
+        <v-checkbox-btn v-model="form.is_notice" label="공지글" />
+      </CCol>
     </CRow>
 
     <CRow class="mb-3">
@@ -231,8 +234,8 @@ onUpdated(() => dataSetup())
       <CCol :md="boardNum === 3 ? 2 : 3">
         <DatePicker v-model="form.execution_date" placeholder="문서 발행일자" />
       </CCol>
-      <CCol v-if="boardNum !== 3" class="pt-2">
-        <CFormSwitch id="is_notice" v-model="form.is_notice" label="공지여부" />
+      <CCol v-if="boardNum !== 3">
+        <v-checkbox-btn v-model="form.is_secret" label="비밀글" />
       </CCol>
     </CRow>
 
