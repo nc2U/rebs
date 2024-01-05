@@ -10,6 +10,40 @@ const patchCommentLike = (pk: number, post: number, page?: number) =>
 const patchCommentBlame = (pk: number, post: number, page?: number) =>
   docStore.patchCommentBlame(pk, post, page)
 
+export const toPrint = (title: string) => {
+  // Clone the specific area to be printed
+  const printContent: any = document.getElementById('print-area')?.cloneNode(true)
+
+  // Create a new window for printing
+  const printWindow = window.open('', '_blank')
+  if (printWindow) {
+    printWindow.document.open()
+
+    // Add the cloned content to the new window
+    printWindow.document.write(`<html><head><title>${title}</title></head><body>`)
+    printWindow.document.write(printContent?.innerHTML)
+    printWindow.document.write('</body></html>')
+
+    // Close the document for writing
+    printWindow.document.close()
+
+    // Print the new window
+    printWindow.print()
+    // Close the new window after printing
+    printWindow.close()
+  }
+}
+
+export const toPostLike = (pk: number) => patchPostLike(pk)
+
+export const toPostBlame = (pk: number) => patchPostBlame(pk)
+
+export const toCommentLike = (pk: number, post: number, page = 1) =>
+  patchCommentLike(pk, post, page)
+
+export const toCommentBlame = (pk: number, post: number, page = 1) =>
+  patchCommentBlame(pk, post, page)
+
 export const postManageItems = ref([
   { title: '복사하기', icon: 'content-copy' },
   { title: '이동하기', icon: 'folder-arrow-right' },
@@ -49,10 +83,6 @@ const toTrashCan = (post: number, state: boolean) => {
   }
 }
 
-export const toPostLike = (pk: number) => patchPostLike(pk)
-
-export const toPostBlame = (pk: number) => patchPostBlame(pk)
-
 export const toPostManage = (
   f: number,
   brd: number,
@@ -66,9 +96,3 @@ export const toPostManage = (
   if (f === 7) return toBlind(post, state)
   if (f === 8) return toTrashCan(post, state)
 }
-
-export const toCommentLike = (pk: number, post: number, page = 1) =>
-  patchCommentLike(pk, post, page)
-
-export const toCommentBlame = (pk: number, post: number, page = 1) =>
-  patchCommentBlame(pk, post, page)

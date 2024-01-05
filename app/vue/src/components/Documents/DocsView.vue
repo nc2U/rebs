@@ -13,7 +13,7 @@ import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 import { type Post } from '@/store/types/document'
-import { postManageItems, toPostLike, toPostBlame, toPostManage } from '@/utils/postMixins'
+import { toPrint, postManageItems, toPostLike, toPostBlame, toPostManage } from '@/utils/postMixins'
 import sanitizeHtml from 'sanitize-html'
 import type { User } from '@/store/types/accounts'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -76,30 +76,6 @@ const blameAction = () => {
 
 const linkHitUp = async (pk: number) => emit('link-hit', pk)
 const fileHitUp = async (pk: number) => emit('file-hit', pk)
-
-const toPrint = () => {
-  // Clone the specific area to be printed
-  const printContent: any = document.getElementById('print-area')?.cloneNode(true)
-
-  // Create a new window for printing
-  const printWindow = window.open('', '_blank')
-  if (printWindow) {
-    printWindow.document.open()
-
-    // Add the cloned content to the new window
-    printWindow.document.write(`<html><head><title>${props.post.title}</title></head><body>`)
-    printWindow.document.write(printContent?.innerHTML)
-    printWindow.document.write('</body></html>')
-
-    // Close the document for writing
-    printWindow.document.close()
-
-    // Print the new window
-    printWindow.print()
-    // Close the new window after printing
-    printWindow.close()
-  }
-}
 
 const [route, router] = [useRoute(), useRouter()]
 
@@ -280,7 +256,7 @@ onMounted(() => {
           <v-icon icon="mdi-heart" size="sm" />
           <span class="ml-1">{{ post.like }}</span>
         </small>
-        <small class="mr-2 text-btn" @click="toPrint">
+        <small class="mr-2 text-btn" @click="toPrint(post.title)">
           <v-icon icon="mdi-printer" size="sm" />
           <span class="ml-1">프린트</span>
         </small>
