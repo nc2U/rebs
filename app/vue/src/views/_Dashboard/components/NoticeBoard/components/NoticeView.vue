@@ -386,7 +386,7 @@ onMounted(() => {
           class="mr-1"
           @click="toScrape"
         >
-          스크랩 {{ post.is_scraped ? '+1' : '' }}
+          스크랩 {{ post.scraped ? `+${post.scraped}` : '' }}
         </v-btn>
         <v-btn
           variant="tonal"
