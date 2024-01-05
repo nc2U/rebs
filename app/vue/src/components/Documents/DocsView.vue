@@ -153,8 +153,8 @@ const toManage = (fn: number) => {
   }
 }
 
-const copyPost = () => alert('게시물 복사!')
-const movePost = () => alert('게시물 이동!')
+const copyPost = (board: number) => alert('게시물 복사!--' + board)
+const movePost = (board: number) => alert('게시물 이동!--' + board)
 const changeCate = () => alert('카테고리 변경!')
 
 const getFileName = (file: string) => {
@@ -498,9 +498,10 @@ onMounted(() => {
 
   <BoardListModal
     ref="refBoardListModal"
+    :now-board="post?.board"
     :board-list="boardList"
     :is-copy="isCopy"
-    @capy-post="copyPost"
+    @copy-post="copyPost"
     @move-post="movePost"
   />
 
