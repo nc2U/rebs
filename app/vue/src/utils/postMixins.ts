@@ -1,4 +1,9 @@
 import { ref } from 'vue'
+import { useDocument } from '@/store/pinia/document'
+
+const docStore = useDocument()
+const patchPostLike = (pk: number) => docStore.patchPostLike(pk)
+const patchPostBlame = (pk: number) => docStore.patchPostBlame(pk)
 
 export const postManageItems = ref([
   { title: '복사하기', icon: 'content-copy' },
@@ -54,7 +59,9 @@ const toTrashCan = (post: number, state: boolean) => {
   }
 }
 
-export const toPostBlame = (pk: number) => alert('mixin - 준비중! - ' + pk)
+export const toPostLike = (pk: number) => patchPostLike(pk)
+
+export const toPostBlame = (pk: number) => patchPostBlame(pk)
 
 export const toPostManage = (
   f: number,
