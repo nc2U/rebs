@@ -94,9 +94,11 @@ export type Post = {
   content: string
   hit?: number
   like?: number
-  scraped?: number
-  is_scraped?: boolean
+  my_like?: boolean
+  scrape?: number
+  my_scrape?: boolean
   blame?: number
+  my_blame?: boolean
   ip: string | null
   device: string
   is_secret: boolean
@@ -172,8 +174,9 @@ export interface Comment {
   parent: number | null
   replies?: Comment[]
   like?: number
-  dislike?: number
+  my_like?: boolean
   blame?: number
+  my_blame?: boolean
   ip?: string
   device?: string
   secret: boolean
