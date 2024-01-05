@@ -359,6 +359,27 @@ class PostLikeSerializer(serializers.ModelSerializer):
         return instance
 
 
+class PostBlameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ('pk', 'blame')
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        user = self.context['request'].user
+        profile = Profile.objects.get(user=user)
+
+        if profile.blame_posts.filter(pk=instance.pk).exists():
+            if instance.blame > 0:
+                instance.blame -= 1
+                profile.blame_posts.remove(instance)
+        else:
+            instance.blame += 1
+            profile.blame_posts.add(instance)
+        instance.save()
+        return instance
+
+
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
@@ -417,6 +438,27 @@ class CommentLikeSerializer(serializers.ModelSerializer):
         else:
             instance.like += 1
             profile.like_comments.add(instance)
+        instance.save()
+        return instance
+
+
+class CommentBlameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('pk', 'blame')
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        user = self.context['request'].user
+        profile = Profile.objects.get(user=user)
+
+        if profile.blame_comments.filter(pk=instance.pk).exists():
+            if instance.blame > 0:
+                instance.blame -= 1
+                profile.blame_comments.remove(instance)
+        else:
+            instance.blame += 1
+            profile.blame_comments.add(instance)
         instance.save()
         return instance
 

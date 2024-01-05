@@ -92,6 +92,12 @@ class PostLikeViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
 
+class PostBlameViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostBlameSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+
 class ImageViewSet(viewsets.ModelViewSet):
     queryset = Image.objects.all()
     serializer_class = ImageSerializer
@@ -131,6 +137,12 @@ class CommentViewSet(viewsets.ModelViewSet):
 class CommentLikeViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentLikeSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+
+class CommentBlameViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentBlameSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
 
