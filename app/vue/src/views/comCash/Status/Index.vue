@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import Cookies from 'js-cookie'
 import { ref, computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/comCash/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
@@ -13,7 +14,6 @@ import TableTitleRow from '@/components/TableTitleRow.vue'
 import StatusByAccount from '@/views/comCash/Status/components/StatusByAccount.vue'
 import CashListByDate from '@/views/comCash/Status/components/CashListByDate.vue'
 import Calculated from '@/views/comCash/Status/components/Calculated.vue'
-import Cookies from 'js-cookie'
 
 const date = ref(getToday())
 const compName = ref('StatusByAccount')
