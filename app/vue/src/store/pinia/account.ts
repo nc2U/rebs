@@ -190,10 +190,6 @@ export const useAccount = defineStore('account', () => {
   // states
   const profile = ref<Profile | null>(null)
 
-  // getters
-  const likePosts = computed(() => profile.value?.like_posts)
-  const likeComments = computed(() => profile.value?.like_comments)
-
   // actions
   const fetchProfile = async () => {
     const profilePk = userInfo.value?.profile?.pk ?? null
@@ -362,9 +358,6 @@ export const useAccount = defineStore('account', () => {
     patchAuth,
 
     profile,
-
-    likePosts,
-    likeComments,
 
     fetchProfile,
     createProfile,

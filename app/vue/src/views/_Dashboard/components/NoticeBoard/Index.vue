@@ -53,7 +53,6 @@ const comStore = inject('comStore') as any
 const company = computed(() => comStore.company?.pk)
 
 const accStore = useAccount()
-const likePosts = computed(() => accStore.likePosts)
 const writeAuth = computed(() => accStore.writeComDocs)
 
 const createScrape = (payload: { post: number; user: number }) => accStore.createScrape(payload)
@@ -217,7 +216,6 @@ onBeforeMount(() => dataSetup(company.value ?? comStore.initComId, route.params?
             :re-order="postFilter.ordering !== '-created'"
             :category="postFilter.category as number"
             :post="post as Post"
-            :like-posts="likePosts"
             :view-route="mainViewName"
             :curr-page="postFilter.page ?? 1"
             :write-auth="writeAuth"

@@ -20,7 +20,6 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import BoardListModal from '@/components/Documents/components/BoardListModal.vue'
 import CateListModal from '@/components/Documents/components/CateListModal.vue'
-import { close } from '@/utils/nprogress'
 
 const props = defineProps({
   boardNum: { type: Number, default: 2 },
@@ -28,7 +27,6 @@ const props = defineProps({
   reOrder: { type: Boolean, default: false },
   category: { type: Number, default: undefined },
   post: { type: Object as PropType<Post>, default: null },
-  likePosts: { type: Array as PropType<number[]>, default: () => [] },
   viewRoute: { type: String, required: true },
   currPage: { type: Number, required: true },
   writeAuth: { type: Boolean, default: true },
@@ -68,7 +66,6 @@ const getPostNav = computed(() => docStore.getPostNav)
 const getPrev = (pk: number) => getPostNav.value.filter(p => p.pk === pk).map(p => p.prev_pk)[0]
 const getNext = (pk: number) => getPostNav.value.filter(p => p.pk === pk).map(p => p.next_pk)[0]
 
-const isLike = computed(() => props.likePosts.includes(props.post.pk ?? 0))
 const toLike = () => emit('to-like', props.post.pk)
 
 const linkHitUp = async (pk: number) => emit('link-hit', pk)
@@ -378,8 +375,10 @@ onMounted(() => {
     <CRow class="py-3">
       <CCol class="text-center">
         <v-btn @click="toLike" variant="outlined" icon="true" color="grey" size="small">
-          <v-icon :icon="isLike ? 'mdi-heart' : 'mdi-heart-outline'" size="small" />
-          <v-tooltip activator="parent" location="end">좋아요</v-tooltip>
+          <v-icon :icon="post.my_like ? 'mdi-heart' : 'mdi-heart-outline'" size="small" />
+          <v-tooltip activator="parent" location="end">
+            {{ post.my_like ? '좋아요' : '취소' }}
+          </v-tooltip>
         </v-btn>
       </CCol>
     </CRow>
