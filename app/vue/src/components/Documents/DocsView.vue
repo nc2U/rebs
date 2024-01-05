@@ -353,6 +353,14 @@ onMounted(() => {
       </CCol>
     </CRow>
 
+    <CRow v-if="post.is_secret">
+      <CCol>
+        <CAlert color="info">
+          이 글은 비밀글입니다. 관리자와 작성자 본인만 열람할 수 있습니다.
+        </CAlert>
+      </CCol>
+    </CRow>
+
     <CRow class="my-5 p-3" id="print-area">
       <CCol>
         <div v-html="sanitizeHtml(post.content)" />
