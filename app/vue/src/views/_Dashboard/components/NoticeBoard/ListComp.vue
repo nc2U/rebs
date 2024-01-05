@@ -1,5 +1,5 @@
 <script lang="ts" setup="">
-import { type PropType } from 'vue'
+import { inject, type PropType } from 'vue'
 import type { Post } from '@/store/types/document'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 
@@ -8,6 +8,8 @@ defineProps({
   noticeList: { type: Array as PropType<Post[]>, default: () => [] },
   postList: { type: Array as PropType<Post[]>, default: () => [] },
 })
+
+const userInfo = inject('userInfo')
 </script>
 
 <template>
@@ -37,9 +39,14 @@ defineProps({
                   offset-x="20"
                   offset-y="-7"
                 />
-                <router-link :to="{ name: `${mainViewName} - 보기`, params: { postId: item.pk } }">
+                <router-link
+                  v-if="!item.is_secret || userInfo.is_superuser || userInfo.pk === item.user.pk"
+                  :to="{ name: `${mainViewName} - 보기`, params: { postId: item.pk } }"
+                >
                   {{ cutString(item.title, 32) }}
                 </router-link>
+                <span v-else class="text-grey">{{ cutString(item.title, 32) }}</span>
+                <v-icon v-if="item.is_secret" icon="mdi-lock" size="sm" class="ml-2 text-grey" />
                 <CBadge v-if="item.is_new" color="warning" size="sm" class="ml-2">new</CBadge>
                 <CBadge v-if="item.comments?.length" color="warning" size="sm" class="ml-1">
                   +{{ item.comments.length }}
@@ -51,10 +58,13 @@ defineProps({
               <tr v-if="(noticeList.length ?? 0) + i <= 7">
                 <td class="pl-5">
                   <router-link
+                    v-if="!item.is_secret || userInfo.is_superuser || userInfo.pk === item.user.pk"
                     :to="{ name: `${mainViewName} - 보기`, params: { postId: item.pk } }"
                   >
                     {{ cutString(item.title, 32) }}
                   </router-link>
+                  <span v-else class="text-grey">{{ cutString(item.title, 32) }}</span>
+                  <v-icon v-if="item.is_secret" icon="mdi-lock" size="sm" class="ml-2 text-grey" />
                   <CBadge v-if="item.is_new" color="warning" size="sm" class="ml-2">new</CBadge>
                   <CBadge v-if="item.comments?.length" color="warning" size="sm" class="ml-1">
                     +{{ item.comments.length }}

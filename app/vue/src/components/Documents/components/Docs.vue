@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, type PropType } from 'vue'
+import { computed, inject, type PropType } from 'vue'
 import type { Post } from '@/store/types/document'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 
@@ -8,6 +8,8 @@ const props = defineProps({
   viewRoute: { type: String, required: true },
   isLawsuit: { type: Boolean, default: false },
 })
+
+const userInfo = inject('userInfo')
 
 const sortName = computed(() => props.post?.proj_name || '본사 문서')
 const sortColor = computed(() => (props.post?.project ? 'success' : 'info'))
@@ -24,10 +26,18 @@ const sortColor = computed(() => (props.post?.project ? 'success' : 'info'))
       {{ cutString(post.lawsuit_name ?? '', 26) }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
-      <router-link :to="{ name: `${viewRoute} - 보기`, params: { postId: post.pk } }">
+      <router-link
+        v-if="!post.is_secret || userInfo.is_superuser || userInfo.pk === post.user.pk"
+        :to="{ name: `${viewRoute} - 보기`, params: { postId: post.pk } }"
+      >
         {{ cutString(post.title, 32) }}
       </router-link>
+      <span v-else class="text-grey">{{ cutString(post.title, 32) }}</span>
+      <v-icon v-if="post.is_secret" icon="mdi-lock" size="sm" class="ml-2 text-grey" />
       <CBadge v-if="post.is_new" color="warning" size="sm" class="ml-2">new</CBadge>
+      <CBadge v-if="post.comments?.length" color="warning" size="sm" class="ml-1">
+        +{{ post.comments.length }}
+      </CBadge>
     </CTableDataCell>
     <CTableDataCell>{{ post.user?.username }}</CTableDataCell>
     <CTableDataCell>{{ timeFormat(post.created ?? '') }}</CTableDataCell>

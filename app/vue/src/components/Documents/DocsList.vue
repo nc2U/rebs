@@ -5,11 +5,13 @@ import { TableSecondary } from '@/utils/cssMixins'
 import type { Post } from '@/store/types/document'
 import Pagination from '@/components/Pagination'
 import Docs from './components/Docs.vue'
+import TopDocs from '@/components/Documents/components/TopDocs.vue'
 
 defineProps({
   company: { type: Number, default: null },
   project: { type: Number, default: null },
   page: { type: Number, default: 1 },
+  noticeList: { type: Array as PropType<Post[]>, default: () => [] },
   postList: { type: Array as PropType<Post[]>, default: () => [] },
   viewRoute: { type: String, required: true },
   isLawsuit: { type: Boolean, default: false },
@@ -60,6 +62,13 @@ const pageSelect = (page: number) => emit('page-select', page)
     </CTableHead>
 
     <CTableBody>
+      <TopDocs
+        v-for="post in noticeList"
+        :key="post.pk"
+        :post="post"
+        :view-route="viewRoute"
+        :is-lawsuit="isLawsuit"
+      />
       <Docs
         v-for="post in postList"
         :key="post.pk"
