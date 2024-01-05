@@ -8,7 +8,7 @@ import CategoryTabs from './components/CategoryTabs.vue'
 import ListController from './components/ListController.vue'
 import NoticeList from './components/NoticeList.vue'
 import NoticeView from './components/NoticeView.vue'
-import NoticeForm from '@/views/_Dashboard/components/NoticeBoard/components/NoticeForm.vue'
+import NoticeForm from './components/NoticeForm.vue'
 
 const lController = ref()
 const boardNumber = ref(1)
