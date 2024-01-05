@@ -182,7 +182,7 @@ const getFileName = (file: string) => {
 }
 
 const toEdit = () => {
-  if (props.post.comments?.length ?? 0 >= 5)
+  if ((props.post.comments?.length ?? 0) >= 5)
     refAlertModal.value.callModal('', '5개 이상의 댓글이 달린 게시물은 수정할 수 없습니다.')
   else
     router.push({
@@ -445,17 +445,7 @@ onMounted(() => {
     <CRow class="py-2">
       <CCol>
         <CButtonGroup role="group">
-          <CButton
-            v-if="editAuth"
-            color="success"
-            :disabled="!writeAuth"
-            @click="
-              $router.push({
-                name: `${viewRoute} - 수정`,
-                params: { postId: post.pk },
-              })
-            "
-          >
+          <CButton v-if="editAuth" color="success" :disabled="!writeAuth" @click="toEdit">
             수정
           </CButton>
           <CButton v-if="editAuth" color="danger" :disabled="!writeAuth" @click="deleteConfirm">
