@@ -367,13 +367,13 @@ export const useDocument = defineStore('document', () => {
   const createComment = (payload: Cm) =>
     api
       .post(`/comment/`, payload)
-      .then(res => fetchPost(res.data.post).then(() => message()))
+      .then(res => fetchPost(res.data.post.pk).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
   const patchComment = (payload: Cm) =>
     api
       .patch(`/comment/${payload.pk}/`, payload)
-      .then(res => fetchPost(res.data.post).then(() => message()))
+      .then(res => fetchPost(res.data.post.pk).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
   const patchCommentLike = (pk: number, post: number, page = 1) =>

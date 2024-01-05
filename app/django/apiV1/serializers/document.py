@@ -265,6 +265,7 @@ class PostSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         validated_data['ip'] = self.context.get('request').META.get('REMOTE_ADDR')
+        validated_data['device'] = self.context.get('request').META.get('HTTP_USER_AGENT')
         post = Post.objects.create(**validated_data)
 
         # Links 처리
@@ -284,6 +285,7 @@ class PostSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def update(self, instance, validated_data):
         validated_data['ip'] = self.context.get('request').META.get('REMOTE_ADDR')
+        validated_data['device'] = self.context.get('request').META.get('HTTP_USER_AGENT')
         instance.__dict__.update(**validated_data)
         instance.project = validated_data.get('project', instance.project)
         instance.board = validated_data.get('board', instance.board)
@@ -419,6 +421,23 @@ class CommentSerializer(serializers.ModelSerializer):
         serializer = self.__class__(instance.replies, many=True)
         serializer.bind('', self)
         return serializer.data
+
+    @transaction.atomic
+    def create(self, validated_data):
+        validated_data['post_id'] = self.initial_data.get('post')
+        validated_data['ip'] = self.context.get('request').META.get('REMOTE_ADDR')
+        validated_data['device'] = self.context.get('request').META.get('HTTP_USER_AGENT')
+        comment = Comment.objects.create(**validated_data)
+        return comment
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        validated_data['ip'] = self.context.get('request').META.get('REMOTE_ADDR')
+        validated_data['device'] = self.context.get('request').META.get('HTTP_USER_AGENT')
+        instance.__dict__.update(**validated_data)
+        instance.post = validated_data.get('post', instance.post)
+        instance.save()
+        return instance
 
 
 class CommentLikeSerializer(serializers.ModelSerializer):
