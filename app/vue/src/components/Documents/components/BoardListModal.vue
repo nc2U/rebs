@@ -58,7 +58,7 @@ defineExpose({ callModal })
       </CTable>
     </template>
     <template #footer>
-      <CButton :color="isCopy ? 'success' : 'info'" @click="onSubmit">
+      <CButton :color="isCopy ? 'warning' : 'danger'" @click="onSubmit">
         게시물 {{ isCopy ? '복사' : '이동' }}
       </CButton>
       <CButton color="light" @click="refListModal.close()">닫기</CButton>

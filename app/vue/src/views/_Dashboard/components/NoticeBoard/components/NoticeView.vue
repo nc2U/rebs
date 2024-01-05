@@ -156,8 +156,15 @@ const toManage = (fn: number) => {
   }
 }
 
-const copyPost = (board: number) => alert('게시물 복사!--' + board)
-const movePost = (board: number) => alert('게시물 이동!--' + board)
+const copyPost = (board: number) => {
+  alert('게시물 복사!--' + board)
+  console.log(board, props.post)
+}
+
+const movePost = (board: number) => {
+  alert('게시물 이동!--' + board)
+  console.log(board, props.post)
+}
 const changeCate = () => alert('카테고리 변경!')
 
 const getFileName = (file: string) => {
