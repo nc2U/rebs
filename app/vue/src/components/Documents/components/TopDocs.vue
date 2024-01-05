@@ -18,7 +18,9 @@ const sortColor = computed(() => (props.post?.project ? 'success' : 'info'))
 
 <template>
   <CTableRow v-if="post" class="text-center">
-    <CTableDataCell>{{ post.pk }}</CTableDataCell>
+    <CTableDataCell>
+      <v-badge color="primary" content=" 공지 " offset-x="5" offset-y="-7" />
+    </CTableDataCell>
     <CTableDataCell class="text-left">
       <v-badge :color="sortColor" :content="sortName" offset-x="-5" offset-y="-7" />
     </CTableDataCell>

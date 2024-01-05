@@ -14,7 +14,7 @@ import { useDocument } from '@/store/pinia/document'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 import type { User } from '@/store/types/accounts'
 import type { Post } from '@/store/types/document'
-import { postManageItems, toPostLike, toPostBlame, toPostManage } from '@/utils/postMixins'
+import { toPrint, toPostLike, toPostBlame, postManageItems, toPostManage } from '@/utils/postMixins'
 import sanitizeHtml from 'sanitize-html'
 import Comments from '@/components/Comments/Index.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -60,6 +60,8 @@ const next = ref<number | null>()
 const postId = computed(() => Number(route.params.postId))
 
 const docStore = useDocument()
+const boardList = computed(() => docStore.boardList)
+const categoryList = computed(() => docStore.categoryList)
 const commentList = computed(() => docStore.commentList)
 const getPostNav = computed(() => docStore.getPostNav)
 
@@ -77,30 +79,6 @@ const blameAction = () => {
 
 const linkHitUp = async (pk: number) => emit('link-hit', pk)
 const fileHitUp = async (pk: number) => emit('file-hit', pk)
-
-const toPrint = () => {
-  // Clone the specific area to be printed
-  const printContent: any = document.getElementById('print-area')?.cloneNode(true)
-
-  // Create a new window for printing
-  const printWindow = window.open('', '_blank')
-  if (printWindow) {
-    printWindow.document.open()
-
-    // Add the cloned content to the new window
-    printWindow.document.write(`<html><head><title>${props.post?.title}</title></head><body>`)
-    printWindow.document.write(printContent?.innerHTML)
-    printWindow.document.write('</body></html>')
-
-    // Close the document for writing
-    printWindow.document.close()
-
-    // Print the new window
-    printWindow.print()
-    // Close the new window after printing
-    printWindow.close()
-  }
-}
 
 const [route, router] = [useRoute(), useRouter()]
 
@@ -179,9 +157,19 @@ const toManage = (fn: number) => {
   }
 }
 
-const copyPost = () => alert('게시물 복사!')
-const movePost = () => alert('게시물 이동!')
-const changeCate = () => alert('카테고리 변경!')
+const copyPost = (board: number) => {
+  alert('게시물 복사!--' + board)
+  console.log(board, props.post)
+}
+
+const movePost = (board: number) => {
+  alert('게시물 이동!--' + board)
+  console.log(board, props.post)
+}
+const changeCate = (cate: number) => {
+  alert('카테고리 변경!--' + cate)
+  console.log(cate, props.post)
+}
 
 const getFileName = (file: string) => {
   if (file) return decodeURI(file.split('/').slice(-1)[0])
@@ -283,7 +271,7 @@ onMounted(() => {
           <v-icon icon="mdi-heart" size="sm" />
           <span class="ml-1">{{ post.like }}</span>
         </small>
-        <small class="mr-2 text-btn" @click="toPrint">
+        <small class="mr-2 text-btn" @click="toPrint(post.title)">
           <v-icon icon="mdi-printer" size="sm" />
           <span class="ml-1">프린트</span>
         </small>
@@ -346,6 +334,14 @@ onMounted(() => {
             </CListGroup>
           </CCol>
         </CRow>
+      </CCol>
+    </CRow>
+
+    <CRow v-if="post.is_secret">
+      <CCol>
+        <CAlert color="info">
+          이 글은 비밀글입니다. 관리자와 작성자 본인만 열람할 수 있습니다.
+        </CAlert>
       </CCol>
     </CRow>
 
@@ -509,13 +505,19 @@ onMounted(() => {
 
   <BoardListModal
     ref="refBoardListModal"
-    :board-list="[]"
+    :now-board="post?.board ?? undefined"
+    :board-list="boardList"
     :is-copy="isCopy"
-    @capy-post="copyPost"
+    @copy-post="copyPost"
     @move-post="movePost"
   />
 
-  <CateListModal ref="refCateListModal" :category-list="[]" @change-cate="changeCate" />
+  <CateListModal
+    ref="refCateListModal"
+    :now-cate="post?.category ?? undefined"
+    :category-list="categoryList"
+    @change-cate="changeCate"
+  />
 </template>
 
 <style lang="scss" scoped>

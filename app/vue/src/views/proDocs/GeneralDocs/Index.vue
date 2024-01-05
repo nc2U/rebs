@@ -13,6 +13,7 @@ import CategoryTabs from '@/components/Documents/CategoryTabs.vue'
 import DocsList from '@/components/Documents/DocsList.vue'
 import DocsView from '@/components/Documents/DocsView.vue'
 import DocsForm from '@/components/Documents/DocsForm.vue'
+import NoticeList from '@/views/_Dashboard/components/NoticeBoard/components/NoticeList.vue'
 
 const fController = ref()
 const boardNumber = ref(2)
@@ -62,8 +63,10 @@ const createScrape = (payload: { post: number; user: number }) => accStore.creat
 const docStore = useDocument()
 const post = computed(() => docStore.post)
 const postList = computed(() => docStore.postList)
+const noticeList = computed(() => docStore.noticeList)
 const categoryList = computed(() => docStore.categoryList)
 
+const fetchBoardList = () => docStore.fetchBoardList()
 const fetchLink = (pk: number) => docStore.fetchLink(pk)
 const fetchFile = (pk: number) => docStore.fetchFile(pk)
 const fetchPost = (pk: number) => docStore.fetchPost(pk)
@@ -159,6 +162,7 @@ const fileHit = async (pk: number) => {
 }
 
 const dataSetup = (pk: number, postId?: string | string[]) => {
+  fetchBoardList()
   postFilter.value.project = pk
   fetchCategoryList(boardNumber.value)
   fetchPostList(postFilter.value)
@@ -203,6 +207,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId, route.param
         <DocsList
           :project="project as number"
           :page="postFilter.page ?? 1"
+          :notice-list="noticeList"
           :post-list="postList"
           :view-route="mainViewName"
           :write-auth="writeAuth"
