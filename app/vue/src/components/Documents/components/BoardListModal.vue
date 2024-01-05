@@ -32,7 +32,7 @@ defineExpose({ callModal })
   <AlertModal ref="refListModal" size="lg">
     <template #header> 게시판 {{ isCopy ? '복사' : '이동' }}</template>
     <template #default>
-      <CTable striped class="mt-3 border-top-1">
+      <CTable v-if="boardList.length" striped class="mt-3 border-top-1">
         <colgroup>
           <col style="width: 90%" />
           <col style="width: 10%" />
@@ -56,6 +56,10 @@ defineExpose({ callModal })
           </CTableRow>
         </CTableBody>
       </CTable>
+
+      <CRow v-else class="text-center">
+        <CCol class="py-5">등록된 게시판이 없습니다.</CCol>
+      </CRow>
     </template>
     <template #footer>
       <CButton :color="isCopy ? 'warning' : 'danger'" @click="onSubmit">

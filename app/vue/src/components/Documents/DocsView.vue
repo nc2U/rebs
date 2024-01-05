@@ -61,6 +61,7 @@ const postId = computed(() => Number(route.params.postId))
 
 const docStore = useDocument()
 const boardList = computed(() => docStore.boardList)
+const categoryList = computed(() => docStore.categoryList)
 const getPostNav = computed(() => docStore.getPostNav)
 
 const getPrev = (pk: number) => getPostNav.value.filter(p => p.pk === pk).map(p => p.prev_pk)[0]
@@ -512,7 +513,12 @@ onMounted(() => {
     @move-post="movePost"
   />
 
-  <CateListModal ref="refCateListModal" :category-list="[]" @change-cate="changeCate" />
+  <CateListModal
+    ref="refCateListModal"
+    :now-cate="post?.category"
+    :category-list="categoryList"
+    @change-cate="changeCate"
+  />
 </template>
 
 <style lang="scss" scoped>

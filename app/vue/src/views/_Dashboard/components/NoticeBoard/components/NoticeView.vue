@@ -61,6 +61,7 @@ const postId = computed(() => Number(route.params.postId))
 
 const docStore = useDocument()
 const boardList = computed(() => docStore.boardList)
+const categoryList = computed(() => docStore.categoryList)
 const commentList = computed(() => docStore.commentList)
 const getPostNav = computed(() => docStore.getPostNav)
 
@@ -499,9 +500,13 @@ onMounted(() => {
     @copy-post="copyPost"
     @move-post="movePost"
   />
-  {{ post }}
 
-  <CateListModal ref="refCateListModal" :category-list="[]" @change-cate="changeCate" />
+  <CateListModal
+    ref="refCateListModal"
+    :now-cate="post?.category"
+    :category-list="categoryList"
+    @change-cate="changeCate"
+  />
 </template>
 
 <style lang="scss" scoped>
