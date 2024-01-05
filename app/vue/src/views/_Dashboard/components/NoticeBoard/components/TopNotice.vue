@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { inject, type PropType } from 'vue'
+import { type ComputedRef, inject, type PropType } from 'vue'
+import type { User } from '@/store/types/accounts'
 import type { Post } from '@/store/types/document'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 
 defineProps({
   post: { type: Object as PropType<Post>, default: null },
 })
-const userInfo = inject('userInfo')
+const userInfo = inject<ComputedRef<User>>('userInfo')
 </script>
 
 <template>
@@ -16,7 +17,7 @@ const userInfo = inject('userInfo')
     </CTableDataCell>
     <CTableDataCell class="text-left">
       <router-link
-        v-if="!post.is_secret || userInfo.is_superuser || userInfo.pk === post.user.pk"
+        v-if="!post.is_secret || userInfo?.is_superuser || userInfo?.pk === post.user?.pk"
         :to="{ name: `공지 사항 - 보기`, params: { postId: post.pk } }"
       >
         {{ cutString(post.title, 32) }}

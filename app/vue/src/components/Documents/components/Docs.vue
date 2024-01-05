@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, inject, type PropType } from 'vue'
+import { computed, type ComputedRef, inject, type PropType } from 'vue'
+import type { User } from '@/store/types/accounts'
 import type { Post } from '@/store/types/document'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 
@@ -9,7 +10,7 @@ const props = defineProps({
   isLawsuit: { type: Boolean, default: false },
 })
 
-const userInfo = inject('userInfo')
+const userInfo = inject<ComputedRef<User>>('userInfo')
 
 const sortName = computed(() => props.post?.proj_name || '본사 문서')
 const sortColor = computed(() => (props.post?.project ? 'success' : 'info'))
@@ -27,7 +28,7 @@ const sortColor = computed(() => (props.post?.project ? 'success' : 'info'))
     </CTableDataCell>
     <CTableDataCell class="text-left">
       <router-link
-        v-if="!post.is_secret || userInfo.is_superuser || userInfo.pk === post.user.pk"
+        v-if="!post.is_secret || userInfo?.is_superuser || userInfo?.pk === post.user?.pk"
         :to="{ name: `${viewRoute} - 보기`, params: { postId: post.pk } }"
       >
         {{ cutString(post.title, 32) }}

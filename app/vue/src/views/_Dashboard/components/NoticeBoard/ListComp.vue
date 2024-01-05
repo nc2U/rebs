@@ -1,5 +1,6 @@
 <script lang="ts" setup="">
-import { inject, type PropType } from 'vue'
+import { type ComputedRef, inject, type PropType } from 'vue'
+import type { User } from '@/store/types/accounts'
 import type { Post } from '@/store/types/document'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 
@@ -9,7 +10,7 @@ defineProps({
   postList: { type: Array as PropType<Post[]>, default: () => [] },
 })
 
-const userInfo = inject('userInfo')
+const userInfo = inject<ComputedRef<User>>('userInfo')
 </script>
 
 <template>
@@ -40,7 +41,7 @@ const userInfo = inject('userInfo')
                   offset-y="-7"
                 />
                 <router-link
-                  v-if="!item.is_secret || userInfo.is_superuser || userInfo.pk === item.user.pk"
+                  v-if="!item.is_secret || userInfo?.is_superuser || userInfo?.pk === item.user?.pk"
                   :to="{ name: `${mainViewName} - 보기`, params: { postId: item.pk } }"
                 >
                   {{ cutString(item.title, 32) }}
@@ -58,7 +59,9 @@ const userInfo = inject('userInfo')
               <tr v-if="(noticeList.length ?? 0) + i <= 7">
                 <td class="pl-5">
                   <router-link
-                    v-if="!item.is_secret || userInfo.is_superuser || userInfo.pk === item.user.pk"
+                    v-if="
+                      !item.is_secret || userInfo?.is_superuser || userInfo?.pk === item.user?.pk
+                    "
                     :to="{ name: `${mainViewName} - 보기`, params: { postId: item.pk } }"
                   >
                     {{ cutString(item.title, 32) }}
