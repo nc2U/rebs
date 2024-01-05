@@ -9,7 +9,6 @@ import CommentForm from './CommentForm.vue'
 const props = defineProps({
   formShow: { type: Boolean, default: true }, // 현재 댓글과 편집 폼 댓글이 동일한지 여부
   comment: { type: Object as PropType<Cm>, default: null },
-  likeComments: { type: Array as PropType<number[]>, default: () => [] },
   lastDepth: { type: Boolean, default: false },
 })
 
@@ -21,7 +20,7 @@ watch(props, val => {
   }
 })
 
-const emit = defineEmits(['vision-toggle', 'to-like', 'on-submit'])
+const emit = defineEmits(['vision-toggle', 'to-like', 'to-blame', 'on-submit'])
 
 const refBlameModal = ref()
 
@@ -30,14 +29,14 @@ const userInfo = inject<ComputedRef<User>>('userInfo')
 const isReplying = ref<boolean>(false)
 const isEditing = ref<boolean>(false)
 
+const toLike = () => emit('to-like', props.comment.pk, props.comment?.post.pk)
+
 const blameConfirm = () => refBlameModal.value.callModal()
 
-const toBlame = () => {
+const blameAction = () => {
   refBlameModal.value.close()
-  alert('ok!')
+  emit('to-blame', props.comment.pk as number, props.comment?.post.pk)
 }
-
-const toLike = () => emit('to-like', props.comment.pk)
 
 const toReply = () => {
   isEditing.value = false
@@ -122,11 +121,12 @@ const onSubmit = (payload: Cm) => emit('on-submit', payload)
   <ConfirmModal ref="refBlameModal">
     <template #header>알림</template>
     <template #default>
-      이 댓글을 신고하시겠습니까?<br /><br />
-      한 번 신고하신 후에는 취소가 불가능합니다.
+      이 댓글을 신고 {{ comment.my_blame ? '를 취소' : '' }} 하시겠습니까?<br /><br />
     </template>
     <template #footer>
-      <CButton color="danger" @click="toBlame">신고</CButton>
+      <CButton :color="comment.my_blame ? 'secondary' : 'danger'" @click="blameAction">
+        {{ comment.my_blame ? '취소' : '신고' }}
+      </CButton>
     </template>
   </ConfirmModal>
 </template>

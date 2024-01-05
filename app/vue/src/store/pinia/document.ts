@@ -305,6 +305,12 @@ export const useDocument = defineStore('document', () => {
       .then(() => accStore.fetchProfile().then(() => fetchPost(pk)))
       .catch(err => errorHandle(err.response.data))
 
+  const patchPostBlame = (pk: number) =>
+    api
+      .patch(`/post-blame/${pk}/`, { pk })
+      .then(() => accStore.fetchProfile().then(() => fetchPost(pk)))
+      .catch(err => errorHandle(err.response.data))
+
   const deletePost = (pk: number) =>
     api
       .delete(`/post/${pk}/`)
@@ -382,6 +388,12 @@ export const useDocument = defineStore('document', () => {
       .then(() => accStore.fetchProfile().then(() => fetchCommentList({ post, page })))
       .catch(err => errorHandle(err.response.data))
 
+  const patchCommentBlame = (pk: number, post: number, page = 1) =>
+    api
+      .patch(`/comment-blame/${pk}/`, { pk })
+      .then(() => accStore.fetchProfile().then(() => fetchCommentList({ post, page })))
+      .catch(err => errorHandle(err.response.data))
+
   const deleteComment = (payload: { pk: number; post: number }) =>
     api
       .delete(`/comment/${payload.pk}/`)
@@ -446,6 +458,7 @@ export const useDocument = defineStore('document', () => {
     updatePost,
     patchPost,
     patchPostLike,
+    patchPostBlame,
     deletePost,
 
     link,
@@ -465,6 +478,7 @@ export const useDocument = defineStore('document', () => {
     createComment,
     patchComment,
     patchCommentLike,
+    patchCommentBlame,
     deleteComment,
 
     tag,

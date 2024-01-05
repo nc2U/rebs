@@ -1,4 +1,14 @@
 import { ref } from 'vue'
+import { useDocument } from '@/store/pinia/document'
+
+const docStore = useDocument()
+const patchPostLike = (pk: number) => docStore.patchPostLike(pk)
+const patchPostBlame = (pk: number) => docStore.patchPostBlame(pk)
+
+const patchCommentLike = (pk: number, post: number, page?: number) =>
+  docStore.patchCommentLike(pk, post, page)
+const patchCommentBlame = (pk: number, post: number, page?: number) =>
+  docStore.patchCommentBlame(pk, post, page)
 
 export const postManageItems = ref([
   { title: '복사하기', icon: 'content-copy' },
@@ -10,21 +20,6 @@ export const postManageItems = ref([
   { title: '블라인드처리', icon: 'eye-off' },
   { title: '휴지통으로', icon: 'trash-can' },
 ])
-
-// const copyPost = (brd: number, post: number) => {
-//   // 게시판 목록 모달 띄우기
-//   alert('게시판 목록(라디오) -> 복사 버튼' + brd + post)
-// }
-//
-// const movePost = (brd: number, post: number) => {
-//   // 게시판 목록 모달 띄우기
-//   alert('게시판 목록(라디오) -> 이동 버튼' + brd + post)
-// }
-//
-// const changeCategory = (brd: number, cate: number | null, post: number) => {
-//   // 게시판별 카테고리 목록 모달 띄우기
-//   alert(brd + '카테고리 모달' + brd + cate + post)
-// }
 
 const toSecretPost = (post: number, state: boolean) => {
   if (!state) alert('이 게시글을 비밀글로 변경하였습니다.')
@@ -54,7 +49,9 @@ const toTrashCan = (post: number, state: boolean) => {
   }
 }
 
-export const toPostBlame = (pk: number) => alert('mixin - 준비중! - ' + pk)
+export const toPostLike = (pk: number) => patchPostLike(pk)
+
+export const toPostBlame = (pk: number) => patchPostBlame(pk)
 
 export const toPostManage = (
   f: number,
@@ -63,12 +60,15 @@ export const toPostManage = (
   post: number,
   state = false,
 ) => {
-  // if (f === 1) return copyPost(brd, post)
-  // if (f === 2) return movePost(brd, post)
-  // if (f === 3) return changeCategory(brd, cate, post)
   if (f === 4) return toSecretPost(post, state)
   if (f === 5) return hideComments(post, state)
   if (f === 6) return toNoticeUp(post, state)
   if (f === 7) return toBlind(post, state)
   if (f === 8) return toTrashCan(post, state)
 }
+
+export const toCommentLike = (pk: number, post: number, page = 1) =>
+  patchCommentLike(pk, post, page)
+
+export const toCommentBlame = (pk: number, post: number, page = 1) =>
+  patchCommentBlame(pk, post, page)

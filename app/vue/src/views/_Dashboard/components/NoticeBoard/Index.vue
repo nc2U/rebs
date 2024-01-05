@@ -8,7 +8,7 @@ import CategoryTabs from './components/CategoryTabs.vue'
 import ListController from './components/ListController.vue'
 import NoticeList from './components/NoticeList.vue'
 import NoticeView from './components/NoticeView.vue'
-import NoticeForm from '@/views/_Dashboard/components/NoticeBoard/components/NoticeForm.vue'
+import NoticeForm from './components/NoticeForm.vue'
 
 const lController = ref()
 const boardNumber = ref(1)
@@ -74,7 +74,6 @@ const updatePost = (payload: { pk: number; form: FormData }) => docStore.updateP
 const patchPost = (payload: PatchPost & { filter: PostFilter }) => docStore.patchPost(payload)
 const patchLink = (payload: Link) => docStore.patchLink(payload)
 const patchFile = (payload: AFile) => docStore.patchFile(payload)
-const patchPostLike = (pk: number) => docStore.patchPostLike(pk)
 const deletePost = (pk: number) => docStore.deletePost(pk)
 
 const [route, router] = [
@@ -88,8 +87,6 @@ watch(route, val => {
   if (val.params.postId) fetchPost(Number(val.params.postId))
   else docStore.post = null
 })
-
-const toLike = (pk: number) => patchPostLike(pk)
 
 const postsRenewal = (page: number) => {
   postFilter.value.page = page
@@ -219,7 +216,6 @@ onBeforeMount(() => dataSetup(company.value ?? comStore.initComId, route.params?
             :view-route="mainViewName"
             :curr-page="postFilter.page ?? 1"
             :write-auth="writeAuth"
-            @to-like="toLike"
             @post-hit="postHit"
             @link-hit="linkHit"
             @file-hit="fileHit"

@@ -13,7 +13,7 @@ import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 import { type Post } from '@/store/types/document'
-import { postManageItems, toPostBlame, toPostManage } from '@/utils/postMixins'
+import { postManageItems, toPostLike, toPostBlame, toPostManage } from '@/utils/postMixins'
 import sanitizeHtml from 'sanitize-html'
 import type { User } from '@/store/types/accounts'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -33,7 +33,6 @@ const props = defineProps({
 })
 
 const emit = defineEmits([
-  'to-like',
   'post-hit',
   'link-hit',
   'file-hit',
@@ -66,7 +65,14 @@ const getPostNav = computed(() => docStore.getPostNav)
 const getPrev = (pk: number) => getPostNav.value.filter(p => p.pk === pk).map(p => p.prev_pk)[0]
 const getNext = (pk: number) => getPostNav.value.filter(p => p.pk === pk).map(p => p.next_pk)[0]
 
-const toLike = () => emit('to-like', props.post.pk)
+const toLike = () => toPostLike(props.post.pk as number)
+
+const blameConfirm = () => refBlameModal.value.callModal()
+
+const blameAction = () => {
+  refBlameModal.value.close()
+  toPostBlame(props.post.pk as number)
+}
 
 const linkHitUp = async (pk: number) => emit('link-hit', pk)
 const fileHitUp = async (pk: number) => emit('file-hit', pk)
@@ -187,13 +193,6 @@ const toEdit = () => {
       name: `${props.viewRoute} - 수정`,
       params: { postId: props.post?.pk },
     })
-}
-
-const blameConfirm = () => refBlameModal.value.callModal()
-
-const blameAction = () => {
-  refBlameModal.value.close()
-  toPostBlame(props.post.pk as number)
 }
 
 const deleteConfirm = () => refDelModal.value.callModal()
@@ -411,8 +410,15 @@ onMounted(() => {
         >
           스크랩 {{ post.scrape ? `+${post.scrape}` : '' }}
         </v-btn>
-        <v-btn variant="tonal" size="small" :rounded="0" class="mr-1" @click="blameConfirm">
-          신고
+        <v-btn
+          variant="tonal"
+          :color="post.my_blame ? 'primary' : ''"
+          size="small"
+          :rounded="0"
+          class="mr-1"
+          @click="blameConfirm"
+        >
+          신고 {{ post.blame ? `+${post.blame}` : '' }}
         </v-btn>
         <v-btn
           v-if="userInfo?.is_superuser"
@@ -504,11 +510,12 @@ onMounted(() => {
   <ConfirmModal ref="refBlameModal">
     <template #header>알림</template>
     <template #default>
-      이 게시글을 신고하시겠습니까?<br /><br />
-      한 번 신고하신 후에는 취소가 불가능합니다.
+      이 게시글을 신고 {{ post.my_blame ? '를 취소' : '' }} 하시겠습니까?<br /><br />
     </template>
     <template #footer>
-      <CButton color="danger" @click="blameAction">신고</CButton>
+      <CButton :color="post.my_blame ? 'secondary' : 'danger'" @click="blameAction">
+        {{ post.my_blame ? '취소' : '신고' }}
+      </CButton>
     </template>
   </ConfirmModal>
 
