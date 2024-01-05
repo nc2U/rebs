@@ -60,6 +60,7 @@ const next = ref<number | null>()
 const postId = computed(() => Number(route.params.postId))
 
 const docStore = useDocument()
+const boardList = computed(() => docStore.boardList)
 const commentList = computed(() => docStore.commentList)
 const getPostNav = computed(() => docStore.getPostNav)
 
@@ -485,7 +486,7 @@ onMounted(() => {
 
   <BoardListModal
     ref="refBoardListModal"
-    :board-list="[]"
+    :board-list="boardList"
     :is-copy="isCopy"
     @capy-post="copyPost"
     @move-post="movePost"

@@ -63,6 +63,7 @@ const postList = computed(() => docStore.postList)
 const noticeList = computed(() => docStore.noticeList)
 const categoryList = computed(() => docStore.categoryList)
 
+const fetchBoardList = () => docStore.fetchBoardList()
 const fetchLink = (pk: number) => docStore.fetchLink(pk)
 const fetchFile = (pk: number) => docStore.fetchFile(pk)
 const fetchPost = (pk: number) => docStore.fetchPost(pk)
@@ -166,6 +167,7 @@ const postDelete = (pk: number) =>
   deletePost(pk).then(() => router.replace({ name: `${mainViewName.value}` }))
 
 const dataSetup = (pk: number, postId?: string | string[]) => {
+  fetchBoardList()
   postFilter.value.company = pk
   fetchCategoryList(boardNumber.value)
   fetchPostList(postFilter.value)

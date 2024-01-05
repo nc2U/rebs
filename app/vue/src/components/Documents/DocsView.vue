@@ -60,6 +60,7 @@ const sortName = computed(() => props.post?.proj_name || '본사 문서')
 const postId = computed(() => Number(route.params.postId))
 
 const docStore = useDocument()
+const boardList = computed(() => docStore.boardList)
 const getPostNav = computed(() => docStore.getPostNav)
 
 const getPrev = (pk: number) => getPostNav.value.filter(p => p.pk === pk).map(p => p.prev_pk)[0]
@@ -497,7 +498,7 @@ onMounted(() => {
 
   <BoardListModal
     ref="refBoardListModal"
-    :board-list="[]"
+    :board-list="boardList"
     :is-copy="isCopy"
     @capy-post="copyPost"
     @move-post="movePost"

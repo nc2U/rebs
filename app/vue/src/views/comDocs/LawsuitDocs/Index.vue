@@ -73,6 +73,7 @@ const postList = computed(() => docStore.postList)
 const categoryList = computed(() => docStore.categoryList)
 const getSuitCase = computed(() => docStore.getSuitCase)
 
+const fetchBoardList = () => docStore.fetchBoardList()
 const fetchLink = (pk: number) => docStore.fetchLink(pk)
 const fetchFile = (pk: number) => docStore.fetchFile(pk)
 const fetchPost = (pk: number) => docStore.fetchPost(pk)
@@ -172,6 +173,7 @@ const fileHit = async (pk: number) => {
 }
 
 const dataSetup = (pk: number, postId?: string | string[]) => {
+  fetchBoardList()
   postFilter.value.company = pk
   fetchCategoryList(boardNumber.value)
   fetchAllSuitCaseList({ is_com: true })
