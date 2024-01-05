@@ -167,17 +167,19 @@ class PostSerializer(serializers.ModelSerializer):
     links = LinksInPostSerializer(many=True, read_only=True)
     files = FilesInPostSerializer(many=True, read_only=True)
     user = UserInDocumentsSerializer(read_only=True)
-    scraped = serializers.SerializerMethodField(read_only=True)
-    is_scraped = serializers.SerializerMethodField(read_only=True)
+    my_like = serializers.SerializerMethodField(read_only=True)
+    scrape = serializers.SerializerMethodField(read_only=True)
+    my_scrape = serializers.SerializerMethodField(read_only=True)
+    my_blame = serializers.SerializerMethodField(read_only=True)
     prev_pk = serializers.SerializerMethodField(read_only=True)
     next_pk = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Post
         fields = ('pk', 'company', 'project', 'proj_name', 'board', 'board_name', 'category',
-                  'cate_name', 'lawsuit', 'lawsuit_name', 'title', 'execution_date', 'content',
-                  'hit', 'like', 'scraped', 'is_scraped', 'blame', 'ip', 'device', 'is_secret',
-                  'password', 'is_hide_comment', 'is_notice', 'is_blind', 'deleted', 'links',
+                  'cate_name', 'lawsuit', 'lawsuit_name', 'title', 'execution_date', 'content', 'hit',
+                  'like', 'my_like', 'scrape', 'my_scrape', 'blame', 'my_blame', 'ip', 'device',
+                  'is_secret', 'password', 'is_hide_comment', 'is_notice', 'is_blind', 'deleted', 'links',
                   'files', 'comments', 'user', 'created', 'updated', 'is_new', 'prev_pk', 'next_pk')
         read_only_fields = ('ip', 'comments')
 
@@ -215,14 +217,26 @@ class PostSerializer(serializers.ModelSerializer):
         return queryset
 
     @staticmethod
-    def get_scraped(obj):
+    def get_scrape(obj):
         return len(obj.scrape_set.all())
 
-    def get_is_scraped(self, obj):
+    def get_my_scrape(self, obj):
         user = self.context['request'].user
         scrapes = obj.scrape_set.all()
         users = [s.user for s in scrapes]
         return user in users
+
+    def get_my_like(self, obj):
+        user = self.context['request'].user
+        likes = user.profile.like_posts.all()
+        likes = [p.pk for p in likes]
+        return obj.pk in likes
+
+    def get_my_blame(self, obj):
+        user = self.context['request'].user
+        blames = user.profile.blame_posts.all()
+        blames = [p.pk for p in blames]
+        return obj.pk in blames
 
     def get_prev_pk(self, obj):
         prev_obj = self.get_collection().filter(created__lt=obj.created).first()
@@ -409,18 +423,32 @@ class SimplePostInCommentSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     post = SimplePostInCommentSerializer(read_only=True)
     replies = serializers.SerializerMethodField(read_only=True)
+    my_like = serializers.SerializerMethodField(read_only=True)
+    my_blame = serializers.SerializerMethodField(read_only=True)
     user = UserInDocumentsSerializer(read_only=True)
 
     class Meta:
         model = Comment
-        fields = ('pk', 'post', 'content', 'parent', 'replies', 'like',
-                  'blame', 'ip', 'device', 'secret', 'user', 'created')
+        fields = ('pk', 'post', 'content', 'parent', 'replies', 'like', 'my_like',
+                  'blame', 'my_blame', 'ip', 'device', 'secret', 'user', 'created')
         read_only_fields = ('ip',)
 
     def get_replies(self, instance):
         serializer = self.__class__(instance.replies, many=True)
         serializer.bind('', self)
         return serializer.data
+
+    def get_my_like(self, obj):
+        user = self.context['request'].user
+        likes = user.profile.like_comments.all()
+        likes = [c.pk for c in likes]
+        return obj.pk in likes
+
+    def get_my_blame(self, obj):
+        user = self.context['request'].user
+        blames = user.profile.blame_comments.all()
+        blames = [c.pk for c in blames]
+        return obj.pk in blames
 
     @transaction.atomic
     def create(self, validated_data):

@@ -27,7 +27,6 @@ const props = defineProps({
   reOrder: { type: Boolean, default: false },
   category: { type: Number, default: undefined },
   post: { type: Object as PropType<Post>, required: true },
-  likePosts: { type: Array as PropType<number[]>, default: () => [] },
   viewRoute: { type: String, required: true },
   currPage: { type: Number, required: true },
   writeAuth: { type: Boolean, default: true },
@@ -45,6 +44,7 @@ const emit = defineEmits([
 ])
 
 const refDelModal = ref()
+const refBlameModal = ref()
 const refAlertModal = ref()
 const refBoardListModal = ref()
 const isCopy = ref(false)
@@ -67,7 +67,7 @@ const getPostNav = computed(() => docStore.getPostNav)
 const getPrev = (pk: number) => getPostNav.value.filter(p => p.pk === pk).map(p => p.prev_pk)[0]
 const getNext = (pk: number) => getPostNav.value.filter(p => p.pk === pk).map(p => p.next_pk)[0]
 
-const isLike = computed(() => props.likePosts.includes(props.post.pk ?? 0))
+// const isLike = computed(() => props.likePosts.includes(props.post.pk ?? 0))
 const toLike = () => emit('to-like', props.post.pk)
 
 const linkHitUp = async (pk: number) => emit('link-hit', pk)
@@ -145,8 +145,7 @@ const shareKakaoTalk = () => {
 }
 
 const toScrape = () => {
-  if (props.post.is_scraped)
-    refAlertModal.value.callModal('', '이미 이 포스트를 스크랩 하였습니다.')
+  if (props.post.my_scrape) refAlertModal.value.callModal('', '이미 이 포스트를 스크랩 하였습니다.')
   else emit('post-scrape', props.post.pk)
 }
 
@@ -192,6 +191,13 @@ const toEdit = () => {
       name: `${props.viewRoute} - 수정`,
       params: { postId: props.post?.pk },
     })
+}
+
+const blameConfirm = () => refBlameModal.value.callModal()
+
+const blameAction = () => {
+  refBlameModal.value.close()
+  toPostBlame(props.post.pk as number)
 }
 
 const deleteConfirm = () => refDelModal.value.callModal()
@@ -354,8 +360,10 @@ onMounted(() => {
     <CRow class="py-3">
       <CCol class="text-center">
         <v-btn @click="toLike" variant="outlined" icon="true" color="grey" size="small">
-          <v-icon :icon="isLike ? 'mdi-heart' : 'mdi-heart-outline'" size="small" />
-          <v-tooltip activator="parent" location="end">좋아요</v-tooltip>
+          <v-icon :icon="post.my_like ? 'mdi-heart' : 'mdi-heart-outline'" size="small" />
+          <v-tooltip activator="parent" location="end">
+            {{ post.my_like ? '좋아요' : '취소' }}
+          </v-tooltip>
         </v-btn>
       </CCol>
     </CRow>
@@ -380,21 +388,15 @@ onMounted(() => {
       <CCol class="text-right">
         <v-btn
           variant="tonal"
-          :color="post.is_scraped ? 'primary' : ''"
+          :color="post.my_scrape ? 'primary' : ''"
           size="small"
           :rounded="0"
           class="mr-1"
           @click="toScrape"
         >
-          스크랩 {{ post.scraped ? `+${post.scraped}` : '' }}
+          스크랩 {{ post.scrape ? `+${post.scrape}` : '' }}
         </v-btn>
-        <v-btn
-          variant="tonal"
-          size="small"
-          :rounded="0"
-          class="mr-1"
-          @click="toPostBlame(post.pk as number)"
-        >
+        <v-btn variant="tonal" size="small" :rounded="0" class="mr-1" @click="blameConfirm">
           신고
         </v-btn>
         <v-btn
@@ -485,6 +487,17 @@ onMounted(() => {
     <template #default>한번 삭제한 자료는 복구할 수 없습니다. 정말 삭제하시겠습니까?</template>
     <template #footer>
       <CButton color="danger" @click="toDelete">삭제</CButton>
+    </template>
+  </ConfirmModal>
+
+  <ConfirmModal ref="refBlameModal">
+    <template #header>알림</template>
+    <template #default>
+      이 게시글을 신고하시겠습니까?<br /><br />
+      한 번 신고하신 후에는 취소가 불가능합니다.
+    </template>
+    <template #footer>
+      <CButton color="danger" @click="blameAction">신고</CButton>
     </template>
   </ConfirmModal>
 

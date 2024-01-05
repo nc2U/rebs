@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { ref, inject, type ComputedRef, type PropType, watch, computed } from 'vue'
+import { ref, watch, inject, type ComputedRef, type PropType } from 'vue'
 import { elapsedTime } from '@/utils/baseMixins'
 import type { User } from '@/store/types/accounts'
 import type { Comment as Cm } from '@/store/types/document'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import CommentForm from './CommentForm.vue'
 
 const props = defineProps({
@@ -22,16 +23,18 @@ watch(props, val => {
 
 const emit = defineEmits(['vision-toggle', 'to-like', 'on-submit'])
 
-const userInfo = inject<ComputedRef<User>>('userInfo')
+const refBlameModal = ref()
 
-const isLike = computed(() => props.likeComments.includes(props.comment.pk ?? 0))
+const userInfo = inject<ComputedRef<User>>('userInfo')
 
 const isReplying = ref<boolean>(false)
 const isEditing = ref<boolean>(false)
 
+const blameConfirm = () => refBlameModal.value.callModal()
+
 const toBlame = () => {
-  if (confirm('이 댓글을 신고하시겠습니까?\n\n한번 신고하신 후에는 취소가 불가능합니다.'))
-    alert('ok!')
+  refBlameModal.value.close()
+  alert('ok!')
 }
 
 const toLike = () => emit('to-like', props.comment.pk)
@@ -60,21 +63,32 @@ const onSubmit = (payload: Cm) => emit('on-submit', payload)
       <v-icon icon="mdi-clock-time-four-outline" size="sm" />
       {{ elapsedTime(comment?.created ?? '') }}
     </small>
-    <small class="ml-2">
+    <small class="ml-3 text-btn" @click="toLike">
       <v-icon
-        :icon="isLike ? 'mdi-heart' : 'mdi-heart-outline'"
-        @click="toLike"
+        :icon="comment.my_like ? 'mdi-heart' : 'mdi-heart-outline'"
         size="sm"
         class="icon-btn"
       />
-      {{ !isLike ? '좋아요' : '취소' }}
+      <v-tooltip activator="parent" location="top">
+        {{ !comment.my_like ? '좋아요' : '취소' }}
+      </v-tooltip>
       {{ comment?.like ?? 0 }}
     </small>
-    <small class="ml-2 text-btn" @click="toBlame">
-      <v-icon icon="mdi mdi-bell" size="xs" />
-      <v-tooltip activator="parent" location="end">신고하기</v-tooltip>
+
+    <small class="ml-3 text-btn" @click="blameConfirm">
+      <v-icon
+        :icon="comment.my_blame ? 'mdi-bell' : 'mdi-bell-outline'"
+        size="xs"
+        class="icon-btn"
+      />
+      <!--      신고-->
+      <v-tooltip activator="parent" location="top">
+        {{ !comment.my_blame ? '신고' : '취소' }}
+      </v-tooltip>
+      {{ comment.blame ?? 0 }}
     </small>
-    <small v-if="!lastDepth" class="ml-2 text-btn" @click="toReply">
+
+    <small v-if="!lastDepth" class="ml-3 text-btn" @click="toReply">
       {{ !isReplying ? '답변' : '취소' }}
     </small>
     <template v-if="!comment.replies?.length && userInfo?.pk === props.comment?.user?.pk">
@@ -104,6 +118,17 @@ const onSubmit = (payload: Cm) => emit('on-submit', payload)
       />
     </p>
   </li>
+
+  <ConfirmModal ref="refBlameModal">
+    <template #header>알림</template>
+    <template #default>
+      이 댓글을 신고하시겠습니까?<br /><br />
+      한 번 신고하신 후에는 취소가 불가능합니다.
+    </template>
+    <template #footer>
+      <CButton color="danger" @click="toBlame">신고</CButton>
+    </template>
+  </ConfirmModal>
 </template>
 
 <style lang="scss" scoped>

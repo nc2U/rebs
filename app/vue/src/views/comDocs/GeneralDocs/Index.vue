@@ -13,7 +13,6 @@ import CategoryTabs from '@/components/Documents/CategoryTabs.vue'
 import DocsList from '@/components/Documents/DocsList.vue'
 import DocsView from '@/components/Documents/DocsView.vue'
 import DocsForm from '@/components/Documents/DocsForm.vue'
-import NoticeView from '@/views/_Dashboard/components/NoticeBoard/components/NoticeView.vue'
 
 const fController = ref()
 const boardNumber = ref(2)
@@ -62,7 +61,6 @@ const comStore = useCompany()
 const company = computed(() => comStore.company?.pk)
 
 const accStore = useAccount()
-const likePosts = computed(() => accStore.likePosts)
 const writeAuth = computed(() => accStore.writeComDocs)
 
 const createScrape = (payload: { post: number; user: number }) => accStore.createScrape(payload)
@@ -237,7 +235,6 @@ onBeforeMount(() => dataSetup(company.value || comStore.initComId, route.params?
           :re-order="postFilter.ordering !== '-created'"
           :category="postFilter.category as number"
           :post="post as Post"
-          :like-posts="likePosts"
           :view-route="mainViewName"
           :curr-page="postFilter.page ?? 1"
           :write-auth="writeAuth"

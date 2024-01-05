@@ -119,10 +119,10 @@ class Profile(models.Model):
     birth_date = models.DateField('생년월일', null=True, blank=True)
     cell_phone = models.CharField('휴대폰', max_length=13, blank=True)
     image = models.ImageField(upload_to=get_image_filename, null=True, blank=True, verbose_name='프로필 이미지')
-    like_posts = models.ManyToManyField(Post, blank=True, related_name='post_like_users')
-    like_comments = models.ManyToManyField(Comment, blank=True, related_name='comment_like_users')
-    blame_posts = models.ManyToManyField(Post, blank=True, related_name='post_blame_users')
-    blame_comments = models.ManyToManyField(Comment, blank=True, related_name='comment_blame_users')
+    like_posts = models.ManyToManyField(Post, blank=True, related_name='post_likes')
+    like_comments = models.ManyToManyField(Comment, blank=True, related_name='comment_likes')
+    blame_posts = models.ManyToManyField(Post, blank=True, related_name='post_blames')
+    blame_comments = models.ManyToManyField(Comment, blank=True, related_name='comment_blames')
 
     def __str__(self):
         return self.name
