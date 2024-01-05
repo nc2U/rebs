@@ -13,7 +13,7 @@ import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 import { type Post } from '@/store/types/document'
-import { postManageItems, toPostBlame, toPostManage } from '@/utils/postMixins'
+import { postManageItems, toPostLike, toPostBlame, toPostManage } from '@/utils/postMixins'
 import sanitizeHtml from 'sanitize-html'
 import type { User } from '@/store/types/accounts'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -33,7 +33,6 @@ const props = defineProps({
 })
 
 const emit = defineEmits([
-  'to-like',
   'post-hit',
   'link-hit',
   'file-hit',
@@ -66,7 +65,14 @@ const getPostNav = computed(() => docStore.getPostNav)
 const getPrev = (pk: number) => getPostNav.value.filter(p => p.pk === pk).map(p => p.prev_pk)[0]
 const getNext = (pk: number) => getPostNav.value.filter(p => p.pk === pk).map(p => p.next_pk)[0]
 
-const toLike = () => emit('to-like', props.post.pk)
+const toLike = () => toPostLike(props.post.pk as number)
+
+const blameConfirm = () => refBlameModal.value.callModal()
+
+const blameAction = () => {
+  refBlameModal.value.close()
+  toPostBlame(props.post.pk as number)
+}
 
 const linkHitUp = async (pk: number) => emit('link-hit', pk)
 const fileHitUp = async (pk: number) => emit('file-hit', pk)
@@ -187,13 +193,6 @@ const toEdit = () => {
       name: `${props.viewRoute} - 수정`,
       params: { postId: props.post?.pk },
     })
-}
-
-const blameConfirm = () => refBlameModal.value.callModal()
-
-const blameAction = () => {
-  refBlameModal.value.close()
-  toPostBlame(props.post.pk as number)
 }
 
 const deleteConfirm = () => refDelModal.value.callModal()
