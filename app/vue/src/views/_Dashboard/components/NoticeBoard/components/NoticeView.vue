@@ -185,7 +185,7 @@ const getFileName = (file: string) => {
 }
 
 const toEdit = () => {
-  if (props.post.comments?.length ?? 0 >= 5)
+  if ((props.post.comments?.length ?? 0) >= 5)
     refAlertModal.value.callModal('', '5개 이상의 댓글이 달린 게시물은 수정할 수 없습니다.')
   else
     router.push({

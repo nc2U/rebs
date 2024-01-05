@@ -114,11 +114,13 @@ router.register(r'suitcase', document.LawSuitCaseViewSet)
 router.register(r'all-suitcase', document.AllLawSuitCaseViewSet, basename='all-suitcase')
 router.register(r'post', document.PostViewSet)
 router.register(r'post-like', document.PostLikeViewSet, basename='post-like')
+router.register(r'post-blame', document.PostBlameViewSet, basename='post-blame')
 router.register(r'link', document.LinkViewSet)
 router.register(r'image', document.ImageViewSet)
 router.register(r'file', document.FileViewSet)
 router.register(r'comment', document.CommentViewSet)
 router.register(r'comment-like', document.CommentLikeViewSet, basename='comment-like')
+router.register(r'comment-blame', document.CommentBlameViewSet, basename='comment-blame')
 router.register(r'tag', document.TagViewSet)
 
 urlpatterns = router.urls

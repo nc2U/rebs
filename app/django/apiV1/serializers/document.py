@@ -265,6 +265,7 @@ class PostSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         validated_data['ip'] = self.context.get('request').META.get('REMOTE_ADDR')
+        validated_data['device'] = self.context.get('request').META.get('HTTP_USER_AGENT')
         post = Post.objects.create(**validated_data)
 
         # Links 처리
@@ -284,6 +285,7 @@ class PostSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def update(self, instance, validated_data):
         validated_data['ip'] = self.context.get('request').META.get('REMOTE_ADDR')
+        validated_data['device'] = self.context.get('request').META.get('HTTP_USER_AGENT')
         instance.__dict__.update(**validated_data)
         instance.project = validated_data.get('project', instance.project)
         instance.board = validated_data.get('board', instance.board)
@@ -359,6 +361,27 @@ class PostLikeSerializer(serializers.ModelSerializer):
         return instance
 
 
+class PostBlameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ('pk', 'blame')
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        user = self.context['request'].user
+        profile = Profile.objects.get(user=user)
+
+        if profile.blame_posts.filter(pk=instance.pk).exists():
+            if instance.blame > 0:
+                instance.blame -= 1
+                profile.blame_posts.remove(instance)
+        else:
+            instance.blame += 1
+            profile.blame_posts.add(instance)
+        instance.save()
+        return instance
+
+
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
@@ -399,6 +422,23 @@ class CommentSerializer(serializers.ModelSerializer):
         serializer.bind('', self)
         return serializer.data
 
+    @transaction.atomic
+    def create(self, validated_data):
+        validated_data['post_id'] = self.initial_data.get('post')
+        validated_data['ip'] = self.context.get('request').META.get('REMOTE_ADDR')
+        validated_data['device'] = self.context.get('request').META.get('HTTP_USER_AGENT')
+        comment = Comment.objects.create(**validated_data)
+        return comment
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        validated_data['ip'] = self.context.get('request').META.get('REMOTE_ADDR')
+        validated_data['device'] = self.context.get('request').META.get('HTTP_USER_AGENT')
+        instance.__dict__.update(**validated_data)
+        instance.post = validated_data.get('post', instance.post)
+        instance.save()
+        return instance
+
 
 class CommentLikeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -417,6 +457,27 @@ class CommentLikeSerializer(serializers.ModelSerializer):
         else:
             instance.like += 1
             profile.like_comments.add(instance)
+        instance.save()
+        return instance
+
+
+class CommentBlameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('pk', 'blame')
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        user = self.context['request'].user
+        profile = Profile.objects.get(user=user)
+
+        if profile.blame_comments.filter(pk=instance.pk).exists():
+            if instance.blame > 0:
+                instance.blame -= 1
+                profile.blame_comments.remove(instance)
+        else:
+            instance.blame += 1
+            profile.blame_comments.add(instance)
         instance.save()
         return instance
 
