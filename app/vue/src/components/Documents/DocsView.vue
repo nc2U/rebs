@@ -142,8 +142,7 @@ const shareKakaoTalk = () => {
 }
 
 const toScrape = () => {
-  if (props.post.is_scraped)
-    refAlertModal.value.callModal('', '이미 이 포스트를 스크랩 하였습니다.')
+  if (props.post.my_scrape) refAlertModal.value.callModal('', '이미 이 포스트를 스크랩 하였습니다.')
   else emit('post-scrape', props.post.pk)
 }
 
@@ -396,13 +395,13 @@ onMounted(() => {
       <CCol class="text-right">
         <v-btn
           variant="tonal"
-          :color="post.is_scraped ? 'primary' : ''"
+          :color="post.my_scrape ? 'primary' : ''"
           size="small"
           :rounded="0"
           class="mr-1"
           @click="toScrape"
         >
-          스크랩 {{ post.scraped ? `+${post.scraped}` : '' }}
+          스크랩 {{ post.scrape ? `+${post.scrape}` : '' }}
         </v-btn>
         <v-btn
           variant="tonal"
