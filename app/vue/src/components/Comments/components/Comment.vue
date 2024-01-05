@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { ref, inject, type ComputedRef, type PropType, watch, computed } from 'vue'
+import { ref, watch, inject, type ComputedRef, type PropType } from 'vue'
 import { elapsedTime } from '@/utils/baseMixins'
 import type { User } from '@/store/types/accounts'
 import type { Comment as Cm } from '@/store/types/document'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import CommentForm from './CommentForm.vue'
 
 const props = defineProps({
@@ -22,14 +23,18 @@ watch(props, val => {
 
 const emit = defineEmits(['vision-toggle', 'to-like', 'on-submit'])
 
+const refBlameModal = ref()
+
 const userInfo = inject<ComputedRef<User>>('userInfo')
 
 const isReplying = ref<boolean>(false)
 const isEditing = ref<boolean>(false)
 
+const blameConfirm = () => refBlameModal.value.callModal()
+
 const toBlame = () => {
-  if (confirm('이 댓글을 신고하시겠습니까?\n\n한번 신고하신 후에는 취소가 불가능합니다.'))
-    alert('ok!')
+  refBlameModal.value.close()
+  alert('ok!')
 }
 
 const toLike = () => emit('to-like', props.comment.pk)
@@ -70,7 +75,7 @@ const onSubmit = (payload: Cm) => emit('on-submit', payload)
       {{ comment?.like ?? 0 }}
     </small>
 
-    <small class="ml-3 text-btn" @click="toBlame">
+    <small class="ml-3 text-btn" @click="blameConfirm">
       <v-icon
         :icon="comment.my_blame ? 'mdi-bell' : 'mdi-bell-outline'"
         size="xs"
@@ -113,6 +118,17 @@ const onSubmit = (payload: Cm) => emit('on-submit', payload)
       />
     </p>
   </li>
+
+  <ConfirmModal ref="refBlameModal">
+    <template #header>알림</template>
+    <template #default>
+      이 댓글을 신고하시겠습니까?<br /><br />
+      한 번 신고하신 후에는 취소가 불가능합니다.
+    </template>
+    <template #footer>
+      <CButton color="danger" @click="toBlame">신고</CButton>
+    </template>
+  </ConfirmModal>
 </template>
 
 <style lang="scss" scoped>

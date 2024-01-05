@@ -20,6 +20,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import BoardListModal from '@/components/Documents/components/BoardListModal.vue'
 import CateListModal from '@/components/Documents/components/CateListModal.vue'
+import { close } from '@/utils/nprogress'
 
 const props = defineProps({
   boardNum: { type: Number, default: 2 },
@@ -44,6 +45,7 @@ const emit = defineEmits([
 ])
 
 const refDelModal = ref()
+const refBlameModal = ref()
 const refAlertModal = ref()
 const refBoardListModal = ref()
 const isCopy = ref(false)
@@ -188,6 +190,13 @@ const toEdit = () => {
       name: `${props.viewRoute} - 수정`,
       params: { postId: props.post?.pk },
     })
+}
+
+const blameConfirm = () => refBlameModal.value.callModal()
+
+const blameAction = () => {
+  refBlameModal.value.close()
+  toPostBlame(props.post.pk as number)
 }
 
 const deleteConfirm = () => refDelModal.value.callModal()
@@ -403,13 +412,7 @@ onMounted(() => {
         >
           스크랩 {{ post.scrape ? `+${post.scrape}` : '' }}
         </v-btn>
-        <v-btn
-          variant="tonal"
-          size="small"
-          :rounded="0"
-          class="mr-1"
-          @click="toPostBlame(post.pk as number)"
-        >
+        <v-btn variant="tonal" size="small" :rounded="0" class="mr-1" @click="blameConfirm">
           신고
         </v-btn>
         <v-btn
@@ -496,6 +499,17 @@ onMounted(() => {
     <template #default>한번 삭제한 자료는 복구할 수 없습니다. 정말 삭제하시겠습니까?</template>
     <template #footer>
       <CButton color="danger" @click="toDelete">삭제</CButton>
+    </template>
+  </ConfirmModal>
+
+  <ConfirmModal ref="refBlameModal">
+    <template #header>알림</template>
+    <template #default>
+      이 게시글을 신고하시겠습니까?<br /><br />
+      한 번 신고하신 후에는 취소가 불가능합니다.
+    </template>
+    <template #footer>
+      <CButton color="danger" @click="blameAction">신고</CButton>
     </template>
   </ConfirmModal>
 
