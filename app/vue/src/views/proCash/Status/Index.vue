@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import Cookies from 'js-cookie'
 import { ref, computed, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { useProCash } from '@/store/pinia/proCash'
@@ -14,7 +15,6 @@ import StatusByAccount from '@/views/proCash/Status/components/StatusByAccount.v
 import CashListByDate from '@/views/proCash/Status/components/CashListByDate.vue'
 import SummaryForBudget from '@/views/proCash/Status/components/SummaryForBudget.vue'
 import Calculated from '@/views/comCash/Status/components/Calculated.vue'
-import Cookies from 'js-cookie'
 
 const date = ref(getToday())
 const direct = ref('0')

@@ -94,6 +94,8 @@ export type Post = {
   content: string
   hit?: number
   like?: number
+  scraped?: number
+  is_scraped: boolean
   blame?: number
   ip: string | null
   device: string
@@ -107,7 +109,6 @@ export type Post = {
   files?: AFile[]
   comments?: number[]
   user?: SimpleUser
-  is_scraped?: false
   created?: string
   updated?: string
   is_new?: boolean

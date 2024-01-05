@@ -167,6 +167,7 @@ class PostSerializer(serializers.ModelSerializer):
     links = LinksInPostSerializer(many=True, read_only=True)
     files = FilesInPostSerializer(many=True, read_only=True)
     user = UserInDocumentsSerializer(read_only=True)
+    scraped = serializers.SerializerMethodField(read_only=True)
     is_scraped = serializers.SerializerMethodField(read_only=True)
     prev_pk = serializers.SerializerMethodField(read_only=True)
     next_pk = serializers.SerializerMethodField(read_only=True)
@@ -175,9 +176,9 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ('pk', 'company', 'project', 'proj_name', 'board', 'board_name', 'category',
                   'cate_name', 'lawsuit', 'lawsuit_name', 'title', 'execution_date', 'content',
-                  'hit', 'like', 'blame', 'ip', 'device', 'is_secret', 'password', 'is_hide_comment',
-                  'is_notice', 'is_blind', 'deleted', 'links', 'files', 'comments', 'user', 'is_scraped',
-                  'created', 'updated', 'is_new', 'prev_pk', 'next_pk')
+                  'hit', 'like', 'scraped', 'is_scraped', 'blame', 'ip', 'device', 'is_secret',
+                  'password', 'is_hide_comment', 'is_notice', 'is_blind', 'deleted', 'links',
+                  'files', 'comments', 'user', 'created', 'updated', 'is_new', 'prev_pk', 'next_pk')
         read_only_fields = ('ip', 'comments')
 
     def get_collection(self):
@@ -212,6 +213,10 @@ class PostSerializer(serializers.ModelSerializer):
         ) if search else queryset
 
         return queryset
+
+    @staticmethod
+    def get_scraped(obj):
+        return len(obj.scrape_set.all())
 
     def get_is_scraped(self, obj):
         user = self.context['request'].user
