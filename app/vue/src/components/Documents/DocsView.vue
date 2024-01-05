@@ -163,7 +163,10 @@ const movePost = (board: number) => {
   alert('게시물 이동!--' + board)
   console.log(board, props.post)
 }
-const changeCate = () => alert('카테고리 변경!')
+const changeCate = (cate: number) => {
+  alert('카테고리 변경!--' + cate)
+  console.log(cate, props.post)
+}
 
 const getFileName = (file: string) => {
   if (file) return decodeURI(file.split('/').slice(-1)[0])
