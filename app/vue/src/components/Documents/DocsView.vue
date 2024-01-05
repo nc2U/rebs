@@ -418,7 +418,7 @@ onMounted(() => {
           class="mr-1"
           @click="blameConfirm"
         >
-          신고
+          신고 {{ post.blame ? `+${post.blame}` : '' }}
         </v-btn>
         <v-btn
           v-if="userInfo?.is_superuser"
