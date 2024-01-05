@@ -48,6 +48,8 @@ export type Profile = {
   image?: File | string | null
   like_posts?: number[]
   like_comments?: number[]
+  blame_posts?: number[]
+  blame_comments?: number[]
 }
 
 export interface Scrape {

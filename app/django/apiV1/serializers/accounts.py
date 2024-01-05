@@ -93,8 +93,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ('pk', 'user', 'name', 'birth_date',
-                  'cell_phone', 'image', 'like_posts', 'like_comments')
+        fields = ('pk', 'user', 'name', 'birth_date', 'cell_phone', 'image',
+                  'like_posts', 'like_comments', 'blame_posts', 'blame_comments')
 
     @transaction.atomic
     def update(self, instance, validated_data):
