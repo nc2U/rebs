@@ -95,7 +95,7 @@ export type Post = {
   hit?: number
   like?: number
   scraped?: number
-  is_scraped: boolean
+  is_scraped?: boolean
   blame?: number
   ip: string | null
   device: string
