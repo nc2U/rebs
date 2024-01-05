@@ -157,7 +157,7 @@ export interface PatchPost {
   like?: number[]
   dislike?: number[]
   blame?: number
-  secret?: boolean
+  is_secret?: boolean
   password?: string
   soft_delete?: string | null
 }
