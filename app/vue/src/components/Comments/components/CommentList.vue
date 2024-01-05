@@ -2,29 +2,36 @@
 import { ref, computed, type PropType } from 'vue'
 import { useDocument } from '@/store/pinia/document'
 import type { Comment as Cm } from '@/store/types/document'
+import { toCommentLike, toCommentBlame } from '@/utils/postMixins'
 import Comment from './Comment.vue'
 import Pagination from '@/components/Pagination'
 
 defineProps({
   actForm: { type: Number, default: undefined },
   comments: { type: Array as PropType<Cm[]>, default: () => [] },
-  likeComments: { type: Array as PropType<number[]>, default: () => [] },
 })
-const emit = defineEmits(['vision-toggle', 'to-like', 'on-submit', 'form-reset', 'page-select'])
+const emit = defineEmits(['vision-toggle', 'on-submit', 'form-reset', 'page-select'])
+
+const page = ref(1)
 
 const docStore = useDocument()
 const commentCount = computed(() => docStore.commentCount)
 
 const visionToggle = (payload: { num: number; sts: boolean }) => emit('vision-toggle', payload)
 
-const toLike = (pk: number) => emit('to-like', pk)
+const toLike = (pk: number, post: number) => toCommentLike(pk, post, page.value)
+
+const toBlame = (pk: number, post: number) => toCommentBlame(pk, post, page.value)
 
 const onSubmit = (payload: Cm) => {
   emit('on-submit', payload)
   emit('form-reset')
 }
 
-const pageSelect = (page: number) => emit('page-select', page)
+const pageSelect = (p: number) => {
+  page.value = p
+  emit('page-select', p)
+}
 
 const itemsPerPage = ref(10)
 const commentPages = (pages: number) => Math.ceil(commentCount.value / pages)
@@ -37,9 +44,9 @@ const commentPages = (pages: number) => Math.ceil(commentCount.value / pages)
       <Comment
         :form-show="actForm === cmt1.pk"
         :comment="cmt1"
-        :like-comments="likeComments"
         @vision-toggle="visionToggle"
         @to-like="toLike"
+        @to-blame="toBlame"
         @on-submit="onSubmit"
       />
 
@@ -47,9 +54,9 @@ const commentPages = (pages: number) => Math.ceil(commentCount.value / pages)
         <Comment
           :form-show="actForm === cmt2.pk"
           :comment="cmt2"
-          :like-comments="likeComments"
           @vision-toggle="visionToggle"
           @to-like="toLike"
+          @to-blame="toBlame"
           @on-submit="onSubmit"
         />
 
@@ -57,9 +64,9 @@ const commentPages = (pages: number) => Math.ceil(commentCount.value / pages)
           <Comment
             :form-show="actForm === cmt3.pk"
             :comment="cmt3"
-            :like-comments="likeComments"
             @vision-toggle="visionToggle"
             @to-like="toLike"
+            @to-blame="toBlame"
             @on-submit="onSubmit"
           />
 
@@ -67,19 +74,19 @@ const commentPages = (pages: number) => Math.ceil(commentCount.value / pages)
             <Comment
               :form-show="actForm === cmt4.pk"
               :comment="cmt4"
-              :like-comments="likeComments"
               @vision-toggle="visionToggle"
               @to-like="toLike"
+              @to-blame="toBlame"
               @on-submit="onSubmit"
             />
             <ul v-for="cmt5 in cmt4.replies" :key="cmt5.pk" class="comments ml-5 mb-3">
               <Comment
                 :form-show="actForm === cmt5.pk"
                 :comment="cmt5"
-                :like-comments="likeComments"
                 :last-depth="true"
                 @vision-toggle="visionToggle"
                 @to-like="toLike"
+                @to-blame="toBlame"
                 @on-submit="onSubmit"
               />
             </ul>

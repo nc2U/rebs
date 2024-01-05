@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { ref, type PropType } from 'vue'
-import { useAccount } from '@/store/pinia/account'
 import { useDocument } from '@/store/pinia/document'
 import type { Comment } from '@/store/types/document'
 import CommentList from './components/CommentList.vue'
@@ -13,8 +12,6 @@ const props = defineProps({
 
 const formVision = ref<boolean>(true)
 const actForm = ref<number | undefined>(undefined)
-
-const accStore = useAccount()
 
 const docStore = useDocument()
 const createComment = (payload: Comment) => docStore.createComment(payload)
