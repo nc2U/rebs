@@ -13,6 +13,7 @@ const patchCommentLike = (pk: number, post: number, page?: number) =>
 const patchCommentBlame = (pk: number, post: number, page?: number) =>
   docStore.patchCommentBlame(pk, post, page)
 const deletePost = (pk: number) => docStore.deletePost(pk)
+const restorePost = (pk: number, isProject = false) => docStore.restorePost(pk, isProject)
 
 export const toPrint = (title: string) => {
   // Clone the specific area to be printed
@@ -122,15 +123,12 @@ const toBlind = (post: number, state: boolean) =>
     message('info', '', `이 게시글을 블라인드${!is_blind.value ? ' 해제' : ' 처리'}하였습니다.`),
   )
 
-const toTrashCan = (post: number, state: boolean) => {
-  // --------- Todo -----------
+const toTrashCan = async (post: number, state: boolean, isProj = false) => {
   if (!state) {
-    if (confirm('이 글을 휴지통으로 이동하시겠습니까?')) alert('soft delete 실행')
+    if (confirm('이 글을 휴지통으로 이동하시겠습니까?')) await deletePost(post)
   } else {
-    if (confirm('이 글을 휴지통에서 복구 하시겠습니까?')) alert('soft delete 해제 실행')
+    if (confirm('이 글을 휴지통에서 복구 하시겠습니까?')) await restorePost(post, isProj)
   }
-  if (!state) deletePost(post)
-  else alert('')
 }
 
 export const toPostManage = (

@@ -317,6 +317,20 @@ export const useDocument = defineStore('document', () => {
       .then(() => message('warning'))
       .catch(err => errorHandle(err.response.data))
 
+  const restorePost = (pk: number, isProject = false) =>
+    api
+      .post(`/post-restore/${pk}/`)
+      .then(res =>
+        fetchPostList({
+          company: res.data.company,
+          project: res.data.project,
+          board: res.data.board,
+          is_com: !isProject,
+          page: 1,
+        }).then(() => message()),
+      )
+      .catch(err => errorHandle(err.response.data))
+
   const link = ref<Link | null>(null)
 
   const fetchLink = (pk: number) =>
@@ -460,6 +474,7 @@ export const useDocument = defineStore('document', () => {
     patchPostLike,
     patchPostBlame,
     deletePost,
+    restorePost,
 
     link,
     fetchLink,
