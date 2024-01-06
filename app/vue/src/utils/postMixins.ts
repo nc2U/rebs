@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { type PostFilter, useDocument } from '@/store/pinia/document'
 import type { PatchPost } from '@/store/types/document'
 import { message } from '@/utils/helper'
@@ -12,6 +12,7 @@ const patchCommentLike = (pk: number, post: number, page?: number) =>
   docStore.patchCommentLike(pk, post, page)
 const patchCommentBlame = (pk: number, post: number, page?: number) =>
   docStore.patchCommentBlame(pk, post, page)
+const deletePost = (pk: number) => docStore.deletePost(pk)
 
 export const toPrint = (title: string) => {
   // Clone the specific area to be printed
@@ -122,11 +123,14 @@ const toBlind = (post: number, state: boolean) =>
   )
 
 const toTrashCan = (post: number, state: boolean) => {
+  // --------- Todo -----------
   if (!state) {
     if (confirm('이 글을 휴지통으로 이동하시겠습니까?')) alert('soft delete 실행')
   } else {
     if (confirm('이 글을 휴지통에서 복구 하시겠습니까?')) alert('soft delete 해제 실행')
   }
+  if (!state) deletePost(post)
+  else alert('')
 }
 
 export const toPostManage = (

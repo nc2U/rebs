@@ -1,14 +1,6 @@
 <script lang="ts" setup>
-import {
-  computed,
-  type ComputedRef,
-  inject,
-  onBeforeMount,
-  onMounted,
-  type PropType,
-  ref,
-  watch,
-} from 'vue'
+import type { ComputedRef, PropType } from 'vue'
+import { ref, computed, watch, inject, onBeforeMount, onMounted } from 'vue'
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
 import { cutString, timeFormat } from '@/utils/baseMixins'
