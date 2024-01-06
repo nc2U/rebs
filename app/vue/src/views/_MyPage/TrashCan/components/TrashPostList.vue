@@ -3,12 +3,12 @@ import type { PropType } from 'vue'
 import { numFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 import { useAccount } from '@/store/pinia/account'
-import type { Post } from '@/store/types/document'
+import type { TrashPost as TP } from '@/store/types/document'
 import TrashPost from './TrashPost.vue'
 import Pagination from '@/components/Pagination'
 
 defineProps({
-  trashPostList: { type: Array as PropType<Post[]>, default: () => [] },
+  trashPostList: { type: Array as PropType<TP[]>, default: () => [] },
   trashPostCount: { type: Number, default: 0 },
   viewRoute: { type: String, required: true },
   page: { type: Number, default: 1 },

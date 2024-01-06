@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { type PropType } from 'vue'
 import { cutString, timeFormat } from '@/utils/baseMixins'
-import type { Post } from '@/store/types/document'
+import type { TrashPost } from '@/store/types/document'
 
 const props = defineProps({
-  trashPost: { type: Object as PropType<Post>, default: null },
+  trashPost: { type: Object as PropType<TrashPost>, default: null },
   viewRoute: { type: String, default: '' },
 })
 
@@ -26,7 +26,7 @@ const restorePost = () => emit('restore-post', props.trashPost.pk)
         </router-link>
       </span>
     </CTableDataCell>
-    <CTableDataCell>{{ timeFormat(trashPost.deleted) }}</CTableDataCell>
+    <CTableDataCell>{{ timeFormat(trashPost?.deleted) }}</CTableDataCell>
     <CTableDataCell>
       <v-btn
         density="compact"

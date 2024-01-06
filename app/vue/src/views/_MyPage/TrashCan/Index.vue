@@ -2,6 +2,7 @@
 import { computed, onBeforeMount, ref, watch } from 'vue'
 import { navMenu, pageTitle } from '@/views/_MyPage/_menu/headermixin'
 import { useDocument } from '@/store/pinia/document'
+import type { TrashPost as TP } from '@/store/types/document'
 import { type RouteLocationNormalizedLoaded as LoadedRoute, useRoute } from 'vue-router'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -45,7 +46,7 @@ const callRestorePost = (pk: number) => {
 }
 
 const modalAction = () => {
-  restorePost(restoreId.value)
+  restorePost(restoreId.value as number)
   refRestoreModal.value.close()
 }
 
@@ -62,7 +63,7 @@ onBeforeMount(() => {
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <div v-if="$route.name === mainViewName" class="pt-3">
+      <div v-if="route.name === mainViewName" class="pt-3">
         <TrashPostList
           :trash-post-list="trashPostList"
           :trash-post-count="trashPostCount"
@@ -73,10 +74,10 @@ onBeforeMount(() => {
         />
       </div>
 
-      <div v-else-if="$route.name.includes('보기')" class="pt-3">
+      <div v-else-if="route.name.includes('보기')" class="pt-3">
         <TrashPostView
           :category="category as undefined"
-          :post="trashPost"
+          :post="trashPost as TP"
           :view-route="mainViewName"
           :curr-page="page"
           @restore-post="callRestorePost"

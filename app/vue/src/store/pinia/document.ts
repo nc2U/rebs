@@ -13,6 +13,7 @@ import type {
   SimpleSuitCase,
   Post,
   Comment as Cm,
+  TrashPost as TP,
 } from '@/store/types/document'
 import { useAccount } from '@/store/pinia/account'
 
@@ -318,8 +319,8 @@ export const useDocument = defineStore('document', () => {
       .catch(err => errorHandle(err.response.data))
 
   // state
-  const trashPost = ref<Post | null>(null)
-  const trashPostList = ref<Post[]>([])
+  const trashPost = ref<TP | null>(null)
+  const trashPostList = ref<TP[]>([])
   const trashPostCount = ref(0)
 
   const trashPostPages = (itemsPerPage: number) => Math.ceil(trashPostCount.value / itemsPerPage)
