@@ -255,7 +255,7 @@ onMounted(() => {
 
     <v-divider />
 
-    <CRow class="text-blue-grey">
+    <CRow class="text-blue-grey mb-5">
       <CCol>
         <small class="mr-3">작성자 : {{ post.user?.username }}</small>
         <small class="mr-2">
@@ -284,90 +284,103 @@ onMounted(() => {
       </CCol>
     </CRow>
 
-    <CRow class="mt-5 py-2 justify-content-between">
-      <CCol md="7" lg="6" xl="5">
-        <table v-if="boardNum !== 1 && post.execution_date" class="table table-bordered mt-2 mb-3">
-          <tbody>
-            <tr v-if="post.lawsuit">
-              <td class="p-2 bg-blue-grey-lighten-4 text-center">관련사건</td>
-              <td class="p-2">
-                <router-link
-                  :to="{ name: '현장 소송 사건 - 보기', params: { caseId: post.lawsuit } }"
-                >
-                  {{ post.lawsuit_name }}
-                </router-link>
-              </td>
-            </tr>
-            <tr>
-              <td class="p-2 bg-blue-grey-lighten-4 text-center">발행일자</td>
-              <td class="p-2">{{ post.execution_date }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </CCol>
-
-      <CCol md="7" lg="6" xl="5">
-        <CRow v-if="!!post.links && post.links.length" class="mb-3">
-          <CCol>
-            <CListGroup>
-              <CListGroupItem>Link</CListGroupItem>
-              <CListGroupItem
-                v-for="l in post.links"
-                :key="l.pk"
-                class="d-flex justify-content-between align-items-center"
-              >
-                <a :href="l.link" target="_blank" @click="linkHitUp(l.pk as number)">
-                  {{ cutString(l.link, 45) }}
-                </a>
-                <small>
-                  조회 수 :
-                  <CBadge color="info" shape="rounded-pill">
-                    {{ l.hit }}
-                  </CBadge>
-                </small>
-              </CListGroupItem>
-            </CListGroup>
-          </CCol>
-        </CRow>
-
-        <CRow v-if="post.files && post.files.length">
-          <CCol>
-            <CListGroup>
-              <CListGroupItem>File</CListGroupItem>
-              <CListGroupItem
-                v-for="f in post.files"
-                :key="f.pk"
-                class="d-flex justify-content-between align-items-center"
-              >
-                <a :href="f.file" target="_blank" @click="fileHitUp(f.pk as number)">
-                  {{ cutString(getFileName(f.file ?? ''), 45) }}
-                </a>
-                <small>
-                  다운로드 :
-                  <CBadge color="success" shape="rounded-pill">
-                    {{ f.hit }}
-                  </CBadge>
-                </small>
-              </CListGroupItem>
-            </CListGroup>
-          </CCol>
-        </CRow>
-      </CCol>
-    </CRow>
-
     <CRow v-if="post.is_secret">
       <CCol>
         <CAlert color="info">
-          이 글은 비밀글입니다. 관리자와 작성자 본인만 열람할 수 있습니다.
+          이 글은 비밀글입니다. 작성자 본인과 관리자만 열람할 수 있습니다.
         </CAlert>
       </CCol>
     </CRow>
 
-    <CRow class="my-5 p-3" id="print-area">
+    <CRow v-if="post.is_blind">
       <CCol>
-        <div v-html="sanitizeHtml(post.content)" />
+        <CAlert color="danger">
+          이 글은 블라인드 처리된 글입니다. 작성자 본인과 관리자만 확인이 가능합니다.
+        </CAlert>
       </CCol>
     </CRow>
+
+    <div v-show="!post.is_blind || userInfo?.pk === post.user?.pk || userInfo?.is_superuser">
+      <CRow class="py-2 justify-content-between">
+        <CCol md="7" lg="6" xl="5">
+          <table
+            v-if="boardNum !== 1 && post.execution_date"
+            class="table table-bordered mt-2 mb-3"
+          >
+            <tbody>
+              <tr v-if="post.lawsuit">
+                <td class="p-2 bg-blue-grey-lighten-4 text-center">관련사건</td>
+                <td class="p-2">
+                  <router-link
+                    :to="{ name: '현장 소송 사건 - 보기', params: { caseId: post.lawsuit } }"
+                  >
+                    {{ post.lawsuit_name }}
+                  </router-link>
+                </td>
+              </tr>
+              <tr>
+                <td class="p-2 bg-blue-grey-lighten-4 text-center">발행일자</td>
+                <td class="p-2">{{ post.execution_date }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </CCol>
+
+        <CCol md="7" lg="6" xl="5">
+          <CRow v-if="!!post.links && post.links.length" class="mb-3">
+            <CCol>
+              <CListGroup>
+                <CListGroupItem>Link</CListGroupItem>
+                <CListGroupItem
+                  v-for="l in post.links"
+                  :key="l.pk"
+                  class="d-flex justify-content-between align-items-center"
+                >
+                  <a :href="l.link" target="_blank" @click="linkHitUp(l.pk as number)">
+                    {{ cutString(l.link, 45) }}
+                  </a>
+                  <small>
+                    조회 수 :
+                    <CBadge color="info" shape="rounded-pill">
+                      {{ l.hit }}
+                    </CBadge>
+                  </small>
+                </CListGroupItem>
+              </CListGroup>
+            </CCol>
+          </CRow>
+
+          <CRow v-if="post.files && post.files.length">
+            <CCol>
+              <CListGroup>
+                <CListGroupItem>File</CListGroupItem>
+                <CListGroupItem
+                  v-for="f in post.files"
+                  :key="f.pk"
+                  class="d-flex justify-content-between align-items-center"
+                >
+                  <a :href="f.file" target="_blank" @click="fileHitUp(f.pk as number)">
+                    {{ cutString(getFileName(f.file ?? ''), 45) }}
+                  </a>
+                  <small>
+                    다운로드 :
+                    <CBadge color="success" shape="rounded-pill">
+                      {{ f.hit }}
+                    </CBadge>
+                  </small>
+                </CListGroupItem>
+              </CListGroup>
+            </CCol>
+          </CRow>
+        </CCol>
+      </CRow>
+
+      <CRow class="my-5 p-3" id="print-area">
+        <CCol>
+          <div v-html="sanitizeHtml(post.content)" />
+        </CCol>
+      </CRow>
+    </div>
 
     <CRow class="py-3">
       <CCol class="text-center">

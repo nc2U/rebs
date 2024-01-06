@@ -57,6 +57,8 @@ const hideCmtTitle = computed(() => (is_hide_cmt.value ? '댓글숨김 해제' :
 const is_notice = computed(() => docStore.post?.is_notice)
 const notiTitle = computed(() => (is_notice.value ? '공지내림' : '공지올림'))
 
+const is_blind = computed(() => docStore.post?.is_blind)
+
 export const postManageItems = computed(() => [
   { title: '복사하기', icon: 'content-copy' },
   { title: '이동하기', icon: 'folder-arrow-right' },
@@ -64,7 +66,10 @@ export const postManageItems = computed(() => [
   { title: secretTitle.value, icon: secretIcon.value },
   { title: hideCmtTitle.value, icon: `comment${is_hide_cmt.value ? '' : '-off'}` },
   { title: notiTitle.value, icon: `bullhorn-variant${is_notice.value ? '-outline' : ''}` },
-  { title: '블라인드처리', icon: 'eye-off' },
+  {
+    title: `블라인드${is_blind.value ? '해제' : '처리'}`,
+    icon: `eye${is_blind.value ? '' : '-off'}`,
+  },
   { title: '휴지통으로', icon: 'trash-can' },
 ])
 
@@ -107,10 +112,14 @@ const toNoticeUp = (post: number, state: boolean) =>
     ),
   )
 
-const toBlind = (post: number, state: boolean) => {
-  if (!state) alert('이 게시글을 공지로 등록하였습니다.')
-  else alert('이 게시글을 블라인드 해제하였습니다.')
-}
+const toBlind = (post: number, state: boolean) =>
+  patchPost({
+    pk: post,
+    is_blind: !state,
+    filter: {},
+  }).then(() =>
+    message('info', '', `이 게시글을 블라인드${!is_blind.value ? ' 해제' : ' 처리'}하였습니다.`),
+  )
 
 const toTrashCan = (post: number, state: boolean) => {
   if (!state) {
