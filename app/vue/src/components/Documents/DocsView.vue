@@ -23,6 +23,7 @@ const props = defineProps({
   viewRoute: { type: String, required: true },
   currPage: { type: Number, required: true },
   writeAuth: { type: Boolean, default: true },
+  postFilter: { type: Object, default: null },
 })
 
 const emit = defineEmits([
