@@ -75,7 +75,7 @@ const updatePost = (payload: { pk: number; form: FormData }) => docStore.updateP
 const patchPost = (payload: PatchPost & { filter: PostFilter }) => docStore.patchPost(payload)
 const patchLink = (payload: Link) => docStore.patchLink(payload)
 const patchFile = (payload: AFile) => docStore.patchFile(payload)
-const deletePost = (pk: number) => docStore.deletePost(pk)
+const deletePost = (pk: number, filter: PostFilter) => docStore.deletePost(pk, filter)
 
 const [route, router] = [
   useRoute() as Loaded & {
@@ -164,7 +164,7 @@ const onSubmit = async (payload: Post & Attatches) => {
 }
 
 const postDelete = (pk: number) =>
-  deletePost(pk).then(() => router.replace({ name: `${mainViewName.value}` }))
+  deletePost(pk, postFilter.value).then(() => router.replace({ name: mainViewName.value }))
 
 const dataSetup = (pk: number, postId?: string | string[]) => {
   fetchBoardList()
