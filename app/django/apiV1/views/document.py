@@ -156,16 +156,3 @@ class TagViewSet(viewsets.ModelViewSet):
 class PostInTrashViewSet(PostViewSet):
     queryset = Post.objects.filter(deleted__isnull=False)
     serializer_class = PostInTrashSerializer
-
-    def put(self, request, *args, **kwargs):
-        # Serializer를 통해 데이터 유효성 검사
-        serializer = PostInTrashSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        # 모델의 restore 함수를 호출하여 객체를 업데이트
-        instance = self.get_object()
-        instance.restore(serializer.validated_data)
-
-        # Serializer를 통해 업데이트된 객체를 반환
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data, status=status.HTTP_200_OK)

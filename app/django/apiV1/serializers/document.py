@@ -524,3 +524,7 @@ class PostInTrashSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('pk', 'board_name', 'cate_name', 'title', 'content', 'user', 'created', 'deleted')
+
+    def update(self, instance, validated_data):
+        instance.restore()
+        return instance
