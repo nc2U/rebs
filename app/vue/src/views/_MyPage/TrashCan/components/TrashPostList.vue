@@ -24,9 +24,9 @@ const restorePost1 = (pk: number) => emit('restore-post', pk)
 </script>
 
 <template>
-  <h5>스크랩 : 총 {{ numFormat(trashPostCount) }}건</h5>
+  <h5 v-if="trashPostCount">삭제 게시물 : 총 {{ numFormat(trashPostCount) }}건</h5>
 
-  <v-divider />
+  <v-divider v-if="trashPostCount" />
 
   <CTable hover responsive align="middle">
     <colgroup>
