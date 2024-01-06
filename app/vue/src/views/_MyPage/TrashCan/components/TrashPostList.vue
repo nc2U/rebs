@@ -2,10 +2,10 @@
 import type { PropType } from 'vue'
 import { numFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
-import { useAccount } from '@/store/pinia/account'
 import type { TrashPost as TP } from '@/store/types/document'
 import TrashPost from './TrashPost.vue'
 import Pagination from '@/components/Pagination'
+import { useDocument } from '@/store/pinia/document'
 
 defineProps({
   trashPostList: { type: Array as PropType<TP[]>, default: () => [] },
@@ -16,8 +16,8 @@ defineProps({
 
 const emit = defineEmits(['page-select', 'restore-post'])
 
-const accStore = useAccount()
-const scrapePages = (pages: number) => accStore.scrapePages(pages)
+const docStore = useDocument()
+const trashPostPages = (pages: number) => docStore.trashPostPages(pages)
 const pageSelect = (page: number) => emit('page-select', page)
 
 const restorePost1 = (pk: number) => emit('restore-post', pk)
@@ -63,7 +63,7 @@ const restorePost1 = (pk: number) => emit('restore-post', pk)
       <Pagination
         :active-page="page"
         :limit="8"
-        :pages="scrapePages(10)"
+        :pages="trashPostPages(10)"
         class="mt-3"
         @active-page-change="pageSelect"
       />
