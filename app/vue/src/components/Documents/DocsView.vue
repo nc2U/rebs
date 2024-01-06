@@ -152,7 +152,7 @@ const toManage = (fn: number) => {
       refTrashModal.value.close()
       router.replace({ name: props.viewRoute })
     }
-    toPostManage(fn, brd as number, cate, post as number, state)
+    toPostManage(fn, post as number, state, props.postFilter)
   }
 }
 
