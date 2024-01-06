@@ -245,6 +245,7 @@ onBeforeMount(() => dataSetup(company.value || comStore.initComId, route.params?
           :view-route="mainViewName"
           :curr-page="postFilter.page ?? 1"
           :write-auth="writeAuth"
+          :post-filter="postFilter"
           @post-hit="postHit"
           @link-hit="linkHit"
           @file-hit="fileHit"

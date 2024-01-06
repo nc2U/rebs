@@ -23,6 +23,7 @@ const props = defineProps({
   viewRoute: { type: String, required: true },
   currPage: { type: Number, required: true },
   writeAuth: { type: Boolean, default: true },
+  postFilter: { type: Object, default: null },
 })
 
 const emit = defineEmits([
@@ -40,6 +41,7 @@ const refAlertModal = ref()
 const refBoardListModal = ref()
 const isCopy = ref(false)
 const refCateListModal = ref()
+const refTrashModal = ref()
 
 const userInfo = inject<ComputedRef<User>>('userInfo')
 const editAuth = computed(
@@ -124,8 +126,6 @@ const toScrape = () => {
 }
 
 const toManage = (fn: number) => {
-  const brd = props.post?.board
-  const cate = props.post?.category
   const post = props.post.pk
   let state = false
   if (fn < 4) {
@@ -143,8 +143,14 @@ const toManage = (fn: number) => {
     else if (fn === 5) state = props.post.is_hide_comment
     else if (fn === 6) state = props.post.is_notice // is_notice
     else if (fn === 7) state = props.post.is_blind // is_blind
-    else if (fn === 8) state = !!props.post.deleted // is_soft_deleted
-    toPostManage(fn, brd as number, cate, post as number, state)
+    else if (fn === 8) state = refTrashModal.value.callModal() // deleted confirm
+    else if (fn === 9) {
+      // soft delete
+      state = !!props.post.deleted // is_deleted
+      refTrashModal.value.close()
+      router.replace({ name: props.viewRoute })
+    }
+    toPostManage(fn, post as number, state, props.postFilter)
   }
 }
 
@@ -539,6 +545,14 @@ onMounted(() => {
     :category-list="categoryList"
     @change-cate="changeCate"
   />
+
+  <ConfirmModal ref="refTrashModal">
+    <template #header>알림</template>
+    <template #default>이 게시물을 휴지통으로 삭제 하시겠습니까?</template>
+    <template #footer>
+      <CButton color="danger" @click="toManage(9)">삭제</CButton>
+    </template>
+  </ConfirmModal>
 </template>
 
 <style lang="scss" scoped>

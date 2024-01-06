@@ -12,8 +12,7 @@ const patchCommentLike = (pk: number, post: number, page?: number) =>
   docStore.patchCommentLike(pk, post, page)
 const patchCommentBlame = (pk: number, post: number, page?: number) =>
   docStore.patchCommentBlame(pk, post, page)
-const deletePost = (pk: number) => docStore.deletePost(pk)
-const restorePost = (pk: number, isProject = false) => docStore.restorePost(pk, isProject)
+const deletePost = (pk: number, filter: PostFilter) => docStore.deletePost(pk, filter)
 
 export const toPrint = (title: string) => {
   // Clone the specific area to be printed
@@ -75,11 +74,11 @@ export const postManageItems = computed(() => [
   { title: '휴지통으로', icon: 'trash-can' },
 ])
 
-const toSecretPost = (post: number, state: boolean) =>
+const toSecretPost = (post: number, state: boolean, filter: PostFilter) =>
   patchPost({
     pk: post,
     is_secret: !state,
-    filter: {},
+    filter,
   }).then(() =>
     message(
       'info',
@@ -88,11 +87,11 @@ const toSecretPost = (post: number, state: boolean) =>
     ),
   )
 
-const hideComments = (post: number, state: boolean) =>
+const hideComments = (post: number, state: boolean, filter: PostFilter) =>
   patchPost({
     pk: post,
     is_hide_comment: !state,
-    filter: {},
+    filter,
   }).then(() =>
     message(
       'info',
@@ -101,11 +100,11 @@ const hideComments = (post: number, state: boolean) =>
     ),
   )
 
-const toNoticeUp = (post: number, state: boolean) =>
+const toNoticeUp = (post: number, state: boolean, filter: PostFilter) =>
   patchPost({
     pk: post,
     is_notice: !state,
-    filter: {},
+    filter,
   }).then(() =>
     message(
       'info',
@@ -114,33 +113,23 @@ const toNoticeUp = (post: number, state: boolean) =>
     ),
   )
 
-const toBlind = (post: number, state: boolean) =>
+const toBlind = (post: number, state: boolean, filter: PostFilter) =>
   patchPost({
     pk: post,
     is_blind: !state,
-    filter: {},
+    filter,
   }).then(() =>
     message('info', '', `이 게시글을 블라인드${!is_blind.value ? ' 해제' : ' 처리'}하였습니다.`),
   )
 
-const toTrashCan = async (post: number, state: boolean, isProj = false) => {
-  if (!state) {
-    if (confirm('이 글을 휴지통으로 이동하시겠습니까?')) await deletePost(post)
-  } else {
-    if (confirm('이 글을 휴지통에서 복구 하시겠습니까?')) await restorePost(post, isProj)
-  }
+const toTrashCan = async (post: number, state: boolean, filter: PostFilter) => {
+  if (!state) await deletePost(post, filter)
 }
 
-export const toPostManage = (
-  f: number,
-  brd: number,
-  cate: number | null,
-  post: number,
-  state = false,
-) => {
-  if (f === 4) return toSecretPost(post, state)
-  if (f === 5) return hideComments(post, state)
-  if (f === 6) return toNoticeUp(post, state)
-  if (f === 7) return toBlind(post, state)
-  if (f === 8) return toTrashCan(post, state)
+export const toPostManage = (fn: number, post: number, state = false, filter: PostFilter) => {
+  if (fn === 4) return toSecretPost(post, state, filter)
+  if (fn === 5) return hideComments(post, state, filter)
+  if (fn === 6) return toNoticeUp(post, state, filter)
+  if (fn === 7) return toBlind(post, state, filter)
+  if (fn === 9) return toTrashCan(post, state, filter)
 }
