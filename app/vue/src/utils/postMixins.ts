@@ -51,12 +51,14 @@ const is_secret = computed(() => docStore.post?.is_secret)
 const secretTitle = computed(() => (is_secret.value ? '비밀글 해제' : '비밀글로'))
 const secretIcon = computed(() => (is_secret.value ? 'lock-open-variant' : 'lock'))
 
+const is_hide_cmt = computed(() => docStore.post?.is_hide_comment)
+const hideCmtTitle = computed(() => (is_hide_cmt.value ? '댓글감춤 해제' : '댓글감춤'))
 export const postManageItems = computed(() => [
   { title: '복사하기', icon: 'content-copy' },
   { title: '이동하기', icon: 'folder-arrow-right' },
   { title: '카테고리변경', icon: 'tag-multiple' },
   { title: secretTitle.value, icon: secretIcon.value },
-  { title: '댓글감춤', icon: 'comment-off' },
+  { title: hideCmtTitle.value, icon: `comment${is_hide_cmt.value ? '' : '-off'}` },
   { title: '공지올림', icon: 'bullhorn-variant' },
   { title: '블라인드처리', icon: 'eye-off' },
   { title: '휴지통으로', icon: 'trash-can' },
@@ -68,13 +70,17 @@ const toSecretPost = (post: number, state: boolean) =>
     is_secret: !state,
     filter: {},
   }).then(() =>
-    message('success', '', `게시글을 비밀글${!is_secret.value ? '을 해제' : '로 변경'}하였습니다.`),
+    message('info', '', `게시글을 비밀글${!is_secret.value ? '에서 해제' : '로 변경'}하였습니다.`),
   )
 
-const hideComments = (post: number, state: boolean) => {
-  if (!state) alert('이 게시글의 댓글을 감춤 처리하였습니다.')
-  else alert('이 게시글의 댓글 감춤을 해제하였습니다.')
-}
+const hideComments = (post: number, state: boolean) =>
+  patchPost({
+    pk: post,
+    is_hide_comment: !state,
+    filter: {},
+  }).then(() =>
+    message('info', '', `댓글 감춤${!is_secret.value ? '을 해제' : '으로 변경'}하였습니다.`),
+  )
 
 const toNoticeUp = (post: number, state: boolean) => {
   if (!state) alert('이 게시글을 블라인드 처리하였습니다.')
