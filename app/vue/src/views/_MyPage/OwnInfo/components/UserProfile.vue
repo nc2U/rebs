@@ -1,13 +1,8 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
-import { useAccount } from '@/store/pinia/account'
+import { type ComputedRef, inject } from 'vue'
+import type { User } from '@/store/types/accounts'
 
-defineProps({
-  profile: { type: Object, default: null },
-})
-
-const accountStore = useAccount()
-const userInfo = computed(() => accountStore.userInfo)
+const userInfo = inject<ComputedRef<User>>('userInfo')
 </script>
 
 <template>

@@ -145,7 +145,7 @@ const toManage = (fn: number) => {
     else if (fn === 6) state = props.post.is_notice // is_notice
     else if (fn === 7) state = props.post.is_blind // is_blind
     else if (fn === 8) state = !!props.post.deleted // is_soft_deleted
-    toPostManage(fn, brd as number, cate, post as number, state, { isProj: false })
+    toPostManage(fn, brd as number, cate, post as number, state)
   }
 }
 

@@ -3,29 +3,29 @@ import type { PropType } from 'vue'
 import { numFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 import { useAccount } from '@/store/pinia/account'
-import type { Scrape as S } from '@/store/types/accounts'
-import Scrape from './Scrape.vue'
+import type { Post } from '@/store/types/document'
+import TrashPost from './TrashPost.vue'
 import Pagination from '@/components/Pagination'
 
 defineProps({
-  scrapeList: { type: Array as PropType<S[]>, default: () => [] },
-  scrapeCount: { type: Number, default: 0 },
+  trashPostList: { type: Array as PropType<Post[]>, default: () => [] },
+  trashPostCount: { type: Number, default: 0 },
   viewRoute: { type: String, required: true },
   page: { type: Number, default: 1 },
 })
 
-const emit = defineEmits(['page-select', 'patch-title', 'del-scrape'])
+const emit = defineEmits(['page-select'])
 
 const accStore = useAccount()
 const scrapePages = (pages: number) => accStore.scrapePages(pages)
 const pageSelect = (page: number) => emit('page-select', page)
 
-const patchTitle = (pk: number, title: string) => emit('patch-title', pk, title)
-const delScrape = (pk: number) => emit('del-scrape', pk)
+// const patchTitle = (pk: number, title: string) => emit('patch-title', pk, title)
+// const delScrape = (pk: number) => emit('del-scrape', pk)
 </script>
 
 <template>
-  <h5>스크랩 : 총 {{ numFormat(scrapeCount) }}건</h5>
+  <h5>스크랩 : 총 {{ numFormat(trashPostCount) }}건</h5>
 
   <v-divider />
 
@@ -51,13 +51,11 @@ const delScrape = (pk: number) => emit('del-scrape', pk)
     </CTableHead>
 
     <CTableBody>
-      <Scrape
-        v-for="scrape in scrapeList"
-        :key="scrape.pk"
-        :scrape="scrape"
+      <TrashPost
+        v-for="post in trashPostList"
+        :key="post.pk"
+        :trash-post="post"
         :view-route="viewRoute"
-        @patch-title="patchTitle"
-        @del-scrape="delScrape"
       />
     </CTableBody>
   </CTable>
