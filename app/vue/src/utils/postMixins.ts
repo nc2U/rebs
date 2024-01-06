@@ -68,7 +68,11 @@ const toSecretPost = (post: number, state: boolean) =>
     is_secret: !state,
     filter: {},
   }).then(() =>
-    message('success', '', `게시글을 비밀글${!is_secret.value ? '을 해제' : '로 변경'}하였습니다.`),
+    message(
+      'success',
+      '',
+      `게시글을 비밀글${!is_secret.value ? '에서 해제' : '로 변경'}하였습니다.`,
+    ),
   )
 
 const hideComments = (post: number, state: boolean) => {
