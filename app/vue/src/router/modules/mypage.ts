@@ -75,6 +75,32 @@ const myPage = {
       ],
     },
     {
+      path: 'trash-can',
+      name: '휴지통',
+      component: () => import('@/views/_MyPage/TrashCan/Index.vue'),
+      meta: { title: '휴지통', auth: true, except: true },
+      children: [
+        {
+          path: ':postId(\\d+)',
+          name: '휴지통 - 보기',
+          component: () => import('@/views/_MyPage/TrashCan/Index.vue'),
+          meta: { title: '휴지통', auth: true, except: true },
+        },
+        {
+          path: ':postId(\\d+)/update',
+          name: '휴지통 - 수정',
+          component: () => import('@/views/_MyPage/TrashCan/Index.vue'),
+          meta: { title: '휴지통', auth: true, except: true },
+        },
+        {
+          path: 'create',
+          name: '휴지통 - 작성',
+          component: () => import('@/views/_MyPage/TrashCan/Index.vue'),
+          meta: { title: '휴지통', auth: true, except: true },
+        },
+      ],
+    },
+    {
       path: 'modify',
       name: '정보 수정',
       component: () => import('@/views/_MyPage/Modify/Index.vue'),
