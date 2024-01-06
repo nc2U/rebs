@@ -126,10 +126,27 @@ const toTrashCan = async (post: number, state: boolean, filter: PostFilter) => {
   if (!state) await deletePost(post, filter)
 }
 
-export const toPostManage = (fn: number, post: number, state = false, filter: PostFilter) => {
+export const toPostManage = (fn, brd, cate, post, state, filter) => {
+  if (fn === 11) return copyPost(post, state, filter)
+  if (fn === 22) return movePost(post, state, filter)
+  if (fn === 33) return changeCate(post, state, filter)
   if (fn === 4) return toSecretPost(post, state, filter)
   if (fn === 5) return hideComments(post, state, filter)
   if (fn === 6) return toNoticeUp(post, state, filter)
   if (fn === 7) return toBlind(post, state, filter)
-  if (fn === 9) return toTrashCan(post, state, filter)
+  if (fn === 88) return toTrashCan(post, state, filter)
+}
+
+const copyPost = (board: number, post: number) => {
+  alert('게시물 복사!--' + board)
+  console.log(board, post)
+}
+
+const movePost = (board: number, post: number) => {
+  alert('게시물 이동!--' + board)
+  console.log(board, post)
+}
+const changeCate = (cate: number, post: number) => {
+  alert('카테고리 변경!--' + cate)
+  console.log(cate, post)
 }

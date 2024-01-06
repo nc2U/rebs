@@ -127,8 +127,10 @@ const toScrape = () => {
 }
 
 const toManage = (fn: number) => {
-  const post = props.post.pk
-  let state = false
+  const brd = props.post?.board as number
+  const cate = props.post?.category as number | null
+  const post = props.post.pk as number
+  let state: boolean = false
   if (fn < 4) {
     if (fn === 1) {
       isCopy.value = true
@@ -145,28 +147,14 @@ const toManage = (fn: number) => {
     else if (fn === 6) state = props.post.is_notice // is_notice
     else if (fn === 7) state = props.post.is_blind // is_blind
     else if (fn === 8) refTrashModal.value.callModal() // deleted confirm
-    else if (fn === 9) {
+    else if (fn === 88) {
       // soft delete
       state = !!props.post.deleted // is_deleted
       refTrashModal.value.close()
       router.replace({ name: props.viewRoute })
     }
-    toPostManage(fn, post as number, state, props.postFilter)
+    toPostManage(fn, brd, cate, post, state, props.postFilter)
   }
-}
-
-const copyPost = (board: number) => {
-  alert('게시물 복사!--' + board)
-  console.log(board, props.post)
-}
-
-const movePost = (board: number) => {
-  alert('게시물 이동!--' + board)
-  console.log(board, props.post)
-}
-const changeCate = (cate: number) => {
-  alert('카테고리 변경!--' + cate)
-  console.log(cate, props.post)
 }
 
 const getFileName = (file: string) => {
@@ -514,15 +502,15 @@ onMounted(() => {
     :now-board="post?.board ?? undefined"
     :board-list="boardList"
     :is-copy="isCopy"
-    @copy-post="copyPost"
-    @move-post="movePost"
+    @copy-post="toManage(11)"
+    @move-post="toManage(22)"
   />
 
   <CateListModal
     ref="refCateListModal"
     :now-cate="post?.category ?? undefined"
     :category-list="categoryList"
-    @change-cate="changeCate"
+    @change-cate="toManage(33)"
   />
 
   <ConfirmModal ref="refTrashModal">

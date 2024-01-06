@@ -126,8 +126,10 @@ const toScrape = () => {
 }
 
 const toManage = (fn: number) => {
-  const post = props.post.pk
-  let state = false
+  const brd = props.post?.board as number
+  const cate = props.post?.category as number | null
+  const post = props.post.pk as number
+  let state: boolean = false
   if (fn < 4) {
     if (fn === 1) {
       isCopy.value = true
@@ -144,13 +146,13 @@ const toManage = (fn: number) => {
     else if (fn === 6) state = props.post.is_notice // is_notice
     else if (fn === 7) state = props.post.is_blind // is_blind
     else if (fn === 8) state = refTrashModal.value.callModal() // deleted confirm
-    else if (fn === 9) {
+    else if (fn === 88) {
       // soft delete
       state = !!props.post.deleted // is_deleted
       refTrashModal.value.close()
       router.replace({ name: props.viewRoute })
     }
-    toPostManage(fn, post as number, state, props.postFilter)
+    toPostManage(fn, brd, cate, post, state, props.postFilter)
   }
 }
 
