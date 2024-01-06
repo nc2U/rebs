@@ -1,20 +1,16 @@
 <script setup lang="ts">
-import { type PropType, ref } from 'vue'
+import { type PropType } from 'vue'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 import type { Post } from '@/store/types/document'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const props = defineProps({
   trashPost: { type: Object as PropType<Post>, default: null },
+  viewRoute: { type: String, default: '' },
 })
 
 const emit = defineEmits(['restore-post'])
 
-const viewRoute = ref('휴지통')
-
-const refConfirmModal = ref()
-
-const modalAction = () => emit('restore-post', props.trashPost.pk)
+const restorePost = () => emit('restore-post', props.trashPost.pk)
 </script>
 
 <template>
@@ -32,15 +28,14 @@ const modalAction = () => emit('restore-post', props.trashPost.pk)
     </CTableDataCell>
     <CTableDataCell>{{ timeFormat(trashPost.deleted) }}</CTableDataCell>
     <CTableDataCell>
-      <v-btn density="compact" icon="mdi-delete-restore" size="sm" rounded="1" color="success" />
+      <v-btn
+        density="compact"
+        icon="mdi-delete-restore"
+        size="sm"
+        rounded="1"
+        color="success"
+        @click="restorePost"
+      />
     </CTableDataCell>
   </CTableRow>
-
-  <ConfirmModal ref="refConfirmModal">
-    <template #header> 게시물 정보 복원</template>
-    <template #default> 현재 게시물을 휴지통에서 복원 하시겠습니까?</template>
-    <template #footer>
-      <CButton color="info" @click="modalAction"> 복원</CButton>
-    </template>
-  </ConfirmModal>
 </template>

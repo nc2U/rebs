@@ -14,11 +14,13 @@ defineProps({
   page: { type: Number, default: 1 },
 })
 
-const emit = defineEmits(['page-select'])
+const emit = defineEmits(['page-select', 'restore-post'])
 
 const accStore = useAccount()
 const scrapePages = (pages: number) => accStore.scrapePages(pages)
 const pageSelect = (page: number) => emit('page-select', page)
+
+const restorePost1 = (pk: number) => emit('restore-post', pk)
 </script>
 
 <template>
@@ -51,6 +53,7 @@ const pageSelect = (page: number) => emit('page-select', page)
         :key="post.pk"
         :trash-post="post"
         :view-route="viewRoute"
+        @restore-post="restorePost1"
       />
     </CTableBody>
   </CTable>

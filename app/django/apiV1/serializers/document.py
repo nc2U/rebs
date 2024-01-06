@@ -523,4 +523,4 @@ class PostInTrashSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ('pk', 'board_name', 'cate_name', 'title', 'content', 'deleted', 'user')
+        fields = ('pk', 'board_name', 'cate_name', 'title', 'content', 'user', 'created', 'deleted')

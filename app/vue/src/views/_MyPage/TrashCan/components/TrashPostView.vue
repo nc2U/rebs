@@ -41,9 +41,13 @@ const restorePost = () => emit('restore-post', props.post.pk)
         <small class="mr-3">작성자 : {{ post.user }}</small>
       </CCol>
 
-      <CCol class="text-right" md="3">
+      <CCol class="text-right" md="6">
         <small>
-          <v-icon icon="mdi-delete-clock-outline" size="small" />
+          <v-icon icon="mdi-calendar-clock" size="small" />
+          <span class="ml-2">{{ timeFormat(post?.created ?? '') }}</span>
+        </small>
+        <small class="ml-3">
+          <v-icon icon="mdi-delete-clock" size="small" />
           <span class="ml-2">{{ timeFormat(post?.deleted ?? '') }}</span>
         </small>
       </CCol>

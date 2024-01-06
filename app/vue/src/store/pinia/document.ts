@@ -344,7 +344,7 @@ export const useDocument = defineStore('document', () => {
 
   const restorePost = (pk: number, isProject = false) =>
     api
-      .put(`/post-trash-can/${pk}/`)
+      .patch(`/post-trash-can/${pk}/`)
       .then(res =>
         fetchPostList({
           company: res.data.company,

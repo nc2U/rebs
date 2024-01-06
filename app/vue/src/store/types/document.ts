@@ -194,6 +194,7 @@ export interface TrashPost {
   cate_name: string
   title: string
   content: string
-  deleted: string
   user: string
+  created: string
+  deleted: string
 }

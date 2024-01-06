@@ -7,6 +7,7 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import TrashPostList from './components/TrashPostList.vue'
 import TrashPostView from './components/TrashPostView.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const mainViewName = ref('휴지통')
 const category = ref()
@@ -19,6 +20,7 @@ const trashPostCount = computed(() => docStore.trashPostCount)
 
 const fetchTrashPost = (pk: number) => docStore.fetchTrashPost(pk)
 const fetchTrashPostList = (page?: number) => docStore.fetchTrashPostList(page)
+const restorePost = (pk: number) => docStore.restorePost(pk)
 
 const route = useRoute() as LoadedRoute & {
   name: string
@@ -34,7 +36,18 @@ const pageSelect = (p: number) => {
   fetchTrashPostList(p)
 }
 
-const restorePost = () => alert('ok!')
+const restoreId = ref<number | null>(null)
+
+const refRestoreModal = ref()
+const callRestorePost = (pk: number) => {
+  restoreId.value = pk
+  refRestoreModal.value.callModal()
+}
+
+const modalAction = () => {
+  restorePost(restoreId.value)
+  refRestoreModal.value.close()
+}
 
 const postId = computed(() => Number(route.params.postId))
 
@@ -56,6 +69,7 @@ onBeforeMount(() => {
           :view-route="mainViewName"
           :page="page"
           @page-select="pageSelect"
+          @restore-post="callRestorePost"
         />
       </div>
 
@@ -65,9 +79,17 @@ onBeforeMount(() => {
           :post="trashPost"
           :view-route="mainViewName"
           :curr-page="page"
-          @restore-post="restorePost"
+          @restore-post="callRestorePost"
         />
       </div>
     </CCardBody>
   </ContentBody>
+
+  <ConfirmModal ref="refRestoreModal">
+    <template #header>알림</template>
+    <template #default>이 게시물을 휴지통으로부터 복원 하시겠습니까?</template>
+    <template #footer>
+      <CButton color="success" @click="modalAction">삭제 복원</CButton>
+    </template>
+  </ConfirmModal>
 </template>
