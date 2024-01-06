@@ -514,3 +514,9 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('pk', 'board', 'name', 'post')
+
+
+class PostInTrashSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ('pk', 'title', 'deleted')
