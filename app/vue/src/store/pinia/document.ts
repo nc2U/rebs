@@ -316,10 +316,9 @@ export const useDocument = defineStore('document', () => {
     api
       .delete(`/post/${pk}/`)
       .then(() =>
-        fetchPostList({
-          company: res.data.company,
-          ...filter,
-        }).then(() => message('warning', '', '해당 게시물이 휴지통으로 삭제되었습니다.')),
+        fetchPostList(filter).then(() =>
+          message('warning', '', '해당 게시물이 휴지통으로 삭제되었습니다.'),
+        ),
       )
       .catch(err => errorHandle(err.response.data))
 

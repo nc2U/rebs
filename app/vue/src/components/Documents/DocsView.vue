@@ -126,8 +126,6 @@ const toScrape = () => {
 }
 
 const toManage = (fn: number) => {
-  const brd = props.post?.board
-  const cate = props.post?.category
   const post = props.post.pk
   let state = false
   if (fn < 4) {

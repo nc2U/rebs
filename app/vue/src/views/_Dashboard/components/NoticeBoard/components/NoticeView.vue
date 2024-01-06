@@ -127,8 +127,6 @@ const toScrape = () => {
 }
 
 const toManage = (fn: number) => {
-  const brd = props.post?.board
-  const cate = props.post?.category
   const post = props.post.pk
   let state = false
   if (fn < 4) {
@@ -253,7 +251,7 @@ onMounted(() => {
         <span>[{{ post.cate_name }}]</span>
       </CCol>
     </CRow>
-    {{ postFilter }}
+
     <v-divider />
 
     <CRow class="text-blue-grey">
