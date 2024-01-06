@@ -13,9 +13,9 @@ const emit = defineEmits(['copy-post', 'move-post'])
 
 const refListModal = ref()
 
-const board = ref<number | null>(null)
+const selectedBoard = ref<number | null>(null)
 
-const selectBoard = (brd: number) => (board.value = brd)
+const selectBoard = (board: number) => (selectedBoard.value = board)
 
 const onSubmit = () => {
   if (props.isCopy) emit('copy-post', board.value)
@@ -62,7 +62,7 @@ defineExpose({ callModal })
       </CRow>
     </template>
     <template #footer>
-      <CButton :color="isCopy ? 'warning' : 'danger'" @click="onSubmit">
+      <CButton :color="isCopy ? 'warning' : 'danger'" @click="onSubmit" :disabled="!selectedBoard">
         게시물 {{ isCopy ? '복사' : '이동' }}
       </CButton>
       <CButton color="light" @click="refListModal.close()">닫기</CButton>

@@ -60,7 +60,7 @@ defineExpose({ callModal })
       </CRow>
     </template>
     <template #footer>
-      <CButton color="danger" @click="onSubmit"> 카테고리 변경</CButton>
+      <CButton color="danger" @click="onSubmit" :disabled="!category"> 카테고리 변경</CButton>
       <CButton color="light" @click="refListModal.close()">닫기</CButton>
     </template>
   </AlertModal>
