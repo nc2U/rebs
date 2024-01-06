@@ -317,6 +317,31 @@ export const useDocument = defineStore('document', () => {
       .then(() => message('warning'))
       .catch(err => errorHandle(err.response.data))
 
+  // state
+  const trashPost = ref<Post | null>(null)
+  const trashPostList = ref<Post[]>([])
+  const trashPostCount = ref(0)
+
+  const trashPostPages = (itemsPerPage: number) => Math.ceil(trashPostCount.value / itemsPerPage)
+
+  const fetchTrashPost = async (pk: number) =>
+    api
+      .get(`/post-trash-can/${pk}/`)
+      .then(res => {
+        trashPost.value = res.data
+        fetchCommentList({ post: pk })
+      })
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchTrashPostList = (page = 1) =>
+    api
+      .get(`/post-trash-can/?page=${page}`)
+      .then(res => {
+        trashPostList.value = res.data.results
+        trashPostCount.value = res.data.count
+      })
+      .catch(err => errorHandle(err.response.data))
+
   const restorePost = (pk: number, isProject = false) =>
     api
       .put(`/post-trash-can/${pk}/`)
@@ -327,7 +352,7 @@ export const useDocument = defineStore('document', () => {
           board: res.data.board,
           is_com: !isProject,
           page: 1,
-        }).then(() => message()),
+        }).then(() => fetchTrashPostList().then(() => message())),
       )
       .catch(err => errorHandle(err.response.data))
 
@@ -474,6 +499,14 @@ export const useDocument = defineStore('document', () => {
     patchPostLike,
     patchPostBlame,
     deletePost,
+
+    trashPost,
+    trashPostList,
+    trashPostCount,
+
+    trashPostPages,
+    fetchTrashPost,
+    fetchTrashPostList,
     restorePost,
 
     link,
