@@ -18,20 +18,15 @@ const restorePost = () => emit('restore-post', props.post.pk)
 
 <template>
   <div v-if="post" class="m-0 p-0">
-    <CRow class="mt-2">
-      <CCol md="8">
-        <h6>[{{ post.board_name }}]</h6>
-      </CCol>
-    </CRow>
-
     <CRow class="mt-3">
       <CCol md="8">
         <h5>{{ post.title }}</h5>
       </CCol>
 
-      <!--      <CCol class="pt-1 pr-3 text-right">-->
-      <!--        <span>[{{ post.board_name }}]</span>-->
-      <!--      </CCol>-->
+      <CCol class="pt-1 pr-3 text-right">
+        [<span>{{ post.board_name }}</span>
+        <span v-if="post.cate_name"> &gt; {{ post.cate_name }} </span>]
+      </CCol>
     </CRow>
 
     <v-divider />

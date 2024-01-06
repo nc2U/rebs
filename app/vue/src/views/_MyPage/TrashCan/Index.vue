@@ -3,7 +3,7 @@ import { computed, onBeforeMount, ref, watch } from 'vue'
 import { navMenu, pageTitle } from '@/views/_MyPage/_menu/headermixin'
 import { useDocument } from '@/store/pinia/document'
 import type { TrashPost as TP } from '@/store/types/document'
-import { type RouteLocationNormalizedLoaded as LoadedRoute, useRoute } from 'vue-router'
+import { type RouteLocationNormalizedLoaded as LoadedRoute, useRoute, useRouter } from 'vue-router'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import TrashPostList from './components/TrashPostList.vue'
@@ -23,9 +23,12 @@ const fetchTrashPost = (pk: number) => docStore.fetchTrashPost(pk)
 const fetchTrashPostList = (page?: number) => docStore.fetchTrashPostList(page)
 const restorePost = (pk: number) => docStore.restorePost(pk)
 
-const route = useRoute() as LoadedRoute & {
-  name: string
-}
+const [route, router] = [
+  useRoute() as LoadedRoute & {
+    name: string
+  },
+  useRouter(),
+]
 
 watch(route, val => {
   if (val.params.postId) fetchTrashPost(Number(val.params.postId))
@@ -48,6 +51,7 @@ const callRestorePost = (pk: number) => {
 const modalAction = () => {
   restorePost(restoreId.value as number)
   refRestoreModal.value.close()
+  router.replace({ name: mainViewName.value })
 }
 
 const postId = computed(() => Number(route.params.postId))
