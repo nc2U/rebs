@@ -13,7 +13,6 @@ import CategoryTabs from '@/components/Documents/CategoryTabs.vue'
 import DocsList from '@/components/Documents/DocsList.vue'
 import DocsView from '@/components/Documents/DocsView.vue'
 import DocsForm from '@/components/Documents/DocsForm.vue'
-import NoticeList from '@/views/_Dashboard/components/NoticeBoard/components/NoticeList.vue'
 
 const fController = ref()
 const boardNumber = ref(2)

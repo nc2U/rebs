@@ -19,9 +19,6 @@ const emit = defineEmits(['page-select'])
 const accStore = useAccount()
 const scrapePages = (pages: number) => accStore.scrapePages(pages)
 const pageSelect = (page: number) => emit('page-select', page)
-
-// const patchTitle = (pk: number, title: string) => emit('patch-title', pk, title)
-// const delScrape = (pk: number) => emit('del-scrape', pk)
 </script>
 
 <template>
@@ -35,8 +32,7 @@ const pageSelect = (page: number) => emit('page-select', page)
       <col style="width: 20%" />
       <col style="width: 35%" />
       <col style="width: 20%" />
-      <col style="width: 10%" />
-      <col style="width: 10%" />
+      <col style="width: 20%" />
     </colgroup>
 
     <CTableHead>
@@ -44,9 +40,8 @@ const pageSelect = (page: number) => emit('page-select', page)
         <CTableHeaderCell scope="col">번호</CTableHeaderCell>
         <CTableHeaderCell scope="col">게시판</CTableHeaderCell>
         <CTableHeaderCell scope="col">제목</CTableHeaderCell>
-        <CTableHeaderCell scope="col">보관일시</CTableHeaderCell>
-        <CTableHeaderCell scope="col">제목수정</CTableHeaderCell>
-        <CTableHeaderCell scope="col">보관취소</CTableHeaderCell>
+        <CTableHeaderCell scope="col">삭제일시</CTableHeaderCell>
+        <CTableHeaderCell scope="col">삭제복원</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 

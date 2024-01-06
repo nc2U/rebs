@@ -5,11 +5,13 @@ import { useDocument } from '@/store/pinia/document'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import TrashPostList from './components/TrashPostList.vue'
+import TrashPostView from './components/TrashPostView.vue'
 
 const mainViewName = ref('휴지통')
 const page = ref<number>(1)
 
 const docStore = useDocument()
+const trashPost = computed(() => docStore.trashPost)
 const trashPostList = computed(() => docStore.trashPostList)
 const trashPostCount = computed(() => docStore.trashPostCount)
 
@@ -33,7 +35,7 @@ onBeforeMount(() => fetchTrashPostList(page.value))
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <div class="pt-3">
+      <div v-if="$route.name === mainViewName" class="pt-3">
         <TrashPostList
           :trash-post-list="trashPostList"
           :trash-post-count="trashPostCount"
@@ -41,6 +43,10 @@ onBeforeMount(() => fetchTrashPostList(page.value))
           :page="page"
           @page-select="pageSelect"
         />
+      </div>
+
+      <div v-else-if="$route.name.includes('보기')" class="pt-3">
+        <TrashPostView :post="trashPost" />
       </div>
     </CCardBody>
   </ContentBody>

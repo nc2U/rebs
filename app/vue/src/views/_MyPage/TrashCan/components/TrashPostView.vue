@@ -4,35 +4,33 @@ import { ref, computed, watch, inject, onBeforeMount, onMounted } from 'vue'
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
 import { cutString, timeFormat } from '@/utils/baseMixins'
-import { type Post } from '@/store/types/document'
+import type { PatchPost } from '@/store/types/document'
 import { toPrint, toPostLike, toPostBlame, postManageItems, toPostManage } from '@/utils/postMixins'
 import sanitizeHtml from 'sanitize-html'
 import type { User } from '@/store/types/accounts'
 import AlertModal from '@/components/Modals/AlertModal.vue'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import BoardListModal from '@/components/Documents/components/BoardListModal.vue'
 import CateListModal from '@/components/Documents/components/CateListModal.vue'
-import Comments from '@/components/Comments/Index.vue'
 
 const props = defineProps({
-  boardNum: { type: Number, default: 2 },
-  heatedPage: { type: Array as PropType<number[]>, default: () => [] },
-  reOrder: { type: Boolean, default: false },
+  // boardNum: { type: Number, default: 2 },
+  // heatedPage: { type: Array as PropType<number[]>, default: () => [] },
+  // reOrder: { type: Boolean, default: false },
   category: { type: Number, default: undefined },
-  post: { type: Object as PropType<Post>, default: null },
+  post: { type: Object as PropType<PatchPost>, default: null },
   viewRoute: { type: String, required: true },
   currPage: { type: Number, required: true },
-  writeAuth: { type: Boolean, default: true },
+  // writeAuth: { type: Boolean, default: true },
 })
 
-const emit = defineEmits([
-  'post-hit',
-  'link-hit',
-  'file-hit',
-  'post-scrape',
-  'posts-renewal',
-  'post-delete',
-])
+// const emit = defineEmits([
+//   'post-hit',
+//   'link-hit',
+//   'file-hit',
+//   'post-scrape',
+//   'posts-renewal',
+//   'post-delete',
+// ])
 
 const refDelModal = ref()
 const refBlameModal = ref()
@@ -42,12 +40,9 @@ const isCopy = ref(false)
 const refCateListModal = ref()
 
 const userInfo = inject<ComputedRef<User>>('userInfo')
-const editAuth = computed(
-  () => userInfo?.value?.is_superuser || props.post.user?.pk === userInfo?.value?.pk,
-)
 
-const prev = ref<number | null>()
-const next = ref<number | null>()
+// const prev = ref<number | null>()
+// const next = ref<number | null>()
 
 const sortName = computed(() => props.post?.proj_name || '본사 문서')
 const postId = computed(() => Number(route.params.postId))
@@ -55,68 +50,68 @@ const postId = computed(() => Number(route.params.postId))
 const docStore = useDocument()
 const boardList = computed(() => docStore.boardList)
 const categoryList = computed(() => docStore.categoryList)
-const commentList = computed(() => docStore.commentList)
-const getPostNav = computed(() => docStore.getPostNav)
+// const commentList = computed(() => docStore.commentList)
+// const getPostNav = computed(() => docStore.getPostNav)
 
-const getPrev = (pk: number) => getPostNav.value.filter(p => p.pk === pk).map(p => p.prev_pk)[0]
-const getNext = (pk: number) => getPostNav.value.filter(p => p.pk === pk).map(p => p.next_pk)[0]
+// const getPrev = (pk: number) => getPostNav.value.filter(p => p.pk === pk).map(p => p.prev_pk)[0]
+// const getNext = (pk: number) => getPostNav.value.filter(p => p.pk === pk).map(p => p.next_pk)[0]
 
-const toLike = () => toPostLike(props.post.pk as number)
+// const toLike = () => toPostLike(props.post.pk as number)
 
-const blameConfirm = () => refBlameModal.value.callModal()
-
-const blameAction = () => {
-  refBlameModal.value.close()
-  toPostBlame(props.post.pk as number)
-}
-
-const linkHitUp = async (pk: number) => emit('link-hit', pk)
-const fileHitUp = async (pk: number) => emit('file-hit', pk)
+// const blameConfirm = () => refBlameModal.value.callModal()
+//
+// const blameAction = () => {
+//   refBlameModal.value.close()
+//   toPostBlame(props.post.pk as number)
+// }
+//
+// const linkHitUp = async (pk: number) => emit('link-hit', pk)
+// const fileHitUp = async (pk: number) => emit('file-hit', pk)
 
 const [route, router] = [useRoute(), useRouter()]
 
-const sendUrl = `${window.location.host}${route.fullPath}`
+// const sendUrl = `${window.location.host}${route.fullPath}`
 
-const shareFacebook = () => window.open(`https://facebook.com/share/share.php?u=${sendUrl}`)
-const shareTwitter = () => window.open(`https://twitter.com/intent/tweet?text=&url=${sendUrl}`)
-const shareKakaoTalk = () => {
-  // 카카오링크 버튼 생성
-  ;(window as any).Kakao.Share.createDefaultButton({
-    container: '#kakaotalk-sharing-btn',
-    objectType: 'feed',
-    content: {
-      title: '주식회사 바램디앤씨',
-      description: `#공지사항 #${props.post?.title}`,
-      imageUrl: 'https://brdnc.co.kr/static/dist/img/icons/ms-icon-310x310.png',
-      link: {
-        // [내 애플리케이션] > [플랫폼] 에서 등록한 사이트 도메인과 일치해야 함
-        mobileWebUrl: sendUrl,
-        webUrl: sendUrl,
-      },
-    },
-    social: {
-      likeCount: props.post.like,
-      commentCount: props.post.comments?.length ?? 0,
-      // sharedCount: 45,
-    },
-    buttons: [
-      {
-        title: '웹으로 보기',
-        link: {
-          mobileWebUrl: sendUrl,
-          webUrl: sendUrl,
-        },
-      },
-      {
-        title: '앱으로 보기',
-        link: {
-          mobileWebUrl: sendUrl,
-          webUrl: sendUrl,
-        },
-      },
-    ],
-  })
-}
+// const shareFacebook = () => window.open(`https://facebook.com/share/share.php?u=${sendUrl}`)
+// const shareTwitter = () => window.open(`https://twitter.com/intent/tweet?text=&url=${sendUrl}`)
+// const shareKakaoTalk = () => {
+//   // 카카오링크 버튼 생성
+//   ;(window as any).Kakao.Share.createDefaultButton({
+//     container: '#kakaotalk-sharing-btn',
+//     objectType: 'feed',
+//     content: {
+//       title: '주식회사 바램디앤씨',
+//       description: `#공지사항 #${props.post?.title}`,
+//       imageUrl: 'https://brdnc.co.kr/static/dist/img/icons/ms-icon-310x310.png',
+//       link: {
+//         // [내 애플리케이션] > [플랫폼] 에서 등록한 사이트 도메인과 일치해야 함
+//         mobileWebUrl: sendUrl,
+//         webUrl: sendUrl,
+//       },
+//     },
+//     social: {
+//       likeCount: props.post.like,
+//       commentCount: props.post.comments?.length ?? 0,
+//       // sharedCount: 45,
+//     },
+//     buttons: [
+//       {
+//         title: '웹으로 보기',
+//         link: {
+//           mobileWebUrl: sendUrl,
+//           webUrl: sendUrl,
+//         },
+//       },
+//       {
+//         title: '앱으로 보기',
+//         link: {
+//           mobileWebUrl: sendUrl,
+//           webUrl: sendUrl,
+//         },
+//       },
+//     ],
+//   })
+// }
 
 const toScrape = () => {
   if (props.post.my_scrape) refAlertModal.value.callModal('', '이미 이 포스트를 스크랩 하였습니다.')
@@ -148,43 +143,43 @@ const toManage = (fn: number) => {
   }
 }
 
-const copyPost = (board: number) => {
-  alert('게시물 복사!--' + board)
-  console.log(board, props.post)
-}
-
-const movePost = (board: number) => {
-  alert('게시물 이동!--' + board)
-  console.log(board, props.post)
-}
-const changeCate = (cate: number) => {
-  alert('카테고리 변경!--' + cate)
-  console.log(cate, props.post)
-}
+// const copyPost = (board: number) => {
+//   alert('게시물 복사!--' + board)
+//   console.log(board, props.post)
+// }
+//
+// const movePost = (board: number) => {
+//   alert('게시물 이동!--' + board)
+//   console.log(board, props.post)
+// }
+// const changeCate = (cate: number) => {
+//   alert('카테고리 변경!--' + cate)
+//   console.log(cate, props.post)
+// }
 
 const getFileName = (file: string) => {
   if (file) return decodeURI(file.split('/').slice(-1)[0])
   else return
 }
 
-const toEdit = () => {
-  if ((props.post.comments?.length ?? 0) >= 5)
-    refAlertModal.value.callModal('', '5개 이상의 댓글이 달린 게시물은 수정할 수 없습니다.')
-  else
-    router.push({
-      name: `${props.viewRoute} - 수정`,
-      params: { postId: props.post?.pk },
-    })
-}
-
-const deleteConfirm = () => refDelModal.value.callModal()
-
-const toDelete = () => {
-  refDelModal.value.close()
-  if ((userInfo?.value.is_superuser || props.post.comments?.length) ?? 0 < 5)
-    emit('post-delete', props.post.pk)
-  else refAlertModal.value.callModal('', '5개 이상의 댓글이 달린 게시물은 삭제할 수 없습니다.')
-}
+// const toEdit = () => {
+//   if ((props.post.comments?.length ?? 0) >= 5)
+//     refAlertModal.value.callModal('', '5개 이상의 댓글이 달린 게시물은 수정할 수 없습니다.')
+//   else
+//     router.push({
+//       name: `${props.viewRoute} - 수정`,
+//       params: { postId: props.post?.pk },
+//     })
+// }
+//
+// const deleteConfirm = () => refDelModal.value.callModal()
+//
+// const toDelete = () => {
+//   refDelModal.value.close()
+//   if ((userInfo?.value.is_superuser || props.post.comments?.length) ?? 0 < 5)
+//     emit('post-delete', props.post.pk)
+//   else refAlertModal.value.callModal('', '5개 이상의 댓글이 달린 게시물은 삭제할 수 없습니다.')
+// }
 
 watch(
   () => getPostNav.value,
@@ -452,77 +447,75 @@ onMounted(() => {
 
     <v-divider />
 
-    <Comments :post="post.pk as number" :is-hide="post.is_hide_comment" :comments="commentList" />
-
     <CRow class="py-2">
       <CCol>
         <CButtonGroup role="group">
-          <CButton v-if="editAuth" color="success" :disabled="!writeAuth" @click="toEdit">
-            수정
-          </CButton>
-          <CButton v-if="editAuth" color="danger" :disabled="!writeAuth" @click="deleteConfirm">
-            삭제
-          </CButton>
+          <!--          <CButton v-if="editAuth" color="success" :disabled="!writeAuth" @click="toEdit">-->
+          <!--            수정-->
+          <!--          </CButton>-->
+          <!--          <CButton v-if="editAuth" color="danger" :disabled="!writeAuth" @click="deleteConfirm">-->
+          <!--            삭제-->
+          <!--          </CButton>-->
           <CButton color="secondary" @click="$router.push({ name: `${viewRoute}` })"> 목록</CButton>
-          <CButton
-            color="light"
-            :disabled="!prev || reOrder"
-            @click="
-              $router.push({
-                name: `${viewRoute} - 보기`,
-                params: { postId: prev },
-              })
-            "
-          >
-            이전
-          </CButton>
-          <CButton
-            color="light"
-            :disabled="!next || reOrder"
-            @click="
-              $router.push({
-                name: `${viewRoute} - 보기`,
-                params: { postId: next },
-              })
-            "
-          >
-            다음
-          </CButton>
+          <!--          <CButton-->
+          <!--            color="light"-->
+          <!--            :disabled="!prev || reOrder"-->
+          <!--            @click="-->
+          <!--              $router.push({-->
+          <!--                name: `${viewRoute} - 보기`,-->
+          <!--                params: { postId: prev },-->
+          <!--              })-->
+          <!--            "-->
+          <!--          >-->
+          <!--            이전-->
+          <!--          </CButton>-->
+          <!--          <CButton-->
+          <!--            color="light"-->
+          <!--            :disabled="!next || reOrder"-->
+          <!--            @click="-->
+          <!--              $router.push({-->
+          <!--                name: `${viewRoute} - 보기`,-->
+          <!--                params: { postId: next },-->
+          <!--              })-->
+          <!--            "-->
+          <!--          >-->
+          <!--            다음-->
+          <!--          </CButton>-->
         </CButtonGroup>
       </CCol>
-      <CCol class="text-right">
-        <CButton
-          color="primary"
-          :disabled="!writeAuth"
-          @click="$router.push({ name: `${viewRoute} - 작성` })"
-        >
-          신규등록
-        </CButton>
-      </CCol>
+      <!--      <CCol class="text-right">-->
+      <!--        <CButton-->
+      <!--          color="primary"-->
+      <!--          :disabled="!writeAuth"-->
+      <!--          @click="$router.push({ name: `${viewRoute} - 작성` })"-->
+      <!--        >-->
+      <!--          신규등록-->
+      <!--        </CButton>-->
+      <!--      </CCol>-->
     </CRow>
   </div>
 
   <AlertModal ref="refAlertModal" />
 
-  <ConfirmModal ref="refDelModal">
-    <template #header>알림</template>
-    <template #default>한번 삭제한 자료는 복구할 수 없습니다. 정말 삭제하시겠습니까?</template>
-    <template #footer>
-      <CButton color="danger" @click="toDelete">삭제</CButton>
-    </template>
-  </ConfirmModal>
+  <!--  <ConfirmModal ref="refDelModal">-->
+  <!--    <template #header>알림</template>-->
+  <!--    <template #default>한번 삭제한 자료는 복구할 수 없습니다. 정말 삭제하시겠습니까?</template>-->
+  <!--    <template #footer>-->
+  <!--      <CButton color="danger" @click="toDelete">삭제</CButton>-->
+  <!--    </template>-->
+  <!--  </ConfirmModal>-->
 
-  <ConfirmModal ref="refBlameModal">
-    <template #header>알림</template>
-    <template #default>
-      이 게시글을 신고 {{ post.my_blame ? '를 취소' : '' }} 하시겠습니까?<br /><br />
-    </template>
-    <template #footer>
-      <CButton :color="post.my_blame ? 'secondary' : 'danger'" @click="blameAction">
-        {{ post.my_blame ? '취소' : '신고' }}
-      </CButton>
-    </template>
-  </ConfirmModal>
+  <!--  <ConfirmModal ref="refBlameModal">-->
+  <!--    <template #header>알림</template>-->
+  <!--    <template #default>-->
+  <!--      이 게시글을 신고 {{ post.my_blame ? '를 취소' : '' }} 하시겠습니까?<br /><br />-->
+  <!--    </template>-->
+  <!--    <template #footer>-->
+  <!--      <CButton :color="post.my_blame ? 'secondary' : 'danger'" @click="blameAction">-->
+  <!--        {{ post.my_blame ? '취소' : '신고' }}-->
+  <!--      </CButton>-->
+  <!--    </template>-->
+  <!--  </ConfirmModal>-->
 
   <BoardListModal
     ref="refBoardListModal"
