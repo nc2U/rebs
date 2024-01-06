@@ -315,7 +315,7 @@ export const useDocument = defineStore('document', () => {
   const deletePost = (pk: number) =>
     api
       .delete(`/post/${pk}/`)
-      .then(() => message('warning'))
+      .then(() => message('warning', '', '해당 게시물이 휴지통으로 삭제되었습니다.'))
       .catch(err => errorHandle(err.response.data))
 
   // state
@@ -353,7 +353,11 @@ export const useDocument = defineStore('document', () => {
           board: res.data.board,
           is_com: !isProject,
           page: 1,
-        }).then(() => fetchTrashPostList().then(() => message())),
+        }).then(() =>
+          fetchTrashPostList().then(() =>
+            message('success', '', '해당 게시물 휴지통에서 복원되었습니다.'),
+          ),
+        ),
       )
       .catch(err => errorHandle(err.response.data))
 
