@@ -124,11 +124,7 @@ const toBlind = (post: number, state: boolean) =>
   )
 
 const toTrashCan = async (post: number, state: boolean, isProj = false) => {
-  if (!state) {
-    if (confirm('이 글을 휴지통으로 이동하시겠습니까?')) await deletePost(post)
-  } else {
-    if (confirm('이 글을 휴지통에서 복구 하시겠습니까?')) await restorePost(post, isProj)
-  }
+  if (!state) await deletePost(post)
 }
 
 export const toPostManage = (
@@ -142,5 +138,5 @@ export const toPostManage = (
   if (f === 5) return hideComments(post, state)
   if (f === 6) return toNoticeUp(post, state)
   if (f === 7) return toBlind(post, state)
-  if (f === 8) return toTrashCan(post, state)
+  if (f === 9) return toTrashCan(post, state)
 }
