@@ -187,3 +187,13 @@ export interface Comment {
   user?: SimpleUser
   created?: string
 }
+
+export interface TrashPost {
+  pk: number
+  board_name: string
+  cate_name: string
+  title: string
+  content: string
+  deleted: string
+  user: string
+}

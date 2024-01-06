@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, type PropType } from 'vue'
+import { type PropType, ref } from 'vue'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 import type { Post } from '@/store/types/document'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -10,25 +10,14 @@ const props = defineProps({
 
 const emit = defineEmits(['restore-post'])
 
-const refConfirmModal = ref()
+const viewRoute = ref('휴지통')
 
-const viewRoute = computed(() => {
-  if (props.trashPost?.board === 1) return '공지 사항'
-  if (!!props.trashPost?.project) {
-    if (props.trashPost.board === 2) return '현장 일반 문서'
-    else if (props.trashPost.board === 3) return '현장 소송 문서'
-  } else {
-    if (props.trashPost?.board === 2) return '본사 일반 문서'
-    else if (props.trashPost?.board === 3) return '본사 소송 문서'
-  }
-  return '공지 사항'
-})
+const refConfirmModal = ref()
 
 const modalAction = () => emit('restore-post', props.trashPost.pk)
 </script>
 
 <template>
-  <!--  {{ trashPost }}-->
   <CTableRow class="text-center" color="danger">
     <CTableDataCell>{{ trashPost.pk }}</CTableDataCell>
     <CTableDataCell>

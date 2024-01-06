@@ -517,6 +517,10 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class PostInTrashSerializer(serializers.ModelSerializer):
+    board_name = serializers.SlugField(source='board', read_only=True)
+    cate_name = serializers.SlugField(source='category', read_only=True)
+    user = serializers.SlugField(read_only=True)
+
     class Meta:
         model = Post
-        fields = ('pk', 'title', 'deleted')
+        fields = ('pk', 'board_name', 'cate_name', 'title', 'content', 'deleted', 'user')
