@@ -429,9 +429,7 @@ onMounted(() => {
 
     <v-divider />
 
-    <Comments :post="post.pk as number" :comments="commentList" />
-
-    <v-divider />
+    <Comments :post="post.pk as number" :is-hide="post.is_hide_comment" :comments="commentList" />
 
     <CRow class="py-2">
       <CCol>

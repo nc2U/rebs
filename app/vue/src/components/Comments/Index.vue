@@ -7,6 +7,7 @@ import CommentForm from './components/CommentForm.vue'
 
 const props = defineProps({
   post: { type: Number, required: true },
+  isHide: { type: Boolean, default: false },
   comments: { type: Array as PropType<Comment[]>, default: () => [] },
 })
 
@@ -41,16 +42,20 @@ const pageSelect = (page: number) => docStore.fetchCommentList({ post: props.pos
 </script>
 
 <template>
-  <CommentList
-    :act-form="actForm"
-    :comments="comments"
-    @vision-toggle="visionToggle"
-    @to-like="toLike"
-    @on-submit="onSubmit"
-    @form-reset="formReset"
-    @page-select="pageSelect"
-  />
-  <div v-show="formVision" class="pt-1">
-    <CommentForm :form-vision="formVision" :post="post" @on-submit="onSubmit" />
+  <div v-show="!isHide">
+    <CommentList
+      :act-form="actForm"
+      :comments="comments"
+      @vision-toggle="visionToggle"
+      @to-like="toLike"
+      @on-submit="onSubmit"
+      @form-reset="formReset"
+      @page-select="pageSelect"
+    />
+    <div v-show="formVision" class="pt-1">
+      <CommentForm :form-vision="formVision" :post="post" @on-submit="onSubmit" />
+    </div>
+
+    <v-divider />
   </div>
 </template>

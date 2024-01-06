@@ -20,6 +20,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import BoardListModal from '@/components/Documents/components/BoardListModal.vue'
 import CateListModal from '@/components/Documents/components/CateListModal.vue'
+import Comments from '@/components/Comments/Index.vue'
 
 const props = defineProps({
   boardNum: { type: Number, default: 2 },
@@ -62,6 +63,7 @@ const postId = computed(() => Number(route.params.postId))
 const docStore = useDocument()
 const boardList = computed(() => docStore.boardList)
 const categoryList = computed(() => docStore.categoryList)
+const commentList = computed(() => docStore.commentList)
 const getPostNav = computed(() => docStore.getPostNav)
 
 const getPrev = (pk: number) => getPostNav.value.filter(p => p.pk === pk).map(p => p.prev_pk)[0]
@@ -444,6 +446,8 @@ onMounted(() => {
     </CRow>
 
     <v-divider />
+
+    <Comments :post="post.pk as number" :is-hide="post.is_hide_comment" :comments="commentList" />
 
     <CRow class="py-2">
       <CCol>
