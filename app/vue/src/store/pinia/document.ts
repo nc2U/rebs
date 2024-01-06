@@ -13,6 +13,7 @@ import type {
   SimpleSuitCase,
   Post,
   Comment as Cm,
+  TrashPost as TP,
 } from '@/store/types/document'
 import { useAccount } from '@/store/pinia/account'
 
@@ -317,6 +318,45 @@ export const useDocument = defineStore('document', () => {
       .then(() => message('warning'))
       .catch(err => errorHandle(err.response.data))
 
+  // state
+  const trashPost = ref<TP | null>(null)
+  const trashPostList = ref<TP[]>([])
+  const trashPostCount = ref(0)
+
+  const trashPostPages = (itemsPerPage: number) => Math.ceil(trashPostCount.value / itemsPerPage)
+
+  const fetchTrashPost = async (pk: number) =>
+    api
+      .get(`/post-trash-can/${pk}/`)
+      .then(res => {
+        trashPost.value = res.data
+        fetchCommentList({ post: pk })
+      })
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchTrashPostList = (page = 1) =>
+    api
+      .get(`/post-trash-can/?page=${page}`)
+      .then(res => {
+        trashPostList.value = res.data.results
+        trashPostCount.value = res.data.count
+      })
+      .catch(err => errorHandle(err.response.data))
+
+  const restorePost = (pk: number, isProject = false) =>
+    api
+      .patch(`/post-trash-can/${pk}/`)
+      .then(res =>
+        fetchPostList({
+          company: res.data.company,
+          project: res.data.project,
+          board: res.data.board,
+          is_com: !isProject,
+          page: 1,
+        }).then(() => fetchTrashPostList().then(() => message())),
+      )
+      .catch(err => errorHandle(err.response.data))
+
   const link = ref<Link | null>(null)
 
   const fetchLink = (pk: number) =>
@@ -460,6 +500,15 @@ export const useDocument = defineStore('document', () => {
     patchPostLike,
     patchPostBlame,
     deletePost,
+
+    trashPost,
+    trashPostList,
+    trashPostCount,
+
+    trashPostPages,
+    fetchTrashPost,
+    fetchTrashPostList,
+    restorePost,
 
     link,
     fetchLink,

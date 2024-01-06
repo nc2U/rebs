@@ -146,20 +146,24 @@ export type Attatches = {
 
 export interface PatchPost {
   pk: number
-  is_notice?: boolean
+  company?: number
+  project?: number
+  board?: number
   category?: number | null
   lawsuit?: number | null
   title?: string
   execution_date?: string | null
   content?: string
-  is_hide_comment?: boolean
   hit?: number
-  like?: number[]
-  dislike?: number[]
+  like?: number
+  scrape?: number
   blame?: number
   is_secret?: boolean
   password?: string
-  soft_delete?: string | null
+  is_hide_comment?: boolean
+  is_notice?: boolean
+  is_blind?: boolean
+  deleted?: string | null
 }
 
 export interface Comment {
@@ -182,4 +186,15 @@ export interface Comment {
   secret: boolean
   user?: SimpleUser
   created?: string
+}
+
+export interface TrashPost {
+  pk: number
+  board_name: string
+  cate_name: string
+  title: string
+  content: string
+  user: string
+  created: string
+  deleted: string
 }

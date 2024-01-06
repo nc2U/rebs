@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted, onUpdated, type PropType } from 'vue'
+import type { PropType } from 'vue'
+import { ref, reactive, computed, onMounted, onUpdated } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { Post, Link } from '@/store/types/document'
 import { AlertSecondary } from '@/utils/cssMixins'

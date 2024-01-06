@@ -122,6 +122,7 @@ router.register(r'comment', document.CommentViewSet)
 router.register(r'comment-like', document.CommentLikeViewSet, basename='comment-like')
 router.register(r'comment-blame', document.CommentBlameViewSet, basename='comment-blame')
 router.register(r'tag', document.TagViewSet)
+router.register(r'post-trash-can', document.PostInTrashViewSet)
 
 urlpatterns = router.urls
 urlpatterns += [path('check-password/', accounts.CheckPasswordView.as_view(), name='check-password')]

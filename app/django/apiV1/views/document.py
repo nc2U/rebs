@@ -1,6 +1,7 @@
 from django_filters import BooleanFilter
 from django_filters.rest_framework import FilterSet
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.response import Response
 
 from ..pagination import PageNumberPaginationThreeThousand
 from ..permission import *
@@ -150,3 +151,8 @@ class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
+
+
+class PostInTrashViewSet(PostViewSet):
+    queryset = Post.objects.filter(deleted__isnull=False)
+    serializer_class = PostInTrashSerializer

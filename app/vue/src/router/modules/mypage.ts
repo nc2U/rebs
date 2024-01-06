@@ -53,24 +53,18 @@ const myPage = {
       name: '스크랩',
       component: () => import('@/views/_MyPage/OwnScrap/Index.vue'),
       meta: { title: '스크랩', auth: true, except: true },
+    },
+    {
+      path: 'trash-can',
+      name: '휴지통',
+      component: () => import('@/views/_MyPage/TrashCan/Index.vue'),
+      meta: { title: '휴지통', auth: true, except: true },
       children: [
         {
           path: ':postId(\\d+)',
-          name: '스크랩 - 보기',
-          component: () => import('@/views/_MyPage/OwnScrap/Index.vue'),
-          meta: { title: '스크랩', auth: true, except: true },
-        },
-        {
-          path: ':postId(\\d+)/update',
-          name: '스크랩 - 수정',
-          component: () => import('@/views/_MyPage/OwnScrap/Index.vue'),
-          meta: { title: '스크랩', auth: true, except: true },
-        },
-        {
-          path: 'create',
-          name: '스크랩 - 작성',
-          component: () => import('@/views/_MyPage/OwnScrap/Index.vue'),
-          meta: { title: '스크랩', auth: true, except: true },
+          name: '휴지통 - 보기',
+          component: () => import('@/views/_MyPage/TrashCan/Index.vue'),
+          meta: { title: '휴지통', auth: true, except: true },
         },
       ],
     },
