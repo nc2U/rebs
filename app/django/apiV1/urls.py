@@ -112,7 +112,7 @@ router.register(r'board', document.BoardViewSet)
 router.register(r'category', document.CategoryViewSet)
 router.register(r'suitcase', document.LawSuitCaseViewSet)
 router.register(r'all-suitcase', document.AllLawSuitCaseViewSet, basename='all-suitcase')
-router.register(r'post', document.PostViewSet)
+router.register(r'post', document.PostViewSet, basename='post')
 router.register(r'post-like', document.PostLikeViewSet, basename='post-like')
 router.register(r'post-blame', document.PostBlameViewSet, basename='post-blame')
 router.register(r'link', document.LinkViewSet)
@@ -130,3 +130,5 @@ urlpatterns += [path('change-password/', accounts.ChangePasswordView.as_view(), 
 urlpatterns += [path('password-reset/', accounts.PasswordResetRequestView.as_view(), name='password-reset')]
 urlpatterns += [path('password-reset-confirm/<str:user_id>/<str:token>/',
                      accounts.PasswordResetConfirmView.as_view(), name='password-reset-confirm')]
+urlpatterns += [
+    path('post/<int:pk>/copy/', document.PostViewSet.as_view({'post': 'copy_and_create'}), name='post-copy')]
