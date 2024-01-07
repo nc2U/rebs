@@ -125,9 +125,7 @@ const toScrape = () => {
   else emit('post-scrape', props.post.pk)
 }
 
-const toManage = (fn: number) => {
-  const brd = props.post?.board as number
-  const cate = props.post?.category as number | null
+const toManage = (fn: number, el?: { nBrd?: number; nProj?: number; nCate?: number }) => {
   const post = props.post.pk as number
   let state: boolean = false
   if (fn < 4) {
@@ -152,7 +150,15 @@ const toManage = (fn: number) => {
       refTrashModal.value.close()
       router.replace({ name: props.viewRoute })
     }
-    toPostManage(fn, brd, cate, post, state, props.postFilter)
+    const payload = {
+      board: el?.nBrd,
+      project: el?.nProj,
+      category: el?.nCate,
+      post,
+      state,
+      filter: props.postFilter,
+    }
+    toPostManage(fn, payload)
   }
 }
 
@@ -535,7 +541,7 @@ onMounted(() => {
   <BoardListModal
     ref="refBoardListModal"
     :now-board="post?.board ?? undefined"
-    :now-project="post?.project"
+    :now-project="post?.project ?? undefined"
     :board-list="boardList"
     :is-copy="isCopy"
     @copy-post="copyPost"

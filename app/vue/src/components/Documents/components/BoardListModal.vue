@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, type PropType, onBeforeMount, onUpdated } from 'vue'
+import { ref, computed, type PropType, onBeforeMount, onUpdated, nextTick } from 'vue'
 import type { Board } from '@/store/types/document'
 import { useProject } from '@/store/pinia/project'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -27,12 +27,12 @@ const formCheck = computed(() => {
   return a && b
 })
 
-const brdChk = (e: Event) =>
-  e.target.value === '1' ? (project.value = null) : (project.value = props.nowProject)
+const brdChk = () =>
+  nextTick(() => (board.value === 1 ? (project.value = null) : (project.value = props.nowProject)))
 
 const onSubmit = () => {
-  if (props.isCopy) emit('copy-post', board.value)
-  else emit('move-post', board.value)
+  if (props.isCopy) emit('copy-post', board.value, project.value)
+  else emit('move-post', board.value, project.value)
   refListModal.value.close()
 }
 

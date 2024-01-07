@@ -126,10 +126,20 @@ const toTrashCan = async (post: number, state: boolean, filter: PostFilter) => {
   if (!state) await deletePost(post, filter)
 }
 
-export const toPostManage = (fn, brd, cate, post, state, filter) => {
-  if (fn === 11) return copyPost(post, state, filter)
-  if (fn === 22) return movePost(post, state, filter)
-  if (fn === 33) return changeCate(post, state, filter)
+interface ManagePayload {
+  board: number | undefined
+  project: number | undefined
+  category: number | undefined
+  post: number
+  state: boolean
+  filter: PostFilter
+}
+
+export const toPostManage = (fn, payload: ManagePayload) => {
+  const { board, project, category, post, state, filter } = payload
+  if (fn === 11) return copyPost(post, board, project)
+  if (fn === 22) return movePost(post, board, project)
+  if (fn === 33) return changeCate(post, category)
   if (fn === 4) return toSecretPost(post, state, filter)
   if (fn === 5) return hideComments(post, state, filter)
   if (fn === 6) return toNoticeUp(post, state, filter)
@@ -137,16 +147,16 @@ export const toPostManage = (fn, brd, cate, post, state, filter) => {
   if (fn === 88) return toTrashCan(post, state, filter)
 }
 
-const copyPost = (board: number, post: number) => {
-  alert('게시물 복사!--' + board)
+const copyPost = (post, board, project) => {
+  alert('게시물 복사!--' + board + project)
   console.log(board, post)
 }
 
-const movePost = (board: number, post: number) => {
-  alert('게시물 이동!--' + board)
+const movePost = (post, board, project) => {
+  alert('게시물 이동!--' + board + project)
   console.log(board, post)
 }
-const changeCate = (cate: number, post: number) => {
+const changeCate = (post, cate) => {
   alert('카테고리 변경!--' + cate)
   console.log(cate, post)
 }
