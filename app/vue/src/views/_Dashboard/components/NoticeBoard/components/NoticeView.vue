@@ -500,6 +500,7 @@ onMounted(() => {
   <BoardListModal
     ref="refBoardListModal"
     :now-board="post?.board ?? undefined"
+    :now-project="post?.project"
     :board-list="boardList"
     :is-copy="isCopy"
     @copy-post="toManage(11)"

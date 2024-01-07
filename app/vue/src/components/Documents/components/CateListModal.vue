@@ -38,17 +38,17 @@ defineExpose({ callModal })
             <CTableDataCell>
               <div class="form-check">
                 <input
+                  v-model="category"
+                  :id="`cate_${obj.pk}`"
+                  :value="obj.pk"
                   type="radio"
                   class="form-check-input"
                   style="margin-top: 6px"
-                  :id="`cate_${obj.pk}`"
-                  v-model="category"
-                  :value="obj.pk"
                   :disabled="nowCate === obj.pk"
                 />
-                <label class="form-label form-check-label" :for="`cate_${obj.pk}`">{{
-                  obj.name
-                }}</label>
+                <label class="form-label form-check-label" :for="`cate_${obj.pk}`">
+                  {{ obj.name }}
+                </label>
               </div>
             </CTableDataCell>
             <CTableDataCell class="text-center">
