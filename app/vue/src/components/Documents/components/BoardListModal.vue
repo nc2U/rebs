@@ -103,7 +103,6 @@ onUpdated(() => {
       </CRow>
     </template>
     <template #footer>
-      b: {{ board }} / p: {{ project }} / np: {{ nowProject }}
       <CButton :color="isCopy ? 'warning' : 'danger'" @click="onSubmit" :disabled="formCheck">
         게시물 {{ isCopy ? '복사' : '이동' }}
       </CButton>
