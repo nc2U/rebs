@@ -158,7 +158,7 @@ const toManage = (fn: number, el?: { nBrd?: number; nProj?: number; nCate?: numb
       post,
       state,
       filter: props.postFilter,
-      manager: userInfo?.value.username,
+      manager: userInfo?.value.username as string,
     }
     toPostManage(fn, payload)
   }

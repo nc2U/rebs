@@ -130,7 +130,6 @@ const toTrashCan = async (post: number, state: boolean, filter: PostFilter) => {
 interface ManagePayload {
   board: number | undefined
   project: number | undefined
-  content: string
   category: number | undefined
   post: Post
   state: boolean
@@ -142,12 +141,12 @@ export const toPostManage = (fn, payload: ManagePayload) => {
   const { board, project, manager, category, post, state, filter } = payload
   if (fn === 11) return copyPost(post, board, project, filter, manager)
   if (fn === 22) return movePost(post, board, project, filter, manager)
-  if (fn === 33) return changeCate(post.pk, category, filter)
-  if (fn === 4) return toSecretPost(post.pk, state, filter)
-  if (fn === 5) return hideComments(post.pk, state, filter)
-  if (fn === 6) return toNoticeUp(post.pk, state, filter)
-  if (fn === 7) return toBlind(post.pk, state, filter)
-  if (fn === 88) return toTrashCan(post.pk, state, filter)
+  if (fn === 33) return changeCate(post.pk as number, category, filter)
+  if (fn === 4) return toSecretPost(post.pk as number, state, filter)
+  if (fn === 5) return hideComments(post.pk as number, state, filter)
+  if (fn === 6) return toNoticeUp(post.pk as number, state, filter)
+  if (fn === 7) return toBlind(post.pk as number, state, filter)
+  if (fn === 88) return toTrashCan(post.pk as number, state, filter)
 }
 
 const copyPost = async (post, board, project, filter, manager) => {
