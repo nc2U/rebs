@@ -125,9 +125,9 @@ const toScrape = () => {
   else emit('post-scrape', props.post.pk)
 }
 
-const toManage = (fn: number) => {
-  const post = props.post.pk
-  let state = false
+const toManage = (fn: number, el?: { nBrd?: number; nProj?: number; nCate?: number }) => {
+  const post = props.post
+  let state: boolean = false
   if (fn < 4) {
     if (fn === 1) {
       isCopy.value = true
@@ -139,34 +139,33 @@ const toManage = (fn: number) => {
       refCateListModal.value.callModal()
     }
   } else {
-    if (fn === 4) state = props.post.is_secret // is_secret
-    else if (fn === 5) state = props.post.is_hide_comment
-    else if (fn === 6) state = props.post.is_notice // is_notice
-    else if (fn === 7) state = props.post.is_blind // is_blind
+    if (fn === 4) state = post.is_secret // is_secret
+    else if (fn === 5) state = post.is_hide_comment
+    else if (fn === 6) state = post.is_notice // is_notice
+    else if (fn === 7) state = post.is_blind // is_blind
     else if (fn === 8) state = refTrashModal.value.callModal() // deleted confirm
-    else if (fn === 9) {
+    else if (fn === 88) {
       // soft delete
-      state = !!props.post.deleted // is_deleted
+      state = !!post.deleted // is_deleted
       refTrashModal.value.close()
       router.replace({ name: props.viewRoute })
     }
-    toPostManage(fn, post as number, state, props.postFilter)
+    const payload = {
+      board: el?.nBrd,
+      project: el?.nProj,
+      category: el?.nCate,
+      post,
+      state,
+      filter: props.postFilter,
+      manager: userInfo?.value.username as string,
+    }
+    toPostManage(fn, payload)
   }
 }
 
-const copyPost = (board: number) => {
-  alert('게시물 복사!--' + board)
-  console.log(board, props.post)
-}
-
-const movePost = (board: number) => {
-  alert('게시물 이동!--' + board)
-  console.log(board, props.post)
-}
-const changeCate = (cate: number) => {
-  alert('카테고리 변경!--' + cate)
-  console.log(cate, props.post)
-}
+const copyPost = (nBrd?: number, nProj?: number) => toManage(11, { nBrd, nProj })
+const movePost = (nBrd?: number, nProj?: number) => toManage(22, { nBrd, nProj })
+const changeCate = (nCate?: number) => toManage(33, { nCate })
 
 const getFileName = (file: string) => {
   if (file) return decodeURI(file.split('/').slice(-1)[0])
@@ -244,7 +243,10 @@ onMounted(() => {
   <div v-if="post" class="m-0 p-0">
     <CRow class="mt-5">
       <CCol md="8">
-        <h5>{{ post.title }}</h5>
+        <h5>
+          <v-icon v-if="post.is_notice" icon="mdi-bullhorn" size="sm" color="blue-grey-darken-1" />
+          {{ post.title }}
+        </h5>
       </CCol>
       <CCol v-if="post.cate_name" class="pt-1 text-right">
         <span>[{{ sortName }}] [{{ post.cate_name }}]</span>
@@ -533,6 +535,7 @@ onMounted(() => {
   <BoardListModal
     ref="refBoardListModal"
     :now-board="post?.board ?? undefined"
+    :now-project="post?.project ?? undefined"
     :board-list="boardList"
     :is-copy="isCopy"
     @copy-post="copyPost"
@@ -550,7 +553,7 @@ onMounted(() => {
     <template #header>알림</template>
     <template #default>이 게시물을 휴지통으로 삭제 하시겠습니까?</template>
     <template #footer>
-      <CButton color="danger" @click="toManage(9)">삭제</CButton>
+      <CButton color="danger" @click="toManage(88)">삭제</CButton>
     </template>
   </ConfirmModal>
 </template>

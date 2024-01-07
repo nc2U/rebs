@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, type PropType } from 'vue'
+import { ref, type PropType, onBeforeMount, nextTick } from 'vue'
 import type { Category } from '@/store/types/document'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
@@ -14,10 +14,8 @@ const refListModal = ref()
 
 const category = ref<number | null>(null)
 
-const selectCate = (cate: number) => (category.value = cate)
-
 const onSubmit = () => {
-  emit('change-cate', category.value)
+  emit('change-cate', category.value ?? undefined)
   refListModal.value.close()
 }
 
@@ -32,23 +30,28 @@ defineExpose({ callModal })
     <template #default>
       <CTable v-if="categoryList.length" striped class="mt-3 border-top-1">
         <colgroup>
-          <col style="width: 90%" />
-          <col style="width: 10%" />
+          <col style="width: 80%" />
+          <col style="width: 20%" />
         </colgroup>
         <CTableBody>
           <CTableRow v-for="obj in categoryList" :key="obj.pk" :item-key="obj.pk">
             <CTableDataCell>
-              <CFormCheck
-                type="radio"
-                name="board"
-                :id="`board_${obj.pk}`"
-                :label="obj.name"
-                :value="obj.pk"
-                :disabled="nowCate === obj.pk"
-                @change="selectCate(obj.pk as number)"
-              />
+              <div class="form-check">
+                <input
+                  v-model="category"
+                  :id="`cate_${obj.pk}`"
+                  :value="obj.pk"
+                  type="radio"
+                  class="form-check-input"
+                  style="margin-top: 6px"
+                  :disabled="nowCate === obj.pk"
+                />
+                <label class="form-label form-check-label" :for="`cate_${obj.pk}`">
+                  {{ obj.name }}
+                </label>
+              </div>
             </CTableDataCell>
-            <CTableDataCell>
+            <CTableDataCell class="text-center">
               <CBadge v-if="nowCate === obj.pk" color="warning">현재</CBadge>
             </CTableDataCell>
           </CTableRow>
@@ -60,7 +63,7 @@ defineExpose({ callModal })
       </CRow>
     </template>
     <template #footer>
-      <CButton color="danger" @click="onSubmit"> 카테고리 변경</CButton>
+      <CButton color="danger" @click="onSubmit" :disabled="!category">카테고리 변경</CButton>
       <CButton color="light" @click="refListModal.close()">닫기</CButton>
     </template>
   </AlertModal>

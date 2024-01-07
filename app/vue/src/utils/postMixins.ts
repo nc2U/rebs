@@ -1,7 +1,8 @@
 import { computed } from 'vue'
-import { type PostFilter, useDocument } from '@/store/pinia/document'
-import type { PatchPost } from '@/store/types/document'
 import { message } from '@/utils/helper'
+import { timeFormat } from '@/utils/baseMixins'
+import type { PatchPost, Post } from '@/store/types/document'
+import { type PostFilter, useDocument } from '@/store/pinia/document'
 
 const docStore = useDocument()
 const patchPost = (payload: PatchPost & { filter: PostFilter }) => docStore.patchPost(payload)
@@ -126,10 +127,46 @@ const toTrashCan = async (post: number, state: boolean, filter: PostFilter) => {
   if (!state) await deletePost(post, filter)
 }
 
-export const toPostManage = (fn: number, post: number, state = false, filter: PostFilter) => {
-  if (fn === 4) return toSecretPost(post, state, filter)
-  if (fn === 5) return hideComments(post, state, filter)
-  if (fn === 6) return toNoticeUp(post, state, filter)
-  if (fn === 7) return toBlind(post, state, filter)
-  if (fn === 9) return toTrashCan(post, state, filter)
+interface ManagePayload {
+  board: number | undefined
+  project: number | undefined
+  category: number | undefined
+  post: Post
+  state: boolean
+  filter: PostFilter
+  manager: string
+}
+
+export const toPostManage = (fn, payload: ManagePayload) => {
+  const { board, project, manager, category, post, state, filter } = payload
+  if (fn === 11) return copyPost(post, board, project, filter, manager)
+  if (fn === 22) return movePost(post, board, project, filter, manager)
+  if (fn === 33) return changeCate(post.pk as number, category, filter)
+  if (fn === 4) return toSecretPost(post.pk as number, state, filter)
+  if (fn === 5) return hideComments(post.pk as number, state, filter)
+  if (fn === 6) return toNoticeUp(post.pk as number, state, filter)
+  if (fn === 7) return toBlind(post.pk as number, state, filter)
+  if (fn === 88) return toTrashCan(post.pk as number, state, filter)
+}
+
+const copyPost = async (post, board, project, filter, manager) => {
+  post.content = `${post.content}<br /><br /><p>[이 게시물은 ${manager} 님에 의해 ${timeFormat(
+    new Date(),
+  )} ${post.board_name} 에서 복사됨]</p>`
+  // await patchPost({ pk: post, board, project, content, filter })
+}
+
+const movePost = async (post, board, project, filter, manager) => {
+  const content = `${post.content}<br /><br /><p>[이 게시물은 ${manager} 님에 의해 ${timeFormat(
+    new Date(),
+  )} ${post.board_name} 에서 이동됨]</p>`
+  await patchPost({ pk: post.pk, board, project, content, filter }).then(() =>
+    message('success', '', '게시물 이동이 완료되었습니다.'),
+  )
+}
+const changeCate = async (post, cate, filter) => {
+  console.log(post, cate)
+  await patchPost({ pk: post, category: cate, filter }).then(() =>
+    message('success', '', '카테고리가 변경되었습니다.'),
+  )
 }
