@@ -126,7 +126,7 @@ const toScrape = () => {
 }
 
 const toManage = (fn: number, el?: { nBrd?: number; nProj?: number; nCate?: number }) => {
-  const post = props.post.pk as number
+  const post = props.post
   let state: boolean = false
   if (fn < 4) {
     if (fn === 1) {
@@ -139,14 +139,14 @@ const toManage = (fn: number, el?: { nBrd?: number; nProj?: number; nCate?: numb
       refCateListModal.value.callModal()
     }
   } else {
-    if (fn === 4) state = props.post.is_secret // is_secret
-    else if (fn === 5) state = props.post.is_hide_comment
-    else if (fn === 6) state = props.post.is_notice // is_notice
-    else if (fn === 7) state = props.post.is_blind // is_blind
+    if (fn === 4) state = post.is_secret // is_secret
+    else if (fn === 5) state = post.is_hide_comment
+    else if (fn === 6) state = post.is_notice // is_notice
+    else if (fn === 7) state = post.is_blind // is_blind
     else if (fn === 8) state = refTrashModal.value.callModal() // deleted confirm
     else if (fn === 88) {
       // soft delete
-      state = !!props.post.deleted // is_deleted
+      state = !!post.deleted // is_deleted
       refTrashModal.value.close()
       router.replace({ name: props.viewRoute })
     }

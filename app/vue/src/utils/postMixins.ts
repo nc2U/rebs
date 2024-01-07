@@ -1,6 +1,6 @@
 import { computed } from 'vue'
 import { type PostFilter, useDocument } from '@/store/pinia/document'
-import type { PatchPost } from '@/store/types/document'
+import type { PatchPost, Post } from '@/store/types/document'
 import { message } from '@/utils/helper'
 
 const docStore = useDocument()
@@ -129,36 +129,39 @@ const toTrashCan = async (post: number, state: boolean, filter: PostFilter) => {
 interface ManagePayload {
   board: number | undefined
   project: number | undefined
+  content: string
   category: number | undefined
-  post: number
+  post: Post
   state: boolean
   filter: PostFilter
 }
 
 export const toPostManage = (fn, payload: ManagePayload) => {
-  const { board, project, category, post, state, filter } = payload
-  if (fn === 11) return copyPost(post, board, project)
-  if (fn === 22) return movePost(post, board, project)
-  if (fn === 33) return changeCate(post, category)
-  if (fn === 4) return toSecretPost(post, state, filter)
-  if (fn === 5) return hideComments(post, state, filter)
-  if (fn === 6) return toNoticeUp(post, state, filter)
-  if (fn === 7) return toBlind(post, state, filter)
-  if (fn === 88) return toTrashCan(post, state, filter)
+  const { board, project, content, category, post, state, filter } = payload
+  if (fn === 11) return copyPost(post, board, project, content, filter)
+  if (fn === 22) return movePost(post, board, project, content, filter)
+  if (fn === 33) return changeCate(post.pk, category, filter)
+  if (fn === 4) return toSecretPost(post.pk, state, filter)
+  if (fn === 5) return hideComments(post.pk, state, filter)
+  if (fn === 6) return toNoticeUp(post.pk, state, filter)
+  if (fn === 7) return toBlind(post.pk, state, filter)
+  if (fn === 88) return toTrashCan(post.pk, state, filter)
 }
 
-const copyPost = async (post, board, project) => {
-  alert('게시물 복사!--' + board + project)
-  console.log(post, board, project)
+const copyPost = async (post, board, project, content, filter) => {
+  // content = `${content}<br /><br /><p>[이 게시물은 ${} 님에 의해 2024-01-07 18:38:02 게시판 A-1 에서 복사됨]</p>`
+  console.log(post, board, project, content)
+  // await patchPost({ pk: post, board, project, content, filter })
 }
 
-const movePost = async (post, board, project) => {
-  console.log(post, board, project)
-  await patchPost({ pk: post, board, project })
+const movePost = async (post, board, project, content, filter) => {
+  // content = `${content}<br /><br /><p>[이 게시물은 ${} 님에 의해 2024-01-07 18:38:02 게시판 A-1 에서 이동됨]</p>`
+  console.log(post, board, project, content)
+  await patchPost({ pk: post, board, project, content, filter })
 }
-const changeCate = async (post, cate) => {
+const changeCate = async (post, cate, filter) => {
   console.log(post, cate)
-  await patchPost({ pk: post, category: cate }).then(() =>
+  await patchPost({ pk: post, category: cate, filter }).then(() =>
     message('success', '', '카테고리가 변경되었습니다.'),
   )
 }
