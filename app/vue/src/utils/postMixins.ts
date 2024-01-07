@@ -147,16 +147,18 @@ export const toPostManage = (fn, payload: ManagePayload) => {
   if (fn === 88) return toTrashCan(post, state, filter)
 }
 
-const copyPost = (post, board, project) => {
+const copyPost = async (post, board, project) => {
   alert('게시물 복사!--' + board + project)
-  console.log(board, post)
+  console.log(post, board, project)
 }
 
-const movePost = (post, board, project) => {
-  alert('게시물 이동!--' + board + project)
-  console.log(board, post)
+const movePost = async (post, board, project) => {
+  console.log(post, board, project)
+  await patchPost({ pk: post, board, project })
 }
-const changeCate = (post, cate) => {
-  alert('카테고리 변경!--' + cate)
-  console.log(cate, post)
+const changeCate = async (post, cate) => {
+  console.log(post, cate)
+  await patchPost({ pk: post, category: cate }).then(() =>
+    message('success', '', '카테고리가 변경되었습니다.'),
+  )
 }
