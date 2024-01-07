@@ -153,20 +153,21 @@ const copyPost = async (post, board, project, filter, manager) => {
   post.content = `${post.content}<br /><br /><p>[이 게시물은 ${manager} 님에 의해 ${timeFormat(
     new Date(),
   )} ${post.board_name} 에서 복사됨]</p>`
-  // await patchPost({ pk: post, board, project, content, filter })
+  // copy api 적용
+  alert('copy api 준비중!')
 }
 
-const movePost = async (post, board, project, filter, manager) => {
+const movePost = (post, board, project, filter, manager) => {
   const content = `${post.content}<br /><br /><p>[이 게시물은 ${manager} 님에 의해 ${timeFormat(
     new Date(),
   )} ${post.board_name} 에서 이동됨]</p>`
-  await patchPost({ pk: post.pk, board, project, content, filter }).then(() =>
+  patchPost({ pk: post.pk, board, project, content, filter }).then(() =>
     message('success', '', '게시물 이동이 완료되었습니다.'),
   )
 }
-const changeCate = async (post, cate, filter) => {
+const changeCate = (post, cate, filter) => {
   console.log(post, cate)
-  await patchPost({ pk: post, category: cate, filter }).then(() =>
+  patchPost({ pk: post, category: cate, filter }).then(() =>
     message('success', '', '카테고리가 변경되었습니다.'),
   )
 }
