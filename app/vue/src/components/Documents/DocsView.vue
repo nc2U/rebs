@@ -242,7 +242,10 @@ onMounted(() => {
   <div v-if="post" class="m-0 p-0">
     <CRow class="mt-5">
       <CCol md="8">
-        <h5>{{ post.title }}</h5>
+        <h5>
+          <v-icon v-if="post.is_notice" icon="mdi-bullhorn" size="sm" color="blue-grey-darken-1" />
+          {{ post.title }}
+        </h5>
       </CCol>
       <CCol v-if="post.cate_name" class="pt-1 text-right">
         <span>[{{ sortName }}] [{{ post.cate_name }}]</span>
