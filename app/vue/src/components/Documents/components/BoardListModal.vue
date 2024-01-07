@@ -31,8 +31,8 @@ const brdChk = () =>
   nextTick(() => (board.value === 1 ? (project.value = null) : (project.value = props.nowProject)))
 
 const onSubmit = () => {
-  if (props.isCopy) emit('copy-post', board.value, project.value)
-  else emit('move-post', board.value, project.value)
+  if (props.isCopy) emit('copy-post', board.value, project.value ?? undefined)
+  else emit('move-post', board.value, project.value ?? undefined)
   refListModal.value.close()
 }
 

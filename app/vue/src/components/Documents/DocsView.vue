@@ -162,19 +162,9 @@ const toManage = (fn: number, el?: { nBrd?: number; nProj?: number; nCate?: numb
   }
 }
 
-const copyPost = (board: number) => {
-  alert('게시물 복사!--' + board)
-  console.log(board, props.post)
-}
-
-const movePost = (board: number) => {
-  alert('게시물 이동!--' + board)
-  console.log(board, props.post)
-}
-const changeCate = (cate: number) => {
-  alert('카테고리 변경!--' + cate)
-  console.log(cate, props.post)
-}
+const copyPost = (nBrd?: number, nProj?: number) => toManage(11, { nBrd, nProj })
+const movePost = (nBrd?: number, nProj?: number) => toManage(22, { nBrd, nProj })
+const changeCate = (nCate?: number) => toManage(33, { nCate })
 
 const getFileName = (file: string) => {
   if (file) return decodeURI(file.split('/').slice(-1)[0])

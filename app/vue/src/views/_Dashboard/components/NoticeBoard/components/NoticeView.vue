@@ -163,6 +163,10 @@ const toManage = (fn: number, el?: { nBrd?: number; nProj?: number; nCate?: numb
   }
 }
 
+const copyPost = (nBrd?: number, nProj?: number) => toManage(11, { nBrd, nProj })
+const movePost = (nBrd?: number, nProj?: number) => toManage(22, { nBrd, nProj })
+const changeCate = (nCate?: number) => toManage(33, { nCate })
+
 const getFileName = (file: string) => {
   if (file) return decodeURI(file.split('/').slice(-1)[0])
   else return
@@ -509,15 +513,15 @@ onMounted(() => {
     :now-project="post?.project ?? undefined"
     :board-list="boardList"
     :is-copy="isCopy"
-    @copy-post="toManage(11)"
-    @move-post="toManage(22)"
+    @copy-post="copyPost"
+    @move-post="movePost"
   />
 
   <CateListModal
     ref="refCateListModal"
     :now-cate="post?.category ?? undefined"
     :category-list="categoryList"
-    @change-cate="toManage(33)"
+    @change-cate="changeCate"
   />
 
   <ConfirmModal ref="refTrashModal">

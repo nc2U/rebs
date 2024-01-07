@@ -15,7 +15,7 @@ const refListModal = ref()
 const category = ref<number | null>(null)
 
 const onSubmit = () => {
-  emit('change-cate', category.value)
+  emit('change-cate', category.value ?? undefined)
   refListModal.value.close()
 }
 
