@@ -283,16 +283,18 @@ class PostSerializer(serializers.ModelSerializer):
         post = Post.objects.create(**validated_data)
 
         # Links 처리
-        new_links = self.initial_data.getlist('newLinks')
-        if new_links:
-            for link in new_links:
-                Link.objects.create(post=post, link=self.to_python(link))
+        if self.initial_data.get('newLinks'):
+            new_links = self.initial_data.getlist('newLinks')
+            if new_links:
+                for link in new_links:
+                    Link.objects.create(post=post, link=self.to_python(link))
 
         # Files 처리
-        new_files = self.initial_data.getlist('newFiles')
-        if new_files:
-            for file in new_files:
-                File.objects.create(post=post, file=file)
+        if self.initial_data.get('newFiles'):
+            new_files = self.initial_data.getlist('newFiles')
+            if new_files:
+                for file in new_files:
+                    File.objects.create(post=post, file=file)
 
         return post
 

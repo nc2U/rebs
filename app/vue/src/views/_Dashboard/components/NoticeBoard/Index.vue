@@ -163,9 +163,6 @@ const onSubmit = async (payload: Post & Attatches) => {
   }
 }
 
-const postDelete = (pk: number) =>
-  deletePost(pk, postFilter.value).then(() => router.replace({ name: mainViewName.value }))
-
 const dataSetup = (pk: number, postId?: string | string[]) => {
   fetchBoardList()
   postFilter.value.company = pk
@@ -224,7 +221,6 @@ onBeforeMount(() => dataSetup(company.value ?? comStore.initComId, route.params?
             @file-hit="fileHit"
             @post-scrape="postScrape"
             @posts-renewal="postsRenewal"
-            @post-delete="postDelete"
           />
         </div>
 

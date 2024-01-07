@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django_filters import BooleanFilter
 from django_filters.rest_framework import FilterSet
 from rest_framework import viewsets, status
@@ -82,6 +84,39 @@ class PostViewSet(viewsets.ModelViewSet):
     search_fields = (
         'lawsuit__case_number', 'lawsuit__case_name', 'title',
         'content', 'links__link', 'files__file', 'user__username')
+
+    def copy_and_create(self, request, *args, **kwargs):
+        # 복사할 행의 ID를 저장한다.
+        origin_pk = kwargs.get('pk')
+        project = request.data.get('project')
+        board = request.data.get('board')
+
+        try:
+            # 기존 행을 가져와서 복사한다.
+            org_instance = Post.objects.get(pk=origin_pk)
+
+            add_text = f'<br /><br /><p>[이 게시물은 {self.request.user.username} 님에 의해 {datetime.now()} {org_instance.board.name} 에서 복사됨]</p>'
+
+            # 기존 행의 정보를 사용하여 새로운 행을 생성한다.
+            new_instance_data = {
+                'company': org_instance.company.pk,
+                'project': project if project else None,
+                'board': board,
+                'category': org_instance.category.pk if org_instance.category else None,
+                'lawsuit': org_instance.lawsuit.pk if org_instance.lawsuit else None,
+                'title': org_instance.title,
+                'execution_date': org_instance.execution_date if org_instance.execution_date else None,
+                'content': org_instance.content + add_text,
+            }
+
+            # Serializer를 사용해 새로운 행을 생성하고 저장한다.
+            serializer = PostSerializer(data=new_instance_data, context={'request': request})
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Post.DoesNotExist:
+            return Response({'detail': 'Original Post object does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
