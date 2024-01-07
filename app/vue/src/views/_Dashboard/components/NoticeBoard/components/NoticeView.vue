@@ -531,7 +531,7 @@ onMounted(() => {
     <template #header>알림</template>
     <template #default>이 게시물을 휴지통으로 삭제 하시겠습니까?</template>
     <template #footer>
-      <CButton color="danger" @click="toManage(9)">삭제</CButton>
+      <CButton color="danger" @click="toManage(88)">삭제</CButton>
     </template>
   </ConfirmModal>
 </template>
