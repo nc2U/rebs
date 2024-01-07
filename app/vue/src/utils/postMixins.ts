@@ -13,6 +13,8 @@ const patchCommentLike = (pk: number, post: number, page?: number) =>
   docStore.patchCommentLike(pk, post, page)
 const patchCommentBlame = (pk: number, post: number, page?: number) =>
   docStore.patchCommentBlame(pk, post, page)
+const copyCreatePost = (payload: { post: number; board: number; project: number | null }) =>
+  docStore.copyPost(payload)
 const deletePost = (pk: number, filter: PostFilter) => docStore.deletePost(pk, filter)
 
 export const toPrint = (title: string) => {
@@ -129,43 +131,49 @@ const toTrashCan = async (post: number, state: boolean, filter: PostFilter) => {
 
 interface ManagePayload {
   board: number | undefined
+  board_name: string | undefined
   project: number | undefined
   category: number | undefined
-  post: Post
+  content: string
+  post: number
   state: boolean
   filter: PostFilter
   manager: string
 }
 
-export const toPostManage = (fn, payload: ManagePayload) => {
-  const { board, project, manager, category, post, state, filter } = payload
-  if (fn === 11) return copyPost(post, board, project, filter, manager)
-  if (fn === 22) return movePost(post, board, project, filter, manager)
-  if (fn === 33) return changeCate(post.pk as number, category, filter)
-  if (fn === 4) return toSecretPost(post.pk as number, state, filter)
-  if (fn === 5) return hideComments(post.pk as number, state, filter)
-  if (fn === 6) return toNoticeUp(post.pk as number, state, filter)
-  if (fn === 7) return toBlind(post.pk as number, state, filter)
-  if (fn === 88) return toTrashCan(post.pk as number, state, filter)
+export const toPostManage = (fn: number, payload: ManagePayload) => {
+  const { post, board, project, category, content, board_name, manager, state, filter } = payload
+  if (fn === 11) return copyPost(post, board as number, project)
+  if (fn === 22)
+    return movePost(post, board as number, board_name, project, content, manager, filter)
+  if (fn === 33) return changeCate(post, category, filter)
+  if (fn === 4) return toSecretPost(post, state, filter)
+  if (fn === 5) return hideComments(post, state, filter)
+  if (fn === 6) return toNoticeUp(post, state, filter)
+  if (fn === 7) return toBlind(post, state, filter)
+  if (fn === 88) return toTrashCan(post, state, filter)
 }
 
-const copyPost = async (post, board, project, filter, manager) => {
-  post.content = `${post.content}<br /><br /><p>[이 게시물은 ${manager} 님에 의해 ${timeFormat(
-    new Date(),
-  )} ${post.board_name} 에서 복사됨]</p>`
-  // copy api 적용
-  alert('copy api 준비중!')
-}
+const copyPost = (post: number, board: number, project: number | undefined) =>
+  copyCreatePost({ post, board, project: project ?? null })
 
-const movePost = (post, board, project, filter, manager) => {
-  const content = `${post.content}<br /><br /><p>[이 게시물은 ${manager} 님에 의해 ${timeFormat(
+const movePost = (
+  post: number,
+  board: number,
+  board_name: string | undefined,
+  project: number | undefined,
+  org_content: string,
+  manager: string,
+  filter: PostFilter,
+) => {
+  const content = `${org_content}<br /><br /><p>[이 게시물은 ${manager} 님에 의해 ${timeFormat(
     new Date(),
-  )} ${post.board_name} 에서 이동됨]</p>`
-  patchPost({ pk: post.pk, board, project, content, filter }).then(() =>
+  )} ${board_name} 에서 이동됨]</p>`
+  patchPost({ pk: post, board, project, content, filter }).then(() =>
     message('success', '', '게시물 이동이 완료되었습니다.'),
   )
 }
-const changeCate = (post, cate, filter) => {
+const changeCate = (post: number, cate: number | undefined, filter: PostFilter) => {
   console.log(post, cate)
   patchPost({ pk: post, category: cate, filter }).then(() =>
     message('success', '', '카테고리가 변경되었습니다.'),
