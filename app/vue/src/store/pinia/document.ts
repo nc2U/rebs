@@ -312,6 +312,12 @@ export const useDocument = defineStore('document', () => {
       .then(() => accStore.fetchProfile().then(() => fetchPost(pk)))
       .catch(err => errorHandle(err.response.data))
 
+  const copyPost = (payload: { post: number; board: number; project: number | null }) =>
+    api
+      .post(`post/${payload.post}/copy/`, payload)
+      .then(() => message('success', '', '게시물 복사가 완료되었습니다.'))
+      .catch(err => errorHandle(err.response.data))
+
   const deletePost = (pk: number, filter: PostFilter) =>
     api
       .delete(`/post/${pk}/`)
@@ -507,6 +513,7 @@ export const useDocument = defineStore('document', () => {
     patchPost,
     patchPostLike,
     patchPostBlame,
+    copyPost,
     deletePost,
 
     trashPost,
