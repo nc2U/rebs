@@ -31,7 +31,6 @@ const emit = defineEmits([
   'file-hit',
   'post-scrape',
   'posts-renewal',
-  'post-delete',
   'to-manage',
 ])
 
@@ -188,10 +187,10 @@ const toEdit = () => {
 const deleteConfirm = () => refDelModal.value.callModal()
 
 const toDelete = () => {
-  refDelModal.value.close()
-  if ((userInfo?.value.is_superuser || props.post.comments?.length) ?? 0 < 5)
-    emit('post-delete', props.post.pk)
+  if (userInfo?.value.is_superuser) toManage(88)
+  else if ((props.post.comments?.length ?? 0) < 5) toManage(88)
   else refAlertModal.value.callModal('', '5개 이상의 댓글이 달린 게시물은 삭제할 수 없습니다.')
+  refDelModal.value.close()
 }
 
 watch(
