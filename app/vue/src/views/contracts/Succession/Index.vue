@@ -33,10 +33,10 @@ const fetchSuccession = (pk: number) => contStore.fetchSuccession(pk)
 const fetchSuccessionList = (projId: number, page?: number) =>
   contStore.fetchSuccessionList(projId, page)
 
-const fetchBuyerList = (projId: number) => contStore.fetchBuyerList(projId)
-
-const createBuyer = (payload: Succession & Buyer & { project: number }) =>
-  contStore.createBuyer(payload)
+// const fetchBuyerList = (projId: number) => contStore.fetchBuyerList(projId)
+//
+// const createBuyer = (payload: Succession & Buyer & { project: number }) =>
+//   contStore.createBuyer(payload)
 
 const patchSuccession = (payload: Succession & Buyer & { project: number; page: number }) =>
   contStore.patchSuccession(payload)
@@ -50,14 +50,14 @@ watch(route, val => {
   }
 })
 
-watch(contractor, val => {
-  if (val) fetchContract(val.contract)
-  if (val?.successions.length) fetchSuccession(val.successions[0].pk)
-  else {
-    contStore.contract = null
-    contStore.succession = null
-  }
-})
+// watch(contractor, val => {
+//   if (val) fetchContract(val.contract)
+//   if (val?.successions.length) fetchSuccession(val.successions[0].pk)
+//   else {
+//     contStore.contract = null
+//     contStore.succession = null
+//   }
+// })
 
 const router = useRouter()
 
@@ -75,22 +75,23 @@ const pageSelect = (p: number) => {
 const onSubmit = (payload: { s_data: Succession; b_data: Buyer }) => {
   const { s_data, b_data } = payload
   const dbData = { ...s_data, ...b_data }
-  if (!!project.value) {
-    if (!s_data.pk) {
-      createBuyer({ ...dbData, project: project.value })
-      router.push({ name: '권리 의무 승계' })
-    } else
-      patchSuccession({
-        ...dbData,
-        project: project.value,
-        page: page.value,
-      })
-  } else alert('프로젝트를 선택하여 주세요!')
+  console.log(s_data, b_data)
+  // if (!!project.value) {
+  //   if (!s_data.pk) {
+  //     createBuyer({ ...dbData, project: project.value })
+  //     router.push({ name: '권리 의무 승계' })
+  //   } else
+  //     patchSuccession({
+  //       ...dbData,
+  //       project: project.value,
+  //       page: page.value,
+  //     })
+  // } else alert('프로젝트를 선택하여 주세요!')
 }
 
 const dataSetup = (pk: number) => {
   fetchSuccessionList(pk)
-  fetchBuyerList(pk)
+  // fetchBuyerList(pk)
 }
 
 const dataReset = () => {
@@ -98,7 +99,7 @@ const dataReset = () => {
   contStore.contractor = null
   contStore.contractorList = []
   contStore.successionList = []
-  contStore.buyerList = []
+  // contStore.buyerList = []
 }
 
 const projSelect = (target: number | null) => {
