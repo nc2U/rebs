@@ -52,7 +52,7 @@ const resumeForm = () => {
           <CIcon name="cilTask" />
           계약자명 :
           {{ contractor.__str__ }} :::::: 현재상태 : [{{ getStatus(contractor.status) }}]
-          {{ isSuccession ? '-> (!!!-권리 의무 승계 진행 중-!!!)' : '' }}
+          {{ isSuccession ? '-> (!!!-변경 인가 진행 중-!!!)' : '' }}
         </strong>
       </CCol>
       <CCol class="text-right">
