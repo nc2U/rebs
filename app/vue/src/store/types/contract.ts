@@ -141,7 +141,7 @@ export interface Contractor {
   reservation_date: string | null
   contract_date: string | null
   note: string
-  successions: SimpleSuccession[]
+  succession: SimpleSuccession
   contractorrelease: number | null
 }
 
@@ -178,7 +178,7 @@ export interface Succession {
 }
 
 export interface Buyer {
-  id?: number
+  b_pk?: number
   name: string
   birth_date: string
   gender: 'M' | 'F'
