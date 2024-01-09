@@ -11,7 +11,7 @@ const props = defineProps({
 const emit = defineEmits(['resume-form'])
 
 const isSuccession = computed(
-  () => !!props.contractor.successions.length && !props.contractor.successions[0].is_approval,
+  () => !!props.contractor.succession && !props.contractor.succession.is_approval,
 )
 
 const alertColor = computed(() => {

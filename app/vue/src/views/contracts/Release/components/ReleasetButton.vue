@@ -20,7 +20,7 @@ const contractStore = useContract()
 const contRelease = computed(() => contractStore.contRelease)
 
 const isSuccession = computed(
-  () => !!props.contractor?.successions.length && !props.contractor?.successions[0].is_approval,
+  () => !!props.contractor?.succession && !props.contractor?.succession.is_approval,
 )
 
 const callFormModal = () => {
