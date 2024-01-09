@@ -85,11 +85,17 @@ class PdfExportBill(View):
         # 이 계약 건 분양가 (계약금, 중도금, 잔금 약정액)
         cont_price = contract.contractprice
         price = cont_price.price
+        price_build = cont_price.price_build
+        price_land = cont_price.price_land
+        price_tax = cont_price.price_tax
         down = cont_price.down_pay
         middle = cont_price.middle_pay
         remain = cont_price.remain_pay
 
         bill_data['price'] = price if unit else '동호 지정 후 고지'  # 이 건 분양가격
+        bill_data['price_build'] = price_build if unit else '-'  # 이 건 분양가격
+        bill_data['price_land'] = price_land if unit else '-'  # 이 건 분양가격
+        bill_data['price_tax'] = price_tax if unit else '-'  # 이 건 분양가격
 
         # 납부목록, 완납금액 구하기 ------------------------------------------
         paid_list, paid_sum_total = self.get_paid(contract)
