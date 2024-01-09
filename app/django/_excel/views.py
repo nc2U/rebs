@@ -201,7 +201,7 @@ class ExportContracts(View):
                 is_date.append(col_num)
             if title == '등록상태':
                 reg_col = col_num
-            if title in ('공급가액', '납입금합계', '회당계약금', '회당중도금', '회당잔금'):
+            if title in ('건물가', '대지가', '부가세', '공급가액', '납입금합계', '회당계약금', '회당중도금', '회당잔금'):
                 is_num.append(col_num)
                 if title == '납입금합계':
                     sum_col = col_num
