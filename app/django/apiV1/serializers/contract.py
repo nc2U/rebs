@@ -604,7 +604,7 @@ class SuccessionInContractorSerializer(serializers.ModelSerializer):
 
 class ContractorSerializer(serializers.ModelSerializer):
     qualifi_display = serializers.CharField(source='get_qualification_display', read_only=True)
-    succession = SuccessionInContractorSerializer(source='curr_contractor', read_only=True)
+    succession = SuccessionInContractorSerializer(source='prev_contractor', read_only=True)
     contractorrelease = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
@@ -798,17 +798,19 @@ class SuccessionSerializer(serializers.ModelSerializer):
 
         contract = instance.contract
 
-        buyer_qua = '1' if contract.order_group.sort == '2' else '3'  # 일반분양이면 일반('1') 조합이면 인가('3')
-        seller_qua = '1' if contract.order_group.sort == '2' else '2'  # 일반분양이면 일반('1') 조합이면 미인가('2')
+        qua_true = '1' if contract.order_group.sort == '2' else '3'  # 일반분양이면 일반('1') 조합이면 인가('3')
+        qua_false = '1' if contract.order_group.sort == '2' else '2'  # 일반분양이면 일반('1') 조합이면 미인가('2')
 
-        # 최초 변경인가 처리 완료 시
-        if before_is_approval is False and after_is_approval is True:
-            buyer.qualification = buyer_qua
-            buyer.save()
-
-            seller = instance.seller
-            seller.qualification = seller_qua
-            seller.save()
+        # 최초 변경인가 처리 변경 시 (조합원이면 인가/미인가 상태 적용)
+        seller = instance.seller
+        if before_is_approval is False and after_is_approval is True:  # 변경인가 완료로 변경 시
+            buyer.qualification = qua_true
+            seller.qualification = qua_false
+        if before_is_approval is True and after_is_approval is False:  # 변경인가 진행중으로 변경 시
+            buyer.qualification = qua_false
+            seller.qualification = qua_true
+        buyer.save()
+        seller.save()
 
         return instance
 
