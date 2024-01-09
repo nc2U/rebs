@@ -20,7 +20,7 @@ const visible = ref(false)
 const unitSet = ref(false)
 
 const filteredStr = ref(`&status=${status.value}`)
-const printItems = ref(['1', '3', '4', '5', '8', '9', '10'])
+const printItems = ref(['1', '3', '4', '5', '8', '12', '13'])
 
 const projStore = useProject()
 const project = computed(() => projStore.project)
