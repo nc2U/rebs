@@ -604,14 +604,14 @@ class SuccessionInContractorSerializer(serializers.ModelSerializer):
 
 class ContractorSerializer(serializers.ModelSerializer):
     qualifi_display = serializers.CharField(source='get_qualification_display', read_only=True)
-    successions = SuccessionInContractorSerializer(many=True, read_only=True)
+    succession = SuccessionInContractorSerializer(source='curr_contractor', read_only=True)
     contractorrelease = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Contractor
         fields = ('pk', 'contract', 'name', '__str__', 'birth_date', 'gender',
                   'qualification', 'qualifi_display', 'status', 'reservation_date',
-                  'contract_date', 'is_active', 'note', 'successions', 'contractorrelease')
+                  'contract_date', 'is_active', 'note', 'succession', 'contractorrelease')
 
 
 class ContractorAddressSerializer(serializers.ModelSerializer):
@@ -642,13 +642,13 @@ class SellerInSuccessionSerializer(serializers.ModelSerializer):
 class BuyerInSuccessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contractor
-        fields = ('pk', 'name', 'birth_date', 'gender',
-                  'contractoraddress__id_zipcode', 'contractoraddress__id_address1',
-                  'contractoraddress__id_address2', 'contractoraddress__id_address3',
-                  'contractoraddress__dm_zipcode', 'contractoraddress__dm_address1',
-                  'contractoraddress__dm_address2', 'contractoraddress__dm_address3',
-                  'contractorcontact__cell_phone', 'contractorcontact__home_phone',
-                  'contractorcontact__other_phone', 'contractorcontact__email')
+        fields = ('pk', 'name', 'birth_date', 'gender',)
+        # 'contractoraddress__id_zipcode', 'contractoraddress__id_address1',
+        # 'contractoraddress__id_address2', 'contractoraddress__id_address3',
+        # 'contractoraddress__dm_zipcode', 'contractoraddress__dm_address1',
+        # 'contractoraddress__dm_address2', 'contractoraddress__dm_address3',
+        # 'contractorcontact__cell_phone', 'contractorcontact__home_phone',
+        # 'contractorcontact__other_phone', 'contractorcontact__email')
 
 
 class SuccessionSerializer(serializers.ModelSerializer):
