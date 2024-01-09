@@ -78,7 +78,7 @@ class Contractor(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
 
     def __str__(self):
-        return f'{self.name}({self.contract.serial_number})'
+        return f'{self.name}({self.contract.serial_number if self.contract else self.prev_contract.serial_number})'
 
     class Meta:
         verbose_name = '03. 계약자 정보'
