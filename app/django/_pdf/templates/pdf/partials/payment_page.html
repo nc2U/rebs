@@ -51,13 +51,13 @@
             <td class="title br2 bb" colspan="4">분양금</td>
             <td class="bb" colspan="7">{{ price|default:"-"|intcomma }}</td>
             <td class="title bl2 br2 bb" colspan="4">건물가</td>
-            <td class="bb" colspan="7">{{ price.price_build|default:"-"|intcomma }}</td>
+            <td class="bb" colspan="7">{{ price_build|default:"-"|intcomma }}</td>
         </tr>
         <tr>
             <td class="title br2 bb2" colspan="4">대지가</td>
-            <td class="bb2" colspan="7">{{ price.price_land|default:"-"|intcomma }}</td>
+            <td class="bb2" colspan="7">{{ price_land|default:"-"|intcomma }}</td>
             <td class="title bl2 br2 bb2" colspan="4">부가세</td>
-            <td class="bb2" colspan="7">{{ price.price_tax|default:"-"|intcomma }}</td>
+            <td class="bb2" colspan="7">{{ price_tax|default:"-"|intcomma }}</td>
         </tr>
         <tr>
             <td colspan="22">&nbsp;</td>

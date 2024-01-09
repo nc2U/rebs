@@ -93,9 +93,9 @@ class PdfExportBill(View):
         remain = cont_price.remain_pay
 
         bill_data['price'] = price if unit else '동호 지정 후 고지'  # 이 건 분양가격
-        bill_data['price_build'] = price_build if unit else '-'  # 이 건 분양가격
-        bill_data['price_land'] = price_land if unit else '-'  # 이 건 분양가격
-        bill_data['price_tax'] = price_tax if unit else '-'  # 이 건 분양가격
+        bill_data['price_build'] = price_build if unit else '-'  # 이 건 건물가
+        bill_data['price_land'] = price_land if unit else '-'  # 이 건 대지가
+        bill_data['price_tax'] = price_tax if unit else '-'  # 이 건 부가세
 
         # 납부목록, 완납금액 구하기 ------------------------------------------
         paid_list, paid_sum_total = self.get_paid(contract)
@@ -484,11 +484,18 @@ class PdfExportPayments(View):
 
         # 1. 이 계약 건 분양가격 (계약금, 중도금, 잔금 약정액)
         cont_price = contract.contractprice  # 공급가격
+        price = cont_price.price
+        price_build = cont_price.price_build
+        price_land = cont_price.price_land
+        price_tax = cont_price.price_tax
+        context['price'] = price if unit else '동호 지정 후 고지'  # 이 건 분양가격
+        context['price_build'] = price_build if unit else '-'  # 이 건 건물가
+        context['price_land'] = price_land if unit else '-'  # 이 건 대지가
+        context['price_tax'] = price_tax if unit else '-'  # 이 건 부가세
+
         down = cont_price.down_pay  # 계약금
         middle = cont_price.middle_pay  # 중도금
         remain = cont_price.remain_pay  # 잔금
-
-        context['price'] = cont_price.price if unit else '동호 지정 후 고지'  # 이 건 분양가격
         amount = {'1': down, '2': middle, '3': remain}
 
         # 2. 요약 테이블 데이터
