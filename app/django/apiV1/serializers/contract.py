@@ -9,7 +9,7 @@ from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
 from rebs.models import AccountSort, ProjectAccountD2, ProjectAccountD3
 from contract.models import (OrderGroup, Contract, ContractPrice, Contractor,
                              ContractorAddress, ContractorContact,
-                             Succession, SuccessionBuyer, ContractorRelease)
+                             Succession, ContractorRelease)
 
 from .items import SimpleUnitTypeSerializer
 from .payment import SimpleInstallmentOrderSerializer, SimpleOrderGroupSerializer
@@ -635,17 +635,20 @@ class ContractInSuccessionSerializer(serializers.ModelSerializer):
 
 class SellerInSuccessionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = SuccessionBuyer
+        model = Contractor
         fields = ('pk', 'name')
 
 
 class BuyerInSuccessionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = SuccessionBuyer
-        fields = ('id', 'name', 'birth_date', 'gender',
-                  'id_zipcode', 'id_address1', 'id_address2', 'id_address3',
-                  'dm_zipcode', 'dm_address1', 'dm_address2', 'dm_address3',
-                  'cell_phone', 'home_phone', 'other_phone', 'email')
+        model = Contractor
+        fields = ('pk', 'name', 'birth_date', 'gender',
+                  'contractoraddress__id_zipcode', 'contractoraddress__id_address1',
+                  'contractoraddress__id_address2', 'contractoraddress__id_address3',
+                  'contractoraddress__dm_zipcode', 'contractoraddress__dm_address1',
+                  'contractoraddress__dm_address2', 'contractoraddress__dm_address3',
+                  'contractorcontact__cell_phone', 'contractorcontact__home_phone',
+                  'contractorcontact__other_phone', 'contractorcontact__email')
 
 
 class SuccessionSerializer(serializers.ModelSerializer):
@@ -659,15 +662,48 @@ class SuccessionSerializer(serializers.ModelSerializer):
                   'trading_date', 'is_approval', 'approval_date', 'note')
 
     @transaction.atomic
-    def update(self, instance, validated_data):
+    def create(self, validated_data):
         # 1. 권리의무승계 정보 테이블 입력
-        instance.__dict__.update(**validated_data)
+        succession = Succession.objects.create(**validated_data)
+        succession.save()
 
-        # 2. 양수계약자 데이터
-        buyer_id = self.initial_data.get('id')
+        contract = succession.contract
+
+        # 2. 기존 계약자(양도인) 처리
+        seller = contract.contractor
+        seller.contract = None
+        seller.status = '5'
+        seller.is_active = False
+
+        # 해지신청 계약자인지 확인
+        try:
+            release = seller.contractorrelease
+            if release:
+                release.status = '0'
+                release.save()
+        except ObjectDoesNotExist:
+            pass
+
+        seller.save()
+
+        # 3. 양수계약자 데이터 생성
         buyer_name = self.initial_data.get('name')
         buyer_birth_date = self.initial_data.get('birth_date')
         buyer_gender = self.initial_data.get('gender')
+        qualification = '1' if contract.order_group.sort == '2' else '2'  # 일반분양이면 일반('1') 조합이면 미인가('2')
+
+        buyer = Contractor(contract=contract,
+                           prev_contract=seller,
+                           name=buyer_name,
+                           birth_date=buyer_birth_date,
+                           gender=buyer_gender,
+                           qualification=qualification,
+                           status='2',
+                           contract_date=validated_data.get('apply_date'),  # 승계신청일을 계약일자로 기록
+                           note=validated_data.get('note'))
+        buyer.save()
+
+        # 4. 양수계약자 주소정보 입력
         buyer_id_zipcode = self.initial_data.get('id_zipcode')
         buyer_id_address1 = self.initial_data.get('id_address1')
         buyer_id_address2 = self.initial_data.get('id_address2')
@@ -676,127 +712,142 @@ class SuccessionSerializer(serializers.ModelSerializer):
         buyer_dm_address1 = self.initial_data.get('dm_address1')
         buyer_dm_address2 = self.initial_data.get('dm_address2')
         buyer_dm_address3 = self.initial_data.get('dm_address3')
+
+        buyer_addr = ContractorAddress(contractor=buyer,
+                                       id_zipcode=buyer_id_zipcode,
+                                       id_address1=buyer_id_address1,
+                                       id_address2=buyer_id_address2,
+                                       id_address3=buyer_id_address3,
+                                       dm_zipcode=buyer_dm_zipcode,
+                                       dm_address1=buyer_dm_address1,
+                                       dm_address2=buyer_dm_address2,
+                                       dm_address3=buyer_dm_address3)
+        buyer_addr.save()
+
+        # 5. 양수계약자 연락처정보 입력
         buyer_cell_phone = self.initial_data.get('cell_phone')
         buyer_home_phone = self.initial_data.get('home_phone')
         buyer_other_phone = self.initial_data.get('other_phone')
         buyer_email = self.initial_data.get('email')
 
-        buyer = SuccessionBuyer.objects.get(pk=buyer_id)
+        buyer_contact = ContractorContact(contractor=buyer,
+                                          cell_phone=buyer_cell_phone,
+                                          home_phone=buyer_home_phone,
+                                          other_phone=buyer_other_phone,
+                                          email=buyer_email)
+        buyer_contact.save()
+
+        return succession
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        instance.__dict__.update(**validated_data)
+        instance.save()
+
+        buyer_name = self.initial_data.get('name')
+        buyer_birth_date = self.initial_data.get('birth_date')
+        buyer_gender = self.initial_data.get('gender')
+
+        # 2. 양수계약자 데이터 저장
+        buyer = instance.buyer  # 양수계약자 정보
         buyer.name = buyer_name
         buyer.birth_date = buyer_birth_date
         buyer.gender = buyer_gender
-        buyer.id_zipcode = buyer_id_zipcode
-        buyer.id_address1 = buyer_id_address1
-        buyer.id_address2 = buyer_id_address2
-        buyer.id_address3 = buyer_id_address3
-        buyer.dm_zipcode = buyer_dm_zipcode
-        buyer.dm_address1 = buyer_dm_address1
-        buyer.dm_address2 = buyer_dm_address2
-        buyer.dm_address3 = buyer_dm_address3
-        buyer.cell_phone = buyer_cell_phone
-        buyer.home_phone = buyer_home_phone
-        buyer.other_phone = buyer_other_phone
-        buyer.email = buyer_email
+        buyer.contract_date = validated_data.get('apply_date')  # 승계신청일을 계약일자로 기록
+        buyer.note = f'{buyer.note + "\n" if buyer.note else ""}{validated_data.get('note')}'
         buyer.save()
 
+        buyer_id_zipcode = self.initial_data.get('id_zipcode')
+        buyer_id_address1 = self.initial_data.get('id_address1')
+        buyer_id_address2 = self.initial_data.get('id_address2')
+        buyer_id_address3 = self.initial_data.get('id_address3')
+        buyer_dm_zipcode = self.initial_data.get('dm_zipcode')
+        buyer_dm_address1 = self.initial_data.get('dm_address1')
+        buyer_dm_address2 = self.initial_data.get('dm_address2')
+        buyer_dm_address3 = self.initial_data.get('dm_address3')
+
+        buyer_addr = buyer.contractoraddress
+        buyer_addr.id_zipcode = buyer_id_zipcode
+        buyer_addr.id_address1 = buyer_id_address1
+        buyer_addr.id_address2 = buyer_id_address2
+        buyer_addr.id_address3 = buyer_id_address3
+        buyer_addr.dm_zipcode = buyer_dm_zipcode
+        buyer_addr.dm_address1 = buyer_dm_address1
+        buyer_addr.dm_address2 = buyer_dm_address2
+        buyer_addr.dm_address3 = buyer_dm_address3
+        buyer_addr.save()
+
+        buyer_cell_phone = self.initial_data.get('cell_phone')
+        buyer_home_phone = self.initial_data.get('home_phone')
+        buyer_other_phone = self.initial_data.get('other_phone')
+        buyer_email = self.initial_data.get('email')
+
+        buyer_contact = buyer.contractorcontact
+        buyer_contact.cell_phone = buyer_cell_phone
+        buyer_contact.home_phone = buyer_home_phone
+        buyer_contact.other_phone = buyer_other_phone
+        buyer_contact.email = buyer_email
+        buyer_contact.save()
+
         # 3. 양도계약자 데이터
-        seller_id = self.initial_data.get('seller')
-        seller = Contractor.objects.get(pk=seller_id)
+        # seller_id = self.initial_data.get('seller')
 
         # 변경인가완료 처리 여부 확인
-        before_is_approval = Succession.objects.get(pk=instance.pk).is_approval
+        before_is_approval = instance.is_approval
         after_is_approval = validated_data.get('is_approval')
 
+        contract = instance.contract
+
+        buyer_qua = '1' if contract.order_group.sort == '2' else '3'  # 일반분양이면 일반('1') 조합이면 인가('3')
+        seller_qua = '1' if contract.order_group.sort == '2' else '2'  # 일반분양이면 일반('1') 조합이면 미인가('2')
+
         # 최초 변경인가 처리 완료 시
-        if before_is_approval is not after_is_approval:
-            # 1. 기존 양도계약자(seller) 데이터를 양수계약자 데이터로 이동
-            buyer.name = seller.name
-            buyer.birth_date = seller.birth_date
-            buyer.gender = seller.gender
-            buyer.id_zipcode = seller.contractoraddress.id_zipcode
-            buyer.id_address1 = seller.contractoraddress.id_address1
-            buyer.id_address2 = seller.contractoraddress.id_address2
-            buyer.id_address3 = seller.contractoraddress.id_address3
-            buyer.dm_zipcode = seller.contractoraddress.dm_zipcode
-            buyer.dm_address1 = seller.contractoraddress.dm_address1
-            buyer.dm_address2 = seller.contractoraddress.dm_address2
-            buyer.dm_address3 = seller.contractoraddress.dm_address3
-            buyer.cell_phone = seller.contractorcontact.cell_phone
-            buyer.home_phone = seller.contractorcontact.home_phone
-            buyer.other_phone = seller.contractorcontact.other_phone
-            buyer.email = seller.contractorcontact.email
+        if before_is_approval is False and after_is_approval is True:
+            buyer.qualification = buyer_qua
             buyer.save()
 
-            # 2. 기존 양수계약자 데이터를 양도계약자 데이터로 이동
-            msg = f'{seller}에서 [{validated_data["approval_date"]}] 승계 처리'
-            append_note = '\n' + msg if seller.note else msg
-            seller.name = buyer_name
-            seller.birth_date = buyer_birth_date
-            seller.gender = buyer_gender
-            if after_is_approval:
-                seller.note = seller.note + append_note
+            seller = instance.seller
+            seller.qualification = seller_qua
             seller.save()
-
-            # 3. 주소정보 변경
-            address = ContractorAddress.objects.get(contractor=seller)
-            address.id_zipcode = buyer_id_zipcode
-            address.id_address1 = buyer_id_address1
-            address.id_address2 = buyer_id_address2
-            address.id_address3 = buyer_id_address3
-            address.dm_zipcode = buyer_dm_zipcode
-            address.dm_address1 = buyer_dm_address1
-            address.dm_address2 = buyer_dm_address2
-            address.dm_address3 = buyer_dm_address3
-            address.save()
-
-            # 4. 연락처 정보 변경
-            contact = ContractorContact.objects.get(contractor=seller)
-            contact.cell_phone = buyer_cell_phone
-            contact.home_phone = buyer_home_phone
-            contact.other_phone = buyer_other_phone
-            contact.email = buyer_email
-            contact.save()
-
-        instance.save()
 
         return instance
 
 
-class SuccessionBuyerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SuccessionBuyer
-        fields = ('id', 'name', 'birth_date', 'gender',
-                  'id_zipcode', 'id_address1', 'id_address2', 'id_address3',
-                  'dm_zipcode', 'dm_address1', 'dm_address2', 'dm_address3',
-                  'cell_phone', 'home_phone', 'other_phone', 'email')
-
-    @transaction.atomic
-    def create(self, validated_data):
-        # 1. 양수자 데이터 입력
-        buyer = SuccessionBuyer.objects.create(**validated_data)
-        buyer.save()
-
-        # 2. 권리의무승계 정보 테이블 입력
-        succession = Succession(contract_id=self.initial_data.get('contract'),
-                                seller_id=self.initial_data.get('seller'),
-                                buyer=buyer,
-                                apply_date=self.initial_data.get('apply_date'),
-                                trading_date=self.initial_data.get('trading_date'),
-                                is_approval=self.initial_data.get('is_approval'),
-                                approval_date=self.initial_data.get('approval_date'),
-                                note=self.initial_data.get('note'))
-        succession.save()
-
-        # 3. 해지신청 계약자인지 확인
-        try:
-            release = succession.seller.contractorrelease
-            if release:
-                release.status = '0'
-                release.save()
-        except ObjectDoesNotExist:
-            pass
-
-        return buyer
+# class SuccessionBuyerSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = SuccessionBuyer
+#         fields = ('id', 'name', 'birth_date', 'gender',
+#                   'id_zipcode', 'id_address1', 'id_address2', 'id_address3',
+#                   'dm_zipcode', 'dm_address1', 'dm_address2', 'dm_address3',
+#                   'cell_phone', 'home_phone', 'other_phone', 'email')
+#
+#     @transaction.atomic
+#     def create(self, validated_data):
+#         # 1. 양수자 데이터 입력
+#         buyer = SuccessionBuyer.objects.create(**validated_data)
+#         buyer.save()
+#
+#         # 2. 권리의무승계 정보 테이블 입력
+#         succession = Succession(contract_id=self.initial_data.get('contract'),
+#                                 seller_id=self.initial_data.get('seller'),
+#                                 buyer=buyer,
+#                                 apply_date=self.initial_data.get('apply_date'),
+#                                 trading_date=self.initial_data.get('trading_date'),
+#                                 is_approval=self.initial_data.get('is_approval'),
+#                                 approval_date=self.initial_data.get('approval_date'),
+#                                 note=self.initial_data.get('note'))
+#         succession.save()
+#
+#         # 3. 해지신청 계약자인지 확인
+#         try:
+#             release = succession.seller.contractorrelease
+#             if release:
+#                 release.status = '0'
+#                 release.save()
+#         except ObjectDoesNotExist:
+#             pass
+#
+#         return buyer
 
 
 class ContractorReleaseSerializer(serializers.ModelSerializer):
