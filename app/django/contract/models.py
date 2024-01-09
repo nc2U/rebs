@@ -78,7 +78,7 @@ class Contractor(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
 
     def __str__(self):
-        return f'{self.name}({self.contract.serial_number})'
+        return f'{self.name}({self.contract.serial_number if self.contract else self.prev_contract.serial_number})'
 
     class Meta:
         verbose_name = '03. 계약자 정보'
@@ -127,8 +127,10 @@ class ContractorContact(models.Model):
 
 class Succession(models.Model):
     contract = models.ForeignKey('Contract', on_delete=models.PROTECT, verbose_name='계약 정보')
-    seller = models.ForeignKey('Contractor', on_delete=models.PROTECT, verbose_name='양도계약자', related_name='successions')
-    buyer = models.OneToOneField('SuccessionBuyer', on_delete=models.PROTECT, verbose_name='양수계약자')
+    seller = models.OneToOneField('Contractor', on_delete=models.CASCADE, verbose_name='양도계약자',
+                                  related_name='prev_contractor')
+    buyer = models.OneToOneField('Contractor', on_delete=models.CASCADE, verbose_name='양수계약자',
+                                 related_name='curr_contractor')
     apply_date = models.DateField('승계신청일')
     trading_date = models.DateField('매매계약일')
     approval_date = models.DateField('변경인가일', null=True, blank=True)
@@ -145,35 +147,6 @@ class Succession(models.Model):
         ordering = ['-apply_date', '-trading_date', '-id']
         verbose_name = '06. 권리 의무 승계'
         verbose_name_plural = '06. 권리 의무 승계'
-
-
-class SuccessionBuyer(models.Model):
-    name = models.CharField('계약자명', max_length=20)
-    birth_date = models.DateField('생년월일', null=True, blank=True)
-    GENDER_CHOICES = (('M', '남자'), ('F', '여자'))
-    gender = models.CharField('성별', max_length=1, choices=GENDER_CHOICES, blank=True)
-    id_zipcode = models.CharField('우편번호', max_length=5)
-    id_address1 = models.CharField('주민등록 주소', max_length=50)
-    id_address2 = models.CharField('상세주소', max_length=30, blank=True)
-    id_address3 = models.CharField('참고항목', max_length=30, blank=True)
-    dm_zipcode = models.CharField('우편번호', max_length=5)
-    dm_address1 = models.CharField('우편송부 주소', max_length=50)
-    dm_address2 = models.CharField('상세주소', max_length=30, blank=True)
-    dm_address3 = models.CharField('참고항목', max_length=30, blank=True)
-    cell_phone = models.CharField('휴대전화', max_length=13)
-    home_phone = models.CharField('집 전화', max_length=13, blank=True)
-    other_phone = models.CharField('기타 전화', max_length=13, blank=True)
-    email = models.EmailField('이메일', max_length=30, blank=True)
-    created_at = models.DateTimeField('등록일', auto_now_add=True)
-    updated_at = models.DateTimeField('수정일', auto_now=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
-
-    def __str__(self):
-        return f'{self.name}'
-
-    class Meta:
-        verbose_name = '07. 양(매)수 승계자'
-        verbose_name_plural = '07. 양(매)수 승계자'
 
 
 class ContractorRelease(models.Model):
@@ -196,5 +169,5 @@ class ContractorRelease(models.Model):
         return f'{self.contractor}'
 
     class Meta:
-        verbose_name = '08. 계약 해지 정보'
-        verbose_name_plural = '08. 계약 해지 정보'
+        verbose_name = '07. 계약 해지 정보'
+        verbose_name_plural = '07. 계약 해지 정보'
