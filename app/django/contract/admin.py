@@ -12,6 +12,7 @@ class OrderGroupAdmin(ImportExportMixin, admin.ModelAdmin):
 
 class ContractorInline(admin.StackedInline):
     model = Contractor
+    fk_name = 'contract'
     extra = 0
 
 

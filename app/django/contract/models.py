@@ -57,7 +57,11 @@ class ContractPrice(models.Model):
 
 
 class Contractor(models.Model):
-    contract = models.OneToOneField('Contract', on_delete=models.PROTECT, verbose_name='계약 정보')
+    contract = models.OneToOneField('Contract', on_delete=models.PROTECT, null=True,
+                                    related_name='curr_contract', verbose_name='계약 정보')
+    prev_contract = models.ForeignKey('Contract', on_delete=models.SET_NULL, null=True,
+                                      related_name='prev_contract', verbose_name='종전 계약건',
+                                      help_text='계약해지/양도승계 전 계약건')
     name = models.CharField('계약자명', max_length=20)
     birth_date = models.DateField('생년월일', null=True, blank=True)
     GENDER_CHOICES = (('M', '남자'), ('F', '여자'))
