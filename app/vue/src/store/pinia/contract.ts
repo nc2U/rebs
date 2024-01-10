@@ -284,7 +284,7 @@ export const useContract = defineStore('contract', () => {
       .post(`/succession/`, dbData)
       .then(res =>
         fetchSuccessionList(project, page).then(() =>
-          fetchContractor(res.data.seller.pk).then(() => message()),
+          fetchContractor(res.data.buyer.pk).then(() => message()),
         ),
       )
       .catch(err => errorHandle(err.response.data))
@@ -298,7 +298,7 @@ export const useContract = defineStore('contract', () => {
       .put(`/succession/${pk}/`, dbData)
       .then(res =>
         fetchSuccessionList(project, page).then(() =>
-          fetchContractor(res.data.seller.pk).then(() => message()),
+          fetchContractor(res.data.buyer.pk).then(() => message()),
         ),
       )
       .catch(err => errorHandle(err.response.data))
