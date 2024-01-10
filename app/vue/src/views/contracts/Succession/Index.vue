@@ -90,7 +90,7 @@ const onSubmit = (payload: { s_data: Succession; b_data: BuyerForm }) => {
 
   console.log(s_data, b_data)
 
-  if (!s_data.pk || !b_data.pk) {
+  if (!s_data.pk) {
     createSuccession({ ...dbData, project: project.value as number })
     router.push({ name: '권리 의무 승계', query: { contractor: s_data.seller.pk } })
   } else

@@ -203,7 +203,6 @@ export interface Buyer {
 }
 
 export interface BuyerForm {
-  pk?: number
   name: string
   birth_date: string
   gender: 'M' | 'F'

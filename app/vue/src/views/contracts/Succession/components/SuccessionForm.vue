@@ -36,7 +36,6 @@ const form = reactive({
 })
 
 const buyer_data = reactive<BuyerForm>({
-  pk: undefined,
   name: '',
   birth_date: '',
   gender: 'M',
@@ -167,7 +166,6 @@ const formDataSet = () => {
     form.approval_date = props.succession.approval_date
     form.note = props.succession.note
 
-    buyer_data.pk = buyer.pk
     buyer_data.name = buyer.name
     buyer_data.birth_date = buyer.birth_date
     buyer_data.gender = buyer.gender
