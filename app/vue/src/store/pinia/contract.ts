@@ -14,7 +14,7 @@ import {
   type SalesPrice,
   type DownPayment,
   type Succession,
-  type Buyer,
+  type BuyerForm,
   type ContractRelease,
 } from '@/store/types/contract'
 
@@ -277,7 +277,7 @@ export const useContract = defineStore('contract', () => {
       .catch(err => errorHandle(err.response.data))
 
   const patchSuccession = async (
-    payload: Succession & Buyer & { project: number; page: number },
+    payload: Succession & BuyerForm & { project: number; page: number },
   ) => {
     const { pk, project, page, ...dbData } = payload
     return await api

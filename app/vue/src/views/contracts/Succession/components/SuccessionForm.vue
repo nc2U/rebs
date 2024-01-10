@@ -3,7 +3,7 @@ import { ref, reactive, computed, onBeforeMount, nextTick, type PropType } from 
 import { write_contract } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
 import { useContract } from '@/store/pinia/contract'
-import { type Succession } from '@/store/types/contract'
+import { type BuyerForm, type Succession } from '@/store/types/contract'
 import { type AddressData, callAddress } from '@/components/DaumPostcode/address'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -35,7 +35,7 @@ const form = reactive({
   note: '',
 })
 
-const buyer_data = reactive<any>({
+const buyer_data = reactive<BuyerForm>({
   pk: undefined,
   name: '',
   birth_date: '',

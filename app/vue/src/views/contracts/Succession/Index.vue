@@ -5,7 +5,7 @@ import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
 import { useRoute, useRouter } from 'vue-router'
 import { write_contract } from '@/utils/pageAuth'
-import type { Buyer, Succession } from '@/store/types/contract'
+import type { BuyerForm, Succession } from '@/store/types/contract'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContNavigation from '@/views/contracts/Register/components/ContNavigation.vue'
@@ -42,10 +42,10 @@ const fetchSuccession = (pk: number) => contStore.fetchSuccession(pk)
 const fetchSuccessionList = (projId: number, page?: number) =>
   contStore.fetchSuccessionList(projId, page)
 
-// const createBuyer = (payload: Succession & Buyer & { project: number }) =>
+// const createBuyer = (payload: Succession & BuyerForm & { project: number }) =>
 //   contStore.createBuyer(payload)
 
-const patchSuccession = (payload: Succession & Buyer & { project: number; page: number }) =>
+const patchSuccession = (payload: Succession & BuyerForm & { project: number; page: number }) =>
   contStore.patchSuccession(payload)
 
 const route = useRoute()
@@ -84,21 +84,21 @@ const callFormModal = () => {
   else successionAlertModal.value.callModal()
 }
 
-const onSubmit = (payload: { s_data: Succession; b_data: Buyer }) => {
+const onSubmit = (payload: { s_data: Succession; b_data: BuyerForm }) => {
   const { s_data, b_data } = payload
   const dbData = { ...s_data, ...b_data }
+
   console.log(s_data, b_data)
-  // if (!!project.value) {
-  //   if (!s_data.pk) {
-  //     createBuyer({ ...dbData, project: project.value })
-  //     router.push({ name: '권리 의무 승계' })
-  //   } else
-  //     patchSuccession({
-  //       ...dbData,
-  //       project: project.value,
-  //       page: page.value,
-  //     })
-  // } else alert('프로젝트를 선택하여 주세요!')
+
+  if (!s_data.pk || !b_data.pk) {
+    createBuyer({ ...dbData, project: project.value })
+    router.push({ name: '권리 의무 승계' })
+  } else
+    patchSuccession({
+      ...dbData,
+      project: project.value,
+      page: page.value,
+    })
 }
 
 const dataSetup = (pk: number) => fetchSuccessionList(pk)
