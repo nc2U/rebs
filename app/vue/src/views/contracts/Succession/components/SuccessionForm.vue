@@ -93,6 +93,11 @@ const done = computed(() => !!props.succession && props.succession.is_approval)
 const contStore = useContract()
 const contractor = computed(() => contStore.contractor)
 
+const seller = computed(() => ({
+  pk: props.succession ? props.succession.seller.pk : contractor.value?.pk,
+  name: props.succession ? props.succession.seller.name : contractor.value?.name,
+}))
+
 const onSubmit = (event: Event) => {
   if (write_contract.value) {
     if (isValidate(event)) {
@@ -192,7 +197,6 @@ onBeforeMount(() => formDataSet())
 </script>
 
 <template>
-  {{ succession }}
   <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
     <CModalBody class="p-4">
       <CRow class="mb-2">
@@ -202,9 +206,9 @@ onBeforeMount(() => formDataSet())
               양{{ done ? '수' : '도' }}계약자
             </CFormLabel>
             <CCol sm="8">
-              <CFormSelect v-if="contractor" v-model="form.seller" required readonly>
-                <option :value="contractor.pk">
-                  {{ contractor.name || succession.seller.name }}
+              <CFormSelect v-model="form.seller" required readonly>
+                <option :value="seller.pk">
+                  {{ seller.name }}
                 </option>
               </CFormSelect>
             </CCol>
@@ -563,9 +567,9 @@ onBeforeMount(() => formDataSet())
   <DaumPostcode ref="postCode" @address-callback="addressCallback" />
 
   <ConfirmModal ref="refConfirmModal">
-    <template #header> 계약 해지 정보 - [삭제]</template>
+    <template #header> 권리 의무 승계 정보 - [삭제]</template>
     <template #default>
-      삭제 후 복구할 수 없습니다. 해당 건별 수납 정보 삭제를 진행하시겠습니까?
+      삭제 후 복구할 수 없습니다. 해당 권리 의무 승계 정보 삭제를 진행하시겠습니까?
     </template>
     <template #footer>
       <CButton color="danger" @click="modalAction">삭제</CButton>
