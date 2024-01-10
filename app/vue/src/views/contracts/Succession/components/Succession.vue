@@ -32,12 +32,12 @@ const callFormModal = () => {
   </CTableDataCell>
   <CTableDataCell class="text-center">
     <router-link to="" @click="callFormModal">
-      {{ done ? succession.buyer.name : succession.seller.name }}
+      {{ succession.seller.name }}
     </router-link>
   </CTableDataCell>
   <CTableDataCell class="text-center">
     <router-link to="" @click="callFormModal">
-      {{ done ? succession.seller.name : succession.buyer.name }}
+      {{ succession.buyer.name }}
     </router-link>
   </CTableDataCell>
   <CTableDataCell class="text-center">

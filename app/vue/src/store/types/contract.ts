@@ -202,6 +202,24 @@ export interface Buyer {
   }
 }
 
+export interface BuyerForm {
+  name: string
+  birth_date: string
+  gender: 'M' | 'F'
+  id_zipcode: string
+  id_address1: string
+  id_address2: string
+  id_address3: string
+  dm_zipcode: string
+  dm_address1: string
+  dm_address2: string
+  dm_address3: string
+  cell_phone: string
+  home_phone: string
+  other_phone: string
+  email: string
+}
+
 export interface ContractRelease {
   pk: number
   project: number

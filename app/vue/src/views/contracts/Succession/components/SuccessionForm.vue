@@ -3,7 +3,7 @@ import { ref, reactive, computed, onBeforeMount, nextTick, type PropType } from 
 import { write_contract } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
 import { useContract } from '@/store/pinia/contract'
-import { type Buyer, type Succession } from '@/store/types/contract'
+import { type BuyerForm, type Succession } from '@/store/types/contract'
 import { type AddressData, callAddress } from '@/components/DaumPostcode/address'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -35,8 +35,7 @@ const form = reactive({
   note: '',
 })
 
-const buyer_data = reactive<any>({
-  pk: undefined,
+const buyer_data = reactive<BuyerForm>({
   name: '',
   birth_date: '',
   gender: 'M',
@@ -68,7 +67,6 @@ const formsCheck = computed(() => {
     const j = buyer_data.gender === props.succession.buyer.gender
 
     const addr = props.succession.buyer.contractoraddress
-
     const k = buyer_data.id_zipcode === addr.id_zipcode
     const l = buyer_data.id_address1 === addr.id_address1
     const m = buyer_data.id_address2 === addr.id_address2
@@ -93,6 +91,11 @@ const done = computed(() => !!props.succession && props.succession.is_approval)
 
 const contStore = useContract()
 const contractor = computed(() => contStore.contractor)
+
+const seller = computed(() => ({
+  pk: props.succession ? props.succession.seller.pk : contractor.value?.pk,
+  name: props.succession ? props.succession.seller.name : contractor.value?.name,
+}))
 
 const onSubmit = (event: Event) => {
   if (write_contract.value) {
@@ -152,32 +155,36 @@ const chkApproval = () => {
 
 const formDataSet = () => {
   if (props.succession) {
+    const buyer = props.succession.buyer
     form.pk = props.succession.pk
     form.contract = props.succession.contract.pk
     form.seller = props.succession.seller.pk
-    form.buyer = props.succession.buyer.pk
+    form.buyer = buyer.pk as number
     form.apply_date = props.succession.apply_date
     form.trading_date = props.succession.trading_date
     form.is_approval = props.succession.is_approval
     form.approval_date = props.succession.approval_date
     form.note = props.succession.note
 
-    //     buyer_data.b_pk = val.b_pk
-    //     buyer_data.name = val.name
-    //     buyer_data.birth_date = val.birth_date
-    //     buyer_data.gender = val.gender
-    //     buyer_data.id_zipcode = val.id_zipcode
-    //     buyer_data.id_address1 = val.id_address1
-    //     buyer_data.id_address2 = val.id_address2
-    //     buyer_data.id_address3 = val.id_address3
-    //     buyer_data.dm_zipcode = val.dm_zipcode
-    //     buyer_data.dm_address1 = val.dm_address1
-    //     buyer_data.dm_address2 = val.dm_address2
-    //     buyer_data.dm_address3 = val.dm_address3
-    //     buyer_data.cell_phone = val.cell_phone
-    //     buyer_data.home_phone = val.home_phone
-    //     buyer_data.other_phone = val.other_phone
-    //     buyer_data.email = val.email
+    buyer_data.name = buyer.name
+    buyer_data.birth_date = buyer.birth_date
+    buyer_data.gender = buyer.gender
+
+    const addr = buyer.contractoraddress
+    buyer_data.id_zipcode = addr.id_zipcode
+    buyer_data.id_address1 = addr.id_address1
+    buyer_data.id_address2 = addr.id_address2
+    buyer_data.id_address3 = addr.id_address3
+    buyer_data.dm_zipcode = addr.dm_zipcode
+    buyer_data.dm_address1 = addr.dm_address1
+    buyer_data.dm_address2 = addr.dm_address2
+    buyer_data.dm_address3 = addr.dm_address3
+
+    const cont = buyer.contractorcontact
+    buyer_data.cell_phone = cont.cell_phone
+    buyer_data.home_phone = cont.home_phone
+    buyer_data.other_phone = cont.other_phone
+    buyer_data.email = cont.email
   } else {
     form.contract = contractor.value?.contract || null
     form.seller = contractor.value?.pk || null
@@ -188,45 +195,53 @@ onBeforeMount(() => formDataSet())
 </script>
 
 <template>
-  {{ succession }}
   <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
     <CModalBody class="p-4">
       <CRow class="mb-2">
         <CCol xs="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">
-              양{{ done ? '수' : '도' }}계약자
-            </CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label"> 양도계약자</CFormLabel>
             <CCol sm="8">
-              <CFormSelect v-if="contractor" v-model="form.seller" required readonly>
-                <option :value="contractor.pk">
-                  {{ contractor.name }}
+              <CFormSelect v-model="form.seller" required readonly :disabled="done">
+                <option :value="seller.pk">
+                  {{ seller.name }}
                 </option>
               </CFormSelect>
             </CCol>
           </CRow>
         </CCol>
 
-        <CCol xs="6">
-          <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">계약건</CFormLabel>
-            <CCol sm="8" class="text-left">
-              <CFormSelect v-if="contractor" v-model="form.contract" required readonly>
-                <option :value="contractor.contract">
-                  {{ contractor.__str__ }}
-                </option>
-              </CFormSelect>
-            </CCol>
-          </CRow>
-        </CCol>
+        <!--        <CCol xs="6">-->
+        <!--          <CRow>-->
+        <!--            <CFormLabel class="col-sm-4 col-form-label">계약건</CFormLabel>-->
+        <!--            <CCol sm="8" class="text-left">-->
+        <!--              <CFormSelect-->
+        <!--                v-if="contractor"-->
+        <!--                v-model="form.contract"-->
+        <!--                required-->
+        <!--                readonly-->
+        <!--                :disabled="done"-->
+        <!--              >-->
+        <!--                <option :value="contractor.contract">-->
+        <!--                  {{ contractor.__str__ }}-->
+        <!--                </option>-->
+        <!--              </CFormSelect>-->
+        <!--            </CCol>-->
+        <!--          </CRow>-->
+        <!--        </CCol>-->
       </CRow>
 
       <CRow class="mb-2">
         <CCol xs="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label"> 승계신청일</CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label">승계신청일</CFormLabel>
             <CCol sm="8">
-              <DatePicker v-model="form.apply_date" required placeholder="승계신청일" />
+              <DatePicker
+                v-model="form.apply_date"
+                required
+                placeholder="승계신청일"
+                :disabled="done"
+              />
             </CCol>
           </CRow>
         </CCol>
@@ -235,7 +250,12 @@ onBeforeMount(() => formDataSet())
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label"> 매매계약일</CFormLabel>
             <CCol sm="8">
-              <DatePicker v-model="form.trading_date" required placeholder="매매계약일" />
+              <DatePicker
+                v-model="form.trading_date"
+                required
+                placeholder="매매계약일"
+                :disabled="done"
+              />
             </CCol>
           </CRow>
         </CCol>
@@ -243,14 +263,12 @@ onBeforeMount(() => formDataSet())
 
       <v-divider />
 
-      <h6 class="pb-2">◼︎ 양{{ done ? '도' : '수' }}계약자 인적사항</h6>
+      <h6 class="pb-2">◼︎ 양수계약자 인적사항</h6>
 
       <CRow class="mb-2">
         <CCol xs="6">
           <CRow>
-            <CFormLabel class="col-sm-4 col-form-label">
-              양{{ done ? '도' : '수' }}계약자
-            </CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label">양수계약자</CFormLabel>
             <CCol sm="8">
               <CFormInput
                 v-model="buyer_data.name"
@@ -395,8 +413,8 @@ onBeforeMount(() => formDataSet())
                   maxlength="5"
                   placeholder="우편번호"
                   required
-                  :disabled="done"
                   @focus="postCode.initiate(2)"
+                  :disabled="done"
                 />
               </CInputGroup>
             </CCol>
@@ -406,8 +424,8 @@ onBeforeMount(() => formDataSet())
                 maxlength="35"
                 placeholder="주민등록 메인 주소"
                 required
-                :disabled="done"
                 @focus="postCode.initiate(2)"
+                :disabled="done"
               />
             </CCol>
           </CRow>
@@ -418,16 +436,16 @@ onBeforeMount(() => formDataSet())
                 ref="address21"
                 v-model="buyer_data.id_address2"
                 maxlength="20"
-                :disabled="done"
                 placeholder="상세주소(지번, 동호수)"
+                :disabled="done"
               />
             </CCol>
             <CCol xs="6">
               <CFormInput
                 v-model="buyer_data.id_address3"
                 maxlength="20"
-                :disabled="done"
                 placeholder="참고항목(동, 건물)"
+                :disabled="done"
               />
             </CCol>
           </CRow>
@@ -448,8 +466,8 @@ onBeforeMount(() => formDataSet())
                   maxlength="5"
                   placeholder="우편번호"
                   required
-                  :disabled="done"
                   @focus="postCode.initiate(3)"
+                  :disabled="done"
                 />
               </CInputGroup>
             </CCol>
@@ -459,8 +477,8 @@ onBeforeMount(() => formDataSet())
                 maxlength="35"
                 placeholder="우편송달 메인 주소"
                 required
-                :disabled="done"
                 @focus="postCode.initiate(3)"
+                :disabled="done"
               />
             </CCol>
           </CRow>
@@ -471,8 +489,8 @@ onBeforeMount(() => formDataSet())
                 ref="address22"
                 v-model="buyer_data.dm_address2"
                 maxlength="20"
-                :disabled="done"
                 placeholder="상세주소(지번, 동호수)"
+                :disabled="done"
               />
             </CCol>
             <CCol xs="6">
@@ -480,16 +498,16 @@ onBeforeMount(() => formDataSet())
                 <CFormInput
                   v-model="buyer_data.dm_address3"
                   maxlength="20"
-                  :disabled="done"
                   placeholder="참고항목(동, 건물)"
+                  :disabled="done"
                 />
                 <CInputGroupText>
                   <CFormCheck
                     id="toSame"
                     v-model="sameAddr"
                     label="상동"
-                    :disabled="done"
                     @click="toSame"
+                    :disabled="done"
                   />
                 </CInputGroupText>
               </CInputGroup>
@@ -523,7 +541,7 @@ onBeforeMount(() => formDataSet())
               <DatePicker
                 v-model="form.approval_date"
                 :required="form.is_approval"
-                :disabled="!succession"
+                :disabled="!succession || done"
                 placeholder="변경인가일"
               />
             </CCol>
@@ -536,7 +554,7 @@ onBeforeMount(() => formDataSet())
           <CRow>
             <CFormLabel class="col-sm-2 col-form-label">비고</CFormLabel>
             <CCol sm="10">
-              <CFormTextarea v-model="form.note" placeholder="기타 특이사항" />
+              <CFormTextarea v-model="form.note" placeholder="기타 특이사항" :disabled="done" />
             </CCol>
           </CRow>
         </CCol>
@@ -559,9 +577,9 @@ onBeforeMount(() => formDataSet())
   <DaumPostcode ref="postCode" @address-callback="addressCallback" />
 
   <ConfirmModal ref="refConfirmModal">
-    <template #header> 계약 해지 정보 - [삭제]</template>
+    <template #header> 권리 의무 승계 정보 - [삭제]</template>
     <template #default>
-      삭제 후 복구할 수 없습니다. 해당 건별 수납 정보 삭제를 진행하시겠습니까?
+      삭제 후 복구할 수 없습니다. 해당 권리 의무 승계 정보 삭제를 진행하시겠습니까?
     </template>
     <template #footer>
       <CButton color="danger" @click="modalAction">삭제</CButton>
