@@ -1,19 +1,38 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useContract } from '@/store/pinia/contract'
 import { type Succession as SuccessType } from '@/store/types/contract'
 import { TableSecondary } from '@/utils/cssMixins'
+import { write_contract } from '@/utils/pageAuth'
 import Pagination from '@/components/Pagination'
 import Succession from '@/views/contracts/Succession/components/Succession.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import FormModal from '@/components/Modals/FormModal.vue'
+import SuccessionForm from '@/views/contracts/Succession/components/SuccessionForm.vue'
 
 const emit = defineEmits(['page-select', 'on-submit'])
+
+const formData = ref<SuccessType | null>(null)
+
+const successionFormModal = ref()
+const successionAlertModal = ref()
 
 const contractStore = useContract()
 const successionList = computed(() => contractStore.successionList)
 const successionPages = computed(() => contractStore.successionPages)
 
 const pageSelect = (page: number) => emit('page-select', page)
-const onSubmit = (payload: SuccessType) => emit('on-submit', payload)
+
+const callFormModal = (payload: SuccessType) => {
+  formData.value = payload
+  if (write_contract.value) successionFormModal.value.callModal()
+  else successionAlertModal.value.callModal()
+}
+
+const onSubmit = (payload: SuccessType) => {
+  emit('on-submit', payload)
+  successionFormModal.value.close()
+}
 </script>
 
 <template>
@@ -47,7 +66,7 @@ const onSubmit = (payload: SuccessType) => emit('on-submit', payload)
         :key="suc.pk"
         :class="suc.is_approval ? 'bg-light' : ''"
       >
-        <Succession :succession="suc" @on-submit="onSubmit" />
+        <Succession :succession="suc" @call-form="callFormModal" />
       </CTableRow>
     </CTableBody>
   </CTable>
@@ -59,4 +78,17 @@ const onSubmit = (payload: SuccessType) => emit('on-submit', payload)
     class="mt-3"
     @active-page-change="pageSelect"
   />
+
+  <FormModal ref="successionFormModal" size="lg">
+    <template #header>권리 의무 승계 수정 등록</template>
+    <template #default>
+      <SuccessionForm
+        :succession="formData"
+        @on-submit="onSubmit"
+        @close="successionFormModal.close()"
+      />
+    </template>
+  </FormModal>
+
+  <AlertModal ref="successionAlertModal" />
 </template>

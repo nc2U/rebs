@@ -1,19 +1,12 @@
 <script lang="ts" setup>
-import { ref, computed, type PropType } from 'vue'
+import { computed, type PropType } from 'vue'
 import { type Succession } from '@/store/types/contract'
 import { useRouter } from 'vue-router'
-import { write_contract } from '@/utils/pageAuth'
-import FormModal from '@/components/Modals/FormModal.vue'
-import SuccessionForm from '@/views/contracts/Succession/components/SuccessionForm.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
   succession: { type: Object as PropType<Succession>, required: true },
 })
-const emit = defineEmits(['on-submit'])
-
-const successionFormModal = ref()
-const successionAlertModal = ref()
+const emit = defineEmits(['call-form', 'on-submit'])
 
 const done = computed(() => props.succession.is_approval)
 const buttonColor = computed(() => (!done.value ? 'success' : 'secondary'))
@@ -21,19 +14,13 @@ const buttonColor = computed(() => (!done.value ? 'success' : 'secondary'))
 const router = useRouter()
 
 const callFormModal = () => {
-  router.push({
+  router.replace({
     name: '권리 의무 승계',
-    query: { contractor: props.succession?.buyer.b_pk },
+    query: { contractor: props.succession?.buyer.pk },
   })
   setTimeout(() => {
-    if (write_contract.value) successionFormModal.value.callModal()
-    else successionAlertModal.value.callModal()
+    emit('call-form', props.succession)
   }, 300)
-}
-
-const onSubmit = (payload: Succession) => {
-  emit('on-submit', payload)
-  successionFormModal.value.close()
 }
 </script>
 
@@ -68,17 +55,4 @@ const onSubmit = (payload: Succession) => {
   <CTableDataCell class="text-center">
     <CButton type="button" :color="buttonColor" size="sm" @click="callFormModal"> 확인</CButton>
   </CTableDataCell>
-
-  <FormModal ref="successionFormModal" size="lg">
-    <template #header>권리 의무 승계 수정 등록</template>
-    <template #default>
-      <SuccessionForm
-        :succession="succession"
-        @on-submit="onSubmit"
-        @close="successionFormModal.close()"
-      />
-    </template>
-  </FormModal>
-
-  <AlertModal ref="successionAlertModal" />
 </template>

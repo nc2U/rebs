@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, onBeforeMount, nextTick } from 'vue'
+import { ref, reactive, computed, onBeforeMount, nextTick, type PropType } from 'vue'
 import { write_contract } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
 import { useContract } from '@/store/pinia/contract'
-import { type Buyer } from '@/store/types/contract'
+import { type Buyer, type Succession } from '@/store/types/contract'
 import { type AddressData, callAddress } from '@/components/DaumPostcode/address'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
-const props = defineProps({ succession: { type: Object, default: null } })
+const props = defineProps({ succession: { type: Object as PropType<Succession>, default: null } })
 
 const emit = defineEmits(['on-submit', 'close'])
 
@@ -190,6 +190,7 @@ onBeforeMount(() => formDataSet())
 </script>
 
 <template>
+  {{ succession }}
   <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
     <CModalBody class="p-4">
       <CRow class="mb-2">
