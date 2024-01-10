@@ -604,7 +604,7 @@ class SuccessionInContractorSerializer(serializers.ModelSerializer):
 
 class ContractorSerializer(serializers.ModelSerializer):
     qualifi_display = serializers.CharField(source='get_qualification_display', read_only=True)
-    succession = SuccessionInContractorSerializer(source='prev_contractor', read_only=True)
+    succession = SuccessionInContractorSerializer(source='curr_contractor', read_only=True)
     contractorrelease = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:

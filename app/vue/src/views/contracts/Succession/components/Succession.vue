@@ -23,7 +23,7 @@ const router = useRouter()
 const callFormModal = () => {
   router.push({
     name: '권리 의무 승계',
-    query: { contractor: props.succession.seller.pk },
+    query: { contractor: props.succession?.buyer.b_pk },
   })
   setTimeout(() => {
     if (write_contract.value) successionFormModal.value.callModal()
