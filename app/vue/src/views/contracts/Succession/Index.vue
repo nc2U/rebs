@@ -42,7 +42,7 @@ const fetchSuccession = (pk: number) => contStore.fetchSuccession(pk)
 const fetchSuccessionList = (projId: number, page?: number) =>
   contStore.fetchSuccessionList(projId, page)
 
-const createSuccession = (payload: Succession & BuyerForm & { project: number }) =>
+const createSuccession = (payload: Succession & BuyerForm & { project: number; page: number }) =>
   contStore.createSuccession(payload)
 
 const patchSuccession = (payload: Succession & BuyerForm & { project: number; page: number }) =>
@@ -88,10 +88,8 @@ const onSubmit = (payload: { s_data: Succession; b_data: BuyerForm }) => {
   const { s_data, b_data } = payload
   const dbData = { ...s_data, ...b_data }
 
-  console.log(s_data, b_data)
-
   if (!s_data.pk) {
-    createSuccession({ ...dbData, project: project.value as number })
+    createSuccession({ ...dbData, project: project.value as number, page: 1 })
     router.push({ name: '권리 의무 승계', query: { contractor: s_data.seller.pk } })
   } else
     patchSuccession({
@@ -99,6 +97,7 @@ const onSubmit = (payload: { s_data: Succession; b_data: BuyerForm }) => {
       project: project.value as number,
       page: page.value,
     })
+  successionFormModal.value.close()
 }
 
 const dataSetup = (pk: number) => fetchSuccessionList(pk)
