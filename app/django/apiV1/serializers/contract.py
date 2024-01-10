@@ -639,16 +639,26 @@ class SellerInSuccessionSerializer(serializers.ModelSerializer):
         fields = ('pk', 'name')
 
 
+class BuyerAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContractorAddress
+        fields = ('pk', 'id_zipcode', 'id_address1', 'id_address2', 'id_address3',
+                  'dm_zipcode', 'dm_address1', 'dm_address2', 'dm_address3')
+
+
+class BuyerContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContractorContact
+        fields = ('pk', 'cell_phone', 'home_phone', 'other_phone', 'email')
+
+
 class BuyerInSuccessionSerializer(serializers.ModelSerializer):
+    contractoraddress = BuyerAddressSerializer(read_only=True)
+    contractorcontact = BuyerContactSerializer(read_only=True)
+
     class Meta:
         model = Contractor
-        fields = ('pk', 'name', 'birth_date', 'gender',)
-        # 'contractoraddress__id_zipcode', 'contractoraddress__id_address1',
-        # 'contractoraddress__id_address2', 'contractoraddress__id_address3',
-        # 'contractoraddress__dm_zipcode', 'contractoraddress__dm_address1',
-        # 'contractoraddress__dm_address2', 'contractoraddress__dm_address3',
-        # 'contractorcontact__cell_phone', 'contractorcontact__home_phone',
-        # 'contractorcontact__other_phone', 'contractorcontact__email')
+        fields = ('pk', 'name', 'birth_date', 'gender', 'contractoraddress', 'contractorcontact')
 
 
 class SuccessionSerializer(serializers.ModelSerializer):

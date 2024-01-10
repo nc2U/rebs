@@ -35,7 +35,7 @@ const form = reactive({
   note: '',
 })
 
-const buyer_data = reactive<Buyer>({
+const buyer_data = reactive<any>({
   pk: undefined,
   name: '',
   birth_date: '',
@@ -54,62 +54,45 @@ const buyer_data = reactive<Buyer>({
   email: '',
 })
 
-const formsCheck = computed(() => 1) // {
-// if (props.succession && buyer.value) {
-//   const a = form.buyer === props.succession.buyer.b_pk
-//   const b = form.apply_date === props.succession.apply_date
-//   const c = form.trading_date === props.succession.trading_date
-//   const d = form.is_approval === props.succession.is_approval
-//   const e = form.approval_date === props.succession.approval_date
-//   const f = form.note === props.succession.note
-//   const g = buyer_data.name === buyer.value.name
-//   const h = buyer_data.birth_date === buyer.value.birth_date
-//   const i = buyer_data.gender === buyer.value.gender
-//   const j = buyer_data.id_zipcode === buyer.value.id_zipcode
-//   const k = buyer_data.id_address1 === buyer.value.id_address1
-//   const l = buyer_data.id_address2 === buyer.value.id_address2
-//   const m = buyer_data.id_address3 === buyer.value.id_address3
-//   const n = buyer_data.dm_zipcode === buyer.value.dm_zipcode
-//   const o = buyer_data.dm_address1 === buyer.value.dm_address1
-//   const p = buyer_data.dm_address2 === buyer.value.dm_address2
-//   const q = buyer_data.dm_address3 === buyer.value.dm_address3
-//   const r = buyer_data.cell_phone === buyer.value.cell_phone
-//   const s = buyer_data.home_phone === buyer.value.home_phone
-//   const t = buyer_data.other_phone === buyer.value.other_phone
-//   const u = buyer_data.email === buyer.value.email
-//   const fc = a && b && c && d && e && f && g && h && i && j
-//   const bc = k && l && m && n && o && p && q && r && s && t && u
-//   return fc && bc
-// } else return false
-// })
+const formsCheck = computed(() => {
+  if (props.succession) {
+    const a = form.seller === props.succession.seller.pk
+    const b = form.buyer === props.succession.buyer.pk
+    const c = form.apply_date === props.succession.apply_date
+    const d = form.trading_date === props.succession.trading_date
+    const e = form.is_approval === props.succession.is_approval
+    const f = form.approval_date === props.succession.approval_date
+    const g = form.note === props.succession.note
+    const h = buyer_data.name === props.succession.buyer.name
+    const i = buyer_data.birth_date === props.succession.buyer.birth_date
+    const j = buyer_data.gender === props.succession.buyer.gender
+
+    const addr = props.succession.buyer.contractoraddress
+
+    const k = buyer_data.id_zipcode === addr.id_zipcode
+    const l = buyer_data.id_address1 === addr.id_address1
+    const m = buyer_data.id_address2 === addr.id_address2
+    const n = buyer_data.id_address3 === addr.id_address3
+    const o = buyer_data.dm_zipcode === addr.dm_zipcode
+    const p = buyer_data.dm_address1 === addr.dm_address1
+    const q = buyer_data.dm_address2 === addr.dm_address2
+    const r = buyer_data.dm_address3 === addr.dm_address3
+
+    const cont = props.succession.buyer.contractorcontact
+    const s = buyer_data.cell_phone === cont.cell_phone
+    const t = buyer_data.home_phone === cont.home_phone
+    const u = buyer_data.other_phone === cont.other_phone
+    const v = buyer_data.email === cont.email
+    const fc = a && b && c && d && e && f && g && h && i && j && k
+    const bc = l && m && n && o && p && q && r && s && t && u && v
+    return fc && bc
+  } else return false
+})
 
 const done = computed(() => !!props.succession && props.succession.is_approval)
 
 const contStore = useContract()
-// const buyer = computed(() => contStore.buyer)
 const contractor = computed(() => contStore.contractor)
-// const fetchBuyer = (pk: number) => contStore.fetchBuyer(pk)
-
-// watch(buyer, val => {
-//   if (val) {
-//     buyer_data.b_pk = val.b_pk
-//     buyer_data.name = val.name
-//     buyer_data.birth_date = val.birth_date
-//     buyer_data.gender = val.gender
-//     buyer_data.id_zipcode = val.id_zipcode
-//     buyer_data.id_address1 = val.id_address1
-//     buyer_data.id_address2 = val.id_address2
-//     buyer_data.id_address3 = val.id_address3
-//     buyer_data.dm_zipcode = val.dm_zipcode
-//     buyer_data.dm_address1 = val.dm_address1
-//     buyer_data.dm_address2 = val.dm_address2
-//     buyer_data.dm_address3 = val.dm_address3
-//     buyer_data.cell_phone = val.cell_phone
-//     buyer_data.home_phone = val.home_phone
-//     buyer_data.other_phone = val.other_phone
-//     buyer_data.email = val.email
-//   }
-// })
 
 const onSubmit = (event: Event) => {
   if (write_contract.value) {
@@ -172,14 +155,29 @@ const formDataSet = () => {
     form.pk = props.succession.pk
     form.contract = props.succession.contract.pk
     form.seller = props.succession.seller.pk
-    form.buyer = props.succession.buyer.b_pk
+    form.buyer = props.succession.buyer.pk
     form.apply_date = props.succession.apply_date
     form.trading_date = props.succession.trading_date
     form.is_approval = props.succession.is_approval
     form.approval_date = props.succession.approval_date
     form.note = props.succession.note
 
-    // fetchBuyer(props.succession.buyer.b_pk)
+    //     buyer_data.b_pk = val.b_pk
+    //     buyer_data.name = val.name
+    //     buyer_data.birth_date = val.birth_date
+    //     buyer_data.gender = val.gender
+    //     buyer_data.id_zipcode = val.id_zipcode
+    //     buyer_data.id_address1 = val.id_address1
+    //     buyer_data.id_address2 = val.id_address2
+    //     buyer_data.id_address3 = val.id_address3
+    //     buyer_data.dm_zipcode = val.dm_zipcode
+    //     buyer_data.dm_address1 = val.dm_address1
+    //     buyer_data.dm_address2 = val.dm_address2
+    //     buyer_data.dm_address3 = val.dm_address3
+    //     buyer_data.cell_phone = val.cell_phone
+    //     buyer_data.home_phone = val.home_phone
+    //     buyer_data.other_phone = val.other_phone
+    //     buyer_data.email = val.email
   } else {
     form.contract = contractor.value?.contract || null
     form.seller = contractor.value?.pk || null
