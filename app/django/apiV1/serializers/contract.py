@@ -864,15 +864,17 @@ class ContractorReleaseSerializer(serializers.ModelSerializer):
         # 1. 해지정보 테이블 입력
         instance.__dict__.update(**validated_data)
 
-        contractor = Contractor.objects.get(pk=self.initial_data.get('contractor'))
+        contractor = instance.contractor  # Contractor.objects.get(pk=self.initial_data.get('contractor'))
 
-        try:
-            released_done = contractor.contractorrelease.status >= '4'
-        except ObjectDoesNotExist:
-            released_done = False
+        # try:
+        #     released_done = instance.status >= '4'
+        # except ObjectDoesNotExist:
+        #     released_done = False
+
+        released_done = True if instance.status >= '4' else False
 
         # 미완료인 상태에서 4 -> 처리완료, 5 -> 자격상실 :: 최종 해지 확정 요청이 있을 경우
-        if not released_done and self.initial_data.get('status') >= '4':
+        if not released_done and validated_data.get('status') >= '4':
             # 1. 계약자 정보 현재 상태 변경
             contract = Contract.objects.get(pk=contractor.contract.id)
             keyunit = KeyUnit.objects.get(contract__contractor=contractor)
