@@ -4,7 +4,8 @@ import { navMenu, pageTitle } from '@/views/contracts/_menu/headermixin2'
 import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
 import { useRoute, useRouter } from 'vue-router'
-import { type Buyer, type Succession } from '@/store/types/contract'
+import { write_contract } from '@/utils/pageAuth'
+import type { Buyer, Succession } from '@/store/types/contract'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContNavigation from '@/views/contracts/Register/components/ContNavigation.vue'
@@ -13,8 +14,14 @@ import ContController from './components/ContController.vue'
 import SuccessionButton from './components/SuccessionButton.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import SuccessionList from './components/SuccessionList.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import FormModal from '@/components/Modals/FormModal.vue'
+import SuccessionForm from '@/views/contracts/Succession/components/SuccessionForm.vue'
 
 const page = ref(1)
+
+const successionFormModal = ref()
+const successionAlertModal = ref()
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
@@ -23,6 +30,8 @@ const downloadUrl = computed(() => `/excel/successions/?project=${project.value}
 
 const contStore = useContract()
 const contractor = computed(() => contStore.contractor)
+const succession = computed(() => contStore.succession)
+const isSuccession = computed(() => !!succession.value && !succession.value.is_approval)
 
 const fetchContract = (cont: number) => contStore.fetchContract(cont)
 const fetchContractor = (contor: number) => contStore.fetchContractor(contor)
@@ -68,6 +77,11 @@ const searchContractor = (search: string) => {
 const pageSelect = (p: number) => {
   page.value = p
   if (project.value) fetchSuccessionList(project.value, p)
+}
+
+const callFormModal = () => {
+  if (write_contract.value) successionFormModal.value.callModal()
+  else successionAlertModal.value.callModal()
 }
 
 const onSubmit = (payload: { s_data: Succession; b_data: Buyer }) => {
@@ -121,10 +135,29 @@ onBeforeMount(() => {
     <CCardBody class="pb-5">
       <ContNavigation :cont-on="!!contractor?.status && contractor.status < '3'" />
       <ContController :project="project || undefined" @search-contractor="searchContractor" />
+
       <ContractorAlert v-if="contractor" :contractor="contractor" />
-      <SuccessionButton v-if="contractor" @on-submit="onSubmit" />
+
+      <SuccessionButton
+        v-if="contractor"
+        :is-succession="isSuccession"
+        @call-form="callFormModal"
+      />
       <TableTitleRow title="승계 진행 건 목록" excel :url="downloadUrl" :disabled="!project" />
-      <SuccessionList @page-select="pageSelect" @on-submit="onSubmit" />
+      <SuccessionList @page-select="pageSelect" @call-form="callFormModal" />
     </CCardBody>
   </ContentBody>
+
+  <FormModal ref="successionFormModal" size="lg">
+    <template #header>권리 의무 승계 수정 등록</template>
+    <template #default>
+      <SuccessionForm
+        :succession="succession"
+        @on-submit="onSubmit"
+        @close="successionFormModal.close()"
+      />
+    </template>
+  </FormModal>
+
+  <AlertModal ref="successionAlertModal" />
 </template>

@@ -3,7 +3,7 @@ import { ref, reactive, computed, onBeforeMount, nextTick, type PropType } from 
 import { write_contract } from '@/utils/pageAuth'
 import { isValidate } from '@/utils/helper'
 import { useContract } from '@/store/pinia/contract'
-import { type Buyer, type Succession } from '@/store/types/contract'
+import { type Succession } from '@/store/types/contract'
 import { type AddressData, callAddress } from '@/components/DaumPostcode/address'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -68,7 +68,6 @@ const formsCheck = computed(() => {
     const j = buyer_data.gender === props.succession.buyer.gender
 
     const addr = props.succession.buyer.contractoraddress
-
     const k = buyer_data.id_zipcode === addr.id_zipcode
     const l = buyer_data.id_address1 === addr.id_address1
     const m = buyer_data.id_address2 === addr.id_address2
@@ -152,32 +151,37 @@ const chkApproval = () => {
 
 const formDataSet = () => {
   if (props.succession) {
+    const buyer = props.succession.buyer
     form.pk = props.succession.pk
     form.contract = props.succession.contract.pk
     form.seller = props.succession.seller.pk
-    form.buyer = props.succession.buyer.pk
+    form.buyer = buyer.pk as number
     form.apply_date = props.succession.apply_date
     form.trading_date = props.succession.trading_date
     form.is_approval = props.succession.is_approval
     form.approval_date = props.succession.approval_date
     form.note = props.succession.note
 
-    //     buyer_data.b_pk = val.b_pk
-    //     buyer_data.name = val.name
-    //     buyer_data.birth_date = val.birth_date
-    //     buyer_data.gender = val.gender
-    //     buyer_data.id_zipcode = val.id_zipcode
-    //     buyer_data.id_address1 = val.id_address1
-    //     buyer_data.id_address2 = val.id_address2
-    //     buyer_data.id_address3 = val.id_address3
-    //     buyer_data.dm_zipcode = val.dm_zipcode
-    //     buyer_data.dm_address1 = val.dm_address1
-    //     buyer_data.dm_address2 = val.dm_address2
-    //     buyer_data.dm_address3 = val.dm_address3
-    //     buyer_data.cell_phone = val.cell_phone
-    //     buyer_data.home_phone = val.home_phone
-    //     buyer_data.other_phone = val.other_phone
-    //     buyer_data.email = val.email
+    buyer_data.pk = buyer.pk
+    buyer_data.name = buyer.name
+    buyer_data.birth_date = buyer.birth_date
+    buyer_data.gender = buyer.gender
+
+    const addr = buyer.contractoraddress
+    buyer_data.id_zipcode = addr.id_zipcode
+    buyer_data.id_address1 = addr.id_address1
+    buyer_data.id_address2 = addr.id_address2
+    buyer_data.id_address3 = addr.id_address3
+    buyer_data.dm_zipcode = addr.dm_zipcode
+    buyer_data.dm_address1 = addr.dm_address1
+    buyer_data.dm_address2 = addr.dm_address2
+    buyer_data.dm_address3 = addr.dm_address3
+
+    const cont = buyer.contractorcontact
+    buyer_data.cell_phone = cont.cell_phone
+    buyer_data.home_phone = cont.home_phone
+    buyer_data.other_phone = cont.other_phone
+    buyer_data.email = cont.email
   } else {
     form.contract = contractor.value?.contract || null
     form.seller = contractor.value?.pk || null
@@ -200,7 +204,7 @@ onBeforeMount(() => formDataSet())
             <CCol sm="8">
               <CFormSelect v-if="contractor" v-model="form.seller" required readonly>
                 <option :value="contractor.pk">
-                  {{ contractor.name }}
+                  {{ contractor.name || succession.seller.name }}
                 </option>
               </CFormSelect>
             </CCol>
