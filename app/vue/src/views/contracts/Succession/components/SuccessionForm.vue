@@ -203,7 +203,7 @@ onBeforeMount(() => formDataSet())
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label"> 양도계약자</CFormLabel>
             <CCol sm="8">
-              <CFormSelect v-model="form.seller" required readonly :disabled="done">
+              <CFormSelect v-model="form.seller" required readonly>
                 <option :value="seller.pk">
                   {{ seller.name }}
                 </option>
@@ -221,7 +221,6 @@ onBeforeMount(() => formDataSet())
         <!--                v-model="form.contract"-->
         <!--                required-->
         <!--                readonly-->
-        <!--                :disabled="done"-->
         <!--              >-->
         <!--                <option :value="contractor.contract">-->
         <!--                  {{ contractor.__str__ }}-->
@@ -395,7 +394,6 @@ onBeforeMount(() => formDataSet())
                 placeholder="주민등록 메인 주소"
                 required
                 @focus="postCode.initiate(2)"
-                :disabled="done"
               />
             </CCol>
           </CRow>
@@ -512,7 +510,7 @@ onBeforeMount(() => formDataSet())
           <CRow>
             <CFormLabel class="col-sm-2 col-form-label">비고</CFormLabel>
             <CCol sm="10">
-              <CFormTextarea v-model="form.note" placeholder="기타 특이사항" :disabled="done" />
+              <CFormTextarea v-model="form.note" placeholder="기타 특이사항" />
             </CCol>
           </CRow>
         </CCol>
