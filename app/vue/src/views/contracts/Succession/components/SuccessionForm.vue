@@ -36,7 +36,7 @@ const form = reactive({
 })
 
 const buyer_data = reactive<Buyer>({
-  b_pk: undefined,
+  pk: undefined,
   name: '',
   birth_date: '',
   gender: 'M',

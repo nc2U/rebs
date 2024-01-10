@@ -33,8 +33,6 @@ const fetchSuccession = (pk: number) => contStore.fetchSuccession(pk)
 const fetchSuccessionList = (projId: number, page?: number) =>
   contStore.fetchSuccessionList(projId, page)
 
-// const fetchBuyerList = (projId: number) => contStore.fetchBuyerList(projId)
-//
 // const createBuyer = (payload: Succession & Buyer & { project: number }) =>
 //   contStore.createBuyer(payload)
 
@@ -50,14 +48,14 @@ watch(route, val => {
   }
 })
 
-// watch(contractor, val => {
-//   if (val) fetchContract(val.contract)
-//   if (val?.successions.length) fetchSuccession(val.successions[0].pk)
-//   else {
-//     contStore.contract = null
-//     contStore.succession = null
-//   }
-// })
+watch(contractor, val => {
+  if (val) fetchContract(val.contract)
+  if (val?.succession) fetchSuccession(val.succession.pk)
+  else {
+    contStore.contract = null
+    contStore.succession = null
+  }
+})
 
 const router = useRouter()
 
@@ -89,17 +87,13 @@ const onSubmit = (payload: { s_data: Succession; b_data: Buyer }) => {
   // } else alert('프로젝트를 선택하여 주세요!')
 }
 
-const dataSetup = (pk: number) => {
-  fetchSuccessionList(pk)
-  // fetchBuyerList(pk)
-}
+const dataSetup = (pk: number) => fetchSuccessionList(pk)
 
 const dataReset = () => {
   contStore.contract = null
   contStore.contractor = null
   contStore.contractorList = []
   contStore.successionList = []
-  // contStore.buyerList = []
 }
 
 const projSelect = (target: number | null) => {
