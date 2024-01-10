@@ -151,7 +151,7 @@ onBeforeMount(() => {
     <template #header>권리 의무 승계 수정 등록</template>
     <template #default>
       <SuccessionForm
-        :succession="succession"
+        :succession="succession ?? undefined"
         @on-submit="onSubmit"
         @close="successionFormModal.close()"
       />
