@@ -754,7 +754,7 @@ class SuccessionSerializer(serializers.ModelSerializer):
         buyer.birth_date = buyer_birth_date
         buyer.gender = buyer_gender
         buyer.contract_date = validated_data.get('apply_date')  # 승계신청일을 계약일자로 기록
-        buyer.note = f'{buyer.note + "\n" if buyer.note else ""}{validated_data.get('note')}'
+        buyer.note = f"{buyer.note + '\n' if buyer.note else ''}{validated_data.get('note')}"
         buyer.save()
 
         buyer_id_zipcode = self.initial_data.get('id_zipcode')
