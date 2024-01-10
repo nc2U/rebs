@@ -84,11 +84,17 @@ const callFormModal = () => {
   else successionAlertModal.value.callModal()
 }
 
+const doneAlert = () =>
+  successionAlertModal.value.callModal(
+    '',
+    '승계 완료된 건 입니다. 신규 승계 건을 등록하려면 해당 계약자를 선택하십시요.',
+  )
+
 const onSubmit = (payload: { s_data: Succession; b_data: BuyerForm }) => {
   const { s_data, b_data } = payload
   const dbData = { ...s_data, ...b_data }
 
-  if (!s_data.pk) {
+  if (!isSuccession.value && !s_data.pk) {
     createSuccession({ ...dbData, project: project.value as number, page: 1 })
     router.push({ name: '권리 의무 승계', query: { contractor: s_data.seller.pk } })
   } else
@@ -143,7 +149,11 @@ onBeforeMount(() => {
         @call-form="callFormModal"
       />
       <TableTitleRow title="승계 진행 건 목록" excel :url="downloadUrl" :disabled="!project" />
-      <SuccessionList @page-select="pageSelect" @call-form="callFormModal" />
+      <SuccessionList
+        @page-select="pageSelect"
+        @call-form="callFormModal"
+        @done-alert="doneAlert"
+      />
     </CCardBody>
   </ContentBody>
 
@@ -152,6 +162,7 @@ onBeforeMount(() => {
     <template #default>
       <SuccessionForm
         :succession="succession ?? undefined"
+        :is-succession="isSuccession"
         @on-submit="onSubmit"
         @close="successionFormModal.close()"
       />

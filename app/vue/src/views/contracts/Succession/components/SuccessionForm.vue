@@ -10,7 +10,10 @@ import DatePicker from '@/components/DatePicker/index.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
-const props = defineProps({ succession: { type: Object as PropType<Succession>, default: null } })
+const props = defineProps({
+  succession: { type: Object as PropType<Succession>, default: null },
+  isSuccession: { type: Boolean, default: false },
+})
 
 const emit = defineEmits(['on-submit', 'close'])
 
@@ -54,7 +57,7 @@ const buyer_data = reactive<BuyerForm>({
 })
 
 const formsCheck = computed(() => {
-  if (props.succession) {
+  if (props.isSuccession) {
     const a = form.seller === props.succession.seller.pk
     const b = form.buyer === props.succession.buyer.pk
     const c = form.apply_date === props.succession.apply_date
@@ -87,14 +90,12 @@ const formsCheck = computed(() => {
   } else return false
 })
 
-const done = computed(() => !!props.succession && props.succession.is_approval)
-
 const contStore = useContract()
 const contractor = computed(() => contStore.contractor)
 
 const seller = computed(() => ({
-  pk: props.succession ? props.succession.seller.pk : contractor.value?.pk,
-  name: props.succession ? props.succession.seller.name : contractor.value?.name,
+  pk: props.isSuccession ? props.succession.seller.pk : contractor.value?.pk,
+  name: props.isSuccession ? props.succession.seller.name : contractor.value?.name,
 }))
 
 const onSubmit = (event: Event) => {
@@ -154,7 +155,7 @@ const chkApproval = () => {
 }
 
 const formDataSet = () => {
-  if (props.succession) {
+  if (props.isSuccession) {
     const buyer = props.succession.buyer
     form.pk = props.succession.pk
     form.contract = props.succession.contract.pk
@@ -236,12 +237,7 @@ onBeforeMount(() => formDataSet())
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">승계신청일</CFormLabel>
             <CCol sm="8">
-              <DatePicker
-                v-model="form.apply_date"
-                required
-                placeholder="승계신청일"
-                :disabled="done"
-              />
+              <DatePicker v-model="form.apply_date" required placeholder="승계신청일" />
             </CCol>
           </CRow>
         </CCol>
@@ -250,12 +246,7 @@ onBeforeMount(() => formDataSet())
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label"> 매매계약일</CFormLabel>
             <CCol sm="8">
-              <DatePicker
-                v-model="form.trading_date"
-                required
-                placeholder="매매계약일"
-                :disabled="done"
-              />
+              <DatePicker v-model="form.trading_date" required placeholder="매매계약일" />
             </CCol>
           </CRow>
         </CCol>
@@ -270,12 +261,7 @@ onBeforeMount(() => formDataSet())
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">양수계약자</CFormLabel>
             <CCol sm="8">
-              <CFormInput
-                v-model="buyer_data.name"
-                required
-                placeholder="양수계약자 성명"
-                :disabled="done"
-              />
+              <CFormInput v-model="buyer_data.name" required placeholder="양수계약자 성명" />
             </CCol>
           </CRow>
         </CCol>
@@ -286,12 +272,7 @@ onBeforeMount(() => formDataSet())
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">생년월일</CFormLabel>
             <CCol sm="8">
-              <DatePicker
-                v-model="buyer_data.birth_date"
-                required
-                placeholder="생년월일"
-                :disabled="done"
-              />
+              <DatePicker v-model="buyer_data.birth_date" required placeholder="생년월일" />
             </CCol>
           </CRow>
         </CCol>
@@ -308,7 +289,6 @@ onBeforeMount(() => formDataSet())
                   type="radio"
                   value="M"
                   name="gender"
-                  :disabled="done"
                 />
                 <label class="form-check-label" for="male">남성</label>
               </div>
@@ -320,7 +300,6 @@ onBeforeMount(() => formDataSet())
                   type="radio"
                   value="F"
                   name="gender"
-                  :disabled="done"
                 />
                 <label class="form-check-label" for="female">여성</label>
               </div>
@@ -342,7 +321,6 @@ onBeforeMount(() => formDataSet())
                 maxlength="13"
                 required
                 placeholder="휴대전화"
-                :disabled="done"
               />
             </CCol>
           </CRow>
@@ -359,7 +337,6 @@ onBeforeMount(() => formDataSet())
                 class="form-control"
                 maxlength="13"
                 placeholder="집전화"
-                :disabled="done"
               />
             </CCol>
           </CRow>
@@ -378,7 +355,6 @@ onBeforeMount(() => formDataSet())
                 class="form-control"
                 maxlength="13"
                 placeholder="기타연락처"
-                :disabled="done"
               />
             </CCol>
           </CRow>
@@ -388,12 +364,7 @@ onBeforeMount(() => formDataSet())
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label">이메일</CFormLabel>
             <CCol sm="8">
-              <CFormInput
-                v-model="buyer_data.email"
-                type="email"
-                placeholder="이메일"
-                :disabled="done"
-              />
+              <CFormInput v-model="buyer_data.email" type="email" placeholder="이메일" />
             </CCol>
           </CRow>
         </CCol>
@@ -414,7 +385,6 @@ onBeforeMount(() => formDataSet())
                   placeholder="우편번호"
                   required
                   @focus="postCode.initiate(2)"
-                  :disabled="done"
                 />
               </CInputGroup>
             </CCol>
@@ -437,7 +407,6 @@ onBeforeMount(() => formDataSet())
                 v-model="buyer_data.id_address2"
                 maxlength="20"
                 placeholder="상세주소(지번, 동호수)"
-                :disabled="done"
               />
             </CCol>
             <CCol xs="6">
@@ -445,7 +414,6 @@ onBeforeMount(() => formDataSet())
                 v-model="buyer_data.id_address3"
                 maxlength="20"
                 placeholder="참고항목(동, 건물)"
-                :disabled="done"
               />
             </CCol>
           </CRow>
@@ -467,7 +435,6 @@ onBeforeMount(() => formDataSet())
                   placeholder="우편번호"
                   required
                   @focus="postCode.initiate(3)"
-                  :disabled="done"
                 />
               </CInputGroup>
             </CCol>
@@ -478,7 +445,6 @@ onBeforeMount(() => formDataSet())
                 placeholder="우편송달 메인 주소"
                 required
                 @focus="postCode.initiate(3)"
-                :disabled="done"
               />
             </CCol>
           </CRow>
@@ -490,7 +456,6 @@ onBeforeMount(() => formDataSet())
                 v-model="buyer_data.dm_address2"
                 maxlength="20"
                 placeholder="상세주소(지번, 동호수)"
-                :disabled="done"
               />
             </CCol>
             <CCol xs="6">
@@ -499,16 +464,9 @@ onBeforeMount(() => formDataSet())
                   v-model="buyer_data.dm_address3"
                   maxlength="20"
                   placeholder="참고항목(동, 건물)"
-                  :disabled="done"
                 />
                 <CInputGroupText>
-                  <CFormCheck
-                    id="toSame"
-                    v-model="sameAddr"
-                    label="상동"
-                    @click="toSame"
-                    :disabled="done"
-                  />
+                  <CFormCheck id="toSame" v-model="sameAddr" label="상동" @click="toSame" />
                 </CInputGroupText>
               </CInputGroup>
             </CCol>
@@ -541,7 +499,7 @@ onBeforeMount(() => formDataSet())
               <DatePicker
                 v-model="form.approval_date"
                 :required="form.is_approval"
-                :disabled="!succession || done"
+                :disabled="!form.is_approval"
                 placeholder="변경인가일"
               />
             </CCol>
@@ -564,10 +522,10 @@ onBeforeMount(() => formDataSet())
     <CModalFooter>
       <CButton type="button" color="light" @click="emit('close')"> 닫기</CButton>
       <slot name="footer">
-        <CButton type="submit" :color="succession ? 'success' : 'primary'" :disabled="formsCheck">
+        <CButton type="submit" :color="isSuccession ? 'success' : 'primary'" :disabled="formsCheck">
           저장
         </CButton>
-        <CButton v-if="succession" type="button" color="danger" @click="deleteConfirm">
+        <CButton v-if="isSuccession" type="button" color="danger" @click="deleteConfirm">
           삭제
         </CButton>
       </slot>

@@ -6,7 +6,7 @@ import { useRouter } from 'vue-router'
 const props = defineProps({
   succession: { type: Object as PropType<Succession>, required: true },
 })
-const emit = defineEmits(['call-form', 'on-submit'])
+const emit = defineEmits(['call-form', 'done-alert'])
 
 const done = computed(() => props.succession.is_approval)
 const buttonColor = computed(() => (!done.value ? 'success' : 'secondary'))
@@ -14,13 +14,15 @@ const buttonColor = computed(() => (!done.value ? 'success' : 'secondary'))
 const router = useRouter()
 
 const callFormModal = () => {
-  router.replace({
-    name: '권리 의무 승계',
-    query: { contractor: props.succession?.buyer.pk },
-  })
-  setTimeout(() => {
-    emit('call-form', props.succession)
-  }, 300)
+  if (!done.value) {
+    router.replace({
+      name: '권리 의무 승계',
+      query: { contractor: props.succession?.buyer.pk },
+    })
+    setTimeout(() => {
+      emit('call-form', props.succession)
+    }, 300)
+  } else emit('done-alert')
 }
 </script>
 

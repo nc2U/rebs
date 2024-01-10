@@ -5,15 +5,15 @@ import { TableSecondary } from '@/utils/cssMixins'
 import Pagination from '@/components/Pagination'
 import Succession from '@/views/contracts/Succession/components/Succession.vue'
 
-const emit = defineEmits(['page-select', 'call-form'])
+const emit = defineEmits(['page-select', 'call-form', 'done-alert'])
 
 const contractStore = useContract()
 const successionList = computed(() => contractStore.successionList)
 const successionPages = computed(() => contractStore.successionPages)
 
 const pageSelect = (page: number) => emit('page-select', page)
-
 const callForm = () => emit('call-form')
+const doneAlert = () => emit('done-alert')
 </script>
 
 <template>
@@ -47,7 +47,7 @@ const callForm = () => emit('call-form')
         :key="suc.pk"
         :class="suc.is_approval ? 'bg-light' : ''"
       >
-        <Succession :succession="suc" @call-form="callForm" />
+        <Succession :succession="suc" @call-form="callForm" @done-alert="doneAlert" />
       </CTableRow>
     </CTableBody>
   </CTable>
