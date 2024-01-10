@@ -811,8 +811,8 @@ class ContractorReleaseSerializer(serializers.ModelSerializer):
         # 미완료인 상태에서 4 -> 처리완료, 5 -> 자격상실 :: 최종 해지 확정 요청이 있을 경우
         if not released_done and validated_data.get('status') >= '4':
             # 1. 계약자 정보 현재 상태 변경
-            contract = Contract.objects.get(pk=contractor.contract.id)
-            keyunit = KeyUnit.objects.get(contract__contractor=contractor)
+            contract = contractor.contract  # Contract.objects.get(pk=contractor.contract.id)
+            keyunit = KeyUnit.objects.get(contract=contract)
 
             completion_date = self.initial_data.get('completion_date')
 
@@ -826,10 +826,11 @@ class ContractorReleaseSerializer(serializers.ModelSerializer):
             keyunit.save()
 
             # 4. 동호수 연결 해제
+            unit = None
             try:  # 동호수 존재 여부 확인
                 unit = keyunit.houseunit
             except ObjectDoesNotExist:
-                unit = None
+                pass
             if unit:
                 unit.key_unit = None
                 unit.save()
