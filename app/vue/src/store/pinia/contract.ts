@@ -276,6 +276,20 @@ export const useContract = defineStore('contract', () => {
       })
       .catch(err => errorHandle(err.response.data))
 
+  const createSuccession = async (
+    payload: Succession & BuyerForm & { project: number; page: number },
+  ) => {
+    const { project, page, ...dbData } = payload
+    return await api
+      .post(`/succession/`, dbData)
+      .then(res =>
+        fetchSuccessionList(project, page).then(() =>
+          fetchContractor(res.data.seller.pk).then(() => message()),
+        ),
+      )
+      .catch(err => errorHandle(err.response.data))
+  }
+
   const patchSuccession = async (
     payload: Succession & BuyerForm & { project: number; page: number },
   ) => {
@@ -289,31 +303,6 @@ export const useContract = defineStore('contract', () => {
       )
       .catch(err => errorHandle(err.response.data))
   }
-
-  // // state & getters
-  // const buyer = ref<Buyer | null>(null)
-  // const buyerList = ref<Buyer[]>([])
-  //
-  // // actions
-  // const fetchBuyer = (pk: number) =>
-  //   api
-  //     .get(`/succession-buyer/${pk}/`)
-  //     .then(res => (buyer.value = res.data))
-  //     .catch(err => errorHandle(err.response.data))
-  //
-  // const fetchBuyerList = (project: number) =>
-  //   api
-  //     .get(`/succession-buyer/?project=${project}`)
-  //     .then(res => (buyerList.value = res.data.results))
-  //     .catch(err => errorHandle(err.response.data))
-  //
-  // const createBuyer = async (payload: Succession & Buyer & { project: number }) => {
-  //   const { project, ...dbData } = payload
-  //   return await api
-  //     .post(`/succession-buyer/`, dbData)
-  //     .then(() => fetchSuccessionList(project).then(() => message()))
-  //     .catch(err => errorHandle(err.response.data))
-  // }
 
   // state & getters
   const contRelease = ref<ContractRelease | null>(null)
@@ -404,14 +393,8 @@ export const useContract = defineStore('contract', () => {
     successionPages,
     fetchSuccession,
     fetchSuccessionList,
+    createSuccession,
     patchSuccession,
-
-    // buyer,
-    // buyerList,
-    //
-    // fetchBuyer,
-    // fetchBuyerList,
-    // createBuyer,
 
     contRelease,
     contReleaseList,

@@ -42,8 +42,8 @@ const fetchSuccession = (pk: number) => contStore.fetchSuccession(pk)
 const fetchSuccessionList = (projId: number, page?: number) =>
   contStore.fetchSuccessionList(projId, page)
 
-// const createBuyer = (payload: Succession & BuyerForm & { project: number }) =>
-//   contStore.createBuyer(payload)
+const createSuccession = (payload: Succession & BuyerForm & { project: number }) =>
+  contStore.createSuccession(payload)
 
 const patchSuccession = (payload: Succession & BuyerForm & { project: number; page: number }) =>
   contStore.patchSuccession(payload)
@@ -91,12 +91,12 @@ const onSubmit = (payload: { s_data: Succession; b_data: BuyerForm }) => {
   console.log(s_data, b_data)
 
   if (!s_data.pk || !b_data.pk) {
-    createBuyer({ ...dbData, project: project.value })
-    router.push({ name: '권리 의무 승계' })
+    createSuccession({ ...dbData, project: project.value as number })
+    router.push({ name: '권리 의무 승계', query: { contractor: s_data.seller.pk } })
   } else
     patchSuccession({
       ...dbData,
-      project: project.value,
+      project: project.value as number,
       page: page.value,
     })
 }
