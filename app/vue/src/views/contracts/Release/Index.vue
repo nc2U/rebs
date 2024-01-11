@@ -148,7 +148,7 @@ onBeforeMount(() => {
     <template #header>계약 해지 수정 등록</template>
     <template #default>
       <ReleaseForm
-        :release="contRelease"
+        :release="contRelease ?? undefined"
         :contractor="contractor as Contractor"
         @on-submit="onSubmit"
         @close="releaseFormModal.close()"
