@@ -74,16 +74,19 @@ const onSubmit = (payload: ContractRelease) => {
   if (project.value) payload.project = project.value
   if (!payload.pk) createRelease({ ...payload })
   else updateRelease({ page: page.value, ...payload })
+  releaseFormModal.value.close()
 }
 
 const callForm = (contractor: number) => {
-  router.push({
+  router.replace({
     name: '계약 해지 관리',
     query: { contractor },
   })
 
-  if (write_contract.value) releaseFormModal.value.callModal()
-  else releaseAlertModal.value.callModal()
+  setTimeout(() => {
+    if (write_contract.value) releaseFormModal.value.callModal()
+    else releaseAlertModal.value.callModal()
+  }, 500)
 }
 
 const dataSetup = (pk: number) => fetchContReleaseList(pk)
