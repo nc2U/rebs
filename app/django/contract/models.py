@@ -65,7 +65,7 @@ class Contractor(models.Model):
     birth_date = models.DateField('생년월일', null=True, blank=True)
     GENDER_CHOICES = (('M', '남자'), ('F', '여자'))
     gender = models.CharField('성별', max_length=1, choices=GENDER_CHOICES, blank=True)
-    QUA_CHOICES = (('2', '미인가'), ('3', '인가'), ('4', '부적격'), ('1', '일반분양'))
+    QUA_CHOICES = (('1', '일반분양'), ('2', '미인가조합원'), ('3', '인가조합원'), ('4', '부적격조합원'))
     qualification = models.CharField('등록상태', max_length=1, choices=QUA_CHOICES, default='1')
     STATUS_CHOICES = (('1', '청약'), ('2', '계약'), ('3', '청약 해지'), ('4', '계약 해지'), ('5', '양도 승계'))
     status = models.CharField('계약상태', max_length=1, choices=STATUS_CHOICES)

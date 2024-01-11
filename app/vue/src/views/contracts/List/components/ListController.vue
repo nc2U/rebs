@@ -135,10 +135,10 @@ onMounted(() => {
           <CCol md="4" xl="2" class="mb-3">
             <CFormSelect v-model="form.qualification" @change="listFiltering(1)">
               <option value="">등록상태</option>
-              <option value="2">미인가</option>
-              <option value="3">인가</option>
-              <option value="4">부적격</option>
               <option value="1">일반분양</option>
+              <option value="2">미인가조합원</option>
+              <option value="3">인가조합원</option>
+              <option value="4">부적격조합원</option>
             </CFormSelect>
           </CCol>
         </CRow>
