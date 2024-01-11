@@ -1,16 +1,13 @@
 <script lang="ts" setup>
 import { computed, type PropType } from 'vue'
-import { useContract } from '@/store/pinia/contract'
-import { type Contractor } from '@/store/types/contract'
+import { type Contractor, type ContractRelease } from '@/store/types/contract'
 import { AlertLight } from '@/utils/cssMixins'
 
 const props = defineProps({
   contractor: { type: Object as PropType<Contractor>, default: null },
+  contRelease: { type: Object as PropType<ContractRelease>, default: null },
 })
 const emit = defineEmits(['call-form'])
-
-const contractStore = useContract()
-const contRelease = computed(() => contractStore.contRelease)
 
 const isSuccession = computed(
   () => !!props.contractor?.succession && !props.contractor?.succession.is_approval,

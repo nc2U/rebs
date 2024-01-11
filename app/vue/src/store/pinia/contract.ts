@@ -330,7 +330,10 @@ export const useContract = defineStore('contract', () => {
   const createRelease = (payload: ContractRelease) =>
     api
       .post(`/contractor-release/`, payload)
-      .then(() => fetchContReleaseList(payload.project).then(() => message()))
+      .then(res => {
+        contRelease.value = res.data
+        fetchContReleaseList(payload.project).then(() => message())
+      })
       .catch(err => errorHandle(err.response.data))
 
   const updateRelease = (payload: ContractRelease & { page: number }) =>

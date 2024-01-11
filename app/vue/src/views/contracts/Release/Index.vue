@@ -132,7 +132,12 @@ onBeforeMount(() => {
         @call-form="callForm"
       />
       <ContractorAlert v-if="contractor" :contractor="contractor" />
-      <ReleasetButton v-if="contractor" :contractor="contractor" @call-form="callForm" />
+      <ReleasetButton
+        v-if="contractor"
+        :contractor="contractor"
+        :cont-release="contRelease"
+        @call-form="callForm"
+      />
       <TableTitleRow
         title="계약 해지 현황"
         color="grey"
