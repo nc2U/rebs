@@ -135,7 +135,7 @@ onBeforeMount(() => {
       <ReleasetButton
         v-if="contractor"
         :contractor="contractor"
-        :cont-release="contRelease"
+        :cont-release="contRelease ?? undefined"
         @call-form="callForm"
       />
       <TableTitleRow
