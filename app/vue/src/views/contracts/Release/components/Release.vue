@@ -1,24 +1,10 @@
 <script lang="ts" setup>
-import { ref, computed, type PropType } from 'vue'
-import { useContract } from '@/store/pinia/contract'
-import { type Contractor, type ContractRelease } from '@/store/types/contract'
-import { useRouter } from 'vue-router'
+import { computed, type PropType } from 'vue'
+import { type ContractRelease } from '@/store/types/contract'
 import { numFormat, cutString } from '@/utils/baseMixins'
-import { write_contract } from '@/utils/pageAuth'
-import FormModal from '@/components/Modals/FormModal.vue'
-import ReleaseForm from '@/views/contracts/Release/components/ReleaseForm.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({
-  release: { type: Object as PropType<ContractRelease>, default: null },
-})
-const emit = defineEmits(['on-submit', 'get-release'])
-
-const releaseFormModal = ref()
-const releaseAlertModal = ref()
-
-const contractStore = useContract()
-const contractor = computed(() => contractStore.contractor)
+const props = defineProps({ release: { type: Object as PropType<ContractRelease>, default: null } })
+const emit = defineEmits(['call-form'])
 
 const getStatus = (num: string) => {
   const status = [
@@ -42,23 +28,7 @@ const buttonColor = computed(() => {
   else return 'secondary'
 })
 
-const router = useRouter()
-
-const callFormModal = () => {
-  emit('get-release', props.release.pk)
-  router.push({
-    name: '계약 해지 관리',
-    query: { contractor: props.release.contractor },
-  })
-
-  if (write_contract.value) releaseFormModal.value.callModal()
-  else releaseAlertModal.value.callModal()
-}
-
-const onSubmit = (payload: ContractRelease) => {
-  emit('on-submit', payload)
-  releaseFormModal.value.close()
-}
+const callFormModal = () => emit('call-form', props.release?.contractor)
 </script>
 
 <template>
@@ -91,18 +61,4 @@ const onSubmit = (payload: ContractRelease) => {
   <CTableDataCell class="text-center">
     <CButton type="button" :color="buttonColor" size="sm" @click="callFormModal"> 확인</CButton>
   </CTableDataCell>
-
-  <FormModal ref="releaseFormModal" size="lg">
-    <template #header>계약 해지 수정 등록</template>
-    <template #default>
-      <ReleaseForm
-        :release="release"
-        :contractor="contractor as Contractor"
-        @on-submit="onSubmit"
-        @close="releaseFormModal.close()"
-      />
-    </template>
-  </FormModal>
-
-  <AlertModal ref="releaseAlertModal" />
 </template>

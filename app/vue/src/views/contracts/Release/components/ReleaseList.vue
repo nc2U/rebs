@@ -2,19 +2,17 @@
 import { computed } from 'vue'
 import { TableSecondary } from '@/utils/cssMixins'
 import { useContract } from '@/store/pinia/contract'
-import { type ContractRelease } from '@/store/types/contract'
 import Pagination from '@/components/Pagination'
 import Release from '@/views/contracts/Release/components/Release.vue'
 
-const emit = defineEmits(['page-select', 'get-release', 'on-submit'])
+const emit = defineEmits(['page-select', 'call-form'])
 
 const contractStore = useContract()
 const contReleaseList = computed(() => contractStore.contReleaseList)
 const releasePages = computed(() => contractStore.releasePages)
 
 const pageSelect = (page: number) => emit('page-select', page)
-const getRelease = (release: number) => emit('get-release', release)
-const onSubmit = (payload: ContractRelease) => emit('on-submit', payload)
+const callForm = (contractor: number) => emit('call-form', contractor)
 </script>
 
 <template>
@@ -46,7 +44,7 @@ const onSubmit = (payload: ContractRelease) => emit('on-submit', payload)
     </CTableHead>
     <CTableBody>
       <CTableRow v-for="release in contReleaseList" :key="release.pk">
-        <Release :release="release" @get-release="getRelease" @on-submit="onSubmit" />
+        <Release :release="release" @call-form="callForm" />
       </CTableRow>
     </CTableBody>
   </CTable>

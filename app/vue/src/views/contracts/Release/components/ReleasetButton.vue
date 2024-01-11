@@ -1,20 +1,13 @@
 <script lang="ts" setup>
-import { ref, computed, type PropType } from 'vue'
+import { computed, type PropType } from 'vue'
 import { useContract } from '@/store/pinia/contract'
-import { type Contractor, type ContractRelease } from '@/store/types/contract'
+import { type Contractor } from '@/store/types/contract'
 import { AlertLight } from '@/utils/cssMixins'
-import { write_contract } from '@/utils/pageAuth'
-import FormModal from '@/components/Modals/FormModal.vue'
-import ReleaseForm from '@/views/contracts/Release/components/ReleaseForm.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
   contractor: { type: Object as PropType<Contractor>, default: null },
 })
-const emit = defineEmits(['on-submit'])
-
-const releaseFormModal = ref()
-const releaseAlertModal = ref()
+const emit = defineEmits(['call-form'])
 
 const contractStore = useContract()
 const contRelease = computed(() => contractStore.contRelease)
@@ -23,15 +16,7 @@ const isSuccession = computed(
   () => !!props.contractor?.succession && !props.contractor?.succession.is_approval,
 )
 
-const callFormModal = () => {
-  if (write_contract.value) releaseFormModal.value.callModal()
-  else releaseAlertModal.value.callModal()
-}
-
-const onSubmit = (payload: ContractRelease) => {
-  emit('on-submit', payload)
-  releaseFormModal.value.close()
-}
+const callFormModal = () => emit('call-form', props.contractor.pk)
 </script>
 
 <template>
@@ -44,18 +29,4 @@ const onSubmit = (payload: ContractRelease) => {
       {{ contRelease ? '수정하기' : '등록하기' }}
     </CButton>
   </CAlert>
-
-  <FormModal ref="releaseFormModal" size="lg">
-    <template #header> 계약 해지 {{ contRelease ? '수정' : '신규' }} 등록</template>
-    <template #default>
-      <ReleaseForm
-        :contractor="contractor"
-        :release="contRelease as ContractRelease"
-        @on-submit="onSubmit"
-        @close="releaseFormModal.close()"
-      />
-    </template>
-  </FormModal>
-
-  <AlertModal ref="releaseAlertModal" />
 </template>
