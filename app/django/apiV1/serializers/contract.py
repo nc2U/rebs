@@ -796,66 +796,58 @@ class ContractorReleaseSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def update(self, instance, validated_data):
-        # 1. 해지정보 테이블 입력
-        instance.__dict__.update(**validated_data)
+        contractor = instance.contractor  # 계약자 오브젝트
+        released_done = True if instance.status in ('4', '5') else False  # 해지완결 여부
 
-        contractor = instance.contractor  # Contractor.objects.get(pk=self.initial_data.get('contractor'))
-
-        # try:
-        #     released_done = instance.status >= '4'
-        # except ObjectDoesNotExist:
-        #     released_done = False
-
-        released_done = True if instance.status >= '4' else False
-
-        # 미완료인 상태에서 4 -> 처리완료, 5 -> 자격상실 :: 최종 해지 확정 요청이 있을 경우
-        if not released_done and validated_data.get('status') >= '4':
-            # 1. 계약자 정보 현재 상태 변경
-            contract = contractor.contract  # Contract.objects.get(pk=contractor.contract.id)
-            keyunit = KeyUnit.objects.get(contract=contract)
-
+        # 미완료인 상태에서 4 -> 처리완료, 5 -> 자격상실 :: 최초의 최종 해지 확정 처리 1회 실행
+        if not released_done and validated_data.get('status') in ('4', '5'):
+            # 1. 계약 상태 변경
             completion_date = self.initial_data.get('completion_date')
-
-            # 2. 계약 상태 변경
+            contract = contractor.contract
             contract.serial_number = f"{contract.serial_number}-terminated-{completion_date}"
             contract.activation = False  # 일련번호 활성 해제
             contract.save()
 
-            # 3. 계약유닛 연결 해제
+            # 2. 키유닛과 계약 간 연결 해제
+            keyunit = KeyUnit.objects.get(contract=contract)
             keyunit.contract = None
             keyunit.save()
 
-            # 4. 동호수 연결 해제
+            # 3. 동호수 연결 해제
             unit = None
             try:  # 동호수 존재 여부 확인
                 unit = keyunit.houseunit
             except ObjectDoesNotExist:
                 pass
-            if unit:
+            if unit:  # 동호수 존재 시 삭제
                 unit.key_unit = None
                 unit.save()
 
-            # 5. 해당 납부분담금 환불처리
-            sort = AccountSort.objects.get(pk=1)  # 입금 종류 선택
-            payments = ProjectCashBook.objects.filter(sort=sort, contract=contractor.contract)  # 해당 계약 입금건 전체
+            # 4. 해당 납부분담금 환불처리
+            sort = AccountSort.objects.get(pk=1)  # 입금 종류 선택(1=입금, 2=출금)
+            payments = ProjectCashBook.objects.filter(sort=sort, contract=contract)  # 해당 계약 입금건 전체
             for payment in payments:
                 if not released_done:  # 해지 확정 전일 때만 실행
-                    refund_d3 = int(payment.project_account_d3.id) + 1  # 분양대금 or 분담금 환불 건으로 계정 변경
-                    payment.project_account_d3 = ProjectAccountD3.objects.get(pk=refund_d3)
+                    refund_d3 = int(payment.project_account_d3.id) + 1  # 분양대금 or 분담금 환불처리 건으로 계정
+                    payment.project_account_d3 = ProjectAccountD3.objects.get(pk=refund_d3)  # 환불처리 계정으로 변경
                     payment.refund_contractor = contractor  # 환불 계약자 등록
-                if completion_date:
+                if completion_date:  # 최종 해지(환불)처리일 정보가 있으면
                     msg = f'환불 계약 건 - {payment.contract.serial_number[:13]} ({completion_date} {contractor.name} 환불완료)'
                     append_note = ', ' + msg if payment.note else msg
-                    payment.note = payment.note + append_note
+                    payment.note = payment.note + append_note  # 비고란 최종 메시지 입력
                 payment.save()
 
-            # 6. 최종 해지상태로 변경
+            # 5.  계약자 정보 최종 해지상태로 변경
+            contractor.prev_contract = contract
+            contractor.contract = None
             if contractor.qualification == '3':
                 contractor.qualification = '2'  # 인가 등록 취소
             contractor.is_active = False  # 비활성 상태로 변경
             contractor.status = '4'  # 해지 상태로 변경
             contractor.save()
 
+        # 1. 해지정보 테이블 입력
+        instance.__dict__.update(**validated_data)
         instance.save()
 
         return instance
