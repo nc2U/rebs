@@ -42,15 +42,18 @@ class ContractViewSet(viewsets.ModelViewSet):
     serializer_class = ContractSerializer
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     filterset_class = ContractFilter
-    search_fields = ('serial_number', 'contractor__name', 'contractor__note',
-                     'contractor__contractorcontact__cell_phone',
-                     'contractor__contractorcontact__email',
+    search_fields = ('serial_number', 'contractor__name',
+                     'contractor__note', 'succession__seller__name',
                      'contractor__contractoraddress__id_address1',
                      'contractor__contractoraddress__id_address2',
                      'contractor__contractoraddress__id_address3',
                      'contractor__contractoraddress__dm_address1',
                      'contractor__contractoraddress__dm_address2',
-                     'contractor__contractoraddress__dm_address3')
+                     'contractor__contractoraddress__dm_address3',
+                     'contractor__contractorcontact__cell_phone',
+                     'contractor__contractorcontact__home_phone',
+                     'contractor__contractorcontact__other_phone',
+                     'contractor__contractorcontact__email')
     ordering_fields = ('created_at', 'contractor__contract_date',
                        'serial_number', 'contractor__name')
 
@@ -107,7 +110,12 @@ class ContractorViewSet(viewsets.ModelViewSet):
     serializer_class = ContractorSerializer
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     filterset_fields = ('contract__project', 'gender', 'qualification', 'status', 'is_active')
-    search_fields = ('name', 'note', 'contract__serial_number', 'contract__succession__seller__name')
+    search_fields = ('name', 'note', 'contract__serial_number', 'contract__succession__seller__name',
+                     'contractoraddress__id_address1', 'contractoraddress__id_address2',
+                     'contractoraddress__id_address3', 'contractoraddress__dm_address1',
+                     'contractoraddress__dm_address2', 'contractoraddress__dm_address3',
+                     'contractorcontact__cell_phone', 'contractorcontact__home_phone',
+                     'contractorcontact__other_phone', 'contractorcontact__email')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -139,15 +147,6 @@ class SuccessionViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-
-
-# class SuccessionBuyerViewSet(viewsets.ModelViewSet):
-#     queryset = SuccessionBuyer.objects.all()
-#     serializer_class = SuccessionBuyerSerializer
-#     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
-#
-#     def perform_create(self, serializer):
-#         serializer.save(user=self.request.user)
 
 
 class ContReleaseViewSet(viewsets.ModelViewSet):
