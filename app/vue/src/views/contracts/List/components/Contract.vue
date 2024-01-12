@@ -12,7 +12,7 @@ const contractor = computed(() => props.contract?.contractor?.pk)
 const router = useRouter()
 
 const getColor = (q: '1' | '2' | '3' | '4' | undefined) =>
-  q ? { '1': '', '2': 'warning', '3': 'success', '4': 'danger' }[q] : ''
+  q ? { '1': 'info', '2': 'warning', '3': 'success', '4': 'danger' }[q] : ''
 </script>
 
 <template>
@@ -24,7 +24,7 @@ const getColor = (q: '1' | '2' | '3' | '4' | undefined) =>
     </CTableDataCell>
     <CTableDataCell>
       <CBadge :color="getColor(contract.contractor?.qualification)">
-        {{ contract.order_group_sort === '1' ? contract.contractor?.qualifi_display : '' }}
+        {{ contract.contractor?.qualifi_display }}
       </CBadge>
     </CTableDataCell>
     <CTableDataCell>
