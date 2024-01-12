@@ -17,6 +17,7 @@ const form = reactive({
   is_pm_cost: false,
   pay_name: '',
   alias_name: '',
+  days_since_prev: null as string | null,
   pay_due_date: null as string | null,
   extra_due_date: null as string | null,
 })
@@ -32,9 +33,10 @@ const formsCheck = computed(() => {
   const e = form.is_pm_cost === props.payOrder.is_pm_cost
   const f = form.pay_name === props.payOrder.pay_name
   const g = form.alias_name === props.payOrder.alias_name
-  const h = form.pay_due_date === props.payOrder.pay_due_date
-  const i = form.extra_due_date === props.payOrder.extra_due_date
-  return a && b && c && d && e && f && g && h && i
+  const h = form.days_since_prev === props.payOrder.days_since_prev
+  const i = form.pay_due_date === props.payOrder.pay_due_date
+  const j = form.extra_due_date === props.payOrder.extra_due_date
+  return a && b && c && d && e && f && g && h && i && j
 })
 
 const formCheck = (bool: boolean) => {
@@ -75,6 +77,7 @@ const dataSetup = () => {
   form.is_pm_cost = props.payOrder.is_pm_cost
   form.pay_name = props.payOrder.pay_name
   form.alias_name = props.payOrder.alias_name
+  form.days_since_prev = props.payOrder.days_since_prev
   form.pay_due_date = props.payOrder.pay_due_date
   form.extra_due_date = props.payOrder.extra_due_date
 }
@@ -147,6 +150,17 @@ onBeforeMount(() => dataSetup())
         placeholder="회차 별칭"
         required
         @keypress.enter="formCheck(form.alias_name !== payOrder.alias_name)"
+      />
+    </CTableDataCell>
+
+    <CTableDataCell>
+      <CFormInput
+        v-model="form.days_since_prev"
+        type="number"
+        maxlength="20"
+        placeholder="전회 경과일수"
+        required
+        @keypress.enter="formCheck(form.days_since_prev !== payOrder.days_since_prev)"
       />
     </CTableDataCell>
 

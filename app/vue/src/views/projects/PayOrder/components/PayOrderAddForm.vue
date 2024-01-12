@@ -21,6 +21,7 @@ const form = reactive({
   is_pm_cost: false,
   pay_name: '',
   alias_name: '',
+  days_since_prev: null as number | null,
   pay_due_date: null as string | null,
   extra_due_date: null as string | null,
 })
@@ -57,6 +58,7 @@ const resetForm = () => {
   form.is_pm_cost = false
   form.pay_name = ''
   form.alias_name = ''
+  form.days_since_prev = null
   form.pay_due_date = null
   form.extra_due_date = null
 }
@@ -64,19 +66,31 @@ const resetForm = () => {
 
 <template>
   <CForm novalidate class="needs-validation" :validated="validated" @submit.prevent="onSubmit">
-    <CRow class="p-2">
-      <CCol xl="5">
-        <CRow>
-          <CCol md="3" class="mb-2">
+    <CTable borderless>
+      <colgroup>
+        <col style="width: 9%" />
+        <col style="width: 9%" />
+        <col style="width: 9%" />
+        <col style="width: 9%" />
+        <col style="width: 9%" />
+        <col style="width: 9%" />
+        <col style="width: 9%" />
+        <col style="width: 9%" />
+        <col style="width: 9%" />
+        <col style="width: 9%" />
+        <col style="width: 10%" />
+      </colgroup>
+      <CTableBody>
+        <CTableRow>
+          <CTableDataCell>
             <CFormSelect v-model="form.pay_sort" :disabled="disabled" required>
               <option value="">종류선택</option>
               <option value="1">계약금</option>
               <option value="2">중도금</option>
               <option value="3">잔 금</option>
             </CFormSelect>
-          </CCol>
-
-          <CCol md="3" class="mb-2">
+          </CTableDataCell>
+          <CTableDataCell>
             <CFormInput
               v-model.number="form.pay_code"
               placeholder="납입회차 코드"
@@ -88,9 +102,8 @@ const resetForm = () => {
             <!--        <CFormText>-->
             <!--          프로젝트 내에서 모든 납부회차를 고유 순서대로 숫자로 부여한다.'-->
             <!--        </CFormText>-->
-          </CCol>
-
-          <CCol md="3" class="mb-2">
+          </CTableDataCell>
+          <CTableDataCell>
             <CFormInput
               v-model.number="form.pay_time"
               placeholder="납부순서"
@@ -104,36 +117,25 @@ const resetForm = () => {
             <!--          업무대행료) 하나의 납입회차 코드(ex: 1)에 2개의 납부순서(ex: 1, 2)를-->
             <!--          등록한다.-->
             <!--        </CFormText>-->
-          </CCol>
-
-          <CCol md="3" class="mb-2">
+          </CTableDataCell>
+          <CTableDataCell>
             <CFormInput
               v-model="form.pay_ratio"
               maxlength="20"
               type="number"
-              placeholder="공급가 대비 납부비율(%)"
+              placeholder="납부비율(공급가대비)"
               :disabled="disabled || form.pay_sort === '3'"
             />
-          </CCol>
-        </CRow>
-      </CCol>
-
-      <CCol>
-        <CRow>
-          <CCol md="12" class="mb-2">
+          </CTableDataCell>
+          <CTableDataCell>
             <CRow>
               <CFormLabel class="col-md-8 col-form-label"> PM용역비 여부</CFormLabel>
               <CCol md="1" class="pt-2">
                 <CFormSwitch v-model="form.is_pm_cost" :checked="false" :disabled="disabled" />
               </CCol>
             </CRow>
-          </CCol>
-        </CRow>
-      </CCol>
-
-      <CCol xl="5">
-        <CRow>
-          <CCol md="3" class="mb-2">
+          </CTableDataCell>
+          <CTableDataCell>
             <CFormInput
               v-model="form.pay_name"
               maxlength="20"
@@ -141,17 +143,25 @@ const resetForm = () => {
               required
               :disabled="disabled"
             />
-          </CCol>
-          <CCol md="3" class="mb-2">
+          </CTableDataCell>
+          <CTableDataCell>
             <CFormInput
               v-model="form.alias_name"
               maxlength="20"
               placeholder="별칭 이름"
               :disabled="disabled"
             />
-          </CCol>
-
-          <CCol md="3" class="mb-2">
+          </CTableDataCell>
+          <CTableDataCell>
+            <CFormInput
+              v-model.number="form.days_since_prev"
+              type="number"
+              maxlength="20"
+              placeholder="전회 기준 경과일수"
+              :disabled="disabled"
+            />
+          </CTableDataCell>
+          <CTableDataCell>
             <DatePicker
               v-model="form.pay_due_date"
               maxlength="10"
@@ -159,9 +169,8 @@ const resetForm = () => {
               :required="false"
               :disabled="disabled"
             />
-          </CCol>
-
-          <CCol md="3" class="mb-2">
+          </CTableDataCell>
+          <CTableDataCell>
             <DatePicker
               v-model="form.extra_due_date"
               maxlength="10"
@@ -173,18 +182,13 @@ const resetForm = () => {
             <!--              연체료 계산 기준은 납부기한일이 원칙이나 이 값이 있는 경우-->
             <!--              납부유예일을 연체료 계산 기준으로 한다.-->
             <!--            </CFormText>-->
-          </CCol>
-        </CRow>
-      </CCol>
-
-      <CCol xl="1">
-        <CRow>
-          <CCol md="12" class="d-grid gap-2 d-lg-block mb-3">
+          </CTableDataCell>
+          <CTableDataCell>
             <CButton color="primary" type="submit" :disabled="disabled"> 회차추가</CButton>
-          </CCol>
-        </CRow>
-      </CCol>
-    </CRow>
+          </CTableDataCell>
+        </CTableRow>
+      </CTableBody>
+    </CTable>
   </CForm>
 
   <ConfirmModal ref="refConfirmModal">
