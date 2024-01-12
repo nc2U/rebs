@@ -17,6 +17,10 @@ from payment.models import InstallmentPaymentOrder
 TODAY = date.today()
 
 
+def is_due(due_date):
+    return due_date and due_date <= TODAY
+
+
 def get_due_date(contract, order):
     """
     :: 납부 일자 구하기
@@ -605,7 +609,7 @@ class PdfExportPayments(View):
         """
         total_amounts = 0
         # 약정회차 리스트
-        due_orders = list(filter(lambda x: x.pay_code <= self.get_now_order(contract, inspay_orders)[0], inspay_orders))
+        due_orders = [o for o in inspay_orders if o.pay_code <= self.get_now_order(contract, o)[0]]
         for order in due_orders:
             total_amounts += amount[order.pay_sort]
         return total_amounts
@@ -616,11 +620,8 @@ class PdfExportPayments(View):
         :: 현재 납부회차 구하기
         :param contract: contract 객체
         :param inspay_orders: 전체 납부회차 쿼리셋
-        :return: 현재 납부회차 객체(납부기한일 기준)
+        :return: 튜플 -> (int:pay_code, str: alias_name) 현재 납부회차의 코드와 별칭 튜플(납부기한일 기준)
         """
 
-        def is_due(due_date):
-            return due_date and due_date <= TODAY
-
-        due_orders = list(filter(lambda o: is_due(get_due_date(contract, o)), inspay_orders))
+        due_orders = [o for o in inspay_orders if is_due(get_due_date(contract, o))]
         return max([(o.pay_code, o.alias_name) for o in due_orders])
