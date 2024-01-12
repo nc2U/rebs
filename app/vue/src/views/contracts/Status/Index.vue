@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed, onBeforeMount, provide } from 'vue'
-import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin1'
+import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
 import { useContract } from '@/store/pinia/contract'
