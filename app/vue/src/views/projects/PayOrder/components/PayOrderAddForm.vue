@@ -183,7 +183,7 @@ const resetForm = () => {
             <!--              납부유예일을 연체료 계산 기준으로 한다.-->
             <!--            </CFormText>-->
           </CTableDataCell>
-          <CTableDataCell>
+          <CTableDataCell class="text-center">
             <CButton color="primary" type="submit" :disabled="disabled"> 회차추가</CButton>
           </CTableDataCell>
         </CTableRow>
