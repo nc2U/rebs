@@ -18,15 +18,20 @@ TODAY = date.today()
 
 
 def is_due(due_date):
+    """
+    :: 주어진 날짜가 기도래 납부기한에 해당하는지 여부
+    :param due_date:
+    :return: bool -> 기도래 기한 여부
+    """
     return due_date and due_date <= TODAY
 
 
-def get_due_date(contract, order):
+def get_due_date_per_order(contract, order):
     """
-    :: 납부 일자 구하기
+    :: 회차 별 납부 일자 구하기
     :param cont: 계약자 객체
     :param order: 납부 회차 객체
-    :return str(due_date): 약정 납부 일자
+    :return str(due_date): 회차 별 약정 납부 일자
     """
 
     is_succession = contract.succession_set.all()
@@ -43,6 +48,16 @@ def get_due_date(contract, order):
         else:
             due_date = None if order.pay_code > 2 else due_date
     return due_date
+
+
+def get_due_orders(contract, inspay_orders):
+    """
+    :: 기도래 납부 회차 객체 리스트 구하기
+    :param contract: 
+    :param inspay_orders: 
+    :return: list -> 납부회차 객체
+    """
+    return [o for o in inspay_orders if is_due(get_due_date_per_order(contract, o))]
 
 
 class PdfExportBill(View):
@@ -270,7 +285,7 @@ class PdfExportBill(View):
 
             payment_dict = {
                 'order': order,
-                'due_date': get_due_date(contract, order),
+                'due_date': get_due_date_per_order(contract, order),
                 'amount': amount,
                 'unpaid': unpaid,
                 'penalty': penalty,
@@ -309,7 +324,7 @@ class PdfExportBill(View):
         late_fee_sum = 0
 
         for order in due_orders:
-            due_date = get_due_date(contract, order)  # 납부기한
+            due_date = get_due_date_per_order(contract, order)  # 납부기한
             ord_info = list(filter(lambda o: o['order'] == order, orders_info))[0]  # 금 회차 orders_info
             amount = ord_info['pay_amount']  # 금 회차 납부 약정액
 
@@ -395,7 +410,7 @@ class PdfExportBill(View):
 
             paid_dict = {
                 'order': order.pay_name,
-                'due_date': get_due_date(contract, order),
+                'due_date': get_due_date_per_order(contract, order),
                 'amount': amount,
                 'paid_date': '',
                 'paid_amt': 0,
@@ -511,8 +526,7 @@ class PdfExportPayments(View):
 
         # 2. 요약 테이블 데이터
         context['due_amount'] = self.get_due_amount(inspay_orders, contract, amount)  # 약정금 누계
-        context['now_order'] = self.get_now_order(contract, inspay_orders)
-
+        context['now_order'] = max([(o.pay_code, o.alias_name) for o in get_due_orders(contract, inspay_orders)])
         # 2. 간단 차수 정보
         context['simple_orders'] = simple_orders = self.get_simple_orders(inspay_orders, contract, amount)
 
@@ -593,7 +607,7 @@ class PdfExportPayments(View):
             amount_total += amount[ord.pay_sort]
             ord_info = {
                 'name': ord.alias_name if ord.alias_name else ord.pay_name,
-                'due_date': get_due_date(contract, ord),
+                'due_date': get_due_date_per_order(contract, ord),
                 'amount': amount[ord.pay_sort],
                 'amount_total': amount_total,
             }
@@ -601,29 +615,18 @@ class PdfExportPayments(View):
 
         return simple_orders
 
-    def get_due_amount(self, inspay_orders, contract, amount):
+    @staticmethod
+    def get_due_amount(inspay_orders, contract, amount):
         """
         :: 약정금 누계 계산 함수
         :param inspay_orders: 전체 납부회차 쿼리셋
         :param contract: contract 객체
         :param amount: {'1': down, '2': middle, '3': remain}
-        :return: int 현재회차까지 납부약정액 합계
+        :return: int 현재 회차까지 납부 약정액 합계
         """
         total_amounts = 0
         # 약정회차 리스트
-        due_orders = [o for o in inspay_orders if is_due(get_due_date(contract, o))]
+        due_orders = get_due_orders(contract, inspay_orders)
         for order in due_orders:
             total_amounts += amount[order.pay_sort]
         return total_amounts
-
-    @staticmethod
-    def get_now_order(contract, inspay_orders):
-        """
-        :: 현재 납부회차 구하기
-        :param contract: contract 객체
-        :param inspay_orders: 전체 납부회차 쿼리셋
-        :return: 튜플 -> (int:pay_code, str: alias_name) 현재 납부회차의 코드와 별칭 튜플(납부기한일 기준)
-        """
-
-        due_orders = [o for o in inspay_orders if is_due(get_due_date(contract, o))]
-        return max([(o.pay_code, o.alias_name) for o in due_orders])
