@@ -201,12 +201,12 @@ class PdfExportBill(View):
         return bill_data
 
     @staticmethod
-    def get_contract(cont_id):
+    def get_contract(contor_id):
         """ ■ 계약 가져오기
         :param cont_id: 계약자 아이디
         :return object(contract: 계약 건):
         """
-        return Contract.objects.get(contractor__id=cont_id)
+        return Contract.objects.get(contractor__id=contor_id)
 
     @staticmethod
     def get_paid(contract):
@@ -352,7 +352,7 @@ class PdfExportBill(View):
             else:
                 try:
                     unpaid_days = (issue_date - due_date).days
-                except:
+                except Exception:
                     unpaid_days = 0
 
             delayed_amt = 0  # 당회 납부 지연 시 납부 전 지연금 계산

@@ -129,7 +129,7 @@ onBeforeMount(() => dataSetup())
 
     <CTableDataCell>
       <CCol class="pt-2 pl-3">
-        <CFormSwitch v-model="form.is_pm_cost" :checked="payOrder.is_pm_cost === true" />
+        <CFormSwitch v-model="form.is_pm_cost" />
       </CCol>
     </CTableDataCell>
 
@@ -158,7 +158,7 @@ onBeforeMount(() => dataSetup())
         v-model="form.days_since_prev"
         type="number"
         maxlength="20"
-        placeholder="전회 경과일수"
+        placeholder="전회 기준 경과일수"
         required
         @keypress.enter="formCheck(form.days_since_prev !== payOrder.days_since_prev)"
       />

@@ -131,7 +131,7 @@ const resetForm = () => {
             <CRow>
               <CFormLabel class="col-md-8 col-form-label"> PM용역비 여부</CFormLabel>
               <CCol md="1" class="pt-2">
-                <CFormSwitch v-model="form.is_pm_cost" :checked="false" :disabled="disabled" />
+                <CFormSwitch v-model="form.is_pm_cost" :disabled="disabled" />
               </CCol>
             </CRow>
           </CTableDataCell>
