@@ -33,9 +33,11 @@ class InstallmentPaymentOrder(models.Model):  # 분할 납부 차수 등록
     is_pm_cost = models.BooleanField('PM용역비 여부', default=False)
     pay_name = models.CharField('납부회차 명', max_length=20)
     alias_name = models.CharField('회차 별칭', max_length=20, blank=True)
-    pay_due_date = models.DateField('납부기한일', null=True, blank=True)
+    days_since_prev = models.PositiveSmallIntegerField('전회 기준 경과일수', null=True, blank=True,
+                                                       help_text="전 회차(예: 계약일)로부터 __일 이내 형식으로 납부기한을 지정할 경우 해당 일수")
+    pay_due_date = models.DateField('지정 납부기한', null=True, blank=True, help_text="특정일자를 납부기한으로 지정할 경우")
     extra_due_date = models.DateField('납부유예일', null=True, blank=True,
-                                      help_text='연체료 계산 기준은 납부기한일이 원칙이나 이 값이 있는 경우 납부유예일을 연체료 계산 기준으로 한다.')
+                                      help_text='연체료 계산 기준은 지정 납부기한이 원칙이나 이 값이 있는 경우 납부유예일을 연체료 계산 기준으로 한다.')
 
     def __str__(self):
         return f'[{self.get_pay_sort_display()}] - {self.pay_name}'
