@@ -245,7 +245,8 @@ class PdfExportBill(View):
 
         return paid_code
 
-    def get_this_pay_info(self, contract,
+    @staticmethod
+    def get_this_pay_info(contract,
                           orders_info, inspay_order,
                           now_due_order, paid_code):
         """
@@ -375,7 +376,8 @@ class PdfExportBill(View):
         else:
             return paid_amt_list
 
-    def get_remain_orders(self, contract, orders_info, inspay_order, now_due_order):
+    @staticmethod
+    def get_remain_orders(contract, orders_info, inspay_order, now_due_order):
         """
         :: ■ 납부약정 및 납입내역 - 잔여회차
         :param contract: 계약 건
@@ -609,7 +611,7 @@ class PdfExportPayments(View):
         """
         total_amounts = 0
         # 약정회차 리스트
-        due_orders = [o for o in inspay_orders if o.pay_code <= self.get_now_order(contract, o)[0]]
+        due_orders = [o for o in inspay_orders if is_due(get_due_date(contract, o))]
         for order in due_orders:
             total_amounts += amount[order.pay_sort]
         return total_amounts
