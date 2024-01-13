@@ -87,8 +87,31 @@ onMounted(() => {
 <template>
   <CCallout color="info" class="pb-0 mb-4" :class="bgLight">
     <CRow>
-      <CCol lg="6">
+      <CCol lg="7">
         <CRow>
+          <CCol md="4" xl="2" class="mb-3">
+            <CFormSelect v-model="form.ordering" @change="listFiltering(1)">
+              <option value="-created_at">등록일시 내림차순</option>
+              <option value="created_at">등록일시 올림차순</option>
+              <option value="-contractor__contract_date">계약일자 내림차순</option>
+              <option value="contractor__contract_date">계약일자 올림차순</option>
+              <option value="-serial_number">일련번호 내림차순</option>
+              <option value="serial_number">일련번호 올림차순</option>
+              <option value="-contractor__name">계약자명 내림차순</option>
+              <option value="contractor__name">계약자명 올림차순</option>
+            </CFormSelect>
+          </CCol>
+
+          <CCol md="4" xl="2" class="mb-3">
+            <CFormSelect v-model="form.qualification" @change="listFiltering(1)">
+              <option value="">등록상태</option>
+              <option value="1">일반분양</option>
+              <option value="2">미인가조합원</option>
+              <option value="3">인가조합원</option>
+              <option value="4">부적격조합원</option>
+            </CFormSelect>
+          </CCol>
+
           <CCol md="4" xl="2" class="mb-3">
             <CFormSelect v-model="form.status" @change="listFiltering(1)">
               <option value="1">청약 현황</option>
@@ -122,74 +145,54 @@ onMounted(() => {
               </option>
             </CFormSelect>
           </CCol>
-
-          <CCol md="4" xl="2" class="pt-1 mb-3">
-            <CFormSwitch
-              id="null_unit"
-              v-model="form.null_unit"
-              label="동호 미지정"
-              @change="listFiltering(1)"
-            />
-          </CCol>
-
-          <CCol md="4" xl="2" class="mb-3">
-            <CFormSelect v-model="form.qualification" @change="listFiltering(1)">
-              <option value="">등록상태</option>
-              <option value="1">일반분양</option>
-              <option value="2">미인가조합원</option>
-              <option value="3">인가조합원</option>
-              <option value="4">부적격조합원</option>
-            </CFormSelect>
-          </CCol>
         </CRow>
       </CCol>
 
-      <CCol lg="4">
+      <CCol lg="5">
         <CRow>
-          <CCol md="4" lg="6" xl="4" class="mb-3">
-            <CFormSelect v-model="form.ordering" @change="listFiltering(1)">
-              <option value="-created_at">등록일시 내림차순</option>
-              <option value="created_at">등록일시 올림차순</option>
-              <option value="-contractor__contract_date">계약일자 내림차순</option>
-              <option value="contractor__contract_date">계약일자 올림차순</option>
-              <option value="-serial_number">일련번호 내림차순</option>
-              <option value="serial_number">일련번호 올림차순</option>
-              <option value="-contractor__name">계약자명 내림차순</option>
-              <option value="contractor__name">계약자명 올림차순</option>
-            </CFormSelect>
+          <CCol md="12" lg="8">
+            <CRow>
+              <CCol md="4" lg="6" xl="4" class="pt-2 mb-3">
+                <CFormSwitch
+                  id="null_unit"
+                  v-model="form.null_unit"
+                  label="동호 미지정"
+                  @change="listFiltering(1)"
+                />
+              </CCol>
+              <CCol md="4" lg="6" xl="4" class="mb-3">
+                <DatePicker
+                  v-model="from_date"
+                  placeholder="계약일 (From)"
+                  @keydown.enter="listFiltering(1)"
+                />
+              </CCol>
+
+              <CCol md="4" lg="6" xl="4" class="mb-3">
+                <DatePicker
+                  v-model="to_date"
+                  placeholder="계약일 (To)"
+                  @keydown.enter="listFiltering(1)"
+                />
+              </CCol>
+            </CRow>
           </CCol>
 
-          <CCol md="4" lg="6" xl="4" class="mb-3">
-            <DatePicker
-              v-model="from_date"
-              placeholder="계약일 (From)"
-              @keydown.enter="listFiltering(1)"
-            />
-          </CCol>
-
-          <CCol md="4" lg="6" xl="4" class="mb-3">
-            <DatePicker
-              v-model="to_date"
-              placeholder="계약일 (To)"
-              @keydown.enter="listFiltering(1)"
-            />
-          </CCol>
-        </CRow>
-      </CCol>
-
-      <CCol lg="2">
-        <CRow>
-          <CCol class="mb-3">
-            <CInputGroup class="flex-nowrap">
-              <CFormInput
-                v-model="form.search"
-                placeholder="계약자, 전화번호, 일련번호, 비고"
-                aria-label="Username"
-                aria-describedby="addon-wrapping"
-                @keydown.enter="listFiltering(1)"
-              />
-              <CInputGroupText @click="listFiltering(1)">검색</CInputGroupText>
-            </CInputGroup>
+          <CCol>
+            <CRow>
+              <CCol class="mb-3">
+                <CInputGroup class="flex-nowrap">
+                  <CFormInput
+                    v-model="form.search"
+                    placeholder="계약자, 전화번호, 일련번호, 비고"
+                    aria-label="Username"
+                    aria-describedby="addon-wrapping"
+                    @keydown.enter="listFiltering(1)"
+                  />
+                  <CInputGroupText @click="listFiltering(1)">검색</CInputGroupText>
+                </CInputGroup>
+              </CCol>
+            </CRow>
           </CCol>
         </CRow>
       </CCol>
