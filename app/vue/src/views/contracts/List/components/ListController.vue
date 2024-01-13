@@ -152,7 +152,7 @@ onMounted(() => {
         <CRow>
           <CCol md="12" lg="8">
             <CRow>
-              <CCol md="4" lg="6" xl="4" class="pt-2 mb-3">
+              <CCol md="4" lg="6" xl="4" class="pt-2 mb-3 col-form-label">
                 <CFormSwitch
                   id="null_unit"
                   v-model="form.null_unit"
