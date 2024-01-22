@@ -136,7 +136,7 @@ onBeforeMount(() => {
   fetchProAllAccD2List()
   fetchProAllAccD3List()
   dataSetup(project.value || projStore.initProjId)
-  compName.value = comp[Number(Cookies.get('proCashStatus'))]
+  compName.value = comp[Number(Cookies.get('proCashStatus') ?? 1)]
 })
 </script>
 

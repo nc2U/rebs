@@ -106,7 +106,7 @@ onBeforeMount(() => {
   fetchAllAccD2List()
   fetchAllAccD3List()
   dataSetup(company.value || comStore.initComId)
-  compName.value = comp[Number(Cookies.get('comCashStatus'))]
+  compName.value = comp[Number(Cookies.get('comCashStatus') ?? 1)]
 })
 </script>
 
