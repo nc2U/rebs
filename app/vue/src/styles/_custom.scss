@@ -419,6 +419,13 @@ input[type='number'] {
   color: #7f7f8a;
 }
 
-.dark-theme .text-50 {
-  color: #cccccc;
+.dark-theme {
+  .text-50 {
+    color: #cccccc;
+  }
+
+  .v-table__wrapper table tr {
+    background-color: #24252F;
+    color: #E3E3E4;
+  }
 }
