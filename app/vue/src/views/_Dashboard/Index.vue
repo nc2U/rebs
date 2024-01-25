@@ -20,17 +20,13 @@ onBeforeMount(() => docStore.fetchPostList({ board: 1 }))
 <template>
   <CContainer fluid>
     <CRow>
-      <CCol xl="11" xxl="10">
+      <CCol>
         <MainCarousel />
       </CCol>
     </CRow>
     <CRow>
-      <CCol xl="11" xxl="10">
-        <CRow>
-          <CCol lg="12">
-            <WiseWord />
-          </CCol>
-        </CRow>
+      <CCol>
+        <WiseWord />
       </CCol>
     </CRow>
     <CRow>
