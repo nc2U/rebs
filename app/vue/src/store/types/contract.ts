@@ -15,6 +15,8 @@ export interface Contract {
   unit_type: number
   serial_number: string
   activation: boolean
+  is_sup_cont: boolean
+  sup_cont_date: string | null
   keyunit: KeyUnit | null
   contractprice: ContPrice | null
   contractor: ContractorInContract | null
