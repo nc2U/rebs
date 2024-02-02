@@ -54,6 +54,8 @@ const form = reactive({
   unit_type: null as number | null,
   serial_number: '',
   activation: true,
+  is_sup_cont: false,
+  sup_cont_date: null,
 
   // keyunit & houseunit
   keyunit: null as number | null, // 4
@@ -307,6 +309,9 @@ const formDataReset = () => {
   form.order_group = null
   form.order_group_sort = ''
   form.unit_type = null
+  form.serial_number = ''
+  form.is_sup_cont = false
+  form.sup_cont_date = null
   form.keyunit = null
   form.houseunit = null
   form.keyunit_code = ''
@@ -355,6 +360,8 @@ const formDataSetup = () => {
     form.order_group_sort = props.contract.order_group_desc.sort
     form.unit_type = props.contract.unit_type
     form.serial_number = props.contract.serial_number
+    form.is_sup_cont = props.contract.is_sup_cont
+    form.sup_cont_date = props.contract.sup_cont_date
     form.keyunit = props.contract.keyunit?.pk
     form.keyunit_code = props.contract.keyunit?.unit_code
     form.houseunit = props.contract.keyunit?.houseunit?.pk
@@ -503,6 +510,35 @@ onUpdated(() => formDataSetup())
           />
           <CFormFeedback invalid>동호수를 선택하세요.</CFormFeedback>
         </CCol>
+      </CRow>
+
+      <CRow class="mb-0">
+        <CAlert :color="isDark ? 'default' : 'secondary'" class="pb-0">
+          <CRow class="mb-3">
+            <CFormLabel class="col-md-2 col-lg-1 col-form-label">공급계약</CFormLabel>
+            <CCol v-show="isContract" xs="5" lg="1" class="pt-2 p-0 text-center">
+              <v-checkbox-btn
+                id="to-same"
+                v-model="form.is_sup_cont"
+                label="체결 여부"
+                :color="isDark ? '#857DCC' : '#321FDB'"
+                hide-details
+                :disabled="!isContract"
+              />
+            </CCol>
+            <CFormLabel class="col-md-2 col-lg-1 col-form-label">체결일자</CFormLabel>
+            <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+              <DatePicker
+                v-model="form.sup_cont_date"
+                maxlength="10"
+                placeholder="공급계약 체결일"
+                :required="isContract"
+                :disabled="noStatus"
+              />
+              <CFormFeedback invalid>공급계약 체결일을 입력하세요.</CFormFeedback>
+            </CCol>
+          </CRow>
+        </CAlert>
       </CRow>
 
       <v-divider />
