@@ -422,8 +422,8 @@ onUpdated(() => formDataSetup())
       <v-divider />
 
       <CRow class="mb-3">
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 구분</CFormLabel>
-        <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 구분</CFormLabel>
+        <CCol sm="10" lg="2" class="mb-sm-3 mb-lg-0">
           <Multiselect
             v-model="form.status"
             :options="[
@@ -446,8 +446,8 @@ onUpdated(() => formDataSetup())
       </CRow>
 
       <CRow class="mb-3">
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 차수</CFormLabel>
-        <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 차수</CFormLabel>
+        <CCol sm="10" lg="2" class="mb-sm-3 mb-lg-0">
           <CFormSelect
             v-model.number="form.order_group"
             required
@@ -462,8 +462,8 @@ onUpdated(() => formDataSetup())
           <CFormFeedback invalid>차수그룹을 선택하세요.</CFormFeedback>
         </CCol>
 
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 타입</CFormLabel>
-        <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 타입</CFormLabel>
+        <CCol sm="10" lg="2" class="mb-sm-3 mb-lg-0">
           <CFormSelect
             v-model.number="form.unit_type"
             required
@@ -478,8 +478,8 @@ onUpdated(() => formDataSetup())
           <CFormFeedback invalid>유니트 타입을 선택하세요.</CFormFeedback>
         </CCol>
 
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> {{ contLabel }}코드</CFormLabel>
-        <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> {{ contLabel }}코드</CFormLabel>
+        <CCol sm="10" lg="2" class="mb-sm-3 mb-lg-0">
           <CFormSelect
             v-model.number="form.keyunit"
             required
@@ -494,8 +494,8 @@ onUpdated(() => formDataSetup())
           <CFormFeedback invalid> {{ contLabel }}코드를 선택하세요.</CFormFeedback>
         </CCol>
 
-        <CFormLabel v-if="unitSet" class="col-md-2 col-lg-1 col-form-label"> 동호수</CFormLabel>
-        <CCol v-if="unitSet" md="10" lg="2" class="mb-md-3 mb-lg-0">
+        <CFormLabel v-if="unitSet" class="col-sm-2 col-lg-1 col-form-label"> 동호수</CFormLabel>
+        <CCol v-if="unitSet" sm="10" lg="2" class="mb-sm-3 mb-lg-0">
           <Multiselect
             v-model.number="form.houseunit"
             :options="getHouseUnits"
@@ -512,22 +512,21 @@ onUpdated(() => formDataSetup())
         </CCol>
       </CRow>
 
-      <CRow class="mb-0">
-        <CAlert :color="isDark ? 'default' : 'secondary'" class="pb-0">
-          <CRow class="mb-3">
-            <CFormLabel class="col-md-2 col-lg-1 col-form-label">공급계약</CFormLabel>
-            <CCol v-show="isContract" xs="5" lg="1" class="pt-2 p-0 text-center">
+      <CRow>
+        <CAlert :color="isDark ? 'default' : 'success'" class="py-3 mb-0">
+          <CRow>
+            <CFormLabel class="col-sm-2 col-lg-1 col-form-label">공급계약</CFormLabel>
+            <CCol sm="10" lg="2" class="pt-1">
               <v-checkbox-btn
-                id="to-same"
                 v-model="form.is_sup_cont"
                 label="체결 여부"
                 :color="isDark ? '#857DCC' : '#321FDB'"
-                hide-details
+                density="compact"
                 :disabled="!isContract"
               />
             </CCol>
-            <CFormLabel class="col-md-2 col-lg-1 col-form-label">체결일자</CFormLabel>
-            <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+            <CFormLabel class="col-sm-2 col-lg-1 col-form-label">체결일자</CFormLabel>
+            <CCol sm="10" lg="2">
               <DatePicker
                 v-model="form.sup_cont_date"
                 maxlength="10"
@@ -544,8 +543,8 @@ onUpdated(() => formDataSetup())
       <v-divider />
 
       <CRow class="mb-3">
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> {{ contLabel }}일자</CFormLabel>
-        <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> {{ contLabel }}일자</CFormLabel>
+        <CCol sm="10" lg="2" class="mb-sm-3 mb-lg-0">
           <DatePicker
             v-show="form.status === '1'"
             v-model="form.reservation_date"
@@ -562,8 +561,8 @@ onUpdated(() => formDataSetup())
           />
         </CCol>
 
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> {{ contLabel }}자명</CFormLabel>
-        <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> {{ contLabel }}자명</CFormLabel>
+        <CCol sm="10" lg="2" class="mb-sm-3 mb-lg-0">
           <CFormInput
             v-model="form.name"
             maxlength="20"
@@ -574,8 +573,8 @@ onUpdated(() => formDataSetup())
           <CFormFeedback invalid> {{ contLabel }}자명을 입력하세요.</CFormFeedback>
         </CCol>
 
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 생년월일</CFormLabel>
-        <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 생년월일</CFormLabel>
+        <CCol sm="10" lg="2" class="mb-sm-3 mb-lg-0">
           <DatePicker
             v-model="form.birth_date"
             maxlength="10"
@@ -586,7 +585,7 @@ onUpdated(() => formDataSetup())
           <CFormFeedback invalid>생년월일 입력하세요.</CFormFeedback>
         </CCol>
 
-        <CCol v-show="isContract" xs="5" lg="1" class="pt-2 p-0 text-center">
+        <CCol v-show="isContract" xs="6" lg="1" class="pt-2 p-0 text-center">
           <div class="form-check form-check-inline">
             <input
               id="male"
@@ -627,8 +626,8 @@ onUpdated(() => formDataSetup())
       </CRow>
 
       <CRow class="mb-3">
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 휴대전화</CFormLabel>
-        <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 휴대전화</CFormLabel>
+        <CCol sm="10" lg="2" class="mb-sm-3 mb-lg-0">
           <input
             v-model="form.cell_phone"
             v-maska
@@ -642,8 +641,8 @@ onUpdated(() => formDataSetup())
           <CFormFeedback invalid>휴대전화번호를 입력하세요.</CFormFeedback>
         </CCol>
 
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 집전화</CFormLabel>
-        <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 집전화</CFormLabel>
+        <CCol sm="10" lg="2" class="mb-sm-3 mb-lg-0">
           <input
             v-model="form.home_phone"
             v-maska
@@ -655,8 +654,8 @@ onUpdated(() => formDataSetup())
           />
         </CCol>
 
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 기타 연락처</CFormLabel>
-        <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 기타 연락처</CFormLabel>
+        <CCol sm="10" lg="2" class="mb-sm-3 mb-lg-0">
           <input
             v-model="form.other_phone"
             v-maska
@@ -668,8 +667,8 @@ onUpdated(() => formDataSetup())
           />
         </CCol>
 
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 이메일</CFormLabel>
-        <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 이메일</CFormLabel>
+        <CCol sm="10" lg="2" class="mb-sm-3 mb-lg-0">
           <CFormInput
             v-model="form.email"
             type="email"
@@ -680,8 +679,8 @@ onUpdated(() => formDataSetup())
         </CCol>
       </CRow>
 
-      <CRow class="mb-0">
-        <CAlert :color="isDark ? 'default' : 'secondary'" class="pb-0">
+      <CRow>
+        <CAlert :color="isDark ? 'default' : 'secondary'" class="py-3">
           <CRow v-if="downPayments.length" class="mb-3">
             <CCol>
               <CRow
@@ -693,7 +692,7 @@ onUpdated(() => formDataSetup())
                 <CCol>
                   계약금
                   <router-link
-                    v-c-tooltip="'전체 건별 수납 관리'"
+                    v-c-tooltip="'건별 수납 관리'"
                     :to="{
                       name: '건별 수납 관리',
                       query: { contract: contract.pk },
@@ -706,7 +705,7 @@ onUpdated(() => formDataSetup())
                 <CCol class="text-right">{{ payment.deal_date }}</CCol>
                 <CCol class="text-right">
                   <router-link
-                    v-c-tooltip="'전체 건별 수납 관리'"
+                    v-c-tooltip="'건별 수납 관리'"
                     :to="{
                       name: '건별 수납 관리',
                       query: { contract: contract.pk },
@@ -735,7 +734,7 @@ onUpdated(() => formDataSetup())
             </CCol>
           </CRow>
           <CRow>
-            <CFormLabel class="col-md-2 col-lg-1 col-form-label">
+            <CFormLabel class="col-sm-2 col-lg-1 col-form-label">
               {{ contLabel }}금 {{ !form.payment ? '등록' : '수정' }}
             </CFormLabel>
             <CCol md="10" lg="2" class="mb-3 mb-lg-0">
@@ -812,7 +811,7 @@ onUpdated(() => formDataSetup())
       </CRow>
 
       <CRow v-show="isContract" class="mb-0">
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 주민등록 주소</CFormLabel>
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 주민등록 주소</CFormLabel>
         <CCol md="3" lg="2" class="mb-3 mb-lg-0">
           <CInputGroup>
             <CInputGroupText @click="refPostCode.initiate(2)"> 우편번호</CInputGroupText>
@@ -865,7 +864,7 @@ onUpdated(() => formDataSetup())
       </CRow>
 
       <CRow v-show="isContract" class="mb-0">
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 우편수령 주소</CFormLabel>
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 우편수령 주소</CFormLabel>
         <CCol md="3" lg="2" class="mb-3 mb-lg-0">
           <CInputGroup>
             <CInputGroupText @click="refPostCode.initiate(3)"> 우편번호</CInputGroupText>
@@ -924,7 +923,6 @@ onUpdated(() => formDataSetup())
             v-model="sameAddr"
             label="상동"
             :color="isDark ? '#857DCC' : '#321FDB'"
-            hide-details
             :disabled="!isContract || !form.id_zipcode"
             @click="toSame"
           />
@@ -932,8 +930,8 @@ onUpdated(() => formDataSetup())
       </CRow>
 
       <CRow class="mb-3">
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 비고</CFormLabel>
-        <CCol md="10" lg="11" class="mb-md-3 mb-lg-0">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 비고</CFormLabel>
+        <CCol sm="10" lg="11" class="mb-md-3 mb-lg-0">
           <CFormTextarea v-model="form.note" placeholder="기타 특이사항" :disabled="noStatus" />
         </CCol>
       </CRow>
