@@ -680,7 +680,7 @@ onUpdated(() => formDataSetup())
       </CRow>
 
       <CRow>
-        <CAlert :color="isDark ? 'default' : 'secondary'" class="py-3">
+        <CAlert :color="isDark ? 'default' : 'secondary'" class="pt-3 pb-sm-3 pb-lg-0">
           <CRow v-if="downPayments.length" class="mb-3">
             <CCol>
               <CRow
@@ -815,10 +815,10 @@ onUpdated(() => formDataSetup())
         </CAlert>
       </CRow>
 
-      <CRow v-show="isContract">
+      <CRow v-show="isContract" class="mb-sm-3 mb-lg-0">
         <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 주민등록 주소</CFormLabel>
 
-        <CCol sm="10" md="3" lg="2" class="mb-3 mb-lg-0">
+        <CCol sm="10" md="5" lg="2" class="mb-3 mb-lg-0">
           <CInputGroup>
             <CInputGroupText @click="refPostCode.initiate(2)"> 우편번호</CInputGroupText>
             <CFormInput
@@ -837,7 +837,7 @@ onUpdated(() => formDataSetup())
 
         <CCol sm="2" class="d-none d-sm-block d-md-none"></CCol>
 
-        <CCol sm="10" md="7" lg="4" class="mb-3 mb-lg-0">
+        <CCol sm="10" md="5" lg="4" class="mb-3 mb-lg-0">
           <CFormInput
             v-model="form.id_address1"
             maxlength="35"
@@ -874,9 +874,9 @@ onUpdated(() => formDataSetup())
         </CCol>
       </CRow>
 
-      <CRow v-show="isContract" class="mb-0">
+      <CRow v-show="isContract" class="mb-sm-3 mb-lg-0">
         <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 우편수령 주소</CFormLabel>
-        <CCol sm="10" md="3" lg="2" class="mb-3 mb-lg-0">
+        <CCol sm="10" md="5" lg="2" class="mb-3 mb-lg-0">
           <CInputGroup>
             <CInputGroupText @click="refPostCode.initiate(3)"> 우편번호</CInputGroupText>
             <CFormInput
@@ -895,7 +895,7 @@ onUpdated(() => formDataSetup())
 
         <CCol sm="2" class="d-none d-sm-block d-md-none"></CCol>
 
-        <CCol sm="10" md="7" lg="4" class="mb-3 mb-lg-0">
+        <CCol sm="10" md="5" lg="4" class="mb-3 mb-lg-0">
           <CFormInput
             v-model="form.dm_address1"
             maxlength="50"
@@ -945,7 +945,7 @@ onUpdated(() => formDataSetup())
         </CCol>
       </CRow>
 
-      <CRow class="mb-3">
+      <CRow class="mb-sm-3 mb-lg-0">
         <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 비고</CFormLabel>
         <CCol sm="10" lg="11" class="mb-md-3 mb-lg-0">
           <CFormTextarea v-model="form.note" placeholder="기타 특이사항" :disabled="noStatus" />
