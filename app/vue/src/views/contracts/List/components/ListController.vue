@@ -19,6 +19,7 @@ const form = reactive<ContFilter>({
   null_unit: false,
   building: '',
   qualification: '',
+  is_sup_cont: '',
   ordering: '-created_at',
   search: '',
 })
@@ -160,21 +161,30 @@ onMounted(() => {
                   @change="listFiltering(1)"
                 />
               </CCol>
-              <CCol md="4" lg="6" xl="4" class="mb-3">
-                <DatePicker
-                  v-model="from_date"
-                  placeholder="계약일 (From)"
-                  @keydown.enter="listFiltering(1)"
-                />
+
+              <CCol md="4" lg="6" xl="4">
+                <CFormSelect v-model="form.is_sup_cont" @change="listFiltering(1)">
+                  <option value="">공급계약 (전체)</option>
+                  <option value="true">체결</option>
+                  <option value="false">미체결</option>
+                </CFormSelect>
               </CCol>
 
-              <CCol md="4" lg="6" xl="4" class="mb-3">
-                <DatePicker
-                  v-model="to_date"
-                  placeholder="계약일 (To)"
-                  @keydown.enter="listFiltering(1)"
-                />
-              </CCol>
+              <!--              <CCol md="4" lg="6" xl="4" class="mb-3">-->
+              <!--                <DatePicker-->
+              <!--                  v-model="from_date"-->
+              <!--                  placeholder="계약일 (From)"-->
+              <!--                  @keydown.enter="listFiltering(1)"-->
+              <!--                />-->
+              <!--              </CCol>-->
+
+              <!--              <CCol md="4" lg="6" xl="4" class="mb-3">-->
+              <!--                <DatePicker-->
+              <!--                  v-model="to_date"-->
+              <!--                  placeholder="계약일 (To)"-->
+              <!--                  @keydown.enter="listFiltering(1)"-->
+              <!--                />-->
+              <!--              </CCol>-->
             </CRow>
           </CCol>
 
