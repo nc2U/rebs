@@ -32,8 +32,8 @@ class ContractFilter(FilterSet):
 
     class Meta:
         model = Contract
-        fields = ('project', 'order_group', 'activation', 'unit_type', 'houseunit__isnull',
-                  'keyunit__houseunit__building_unit', 'contractor__status',
+        fields = ('project', 'activation', 'contractor__status', 'order_group', 'unit_type',
+                  'keyunit__houseunit__building_unit', 'houseunit__isnull', 'is_sup_cont',
                   'contractor__qualification', 'from_contract_date', 'to_contract_date')
 
 
