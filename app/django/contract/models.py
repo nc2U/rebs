@@ -24,6 +24,8 @@ class Contract(models.Model):
     order_group = models.ForeignKey(OrderGroup, on_delete=models.PROTECT, verbose_name='차수')
     unit_type = models.ForeignKey('items.UnitType', on_delete=models.PROTECT, verbose_name='타입')
     activation = models.BooleanField('계약 활성 여부', default=True)
+    is_sup_cont = models.BooleanField('공급계약 체결여부', default=False)
+    sup_cont_date = models.DateField('공급계약 체결일', null=True, blank=True)
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')

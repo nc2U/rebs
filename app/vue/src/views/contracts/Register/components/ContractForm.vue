@@ -54,6 +54,8 @@ const form = reactive({
   unit_type: null as number | null,
   serial_number: '',
   activation: true,
+  is_sup_cont: false,
+  sup_cont_date: null,
 
   // keyunit & houseunit
   keyunit: null as number | null, // 4
@@ -111,23 +113,6 @@ watch(matchAddr, val => sameAddrBtnSet(val))
 const store = useStore()
 const isDark = computed(() => store.theme === 'dark')
 
-const sameAddrBtnSet = (chk: boolean) => (sameAddr.value = chk)
-
-const toSame = () => {
-  sameAddr.value = !sameAddr.value
-  if (sameAddr.value) {
-    form.dm_zipcode = form.id_zipcode
-    form.dm_address1 = form.id_address1
-    form.dm_address2 = form.id_address2
-    form.dm_address3 = form.id_address3
-  } else {
-    form.dm_zipcode = ''
-    form.dm_address1 = ''
-    form.dm_address2 = ''
-    form.dm_address3 = ''
-  }
-}
-
 const contractStore = useContract()
 const getOrderGroups = computed(() => contractStore.getOrderGroups)
 const getKeyUnits = computed(() => contractStore.getKeyUnits)
@@ -154,6 +139,49 @@ const downPayments = computed(() =>
     ? props.contract.payments.filter((p: Payment) => p.installment_order.pay_time === 1)
     : [],
 )
+
+const formsCheck = computed(() => {
+  if (props.contract && props.contractor) {
+    const contact = props.contract.contractor?.contractorcontact
+    const address = props.contract.contractor?.contractoraddress
+
+    const a = form.order_group === props.contract.order_group
+    const b = form.unit_type === props.contract.unit_type
+    const c = form.keyunit === props.contract.keyunit?.pk
+    const d = form.houseunit === props.contract.keyunit?.houseunit?.pk
+    const e = form.is_sup_cont === props.contract.is_sup_cont
+    const f = form.sup_cont_date === props.contract.sup_cont_date
+    const g = form.reservation_date === props.contractor.reservation_date
+    const h = form.contract_date === props.contractor?.contract_date
+    const i = form.name === props.contractor.name
+    const j = form.birth_date === props.contractor.birth_date
+    const k = form.gender === props.contractor?.gender
+    const l = form.qualification === props.contractor?.qualification
+    const m = form.cell_phone === contact.cell_phone
+    const n = form.home_phone === contact?.home_phone
+    const o = form.other_phone === contact?.other_phone
+    const p = form.email === contact?.email
+    const q = !form.deal_date
+    const r = !form.income
+    const s = !form.bank_account
+    const t = !form.trader
+    const u = !form.installment_order
+    const v = form.id_zipcode === address.id_zipcode
+    const w = form.id_address1 === address.id_address1
+    const x = form.id_address2 === address.id_address2
+    const y = form.id_address3 === address.id_address3
+    const z = form.dm_zipcode === address.dm_zipcode
+    const a1 = form.dm_address1 === address.dm_address1
+    const b1 = form.dm_address2 === address.dm_address2
+    const c1 = form.dm_address3 === address.dm_address3
+    const d1 = form.note === props.contract.contractor.note
+
+    const cond1 = a && b && c && d && e && f && g && h && i && j
+    const cond2 = k && l && m && n && o && p && q && r && s && t
+    const cond3 = u && v && w && x && y && z && a1 && b1 && c1 && d1
+    return cond1 && cond2 && cond3
+  } else return false
+})
 
 const allowedPeriod = (paidDate: string) => useAccount().superAuth || diffDate(paidDate) <= 90
 
@@ -221,92 +249,23 @@ const typeSelect = () => {
   })
 }
 
-const onSubmit = (event: Event) => {
-  if (isValidate(event)) {
-    validated.value = true
-  } else {
-    if (write_contract.value) refConfirmModal.value.callModal()
-    else refAlertModal.value.callModal()
-  }
-}
-
-const modalAction = () => {
-  if (!props.contract) emit('on-create', form)
-  else emit('on-update', form)
-  validated.value = false
-  refConfirmModal.value.close()
-}
-
 const deleteContract = () => {
   if (useAccount().superAuth) refDelModal.value.callModal()
   else refAlertModal.value.callModal()
 }
 
-const addressCallback = (data: AddressData) => {
-  const { formNum, zipcode, address1, address3 } = callAddress(data)
-  if (formNum === 2) {
-    form.id_zipcode = zipcode
-    form.id_address1 = address1
-    form.id_address2 = ''
-    form.id_address3 = address3
-    address21.value.$el.nextElementSibling.focus()
-  } else if (formNum === 3) {
-    form.dm_zipcode = zipcode
-    form.dm_address1 = address1
-    form.dm_address2 = ''
-    form.dm_address3 = address3
-    address22.value.$el.nextElementSibling.focus()
-  }
-}
-
 const searchContractor = (contor: string) => emit('search-contractor', contor)
 
-const formsCheck = computed(() => {
-  if (props.contract && props.contractor) {
-    const contact = props.contract.contractor?.contractorcontact
-    const address = props.contract.contractor?.contractoraddress
-
-    const a = form.order_group === props.contract.order_group
-    const b = form.unit_type === props.contract.unit_type
-    const c = form.keyunit === props.contract.keyunit?.pk
-    const d = form.houseunit === props.contract.keyunit?.houseunit?.pk
-    const e = form.reservation_date === props.contractor.reservation_date
-    const f = form.contract_date === props.contractor?.contract_date
-    const g = form.name === props.contractor.name
-    const h = form.birth_date === props.contractor.birth_date
-    const i = form.gender === props.contractor?.gender
-    const j = form.qualification === props.contractor?.qualification
-    const k = form.cell_phone === contact.cell_phone
-    const l = form.home_phone === contact?.home_phone
-    const m = form.other_phone === contact?.other_phone
-    const n = form.email === contact?.email
-    const o = !form.deal_date
-    const p = !form.income
-    const q = !form.bank_account
-    const r = !form.trader
-    const s = !form.installment_order
-    const t = form.id_zipcode === address.id_zipcode
-    const u = form.id_address1 === address.id_address1
-    const v = form.id_address2 === address.id_address2
-    const w = form.id_address3 === address.id_address3
-    const x = form.dm_zipcode === address.dm_zipcode
-    const y = form.dm_address1 === address.dm_address1
-    const z = form.dm_address2 === address.dm_address2
-    const a1 = form.dm_address3 === address.dm_address3
-    const b1 = form.note === props.contract.contractor.note
-
-    const cond1 = a && b && c && d && e && f && g && h && i
-    const cond2 = j && k && l && m && n && o && p && q && r && s
-    const cond3 = t && u && v && w && x && y && z && a1 && b1
-    return cond1 && cond2 && cond3
-  } else return false
-})
+const remove_sup_cDate = () => (form.is_sup_cont ? (form.sup_cont_date = null) : null)
 
 const formDataReset = () => {
   form.pk = null
   form.order_group = null
   form.order_group_sort = ''
   form.unit_type = null
+  form.serial_number = ''
+  form.is_sup_cont = false
+  form.sup_cont_date = null
   form.keyunit = null
   form.houseunit = null
   form.keyunit_code = ''
@@ -355,6 +314,8 @@ const formDataSetup = () => {
     form.order_group_sort = props.contract.order_group_desc.sort
     form.unit_type = props.contract.unit_type
     form.serial_number = props.contract.serial_number
+    form.is_sup_cont = props.contract.is_sup_cont
+    form.sup_cont_date = props.contract.sup_cont_date
     form.keyunit = props.contract.keyunit?.pk
     form.keyunit_code = props.contract.keyunit?.unit_code
     form.houseunit = props.contract.keyunit?.houseunit?.pk
@@ -394,6 +355,56 @@ const formDataSetup = () => {
 
 const resumeForm = (contor: string) => emit('resume-form', contor)
 
+const addressCallback = (data: AddressData) => {
+  const { formNum, zipcode, address1, address3 } = callAddress(data)
+  if (formNum === 2) {
+    form.id_zipcode = zipcode
+    form.id_address1 = address1
+    form.id_address2 = ''
+    form.id_address3 = address3
+    address21.value.$el.nextElementSibling.focus()
+  } else if (formNum === 3) {
+    form.dm_zipcode = zipcode
+    form.dm_address1 = address1
+    form.dm_address2 = ''
+    form.dm_address3 = address3
+    address22.value.$el.nextElementSibling.focus()
+  }
+}
+
+const sameAddrBtnSet = (chk: boolean) => (sameAddr.value = chk)
+
+const toSame = () => {
+  sameAddr.value = !sameAddr.value
+  if (sameAddr.value) {
+    form.dm_zipcode = form.id_zipcode
+    form.dm_address1 = form.id_address1
+    form.dm_address2 = form.id_address2
+    form.dm_address3 = form.id_address3
+  } else {
+    form.dm_zipcode = ''
+    form.dm_address1 = ''
+    form.dm_address2 = ''
+    form.dm_address3 = ''
+  }
+}
+
+const onSubmit = (event: Event) => {
+  if (isValidate(event)) {
+    validated.value = true
+  } else {
+    if (write_contract.value) refConfirmModal.value.callModal()
+    else refAlertModal.value.callModal()
+  }
+}
+
+const modalAction = () => {
+  if (!props.contract) emit('on-create', form)
+  else emit('on-update', form)
+  validated.value = false
+  refConfirmModal.value.close()
+}
+
 defineExpose({ formDataReset })
 
 onMounted(() => formDataSetup())
@@ -415,8 +426,8 @@ onUpdated(() => formDataSetup())
       <v-divider />
 
       <CRow class="mb-3">
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 구분</CFormLabel>
-        <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 구분</CFormLabel>
+        <CCol sm="10" lg="2" class="mb-sm-3 mb-lg-0">
           <Multiselect
             v-model="form.status"
             :options="[
@@ -439,8 +450,8 @@ onUpdated(() => formDataSetup())
       </CRow>
 
       <CRow class="mb-3">
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 차수</CFormLabel>
-        <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 차수</CFormLabel>
+        <CCol sm="10" lg="2" class="mb-sm-3 mb-lg-0">
           <CFormSelect
             v-model.number="form.order_group"
             required
@@ -455,8 +466,8 @@ onUpdated(() => formDataSetup())
           <CFormFeedback invalid>차수그룹을 선택하세요.</CFormFeedback>
         </CCol>
 
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 타입</CFormLabel>
-        <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 타입</CFormLabel>
+        <CCol sm="10" lg="2" class="mb-sm-3 mb-lg-0">
           <CFormSelect
             v-model.number="form.unit_type"
             required
@@ -471,8 +482,8 @@ onUpdated(() => formDataSetup())
           <CFormFeedback invalid>유니트 타입을 선택하세요.</CFormFeedback>
         </CCol>
 
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> {{ contLabel }}코드</CFormLabel>
-        <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> {{ contLabel }}코드</CFormLabel>
+        <CCol sm="10" lg="2" class="mb-sm-3 mb-lg-0">
           <CFormSelect
             v-model.number="form.keyunit"
             required
@@ -487,8 +498,8 @@ onUpdated(() => formDataSetup())
           <CFormFeedback invalid> {{ contLabel }}코드를 선택하세요.</CFormFeedback>
         </CCol>
 
-        <CFormLabel v-if="unitSet" class="col-md-2 col-lg-1 col-form-label"> 동호수</CFormLabel>
-        <CCol v-if="unitSet" md="10" lg="2" class="mb-md-3 mb-lg-0">
+        <CFormLabel v-if="unitSet" class="col-sm-2 col-lg-1 col-form-label"> 동호수</CFormLabel>
+        <CCol v-if="unitSet" sm="10" lg="2" class="mb-sm-3 mb-lg-0">
           <Multiselect
             v-model.number="form.houseunit"
             :options="getHouseUnits"
@@ -505,11 +516,43 @@ onUpdated(() => formDataSetup())
         </CCol>
       </CRow>
 
+      <CRow>
+        <CAlert
+          :color="isDark ? 'default' : form.is_sup_cont ? 'success' : 'warning'"
+          class="py-3 mb-0"
+        >
+          <CRow>
+            <CFormLabel class="col-sm-2 col-lg-1 col-form-label">공급계약</CFormLabel>
+            <CCol sm="10" lg="2" class="pt-1">
+              <v-checkbox-btn
+                v-model="form.is_sup_cont"
+                label="체결 여부"
+                :color="isDark ? '#857DCC' : '#321FDB'"
+                density="compact"
+                :disabled="!isContract"
+                @click="remove_sup_cDate"
+              />
+            </CCol>
+            <CFormLabel class="col-sm-2 col-lg-1 col-form-label">체결일자</CFormLabel>
+            <CCol sm="10" lg="2">
+              <DatePicker
+                v-model="form.sup_cont_date"
+                maxlength="10"
+                placeholder="공급계약 체결일"
+                :required="form.is_sup_cont"
+                :disabled="!form.is_sup_cont"
+              />
+              <CFormFeedback invalid>공급계약 체결일을 입력하세요.</CFormFeedback>
+            </CCol>
+          </CRow>
+        </CAlert>
+      </CRow>
+
       <v-divider />
 
       <CRow class="mb-3">
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> {{ contLabel }}일자</CFormLabel>
-        <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> {{ contLabel }}일자</CFormLabel>
+        <CCol sm="10" lg="2" class="mb-sm-3 mb-lg-0">
           <DatePicker
             v-show="form.status === '1'"
             v-model="form.reservation_date"
@@ -526,8 +569,8 @@ onUpdated(() => formDataSetup())
           />
         </CCol>
 
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> {{ contLabel }}자명</CFormLabel>
-        <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> {{ contLabel }}자명</CFormLabel>
+        <CCol sm="10" lg="2" class="mb-sm-3 mb-lg-0">
           <CFormInput
             v-model="form.name"
             maxlength="20"
@@ -538,8 +581,8 @@ onUpdated(() => formDataSetup())
           <CFormFeedback invalid> {{ contLabel }}자명을 입력하세요.</CFormFeedback>
         </CCol>
 
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 생년월일</CFormLabel>
-        <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 생년월일</CFormLabel>
+        <CCol sm="10" lg="2" class="mb-sm-3 mb-lg-0">
           <DatePicker
             v-model="form.birth_date"
             maxlength="10"
@@ -550,7 +593,7 @@ onUpdated(() => formDataSetup())
           <CFormFeedback invalid>생년월일 입력하세요.</CFormFeedback>
         </CCol>
 
-        <CCol v-show="isContract" xs="5" lg="1" class="pt-2 p-0 text-center">
+        <CCol v-show="isContract" xs="6" lg="1" class="pt-2 p-0 text-center">
           <div class="form-check form-check-inline">
             <input
               id="male"
@@ -591,8 +634,8 @@ onUpdated(() => formDataSetup())
       </CRow>
 
       <CRow class="mb-3">
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 휴대전화</CFormLabel>
-        <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 휴대전화</CFormLabel>
+        <CCol sm="10" lg="2" class="mb-sm-3 mb-lg-0">
           <input
             v-model="form.cell_phone"
             v-maska
@@ -606,8 +649,8 @@ onUpdated(() => formDataSetup())
           <CFormFeedback invalid>휴대전화번호를 입력하세요.</CFormFeedback>
         </CCol>
 
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 집전화</CFormLabel>
-        <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 집전화</CFormLabel>
+        <CCol sm="10" lg="2" class="mb-sm-3 mb-lg-0">
           <input
             v-model="form.home_phone"
             v-maska
@@ -619,8 +662,8 @@ onUpdated(() => formDataSetup())
           />
         </CCol>
 
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 기타 연락처</CFormLabel>
-        <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 기타 연락처</CFormLabel>
+        <CCol sm="10" lg="2" class="mb-sm-3 mb-lg-0">
           <input
             v-model="form.other_phone"
             v-maska
@@ -632,8 +675,8 @@ onUpdated(() => formDataSetup())
           />
         </CCol>
 
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 이메일</CFormLabel>
-        <CCol md="10" lg="2" class="mb-md-3 mb-lg-0">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 이메일</CFormLabel>
+        <CCol sm="10" lg="2" class="mb-sm-3 mb-lg-0">
           <CFormInput
             v-model="form.email"
             type="email"
@@ -644,8 +687,8 @@ onUpdated(() => formDataSetup())
         </CCol>
       </CRow>
 
-      <CRow class="mb-0">
-        <CAlert :color="isDark ? 'default' : 'secondary'" class="pb-0">
+      <CRow>
+        <CAlert :color="isDark ? 'default' : 'secondary'" class="pt-3 pb-sm-3 pb-lg-0">
           <CRow v-if="downPayments.length" class="mb-3">
             <CCol>
               <CRow
@@ -657,7 +700,7 @@ onUpdated(() => formDataSetup())
                 <CCol>
                   계약금
                   <router-link
-                    v-c-tooltip="'전체 건별 수납 관리'"
+                    v-c-tooltip="'건별 수납 관리'"
                     :to="{
                       name: '건별 수납 관리',
                       query: { contract: contract.pk },
@@ -670,7 +713,7 @@ onUpdated(() => formDataSetup())
                 <CCol class="text-right">{{ payment.deal_date }}</CCol>
                 <CCol class="text-right">
                   <router-link
-                    v-c-tooltip="'전체 건별 수납 관리'"
+                    v-c-tooltip="'건별 수납 관리'"
                     :to="{
                       name: '건별 수납 관리',
                       query: { contract: contract.pk },
@@ -699,10 +742,10 @@ onUpdated(() => formDataSetup())
             </CCol>
           </CRow>
           <CRow>
-            <CFormLabel class="col-md-2 col-lg-1 col-form-label">
+            <CFormLabel class="col-sm-2 col-lg-1 col-form-label">
               {{ contLabel }}금 {{ !form.payment ? '등록' : '수정' }}
             </CFormLabel>
-            <CCol md="10" lg="2" class="mb-3 mb-lg-0">
+            <CCol sm="10" lg="2" class="mb-3 mb-lg-0">
               <DatePicker
                 v-model="form.deal_date"
                 placeholder="입금일자"
@@ -712,9 +755,9 @@ onUpdated(() => formDataSetup())
               <!--                :required="!contract"-->
             </CCol>
 
-            <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
+            <CCol sm="2" class="d-none d-sm-block d-lg-none"></CCol>
 
-            <CCol md="5" lg="2" class="mb-3 mb-lg-0">
+            <CCol sm="10" md="5" lg="2" class="mb-3 mb-lg-0">
               <CFormInput
                 v-model.number="form.income"
                 type="number"
@@ -726,7 +769,9 @@ onUpdated(() => formDataSetup())
               <CFormFeedback invalid>입금액을 입력하세요.</CFormFeedback>
             </CCol>
 
-            <CCol md="5" lg="2" class="mb-3 mb-lg-0">
+            <CCol sm="2" class="d-none d-sm-block d-md-none"></CCol>
+
+            <CCol sm="10" md="5" lg="2" class="mb-3 mb-lg-0">
               <CFormSelect
                 v-model="form.bank_account"
                 :required="form.deal_date"
@@ -740,9 +785,9 @@ onUpdated(() => formDataSetup())
               <CFormFeedback invalid>납부계좌를 선택하세요.</CFormFeedback>
             </CCol>
 
-            <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
+            <CCol sm="2" class="d-none d-sm-block d-lg-none"></CCol>
 
-            <CCol md="5" lg="2" class="mb-3 mb-lg-0">
+            <CCol sm="10" md="5" lg="2" class="mb-3 mb-lg-0">
               <CFormInput
                 v-model="form.trader"
                 maxlength="20"
@@ -752,7 +797,10 @@ onUpdated(() => formDataSetup())
               />
               <CFormFeedback invalid>입금자명을 입력하세요.</CFormFeedback>
             </CCol>
-            <CCol md="5" lg="2" class="mb-md-3 mb-lg-0">
+
+            <CCol sm="2" class="d-none d-sm-block d-md-none"></CCol>
+
+            <CCol sm="10" md="5" lg="2" class="mb-md-3 mb-lg-0">
               <CFormSelect
                 v-model="form.installment_order"
                 :required="form.deal_date"
@@ -766,7 +814,7 @@ onUpdated(() => formDataSetup())
               <CFormFeedback invalid>납부회차를 선택하세요.</CFormFeedback>
             </CCol>
 
-            <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
+            <CCol sm="2" class="d-none d-sm-block d-lg-none"></CCol>
 
             <CCol v-if="form.payment" xs="3" md="2" lg="1" class="pt-2 mb-3">
               <a href="javascript:void(0)" @click="payReset">Reset</a>
@@ -775,9 +823,10 @@ onUpdated(() => formDataSetup())
         </CAlert>
       </CRow>
 
-      <CRow v-show="isContract" class="mb-0">
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 주민등록 주소</CFormLabel>
-        <CCol md="3" lg="2" class="mb-3 mb-lg-0">
+      <CRow v-show="isContract" class="mb-sm-3 mb-lg-0">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 주민등록 주소</CFormLabel>
+
+        <CCol sm="10" md="5" lg="2" class="mb-3 mb-lg-0">
           <CInputGroup>
             <CInputGroupText @click="refPostCode.initiate(2)"> 우편번호</CInputGroupText>
             <CFormInput
@@ -794,7 +843,9 @@ onUpdated(() => formDataSetup())
           </CInputGroup>
         </CCol>
 
-        <CCol md="7" lg="4" class="mb-3 mb-lg-0">
+        <CCol sm="2" class="d-none d-sm-block d-md-none"></CCol>
+
+        <CCol sm="10" md="5" lg="4" class="mb-3 mb-lg-0">
           <CFormInput
             v-model="form.id_address1"
             maxlength="35"
@@ -806,9 +857,9 @@ onUpdated(() => formDataSetup())
           <CFormFeedback invalid>주민등록 주소를 입력하세요.</CFormFeedback>
         </CCol>
 
-        <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
+        <CCol sm="2" class="d-none d-sm-block d-lg-none"></CCol>
 
-        <CCol md="6" lg="2" class="mb-3 mb-lg-0">
+        <CCol sm="10" md="5" lg="2" class="mb-3 mb-lg-0">
           <CFormInput
             ref="address21"
             v-model="form.id_address2"
@@ -818,7 +869,10 @@ onUpdated(() => formDataSetup())
           />
           <CFormFeedback invalid>상세주소를 입력하세요.</CFormFeedback>
         </CCol>
-        <CCol md="4" lg="2">
+
+        <CCol sm="2" class="d-none d-sm-block d-md-none"></CCol>
+
+        <CCol sm="10" md="5" lg="2">
           <CFormInput
             v-model="form.id_address3"
             maxlength="20"
@@ -828,9 +882,9 @@ onUpdated(() => formDataSetup())
         </CCol>
       </CRow>
 
-      <CRow v-show="isContract" class="mb-0">
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 우편수령 주소</CFormLabel>
-        <CCol md="3" lg="2" class="mb-3 mb-lg-0">
+      <CRow v-show="isContract" class="mb-sm-3 mb-lg-0">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 우편수령 주소</CFormLabel>
+        <CCol sm="10" md="5" lg="2" class="mb-3 mb-lg-0">
           <CInputGroup>
             <CInputGroupText @click="refPostCode.initiate(3)"> 우편번호</CInputGroupText>
             <CFormInput
@@ -847,7 +901,9 @@ onUpdated(() => formDataSetup())
           </CInputGroup>
         </CCol>
 
-        <CCol md="7" lg="4" class="mb-3 mb-lg-0">
+        <CCol sm="2" class="d-none d-sm-block d-md-none"></CCol>
+
+        <CCol sm="10" md="5" lg="4" class="mb-3 mb-lg-0">
           <CFormInput
             v-model="form.dm_address1"
             maxlength="50"
@@ -859,9 +915,9 @@ onUpdated(() => formDataSetup())
           <CFormFeedback invalid> 우편물 수령 주소를 입력하세요.</CFormFeedback>
         </CCol>
 
-        <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
+        <CCol sm="2" class="d-none d-sm-block d-lg-none"></CCol>
 
-        <CCol md="6" lg="2" class="mb-3 mb-lg-0">
+        <CCol sm="10" md="5" lg="2" class="mb-3 mb-lg-0">
           <CFormInput
             ref="address22"
             v-model="form.dm_address2"
@@ -871,7 +927,10 @@ onUpdated(() => formDataSetup())
           />
           <CFormFeedback invalid>상세주소를 입력하세요.</CFormFeedback>
         </CCol>
-        <CCol md="4" lg="2">
+
+        <CCol sm="2" class="d-none d-sm-block d-md-none"></CCol>
+
+        <CCol sm="10" md="5" lg="2">
           <CFormInput
             v-model="form.dm_address3"
             maxlength="30"
@@ -880,24 +939,23 @@ onUpdated(() => formDataSetup())
           />
         </CCol>
 
-        <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
+        <CCol sm="2" class="d-none d-sm-block d-lg-none"></CCol>
 
-        <CCol md="10" lg="1">
+        <CCol sm="10" lg="1">
           <v-checkbox-btn
             id="to-same"
             v-model="sameAddr"
             label="상동"
             :color="isDark ? '#857DCC' : '#321FDB'"
-            hide-details
             :disabled="!isContract || !form.id_zipcode"
             @click="toSame"
           />
         </CCol>
       </CRow>
 
-      <CRow class="mb-3">
-        <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 비고</CFormLabel>
-        <CCol md="10" lg="11" class="mb-md-3 mb-lg-0">
+      <CRow class="mb-sm-3 mb-lg-0">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 비고</CFormLabel>
+        <CCol sm="10" lg="11" class="mb-md-3 mb-lg-0">
           <CFormTextarea v-model="form.note" placeholder="기타 특이사항" :disabled="noStatus" />
         </CCol>
       </CRow>
