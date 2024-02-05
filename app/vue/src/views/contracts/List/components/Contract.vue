@@ -16,7 +16,7 @@ const getColor = (q: '1' | '2' | '3' | '4' | undefined) =>
 </script>
 
 <template>
-  <CTableRow v-if="contract" class="text-center">
+  <CTableRow v-if="contract" class="text-center" :color="contract.is_sup_cont ? 'success' : ''">
     <CTableDataCell>
       <router-link :to="{ name: '계약 등록 수정', query: { contractor } }">
         {{ contract.serial_number }}
@@ -53,6 +53,7 @@ const getColor = (q: '1' | '2' | '3' | '4' | undefined) =>
       </router-link>
     </CTableDataCell>
     <CTableDataCell>{{ contract.contractor?.contract_date }}</CTableDataCell>
+    <CTableDataCell>{{ contract.sup_cont_date }}</CTableDataCell>
     <CTableDataCell class="text-right">
       {{ numFormat(contract.contractprice?.price || 0) }}
     </CTableDataCell>
@@ -65,7 +66,6 @@ const getColor = (q: '1' | '2' | '3' | '4' | undefined) =>
     <CTableDataCell class="text-right">
       {{ numFormat(contract.total_paid) }}
     </CTableDataCell>
-    <CTableDataCell>{{ contract.contractor?.contractorcontact?.cell_phone }}</CTableDataCell>
     <CTableDataCell>
       <CButton
         type="button"
