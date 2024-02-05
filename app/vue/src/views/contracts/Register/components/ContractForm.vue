@@ -815,9 +815,10 @@ onUpdated(() => formDataSetup())
         </CAlert>
       </CRow>
 
-      <CRow v-show="isContract" class="mb-0">
+      <CRow v-show="isContract">
         <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 주민등록 주소</CFormLabel>
-        <CCol md="3" lg="2" class="mb-3 mb-lg-0">
+
+        <CCol sm="10" md="3" lg="2" class="mb-3 mb-lg-0">
           <CInputGroup>
             <CInputGroupText @click="refPostCode.initiate(2)"> 우편번호</CInputGroupText>
             <CFormInput
@@ -834,7 +835,9 @@ onUpdated(() => formDataSetup())
           </CInputGroup>
         </CCol>
 
-        <CCol md="7" lg="4" class="mb-3 mb-lg-0">
+        <CCol sm="2" class="d-none d-sm-block d-md-none"></CCol>
+
+        <CCol sm="10" md="7" lg="4" class="mb-3 mb-lg-0">
           <CFormInput
             v-model="form.id_address1"
             maxlength="35"
@@ -846,9 +849,9 @@ onUpdated(() => formDataSetup())
           <CFormFeedback invalid>주민등록 주소를 입력하세요.</CFormFeedback>
         </CCol>
 
-        <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
+        <CCol sm="2" class="d-none d-sm-block d-lg-none"></CCol>
 
-        <CCol md="6" lg="2" class="mb-3 mb-lg-0">
+        <CCol sm="10" md="5" lg="2" class="mb-3 mb-lg-0">
           <CFormInput
             ref="address21"
             v-model="form.id_address2"
@@ -858,7 +861,10 @@ onUpdated(() => formDataSetup())
           />
           <CFormFeedback invalid>상세주소를 입력하세요.</CFormFeedback>
         </CCol>
-        <CCol md="4" lg="2">
+
+        <CCol sm="2" class="d-none d-sm-block d-md-none"></CCol>
+
+        <CCol sm="10" md="5" lg="2">
           <CFormInput
             v-model="form.id_address3"
             maxlength="20"
@@ -870,7 +876,7 @@ onUpdated(() => formDataSetup())
 
       <CRow v-show="isContract" class="mb-0">
         <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 우편수령 주소</CFormLabel>
-        <CCol md="3" lg="2" class="mb-3 mb-lg-0">
+        <CCol sm="10" md="3" lg="2" class="mb-3 mb-lg-0">
           <CInputGroup>
             <CInputGroupText @click="refPostCode.initiate(3)"> 우편번호</CInputGroupText>
             <CFormInput
@@ -887,7 +893,9 @@ onUpdated(() => formDataSetup())
           </CInputGroup>
         </CCol>
 
-        <CCol md="7" lg="4" class="mb-3 mb-lg-0">
+        <CCol sm="2" class="d-none d-sm-block d-md-none"></CCol>
+
+        <CCol sm="10" md="7" lg="4" class="mb-3 mb-lg-0">
           <CFormInput
             v-model="form.dm_address1"
             maxlength="50"
@@ -899,9 +907,9 @@ onUpdated(() => formDataSetup())
           <CFormFeedback invalid> 우편물 수령 주소를 입력하세요.</CFormFeedback>
         </CCol>
 
-        <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
+        <CCol sm="2" class="d-none d-sm-block d-lg-none"></CCol>
 
-        <CCol md="6" lg="2" class="mb-3 mb-lg-0">
+        <CCol sm="10" md="5" lg="2" class="mb-3 mb-lg-0">
           <CFormInput
             ref="address22"
             v-model="form.dm_address2"
@@ -911,7 +919,10 @@ onUpdated(() => formDataSetup())
           />
           <CFormFeedback invalid>상세주소를 입력하세요.</CFormFeedback>
         </CCol>
-        <CCol md="4" lg="2">
+
+        <CCol sm="2" class="d-none d-sm-block d-md-none"></CCol>
+
+        <CCol sm="10" md="5" lg="2">
           <CFormInput
             v-model="form.dm_address3"
             maxlength="30"
@@ -920,9 +931,9 @@ onUpdated(() => formDataSetup())
           />
         </CCol>
 
-        <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
+        <CCol sm="2" class="d-none d-sm-block d-lg-none"></CCol>
 
-        <CCol md="10" lg="1">
+        <CCol sm="10" lg="1">
           <v-checkbox-btn
             id="to-same"
             v-model="sameAddr"
