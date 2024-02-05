@@ -737,7 +737,7 @@ onUpdated(() => formDataSetup())
             <CFormLabel class="col-sm-2 col-lg-1 col-form-label">
               {{ contLabel }}금 {{ !form.payment ? '등록' : '수정' }}
             </CFormLabel>
-            <CCol md="10" lg="2" class="mb-3 mb-lg-0">
+            <CCol sm="10" lg="2" class="mb-3 mb-lg-0">
               <DatePicker
                 v-model="form.deal_date"
                 placeholder="입금일자"
@@ -747,9 +747,9 @@ onUpdated(() => formDataSetup())
               <!--                :required="!contract"-->
             </CCol>
 
-            <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
+            <CCol sm="2" class="d-none d-sm-block d-lg-none"></CCol>
 
-            <CCol md="5" lg="2" class="mb-3 mb-lg-0">
+            <CCol sm="10" md="5" lg="2" class="mb-3 mb-lg-0">
               <CFormInput
                 v-model.number="form.income"
                 type="number"
@@ -761,7 +761,9 @@ onUpdated(() => formDataSetup())
               <CFormFeedback invalid>입금액을 입력하세요.</CFormFeedback>
             </CCol>
 
-            <CCol md="5" lg="2" class="mb-3 mb-lg-0">
+            <CCol sm="2" class="d-none d-sm-block d-md-none"></CCol>
+
+            <CCol sm="10" md="5" lg="2" class="mb-3 mb-lg-0">
               <CFormSelect
                 v-model="form.bank_account"
                 :required="form.deal_date"
@@ -775,9 +777,9 @@ onUpdated(() => formDataSetup())
               <CFormFeedback invalid>납부계좌를 선택하세요.</CFormFeedback>
             </CCol>
 
-            <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
+            <CCol sm="2" class="d-none d-sm-block d-lg-none"></CCol>
 
-            <CCol md="5" lg="2" class="mb-3 mb-lg-0">
+            <CCol sm="10" md="5" lg="2" class="mb-3 mb-lg-0">
               <CFormInput
                 v-model="form.trader"
                 maxlength="20"
@@ -787,7 +789,10 @@ onUpdated(() => formDataSetup())
               />
               <CFormFeedback invalid>입금자명을 입력하세요.</CFormFeedback>
             </CCol>
-            <CCol md="5" lg="2" class="mb-md-3 mb-lg-0">
+
+            <CCol sm="2" class="d-none d-sm-block d-md-none"></CCol>
+
+            <CCol sm="10" md="5" lg="2" class="mb-md-3 mb-lg-0">
               <CFormSelect
                 v-model="form.installment_order"
                 :required="form.deal_date"
@@ -801,7 +806,7 @@ onUpdated(() => formDataSetup())
               <CFormFeedback invalid>납부회차를 선택하세요.</CFormFeedback>
             </CCol>
 
-            <CCol md="2" class="d-none d-md-block d-lg-none"></CCol>
+            <CCol sm="2" class="d-none d-sm-block d-lg-none"></CCol>
 
             <CCol v-if="form.payment" xs="3" md="2" lg="1" class="pt-2 mb-3">
               <a href="javascript:void(0)" @click="payReset">Reset</a>
