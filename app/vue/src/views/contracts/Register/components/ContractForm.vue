@@ -113,23 +113,6 @@ watch(matchAddr, val => sameAddrBtnSet(val))
 const store = useStore()
 const isDark = computed(() => store.theme === 'dark')
 
-const sameAddrBtnSet = (chk: boolean) => (sameAddr.value = chk)
-
-const toSame = () => {
-  sameAddr.value = !sameAddr.value
-  if (sameAddr.value) {
-    form.dm_zipcode = form.id_zipcode
-    form.dm_address1 = form.id_address1
-    form.dm_address2 = form.id_address2
-    form.dm_address3 = form.id_address3
-  } else {
-    form.dm_zipcode = ''
-    form.dm_address1 = ''
-    form.dm_address2 = ''
-    form.dm_address3 = ''
-  }
-}
-
 const contractStore = useContract()
 const getOrderGroups = computed(() => contractStore.getOrderGroups)
 const getKeyUnits = computed(() => contractStore.getKeyUnits)
@@ -156,6 +139,49 @@ const downPayments = computed(() =>
     ? props.contract.payments.filter((p: Payment) => p.installment_order.pay_time === 1)
     : [],
 )
+
+const formsCheck = computed(() => {
+  if (props.contract && props.contractor) {
+    const contact = props.contract.contractor?.contractorcontact
+    const address = props.contract.contractor?.contractoraddress
+
+    const a = form.order_group === props.contract.order_group
+    const b = form.unit_type === props.contract.unit_type
+    const c = form.keyunit === props.contract.keyunit?.pk
+    const d = form.houseunit === props.contract.keyunit?.houseunit?.pk
+    const e = form.is_sup_cont === props.contract.is_sup_cont
+    const f = form.sup_cont_date === props.contract.sup_cont_date
+    const g = form.reservation_date === props.contractor.reservation_date
+    const h = form.contract_date === props.contractor?.contract_date
+    const i = form.name === props.contractor.name
+    const j = form.birth_date === props.contractor.birth_date
+    const k = form.gender === props.contractor?.gender
+    const l = form.qualification === props.contractor?.qualification
+    const m = form.cell_phone === contact.cell_phone
+    const n = form.home_phone === contact?.home_phone
+    const o = form.other_phone === contact?.other_phone
+    const p = form.email === contact?.email
+    const q = !form.deal_date
+    const r = !form.income
+    const s = !form.bank_account
+    const t = !form.trader
+    const u = !form.installment_order
+    const v = form.id_zipcode === address.id_zipcode
+    const w = form.id_address1 === address.id_address1
+    const x = form.id_address2 === address.id_address2
+    const y = form.id_address3 === address.id_address3
+    const z = form.dm_zipcode === address.dm_zipcode
+    const a1 = form.dm_address1 === address.dm_address1
+    const b1 = form.dm_address2 === address.dm_address2
+    const c1 = form.dm_address3 === address.dm_address3
+    const d1 = form.note === props.contract.contractor.note
+
+    const cond1 = a && b && c && d && e && f && g && h && i && j
+    const cond2 = k && l && m && n && o && p && q && r && s && t
+    const cond3 = u && v && w && x && y && z && a1 && b1 && c1 && d1
+    return cond1 && cond2 && cond3
+  } else return false
+})
 
 const allowedPeriod = (paidDate: string) => useAccount().superAuth || diffDate(paidDate) <= 90
 
@@ -223,88 +249,14 @@ const typeSelect = () => {
   })
 }
 
-const onSubmit = (event: Event) => {
-  if (isValidate(event)) {
-    validated.value = true
-  } else {
-    if (write_contract.value) refConfirmModal.value.callModal()
-    else refAlertModal.value.callModal()
-  }
-}
-
-const modalAction = () => {
-  if (!props.contract) emit('on-create', form)
-  else emit('on-update', form)
-  validated.value = false
-  refConfirmModal.value.close()
-}
-
 const deleteContract = () => {
   if (useAccount().superAuth) refDelModal.value.callModal()
   else refAlertModal.value.callModal()
 }
 
-const addressCallback = (data: AddressData) => {
-  const { formNum, zipcode, address1, address3 } = callAddress(data)
-  if (formNum === 2) {
-    form.id_zipcode = zipcode
-    form.id_address1 = address1
-    form.id_address2 = ''
-    form.id_address3 = address3
-    address21.value.$el.nextElementSibling.focus()
-  } else if (formNum === 3) {
-    form.dm_zipcode = zipcode
-    form.dm_address1 = address1
-    form.dm_address2 = ''
-    form.dm_address3 = address3
-    address22.value.$el.nextElementSibling.focus()
-  }
-}
-
 const searchContractor = (contor: string) => emit('search-contractor', contor)
 
-const formsCheck = computed(() => {
-  if (props.contract && props.contractor) {
-    const contact = props.contract.contractor?.contractorcontact
-    const address = props.contract.contractor?.contractoraddress
-
-    const a = form.order_group === props.contract.order_group
-    const b = form.unit_type === props.contract.unit_type
-    const c = form.keyunit === props.contract.keyunit?.pk
-    const d = form.houseunit === props.contract.keyunit?.houseunit?.pk
-    const e = form.is_sup_cont === props.contract.is_sup_cont
-    const f = form.sup_cont_date === props.contract.sup_cont_date
-    const g = form.reservation_date === props.contractor.reservation_date
-    const h = form.contract_date === props.contractor?.contract_date
-    const i = form.name === props.contractor.name
-    const j = form.birth_date === props.contractor.birth_date
-    const k = form.gender === props.contractor?.gender
-    const l = form.qualification === props.contractor?.qualification
-    const m = form.cell_phone === contact.cell_phone
-    const n = form.home_phone === contact?.home_phone
-    const o = form.other_phone === contact?.other_phone
-    const p = form.email === contact?.email
-    const q = !form.deal_date
-    const r = !form.income
-    const s = !form.bank_account
-    const t = !form.trader
-    const u = !form.installment_order
-    const v = form.id_zipcode === address.id_zipcode
-    const w = form.id_address1 === address.id_address1
-    const x = form.id_address2 === address.id_address2
-    const y = form.id_address3 === address.id_address3
-    const z = form.dm_zipcode === address.dm_zipcode
-    const a1 = form.dm_address1 === address.dm_address1
-    const b1 = form.dm_address2 === address.dm_address2
-    const c1 = form.dm_address3 === address.dm_address3
-    const d1 = form.note === props.contract.contractor.note
-
-    const cond1 = a && b && c && d && e && f && g && h && i && j
-    const cond2 = k && l && m && n && o && p && q && r && s && t
-    const cond3 = u && v && w && x && y && z && a1 && b1 && c1 && d1
-    return cond1 && cond2 && cond3
-  } else return false
-})
+const remove_sup_cDate = () => (form.is_sup_cont ? (form.sup_cont_date = null) : null)
 
 const formDataReset = () => {
   form.pk = null
@@ -402,6 +354,56 @@ const formDataSetup = () => {
 }
 
 const resumeForm = (contor: string) => emit('resume-form', contor)
+
+const addressCallback = (data: AddressData) => {
+  const { formNum, zipcode, address1, address3 } = callAddress(data)
+  if (formNum === 2) {
+    form.id_zipcode = zipcode
+    form.id_address1 = address1
+    form.id_address2 = ''
+    form.id_address3 = address3
+    address21.value.$el.nextElementSibling.focus()
+  } else if (formNum === 3) {
+    form.dm_zipcode = zipcode
+    form.dm_address1 = address1
+    form.dm_address2 = ''
+    form.dm_address3 = address3
+    address22.value.$el.nextElementSibling.focus()
+  }
+}
+
+const sameAddrBtnSet = (chk: boolean) => (sameAddr.value = chk)
+
+const toSame = () => {
+  sameAddr.value = !sameAddr.value
+  if (sameAddr.value) {
+    form.dm_zipcode = form.id_zipcode
+    form.dm_address1 = form.id_address1
+    form.dm_address2 = form.id_address2
+    form.dm_address3 = form.id_address3
+  } else {
+    form.dm_zipcode = ''
+    form.dm_address1 = ''
+    form.dm_address2 = ''
+    form.dm_address3 = ''
+  }
+}
+
+const onSubmit = (event: Event) => {
+  if (isValidate(event)) {
+    validated.value = true
+  } else {
+    if (write_contract.value) refConfirmModal.value.callModal()
+    else refAlertModal.value.callModal()
+  }
+}
+
+const modalAction = () => {
+  if (!props.contract) emit('on-create', form)
+  else emit('on-update', form)
+  validated.value = false
+  refConfirmModal.value.close()
+}
 
 defineExpose({ formDataReset })
 
@@ -528,6 +530,7 @@ onUpdated(() => formDataSetup())
                 :color="isDark ? '#857DCC' : '#321FDB'"
                 density="compact"
                 :disabled="!isContract"
+                @click="remove_sup_cDate"
               />
             </CCol>
             <CFormLabel class="col-sm-2 col-lg-1 col-form-label">체결일자</CFormLabel>
