@@ -272,34 +272,36 @@ const formsCheck = computed(() => {
     const b = form.unit_type === props.contract.unit_type
     const c = form.keyunit === props.contract.keyunit?.pk
     const d = form.houseunit === props.contract.keyunit?.houseunit?.pk
-    const e = form.reservation_date === props.contractor.reservation_date
-    const f = form.contract_date === props.contractor?.contract_date
-    const g = form.name === props.contractor.name
-    const h = form.birth_date === props.contractor.birth_date
-    const i = form.gender === props.contractor?.gender
-    const j = form.qualification === props.contractor?.qualification
-    const k = form.cell_phone === contact.cell_phone
-    const l = form.home_phone === contact?.home_phone
-    const m = form.other_phone === contact?.other_phone
-    const n = form.email === contact?.email
-    const o = !form.deal_date
-    const p = !form.income
-    const q = !form.bank_account
-    const r = !form.trader
-    const s = !form.installment_order
-    const t = form.id_zipcode === address.id_zipcode
-    const u = form.id_address1 === address.id_address1
-    const v = form.id_address2 === address.id_address2
-    const w = form.id_address3 === address.id_address3
-    const x = form.dm_zipcode === address.dm_zipcode
-    const y = form.dm_address1 === address.dm_address1
-    const z = form.dm_address2 === address.dm_address2
-    const a1 = form.dm_address3 === address.dm_address3
-    const b1 = form.note === props.contract.contractor.note
+    const e = form.is_sup_cont === props.contract.is_sup_cont
+    const f = form.sup_cont_date === props.contract.sup_cont_date
+    const g = form.reservation_date === props.contractor.reservation_date
+    const h = form.contract_date === props.contractor?.contract_date
+    const i = form.name === props.contractor.name
+    const j = form.birth_date === props.contractor.birth_date
+    const k = form.gender === props.contractor?.gender
+    const l = form.qualification === props.contractor?.qualification
+    const m = form.cell_phone === contact.cell_phone
+    const n = form.home_phone === contact?.home_phone
+    const o = form.other_phone === contact?.other_phone
+    const p = form.email === contact?.email
+    const q = !form.deal_date
+    const r = !form.income
+    const s = !form.bank_account
+    const t = !form.trader
+    const u = !form.installment_order
+    const v = form.id_zipcode === address.id_zipcode
+    const w = form.id_address1 === address.id_address1
+    const x = form.id_address2 === address.id_address2
+    const y = form.id_address3 === address.id_address3
+    const z = form.dm_zipcode === address.dm_zipcode
+    const a1 = form.dm_address1 === address.dm_address1
+    const b1 = form.dm_address2 === address.dm_address2
+    const c1 = form.dm_address3 === address.dm_address3
+    const d1 = form.note === props.contract.contractor.note
 
-    const cond1 = a && b && c && d && e && f && g && h && i
-    const cond2 = j && k && l && m && n && o && p && q && r && s
-    const cond3 = t && u && v && w && x && y && z && a1 && b1
+    const cond1 = a && b && c && d && e && f && g && h && i && j
+    const cond2 = k && l && m && n && o && p && q && r && s && t
+    const cond3 = u && v && w && x && y && z && a1 && b1 && c1 && d1
     return cond1 && cond2 && cond3
   } else return false
 })
@@ -513,7 +515,10 @@ onUpdated(() => formDataSetup())
       </CRow>
 
       <CRow>
-        <CAlert :color="isDark ? 'default' : 'success'" class="py-3 mb-0">
+        <CAlert
+          :color="isDark ? 'default' : form.is_sup_cont ? 'success' : 'warning'"
+          class="py-3 mb-0"
+        >
           <CRow>
             <CFormLabel class="col-sm-2 col-lg-1 col-form-label">공급계약</CFormLabel>
             <CCol sm="10" lg="2" class="pt-1">
@@ -531,8 +536,8 @@ onUpdated(() => formDataSetup())
                 v-model="form.sup_cont_date"
                 maxlength="10"
                 placeholder="공급계약 체결일"
-                :required="isContract"
-                :disabled="noStatus"
+                :required="form.is_sup_cont"
+                :disabled="!form.is_sup_cont"
               />
               <CFormFeedback invalid>공급계약 체결일을 입력하세요.</CFormFeedback>
             </CCol>
