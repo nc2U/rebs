@@ -314,8 +314,8 @@ const formDataSetup = () => {
     form.order_group_sort = props.contract.order_group_desc.sort
     form.unit_type = props.contract.unit_type
     form.serial_number = props.contract.serial_number
-    form.is_sup_cont = props.contract.is_sup_cont
-    form.sup_cont_date = props.contract.sup_cont_date
+    form.is_sup_cont = form.is_sup_cont ?? props.contract.is_sup_cont
+    form.sup_cont_date = form.sup_cont_date ?? props.contract.sup_cont_date
     form.keyunit = props.contract.keyunit?.pk
     form.keyunit_code = props.contract.keyunit?.unit_code
     form.houseunit = props.contract.keyunit?.houseunit?.pk
@@ -326,28 +326,28 @@ const formDataSetup = () => {
     form.gender = props.contract.contractor.gender // 9
     form.qualification = props.contract.contractor.qualification // 10
     form.status = props.contract.contractor.status
-    form.reservation_date = props.contractor.reservation_date
-    form.contract_date = props.contractor.contract_date
-    form.note = props.contract.contractor.note
+    form.reservation_date = props.contractor?.reservation_date
+    form.contract_date = props.contractor?.contract_date
+    form.note = form.note ?? props.contract.contractor.note
 
     // address
     if (props.contract.contractor.status === '2') {
       const address = props.contract.contractor.contractoraddress
       form.id_zipcode = address.id_zipcode // 20
       form.id_address1 = address.id_address1 // 21
-      form.id_address2 = address.id_address2 // 22
-      form.id_address3 = address.id_address3 // 23
+      form.id_address2 = form.id_address2 ?? address.id_address2 // 22
+      form.id_address3 = form.id_address3 ?? address.id_address3 // 23
       form.dm_zipcode = address.dm_zipcode // 24
       form.dm_address1 = address.dm_address1
-      form.dm_address2 = address.dm_address2 // 26
-      form.dm_address3 = address.dm_address3 // 27
+      form.dm_address2 = form.dm_address2 ?? address.dm_address2 // 26
+      form.dm_address3 = form.dm_address3 ?? address.dm_address3 // 27
     }
     // contact
     const contact = props.contract.contractor?.contractorcontact
     form.cell_phone = contact.cell_phone
-    form.home_phone = contact.home_phone // 11 // 12
-    form.other_phone = contact.other_phone // 13
-    form.email = contact.email // 14
+    form.home_phone = form.home_phone ?? contact.home_phone // 11 // 12
+    form.other_phone = form.other_phone ?? contact.other_phone // 13
+    form.email = form.email ?? contact.email // 14
 
     sameAddrBtnSet(matchAddr.value)
   }
@@ -622,7 +622,7 @@ onUpdated(() => formDataSetup())
           <CFormFeedback invalid>성별을 선택하세요.</CFormFeedback>
         </CCol>
 
-        <CCol v-if="isContract && isUnion && contract.order_group_sort === '1'" xs="6" lg="2">
+        <CCol v-if="isContract && isUnion && contract?.order_group_sort === '1'" xs="6" lg="2">
           <CFormSelect v-model="form.qualification" required :disabled="!isContract">
             <option value="">---------</option>
             <option value="2">미인가</option>
