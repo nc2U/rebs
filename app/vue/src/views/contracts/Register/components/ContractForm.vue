@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, nextTick, watch, onMounted, onUpdated, type PropType } from 'vue'
 import { useStore } from '@/store'
+import { onBeforeRouteLeave } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
 import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
@@ -409,6 +410,7 @@ defineExpose({ formDataReset })
 
 onMounted(() => formDataSetup())
 onUpdated(() => formDataSetup())
+onBeforeRouteLeave(() => formDataReset())
 </script>
 
 <template>
