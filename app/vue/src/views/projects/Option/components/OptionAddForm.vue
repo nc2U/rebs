@@ -67,7 +67,7 @@ const resetForm = () => {
 <template>
   <CForm novalidate class="needs-validation" :validated="validated" @submit.prevent="onSubmit">
     <CRow class="p-2">
-      <CCol lg="6">
+      <CCol lg="7">
         <CRow>
           <CCol lg="3" class="mb-2">
             <CFormSelect v-model="form.sort" required :disabled="disabled">
@@ -110,9 +110,9 @@ const resetForm = () => {
         </CRow>
       </CCol>
 
-      <CCol lg="6">
+      <CCol lg="5">
         <CRow>
-          <CCol lg="10" class="mb-2">
+          <CCol lg="9" class="mb-2">
             <CFormInput
               v-model.number="form.contract_area"
               placeholder="상세 설명"
@@ -121,7 +121,7 @@ const resetForm = () => {
             <CFormFeedback invalid> 계약면적을 소소점4자리 이하로 입력하세요.</CFormFeedback>
           </CCol>
 
-          <CCol lg="2" class="d-grid gap-2 d-lg-block mb-3">
+          <CCol lg="3" class="d-grid gap-2 d-lg-block mb-3">
             <CButton color="primary" type="submit" :disabled="disabled"> 옵션추가</CButton>
           </CCol>
         </CRow>
