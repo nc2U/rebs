@@ -108,3 +108,10 @@ class OptionItem(models.Model):
     opt_price = models.PositiveIntegerField(verbose_name='옵션금액')
     opt_deposit = models.PositiveIntegerField('계약금', null=True, blank=True)
     opt_balance = models.PositiveIntegerField('잔금', null=True, blank=True)
+
+    def __str__(self):
+        return self.opt_name
+
+    class Meta:
+        verbose_name = '06. 유상 옵션'
+        verbose_name_plural = '06. 유상 옵션'
