@@ -53,19 +53,20 @@ const pageSelect = (page: number) => listControl.value.listFiltering(page)
 
 const onContFiltering = (payload: ContFilter) => {
   const {
+    status,
     order_group,
     unit_type,
     building,
-    status,
     null_unit,
     qualification,
+    is_sup_cont,
     from_date,
     to_date,
     search,
   } = payload
   payload.project = project.value?.pk
   const is_unit = null_unit ? '1' : ''
-  filteredStr.value = `&group=${order_group}&type=${unit_type}&dong=${building}&is_null=${is_unit}&quali=${qualification}&status=${status}&sdate=${from_date}&edate=${to_date}&q=${search}`
+  filteredStr.value = `&status=${status}&group=${order_group}&type=${unit_type}&dong=${building}&is_null=${is_unit}&quali=${qualification}&sup=${is_sup_cont}&sdate=${from_date}&edate=${to_date}&q=${search}`
   if (payload.project) fetchContractList(payload)
 }
 const setItems = (arr: string[]) => (printItems.value = arr)
