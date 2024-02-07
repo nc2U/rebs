@@ -51,7 +51,7 @@ class HouseUnitAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class OptionItemAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'project', 'types', 'opt_code', 'opt_name', 'opt_desc',
+    list_display = ('id', 'project', 'opt_code', 'opt_name', 'opt_desc',
                     'opt_maker', 'opt_price', 'opt_deposit', 'opt_balance')
     search_fields = ('opt_code', 'opt_name', 'opt_desc', 'opt_maker')
     list_display_links = ('opt_code', 'opt_name')
