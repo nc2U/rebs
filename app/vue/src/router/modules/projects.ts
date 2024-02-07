@@ -28,24 +28,6 @@ const projects = {
       meta: { title: '프로젝트 등록', auth: true },
     },
     {
-      path: 'manage/order',
-      name: '차수 분류 등록',
-      component: () =>
-        pageViewAuth.value
-          ? import('@/views/projects/OrderGroup/Index.vue')
-          : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '차수 분류 등록', auth: true },
-    },
-    {
-      path: 'manage/type',
-      name: '타입 정보 등록',
-      component: () =>
-        pageViewAuth.value
-          ? import('@/views/projects/Type/Index.vue')
-          : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '타입 정보 등록', auth: true },
-    },
-    {
       path: 'manage/inc-budget',
       name: '수입 예산 등록',
       component: () =>
@@ -62,6 +44,24 @@ const projects = {
           ? import('@/views/projects/OutBudget/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '지출 예산 등록', auth: true },
+    },
+    {
+      path: 'manage/order',
+      name: '차수 분류 등록',
+      component: () =>
+        pageViewAuth.value
+          ? import('@/views/projects/OrderGroup/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '차수 분류 등록', auth: true },
+    },
+    {
+      path: 'manage/type',
+      name: '타입 정보 등록',
+      component: () =>
+        pageViewAuth.value
+          ? import('@/views/projects/Type/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '타입 정보 등록', auth: true },
     },
 
     {
@@ -117,6 +117,15 @@ const projects = {
           ? import('@/views/projects/Price/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '공급 가격 등록', auth: true },
+    },
+    {
+      path: 'settings/options',
+      name: '옵션 품목 등록',
+      component: () =>
+        pageViewAuth.value
+          ? import('@/views/projects/Option/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '옵션 품목 등록', auth: true },
     },
     {
       path: 'site/index',
