@@ -95,3 +95,11 @@ class HouseUnitSummaryViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     filterset_fields = ('building_unit__project', 'unit_type',
                         'floor_type', 'building_unit', 'is_hold')
+
+
+class OptionItemViewSet(viewsets.ModelViewSet):
+    queryset = OptionItem.objects.all()
+    serializer_class = OptionItemSerializer
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
+    filterset_fields = ('project', 'types')
+    search_fields = ('opt_code', 'opt_name', 'opt_desc', 'opt_maker')
