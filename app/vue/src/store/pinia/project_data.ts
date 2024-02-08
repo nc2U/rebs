@@ -264,7 +264,7 @@ export const useProjectData = defineStore('projectData', () => {
       .catch(err => errorHandle(err.response.data))
   const updateOptionItem = (payload: OptionItem) =>
     api
-      .post(`/option-item/${payload.pk}/`, payload)
+      .put(`/option-item/${payload.pk}/`, payload)
       .then(res => fetchOptionItemList(res.data.project).then(() => message()))
       .catch(err => errorHandle(err.response.data))
   const deleteOptionItem = (pk: number, proj: number) =>
