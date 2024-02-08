@@ -260,3 +260,16 @@ export interface SiteContract {
   acc_owner: string
   note: string
 }
+
+export interface OptionItem {
+  pk?: number
+  project: number
+  types: number[]
+  opt_code: string | null
+  opt_name: string
+  opt_desc: string | null
+  opt_maker: string | null
+  opt_price: number
+  opt_deposit: number | null
+  opt_balance: number | null
+}

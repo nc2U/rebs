@@ -6,6 +6,7 @@ import {
   type BuildingUnit,
   type AllHouseUnit,
   type HouseUnit,
+  type OptionItem,
 } from '@/store/types/project'
 import api from '@/api'
 import { errorHandle, message } from '@/utils/helper'
@@ -245,6 +246,37 @@ export const useProjectData = defineStore('projectData', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
+  // states & getters
+  const optionItemList = ref<OptionItem[]>([])
+  // const optionItem = ref()
+
+  const fetchOptionItemList = () =>
+    api
+      .get(`/option-item/`)
+      .then(res => (optionItemList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+  // const fetchOptionItem = (pk: number) => api.get(`/option-item/${pk}/`)
+
+  const createOptionItem = (payload: OptionItem) =>
+    api
+      .post(`/option-item/`, payload)
+      .then(() => fetchOptionItemList().then(() => message()))
+      .catch(err => errorHandle(err.response.data))
+  const updateOptionItem = (payload: OptionItem) =>
+    api
+      .post(`/option-item/${payload.pk}/`, payload)
+      .then(() => fetchOptionItemList().then(() => message()))
+      .catch(err => errorHandle(err.response.data))
+  const deleteOptionItem = (pk: number) =>
+    api
+      .delete(`/option-item/${pk}/`)
+      .then(() =>
+        fetchOptionItemList().then(() =>
+          message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.'),
+        ),
+      )
+      .catch(err => errorHandle(err.response.data))
+
   return {
     unitTypeList,
     simpleTypes,
@@ -279,5 +311,14 @@ export const useProjectData = defineStore('projectData', () => {
     updateUnit,
     patchUnit,
     deleteUnit,
+
+    optionItemList,
+    // optionItem,
+
+    fetchOptionItemList,
+    // fetchOptionItem,
+    createOptionItem,
+    updateOptionItem,
+    deleteOptionItem,
   }
 })
