@@ -139,11 +139,15 @@ const toManage = (fn: number, el?: { nBrd?: number; nProj?: number; nCate?: numb
       refCateListModal.value.callModal()
     }
   } else {
-    if (fn === 4) state = props.post.is_secret // is_secret
+    if (fn === 4)
+      state = props.post.is_secret // is_secret
     else if (fn === 5) state = props.post.is_hide_comment
-    else if (fn === 6) state = props.post.is_notice // is_notice
-    else if (fn === 7) state = props.post.is_blind // is_blind
-    else if (fn === 8) refTrashModal.value.callModal() // deleted confirm
+    else if (fn === 6)
+      state = props.post.is_notice // is_notice
+    else if (fn === 7)
+      state = props.post.is_blind // is_blind
+    else if (fn === 8)
+      refTrashModal.value.callModal() // deleted confirm
     else if (fn === 88) {
       // soft delete
       state = !!props.post.deleted // is_deleted
@@ -367,7 +371,7 @@ onMounted(() => {
         <v-btn @click="toLike" variant="outlined" icon="true" color="grey" size="small">
           <v-icon :icon="post.my_like ? 'mdi-heart' : 'mdi-heart-outline'" size="small" />
           <v-tooltip activator="parent" location="end">
-            {{ post.my_like ? '좋아요' : '취소' }}
+            {{ post.my_like ? '취소' : '좋아요' }}
           </v-tooltip>
         </v-btn>
       </CCol>
