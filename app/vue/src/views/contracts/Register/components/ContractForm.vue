@@ -315,7 +315,7 @@ const formDataSetup = () => {
     form.order_group_sort = props.contract.order_group_desc.sort
     form.unit_type = props.contract.unit_type
     form.serial_number = props.contract.serial_number
-    form.is_sup_cont = form.is_sup_cont ?? props.contract.is_sup_cont
+    form.is_sup_cont = form.is_sup_cont || props.contract.is_sup_cont
     form.sup_cont_date = form.sup_cont_date ?? props.contract.sup_cont_date
     form.keyunit = props.contract.keyunit?.pk
     form.keyunit_code = props.contract.keyunit?.unit_code
