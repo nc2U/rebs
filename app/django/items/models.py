@@ -105,7 +105,7 @@ class OptionItem(models.Model):
     opt_name = models.CharField('품목이름', max_length=100)
     opt_desc = models.CharField('세부옵션', max_length=200, blank=True, null=True)
     opt_maker = models.CharField('제조사', max_length=20, blank=True, null=True)
-    opt_price = models.PositiveIntegerField(verbose_name='옵션금액')
+    opt_price = models.PositiveIntegerField(verbose_name='옵션가격')
     opt_deposit = models.PositiveIntegerField('계약금', null=True, blank=True)
     opt_balance = models.PositiveIntegerField('잔금', null=True, blank=True)
 

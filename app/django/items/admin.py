@@ -55,7 +55,7 @@ class OptionItemAdmin(ImportExportMixin, admin.ModelAdmin):
                     'opt_maker', 'opt_price', 'opt_deposit', 'opt_balance')
     search_fields = ('opt_code', 'opt_name', 'opt_desc', 'opt_maker')
     list_display_links = ('opt_code', 'opt_name')
-    list_editable = ('opt_code', 'opt_name', 'opt_desc', 'opt_maker', 'opt_price', 'opt_deposit', 'opt_balance')
+    list_editable = ('opt_desc', 'opt_maker', 'opt_price', 'opt_deposit', 'opt_balance')
     list_filter = ('project', 'types')
 
 
