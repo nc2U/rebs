@@ -250,9 +250,9 @@ export const useProjectData = defineStore('projectData', () => {
   const optionItemList = ref<OptionItem[]>([])
   // const optionItem = ref()
 
-  const fetchOptionItemList = () =>
+  const fetchOptionItemList = (proj: number) =>
     api
-      .get(`/option-item/`)
+      .get(`/option-item/?project=${proj}`)
       .then(res => (optionItemList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   // const fetchOptionItem = (pk: number) => api.get(`/option-item/${pk}/`)
@@ -260,18 +260,18 @@ export const useProjectData = defineStore('projectData', () => {
   const createOptionItem = (payload: OptionItem) =>
     api
       .post(`/option-item/`, payload)
-      .then(() => fetchOptionItemList().then(() => message()))
+      .then(res => fetchOptionItemList(res.data.project).then(() => message()))
       .catch(err => errorHandle(err.response.data))
   const updateOptionItem = (payload: OptionItem) =>
     api
       .post(`/option-item/${payload.pk}/`, payload)
-      .then(() => fetchOptionItemList().then(() => message()))
+      .then(res => fetchOptionItemList(res.data.project).then(() => message()))
       .catch(err => errorHandle(err.response.data))
-  const deleteOptionItem = (pk: number) =>
+  const deleteOptionItem = (pk: number, proj: number) =>
     api
       .delete(`/option-item/${pk}/`)
       .then(() =>
-        fetchOptionItemList().then(() =>
+        fetchOptionItemList(proj).then(() =>
           message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.'),
         ),
       )
