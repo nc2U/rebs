@@ -1,31 +1,28 @@
 <script lang="ts" setup>
-import { inject, reactive, ref } from 'vue'
+import { ref, reactive, inject } from 'vue'
 import { write_project } from '@/utils/pageAuth'
+import Multiselect from '@/components/MultiSelect/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-export type SortType = {
-  value: '1' | '2' | '3' | '4' | '5' | '6'
-  label: string
-}
-
-const typeSort = inject<SortType[]>('typeSort')
 defineProps({ disabled: Boolean })
 const emit = defineEmits(['on-submit'])
+
+const getTypes = inject('getTypes')
 
 const refAlertModal = ref()
 const refConfirmModal = ref()
 
 const validated = ref(false)
 const form = reactive({
-  sort: '',
-  name: '',
-  color: '',
-  actual_area: null,
-  supply_area: null,
-  contract_area: null,
-  average_price: null,
-  num_unit: null,
+  types: [] as number[],
+  opt_code: '',
+  opt_name: '',
+  opt_desc: '',
+  opt_maker: '',
+  opt_price: null as null | number,
+  opt_deposit: null as null | number,
+  opt_balance: null as null | number,
 })
 
 const onSubmit = (event: Event) => {
@@ -53,85 +50,120 @@ const modalAction = () => {
 }
 
 const resetForm = () => {
-  form.sort = ''
-  form.name = ''
-  form.color = ''
-  form.actual_area = null
-  form.supply_area = null
-  form.contract_area = null
-  form.average_price = null
-  form.num_unit = null
+  form.types = []
+  form.opt_code = ''
+  form.opt_name = ''
+  form.opt_desc = ''
+  form.opt_maker = ''
+  form.opt_price = null
+  form.opt_deposit = null
+  form.opt_balance = null
 }
 </script>
 
 <template>
   <CForm novalidate class="needs-validation" :validated="validated" @submit.prevent="onSubmit">
     <CRow class="p-2">
-      <CCol lg="7">
+      <CCol lg="6" xl="3">
         <CRow>
-          <CCol lg="3" class="mb-2">
-            <CFormSelect v-model="form.sort" required :disabled="disabled">
-              <option value="">타입</option>
-              <option v-for="tp in typeSort" :key="tp.value" :value="tp.value">
-                {{ tp.label }}
-              </option>
-            </CFormSelect>
-          </CCol>
-
-          <CCol lg="3" class="mb-2">
-            <CFormInput
-              v-model="form.name"
-              maxlength="10"
-              placeholder="옵션 코드"
+          <CCol lg="12" xl="7" class="mb-2">
+            <Multiselect
+              v-model="form.types"
+              :options="getTypes"
+              placeholder="타입구분"
+              :classes="{ search: 'form-control multiselect-search' }"
               required
               :disabled="disabled"
             />
+            <CFormFeedback invalid> 적용 타입을 선택하세요.</CFormFeedback>
           </CCol>
 
-          <CCol lg="3" class="mb-2">
+          <CCol lg="12" xl="5" class="mb-2">
             <CFormInput
-              v-model.number="form.actual_area"
-              placeholder="옵션 명칭"
+              v-model="form.opt_code"
+              maxlength="20"
+              placeholder="품목 코드"
               :disabled="disabled"
             />
-            <CFormFeedback invalid> 전용면적을 소소점4자리 이하로 입력하세요.</CFormFeedback>
-          </CCol>
-
-          <CCol lg="3" class="mb-2">
-            <CFormInput
-              v-model.number="form.supply_area"
-              placeholder="옵션 가격"
-              type="number"
-              min="0"
-              :disabled="disabled"
-            />
-            <CFormFeedback invalid> 공급면적을 소소점4자리 이하로 입력하세요.</CFormFeedback>
           </CCol>
         </CRow>
       </CCol>
 
-      <CCol lg="5">
+      <CCol lg="6" xl="3">
         <CRow>
-          <CCol lg="9" class="mb-2">
+          <CCol lg="12" xl="6" class="mb-2">
             <CFormInput
-              v-model.number="form.contract_area"
-              placeholder="상세 설명"
+              v-model="form.opt_name"
+              maxlength="100"
+              placeholder="품목 이름"
+              required
               :disabled="disabled"
             />
-            <CFormFeedback invalid> 계약면적을 소소점4자리 이하로 입력하세요.</CFormFeedback>
+            <CFormFeedback invalid> 유상 옵션 품목 이름을 입력하세요.</CFormFeedback>
           </CCol>
 
-          <CCol lg="3" class="d-grid gap-2 d-lg-block mb-3">
-            <CButton color="primary" type="submit" :disabled="disabled"> 옵션추가</CButton>
+          <CCol lg="12" xl="6" class="mb-2">
+            <CFormInput
+              v-model="form.opt_desc"
+              maxlength="200"
+              placeholder="세부 옵션"
+              :disabled="disabled"
+            />
           </CCol>
         </CRow>
+      </CCol>
+
+      <CCol lg="12" xl="5">
+        <CRow>
+          <CCol lg="6" xl="3" class="mb-2">
+            <CFormInput v-model="form.opt_maker" placeholder="제조사" :disabled="disabled" />
+          </CCol>
+          <CCol lg="6" xl="3" class="mb-2">
+            <CFormInput
+              v-model.number="form.opt_price"
+              maxlength="20"
+              placeholder="옵션 가격"
+              type="number"
+              min="0"
+              required
+              :disabled="disabled"
+            />
+            <CFormFeedback invalid> 유상 옵션 금액을 입력하세요.</CFormFeedback>
+          </CCol>
+
+          <CCol lg="6" xl="3" class="mb-2">
+            <CFormInput
+              v-model.number="form.opt_deposit"
+              placeholder="계약금"
+              type="number"
+              min="0"
+              :disabled="disabled"
+            />
+          </CCol>
+
+          <CCol lg="6" xl="3" class="mb-2">
+            <CFormInput
+              v-model.number="form.opt_balance"
+              placeholder="잔금"
+              type="number"
+              min="0"
+              :disabled="disabled"
+            />
+          </CCol>
+        </CRow>
+      </CCol>
+
+      <CCol lg="12" xl="1">
+        <CCol lg="12" class="d-grid gap-2 d-lg-block mb-3 text-center">
+          <CButton color="primary" type="submit" :disabled="disabled"> 옵션추가</CButton>
+        </CCol>
       </CCol>
     </CRow>
   </CForm>
 
   <ConfirmModal ref="refConfirmModal">
-    <template #header> 타입 정보 등록</template>
-    <template #default> 프로젝트의 타입 정보 등록을 진행하시겠습니까?</template>
+    <template #header> 옵션 정보 등록</template>
+    <template #default> 프로젝트의 유상 옵션 정보 등록을 진행하시겠습니까?</template>
     <template #footer>
       <CButton color="primary" @click="modalAction">저장</CButton>
     </template>
