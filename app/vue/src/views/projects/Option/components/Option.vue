@@ -1,12 +1,13 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount, inject } from 'vue'
+import { ref, reactive, computed, onBeforeMount, inject, type PropType } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { write_project } from '@/utils/pageAuth'
+import type { OptionItem } from '@/store/types/project'
 import Multiselect from '@/components/MultiSelect/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({ optionItem: { type: Object, required: true } })
+const props = defineProps({ optionItem: { type: Object as PropType<OptionItem>, required: true } })
 const emit = defineEmits(['on-update', 'on-delete'])
 
 const getTypes = inject('getTypes')
@@ -26,7 +27,7 @@ const refAlertModal = ref()
 const refConfirmModal = ref()
 
 const formsCheck = computed(() => {
-  const a = form.types === props.optionItem.types
+  const a = JSON.stringify(form.types) === JSON.stringify(props.optionItem.types)
   const b = form.opt_code === props.optionItem.opt_code
   const c = form.opt_name === props.optionItem.opt_name
   const d = form.opt_desc === props.optionItem.opt_desc
@@ -91,6 +92,7 @@ onBeforeMount(() => dataSetup())
     <CTableDataCell>
       <CFormInput
         v-model="form.opt_code"
+        maxlength="20"
         placeholder="품목 코드"
         @keypress.enter="formCheck(form.opt_code !== optionItem.opt_code)"
       />
@@ -98,6 +100,7 @@ onBeforeMount(() => dataSetup())
     <CTableDataCell>
       <CFormInput
         v-model="form.opt_name"
+        maxlength="100"
         placeholder="품목 이름"
         required
         @keypress.enter="formCheck(form.opt_name !== optionItem.opt_name)"
@@ -105,21 +108,17 @@ onBeforeMount(() => dataSetup())
     </CTableDataCell>
     <CTableDataCell>
       <CFormInput
-        v-model.number="form.opt_desc"
+        v-model="form.opt_desc"
+        maxlength="200"
         placeholder="세부 옵션"
-        type="number"
-        min="0"
-        step="0.0001"
         @keypress.enter="formCheck(form.opt_desc !== optionItem.opt_desc)"
       />
     </CTableDataCell>
 
     <CTableDataCell>
       <CFormInput
-        v-model.number="form.opt_maker"
+        v-model="form.opt_maker"
         placeholder="제조사"
-        type="number"
-        min="0"
         @keypress.enter="formCheck(form.opt_maker !== optionItem.opt_maker)"
       />
     </CTableDataCell>

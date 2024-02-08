@@ -34,7 +34,13 @@ const onDeleteOption = (pk: number) => {
 
 const projSelect = (target: number | null) => {
   pDataStore.unitTypeList = []
-  if (!!target) fetchTypeList(target)
+  if (!!target) {
+    fetchTypeList(target, '1')
+    fetchOptionItemList(target)
+  } else {
+    pDataStore.unitTypeList = []
+    pDataStore.optionItemList = []
+  }
 }
 
 onBeforeMount(() => {
