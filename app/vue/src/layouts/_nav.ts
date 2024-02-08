@@ -185,6 +185,16 @@ const project = {
     },
     {
       component: 'CNavItem',
+      name: '수입 예산 등록',
+      to: '/project/manage/inc-budget',
+    },
+    {
+      component: 'CNavItem',
+      name: '지출 예산 등록',
+      to: '/project/manage/out-budget',
+    },
+    {
+      component: 'CNavItem',
       name: '차수 분류 등록',
       to: '/project/manage/order',
     },
@@ -195,13 +205,8 @@ const project = {
     },
     {
       component: 'CNavItem',
-      name: '수입 예산 등록',
-      to: '/project/manage/inc-budget',
-    },
-    {
-      component: 'CNavItem',
-      name: '지출 예산 등록',
-      to: '/project/manage/out-budget',
+      name: '층별 조건 등록',
+      to: '/project/settings/floor',
     },
     {
       component: 'CNavItem',
@@ -220,11 +225,6 @@ const project = {
         },
         {
           component: 'CNavItem',
-          name: '층별 조건 등록',
-          to: '/project/settings/floor',
-        },
-        {
-          component: 'CNavItem',
           name: '납부 회차 등록',
           to: '/project/settings/payment-order',
         },
@@ -237,6 +237,11 @@ const project = {
           component: 'CNavItem',
           name: '공급 가격 등록',
           to: '/project/settings/price',
+        },
+        {
+          component: 'CNavItem',
+          name: '옵션 품목 등록',
+          to: '/project/settings/options',
         },
       ],
     },

@@ -96,3 +96,22 @@ class HouseUnit(models.Model):
         ordering = ['-building_unit__project', 'building_unit', '-floor_no', 'bldg_line']
         verbose_name = '05. 호수'
         verbose_name_plural = '05. 호수'
+
+
+class OptionItem(models.Model):
+    project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
+    types = models.ManyToManyField('UnitType', verbose_name='타입구분')
+    opt_code = models.CharField('품목코드', max_length=20, blank=True, null=True)
+    opt_name = models.CharField('품목이름', max_length=100)
+    opt_desc = models.CharField('세부옵션', max_length=200, blank=True, null=True)
+    opt_maker = models.CharField('제조사', max_length=20, blank=True, null=True)
+    opt_price = models.PositiveIntegerField(verbose_name='옵션가격')
+    opt_deposit = models.PositiveIntegerField('계약금', null=True, blank=True)
+    opt_balance = models.PositiveIntegerField('잔금', null=True, blank=True)
+
+    def __str__(self):
+        return self.opt_name
+
+    class Meta:
+        verbose_name = '06. 유상 옵션'
+        verbose_name_plural = '06. 유상 옵션'

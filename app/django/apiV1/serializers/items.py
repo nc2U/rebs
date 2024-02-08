@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from contract.models import Contract, Contractor
-from items.models import UnitType, UnitFloorType, KeyUnit, BuildingUnit, HouseUnit
+from items.models import UnitType, UnitFloorType, KeyUnit, BuildingUnit, HouseUnit, OptionItem
 
 
 # Items --------------------------------------------------------------------------
@@ -88,3 +88,10 @@ class HouseUnitSummarySerializer(serializers.ModelSerializer):
     class Meta:
         model = HouseUnit
         fields = ('pk', 'unit_type', 'building_unit', 'name')
+
+
+class OptionItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OptionItem
+        fields = ('pk', 'project', 'types', 'opt_code', 'opt_name', 'opt_desc',
+                  'opt_maker', 'opt_price', 'opt_deposit', 'opt_balance')

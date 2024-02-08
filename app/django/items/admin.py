@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from import_export.admin import ImportExportMixin
 
-from .models import UnitType, UnitFloorType, KeyUnit, BuildingUnit, HouseUnit
+from .models import UnitType, UnitFloorType, KeyUnit, BuildingUnit, HouseUnit, OptionItem
 
 
 class UnitTypeAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -50,8 +50,18 @@ class HouseUnitAdmin(ImportExportMixin, admin.ModelAdmin):
                    'bldg_line', 'floor_type', 'is_hold', 'key_unit')
 
 
+class OptionItemAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ('id', 'project', 'opt_code', 'opt_name', 'opt_desc',
+                    'opt_maker', 'opt_price', 'opt_deposit', 'opt_balance')
+    search_fields = ('opt_code', 'opt_name', 'opt_desc', 'opt_maker')
+    list_display_links = ('opt_code', 'opt_name')
+    list_editable = ('opt_desc', 'opt_maker', 'opt_price', 'opt_deposit', 'opt_balance')
+    list_filter = ('project', 'types')
+
+
 admin.site.register(UnitType, UnitTypeAdmin)
 admin.site.register(UnitFloorType, UnitFloorTypeAdmin)
 admin.site.register(KeyUnit, KeyUnitAdmin)
 admin.site.register(BuildingUnit, BuindingUnitAdmin)
 admin.site.register(HouseUnit, HouseUnitAdmin)
+admin.site.register(OptionItem, OptionItemAdmin)
