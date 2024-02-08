@@ -14,10 +14,10 @@ const getTypes = inject('getTypes')
 
 const form = reactive({
   types: [] as number[],
-  opt_code: '',
+  opt_code: '' as string | null,
   opt_name: '',
-  opt_desc: '',
-  opt_maker: '',
+  opt_desc: '' as string | null,
+  opt_maker: '' as string | null,
   opt_price: null as null | number,
   opt_deposit: null as null | number,
   opt_balance: null as null | number,
