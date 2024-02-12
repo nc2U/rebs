@@ -26,7 +26,7 @@ export type StaffFilter = {
   gra?: string
   pos?: string
   dut?: string
-  sts?: string
+  sts?: '1' | '2' | '3' | '4'
   q?: string
 }
 

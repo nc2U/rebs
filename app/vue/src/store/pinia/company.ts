@@ -109,7 +109,7 @@ export const useCompany = defineStore('company', () => {
       gra = '',
       pos = '',
       dut = '',
-      sts = '',
+      sts = '1',
       q = '',
     } = payload
     const qStr = `?page=${page}&company=${com}&sort=${sort}&department=${dep}&grade=${gra}&position=${pos}&duty=${dut}&status=${sts}&search=${q}`
