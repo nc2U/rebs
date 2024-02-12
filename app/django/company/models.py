@@ -1,6 +1,8 @@
 import hashlib
 from django.db import models
 
+from accounts.models import User
+
 
 class Company(models.Model):
     name = models.CharField('회사명', max_length=30, unique=True)
@@ -129,3 +131,23 @@ class Staff(models.Model):
         ordering = ['-date_join']
         verbose_name = '06. 직원 정보'
         verbose_name_plural = '06. 직원 정보'
+
+# class Work(models.Model):
+#     title = models.CharField(max_length=100, verbose_name='업무 제목')
+#     description = models.TextField(verbose_name='세부 내용', blank=True, default='')
+#     creater = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='업무 생성자')
+#     created = models.DateTimeField('생성일', auto_now_add=True)
+#     worker = models.OneToOneField('accounts.User', on_delete=models.PROTECT, verbose_name='담당자')
+#     WORK_STATUS = (('0', '할당'), ('1', '접수'), ('2', '진행 중'), ('3', '처리 완료'), ('4', '미처리 종결'), ('5', '이관'))
+#     status = models.CharField('처리 상태', max_length=1, choices=WORK_STATUS, default='0')
+#     receipt_time = models.DateTimeField('접수 시간', null=True, blank=True)
+#     deadline = models.DateTimeField('예상 처리 기한', null=True, blank=True)
+#     done_time = models.DateTimeField('완료 일시', null=True, blank=True)
+#
+#
+# class WorkComment(models.Model):
+#     work = models.ForeignKey(Work, related_name='comments', on_delete=models.CASCADE)
+#     comment = models.TextField('')
+#     user = models.ForeignKey(User, related_name='comments', on_delete=models.CASCADE)
+#     created = models.DateTimeField('생성일시', auto_now_add=True)
+#     updated = models.DateTimeField('수정일시', auto_now=True)
