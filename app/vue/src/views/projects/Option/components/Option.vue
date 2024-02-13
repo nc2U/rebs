@@ -81,10 +81,12 @@ onBeforeMount(() => dataSetup())
   <CTableRow>
     <CTableDataCell>
       <Multiselect
+        mode="multiple"
         v-model="form.types"
         :options="getTypes"
         placeholder="타입구분"
         :classes="{ search: 'form-control multiselect-search' }"
+        appendToBody
         required
       />
     </CTableDataCell>
