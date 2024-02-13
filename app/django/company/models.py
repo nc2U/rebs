@@ -133,16 +133,32 @@ class Staff(models.Model):
         verbose_name_plural = '06. 직원 정보'
 
 # class Work(models.Model):
+#     WORK_TYPE = (('1', '통상업무'), ('2', '민원처리'), ('3', '기타작업'))
+#     type = models.CharField('작업유형', max_length=1, choices=WORK_TYPE)
+#     is_secret = models.BooleanField('비공개', default=False)
 #     title = models.CharField(max_length=100, verbose_name='업무 제목')
-#     description = models.TextField(verbose_name='세부 내용', blank=True, default='')
-#     creater = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='업무 생성자')
-#     created = models.DateTimeField('생성일', auto_now_add=True)
+#     desc = models.TextField(verbose_name='설명', blank=True, default='')
+#     upper_work = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, verbose_name='상위 업무')
+#     WORK_STATUS = (('0', '신규'), ('1', '진행'), ('2', '해결'), ('3', '의견'), ('4', '완료'), ('5', '거절'))
+#     status = models.CharField('상태', max_length=1, choices=WORK_STATUS, default='0')
+#     WORK_PRIORITY = (('1', '낮음'), ('2', '보통'), ('3', '높음'), ('4', '긴급'), ('5', '즉시'))
+#     priority = models.CharField('우선 순위', max_length=1, choices=WORK_PRIORITY)
 #     worker = models.OneToOneField('accounts.User', on_delete=models.PROTECT, verbose_name='담당자')
-#     WORK_STATUS = (('0', '할당'), ('1', '접수'), ('2', '진행 중'), ('3', '처리 완료'), ('4', '미처리 종결'), ('5', '이관'))
-#     status = models.CharField('처리 상태', max_length=1, choices=WORK_STATUS, default='0')
-#     receipt_time = models.DateTimeField('접수 시간', null=True, blank=True)
-#     deadline = models.DateTimeField('예상 처리 기한', null=True, blank=True)
+#     start_time = models.DateTimeField('시작 시간', null=True, blank=True)
+#     deadline = models.DateTimeField('완료 기한', null=True, blank=True)
+#     WORK_PROGRESS = (
+#         ('0', '0%'), ('1', '10%'), ('2', '20%'), ('3', '30%'), ('4', '40%'), ('5', '50%'),
+#         ('6', '60%'), ('7', '70%'), ('8', '80%'), ('9', '90%'), ('10', '100%'))
+#     progress = models.CharField('진척도', max_length=1, choices=WORK_PROGRESS)
 #     done_time = models.DateTimeField('완료 일시', null=True, blank=True)
+#     collaborator = models.ManyToManyField('accounts.User', null=True, blank=True, verbose_name='업무협력자')
+#     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='업무 생성자')
+#     created = models.DateTimeField('생성일', auto_now_add=True)
+#
+#
+# class WorkFile(models.Model):
+#     work = models.OneToOneField('Work', on_delete=models.PROTECT, verbose_name='파일')
+#     desc = models.CharField('부가설명', max_length=255, blank=True, default='')
 #
 #
 # class WorkComment(models.Model):
