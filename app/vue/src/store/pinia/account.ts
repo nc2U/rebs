@@ -70,8 +70,8 @@ export const useAccount = defineStore('account', () => {
         return api.get(`/user/${extractId(accessToken.value)}/`)
       })
       .then(res => {
-        setUser(res.data)
-        message('info', '', '로그인 성공 알림!', 2000, 'top-center', 'bounce')
+        if (!!res.data.profile) setUser(res.data)
+        return res.data
       })
       .catch(() => message('warning', '', '이메일 또는 비밀번호를 확인하여 주세요.'))
   }

@@ -83,6 +83,7 @@ INSTALLED_APPS += [  # app
     'payment.apps.PaymentConfig',
     'project.apps.ProjectConfig',
     'rebs.apps.RebsConfig',
+    'work.apps.WorkConfig',
     '_excel.apps.ExcelConfig',
     '_pdf.apps.PdfConfig',
 ]
