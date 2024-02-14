@@ -13,7 +13,7 @@ class TaskProject(models.Model):
                                   help_text='1에서 100글자 소문자(a-z), 숫자, 대쉬(-)와 밑줄(_)만 가능합니다. 식별자는 저장 후에는 수정할 수 없습니다.')
     homepage = models.URLField('홈페이지', max_length=200, null=True, blank=True)
     public = models.BooleanField('공개', default=True, help_text='공개 프로젝트는 모든 로그인한 사용자가 접속할 수 있습니다.')
-    parent_project = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
+    parent_project = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='상위 프로젝트')
     inherit_members = models.BooleanField('상위 프로젝트 멤버 상속', default=False)
     members = models.ManyToManyField('accounts.User', related_name='members', blank=True)
     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='업무 생성자')
@@ -21,6 +21,11 @@ class TaskProject(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ('-created',)
+        verbose_name = '01. 업무 프로젝트'
+        verbose_name_plural = '01. 업무 프로젝트'
 
 
 class Role(models.Model):
@@ -37,6 +42,11 @@ class Role(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ('-created',)
+        verbose_name = '02. 역할 및 권한'
+        verbose_name_plural = '02. 역할 및 권한'
 
 
 class Permission(models.Model):
@@ -133,9 +143,9 @@ class Permission(models.Model):
         return f'{self.role.name} - 권한'
 
 
-class TaskTracker(models.Model):
+class Tracker(models.Model):
     name = models.CharField('이름', max_length=100)
-    default_status = models.ForeignKey('TaskStatus', on_delete=models.PROTECT, verbose_name='초기 상태')
+    default_status = models.ForeignKey('Status', on_delete=models.PROTECT, verbose_name='초기 상태')
     displayed = models.BooleanField('로드맵에 표시', default=True)
     desc = models.CharField('설명', max_length=255, blank=True, default='')
     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='업무 생성자')
@@ -144,8 +154,13 @@ class TaskTracker(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ('-created',)
+        verbose_name = '03. 업무 유형'
+        verbose_name_plural = '03. 업무 유형'
 
-class TaskStatus(models.Model):
+
+class Status(models.Model):
     name = models.CharField('이름', max_length=20)
     desc = models.CharField('설명', max_length=255, blank=True, default='')
     closed = models.BooleanField('완료 상태', default=False)
@@ -154,6 +169,26 @@ class TaskStatus(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ('-created',)
+        verbose_name = '04. 업무 상태'
+        verbose_name_plural = '04. 업무 상태'
+
+
+class Workflow(models.Model):
+    role = models.ForeignKey(Role, on_delete=models.CASCADE, verbose_name='역할')
+    tracker = models.ForeignKey(Tracker, on_delete=models.CASCADE, verbose_name='업무 유형')
+    status = models.OneToOneField(Status, on_delete=models.CASCADE, verbose_name='업무 상태',
+                                  related_name='each_status')
+    statuses = models.ManyToManyField(Status, verbose_name='허용 업무 상태', blank=True)
+
+    def __str__(self):
+        return f'{self.role} - {self.tracker}'
+
+    class Meta:
+        verbose_name = '05. 업무 흐름'
+        verbose_name_plural = '05. 업무 흐름'
 
 
 class TaskCategory(models.Model):
@@ -164,6 +199,11 @@ class TaskCategory(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ('-created',)
+        verbose_name = '06. 업무 범주'
+        verbose_name_plural = '06. 업무 범주'
 
 
 class TimeActivity(models.Model):
@@ -176,8 +216,13 @@ class TimeActivity(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ('-created',)
+        verbose_name = '07. 업무 분류'
+        verbose_name_plural = '07. 업무 분류'
 
-class TaskPriority(models.Model):
+
+class Priority(models.Model):
     name = models.CharField('이름', max_length=20)
     active = models.BooleanField('사용중', default=True)
     default = models.BooleanField('기본값', default=False)
@@ -186,6 +231,11 @@ class TaskPriority(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ('-created',)
+        verbose_name = '08. 업무 우선순위'
+        verbose_name_plural = '08. 업무 우선순위'
 
 
 class DocsCategory(models.Model):
@@ -198,26 +248,31 @@ class DocsCategory(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ('-created',)
+        verbose_name = '09. 문서 범주'
+        verbose_name_plural = '09. 문서 범주'
+
 
 class Task(models.Model):
     project = models.ForeignKey(TaskProject, on_delete=models.PROTECT, verbose_name='프로젝트')
-    tracker = models.ForeignKey(TaskTracker, on_delete=models.PROTECT, verbose_name='유형')
+    tracker = models.ForeignKey(Tracker, on_delete=models.PROTECT, verbose_name='유형')
     private = models.BooleanField('비공개', default=False)
     subject = models.CharField(max_length=100, verbose_name='주제')
     desc = models.TextField(verbose_name='설명', blank=True, default='')
-    status = models.ForeignKey(TaskStatus, on_delete=models.PROTECT, verbose_name='상태')
+    status = models.ForeignKey(Status, on_delete=models.PROTECT, verbose_name='상태')
     parent_task = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='상위업무')
     category = models.ForeignKey(TaskCategory, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='카테고리')
-    priority = models.ForeignKey(TaskPriority, on_delete=models.PROTECT, verbose_name='우선순위')
+    priority = models.ForeignKey(Priority, on_delete=models.PROTECT, verbose_name='우선순위')
     assignee = models.OneToOneField('accounts.User', on_delete=models.SET_NULL,
                                     null=True, blank=True, verbose_name='담당자', related_name='assignee')
     start_date = models.DateField('시작 일자', null=True, blank=True)
     due_date = models.DateField('완료 기한', null=True, blank=True)
-    estimated_time = models.DateTimeField('추정 소요시간', null=True, blank=True)
+    estimated_time = models.PositiveSmallIntegerField('추정 소요시간', null=True, blank=True)
     PROGRESS_RATIO = (
         (0.0, '0%'), (0.1, '10%'), (0.2, '20%'), (0.3, '30%'), (0.4, '40%'), (0.5, '50%'),
         (0.6, '60%'), (0.7, '70%'), (0.8, '80%'), (0.9, '90%'), (1.0, '100%'))
-    progress = models.DecimalField('진척도', max_digits=2, decimal_places=1, choices=PROGRESS_RATIO)
+    progress = models.DecimalField('진척도', max_digits=2, decimal_places=1, choices=PROGRESS_RATIO, default=0.0)
     watchers = models.ManyToManyField('accounts.User', blank=True,
                                       verbose_name='업무 관람자', related_name='watchers')
     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='업무 생성자')
@@ -225,6 +280,11 @@ class Task(models.Model):
 
     def __str__(self):
         return self.subject
+
+    class Meta:
+        ordering = ('-created',)
+        verbose_name = '10. 단위 업무'
+        verbose_name_plural = '10. 단위 업무'
 
 
 def get_file_name(filename):
