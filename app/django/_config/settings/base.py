@@ -287,10 +287,10 @@ APP_ORDER = [
     'rebs',
     'notice',
     'document',
-    'book',
+    'work',
     'accounts',
+    'book',
 ]
-
 MDEDITOR_CONFIGS = {
     'default': {
         'language': 'en',
