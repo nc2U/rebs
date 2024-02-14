@@ -71,7 +71,7 @@ export const useAccount = defineStore('account', () => {
       })
       .then(res => {
         setUser(res.data)
-        message('info', '', '로그인 성공 알림!', 2000, 'top-center', 'bounce')
+        return res.data
       })
       .catch(() => message('warning', '', '이메일 또는 비밀번호를 확인하여 주세요.'))
   }
