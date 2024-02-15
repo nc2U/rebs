@@ -129,10 +129,11 @@ const AppSidebarNav = defineComponent({
 
     if (!isStaff.value) {
       // 본사 관리직원 권한이 없으면
-      nav.splice(9, 6) // 본사관련 및 환경설정 메뉴 제외
+      nav.splice(3, 4) // 본사관련 메뉴 제외
+      nav.splice(10, 2) // 환경설정 메뉴 제외
     }
     // 본사 자금관리 권한 없으면 자금관리 메뉴 제외
-    else if (!isCash.value) nav.splice(10, 1)
+    else if (!isCash.value) nav.splice(4, 1)
 
     return () =>
       h(
