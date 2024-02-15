@@ -16,29 +16,29 @@ const schedule = {
   icon: 'cil-calendar',
 }
 
-// const work_manage = {
-//   component: 'CNavItem',
-//   name: '업무 협업 관리',
-//   to: '/settings',
-//   icon: 'cil-task',
-//   items: [
-//     {
-//       component: 'CNavItem',
-//       name: '내 페이지',
-//       to: '/settings/company',
-//     },
-//     {
-//       component: 'CNavItem',
-//       name: '프 로 젝 트',
-//       to: '/settings/authorization',
-//     },
-//     {
-//       component: 'CNavItem',
-//       name: '시스템 관리',
-//       to: '/settings/authorization',
-//     },
-//   ],
-// }
+const work_manage = {
+  component: 'CNavItem',
+  name: '업무 관리',
+  to: '/work',
+  icon: 'cil-task',
+  items: [
+    {
+      component: 'CNavItem',
+      name: '내 업무 관리',
+      to: '/work/mytask',
+    },
+    {
+      component: 'CNavItem',
+      name: '작업 프로젝트',
+      to: '/work/projects',
+    },
+    {
+      component: 'CNavItem',
+      name: '기본 설정 관리',
+      to: '/work/admin',
+    },
+  ],
+}
 
 const company_cash = {
   component: 'CNavItem',
@@ -417,7 +417,7 @@ const settings = {
 const nav = [
   dashboard,
   schedule,
-  // work_manage,
+  work_manage,
   {
     component: 'CNavTitle',
     name: '본사 관리',
