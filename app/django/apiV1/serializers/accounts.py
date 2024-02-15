@@ -78,6 +78,13 @@ class UserSerializer(serializers.ModelSerializer):
                    f'관리자의 승인을 기다리거나 관리자({settings.EMAIL_DEFAULT_SENDER})에게 승인을 요청할 수 있습니다.')
         send_mail(subject, message, settings.EMAIL_DEFAULT_SENDER, [user.email])
 
+        # 관리자에게 회원가입 메일 보내기
+        subject = f'[Rebs] 신규회원 가입 1건 ({user.username}님)이 있습니다.'
+        message = (f'[Rebs] 시스템 - {user.username}님이 신규 회원가입을 하였습니다.\n\n'
+                   f'사용자 이  름 : {user.username}\n'
+                   f'사용자 이메일 : {user.email}\n')
+        send_mail(subject, message, settings.EMAIL_DEFAULT_SENDER, [settings.EMAIL_DEFAULT_SENDER])
+
         user.save()
         return user
 
