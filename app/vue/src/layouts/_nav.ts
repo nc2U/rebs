@@ -34,7 +34,7 @@ const work_manage = {
     },
     {
       component: 'CNavItem',
-      name: '관리자 메뉴',
+      name: '관리 메뉴',
       to: '/work/admin',
     },
   ],

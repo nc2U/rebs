@@ -8,6 +8,7 @@ import { type RouteRecordRaw } from 'vue-router'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 
 /* Router Modules */
+import workManage from '@/router/modules/workManage'
 import contracts from '@/router/modules/contracts'
 import payments from '@/router/modules/payments'
 import notices from '@/router/modules/notices'
@@ -68,6 +69,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "schedule" */ '@/views/_Schedules/index.vue'),
         meta: { title: '일 정 관 리', auth: true, affix: true },
       },
+      workManage,
       contracts,
       payments,
       notices,
