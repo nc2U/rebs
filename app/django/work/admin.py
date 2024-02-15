@@ -1,7 +1,7 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
-from .models import TaskProject, Role, Permission, Tracker, Status, TaskCategory, \
-    TimeActivity, Priority, DocsCategory, Task, TaskFile, TaskComment
+from .models import (TaskProject, Role, Permission, Tracker, Status, TaskCategory,
+                     TimeActivity, Priority, DocsCategory, Task, TaskFile, TaskComment)
 
 
 @admin.register(TaskProject)

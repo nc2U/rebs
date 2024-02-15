@@ -24,17 +24,17 @@ const work_manage = {
   items: [
     {
       component: 'CNavItem',
-      name: '내 업무 관리',
+      name: '내 페이지',
       to: '/work/mytask',
     },
     {
       component: 'CNavItem',
-      name: '작업 프로젝트',
+      name: '프로젝트',
       to: '/work/projects',
     },
     {
       component: 'CNavItem',
-      name: '기본 설정 관리',
+      name: '관리자 메뉴',
       to: '/work/admin',
     },
   ],

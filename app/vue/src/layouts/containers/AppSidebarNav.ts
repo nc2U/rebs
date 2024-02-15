@@ -23,6 +23,8 @@ const isStaff = computed(
   () => useAccount().superAuth || Number(useAccount().staffAuth?.is_staff || null),
 )
 
+const isSuper = computed(() => useAccount().superAuth)
+
 const isCash = computed(
   () => useAccount().superAuth || Number(useAccount().staffAuth?.company_cash || null),
 )
@@ -127,12 +129,16 @@ const AppSidebarNav = defineComponent({
         : h(resolveComponent(item.component), {}, () => item.name)
     }
 
-    if (!isStaff.value) {
-      // 본사 관리직원 권한이 없으면
-      nav.splice(3, 4) // 본사관련 메뉴 제외
-      nav.splice(10, 2) // 환경설정 메뉴 제외
+    if (!isSuper.value) {
+      // 슈퍼 유저가 아니면
+      ;(nav[2] as any).items.splice(2, 1)
     }
-    // 본사 자금관리 권한 없으면 자금관리 메뉴 제외
+    if (!isStaff.value) {
+      // 본사 관리 직원 권한이 없으면
+      nav.splice(3, 4) // 본사 관련 메뉴 제외
+      nav.splice(10, 2) // 환경 설정 메뉴 제외
+    }
+    // 본사 자금 관리 권한 없으면 자금 관리 메뉴 제외
     else if (!isCash.value) nav.splice(4, 1)
 
     return () =>
