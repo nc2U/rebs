@@ -16,6 +16,131 @@ const schedule = {
   icon: 'cil-calendar',
 }
 
+// const work_manage = {
+//   component: 'CNavItem',
+//   name: '업무 협업 관리',
+//   to: '/settings',
+//   icon: 'cil-task',
+//   items: [
+//     {
+//       component: 'CNavItem',
+//       name: '내 페이지',
+//       to: '/settings/company',
+//     },
+//     {
+//       component: 'CNavItem',
+//       name: '프 로 젝 트',
+//       to: '/settings/authorization',
+//     },
+//     {
+//       component: 'CNavItem',
+//       name: '시스템 관리',
+//       to: '/settings/authorization',
+//     },
+//   ],
+// }
+
+const company_cash = {
+  component: 'CNavItem',
+  name: '본사 자금 관리',
+  to: '/cashes',
+  icon: 'cil-laptop',
+  items: [
+    {
+      component: 'CNavItem',
+      name: '본사 자금 현황',
+      to: '/cashes/status',
+    },
+    {
+      component: 'CNavItem',
+      name: '본사 출납 관리',
+      to: '/cashes/index',
+    },
+  ],
+}
+
+const company_docs = {
+  component: 'CNavItem',
+  name: '본사 문서 관리',
+  to: '/docs/general',
+  icon: 'cil-cloud-download',
+  items: [
+    {
+      component: 'CNavItem',
+      name: '본사 일반 문서',
+      to: '/docs/general/posts',
+    },
+    {
+      component: 'CNavItem',
+      name: '본사 공문 발송',
+      to: '/docs/official/letters',
+      badge: {
+        color: 'danger',
+        text: 'u.c',
+      },
+    },
+    {
+      component: 'CNavItem',
+      name: '본사 소송 관리',
+      to: '/docs/lawsuit',
+      icon: 'cil-library-building',
+      items: [
+        {
+          component: 'CNavItem',
+          name: '본사 소송 문서',
+          to: '/docs/lawsuit/posts',
+        },
+        {
+          component: 'CNavItem',
+          name: '본사 소송 사건',
+          to: '/docs/lawsuit/case',
+        },
+      ],
+    },
+  ],
+}
+
+const human_resource = {
+  component: 'CNavItem',
+  name: '본사 인사 관리',
+  to: '/hr-manage',
+  icon: 'cilPeople',
+  items: [
+    {
+      component: 'CNavItem',
+      name: '직원 정보 관리',
+      to: '/hr-manage/staff',
+    },
+    {
+      component: 'CNavItem',
+      name: '부서 정보 관리',
+      to: '/hr-manage/department',
+    },
+    {
+      component: 'CNavItem',
+      name: '기타 설정 관리',
+      icon: 'cil-user-follow',
+      items: [
+        {
+          component: 'CNavItem',
+          name: '직위 정보 관리',
+          to: '/hr-manage/position',
+        },
+        {
+          component: 'CNavItem',
+          name: '직책 정보 관리',
+          to: '/hr-manage/duty',
+        },
+        {
+          component: 'CNavItem',
+          name: '직급 정보 관리',
+          to: '/hr-manage/grade',
+        },
+      ],
+    },
+  ],
+}
+
 const contract = {
   component: 'CNavItem',
   name: '공급 계약 관리',
@@ -174,13 +299,13 @@ const project_docs = {
 
 const project = {
   component: 'CNavItem',
-  name: '신규 프로젝트',
+  name: '현장 등록 관리',
   to: '/project',
   icon: 'cil-building',
   items: [
     {
       component: 'CNavItem',
-      name: '프로젝트 등록',
+      name: '신규 현장 등록',
       to: '/project/manage/index',
     },
     {
@@ -270,107 +395,6 @@ const project = {
   ],
 }
 
-const company_cash = {
-  component: 'CNavItem',
-  name: '본사 자금 관리',
-  to: '/cashes',
-  icon: 'cil-laptop',
-  items: [
-    {
-      component: 'CNavItem',
-      name: '본사 자금 현황',
-      to: '/cashes/status',
-    },
-    {
-      component: 'CNavItem',
-      name: '본사 출납 관리',
-      to: '/cashes/index',
-    },
-  ],
-}
-
-const company_docs = {
-  component: 'CNavItem',
-  name: '본사 문서 관리',
-  to: '/docs/general',
-  icon: 'cil-cloud-download',
-  items: [
-    {
-      component: 'CNavItem',
-      name: '본사 일반 문서',
-      to: '/docs/general/posts',
-    },
-    {
-      component: 'CNavItem',
-      name: '본사 공문 발송',
-      to: '/docs/official/letters',
-      badge: {
-        color: 'danger',
-        text: 'u.c',
-      },
-    },
-    {
-      component: 'CNavItem',
-      name: '본사 소송 관리',
-      to: '/docs/lawsuit',
-      icon: 'cil-library-building',
-      items: [
-        {
-          component: 'CNavItem',
-          name: '본사 소송 문서',
-          to: '/docs/lawsuit/posts',
-        },
-        {
-          component: 'CNavItem',
-          name: '본사 소송 사건',
-          to: '/docs/lawsuit/case',
-        },
-      ],
-    },
-  ],
-}
-
-const human_resource = {
-  component: 'CNavItem',
-  name: '본사 인사 관리',
-  to: '/hr-manage',
-  icon: 'cilPeople',
-  items: [
-    {
-      component: 'CNavItem',
-      name: '직원 정보 관리',
-      to: '/hr-manage/staff',
-    },
-    {
-      component: 'CNavItem',
-      name: '부서 정보 관리',
-      to: '/hr-manage/department',
-    },
-    {
-      component: 'CNavItem',
-      name: '기타 설정 관리',
-      icon: 'cil-user-follow',
-      items: [
-        {
-          component: 'CNavItem',
-          name: '직위 정보 관리',
-          to: '/hr-manage/position',
-        },
-        {
-          component: 'CNavItem',
-          name: '직책 정보 관리',
-          to: '/hr-manage/duty',
-        },
-        {
-          component: 'CNavItem',
-          name: '직급 정보 관리',
-          to: '/hr-manage/grade',
-        },
-      ],
-    },
-  ],
-}
-
 const settings = {
   component: 'CNavItem',
   name: '환 경 설 정',
@@ -393,16 +417,7 @@ const settings = {
 const nav = [
   dashboard,
   schedule,
-  {
-    component: 'CNavTitle',
-    name: '프로젝트 관리',
-  },
-  contract,
-  payment,
-  notice,
-  project_cash,
-  project_docs,
-  project,
+  // work_manage,
   {
     component: 'CNavTitle',
     name: '본사 관리',
@@ -410,6 +425,16 @@ const nav = [
   company_cash,
   company_docs,
   human_resource,
+  {
+    component: 'CNavTitle',
+    name: '현장 관리',
+  },
+  contract,
+  payment,
+  notice,
+  project_cash,
+  project_docs,
+  project,
   {
     component: 'CNavTitle',
     name: '기타 관리',

@@ -163,7 +163,8 @@ const onSubmit = () => {
 const modalAction = () => {
   const authData = { ...comInfo.value, ...projectAuth.value, ...menuAuth.value }
   if (user.value && user.value.pk) {
-    if (!!authData.pk) accStore.patchAuth(authData, user.value.pk) // staffauth patch
+    if (!!authData.pk)
+      accStore.patchAuth(authData, user.value.pk) // staffauth patch
     else accStore.createAuth(authData, user.value.pk) // staffauth create
     refConfirmModal.value.close()
   } else {
@@ -227,15 +228,17 @@ onBeforeMount(() => {
         @change-pro-staff="changeProStaff"
         @select-user="selectUser"
       />
-      <ProjectManageAuth
-        :user="user as User"
-        @get-allowed="getAllowed"
-        @get-assigned="getAssigned"
-      />
+
       <SideBarManageAuth
         :user="user as User"
         :allowed="projectAuth.allowed_projects"
         @select-auth="selectAuth"
+      />
+
+      <ProjectManageAuth
+        :user="user as User"
+        @get-allowed="getAllowed"
+        @get-assigned="getAssigned"
       />
     </CCardBody>
 

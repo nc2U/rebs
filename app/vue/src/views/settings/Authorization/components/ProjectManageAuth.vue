@@ -40,7 +40,7 @@ onBeforeMount(() => project.fetchProjectList())
 </script>
 
 <template>
-  <CCallout color="secondary" class="mb-4" :class="bgLight">
+  <CCallout color="secondary" :class="bgLight">
     <CRow>
       <CCol md="10" lg="8" xl="6">
         <CRow class="m-1">
@@ -88,6 +88,4 @@ onBeforeMount(() => project.fetchProjectList())
       </CCol>
     </CRow>
   </CCallout>
-
-  <v-divider />
 </template>

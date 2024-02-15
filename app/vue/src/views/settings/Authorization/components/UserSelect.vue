@@ -69,7 +69,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <CCallout color="dark" :class="bgLight">
+  <CCallout color="dark" class="mb-4" :class="bgLight">
     <CRow>
       <CCol md="10" lg="8" xl="6">
         <CRow class="m-1">
@@ -108,4 +108,6 @@ onBeforeMount(() => {
       </CCol>
     </CRow>
   </CCallout>
+
+  <v-divider />
 </template>
