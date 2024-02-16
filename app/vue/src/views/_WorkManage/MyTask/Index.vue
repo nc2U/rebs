@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount, watch } from 'vue'
-import { pageTitle, navMenu } from '@/views/_WorkManage/_menu/headermixin'
+import { pageTitle, navMenu } from '@/views/_WorkManage/_menu/headermixin11'
 import { type RouteLocationNormalizedLoaded as Loaded, useRoute, useRouter } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
 import { useProject } from '@/store/pinia/project'
