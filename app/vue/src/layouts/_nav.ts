@@ -12,14 +12,14 @@ const dashboard = {
 const work_project = {
   component: 'CNavItem',
   name: '업 무 관 리',
-  to: '/work/task',
+  to: '/work',
   icon: 'cil-task',
 }
 
 const work_admin = {
   component: 'CNavItem',
   name: '설 정 관 리',
-  to: '/work/admin',
+  to: '/admin',
   icon: 'cil-settings',
 }
 
