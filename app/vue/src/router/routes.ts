@@ -63,12 +63,12 @@ const routes: Array<RouteRecordRaw> = [
           },
         ],
       },
-      {
-        path: 'schedule',
-        name: '일 정 관 리',
-        component: () => import(/* webpackChunkName: "schedule" */ '@/views/_Schedules/index.vue'),
-        meta: { title: '일 정 관 리', auth: true, affix: true },
-      },
+      // {
+      //   path: 'schedule',
+      //   name: '일 정 관 리',
+      //   component: () => import(/* webpackChunkName: "schedule" */ '@/views/_Schedules/index.vue'),
+      //   meta: { title: '일 정 관 리', auth: true, affix: true },
+      // },
       workManage,
       contracts,
       payments,

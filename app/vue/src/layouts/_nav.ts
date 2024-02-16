@@ -9,24 +9,19 @@ const dashboard = {
   },
 }
 
-const schedule = {
-  component: 'CNavItem',
-  name: '일 정 관 리',
-  to: '/schedule',
-  icon: 'cil-calendar',
-}
+// const schedule = {
+//   component: 'CNavItem',
+//   name: '일 정 관 리',
+//   to: '/schedule',
+//   icon: 'cil-calendar',
+// }
 
 const work_manage = {
   component: 'CNavItem',
-  name: '업무 관리',
+  name: '업 무 관 리',
   to: '/work',
   icon: 'cil-task',
   items: [
-    {
-      component: 'CNavItem',
-      name: '내 페이지',
-      to: '/work/mytask',
-    },
     {
       component: 'CNavItem',
       name: '프로젝트',
@@ -416,7 +411,7 @@ const settings = {
 
 const nav = [
   dashboard,
-  schedule,
+  // schedule,
   work_manage,
   {
     component: 'CNavTitle',
