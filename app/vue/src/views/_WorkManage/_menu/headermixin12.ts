@@ -1,4 +1,4 @@
-export const pageTitle = '업무 관리'
+export const pageTitle = '업 무 관 리'
 export const navMenu = [
   '프로젝트',
   '작업내역',
