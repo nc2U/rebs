@@ -11,7 +11,7 @@ const btnColor = computed(() => (dark.value ? 'blue-grey' : ''))
 
 const [route, router] = [useRoute(), useRouter()]
 watch(
-  () => route.path,
+  () => route?.meta?.title,
   () => {
     addTags()
     moveToCurrentTag()
@@ -43,7 +43,7 @@ const slashPath = (p: string) => (p.charAt(0) !== '/' ? '/' + p : p)
 const filterAffixTags = (regRoutes: RouteLocationMatched[] | RouteRecordRaw[]) => {
   let affixedViews: VisitedView[] = []
   regRoutes.forEach((view: RouteLocationMatched | RouteRecordRaw) => {
-    if (view.meta && view.meta.affix) {
+    if (view?.meta && view.meta?.affix) {
       const path = slashPath(view.path)
       affixedViews.push({
         name: view.name as string,
@@ -55,7 +55,7 @@ const filterAffixTags = (regRoutes: RouteLocationMatched[] | RouteRecordRaw[]) =
 
     if (view.children) {
       const tempViews = filterAffixTags(view.children)
-      if (tempViews.length >= 1) {
+      if (!!tempViews.length) {
         affixedViews = [...affixedViews, ...tempViews]
       }
     }
@@ -66,13 +66,13 @@ const filterAffixTags = (regRoutes: RouteLocationMatched[] | RouteRecordRaw[]) =
 
 const initTags = () => {
   affixTags.value = filterAffixTags(route?.matched ?? [])
-  affixTags.value.forEach((tag: VisitedView) =>
-    tag.meta.title ? tagsViewStore.addView(tag) : undefined,
+  affixTags.value.forEach((view: VisitedView) =>
+    view?.meta?.title ? tagsViewStore.addView(view) : undefined,
   )
 }
 
 const addTags = () =>
-  route?.meta.title && !route.meta.except
+  route?.meta?.title && !route?.meta?.except
     ? tagsViewStore.addView({
         name: route.name,
         path: route.path,
@@ -94,7 +94,7 @@ const moveToCurrentTag = () =>
 
 const toLastView = () => {
   const latestView = visitedViews.value.slice(-1)[0]
-  router.push({ path: latestView.fullPath })
+  router.push({ path: latestView.fullPath ?? latestView.path })
 }
 
 const closeSelectedTag = (view: VisitedView) =>
