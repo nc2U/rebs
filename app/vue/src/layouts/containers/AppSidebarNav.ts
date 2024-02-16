@@ -129,17 +129,17 @@ const AppSidebarNav = defineComponent({
         : h(resolveComponent(item.component), {}, () => item.name)
     }
 
-    if (!isSuper.value) {
-      // 슈퍼 유저가 아니면
-      ;(nav[2] as any).items.splice(2, 1)
-    }
+    if (!isSuper.value) nav.splice(2, 1) // 관리자 관련 메뉴 제외
+    const wmNum = isSuper.value ? 3 : 2
+    const prNum = 6 // 현장 메뉴 개수
+
     if (!isStaff.value) {
       // 본사 관리 직원 권한이 없으면
-      nav.splice(3, 4) // 본사 관련 메뉴 제외
-      nav.splice(10, 2) // 환경 설정 메뉴 제외
+      nav.splice(wmNum, 4) // 본사 관련 메뉴 제외
+      nav.splice(wmNum + prNum + 1, 2) // 환경 설정 메뉴 제외
     }
     // 본사 자금 관리 권한 없으면 자금 관리 메뉴 제외
-    else if (!isCash.value) nav.splice(4, 1)
+    else if (!isCash.value) nav.splice(wmNum + 1, 1)
 
     return () =>
       h(
