@@ -1,5 +1,5 @@
 <template>
-  <CCard class="mb-4 text-body">
+  <CCard class="mb-4 text-body mx-2 mx-md-3 mx-xl-5">
     <slot name="header">
       <CCardHeader>
         <v-icon icon="mdi mdi-subtitles-outline" size="small" />
