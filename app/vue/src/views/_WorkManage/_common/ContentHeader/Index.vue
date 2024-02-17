@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useStore } from '@/store'
-import HeaderNav from '@/layouts/ContentHeader/components/HeaderNav.vue'
+import HeaderNav from './components/HeaderNav.vue'
 
 defineProps({
   pageTitle: {
