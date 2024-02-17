@@ -7,5 +7,5 @@ const backGround = computed(() => (isDark.value ? '' : 'bg-white'))
 </script>
 
 <template>
-  <div class="mt-0 mb-4 text-body" :class="backGround">a</div>
+  <div class="text-body" :class="backGround">a</div>
 </template>

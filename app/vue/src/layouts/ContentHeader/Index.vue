@@ -39,7 +39,7 @@ const projSelect = (proj: number | null) => {
 </script>
 
 <template>
-  <CCard class="mb-4 text-body mt-4 mx-2 mx-md-3 mx-xl-5">
+  <CCard class="text-body my-4 mx-2 mx-md-3 mx-xl-5">
     <CCardHeader>
       <v-icon icon="mdi mdi-text-box-check-outline" size="small" />
       <strong class="pl-1"> {{ pageTitle }}</strong>

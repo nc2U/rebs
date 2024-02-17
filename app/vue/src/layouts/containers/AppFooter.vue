@@ -1,5 +1,5 @@
 <template>
-  <CFooter class="mt-4">
+  <CFooter class="mt-0">
     <div>
       <a href="/">Rebs</a>
       <span class="ms-1">&copy; {{ new Date().getFullYear() }} creativeLabs.</span>
