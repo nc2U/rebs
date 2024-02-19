@@ -9,8 +9,8 @@ const backGround = computed(() => (isDark.value ? 'bg-dark' : 'bg-white'))
 
 <template>
   <CRow class="flex-grow-1">
-    <CCol md="10" class="text-body pl-4 p-3 main" :class="backGround">a</CCol>
-    <CCol class="text-body p-3">b</CCol>
+    <CCol md="10" class="text-body pl-4 p-3 main" :class="backGround"></CCol>
+    <CCol class="text-body p-3"></CCol>
 
     <!--    <CButton-->
     <!--      color="primary"-->
