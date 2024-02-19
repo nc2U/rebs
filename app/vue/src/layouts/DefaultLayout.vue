@@ -12,8 +12,8 @@ import BackToTop from '@/components/BackToTop/index.vue'
   <div class="wrapper d-flex flex-column min-vh-100 bg-light dark:bg-body">
     <AppHeader />
     <!--    <div class="body flex-grow-1 px-md-3 px-xl-5">-->
-    <div class="body flex-grow-1" style="display: flex; align-items: stretch">
-      <CContainer fluid class="p-0" style="flex: 1">
+    <div class="body d-flex flex-column flex-grow-1">
+      <CContainer fluid class="d-flex flex-column flex-grow-1 p-0">
         <router-view />
       </CContainer>
     </div>

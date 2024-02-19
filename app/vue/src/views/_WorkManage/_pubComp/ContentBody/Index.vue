@@ -3,11 +3,11 @@ import { computed } from 'vue'
 import { useStore } from '@/store'
 
 const isDark = computed(() => useStore().theme === 'dark')
-const backGround = computed(() => (isDark.value ? '' : 'bg-white'))
+const backGround = computed(() => (isDark.value ? 'bg-dark' : 'bg-white'))
 </script>
 
 <template>
-  <CRow>
+  <CRow class="flex-grow-1">
     <CCol md="9" class="text-body pl-4 p-3 main" :class="backGround">a</CCol>
     <CCol class="p-3">b</CCol>
   </CRow>
@@ -16,6 +16,5 @@ const backGround = computed(() => (isDark.value ? '' : 'bg-white'))
 <style lang="scss" scoped>
 .main {
   border-right: 1px solid #ddd !important;
-  height: inherit !important;
 }
 </style>
