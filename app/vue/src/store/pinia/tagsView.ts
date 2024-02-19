@@ -16,12 +16,12 @@ export const useTagsView = defineStore('tags-view', () => {
 
   const addVisitedView = (view: VisitedView) => {
     if (visitedViews.value.some(v => v.meta.title === view.meta.title)) return
-    visitedViews.value.push(Object.assign({}, view))
+    else visitedViews.value.push(Object.assign({}, view))
   }
 
   const addCachedView = (view: VisitedView) => {
     if (cachedViews.value.includes(view.name)) return
-    if (!view.meta.noCache) cachedViews.value.push(view.name)
+    if (!view?.meta?.noCache) cachedViews.value.push(view.name)
   }
 
   const delView = (view: VisitedView) =>
@@ -36,7 +36,7 @@ export const useTagsView = defineStore('tags-view', () => {
   const delVisitedView = (view: VisitedView) =>
     new Promise(resolve => {
       for (const [i, v] of visitedViews.value.entries()) {
-        if (v.path === view.path) {
+        if (v.meta?.title === view.meta?.title) {
           visitedViews.value.splice(i, 1)
           break
         }

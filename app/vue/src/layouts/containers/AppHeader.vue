@@ -35,7 +35,7 @@ const toggleAside = () => store.toggleAside()
 </script>
 
 <template>
-  <CHeader position="sticky" class="mb-4 pb-0">
+  <CHeader position="sticky" class="pb-0">
     <CContainer fluid>
       <CHeaderToggler class="ps-1" @click="toggleSidebar">
         <v-icon v-if="isVisible" icon="mdi mdi-format-indent-decrease" size="small" />
