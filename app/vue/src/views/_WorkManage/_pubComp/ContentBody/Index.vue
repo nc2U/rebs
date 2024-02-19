@@ -7,5 +7,15 @@ const backGround = computed(() => (isDark.value ? '' : 'bg-white'))
 </script>
 
 <template>
-  <div class="text-body" :class="backGround">a</div>
+  <CRow>
+    <CCol md="9" class="text-body pl-4 p-3 main" :class="backGround">a</CCol>
+    <CCol class="p-3">b</CCol>
+  </CRow>
 </template>
+
+<style lang="scss" scoped>
+.main {
+  border-right: 1px solid #ddd !important;
+  height: inherit !important;
+}
+</style>
