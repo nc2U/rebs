@@ -1,27 +1,39 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { type RouteRecordName, useRouter } from 'vue-router'
 
+const props = defineProps({
+  navMenu: {
+    type: Array,
+    default: () => [],
+  },
+  query: { type: Object, default: null },
+})
 const visible = ref(false)
+
+const router = useRouter()
+
+const goToMenu = (menu: string) => {
+  router.push({ name: menu as RouteRecordName, query: props.query })
+  visible.value = false
+}
+const toggle = () => (visible.value = !visible.value)
+defineExpose({ toggle })
 </script>
 
 <template>
   <CRow class="flex-grow-1">
-    <CCol md="10" class="text-body pl-5 p-3 main">
+    <CCol md="9" class="text-body pl-5 p-3 main">
       <slot></slot>
     </CCol>
 
-    <CButton
-      color="primary"
-      @click="
-        () => {
-          visible = !visible
-        }
-      "
-      >Toggle offcanvas
-    </CButton>
+    <CCol class="text-body p-3 d-none d-md-block">
+      <slot name="aside"></slot>
+    </CCol>
 
     <COffcanvas
       placement="end"
+      class="p-0"
       :visible="visible"
       @hide="
         () => {
@@ -30,7 +42,9 @@ const visible = ref(false)
       "
     >
       <COffcanvasHeader>
-        <COffcanvasTitle>Offcanvas</COffcanvasTitle>
+        <COffcanvasTitle>
+          <CFormInput placeholder="검색" />
+        </COffcanvasTitle>
         <CCloseButton
           class="text-reset"
           @click="
@@ -40,9 +54,27 @@ const visible = ref(false)
           "
         />
       </COffcanvasHeader>
-      <COffcanvasBody>
-        Content for the offcanvas goes here. You can place just about any Bootstrap component or
-        custom elements here.
+
+      <COffcanvasBody class="p-0">
+        <CRow>
+          <CCol class="d-grid gap-2">
+            <CListGroup vertical role="group" aria-label="Vertical button group" class="m-0">
+              <CListGroupItem
+                v-for="(menu, i) in navMenu"
+                :key="i"
+                @click="goToMenu(menu)"
+                class="pointer"
+              >
+                {{ menu }}
+              </CListGroupItem>
+            </CListGroup>
+          </CCol>
+        </CRow>
+
+        <slot name="aside">
+          Content for the offcanvas goes here. You can place just about any Bootstrap component or
+          custom elements here.
+        </slot>
       </COffcanvasBody>
     </COffcanvas>
   </CRow>
