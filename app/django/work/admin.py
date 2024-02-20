@@ -2,7 +2,7 @@ from django.contrib import admin
 from import_export.admin import ImportExportMixin
 from .models import (TaskProject, Role, Permission, Tracker, Module, Version,
                      TaskCategory, Repository, Status, Workflow, CodeActivity,
-                     CodeIssuePriority, CodeDocsCategory, Issue, IssueFile, IssueComment)
+                     CodeIssuePriority, CodeDocsCategory, Issue, IssueFile, IssueComment, SpentTime)
 
 
 @admin.register(TaskProject)
@@ -83,3 +83,8 @@ class IssueCommentInline(admin.TabularInline):
 @admin.register(Issue)
 class IssueAdmin(admin.ModelAdmin):
     inlines = (IssueFileInline, IssueCommentInline)
+
+
+@admin.register(SpentTime)
+class SpentTimeAdmin(ImportExportMixin, admin.ModelAdmin):
+    pass
