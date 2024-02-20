@@ -1,7 +1,8 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
-from .models import (TaskProject, Role, Permission, Tracker, Status, TaskCategory,
-                     TimeActivity, Priority, DocsCategory, Task, TaskFile, TaskComment)
+from .models import (TaskProject, Role, Permission, Tracker, Module, Version,
+                     TaskCategory, Repository, Status, Workflow, TimeActivity,
+                     CodeTimeClassify, CodePriority, CodeDocsCate, Task, TaskFile, TaskComment)
 
 
 @admin.register(TaskProject)
@@ -24,8 +25,13 @@ class TaskTrackerAdmin(ImportExportMixin, admin.ModelAdmin):
     pass
 
 
-@admin.register(Status)
-class TaskStatusAdmin(ImportExportMixin, admin.ModelAdmin):
+@admin.register(Module)
+class ModuleAdmin(ImportExportMixin, admin.ModelAdmin):
+    pass
+
+
+@admin.register(Version)
+class VersionAdmin(ImportExportMixin, admin.ModelAdmin):
     pass
 
 
@@ -34,18 +40,38 @@ class TaskCategoryAdmin(ImportExportMixin, admin.ModelAdmin):
     pass
 
 
+@admin.register(Repository)
+class RepositoryAdmin(ImportExportMixin, admin.ModelAdmin):
+    pass
+
+
+@admin.register(Status)
+class TaskStatusAdmin(ImportExportMixin, admin.ModelAdmin):
+    pass
+
+
+@admin.register(Workflow)
+class WorkflowAdmin(ImportExportMixin, admin.ModelAdmin):
+    pass
+
+
 @admin.register(TimeActivity)
 class TimeActivityAdmin(ImportExportMixin, admin.ModelAdmin):
     pass
 
 
-@admin.register(Priority)
-class TimeActivityPriorityAdmin(ImportExportMixin, admin.ModelAdmin):
+@admin.register(CodeTimeClassify)
+class CodeTimeClassifyAdmin(ImportExportMixin, admin.ModelAdmin):
     pass
 
 
-@admin.register(DocsCategory)
-class DocsCategoryAdmin(ImportExportMixin, admin.ModelAdmin):
+@admin.register(CodePriority)
+class CodePriorityAdmin(ImportExportMixin, admin.ModelAdmin):
+    pass
+
+
+@admin.register(CodeDocsCate)
+class CodeDocsCateAdmin(ImportExportMixin, admin.ModelAdmin):
     pass
 
 

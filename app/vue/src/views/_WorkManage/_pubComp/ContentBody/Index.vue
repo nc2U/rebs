@@ -1,61 +1,93 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
-import { useStore } from '@/store'
+import { ref } from 'vue'
+import { type RouteRecordName, useRouter } from 'vue-router'
 
+const props = defineProps({
+  navMenu: {
+    type: Array,
+    default: () => [],
+  },
+  query: { type: Object, default: null },
+})
 const visible = ref(false)
-const isDark = computed(() => useStore().theme === 'dark')
-const backGround = computed(() => (isDark.value ? 'bg-dark' : 'bg-white'))
+
+const router = useRouter()
+
+const goToMenu = (menu: string) => {
+  router.push({ name: menu as RouteRecordName, query: props.query })
+  visible.value = false
+}
+const toggle = () => (visible.value = !visible.value)
+defineExpose({ toggle })
 </script>
 
 <template>
   <CRow class="flex-grow-1">
-    <CCol md="10" class="text-body pl-4 p-3 main" :class="backGround"></CCol>
-    <CCol class="text-body p-3"></CCol>
+    <CCol md="9" class="text-body pl-5 p-3 main">
+      <slot></slot>
+    </CCol>
 
-    <!--    <CButton-->
-    <!--      color="primary"-->
-    <!--      @click="-->
-    <!--        () => {-->
-    <!--          visible = !visible-->
-    <!--        }-->
-    <!--      "-->
-    <!--      >Toggle offcanvas-->
-    <!--    </CButton>-->
+    <CCol class="text-body p-3 d-none d-md-block">
+      <slot name="aside"></slot>
+    </CCol>
 
-    <!--    <COffcanvas-->
-    <!--      placement="end"-->
-    <!--      :visible="visible"-->
-    <!--      @hide="-->
-    <!--        () => {-->
-    <!--          visible = !visible-->
-    <!--        }-->
-    <!--      "-->
-    <!--    >-->
-    <!--      <COffcanvasHeader>-->
-    <!--        <COffcanvasTitle>Offcanvas</COffcanvasTitle>-->
-    <!--        <CCloseButton-->
-    <!--          class="text-reset"-->
-    <!--          @click="-->
-    <!--            () => {-->
-    <!--              visible = false-->
-    <!--            }-->
-    <!--          "-->
-    <!--        />-->
-    <!--      </COffcanvasHeader>-->
-    <!--      <COffcanvasBody>-->
-    <!--        Content for the offcanvas goes here. You can place just about any Bootstrap component or-->
-    <!--        custom elements here.-->
-    <!--      </COffcanvasBody>-->
-    <!--    </COffcanvas>-->
+    <COffcanvas
+      placement="end"
+      class="p-0"
+      :visible="visible"
+      @hide="
+        () => {
+          visible = !visible
+        }
+      "
+    >
+      <COffcanvasHeader>
+        <COffcanvasTitle>
+          <CFormInput placeholder="검색" />
+        </COffcanvasTitle>
+        <CCloseButton
+          class="text-reset"
+          @click="
+            () => {
+              visible = false
+            }
+          "
+        />
+      </COffcanvasHeader>
+
+      <COffcanvasBody class="p-0">
+        <CRow>
+          <CCol class="d-grid gap-2">
+            <CListGroup vertical role="group" aria-label="Vertical button group" class="m-0">
+              <CListGroupItem
+                v-for="(menu, i) in navMenu"
+                :key="i"
+                @click="goToMenu(menu as string)"
+                class="pointer"
+              >
+                {{ menu }}
+              </CListGroupItem>
+            </CListGroup>
+          </CCol>
+        </CRow>
+
+        <slot name="aside">
+          Content for the offcanvas goes here. You can place just about any Bootstrap component or
+          custom elements here.
+        </slot>
+      </COffcanvasBody>
+    </COffcanvas>
   </CRow>
 </template>
 
 <style lang="scss" scoped>
 .main {
+  background: #ffffff;
   border-right: 1px solid #ddd !important;
 }
 
 .dark-theme .main {
+  background: #151620;
   border-right: 1px solid #333 !important;
 }
 </style>

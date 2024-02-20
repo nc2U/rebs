@@ -18,18 +18,29 @@ const isDark = computed(() => useStore().theme === 'dark')
 const backGround = computed(() =>
   isDark.value ? 'bg-blue-grey-darken-5' : 'bg-blue-grey-lighten-4',
 )
+
+const emit = defineEmits(['side-nav-call'])
+const sideNavCall = () => emit('side-nav-call')
 </script>
 
 <template>
-  <div class="mb-0 text-body" :class="backGround">
-    <div class="mb-2 p-4 text-white">
-      <strong class="title pl-1"> {{ pageTitle }}</strong>
-    </div>
-
-    <div class="pl-5">
-      <HeaderNav :menus="navMenu" :query="$route?.query" />
-    </div>
-  </div>
+  <CRow class="mb-0 text-body" :class="backGround">
+    <CCol>
+      <CRow>
+        <CCol class="mb-2 p-4 text-white">
+          <strong class="title pl-1"> {{ pageTitle }}</strong>
+        </CCol>
+        <CCol class="text-right p-3 pr-4">
+          <v-icon icon="mdi-text" size="x-large" class="d-md-none pointer" @click="sideNavCall" />
+        </CCol>
+      </CRow>
+      <CRow class="d-none d-md-block">
+        <CCol>
+          <HeaderNav :menus="navMenu" :query="$route?.query" />
+        </CCol>
+      </CRow>
+    </CCol>
+  </CRow>
 </template>
 
 <style lang="scss" scoped>
