@@ -4,6 +4,8 @@ from datetime import datetime
 
 from django.db import models
 
+from project.models import Project
+
 
 class TaskProject(models.Model):
     company = models.ForeignKey('company.Company', on_delete=models.CASCADE)
@@ -16,14 +18,14 @@ class TaskProject(models.Model):
     parent_project = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='상위 프로젝트')
     inherit_members = models.BooleanField('상위 프로젝트 멤버 상속', default=False)
     members = models.ManyToManyField('accounts.User', related_name='members', blank=True)
-    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='업무 생성자')
+    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='사용자')
     created = models.DateTimeField('생성일시', auto_now_add=True)
 
     def __str__(self):
         return self.name
 
     class Meta:
-        ordering = ('-created',)
+        ordering = ('created',)
         verbose_name = '01. 업무 프로젝트'
         verbose_name_plural = '01. 업무 프로젝트'
 
@@ -37,8 +39,8 @@ class Role(models.Model):
     time_log_visible = models.CharField('시간기록 가시성', max_length=3, choices=TIME_VIEW_PERM, default='ALL')
     USER_VIEW_PERM = (('ALL', '모든 활성 사용자'), ('PRJ', '보이는 프로젝트 사용자'))
     user_visible = models.CharField('시간기록 가시성', max_length=3, choices=TIME_VIEW_PERM, default='ALL')
-    order = models.PositiveSmallIntegerField('정렬')
-    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='업무 생성자')
+    order = models.PositiveSmallIntegerField('정렬', default=1)
+    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='사용자')
     created = models.DateTimeField('생성일시', auto_now_add=True)
 
     def __str__(self):
@@ -150,8 +152,8 @@ class Tracker(models.Model):
     default_status = models.ForeignKey('Status', on_delete=models.PROTECT, verbose_name='초기 상태')
     displayed = models.BooleanField('로드맵에 표시', default=True)
     desc = models.CharField('설명', max_length=255, blank=True, default='')
-    order = models.PositiveSmallIntegerField('정렬')
-    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='업무 생성자')
+    order = models.PositiveSmallIntegerField('정렬', default=1)
+    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='사용자')
     created = models.DateTimeField('생성일시', auto_now_add=True)
 
     def __str__(self):
@@ -180,7 +182,6 @@ class Module(models.Model):
         return self.issue
 
     class Meta:
-        ordering = ('id',)
         verbose_name = '04. 모듈'
         verbose_name_plural = '04. 모듈'
 
@@ -190,7 +191,7 @@ class Version(models.Model):
     name = models.CharField('이름', max_length=20)
     desc = models.CharField('설명', max_length=255, blank=True, default='')
     wiki_page = models.CharField('위키 페이지', max_length=255, blank=True, null=True)
-    relese_date = models.DateField(verbose_name='출시일')
+    release_date = models.DateField(verbose_name='출시일')
     SHARE_CHOICES = (
         ('0', '공유 없음'), ('1', '하위 프로젝트'), ('2', '상위 및 하위 프로젝트'), ('3', '최상위 및 모든 하위 프로젝트'), ('4', '모든 프로젝트'))
     share = models.CharField('공유', max_length=1, default='0')
@@ -200,15 +201,14 @@ class Version(models.Model):
         return self.name
 
     class Meta:
-        ordering = ('-id',)
         verbose_name = '05. 버전'
         verbose_name_plural = '05. 버전'
 
 
 class TaskCategory(models.Model):
     name = models.CharField('범주', max_length=100)
-    order = models.PositiveSmallIntegerField('정렬', default=0)
-    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='업무 생성자')
+    order = models.PositiveSmallIntegerField('정렬', default=1)
+    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='사용자')
     created = models.DateTimeField('생성일시', auto_now_add=True)
 
     def __str__(self):
@@ -235,7 +235,6 @@ class Repository(models.Model):
         return self.scm
 
     class Meta:
-        ordering = ('-id',)
         verbose_name = '07. 저장소'
         verbose_name_plural = '07. 저장소'
 
@@ -244,8 +243,8 @@ class Status(models.Model):
     name = models.CharField('이름', max_length=20)
     desc = models.CharField('설명', max_length=255, blank=True, default='')
     closed = models.BooleanField('완료 상태', default=False)
-    order = models.PositiveSmallIntegerField('정렬')
-    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='업무 생성자')
+    order = models.PositiveSmallIntegerField('정렬', default=1)
+    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='사용자')
     created = models.DateTimeField('생성일시', auto_now_add=True)
 
     def __str__(self):
@@ -272,70 +271,58 @@ class Workflow(models.Model):
         verbose_name_plural = '09. 업무 흐름'
 
 
-class TimeActivity(models.Model):
-    name = models.CharField('이름', max_length=20)
-    active = models.BooleanField('사용중', default=True)
-    default = models.BooleanField('기본값', default=False)
-    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='업무 생성자')
-    created = models.DateTimeField('생성일시', auto_now_add=True)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        ordering = ('-created',)
-        verbose_name = '10. 업무 분류'
-        verbose_name_plural = '10 업무 분류'
-
-
-class CodeTimeClassify(models.Model):
+class CodeActivity(models.Model):
     name = models.CharField('이름', max_length=50)
     active = models.BooleanField('사용중', default=True)
     default = models.BooleanField('기본값', default=False)
-    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='업무 생성자')
+    order = models.PositiveSmallIntegerField('정렬', default=1)
+    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='사용자')
     created = models.DateTimeField('생성일시', auto_now_add=True)
 
     def __str__(self):
         return self.name
 
     class Meta:
-        verbose_name = '11. 작업분류(시간추적)'
-        verbose_name_plural = '11. 작업분류(시간추적)'
+        ordering = ('order', '-created',)
+        verbose_name = '10. 작업분류(시간추적)'
+        verbose_name_plural = '10. 작업분류(시간추적)'
 
 
-class CodePriority(models.Model):
+class CodeIssuePriority(models.Model):
     name = models.CharField('이름', max_length=20)
     active = models.BooleanField('사용중', default=True)
     default = models.BooleanField('기본값', default=False)
-    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='업무 생성자')
+    order = models.PositiveSmallIntegerField('정렬', default=1)
+    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='사용자')
     created = models.DateTimeField('생성일시', auto_now_add=True)
 
     def __str__(self):
         return self.name
 
     class Meta:
-        ordering = ('-created',)
-        verbose_name = '12. 업무 우선순위'
-        verbose_name_plural = '12. 업무 우선순위'
+        ordering = ('order', '-created',)
+        verbose_name = '11. 업무 우선순위'
+        verbose_name_plural = '11. 업무 우선순위'
 
 
-class CodeDocsCate(models.Model):
+class CodeDocsCategory(models.Model):
     name = models.CharField('이름', max_length=20)
     active = models.BooleanField('사용중', default=True)
     default = models.BooleanField('기본값', default=False)
-    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='업무 생성자')
+    order = models.PositiveSmallIntegerField('정렬', default=1)
+    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='사용자')
     created = models.DateTimeField('생성일시', auto_now_add=True)
 
     def __str__(self):
         return self.name
 
     class Meta:
-        ordering = ('-created',)
-        verbose_name = '13. 문서 범주'
-        verbose_name_plural = '13. 문서 범주'
+        ordering = ('order', '-created',)
+        verbose_name = '12. 문서 범주'
+        verbose_name_plural = '12. 문서 범주'
 
 
-class Task(models.Model):
+class Issue(models.Model):
     project = models.ForeignKey(TaskProject, on_delete=models.PROTECT, verbose_name='프로젝트')
     tracker = models.ForeignKey(Tracker, on_delete=models.PROTECT, verbose_name='유형')
     private = models.BooleanField('비공개', default=False)
@@ -344,9 +331,9 @@ class Task(models.Model):
     status = models.ForeignKey(Status, on_delete=models.PROTECT, verbose_name='상태')
     parent_task = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='상위업무')
     category = models.ForeignKey(TaskCategory, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='카테고리')
-    priority = models.ForeignKey(CodePriority, on_delete=models.PROTECT, verbose_name='우선순위')
-    assignee = models.OneToOneField('accounts.User', on_delete=models.SET_NULL,
-                                    null=True, blank=True, verbose_name='담당자', related_name='assignee')
+    priority = models.ForeignKey(CodeIssuePriority, on_delete=models.PROTECT, verbose_name='우선순위')
+    assignee = models.ForeignKey('accounts.User', on_delete=models.SET_NULL,
+                                 null=True, blank=True, verbose_name='담당자', related_name='assignees')
     start_date = models.DateField('시작 일자', null=True, blank=True)
     due_date = models.DateField('완료 기한', null=True, blank=True)
     estimated_time = models.PositiveSmallIntegerField('추정 소요시간', null=True, blank=True)
@@ -356,16 +343,17 @@ class Task(models.Model):
     progress = models.DecimalField('진척도', max_digits=2, decimal_places=1, choices=PROGRESS_RATIO, default=0.0)
     watchers = models.ManyToManyField('accounts.User', blank=True,
                                       verbose_name='업무 관람자', related_name='watchers')
-    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='업무 생성자')
-    created = models.DateTimeField('생성일', auto_now_add=True)
+    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='사용자')
+    created = models.DateTimeField('생성', auto_now_add=True)
+    updated = models.DateTimeField('변경', auto_now=True)
 
     def __str__(self):
         return self.subject
 
     class Meta:
         ordering = ('-created',)
-        verbose_name = '14. 업무(작업)'
-        verbose_name_plural = '14. 업무(작업)'
+        verbose_name = '13. 업무(작업)'
+        verbose_name_plural = '13. 업무(작업)'
 
 
 def get_file_name(filename):
@@ -383,8 +371,8 @@ def get_file_path(instance, filename):
     return f"task/{get_file_name(filename)}"
 
 
-class TaskFile(models.Model):
-    task = models.ForeignKey(Task, on_delete=models.CASCADE, default=None, verbose_name='파일', related_name='files')
+class IssueFile(models.Model):
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, default=None, verbose_name='업무', related_name='files')
     file = models.FileField(upload_to='files', verbose_name='파일')
     desc = models.CharField('부가설명', max_length=255, blank=True, default='')
 
@@ -392,13 +380,30 @@ class TaskFile(models.Model):
         return self.file
 
 
-class TaskComment(models.Model):
-    Task = models.ForeignKey(Task, on_delete=models.CASCADE, verbose_name='작업', related_name='comments')
+class IssueComment(models.Model):
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, verbose_name='업무', related_name='comments')
     content = models.TextField('내용')
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')
-    user = models.ForeignKey('accounts.User', related_name='comments', on_delete=models.CASCADE)
+    user = models.ForeignKey('accounts.User', on_delete=models.CASCADE, verbose_name='사용자')
     created = models.DateTimeField('생성일시', auto_now_add=True)
     updated = models.DateTimeField('수정일시', auto_now=True)
 
     def __str__(self):
         return self.content
+
+
+class SpentTime(models.Model):
+    project = models.ForeignKey(TaskProject, on_delete=models.CASCADE, verbose_name='프로젝트')
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, verbose_name='업무')
+    date = models.DateField(verbose_name='작업일자')
+    hours = models.DecimalField(max_digits=5, decimal_places=2)
+    comment = models.CharField(max_length=255, blank=True, default='')
+    activity = models.ForeignKey(CodeActivity, on_delete=models.PROTECT, verbose_name='작업분류(시간추적)')
+    user = models.ForeignKey('accounts.User', on_delete=models.CASCADE, verbose_name='사용자')
+
+    def __str__(self):
+        return self.hours
+
+    class Meta:
+        verbose_name = '14. 소요 시간'
+        verbose_name_plural = '14. 소요 시간'

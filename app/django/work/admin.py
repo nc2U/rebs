@@ -1,8 +1,8 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
 from .models import (TaskProject, Role, Permission, Tracker, Module, Version,
-                     TaskCategory, Repository, Status, Workflow, TimeActivity,
-                     CodeTimeClassify, CodePriority, CodeDocsCate, Task, TaskFile, TaskComment)
+                     TaskCategory, Repository, Status, Workflow, CodeActivity,
+                     CodeIssuePriority, CodeDocsCategory, Issue, IssueFile, IssueComment)
 
 
 @admin.register(TaskProject)
@@ -55,36 +55,31 @@ class WorkflowAdmin(ImportExportMixin, admin.ModelAdmin):
     pass
 
 
-@admin.register(TimeActivity)
-class TimeActivityAdmin(ImportExportMixin, admin.ModelAdmin):
+@admin.register(CodeActivity)
+class CodeActivityAdmin(ImportExportMixin, admin.ModelAdmin):
     pass
 
 
-@admin.register(CodeTimeClassify)
-class CodeTimeClassifyAdmin(ImportExportMixin, admin.ModelAdmin):
+@admin.register(CodeIssuePriority)
+class CodeIssuePriorityAdmin(ImportExportMixin, admin.ModelAdmin):
     pass
 
 
-@admin.register(CodePriority)
-class CodePriorityAdmin(ImportExportMixin, admin.ModelAdmin):
+@admin.register(CodeDocsCategory)
+class CodeDocsCategoryAdmin(ImportExportMixin, admin.ModelAdmin):
     pass
 
 
-@admin.register(CodeDocsCate)
-class CodeDocsCateAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
-
-
-class TaskFileInline(admin.TabularInline):
-    model = TaskFile
+class IssueFileInline(admin.TabularInline):
+    model = IssueFile
     extra = 1
 
 
-class TaskCommentInline(admin.TabularInline):
-    model = TaskComment
+class IssueCommentInline(admin.TabularInline):
+    model = IssueComment
     extra = 1
 
 
-@admin.register(Task)
-class TaskAdmin(admin.ModelAdmin):
-    inlines = (TaskFileInline, TaskCommentInline)
+@admin.register(Issue)
+class IssueAdmin(admin.ModelAdmin):
+    inlines = (IssueFileInline, IssueCommentInline)
