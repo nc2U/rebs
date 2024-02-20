@@ -30,8 +30,8 @@ const sideNavCall = () => emit('side-nav-call')
         <CCol class="mb-2 p-4 text-white">
           <strong class="title pl-1"> {{ pageTitle }}</strong>
         </CCol>
-        <CCol class="text-right p-3 pr-4">
-          <v-icon icon="mdi-text" size="x-large" class="d-md-none pointer" @click="sideNavCall" />
+        <CCol class="text-right p-3 pr-5">
+          <v-icon icon="mdi-menu" size="x-large" class="d-md-none pointer" @click="sideNavCall" />
         </CCol>
       </CRow>
       <CRow class="d-none d-md-block">

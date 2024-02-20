@@ -55,19 +55,20 @@ defineExpose({ toggle })
         />
       </COffcanvasHeader>
 
-      <COffcanvasBody class="p-0">
-        <CRow>
+      <COffcanvasBody>
+        <CRow class="mb-3">
           <CCol class="d-grid gap-2">
-            <CListGroup vertical role="group" aria-label="Vertical button group" class="m-0">
-              <CListGroupItem
-                v-for="(menu, i) in navMenu"
-                :key="i"
-                @click="goToMenu(menu as string)"
-                class="pointer"
-              >
-                {{ menu }}
-              </CListGroupItem>
-            </CListGroup>
+            <CNavbarNav vertical role="group" aria-label="Vertical button group" class="m-0">
+              <CNavItem v-for="(menu, i) in navMenu" :key="i">
+                <CNavLink
+                  @click="goToMenu(menu as string)"
+                  :active="$route.name === menu || $route.meta.title === menu"
+                  class="pl-3"
+                >
+                  {{ menu }}
+                </CNavLink>
+              </CNavItem>
+            </CNavbarNav>
           </CCol>
         </CRow>
 
@@ -89,5 +90,14 @@ defineExpose({ toggle })
 .dark-theme .main {
   background: #151620;
   border-right: 1px solid #333 !important;
+}
+
+.active {
+  font-weight: bold;
+  background: #e5e7eb;
+}
+
+.dark-theme .active {
+  background: #32333d;
 }
 </style>
