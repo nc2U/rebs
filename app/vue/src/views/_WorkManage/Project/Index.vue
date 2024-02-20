@@ -7,5 +7,9 @@ import ContentBody from '@/views/_WorkManage/_pubComp/ContentBody/Index.vue'
 <template>
   <Header :page-title="pageTitle" :nav-menu="navMenu" />
 
-  <ContentBody></ContentBody>
+  <ContentBody>
+    <template v-slot:default>a</template>
+
+    <template v-slot:aside>b</template>
+  </ContentBody>
 </template>
