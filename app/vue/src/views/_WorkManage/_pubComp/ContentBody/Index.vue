@@ -62,7 +62,7 @@ defineExpose({ toggle })
               <CListGroupItem
                 v-for="(menu, i) in navMenu"
                 :key="i"
-                @click="goToMenu(menu)"
+                @click="goToMenu(menu as string)"
                 class="pointer"
               >
                 {{ menu }}
