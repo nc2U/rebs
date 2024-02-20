@@ -33,7 +33,7 @@ defineExpose({ toggle })
 
     <COffcanvas
       placement="end"
-      class="p-0"
+      class="p-2"
       :visible="visible"
       @hide="
         () => {
@@ -55,7 +55,9 @@ defineExpose({ toggle })
         />
       </COffcanvasHeader>
 
-      <COffcanvasBody>
+      <v-divider />
+
+      <COffcanvasBody class="p-0">
         <CRow class="mb-3">
           <CCol class="d-grid gap-2">
             <CNavbarNav vertical role="group" aria-label="Vertical button group" class="m-0">
@@ -71,6 +73,8 @@ defineExpose({ toggle })
             </CNavbarNav>
           </CCol>
         </CRow>
+
+        <v-divider />
 
         <slot name="aside">
           Content for the offcanvas goes here. You can place just about any Bootstrap component or
