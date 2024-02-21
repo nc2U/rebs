@@ -19,7 +19,6 @@ const workProject = {
         {
           path: ':projId',
           name: '개요',
-          component: () => import('@/views/_Work/Projects/UnitProject/Index.vue'),
         },
       ],
     },
