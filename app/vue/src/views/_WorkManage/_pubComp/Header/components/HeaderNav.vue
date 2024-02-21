@@ -9,7 +9,7 @@ defineProps({
 
 <template>
   <CNav variant="tabs" class="mb-0 pl-4">
-    <CDropdown color="secondary" class="m-0">
+    <CDropdown>
       <CDropdownToggle component="button" color=""></CDropdownToggle>
       <CDropdownMenu>
         <CDropdownItem>새 업무 만들기</CDropdownItem>
