@@ -12,7 +12,11 @@ const sideNavCAll = () => cBody.value.toggle()
   <Header :page-title="pageTitle" :nav-menu="navMenu" @side-nav-call="sideNavCAll" />
 
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query">
-    <template v-slot:default>a</template>
+    <template v-slot:default>
+      <router-link :to="{ name: '개요', params: { projId: 'dongchun' } }">
+        개별 프로젝트
+      </router-link>
+    </template>
 
     <template v-slot:aside></template>
   </ContentBody>

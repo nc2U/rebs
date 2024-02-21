@@ -1,7 +1,7 @@
 export const pageTitle = '설 정 관 리'
 
 export const navMenu = [
-  '프로젝트 관리',
+  '프로젝트 목록',
   '사용자',
   '그룹',
   '역할 및 권한',
