@@ -19,7 +19,7 @@ const work_project = {
 const work_admin = {
   component: 'CNavItem',
   name: '설 정 관 리',
-  to: '/settings',
+  to: '/admin',
   icon: 'cil-code',
 }
 

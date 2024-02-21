@@ -18,7 +18,47 @@ const workProject = {
       children: [
         {
           path: ':projId',
-          name: '개요',
+          name: '[개요]',
+        },
+        {
+          path: ':projId/activity',
+          name: '[작업내역]',
+        },
+        {
+          path: ':projId/issue',
+          name: '[업무]',
+        },
+        {
+          path: ':projId/time_entry',
+          name: '[소요시간]',
+        },
+        {
+          path: ':projId/gantt',
+          name: '[차트]',
+        },
+        {
+          path: ':projId/calendar',
+          name: '[달력]',
+        },
+        {
+          path: ':projId/news',
+          name: '[공지]',
+        },
+        {
+          path: ':projId/document',
+          name: '[문서]',
+        },
+        {
+          path: ':projId/wiki',
+          name: '[위키]',
+        },
+        {
+          path: ':projId/file',
+          name: '[파일]',
+        },
+        {
+          path: ':projId/setting',
+          name: '[설정]',
         },
       ],
     },
@@ -28,12 +68,12 @@ const workProject = {
       component: () => import('@/views/_Work/Projects/Index.vue'),
     },
     {
-      path: 'issues',
+      path: 'issue',
       name: '업무',
       component: () => import('@/views/_Work/Projects/Index.vue'),
     },
     {
-      path: 'time_entries',
+      path: 'time_entry',
       name: '소요시간',
       component: () => import('@/views/_Work/Projects/Index.vue'),
     },
@@ -50,31 +90,6 @@ const workProject = {
     {
       path: 'news',
       name: '공지',
-      component: () => import('@/views/_Work/Projects/Index.vue'),
-    },
-    {
-      path: 'documents',
-      name: '문서',
-      component: () => import('@/views/_Work/Projects/Index.vue'),
-    },
-    {
-      path: 'wiki',
-      name: '위키',
-      component: () => import('@/views/_Work/Projects/Index.vue'),
-    },
-    {
-      path: 'files',
-      name: '파일',
-      component: () => import('@/views/_Work/Projects/Index.vue'),
-    },
-    {
-      path: 'repository',
-      name: '저장소',
-      component: () => import('@/views/_Work/Projects/Index.vue'),
-    },
-    {
-      path: 'settings',
-      name: '설정',
       component: () => import('@/views/_Work/Projects/Index.vue'),
     },
   ],
