@@ -1,16 +1,21 @@
 <script lang="ts" setup>
-import type { RouteRecordName } from 'vue-router'
+import { computed } from 'vue'
+import { useStore } from '@/store'
+import { type RouteRecordName } from 'vue-router'
 
 defineProps({
   menus: { type: Array, required: true },
   query: { type: Object, default: null },
 })
+
+const store = useStore()
+const isDark = computed(() => store.theme === 'dark')
 </script>
 
 <template>
   <CNav variant="tabs" class="mb-0 pl-4">
-    <CDropdown>
-      <CDropdownToggle component="button" color=""></CDropdownToggle>
+    <CDropdown v-if="$route.params.id">
+      <CDropdownToggle :color="isDark ? 'dark' : 'light'" />
       <CDropdownMenu>
         <CDropdownItem>새 업무 만들기</CDropdownItem>
         <CDropdownItem>새 업무 카테고리</CDropdownItem>
