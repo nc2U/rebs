@@ -18,7 +18,7 @@ const sideNavCAll = () => cBody.value.toggle()
 
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query">
     <template v-slot:default>
-      <router-link :to="{ name: '[개요]', params: { projId: 'dongchun' } }">
+      <router-link :to="{ name: '(개요)', params: { projId: 'dongchun' } }">
         개별 프로젝트
       </router-link>
 

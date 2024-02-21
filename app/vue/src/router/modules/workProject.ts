@@ -18,47 +18,47 @@ const workProject = {
       children: [
         {
           path: ':projId',
-          name: '[개요]',
+          name: '(개요)',
         },
         {
           path: ':projId/activity',
-          name: '[작업내역]',
+          name: '(작업내역)',
         },
         {
           path: ':projId/issue',
-          name: '[업무]',
+          name: '(업무)',
         },
         {
           path: ':projId/time_entry',
-          name: '[소요시간]',
+          name: '(소요시간)',
         },
         {
           path: ':projId/gantt',
-          name: '[차트]',
+          name: '(차트)',
         },
         {
           path: ':projId/calendar',
-          name: '[달력]',
+          name: '(달력)',
         },
         {
           path: ':projId/news',
-          name: '[공지]',
+          name: '(공지)',
         },
         {
           path: ':projId/document',
-          name: '[문서]',
+          name: '(문서)',
         },
         {
           path: ':projId/wiki',
-          name: '[위키]',
+          name: '(위키)',
         },
         {
           path: ':projId/file',
-          name: '[파일]',
+          name: '(파일)',
         },
         {
           path: ':projId/setting',
-          name: '[설정]',
+          name: '(설정)',
         },
       ],
     },
