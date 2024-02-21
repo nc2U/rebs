@@ -16,7 +16,7 @@ const isDark = computed(() => store.theme === 'dark')
 
 <template>
   <CNav variant="tabs" class="mb-0 pl-4">
-    <CDropdown v-if="$route.params.id">
+    <CDropdown v-if="$route.params.projId">
       <CDropdownToggle :color="isDark ? 'dark' : 'light'" />
       <CDropdownMenu>
         <CDropdownItem>새 업무 만들기</CDropdownItem>

@@ -15,11 +15,13 @@ const workProject = {
       path: 'project',
       name: '프로젝트',
       component: () => import('@/views/_Work/Projects/Index.vue'),
+      meta: { except: true },
       children: [
         {
-          path: ':id',
+          path: ':projId',
           name: '개요',
           component: () => import('@/views/_Work/Projects/UnitProject/Index.vue'),
+          meta: { except: true },
         },
       ],
     },
