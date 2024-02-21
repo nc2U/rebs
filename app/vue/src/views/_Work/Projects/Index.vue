@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { pageTitle, navMenu } from '@/views/_Work/_menu/headermixin12'
-import Header from '../components/Header/Index.vue'
+import { pageTitle, navMenu } from '@/views/_Work/_menu/headermixin11'
+import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 
 const cBody = ref()

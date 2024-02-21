@@ -1,6 +1,6 @@
 export const pageTitle = '업 무 관 리'
 export const navMenu = [
-  '프로젝트',
+  '개요',
   '작업내역',
   '업무',
   '소요시간',

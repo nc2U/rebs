@@ -18,7 +18,8 @@ const workProject = {
       children: [
         {
           path: ':id',
-          component: () => import('@/views/_Work/Projects/Index.vue'),
+          name: '개요',
+          component: () => import('@/views/_Work/Projects/UnitProject/Index.vue'),
         },
       ],
     },
