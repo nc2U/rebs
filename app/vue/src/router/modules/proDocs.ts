@@ -30,29 +30,14 @@ const proDocs = {
         {
           path: ':postId(\\d+)',
           name: '현장 일반 문서 - 보기',
-          component: () =>
-            pageViewAuth.value
-              ? import('@/views/proDocs/GeneralDocs/Index.vue')
-              : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '현장 일반 문서', auth: true, except: true },
         },
         {
           path: ':postId(\\d+)/update',
           name: '현장 일반 문서 - 수정',
-          component: () =>
-            pageViewAuth.value
-              ? import('@/views/proDocs/GeneralDocs/Index.vue')
-              : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '현장 일반 문서', auth: true, except: true },
         },
         {
           path: 'create',
           name: '현장 일반 문서 - 작성',
-          component: () =>
-            pageViewAuth.value
-              ? import('@/views/proDocs/GeneralDocs/Index.vue')
-              : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '현장 일반 문서', auth: true, except: true },
         },
       ],
     },
@@ -68,29 +53,14 @@ const proDocs = {
         {
           path: ':postId(\\d+)',
           name: '현장 소송 문서 - 보기',
-          component: () =>
-            pageViewAuth.value
-              ? import('@/views/proDocs/LawsuitDocs/Index.vue')
-              : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '현장 소송 문서', auth: true, except: true },
         },
         {
           path: ':postId(\\d+)/update',
           name: '현장 소송 문서 - 수정',
-          component: () =>
-            pageViewAuth.value
-              ? import('@/views/proDocs/LawsuitDocs/Index.vue')
-              : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '현장 소송 문서', auth: true, except: true },
         },
         {
           path: 'create',
           name: '현장 소송 문서 - 작성',
-          component: () =>
-            pageViewAuth.value
-              ? import('@/views/proDocs/LawsuitDocs/Index.vue')
-              : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '현장 소송 문서', auth: true, except: true },
         },
       ],
     },
@@ -106,29 +76,14 @@ const proDocs = {
         {
           path: ':caseId(\\d+)',
           name: '현장 소송 사건 - 보기',
-          component: () =>
-            pageViewAuth.value
-              ? import('@/views/proDocs/LawsuitCase/Index.vue')
-              : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '현장 소송 사건', auth: true, except: true },
         },
         {
           path: ':caseId(\\d+)/update',
           name: '현장 소송 사건 - 수정',
-          component: () =>
-            pageViewAuth.value
-              ? import('@/views/proDocs/LawsuitCase/Index.vue')
-              : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '현장 소송 사건', auth: true, except: true },
         },
         {
           path: 'create',
           name: '현장 소송 사건 - 작성',
-          component: () =>
-            pageViewAuth.value
-              ? import('@/views/proDocs/LawsuitCase/Index.vue')
-              : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '현장 소송 사건', auth: true, except: true },
         },
       ],
     },

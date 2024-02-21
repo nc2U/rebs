@@ -30,29 +30,14 @@ const comDocs = {
         {
           path: ':postId(\\d+)',
           name: '본사 일반 문서 - 보기',
-          component: () =>
-            pageViewAuth.value
-              ? import('@/views/comDocs/GeneralDocs/Index.vue')
-              : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '본사 일반 문서', auth: true, except: true },
         },
         {
           path: ':postId(\\d+)/update',
           name: '본사 일반 문서 - 수정',
-          component: () =>
-            pageViewAuth.value
-              ? import('@/views/comDocs/GeneralDocs/Index.vue')
-              : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '본사 일반 문서', auth: true, except: true },
         },
         {
           path: 'create',
           name: '본사 일반 문서 - 작성',
-          component: () =>
-            pageViewAuth.value
-              ? import('@/views/comDocs/GeneralDocs/Index.vue')
-              : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '본사 일반 문서', auth: true, except: true },
         },
       ],
     },
@@ -68,29 +53,13 @@ const comDocs = {
         {
           path: ':postId(\\d+)',
           name: '본사 공문 발송 - 보기',
-          component: () =>
-            pageViewAuth.value
-              ? import('@/views/comDocs/OfficialLetter/Index.vue')
-              : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '본사 공문 발송', auth: true, except: true },
         },
         {
           path: ':postId(\\d+)/update',
-          name: '본사 공문 발송 - 수정',
-          component: () =>
-            pageViewAuth.value
-              ? import('@/views/comDocs/OfficialLetter/Index.vue')
-              : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '본사 공문 발송', auth: true, except: true },
         },
         {
           path: 'create',
           name: '본사 공문 발송 - 작성',
-          component: () =>
-            pageViewAuth.value
-              ? import('@/views/comDocs/OfficialLetter/Index.vue')
-              : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '본사 공문 발송', auth: true, except: true },
         },
       ],
     },
@@ -116,29 +85,14 @@ const comDocs = {
             {
               path: ':postId(\\d+)',
               name: '본사 소송 문서 - 보기',
-              component: () =>
-                pageViewAuth.value
-                  ? import('@/views/comDocs/LawsuitDocs/Index.vue')
-                  : import('@/views/_Accounts/NoAuth.vue'),
-              meta: { title: '본사 소송 문서', auth: true, except: true },
             },
             {
               path: ':postId(\\d+)/update',
               name: '본사 소송 문서 - 수정',
-              component: () =>
-                pageViewAuth.value
-                  ? import('@/views/comDocs/LawsuitDocs/Index.vue')
-                  : import('@/views/_Accounts/NoAuth.vue'),
-              meta: { title: '본사 소송 문서', auth: true, except: true },
             },
             {
               path: 'create',
               name: '본사 소송 문서 - 작성',
-              component: () =>
-                pageViewAuth.value
-                  ? import('@/views/comDocs/LawsuitDocs/Index.vue')
-                  : import('@/views/_Accounts/NoAuth.vue'),
-              meta: { title: '본사 소송 문서', auth: true, except: true },
             },
           ],
         },
@@ -154,29 +108,14 @@ const comDocs = {
             {
               path: ':caseId(\\d+)',
               name: '본사 소송 사건 - 보기',
-              component: () =>
-                pageViewAuth.value
-                  ? import('@/views/comDocs/LawsuitCase/Index.vue')
-                  : import('@/views/_Accounts/NoAuth.vue'),
-              meta: { title: '본사 소송 사건', auth: true, except: true },
             },
             {
               path: ':caseId(\\d+)/update',
               name: '본사 소송 사건 - 수정',
-              component: () =>
-                pageViewAuth.value
-                  ? import('@/views/comDocs/LawsuitCase/Index.vue')
-                  : import('@/views/_Accounts/NoAuth.vue'),
-              meta: { title: '본사 소송 사건', auth: true, except: true },
             },
             {
               path: 'create',
               name: '본사 소송 사건 - 작성',
-              component: () =>
-                pageViewAuth.value
-                  ? import('@/views/comDocs/LawsuitCase/Index.vue')
-                  : import('@/views/_Accounts/NoAuth.vue'),
-              meta: { title: '본사 소송 사건', auth: true, except: true },
             },
           ],
         },
