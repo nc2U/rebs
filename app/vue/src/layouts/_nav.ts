@@ -64,21 +64,13 @@ const company_docs = {
     },
     {
       component: 'CNavItem',
-      name: '본사 소송 관리',
-      to: '/docs/lawsuit',
-      icon: 'cil-library-building',
-      items: [
-        {
-          component: 'CNavItem',
-          name: '본사 소송 문서',
-          to: '/docs/lawsuit/posts',
-        },
-        {
-          component: 'CNavItem',
-          name: '본사 소송 사건',
-          to: '/docs/lawsuit/case',
-        },
-      ],
+      name: '본사 소송 문서',
+      to: '/docs/lawsuit/posts',
+    },
+    {
+      component: 'CNavItem',
+      name: '본사 소송 사건',
+      to: '/docs/lawsuit/case',
     },
   ],
 }

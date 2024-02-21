@@ -51,11 +51,12 @@ const comDocs = {
       meta: { title: '본사 공문 발송', auth: true },
       children: [
         {
-          path: ':postId(\\d+)',
+          path: ':letterId(\\d+)',
           name: '본사 공문 발송 - 보기',
         },
         {
-          path: ':postId(\\d+)/update',
+          path: ':letterId(\\d+)/update',
+          name: '본사 공문 발송 - 수정',
         },
         {
           path: 'create',
@@ -64,60 +65,48 @@ const comDocs = {
       ],
     },
     {
-      path: 'lawsuit',
-      name: '본사 소송 관리',
-      redirect: '/docs/lawsuit/posts',
-      component: {
-        render() {
-          return h(resolveComponent('router-view'))
-        },
-      },
+      path: 'lawsuit/posts',
+      name: '본사 소송 문서',
+      component: () =>
+        pageViewAuth.value
+          ? import('@/views/comDocs/LawsuitDocs/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '본사 소송 문서', auth: true },
       children: [
         {
-          path: 'posts',
-          name: '본사 소송 문서',
-          component: () =>
-            pageViewAuth.value
-              ? import('@/views/comDocs/LawsuitDocs/Index.vue')
-              : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '본사 소송 문서', auth: true },
-          children: [
-            {
-              path: ':postId(\\d+)',
-              name: '본사 소송 문서 - 보기',
-            },
-            {
-              path: ':postId(\\d+)/update',
-              name: '본사 소송 문서 - 수정',
-            },
-            {
-              path: 'create',
-              name: '본사 소송 문서 - 작성',
-            },
-          ],
+          path: ':postId(\\d+)',
+          name: '본사 소송 문서 - 보기',
         },
         {
-          path: 'case',
-          name: '본사 소송 사건',
-          component: () =>
-            pageViewAuth.value
-              ? import('@/views/comDocs/LawsuitCase/Index.vue')
-              : import('@/views/_Accounts/NoAuth.vue'),
-          meta: { title: '본사 소송 사건', auth: true },
-          children: [
-            {
-              path: ':caseId(\\d+)',
-              name: '본사 소송 사건 - 보기',
-            },
-            {
-              path: ':caseId(\\d+)/update',
-              name: '본사 소송 사건 - 수정',
-            },
-            {
-              path: 'create',
-              name: '본사 소송 사건 - 작성',
-            },
-          ],
+          path: ':postId(\\d+)/update',
+          name: '본사 소송 문서 - 수정',
+        },
+        {
+          path: 'create',
+          name: '본사 소송 문서 - 작성',
+        },
+      ],
+    },
+    {
+      path: 'lawsuit/case',
+      name: '본사 소송 사건',
+      component: () =>
+        pageViewAuth.value
+          ? import('@/views/comDocs/LawsuitCase/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '본사 소송 사건', auth: true },
+      children: [
+        {
+          path: ':caseId(\\d+)',
+          name: '본사 소송 사건 - 보기',
+        },
+        {
+          path: ':caseId(\\d+)/update',
+          name: '본사 소송 사건 - 수정',
+        },
+        {
+          path: 'create',
+          name: '본사 소송 사건 - 작성',
         },
       ],
     },
