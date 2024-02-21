@@ -6,7 +6,9 @@ import { useCompany } from '@/store/pinia/company'
 
 const accStore = useAccount()
 const userInfo = computed(() => accStore.userInfo)
+const superAuth = computed(() => accStore.superAuth)
 provide('userInfo', userInfo)
+provide('superAuth', superAuth)
 
 const comStore = useCompany()
 const company = computed(() => comStore.company?.pk)
