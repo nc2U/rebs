@@ -19,8 +19,8 @@ const work_project = {
 const work_admin = {
   component: 'CNavItem',
   name: '설 정 관 리',
-  to: '/admin',
-  icon: 'cil-settings',
+  to: '/settings',
+  icon: 'cil-code',
 }
 
 const company_cash = {
