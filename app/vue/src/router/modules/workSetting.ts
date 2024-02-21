@@ -1,6 +1,6 @@
 import { h, resolveComponent } from 'vue'
 
-const workManage = {
+const workSetting = {
   path: 'admin',
   name: '설 정 관 리',
   redirect: '/admin/projects',
@@ -79,4 +79,4 @@ const workManage = {
   ],
 }
 
-export default workManage
+export default workSetting

@@ -9,7 +9,7 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue'
 
 /* Router Modules */
 import workProject from '@/router/modules/workProject'
-import workManage from '@/router/modules/workManage'
+import workSetting from '@/router/modules/workSetting'
 import contracts from '@/router/modules/contracts'
 import payments from '@/router/modules/payments'
 import notices from '@/router/modules/notices'
@@ -65,7 +65,7 @@ const routes: Array<RouteRecordRaw> = [
         ],
       },
       workProject,
-      workManage,
+      workSetting,
       contracts,
       payments,
       notices,
