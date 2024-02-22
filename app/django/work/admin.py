@@ -1,8 +1,8 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
-from .models import (TaskProject, Role, Permission, Tracker, Module, Version,
-                     TaskCategory, Repository, Status, Workflow, CodeActivity,
-                     CodeIssuePriority, CodeDocsCategory, Issue, IssueFile, IssueComment, SpentTime)
+from .models import (TaskProject, Role, Permission, Tracker, Module, Version, TaskCategory,
+                     Repository, Status, Workflow, CodeActivity, CodeIssuePriority,
+                     CodeDocsCategory, Issue, IssueFile, IssueComment, SpentTime)
 
 
 @admin.register(TaskProject)
@@ -47,7 +47,7 @@ class RepositoryAdmin(ImportExportMixin, admin.ModelAdmin):
 
 @admin.register(Status)
 class TaskStatusAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
+    list_display = ('name', 'closed')
 
 
 @admin.register(Workflow)
@@ -57,17 +57,17 @@ class WorkflowAdmin(ImportExportMixin, admin.ModelAdmin):
 
 @admin.register(CodeActivity)
 class CodeActivityAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
+    list_display = ('name', 'default', 'active')
 
 
 @admin.register(CodeIssuePriority)
 class CodeIssuePriorityAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
+    list_display = ('name', 'default', 'active')
 
 
 @admin.register(CodeDocsCategory)
 class CodeDocsCategoryAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
+    list_display = ('name', 'default', 'active')
 
 
 class IssueFileInline(admin.TabularInline):

@@ -32,13 +32,15 @@ class TaskProject(models.Model):
 
 class Role(models.Model):
     name = models.CharField('이름', max_length=20)
-    can_task_assign = models.BooleanField('작업 위탁 가능', default=True)
-    TASK_VIEW_PERM = (('ALL', '모든 작업'), ('PUB', '비공개 작업 제외'), ('PRI', '직접 생성 또는 담당한 작업'))
-    task_visible = models.CharField('작업 가시성', max_length=3, choices=TASK_VIEW_PERM, default='PUB')
+    can_task_assign = models.BooleanField('업무 위탁 가능', default=True)
+    TASK_VIEW_PERM = (('ALL', '모든 업무'), ('PUB', '비공개 업무 제외'), ('PRI', '직접 생성 또는 담당한 업무'))
+    task_visible = models.CharField('업무 가시성', max_length=3, choices=TASK_VIEW_PERM, default='PUB')
     TIME_VIEW_PERM = (('ALL', '모든 시간기록'), ('PRI', '직접 생성한 시간기록'))
     time_log_visible = models.CharField('시간기록 가시성', max_length=3, choices=TIME_VIEW_PERM, default='ALL')
     USER_VIEW_PERM = (('ALL', '모든 활성 사용자'), ('PRJ', '보이는 프로젝트 사용자'))
-    user_visible = models.CharField('시간기록 가시성', max_length=3, choices=TIME_VIEW_PERM, default='ALL')
+    user_visible = models.CharField('사용자 가시성', max_length=3, choices=USER_VIEW_PERM, default='ALL')
+    default_time_activity = models.ForeignKey('CodeActivity', on_delete=models.SET_NULL, null=True, blank=True,
+                                              verbose_name='기본 활동')
     order = models.PositiveSmallIntegerField('정렬', default=1)
     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='사용자')
     created = models.DateTimeField('생성일시', auto_now_add=True)
@@ -47,13 +49,14 @@ class Role(models.Model):
         return self.name
 
     class Meta:
-        ordering = ('order', '-created',)
+        ordering = ('order', 'created',)
         verbose_name = '02. 역할 및 권한'
         verbose_name_plural = '02. 역할 및 권한'
 
 
 class Permission(models.Model):
     role = models.OneToOneField(Role, on_delete=models.CASCADE)
+    # 프로젝트
     project_create = models.BooleanField('프로젝트 생성', default=False)
     project_update = models.BooleanField('프로젝트 편집', default=False)
     project_close = models.BooleanField('프로젝트 닫기/열기', default=False)
@@ -65,70 +68,69 @@ class Permission(models.Model):
     project_create_sub = models.BooleanField('하위 프로젝트 생성', default=False)
     project_pub_query = models.BooleanField('공용 검색양식 관리', default=False)
     project_save_query = models.BooleanField('검색양식 저장', default=True)
-
+    # 게시판
     forum_read = models.BooleanField('게시물 보기', default=True)
-    forum_create = models.BooleanField('게시물 생성', default=True)
+    forum_create = models.BooleanField('게시물 추가', default=True)
     forum_update = models.BooleanField('게시물 편집', default=False)
-    forum_own_update = models.BooleanField('내 게시물 편집', default=False)
+    forum_own_update = models.BooleanField('내 게시물 편집', default=True)
     forum_delete = models.BooleanField('게시물 삭제', default=False)
     forum_own_delete = models.BooleanField('내 게시물 삭제', default=False)
     forum_watcher_read = models.BooleanField('게시물 관람자 보기', default=False)
     forum_watcher_create = models.BooleanField('게시물 관람자 추가', default=False)
     forum_watcher_delete = models.BooleanField('게시물 관람자 삭제', default=False)
     forum_manage = models.BooleanField('게시판 관리', default=False)
-    forum_manage = models.BooleanField('게시판 관리', default=False)
-    forum_manage = models.BooleanField('게시판 관리', default=False)
-
+    # 달력
     calendar_read = models.BooleanField('달력 보기', default=True)
-
+    # 문서
     document_read = models.BooleanField('문서 보기', default=True)
-    document_create = models.BooleanField('문서 생성', default=True)
-    document_update = models.BooleanField('문서 편집', default=True)
-    document_delete = models.BooleanField('문서 삭제', default=True)
-
+    document_create = models.BooleanField('문서 추가', default=False)
+    document_update = models.BooleanField('문서 편집', default=False)
+    document_delete = models.BooleanField('문서 삭제', default=False)
+    # 파일
     file_read = models.BooleanField('파일 보기', default=True)
     file_manage = models.BooleanField('파일 관리', default=False)
-
+    # 간트차트
     gantt_read = models.BooleanField('간트 차트 보기', default=True)
-
-    task_read = models.BooleanField('작업 보기', default=True)
-    task_create = models.BooleanField('작업 생성', default=True)
-    task_update = models.BooleanField('작업 편집', default=False)
-    task_own_update = models.BooleanField('내 작업 편집', default=False)
-    task_copy = models.BooleanField('작업 복사', default=False)
-    task_rel_manage = models.BooleanField('작업 관계 관리', default=False)
-    task_sub_manage = models.BooleanField('하위 작업 관리', default=False)
-    task_public = models.BooleanField('작업 공개/비공개 설정', default=False)
+    # 업무
+    task_read = models.BooleanField('업무 보기', default=True)
+    task_create = models.BooleanField('업무 추가', default=True)
+    task_update = models.BooleanField('업무 편집', default=False)
+    task_own_update = models.BooleanField('내 업무 편집', default=True)
+    task_copy = models.BooleanField('업무 복사', default=True)
+    task_rel_manage = models.BooleanField('업무 관계 관리', default=True)
+    task_sub_manage = models.BooleanField('하위 업무 관리', default=True)
+    task_public = models.BooleanField('업무 공개/비공개 설정', default=False)
+    task_own_public = models.BooleanField('내 업무 공개/비공개 설정', default=True)
     task_comment_create = models.BooleanField('댓글 추가', default=True)
     task_comment_update = models.BooleanField('댓글 편집', default=False)
-    task_comment_own_update = models.BooleanField('내 댓글 편집', default=False)
+    task_comment_own_update = models.BooleanField('내 댓글 편집', default=True)
     task_private_comment_read = models.BooleanField('비공개 댓글 보기', default=False)
     task_private_comment_set = models.BooleanField('댓글 비공개로 설정', default=False)
-    task_delete = models.BooleanField('작업 삭제', default=False)
-    task_watcher_read = models.BooleanField('작업 관람자 보기', default=False)
-    task_watcher_create = models.BooleanField('작업 관람자 추가', default=False)
-    task_watcher_delete = models.BooleanField('작업 관람자 삭제', default=False)
-    task_import = models.BooleanField('작업 가져오기', default=False)
-    task_category_manage = models.BooleanField('작업 범주 관리', default=False)
-
-    news_read = models.BooleanField('뉴스 보기', default=True)
-    news_manage = models.BooleanField('뉴스 관리', default=False)
-    news_comment = models.BooleanField('댓글 달기', default=True)
-
-    repo_changesets_read = models.BooleanField('변경 묶음 보기', default=True)
-    repo_read = models.BooleanField('저장소 보기', default=True)
+    task_delete = models.BooleanField('업무 삭제', default=False)
+    task_watcher_read = models.BooleanField('업무 관람자 보기', default=False)
+    task_watcher_create = models.BooleanField('업무 관람자 추가', default=False)
+    task_watcher_delete = models.BooleanField('업무 관람자 삭제', default=False)
+    task_import = models.BooleanField('업무 가져오기', default=False)
+    task_category_manage = models.BooleanField('업무 범주 관리', default=False)
+    # 공지(뉴스)
+    news_read = models.BooleanField('공지 보기', default=True)
+    news_manage = models.BooleanField('공지 관리', default=False)
+    news_comment = models.BooleanField('공지 댓글 달기', default=True)
+    # 저장소(레파지토리)
+    repo_changesets_read = models.BooleanField('변경 묶음 보기', default=False)
+    repo_read = models.BooleanField('저장소 보기', default=False)
     repo_commit_access = models.BooleanField('변경 로그 보기', default=False)
-    repo_rel_task_manage = models.BooleanField('연관 작업 관리', default=False)
+    repo_rel_task_manage = models.BooleanField('연결된 업무 관리', default=False)
     repo_manage = models.BooleanField('저장소 관리', default=False)
-
+    # 시간추적
     time_read = models.BooleanField('시간 입력 보기', default=True)
-    time_create = models.BooleanField('작업 시간 기록', default=False)
+    time_create = models.BooleanField('작업 시간 기록', default=True)
     time_update = models.BooleanField('시간 입력 편집', default=False)
-    time_own_update = models.BooleanField('내 시간 입력 편집', default=False)
+    time_own_update = models.BooleanField('내 시간 입력 편집', default=True)
     time_pro_act_manage = models.BooleanField('프로젝트 작업내역 관리', default=False)
     time_other_user_log = models.BooleanField('다른 사용자 소요시간 입력', default=False)
     time_entries_import = models.BooleanField('소요시간 가져오기', default=False)
-
+    # 위키
     wiki_read = models.BooleanField('위키 보기', default=True)
     wiki_history_read = models.BooleanField('위키 기록 보기', default=True)
     wiki_page_export = models.BooleanField('위키 페이지 내보내기', default=False)
@@ -147,11 +149,11 @@ class Permission(models.Model):
 
 
 class Tracker(models.Model):
-    project = models.ForeignKey(TaskProject, on_delete=models.CASCADE, related_name='프로젝트')
     name = models.CharField('이름', max_length=100)
     default_status = models.ForeignKey('Status', on_delete=models.PROTECT, verbose_name='초기 상태')
     displayed = models.BooleanField('로드맵에 표시', default=True)
     desc = models.CharField('설명', max_length=255, blank=True, default='')
+    projects = models.ManyToManyField(TaskProject, blank=True, verbose_name='프로젝트')
     order = models.PositiveSmallIntegerField('정렬', default=1)
     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='사용자')
     created = models.DateTimeField('생성일시', auto_now_add=True)
@@ -160,7 +162,7 @@ class Tracker(models.Model):
         return self.name
 
     class Meta:
-        ordering = ('order', '-created',)
+        ordering = ('order', 'created')
         verbose_name = '03. 업무 유형'
         verbose_name_plural = '03. 업무 유형'
 
@@ -190,6 +192,7 @@ class Version(models.Model):
     project = models.ForeignKey(TaskProject, on_delete=models.CASCADE, verbose_name='프로젝트')
     name = models.CharField('이름', max_length=20)
     desc = models.CharField('설명', max_length=255, blank=True, default='')
+    status = models.CharField('상태', max_length=1, choices=(('1', '진행'), ('2', '잠김'), ('3', '닫힘')), default='1')
     wiki_page = models.CharField('위키 페이지', max_length=255, blank=True, null=True)
     release_date = models.DateField(verbose_name='출시일')
     SHARE_CHOICES = (
@@ -227,7 +230,7 @@ class Repository(models.Model):
     is_default = models.BooleanField('주저장소', default=True)
     identifier = models.CharField('식별자', max_length=20, unique=True, blank=True, null=True,
                                   help_text='1 에서 255 글자 소문자(a-z),숫자,대쉬(-)와 밑줄(_)만 가능합니다. 식별자는 저장후에는 수정할 수 없습니다.')
-    path = models.CharField('저장소 경로', max_length=255, help_text='로컬의 bare 저장소 (예: /gitrepo, c:\gitrepo)')
+    path = models.CharField('저장소 경로', max_length=255, help_text='로컬의 bare 저장소 (예: //gitrepo, c:\\gitrepo)')
     path_encoding = models.CharField('경로 인코딩', max_length=20, default='UTF-8', help_text='기본: UTF-8')
     is_report = models.BooleanField('파일이나 폴더의 마지막 커밋을 보고', default=False)
 
@@ -251,7 +254,7 @@ class Status(models.Model):
         return self.name
 
     class Meta:
-        ordering = ('order', '-created',)
+        ordering = ('order', 'created',)
         verbose_name = '08. 업무 상태'
         verbose_name_plural = '08. 업무 상태'
 
@@ -283,7 +286,7 @@ class CodeActivity(models.Model):
         return self.name
 
     class Meta:
-        ordering = ('order', '-created',)
+        ordering = ('order', 'created',)
         verbose_name = '10. 작업분류(시간추적)'
         verbose_name_plural = '10. 작업분류(시간추적)'
 
@@ -300,7 +303,7 @@ class CodeIssuePriority(models.Model):
         return self.name
 
     class Meta:
-        ordering = ('order', '-created',)
+        ordering = ('order', 'created',)
         verbose_name = '11. 업무 우선순위'
         verbose_name_plural = '11. 업무 우선순위'
 
@@ -317,7 +320,7 @@ class CodeDocsCategory(models.Model):
         return self.name
 
     class Meta:
-        ordering = ('order', '-created',)
+        ordering = ('order', 'created',)
         verbose_name = '12. 문서 범주'
         verbose_name_plural = '12. 문서 범주'
 
