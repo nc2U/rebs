@@ -8,7 +8,7 @@ from project.models import Project
 
 
 class TaskProject(models.Model):
-    company = models.ForeignKey('company.Company', on_delete=models.CASCADE)
+    company = models.ForeignKey('company.Company', on_delete=models.CASCADE, verbose_name="회사")
     name = models.CharField('이름', max_length=100)
     desc = models.TextField('설명', blank=True, default='')
     identifier = models.CharField('식별자', max_length=20, unique=True,
@@ -110,13 +110,13 @@ class Member(models.Model):
 
 class Role(models.Model):
     name = models.CharField('이름', max_length=20)
-    can_task_assign = models.BooleanField('업무 위탁 가능', default=True)
+    can_task_assign = models.BooleanField('업무 위탁 권한', default=True)
     TASK_VIEW_PERM = (('ALL', '모든 업무'), ('PUB', '비공개 업무 제외'), ('PRI', '직접 생성 또는 담당한 업무'))
-    task_visible = models.CharField('업무 가시성', max_length=3, choices=TASK_VIEW_PERM, default='PUB')
+    task_visible = models.CharField('업무 보기 권한', max_length=3, choices=TASK_VIEW_PERM, default='PUB')
     TIME_VIEW_PERM = (('ALL', '모든 시간기록'), ('PRI', '직접 생성한 시간기록'))
-    time_log_visible = models.CharField('시간기록 가시성', max_length=3, choices=TIME_VIEW_PERM, default='ALL')
+    time_log_visible = models.CharField('시간기록 보기 권한', max_length=3, choices=TIME_VIEW_PERM, default='ALL')
     USER_VIEW_PERM = (('ALL', '모든 활성 사용자'), ('PRJ', '보이는 프로젝트 사용자'))
-    user_visible = models.CharField('사용자 가시성', max_length=3, choices=USER_VIEW_PERM, default='ALL')
+    user_visible = models.CharField('사용자 보기 권한', max_length=3, choices=USER_VIEW_PERM, default='ALL')
     default_time_activity = models.ForeignKey('CodeActivity', on_delete=models.SET_NULL, null=True, blank=True,
                                               verbose_name='기본 활동')
     order = models.PositiveSmallIntegerField('정렬', default=1)
