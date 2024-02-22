@@ -1,12 +1,38 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
-from .models import (TaskProject, Role, Permission, Tracker, Module, Version,
-                     TaskCategory, Repository, Status, Workflow, CodeActivity,
-                     CodeIssuePriority, CodeDocsCategory, Issue, IssueFile, IssueComment, SpentTime)
+from .models import (TaskProject, Member, Role, Permission, Tracker, Module, Version, TaskCategory,
+                     Repository, Status, Workflow, CodeActivity, CodeIssuePriority,
+                     CodeDocsCategory, Issue, IssueFile, IssueComment, SpentTime)
+
+
+class ModuleInline(admin.TabularInline):
+    model = Module
+    extra = 1
+
+
+class VersionInline(admin.TabularInline):
+    model = Version
+    extra = 1
+
+
+class TaskCategoryInline(admin.TabularInline):
+    model = TaskCategory
+    extra = 1
+
+
+class RepositoryInline(admin.TabularInline):
+    model = Repository
+    extra = 1
 
 
 @admin.register(TaskProject)
 class TaskProjectAdmin(ImportExportMixin, admin.ModelAdmin):
+    inlines = (ModuleInline, VersionInline,
+               TaskCategoryInline, RepositoryInline)
+
+
+@admin.register(Member)
+class MemberAdmin(ImportExportMixin, admin.ModelAdmin):
     pass
 
 
@@ -25,29 +51,9 @@ class TaskTrackerAdmin(ImportExportMixin, admin.ModelAdmin):
     pass
 
 
-@admin.register(Module)
-class ModuleAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
-
-
-@admin.register(Version)
-class VersionAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
-
-
-@admin.register(TaskCategory)
-class TaskCategoryAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
-
-
-@admin.register(Repository)
-class RepositoryAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
-
-
 @admin.register(Status)
 class TaskStatusAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
+    list_display = ('name', 'closed')
 
 
 @admin.register(Workflow)
@@ -57,17 +63,17 @@ class WorkflowAdmin(ImportExportMixin, admin.ModelAdmin):
 
 @admin.register(CodeActivity)
 class CodeActivityAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
+    list_display = ('name', 'default', 'active')
 
 
 @admin.register(CodeIssuePriority)
 class CodeIssuePriorityAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
+    list_display = ('name', 'default', 'active')
 
 
 @admin.register(CodeDocsCategory)
 class CodeDocsCategoryAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
+    list_display = ('name', 'default', 'active')
 
 
 class IssueFileInline(admin.TabularInline):
@@ -80,11 +86,11 @@ class IssueCommentInline(admin.TabularInline):
     extra = 1
 
 
+class SpentTimeInline(admin.TabularInline):
+    model = SpentTime
+    extra = 1
+
+
 @admin.register(Issue)
 class IssueAdmin(admin.ModelAdmin):
-    inlines = (IssueFileInline, IssueCommentInline)
-
-
-@admin.register(SpentTime)
-class SpentTimeAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
+    inlines = (IssueFileInline, IssueCommentInline, SpentTimeInline)

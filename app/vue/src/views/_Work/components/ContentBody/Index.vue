@@ -92,7 +92,7 @@ defineExpose({ toggle })
 }
 
 .dark-theme .main {
-  background: #151620;
+  background: #1c1d26;
   border-right: 1px solid #333 !important;
 }
 

@@ -47,8 +47,8 @@ class Project(models.Model):
 
     class Meta:
         ordering = ['order', '-start_year', 'id']
-        verbose_name = '01. 프로젝트'
-        verbose_name_plural = '01. 프로젝트'
+        verbose_name = '01. 프로젝트(현장)'
+        verbose_name_plural = '01. 프로젝트(현장)'
 
 
 class ProjectIncBudget(models.Model):
@@ -71,8 +71,8 @@ class ProjectIncBudget(models.Model):
 
     class Meta:
         ordering = ('id', '-project')
-        verbose_name = '02. 프로젝트 수입예산'
-        verbose_name_plural = '02. 프로젝트 수입예산'
+        verbose_name = '02. 현장 수입예산'
+        verbose_name_plural = '02. 현장 수입예산'
 
 
 class ProjectOutBudget(models.Model):
@@ -91,8 +91,8 @@ class ProjectOutBudget(models.Model):
 
     class Meta:
         ordering = ('order', 'id', '-project')
-        verbose_name = '03. 프로젝트 지출예산'
-        verbose_name_plural = '03. 프로젝트 지출예산'
+        verbose_name = '03. 현장 지출예산'
+        verbose_name_plural = '03. 현장 지출예산'
 
 
 class Site(models.Model):

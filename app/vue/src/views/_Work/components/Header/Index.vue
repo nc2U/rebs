@@ -16,7 +16,7 @@ defineProps({
 
 const isDark = computed(() => useStore().theme === 'dark')
 const backGround = computed(() =>
-  isDark.value ? 'bg-blue-grey-darken-5' : 'bg-blue-grey-lighten-4',
+  isDark.value ? 'bg-blue-grey-darken-5' : 'bg-blue-grey-lighten-3',
 )
 
 const emit = defineEmits(['side-nav-call'])
