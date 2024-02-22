@@ -5096,5 +5096,500 @@
       "saying_en": "When you have exhausted all possibilities, remember this: you haven't.",
       "spoked_by": "토머스 에디슨"
     }
+  },
+  {
+    "model": "work.role",
+    "pk": 1,
+    "fields": {
+      "name": "관리자",
+      "can_task_assign": true,
+      "task_visible": "ALL",
+      "time_log_visible": "ALL",
+      "user_visible": "ALL",
+      "default_time_activity": null,
+      "order": 1,
+      "user": 1
+    }
+  },
+  {
+    "model": "work.role",
+    "pk": 2,
+    "fields": {
+      "name": "개발자",
+      "can_task_assign": true,
+      "task_visible": "PUB",
+      "time_log_visible": "ALL",
+      "user_visible": "ALL",
+      "default_time_activity": null,
+      "order": 1,
+      "user": 1
+    }
+  },
+  {
+    "model": "work.role",
+    "pk": 3,
+    "fields": {
+      "name": "보고자",
+      "can_task_assign": true,
+      "task_visible": "PUB",
+      "time_log_visible": "ALL",
+      "user_visible": "ALL",
+      "default_time_activity": null,
+      "order": 1,
+      "user": 1
+    }
+  },
+  {
+    "model": "work.permission",
+    "pk": 1,
+    "fields": {
+      "role": 1,
+      "project_create": true,
+      "project_update": true,
+      "project_close": true,
+      "project_delete": true,
+      "project_public": true,
+      "project_module": true,
+      "project_member": true,
+      "project_version": true,
+      "project_create_sub": true,
+      "project_pub_query": true,
+      "project_save_query": true,
+      "forum_read": true,
+      "forum_create": true,
+      "forum_update": true,
+      "forum_own_update": true,
+      "forum_delete": true,
+      "forum_own_delete": true,
+      "forum_watcher_read": true,
+      "forum_watcher_create": true,
+      "forum_watcher_delete": true,
+      "forum_manage": true,
+      "calendar_read": true,
+      "document_read": true,
+      "document_create": true,
+      "document_update": true,
+      "document_delete": true,
+      "file_read": true,
+      "file_manage": true,
+      "gantt_read": true,
+      "task_read": true,
+      "task_create": true,
+      "task_update": true,
+      "task_own_update": true,
+      "task_copy": true,
+      "task_rel_manage": true,
+      "task_sub_manage": true,
+      "task_public": true,
+      "task_own_public": true,
+      "task_comment_create": true,
+      "task_comment_update": true,
+      "task_comment_own_update": true,
+      "task_private_comment_read": true,
+      "task_private_comment_set": true,
+      "task_delete": true,
+      "task_watcher_read": true,
+      "task_watcher_create": true,
+      "task_watcher_delete": true,
+      "task_import": true,
+      "task_category_manage": true,
+      "news_read": true,
+      "news_manage": true,
+      "news_comment": true,
+      "repo_changesets_read": true,
+      "repo_read": true,
+      "repo_commit_access": true,
+      "repo_rel_task_manage": true,
+      "repo_manage": true,
+      "time_read": true,
+      "time_create": true,
+      "time_update": true,
+      "time_own_update": true,
+      "time_pro_act_manage": true,
+      "time_other_user_log": true,
+      "time_entries_import": true,
+      "wiki_read": true,
+      "wiki_history_read": true,
+      "wiki_page_export": true,
+      "wiki_page_update": true,
+      "wiki_page_rename": true,
+      "wiki_page_delete": true,
+      "wiki_attachment_delete": true,
+      "wiki_watcher_read": true,
+      "wiki_watcher_create": true,
+      "wiki_watcher_delete": true,
+      "wiki_page_project": true,
+      "wiki_manage": true
+    }
+  },
+  {
+    "model": "work.permission",
+    "pk": 2,
+    "fields": {
+      "role": 2,
+      "project_create": false,
+      "project_update": false,
+      "project_close": false,
+      "project_delete": false,
+      "project_public": false,
+      "project_module": false,
+      "project_member": false,
+      "project_version": true,
+      "project_create_sub": false,
+      "project_pub_query": false,
+      "project_save_query": true,
+      "forum_read": true,
+      "forum_create": true,
+      "forum_update": false,
+      "forum_own_update": true,
+      "forum_delete": false,
+      "forum_own_delete": false,
+      "forum_watcher_read": false,
+      "forum_watcher_create": false,
+      "forum_watcher_delete": false,
+      "forum_manage": false,
+      "calendar_read": true,
+      "document_read": true,
+      "document_create": false,
+      "document_update": false,
+      "document_delete": false,
+      "file_read": true,
+      "file_manage": true,
+      "gantt_read": true,
+      "task_read": true,
+      "task_create": true,
+      "task_update": false,
+      "task_own_update": true,
+      "task_copy": false,
+      "task_rel_manage": true,
+      "task_sub_manage": true,
+      "task_public": false,
+      "task_own_public": true,
+      "task_comment_create": true,
+      "task_comment_update": false,
+      "task_comment_own_update": true,
+      "task_private_comment_read": false,
+      "task_private_comment_set": false,
+      "task_delete": false,
+      "task_watcher_read": false,
+      "task_watcher_create": false,
+      "task_watcher_delete": false,
+      "task_import": false,
+      "task_category_manage": false,
+      "news_read": true,
+      "news_manage": false,
+      "news_comment": true,
+      "repo_changesets_read": true,
+      "repo_read": true,
+      "repo_commit_access": true,
+      "repo_rel_task_manage": true,
+      "repo_manage": false,
+      "time_read": true,
+      "time_create": true,
+      "time_update": false,
+      "time_own_update": true,
+      "time_pro_act_manage": false,
+      "time_other_user_log": false,
+      "time_entries_import": false,
+      "wiki_read": true,
+      "wiki_history_read": true,
+      "wiki_page_export": false,
+      "wiki_page_update": true,
+      "wiki_page_rename": false,
+      "wiki_page_delete": true,
+      "wiki_attachment_delete": false,
+      "wiki_watcher_read": false,
+      "wiki_watcher_create": false,
+      "wiki_watcher_delete": false,
+      "wiki_page_project": false,
+      "wiki_manage": false
+    }
+  },
+  {
+    "model": "work.permission",
+    "pk": 3,
+    "fields": {
+      "role": 3,
+      "project_create": false,
+      "project_update": false,
+      "project_close": false,
+      "project_delete": false,
+      "project_public": false,
+      "project_module": false,
+      "project_member": false,
+      "project_version": false,
+      "project_create_sub": false,
+      "project_pub_query": false,
+      "project_save_query": true,
+      "forum_read": true,
+      "forum_create": true,
+      "forum_update": false,
+      "forum_own_update": true,
+      "forum_delete": false,
+      "forum_own_delete": false,
+      "forum_watcher_read": false,
+      "forum_watcher_create": false,
+      "forum_watcher_delete": false,
+      "forum_manage": false,
+      "calendar_read": true,
+      "document_read": true,
+      "document_create": false,
+      "document_update": false,
+      "document_delete": false,
+      "file_read": true,
+      "file_manage": false,
+      "gantt_read": true,
+      "task_read": true,
+      "task_create": true,
+      "task_update": false,
+      "task_own_update": true,
+      "task_copy": false,
+      "task_rel_manage": false,
+      "task_sub_manage": false,
+      "task_public": false,
+      "task_own_public": false,
+      "task_comment_create": true,
+      "task_comment_update": false,
+      "task_comment_own_update": true,
+      "task_private_comment_read": false,
+      "task_private_comment_set": false,
+      "task_delete": false,
+      "task_watcher_read": false,
+      "task_watcher_create": false,
+      "task_watcher_delete": false,
+      "task_import": false,
+      "task_category_manage": false,
+      "news_read": true,
+      "news_manage": false,
+      "news_comment": true,
+      "repo_changesets_read": true,
+      "repo_read": true,
+      "repo_commit_access": false,
+      "repo_rel_task_manage": false,
+      "repo_manage": false,
+      "time_read": true,
+      "time_create": true,
+      "time_update": false,
+      "time_own_update": true,
+      "time_pro_act_manage": false,
+      "time_other_user_log": false,
+      "time_entries_import": false,
+      "wiki_read": true,
+      "wiki_history_read": true,
+      "wiki_page_export": false,
+      "wiki_page_update": false,
+      "wiki_page_rename": false,
+      "wiki_page_delete": false,
+      "wiki_attachment_delete": false,
+      "wiki_watcher_read": false,
+      "wiki_watcher_create": false,
+      "wiki_watcher_delete": false,
+      "wiki_page_project": false,
+      "wiki_manage": false
+    }
+  },
+  {
+    "model": "work.tracker",
+    "pk": 1,
+    "fields": {
+      "name": "결함",
+      "default_status": 1,
+      "displayed": true,
+      "desc": "",
+      "order": 1,
+      "user": 1,
+      "projects": []
+    }
+  },
+  {
+    "model": "work.tracker",
+    "pk": 2,
+    "fields": {
+      "name": "기능",
+      "default_status": 1,
+      "displayed": true,
+      "desc": "",
+      "order": 1,
+      "user": 1,
+      "projects": []
+    }
+  },
+  {
+    "model": "work.tracker",
+    "pk": 3,
+    "fields": {
+      "name": "지원",
+      "default_status": 1,
+      "displayed": true,
+      "desc": "",
+      "order": 1,
+      "user": 1,
+      "projects": []
+    }
+  },
+  {
+    "model": "work.status",
+    "pk": 1,
+    "fields": {
+      "name": "신규",
+      "desc": "",
+      "closed": false,
+      "order": 1,
+      "user": 1
+    }
+  },
+  {
+    "model": "work.status",
+    "pk": 2,
+    "fields": {
+      "name": "진행",
+      "desc": "",
+      "closed": false,
+      "order": 1,
+      "user": 1
+    }
+  },
+  {
+    "model": "work.status",
+    "pk": 3,
+    "fields": {
+      "name": "해결",
+      "desc": "",
+      "closed": false,
+      "order": 1,
+      "user": 1
+    }
+  },
+  {
+    "model": "work.status",
+    "pk": 4,
+    "fields": {
+      "name": "의견",
+      "desc": "",
+      "closed": false,
+      "order": 1,
+      "user": 1
+    }
+  },
+  {
+    "model": "work.status",
+    "pk": 5,
+    "fields": {
+      "name": "종료",
+      "desc": "",
+      "closed": true,
+      "order": 1,
+      "user": 1
+    }
+  },
+  {
+    "model": "work.status",
+    "pk": 6,
+    "fields": {
+      "name": "거절",
+      "desc": "",
+      "closed": true,
+      "order": 1,
+      "user": 1
+    }
+  },
+  {
+    "model": "work.codeactivity",
+    "pk": 1,
+    "fields": {
+      "name": "디자인",
+      "active": true,
+      "default": false,
+      "order": 1,
+      "user": 1
+    }
+  },
+  {
+    "model": "work.codeactivity",
+    "pk": 2,
+    "fields": {
+      "name": "개발",
+      "active": true,
+      "default": false,
+      "order": 1,
+      "user": 1
+    }
+  },
+  {
+    "model": "work.codeissuepriority",
+    "pk": 1,
+    "fields": {
+      "name": "낮음",
+      "active": true,
+      "default": false,
+      "order": 1,
+      "user": 1
+    }
+  },
+  {
+    "model": "work.codeissuepriority",
+    "pk": 2,
+    "fields": {
+      "name": "보통",
+      "active": true,
+      "default": true,
+      "order": 1,
+      "user": 1
+    }
+  },
+  {
+    "model": "work.codeissuepriority",
+    "pk": 3,
+    "fields": {
+      "name": "높음",
+      "active": true,
+      "default": false,
+      "order": 1,
+      "user": 1
+    }
+  },
+  {
+    "model": "work.codeissuepriority",
+    "pk": 4,
+    "fields": {
+      "name": "긴급",
+      "active": true,
+      "default": false,
+      "order": 1,
+      "user": 1
+    }
+  },
+  {
+    "model": "work.codeissuepriority",
+    "pk": 5,
+    "fields": {
+      "name": "즉시",
+      "active": true,
+      "default": false,
+      "order": 1,
+      "user": 1
+    }
+  },
+  {
+    "model": "work.codedocscategory",
+    "pk": 1,
+    "fields": {
+      "name": "사용자 문서",
+      "active": true,
+      "default": false,
+      "order": 1,
+      "user": 1
+    }
+  },
+  {
+    "model": "work.codedocscategory",
+    "pk": 2,
+    "fields": {
+      "name": "기술 문서",
+      "active": true,
+      "default": false,
+      "order": 1,
+      "user": 1
+    }
   }
 ]
