@@ -1,12 +1,27 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
-from .models import (TaskProject, Role, Permission, Tracker, Module, Version, TaskCategory,
+from .models import (TaskProject, Member, Role, Permission, Tracker, Module, Version, TaskCategory,
                      Repository, Status, Workflow, CodeActivity, CodeIssuePriority,
                      CodeDocsCategory, Issue, IssueFile, IssueComment, SpentTime)
 
 
+class ModuleInline(admin.TabularInline):
+    model = Module
+    extra = 1
+
+
+class TaskCategoryInline(admin.TabularInline):
+    model = TaskCategory
+    extra = 1
+
+
 @admin.register(TaskProject)
 class TaskProjectAdmin(ImportExportMixin, admin.ModelAdmin):
+    inlines = (ModuleInline, TaskCategoryInline)
+
+
+@admin.register(Member)
+class MemberAdmin(ImportExportMixin, admin.ModelAdmin):
     pass
 
 
@@ -25,18 +40,8 @@ class TaskTrackerAdmin(ImportExportMixin, admin.ModelAdmin):
     pass
 
 
-@admin.register(Module)
-class ModuleAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
-
-
 @admin.register(Version)
 class VersionAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
-
-
-@admin.register(TaskCategory)
-class TaskCategoryAdmin(ImportExportMixin, admin.ModelAdmin):
     pass
 
 
