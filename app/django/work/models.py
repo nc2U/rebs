@@ -25,8 +25,8 @@ class TaskProject(models.Model):
 
     class Meta:
         ordering = ('created',)
-        verbose_name = '01. 프로젝트'
-        verbose_name_plural = '01. 프로젝트'
+        verbose_name = '01. 프로젝트(업무)'
+        verbose_name_plural = '01. 프로젝트(업무)'
 
 
 class Module(models.Model):
