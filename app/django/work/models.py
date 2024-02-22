@@ -46,19 +46,6 @@ class Module(models.Model):
         return self.issue
 
 
-class Member(models.Model):
-    project = models.ForeignKey(TaskProject, on_delete=models.CASCADE, verbose_name='프로젝트')
-    member = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='구성원')
-    roles = models.ManyToManyField('Role', verbose_name='역할')
-
-    def __str__(self):
-        return self.member
-
-    class Meta:
-        verbose_name = '02. 구성원'
-        verbose_name_plural = '02. 구성원'
-
-
 class Version(models.Model):
     project = models.ForeignKey(TaskProject, on_delete=models.CASCADE, verbose_name='프로젝트')
     name = models.CharField('이름', max_length=20)
@@ -75,20 +62,32 @@ class Version(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = '03. 버전'
-        verbose_name_plural = '03. 버전'
+        ordering = ('id',)
 
 
 class TaskCategory(models.Model):
     project = models.ForeignKey(TaskProject, on_delete=models.CASCADE, verbose_name='프로젝트')
     name = models.CharField('범주', max_length=100)
-    assignee = models.ForeignKey(Member, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='담당자')
+    assignee = models.ForeignKey('Member', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='담당자')
 
     def __str__(self):
         return self.name
 
     class Meta:
         ordering = ('id',)
+
+
+class Member(models.Model):
+    project = models.ForeignKey(TaskProject, on_delete=models.CASCADE, verbose_name='프로젝트')
+    member = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='구성원')
+    roles = models.ManyToManyField('Role', verbose_name='역할')
+
+    def __str__(self):
+        return self.member
+
+    class Meta:
+        verbose_name = '02. 구성원'
+        verbose_name_plural = '02. 구성원'
 
 
 class Role(models.Model):
@@ -111,8 +110,8 @@ class Role(models.Model):
 
     class Meta:
         ordering = ('order', 'created',)
-        verbose_name = '04. 역할 및 권한'
-        verbose_name_plural = '04. 역할 및 권한'
+        verbose_name = '03. 역할 및 권한'
+        verbose_name_plural = '03. 역할 및 권한'
 
 
 class Permission(models.Model):
@@ -224,8 +223,8 @@ class Tracker(models.Model):
 
     class Meta:
         ordering = ('order', 'created')
-        verbose_name = '05. 업무 유형'
-        verbose_name_plural = '05. 업무 유형'
+        verbose_name = '04. 업무 유형'
+        verbose_name_plural = '04. 업무 유형'
 
 
 class Repository(models.Model):
@@ -243,8 +242,8 @@ class Repository(models.Model):
         return self.scm
 
     class Meta:
-        verbose_name = '06. 저장소'
-        verbose_name_plural = '06. 저장소'
+        verbose_name = '05. 저장소'
+        verbose_name_plural = '05. 저장소'
 
 
 class Status(models.Model):
@@ -260,8 +259,8 @@ class Status(models.Model):
 
     class Meta:
         ordering = ('order', 'created',)
-        verbose_name = '07. 업무 상태'
-        verbose_name_plural = '07. 업무 상태'
+        verbose_name = '06. 업무 상태'
+        verbose_name_plural = '06. 업무 상태'
 
 
 class Workflow(models.Model):
@@ -275,8 +274,8 @@ class Workflow(models.Model):
         return f'{self.role} - {self.tracker}'
 
     class Meta:
-        verbose_name = '08. 업무 흐름'
-        verbose_name_plural = '08. 업무 흐름'
+        verbose_name = '07. 업무 흐름'
+        verbose_name_plural = '07. 업무 흐름'
 
 
 class CodeActivity(models.Model):
@@ -292,8 +291,8 @@ class CodeActivity(models.Model):
 
     class Meta:
         ordering = ('order', 'created',)
-        verbose_name = '09. 작업분류(시간추적)'
-        verbose_name_plural = '09. 작업분류(시간추적)'
+        verbose_name = '08. 작업분류(시간추적)'
+        verbose_name_plural = '08. 작업분류(시간추적)'
 
 
 class CodeIssuePriority(models.Model):
@@ -309,8 +308,8 @@ class CodeIssuePriority(models.Model):
 
     class Meta:
         ordering = ('order', 'created',)
-        verbose_name = '10. 업무 우선순위'
-        verbose_name_plural = '10. 업무 우선순위'
+        verbose_name = '09. 업무 우선순위'
+        verbose_name_plural = '09. 업무 우선순위'
 
 
 class CodeDocsCategory(models.Model):
@@ -326,8 +325,8 @@ class CodeDocsCategory(models.Model):
 
     class Meta:
         ordering = ('order', 'created',)
-        verbose_name = '11. 문서 범주'
-        verbose_name_plural = '11. 문서 범주'
+        verbose_name = '10. 문서 범주'
+        verbose_name_plural = '10. 문서 범주'
 
 
 class Issue(models.Model):
@@ -360,8 +359,8 @@ class Issue(models.Model):
 
     class Meta:
         ordering = ('-created',)
-        verbose_name = '12. 업무(작업)'
-        verbose_name_plural = '12. 업무(작업)'
+        verbose_name = '11. 업무(작업)'
+        verbose_name_plural = '11. 업무(작업)'
 
 
 def get_file_name(filename):
@@ -413,5 +412,5 @@ class SpentTime(models.Model):
         return self.hours
 
     class Meta:
-        verbose_name = '13. 소요 시간'
-        verbose_name_plural = '13. 소요 시간'
+        verbose_name = '12. 소요 시간'
+        verbose_name_plural = '12. 소요 시간'

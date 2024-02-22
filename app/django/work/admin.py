@@ -10,6 +10,11 @@ class ModuleInline(admin.TabularInline):
     extra = 1
 
 
+class VersionInline(admin.TabularInline):
+    model = Version
+    extra = 1
+
+
 class TaskCategoryInline(admin.TabularInline):
     model = TaskCategory
     extra = 1
@@ -17,7 +22,7 @@ class TaskCategoryInline(admin.TabularInline):
 
 @admin.register(TaskProject)
 class TaskProjectAdmin(ImportExportMixin, admin.ModelAdmin):
-    inlines = (ModuleInline, TaskCategoryInline)
+    inlines = (ModuleInline, VersionInline, TaskCategoryInline)
 
 
 @admin.register(Member)
@@ -37,11 +42,6 @@ class RoleAdmin(ImportExportMixin, admin.ModelAdmin):
 
 @admin.register(Tracker)
 class TaskTrackerAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
-
-
-@admin.register(Version)
-class VersionAdmin(ImportExportMixin, admin.ModelAdmin):
     pass
 
 
