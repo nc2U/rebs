@@ -77,6 +77,24 @@ class TaskCategory(models.Model):
         ordering = ('id',)
 
 
+class Repository(models.Model):
+    project = models.ForeignKey(TaskProject, on_delete=models.CASCADE, verbose_name='프로젝트')
+    SCM_CHOICES = (('1', 'Git'),)
+    scm = models.CharField('종류', max_length=10, default='1')
+    is_default = models.BooleanField('주저장소', default=True)
+    identifier = models.CharField('식별자', max_length=20, unique=True, blank=True, null=True,
+                                  help_text='1 에서 255 글자 소문자(a-z),숫자,대쉬(-)와 밑줄(_)만 가능합니다. 식별자는 저장후에는 수정할 수 없습니다.')
+    path = models.CharField('저장소 경로', max_length=255, help_text='로컬의 bare 저장소 (예: //gitrepo, c:\\gitrepo)')
+    path_encoding = models.CharField('경로 인코딩', max_length=20, default='UTF-8', help_text='기본: UTF-8')
+    is_report = models.BooleanField('파일이나 폴더의 마지막 커밋을 보고', default=False)
+
+    def __str__(self):
+        return self.scm
+
+    class Meta:
+        ordering = ('id',)
+
+
 class Member(models.Model):
     project = models.ForeignKey(TaskProject, on_delete=models.CASCADE, verbose_name='프로젝트')
     member = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='구성원')
@@ -227,25 +245,6 @@ class Tracker(models.Model):
         verbose_name_plural = '04. 업무 유형'
 
 
-class Repository(models.Model):
-    project = models.ForeignKey(TaskProject, on_delete=models.CASCADE, verbose_name='프로젝트')
-    SCM_CHOICES = (('1', 'Git'),)
-    scm = models.CharField('종류', max_length=10, default='1')
-    is_default = models.BooleanField('주저장소', default=True)
-    identifier = models.CharField('식별자', max_length=20, unique=True, blank=True, null=True,
-                                  help_text='1 에서 255 글자 소문자(a-z),숫자,대쉬(-)와 밑줄(_)만 가능합니다. 식별자는 저장후에는 수정할 수 없습니다.')
-    path = models.CharField('저장소 경로', max_length=255, help_text='로컬의 bare 저장소 (예: //gitrepo, c:\\gitrepo)')
-    path_encoding = models.CharField('경로 인코딩', max_length=20, default='UTF-8', help_text='기본: UTF-8')
-    is_report = models.BooleanField('파일이나 폴더의 마지막 커밋을 보고', default=False)
-
-    def __str__(self):
-        return self.scm
-
-    class Meta:
-        verbose_name = '05. 저장소'
-        verbose_name_plural = '05. 저장소'
-
-
 class Status(models.Model):
     name = models.CharField('이름', max_length=20)
     desc = models.CharField('설명', max_length=255, blank=True, default='')
@@ -259,8 +258,8 @@ class Status(models.Model):
 
     class Meta:
         ordering = ('order', 'created',)
-        verbose_name = '06. 업무 상태'
-        verbose_name_plural = '06. 업무 상태'
+        verbose_name = '05. 업무 상태'
+        verbose_name_plural = '05. 업무 상태'
 
 
 class Workflow(models.Model):
@@ -274,8 +273,8 @@ class Workflow(models.Model):
         return f'{self.role} - {self.tracker}'
 
     class Meta:
-        verbose_name = '07. 업무 흐름'
-        verbose_name_plural = '07. 업무 흐름'
+        verbose_name = '06. 업무 흐름'
+        verbose_name_plural = '06. 업무 흐름'
 
 
 class CodeActivity(models.Model):
@@ -291,8 +290,8 @@ class CodeActivity(models.Model):
 
     class Meta:
         ordering = ('order', 'created',)
-        verbose_name = '08. 작업분류(시간추적)'
-        verbose_name_plural = '08. 작업분류(시간추적)'
+        verbose_name = '07. 작업분류(시간추적)'
+        verbose_name_plural = '07. 작업분류(시간추적)'
 
 
 class CodeIssuePriority(models.Model):
@@ -308,8 +307,8 @@ class CodeIssuePriority(models.Model):
 
     class Meta:
         ordering = ('order', 'created',)
-        verbose_name = '09. 업무 우선순위'
-        verbose_name_plural = '09. 업무 우선순위'
+        verbose_name = '08. 업무 우선순위'
+        verbose_name_plural = '08. 업무 우선순위'
 
 
 class CodeDocsCategory(models.Model):
@@ -325,8 +324,8 @@ class CodeDocsCategory(models.Model):
 
     class Meta:
         ordering = ('order', 'created',)
-        verbose_name = '10. 문서 범주'
-        verbose_name_plural = '10. 문서 범주'
+        verbose_name = '09. 문서 범주'
+        verbose_name_plural = '09. 문서 범주'
 
 
 class Issue(models.Model):
@@ -337,10 +336,11 @@ class Issue(models.Model):
     desc = models.TextField(verbose_name='설명', blank=True, default='')
     status = models.ForeignKey(Status, on_delete=models.PROTECT, verbose_name='상태')
     parent_task = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='상위업무')
-    category = models.ForeignKey(TaskCategory, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='카테고리')
     priority = models.ForeignKey(CodeIssuePriority, on_delete=models.PROTECT, verbose_name='우선순위')
     assignee = models.ForeignKey('accounts.User', on_delete=models.SET_NULL,
                                  null=True, blank=True, verbose_name='담당자', related_name='assignees')
+    category = models.ForeignKey(TaskCategory, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='범주')
+    version = models.ForeignKey(Version, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='버전')
     start_date = models.DateField('시작 일자', null=True, blank=True)
     due_date = models.DateField('완료 기한', null=True, blank=True)
     estimated_time = models.PositiveSmallIntegerField('추정 소요시간', null=True, blank=True)
@@ -359,8 +359,8 @@ class Issue(models.Model):
 
     class Meta:
         ordering = ('-created',)
-        verbose_name = '11. 업무(작업)'
-        verbose_name_plural = '11. 업무(작업)'
+        verbose_name = '10. 업무(작업)'
+        verbose_name_plural = '10. 업무(작업)'
 
 
 def get_file_name(filename):
@@ -400,17 +400,15 @@ class IssueComment(models.Model):
 
 
 class SpentTime(models.Model):
-    project = models.ForeignKey(TaskProject, on_delete=models.CASCADE, verbose_name='프로젝트')
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, verbose_name='업무')
+    user = models.ForeignKey('accounts.User', on_delete=models.CASCADE, verbose_name='사용자')
     date = models.DateField(verbose_name='작업일자')
     hours = models.DecimalField(max_digits=5, decimal_places=2)
-    comment = models.CharField(max_length=255, blank=True, default='')
+    comment = models.CharField('설명', max_length=255, blank=True, default='')
     activity = models.ForeignKey(CodeActivity, on_delete=models.PROTECT, verbose_name='작업분류(시간추적)')
-    user = models.ForeignKey('accounts.User', on_delete=models.CASCADE, verbose_name='사용자')
 
     def __str__(self):
         return self.hours
 
     class Meta:
-        verbose_name = '12. 소요 시간'
-        verbose_name_plural = '12. 소요 시간'
+        ordering = ('date',)

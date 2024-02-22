@@ -20,9 +20,15 @@ class TaskCategoryInline(admin.TabularInline):
     extra = 1
 
 
+class RepositoryInline(admin.TabularInline):
+    model = Repository
+    extra = 1
+
+
 @admin.register(TaskProject)
 class TaskProjectAdmin(ImportExportMixin, admin.ModelAdmin):
-    inlines = (ModuleInline, VersionInline, TaskCategoryInline)
+    inlines = (ModuleInline, VersionInline,
+               TaskCategoryInline, RepositoryInline)
 
 
 @admin.register(Member)
@@ -42,11 +48,6 @@ class RoleAdmin(ImportExportMixin, admin.ModelAdmin):
 
 @admin.register(Tracker)
 class TaskTrackerAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
-
-
-@admin.register(Repository)
-class RepositoryAdmin(ImportExportMixin, admin.ModelAdmin):
     pass
 
 
@@ -85,11 +86,11 @@ class IssueCommentInline(admin.TabularInline):
     extra = 1
 
 
+class SpentTimeInline(admin.TabularInline):
+    model = SpentTime
+    extra = 1
+
+
 @admin.register(Issue)
 class IssueAdmin(admin.ModelAdmin):
-    inlines = (IssueFileInline, IssueCommentInline)
-
-
-@admin.register(SpentTime)
-class SpentTimeAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
+    inlines = (IssueFileInline, IssueCommentInline, SpentTimeInline)
