@@ -17,8 +17,8 @@ const sideNavCAll = () => cBody.value.toggle()
   <Header :page-title="pageTitle" :nav-menu="navMenu" @side-nav-call="sideNavCAll" />
 
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query">
-    <template v-slot:default> Under Construction!</template>
+    <template v-slot:default></template>
 
-    <template v-slot:aside> Under Construction!</template>
+    <template v-slot:aside></template>
   </ContentBody>
 </template>

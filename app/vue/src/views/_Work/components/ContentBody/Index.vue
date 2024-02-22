@@ -24,11 +24,11 @@ defineExpose({ toggle })
 <template>
   <CRow class="flex-grow-1">
     <CCol md="9" class="text-body pl-5 p-3 main">
-      <slot></slot>
+      <slot> Under Construction!</slot>
     </CCol>
 
     <CCol class="text-body p-3 d-none d-md-block">
-      <slot name="aside"></slot>
+      <slot name="aside"> Under Construction!</slot>
     </CCol>
 
     <COffcanvas

@@ -12,7 +12,7 @@ const sideNavCAll = () => cBody.value.toggle()
   <Header :page-title="pageTitle" @side-nav-call="sideNavCAll" />
 
   <ContentBody ref="cBody" :query="$route?.query">
-    <template v-slot:default>a</template>
+    <template v-slot:default></template>
 
     <template v-slot:aside></template>
   </ContentBody>
