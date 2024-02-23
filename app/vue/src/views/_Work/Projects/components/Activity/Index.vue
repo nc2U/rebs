@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { pageTitle, navMenu } from '@/views/_Work/_menu/headermixin2'
+import { pageTitle, navMenu } from '@/views/_Work/_menu/headermixin1'
 import { useRoute } from 'vue-router'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
