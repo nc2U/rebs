@@ -1,11 +1,25 @@
-<script lang="ts" setup="">
+<script setup lang="ts">
+import { ref } from 'vue'
+import { pageTitle, navMenu1 } from '@/views/_Work/_menu/headermixin1'
 import { useRoute } from 'vue-router'
+import Header from '@/views/_Work/components/Header/Index.vue'
+import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
+
+const cBody = ref()
 
 const route = useRoute()
+
+const sideNavCAll = () => cBody.value.toggle()
 </script>
 
 <template>
-  <CRow>
-    <CCol>{{ route.name }}</CCol>
-  </CRow>
+  <Header :page-title="pageTitle" :nav-menu="navMenu1" @side-nav-call="sideNavCAll" />
+
+  <ContentBody ref="cBody" :nav-menu="navMenu1" :query="$route?.query">
+    <template v-slot:default>
+      {{ route.name }}
+    </template>
+
+    <template v-slot:aside></template>
+  </ContentBody>
 </template>
