@@ -37,6 +37,10 @@ const workProject = {
           name: '(작업내역)',
         },
         {
+          path: ':projId/roadmap',
+          name: '(로드맵)',
+        },
+        {
           path: ':projId/issue',
           name: '(업무)',
         },
@@ -65,8 +69,16 @@ const workProject = {
           name: '(위키)',
         },
         {
+          path: ':projId/forum',
+          name: '(게시판)',
+        },
+        {
           path: ':projId/file',
           name: '(파일)',
+        },
+        {
+          path: ':projId/repository',
+          name: '(저장소)',
         },
         {
           path: ':projId/setting',
