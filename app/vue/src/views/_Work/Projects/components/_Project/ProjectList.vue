@@ -13,6 +13,22 @@ const projectList = ref([
         name: '공급계약 95% 전환',
         desc: '도급계약 유효조건 (공급계약 95%) 달성하기',
         slug: 'cont-95',
+        child: [
+          {
+            pk: 5,
+            name: '그랜드 차일드 프로젝트 1111',
+            desc: '-------------------',
+            slug: 'cont-955',
+            child: [],
+          },
+        ],
+      },
+      {
+        pk: 4,
+        name: '착공하기',
+        desc: '도급계약 유효조건 (공급계약 95%) 달성하기',
+        slug: 'cont-96',
+        child: [],
       },
     ],
   },
@@ -21,6 +37,7 @@ const projectList = ref([
     name: 'Redmine clone 프로젝트',
     desc: 'Redmine clone 및 최적화 프로젝트',
     slug: 'redmine-clone',
+    child: [],
   },
 ])
 </script>
@@ -51,6 +68,42 @@ const projectList = ref([
             {{ proj.name }}
           </router-link>
           <p>{{ proj.desc }}</p>
+
+          <span v-if="!!proj.child?.length" class="child pb-0">
+            <blockquote v-for="child in proj.child" :key="child.pk" class="mb-0">
+              <router-link :to="{ name: '(개요)', params: { projId: child.slug } }">
+                {{ child.name }}
+              </router-link>
+              <p>{{ child.desc }}</p>
+
+              <span v-if="!!child?.child?.length" class="child pb-0">
+                <blockquote v-for="child1 in child.child" :key="child1.pk" class="mb-0">
+                  <router-link :to="{ name: '(개요)', params: { projId: child1.slug } }">
+                    {{ child1.name }}
+                  </router-link>
+                  <p>{{ child1.desc }}</p>
+
+                  <span v-if="!!child1?.child?.length" class="child pb-0">
+                    <blockquote v-for="child2 in child1.child" :key="child2.pk" class="mb-0">
+                      <router-link :to="{ name: '(개요)', params: { projId: child2.slug } }">
+                        {{ child2.name }}
+                      </router-link>
+                      <p>{{ child2.desc }}</p>
+
+                      <span v-if="!!child2?.child?.length" class="child pb-0">
+                        <blockquote v-for="child3 in child2.child" :key="child3.pk" class="mb-0">
+                          <router-link :to="{ name: '(개요)', params: { projId: child3.slug } }">
+                            {{ child3.name }}
+                          </router-link>
+                          <p>{{ child3.desc }}</p>
+                        </blockquote>
+                      </span>
+                    </blockquote>
+                  </span>
+                </blockquote>
+              </span>
+            </blockquote>
+          </span>
         </CCardBody>
       </CCard>
     </CCol>
@@ -70,5 +123,17 @@ h5 {
 
 .card p {
   font-size: 0.89em;
+}
+
+.card .child {
+  a {
+    font-size: 0.96em;
+    font-weight: normal;
+  }
+}
+
+.card blockquote {
+  padding-left: 12px;
+  border-left: 3px solid #ddd;
 }
 </style>
