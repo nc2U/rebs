@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { pageTitle, navMenu1, navMenu2 } from '@/views/_Work/_menu/headermixin1'
+import { useRoute } from 'vue-router'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
-import { useRoute } from 'vue-router'
+import ProjectList from '@/views/_Work/Projects/components/ProjectList.vue'
+import ProjectForm from '@/views/_Work/Projects/components/ProjectForm.vue'
 
 const cBody = ref()
 
@@ -18,9 +20,9 @@ const sideNavCAll = () => cBody.value.toggle()
 
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query">
     <template v-slot:default>
-      <router-link :to="{ name: '(개요)', params: { projId: 'dongchun' } }">
-        개별 프로젝트
-      </router-link>
+      <ProjectList v-if="route.name === '프로젝트'" />
+
+      <ProjectForm v-if="route.name === '프로젝트 - 생성'" />
     </template>
 
     <template v-slot:aside></template>

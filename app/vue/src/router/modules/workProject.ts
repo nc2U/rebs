@@ -17,6 +17,18 @@ const workProject = {
       component: () => import('@/views/_Work/Projects/Index.vue'),
       children: [
         {
+          path: 'create',
+          name: '프로젝트 - 생성',
+        },
+        {
+          path: ':projId/update',
+          name: '프로젝트 - 수정',
+        },
+        {
+          path: ':projId/delete',
+          name: '프로젝트 - 삭제',
+        },
+        {
           path: ':projId',
           name: '(개요)',
         },
