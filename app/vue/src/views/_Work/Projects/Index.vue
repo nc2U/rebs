@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, inject, ref } from 'vue'
-import { pageTitle, navMenu as navMenu1 } from '@/views/_Work/_menu/headermixin1'
+import { navMenu as navMenu1 } from '@/views/_Work/_menu/headermixin1'
 import { navMenu as navMenu2 } from '@/views/_Work/_menu/headermixin2'
 import { useRoute } from 'vue-router'
 import Header from '@/views/_Work/components/Header/Index.vue'
