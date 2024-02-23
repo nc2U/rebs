@@ -17,12 +17,28 @@ const workProject = {
       component: () => import('@/views/_Work/Projects/Index.vue'),
       children: [
         {
+          path: 'create',
+          name: '프로젝트 - 생성',
+        },
+        {
+          path: ':projId/update',
+          name: '프로젝트 - 수정',
+        },
+        {
+          path: ':projId/delete',
+          name: '프로젝트 - 삭제',
+        },
+        {
           path: ':projId',
           name: '(개요)',
         },
         {
           path: ':projId/activity',
           name: '(작업내역)',
+        },
+        {
+          path: ':projId/roadmap',
+          name: '(로드맵)',
         },
         {
           path: ':projId/issue',
@@ -53,8 +69,16 @@ const workProject = {
           name: '(위키)',
         },
         {
+          path: ':projId/forum',
+          name: '(게시판)',
+        },
+        {
           path: ':projId/file',
           name: '(파일)',
+        },
+        {
+          path: ':projId/repository',
+          name: '(저장소)',
         },
         {
           path: ':projId/setting',
@@ -65,32 +89,32 @@ const workProject = {
     {
       path: 'activity',
       name: '작업내역',
-      component: () => import('@/views/_Work/Projects/Index.vue'),
+      component: () => import('@/views/_Work/Projects/components/Activity/Index.vue'),
     },
     {
       path: 'issue',
       name: '업무',
-      component: () => import('@/views/_Work/Projects/Index.vue'),
+      component: () => import('@/views/_Work/Projects/components/Issues/Index.vue'),
     },
     {
       path: 'time_entry',
       name: '소요시간',
-      component: () => import('@/views/_Work/Projects/Index.vue'),
+      component: () => import('@/views/_Work/Projects/components/SpentTime/Index.vue'),
     },
     {
       path: 'gantt',
       name: '차트',
-      component: () => import('@/views/_Work/Projects/Index.vue'),
+      component: () => import('@/views/_Work/Projects/components/Gantt/Index.vue'),
     },
     {
       path: 'calendar',
       name: '달력',
-      component: () => import('@/views/_Work/Projects/Index.vue'),
+      component: () => import('@/views/_Work/Projects/components/Calendar/Index.vue'),
     },
     {
       path: 'news',
       name: '공지',
-      component: () => import('@/views/_Work/Projects/Index.vue'),
+      component: () => import('@/views/_Work/Projects/components/News/Index.vue'),
     },
   ],
 }

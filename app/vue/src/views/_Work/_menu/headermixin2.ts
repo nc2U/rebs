@@ -1,14 +1,33 @@
-export const pageTitle = '설 정 관 리'
+import { computed } from 'vue'
+import { useAccount } from '@/store/pinia/account'
 
-export const navMenu = [
-  '프로젝트 목록',
-  '사용자',
-  '그룹',
-  '역할 및 권한',
-  '작업 유형',
-  '작업 상태',
-  '업무 흐름',
-  '코드값',
-  '제반 설정',
-  '정보',
-]
+const accStore = useAccount()
+const superAuth = computed(() => accStore.superAuth)
+
+export const pageTitle = '업 무 관 리'
+export const navMenu = superAuth?.value
+  ? [
+      '(개요)',
+      '(작업내역)',
+      '(업무)',
+      '(소요시간)',
+      '(차트)',
+      '(달력)',
+      '(공지)',
+      '(문서)',
+      '(위키)',
+      '(파일)',
+      '(설정)',
+    ]
+  : [
+      '(개요)',
+      '(작업내역)',
+      '(업무)',
+      '(소요시간)',
+      '(차트)',
+      '(달력)',
+      '(공지)',
+      '(문서)',
+      '(위키)',
+      '(파일)',
+    ]

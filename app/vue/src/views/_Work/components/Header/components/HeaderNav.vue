@@ -31,7 +31,10 @@ const isDark = computed(() => store.theme === 'dark')
     </CDropdown>
     <CNavItem v-for="(menu, i) in menus" :key="i">
       <CNavLink
-        :active="$route.name === menu || $route.meta.title === menu"
+        :active="
+          ($route.name as string).includes(menu as string) ||
+          ($route.meta.title as string).includes(menu as string)
+        "
         @click="$router.push({ name: menu as RouteRecordName, query })"
       >
         {{ menu }}
