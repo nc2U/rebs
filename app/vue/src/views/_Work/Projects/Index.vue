@@ -28,11 +28,20 @@ const route = useRoute()
 
 const navMenu = computed(() => ((route.name as string).includes('프로젝트') ? navMenu1 : navMenu2))
 
+const project = ref({
+  pk: 1,
+  name: '동춘1구역9블럭 지역주택조합',
+  desc: '동춘1구역9블럭 지역주택조합 공동주택 신축사업',
+  slug: 'dongchun',
+})
+
+const headerTitle = (route.name as string).includes('프로젝트') ? project.value.name : pageTitle
+
 const sideNavCAll = () => cBody.value.toggle()
 </script>
 
 <template>
-  <Header :page-title="pageTitle" :nav-menu="navMenu" @side-nav-call="sideNavCAll" />
+  <Header :page-title="headerTitle" :nav-menu="navMenu" @side-nav-call="sideNavCAll" />
 
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query">
     <template v-slot:default>
