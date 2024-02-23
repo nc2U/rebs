@@ -7,6 +7,14 @@ const projectList = ref([
     name: '동춘1구역9블럭 지역주택조합',
     desc: '동춘1구역9블럭 지역주택조합 공동주택 신축사업',
     slug: 'dongchun',
+    child: [
+      {
+        pk: 3,
+        name: '공급계약 95% 전환',
+        desc: '도급계약 유효조건 (공급계약 95%) 달성하기',
+        slug: 'cont-95',
+      },
+    ],
   },
   {
     pk: 2,
@@ -57,11 +65,10 @@ h5 {
 
 .card a {
   font-weight: bold;
-  font-size: 1.1em;
-  //color: #5889ce;
+  font-size: 1.13em;
 }
 
 .card p {
-  font-size: 0.9em;
+  font-size: 0.89em;
 }
 </style>
