@@ -43,3 +43,17 @@ body:-moz-full-screen {
 .v-window--show-arrows-on-hover {
   color: #666;
 }
+
+h1, h2, h3, h4, h5, h6 {
+  color: #5b5c5d;
+}
+
+.dark-theme {
+  h1, h2, h3, h4, h5, h6 {
+    color: #ddd;
+  }
+}
+
+a {
+  color: #1b68d3;
+}
