@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { pageTitle, navMenu1, navMenu2 } from '@/views/_Work/_menu/headermixin1'
+import { ref } from 'vue'
+import { pageTitle, navMenu } from '@/views/_Work/_menu/headermixin1'
 import { useRoute } from 'vue-router'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
@@ -24,7 +24,6 @@ import Settings from '@/views/_Work/Projects/components/_Project/Settings/Index.
 const cBody = ref()
 
 const route = useRoute()
-const navMenu = computed(() => (route.params['projId'] ? navMenu2 : navMenu1))
 
 const sideNavCAll = () => cBody.value.toggle()
 </script>
