@@ -1,7 +1,7 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
-from .views import accounts
+from .views import accounts, work
 from .views import company
 from .views import rebs
 from .views import project
@@ -43,6 +43,25 @@ router.register(r'account-depth3', rebs.AccountSubD3ViewSet)  # only list
 router.register(r'project-account-depth2', rebs.ProjectAccountD2ViewSet)  # only list
 router.register(r'project-account-depth3', rebs.ProjectAccountD3ViewSet)  # only list
 router.register(r'wise-say', rebs.WiseSayViewSet)
+# work
+router.register(r'task-project', work.TaskProjectViewSet)
+router.register(r'module', work.ModuleViewSet)
+router.register(r'version', work.VersionViewSet)
+router.register(r'task-category', work.TaskCategoryViewSet)
+router.register(r'repository', work.RepositoryViewSet)
+router.register(r'member', work.MemberViewSet)
+router.register(r'role', work.RoleViewSet)
+router.register(r'permission', work.PermissionViewSet)
+router.register(r'tracker', work.TrackerViewSet)
+router.register(r'status', work.StatusViewSet)
+router.register(r'workflow', work.WorkflowViewSet)
+router.register(r'code-activity', work.CodeActivityViewSet)
+router.register(r'code-issue-priority', work.CodeIssuePriorityViewSet)
+router.register(r'code-docs-category', work.CodeDocsCategoryViewSet)
+router.register(r'issuue', work.IssueViewSet)
+router.register(r'issue-file', work.IssueFileViewSet)
+router.register(r'issue-comment', work.IssueCommentViewSet)
+router.register(r'spent-time', work.SpentTimeViewSet)
 # project
 router.register(r'project', project.ProjectViewSet)
 router.register(r'inc-budget', project.ProjectIncBudgetViewSet)  # only list
