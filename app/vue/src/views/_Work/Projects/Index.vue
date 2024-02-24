@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed, inject, ref } from 'vue'
+import { computed, type ComputedRef, inject, ref } from 'vue'
 import { navMenu as navMenu1 } from '@/views/_Work/_menu/headermixin1'
 import { navMenu as navMenu2 } from '@/views/_Work/_menu/headermixin2'
 import { useRoute } from 'vue-router'
+import type { Company } from '@/store/types/settings'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import ProjectList from '@/views/_Work/Projects/components/_Project/ProjectList.vue'
@@ -25,7 +26,8 @@ import Settings from '@/views/_Work/Projects/components/_Project/Settings/Index.
 const cBody = ref()
 
 const route = useRoute()
-const comName = (inject('comStore') as { company: { name: string } }).company.name
+const company = inject<ComputedRef<Company>>('company')
+const comName = computed(() => company?.value?.name)
 const navMenu = computed(() => ((route.name as string).includes('프로젝트') ? navMenu1 : navMenu2))
 
 const project = ref({
@@ -36,7 +38,7 @@ const project = ref({
 })
 
 const headerTitle = computed(() =>
-  (route.name as string).includes('프로젝트') ? comName : project.value.name,
+  (route.name as string).includes('프로젝트') ? comName.value : project.value.name,
 )
 
 const sideNavCAll = () => cBody.value.toggle()
