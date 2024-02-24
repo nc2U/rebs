@@ -14,9 +14,9 @@ class TaskProject(models.Model):
     identifier = models.CharField('식별자', max_length=20, unique=True,
                                   help_text='1에서 100글자 소문자(a-z), 숫자, 대쉬(-)와 밑줄(_)만 가능합니다. 식별자는 저장 후에는 수정할 수 없습니다.')
     homepage = models.URLField('홈페이지', max_length=200, null=True, blank=True)
-    public = models.BooleanField('공개', default=True, help_text='공개 프로젝트는 모든 로그인한 사용자가 접속할 수 있습니다.')
+    is_public = models.BooleanField('공개', default=True, help_text='공개 프로젝트는 모든 로그인한 사용자가 접속할 수 있습니다.')
     parent_project = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='상위 프로젝트')
-    inherit_members = models.BooleanField('상위 프로젝트 멤버 상속', default=False)
+    is_inherit_members = models.BooleanField('상위 프로젝트 멤버 상속', default=False)
     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='사용자')
     created = models.DateTimeField('생성일시', auto_now_add=True)
 
