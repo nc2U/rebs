@@ -7,12 +7,16 @@ from work.models import (TaskProject, Module, Version, TaskCategory, Repository,
 
 # Work --------------------------------------------------------------------------
 class TaskProjectSerializer(serializers.ModelSerializer):
+    sub_projects = serializers.SerializerMethodField()
     user = serializers.SlugRelatedField('username', read_only=True)
 
     class Meta:
         model = TaskProject
-        fields = ('pk', 'name', 'desc', 'identifier', 'homepage', 'is_public',
-                  'is_inherit_members', 'created', 'company', 'parent_project', 'user')
+        fields = ('pk', 'name', 'desc', 'identifier', 'homepage', 'is_public', 'is_inherit_members',
+                  'created', 'company', 'parent_project', 'sub_projects', 'user')
+
+    def get_sub_projects(self, obj):
+        return self.__class__(obj.taskproject_set.all(), many=True, read_only=True).data
 
 
 class ModuleSerializer(serializers.ModelSerializer):
