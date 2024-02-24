@@ -60,7 +60,11 @@ const projectList = ref([
     </CCol>
   </CRow>
 
-  <CRow>
+  <CRow v-if="!projectList.length">
+    <CAlert color="warning" class="text-center"> 표시할 데이터가 없습니다.</CAlert>
+  </CRow>
+
+  <CRow v-else>
     <CCol v-for="proj in projectList" :key="proj.pk" sm="12" lg="6" xl="4" class="my-2">
       <CCard>
         <CCardBody class="card">
@@ -70,36 +74,36 @@ const projectList = ref([
           <p>{{ proj.desc }}</p>
 
           <span v-if="!!proj.child?.length" class="child pb-0">
-            <blockquote v-for="child in proj.child" :key="child.pk" class="mb-0">
-              <router-link :to="{ name: '(개요)', params: { projId: child.slug } }">
-                {{ child.name }}
+            <blockquote v-for="child1 in proj.child" :key="child1.pk" class="mb-0">
+              <router-link :to="{ name: '(개요)', params: { projId: child1.slug } }">
+                {{ child1.name }}
               </router-link>
-              <p>{{ child.desc }}</p>
+              <p>{{ child1.desc }}</p>
 
-              <span v-if="!!child?.child?.length" class="child pb-0">
-                <blockquote v-for="child1 in child.child" :key="child1.pk" class="mb-0">
-                  <router-link :to="{ name: '(개요)', params: { projId: child1.slug } }">
-                    {{ child1.name }}
+              <span v-if="!!child1?.child?.length" class="child pb-0">
+                <blockquote v-for="child2 in child1.child" :key="child2.pk" class="mb-0">
+                  <router-link :to="{ name: '(개요)', params: { projId: child2.slug } }">
+                    {{ child2.name }}
                   </router-link>
-                  <p>{{ child1.desc }}</p>
+                  <p>{{ child2.desc }}</p>
 
-                  <span v-if="!!child1?.child?.length" class="child pb-0">
-                    <blockquote v-for="child2 in child1.child" :key="child2.pk" class="mb-0">
-                      <router-link :to="{ name: '(개요)', params: { projId: child2.slug } }">
-                        {{ child2.name }}
-                      </router-link>
-                      <p>{{ child2.desc }}</p>
+                  <!--                  <span v-if="!!child2?.child?.length" class="child pb-0">-->
+                  <!--                    <blockquote v-for="child3 in child2.child" :key="child3.pk" class="mb-0">-->
+                  <!--                      <router-link :to="{ name: '(개요)', params: { projId: child3.slug } }">-->
+                  <!--                        {{ child3.name }}-->
+                  <!--                      </router-link>-->
+                  <!--                      <p>{{ child3.desc }}</p>-->
 
-                      <span v-if="!!child2?.child?.length" class="child pb-0">
-                        <blockquote v-for="child3 in child2.child" :key="child3.pk" class="mb-0">
-                          <router-link :to="{ name: '(개요)', params: { projId: child3.slug } }">
-                            {{ child3.name }}
-                          </router-link>
-                          <p>{{ child3.desc }}</p>
-                        </blockquote>
-                      </span>
-                    </blockquote>
-                  </span>
+                  <!--                      &lt;!&ndash;                      <span v-if="!!child2?.child?.length" class="child pb-0">&ndash;&gt;-->
+                  <!--                      &lt;!&ndash;                        <blockquote v-for="child3 in child2.child" :key="child3.pk" class="mb-0">&ndash;&gt;-->
+                  <!--                      &lt;!&ndash;                          <router-link :to="{ name: '(개요)', params: { projId: child3.slug } }">&ndash;&gt;-->
+                  <!--                      &lt;!&ndash;                            {{ child3.name }}&ndash;&gt;-->
+                  <!--                      &lt;!&ndash;                          </router-link>&ndash;&gt;-->
+                  <!--                      &lt;!&ndash;                          <p>{{ child3.desc }}</p>&ndash;&gt;-->
+                  <!--                      &lt;!&ndash;                        </blockquote>&ndash;&gt;-->
+                  <!--                      &lt;!&ndash;                      </span>&ndash;&gt;-->
+                  <!--                    </blockquote>-->
+                  <!--                  </span>-->
                 </blockquote>
               </span>
             </blockquote>

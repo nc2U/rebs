@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+from django_filters.rest_framework import FilterSet, BooleanFilter
 
 from ..permission import *
 from ..pagination import *
@@ -10,12 +11,21 @@ from work.models import (TaskProject, Module, Version, TaskCategory, Repository,
 
 
 # Work --------------------------------------------------------------------------
+class TaskProjectFilter(FilterSet):
+    parent__isnull = BooleanFilter(field_name='parent_project', lookup_expr='isnull', label='하위 프로젝트 여부')
+
+    class Meta:
+        model = TaskProject
+        fields = ('parent__isnull',)
+
+
 class TaskProjectViewSet(viewsets.ModelViewSet):
     queryset = TaskProject.objects.all()
     serializer_class = TaskProjectSerializer
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = PageNumberPaginationTwenty
-    search_fields = ('id',)
+    filterset_class = TaskProjectFilter
+    search_fields = ('name', 'desc', 'identifier')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

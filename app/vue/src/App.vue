@@ -11,8 +11,8 @@ provide('userInfo', userInfo)
 provide('superAuth', superAuth)
 
 const comStore = useCompany()
-const company = computed(() => comStore.company?.pk)
-provide('comStore', comStore)
+const company = computed(() => comStore.company)
+provide('company', company)
 
 const store = useStore()
 watch(store, () => {
@@ -25,7 +25,7 @@ onMounted(() => {
   store.theme === 'dark'
     ? document.body.classList.add('dark-theme')
     : document.body.classList.remove('dark-theme')
-  if (accStore.isAuthorized) comStore.fetchCompany(company.value || comStore.initComId)
+  if (accStore.isAuthorized) comStore.fetchCompany(company.value?.pk || comStore.initComId)
 })
 </script>
 
