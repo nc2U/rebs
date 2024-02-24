@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { computed, type ComputedRef, inject, ref } from 'vue'
+import { ref, computed, inject, onBeforeMount, type ComputedRef } from 'vue'
 import { navMenu as navMenu1 } from '@/views/_Work/_menu/headermixin1'
 import { navMenu as navMenu2 } from '@/views/_Work/_menu/headermixin2'
-import { useRoute } from 'vue-router'
 import type { Company } from '@/store/types/settings'
+import { useRoute } from 'vue-router'
+import { useWork } from '@/store/pinia/work'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import ProjectList from '@/views/_Work/Projects/components/_Project/ProjectList.vue'
@@ -42,6 +43,14 @@ const headerTitle = computed(() =>
 )
 
 const sideNavCAll = () => cBody.value.toggle()
+
+const workStore = useWork()
+const taskProject = computed(() => workStore.taskProject)
+const taskProjectList = computed(() => workStore.taskProjectList)
+
+const fetchTaskProject = (pk: number) => workStore.fetchTaskProject(pk)
+
+onBeforeMount(() => workStore.fetchTaskProjectList())
 </script>
 
 <template>
@@ -49,7 +58,7 @@ const sideNavCAll = () => cBody.value.toggle()
 
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query">
     <template v-slot:default>
-      <ProjectList v-if="route.name === '프로젝트'" />
+      <ProjectList v-if="route.name === '프로젝트'" :project-list="taskProjectList" />
 
       <ProjectForm v-if="route.name === '프로젝트 - 생성'" />
 

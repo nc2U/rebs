@@ -1,45 +1,13 @@
-<script lang="ts" setup="">
-import { ref } from 'vue'
+<script lang="ts" setup>
+import type { PropType } from 'vue'
+import type { TaskProject } from '@/store/types/work'
 
-const projectList = ref([
-  {
-    pk: 1,
-    name: '동춘1구역9블럭 지역주택조합',
-    desc: '동춘1구역9블럭 지역주택조합 공동주택 신축사업',
-    slug: 'dongchun',
-    child: [
-      {
-        pk: 3,
-        name: '공급계약 95% 전환',
-        desc: '도급계약 유효조건 (공급계약 95%) 달성하기',
-        slug: 'cont-95',
-        child: [
-          {
-            pk: 5,
-            name: '그랜드 차일드 프로젝트 1111',
-            desc: '-------------------',
-            slug: 'cont-955',
-            child: [],
-          },
-        ],
-      },
-      {
-        pk: 4,
-        name: '착공하기',
-        desc: '도급계약 유효조건 (공급계약 95%) 달성하기',
-        slug: 'cont-96',
-        child: [],
-      },
-    ],
+defineProps({
+  projectList: {
+    type: Array as PropType<TaskProject[]>,
+    default: () => [],
   },
-  {
-    pk: 2,
-    name: 'Redmine clone 프로젝트',
-    desc: 'Redmine clone 및 최적화 프로젝트',
-    slug: 'redmine-clone',
-    child: [],
-  },
-])
+})
 </script>
 
 <template>
@@ -67,43 +35,59 @@ const projectList = ref([
   <CRow v-else>
     <CCol v-for="proj in projectList" :key="proj.pk" sm="12" lg="6" xl="4" class="my-2">
       <CCard>
-        <CCardBody class="card">
-          <router-link :to="{ name: '(개요)', params: { projId: proj.slug } }">
+        <CCardBody class="card pb-0">
+          <router-link :to="{ name: '(개요)', params: { projId: proj.identifier } }">
             {{ proj.name }}
           </router-link>
           <p>{{ proj.desc }}</p>
 
-          <span v-if="!!proj.child?.length" class="child pb-0">
-            <blockquote v-for="child1 in proj.child" :key="child1.pk" class="mb-0">
-              <router-link :to="{ name: '(개요)', params: { projId: child1.slug } }">
-                {{ child1.name }}
+          <!-- c1 -->
+          <span v-if="!!proj.sub_projects.length" class="child">
+            <blockquote v-for="c1 in proj.sub_projects" :key="c1.pk">
+              <router-link :to="{ name: '(개요)', params: { projId: c1.identifier } }">
+                {{ c1.name }}
               </router-link>
-              <p>{{ child1.desc }}</p>
+              <p>{{ c1.desc }}</p>
 
-              <span v-if="!!child1?.child?.length" class="child pb-0">
-                <blockquote v-for="child2 in child1.child" :key="child2.pk" class="mb-0">
-                  <router-link :to="{ name: '(개요)', params: { projId: child2.slug } }">
-                    {{ child2.name }}
+              <!-- c2 -->
+              <span v-if="!!c1.sub_projects.length" class="child">
+                <blockquote v-for="c2 in c1.sub_projects" :key="c2.pk">
+                  <router-link :to="{ name: '(개요)', params: { projId: c2.identifier } }">
+                    {{ c2.name }}
                   </router-link>
-                  <p>{{ child2.desc }}</p>
+                  <p>{{ c2.desc }}</p>
 
-                  <!--                  <span v-if="!!child2?.child?.length" class="child pb-0">-->
-                  <!--                    <blockquote v-for="child3 in child2.child" :key="child3.pk" class="mb-0">-->
-                  <!--                      <router-link :to="{ name: '(개요)', params: { projId: child3.slug } }">-->
-                  <!--                        {{ child3.name }}-->
-                  <!--                      </router-link>-->
-                  <!--                      <p>{{ child3.desc }}</p>-->
+                  <!-- c3 -->
+                  <span v-if="!!c2.sub_projects.length" class="child">
+                    <blockquote v-for="c3 in c2.sub_projects" :key="c3.pk">
+                      <router-link :to="{ name: '(개요)', params: { projId: c3.identifier } }">
+                        {{ c3.name }}
+                      </router-link>
+                      <p>{{ c3.desc }}</p>
 
-                  <!--                      &lt;!&ndash;                      <span v-if="!!child2?.child?.length" class="child pb-0">&ndash;&gt;-->
-                  <!--                      &lt;!&ndash;                        <blockquote v-for="child3 in child2.child" :key="child3.pk" class="mb-0">&ndash;&gt;-->
-                  <!--                      &lt;!&ndash;                          <router-link :to="{ name: '(개요)', params: { projId: child3.slug } }">&ndash;&gt;-->
-                  <!--                      &lt;!&ndash;                            {{ child3.name }}&ndash;&gt;-->
-                  <!--                      &lt;!&ndash;                          </router-link>&ndash;&gt;-->
-                  <!--                      &lt;!&ndash;                          <p>{{ child3.desc }}</p>&ndash;&gt;-->
-                  <!--                      &lt;!&ndash;                        </blockquote>&ndash;&gt;-->
-                  <!--                      &lt;!&ndash;                      </span>&ndash;&gt;-->
-                  <!--                    </blockquote>-->
-                  <!--                  </span>-->
+                      <!-- c4 -->
+                      <span v-if="!!c3.sub_projects.length" class="child">
+                        <blockquote v-for="c4 in c3.sub_projects" :key="c4.pk">
+                          <router-link :to="{ name: '(개요)', params: { projId: c4.identifier } }">
+                            {{ c4.name }}
+                          </router-link>
+                          <p>{{ c4.desc }}</p>
+
+                          <!-- c5 -->
+                          <span v-if="!!c4.sub_projects.length" class="child">
+                            <blockquote v-for="c5 in c4.sub_projects" :key="c5.pk">
+                              <router-link
+                                :to="{ name: '(개요)', params: { projId: c5.identifier } }"
+                              >
+                                {{ c5.name }}
+                              </router-link>
+                              <p>{{ c5.desc }}</p>
+                            </blockquote>
+                          </span>
+                        </blockquote>
+                      </span>
+                    </blockquote>
+                  </span>
                 </blockquote>
               </span>
             </blockquote>
