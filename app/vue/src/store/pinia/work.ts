@@ -12,7 +12,7 @@ export const useWork = defineStore('company', () => {
   // actions
   const fetchTaskProjectList = () =>
     api
-      .get('/task-project/')
+      .get('/task-project/?parent__isnull=true')
       .then(res => (taskProjectList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
