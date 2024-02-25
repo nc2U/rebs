@@ -1,5 +1,5 @@
 export interface TaskProject {
-  pk: number
+  pk?: number
   company: number
   name: string
   desc: string
@@ -8,7 +8,7 @@ export interface TaskProject {
   is_public: boolean
   parent_project: number | null
   is_inherit_members: boolean
-  sub_projects: TaskProject[]
-  created: string
-  user: number
+  sub_projects?: TaskProject[]
+  created?: string
+  user?: number
 }
