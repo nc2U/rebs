@@ -1,6 +1,11 @@
 <script lang="ts" setup="">
 import { ref } from 'vue'
+import Multiselect from '@vueform/multiselect'
 import QuillEditor from '@/components/QuillEditor/index.vue'
+
+defineProps({
+  getProjects: { type: Array, default: () => [] },
+})
 
 const validated = ref(false)
 
@@ -28,7 +33,14 @@ const module = ref({
   gantt: true,
 })
 
-const onSubmit = () => 1
+const onSubmit = (event: Event) => {
+  const el = event.currentTarget as HTMLFormElement
+  if (!el.checkValidity()) {
+    event.preventDefault()
+    event.stopPropagation()
+    validated.value = true
+  }
+}
 </script>
 
 <template>
@@ -55,7 +67,7 @@ const onSubmit = () => 1
         <CRow class="mb-3">
           <CFormLabel class="required col-form-label text-right col-2">이름</CFormLabel>
           <CCol>
-            <CFormInput v-model="form.name" placeholder="프로젝트 이름" />
+            <CFormInput v-model="form.name" maxlength="100" required placeholder="프로젝트 이름" />
           </CCol>
         </CRow>
 
@@ -71,7 +83,9 @@ const onSubmit = () => 1
           <CCol>
             <CFormInput
               v-model="form.identifier"
+              maxlength="100"
               placeholder="프로젝트 식별자"
+              required
               text="1에서 100글자 소문자(a-z), 숫자, 대쉬(-)와 밑줄(_)만 가능합니다. 식별자 저장 후에는 수정할 수 없습니다."
             />
           </CCol>
@@ -80,7 +94,7 @@ const onSubmit = () => 1
         <CRow class="mb-3">
           <CFormLabel class="col-form-label text-right col-2">홈페이지</CFormLabel>
           <CCol>
-            <CFormInput v-model="form.homepage" placeholder="홈페이지 URL" />
+            <CFormInput v-model="form.homepage" maxlength="255" placeholder="홈페이지 URL" />
           </CCol>
         </CRow>
 
@@ -97,9 +111,15 @@ const onSubmit = () => 1
         <CRow class="mb-3">
           <CFormLabel class="col-form-label text-right col-2">상위 프로젝트</CFormLabel>
           <CCol>
-            <CFormSelect v-model="form.parent_project">
-              <option>----------</option>
-            </CFormSelect>
+            <Multiselect
+              v-model="form.parent_project"
+              :options="getProjects"
+              placeholder="상위 프로젝트 선택"
+              autocomplete="label"
+              :classes="{ search: 'form-control multiselect-search' }"
+              :add-option-on="['enter', 'tab']"
+              searchable
+            />
           </CCol>
         </CRow>
 
@@ -155,8 +175,8 @@ const onSubmit = () => 1
 
     <CRow>
       <CCol>
-        <CButton color="primary">저장</CButton>
-        <CButton color="primary">저장 후 계속하기</CButton>
+        <CButton color="primary" type="submit">저장</CButton>
+        <!--        <CButton color="primary" type="submit">저장 후 계속하기</CButton>-->
       </CCol>
     </CRow>
   </CForm>

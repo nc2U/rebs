@@ -47,6 +47,7 @@ const sideNavCAll = () => cBody.value.toggle()
 const workStore = useWork()
 const taskProject = computed(() => workStore.taskProject)
 const taskProjectList = computed(() => workStore.taskProjectList)
+const getProjects = computed(() => workStore.getProjects)
 
 const fetchTaskProject = (pk: number) => workStore.fetchTaskProject(pk)
 
@@ -60,7 +61,7 @@ onBeforeMount(() => workStore.fetchTaskProjectList())
     <template v-slot:default>
       <ProjectList v-if="route.name === '프로젝트'" :project-list="taskProjectList" />
 
-      <ProjectForm v-if="route.name === '프로젝트 - 생성'" />
+      <ProjectForm v-if="route.name === '프로젝트 - 생성'" :get-projects="getProjects" />
 
       <Overview v-if="route.name === '(개요)'" />
 
