@@ -1,5 +1,6 @@
 <script lang="ts" setup="">
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import Multiselect from '@vueform/multiselect'
 import QuillEditor from '@/components/QuillEditor/index.vue'
 
@@ -7,9 +8,11 @@ defineProps({
   getProjects: { type: Array, default: () => [] },
 })
 
+const emit = defineEmits(['on-submit'])
+
 const validated = ref(false)
 
-const form = ref({
+const form = reactive({
   pk: undefined,
   name: '',
   desc: '',
@@ -20,7 +23,7 @@ const form = ref({
   is_inherit_members: false,
 })
 
-const module = ref({
+const module = reactive({
   issue: true,
   time: true,
   news: true,
@@ -33,12 +36,18 @@ const module = ref({
   gantt: true,
 })
 
+const router = useRouter()
+
 const onSubmit = (event: Event) => {
   const el = event.currentTarget as HTMLFormElement
   if (!el.checkValidity()) {
     event.preventDefault()
     event.stopPropagation()
     validated.value = true
+  } else {
+    emit('on-submit', { form, module })
+    validated.value = false
+    router.push({ name: '(설정)', params: { projId: form.identifier } })
   }
 }
 </script>

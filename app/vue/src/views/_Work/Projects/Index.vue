@@ -51,6 +51,12 @@ const getProjects = computed(() => workStore.getProjects)
 
 const fetchTaskProject = (pk: number) => workStore.fetchTaskProject(pk)
 
+const onSubmit = (payload: any) => {
+  // const parent = payload.form.parent_project
+  // payload.form.depth = parent === null ? 1 : parent + 1
+  console.log(payload)
+}
+
 onBeforeMount(() => workStore.fetchTaskProjectList())
 </script>
 
@@ -61,7 +67,11 @@ onBeforeMount(() => workStore.fetchTaskProjectList())
     <template v-slot:default>
       <ProjectList v-if="route.name === '프로젝트'" :project-list="taskProjectList" />
 
-      <ProjectForm v-if="route.name === '프로젝트 - 생성'" :get-projects="getProjects" />
+      <ProjectForm
+        v-if="route.name === '프로젝트 - 생성'"
+        :get-projects="getProjects"
+        @on-submit="onSubmit"
+      />
 
       <Overview v-if="route.name === '(개요)'" />
 
