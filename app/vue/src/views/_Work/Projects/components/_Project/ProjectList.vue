@@ -42,7 +42,7 @@ defineProps({
           <p>{{ proj.desc }}</p>
 
           <!-- c1 -->
-          <span v-if="!!proj.sub_projects.length" class="child">
+          <span v-if="!!proj.sub_projects?.length" class="child">
             <blockquote v-for="c1 in proj.sub_projects" :key="c1.pk">
               <router-link :to="{ name: '(개요)', params: { projId: c1.identifier } }">
                 {{ c1.name }}
@@ -50,7 +50,7 @@ defineProps({
               <p>{{ c1.desc }}</p>
 
               <!-- c2 -->
-              <span v-if="!!c1.sub_projects.length" class="child">
+              <span v-if="!!c1.sub_projects?.length" class="child">
                 <blockquote v-for="c2 in c1.sub_projects" :key="c2.pk">
                   <router-link :to="{ name: '(개요)', params: { projId: c2.identifier } }">
                     {{ c2.name }}
@@ -58,7 +58,7 @@ defineProps({
                   <p>{{ c2.desc }}</p>
 
                   <!-- c3 -->
-                  <span v-if="!!c2.sub_projects.length" class="child">
+                  <span v-if="!!c2.sub_projects?.length" class="child">
                     <blockquote v-for="c3 in c2.sub_projects" :key="c3.pk">
                       <router-link :to="{ name: '(개요)', params: { projId: c3.identifier } }">
                         {{ c3.name }}
@@ -66,7 +66,7 @@ defineProps({
                       <p>{{ c3.desc }}</p>
 
                       <!-- c4 -->
-                      <span v-if="!!c3.sub_projects.length" class="child">
+                      <span v-if="!!c3.sub_projects?.length" class="child">
                         <blockquote v-for="c4 in c3.sub_projects" :key="c4.pk">
                           <router-link :to="{ name: '(개요)', params: { projId: c4.identifier } }">
                             {{ c4.name }}
@@ -74,7 +74,7 @@ defineProps({
                           <p>{{ c4.desc }}</p>
 
                           <!-- c5 -->
-                          <span v-if="!!c4.sub_projects.length" class="child">
+                          <span v-if="!!c4.sub_projects?.length" class="child">
                             <blockquote v-for="c5 in c4.sub_projects" :key="c5.pk">
                               <router-link
                                 :to="{ name: '(개요)', params: { projId: c5.identifier } }"
@@ -99,11 +99,6 @@ defineProps({
 </template>
 
 <style lang="scss" scoped>
-h5 {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-weight: bold;
-}
-
 .card a {
   font-weight: bold;
   font-size: 1.13em;
