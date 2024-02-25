@@ -16,6 +16,8 @@ class TaskProject(models.Model):
     homepage = models.URLField('홈페이지', max_length=255, null=True, blank=True)
     is_public = models.BooleanField('공개', default=True, help_text='공개 프로젝트는 모든 로그인한 사용자가 접속할 수 있습니다.')
     parent_project = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='상위 프로젝트')
+    depth = models.PositiveSmallIntegerField('단계', default=1,
+                                             help_text='프로젝트 간 상하 소속 관계에 의한 단계, 최상위인 경우 1단계 이후 각 뎁스 마다 1씩 증가')
     is_inherit_members = models.BooleanField('상위 프로젝트 멤버 상속', default=False)
     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='사용자')
     created = models.DateTimeField('생성일시', auto_now_add=True)

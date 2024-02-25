@@ -13,7 +13,7 @@ class TaskProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = TaskProject
         fields = ('pk', 'name', 'desc', 'identifier', 'homepage', 'is_public', 'is_inherit_members',
-                  'created', 'company', 'parent_project', 'sub_projects', 'user')
+                  'created', 'company', 'parent_project', 'depth', 'sub_projects', 'user')
 
     def get_sub_projects(self, obj):
         return self.__class__(obj.taskproject_set.all(), many=True, read_only=True).data
