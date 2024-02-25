@@ -1,12 +1,12 @@
 <script lang="ts" setup="">
-import { onMounted, onUpdated, reactive, ref } from 'vue'
+import { onMounted, onUpdated, type PropType, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import type { TaskProject } from '@/store/types/work'
 import Multiselect from '@vueform/multiselect'
-// import QuillEditor from '@/components/QuillEditor/index.vue'
 
 const props = defineProps({
   title: { type: String, default: 'Body Title' },
-  project: { type: Object, default: () => null },
+  project: { type: Object as PropType<TaskProject | null>, default: null },
   getProjects: { type: Array, default: () => [] },
 })
 
@@ -15,13 +15,13 @@ const emit = defineEmits(['on-submit'])
 const validated = ref(false)
 
 const form = reactive({
-  pk: undefined,
+  pk: undefined as number | undefined,
   name: '',
   desc: '',
   identifier: '',
-  homepage: null,
+  homepage: null as string | null,
   is_public: true,
-  parent_project: null,
+  parent_project: null as number | null,
   is_inherit_members: false,
 })
 
@@ -64,16 +64,16 @@ const dataSetup = () => {
     form.parent_project = props.project.parent_project
     form.is_inherit_members = props.project.is_inherit_members
 
-    module.issue = props.project.module.issue
-    module.time = props.project.module.time
-    module.news = props.project.module.news
-    module.document = props.project.module.document
-    module.file = props.project.module.file
-    module.wiki = props.project.module.wiki
-    module.repository = props.project.module.repository
-    module.forum = props.project.module.forum
-    module.calendar = props.project.module.calendar
-    module.gantt = props.project.module.gantt
+    module.issue = !!props.project.module?.issue
+    module.time = !!props.project.module?.time
+    module.news = !!props.project.module?.news
+    module.document = !!props.project.module?.document
+    module.file = !!props.project.module?.file
+    module.wiki = !!props.project.module?.wiki
+    module.repository = !!props.project.module?.repository
+    module.forum = !!props.project.module?.forum
+    module.calendar = !!props.project.module?.calendar
+    module.gantt = !!props.project.module?.gantt
   }
 }
 
