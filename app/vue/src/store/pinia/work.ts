@@ -38,7 +38,7 @@ export const useWork = defineStore('work', () => {
 
   const updateTaskProject = (payload: TaskProject) =>
     api
-      .put(`/task-project/${payload.pk}/`, payload)
+      .put(`/task-project/${payload.identifier}/`, payload)
       .then(() => fetchTaskProjectList().then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
