@@ -50,11 +50,14 @@ const taskProjectList = computed(() => workStore.taskProjectList)
 const getProjects = computed(() => workStore.getProjects)
 
 const fetchTaskProject = (pk: number) => workStore.fetchTaskProject(pk)
+const createTaskProject = (payload: any) => workStore.createTaskProject(payload)
+const updateTaskProject = (payload: any) => workStore.updateTaskProject(payload)
 
 const onSubmit = (payload: any) => {
-  // const parent = payload.form.parent_project
-  // payload.form.depth = parent === null ? 1 : parent + 1
+  payload.company = company?.value.pk
   console.log(payload)
+  if (!!payload.pk) updateTaskProject(payload)
+  else createTaskProject(payload)
 }
 
 onBeforeMount(() => workStore.fetchTaskProjectList())

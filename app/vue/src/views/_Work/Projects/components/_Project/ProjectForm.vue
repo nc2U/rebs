@@ -45,7 +45,7 @@ const onSubmit = (event: Event) => {
     event.stopPropagation()
     validated.value = true
   } else {
-    emit('on-submit', { form, module })
+    emit('on-submit', { ...form, ...module })
     validated.value = false
     router.push({ name: '(설정)', params: { projId: form.identifier } })
   }
