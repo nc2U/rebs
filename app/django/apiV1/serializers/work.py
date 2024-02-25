@@ -19,10 +19,16 @@ class TaskProjectSerializer(serializers.ModelSerializer):
         return self.__class__(obj.taskproject_set.all(), many=True, read_only=True).data
 
     def create(self, validated_data):
-        parent = validated_data['parent_project']
+        parent = validated_data.get('parent_project', None)
         validated_data['depth'] = 1 if parent is None else parent.depth + 1
         project = TaskProject.objects.create(**validated_data)
         project.save()
+
+    def update(self, instance, validated_data):
+        instance.__dict__.update(validated_data)
+        parent = validated_data.get('parent_project', None)
+        instance.depth = 1 if parent is None else parent.depth + 1
+        instance.save()
 
 
 class ModuleSerializer(serializers.ModelSerializer):
