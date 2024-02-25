@@ -54,7 +54,7 @@ const onSubmit = (payload: any) => {
 }
 
 onBeforeRouteUpdate(async to => {
-  if (to.params.projId) await fetchTaskProject(to.params.projId[0])
+  if (to.params.projId) await fetchTaskProject(to.params.projId as string)
   else {
     workStore.taskProject = null
     await fetchTaskProjectList()
@@ -63,7 +63,7 @@ onBeforeRouteUpdate(async to => {
 
 onBeforeMount(() => {
   workStore.fetchTaskProjectList()
-  if (route.params.projId) fetchTaskProject(route.params.projId[0])
+  if (route.params.projId) fetchTaskProject(route.params.projId as string)
 })
 </script>
 
