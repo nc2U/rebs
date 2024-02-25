@@ -83,7 +83,7 @@ const onSubmit = (event: Event) => {
         <CRow class="mb-3">
           <CFormLabel class="col-form-label text-right col-2">설명</CFormLabel>
           <CCol class="mb-5">
-            <QuillEditor v-model="form.desc" />
+            <QuillEditor v-model:content="form.desc" />
           </CCol>
         </CRow>
 
