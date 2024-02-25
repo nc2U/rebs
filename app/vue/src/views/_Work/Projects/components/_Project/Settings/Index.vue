@@ -1,6 +1,5 @@
 <script lang="ts" setup="">
 import { ref, computed, inject, type ComputedRef } from 'vue'
-import { useRoute } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import type { Company } from '@/store/types/settings'
 import ProjectForm from '@/views/_Work/Projects/components/_Project/ProjectForm.vue'
@@ -16,13 +15,12 @@ const menus = ref([
   '시간 추적',
 ])
 
-const route = useRoute()
 const company = inject<ComputedRef<Company>>('company')
 
 const workStore = useWork()
 const taskProject = computed(() => workStore.taskProject)
 // const taskProjectList = computed(() => workStore.taskProjectList)
-const getProjects = computed(() => workStore.getProjects)
+const getTaskProjects = computed(() => workStore.getTaskProjects)
 
 // const fetchTaskProject = (pk: number) => workStore.fetchTaskProject(pk)
 const createTaskProject = (payload: any) => workStore.createTaskProject(payload)
@@ -40,7 +38,7 @@ const onSubmit = (payload: any) => {
   <ProjectForm
     title="설정"
     :project="taskProject"
-    :get-projects="getProjects"
+    :get-task-projects="getTaskProjects"
     @on-submit="onSubmit"
   >
     <!--    <CNav variant="tabs" class="mb-3 pl-4">-->

@@ -40,7 +40,7 @@ const sideNavCAll = () => cBody.value.toggle()
 const workStore = useWork()
 const taskProject = computed(() => workStore.taskProject)
 const taskProjectList = computed(() => workStore.taskProjectList)
-const getProjects = computed(() => workStore.getProjects)
+const getTaskProjects = computed(() => workStore.getTaskProjects)
 
 const fetchTaskProjectList = () => workStore.fetchTaskProjectList()
 const fetchTaskProject = (projId: string) => workStore.fetchTaskProject(projId)
@@ -77,7 +77,7 @@ onBeforeMount(() => {
       <ProjectForm
         v-if="route.name === '프로젝트 - 생성'"
         title="새 프로젝트"
-        :get-projects="getProjects"
+        :get-task-projects="getTaskProjects"
         @on-submit="onSubmit"
       />
 

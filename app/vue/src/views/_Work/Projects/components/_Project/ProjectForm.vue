@@ -2,12 +2,12 @@
 import { onMounted, onUpdated, type PropType, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import type { TaskProject } from '@/store/types/work'
-import Multiselect from '@vueform/multiselect'
+import Option from '@/views/projects/Option/components/Option.vue'
 
 const props = defineProps({
   title: { type: String, default: 'Body Title' },
   project: { type: Object as PropType<TaskProject | null>, default: null },
-  getProjects: { type: Array, default: () => [] },
+  getTaskProjects: { type: Array, default: () => [] },
 })
 
 const emit = defineEmits(['on-submit'])
@@ -141,15 +141,12 @@ onUpdated(() => dataSetup())
         <CRow class="mb-3">
           <CFormLabel class="col-form-label text-right col-2">상위 프로젝트</CFormLabel>
           <CCol>
-            <Multiselect
-              v-model="form.parent_project"
-              :options="getProjects"
-              placeholder="상위 프로젝트 선택"
-              autocomplete="label"
-              :classes="{ search: 'form-control multiselect-search' }"
-              :add-option-on="['enter', 'tab']"
-              searchable
-            />
+            <CFormSelect v-model="form.parent_project">
+              <option option-item="">상위 프로젝트 선택</option>
+              <option v-for="proj in getTaskProjects" :value="proj.value" :key="proj.value">
+                {{ proj.label }}
+              </option>
+            </CFormSelect>
           </CCol>
         </CRow>
 
