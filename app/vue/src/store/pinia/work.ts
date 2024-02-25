@@ -31,15 +31,15 @@ export const useWork = defineStore('work', () => {
   const createTaskProject = (payload: TaskProject) =>
     api
       .post(`/task-project/`, payload)
-      .then(() => {
-        fetchTaskProjectList().then(() => message())
+      .then(res => {
+        fetchTaskProject(res.data.identifier).then(() => message())
       })
       .catch(err => errorHandle(err.response.data))
 
   const updateTaskProject = (payload: TaskProject) =>
     api
       .put(`/task-project/${payload.identifier}/`, payload)
-      .then(() => fetchTaskProjectList().then(() => message()))
+      .then(res => fetchTaskProject(res.data.identifier).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
   const deleteTaskProject = (pk: number) =>
