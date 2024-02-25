@@ -32,7 +32,7 @@ const module = reactive({
   document: true,
   file: true,
   wiki: true,
-  repository: true,
+  repository: false,
   forum: true,
   calendar: true,
   gantt: true,
