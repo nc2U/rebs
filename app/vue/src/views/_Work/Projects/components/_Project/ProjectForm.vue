@@ -47,7 +47,6 @@ const onSubmit = (event: Event) => {
     event.stopPropagation()
     validated.value = true
   } else {
-    // if (form.pk) module.project = form.pk
     emit('on-submit', { ...form, ...module })
     validated.value = false
     router.push({ name: '(설정)', params: { projId: form.identifier } })
@@ -116,7 +115,7 @@ onUpdated(() => dataSetup())
               maxlength="100"
               placeholder="프로젝트 식별자"
               required
-              :disabled="form.identifier"
+              :disabled="!!project?.identifier"
               text="1에서 100글자 소문자(a-z), 숫자, 대쉬(-)와 밑줄(_)만 가능합니다. 식별자 저장 후에는 수정할 수 없습니다."
             />
           </CCol>
@@ -132,7 +131,7 @@ onUpdated(() => dataSetup())
         <CRow class="mb-3">
           <CFormLabel class="col-form-label text-right col-2">공개여부</CFormLabel>
           <CCol class="pt-2">
-            <CFormSwitch v-model="form.is_public" label="프로젝트 공개 여부" />
+            <CFormSwitch v-model="form.is_public" id="is_public" label="프로젝트 공개 여부" />
             <div class="form-text">
               공개 프로젝트는 네트워크의 모든 사용자가 접속할 수 있습니다.
             </div>
@@ -157,7 +156,11 @@ onUpdated(() => dataSetup())
         <CRow class="mb-3">
           <CFormLabel class="col-form-label text-right col-2">상위 프로젝트 구성원 상속</CFormLabel>
           <CCol class="pt-2">
-            <CFormSwitch v-model="form.is_inherit_members" label="상위 프로젝트 구성원 상속 여부" />
+            <CFormSwitch
+              v-model="form.is_inherit_members"
+              id="is_inherit_members"
+              label="상위 프로젝트 구성원 상속 여부"
+            />
           </CCol>
         </CRow>
       </CCardBody>
