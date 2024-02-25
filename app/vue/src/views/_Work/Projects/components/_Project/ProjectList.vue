@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { PropType } from 'vue'
+import { inject, type PropType } from 'vue'
 import type { TaskProject } from '@/store/types/work'
 
 defineProps({
@@ -8,6 +8,8 @@ defineProps({
     default: () => [],
   },
 })
+
+const superAuth = inject('superAuth', false)
 </script>
 
 <template>
@@ -16,7 +18,7 @@ defineProps({
       <h5>프로젝트</h5>
     </CCol>
 
-    <CCol class="text-right">
+    <CCol v-if="superAuth" class="text-right">
       <span v-show="$route.name !== '프로젝트 - 생성'" class="mr-2">
         <v-icon icon="mdi-plus-circle" color="success" size="sm" />
         <router-link :to="{ name: '프로젝트 - 생성' }" class="ml-1">새 프로젝트</router-link>
