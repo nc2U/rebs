@@ -33,28 +33,28 @@ class TaskProjectSerializer(serializers.ModelSerializer):
         project = TaskProject.objects.create(**validated_data)
         project.save()
 
-        # issue = True if self.initial_data.get('issue', None) == 'true' else False
-        # time = True if self.initial_data.get('time', None) == 'true' else False
-        # news = True if self.initial_data.get('news', None) == 'true' else False
-        # document = True if self.initial_data.get('document', None) == 'true' else False
-        # file = True if self.initial_data.get('file', None) == 'true' else False
-        # wiki = True if self.initial_data.get('wiki', None) == 'true' else False
-        # repository = True if self.initial_data.get('repository', None) == 'true' else False
-        # forum = True if self.initial_data.get('forum', None) == 'true' else False
-        # calendar = True if self.initial_data.get('calendar', None) == 'true' else False
-        # gantt = True if self.initial_data.get('gantt', None) == 'true' else False
-        #
-        # Module(project=project,
-        #        issue=issue,
-        #        time=time,
-        #        news=news,
-        #        document=document,
-        #        file=file,
-        #        wiki=wiki,
-        #        repository=repository,
-        #        forum=forum,
-        #        calendar=calendar,
-        #        gantt=gantt).save()
+        issue = self.initial_data.get('issue', True)
+        time = self.initial_data.get('time', True)
+        news = self.initial_data.get('news', True)
+        document = self.initial_data.get('document', True)
+        file = self.initial_data.get('file', True)
+        wiki = self.initial_data.get('wiki', True)
+        repository = self.initial_data.get('repository', True)
+        forum = self.initial_data.get('forum', True)
+        calendar = self.initial_data.get('calendar', True)
+        gantt = self.initial_data.get('gantt', True)
+
+        Module(project=project,
+               issue=issue,
+               time=time,
+               news=news,
+               document=document,
+               file=file,
+               wiki=wiki,
+               repository=repository,
+               forum=forum,
+               calendar=calendar,
+               gantt=gantt).save()
 
         return project
 
@@ -65,16 +65,16 @@ class TaskProjectSerializer(serializers.ModelSerializer):
         instance.depth = 1 if parent is None else parent.depth + 1
         instance.save()
 
-        issue = True if self.initial_data.get('issue', None) == 'true' else False
-        time = True if self.initial_data.get('time', None) == 'true' else False
-        news = True if self.initial_data.get('news', None) == 'true' else False
-        document = True if self.initial_data.get('document', None) == 'true' else False
-        file = True if self.initial_data.get('file', None) == 'true' else False
-        wiki = True if self.initial_data.get('wiki', None) == 'true' else False
-        repository = True if self.initial_data.get('repository', None) == 'true' else False
-        forum = True if self.initial_data.get('forum', None) == 'true' else False
-        calendar = True if self.initial_data.get('calendar', None) == 'true' else False
-        gantt = True if self.initial_data.get('gantt', None) == 'true' else False
+        issue = self.initial_data.get('issue', True)
+        time = self.initial_data.get('time', True)
+        news = self.initial_data.get('news', True)
+        document = self.initial_data.get('document', True)
+        file = self.initial_data.get('file', True)
+        wiki = self.initial_data.get('wiki', True)
+        repository = self.initial_data.get('repository', True)
+        forum = self.initial_data.get('forum', True)
+        calendar = self.initial_data.get('calendar', True)
+        gantt = self.initial_data.get('gantt', True)
 
         module = instance.module
         module.issue = issue
