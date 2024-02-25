@@ -32,7 +32,7 @@ class TaskProject(models.Model):
 
 
 class Module(models.Model):
-    project = models.ForeignKey(TaskProject, on_delete=models.CASCADE, verbose_name='프로젝트')
+    project = models.OneToOneField(TaskProject, on_delete=models.CASCADE, verbose_name='프로젝트')
     issue = models.BooleanField('업무관리', default=True)
     time = models.BooleanField('시간추적', default=True)
     news = models.BooleanField('공지', default=True)
@@ -43,9 +43,6 @@ class Module(models.Model):
     forum = models.BooleanField('게시판', default=True)
     calendar = models.BooleanField('달력', default=True)
     gantt = models.BooleanField('Gantt 차트', default=True)
-
-    def __str__(self):
-        return self.issue
 
 
 class Version(models.Model):

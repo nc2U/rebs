@@ -12,17 +12,17 @@ class ModuleInline(admin.TabularInline):
 
 class VersionInline(admin.TabularInline):
     model = Version
-    extra = 1
+    extra = 0
 
 
 class TaskCategoryInline(admin.TabularInline):
     model = TaskCategory
-    extra = 1
+    extra = 0
 
 
 class RepositoryInline(admin.TabularInline):
     model = Repository
-    extra = 1
+    extra = 0
 
 
 @admin.register(TaskProject)

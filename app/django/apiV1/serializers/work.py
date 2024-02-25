@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import serializers
 
 from work.models import (TaskProject, Module, Version, TaskCategory, Repository, Member, Role,
@@ -6,29 +7,89 @@ from work.models import (TaskProject, Module, Version, TaskCategory, Repository,
 
 
 # Work --------------------------------------------------------------------------
+class ModuleInTaskProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Module
+        fields = '__all__'
+
+
 class TaskProjectSerializer(serializers.ModelSerializer):
     sub_projects = serializers.SerializerMethodField()
     user = serializers.SlugRelatedField('username', read_only=True)
+    module = ModuleInTaskProjectSerializer(read_only=True)
 
     class Meta:
         model = TaskProject
         fields = ('pk', 'name', 'desc', 'identifier', 'homepage', 'is_public', 'is_inherit_members',
-                  'created', 'company', 'parent_project', 'depth', 'sub_projects', 'user')
+                  'created', 'company', 'parent_project', 'depth', 'sub_projects', 'user', 'module')
 
     def get_sub_projects(self, obj):
         return self.__class__(obj.taskproject_set.all(), many=True, read_only=True).data
 
+    @transaction.atomic
     def create(self, validated_data):
         parent = validated_data.get('parent_project', None)
         validated_data['depth'] = 1 if parent is None else parent.depth + 1
         project = TaskProject.objects.create(**validated_data)
         project.save()
 
+        issue = True if self.initial_data.get('issue', None) == 'true' else False
+        time = True if self.initial_data.get('time', None) == 'true' else False
+        news = True if self.initial_data.get('news', None) == 'true' else False
+        document = True if self.initial_data.get('document', None) == 'true' else False
+        file = True if self.initial_data.get('file', None) == 'true' else False
+        wiki = True if self.initial_data.get('wiki', None) == 'true' else False
+        repository = True if self.initial_data.get('repository', None) == 'true' else False
+        forum = True if self.initial_data.get('forum', None) == 'true' else False
+        calendar = True if self.initial_data.get('calendar', None) == 'true' else False
+        gantt = True if self.initial_data.get('gantt', None) == 'true' else False
+
+        Module(project=project,
+               issue=issue,
+               time=time,
+               news=news,
+               document=document,
+               file=file,
+               wiki=wiki,
+               repository=repository,
+               forum=forum,
+               calendar=calendar,
+               gantt=gantt).save()
+
+        return project
+
+    @transaction.atomic
     def update(self, instance, validated_data):
         instance.__dict__.update(validated_data)
         parent = validated_data.get('parent_project', None)
         instance.depth = 1 if parent is None else parent.depth + 1
         instance.save()
+
+        issue = True if self.initial_data.get('issue', None) == 'true' else False
+        time = True if self.initial_data.get('time', None) == 'true' else False
+        news = True if self.initial_data.get('news', None) == 'true' else False
+        document = True if self.initial_data.get('document', None) == 'true' else False
+        file = True if self.initial_data.get('file', None) == 'true' else False
+        wiki = True if self.initial_data.get('wiki', None) == 'true' else False
+        repository = True if self.initial_data.get('repository', None) == 'true' else False
+        forum = True if self.initial_data.get('forum', None) == 'true' else False
+        calendar = True if self.initial_data.get('calendar', None) == 'true' else False
+        gantt = True if self.initial_data.get('gantt', None) == 'true' else False
+
+        module = instance.module
+        module.issue = issue
+        module.time = time
+        module.news = news
+        module.document = document
+        module.file = file
+        module.wiki = wiki
+        module.repository = repository
+        module.forum = forum
+        module.calendar = calendar
+        module.gantt = gantt
+        module.save()
+
+        return instance
 
 
 class ModuleSerializer(serializers.ModelSerializer):
