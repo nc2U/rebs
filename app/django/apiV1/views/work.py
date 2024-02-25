@@ -1,5 +1,7 @@
 from rest_framework import viewsets
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import FilterSet, BooleanFilter
+from rest_framework.response import Response
 
 from ..permission import *
 from ..pagination import *
@@ -22,6 +24,7 @@ class TaskProjectFilter(FilterSet):
 class TaskProjectViewSet(viewsets.ModelViewSet):
     queryset = TaskProject.objects.all()
     serializer_class = TaskProjectSerializer
+    lookup_field = 'identifier'
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = PageNumberPaginationTwenty
     filterset_class = TaskProjectFilter
