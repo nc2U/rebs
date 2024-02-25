@@ -18,6 +18,12 @@ class TaskProjectSerializer(serializers.ModelSerializer):
     def get_sub_projects(self, obj):
         return self.__class__(obj.taskproject_set.all(), many=True, read_only=True).data
 
+    def create(self, validated_data):
+        parent = validated_data['parent_project']
+        validated_data['depth'] = 1 if parent is None else parent.depth + 1
+        project = TaskProject.objects.create(**validated_data)
+        project.save()
+
 
 class ModuleSerializer(serializers.ModelSerializer):
     class Meta:
