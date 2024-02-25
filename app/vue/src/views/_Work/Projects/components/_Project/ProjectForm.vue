@@ -1,10 +1,12 @@
 <script lang="ts" setup="">
-import { reactive, ref } from 'vue'
+import { onMounted, onUpdated, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Multiselect from '@vueform/multiselect'
 import QuillEditor from '@/components/QuillEditor/index.vue'
 
-defineProps({
+const props = defineProps({
+  title: { type: String, default: 'Body Title' },
+  project: { type: Object, default: () => null },
   getProjects: { type: Array, default: () => [] },
 })
 
@@ -50,26 +52,44 @@ const onSubmit = (event: Event) => {
     router.push({ name: '(설정)', params: { projId: form.identifier } })
   }
 }
+
+const dataSetup = () => {
+  if (props.project) {
+    form.pk = props.project.pk
+    form.name = props.project.name
+    form.desc = props.project.desc
+    form.identifier = props.project.identifier
+    form.homepage = props.project.homepage
+    form.is_public = props.project.is_public
+    form.parent_project = props.project.parent_project
+    form.is_inherit_members = props.project.is_inherit_members
+
+    module.issue = props.project.module.issue
+    module.time = props.project.module.time
+    module.news = props.project.module.news
+    module.document = props.project.module.document
+    module.file = props.project.module.file
+    module.wiki = props.project.module.wiki
+    module.repository = props.project.module.repository
+    module.forum = props.project.module.forum
+    module.calendar = props.project.module.calendar
+    module.gantt = props.project.module.gantt
+  }
+}
+
+onMounted(() => dataSetup())
+onUpdated(() => dataSetup())
 </script>
 
 <template>
   <CRow>
     <CCol class="my-3">
-      <h5>새 프로젝트</h5>
-    </CCol>
-
-    <CCol class="text-right">
-      <span v-show="$route.name !== '프로젝트 - 생성'" class="mr-2">
-        <v-icon icon="mdi-plus-circle" color="success" size="sm" />
-        <router-link :to="{ name: '프로젝트 - 생성' }" class="ml-1">새 프로젝트</router-link>
-      </span>
-      <span>
-        <v-icon icon="mdi-cog" color="secondary" size="sm" />
-        <router-link :to="{ name: '프로젝트 목록' }" class="ml-1">관리</router-link>
-      </span>
+      <h5>{{ title }}</h5>
     </CCol>
   </CRow>
 
+  <slot></slot>
+  {{ project }}--
   <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
     <CCard class="mb-3">
       <CCardBody>

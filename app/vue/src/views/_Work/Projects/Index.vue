@@ -3,7 +3,7 @@ import { ref, computed, inject, onBeforeMount, type ComputedRef } from 'vue'
 import { navMenu as navMenu1 } from '@/views/_Work/_menu/headermixin1'
 import { navMenu as navMenu2 } from '@/views/_Work/_menu/headermixin2'
 import type { Company } from '@/store/types/settings'
-import { useRoute } from 'vue-router'
+import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
@@ -31,15 +31,8 @@ const company = inject<ComputedRef<Company>>('company')
 const comName = computed(() => company?.value?.name)
 const navMenu = computed(() => ((route.name as string).includes('프로젝트') ? navMenu1 : navMenu2))
 
-const project = ref({
-  pk: 1,
-  name: '동춘1구역9블럭 지역주택조합',
-  desc: '동춘1구역9블럭 지역주택조합 공동주택 신축사업',
-  slug: 'dongchun',
-})
-
 const headerTitle = computed(() =>
-  (route.name as string).includes('프로젝트') ? comName.value : project.value.name,
+  (route.name as string).includes('프로젝트') ? comName.value : taskProject.value?.name,
 )
 
 const sideNavCAll = () => cBody.value.toggle()
@@ -56,11 +49,19 @@ const updateTaskProject = (payload: any) => workStore.updateTaskProject(payload)
 const onSubmit = (payload: any) => {
   payload.company = company?.value.pk
   console.log(payload)
-  if (!!payload.pk) updateTaskProject(payload)
+  if (!!payload.identifier) updateTaskProject(payload)
   else createTaskProject(payload)
 }
 
-onBeforeMount(() => workStore.fetchTaskProjectList())
+onBeforeRouteUpdate(async to => {
+  if (to.params.projId) await fetchTaskProject(to.params.projId)
+  else workStore.taskProject = null
+})
+
+onBeforeMount(() => {
+  workStore.fetchTaskProjectList()
+  if (route.params.projId) fetchTaskProject(route.params.projId)
+})
 </script>
 
 <template>
@@ -72,6 +73,7 @@ onBeforeMount(() => workStore.fetchTaskProjectList())
 
       <ProjectForm
         v-if="route.name === '프로젝트 - 생성'"
+        title="새 프로젝트"
         :get-projects="getProjects"
         @on-submit="onSubmit"
       />
