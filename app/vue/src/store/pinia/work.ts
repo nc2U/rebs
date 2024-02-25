@@ -22,9 +22,9 @@ export const useWork = defineStore('work', () => {
       .then(res => (taskProjectList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const fetchTaskProject = (pk: number) =>
+  const fetchTaskProject = (slug: string) =>
     api
-      .get(`/task-project/${pk}/`)
+      .get(`/task-project/${slug}/`)
       .then(res => (taskProject.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
