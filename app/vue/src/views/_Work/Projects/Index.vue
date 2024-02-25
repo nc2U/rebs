@@ -42,7 +42,8 @@ const taskProject = computed(() => workStore.taskProject)
 const taskProjectList = computed(() => workStore.taskProjectList)
 const getProjects = computed(() => workStore.getProjects)
 
-const fetchTaskProject = (pk: number) => workStore.fetchTaskProject(pk)
+const fetchTaskProjectList = () => workStore.fetchTaskProjectList()
+const fetchTaskProject = (projId: string) => workStore.fetchTaskProject(projId)
 const createTaskProject = (payload: any) => workStore.createTaskProject(payload)
 const updateTaskProject = (payload: any) => workStore.updateTaskProject(payload)
 
@@ -54,7 +55,10 @@ const onSubmit = (payload: any) => {
 
 onBeforeRouteUpdate(async to => {
   if (to.params.projId) await fetchTaskProject(to.params.projId)
-  else workStore.taskProject = null
+  else {
+    workStore.taskProject = null
+    await fetchTaskProjectList()
+  }
 })
 
 onBeforeMount(() => {
