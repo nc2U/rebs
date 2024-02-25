@@ -11,9 +11,9 @@ class TaskProject(models.Model):
     company = models.ForeignKey('company.Company', on_delete=models.CASCADE, verbose_name="회사")
     name = models.CharField('이름', max_length=100)
     desc = models.TextField('설명', blank=True, default='')
-    identifier = models.CharField('식별자', max_length=20, unique=True,
+    identifier = models.CharField('식별자', max_length=100, unique=True,
                                   help_text='1에서 100글자 소문자(a-z), 숫자, 대쉬(-)와 밑줄(_)만 가능합니다. 식별자는 저장 후에는 수정할 수 없습니다.')
-    homepage = models.URLField('홈페이지', max_length=200, null=True, blank=True)
+    homepage = models.URLField('홈페이지', max_length=255, null=True, blank=True)
     is_public = models.BooleanField('공개', default=True, help_text='공개 프로젝트는 모든 로그인한 사용자가 접속할 수 있습니다.')
     parent_project = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='상위 프로젝트')
     is_inherit_members = models.BooleanField('상위 프로젝트 멤버 상속', default=False)
