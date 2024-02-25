@@ -4,8 +4,6 @@ from datetime import datetime
 
 from django.db import models
 
-from project.models import Project
-
 
 class TaskProject(models.Model):
     company = models.ForeignKey('company.Company', on_delete=models.CASCADE, verbose_name="회사")

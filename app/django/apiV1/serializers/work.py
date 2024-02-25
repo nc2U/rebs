@@ -10,9 +10,8 @@ from work.models import (TaskProject, Module, Version, TaskCategory, Repository,
 class ModuleInTaskProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Module
-        fields = (
-            'pk', 'project', 'issue', 'time', 'news', 'document',
-            'file', 'wiki', 'repository', 'forum', 'calendar', 'gantt')
+        fields = ('pk', 'project', 'issue', 'time', 'news', 'document',
+                  'file', 'wiki', 'repository', 'forum', 'calendar', 'gantt')
 
 
 class TaskProjectSerializer(serializers.ModelSerializer):
