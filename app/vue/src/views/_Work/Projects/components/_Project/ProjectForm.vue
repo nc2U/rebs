@@ -2,7 +2,7 @@
 import { onMounted, onUpdated, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Multiselect from '@vueform/multiselect'
-import QuillEditor from '@/components/QuillEditor/index.vue'
+// import QuillEditor from '@/components/QuillEditor/index.vue'
 
 const props = defineProps({
   title: { type: String, default: 'Body Title' },
@@ -47,6 +47,7 @@ const onSubmit = (event: Event) => {
     event.stopPropagation()
     validated.value = true
   } else {
+    // if (form.pk) module.project = form.pk
     emit('on-submit', { ...form, ...module })
     validated.value = false
     router.push({ name: '(설정)', params: { projId: form.identifier } })
@@ -89,7 +90,7 @@ onUpdated(() => dataSetup())
   </CRow>
 
   <slot></slot>
-  {{ project }}--
+
   <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
     <CCard class="mb-3">
       <CCardBody>
@@ -102,8 +103,8 @@ onUpdated(() => dataSetup())
 
         <CRow class="mb-3">
           <CFormLabel class="col-form-label text-right col-2">설명</CFormLabel>
-          <CCol class="mb-5">
-            <QuillEditor v-model:content="form.desc" />
+          <CCol>
+            <CFormTextarea v-model="form.desc" placeholder="프로젝트 설명" />
           </CCol>
         </CRow>
 

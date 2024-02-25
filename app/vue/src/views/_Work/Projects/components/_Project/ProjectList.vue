@@ -37,11 +37,11 @@ const superAuth = inject('superAuth', false)
   <CRow v-else>
     <CCol v-for="proj in projectList" :key="proj.pk" sm="12" lg="6" xl="4" class="my-2">
       <CCard>
-        <CCardBody class="card pb-0">
+        <CCardBody class="card">
           <router-link :to="{ name: '(개요)', params: { projId: proj.identifier } }">
             {{ proj.name }}
           </router-link>
-          <p>{{ proj.desc }}</p>
+          <p v-html="proj.desc" />
 
           <!-- c1 -->
           <span v-if="!!proj.sub_projects?.length" class="child">
@@ -49,7 +49,7 @@ const superAuth = inject('superAuth', false)
               <router-link :to="{ name: '(개요)', params: { projId: c1.identifier } }">
                 {{ c1.name }}
               </router-link>
-              <p>{{ c1.desc }}</p>
+              <p v-html="c1.desc" />
 
               <!-- c2 -->
               <span v-if="!!c1.sub_projects?.length" class="child">
@@ -57,7 +57,7 @@ const superAuth = inject('superAuth', false)
                   <router-link :to="{ name: '(개요)', params: { projId: c2.identifier } }">
                     {{ c2.name }}
                   </router-link>
-                  <p>{{ c2.desc }}</p>
+                  <p v-html="c2.desc" />
 
                   <!-- c3 -->
                   <span v-if="!!c2.sub_projects?.length" class="child">
@@ -65,7 +65,7 @@ const superAuth = inject('superAuth', false)
                       <router-link :to="{ name: '(개요)', params: { projId: c3.identifier } }">
                         {{ c3.name }}
                       </router-link>
-                      <p>{{ c3.desc }}</p>
+                      <p v-html="c3.desc" />
 
                       <!-- c4 -->
                       <span v-if="!!c3.sub_projects?.length" class="child">
@@ -73,7 +73,7 @@ const superAuth = inject('superAuth', false)
                           <router-link :to="{ name: '(개요)', params: { projId: c4.identifier } }">
                             {{ c4.name }}
                           </router-link>
-                          <p>{{ c4.desc }}</p>
+                          <p v-html="c4.desc" />
 
                           <!-- c5 -->
                           <span v-if="!!c4.sub_projects?.length" class="child">
@@ -83,7 +83,7 @@ const superAuth = inject('superAuth', false)
                               >
                                 {{ c5.name }}
                               </router-link>
-                              <p>{{ c5.desc }}</p>
+                              <p v-html="c5.desc" />
                             </blockquote>
                           </span>
                         </blockquote>
@@ -106,8 +106,10 @@ const superAuth = inject('superAuth', false)
   font-size: 1.13em;
 }
 
-.card p {
+.card-body p {
   font-size: 0.89em;
+  margin-top: 2px;
+  margin-bottom: 0;
 }
 
 .card .child {

@@ -1,7 +1,5 @@
 from rest_framework import viewsets
-from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import FilterSet, BooleanFilter
-from rest_framework.response import Response
 
 from ..permission import *
 from ..pagination import *
