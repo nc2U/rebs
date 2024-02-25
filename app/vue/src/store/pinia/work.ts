@@ -1,5 +1,5 @@
 import api from '@/api'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
 import type { TaskProject } from '@/store/types/work'
@@ -8,6 +8,12 @@ export const useWork = defineStore('work', () => {
   // states & getters
   const taskProjectList = ref<TaskProject[]>([])
   const taskProject = ref<TaskProject | null>(null)
+  const getProjects = computed(() =>
+    taskProjectList.value.map(p => ({
+      value: p.pk,
+      label: p.name,
+    })),
+  )
 
   // actions
   const fetchTaskProjectList = () =>
@@ -49,6 +55,7 @@ export const useWork = defineStore('work', () => {
   return {
     taskProjectList,
     taskProject,
+    getProjects,
 
     fetchTaskProjectList,
     fetchTaskProject,

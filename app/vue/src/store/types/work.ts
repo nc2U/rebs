@@ -7,6 +7,7 @@ export interface TaskProject {
   homepage: string | null
   is_public: boolean
   parent_project: number | null
+  depth: number
   is_inherit_members: boolean
   sub_projects?: TaskProject[]
   created?: string
