@@ -22,7 +22,7 @@ const sideNavCall = () => emit('side-nav-call')
 </script>
 
 <template>
-  <CRow class="mb-0 text-body" :class="backGround">
+  <CRow class="mb-0" :class="backGround">
     <CCol>
       <CRow>
         <CCol class="mb-2 p-4">
@@ -45,5 +45,10 @@ const sideNavCall = () => emit('side-nav-call')
 strong.title {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 20px;
+  color: #555;
+}
+
+.dark-theme .title {
+  color: #ddd;
 }
 </style>
