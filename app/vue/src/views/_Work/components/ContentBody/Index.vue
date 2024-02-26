@@ -23,11 +23,11 @@ defineExpose({ toggle })
 
 <template>
   <CRow class="flex-grow-1">
-    <CCol md="9" class="text-body pl-5 p-3 main">
+    <CCol md="9" class="text-body main p-4 px-lg-5">
       <slot> Under Construction!</slot>
     </CCol>
 
-    <CCol class="text-body p-3 d-none d-md-block">
+    <CCol class="text-body p-4 d-none d-md-block">
       <slot name="aside"> Under Construction!</slot>
     </CCol>
 

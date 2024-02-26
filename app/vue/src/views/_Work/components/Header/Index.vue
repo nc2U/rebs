@@ -15,9 +15,7 @@ defineProps({
 })
 
 const isDark = computed(() => useStore().theme === 'dark')
-const backGround = computed(() =>
-  isDark.value ? 'bg-blue-grey-darken-5' : 'bg-blue-grey-lighten-3',
-)
+const backGround = computed(() => (isDark.value ? 'bg-blue-grey-darken-5' : 'bg-indigo-lighten-5'))
 
 const emit = defineEmits(['side-nav-call'])
 const sideNavCall = () => emit('side-nav-call')
@@ -27,7 +25,7 @@ const sideNavCall = () => emit('side-nav-call')
   <CRow class="mb-0 text-body" :class="backGround">
     <CCol>
       <CRow>
-        <CCol class="mb-2 p-4 text-white">
+        <CCol class="mb-2 p-4">
           <strong class="title pl-1"> {{ pageTitle }}</strong>
         </CCol>
         <CCol class="text-right p-3 pr-5">
