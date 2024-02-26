@@ -9,38 +9,6 @@ export const useWork = defineStore('work', () => {
   const taskProjectList = ref<TaskProject[]>([])
   const AllTaskProjects = ref<TaskProject[]>([])
   const taskProject = ref<TaskProject | null>(null)
-  const getTaskProjects = computed(() =>
-    taskProjectList.value.map(p => ({
-      value: p.pk,
-      label: p.name,
-      depth: p.depth,
-      subs: p.sub_projects?.map(s1 => ({
-        value: s1.pk,
-        label: s1.name,
-        depth: s1.depth,
-        subs: s1.sub_projects?.map(s2 => ({
-          value: s2.pk,
-          label: s2.name,
-          depth: s2.depth,
-          subs: s2.sub_projects?.map(s3 => ({
-            value: s3.pk,
-            label: s3.name,
-            depth: s3.depth,
-            subs: s3.sub_projects?.map(s4 => ({
-              value: s4.pk,
-              label: s4.name,
-              depth: s4.depth,
-              subs: s4.sub_projects?.map(s5 => ({
-                value: s5.pk,
-                label: s5.name,
-                depth: s5.depth,
-              })),
-            })),
-          })),
-        })),
-      })),
-    })),
-  )
 
   // actions
   const fetchTaskProjectList = () =>
@@ -89,7 +57,6 @@ export const useWork = defineStore('work', () => {
     taskProjectList,
     AllTaskProjects,
     taskProject,
-    getTaskProjects,
 
     fetchTaskProjectList,
     fetchAllTaskProjects,
