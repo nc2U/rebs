@@ -45,7 +45,7 @@ const sideNavCall = () => emit('side-nav-call')
 strong.title {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 20px;
-  color: #555;
+  color: #4e555b;
 }
 
 .dark-theme .title {
