@@ -30,6 +30,7 @@ const onSubmit = (payload: any) => {
   payload.company = company?.value.pk
   if (!!payload.pk) updateTaskProject(payload)
   else createTaskProject(payload)
+  console.log(payload)
 }
 </script>
 
