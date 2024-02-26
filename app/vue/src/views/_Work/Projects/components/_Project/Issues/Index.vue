@@ -1,11 +1,9 @@
-<script lang="ts" setup="">
-import { useRoute } from 'vue-router'
-
-const route = useRoute()
-</script>
+<script lang="ts" setup></script>
 
 <template>
-  <CRow>
-    <CCol>{{ route.name }}</CCol>
+  <CRow class="py-2">
+    <CCol>
+      <h5>{{ $route.name }}</h5>
+    </CCol>
   </CRow>
 </template>

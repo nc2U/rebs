@@ -12,7 +12,13 @@ const sideNavCAll = () => cBody.value.toggle()
   <Header :page-title="pageTitle" :nav-menu="navMenu" @side-nav-call="sideNavCAll" />
 
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query">
-    <template v-slot:default> {{ $route.name }} ==</template>
+    <template v-slot:default>
+      <CRow class="py-2">
+        <CCol>
+          <h5>{{ $route.name }}</h5>
+        </CCol>
+      </CRow>
+    </template>
 
     <template v-slot:aside></template>
   </ContentBody>

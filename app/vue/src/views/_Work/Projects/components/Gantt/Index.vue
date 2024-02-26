@@ -17,7 +17,11 @@ const sideNavCAll = () => cBody.value.toggle()
 
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query">
     <template v-slot:default>
-      {{ $route.name }}
+      <CRow class="py-2">
+        <CCol>
+          <h5>{{ $route.name }}</h5>
+        </CCol>
+      </CRow>
     </template>
 
     <template v-slot:aside></template>
