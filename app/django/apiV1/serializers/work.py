@@ -61,7 +61,8 @@ class TaskProjectSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def update(self, instance, validated_data):
-        instance.__dict__.update(validated_data)
+        # 1. 프로젝트 정보 테이블 입력
+        instance.__dict__.update(**validated_data)
         parent = validated_data.get('parent_project', None)
         instance.depth = 1 if parent is None else parent.depth + 1
         instance.save()

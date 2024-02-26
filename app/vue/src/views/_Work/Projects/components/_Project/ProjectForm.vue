@@ -216,7 +216,7 @@ onUpdated(() => dataSetup())
 
     <CRow>
       <CCol>
-        <CButton color="primary" type="submit">저장</CButton>
+        <CButton :color="!project ? 'primary' : 'success'" type="submit">저장</CButton>
         <!--        <CButton color="primary" type="submit">저장 후 계속하기</CButton>-->
       </CCol>
     </CRow>
