@@ -81,8 +81,8 @@ onUpdated(() => dataSetup())
 </script>
 
 <template>
-  <CRow>
-    <CCol class="my-3">
+  <CRow class="py-3">
+    <CCol>
       <h5>{{ title }}</h5>
     </CCol>
   </CRow>

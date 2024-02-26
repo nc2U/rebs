@@ -13,8 +13,8 @@ const superAuth = inject('superAuth', false)
 </script>
 
 <template>
-  <CRow>
-    <CCol class="my-3">
+  <CRow class="py-3">
+    <CCol>
       <h5>프로젝트</h5>
     </CCol>
 
