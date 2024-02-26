@@ -68,29 +68,29 @@ class TaskProjectSerializer(serializers.ModelSerializer):
         # instance.depth = 1 if parent is None else parent.depth + 1
         instance.save()
 
-        issue = self.initial_data.get('issue', True)
-        time = self.initial_data.get('time', True)
-        news = self.initial_data.get('news', True)
-        document = self.initial_data.get('document', True)
-        file = self.initial_data.get('file', True)
-        wiki = self.initial_data.get('wiki', True)
-        repository = self.initial_data.get('repository', False)
-        forum = self.initial_data.get('forum', True)
-        calendar = self.initial_data.get('calendar', True)
-        gantt = self.initial_data.get('gantt', True)
-
-        module = instance.module
-        module.issue = issue
-        module.time = time
-        module.news = news
-        module.document = document
-        module.file = file
-        module.wiki = wiki
-        module.repository = repository
-        module.forum = forum
-        module.calendar = calendar
-        module.gantt = gantt
-        module.save()
+        # issue = self.initial_data.get('issue', True)
+        # time = self.initial_data.get('time', True)
+        # news = self.initial_data.get('news', True)
+        # document = self.initial_data.get('document', True)
+        # file = self.initial_data.get('file', True)
+        # wiki = self.initial_data.get('wiki', True)
+        # repository = self.initial_data.get('repository', False)
+        # forum = self.initial_data.get('forum', True)
+        # calendar = self.initial_data.get('calendar', True)
+        # gantt = self.initial_data.get('gantt', True)
+        #
+        # module = instance.module
+        # module.issue = issue
+        # module.time = time
+        # module.news = news
+        # module.document = document
+        # module.file = file
+        # module.wiki = wiki
+        # module.repository = repository
+        # module.forum = forum
+        # module.calendar = calendar
+        # module.gantt = gantt
+        # module.save()
 
         return instance
 
