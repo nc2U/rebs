@@ -142,7 +142,18 @@ onUpdated(() => dataSetup())
           <CCol>
             <CFormSelect v-model.number="form.parent_project">
               <option value="">상위 프로젝트 선택</option>
-              <option v-for="proj in allTaskProjects" :value="proj.pk" :key="proj.pk">
+              <option
+                v-for="proj in allTaskProjects"
+                :value="proj.pk"
+                :key="proj.pk"
+                style="padding-left: 50px"
+              >
+                <span v-if="proj.depth === 2"> &nbsp;&nbsp;» </span>
+                <span v-if="proj.depth === 3"> &nbsp;&nbsp;&nbsp;&nbsp;» </span>
+                <span v-if="proj.depth === 4"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;» </span>
+                <span v-if="proj.depth === 5">
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;»
+                </span>
                 {{ proj.name }}
               </option>
             </CFormSelect>
