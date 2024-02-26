@@ -28,7 +28,6 @@ const updateTaskProject = (payload: any) => workStore.updateTaskProject(payload)
 
 const onSubmit = (payload: any) => {
   payload.company = company?.value.pk
-  console.log(payload)
   if (!!payload.pk) updateTaskProject(payload)
   else createTaskProject(payload)
 }
