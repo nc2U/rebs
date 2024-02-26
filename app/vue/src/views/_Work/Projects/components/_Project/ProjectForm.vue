@@ -146,7 +146,7 @@ onUpdated(() => dataSetup())
                 v-for="proj in allTaskProjects"
                 :value="proj.pk"
                 :key="proj.pk"
-                style="padding-left: 50px"
+                v-show="project?.pk !== proj.pk"
               >
                 <span v-if="proj.depth === 2"> &nbsp;&nbsp;» </span>
                 <span v-if="proj.depth === 3"> &nbsp;&nbsp;&nbsp;&nbsp;» </span>

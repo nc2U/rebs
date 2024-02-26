@@ -59,7 +59,6 @@ onBeforeRouteUpdate(async to => {
 
 onBeforeMount(() => {
   workStore.fetchTaskProjectList()
-  workStore.fetchAllTaskProjects()
   if (route.params.projId) workStore.fetchTaskProject(route.params.projId as string)
 })
 </script>

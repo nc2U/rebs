@@ -7,20 +7,30 @@ import type { TaskProject } from '@/store/types/work'
 export const useWork = defineStore('work', () => {
   // states & getters
   const taskProjectList = ref<TaskProject[]>([])
-  const AllTaskProjects = ref<TaskProject[]>([])
   const taskProject = ref<TaskProject | null>(null)
+  const AllTaskProjects = computed(() => {
+    const result: TaskProject[] = []
+
+    function flatten(proj: TaskProject) {
+      result.push(proj)
+      if (!!proj.sub_projects?.length) {
+        proj.sub_projects.forEach(sub => {
+          flatten(sub)
+        })
+      }
+    }
+
+    taskProjectList.value.forEach(root => {
+      flatten(root)
+    })
+    return result
+  })
 
   // actions
   const fetchTaskProjectList = () =>
     api
       .get('/task-project/?parent__isnull=true')
       .then(res => (taskProjectList.value = res.data.results))
-      .catch(err => errorHandle(err.response.data))
-
-  const fetchAllTaskProjects = () =>
-    api
-      .get('/task-project/')
-      .then(res => (AllTaskProjects.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
   const fetchTaskProject = (slug: string) =>
@@ -59,7 +69,6 @@ export const useWork = defineStore('work', () => {
     taskProject,
 
     fetchTaskProjectList,
-    fetchAllTaskProjects,
     fetchTaskProject,
     createTaskProject,
     updateTaskProject,
