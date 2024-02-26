@@ -6,7 +6,7 @@ import type { TaskProject } from '@/store/types/work'
 const props = defineProps({
   title: { type: String, default: 'Body Title' },
   project: { type: Object as PropType<TaskProject | null>, default: null },
-  getTaskProjects: { type: Array, default: () => [] },
+  allTaskProjects: { type: Array as PropType<TaskProject[]>, default: () => [] },
 })
 
 const emit = defineEmits(['on-submit'])
@@ -142,8 +142,8 @@ onUpdated(() => dataSetup())
           <CCol>
             <CFormSelect v-model.number="form.parent_project">
               <option value="">상위 프로젝트 선택</option>
-              <option v-for="proj in getTaskProjects" :value="proj.value" :key="proj.value">
-                {{ proj.label }}
+              <option v-for="proj in allTaskProjects" :value="proj.pk" :key="proj.pk">
+                {{ proj.name }}
               </option>
             </CFormSelect>
           </CCol>

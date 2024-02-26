@@ -40,31 +40,27 @@ const sideNavCAll = () => cBody.value.toggle()
 const workStore = useWork()
 const taskProject = computed(() => workStore.taskProject)
 const taskProjectList = computed(() => workStore.taskProjectList)
-const getTaskProjects = computed(() => workStore.getTaskProjects)
-
-const fetchTaskProjectList = () => workStore.fetchTaskProjectList()
-const fetchTaskProject = (projId: string) => workStore.fetchTaskProject(projId)
-const createTaskProject = (payload: any) => workStore.createTaskProject(payload)
-const updateTaskProject = (payload: any) => workStore.updateTaskProject(payload)
+const AllTaskProjects = computed(() => workStore.AllTaskProjects)
 
 const onSubmit = (payload: any) => {
   payload.company = company?.value.pk
-  if (!!payload.pk) updateTaskProject(payload)
-  else createTaskProject(payload)
+  if (!!payload.pk) workStore.updateTaskProject(payload)
+  else workStore.createTaskProject(payload)
   console.log(payload)
 }
 
 onBeforeRouteUpdate(async to => {
-  if (to.params.projId) await fetchTaskProject(to.params.projId as string)
+  if (to.params.projId) await workStore.fetchTaskProject(to.params.projId as string)
   else {
     workStore.taskProject = null
-    await fetchTaskProjectList()
+    await workStore.fetchTaskProjectList()
   }
 })
 
 onBeforeMount(() => {
   workStore.fetchTaskProjectList()
-  if (route.params.projId) fetchTaskProject(route.params.projId as string)
+  workStore.fetchAllTaskProjects()
+  if (route.params.projId) workStore.fetchTaskProject(route.params.projId as string)
 })
 </script>
 
@@ -78,7 +74,7 @@ onBeforeMount(() => {
       <ProjectForm
         v-if="route.name === '프로젝트 - 생성'"
         title="새 프로젝트"
-        :get-task-projects="getTaskProjects"
+        :all-task-projects="AllTaskProjects"
         @on-submit="onSubmit"
       />
 

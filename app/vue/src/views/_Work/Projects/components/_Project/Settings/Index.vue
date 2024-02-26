@@ -4,32 +4,27 @@ import { useWork } from '@/store/pinia/work'
 import type { Company } from '@/store/types/settings'
 import ProjectForm from '@/views/_Work/Projects/components/_Project/ProjectForm.vue'
 
-const menus = ref([
-  '프로젝트',
-  '구성원',
-  '업무 추적',
-  '버전',
-  '업무 범주',
-  '저장소',
-  '게시판',
-  '시간 추적',
-])
+// const menus = ref([
+//   '프로젝트',
+//   '구성원',
+//   '업무 추적',
+//   '버전',
+//   '업무 범주',
+//   '저장소',
+//   '게시판',
+//   '시간 추적',
+// ])
 
 const company = inject<ComputedRef<Company>>('company')
 
 const workStore = useWork()
 const taskProject = computed(() => workStore.taskProject)
-// const taskProjectList = computed(() => workStore.taskProjectList)
-const getTaskProjects = computed(() => workStore.getTaskProjects)
-
-// const fetchTaskProject = (pk: number) => workStore.fetchTaskProject(pk)
-const createTaskProject = (payload: any) => workStore.createTaskProject(payload)
-const updateTaskProject = (payload: any) => workStore.updateTaskProject(payload)
+const AllTaskProjects = computed(() => workStore.AllTaskProjects)
 
 const onSubmit = (payload: any) => {
   payload.company = company?.value.pk
-  if (!!payload.pk) updateTaskProject(payload)
-  else createTaskProject(payload)
+  if (!!payload.pk) workStore.updateTaskProject(payload)
+  else workStore.createTaskProject(payload)
   console.log(payload)
 }
 </script>
@@ -38,7 +33,7 @@ const onSubmit = (payload: any) => {
   <ProjectForm
     title="설정"
     :project="taskProject"
-    :get-task-projects="getTaskProjects"
+    :all-task-projects="AllTaskProjects"
     @on-submit="onSubmit"
   >
     <!--    <CNav variant="tabs" class="mb-3 pl-4">-->
