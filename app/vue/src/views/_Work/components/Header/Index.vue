@@ -24,7 +24,7 @@ const sideNavCall = () => emit('side-nav-call')
 <template>
   <CRow class="mb-0" :class="backGround">
     <CCol>
-      <CRow>
+      <CRow class="px-3">
         <CCol class="mb-2 p-4">
           <strong class="title pl-1"> {{ pageTitle }}</strong>
         </CCol>
