@@ -22,11 +22,11 @@ class TaskProjectFilter(FilterSet):
 class TaskProjectViewSet(viewsets.ModelViewSet):
     queryset = TaskProject.objects.all()
     serializer_class = TaskProjectSerializer
-    lookup_field = 'identifier'
+    lookup_field = 'slug'
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = PageNumberPaginationTwenty
     filterset_class = TaskProjectFilter
-    search_fields = ('name', 'desc', 'identifier')
+    search_fields = ('name', 'desc', 'slug')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
