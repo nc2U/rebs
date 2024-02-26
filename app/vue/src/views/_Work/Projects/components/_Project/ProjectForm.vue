@@ -48,7 +48,7 @@ const onSubmit = (event: Event) => {
   } else {
     emit('on-submit', { ...form, ...module })
     validated.value = false
-    // router.push({ name: '(설정)', params: { projId: form.slug } })
+    router.push({ name: '(설정)', params: { projId: form.slug } })
   }
 }
 
