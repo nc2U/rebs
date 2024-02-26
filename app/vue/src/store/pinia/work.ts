@@ -43,7 +43,7 @@ export const useWork = defineStore('work', () => {
     api
       .post(`/task-project/`, payload)
       .then(res => {
-        fetchTaskProject(res.data.identifier).then(() => message())
+        fetchTaskProject(res.data.slug).then(() => message())
       })
       .catch(err => errorHandle(err.response.data))
 
