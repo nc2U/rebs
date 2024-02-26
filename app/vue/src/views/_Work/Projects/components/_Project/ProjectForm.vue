@@ -2,12 +2,11 @@
 import { onMounted, onUpdated, type PropType, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import type { TaskProject } from '@/store/types/work'
-import Option from '@/views/projects/Option/components/Option.vue'
 
 const props = defineProps({
   title: { type: String, default: 'Body Title' },
   project: { type: Object as PropType<TaskProject | null>, default: null },
-  getTaskProjects: { type: Array, default: () => [] },
+  allTaskProjects: { type: Array as PropType<TaskProject[]>, default: () => [] },
 })
 
 const emit = defineEmits(['on-submit'])
@@ -18,7 +17,7 @@ const form = reactive({
   pk: undefined as number | undefined,
   name: '',
   desc: '',
-  identifier: '',
+  slug: '',
   homepage: null as string | null,
   is_public: true,
   parent_project: null as number | null,
@@ -49,7 +48,7 @@ const onSubmit = (event: Event) => {
   } else {
     emit('on-submit', { ...form, ...module })
     validated.value = false
-    router.push({ name: '(설정)', params: { projId: form.identifier } })
+    // router.push({ name: '(설정)', params: { projId: form.slug } })
   }
 }
 
@@ -58,7 +57,7 @@ const dataSetup = () => {
     form.pk = props.project.pk
     form.name = props.project.name
     form.desc = props.project.desc
-    form.identifier = props.project.identifier
+    form.slug = props.project.slug
     form.homepage = props.project.homepage
     form.is_public = props.project.is_public
     form.parent_project = props.project.parent_project
@@ -111,11 +110,11 @@ onUpdated(() => dataSetup())
           <CFormLabel class="required col-form-label text-right col-2">식별자</CFormLabel>
           <CCol>
             <CFormInput
-              v-model="form.identifier"
+              v-model="form.slug"
               maxlength="100"
               placeholder="프로젝트 식별자"
               required
-              :disabled="!!project?.identifier"
+              :disabled="!!project?.slug"
               text="1에서 100글자 소문자(a-z), 숫자, 대쉬(-)와 밑줄(_)만 가능합니다. 식별자 저장 후에는 수정할 수 없습니다."
             />
           </CCol>
@@ -141,10 +140,21 @@ onUpdated(() => dataSetup())
         <CRow class="mb-3">
           <CFormLabel class="col-form-label text-right col-2">상위 프로젝트</CFormLabel>
           <CCol>
-            <CFormSelect v-model="form.parent_project">
-              <option option-item="">상위 프로젝트 선택</option>
-              <option v-for="proj in getTaskProjects" :value="proj.value" :key="proj.value">
-                {{ proj.label }}
+            <CFormSelect v-model.number="form.parent_project">
+              <option value="">상위 프로젝트 선택</option>
+              <option
+                v-for="proj in allTaskProjects"
+                :value="proj.pk"
+                :key="proj.pk"
+                v-show="project?.pk !== proj.pk"
+              >
+                <span v-if="proj.depth === 2"> &nbsp;&nbsp;» </span>
+                <span v-if="proj.depth === 3"> &nbsp;&nbsp;&nbsp;&nbsp;» </span>
+                <span v-if="proj.depth === 4"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;» </span>
+                <span v-if="proj.depth === 5">
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;»
+                </span>
+                {{ proj.name }}
               </option>
             </CFormSelect>
           </CCol>

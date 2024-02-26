@@ -3,7 +3,7 @@ export interface TaskProject {
   company: number
   name: string
   desc: string
-  identifier: string
+  slug: string
   homepage: string | null
   is_public: boolean
   parent_project: number | null
