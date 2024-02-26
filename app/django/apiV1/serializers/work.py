@@ -61,11 +61,8 @@ class TaskProjectSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def update(self, instance, validated_data):
-        # 1. 프로젝트 정보 테이블 입력
-        instance.__dict__.update(**validated_data)
         parent = validated_data.get('parent_project', None)
         instance.depth = 1 if parent is None else parent.depth + 1
-        instance.save()
 
         issue = self.initial_data.get('issue', True)
         time = self.initial_data.get('time', True)
@@ -91,7 +88,7 @@ class TaskProjectSerializer(serializers.ModelSerializer):
         module.gantt = gantt
         module.save()
 
-        return instance
+        return super().update(instance, validated_data)
 
 
 class ModuleSerializer(serializers.ModelSerializer):
