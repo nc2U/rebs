@@ -29,8 +29,7 @@ class TaskProjectSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        parent_pk = validated_data.get('parent_project', None)
-        parent = TaskProject.objects.get(pk=parent_pk) if parent_pk else None
+        parent = validated_data.get('parent_project', None)
         validated_data['depth'] = 1 if parent is None else parent.depth + 1
         project = TaskProject.objects.create(**validated_data)
         project.save()
@@ -63,9 +62,8 @@ class TaskProjectSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def update(self, instance, validated_data):
         instance.__dict__.update(validated_data)
-        # parent_pk = validated_data.get('parent_project', None)
-        # parent = TaskProject.objects.get(pk=parent_pk) if parent_pk is not None else None
-        # instance.depth = 1 if parent is None else parent.depth + 1
+        parent = validated_data.get('parent_project', None)
+        instance.depth = 1 if parent is None else parent.depth + 1
         instance.save()
 
         issue = self.initial_data.get('issue', True)
