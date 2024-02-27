@@ -16,11 +16,11 @@ const validated = ref(false)
 const form = reactive({
   pk: undefined as number | undefined,
   name: '',
-  desc: '',
-  slug: '',
+  description: '',
   homepage: null as string | null,
   is_public: true,
-  parent_project: null as number | null,
+  parent: null as number | null,
+  slug: '',
   is_inherit_members: false,
 })
 
@@ -56,11 +56,11 @@ const dataSetup = () => {
   if (props.project) {
     form.pk = props.project.pk
     form.name = props.project.name
-    form.desc = props.project.desc
+    form.description = props.project.description
     form.slug = props.project.slug
     form.homepage = props.project.homepage
     form.is_public = props.project.is_public
-    form.parent_project = props.project.parent_project
+    form.parent = props.project.parent
     form.is_inherit_members = props.project.is_inherit_members
 
     module.issue = !!props.project.module?.issue
@@ -102,7 +102,7 @@ onUpdated(() => dataSetup())
         <CRow class="mb-3">
           <CFormLabel class="col-form-label text-right col-2">설명</CFormLabel>
           <CCol>
-            <CFormTextarea v-model="form.desc" placeholder="프로젝트 설명" />
+            <CFormTextarea v-model="form.description" placeholder="프로젝트 설명" />
           </CCol>
         </CRow>
 
@@ -140,7 +140,7 @@ onUpdated(() => dataSetup())
         <CRow class="mb-3">
           <CFormLabel class="col-form-label text-right col-2">상위 프로젝트</CFormLabel>
           <CCol>
-            <CFormSelect v-model.number="form.parent_project">
+            <CFormSelect v-model.number="form.parent">
               <option value="">상위 프로젝트 선택</option>
               <option
                 v-for="proj in allTaskProjects"

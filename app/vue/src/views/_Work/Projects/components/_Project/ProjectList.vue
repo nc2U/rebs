@@ -41,7 +41,7 @@ const superAuth = inject('superAuth', false)
           <router-link :to="{ name: '(개요)', params: { projId: proj.slug } }">
             {{ proj.name }}
           </router-link>
-          <p v-html="proj.desc" />
+          <p v-html="proj.description" />
 
           <!-- c1 -->
           <div v-if="!!proj.sub_projects?.length" class="child">
@@ -49,7 +49,7 @@ const superAuth = inject('superAuth', false)
               <router-link :to="{ name: '(개요)', params: { projId: c1.slug } }">
                 {{ c1.name }}
               </router-link>
-              <p v-html="c1.desc" />
+              <p v-html="c1.description" />
 
               <!-- c2 -->
               <div v-if="!!c1.sub_projects?.length" class="child">
@@ -57,7 +57,7 @@ const superAuth = inject('superAuth', false)
                   <router-link :to="{ name: '(개요)', params: { projId: c2.slug } }">
                     {{ c2.name }}
                   </router-link>
-                  <p v-html="c2.desc" />
+                  <p v-html="c2.description" />
 
                   <!-- c3 -->
                   <div v-if="!!c2.sub_projects?.length" class="child">
@@ -65,7 +65,7 @@ const superAuth = inject('superAuth', false)
                       <router-link :to="{ name: '(개요)', params: { projId: c3.slug } }">
                         {{ c3.name }}
                       </router-link>
-                      <p v-html="c3.desc" />
+                      <p v-html="c3.description" />
 
                       <!-- c4 -->
                       <div v-if="!!c3.sub_projects?.length" class="child">
@@ -73,7 +73,7 @@ const superAuth = inject('superAuth', false)
                           <router-link :to="{ name: '(개요)', params: { projId: c4.slug } }">
                             {{ c4.name }}
                           </router-link>
-                          <p v-html="c4.desc" />
+                          <p v-html="c4.description" />
 
                           <!-- c5 -->
                           <div v-if="!!c4.sub_projects?.length" class="child">
@@ -81,7 +81,7 @@ const superAuth = inject('superAuth', false)
                               <router-link :to="{ name: '(개요)', params: { projId: c5.slug } }">
                                 {{ c5.name }}
                               </router-link>
-                              <p v-html="c5.desc" />
+                              <p v-html="c5.description" />
                             </blockquote>
                           </div>
                         </blockquote>
