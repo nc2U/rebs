@@ -7,7 +7,7 @@ from ..serializers.work import *
 
 from work.models import (IssueProject, Module, Version, IssueCategory, Repository, Member, Role,
                          Permission, Tracker, IssueStatus, Workflow, CodeActivity, CodeIssuePriority,
-                         CodeDocsCategory, Issue, IssueFile, IssueComment, SpentTime)
+                         CodeDocsCategory, Issue, IssueFile, IssueComment, TimeEntry)
 
 
 # Work --------------------------------------------------------------------------
@@ -173,9 +173,9 @@ class IssueCommentViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-class SpentTimeViewSet(viewsets.ModelViewSet):
-    queryset = SpentTime.objects.all()
-    serializer_class = SpentTimeSerializer
+class TimeEntryViewSet(viewsets.ModelViewSet):
+    queryset = TimeEntry.objects.all()
+    serializer_class = TimeEntrySerializer
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = PageNumberPaginationTwenty
     search_fields = ('id',)

@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 from work.models import (IssueProject, Module, Version, IssueCategory, Repository, Member, Role,
                          Permission, Tracker, IssueStatus, Workflow, CodeActivity, CodeIssuePriority,
-                         CodeDocsCategory, Issue, IssueFile, IssueComment, SpentTime)
+                         CodeDocsCategory, Issue, IssueFile, IssueComment, TimeEntry)
 
 
 # Work --------------------------------------------------------------------------
@@ -188,7 +188,7 @@ class IssueCommentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class SpentTimeSerializer(serializers.ModelSerializer):
+class TimeEntrySerializer(serializers.ModelSerializer):
     class Meta:
-        model = SpentTime
+        model = TimeEntry
         fields = '__all__'

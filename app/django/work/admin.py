@@ -2,7 +2,7 @@ from django.contrib import admin
 from import_export.admin import ImportExportMixin
 from .models import (IssueProject, Member, Role, Permission, Tracker, Module, Version, IssueCategory,
                      Repository, IssueStatus, Workflow, CodeActivity, CodeIssuePriority,
-                     CodeDocsCategory, Issue, IssueFile, IssueComment, SpentTime)
+                     CodeDocsCategory, Issue, IssueFile, IssueComment, TimeEntry)
 
 
 class ModuleInline(admin.TabularInline):
@@ -86,11 +86,11 @@ class IssueCommentInline(admin.TabularInline):
     extra = 1
 
 
-class SpentTimeInline(admin.TabularInline):
-    model = SpentTime
+class TimeEntryInline(admin.TabularInline):
+    model = TimeEntry
     extra = 1
 
 
 @admin.register(Issue)
 class IssueAdmin(admin.ModelAdmin):
-    inlines = (IssueFileInline, IssueCommentInline, SpentTimeInline)
+    inlines = (IssueFileInline, IssueCommentInline, TimeEntryInline)

@@ -61,7 +61,7 @@ router.register(r'code-docs-category', work.CodeDocsCategoryViewSet)
 router.register(r'issue', work.IssueViewSet)
 router.register(r'issue-file', work.IssueFileViewSet)
 router.register(r'issue-comment', work.IssueCommentViewSet)
-router.register(r'spent-time', work.SpentTimeViewSet)
+router.register(r'time-entry', work.TimeEntryViewSet)
 # project
 router.register(r'project', project.ProjectViewSet)
 router.register(r'inc-budget', project.ProjectIncBudgetViewSet)  # only list
