@@ -251,9 +251,9 @@ class IssueStatus(models.Model):
 class Workflow(models.Model):
     role = models.ForeignKey(Role, on_delete=models.CASCADE, verbose_name='역할')
     tracker = models.ForeignKey(Tracker, on_delete=models.CASCADE, verbose_name='업무 유형')
-    status = models.OneToOneField(IssueStatus, on_delete=models.CASCADE, verbose_name='업무 상태',
-                                  related_name='each_status')
-    statuses = models.ManyToManyField(IssueStatus, verbose_name='허용 업무 상태', blank=True)
+    old_status = models.OneToOneField(IssueStatus, on_delete=models.CASCADE, verbose_name='업무 상태',
+                                      related_name='each_status')
+    new_statuses = models.ManyToManyField(IssueStatus, verbose_name='허용 업무 상태', blank=True)
 
     def __str__(self):
         return f'{self.role} - {self.tracker}'
@@ -361,6 +361,14 @@ class Issue(models.Model):
         ordering = ('-created',)
         verbose_name = '10. 업무(작업)'
         verbose_name_plural = '10. 업무(작업)'
+
+
+# class TimeEntry(models.Model):
+#     project = models.ForeignKey(IssueProject, on_delete=models.PROTECT, verbose_name='프로젝트')
+#     issue = models.ForeignKey(Issue, on_delete=models.PROTECT, verbose_name='업무')
+#     hours = models.DecimalField('시간', max_digits=8, decimal_places=2, default=0.0)
+#     comment = models.CharField('코멘트', max_length=255)
+#     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='사용자')
 
 
 def get_file_name(filename):
