@@ -63,7 +63,7 @@ class Version(models.Model):
         ordering = ('id',)
 
 
-class TaskCategory(models.Model):
+class IssueCategory(models.Model):
     project = models.ForeignKey(TaskProject, on_delete=models.CASCADE, verbose_name='프로젝트')
     name = models.CharField('범주', max_length=100)
     assignee = models.ForeignKey('Member', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='담당자')
@@ -337,7 +337,7 @@ class Issue(models.Model):
     priority = models.ForeignKey(CodeIssuePriority, on_delete=models.PROTECT, verbose_name='우선순위')
     assignee = models.ForeignKey('accounts.User', on_delete=models.SET_NULL,
                                  null=True, blank=True, verbose_name='담당자', related_name='assignees')
-    category = models.ForeignKey(TaskCategory, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='범주')
+    category = models.ForeignKey(IssueCategory, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='범주')
     version = models.ForeignKey(Version, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='버전')
     start_date = models.DateField('시작 일자', null=True, blank=True)
     due_date = models.DateField('완료 기한', null=True, blank=True)

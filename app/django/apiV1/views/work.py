@@ -5,7 +5,7 @@ from ..permission import *
 from ..pagination import *
 from ..serializers.work import *
 
-from work.models import (TaskProject, Module, Version, TaskCategory, Repository, Member, Role,
+from work.models import (TaskProject, Module, Version, IssueCategory, Repository, Member, Role,
                          Permission, Tracker, Status, Workflow, CodeActivity, CodeIssuePriority,
                          CodeDocsCategory, Issue, IssueFile, IssueComment, SpentTime)
 
@@ -44,9 +44,9 @@ class VersionViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
 
-class TaskCategoryViewSet(viewsets.ModelViewSet):
-    queryset = TaskCategory.objects.all()
-    serializer_class = TaskCategorySerializer
+class IssueCategoryViewSet(viewsets.ModelViewSet):
+    queryset = IssueCategory.objects.all()
+    serializer_class = IssueCategorySerializer
     permission_classes = (permissions.IsAuthenticated,)
 
 

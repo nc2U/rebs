@@ -1,7 +1,7 @@
 from django.db import transaction
 from rest_framework import serializers
 
-from work.models import (TaskProject, Module, Version, TaskCategory, Repository, Member, Role,
+from work.models import (TaskProject, Module, Version, IssueCategory, Repository, Member, Role,
                          Permission, Tracker, Status, Workflow, CodeActivity, CodeIssuePriority,
                          CodeDocsCategory, Issue, IssueFile, IssueComment, SpentTime)
 
@@ -104,9 +104,9 @@ class VersionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class TaskCategorySerializer(serializers.ModelSerializer):
+class IssueCategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = TaskCategory
+        model = IssueCategory
         fields = '__all__'
 
 
