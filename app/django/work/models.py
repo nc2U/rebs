@@ -216,7 +216,7 @@ class Tracker(models.Model):
     name = models.CharField('이름', max_length=100)
     description = models.CharField('설명', max_length=255, blank=True, default='')
     is_in_roadmap = models.BooleanField('로드맵에 표시', default=True)
-    default_status = models.ForeignKey('Status', on_delete=models.PROTECT, verbose_name='초기 상태')
+    default_status = models.ForeignKey('IssueStatus', on_delete=models.PROTECT, verbose_name='초기 상태')
     projects = models.ManyToManyField(IssueProject, blank=True, verbose_name='프로젝트')
     order = models.PositiveSmallIntegerField('정렬', default=1)
     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='사용자')
@@ -231,7 +231,7 @@ class Tracker(models.Model):
         verbose_name_plural = '04. 업무 유형'
 
 
-class Status(models.Model):
+class IssueStatus(models.Model):
     name = models.CharField('이름', max_length=20)
     desc = models.CharField('설명', max_length=255, blank=True, default='')
     closed = models.BooleanField('완료 상태', default=False)
@@ -251,9 +251,9 @@ class Status(models.Model):
 class Workflow(models.Model):
     role = models.ForeignKey(Role, on_delete=models.CASCADE, verbose_name='역할')
     tracker = models.ForeignKey(Tracker, on_delete=models.CASCADE, verbose_name='업무 유형')
-    status = models.OneToOneField(Status, on_delete=models.CASCADE, verbose_name='업무 상태',
+    status = models.OneToOneField(IssueStatus, on_delete=models.CASCADE, verbose_name='업무 상태',
                                   related_name='each_status')
-    statuses = models.ManyToManyField(Status, verbose_name='허용 업무 상태', blank=True)
+    statuses = models.ManyToManyField(IssueStatus, verbose_name='허용 업무 상태', blank=True)
 
     def __str__(self):
         return f'{self.role} - {self.tracker}'
@@ -314,19 +314,6 @@ class CodeDocsCategory(models.Model):
         verbose_name_plural = '09. 문서 범주'
 
 
-class Enumeration(models.Model):
-    project = models.ForeignKey(IssueProject, on_delete=models.PROTECT, verbose_name='프로젝트')
-    name = models.CharField('이름', max_length=30)
-    order = models.PositiveSmallIntegerField('정렬', default=1)
-    type = models.CharField('타입', max_length=2,
-                            choices=(('IP', '업무 우선순위'), ('DC', '문서 범주'), ('TA', '작업분류(시간추적)')), default='TA')
-    is_default = models.BooleanField('기본값', default=False)
-    active = models.BooleanField('사용중', default=True)
-    parent = models.ForeignKey('self', on_delete=models.PROTECT)
-    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='사용자')
-    created = models.DateTimeField('생성일시', auto_now_add=True)
-
-
 class IssueCategory(models.Model):
     project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
     name = models.CharField('범주', max_length=100)
@@ -347,7 +334,7 @@ class Issue(models.Model):
     description = models.TextField(verbose_name='설명', blank=True, default='')
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='상위 업무',
                                related_name='children')
-    status = models.ForeignKey(Status, on_delete=models.PROTECT, verbose_name='상태')
+    status = models.ForeignKey(IssueStatus, on_delete=models.PROTECT, verbose_name='상태')
     priority = models.ForeignKey(CodeIssuePriority, on_delete=models.PROTECT, verbose_name='우선순위')
     assigned_to = models.ForeignKey('accounts.User', on_delete=models.SET_NULL,
                                     null=True, blank=True, verbose_name='담당자', related_name='assignees')

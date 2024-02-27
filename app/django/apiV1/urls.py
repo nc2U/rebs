@@ -44,21 +44,21 @@ router.register(r'project-account-depth2', rebs.ProjectAccountD2ViewSet)  # only
 router.register(r'project-account-depth3', rebs.ProjectAccountD3ViewSet)  # only list
 router.register(r'wise-say', rebs.WiseSayViewSet)
 # work
-router.register(r'task-project', work.IssueProjectViewSet)
+router.register(r'issue-project', work.IssueProjectViewSet)
 router.register(r'module', work.ModuleViewSet)
 router.register(r'version', work.VersionViewSet)
-router.register(r'task-category', work.IssueCategoryViewSet)
+router.register(r'issue-category', work.IssueCategoryViewSet)
 router.register(r'repository', work.RepositoryViewSet)
 router.register(r'member', work.MemberViewSet)
 router.register(r'role', work.RoleViewSet)
 router.register(r'permission', work.PermissionViewSet)
 router.register(r'tracker', work.TrackerViewSet)
-router.register(r'status', work.StatusViewSet)
+router.register(r'issue-status', work.IssueStatusViewSet)
 router.register(r'workflow', work.WorkflowViewSet)
 router.register(r'code-activity', work.CodeActivityViewSet)
 router.register(r'code-issue-priority', work.CodeIssuePriorityViewSet)
 router.register(r'code-docs-category', work.CodeDocsCategoryViewSet)
-router.register(r'issuue', work.IssueViewSet)
+router.register(r'issue', work.IssueViewSet)
 router.register(r'issue-file', work.IssueFileViewSet)
 router.register(r'issue-comment', work.IssueCommentViewSet)
 router.register(r'spent-time', work.SpentTimeViewSet)
@@ -92,7 +92,6 @@ router.register(r'option-item', items.OptionItemViewSet, basename='option-item')
 router.register(r'payment', payment.PaymentViewSet, basename='payment')  # only list
 router.register(r'all-payment', payment.AllPaymentViewSet, basename='all-payment')  # only list
 router.register(r'payment-sum', payment.PaymentSummaryViewSet, basename='payment-sum')  # only list
-# router.register(r'cont-num-type', payment.ContNumByTypeViewSet, basename='cont-num-type')  # only list
 router.register(r'price', payment.SalesPriceViewSet)
 router.register(r'pay-order', payment.InstallmentOrderViewSet)
 router.register(r'down-payment', payment.DownPaymentViewSet)
@@ -122,7 +121,6 @@ router.register(r'contractor', contract.ContractorViewSet)
 router.register(r'contractor-address', contract.ContAddressViewSet)
 router.register(r'contractor-contact', contract.ContContactViewSet)
 router.register(r'succession', contract.SuccessionViewSet)
-# router.register(r'succession-buyer', contract.SuccessionBuyerViewSet)
 router.register(r'contractor-release', contract.ContReleaseViewSet)
 # notice
 router.register(r'sales-bill-issue', notice.BillIssueViewSet)

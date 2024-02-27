@@ -2,7 +2,7 @@ from django.db import transaction
 from rest_framework import serializers
 
 from work.models import (IssueProject, Module, Version, IssueCategory, Repository, Member, Role,
-                         Permission, Tracker, Status, Workflow, CodeActivity, CodeIssuePriority,
+                         Permission, Tracker, IssueStatus, Workflow, CodeActivity, CodeIssuePriority,
                          CodeDocsCategory, Issue, IssueFile, IssueComment, SpentTime)
 
 
@@ -140,9 +140,9 @@ class TrackerSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class StatusSerializer(serializers.ModelSerializer):
+class IssueStatusSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Status
+        model = IssueStatus
         fields = '__all__'
 
 

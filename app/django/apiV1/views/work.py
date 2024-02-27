@@ -6,7 +6,7 @@ from ..pagination import *
 from ..serializers.work import *
 
 from work.models import (IssueProject, Module, Version, IssueCategory, Repository, Member, Role,
-                         Permission, Tracker, Status, Workflow, CodeActivity, CodeIssuePriority,
+                         Permission, Tracker, IssueStatus, Workflow, CodeActivity, CodeIssuePriority,
                          CodeDocsCategory, Issue, IssueFile, IssueComment, SpentTime)
 
 
@@ -90,9 +90,9 @@ class TrackerViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-class StatusViewSet(viewsets.ModelViewSet):
-    queryset = Status.objects.all()
-    serializer_class = StatusSerializer
+class IssueStatusViewSet(viewsets.ModelViewSet):
+    queryset = IssueStatus.objects.all()
+    serializer_class = IssueStatusSerializer
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = PageNumberPaginationTwenty
     search_fields = ('id',)

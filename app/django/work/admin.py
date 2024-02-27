@@ -1,7 +1,7 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
 from .models import (IssueProject, Member, Role, Permission, Tracker, Module, Version, IssueCategory,
-                     Repository, Status, Workflow, CodeActivity, CodeIssuePriority,
+                     Repository, IssueStatus, Workflow, CodeActivity, CodeIssuePriority,
                      CodeDocsCategory, Issue, IssueFile, IssueComment, SpentTime)
 
 
@@ -51,8 +51,8 @@ class TaskTrackerAdmin(ImportExportMixin, admin.ModelAdmin):
     pass
 
 
-@admin.register(Status)
-class TaskStatusAdmin(ImportExportMixin, admin.ModelAdmin):
+@admin.register(IssueStatus)
+class IssueStatusAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('name', 'closed')
 
 
