@@ -1,7 +1,7 @@
 from django.db import transaction
 from rest_framework import serializers
 
-from work.models import (TaskProject, Module, Version, TaskCategory, Repository, Member, Role,
+from work.models import (TaskProject, Module, Version, IssueCategory, Repository, Member, Role,
                          Permission, Tracker, Status, Workflow, CodeActivity, CodeIssuePriority,
                          CodeDocsCategory, Issue, IssueFile, IssueComment, SpentTime)
 
@@ -21,15 +21,16 @@ class TaskProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TaskProject
-        fields = ('pk', 'name', 'desc', 'slug', 'homepage', 'is_public', 'is_inherit_members',
-                  'created', 'company', 'parent_project', 'depth', 'sub_projects', 'user', 'module')
+        fields = ('pk', 'company', 'name', 'description', 'homepage', 'is_public',
+                  'parent', 'slug', 'status', 'is_inherit_members', 'depth',
+                  'sub_projects', 'module', 'user', 'created')
 
     def get_sub_projects(self, obj):
         return self.__class__(obj.taskproject_set.all(), many=True, read_only=True).data
 
     @transaction.atomic
     def create(self, validated_data):
-        parent = validated_data.get('parent_project', None)
+        parent = validated_data.get('parent', None)
         validated_data['depth'] = 1 if parent is None else parent.depth + 1
         project = TaskProject.objects.create(**validated_data)
         project.save()
@@ -61,7 +62,7 @@ class TaskProjectSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def update(self, instance, validated_data):
-        parent = validated_data.get('parent_project', None)
+        parent = validated_data.get('parent', None)
         instance.depth = 1 if parent is None else parent.depth + 1
 
         issue = self.initial_data.get('issue', True)
@@ -103,9 +104,9 @@ class VersionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class TaskCategorySerializer(serializers.ModelSerializer):
+class IssueCategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = TaskCategory
+        model = IssueCategory
         fields = '__all__'
 
 

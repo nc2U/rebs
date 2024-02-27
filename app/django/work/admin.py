@@ -1,6 +1,6 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
-from .models import (TaskProject, Member, Role, Permission, Tracker, Module, Version, TaskCategory,
+from .models import (TaskProject, Member, Role, Permission, Tracker, Module, Version, IssueCategory,
                      Repository, Status, Workflow, CodeActivity, CodeIssuePriority,
                      CodeDocsCategory, Issue, IssueFile, IssueComment, SpentTime)
 
@@ -15,8 +15,8 @@ class VersionInline(admin.TabularInline):
     extra = 0
 
 
-class TaskCategoryInline(admin.TabularInline):
-    model = TaskCategory
+class IssueCategoryInline(admin.TabularInline):
+    model = IssueCategory
     extra = 0
 
 
@@ -28,7 +28,7 @@ class RepositoryInline(admin.TabularInline):
 @admin.register(TaskProject)
 class TaskProjectAdmin(ImportExportMixin, admin.ModelAdmin):
     inlines = (ModuleInline, VersionInline,
-               TaskCategoryInline, RepositoryInline)
+               IssueCategoryInline, RepositoryInline)
 
 
 @admin.register(Member)

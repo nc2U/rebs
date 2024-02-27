@@ -2,17 +2,18 @@ export interface TaskProject {
   pk?: number
   company: number
   name: string
-  desc: string
-  slug: string
+  description: string
   homepage: string | null
   is_public: boolean
-  parent_project: number | null
-  depth: number
+  parent: number | null
+  slug: string
+  status: '1' | '9'
   is_inherit_members: boolean
+  depth: number
   sub_projects?: TaskProject[]
-  created?: string
-  user?: number
   module: Module | null
+  user?: number
+  created?: string
 }
 
 export interface Module {

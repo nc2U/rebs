@@ -8,15 +8,16 @@ from django.db import models
 class TaskProject(models.Model):
     company = models.ForeignKey('company.Company', on_delete=models.CASCADE, verbose_name="회사")
     name = models.CharField('이름', max_length=100)
-    desc = models.TextField('설명', blank=True, default='')
-    slug = models.CharField('식별자', max_length=100, unique=True,
-                            help_text='1에서 100글자 소문자(a-z), 숫자, 대쉬(-)와 밑줄(_)만 가능합니다. 식별자는 저장 후에는 수정할 수 없습니다.')
+    description = models.TextField('설명', blank=True, default='')
     homepage = models.URLField('홈페이지', max_length=255, null=True, blank=True)
     is_public = models.BooleanField('공개', default=True, help_text='공개 프로젝트는 모든 로그인한 사용자가 접속할 수 있습니다.')
-    parent_project = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='상위 프로젝트')
+    parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='상위 프로젝트')
+    slug = models.CharField('식별자', max_length=100, unique=True,
+                            help_text='1에서 100글자 소문자(a-z), 숫자, 대쉬(-)와 밑줄(_)만 가능합니다. 식별자는 저장 후에는 수정할 수 없습니다.')
+    status = models.CharField('사용여부', max_length=1, default='1', choices=(('1', '사용'), ('9', '잠금보관(모든 접근이 차단됨)')))
+    is_inherit_members = models.BooleanField('상위 프로젝트 멤버 상속', default=False)
     depth = models.PositiveSmallIntegerField('단계', default=1,
                                              help_text='프로젝트 간 상하 소속 관계에 의한 단계, 최상위인 경우 1단계 이후 각 뎁스 마다 1씩 증가')
-    is_inherit_members = models.BooleanField('상위 프로젝트 멤버 상속', default=False)
     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='사용자')
     created = models.DateTimeField('생성일시', auto_now_add=True)
 
@@ -62,7 +63,7 @@ class Version(models.Model):
         ordering = ('id',)
 
 
-class TaskCategory(models.Model):
+class IssueCategory(models.Model):
     project = models.ForeignKey(TaskProject, on_delete=models.CASCADE, verbose_name='프로젝트')
     name = models.CharField('범주', max_length=100)
     assignee = models.ForeignKey('Member', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='담당자')
@@ -107,11 +108,11 @@ class Member(models.Model):
 
 class Role(models.Model):
     name = models.CharField('이름', max_length=20)
-    can_task_assign = models.BooleanField('업무 위탁 권한', default=True)
+    assignable = models.BooleanField('업무 위탁 권한', default=True)
     TASK_VIEW_PERM = (('ALL', '모든 업무'), ('PUB', '비공개 업무 제외'), ('PRI', '직접 생성 또는 담당한 업무'))
-    task_visible = models.CharField('업무 보기 권한', max_length=3, choices=TASK_VIEW_PERM, default='PUB')
+    issue_visible = models.CharField('업무 보기 권한', max_length=3, choices=TASK_VIEW_PERM, default='PUB')
     TIME_VIEW_PERM = (('ALL', '모든 시간기록'), ('PRI', '직접 생성한 시간기록'))
-    time_log_visible = models.CharField('시간기록 보기 권한', max_length=3, choices=TIME_VIEW_PERM, default='ALL')
+    time_entry_visible = models.CharField('시간기록 보기 권한', max_length=3, choices=TIME_VIEW_PERM, default='ALL')
     USER_VIEW_PERM = (('ALL', '모든 활성 사용자'), ('PRJ', '보이는 프로젝트 사용자'))
     user_visible = models.CharField('사용자 보기 권한', max_length=3, choices=USER_VIEW_PERM, default='ALL')
     default_time_activity = models.ForeignKey('CodeActivity', on_delete=models.SET_NULL, null=True, blank=True,
@@ -336,7 +337,7 @@ class Issue(models.Model):
     priority = models.ForeignKey(CodeIssuePriority, on_delete=models.PROTECT, verbose_name='우선순위')
     assignee = models.ForeignKey('accounts.User', on_delete=models.SET_NULL,
                                  null=True, blank=True, verbose_name='담당자', related_name='assignees')
-    category = models.ForeignKey(TaskCategory, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='범주')
+    category = models.ForeignKey(IssueCategory, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='범주')
     version = models.ForeignKey(Version, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='버전')
     start_date = models.DateField('시작 일자', null=True, blank=True)
     due_date = models.DateField('완료 기한', null=True, blank=True)

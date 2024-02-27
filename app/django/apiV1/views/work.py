@@ -5,14 +5,14 @@ from ..permission import *
 from ..pagination import *
 from ..serializers.work import *
 
-from work.models import (TaskProject, Module, Version, TaskCategory, Repository, Member, Role,
+from work.models import (TaskProject, Module, Version, IssueCategory, Repository, Member, Role,
                          Permission, Tracker, Status, Workflow, CodeActivity, CodeIssuePriority,
                          CodeDocsCategory, Issue, IssueFile, IssueComment, SpentTime)
 
 
 # Work --------------------------------------------------------------------------
 class TaskProjectFilter(FilterSet):
-    parent__isnull = BooleanFilter(field_name='parent_project', lookup_expr='isnull', label='하위 프로젝트 여부')
+    parent__isnull = BooleanFilter(field_name='parent', lookup_expr='isnull', label='하위 프로젝트 여부')
 
     class Meta:
         model = TaskProject
@@ -26,7 +26,7 @@ class TaskProjectViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = PageNumberPaginationTwenty
     filterset_class = TaskProjectFilter
-    search_fields = ('name', 'desc', 'slug')
+    search_fields = ('name', 'description', 'slug')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -44,9 +44,9 @@ class VersionViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
 
-class TaskCategoryViewSet(viewsets.ModelViewSet):
-    queryset = TaskCategory.objects.all()
-    serializer_class = TaskCategorySerializer
+class IssueCategoryViewSet(viewsets.ModelViewSet):
+    queryset = IssueCategory.objects.all()
+    serializer_class = IssueCategorySerializer
     permission_classes = (permissions.IsAuthenticated,)
 
 
