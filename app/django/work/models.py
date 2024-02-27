@@ -63,18 +63,6 @@ class Version(models.Model):
         ordering = ('id',)
 
 
-class IssueCategory(models.Model):
-    project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
-    name = models.CharField('범주', max_length=100)
-    assignee = models.ForeignKey('Member', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='담당자')
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        ordering = ('id',)
-
-
 class Repository(models.Model):
     project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
     SCM_CHOICES = (('1', 'Git'),)
@@ -326,31 +314,58 @@ class CodeDocsCategory(models.Model):
         verbose_name_plural = '09. 문서 범주'
 
 
+class Enumeration(models.Model):
+    project = models.ForeignKey(IssueProject, on_delete=models.PROTECT, verbose_name='프로젝트')
+    name = models.CharField('이름', max_length=30)
+    order = models.PositiveSmallIntegerField('정렬', default=1)
+    type = models.CharField('타입', max_length=2,
+                            choices=(('IP', '업무 우선순위'), ('DC', '문서 범주'), ('TA', '작업분류(시간추적)')), default='TA')
+    is_default = models.BooleanField('기본값', default=False)
+    active = models.BooleanField('사용중', default=True)
+    parent = models.ForeignKey('self', on_delete=models.PROTECT)
+    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='사용자')
+    created = models.DateTimeField('생성일시', auto_now_add=True)
+
+
+class IssueCategory(models.Model):
+    project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
+    name = models.CharField('범주', max_length=100)
+    assigned_to = models.ForeignKey('Member', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='담당자')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ('id',)
+
+
 class Issue(models.Model):
     project = models.ForeignKey(IssueProject, on_delete=models.PROTECT, verbose_name='프로젝트')
     tracker = models.ForeignKey(Tracker, on_delete=models.PROTECT, verbose_name='유형')
-    private = models.BooleanField('비공개', default=False)
+    is_private = models.BooleanField('비공개', default=False)
     subject = models.CharField(max_length=100, verbose_name='주제')
-    desc = models.TextField(verbose_name='설명', blank=True, default='')
+    description = models.TextField(verbose_name='설명', blank=True, default='')
+    parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='상위 업무',
+                               related_name='children')
     status = models.ForeignKey(Status, on_delete=models.PROTECT, verbose_name='상태')
-    parent_task = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='상위업무')
     priority = models.ForeignKey(CodeIssuePriority, on_delete=models.PROTECT, verbose_name='우선순위')
-    assignee = models.ForeignKey('accounts.User', on_delete=models.SET_NULL,
-                                 null=True, blank=True, verbose_name='담당자', related_name='assignees')
+    assigned_to = models.ForeignKey('accounts.User', on_delete=models.SET_NULL,
+                                    null=True, blank=True, verbose_name='담당자', related_name='assignees')
     category = models.ForeignKey(IssueCategory, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='범주')
-    version = models.ForeignKey(Version, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='버전')
+    fixed_version = models.ForeignKey(Version, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='목표 버전')
     start_date = models.DateField('시작 일자', null=True, blank=True)
     due_date = models.DateField('완료 기한', null=True, blank=True)
-    estimated_time = models.PositiveSmallIntegerField('추정 소요시간', null=True, blank=True)
+    estimated_hours = models.PositiveSmallIntegerField('추정 소요시간', null=True, blank=True)
     PROGRESS_RATIO = (
         (0.0, '0%'), (0.1, '10%'), (0.2, '20%'), (0.3, '30%'), (0.4, '40%'), (0.5, '50%'),
         (0.6, '60%'), (0.7, '70%'), (0.8, '80%'), (0.9, '90%'), (1.0, '100%'))
-    progress = models.DecimalField('진척도', max_digits=2, decimal_places=1, choices=PROGRESS_RATIO, default=0.0)
+    done_ratio = models.DecimalField('진척도', max_digits=2, decimal_places=1, choices=PROGRESS_RATIO, default=0.0)
     watchers = models.ManyToManyField('accounts.User', blank=True,
                                       verbose_name='업무 관람자', related_name='watchers')
     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='사용자')
     created = models.DateTimeField('생성', auto_now_add=True)
     updated = models.DateTimeField('변경', auto_now=True)
+    closed = models.DateTimeField('완료', null=True, blank=True, help_text='상태가 완료로 입력된 시간. 한 번 완료하면 다시 진행으로 변경해도 남아있음.')
 
     def __str__(self):
         return self.subject
