@@ -33,12 +33,12 @@ const workSetting = {
     },
     {
       path: 'tracker',
-      name: '작업 유형',
+      name: '업무 유형',
       component: () => import('@/views/_Work/Settings/components/Trackers/Index.vue'),
     },
     {
       path: 'status',
-      name: '작업 상태',
+      name: '업무 상태',
       component: () => import('@/views/_Work/Settings/components/Statuses/Index.vue'),
     },
     {
