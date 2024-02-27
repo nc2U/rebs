@@ -47,10 +47,10 @@ class Module(models.Model):
 class Version(models.Model):
     project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
     name = models.CharField('이름', max_length=20)
-    desc = models.CharField('설명', max_length=255, blank=True, default='')
+    description = models.CharField('설명', max_length=255, blank=True, default='')
     status = models.CharField('상태', max_length=1, choices=(('1', '진행'), ('2', '잠김'), ('3', '닫힘')), default='1')
-    wiki_page = models.CharField('위키 페이지', max_length=255, blank=True, null=True)
-    release_date = models.DateField(verbose_name='출시일', blank=True, null=True)
+    wiki_page_title = models.CharField('위키 페이지 주소', max_length=255, blank=True, null=True)
+    effective_date = models.DateField(verbose_name='날짜', blank=True, null=True)
     SHARE_CHOICES = (
         ('0', '공유 없음'), ('1', '하위 프로젝트'), ('2', '상위 및 하위 프로젝트'), ('3', '최상위 및 모든 하위 프로젝트'), ('4', '모든 프로젝트'))
     share = models.CharField('공유', max_length=1, default='0')
@@ -226,9 +226,9 @@ class Permission(models.Model):
 
 class Tracker(models.Model):
     name = models.CharField('이름', max_length=100)
+    description = models.CharField('설명', max_length=255, blank=True, default='')
+    is_in_roadmap = models.BooleanField('로드맵에 표시', default=True)
     default_status = models.ForeignKey('Status', on_delete=models.PROTECT, verbose_name='초기 상태')
-    displayed = models.BooleanField('로드맵에 표시', default=True)
-    desc = models.CharField('설명', max_length=255, blank=True, default='')
     projects = models.ManyToManyField(IssueProject, blank=True, verbose_name='프로젝트')
     order = models.PositiveSmallIntegerField('정렬', default=1)
     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='사용자')
