@@ -26,7 +26,7 @@ class IssueProjectSerializer(serializers.ModelSerializer):
                   'sub_projects', 'module', 'user', 'created')
 
     def get_sub_projects(self, obj):
-        return self.__class__(obj.IssueProject_set.all(), many=True, read_only=True).data
+        return self.__class__(obj.issueproject_set.all(), many=True, read_only=True).data
 
     @transaction.atomic
     def create(self, validated_data):
