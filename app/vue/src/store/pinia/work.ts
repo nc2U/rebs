@@ -29,19 +29,19 @@ export const useWork = defineStore('work', () => {
   // actions
   const fetchTaskProjectList = () =>
     api
-      .get('/task-project/?parent__isnull=true')
+      .get('/issue-project/?parent__isnull=true')
       .then(res => (taskProjectList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
   const fetchTaskProject = (slug: string) =>
     api
-      .get(`/task-project/${slug}/`)
+      .get(`/issue-project/${slug}/`)
       .then(res => (taskProject.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
   const createTaskProject = (payload: TaskProject) =>
     api
-      .post(`/task-project/`, payload)
+      .post(`/issue-project/`, payload)
       .then(res => {
         fetchTaskProject(res.data.slug).then(() => message())
       })
@@ -49,13 +49,13 @@ export const useWork = defineStore('work', () => {
 
   const updateTaskProject = (payload: TaskProject) =>
     api
-      .put(`/task-project/${payload.slug}/`, payload)
+      .put(`/issue-project/${payload.slug}/`, payload)
       .then(res => fetchTaskProject(res.data.slug).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
   const deleteTaskProject = (pk: number) =>
     api
-      .delete(`/task-project/${pk}/`)
+      .delete(`/issue-project/${pk}/`)
       .then(() =>
         fetchTaskProjectList().then(() =>
           message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.'),
