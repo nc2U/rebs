@@ -5,27 +5,27 @@ from ..permission import *
 from ..pagination import *
 from ..serializers.work import *
 
-from work.models import (TaskProject, Module, Version, IssueCategory, Repository, Member, Role,
+from work.models import (IssueProject, Module, Version, IssueCategory, Repository, Member, Role,
                          Permission, Tracker, Status, Workflow, CodeActivity, CodeIssuePriority,
                          CodeDocsCategory, Issue, IssueFile, IssueComment, SpentTime)
 
 
 # Work --------------------------------------------------------------------------
-class TaskProjectFilter(FilterSet):
+class IssueProjectFilter(FilterSet):
     parent__isnull = BooleanFilter(field_name='parent', lookup_expr='isnull', label='하위 프로젝트 여부')
 
     class Meta:
-        model = TaskProject
+        model = IssueProject
         fields = ('parent__isnull',)
 
 
-class TaskProjectViewSet(viewsets.ModelViewSet):
-    queryset = TaskProject.objects.all()
-    serializer_class = TaskProjectSerializer
+class IssueProjectViewSet(viewsets.ModelViewSet):
+    queryset = IssueProject.objects.all()
+    serializer_class = IssueProjectSerializer
     lookup_field = 'slug'
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = PageNumberPaginationTwenty
-    filterset_class = TaskProjectFilter
+    filterset_class = IssueProjectFilter
     search_fields = ('name', 'description', 'slug')
 
     def perform_create(self, serializer):

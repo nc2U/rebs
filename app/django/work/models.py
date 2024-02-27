@@ -5,7 +5,7 @@ from datetime import datetime
 from django.db import models
 
 
-class TaskProject(models.Model):
+class IssueProject(models.Model):
     company = models.ForeignKey('company.Company', on_delete=models.CASCADE, verbose_name="회사")
     name = models.CharField('이름', max_length=100)
     description = models.TextField('설명', blank=True, default='')
@@ -31,7 +31,7 @@ class TaskProject(models.Model):
 
 
 class Module(models.Model):
-    project = models.OneToOneField(TaskProject, on_delete=models.CASCADE, verbose_name='프로젝트')
+    project = models.OneToOneField(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
     issue = models.BooleanField('업무관리', default=True)
     time = models.BooleanField('시간추적', default=True)
     news = models.BooleanField('공지', default=True)
@@ -45,7 +45,7 @@ class Module(models.Model):
 
 
 class Version(models.Model):
-    project = models.ForeignKey(TaskProject, on_delete=models.CASCADE, verbose_name='프로젝트')
+    project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
     name = models.CharField('이름', max_length=20)
     desc = models.CharField('설명', max_length=255, blank=True, default='')
     status = models.CharField('상태', max_length=1, choices=(('1', '진행'), ('2', '잠김'), ('3', '닫힘')), default='1')
@@ -64,7 +64,7 @@ class Version(models.Model):
 
 
 class IssueCategory(models.Model):
-    project = models.ForeignKey(TaskProject, on_delete=models.CASCADE, verbose_name='프로젝트')
+    project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
     name = models.CharField('범주', max_length=100)
     assignee = models.ForeignKey('Member', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='담당자')
 
@@ -76,7 +76,7 @@ class IssueCategory(models.Model):
 
 
 class Repository(models.Model):
-    project = models.ForeignKey(TaskProject, on_delete=models.CASCADE, verbose_name='프로젝트')
+    project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
     SCM_CHOICES = (('1', 'Git'),)
     scm = models.CharField('종류', max_length=10, default='1')
     is_default = models.BooleanField('주저장소', default=True)
@@ -94,7 +94,7 @@ class Repository(models.Model):
 
 
 class Member(models.Model):
-    project = models.ForeignKey(TaskProject, on_delete=models.CASCADE, verbose_name='프로젝트')
+    project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
     member = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='구성원')
     roles = models.ManyToManyField('Role', verbose_name='역할')
 
@@ -229,7 +229,7 @@ class Tracker(models.Model):
     default_status = models.ForeignKey('Status', on_delete=models.PROTECT, verbose_name='초기 상태')
     displayed = models.BooleanField('로드맵에 표시', default=True)
     desc = models.CharField('설명', max_length=255, blank=True, default='')
-    projects = models.ManyToManyField(TaskProject, blank=True, verbose_name='프로젝트')
+    projects = models.ManyToManyField(IssueProject, blank=True, verbose_name='프로젝트')
     order = models.PositiveSmallIntegerField('정렬', default=1)
     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='사용자')
     created = models.DateTimeField('생성일시', auto_now_add=True)
@@ -327,7 +327,7 @@ class CodeDocsCategory(models.Model):
 
 
 class Issue(models.Model):
-    project = models.ForeignKey(TaskProject, on_delete=models.PROTECT, verbose_name='프로젝트')
+    project = models.ForeignKey(IssueProject, on_delete=models.PROTECT, verbose_name='프로젝트')
     tracker = models.ForeignKey(Tracker, on_delete=models.PROTECT, verbose_name='유형')
     private = models.BooleanField('비공개', default=False)
     subject = models.CharField(max_length=100, verbose_name='주제')

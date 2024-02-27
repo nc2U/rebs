@@ -44,7 +44,7 @@ router.register(r'project-account-depth2', rebs.ProjectAccountD2ViewSet)  # only
 router.register(r'project-account-depth3', rebs.ProjectAccountD3ViewSet)  # only list
 router.register(r'wise-say', rebs.WiseSayViewSet)
 # work
-router.register(r'task-project', work.TaskProjectViewSet)
+router.register(r'task-project', work.IssueProjectViewSet)
 router.register(r'module', work.ModuleViewSet)
 router.register(r'version', work.VersionViewSet)
 router.register(r'task-category', work.IssueCategoryViewSet)

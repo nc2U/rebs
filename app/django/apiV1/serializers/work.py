@@ -1,38 +1,38 @@
 from django.db import transaction
 from rest_framework import serializers
 
-from work.models import (TaskProject, Module, Version, IssueCategory, Repository, Member, Role,
+from work.models import (IssueProject, Module, Version, IssueCategory, Repository, Member, Role,
                          Permission, Tracker, Status, Workflow, CodeActivity, CodeIssuePriority,
                          CodeDocsCategory, Issue, IssueFile, IssueComment, SpentTime)
 
 
 # Work --------------------------------------------------------------------------
-class ModuleInTaskProjectSerializer(serializers.ModelSerializer):
+class ModuleInIssueProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Module
         fields = ('pk', 'project', 'issue', 'time', 'news', 'document',
                   'file', 'wiki', 'repository', 'forum', 'calendar', 'gantt')
 
 
-class TaskProjectSerializer(serializers.ModelSerializer):
+class IssueProjectSerializer(serializers.ModelSerializer):
     sub_projects = serializers.SerializerMethodField()
     user = serializers.SlugRelatedField('username', read_only=True)
-    module = ModuleInTaskProjectSerializer(read_only=True)
+    module = ModuleInIssueProjectSerializer(read_only=True)
 
     class Meta:
-        model = TaskProject
+        model = IssueProject
         fields = ('pk', 'company', 'name', 'description', 'homepage', 'is_public',
                   'parent', 'slug', 'status', 'is_inherit_members', 'depth',
                   'sub_projects', 'module', 'user', 'created')
 
     def get_sub_projects(self, obj):
-        return self.__class__(obj.taskproject_set.all(), many=True, read_only=True).data
+        return self.__class__(obj.IssueProject_set.all(), many=True, read_only=True).data
 
     @transaction.atomic
     def create(self, validated_data):
         parent = validated_data.get('parent', None)
         validated_data['depth'] = 1 if parent is None else parent.depth + 1
-        project = TaskProject.objects.create(**validated_data)
+        project = IssueProject.objects.create(**validated_data)
         project.save()
 
         issue = self.initial_data.get('issue', True)
