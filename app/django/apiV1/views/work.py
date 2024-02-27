@@ -12,7 +12,7 @@ from work.models import (TaskProject, Module, Version, TaskCategory, Repository,
 
 # Work --------------------------------------------------------------------------
 class TaskProjectFilter(FilterSet):
-    parent__isnull = BooleanFilter(field_name='parent_project', lookup_expr='isnull', label='하위 프로젝트 여부')
+    parent__isnull = BooleanFilter(field_name='parent', lookup_expr='isnull', label='하위 프로젝트 여부')
 
     class Meta:
         model = TaskProject
@@ -26,7 +26,7 @@ class TaskProjectViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = PageNumberPaginationTwenty
     filterset_class = TaskProjectFilter
-    search_fields = ('name', 'desc', 'slug')
+    search_fields = ('name', 'description', 'slug')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
