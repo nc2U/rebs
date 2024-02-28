@@ -406,21 +406,6 @@ class IssueComment(models.Model):
         return self.content
 
 
-# class SpentTime(models.Model):
-#     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, verbose_name='업무')
-#     user = models.ForeignKey('accounts.User', on_delete=models.CASCADE, verbose_name='사용자')
-#     date = models.DateField(verbose_name='작업일자')
-#     hours = models.DecimalField(max_digits=5, decimal_places=2)
-#     comment = models.CharField('설명', max_length=255, blank=True, default='')
-#     activity = models.ForeignKey(CodeActivity, on_delete=models.PROTECT, verbose_name='작업분류(시간추적)')
-#
-#     def __str__(self):
-#         return self.hours
-#
-#     class Meta:
-#         ordering = ('date',)
-
-
 class TimeEntry(models.Model):
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, verbose_name='업무')
     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='사용자')
