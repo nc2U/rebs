@@ -22,9 +22,8 @@ const iProject = computed(() => workStore.issueProject)
       <CRow>
         <CCard>
           <CCardBody>
-            <!--        <CCardTitle>업무 추적</CCardTitle>-->
-            <CCardTitle>업무 추적</CCardTitle>
-            <CTable bordered hover small striped>
+            <CCardSubtitle>업무 추적</CCardSubtitle>
+            <CTable bordered hover small striped class="mt-2 mb-0">
               <CTableHead>
                 <CTableRow class="text-center">
                   <CTableHeaderCell scope="col"></CTableHeaderCell>
@@ -50,10 +49,25 @@ const iProject = computed(() => workStore.issueProject)
       </CRow>
     </CCol>
 
-    <CCol></CCol>
+    <CCol>
+      <CCard v-if="iProject?.sub_projects?.length">
+        <CCardBody>
+          <CCardSubtitle>하위 프로젝트</CCardSubtitle>
+          <CCardText>
+            <router-link
+              v-for="(sub, i) in iProject.sub_projects"
+              :to="{ name: '(개요)', params: { projId: sub.slug } }"
+              :key="sub.pk"
+            >
+              {{ sub.name }}<span v-if="i + 1 < iProject?.sub_projects?.length">, </span>
+            </router-link>
+          </CCardText>
+        </CCardBody>
+      </CCard>
+    </CCol>
   </CRow>
 
-  <!--  <CRow>-->
-  <!--    <CCol>{{ iProject }}</CCol>-->
-  <!--  </CRow>-->
+  <CRow>
+    <CCol>{{ iProject }}</CCol>
+  </CRow>
 </template>
