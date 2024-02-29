@@ -4391,13 +4391,15 @@
     "pk": 1,
     "fields": {
       "name": "관리자",
-      "can_task_assign": true,
-      "task_visible": "ALL",
-      "time_log_visible": "ALL",
+      "assignable": true,
+      "issue_visible": "ALL",
+      "time_entry_visible": "ALL",
       "user_visible": "ALL",
       "default_time_activity": null,
       "order": 1,
-      "user": 1
+      "user": 1,
+      "created": "2024-02-29T12:48:04.469Z",
+      "updated": "2024-02-29T12:48:04.469Z"
     }
   },
   {
@@ -4405,13 +4407,15 @@
     "pk": 2,
     "fields": {
       "name": "개발자",
-      "can_task_assign": true,
-      "task_visible": "PUB",
-      "time_log_visible": "ALL",
+      "assignable": true,
+      "issue_visible": "PUB",
+      "time_entry_visible": "ALL",
       "user_visible": "ALL",
       "default_time_activity": null,
       "order": 1,
-      "user": 1
+      "user": 1,
+      "created": "2024-02-29T12:59:14.669Z",
+      "updated": "2024-02-29T13:09:49.329Z"
     }
   },
   {
@@ -4419,13 +4423,15 @@
     "pk": 3,
     "fields": {
       "name": "보고자",
-      "can_task_assign": true,
-      "task_visible": "PUB",
-      "time_log_visible": "ALL",
+      "assignable": true,
+      "issue_visible": "PUB",
+      "time_entry_visible": "ALL",
       "user_visible": "ALL",
       "default_time_activity": null,
       "order": 1,
-      "user": 1
+      "user": 1,
+      "created": "2024-02-29T12:59:24.279Z",
+      "updated": "2024-02-29T13:11:48.004Z"
     }
   },
   {
@@ -4532,7 +4538,7 @@
       "forum_update": false,
       "forum_own_update": true,
       "forum_delete": false,
-      "forum_own_delete": false,
+      "forum_own_delete": true,
       "forum_watcher_read": false,
       "forum_watcher_create": false,
       "forum_watcher_delete": false,
@@ -4547,9 +4553,9 @@
       "gantt_read": true,
       "issue_read": true,
       "issue_create": true,
-      "issue_update": false,
+      "issue_update": true,
       "issue_own_update": true,
-      "issue_copy": false,
+      "issue_copy": true,
       "issue_rel_manage": true,
       "issue_sub_manage": true,
       "issue_public": false,
@@ -4564,7 +4570,7 @@
       "issue_watcher_create": false,
       "issue_watcher_delete": false,
       "issue_import": false,
-      "issue_category_manage": false,
+      "issue_category_manage": true,
       "news_read": true,
       "news_manage": false,
       "news_comment": true,
@@ -4572,7 +4578,7 @@
       "repo_read": true,
       "repo_commit_access": true,
       "repo_rel_issue_manage": true,
-      "repo_manage": false,
+      "repo_manage": true,
       "time_read": true,
       "time_create": true,
       "time_update": false,
@@ -4651,8 +4657,8 @@
       "news_read": true,
       "news_manage": false,
       "news_comment": true,
-      "repo_changesets_read": true,
-      "repo_read": true,
+      "repo_changesets_read": false,
+      "repo_read": false,
       "repo_commit_access": false,
       "repo_rel_issue_manage": false,
       "repo_manage": false,
@@ -4682,11 +4688,13 @@
     "pk": 1,
     "fields": {
       "name": "결함",
+      "description": "",
+      "is_in_roadmap": true,
       "default_status": 1,
-      "displayed": true,
-      "desc": "",
       "order": 1,
       "user": 1,
+      "created": "2024-02-29T13:19:11.259Z",
+      "updated": "2024-02-29T13:19:11.259Z",
       "projects": []
     }
   },
@@ -4695,11 +4703,13 @@
     "pk": 2,
     "fields": {
       "name": "기능",
+      "description": "",
+      "is_in_roadmap": true,
       "default_status": 1,
-      "displayed": true,
-      "desc": "",
       "order": 1,
       "user": 1,
+      "created": "2024-02-29T13:19:21.994Z",
+      "updated": "2024-02-29T13:19:21.994Z",
       "projects": []
     }
   },
@@ -4708,78 +4718,92 @@
     "pk": 3,
     "fields": {
       "name": "지원",
+      "description": "",
+      "is_in_roadmap": true,
       "default_status": 1,
-      "displayed": true,
-      "desc": "",
       "order": 1,
       "user": 1,
+      "created": "2024-02-29T13:19:32.152Z",
+      "updated": "2024-02-29T13:19:32.152Z",
       "projects": []
     }
   },
   {
-    "model": "work.status",
+    "model": "work.issuestatus",
     "pk": 1,
     "fields": {
       "name": "신규",
-      "desc": "",
+      "description": "",
       "closed": false,
       "order": 1,
-      "user": 1
+      "user": 1,
+      "created": "2024-02-29T13:17:23.937Z",
+      "updated": "2024-02-29T13:17:23.937Z"
     }
   },
   {
-    "model": "work.status",
+    "model": "work.issuestatus",
     "pk": 2,
     "fields": {
       "name": "진행",
-      "desc": "",
+      "description": "",
       "closed": false,
       "order": 1,
-      "user": 1
+      "user": 1,
+      "created": "2024-02-29T13:17:35.601Z",
+      "updated": "2024-02-29T13:17:35.601Z"
     }
   },
   {
-    "model": "work.status",
+    "model": "work.issuestatus",
     "pk": 3,
     "fields": {
       "name": "해결",
-      "desc": "",
+      "description": "",
       "closed": false,
       "order": 1,
-      "user": 1
+      "user": 1,
+      "created": "2024-02-29T13:17:42.076Z",
+      "updated": "2024-02-29T13:17:42.076Z"
     }
   },
   {
-    "model": "work.status",
+    "model": "work.issuestatus",
     "pk": 4,
     "fields": {
       "name": "의견",
-      "desc": "",
+      "description": "",
       "closed": false,
       "order": 1,
-      "user": 1
+      "user": 1,
+      "created": "2024-02-29T13:17:48.948Z",
+      "updated": "2024-02-29T13:17:48.948Z"
     }
   },
   {
-    "model": "work.status",
+    "model": "work.issuestatus",
     "pk": 5,
     "fields": {
       "name": "종료",
-      "desc": "",
+      "description": "",
       "closed": true,
       "order": 1,
-      "user": 1
+      "user": 1,
+      "created": "2024-02-29T13:17:58.034Z",
+      "updated": "2024-02-29T13:17:58.034Z"
     }
   },
   {
-    "model": "work.status",
+    "model": "work.issuestatus",
     "pk": 6,
     "fields": {
       "name": "거절",
-      "desc": "",
+      "description": "",
       "closed": true,
       "order": 1,
-      "user": 1
+      "user": 1,
+      "created": "2024-02-29T13:18:07.402Z",
+      "updated": "2024-02-29T13:18:07.402Z"
     }
   },
   {
@@ -4790,7 +4814,9 @@
       "active": true,
       "default": false,
       "order": 1,
-      "user": 1
+      "user": 1,
+      "created": "2024-02-29T13:28:37.675Z",
+      "updated": "2024-02-29T13:28:37.675Z"
     }
   },
   {
@@ -4801,7 +4827,9 @@
       "active": true,
       "default": false,
       "order": 1,
-      "user": 1
+      "user": 1,
+      "created": "2024-02-29T13:28:43.642Z",
+      "updated": "2024-02-29T13:28:43.642Z"
     }
   },
   {
@@ -4812,7 +4840,9 @@
       "active": true,
       "default": false,
       "order": 1,
-      "user": 1
+      "user": 1,
+      "created": "2024-02-29T13:28:58.277Z",
+      "updated": "2024-02-29T13:28:58.277Z"
     }
   },
   {
@@ -4823,7 +4853,9 @@
       "active": true,
       "default": true,
       "order": 1,
-      "user": 1
+      "user": 1,
+      "created": "2024-02-29T13:29:05.753Z",
+      "updated": "2024-02-29T13:29:05.753Z"
     }
   },
   {
@@ -4834,7 +4866,9 @@
       "active": true,
       "default": false,
       "order": 1,
-      "user": 1
+      "user": 1,
+      "created": "2024-02-29T13:29:12.874Z",
+      "updated": "2024-02-29T13:29:12.874Z"
     }
   },
   {
@@ -4845,7 +4879,9 @@
       "active": true,
       "default": false,
       "order": 1,
-      "user": 1
+      "user": 1,
+      "created": "2024-02-29T13:29:18.401Z",
+      "updated": "2024-02-29T13:29:18.401Z"
     }
   },
   {
@@ -4856,7 +4892,9 @@
       "active": true,
       "default": false,
       "order": 1,
-      "user": 1
+      "user": 1,
+      "created": "2024-02-29T13:29:24.243Z",
+      "updated": "2024-02-29T13:29:24.243Z"
     }
   },
   {
@@ -4867,7 +4905,9 @@
       "active": true,
       "default": false,
       "order": 1,
-      "user": 1
+      "user": 1,
+      "created": "2024-02-29T13:29:40.571Z",
+      "updated": "2024-02-29T13:29:40.571Z"
     }
   },
   {
@@ -4878,7 +4918,9 @@
       "active": true,
       "default": false,
       "order": 1,
-      "user": 1
+      "user": 1,
+      "created": "2024-02-29T13:29:46.856Z",
+      "updated": "2024-02-29T13:29:46.856Z"
     }
   },
   {
