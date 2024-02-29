@@ -98,8 +98,8 @@ class Member(models.Model):
 class Role(models.Model):
     name = models.CharField('이름', max_length=20)
     assignable = models.BooleanField('업무 위탁 권한', default=True)
-    TASK_VIEW_PERM = (('ALL', '모든 업무'), ('PUB', '비공개 업무 제외'), ('PRI', '직접 생성 또는 담당한 업무'))
-    issue_visible = models.CharField('업무 보기 권한', max_length=3, choices=TASK_VIEW_PERM, default='PUB')
+    ISSUE_VIEW_PERM = (('ALL', '모든 업무'), ('PUB', '비공개 업무 제외'), ('PRI', '직접 생성 또는 담당한 업무'))
+    issue_visible = models.CharField('업무 보기 권한', max_length=3, choices=ISSUE_VIEW_PERM, default='PUB')
     TIME_VIEW_PERM = (('ALL', '모든 시간기록'), ('PRI', '직접 생성한 시간기록'))
     time_entry_visible = models.CharField('시간기록 보기 권한', max_length=3, choices=TIME_VIEW_PERM, default='ALL')
     USER_VIEW_PERM = (('ALL', '모든 활성 사용자'), ('PRJ', '보이는 프로젝트 사용자'))
@@ -158,26 +158,26 @@ class Permission(models.Model):
     # 간트차트
     gantt_read = models.BooleanField('간트 차트 보기', default=True)
     # 업무
-    task_read = models.BooleanField('업무 보기', default=True)
-    task_create = models.BooleanField('업무 추가', default=True)
-    task_update = models.BooleanField('업무 편집', default=False)
-    task_own_update = models.BooleanField('내 업무 편집', default=True)
-    task_copy = models.BooleanField('업무 복사', default=True)
-    task_rel_manage = models.BooleanField('업무 관계 관리', default=True)
-    task_sub_manage = models.BooleanField('하위 업무 관리', default=True)
-    task_public = models.BooleanField('업무 공개/비공개 설정', default=False)
-    task_own_public = models.BooleanField('내 업무 공개/비공개 설정', default=True)
-    task_comment_create = models.BooleanField('댓글 추가', default=True)
-    task_comment_update = models.BooleanField('댓글 편집', default=False)
-    task_comment_own_update = models.BooleanField('내 댓글 편집', default=True)
-    task_private_comment_read = models.BooleanField('비공개 댓글 보기', default=False)
-    task_private_comment_set = models.BooleanField('댓글 비공개로 설정', default=False)
-    task_delete = models.BooleanField('업무 삭제', default=False)
-    task_watcher_read = models.BooleanField('업무 관람자 보기', default=False)
-    task_watcher_create = models.BooleanField('업무 관람자 추가', default=False)
-    task_watcher_delete = models.BooleanField('업무 관람자 삭제', default=False)
-    task_import = models.BooleanField('업무 가져오기', default=False)
-    task_category_manage = models.BooleanField('업무 범주 관리', default=False)
+    issue_read = models.BooleanField('업무 보기', default=True)
+    issue_create = models.BooleanField('업무 추가', default=True)
+    issue_update = models.BooleanField('업무 편집', default=False)
+    issue_own_update = models.BooleanField('내 업무 편집', default=True)
+    issue_copy = models.BooleanField('업무 복사', default=True)
+    issue_rel_manage = models.BooleanField('업무 관계 관리', default=True)
+    issue_sub_manage = models.BooleanField('하위 업무 관리', default=True)
+    issue_public = models.BooleanField('업무 공개/비공개 설정', default=False)
+    issue_own_public = models.BooleanField('내 업무 공개/비공개 설정', default=True)
+    issue_comment_create = models.BooleanField('댓글 추가', default=True)
+    issue_comment_update = models.BooleanField('댓글 편집', default=False)
+    issue_comment_own_update = models.BooleanField('내 댓글 편집', default=True)
+    issue_private_comment_read = models.BooleanField('비공개 댓글 보기', default=False)
+    issue_private_comment_set = models.BooleanField('댓글 비공개로 설정', default=False)
+    issue_delete = models.BooleanField('업무 삭제', default=False)
+    issue_watcher_read = models.BooleanField('업무 관람자 보기', default=False)
+    issue_watcher_create = models.BooleanField('업무 관람자 추가', default=False)
+    issue_watcher_delete = models.BooleanField('업무 관람자 삭제', default=False)
+    issue_import = models.BooleanField('업무 가져오기', default=False)
+    issue_category_manage = models.BooleanField('업무 범주 관리', default=False)
     # 공지(뉴스)
     news_read = models.BooleanField('공지 보기', default=True)
     news_manage = models.BooleanField('공지 관리', default=False)
@@ -186,7 +186,7 @@ class Permission(models.Model):
     repo_changesets_read = models.BooleanField('변경 묶음 보기', default=False)
     repo_read = models.BooleanField('저장소 보기', default=False)
     repo_commit_access = models.BooleanField('변경 로그 보기', default=False)
-    repo_rel_task_manage = models.BooleanField('연결된 업무 관리', default=False)
+    repo_rel_issue_manage = models.BooleanField('연결된 업무 관리', default=False)
     repo_manage = models.BooleanField('저장소 관리', default=False)
     # 시간추적
     time_read = models.BooleanField('시간 입력 보기', default=True)
@@ -382,7 +382,7 @@ def get_file_name(filename):
 
 
 def get_file_path(instance, filename):
-    return f"task/{get_file_name(filename)}"
+    return f"issue/{get_file_name(filename)}"
 
 
 class IssueFile(models.Model):
