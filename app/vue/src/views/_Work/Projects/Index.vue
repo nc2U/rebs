@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, computed, inject, onBeforeMount, type ComputedRef } from 'vue'
 import { navMenu as navMenu1 } from '@/views/_Work/_menu/headermixin1'
-import { navMenu as navMenu2 } from '@/views/_Work/_menu/headermixin2'
 import type { Company } from '@/store/types/settings'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
+import { useAccount } from '@/store/pinia/account'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import ProjectList from '@/views/_Work/Projects/components/_Project/ProjectList.vue'
@@ -26,21 +26,45 @@ import Settings from '@/views/_Work/Projects/components/_Project/Settings/Index.
 
 const cBody = ref()
 
+const accStore = useAccount()
+const superAuth = computed(() => accStore.superAuth)
+
+const workStore = useWork()
+const issueProject = computed(() => workStore.issueProject)
+const modules = computed(() => issueProject.value?.module)
+const issueProjectList = computed(() => workStore.issueProjectList)
+const AllIssueProjects = computed(() => workStore.AllIssueProjects)
+
+const navMenu2 = computed(() => {
+  let menus = [
+    { no: 1, menu: '(개요)' },
+    { no: 2, menu: '(작업내역)' },
+  ]
+  if (modules.value?.issue) menus = [...new Set([...menus, ...[{ no: 3, menu: '(업무)' }]])]
+  if (modules.value?.time) menus = [...new Set([...menus, ...[{ no: 4, menu: '(소요시간)' }]])]
+  if (modules.value?.news) menus = [...new Set([...menus, ...[{ no: 7, menu: '(공지)' }]])]
+  if (modules.value?.document) menus = [...new Set([...menus, ...[{ no: 8, menu: '(문서)' }]])]
+  if (modules.value?.file) menus = [...new Set([...menus, ...[{ no: 10, menu: '(파일)' }]])]
+  if (modules.value?.wiki) menus = [...new Set([...menus, ...[{ no: 9, menu: '(위키)' }]])]
+  if (modules.value?.calendar) menus = [...new Set([...menus, ...[{ no: 6, menu: '(달력)' }]])]
+  if (modules.value?.gantt) menus = [...new Set([...menus, ...[{ no: 5, menu: '(차트)' }]])]
+  if (superAuth.value) menus = [...menus, ...[{ no: 11, menu: '(설정)' }]]
+
+  return menus.sort((a, b) => a.no - b.no).map(m => m.menu)
+})
+
 const route = useRoute()
 const company = inject<ComputedRef<Company>>('company')
 const comName = computed(() => company?.value?.name)
-const navMenu = computed(() => ((route.name as string).includes('프로젝트') ? navMenu1 : navMenu2))
+const navMenu = computed(() =>
+  (route.name as string).includes('프로젝트') ? navMenu1 : navMenu2.value,
+)
 
 const headerTitle = computed(() =>
   (route.name as string).includes('프로젝트') ? comName.value : issueProject.value?.name,
 )
 
 const sideNavCAll = () => cBody.value.toggle()
-
-const workStore = useWork()
-const issueProject = computed(() => workStore.issueProject)
-const issueProjectList = computed(() => workStore.issueProjectList)
-const AllIssueProjects = computed(() => workStore.AllIssueProjects)
 
 const onSubmit = (payload: any) => {
   payload.company = company?.value.pk
