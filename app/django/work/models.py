@@ -140,7 +140,7 @@ class Permission(models.Model):
     forum_update = models.BooleanField('게시물 편집', default=False)
     forum_own_update = models.BooleanField('내 게시물 편집', default=True)
     forum_delete = models.BooleanField('게시물 삭제', default=False)
-    forum_own_delete = models.BooleanField('내 게시물 삭제', default=False)
+    forum_own_delete = models.BooleanField('내 게시물 삭제', default=True)
     forum_watcher_read = models.BooleanField('게시물 관람자 보기', default=False)
     forum_watcher_create = models.BooleanField('게시물 관람자 추가', default=False)
     forum_watcher_delete = models.BooleanField('게시물 관람자 삭제', default=False)
