@@ -355,7 +355,7 @@ class Issue(models.Model):
         (0.6, '60%'), (0.7, '70%'), (0.8, '80%'), (0.9, '90%'), (1.0, '100%'))
     done_ratio = models.DecimalField('진척도', max_digits=2, decimal_places=1, choices=PROGRESS_RATIO, default=0.0)
     watchers = models.ManyToManyField('accounts.User', blank=True,
-                                      verbose_name='업무 관람자', related_name='watchers')
+                                      verbose_name='업무 진행 공유', related_name='watchers')
     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='사용자')
     created = models.DateTimeField('추가', auto_now_add=True)
     updated = models.DateTimeField('수정', auto_now=True)
