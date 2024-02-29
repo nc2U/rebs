@@ -236,7 +236,7 @@ class Tracker(models.Model):
 
 class IssueStatus(models.Model):
     name = models.CharField('이름', max_length=20)
-    desc = models.CharField('설명', max_length=255, blank=True, default='')
+    description = models.CharField('설명', max_length=255, blank=True, default='')
     closed = models.BooleanField('완료 상태', default=False)
     order = models.PositiveSmallIntegerField('정렬', default=1)
     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='사용자')
@@ -388,7 +388,7 @@ def get_file_path(instance, filename):
 class IssueFile(models.Model):
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, default=None, verbose_name='업무', related_name='files')
     file = models.FileField(upload_to='files', verbose_name='파일')
-    desc = models.CharField('부가설명', max_length=255, blank=True, default='')
+    description = models.CharField('부가설명', max_length=255, blank=True, default='')
 
     def __str__(self):
         return self.file
