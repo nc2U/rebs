@@ -24,7 +24,7 @@ const iProject = computed(() => workStore.issueProject)
           <CCardBody>
             <!--        <CCardTitle>업무 추적</CCardTitle>-->
             <CCardTitle>업무 추적</CCardTitle>
-            <CTable>
+            <CTable bordered hover small striped>
               <CTableHead>
                 <CTableRow class="text-center">
                   <CTableHeaderCell scope="col"></CTableHeaderCell>
@@ -35,7 +35,7 @@ const iProject = computed(() => workStore.issueProject)
               </CTableHead>
 
               <CTableBody>
-                <CTableRow class="text-center">
+                <CTableRow v-for="i in 3" :key="i" class="text-center">
                   <CTableHeaderCell>결함</CTableHeaderCell>
                   <CTableDataCell>0</CTableDataCell>
                   <CTableDataCell>0</CTableDataCell>
@@ -45,7 +45,7 @@ const iProject = computed(() => workStore.issueProject)
             </CTable>
           </CCardBody>
 
-          <CCardText> 모든 업무 보기 | 요약</CCardText>
+          <CCardText class="mx-3 mb-2"> 모든 업무 보기 | 요약 | 달력 | Gantt 차트</CCardText>
         </CCard>
       </CRow>
     </CCol>
