@@ -32,34 +32,34 @@ const comName = computed(() => company?.value?.name)
 const navMenu = computed(() => ((route.name as string).includes('프로젝트') ? navMenu1 : navMenu2))
 
 const headerTitle = computed(() =>
-  (route.name as string).includes('프로젝트') ? comName.value : taskProject.value?.name,
+  (route.name as string).includes('프로젝트') ? comName.value : issueProject.value?.name,
 )
 
 const sideNavCAll = () => cBody.value.toggle()
 
 const workStore = useWork()
-const taskProject = computed(() => workStore.taskProject)
-const taskProjectList = computed(() => workStore.taskProjectList)
-const AllTaskProjects = computed(() => workStore.AllTaskProjects)
+const issueProject = computed(() => workStore.issueProject)
+const issueProjectList = computed(() => workStore.issueProjectList)
+const AllIssueProjects = computed(() => workStore.AllIssueProjects)
 
 const onSubmit = (payload: any) => {
   payload.company = company?.value.pk
-  if (!!payload.pk) workStore.updateTaskProject(payload)
-  else workStore.createTaskProject(payload)
+  if (!!payload.pk) workStore.updateIssueProject(payload)
+  else workStore.createIssueProject(payload)
   console.log(payload)
 }
 
 onBeforeRouteUpdate(async to => {
-  if (to.params.projId) await workStore.fetchTaskProject(to.params.projId as string)
+  if (to.params.projId) await workStore.fetchIssueProject(to.params.projId as string)
   else {
-    workStore.taskProject = null
-    await workStore.fetchTaskProjectList()
+    workStore.issueProject = null
+    await workStore.fetchIssueProjectList()
   }
 })
 
 onBeforeMount(() => {
-  workStore.fetchTaskProjectList()
-  if (route.params.projId) workStore.fetchTaskProject(route.params.projId as string)
+  workStore.fetchIssueProjectList()
+  if (route.params.projId) workStore.fetchIssueProject(route.params.projId as string)
 })
 </script>
 
@@ -68,12 +68,12 @@ onBeforeMount(() => {
 
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query">
     <template v-slot:default>
-      <ProjectList v-if="route.name === '프로젝트'" :project-list="taskProjectList" />
+      <ProjectList v-if="route.name === '프로젝트'" :project-list="issueProjectList" />
 
       <ProjectForm
         v-if="route.name === '프로젝트 - 생성'"
         title="새 프로젝트"
-        :all-task-projects="AllTaskProjects"
+        :all-task-projects="AllIssueProjects"
         @on-submit="onSubmit"
       />
 

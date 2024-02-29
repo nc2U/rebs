@@ -7,6 +7,12 @@ from work.models import (IssueProject, Module, Version, IssueCategory, Repositor
 
 
 # Work --------------------------------------------------------------------------
+class TrackerInIssueProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tracker
+        fields = ('pk', 'name', 'description')
+
+
 class ModuleInIssueProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Module
@@ -17,13 +23,14 @@ class ModuleInIssueProjectSerializer(serializers.ModelSerializer):
 class IssueProjectSerializer(serializers.ModelSerializer):
     sub_projects = serializers.SerializerMethodField()
     user = serializers.SlugRelatedField('username', read_only=True)
+    tracker = TrackerInIssueProjectSerializer(many=True, read_only=True)
     module = ModuleInIssueProjectSerializer(read_only=True)
 
     class Meta:
         model = IssueProject
         fields = ('pk', 'company', 'name', 'description', 'homepage', 'is_public',
                   'parent', 'slug', 'status', 'is_inherit_members', 'depth',
-                  'sub_projects', 'module', 'user', 'created')
+                  'tracker', 'sub_projects', 'module', 'user', 'created')
 
     def get_sub_projects(self, obj):
         return self.__class__(obj.issueproject_set.all(), many=True, read_only=True).data

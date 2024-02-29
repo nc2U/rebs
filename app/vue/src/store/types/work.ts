@@ -1,4 +1,4 @@
-export interface TaskProject {
+export interface IssueProject {
   pk?: number
   company: number
   name: string
@@ -10,7 +10,7 @@ export interface TaskProject {
   status: '1' | '9'
   is_inherit_members: boolean
   depth: number
-  sub_projects?: TaskProject[]
+  sub_projects?: IssueProject[]
   module: Module | null
   user?: number
   created?: string
