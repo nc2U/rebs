@@ -1,12 +1,12 @@
 <script lang="ts" setup="">
 import { onMounted, onUpdated, type PropType, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import type { TaskProject } from '@/store/types/work'
+import type { IssueProject } from '@/store/types/work'
 
 const props = defineProps({
   title: { type: String, default: 'Body Title' },
-  project: { type: Object as PropType<TaskProject | null>, default: null },
-  allTaskProjects: { type: Array as PropType<TaskProject[]>, default: () => [] },
+  project: { type: Object as PropType<IssueProject | null>, default: null },
+  allTaskProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
 })
 
 const emit = defineEmits(['on-submit'])

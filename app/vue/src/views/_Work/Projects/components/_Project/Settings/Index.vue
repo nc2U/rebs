@@ -18,36 +18,36 @@ import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 
 const company = inject<ComputedRef<Company>>('company')
 const workStore = useWork()
-const taskProject = computed(() => workStore.taskProject)
-const AllTaskProjects = computed(() => workStore.AllTaskProjects)
+const issueProject = computed(() => workStore.issueProject)
+const AllIssueProjects = computed(() => workStore.AllIssueProjects)
 
 const onSubmit = (payload: any) => {
   payload.company = company?.value.pk
-  if (!!payload.pk) workStore.updateTaskProject(payload)
-  else workStore.createTaskProject(payload)
+  if (!!payload.pk) workStore.updateIssueProject(payload)
+  else workStore.createIssueProject(payload)
   console.log(payload)
 }
 
 onBeforeRouteUpdate(async to => {
-  if (to.params.projId) await workStore.fetchTaskProject(to.params.projId as string)
+  if (to.params.projId) await workStore.fetchIssueProject(to.params.projId as string)
   else {
-    workStore.taskProject = null
-    await workStore.fetchTaskProjectList()
+    workStore.issueProject = null
+    await workStore.fetchIssueProjectList()
   }
 })
 
 const route = useRoute()
 onBeforeMount(() => {
-  workStore.fetchTaskProjectList()
-  if (route.params.projId) workStore.fetchTaskProject(route.params.projId as string)
+  workStore.fetchIssueProjectList()
+  if (route.params.projId) workStore.fetchIssueProject(route.params.projId as string)
 })
 </script>
 
 <template>
   <ProjectForm
     title="설정"
-    :project="taskProject"
-    :all-task-projects="AllTaskProjects"
+    :project="issueProject"
+    :all-task-projects="AllIssueProjects"
     @on-submit="onSubmit"
   />
 </template>
