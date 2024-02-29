@@ -8,6 +8,7 @@ const props = defineProps({
     default: () => [],
   },
   query: { type: Object, default: null },
+  aside: { type: Boolean, default: true },
 })
 const visible = ref(false)
 
@@ -23,11 +24,11 @@ defineExpose({ toggle })
 
 <template>
   <CRow class="flex-grow-1">
-    <CCol md="9" class="text-body main p-4 px-lg-5">
+    <CCol class="text-body main p-4 px-lg-5">
       <slot> Under Construction!</slot>
     </CCol>
 
-    <CCol class="text-body p-4 d-none d-md-block">
+    <CCol v-if="aside" md="3" class="text-body p-4 d-none d-md-block">
       <slot name="aside"> Under Construction!</slot>
     </CCol>
 

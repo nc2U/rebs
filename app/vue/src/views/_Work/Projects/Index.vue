@@ -25,6 +25,9 @@ import Repository from '@/views/_Work/Projects/components/_Project/Repository/In
 import Settings from '@/views/_Work/Projects/components/_Project/Settings/Index.vue'
 
 const cBody = ref()
+const aside = ref(true)
+
+const asideVisible = (visible: boolean) => (aside.value = visible)
 
 const route = useRoute()
 const company = inject<ComputedRef<Company>>('company')
@@ -90,44 +93,49 @@ onBeforeMount(() => {
 <template>
   <Header :page-title="headerTitle" :nav-menu="navMenus" @side-nav-call="sideNavCAll" />
 
-  <ContentBody ref="cBody" :nav-menu="navMenus" :query="$route?.query">
+  <ContentBody ref="cBody" :nav-menu="navMenus" :query="$route?.query" :aside="aside">
     <template v-slot:default>
-      <ProjectList v-if="route.name === '프로젝트'" :project-list="issueProjectList" />
+      <ProjectList
+        v-if="route.name === '프로젝트'"
+        :project-list="issueProjectList"
+        @aside-visible="asideVisible"
+      />
 
       <ProjectForm
         v-if="route.name === '프로젝트 - 생성'"
         title="새 프로젝트"
         :all-task-projects="AllIssueProjects"
+        @aside-visible="asideVisible"
         @on-submit="onSubmit"
       />
 
-      <Overview v-if="route.name === '(개요)'" />
+      <Overview v-if="route.name === '(개요)'" @aside-visible="asideVisible" />
 
-      <Activity v-if="route.name === '(작업내역)'" />
+      <Activity v-if="route.name === '(작업내역)'" @aside-visible="asideVisible" />
 
-      <Roadmap v-if="route.name === '(로드맵)'" />
+      <Roadmap v-if="route.name === '(로드맵)'" @aside-visible="asideVisible" />
 
-      <Issues v-if="route.name === '(업무)'" />
+      <Issues v-if="route.name === '(업무)'" @aside-visible="asideVisible" />
 
-      <SpentTime v-if="route.name === '(소요시간)'" />
+      <SpentTime v-if="route.name === '(소요시간)'" @aside-visible="asideVisible" />
 
-      <Gantt v-if="route.name === '(차트)'" />
+      <Gantt v-if="route.name === '(차트)'" @aside-visible="asideVisible" />
 
-      <Calendar v-if="route.name === '(달력)'" />
+      <Calendar v-if="route.name === '(달력)'" @aside-visible="asideVisible" />
 
-      <News v-if="route.name === '(공지)'" />
+      <News v-if="route.name === '(공지)'" @aside-visible="asideVisible" />
 
-      <Documents v-if="route.name === '(문서)'" />
+      <Documents v-if="route.name === '(문서)'" @aside-visible="asideVisible" />
 
-      <Wiki v-if="route.name === '(위키)'" />
+      <Wiki v-if="route.name === '(위키)'" @aside-visible="asideVisible" />
 
-      <Forums v-if="route.name === '(게시판)'" />
+      <Forums v-if="route.name === '(게시판)'" @aside-visible="asideVisible" />
 
-      <Files v-if="route.name === '(파일)'" />
+      <Files v-if="route.name === '(파일)'" @aside-visible="asideVisible" />
 
-      <Repository v-if="route.name === '(저장소)'" />
+      <Repository v-if="route.name === '(저장소)'" @aside-visible="asideVisible" />
 
-      <Settings v-if="route.name === '(설정)'" />
+      <Settings v-if="route.name === '(설정)'" @aside-visible="asideVisible" />
     </template>
 
     <template v-slot:aside></template>
