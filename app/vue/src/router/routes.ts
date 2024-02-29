@@ -64,7 +64,7 @@ const routes: Array<RouteRecordRaw> = [
           },
         ],
       },
-      workProject,
+      workProject as RouteRecordRaw,
       workSetting,
       contracts,
       payments,
