@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { inject, type PropType } from 'vue'
+import { inject, onBeforeMount, type PropType } from 'vue'
 import type { IssueProject } from '@/store/types/work'
 
 defineProps({
@@ -9,7 +9,11 @@ defineProps({
   },
 })
 
+const emit = defineEmits(['aside-visible'])
+
 const superAuth = inject('superAuth', false)
+
+onBeforeMount(() => emit('aside-visible', true))
 </script>
 
 <template>

@@ -1,4 +1,10 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { onBeforeMount } from 'vue'
+
+const emit = defineEmits(['aside-visible'])
+
+onBeforeMount(() => emit('aside-visible', false))
+</script>
 
 <template>
   <CRow class="py-2">

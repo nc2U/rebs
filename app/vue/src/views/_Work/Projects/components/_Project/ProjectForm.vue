@@ -1,5 +1,5 @@
 <script lang="ts" setup="">
-import { onMounted, onUpdated, type PropType, reactive, ref } from 'vue'
+import { onBeforeMount, onMounted, onUpdated, type PropType, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import type { IssueProject } from '@/store/types/work'
 
@@ -9,7 +9,7 @@ const props = defineProps({
   allTaskProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
 })
 
-const emit = defineEmits(['on-submit'])
+const emit = defineEmits(['aside-visible', 'on-submit'])
 
 const validated = ref(false)
 
@@ -78,6 +78,7 @@ const dataSetup = () => {
 
 onMounted(() => dataSetup())
 onUpdated(() => dataSetup())
+onBeforeMount(() => emit('aside-visible', false))
 </script>
 
 <template>

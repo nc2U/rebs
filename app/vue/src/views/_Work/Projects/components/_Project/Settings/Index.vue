@@ -5,6 +5,8 @@ import type { Company } from '@/store/types/settings'
 import ProjectForm from '@/views/_Work/Projects/components/_Project/ProjectForm.vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 
+const emit = defineEmits(['aside-visible'])
+
 const menu = ref('프로젝트')
 const setMenu = (m: string) => (menu.value = m)
 
@@ -57,6 +59,7 @@ const route = useRoute()
 onBeforeMount(() => {
   workStore.fetchIssueProjectList()
   if (route.params.projId) workStore.fetchIssueProject(route.params.projId as string)
+  emit('aside-visible', false)
 })
 </script>
 
