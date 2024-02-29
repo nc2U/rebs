@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import type { IssueProject } from '@/store/types/work'
 
 const props = defineProps({
-  title: { type: String, default: 'Body Title' },
+  title: { type: String, default: '' },
   project: { type: Object as PropType<IssueProject | null>, default: null },
   allTaskProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
 })
@@ -81,7 +81,7 @@ onUpdated(() => dataSetup())
 </script>
 
 <template>
-  <CRow class="py-2">
+  <CRow v-if="title" class="py-2">
     <CCol>
       <h5>{{ title }}</h5>
     </CCol>

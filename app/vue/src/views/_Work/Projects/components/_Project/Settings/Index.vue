@@ -1,24 +1,41 @@
 <script lang="ts" setup>
-import { computed, inject, type ComputedRef, onBeforeMount } from 'vue'
+import { ref, computed, inject, type ComputedRef, onBeforeMount } from 'vue'
 import { useWork } from '@/store/pinia/work'
 import type { Company } from '@/store/types/settings'
 import ProjectForm from '@/views/_Work/Projects/components/_Project/ProjectForm.vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 
-// const menus = ref([
-//   '프로젝트',
-//   '구성원',
-//   '업무 추적',
-//   '버전',
-//   '업무 범주',
-//   '저장소',
-//   '게시판',
-//   '시간 추적',
-// ])
+const menu = ref('프로젝트')
+const setMenu = (m: string) => (menu.value = m)
+
+const settingMenus = computed(() => {
+  let menus = [
+    { no: 1, menu: '프로젝트' },
+    { no: 2, menu: '구성원' },
+    { no: 4, menu: '버전' },
+  ]
+
+  if (modules.value?.issue)
+    menus = [
+      ...new Set([
+        ...menus,
+        ...[
+          { no: 3, menu: '업무추적' },
+          { no: 5, menu: '업무범주' },
+        ],
+      ]),
+    ]
+  if (modules.value?.time) menus = [...new Set([...menus, ...[{ no: 8, menu: '시간추적' }]])]
+  if (modules.value?.repository) menus = [...new Set([...menus, ...[{ no: 6, menu: '저장소' }]])]
+  if (modules.value?.forum) menus = [...new Set([...menus, ...[{ no: 7, menu: '게시판' }]])]
+
+  return menus.sort((a, b) => a.no - b.no).map(m => m.menu)
+})
 
 const company = inject<ComputedRef<Company>>('company')
 const workStore = useWork()
 const issueProject = computed(() => workStore.issueProject)
+const modules = computed(() => issueProject.value?.module)
 const AllIssueProjects = computed(() => workStore.AllIssueProjects)
 
 const onSubmit = (payload: any) => {
@@ -44,8 +61,22 @@ onBeforeMount(() => {
 </script>
 
 <template>
+  <CRow class="py-2">
+    <CCol>
+      <h5>설정</h5>
+    </CCol>
+  </CRow>
+
+  <CRow class="mb-3">
+    <CCol>
+      <v-tabs density="compact">
+        <v-tab v-for="m in settingMenus" :value="m" :key="m" @click="setMenu(m)">{{ m }}</v-tab>
+      </v-tabs>
+    </CCol>
+  </CRow>
+
   <ProjectForm
-    title="설정"
+    v-if="menu === '프로젝트'"
     :project="issueProject"
     :all-task-projects="AllIssueProjects"
     @on-submit="onSubmit"
