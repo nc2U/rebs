@@ -6,8 +6,8 @@ import type { IssueProject } from '@/store/types/work'
 
 export const useWork = defineStore('work', () => {
   // states & getters
-  const issueProjectList = ref<IssueProject[]>([])
   const issueProject = ref<IssueProject | null>(null)
+  const issueProjectList = ref<IssueProject[]>([])
   const AllIssueProjects = computed(() => {
     const result: IssueProject[] = []
 
@@ -64,9 +64,9 @@ export const useWork = defineStore('work', () => {
       .catch(err => errorHandle(err.response.data))
 
   return {
+    issueProject,
     issueProjectList,
     AllIssueProjects,
-    issueProject,
 
     fetchIssueProjectList,
     fetchIssueProject,
