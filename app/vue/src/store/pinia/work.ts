@@ -2,16 +2,16 @@ import api from '@/api'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
-import type { TaskProject } from '@/store/types/work'
+import type { IssueProject } from '@/store/types/work'
 
 export const useWork = defineStore('work', () => {
   // states & getters
-  const taskProjectList = ref<TaskProject[]>([])
-  const taskProject = ref<TaskProject | null>(null)
-  const AllTaskProjects = computed(() => {
-    const result: TaskProject[] = []
+  const issueProjectList = ref<IssueProject[]>([])
+  const issueProject = ref<IssueProject | null>(null)
+  const AllIssueProjects = computed(() => {
+    const result: IssueProject[] = []
 
-    function flatten(proj: TaskProject) {
+    function flatten(proj: IssueProject) {
       result.push(proj)
       if (!!proj.sub_projects?.length) {
         proj.sub_projects.forEach(sub => {
@@ -20,58 +20,58 @@ export const useWork = defineStore('work', () => {
       }
     }
 
-    taskProjectList.value.forEach(root => {
+    issueProjectList.value.forEach(root => {
       flatten(root)
     })
     return result
   })
 
   // actions
-  const fetchTaskProjectList = () =>
+  const fetchIssueProjectList = () =>
     api
       .get('/issue-project/?parent__isnull=true')
-      .then(res => (taskProjectList.value = res.data.results))
+      .then(res => (issueProjectList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const fetchTaskProject = (slug: string) =>
+  const fetchIssueProject = (slug: string) =>
     api
       .get(`/issue-project/${slug}/`)
-      .then(res => (taskProject.value = res.data))
+      .then(res => (issueProject.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const createTaskProject = (payload: TaskProject) =>
+  const createIssueProject = (payload: IssueProject) =>
     api
       .post(`/issue-project/`, payload)
       .then(res => {
-        fetchTaskProject(res.data.slug).then(() => message())
+        fetchIssueProject(res.data.slug).then(() => message())
       })
       .catch(err => errorHandle(err.response.data))
 
-  const updateTaskProject = (payload: TaskProject) =>
+  const updateIssueProject = (payload: IssueProject) =>
     api
       .put(`/issue-project/${payload.slug}/`, payload)
-      .then(res => fetchTaskProject(res.data.slug).then(() => message()))
+      .then(res => fetchIssueProject(res.data.slug).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
-  const deleteTaskProject = (pk: number) =>
+  const deleteIssueProject = (pk: number) =>
     api
       .delete(`/issue-project/${pk}/`)
       .then(() =>
-        fetchTaskProjectList().then(() =>
+        fetchIssueProjectList().then(() =>
           message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.'),
         ),
       )
       .catch(err => errorHandle(err.response.data))
 
   return {
-    taskProjectList,
-    AllTaskProjects,
-    taskProject,
+    issueProjectList,
+    AllIssueProjects,
+    issueProject,
 
-    fetchTaskProjectList,
-    fetchTaskProject,
-    createTaskProject,
-    updateTaskProject,
-    deleteTaskProject,
+    fetchIssueProjectList,
+    fetchIssueProject,
+    createIssueProject,
+    updateIssueProject,
+    deleteIssueProject,
   }
 })
