@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { inject, onBeforeMount, type PropType } from 'vue'
 import type { IssueProject } from '@/store/types/work'
+import NoData from '@/views/_Work/components/NoData.vue'
 
 defineProps({
   projectList: {
@@ -34,9 +35,7 @@ onBeforeMount(() => emit('aside-visible', true))
     </CCol>
   </CRow>
 
-  <CRow v-if="!projectList.length">
-    <CAlert color="warning" class="text-center"> 표시할 데이터가 없습니다.</CAlert>
-  </CRow>
+  <NoData v-if="!projectList.length" />
 
   <CRow v-else>
     <CCol v-for="proj in projectList" :key="proj.pk" sm="12" lg="6" xl="4">

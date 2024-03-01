@@ -4,12 +4,15 @@ import { navMenu } from '@/views/_Work/_menu/headermixin1'
 import type { Company } from '@/store/types/settings'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
+import NoData from '@/views/_Work/components/NoData.vue'
 
 const cBody = ref()
 const company = inject<ComputedRef<Company>>('company')
 const comName = computed(() => company?.value?.name)
 
 const sideNavCAll = () => cBody.value.toggle()
+
+const activities = computed(() => [])
 </script>
 
 <template>
@@ -23,14 +26,14 @@ const sideNavCAll = () => cBody.value.toggle()
         </CCol>
       </CRow>
 
-      <CRow class="mb-3">
+      <CRow class="fst-italic">
         <CCol>2024/02/21부터 2024/03/01까지</CCol>
       </CRow>
 
-      <CRow class="mb-2">
-        <CCol>
-          <CAlert color="warning">표시할 데이터가 없습니다.</CAlert>
-        </CCol>
+      <NoData v-if="!activities.length" />
+
+      <CRow v-else>
+        <CCol></CCol>
       </CRow>
 
       <CRow>
