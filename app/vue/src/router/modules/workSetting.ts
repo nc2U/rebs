@@ -21,11 +21,11 @@ const workSetting = {
       name: '사용자',
       component: () => import('@/views/_Work/Settings/components/Users/Index.vue'),
     },
-    {
-      path: 'group',
-      name: '그룹',
-      component: () => import('@/views/_Work/Settings/components/Groups/Index.vue'),
-    },
+    // {
+    //   path: 'group',
+    //   name: '그룹',
+    //   component: () => import('@/views/_Work/Settings/components/Groups/Index.vue'),
+    // },
     {
       path: 'role',
       name: '역할 및 권한',
