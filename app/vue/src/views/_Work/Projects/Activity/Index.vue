@@ -22,6 +22,25 @@ const sideNavCAll = () => cBody.value.toggle()
           <h5>{{ $route.name }}</h5>
         </CCol>
       </CRow>
+
+      <CRow class="mb-3">
+        <CCol>2024/02/21부터 2024/03/01까지</CCol>
+      </CRow>
+
+      <CRow class="mb-2">
+        <CCol>
+          <CAlert color="warning">표시할 데이터가 없습니다.</CAlert>
+        </CCol>
+      </CRow>
+
+      <CRow>
+        <CCol>
+          <CButtonGroup role="group">
+            <CButton color="primary" variant="outline" size="sm">« 뒤로</CButton>
+            <CButton color="primary" variant="outline" size="sm">다음 »</CButton>
+          </CButtonGroup>
+        </CCol>
+      </CRow>
     </template>
 
     <template v-slot:aside></template>
