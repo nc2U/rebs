@@ -19,7 +19,7 @@ onBeforeMount(() => docStore.fetchPostList({ board: 1 }))
 
 <template>
   <CContainer fluid>
-    <CRow>
+    <CRow class="mt-3">
       <CCol>
         <MainCarousel />
       </CCol>
