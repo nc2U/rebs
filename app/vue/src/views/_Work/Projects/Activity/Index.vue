@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { computed, type ComputedRef, inject, ref } from 'vue'
-import { navMenu } from '@/views/_Work/_menu/headermixin1'
+import { computed, type ComputedRef, inject, onBeforeMount, ref } from 'vue'
+import { navMenu1, navMenu2 } from '@/views/_Work/_menu/headermixin1'
 import type { Company } from '@/store/types/settings'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import NoData from '@/views/_Work/components/NoData.vue'
+import { useWork } from '@/store/pinia/work'
 
 const cBody = ref()
 const company = inject<ComputedRef<Company>>('company')
@@ -12,7 +13,16 @@ const comName = computed(() => company?.value?.name)
 
 const sideNavCAll = () => cBody.value.toggle()
 
+const workStore = useWork()
+const issueProjectList = computed(() => workStore.issueProjectList)
+
+const navMenu = computed(() => (!issueProjectList.value.length ? navMenu1 : navMenu2))
+
 const activities = computed(() => [])
+
+onBeforeMount(() => {
+  workStore.fetchIssueProjectList()
+})
 </script>
 
 <template>

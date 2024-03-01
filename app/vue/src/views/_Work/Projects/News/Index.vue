@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, type ComputedRef, inject, onBeforeMount, ref } from 'vue'
-import { navMenu } from '@/views/_Work/_menu/headermixin1'
+import { navMenu2 as navMenu } from '@/views/_Work/_menu/headermixin1'
 import type { Company } from '@/store/types/settings'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
