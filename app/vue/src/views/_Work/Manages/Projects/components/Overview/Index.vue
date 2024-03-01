@@ -15,6 +15,48 @@ onBeforeMount(() => emit('aside-visible', false))
     <CCol>
       <h5>개요</h5>
     </CCol>
+
+    <CCol class="text-right">
+      <span class="mr-2">
+        <v-icon icon="mdi-bookmark-multiple" color="primary" size="sm" />
+        <router-link to="" class="ml-1">북마크 추가</router-link>
+      </span>
+
+      <span>
+        <CDropdown color="secondary" variant="input-group" placement="bottom-end">
+          <CDropdownToggle :caret="false" color="light" size="sm">
+            <v-icon icon="mdi-dots-horizontal" class="pointer" color="grey-darken-1" />
+            <v-tooltip activator="parent" location="top">Actions</v-tooltip>
+          </CDropdownToggle>
+          <CDropdownMenu>
+            <CDropdownItem>
+              <router-link :to="{ name: '프로젝트 - 생성', query: { parent: iProject?.pk } }">
+                <v-icon icon="mdi-plus-circle" color="success" size="sm" />
+                새 하위 프로젝트
+              </router-link>
+            </CDropdownItem>
+            <CDropdownItem>
+              <router-link to="">
+                <v-icon icon="mdi-lock" color="warning" size="sm" />
+                닫기
+              </router-link>
+            </CDropdownItem>
+            <CDropdownItem>
+              <router-link to="">
+                <v-icon icon="mdi-trash-can-outline" color="danger" size="sm" />
+                삭제
+              </router-link>
+            </CDropdownItem>
+            <CDropdownItem>
+              <router-link to="">
+                <v-icon icon="mdi-cog" color="secondary" size="sm" />
+                설정
+              </router-link>
+            </CDropdownItem>
+          </CDropdownMenu>
+        </CDropdown>
+      </span>
+    </CCol>
   </CRow>
 
   <CRow>
