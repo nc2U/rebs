@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, inject, ref } from 'vue'
+import { computed, inject, onBeforeMount, ref } from 'vue'
 import { pageTitle, navMenu } from '@/views/_Work/_menu/headermixin3'
 import { useWork } from '@/store/pinia/work'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import SearchList from '@/views/_Work/components/SearchList.vue'
 import NoData from '@/views/_Work/components/NoData.vue'
+import ProjectTable from './components/ProjectTable.vue'
 
 const cBody = ref()
 const sideNavCAll = () => cBody.value.toggle()
@@ -13,7 +14,11 @@ const sideNavCAll = () => cBody.value.toggle()
 const superAuth = inject('superAuth', false)
 
 const workStore = useWork()
-const iProjectList = computed(() => workStore.issueProjectList)
+const projectList = computed(() => workStore.AllIssueProjects)
+
+onBeforeMount(() => {
+  workStore.fetchIssueProjectList()
+})
 </script>
 
 <template>
@@ -36,10 +41,12 @@ const iProjectList = computed(() => workStore.issueProjectList)
 
       <SearchList />
 
-      <NoData v-if="!iProjectList.length" />
+      <NoData v-if="!projectList.length" />
 
       <CRow v-else>
-        <CCol></CCol>
+        <CCol>
+          <ProjectTable :issue-project-list="projectList" />
+        </CCol>
       </CRow>
     </template>
 
