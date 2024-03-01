@@ -1,15 +1,20 @@
 <script lang="ts" setup="">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
-const msg = ref('head search')
+const search = ref('')
+
+const router = useRouter()
+
+const goSearch = () => router.push({ name: '전체검색', query: { scope: '', q: search.value } })
 </script>
 
 <template>
   <CRow>
     <CCol class="p-1">
       <CInputGroup size="" class="mb-3">
-        <CInputGroupText id="inputGroup-sizing-sm">검색</CInputGroupText>
-        <CFormInput aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" />
+        <CInputGroupText id="inputGroup-sizing-sm" @click="goSearch">검색</CInputGroupText>
+        <CFormInput v-model="search" @keydown.enter="goSearch" />
       </CInputGroup>
     </CCol>
     <CCol class="p-1">
