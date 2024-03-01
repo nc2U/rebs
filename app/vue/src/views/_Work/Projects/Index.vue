@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, inject, onBeforeMount, type ComputedRef } from 'vue'
-import { navMenu } from '@/views/_Work/_menu/headermixin1'
+import { navMenu1, navMenu2 } from '@/views/_Work/_menu/headermixin1'
 import type { Company } from '@/store/types/settings'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
@@ -46,7 +46,9 @@ const modules = computed(() => issueProject.value?.module)
 const issueProjectList = computed(() => workStore.issueProjectList)
 const AllIssueProjects = computed(() => workStore.AllIssueProjects)
 
-const projectMenus = computed(() => {
+const navMenus = computed(() => (!issueProjectList.value.length ? navMenu1 : navMenu2))
+
+const projectNavMenus = computed(() => {
   let menus = [
     { no: 1, menu: '(개요)' },
     { no: 2, menu: '(작업내역)' },
@@ -65,8 +67,8 @@ const projectMenus = computed(() => {
   return menus.sort((a, b) => a.no - b.no).map(m => m.menu)
 })
 
-const navMenus = computed(() =>
-  (route.name as string).includes('프로젝트') ? navMenu : projectMenus.value,
+const navMenu = computed(() =>
+  (route.name as string).includes('프로젝트') ? navMenus.value : projectNavMenus.value,
 )
 
 const sideNavCAll = () => cBody.value.toggle()
@@ -93,9 +95,9 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <Header :page-title="headerTitle" :nav-menu="navMenus" @side-nav-call="sideNavCAll" />
+  <Header :page-title="headerTitle" :nav-menu="navMenu" @side-nav-call="sideNavCAll" />
 
-  <ContentBody ref="cBody" :nav-menu="navMenus" :query="$route?.query" :aside="aside">
+  <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query" :aside="aside">
     <template v-slot:default>
       <ProjectList
         v-if="route.name === '프로젝트'"
