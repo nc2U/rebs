@@ -12,7 +12,7 @@ const store = useStore()
     codeTheme="atom"
     :toolbarsExclude="['github']"
     style="height: 250px"
-    :theme="store.theme"
+    :theme="store.theme === 'dark' ? 'dark' : 'light'"
   />
 </template>
 
