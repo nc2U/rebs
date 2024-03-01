@@ -18,7 +18,7 @@ onBeforeMount(() => {
     <CCol class="p-1">
       <CInputGroup size="" class="mb-3">
         <CInputGroupText id="inputGroup-sizing-sm" @click="goSearch">검색</CInputGroupText>
-        <CFormInput v-model="search" @keydown.enter="goSearch" />
+        <CFormInput v-model="search" @keydown.enter="goSearch" @focusin="search = ''" />
       </CInputGroup>
     </CCol>
     <CCol class="p-1">

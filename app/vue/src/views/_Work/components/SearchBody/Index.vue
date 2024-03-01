@@ -14,8 +14,22 @@ const comName = computed(() => company?.value?.name)
 const sideNavCAll = () => cBody.value.toggle()
 
 const searchWord = ref('')
-const searchAll = ref(true)
-const searchSub = ref(false)
+const searchCond = ref({
+  all: true,
+  subOnly: false,
+  issue: false,
+  news: false,
+  document: false,
+  changeSet: false,
+  wiki: false,
+  text: false,
+  project: false,
+
+  opened: false,
+  attatch: '1' as '1' | '2' | '3',
+})
+
+const visible = ref(false)
 
 const route = useRoute()
 
@@ -36,7 +50,7 @@ onBeforeMount(() => {
     <template v-slot:default>
       <CRow class="py-2">
         <CCol>
-          <h5>{{ $route.name }}</h5>
+          <h5>검색</h5>
         </CCol>
       </CRow>
 
@@ -47,26 +61,102 @@ onBeforeMount(() => {
               <CFormInput v-model="searchWord" />
             </CCol>
             <CCol class="pt-2">
-              <CFormCheck v-model="searchAll" inline label="모든 단어" id="all-word" />
+              <CFormCheck v-model="searchCond.all" inline label="모든 단어" id="all-word" />
 
-              <CFormCheck v-model="searchSub" inline label="제목에서만 찾기" id="only-subject" />
+              <CFormCheck
+                v-model="searchCond.subOnly"
+                inline
+                label="제목에서만 찾기"
+                id="only-subject"
+              />
             </CCol>
           </CRow>
 
-          <CRow>
-            <CCol></CCol>
+          <CRow class="mt-3 m-1">
+            <CCard class="mt-3" color="light">
+              <CCardBody>
+                <CFormCheck v-model="searchCond.issue" inline label="업무" id="issue-search" />
+                <CFormCheck v-model="searchCond.news" inline label="공지" id="news-search" />
+                <CFormCheck v-model="searchCond.document" inline label="문서" id="docs-search" />
+                <CFormCheck
+                  v-model="searchCond.changeSet"
+                  inline
+                  label="변경묶음"
+                  id="cng-search"
+                />
+                <CFormCheck v-model="searchCond.wiki" inline label="위키 페이지" id="wiki-search" />
+                <CFormCheck v-model="searchCond.text" inline label="글" id="text-search" />
+                <CFormCheck v-model="searchCond.project" inline label="프로젝트" id="proj-search" />
+              </CCardBody>
+            </CCard>
+          </CRow>
+
+          <CRow class="mt-3">
+            <h6 class="pointer mb-0" @click="visible = !visible">
+              <v-icon :icon="visible ? 'mdi-chevron-down' : 'mdi-chevron-right'" size="sm" />
+              옵션
+            </h6>
+            <CCollapse :visible="visible">
+              <CRow class="mt-2" color="light">
+                <CCol>
+                  <CFormCheck v-model="searchCond.opened" label="열린 업무만" id="opened-only" />
+                </CCol>
+              </CRow>
+
+              <CRow class="mt-1">
+                <CCol>
+                  <CFormCheck
+                    v-model="searchCond.attatch"
+                    value="1"
+                    type="radio"
+                    inline
+                    name="attatch"
+                    id="attatch1"
+                    label="첨부는 검색하지 않음"
+                  />
+                  <CFormCheck
+                    v-model="searchCond.attatch"
+                    value="2"
+                    type="radio"
+                    inline
+                    name="attatch"
+                    id="attatch2"
+                    label="첨부파일명과 설명만 검색"
+                  />
+                  <CFormCheck
+                    v-model="searchCond.attatch"
+                    value="3"
+                    type="radio"
+                    inline
+                    name="attatch"
+                    id="attatch3"
+                    label="첨부만 검색"
+                  />
+                </CCol>
+              </CRow>
+            </CCollapse>
           </CRow>
         </CCardBody>
       </CCard>
 
-      <CRow class="mt-3">
+      <CRow class="mt-2">
         <CCol>
-          <h5>결과 (0)</h5>
+          <CButton color="secondary" variant="outline" size="sm">검색</CButton>
         </CCol>
       </CRow>
 
-      <CRow class="mt-3">
-        <CCol> 결과들 ...</CCol>
+      <CRow v-if="route.query.q">
+        <CCol>
+          <CRow class="mt-4">
+            <CCol>
+              <h5>결과 (0)</h5>
+            </CCol>
+          </CRow>
+
+          <CRow class="mt-2">
+            <CCol> 결과들 ... (구현 중)</CCol>
+          </CRow>
+        </CCol>
       </CRow>
     </template>
 
