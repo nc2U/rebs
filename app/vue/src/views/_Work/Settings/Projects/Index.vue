@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { pageTitle, navMenu } from '@/views/_Work/_menu/headermixin3'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
+import SearchList from '@/views/_Work/Settings/Projects/components/SearchList.vue'
 
 const cBody = ref()
 const sideNavCAll = () => cBody.value.toggle()
@@ -18,6 +19,8 @@ const sideNavCAll = () => cBody.value.toggle()
           <h5>{{ $route.name }}</h5>
         </CCol>
       </CRow>
+
+      <SearchList />
     </template>
 
     <template v-slot:aside></template>
