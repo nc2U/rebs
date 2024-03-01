@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useStore } from '@/store'
+import HeaderSearch from './components/Search.vue'
 import HeaderNav from './components/HeaderNav.vue'
 
 defineProps({
@@ -30,6 +31,9 @@ const sideNavCall = () => emit('side-nav-call')
         </CCol>
         <CCol class="text-right p-3 pr-5">
           <v-icon icon="mdi-menu" size="x-large" class="d-md-none pointer" @click="sideNavCall" />
+        </CCol>
+        <CCol class="d-none d-md-block text-right">
+          <HeaderSearch />
         </CCol>
       </CRow>
       <CRow class="d-none d-md-block">
