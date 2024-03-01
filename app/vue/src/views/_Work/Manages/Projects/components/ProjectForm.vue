@@ -1,6 +1,6 @@
 <script lang="ts" setup="">
 import { onBeforeMount, onMounted, onUpdated, type PropType, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import type { IssueProject } from '@/store/types/work'
 import MdEditor from '@/components/MdEditor/Index.vue'
 
@@ -38,7 +38,7 @@ const module = reactive({
   gantt: true,
 })
 
-const router = useRouter()
+const [route, router] = [useRoute(), useRouter()]
 
 const onSubmit = (event: Event) => {
   const el = event.currentTarget as HTMLFormElement
@@ -79,7 +79,10 @@ const dataSetup = () => {
 
 onMounted(() => dataSetup())
 onUpdated(() => dataSetup())
-onBeforeMount(() => emit('aside-visible', false))
+onBeforeMount(() => {
+  emit('aside-visible', false)
+  if (!!route.query.parent) form.parent = route.query.parent
+})
 </script>
 
 <template>
