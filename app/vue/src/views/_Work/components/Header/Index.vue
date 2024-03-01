@@ -30,7 +30,12 @@ const sideNavCall = () => emit('side-nav-call')
           <strong class="title pl-1"> {{ pageTitle }}</strong>
         </CCol>
         <CCol class="text-right p-3 pr-5">
-          <v-icon icon="mdi-menu" size="x-large" class="d-md-none pointer" @click="sideNavCall" />
+          <v-icon
+            icon="mdi-view-headline"
+            size="x-large"
+            class="d-md-none pointer"
+            @click="sideNavCall"
+          />
         </CCol>
         <CCol class="d-none d-md-block text-right">
           <HeaderSearch />
