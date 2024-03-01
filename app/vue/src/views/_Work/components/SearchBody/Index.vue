@@ -26,6 +26,10 @@ onBeforeMount(() => emit('aside-visible', false))
           <h5>{{ $route.name }}</h5>
         </CCol>
       </CRow>
+
+      <CRow v-if="$route?.query?.q">
+        <CCol>검색어 : "{{ $route.query.q }}"</CCol>
+      </CRow>
     </template>
 
     <template v-slot:aside></template>

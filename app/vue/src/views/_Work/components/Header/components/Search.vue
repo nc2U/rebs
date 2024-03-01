@@ -1,12 +1,16 @@
 <script lang="ts" setup="">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { onBeforeMount, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 const search = ref('')
 
-const router = useRouter()
+const [route, router] = [useRoute(), useRouter()]
 
 const goSearch = () => router.push({ name: '전체검색', query: { scope: '', q: search.value } })
+
+onBeforeMount(() => {
+  if (route?.query.q) search.value = route.query.q as string
+})
 </script>
 
 <template>
