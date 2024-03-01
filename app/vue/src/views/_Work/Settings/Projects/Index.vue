@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, inject, ref } from 'vue'
 import { pageTitle, navMenu } from '@/views/_Work/_menu/headermixin3'
 import { useWork } from '@/store/pinia/work'
 import Header from '@/views/_Work/components/Header/Index.vue'
@@ -9,6 +9,8 @@ import NoData from '@/views/_Work/components/NoData.vue'
 
 const cBody = ref()
 const sideNavCAll = () => cBody.value.toggle()
+
+const superAuth = inject('superAuth', false)
 
 const workStore = useWork()
 const iProjectList = computed(() => workStore.issueProjectList)
@@ -22,6 +24,13 @@ const iProjectList = computed(() => workStore.issueProjectList)
       <CRow class="py-2">
         <CCol>
           <h5>{{ $route.name }}</h5>
+        </CCol>
+
+        <CCol v-if="superAuth" class="text-right">
+          <span v-show="$route.name !== '프로젝트 - 생성'" class="mr-2">
+            <v-icon icon="mdi-plus-circle" color="success" size="sm" />
+            <router-link :to="{ name: '프로젝트 - 생성' }" class="ml-1">새 프로젝트</router-link>
+          </span>
         </CCol>
       </CRow>
 
