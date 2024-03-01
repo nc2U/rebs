@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, type ComputedRef, inject, onBeforeMount, ref, watch } from 'vue'
 import { navMenu } from '@/views/_Work/_menu/headermixin1'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import type { Company } from '@/store/types/settings'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
@@ -31,7 +31,9 @@ const searchCond = ref({
 
 const visible = ref(false)
 
-const route = useRoute()
+const [route, router] = [useRoute(), useRouter()]
+
+const goSearch = () => router.replace({ name: '전체검색', query: { q: searchWord.value } })
 
 watch(route, nVal => {
   if (nVal.query.q) searchWord.value = nVal.query.q as string
@@ -58,7 +60,7 @@ onBeforeMount(() => {
         <CCardBody>
           <CRow>
             <CCol sm="12" md="8" lg="6" xl="3">
-              <CFormInput v-model="searchWord" />
+              <CFormInput v-model="searchWord" @keydown.enter="goSearch" />
             </CCol>
             <CCol class="pt-2">
               <CFormCheck v-model="searchCond.all" inline label="모든 단어" id="all-word" />
@@ -92,18 +94,19 @@ onBeforeMount(() => {
           </CRow>
 
           <CRow class="mt-3">
-            <h6 class="pointer mb-0" @click="visible = !visible">
+            <CCol class="pointer mb-0" @click="visible = !visible">
               <v-icon :icon="visible ? 'mdi-chevron-down' : 'mdi-chevron-right'" size="sm" />
               옵션
-            </h6>
+            </CCol>
             <CCollapse :visible="visible">
-              <CRow class="mt-2" color="light">
+              <v-divider class="mx-1" />
+              <CRow class="mt-2 pl-1" color="light">
                 <CCol>
                   <CFormCheck v-model="searchCond.opened" label="열린 업무만" id="opened-only" />
                 </CCol>
               </CRow>
 
-              <CRow class="mt-1">
+              <CRow class="mt-1 pl-1">
                 <CCol>
                   <CFormCheck
                     v-model="searchCond.attatch"
@@ -141,7 +144,7 @@ onBeforeMount(() => {
 
       <CRow class="mt-2">
         <CCol>
-          <CButton color="secondary" variant="outline" size="sm">검색</CButton>
+          <CButton color="secondary" variant="outline" size="sm" @click="goSearch">검색</CButton>
         </CCol>
       </CRow>
 
