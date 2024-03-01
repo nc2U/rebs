@@ -93,32 +93,32 @@ const workProject = {
     {
       path: 'activity',
       name: '작업내역',
-      component: () => import('@/views/_Work/Projects/_components/Activity/Index.vue'),
+      component: () => import('@/views/_Work/Projects/Activity/Index.vue'),
     },
     {
       path: 'issue',
       name: '업무',
-      component: () => import('@/views/_Work/Projects/_components/Issues/Index.vue'),
+      component: () => import('@/views/_Work/Projects/Issues/Index.vue'),
     },
     {
       path: 'time_entry',
       name: '소요시간',
-      component: () => import('@/views/_Work/Projects/_components/SpentTime/Index.vue'),
+      component: () => import('@/views/_Work/Projects/SpentTime/Index.vue'),
     },
     {
       path: 'gantt',
       name: '차트',
-      component: () => import('@/views/_Work/Projects/_components/Gantt/Index.vue'),
+      component: () => import('@/views/_Work/Projects/Gantt/Index.vue'),
     },
     {
       path: 'calendar',
       name: '달력',
-      component: () => import('@/views/_Work/Projects/_components/Calendar/Index.vue'),
+      component: () => import('@/views/_Work/Projects/Calendar/Index.vue'),
     },
     {
       path: 'news',
       name: '공지',
-      component: () => import('@/views/_Work/Projects/_components/News/Index.vue'),
+      component: () => import('@/views/_Work/Projects/News/Index.vue'),
     },
     {
       path: 'search',
