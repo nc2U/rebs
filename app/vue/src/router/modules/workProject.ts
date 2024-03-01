@@ -14,7 +14,7 @@ const workProject = {
     {
       path: 'project',
       name: '프로젝트',
-      component: () => import('@/views/_Work/Projects/Index.vue'),
+      component: () => import('@/views/_Work/Manages/Index.vue'),
       children: [
         {
           path: 'create',
@@ -93,32 +93,32 @@ const workProject = {
     {
       path: 'activity',
       name: '작업내역',
-      component: () => import('@/views/_Work/Projects/Activity/Index.vue'),
+      component: () => import('@/views/_Work/Manages/Activity/Index.vue'),
     },
     {
       path: 'issue',
       name: '업무',
-      component: () => import('@/views/_Work/Projects/Issues/Index.vue'),
+      component: () => import('@/views/_Work/Manages/Issues/Index.vue'),
     },
     {
       path: 'time_entry',
       name: '소요시간',
-      component: () => import('@/views/_Work/Projects/SpentTime/Index.vue'),
+      component: () => import('@/views/_Work/Manages/SpentTime/Index.vue'),
     },
     {
       path: 'gantt',
       name: '차트',
-      component: () => import('@/views/_Work/Projects/Gantt/Index.vue'),
+      component: () => import('@/views/_Work/Manages/Gantt/Index.vue'),
     },
     {
       path: 'calendar',
       name: '달력',
-      component: () => import('@/views/_Work/Projects/Calendar/Index.vue'),
+      component: () => import('@/views/_Work/Manages/Calendar/Index.vue'),
     },
     {
       path: 'news',
       name: '공지',
-      component: () => import('@/views/_Work/Projects/News/Index.vue'),
+      component: () => import('@/views/_Work/Manages/News/Index.vue'),
     },
     {
       path: 'search',

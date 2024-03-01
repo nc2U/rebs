@@ -105,6 +105,10 @@ onBeforeMount(() => emit('aside-visible', true))
 </template>
 
 <style lang="scss" scoped>
+.project-set {
+  padding-bottom: 0;
+}
+
 .project-set a {
   font-weight: bold;
   font-size: 1.13em;
@@ -115,9 +119,7 @@ onBeforeMount(() => emit('aside-visible', true))
     font-size: 0.96em;
     font-weight: normal;
   }
-}
 
-.project-set .child {
   padding-left: 12px;
   border-left: 3px solid #ddd;
 }
