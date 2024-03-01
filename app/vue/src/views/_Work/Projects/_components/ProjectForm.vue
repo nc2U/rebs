@@ -2,6 +2,7 @@
 import { onBeforeMount, onMounted, onUpdated, type PropType, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import type { IssueProject } from '@/store/types/work'
+import MdEditor from '@/components/MdEditor/Index.vue'
 
 const props = defineProps({
   title: { type: String, default: '' },
@@ -103,7 +104,8 @@ onBeforeMount(() => emit('aside-visible', false))
         <CRow class="mb-3">
           <CFormLabel class="col-form-label text-right col-2">설명</CFormLabel>
           <CCol>
-            <CFormTextarea v-model="form.description" placeholder="프로젝트 설명" />
+            <!--            <CFormTextarea v-model="form.description" placeholder="프로젝트 설명" />-->
+            <MdEditor v-model="form.description" placeholder="프로젝트 설명" />
           </CCol>
         </CRow>
 
