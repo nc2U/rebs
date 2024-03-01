@@ -4,6 +4,7 @@ import { navMenu2 as navMenu } from '@/views/_Work/_menu/headermixin1'
 import type { Company } from '@/store/types/settings'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
+import SearchList from '@/views/_Work/components/SearchList.vue'
 
 const cBody = ref()
 const company = inject<ComputedRef<Company>>('company')
@@ -20,6 +21,31 @@ const sideNavCAll = () => cBody.value.toggle()
       <CRow class="py-2">
         <CCol>
           <h5>{{ $route.name }}</h5>
+        </CCol>
+      </CRow>
+
+      <SearchList />
+
+      <CRow class="mb-3">
+        <CCol> Calendar!!!</CCol>
+      </CRow>
+
+      <CRow>
+        <CCol>
+          <v-icon icon="mdi-arrow-right-bold" color="success" size="sm" />
+          오늘 시작하는 업무(task)
+        </CCol>
+      </CRow>
+      <CRow>
+        <CCol>
+          <v-icon icon="mdi-arrow-left-bold" color="danger" size="sm" />
+          오늘 종료하는 업무(task)
+        </CCol>
+      </CRow>
+      <CRow>
+        <CCol>
+          <v-icon icon="mdi-rhombus" color="danger" size="sm" />
+          오늘 시작하고 종료하는 업무(task)
         </CCol>
       </CRow>
     </template>
