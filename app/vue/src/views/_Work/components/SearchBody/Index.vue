@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, type ComputedRef, inject, onBeforeMount, ref, watch } from 'vue'
 import { navMenu2 as navMenu } from '@/views/_Work/_menu/headermixin1'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
 import type { Company } from '@/store/types/settings'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
@@ -42,6 +42,11 @@ watch(route, nVal => {
 onBeforeMount(() => {
   emit('aside-visible', false)
   if (route.query.q) searchWord.value = route.query.q as string
+})
+
+onBeforeRouteLeave((to, from, next) => {
+  to.query = {}
+  next()
 })
 </script>
 
