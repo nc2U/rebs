@@ -16,7 +16,9 @@ defineProps({
 })
 
 const isDark = computed(() => useStore().theme === 'dark')
-const backGround = computed(() => (isDark.value ? 'bg-blue-grey-darken-5' : 'bg-indigo-lighten-5'))
+const backGround = computed(() =>
+  isDark.value ? 'bg-blue-grey-darken-5' : 'bg-blue-grey-lighten-3',
+)
 
 const emit = defineEmits(['side-nav-call'])
 const sideNavCall = () => emit('side-nav-call')
@@ -54,7 +56,7 @@ const sideNavCall = () => emit('side-nav-call')
 strong.title {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 20px;
-  color: #4e555b;
+  color: #fff;
 }
 
 .dark-theme .title {
