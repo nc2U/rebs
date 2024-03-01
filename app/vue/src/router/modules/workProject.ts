@@ -84,6 +84,10 @@ const workProject = {
           path: ':projId/setting',
           name: '(설정)',
         },
+        {
+          path: ':projId/search',
+          name: '(검색)',
+        },
       ],
     },
     {
@@ -115,6 +119,11 @@ const workProject = {
       path: 'news',
       name: '공지',
       component: () => import('@/views/_Work/Projects/components/News/Index.vue'),
+    },
+    {
+      path: 'search',
+      name: '전체검색',
+      component: () => import('@/views/_Work/components/SearchBody/Index.vue'),
     },
   ],
 }
