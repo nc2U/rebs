@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { inject, onBeforeMount, type PropType } from 'vue'
 import type { IssueProject } from '@/store/types/work'
+import SearchList from '@/views/_Work/Projects/_components/SearchList.vue'
 import NoData from '@/views/_Work/components/NoData.vue'
 
 defineProps({
@@ -34,6 +35,8 @@ onBeforeMount(() => emit('aside-visible', true))
       </span>
     </CCol>
   </CRow>
+
+  <SearchList />
 
   <NoData v-if="!projectList.length" />
 
