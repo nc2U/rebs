@@ -14,7 +14,7 @@ const workProject = {
     {
       path: 'project',
       name: '프로젝트',
-      component: () => import('@/views/_Work/Manages/Index.vue'),
+      component: () => import('@/views/_Work/Manages/Projects/Index.vue'),
       children: [
         {
           path: 'create',

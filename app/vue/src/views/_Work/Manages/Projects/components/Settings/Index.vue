@@ -2,7 +2,7 @@
 import { ref, computed, inject, type ComputedRef, onBeforeMount } from 'vue'
 import { useWork } from '@/store/pinia/work'
 import type { Company } from '@/store/types/settings'
-import ProjectForm from '@/views/_Work/Manages/_components/ProjectForm.vue'
+import ProjectForm from '@/views/_Work/Manages/Projects/components/ProjectForm.vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 
 const emit = defineEmits(['aside-visible'])
