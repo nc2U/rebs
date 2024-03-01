@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
 import { type OptionItem } from '@/store/types/project'
 import { TableSecondary } from '@/utils/cssMixins'
-import Option from '@/views/projects/Option/components/Option.vue'
+import PaidOption from '@/views/projects/PaidOption/components/PaidOption.vue'
 
 const emit = defineEmits(['on-update', 'on-delete'])
 
@@ -41,7 +41,7 @@ const onDeleteOption = (pk: number) => emit('on-delete', pk)
       </CTableRow>
     </CTableHead>
     <CTableBody v-if="optionItemList.length > 0">
-      <Option
+      <PaidOption
         v-for="opt in optionItemList"
         :key="opt.pk"
         :option-item="opt"

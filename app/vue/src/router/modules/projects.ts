@@ -123,7 +123,7 @@ const projects = {
       name: '옵션 품목 등록',
       component: () =>
         pageViewAuth.value
-          ? import('@/views/projects/Option/Index.vue')
+          ? import('@/views/projects/PaidOption/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '옵션 품목 등록', auth: true },
     },

@@ -1,6 +1,5 @@
 <script lang="ts" setup="">
 import { ref } from 'vue'
-import Option from '@/views/projects/Option/components/Option.vue'
 
 const msg = ref('head search')
 </script>

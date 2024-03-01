@@ -6,8 +6,8 @@ import { useProjectData } from '@/store/pinia/project_data'
 import type { OptionItem } from '@/store/types/project'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
-import OptionAddForm from '@/views/projects/Option/components/OptionAddForm.vue'
-import OptionFormList from '@/views/projects/Option/components/OptionFormList.vue'
+import OptionAddForm from '@/views/projects/PaidOption/components/OptionAddForm.vue'
+import OptionFormList from '@/views/projects/PaidOption/components/OptionFormList.vue'
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
