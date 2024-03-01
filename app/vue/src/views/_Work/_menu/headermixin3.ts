@@ -3,7 +3,7 @@ export const pageTitle = '설 정 관 리'
 export const navMenu = [
   '프로젝트 목록',
   '사용자',
-  '그룹',
+  // '그룹',
   '역할 및 권한',
   '업무 유형',
   '업무 상태',
