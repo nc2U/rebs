@@ -1,12 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { pageTitle, navMenu } from '@/views/_Work/_menu/headermixin3'
+import { useWork } from '@/store/pinia/work'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
-import SearchList from '@/views/_Work/Settings/Projects/components/SearchList.vue'
+import SearchList from '@/views/_Work/components/SearchList.vue'
+import NoData from '@/views/_Work/components/NoData.vue'
 
 const cBody = ref()
 const sideNavCAll = () => cBody.value.toggle()
+
+const workStore = useWork()
+const iProjectList = computed(() => workStore.issueProjectList)
 </script>
 
 <template>
@@ -21,6 +26,12 @@ const sideNavCAll = () => cBody.value.toggle()
       </CRow>
 
       <SearchList />
+
+      <NoData v-if="!iProjectList.length" />
+
+      <CRow v-else>
+        <CCol></CCol>
+      </CRow>
     </template>
 
     <template v-slot:aside></template>
