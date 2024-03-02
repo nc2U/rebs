@@ -5,6 +5,7 @@ import { useAccount } from '@/store/pinia/account'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import UserList from '@/views/_Work/Settings/Users/components/UserList.vue'
+import UserForm from '@/views/_Work/Settings/Users/components/UserForm.vue'
 
 const cBody = ref()
 const sideNavCAll = () => cBody.value.toggle()
@@ -19,7 +20,11 @@ onBeforeMount(() => accStore.fetchUsersList())
 
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query">
     <template v-slot:default>
-      <UserList :user-list="usersList" />
+      <UserList v-if="$route.name === '사용자'" :user-list="usersList" />
+
+      <UserForm v-if="$route.name === '사용자 - 생성'" />
+
+      <UserForm v-if="$route.name === '사용자 - 수정'" />
     </template>
 
     <template v-slot:aside></template>

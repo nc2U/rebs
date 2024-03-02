@@ -21,7 +21,7 @@ const superAuth = inject('superAuth', false)
     <CCol v-if="superAuth" class="text-right">
       <span class="mr-2">
         <v-icon icon="mdi-plus-circle" color="success" size="sm" />
-        <router-link to="" class="ml-1">새 사용자</router-link>
+        <router-link :to="{ name: '사용자 - 생성' }" class="ml-1">새 사용자</router-link>
       </span>
 
       <!--          <span>-->
