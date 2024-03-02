@@ -32,7 +32,7 @@ defineProps({
           <CFormCheck />
         </CTableDataCell>
         <CTableDataCell>
-          <router-link to="">
+          <router-link :to="{ name: '사용자 - 수정', params: { userId: user.pk } }">
             {{ user.username }}
           </router-link>
         </CTableDataCell>
