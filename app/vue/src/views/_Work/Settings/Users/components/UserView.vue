@@ -9,12 +9,12 @@ const accStore = useAccount()
 const user = computed(() => accStore.user)
 
 onBeforeRouteUpdate(async to => {
-  if (to.params.userId) await accStore.fetchUser(to.params.userId as string)
+  if (to.params.userId) await accStore.fetchUser(Number(to.params.userId))
   else accStore.user = null
 })
 const route = useRoute()
 onBeforeMount(() => {
-  if (route.params.userId) accStore.fetchUser(route.params.userId)
+  if (route.params.userId) accStore.fetchUser(Number(route.params.userId))
 })
 </script>
 

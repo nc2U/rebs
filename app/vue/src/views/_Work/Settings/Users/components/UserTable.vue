@@ -40,7 +40,7 @@ defineProps({
         <CTableDataCell>{{ user.email }}</CTableDataCell>
         <CTableDataCell>{{ user.is_superuser ? '예' : '아니오' }}</CTableDataCell>
         <CTableDataCell>{{ timeFormat(user.date_joined) }}</CTableDataCell>
-        <CTableDataCell>{{ elapsedTime(user.last_login) }}</CTableDataCell>
+        <CTableDataCell>{{ elapsedTime(user.last_login as string) }}</CTableDataCell>
         <CTableDataCell>
           <span>
             <CDropdown color="secondary" variant="input-group" placement="bottom-end">
