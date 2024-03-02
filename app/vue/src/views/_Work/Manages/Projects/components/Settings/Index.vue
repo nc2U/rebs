@@ -4,6 +4,13 @@ import { useWork } from '@/store/pinia/work'
 import type { Company } from '@/store/types/settings'
 import ProjectForm from '@/views/_Work/Manages/Projects/components/ProjectForm.vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
+import Member from '@/views/_Work/Manages/Projects/components/Settings/components/Member.vue'
+import IssueTracking from '@/views/_Work/Manages/Projects/components/Settings/components/IssueTracking.vue'
+import Version from '@/views/_Work/Manages/Projects/components/Settings/components/Version.vue'
+import IssueCategory from '@/views/_Work/Manages/Projects/components/Settings/components/IssueCategory.vue'
+import Repository from '@/views/_Work/Manages/Projects/components/Settings/components/Repository.vue'
+import Forum from '@/views/_Work/Manages/Projects/components/Settings/components/Forum.vue'
+import TimeTracking from '@/views/_Work/Manages/Projects/components/Settings/components/TimeTracking.vue'
 
 const emit = defineEmits(['aside-visible'])
 
@@ -84,4 +91,18 @@ onBeforeMount(() => {
     :all-task-projects="AllIssueProjects"
     @on-submit="onSubmit"
   />
+
+  <Member v-if="menu === '구성원'" />
+
+  <IssueTracking v-if="menu === '업무추적'" />
+
+  <Version v-if="menu === '버전'" />
+
+  <IssueCategory v-if="menu === '업무범주'" />
+
+  <Repository v-if="menu === '저장소'" />
+
+  <Forum v-if="menu === '게시판'" />
+
+  <TimeTracking v-if="menu === '시간추적'" />
 </template>
