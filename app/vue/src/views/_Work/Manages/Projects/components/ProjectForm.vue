@@ -81,7 +81,7 @@ onMounted(() => dataSetup())
 onUpdated(() => dataSetup())
 onBeforeMount(() => {
   emit('aside-visible', false)
-  if (!!route.query.parent) form.parent = route.query.parent
+  if (!!route.query.parent) form.parent = Number(route.query.parent)
 })
 </script>
 
