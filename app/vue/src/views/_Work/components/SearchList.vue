@@ -22,11 +22,11 @@ const viewMode = ref<'board' | 'list'>('board')
     <CCollapse :visible="condVisible">
       <slot name="condition">
         <CRow class="m-2" color="light">
-          <CCol>
+          <CCol class="col-4 col-md-6 col-lg-7 col-xl-8 pt-1">
             <CFormCheck v-model="searchCond.status" label="상태" id="status" />
           </CCol>
           <CCol>
-            <CFormSelect size="sm">
+            <CFormSelect size="sm" data-width="20">
               <option value="1">사용중</option>
               <option value="2">닫힘</option>
             </CFormSelect>
