@@ -24,7 +24,13 @@ onBeforeMount(() => emit('aside-visible', false))
 
       <span>
         <CDropdown color="secondary" variant="input-group" placement="bottom-end">
-          <CDropdownToggle :caret="false" color="light" size="sm">
+          <CDropdownToggle
+            :caret="false"
+            color="light"
+            variant="ghost"
+            size="sm"
+            shape="rounded-pill"
+          >
             <v-icon icon="mdi-dots-horizontal" class="pointer" color="grey-darken-1" />
             <v-tooltip activator="parent" location="top">Actions</v-tooltip>
           </CDropdownToggle>
