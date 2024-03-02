@@ -1,19 +1,21 @@
 <script lang="ts" setup="">
-import { computed, inject, onBeforeMount } from 'vue'
+import { computed, inject, onBeforeMount, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
-import router from '@/router'
+
+const menu = ref<'일반' | '프로젝트'>('일반')
 
 const superAuth = inject('superAuth', false)
 
 const accStore = useAccount()
 const user = computed(() => accStore.user)
 
+const route = useRoute()
 onBeforeRouteUpdate(async to => {
   if (to.params.userId) await accStore.fetchUser(Number(to.params.userId))
   else accStore.user = null
 })
-const route = useRoute()
+
 onBeforeMount(() => {
   if (route.params.userId) accStore.fetchUser(Number(route.params.userId))
   if (route.query.tab) router.replace({ name: '사용자 - 수정', params: { userId: user.value?.pk } })
@@ -43,39 +45,16 @@ onBeforeMount(() => {
   <CRow v-if="user" class="mb-3">
     <CCol>
       <v-tabs density="compact">
-        <v-tab
-          value="general"
-          @click="
-            $router.push({
-              name: '사용자 - 수정',
-              params: { userId: user.pk },
-              query: { tab: 'general' },
-            })
-          "
-        >
-          일반
-        </v-tab>
-        <v-tab
-          value="project"
-          @click="
-            $router.push({
-              name: '사용자 - 수정',
-              params: { userId: user.pk },
-              query: { tab: 'project' },
-            })
-          "
-        >
-          프로젝트
-        </v-tab>
+        <v-tab @click="menu = '일반'"> 일반</v-tab>
+        <v-tab @click="menu = '프로젝트'"> 프로젝트</v-tab>
       </v-tabs>
     </CCol>
   </CRow>
-
-  <CRow v-show="!$route?.query?.tab || $route.query?.tab === 'general'">
+  <CRow v-if="menu === '일반'">
     <CCol>User Form</CCol>
   </CRow>
 
-  <CRow v-show="$route?.query?.tab === 'project'">
+  <CRow v-if="menu === '프로젝트'">
     <CCol> 프로젝트 탭</CCol>
   </CRow>
 </template>

@@ -15,7 +15,6 @@ import TimeTracking from '@/views/_Work/Manages/Projects/components/Settings/com
 const emit = defineEmits(['aside-visible'])
 
 const menu = ref('프로젝트')
-const setMenu = (m: string) => (menu.value = m)
 
 const settingMenus = computed(() => {
   let menus = [
@@ -80,7 +79,7 @@ onBeforeMount(() => {
   <CRow class="mb-3">
     <CCol>
       <v-tabs density="compact">
-        <v-tab v-for="m in settingMenus" :value="m" :key="m" @click="setMenu(m)">{{ m }}</v-tab>
+        <v-tab v-for="m in settingMenus" :value="m" :key="m" @click="menu = m">{{ m }}</v-tab>
       </v-tabs>
     </CCol>
   </CRow>
