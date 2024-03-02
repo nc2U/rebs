@@ -48,10 +48,18 @@ const sideNavCall = () => emit('side-nav-call')
               <strong class="title pl-1"> {{ pageTitle }}</strong>
             </CCol>
 
-            <CCol class="text-body d-md-none pointer" @click="visible = !visible">
-              <v-icon :icon="visible ? 'mdi-chevron-up' : 'mdi-chevron-down'" color="" />
+            <CCol
+              class="text-body d-md-none"
+              :class="{ pointer: !!parents.length }"
+              @click="visible = !visible"
+            >
+              <v-icon
+                v-if="!!parents.length"
+                :icon="visible ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+                color=""
+              />
               <strong class="title pl-1"> {{ pageTitle }}</strong>
-              <CCollapse :visible="visible">
+              <CCollapse v-if="!!parents.length" :visible="visible">
                 <CCard class="mt-3">
                   <CCardBody>
                     <span v-for="p in parents" :key="p.pk" class="mr-1 text-blue-grey">
