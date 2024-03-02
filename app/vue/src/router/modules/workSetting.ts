@@ -20,6 +20,16 @@ const workSetting = {
       path: 'user',
       name: '사용자',
       component: () => import('@/views/_Work/Settings/Users/Index.vue'),
+      children: [
+        {
+          path: 'create',
+          name: '사용자 - 생성',
+        },
+        {
+          path: ':userId/update',
+          name: '사용자 - 수정',
+        },
+      ],
     },
     // {
     //   path: 'group',
