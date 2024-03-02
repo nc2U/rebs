@@ -2,6 +2,7 @@
 import { computed, inject, onBeforeMount } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
+import router from '@/router'
 
 const superAuth = inject('superAuth', false)
 
@@ -15,12 +16,13 @@ onBeforeRouteUpdate(async to => {
 const route = useRoute()
 onBeforeMount(() => {
   if (route.params.userId) accStore.fetchUser(route.params.userId)
+  if (route.query.tab) router.replace({ name: '사용자 - 수정', params: { userId: user.value?.pk } })
 })
 </script>
 
 <template>
   <CRow class="py-2">
-    <CCol>
+    <CCol class="mb-2">
       <span class="h5 mr-2">
         <router-link :to="{ name: '사용자' }">사용자</router-link>
       </span>
@@ -69,7 +71,7 @@ onBeforeMount(() => {
     </CCol>
   </CRow>
 
-  <CRow v-show="!$route?.query || $route.query?.tab === 'general'">
+  <CRow v-show="!$route?.query?.tab || $route.query?.tab === 'general'">
     <CCol>User Form</CCol>
   </CRow>
 
