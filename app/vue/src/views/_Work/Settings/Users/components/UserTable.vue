@@ -55,11 +55,13 @@ defineProps({
                 <v-tooltip activator="parent" location="top">Actions</v-tooltip>
               </CDropdownToggle>
               <CDropdownMenu>
-                <CDropdownItem>
-                  <router-link to="">
+                <CDropdownItem
+                  @click="$router.push({ name: '사용자 - 수정', params: { userId: user.pk } })"
+                >
+                  <span>
                     <v-icon icon="mdi-pencil" color="yellow-darken-2" size="sm" />
                     편집
-                  </router-link>
+                  </span>
                 </CDropdownItem>
               </CDropdownMenu>
             </CDropdown>
