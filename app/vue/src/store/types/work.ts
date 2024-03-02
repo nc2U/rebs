@@ -1,3 +1,9 @@
+interface BCParent {
+  pk: number
+  name: string
+  slug: string
+}
+
 export interface IssueProject {
   pk?: number
   company: number
@@ -5,6 +11,7 @@ export interface IssueProject {
   description: string
   homepage: string | null
   is_public: boolean
+  _recurse_parents: BCParent[]
   parent: number | null
   slug: string
   status: '1' | '9'
