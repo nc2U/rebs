@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { ref, computed, type PropType } from 'vue'
+import { ref, computed, type PropType, watch } from 'vue'
 import { useStore } from '@/store'
+import { useRoute } from 'vue-router'
 import HeaderSearch from './components/Search.vue'
 import HeaderNav from './components/HeaderNav.vue'
 
@@ -26,6 +27,8 @@ const backGround = computed(() => (isDark.value ? 'bg-blue-grey-darken-5' : 'bg-
 
 const emit = defineEmits(['side-nav-call'])
 const sideNavCall = () => emit('side-nav-call')
+
+watch(useRoute(), () => (visible.value = false))
 </script>
 
 <template>
@@ -76,7 +79,7 @@ const sideNavCall = () => emit('side-nav-call')
         </CCol>
 
         <CCol class="text-body d-md-none text-right p-3">
-          <v-icon icon="mdi-view-headline" size="x-large" class="pointer" @click="sideNavCall" />
+          <v-app-bar-nav-icon @click="sideNavCall" />
         </CCol>
         <CCol class="d-none d-md-block text-right">
           <HeaderSearch />
