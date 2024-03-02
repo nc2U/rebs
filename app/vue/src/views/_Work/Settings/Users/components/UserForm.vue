@@ -1,6 +1,6 @@
 <script lang="ts" setup="">
 import { computed, inject, onBeforeMount, ref } from 'vue'
-import { onBeforeRouteUpdate, useRoute } from 'vue-router'
+import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
 
 const menu = ref<'일반' | '프로젝트'>('일반')
@@ -10,7 +10,7 @@ const superAuth = inject('superAuth', false)
 const accStore = useAccount()
 const user = computed(() => accStore.user)
 
-const route = useRoute()
+const [route, router] = [useRoute(), useRouter()]
 onBeforeRouteUpdate(async to => {
   if (to.params.userId) await accStore.fetchUser(Number(to.params.userId))
   else accStore.user = null
