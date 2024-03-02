@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, type PropType } from 'vue'
+import { ref, computed, type PropType } from 'vue'
 import { useStore } from '@/store'
 import HeaderSearch from './components/Search.vue'
 import HeaderNav from './components/HeaderNav.vue'
@@ -18,6 +18,8 @@ defineProps({
     default: () => [],
   },
 })
+
+const visible = ref(false)
 
 const isDark = computed(() => useStore().theme === 'dark')
 const backGround = computed(() => (isDark.value ? 'bg-blue-grey-darken-5' : 'bg-indigo-lighten-5'))
@@ -42,14 +44,30 @@ const sideNavCall = () => emit('side-nav-call')
             </CCol>
           </CRow>
           <CRow>
-            <CCol>
-              <v-icon icon="mdi-chevron-down" color="" class="d-md-none pointer" />
+            <CCol class="text-body d-none d-md-block">
               <strong class="title pl-1"> {{ pageTitle }}</strong>
+            </CCol>
+
+            <CCol class="text-body d-md-none pointer" @click="visible = !visible">
+              <v-icon :icon="visible ? 'mdi-chevron-up' : 'mdi-chevron-down'" color="" />
+              <strong class="title pl-1"> {{ pageTitle }}</strong>
+              <CCollapse :visible="visible">
+                <CCard class="mt-3">
+                  <CCardBody>
+                    <span v-for="p in parents" :key="p.pk" class="mr-1 text-blue-grey">
+                      <router-link :to="{ name: '(개요)', params: { projId: p.slug } }">
+                        {{ p.name }}
+                      </router-link>
+                      »
+                    </span>
+                  </CCardBody>
+                </CCard>
+              </CCollapse>
             </CCol>
           </CRow>
         </CCol>
 
-        <CCol class="d-md-none text-right p-3">
+        <CCol class="text-body d-md-none text-right p-3">
           <v-icon icon="mdi-view-headline" size="x-large" class="pointer" @click="sideNavCall" />
         </CCol>
         <CCol class="d-none d-md-block text-right">
