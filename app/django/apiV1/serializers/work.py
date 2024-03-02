@@ -1,3 +1,5 @@
+import json
+
 from django.db import transaction
 from rest_framework import serializers
 
@@ -20,7 +22,14 @@ class ModuleInIssueProjectSerializer(serializers.ModelSerializer):
                   'file', 'wiki', 'repository', 'forum', 'calendar', 'gantt')
 
 
+class IProjectInIssueProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IssueProject
+        fields = ('pk', 'name', 'slug')
+
+
 class IssueProjectSerializer(serializers.ModelSerializer):
+    _recurse_parents = IProjectInIssueProjectSerializer(many=True, read_only=True)
     sub_projects = serializers.SerializerMethodField()
     user = serializers.SlugRelatedField('username', read_only=True)
     tracker = TrackerInIssueProjectSerializer(many=True, read_only=True)
@@ -29,8 +38,8 @@ class IssueProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = IssueProject
         fields = ('pk', 'company', 'name', 'description', 'homepage', 'is_public',
-                  'parent', 'slug', 'status', 'is_inherit_members', 'depth',
-                  'tracker', 'sub_projects', 'module', 'user', 'created')
+                  '_recurse_parents', 'parent', 'slug', 'status', 'is_inherit_members',
+                  'depth', 'tracker', 'sub_projects', 'module', 'user', 'created')
 
     def get_sub_projects(self, obj):
         return self.__class__(obj.issueproject_set.all(), many=True, read_only=True).data

@@ -25,6 +25,15 @@ class IssueProject(models.Model):
     def __str__(self):
         return self.name
 
+    def _recurse_parents(self, parents=None):
+        if parents is None:
+            parents = []
+
+        if self.parent:
+            parents.insert(0, self.parent)
+            return self.parent._recurse_parents(parents)
+        return parents
+
     class Meta:
         ordering = ('-created',)
         verbose_name = '01. 프로젝트(업무)'
