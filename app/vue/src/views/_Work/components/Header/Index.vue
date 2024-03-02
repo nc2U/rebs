@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, type PropType } from 'vue'
 import { useStore } from '@/store'
 import HeaderSearch from './components/Search.vue'
 import HeaderNav from './components/HeaderNav.vue'
@@ -12,6 +12,10 @@ defineProps({
   navMenu: {
     type: Array,
     default: () => ['Base Menu'],
+  },
+  parents: {
+    type: Array as PropType<{ pk: number; name: string; slug: string }[]>,
+    default: () => [],
   },
 })
 
@@ -26,21 +30,33 @@ const sideNavCall = () => emit('side-nav-call')
   <CRow class="mb-0" :class="backGround">
     <CCol>
       <CRow class="px-3">
-        <CCol class="mb-2 p-4">
-          <strong class="title pl-1"> {{ pageTitle }}</strong>
+        <CCol class="mb-2 p-4 col-9 col-md-6 col-lg-7 col-xl-9">
+          <CRow v-if="!!parents.length" class="d-none d-md-block">
+            <CCol>
+              <span v-for="p in parents" :key="p.pk" class="mr-1 text-blue-grey">
+                <router-link :to="{ name: '(개요)', params: { projId: p.slug } }">
+                  {{ p.name }}
+                </router-link>
+                »
+              </span>
+            </CCol>
+          </CRow>
+          <CRow>
+            <CCol>
+              <v-icon icon="mdi-chevron-down" color="" class="d-md-none pointer" />
+              <strong class="title pl-1"> {{ pageTitle }}</strong>
+            </CCol>
+          </CRow>
         </CCol>
-        <CCol class="text-right p-3 pr-5">
-          <v-icon
-            icon="mdi-view-headline"
-            size="x-large"
-            class="d-md-none pointer"
-            @click="sideNavCall"
-          />
+
+        <CCol class="d-md-none text-right p-3">
+          <v-icon icon="mdi-view-headline" size="x-large" class="pointer" @click="sideNavCall" />
         </CCol>
         <CCol class="d-none d-md-block text-right">
           <HeaderSearch />
         </CCol>
       </CRow>
+
       <CRow class="d-none d-md-block">
         <CCol>
           <HeaderNav :menus="navMenu" :query="$route?.query" />

@@ -95,7 +95,12 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <Header :page-title="headerTitle" :nav-menu="navMenu" @side-nav-call="sideNavCAll" />
+  <Header
+    :page-title="headerTitle"
+    :nav-menu="navMenu"
+    :parents="issueProject?._recurse_parents"
+    @side-nav-call="sideNavCAll"
+  />
 
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query" :aside="aside">
     <template v-slot:default>
