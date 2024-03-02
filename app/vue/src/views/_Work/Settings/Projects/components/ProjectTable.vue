@@ -9,7 +9,7 @@ defineProps({
 
 <template>
   <v-divider class="mb-0" />
-  <CTable hover small striped>
+  <CTable hover small striped responsive>
     <CTableHead>
       <CTableRow color="">
         <CTableHeaderCell>
