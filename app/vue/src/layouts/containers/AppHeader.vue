@@ -100,8 +100,10 @@ const toggleAside = () => store.toggleAside()
         </router-link>
       </CHeaderNav>
 
-      <CHeaderToggler class="px-md-0 me-md-3">
-        <v-icon icon="mdi mdi-apps" @click="toggleAside" size="small" />
+      <CHeaderToggler class="px-md-0 me-md-3" @click="toggleAside">
+        <v-btn icon size="small" flat :color="theme">
+          <v-icon icon="mdi-apps" size="large" />
+        </v-btn>
       </CHeaderToggler>
     </CContainer>
 
