@@ -1,4 +1,4 @@
-<script lang="ts" setup="">
+<script lang="ts" setup>
 import { inject, type PropType } from 'vue'
 import NoData from '@/views/_Work/components/NoData.vue'
 import SearchList from '@/views/_Work/components/SearchList.vue'

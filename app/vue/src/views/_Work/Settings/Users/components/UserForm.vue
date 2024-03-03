@@ -1,4 +1,4 @@
-<script lang="ts" setup="">
+<script lang="ts" setup>
 import { computed, inject, onBeforeMount, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
