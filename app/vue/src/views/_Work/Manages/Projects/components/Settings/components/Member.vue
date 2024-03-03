@@ -1,6 +1,9 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import NoData from '@/views/_Work/components/NoData.vue'
+import FormModal from '@/components/Modals/FormModal.vue'
+
+const memberFormModal = ref(false)
 
 const memberList = computed(() => [])
 </script>
@@ -10,7 +13,7 @@ const memberList = computed(() => [])
     <CCol>
       <span class="mr-2">
         <v-icon icon="mdi-plus-circle" color="success" size="sm" />
-        <router-link to="" class="ml-1">새 구성원</router-link>
+        <router-link to="" class="ml-1" @click="memberFormModal.callModal">새 구성원</router-link>
       </span>
     </CCol>
 
@@ -59,4 +62,40 @@ const memberList = computed(() => [])
       </CTable>
     </CCol>
   </CRow>
+
+  <FormModal ref="memberFormModal" size="xl">
+    <template #icon></template>
+    <template #header>새 구성원</template>
+    <template #default>
+      <CModalBody class="text-body">
+        <CCard class="mb-3">
+          <CCardHeader>
+            <v-icon icon="mdi-check" color="success" size="sm" />
+            추가할 사용자 선택
+          </CCardHeader>
+          <CCardBody>
+            <CFormCheck inline id="id1" label="admin" />
+            <CFormCheck inline id="id2" label="nc2u" />
+            <CFormCheck inline id="id3" label="ㅁㅁㅁ" />
+          </CCardBody>
+        </CCard>
+
+        <CCard>
+          <CCardHeader>
+            <v-icon icon="mdi-check" color="success" size="sm" />
+            역할
+          </CCardHeader>
+          <CCardBody>
+            <CFormCheck inline id="id1" label="관리자" />
+            <CFormCheck inline id="id2" label="개발자" />
+            <CFormCheck inline id="id3" label="보고자" />
+          </CCardBody>
+        </CCard>
+      </CModalBody>
+      <CModalFooter>
+        <CButton color="light" @click="memberFormModal.close"> 닫기</CButton>
+        <CButton color="primary">추가</CButton>
+      </CModalFooter>
+    </template>
+  </FormModal>
 </template>

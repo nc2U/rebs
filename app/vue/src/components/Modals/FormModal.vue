@@ -18,12 +18,7 @@ defineExpose({ callModal, close })
     <CModalHeader class="text-body">
       <CModalTitle>
         <slot name="icon">
-          <v-icon
-            icon="mdi mdi-application-cog"
-            size="small"
-            color="blue-grey-darken-1"
-            class="mr-2"
-          />
+          <v-icon icon="mdi-application-cog" size="small" color="blue-grey-darken-1" class="mr-2" />
         </slot>
         <slot name="header">Title</slot>
       </CModalTitle>
