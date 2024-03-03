@@ -22,7 +22,7 @@ const memberList = computed(() => [])
 
   <CRow>
     <CCol>
-      <v-divider class="mb-0" />
+      <v-divider class="my-0" />
       <CTable hover small striped responsive>
         <CTableHead>
           <CTableRow class="text-center">
