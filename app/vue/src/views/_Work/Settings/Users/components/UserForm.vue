@@ -44,9 +44,9 @@ onBeforeMount(() => {
 
   <CRow v-if="user" class="mb-3">
     <CCol>
-      <v-tabs density="compact">
-        <v-tab @click="menu = '일반'"> 일반</v-tab>
-        <v-tab @click="menu = '프로젝트'"> 프로젝트</v-tab>
+      <v-tabs v-model="menu" density="compact">
+        <v-tab value="일반" variant="tonal"> 일반</v-tab>
+        <v-tab value="프로젝트" variant="tonal"> 프로젝트</v-tab>
       </v-tabs>
     </CCol>
   </CRow>
