@@ -1,4 +1,4 @@
-<script lang="ts" setup="">
+<script lang="ts" setup>
 import { computed } from 'vue'
 import NoData from '@/views/_Work/components/NoData.vue'
 

@@ -1,8 +1,4 @@
-<script lang="ts" setup="">
-import { computed } from 'vue'
-
-const memberList = computed(() => [])
-</script>
+<script lang="ts" setup></script>
 
 <template>
   <CRow class="py-2">
