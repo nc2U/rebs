@@ -1,4 +1,4 @@
-<script lang="ts" setup="">
+<script lang="ts" setup>
 import { type PropType, ref } from 'vue'
 import { type Duty } from '@/store/types/company'
 import FormModal from '@/components/Modals/FormModal.vue'

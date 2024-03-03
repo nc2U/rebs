@@ -1,4 +1,4 @@
-<script lang="ts" setup="">
+<script lang="ts" setup>
 import { computed, type PropType, ref } from 'vue'
 import { useCompany } from '@/store/pinia/company'
 import { type Grade } from '@/store/types/company'

@@ -1,4 +1,4 @@
-<script lang="ts" setup="">
+<script lang="ts" setup>
 import { ref, computed, watch, onBeforeMount } from 'vue'
 import { useStore } from '@/store'
 import { useRebs } from '@/store/pinia/rebs'

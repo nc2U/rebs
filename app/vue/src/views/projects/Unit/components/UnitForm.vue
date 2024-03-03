@@ -1,4 +1,4 @@
-<script lang="ts" setup="">
+<script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { useProjectData } from '@/store/pinia/project_data'

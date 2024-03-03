@@ -1,4 +1,4 @@
-<script lang="ts" setup="">
+<script lang="ts" setup>
 import { type ComputedRef, inject, type PropType } from 'vue'
 import type { User } from '@/store/types/accounts'
 import type { Post } from '@/store/types/document'

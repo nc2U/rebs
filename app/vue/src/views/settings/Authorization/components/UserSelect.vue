@@ -1,4 +1,4 @@
-<script lang="ts" setup="">
+<script lang="ts" setup>
 import { ref, computed, nextTick, onBeforeMount, watch } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { bgLight } from '@/utils/cssMixins'

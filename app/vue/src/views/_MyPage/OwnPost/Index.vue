@@ -1,4 +1,4 @@
-<script lang="ts" setup="">
+<script lang="ts" setup>
 import { computed, type ComputedRef, inject, onBeforeMount, ref } from 'vue'
 import { pageTitle, navMenu } from '@/views/_MyPage/_menu/headermixin'
 import type { User } from '@/store/types/accounts'

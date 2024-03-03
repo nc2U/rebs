@@ -1,4 +1,4 @@
-<script lang="ts" setup="">
+<script lang="ts" setup>
 import { onBeforeMount, onMounted, onUpdated, type PropType, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { IssueProject } from '@/store/types/work'

@@ -1,4 +1,4 @@
-<script lang="ts" setup="">
+<script lang="ts" setup>
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { useCompany } from '@/store/pinia/company'
 import { isValidate } from '@/utils/helper'
