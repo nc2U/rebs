@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { computed, inject } from 'vue'
+import { computed, type ComputedRef, inject } from 'vue'
 
-const isDark = inject('isDark')
+const isDark = inject<ComputedRef<boolean>>('isDark')
 
-const light = computed(() => (!isDark.value ? 'light' : ''))
+const light = computed(() => (!isDark?.value ? 'light' : ''))
 </script>
 
 <template>
