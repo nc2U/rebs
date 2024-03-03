@@ -24,7 +24,7 @@ watch(isDark, () => {
 })
 
 onMounted(() => {
-  store.theme === 'dark'
+  isDark.value
     ? document.body.classList.add('dark-theme')
     : document.body.classList.remove('dark-theme')
   if (accStore.isAuthorized) comStore.fetchCompany(company.value?.pk || comStore.initComId)
