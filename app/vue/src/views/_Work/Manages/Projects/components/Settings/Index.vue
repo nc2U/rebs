@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import Cookies from 'js-cookie'
 import { ref, computed, inject, type ComputedRef, onBeforeMount } from 'vue'
 import { useWork } from '@/store/pinia/work'
 import type { Company } from '@/store/types/settings'
@@ -66,6 +67,7 @@ onBeforeMount(() => {
   workStore.fetchIssueProjectList()
   if (route.params.projId) workStore.fetchIssueProject(route.params.projId as string)
   emit('aside-visible', false)
+  menu.value = Cookies.get('workSettingMenu') ?? '프로젝트'
 })
 </script>
 
@@ -78,8 +80,15 @@ onBeforeMount(() => {
 
   <CRow class="mb-3">
     <CCol>
-      <v-tabs density="compact">
-        <v-tab v-for="m in settingMenus" :value="m" :key="m" @click="menu = m">{{ m }}</v-tab>
+      <v-tabs v-model="menu" density="compact" color="danger">
+        <v-tab
+          v-for="m in settingMenus"
+          :value="m"
+          :key="m"
+          @click="Cookies.set('workSettingMenu', m)"
+        >
+          {{ m }}
+        </v-tab>
       </v-tabs>
     </CCol>
   </CRow>
