@@ -1,9 +1,57 @@
 <script lang="ts" setup="">
-import { ref } from 'vue'
+import { computed } from 'vue'
+import NoData from '@/views/_Work/components/NoData.vue'
 
-const msg = ref('TimeTracking!')
+const memberList = computed(() => [])
 </script>
 
 <template>
-  <div>{{ msg }}</div>
+  <CRow class="py-2">
+    <CCol class="text-right">
+      <span>
+        <v-icon icon="mdi-trash-can" color="secondary" size="sm" />
+        <router-link to="" class="ml-1">초기화</router-link>
+      </span>
+
+      <span class="ml-2">
+        <v-icon icon="mdi-cog" color="secondary" size="sm" />
+        <router-link :to="{ name: '코드값' }" class="ml-1">관리</router-link>
+      </span>
+    </CCol>
+  </CRow>
+
+  <CRow>
+    <CCol>
+      <v-divider class="mb-0" />
+      <CTable hover small striped responsive>
+        <CTableHead>
+          <CTableRow class="text-center">
+            <CTableHeaderCell scope="col"></CTableHeaderCell>
+            <CTableHeaderCell scope="col">이름</CTableHeaderCell>
+            <CTableHeaderCell scope="col">시스템 작업</CTableHeaderCell>
+            <CTableHeaderCell scope="col">사용중</CTableHeaderCell>
+          </CTableRow>
+        </CTableHead>
+
+        <CTableBody>
+          <CTableRow v-for="i in 2" :key="i" class="text-center">
+            <CTableHeaderCell>디자인</CTableHeaderCell>
+            <CTableDataCell></CTableDataCell>
+            <CTableDataCell>
+              <v-icon icon="mdi-check" size="sm" color="success" />
+            </CTableDataCell>
+            <CTableDataCell>
+              <CFormCheck />
+            </CTableDataCell>
+          </CTableRow>
+        </CTableBody>
+      </CTable>
+    </CCol>
+  </CRow>
+
+  <CRow>
+    <CCol>
+      <CButton color="primary" size="sm" variant="outline">저장</CButton>
+    </CCol>
+  </CRow>
 </template>
