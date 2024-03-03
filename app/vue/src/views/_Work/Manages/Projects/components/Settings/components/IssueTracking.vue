@@ -1,4 +1,10 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { computed, inject } from 'vue'
+
+const isDark = inject('isDark')
+
+const light = computed(() => (!isDark.value ? 'light' : ''))
+</script>
 
 <template>
   <CRow class="py-2">
@@ -16,7 +22,7 @@
 
   <CRow>
     <CCol>
-      <CCard class="mb-3" color="light">
+      <CCard class="mb-3" :color="light">
         <CCardBody>
           <CRow>
             <CCol>
@@ -38,7 +44,7 @@
 
   <CRow>
     <CCol>
-      <CCard class="mb-3" color="light">
+      <CCard class="mb-3" :color="light">
         <CCardBody>
           <CRow class="mb-2">
             <CFormLabel for="inputEmail3" class="col-sm-2 col-form-label text-right">

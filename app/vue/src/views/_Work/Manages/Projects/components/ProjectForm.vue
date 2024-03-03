@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onBeforeMount, onMounted, onUpdated, type PropType, reactive, ref } from 'vue'
+import { inject, onBeforeMount, onMounted, onUpdated, type PropType, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { IssueProject } from '@/store/types/work'
 import MdEditor from '@/components/MdEditor/Index.vue'
@@ -11,6 +11,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['aside-visible', 'on-submit'])
+
+const isDark = inject('isDark')
 
 const validated = ref(false)
 
@@ -183,7 +185,7 @@ onBeforeMount(() => {
       <v-icon icon="mdi-check-bold" size="sm" color="success" />
       모듈
     </h6>
-    <CCard class="mb-3">
+    <CCard class="mb-3" :color="!isDark ? 'light' : ''">
       <CCardBody>
         <CRow>
           <CCol sm="6" md="4" lg="3" xl="2">
