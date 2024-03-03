@@ -80,11 +80,12 @@ onBeforeMount(() => {
 
   <CRow class="mb-3">
     <CCol>
-      <v-tabs v-model="menu" density="compact" color="danger">
+      <v-tabs v-model="menu" density="compact">
         <v-tab
           v-for="m in settingMenus"
           :value="m"
           :key="m"
+          variant="tonal"
           @click="Cookies.set('workSettingMenu', m)"
         >
           {{ m }}
