@@ -6,6 +6,9 @@ import FormModal from '@/components/Modals/FormModal.vue'
 
 const memberFormModal = ref()
 
+const members = ref([])
+const roles = ref([])
+
 const memberList = computed(() => [])
 
 const callModal = () => memberFormModal.value.callModal()
@@ -86,9 +89,12 @@ onBeforeMount(() => accStore.fetchUsersList())
               v-for="u in userList"
               :key="u.pk"
               inline
-              :id="'user' + u.pk"
+              :value="u.pk"
+              :id="u.username"
               :label="u.username"
+              v-model="members"
             />
+            {{ members }}
           </CCardBody>
         </CCard>
 
@@ -98,9 +104,11 @@ onBeforeMount(() => accStore.fetchUsersList())
             역할
           </CCardHeader>
           <CCardBody>
-            <CFormCheck inline id="id1" label="관리자" />
-            <CFormCheck inline id="id2" label="개발자" />
-            <CFormCheck inline id="id3" label="보고자" />
+            <CFormCheck v-model="roles" value="관리자" inline id="id1" label="관리자" />
+            <CFormCheck v-model="roles" value="개발자" inline id="id2" label="개발자" />
+            <CFormCheck v-model="roles" value="보고자" inline id="id3" label="보고자" />
+
+            {{ roles }}
           </CCardBody>
         </CCard>
       </CModalBody>
