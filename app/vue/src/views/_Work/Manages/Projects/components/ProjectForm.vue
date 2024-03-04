@@ -36,16 +36,24 @@ const form = reactive({
   is_inherit_members: false,
 })
 
+const tempSpace = ref('')
+
 const getSlug = (event: string) => {
   if (!props.project?.slug) {
     const pattern = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/ //한글
 
     let slug = form.slug.length === 0 ? '' : form.slug
 
-    if (event.code === 'Backspace') slug = slug.slice(0, -1)
-    else if (event.code === 'Space') slug = slug + '-'
-    else if (event.code.includes('Digit')) slug = slug + event.key
-    else if (event.code.includes('Key')) if (!pattern.test(event.key)) slug = slug + event.key
+    if (event.code === 'Backspace') {
+      if (slug.length >= form.name.length) slug = slug.slice(0, -1)
+    } else if (event.code === 'Space') tempSpace.value = !!slug.length ? '-' : ''
+    else if (
+      event.code.includes('Digit') ||
+      (event.code.includes('Key') && !pattern.test(event.key))
+    ) {
+      slug = slug + tempSpace.value + event.key
+      tempSpace.value = ''
+    }
 
     form.slug = slug
   }
