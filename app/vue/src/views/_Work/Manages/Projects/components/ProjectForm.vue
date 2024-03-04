@@ -1,5 +1,14 @@
 <script lang="ts" setup>
-import { inject, onBeforeMount, onMounted, onUpdated, type PropType, reactive, ref } from 'vue'
+import {
+  inject,
+  nextTick,
+  onBeforeMount,
+  onMounted,
+  onUpdated,
+  type PropType,
+  reactive,
+  ref,
+} from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { IssueProject } from '@/store/types/work'
 import MdEditor from '@/components/MdEditor/Index.vue'
@@ -26,6 +35,21 @@ const form = reactive({
   slug: '',
   is_inherit_members: false,
 })
+
+const getSlug = (event: string) => {
+  if (!props.project?.slug) {
+    const pattern = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/ //한글
+
+    let slug = form.slug.length === 0 ? '' : form.slug
+
+    if (event.code === 'Backspace') slug = slug.slice(0, -1)
+    else if (event.code === 'Space') slug = slug + '-'
+    else if (event.code.includes('Digit')) slug = slug + event.key
+    else if (event.code.includes('Key')) if (!pattern.test(event.key)) slug = slug + event.key
+
+    form.slug = slug
+  }
+}
 
 const module = reactive({
   issue: true,
@@ -102,14 +126,19 @@ onBeforeMount(() => {
         <CRow class="mb-3">
           <CFormLabel class="required col-form-label text-right col-2">이름</CFormLabel>
           <CCol>
-            <CFormInput v-model="form.name" maxlength="100" required placeholder="프로젝트 이름" />
+            <CFormInput
+              v-model="form.name"
+              @keydown="getSlug"
+              maxlength="100"
+              required
+              placeholder="프로젝트 이름"
+            />
           </CCol>
         </CRow>
 
         <CRow class="mb-3">
           <CFormLabel class="col-form-label text-right col-2">설명</CFormLabel>
           <CCol>
-            <!--            <CFormTextarea v-model="form.description" placeholder="프로젝트 설명" />-->
             <MdEditor v-model="form.description" placeholder="프로젝트 설명" />
           </CCol>
         </CRow>
