@@ -3,9 +3,11 @@ import { ref, computed } from 'vue'
 import NoData from '@/views/_Work/components/NoData.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 
-const memberFormModal = ref(false)
+const memberFormModal = ref()
 
 const memberList = computed(() => [])
+
+const callModal = () => memberFormModal.value.callModal()
 </script>
 
 <template>
@@ -13,7 +15,7 @@ const memberList = computed(() => [])
     <CCol>
       <span class="mr-2">
         <v-icon icon="mdi-plus-circle" color="success" size="sm" />
-        <router-link to="" class="ml-1" @click="memberFormModal.callModal">새 구성원</router-link>
+        <router-link to="" class="ml-1" @click="callModal"> 새 구성원 </router-link>
       </span>
     </CCol>
 
