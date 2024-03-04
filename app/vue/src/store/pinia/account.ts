@@ -34,7 +34,7 @@ export const useAccount = defineStore('account', () => {
   // actions
   const fetchUsersList = () =>
     api
-      .get('/user/')
+      .get('/user/?is_active=true')
       .then(res => (usersList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onBeforeMount } from 'vue'
+import { useAccount } from '@/store/pinia/account'
 import NoData from '@/views/_Work/components/NoData.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 
@@ -8,6 +9,11 @@ const memberFormModal = ref()
 const memberList = computed(() => [])
 
 const callModal = () => memberFormModal.value.callModal()
+
+const accStore = useAccount()
+const userList = computed(() => accStore.usersList)
+
+onBeforeMount(() => accStore.fetchUsersList())
 </script>
 
 <template>
@@ -76,9 +82,13 @@ const callModal = () => memberFormModal.value.callModal()
             추가할 사용자 선택
           </CCardHeader>
           <CCardBody>
-            <CFormCheck inline id="id1" label="admin" />
-            <CFormCheck inline id="id2" label="nc2u" />
-            <CFormCheck inline id="id3" label="ㅁㅁㅁ" />
+            <CFormCheck
+              v-for="u in userList"
+              :key="u.pk"
+              inline
+              :id="'user' + u.pk"
+              :label="u.username"
+            />
           </CCardBody>
         </CCard>
 

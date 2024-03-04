@@ -25,6 +25,7 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     pagination_class = PageNumberPaginationThreeThousand
     permission_classes = (permissions.AllowAny,)
+    filterset_fields = ('is_staff', 'is_active',)
 
 
 class StaffAuthViewSet(viewsets.ModelViewSet):
