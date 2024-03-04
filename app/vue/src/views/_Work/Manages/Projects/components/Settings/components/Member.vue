@@ -81,7 +81,7 @@ onBeforeMount(() => accStore.fetchUsersList())
             <v-icon icon="mdi-check" color="success" size="sm" />
             추가할 사용자 선택
           </CCardHeader>
-          <CCardBody>
+          <CCardBody class="pb-5">
             <CFormCheck
               v-for="u in userList"
               :key="u.pk"
