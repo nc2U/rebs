@@ -5,105 +5,6 @@ from datetime import datetime
 from django.db import models
 
 
-class IssueProject(models.Model):
-    company = models.ForeignKey('company.Company', on_delete=models.CASCADE, verbose_name="회사")
-    name = models.CharField('이름', max_length=100)
-    description = models.TextField('설명', blank=True, default='')
-    homepage = models.URLField('홈페이지', max_length=255, null=True, blank=True)
-    is_public = models.BooleanField('공개', default=True, help_text='공개 프로젝트는 모든 로그인한 사용자가 접속할 수 있습니다.')
-    parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='상위 프로젝트')
-    slug = models.CharField('식별자', max_length=100, unique=True,
-                            help_text='1에서 100글자 소문자(a-z), 숫자, 대쉬(-)와 밑줄(_)만 가능합니다. 식별자는 저장 후에는 수정할 수 없습니다.')
-    status = models.CharField('사용여부', max_length=1, default='1', choices=(('1', '사용'), ('9', '잠금보관(모든 접근이 차단됨)')))
-    is_inherit_members = models.BooleanField('상위 프로젝트 멤버 상속', default=False)
-    depth = models.PositiveSmallIntegerField('단계', default=1,
-                                             help_text='프로젝트 간 상하 소속 관계에 의한 단계, 최상위인 경우 1단계 이후 각 뎁스 마다 1씩 증가')
-    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자')
-    created = models.DateTimeField('추가', auto_now_add=True)
-    updated = models.DateTimeField('수정', auto_now=True)
-
-    def __str__(self):
-        return self.name
-
-    def _recurse_parents(self, parents=None):
-        if parents is None:
-            parents = []
-
-        if self.parent:
-            parents.insert(0, self.parent)
-            return self.parent._recurse_parents(parents)
-        return parents
-
-    class Meta:
-        ordering = ('-created',)
-        verbose_name = '01. 프로젝트(업무)'
-        verbose_name_plural = '01. 프로젝트(업무)'
-
-
-class Module(models.Model):
-    project = models.OneToOneField(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
-    issue = models.BooleanField('업무관리', default=True)
-    time = models.BooleanField('시간추적', default=True)
-    news = models.BooleanField('공지', default=True)
-    document = models.BooleanField('문서', default=True)
-    file = models.BooleanField('파일', default=True)
-    wiki = models.BooleanField('위키', default=True)
-    repository = models.BooleanField('저장소', default=True)
-    forum = models.BooleanField('게시판', default=True)
-    calendar = models.BooleanField('달력', default=True)
-    gantt = models.BooleanField('Gantt 차트', default=True)
-
-
-class Version(models.Model):
-    project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
-    name = models.CharField('이름', max_length=20)
-    description = models.CharField('설명', max_length=255, blank=True, default='')
-    status = models.CharField('상태', max_length=1, choices=(('1', '진행'), ('2', '잠김'), ('3', '닫힘')), default='1')
-    wiki_page_title = models.CharField('위키 페이지 주소', max_length=255, blank=True, null=True)
-    effective_date = models.DateField(verbose_name='날짜', blank=True, null=True)
-    SHARE_CHOICES = (
-        ('0', '공유 없음'), ('1', '하위 프로젝트'), ('2', '상위 및 하위 프로젝트'), ('3', '최상위 및 모든 하위 프로젝트'), ('4', '모든 프로젝트'))
-    share = models.CharField('공유', max_length=1, default='0')
-    is_default = models.BooleanField('기본 버전', default=False)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        ordering = ('id',)
-
-
-class Repository(models.Model):
-    project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
-    SCM_CHOICES = (('1', 'Git'),)
-    scm = models.CharField('종류', max_length=10, default='1')
-    is_default = models.BooleanField('주저장소', default=True)
-    slug = models.CharField('식별자', max_length=20, unique=True, blank=True, null=True,
-                            help_text='1 에서 255 글자 소문자(a-z),숫자,대쉬(-)와 밑줄(_)만 가능합니다. 식별자는 저장후에는 수정할 수 없습니다.')
-    path = models.CharField('저장소 경로', max_length=255, help_text='로컬의 bare 저장소 (예: //gitrepo, c:\\gitrepo)')
-    path_encoding = models.CharField('경로 인코딩', max_length=20, default='UTF-8', help_text='기본: UTF-8')
-    is_report = models.BooleanField('파일이나 폴더의 마지막 커밋을 보고', default=False)
-
-    def __str__(self):
-        return self.scm
-
-    class Meta:
-        ordering = ('id',)
-
-
-class Member(models.Model):
-    project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
-    member = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='구성원')
-    roles = models.ManyToManyField('Role', verbose_name='역할')
-
-    def __str__(self):
-        return self.member
-
-    class Meta:
-        verbose_name = '02. 구성원'
-        verbose_name_plural = '02. 구성원'
-
-
 class Role(models.Model):
     name = models.CharField('이름', max_length=20)
     assignable = models.BooleanField('업무 위탁 권한', default=True)
@@ -125,8 +26,20 @@ class Role(models.Model):
 
     class Meta:
         ordering = ('order', 'created',)
-        verbose_name = '03. 역할 및 권한'
-        verbose_name_plural = '03. 역할 및 권한'
+        verbose_name = '02. 역할 및 권한'
+        verbose_name_plural = '02. 역할 및 권한'
+
+
+class Member(models.Model):
+    user = models.OneToOneField('accounts.User', on_delete=models.PROTECT, verbose_name='구성원')
+    roles = models.ManyToManyField(Role, through='Membership', verbose_name='역할')
+
+    def __str__(self):
+        return self.user.username
+
+    class Meta:
+        verbose_name = '03. 구성원'
+        verbose_name_plural = '03. 구성원'
 
 
 class Permission(models.Model):
@@ -221,6 +134,99 @@ class Permission(models.Model):
 
     def __str__(self):
         return f'{self.role.name} - 권한'
+
+
+class IssueProject(models.Model):
+    company = models.ForeignKey('company.Company', on_delete=models.CASCADE, verbose_name="회사")
+    name = models.CharField('이름', max_length=100)
+    description = models.TextField('설명', blank=True, default='')
+    homepage = models.URLField('홈페이지', max_length=255, null=True, blank=True)
+    is_public = models.BooleanField('공개', default=True, help_text='공개 프로젝트는 모든 로그인한 사용자가 접속할 수 있습니다.')
+    parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='상위 프로젝트')
+    slug = models.CharField('식별자', max_length=100, unique=True,
+                            help_text='1에서 100글자 소문자(a-z), 숫자, 대쉬(-)와 밑줄(_)만 가능합니다. 식별자는 저장 후에는 수정할 수 없습니다.')
+    status = models.CharField('사용여부', max_length=1, default='1', choices=(('1', '사용'), ('9', '잠금보관(모든 접근이 차단됨)')))
+    is_inherit_members = models.BooleanField('상위 프로젝트 멤버 상속', default=False)
+    depth = models.PositiveSmallIntegerField('단계', default=1,
+                                             help_text='프로젝트 간 상하 소속 관계에 의한 단계, 최상위인 경우 1단계 이후 각 뎁스 마다 1씩 증가')
+    members = models.ManyToManyField('Member', through='Membership')
+    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자')
+    created = models.DateTimeField('추가', auto_now_add=True)
+    updated = models.DateTimeField('수정', auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+    def _recurse_parents(self, parents=None):
+        if parents is None:
+            parents = []
+
+        if self.parent:
+            parents.insert(0, self.parent)
+            return self.parent._recurse_parents(parents)
+        return parents
+
+    class Meta:
+        ordering = ('-created',)
+        verbose_name = '01. 프로젝트(업무)'
+        verbose_name_plural = '01. 프로젝트(업무)'
+
+
+class Membership(models.Model):
+    project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, related_name='프로젝트')
+    member = models.ForeignKey(Member, on_delete=models.CASCADE, related_name='구성원')
+    role = models.ForeignKey(Role, on_delete=models.CASCADE, related_name='역할')
+
+
+class Module(models.Model):
+    project = models.OneToOneField(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
+    issue = models.BooleanField('업무관리', default=True)
+    time = models.BooleanField('시간추적', default=True)
+    news = models.BooleanField('공지', default=True)
+    document = models.BooleanField('문서', default=True)
+    file = models.BooleanField('파일', default=True)
+    wiki = models.BooleanField('위키', default=True)
+    repository = models.BooleanField('저장소', default=True)
+    forum = models.BooleanField('게시판', default=True)
+    calendar = models.BooleanField('달력', default=True)
+    gantt = models.BooleanField('Gantt 차트', default=True)
+
+
+class Version(models.Model):
+    project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
+    name = models.CharField('이름', max_length=20)
+    description = models.CharField('설명', max_length=255, blank=True, default='')
+    status = models.CharField('상태', max_length=1, choices=(('1', '진행'), ('2', '잠김'), ('3', '닫힘')), default='1')
+    wiki_page_title = models.CharField('위키 페이지 주소', max_length=255, blank=True, null=True)
+    effective_date = models.DateField(verbose_name='날짜', blank=True, null=True)
+    SHARE_CHOICES = (
+        ('0', '공유 없음'), ('1', '하위 프로젝트'), ('2', '상위 및 하위 프로젝트'), ('3', '최상위 및 모든 하위 프로젝트'), ('4', '모든 프로젝트'))
+    share = models.CharField('공유', max_length=1, default='0')
+    is_default = models.BooleanField('기본 버전', default=False)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ('id',)
+
+
+class Repository(models.Model):
+    project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
+    SCM_CHOICES = (('1', 'Git'),)
+    scm = models.CharField('종류', max_length=10, default='1')
+    is_default = models.BooleanField('주저장소', default=True)
+    slug = models.CharField('식별자', max_length=20, unique=True, blank=True, null=True,
+                            help_text='1 에서 255 글자 소문자(a-z),숫자,대쉬(-)와 밑줄(_)만 가능합니다. 식별자는 저장후에는 수정할 수 없습니다.')
+    path = models.CharField('저장소 경로', max_length=255, help_text='로컬의 bare 저장소 (예: //gitrepo, c:\\gitrepo)')
+    path_encoding = models.CharField('경로 인코딩', max_length=20, default='UTF-8', help_text='기본: UTF-8')
+    is_report = models.BooleanField('파일이나 폴더의 마지막 커밋을 보고', default=False)
+
+    def __str__(self):
+        return self.scm
+
+    class Meta:
+        ordering = ('id',)
 
 
 class Tracker(models.Model):
