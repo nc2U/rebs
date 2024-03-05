@@ -65,12 +65,12 @@ onBeforeMount(() => emit('aside-visible', false))
     </CCol>
   </CRow>
 
+  <CRow class="mb-2">
+    <CCol>{{ iProject?.description }}</CCol>
+  </CRow>
+
   <CRow>
     <CCol>
-      <CRow class="mb-2">
-        <CCol>{{ iProject?.description }}</CCol>
-      </CRow>
-
       <CRow>
         <CCard>
           <CCardBody>
