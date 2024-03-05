@@ -39,7 +39,6 @@ const form = reactive({
 const tempSpace = ref('')
 
 const getSlug = (event: { key: string; code: string }) => {
-  console.log(event)
   if (!props.project?.slug) {
     const pattern = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/ //한글
 
