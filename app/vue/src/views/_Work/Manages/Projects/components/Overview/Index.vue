@@ -1,8 +1,10 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount } from 'vue'
+import { computed, inject, onBeforeMount } from 'vue'
 import { useWork } from '@/store/pinia/work'
 
 const emit = defineEmits(['aside-visible'])
+
+const isDark = inject('isDark')
 
 const workStore = useWork()
 const iProject = computed(() => workStore.issueProject)
@@ -71,8 +73,8 @@ onBeforeMount(() => emit('aside-visible', false))
 
   <CRow>
     <CCol>
-      <CRow>
-        <CCard>
+      <CRow class="mb-3">
+        <CCard :color="isDark ? '' : 'light'">
           <CCardBody>
             <CCardSubtitle>업무 추적</CCardSubtitle>
             <CTable bordered hover small striped class="mt-2 mb-0">
@@ -99,10 +101,27 @@ onBeforeMount(() => emit('aside-visible', false))
           <CCardText class="mx-3 mb-2"> 모든 업무 보기 | 요약 | 달력 | Gantt 차트</CCardText>
         </CCard>
       </CRow>
+
+      <CRow class="mb-3">
+        <CCard :color="isDark ? '' : 'light'">
+          <CCardBody>
+            <h6>
+              <v-icon icon="mdi-clock-outline" size="small" />
+              시간추적
+            </h6>
+            <ul class="pl-4 mb-0">
+              <li>추정시간 : 48:00 시간</li>
+              <li>소요시간 : 0:00 시간</li>
+            </ul>
+          </CCardBody>
+
+          <CCardText class="mx-3 mb-2"> 작업시간 기록 | 자세히 | 보고서</CCardText>
+        </CCard>
+      </CRow>
     </CCol>
 
     <CCol>
-      <CCard v-if="iProject?.sub_projects?.length">
+      <CCard v-if="iProject?.sub_projects?.length" :color="isDark ? '' : 'light'">
         <CCardBody>
           <CCardSubtitle>하위 프로젝트</CCardSubtitle>
           <CCardText>
