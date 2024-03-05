@@ -66,18 +66,6 @@ class Role(models.Model):
         verbose_name_plural = '02. 역할 및 권한'
 
 
-class Member(models.Model):
-    user = models.OneToOneField('accounts.User', on_delete=models.PROTECT, verbose_name='구성원')
-    roles = models.ManyToManyField(Role, through='Membership', verbose_name='역할')
-
-    def __str__(self):
-        return self.user.username
-
-    class Meta:
-        verbose_name = '03. 구성원'
-        verbose_name_plural = '03. 구성원'
-
-
 class Permission(models.Model):
     role = models.OneToOneField(Role, on_delete=models.CASCADE)
     # 프로젝트
@@ -170,6 +158,18 @@ class Permission(models.Model):
 
     def __str__(self):
         return f'{self.role.name} - 권한'
+
+
+class Member(models.Model):
+    user = models.OneToOneField('accounts.User', on_delete=models.PROTECT, verbose_name='구성원')
+    roles = models.ManyToManyField(Role, through='Membership', verbose_name='역할')
+
+    def __str__(self):
+        return self.user.username
+
+    class Meta:
+        verbose_name = '03. 구성원'
+        verbose_name_plural = '03. 구성원'
 
 
 class Membership(models.Model):
