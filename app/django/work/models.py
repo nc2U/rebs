@@ -18,7 +18,7 @@ class IssueProject(models.Model):
     is_inherit_members = models.BooleanField('상위 프로젝트 멤버 상속', default=False)
     depth = models.PositiveSmallIntegerField('단계', default=1,
                                              help_text='프로젝트 간 상하 소속 관계에 의한 단계, 최상위인 경우 1단계 이후 각 뎁스 마다 1씩 증가')
-    members = models.ManyToManyField('Member', through='Membership')
+    members = models.ManyToManyField('Member', through='Membership', related_name='projects', verbose_name='구성원')
     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자')
     created = models.DateTimeField('추가', auto_now_add=True)
     updated = models.DateTimeField('수정', auto_now=True)
@@ -162,20 +162,27 @@ class Permission(models.Model):
 
 class Member(models.Model):
     user = models.OneToOneField('accounts.User', on_delete=models.PROTECT, verbose_name='구성원')
-    roles = models.ManyToManyField(Role, through='Membership', verbose_name='역할')
+    roles = models.ManyToManyField(Role, through='Membership', related_name='members', verbose_name='역할')
 
     def __str__(self):
         return self.user.username
 
     class Meta:
-        verbose_name = '03. 구성원'
-        verbose_name_plural = '03. 구성원'
+        verbose_name = '03-1. 구성원'
+        verbose_name_plural = '03-1. 구성원'
 
 
 class Membership(models.Model):
-    project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, related_name='프로젝트')
-    member = models.ForeignKey(Member, on_delete=models.CASCADE, related_name='구성원')
-    role = models.ForeignKey(Role, on_delete=models.CASCADE, related_name='역할')
+    project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
+    member = models.ForeignKey(Member, on_delete=models.CASCADE, verbose_name='구성원')
+    role = models.ForeignKey(Role, on_delete=models.CASCADE, verbose_name='역할')
+
+    def __str__(self):
+        return self.member
+
+    class Meta:
+        verbose_name = '03-2. 멤버십'
+        verbose_name_plural = '03-2. 멤버십'
 
 
 class Module(models.Model):
