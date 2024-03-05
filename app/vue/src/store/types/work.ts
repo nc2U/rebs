@@ -11,12 +11,13 @@ export interface IssueProject {
   description: string
   homepage: string | null
   is_public: boolean
-  _recurse_parents: BCParent[]
+  family_tree: BCParent[]
   parent: number | null
   slug: string
   status: '1' | '9'
   is_inherit_members: boolean
   depth: number
+  members: number[]
   sub_projects?: IssueProject[]
   module: Module | null
   user?: number

@@ -5,7 +5,7 @@ import { errorHandle, message } from '@/utils/helper'
 import type { IssueProject } from '@/store/types/work'
 
 export const useWork = defineStore('work', () => {
-  // states & getters
+  // Issue Project states & getters
   const issueProject = ref<IssueProject | null>(null)
   const issueProjectList = ref<IssueProject[]>([])
   const AllIssueProjects = computed(() => {
@@ -63,6 +63,22 @@ export const useWork = defineStore('work', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
+  // Role & Permission states & getters
+  const role = ref()
+  const roleList = ref([])
+
+  const fetchRole = (pk: number) =>
+    api
+      .get(`/role/${pk}/`)
+      .then(res => (role.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchRoleList = () =>
+    api
+      .get(`/role/`)
+      .then(res => (roleList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
   return {
     issueProject,
     issueProjectList,
@@ -73,5 +89,11 @@ export const useWork = defineStore('work', () => {
     createIssueProject,
     updateIssueProject,
     deleteIssueProject,
+
+    role,
+    roleList,
+
+    fetchRole,
+    fetchRoleList,
   }
 })
