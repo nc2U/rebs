@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import Cookies from 'js-cookie'
 import { ref, reactive, inject, onBeforeMount, onMounted, onUpdated, type PropType } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { IssueProject } from '@/store/types/work'
@@ -72,6 +73,7 @@ const onSubmit = (event: Event) => {
     event.stopPropagation()
     validated.value = true
   } else {
+    Cookies.set('workSettingMenu', '프로젝트')
     emit('on-submit', { ...form, ...module })
     validated.value = false
     router.push({ name: '(설정)', params: { projId: form.slug } })
