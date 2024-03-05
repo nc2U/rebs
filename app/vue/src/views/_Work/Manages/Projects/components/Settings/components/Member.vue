@@ -19,11 +19,13 @@ const memberList = computed(() => workStore.issueProject?.members)
 const roleList = computed(() => workStore.roleList)
 
 const callModal = () => memberFormModal.value.callModal()
-const modalAction = () =>
+const modalAction = () => {
   console.log(
-    members.value.sort((a, b) => a - b),
-    roles.value.sort((a, b) => a - b),
+    [{ members: members.value.sort((a, b) => a - b) }],
+    [{ roles: roles.value.sort((a, b) => a - b) }],
   )
+  memberFormModal.value.close()
+}
 // FormModal E ------------------
 
 onBeforeMount(() => {
