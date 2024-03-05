@@ -27,7 +27,7 @@ class RecurseParentSerializer(serializers.ModelSerializer):
 
 
 class IssueProjectSerializer(serializers.ModelSerializer):
-    _recurse_parents = RecurseParentSerializer(many=True, read_only=True)
+    family_tree = RecurseParentSerializer(many=True, read_only=True)
     sub_projects = serializers.SerializerMethodField()
     user = serializers.SlugRelatedField('username', read_only=True)
     tracker = TrackerInIssueProjectSerializer(many=True, read_only=True)
@@ -36,8 +36,8 @@ class IssueProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = IssueProject
         fields = ('pk', 'company', 'name', 'description', 'homepage', 'is_public',
-                  '_recurse_parents', 'parent', 'slug', 'status', 'is_inherit_members',
-                  'depth', 'members', 'tracker', 'sub_projects', 'module', 'user', 'created')
+                  'family_tree', 'parent', 'slug', 'status', 'is_inherit_members',
+                  'depth', 'members', 'sub_projects', 'module', 'user', 'created')
 
     def get_sub_projects(self, obj):
         return self.__class__(obj.issueproject_set.all(), many=True, read_only=True).data

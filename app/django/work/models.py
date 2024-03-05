@@ -26,13 +26,13 @@ class IssueProject(models.Model):
     def __str__(self):
         return self.name
 
-    def _recurse_parents(self, parents=None):
+    def family_tree(self, parents=None):
         if parents is None:
             parents = []
 
         if self.parent:
             parents.insert(0, self.parent)
-            return self.parent._recurse_parents(parents)
+            return self.parent.family_tree(parents)
         return parents
 
     class Meta:
