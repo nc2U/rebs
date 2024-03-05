@@ -121,7 +121,22 @@ onBeforeMount(() => emit('aside-visible', false))
     </CCol>
 
     <CCol lg="6">
-      <CCard v-if="iProject?.sub_projects?.length" :color="isDark ? '' : 'light'">
+      <CCard v-if="iProject?.members?.length" :color="isDark ? '' : 'light'" class="mb-3">
+        <CCardBody>
+          <CCardSubtitle>구성원</CCardSubtitle>
+          <!--          <CCardText>-->
+          <!--            <router-link-->
+          <!--              v-for="(mem, i) in iProject.members"-->
+          <!--              :to="{ name: '(개요)', params: { projId: sub.slug } }"-->
+          <!--              :key="sub.pk"-->
+          <!--            >-->
+          <!--              {{ sub.name }}<span v-if="i + 1 < iProject?.sub_projects?.length">, </span>-->
+          <!--            </router-link>-->
+          <!--          </CCardText>-->
+        </CCardBody>
+      </CCard>
+
+      <CCard v-if="iProject?.sub_projects?.length" :color="isDark ? '' : 'light'" class="mb-3">
         <CCardBody>
           <CCardSubtitle>하위 프로젝트</CCardSubtitle>
           <CCardText>
