@@ -38,7 +38,8 @@ const form = reactive({
 
 const tempSpace = ref('')
 
-const getSlug = (event: string) => {
+const getSlug = (event: { key: string; code: string }) => {
+  console.log(event)
   if (!props.project?.slug) {
     const pattern = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/ //한글
 
@@ -49,9 +50,9 @@ const getSlug = (event: string) => {
     } else if (event.code === 'Space') tempSpace.value = !!slug.length ? '-' : ''
     else if (
       event.code.includes('Digit') ||
-      (event.code.includes('Key') && !pattern.test(event.key))
+      (event.code.includes('Key') && event.key.length === 1 && !pattern.test(event.key))
     ) {
-      slug = slug + tempSpace.value + event.key
+      slug = slug + tempSpace.value + event.key.toLowerCase()
       tempSpace.value = ''
     }
 
