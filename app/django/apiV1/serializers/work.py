@@ -87,7 +87,7 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         model = IssueProject
         fields = ('pk', 'company', 'name', 'description', 'homepage', 'is_public',
                   'family_tree', 'parent', 'slug', 'status', 'is_inherit_members',
-                  'depth', 'members', 'sub_projects', 'tracker', 'module', 'user', 'created')
+                  'depth', 'members', 'sub_projects', 'module', 'user', 'created')
 
     def get_sub_projects(self, obj):
         return self.__class__(obj.issueproject_set.all(), many=True, read_only=True).data
