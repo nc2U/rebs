@@ -98,7 +98,7 @@ onBeforeMount(() => {
   <Header
     :page-title="headerTitle"
     :nav-menu="navMenu"
-    :parents="issueProject?._recurse_parents"
+    :family-tree="issueProject?.family_tree"
     @side-nav-call="sideNavCAll"
   />
 

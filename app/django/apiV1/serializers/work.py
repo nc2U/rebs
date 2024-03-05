@@ -7,10 +7,10 @@ from work.models import (IssueProject, Module, Version, IssueCategory, Repositor
 
 
 # Work --------------------------------------------------------------------------
-class TrackerInIssueProjectSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tracker
-        fields = ('pk', 'name', 'description')
+# class TrackerInIssueProjectSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Tracker
+#         fields = ('pk', 'name', 'description')
 
 
 class ModuleInIssueProjectSerializer(serializers.ModelSerializer):
@@ -30,7 +30,7 @@ class IssueProjectSerializer(serializers.ModelSerializer):
     family_tree = RecurseParentSerializer(many=True, read_only=True)
     sub_projects = serializers.SerializerMethodField()
     user = serializers.SlugRelatedField('username', read_only=True)
-    tracker = TrackerInIssueProjectSerializer(many=True, read_only=True)
+    # tracker = TrackerInIssueProjectSerializer(many=True, read_only=True)
     module = ModuleInIssueProjectSerializer(read_only=True)
 
     class Meta:

@@ -1,22 +1,35 @@
 <script lang="ts" setup>
 import { ref, computed, onBeforeMount } from 'vue'
 import { useAccount } from '@/store/pinia/account'
+import { useWork } from '@/store/pinia/work'
 import NoData from '@/views/_Work/components/NoData.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 
+// FormModal S ------------------
 const memberFormModal = ref()
 
 const members = ref([])
 const roles = ref([])
 
-const memberList = computed(() => [])
-
-const callModal = () => memberFormModal.value.callModal()
-
 const accStore = useAccount()
 const userList = computed(() => accStore.usersList)
 
-onBeforeMount(() => accStore.fetchUsersList())
+const workStore = useWork()
+const memberList = computed(() => workStore.issueProject.members)
+const roleList = computed(() => workStore.roleList)
+
+const callModal = () => memberFormModal.value.callModal()
+const modalAction = () =>
+  console.log(
+    members.value.sort((a, b) => a - b),
+    roles.value.sort((a, b) => a - b),
+  )
+// FormModal E ------------------
+
+onBeforeMount(() => {
+  accStore.fetchUsersList()
+  workStore.fetchRoleList()
+})
 </script>
 
 <template>
@@ -86,9 +99,9 @@ onBeforeMount(() => accStore.fetchUsersList())
           </CCardHeader>
           <CCardBody class="pb-5">
             <CFormCheck
+              inline
               v-for="u in userList"
               :key="u.pk"
-              inline
               :value="u.pk"
               :id="u.username"
               :label="u.username"
@@ -104,9 +117,15 @@ onBeforeMount(() => accStore.fetchUsersList())
             역할
           </CCardHeader>
           <CCardBody>
-            <CFormCheck v-model="roles" value="관리자" inline id="id1" label="관리자" />
-            <CFormCheck v-model="roles" value="개발자" inline id="id2" label="개발자" />
-            <CFormCheck v-model="roles" value="보고자" inline id="id3" label="보고자" />
+            <CFormCheck
+              inline
+              v-for="r in roleList"
+              :key="r.id"
+              :value="r.id"
+              :id="r.name"
+              :label="r.name"
+              v-model="roles"
+            />
 
             {{ roles }}
           </CCardBody>
@@ -114,7 +133,7 @@ onBeforeMount(() => accStore.fetchUsersList())
       </CModalBody>
       <CModalFooter>
         <CButton color="light" @click="memberFormModal.close"> 닫기</CButton>
-        <CButton color="primary">추가</CButton>
+        <CButton color="primary" @click="modalAction">추가</CButton>
       </CModalFooter>
     </template>
   </FormModal>
