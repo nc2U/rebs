@@ -27,6 +27,7 @@ class RepositoryInline(admin.TabularInline):
 
 @admin.register(IssueProject)
 class IssueProjectAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ('name', 'homepage', 'is_public', 'parent', 'slug', 'status', 'created')
     inlines = (ModuleInline, VersionInline,
                IssueCategoryInline, RepositoryInline)
 
@@ -38,6 +39,7 @@ class PermissionInline(admin.StackedInline):
 
 @admin.register(Role)
 class RoleAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ('name', 'issue_visible', 'time_entry_visible', 'user_visible', 'default_time_activity')
     inlines = (PermissionInline,)
 
 
@@ -48,7 +50,7 @@ class MemberAdmin(ImportExportMixin, admin.ModelAdmin):
 
 @admin.register(Membership)
 class MembershipAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
+    list_display = ('project', 'member', 'role')
 
 
 @admin.register(Tracker)
@@ -98,4 +100,7 @@ class TimeEntryInline(admin.TabularInline):
 
 @admin.register(Issue)
 class IssueAdmin(admin.ModelAdmin):
+    list_display = ('project', 'tracker', 'is_private', 'subject',
+                    'parent', 'status', 'priority', 'start_date', 'due_date')
+    list_display_links = ('subject',)
     inlines = (IssueFileInline, IssueCommentInline, TimeEntryInline)

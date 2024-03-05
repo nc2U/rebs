@@ -178,7 +178,7 @@ class Membership(models.Model):
     role = models.ForeignKey(Role, on_delete=models.CASCADE, verbose_name='역할')
 
     def __str__(self):
-        return self.member
+        return self.member.user.username
 
     class Meta:
         verbose_name = '03-2. 멤버십'
