@@ -72,7 +72,7 @@ onBeforeMount(() => emit('aside-visible', false))
   </CRow>
 
   <CRow>
-    <CCol>
+    <CCol lg="6">
       <CRow class="mb-3">
         <CCard :color="isDark ? '' : 'light'">
           <CCardBody>
@@ -120,7 +120,7 @@ onBeforeMount(() => emit('aside-visible', false))
       </CRow>
     </CCol>
 
-    <CCol>
+    <CCol lg="6">
       <CCard v-if="iProject?.sub_projects?.length" :color="isDark ? '' : 'light'">
         <CCardBody>
           <CCardSubtitle>하위 프로젝트</CCardSubtitle>
