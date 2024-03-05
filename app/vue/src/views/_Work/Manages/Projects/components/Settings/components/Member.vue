@@ -15,7 +15,7 @@ const accStore = useAccount()
 const userList = computed(() => accStore.usersList)
 
 const workStore = useWork()
-const memberList = computed(() => workStore.issueProject.members)
+const memberList = computed(() => workStore.issueProject?.members)
 const roleList = computed(() => workStore.roleList)
 
 const callModal = () => memberFormModal.value.callModal()
@@ -49,7 +49,7 @@ onBeforeMount(() => {
     </CCol>
   </CRow>
 
-  <NoData v-if="!memberList.length" />
+  <NoData v-if="!memberList?.length" />
 
   <CRow v-else>
     <CCol>
@@ -126,7 +126,6 @@ onBeforeMount(() => {
               :label="r.name"
               v-model="roles"
             />
-
             {{ roles }}
           </CCardBody>
         </CCard>

@@ -38,3 +38,17 @@ export interface Module {
   gantt: boolean
   project: number
 }
+
+export interface Role {
+  id: number
+  name: string
+  assignable: boolean
+  issue_visible: 'ALL' | 'PUB' | 'PRI'
+  time_entry_visible: 'ALL' | 'PRI'
+  user_visible: 'ALL' | 'PRJ'
+  order: number
+  created: string
+  updated: string
+  default_time_activity: number | null
+  user: number
+}

@@ -2,7 +2,7 @@ import api from '@/api'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
-import type { IssueProject } from '@/store/types/work'
+import type { IssueProject, Role } from '@/store/types/work'
 
 export const useWork = defineStore('work', () => {
   // Issue Project states & getters
@@ -64,8 +64,8 @@ export const useWork = defineStore('work', () => {
       .catch(err => errorHandle(err.response.data))
 
   // Role & Permission states & getters
-  const role = ref()
-  const roleList = ref([])
+  const role = ref<Role | null>(null)
+  const roleList = ref<Role[]>([])
 
   const fetchRole = (pk: number) =>
     api
