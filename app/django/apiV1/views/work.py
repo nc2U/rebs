@@ -32,6 +32,29 @@ class IssueProjectViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
+class RoleViewSet(viewsets.ModelViewSet):
+    queryset = Role.objects.all()
+    serializer_class = RoleSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    pagination_class = PageNumberPaginationTwenty
+    search_fields = ('id',)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class PermissionViewSet(viewsets.ModelViewSet):
+    queryset = Permission.objects.all()
+    serializer_class = PermissionSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+
+class MemberViewSet(viewsets.ModelViewSet):
+    queryset = Member.objects.all()
+    serializer_class = MemberSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+
 class ModuleViewSet(viewsets.ModelViewSet):
     queryset = Module.objects.all()
     serializer_class = ModuleSerializer
@@ -53,29 +76,6 @@ class IssueCategoryViewSet(viewsets.ModelViewSet):
 class RepositoryViewSet(viewsets.ModelViewSet):
     queryset = Repository.objects.all()
     serializer_class = RepositorySerializer
-    permission_classes = (permissions.IsAuthenticated,)
-
-
-class MemberViewSet(viewsets.ModelViewSet):
-    queryset = Member.objects.all()
-    serializer_class = MemberSerializer
-    permission_classes = (permissions.IsAuthenticated,)
-
-
-class RoleViewSet(viewsets.ModelViewSet):
-    queryset = Role.objects.all()
-    serializer_class = RoleSerializer
-    permission_classes = (permissions.IsAuthenticated,)
-    pagination_class = PageNumberPaginationTwenty
-    search_fields = ('id',)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-
-class PermissionViewSet(viewsets.ModelViewSet):
-    queryset = Permission.objects.all()
-    serializer_class = PermissionSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
 

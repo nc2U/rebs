@@ -1,14 +1,6 @@
 <script lang="ts" setup>
-import {
-  inject,
-  nextTick,
-  onBeforeMount,
-  onMounted,
-  onUpdated,
-  type PropType,
-  reactive,
-  ref,
-} from 'vue'
+import Cookies from 'js-cookie'
+import { ref, reactive, inject, onBeforeMount, onMounted, onUpdated, type PropType } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { IssueProject } from '@/store/types/work'
 import MdEditor from '@/components/MdEditor/Index.vue'
@@ -38,7 +30,7 @@ const form = reactive({
 
 const tempSpace = ref('')
 
-const getSlug = (event: string) => {
+const getSlug = (event: { key: string; code: string }) => {
   if (!props.project?.slug) {
     const pattern = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/ //한글
 
@@ -49,9 +41,9 @@ const getSlug = (event: string) => {
     } else if (event.code === 'Space') tempSpace.value = !!slug.length ? '-' : ''
     else if (
       event.code.includes('Digit') ||
-      (event.code.includes('Key') && !pattern.test(event.key))
+      (event.code.includes('Key') && event.key.length === 1 && !pattern.test(event.key))
     ) {
-      slug = slug + tempSpace.value + event.key
+      slug = slug + tempSpace.value + event.key.toLowerCase()
       tempSpace.value = ''
     }
 
@@ -81,6 +73,7 @@ const onSubmit = (event: Event) => {
     event.stopPropagation()
     validated.value = true
   } else {
+    Cookies.set('workSettingMenu', '프로젝트')
     emit('on-submit', { ...form, ...module })
     validated.value = false
     router.push({ name: '(설정)', params: { projId: form.slug } })

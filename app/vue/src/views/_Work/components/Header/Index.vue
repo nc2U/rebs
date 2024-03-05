@@ -14,7 +14,7 @@ defineProps({
     type: Array,
     default: () => ['Base Menu'],
   },
-  parents: {
+  familyTree: {
     type: Array as PropType<{ pk: number; name: string; slug: string }[]>,
     default: () => [],
   },
@@ -36,9 +36,9 @@ watch(useRoute(), () => (visible.value = false))
     <CCol>
       <CRow class="px-3">
         <CCol class="mb-2 p-4 col-9 col-md-6 col-lg-7 col-xl-9">
-          <CRow v-if="!!parents.length" class="d-none d-md-block">
+          <CRow v-if="!!familyTree.length" class="d-none d-md-block">
             <CCol>
-              <span v-for="p in parents" :key="p.pk" class="mr-1 text-blue-grey">
+              <span v-for="p in familyTree" :key="p.pk" class="mr-1 text-blue-grey">
                 <router-link :to="{ name: '(개요)', params: { projId: p.slug } }">
                   {{ p.name }}
                 </router-link>
@@ -53,19 +53,19 @@ watch(useRoute(), () => (visible.value = false))
 
             <CCol
               class="text-body d-md-none"
-              :class="{ pointer: !!parents.length }"
+              :class="{ pointer: !!familyTree.length }"
               @click="visible = !visible"
             >
               <v-icon
-                v-if="!!parents.length"
+                v-if="!!familyTree.length"
                 :icon="visible ? 'mdi-chevron-up' : 'mdi-chevron-down'"
                 color=""
               />
               <strong class="title pl-1"> {{ pageTitle }}</strong>
-              <CCollapse v-if="!!parents.length" :visible="visible">
+              <CCollapse v-if="!!familyTree.length" :visible="visible">
                 <CCard class="mt-3">
                   <CCardBody>
-                    <span v-for="p in parents" :key="p.pk" class="mr-1 text-blue-grey">
+                    <span v-for="p in familyTree" :key="p.pk" class="mr-1 text-blue-grey">
                       <router-link :to="{ name: '(개요)', params: { projId: p.slug } }">
                         {{ p.name }}
                       </router-link>

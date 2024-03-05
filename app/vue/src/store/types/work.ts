@@ -11,12 +11,13 @@ export interface IssueProject {
   description: string
   homepage: string | null
   is_public: boolean
-  _recurse_parents: BCParent[]
+  family_tree: BCParent[]
   parent: number | null
   slug: string
   status: '1' | '9'
   is_inherit_members: boolean
   depth: number
+  members: number[]
   sub_projects?: IssueProject[]
   module: Module | null
   user?: number
@@ -36,4 +37,18 @@ export interface Module {
   calendar: boolean
   gantt: boolean
   project: number
+}
+
+export interface Role {
+  id: number
+  name: string
+  assignable: boolean
+  issue_visible: 'ALL' | 'PUB' | 'PRI'
+  time_entry_visible: 'ALL' | 'PRI'
+  user_visible: 'ALL' | 'PRJ'
+  order: number
+  created: string
+  updated: string
+  default_time_activity: number | null
+  user: number
 }

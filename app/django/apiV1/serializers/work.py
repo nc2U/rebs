@@ -7,10 +7,10 @@ from work.models import (IssueProject, Module, Version, IssueCategory, Repositor
 
 
 # Work --------------------------------------------------------------------------
-class TrackerInIssueProjectSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tracker
-        fields = ('pk', 'name', 'description')
+# class TrackerInIssueProjectSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Tracker
+#         fields = ('pk', 'name', 'description')
 
 
 class ModuleInIssueProjectSerializer(serializers.ModelSerializer):
@@ -20,24 +20,24 @@ class ModuleInIssueProjectSerializer(serializers.ModelSerializer):
                   'file', 'wiki', 'repository', 'forum', 'calendar', 'gantt')
 
 
-class IProjectInIssueProjectSerializer(serializers.ModelSerializer):
+class RecurseParentSerializer(serializers.ModelSerializer):
     class Meta:
         model = IssueProject
         fields = ('pk', 'name', 'slug')
 
 
 class IssueProjectSerializer(serializers.ModelSerializer):
-    _recurse_parents = IProjectInIssueProjectSerializer(many=True, read_only=True)
+    family_tree = RecurseParentSerializer(many=True, read_only=True)
     sub_projects = serializers.SerializerMethodField()
     user = serializers.SlugRelatedField('username', read_only=True)
-    tracker = TrackerInIssueProjectSerializer(many=True, read_only=True)
+    # tracker = TrackerInIssueProjectSerializer(many=True, read_only=True)
     module = ModuleInIssueProjectSerializer(read_only=True)
 
     class Meta:
         model = IssueProject
         fields = ('pk', 'company', 'name', 'description', 'homepage', 'is_public',
-                  '_recurse_parents', 'parent', 'slug', 'status', 'is_inherit_members',
-                  'depth', 'tracker', 'sub_projects', 'module', 'user', 'created')
+                  'family_tree', 'parent', 'slug', 'status', 'is_inherit_members',
+                  'depth', 'members', 'sub_projects', 'module', 'user', 'created')
 
     def get_sub_projects(self, obj):
         return self.__class__(obj.issueproject_set.all(), many=True, read_only=True).data
@@ -106,6 +106,24 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 
+class RoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = '__all__'
+
+
+class PermissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Permission
+        fields = '__all__'
+
+
+class MemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Member
+        fields = '__all__'
+
+
 class ModuleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Module
@@ -127,24 +145,6 @@ class IssueCategorySerializer(serializers.ModelSerializer):
 class RepositorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Repository
-        fields = '__all__'
-
-
-class MemberSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Member
-        fields = '__all__'
-
-
-class RoleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Role
-        fields = '__all__'
-
-
-class PermissionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Permission
         fields = '__all__'
 
 
