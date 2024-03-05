@@ -1,14 +1,5 @@
 <script lang="ts" setup>
-import {
-  inject,
-  nextTick,
-  onBeforeMount,
-  onMounted,
-  onUpdated,
-  type PropType,
-  reactive,
-  ref,
-} from 'vue'
+import { ref, reactive, inject, onBeforeMount, onMounted, onUpdated, type PropType } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { IssueProject } from '@/store/types/work'
 import MdEditor from '@/components/MdEditor/Index.vue'
