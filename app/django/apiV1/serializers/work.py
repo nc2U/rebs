@@ -20,14 +20,16 @@ class ModuleInIssueProjectSerializer(serializers.ModelSerializer):
                   'file', 'wiki', 'repository', 'forum', 'calendar', 'gantt')
 
 
-class RecurseParentSerializer(serializers.ModelSerializer):
+class FamilyTreeSerializer(serializers.ModelSerializer):
+    """ recursive get patents -> for bread crumb """
+
     class Meta:
         model = IssueProject
         fields = ('pk', 'name', 'slug')
 
 
 class IssueProjectSerializer(serializers.ModelSerializer):
-    family_tree = RecurseParentSerializer(many=True, read_only=True)
+    family_tree = FamilyTreeSerializer(many=True, read_only=True)
     sub_projects = serializers.SerializerMethodField()
     user = serializers.SlugRelatedField('username', read_only=True)
     # tracker = TrackerInIssueProjectSerializer(many=True, read_only=True)
