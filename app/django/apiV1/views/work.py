@@ -5,9 +5,9 @@ from ..permission import *
 from ..pagination import *
 from ..serializers.work import *
 
-from work.models import (IssueProject, Module, Version, IssueCategory, Repository, Member, Role,
-                         Permission, Tracker, IssueStatus, Workflow, CodeActivity, CodeIssuePriority,
-                         CodeDocsCategory, Issue, IssueFile, IssueComment, TimeEntry)
+from work.models import (IssueProject, Role, Permission, Member, Membership, Module, Version,
+                         IssueCategory, Repository, Tracker, IssueStatus, Workflow, CodeActivity,
+                         CodeIssuePriority, CodeDocsCategory, Issue, IssueFile, IssueComment, TimeEntry)
 
 
 # Work --------------------------------------------------------------------------
@@ -17,19 +17,6 @@ class IssueProjectFilter(FilterSet):
     class Meta:
         model = IssueProject
         fields = ('parent__isnull',)
-
-
-class IssueProjectViewSet(viewsets.ModelViewSet):
-    queryset = IssueProject.objects.all()
-    serializer_class = IssueProjectSerializer
-    lookup_field = 'slug'
-    permission_classes = (permissions.IsAuthenticated,)
-    pagination_class = PageNumberPaginationTwenty
-    filterset_class = IssueProjectFilter
-    search_fields = ('name', 'description', 'slug')
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
 
 
 class RoleViewSet(viewsets.ModelViewSet):
@@ -55,6 +42,25 @@ class MemberViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
 
+class MembershipViewSet(viewsets.ModelViewSet):
+    queryset = Membership.objects.all()
+    serializer_class = MembershipSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+
+class IssueProjectViewSet(viewsets.ModelViewSet):
+    queryset = IssueProject.objects.all()
+    serializer_class = IssueProjectSerializer
+    lookup_field = 'slug'
+    permission_classes = (permissions.IsAuthenticated,)
+    pagination_class = PageNumberPaginationTwenty
+    filterset_class = IssueProjectFilter
+    search_fields = ('name', 'description', 'slug')
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
 class ModuleViewSet(viewsets.ModelViewSet):
     queryset = Module.objects.all()
     serializer_class = ModuleSerializer
@@ -64,12 +70,6 @@ class ModuleViewSet(viewsets.ModelViewSet):
 class VersionViewSet(viewsets.ModelViewSet):
     queryset = Version.objects.all()
     serializer_class = VersionSerializer
-    permission_classes = (permissions.IsAuthenticated,)
-
-
-class IssueCategoryViewSet(viewsets.ModelViewSet):
-    queryset = IssueCategory.objects.all()
-    serializer_class = IssueCategorySerializer
     permission_classes = (permissions.IsAuthenticated,)
 
 
@@ -138,6 +138,12 @@ class CodeDocsCategoryViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class IssueCategoryViewSet(viewsets.ModelViewSet):
+    queryset = IssueCategory.objects.all()
+    serializer_class = IssueCategorySerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
 
 class IssueViewSet(viewsets.ModelViewSet):
