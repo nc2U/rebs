@@ -48,11 +48,6 @@ class MemberAdmin(ImportExportMixin, admin.ModelAdmin):
     pass
 
 
-# @admin.register(Membership)
-# class MembershipAdmin(ImportExportMixin, admin.ModelAdmin):
-#     list_display = ('project', 'member', 'role')
-
-
 @admin.register(Tracker)
 class TaskTrackerAdmin(ImportExportMixin, admin.ModelAdmin):
     pass

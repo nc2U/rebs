@@ -173,19 +173,6 @@ class IssueProject(models.Model):
         verbose_name_plural = '01. 프로젝트(업무)'
 
 
-# class Membership(models.Model):
-#     project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
-#     member = models.ForeignKey(Member, on_delete=models.CASCADE, verbose_name='구성원')
-#     role = models.ForeignKey(Role, on_delete=models.CASCADE, verbose_name='역할')
-#
-#     def __str__(self):
-#         return self.member.user.username
-#
-#     class Meta:
-#         verbose_name = '03-2. 멤버십'
-#         verbose_name_plural = '03-2. 멤버십'
-
-
 class Module(models.Model):
     project = models.OneToOneField(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
     issue = models.BooleanField('업무관리', default=True)

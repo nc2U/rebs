@@ -56,12 +56,6 @@ class MemberSerializer(serializers.ModelSerializer):
         fields = ('pk', 'user', 'roles')
 
 
-# class MembershipSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Membership
-#         fields = ('pk', 'project', 'member', 'role')
-
-
 class TrackerInIssueProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tracker

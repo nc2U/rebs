@@ -42,12 +42,6 @@ class MemberViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
 
-# class MembershipViewSet(viewsets.ModelViewSet):
-#     queryset = Membership.objects.all()
-#     serializer_class = MembershipSerializer
-#     permission_classes = (permissions.IsAuthenticated,)
-
-
 class IssueProjectViewSet(viewsets.ModelViewSet):
     queryset = IssueProject.objects.all()
     serializer_class = IssueProjectSerializer
