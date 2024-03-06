@@ -5,33 +5,33 @@ from datetime import datetime
 from django.db import models
 
 
-class Role(models.Model):
-    name = models.CharField('이름', max_length=20)
-    assignable = models.BooleanField('업무 위탁 권한', default=True)
-    ISSUE_VIEW_PERM = (('ALL', '모든 업무'), ('PUB', '비공개 업무 제외'), ('PRI', '직접 생성 또는 담당한 업무'))
-    issue_visible = models.CharField('업무 보기 권한', max_length=3, choices=ISSUE_VIEW_PERM, default='PUB')
-    TIME_VIEW_PERM = (('ALL', '모든 시간기록'), ('PRI', '직접 생성한 시간기록'))
-    time_entry_visible = models.CharField('시간기록 보기 권한', max_length=3, choices=TIME_VIEW_PERM, default='ALL')
-    USER_VIEW_PERM = (('ALL', '모든 활성 사용자'), ('PRJ', '보이는 프로젝트 사용자'))
-    user_visible = models.CharField('사용자 보기 권한', max_length=3, choices=USER_VIEW_PERM, default='ALL')
-    default_time_activity = models.ForeignKey('CodeActivity', on_delete=models.SET_NULL, null=True, blank=True,
-                                              verbose_name='기본 활동')
-    order = models.PositiveSmallIntegerField('정렬', default=1)
-    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자')
-    created = models.DateTimeField('추가', auto_now_add=True)
-    updated = models.DateTimeField('수정', auto_now=True)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        ordering = ('order', 'created',)
-        verbose_name = '02. 역할 및 권한'
-        verbose_name_plural = '02. 역할 및 권한'
+# class Role(models.Model):
+#     name = models.CharField('이름', max_length=20)
+#     assignable = models.BooleanField('업무 위탁 권한', default=True)
+#     ISSUE_VIEW_PERM = (('ALL', '모든 업무'), ('PUB', '비공개 업무 제외'), ('PRI', '직접 생성 또는 담당한 업무'))
+#     issue_visible = models.CharField('업무 보기 권한', max_length=3, choices=ISSUE_VIEW_PERM, default='PUB')
+#     TIME_VIEW_PERM = (('ALL', '모든 시간기록'), ('PRI', '직접 생성한 시간기록'))
+#     time_entry_visible = models.CharField('시간기록 보기 권한', max_length=3, choices=TIME_VIEW_PERM, default='ALL')
+#     USER_VIEW_PERM = (('ALL', '모든 활성 사용자'), ('PRJ', '보이는 프로젝트 사용자'))
+#     user_visible = models.CharField('사용자 보기 권한', max_length=3, choices=USER_VIEW_PERM, default='ALL')
+#     default_time_activity = models.ForeignKey('CodeActivity', on_delete=models.SET_NULL, null=True, blank=True,
+#                                               verbose_name='기본 활동')
+#     order = models.PositiveSmallIntegerField('정렬', default=1)
+#     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자')
+#     created = models.DateTimeField('추가', auto_now_add=True)
+#     updated = models.DateTimeField('수정', auto_now=True)
+#
+#     def __str__(self):
+#         return self.name
+#
+#     class Meta:
+#         ordering = ('order', 'created',)
+#         verbose_name = '02. 역할 및 권한'
+#         verbose_name_plural = '02. 역할 및 권한'
 
 
 class Permission(models.Model):
-    role = models.OneToOneField(Role, on_delete=models.CASCADE)
+    # role = models.OneToOneField(Role, on_delete=models.CASCADE)
     # 프로젝트
     project_create = models.BooleanField('프로젝트 생성', default=False)
     project_update = models.BooleanField('프로젝트 편집', default=False)
@@ -124,16 +124,16 @@ class Permission(models.Model):
         return f'{self.role.name} - 권한'
 
 
-class Member(models.Model):
-    user = models.OneToOneField('accounts.User', on_delete=models.PROTECT, verbose_name='구성원')
-    roles = models.ManyToManyField(Role, through='Membership', related_name='members', verbose_name='역할')
-
-    def __str__(self):
-        return self.user.username
-
-    class Meta:
-        verbose_name = '03-1. 구성원'
-        verbose_name_plural = '03-1. 구성원'
+# class Member(models.Model):
+#     user = models.OneToOneField('accounts.User', on_delete=models.PROTECT, verbose_name='구성원')
+#     roles = models.ManyToManyField(Role, through='Membership', related_name='members', verbose_name='역할')
+#
+#     def __str__(self):
+#         return self.user.username
+#
+#     class Meta:
+#         verbose_name = '03-1. 구성원'
+#         verbose_name_plural = '03-1. 구성원'
 
 
 class IssueProject(models.Model):
@@ -149,7 +149,7 @@ class IssueProject(models.Model):
     is_inherit_members = models.BooleanField('상위 프로젝트 멤버 상속', default=False)
     depth = models.PositiveSmallIntegerField('단계', default=1,
                                              help_text='프로젝트 간 상하 소속 관계에 의한 단계, 최상위인 경우 1단계 이후 각 뎁스 마다 1씩 증가')
-    members = models.ManyToManyField(Member, through='Membership', related_name='projects', verbose_name='구성원')
+    # members = models.ManyToManyField(Member, through='Membership', related_name='projects', verbose_name='구성원')
     trackers = models.ManyToManyField('Tracker', blank=True, related_name='projects', verbose_name='프로젝트')
     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자')
     created = models.DateTimeField('추가', auto_now_add=True)
@@ -173,17 +173,17 @@ class IssueProject(models.Model):
         verbose_name_plural = '01. 프로젝트(업무)'
 
 
-class Membership(models.Model):
-    project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
-    member = models.ForeignKey(Member, on_delete=models.CASCADE, verbose_name='구성원')
-    role = models.ForeignKey(Role, on_delete=models.CASCADE, verbose_name='역할')
-
-    def __str__(self):
-        return self.member.user.username
-
-    class Meta:
-        verbose_name = '03-2. 멤버십'
-        verbose_name_plural = '03-2. 멤버십'
+# class Membership(models.Model):
+#     project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
+#     member = models.ForeignKey(Member, on_delete=models.CASCADE, verbose_name='구성원')
+#     role = models.ForeignKey(Role, on_delete=models.CASCADE, verbose_name='역할')
+#
+#     def __str__(self):
+#         return self.member.user.username
+#
+#     class Meta:
+#         verbose_name = '03-2. 멤버십'
+#         verbose_name_plural = '03-2. 멤버십'
 
 
 class Module(models.Model):
@@ -275,7 +275,7 @@ class IssueStatus(models.Model):
 
 
 class Workflow(models.Model):
-    role = models.ForeignKey(Role, on_delete=models.CASCADE, verbose_name='역할')
+    # role = models.ForeignKey(Role, on_delete=models.CASCADE, verbose_name='역할')
     tracker = models.ForeignKey(Tracker, on_delete=models.CASCADE, verbose_name='업무 유형')
     old_status = models.OneToOneField(IssueStatus, on_delete=models.CASCADE, verbose_name='업무 상태',
                                       related_name='each_status')
@@ -346,7 +346,8 @@ class CodeDocsCategory(models.Model):
 class IssueCategory(models.Model):
     project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
     name = models.CharField('범주', max_length=100)
-    assigned_to = models.ForeignKey(Member, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='담당자')
+
+    # assigned_to = models.ForeignKey(Member, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='담당자')
 
     def __str__(self):
         return self.name

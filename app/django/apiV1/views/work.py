@@ -5,7 +5,9 @@ from ..permission import *
 from ..pagination import *
 from ..serializers.work import *
 
-from work.models import (IssueProject, Role, Permission, Member, Membership, Module, Version,
+from work.models import (IssueProject,  # Role,
+                         Permission,  # Member, Membership,
+                         Module, Version,
                          IssueCategory, Repository, Tracker, IssueStatus, Workflow, CodeActivity,
                          CodeIssuePriority, CodeDocsCategory, Issue, IssueFile, IssueComment, TimeEntry)
 
@@ -19,15 +21,15 @@ class IssueProjectFilter(FilterSet):
         fields = ('parent__isnull',)
 
 
-class RoleViewSet(viewsets.ModelViewSet):
-    queryset = Role.objects.all()
-    serializer_class = RoleSerializer
-    permission_classes = (permissions.IsAuthenticated,)
-    pagination_class = PageNumberPaginationTwenty
-    search_fields = ('id',)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+# class RoleViewSet(viewsets.ModelViewSet):
+#     queryset = Role.objects.all()
+#     serializer_class = RoleSerializer
+#     permission_classes = (permissions.IsAuthenticated,)
+#     pagination_class = PageNumberPaginationTwenty
+#     search_fields = ('id',)
+#
+#     def perform_create(self, serializer):
+#         serializer.save(user=self.request.user)
 
 
 class PermissionViewSet(viewsets.ModelViewSet):
@@ -36,16 +38,16 @@ class PermissionViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
 
-class MemberViewSet(viewsets.ModelViewSet):
-    queryset = Member.objects.all()
-    serializer_class = MemberSerializer
-    permission_classes = (permissions.IsAuthenticated,)
-
-
-class MembershipViewSet(viewsets.ModelViewSet):
-    queryset = Membership.objects.all()
-    serializer_class = MembershipSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+# class MemberViewSet(viewsets.ModelViewSet):
+#     queryset = Member.objects.all()
+#     serializer_class = MemberSerializer
+#     permission_classes = (permissions.IsAuthenticated,)
+#
+#
+# class MembershipViewSet(viewsets.ModelViewSet):
+#     queryset = Membership.objects.all()
+#     serializer_class = MembershipSerializer
+#     permission_classes = (permissions.IsAuthenticated,)
 
 
 class IssueProjectViewSet(viewsets.ModelViewSet):
