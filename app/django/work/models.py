@@ -5,135 +5,135 @@ from datetime import datetime
 from django.db import models
 
 
-# class Role(models.Model):
-#     name = models.CharField('이름', max_length=20)
-#     assignable = models.BooleanField('업무 위탁 권한', default=True)
-#     ISSUE_VIEW_PERM = (('ALL', '모든 업무'), ('PUB', '비공개 업무 제외'), ('PRI', '직접 생성 또는 담당한 업무'))
-#     issue_visible = models.CharField('업무 보기 권한', max_length=3, choices=ISSUE_VIEW_PERM, default='PUB')
-#     TIME_VIEW_PERM = (('ALL', '모든 시간기록'), ('PRI', '직접 생성한 시간기록'))
-#     time_entry_visible = models.CharField('시간기록 보기 권한', max_length=3, choices=TIME_VIEW_PERM, default='ALL')
-#     USER_VIEW_PERM = (('ALL', '모든 활성 사용자'), ('PRJ', '보이는 프로젝트 사용자'))
-#     user_visible = models.CharField('사용자 보기 권한', max_length=3, choices=USER_VIEW_PERM, default='ALL')
-#     default_time_activity = models.ForeignKey('CodeActivity', on_delete=models.SET_NULL, null=True, blank=True,
-#                                               verbose_name='기본 활동')
-#     order = models.PositiveSmallIntegerField('정렬', default=1)
-#     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자')
-#     created = models.DateTimeField('추가', auto_now_add=True)
-#     updated = models.DateTimeField('수정', auto_now=True)
-#
-#     def __str__(self):
-#         return self.name
-#
-#     class Meta:
-#         ordering = ('order', 'created',)
-#         verbose_name = '02. 역할 및 권한'
-#         verbose_name_plural = '02. 역할 및 권한'
+class Role(models.Model):
+    name = models.CharField('이름', max_length=20)
+    assignable = models.BooleanField('업무 위탁 권한', default=True)
+    ISSUE_VIEW_PERM = (('ALL', '모든 업무'), ('PUB', '비공개 업무 제외'), ('PRI', '직접 생성 또는 담당한 업무'))
+    issue_visible = models.CharField('업무 보기 권한', max_length=3, choices=ISSUE_VIEW_PERM, default='PUB')
+    TIME_VIEW_PERM = (('ALL', '모든 시간기록'), ('PRI', '직접 생성한 시간기록'))
+    time_entry_visible = models.CharField('시간기록 보기 권한', max_length=3, choices=TIME_VIEW_PERM, default='ALL')
+    USER_VIEW_PERM = (('ALL', '모든 활성 사용자'), ('PRJ', '보이는 프로젝트 사용자'))
+    user_visible = models.CharField('사용자 보기 권한', max_length=3, choices=USER_VIEW_PERM, default='ALL')
+    default_time_activity = models.ForeignKey('CodeActivity', on_delete=models.SET_NULL, null=True, blank=True,
+                                              verbose_name='기본 활동')
+    order = models.PositiveSmallIntegerField('정렬', default=1)
+    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자')
+    created = models.DateTimeField('추가', auto_now_add=True)
+    updated = models.DateTimeField('수정', auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ('order', 'created',)
+        verbose_name = '02. 역할 및 권한'
+        verbose_name_plural = '02. 역할 및 권한'
 
 
-# class Permission(models.Model):
-#     role = models.OneToOneField(Role, on_delete=models.CASCADE)
-#     # 프로젝트
-#     project_create = models.BooleanField('프로젝트 생성', default=False)
-#     project_update = models.BooleanField('프로젝트 편집', default=False)
-#     project_close = models.BooleanField('프로젝트 닫기/열기', default=False)
-#     project_delete = models.BooleanField('프로젝트 삭제', default=False)
-#     project_public = models.BooleanField('프로젝트 공개/비공개 설정', default=False)
-#     project_module = models.BooleanField('프로젝트 모듈 선택', default=False)
-#     project_member = models.BooleanField('구성원 관리', default=False)
-#     project_version = models.BooleanField('버전 관리', default=False)
-#     project_create_sub = models.BooleanField('하위 프로젝트 생성', default=False)
-#     project_pub_query = models.BooleanField('공용 검색양식 관리', default=False)
-#     project_save_query = models.BooleanField('검색양식 저장', default=True)
-#     # 게시판
-#     forum_read = models.BooleanField('게시물 보기', default=True)
-#     forum_create = models.BooleanField('게시물 추가', default=True)
-#     forum_update = models.BooleanField('게시물 편집', default=False)
-#     forum_own_update = models.BooleanField('내 게시물 편집', default=True)
-#     forum_delete = models.BooleanField('게시물 삭제', default=False)
-#     forum_own_delete = models.BooleanField('내 게시물 삭제', default=True)
-#     forum_watcher_read = models.BooleanField('게시물 관람자 보기', default=False)
-#     forum_watcher_create = models.BooleanField('게시물 관람자 추가', default=False)
-#     forum_watcher_delete = models.BooleanField('게시물 관람자 삭제', default=False)
-#     forum_manage = models.BooleanField('게시판 관리', default=False)
-#     # 달력
-#     calendar_read = models.BooleanField('달력 보기', default=True)
-#     # 문서
-#     document_read = models.BooleanField('문서 보기', default=True)
-#     document_create = models.BooleanField('문서 추가', default=False)
-#     document_update = models.BooleanField('문서 편집', default=False)
-#     document_delete = models.BooleanField('문서 삭제', default=False)
-#     # 파일
-#     file_read = models.BooleanField('파일 보기', default=True)
-#     file_manage = models.BooleanField('파일 관리', default=False)
-#     # 간트차트
-#     gantt_read = models.BooleanField('간트 차트 보기', default=True)
-#     # 업무
-#     issue_read = models.BooleanField('업무 보기', default=True)
-#     issue_create = models.BooleanField('업무 추가', default=True)
-#     issue_update = models.BooleanField('업무 편집', default=False)
-#     issue_own_update = models.BooleanField('내 업무 편집', default=True)
-#     issue_copy = models.BooleanField('업무 복사', default=True)
-#     issue_rel_manage = models.BooleanField('업무 관계 관리', default=True)
-#     issue_sub_manage = models.BooleanField('하위 업무 관리', default=True)
-#     issue_public = models.BooleanField('업무 공개/비공개 설정', default=False)
-#     issue_own_public = models.BooleanField('내 업무 공개/비공개 설정', default=True)
-#     issue_comment_create = models.BooleanField('댓글 추가', default=True)
-#     issue_comment_update = models.BooleanField('댓글 편집', default=False)
-#     issue_comment_own_update = models.BooleanField('내 댓글 편집', default=True)
-#     issue_private_comment_read = models.BooleanField('비공개 댓글 보기', default=False)
-#     issue_private_comment_set = models.BooleanField('댓글 비공개로 설정', default=False)
-#     issue_delete = models.BooleanField('업무 삭제', default=False)
-#     issue_watcher_read = models.BooleanField('업무 관람자 보기', default=False)
-#     issue_watcher_create = models.BooleanField('업무 관람자 추가', default=False)
-#     issue_watcher_delete = models.BooleanField('업무 관람자 삭제', default=False)
-#     issue_import = models.BooleanField('업무 가져오기', default=False)
-#     issue_category_manage = models.BooleanField('업무 범주 관리', default=False)
-#     # 공지(뉴스)
-#     news_read = models.BooleanField('공지 보기', default=True)
-#     news_manage = models.BooleanField('공지 관리', default=False)
-#     news_comment = models.BooleanField('공지 댓글 달기', default=True)
-#     # 저장소(레파지토리)
-#     repo_changesets_read = models.BooleanField('변경 묶음 보기', default=False)
-#     repo_read = models.BooleanField('저장소 보기', default=False)
-#     repo_commit_access = models.BooleanField('변경 로그 보기', default=False)
-#     repo_rel_issue_manage = models.BooleanField('연결된 업무 관리', default=False)
-#     repo_manage = models.BooleanField('저장소 관리', default=False)
-#     # 시간추적
-#     time_read = models.BooleanField('시간 입력 보기', default=True)
-#     time_create = models.BooleanField('작업 시간 기록', default=True)
-#     time_update = models.BooleanField('시간 입력 편집', default=False)
-#     time_own_update = models.BooleanField('내 시간 입력 편집', default=True)
-#     time_pro_act_manage = models.BooleanField('프로젝트 작업내역 관리', default=False)
-#     time_other_user_log = models.BooleanField('다른 사용자 소요시간 입력', default=False)
-#     time_entries_import = models.BooleanField('소요시간 가져오기', default=False)
-#     # 위키
-#     wiki_read = models.BooleanField('위키 보기', default=True)
-#     wiki_history_read = models.BooleanField('위키 기록 보기', default=True)
-#     wiki_page_export = models.BooleanField('위키 페이지 내보내기', default=False)
-#     wiki_page_update = models.BooleanField('위키 페이지 편집', default=False)
-#     wiki_page_rename = models.BooleanField('위키 페이지 이름변경', default=False)
-#     wiki_page_delete = models.BooleanField('위키 페이지 삭제', default=False)
-#     wiki_attachment_delete = models.BooleanField('첨부파일 삭제', default=False)
-#     wiki_watcher_read = models.BooleanField('위키 관람자 보기', default=False)
-#     wiki_watcher_create = models.BooleanField('위키 관람자 추가', default=False)
-#     wiki_watcher_delete = models.BooleanField('위키 관람자 삭제', default=False)
-#     wiki_page_project = models.BooleanField('프로젝트 위키 페이지', default=False)
-#     wiki_manage = models.BooleanField('위키 관리', default=False)
-#
-#     def __str__(self):
-#         return f'{self.role.name} - 권한'
+class Permission(models.Model):
+    role = models.OneToOneField(Role, on_delete=models.CASCADE)
+    # 프로젝트
+    project_create = models.BooleanField('프로젝트 생성', default=False)
+    project_update = models.BooleanField('프로젝트 편집', default=False)
+    project_close = models.BooleanField('프로젝트 닫기/열기', default=False)
+    project_delete = models.BooleanField('프로젝트 삭제', default=False)
+    project_public = models.BooleanField('프로젝트 공개/비공개 설정', default=False)
+    project_module = models.BooleanField('프로젝트 모듈 선택', default=False)
+    project_member = models.BooleanField('구성원 관리', default=False)
+    project_version = models.BooleanField('버전 관리', default=False)
+    project_create_sub = models.BooleanField('하위 프로젝트 생성', default=False)
+    project_pub_query = models.BooleanField('공용 검색양식 관리', default=False)
+    project_save_query = models.BooleanField('검색양식 저장', default=True)
+    # 게시판
+    forum_read = models.BooleanField('게시물 보기', default=True)
+    forum_create = models.BooleanField('게시물 추가', default=True)
+    forum_update = models.BooleanField('게시물 편집', default=False)
+    forum_own_update = models.BooleanField('내 게시물 편집', default=True)
+    forum_delete = models.BooleanField('게시물 삭제', default=False)
+    forum_own_delete = models.BooleanField('내 게시물 삭제', default=True)
+    forum_watcher_read = models.BooleanField('게시물 관람자 보기', default=False)
+    forum_watcher_create = models.BooleanField('게시물 관람자 추가', default=False)
+    forum_watcher_delete = models.BooleanField('게시물 관람자 삭제', default=False)
+    forum_manage = models.BooleanField('게시판 관리', default=False)
+    # 달력
+    calendar_read = models.BooleanField('달력 보기', default=True)
+    # 문서
+    document_read = models.BooleanField('문서 보기', default=True)
+    document_create = models.BooleanField('문서 추가', default=False)
+    document_update = models.BooleanField('문서 편집', default=False)
+    document_delete = models.BooleanField('문서 삭제', default=False)
+    # 파일
+    file_read = models.BooleanField('파일 보기', default=True)
+    file_manage = models.BooleanField('파일 관리', default=False)
+    # 간트차트
+    gantt_read = models.BooleanField('간트 차트 보기', default=True)
+    # 업무
+    issue_read = models.BooleanField('업무 보기', default=True)
+    issue_create = models.BooleanField('업무 추가', default=True)
+    issue_update = models.BooleanField('업무 편집', default=False)
+    issue_own_update = models.BooleanField('내 업무 편집', default=True)
+    issue_copy = models.BooleanField('업무 복사', default=True)
+    issue_rel_manage = models.BooleanField('업무 관계 관리', default=True)
+    issue_sub_manage = models.BooleanField('하위 업무 관리', default=True)
+    issue_public = models.BooleanField('업무 공개/비공개 설정', default=False)
+    issue_own_public = models.BooleanField('내 업무 공개/비공개 설정', default=True)
+    issue_comment_create = models.BooleanField('댓글 추가', default=True)
+    issue_comment_update = models.BooleanField('댓글 편집', default=False)
+    issue_comment_own_update = models.BooleanField('내 댓글 편집', default=True)
+    issue_private_comment_read = models.BooleanField('비공개 댓글 보기', default=False)
+    issue_private_comment_set = models.BooleanField('댓글 비공개로 설정', default=False)
+    issue_delete = models.BooleanField('업무 삭제', default=False)
+    issue_watcher_read = models.BooleanField('업무 관람자 보기', default=False)
+    issue_watcher_create = models.BooleanField('업무 관람자 추가', default=False)
+    issue_watcher_delete = models.BooleanField('업무 관람자 삭제', default=False)
+    issue_import = models.BooleanField('업무 가져오기', default=False)
+    issue_category_manage = models.BooleanField('업무 범주 관리', default=False)
+    # 공지(뉴스)
+    news_read = models.BooleanField('공지 보기', default=True)
+    news_manage = models.BooleanField('공지 관리', default=False)
+    news_comment = models.BooleanField('공지 댓글 달기', default=True)
+    # 저장소(레파지토리)
+    repo_changesets_read = models.BooleanField('변경 묶음 보기', default=False)
+    repo_read = models.BooleanField('저장소 보기', default=False)
+    repo_commit_access = models.BooleanField('변경 로그 보기', default=False)
+    repo_rel_issue_manage = models.BooleanField('연결된 업무 관리', default=False)
+    repo_manage = models.BooleanField('저장소 관리', default=False)
+    # 시간추적
+    time_read = models.BooleanField('시간 입력 보기', default=True)
+    time_create = models.BooleanField('작업 시간 기록', default=True)
+    time_update = models.BooleanField('시간 입력 편집', default=False)
+    time_own_update = models.BooleanField('내 시간 입력 편집', default=True)
+    time_pro_act_manage = models.BooleanField('프로젝트 작업내역 관리', default=False)
+    time_other_user_log = models.BooleanField('다른 사용자 소요시간 입력', default=False)
+    time_entries_import = models.BooleanField('소요시간 가져오기', default=False)
+    # 위키
+    wiki_read = models.BooleanField('위키 보기', default=True)
+    wiki_history_read = models.BooleanField('위키 기록 보기', default=True)
+    wiki_page_export = models.BooleanField('위키 페이지 내보내기', default=False)
+    wiki_page_update = models.BooleanField('위키 페이지 편집', default=False)
+    wiki_page_rename = models.BooleanField('위키 페이지 이름변경', default=False)
+    wiki_page_delete = models.BooleanField('위키 페이지 삭제', default=False)
+    wiki_attachment_delete = models.BooleanField('첨부파일 삭제', default=False)
+    wiki_watcher_read = models.BooleanField('위키 관람자 보기', default=False)
+    wiki_watcher_create = models.BooleanField('위키 관람자 추가', default=False)
+    wiki_watcher_delete = models.BooleanField('위키 관람자 삭제', default=False)
+    wiki_page_project = models.BooleanField('프로젝트 위키 페이지', default=False)
+    wiki_manage = models.BooleanField('위키 관리', default=False)
+
+    def __str__(self):
+        return f'{self.role.name} - 권한'
 
 
-# class Member(models.Model):
-#     user = models.OneToOneField('accounts.User', on_delete=models.PROTECT, verbose_name='구성원')
-#     roles = models.ManyToManyField(Role, through='Membership', related_name='members', verbose_name='역할')
-#
-#     def __str__(self):
-#         return self.user.username
-#
-#     class Meta:
-#         verbose_name = '03-1. 구성원'
-#         verbose_name_plural = '03-1. 구성원'
+class Member(models.Model):
+    user = models.OneToOneField('accounts.User', on_delete=models.PROTECT, verbose_name='구성원')
+    roles = models.ManyToManyField(Role, related_name='members', verbose_name='역할')
+
+    def __str__(self):
+        return self.user.username
+
+    class Meta:
+        verbose_name = '03. 구성원'
+        verbose_name_plural = '03. 구성원'
 
 
 class IssueProject(models.Model):
@@ -149,7 +149,7 @@ class IssueProject(models.Model):
     is_inherit_members = models.BooleanField('상위 프로젝트 멤버 상속', default=False)
     depth = models.PositiveSmallIntegerField('단계', default=1,
                                              help_text='프로젝트 간 상하 소속 관계에 의한 단계, 최상위인 경우 1단계 이후 각 뎁스 마다 1씩 증가')
-    # members = models.ManyToManyField(Member, through='Membership', related_name='projects', verbose_name='구성원')
+    members = models.ManyToManyField(Member, blank=True, related_name='projects', verbose_name='구성원')
     trackers = models.ManyToManyField('Tracker', blank=True, related_name='projects', verbose_name='프로젝트')
     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자')
     created = models.DateTimeField('추가', auto_now_add=True)
@@ -275,7 +275,7 @@ class IssueStatus(models.Model):
 
 
 class Workflow(models.Model):
-    # role = models.ForeignKey(Role, on_delete=models.CASCADE, verbose_name='역할')
+    role = models.ForeignKey(Role, on_delete=models.CASCADE, verbose_name='역할')
     tracker = models.ForeignKey(Tracker, on_delete=models.CASCADE, verbose_name='업무 유형')
     old_status = models.OneToOneField(IssueStatus, on_delete=models.CASCADE, verbose_name='업무 상태',
                                       related_name='each_status')
@@ -346,8 +346,7 @@ class CodeDocsCategory(models.Model):
 class IssueCategory(models.Model):
     project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
     name = models.CharField('범주', max_length=100)
-
-    # assigned_to = models.ForeignKey(Member, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='담당자')
+    assigned_to = models.ForeignKey(Member, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='담당자')
 
     def __str__(self):
         return self.name

@@ -1,7 +1,6 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
-from .models import (IssueProject,  # Member, Membership, Role, Permission,
-                     Tracker, Module,
+from .models import (IssueProject, Member, Role, Permission, Tracker, Module,
                      Version, IssueCategory, Repository, IssueStatus, Workflow, CodeActivity,
                      CodeIssuePriority, CodeDocsCategory, Issue, IssueFile, IssueComment, TimeEntry)
 
@@ -33,22 +32,22 @@ class IssueProjectAdmin(ImportExportMixin, admin.ModelAdmin):
                IssueCategoryInline, RepositoryInline)
 
 
-# class PermissionInline(admin.StackedInline):
-#     model = Permission
-#     extra = 1
+class PermissionInline(admin.StackedInline):
+    model = Permission
+    extra = 1
 
 
-# @admin.register(Role)
-# class RoleAdmin(ImportExportMixin, admin.ModelAdmin):
-#     list_display = ('name', 'issue_visible', 'time_entry_visible', 'user_visible', 'default_time_activity')
-#     inlines = (PermissionInline,)
-#
-#
-# @admin.register(Member)
-# class MemberAdmin(ImportExportMixin, admin.ModelAdmin):
-#     pass
-#
-#
+@admin.register(Role)
+class RoleAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ('name', 'issue_visible', 'time_entry_visible', 'user_visible', 'default_time_activity')
+    inlines = (PermissionInline,)
+
+
+@admin.register(Member)
+class MemberAdmin(ImportExportMixin, admin.ModelAdmin):
+    pass
+
+
 # @admin.register(Membership)
 # class MembershipAdmin(ImportExportMixin, admin.ModelAdmin):
 #     list_display = ('project', 'member', 'role')

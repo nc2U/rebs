@@ -1,8 +1,7 @@
 from django.db import transaction
 from rest_framework import serializers
 
-from work.models import (IssueProject,  # Role, Permission, Member, Membership,
-                         Module, Version,
+from work.models import (IssueProject, Role, Permission, Member, Module, Version,
                          IssueCategory, Repository, Tracker, IssueStatus, Workflow, CodeActivity,
                          CodeIssuePriority, CodeDocsCategory, Issue, IssueFile, IssueComment, TimeEntry)
 
@@ -16,47 +15,47 @@ class FamilyTreeSerializer(serializers.ModelSerializer):
         fields = ('pk', 'name', 'slug')
 
 
-# class RoleSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Role
-#         fields = ('pk', 'name', 'assignable', 'issue_visible', 'time_entry_visible',
-#                   'user_visible', 'order', 'user', 'created', 'updated')
+class RoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = ('pk', 'name', 'assignable', 'issue_visible', 'time_entry_visible',
+                  'user_visible', 'order', 'user', 'created', 'updated')
 
-#
-# class PermissionSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Permission
-#         fields = ('pk', 'project_create', 'project_update', 'project_close', 'project_delete',
-#                   'project_public', 'project_module', 'project_member', 'project_version',
-#                   'project_create_sub', 'project_pub_query', 'project_save_query',
-#                   'forum_read', 'forum_create', 'forum_update', 'forum_own_update',
-#                   'forum_delete', 'forum_own_delete', 'forum_watcher_read',
-#                   'forum_watcher_create', 'forum_watcher_delete', 'forum_manage',
-#                   'calendar_read',
-#                   'document_read', 'document_create', 'document_update', 'document_delete',
-#                   'file_read', 'file_manage',
-#                   'gantt_read',
-#                   'issue_read', 'issue_create', 'issue_update', 'issue_own_update', 'issue_copy',
-#                   'issue_rel_manage', 'issue_sub_manage', 'issue_public', 'issue_own_public',
-#                   'issue_comment_create', 'issue_comment_update', 'issue_comment_own_update',
-#                   'issue_private_comment_read', 'issue_private_comment_set', 'issue_delete',
-#                   'issue_watcher_read', 'issue_watcher_create', 'issue_watcher_delete', 'issue_import',
-#                   'issue_category_manage',
-#                   'news_read', 'news_manage', 'news_manage', 'news_comment',
-#                   'repo_changesets_read', 'repo_read', 'repo_commit_access', 'repo_rel_issue_manage', 'repo_manage',
-#                   'time_read', 'time_create', 'time_update', 'time_own_update',
-#                   'time_pro_act_manage', 'time_other_user_log', 'time_entries_import',
-#                   'wiki_read', 'wiki_history_read', 'wiki_page_export', 'wiki_page_update',
-#                   'wiki_page_rename', 'wiki_page_delete', 'wiki_attachment_delete', 'wiki_watcher_read',
-#                   'wiki_watcher_create', 'wiki_watcher_delete', 'wiki_page_project', 'wiki_manage')
-#
 
-# class MemberSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Member
-#         fields = ('pk', 'user', 'roles')
-#
-#
+class PermissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Permission
+        fields = ('pk', 'project_create', 'project_update', 'project_close', 'project_delete',
+                  'project_public', 'project_module', 'project_member', 'project_version',
+                  'project_create_sub', 'project_pub_query', 'project_save_query',
+                  'forum_read', 'forum_create', 'forum_update', 'forum_own_update',
+                  'forum_delete', 'forum_own_delete', 'forum_watcher_read',
+                  'forum_watcher_create', 'forum_watcher_delete', 'forum_manage',
+                  'calendar_read',
+                  'document_read', 'document_create', 'document_update', 'document_delete',
+                  'file_read', 'file_manage',
+                  'gantt_read',
+                  'issue_read', 'issue_create', 'issue_update', 'issue_own_update', 'issue_copy',
+                  'issue_rel_manage', 'issue_sub_manage', 'issue_public', 'issue_own_public',
+                  'issue_comment_create', 'issue_comment_update', 'issue_comment_own_update',
+                  'issue_private_comment_read', 'issue_private_comment_set', 'issue_delete',
+                  'issue_watcher_read', 'issue_watcher_create', 'issue_watcher_delete', 'issue_import',
+                  'issue_category_manage',
+                  'news_read', 'news_manage', 'news_manage', 'news_comment',
+                  'repo_changesets_read', 'repo_read', 'repo_commit_access', 'repo_rel_issue_manage', 'repo_manage',
+                  'time_read', 'time_create', 'time_update', 'time_own_update',
+                  'time_pro_act_manage', 'time_other_user_log', 'time_entries_import',
+                  'wiki_read', 'wiki_history_read', 'wiki_page_export', 'wiki_page_update',
+                  'wiki_page_rename', 'wiki_page_delete', 'wiki_attachment_delete', 'wiki_watcher_read',
+                  'wiki_watcher_create', 'wiki_watcher_delete', 'wiki_page_project', 'wiki_manage')
+
+
+class MemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Member
+        fields = ('pk', 'user', 'roles')
+
+
 # class MembershipSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = Membership
