@@ -45,8 +45,7 @@ class RoleAdmin(ImportExportMixin, admin.ModelAdmin):
 
 @admin.register(Member)
 class MemberAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('pk', 'name', 'roles')
-    list_display_links = ('name',)
+    pass
 
 
 @admin.register(Tracker)
