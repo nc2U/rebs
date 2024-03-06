@@ -2,27 +2,32 @@
 import { ref, computed, onBeforeMount } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { useWork } from '@/store/pinia/work'
+import type { SimpleMember } from '@/store/types/work'
 import NoData from '@/views/_Work/components/NoData.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 
 // FormModal S ------------------
 const memberFormModal = ref()
 
-const members = ref([])
+const users = ref([])
 const roles = ref([])
 
 const accStore = useAccount()
 const userList = computed(() => accStore.usersList)
 
 const workStore = useWork()
-const memberList = computed(() => workStore.issueProject?.members)
+const memberList = computed<SimpleMember[]>(() => workStore.issueProject?.members ?? [])
 const roleList = computed(() => workStore.roleList)
+const patchIssueProject = (payload: { slug: string; users: number[]; roles: number[] }) =>
+  workStore.patchIssueProject(payload)
 
 const callModal = () => memberFormModal.value.callModal()
 const modalAction = () => {
-  const m = [...members.value.sort((a, b) => a - b)]
-  const r = [...roles.value.sort((a, b) => a - b)]
-  console.log({ members: m }, { roles: r })
+  const _memList = [...users.value.sort((a, b) => a - b)]
+  const _roleList = [...roles.value.sort((a, b) => a - b)]
+
+  patchIssueProject({ slug: 'rebs', users: _memList, roles: _roleList })
+
   memberFormModal.value.close()
 }
 // FormModal E ------------------
@@ -66,12 +71,14 @@ onBeforeMount(() => {
         </CTableHead>
 
         <CTableBody>
-          <CTableRow v-for="i in 2" :key="i" class="text-center">
+          <CTableRow v-for="mem in memberList" :key="mem.pk" class="text-center">
             <CTableHeaderCell></CTableHeaderCell>
             <CTableDataCell>
-              <router-link to="">austin1 kho</router-link>
+              <router-link to="">{{ mem.user.username }}</router-link>
             </CTableDataCell>
-            <CTableDataCell> 관리자, 개발자</CTableDataCell>
+            <CTableDataCell>
+              <span v-for="role in mem.roles" :key="role.pk">{{ role.name }}, </span>
+            </CTableDataCell>
             <CTableDataCell>
               <span class="mr-2">
                 <v-icon icon="mdi-pencil" color="amber" size="sm" />
@@ -106,9 +113,9 @@ onBeforeMount(() => {
               :value="u.pk"
               :id="u.username"
               :label="u.username"
-              v-model="members"
+              v-model="users"
             />
-            {{ members }}
+            {{ users }}
           </CCardBody>
         </CCard>
 

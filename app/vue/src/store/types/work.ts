@@ -4,6 +4,12 @@ interface BCParent {
   slug: string
 }
 
+export interface SimpleMember {
+  pk: number
+  user: { pk: number; username: string }
+  roles: { pk: number; name: string }[]
+}
+
 export interface IssueProject {
   pk?: number
   company: number
@@ -17,7 +23,7 @@ export interface IssueProject {
   status: '1' | '9'
   is_inherit_members: boolean
   depth: number
-  members: number[]
+  members: SimpleMember[]
   sub_projects?: IssueProject[]
   trackers: number[]
   module: Module | null
