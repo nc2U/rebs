@@ -53,6 +53,12 @@ export const useWork = defineStore('work', () => {
       .then(res => fetchIssueProject(res.data.slug).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
+  const patchIssueProject = (payload: { slug: string & any }) =>
+    api
+      .patch(`/issue-project/${payload.slug}/`, payload)
+      .then(res => fetchIssueProject(res.data.slug).then(() => message()))
+      .catch(err => errorHandle(err.response.data))
+
   const deleteIssueProject = (pk: number) =>
     api
       .delete(`/issue-project/${pk}/`)
@@ -88,6 +94,7 @@ export const useWork = defineStore('work', () => {
     fetchIssueProject,
     createIssueProject,
     updateIssueProject,
+    patchIssueProject,
     deleteIssueProject,
 
     role,

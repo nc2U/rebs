@@ -113,7 +113,7 @@ class RoleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Role
         fields = ('pk', 'name', 'assignable', 'issue_visible', 'time_entry_visible',
-                  'user_visible', 'order', 'user', 'created', 'updated')
+                  'user_visible', 'default_time_activity', 'order', 'user', 'created', 'updated')
 
 
 class PermissionSerializer(serializers.ModelSerializer):

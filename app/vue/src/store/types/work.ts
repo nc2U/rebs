@@ -19,6 +19,7 @@ export interface IssueProject {
   depth: number
   members: number[]
   sub_projects?: IssueProject[]
+  trackers: number[]
   module: Module | null
   user?: number
   created?: string
@@ -26,6 +27,7 @@ export interface IssueProject {
 
 export interface Module {
   pk?: number
+  project: number
   issue: boolean
   time: boolean
   news: boolean
@@ -36,7 +38,6 @@ export interface Module {
   forum: boolean
   calendar: boolean
   gantt: boolean
-  project: number
 }
 
 export interface Role {
@@ -46,9 +47,9 @@ export interface Role {
   issue_visible: 'ALL' | 'PUB' | 'PRI'
   time_entry_visible: 'ALL' | 'PRI'
   user_visible: 'ALL' | 'PRJ'
+  default_time_activity: number | null
   order: number
+  user: number
   created: string
   updated: string
-  default_time_activity: number | null
-  user: number
 }
