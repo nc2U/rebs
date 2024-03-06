@@ -5,8 +5,7 @@ from ..permission import *
 from ..pagination import *
 from ..serializers.work import *
 
-from work.models import (IssueProject,  # Role,
-                         Permission,  # Member, Membership,
+from work.models import (IssueProject,  # Role, Permission, Member, Membership,
                          Module, Version,
                          IssueCategory, Repository, Tracker, IssueStatus, Workflow, CodeActivity,
                          CodeIssuePriority, CodeDocsCategory, Issue, IssueFile, IssueComment, TimeEntry)
@@ -32,10 +31,10 @@ class IssueProjectFilter(FilterSet):
 #         serializer.save(user=self.request.user)
 
 
-class PermissionViewSet(viewsets.ModelViewSet):
-    queryset = Permission.objects.all()
-    serializer_class = PermissionSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+# class PermissionViewSet(viewsets.ModelViewSet):
+#     queryset = Permission.objects.all()
+#     serializer_class = PermissionSerializer
+#     permission_classes = (permissions.IsAuthenticated,)
 
 
 # class MemberViewSet(viewsets.ModelViewSet):

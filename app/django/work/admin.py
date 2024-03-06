@@ -1,7 +1,7 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
-from .models import (IssueProject,  # Member, Membership, Role,
-                     Permission, Tracker, Module,
+from .models import (IssueProject,  # Member, Membership, Role, Permission,
+                     Tracker, Module,
                      Version, IssueCategory, Repository, IssueStatus, Workflow, CodeActivity,
                      CodeIssuePriority, CodeDocsCategory, Issue, IssueFile, IssueComment, TimeEntry)
 
@@ -33,9 +33,9 @@ class IssueProjectAdmin(ImportExportMixin, admin.ModelAdmin):
                IssueCategoryInline, RepositoryInline)
 
 
-class PermissionInline(admin.StackedInline):
-    model = Permission
-    extra = 1
+# class PermissionInline(admin.StackedInline):
+#     model = Permission
+#     extra = 1
 
 
 # @admin.register(Role)

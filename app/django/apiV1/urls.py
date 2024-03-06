@@ -46,7 +46,7 @@ router.register(r'wise-say', rebs.WiseSayViewSet)
 # work
 router.register(r'issue-project', work.IssueProjectViewSet)
 # router.register(r'role', work.RoleViewSet)
-router.register(r'permission', work.PermissionViewSet)
+# router.register(r'permission', work.PermissionViewSet)
 # router.register(r'member', work.MemberViewSet)
 # router.register(r'membership', work.MembershipViewSet)
 router.register(r'module', work.ModuleViewSet)
