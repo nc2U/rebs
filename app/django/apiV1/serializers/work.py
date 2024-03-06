@@ -1,6 +1,7 @@
 from django.db import transaction
 from rest_framework import serializers
 
+from accounts.models import User
 from work.models import (IssueProject, Role, Permission, Member, Module, Version, IssueCategory,
                          Repository, Tracker, IssueStatus, Workflow, CodeActivity, CodeIssuePriority,
                          CodeDocsCategory, Issue, IssueFile, IssueComment, TimeEntry)
@@ -13,6 +14,27 @@ class FamilyTreeSerializer(serializers.ModelSerializer):
     class Meta:
         model = IssueProject
         fields = ('pk', 'name', 'slug')
+
+
+class UserInMemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('pk', 'username')
+
+
+class RoleInMemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = ('pk', 'name')
+
+
+class MemberInIssueProjectSerializer(serializers.ModelSerializer):
+    user = UserInMemberSerializer(read_only=True)
+    roles = RoleInMemberSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Member
+        fields = ('pk', 'user', 'roles')
 
 
 # class TrackerInIssueProjectSerializer(serializers.ModelSerializer):
@@ -31,7 +53,7 @@ class ModuleInIssueProjectSerializer(serializers.ModelSerializer):
 class IssueProjectSerializer(serializers.ModelSerializer):
     family_tree = FamilyTreeSerializer(many=True, read_only=True)
     sub_projects = serializers.SerializerMethodField()
-    # members = MemberSerializer(many=True, read_only=True)
+    members = MemberInIssueProjectSerializer(many=True, read_only=True)
     module = ModuleInIssueProjectSerializer(read_only=True)
     # trackers = TrackerInIssueProjectSerializer(many=True, read_only=True)
     user = serializers.SlugRelatedField('username', read_only=True)
@@ -106,6 +128,20 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         module.gantt = gantt
         module.save()
 
+        # user에 대응하는 member 모델 생성
+        users = self.initial_data.get('users')
+        roles = self.initial_data.get('roles')
+
+        members = []
+
+        for user in users:
+            user_instance = User.objects.get(pk=user)
+            member_instance = Member.objects.create(user=user_instance)
+            member_instance.roles.add(*roles)
+            member_instance.save()
+            members.append(member_instance.pk)
+
+        validated_data['members'] = members
         return super().update(instance, validated_data)
 
 
