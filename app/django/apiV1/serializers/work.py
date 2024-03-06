@@ -62,10 +62,10 @@ class MembershipSerializer(serializers.ModelSerializer):
         fields = ('pk', 'project', 'member', 'role')
 
 
-# class TrackerInIssueProjectSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Tracker
-#         fields = ('pk', 'name', 'description')
+class TrackerInIssueProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tracker
+        fields = ('pk', 'name', 'description')
 
 
 class ModuleInIssueProjectSerializer(serializers.ModelSerializer):
@@ -79,15 +79,15 @@ class IssueProjectSerializer(serializers.ModelSerializer):
     family_tree = FamilyTreeSerializer(many=True, read_only=True)
     members = MemberSerializer(many=True, read_only=True)
     sub_projects = serializers.SerializerMethodField()
+    trackers = TrackerInIssueProjectSerializer(many=True, read_only=True)
     user = serializers.SlugRelatedField('username', read_only=True)
-    # tracker = TrackerInIssueProjectSerializer(many=True, read_only=True)
     module = ModuleInIssueProjectSerializer(read_only=True)
 
     class Meta:
         model = IssueProject
         fields = ('pk', 'company', 'name', 'description', 'homepage', 'is_public',
                   'family_tree', 'parent', 'slug', 'status', 'is_inherit_members',
-                  'depth', 'members', 'sub_projects', 'module', 'user', 'created')
+                  'depth', 'members', 'sub_projects', 'trackers', 'module', 'user', 'created')
 
     def get_sub_projects(self, obj):
         return self.__class__(obj.issueproject_set.all(), many=True, read_only=True).data

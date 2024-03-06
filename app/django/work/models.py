@@ -150,6 +150,7 @@ class IssueProject(models.Model):
     depth = models.PositiveSmallIntegerField('단계', default=1,
                                              help_text='프로젝트 간 상하 소속 관계에 의한 단계, 최상위인 경우 1단계 이후 각 뎁스 마다 1씩 증가')
     members = models.ManyToManyField(Member, through='Membership', related_name='projects', verbose_name='구성원')
+    trackers = models.ManyToManyField('Tracker', blank=True, related_name='projects', verbose_name='프로젝트')
     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자')
     created = models.DateTimeField('추가', auto_now_add=True)
     updated = models.DateTimeField('수정', auto_now=True)
