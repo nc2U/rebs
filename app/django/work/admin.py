@@ -45,12 +45,14 @@ class RoleAdmin(ImportExportMixin, admin.ModelAdmin):
 
 @admin.register(Member)
 class MemberAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
+    list_display = ('pk', 'name', 'roles')
+    list_display_links = ('name',)
 
 
 @admin.register(Tracker)
 class TaskTrackerAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
+    list_display = ('name', 'is_in_roadmap', 'default_status', 'order')
+    list_editable = ('is_in_roadmap', 'default_status', 'order')
 
 
 @admin.register(IssueStatus)
