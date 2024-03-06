@@ -77,7 +77,6 @@ const onSubmit = (payload: any) => {
   payload.company = company?.value.pk
   if (!!payload.pk) workStore.updateIssueProject(payload)
   else workStore.createIssueProject(payload)
-  console.log(payload)
 }
 
 onBeforeRouteUpdate(async to => {
