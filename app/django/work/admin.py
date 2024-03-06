@@ -1,7 +1,7 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
-from .models import (IssueProject, Member, Role, Permission, Tracker, Module,
-                     Version, IssueCategory, Repository, IssueStatus, Workflow, CodeActivity,
+from .models import (IssueProject, Role, Permission, Member, Tracker, Module, Version,
+                     IssueCategory, Repository, IssueStatus, Workflow, CodeActivity,
                      CodeIssuePriority, CodeDocsCategory, Issue, IssueFile, IssueComment, TimeEntry)
 
 
