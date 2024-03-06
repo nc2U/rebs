@@ -241,7 +241,6 @@ class Tracker(models.Model):
     description = models.CharField('설명', max_length=255, blank=True, default='')
     is_in_roadmap = models.BooleanField('로드맵에 표시', default=True)
     default_status = models.ForeignKey('IssueStatus', on_delete=models.PROTECT, verbose_name='초기 상태')
-    projects = models.ManyToManyField(IssueProject, blank=True, verbose_name='프로젝트')
     order = models.PositiveSmallIntegerField('정렬', default=1)
     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자')
     created = models.DateTimeField('추가', auto_now_add=True)
