@@ -40,7 +40,7 @@ export interface Module {
 }
 
 export interface Role {
-  id: number
+  pk: number
   name: string
   assignable: boolean
   issue_visible: 'ALL' | 'PUB' | 'PRI'

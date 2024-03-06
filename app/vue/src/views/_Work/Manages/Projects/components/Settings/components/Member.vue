@@ -121,8 +121,8 @@ onBeforeMount(() => {
             <CFormCheck
               inline
               v-for="r in roleList"
-              :key="r.id"
-              :value="r.id"
+              :key="r.pk"
+              :value="r.pk"
               :id="r.name"
               :label="r.name"
               v-model="roles"
