@@ -26,7 +26,7 @@ onBeforeMount(() => workStore.fetchIssueProjectList())
     <template v-slot:default>
       <CRow class="py-2">
         <CCol>
-          <h5>{{ $route.name }}</h5>
+          <h5>프로젝트</h5>
         </CCol>
 
         <CCol v-if="superAuth" class="text-right">

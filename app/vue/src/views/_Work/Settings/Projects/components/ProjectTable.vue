@@ -35,7 +35,7 @@ defineProps({
         </CTableDataCell>
         <CTableDataCell>{{ iproj.slug }}</CTableDataCell>
         <CTableDataCell>{{ iproj.description }}</CTableDataCell>
-        <CTableDataCell>
+        <CTableDataCell class="text-right">
           <span>
             <CDropdown color="secondary" variant="input-group" placement="bottom-end">
               <CDropdownToggle
