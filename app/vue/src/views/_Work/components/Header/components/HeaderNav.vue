@@ -12,6 +12,8 @@ const superAuth = inject('superAuth')
 
 const store = useStore()
 const isDark = computed(() => store.theme === 'dark')
+
+const getTitle = (title: string) => title.replace(/[() ]/gim, '')
 </script>
 
 <template>
@@ -37,7 +39,7 @@ const isDark = computed(() => store.theme === 'dark')
         "
         @click="$router.push({ name: menu as RouteRecordName, query })"
       >
-        {{ menu }}
+        {{ getTitle(menu as string) }}
       </CNavLink>
     </CNavItem>
   </CNav>
