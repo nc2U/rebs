@@ -134,14 +134,17 @@ class IssueProjectSerializer(serializers.ModelSerializer):
 
         members = []
 
-        for user in users:
-            user_instance = User.objects.get(pk=user)
-            member_instance = Member.objects.create(user=user_instance)
-            member_instance.roles.add(*roles)
-            member_instance.save()
-            members.append(member_instance.pk)
+        if users:
+            for user in users:
+                user_instance = User.objects.get(pk=user)
+                member_instance = Member.objects.create(user=user_instance)
+                member_instance.roles.add(*roles)
+                member_instance.save()
+                members.append(member_instance.pk)
 
-        validated_data['members'] = members
+            for member in members:
+                instance.members.add(member)
+
         return super().update(instance, validated_data)
 
 

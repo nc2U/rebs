@@ -9,11 +9,10 @@ import FormModal from '@/components/Modals/FormModal.vue'
 // FormModal S ------------------
 const memberFormModal = ref()
 
+const validated = ref(false)
+
 const users = ref([])
 const roles = ref([])
-
-const accStore = useAccount()
-const userList = computed(() => accStore.usersList)
 
 const workStore = useWork()
 const memberList = computed<SimpleMember[]>(() => workStore.issueProject?.members ?? [])
@@ -21,14 +20,34 @@ const roleList = computed(() => workStore.roleList)
 const patchIssueProject = (payload: { slug: string; users: number[]; roles: number[] }) =>
   workStore.patchIssueProject(payload)
 
+const accStore = useAccount()
+const userList = computed(() => {
+  const memPkList = memberList.value.map(m => m.user.pk)
+  // 전체 회원 중 이 프로젝트 구성원을 제외한 목록
+  return accStore.usersList.filter(u => !memPkList.includes(u.pk as number))
+})
+
 const callModal = () => memberFormModal.value.callModal()
+
+const onSubmit = (event: Event) => {
+  const el = event.currentTarget as HTMLFormElement
+  if (!el.checkValidity()) {
+    event.preventDefault()
+    event.stopPropagation()
+    validated.value = true
+  } else {
+    modalAction()
+    validated.value = false
+    memberFormModal.value.close()
+  }
+}
+
 const modalAction = () => {
   const _memList = [...users.value.sort((a, b) => a - b)]
   const _roleList = [...roles.value.sort((a, b) => a - b)]
-
   patchIssueProject({ slug: 'rebs', users: _memList, roles: _roleList })
-
-  memberFormModal.value.close()
+  users.value = []
+  roles.value = []
 }
 // FormModal E ------------------
 
@@ -99,49 +118,51 @@ onBeforeMount(() => {
     <template #icon></template>
     <template #header>새 구성원</template>
     <template #default>
-      <CModalBody class="text-body">
-        <CCard class="mb-3">
-          <CCardHeader>
-            <v-icon icon="mdi-check" color="success" size="sm" />
-            추가할 사용자 선택
-          </CCardHeader>
-          <CCardBody class="pb-5">
-            <CFormCheck
-              inline
-              v-for="u in userList"
-              :key="u.pk"
-              :value="u.pk"
-              :id="u.username"
-              :label="u.username"
-              v-model="users"
-            />
-            {{ users }}
-          </CCardBody>
-        </CCard>
+      <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
+        <CModalBody class="text-body">
+          <CCard class="mb-3">
+            <CCardHeader>
+              <v-icon icon="mdi-check" color="success" size="sm" />
+              추가할 사용자 선택
+            </CCardHeader>
+            <CCardBody class="pb-5">
+              <CFormCheck
+                inline
+                v-for="u in userList"
+                :key="u.pk"
+                :value="u.pk"
+                :id="u.username"
+                :label="u.username"
+                v-model="users"
+                :required="!users.length"
+              />
+            </CCardBody>
+          </CCard>
 
-        <CCard>
-          <CCardHeader>
-            <v-icon icon="mdi-check" color="success" size="sm" />
-            역할
-          </CCardHeader>
-          <CCardBody>
-            <CFormCheck
-              inline
-              v-for="r in roleList"
-              :key="r.pk"
-              :value="r.pk"
-              :id="r.name"
-              :label="r.name"
-              v-model="roles"
-            />
-            {{ roles }}
-          </CCardBody>
-        </CCard>
-      </CModalBody>
-      <CModalFooter>
-        <CButton color="light" @click="memberFormModal.close"> 닫기</CButton>
-        <CButton color="primary" @click="modalAction">추가</CButton>
-      </CModalFooter>
+          <CCard>
+            <CCardHeader>
+              <v-icon icon="mdi-check" color="success" size="sm" />
+              역할
+            </CCardHeader>
+            <CCardBody>
+              <CFormCheck
+                inline
+                v-for="r in roleList"
+                :key="r.pk"
+                :value="r.pk"
+                :id="r.name"
+                :label="r.name"
+                v-model="roles"
+                :required="!roles.length"
+              />
+            </CCardBody>
+          </CCard>
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="light" @click="memberFormModal.close"> 닫기</CButton>
+          <CButton color="primary" type="submit">추가</CButton>
+        </CModalFooter>
+      </CForm>
     </template>
   </FormModal>
 </template>
