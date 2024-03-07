@@ -13,7 +13,7 @@ const workSetting = {
   children: [
     {
       path: 'project',
-      name: '프로젝트 목록',
+      name: '(프로젝트)',
       component: () => import('@/views/_Work/Settings/Projects/Index.vue'),
     },
     {

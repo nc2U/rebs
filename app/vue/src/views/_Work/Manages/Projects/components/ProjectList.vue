@@ -31,7 +31,7 @@ onBeforeMount(() => emit('aside-visible', true))
       </span>
       <span>
         <v-icon icon="mdi-cog" color="secondary" size="sm" />
-        <router-link :to="{ name: '프로젝트 목록' }" class="ml-1">관리</router-link>
+        <router-link :to="{ name: '(프로젝트)' }" class="ml-1">관리</router-link>
       </span>
     </CCol>
   </CRow>
