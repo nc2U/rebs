@@ -141,7 +141,8 @@ class IssueProjectSerializer(serializers.ModelSerializer):
             member_instance.save()
             members.append(member_instance.pk)
 
-        validated_data['members'] = members
+        for member in members:
+            instance.members.add(member)
         return super().update(instance, validated_data)
 
 

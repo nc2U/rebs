@@ -14,14 +14,18 @@ const validated = ref(false)
 const users = ref([])
 const roles = ref([])
 
-const accStore = useAccount()
-const userList = computed(() => accStore.usersList)
-
 const workStore = useWork()
 const memberList = computed<SimpleMember[]>(() => workStore.issueProject?.members ?? [])
 const roleList = computed(() => workStore.roleList)
 const patchIssueProject = (payload: { slug: string; users: number[]; roles: number[] }) =>
   workStore.patchIssueProject(payload)
+
+const accStore = useAccount()
+const userList = computed(() => {
+  const memPkList = memberList.value.map(m => m.user.pk)
+  // 전체 회원 중 이 프로젝트 구성원을 제외한 목록
+  return accStore.usersList.filter(u => !memPkList.includes(u.pk as number))
+})
 
 const callModal = () => memberFormModal.value.callModal()
 
@@ -41,10 +45,9 @@ const onSubmit = (event: Event) => {
 const modalAction = () => {
   const _memList = [...users.value.sort((a, b) => a - b)]
   const _roleList = [...roles.value.sort((a, b) => a - b)]
-
-  // patchIssueProject({ slug: 'rebs', users: _memList, roles: _roleList })
-
-  alert('modal!!')
+  patchIssueProject({ slug: 'rebs', users: _memList, roles: _roleList })
+  users.value = []
+  roles.value = []
 }
 // FormModal E ------------------
 
@@ -133,7 +136,6 @@ onBeforeMount(() => {
                 v-model="users"
                 :required="!users.length"
               />
-              {{ users }}
             </CCardBody>
           </CCard>
 
@@ -153,7 +155,6 @@ onBeforeMount(() => {
                 v-model="roles"
                 :required="!roles.length"
               />
-              {{ roles }}
             </CCardBody>
           </CCard>
         </CModalBody>
