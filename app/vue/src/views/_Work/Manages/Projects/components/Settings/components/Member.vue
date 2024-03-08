@@ -55,8 +55,26 @@ const modalAction = () => {
 }
 // FormModal E ------------------
 
-const toEdit = (n: number) => {
-  editMode.value = n
+const memberRole = ref([])
+
+const toEdit = (mem: any) => {
+  console.log(mem)
+  editMode.value = mem.pk
+  memberRole.value = mem.roles.map((r: { pk: number; name: string }) => r.pk)
+}
+
+const cancelEdit = () => {
+  editMode.value = null
+  memberRole.value = []
+}
+
+const editSubmit = (pk: number) => {
+  workStore.patchMember({
+    pk,
+    roles: memberRole.value,
+    slug: iProject?.value.slug as string,
+  })
+  cancelEdit()
 }
 
 const toDelete = () => alert(iProject?.value.slug + ' - 삭제')
@@ -99,48 +117,63 @@ onBeforeMount(() => {
         <CTableHead>
           <CTableRow class="text-center">
             <CTableHeaderCell scope="col"></CTableHeaderCell>
-            <CTableHeaderCell scope="col">사용자/그룹</CTableHeaderCell>
+            <CTableHeaderCell scope="col">사용자</CTableHeaderCell>
             <CTableHeaderCell scope="col">역할</CTableHeaderCell>
             <CTableHeaderCell scope="col">비고</CTableHeaderCell>
           </CTableRow>
         </CTableHead>
 
         <CTableBody>
-          <CTableRow
-            v-for="mem in memberList"
-            :key="mem.pk"
-            style="background: lightyellow !important"
-          >
+          <CTableRow v-for="mem in memberList" :key="mem.pk" align="middle">
             <CTableHeaderCell></CTableHeaderCell>
             <CTableDataCell>
               <router-link to="">{{ mem.user.username }}</router-link>
             </CTableDataCell>
+
             <CTableDataCell>
-              <div v-if="editMode === mem.user.pk">
-                <div v-for="i in 3" :key="i">
-                  <CFormCheck label="관리자" id="관리자" class="text-left" />
+              <div v-if="editMode === mem.pk">
+                <div v-for="role in roleList" :key="role.pk">
+                  <CFormCheck
+                    v-model="memberRole"
+                    :label="role.name"
+                    :value="role.pk"
+                    :id="'role-' + role.pk"
+                    :disabled="false"
+                    class="text-left"
+                  />
                   <span class="form-text">상위 프로젝트로부터 상속</span><br />
                 </div>
 
-                <CButton color="primary" variant="outline" size="sm" type="button"> 저장</CButton>
+                <CButton
+                  color="success"
+                  size="sm"
+                  type="button"
+                  class="mt-1"
+                  @click="editSubmit(mem.pk)"
+                >
+                  저장
+                </CButton>
                 <CButton
                   color="secondary"
                   variant="outline"
                   size="sm"
                   type="button"
-                  @click="editMode = null"
+                  @click="cancelEdit"
+                  class="mt-1"
                 >
                   취소
                 </CButton>
               </div>
               <div v-else>
-                <span v-for="role in mem.roles" :key="role.pk">{{ role.name }}, </span>
+                <span v-for="(mr, i) in mem.roles" :key="mr.pk">
+                  {{ mr.name }}<span v-if="mem.roles.length > i + 1">, </span>
+                </span>
               </div>
             </CTableDataCell>
             <CTableDataCell class="text-center">
               <span class="mr-2">
                 <v-icon icon="mdi-pencil" color="amber" size="sm" />
-                <router-link to="" @click="toEdit(mem.user.pk)">편집</router-link>
+                <router-link to="" @click="toEdit(mem)">편집</router-link>
               </span>
               <span>
                 <v-icon icon="mdi-trash-can-outline" color="grey" size="sm" />

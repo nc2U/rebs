@@ -59,3 +59,9 @@ export interface Role {
   created: string
   updated: string
 }
+
+export interface Member {
+  pk: number
+  user: number
+  roles: number[]
+}

@@ -2,7 +2,7 @@ import api from '@/api'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
-import type { IssueProject, Role } from '@/store/types/work'
+import type { IssueProject, Member, Role } from '@/store/types/work'
 
 export const useWork = defineStore('work', () => {
   // Issue Project states & getters
@@ -85,11 +85,34 @@ export const useWork = defineStore('work', () => {
       .then(res => (roleList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
+  // Role & Permission states & getters
+  const member = ref<Member | null>(null)
+  const memberList = ref<Member[]>([])
+
+  const fetchMember = (pk: number) =>
+    api
+      .get(`/member/${pk}/`)
+      .then(res => (member.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchMemberList = () =>
+    api
+      .get(`/member/`)
+      .then(res => (memberList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
+  const patchMember = (payload: { pk: number; user?: number; roles?: number[]; slug: string }) =>
+    api
+      .patch(`/member/${payload.pk}/`, payload)
+      .then(res =>
+        fetchIssueProject(payload.slug).then(() => fetchMember(res.data.pk).then(() => message())),
+      )
+      .catch(err => errorHandle(err.response.data))
+
   return {
     issueProject,
     issueProjectList,
     AllIssueProjects,
-
     fetchIssueProjectList,
     fetchIssueProject,
     createIssueProject,
@@ -99,8 +122,13 @@ export const useWork = defineStore('work', () => {
 
     role,
     roleList,
-
     fetchRole,
     fetchRoleList,
+
+    member,
+    memberList,
+    fetchMember,
+    fetchMemberList,
+    patchMember,
   }
 })
