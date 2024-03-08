@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import Cookies from 'js-cookie'
 import { ref, reactive, inject, onBeforeMount, onMounted, onUpdated, type PropType } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import type { IssueProject } from '@/store/types/work'
 import MdEditor from '@/components/MdEditor/Index.vue'
 
@@ -64,7 +64,7 @@ const module = reactive({
   gantt: true,
 })
 
-const [route, router] = [useRoute(), useRouter()]
+const route = useRoute()
 
 const onSubmit = (event: Event) => {
   const el = event.currentTarget as HTMLFormElement
@@ -76,7 +76,6 @@ const onSubmit = (event: Event) => {
     Cookies.set('workSettingMenu', '프로젝트')
     emit('on-submit', { ...form, ...module })
     validated.value = false
-    router.push({ name: '(설정)', params: { projId: form.slug } })
   }
 }
 

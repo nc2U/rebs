@@ -2,7 +2,7 @@
 import { ref, computed, onBeforeMount, provide, inject, type ComputedRef } from 'vue'
 import { navMenu1, navMenu2 } from '@/views/_Work/_menu/headermixin1'
 import type { Company } from '@/store/types/settings'
-import { onBeforeRouteUpdate, useRoute } from 'vue-router'
+import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import { useAccount } from '@/store/pinia/account'
 import Header from '@/views/_Work/components/Header/Index.vue'
@@ -74,10 +74,13 @@ const navMenu = computed(() =>
 
 const sideNavCAll = () => cBody.value.toggle()
 
-const onSubmit = (payload: any) => {
+const router = useRouter()
+const onSubmit = async (payload: any) => {
   payload.company = company?.value.pk
-  if (!!payload.pk) workStore.updateIssueProject(payload)
-  else workStore.createIssueProject(payload)
+  if (!!payload.pk) await workStore.updateIssueProject(payload)
+  else await workStore.createIssueProject(payload)
+
+  await router.push({ name: '(설정)', params: { projId: issueProject.value?.slug } })
 }
 
 onBeforeRouteUpdate(async to => {
