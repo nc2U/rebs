@@ -23,6 +23,7 @@ export interface IssueProject {
   status: '1' | '9'
   is_inherit_members: boolean
   depth: number
+  parent_members: SimpleMember[]
   members: SimpleMember[]
   sub_projects?: IssueProject[]
   trackers: number[]

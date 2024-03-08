@@ -19,8 +19,11 @@ const roles = ref([])
 const editMode = ref<number | null>(null)
 
 const workStore = useWork()
-const parentMembers = computed(() => [])
+const parentMembers = computed<SimpleMember[]>(() => workStore.issueProject?.parent_members ?? [])
 const memberList = computed<SimpleMember[]>(() => workStore.issueProject?.members ?? [])
+
+const computedMembers = computed(() => [...parentMembers.value, ...memberList.value])
+
 const roleList = computed(() => workStore.roleList)
 const patchIssueProject = (payload: { slug: string; users: number[]; roles: number[] }) =>
   workStore.patchIssueProject(payload)
@@ -57,6 +60,12 @@ const modalAction = () => {
 // FormModal E ------------------
 
 const memberRole = ref([])
+
+const isInherit = (mem: number, pk: number) =>
+  parentMembers.value
+    .filter(m => m.pk === mem)[0]
+    ?.roles.map(r => r.pk)
+    .includes(pk)
 
 const toEdit = (mem: any) => {
   console.log(mem)
@@ -103,7 +112,7 @@ onBeforeMount(() => {
     </CCol>
   </CRow>
 
-  <NoData v-if="!memberList?.length" />
+  <NoData v-if="!computedMembers.length" />
 
   <CRow v-else>
     <CCol>
@@ -125,7 +134,7 @@ onBeforeMount(() => {
         </CTableHead>
 
         <CTableBody>
-          <CTableRow v-for="mem in memberList" :key="mem.pk" align="middle">
+          <CTableRow v-for="mem in computedMembers" :key="mem.pk" align="middle">
             <CTableHeaderCell></CTableHeaderCell>
             <CTableDataCell>
               <router-link to="">{{ mem.user.username }}</router-link>
@@ -139,17 +148,19 @@ onBeforeMount(() => {
                     :label="role.name"
                     :value="role.pk"
                     :id="'role-' + role.pk"
-                    :disabled="false"
+                    :disabled="isInherit(mem.pk, role.pk)"
                     class="text-left"
                   />
-                  <span class="form-text">상위 프로젝트로부터 상속</span><br />
+                  <span v-if="isInherit(mem.pk, role.pk)" class="form-text">
+                    상위 프로젝트로부터 상속
+                  </span>
                 </div>
 
                 <CButton
                   color="success"
                   size="sm"
                   type="button"
-                  class="mt-1"
+                  class="mt-2"
                   @click="editSubmit(mem.pk)"
                 >
                   저장
@@ -160,7 +171,7 @@ onBeforeMount(() => {
                   size="sm"
                   type="button"
                   @click="cancelEdit"
-                  class="mt-1"
+                  class="mt-2"
                 >
                   취소
                 </CButton>
