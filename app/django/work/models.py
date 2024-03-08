@@ -169,7 +169,7 @@ class Permission(models.Model):
 
 
 class Member(models.Model):
-    user = models.OneToOneField('accounts.User', on_delete=models.PROTECT, verbose_name='구성원')
+    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='구성원')
     roles = models.ManyToManyField(Role, related_name='members', verbose_name='역할')
 
     def __str__(self):
