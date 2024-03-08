@@ -1,10 +1,12 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount } from 'vue'
+import { ref, computed, onBeforeMount, inject, type ComputedRef } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { useWork } from '@/store/pinia/work'
-import type { SimpleMember } from '@/store/types/work'
+import type { IssueProject, SimpleMember } from '@/store/types/work'
 import NoData from '@/views/_Work/components/NoData.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
+
+const iProject = inject<ComputedRef<IssueProject>>('iProject')
 
 // FormModal S ------------------
 const memberFormModal = ref()
@@ -13,6 +15,8 @@ const validated = ref(false)
 
 const users = ref([])
 const roles = ref([])
+
+const editMode = ref(false)
 
 const workStore = useWork()
 const memberList = computed<SimpleMember[]>(() => workStore.issueProject?.members ?? [])
@@ -45,11 +49,15 @@ const onSubmit = (event: Event) => {
 const modalAction = () => {
   const _memList = [...users.value.sort((a, b) => a - b)]
   const _roleList = [...roles.value.sort((a, b) => a - b)]
-  patchIssueProject({ slug: 'rebs', users: _memList, roles: _roleList })
+  patchIssueProject({ slug: iProject?.value.slug as string, users: _memList, roles: _roleList })
   users.value = []
   roles.value = []
 }
 // FormModal E ------------------
+
+const toEdit = () => alert(iProject?.value.slug + ' - 편집')
+
+const toDelete = () => alert(iProject?.value.slug + ' - 삭제')
 
 onBeforeMount(() => {
   accStore.fetchUsersList()
@@ -96,16 +104,19 @@ onBeforeMount(() => {
               <router-link to="">{{ mem.user.username }}</router-link>
             </CTableDataCell>
             <CTableDataCell>
-              <span v-for="role in mem.roles" :key="role.pk">{{ role.name }}, </span>
+              <div v-if="!editMode">
+                <span v-for="role in mem.roles" :key="role.pk">{{ role.name }}, </span>
+              </div>
+              <div v-else>aaa</div>
             </CTableDataCell>
             <CTableDataCell>
               <span class="mr-2">
                 <v-icon icon="mdi-pencil" color="amber" size="sm" />
-                <router-link to="">편집</router-link>
+                <router-link to="" @click="editMode = !editMode">편집</router-link>
               </span>
               <span>
                 <v-icon icon="mdi-trash-can-outline" color="grey" size="sm" />
-                <router-link to="">삭제</router-link>
+                <router-link to="" @click="toDelete">삭제</router-link>
               </span>
             </CTableDataCell>
           </CTableRow>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, inject, onBeforeMount, type ComputedRef } from 'vue'
+import { ref, computed, onBeforeMount, provide, inject, type ComputedRef } from 'vue'
 import { navMenu1, navMenu2 } from '@/views/_Work/_menu/headermixin1'
 import type { Company } from '@/store/types/settings'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
@@ -42,6 +42,7 @@ const superAuth = computed(() => accStore.superAuth)
 
 const workStore = useWork()
 const issueProject = computed(() => workStore.issueProject)
+provide('iProject', issueProject)
 const modules = computed(() => issueProject.value?.module)
 const issueProjectList = computed(() => workStore.issueProjectList)
 const AllIssueProjects = computed(() => workStore.AllIssueProjects)
