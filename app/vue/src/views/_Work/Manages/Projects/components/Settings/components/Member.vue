@@ -59,7 +59,7 @@ const modalAction = () => {
 }
 // FormModal E ------------------
 
-const memberRole = ref([])
+const memberRole = ref([]) // 업데이트할 멤버의 권한
 
 const isInherit = (mem: number, pk: number) =>
   parentMembers.value
@@ -78,12 +78,19 @@ const cancelEdit = () => {
   memberRole.value = []
 }
 
-const editSubmit = (pk: number) => {
-  workStore.patchMember({
-    pk,
-    roles: memberRole.value,
-    slug: iProject?.value.slug as string,
-  })
+const editSubmit = (pk: number, user: number) => {
+  const parent = parentMembers.value.filter(m => m.pk === pk)[0]?.roles.map(r => r.pk)
+  const slug = iProject?.value.slug as string
+
+  if (parent) {
+    // 멤버 정보 등록
+    const roles = memberRole.value.filter(r => !parent.includes(r)) // 부모 권한 대비 추가 권한
+    patchIssueProject({ slug, users: [user], roles })
+  } else {
+    // 멤버 정보 수정
+    const roles = memberRole.value
+    workStore.patchMember({ pk, roles, slug })
+  }
   cancelEdit()
 }
 
@@ -161,7 +168,7 @@ onBeforeMount(() => {
                   size="sm"
                   type="button"
                   class="mt-2"
-                  @click="editSubmit(mem.pk)"
+                  @click="editSubmit(mem.pk, mem.user.pk)"
                 >
                   저장
                 </CButton>
