@@ -138,7 +138,9 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         if users:
             for user in users:
                 user_instance = User.objects.get(pk=user)
-                member_instance = Member.objects.create(user=user_instance)
+                member_instance = user_instance.member \
+                    if user_instance.member \
+                    else Member.objects.create(user=user_instance)
                 member_instance.roles.add(*roles)
                 member_instance.save()
                 members.append(member_instance.pk)
