@@ -31,7 +31,7 @@ class IssueProject(models.Model):
         if parents is None:
             parents = []
 
-        if self.is_inherit_members and self.parent:
+        if self.parent:
             parents.insert(0, self.parent)
             return self.parent.family_tree(parents)
         return parents
@@ -39,7 +39,7 @@ class IssueProject(models.Model):
     def parent_members(self):
         members = []
 
-        if self.parent:
+        if self.is_inherit_members and self.parent:
             members = self.parent.members
         return members
 
