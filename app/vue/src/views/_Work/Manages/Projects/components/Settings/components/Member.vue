@@ -19,6 +19,7 @@ const roles = ref([])
 const editMode = ref<number | null>(null)
 
 const workStore = useWork()
+const parentMembers = computed(() => [])
 const memberList = computed<SimpleMember[]>(() => workStore.issueProject?.members ?? [])
 const roleList = computed(() => workStore.roleList)
 const patchIssueProject = (payload: { slug: string; users: number[]; roles: number[] }) =>
