@@ -16,7 +16,7 @@ const validated = ref(false)
 const users = ref([])
 const roles = ref([])
 
-const editMode = ref(false)
+const editMode = ref<number | null>(null)
 
 const workStore = useWork()
 const memberList = computed<SimpleMember[]>(() => workStore.issueProject?.members ?? [])
@@ -55,7 +55,9 @@ const modalAction = () => {
 }
 // FormModal E ------------------
 
-const toEdit = () => alert(iProject?.value.slug + ' - 편집')
+const toEdit = (n: number) => {
+  editMode.value = n
+}
 
 const toDelete = () => alert(iProject?.value.slug + ' - 삭제')
 
@@ -88,6 +90,12 @@ onBeforeMount(() => {
     <CCol>
       <v-divider class="my-0" />
       <CTable hover small striped responsive>
+        <colgroup>
+          <col style="width: 25%" />
+          <col style="width: 25%" />
+          <col style="width: 25%" />
+          <col style="width: 25%" />
+        </colgroup>
         <CTableHead>
           <CTableRow class="text-center">
             <CTableHeaderCell scope="col"></CTableHeaderCell>
@@ -98,21 +106,41 @@ onBeforeMount(() => {
         </CTableHead>
 
         <CTableBody>
-          <CTableRow v-for="mem in memberList" :key="mem.pk" class="text-center">
+          <CTableRow
+            v-for="mem in memberList"
+            :key="mem.pk"
+            style="background: lightyellow !important"
+          >
             <CTableHeaderCell></CTableHeaderCell>
             <CTableDataCell>
               <router-link to="">{{ mem.user.username }}</router-link>
             </CTableDataCell>
             <CTableDataCell>
-              <div v-if="!editMode">
+              <div v-if="editMode === mem.user.pk">
+                <div v-for="i in 3" :key="i">
+                  <CFormCheck label="관리자" id="관리자" class="text-left" />
+                  <span class="form-text">상위 프로젝트로부터 상속</span><br />
+                </div>
+
+                <CButton color="primary" variant="outline" size="sm" type="button"> 저장</CButton>
+                <CButton
+                  color="secondary"
+                  variant="outline"
+                  size="sm"
+                  type="button"
+                  @click="editMode = null"
+                >
+                  취소
+                </CButton>
+              </div>
+              <div v-else>
                 <span v-for="role in mem.roles" :key="role.pk">{{ role.name }}, </span>
               </div>
-              <div v-else>aaa</div>
             </CTableDataCell>
-            <CTableDataCell>
+            <CTableDataCell class="text-right">
               <span class="mr-2">
                 <v-icon icon="mdi-pencil" color="amber" size="sm" />
-                <router-link to="" @click="editMode = !editMode">편집</router-link>
+                <router-link to="" @click="toEdit(mem.user.pk)">편집</router-link>
               </span>
               <span>
                 <v-icon icon="mdi-trash-can-outline" color="grey" size="sm" />
