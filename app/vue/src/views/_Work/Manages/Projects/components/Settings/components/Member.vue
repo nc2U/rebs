@@ -91,9 +91,9 @@ onBeforeMount(() => {
       <v-divider class="my-0" />
       <CTable hover small striped responsive>
         <colgroup>
+          <col style="width: 5%" />
           <col style="width: 25%" />
-          <col style="width: 25%" />
-          <col style="width: 25%" />
+          <col style="width: 45%" />
           <col style="width: 25%" />
         </colgroup>
         <CTableHead>
@@ -101,7 +101,7 @@ onBeforeMount(() => {
             <CTableHeaderCell scope="col"></CTableHeaderCell>
             <CTableHeaderCell scope="col">사용자/그룹</CTableHeaderCell>
             <CTableHeaderCell scope="col">역할</CTableHeaderCell>
-            <CTableHeaderCell scope="col"></CTableHeaderCell>
+            <CTableHeaderCell scope="col">비고</CTableHeaderCell>
           </CTableRow>
         </CTableHead>
 
@@ -137,7 +137,7 @@ onBeforeMount(() => {
                 <span v-for="role in mem.roles" :key="role.pk">{{ role.name }}, </span>
               </div>
             </CTableDataCell>
-            <CTableDataCell class="text-right">
+            <CTableDataCell class="text-center">
               <span class="mr-2">
                 <v-icon icon="mdi-pencil" color="amber" size="sm" />
                 <router-link to="" @click="toEdit(mem.user.pk)">편집</router-link>
