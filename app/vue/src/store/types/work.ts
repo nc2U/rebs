@@ -8,6 +8,7 @@ export interface SimpleMember {
   pk: number
   user: { pk: number; username: string }
   roles: { pk: number; name: string }[]
+  add_roles?: { pk: number; name: string }[]
 }
 
 export interface IssueProject {

@@ -48,8 +48,12 @@ const computedMembers = computed(() => {
 })
 
 const roleList = computed(() => workStore.roleList)
-const patchIssueProject = (payload: { slug: string; users: number[]; roles: number[] }) =>
-  workStore.patchIssueProject(payload)
+const patchIssueProject = (payload: {
+  slug: string
+  users: number[]
+  roles: number[]
+  del_mem?: number
+}) => workStore.patchIssueProject(payload)
 
 const accStore = useAccount()
 const userList = computed(() => {
@@ -83,7 +87,7 @@ const modalAction = () => {
 }
 // FormModal E ------------------
 
-const memberRole = ref([]) // 업데이트할 멤버의 권한
+const memberRole = ref<number[]>([]) // 업데이트할 멤버의 권한
 
 const isInherit = (mem: number, role?: number) => {
   if (!role) {
@@ -96,10 +100,10 @@ const isInherit = (mem: number, role?: number) => {
   }
 }
 
-const toEdit = (mem: any) => {
-  editMode.value = mem.pk
-  const pRoles = mem.roles.map((r: { pk: number; name: string }) => r.pk)
-  const mRoles = mem.add_roles?.map(r => r.pk) ?? []
+const toEdit = (member: SimpleMember) => {
+  editMode.value = member.pk
+  const pRoles = member.roles.map((r: { pk: number; name: string }) => r.pk)
+  const mRoles = member.add_roles?.map(r => r.pk) ?? []
   memberRole.value = [...pRoles, ...mRoles]
 }
 
@@ -128,12 +132,12 @@ const editSubmit = (mem: number, user: number) => {
   } else {
     // 멤버 정보 수정
     const roles = memberRole.value
-    workStore.patchMember({ pk, roles, slug })
+    workStore.patchMember({ pk: mem, roles, slug })
   }
   cancelEdit()
 }
 
-const toDelete = (mem: any) => {
+const toDelete = (mem: SimpleMember) => {
   memberConfirmModal.value.callModal(
     '',
     '이 구성원을 프로젝트에서 삭제하시겠습니까?',
@@ -147,16 +151,18 @@ const deleteMember = ref<number | null>(null)
 
 const deleteSubmit = () => {
   patchIssueProject({
-    slug: iProject?.value.slug,
+    slug: iProject?.value.slug as string,
     users: [],
     roles: [],
-    del_mem: deleteMember.value,
+    del_mem: deleteMember.value ?? undefined,
   })
   memberConfirmModal.value.close()
 }
 
-const mergedMembers = (mem1: { pk: number; name: string }, mem2: { pk: number; name: string }) =>
-  [...mem1, ...mem2].sort((a, b) => a.pk - b.pk)
+const mergedMembers = (
+  mem1: { pk: number; name: string }[],
+  mem2: { pk: number; name: string }[],
+) => [...mem1, ...mem2].sort((a, b) => a.pk - b.pk)
 
 const addComma = (n: number, i) => n > i + 1
 
@@ -251,8 +257,10 @@ onBeforeMount(() => {
                   v-for="(mr, i) in mergedMembers(mem.roles, mem?.add_roles ?? [])"
                   :key="mr.pk"
                 >
-                  {{ mr.name }}
-                  <span v-if="addComma(mem.roles.length + mem?.add_roles?.length ?? 0, i)">, </span>
+                  {{ mr.name
+                  }}<span v-if="addComma(mem.roles.length + (mem?.add_roles?.length ?? 0), i)"
+                    >,
+                  </span>
                 </span>
               </div>
             </CTableDataCell>
