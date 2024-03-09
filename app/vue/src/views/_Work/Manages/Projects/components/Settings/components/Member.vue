@@ -108,14 +108,23 @@ const cancelEdit = () => {
   memberRole.value = []
 }
 
-const editSubmit = (pk: number, user: number) => {
-  const parent = parentMembers.value.filter(m => m.pk === pk)[0]?.roles.map(r => r.pk)
+const editSubmit = (mem: number, user: number) => {
+  const parent = parentMembers.value.filter(m => m.pk === mem)[0]?.roles.map(r => r.pk)
   const slug = iProject?.value.slug as string
 
   if (parent) {
-    // 멤버 정보 등록
-    const roles = memberRole.value.filter(r => !parent.includes(r)) // 부모 권한 대비 추가 권한
-    patchIssueProject({ slug, users: [user], roles })
+    // 1. parent의 권한은 수정할 수 없다.
+    // 2. 그러므로 멤버의 권한을 추출한다.
+    // 3. 멤버의 권한이 있으면
+    if (memberRole.value.length > parent.length) {
+      // 멤버 정보 등록
+      const roles = memberRole.value.filter(r => !parent.includes(r)) // 부모 권한 대비 추가 권한
+      patchIssueProject({ slug, users: [user], roles })
+    } else {
+      // 멤버의 권한이 없으면 멤버를 삭제한다.
+      const member = memberList.value.filter(m => m.user.pk === user)[0].pk
+      patchIssueProject({ slug, users: [], roles: [], del_mem: member })
+    }
   } else {
     // 멤버 정보 수정
     const roles = memberRole.value
@@ -173,6 +182,8 @@ onBeforeMount(() => {
       </span>
     </CCol>
   </CRow>
+
+  {{ memberRole }}
 
   <NoData v-if="!computedMembers.length" />
 
