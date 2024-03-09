@@ -53,11 +53,18 @@ export const useWork = defineStore('work', () => {
       .then(res => fetchIssueProject(res.data.slug).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
-  const patchIssueProject = (payload: { slug: string; users: number[]; roles: number[] }) =>
-    api
+  const patchIssueProject = async (payload: {
+    slug: string
+    users: number[]
+    roles: number[]
+    del_mem?: number
+  }) => {
+    const type = payload.del_mem ? 'warning' : 'success'
+    return await api
       .patch(`/issue-project/${payload.slug}/`, payload)
-      .then(res => fetchIssueProject(res.data.slug).then(() => message()))
+      .then(res => fetchIssueProject(res.data.slug).then(() => message(type)))
       .catch(err => errorHandle(err.response.data))
+  }
 
   const deleteIssueProject = (pk: number) =>
     api

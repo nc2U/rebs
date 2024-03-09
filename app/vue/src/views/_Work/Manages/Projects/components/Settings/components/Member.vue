@@ -5,11 +5,13 @@ import { useWork } from '@/store/pinia/work'
 import type { IssueProject, SimpleMember } from '@/store/types/work'
 import NoData from '@/views/_Work/components/NoData.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const iProject = inject<ComputedRef<IssueProject>>('iProject')
 
 // FormModal S ------------------
 const memberFormModal = ref()
+const memberConfirmModal = ref()
 
 const validated = ref(false)
 
@@ -23,6 +25,7 @@ const parentMembers = computed<SimpleMember[]>(() => workStore.issueProject?.par
 const memberList = computed<SimpleMember[]>(() => workStore.issueProject?.members ?? [])
 
 const computedMembers = computed(() => {
+  // 부모멤버권한 + 하위멤버권한 = 멤버 목록 합치기
   // 1. 부모유저와 동일한 member가 있는 경우 멤버 역할(roles)을 부모 역할에 Merge
   const mergeParents = parentMembers.value.map(pm => {
     const existMembers = memberList.value.filter(m =>
@@ -121,7 +124,27 @@ const editSubmit = (pk: number, user: number) => {
   cancelEdit()
 }
 
-const toDelete = () => alert(iProject?.value.slug + ' - 삭제')
+const toDelete = (mem: any) => {
+  memberConfirmModal.value.callModal(
+    '',
+    '이 구성원을 프로젝트에서 삭제하시겠습니까?',
+    '',
+    'warning',
+  )
+  deleteMember.value = mem.pk
+}
+
+const deleteMember = ref<number | null>(null)
+
+const deleteSubmit = () => {
+  patchIssueProject({
+    slug: iProject?.value.slug,
+    users: [],
+    roles: [],
+    del_mem: deleteMember.value,
+  })
+  memberConfirmModal.value.close()
+}
 
 const mergedMembers = (mem1: { pk: number; name: string }, mem2: { pk: number; name: string }) =>
   [...mem1, ...mem2].sort((a, b) => a.pk - b.pk)
@@ -234,7 +257,7 @@ onBeforeMount(() => {
 
               <span v-if="!isInherit(mem.pk)">
                 <v-icon icon="mdi-trash-can-outline" color="grey" size="sm" />
-                <router-link to="" @click="toDelete">삭제</router-link>
+                <router-link to="" @click="toDelete(mem)">삭제</router-link>
               </span>
             </CTableDataCell>
           </CTableRow>
@@ -294,4 +317,10 @@ onBeforeMount(() => {
       </CForm>
     </template>
   </FormModal>
+
+  <ConfirmModal ref="memberConfirmModal">
+    <template #footer>
+      <CButton color="warning" @click="deleteSubmit">삭제</CButton>
+    </template>
+  </ConfirmModal>
 </template>

@@ -75,28 +75,17 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         project = IssueProject.objects.create(**validated_data)
         project.save()
 
-        issue = self.initial_data.get('issue', True)
-        time = self.initial_data.get('time', True)
-        news = self.initial_data.get('news', True)
-        document = self.initial_data.get('document', True)
-        file = self.initial_data.get('file', True)
-        wiki = self.initial_data.get('wiki', True)
-        repository = self.initial_data.get('repository', False)
-        forum = self.initial_data.get('forum', True)
-        calendar = self.initial_data.get('calendar', True)
-        gantt = self.initial_data.get('gantt', True)
-
         Module(project=project,
-               issue=issue,
-               time=time,
-               news=news,
-               document=document,
-               file=file,
-               wiki=wiki,
-               repository=repository,
-               forum=forum,
-               calendar=calendar,
-               gantt=gantt).save()
+               issue=self.initial_data.get('issue', True),
+               time=self.initial_data.get('time', True),
+               news=self.initial_data.get('news', True),
+               document=self.initial_data.get('document', True),
+               file=self.initial_data.get('file', True),
+               wiki=self.initial_data.get('wiki', True),
+               repository=self.initial_data.get('repository', False),
+               forum=self.initial_data.get('forum', True),
+               calendar=self.initial_data.get('calendar', True),
+               gantt=self.initial_data.get('gantt', True)).save()
 
         return project
 
@@ -105,33 +94,23 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         parent = validated_data.get('parent', None)
         instance.depth = 1 if parent is None else parent.depth + 1
 
-        issue = self.initial_data.get('issue', True)
-        time = self.initial_data.get('time', True)
-        news = self.initial_data.get('news', True)
-        document = self.initial_data.get('document', True)
-        file = self.initial_data.get('file', True)
-        wiki = self.initial_data.get('wiki', True)
-        repository = self.initial_data.get('repository', False)
-        forum = self.initial_data.get('forum', True)
-        calendar = self.initial_data.get('calendar', True)
-        gantt = self.initial_data.get('gantt', True)
-
         module = instance.module
-        module.issue = issue
-        module.time = time
-        module.news = news
-        module.document = document
-        module.file = file
-        module.wiki = wiki
-        module.repository = repository
-        module.forum = forum
-        module.calendar = calendar
-        module.gantt = gantt
+        module.issue = self.initial_data.get('issue', True)
+        module.time = self.initial_data.get('time', True)
+        module.news = self.initial_data.get('news', True)
+        module.document = self.initial_data.get('document', True)
+        module.file = self.initial_data.get('file', True)
+        module.wiki = self.initial_data.get('wiki', True)
+        module.repository = self.initial_data.get('repository', False)
+        module.forum = self.initial_data.get('forum', True)
+        module.calendar = self.initial_data.get('calendar', True)
+        module.gantt = self.initial_data.get('gantt', True)
         module.save()
 
         # user에 대응하는 member 모델 생성
         users = self.initial_data.get('users')
         roles = self.initial_data.get('roles')
+        del_mem = self.initial_data.get('del_mem', None)
 
         members = []
 
@@ -145,6 +124,10 @@ class IssueProjectSerializer(serializers.ModelSerializer):
 
             for member in members:
                 instance.members.add(member)
+        elif del_mem is not None:
+            instance.members.remove(del_mem)
+            member = Member.objects.get(pk=del_mem)
+            member.delete()
 
         return super().update(instance, validated_data)
 
