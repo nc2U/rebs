@@ -74,7 +74,6 @@ const isInherit = (mem: number, role?: number) => {
 }
 
 const toEdit = (mem: any) => {
-  console.log(mem)
   editMode.value = mem.pk
   memberRole.value = mem.roles.map((r: { pk: number; name: string }) => r.pk)
 }
@@ -193,10 +192,15 @@ onBeforeMount(() => {
               </div>
             </CTableDataCell>
             <CTableDataCell class="px-3">
-              <span class="mr-2">
+              <span v-if="editMode === null || editMode !== mem.pk" class="mr-2">
                 <v-icon icon="mdi-pencil" color="amber" size="sm" />
                 <router-link to="" @click="toEdit(mem)">편집</router-link>
               </span>
+              <span v-else class="mr-2">
+                <v-icon icon="mdi-pencil" color="amber" size="sm" />
+                <router-link to="" @click="cancelEdit">취소</router-link>
+              </span>
+
               <span v-if="!isInherit(mem.pk)">
                 <v-icon icon="mdi-trash-can-outline" color="grey" size="sm" />
                 <router-link to="" @click="toDelete">삭제</router-link>
