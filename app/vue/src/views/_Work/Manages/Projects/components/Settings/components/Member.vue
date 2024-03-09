@@ -62,11 +62,16 @@ const modalAction = () => {
 
 const memberRole = ref([]) // 업데이트할 멤버의 권한
 
-const isInherit = (mem: number, pk: number) =>
-  parentMembers.value
-    .filter(m => m.pk === mem)[0]
-    ?.roles.map(r => r.pk)
-    .includes(pk)
+const isInherit = (mem: number, role?: number) => {
+  if (!role) {
+    return !!parentMembers.value.filter(m => m.pk === mem)[0]
+  } else {
+    return parentMembers.value
+      .filter(m => m.pk === mem)[0]
+      ?.roles.map(r => r.pk)
+      .includes(role)
+  }
+}
 
 const toEdit = (mem: any) => {
   console.log(mem)
@@ -119,7 +124,7 @@ onBeforeMount(() => {
       </span>
     </CCol>
   </CRow>
-  
+
   <NoData v-if="!computedMembers.length" />
 
   <CRow v-else>
@@ -127,28 +132,25 @@ onBeforeMount(() => {
       <v-divider class="my-0" />
       <CTable hover small striped responsive>
         <colgroup>
-          <col style="width: 5%" />
-          <col style="width: 25%" />
+          <col style="width: 30%" />
           <col style="width: 45%" />
           <col style="width: 25%" />
         </colgroup>
         <CTableHead>
           <CTableRow class="text-center">
-            <CTableHeaderCell scope="col"></CTableHeaderCell>
             <CTableHeaderCell scope="col">사용자</CTableHeaderCell>
             <CTableHeaderCell scope="col">역할</CTableHeaderCell>
-            <CTableHeaderCell scope="col">비고</CTableHeaderCell>
+            <CTableHeaderCell scope="col"></CTableHeaderCell>
           </CTableRow>
         </CTableHead>
 
         <CTableBody>
           <CTableRow v-for="mem in computedMembers" :key="mem.pk" align="middle">
-            <CTableHeaderCell></CTableHeaderCell>
-            <CTableDataCell>
+            <CTableDataCell class="pl-5">
               <router-link to="">{{ mem.user.username }}</router-link>
             </CTableDataCell>
 
-            <CTableDataCell>
+            <CTableDataCell class="pl-3">
               <div v-if="editMode === mem.pk">
                 <div v-for="role in roleList" :key="role.pk">
                   <CFormCheck
@@ -190,12 +192,12 @@ onBeforeMount(() => {
                 </span>
               </div>
             </CTableDataCell>
-            <CTableDataCell class="text-center">
+            <CTableDataCell class="px-3">
               <span class="mr-2">
                 <v-icon icon="mdi-pencil" color="amber" size="sm" />
                 <router-link to="" @click="toEdit(mem)">편집</router-link>
               </span>
-              <span>
+              <span v-if="!isInherit(mem.pk)">
                 <v-icon icon="mdi-trash-can-outline" color="grey" size="sm" />
                 <router-link to="" @click="toDelete">삭제</router-link>
               </span>
