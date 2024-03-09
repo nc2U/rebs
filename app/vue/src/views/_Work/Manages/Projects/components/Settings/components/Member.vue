@@ -31,14 +31,14 @@ const computedMembers = computed(() => {
 
     if (existMembers.map(e => e.user.pk).includes(pm.user.pk)) {
       // 부모유저와 하위멤버 유저가 동일한 경우
-      pm.add_roles = existMembers[0].roles
+      pm.add_roles = existMembers.filter(e => e.user.pk === pm.user.pk)[0].roles
       return pm
     } else return pm
   })
 
   // 2. 부모유저와 동일한 member가 있는 경우 해당 멤버는 제외 한 나머지를 부모 멤버와 Merge
   const mergeMembers = memberList.value.filter(
-    m => !parentMembers.value.map(pm => pm.user.pk).includes(m.pk),
+    m => !parentMembers.value.map(pm => pm.user.pk).includes(m.user.pk),
   )
 
   return [...mergeParents, ...mergeMembers]
