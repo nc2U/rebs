@@ -190,8 +190,6 @@ onBeforeMount(() => {
     </CCol>
   </CRow>
 
-  {{ memberRole }}
-
   <NoData v-if="!computedMembers.length" />
 
   <CRow v-else>
