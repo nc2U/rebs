@@ -7,18 +7,10 @@ import NoData from '@/views/_Work/components/NoData.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
-const iProject = inject<ComputedRef<IssueProject>>('iProject')
-
-// FormModal S ------------------
-const memberFormModal = ref()
 const memberConfirmModal = ref()
+const memberFormModal = ref()
 
-const validated = ref(false)
-
-const users = ref([])
-const roles = ref([])
-
-const editMode = ref<number | null>(null)
+const iProject = inject<ComputedRef<IssueProject>>('iProject')
 
 const workStore = useWork()
 const parentMembers = computed<SimpleMember[]>(() => workStore.issueProject?.parent_members ?? [])
@@ -62,30 +54,6 @@ const userList = computed(() => {
   // 전체 회원 중 이 프로젝트 구성원을 제외한 목록
   return accStore.usersList.filter(u => !memPkList.includes(u.pk as number))
 })
-
-const callModal = () => memberFormModal.value.callModal()
-
-const onSubmit = (event: Event) => {
-  const el = event.currentTarget as HTMLFormElement
-  if (!el.checkValidity()) {
-    event.preventDefault()
-    event.stopPropagation()
-    validated.value = true
-  } else {
-    modalAction()
-    validated.value = false
-    memberFormModal.value.close()
-  }
-}
-
-const modalAction = () => {
-  const _memList = [...users.value.sort((a, b) => a - b)]
-  const _roleList = [...roles.value.sort((a, b) => a - b)]
-  patchIssueProject({ slug: iProject?.value.slug as string, users: _memList, roles: _roleList })
-  users.value = []
-  roles.value = []
-}
-// FormModal E ------------------
 
 const memberRole = ref<number[]>([]) // 업데이트할 멤버의 권한
 
@@ -165,6 +133,39 @@ const mergedMembers = (
 ) => [...mem1, ...mem2].sort((a, b) => a.pk - b.pk)
 
 const addComma = (n: number, i) => n > i + 1
+
+// FormModal Start ------------------
+
+const validated = ref(false)
+
+const users = ref([])
+const roles = ref([])
+
+const editMode = ref<number | null>(null)
+
+const callModal = () => memberFormModal.value.callModal()
+
+const onSubmit = (event: Event) => {
+  const el = event.currentTarget as HTMLFormElement
+  if (!el.checkValidity()) {
+    event.preventDefault()
+    event.stopPropagation()
+    validated.value = true
+  } else {
+    modalAction()
+    validated.value = false
+    memberFormModal.value.close()
+  }
+}
+
+const modalAction = () => {
+  const _memList = [...users.value.sort((a, b) => a - b)]
+  const _roleList = [...roles.value.sort((a, b) => a - b)]
+  patchIssueProject({ slug: iProject?.value.slug as string, users: _memList, roles: _roleList })
+  users.value = []
+  roles.value = []
+}
+// FormModal End ------------------
 
 onBeforeMount(() => {
   accStore.fetchUsersList()
