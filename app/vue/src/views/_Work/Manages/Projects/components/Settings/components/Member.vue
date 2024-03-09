@@ -30,7 +30,8 @@ const patchIssueProject = (payload: { slug: string; users: number[]; roles: numb
 
 const accStore = useAccount()
 const userList = computed(() => {
-  const memPkList = memberList.value.map(m => m.user.pk)
+  const memPkList = computedMembers.value.map(m => m.user.pk) // 멤버(상속시 부모 멤버 포함)로 등록된 사용자 id 배열
+
   // 전체 회원 중 이 프로젝트 구성원을 제외한 목록
   return accStore.usersList.filter(u => !memPkList.includes(u.pk as number))
 })
@@ -118,7 +119,7 @@ onBeforeMount(() => {
       </span>
     </CCol>
   </CRow>
-
+  
   <NoData v-if="!computedMembers.length" />
 
   <CRow v-else>
