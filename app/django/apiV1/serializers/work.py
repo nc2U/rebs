@@ -37,17 +37,17 @@ class MemberInIssueProjectSerializer(serializers.ModelSerializer):
         fields = ('pk', 'user', 'roles')
 
 
-# class TrackerInIssueProjectSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Tracker
-#         fields = ('pk', 'name', 'description')
-
-
 class ModuleInIssueProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Module
         fields = ('pk', 'project', 'issue', 'time', 'news', 'document',
                   'file', 'wiki', 'repository', 'forum', 'calendar', 'gantt')
+
+
+# class TrackerInIssueProjectSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Tracker
+#         fields = ('pk', 'name', 'description')
 
 
 class IssueProjectSerializer(serializers.ModelSerializer):
