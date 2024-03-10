@@ -61,9 +61,10 @@ class IssueProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = IssueProject
-        fields = ('pk', 'company', 'name', 'description', 'homepage', 'is_public', 'family_tree',
-                  'parent', 'slug', 'status', 'is_inherit_members', 'depth', 'sub_projects',
-                  'parent_members', 'members', 'module', 'trackers', 'user', 'created')
+        fields = ('pk', 'company', 'name', 'slug', 'description', 'homepage', 'is_public',
+                  'family_tree', 'parent', 'is_inherit_members', 'default_assigned_to',
+                  'default_version', 'trackers', 'status', 'depth', 'parent_members', 'members',
+                  'sub_projects', 'module', 'user', 'created', 'updated')
 
     def get_sub_projects(self, obj):
         return self.__class__(obj.issueproject_set.all(), many=True, read_only=True).data
@@ -183,8 +184,8 @@ class ModuleSerializer(serializers.ModelSerializer):
 class VersionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Version
-        fields = ('pk', 'project', 'name', 'description', 'status',
-                  'wiki_page_title', 'effective_date', 'share', 'is_default')
+        fields = ('pk', 'project', 'name', 'status', 'sharing',
+                  'due_date', 'description', 'wiki_page_title')
 
 
 class RepositorySerializer(serializers.ModelSerializer):
@@ -242,10 +243,10 @@ class IssueCategorySerializer(serializers.ModelSerializer):
 class IssueSerializer(serializers.ModelSerializer):
     class Meta:
         model = Issue
-        fields = ('pk', 'project', 'tracker', 'is_private', 'subject', 'description',
-                  'parent', 'status', 'priority', 'assigned_to', 'category', 'fixed_version',
-                  'start_date', 'due_date', 'estimated_hours', 'done_ratio', 'watchers',
-                  'closed', 'user', 'created', 'updated')
+        fields = ('pk', 'project', 'tracker', 'status', 'priority', 'subject',
+                  'description', 'category', 'fixed_version', 'assigned_to',
+                  'parent', 'watchers', 'is_private', 'estimated_hours', 'start_date',
+                  'due_date', 'done_ratio', 'closed', 'user', 'created', 'updated')
 
 
 class IssueFileSerializer(serializers.ModelSerializer):
@@ -263,4 +264,4 @@ class IssueCommentSerializer(serializers.ModelSerializer):
 class TimeEntrySerializer(serializers.ModelSerializer):
     class Meta:
         model = TimeEntry
-        fields = ('pk', 'issue', 'spent_on', 'hours', 'comment', 'activity', 'user', 'created', 'updated')
+        fields = ('pk', 'issue', 'spent_on', 'hours', 'activity', 'comment', 'user', 'created', 'updated')

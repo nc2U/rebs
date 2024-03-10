@@ -201,14 +201,13 @@ class Module(models.Model):
 class Version(models.Model):
     project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
     name = models.CharField('이름', max_length=20)
-    description = models.CharField('설명', max_length=255, blank=True, default='')
     status = models.CharField('상태', max_length=1, choices=(('1', '진행'), ('2', '잠김'), ('3', '닫힘')), default='1')
-    wiki_page_title = models.CharField('위키 페이지 주소', max_length=255, blank=True, null=True)
-    effective_date = models.DateField(verbose_name='날짜', blank=True, null=True)
-    SHARE_CHOICES = (
+    SHARING_CHOICES = (
         ('0', '공유 없음'), ('1', '하위 프로젝트'), ('2', '상위 및 하위 프로젝트'), ('3', '최상위 및 모든 하위 프로젝트'), ('4', '모든 프로젝트'))
-    share = models.CharField('공유', max_length=1, default='0')
-    is_default = models.BooleanField('기본 버전', default=False)
+    sharing = models.CharField('공유', max_length=1, choices=SHARING_CHOICES, default='1')
+    due_date = models.DateField(verbose_name='날짜', blank=True, null=True)
+    description = models.CharField('설명', max_length=255, blank=True, default='')
+    wiki_page_title = models.CharField('위키 페이지 주소', max_length=255, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -429,8 +428,8 @@ class TimeEntry(models.Model):
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, verbose_name='업무')
     spent_on = models.DateField('업무일자')
     hours = models.DecimalField('시간', max_digits=5, decimal_places=2)
-    comment = models.CharField('설명', max_length=255, blank=True, default='')
     activity = models.ForeignKey(CodeActivity, on_delete=models.PROTECT, verbose_name='작업분류(시간추적)')
+    comment = models.CharField('설명', max_length=255, blank=True, default='')
     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자')
     created = models.DateTimeField('추가', auto_now_add=True)
     updated = models.DateTimeField('수정', auto_now=True)
@@ -440,3 +439,6 @@ class TimeEntry(models.Model):
 
     class Meta:
         ordering = ('spent_on',)
+
+# class Search(models.Model):
+#     pass
