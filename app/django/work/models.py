@@ -8,18 +8,22 @@ from django.db import models
 class IssueProject(models.Model):
     company = models.ForeignKey('company.Company', on_delete=models.CASCADE, verbose_name="회사")
     name = models.CharField('이름', max_length=100)
+    slug = models.CharField('식별자', max_length=100, unique=True,
+                            help_text='1에서 100글자 소문자(a-z), 숫자, 대쉬(-)와 밑줄(_)만 가능합니다. 식별자는 저장 후에는 수정할 수 없습니다.')
     description = models.TextField('설명', blank=True, default='')
     homepage = models.URLField('홈페이지', max_length=255, null=True, blank=True)
     is_public = models.BooleanField('공개', default=True, help_text='공개 프로젝트는 모든 로그인한 사용자가 접속할 수 있습니다.')
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='상위 프로젝트')
-    slug = models.CharField('식별자', max_length=100, unique=True,
-                            help_text='1에서 100글자 소문자(a-z), 숫자, 대쉬(-)와 밑줄(_)만 가능합니다. 식별자는 저장 후에는 수정할 수 없습니다.')
-    status = models.CharField('사용여부', max_length=1, default='1', choices=(('1', '사용'), ('9', '잠금보관(모든 접근이 차단됨)')))
     is_inherit_members = models.BooleanField('상위 프로젝트 멤버 상속', default=False)
+    default_assigned_to = models.ForeignKey('Member', on_delete=models.SET_NULL, null=True, blank=True,
+                                            verbose_name='기본 담당자', help_text='새로운 프로젝트가 하위 프로젝트이고 구성원을 상속할 때만 작동합니다.')
+    default_version = models.ForeignKey('Version', on_delete=models.SET_NULL, null=True, blank=True,
+                                        verbose_name='기본 버전', help_text='기존 공유 버전에서만 작동합니다.')
+    trackers = models.ManyToManyField('Tracker', blank=True, related_name='projects', verbose_name='프로젝트')
+    status = models.CharField('사용여부', max_length=1, default='1', choices=(('1', '사용'), ('9', '잠금보관(모든 접근이 차단됨)')))
     depth = models.PositiveSmallIntegerField('단계', default=1,
                                              help_text='프로젝트 간 상하 소속 관계에 의한 단계, 최상위인 경우 1단계 이후 각 뎁스 마다 1씩 증가')
     members = models.ManyToManyField('Member', blank=True, related_name='projects', verbose_name='구성원')
-    trackers = models.ManyToManyField('Tracker', blank=True, related_name='projects', verbose_name='프로젝트')
     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자')
     created = models.DateTimeField('추가', auto_now_add=True)
     updated = models.DateTimeField('수정', auto_now=True)
@@ -352,26 +356,25 @@ class IssueCategory(models.Model):
 class Issue(models.Model):
     project = models.ForeignKey(IssueProject, on_delete=models.PROTECT, verbose_name='프로젝트')
     tracker = models.ForeignKey(Tracker, on_delete=models.PROTECT, verbose_name='유형')
-    is_private = models.BooleanField('비공개', default=False)
-    subject = models.CharField(max_length=100, verbose_name='주제')
-    description = models.TextField(verbose_name='설명', blank=True, default='')
-    parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='상위 업무',
-                               related_name='children')
     status = models.ForeignKey(IssueStatus, on_delete=models.PROTECT, verbose_name='상태')
     priority = models.ForeignKey(CodeIssuePriority, on_delete=models.PROTECT, verbose_name='우선순위')
-    assigned_to = models.ForeignKey('accounts.User', on_delete=models.SET_NULL,
-                                    null=True, blank=True, verbose_name='담당자', related_name='assignees')
+    subject = models.CharField(max_length=100, verbose_name='주제')
+    description = models.TextField(verbose_name='설명', blank=True, default='')
     category = models.ForeignKey(IssueCategory, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='범주')
     fixed_version = models.ForeignKey(Version, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='목표 버전')
+    assigned_to = models.ForeignKey('accounts.User', on_delete=models.SET_NULL,
+                                    null=True, blank=True, verbose_name='담당자', related_name='assignees')
+    parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True,
+                               verbose_name='상위 업무', related_name='children')
+    watchers = models.ManyToManyField('accounts.User', blank=True, verbose_name='업무 진행 공유', related_name='watchers')
+    is_private = models.BooleanField('비공개', default=False)
+    estimated_hours = models.PositiveSmallIntegerField('추정 소요시간', null=True, blank=True)
     start_date = models.DateField('시작 일자', null=True, blank=True)
     due_date = models.DateField('완료 기한', null=True, blank=True)
-    estimated_hours = models.PositiveSmallIntegerField('추정 소요시간', null=True, blank=True)
     PROGRESS_RATIO = (
         (0.0, '0%'), (0.1, '10%'), (0.2, '20%'), (0.3, '30%'), (0.4, '40%'), (0.5, '50%'),
         (0.6, '60%'), (0.7, '70%'), (0.8, '80%'), (0.9, '90%'), (1.0, '100%'))
     done_ratio = models.DecimalField('진척도', max_digits=2, decimal_places=1, choices=PROGRESS_RATIO, default=0.0)
-    watchers = models.ManyToManyField('accounts.User', blank=True,
-                                      verbose_name='업무 진행 공유', related_name='watchers')
     closed = models.DateTimeField('완료', null=True, blank=True, help_text='상태가 완료로 입력된 시간. 한 번 완료하면 다시 진행으로 변경해도 남아있음.')
     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자')
     created = models.DateTimeField('추가', auto_now_add=True)
