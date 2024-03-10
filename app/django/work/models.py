@@ -440,5 +440,25 @@ class TimeEntry(models.Model):
     class Meta:
         ordering = ('spent_on',)
 
-# class Search(models.Model):
-#     pass
+
+class Search(models.Model):
+    member = models.ForeignKey(Member, on_delete=models.CASCADE, verbose_name='내 검색어')
+    offset = models.BigIntegerField('오프셋', default=False)  # 응답에서 이 결과 수를 건너뚭니다.(선택사항)
+    limit = models.PositiveIntegerField('응답결과 수', blank=True, null=True)  # 응답 결과 수 (선택사항)
+    q = models.CharField('검색어', max_length=255, blank=True, default='', help_text='공백으로 구분된 여러 값을 지정할 수 있습니다.')
+    scope = models.CharField('검색 범위 조건', max_length=1, choices=(('0', '모두'), ('1', '프로젝트 내'), ('2', '하위 프로젝트 포함')))
+    all_words = models.BooleanField('모든 검색어가 일치하는지 여부', default=False)
+    title_only = models.BooleanField('제목 검색', default=False)
+    issue = models.BooleanField('업무 포함 여부', default=False)
+    news = models.BooleanField('공지 포함 여부', default=False)
+    document = models.BooleanField('문서 포함 여부', default=False)
+    changeset = models.BooleanField('변경 집합 포함 여부', default=False)
+    wiki = models.BooleanField('위키 포함 여부', default=False)
+    forum = models.BooleanField('게시판 포함 여부', default=False)
+    project = models.BooleanField('프로젝트 포함 여부', default=False)
+    open_issue = models.BooleanField('미해결 업무 검색', default=False)
+    attachment = models.CharField('설명 및 첨부파일 검색', max_length=1,
+                                  choices=(('0', '설명 및 첨부파일 검색'), ('1', '설명에서만 검색'), ('2', '첨부파일에서만 검색')), default='0')
+
+    def __str__(self):
+        return f'#{self.pk}. {self.member.user.username} - 검색조건'
