@@ -9,6 +9,16 @@ const isDark = inject('isDark')
 const workStore = useWork()
 const iProject = computed(() => workStore.issueProject)
 
+const pm = computed(() => iProject.value?.parent_members)
+const mem = computed(() => iProject.value?.members)
+
+const pMembers = computed(() => {
+  const pMem = iProject.value?.parent_members
+  const mem = iProject.value?.members
+
+  return { parent_members: pMem, members: mem }
+})
+
 onBeforeMount(() => emit('aside-visible', false))
 </script>
 
@@ -71,6 +81,13 @@ onBeforeMount(() => emit('aside-visible', false))
     <CCol>{{ iProject?.description }}</CCol>
   </CRow>
 
+  parent_members : {{ pm }}
+  <hr />
+  members : {{ mem }}
+  <hr />
+  병합목록 :
+  <div v-for="(pm, i) in pMembers" :key="i">{{ pm }}</div>
+
   <CRow>
     <CCol lg="6">
       <CRow class="mb-3">
@@ -124,15 +141,12 @@ onBeforeMount(() => emit('aside-visible', false))
       <CCard v-if="iProject?.members?.length" :color="isDark ? '' : 'light'" class="mb-3">
         <CCardBody>
           <CCardSubtitle>구성원</CCardSubtitle>
-          <!--          <CCardText>-->
-          <!--            <router-link-->
-          <!--              v-for="(mem, i) in iProject.members"-->
-          <!--              :to="{ name: '(개요)', params: { projId: sub.slug } }"-->
-          <!--              :key="sub.pk"-->
-          <!--            >-->
-          <!--              {{ sub.name }}<span v-if="i + 1 < iProject?.sub_projects?.length">, </span>-->
-          <!--            </router-link>-->
-          <!--          </CCardText>-->
+          <CCardText>
+            <div>
+              관리자 :
+              <router-link to="">austin1 kho</router-link>
+            </div>
+          </CCardText>
         </CCardBody>
       </CCard>
 

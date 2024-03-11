@@ -15,8 +15,6 @@ class IssueProject(models.Model):
     is_public = models.BooleanField('공개', default=True, help_text='공개 프로젝트는 모든 로그인한 사용자가 접속할 수 있습니다.')
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='상위 프로젝트')
     is_inherit_members = models.BooleanField('상위 프로젝트 멤버 상속', default=False)
-    default_assigned_to = models.ForeignKey('Member', on_delete=models.SET_NULL, null=True, blank=True,
-                                            verbose_name='기본 담당자', help_text='새로운 프로젝트가 하위 프로젝트이고 구성원을 상속할 때만 작동합니다.')
     default_version = models.ForeignKey('Version', on_delete=models.SET_NULL, null=True, blank=True,
                                         verbose_name='기본 버전', help_text='기존 공유 버전에서만 작동합니다.')
     trackers = models.ManyToManyField('Tracker', blank=True, related_name='projects', verbose_name='프로젝트')
