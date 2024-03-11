@@ -15,9 +15,8 @@ const mem = computed(() => iProject.value?.members)
 const pMembers = computed(() => {
   const pMem = iProject.value?.parent_members
   const mem = iProject.value?.members
-  const merged = pMem?.concat(mem)
 
-  return merged
+  return { parent_members: pMem, members: mem }
 })
 
 onBeforeMount(() => emit('aside-visible', false))
@@ -87,7 +86,7 @@ onBeforeMount(() => emit('aside-visible', false))
   members : {{ mem }}
   <hr />
   병합목록 :
-  <div v-for="pm in pMembers" :key="pm.pk">{{ pm }}</div>
+  <div v-for="(pm, i) in pMembers" :key="i">{{ pm }}</div>
 
   <CRow>
     <CCol lg="6">

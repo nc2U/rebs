@@ -61,10 +61,10 @@ class IssueProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = IssueProject
-        fields = ('pk', 'company', 'name', 'slug', 'description', 'homepage', 'is_public',
-                  'family_tree', 'parent', 'is_inherit_members', 'default_assigned_to',
-                  'default_version', 'trackers', 'status', 'depth', 'parent_members', 'members',
-                  'sub_projects', 'module', 'user', 'created', 'updated')
+        fields = ('pk', 'company', 'name', 'slug', 'description', 'homepage',
+                  'is_public', 'family_tree', 'parent', 'is_inherit_members',
+                  'default_version', 'trackers', 'status', 'depth', 'parent_members',
+                  'members', 'sub_projects', 'module', 'user', 'created', 'updated')
 
     def get_sub_projects(self, obj):
         return self.__class__(obj.issueproject_set.all(), many=True, read_only=True).data
