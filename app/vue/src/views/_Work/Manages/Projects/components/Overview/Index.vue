@@ -178,7 +178,11 @@ onBeforeMount(() => emit('aside-visible', false))
     </CCol>
 
     <CCol lg="6">
-      <CCard v-if="iProject?.members?.length" :color="isDark ? '' : 'light'" class="mb-3">
+      <CCard
+        v-if="!!Object.keys(computedMembers).length"
+        :color="isDark ? '' : 'light'"
+        class="mb-3"
+      >
         <CCardBody>
           <CCardSubtitle>구성원</CCardSubtitle>
           <CCardText>
