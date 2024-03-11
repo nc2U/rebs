@@ -204,6 +204,7 @@ onBeforeMount(() => {
               v-model="form.is_inherit_members"
               id="is_inherit_members"
               label="상위 프로젝트 구성원 상속 여부"
+              :disabled="!form.parent"
             />
           </CCol>
         </CRow>
