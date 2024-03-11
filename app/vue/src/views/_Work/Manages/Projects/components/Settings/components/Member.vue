@@ -132,7 +132,7 @@ const mergedMembers = (
   mem2: { pk: number; name: string }[],
 ) => [...mem1, ...mem2].sort((a, b) => a.pk - b.pk)
 
-const addComma = (n: number, i) => n > i + 1
+const addComma = (n: number, i: number) => n > i + 1
 
 // FormModal Start ------------------
 
