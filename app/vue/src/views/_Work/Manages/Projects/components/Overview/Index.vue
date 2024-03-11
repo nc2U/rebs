@@ -63,7 +63,7 @@ const computedMembers = computed(() => {
     }
   })
 
-  return organizedData
+  return organizedData as { [key: string]: Array<{ pk: number; username: string }> }
 })
 
 onBeforeMount(() => emit('aside-visible', false))
@@ -182,14 +182,14 @@ onBeforeMount(() => emit('aside-visible', false))
         <CCardBody>
           <CCardSubtitle>구성원</CCardSubtitle>
           <CCardText>
-            <div v-for="(val, key) in computedMembers" :key="val.pk">
+            <div v-for="(val, key) in computedMembers" :key="key">
               {{ key }} :
 
               <span v-for="(u, i) in val" :key="u.pk">
-                <!--                <router-link to="">-->
-                {{ u.username }}
-                <!--                </router-link>-->
-                <span v-if="i + 1 < val.length">, </span>
+                <router-link to="">
+                  {{ u.username }}
+                </router-link>
+                <span v-if="Number(i) + 1 < val.length">, </span>
               </span>
             </div>
           </CCardText>
