@@ -40,11 +40,11 @@ const computedMembers = computed(() => {
   mergedMembers.forEach(item => {
     // Iterate over the roles of each user
     item.roles.forEach(role => {
-      // If the role exists in the organizedData, push the username
+      // If the role exists in the organizedData, push the user
       if (organizedData[role.name]) {
         organizedData[role.name].push(item.user)
       } else {
-        // If the role doesn't exist, create a new array with the username
+        // If the role doesn't exist, create a new array with the user
         organizedData[role.name] = [item.user]
       }
     })
@@ -52,11 +52,11 @@ const computedMembers = computed(() => {
     // Check if there are additional roles
     if (item.add_roles) {
       item.add_roles.forEach(role => {
-        // If the role exists in the organizedData, push the username
+        // If the role exists in the organizedData, push the user
         if (organizedData[role.name]) {
           organizedData[role.name].push(item.user)
         } else {
-          // If the role doesn't exist, create a new array with the username
+          // If the role doesn't exist, create a new array with the user
           organizedData[role.name] = [item.user]
         }
       })
