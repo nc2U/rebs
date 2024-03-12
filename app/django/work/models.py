@@ -439,6 +439,17 @@ class TimeEntry(models.Model):
         ordering = ('spent_on',)
 
 
+class LogEntry(models.Model):
+    ACTION_CHOICES = (('CREATE', '생성'), ('UPDATE', '수정'))
+    action = models.CharField(max_length=10, choices=ACTION_CHOICES)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    details = models.TextField()
+    user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.action} - {self.timestamp}"
+
+
 class Search(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE, verbose_name='내 검색어')
     offset = models.BigIntegerField('오프셋', default=False)  # 응답에서 이 결과 수를 건너뚭니다.(선택사항)
