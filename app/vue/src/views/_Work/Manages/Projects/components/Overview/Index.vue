@@ -35,7 +35,7 @@ const computedMembers = computed(() => {
 
   const mergedMembers = [...computedParents, ...computedMembers]
 
-  const organizedData = {}
+  const organizedData = {} as { [key: string]: Array<{ pk: number; username: string }> }
 
   mergedMembers.forEach(item => {
     // Iterate over the roles of each user
@@ -63,7 +63,7 @@ const computedMembers = computed(() => {
     }
   })
 
-  return organizedData as { [key: string]: Array<{ pk: number; username: string }> }
+  return organizedData
 })
 
 onBeforeMount(() => emit('aside-visible', false))
@@ -190,7 +190,7 @@ onBeforeMount(() => emit('aside-visible', false))
               {{ key }} :
 
               <span v-for="(u, i) in val" :key="u.pk">
-                <router-link to="">
+                <router-link :to="{ name: '사용자 - 보기', params: { userId: u.pk } }">
                   {{ u.username }}
                 </router-link>
                 <span v-if="Number(i) + 1 < val.length">, </span>
