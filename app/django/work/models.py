@@ -439,7 +439,7 @@ class TimeEntry(models.Model):
         ordering = ('spent_on',)
 
 
-class LogEntry(models.Model):
+class IssueLogEntry(models.Model):
     ACTION_CHOICES = (('CREATE', '생성'), ('UPDATE', '수정'))
     action = models.CharField(max_length=10, choices=ACTION_CHOICES)
     timestamp = models.DateTimeField(auto_now_add=True)
