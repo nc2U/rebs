@@ -216,8 +216,4 @@ onBeforeMount(() => emit('aside-visible', false))
       </CCard>
     </CCol>
   </CRow>
-
-  <CRow>
-    <CCol>{{ iProject }}</CCol>
-  </CRow>
 </template>
