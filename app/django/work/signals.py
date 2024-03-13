@@ -7,4 +7,4 @@ from .models import Issue, IssueLogEntry
 def log_changes(sender, instance, created, **kwargs):
     action = 'CREATE' if created else 'UPDATE'
     details = f"{action} action occurred on {sender.__name__} with ID {instance.id}"
-    IssueLogEntry.objects.create(actction=action, user=instance.user, details=details)
+    IssueLogEntry.objects.create(action=action, user=instance.user, details=details)

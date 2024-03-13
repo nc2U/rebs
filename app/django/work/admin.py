@@ -1,8 +1,9 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
-from .models import (IssueProject, Role, Permission, Member, Tracker, Module, Version,
-                     IssueCategory, Repository, IssueStatus, Workflow, CodeActivity,
-                     CodeIssuePriority, CodeDocsCategory, Issue, IssueFile, IssueComment, TimeEntry)
+from .models import (IssueProject, Role, Permission, Member, Tracker, Module,
+                     Version, IssueCategory, Repository, IssueStatus, Workflow,
+                     CodeActivity, CodeIssuePriority, CodeDocsCategory,
+                     Issue, IssueFile, IssueComment, TimeEntry, IssueLogEntry)
 
 
 class ModuleInline(admin.TabularInline):
@@ -100,3 +101,8 @@ class IssueAdmin(admin.ModelAdmin):
                     'parent', 'status', 'priority', 'start_date', 'due_date')
     list_display_links = ('subject',)
     inlines = (IssueFileInline, IssueCommentInline, TimeEntryInline)
+
+
+@admin.register(IssueLogEntry)
+class IssueLogEntryAdmin(admin.ModelAdmin):
+    pass
