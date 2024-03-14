@@ -47,7 +47,7 @@ def track_changes(sender, instance, **kwargs):
 @receiver(post_save, sender=Issue)
 def log_changes(sender, instance, created, **kwargs):
     action = 'Created' if created else 'Edited'
-    details = f"- {sender.__name__} 모델에서 {instance}(#{instance.id}) 업무가 {action} 되었습니다.  "
+    details = f"- **업무** - _{instance}(#{instance.id})_ 업무가 _{action}_ 되었습니다.  " if created else ""
     if hasattr(instance, '_old_project'):
         details += f"- **프로젝트**가 _{instance._old_project}_에서 _{instance.project}_(으)로 변경되었습니다.  "
     if hasattr(instance, '_old_tracker'):
