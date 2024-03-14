@@ -82,6 +82,6 @@ def log_changes(sender, instance, created, **kwargs):
         details += f"- **진척도**가 _{instance._old_done_ratio}_에서 _{instance.done_ratio}_(으)로 변경되었습니다.  "
     if hasattr(instance, '_old_closed'):
         details += f"- **완료 여부**가 _{instance._old_closed}_에서 _{instance.closed}_(으)로 변경되었습니다.  "
-        
+
     user = instance.creator if created else instance.updater
-    IssueLogEntry.objects.create(issue=instance, action=action, user=user, details=details)
+    IssueLogEntry.objects.create(issue=instance, action=action, details=details, user=user)
