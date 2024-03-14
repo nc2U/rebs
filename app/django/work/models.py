@@ -355,7 +355,7 @@ class Issue(models.Model):
     tracker = models.ForeignKey(Tracker, on_delete=models.PROTECT, verbose_name='유형')
     status = models.ForeignKey(IssueStatus, on_delete=models.PROTECT, verbose_name='상태')
     priority = models.ForeignKey(CodeIssuePriority, on_delete=models.PROTECT, verbose_name='우선순위')
-    subject = models.CharField(max_length=100, verbose_name='주제')
+    subject = models.CharField(max_length=100, verbose_name='제목')
     description = models.TextField(verbose_name='설명', blank=True, default='')
     category = models.ForeignKey(IssueCategory, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='범주')
     fixed_version = models.ForeignKey(Version, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='목표 버전')
@@ -363,7 +363,7 @@ class Issue(models.Model):
                                     null=True, blank=True, verbose_name='담당자', related_name='assignees')
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True,
                                verbose_name='상위 업무', related_name='children')
-    watchers = models.ManyToManyField('accounts.User', blank=True, verbose_name='업무 진행 공유', related_name='watchers')
+    watchers = models.ManyToManyField('accounts.User', blank=True, verbose_name='업무 공유 열람', related_name='watchers')
     is_private = models.BooleanField('비공개', default=False)
     estimated_hours = models.PositiveSmallIntegerField('추정 소요시간', null=True, blank=True)
     start_date = models.DateField('시작 일자', null=True, blank=True)
