@@ -77,12 +77,13 @@ const sideNavCAll = () => cBody.value.toggle()
 const router = useRouter()
 const onSubmit = (payload: any) => {
   payload.company = company?.value.pk
-  workStore.createIssueProject(payload).then(() => {
+  workStore.createIssueProject(payload)
+  setTimeout(() => {
     router.push({
       name: '(설정)',
       params: { projId: issueProject.value?.slug },
     })
-  })
+  }, 500)
 }
 
 onBeforeRouteUpdate(async to => {
