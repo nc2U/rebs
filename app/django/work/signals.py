@@ -83,4 +83,4 @@ def log_changes(sender, instance, created, **kwargs):
     if hasattr(instance, '_old_closed'):
         details += f"- **완료 여부**가 _{instance._old_closed}_에서 _{instance.closed}_(으)로 변경되었습니다.  "
 
-    IssueLogEntry.objects.create(issue=instance.issue, action=action, user=instance.user, details=details)
+    IssueLogEntry.objects.create(issue=instance, action=action, user=instance.user, details=details)
