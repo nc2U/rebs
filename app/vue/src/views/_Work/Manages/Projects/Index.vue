@@ -43,9 +43,11 @@ const superAuth = computed(() => accStore.superAuth)
 const workStore = useWork()
 const issueProject = computed(() => workStore.issueProject)
 provide('iProject', issueProject)
-const modules = computed(() => issueProject.value?.module)
 const issueProjectList = computed(() => workStore.issueProjectList)
 const AllIssueProjects = computed(() => workStore.AllIssueProjects)
+
+const version = computed(() => false)
+const modules = computed(() => issueProject.value?.module)
 
 const navMenus = computed(() => (!issueProjectList.value.length ? navMenu1 : navMenu2))
 
@@ -54,7 +56,7 @@ const projectNavMenus = computed(() => {
     { no: 1, menu: '(개요)' },
     { no: 2, menu: '(작업내역)' },
   ]
-  // if (version.value) menus = [...new Set([...menus, ...[{ no: 3, menu: '(로드맵)' }]])]
+  if (version.value) menus = [...new Set([...menus, ...[{ no: 3, menu: '(로드맵)' }]])]
   if (modules.value?.issue) menus = [...new Set([...menus, ...[{ no: 4, menu: '(업무)' }]])]
   if (modules.value?.time) menus = [...new Set([...menus, ...[{ no: 5, menu: '(소요시간)' }]])]
   if (modules.value?.gantt) menus = [...new Set([...menus, ...[{ no: 6, menu: '(차트)' }]])]
