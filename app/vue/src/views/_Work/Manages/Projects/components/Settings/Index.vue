@@ -49,8 +49,7 @@ const AllIssueProjects = computed(() => workStore.AllIssueProjects)
 
 const onSubmit = (payload: any) => {
   payload.company = company?.value.pk
-  if (!!payload.pk) workStore.updateIssueProject(payload)
-  else workStore.createIssueProject(payload)
+  workStore.updateIssueProject(payload)
 }
 
 onBeforeRouteUpdate(async to => {

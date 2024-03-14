@@ -20,10 +20,10 @@ const workProject = {
           path: 'create',
           name: '프로젝트 - 생성',
         },
-        {
-          path: ':projId/update',
-          name: '프로젝트 - 수정',
-        },
+        // {
+        //   path: ':projId/update',
+        //   name: '프로젝트 - 수정',
+        // },
         {
           path: ':projId/delete',
           name: '프로젝트 - 삭제',

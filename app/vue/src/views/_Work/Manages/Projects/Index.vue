@@ -75,12 +75,14 @@ const navMenu = computed(() =>
 const sideNavCAll = () => cBody.value.toggle()
 
 const router = useRouter()
-const onSubmit = async (payload: any) => {
+const onSubmit = (payload: any) => {
   payload.company = company?.value.pk
-  if (!!payload.pk) await workStore.updateIssueProject(payload)
-  else await workStore.createIssueProject(payload)
-
-  await router.push({ name: '(설정)', params: { projId: issueProject.value?.slug } })
+  workStore.createIssueProject(payload).then(() => {
+    router.push({
+      name: '(설정)',
+      params: { projId: issueProject.value?.slug },
+    })
+  })
 }
 
 onBeforeRouteUpdate(async to => {
