@@ -469,8 +469,8 @@ class IssueLogEntry(models.Model):
     ACTION_CHOICES = (('Created', '추가'), ('Edited', '편집'))
     action = models.CharField(max_length=10, choices=ACTION_CHOICES)
     details = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.action} - {self.timestamp}"

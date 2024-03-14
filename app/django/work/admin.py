@@ -105,4 +105,4 @@ class IssueAdmin(admin.ModelAdmin):
 
 @admin.register(IssueLogEntry)
 class IssueLogEntryAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('issue', 'action', 'details', 'user', 'timestamp')
