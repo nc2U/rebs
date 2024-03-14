@@ -57,14 +57,15 @@ class IssueProjectSerializer(serializers.ModelSerializer):
     members = MemberInIssueProjectSerializer(many=True, read_only=True)
     module = ModuleInIssueProjectSerializer(read_only=True)
     # trackers = TrackerInIssueProjectSerializer(many=True, read_only=True)
-    user = serializers.SlugRelatedField('username', read_only=True)
+    creator = serializers.SlugRelatedField('username', read_only=True)
+    updater = serializers.SlugRelatedField('username', read_only=True)
 
     class Meta:
         model = IssueProject
         fields = ('pk', 'company', 'name', 'slug', 'description', 'homepage',
                   'is_public', 'family_tree', 'parent', 'is_inherit_members',
                   'default_version', 'trackers', 'status', 'depth', 'parent_members',
-                  'members', 'sub_projects', 'module', 'user', 'created', 'updated')
+                  'members', 'sub_projects', 'module', 'creator', 'updater', 'created', 'updated')
 
     def get_sub_projects(self, obj):
         return self.__class__(obj.issueproject_set.all(), many=True, read_only=True).data

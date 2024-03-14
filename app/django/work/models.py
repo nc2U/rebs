@@ -373,7 +373,9 @@ class Issue(models.Model):
         (0.6, '60%'), (0.7, '70%'), (0.8, '80%'), (0.9, '90%'), (1.0, '100%'))
     done_ratio = models.DecimalField('진척도', max_digits=2, decimal_places=1, choices=PROGRESS_RATIO, default=0.0)
     closed = models.DateTimeField('완료', null=True, blank=True, help_text='상태가 완료로 입력된 시간. 한 번 완료하면 다시 진행으로 변경해도 남아있음.')
-    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자')
+    creator = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자', related_name='creator')
+    updater = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='수정자',
+                                related_name='updater', null=True, blank=True)
     created = models.DateTimeField('추가', auto_now_add=True)
     updated = models.DateTimeField('수정', auto_now=True)
 
@@ -439,17 +441,6 @@ class TimeEntry(models.Model):
         ordering = ('spent_on',)
 
 
-class IssueLogEntry(models.Model):
-    ACTION_CHOICES = (('CREATE', '생성'), ('UPDATE', '수정'))
-    action = models.CharField(max_length=10, choices=ACTION_CHOICES)
-    timestamp = models.DateTimeField(auto_now_add=True)
-    details = models.TextField()
-    user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True)
-
-    def __str__(self):
-        return f"{self.action} - {self.timestamp}"
-
-
 class Search(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE, verbose_name='내 검색어')
     offset = models.BigIntegerField('오프셋', default=False)  # 응답에서 이 결과 수를 건너뚭니다.(선택사항)
@@ -471,3 +462,15 @@ class Search(models.Model):
 
     def __str__(self):
         return f'#{self.pk}. {self.member.user.username} - 검색조건'
+
+
+class IssueLogEntry(models.Model):
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, verbose_name='업무')
+    ACTION_CHOICES = (('CREATE', '생성'), ('UPDATE', '수정'))
+    action = models.CharField(max_length=10, choices=ACTION_CHOICES)
+    details = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.action} - {self.timestamp}"

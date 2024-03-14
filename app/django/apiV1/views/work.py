@@ -148,7 +148,10 @@ class IssueViewSet(viewsets.ModelViewSet):
     search_fields = ('id',)
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        serializer.save(creator=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(updater=self.request.user)
 
 
 class IssueFileViewSet(viewsets.ModelViewSet):
