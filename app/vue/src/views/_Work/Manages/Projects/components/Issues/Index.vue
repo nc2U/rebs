@@ -1,9 +1,16 @@
 <script lang="ts" setup>
-import { onBeforeMount } from 'vue'
+import { computed, onBeforeMount } from 'vue'
+import { useWork } from '@/store/pinia/work'
 
 const emit = defineEmits(['aside-visible'])
 
-onBeforeMount(() => emit('aside-visible', true))
+const workStore = useWork()
+const issueList = computed(() => workStore.issueList)
+
+onBeforeMount(() => {
+  emit('aside-visible', true)
+  workStore.fetchIssueList()
+})
 </script>
 
 <template>
