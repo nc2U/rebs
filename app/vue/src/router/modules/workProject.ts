@@ -18,7 +18,7 @@ const workProject = {
       children: [
         {
           path: 'create',
-          name: '프로젝트 - 생성',
+          name: '프로젝트 - 추가',
         },
         // {
         //   path: ':projId/update',
@@ -43,6 +43,18 @@ const workProject = {
         {
           path: ':projId/issue',
           name: '(업무)',
+        },
+        {
+          path: ':projId/issue/create',
+          name: '(업무) - 추가',
+        },
+        {
+          path: ':projId/issue/:issueId/update',
+          name: '(업무) - 편집',
+        },
+        {
+          path: ':projId/issue/:issueId/delete',
+          name: '(업무) - 삭제',
         },
         {
           path: ':projId/time_entry',

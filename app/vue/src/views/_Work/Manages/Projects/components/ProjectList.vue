@@ -25,9 +25,9 @@ onBeforeMount(() => emit('aside-visible', true))
     </CCol>
 
     <CCol v-if="superAuth" class="text-right">
-      <span v-show="$route.name !== '프로젝트 - 생성'" class="mr-2">
+      <span v-show="$route.name !== '프로젝트 - 추가'" class="mr-2">
         <v-icon icon="mdi-plus-circle" color="success" size="sm" />
-        <router-link :to="{ name: '프로젝트 - 생성' }" class="ml-1">새 프로젝트</router-link>
+        <router-link :to="{ name: '프로젝트 - 추가' }" class="ml-1">새 프로젝트</router-link>
       </span>
       <span>
         <v-icon icon="mdi-cog" color="secondary" size="sm" />

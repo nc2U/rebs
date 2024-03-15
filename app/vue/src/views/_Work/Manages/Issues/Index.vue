@@ -27,7 +27,7 @@ const issueList = computed(() => [])
         </CCol>
 
         <CCol class="text-right">
-          <span v-show="$route.name !== '프로젝트 - 생성'" class="mr-2">
+          <span v-show="$route.name !== '프로젝트 - 추가'" class="mr-2">
             <v-icon icon="mdi-plus-circle" color="success" size="sm" />
             <router-link to="" class="ml-1">새 업무만들기</router-link>
           </span>

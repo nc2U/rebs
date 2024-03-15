@@ -119,7 +119,7 @@ onBeforeMount(() => {
       />
 
       <ProjectForm
-        v-if="route.name === '프로젝트 - 생성'"
+        v-if="route.name === '프로젝트 - 추가'"
         title="새 프로젝트"
         :all-task-projects="AllIssueProjects"
         @aside-visible="asideVisible"
