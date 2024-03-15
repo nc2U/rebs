@@ -10,7 +10,7 @@ onBeforeMount(() => emit('aside-visible', true))
 <template>
   <CRow class="py-2">
     <CCol>
-      <h5>{{ $route.name }}</h5>
+      <h5>달력</h5>
     </CCol>
   </CRow>
 
