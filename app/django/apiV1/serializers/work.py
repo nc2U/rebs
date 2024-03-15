@@ -249,6 +249,10 @@ class IProjectIssueSerializer(serializers.ModelSerializer):
 
 class IssueSerializer(serializers.ModelSerializer):
     project = IProjectIssueSerializer()
+    tracker = serializers.SlugRelatedField('name', read_only=True)
+    status = serializers.SlugRelatedField('name', read_only=True)
+    priority = serializers.SlugRelatedField('name', read_only=True)
+    assigned_to = UserInMemberSerializer(read_only=True)
 
     class Meta:
         model = Issue
