@@ -67,3 +67,28 @@ export interface Member {
   user: number
   roles: number[]
 }
+
+export interface Issue {
+  pk: number
+  project: number
+  tracker: number
+  status: number
+  priority: number
+  subject: string
+  description: string
+  category: number | null
+  fixed_version: number | null
+  assigned_to: number | null
+  parent: number | null
+  watchers: number[]
+  is_private: boolean
+  estimated_hours: number | null
+  start_date: string | null
+  due_date: string | null
+  done_ratio: number
+  closed: string | null
+  creator: number
+  updater: number | null
+  created: string
+  updated: string
+}

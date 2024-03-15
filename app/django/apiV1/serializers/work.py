@@ -245,9 +245,9 @@ class IssueSerializer(serializers.ModelSerializer):
     class Meta:
         model = Issue
         fields = ('pk', 'project', 'tracker', 'status', 'priority', 'subject',
-                  'description', 'category', 'fixed_version', 'assigned_to',
-                  'parent', 'watchers', 'is_private', 'estimated_hours', 'start_date',
-                  'due_date', 'done_ratio', 'closed', 'user', 'created', 'updated')
+                  'description', 'category', 'fixed_version', 'assigned_to', 'parent',
+                  'watchers', 'is_private', 'estimated_hours', 'start_date', 'due_date',
+                  'done_ratio', 'closed', 'creator', 'updater', 'created', 'updated')
 
 
 class IssueFileSerializer(serializers.ModelSerializer):
