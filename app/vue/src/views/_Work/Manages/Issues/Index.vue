@@ -65,8 +65,21 @@ onBeforeMount(() => {
 
             <CTableBody>
               <CTableRow v-for="issue in issueList" :key="issue.pk">
-                <CTableDataCell>{{ issue.pk }}</CTableDataCell>
-                <CTableDataCell>{{ issue.project }}</CTableDataCell>
+                <CTableDataCell>
+                  <router-link
+                    :to="{
+                      name: '(업무) - 보기',
+                      params: { projId: issue.project.slug, issueId: issue.pk },
+                    }"
+                  >
+                    {{ issue.pk }}
+                  </router-link>
+                </CTableDataCell>
+                <CTableDataCell>
+                  <router-link :to="{ name: '(개요)', params: { projId: issue.project.slug } }">
+                    {{ issue.project.name }}
+                  </router-link>
+                </CTableDataCell>
                 <CTableDataCell>{{ issue.tracker }}</CTableDataCell>
                 <CTableDataCell>{{ issue.status }}</CTableDataCell>
                 <CTableDataCell>{{ issue.priority }}</CTableDataCell>
@@ -74,7 +87,7 @@ onBeforeMount(() => {
                   <router-link
                     :to="{
                       name: '(업무) - 보기',
-                      params: { projId: 'redmine', issueId: issue.pk },
+                      params: { projId: issue.project.slug, issueId: issue.pk },
                     }"
                   >
                     {{ issue.subject }}

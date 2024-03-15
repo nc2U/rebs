@@ -70,7 +70,7 @@ export interface Member {
 
 export interface Issue {
   pk: number
-  project: number
+  project: { slug: string; name: string }
   tracker: number
   status: number
   priority: number
