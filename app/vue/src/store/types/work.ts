@@ -71,14 +71,14 @@ export interface Member {
 export interface Issue {
   pk: number
   project: { slug: string; name: string }
-  tracker: number
-  status: number
-  priority: number
+  tracker: string
+  status: string
+  priority: string
   subject: string
   description: string
   category: number | null
   fixed_version: number | null
-  assigned_to: number | null
+  assigned_to: { pk: number; username: string } | null
   parent: number | null
   watchers: number[]
   is_private: boolean
