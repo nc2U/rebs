@@ -241,7 +241,15 @@ class IssueCategorySerializer(serializers.ModelSerializer):
         fields = ('pk', 'project', 'name', 'assigned_to')
 
 
+class IProjectIssueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IssueProject
+        fields = ('slug', 'name')
+
+
 class IssueSerializer(serializers.ModelSerializer):
+    project = IProjectIssueSerializer()
+
     class Meta:
         model = Issue
         fields = ('pk', 'project', 'tracker', 'status', 'priority', 'subject',
