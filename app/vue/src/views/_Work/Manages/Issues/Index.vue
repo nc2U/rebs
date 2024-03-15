@@ -70,8 +70,23 @@ onBeforeMount(() => {
                 <CTableDataCell>{{ issue.tracker }}</CTableDataCell>
                 <CTableDataCell>{{ issue.status }}</CTableDataCell>
                 <CTableDataCell>{{ issue.priority }}</CTableDataCell>
-                <CTableDataCell>{{ issue.subject }}</CTableDataCell>
-                <CTableDataCell class="text-center">{{ issue.assigned_to }}</CTableDataCell>
+                <CTableDataCell>
+                  <router-link
+                    :to="{
+                      name: '(업무) - 보기',
+                      params: { projId: 'redmine', issueId: issue.pk },
+                    }"
+                  >
+                    {{ issue.subject }}
+                  </router-link>
+                </CTableDataCell>
+                <CTableDataCell class="text-center">
+                  <router-link
+                    :to="{ name: '사용자 - 보기', params: { userId: issue.assigned_to } }"
+                  >
+                    {{ issue.assigned_to }}
+                  </router-link>
+                </CTableDataCell>
                 <CTableDataCell class="text-center">{{ timeFormat(issue.updated) }}</CTableDataCell>
                 <CTableDataCell></CTableDataCell>
               </CTableRow>

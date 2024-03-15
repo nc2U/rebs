@@ -45,6 +45,10 @@ const workProject = {
           name: '(업무)',
         },
         {
+          path: ':projId/issue/:issueId',
+          name: '(업무) - 보기',
+        },
+        {
           path: ':projId/issue/create',
           name: '(업무) - 추가',
         },
