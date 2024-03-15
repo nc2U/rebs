@@ -95,9 +95,9 @@ onBeforeMount(() => {
                 </CTableDataCell>
                 <CTableDataCell class="text-center">
                   <router-link
-                    :to="{ name: '사용자 - 보기', params: { userId: issue.assigned_to.pk } }"
+                    :to="{ name: '사용자 - 보기', params: { userId: issue.assigned_to?.pk } }"
                   >
-                    {{ issue.assigned_to.username }}
+                    {{ issue.assigned_to?.username }}
                   </router-link>
                 </CTableDataCell>
                 <CTableDataCell class="text-center">{{ timeFormat(issue.updated) }}</CTableDataCell>

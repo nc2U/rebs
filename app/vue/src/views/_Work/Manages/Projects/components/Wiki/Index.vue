@@ -9,7 +9,20 @@ onBeforeMount(() => emit('aside-visible', false))
 <template>
   <CRow class="py-2">
     <CCol>
-      <h5>{{ $route.name }}</h5>
+      <h5>위키(Wiki)</h5>
+    </CCol>
+  </CRow>
+
+  <CRow>
+    <CCol>
+      <CFormTextarea></CFormTextarea>
+    </CCol>
+  </CRow>
+
+  <CRow class="mt-2">
+    <CCol>
+      <CButton color="primary">저장</CButton>
+      <CButton color="light">취소</CButton>
     </CCol>
   </CRow>
 </template>
