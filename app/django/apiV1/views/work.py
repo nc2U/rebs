@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import viewsets
 from django_filters.rest_framework import FilterSet, BooleanFilter
 
@@ -16,7 +17,17 @@ class IssueProjectFilter(FilterSet):
 
     class Meta:
         model = IssueProject
-        fields = ('parent__isnull', 'is_public')
+        fields = ('parent__isnull',)
+
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        user = self.request.user
+        if user and user.is_authenticated:
+            if user.is_superuser:
+                queryset = queryset.filter(Q(is_public=True) | Q(is_public=False))
+            else:
+                queryset = queryset.filter(Q(is_public=True) | Q(members__user=user))
+        return queryset
 
 
 class IssueProjectViewSet(viewsets.ModelViewSet):
