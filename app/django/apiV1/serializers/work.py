@@ -134,13 +134,6 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 
-class RoleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Role
-        fields = ('pk', 'name', 'assignable', 'issue_visible', 'time_entry_visible',
-                  'user_visible', 'default_time_activity', 'order', 'user', 'created', 'updated')
-
-
 class PermissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Permission
@@ -167,6 +160,15 @@ class PermissionSerializer(serializers.ModelSerializer):
                   'wiki_read', 'wiki_history_read', 'wiki_page_export', 'wiki_page_update',
                   'wiki_page_rename', 'wiki_page_delete', 'wiki_attachment_delete', 'wiki_watcher_read',
                   'wiki_watcher_create', 'wiki_watcher_delete', 'wiki_page_project', 'wiki_manage')
+
+
+class RoleSerializer(serializers.ModelSerializer):
+    permission = PermissionSerializer(read_only=True)
+
+    class Meta:
+        model = Role
+        fields = ('pk', 'name', 'assignable', 'issue_visible', 'time_entry_visible', 'user_visible',
+                  'default_time_activity', 'permission', 'order', 'user', 'created', 'updated')
 
 
 class MemberSerializer(serializers.ModelSerializer):
