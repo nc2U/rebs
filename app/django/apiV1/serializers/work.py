@@ -255,6 +255,7 @@ class IssueSerializer(serializers.ModelSerializer):
     status = serializers.SlugRelatedField('name', read_only=True)
     priority = serializers.SlugRelatedField('name', read_only=True)
     assigned_to = UserInMemberSerializer(read_only=True)
+    parent = serializers.SerializerMethodField()
 
     class Meta:
         model = Issue
@@ -262,6 +263,12 @@ class IssueSerializer(serializers.ModelSerializer):
                   'description', 'category', 'fixed_version', 'assigned_to', 'parent',
                   'watchers', 'is_private', 'estimated_hours', 'start_date', 'due_date',
                   'done_ratio', 'closed', 'creator', 'updater', 'created', 'updated')
+
+    @staticmethod
+    def get_parent(obj):
+        # Check if there is a parent object corresponding to the parent field in the entire collection
+        parent_obj = None if obj.parent is None else IssueProject.objects.filter(id=obj.parent_id).first()
+        return obj.parent if parent_obj else None
 
 
 class IssueFileSerializer(serializers.ModelSerializer):
