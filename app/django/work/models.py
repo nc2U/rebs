@@ -42,8 +42,8 @@ class IssueProject(models.Model):
         members = self.members.all()
 
         if self.is_inherit_members and self.parent:
-            up_members = self.parent.all_members()
-            members |= up_members
+            parent_members = self.parent.all_members()
+            members |= parent_members.exclude(user__in=members.values_list('user', flat=True))
         return members
 
     class Meta:
