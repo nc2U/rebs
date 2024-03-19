@@ -39,11 +39,15 @@ class IssueProject(models.Model):
         return parents
 
     def all_members(self):
+        """
+        member 와 조상 member를 user 기준 유니크하게 조인하고,
+        조인 시 member.Role 역시 유니크하게 조인한다.
+        """
         members = self.members.all()
 
         if self.is_inherit_members and self.parent:
             parent_members = self.parent.all_members()
-            members |= parent_members.exclude(user__in=members.values_list('user', flat=True))
+            members |= parent_members  # .exclude(user__in=members.values_list('user', flat=True))
         return members
 
     class Meta:
