@@ -38,11 +38,12 @@ class IssueProject(models.Model):
             return self.parent.family_tree(parents)
         return parents
 
-    def parent_members(self):
-        members = []
+    def all_members(self):
+        members = self.members.all()
 
         if self.is_inherit_members and self.parent:
-            members = self.parent.members
+            up_members = self.parent.all_members()
+            members |= up_members
         return members
 
     class Meta:

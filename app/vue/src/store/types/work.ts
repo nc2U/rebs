@@ -26,11 +26,10 @@ export interface IssueProject {
   trackers: number[]
   status: '1' | '9'
   depth: number
-  parent_members: SimpleMember[]
+  all_members: SimpleMember[]
   members: SimpleMember[]
   sub_projects?: IssueProject[]
   module: Module | null
-  visible: boolean
   user?: number
   created?: string
 }
