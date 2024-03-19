@@ -10,34 +10,12 @@ const isDark = inject('isDark')
 const workStore = useWork()
 const iProject = computed(() => workStore.issueProject)
 
-const parentMembers = computed<SimpleMember[]>(() => workStore.issueProject?.parent_members ?? [])
-const memberList = computed<SimpleMember[]>(() => workStore.issueProject?.members ?? [])
+const allMembers = computed<SimpleMember[]>(() => workStore.issueProject?.all_members ?? [])
 
 const computedMembers = computed(() => {
-  // 부모멤버권한 + 하위멤버권한 = 멤버 목록 합치기
-  // 1. 부모유저와 동일한 member가 있는 경우 멤버 역할(roles)을 부모 역할에 Merge
-  const computedParents = parentMembers.value.map(pm => {
-    const existMembers = memberList.value.filter(m =>
-      parentMembers.value.map(pm => pm.user.pk).includes(m.user.pk),
-    )
-
-    if (existMembers.map(e => e.user.pk).includes(pm.user.pk)) {
-      // 부모유저와 하위멤버 유저가 동일한 경우
-      pm.add_roles = existMembers.filter(e => e.user.pk === pm.user.pk)[0].roles
-      return pm
-    } else return pm
-  })
-
-  // 2. 부모유저와 동일한 member가 있는 경우 해당 멤버는 제외 한 나머지를 부모 멤버와 Merge
-  const computedMembers = memberList.value.filter(
-    m => !parentMembers.value.map(pm => pm.user.pk).includes(m.user.pk),
-  )
-
-  const mergedMembers = [...computedParents, ...computedMembers]
-
   const organizedData = {} as { [key: string]: Array<{ pk: number; username: string }> }
 
-  mergedMembers.forEach(item => {
+  allMembers.value.forEach(item => {
     // Iterate over the roles of each user
     item.roles.forEach(role => {
       // If the role exists in the organizedData, push the user
