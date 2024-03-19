@@ -13,16 +13,10 @@ export const useWork = defineStore('work', () => {
 
     function flatten(proj: IssueProject) {
       result.push(proj)
-      if (!!proj.sub_projects?.length) {
-        proj.sub_projects.forEach(sub => {
-          flatten(sub)
-        })
-      }
+      if (!!proj.sub_projects?.length) proj.sub_projects.forEach(sub => flatten(sub))
     }
 
-    issueProjectList.value.forEach(root => {
-      flatten(root)
-    })
+    issueProjectList.value.forEach(rootProj => flatten(rootProj))
     return result
   })
 
