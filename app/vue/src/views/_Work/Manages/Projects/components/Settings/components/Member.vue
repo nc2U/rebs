@@ -6,7 +6,6 @@ import type { IssueProject, SimpleMember } from '@/store/types/work'
 import NoData from '@/views/_Work/components/NoData.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import { all } from 'axios'
 
 const memberConfirmModal = ref()
 const memberFormModal = ref()
