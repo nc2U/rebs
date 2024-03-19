@@ -1,6 +1,15 @@
 <script lang="ts" setup>
 import Cookies from 'js-cookie'
-import { ref, reactive, inject, onBeforeMount, onMounted, onUpdated, type PropType } from 'vue'
+import {
+  ref,
+  reactive,
+  inject,
+  onBeforeMount,
+  onMounted,
+  onUpdated,
+  type PropType,
+  nextTick,
+} from 'vue'
 import { useRoute } from 'vue-router'
 import type { IssueProject } from '@/store/types/work'
 import MdEditor from '@/components/MdEditor/Index.vue'
@@ -29,6 +38,12 @@ const form = reactive({
 })
 
 const tempSpace = ref('')
+
+const chkPublic = () =>
+  nextTick(() => {
+    const parent = form.parent ? props.allTaskProjects.filter(p => p.pk === form.parent)[0] : null
+    form.is_public = !!parent?.is_public
+  })
 
 const getSlug = (event: { key: string; code: string }) => {
   if (!props.project?.slug) {
@@ -100,6 +115,8 @@ const dataSetup = () => {
     module.forum = !!props.project.module?.forum
     module.calendar = !!props.project.module?.calendar
     module.gantt = !!props.project.module?.gantt
+
+    if (props.project.parent) chkPublic()
   }
 }
 
@@ -167,7 +184,12 @@ onBeforeMount(() => {
         <CRow class="mb-3">
           <CFormLabel class="col-form-label text-right col-2">공개여부</CFormLabel>
           <CCol class="pt-2">
-            <CFormSwitch v-model="form.is_public" id="is_public" label="프로젝트 공개 여부" />
+            <CFormSwitch
+              v-model="form.is_public"
+              id="is_public"
+              label="프로젝트 공개 여부"
+              :disabled="form.parent"
+            />
             <div class="form-text">
               공개 프로젝트는 네트워크의 모든 사용자가 접속할 수 있습니다.
             </div>
@@ -177,7 +199,7 @@ onBeforeMount(() => {
         <CRow class="mb-3">
           <CFormLabel class="col-form-label text-right col-2">상위 프로젝트</CFormLabel>
           <CCol>
-            <CFormSelect v-model.number="form.parent">
+            <CFormSelect v-model.number="form.parent" @change="chkPublic">
               <option value="">상위 프로젝트 선택</option>
               <option
                 v-for="proj in allTaskProjects"
