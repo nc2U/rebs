@@ -15,20 +15,22 @@ export interface IssueProject {
   pk?: number
   company: number
   name: string
+  slug: string
   description: string
   homepage: string | null
   is_public: boolean
   family_tree: BCParent[]
   parent: number | null
-  slug: string
-  status: '1' | '9'
   is_inherit_members: boolean
+  default_version: string | null
+  trackers: number[]
+  status: '1' | '9'
   depth: number
   parent_members: SimpleMember[]
   members: SimpleMember[]
   sub_projects?: IssueProject[]
-  trackers: number[]
   module: Module | null
+  visible: boolean
   user?: number
   created?: string
 }
