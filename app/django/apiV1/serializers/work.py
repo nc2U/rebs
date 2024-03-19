@@ -64,29 +64,30 @@ class IssueProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = IssueProject
         fields = ('pk', 'company', 'name', 'slug', 'description', 'homepage', 'is_public',
-                  'family_tree', 'parent', 'is_inherit_members', 'default_version', 'trackers',
-                  'status', 'depth', 'parent_members', 'members', 'sub_projects', 'module',
-                  'visible', 'creator', 'updater', 'created', 'updated')
+                  'family_tree', 'parent', 'is_inherit_members', 'default_version',
+                  'trackers', 'status', 'depth', 'parent_members', 'members', 'sub_projects',
+                  'module', 'visible', 'creator', 'updater', 'created', 'updated')
 
     def get_sub_projects(self, obj):
         return self.__class__(obj.issueproject_set.all(), many=True, read_only=True).data
 
     def get_visible(self, obj):
         request = self.context.get('request')
+
+        def final_members(proj):
+            # 상속받는 상위 멤버 모두 구하기
+            total_members = proj.members.all()
+
+            if proj.is_inherit_members and proj.parent:
+                parent_members = final_members(proj.parent)
+                total_members |= parent_members
+
+            return total_members
+
         if request and hasattr(request, 'user'):
             user = request.user
-            members = []
-
-            def append_mems(mems):
-                for mem in mems:
-                    members.append(mem)
-
-            append_mems(obj.members.all())
-
-            if obj.parent and obj.is_inherit_members:
-                append_mems(obj.parent.members.all())
-
-            return obj.is_public or user in members or user.is_superuser
+            members = [m.user.pk for m in final_members(obj)]
+            return obj.is_public or user.pk in members or user.is_superuser
         else:
             return False
 
