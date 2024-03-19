@@ -13,31 +13,8 @@ const memberFormModal = ref()
 const iProject = inject<ComputedRef<IssueProject>>('iProject')
 
 const workStore = useWork()
-const parentMembers = computed<SimpleMember[]>(() => workStore.issueProject?.parent_members ?? [])
 const memberList = computed<SimpleMember[]>(() => workStore.issueProject?.members ?? [])
-
-const computedMembers = computed(() => {
-  // 부모멤버권한 + 하위멤버권한 = 멤버 목록 합치기
-  // 1. 부모유저와 동일한 member가 있는 경우 멤버 역할(roles)을 부모 역할에 Merge
-  const mergeParents = parentMembers.value.map(pm => {
-    const existMembers = memberList.value.filter(m =>
-      parentMembers.value.map(pm => pm.user.pk).includes(m.user.pk),
-    )
-
-    if (existMembers.map(e => e.user.pk).includes(pm.user.pk)) {
-      // 부모유저와 하위멤버 유저가 동일한 경우
-      pm.add_roles = existMembers.filter(e => e.user.pk === pm.user.pk)[0].roles
-      return pm
-    } else return pm
-  })
-
-  // 2. 부모유저와 동일한 member가 있는 경우 해당 멤버는 제외 한 나머지를 부모 멤버와 Merge
-  const mergeMembers = memberList.value.filter(
-    m => !parentMembers.value.map(pm => pm.user.pk).includes(m.user.pk),
-  )
-
-  return [...mergeParents, ...mergeMembers]
-})
+const allMembers = computed<SimpleMember[]>(() => workStore.issueProject?.all_members ?? [])
 
 const roleList = computed(() => workStore.roleList)
 const patchIssueProject = (payload: {
@@ -49,7 +26,7 @@ const patchIssueProject = (payload: {
 
 const accStore = useAccount()
 const userList = computed(() => {
-  const memPkList = computedMembers.value.map(m => m.user.pk) // 멤버(상속시 부모 멤버 포함)로 등록된 사용자 id 배열
+  const memPkList = allMembers.value.map(m => m.user.pk) // 멤버(상속시 부모 멤버 포함)로 등록된 사용자 id 배열
 
   // 전체 회원 중 이 프로젝트 구성원을 제외한 목록
   return accStore.usersList.filter(u => !memPkList.includes(u.pk as number))
@@ -59,9 +36,9 @@ const memberRole = ref<number[]>([]) // 업데이트할 멤버의 권한
 
 const isInherit = (mem: number, role?: number) => {
   if (!role) {
-    return !!parentMembers.value.filter(m => m.pk === mem)[0]
+    return !!allMembers.value.filter(m => m.pk === mem)[0]
   } else {
-    return parentMembers.value
+    return allMembers.value
       .filter(m => m.pk === mem)[0]
       ?.roles.map(r => r.pk)
       .includes(role)
@@ -81,7 +58,7 @@ const cancelEdit = () => {
 }
 
 const editSubmit = (mem: number, user: number) => {
-  const parent = parentMembers.value.filter(m => m.pk === mem)[0]?.roles.map(r => r.pk)
+  const parent = allMembers.value.filter(m => m.pk === mem)[0]?.roles.map(r => r.pk)
   const slug = iProject?.value.slug as string
 
   if (parent) {
@@ -190,7 +167,7 @@ onBeforeMount(() => {
     </CCol>
   </CRow>
 
-  <NoData v-if="!computedMembers.length" />
+  <NoData v-if="!allMembers.length" />
 
   <CRow v-else>
     <CCol>
@@ -210,7 +187,7 @@ onBeforeMount(() => {
         </CTableHead>
 
         <CTableBody>
-          <CTableRow v-for="mem in computedMembers" :key="mem.pk" align="middle">
+          <CTableRow v-for="mem in allMembers" :key="mem.pk" align="middle">
             <CTableDataCell class="pl-5">
               <router-link to="">{{ mem.user.username }}</router-link>
             </CTableDataCell>
