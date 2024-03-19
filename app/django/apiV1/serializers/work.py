@@ -57,18 +57,38 @@ class IssueProjectSerializer(serializers.ModelSerializer):
     members = MemberInIssueProjectSerializer(many=True, read_only=True)
     module = ModuleInIssueProjectSerializer(read_only=True)
     # trackers = TrackerInIssueProjectSerializer(many=True, read_only=True)
+    visible = serializers.SerializerMethodField()
     creator = serializers.SlugRelatedField('username', read_only=True)
     updater = serializers.SlugRelatedField('username', read_only=True)
 
     class Meta:
         model = IssueProject
-        fields = ('pk', 'company', 'name', 'slug', 'description', 'homepage',
-                  'is_public', 'family_tree', 'parent', 'is_inherit_members',
-                  'default_version', 'trackers', 'status', 'depth', 'parent_members',
-                  'members', 'sub_projects', 'module', 'creator', 'updater', 'created', 'updated')
+        fields = ('pk', 'company', 'name', 'slug', 'description', 'homepage', 'is_public',
+                  'family_tree', 'parent', 'is_inherit_members', 'default_version', 'trackers',
+                  'status', 'depth', 'parent_members', 'members', 'sub_projects', 'module',
+                  'visible', 'creator', 'updater', 'created', 'updated')
 
     def get_sub_projects(self, obj):
         return self.__class__(obj.issueproject_set.all(), many=True, read_only=True).data
+
+    def get_visible(self, obj):
+        request = self.context.get('request')
+        if request and hasattr(request, 'user'):
+            user = request.user
+            members = []
+
+            def append_mems(mems):
+                for mem in mems:
+                    members.append(mem)
+
+            append_mems(obj.members.all())
+
+            if obj.parent and obj.is_inherit_members:
+                append_mems(obj.parent.members.all())
+
+            return obj.is_public or user in members or user.is_superuser
+        else:
+            return False
 
     @transaction.atomic
     def create(self, validated_data):
