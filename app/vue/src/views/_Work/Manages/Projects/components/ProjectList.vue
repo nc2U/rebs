@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, inject, onBeforeMount, type ComputedRef, type PropType } from 'vue'
+import { inject, onBeforeMount, type ComputedRef, type PropType } from 'vue'
 import type { User } from '@/store/types/accounts'
 import type { IssueProject } from '@/store/types/work'
 import SearchList from '@/views/_Work/components/SearchList.vue'
