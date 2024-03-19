@@ -47,7 +47,7 @@ onBeforeMount(() => emit('aside-visible', true))
       <CCard
         v-if="
           proj.is_public ||
-          proj.members.map(m => m.user.pk).includes(userInfo?.pk ?? 0) ||
+          proj.all_members.map(m => m.user.pk).includes(userInfo?.pk ?? 0) ||
           superAuth
         "
         class="my-2"
@@ -64,9 +64,7 @@ onBeforeMount(() => emit('aside-visible', true))
               <span
                 v-if="
                   c1.is_public ||
-                  c1.members.map(m => m.user.pk).includes(userInfo?.pk ?? 0) ||
-                  (c1.parent_members.map(m => m.user.pk).includes(userInfo?.pk ?? 0) &&
-                    c1.is_inherit_members) ||
+                  c1.all_members.map(m => m.user.pk).includes(userInfo?.pk ?? 0) ||
                   superAuth
                 "
               >
@@ -82,9 +80,7 @@ onBeforeMount(() => emit('aside-visible', true))
                   <span
                     v-if="
                       c2.is_public ||
-                      c2.members.map(m => m.user.pk).includes(userInfo?.pk ?? 0) ||
-                      (c2.parent_members.map(m => m.user.pk).includes(userInfo?.pk ?? 0) &&
-                        c2.is_inherit_members) ||
+                      c2.all_members.map(m => m.user.pk).includes(userInfo?.pk ?? 0) ||
                       superAuth
                     "
                   >
@@ -100,9 +96,7 @@ onBeforeMount(() => emit('aside-visible', true))
                       <span
                         v-if="
                           c3.is_public ||
-                          c3.members.map(m => m.user.pk).includes(userInfo?.pk ?? 0) ||
-                          (c3.parent_members.map(m => m.user.pk).includes(userInfo?.pk ?? 0) &&
-                            c3.is_inherit_members) ||
+                          c3.all_members.map(m => m.user.pk).includes(userInfo?.pk ?? 0) ||
                           superAuth
                         "
                       >
@@ -118,9 +112,7 @@ onBeforeMount(() => emit('aside-visible', true))
                           <span
                             v-if="
                               c4.is_public ||
-                              c4.members.map(m => m.user.pk).includes(userInfo?.pk ?? 0) ||
-                              (c4.parent_members.map(m => m.user.pk).includes(userInfo?.pk ?? 0) &&
-                                c4.is_inherit_members) ||
+                              c4.all_members.map(m => m.user.pk).includes(userInfo?.pk ?? 0) ||
                               superAuth
                             "
                           >
@@ -136,11 +128,7 @@ onBeforeMount(() => emit('aside-visible', true))
                               <span
                                 v-if="
                                   c5.is_public ||
-                                  c5.members.map(m => m.user.pk).includes(userInfo?.pk ?? 0) ||
-                                  (c5.parent_members
-                                    .map(m => m.user.pk)
-                                    .includes(userInfo?.pk ?? 0) &&
-                                    c5.is_inherit_members) ||
+                                  c5.all_members.map(m => m.user.pk).includes(userInfo?.pk ?? 0) ||
                                   superAuth
                                 "
                               >
