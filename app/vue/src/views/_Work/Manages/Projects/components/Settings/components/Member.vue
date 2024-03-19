@@ -6,6 +6,7 @@ import type { IssueProject, SimpleMember } from '@/store/types/work'
 import NoData from '@/views/_Work/components/NoData.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import { all } from 'axios'
 
 const memberConfirmModal = ref()
 const memberFormModal = ref()
@@ -34,14 +35,23 @@ const userList = computed(() => {
 
 const memberRole = ref<number[]>([]) // 업데이트할 멤버의 권한
 
-const isInherit = (mem: number, role?: number) => {
-  if (!role) {
-    return !!allMembers.value.filter(m => m.pk === mem)[0]
-  } else {
-    return allMembers.value
-      .filter(m => m.pk === mem)[0]
-      ?.roles.map(r => r.pk)
-      .includes(role)
+const noInheritMem = (mem: number) => {
+  const member = memberList.value.filter(m => m.pk === mem)[0]
+  const duplicate = allMembers.value.filter(m => m.pk === mem)[0]
+  return !!member && member.roles.length === duplicate.roles.length
+}
+
+const inheritRole = (mem: number, role: number) => {
+  if (noInheritMem(mem)) return false
+  else {
+    const member = memberList.value.filter(m => m.pk === mem)[0]
+    return (
+      !member &&
+      allMembers.value
+        .filter(m => m.pk === mem)[0]
+        .roles.map(r => r.pk)
+        .includes(role)
+    )
   }
 }
 
@@ -200,10 +210,10 @@ onBeforeMount(() => {
                     :label="role.name"
                     :value="role.pk"
                     :id="'role-' + role.pk"
-                    :disabled="isInherit(mem.pk, role.pk)"
+                    :disabled="inheritRole(mem.pk, role.pk)"
                     class="text-left"
                   />
-                  <span v-if="isInherit(mem.pk, role.pk)" class="form-text">
+                  <span v-if="inheritRole(mem.pk, role.pk)" class="form-text">
                     상위 프로젝트로부터 상속
                   </span>
                 </div>
@@ -250,7 +260,7 @@ onBeforeMount(() => {
                 <router-link to="" @click="cancelEdit">취소</router-link>
               </span>
 
-              <span v-if="!isInherit(mem.pk)">
+              <span v-if="noInheritMem(mem.pk)">
                 <v-icon icon="mdi-trash-can-outline" color="grey" size="sm" />
                 <router-link to="" @click="toDelete(mem)">삭제</router-link>
               </span>
