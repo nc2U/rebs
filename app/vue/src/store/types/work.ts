@@ -30,8 +30,11 @@ export interface IssueProject {
   members: SimpleMember[]
   sub_projects?: IssueProject[]
   module: Module | null
-  user?: number
+  visible: boolean
+  creator?: string
+  updater?: string
   created?: string
+  updated?: string
 }
 
 export interface Module {
