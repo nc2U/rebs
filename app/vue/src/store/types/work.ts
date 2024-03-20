@@ -31,8 +31,7 @@ export interface IssueProject {
   sub_projects?: IssueProject[]
   module: Module | null
   visible: boolean
-  creator?: string
-  updater?: string
+  user?: string
   created?: string
   updated?: string
 }
