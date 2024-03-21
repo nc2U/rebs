@@ -17,6 +17,9 @@ const emit = defineEmits(['aside-visible'])
 const superAuth = inject('superAuth', false)
 const userInfo = inject<ComputedRef<User>>('userInfo')
 
+const isOwnProject = (project: IssueProject) =>
+  project.all_members.map(m => m.user.pk).includes(userInfo?.value.pk as number)
+
 onBeforeMount(() => emit('aside-visible', true))
 </script>
 
@@ -56,6 +59,7 @@ onBeforeMount(() => emit('aside-visible', true))
           <router-link :to="{ name: '(개요)', params: { projId: proj.slug } }">
             {{ proj.name }}
           </router-link>
+          <v-icon v-if="isOwnProject(proj)" icon="mdi-account-tag" size="15" class="ml-1" />
           <p v-html="proj.description" />
 
           <!-- c1 -->
@@ -71,6 +75,7 @@ onBeforeMount(() => emit('aside-visible', true))
                 <router-link :to="{ name: '(개요)', params: { projId: c1.slug } }">
                   {{ c1.name }}
                 </router-link>
+                <v-icon v-if="isOwnProject(c1)" icon="mdi-account-tag" size="15" class="ml-1" />
                 <p v-html="c1.description" />
               </span>
 
@@ -87,6 +92,7 @@ onBeforeMount(() => emit('aside-visible', true))
                     <router-link :to="{ name: '(개요)', params: { projId: c2.slug } }">
                       {{ c2.name }}
                     </router-link>
+                    <v-icon v-if="isOwnProject(c2)" icon="mdi-account-tag" size="15" class="ml-1" />
                     <p v-html="c2.description" />
                   </span>
 
@@ -103,6 +109,12 @@ onBeforeMount(() => emit('aside-visible', true))
                         <router-link :to="{ name: '(개요)', params: { projId: c3.slug } }">
                           {{ c3.name }}
                         </router-link>
+                        <v-icon
+                          v-if="isOwnProject(c3)"
+                          icon="mdi-account-tag"
+                          size="15"
+                          class="ml-1"
+                        />
                         <p v-html="c3.description" />
                       </span>
 
@@ -119,6 +131,12 @@ onBeforeMount(() => emit('aside-visible', true))
                             <router-link :to="{ name: '(개요)', params: { projId: c4.slug } }">
                               {{ c4.name }}
                             </router-link>
+                            <v-icon
+                              v-if="isOwnProject(c4)"
+                              icon="mdi-account-tag"
+                              size="15"
+                              class="ml-1"
+                            />
                             <p v-html="c4.description" />
                           </span>
 
@@ -135,6 +153,12 @@ onBeforeMount(() => emit('aside-visible', true))
                                 <router-link :to="{ name: '(개요)', params: { projId: c5.slug } }">
                                   {{ c5.name }}
                                 </router-link>
+                                <v-icon
+                                  v-if="isOwnProject(c5)"
+                                  icon="mdi-account-tag"
+                                  size="15"
+                                  class="ml-1"
+                                />
                                 <p v-html="c5.description" />
                               </span>
                             </blockquote>
