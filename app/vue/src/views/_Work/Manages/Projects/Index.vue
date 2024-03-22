@@ -31,10 +31,11 @@ const aside = ref(true)
 const asideVisible = (visible: boolean) => (aside.value = visible)
 
 const route = useRoute()
+const routeName = computed(() => route.name as string)
 const company = inject<ComputedRef<Company>>('company')
 const comName = computed(() => company?.value?.name)
 const headerTitle = computed(() =>
-  (route.name as string).includes('프로젝트') ? comName.value : issueProject.value?.name,
+  routeName.value.includes('프로젝트') ? comName.value : issueProject.value?.name,
 )
 
 const accStore = useAccount()
@@ -71,7 +72,7 @@ const projectNavMenus = computed(() => {
 })
 
 const navMenu = computed(() =>
-  (route.name as string).includes('프로젝트') ? navMenus.value : projectNavMenus.value,
+  routeName.value.includes('프로젝트') ? navMenus.value : projectNavMenus.value,
 )
 
 const sideNavCAll = () => cBody.value.toggle()
@@ -113,46 +114,46 @@ onBeforeMount(() => {
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query" :aside="aside">
     <template v-slot:default>
       <ProjectList
-        v-if="route.name === '프로젝트'"
+        v-if="routeName === '프로젝트'"
         :project-list="issueProjectList"
         @aside-visible="asideVisible"
       />
 
       <ProjectForm
-        v-if="route.name === '프로젝트 - 추가'"
+        v-if="routeName === '프로젝트 - 추가'"
         title="새 프로젝트"
         :all-task-projects="AllIssueProjects"
         @aside-visible="asideVisible"
         @on-submit="onSubmit"
       />
 
-      <Overview v-if="route.name === '(개요)'" @aside-visible="asideVisible" />
+      <Overview v-if="routeName === '(개요)'" @aside-visible="asideVisible" />
 
-      <Activity v-if="route.name === '(작업내역)'" @aside-visible="asideVisible" />
+      <Activity v-if="routeName === '(작업내역)'" @aside-visible="asideVisible" />
 
-      <Roadmap v-if="route.name === '(로드맵)'" @aside-visible="asideVisible" />
+      <Roadmap v-if="routeName === '(로드맵)'" @aside-visible="asideVisible" />
 
-      <Issues v-if="route.name === '(업무)'" @aside-visible="asideVisible" />
+      <Issues v-if="routeName.includes('(업무)')" @aside-visible="asideVisible" />
 
-      <SpentTime v-if="route.name === '(소요시간)'" @aside-visible="asideVisible" />
+      <SpentTime v-if="routeName === '(소요시간)'" @aside-visible="asideVisible" />
 
-      <Gantt v-if="route.name === '(차트)'" @aside-visible="asideVisible" />
+      <Gantt v-if="routeName === '(차트)'" @aside-visible="asideVisible" />
 
-      <Calendar v-if="route.name === '(달력)'" @aside-visible="asideVisible" />
+      <Calendar v-if="routeName === '(달력)'" @aside-visible="asideVisible" />
 
-      <News v-if="route.name === '(공지)'" @aside-visible="asideVisible" />
+      <News v-if="routeName === '(공지)'" @aside-visible="asideVisible" />
 
-      <Documents v-if="route.name === '(문서)'" @aside-visible="asideVisible" />
+      <Documents v-if="routeName === '(문서)'" @aside-visible="asideVisible" />
 
-      <Wiki v-if="route.name === '(위키)'" @aside-visible="asideVisible" />
+      <Wiki v-if="routeName === '(위키)'" @aside-visible="asideVisible" />
 
-      <Forums v-if="route.name === '(게시판)'" @aside-visible="asideVisible" />
+      <Forums v-if="routeName === '(게시판)'" @aside-visible="asideVisible" />
 
-      <Files v-if="route.name === '(파일)'" @aside-visible="asideVisible" />
+      <Files v-if="routeName === '(파일)'" @aside-visible="asideVisible" />
 
-      <Repository v-if="route.name === '(저장소)'" @aside-visible="asideVisible" />
+      <Repository v-if="routeName === '(저장소)'" @aside-visible="asideVisible" />
 
-      <Settings v-if="route.name === '(설정)'" @aside-visible="asideVisible" />
+      <Settings v-if="routeName === '(설정)'" @aside-visible="asideVisible" />
     </template>
 
     <template v-slot:aside></template>
