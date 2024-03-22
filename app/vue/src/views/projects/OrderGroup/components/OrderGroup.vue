@@ -77,8 +77,8 @@ onBeforeMount(() => dataSetup())
     <CTableDataCell>
       <CFormSelect v-model="form.sort">
         <option value="">구분선택</option>
-        <option value="1">일반분양</option>
-        <option value="2">조합모집</option>
+        <option value="1">조합모집</option>
+        <option value="2">일반분양</option>
       </CFormSelect>
     </CTableDataCell>
     <CTableDataCell>
