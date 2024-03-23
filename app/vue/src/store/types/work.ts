@@ -176,3 +176,5 @@ export interface Issue {
   created: string
   updated: string
 }
+
+export interface LogEntry {}
