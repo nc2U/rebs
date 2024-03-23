@@ -194,3 +194,5 @@ class LogEntryViewSet(viewsets.ModelViewSet):
     queryset = IssueLogEntry.objects.all()
     serializer_class = LogEntrySerializer
     permission_classes = (permissions.IsAuthenticated,)
+    filterset_fields = ('issue', 'user',)
+    search_fields = ('action', 'details')

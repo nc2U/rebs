@@ -22,7 +22,7 @@ class IssueProject(models.Model):
     depth = models.PositiveSmallIntegerField('단계', default=1,
                                              help_text='프로젝트 간 상하 소속 관계에 의한 단계, 최상위인 경우 1단계 이후 각 뎁스 마다 1씩 증가')
     members = models.ManyToManyField('Member', blank=True, related_name='projects', verbose_name='구성원')
-    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자')
+    자ser = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자')
     created = models.DateTimeField('추가', auto_now_add=True)
     updated = models.DateTimeField('편집', auto_now=True)
 
@@ -479,8 +479,8 @@ class IssueLogEntry(models.Model):
     ACTION_CHOICES = (('Created', '추가'), ('Edited', '편집'))
     action = models.CharField(max_length=10, choices=ACTION_CHOICES)
     details = models.TextField()
-    user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True)
-    timestamp = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사용자')
+    timestamp = models.DateTimeField('로그시간', auto_now_add=True)
 
     def __str__(self):
         return f"{self.action} - {self.timestamp}"
