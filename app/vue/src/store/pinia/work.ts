@@ -142,11 +142,15 @@ export const useWork = defineStore('work', () => {
   //     .then(res => (logEntry.value = res.data))
   //     .catch(err => errorHandle(err.response.data))
 
-  const fetchLogEntryList = () =>
-    api
-      .get(`/log-entry/`)
+  const fetchLogEntryList = async (payload: { issue?: number; user?: number }) => {
+    let url = `/log-entry/?search=Edited`
+    if (payload.issue) url += `&issue=${payload.issue}`
+    if (payload.user) url += `&user=${payload.user}`
+    return await api
+      .get(url)
       .then(res => (logEntryList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
+  }
 
   return {
     issueProject,
