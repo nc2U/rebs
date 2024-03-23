@@ -1,8 +1,11 @@
 <script lang="ts" setup="">
 import { ref, type PropType } from 'vue'
-import type { Issue } from '@/store/types/work'
+import type { Issue, LogEntry } from '@/store/types/work'
 
-defineProps({ issue: { type: Object as PropType<Issue>, default: null } })
+defineProps({
+  issue: { type: Object as PropType<Issue>, default: null },
+  logEntryList: { type: Array as PropType<LogEntry[]>, default: () => [] },
+})
 
 const tabPaneActiveKey = ref(1)
 </script>
@@ -192,11 +195,9 @@ const tabPaneActiveKey = ref(1)
 
   <CTabContent class="pt-3">
     <CTabPane role="tabpanel" aria-labelledby="home-tab" :visible="tabPaneActiveKey === 1">
-      Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown
-      aliqua, retro synth master cleanse. Mustache cliche tempor, williamsburg carles vegan
-      helvetica. Reprehenderit butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi,
-      qui irure terry richardson ex squid. Aliquip placeat salvia cillum iphone. Seitan aliquip quis
-      cardigan american apparel, butcher voluptate nisi qui.
+      <ul v-for="log in logEntryList" :key="log.pk">
+        <li>{{ log.details }}</li>
+      </ul>
     </CTabPane>
     <CTabPane role="tabpanel" aria-labelledby="profile-tab" :visible="tabPaneActiveKey === 2">
       Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid.
@@ -209,13 +210,9 @@ const tabPaneActiveKey = ref(1)
       butcher vero sint qui sapiente accusamus tattooed echo park.
     </CTabPane>
     <CTabPane role="tabpanel" aria-labelledby="contact-tab" :visible="tabPaneActiveKey === 3">
-      Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic
-      lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed
-      craft beer, iphone skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth
-      PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork. Williamsburg banh mi whatever
-      gluten-free, carles pitchfork biodiesel fixie etsy retro mlkshk vice blog. Scenester cred you
-      probably haven't heard of them, vinyl craft beer blog stumptown. Pitchfork sustainable tofu
-      synth chambray yr.
+      <ul v-for="log in logEntryList" :key="log.pk">
+        <li>{{ log.details }}</li>
+      </ul>
     </CTabPane>
   </CTabContent>
 </template>
