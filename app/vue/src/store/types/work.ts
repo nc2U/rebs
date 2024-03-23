@@ -178,7 +178,7 @@ export interface Issue {
 }
 
 export interface LogEntry {
-  id: number
+  pk: number
   action: 'Created' | 'Edited'
   details: string
   timestamp: string
