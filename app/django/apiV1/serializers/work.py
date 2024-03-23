@@ -318,4 +318,4 @@ class SearchSerializer(serializers.ModelSerializer):
 class LogEntrySerializer(serializers.ModelSerializer):
     class Meta:
         model = IssueLogEntry
-        fields = '__all__'
+        fields = ('pk', 'action', 'details', 'timestamp', 'issue', 'user')
