@@ -31,5 +31,5 @@ onBeforeMount(() => {
 <template>
   <IssueList v-if="route.name === '(업무)'" :issue-list="issueList" />
 
-  <IssueView v-if="route.name === '(업무) - 보기'" :issue="issue ?? null" />
+  <IssueView v-if="route.name === '(업무) - 보기'" :issue="issue ?? undefined" />
 </template>

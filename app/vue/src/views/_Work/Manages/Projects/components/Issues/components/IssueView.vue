@@ -2,7 +2,7 @@
 import type { PropType } from 'vue'
 import type { Issue } from '@/store/types/work'
 
-defineProps({ issue: { type: Object as PropType<Issue>, default: undefined } })
+defineProps({ issue: { type: Object as PropType<Issue>, default: null } })
 </script>
 
 <template>
