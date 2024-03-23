@@ -177,4 +177,11 @@ export interface Issue {
   updated: string
 }
 
-export interface LogEntry {}
+export interface LogEntry {
+  id: number
+  action: 'Created' | 'Edited'
+  details: string
+  timestamp: string
+  issue: number
+  user: number
+}
