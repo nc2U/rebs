@@ -4,7 +4,7 @@ from rest_framework import serializers
 from accounts.models import User
 from work.models import (IssueProject, Role, Permission, Member, Module, Version, IssueCategory,
                          Repository, Tracker, IssueStatus, Workflow, CodeActivity, CodeIssuePriority,
-                         CodeDocsCategory, Issue, IssueFile, IssueComment, TimeEntry)
+                         CodeDocsCategory, Issue, IssueFile, IssueComment, TimeEntry, Search, IssueLogEntry)
 
 
 # Work --------------------------------------------------------------------------
@@ -307,3 +307,15 @@ class TimeEntrySerializer(serializers.ModelSerializer):
     class Meta:
         model = TimeEntry
         fields = ('pk', 'issue', 'spent_on', 'hours', 'activity', 'comment', 'user', 'created', 'updated')
+
+
+class SearchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Search
+        fields = '__all__'
+
+
+class LogEntrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IssueLogEntry
+        fields = '__all__'

@@ -7,7 +7,7 @@ from ..serializers.work import *
 
 from work.models import (IssueProject, Role, Permission, Member, Module, Version, IssueCategory,
                          Repository, Tracker, IssueStatus, Workflow, CodeActivity, CodeIssuePriority,
-                         CodeDocsCategory, Issue, IssueFile, IssueComment, TimeEntry)
+                         CodeDocsCategory, Issue, IssueFile, IssueComment, TimeEntry, Search, IssueLogEntry)
 
 
 # Work --------------------------------------------------------------------------
@@ -182,3 +182,15 @@ class TimeEntryViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = PageNumberPaginationTwenty
     search_fields = ('id',)
+
+
+class SearchViewSet(viewsets.ModelViewSet):
+    queryset = Search.objects.all()
+    serializer_class = SearchSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+
+class LogEntryViewSet(viewsets.ModelViewSet):
+    queryset = IssueLogEntry.objects.all()
+    serializer_class = LogEntrySerializer
+    permission_classes = (permissions.IsAuthenticated,)
