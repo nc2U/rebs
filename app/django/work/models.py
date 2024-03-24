@@ -477,8 +477,9 @@ class Search(models.Model):
 class IssueLogEntry(models.Model):
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, verbose_name='업무')
     ACTION_CHOICES = (('Created', '추가'), ('Edited', '편집'))
-    action = models.CharField(max_length=10, choices=ACTION_CHOICES)
-    details = models.TextField()
+    action = models.CharField('이벤트', max_length=10, choices=ACTION_CHOICES)
+    details = models.TextField('설명', blank=True, default='')
+    diff = models.TextField('차이점', blank=True, default='')
     user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사용자')
     timestamp = models.DateTimeField('로그시간', auto_now_add=True)
 

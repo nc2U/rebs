@@ -48,6 +48,7 @@ def track_changes(sender, instance, **kwargs):
 def log_changes(sender, instance, created, **kwargs):
     action = 'Created' if created else 'Edited'
     details = f"- **업무** - _{instance}(#{instance.id})_ 업무가 _{action}_ 되었습니다.  " if created else ""
+    diff = ""
     if hasattr(instance, '_old_project'):
         details += f"- **프로젝트**가 _{instance._old_project}_에서 _{instance.project}_(으)로 변경되었습니다.  "
     if hasattr(instance, '_old_tracker'):
@@ -59,7 +60,8 @@ def log_changes(sender, instance, created, **kwargs):
     if hasattr(instance, '_old_subject'):
         details += f"- **제목**을 _{instance._old_subject}_에서 _{instance.subject}_(으)로 변경되었습니다.  "
     if hasattr(instance, '_old_description'):
-        details += f"- **설명**이 _{instance._old_description}_에서 _{instance.description}_(으)로 변경되었습니다.  "
+        details += f"- **설명**이 변경되었습니다.  "
+        diff += f"_{instance._old_description}_에서 _{instance.description}_(으)로"
     if hasattr(instance, '_old_category'):
         details += f"- **범주**가 _{instance._old_category}_에서 _{instance.category}_(으)로 변경되었습니다.  "
     if hasattr(instance, '_old_fixed_version'):
@@ -84,4 +86,4 @@ def log_changes(sender, instance, created, **kwargs):
         details += f"- **완료 여부**가 _{instance._old_closed}_에서 _{instance.closed}_(으)로 변경되었습니다.  "
 
     user = instance.creator if created else instance.updater
-    IssueLogEntry.objects.create(issue=instance, action=action, details=details, user=user)
+    IssueLogEntry.objects.create(issue=instance, action=action, details=details, diff=diff, user=user)
