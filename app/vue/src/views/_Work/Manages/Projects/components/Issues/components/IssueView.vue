@@ -151,7 +151,7 @@ const tabPaneActiveKey = ref(1)
     </CCardBody>
   </CCard>
 
-  <CNav variant="tabs" role="tablist" compact>
+  <CNav variant="tabs">
     <CNavItem>
       <CNavLink
         href="javascript:void(0);"
@@ -165,7 +165,7 @@ const tabPaneActiveKey = ref(1)
         이력
       </CNavLink>
     </CNavItem>
-    <CNavItem v-if="false">
+    <CNavItem v-if="true">
       <CNavLink
         href="javascript:void(0);"
         :active="tabPaneActiveKey === 2"
@@ -193,28 +193,39 @@ const tabPaneActiveKey = ref(1)
     </CNavItem>
   </CNav>
 
-  <CTabContent class="pt-3">
-    <CTabPane role="tabpanel" aria-labelledby="home-tab" :visible="tabPaneActiveKey === 1">
-      <ul v-for="log in logEntryList" :key="log.pk">
-        <li>{{ log.details }}</li>
-      </ul>
-    </CTabPane>
-    <CTabPane role="tabpanel" aria-labelledby="profile-tab" :visible="tabPaneActiveKey === 2">
-      Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid.
-      Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four
-      loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer
-      mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore
-      aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr, vero magna velit sapiente
-      labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean shorts
-      beard ut DIY ethical culpa terry richardson biodiesel. Art party scenester stumptown, tumblr
-      butcher vero sint qui sapiente accusamus tattooed echo park.
-    </CTabPane>
-    <CTabPane role="tabpanel" aria-labelledby="contact-tab" :visible="tabPaneActiveKey === 3">
-      <ul v-for="log in logEntryList" :key="log.pk">
-        <li>{{ log.details }}</li>
-      </ul>
-    </CTabPane>
-  </CTabContent>
+  <CCard class="border-top-0 p-2" :style="{ '--cui-card-border-radius': 0 }">
+    <CCardBody>
+      <CTabContent>
+        <CTabPane role="tabpanel" aria-labelledby="home-tab" :visible="tabPaneActiveKey === 1">
+          <div v-for="log in logEntryList" :key="log.pk">
+            <CRow>
+              <CCol>{{ log.user }}이(가) 22분 전에 변경</CCol>
+              <CCol class="text-right">#1</CCol>
+            </CRow>
+            <v-divider class="mt-0" />
+            <ul class="pl-4">
+              <li>{{ log.details }}</li>
+            </ul>
+          </div>
+        </CTabPane>
+        <CTabPane role="tabpanel" aria-labelledby="profile-tab" :visible="tabPaneActiveKey === 2">
+          Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid.
+          Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan
+          four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft
+          beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic,
+          assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr, vero
+          magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit,
+          sustainable jean shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party
+          scenester stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.
+        </CTabPane>
+        <CTabPane role="tabpanel" aria-labelledby="contact-tab" :visible="tabPaneActiveKey === 3">
+          <ul v-for="log in logEntryList" :key="log.pk">
+            <li>{{ log.details }}</li>
+          </ul>
+        </CTabPane>
+      </CTabContent>
+    </CCardBody>
+  </CCard>
 </template>
 
 <style lang="scss" scoped>
