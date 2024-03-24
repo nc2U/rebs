@@ -27,6 +27,7 @@ const form = ref({
   due_date: null as string | null,
   estimated_hours: null as number | null,
   done_ratio: 0,
+  watchers: [] as number[],
 })
 
 const emit = defineEmits(['on-submit', 'close-form'])
@@ -204,41 +205,65 @@ onBeforeMount(() => {
           </CCol>
         </CRow>
 
-        <h6>작업시간 기록</h6>
-        <v-divider class="mt-0" />
-        <CRow class="mb-3">
-          <CFormLabel for="issue-project" class="col-sm-2 col-form-label text-right">
-            소요시간
-          </CFormLabel>
-          <CCol sm="4">
-            <CInputGroup>
-              <CFormInput v-model="form.estimated_hours" id="estimated_hours" placeholder="시간" />
-              <CInputGroupText>시간</CInputGroupText>
-            </CInputGroup>
-          </CCol>
+        <div v-if="!issue">
+          <CRow class="mb-3">
+            <CFormLabel for="file" class="col-sm-2 col-form-label text-right"> 파일</CFormLabel>
+            <CCol sm="4">
+              <CFormInput id="file" type="file" />
+            </CCol>
+          </CRow>
 
-          <CFormLabel for="issue-project" class="col-sm-2 col-form-label text-right">
-            작업종류
-          </CFormLabel>
-          <CCol sm="4">
-            <CFormSelect>
-              <option value="">---------</option>
-            </CFormSelect>
-          </CCol>
-        </CRow>
+          <CRow class="mb-3">
+            <CFormLabel for="watcher" class="col-sm-2 col-form-label text-right">
+              업무 열람 공유자
+            </CFormLabel>
+            <CCol sm="4" style="padding-top: 8px">
+              <CFormCheck v-model="form.watchers" id="watcher" label="austin kho" />
+            </CCol>
+          </CRow>
+        </div>
 
-        <CRow class="mb-3">
-          <CFormLabel for="issue-project" class="col-sm-2 col-form-label text-right">
-            설명
-          </CFormLabel>
-          <CCol sm="10">
-            <CFormInput />
-          </CCol>
-        </CRow>
+        <div v-else>
+          <h6>작업시간 기록</h6>
+          <v-divider class="mt-0" />
+          <CRow class="mb-3">
+            <CFormLabel for="issue-project" class="col-sm-2 col-form-label text-right">
+              소요시간
+            </CFormLabel>
+            <CCol sm="4">
+              <CInputGroup>
+                <CFormInput
+                  v-model="form.estimated_hours"
+                  id="estimated_hours"
+                  placeholder="시간"
+                />
+                <CInputGroupText>시간</CInputGroupText>
+              </CInputGroup>
+            </CCol>
 
-        <h6>댓글</h6>
-        <v-divider class="mt-0" />
-        <MdEditor style="height: 180px" />
+            <CFormLabel for="issue-project" class="col-sm-2 col-form-label text-right">
+              작업종류
+            </CFormLabel>
+            <CCol sm="4">
+              <CFormSelect>
+                <option value="">---------</option>
+              </CFormSelect>
+            </CCol>
+          </CRow>
+
+          <CRow class="mb-3">
+            <CFormLabel for="issue-project" class="col-sm-2 col-form-label text-right">
+              설명
+            </CFormLabel>
+            <CCol sm="10">
+              <CFormInput />
+            </CCol>
+          </CRow>
+
+          <h6>댓글</h6>
+          <v-divider class="mt-0" />
+          <MdEditor style="height: 180px" />
+        </div>
       </CCardBody>
     </CCard>
 
