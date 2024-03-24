@@ -183,5 +183,8 @@ export interface LogEntry {
   details: string
   timestamp: string
   issue: number
-  user: number
+  user: {
+    pk: number
+    username: string
+  }
 }
