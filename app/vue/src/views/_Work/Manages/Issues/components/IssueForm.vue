@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onBeforeMount, type PropType } from 'vue'
+import { ref, onBeforeMount, type PropType, computed } from 'vue'
 import type { Issue } from '@/store/types/work'
 import DatePicker from '@/components/DatePicker/index.vue'
 import MdEditor from '@/components/MdEditor/Index.vue'
@@ -14,6 +14,7 @@ const props = defineProps({
 
 const validated = ref(false)
 const editDetails = ref(true)
+
 const form = ref({
   pk: null as number | null,
   project: '',
@@ -41,6 +42,25 @@ const timeEntry = ref({
 })
 
 const emit = defineEmits(['on-submit', 'close-form'])
+
+const formCheck = computed(() => {
+  if (props.issue) {
+    const a = form.value.project === props.issue.project.slug
+    const b = form.value.is_private === props.issue.is_private
+    const c = form.value.tracker === props.issue.tracker
+    const d = form.value.subject === props.issue.subject
+    const e = form.value.description === props.issue.description
+    const f = form.value.status === props.issue.status
+    const g = form.value.parent === props.issue.parent
+    const h = form.value.priority === props.issue.priority
+    const i = form.value.start_date === props.issue.start_date
+    const j = form.value.assigned_to === props.issue.assigned_to?.pk
+    const k = form.value.due_date === props.issue.due_date
+    const l = form.value.estimated_hours === props.issue.estimated_hours
+    const m = form.value.done_ratio === props.issue.done_ratio
+    return a && b && c && d && e && f && g && h && i && j && k && l && m
+  } else return false
+})
 
 const onSubmit = (event: Event) => {
   if (isValidate(event)) {
@@ -191,7 +211,12 @@ onBeforeMount(() => {
             추정시간
           </CFormLabel>
           <div class="col-sm-3">
-            <CFormInput v-model="form.estimated_hours" id="estimated_hours" />
+            <CFormInput
+              v-model.number="form.estimated_hours"
+              type="number"
+              min="0"
+              id="estimated_hours"
+            />
           </div>
           <div class="col-sm-1" style="padding-top: 6px">시간</div>
         </CRow>
@@ -203,7 +228,7 @@ onBeforeMount(() => {
             진척도
           </CFormLabel>
           <CCol sm="4">
-            <CFormSelect v-model="form.done_ratio" id="done_ratio">
+            <CFormSelect v-model.number="form.done_ratio" id="done_ratio">
               <option :value="0">0%</option>
               <option :value="10">10%</option>
               <option :value="20">20%</option>
@@ -245,7 +270,7 @@ onBeforeMount(() => {
               소요시간
             </CFormLabel>
             <div class="col-sm-3">
-              <CFormInput v-model="timeEntry.hours" id="hours" />
+              <CFormInput v-model.number="timeEntry.hours" type="number" min="0" id="hours" />
             </div>
             <div class="col-sm-1" style="padding-top: 6px">시간</div>
 
@@ -275,7 +300,9 @@ onBeforeMount(() => {
       </CCardBody>
     </CCard>
 
-    <CButton type="submit" color="primary">확인</CButton>
+    <CButton type="submit" :color="issue ? 'success' : 'primary'" :disabled="formCheck">
+      확인
+    </CButton>
     <CButton type="button" color="light" @click="closeForm">취소</CButton>
   </CForm>
 </template>

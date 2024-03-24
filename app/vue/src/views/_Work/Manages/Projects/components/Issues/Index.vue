@@ -17,7 +17,8 @@ const logEntryList = computed(() => workStore.logEntryList)
 
 const onSubmit = (payload: any) => {
   console.log(payload)
-  alert('issue create!')
+  if (payload.pk) alert('issue update!')
+  else alert('issue create!')
   router.replace({ name: '(업무)' })
 }
 
@@ -47,6 +48,7 @@ onBeforeMount(() => {
     v-if="route.name === '(업무) - 보기' && issue"
     :issue="issue"
     :log-entry-list="logEntryList"
+    @on-submit="onSubmit"
   />
 
   <CRow v-if="route.name === '(업무) - 추가'" class="py-2">

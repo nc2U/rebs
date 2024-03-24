@@ -10,9 +10,13 @@ defineProps({
   logEntryList: { type: Array as PropType<LogEntry[]>, default: () => [] },
 })
 
+const emit = defineEmits(['on-submit'])
+
 const editForm = ref(false)
 
 const tabPaneActiveKey = ref(1)
+
+const onSubmit = (payload: any) => emit('on-submit', payload)
 
 const callEditForm = () => (editForm.value = true)
 </script>
@@ -252,7 +256,7 @@ const callEditForm = () => (editForm.value = true)
       </CCol>
     </CRow>
 
-    <IssueForm :issue="issue" @close-form="() => (editForm = false)" />
+    <IssueForm :issue="issue" @on-submit="onSubmit" @close-form="() => (editForm = false)" />
   </div>
 </template>
 
