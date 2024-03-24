@@ -30,6 +30,14 @@ const form = ref({
   watchers: [] as number[],
 })
 
+const timeEntry = ref({
+  issue: null as number | null,
+  spent_on: '',
+  hours: null as number | null,
+  activity: null as number | null,
+  comment: '',
+})
+
 const emit = defineEmits(['on-submit', 'close-form'])
 
 const onSubmit = () => {
@@ -174,12 +182,10 @@ onBeforeMount(() => {
           <CFormLabel for="estimated_hours" class="col-sm-2 col-form-label text-right">
             추정시간
           </CFormLabel>
-          <CCol sm="4">
-            <CInputGroup>
-              <CFormInput v-model="form.estimated_hours" id="estimated_hours" placeholder="시간" />
-              <CInputGroupText>시간</CInputGroupText>
-            </CInputGroup>
-          </CCol>
+          <div class="col-sm-3">
+            <CFormInput v-model="form.estimated_hours" id="estimated_hours" />
+          </div>
+          <div class="col-sm-1" style="padding-top: 6px">시간</div>
         </CRow>
 
         <CRow class="mb-3">
@@ -227,19 +233,13 @@ onBeforeMount(() => {
           <h6>작업시간 기록</h6>
           <v-divider class="mt-0" />
           <CRow class="mb-3">
-            <CFormLabel for="issue-project" class="col-sm-2 col-form-label text-right">
+            <CFormLabel for="hours" class="col-sm-2 col-form-label text-right">
               소요시간
             </CFormLabel>
-            <CCol sm="4">
-              <CInputGroup>
-                <CFormInput
-                  v-model="form.estimated_hours"
-                  id="estimated_hours"
-                  placeholder="시간"
-                />
-                <CInputGroupText>시간</CInputGroupText>
-              </CInputGroup>
-            </CCol>
+            <div class="col-sm-3">
+              <CFormInput v-model="timeEntry.hours" id="hours" />
+            </div>
+            <div class="col-sm-1" style="padding-top: 6px">시간</div>
 
             <CFormLabel for="issue-project" class="col-sm-2 col-form-label text-right">
               작업종류
@@ -267,6 +267,7 @@ onBeforeMount(() => {
       </CCardBody>
     </CCard>
 
-    <CButton type="button" color="light" @click="closeForm" size="sm">취소</CButton>
+    <CButton color="primary">확인</CButton>
+    <CButton type="button" color="light" @click="closeForm">취소</CButton>
   </CForm>
 </template>
