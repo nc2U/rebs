@@ -1,7 +1,9 @@
 <script lang="ts" setup="">
 import { ref, type PropType } from 'vue'
 import type { Issue, LogEntry } from '@/store/types/work'
-import { timeFormat, elapsedTime, dateFormat } from '@/utils/baseMixins'
+import { elapsedTime } from '@/utils/baseMixins'
+import IssueControl from './IssueControl.vue'
+import IssueForm from '@/views/_Work/Manages/Issues/components/IssueForm.vue'
 
 defineProps({
   issue: { type: Object as PropType<Issue>, default: null },
@@ -20,56 +22,7 @@ const tabPaneActiveKey = ref(1)
       </h5>
     </CCol>
 
-    <CCol class="text-right">
-      <span v-show="$route.name !== '프로젝트 - 추가'" class="mr-2">
-        <v-icon icon="mdi-pencil" color="amber" size="sm" />
-        <router-link to="" class="ml-1">편집</router-link>
-      </span>
-
-      <span v-show="$route.name !== '프로젝트 - 추가'" class="mr-2">
-        <v-icon icon="mdi-timer-edit-outline" color="grey" size="sm" />
-        <router-link to="" class="ml-1">작업시간 기록</router-link>
-      </span>
-
-      <span v-show="$route.name !== '프로젝트 - 추가'" class="mr-2">
-        <v-icon icon="mdi-star" color="amber" size="sm" />
-        <router-link to="" class="ml-1">관심끄기</router-link>
-      </span>
-
-      <span v-show="$route.name !== '프로젝트 - 추가'" class="mr-2">
-        <v-icon icon="mdi-content-copy" color="grey" size="sm" />
-        <router-link to="" class="ml-1">복사</router-link>
-      </span>
-
-      <span>
-        <CDropdown color="secondary" variant="input-group" placement="bottom-end">
-          <CDropdownToggle
-            :caret="false"
-            color="light"
-            variant="ghost"
-            size="sm"
-            shape="rounded-pill"
-          >
-            <v-icon icon="mdi-dots-horizontal" class="pointer" color="grey-darken-1" />
-            <v-tooltip activator="parent" location="top">Actions</v-tooltip>
-          </CDropdownToggle>
-          <CDropdownMenu>
-            <CDropdownItem>
-              <router-link to="">
-                <v-icon icon="mdi-link-plus" color="grey" size="sm" />
-                링크 복사
-              </router-link>
-            </CDropdownItem>
-            <CDropdownItem>
-              <router-link to="">
-                <v-icon icon="mdi-trash-can-outline" color="grey" size="sm" />
-                업무 삭제
-              </router-link>
-            </CDropdownItem>
-          </CDropdownMenu>
-        </CDropdown>
-      </span>
-    </CCol>
+    <IssueControl />
   </CRow>
 
   <CCard color="yellow-lighten-5 mb-3">
@@ -133,7 +86,6 @@ const tabPaneActiveKey = ref(1)
               </div>
             </CCol>
           </CRow>
-
           <CRow>
             <CCol class="title">추정시간:</CCol>
             <CCol>{{ issue?.estimated_hours ? issue.estimated_hours + ':00 시간' : '' }}</CCol>
@@ -267,6 +219,20 @@ const tabPaneActiveKey = ref(1)
       </CTabContent>
     </CCardBody>
   </CCard>
+
+  <div>
+    <CRow class="pt-2">
+      <IssueControl />
+    </CRow>
+
+    <CRow class="py-2">
+      <CCol>
+        <h5>편집</h5>
+      </CCol>
+    </CRow>
+
+    <IssueForm />
+  </div>
 </template>
 
 <style lang="scss" scoped>
