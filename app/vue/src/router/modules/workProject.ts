@@ -115,6 +115,12 @@ const workProject = {
       path: 'issue',
       name: '업무',
       component: () => import('@/views/_Work/Manages/Issues/Index.vue'),
+      children: [
+        {
+          path: 'create',
+          name: '업무 - 추가',
+        },
+      ],
     },
     {
       path: 'time_entry',
