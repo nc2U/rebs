@@ -379,9 +379,9 @@ class Issue(models.Model):
     start_date = models.DateField('시작 일자', null=True, blank=True)
     due_date = models.DateField('완료 기한', null=True, blank=True)
     PROGRESS_RATIO = (
-        (0.0, '0%'), (0.1, '10%'), (0.2, '20%'), (0.3, '30%'), (0.4, '40%'), (0.5, '50%'),
-        (0.6, '60%'), (0.7, '70%'), (0.8, '80%'), (0.9, '90%'), (1.0, '100%'))
-    done_ratio = models.DecimalField('진척도', max_digits=2, decimal_places=1, choices=PROGRESS_RATIO, default=0.0)
+        (0, '0%'), (10, '10%'), (20, '20%'), (30, '30%'), (40, '40%'), (50, '50%'),
+        (60, '60%'), (70, '70%'), (80, '80%'), (90, '90%'), (100, '100%'))
+    done_ratio = models.PositiveSmallIntegerField('진척도', choices=PROGRESS_RATIO, default=0)
     closed = models.DateTimeField('완료', null=True, blank=True, help_text='상태가 완료로 입력된 시간. 한 번 완료하면 다시 진행으로 변경해도 남아있음.')
     creator = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자', related_name='creator')
     updater = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='수정자',
