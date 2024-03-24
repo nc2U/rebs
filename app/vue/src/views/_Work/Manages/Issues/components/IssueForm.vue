@@ -1,9 +1,10 @@
-<script lang="ts" setup="">
-import { ref } from 'vue'
-
-const msg = ref('Issue Form!')
+<script lang="ts" setup>
+const emit = defineEmits(['close-form'])
+const closeForm = () => emit('close-form')
 </script>
 
 <template>
-  <div>{{ msg }}</div>
+  <div>{{ 'edit form' }}</div>
+
+  <CButton type="button" color="light" @click="closeForm" size="sm">취소</CButton>
 </template>

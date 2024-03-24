@@ -10,7 +10,11 @@ defineProps({
   logEntryList: { type: Array as PropType<LogEntry[]>, default: () => [] },
 })
 
+const editForm = ref(false)
+
 const tabPaneActiveKey = ref(1)
+
+const callEditForm = () => (editForm.value = true)
 </script>
 
 <template>
@@ -22,7 +26,7 @@ const tabPaneActiveKey = ref(1)
       </h5>
     </CCol>
 
-    <IssueControl />
+    <IssueControl @call-edit-form="callEditForm" />
   </CRow>
 
   <CCard color="yellow-lighten-5 mb-3">
@@ -220,18 +224,18 @@ const tabPaneActiveKey = ref(1)
     </CCardBody>
   </CCard>
 
-  <div>
-    <CRow class="pt-2">
-      <IssueControl />
-    </CRow>
+  <CRow class="pt-2">
+    <IssueControl @call-edit-form="callEditForm" />
+  </CRow>
 
+  <div v-if="editForm">
     <CRow class="py-2">
       <CCol>
         <h5>편집</h5>
       </CCol>
     </CRow>
 
-    <IssueForm />
+    <IssueForm @close-form="() => (editForm = false)" />
   </div>
 </template>
 

@@ -1,14 +1,14 @@
-<script lang="ts" setup="">
-import { ref } from 'vue'
+<script lang="ts" setup>
+const emit = defineEmits(['call-edit-form'])
 
-const msg = ref('Hello world')
+const callEditForm = () => emit('call-edit-form')
 </script>
 
 <template>
   <CCol class="text-right">
     <span v-show="$route.name !== '프로젝트 - 추가'" class="mr-2">
       <v-icon icon="mdi-pencil" color="amber" size="sm" />
-      <router-link to="" class="ml-1">편집</router-link>
+      <router-link to="" class="ml-1" @click="callEditForm">편집</router-link>
     </span>
 
     <span v-show="$route.name !== '프로젝트 - 추가'" class="mr-2">
