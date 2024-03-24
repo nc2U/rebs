@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { ref, onBeforeMount, type PropType } from 'vue'
+import type { Issue } from '@/store/types/work'
 import DatePicker from '@/components/DatePicker/index.vue'
 import MdEditor from '@/components/MdEditor/Index.vue'
-import type { Issue } from '@/store/types/work'
 
 const props = defineProps({
   issue: {
@@ -262,7 +262,7 @@ onBeforeMount(() => {
 
           <h6>댓글</h6>
           <v-divider class="mt-0" />
-          <MdEditor style="height: 180px" />
+          <!--          <MdEditor style="height: 180px" />-->
         </div>
       </CCardBody>
     </CCard>

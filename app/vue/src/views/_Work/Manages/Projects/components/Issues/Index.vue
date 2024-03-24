@@ -4,6 +4,7 @@ import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import IssueList from './components/IssueList.vue'
 import IssueView from './components/IssueView.vue'
+import IssueForm from '@/views/_Work/Manages/Issues/components/IssueForm.vue'
 
 const emit = defineEmits(['aside-visible'])
 
@@ -41,4 +42,15 @@ onBeforeMount(() => {
     :issue="issue"
     :log-entry-list="logEntryList"
   />
+
+  <CRow v-if="route.name === '(업무) - 추가'" class="py-2">
+    <CCol>
+      <h5>
+        <span>{{ issue?.tracker }} #{{ issue?.pk }}</span>
+        <CBadge color="primary" variant="outline" class="ml-2">진행중</CBadge>
+      </h5>
+    </CCol>
+
+    <IssueForm />
+  </CRow>
 </template>

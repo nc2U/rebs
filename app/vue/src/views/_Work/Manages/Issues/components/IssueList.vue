@@ -1,4 +1,4 @@
-<script lang="ts" setup="">
+<script lang="ts" setup>
 import type { PropType } from 'vue'
 import type { Issue } from '@/store/types/work'
 import { timeFormat } from '@/utils/baseMixins'
@@ -11,25 +11,25 @@ defineProps({
 </script>
 
 <template>
-  <CRow class="py-2">
-    <CCol>
-      <h5>업무</h5>
-    </CCol>
+  <CRow>
+    <CRow class="py-2">
+      <CCol>
+        <h5>{{ $route.name }}</h5>
+      </CCol>
 
-    <CCol class="text-right">
-      <span v-show="$route.name !== '프로젝트 - 추가'" class="mr-2">
-        <v-icon icon="mdi-plus-circle" color="success" size="sm" />
-        <router-link :to="{ name: '(업무) - 추가' }" class="ml-1">새 업무만들기</router-link>
-      </span>
-    </CCol>
-  </CRow>
+      <CCol class="text-right">
+        <span class="mr-2">
+          <v-icon icon="mdi-plus-circle" color="success" size="sm" />
+          <router-link :to="{ name: '업무 - 추가' }" class="ml-1">새 업무만들기</router-link>
+        </span>
+      </CCol>
+    </CRow>
 
-  <SearchList />
+    <SearchList />
 
-  <NoData v-if="!issueList.length" />
+    <NoData v-if="!issueList.length" />
 
-  <CRow v-else>
-    <CCol col="12">
+    <CCol v-else col="12">
       <v-divider class="mb-0" />
       <CTable striped hover small>
         <CTableHead>
