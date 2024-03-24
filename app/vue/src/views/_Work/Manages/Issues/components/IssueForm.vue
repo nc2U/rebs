@@ -76,8 +76,10 @@ onBeforeMount(() => {
   <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
     <CCard color="light" class="mb-2">
       <CCardBody>
-        <h6>속성 변경</h6>
-        <v-divider class="mt-0" />
+        <div v-if="issue">
+          <h6>속성 변경</h6>
+          <v-divider class="mt-0" />
+        </div>
         <CRow class="mb-3">
           <CFormLabel for="project" class="col-sm-2 col-form-label text-right required">
             프로젝트

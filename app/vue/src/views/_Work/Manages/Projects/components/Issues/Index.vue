@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount } from 'vue'
-import { onBeforeRouteUpdate, useRoute } from 'vue-router'
+import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import IssueList from './components/IssueList.vue'
 import IssueView from './components/IssueView.vue'
@@ -8,12 +8,18 @@ import IssueForm from '@/views/_Work/Manages/Issues/components/IssueForm.vue'
 
 const emit = defineEmits(['aside-visible'])
 
-const route = useRoute()
+const [route, router] = [useRoute(), useRouter()]
 
 const workStore = useWork()
 const issue = computed(() => workStore.issue)
 const issueList = computed(() => workStore.issueList)
 const logEntryList = computed(() => workStore.logEntryList)
+
+const onSubmit = (payload: any) => {
+  console.log(payload)
+  alert('issue create!')
+  router.replace({ name: '(업무)' })
+}
 
 onBeforeRouteUpdate(async to => {
   if (to.params.issueId) await workStore.fetchIssue(Number(to.params.issueId))
@@ -45,12 +51,9 @@ onBeforeMount(() => {
 
   <CRow v-if="route.name === '(업무) - 추가'" class="py-2">
     <CCol>
-      <h5>
-        <span>{{ issue?.tracker }} #{{ issue?.pk }}</span>
-        <CBadge color="primary" variant="outline" class="ml-2">진행중</CBadge>
-      </h5>
+      <h5>새 업무만들기</h5>
     </CCol>
 
-    <IssueForm />
+    <IssueForm @on-submit="onSubmit" @close-form="router.push({ name: '(업무)' })" />
   </CRow>
 </template>
