@@ -83,21 +83,22 @@ const tabPaneActiveKey = ref(1)
         <router-link to="">22분</router-link>
         전에 수정됨.
       </p>
+
       <CRow>
-        <CCol>상태 :</CCol>
+        <CCol class="col-6 col-md-3 title">상태 :</CCol>
         <CCol>{{ issue?.status }}</CCol>
-        <CCol>시작일:</CCol>
+        <CCol class="col-6 col-md-3 title">시작일:</CCol>
         <CCol>{{ issue?.start_date }}</CCol>
       </CRow>
       <CRow>
-        <CCol>우선순위 :</CCol>
+        <CCol class="col-6 col-md-3 title">우선순위 :</CCol>
         <CCol>{{ issue?.priority }}</CCol>
-        <CCol>완료일:</CCol>
+        <CCol class="col-6 col-md-3 title">완료일:</CCol>
         <CCol>{{ issue?.due_date }}</CCol>
       </CRow>
 
       <CRow>
-        <CCol>담당자 :</CCol>
+        <CCol class="col-6 col-md-3 title">담당자 :</CCol>
         <CCol>
           <router-link
             :to="{ name: '사용자 - 보기', params: { userId: issue?.assigned_to?.pk ?? 0 } }"
@@ -105,21 +106,31 @@ const tabPaneActiveKey = ref(1)
             {{ issue?.assigned_to?.username }}
           </router-link>
         </CCol>
-        <CCol>진척도:</CCol>
-        <CCol>{{ issue?.done_ratio }}%</CCol>
+        <CCol class="col-6 col-md-3 title">진척도:</CCol>
+        <CCol>
+          <div>
+            <CProgress
+              color="success"
+              :value="20"
+              style="width: 110px; float: left; margin-top: 2px"
+              height="16"
+            />
+            <span class="ml-2 pt-0">{{ issue?.done_ratio }}%</span>
+          </div>
+        </CCol>
       </CRow>
 
       <CRow>
-        <CCol></CCol>
-        <CCol></CCol>
-        <CCol>추정시간:</CCol>
-        <CCol>{{ issue?.estimated_hours }}</CCol>
+        <CCol class="d-none d-md-block"></CCol>
+        <CCol class="d-none d-md-block"></CCol>
+        <CCol class="col-6 col-md-3 title">추정시간:</CCol>
+        <CCol>{{ issue?.estimated_hours ? issue.estimated_hours + ':00 시간' : '' }}</CCol>
       </CRow>
 
       <v-divider />
 
       <CRow class="mb-3">
-        <CCol>설명</CCol>
+        <CCol class="title">설명</CCol>
         <CCol class="text-right">
           <v-icon icon="mdi-comment-text-outline" size="sm" color="info" class="mr-2" />
           <router-link to="">댓글달기</router-link>
@@ -135,7 +146,7 @@ const tabPaneActiveKey = ref(1)
       <v-divider />
 
       <CRow>
-        <CCol>하위 일감</CCol>
+        <CCol class="title">하위 일감</CCol>
         <CCol class="text-right">
           <router-link to="">추가</router-link>
         </CCol>
@@ -144,7 +155,7 @@ const tabPaneActiveKey = ref(1)
       <v-divider />
 
       <CRow>
-        <CCol>연결된 일감</CCol>
+        <CCol class="title">연결된 일감</CCol>
         <CCol class="text-right">
           <router-link to="">추가</router-link>
         </CCol>
@@ -245,6 +256,10 @@ const tabPaneActiveKey = ref(1)
 </template>
 
 <style lang="scss" scoped>
+.title {
+  font-weight: bold;
+}
+
 .sub-title {
   font-size: 1.1em;
   font-weight: bold;
