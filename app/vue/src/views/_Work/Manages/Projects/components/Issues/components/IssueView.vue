@@ -1,6 +1,7 @@
 <script lang="ts" setup="">
 import { ref, type PropType } from 'vue'
 import type { Issue, LogEntry } from '@/store/types/work'
+import { timeFormat, elapsedTime, dateFormat } from '@/utils/baseMixins'
 
 defineProps({
   issue: { type: Object as PropType<Issue>, default: null },
@@ -199,8 +200,23 @@ const tabPaneActiveKey = ref(1)
         <CTabPane role="tabpanel" aria-labelledby="home-tab" :visible="tabPaneActiveKey === 1">
           <div v-for="log in logEntryList" :key="log.pk">
             <CRow>
-              <CCol>{{ log.user }}이(가) 22분 전에 변경</CCol>
-              <CCol class="text-right">#1</CCol>
+              <CCol>
+                <router-link :to="{ name: '사용자 - 보기', params: { userId: log.user.pk } }">
+                  {{ log.user.username }}
+                </router-link>
+                이(가)
+                <router-link
+                  :to="{
+                    name: '(작업내역)',
+                    params: { projId: 'redmine' },
+                    query: { from: log.timestamp.substring(0, 10) },
+                  }"
+                >
+                  {{ elapsedTime(log.timestamp) }}
+                </router-link>
+                에 변경
+              </CCol>
+              <CCol class="text-right">#{{ log.pk }}</CCol>
             </CRow>
             <v-divider class="mt-0" />
             <ul class="pl-4">
