@@ -6,7 +6,7 @@ import IssueControl from './IssueControl.vue'
 import IssueForm from '@/views/_Work/Manages/Issues/components/IssueForm.vue'
 
 defineProps({
-  issue: { type: Object as PropType<Issue>, default: null },
+  issue: { type: Object as PropType<Issue>, required: true },
   logEntryList: { type: Array as PropType<LogEntry[]>, default: () => [] },
 })
 
@@ -35,10 +35,27 @@ const callEditForm = () => (editForm.value = true)
       <p class="mt-1">
         <router-link to="">austin2 kho</router-link>
         이(가)
-        <router-link to="">23분</router-link>
+        <router-link
+          :to="{
+            name: '(작업내역)',
+            params: { projId: 'redmine' },
+            query: { from: issue?.created.substring(0, 10) },
+          }"
+        >
+          {{ elapsedTime(issue?.created) }}
+        </router-link>
         전에 추가함.
-        <router-link to="">22분</router-link>
+        <router-link
+          :to="{
+            name: '(작업내역)',
+            params: { projId: 'redmine' },
+            query: { from: issue.updated.substring(0, 10) },
+          }"
+        >
+          {{ elapsedTime(issue.updated) }}
+        </router-link>
         전에 수정됨.
+        {{ issue.updated }}
       </p>
 
       <CRow>

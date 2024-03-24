@@ -37,8 +37,8 @@ onBeforeMount(() => {
   <IssueList v-if="route.name === '(업무)'" :issue-list="issueList" />
 
   <IssueView
-    v-if="route.name === '(업무) - 보기'"
-    :issue="issue ?? undefined"
+    v-if="route.name === '(업무) - 보기' && issue"
+    :issue="issue"
     :log-entry-list="logEntryList"
   />
 </template>
