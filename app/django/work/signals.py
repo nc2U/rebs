@@ -86,4 +86,5 @@ def log_changes(sender, instance, created, **kwargs):
         details += f"- **완료 여부**가 _{instance._old_closed}_에서 _{instance.closed}_(으)로 변경되었습니다.  "
 
     user = instance.creator if created else instance.updater
-    IssueLogEntry.objects.create(issue=instance, action=action, details=details, diff=diff, user=user)
+    if action == 'Edited':
+        IssueLogEntry.objects.create(issue=instance, action=action, details=details, diff=diff, user=user)
