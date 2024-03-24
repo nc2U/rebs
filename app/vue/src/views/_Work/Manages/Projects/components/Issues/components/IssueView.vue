@@ -82,11 +82,11 @@ const callEditForm = () => (editForm.value = true)
               <div>
                 <CProgress
                   color="success"
-                  :value="20"
+                  :value="issue?.done_ratio ?? 0"
                   style="width: 110px; float: left; margin-top: 2px"
                   height="16"
                 />
-                <span class="ml-2 pt-0">{{ issue?.done_ratio }}%</span>
+                <span class="ml-2 pt-0">{{ issue?.done_ratio ?? 0 }}%</span>
               </div>
             </CCol>
           </CRow>
@@ -235,7 +235,7 @@ const callEditForm = () => (editForm.value = true)
       </CCol>
     </CRow>
 
-    <IssueForm @close-form="() => (editForm = false)" />
+    <IssueForm :issue="issue" @close-form="() => (editForm = false)" />
   </div>
 </template>
 
