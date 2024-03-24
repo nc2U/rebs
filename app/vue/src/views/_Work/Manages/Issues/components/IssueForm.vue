@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { ref, onBeforeMount, type PropType, computed } from 'vue'
 import type { Issue } from '@/store/types/work'
+import { isValidate } from '@/utils/helper'
 import DatePicker from '@/components/DatePicker/index.vue'
 import MdEditor from '@/components/MdEditor/Index.vue'
-import { isValidate } from '@/utils/helper'
 
 const props = defineProps({
   issue: {
@@ -65,7 +65,11 @@ const formCheck = computed(() => {
 const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
-  } else emit('on-submit', form.value)
+  } else {
+    const e = form.value.estimated_hours
+
+    if (form.value.estimated_hours) emit('on-submit', form.value)
+  }
 }
 
 const closeForm = () => emit('close-form')
@@ -211,11 +215,12 @@ onBeforeMount(() => {
             추정시간
           </CFormLabel>
           <div class="col-sm-3">
-            <CFormInput
-              v-model.number="form.estimated_hours"
-              type="number"
-              min="0"
+            <input
+              v-model="form.estimated_hours"
               id="estimated_hours"
+              maxlength="10"
+              type="text"
+              class="form-control"
             />
           </div>
           <div class="col-sm-1" style="padding-top: 6px">시간</div>
@@ -270,7 +275,14 @@ onBeforeMount(() => {
               소요시간
             </CFormLabel>
             <div class="col-sm-3">
-              <CFormInput v-model.number="timeEntry.hours" type="number" min="0" id="hours" />
+              <!--              <CFormInput v-model.number="timeEntry.hours" type="number" min="0" id="hours" />-->
+              <input
+                v-model="timeEntry.hours"
+                id="hours"
+                maxlength="10"
+                type="text"
+                class="form-control"
+              />
             </div>
             <div class="col-sm-1" style="padding-top: 6px">시간</div>
 
