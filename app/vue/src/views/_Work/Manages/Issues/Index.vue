@@ -7,6 +7,7 @@ import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import IssueList from './components/IssueList.vue'
 import IssueForm from '@/views/_Work/Manages/Issues/components/IssueForm.vue'
+import { useRouter } from 'vue-router'
 
 const cBody = ref()
 const company = inject<ComputedRef<Company>>('company')
@@ -16,6 +17,14 @@ const sideNavCAll = () => cBody.value.toggle()
 
 const workStore = useWork()
 const issueList = computed(() => workStore.issueList)
+
+const router = useRouter()
+
+const onSubmit = (payload: any) => {
+  console.log(payload)
+  alert('issue create!')
+  router.replace({ name: '업무' })
+}
 
 onBeforeMount(() => {
   workStore.fetchIssueList()
@@ -34,7 +43,7 @@ onBeforeMount(() => {
           <h5>새 업무만들기</h5>
         </CCol>
 
-        <IssueForm />
+        <IssueForm @on-submit="onSubmit" @close-form="router.push({ name: '업무' })" />
       </CRow>
     </template>
 

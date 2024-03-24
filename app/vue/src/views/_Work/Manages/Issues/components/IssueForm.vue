@@ -3,6 +3,7 @@ import { ref, onBeforeMount, type PropType } from 'vue'
 import type { Issue } from '@/store/types/work'
 import DatePicker from '@/components/DatePicker/index.vue'
 import MdEditor from '@/components/MdEditor/Index.vue'
+import { isValidate } from '@/utils/helper'
 
 const props = defineProps({
   issue: {
@@ -14,6 +15,7 @@ const props = defineProps({
 const validated = ref(false)
 const editDetails = ref(true)
 const form = ref({
+  pk: null as number | null,
   project: '',
   is_private: false,
   tracker: '',
@@ -40,8 +42,10 @@ const timeEntry = ref({
 
 const emit = defineEmits(['on-submit', 'close-form'])
 
-const onSubmit = () => {
-  emit('on-submit', form.value)
+const onSubmit = (event: Event) => {
+  if (isValidate(event)) {
+    validated.value = true
+  } else emit('on-submit', form.value)
 }
 
 const closeForm = () => emit('close-form')
@@ -50,6 +54,7 @@ onBeforeMount(() => {
   if (props.issue) {
     editDetails.value = false
 
+    form.value.pk = props.issue.pk
     form.value.project = props.issue.project.slug
     form.value.is_private = props.issue.is_private
     form.value.tracker = props.issue.tracker
@@ -78,7 +83,7 @@ onBeforeMount(() => {
             프로젝트
           </CFormLabel>
           <CCol sm="4">
-            <CFormSelect v-model="form.project" id="project">
+            <CFormSelect v-model="form.project" id="project" required>
               <option value="redmine">redmine</option>
             </CFormSelect>
           </CCol>
@@ -92,7 +97,7 @@ onBeforeMount(() => {
             유형
           </CFormLabel>
           <CCol sm="4">
-            <CFormSelect v-model="form.tracker" id="tracker">
+            <CFormSelect v-model="form.tracker" id="tracker" required>
               <option>기능</option>
             </CFormSelect>
           </CCol>
@@ -103,7 +108,7 @@ onBeforeMount(() => {
             제목
           </CFormLabel>
           <CCol sm="10">
-            <CFormInput v-model="form.subject" id="subject" />
+            <CFormInput v-model="form.subject" maxlength="100" id="subject" required />
           </CCol>
         </CRow>
 
@@ -115,8 +120,9 @@ onBeforeMount(() => {
             <v-icon icon="mdi-pencil" size="sm" color="amber" />
             <router-link to="" @click="() => (editDetails = true)">편집</router-link>
           </CCol>
-          <CCol v-else sm="10">
-            <MdEditor v-model="form.description" id="description" />
+
+          <CCol v-else sm="10" id="description">
+            <MdEditor v-model="form.description" />
           </CCol>
         </CRow>
 
@@ -125,7 +131,7 @@ onBeforeMount(() => {
             상태
           </CFormLabel>
           <CCol sm="4">
-            <CFormSelect v-model="form.status" id="status">
+            <CFormSelect v-model="form.status" id="status" required>
               <option>진행</option>
             </CFormSelect>
           </CCol>
@@ -145,7 +151,7 @@ onBeforeMount(() => {
             우선순위
           </CFormLabel>
           <CCol sm="4">
-            <CFormSelect v-model="form.priority" id="priority">
+            <CFormSelect v-model="form.priority" id="priority" required>
               <option>보통</option>
             </CFormSelect>
           </CCol>
@@ -262,12 +268,12 @@ onBeforeMount(() => {
 
           <h6>댓글</h6>
           <v-divider class="mt-0" />
-          <!--          <MdEditor style="height: 180px" />-->
+          <MdEditor style="height: 180px" />
         </div>
       </CCardBody>
     </CCard>
 
-    <CButton color="primary">확인</CButton>
+    <CButton type="submit" color="primary">확인</CButton>
     <CButton type="button" color="light" @click="closeForm">취소</CButton>
   </CForm>
 </template>
