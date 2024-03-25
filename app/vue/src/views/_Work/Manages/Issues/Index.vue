@@ -17,6 +17,7 @@ const sideNavCAll = () => cBody.value.toggle()
 
 const workStore = useWork()
 const issueList = computed(() => workStore.issueList)
+const issueProjects = computed(() => workStore.AllIssueProjects)
 
 const router = useRouter()
 
@@ -27,6 +28,7 @@ const onSubmit = (payload: any) => {
 }
 
 onBeforeMount(() => {
+  workStore.fetchIssueProjectList()
   workStore.fetchIssueList()
 })
 </script>
@@ -43,7 +45,11 @@ onBeforeMount(() => {
           <h5>새 업무만들기</h5>
         </CCol>
 
-        <IssueForm @on-submit="onSubmit" @close-form="router.push({ name: '업무' })" />
+        <IssueForm
+          :issue-projects="issueProjects"
+          @on-submit="onSubmit"
+          @close-form="router.push({ name: '업무' })"
+        />
       </CRow>
     </template>
 
