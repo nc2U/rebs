@@ -53,7 +53,7 @@ onBeforeMount(() => {
 
   <IssueView
     v-if="route.name === '(업무) - 보기' && issue"
-    :i-project="iProject"
+    :i-project="iProject ?? undefined"
     :issue="issue"
     :log-entry-list="logEntryList"
     @on-submit="onSubmit"
@@ -65,7 +65,7 @@ onBeforeMount(() => {
     </CCol>
 
     <IssueForm
-      :i-project="iProject"
+      :i-project="iProject ?? undefined"
       :issue-projects="issueProjects"
       @on-submit="onSubmit"
       @close-form="router.push({ name: '(업무)' })"

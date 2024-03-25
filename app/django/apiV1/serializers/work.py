@@ -2,7 +2,6 @@ from django.db import transaction
 from rest_framework import serializers
 
 from accounts.models import User
-from apiV1.serializers.accounts import UserSerializer
 from work.models import (IssueProject, Role, Permission, Member, Module, Version, IssueCategory,
                          Repository, Tracker, IssueStatus, Workflow, CodeActivity, CodeIssuePriority,
                          CodeDocsCategory, Issue, IssueFile, IssueComment, TimeEntry, Search, IssueLogEntry)
