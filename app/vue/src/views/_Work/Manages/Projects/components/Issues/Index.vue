@@ -23,8 +23,10 @@ const onSubmit = (payload: any) => {
 }
 
 onBeforeRouteUpdate(async to => {
-  if (to.params.issueId) await workStore.fetchIssue(Number(to.params.issueId))
-  else {
+  if (to.params.issueId) {
+    await workStore.fetchIssue(Number(to.params.issueId))
+    await workStore.fetchLogEntryList({ issue: to.params.issueId as string })
+  } else {
     workStore.issue = null
     await workStore.fetchIssueList()
   }
