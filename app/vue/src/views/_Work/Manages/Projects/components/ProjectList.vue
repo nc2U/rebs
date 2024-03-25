@@ -2,6 +2,7 @@
 import { inject, onBeforeMount, type ComputedRef, type PropType } from 'vue'
 import type { User } from '@/store/types/accounts'
 import type { IssueProject } from '@/store/types/work'
+import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 import SearchList from '@/views/_Work/components/SearchList.vue'
 import NoData from '@/views/_Work/components/NoData.vue'
 
@@ -66,7 +67,7 @@ onBeforeMount(() => emit('aside-visible', true))
             size="15"
             class="ml-1"
           />
-          <p v-html="proj.description" />
+          <VueMarkdownIt :source="proj.description" />
 
           <!-- c1 -->
           <div v-if="!!proj.sub_projects?.length" class="child">
@@ -88,7 +89,7 @@ onBeforeMount(() => emit('aside-visible', true))
                   size="15"
                   class="ml-1"
                 />
-                <p v-html="c1.description" />
+                <VueMarkdownIt :source="c1.description" />
               </span>
 
               <!-- c2 -->
@@ -111,7 +112,7 @@ onBeforeMount(() => emit('aside-visible', true))
                       size="15"
                       class="ml-1"
                     />
-                    <p v-html="c2.description" />
+                    <VueMarkdownIt :source="c2.description" />
                   </span>
 
                   <!-- c3 -->
@@ -134,7 +135,7 @@ onBeforeMount(() => emit('aside-visible', true))
                           size="15"
                           class="ml-1"
                         />
-                        <p v-html="c3.description" />
+                        <VueMarkdownIt :source="c3.description" />
                       </span>
 
                       <!-- c4 -->
@@ -157,7 +158,7 @@ onBeforeMount(() => emit('aside-visible', true))
                               size="15"
                               class="ml-1"
                             />
-                            <p v-html="c4.description" />
+                            <VueMarkdownIt :source="c4.description" />
                           </span>
 
                           <!-- c5 -->
@@ -180,7 +181,7 @@ onBeforeMount(() => emit('aside-visible', true))
                                   size="15"
                                   class="ml-1"
                                 />
-                                <p v-html="c5.description" />
+                                <VueMarkdownIt :source="c5.description" />
                               </span>
                             </blockquote>
                           </div>
