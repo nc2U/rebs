@@ -35,32 +35,48 @@ const callEditForm = () => (editForm.value = true)
 
   <CCard color="yellow-lighten-5 mb-3">
     <CCardBody>
-      <span class="sub-title">권한별 프로젝트 목록 보기</span>
-      <p class="mt-1">
-        <router-link to="">austin2 kho</router-link>
-        이(가)
-        <router-link
-          :to="{
-            name: '(작업내역)',
-            params: { projId: 'redmine' },
-            query: { from: issue?.created.substring(0, 10) },
-          }"
-        >
-          {{ elapsedTime(issue?.created) }}
-        </router-link>
-        전에 추가함.
-        <router-link
-          :to="{
-            name: '(작업내역)',
-            params: { projId: 'redmine' },
-            query: { from: issue.updated.substring(0, 10) },
-          }"
-        >
-          {{ elapsedTime(issue.updated) }}
-        </router-link>
-        전에 수정됨.
-        {{ issue.updated }}
-      </p>
+      <CRow>
+        <CCol>
+          <span class="sub-title">권한별 프로젝트 목록 보기</span>
+        </CCol>
+        <CCol class="text-right form-text">
+          <!--          <router-link to="">« 뒤로</router-link>-->
+          <!--          |-->
+          <!--          <router-link to="">2/2</router-link>-->
+          <!--          |-->
+          <!--          <router-link to="">다음 »</router-link>-->
+          <span>« 뒤로 | 2/2 | 다음 »</span>
+        </CCol>
+      </CRow>
+
+      <CRow>
+        <CCol>
+          <p class="mt-1">
+            <router-link to="">austin2 kho</router-link>
+            이(가)
+            <router-link
+              :to="{
+                name: '(작업내역)',
+                params: { projId: 'redmine' },
+                query: { from: issue?.created.substring(0, 10) },
+              }"
+            >
+              {{ elapsedTime(issue?.created) }}
+            </router-link>
+            전에 추가함.
+            <router-link
+              :to="{
+                name: '(작업내역)',
+                params: { projId: 'redmine' },
+                query: { from: issue.updated.substring(0, 10) },
+              }"
+            >
+              {{ elapsedTime(issue.updated) }}
+            </router-link>
+            전에 수정됨.
+          </p>
+        </CCol>
+      </CRow>
 
       <CRow>
         <CCol md="6">
@@ -123,7 +139,7 @@ const callEditForm = () => (editForm.value = true)
 
       <CRow class="mb-3">
         <CCol class="title">설명</CCol>
-        <CCol class="text-right">
+        <CCol class="text-right form-text">
           <v-icon icon="mdi-comment-text-outline" size="sm" color="grey" class="mr-2" />
           <router-link to="">댓글달기</router-link>
         </CCol>
@@ -139,7 +155,7 @@ const callEditForm = () => (editForm.value = true)
 
       <CRow>
         <CCol class="title">하위 일감</CCol>
-        <CCol class="text-right">
+        <CCol class="text-right form-text">
           <router-link to="">추가</router-link>
         </CCol>
       </CRow>
@@ -148,7 +164,7 @@ const callEditForm = () => (editForm.value = true)
 
       <CRow>
         <CCol class="title">연결된 일감</CCol>
-        <CCol class="text-right">
+        <CCol class="text-right form-text">
           <router-link to="">추가</router-link>
         </CCol>
       </CRow>

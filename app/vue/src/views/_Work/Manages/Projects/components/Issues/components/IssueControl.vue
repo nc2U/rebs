@@ -5,7 +5,7 @@ const callEditForm = () => emit('call-edit-form')
 </script>
 
 <template>
-  <CCol class="text-right">
+  <CCol class="text-right form-text">
     <span v-show="$route.name !== '프로젝트 - 추가'" class="mr-2">
       <v-icon icon="mdi-pencil" color="amber" size="sm" />
       <router-link to="" class="ml-1" @click="callEditForm">편집</router-link>
@@ -39,13 +39,13 @@ const callEditForm = () => emit('call-edit-form')
           <v-tooltip activator="parent" location="top">Actions</v-tooltip>
         </CDropdownToggle>
         <CDropdownMenu>
-          <CDropdownItem>
+          <CDropdownItem class="form-text">
             <router-link to="">
               <v-icon icon="mdi-link-plus" color="grey" size="sm" />
               링크 복사
             </router-link>
           </CDropdownItem>
-          <CDropdownItem>
+          <CDropdownItem class="form-text">
             <router-link to="">
               <v-icon icon="mdi-trash-can-outline" color="grey" size="sm" />
               업무 삭제
