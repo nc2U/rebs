@@ -29,7 +29,7 @@ onBeforeMount(() => emit('aside-visible', true))
       <h5>프로젝트</h5>
     </CCol>
 
-    <CCol v-if="superAuth" class="text-right">
+    <CCol v-if="superAuth" class="text-right form-text">
       <span v-show="$route.name !== '프로젝트 - 추가'" class="mr-2">
         <v-icon icon="mdi-plus-circle" color="success" size="sm" />
         <router-link :to="{ name: '프로젝트 - 추가' }" class="ml-1">새 프로젝트</router-link>
@@ -59,7 +59,13 @@ onBeforeMount(() => emit('aside-visible', true))
           <router-link :to="{ name: '(개요)', params: { projId: proj.slug } }">
             {{ proj.name }}
           </router-link>
-          <v-icon v-if="isOwnProject(proj)" icon="mdi-account-tag" size="15" class="ml-1" />
+          <v-icon
+            v-if="isOwnProject(proj)"
+            icon="mdi-account-tag"
+            color="success"
+            size="15"
+            class="ml-1"
+          />
           <p v-html="proj.description" />
 
           <!-- c1 -->
@@ -75,7 +81,13 @@ onBeforeMount(() => emit('aside-visible', true))
                 <router-link :to="{ name: '(개요)', params: { projId: c1.slug } }">
                   {{ c1.name }}
                 </router-link>
-                <v-icon v-if="isOwnProject(c1)" icon="mdi-account-tag" size="15" class="ml-1" />
+                <v-icon
+                  v-if="isOwnProject(c1)"
+                  icon="mdi-account-tag"
+                  color="success"
+                  size="15"
+                  class="ml-1"
+                />
                 <p v-html="c1.description" />
               </span>
 
@@ -92,7 +104,13 @@ onBeforeMount(() => emit('aside-visible', true))
                     <router-link :to="{ name: '(개요)', params: { projId: c2.slug } }">
                       {{ c2.name }}
                     </router-link>
-                    <v-icon v-if="isOwnProject(c2)" icon="mdi-account-tag" size="15" class="ml-1" />
+                    <v-icon
+                      v-if="isOwnProject(c2)"
+                      icon="mdi-account-tag"
+                      color="success"
+                      size="15"
+                      class="ml-1"
+                    />
                     <p v-html="c2.description" />
                   </span>
 
@@ -112,6 +130,7 @@ onBeforeMount(() => emit('aside-visible', true))
                         <v-icon
                           v-if="isOwnProject(c3)"
                           icon="mdi-account-tag"
+                          color="success"
                           size="15"
                           class="ml-1"
                         />
@@ -134,6 +153,7 @@ onBeforeMount(() => emit('aside-visible', true))
                             <v-icon
                               v-if="isOwnProject(c4)"
                               icon="mdi-account-tag"
+                              color="success"
                               size="15"
                               class="ml-1"
                             />
@@ -156,6 +176,7 @@ onBeforeMount(() => emit('aside-visible', true))
                                 <v-icon
                                   v-if="isOwnProject(c5)"
                                   icon="mdi-account-tag"
+                                  color="success"
                                   size="15"
                                   class="ml-1"
                                 />
@@ -177,14 +198,14 @@ onBeforeMount(() => emit('aside-visible', true))
   </CRow>
 
   <CRow>
-    <CCol class="text-right">
+    <CCol class="text-right form-text">
       <span class="mr-2">
-        <v-icon icon="mdi-account-tag" size="15" class="mr-1" />
+        <v-icon icon="mdi-account-tag" color="success" size="15" class="mr-1" />
         <span class="mt-2">내 프로젝트</span>
       </span>
 
       <span>
-        <v-icon icon="mdi-bookmark" size="15" class="mr-1" />
+        <v-icon icon="mdi-bookmark" color="info" size="15" class="mr-1" />
         <span class="mt-2">내 북마크</span>
       </span>
     </CCol>
