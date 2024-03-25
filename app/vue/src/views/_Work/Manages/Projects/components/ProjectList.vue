@@ -175,6 +175,20 @@ onBeforeMount(() => emit('aside-visible', true))
       </CCard>
     </CCol>
   </CRow>
+
+  <CRow>
+    <CCol class="text-right">
+      <span class="mr-2">
+        <v-icon icon="mdi-account-tag" size="15" class="mr-1" />
+        <span class="mt-2">내 프로젝트</span>
+      </span>
+
+      <span>
+        <v-icon icon="mdi-bookmark" size="15" class="mr-1" />
+        <span class="mt-2">내 북마크</span>
+      </span>
+    </CCol>
+  </CRow>
 </template>
 
 <style lang="scss" scoped>
