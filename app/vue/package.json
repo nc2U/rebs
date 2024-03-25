@@ -40,6 +40,7 @@
     "buffer": "^6.0.3",
     "core-js": "^3.36.0",
     "js-cookie": "^3.0.5",
+    "markdown-it": "^14.1.0",
     "maska": "^2.1.11",
     "md-editor-v3": "^4.11.3",
     "mosha-vue-toastify": "^1.0.23",
