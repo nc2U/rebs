@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { ref, type PropType } from 'vue'
-import type { Issue, LogEntry } from '@/store/types/work'
+import type { Issue, IssueProject, LogEntry } from '@/store/types/work'
 import { elapsedTime } from '@/utils/baseMixins'
 import IssueControl from './IssueControl.vue'
 import IssueHistory from './IssueHistory.vue'
 import IssueForm from '@/views/_Work/Manages/Issues/components/IssueForm.vue'
 
 defineProps({
+  iProject: { type: Object as PropType<IssueProject>, default: null },
   issue: { type: Object as PropType<Issue>, required: true },
   logEntryList: { type: Array as PropType<LogEntry[]>, default: () => [] },
 })
@@ -167,7 +168,12 @@ const callEditForm = () => (editForm.value = true)
       </CCol>
     </CRow>
 
-    <IssueForm :issue="issue" @on-submit="onSubmit" @close-form="() => (editForm = false)" />
+    <IssueForm
+      :i-project="iProject"
+      :issue="issue"
+      @on-submit="onSubmit"
+      @close-form="() => (editForm = false)"
+    />
   </div>
 </template>
 

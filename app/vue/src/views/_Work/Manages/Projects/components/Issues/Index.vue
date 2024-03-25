@@ -14,6 +14,8 @@ const workStore = useWork()
 const issue = computed(() => workStore.issue)
 const issueList = computed(() => workStore.issueList)
 const logEntryList = computed(() => workStore.logEntryList)
+const iProject = computed(() => workStore.issueProject)
+const issueProjects = computed(() => workStore.AllIssueProjects)
 
 const onSubmit = (payload: any) => {
   console.log(payload)
@@ -36,7 +38,10 @@ onBeforeMount(() => {
   emit('aside-visible', true)
   workStore.fetchIssueList()
 
+  if (route.params.projId) workStore.fetchIssueProject(route.params.projId as string)
+
   if (route.params.issueId) {
+    workStore.fetchIssueProjectList()
     workStore.fetchIssue(Number(route.params.issueId))
     workStore.fetchLogEntryList({ issue: route.params.issueId as string })
   }
@@ -48,6 +53,7 @@ onBeforeMount(() => {
 
   <IssueView
     v-if="route.name === '(업무) - 보기' && issue"
+    :i-project="iProject"
     :issue="issue"
     :log-entry-list="logEntryList"
     @on-submit="onSubmit"
@@ -58,6 +64,11 @@ onBeforeMount(() => {
       <h5>새 업무만들기</h5>
     </CCol>
 
-    <IssueForm @on-submit="onSubmit" @close-form="router.push({ name: '(업무)' })" />
+    <IssueForm
+      :i-project="iProject"
+      :issue-projects="issueProjects"
+      @on-submit="onSubmit"
+      @close-form="router.push({ name: '(업무)' })"
+    />
   </CRow>
 </template>

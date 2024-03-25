@@ -1,15 +1,14 @@
 <script lang="ts" setup>
 import { ref, onBeforeMount, type PropType, computed } from 'vue'
-import type { Issue } from '@/store/types/work'
+import type { Issue, IssueProject } from '@/store/types/work'
 import { isValidate } from '@/utils/helper'
 import DatePicker from '@/components/DatePicker/index.vue'
 import MdEditor from '@/components/MdEditor/Index.vue'
 
 const props = defineProps({
-  issue: {
-    type: Object as PropType<Issue>,
-    default: null,
-  },
+  iProject: { type: Object as PropType<IssueProject>, default: null },
+  issue: { type: Object as PropType<Issue>, default: null },
+  issueProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
 })
 
 const validated = ref(false)
@@ -75,6 +74,7 @@ const onSubmit = (event: Event) => {
 const closeForm = () => emit('close-form')
 
 onBeforeMount(() => {
+  if (props.iProject) form.value.project = props.iProject.slug
   if (props.issue) {
     editDetails.value = false
 
@@ -108,9 +108,18 @@ onBeforeMount(() => {
           <CFormLabel for="project" class="col-sm-2 col-form-label text-right required">
             프로젝트
           </CFormLabel>
+
           <CCol sm="4">
-            <CFormSelect v-model="form.project" id="project" required>
-              <option value="redmine">redmine</option>
+            <CFormSelect v-model="form.project">
+              <option v-for="proj in issueProjects" :value="proj.slug" :key="proj.slug">
+                <span v-if="proj.depth === 2"> &nbsp;&nbsp;» </span>
+                <span v-if="proj.depth === 3"> &nbsp;&nbsp;&nbsp;&nbsp;» </span>
+                <span v-if="proj.depth === 4"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;» </span>
+                <span v-if="proj.depth === 5">
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;»
+                </span>
+                {{ proj.name }}
+              </option>
             </CFormSelect>
           </CCol>
           <CCol style="padding-top: 8px">
