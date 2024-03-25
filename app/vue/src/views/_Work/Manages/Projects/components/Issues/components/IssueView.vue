@@ -2,6 +2,7 @@
 import { ref, type PropType } from 'vue'
 import type { Issue, IssueProject, LogEntry } from '@/store/types/work'
 import { elapsedTime } from '@/utils/baseMixins'
+import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 import IssueControl from './IssueControl.vue'
 import IssueHistory from './IssueHistory.vue'
 import IssueForm from '@/views/_Work/Manages/Issues/components/IssueForm.vue'
@@ -146,8 +147,8 @@ const callEditForm = () => (editForm.value = true)
       </CRow>
 
       <CRow>
-        <CCol>
-          {{ issue?.description }}
+        <CCol class="pl-5">
+          <VueMarkdownIt :source="issue?.description" />
         </CCol>
       </CRow>
 

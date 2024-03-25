@@ -2,6 +2,7 @@
 import { type PropType, ref } from 'vue'
 import type { LogEntry } from '@/store/types/work'
 import { elapsedTime } from '@/utils/baseMixins'
+import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 
 defineProps({
   logEntryList: { type: Array as PropType<LogEntry[]>, default: () => [] },
@@ -82,11 +83,12 @@ const tabPaneActiveKey = ref(1)
               <CCol class="text-right">#{{ log.pk }}</CCol>
             </CRow>
             <v-divider class="mt-0" />
-            <ul class="pl-4">
-              <li>{{ log.details }}</li>
-            </ul>
+            <div class="pl-4">
+              <VueMarkdownIt :source="log.details" />
+            </div>
           </div>
         </CTabPane>
+
         <CTabPane role="tabpanel" aria-labelledby="profile-tab" :visible="tabPaneActiveKey === 2">
           Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid.
           Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan
@@ -97,10 +99,33 @@ const tabPaneActiveKey = ref(1)
           sustainable jean shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party
           scenester stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.
         </CTabPane>
+
         <CTabPane role="tabpanel" aria-labelledby="contact-tab" :visible="tabPaneActiveKey === 3">
-          <ul v-for="log in logEntryList" :key="log.pk">
-            <li>{{ log.details }}</li>
-          </ul>
+          <div v-for="log in logEntryList" :key="log.pk">
+            <CRow>
+              <CCol v-if="log.user">
+                <router-link :to="{ name: '사용자 - 보기', params: { userId: log.user.pk } }">
+                  {{ log.user.username }}
+                </router-link>
+                이(가)
+                <router-link
+                  :to="{
+                    name: '(작업내역)',
+                    params: { projId: 'redmine' },
+                    query: { from: log.timestamp.substring(0, 10) },
+                  }"
+                >
+                  {{ elapsedTime(log.timestamp) }}
+                </router-link>
+                에 변경
+              </CCol>
+              <CCol class="text-right">#{{ log.pk }}</CCol>
+            </CRow>
+            <v-divider class="mt-0" />
+            <div class="pl-4">
+              <VueMarkdownIt :source="log.details" />
+            </div>
+          </div>
         </CTabPane>
       </CTabContent>
     </CCardBody>
