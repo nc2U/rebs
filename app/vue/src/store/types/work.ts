@@ -185,7 +185,7 @@ export interface IssueStatus {
   order: number
 }
 
-export interface CodePriority {
+export interface CodeValue {
   pk: number
   name: string
   active: boolean

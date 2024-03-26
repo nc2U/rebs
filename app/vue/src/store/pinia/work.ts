@@ -9,7 +9,7 @@ import type {
   Issue,
   LogEntry,
   IssueStatus,
-  CodePriority,
+  CodeValue,
 } from '@/store/types/work'
 
 export const useWork = defineStore('work', () => {
@@ -119,14 +119,7 @@ export const useWork = defineStore('work', () => {
       .catch(err => errorHandle(err.response.data))
 
   // status states & getters
-  const status = ref<IssueStatus | null>(null)
   const statusList = ref<IssueStatus[]>([])
-
-  const fetchStatus = (pk: number) =>
-    api
-      .get(`/issue-status/${pk}/`)
-      .then(res => (status.value = res.data))
-      .catch(err => errorHandle(err.response.data))
 
   const fetchStatusList = () =>
     api
@@ -134,15 +127,17 @@ export const useWork = defineStore('work', () => {
       .then(res => (statusList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  // priority states & getters
-  const priority = ref<CodePriority | null>(null)
-  const priorityList = ref<CodePriority[]>([])
+  // code-activity states & getters
+  const activityList = ref<CodeValue[]>([])
 
-  const fetchPriority = (pk: number) =>
+  const fetchActivityList = () =>
     api
-      .get(`/code-priority/${pk}/`)
-      .then(res => (priority.value = res.data))
+      .get(`code-activity`)
+      .then(res => (activityList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
+
+  // code-priority states & getters
+  const priorityList = ref<CodeValue[]>([])
 
   const fetchPriorityList = () =>
     api
@@ -173,14 +168,7 @@ export const useWork = defineStore('work', () => {
       .catch(err => errorHandle(err.response.data))
 
   // issue states & getters
-  // const logEntry = ref<LogEntry | null>(null)
   const logEntryList = ref<LogEntry[]>([])
-
-  // const fetchLogEntry = (pk: number) =>
-  //   api
-  //     .get(`/log-entry/${pk}/`)
-  //     .then(res => (logEntry.value = res.data))
-  //     .catch(err => errorHandle(err.response.data))
 
   const fetchLogEntryList = async (payload: { issue: string; user?: number }) => {
     let url = `/log-entry/?issue=${payload.issue}`
@@ -213,14 +201,13 @@ export const useWork = defineStore('work', () => {
     fetchMemberList,
     patchMember,
 
-    status,
     statusList,
-    fetchStatus,
     fetchStatusList,
 
-    priority,
+    activityList,
+    fetchActivityList,
+
     priorityList,
-    fetchPriority,
     fetchPriorityList,
 
     issue,
