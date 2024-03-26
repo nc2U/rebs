@@ -4,6 +4,7 @@ import type { Issue, IssueProject } from '@/store/types/work'
 import { isValidate } from '@/utils/helper'
 import { useWork } from '@/store/pinia/work'
 import DatePicker from '@/components/DatePicker/index.vue'
+import MultiSelect from '@/components/MultiSelect/index.vue'
 import MdEditor from '@/components/MdEditor/Index.vue'
 
 const props = defineProps({
@@ -76,6 +77,7 @@ const closeForm = () => emit('close-form')
 
 const workStore = useWork()
 const statusList = computed(() => workStore.statusList)
+const activityList = computed(() => workStore.activityList)
 const priorityList = computed(() => workStore.priorityList)
 const issueList = computed(() => workStore.issueList)
 
@@ -102,6 +104,7 @@ onBeforeMount(() => {
 })
 
 workStore.fetchStatusList()
+workStore.fetchActivityList()
 workStore.fetchPriorityList()
 workStore.fetchIssueList()
 </script>
@@ -199,6 +202,7 @@ workStore.fetchIssueList()
                 {{ parent.subject }}
               </option>
             </CFormSelect>
+            <!--            <MultiSelect v-model="form.parent" id="parent" />-->
           </CCol>
         </CRow>
 
@@ -324,6 +328,9 @@ workStore.fetchIssueList()
             <CCol sm="4">
               <CFormSelect>
                 <option value="">---------</option>
+                <option v-for="act in activityList" :value="act.pk" :key="act.pk">
+                  {{ act.name }}
+                </option>
               </CFormSelect>
             </CCol>
           </CRow>
