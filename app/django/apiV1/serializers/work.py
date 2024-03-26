@@ -44,10 +44,10 @@ class ModuleInIssueProjectSerializer(serializers.ModelSerializer):
                   'file', 'wiki', 'repository', 'forum', 'calendar', 'gantt')
 
 
-# class TrackerInIssueProjectSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Tracker
-#         fields = ('pk', 'name', 'description')
+class TrackerInIssueProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tracker
+        fields = ('pk', 'name')
 
 
 class IssueProjectSerializer(serializers.ModelSerializer):
@@ -55,7 +55,7 @@ class IssueProjectSerializer(serializers.ModelSerializer):
     sub_projects = serializers.SerializerMethodField()
     all_members = MemberInIssueProjectSerializer(many=True, read_only=True)
     members = MemberInIssueProjectSerializer(many=True, read_only=True)
-    # trackers = TrackerInIssueProjectSerializer(many=True, read_only=True)
+    trackers = TrackerInIssueProjectSerializer(many=True, read_only=True)
     module = ModuleInIssueProjectSerializer(read_only=True)
     visible = serializers.SerializerMethodField()
     user = serializers.SlugRelatedField('username', read_only=True)

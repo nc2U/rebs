@@ -17,7 +17,7 @@ class IssueProject(models.Model):
     is_inherit_members = models.BooleanField('상위 프로젝트 멤버 상속', default=False)
     default_version = models.ForeignKey('Version', on_delete=models.SET_NULL, null=True, blank=True,
                                         verbose_name='기본 버전', help_text='기존 공유 버전에서만 작동합니다.')
-    trackers = models.ManyToManyField('Tracker', blank=True, related_name='projects', verbose_name='프로젝트')
+    trackers = models.ManyToManyField('Tracker', blank=True, related_name='projects', verbose_name='허용유형')
     status = models.CharField('사용여부', max_length=1, default='1', choices=(('1', '사용'), ('9', '잠금보관(모든 접근이 차단됨)')))
     depth = models.PositiveSmallIntegerField('단계', default=1,
                                              help_text='프로젝트 간 상하 소속 관계에 의한 단계, 최상위인 경우 1단계 이후 각 뎁스 마다 1씩 증가')
