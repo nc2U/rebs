@@ -269,11 +269,23 @@ class IProjectIssueSerializer(serializers.ModelSerializer):
         fields = ('slug', 'name')
 
 
+class IssueStatusInIssueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IssueStatus
+        fields = ('pk', 'name')
+
+
+class CodePriorityInIssueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CodeIssuePriority
+        fields = ('pk', 'name')
+
+
 class IssueSerializer(serializers.ModelSerializer):
     project = IProjectIssueSerializer()
-    tracker = serializers.SlugRelatedField('name', read_only=True)
-    status = serializers.SlugRelatedField('name', read_only=True)
-    priority = serializers.SlugRelatedField('name', read_only=True)
+    tracker = TrackerInIssueProjectSerializer(read_only=True)
+    status = IssueStatusInIssueSerializer(read_only=True)
+    priority = CodePriorityInIssueSerializer(read_only=True)
     assigned_to = UserInMemberSerializer(read_only=True)
     parent = serializers.SerializerMethodField()
 
