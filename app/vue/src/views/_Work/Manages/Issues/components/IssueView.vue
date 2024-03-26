@@ -20,7 +20,18 @@ const editForm = ref(false)
 
 const onSubmit = (payload: any) => emit('on-submit', payload)
 
-const callEditForm = () => (editForm.value = true)
+const scrollToId = (id: string) => {
+  const el = document.getElementById(id)
+  if (el) el.scrollIntoView({ behavior: 'smooth' })
+}
+
+const callEditForm = () => {
+  editForm.value = true
+
+  setTimeout(() => {
+    scrollToId('edit-form')
+  }, 100)
+}
 </script>
 
 <template>
@@ -181,7 +192,7 @@ const callEditForm = () => (editForm.value = true)
 
   <div v-if="editForm">
     <CRow class="py-2">
-      <CCol>
+      <CCol id="edit-form">
         <h5>편집</h5>
       </CCol>
     </CRow>
