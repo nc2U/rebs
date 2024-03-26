@@ -19,12 +19,12 @@ const form = ref({
   pk: null as number | null,
   project: '',
   is_private: false,
-  tracker: '',
+  tracker: null as number | null,
   subject: '',
   description: '',
-  status: '신규',
+  status: null as number | null,
   parent: null as number | null,
-  priority: '보통',
+  priority: null as number | null,
   start_date: null as string | null,
   assigned_to: null as number | null,
   due_date: null as string | null,
@@ -47,12 +47,12 @@ const formCheck = computed(() => {
   if (props.issue) {
     const a = form.value.project === props.issue.project.slug
     const b = form.value.is_private === props.issue.is_private
-    const c = form.value.tracker === props.issue.tracker
+    const c = form.value.tracker === props.issue.tracker.pk
     const d = form.value.subject === props.issue.subject
     const e = form.value.description === props.issue.description
-    const f = form.value.status === props.issue.status
+    const f = form.value.status === props.issue.status.pk
     const g = form.value.parent === props.issue.parent
-    const h = form.value.priority === props.issue.priority
+    const h = form.value.priority === props.issue.priority.pk
     const i = form.value.start_date === props.issue.start_date
     const j = form.value.assigned_to === props.issue.assigned_to?.pk
     const k = form.value.due_date === props.issue.due_date
@@ -76,6 +76,8 @@ const closeForm = () => emit('close-form')
 
 const workStore = useWork()
 const statusList = computed(() => workStore.statusList)
+const priorityList = computed(() => workStore.priorityList)
+const issueList = computed(() => workStore.issueList)
 
 onBeforeMount(() => {
   if (props.iProject) form.value.project = props.iProject.slug
@@ -85,12 +87,12 @@ onBeforeMount(() => {
     form.value.pk = props.issue.pk
     form.value.project = props.issue.project.slug
     form.value.is_private = props.issue.is_private
-    form.value.tracker = props.issue.tracker
+    form.value.tracker = props.issue.tracker.pk
     form.value.subject = props.issue.subject
     form.value.description = props.issue.description
-    form.value.status = props.issue.status
+    form.value.status = props.issue.status.pk
     form.value.parent = props.issue.parent
-    form.value.priority = props.issue.priority
+    form.value.priority = props.issue.priority.pk
     form.value.start_date = props.issue.start_date
     form.value.assigned_to = props.issue.assigned_to?.pk ?? null
     form.value.due_date = props.issue.due_date
@@ -100,6 +102,8 @@ onBeforeMount(() => {
 })
 
 workStore.fetchStatusList()
+workStore.fetchPriorityList()
+workStore.fetchIssueList()
 </script>
 
 <template>
@@ -139,8 +143,8 @@ workStore.fetchStatusList()
           </CFormLabel>
           <CCol sm="4">
             <CFormSelect v-model="form.tracker" id="tracker" required>
-              <option v-for="tracker in iProject.trackers" :key="tracker.pk">
-                {{ tracker.name }}
+              <option v-for="tr in iProject.trackers" :value="tr.pk" :key="tr.pk">
+                {{ tr.name }}
               </option>
             </CFormSelect>
           </CCol>
@@ -175,7 +179,9 @@ workStore.fetchStatusList()
           </CFormLabel>
           <CCol sm="4">
             <CFormSelect v-model="form.status" id="status" required>
-              <option v-for="sts in statusList" :key="sts.pk">{{ sts.name }}</option>
+              <option v-for="sts in statusList" :value="sts.pk" :key="sts.pk">
+                {{ sts.name }}
+              </option>
             </CFormSelect>
           </CCol>
 
@@ -184,7 +190,14 @@ workStore.fetchStatusList()
           </CFormLabel>
           <CCol sm="4">
             <CFormSelect v-model="form.parent" id="parent">
-              <option value=""></option>
+              <option value="">---------</option>
+              <option
+                v-for="parent in issueList.filter(i => i.pk !== form.pk)"
+                :value="parent.pk"
+                :key="parent.pk"
+              >
+                {{ parent.subject }}
+              </option>
             </CFormSelect>
           </CCol>
         </CRow>
@@ -195,7 +208,7 @@ workStore.fetchStatusList()
           </CFormLabel>
           <CCol sm="4">
             <CFormSelect v-model="form.priority" id="priority" required>
-              <option>보통</option>
+              <option v-for="pr in priorityList" :value="pr.pk" :key="pr.pk">{{ pr.name }}</option>
             </CFormSelect>
           </CCol>
 
@@ -213,7 +226,9 @@ workStore.fetchStatusList()
           </CFormLabel>
           <CCol sm="4">
             <CFormSelect v-model="form.assigned_to" id="assigned_to">
-              <option value="1">admin</option>
+              <option v-for="mem in iProject.all_members" :value="mem.user.pk">
+                {{ mem.user.username }}
+              </option>
             </CFormSelect>
           </CCol>
 

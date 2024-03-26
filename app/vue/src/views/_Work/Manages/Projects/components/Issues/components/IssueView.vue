@@ -27,7 +27,7 @@ const callEditForm = () => (editForm.value = true)
   <CRow class="py-2">
     <CCol>
       <h5>
-        <span>{{ issue?.tracker }} #{{ issue?.pk }}</span>
+        <span>{{ issue?.tracker.name }} #{{ issue?.pk }}</span>
         <CBadge color="primary" variant="outline" class="ml-2">진행중</CBadge>
       </h5>
     </CCol>
@@ -84,11 +84,11 @@ const callEditForm = () => (editForm.value = true)
         <CCol md="6">
           <CRow>
             <CCol class="title">상태 :</CCol>
-            <CCol>{{ issue?.status }}</CCol>
+            <CCol>{{ issue?.status.name }}</CCol>
           </CRow>
           <CRow>
             <CCol class="title">우선순위 :</CCol>
-            <CCol>{{ issue?.priority }}</CCol>
+            <CCol>{{ issue?.priority.name }}</CCol>
           </CRow>
           <CRow>
             <CCol class="title">담당자 :</CCol>

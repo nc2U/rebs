@@ -63,9 +63,9 @@ defineProps({
                 {{ issue.project.name }}
               </router-link>
             </CTableDataCell>
-            <CTableDataCell>{{ issue.tracker }}</CTableDataCell>
-            <CTableDataCell>{{ issue.status }}</CTableDataCell>
-            <CTableDataCell>{{ issue.priority }}</CTableDataCell>
+            <CTableDataCell>{{ issue.tracker.name }}</CTableDataCell>
+            <CTableDataCell>{{ issue.status.name }}</CTableDataCell>
+            <CTableDataCell>{{ issue.priority.name }}</CTableDataCell>
             <CTableDataCell>
               <router-link
                 :to="{

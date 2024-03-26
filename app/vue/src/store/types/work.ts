@@ -155,9 +155,9 @@ export interface Member {
 export interface Issue {
   pk: number
   project: { slug: string; name: string }
-  tracker: string
-  status: string
-  priority: string
+  tracker: { pk: number; name: string }
+  status: { pk: number; name: string }
+  priority: { pk: number; name: string }
   subject: string
   description: string
   category: number | null
