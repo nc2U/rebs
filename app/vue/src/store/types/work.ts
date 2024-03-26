@@ -23,7 +23,7 @@ export interface IssueProject {
   parent: number | null
   is_inherit_members: boolean
   default_version: string | null
-  trackers: number[]
+  trackers: { pk: number; name: string }[]
   status: '1' | '9'
   depth: number
   all_members: SimpleMember[]
