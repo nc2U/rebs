@@ -2,7 +2,15 @@ import api from '@/api'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
-import type { IssueProject, Member, Role, Issue, LogEntry, IssueStatus } from '@/store/types/work'
+import type {
+  IssueProject,
+  Member,
+  Role,
+  Issue,
+  LogEntry,
+  IssueStatus,
+  CodePriority,
+} from '@/store/types/work'
 
 export const useWork = defineStore('work', () => {
   // Issue Project states & getters
@@ -126,6 +134,22 @@ export const useWork = defineStore('work', () => {
       .then(res => (statusList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
+  // priority states & getters
+  const priority = ref<CodePriority | null>(null)
+  const priorityList = ref<CodePriority[]>([])
+
+  const fetchPriority = (pk: number) =>
+    api
+      .get(`/code-priority/${pk}/`)
+      .then(res => (priority.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchPriorityList = () =>
+    api
+      .get(`code-priority`)
+      .then(res => (priorityList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
   // issue states & getters
   const issue = ref<Issue | null>(null)
   const issueList = ref<Issue[]>([])
@@ -193,6 +217,11 @@ export const useWork = defineStore('work', () => {
     statusList,
     fetchStatus,
     fetchStatusList,
+
+    priority,
+    priorityList,
+    fetchPriority,
+    fetchPriorityList,
 
     issue,
     issueList,

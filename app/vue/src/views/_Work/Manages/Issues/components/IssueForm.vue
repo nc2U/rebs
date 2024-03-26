@@ -2,6 +2,7 @@
 import { ref, onBeforeMount, type PropType, computed } from 'vue'
 import type { Issue, IssueProject } from '@/store/types/work'
 import { isValidate } from '@/utils/helper'
+import { useWork } from '@/store/pinia/work'
 import DatePicker from '@/components/DatePicker/index.vue'
 import MdEditor from '@/components/MdEditor/Index.vue'
 
@@ -73,6 +74,9 @@ const onSubmit = (event: Event) => {
 
 const closeForm = () => emit('close-form')
 
+const workStore = useWork()
+const statusList = computed(() => workStore.statusList)
+
 onBeforeMount(() => {
   if (props.iProject) form.value.project = props.iProject.slug
   if (props.issue) {
@@ -94,6 +98,8 @@ onBeforeMount(() => {
     form.value.done_ratio = props.issue.done_ratio
   }
 })
+
+workStore.fetchStatusList()
 </script>
 
 <template>
@@ -169,7 +175,7 @@ onBeforeMount(() => {
           </CFormLabel>
           <CCol sm="4">
             <CFormSelect v-model="form.status" id="status" required>
-              <option>진행</option>
+              <option v-for="sts in statusList" :key="sts.pk">{{ sts.name }}</option>
             </CFormSelect>
           </CCol>
 

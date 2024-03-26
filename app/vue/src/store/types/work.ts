@@ -178,11 +178,19 @@ export interface Issue {
 }
 
 export interface IssueStatus {
-  pk: 1
-  name: '신규'
-  description: ''
-  closed: false
-  order: 1
+  pk: number
+  name: string
+  description: string
+  closed: boolean
+  order: number
+}
+
+export interface CodePriority {
+  pk: number
+  name: string
+  active: boolean
+  default: boolean
+  order: number
 }
 
 export interface LogEntry {
