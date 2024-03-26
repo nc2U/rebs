@@ -4,7 +4,7 @@ import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import IssueList from '@/views/_Work/Manages/Issues/components/IssueList.vue'
 import IssueForm from '@/views/_Work/Manages/Issues/components/IssueForm.vue'
-import IssueView from './components/IssueView.vue'
+import IssueView from '@/views/_Work/Manages/Issues/components/IssueView.vue'
 
 const emit = defineEmits(['aside-visible'])
 
