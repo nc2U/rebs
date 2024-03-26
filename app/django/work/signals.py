@@ -47,43 +47,59 @@ def track_changes(sender, instance, **kwargs):
 @receiver(post_save, sender=Issue)
 def log_changes(sender, instance, created, **kwargs):
     action = 'Created' if created else 'Edited'
-    details = f"- **업무** - _{instance}(#{instance.id})_ 업무가 _{action}_ 되었습니다.  " if created else ""
+    details = f"- **업무** - *{instance}(#{instance.id})*업무가 *{action}* 되었습니다.  " if created else ""
     diff = ""
     if hasattr(instance, '_old_project'):
-        details += f"- **프로젝트**가 _{instance._old_project}_에서 _{instance.project}_(으)로 변경되었습니다.  "
+        details += f"- **프로젝트**가 *{instance._old_project}*에서 *{instance.project}*(으)로 변경되었습니다.  "
     if hasattr(instance, '_old_tracker'):
-        details += f"- **유형**이 _{instance._old_tracker}_에서 _{instance.tracker}_(으)로 변경되었습니다.  "
+        details += f"- **유형**이 *{instance._old_tracker}*에서 *{instance.tracker}*(으)로 변경되었습니다.  "
     if hasattr(instance, '_old_status'):
-        details += f"- **상태**가 _{instance._old_status}_에서 _{instance.status}_(으)로 변경되었습니다.  "
+        details += f"- **상태**가 *{instance._old_status}*에서 *{instance.status}*(으)로 변경되었습니다.  "
     if hasattr(instance, '_old_priority'):
-        details += f"- **우선순위**가 _{instance._old_priority}_에서 _{instance.priority}_(으)로 변경되었습니다.  "
+        details += f"- **우선순위**가 _{instance._old_priority}_ 에서 _{instance.priority}*(으)로 변경되었습니다.  "
     if hasattr(instance, '_old_subject'):
-        details += f"- **제목**을 _{instance._old_subject}_에서 _{instance.subject}_(으)로 변경되었습니다.  "
+        details += f"- **제목**을 *{instance._old_subject}*에서 *{instance.subject}*(으)로 변경되었습니다.  "
     if hasattr(instance, '_old_description'):
         details += f"- **설명**이 변경되었습니다.  "
-        diff += f"_{instance._old_description}_에서 _{instance.description}_(으)로"
+        diff += f"*{instance._old_description}*에서 *{instance.description}*(으)로"
     if hasattr(instance, '_old_category'):
-        details += f"- **범주**가 _{instance._old_category}_에서 _{instance.category}_(으)로 변경되었습니다.  "
+        desc = f"- *{instance._old_category}*에서 " if instance._old_category else ""
+        act = "변경" if instance._old_category else "지정"
+        details += f"- **범주**가 {desc}*{instance.category}*(으)로 {act}되었습니다.  "
     if hasattr(instance, '_old_fixed_version'):
-        details += f"- **목표 버전**이 _{instance._old_fixed_version}_에서 _{instance.fixed_version}_(으)로 변경되었습니다.  "
+        desc = f"- *{instance._old_fixed_version}*에서 " if instance._old_fixed_version else ""
+        act = "변경" if instance._old_fixed_version else "지정"
+        details += f"- **목표 버전**이 {desc}*{instance.fixed_version}*(으)로 {act}되었습니다.  "
     if hasattr(instance, '_old_assigned_to'):
-        details += f"- **담당자**가 _{instance._old_assigned_to}_에서 _{instance.assigned_to}_(으)로 변경되었습니다.  "
+        desc = f"- *{instance._old_assigned_to}*에서 " if instance._old_assigned_to else ""
+        act = "변경" if instance._old_assigned_to else "지정"
+        details += f"- **담당자**가 {desc}*{instance.assigned_to}*(으)로 {act}되었습니다.  "
     if hasattr(instance, '_old_parent'):
-        details += f"- **상위 업무**가 _{instance._old_parent}_에서 _{instance.parent}_(으)로 변경되었습니다.  "
+        desc = f"- *{instance._old_parent}*에서 " if instance._old_parent else ""
+        act = "변경" if instance._old_parent else "지정"
+        details += f"- **상위 업무**가 {desc}*{instance.parent}*(으)로 {act}되었습니다.  "
     if hasattr(instance, '_old_watchers'):
-        details += f"- **업무 공유 열람**가 _{instance._old_watchers}_에서 _{instance.watchers}_(으)로 변경되었습니다.  "
+        desc = f"- *{instance._old_watchers}*에서 " if instance._old_watchers else ""
+        act = "변경" if instance._old_watchers else "지정"
+        details += f"- **업무 공유 열람**가 {desc}*{instance.watchers}*(으)로 {act}되었습니다.  "
     if hasattr(instance, '_old_is_private'):
-        details += f"- **비공개 설정**이 _{instance._old_is_private}_에서 _{instance.is_private}_(으)로 변경되었습니다.  "
+        details += f"- **비공개 설정**이 *{instance._old_is_private}*에서 *{instance.is_private}*(으)로 변경되었습니다.  "
     if hasattr(instance, '_old_estimated_hours'):
-        details += f"- **추정 소요시간**이 _{instance._old_estimated_hours}_에서 _{instance.estimated_hours}_(으)로 변경되었습니다.  "
+        desc = f"- *{instance._old_estimated_hours}*에서 " if instance._old_estimated_hours else ""
+        act = "변경" if instance._old_estimated_hours else "지정"
+        details += f"- **추정시간**이 {desc}*{instance.estimated_hours}*(으)로 {act}되었습니다.  "
     if hasattr(instance, '_old_start_date'):
-        details += f"- **시작 일자**가 _{instance._old_start_date}_에서 _{instance.start_date}_(으)로 변경되었습니다.  "
+        desc = f"- *{instance._old_start_date}*에서 " if instance._old_start_date else ""
+        act = "변경" if instance._old_start_date else "지정"
+        details += f"- **시작 일자**가 {desc}*{instance.start_date}*(으)로 {act}되었습니다.  "
     if hasattr(instance, '_old_due_date'):
-        details += f"- **완료 기한**이 _{instance._old_due_date}_에서 _{instance.due_date}_(으)로 변경되었습니다.  "
+        desc = f"- *{instance._old_due_date}*에서 " if instance._old_due_date else ""
+        act = "변경" if instance._old_due_date else "지정"
+        details += f"- **완료 기한**이 {desc}*{instance.due_date}*(으)로 {act}되었습니다.  "
     if hasattr(instance, '_old_done_ratio'):
-        details += f"- **진척도**가 _{instance._old_done_ratio}_에서 _{instance.done_ratio}_(으)로 변경되었습니다.  "
+        details += f"- **진척도**가 *{instance._old_done_ratio}*에서 *{instance.done_ratio}*(으)로 변경되었습니다.  "
     if hasattr(instance, '_old_closed'):
-        details += f"- **완료 여부**가 _{instance._old_closed}_에서 _{instance.closed}_(으)로 변경되었습니다.  "
+        details += f"- **해당 업무**가 *{instance.closed}*에 종료되었습니다.  "
 
     user = instance.creator if created else instance.updater
     if action == 'Edited':
