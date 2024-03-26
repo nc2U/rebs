@@ -42,6 +42,8 @@ const timeEntry = ref({
   comment: '',
 })
 
+const comment = ref('')
+
 const emit = defineEmits(['on-submit', 'close-form'])
 
 const formCheck = computed(() => {
@@ -326,7 +328,7 @@ workStore.fetchIssueList()
               작업종류
             </CFormLabel>
             <CCol sm="4">
-              <CFormSelect>
+              <CFormSelect v-model="timeEntry.activity">
                 <option value="">---------</option>
                 <option v-for="act in activityList" :value="act.pk" :key="act.pk">
                   {{ act.name }}
@@ -340,13 +342,13 @@ workStore.fetchIssueList()
               설명
             </CFormLabel>
             <CCol sm="10">
-              <CFormInput />
+              <CFormInput v-model="timeEntry.comment" />
             </CCol>
           </CRow>
 
           <h6>댓글</h6>
           <v-divider class="mt-0" />
-          <MdEditor style="height: 180px" />
+          <MdEditor v-model="comment" style="height: 180px" />
         </div>
       </CCardBody>
     </CCard>
