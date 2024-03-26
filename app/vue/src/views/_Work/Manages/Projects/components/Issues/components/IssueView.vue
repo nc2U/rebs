@@ -10,6 +10,7 @@ import IssueForm from '@/views/_Work/Manages/Issues/components/IssueForm.vue'
 defineProps({
   iProject: { type: Object as PropType<IssueProject>, default: null },
   issue: { type: Object as PropType<Issue>, required: true },
+  issueProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
   logEntryList: { type: Array as PropType<LogEntry[]>, default: () => [] },
 })
 
@@ -188,6 +189,7 @@ const callEditForm = () => (editForm.value = true)
     <IssueForm
       :i-project="iProject"
       :issue="issue"
+      :issue-projects="issueProjects"
       @on-submit="onSubmit"
       @close-form="() => (editForm = false)"
     />

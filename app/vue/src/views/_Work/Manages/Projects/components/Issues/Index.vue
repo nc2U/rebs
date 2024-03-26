@@ -55,6 +55,7 @@ onBeforeMount(() => {
     v-if="route.name === '(업무) - 보기' && issue"
     :i-project="iProject ?? undefined"
     :issue="issue"
+    :issue-projects="issueProjects"
     :log-entry-list="logEntryList"
     @on-submit="onSubmit"
   />
