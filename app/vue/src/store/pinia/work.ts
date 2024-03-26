@@ -2,7 +2,7 @@ import api from '@/api'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
-import type { IssueProject, Member, Role, Issue, LogEntry } from '@/store/types/work'
+import type { IssueProject, Member, Role, Issue, LogEntry, IssueStatus } from '@/store/types/work'
 
 export const useWork = defineStore('work', () => {
   // Issue Project states & getters
@@ -110,6 +110,22 @@ export const useWork = defineStore('work', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
+  // status states & getters
+  const status = ref<IssueStatus | null>(null)
+  const statusList = ref<IssueStatus[]>([])
+
+  const fetchStatus = (pk: number) =>
+    api
+      .get(`/issue-status/${pk}/`)
+      .then(res => (status.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchStatusList = () =>
+    api
+      .get(`issue-status`)
+      .then(res => (statusList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
   // issue states & getters
   const issue = ref<Issue | null>(null)
   const issueList = ref<Issue[]>([])
@@ -172,6 +188,11 @@ export const useWork = defineStore('work', () => {
     fetchMember,
     fetchMemberList,
     patchMember,
+
+    status,
+    statusList,
+    fetchStatus,
+    fetchStatusList,
 
     issue,
     issueList,

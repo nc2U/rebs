@@ -177,6 +177,14 @@ export interface Issue {
   updated: string
 }
 
+export interface IssueStatus {
+  pk: 1
+  name: '신규'
+  description: ''
+  closed: false
+  order: 1
+}
+
 export interface LogEntry {
   pk: number
   action: 'Created' | 'Edited'
