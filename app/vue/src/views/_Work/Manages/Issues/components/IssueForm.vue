@@ -133,7 +133,9 @@ onBeforeMount(() => {
           </CFormLabel>
           <CCol sm="4">
             <CFormSelect v-model="form.tracker" id="tracker" required>
-              <option>기능</option>
+              <option v-for="tracker in iProject.trackers" :key="tracker.pk">
+                {{ tracker.name }}
+              </option>
             </CFormSelect>
           </CCol>
         </CRow>
