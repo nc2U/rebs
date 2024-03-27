@@ -71,7 +71,12 @@ const onSubmit = (event: Event) => {
   } else {
     const e = form.value.estimated_hours
 
-    if (form.value.estimated_hours) emit('on-submit', form.value)
+    if (form.value.estimated_hours)
+      emit('on-submit', {
+        ...form.value,
+        ...timeEntry.value,
+        issueComment: comment.value,
+      })
   }
 }
 

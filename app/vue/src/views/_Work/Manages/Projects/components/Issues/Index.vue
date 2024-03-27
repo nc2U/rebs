@@ -19,8 +19,9 @@ const issueProjects = computed(() => workStore.AllIssueProjects)
 
 const onSubmit = (payload: any) => {
   console.log(payload)
-  if (payload.pk) alert('issue update!')
-  else alert('issue create!')
+  if (payload.pk) {
+    workStore.updateIssue(payload)
+  } else workStore.createIssue(payload)
   router.replace({ name: '(업무)' })
 }
 
