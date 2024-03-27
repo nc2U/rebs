@@ -14,13 +14,15 @@ defineProps({
   <CRow>
     <CRow class="py-2">
       <CCol>
-        <h5>{{ $route.name }}</h5>
+        <h5>업무</h5>
       </CCol>
 
       <CCol class="text-right">
         <span class="mr-2">
           <v-icon icon="mdi-plus-circle" color="success" size="sm" />
-          <router-link :to="{ name: '업무 - 추가' }" class="ml-1">새 업무만들기</router-link>
+          <router-link :to="{ name: `${String($route.name)} - 추가` }" class="ml-1">
+            새 업무만들기
+          </router-link>
         </span>
       </CCol>
     </CRow>
