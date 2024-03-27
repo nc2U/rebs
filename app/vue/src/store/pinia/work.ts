@@ -179,13 +179,13 @@ export const useWork = defineStore('work', () => {
 
   const updateIssue = (payload: any) =>
     api
-      .put(`/issue/${payload.issue.pk}/`, payload)
+      .put(`/issue/${payload.pk}/`, payload)
       .then(() => fetchIssue(payload.pk).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
   const patchIssue = (payload: any) =>
     api
-      .patch(`/issue/${payload.issue.pk}/`, payload)
+      .patch(`/issue/${payload.pk}/`, payload)
       .then(() => fetchIssue(payload.pk).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
