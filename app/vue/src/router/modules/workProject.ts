@@ -43,22 +43,24 @@ const workProject = {
         {
           path: ':projId/issue',
           name: '(업무)',
-        },
-        {
-          path: ':projId/issue/:issueId',
-          name: '(업무) - 보기',
-        },
-        {
-          path: ':projId/issue/create',
-          name: '(업무) - 추가',
-        },
-        {
-          path: ':projId/issue/:issueId/update',
-          name: '(업무) - 편집',
-        },
-        {
-          path: ':projId/issue/:issueId/delete',
-          name: '(업무) - 삭제',
+          children: [
+            {
+              path: ':issueId',
+              name: '(업무) - 보기',
+            },
+            {
+              path: 'create',
+              name: '(업무) - 추가',
+            },
+            {
+              path: ':issueId/update',
+              name: '(업무) - 편집',
+            },
+            {
+              path: ':issueId/delete',
+              name: '(업무) - 삭제',
+            },
+          ],
         },
         {
           path: ':projId/time_entry',
