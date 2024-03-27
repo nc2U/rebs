@@ -133,7 +133,7 @@ export const useWork = defineStore('work', () => {
 
   const fetchStatusList = () =>
     api
-      .get(`tracker`)
+      .get(`issue-status`)
       .then(res => (statusList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
