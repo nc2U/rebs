@@ -78,6 +78,12 @@ const onSubmit = (event: Event) => {
 const closeForm = () => emit('close-form')
 
 const workStore = useWork()
+const memberList = computed(() =>
+  props.iProject ? props.iProject.all_members : workStore.memberList,
+)
+const trackerList = computed(() =>
+  props.iProject ? props.iProject.trackers : workStore.trackerList,
+)
 const statusList = computed(() => workStore.statusList)
 const activityList = computed(() => workStore.activityList)
 const priorityList = computed(() => workStore.priorityList)
@@ -105,6 +111,8 @@ onBeforeMount(() => {
   }
 })
 
+workStore.fetchMemberList()
+workStore.fetchTrackerList()
 workStore.fetchStatusList()
 workStore.fetchActivityList()
 workStore.fetchPriorityList()
@@ -148,7 +156,7 @@ workStore.fetchIssueList()
           </CFormLabel>
           <CCol sm="4">
             <CFormSelect v-model="form.tracker" id="tracker" required>
-              <option v-for="tr in iProject.trackers" :value="tr.pk" :key="tr.pk">
+              <option v-for="tr in trackerList" :value="tr.pk" :key="tr.pk">
                 {{ tr.name }}
               </option>
             </CFormSelect>
@@ -232,7 +240,7 @@ workStore.fetchIssueList()
           </CFormLabel>
           <CCol sm="4">
             <CFormSelect v-model="form.assigned_to" id="assigned_to">
-              <option v-for="mem in iProject.all_members" :value="mem.user.pk">
+              <option v-for="mem in memberList" :value="mem.user.pk">
                 {{ mem.user.username }}
               </option>
             </CFormSelect>

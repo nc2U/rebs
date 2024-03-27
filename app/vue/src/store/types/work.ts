@@ -148,8 +148,8 @@ export interface Permission {
 
 export interface Member {
   pk: number
-  user: number
-  roles: number[]
+  user: { pk: number; username: string }
+  roles: { pk: number; name: string }[]
 }
 
 export interface Issue {
