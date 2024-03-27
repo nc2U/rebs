@@ -95,6 +95,8 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         parent = validated_data.get('parent', None)
         validated_data['depth'] = 1 if parent is None else parent.depth + 1
         project = IssueProject.objects.create(**validated_data)
+        # 프로젝트 생성시 설정된 기본 유형 추가
+        project.trackers.add(*[1, 2, 3])
         project.save()
 
         Module(project=project,
