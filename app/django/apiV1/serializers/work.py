@@ -310,6 +310,10 @@ class IssueSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         issue = Issue.objects.create(**validated_data)
+        watchers = validated_data.get('watchers', [])
+        # Set the watchers of the instance to the list of watchers
+        if watchers:
+            issue.watchers.set(*watchers)
         issue.save()
         return issue
 
