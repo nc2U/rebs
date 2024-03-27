@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { ref, onBeforeMount, type PropType, computed } from 'vue'
+import { ref, onBeforeMount, type PropType, computed, watch } from 'vue'
 import type { Issue, IssueProject } from '@/store/types/work'
 import { isValidate } from '@/utils/helper'
 import { useWork } from '@/store/pinia/work'
 import DatePicker from '@/components/DatePicker/index.vue'
 import MultiSelect from '@/components/MultiSelect/index.vue'
 import MdEditor from '@/components/MdEditor/Index.vue'
+import { useRoute } from 'vue-router'
 
 const props = defineProps({
-  iProject: { type: Object as PropType<IssueProject>, default: null },
   issue: { type: Object as PropType<Issue>, default: null },
   issueProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
 })
@@ -83,19 +83,25 @@ const onSubmit = (event: Event) => {
 const closeForm = () => emit('close-form')
 
 const workStore = useWork()
+const issueProject = computed(() => workStore.issueProject)
+watch(issueProject, nval => {
+  if (nval) form.value.project = nval?.slug
+})
+
 const memberList = computed(() =>
-  props.iProject ? props.iProject.all_members : workStore.memberList,
+  issueProject.value ? issueProject.value.all_members : workStore.memberList,
 )
 const trackerList = computed(() =>
-  props.iProject ? props.iProject.trackers : workStore.trackerList,
+  issueProject.value ? issueProject.value.trackers : workStore.trackerList,
 )
 const statusList = computed(() => workStore.statusList)
 const activityList = computed(() => workStore.activityList)
 const priorityList = computed(() => workStore.priorityList)
 const issueList = computed(() => workStore.issueList)
 
+const route = useRoute()
 onBeforeMount(() => {
-  if (props.iProject) form.value.project = props.iProject.slug
+  if (issueProject.value) form.value.project = issueProject.value.slug
   if (props.issue) {
     editDetails.value = false
 
@@ -114,14 +120,15 @@ onBeforeMount(() => {
     form.value.estimated_hours = props.issue.estimated_hours
     form.value.done_ratio = props.issue.done_ratio
   }
-})
 
-workStore.fetchMemberList()
-workStore.fetchTrackerList()
-workStore.fetchStatusList()
-workStore.fetchActivityList()
-workStore.fetchPriorityList()
-workStore.fetchIssueList()
+  if (route.params.projId) workStore.fetchIssueProject(route.params.projId as string)
+  workStore.fetchMemberList()
+  workStore.fetchTrackerList()
+  workStore.fetchStatusList()
+  workStore.fetchActivityList()
+  workStore.fetchPriorityList()
+  workStore.fetchIssueList()
+})
 </script>
 
 <template>

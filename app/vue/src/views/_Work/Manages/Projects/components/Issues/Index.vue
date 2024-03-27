@@ -67,7 +67,6 @@ onBeforeMount(() => {
     </CCol>
 
     <IssueForm
-      :i-project="iProject ?? undefined"
       :issue-projects="issueProjects"
       @on-submit="onSubmit"
       @close-form="router.push({ name: '(업무)' })"
