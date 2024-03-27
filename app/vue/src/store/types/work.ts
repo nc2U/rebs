@@ -177,6 +177,16 @@ export interface Issue {
   updated: string
 }
 
+export interface Tracker {
+  pk: number
+  name: string
+  description: string
+  is_in_roadmap: boolean
+  default_status: number
+  projects: number[]
+  order: number
+}
+
 export interface IssueStatus {
   pk: number
   name: string

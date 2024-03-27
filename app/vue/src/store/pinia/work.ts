@@ -7,9 +7,10 @@ import type {
   Member,
   Role,
   Issue,
-  LogEntry,
+  Tracker,
   IssueStatus,
   CodeValue,
+  LogEntry,
 } from '@/store/types/work'
 
 export const useWork = defineStore('work', () => {
@@ -118,12 +119,21 @@ export const useWork = defineStore('work', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
+  // tracker states & getters
+  const trackerList = ref<Tracker[]>([])
+
+  const fetchTrackerList = () =>
+    api
+      .get(`tracker`)
+      .then(res => (trackerList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
   // status states & getters
   const statusList = ref<IssueStatus[]>([])
 
   const fetchStatusList = () =>
     api
-      .get(`issue-status`)
+      .get(`tracker`)
       .then(res => (statusList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
@@ -200,6 +210,9 @@ export const useWork = defineStore('work', () => {
     fetchMember,
     fetchMemberList,
     patchMember,
+
+    trackerList,
+    fetchTrackerList,
 
     statusList,
     fetchStatusList,
