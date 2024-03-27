@@ -171,10 +171,30 @@ export const useWork = defineStore('work', () => {
       .then(res => (issueList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
+  const createIssue = (payload: any) =>
+    api
+      .post(`/issue/`, payload)
+      .then(res => fetchIssue(res.data.pk).then(() => message()))
+      .catch(err => errorHandle(err.response.data))
+
+  const updateIssue = (payload: any) =>
+    api
+      .put(`/issue/${payload.issue.pk}/`, payload)
+      .then(() => fetchIssue(payload.pk).then(() => message()))
+      .catch(err => errorHandle(err.response.data))
+
   const patchIssue = (payload: any) =>
     api
-      .patch(`/issue/${payload.pk}/`, payload)
-      .then(res => fetchIssue(payload.pk).then(() => message()))
+      .patch(`/issue/${payload.issue.pk}/`, payload)
+      .then(() => fetchIssue(payload.pk).then(() => message()))
+      .catch(err => errorHandle(err.response.data))
+
+  const deleteIssue = (pk: number) =>
+    api
+      .delete(`/issue/${pk}/`)
+      .then(() =>
+        fetchIssueList().then(() => message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.')),
+      )
       .catch(err => errorHandle(err.response.data))
 
   // issue states & getters
@@ -227,7 +247,10 @@ export const useWork = defineStore('work', () => {
     issueList,
     fetchIssue,
     fetchIssueList,
+    createIssue,
+    updateIssue,
     patchIssue,
+    deleteIssue,
 
     logEntryList,
     fetchLogEntryList,
