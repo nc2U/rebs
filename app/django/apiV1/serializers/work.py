@@ -192,6 +192,9 @@ class RoleSerializer(serializers.ModelSerializer):
 
 
 class MemberSerializer(serializers.ModelSerializer):
+    user = UserInMemberSerializer(read_only=True)
+    roles = RoleInMemberSerializer(many=True, read_only=True)
+
     class Meta:
         model = Member
         fields = ('pk', 'user', 'roles')
