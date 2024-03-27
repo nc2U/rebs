@@ -119,8 +119,10 @@ onBeforeMount(() => {
     form.value.estimated_hours = props.issue.estimated_hours
     form.value.done_ratio = props.issue.done_ratio
   }
-
-  if (route.params.projId) workStore.fetchIssueProject(route.params.projId as string)
+  if (route.params.projId) {
+    workStore.fetchIssueProject(route.params.projId as string)
+    form.value.project = route.params.projId as string
+  }
   workStore.fetchMemberList()
   workStore.fetchTrackerList()
   workStore.fetchStatusList()
@@ -319,7 +321,18 @@ onBeforeMount(() => {
               업무 열람 공유자
             </CFormLabel>
             <CCol sm="4" style="padding-top: 8px">
-              <CFormCheck v-model="form.watchers" id="watcher" label="austin kho" />
+              <span v-for="mem in memberList" :key="mem.pk" class="mr-3">
+                <input
+                  v-model="form.watchers"
+                  :id="`user-${mem.user.pk}`"
+                  :value="mem.pk"
+                  type="checkbox"
+                  class="form-check-input"
+                />
+                <label :for="`user-${mem.user.pk}`" class="form-label form-check-label ml-2">
+                  {{ mem.user.username }}
+                </label>
+              </span>
             </CCol>
           </CRow>
         </div>

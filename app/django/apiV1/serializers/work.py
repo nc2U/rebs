@@ -309,8 +309,18 @@ class IssueSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
+        # Pop 'watchers' from validated_data to avoid KeyError
+        watchers = validated_data.pop('watchers', [])
+        slug = validated_data.get('project', None)
+
+        try:
+            project = IssueProject.objects.get(slug=slug)
+        except IssueProject.DoesNotExist:
+            # Handle the case where the IssueProject does not exist
+            raise serializers.ValidationError("IssueProject with slug '{}' does not exist.".format(slug))
+
         issue = Issue.objects.create(**validated_data)
-        watchers = validated_data.get('watchers', [])
+        issue.project = project
         # Set the watchers of the instance to the list of watchers
         if watchers:
             issue.watchers.set(*watchers)
