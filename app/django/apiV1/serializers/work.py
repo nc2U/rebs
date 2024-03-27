@@ -302,8 +302,18 @@ class IssueSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_parent(obj):
         # Check if there is a parent object corresponding to the parent field in the entire collection
-        parent_obj = None if obj.parent is None else IssueProject.objects.filter(id=obj.parent_id).first()
+        parent_obj = IssueProject.objects.filter(id=obj.parent_id).first() if obj.parent else None
         return obj.parent if parent_obj else None
+
+    @transaction.atomic
+    def create(self, validated_data):
+        issue = Issue.objects.create(**validated_data)
+        issue.save()
+        return issue
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        return super().update(instance, validated_data)
 
 
 class IssueFileSerializer(serializers.ModelSerializer):
