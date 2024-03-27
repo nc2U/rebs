@@ -43,6 +43,7 @@ const chkPublic = () =>
   nextTick(() => {
     const parent = form.parent ? props.allTaskProjects.filter(p => p.pk === form.parent)[0] : null
     form.is_public = !!parent?.is_public
+    form.is_inherit_members = true
   })
 
 const getSlug = (event: { key: string; code: string }) => {
