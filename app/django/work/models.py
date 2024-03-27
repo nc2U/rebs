@@ -373,7 +373,7 @@ class Issue(models.Model):
                                     null=True, blank=True, verbose_name='담당자', related_name='assignees')
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True,
                                verbose_name='상위 업무', related_name='children')
-    watchers = models.ManyToManyField('accounts.User', blank=True, verbose_name='업무 열람 공유자', related_name='watchers')
+    watchers = models.ManyToManyField(Member, blank=True, verbose_name='업무 열람 공유자', related_name='watchers')
     is_private = models.BooleanField('비공개', default=False)
     estimated_hours = models.PositiveSmallIntegerField('추정 소요시간', null=True, blank=True)
     start_date = models.DateField('시작 일자', null=True, blank=True)
@@ -383,7 +383,8 @@ class Issue(models.Model):
         (60, '60%'), (70, '70%'), (80, '80%'), (90, '90%'), (100, '100%'))
     done_ratio = models.PositiveSmallIntegerField('진척도', choices=PROGRESS_RATIO, default=0)
     closed = models.DateTimeField('완료', null=True, blank=True, help_text='상태가 완료로 입력된 시간. 한 번 완료하면 다시 진행으로 변경해도 남아있음.')
-    creator = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자', related_name='creator')
+    creator = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자',
+                                related_name='creator', null=True, blank=True)
     updater = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='수정자',
                                 related_name='updater', null=True, blank=True)
     created = models.DateTimeField('추가', auto_now_add=True)

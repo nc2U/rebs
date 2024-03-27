@@ -285,7 +285,7 @@ class CodePriorityInIssueSerializer(serializers.ModelSerializer):
 
 
 class IssueSerializer(serializers.ModelSerializer):
-    project = IProjectIssueSerializer()
+    project = IProjectIssueSerializer(read_only=True)
     tracker = TrackerInIssueProjectSerializer(read_only=True)
     status = IssueStatusInIssueSerializer(read_only=True)
     priority = CodePriorityInIssueSerializer(read_only=True)
@@ -313,7 +313,16 @@ class IssueSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def update(self, instance, validated_data):
-        return super().update(instance, validated_data)
+        instance.__dict__.update(**validated_data)
+        instance.creator = validated_data.get('creator', instance.creator)
+        instance.project = validated_data.get('project', instance.project)
+        # Get the list of watchers from validated_data, default to empty list
+        watchers = validated_data.get('watchers', [])
+        # Set the watchers of the instance to the list of watchers
+        if watchers:
+            instance.watchers.set(*watchers)
+        instance.save()
+        return instance
 
 
 class IssueFileSerializer(serializers.ModelSerializer):
