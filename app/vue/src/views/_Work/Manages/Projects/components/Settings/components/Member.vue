@@ -67,23 +67,42 @@ const cancelEdit = () => {
 }
 
 const editSubmit = (mem: number, user: number) => {
-  const parent = allMembers.value.filter(m => m.pk === mem)[0]?.roles.map(r => r.pk)
+  const currRoles = allMembers.value.filter(m => m.pk === mem)[0]?.roles.map(r => r.pk)
   const slug = iProject?.value.slug as string
 
-  if (parent) {
-    // 1. parent의 권한은 수정할 수 없다.
-    // 2. 그러므로 멤버의 권한을 추출한다.
-    // 3. 멤버의 권한이 있으면
-    if (memberRole.value.length > parent.length) {
-      // 멤버 정보 등록
-      const roles = memberRole.value.filter(r => !parent.includes(r)) // 부모 권한 대비 추가 권한
-      patchIssueProject({ slug, users: [user], roles })
+  if (currRoles) {
+    // 현재 역할이 존재하면
+
+    const isMember = !!memberList.value.filter(m => m.pk === mem).length
+
+    if (isMember) {
+      // 현재 프로젝트 멤버이면
+      alert('this! => ')
+
+      if (memberRole.value.length > currRoles.length) {
+        // 추가할 역할이 있는 경우에만 해당 역할을 추가한다.
+        return
+      } else alert('수정할 역할을 선택하세요!')
     } else {
-      // 멤버의 권한이 없으면 멤버를 삭제한다.
-      const member = memberList.value.filter(m => m.user.pk === user)[0].pk
-      patchIssueProject({ slug, users: [], roles: [], del_mem: member })
+      // 부모 프로젝트 멤버이면
+      // 1. currRoles의 역할은 수정할 수 없다. ??
+      // 2. 그러므로 멤버의 역할을 추출한다.
+      // 3. 멤버의 기존 역할이 있을 때
+      if (memberRole.value.length > currRoles.length) {
+        // 추가할 역할이 있으면
+        // 멤버 정보 등록
+        const roles = memberRole.value.filter(r => !currRoles.includes(r)) // 부모 권한 대비 추가 권한
+        patchIssueProject({ slug, users: [user], roles })
+      } else {
+        // // 추가할 역할이 없으면
+        // // 멤버의 권한이 없으면 멤버를 삭제한다.
+        // const member = memberList.value.filter(m => m.user.pk === user)[0].pk
+        // patchIssueProject({ slug, users: [], roles: [], del_mem: member })
+        alert('추가할 역할을 선택하세요!')
+      }
     }
   } else {
+    // 멤버의 기존 역할이 없으면 새로 생성한다.
     // 멤버 정보 수정
     const roles = memberRole.value
     workStore.patchMember({ pk: mem, roles, slug })
