@@ -63,37 +63,37 @@ def log_changes(sender, instance, created, **kwargs):
         details += f"- **설명**이 변경되었습니다.  "
         diff += f"변경전 : *{instance._old_description}*, 변경후 : *{instance.description}*"
     if hasattr(instance, '_old_category'):
-        desc = f"- *{instance._old_category}*에서 " if instance._old_category else ""
+        desc = f"*{instance._old_category}*에서 " if instance._old_category else ""
         act = "변경" if instance._old_category else "지정"
         details += f"- **범주**가 {desc}*{instance.category}*(으)로 {act}되었습니다.  "
     if hasattr(instance, '_old_fixed_version'):
-        desc = f"- *{instance._old_fixed_version}*에서 " if instance._old_fixed_version else ""
+        desc = f" *{instance._old_fixed_version}*에서 " if instance._old_fixed_version else ""
         act = "변경" if instance._old_fixed_version else "지정"
         details += f"- **목표 버전**이 {desc}*{instance.fixed_version}*(으)로 {act}되었습니다.  "
     if hasattr(instance, '_old_assigned_to'):
-        desc = f"- *{instance._old_assigned_to}*에서 " if instance._old_assigned_to else ""
+        desc = f" *{instance._old_assigned_to}*에서 " if instance._old_assigned_to else ""
         act = "변경" if instance._old_assigned_to else "지정"
         details += f"- **담당자**가 {desc}*{instance.assigned_to}*(으)로 {act}되었습니다.  "
     if hasattr(instance, '_old_parent'):
-        desc = f"- *{instance._old_parent}*에서 " if instance._old_parent else ""
+        desc = f" *{instance._old_parent}*에서 " if instance._old_parent else ""
         act = "변경" if instance._old_parent else "지정"
         details += f"- **상위 업무**가 {desc}*{instance.parent}*(으)로 {act}되었습니다.  "
     if hasattr(instance, '_old_watchers'):
-        desc = f"- *{instance._old_watchers}*에서 " if instance._old_watchers else ""
+        desc = f" *{instance._old_watchers}*에서 " if instance._old_watchers else ""
         act = "변경" if instance._old_watchers else "지정"
         details += f"- **업무 열람 공유자**가 {desc}*{instance.watchers}*(으)로 {act}되었습니다.  "
     if hasattr(instance, '_old_is_private'):
         details += f"- **비공개 설정**이 *{instance._old_is_private}*에서 *{instance.is_private}*(으)로 변경되었습니다.  "
     if hasattr(instance, '_old_estimated_hours'):
-        desc = f"- *{instance._old_estimated_hours}*에서 " if instance._old_estimated_hours else ""
+        desc = f" *{instance._old_estimated_hours}*에서 " if instance._old_estimated_hours else ""
         act = "변경" if instance._old_estimated_hours else "지정"
         details += f"- **추정시간**이 {desc}*{instance.estimated_hours}*(으)로 {act}되었습니다.  "
     if hasattr(instance, '_old_start_date'):
-        desc = f"- *{instance._old_start_date}*에서 " if instance._old_start_date else ""
+        desc = f" *{instance._old_start_date}*에서 " if instance._old_start_date else ""
         act = "변경" if instance._old_start_date else "지정"
         details += f"- **시작 일자**가 {desc}*{instance.start_date}*(으)로 {act}되었습니다.  "
     if hasattr(instance, '_old_due_date'):
-        desc = f"- *{instance._old_due_date}*에서 " if instance._old_due_date else ""
+        desc = f" *{instance._old_due_date}*에서 " if instance._old_due_date else ""
         act = "변경" if instance._old_due_date else "지정"
         details += f"- **완료 기한**이 {desc}*{instance.due_date}*(으)로 {act}되었습니다.  "
     if hasattr(instance, '_old_done_ratio'):
