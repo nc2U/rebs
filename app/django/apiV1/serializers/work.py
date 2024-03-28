@@ -340,7 +340,7 @@ class IssueSerializer(serializers.ModelSerializer):
         instance.tracker = Tracker.objects.get(pk=self.initial_data.get('tracker'))
         instance.status = IssueStatus.objects.get(pk=self.initial_data.get('status'))
         instance.priority = CodeIssuePriority.objects.get(pk=self.initial_data.get('priority'))
-        instance.creator = validated_data.get('creator', instance.creator)
+        instance.creator = instance.creator  # validated_data.get('creator', instance.creator)
 
         assigned_to = self.initial_data.get('assigned_to', None)
         assigned_to = User.objects.get(pk=assigned_to) if assigned_to else None
@@ -354,8 +354,7 @@ class IssueSerializer(serializers.ModelSerializer):
             for watcher in watchers:
                 if not instance.watchers.filter(id=watcher.pk).exists():
                     instance.watchers.set(watcher)
-        instance.save()
-        return instance
+        return super().update(instance, validated_data)
 
 
 class IssueFileSerializer(serializers.ModelSerializer):
