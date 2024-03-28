@@ -329,19 +329,31 @@ class IssueSerializer(serializers.ModelSerializer):
             issue.watchers.add(assigned_to)
         if watchers:
             for watcher in watchers:
-                issue.watchers.set([watcher])
+                if not issue.watchers.filter(id=watcher.pk).exists():
+                    issue.watchers.add(watcher)
         return issue
 
     @transaction.atomic
     def update(self, instance, validated_data):
         instance.__dict__.update(**validated_data)
-        instance.project = validated_data.get('project', instance.project)
+        instance.project = IssueProject.objects.get(slug=self.initial_data.get('project', None))
+        instance.tracker = Tracker.objects.get(pk=self.initial_data.get('tracker'))
+        instance.status = IssueStatus.objects.get(pk=self.initial_data.get('status'))
+        instance.priority = CodeIssuePriority.objects.get(pk=self.initial_data.get('priority'))
         instance.creator = validated_data.get('creator', instance.creator)
-        # Get the list of watchers from validated_data, default to empty list
+
+        assigned_to = self.initial_data.get('assigned_to', None)
+        assigned_to = User.objects.get(pk=assigned_to) if assigned_to else None
+        if assigned_to is None:
+            instance.watchers.remove(assigned_to)
+        else:
+            instance.watchers.add(assigned_to)
+
         watchers = validated_data.get('watchers', [])
-        # Set the watchers of the instance to the list of watchers
         if watchers:
-            instance.watchers.set(*watchers)
+            for watcher in watchers:
+                if not instance.watchers.filter(id=watcher.pk).exists():
+                    instance.watchers.set(watcher)
         instance.save()
         return instance
 
