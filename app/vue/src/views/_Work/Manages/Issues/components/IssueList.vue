@@ -80,6 +80,7 @@ defineProps({
             </CTableDataCell>
             <CTableDataCell class="text-center">
               <router-link
+                v-if="issue.assigned_to"
                 :to="{ name: '사용자 - 보기', params: { userId: issue.assigned_to?.pk } }"
               >
                 {{ issue.assigned_to?.username }}
