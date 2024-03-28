@@ -309,29 +309,38 @@ class IssueSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
+        project = IssueProject.objects.get(slug=self.initial_data.get('project', None))
+        tracker = Tracker.objects.get(pk=self.initial_data.get('tracker'))
+        status = IssueStatus.objects.get(pk=self.initial_data.get('status'))
+        priority = CodeIssuePriority.objects.get(pk=self.initial_data.get('priority'))
+        assigned_to = self.initial_data.get('assigned_to', None)
+        assigned_to = User.objects.get(pk=assigned_to) if assigned_to else None
+
         # Pop 'watchers' from validated_data to avoid KeyError
         watchers = validated_data.pop('watchers', [])
-        slug = validated_data.get('project', None)
-
-        try:
-            project = IssueProject.objects.get(slug=slug)
-        except IssueProject.DoesNotExist:
-            # Handle the case where the IssueProject does not exist
-            raise serializers.ValidationError("IssueProject with slug '{}' does not exist.".format(slug))
-
-        issue = Issue.objects.create(**validated_data)
-        issue.project = project
+        issue = Issue.objects.create(project=project,
+                                     tracker=tracker,
+                                     status=status,
+                                     priority=priority,
+                                     assigned_to=assigned_to,
+                                     **validated_data)
         # Set the watchers of the instance to the list of watchers
+        if assigned_to:
+            issue.watchers.add(assigned_to)
         if watchers:
-            issue.watchers.set(*watchers)
+            try:
+                issue.watchers.set(*watchers)
+            except TypeError:
+                # Handle the case where the IssueProject does not exist
+                raise serializers.ValidationError("watchers is '{}'".format(watchers))
         issue.save()
         return issue
 
     @transaction.atomic
     def update(self, instance, validated_data):
         instance.__dict__.update(**validated_data)
-        instance.creator = validated_data.get('creator', instance.creator)
         instance.project = validated_data.get('project', instance.project)
+        instance.creator = validated_data.get('creator', instance.creator)
         # Get the list of watchers from validated_data, default to empty list
         watchers = validated_data.get('watchers', [])
         # Set the watchers of the instance to the list of watchers

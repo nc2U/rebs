@@ -118,6 +118,9 @@ onBeforeMount(() => {
     form.value.due_date = props.issue.due_date
     form.value.estimated_hours = props.issue.estimated_hours
     form.value.done_ratio = props.issue.done_ratio
+  } else {
+    form.value.status = 1
+    form.value.priority = 2
   }
   if (route.params.projId) {
     workStore.fetchIssueProject(route.params.projId as string)
@@ -205,8 +208,8 @@ onBeforeMount(() => {
           </CFormLabel>
           <CCol sm="4">
             <CFormSelect v-model="form.status" id="status" required>
-              <option v-for="sts in statusList" :value="sts.pk" :key="sts.pk">
-                {{ sts.name }}
+              <option v-for="status in statusList" :value="status.pk" :key="status.pk">
+                {{ status.name }}
               </option>
             </CFormSelect>
           </CCol>
@@ -253,6 +256,7 @@ onBeforeMount(() => {
           </CFormLabel>
           <CCol sm="4">
             <CFormSelect v-model="form.assigned_to" id="assigned_to">
+              <option value="">---------</option>
               <option v-for="mem in memberList" :value="mem.user.pk">
                 {{ mem.user.username }}
               </option>
@@ -325,7 +329,7 @@ onBeforeMount(() => {
                 <input
                   v-model="form.watchers"
                   :id="`user-${mem.user.pk}`"
-                  :value="mem.pk"
+                  :value="mem.user.pk"
                   type="checkbox"
                   class="form-check-input"
                 />
