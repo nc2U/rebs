@@ -328,11 +328,11 @@ class IssueSerializer(serializers.ModelSerializer):
         if assigned_to:
             issue.watchers.add(assigned_to)
         if watchers:
-            try:
-                issue.watchers.set(*watchers)
-            except TypeError:
-                # Handle the case where the IssueProject does not exist
-                raise serializers.ValidationError("watchers is '{}'".format(watchers))
+            # try:
+            #     issue.watchers.set(*watchers)
+            # except TypeError:
+            #     # Handle the case where the IssueProject does not exist
+            raise serializers.ValidationError("watchers is '{}'".format(watchers))
         issue.save()
         return issue
 
