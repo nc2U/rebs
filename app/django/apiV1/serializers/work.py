@@ -325,15 +325,11 @@ class IssueSerializer(serializers.ModelSerializer):
                                      assigned_to=assigned_to,
                                      **validated_data)
         # Set the watchers of the instance to the list of watchers
-        if assigned_to:
+        if assigned_to is not None:
             issue.watchers.add(assigned_to)
         if watchers:
-            # try:
-            #     issue.watchers.set(*watchers)
-            # except TypeError:
-            #     # Handle the case where the IssueProject does not exist
-            raise serializers.ValidationError("watchers is '{}'".format(watchers))
-        issue.save()
+            for watcher in watchers:
+                issue.watchers.set([watcher])
         return issue
 
     @transaction.atomic

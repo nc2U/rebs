@@ -58,10 +58,10 @@ def log_changes(sender, instance, created, **kwargs):
     if hasattr(instance, '_old_priority'):
         details += f"- **우선순위**가 _{instance._old_priority}_ 에서 _{instance.priority}*(으)로 변경되었습니다.  "
     if hasattr(instance, '_old_subject'):
-        details += f"- **제목**을 *{instance._old_subject}*에서 *{instance.subject}*(으)로 변경되었습니다.  "
+        details += f"- **제목**이 *{instance._old_subject}*에서 *{instance.subject}*(으)로 변경되었습니다.  "
     if hasattr(instance, '_old_description'):
         details += f"- **설명**이 변경되었습니다.  "
-        diff += f"*{instance._old_description}*에서 *{instance.description}*(으)로"
+        diff += f"변경전 : *{instance._old_description}*, 변경후 : *{instance.description}*"
     if hasattr(instance, '_old_category'):
         desc = f"- *{instance._old_category}*에서 " if instance._old_category else ""
         act = "변경" if instance._old_category else "지정"
@@ -81,7 +81,7 @@ def log_changes(sender, instance, created, **kwargs):
     if hasattr(instance, '_old_watchers'):
         desc = f"- *{instance._old_watchers}*에서 " if instance._old_watchers else ""
         act = "변경" if instance._old_watchers else "지정"
-        details += f"- **업무 공유 열람**가 {desc}*{instance.watchers}*(으)로 {act}되었습니다.  "
+        details += f"- **업무 열람 공유자**가 {desc}*{instance.watchers}*(으)로 {act}되었습니다.  "
     if hasattr(instance, '_old_is_private'):
         details += f"- **비공개 설정**이 *{instance._old_is_private}*에서 *{instance.is_private}*(으)로 변경되었습니다.  "
     if hasattr(instance, '_old_estimated_hours'):
