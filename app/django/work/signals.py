@@ -62,10 +62,10 @@ def log_changes(sender, instance, created, **kwargs):
     if hasattr(instance, '_old_description'):
         details += f"|- **설명**이 변경되었습니다."
         diff += (f"""**변경전 :**  
-                    *{instance._old_description}*   
+                    {instance._old_description}   
                     -----------------------------  
                     **변경후 :**  
-                    *{instance.description}*""")
+                    {instance.description}""")
     if hasattr(instance, '_old_category'):
         desc = f"*{instance._old_category}*에서 " if instance._old_category else ""
         act = "변경" if instance._old_category else "지정"
