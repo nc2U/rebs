@@ -205,7 +205,7 @@ export const useWork = defineStore('work', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
-  // issue states & getters
+  // issue-log states & getters
   const logEntryList = ref<LogEntry[]>([])
 
   const fetchLogEntryList = async (payload: { issue: string; user?: number }) => {
@@ -214,6 +214,19 @@ export const useWork = defineStore('work', () => {
     return await api
       .get(url)
       .then(res => (logEntryList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  // activity-log states & getters
+  const ActivityLogList = ref<any[]>([])
+
+  const fetchActivityLogList = async () => {
+    const url = `/act-entry/?1=1`
+    // ?project=&issue=&act_date=&from_act_date=2024-03-19&to_act_date=2024-03-29&user=
+    // if (payload.user) url += `&user=${payload.user}`
+    return await api
+      .get(url)
+      .then(res => (ActivityLogList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
 
@@ -262,5 +275,8 @@ export const useWork = defineStore('work', () => {
 
     logEntryList,
     fetchLogEntryList,
+
+    ActivityLogList,
+    fetchActivityLogList,
   }
 })
