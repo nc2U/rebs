@@ -218,8 +218,14 @@ export interface LogEntry {
 
 export interface ActLogEntry {
   pk: number
-  project: number
-  issue: number
+  project: string | null
+  issue: {
+    pk: number
+    tracker: string
+    status: string
+    subject: string
+    description: string
+  } | null
   status_log: string
   change_sets: string
   news: string

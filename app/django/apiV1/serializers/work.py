@@ -385,7 +385,18 @@ class LogEntrySerializer(serializers.ModelSerializer):
         fields = ('pk', 'action', 'details', 'diff', 'timestamp', 'issue', 'user')
 
 
+class IssueInActivitySerializer(serializers.ModelSerializer):
+    tracker = serializers.SlugRelatedField(slug_field='name', read_only=True)
+    status = serializers.SlugRelatedField('name', read_only=True)
+
+    class Meta:
+        model = Issue
+        fields = ('pk', 'tracker', 'status', 'subject', 'description')
+
+
 class ActivityLogEntrySerializer(serializers.ModelSerializer):
+    project = serializers.SlugRelatedField('name', read_only=True)
+    issue = IssueInActivitySerializer(read_only=True)
     user = UserInMemberSerializer(read_only=True)
 
     class Meta:
