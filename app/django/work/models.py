@@ -452,6 +452,19 @@ class TimeEntry(models.Model):
         ordering = ('spent_on',)
 
 
+class IssueLogEntry(models.Model):
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, verbose_name='업무')
+    ACTION_CHOICES = (('Created', '추가'), ('Edited', '편집'))
+    action = models.CharField('이벤트', max_length=10, choices=ACTION_CHOICES)
+    details = models.TextField('설명', blank=True, default='')
+    diff = models.TextField('차이점', blank=True, default='')
+    user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사용자')
+    timestamp = models.DateTimeField('로그시간', auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.action} - {self.timestamp}"
+
+
 class Search(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE, verbose_name='내 검색어')
     offset = models.BigIntegerField('오프셋', default=False)  # 응답에서 이 결과 수를 건너뚭니다.(선택사항)
@@ -473,16 +486,3 @@ class Search(models.Model):
 
     def __str__(self):
         return f'#{self.pk}. {self.member.user.username} - 검색조건'
-
-
-class IssueLogEntry(models.Model):
-    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, verbose_name='업무')
-    ACTION_CHOICES = (('Created', '추가'), ('Edited', '편집'))
-    action = models.CharField('이벤트', max_length=10, choices=ACTION_CHOICES)
-    details = models.TextField('설명', blank=True, default='')
-    diff = models.TextField('차이점', blank=True, default='')
-    user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사용자')
-    timestamp = models.DateTimeField('로그시간', auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.action} - {self.timestamp}"
