@@ -180,13 +180,21 @@ export const useWork = defineStore('work', () => {
   const updateIssue = (payload: any) =>
     api
       .put(`/issue/${payload.pk}/`, payload)
-      .then(() => fetchIssue(payload.pk).then(() => message()))
+      .then(() =>
+        fetchIssue(payload.pk).then(() =>
+          fetchLogEntryList({ issue: payload.pk }).then(() => message()),
+        ),
+      )
       .catch(err => errorHandle(err.response.data))
 
   const patchIssue = (payload: any) =>
     api
       .patch(`/issue/${payload.pk}/`, payload)
-      .then(() => fetchIssue(payload.pk).then(() => message()))
+      .then(() =>
+        fetchIssue(payload.pk).then(() =>
+          fetchLogEntryList({ issue: payload.pk }).then(() => message()),
+        ),
+      )
       .catch(err => errorHandle(err.response.data))
 
   const deleteIssue = (pk: number) =>
