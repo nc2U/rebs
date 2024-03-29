@@ -1,12 +1,30 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount } from 'vue'
+import { useWork } from '@/store/pinia/work'
 import NoData from '@/views/_Work/components/NoData.vue'
 
 const emit = defineEmits(['aside-visible'])
 
-const activities = computed(() => [])
+const fromDate = computed(
+  () =>
+    new Date().getFullYear() +
+    '/' +
+    (new Date().getMonth() + 1) +
+    '/' +
+    (new Date().getDate() - 10),
+)
 
-onBeforeMount(() => emit('aside-visible', true))
+const toDate = computed(
+  () => new Date().getFullYear() + '/' + (new Date().getMonth() + 1) + '/' + new Date().getDate(),
+)
+
+const workStore = useWork()
+const ActivityLogList = computed(() => workStore.ActivityLogList)
+
+onBeforeMount(() => {
+  emit('aside-visible', true)
+  workStore.fetchActivityLogList()
+})
 </script>
 
 <template>
@@ -17,13 +35,15 @@ onBeforeMount(() => emit('aside-visible', true))
   </CRow>
 
   <CRow class="fst-italic">
-    <CCol>2024/02/21부터 2024/03/01까지</CCol>
+    <CCol> {{ fromDate }}부터 {{ toDate }}까지</CCol>
   </CRow>
 
-  <NoData v-if="!activities.length" />
+  <NoData v-if="!ActivityLogList.length" />
 
   <CRow v-else>
-    <CCol></CCol>
+    <CCol v-for="act in ActivityLogList" :key="act.pk">
+      {{ act }}
+    </CCol>
   </CRow>
 
   <CRow>
