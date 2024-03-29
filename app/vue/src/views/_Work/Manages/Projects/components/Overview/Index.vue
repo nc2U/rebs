@@ -54,7 +54,7 @@ onBeforeMount(() => emit('aside-visible', false))
     </CCol>
 
     <CCol class="text-right">
-      <span class="mr-2">
+      <span class="mr-2 form-text">
         <v-icon icon="mdi-bookmark-multiple" color="primary" size="sm" />
         <router-link to="" class="ml-1">북마크 추가</router-link>
       </span>

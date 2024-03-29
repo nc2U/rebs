@@ -2,7 +2,7 @@
 
 <template>
   <CRow class="py-2">
-    <CCol class="text-right">
+    <CCol class="text-right form-text">
       <span>
         <v-icon icon="mdi-trash-can" color="secondary" size="sm" />
         <router-link to="" class="ml-1">초기화</router-link>

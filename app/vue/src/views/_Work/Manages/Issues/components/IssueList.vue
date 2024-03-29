@@ -18,7 +18,7 @@ defineProps({
       </CCol>
 
       <CCol class="text-right">
-        <span class="mr-2">
+        <span class="mr-2 form-text">
           <v-icon icon="mdi-plus-circle" color="success" size="sm" />
           <router-link :to="{ name: `${String($route.name)} - 추가` }" class="ml-1">
             새 업무만들기
@@ -33,7 +33,7 @@ defineProps({
 
     <CCol v-else col="12">
       <v-divider class="mb-0" />
-      <CTable striped hover small>
+      <CTable striped hover small responsive>
         <colgroup>
           <col style="width: 8%" />
           <col style="width: 16%" />

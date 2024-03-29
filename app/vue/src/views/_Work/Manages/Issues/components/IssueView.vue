@@ -67,7 +67,7 @@ const callEditForm = () => {
 
       <CRow>
         <CCol>
-          <p class="mt-1">
+          <p class="mt-1 form-text">
             <router-link to="">austin2 kho</router-link>
             이(가)
             <router-link
