@@ -119,6 +119,7 @@ onBeforeMount(() => {
     form.value.estimated_hours = props.issue.estimated_hours
     form.value.done_ratio = props.issue.done_ratio
   } else {
+    form.value.project = props.issueProjects[0].slug
     form.value.tracker = 2
     form.value.status = 1
     form.value.priority = 2

@@ -174,7 +174,7 @@ export const useWork = defineStore('work', () => {
   const createIssue = (payload: any) =>
     api
       .post(`/issue/`, payload)
-      .then(res => fetchIssue(res.data.pk).then(() => message()))
+      .then(res => fetchIssueList().then(() => fetchIssue(res.data.pk).then(() => message())))
       .catch(err => errorHandle(err.response.data))
 
   const updateIssue = (payload: any) =>
