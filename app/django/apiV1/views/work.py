@@ -5,9 +5,10 @@ from ..permission import *
 from ..pagination import *
 from ..serializers.work import *
 
-from work.models import (IssueProject, Role, Permission, Member, Module, Version, IssueCategory,
-                         Repository, Tracker, IssueStatus, Workflow, CodeActivity, CodeIssuePriority,
-                         CodeDocsCategory, Issue, IssueFile, IssueComment, TimeEntry, Search, IssueLogEntry)
+from work.models import (IssueProject, Role, Permission, Member, Module, Version,
+                         IssueCategory, Repository, Tracker, IssueStatus, Workflow,
+                         CodeActivity, CodeIssuePriority, CodeDocsCategory, Issue,
+                         IssueFile, IssueComment, TimeEntry, Search, IssueLogEntry, ActivityLogEntry)
 
 
 # Work --------------------------------------------------------------------------
@@ -184,15 +185,29 @@ class TimeEntryViewSet(viewsets.ModelViewSet):
     search_fields = ('id',)
 
 
-class SearchViewSet(viewsets.ModelViewSet):
-    queryset = Search.objects.all()
-    serializer_class = SearchSerializer
-    permission_classes = (permissions.IsAuthenticated,)
-
-
 class LogEntryViewSet(viewsets.ModelViewSet):
     queryset = IssueLogEntry.objects.all()
     serializer_class = LogEntrySerializer
     permission_classes = (permissions.IsAuthenticated,)
     filterset_fields = ('issue', 'user',)
     search_fields = ('action', 'details')
+
+
+class ActivityLogEntryViewSet(viewsets.ModelViewSet):
+    queryset = ActivityLogEntry.objects.all()
+    serializer_class = ActivityLogEntrySerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    filterset_fields = ('project', 'issue', 'user')
+
+    def get_queryset(self):
+        queryset = ActivityLogEntry.objects.all()
+        date = self.request.query_params.get('from', None)
+        if date is not None:
+            queryset = queryset.filter(act_date=date)
+        return queryset
+
+
+class SearchViewSet(viewsets.ModelViewSet):
+    queryset = Search.objects.all()
+    serializer_class = SearchSerializer
+    permission_classes = (permissions.IsAuthenticated,)

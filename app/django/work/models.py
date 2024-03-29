@@ -375,7 +375,7 @@ class Issue(models.Model):
                                verbose_name='상위 업무', related_name='children')
     watchers = models.ManyToManyField('accounts.User', blank=True, verbose_name='업무 열람 공유자', related_name='watchers')
     is_private = models.BooleanField('비공개', default=False)
-    estimated_hours = models.PositiveSmallIntegerField('추정 소요시간', null=True, blank=True)
+    estimated_hours = models.DecimalField('추정 소요시간', max_digits=5, decimal_places=2, null=True, blank=True)
     start_date = models.DateField('시작 일자', null=True, blank=True)
     due_date = models.DateField('완료 기한', null=True, blank=True)
     PROGRESS_RATIO = (
@@ -452,6 +452,38 @@ class TimeEntry(models.Model):
         ordering = ('spent_on',)
 
 
+class IssueLogEntry(models.Model):
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, verbose_name='업무')
+    ACTION_CHOICES = (('Created', '추가'), ('Edited', '편집'))
+    action = models.CharField('이벤트', max_length=10, choices=ACTION_CHOICES)
+    details = models.TextField('설명', blank=True, default='')
+    diff = models.TextField('차이점', blank=True, default='')
+    user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사용자')
+    timestamp = models.DateTimeField('로그 시간', auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.action} - {self.timestamp}"
+
+
+class ActivityLogEntry(models.Model):
+    project = models.ForeignKey(IssueProject, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='프로젝트')
+    issue = models.ForeignKey(Issue, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='업무')
+    status_log = models.CharField('상태 기록', max_length=30, blank=True, default='')
+    change_sets = models.TextField('변경 묶음', blank=True, default='')
+    news = models.TextField('공지', blank=True, default='')
+    document = models.TextField('문서', blank=True, default='')
+    file = models.TextField('파일', blank=True, default='')
+    wiki = models.TextField('위키 편집', blank=True, default='')
+    message = models.TextField('글', blank=True, default='')
+    spent_time = models.TextField('작업시간', blank=True, default='')
+    act_date = models.DateField('로그 일자', auto_now_add=True)
+    timestamp = models.DateTimeField('로그 시간', auto_now_add=True)
+    user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사용자')
+
+    def __str__(self):
+        return f"{self.user.username} - {self.timestamp}"
+
+
 class Search(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE, verbose_name='내 검색어')
     offset = models.BigIntegerField('오프셋', default=False)  # 응답에서 이 결과 수를 건너뚭니다.(선택사항)
@@ -473,16 +505,3 @@ class Search(models.Model):
 
     def __str__(self):
         return f'#{self.pk}. {self.member.user.username} - 검색조건'
-
-
-class IssueLogEntry(models.Model):
-    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, verbose_name='업무')
-    ACTION_CHOICES = (('Created', '추가'), ('Edited', '편집'))
-    action = models.CharField('이벤트', max_length=10, choices=ACTION_CHOICES)
-    details = models.TextField('설명', blank=True, default='')
-    diff = models.TextField('차이점', blank=True, default='')
-    user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사용자')
-    timestamp = models.DateTimeField('로그시간', auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.action} - {self.timestamp}"

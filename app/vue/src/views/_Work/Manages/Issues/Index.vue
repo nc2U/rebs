@@ -22,9 +22,11 @@ const issueProjects = computed(() => workStore.AllIssueProjects)
 const router = useRouter()
 
 const onSubmit = (payload: any) => {
-  console.log(payload)
-  alert('issue create!')
-  router.replace({ name: '업무' })
+  if (payload.pk) workStore.updateIssue(payload)
+  else {
+    workStore.createIssue(payload)
+    router.replace({ name: '업무' })
+  }
 }
 
 onBeforeMount(() => {
@@ -42,7 +44,7 @@ onBeforeMount(() => {
 
       <CRow v-if="$route.name === '업무 - 추가'" class="py-2">
         <CCol>
-          <h5>새 업무만들기</h5>
+          <h5 class="form-text">새 업무만들기</h5>
         </CCol>
 
         <IssueForm

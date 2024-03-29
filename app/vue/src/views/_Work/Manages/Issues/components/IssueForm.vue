@@ -119,6 +119,7 @@ onBeforeMount(() => {
     form.value.estimated_hours = props.issue.estimated_hours
     form.value.done_ratio = props.issue.done_ratio
   } else {
+    form.value.project = props.issueProjects[0].slug
     form.value.tracker = 2
     form.value.status = 1
     form.value.priority = 2
@@ -258,7 +259,7 @@ onBeforeMount(() => {
           <CCol sm="4">
             <CFormSelect v-model="form.assigned_to" id="assigned_to">
               <option value="">---------</option>
-              <option v-for="mem in memberList" :value="mem.user.pk">
+              <option v-for="mem in memberList" :value="mem.user.pk" :key="mem.pk">
                 {{ mem.user.username }}
               </option>
             </CFormSelect>

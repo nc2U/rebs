@@ -8,7 +8,7 @@ const forumList = computed(() => [])
 <template>
   <CRow class="py-2">
     <CCol>
-      <span class="mr-2">
+      <span class="mr-2 form-text">
         <v-icon icon="mdi-plus-circle" color="success" size="sm" />
         <router-link to="" class="ml-1">새 게시판</router-link>
       </span>
