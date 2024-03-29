@@ -207,15 +207,8 @@ class ActivityLogEntryViewSet(viewsets.ModelViewSet):
     queryset = ActivityLogEntry.objects.all()
     serializer_class = ActivityLogEntrySerializer
     permission_classes = (permissions.IsAuthenticated,)
-    filterset_fields = ('project', 'issue', 'act_date', 'user')
+    pagination_class = PageNumberPaginationThreeHundred
     filterset_class = ActivityLogFilter
-
-    def get_queryset(self):
-        queryset = ActivityLogEntry.objects.all()
-        date = self.request.query_params.get('from', None)
-        if date is not None:
-            queryset = queryset.filter(act_date=date)
-        return queryset
 
 
 class SearchViewSet(viewsets.ModelViewSet):
