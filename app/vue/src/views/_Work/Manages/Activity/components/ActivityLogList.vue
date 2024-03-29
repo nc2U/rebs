@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { dateFormat, timeFormat } from '@/utils/baseMixins'
 import type { PropType } from 'vue'
+import { dateFormat, timeFormat } from '@/utils/baseMixins'
 import type { ActLogEntry } from '@/store/types/work'
 
 defineProps({
@@ -8,8 +8,14 @@ defineProps({
     type: Object as PropType<{ [key: string]: ActLogEntry[] }>,
     default: () => {},
   },
-  fromDate: { type: String, default: '' },
-  toDate: { type: String, default: '' },
+  fromDate: {
+    type: Object as PropType<Date>,
+    default: () => {},
+  },
+  toDate: {
+    type: Object as PropType<Date>,
+    default: () => {},
+  },
 })
 </script>
 
