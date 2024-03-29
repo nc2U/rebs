@@ -215,3 +215,23 @@ export interface LogEntry {
     username: string
   }
 }
+
+export interface ActLogEntry {
+  pk: number
+  project: number
+  issue: number
+  status_log: string
+  change_sets: string
+  news: string
+  document: string
+  file: string
+  wiki: string
+  message: string
+  spent_time: string
+  act_date: string
+  timestamp: string
+  user: {
+    pk: number
+    username: string
+  }
+}

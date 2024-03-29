@@ -218,15 +218,34 @@ export const useWork = defineStore('work', () => {
   }
 
   // activity-log states & getters
-  const ActivityLogList = ref<any[]>([])
+  const activityLogList = ref<any[]>([])
+  const groupedActivities = computed(() => {
+    return activityLogList.value.reduce((result, currentValue) => {
+      ;(result[currentValue['act_date']] = result[currentValue['act_date']] || []).push(
+        currentValue,
+      )
+      return result
+    }, {})
+  })
 
-  const fetchActivityLogList = async () => {
-    const url = `/act-entry/?1=1`
-    // ?project=&issue=&act_date=&from_act_date=2024-03-19&to_act_date=2024-03-29&user=
-    // if (payload.user) url += `&user=${payload.user}`
+  const fetchActivityLogList = async (payload: any) => {
+    let url = `/act-entry/?1=1`
+    if (payload.project) url += `project=${payload.project}`
+    if (payload.issue__isnull) url += `issue__isnull=${payload.issue__isnull}`
+    if (payload.change_sets_isnull) url += `change_sets_isnull=${payload.change_sets_isnull}`
+    if (payload.news__isnull) url += `news__isnull=${payload.news__isnull}`
+    if (payload.document__isnull) url += `document__isnull=${payload.document__isnull}`
+    if (payload.file__isnull) url += `file__isnull=${payload.file__isnull}`
+    if (payload.wiki__isnull) url += `wiki__isnull=${payload.wiki__isnull}`
+    if (payload.message__isnull) url += `message__isnull=${payload.message__isnull}`
+    if (payload.spent_time__isnull) url += `spent_time__isnull=${payload.spent_time__isnull}`
+    if (payload.act_date) url += `act_date=${payload.act_date}`
+    if (payload.from_act_date) url += `from_act_date=${payload.from_act_date}`
+    if (payload.to_act_date) url += `to_act_date=${payload.to_act_date}`
+    if (payload.user) url += `user=${payload.user}`
     return await api
       .get(url)
-      .then(res => (ActivityLogList.value = res.data.results))
+      .then(res => (activityLogList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
 
@@ -276,7 +295,8 @@ export const useWork = defineStore('work', () => {
     logEntryList,
     fetchLogEntryList,
 
-    ActivityLogList,
+    activityLogList,
+    groupedActivities,
     fetchActivityLogList,
   }
 })
