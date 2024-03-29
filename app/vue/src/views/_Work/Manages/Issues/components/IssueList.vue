@@ -98,7 +98,7 @@ defineProps({
               </router-link>
             </CTableDataCell>
             <CTableDataCell class="text-center">{{ timeFormat(issue.updated) }}</CTableDataCell>
-            <CTableDataCell>
+            <CTableDataCell class="p-0">
               <span>
                 <CDropdown color="secondary" variant="input-group" placement="bottom-end">
                   <CDropdownToggle
