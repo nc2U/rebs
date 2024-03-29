@@ -1,3 +1,4 @@
+from django_filters import DateFilter
 from rest_framework import viewsets
 from django_filters.rest_framework import FilterSet, BooleanFilter
 
@@ -193,11 +194,21 @@ class LogEntryViewSet(viewsets.ModelViewSet):
     search_fields = ('action', 'details')
 
 
+class ActivityLogFilter(FilterSet):
+    from_act_date = DateFilter(field_name='act_date', lookup_expr='gte', label='로그일자부터')
+    to_act_date = DateFilter(field_name='act_date', lookup_expr='lte', label='로그일자까지')
+
+    class Meta:
+        model = ActivityLogEntry
+        fields = ('project', 'issue', 'act_date', 'from_act_date', 'to_act_date', 'user')
+
+
 class ActivityLogEntryViewSet(viewsets.ModelViewSet):
     queryset = ActivityLogEntry.objects.all()
     serializer_class = ActivityLogEntrySerializer
     permission_classes = (permissions.IsAuthenticated,)
-    filterset_fields = ('project', 'issue', 'user')
+    filterset_fields = ('project', 'issue', 'act_date', 'user')
+    filterset_class = ActivityLogFilter
 
     def get_queryset(self):
         queryset = ActivityLogEntry.objects.all()
