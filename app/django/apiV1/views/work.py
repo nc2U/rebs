@@ -1,3 +1,4 @@
+from django.db.models.functions import TruncDate
 from django_filters import DateFilter
 from rest_framework import viewsets
 from django_filters.rest_framework import FilterSet, BooleanFilter
