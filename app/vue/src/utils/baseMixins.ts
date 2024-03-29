@@ -18,7 +18,15 @@ export const diffDate = (date1: Date | string, date2?: Date) => {
 export const addDays = (date: Date, days: number) => date.setDate(date.getDate() + days)
 
 export const dateFormat = (date: Date | string, split?: string) => {
-  const formattedDate = typeof date === 'string' ? date : date.toISOString().replace(/T.*$/, '')
+  const computedDate = typeof date === 'string' ? new Date(date) : date
+  const formattedDate = computedDate
+    .toLocaleDateString('en-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      timeZone: 'Asia/Seoul', // Setting timezone to Seoul (KST)
+    })
+    .replace(/(\d+)\/(\d+)\/(\d+)/, '$3-$1-$2')
   return !split ? formattedDate : formattedDate.replace(/-/g, split)
 }
 
