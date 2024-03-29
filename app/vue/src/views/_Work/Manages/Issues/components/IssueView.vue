@@ -18,7 +18,10 @@ const emit = defineEmits(['on-submit'])
 
 const editForm = ref(false)
 
-const onSubmit = (payload: any) => emit('on-submit', payload)
+const onSubmit = (payload: any) => {
+  emit('on-submit', payload)
+  editForm.value = false
+}
 
 const scrollToId = (id: string) => {
   const el = document.getElementById(id)

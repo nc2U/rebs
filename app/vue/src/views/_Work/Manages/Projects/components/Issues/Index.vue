@@ -19,8 +19,10 @@ const issueProjects = computed(() => workStore.AllIssueProjects)
 
 const onSubmit = (payload: any) => {
   if (payload.pk) workStore.updateIssue(payload)
-  else workStore.createIssue(payload)
-  router.replace({ name: '(업무)' })
+  else {
+    workStore.createIssue(payload)
+    router.replace({ name: '(업무)' })
+  }
 }
 
 onBeforeRouteUpdate(async to => {
