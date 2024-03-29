@@ -259,7 +259,7 @@ onBeforeMount(() => {
           <CCol sm="4">
             <CFormSelect v-model="form.assigned_to" id="assigned_to">
               <option value="">---------</option>
-              <option v-for="mem in memberList" :value="mem.user.pk">
+              <option v-for="mem in memberList" :value="mem.user.pk" :key="mem.pk">
                 {{ mem.user.username }}
               </option>
             </CFormSelect>
