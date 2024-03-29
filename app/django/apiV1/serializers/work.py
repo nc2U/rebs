@@ -293,6 +293,8 @@ class IssueSerializer(serializers.ModelSerializer):
     priority = CodePriorityInIssueSerializer(read_only=True)
     assigned_to = UserInMemberSerializer(read_only=True)
     parent = serializers.SerializerMethodField()
+    creator = UserInMemberSerializer(read_only=True)
+    updater = UserInMemberSerializer(read_only=True)
 
     class Meta:
         model = Issue

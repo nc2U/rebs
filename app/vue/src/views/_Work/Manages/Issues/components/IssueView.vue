@@ -53,7 +53,7 @@ const callEditForm = () => {
     <CCardBody>
       <CRow>
         <CCol>
-          <span class="sub-title">권한별 프로젝트 목록 보기</span>
+          <span class="sub-title">{{ issue.subject }}</span>
         </CCol>
         <CCol class="text-right form-text">
           <!--          <router-link to="">« 뒤로</router-link>-->
@@ -68,12 +68,14 @@ const callEditForm = () => {
       <CRow>
         <CCol>
           <p class="mt-1 form-text">
-            <router-link to="">austin2 kho</router-link>
+            <router-link :to="{ name: '사용자 - 보기', params: { userId: issue.creator.pk } }">
+              {{ issue.creator.username }}
+            </router-link>
             이(가)
             <router-link
               :to="{
                 name: '(작업내역)',
-                params: { projId: 'redmine' },
+                params: { projId: iProject.slug },
                 query: { from: issue?.created.substring(0, 10) },
               }"
             >
@@ -83,7 +85,7 @@ const callEditForm = () => {
             <router-link
               :to="{
                 name: '(작업내역)',
-                params: { projId: 'redmine' },
+                params: { projId: iProject.slug },
                 query: { from: issue.updated.substring(0, 10) },
               }"
             >

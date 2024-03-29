@@ -171,8 +171,8 @@ export interface Issue {
   due_date: string | null
   done_ratio: number
   closed: string | null
-  creator: number
-  updater: number | null
+  creator: { pk: number; username: string }
+  updater: { pk: number; username: string } | null
   created: string
   updated: string
 }
