@@ -207,6 +207,7 @@ export interface LogEntry {
   pk: number
   action: 'Created' | 'Edited'
   details: string
+  diff: string
   timestamp: string
   issue: number
   user: {
