@@ -164,15 +164,5 @@ const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
 <style lang="scss" scoped>
 .history {
   color: #7f7f7f;
-
-  ul {
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-}
-
-.vue-md-wrapper ul {
-  margin: 0;
-  padding: 0;
 }
 </style>
