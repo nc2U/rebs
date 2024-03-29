@@ -33,8 +33,13 @@ export const dateFormat = (date: Date | string, split?: string) => {
 export const getToday = () =>
   new Date(new Date().getTime() + 32400000).toISOString().replace(/T.*$/, '')
 
-export const timeFormat = (date: Date | number | string) =>
-  new Date(+new Date(date) + 32400000).toISOString().replace('T', ' ').replace(/\..*/, '')
+export const timeFormat = (date: Date | number | string, short = false) => {
+  const formattedTime = new Date(+new Date(date) + 32400000)
+    .toISOString()
+    .replace('T', ' ')
+    .replace(/\..*/, '')
+  return !short ? formattedTime : formattedTime.substring(11, 16)
+}
 
 export const elapsedTime = (date: number | string): string => {
   const start = new Date(date)
