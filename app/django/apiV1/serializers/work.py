@@ -378,4 +378,4 @@ class LogEntrySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = IssueLogEntry
-        fields = ('pk', 'action', 'details', 'timestamp', 'issue', 'user')
+        fields = ('pk', 'action', 'details', 'diff', 'timestamp', 'issue', 'user')
