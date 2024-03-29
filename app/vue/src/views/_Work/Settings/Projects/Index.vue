@@ -29,7 +29,7 @@ onBeforeMount(() => workStore.fetchIssueProjectList())
           <h5>프로젝트</h5>
         </CCol>
 
-        <CCol v-if="superAuth" class="text-right">
+        <CCol v-if="superAuth" class="text-right form-text">
           <span v-show="$route.name !== '프로젝트 - 추가'" class="mr-2">
             <v-icon icon="mdi-plus-circle" color="success" size="sm" />
             <router-link :to="{ name: '프로젝트 - 추가' }" class="ml-1">새 프로젝트</router-link>

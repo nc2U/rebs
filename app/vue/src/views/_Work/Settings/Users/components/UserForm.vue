@@ -32,7 +32,7 @@ onBeforeMount(() => {
       <span class="h5">{{ user ? 'austin1' : '새 사용자' }}</span>
     </CCol>
 
-    <CCol v-if="user && superAuth" class="text-right">
+    <CCol v-if="user && superAuth" class="text-right form-text">
       <span class="mr-2">
         <v-icon icon="mdi-plus-circle" color="success" size="sm" />
         <router-link :to="{ name: '사용자 - 보기', params: { userId: user.pk } }" class="ml-1">

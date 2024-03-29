@@ -18,7 +18,7 @@ const superAuth = inject('superAuth', false)
       <h5>{{ $route.name }}</h5>
     </CCol>
 
-    <CCol v-if="superAuth" class="text-right">
+    <CCol v-if="superAuth" class="text-right form-text">
       <span class="mr-2">
         <v-icon icon="mdi-plus-circle" color="success" size="sm" />
         <router-link :to="{ name: '사용자 - 생성' }" class="ml-1">새 사용자</router-link>
