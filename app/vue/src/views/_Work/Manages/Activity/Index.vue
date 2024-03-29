@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { computed, type ComputedRef, inject, onBeforeMount, ref } from 'vue'
+import { computed, type ComputedRef, inject, onBeforeMount, ref, watch } from 'vue'
 import { navMenu1, navMenu2 } from '@/views/_Work/_menu/headermixin1'
+import { useWork } from '@/store/pinia/work'
+import { dateFormat } from '@/utils/baseMixins'
 import type { Company } from '@/store/types/settings'
+import type { ActLogEntry } from '@/store/types/work'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
-import NoData from '@/views/_Work/components/NoData.vue'
-import { useWork } from '@/store/pinia/work'
+import ActivityLogList from '@/views/_Work/Manages/Activity/components/ActivityLogList.vue'
 
 const cBody = ref()
 const company = inject<ComputedRef<Company>>('company')
@@ -13,15 +15,30 @@ const comName = computed(() => company?.value?.name)
 
 const sideNavCAll = () => cBody.value.toggle()
 
-const workStore = useWork()
-const issueProjectList = computed(() => workStore.issueProjectList)
-
 const navMenu = computed(() => (!issueProjectList.value.length ? navMenu1 : navMenu2))
 
-const activities = computed(() => [])
+const workStore = useWork()
+const issueProjectList = computed(() => workStore.issueProjectList)
+const groupedActivities = computed<{ [key: string]: ActLogEntry[] }>(
+  () => workStore.groupedActivities,
+)
+
+const fromDate = computed(() => new Date(toDate.value.getTime() - 10 * 24 * 60 * 60 * 1000))
+
+const toDate = ref(new Date())
+watch(toDate, nVal => {
+  workStore.fetchActivityLogList({
+    from_act_date: dateFormat(fromDate.value),
+    to_act_date: dateFormat(nVal),
+  })
+})
 
 onBeforeMount(() => {
   workStore.fetchIssueProjectList()
+  workStore.fetchActivityLogList({
+    from_act_date: dateFormat(fromDate.value),
+    to_act_date: dateFormat(toDate.value),
+  })
 })
 </script>
 
@@ -30,30 +47,11 @@ onBeforeMount(() => {
 
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query">
     <template v-slot:default>
-      <CRow class="py-2">
-        <CCol>
-          <h5>{{ $route.name }}</h5>
-        </CCol>
-      </CRow>
-
-      <CRow class="fst-italic">
-        <CCol>2024/02/21부터 2024/03/01까지</CCol>
-      </CRow>
-
-      <NoData v-if="!activities.length" />
-
-      <CRow v-else>
-        <CCol></CCol>
-      </CRow>
-
-      <CRow>
-        <CCol>
-          <CButtonGroup role="group">
-            <CButton color="primary" variant="outline" size="sm">« 뒤로</CButton>
-            <CButton color="primary" variant="outline" size="sm">다음 »</CButton>
-          </CButtonGroup>
-        </CCol>
-      </CRow>
+      <ActivityLogList
+        :grouped-activities="groupedActivities"
+        :from-date="fromDate"
+        :to-date="toDate"
+      />
     </template>
 
     <template v-slot:aside></template>
