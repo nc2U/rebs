@@ -17,8 +17,10 @@ export const diffDate = (date1: Date | string, date2?: Date) => {
 
 export const addDays = (date: Date, days: number) => date.setDate(date.getDate() + days)
 
-export const dateFormat = (date: Date | string) =>
-  typeof date === 'string' ? date : date.toISOString().replace(/T.*$/, '')
+export const dateFormat = (date: Date | string, split?: string) => {
+  const formattedDate = typeof date === 'string' ? date : date.toISOString().replace(/T.*$/, '')
+  return !split ? formattedDate : formattedDate.replace(/-/g, split)
+}
 
 export const getToday = () =>
   new Date(new Date().getTime() + 32400000).toISOString().replace(/T.*$/, '')
