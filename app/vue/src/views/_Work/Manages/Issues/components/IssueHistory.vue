@@ -9,6 +9,8 @@ defineProps({
 })
 
 const tabPaneActiveKey = ref(1)
+
+const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
 </script>
 
 <template>
@@ -82,9 +84,21 @@ const tabPaneActiveKey = ref(1)
               </CCol>
               <CCol class="text-right">#{{ log.pk }}</CCol>
             </CRow>
-            <v-divider class="mt-0" />
-            <div class="history pl-4">
-              <VueMarkdownIt :source="log.details" />
+            <v-divider class="mt-0 mb-2" />
+            <div class="history pl-4 mb-2">
+              <ul>
+                <li v-for="(src, i) in getHistory(log.details)" :key="i">
+                  <VueMarkdownIt :source="src" />
+                  <span v-if="log.diff">
+                    <router-link to="">
+                      (변경 내용)
+                      <v-tooltip activator="parent" location="start">
+                        <VueMarkdownIt :source="log.diff" />
+                      </v-tooltip>
+                    </router-link>
+                  </span>
+                </li>
+              </ul>
             </div>
           </div>
         </CTabPane>
@@ -124,9 +138,21 @@ const tabPaneActiveKey = ref(1)
               </CCol>
               <CCol class="text-right">#{{ log.pk }}</CCol>
             </CRow>
-            <v-divider class="mt-0" />
-            <div class="history pl-4">
-              <VueMarkdownIt :source="log.details" />
+            <v-divider class="mt-0 mb-2" />
+            <div class="history pl-4 mb-2">
+              <ul>
+                <li v-for="(src, i) in getHistory(log.details)" :key="i">
+                  <VueMarkdownIt :source="src" />
+                  <span v-if="log.diff">
+                    <router-link to="">
+                      (변경 내용)
+                      <v-tooltip activator="parent" location="start">
+                        <VueMarkdownIt :source="log.diff" />
+                      </v-tooltip>
+                    </router-link>
+                  </span>
+                </li>
+              </ul>
             </div>
           </div>
         </CTabPane>
@@ -138,5 +164,15 @@ const tabPaneActiveKey = ref(1)
 <style lang="scss" scoped>
 .history {
   color: #7f7f7f;
+
+  ul {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
+
+.vue-md-wrapper ul {
+  margin: 0;
+  padding: 0;
 }
 </style>
