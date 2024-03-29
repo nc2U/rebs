@@ -325,8 +325,8 @@ class IssueSerializer(serializers.ModelSerializer):
                                      assigned_to=assigned_to,
                                      **validated_data)
         # Set the watchers of the instance to the list of watchers
-        if assigned_to is not None:
-            issue.watchers.add(assigned_to)
+        user = self.context['request'].user
+        issue.watchers.add(user.pk)
         if watchers:
             for watcher in watchers:
                 if not issue.watchers.filter(id=watcher.pk).exists():
@@ -340,13 +340,6 @@ class IssueSerializer(serializers.ModelSerializer):
         instance.tracker = Tracker.objects.get(pk=self.initial_data.get('tracker'))
         instance.status = IssueStatus.objects.get(pk=self.initial_data.get('status'))
         instance.priority = CodeIssuePriority.objects.get(pk=self.initial_data.get('priority'))
-
-        assigned_to = self.initial_data.get('assigned_to', None)
-        assigned_to = User.objects.get(pk=assigned_to) if assigned_to else None
-        if assigned_to is None:
-            instance.watchers.remove(assigned_to)
-        else:
-            instance.watchers.add(assigned_to)
 
         watchers = validated_data.get('watchers', [])
         if watchers:
