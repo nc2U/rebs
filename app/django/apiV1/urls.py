@@ -62,8 +62,9 @@ router.register(r'issue', work.IssueViewSet)
 router.register(r'issue-file', work.IssueFileViewSet)
 router.register(r'issue-comment', work.IssueCommentViewSet)
 router.register(r'time-entry', work.TimeEntryViewSet)
-router.register(r'search', work.SearchViewSet)
 router.register(r'log-entry', work.LogEntryViewSet)
+router.register(r'act-entry', work.ActivityLogEntryViewSet)
+router.register(r'search', work.SearchViewSet)
 # project
 router.register(r'project', project.ProjectViewSet)
 router.register(r'inc-budget', project.ProjectIncBudgetViewSet)  # only list

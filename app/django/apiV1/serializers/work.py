@@ -2,9 +2,10 @@ from django.db import transaction
 from rest_framework import serializers
 
 from accounts.models import User
-from work.models import (IssueProject, Role, Permission, Member, Module, Version, IssueCategory,
-                         Repository, Tracker, IssueStatus, Workflow, CodeActivity, CodeIssuePriority,
-                         CodeDocsCategory, Issue, IssueFile, IssueComment, TimeEntry, Search, IssueLogEntry)
+from work.models import (IssueProject, Role, Permission, Member, Module, Version,
+                         IssueCategory, Repository, Tracker, IssueStatus, Workflow,
+                         CodeActivity, CodeIssuePriority, CodeDocsCategory, Issue,
+                         IssueFile, IssueComment, TimeEntry, Search, IssueLogEntry, ActivityLogEntry)
 
 
 # Work --------------------------------------------------------------------------
@@ -369,15 +370,25 @@ class TimeEntrySerializer(serializers.ModelSerializer):
         fields = ('pk', 'issue', 'spent_on', 'hours', 'activity', 'comment', 'user', 'created', 'updated')
 
 
-class SearchSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Search
-        fields = '__all__'
-
-
 class LogEntrySerializer(serializers.ModelSerializer):
     user = UserInMemberSerializer(read_only=True)
 
     class Meta:
         model = IssueLogEntry
         fields = ('pk', 'action', 'details', 'diff', 'timestamp', 'issue', 'user')
+
+
+class ActivityLogEntrySerializer(serializers.ModelSerializer):
+    user = UserInMemberSerializer(read_only=True)
+
+    class Meta:
+        model = ActivityLogEntry
+        fields = ('pk', 'project', 'issue', 'status_log', 'change_sets',
+                  'news', 'document', 'file', 'wiki', 'message', 'spent_time',
+                  'timestamp', 'user')
+
+
+class SearchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Search
+        fields = '__all__'
