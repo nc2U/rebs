@@ -1,6 +1,6 @@
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
-from .models import Issue, IssueLogEntry
+from .models import Issue, IssueLogEntry, ActivityLogEntry
 
 
 @receiver(pre_save, sender=Issue)
@@ -108,3 +108,12 @@ def log_changes(sender, instance, created, **kwargs):
     user = instance.creator if created else instance.updater
     if action == 'Edited':
         IssueLogEntry.objects.create(issue=instance, action=action, details=details, diff=diff, user=user)
+        if hasattr(instance, '_old_project'):
+            ActivityLogEntry.objects.create(project=instance.project, issue=instance, user=instance.creator)
+        if hasattr(instance, '_old_status'):
+            ActivityLogEntry.objects.create(project=instance.project,
+                                            issue=instance,
+                                            status_log=instance.status.name,
+                                            user=instance.creator)
+    elif action == 'Created':
+        ActivityLogEntry.objects.create(project=instance.project, issue=instance, user=instance.creator)
