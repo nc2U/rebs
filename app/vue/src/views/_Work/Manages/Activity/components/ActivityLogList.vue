@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue'
 import { dateFormat, timeFormat } from '@/utils/baseMixins'
+import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 import type { ActLogEntry } from '@/store/types/work'
 
 defineProps({
@@ -17,6 +18,10 @@ defineProps({
     default: () => {},
   },
 })
+
+const emit = defineEmits(['to-back', 'to-next'])
+const toBack = () => emit('to-back')
+const toNext = () => emit('to-next')
 </script>
 
 <template>
@@ -33,27 +38,43 @@ defineProps({
   <NoData v-if="!groupedActivities" />
 
   <CRow v-else class="my-3">
-    <CCol v-for="(val, key) in groupedActivities" :key="key">
-      <CAlert color="secondary" class="px-3 py-2">
-        <span class="date-title">{{ String(key) === dateFormat(new Date()) ? '오늘' : key }}</span>
-      </CAlert>
+    <CCol>
+      <CRow v-for="(val, key) in groupedActivities" :key="key">
+        <CAlert color="secondary" class="px-3 py-2">
+          <span class="date-title">{{
+            String(key) === dateFormat(new Date()) ? '오늘' : key
+          }}</span>
+        </CAlert>
 
-      <div v-for="act in val" :key="act.pk">
-        <span>{{ timeFormat(act.timestamp, true) }}</span>
-        <span class="ml-2">{{ act.project }}</span> -
-        <span>{{ act.issue }}</span>
-        <div>{{ act.user.username }}</div>
-        <v-divider class="my-2" />
-        {{ act }}
-      </div>
+        <div v-for="act in val" :key="act.pk" class="pl-5">
+          <div>
+            <v-icon icon="mdi-cog" size="sm" color="warning" class="mr-1" />
+            <span class="form-text">{{ timeFormat(act.timestamp, true) }}</span>
+            <span class="ml-2 bold">{{ act.project }}</span> -
+            <span v-if="act.issue">
+              <router-link to="">
+                {{ act.issue.tracker }} #{{ act.pk }} ({{ act.status_log || act.issue.status }})
+                {{ act.issue.subject }}
+              </router-link>
+            </span>
+          </div>
+          <div class="ml-4 pl-5">
+            <VueMarkdownIt :source="act.issue?.description" class="form-text" />
+          </div>
+          <div class="form-text ml-5 pl-2 bg-amber-accent-2">
+            <router-link to="">{{ act.user.username }}</router-link>
+          </div>
+          <v-divider class="my-2" />
+        </div>
+      </CRow>
     </CCol>
   </CRow>
 
   <CRow>
     <CCol>
       <CButtonGroup role="group">
-        <CButton color="primary" variant="outline" size="sm">« 뒤로</CButton>
-        <CButton color="primary" variant="outline" size="sm">다음 »</CButton>
+        <CButton color="primary" variant="outline" size="sm" @click="toBack">« 뒤로</CButton>
+        <CButton color="primary" variant="outline" size="sm" @click="toNext">다음 »</CButton>
       </CButtonGroup>
     </CCol>
   </CRow>
@@ -63,5 +84,10 @@ defineProps({
 .date-title {
   font-size: 1.2em;
   font-weight: bold;
+}
+
+ol {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
 }
 </style>

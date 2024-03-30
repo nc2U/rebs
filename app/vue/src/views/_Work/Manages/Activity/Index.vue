@@ -26,12 +26,17 @@ const groupedActivities = computed<{ [key: string]: ActLogEntry[] }>(
 const fromDate = computed(() => new Date(toDate.value.getTime() - 10 * 24 * 60 * 60 * 1000))
 
 const toDate = ref(new Date())
-watch(toDate, nVal => {
-  workStore.fetchActivityLogList({
-    from_act_date: dateFormat(fromDate.value),
-    to_act_date: dateFormat(nVal),
-  })
+watch(toDate, async nVal => {
+  if (nVal) {
+    await workStore.fetchActivityLogList({
+      from_act_date: dateFormat(fromDate.value),
+      to_act_date: dateFormat(nVal),
+    })
+  }
 })
+
+const toBack = () => (toDate.value = new Date(toDate.value.setDate(toDate.value.getDate() - 10)))
+const toNext = () => (toDate.value = new Date(toDate.value.setDate(toDate.value.getDate() + 10)))
 
 onBeforeMount(() => {
   workStore.fetchIssueProjectList()
@@ -51,6 +56,8 @@ onBeforeMount(() => {
         :grouped-activities="groupedActivities"
         :from-date="fromDate"
         :to-date="toDate"
+        @to-back="toBack"
+        @to-next="toNext"
       />
     </template>
 
