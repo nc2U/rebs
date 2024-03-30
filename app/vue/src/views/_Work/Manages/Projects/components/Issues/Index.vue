@@ -35,16 +35,16 @@ onBeforeRouteUpdate(async to => {
   }
 })
 
-onBeforeMount(() => {
+onBeforeMount(async () => {
   emit('aside-visible', true)
-  workStore.fetchIssueList()
+  await workStore.fetchIssueList()
 
-  if (route.params.projId) workStore.fetchIssueProject(route.params.projId as string)
+  if (route.params.projId) await workStore.fetchIssueProject(route.params.projId as string)
 
   if (route.params.issueId) {
-    workStore.fetchIssueProjectList()
-    workStore.fetchIssue(Number(route.params.issueId))
-    workStore.fetchLogEntryList({ issue: route.params.issueId as string })
+    await workStore.fetchIssueProjectList()
+    await workStore.fetchIssue(Number(route.params.issueId))
+    await workStore.fetchLogEntryList({ issue: route.params.issueId as string })
   }
 })
 </script>
