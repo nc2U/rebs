@@ -61,7 +61,7 @@ const toNext = () => emit('to-next')
                 </router-link>
               </span>
 
-              <div class="ml-4 pl-5">
+              <div class="ml-4 pl-5 fst-italic">
                 <VueMarkdownIt
                   v-if="!act.status_log"
                   :source="act.issue?.description"
@@ -93,10 +93,5 @@ const toNext = () => emit('to-next')
 .date-title {
   font-size: 1.2em;
   font-weight: bold;
-}
-
-ol {
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
 }
 </style>
