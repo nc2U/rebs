@@ -59,3 +59,10 @@ export const elapsedTime = (date: number | string): string => {
 
   return timeFormat(date)
 }
+
+export const numberToHour = (digit: number) => {
+  const a = Math.floor(digit)
+  const b = (digit - a) * 60
+  const c = b < 10 ? '0' : ''
+  return String(a) + ':' + c + String(b)
+}
