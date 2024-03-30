@@ -152,6 +152,32 @@ export interface Member {
   roles: { pk: number; name: string }[]
 }
 
+export interface Tracker {
+  pk: number
+  name: string
+  description: string
+  is_in_roadmap: boolean
+  default_status: number
+  projects: number[]
+  order: number
+}
+
+export interface IssueStatus {
+  pk: number
+  name: string
+  description: string
+  closed: boolean
+  order: number
+}
+
+export interface CodeValue {
+  pk: number
+  name: string
+  active: boolean
+  default: boolean
+  order: number
+}
+
 export interface Issue {
   pk: number
   project: { slug: string; name: string }
@@ -177,30 +203,17 @@ export interface Issue {
   updated: string
 }
 
-export interface Tracker {
+export interface TimeEntry {
   pk: number
-  name: string
-  description: string
-  is_in_roadmap: boolean
-  default_status: number
-  projects: number[]
-  order: number
-}
-
-export interface IssueStatus {
-  pk: number
-  name: string
-  description: string
-  closed: boolean
-  order: number
-}
-
-export interface CodeValue {
-  pk: number
-  name: string
-  active: boolean
-  default: boolean
-  order: number
+  issue: number
+  spent_on: string
+  hours: string
+  activity: number
+  comment: string
+  user: {
+    pk: number
+    username: string
+  }
 }
 
 export interface LogEntry {
