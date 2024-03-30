@@ -370,7 +370,7 @@ onBeforeMount(() => {
               작업종류
             </CFormLabel>
             <CCol sm="4">
-              <CFormSelect v-model="timeEntry.activity">
+              <CFormSelect v-model="timeEntry.activity" :required="!!timeEntry.hours">
                 <option value="">---------</option>
                 <option v-for="act in activityList" :value="act.pk" :key="act.pk">
                   {{ act.name }}
