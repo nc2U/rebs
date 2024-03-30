@@ -356,6 +356,18 @@ class IssueSerializer(serializers.ModelSerializer):
             for watcher in watchers:
                 if not instance.watchers.filter(id=watcher.pk).exists():
                     instance.watchers.set(watcher)
+        # time entry logic
+        hours = self.initial_data.get('hours', None)
+        activity = self.initial_data.get('activity', None)
+        comment = self.initial_data.get('comment', None)
+        if hours and activity:
+            activity = CodeActivity.objects.get(pk=activity)
+            user = self.context['request'].user
+            TimeEntry.objects.create(issue=instance, hours=hours,
+                                     activity=activity, comment=comment, user=user)
+        # issue_comment logic
+        issue_comment = self.initial_data.get('issue_comment', None)
+
         return super().update(instance, validated_data)
 
 
@@ -372,9 +384,11 @@ class IssueCommentSerializer(serializers.ModelSerializer):
 
 
 class TimeEntrySerializer(serializers.ModelSerializer):
+    user = UserInMemberSerializer(read_only=True)
+
     class Meta:
         model = TimeEntry
-        fields = ('pk', 'issue', 'spent_on', 'hours', 'activity', 'comment', 'user', 'created', 'updated')
+        fields = ('pk', 'issue', 'spent_on', 'hours', 'activity', 'comment', 'user')
 
 
 class LogEntrySerializer(serializers.ModelSerializer):

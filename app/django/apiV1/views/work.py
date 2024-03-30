@@ -186,6 +186,9 @@ class TimeEntryViewSet(viewsets.ModelViewSet):
     pagination_class = PageNumberPaginationTwenty
     search_fields = ('id',)
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
 
 class LogEntryViewSet(viewsets.ModelViewSet):
     queryset = IssueLogEntry.objects.all()
