@@ -43,7 +43,7 @@ const toNext = () => emit('to-next')
         <CCol>
           <CAlert color="secondary" class="px-3 py-2">
             <span class="date-title">{{
-              String(key) === dateFormat(new Date()) ? '오늘' : key
+              String(key) === dateFormat(new Date()) ? '오늘' : dateFormat(key as string, '/')
             }}</span>
           </CAlert>
 
