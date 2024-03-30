@@ -78,7 +78,7 @@ const onSubmit = (event: Event) => {
     emit('on-submit', {
       ...form.value,
       ...timeEntry.value,
-      issueComment: comment.value,
+      issue_comment: comment.value,
     })
   }
 }
