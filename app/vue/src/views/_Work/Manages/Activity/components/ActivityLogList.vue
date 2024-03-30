@@ -50,8 +50,8 @@ const toNext = () => emit('to-next')
           <CRow v-for="(act, i) in val" :key="act.pk" class="pl-3">
             <CCol :class="{ 'ml-5': i }">
               <v-icon icon="mdi-cog" size="sm" color="warning" class="mr-1" />
-              <span class="form-text">{{ timeFormat(act.timestamp, true) }}</span>
-              <span class="ml-2 bold">{{ act.project }}</span> -
+              <span class="form-text mr-2">{{ timeFormat(act.timestamp, true) }}</span>
+              <span v-if="!$route.params.projId">{{ act.project }} - </span>
               <span v-if="act.issue">
                 <router-link to="">
                   {{ act.issue.tracker }} #{{ act.issue.pk }} ({{
