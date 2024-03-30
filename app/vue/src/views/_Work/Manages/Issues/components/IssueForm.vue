@@ -61,7 +61,11 @@ const formCheck = computed(() => {
     const k = form.value.due_date === props.issue.due_date
     const l = form.value.estimated_hours === props.issue.estimated_hours
     const m = form.value.done_ratio === props.issue.done_ratio
-    return a && b && c && d && e && f && g && h && i && j && k && l && m
+    const n = !timeEntry.value.hours
+    const o = !timeEntry.value.activity
+    const p = !timeEntry.value.comment
+    const q = !comment.value
+    return a && b && c && d && e && f && g && h && i && j && k && l && m && n && o && p && q
   } else return false
 })
 
@@ -351,14 +355,14 @@ onBeforeMount(() => {
               소요시간
             </CFormLabel>
             <div class="col-sm-3">
-              <!--              <CFormInput v-model.number="timeEntry.hours" type="number" min="0" id="hours" />-->
-              <input
-                v-model="timeEntry.hours"
-                id="hours"
-                maxlength="10"
-                type="text"
-                class="form-control"
-              />
+              <CFormInput v-model="timeEntry.hours" maxlength="10" id="hours" />
+              <!--              <input-->
+              <!--                v-model="timeEntry.hours"-->
+              <!--                id="hours"-->
+              <!--                maxlength="10"-->
+              <!--                type="text"-->
+              <!--                class="form-control"-->
+              <!--              />-->
             </div>
             <div class="col-sm-1" style="padding-top: 6px">시간</div>
 
