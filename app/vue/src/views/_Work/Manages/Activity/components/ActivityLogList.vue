@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue'
-import { dateFormat, timeFormat } from '@/utils/baseMixins'
+import { dateFormat, timeFormat, cutString } from '@/utils/baseMixins'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 import type { ActLogEntry } from '@/store/types/work'
 
@@ -64,7 +64,7 @@ const toNext = () => emit('to-next')
               <div class="ml-4 pl-5 fst-italic">
                 <VueMarkdownIt
                   v-if="!act.status_log"
-                  :source="act.issue?.description"
+                  :source="cutString(act.issue?.description, 113)"
                   class="form-text"
                 />
               </div>
