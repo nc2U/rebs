@@ -383,7 +383,19 @@ class IssueCommentSerializer(serializers.ModelSerializer):
         fields = ('pk', 'content', 'parent', 'user', 'created', 'updated')
 
 
+class IssueInActivitySerializer(serializers.ModelSerializer):
+    project = serializers.SlugRelatedField('name', read_only=True)
+    tracker = serializers.SlugRelatedField(slug_field='name', read_only=True)
+    status = serializers.SlugRelatedField('name', read_only=True)
+
+    class Meta:
+        model = Issue
+        fields = ('pk', 'project', 'tracker', 'status', 'subject', 'description')
+
+
 class TimeEntrySerializer(serializers.ModelSerializer):
+    issue = IssueInActivitySerializer(read_only=True)
+    activity = serializers.SlugRelatedField(slug_field='name', read_only=True)
     user = UserInMemberSerializer(read_only=True)
 
     class Meta:
@@ -397,15 +409,6 @@ class LogEntrySerializer(serializers.ModelSerializer):
     class Meta:
         model = IssueLogEntry
         fields = ('pk', 'action', 'details', 'diff', 'timestamp', 'issue', 'user')
-
-
-class IssueInActivitySerializer(serializers.ModelSerializer):
-    tracker = serializers.SlugRelatedField(slug_field='name', read_only=True)
-    status = serializers.SlugRelatedField('name', read_only=True)
-
-    class Meta:
-        model = Issue
-        fields = ('pk', 'tracker', 'status', 'subject', 'description')
 
 
 class ActivityLogEntrySerializer(serializers.ModelSerializer):

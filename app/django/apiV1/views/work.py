@@ -212,7 +212,7 @@ class ActivityLogFilter(FilterSet):
 
     class Meta:
         model = ActivityLogEntry
-        fields = ('project', 'issue__isnull', 'change_sets_isnull', 'news__isnull',
+        fields = ('issue__project', 'issue__isnull', 'change_sets_isnull', 'news__isnull',
                   'document__isnull', 'file__isnull', 'wiki__isnull', 'message__isnull',
                   'spent_time__isnull', 'act_date', 'from_act_date', 'to_act_date', 'user')
 
