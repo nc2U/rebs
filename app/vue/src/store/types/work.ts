@@ -205,10 +205,17 @@ export interface Issue {
 
 export interface TimeEntry {
   pk: number
-  issue: number
+  issue: {
+    pk: number
+    project: string
+    tracker: string
+    status: string
+    subject: string
+    description: string
+  }
   spent_on: string
   hours: string
-  activity: number
+  activity: string
   comment: string
   user: {
     pk: number
@@ -231,9 +238,9 @@ export interface LogEntry {
 
 export interface ActLogEntry {
   pk: number
-  project: string | null
   issue: {
     pk: number
+    project: string
     tracker: string
     status: string
     subject: string

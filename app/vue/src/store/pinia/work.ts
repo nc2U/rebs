@@ -263,7 +263,7 @@ export const useWork = defineStore('work', () => {
 
   const fetchActivityLogList = async (payload: any) => {
     let url = `/act-entry/?1=1`
-    if (payload.project) url += `project=${payload.project}`
+    if (payload.project) url += `issue__project=${payload.project}`
     if (payload.issue__isnull) url += `issue__isnull=${payload.issue__isnull}`
     if (payload.change_sets_isnull) url += `change_sets_isnull=${payload.change_sets_isnull}`
     if (payload.news__isnull) url += `news__isnull=${payload.news__isnull}`
