@@ -11,6 +11,7 @@ import type {
   IssueStatus,
   CodeValue,
   LogEntry,
+  TimeEntry,
 } from '@/store/types/work'
 
 export const useWork = defineStore('work', () => {
@@ -205,6 +206,38 @@ export const useWork = defineStore('work', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
+  // time-entry states & getters
+  const timeEntry = ref<TimeEntry | null>(null)
+  const timeEntryList = ref<TimeEntry[]>([])
+
+  const fetchTimeEntry = (pk: number) =>
+    api
+      .get(`/time-entry/${pk}/`)
+      .then(res => (timeEntry.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchTimeEntryList = () =>
+    api
+      .get(`/time-entry/`)
+      .then(res => (timeEntryList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
+  const updateTimeEntry = (payload: any) =>
+    api
+      .put(`/time-entry/${payload.pk}/`, payload)
+      .then(() => fetchTimeEntry(payload.pk).then(() => fetchTimeEntryList().then(() => message())))
+      .catch(err => errorHandle(err.response.data))
+
+  const deleteTimeEntry = (pk: number) =>
+    api
+      .delete(`/time-entry/${pk}/`)
+      .then(() =>
+        fetchTimeEntryList().then(() =>
+          message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.'),
+        ),
+      )
+      .catch(err => errorHandle(err.response.data))
+
   // issue-log states & getters
   const logEntryList = ref<LogEntry[]>([])
 
@@ -291,6 +324,13 @@ export const useWork = defineStore('work', () => {
     updateIssue,
     patchIssue,
     deleteIssue,
+
+    timeEntry,
+    timeEntryList,
+    fetchTimeEntry,
+    fetchTimeEntryList,
+    updateTimeEntry,
+    deleteTimeEntry,
 
     logEntryList,
     fetchLogEntryList,
