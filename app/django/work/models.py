@@ -483,6 +483,9 @@ class ActivityLogEntry(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.timestamp}"
 
+    class Meta:
+        ordering = ('-timestamp',)
+
 
 class Search(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE, verbose_name='내 검색어')
