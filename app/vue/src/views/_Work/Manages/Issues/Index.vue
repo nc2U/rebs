@@ -42,17 +42,12 @@ onBeforeMount(() => {
     <template v-slot:default>
       <IssueList v-if="$route.name === '업무'" :issue-list="issueList" />
 
-      <CRow v-if="$route.name === '업무 - 추가'" class="py-2">
-        <CCol>
-          <h5>새 업무만들기</h5>
-        </CCol>
-
-        <IssueForm
-          :issue-projects="issueProjects"
-          @on-submit="onSubmit"
-          @close-form="router.push({ name: '업무' })"
-        />
-      </CRow>
+      <IssueForm
+        v-if="$route.name === '업무 - 추가'"
+        :issue-projects="issueProjects"
+        @on-submit="onSubmit"
+        @close-form="router.push({ name: '업무' })"
+      />
     </template>
 
     <template v-slot:aside></template>

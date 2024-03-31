@@ -196,12 +196,6 @@ const callEditForm = () => {
   </div>
 
   <div v-if="editForm">
-    <CRow class="py-2">
-      <CCol id="edit-form">
-        <h5>편집</h5>
-      </CCol>
-    </CRow>
-
     <IssueForm
       :i-project="iProject"
       :issue="issue"
