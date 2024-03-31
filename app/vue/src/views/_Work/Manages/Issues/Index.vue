@@ -44,7 +44,7 @@ onBeforeMount(() => {
 
       <CRow v-if="$route.name === '업무 - 추가'" class="py-2">
         <CCol>
-          <h5 class="form-text">새 업무만들기</h5>
+          <h5>새 업무만들기</h5>
         </CCol>
 
         <IssueForm

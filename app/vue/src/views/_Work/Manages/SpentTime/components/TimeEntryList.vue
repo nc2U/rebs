@@ -20,7 +20,7 @@ defineProps({
     <CCol class="text-right">
       <span v-show="$route.name !== '프로젝트 - 추가'" class="mr-2 form-text">
         <v-icon icon="mdi-plus-circle" color="success" size="sm" />
-        <router-link to="" class="ml-1">작업시간 기록</router-link>
+        <router-link :to="{ name: '소요시간 - 추가' }" class="ml-1">작업시간 기록</router-link>
       </span>
     </CCol>
   </CRow>
