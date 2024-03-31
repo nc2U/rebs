@@ -160,6 +160,12 @@ export const useWork = defineStore('work', () => {
   // issue states & getters
   const issue = ref<Issue | null>(null)
   const issueList = ref<Issue[]>([])
+  const getIssues = computed(() =>
+    issueList.value.map(i => ({
+      value: i.pk,
+      label: i.subject,
+    })),
+  )
 
   const fetchIssue = (pk: number) =>
     api
@@ -336,6 +342,7 @@ export const useWork = defineStore('work', () => {
 
     issue,
     issueList,
+    getIssues,
     fetchIssue,
     fetchIssueList,
     createIssue,

@@ -50,7 +50,7 @@ const closeForm = () => emit('close-form')
 
 const workStore = useWork()
 const activityList = computed(() => workStore.activityList)
-const issueList = computed(() => workStore.issueList)
+const getIssues = computed(() => workStore.getIssues)
 
 const route = useRoute()
 
@@ -74,7 +74,7 @@ onBeforeMount(() => {
   // workStore.fetchStatusList()
   workStore.fetchActivityList()
   // workStore.fetchPriorityList()
-  // workStore.fetchIssueList()
+  workStore.fetchIssueList()
 })
 </script>
 
@@ -111,13 +111,7 @@ onBeforeMount(() => {
               업무
             </CFormLabel>
             <CCol sm="4">
-              <!--            <MultiSelect />-->
-              <CFormSelect v-model="form.issue" id="issue" required>
-                <option value="">---------</option>
-                <option v-for="issue in issueList" :value="issue.pk" :key="issue.pk">
-                  {{ issue.subject }}
-                </option>
-              </CFormSelect>
+              <MultiSelect :options="getIssues" />
             </CCol>
           </CRow>
 
