@@ -12,6 +12,7 @@ import type {
   CodeValue,
   LogEntry,
   TimeEntry,
+  TimeEntryFilter,
 } from '@/store/types/work'
 
 export const useWork = defineStore('work', () => {
@@ -216,23 +217,40 @@ export const useWork = defineStore('work', () => {
       .then(res => (timeEntry.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const fetchTimeEntryList = () =>
-    api
-      .get(`/time-entry/`)
+  const fetchTimeEntryList = async (payload: TimeEntryFilter) => {
+    let url = `/time-entry/?1=1`
+    if (payload.issue_project) url += `&issue__project=${payload.issue_project}`
+    if (payload.issue) url += `&issue=${payload.issue}`
+    if (payload.user) url += `&user=${payload.user}`
+    if (payload.activity) url += `&activity=${payload.activity}`
+    if (payload.hours) url += `&hours=${payload.hours}`
+    if (payload.from_spent_on) url += `&from_spent_on=${payload.from_spent_on}`
+    if (payload.to_spent_on) url += `&to_spent_on=${payload.to_spent_on}`
+    if (payload.issue__tracker) url += `&issue__tracker=${payload.issue__tracker}`
+    if (payload.issue__parent) url += `&issue__parent=${payload.issue__parent}`
+    if (payload.issue__status) url += `&issue__status=${payload.issue__status}`
+    if (payload.issue__fixed_version) url += `&issue__fixed_version=${payload.issue__fixed_version}`
+    if (payload.issue__category) url += `&issue__category=${payload.issue__category}`
+
+    return await api
+      .get(url)
       .then(res => (timeEntryList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
+  }
 
   const updateTimeEntry = (payload: any) =>
     api
       .put(`/time-entry/${payload.pk}/`, payload)
-      .then(() => fetchTimeEntry(payload.pk).then(() => fetchTimeEntryList().then(() => message())))
+      .then(() =>
+        fetchTimeEntry(payload.pk).then(() => fetchTimeEntryList({}).then(() => message())),
+      )
       .catch(err => errorHandle(err.response.data))
 
   const deleteTimeEntry = (pk: number) =>
     api
       .delete(`/time-entry/${pk}/`)
       .then(() =>
-        fetchTimeEntryList().then(() =>
+        fetchTimeEntryList({}).then(() =>
           message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.'),
         ),
       )

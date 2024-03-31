@@ -223,6 +223,22 @@ export interface TimeEntry {
   }
 }
 
+export interface TimeEntryFilter {
+  issue_project?: number
+  issue?: number
+  user?: number
+  activity?: number
+  hours?: number
+  from_spent_on?: string
+  to_spent_on?: string
+  issue__tracker?: number
+  issue__parent?: number
+  issue__status?: number
+  issue__fixed_version?: number
+  issue__category?: number
+  search?: string
+}
+
 export interface LogEntry {
   pk: number
   action: 'Created' | 'Edited'
