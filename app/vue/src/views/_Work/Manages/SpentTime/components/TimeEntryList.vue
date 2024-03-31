@@ -2,6 +2,9 @@
 import { type PropType } from 'vue'
 import type { TimeEntry } from '@/store/types/work'
 import { dateFormat, numberToHour } from '@/utils/baseMixins'
+import NoData from '@/views/_Work/components/NoData.vue'
+import SearchList from '@/views/_Work/components/SearchList.vue'
+import HeaderTab from '@/views/_Work/Manages/SpentTime/components/HeaderTab.vue'
 
 defineProps({
   timeEntryList: { type: Array as PropType<TimeEntry[]>, default: () => [] },
@@ -9,7 +12,26 @@ defineProps({
 </script>
 
 <template>
-  <CRow>
+  <CRow class="py-2">
+    <CCol>
+      <h5>소요시간</h5>
+    </CCol>
+
+    <CCol class="text-right">
+      <span v-show="$route.name !== '프로젝트 - 추가'" class="mr-2 form-text">
+        <v-icon icon="mdi-plus-circle" color="success" size="sm" />
+        <router-link to="" class="ml-1">작업시간 기록</router-link>
+      </span>
+    </CCol>
+  </CRow>
+
+  <SearchList />
+
+  <HeaderTab />
+
+  <NoData v-if="!timeEntryList.length" />
+
+  <CRow v-else>
     <CCol col="12">
       <CRow class="mb-1 text-right pr-2">
         <CCol class="">
