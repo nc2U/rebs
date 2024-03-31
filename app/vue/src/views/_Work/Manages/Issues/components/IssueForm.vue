@@ -4,7 +4,7 @@ import type { Issue, IssueProject } from '@/store/types/work'
 import { isValidate } from '@/utils/helper'
 import { useWork } from '@/store/pinia/work'
 import DatePicker from '@/components/DatePicker/index.vue'
-import MultiSelect from '@/components/MultiSelect/index.vue'
+import Multiselect from '@vueform/multiselect'
 import MdEditor from '@/components/MdEditor/Index.vue'
 import { useRoute } from 'vue-router'
 
@@ -72,15 +72,12 @@ const formCheck = computed(() => {
 const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
-  } else {
-    const e = form.value.estimated_hours
-
+  } else
     emit('on-submit', {
       ...form.value,
       ...timeEntry.value,
       issue_comment: comment.value,
     })
-  }
 }
 
 const closeForm = () => emit('close-form')
@@ -100,7 +97,7 @@ const trackerList = computed(() =>
 const statusList = computed(() => workStore.statusList)
 const activityList = computed(() => workStore.activityList)
 const priorityList = computed(() => workStore.priorityList)
-const issueList = computed(() => workStore.issueList)
+const getIssues = computed(() => workStore.getIssues)
 
 const route = useRoute()
 onBeforeMount(() => {
@@ -228,17 +225,17 @@ onBeforeMount(() => {
               상위 업무
             </CFormLabel>
             <CCol sm="4">
-              <CFormSelect v-model="form.parent" id="parent">
-                <option value="">---------</option>
-                <option
-                  v-for="parent in issueList.filter(i => i.pk !== form.pk)"
-                  :value="parent.pk"
-                  :key="parent.pk"
-                >
-                  {{ parent.subject }}
-                </option>
-              </CFormSelect>
-              <!--            <MultiSelect v-model="form.parent" id="parent" />-->
+              <Multiselect
+                v-model="form.parent"
+                :options="getIssues"
+                id="parent"
+                placeholder="상위 업무 선택"
+                :classes="{
+                  search: 'form-control multiselect-search',
+                  tagsSearch: 'form-control',
+                }"
+                searchable
+              />
             </CCol>
           </CRow>
 

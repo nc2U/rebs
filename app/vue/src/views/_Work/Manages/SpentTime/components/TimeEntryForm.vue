@@ -4,7 +4,7 @@ import { isValidate } from '@/utils/helper'
 import { useRoute } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import DatePicker from '@/components/DatePicker/index.vue'
-import MultiSelect from '@/components/MultiSelect/index.vue'
+import Multiselect from '@vueform/multiselect'
 import type { IssueProject } from '@/store/types/work'
 
 const props = defineProps({
@@ -41,9 +41,7 @@ const formCheck = computed(() => {
 const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
-  } else {
-    emit('on-submit', { ...form.value })
-  }
+  } else emit('on-submit', { ...form.value })
 }
 
 const closeForm = () => emit('close-form')
@@ -93,7 +91,7 @@ onBeforeMount(() => {
             </CFormLabel>
 
             <CCol sm="4">
-              <CFormSelect v-model="form.project" id="project">
+              <CFormSelect v-model="form.project" id="project" required>
                 <option value="">---------</option>
                 <option v-for="proj in issueProjects" :value="proj.slug" :key="proj.slug">
                   <span v-if="proj.depth === 2"> &nbsp;&nbsp;» </span>
@@ -111,7 +109,18 @@ onBeforeMount(() => {
               업무
             </CFormLabel>
             <CCol sm="4">
-              <MultiSelect :options="getIssues" />
+              <Multiselect
+                v-model="form.issue"
+                :options="getIssues"
+                id="issue"
+                placeholder="업무 선택"
+                :classes="{
+                  search: 'form-control multiselect-search',
+                  tagsSearch: 'form-control',
+                }"
+                searchable
+                required
+              />
             </CCol>
           </CRow>
 
@@ -131,7 +140,7 @@ onBeforeMount(() => {
               작업일자
             </CFormLabel>
             <CCol sm="4">
-              <DatePicker v-model="form.spent_on" id="spent_on" />
+              <DatePicker v-model="form.spent_on" id="spent_on" required />
             </CCol>
           </CRow>
 
@@ -140,14 +149,20 @@ onBeforeMount(() => {
               시간
             </CFormLabel>
             <CCol sm="4">
-              <CFormInput v-model="form.hours" id="hours" maxlength="10" placeholder="소요시간" />
+              <CFormInput
+                v-model="form.hours"
+                id="hours"
+                maxlength="10"
+                placeholder="소요시간"
+                required
+              />
             </CCol>
 
             <CFormLabel for="activity" class="col-sm-2 col-form-label text-right required">
               작업종류
             </CFormLabel>
             <CCol sm="4">
-              <CFormSelect v-model="form.activity" id="activity">
+              <CFormSelect v-model="form.activity" id="activity" required>
                 <option value="">---------</option>
                 <option v-for="act in activityList" :value="act.pk" :key="act.pk">
                   {{ act.name }}

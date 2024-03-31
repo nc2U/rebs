@@ -14,6 +14,8 @@ const timeEntry = computed(() => workStore.timeEntry)
 const timeEntryList = computed(() => workStore.timeEntryList)
 const issueProjects = computed(() => workStore.AllIssueProjects)
 
+const onSubmit = (payload: any) => payload
+
 onBeforeMount(() => {
   emit('aside-visible', true)
   workStore.fetchIssueProjectList()
@@ -28,5 +30,7 @@ onBeforeMount(() => {
     v-if="$route.name === '(소요시간) - 추가'"
     :time-entry="timeEntry"
     :issue-projects="issueProjects"
+    @on-submit="onSubmit"
+    @close-form="$router.push({ name: '(소요시간)' })"
   />
 </template>
