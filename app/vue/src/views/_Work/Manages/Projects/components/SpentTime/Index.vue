@@ -16,8 +16,7 @@ const timeEntryList = computed(() => workStore.timeEntryList)
 
 onBeforeMount(() => {
   emit('aside-visible', true)
-  if (route.params.projId)
-    workStore.fetchTimeEntryList({ issue_project: route.params.projId as string })
+  if (route.params.projId) workStore.fetchTimeEntryList({ project: route.params.projId as string })
 })
 </script>
 

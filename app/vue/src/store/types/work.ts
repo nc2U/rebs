@@ -224,7 +224,7 @@ export interface TimeEntry {
 }
 
 export interface TimeEntryFilter {
-  issue_project?: string
+  project?: string
   issue?: number
   user?: number
   activity?: number

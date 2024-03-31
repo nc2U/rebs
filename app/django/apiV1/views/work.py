@@ -185,7 +185,7 @@ class TimeEntryFilter(FilterSet):
 
     class Meta:
         model = TimeEntry
-        fields = ('issue__project', 'issue', 'user', 'activity', 'hours',
+        fields = ('issue__project__slug', 'issue', 'user', 'activity', 'hours',
                   'from_spent_on', 'to_spent_on', 'issue__tracker', 'issue__parent',
                   'issue__status', 'issue__fixed_version', 'issue__category')
 

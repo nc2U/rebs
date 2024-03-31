@@ -10,28 +10,11 @@ defineProps({
 
 <template>
   <CRow>
-    <!--    <CRow class="py-2">-->
-    <!--      <CCol>-->
-    <!--        <h5>소요시간</h5>-->
-    <!--      </CCol>-->
-
-    <!--      <CCol class="text-right">-->
-    <!--        <span class="mr-2 form-text">-->
-    <!--          <v-icon icon="mdi-plus-circle" color="success" size="sm" />-->
-    <!--          <router-link to="" class="ml-1"> 작업시간 기록 </router-link>-->
-    <!--        </span>-->
-    <!--      </CCol>-->
-    <!--    </CRow>-->
-
-    <!--    <SearchList />-->
-
-    <!--    <NoData v-if="!timeEntryList.length" />-->
-
     <CCol col="12">
       <CRow class="mb-1 text-right pr-2">
         <CCol class="">
           <span>시간 : </span>
-          <span class="bold">12:00</span>
+          <span class="bold">{{ numberToHour(12) }}</span>
         </CCol>
       </CRow>
       <v-divider class="my-0" />
