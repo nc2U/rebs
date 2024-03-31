@@ -83,7 +83,7 @@ defineProps({
                 {{ time.user.username }}
               </router-link>
             </CTableDataCell>
-            <CTableDataCell>{{ time.activity }}</CTableDataCell>
+            <CTableDataCell>{{ time.activity.name }}</CTableDataCell>
             <CTableDataCell class="text-left">
               <router-link to=""> {{ time.issue.tracker }} #{{ time.issue.pk }}</router-link>
               : {{ time.issue.subject }}

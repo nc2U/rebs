@@ -73,15 +73,18 @@ watch(timeEntry, nVal => {
   if (nVal) dataSetup()
 })
 
-onBeforeMount(() => {
+onBeforeMount(async () => {
   if (issueProject.value) form.value.project = issueProject.value.slug
   if (route.params.projId) {
-    workStore.fetchIssueProject(route.params.projId as string)
+    await workStore.fetchIssueProject(route.params.projId as string)
     form.value.project = route.params.projId as string
   }
-  workStore.fetchMemberList()
-  workStore.fetchActivityList()
-  workStore.fetchIssueList()
+  if (route.params.timeId) await workStore.fetchTimeEntry(route.params.timeId)
+  else workStore.timeEntry = null
+
+  await workStore.fetchMemberList()
+  await workStore.fetchActivityList()
+  await workStore.fetchIssueList()
 
   dataSetup()
 })

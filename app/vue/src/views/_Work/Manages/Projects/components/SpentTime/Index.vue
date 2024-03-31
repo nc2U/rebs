@@ -18,10 +18,8 @@ const onSubmit = (payload: any) => payload
 onBeforeMount(async () => {
   emit('aside-visible', true)
   await workStore.fetchIssueProjectList()
-  if (route.params.projId)
-    await workStore.fetchTimeEntryList({ project: route.params.projId as string })
-  if (route.params.timeId) await workStore.fetchTimeEntry(route.params.timeId)
-  else workStore.timeEntry = null
+  const filter = route.params.projId ? { project: route.params.projId as string } : {}
+  await workStore.fetchTimeEntryList(filter)
 })
 </script>
 
