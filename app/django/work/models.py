@@ -447,7 +447,7 @@ class TimeEntry(models.Model):
         return f'{self.issue} - {self.hours}'
 
     class Meta:
-        ordering = ('spent_on',)
+        ordering = ('spent_on', 'id')
 
 
 class IssueLogEntry(models.Model):

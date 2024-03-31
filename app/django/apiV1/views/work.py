@@ -1,4 +1,3 @@
-from django.db.models.functions import TruncDate
 from django_filters import DateFilter
 from rest_framework import viewsets
 from django_filters.rest_framework import FilterSet, BooleanFilter
@@ -196,7 +195,7 @@ class TimeEntryViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = PageNumberPaginationTwenty
     filterset_class = TimeEntryFilter
-    search_fields = ('issue__subject', 'comment',)
+    search_fields = ('issue__subject', 'comment')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.db.models import Sum
 from rest_framework import serializers
 
 from accounts.models import User
@@ -397,10 +398,17 @@ class TimeEntrySerializer(serializers.ModelSerializer):
     issue = IssueInActivitySerializer(read_only=True)
     activity = serializers.SlugRelatedField(slug_field='name', read_only=True)
     user = UserInMemberSerializer(read_only=True)
+    total_hours = serializers.SerializerMethodField()
 
     class Meta:
         model = TimeEntry
-        fields = ('pk', 'issue', 'spent_on', 'hours', 'activity', 'comment', 'user')
+        fields = ('pk', 'issue', 'spent_on', 'hours', 'activity', 'comment', 'user', 'total_hours')
+
+    def get_total_hours(self, obj):
+        # Access the filtered queryset from the view context
+        filtered_queryset = self.context['view'].filter_queryset(self.context['view'].get_queryset())
+        total_hours = filtered_queryset.aggregate(total_hours=Sum('hours'))
+        return total_hours['total_hours'] or 0
 
 
 class LogEntrySerializer(serializers.ModelSerializer):
