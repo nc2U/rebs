@@ -20,7 +20,7 @@ const workStore = useWork()
 const timeEntryList = computed(() => workStore.timeEntryList)
 
 onBeforeMount(() => {
-  workStore.fetchTimeEntryList()
+  workStore.fetchTimeEntryList({})
 })
 </script>
 

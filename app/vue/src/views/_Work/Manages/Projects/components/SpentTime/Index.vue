@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount } from 'vue'
+import { useRoute } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import SearchList from '@/views/_Work/components/SearchList.vue'
 import NoData from '@/views/_Work/components/NoData.vue'
@@ -8,12 +9,15 @@ import TimeEntryList from '@/views/_Work/Manages/SpentTime/components/TimeEntryL
 
 const emit = defineEmits(['aside-visible'])
 
+const route = useRoute()
+
 const workStore = useWork()
 const timeEntryList = computed(() => workStore.timeEntryList)
 
 onBeforeMount(() => {
   emit('aside-visible', true)
-  workStore.fetchTimeEntryList()
+  if (route.params.projId)
+    workStore.fetchTimeEntryList({ issue_project: route.params.projId as string })
 })
 </script>
 
