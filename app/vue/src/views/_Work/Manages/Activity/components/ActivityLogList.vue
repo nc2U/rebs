@@ -36,7 +36,7 @@ const toNext = () => emit('to-next')
     <CCol> {{ dateFormat(fromDate, '/') }}부터 {{ dateFormat(toDate, '/') }}까지</CCol>
   </CRow>
 
-  <NoData v-if="!groupedActivities" />
+  <NoData v-if="!Object.getOwnPropertyNames(groupedActivities).length" />
 
   <CRow v-else class="my-3">
     <CCol>
