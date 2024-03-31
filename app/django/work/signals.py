@@ -4,7 +4,7 @@ from .models import Issue, TimeEntry, IssueLogEntry, ActivityLogEntry
 
 
 @receiver(pre_save, sender=Issue)
-def track_changes(sender, instance, **kwargs):
+def issue_track_changes(sender, instance, **kwargs):
     if instance.pk:  # Check if the instance has already been saved
         # Compare fields to track changes
         old_instance = sender.objects.get(pk=instance.pk)
@@ -45,7 +45,7 @@ def track_changes(sender, instance, **kwargs):
 
 
 @receiver(post_save, sender=Issue)
-def log_changes(sender, instance, created, **kwargs):
+def issue_log_changes(sender, instance, created, **kwargs):
     action = 'Created' if created else 'Edited'
     details = f"**업무** - *{instance}(#{instance.id})*업무가 *{action}* 되었습니다." if created else ""
     diff = ""
@@ -115,6 +115,6 @@ def log_changes(sender, instance, created, **kwargs):
         ActivityLogEntry.objects.create(project=instance.project, issue=instance, user=instance.creator)
 
 # @receiver(post_save, sender=TimeEntry)
-# def log_changes(sender, instance, created, **kwargs):
+# def time_log_changes(sender, instance, created, **kwargs):
 #     if created:
 #         pass
