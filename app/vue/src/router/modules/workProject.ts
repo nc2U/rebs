@@ -65,6 +65,20 @@ const workProject = {
         {
           path: ':projId/time_entry',
           name: '(소요시간)',
+          children: [
+            {
+              path: 'create',
+              name: '(소요시간) - 추가',
+            },
+            {
+              path: ':timeId/update',
+              name: '(소요시간) - 편집',
+            },
+            {
+              path: ':timeId/delete',
+              name: '(소요시간) - 삭제',
+            },
+          ],
         },
         {
           path: ':projId/gantt',
