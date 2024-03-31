@@ -221,6 +221,7 @@ export interface TimeEntry {
     pk: number
     username: string
   }
+  total_hours: number
 }
 
 export interface TimeEntryFilter {

@@ -14,7 +14,7 @@ defineProps({
       <CRow class="mb-1 text-right pr-2">
         <CCol class="">
           <span>시간 : </span>
-          <span class="bold">{{ numberToHour(12) }}</span>
+          <span class="bold">{{ numberToHour(timeEntryList[0].total_hours ?? 0) }}</span>
         </CCol>
       </CRow>
       <v-divider class="my-0" />
