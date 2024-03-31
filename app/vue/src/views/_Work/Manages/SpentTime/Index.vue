@@ -8,6 +8,7 @@ import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import NoData from '@/views/_Work/components/NoData.vue'
 import SearchList from '@/views/_Work/components/SearchList.vue'
 import TimeEntryList from '@/views/_Work/Manages/SpentTime/components/TimeEntryList.vue'
+import HeaderTab from '@/views/_Work/Manages/SpentTime/components/HeaderTab.vue'
 
 const cBody = ref()
 const company = inject<ComputedRef<Company>>('company')
@@ -42,6 +43,8 @@ onBeforeMount(() => {
       </CRow>
 
       <SearchList />
+
+      <HeaderTab />
 
       <NoData v-if="!timeEntryList.length" />
 

@@ -1,13 +1,20 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount } from 'vue'
+import { useWork } from '@/store/pinia/work'
 import SearchList from '@/views/_Work/components/SearchList.vue'
 import NoData from '@/views/_Work/components/NoData.vue'
+import HeaderTab from '@/views/_Work/Manages/SpentTime/components/HeaderTab.vue'
+import TimeEntryList from '@/views/_Work/Manages/SpentTime/components/TimeEntryList.vue'
 
 const emit = defineEmits(['aside-visible'])
 
-const timeEntryList = computed(() => [])
+const workStore = useWork()
+const timeEntryList = computed(() => workStore.timeEntryList)
 
-onBeforeMount(() => emit('aside-visible', true))
+onBeforeMount(() => {
+  emit('aside-visible', true)
+  workStore.fetchTimeEntryList()
+})
 </script>
 
 <template>
@@ -26,9 +33,13 @@ onBeforeMount(() => emit('aside-visible', true))
 
   <SearchList />
 
+  <HeaderTab />
+
   <NoData v-if="!timeEntryList.length" />
 
   <CRow v-else>
-    <CCol></CCol>
+    <CCol>
+      <TimeEntryList :time-entry-list="timeEntryList" />
+    </CCol>
   </CRow>
 </template>

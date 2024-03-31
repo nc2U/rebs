@@ -10,28 +10,34 @@ defineProps({
 
 <template>
   <CRow>
-    <CRow class="py-2">
-      <CCol>
-        <h5>소요시간</h5>
-      </CCol>
+    <!--    <CRow class="py-2">-->
+    <!--      <CCol>-->
+    <!--        <h5>소요시간</h5>-->
+    <!--      </CCol>-->
 
-      <CCol class="text-right">
-        <span class="mr-2 form-text">
-          <v-icon icon="mdi-plus-circle" color="success" size="sm" />
-          <router-link to="" class="ml-1"> 작업시간 기록 </router-link>
-        </span>
-      </CCol>
-    </CRow>
+    <!--      <CCol class="text-right">-->
+    <!--        <span class="mr-2 form-text">-->
+    <!--          <v-icon icon="mdi-plus-circle" color="success" size="sm" />-->
+    <!--          <router-link to="" class="ml-1"> 작업시간 기록 </router-link>-->
+    <!--        </span>-->
+    <!--      </CCol>-->
+    <!--    </CRow>-->
 
-    <SearchList />
+    <!--    <SearchList />-->
 
-    <NoData v-if="!timeEntryList.length" />
+    <!--    <NoData v-if="!timeEntryList.length" />-->
 
-    <CCol v-else col="12">
-      <v-divider class="mb-0" />
+    <CCol col="12">
+      <CRow class="mb-1 text-right pr-2">
+        <CCol class="">
+          <span>시간 : </span>
+          <span class="bold">12:00</span>
+        </CCol>
+      </CRow>
+      <v-divider class="my-0" />
       <CTable striped hover small responsive>
         <colgroup>
-          <col style="width: 18%" />
+          <col v-if="!$route.params.projId" style="width: 18%" />
           <col style="width: 10%" />
           <col style="width: 10%" />
           <col style="width: 8%" />
@@ -77,7 +83,6 @@ defineProps({
             <CTableDataCell>
               <span class="strong">{{ numberToHour(time.hours) }}</span>
             </CTableDataCell>
-            <CTableDataCell class="text-center"></CTableDataCell>
             <CTableDataCell class="p-0">
               <span>
                 <CDropdown color="secondary" variant="input-group" placement="bottom-end">
