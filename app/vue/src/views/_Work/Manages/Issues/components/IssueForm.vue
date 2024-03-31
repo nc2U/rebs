@@ -104,7 +104,6 @@ const issueList = computed(() => workStore.issueList)
 
 const route = useRoute()
 onBeforeMount(() => {
-  if (issueProject.value) form.value.project = issueProject.value.slug
   if (props.issue) {
     editDetails.value = false
 
@@ -122,11 +121,6 @@ onBeforeMount(() => {
     form.value.due_date = props.issue.due_date
     form.value.estimated_hours = props.issue.estimated_hours
     form.value.done_ratio = props.issue.done_ratio
-  } else {
-    form.value.project = props.issueProjects[0].slug
-    form.value.tracker = 2
-    form.value.status = 1
-    form.value.priority = 2
   }
   if (route.params.projId) {
     workStore.fetchIssueProject(route.params.projId as string)
@@ -156,6 +150,7 @@ onBeforeMount(() => {
 
           <CCol sm="4">
             <CFormSelect v-model="form.project">
+              <option value="">---------</option>
               <option v-for="proj in issueProjects" :value="proj.slug" :key="proj.slug">
                 <span v-if="proj.depth === 2"> &nbsp;&nbsp;» </span>
                 <span v-if="proj.depth === 3"> &nbsp;&nbsp;&nbsp;&nbsp;» </span>
@@ -178,6 +173,7 @@ onBeforeMount(() => {
           </CFormLabel>
           <CCol sm="4">
             <CFormSelect v-model="form.tracker" id="tracker" required>
+              <option value="">---------</option>
               <option v-for="tr in trackerList" :value="tr.pk" :key="tr.pk">
                 {{ tr.name }}
               </option>
@@ -214,6 +210,7 @@ onBeforeMount(() => {
           </CFormLabel>
           <CCol sm="4">
             <CFormSelect v-model="form.status" id="status" required>
+              <option value="">---------</option>
               <option v-for="status in statusList" :value="status.pk" :key="status.pk">
                 {{ status.name }}
               </option>
@@ -244,6 +241,7 @@ onBeforeMount(() => {
           </CFormLabel>
           <CCol sm="4">
             <CFormSelect v-model="form.priority" id="priority" required>
+              <option value="">---------</option>
               <option v-for="pr in priorityList" :value="pr.pk" :key="pr.pk">{{ pr.name }}</option>
             </CFormSelect>
           </CCol>

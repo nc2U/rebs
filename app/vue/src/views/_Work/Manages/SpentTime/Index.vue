@@ -17,8 +17,10 @@ const sideNavCAll = () => cBody.value.toggle()
 const workStore = useWork()
 const timeEntry = computed(() => workStore.timeEntry)
 const timeEntryList = computed(() => workStore.timeEntryList)
+const issueProjects = computed(() => workStore.AllIssueProjects)
 
 onBeforeMount(() => {
+  workStore.fetchIssueProjectList()
   workStore.fetchTimeEntryList({})
 })
 </script>
@@ -30,13 +32,11 @@ onBeforeMount(() => {
     <template v-slot:default>
       <TimeEntryList v-if="$route.name === '소요시간'" :time-entry-list="timeEntryList" />
 
-      <CRow v-if="$route.name === '소요시간 - 추가'" class="py-2">
-        <CCol>
-          <h5>소요시간</h5>
-        </CCol>
-
-        <TimeEntryForm :time-entry="timeEntry" />
-      </CRow>
+      <TimeEntryForm
+        v-if="$route.name === '소요시간 - 추가'"
+        :time-entry="timeEntry"
+        :issue-projects="issueProjects"
+      />
     </template>
 
     <template v-slot:aside></template>
