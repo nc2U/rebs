@@ -136,7 +136,7 @@ onBeforeMount(() => {
   <CRow class="py-2">
     <CCol id="edit-form">
       <h5>
-        {{ $route.name.includes('추가') ? '새 업무만들기' : '편집' }}
+        {{ !issue ? '새 업무만들기' : '편집' }}
       </h5>
     </CCol>
 
@@ -176,7 +176,7 @@ onBeforeMount(() => {
               유형
             </CFormLabel>
             <CCol sm="4">
-              <CFormSelect v-model="form.tracker" id="tracker" required>
+              <CFormSelect v-model.number="form.tracker" id="tracker" required>
                 <option value="">---------</option>
                 <option v-for="tr in trackerList" :value="tr.pk" :key="tr.pk">
                   {{ tr.name }}
@@ -213,7 +213,7 @@ onBeforeMount(() => {
               상태
             </CFormLabel>
             <CCol sm="4">
-              <CFormSelect v-model="form.status" id="status" required>
+              <CFormSelect v-model.number="form.status" id="status" required>
                 <option value="">---------</option>
                 <option v-for="status in statusList" :value="status.pk" :key="status.pk">
                   {{ status.name }}
@@ -244,7 +244,7 @@ onBeforeMount(() => {
               우선순위
             </CFormLabel>
             <CCol sm="4">
-              <CFormSelect v-model="form.priority" id="priority" required>
+              <CFormSelect v-model.number="form.priority" id="priority" required>
                 <option value="">---------</option>
                 <option v-for="pr in priorityList" :value="pr.pk" :key="pr.pk">
                   {{ pr.name }}
@@ -265,7 +265,7 @@ onBeforeMount(() => {
               담당자
             </CFormLabel>
             <CCol sm="4">
-              <CFormSelect v-model="form.assigned_to" id="assigned_to">
+              <CFormSelect v-model.number="form.assigned_to" id="assigned_to">
                 <option value="">---------</option>
                 <option v-for="mem in memberList" :value="mem.user.pk" :key="mem.pk">
                   {{ mem.user.username }}

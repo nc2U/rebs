@@ -15,26 +15,27 @@ const validated = ref(false)
 
 const form = ref({
   pk: null as number | null,
-  project: null,
-  issue: null,
-  user: null,
+  project: '',
+  issue: null as number | null,
+  user: null as number | null,
   spent_on: '',
   hours: '',
   comment: '',
-  activity: '',
+  activity: null as number | null,
 })
 
 const emit = defineEmits(['on-submit', 'close-form'])
 
 const formCheck = computed(() => {
-  if (props.timeEntry) {
-    const a = form.value.project === props.timeEntry.project
-    const b = form.value.issue === props.timeEntry.issue
-    const c = form.value.spent_on === props.timeEntry.spent_on
-    const d = form.value.hours === props.timeEntry.hours
-    const e = form.value.comment === props.timeEntry.comment
-    const f = form.value.activity === props.timeEntry.activity
-    return a && b && c && d && e && f
+  if (timeEntry.value) {
+    const a = form.value.project === issueProject.value?.slug
+    const b = form.value.issue === timeEntry.value.issue.pk
+    const c = form.value.user === timeEntry.value?.user.pk
+    const d = form.value.spent_on === timeEntry.value.spent_on
+    const e = form.value.hours === timeEntry.value.hours
+    const f = form.value.activity === timeEntry.value.activity.pk
+    const g = form.value.comment === timeEntry.value.comment
+    return a && b && c && d && e && f && g
   } else return false
 })
 
@@ -67,6 +68,7 @@ const dataSetup = () => {
     form.value.activity = timeEntry.value.activity.pk
     form.value.comment = timeEntry.value.comment
   }
+  if (issueProject.value) form.value.project = issueProject.value?.slug
 }
 
 watch(timeEntry, nVal => {
@@ -74,12 +76,11 @@ watch(timeEntry, nVal => {
 })
 
 onBeforeMount(async () => {
-  if (issueProject.value) form.value.project = issueProject.value.slug
   if (route.params.projId) {
     await workStore.fetchIssueProject(route.params.projId as string)
     form.value.project = route.params.projId as string
   }
-  if (route.params.timeId) await workStore.fetchTimeEntry(route.params.timeId)
+  if (route.params.timeId) await workStore.fetchTimeEntry(Number(route.params.timeId))
   else workStore.timeEntry = null
 
   await workStore.fetchMemberList()
@@ -138,12 +139,12 @@ onBeforeMount(async () => {
             </CCol>
           </CRow>
 
-          <CRow v-if="$route.name.includes('편집')" class="mb-3">
+          <CRow v-if="timeEntry" class="mb-3">
             <CFormLabel for="user" class="col-sm-2 col-form-label text-right required">
               사용자
             </CFormLabel>
             <CCol sm="4">
-              <CFormSelect v-model="form.user" id="user" required>
+              <CFormSelect v-model.number="form.user" id="user" required>
                 <option value="">---------</option>
                 <option v-for="mem in memberList" :value="mem.user.pk" :key="mem.user.pk">
                   {{ mem.user.username }}
@@ -179,7 +180,7 @@ onBeforeMount(async () => {
               작업종류
             </CFormLabel>
             <CCol sm="4">
-              <CFormSelect v-model="form.activity" id="activity" required>
+              <CFormSelect v-model.number="form.activity" id="activity" required>
                 <option value="">---------</option>
                 <option v-for="act in activityList" :value="act.pk" :key="act.pk">
                   {{ act.name }}
