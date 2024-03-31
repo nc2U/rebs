@@ -135,7 +135,7 @@ onBeforeMount(() => {
 
       <Issues v-if="routeName.includes('(업무)')" @aside-visible="asideVisible" />
 
-      <SpentTime v-if="routeName === '(소요시간)'" @aside-visible="asideVisible" />
+      <SpentTime v-if="routeName.includes('(소요시간)')" @aside-visible="asideVisible" />
 
       <Gantt v-if="routeName === '(차트)'" @aside-visible="asideVisible" />
 
