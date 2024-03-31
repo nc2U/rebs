@@ -437,7 +437,7 @@ class IssueComment(models.Model):
 
 class TimeEntry(models.Model):
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, verbose_name='업무')
-    spent_on = models.DateField('업무일자', auto_now_add=True)
+    spent_on = models.DateField('작업일자', auto_now_add=True)
     hours = models.DecimalField('시간', max_digits=5, decimal_places=2)
     activity = models.ForeignKey(CodeActivity, on_delete=models.PROTECT, verbose_name='작업분류(시간추적)')
     comment = models.CharField('설명', max_length=255, blank=True, default='')

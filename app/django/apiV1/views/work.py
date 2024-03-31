@@ -179,12 +179,24 @@ class IssueCommentViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
+class TimeEntryFilter(FilterSet):
+    from_spent_on = DateFilter(field_name='spent_on', lookup_expr='gte', label='작업일자부터')
+    to_spent_on = DateFilter(field_name='spent_on', lookup_expr='lte', label='작업일자부터')
+
+    class Meta:
+        model = TimeEntry
+        fields = ('issue__project', 'issue', 'user', 'activity', 'hours',
+                  'from_spent_on', 'to_spent_on', 'issue__tracker', 'issue__parent',
+                  'issue__status', 'issue__fixed_version', 'issue__category')
+
+
 class TimeEntryViewSet(viewsets.ModelViewSet):
     queryset = TimeEntry.objects.all()
     serializer_class = TimeEntrySerializer
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = PageNumberPaginationTwenty
-    search_fields = ('id',)
+    filterset_class = TimeEntryFilter
+    search_fields = ('issue__subject', 'comment',)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
