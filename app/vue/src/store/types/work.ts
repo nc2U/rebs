@@ -215,12 +215,9 @@ export interface TimeEntry {
   }
   spent_on: string
   hours: string
-  activity: string
+  activity: { pk: number; name: string }
   comment: string
-  user: {
-    pk: number
-    username: string
-  }
+  user: { pk: number; username: string }
   total_hours: number
 }
 
