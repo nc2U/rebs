@@ -18,7 +18,7 @@ class FamilyTreeSerializer(serializers.ModelSerializer):
         fields = ('pk', 'name', 'slug')
 
 
-class UserInMemberSerializer(serializers.ModelSerializer):
+class SimpleUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('pk', 'username')
@@ -31,7 +31,7 @@ class RoleInMemberSerializer(serializers.ModelSerializer):
 
 
 class MemberInIssueProjectSerializer(serializers.ModelSerializer):
-    user = UserInMemberSerializer(read_only=True)
+    user = SimpleUserSerializer(read_only=True)
     roles = RoleInMemberSerializer(many=True, read_only=True)
 
     class Meta:
@@ -196,7 +196,7 @@ class RoleSerializer(serializers.ModelSerializer):
 
 
 class MemberSerializer(serializers.ModelSerializer):
-    user = UserInMemberSerializer(read_only=True)
+    user = SimpleUserSerializer(read_only=True)
     roles = RoleInMemberSerializer(many=True, read_only=True)
 
     class Meta:
@@ -293,10 +293,10 @@ class IssueSerializer(serializers.ModelSerializer):
     tracker = TrackerInIssueProjectSerializer(read_only=True)
     status = IssueStatusInIssueSerializer(read_only=True)
     priority = CodePriorityInIssueSerializer(read_only=True)
-    assigned_to = UserInMemberSerializer(read_only=True)
+    assigned_to = SimpleUserSerializer(read_only=True)
     parent = serializers.SerializerMethodField()
-    creator = UserInMemberSerializer(read_only=True)
-    updater = UserInMemberSerializer(read_only=True)
+    creator = SimpleUserSerializer(read_only=True)
+    updater = SimpleUserSerializer(read_only=True)
 
     class Meta:
         model = Issue
@@ -394,10 +394,16 @@ class IssueInActivitySerializer(serializers.ModelSerializer):
         fields = ('pk', 'project', 'tracker', 'status', 'subject', 'description')
 
 
+class SimpleCodeActivitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CodeActivity
+        fields = ('pk', 'name')
+
+
 class TimeEntrySerializer(serializers.ModelSerializer):
     issue = IssueInActivitySerializer(read_only=True)
-    activity = serializers.SlugRelatedField(slug_field='name', read_only=True)
-    user = UserInMemberSerializer(read_only=True)
+    activity = SimpleCodeActivitySerializer(read_only=True)
+    user = SimpleUserSerializer(read_only=True)
     total_hours = serializers.SerializerMethodField()
 
     class Meta:
@@ -412,7 +418,7 @@ class TimeEntrySerializer(serializers.ModelSerializer):
 
 
 class LogEntrySerializer(serializers.ModelSerializer):
-    user = UserInMemberSerializer(read_only=True)
+    user = SimpleUserSerializer(read_only=True)
 
     class Meta:
         model = IssueLogEntry
@@ -422,7 +428,7 @@ class LogEntrySerializer(serializers.ModelSerializer):
 class ActivityLogEntrySerializer(serializers.ModelSerializer):
     project = serializers.SlugRelatedField('name', read_only=True)
     issue = IssueInActivitySerializer(read_only=True)
-    user = UserInMemberSerializer(read_only=True)
+    user = SimpleUserSerializer(read_only=True)
 
     class Meta:
         model = ActivityLogEntry
