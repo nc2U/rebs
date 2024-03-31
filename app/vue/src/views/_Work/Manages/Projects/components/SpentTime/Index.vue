@@ -20,6 +20,8 @@ onBeforeMount(() => {
   emit('aside-visible', true)
   workStore.fetchIssueProjectList()
   if (route.params.projId) workStore.fetchTimeEntryList({ project: route.params.projId as string })
+  if (route.params.timeId) workStore.fetchTimeEntry(route.params.timeId)
+  else workStore.timeEntry = null
 })
 </script>
 
@@ -27,7 +29,7 @@ onBeforeMount(() => {
   <TimeEntryList v-if="$route.name === '(소요시간)'" :time-entry-list="timeEntryList" />
 
   <TimeEntryForm
-    v-if="$route.name === '(소요시간) - 추가'"
+    v-if="$route.name.includes('(소요시간) -')"
     :time-entry="timeEntry"
     :issue-projects="issueProjects"
     @on-submit="onSubmit"

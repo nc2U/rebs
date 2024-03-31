@@ -18,6 +18,7 @@ const form = ref({
   pk: null as number | null,
   project: null,
   issue: null,
+  user: null,
   spent_on: '',
   hours: '',
   comment: '',
@@ -47,17 +48,21 @@ const onSubmit = (event: Event) => {
 const closeForm = () => emit('close-form')
 
 const workStore = useWork()
+const issueProject = computed(() => workStore.issueProject)
 const activityList = computed(() => workStore.activityList)
+const memberList = computed(() =>
+  issueProject.value ? issueProject.value.all_members : workStore.memberList,
+)
 const getIssues = computed(() => workStore.getIssues)
 
 const route = useRoute()
 
 onBeforeMount(() => {
-  // if (issueProject.value) form.value.project = issueProject.value.slug
+  if (issueProject.value) form.value.project = issueProject.value.slug
   if (props.timeEntry) {
     form.value.pk = props.timeEntry.pk
-    form.value.project = props.timeEntry.project.slug
-    form.value.issue = props.timeEntry.issue
+    form.value.issue = props.timeEntry.issue.pk
+    form.value.user = props.timeEntry.user.pk
     form.value.spent_on = props.timeEntry.spent_on
     form.value.hours = props.timeEntry.hours
     form.value.comment = props.timeEntry.comment
@@ -67,11 +72,8 @@ onBeforeMount(() => {
     workStore.fetchIssueProject(route.params.projId as string)
     form.value.project = route.params.projId as string
   }
-  // workStore.fetchMemberList()
-  // workStore.fetchTrackerList()
-  // workStore.fetchStatusList()
+  workStore.fetchMemberList()
   workStore.fetchActivityList()
-  // workStore.fetchPriorityList()
   workStore.fetchIssueList()
 })
 </script>
@@ -80,6 +82,8 @@ onBeforeMount(() => {
   <CCol>
     <h5>소요시간</h5>
   </CCol>
+
+  {{ timeEntry }}
 
   <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
     <CRow class="py-2">
@@ -130,7 +134,10 @@ onBeforeMount(() => {
             </CFormLabel>
             <CCol sm="4">
               <CFormSelect v-model="form.user" id="user" required>
-                <option></option>
+                <option value="">---------</option>
+                <option v-for="mem in memberList" :value="mem.user.pk" :key="mem.user.pk">
+                  {{ mem.user.username }}
+                </option>
               </CFormSelect>
             </CCol>
           </CRow>

@@ -111,7 +111,7 @@ defineProps({
                       <router-link to=""> 작업종류 </router-link>
                     </CDropdownItem>
                     <CDropdownItem class="form-text">
-                      <router-link to="">
+                      <router-link :to="{ name: '(소요시간) - 편집', params: { timeId: time.pk } }">
                         <v-icon icon="mdi-pencil" color="amber" size="sm" />
                         편집
                       </router-link>
