@@ -8,7 +8,6 @@ import Multiselect from '@vueform/multiselect'
 import type { IssueProject } from '@/store/types/work'
 
 const props = defineProps({
-  timeEntry: { type: Object, default: null },
   issueProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
 })
 
@@ -48,6 +47,7 @@ const onSubmit = (event: Event) => {
 const closeForm = () => emit('close-form')
 
 const workStore = useWork()
+const timeEntry = computed(() => workStore.timeEntry)
 const issueProject = computed(() => workStore.issueProject)
 const activityList = computed(() => workStore.activityList)
 const memberList = computed(() =>
@@ -58,19 +58,19 @@ const getIssues = computed(() => workStore.getIssues)
 const route = useRoute()
 
 const dataSetup = () => {
-  if (props.timeEntry) {
-    form.value.pk = props.timeEntry.pk
-    form.value.issue = props.timeEntry.issue.pk
-    form.value.user = props.timeEntry.user.pk
-    form.value.spent_on = props.timeEntry.spent_on
-    form.value.hours = props.timeEntry.hours
-    form.value.activity = props.timeEntry.activity.pk
-    form.value.comment = props.timeEntry.comment
+  if (timeEntry.value) {
+    form.value.pk = timeEntry.value.pk
+    form.value.issue = timeEntry.value.issue.pk
+    form.value.user = timeEntry.value.user.pk
+    form.value.spent_on = timeEntry.value.spent_on
+    form.value.hours = timeEntry.value.hours
+    form.value.activity = timeEntry.value.activity.pk
+    form.value.comment = timeEntry.value.comment
   }
 }
 
-watch(props, nVal => {
-  if (nVal.timeEntry) dataSetup()
+watch(timeEntry, nVal => {
+  if (nVal) dataSetup()
 })
 
 onBeforeMount(() => {
@@ -91,8 +91,6 @@ onBeforeMount(() => {
   <CCol>
     <h5>소요시간</h5>
   </CCol>
-
-  {{ timeEntry }}
 
   <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
     <CRow class="py-2">

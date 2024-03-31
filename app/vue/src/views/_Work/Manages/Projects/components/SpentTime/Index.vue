@@ -10,7 +10,6 @@ const emit = defineEmits(['aside-visible'])
 const route = useRoute()
 
 const workStore = useWork()
-const timeEntry = computed(() => workStore.timeEntry)
 const timeEntryList = computed(() => workStore.timeEntryList)
 const issueProjects = computed(() => workStore.AllIssueProjects)
 
@@ -38,7 +37,6 @@ onBeforeMount(async () => {
 
   <TimeEntryForm
     v-if="$route.name === '(소요시간) - 편집'"
-    :time-entry="timeEntry"
     :issue-projects="issueProjects"
     @on-submit="onSubmit"
     @close-form="$router.push({ name: '(소요시간)' })"
