@@ -16,11 +16,12 @@ const issueProjects = computed(() => workStore.AllIssueProjects)
 
 const onSubmit = (payload: any) => payload
 
-onBeforeMount(() => {
+onBeforeMount(async () => {
   emit('aside-visible', true)
-  workStore.fetchIssueProjectList()
-  if (route.params.projId) workStore.fetchTimeEntryList({ project: route.params.projId as string })
-  if (route.params.timeId) workStore.fetchTimeEntry(route.params.timeId)
+  await workStore.fetchIssueProjectList()
+  if (route.params.projId)
+    await workStore.fetchTimeEntryList({ project: route.params.projId as string })
+  if (route.params.timeId) await workStore.fetchTimeEntry(route.params.timeId)
   else workStore.timeEntry = null
 })
 </script>
