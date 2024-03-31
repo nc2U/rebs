@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount, type PropType } from 'vue'
+import { ref, computed, onBeforeMount, type PropType, watch } from 'vue'
 import { isValidate } from '@/utils/helper'
 import { useRoute } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
@@ -57,17 +57,24 @@ const getIssues = computed(() => workStore.getIssues)
 
 const route = useRoute()
 
-onBeforeMount(() => {
-  if (issueProject.value) form.value.project = issueProject.value.slug
+const dataSetup = () => {
   if (props.timeEntry) {
     form.value.pk = props.timeEntry.pk
     form.value.issue = props.timeEntry.issue.pk
     form.value.user = props.timeEntry.user.pk
     form.value.spent_on = props.timeEntry.spent_on
     form.value.hours = props.timeEntry.hours
+    form.value.activity = props.timeEntry.activity.pk
     form.value.comment = props.timeEntry.comment
-    form.value.activity = props.timeEntry.activity
   }
+}
+
+watch(props, nVal => {
+  if (nVal.timeEntry) dataSetup()
+})
+
+onBeforeMount(() => {
+  if (issueProject.value) form.value.project = issueProject.value.slug
   if (route.params.projId) {
     workStore.fetchIssueProject(route.params.projId as string)
     form.value.project = route.params.projId as string
@@ -75,6 +82,8 @@ onBeforeMount(() => {
   workStore.fetchMemberList()
   workStore.fetchActivityList()
   workStore.fetchIssueList()
+
+  dataSetup()
 })
 </script>
 

@@ -5,6 +5,7 @@ import { dateFormat, numberToHour } from '@/utils/baseMixins'
 import NoData from '@/views/_Work/components/NoData.vue'
 import SearchList from '@/views/_Work/components/SearchList.vue'
 import HeaderTab from '@/views/_Work/Manages/SpentTime/components/HeaderTab.vue'
+import router from '@/router'
 
 defineProps({
   timeEntryList: { type: Array as PropType<TimeEntry[]>, default: () => [] },
@@ -110,8 +111,13 @@ defineProps({
                     <CDropdownItem class="form-text">
                       <router-link to=""> 작업종류 </router-link>
                     </CDropdownItem>
-                    <CDropdownItem class="form-text">
-                      <router-link :to="{ name: '(소요시간) - 편집', params: { timeId: time.pk } }">
+                    <CDropdownItem
+                      class="form-text"
+                      @click="
+                        router.push({ name: '(소요시간) - 편집', params: { timeId: time.pk } })
+                      "
+                    >
+                      <router-link to="">
                         <v-icon icon="mdi-pencil" color="amber" size="sm" />
                         편집
                       </router-link>

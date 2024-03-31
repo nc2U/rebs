@@ -30,7 +30,14 @@ onBeforeMount(async () => {
   <TimeEntryList v-if="$route.name === '(소요시간)'" :time-entry-list="timeEntryList" />
 
   <TimeEntryForm
-    v-if="$route.name.includes('(소요시간) -')"
+    v-if="$route.name === '(소요시간) - 추가'"
+    :issue-projects="issueProjects"
+    @on-submit="onSubmit"
+    @close-form="$router.push({ name: '(소요시간)' })"
+  />
+
+  <TimeEntryForm
+    v-if="$route.name === '(소요시간) - 편집'"
     :time-entry="timeEntry"
     :issue-projects="issueProjects"
     @on-submit="onSubmit"
