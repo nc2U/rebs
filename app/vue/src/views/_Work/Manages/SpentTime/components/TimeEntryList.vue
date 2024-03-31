@@ -13,7 +13,7 @@ defineProps({
     <CCol col="12">
       <CRow class="mb-1 text-right pr-2">
         <CCol class="">
-          <span>시간 : </span>
+          <span>소요시간 합계 : </span>
           <span class="bold">{{ numberToHour(timeEntryList[0].total_hours ?? 0) }}</span>
         </CCol>
       </CRow>
