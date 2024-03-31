@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { dateFormat } from '@/utils/baseMixins'
+import { useRoute } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import type { ActLogEntry } from '@/store/types/work'
 import ActivityLogList from '@/views/_Work/Manages/Activity/components/ActivityLogList.vue'
@@ -22,9 +23,11 @@ const groupedActivities = computed<{ [key: string]: ActLogEntry[] }>(
   () => workStore.groupedActivities,
 )
 
+const route = useRoute()
 onBeforeMount(() => {
   emit('aside-visible', true)
   workStore.fetchActivityLogList({
+    project: route.params.projId,
     from_act_date: dateFormat(fromDate.value),
     to_act_date: dateFormat(toDate.value),
   })

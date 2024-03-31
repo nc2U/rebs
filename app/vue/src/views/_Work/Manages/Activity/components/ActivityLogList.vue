@@ -3,6 +3,7 @@ import type { PropType } from 'vue'
 import { dateFormat, timeFormat, cutString } from '@/utils/baseMixins'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 import type { ActLogEntry } from '@/store/types/work'
+import NoData from '@/views/_Work/components/NoData.vue'
 
 defineProps({
   groupedActivities: {
