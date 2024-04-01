@@ -191,7 +191,7 @@ export const useWork = defineStore('work', () => {
       .put(`/issue/${payload.pk}/`, payload)
       .then(() =>
         fetchIssue(payload.pk).then(() =>
-          fetchActivityLogList({ issue: payload.pk }).then(() => message()),
+          fetchIssueLogList({ issue: payload.pk }).then(() => message()),
         ),
       )
       .catch(err => errorHandle(err.response.data))
@@ -201,7 +201,7 @@ export const useWork = defineStore('work', () => {
       .patch(`/issue/${payload.pk}/`, payload)
       .then(() =>
         fetchIssue(payload.pk).then(() =>
-          fetchActivityLogList({ issue: payload.pk }).then(() => message()),
+          fetchIssueLogList({ issue: payload.pk }).then(() => message()),
         ),
       )
       .catch(err => errorHandle(err.response.data))
