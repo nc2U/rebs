@@ -43,21 +43,21 @@ const toNext = () => emit('to-next')
       <CRow v-for="(val, key) in groupedActivities" :key="key">
         <CCol>
           <CAlert color="secondary" class="px-3 py-2">
-            <span class="date-title">{{
-              String(key) === dateFormat(new Date()) ? '오늘' : dateFormat(key as string, '/')
-            }}</span>
+            <span class="date-title">
+              {{ String(key) === dateFormat(new Date()) ? '오늘' : dateFormat(key as string, '/') }}
+            </span>
           </CAlert>
 
           <CRow v-for="(act, i) in val" :key="act.pk" class="pl-3">
             <CCol :class="{ 'ml-5': i }">
               <v-icon icon="mdi-folder-plus" size="sm" color="warning" class="mr-1" />
               <span class="form-text mr-2">{{ timeFormat(act.timestamp, true) }}</span>
-              <span v-if="!$route.params.projId">{{ act.project.name }} - </span>
+              <span v-if="!$route.params.projId">{{ act.project?.name }} - </span>
               <span v-if="act.issue">
                 <router-link
                   :to="{
                     name: '(업무) - 보기',
-                    params: { projId: act.project.slug, issueId: act.issue.pk },
+                    params: { projId: act.project?.slug, issueId: act.issue.pk },
                   }"
                 >
                   {{ act.issue.tracker }} #{{ act.issue.pk }} ({{
@@ -69,12 +69,12 @@ const toNext = () => emit('to-next')
 
               <div class="ml-4 pl-5 fst-italic">
                 <VueMarkdownIt
-                  v-if="!act.status_log"
+                  v-if="act.sort === '1' && act.action === 'Created'"
                   :source="cutString(act.issue?.description, 113)"
                   class="form-text"
                 />
               </div>
-              <div class="form-text ml-5 pl-2">
+              <div v-if="act.user" class="form-text ml-5 pl-2">
                 <router-link to="">{{ act.user.username }}</router-link>
               </div>
               <v-divider class="my-2" />

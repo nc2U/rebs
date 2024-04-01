@@ -237,24 +237,11 @@ export interface TimeEntryFilter {
   search?: string
 }
 
-export interface LogEntry {
-  pk: number
-  action: 'Created' | 'Edited'
-  details: string
-  diff: string
-  timestamp: string
-  issue: number
-  user: {
-    pk: number
-    username: string
-  }
-}
-
 export interface ActLogEntry {
   pk: number
   sort: '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8'
   action: 'Created' | 'Updated' | 'Progressed'
-  project: { slug: string; name: string }
+  project: { slug: string; name: string } | null
   issue: {
     pk: number
     tracker: string
@@ -269,7 +256,7 @@ export interface ActLogEntry {
   // file: string
   // wiki: string
   // message: string
-  spent_time: string
+  spent_time: number
   details: string
   diff: string
   act_date: string
