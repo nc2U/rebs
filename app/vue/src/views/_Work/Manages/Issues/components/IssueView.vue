@@ -11,7 +11,7 @@ defineProps({
   iProject: { type: Object as PropType<IssueProject>, default: null },
   issue: { type: Object as PropType<Issue>, required: true },
   issueProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
-  logEntryList: { type: Array as PropType<LogEntry[]>, default: () => [] },
+  activityLogList: { type: Array as PropType<LogEntry[]>, default: () => [] },
 })
 
 const emit = defineEmits(['on-submit'])
@@ -189,7 +189,7 @@ const callEditForm = () => {
     </CCardBody>
   </CCard>
 
-  <IssueHistory v-if="logEntryList.length" :log-entry-list="logEntryList" />
+  <IssueHistory v-if="activityLogList.length" :activity-log-list="activityLogList" />
 
   <div>
     <IssueControl @call-edit-form="callEditForm" />
