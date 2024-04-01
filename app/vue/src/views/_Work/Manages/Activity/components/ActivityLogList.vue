@@ -85,6 +85,7 @@ const toNext = () => emit('to-next')
                   :to="{
                     name: '(소요시간)',
                     params: { projId: act.project?.slug, issueId: act.issue?.pk },
+                    query: { issue: act.issue?.pk },
                   }"
                 >
                   {{ act.spent_time.hours }} 시간 ({{ act.issue?.tracker }} #{{ act.issue?.pk }} ({{
