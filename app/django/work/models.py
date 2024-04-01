@@ -450,19 +450,6 @@ class TimeEntry(models.Model):
         ordering = ('spent_on', 'id')
 
 
-class IssueLogEntry(models.Model):
-    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, verbose_name='업무')
-    ACTION_CHOICES = (('Created', '추가'), ('Edited', '편집'))
-    action = models.CharField('이벤트', max_length=10, choices=ACTION_CHOICES)
-    details = models.TextField('설명', blank=True, default='')
-    diff = models.TextField('차이점', blank=True, default='')
-    user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사용자')
-    timestamp = models.DateTimeField('로그 시간', auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.action} - {self.timestamp}"
-
-
 class ActivityLogEntry(models.Model):
     SORT_CHOICES = (('1', '업무'), ('2', '변경묶음'), ('3', '공지'), ('4', '문서'),
                     ('5', '파일'), ('6', '위키편집'), ('7', '글'), ('8', '소요시간'))
@@ -486,6 +473,19 @@ class ActivityLogEntry(models.Model):
 
     class Meta:
         ordering = ('-timestamp',)
+
+
+class IssueLogEntry(models.Model):
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, verbose_name='업무')
+    ACTION_CHOICES = (('Created', '추가'), ('Edited', '편집'))
+    action = models.CharField('이벤트', max_length=10, choices=ACTION_CHOICES)
+    details = models.TextField('설명', blank=True, default='')
+    diff = models.TextField('차이점', blank=True, default='')
+    user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사용자')
+    timestamp = models.DateTimeField('로그 시간', auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.action} - {self.timestamp}"
 
 
 class Search(models.Model):
