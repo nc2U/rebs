@@ -6,6 +6,8 @@ import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 
 defineProps({
   logEntryList: { type: Array as PropType<LogEntry[]>, default: () => [] },
+  issueComments: { type: Array, default: () => [] },
+  timeEntries: { type: Array, default: () => [] },
 })
 
 const tabPaneActiveKey = ref(1)
@@ -28,7 +30,7 @@ const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
         이력
       </CNavLink>
     </CNavItem>
-    <CNavItem v-if="true">
+    <CNavItem v-if="issueComments.length">
       <CNavLink
         href="javascript:void(0);"
         :active="tabPaneActiveKey === 2"
@@ -52,6 +54,19 @@ const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
         "
       >
         항목 변경이력
+      </CNavLink>
+    </CNavItem>
+    <CNavItem v-if="timeEntries.length">
+      <CNavLink
+        href="javascript:void(0);"
+        :active="tabPaneActiveKey === 4"
+        @click="
+          () => {
+            tabPaneActiveKey = 4
+          }
+        "
+      >
+        작업시간
       </CNavLink>
     </CNavItem>
   </CNav>
@@ -155,6 +170,20 @@ const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
               </ul>
             </div>
           </div>
+        </CTabPane>
+
+        <CTabPane role="tabpanel" aria-labelledby="profile-tab" :visible="tabPaneActiveKey === 4">
+          <span class="history">
+            Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid.
+            Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson
+            artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo
+            enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud
+            organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia
+            yr, vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes
+            anderson 8-bit, sustainable jean shorts beard ut DIY ethical culpa terry richardson
+            biodiesel. Art party scenester stumptown, tumblr butcher vero sint qui sapiente
+            accusamus tattooed echo park.
+          </span>
         </CTabPane>
       </CTabContent>
     </CCardBody>
