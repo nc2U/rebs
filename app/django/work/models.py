@@ -454,6 +454,8 @@ class ActivityLogEntry(models.Model):
     SORT_CHOICES = (('1', '업무'), ('2', '변경묶음'), ('3', '공지'), ('4', '문서'),
                     ('5', '파일'), ('6', '위키편집'), ('7', '글'), ('8', '소요시간'))
     sort = models.CharField('구분', max_length=1, choices=SORT_CHOICES, default='1')
+    ACTION_CHOICES = (('Created', '추가'), ('Updated', '편집'), ('Progressed', '진행'))
+    action = models.CharField('이벤트', max_length=10, choices=ACTION_CHOICES)
     project = models.ForeignKey(IssueProject, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='프로젝트')
     issue = models.ForeignKey(Issue, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='업무')
     status_log = models.CharField('상태 기록', max_length=30, blank=True, default='')
@@ -464,6 +466,8 @@ class ActivityLogEntry(models.Model):
     # wiki = models.TextField('위키 편집', blank=True, default='')
     # message = models.TextField('글', blank=True, default='')
     spent_time = models.ForeignKey(TimeEntry, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='소요시간')
+    details = models.TextField('설명', blank=True, default='')
+    diff = models.TextField('차이점', blank=True, default='')
     act_date = models.DateField('로그 일자', auto_now_add=True)
     timestamp = models.DateTimeField('로그 시간', auto_now_add=True)
     user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사용자')
@@ -475,17 +479,19 @@ class ActivityLogEntry(models.Model):
         ordering = ('-timestamp',)
 
 
-class IssueLogEntry(models.Model):
-    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, verbose_name='업무')
-    ACTION_CHOICES = (('Created', '추가'), ('Edited', '편집'))
-    action = models.CharField('이벤트', max_length=10, choices=ACTION_CHOICES)
-    details = models.TextField('설명', blank=True, default='')
-    diff = models.TextField('차이점', blank=True, default='')
-    user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사용자')
-    timestamp = models.DateTimeField('로그 시간', auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.action} - {self.timestamp}"
+# class IssueLogEntry(models.Model):
+#     # issue = models.ForeignKey(Issue, on_delete=models.CASCADE, verbose_name='업무')
+#
+#     # ACTION_CHOICES = (('Created', '추가'), ('Edited', '편집'))
+#     # action = models.CharField('이벤트', max_length=10, choices=ACTION_CHOICES)
+#
+#     # details = models.TextField('설명', blank=True, default='')
+#     # diff = models.TextField('차이점', blank=True, default='')
+#     # user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사용자')
+#     # timestamp = models.DateTimeField('로그 시간', auto_now_add=True)
+#
+#     def __str__(self):
+#         return f"{self.action} - {self.timestamp}"
 
 
 class Search(models.Model):

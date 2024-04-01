@@ -1,6 +1,6 @@
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
-from .models import Issue, TimeEntry, IssueLogEntry, ActivityLogEntry
+from .models import Issue, TimeEntry, ActivityLogEntry
 
 
 @receiver(pre_save, sender=Issue)
@@ -46,14 +46,18 @@ def issue_track_changes(sender, instance, **kwargs):
 
 @receiver(post_save, sender=Issue)
 def issue_log_changes(sender, instance, created, **kwargs):
-    action = 'Created' if created else 'Edited'
-    details = f"**업무** - *{instance}(#{instance.id})*업무가 *{action}* 되었습니다." if created else ""
+    action = "Created" if created else "Updated"
+    status_log = ""
+    details = instance.description if created else f"**업무** - *{instance}(#{instance.id})*업무가 *{action}* 되었습니다."
     diff = ""
     if hasattr(instance, '_old_project'):
+        action = "Created"
         details += f"|- **프로젝트**가 *{instance._old_project}*에서 *{instance.project}*(으)로 변경되었습니다."
     if hasattr(instance, '_old_tracker'):
         details += f"|- **유형**이 *{instance._old_tracker}*에서 *{instance.tracker}*(으)로 변경되었습니다."
     if hasattr(instance, '_old_status'):
+        action = 'Progressed'
+        status_log = instance.status.name
         details += f"|- **상태**가 *{instance._old_status}*에서 *{instance.status}*(으)로 변경되었습니다."
     if hasattr(instance, '_old_priority'):
         details += f"|- **우선순위**가 _{instance._old_priority}_ 에서 _{instance.priority}*(으)로 변경되었습니다."
@@ -101,22 +105,14 @@ def issue_log_changes(sender, instance, created, **kwargs):
     if hasattr(instance, '_old_closed'):
         details += f"|- **해당 업무**가 *{instance.closed}*에 종료되었습니다."
 
-    if action == 'Edited':
-        IssueLogEntry.objects.create(issue=instance, action=action, details=details, diff=diff, user=instance.updater)
-        if hasattr(instance, '_old_project'):  # 프로젝트 변경 시 업무 신규 등록 로그 기록
-            ActivityLogEntry.objects.create(sort='1', project=instance.project,
-                                            issue=instance, user=instance.updater)
-        if hasattr(instance, '_old_status'):  # 업무 상태 변경 시 진행 사항 로그 기록
-            ActivityLogEntry.objects.create(sort='1', project=instance.project,
-                                            issue=instance,
-                                            status_log=instance.status.name,
-                                            user=instance.updater)
-    elif action == 'Created':  # 업무 신규 등록 시 업무 신규 등록 로그 기록
-        ActivityLogEntry.objects.create(sort='1', project=instance.project, issue=instance, user=instance.creator)
+    ActivityLogEntry.objects.create(sort='1', project=instance.project,
+                                    issue=instance, action=action, status_log=status_log,
+                                    details=details, diff=diff, user=instance.updater)
 
 
 @receiver(post_save, sender=TimeEntry)
 def time_log_changes(sender, instance, created, **kwargs):
     if created:
+        details = f"|- **작업 소요시간*({instance.hours})***이 등록되었습니다."
         ActivityLogEntry.objects.create(sort='8', project=instance.issue.project, issue=instance.issue,
-                                        spent_time=instance, user=instance.user)
+                                        action='Updated', details=details, spent_time=instance, user=instance.user)

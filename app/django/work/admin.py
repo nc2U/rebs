@@ -3,7 +3,7 @@ from import_export.admin import ImportExportMixin
 from .models import (IssueProject, Role, Permission, Member, Tracker, Module,
                      Version, IssueCategory, Repository, IssueStatus, Workflow,
                      CodeActivity, CodeIssuePriority, CodeDocsCategory,
-                     Issue, IssueFile, IssueComment, TimeEntry, IssueLogEntry)
+                     Issue, IssueFile, IssueComment, TimeEntry, ActivityLogEntry)
 
 
 class ModuleInline(admin.TabularInline):
@@ -103,6 +103,6 @@ class IssueAdmin(admin.ModelAdmin):
     inlines = (IssueFileInline, IssueCommentInline, TimeEntryInline)
 
 
-@admin.register(IssueLogEntry)
-class IssueLogEntryAdmin(admin.ModelAdmin):
-    list_display = ('issue', 'action', 'details', 'user', 'timestamp')
+@admin.register(ActivityLogEntry)
+class ActivityLogEntryAdmin(admin.ModelAdmin):
+    list_display = ('sort', 'action', 'project', 'issue', 'spent_time', 'details', 'diff', 'act_date', 'timestamp',)

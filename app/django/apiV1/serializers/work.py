@@ -6,7 +6,7 @@ from accounts.models import User
 from work.models import (IssueProject, Role, Permission, Member, Module, Version,
                          IssueCategory, Repository, Tracker, IssueStatus, Workflow,
                          CodeActivity, CodeIssuePriority, CodeDocsCategory, Issue,
-                         IssueFile, IssueComment, TimeEntry, Search, IssueLogEntry, ActivityLogEntry)
+                         IssueFile, IssueComment, TimeEntry, Search, ActivityLogEntry)
 
 
 # Work --------------------------------------------------------------------------
@@ -417,14 +417,6 @@ class TimeEntrySerializer(serializers.ModelSerializer):
         return total_hours['total_hours'] or 0
 
 
-class LogEntrySerializer(serializers.ModelSerializer):
-    user = SimpleUserSerializer(read_only=True)
-
-    class Meta:
-        model = IssueLogEntry
-        fields = ('pk', 'action', 'details', 'diff', 'timestamp', 'issue', 'user')
-
-
 class ActivityLogEntrySerializer(serializers.ModelSerializer):
     project = IProjectIssueSerializer(read_only=True)
     issue = IssueInActivitySerializer(read_only=True)
@@ -432,8 +424,8 @@ class ActivityLogEntrySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ActivityLogEntry
-        fields = ('pk', 'project', 'issue', 'status_log',
-                  'spent_time', 'act_date', 'timestamp', 'user')
+        fields = ('pk', 'sort', 'action', 'project', 'issue', 'status_log',
+                  'spent_time', 'details', 'diff', 'act_date', 'timestamp', 'user')
         # 'change_sets', 'news', 'document', 'file', 'wiki', 'message',
 
 

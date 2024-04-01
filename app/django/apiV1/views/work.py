@@ -9,7 +9,7 @@ from ..serializers.work import *
 from work.models import (IssueProject, Role, Permission, Member, Module, Version,
                          IssueCategory, Repository, Tracker, IssueStatus, Workflow,
                          CodeActivity, CodeIssuePriority, CodeDocsCategory, Issue,
-                         IssueFile, IssueComment, TimeEntry, Search, IssueLogEntry, ActivityLogEntry)
+                         IssueFile, IssueComment, TimeEntry, Search, ActivityLogEntry)
 
 
 # Work --------------------------------------------------------------------------
@@ -199,14 +199,6 @@ class TimeEntryViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-
-
-class LogEntryViewSet(viewsets.ModelViewSet):
-    queryset = IssueLogEntry.objects.all()
-    serializer_class = LogEntrySerializer
-    permission_classes = (permissions.IsAuthenticated,)
-    filterset_fields = ('issue', 'user',)
-    search_fields = ('action', 'details')
 
 
 class ActivityLogFilter(FilterSet):
