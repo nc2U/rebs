@@ -476,7 +476,7 @@ class ActivityLogEntry(models.Model):
     # file = models.TextField('파일', blank=True, default='')
     # wiki = models.TextField('위키 편집', blank=True, default='')
     # message = models.TextField('글', blank=True, default='')
-    # spent_time = models.ForeignKey(TimeEntry, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='소요시간')
+    spent_time = models.ForeignKey(TimeEntry, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='소요시간')
     act_date = models.DateField('로그 일자', auto_now_add=True)
     timestamp = models.DateTimeField('로그 시간', auto_now_add=True)
     user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사용자')

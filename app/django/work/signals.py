@@ -114,8 +114,9 @@ def issue_log_changes(sender, instance, created, **kwargs):
     elif action == 'Created':  # 업무 신규 등록 시 업무 신규 등록 로그 기록
         ActivityLogEntry.objects.create(sort='1', project=instance.project, issue=instance, user=instance.creator)
 
-# @receiver(post_save, sender=TimeEntry)
-# def time_log_changes(sender, instance, created, **kwargs):
-#     if created:
-#         ActivityLogEntry.objects.create(sort='8', project=instance.issue.project, issue=instance.issue,
-#                                         spent_time=instance, user=instance.user)
+
+@receiver(post_save, sender=TimeEntry)
+def time_log_changes(sender, instance, created, **kwargs):
+    if created:
+        ActivityLogEntry.objects.create(sort='8', project=instance.issue.project, issue=instance.issue,
+                                        spent_time=instance, user=instance.user)
