@@ -202,20 +202,20 @@ class TimeEntryViewSet(viewsets.ModelViewSet):
 
 
 class ActivityLogFilter(FilterSet):
-    issue__isnull = BooleanFilter(field_name='issue', lookup_expr='isnull', label='업무')
-    change_sets_isnull = BooleanFilter(field_name='change_sets', lookup_expr='isnull', label='변경묶음')
-    news__isnull = BooleanFilter(field_name='news', lookup_expr='isnull', label='공지')
-    document__isnull = BooleanFilter(field_name='news', lookup_expr='isnull', label='문서')
-    file__isnull = BooleanFilter(field_name='news', lookup_expr='isnull', label='파일')
-    wiki__isnull = BooleanFilter(field_name='news', lookup_expr='isnull', label='위키 편집')
-    message__isnull = BooleanFilter(field_name='news', lookup_expr='isnull', label='글')
-    spent_time__isnull = BooleanFilter(field_name='news', lookup_expr='isnull', label='작업시간')
+    issue__isnull = BooleanFilter(field_name='issue', lookup_expr='isnull', label='업무-없음')
+    change_sets_isnull = BooleanFilter(field_name='change_sets', lookup_expr='isnull', label='변경묶음-없음')
+    news__isnull = BooleanFilter(field_name='news', lookup_expr='isnull', label='공지-없음')
+    document__isnull = BooleanFilter(field_name='news', lookup_expr='isnull', label='문서-없음')
+    file__isnull = BooleanFilter(field_name='news', lookup_expr='isnull', label='파일-없음')
+    wiki__isnull = BooleanFilter(field_name='news', lookup_expr='isnull', label='위키 편집-없음')
+    message__isnull = BooleanFilter(field_name='news', lookup_expr='isnull', label='글-없음')
+    spent_time__isnull = BooleanFilter(field_name='news', lookup_expr='isnull', label='작업시간-없음')
     from_act_date = DateFilter(field_name='act_date', lookup_expr='gte', label='로그일자부터')
     to_act_date = DateFilter(field_name='act_date', lookup_expr='lte', label='로그일자까지')
 
     class Meta:
         model = ActivityLogEntry
-        fields = ('project__slug', 'issue__isnull', 'change_sets_isnull', 'news__isnull',
+        fields = ('project__slug', 'issue', 'issue__isnull', 'change_sets_isnull', 'news__isnull',
                   'document__isnull', 'file__isnull', 'wiki__isnull', 'message__isnull',
                   'spent_time__isnull', 'act_date', 'from_act_date', 'to_act_date', 'user')
 

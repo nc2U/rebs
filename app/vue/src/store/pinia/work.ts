@@ -190,7 +190,7 @@ export const useWork = defineStore('work', () => {
       .put(`/issue/${payload.pk}/`, payload)
       .then(() =>
         fetchIssue(payload.pk).then(() =>
-          fetchLogEntryList({ issue: payload.pk }).then(() => message()),
+          fetchActivityLogList({ issue: payload.pk }).then(() => message()),
         ),
       )
       .catch(err => errorHandle(err.response.data))
@@ -200,7 +200,7 @@ export const useWork = defineStore('work', () => {
       .patch(`/issue/${payload.pk}/`, payload)
       .then(() =>
         fetchIssue(payload.pk).then(() =>
-          fetchLogEntryList({ issue: payload.pk }).then(() => message()),
+          fetchActivityLogList({ issue: payload.pk }).then(() => message()),
         ),
       )
       .catch(err => errorHandle(err.response.data))
@@ -262,18 +262,6 @@ export const useWork = defineStore('work', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
-  // issue-log states & getters
-  const logEntryList = ref<LogEntry[]>([])
-
-  const fetchLogEntryList = async (payload: { issue: string; user?: number }) => {
-    let url = `/log-entry/?issue=${payload.issue}`
-    if (payload.user) url += `&user=${payload.user}`
-    return await api
-      .get(url)
-      .then(res => (logEntryList.value = res.data.results))
-      .catch(err => errorHandle(err.response.data))
-  }
-
   // activity-log states & getters
   const activityLogList = ref<any[]>([])
   const groupedActivities = computed(() => {
@@ -288,6 +276,7 @@ export const useWork = defineStore('work', () => {
   const fetchActivityLogList = async (payload: any) => {
     let url = `/act-entry/?1=1`
     if (payload.project) url += `&project__slug=${payload.project}`
+    if (payload.issue) url += `&issue=${payload.issue}`
     if (payload.issue__isnull) url += `&issue__isnull=${payload.issue__isnull}`
     if (payload.change_sets_isnull) url += `&change_sets_isnull=${payload.change_sets_isnull}`
     if (payload.news__isnull) url += `&news__isnull=${payload.news__isnull}`
@@ -356,9 +345,6 @@ export const useWork = defineStore('work', () => {
     fetchTimeEntryList,
     updateTimeEntry,
     deleteTimeEntry,
-
-    logEntryList,
-    fetchLogEntryList,
 
     activityLogList,
     groupedActivities,
