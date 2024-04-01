@@ -24,7 +24,7 @@ const emit = defineEmits(['to-back', 'to-next'])
 
 const getIcon = (sort: string, progress: boolean) => {
   if (sort === '1') {
-    return progress ? 'mdi-arrow-right-bold' : 'mdi-folder-plus'
+    return progress ? 'mdi-forward' : 'mdi-folder-plus'
   } else if (sort === '8') return 'mdi-folder-clock-outline'
   else return 'mdi-folder-plus'
 }
@@ -61,7 +61,9 @@ const toNext = () => emit('to-next')
               <v-icon
                 :icon="getIcon(act.sort, !!act.status_log)"
                 size="15"
-                :color="act.issue?.status.closed ? 'success' : 'brown-lighten-3'"
+                :color="
+                  act.sort === '1' && act.issue?.status.closed ? 'success' : 'brown-lighten-3'
+                "
                 class="mr-1"
               />
               <span class="form-text mr-2">{{ timeFormat(act.timestamp, true) }}</span>
