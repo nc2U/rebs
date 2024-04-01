@@ -2,8 +2,8 @@ from django.contrib import admin
 from import_export.admin import ImportExportMixin
 from .models import (IssueProject, Role, Permission, Member, Tracker, Module,
                      Version, IssueCategory, Repository, IssueStatus, Workflow,
-                     CodeActivity, CodeIssuePriority, CodeDocsCategory,
-                     Issue, IssueFile, IssueComment, TimeEntry, ActivityLogEntry)
+                     CodeActivity, CodeIssuePriority, CodeDocsCategory, Issue,
+                     IssueFile, IssueComment, TimeEntry, ActivityLogEntry, IssueLogEntry)
 
 
 class ModuleInline(admin.TabularInline):
@@ -105,4 +105,9 @@ class IssueAdmin(admin.ModelAdmin):
 
 @admin.register(ActivityLogEntry)
 class ActivityLogEntryAdmin(admin.ModelAdmin):
-    list_display = ('sort', 'action', 'project', 'issue', 'spent_time', 'details', 'diff', 'act_date', 'timestamp',)
+    list_display = ('sort', 'project', 'issue', 'spent_time', 'act_date')
+
+
+@admin.register(IssueLogEntry)
+class IssueLogEntryAdmin(admin.ModelAdmin):
+    list_display = ('issue', 'action', 'details', 'diff', 'timestamp',)
