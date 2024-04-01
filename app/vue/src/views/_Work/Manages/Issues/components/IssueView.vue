@@ -190,7 +190,7 @@ const callEditForm = () => {
   </CCard>
 
   <IssueHistory v-if="issueLogList.length" :issue-log-list="issueLogList" />
-
+  
   <div>
     <IssueControl @call-edit-form="callEditForm" />
   </div>

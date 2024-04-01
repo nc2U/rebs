@@ -72,14 +72,14 @@ const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
   </CNav>
 
   <CCard
-    v-if="activityLogList.length"
+    v-if="issueLogList.length"
     class="border-top-0 p-2"
     :style="{ '--cui-card-border-radius': 0 }"
   >
     <CCardBody>
       <CTabContent>
         <CTabPane role="tabpanel" aria-labelledby="home-tab" :visible="tabPaneActiveKey === 1">
-          <div v-for="log in activityLogList" :key="log.pk">
+          <div v-for="log in issueLogList" :key="log.pk">
             <CRow>
               <CCol v-if="log.user">
                 <router-link :to="{ name: '사용자 - 보기', params: { userId: log.user.pk } }">
@@ -133,7 +133,7 @@ const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
         </CTabPane>
 
         <CTabPane role="tabpanel" aria-labelledby="contact-tab" :visible="tabPaneActiveKey === 3">
-          <div v-for="log in activityLogList" :key="log.pk">
+          <div v-for="log in issueLogList" :key="log.pk">
             <CRow>
               <CCol v-if="log.user">
                 <router-link :to="{ name: '사용자 - 보기', params: { userId: log.user.pk } }">

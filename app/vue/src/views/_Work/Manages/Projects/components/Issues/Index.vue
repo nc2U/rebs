@@ -28,7 +28,7 @@ const onSubmit = (payload: any) => {
 onBeforeRouteUpdate(async to => {
   if (to.params.issueId) {
     await workStore.fetchIssue(Number(to.params.issueId))
-    await workStore.fetchIssueLogList({ issue: to.params.issueId as string })
+    await workStore.fetchIssueLogList({ issue: Number(to.params.issueId) })
   } else {
     workStore.issue = null
     await workStore.fetchIssueList()
@@ -44,14 +44,14 @@ onBeforeMount(async () => {
   if (route.params.issueId) {
     await workStore.fetchIssueProjectList()
     await workStore.fetchIssue(Number(route.params.issueId))
-    await workStore.fetchIssueLogList({ issue: route.params.issueId as string })
+    await workStore.fetchIssueLogList({ issue: Number(route.params.issueId) })
   }
 })
 </script>
 
 <template>
   <IssueList v-if="route.name === '(업무)'" :issue-list="issueList" />
-
+  
   <IssueView
     v-if="route.name === '(업무) - 보기' && issue"
     :i-project="iProject ?? undefined"

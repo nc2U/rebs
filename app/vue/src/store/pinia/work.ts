@@ -307,7 +307,7 @@ export const useWork = defineStore('work', () => {
     if (payload.user) url += `&user=${payload.user}`
     return await api
       .get(url)
-      .then(res => (activityLogList.value = res.data.results))
+      .then(res => (issueLogList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
 
