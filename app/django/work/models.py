@@ -478,7 +478,7 @@ class ActivityLogEntry(models.Model):
 class IssueLogEntry(models.Model):
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, verbose_name='업무')
     ACTION_CHOICES = (('Created', '추가'), ('Updated', '편집'))
-    action = models.CharField('이벤트', max_length=10, choices=ACTION_CHOICES)
+    action = models.CharField('이벤트', max_length=7, choices=ACTION_CHOICES, default='Created')
     details = models.TextField('설명', blank=True, default='')
     diff = models.TextField('차이점', blank=True, default='')
     timestamp = models.DateTimeField('로그 시간', auto_now_add=True)

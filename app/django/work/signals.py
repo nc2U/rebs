@@ -48,7 +48,7 @@ def issue_track_changes(sender, instance, **kwargs):
 def issue_log_changes(sender, instance, created, **kwargs):
     action = "Created" if created else "Updated"
     status_log = ""
-    details = instance.description if created else f"**업무** - *{instance}(#{instance.id})*업무가 *{action}* 되었습니다."
+    details = f"**업무** - *{instance}(#{instance.id})*업무가 *{action}* 되었습니다."
     diff = ""
     if hasattr(instance, '_old_project'):
         action = "Created"
