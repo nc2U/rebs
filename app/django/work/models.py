@@ -464,6 +464,9 @@ class IssueLogEntry(models.Model):
 
 
 class ActivityLogEntry(models.Model):
+    SORT_CHOICES = (('1', '업무'), ('2', '변경묶음'), ('3', '공지'), ('4', '문서'),
+                    ('5', '파일'), ('6', '위키편집'), ('7', '글'), ('8', '소요시간'))
+    sort = models.CharField('구분', max_length=1, choices=SORT_CHOICES, default='1')
     project = models.ForeignKey(IssueProject, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='프로젝트')
     issue = models.ForeignKey(Issue, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='업무')
     status_log = models.CharField('상태 기록', max_length=30, blank=True, default='')

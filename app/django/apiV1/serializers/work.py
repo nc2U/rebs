@@ -426,7 +426,7 @@ class LogEntrySerializer(serializers.ModelSerializer):
 
 
 class ActivityLogEntrySerializer(serializers.ModelSerializer):
-    project = serializers.SlugRelatedField('name', read_only=True)
+    project = IProjectIssueSerializer(read_only=True)
     issue = IssueInActivitySerializer(read_only=True)
     user = SimpleUserSerializer(read_only=True)
 
