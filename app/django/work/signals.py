@@ -105,9 +105,10 @@ def issue_log_changes(sender, instance, created, **kwargs):
     if hasattr(instance, '_old_closed'):
         details += f"|- **해당 업무**가 *{instance.closed}*에 종료되었습니다."
 
+    user = instance.creator if created else instance.updater
     ActivityLogEntry.objects.create(sort='1', project=instance.project,
                                     issue=instance, action=action, status_log=status_log,
-                                    details=details, diff=diff, user=instance.updater)
+                                    details=details, diff=diff, user=user)
 
 
 @receiver(post_save, sender=TimeEntry)
