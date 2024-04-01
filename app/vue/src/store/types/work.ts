@@ -252,6 +252,8 @@ export interface LogEntry {
 
 export interface ActLogEntry {
   pk: number
+  sort: '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8'
+  action: 'Created' | 'Updated' | 'Progressed'
   project: { slug: string; name: string }
   issue: {
     pk: number
@@ -261,13 +263,15 @@ export interface ActLogEntry {
     description: string
   } | null
   status_log: string
-  change_sets: string
-  news: string
-  document: string
-  file: string
-  wiki: string
-  message: string
+  // change_sets: string
+  // news: string
+  // document: string
+  // file: string
+  // wiki: string
+  // message: string
   spent_time: string
+  details: string
+  diff: string
   act_date: string
   timestamp: string
   user: {
