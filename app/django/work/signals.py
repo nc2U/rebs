@@ -1,6 +1,6 @@
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
-from .models import Issue, TimeEntry, ActivityLogEntry
+from .models import Issue, TimeEntry, ActivityLogEntry, IssueLogEntry
 
 
 @receiver(pre_save, sender=Issue)
@@ -56,7 +56,6 @@ def issue_log_changes(sender, instance, created, **kwargs):
     if hasattr(instance, '_old_tracker'):
         details += f"|- **유형**이 *{instance._old_tracker}*에서 *{instance.tracker}*(으)로 변경되었습니다."
     if hasattr(instance, '_old_status'):
-        action = 'Progressed'
         status_log = instance.status.name
         details += f"|- **상태**가 *{instance._old_status}*에서 *{instance.status}*(으)로 변경되었습니다."
     if hasattr(instance, '_old_priority'):
@@ -106,14 +105,18 @@ def issue_log_changes(sender, instance, created, **kwargs):
         details += f"|- **해당 업무**가 *{instance.closed}*에 종료되었습니다."
 
     user = instance.creator if created else instance.updater
-    ActivityLogEntry.objects.create(sort='1', project=instance.project,
-                                    issue=instance, action=action, status_log=status_log,
-                                    details=details, diff=diff, user=user)
+    if created:
+        ActivityLogEntry.objects.create(sort='1', project=instance.project, issue=instance, user=user)
+    else:
+        IssueLogEntry.objects.create(issue=instance, action=action, status_log=status_log,
+                                     details=details, diff=diff, user=user)
+        if hasattr(instance, '_old_status'):
+            ActivityLogEntry.objects.create(sort='1', project=instance.project,
+                                            issue=instance, status_log=status_log, user=user)
 
 
 @receiver(post_save, sender=TimeEntry)
 def time_log_changes(sender, instance, created, **kwargs):
     if created:
-        details = f"|- **작업 소요시간*({instance.hours})***이 등록되었습니다."
-        ActivityLogEntry.objects.create(sort='8', project=instance.issue.project, issue=instance.issue,
-                                        action='Updated', details=details, spent_time=instance, user=instance.user)
+        ActivityLogEntry.objects.create(sort='8', project=instance.issue.project,
+                                        issue=instance.issue, spent_time=instance, user=instance.user)
