@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { PropType } from 'vue'
+import { ref, type PropType } from 'vue'
 import { dateFormat, timeFormat, cutString } from '@/utils/baseMixins'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 import type { ActLogEntry } from '@/store/types/work'
@@ -21,6 +21,14 @@ defineProps({
 })
 
 const emit = defineEmits(['to-back', 'to-next'])
+
+const getIcon = (sort: string, progress: boolean) => {
+  if (sort === '1') {
+    return progress ? 'mdi-arrow-right-bold' : 'mdi-folder-plus'
+  } else if (sort === '8') return 'mdi-folder-clock-outline'
+  else return 'mdi-folder-plus'
+}
+
 const toBack = () => emit('to-back')
 const toNext = () => emit('to-next')
 </script>
@@ -50,26 +58,44 @@ const toNext = () => emit('to-next')
 
           <CRow v-for="(act, i) in val" :key="act.pk" class="pl-3">
             <CCol :class="{ 'ml-5': i }">
-              <v-icon icon="mdi-folder-plus" size="sm" color="warning" class="mr-1" />
+              <v-icon
+                :icon="getIcon(act.sort, !!act.status_log)"
+                size="15"
+                :color="act.issue?.status.closed ? 'success' : 'brown-lighten-3'"
+                class="mr-1"
+              />
               <span class="form-text mr-2">{{ timeFormat(act.timestamp, true) }}</span>
               <span v-if="!$route.params.projId">{{ act.project?.name }} - </span>
-              <span v-if="act.issue">
+              <span v-if="act.sort === '1'">
                 <router-link
                   :to="{
                     name: '(업무) - 보기',
-                    params: { projId: act.project?.slug, issueId: act.issue.pk },
+                    params: { projId: act.project?.slug, issueId: act.issue?.pk },
                   }"
                 >
-                  {{ act.issue.tracker }} #{{ act.issue.pk }} ({{
-                    act.status_log || act.issue.status
+                  {{ act.issue?.tracker }} #{{ act.issue?.pk }} ({{
+                    act.status_log || act.issue?.status.name
                   }})
-                  {{ act.issue.subject }}
+                  {{ act.issue?.subject }}
+                </router-link>
+              </span>
+
+              <span v-if="act.sort === '8'">
+                <router-link
+                  :to="{
+                    name: '(소요시간)',
+                    params: { projId: act.project?.slug, issueId: act.issue?.pk },
+                  }"
+                >
+                  {{ act.spent_time.hours }} 시간 ({{ act.issue?.tracker }} #{{ act.issue?.pk }} ({{
+                    act.status_log || act.issue?.status.name
+                  }}) {{ act.issue?.subject }})
                 </router-link>
               </span>
 
               <div class="ml-4 pl-5 fst-italic">
                 <VueMarkdownIt
-                  v-if="act.sort === '1' && act.action === 'Created'"
+                  v-if="act.sort === '1' && !act.status_log"
                   :source="cutString(act.issue?.description, 113)"
                   class="form-text"
                 />

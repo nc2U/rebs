@@ -240,12 +240,11 @@ export interface TimeEntryFilter {
 export interface ActLogEntry {
   pk: number
   sort: '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8'
-  action: 'Created' | 'Updated' | 'Progressed'
   project: { slug: string; name: string } | null
   issue: {
     pk: number
     tracker: string
-    status: string
+    status: { pk: number; name: string; closed: boolean }
     subject: string
     description: string
   } | null
@@ -256,7 +255,7 @@ export interface ActLogEntry {
   // file: string
   // wiki: string
   // message: string
-  spent_time: number
+  spent_time: { pk: number; hours: string }
   details: string
   diff: string
   act_date: string
@@ -273,7 +272,7 @@ export interface IssueLogEntry {
     pk: number
     project: string
     tracker: string
-    status: string
+    status: { pk: number; name: string; closed: boolean }
     subject: string
     description: string
   }

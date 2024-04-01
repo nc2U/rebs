@@ -279,7 +279,7 @@ class IProjectIssueSerializer(serializers.ModelSerializer):
 class IssueStatusInIssueSerializer(serializers.ModelSerializer):
     class Meta:
         model = IssueStatus
-        fields = ('pk', 'name')
+        fields = ('pk', 'name', 'closed')
 
 
 class CodePriorityInIssueSerializer(serializers.ModelSerializer):
@@ -387,7 +387,7 @@ class IssueCommentSerializer(serializers.ModelSerializer):
 class IssueInActivitySerializer(serializers.ModelSerializer):
     project = serializers.SlugRelatedField('name', read_only=True)
     tracker = serializers.SlugRelatedField(slug_field='name', read_only=True)
-    status = serializers.SlugRelatedField('name', read_only=True)
+    status = IssueStatusInIssueSerializer(read_only=True)
 
     class Meta:
         model = Issue
@@ -417,9 +417,16 @@ class TimeEntrySerializer(serializers.ModelSerializer):
         return total_hours['total_hours'] or 0
 
 
+class TimeEntryInActivityLogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TimeEntry
+        fields = ('pk', 'hours')
+
+
 class ActivityLogEntrySerializer(serializers.ModelSerializer):
     project = IProjectIssueSerializer(read_only=True)
     issue = IssueInActivitySerializer(read_only=True)
+    spent_time = TimeEntryInActivityLogSerializer(read_only=True)
     user = SimpleUserSerializer(read_only=True)
 
     class Meta:
