@@ -13,7 +13,7 @@ const router = useRouter()
 
 const onSubmit = (payload: { email: string; password: string; redirect: string }) => {
   accStore.login(payload).then(res => {
-    if (!!res.profile) {
+    if (!!res.profile || res.is_superuser) {
       if (payload.redirect) router.push({ path: payload.redirect })
       else router.push({ name: 'Home' })
       message('info', '', '로그인 성공 알림!', 2000, 'top-center', 'bounce')
