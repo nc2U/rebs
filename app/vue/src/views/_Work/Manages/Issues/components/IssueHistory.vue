@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { type PropType, ref } from 'vue'
-import type { LogEntry } from '@/store/types/work'
+import type { IssueLogEntry } from '@/store/types/work'
 import { elapsedTime } from '@/utils/baseMixins'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 
 defineProps({
-  activityLogList: { type: Array as PropType<LogEntry[]>, default: () => [] },
+  issueLogList: { type: Array as PropType<IssueLogEntry[]>, default: () => [] },
   issueComments: { type: Array, default: () => [] },
   timeEntries: { type: Array, default: () => [] },
 })

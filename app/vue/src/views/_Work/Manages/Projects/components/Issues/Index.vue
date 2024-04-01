@@ -13,7 +13,7 @@ const [route, router] = [useRoute(), useRouter()]
 const workStore = useWork()
 const issue = computed(() => workStore.issue)
 const issueList = computed(() => workStore.issueList)
-const activityLogList = computed(() => workStore.activityLogList)
+const issueLogList = computed(() => workStore.issueLogList)
 const iProject = computed(() => workStore.issueProject)
 const issueProjects = computed(() => workStore.AllIssueProjects)
 
@@ -28,7 +28,7 @@ const onSubmit = (payload: any) => {
 onBeforeRouteUpdate(async to => {
   if (to.params.issueId) {
     await workStore.fetchIssue(Number(to.params.issueId))
-    await workStore.fetchActivityLogList({ issue: to.params.issueId as string })
+    await workStore.fetchIssueLogList({ issue: to.params.issueId as string })
   } else {
     workStore.issue = null
     await workStore.fetchIssueList()
@@ -44,7 +44,7 @@ onBeforeMount(async () => {
   if (route.params.issueId) {
     await workStore.fetchIssueProjectList()
     await workStore.fetchIssue(Number(route.params.issueId))
-    await workStore.fetchActivityLogList({ issue: route.params.issueId as string })
+    await workStore.fetchIssueLogList({ issue: route.params.issueId as string })
   }
 })
 </script>
@@ -57,7 +57,7 @@ onBeforeMount(async () => {
     :i-project="iProject ?? undefined"
     :issue="issue"
     :issue-projects="issueProjects"
-    :activity-log-list="activityLogList"
+    :issue-log-list="issueLogList"
     @on-submit="onSubmit"
   />
 
