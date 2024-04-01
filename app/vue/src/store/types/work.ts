@@ -266,3 +266,23 @@ export interface ActLogEntry {
     username: string
   }
 }
+
+export interface IssueLogEntry {
+  pk: number
+  issue: {
+    pk: number
+    project: string
+    tracker: string
+    status: string
+    subject: string
+    description: string
+  }
+  action: string
+  details: string
+  diff: string
+  timestamp: string
+  user: {
+    pk: number
+    username: string
+  }
+}

@@ -10,9 +10,10 @@ import type {
   Tracker,
   IssueStatus,
   CodeValue,
-  LogEntry,
   TimeEntry,
   TimeEntryFilter,
+  ActLogEntry,
+  IssueLogEntry,
 } from '@/store/types/work'
 
 export const useWork = defineStore('work', () => {
@@ -275,6 +276,8 @@ export const useWork = defineStore('work', () => {
 
   const fetchActivityLogList = async (payload: any) => {
     let url = `/act-entry/?1=1`
+    if (payload.sort) url += `&sort=${payload.sort}`
+    if (payload.action) url += `&action=${payload.action}`
     if (payload.project) url += `&project__slug=${payload.project}`
     if (payload.issue) url += `&issue=${payload.issue}`
     if (payload.issue__isnull) url += `&issue__isnull=${payload.issue__isnull}`
@@ -288,6 +291,19 @@ export const useWork = defineStore('work', () => {
     if (payload.act_date) url += `&act_date=${payload.act_date}`
     if (payload.from_act_date) url += `&from_act_date=${payload.from_act_date}`
     if (payload.to_act_date) url += `&to_act_date=${payload.to_act_date}`
+    if (payload.user) url += `&user=${payload.user}`
+    return await api
+      .get(url)
+      .then(res => (activityLogList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  // activity-log states & getters
+  const issueLogList = ref<IssueLogEntry[]>([])
+
+  const fetchIssueLogList = async (payload: { issue?: number; user?: number }) => {
+    let url = `/log-entry/?1=1`
+    if (payload.issue) url += `&issue=${payload.issue}`
     if (payload.user) url += `&user=${payload.user}`
     return await api
       .get(url)
@@ -349,5 +365,8 @@ export const useWork = defineStore('work', () => {
     activityLogList,
     groupedActivities,
     fetchActivityLogList,
+
+    issueLogList,
+    fetchIssueLogList,
   }
 })
