@@ -101,20 +101,22 @@ def issue_log_changes(sender, instance, created, **kwargs):
     if hasattr(instance, '_old_closed'):
         details += f"|- **해당 업무**가 *{instance.closed}*에 종료되었습니다."
 
-    user = instance.creator if created else instance.updater
     if action == 'Edited':
-        IssueLogEntry.objects.create(issue=instance, action=action, details=details, diff=diff, user=user)
-        if hasattr(instance, '_old_project'):
-            ActivityLogEntry.objects.create(project=instance.project, issue=instance, user=instance.creator)
-        if hasattr(instance, '_old_status'):
-            ActivityLogEntry.objects.create(project=instance.project,
+        IssueLogEntry.objects.create(issue=instance, action=action, details=details, diff=diff, user=instance.updater)
+        if hasattr(instance, '_old_project'):  # 프로젝트 변경 시 업무 신규 등록 로그 기록
+            ActivityLogEntry.objects.create(sort='1', project=instance.project,
+                                            issue=instance, user=instance.updater)
+        if hasattr(instance, '_old_status'):  # 업무 상태 변경 시 진행 사항 로그 기록
+            ActivityLogEntry.objects.create(sort='1', project=instance.project,
                                             issue=instance,
                                             status_log=instance.status.name,
-                                            user=instance.creator)
-    elif action == 'Created':
-        ActivityLogEntry.objects.create(project=instance.project, issue=instance, user=instance.creator)
+                                            user=instance.updater)
+    elif action == 'Created':  # 업무 신규 등록 시 업무 신규 등록 로그 기록
+        ActivityLogEntry.objects.create(sort='1', project=instance.project, issue=instance, user=instance.creator)
 
-# @receiver(post_save, sender=TimeEntry)
-# def time_log_changes(sender, instance, created, **kwargs):
-#     if created:
-#         pass
+
+@receiver(post_save, sender=TimeEntry)
+def time_log_changes(sender, instance, created, **kwargs):
+    if created:
+        ActivityLogEntry.objects.create(sort='8', project=instance.issue.project, issue=instance.issue,
+                                        spent_time=instance, user=instance.user)

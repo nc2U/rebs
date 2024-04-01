@@ -450,6 +450,31 @@ class TimeEntry(models.Model):
         ordering = ('spent_on', 'id')
 
 
+class ActivityLogEntry(models.Model):
+    SORT_CHOICES = (('1', '업무'), ('2', '변경묶음'), ('3', '공지'), ('4', '문서'),
+                    ('5', '파일'), ('6', '위키편집'), ('7', '글'), ('8', '소요시간'))
+    sort = models.CharField('구분', max_length=1, choices=SORT_CHOICES, default='1')
+    project = models.ForeignKey(IssueProject, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='프로젝트')
+    issue = models.ForeignKey(Issue, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='업무')
+    status_log = models.CharField('상태 기록', max_length=30, blank=True, default='')
+    # change_sets = models.TextField('변경 묶음', blank=True, default='')
+    # news = models.TextField('공지', blank=True, default='')
+    # document = models.TextField('문서', blank=True, default='')
+    # file = models.TextField('파일', blank=True, default='')
+    # wiki = models.TextField('위키 편집', blank=True, default='')
+    # message = models.TextField('글', blank=True, default='')
+    spent_time = models.ForeignKey(TimeEntry, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='소요시간')
+    act_date = models.DateField('로그 일자', auto_now_add=True)
+    timestamp = models.DateTimeField('로그 시간', auto_now_add=True)
+    user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사용자')
+
+    def __str__(self):
+        return f"{self.user.username} - {self.timestamp}"
+
+    class Meta:
+        ordering = ('-timestamp',)
+
+
 class IssueLogEntry(models.Model):
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, verbose_name='업무')
     ACTION_CHOICES = (('Created', '추가'), ('Edited', '편집'))
@@ -461,28 +486,6 @@ class IssueLogEntry(models.Model):
 
     def __str__(self):
         return f"{self.action} - {self.timestamp}"
-
-
-class ActivityLogEntry(models.Model):
-    project = models.ForeignKey(IssueProject, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='프로젝트')
-    issue = models.ForeignKey(Issue, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='업무')
-    status_log = models.CharField('상태 기록', max_length=30, blank=True, default='')
-    change_sets = models.TextField('변경 묶음', blank=True, default='')
-    news = models.TextField('공지', blank=True, default='')
-    document = models.TextField('문서', blank=True, default='')
-    file = models.TextField('파일', blank=True, default='')
-    wiki = models.TextField('위키 편집', blank=True, default='')
-    message = models.TextField('글', blank=True, default='')
-    spent_time = models.TextField('작업시간', blank=True, default='')
-    act_date = models.DateField('로그 일자', auto_now_add=True)
-    timestamp = models.DateTimeField('로그 시간', auto_now_add=True)
-    user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사용자')
-
-    def __str__(self):
-        return f"{self.user.username} - {self.timestamp}"
-
-    class Meta:
-        ordering = ('-timestamp',)
 
 
 class Search(models.Model):

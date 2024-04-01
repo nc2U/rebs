@@ -426,15 +426,15 @@ class LogEntrySerializer(serializers.ModelSerializer):
 
 
 class ActivityLogEntrySerializer(serializers.ModelSerializer):
-    project = serializers.SlugRelatedField('name', read_only=True)
+    project = IProjectIssueSerializer(read_only=True)
     issue = IssueInActivitySerializer(read_only=True)
     user = SimpleUserSerializer(read_only=True)
 
     class Meta:
         model = ActivityLogEntry
-        fields = ('pk', 'project', 'issue', 'status_log', 'change_sets',
-                  'news', 'document', 'file', 'wiki', 'message', 'spent_time',
-                  'act_date', 'timestamp', 'user')
+        fields = ('pk', 'project', 'issue', 'status_log',
+                  'spent_time', 'act_date', 'timestamp', 'user')
+        # 'change_sets', 'news', 'document', 'file', 'wiki', 'message',
 
 
 class SearchSerializer(serializers.ModelSerializer):

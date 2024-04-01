@@ -252,9 +252,9 @@ export interface LogEntry {
 
 export interface ActLogEntry {
   pk: number
+  project: { slug: string; name: string }
   issue: {
     pk: number
-    project: string
     tracker: string
     status: string
     subject: string
