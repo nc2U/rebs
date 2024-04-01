@@ -432,9 +432,9 @@ class ActivityLogEntrySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ActivityLogEntry
-        fields = ('pk', 'project', 'issue', 'status_log', 'change_sets',
-                  'news', 'document', 'file', 'wiki', 'message', 'spent_time',
+        fields = ('pk', 'project', 'issue', 'status_log',
                   'act_date', 'timestamp', 'user')
+        # 'change_sets', 'news', 'document', 'file', 'wiki', 'message', 'spent_time',
 
 
 class SearchSerializer(serializers.ModelSerializer):
