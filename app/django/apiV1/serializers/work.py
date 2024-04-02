@@ -368,7 +368,8 @@ class IssueSerializer(serializers.ModelSerializer):
                                      activity=activity, comment=comment, user=user)
         # issue_comment logic
         comment_content = self.initial_data.get('comment_content', None)
-        IssueComment.objects.create(issue=instance, content=comment_content, user=user)
+        if comment_content:
+            IssueComment.objects.create(issue=instance, content=comment_content, user=user)
 
         return super().update(instance, validated_data)
 
