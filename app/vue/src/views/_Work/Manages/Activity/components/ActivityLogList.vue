@@ -96,12 +96,15 @@ const toNext = () => emit('to-next')
                 </router-link>
               </span>
 
-              <div class="ml-4 pl-5 fst-italic">
+              <div class="ml-4 pl-3 fst-italic">
                 <VueMarkdownIt
                   v-if="act.sort === '1' && !act.status_log"
                   :source="cutString(act.issue?.description, 113)"
-                  class="form-text"
+                  class="form-text pl-4"
                 />
+                <span v-if="act.sort === '8' && act.spent_time.comment" class="pl-3">
+                  {{ act.spent_time.comment }}
+                </span>
               </div>
               <div v-if="act.user" class="form-text ml-5 pl-2">
                 <router-link to="">{{ act.user.username }}</router-link>
