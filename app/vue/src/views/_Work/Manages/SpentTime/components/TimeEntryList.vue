@@ -114,7 +114,10 @@ defineProps({
                     <CDropdownItem
                       class="form-text"
                       @click="
-                        router.push({ name: '(소요시간) - 편집', params: { timeId: time.pk } })
+                        router.push({
+                          name: '(소요시간) - 편집',
+                          params: { projId: time.issue.project.slug, timeId: time.pk },
+                        })
                       "
                     >
                       <router-link to="">
