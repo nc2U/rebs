@@ -107,7 +107,9 @@ const toNext = () => emit('to-next')
                 </span>
               </div>
               <div v-if="act.user" class="form-text ml-5 pl-2">
-                <router-link to="">{{ act.user.username }}</router-link>
+                <router-link :to="{ name: '사용자 - 보기', params: { userId: act.user.pk } }">
+                  {{ act.user.username }}
+                </router-link>
               </div>
               <v-divider class="my-2" />
             </CCol>
