@@ -118,12 +118,12 @@ def issue_log_changes(sender, instance, created, **kwargs):
 @receiver(post_save, sender=IssueComment)
 def comment_log_changes(sender, instance, created, **kwargs):
     if created:
-        ActivityLogEntry.objects.create(sort='2', project=instance.issue.project,
+        ActivityLogEntry.objects.create(sort='2', project=instance.issue.project, issue=instance.issue,
                                         comment=instance, user=instance.user)
 
 
 @receiver(post_save, sender=TimeEntry)
 def time_log_changes(sender, instance, created, **kwargs):
     if created:
-        ActivityLogEntry.objects.create(sort='9', project=instance.issue.project,
+        ActivityLogEntry.objects.create(sort='9', project=instance.issue.project, issue=instance.issue,
                                         spent_time=instance, user=instance.user)
