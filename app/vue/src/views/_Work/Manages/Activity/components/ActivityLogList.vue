@@ -90,9 +90,10 @@ const toNext = () => emit('to-next')
                     query: { issue: act.issue?.pk },
                   }"
                 >
-                  {{ act.spent_time.hours }} 시간 ({{ act.issue?.tracker }} #{{ act.issue?.pk }} ({{
-                    act.status_log || act.issue?.status.name
-                  }}) {{ act.issue?.subject }})
+                  {{ act.spent_time?.hours }} 시간 ({{ act.issue?.tracker }} #{{
+                    act.issue?.pk
+                  }}
+                  ({{ act.status_log || act.issue?.status.name }}) {{ act.issue?.subject }})
                 </router-link>
               </span>
 
@@ -102,7 +103,7 @@ const toNext = () => emit('to-next')
                   :source="cutString(act.issue?.description, 113)"
                   class="form-text pl-4"
                 />
-                <span v-if="act.sort === '8' && act.spent_time.comment" class="pl-3">
+                <span v-if="act.sort === '8' && act.spent_time?.comment" class="pl-3">
                   {{ cutString(act.spent_time.comment, 100) }}
                 </span>
               </div>
