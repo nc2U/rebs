@@ -12,11 +12,12 @@ const route = useRoute()
 const workStore = useWork()
 const timeEntryList = computed(() => workStore.timeEntryList)
 const issueProjects = computed(() => workStore.AllIssueProjects)
+const createTimeEntry = (payload: any) => workStore.createTimeEntry(payload)
+const updateTimeEntry = (payload: any) => workStore.updateTimeEntry(payload)
 
 const onSubmit = (payload: any) => {
-  if (payload.pk) alert('b - update')
-  else alert('b - create')
-
+  if (payload.pk) updateTimeEntry(payload)
+  else createTimeEntry(payload)
   console.log(payload)
 }
 

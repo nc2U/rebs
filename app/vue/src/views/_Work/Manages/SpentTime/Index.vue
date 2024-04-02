@@ -17,11 +17,12 @@ const sideNavCAll = () => cBody.value.toggle()
 const workStore = useWork()
 const timeEntryList = computed(() => workStore.timeEntryList)
 const issueProjects = computed(() => workStore.AllIssueProjects)
+const createTimeEntry = (payload: any) => workStore.createTimeEntry(payload)
+const updateTimeEntry = (payload: any) => workStore.updateTimeEntry(payload)
 
 const onSubmit = (payload: any) => {
-  if (payload.pk) alert('a - update')
-  else alert('a - create')
-
+  if (payload.pk) updateTimeEntry(payload)
+  else createTimeEntry(payload)
   console.log(payload)
 }
 

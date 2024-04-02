@@ -289,7 +289,7 @@ export const useWork = defineStore('work', () => {
 
   const createTimeEntry = (payload: TimeEntry) =>
     api
-      .put(`/time-entry/`, payload)
+      .post(`/time-entry/`, payload)
       .then(res =>
         fetchTimeEntry(res.data.pk).then(() => fetchTimeEntryList({}).then(() => message())),
       )
