@@ -1,12 +1,14 @@
 <script lang="ts" setup>
-import { ref, onBeforeMount, type PropType, computed, watch } from 'vue'
+import { ref, onBeforeMount, type PropType, computed, watch, inject, type ComputedRef } from 'vue'
 import type { Issue, IssueProject } from '@/store/types/work'
+import type { User } from '@/store/types/accounts'
 import { isValidate } from '@/utils/helper'
+import { colorLight } from '@/utils/cssMixins'
+import { useRoute } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import DatePicker from '@/components/DatePicker/index.vue'
 import Multiselect from '@vueform/multiselect'
 import MdEditor from '@/components/MdEditor/Index.vue'
-import { useRoute } from 'vue-router'
 
 const props = defineProps({
   issue: { type: Object as PropType<Issue>, default: null },
@@ -69,19 +71,7 @@ const formCheck = computed(() => {
   } else return false
 })
 
-const onSubmit = (event: Event) => {
-  if (isValidate(event)) {
-    validated.value = true
-  } else
-    emit('on-submit', {
-      ...form.value,
-      ...timeEntry.value,
-      issue_comment: comment.value,
-    })
-}
-
-const closeForm = () => emit('close-form')
-
+const route = useRoute()
 const workStore = useWork()
 const issueProject = computed(() => workStore.issueProject)
 watch(issueProject, nval => {
@@ -99,7 +89,34 @@ const activityList = computed(() => workStore.activityList)
 const priorityList = computed(() => workStore.priorityList)
 const getIssues = computed(() => workStore.getIssues)
 
-const route = useRoute()
+const onSubmit = (event: Event) => {
+  if (isValidate(event)) {
+    validated.value = true
+  } else
+    emit('on-submit', {
+      ...form.value,
+      ...timeEntry.value,
+      issue_comment: comment.value,
+    })
+}
+
+const closeForm = () => emit('close-form')
+
+const userInfo = inject<ComputedRef<User>>('userInfo')
+const callComment = () => {
+  // 댓글 폼 불러오기
+  comment.value =
+    userInfo?.value.username +
+    ' wrote: \n' +
+    form.value.description
+      .split('\n')
+      .map(line => `> ${line}`)
+      .join('\n') +
+    '\n\n'
+}
+
+defineExpose({ callComment })
+
 onBeforeMount(() => {
   if (props.issue) {
     editDetails.value = false
@@ -141,7 +158,7 @@ onBeforeMount(() => {
     </CCol>
 
     <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
-      <CCard color="light" class="mb-2">
+      <CCard :color="colorLight" class="mb-2">
         <CCardBody>
           <div v-if="issue">
             <h6>속성 변경</h6>

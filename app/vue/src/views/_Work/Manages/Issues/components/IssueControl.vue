@@ -6,22 +6,22 @@ const callEditForm = () => emit('call-edit-form')
 
 <template>
   <CCol class="text-right form-text">
-    <span v-show="$route.name !== '프로젝트 - 추가'" class="mr-2">
+    <span class="mr-2">
       <v-icon icon="mdi-pencil" color="amber" size="sm" />
       <router-link to="" class="ml-1" @click="callEditForm">편집</router-link>
     </span>
 
-    <span v-show="$route.name !== '프로젝트 - 추가'" class="mr-2">
+    <span class="mr-2">
       <v-icon icon="mdi-timer-edit-outline" color="grey" size="sm" />
       <router-link to="" class="ml-1">작업시간 기록</router-link>
     </span>
 
-    <span v-show="$route.name !== '프로젝트 - 추가'" class="mr-2">
+    <span class="mr-2">
       <v-icon icon="mdi-star" color="amber" size="sm" />
       <router-link to="" class="ml-1">관심끄기</router-link>
     </span>
 
-    <span v-show="$route.name !== '프로젝트 - 추가'" class="mr-2">
+    <span class="mr-2">
       <v-icon icon="mdi-content-copy" color="grey" size="sm" />
       <router-link to="" class="ml-1">복사</router-link>
     </span>

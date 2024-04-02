@@ -24,6 +24,7 @@ defineProps({
 
 const emit = defineEmits(['on-submit'])
 
+const issueFormRef = ref()
 const editForm = ref(false)
 
 const onSubmit = (payload: any) => {
@@ -41,6 +42,15 @@ const callEditForm = () => {
 
   setTimeout(() => {
     scrollToId('edit-form')
+  }, 100)
+}
+
+const callComment = () => {
+  editForm.value = true
+
+  setTimeout(() => {
+    scrollToId('edit-form')
+    issueFormRef.value.callComment()
   }, 100)
 }
 </script>
@@ -167,7 +177,7 @@ const callEditForm = () => {
         <CCol class="title">설명</CCol>
         <CCol class="text-right form-text">
           <v-icon icon="mdi-comment-text-outline" size="sm" color="grey" class="mr-2" />
-          <router-link to="">댓글달기</router-link>
+          <router-link to="" @click="callComment">댓글달기</router-link>
         </CCol>
       </CRow>
 
@@ -210,6 +220,7 @@ const callEditForm = () => {
 
   <div v-if="editForm">
     <IssueForm
+      ref="issueFormRef"
       :i-project="iProject"
       :issue="issue"
       :issue-projects="issueProjects"

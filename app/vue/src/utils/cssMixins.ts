@@ -49,3 +49,5 @@ export const AlertLight = computed(() => (isDark.value ? '' : 'light'))
 // export const bgDanger = computed(() => (isDark.value ? '' : 'bg-danger'))
 
 export const bgLight = computed(() => (isDark.value ? '' : 'bg-light'))
+
+export const colorLight = computed(() => (isDark.value ? '' : 'light'))
