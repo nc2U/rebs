@@ -18,7 +18,12 @@ const workStore = useWork()
 const timeEntryList = computed(() => workStore.timeEntryList)
 const issueProjects = computed(() => workStore.AllIssueProjects)
 
-const onSubmit = (payload: any) => payload
+const onSubmit = (payload: any) => {
+  if (payload.pk) alert('a - update')
+  else alert('a - create')
+
+  console.log(payload)
+}
 
 onBeforeMount(() => {
   workStore.fetchIssueProjectList()

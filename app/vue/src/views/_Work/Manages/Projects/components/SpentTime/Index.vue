@@ -13,7 +13,12 @@ const workStore = useWork()
 const timeEntryList = computed(() => workStore.timeEntryList)
 const issueProjects = computed(() => workStore.AllIssueProjects)
 
-const onSubmit = (payload: any) => payload
+const onSubmit = (payload: any) => {
+  if (payload.pk) alert('b - update')
+  else alert('b - create')
+
+  console.log(payload)
+}
 
 onBeforeMount(async () => {
   emit('aside-visible', true)

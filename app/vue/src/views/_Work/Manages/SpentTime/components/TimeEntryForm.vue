@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { ref, computed, onBeforeMount, type PropType, watch } from 'vue'
-import { isValidate } from '@/utils/helper'
 import { useRoute } from 'vue-router'
+import { isValidate } from '@/utils/helper'
 import { useWork } from '@/store/pinia/work'
+import type { IssueProject } from '@/store/types/work'
 import DatePicker from '@/components/DatePicker/index.vue'
 import Multiselect from '@vueform/multiselect'
-import type { IssueProject } from '@/store/types/work'
 
-const props = defineProps({
+defineProps({
   issueProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
 })
 
