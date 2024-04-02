@@ -203,6 +203,10 @@ export interface Issue {
   updated: string
 }
 
+export interface IssueComment {
+  pk: number
+}
+
 export interface TimeEntry {
   pk: number
   issue: {

@@ -6,10 +6,11 @@ import type {
   IssueProject,
   Member,
   Role,
-  Issue,
   Tracker,
   IssueStatus,
   CodeValue,
+  Issue,
+  IssueComment,
   TimeEntry,
   TimeEntryFilter,
   ActLogEntry,
@@ -214,6 +215,47 @@ export const useWork = defineStore('work', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
+  // issue-comment states & getters
+  const issueComment = ref<IssueComment | null>(null)
+  const issueCommentList = ref<IssueComment[]>([])
+
+  const fetchIssueComment = (pk: number) =>
+    api
+      .get(`/issue-comment/${pk}/`)
+      .then(res => (issueComment.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchIssueCommentList = async (payload: any) => {
+    let url = `/issue-comment/?1=1`
+    if (payload.issue) url += `&issue=${payload.issue}`
+    if (payload.user) url += `&user=${payload.user}`
+
+    return await api
+      .get(url)
+      .then(res => (issueCommentList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const updateIssueComment = (payload: any) =>
+    api
+      .put(`/issue-comment/${payload.pk}/`, payload)
+      .then(() =>
+        fetchIssueComment(payload.pk).then(() =>
+          fetchIssueCommentList({ issue: payload.issue }).then(() => message()),
+        ),
+      )
+      .catch(err => errorHandle(err.response.data))
+
+  const deleteIssueComment = (pk: number, issue: number) =>
+    api
+      .delete(`/issue-comment/${pk}/`)
+      .then(() =>
+        fetchIssueCommentList({ issue }).then(() =>
+          message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.'),
+        ),
+      )
+      .catch(err => errorHandle(err.response.data))
+
   // time-entry states & getters
   const timeEntry = ref<TimeEntry | null>(null)
   const timeEntryList = ref<TimeEntry[]>([])
@@ -354,6 +396,13 @@ export const useWork = defineStore('work', () => {
     updateIssue,
     patchIssue,
     deleteIssue,
+
+    issueComment,
+    issueCommentList,
+    fetchIssueComment,
+    fetchIssueCommentList,
+    updateIssueComment,
+    deleteIssueComment,
 
     timeEntry,
     timeEntryList,
