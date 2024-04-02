@@ -103,16 +103,17 @@ const onSubmit = (event: Event) => {
 const closeForm = () => emit('close-form')
 
 const userInfo = inject<ComputedRef<User>>('userInfo')
-const callComment = () => {
+const callComment = (edit?: true) => {
   // 댓글 폼 불러오기
-  comment.value =
-    userInfo?.value.username +
-    ' wrote: \n' +
-    form.value.description
-      .split('\n')
-      .map(line => `> ${line}`)
-      .join('\n') +
-    '\n\n'
+  comment.value = edit
+    ? ''
+    : userInfo?.value.username +
+      ' wrote: \n' +
+      form.value.description
+        .split('\n')
+        .map(line => `> ${line}`)
+        .join('\n') +
+      '\n\n'
 }
 
 defineExpose({ callComment })

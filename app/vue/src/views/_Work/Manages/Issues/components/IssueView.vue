@@ -42,6 +42,7 @@ const callEditForm = () => {
 
   setTimeout(() => {
     scrollToId('edit-form')
+    issueFormRef.value.callComment(true)
   }, 100)
 }
 
