@@ -47,6 +47,7 @@ onBeforeMount(async () => {
     await workStore.fetchIssueProjectList()
     await workStore.fetchIssue(Number(route.params.issueId))
     await workStore.fetchIssueLogList({ issue: Number(route.params.issueId) })
+    await workStore.fetchIssueCommentList({ issue: Number(route.params.issueId) })
     await workStore.fetchTimeEntryList({ issue: Number(route.params.issueId) })
   }
 })

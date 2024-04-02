@@ -111,8 +111,8 @@ const callComment = (edit?: true) => {
       ' wrote: \n' +
       form.value.description
         .split('\n')
-        .map(line => `> ${line}`)
-        .join('\n') +
+        .map(line => ` > ${line}`)
+        .join('  \n') +
       '\n\n'
 }
 

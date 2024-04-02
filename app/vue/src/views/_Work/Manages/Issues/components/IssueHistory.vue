@@ -160,17 +160,70 @@ const copyLink = (path: string, hash: string) => {
         </CTabPane>
 
         <CTabPane role="tabpanel" aria-labelledby="profile-tab" :visible="tabPaneActiveKey === 2">
-          <span class="history">
-            Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid.
-            Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson
-            artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo
-            enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud
-            organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia
-            yr, vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes
-            anderson 8-bit, sustainable jean shorts beard ut DIY ethical culpa terry richardson
-            biodiesel. Art party scenester stumptown, tumblr butcher vero sint qui sapiente
-            accusamus tattooed echo park.
-          </span>
+          <div v-for="comment in issueCommentList" :key="comment.pk">
+            <CRow
+              :id="`note-${comment.pk}`"
+              :class="{ 'bg-blue-lighten-5': $route.hash == `#note-${comment.pk}` }"
+            >
+              <CCol v-if="comment.user">
+                <router-link :to="{ name: '사용자 - 보기', params: { userId: comment.user.pk } }">
+                  {{ comment.user.username }}
+                </router-link>
+                이(가)
+                <router-link
+                  :to="{
+                    name: '(작업내역)',
+                    params: { projId: comment.issue.project.slug },
+                    query: { from: comment.created.substring(0, 10) },
+                  }"
+                >
+                  {{ elapsedTime(comment.created) }}
+                </router-link>
+                에 변경
+              </CCol>
+              <CCol class="text-right">
+                <span>
+                  <CDropdown color="secondary" variant="input-group" placement="bottom-end">
+                    <CDropdownToggle
+                      :caret="false"
+                      color="light"
+                      variant="ghost"
+                      size="sm"
+                      shape="rounded-pill"
+                    >
+                      <v-icon icon="mdi-dots-horizontal" class="pointer" color="grey-darken-1" />
+                      <v-tooltip activator="parent" location="top">Actions</v-tooltip>
+                    </CDropdownToggle>
+                    <CDropdownMenu>
+                      <CDropdownItem
+                        class="form-text"
+                        @click="copyLink($route.path, `#note-${comment.pk}`)"
+                      >
+                        <router-link to="">
+                          <v-icon icon="mdi-pencil" color="amber" size="sm" />
+                          링크 복사
+                        </router-link>
+                      </CDropdownItem>
+                      <CDropdownItem
+                        class="form-text"
+                        @click="copyLink($route.path, `#note-${comment.pk}`)"
+                      >
+                        <router-link to="">
+                          <v-icon icon="mdi-trash-can" color="grey" size="sm" />
+                          삭제
+                        </router-link>
+                      </CDropdownItem>
+                    </CDropdownMenu>
+                  </CDropdown>
+                </span>
+                <router-link :to="{ hash: '#note-' + comment.pk }">#{{ comment.pk }}</router-link>
+              </CCol>
+            </CRow>
+            <v-divider class="mt-0 mb-2" />
+            <div class="history pl-4 mb-2">
+              <VueMarkdownIt :source="comment.content" class="markdown-body" />
+            </div>
+          </div>
         </CTabPane>
 
         <CTabPane role="tabpanel" aria-labelledby="contact-tab" :visible="tabPaneActiveKey === 3">
@@ -277,5 +330,11 @@ const copyLink = (path: string, hash: string) => {
 <style lang="scss" scoped>
 .history {
   color: #7f7f7f;
+}
+
+.vue-md-it-wrapper blockquote {
+  padding-left: 20px !important;
+  border-left: 3px solid #ddd !important;
+  font-style: italic;
 }
 </style>
