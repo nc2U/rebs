@@ -287,7 +287,15 @@ export const useWork = defineStore('work', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const updateTimeEntry = (payload: any) =>
+  const createTimeEntry = (payload: TimeEntry) =>
+    api
+      .put(`/time-entry/`, payload)
+      .then(res =>
+        fetchTimeEntry(res.data.pk).then(() => fetchTimeEntryList({}).then(() => message())),
+      )
+      .catch(err => errorHandle(err.response.data))
+
+  const updateTimeEntry = (payload: TimeEntry) =>
     api
       .put(`/time-entry/${payload.pk}/`, payload)
       .then(() =>
@@ -408,6 +416,7 @@ export const useWork = defineStore('work', () => {
     timeEntryList,
     fetchTimeEntry,
     fetchTimeEntryList,
+    createTimeEntry,
     updateTimeEntry,
     deleteTimeEntry,
 
