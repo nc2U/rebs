@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { type PropType, ref } from 'vue'
+import { onBeforeMount, type PropType, ref } from 'vue'
 import type { IssueComment, IssueLogEntry, TimeEntry } from '@/store/types/work'
+import { useRoute } from 'vue-router'
 import { elapsedTime } from '@/utils/baseMixins'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 
@@ -23,6 +24,11 @@ const copyLink = (path: string, hash: string) => {
   document.execCommand('copy') // 복사 명령을 실행합니다.
   document.body.removeChild(textarea) // textarea를 삭제합니다.
 }
+
+const route = useRoute()
+onBeforeMount(() => {
+  if (route.query.tap) tabPaneActiveKey.value = Number(route.query.tap)
+})
 </script>
 
 <template>
