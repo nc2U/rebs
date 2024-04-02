@@ -381,7 +381,7 @@ class IssueFileSerializer(serializers.ModelSerializer):
 class IssueCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = IssueComment
-        fields = ('pk', 'content', 'parent', 'user', 'created', 'updated')
+        fields = ('pk', 'issue', 'content', 'user', 'created', 'updated')
 
 
 class IssueInActivitySerializer(serializers.ModelSerializer):
