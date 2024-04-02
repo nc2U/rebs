@@ -98,7 +98,7 @@ def issue_log_changes(sender, instance, created, **kwargs):
     if hasattr(instance, '_old_due_date'):
         desc = f" *{instance._old_due_date}*에서 " if instance._old_due_date else ""
         act = "변경" if instance._old_due_date else "지정"
-        details += f"|- **완료 기한**이 {desc}*{instance.due_date}*(으)로 {act}되었습니다."
+        details += f"|- **완료일**이 {desc}*{instance.due_date}*(으)로 {act}되었습니다."
     if hasattr(instance, '_old_done_ratio'):
         details += f"|- **진척도**가 *{instance._old_done_ratio}*에서 *{instance.done_ratio}*(으)로 변경되었습니다."
     if hasattr(instance, '_old_closed'):
