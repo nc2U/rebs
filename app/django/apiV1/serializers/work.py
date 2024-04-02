@@ -385,7 +385,7 @@ class IssueCommentSerializer(serializers.ModelSerializer):
 
 
 class IssueInActivitySerializer(serializers.ModelSerializer):
-    project = serializers.SlugRelatedField('name', read_only=True)
+    project = IProjectIssueSerializer(read_only=True)
     tracker = serializers.SlugRelatedField(slug_field='name', read_only=True)
     status = IssueStatusInIssueSerializer(read_only=True)
 
