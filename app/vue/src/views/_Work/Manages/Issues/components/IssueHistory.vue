@@ -192,7 +192,18 @@ const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
                 에 추가함
               </CCol>
               <CCol class="text-right pr-3">
-                <v-icon icon="mdi-pencil" color="amber" size="sm" class="mr-2" />
+                <v-icon
+                  icon="mdi-pencil"
+                  color="amber"
+                  size="sm"
+                  class="mr-2 pointer"
+                  @click="
+                    $router.push({
+                      name: '(소요시간) - 편집',
+                      params: { projId: time.issue.project.slug, timeId: time.pk },
+                    })
+                  "
+                />
                 <v-icon icon="mdi-trash-can" color="secondary" size="sm" />
               </CCol>
             </CRow>
