@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { type PropType, ref } from 'vue'
-import type { IssueLogEntry } from '@/store/types/work'
+import type { IssueComment, IssueLogEntry, TimeEntryFilter } from '@/store/types/work'
 import { elapsedTime } from '@/utils/baseMixins'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 
 defineProps({
   issueLogList: { type: Array as PropType<IssueLogEntry[]>, default: () => [] },
-  issueComments: { type: Array, default: () => [] },
-  timeEntries: { type: Array, default: () => [] },
+  issueCommentList: { type: Array as PropType<IssueComment[]>, default: () => [] },
+  timeEntryList: { type: Array as PropType<TimeEntryFilter[]>, default: () => [] },
 })
 
 const tabPaneActiveKey = ref(1)
@@ -19,9 +19,9 @@ const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
   <CNav variant="tabs">
     <CNavItem>
       <CNavLink
-        href="javascript:void(0);"
-        :active="tabPaneActiveKey === 1"
-        @click="
+          href="javascript:void(0);"
+          :active="tabPaneActiveKey === 1"
+          @click="
           () => {
             tabPaneActiveKey = 1
           }
@@ -30,11 +30,11 @@ const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
         이력
       </CNavLink>
     </CNavItem>
-    <CNavItem v-if="issueComments.length">
+    <CNavItem v-if="issueCommentList.length">
       <CNavLink
-        href="javascript:void(0);"
-        :active="tabPaneActiveKey === 2"
-        @click="
+          href="javascript:void(0);"
+          :active="tabPaneActiveKey === 2"
+          @click="
           () => {
             tabPaneActiveKey = 2
           }
@@ -45,9 +45,9 @@ const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
     </CNavItem>
     <CNavItem>
       <CNavLink
-        href="javascript:void(0);"
-        :active="tabPaneActiveKey === 3"
-        @click="
+          href="javascript:void(0);"
+          :active="tabPaneActiveKey === 3"
+          @click="
           () => {
             tabPaneActiveKey = 3
           }
@@ -56,11 +56,11 @@ const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
         항목 변경이력
       </CNavLink>
     </CNavItem>
-    <CNavItem v-if="timeEntries.length">
+    <CNavItem v-if="timeEntryList.length">
       <CNavLink
-        href="javascript:void(0);"
-        :active="tabPaneActiveKey === 4"
-        @click="
+          href="javascript:void(0);"
+          :active="tabPaneActiveKey === 4"
+          @click="
           () => {
             tabPaneActiveKey = 4
           }
@@ -72,9 +72,9 @@ const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
   </CNav>
 
   <CCard
-    v-if="issueLogList.length"
-    class="border-top-0 p-2"
-    :style="{ '--cui-card-border-radius': 0 }"
+      v-if="issueLogList.length"
+      class="border-top-0 p-2"
+      :style="{ '--cui-card-border-radius': 0 }"
   >
     <CCardBody>
       <CTabContent>
@@ -87,7 +87,7 @@ const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
                 </router-link>
                 이(가)
                 <router-link
-                  :to="{
+                    :to="{
                     name: '(작업내역)',
                     params: { projId: 'redmine' },
                     query: { from: log.timestamp.substring(0, 10) },
@@ -99,16 +99,16 @@ const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
               </CCol>
               <CCol class="text-right">#{{ log.pk }}</CCol>
             </CRow>
-            <v-divider class="mt-0 mb-2" />
+            <v-divider class="mt-0 mb-2"/>
             <div class="history pl-4 mb-2">
               <ul>
                 <li v-for="(src, i) in getHistory(log.details)" :key="i">
-                  <VueMarkdownIt :source="src" />
+                  <VueMarkdownIt :source="src"/>
                   <span v-if="log.diff">
                     <router-link to="">
                       (변경 내용)
                       <v-tooltip activator="parent" location="start">
-                        <VueMarkdownIt :source="log.diff" />
+                        <VueMarkdownIt :source="log.diff"/>
                       </v-tooltip>
                     </router-link>
                   </span>
@@ -141,7 +141,7 @@ const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
                 </router-link>
                 이(가)
                 <router-link
-                  :to="{
+                    :to="{
                     name: '(작업내역)',
                     params: { projId: 'redmine' },
                     query: { from: log.timestamp.substring(0, 10) },
@@ -153,16 +153,16 @@ const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
               </CCol>
               <CCol class="text-right">#{{ log.pk }}</CCol>
             </CRow>
-            <v-divider class="mt-0 mb-2" />
+            <v-divider class="mt-0 mb-2"/>
             <div class="history pl-4 mb-2">
               <ul>
                 <li v-for="(src, i) in getHistory(log.details)" :key="i">
-                  <VueMarkdownIt :source="src" />
+                  <VueMarkdownIt :source="src"/>
                   <span v-if="log.diff">
                     <router-link to="">
                       (변경 내용)
                       <v-tooltip activator="parent" location="start">
-                        <VueMarkdownIt :source="log.diff" />
+                        <VueMarkdownIt :source="log.diff"/>
                       </v-tooltip>
                     </router-link>
                   </span>

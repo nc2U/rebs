@@ -11,11 +11,13 @@ const emit = defineEmits(['aside-visible'])
 const [route, router] = [useRoute(), useRouter()]
 
 const workStore = useWork()
+const iProject = computed(() => workStore.issueProject)
+const issueProjects = computed(() => workStore.AllIssueProjects)
 const issue = computed(() => workStore.issue)
 const issueList = computed(() => workStore.issueList)
 const issueLogList = computed(() => workStore.issueLogList)
-const iProject = computed(() => workStore.issueProject)
-const issueProjects = computed(() => workStore.AllIssueProjects)
+const issueCommentList = computed(() => workStore.issueCommentList)
+const timeEntryList = computed(() => workStore.timeEntryList)
 
 const onSubmit = (payload: any) => {
   if (payload.pk) workStore.updateIssue(payload)
@@ -45,19 +47,22 @@ onBeforeMount(async () => {
     await workStore.fetchIssueProjectList()
     await workStore.fetchIssue(Number(route.params.issueId))
     await workStore.fetchIssueLogList({ issue: Number(route.params.issueId) })
+    await workStore.fetchTimeEntryList({ issue: Number(route.params.issueId) })
   }
 })
 </script>
 
 <template>
   <IssueList v-if="route.name === '(업무)'" :issue-list="issueList" />
-  
+
   <IssueView
     v-if="route.name === '(업무) - 보기' && issue"
     :i-project="iProject ?? undefined"
     :issue="issue"
     :issue-projects="issueProjects"
     :issue-log-list="issueLogList"
+    :issue-comment-list="issueCommentList"
+    :time-entry-list="timeEntryList"
     @on-submit="onSubmit"
   />
 

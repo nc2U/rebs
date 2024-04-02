@@ -1,6 +1,12 @@
 <script lang="ts" setup>
 import { ref, type PropType } from 'vue'
-import type { Issue, IssueLogEntry, IssueProject } from '@/store/types/work'
+import type {
+  Issue,
+  IssueComment,
+  IssueLogEntry,
+  IssueProject,
+  TimeEntryFilter,
+} from '@/store/types/work'
 import { elapsedTime } from '@/utils/baseMixins'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 import IssueControl from './IssueControl.vue'
@@ -12,6 +18,8 @@ defineProps({
   issue: { type: Object as PropType<Issue>, required: true },
   issueProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
   issueLogList: { type: Array as PropType<IssueLogEntry[]>, default: () => [] },
+  issueCommentList: { type: Array as PropType<IssueComment[]>, default: () => [] },
+  timeEntryList: { type: Array as PropType<TimeEntryFilter[]>, default: () => [] },
 })
 
 const emit = defineEmits(['on-submit'])
@@ -189,8 +197,13 @@ const callEditForm = () => {
     </CCardBody>
   </CCard>
 
-  <IssueHistory v-if="issueLogList.length" :issue-log-list="issueLogList" />
-  
+  <IssueHistory
+    v-if="issueLogList.length"
+    :issue-log-list="issueLogList"
+    :issue-comment-list="issueCommentList"
+    :time-entry-list="timeEntryList"
+  />
+
   <div>
     <IssueControl @call-edit-form="callEditForm" />
   </div>
