@@ -108,10 +108,11 @@ def issue_log_changes(sender, instance, created, **kwargs):
     if created:
         ActivityLogEntry.objects.create(sort='1', project=instance.project, issue=instance, user=user)
     else:
-        IssueLogEntry.objects.create(issue=instance, action=action, details=details, diff=diff, user=user)
-        if hasattr(instance, '_old_status'):
-            ActivityLogEntry.objects.create(sort='1', project=instance.project,
-                                            issue=instance, status_log=status_log, user=user)
+        if details:
+            IssueLogEntry.objects.create(issue=instance, action=action, details=details, diff=diff, user=user)
+            if hasattr(instance, '_old_status'):
+                ActivityLogEntry.objects.create(sort='1', project=instance.project,
+                                                issue=instance, status_log=status_log, user=user)
 
 
 @receiver(post_save, sender=TimeEntry)
