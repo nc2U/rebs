@@ -205,7 +205,14 @@ export interface Issue {
 
 export interface IssueComment {
   pk: number
-  issue: number
+  issue: {
+    pk: number
+    project: { slug: string; name: string }
+    tracker: string
+    status: string
+    subject: string
+    description: string
+  }
   content: string
   created: string
   updated: string
@@ -257,21 +264,21 @@ export interface ActLogEntry {
   project: { slug: string; name: string } | null
   issue: {
     pk: number
+    project: { slug: string; name: string }
     tracker: string
     status: { pk: number; name: string; closed: boolean }
     subject: string
     description: string
   } | null
   status_log: string
+  comment: number | null
   // change_sets: string
   // news: string
   // document: string
   // file: string
   // wiki: string
   // message: string
-  spent_time: { pk: number; hours: string; comment: '' }
-  details: string
-  diff: string
+  spent_time: { pk: number; hours: string; comment: '' } | null
   act_date: string
   timestamp: string
   user: {
