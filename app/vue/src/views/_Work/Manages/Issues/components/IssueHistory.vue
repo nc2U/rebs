@@ -13,6 +13,16 @@ defineProps({
 const tabPaneActiveKey = ref(1)
 
 const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
+
+const copyLink = (path: string, hash: string) => {
+  // 가상의 textarea 엘리먼트를 생성하고 텍스트를 할당.
+  const textarea = document.createElement('textarea')
+  textarea.value = window.location.host + '/#' + path + hash
+  document.body.appendChild(textarea) // textarea를 DOM에 추가합니다.
+  textarea.select() // textarea의 텍스트를 선택합니다.
+  document.execCommand('copy') // 복사 명령을 실행합니다.
+  document.body.removeChild(textarea) // textarea를 삭제합니다.
+}
 </script>
 
 <template>
@@ -80,7 +90,11 @@ const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
       <CTabContent>
         <CTabPane role="tabpanel" aria-labelledby="home-tab" :visible="tabPaneActiveKey === 1">
           <div v-for="log in issueLogList" :key="log.pk">
-            <CRow>
+            <CRow
+              :id="`note-${log.pk}`"
+              :class="{ 'bg-blue-lighten-5': $route.hash == `#note-${log.pk}` }"
+            >
+              <!--              {{ $route.fullPath }}-->
               <CCol v-if="log.user">
                 <router-link :to="{ name: '사용자 - 보기', params: { userId: log.user.pk } }">
                   {{ log.user.username }}
@@ -97,7 +111,34 @@ const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
                 </router-link>
                 에 변경
               </CCol>
-              <CCol class="text-right">#{{ log.pk }}</CCol>
+              <CCol class="text-right">
+                <span>
+                  <CDropdown color="secondary" variant="input-group" placement="bottom-end">
+                    <CDropdownToggle
+                      :caret="false"
+                      color="light"
+                      variant="ghost"
+                      size="sm"
+                      shape="rounded-pill"
+                    >
+                      <v-icon icon="mdi-dots-horizontal" class="pointer" color="grey-darken-1" />
+                      <v-tooltip activator="parent" location="top">Actions</v-tooltip>
+                    </CDropdownToggle>
+                    <CDropdownMenu>
+                      <CDropdownItem
+                        class="form-text"
+                        @click="copyLink($route.path, `#note-${log.pk}`)"
+                      >
+                        <router-link to="">
+                          <v-icon icon="mdi-pencil" color="amber" size="sm" />
+                          링크 복사
+                        </router-link>
+                      </CDropdownItem>
+                    </CDropdownMenu>
+                  </CDropdown>
+                </span>
+                <router-link :to="{ hash: '#note-' + log.pk }">#{{ log.pk }}</router-link>
+              </CCol>
             </CRow>
             <v-divider class="mt-0 mb-2" />
             <div class="history pl-4 mb-2">
@@ -134,7 +175,7 @@ const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
 
         <CTabPane role="tabpanel" aria-labelledby="contact-tab" :visible="tabPaneActiveKey === 3">
           <div v-for="log in issueLogList" :key="log.pk">
-            <CRow>
+            <CRow :id="`note-${log.pk}`">
               <CCol v-if="log.user">
                 <router-link :to="{ name: '사용자 - 보기', params: { userId: log.user.pk } }">
                   {{ log.user.username }}
