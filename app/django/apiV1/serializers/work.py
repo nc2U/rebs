@@ -373,21 +373,7 @@ class IssueSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 
-class IssueFileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = IssueFile
-        fields = ('pk', 'issue', 'file', 'description')
-
-
-class IssueCommentSerializer(serializers.ModelSerializer):
-    user = SimpleUserSerializer(read_only=True)
-
-    class Meta:
-        model = IssueComment
-        fields = ('pk', 'issue', 'content', 'created', 'updated', 'user')
-
-
-class IssueInActivitySerializer(serializers.ModelSerializer):
+class IssueInRelatedSerializer(serializers.ModelSerializer):
     project = IProjectIssueSerializer(read_only=True)
     tracker = serializers.SlugRelatedField(slug_field='name', read_only=True)
     status = IssueStatusInIssueSerializer(read_only=True)
@@ -397,6 +383,21 @@ class IssueInActivitySerializer(serializers.ModelSerializer):
         fields = ('pk', 'project', 'tracker', 'status', 'subject', 'description')
 
 
+class IssueFileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IssueFile
+        fields = ('pk', 'issue', 'file', 'description')
+
+
+class IssueCommentSerializer(serializers.ModelSerializer):
+    issue = IssueInRelatedSerializer(read_only=True)
+    user = SimpleUserSerializer(read_only=True)
+
+    class Meta:
+        model = IssueComment
+        fields = ('pk', 'issue', 'content', 'created', 'updated', 'user')
+
+
 class SimpleCodeActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = CodeActivity
@@ -404,7 +405,7 @@ class SimpleCodeActivitySerializer(serializers.ModelSerializer):
 
 
 class TimeEntrySerializer(serializers.ModelSerializer):
-    issue = IssueInActivitySerializer(read_only=True)
+    issue = IssueInRelatedSerializer(read_only=True)
     activity = SimpleCodeActivitySerializer(read_only=True)
     user = SimpleUserSerializer(read_only=True)
     total_hours = serializers.SerializerMethodField()
@@ -446,19 +447,20 @@ class TimeEntryInActivityLogSerializer(serializers.ModelSerializer):
 
 class ActivityLogEntrySerializer(serializers.ModelSerializer):
     project = IProjectIssueSerializer(read_only=True)
-    issue = IssueInActivitySerializer(read_only=True)
+    issue = IssueInRelatedSerializer(read_only=True)
+    comment = IssueCommentSerializer(read_only=True)
     spent_time = TimeEntryInActivityLogSerializer(read_only=True)
     user = SimpleUserSerializer(read_only=True)
 
     class Meta:
         model = ActivityLogEntry
-        fields = ('pk', 'sort', 'project', 'issue', 'status_log',
+        fields = ('pk', 'sort', 'project', 'issue', 'status_log', 'comment',
                   'spent_time', 'act_date', 'timestamp', 'user')
         # 'change_sets', 'news', 'document', 'file', 'wiki', 'message',
 
 
 class IssueLogEntrySerializer(serializers.ModelSerializer):
-    issue = IssueInActivitySerializer(read_only=True)
+    issue = IssueInRelatedSerializer(read_only=True)
     user = SimpleUserSerializer(read_only=True)
 
     class Meta:

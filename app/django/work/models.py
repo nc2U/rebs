@@ -453,11 +453,12 @@ class TimeEntry(models.Model):
 
 
 class ActivityLogEntry(models.Model):
-    SORT_CHOICES = (('1', '업무'), ('2', '변경묶음'), ('3', '공지'), ('4', '문서'),
-                    ('5', '파일'), ('6', '위키편집'), ('7', '글'), ('8', '소요시간'))
+    SORT_CHOICES = (('1', '업무'), ('2', '댓글'), ('3', '변경묶음'), ('4', '공지'), ('5', '문서'),
+                    ('6', '파일'), ('7', '위키편집'), ('8', '글'), ('9', '작업시간'))
     sort = models.CharField('구분', max_length=1, choices=SORT_CHOICES, default='1')
     project = models.ForeignKey(IssueProject, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='프로젝트')
     issue = models.ForeignKey(Issue, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='업무')
+    comment = models.ForeignKey(IssueComment, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='댓글')
     status_log = models.CharField('상태 기록', max_length=30, blank=True, default='')
     # change_sets = models.TextField('변경 묶음', blank=True, default='')
     # news = models.TextField('공지', blank=True, default='')

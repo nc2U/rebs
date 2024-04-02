@@ -1,6 +1,6 @@
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
-from .models import Issue, TimeEntry, ActivityLogEntry, IssueLogEntry
+from .models import Issue, IssueComment, TimeEntry, ActivityLogEntry, IssueLogEntry
 
 
 @receiver(pre_save, sender=Issue)
@@ -115,8 +115,15 @@ def issue_log_changes(sender, instance, created, **kwargs):
                                                 issue=instance, status_log=status_log, user=user)
 
 
+@receiver(post_save, sender=IssueComment)
+def comment_log_changes(sender, instance, created, **kwargs):
+    if created:
+        ActivityLogEntry.objects.create(sort='2', project=instance.issue.projectt,
+                                        comment=instance, user=instance.user)
+
+
 @receiver(post_save, sender=TimeEntry)
 def time_log_changes(sender, instance, created, **kwargs):
     if created:
-        ActivityLogEntry.objects.create(sort='8', project=instance.issue.project,
-                                        issue=instance.issue, spent_time=instance, user=instance.user)
+        ActivityLogEntry.objects.create(sort='9', project=instance.issue.project,
+                                        spent_time=instance, user=instance.user)
