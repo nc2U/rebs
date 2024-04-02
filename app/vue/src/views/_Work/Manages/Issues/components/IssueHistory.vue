@@ -175,7 +175,10 @@ const copyLink = (path: string, hash: string) => {
 
         <CTabPane role="tabpanel" aria-labelledby="contact-tab" :visible="tabPaneActiveKey === 3">
           <div v-for="log in issueLogList" :key="log.pk">
-            <CRow :id="`note-${log.pk}`">
+            <CRow
+              :id="`note-${log.pk}`"
+              :class="{ 'bg-blue-lighten-5': $route.hash == `#note-${log.pk}` }"
+            >
               <CCol v-if="log.user">
                 <router-link :to="{ name: '사용자 - 보기', params: { userId: log.user.pk } }">
                   {{ log.user.username }}
@@ -192,7 +195,9 @@ const copyLink = (path: string, hash: string) => {
                 </router-link>
                 에 변경
               </CCol>
-              <CCol class="text-right">#{{ log.pk }}</CCol>
+              <CCol class="text-right">
+                <router-link :to="{ hash: '#note-' + log.pk }">#{{ log.pk }}</router-link>
+              </CCol>
             </CRow>
             <v-divider class="mt-0 mb-2" />
             <div class="history pl-4 mb-2">
@@ -233,19 +238,26 @@ const copyLink = (path: string, hash: string) => {
                 에 추가함
               </CCol>
               <CCol class="text-right pr-3">
-                <v-icon
-                  icon="mdi-pencil"
-                  color="amber"
-                  size="sm"
-                  class="mr-2 pointer"
-                  @click="
-                    $router.push({
-                      name: '(소요시간) - 편집',
-                      params: { projId: time.issue.project.slug, timeId: time.pk },
-                    })
-                  "
-                />
-                <v-icon icon="mdi-trash-can" color="secondary" size="sm" />
+                <span>
+                  <v-icon
+                    icon="mdi-pencil"
+                    color="amber"
+                    class="mr-2 pointer"
+                    size="18"
+                    @click="
+                      $router.push({
+                        name: '(소요시간) - 편집',
+                        params: { projId: time.issue.project.slug, timeId: time.pk },
+                      })
+                    "
+                  />
+                  <v-tooltip activator="parent" location="top">편집</v-tooltip>
+                </span>
+
+                <span>
+                  <v-icon icon="mdi-trash-can" color="grey" size="18" class="pointer" />
+                  <v-tooltip activator="parent" location="top">삭제</v-tooltip>
+                </span>
               </CCol>
             </CRow>
             <v-divider class="mt-0 mb-2" />
