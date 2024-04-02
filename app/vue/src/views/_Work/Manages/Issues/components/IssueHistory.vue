@@ -257,7 +257,7 @@ const copyLink = (path: string, hash: string) => {
               <ul>
                 <li v-for="(src, i) in getHistory(log.details)" :key="i">
                   <VueMarkdownIt :source="src" />
-                  <span v-if="log.diff">
+                  <span v-if="log.diff && src.includes('**설명**')">
                     <router-link to="">
                       (변경 내용)
                       <v-tooltip activator="parent" location="start">
