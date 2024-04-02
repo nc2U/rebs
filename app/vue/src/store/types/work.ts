@@ -211,7 +211,7 @@ export interface TimeEntry {
   pk: number
   issue: {
     pk: number
-    project: string
+    project: { slug: string; name: string }
     tracker: string
     status: string
     subject: string
@@ -276,7 +276,7 @@ export interface IssueLogEntry {
   pk: number
   issue: {
     pk: number
-    project: string
+    project: { slug: string; name: string }
     tracker: string
     status: { pk: number; name: string; closed: boolean }
     subject: string
