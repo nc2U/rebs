@@ -5,7 +5,7 @@ import type {
   IssueComment,
   IssueLogEntry,
   IssueProject,
-  TimeEntryFilter,
+  TimeEntry,
 } from '@/store/types/work'
 import { elapsedTime } from '@/utils/baseMixins'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
@@ -19,7 +19,7 @@ defineProps({
   issueProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
   issueLogList: { type: Array as PropType<IssueLogEntry[]>, default: () => [] },
   issueCommentList: { type: Array as PropType<IssueComment[]>, default: () => [] },
-  timeEntryList: { type: Array as PropType<TimeEntryFilter[]>, default: () => [] },
+  timeEntryList: { type: Array as PropType<TimeEntry[]>, default: () => [] },
 })
 
 const emit = defineEmits(['on-submit'])
