@@ -260,7 +260,7 @@ export interface TimeEntryFilter {
 
 export interface ActLogEntry {
   pk: number
-  sort: '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8'
+  sort: '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
   project: { slug: string; name: string } | null
   issue: {
     pk: number
@@ -271,7 +271,7 @@ export interface ActLogEntry {
     description: string
   } | null
   status_log: string
-  comment: number | null
+  comment: { pk: number; content: string } | null
   // change_sets: string
   // news: string
   // document: string

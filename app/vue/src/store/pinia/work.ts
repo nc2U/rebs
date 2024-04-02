@@ -184,17 +184,27 @@ export const useWork = defineStore('work', () => {
   const createIssue = (payload: any) =>
     api
       .post(`/issue/`, payload)
-      .then(res => fetchIssueList().then(() => fetchIssue(res.data.pk).then(() => message())))
+      .then(async res => {
+        await fetchIssue(res.data.pk)
+        await fetchIssueList()
+        await fetchIssueLogList({ issue: res.data.pk })
+        await fetchIssueCommentList({ issue: res.data.pk })
+        await fetchTimeEntryList({ issue: res.data.pk })
+        message()
+      })
       .catch(err => errorHandle(err.response.data))
 
   const updateIssue = (payload: any) =>
     api
       .put(`/issue/${payload.pk}/`, payload)
-      .then(() =>
-        fetchIssue(payload.pk).then(() =>
-          fetchIssueLogList({ issue: payload.pk }).then(() => message()),
-        ),
-      )
+      .then(async () => {
+        await fetchIssue(payload.pk)
+        await fetchIssueLogList({ issue: payload.pk })
+        await fetchIssueLogList({ issue: payload.pk })
+        await fetchIssueCommentList({ issue: payload.pk })
+        await fetchTimeEntryList({ issue: payload.pk })
+        message()
+      })
       .catch(err => errorHandle(err.response.data))
 
   const patchIssue = (payload: any) =>
