@@ -421,7 +421,7 @@ class TimeEntrySerializer(serializers.ModelSerializer):
 class TimeEntryInActivityLogSerializer(serializers.ModelSerializer):
     class Meta:
         model = TimeEntry
-        fields = ('pk', 'hours')
+        fields = ('pk', 'hours', 'comment')
 
 
 class ActivityLogEntrySerializer(serializers.ModelSerializer):

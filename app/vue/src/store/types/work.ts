@@ -261,7 +261,7 @@ export interface ActLogEntry {
   // file: string
   // wiki: string
   // message: string
-  spent_time: { pk: number; hours: string }
+  spent_time: { pk: number; hours: string; comment: '' }
   details: string
   diff: string
   act_date: string
