@@ -44,7 +44,7 @@ const timeEntry = ref({
   comment: '',
 })
 
-const comment = ref('')
+const comment_content = ref('')
 
 const emit = defineEmits(['on-submit', 'close-form'])
 
@@ -66,7 +66,7 @@ const formCheck = computed(() => {
     const n = !timeEntry.value.hours
     const o = !timeEntry.value.activity
     const p = !timeEntry.value.comment
-    const q = !comment.value
+    const q = !comment_content.value
     return a && b && c && d && e && f && g && h && i && j && k && l && m && n && o && p && q
   } else return false
 })
@@ -96,7 +96,7 @@ const onSubmit = (event: Event) => {
     emit('on-submit', {
       ...form.value,
       ...timeEntry.value,
-      issue_comment: comment.value,
+      comment_content: comment_content.value,
     })
 }
 
@@ -105,7 +105,7 @@ const closeForm = () => emit('close-form')
 const userInfo = inject<ComputedRef<User>>('userInfo')
 const callComment = (edit?: true) => {
   // 댓글 폼 불러오기
-  comment.value = edit
+  comment_content.value = edit
     ? ''
     : userInfo?.value.username +
       ' wrote: \n' +
@@ -412,7 +412,7 @@ onBeforeMount(() => {
 
             <h6>댓글</h6>
             <v-divider class="mt-0" />
-            <MdEditor v-model="comment" style="height: 180px" />
+            <MdEditor v-model="comment_content" style="height: 180px" />
           </div>
         </CCardBody>
       </CCard>

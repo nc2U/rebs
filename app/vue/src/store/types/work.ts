@@ -205,6 +205,14 @@ export interface Issue {
 
 export interface IssueComment {
   pk: number
+  issue: number
+  content: string
+  created: string
+  updated: string
+  user: {
+    pk: number
+    username: string
+  }
 }
 
 export interface TimeEntry {

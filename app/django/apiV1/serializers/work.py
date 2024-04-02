@@ -361,13 +361,14 @@ class IssueSerializer(serializers.ModelSerializer):
         hours = self.initial_data.get('hours', None)
         activity = self.initial_data.get('activity', None)
         comment = self.initial_data.get('comment', None)
+        user = self.context['request'].user
         if hours and activity:
             activity = CodeActivity.objects.get(pk=activity)
-            user = self.context['request'].user
             TimeEntry.objects.create(issue=instance, hours=hours,
                                      activity=activity, comment=comment, user=user)
         # issue_comment logic
-        issue_comment = self.initial_data.get('issue_comment', None)
+        comment_content = self.initial_data.get('comment_content', None)
+        IssueComment.objects.create(issue=instance, content=comment_content, user=user)
 
         return super().update(instance, validated_data)
 
@@ -379,9 +380,11 @@ class IssueFileSerializer(serializers.ModelSerializer):
 
 
 class IssueCommentSerializer(serializers.ModelSerializer):
+    user = SimpleUserSerializer(read_only=True)
+
     class Meta:
         model = IssueComment
-        fields = ('pk', 'issue', 'content', 'user', 'created', 'updated')
+        fields = ('pk', 'issue', 'content', 'created', 'updated', 'user')
 
 
 class IssueInActivitySerializer(serializers.ModelSerializer):
