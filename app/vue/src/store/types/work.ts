@@ -221,6 +221,8 @@ export interface TimeEntry {
   hours: string
   activity: { pk: number; name: string }
   comment: string
+  created: string
+  updated: string
   user: { pk: number; username: string }
   total_hours: number
 }
