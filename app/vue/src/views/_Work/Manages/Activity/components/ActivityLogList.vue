@@ -103,7 +103,7 @@ const toNext = () => emit('to-next')
                   class="form-text pl-4"
                 />
                 <span v-if="act.sort === '8' && act.spent_time.comment" class="pl-3">
-                  {{ act.spent_time.comment }}
+                  {{ cutString(act.spent_time.comment, 100) }}
                 </span>
               </div>
               <div v-if="act.user" class="form-text ml-5 pl-2">
