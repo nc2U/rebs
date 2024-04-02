@@ -408,7 +408,8 @@ class TimeEntrySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TimeEntry
-        fields = ('pk', 'issue', 'spent_on', 'hours', 'activity', 'comment', 'user', 'total_hours')
+        fields = ('pk', 'issue', 'spent_on', 'hours', 'activity', 'comment',
+                  'created', 'updated', 'user', 'total_hours')
 
     def get_total_hours(self, obj):
         # Access the filtered queryset from the view context
