@@ -36,7 +36,7 @@ defineProps({
       <CTable striped hover small responsive>
         <colgroup>
           <col style="width: 8%" />
-          <col style="width: 16%" />
+          <col v-if="!$route.params.projId" style="width: 16%" />
           <col style="width: 8%" />
           <col style="width: 8%" />
           <col style="width: 8%" />
@@ -48,7 +48,7 @@ defineProps({
         <CTableHead>
           <CTableRow class="text-center">
             <CTableHeaderCell scope="col">#</CTableHeaderCell>
-            <CTableHeaderCell scope="col">프로젝트</CTableHeaderCell>
+            <CTableHeaderCell v-if="!$route.params.projId" scope="col">프로젝트</CTableHeaderCell>
             <CTableHeaderCell scope="col">유형</CTableHeaderCell>
             <CTableHeaderCell scope="col">상태</CTableHeaderCell>
             <CTableHeaderCell scope="col">우선순위</CTableHeaderCell>
@@ -71,7 +71,7 @@ defineProps({
                 {{ issue.pk }}
               </router-link>
             </CTableDataCell>
-            <CTableDataCell>
+            <CTableDataCell v-if="!$route.params.projId">
               <router-link :to="{ name: '(개요)', params: { projId: issue.project.slug } }">
                 {{ issue.project.name }}
               </router-link>
