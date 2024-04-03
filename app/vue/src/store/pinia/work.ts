@@ -13,7 +13,6 @@ import type {
   IssueComment,
   TimeEntry,
   TimeEntryFilter,
-  ActLogEntry,
   IssueLogEntry,
 } from '@/store/types/work'
 
