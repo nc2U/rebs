@@ -296,6 +296,7 @@ class IssueSerializer(serializers.ModelSerializer):
     priority = CodePriorityInIssueSerializer(read_only=True)
     assigned_to = SimpleUserSerializer(read_only=True)
     parent = serializers.SerializerMethodField()
+    spent_time = serializers.SerializerMethodField(read_only=True)
     creator = SimpleUserSerializer(read_only=True)
     updater = SimpleUserSerializer(read_only=True)
 
@@ -304,13 +305,17 @@ class IssueSerializer(serializers.ModelSerializer):
         fields = ('pk', 'project', 'tracker', 'status', 'priority', 'subject',
                   'description', 'category', 'fixed_version', 'assigned_to', 'parent',
                   'watchers', 'is_private', 'estimated_hours', 'start_date', 'due_date',
-                  'done_ratio', 'closed', 'creator', 'updater', 'created', 'updated')
+                  'done_ratio', 'closed', 'spent_time', 'creator', 'updater', 'created', 'updated')
 
     @staticmethod
     def get_parent(obj):
         # Check if there is a parent object corresponding to the parent field in the entire collection
         parent_obj = IssueProject.objects.filter(id=obj.parent_id).first() if obj.parent else None
         return obj.parent if parent_obj else None
+
+    @staticmethod
+    def get_spent_time(obj):
+        return obj.timeentry_set.all().aggregate(Sum('hours'))['hours__sum']
 
     @transaction.atomic
     def create(self, validated_data):
