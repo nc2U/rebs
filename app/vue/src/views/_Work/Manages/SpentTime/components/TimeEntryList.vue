@@ -73,7 +73,7 @@ defineProps({
         <CTableBody>
           <CTableRow v-for="time in timeEntryList" :key="time.pk" class="text-center">
             <CTableDataCell v-if="!$route.params.projId">
-              <router-link to="">{{ time.issue.project }}</router-link>
+              <router-link to="">{{ time.issue.project.name }}</router-link>
             </CTableDataCell>
             <CTableDataCell class="text-center">
               {{ dateFormat(time.spent_on, '/') }}
