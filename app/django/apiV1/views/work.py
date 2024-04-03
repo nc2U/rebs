@@ -142,12 +142,18 @@ class IssueCategoryViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
 
+class IssueFilter(FilterSet):
+    class Meta:
+        model = Issue
+        fields = ('project', 'status__closed')
+
+
 class IssueViewSet(viewsets.ModelViewSet):
     queryset = Issue.objects.all()
     serializer_class = IssueSerializer
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = PageNumberPaginationTwenty
-    search_fields = ('id',)
+    filterset_class = IssueFilter
 
     def perform_create(self, serializer):
         serializer.save(creator=self.request.user)

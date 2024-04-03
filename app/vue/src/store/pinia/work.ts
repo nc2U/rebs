@@ -175,18 +175,23 @@ export const useWork = defineStore('work', () => {
       .then(res => (issue.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const fetchIssueList = (issue?: number) =>
-    api
-      .get(`/issue/`)
+  const fetchIssueList = async (payload: { project?: string; status__closed?: boolean }) => {
+    let url = `/issue/`
+    if (payload.status__closed) url += `?status__closed=${payload.status__closed}`
+    else url += `?status__closealse`
+
+    return await api
+      .get(url)
       .then(res => (issueList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
+  }
 
   const createIssue = (payload: any) =>
     api
       .post(`/issue/`, payload)
       .then(async res => {
         await fetchIssue(res.data.pk)
-        await fetchIssueList()
+        await fetchIssueList({ project: res.data.project })
         await fetchIssueLogList({ issue: res.data.pk })
         await fetchIssueCommentList({ issue: res.data.pk })
         await fetchTimeEntryList({ issue: res.data.pk })
@@ -221,7 +226,9 @@ export const useWork = defineStore('work', () => {
     api
       .delete(`/issue/${pk}/`)
       .then(() =>
-        fetchIssueList().then(() => message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.')),
+        fetchIssueList({}).then(() =>
+          message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.'),
+        ),
       )
       .catch(err => errorHandle(err.response.data))
 
