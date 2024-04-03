@@ -118,6 +118,7 @@ def issue_log_changes(sender, instance, created, **kwargs):
 @receiver(post_save, sender=IssueComment)
 def comment_log_changes(sender, instance, created, **kwargs):
     if created:
+        IssueLogEntry.objects.create(issue=instance, action='Edited', comment=instance, user=instance.user)
         ActivityLogEntry.objects.create(sort='2', project=instance.issue.project, issue=instance.issue,
                                         comment=instance, user=instance.user)
 
