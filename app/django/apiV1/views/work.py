@@ -145,7 +145,7 @@ class IssueCategoryViewSet(viewsets.ModelViewSet):
 class IssueFilter(FilterSet):
     class Meta:
         model = Issue
-        fields = ('project', 'status__closed')
+        fields = ('project__slug', 'status__closed')
 
 
 class IssueViewSet(viewsets.ModelViewSet):

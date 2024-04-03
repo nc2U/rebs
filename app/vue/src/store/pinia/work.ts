@@ -175,10 +175,10 @@ export const useWork = defineStore('work', () => {
       .then(res => (issue.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const fetchIssueList = async (payload: { project?: string; status__closed?: boolean }) => {
-    let url = `/issue/`
-    if (payload.status__closed) url += `?status__closed=${payload.status__closed}`
-    else url += `?status__closealse`
+  const fetchIssueList = async (payload: { status__closed?: '1' | '0' | ''; project?: string }) => {
+    let url = `/issue/?1=1`
+    if (payload.status__closed) url += `&status__closed=${payload.status__closed}`
+    if (payload.project) url += `&project__slug=${payload.project}`
 
     return await api
       .get(url)

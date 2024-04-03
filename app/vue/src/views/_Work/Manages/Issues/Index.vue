@@ -31,7 +31,7 @@ const onSubmit = (payload: any) => {
 
 onBeforeMount(async () => {
   await workStore.fetchIssueProjectList()
-  await workStore.fetchIssueList()
+  await workStore.fetchIssueList({ status__closed: '' })
 })
 </script>
 

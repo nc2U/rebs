@@ -33,19 +33,24 @@ onBeforeRouteUpdate(async to => {
     await workStore.fetchIssueLogList({ issue: Number(to.params.issueId) })
   } else {
     workStore.issue = null
-    await workStore.fetchIssueList()
+    await workStore.fetchIssueList({ status__closed: false })
   }
 })
 
 onBeforeMount(async () => {
   emit('aside-visible', true)
-  await workStore.fetchIssueList()
+  await workStore.fetchIssueProjectList()
+  await workStore.fetchIssueList({ status__closed: '' })
 
-  if (route.params.projId) await workStore.fetchIssueProject(route.params.projId as string)
+  if (route.params.projId) {
+    await workStore.fetchIssueProject(route.params.projId as string)
+    await workStore.fetchIssueList({
+      status__closed: '',
+      project: route.params.projId as string,
+    })
+  }
 
   if (route.params.issueId) {
-    await workStore.fetchIssueProjectList()
-    await workStore.fetchIssueList()
     await workStore.fetchIssue(Number(route.params.issueId))
     await workStore.fetchIssueLogList({ issue: Number(route.params.issueId) })
     await workStore.fetchIssueCommentList({ issue: Number(route.params.issueId) })
