@@ -7,7 +7,7 @@ import type {
   IssueProject,
   TimeEntry,
 } from '@/store/types/work'
-import { elapsedTime } from '@/utils/baseMixins'
+import { elapsedTime, diffDate } from '@/utils/baseMixins'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 import IssueControl from './IssueControl.vue'
 import IssueHistory from './IssueHistory.vue'
@@ -148,12 +148,17 @@ const callComment = () => {
 
         <CCol md="6">
           <CRow>
-            <CCol class="title">시작일 :</CCol>
+            <CCol class="title">시작일자 :</CCol>
             <CCol>{{ issue?.start_date }}</CCol>
           </CRow>
           <CRow>
-            <CCol class="title">완료일 :</CCol>
-            <CCol>{{ issue?.due_date }}</CCol>
+            <CCol class="title">완료기한 :</CCol>
+            <CCol :class="{ 'text-danger': !!issue.due_date && diffDate(issue.due_date) > 0 }">
+              {{ issue?.due_date }}
+              <span v-if="!!issue.due_date && diffDate(issue.due_date) > 0">
+                ({{ Math.floor(diffDate(issue.due_date)) }} 일 지연)
+              </span>
+            </CCol>
           </CRow>
           <CRow>
             <CCol class="title">진척도 :</CCol>
