@@ -175,7 +175,7 @@ export const useWork = defineStore('work', () => {
       .then(res => (issue.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const fetchIssueList = () =>
+  const fetchIssueList = (issue?: number) =>
     api
       .get(`/issue/`)
       .then(res => (issueList.value = res.data.results))

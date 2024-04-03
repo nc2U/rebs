@@ -45,6 +45,7 @@ onBeforeMount(async () => {
 
   if (route.params.issueId) {
     await workStore.fetchIssueProjectList()
+    await workStore.fetchIssueList()
     await workStore.fetchIssue(Number(route.params.issueId))
     await workStore.fetchIssueLogList({ issue: Number(route.params.issueId) })
     await workStore.fetchIssueCommentList({ issue: Number(route.params.issueId) })

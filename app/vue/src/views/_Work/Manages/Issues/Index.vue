@@ -29,9 +29,9 @@ const onSubmit = (payload: any) => {
   }
 }
 
-onBeforeMount(() => {
-  workStore.fetchIssueProjectList()
-  workStore.fetchIssueList()
+onBeforeMount(async () => {
+  await workStore.fetchIssueProjectList()
+  await workStore.fetchIssueList()
 })
 </script>
 
