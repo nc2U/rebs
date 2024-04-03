@@ -480,7 +480,7 @@ class ActivityLogEntry(models.Model):
 
 class IssueLogEntry(models.Model):
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, verbose_name='업무')
-    ACTION_CHOICES = (('Created', '추가'), ('Updated', '편집'))
+    ACTION_CHOICES = (('Created', '추가'), ('Updated', '편집'), ('Comment', '댓글'))
     action = models.CharField('이벤트', max_length=7, choices=ACTION_CHOICES, default='Created')
     comment = models.ForeignKey(IssueComment, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='댓글')
     details = models.TextField('설명', blank=True, default='')

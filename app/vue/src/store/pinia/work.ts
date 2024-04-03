@@ -190,7 +190,7 @@ export const useWork = defineStore('work', () => {
       .post(`/issue/`, payload)
       .then(async res => {
         await fetchIssue(res.data.pk)
-        await fetchIssueList({ project: res.data.project })
+        await fetchIssueList({ status__closed: '', project: res.data.project.slug })
         await fetchIssueLogList({ issue: res.data.pk })
         await fetchIssueCommentList({ issue: res.data.pk })
         await fetchTimeEntryList({ issue: res.data.pk })
