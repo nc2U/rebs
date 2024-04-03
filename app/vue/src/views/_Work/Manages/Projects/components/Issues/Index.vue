@@ -33,7 +33,7 @@ onBeforeRouteUpdate(async to => {
     await workStore.fetchIssueLogList({ issue: Number(to.params.issueId) })
   } else {
     workStore.issue = null
-    await workStore.fetchIssueList({ status__closed: false })
+    await workStore.fetchIssueList({ status__closed: '' })
   }
 })
 

@@ -136,6 +136,7 @@ onBeforeMount(() => {
     form.value.due_date = props.issue.due_date
     form.value.estimated_hours = props.issue.estimated_hours
     form.value.done_ratio = props.issue.done_ratio
+    workStore.fetchIssueList({ status__closed: '', project: props.issue.project.slug })
   }
   if (route.params.projId) {
     workStore.fetchIssueProject(route.params.projId as string)
@@ -146,7 +147,7 @@ onBeforeMount(() => {
   workStore.fetchStatusList()
   workStore.fetchActivityList()
   workStore.fetchPriorityList()
-  workStore.fetchIssueList()
+  workStore.fetchIssueList({ status__closed: '' })
 })
 </script>
 

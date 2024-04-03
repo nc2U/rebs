@@ -91,15 +91,14 @@ const onSubmit = (payload: any) => {
 
 onBeforeRouteUpdate(async to => {
   if (to.params.projId) await workStore.fetchIssueProject(to.params.projId as string)
-  else {
-    workStore.issueProject = null
-    await workStore.fetchIssueProjectList()
-  }
+  else workStore.issueProject = null
 })
 
-onBeforeMount(() => {
-  workStore.fetchIssueProjectList()
-  if (route.params.projId) workStore.fetchIssueProject(route.params.projId as string)
+onBeforeMount(async () => {
+  await workStore.fetchIssueProjectList()
+  if (route.params.projId) {
+    await workStore.fetchIssueProject(route.params.projId as string)
+  }
 })
 </script>
 

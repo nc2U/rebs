@@ -79,13 +79,14 @@ onBeforeMount(async () => {
   if (route.params.projId) {
     await workStore.fetchIssueProject(route.params.projId as string)
     form.value.project = route.params.projId as string
+    await workStore.fetchIssueList({ status__closed: '', project: form.value.project })
   }
   if (route.params.timeId) await workStore.fetchTimeEntry(Number(route.params.timeId))
   else workStore.timeEntry = null
 
   await workStore.fetchMemberList()
   await workStore.fetchActivityList()
-  await workStore.fetchIssueList()
+  await workStore.fetchIssueList({ status__closed: '' })
 
   dataSetup()
 })
