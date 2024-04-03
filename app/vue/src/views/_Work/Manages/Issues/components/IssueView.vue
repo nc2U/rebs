@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, type PropType } from 'vue'
+import { ref, computed, type PropType } from 'vue'
 import type {
   Issue,
   IssueComment,
@@ -13,7 +13,7 @@ import IssueControl from './IssueControl.vue'
 import IssueHistory from './IssueHistory.vue'
 import IssueForm from '@/views/_Work/Manages/Issues/components/IssueForm.vue'
 
-defineProps({
+const props = defineProps({
   iProject: { type: Object as PropType<IssueProject>, default: null },
   issue: { type: Object as PropType<Issue>, required: true },
   issueProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
@@ -26,6 +26,8 @@ const emit = defineEmits(['on-submit'])
 
 const issueFormRef = ref()
 const editForm = ref(false)
+
+const isClosed = computed(() => props.issue?.closed)
 
 const onSubmit = (payload: any) => {
   emit('on-submit', payload)
@@ -61,7 +63,9 @@ const callComment = () => {
     <CCol>
       <h5>
         <span>{{ issue?.tracker.name }} #{{ issue?.pk }}</span>
-        <CBadge color="primary" variant="outline" class="ml-2">진행중</CBadge>
+        <CBadge :color="isClosed ? 'success' : 'primary'" variant="outline" class="ml-2">
+          {{ isClosed ? '완료됨' : '진행중' }}
+        </CBadge>
       </h5>
     </CCol>
 
