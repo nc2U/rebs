@@ -29,7 +29,7 @@ const form = ref({
   status: 1 as number | null,
   parent: null as number | null,
   priority: 2 as number | null,
-  start_date: dateFormat(new Date()),
+  start_date: dateFormat(new Date()) as string | null,
   assigned_to: null as number | null,
   due_date: null as string | null,
   estimated_hours: null as number | null,
