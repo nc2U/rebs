@@ -1,13 +1,11 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import TimeEntryList from '@/views/_Work/Manages/SpentTime/components/TimeEntryList.vue'
 import TimeEntryForm from '@/views/_Work/Manages/SpentTime/components/TimeEntryForm.vue'
 
 const emit = defineEmits(['aside-visible'])
-
-const route = useRoute()
 
 const workStore = useWork()
 const timeEntryList = computed(() => workStore.timeEntryList)
@@ -15,10 +13,14 @@ const issueProjects = computed(() => workStore.AllIssueProjects)
 const createTimeEntry = (payload: any) => workStore.createTimeEntry(payload)
 const updateTimeEntry = (payload: any) => workStore.updateTimeEntry(payload)
 
-const onSubmit = (payload: any) => {
-  if (payload.pk) updateTimeEntry(payload)
-  else createTimeEntry(payload)
-  console.log(payload)
+const [route, router] = [useRoute(), useRouter()]
+
+const onSubmit = async (payload: any) => {
+  if (payload.pk) await updateTimeEntry(payload)
+  else {
+    await createTimeEntry(payload)
+    await router.replace({ name: '(소요시간)' })
+  }
 }
 
 onBeforeMount(async () => {

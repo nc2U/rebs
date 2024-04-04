@@ -2,6 +2,7 @@
 import { computed, type ComputedRef, inject, onBeforeMount, ref } from 'vue'
 import { navMenu2 as navMenu } from '@/views/_Work/_menu/headermixin1'
 import { useWork } from '@/store/pinia/work'
+import { useRouter } from 'vue-router'
 import type { Company } from '@/store/types/settings'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
@@ -20,9 +21,13 @@ const issueProjects = computed(() => workStore.AllIssueProjects)
 const createTimeEntry = (payload: any) => workStore.createTimeEntry(payload)
 const updateTimeEntry = (payload: any) => workStore.updateTimeEntry(payload)
 
-const onSubmit = (payload: any) => {
-  if (payload.pk) updateTimeEntry(payload)
-  else createTimeEntry(payload)
+const router = useRouter()
+const onSubmit = async (payload: any) => {
+  if (payload.pk) await updateTimeEntry(payload)
+  else {
+    await createTimeEntry(payload)
+    await router.replace({ name: '소요시간' })
+  }
   console.log(payload)
 }
 
