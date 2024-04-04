@@ -2,7 +2,6 @@
 import { ref, computed, type PropType, onBeforeMount } from 'vue'
 import type { Issue, IssueComment, IssueProject, TimeEntry } from '@/store/types/work'
 import { elapsedTime, diffDate } from '@/utils/baseMixins'
-import { useRoute } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 import IssueControl from './IssueControl.vue'
@@ -65,10 +64,7 @@ const callComment = () => {
   }, 100)
 }
 
-const route = useRoute()
-onBeforeMount(
-  async () => await workStore.fetchIssueLogList({ issue: Number(route.params.issueId) }),
-)
+onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue.pk }))
 </script>
 
 <template>
@@ -88,7 +84,9 @@ onBeforeMount(
 
     <IssueControl
       @call-edit-form="callEditForm"
-      @go-time-entry="() => $router.push({ name: '(소요시간) - 추가', query: { issue_id: 1 } })"
+      @go-time-entry="
+        () => $router.push({ name: '(소요시간) - 추가', query: { issue_id: issue.pk } })
+      "
     />
   </CRow>
 
