@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-const emit = defineEmits(['call-edit-form'])
+const emit = defineEmits(['call-edit-form', 'go-time-entry'])
 
 const callEditForm = () => emit('call-edit-form')
+const goTimeEntry = () => emit('go-time-entry')
 </script>
 
 <template>
@@ -13,7 +14,7 @@ const callEditForm = () => emit('call-edit-form')
 
     <span class="mr-2">
       <v-icon icon="mdi-timer-edit-outline" color="grey" size="sm" />
-      <router-link to="" class="ml-1">작업시간 기록</router-link>
+      <router-link to="" class="ml-1" @click="goTimeEntry">작업시간 기록</router-link>
     </span>
 
     <span class="mr-2">

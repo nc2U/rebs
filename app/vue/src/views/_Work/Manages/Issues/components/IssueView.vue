@@ -83,7 +83,10 @@ const callComment = () => {
       </h5>
     </CCol>
 
-    <IssueControl @call-edit-form="callEditForm" />
+    <IssueControl
+      @call-edit-form="callEditForm"
+      @go-time-entry="() => $router.push({ name: '(소요시간) - 추가', query: { issue_id: 1 } })"
+    />
   </CRow>
 
   <CCard color="yellow-lighten-5 mb-3">
@@ -179,7 +182,7 @@ const callComment = () => {
             <CCol>
               <div>
                 <CProgress
-                  color="success"
+                  color="green-lighten-3"
                   :value="issue?.done_ratio ?? 0"
                   style="width: 110px; float: left; margin-top: 2px"
                   height="16"
