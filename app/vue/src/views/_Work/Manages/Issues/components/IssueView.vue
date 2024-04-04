@@ -73,9 +73,13 @@ const callComment = () => {
     <CCol>
       <h5>
         <span>{{ issue?.tracker.name }} #{{ issue?.pk }}</span>
-        <CBadge :color="isClosed ? 'success' : 'primary'" variant="outline" class="ml-2">
-          {{ isClosed ? '완료됨' : '진행중' }}
-        </CBadge>
+        <v-badge
+          :color="isClosed ? 'success' : 'primary'"
+          :content="isClosed ? '완료됨' : '진행중'"
+          inline
+          rounded="1"
+          class="ml-2"
+        />
       </h5>
     </CCol>
 
