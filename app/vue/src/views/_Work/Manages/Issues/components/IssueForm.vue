@@ -9,6 +9,7 @@ import { useWork } from '@/store/pinia/work'
 import DatePicker from '@/components/DatePicker/index.vue'
 import Multiselect from '@vueform/multiselect'
 import MdEditor from '@/components/MdEditor/Index.vue'
+import { dateFormat } from '@/utils/baseMixins'
 
 const props = defineProps({
   issue: { type: Object as PropType<Issue>, default: null },
@@ -28,7 +29,7 @@ const form = ref({
   status: 1 as number | null,
   parent: null as number | null,
   priority: 2 as number | null,
-  start_date: null as string | null,
+  start_date: dateFormat(new Date()),
   assigned_to: null as number | null,
   due_date: null as string | null,
   estimated_hours: null as number | null,
