@@ -3,6 +3,7 @@ import { ref, computed, onBeforeMount, type PropType, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { isValidate } from '@/utils/helper'
 import { useWork } from '@/store/pinia/work'
+import { dateFormat } from '@/utils/baseMixins'
 import type { IssueProject } from '@/store/types/work'
 import DatePicker from '@/components/DatePicker/index.vue'
 import Multiselect from '@vueform/multiselect'
@@ -18,7 +19,7 @@ const form = ref({
   project: '',
   issue: null as number | null,
   user: null as number | null,
-  spent_on: '',
+  spent_on: dateFormat(new Date()),
   hours: '',
   comment: '',
   activity: null as number | null,
@@ -83,6 +84,8 @@ onBeforeMount(async () => {
   }
   if (route.params.timeId) await workStore.fetchTimeEntry(Number(route.params.timeId))
   else workStore.timeEntry = null
+
+  if (route.query.issue_id) form.value.issue = Number(route.query.issue_id)
 
   await workStore.fetchMemberList()
   await workStore.fetchActivityList()
@@ -197,7 +200,7 @@ onBeforeMount(async () => {
                 v-model="form.comment"
                 id="comment"
                 maxlength="255"
-                placeholder="소요시간에 대한 메모"
+                placeholder="소요시간에 대한 설명"
               />
             </CCol>
           </CRow>

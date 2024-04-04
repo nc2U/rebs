@@ -250,7 +250,10 @@ const callComment = () => {
   />
 
   <div>
-    <IssueControl @call-edit-form="callEditForm" />
+    <IssueControl
+      @call-edit-form="callEditForm"
+      @go-time-entry="() => $router.push({ name: '(소요시간) - 추가', query: { issue_id: 1 } })"
+    />
   </div>
 
   <div v-if="editForm">
