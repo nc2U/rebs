@@ -154,7 +154,15 @@ const toNext = () => emit('to-next')
     <CCol>
       <CButtonGroup role="group">
         <CButton color="primary" variant="outline" size="sm" @click="toBack">« 뒤로</CButton>
-        <CButton color="primary" variant="outline" size="sm" @click="toNext">다음 »</CButton>
+        <CButton
+          v-if="dateFormat(toDate) < dateFormat(new Date())"
+          color="primary"
+          variant="outline"
+          size="sm"
+          @click="toNext"
+        >
+          다음 »
+        </CButton>
       </CButtonGroup>
     </CCol>
   </CRow>
