@@ -1,13 +1,9 @@
 <script lang="ts" setup>
-import { ref, computed, type PropType } from 'vue'
-import type {
-  Issue,
-  IssueComment,
-  IssueLogEntry,
-  IssueProject,
-  TimeEntry,
-} from '@/store/types/work'
+import { ref, computed, type PropType, onBeforeMount } from 'vue'
+import type { Issue, IssueComment, IssueProject, TimeEntry } from '@/store/types/work'
 import { elapsedTime, diffDate } from '@/utils/baseMixins'
+import { useRoute } from 'vue-router'
+import { useWork } from '@/store/pinia/work'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 import IssueControl from './IssueControl.vue'
 import IssueHistory from './IssueHistory.vue'
@@ -17,7 +13,6 @@ const props = defineProps({
   iProject: { type: Object as PropType<IssueProject>, default: null },
   issue: { type: Object as PropType<Issue>, required: true },
   issueProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
-  issueLogList: { type: Array as PropType<IssueLogEntry[]>, default: () => [] },
   issueCommentList: { type: Array as PropType<IssueComment[]>, default: () => [] },
   timeEntryList: { type: Array as PropType<TimeEntry[]>, default: () => [] },
 })
@@ -28,6 +23,9 @@ const issueFormRef = ref()
 const editForm = ref(false)
 
 const isClosed = computed(() => props.issue?.closed)
+
+const workStore = useWork()
+const issueLogList = computed(() => workStore.issueLogList)
 
 const transTime = (n: number | null) => {
   if (!n) return ''
@@ -66,6 +64,11 @@ const callComment = () => {
     issueFormRef.value.callComment()
   }, 100)
 }
+
+const route = useRoute()
+onBeforeMount(
+  async () => await workStore.fetchIssueLogList({ issue: Number(route.params.issueId) }),
+)
 </script>
 
 <template>

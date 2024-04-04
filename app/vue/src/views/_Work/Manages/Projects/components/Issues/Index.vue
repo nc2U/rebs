@@ -15,7 +15,6 @@ const iProject = computed(() => workStore.issueProject)
 const issueProjects = computed(() => workStore.AllIssueProjects)
 const issue = computed(() => workStore.issue)
 const issueList = computed(() => workStore.issueList)
-const issueLogList = computed(() => workStore.issueLogList)
 const issueCommentList = computed(() => workStore.issueCommentList)
 const timeEntryList = computed(() => workStore.timeEntryList)
 
@@ -52,7 +51,6 @@ onBeforeMount(async () => {
 
   if (route.params.issueId) {
     await workStore.fetchIssue(Number(route.params.issueId))
-    await workStore.fetchIssueLogList({ issue: Number(route.params.issueId) })
     await workStore.fetchIssueCommentList({ issue: Number(route.params.issueId) })
     await workStore.fetchTimeEntryList({ issue: Number(route.params.issueId) })
   }
@@ -67,7 +65,6 @@ onBeforeMount(async () => {
     :i-project="iProject ?? undefined"
     :issue="issue"
     :issue-projects="issueProjects"
-    :issue-log-list="issueLogList"
     :issue-comment-list="issueCommentList"
     :time-entry-list="timeEntryList"
     @on-submit="onSubmit"
