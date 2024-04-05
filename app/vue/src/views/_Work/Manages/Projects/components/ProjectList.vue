@@ -13,6 +13,12 @@ defineProps({
   },
 })
 
+// v-if="
+//   proj.is_public ||
+//   proj.all_members.map(m => m.user.pk).includes(userInfo?.pk ?? 0) ||
+//   superAuth
+// "
+
 const emit = defineEmits(['aside-visible'])
 
 const superAuth = inject('superAuth', false)
@@ -48,14 +54,7 @@ onBeforeMount(() => emit('aside-visible', true))
 
   <CRow v-else>
     <CCol v-for="proj in projectList" :key="proj.pk" sm="12" lg="6" xl="4">
-      <CCard
-        v-if="
-          proj.is_public ||
-          proj.all_members.map(m => m.user.pk).includes(userInfo?.pk ?? 0) ||
-          superAuth
-        "
-        class="my-2"
-      >
+      <CCard class="my-2">
         <CCardBody class="project-set">
           <router-link :to="{ name: '(개요)', params: { projId: proj.slug } }">
             {{ proj.name }}
