@@ -6,6 +6,7 @@ from ..permission import *
 from ..pagination import *
 from ..serializers.work import *
 
+from django.db import models
 from work.models import (IssueProject, Role, Permission, Member, Module, Version,
                          IssueCategory, Repository, Tracker, IssueStatus, Workflow,
                          CodeActivity, CodeIssuePriority, CodeDocsCategory, Issue,
@@ -14,11 +15,28 @@ from work.models import (IssueProject, Role, Permission, Member, Module, Version
 
 # Work --------------------------------------------------------------------------
 class IssueProjectFilter(FilterSet):
-    parent__isnull = BooleanFilter(field_name='parent', lookup_expr='isnull', label='하위 프로젝트 여부')
+    parent__isnull = BooleanFilter(field_name='parent', lookup_expr='isnull', label='최상위 프로젝트')
+    is_public = BooleanFilter()
 
     class Meta:
         model = IssueProject
-        fields = ('parent__isnull',)
+        fields = ('parent__isnull', 'is_public')
+
+    def filter_queryset(self, queryset):
+        user = self.request.user
+        for name, value in self.form.cleaned_data.items():
+            if name == 'is_public' and user.is_superuser:
+                pass
+            else:
+                queryset = self.filters[name].filter(queryset, value)
+            assert isinstance(
+                queryset, models.QuerySet
+            ), "Expected '%s.%s' to return a QuerySet, but got a %s instead." % (
+                type(self).__name__,
+                name,
+                type(queryset).__name__,
+            )
+        return queryset
 
 
 class IssueProjectViewSet(viewsets.ModelViewSet):

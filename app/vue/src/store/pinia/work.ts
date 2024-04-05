@@ -35,7 +35,7 @@ export const useWork = defineStore('work', () => {
   // actions
   const fetchIssueProjectList = () =>
     api
-      .get('/issue-project/?parent__isnull=true')
+      .get('/issue-project/?parent__isnull=1&is_public=1')
       .then(res => (issueProjectList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
