@@ -6,7 +6,6 @@ from ..permission import *
 from ..pagination import *
 from ..serializers.work import *
 
-from django.db import models
 from work.models import (IssueProject, Role, Permission, Member, Module, Version,
                          IssueCategory, Repository, Tracker, IssueStatus, Workflow,
                          CodeActivity, CodeIssuePriority, CodeDocsCategory, Issue,
@@ -20,23 +19,7 @@ class IssueProjectFilter(FilterSet):
 
     class Meta:
         model = IssueProject
-        fields = ('parent__isnull', 'is_public')
-
-    def filter_queryset(self, queryset):
-        user = self.request.user
-        for name, value in self.form.cleaned_data.items():
-            if name == 'is_public' and user.is_superuser:
-                pass
-            else:
-                queryset = self.filters[name].filter(queryset, value)
-            assert isinstance(
-                queryset, models.QuerySet
-            ), "Expected '%s.%s' to return a QuerySet, but got a %s instead." % (
-                type(self).__name__,
-                name,
-                type(queryset).__name__,
-            )
-        return queryset
+        fields = ('parent__isnull',)
 
 
 class IssueProjectViewSet(viewsets.ModelViewSet):
@@ -47,6 +30,10 @@ class IssueProjectViewSet(viewsets.ModelViewSet):
     pagination_class = PageNumberPaginationTwenty
     filterset_class = IssueProjectFilter
     search_fields = ('name', 'description', 'slug')
+
+    def get_queryset(self):
+        user = self.request.user
+        return self.queryset if user.is_superuser else self.queryset.filter(is_public=True)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -173,6 +160,10 @@ class IssueViewSet(viewsets.ModelViewSet):
     pagination_class = PageNumberPaginationTwenty
     filterset_class = IssueFilter
 
+    def get_queryset(self):
+        user = self.request.user
+        return self.queryset if user.is_superuser else self.queryset.filter(project__is_public=True)
+
     def perform_create(self, serializer):
         serializer.save(creator=self.request.user)
 
@@ -221,6 +212,10 @@ class TimeEntryViewSet(viewsets.ModelViewSet):
     filterset_class = TimeEntryFilter
     search_fields = ('issue__subject', 'comment')
 
+    def get_queryset(self):
+        user = self.request.user
+        return self.queryset if user.is_superuser else self.queryset.filter(issue__project__is_public=True)
+
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
@@ -251,12 +246,20 @@ class ActivityLogEntryViewSet(viewsets.ModelViewSet):
     pagination_class = PageNumberPaginationThreeHundred
     filterset_class = ActivityLogFilter
 
+    def get_queryset(self):
+        user = self.request.user
+        return self.queryset if user.is_superuser else self.queryset.filter(project__is_public=True)
+
 
 class IssueLogEntryViewSet(viewsets.ModelViewSet):
     queryset = IssueLogEntry.objects.all()
     serializer_class = IssueLogEntrySerializer
     permission_classes = (permissions.IsAuthenticated,)
     filterset_fields = ('issue', 'user')
+
+    def get_queryset(self):
+        user = self.request.user
+        return self.queryset if user.is_superuser else self.queryset.filter(issue__project__is_public=True)
 
 
 class SearchViewSet(viewsets.ModelViewSet):
