@@ -32,7 +32,7 @@ const onSubmit = async (payload: any) => {
 }
 
 onBeforeMount(() => {
-  workStore.fetchIssueProjectList()
+  workStore.fetchIssueProjectList({})
   workStore.fetchTimeEntryList({})
 })
 </script>

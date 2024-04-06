@@ -16,7 +16,7 @@ const superAuth = inject('superAuth', false)
 const workStore = useWork()
 const projectList = computed(() => workStore.AllIssueProjects)
 
-onBeforeMount(() => workStore.fetchIssueProjectList())
+onBeforeMount(() => workStore.fetchIssueProjectList({}))
 </script>
 
 <template>

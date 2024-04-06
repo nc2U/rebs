@@ -38,7 +38,7 @@ onBeforeRouteUpdate(async to => {
 
 onBeforeMount(async () => {
   emit('aside-visible', true)
-  await workStore.fetchIssueProjectList()
+  await workStore.fetchIssueProjectList({})
   await workStore.fetchIssueList({ status__closed: '' })
 
   if (route.params.projId) {

@@ -82,7 +82,7 @@ export const useWork = defineStore('work', () => {
     api
       .delete(`/issue-project/${pk}/`)
       .then(() =>
-        fetchIssueProjectList().then(() =>
+        fetchIssueProjectList({}).then(() =>
           message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.'),
         ),
       )

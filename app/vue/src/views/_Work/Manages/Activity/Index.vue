@@ -39,7 +39,7 @@ const toBack = () => (toDate.value = new Date(toDate.value.setDate(toDate.value.
 const toNext = () => (toDate.value = new Date(toDate.value.setDate(toDate.value.getDate() + 10)))
 
 onBeforeMount(() => {
-  workStore.fetchIssueProjectList()
+  workStore.fetchIssueProjectList({})
   workStore.fetchActivityLogList({
     from_act_date: dateFormat(fromDate.value),
     to_act_date: dateFormat(toDate.value),

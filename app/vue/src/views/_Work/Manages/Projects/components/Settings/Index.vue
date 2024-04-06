@@ -56,13 +56,13 @@ onBeforeRouteUpdate(async to => {
   if (to.params.projId) await workStore.fetchIssueProject(to.params.projId as string)
   else {
     workStore.issueProject = null
-    await workStore.fetchIssueProjectList()
+    await workStore.fetchIssueProjectList({})
   }
 })
 
 const route = useRoute()
 onBeforeMount(() => {
-  workStore.fetchIssueProjectList()
+  workStore.fetchIssueProjectList({})
   if (route.params.projId) workStore.fetchIssueProject(route.params.projId as string)
   emit('aside-visible', false)
   menu.value = Cookies.get('workSettingMenu') ?? '프로젝트'
