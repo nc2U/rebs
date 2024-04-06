@@ -3,7 +3,7 @@ import { type PropType } from 'vue'
 import type { TimeEntry } from '@/store/types/work'
 import { dateFormat, numberToHour } from '@/utils/baseMixins'
 import NoData from '@/views/_Work/components/NoData.vue'
-import SearchList from '@/views/_Work/components/SearchList.vue'
+import SearchList from '@/views/_Work/Manages/Projects/components/SearchList.vue'
 import HeaderTab from '@/views/_Work/Manages/SpentTime/components/HeaderTab.vue'
 import router from '@/router'
 

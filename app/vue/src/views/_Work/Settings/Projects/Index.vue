@@ -4,7 +4,7 @@ import { pageTitle, navMenu } from '@/views/_Work/_menu/headermixin3'
 import { useWork } from '@/store/pinia/work'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
-import SearchList from '@/views/_Work/components/SearchList.vue'
+import SearchList from '@/views/_Work/Manages/Projects/components/SearchList.vue'
 import NoData from '@/views/_Work/components/NoData.vue'
 import ProjectTable from './components/ProjectTable.vue'
 

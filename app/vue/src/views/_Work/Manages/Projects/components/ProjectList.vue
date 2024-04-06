@@ -3,7 +3,7 @@ import { inject, onBeforeMount, type ComputedRef, type PropType } from 'vue'
 import type { User } from '@/store/types/accounts'
 import type { IssueProject } from '@/store/types/work'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
-import SearchList from '@/views/_Work/components/SearchList.vue'
+import SearchList from './SearchList.vue'
 import NoData from '@/views/_Work/components/NoData.vue'
 
 defineProps({
@@ -13,13 +13,15 @@ defineProps({
   },
 })
 
-const emit = defineEmits(['aside-visible'])
+const emit = defineEmits(['aside-visible', 'filter-submit'])
 
 const superAuth = inject('superAuth', false)
 const userInfo = inject<ComputedRef<User>>('userInfo')
 
 const isOwnProject = (project: IssueProject) =>
   project.all_members.map(m => m.user.pk).includes(userInfo?.value.pk as number)
+
+const filterSubmit = (payload: any) => emit('filter-submit', payload)
 
 onBeforeMount(() => emit('aside-visible', true))
 </script>
@@ -42,7 +44,7 @@ onBeforeMount(() => emit('aside-visible', true))
     </CCol>
   </CRow>
 
-  <SearchList />
+  <SearchList @filter-submit="filterSubmit" />
 
   <NoData v-if="!projectList.length" />
 

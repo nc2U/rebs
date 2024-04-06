@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onBeforeMount } from 'vue'
-import SearchList from '@/views/_Work/components/SearchList.vue'
+import SearchList from '@/views/_Work/Manages/Projects/components/SearchList.vue'
 
 const emit = defineEmits(['aside-visible'])
 

@@ -4,7 +4,7 @@ import { navMenu2 as navMenu } from '@/views/_Work/_menu/headermixin1'
 import type { Company } from '@/store/types/settings'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
-import SearchList from '@/views/_Work/components/SearchList.vue'
+import SearchList from '@/views/_Work/Manages/Projects/components/SearchList.vue'
 
 const cBody = ref()
 const company = inject<ComputedRef<Company>>('company')

@@ -3,6 +3,8 @@ import { reactive, ref } from 'vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import Multiselect from '@vueform/multiselect'
 
+const emit = defineEmits(['filter-submit'])
+
 const condVisible = ref(true)
 const optVisible = ref(false)
 
@@ -30,6 +32,14 @@ const searchOptions = reactive([
 ])
 
 const viewMode = ref<'board' | 'list'>('board')
+
+const form = ref({
+  status: '1' as '1' | '9',
+})
+
+const filterSubmit = () => {
+  emit('filter-submit', form.value)
+}
 </script>
 
 <template>
@@ -46,7 +56,7 @@ const viewMode = ref<'board' | 'list'>('board')
           <CCol class="col-12 col-md-8">
             <CRow>
               <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
-                <CFormCheck label="상태" id="status" />
+                <CFormCheck label="상태" id="status" checked="true" />
               </CCol>
               <CCol class="d-none d-lg-block col-4 col-lg-3 col-xl-2">
                 <!-- <CFormSelect size="sm" data-width="20">-->
@@ -55,7 +65,7 @@ const viewMode = ref<'board' | 'list'>('board')
                 <!-- </CFormSelect>-->
               </CCol>
               <CCol class="col-8 col-lg-3 col-xl-2">
-                <CFormSelect size="sm" data-width="20">
+                <CFormSelect v-model="form.status" size="sm" data-width="20">
                   <option value="1">사용중</option>
                   <option value="9">닫힘</option>
                 </CFormSelect>
@@ -64,7 +74,7 @@ const viewMode = ref<'board' | 'list'>('board')
 
             <CRow v-if="searchCond.includes('project')">
               <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
-                <CFormCheck v-model="searchCond.status" label="프로젝트" id="project" />
+                <CFormCheck checked="true" label="프로젝트" id="project" />
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
                 <CFormSelect size="sm" data-width="20">
@@ -82,7 +92,7 @@ const viewMode = ref<'board' | 'list'>('board')
 
             <CRow v-if="searchCond.includes('parent')">
               <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
-                <CFormCheck v-model="searchCond.status" label="상위 프로젝트" id="parent" />
+                <CFormCheck checked="true" label="상위 프로젝트" id="parent" />
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
                 <CFormSelect size="sm" data-width="20">
@@ -102,7 +112,7 @@ const viewMode = ref<'board' | 'list'>('board')
 
             <CRow v-if="searchCond.includes('is_public')">
               <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
-                <CFormCheck v-model="searchCond.status" label="공개여부" id="is_public" />
+                <CFormCheck checked="true" label="공개여부" id="is_public" />
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
                 <CFormSelect size="sm" data-width="20">
@@ -120,7 +130,7 @@ const viewMode = ref<'board' | 'list'>('board')
 
             <CRow v-if="searchCond.includes('created')">
               <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
-                <CFormCheck v-model="searchCond.status" label="등록일자" id="created" />
+                <CFormCheck checked="true" label="등록일자" id="created" />
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
                 <CFormSelect size="sm" data-width="20">
@@ -151,7 +161,7 @@ const viewMode = ref<'board' | 'list'>('board')
 
             <CRow v-if="searchCond.includes('name')">
               <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
-                <CFormCheck v-model="searchCond.status" label="이름" id="name" />
+                <CFormCheck checked="true" label="이름" id="name" />
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
                 <CFormSelect size="sm" data-width="20">
@@ -171,7 +181,7 @@ const viewMode = ref<'board' | 'list'>('board')
 
             <CRow v-if="searchCond.includes('description')">
               <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
-                <CFormCheck v-model="searchCond.status" label="설명" id="description" />
+                <CFormCheck checked="true" label="설명" id="description" />
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
                 <CFormSelect size="sm" data-width="20">
@@ -254,7 +264,7 @@ const viewMode = ref<'board' | 'list'>('board')
   <CRow class="my-3">
     <CCol>
       <slot name="footer">
-        <router-link to="" class="mr-3">
+        <router-link to="" class="mr-3" @click="filterSubmit">
           <v-icon icon="mdi-check-bold" size="sm" color="success" />
           검색
         </router-link>

@@ -89,6 +89,11 @@ const onSubmit = (payload: any) => {
   }, 500)
 }
 
+const filterSubmit = (payload: any) => {
+  console.log(payload)
+  alert('ok!!!')
+}
+
 onBeforeRouteUpdate(async to => {
   if (to.params.projId) await workStore.fetchIssueProject(to.params.projId as string)
   else workStore.issueProject = null
@@ -116,6 +121,7 @@ onBeforeMount(async () => {
         v-if="routeName === '프로젝트'"
         :project-list="issueProjectList"
         @aside-visible="asideVisible"
+        @filter-submit="filterSubmit"
       />
 
       <ProjectForm
