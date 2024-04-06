@@ -8,12 +8,22 @@ const optVisible = ref(false)
 
 const searchCond = ref([])
 const searchOptions = reactive([
-  { value: 'project', label: '프로젝트' },
-  { value: 'parent', label: '상위 프로젝트' },
-  { value: 'is_public', label: '공개여부' },
-  { value: 'created', label: '등록일자' },
-  { value: 'name', label: '이름' },
-  { value: 'description', label: '설명' },
+  {
+    label: '필터',
+    options: [
+      { value: 'project', label: '프로젝트' },
+      { value: 'parent', label: '상위 프로젝트' },
+      { value: 'is_public', label: '공개여부' },
+      { value: 'created', label: '등록일자' },
+    ],
+  },
+  {
+    label: '검색',
+    options: [
+      { value: 'name', label: '이름' },
+      { value: 'description', label: '설명' },
+    ],
+  },
 ])
 
 const viewMode = ref<'board' | 'list'>('board')
@@ -35,16 +45,16 @@ const viewMode = ref<'board' | 'list'>('board')
               <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
                 <CFormCheck label="상태" id="status" />
               </CCol>
-              <CCol class="col-4 col-lg-3 col-xl-2">
-                <CFormSelect size="sm" data-width="20">
-                  <option value="1">is</option>
-                  <option value="0">is not</option>
-                </CFormSelect>
+              <CCol class="d-none d-lg-block col-4 col-lg-3 col-xl-2">
+                <!-- <CFormSelect size="sm" data-width="20">-->
+                <!--   <option value="1">is</option>-->
+                <!--   <option value="0">is not</option>-->
+                <!-- </CFormSelect>-->
               </CCol>
-              <CCol class="col-4 col-lg-3 col-xl-2">
+              <CCol class="col-8 col-lg-3 col-xl-2">
                 <CFormSelect size="sm" data-width="20">
                   <option value="1">사용중</option>
-                  <option value="2">닫힘</option>
+                  <option value="9">닫힘</option>
                 </CFormSelect>
               </CCol>
             </CRow>
@@ -190,6 +200,7 @@ const viewMode = ref<'board' | 'list'>('board')
                   mode="tags"
                   v-model="searchCond"
                   id="searchOptions"
+                  :groups="true"
                   :options="searchOptions"
                   size="sm"
                   class="multiselect-blue"
