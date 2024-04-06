@@ -17,6 +17,7 @@ const searchOptions = reactive([
       { value: 'is_public', label: '공개여부', disabled: true },
       { value: 'created', label: '등록일자', disabled: true },
     ],
+    disabled: true,
   },
   {
     label: '검색',
@@ -24,6 +25,7 @@ const searchOptions = reactive([
       { value: 'name', label: '이름', disabled: true },
       { value: 'description', label: '설명', disabled: true },
     ],
+    disabled: true,
   },
 ])
 
