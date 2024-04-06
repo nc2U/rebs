@@ -15,11 +15,10 @@ from work.models import (IssueProject, Role, Permission, Member, Module, Version
 # Work --------------------------------------------------------------------------
 class IssueProjectFilter(FilterSet):
     parent__isnull = BooleanFilter(field_name='parent', lookup_expr='isnull', label='최상위 프로젝트')
-    is_public = BooleanFilter()
 
     class Meta:
         model = IssueProject
-        fields = ('parent__isnull',)
+        fields = ('parent__isnull', 'status')
 
 
 class IssueProjectViewSet(viewsets.ModelViewSet):
