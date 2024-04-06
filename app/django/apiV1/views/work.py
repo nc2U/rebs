@@ -162,19 +162,19 @@ class IssueFilter(FilterSet):
         """
         subs = None
 
-        def get_descendants(parent):
-            descendants = []
+        def get_sub_projects(parent):
+            sub_projects = []
             children = IssueProject.objects.filter(parent=parent)
             for child in children:
-                descendants.append(child)
-                descendants.extend(get_descendants(child))
-            return descendants
+                sub_projects.append(child)
+                sub_projects.extend(get_sub_projects(child))
+            return sub_projects
 
         for name, value in self.form.cleaned_data.items():
             if name == 'project__slug':
                 try:
                     project = IssueProject.objects.get(slug=value)
-                    subs = get_descendants(project)
+                    subs = get_sub_projects(project)
                 except IssueProject.DoesNotExist:
                     pass
             if subs is not None:
