@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
 import type {
   IssueProject,
+  ProjectFilter,
   Member,
   Role,
   Tracker,
@@ -33,11 +34,16 @@ export const useWork = defineStore('work', () => {
   })
 
   // actions
-  const fetchIssueProjectList = () =>
-    api
-      .get('/issue-project/?parent__isnull=1')
+  const fetchIssueProjectList = async (payload: ProjectFilter) => {
+    console.log(payload)
+    let url = `/issue-project/?parent__isnull=1`
+    url += `&status=${payload?.status ?? '1'}`
+
+    return await api
+      .get(url)
       .then(res => (issueProjectList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
+  }
 
   const fetchIssueProject = (slug: string) =>
     api

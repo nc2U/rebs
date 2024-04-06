@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
+import type { ProjectFilter } from '@/store/types/work'
 import DatePicker from '@/components/DatePicker/index.vue'
 import Multiselect from '@vueform/multiselect'
 
@@ -33,8 +34,8 @@ const searchOptions = reactive([
 
 const viewMode = ref<'board' | 'list'>('board')
 
-const form = ref({
-  status: '1' as '1' | '9',
+const form = ref<ProjectFilter>({
+  status: '1',
 })
 
 const filterSubmit = () => {

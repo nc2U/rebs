@@ -36,6 +36,10 @@ export interface IssueProject {
   updated?: string
 }
 
+export interface ProjectFilter {
+  status?: '1' | '9'
+}
+
 export interface Module {
   pk?: number
   project: number
