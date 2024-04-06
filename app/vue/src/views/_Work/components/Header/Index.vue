@@ -39,7 +39,7 @@ watch(useRoute(), () => (visible.value = false))
           <CRow v-if="!!familyTree.length" class="d-none d-md-block">
             <CCol>
               <span v-for="p in familyTree" :key="p.pk" class="mr-1 text-blue-grey">
-                <router-link :to="{ name: '(개요)', params: { projId: p.slug } }">
+                <router-link :to="{ name: $route.name ?? '(개요)', params: { projId: p.slug } }">
                   {{ p.name }}
                 </router-link>
                 »
