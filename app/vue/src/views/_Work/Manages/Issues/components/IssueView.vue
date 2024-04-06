@@ -171,9 +171,13 @@ onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue
           </CRow>
           <CRow>
             <CCol class="title">완료기한 :</CCol>
-            <CCol :class="{ 'text-danger': !!issue.due_date && diffDate(issue.due_date) > 0 }">
+            <CCol
+              :class="{
+                'text-danger': !isClosed && !!issue.due_date && diffDate(issue.due_date) > 0,
+              }"
+            >
               {{ issue?.due_date }}
-              <span v-if="!!issue.due_date && diffDate(issue.due_date) > 0">
+              <span v-if="!isClosed && !!issue.due_date && diffDate(issue.due_date) > 0">
                 ({{ Math.floor(diffDate(issue.due_date)) }} 일 지연)
               </span>
             </CCol>
