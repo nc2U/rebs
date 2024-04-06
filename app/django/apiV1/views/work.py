@@ -6,6 +6,7 @@ from ..permission import *
 from ..pagination import *
 from ..serializers.work import *
 
+from django.db import models
 from work.models import (IssueProject, Role, Permission, Member, Module, Version,
                          IssueCategory, Repository, Tracker, IssueStatus, Workflow,
                          CodeActivity, CodeIssuePriority, CodeDocsCategory, Issue,
@@ -150,6 +151,45 @@ class IssueFilter(FilterSet):
     class Meta:
         model = Issue
         fields = ('project__slug', 'status__closed')
+
+    def filter_queryset(self, queryset):
+        """
+        Filter the queryset with the underlying form's `cleaned_data`. You must
+        call `is_valid()` or `errors` before calling this method.
+
+        This method should be overridden if additional filtering needs to be
+        applied to the queryset before it is cached.
+        """
+        subs = None
+
+        def get_descendants(parent):
+            descendants = []
+            children = IssueProject.objects.filter(parent=parent)
+            for child in children:
+                descendants.append(child)
+                descendants.extend(get_descendants(child))
+            return descendants
+
+        for name, value in self.form.cleaned_data.items():
+            if name == 'project__slug':
+                try:
+                    project = IssueProject.objects.get(slug=value)
+                    subs = get_descendants(project)
+                except IssueProject.DoesNotExist:
+                    pass
+            if subs is not None:
+                for sub in subs:
+                    queryset |= sub.issue_set.all()
+
+            queryset = self.filters[name].filter(queryset, value)
+            assert isinstance(
+                queryset, models.QuerySet
+            ), "Expected '%s.%s' to return a QuerySet, but got a %s instead." % (
+                type(self).__name__,
+                name,
+                type(queryset).__name__,
+            )
+        return queryset
 
 
 class IssueViewSet(viewsets.ModelViewSet):
