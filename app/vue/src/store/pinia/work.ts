@@ -127,7 +127,7 @@ export const useWork = defineStore('work', () => {
 
   const fetchTrackerList = () =>
     api
-      .get(`tracker`)
+      .get(`/tracker/`)
       .then(res => (trackerList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
@@ -136,7 +136,7 @@ export const useWork = defineStore('work', () => {
 
   const fetchStatusList = () =>
     api
-      .get(`issue-status`)
+      .get(`/issue-status/`)
       .then(res => (statusList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
@@ -145,7 +145,7 @@ export const useWork = defineStore('work', () => {
 
   const fetchActivityList = () =>
     api
-      .get(`code-activity`)
+      .get(`/code-activity/`)
       .then(res => (activityList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
@@ -154,7 +154,7 @@ export const useWork = defineStore('work', () => {
 
   const fetchPriorityList = () =>
     api
-      .get(`code-priority`)
+      .get(`/code-priority/`)
       .then(res => (priorityList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
