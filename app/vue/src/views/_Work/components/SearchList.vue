@@ -7,9 +7,7 @@ const condVisible = ref(true)
 const optVisible = ref(false)
 
 const searchCond = ref([])
-
-const searxchOptions = reactive([
-  { value: 'status', label: '상태' },
+const searchOptions = reactive([
   { value: 'project', label: '프로젝트' },
   { value: 'parent', label: '상위 프로젝트' },
   { value: 'is_public', label: '공개여부' },
@@ -35,7 +33,7 @@ const viewMode = ref<'board' | 'list'>('board')
           <CCol class="col-12 col-md-8">
             <CRow>
               <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
-                <CFormCheck v-model="searchCond.status" label="상태" id="status" />
+                <CFormCheck label="상태" id="status" />
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
                 <CFormSelect size="sm" data-width="20">
@@ -51,7 +49,7 @@ const viewMode = ref<'board' | 'list'>('board')
               </CCol>
             </CRow>
 
-            <CRow>
+            <CRow v-if="searchCond.includes('project')">
               <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
                 <CFormCheck v-model="searchCond.status" label="프로젝트" id="project" />
               </CCol>
@@ -69,7 +67,7 @@ const viewMode = ref<'board' | 'list'>('board')
               </CCol>
             </CRow>
 
-            <CRow>
+            <CRow v-if="searchCond.includes('parent')">
               <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
                 <CFormCheck v-model="searchCond.status" label="상위 프로젝트" id="parent" />
               </CCol>
@@ -89,7 +87,7 @@ const viewMode = ref<'board' | 'list'>('board')
               </CCol>
             </CRow>
 
-            <CRow>
+            <CRow v-if="searchCond.includes('is_public')">
               <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
                 <CFormCheck v-model="searchCond.status" label="공개여부" id="is_public" />
               </CCol>
@@ -107,7 +105,7 @@ const viewMode = ref<'board' | 'list'>('board')
               </CCol>
             </CRow>
 
-            <CRow>
+            <CRow v-if="searchCond.includes('created')">
               <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
                 <CFormCheck v-model="searchCond.status" label="등록일자" id="created" />
               </CCol>
@@ -138,7 +136,7 @@ const viewMode = ref<'board' | 'list'>('board')
               </CCol>
             </CRow>
 
-            <CRow>
+            <CRow v-if="searchCond.includes('name')">
               <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
                 <CFormCheck v-model="searchCond.status" label="이름" id="name" />
               </CCol>
@@ -158,7 +156,7 @@ const viewMode = ref<'board' | 'list'>('board')
               </CCol>
             </CRow>
 
-            <CRow>
+            <CRow v-if="searchCond.includes('description')">
               <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
                 <CFormCheck v-model="searchCond.status" label="설명" id="description" />
               </CCol>
@@ -189,11 +187,12 @@ const viewMode = ref<'board' | 'list'>('board')
               </CFormLabel>
               <CCol class="col-8 col-md-12 col-lg-10 col-xl-8 col-xxl-6">
                 <Multiselect
-                  size="sm"
+                  mode="tags"
                   v-model="searchCond"
                   id="searchOptions"
-                  :options="searxchOptions"
-                  mode="multiple"
+                  :options="searchOptions"
+                  size="sm"
+                  class="multiselect-blue"
                   placeholder="검색조건 추가"
                 />
               </CCol>
