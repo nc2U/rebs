@@ -22,19 +22,30 @@ const viewMode = ref<'board' | 'list'>('board')
     <CCollapse :visible="condVisible">
       <slot name="condition">
         <CRow class="m-2" color="light">
-          <CCol class="col-4 col-md-6 col-lg-7 col-xl-8 pt-1">
+          <CCol class="col-4 col-md-3 col-lg-2 pt-1 mb-3">
             <CFormCheck v-model="searchCond.status" label="상태" id="status" />
           </CCol>
-          <CCol>
+          <CCol class="col-4 col-md-3 col-lg-2">
             <CFormSelect size="sm" data-width="20">
               <option value="1">사용중</option>
               <option value="2">닫힘</option>
             </CFormSelect>
           </CCol>
-          <CCol>
-            <CFormSelect size="sm">
-              <option value="">검색조건 추가</option>
+          <CCol class="col-4 col-md-3 col-lg-2">
+            <CFormSelect size="sm" data-width="20">
+              <option value="1">사용중</option>
+              <option value="2">닫힘</option>
             </CFormSelect>
+          </CCol>
+          <CCol class="col-md-3 col-lg-6 text-right">
+            <CRow>
+              <CCol class="d-none d-lg-block"></CCol>
+              <CCol class="col-lg-4">
+                <CFormSelect size="sm">
+                  <option value="">검색조건 추가</option>
+                </CFormSelect>
+              </CCol>
+            </CRow>
           </CCol>
         </CRow>
       </slot>

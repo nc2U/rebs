@@ -13,12 +13,6 @@ defineProps({
   },
 })
 
-// v-if="
-//   proj.is_public ||
-//   proj.all_members.map(m => m.user.pk).includes(userInfo?.pk ?? 0) ||
-//   superAuth
-// "
-
 const emit = defineEmits(['aside-visible'])
 
 const superAuth = inject('superAuth', false)
