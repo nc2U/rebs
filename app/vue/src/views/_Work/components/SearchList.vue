@@ -6,9 +6,7 @@ import Multiselect from '@vueform/multiselect'
 const condVisible = ref(true)
 const optVisible = ref(false)
 
-const searchCond = ref({
-  status: true,
-})
+const searchCond = ref([])
 
 const searxchOptions = reactive([
   { value: 'status', label: '상태' },
@@ -181,17 +179,22 @@ const viewMode = ref<'board' | 'list'>('board')
             </CRow>
           </CCol>
 
-          <CCol class="col-md-4 text-right">
+          <CCol md="4" class="text-right">
             <CRow>
-              <CFormLabel for="searchOptions" class="col-4 col-lg-6 col-xl-8 col-form-label">
+              <CFormLabel
+                for="searchOptions"
+                class="col-4 col-lg-2 col-xl-4 col-xxl-6 col-form-label d-block d-md-none d-lg-block"
+              >
                 검색조건 추가
               </CFormLabel>
-              <CCol class="col-8 col-lg-6 col-xl-4">
+              <CCol class="col-8 col-md-12 col-lg-10 col-xl-8 col-xxl-6">
                 <Multiselect
                   size="sm"
                   v-model="searchCond"
                   id="searchOptions"
                   :options="searxchOptions"
+                  mode="multiple"
+                  placeholder="검색조건 추가"
                 />
               </CCol>
             </CRow>
