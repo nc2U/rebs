@@ -6,11 +6,12 @@ import Multiselect from '@vueform/multiselect'
 const condVisible = ref(true)
 const optVisible = ref(false)
 
-const searchCond = ref([])
+const searchCond = ref(['status'])
 const searchOptions = reactive([
   {
     label: '필터',
     options: [
+      { value: 'status', label: '상태', disabled: true },
       { value: 'project', label: '프로젝트' },
       { value: 'parent', label: '상위 프로젝트' },
       { value: 'is_public', label: '공개여부' },
