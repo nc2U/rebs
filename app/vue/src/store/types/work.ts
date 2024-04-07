@@ -37,10 +37,12 @@ export interface IssueProject {
 }
 
 export interface ProjectFilter {
+  parent__isnull?: boolean
   status?: '1' | '9'
   status__exclude?: '1' | '9'
   is_public?: '1' | '0'
-  parent?: string
+  project?: string
+  project__exclude?: string
 }
 
 export interface Module {
