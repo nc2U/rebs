@@ -105,11 +105,15 @@ onBeforeMount(async () => {
       <CCard color="light" class="mb-2">
         <CCardBody>
           <CRow class="mb-3">
-            <CFormLabel for="project" class="col-sm-2 col-form-label text-right required">
+            <CFormLabel
+              v-show="!issueProject || timeEntry"
+              for="project"
+              class="col-sm-2 col-form-label text-right required"
+            >
               프로젝트
             </CFormLabel>
 
-            <CCol sm="4">
+            <CCol v-show="!issueProject || timeEntry" sm="4">
               <CFormSelect v-model="form.project" id="project" required>
                 <option value="">---------</option>
                 <option v-for="proj in allProjects" :value="proj.slug" :key="proj.slug">
