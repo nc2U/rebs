@@ -56,9 +56,10 @@ const filterSubmit = () => {
   else if (cond.value.status === 'exclude') filterData.status__exclude = form.value.status
   if (cond.value.project === 'is') filterData.project = form.value.project
   else if (cond.value.project === 'exclude') filterData.project__exclude = form.value.project
-
-  if (cond.value.is_public === 'is') filterData.is_public = form.value.is_public
-  else if (cond.value.is_public === 'exclude') filterData.is_public__exclude = form.value.is_public
+  if (cond.value.is_public === 'is' && searchCond.value.includes('is_public'))
+    filterData.is_public = form.value.is_public
+  else if (cond.value.is_public === 'exclude' && searchCond.value.includes('is_public'))
+    filterData.is_public__exclude = form.value.is_public
 
   emit('filter-submit', filterData)
 }
@@ -150,7 +151,7 @@ onBeforeMount(() => {
                 </CFormSelect>
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
-                <CFormSelect size="sm">
+                <CFormSelect v-model="form.is_public" size="sm">
                   <option value="1">예</option>
                   <option value="0">아니오</option>
                 </CFormSelect>
