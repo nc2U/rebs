@@ -91,7 +91,7 @@ const onSubmit = (payload: any) => {
 
 const filterSubmit = (payload: any) => {
   console.log(payload)
-  alert('ok!!!')
+  workStore.fetchIssueProjectList(payload)
 }
 
 onBeforeRouteUpdate(async to => {

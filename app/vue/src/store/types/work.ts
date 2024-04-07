@@ -37,8 +37,8 @@ export interface IssueProject {
 }
 
 export interface ProjectFilter {
-  is_public?: '1' | '0'
   status?: '1' | '9'
+  is_public?: '1' | '0'
 }
 
 export interface Module {

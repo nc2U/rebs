@@ -36,11 +36,10 @@ const viewMode = ref<'board' | 'list'>('board')
 
 const form = ref<ProjectFilter>({
   status: '1',
+  is_public: undefined,
 })
 
-const filterSubmit = () => {
-  emit('filter-submit', form.value)
-}
+const filterSubmit = () => emit('filter-submit', { ...form.value })
 </script>
 
 <template>

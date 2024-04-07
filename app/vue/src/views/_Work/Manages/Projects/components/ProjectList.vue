@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { inject, onBeforeMount, type ComputedRef, type PropType } from 'vue'
 import type { User } from '@/store/types/accounts'
-import type { IssueProject } from '@/store/types/work'
+import type { IssueProject, ProjectFilter } from '@/store/types/work'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 import SearchList from './SearchList.vue'
 import NoData from '@/views/_Work/components/NoData.vue'
@@ -21,7 +21,7 @@ const userInfo = inject<ComputedRef<User>>('userInfo')
 const isOwnProject = (project: IssueProject) =>
   project.all_members.map(m => m.user.pk).includes(userInfo?.value.pk as number)
 
-const filterSubmit = (payload: any) => emit('filter-submit', payload)
+const filterSubmit = (payload: ProjectFilter) => emit('filter-submit', payload)
 
 onBeforeMount(() => emit('aside-visible', true))
 </script>
