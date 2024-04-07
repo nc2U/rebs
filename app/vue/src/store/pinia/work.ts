@@ -45,6 +45,7 @@ export const useWork = defineStore('work', () => {
       : `/issue-project/?parent__isnull=1&is_public=1`
     url += `&is_public=${payload?.is_public}`
     url += `&status=${payload?.status ?? '1'}`
+    url += `&status__exclude=${payload?.status__exclude}`
 
     return await api
       .get(url)

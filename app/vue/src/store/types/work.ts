@@ -38,6 +38,7 @@ export interface IssueProject {
 
 export interface ProjectFilter {
   status?: '1' | '9'
+  status__exclude?: '1' | '9'
   is_public?: '1' | '0'
 }
 
