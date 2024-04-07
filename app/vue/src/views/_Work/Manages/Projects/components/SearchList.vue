@@ -41,7 +41,12 @@ const cond = ref({
 })
 
 const filterSubmit = () => {
-  emit('filter-submit', { ...form.value })
+  const filterData = {} as ProjectFilter
+
+  if (cond.value.status === 'is') filterData.status = form.value.status
+  else if (cond.value.status === 'exclude') filterData.status__exclude = form.value.status
+
+  emit('filter-submit', filterData)
 }
 </script>
 
