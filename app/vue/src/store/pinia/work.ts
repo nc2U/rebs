@@ -25,6 +25,7 @@ export const useWork = defineStore('work', () => {
   // Issue Project states & getters
   const issueProject = ref<IssueProject | null>(null)
   const issueProjectList = ref<IssueProject[]>([])
+
   const allProjects = ref<IssueProject[]>([])
   const AllIssueProjects = computed(() => {
     const result: IssueProject[] = []
@@ -40,25 +41,30 @@ export const useWork = defineStore('work', () => {
 
   // actions
   const fetchIssueProjectList = async (payload: ProjectFilter) => {
-    console.log(payload)
     let url = superAuth.value
       ? `/issue-project/?parent__isnull=1`
       : `/issue-project/?parent__isnull=1&is_public=1`
     if (payload?.parent) url += `&project__slug=${payload.parent}`
 
-    let filterUrl = url
-    if (payload?.status__exclude) filterUrl += `&status__exclude=${payload?.status__exclude}`
-    else filterUrl += `&status=${payload?.status ?? '1'}`
-    if (payload?.is_public) filterUrl += `&is_public=${payload?.is_public}`
-
-    await api
-      .get(url)
-      .then(res => (allProjects.value = res.data.results))
-      .catch(err => errorHandle(err.response.data))
+    if (payload?.status__exclude) url += `&status__exclude=${payload?.status__exclude}`
+    else url += `&status=${payload?.status ?? '1'}`
+    if (payload?.is_public) url += `&is_public=${payload?.is_public}`
 
     return await api
-      .get(filterUrl)
+      .get(url)
       .then(res => (issueProjectList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const fetchAllIssueProjectList = async (parent?: string) => {
+    let url = superAuth.value
+      ? `/issue-project/?parent__isnull=1`
+      : `/issue-project/?parent__isnull=1&is_public=1`
+    if (parent) url += `&project__slug=${parent}`
+
+    return await api
+      .get(url)
+      .then(res => (allProjects.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
 
@@ -405,6 +411,7 @@ export const useWork = defineStore('work', () => {
     issueProjectList,
     AllIssueProjects,
     fetchIssueProjectList,
+    fetchAllIssueProjectList,
     fetchIssueProject,
     createIssueProject,
     updateIssueProject,
