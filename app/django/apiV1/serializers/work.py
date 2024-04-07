@@ -123,7 +123,7 @@ class IssueProjectSerializer(serializers.ModelSerializer):
 
         subs = instance.issueproject_set.all()
         is_public = validated_data.get('is_public', None)
-        if is_public:
+        if is_public and is_public is not instance.is_public:
             for sub in subs:
                 sub.is_public = is_public
                 sub.save()
