@@ -1,15 +1,16 @@
 <script lang="ts" setup>
-import { ref, reactive, type PropType } from 'vue'
+import { ref, reactive, type PropType, onBeforeMount } from 'vue'
 import type { IssueProject, ProjectFilter } from '@/store/types/work'
 import DatePicker from '@/components/DatePicker/index.vue'
 import Multiselect from '@vueform/multiselect'
 
-defineProps({
+const props = defineProps({
   allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
 })
 
 const emit = defineEmits(['filter-submit'])
 
+const viewMode = ref<'board' | 'list'>('board')
 const condVisible = ref(true)
 const optVisible = ref(false)
 
@@ -33,15 +34,15 @@ const searchOptions = reactive([
   },
 ])
 
-const viewMode = ref<'board' | 'list'>('board')
+const cond = ref({
+  status: 'is' as 'is' | 'exclude',
+  project: 'is' as 'is' | 'exclude',
+})
 
 const form = ref<ProjectFilter>({
   status: '1',
   is_public: undefined,
-})
-
-const cond = ref({
-  status: 'is' as 'is' | 'exclude',
+  project: '',
 })
 
 const filterSubmit = () => {
@@ -49,9 +50,17 @@ const filterSubmit = () => {
 
   if (cond.value.status === 'is') filterData.status = form.value.status
   else if (cond.value.status === 'exclude') filterData.status__exclude = form.value.status
+  if (cond.value.project === 'is') filterData.project = form.value.project
+  else if (cond.value.project === 'exclude') filterData.project__exclude = form.value.project
 
   emit('filter-submit', filterData)
 }
+
+onBeforeMount(() => {
+  if (props.allProjects.length) {
+    form.value.project = props.allProjects[0].slug
+  }
+})
 </script>
 
 <template>
@@ -89,13 +98,14 @@ const filterSubmit = () => {
                 <CFormCheck checked="true" label="프로젝트" id="project" />
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
-                <CFormSelect size="sm" data-width="20">
-                  <option value="1">is</option>
-                  <option value="0">is not</option>
+                <CFormSelect v-model="cond.project" size="sm" data-width="20">
+                  <option value="is">is</option>
+                  <option value="exclude">is not</option>
                 </CFormSelect>
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
-                <CFormSelect size="sm" data-width="20">
+                <CFormSelect v-model="form.project" size="sm" data-width="20">
+                  <option value="">---------</option>
                   <option v-for="proj in allProjects" :key="proj.pk" :value="proj.slug">
                     {{ proj.name }}
                   </option>
