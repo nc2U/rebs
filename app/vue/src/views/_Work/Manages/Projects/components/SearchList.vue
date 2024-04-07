@@ -23,10 +23,9 @@ const searchOptions = reactive([
   {
     label: '문자열 검색',
     options: [
-      { value: 'name', label: '이름', disabled: true },
-      { value: 'description', label: '설명', disabled: true },
+      { value: 'name', label: '이름' },
+      { value: 'description', label: '설명' },
     ],
-    disabled: true,
   },
 ])
 
@@ -37,7 +36,13 @@ const form = ref<ProjectFilter>({
   is_public: undefined,
 })
 
-const filterSubmit = () => emit('filter-submit', { ...form.value })
+const cond = ref({
+  status: 'is' as 'is' | 'exclude',
+})
+
+const filterSubmit = () => {
+  emit('filter-submit', { ...form.value })
+}
 </script>
 
 <template>
@@ -57,10 +62,10 @@ const filterSubmit = () => emit('filter-submit', { ...form.value })
                 <CFormCheck label="상태" id="status" checked="true" />
               </CCol>
               <CCol class="d-none d-lg-block col-4 col-lg-3 col-xl-2">
-                <!-- <CFormSelect size="sm" data-width="20">-->
-                <!--   <option value="1">is</option>-->
-                <!--   <option value="0">is not</option>-->
-                <!-- </CFormSelect>-->
+                <CFormSelect v-model="cond.status" size="sm" data-width="20">
+                  <option value="is">is</option>
+                  <option value="exclude">is not</option>
+                </CFormSelect>
               </CCol>
               <CCol class="col-8 col-lg-3 col-xl-2">
                 <CFormSelect v-model="form.status" size="sm" data-width="20">
@@ -164,12 +169,12 @@ const filterSubmit = () => emit('filter-submit', { ...form.value })
               <CCol class="col-4 col-lg-3 col-xl-2">
                 <CFormSelect size="sm" data-width="20">
                   <option value="1">contains</option>
-                  <option value="2">contains any of</option>
-                  <option value="3">doesn't contain</option>
-                  <option value="4">starts with</option>
-                  <option value="5">ends with</option>
-                  <option value="6">none</option>
-                  <option value="7">any</option>
+                  <option value="2" disabled>contains any of</option>
+                  <option value="3" disabled>doesn't contain</option>
+                  <option value="4" disabled>starts with</option>
+                  <option value="5" disabled>ends with</option>
+                  <option value="6" disabled>none</option>
+                  <option value="7" disabled>any</option>
                 </CFormSelect>
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
