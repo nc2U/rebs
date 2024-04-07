@@ -11,7 +11,7 @@ import IssueForm from '@/views/_Work/Manages/Issues/components/IssueForm.vue'
 const props = defineProps({
   iProject: { type: Object as PropType<IssueProject>, default: null },
   issue: { type: Object as PropType<Issue>, required: true },
-  issueProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
+  allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
   issueCommentList: { type: Array as PropType<IssueComment[]>, default: () => [] },
   timeEntryList: { type: Array as PropType<TimeEntry[]>, default: () => [] },
 })
@@ -266,7 +266,7 @@ onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue
       ref="issueFormRef"
       :i-project="iProject"
       :issue="issue"
-      :issue-projects="issueProjects"
+      :all-projects="allProjects"
       @on-submit="onSubmit"
       @close-form="() => (editForm = false)"
     />

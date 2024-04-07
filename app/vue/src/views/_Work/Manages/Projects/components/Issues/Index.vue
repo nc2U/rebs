@@ -12,7 +12,7 @@ const [route, router] = [useRoute(), useRouter()]
 
 const workStore = useWork()
 const iProject = computed(() => workStore.issueProject)
-const issueProjects = computed(() => workStore.AllIssueProjects)
+const allProjects = computed(() => workStore.AllIssueProjects)
 const issue = computed(() => workStore.issue)
 const issueList = computed(() => workStore.issueList)
 const issueCommentList = computed(() => workStore.issueCommentList)
@@ -38,11 +38,12 @@ onBeforeRouteUpdate(async to => {
 
 onBeforeMount(async () => {
   emit('aside-visible', true)
-  await workStore.fetchIssueProjectList({})
+  await workStore.fetchAllIssueProjectList()
   await workStore.fetchIssueList({ status__closed: '' })
 
   if (route.params.projId) {
     await workStore.fetchIssueProject(route.params.projId as string)
+    await workStore.fetchAllIssueProjectList(route.params.projId as string)
     await workStore.fetchIssueList({
       status__closed: '',
       project: route.params.projId as string,
@@ -64,7 +65,7 @@ onBeforeMount(async () => {
     v-if="route.name === '(업무) - 보기' && issue"
     :i-project="iProject ?? undefined"
     :issue="issue"
-    :issue-projects="issueProjects"
+    :all-projects="allProjects"
     :issue-comment-list="issueCommentList"
     :time-entry-list="timeEntryList"
     @on-submit="onSubmit"
@@ -72,7 +73,7 @@ onBeforeMount(async () => {
 
   <IssueForm
     v-if="route.name === '(업무) - 추가'"
-    :issue-projects="issueProjects"
+    :all-projects="allProjects"
     @on-submit="onSubmit"
     @close-form="router.push({ name: '(업무)' })"
   />

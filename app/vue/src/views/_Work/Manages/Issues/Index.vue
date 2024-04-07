@@ -17,7 +17,7 @@ const sideNavCAll = () => cBody.value.toggle()
 
 const workStore = useWork()
 const issueList = computed(() => workStore.issueList)
-const issueProjects = computed(() => workStore.AllIssueProjects)
+const allProjects = computed(() => workStore.AllIssueProjects)
 
 const router = useRouter()
 
@@ -30,7 +30,7 @@ const onSubmit = (payload: any) => {
 }
 
 onBeforeMount(async () => {
-  await workStore.fetchIssueProjectList({})
+  await workStore.fetchAllIssueProjectList()
   await workStore.fetchIssueList({ status__closed: '' })
 })
 </script>
@@ -44,7 +44,7 @@ onBeforeMount(async () => {
 
       <IssueForm
         v-if="$route.name === '업무 - 추가'"
-        :issue-projects="issueProjects"
+        :all-projects="allProjects"
         @on-submit="onSubmit"
         @close-form="router.push({ name: '업무' })"
       />

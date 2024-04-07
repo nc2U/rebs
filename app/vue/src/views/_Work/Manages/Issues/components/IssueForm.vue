@@ -13,7 +13,7 @@ import { dateFormat } from '@/utils/baseMixins'
 
 const props = defineProps({
   issue: { type: Object as PropType<Issue>, default: null },
-  issueProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
+  allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
 })
 
 const validated = ref(false)
@@ -175,7 +175,7 @@ onBeforeMount(() => {
             <CCol sm="4">
               <CFormSelect v-model="form.project">
                 <option value="">---------</option>
-                <option v-for="proj in issueProjects" :value="proj.slug" :key="proj.slug">
+                <option v-for="proj in allProjects" :value="proj.slug" :key="proj.slug">
                   <span v-if="proj.depth === 2"> &nbsp;&nbsp;» </span>
                   <span v-if="proj.depth === 3"> &nbsp;&nbsp;&nbsp;&nbsp;» </span>
                   <span v-if="proj.depth === 4"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;» </span>
