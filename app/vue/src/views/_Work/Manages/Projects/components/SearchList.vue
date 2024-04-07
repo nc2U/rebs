@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
+import { ref, reactive } from 'vue'
 import type { ProjectFilter } from '@/store/types/work'
 import DatePicker from '@/components/DatePicker/index.vue'
 import Multiselect from '@vueform/multiselect'
@@ -12,18 +12,16 @@ const optVisible = ref(false)
 const searchCond = ref(['status'])
 const searchOptions = reactive([
   {
-    label: '필터',
     options: [
       { value: 'status', label: '상태', disabled: true },
-      { value: 'project', label: '프로젝트', disabled: true },
+      { value: 'project', label: '프로젝트' },
       { value: 'parent', label: '상위 프로젝트', disabled: true },
       { value: 'is_public', label: '공개여부', disabled: true },
       { value: 'created', label: '등록일자', disabled: true },
     ],
-    disabled: true,
   },
   {
-    label: '검색',
+    label: '문자열 검색',
     options: [
       { value: 'name', label: '이름', disabled: true },
       { value: 'description', label: '설명', disabled: true },
