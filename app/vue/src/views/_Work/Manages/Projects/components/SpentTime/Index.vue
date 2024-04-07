@@ -9,7 +9,7 @@ const emit = defineEmits(['aside-visible'])
 
 const workStore = useWork()
 const timeEntryList = computed(() => workStore.timeEntryList)
-const issueProjects = computed(() => workStore.AllIssueProjects)
+const allProjects = computed(() => workStore.AllIssueProjects)
 const createTimeEntry = (payload: any) => workStore.createTimeEntry(payload)
 const updateTimeEntry = (payload: any) => workStore.updateTimeEntry(payload)
 
@@ -25,7 +25,7 @@ const onSubmit = async (payload: any) => {
 
 onBeforeMount(async () => {
   emit('aside-visible', true)
-  await workStore.fetchIssueProjectList({})
+  await workStore.fetchAllIssueProjectList()
   const project = route.params.projId ? (route.params.projId as string) : ''
   const issue = route.query.issue_id ? (route.query.issue_id as string) : ''
   await workStore.fetchTimeEntryList({ project, issue })
@@ -37,14 +37,14 @@ onBeforeMount(async () => {
 
   <TimeEntryForm
     v-if="$route.name === '(소요시간) - 추가'"
-    :issue-projects="issueProjects"
+    :all-projects="allProjects"
     @on-submit="onSubmit"
     @close-form="$router.push({ name: '(소요시간)' })"
   />
 
   <TimeEntryForm
     v-if="$route.name === '(소요시간) - 편집'"
-    :issue-projects="issueProjects"
+    :all-projects="allProjects"
     @on-submit="onSubmit"
     @close-form="$router.push({ name: '(소요시간)' })"
   />

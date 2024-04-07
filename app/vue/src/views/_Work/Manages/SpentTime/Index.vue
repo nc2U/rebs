@@ -17,7 +17,7 @@ const sideNavCAll = () => cBody.value.toggle()
 
 const workStore = useWork()
 const timeEntryList = computed(() => workStore.timeEntryList)
-const issueProjects = computed(() => workStore.AllIssueProjects)
+const allProjects = computed(() => workStore.AllIssueProjects)
 const createTimeEntry = (payload: any) => workStore.createTimeEntry(payload)
 const updateTimeEntry = (payload: any) => workStore.updateTimeEntry(payload)
 
@@ -32,7 +32,7 @@ const onSubmit = async (payload: any) => {
 }
 
 onBeforeMount(() => {
-  workStore.fetchIssueProjectList({})
+  workStore.fetchAllIssueProjectList()
   workStore.fetchTimeEntryList({})
 })
 </script>
@@ -46,7 +46,7 @@ onBeforeMount(() => {
 
       <TimeEntryForm
         v-if="$route.name === '소요시간 - 추가'"
-        :issue-projects="issueProjects"
+        :all-projects="allProjects"
         @on-submit="onSubmit"
         @close-form="$router.push({ name: '소요시간' })"
       />
