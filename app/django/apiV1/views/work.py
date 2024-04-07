@@ -1,4 +1,4 @@
-from django_filters import DateFilter
+from django_filters import DateFilter, CharFilter
 from rest_framework import viewsets
 from django_filters.rest_framework import FilterSet, BooleanFilter
 
@@ -16,10 +16,13 @@ from work.models import (IssueProject, Role, Permission, Member, Module, Version
 # Work --------------------------------------------------------------------------
 class IssueProjectFilter(FilterSet):
     parent__isnull = BooleanFilter(field_name='parent', lookup_expr='isnull', label='최상위 프로젝트')
+    status__exclude = CharFilter(field_name='status', exclude=True)
+    name = CharFilter(field_name='name', lookup_expr='icontains', label='이름')
+    description = CharFilter(field_name='description', lookup_expr='icontains', label='설명')
 
     class Meta:
         model = IssueProject
-        fields = ('parent__isnull', 'is_public', 'status')
+        fields = ('parent__isnull', 'is_public', 'status', 'name', 'description')
 
 
 class IssueProjectViewSet(viewsets.ModelViewSet):
@@ -29,7 +32,6 @@ class IssueProjectViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = PageNumberPaginationTwenty
     filterset_class = IssueProjectFilter
-    search_fields = ('name', 'description', 'slug')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
