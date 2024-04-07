@@ -205,6 +205,9 @@ class Module(models.Model):
     calendar = models.BooleanField('달력', default=True)
     gantt = models.BooleanField('Gantt 차트', default=True)
 
+    def __str__(self):
+        return f'{self.project.name}'
+
 
 class Version(models.Model):
     project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')

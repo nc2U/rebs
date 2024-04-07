@@ -71,7 +71,7 @@ class IssueProjectSerializer(serializers.ModelSerializer):
                   'module', 'visible', 'user', 'created', 'updated')
 
     def get_sub_projects(self, obj):
-        return self.__class__(obj.issueproject_set.all(), many=True, read_only=True).data
+        return self.__class__(obj.issueproject_set.exclude(status='9'), many=True, read_only=True).data
 
     def get_visible(self, obj):
         request = self.context.get('request')

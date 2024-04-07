@@ -19,7 +19,7 @@ class IssueProjectFilter(FilterSet):
 
     class Meta:
         model = IssueProject
-        fields = ('parent__isnull', 'status')
+        fields = ('parent__isnull', 'is_public', 'status')
 
 
 class IssueProjectViewSet(viewsets.ModelViewSet):
@@ -31,9 +31,9 @@ class IssueProjectViewSet(viewsets.ModelViewSet):
     filterset_class = IssueProjectFilter
     search_fields = ('name', 'description', 'slug')
 
-    def get_queryset(self):
-        user = self.request.user
-        return self.queryset if user.is_superuser else self.queryset.filter(is_public=True)
+    # def get_queryset(self):
+    #     user = self.request.user
+    #     return self.queryset if user.is_superuser else self.queryset.filter(is_public=True)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
