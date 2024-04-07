@@ -44,6 +44,8 @@ export interface ProjectFilter {
   project__exclude?: string
   is_public?: '1' | '0'
   is_public__exclude?: '1' | '0'
+  name?: string
+  description?: string
 }
 
 export interface Module {

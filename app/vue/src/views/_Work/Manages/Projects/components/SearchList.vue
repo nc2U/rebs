@@ -41,12 +41,18 @@ const cond = ref({
   project: 'is' as 'is' | 'exclude',
   parent: 'all' as 'all' | 'none' | 'is' | 'exclude',
   is_public: 'is' as 'is' | 'exclude',
+
+  name: 'contains',
+  description: 'contains',
 })
 
 const form = ref<ProjectFilter>({
   status: '1',
   project: '',
   is_public: '1',
+
+  name: '',
+  description: '',
 })
 
 const filterSubmit = () => {
@@ -60,6 +66,9 @@ const filterSubmit = () => {
     filterData.is_public = form.value.is_public
   else if (cond.value.is_public === 'exclude' && searchCond.value.includes('is_public'))
     filterData.is_public__exclude = form.value.is_public
+
+  if (form.value.name) filterData.name = form.value.name
+  if (form.value.description) filterData.description = form.value.description
 
   emit('filter-submit', filterData)
 }
@@ -194,8 +203,8 @@ onBeforeMount(() => {
                 <CFormCheck checked="true" label="이름" id="name" disabled />
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
-                <CFormSelect size="sm">
-                  <option value="1">contains</option>
+                <CFormSelect v-model="cond.name" size="sm">
+                  <option value="contains">contains</option>
                   <option value="2" disabled>contains any of</option>
                   <option value="3" disabled>doesn't contain</option>
                   <option value="4" disabled>starts with</option>
@@ -205,7 +214,7 @@ onBeforeMount(() => {
                 </CFormSelect>
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
-                <CFormInput size="sm" />
+                <CFormInput v-model="form.name" size="sm" />
               </CCol>
             </CRow>
 
@@ -214,8 +223,8 @@ onBeforeMount(() => {
                 <CFormCheck checked="true" label="설명" id="description" disabled />
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
-                <CFormSelect size="sm">
-                  <option value="1">contains</option>
+                <CFormSelect v-model="cond.description" size="sm">
+                  <option value="contains">contains</option>
                   <option value="2">contains any of</option>
                   <option value="3">doesn't contain</option>
                   <option value="4">starts with</option>
@@ -225,7 +234,7 @@ onBeforeMount(() => {
                 </CFormSelect>
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
-                <CFormInput size="sm" />
+                <CFormInput v-model="form.description" size="sm" />
               </CCol>
             </CRow>
           </CCol>
