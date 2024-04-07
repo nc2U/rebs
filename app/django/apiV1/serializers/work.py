@@ -120,6 +120,12 @@ class IssueProjectSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         parent = validated_data.get('parent', None)
         instance.depth = 1 if parent is None else parent.depth + 1
+        status = validated_data.get('status', None)
+        if status == '9':
+            subs = instance.issueproject_set.all()
+            for sub in subs:
+                sub.status = status
+                sub.save()
 
         module = instance.module
         module.issue = self.initial_data.get('issue', True)

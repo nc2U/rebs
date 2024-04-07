@@ -31,10 +31,6 @@ class IssueProjectViewSet(viewsets.ModelViewSet):
     filterset_class = IssueProjectFilter
     search_fields = ('name', 'description', 'slug')
 
-    # def get_queryset(self):
-    #     user = self.request.user
-    #     return self.queryset if user.is_superuser else self.queryset.filter(is_public=True)
-
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
