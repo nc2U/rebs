@@ -124,6 +124,7 @@ onBeforeMount(() => {
                 <CFormSelect v-model="form.project" size="sm">
                   <option value="">---------</option>
                   <option v-for="proj in allProjects" :key="proj.pk" :value="proj.slug">
+                    <span v-if="proj.parent">{{ '&nbsp;'.repeat(proj.depth) }}</span>
                     {{ proj.name }}
                   </option>
                 </CFormSelect>

@@ -14,9 +14,9 @@ const props = defineProps({
 
 const emit = defineEmits(['aside-visible', 'filter-submit'])
 
-const isContainSubs = ref(false)
-
-const issueProjectList = computed(() => (isContainSubs.value ? props.projects : props.projectList))
+const issueProjectList = computed(() =>
+  !props.projectList.length ? props.projects : props.projectList,
+)
 
 const superAuth = inject('superAuth', false)
 const userInfo = inject<ComputedRef<User>>('userInfo')
