@@ -15,6 +15,8 @@ const condVisible = ref(true)
 const optVisible = ref(false)
 
 const searchCond = ref(['status'])
+const resetFilter = () => (searchCond.value = ['status'])
+
 const searchOptions = reactive([
   {
     options: [
@@ -82,16 +84,16 @@ onBeforeMount(() => {
           <CCol class="col-12 col-md-8">
             <CRow>
               <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
-                <CFormCheck label="상태" id="status" checked="true" />
+                <CFormCheck label="상태" id="status" checked="true" disabled />
               </CCol>
               <CCol class="d-none d-lg-block col-4 col-lg-3 col-xl-2">
-                <CFormSelect v-model="cond.status" size="sm" data-width="20">
+                <CFormSelect v-model="cond.status" size="sm">
                   <option value="is">is</option>
                   <option value="exclude">is not</option>
                 </CFormSelect>
               </CCol>
               <CCol class="col-8 col-lg-3 col-xl-2">
-                <CFormSelect v-model="form.status" size="sm" data-width="20">
+                <CFormSelect v-model="form.status" size="sm">
                   <option value="1">사용중</option>
                   <option value="9">닫힘</option>
                 </CFormSelect>
@@ -100,16 +102,16 @@ onBeforeMount(() => {
 
             <CRow v-if="searchCond.includes('project')">
               <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
-                <CFormCheck checked="true" label="프로젝트" id="project" />
+                <CFormCheck checked="true" label="프로젝트" id="project" disabled />
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
-                <CFormSelect v-model="cond.project" size="sm" data-width="20">
+                <CFormSelect v-model="cond.project" size="sm">
                   <option value="is">is</option>
                   <option value="exclude">is not</option>
                 </CFormSelect>
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
-                <CFormSelect v-model="form.project" size="sm" data-width="20">
+                <CFormSelect v-model="form.project" size="sm">
                   <option value="">---------</option>
                   <option v-for="proj in allProjects" :key="proj.pk" :value="proj.slug">
                     {{ proj.name }}
@@ -120,10 +122,10 @@ onBeforeMount(() => {
 
             <CRow v-if="searchCond.includes('parent')">
               <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
-                <CFormCheck checked="true" label="상위 프로젝트" id="parent" />
+                <CFormCheck checked="true" label="상위 프로젝트" id="parent" disabled />
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
-                <CFormSelect v-model="cond.parent" size="sm" data-width="20">
+                <CFormSelect v-model="cond.parent" size="sm">
                   <option value="all">any</option>
                   <option value="none">none</option>
                   <option value="is">is</option>
@@ -131,7 +133,7 @@ onBeforeMount(() => {
                 </CFormSelect>
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
-                <CFormSelect size="sm" data-width="20">
+                <CFormSelect size="sm">
                   <option v-for="proj in allProjects" :key="proj.pk" value="1">사용중</option>
                 </CFormSelect>
               </CCol>
@@ -139,16 +141,16 @@ onBeforeMount(() => {
 
             <CRow v-if="searchCond.includes('is_public')">
               <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
-                <CFormCheck checked="true" label="공개여부" id="is_public" />
+                <CFormCheck checked="true" label="공개여부" id="is_public" disabled />
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
-                <CFormSelect v-model="cond.is_public" size="sm" data-width="20">
+                <CFormSelect v-model="cond.is_public" size="sm">
                   <option value="is">is</option>
                   <option value="exclude">is not</option>
                 </CFormSelect>
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
-                <CFormSelect size="sm" data-width="20">
+                <CFormSelect size="sm">
                   <option value="1">예</option>
                   <option value="0">아니오</option>
                 </CFormSelect>
@@ -157,10 +159,10 @@ onBeforeMount(() => {
 
             <CRow v-if="searchCond.includes('created')">
               <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
-                <CFormCheck checked="true" label="등록일자" id="created" />
+                <CFormCheck checked="true" label="등록일자" id="created" disabled />
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
-                <CFormSelect size="sm" data-width="20">
+                <CFormSelect size="sm">
                   <option value="1">is</option>
                   <option value="2">&gt;=</option>
                   <option value="3">&lt;=</option>
@@ -188,10 +190,10 @@ onBeforeMount(() => {
 
             <CRow v-if="searchCond.includes('name')">
               <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
-                <CFormCheck checked="true" label="이름" id="name" />
+                <CFormCheck checked="true" label="이름" id="name" disabled />
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
-                <CFormSelect size="sm" data-width="20">
+                <CFormSelect size="sm">
                   <option value="1">contains</option>
                   <option value="2" disabled>contains any of</option>
                   <option value="3" disabled>doesn't contain</option>
@@ -208,10 +210,10 @@ onBeforeMount(() => {
 
             <CRow v-if="searchCond.includes('description')">
               <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
-                <CFormCheck checked="true" label="설명" id="description" />
+                <CFormCheck checked="true" label="설명" id="description" disabled />
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
-                <CFormSelect size="sm" data-width="20">
+                <CFormSelect size="sm">
                   <option value="1">contains</option>
                   <option value="2">contains any of</option>
                   <option value="3">doesn't contain</option>
@@ -295,7 +297,7 @@ onBeforeMount(() => {
           <v-icon icon="mdi-check-bold" size="sm" color="success" />
           검색
         </router-link>
-        <router-link to="" class="mr-3">
+        <router-link to="" class="mr-3" @click="resetFilter">
           <v-icon icon="mdi-replay" size="sm" color="success" />
           초기화
         </router-link>

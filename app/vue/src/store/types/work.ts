@@ -42,7 +42,6 @@ export interface ProjectFilter {
   status__exclude?: '1' | '9'
   project?: string
   project__exclude?: string
-
   is_public?: '1' | '0'
   is_public__exclude?: '1' | '0'
 }
