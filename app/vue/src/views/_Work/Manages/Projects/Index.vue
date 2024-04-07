@@ -44,6 +44,7 @@ const superAuth = computed(() => accStore.superAuth)
 const workStore = useWork()
 const issueProject = computed(() => workStore.issueProject)
 provide('iProject', issueProject)
+const issueProjects = computed(() => workStore.issueProjects)
 const issueProjectList = computed(() => workStore.issueProjectList)
 const allProjects = computed(() => workStore.AllIssueProjects)
 
@@ -120,6 +121,7 @@ onBeforeMount(async () => {
     <template v-slot:default>
       <ProjectList
         v-if="routeName === '프로젝트'"
+        :projects="issueProjects"
         :project-list="issueProjectList"
         :all-projects="allProjects"
         @aside-visible="asideVisible"

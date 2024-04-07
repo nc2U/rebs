@@ -417,6 +417,7 @@ export const useWork = defineStore('work', () => {
 
   return {
     issueProject,
+    issueProjects,
     issueProjectList,
     AllIssueProjects,
     fetchIssueProjectList,

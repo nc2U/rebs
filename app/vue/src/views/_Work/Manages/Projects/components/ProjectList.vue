@@ -1,17 +1,22 @@
 <script lang="ts" setup>
-import { inject, onBeforeMount, type ComputedRef, type PropType } from 'vue'
+import { ref, inject, onBeforeMount, type ComputedRef, type PropType, computed } from 'vue'
 import type { User } from '@/store/types/accounts'
 import type { IssueProject, ProjectFilter } from '@/store/types/work'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 import SearchList from './SearchList.vue'
 import NoData from '@/views/_Work/components/NoData.vue'
 
-defineProps({
+const props = defineProps({
+  projects: { type: Array as PropType<IssueProject[]>, default: () => [] },
   projectList: { type: Array as PropType<IssueProject[]>, default: () => [] },
   allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
 })
 
 const emit = defineEmits(['aside-visible', 'filter-submit'])
+
+const isContainSubs = ref(false)
+
+const issueProjectList = computed(() => (isContainSubs.value ? props.projects : props.projectList))
 
 const superAuth = inject('superAuth', false)
 const userInfo = inject<ComputedRef<User>>('userInfo')
@@ -44,10 +49,10 @@ onBeforeMount(() => emit('aside-visible', true))
 
   <SearchList :all-projects="allProjects" @filter-submit="filterSubmit" />
 
-  <NoData v-if="!projectList.length" />
+  <NoData v-if="!issueProjectList.length" />
 
   <CRow v-else>
-    <CCol v-for="proj in projectList" :key="proj.pk" sm="12" lg="6" xl="4">
+    <CCol v-for="proj in issueProjectList" :key="proj.pk" sm="12" lg="6" xl="4">
       <CCard class="my-2">
         <CCardBody class="project-set">
           <router-link :to="{ name: '(개요)', params: { projId: proj.slug } }">
