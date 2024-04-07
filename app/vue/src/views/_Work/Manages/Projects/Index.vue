@@ -45,7 +45,7 @@ const workStore = useWork()
 const issueProject = computed(() => workStore.issueProject)
 provide('iProject', issueProject)
 const issueProjectList = computed(() => workStore.issueProjectList)
-const AllIssueProjects = computed(() => workStore.AllIssueProjects)
+const allProjects = computed(() => workStore.AllIssueProjects)
 
 const version = computed(() => false)
 const modules = computed(() => issueProject.value?.module)
@@ -101,6 +101,7 @@ onBeforeRouteUpdate(async to => {
 
 onBeforeMount(async () => {
   await workStore.fetchIssueProjectList({})
+  await workStore.fetchAllIssueProjectList()
   if (route.params.projId) {
     await workStore.fetchIssueProject(route.params.projId as string)
   }
@@ -127,7 +128,7 @@ onBeforeMount(async () => {
       <ProjectForm
         v-if="routeName === '프로젝트 - 추가'"
         title="새 프로젝트"
-        :all-task-projects="AllIssueProjects"
+        :all-projects="allProjects"
         @aside-visible="asideVisible"
         @on-submit="onSubmit"
       />

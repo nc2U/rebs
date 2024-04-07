@@ -17,7 +17,7 @@ import MdEditor from '@/components/MdEditor/Index.vue'
 const props = defineProps({
   title: { type: String, default: '' },
   project: { type: Object as PropType<IssueProject | null>, default: null },
-  allTaskProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
+  allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
 })
 
 const emit = defineEmits(['aside-visible', 'on-submit'])
@@ -41,7 +41,7 @@ const tempSpace = ref('')
 
 const chkPublic = () =>
   nextTick(() => {
-    const parent = form.parent ? props.allTaskProjects.filter(p => p.pk === form.parent)[0] : null
+    const parent = form.parent ? props.allProjects.filter(p => p.pk === form.parent)[0] : null
     form.is_public = !!parent?.is_public
     form.is_inherit_members = true
   })
@@ -206,7 +206,7 @@ onBeforeMount(() => {
             <CFormSelect v-model.number="form.parent" @change="chkPublic">
               <option value="">상위 프로젝트 선택</option>
               <option
-                v-for="proj in allTaskProjects"
+                v-for="proj in allProjects"
                 :value="proj.pk"
                 :key="proj.pk"
                 v-show="project?.pk !== proj.pk"
