@@ -15,15 +15,16 @@ from work.models import (IssueProject, Role, Permission, Member, Module, Version
 
 # Work --------------------------------------------------------------------------
 class IssueProjectFilter(FilterSet):
-    parent = CharFilter(field_name='parent__slug', lookup_expr='iexact', label='상위 프로젝트')
     parent__isnull = BooleanFilter(field_name='parent', lookup_expr='isnull', label='최상위 프로젝트')
-    status__exclude = CharFilter(field_name='status', exclude=True)
+    status__exclude = CharFilter(field_name='status', exclude=True, label='사용여부-제외')
+    project = CharFilter(field_name='slug', lookup_expr='exact', label='프로젝트')
+    project__exclude = CharFilter(field_name='slug', exclude=True, label='프로젝트-제외')
     name = CharFilter(field_name='name', lookup_expr='icontains', label='이름')
     description = CharFilter(field_name='description', lookup_expr='icontains', label='설명')
 
     class Meta:
         model = IssueProject
-        fields = ('parent', 'is_public', 'status', 'name', 'description')
+        fields = ('parent__isnull', 'is_public', 'status', 'project', 'name', 'description')
 
 
 class IssueProjectViewSet(viewsets.ModelViewSet):
