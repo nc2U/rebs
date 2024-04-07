@@ -44,7 +44,7 @@ export const useWork = defineStore('work', () => {
     let url = superAuth.value
       ? `/issue-project/?parent__isnull=1`
       : `/issue-project/?parent__isnull=1&is_public=1`
-    if (payload?.parent) url += `&project__slug=${payload.parent}`
+    if (payload?.parent) url += `&parent__slug=${payload.parent}`
 
     if (payload?.status__exclude) url += `&status__exclude=${payload?.status__exclude}`
     else url += `&status=${payload?.status ?? '1'}`
@@ -60,7 +60,7 @@ export const useWork = defineStore('work', () => {
     let url = superAuth.value
       ? `/issue-project/?parent__isnull=1`
       : `/issue-project/?parent__isnull=1&is_public=1`
-    if (parent) url += `&project__slug=${parent}`
+    if (parent) url += `&parent__slug=${parent}`
 
     return await api
       .get(url)
