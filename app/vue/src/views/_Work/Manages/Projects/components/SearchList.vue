@@ -21,7 +21,7 @@ const searchOptions = reactive([
       { value: 'status', label: '상태', disabled: true },
       { value: 'project', label: '프로젝트' },
       { value: 'parent', label: '상위 프로젝트', disabled: true },
-      { value: 'is_public', label: '공개여부', disabled: true },
+      { value: 'is_public', label: '공개여부' },
       { value: 'created', label: '등록일자', disabled: true },
     ],
   },
@@ -37,12 +37,14 @@ const searchOptions = reactive([
 const cond = ref({
   status: 'is' as 'is' | 'exclude',
   project: 'is' as 'is' | 'exclude',
+  parent: 'all' as 'all' | 'none' | 'is' | 'exclude',
+  is_public: 'is' as 'is' | 'exclude',
 })
 
 const form = ref<ProjectFilter>({
   status: '1',
-  is_public: undefined,
   project: '',
+  is_public: '1',
 })
 
 const filterSubmit = () => {
@@ -52,6 +54,9 @@ const filterSubmit = () => {
   else if (cond.value.status === 'exclude') filterData.status__exclude = form.value.status
   if (cond.value.project === 'is') filterData.project = form.value.project
   else if (cond.value.project === 'exclude') filterData.project__exclude = form.value.project
+
+  if (cond.value.is_public === 'is') filterData.is_public = form.value.is_public
+  else if (cond.value.is_public === 'exclude') filterData.is_public__exclude = form.value.is_public
 
   emit('filter-submit', filterData)
 }
@@ -118,11 +123,11 @@ onBeforeMount(() => {
                 <CFormCheck checked="true" label="상위 프로젝트" id="parent" />
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
-                <CFormSelect size="sm" data-width="20">
-                  <option value="1">any</option>
-                  <option value="1">none</option>
-                  <option value="1">is</option>
-                  <option value="0">is not</option>
+                <CFormSelect v-model="cond.parent" size="sm" data-width="20">
+                  <option value="all">any</option>
+                  <option value="none">none</option>
+                  <option value="is">is</option>
+                  <option value="exclude">is not</option>
                 </CFormSelect>
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
@@ -137,15 +142,15 @@ onBeforeMount(() => {
                 <CFormCheck checked="true" label="공개여부" id="is_public" />
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
-                <CFormSelect size="sm" data-width="20">
-                  <option value="1">is</option>
-                  <option value="0">is not</option>
+                <CFormSelect v-model="cond.is_public" size="sm" data-width="20">
+                  <option value="is">is</option>
+                  <option value="exclude">is not</option>
                 </CFormSelect>
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
                 <CFormSelect size="sm" data-width="20">
-                  <option value="1">사용중</option>
-                  <option value="2">닫힘</option>
+                  <option value="1">예</option>
+                  <option value="0">아니오</option>
                 </CFormSelect>
               </CCol>
             </CRow>

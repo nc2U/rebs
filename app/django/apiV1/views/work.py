@@ -19,12 +19,13 @@ class IssueProjectFilter(FilterSet):
     status__exclude = CharFilter(field_name='status', exclude=True, label='사용여부-제외')
     project = CharFilter(field_name='slug', lookup_expr='exact', label='프로젝트')
     project__exclude = CharFilter(field_name='slug', exclude=True, label='프로젝트-제외')
+    is_public__exclude = BooleanFilter(field_name='is_public', exclude=True, label='공개여부-제외')
     name = CharFilter(field_name='name', lookup_expr='icontains', label='이름')
     description = CharFilter(field_name='description', lookup_expr='icontains', label='설명')
 
     class Meta:
         model = IssueProject
-        fields = ('parent__isnull', 'is_public', 'status', 'project', 'name', 'description')
+        fields = ('parent__isnull', 'status', 'project', 'is_public', 'name', 'description')
 
 
 class IssueProjectViewSet(viewsets.ModelViewSet):

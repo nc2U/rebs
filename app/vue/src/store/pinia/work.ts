@@ -50,6 +50,8 @@ export const useWork = defineStore('work', () => {
     else url += `&status=${payload?.status ?? '1'}`
     if (payload.project) url += `&project=${payload.project}`
     else if (payload.project__exclude) url += `&project__exclude=${payload.project__exclude}`
+    if (payload.is_public) url += `&is_public=${payload.is_public}`
+    else if (payload.is_public__exclude) url += `&is_public__exclude=${payload.is_public__exclude}`
 
     if (payload?.is_public) url += `&is_public=${payload?.is_public}`
 
