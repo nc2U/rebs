@@ -24,7 +24,12 @@ export const useWork = defineStore('work', () => {
 
   // Issue Project states & getters
   const issueProject = ref<IssueProject | null>(null)
-  const issueProjectList = ref<IssueProject[]>([])
+  const issueProjects = ref<IssueProject[]>([])
+  const issueProjectList = computed(() =>
+    issueProjects.value.filter(
+      proj => proj.parent === null && (superAuth.value || proj.is_public === true),
+    ),
+  )
 
   const allProjects = ref<IssueProject[]>([])
   const AllIssueProjects = computed(() => {
@@ -41,11 +46,8 @@ export const useWork = defineStore('work', () => {
 
   // actions
   const fetchIssueProjectList = async (payload: ProjectFilter) => {
-    let url = superAuth.value
-      ? `/issue-project/?parent__isnull=1`
-      : `/issue-project/?parent__isnull=1&is_public=1`
+    let url = `/issue-project/?1=1`
     // if (payload?.parent) url += `&parent__slug=${payload.parent}`
-
     if (payload?.status__exclude) url += `&status__exclude=${payload?.status__exclude}`
     else url += `&status=${payload?.status ?? '1'}`
     if (payload.project) url += `&project=${payload.project}`
@@ -59,7 +61,7 @@ export const useWork = defineStore('work', () => {
 
     return await api
       .get(url)
-      .then(res => (issueProjectList.value = res.data.results))
+      .then(res => (issueProjects.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
 
