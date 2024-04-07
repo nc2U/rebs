@@ -120,9 +120,16 @@ class IssueProjectSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         parent = validated_data.get('parent', None)
         instance.depth = 1 if parent is None else parent.depth + 1
+
+        subs = instance.issueproject_set.all()
+        is_public = validated_data.get('is_public', None)
+        if is_public:
+            for sub in subs:
+                sub.is_public = is_public
+                sub.save()
+
         status = validated_data.get('status', None)
         if status == '9':
-            subs = instance.issueproject_set.all()
             for sub in subs:
                 sub.status = status
                 sub.save()
