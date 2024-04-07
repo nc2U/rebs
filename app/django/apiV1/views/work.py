@@ -15,6 +15,7 @@ from work.models import (IssueProject, Role, Permission, Member, Module, Version
 
 # Work --------------------------------------------------------------------------
 class IssueProjectFilter(FilterSet):
+    parent = CharFilter(field_name='parent__slug', lookup_expr='iexact', label='상위 프로젝트')
     parent__isnull = BooleanFilter(field_name='parent', lookup_expr='isnull', label='최상위 프로젝트')
     status__exclude = CharFilter(field_name='status', exclude=True)
     name = CharFilter(field_name='name', lookup_expr='icontains', label='이름')
@@ -22,7 +23,7 @@ class IssueProjectFilter(FilterSet):
 
     class Meta:
         model = IssueProject
-        fields = ('parent__isnull', 'is_public', 'status', 'name', 'description')
+        fields = ('parent', 'is_public', 'status', 'name', 'description')
 
 
 class IssueProjectViewSet(viewsets.ModelViewSet):
