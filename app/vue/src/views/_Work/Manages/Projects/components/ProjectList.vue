@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, inject, onBeforeMount, type ComputedRef, type PropType, computed } from 'vue'
+import { inject, onBeforeMount, type ComputedRef, type PropType, computed } from 'vue'
 import type { User } from '@/store/types/accounts'
 import type { IssueProject, ProjectFilter } from '@/store/types/work'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
