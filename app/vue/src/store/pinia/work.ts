@@ -1,6 +1,7 @@
 import api from '@/api'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
+import { useAccount } from '@/store/pinia/account'
 import { errorHandle, message } from '@/utils/helper'
 import type {
   IssueProject,
@@ -18,6 +19,9 @@ import type {
 } from '@/store/types/work'
 
 export const useWork = defineStore('work', () => {
+  const accStore = useAccount()
+  const superAuth = computed(() => accStore.superAuth)
+
   // Issue Project states & getters
   const issueProject = ref<IssueProject | null>(null)
   const issueProjectList = ref<IssueProject[]>([])
@@ -36,7 +40,10 @@ export const useWork = defineStore('work', () => {
   // actions
   const fetchIssueProjectList = async (payload: ProjectFilter) => {
     console.log(payload)
-    let url = `/issue-project/?parent__isnull=1`
+    let url = superAuth.value
+      ? `/issue-project/?parent__isnull=1`
+      : `/issue-project/?parent__isnull=1&is_public=1`
+    url += `&is_public=${payload?.is_public}`
     url += `&status=${payload?.status ?? '1'}`
 
     return await api
