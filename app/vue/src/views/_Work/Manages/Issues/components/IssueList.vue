@@ -142,7 +142,15 @@ defineProps({
                         지켜보기
                       </router-link>
                     </CDropdownItem>
-                    <CDropdownItem class="form-text">
+                    <CDropdownItem
+                      class="form-text"
+                      @click="
+                        $router.push({
+                          name: $route.params.projId ? '(소요시간) - 추가' : '소요시간 - 추가',
+                          query: { issue_id: issue.pk },
+                        })
+                      "
+                    >
                       <router-link to="">
                         <v-icon icon="mdi-calendar-clock" color="secondary" size="sm" />
                         작업시간 기록
