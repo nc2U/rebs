@@ -44,7 +44,7 @@ export const useWork = defineStore('work', () => {
     let url = superAuth.value
       ? `/issue-project/?parent__isnull=1`
       : `/issue-project/?parent__isnull=1&is_public=1`
-    if (payload?.project) url += `&project__slug=${payload.project}`
+    if (payload?.parent) url += `&project__slug=${payload.parent}`
 
     let filterUrl = url
     if (payload?.status__exclude) filterUrl += `&status__exclude=${payload?.status__exclude}`
