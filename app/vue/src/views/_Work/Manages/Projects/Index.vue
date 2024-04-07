@@ -121,6 +121,7 @@ onBeforeMount(async () => {
       <ProjectList
         v-if="routeName === '프로젝트'"
         :project-list="issueProjectList"
+        :all-projects="allProjects"
         @aside-visible="asideVisible"
         @filter-submit="filterSubmit"
       />

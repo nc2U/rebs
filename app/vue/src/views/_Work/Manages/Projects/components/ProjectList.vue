@@ -7,10 +7,8 @@ import SearchList from './SearchList.vue'
 import NoData from '@/views/_Work/components/NoData.vue'
 
 defineProps({
-  projectList: {
-    type: Array as PropType<IssueProject[]>,
-    default: () => [],
-  },
+  projectList: { type: Array as PropType<IssueProject[]>, default: () => [] },
+  allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
 })
 
 const emit = defineEmits(['aside-visible', 'filter-submit'])
@@ -44,7 +42,7 @@ onBeforeMount(() => emit('aside-visible', true))
     </CCol>
   </CRow>
 
-  <SearchList @filter-submit="filterSubmit" />
+  <SearchList :all-projects="allProjects" @filter-submit="filterSubmit" />
 
   <NoData v-if="!projectList.length" />
 

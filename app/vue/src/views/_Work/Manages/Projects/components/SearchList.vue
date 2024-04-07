@@ -1,8 +1,12 @@
 <script lang="ts" setup>
-import { ref, reactive } from 'vue'
-import type { ProjectFilter } from '@/store/types/work'
+import { ref, reactive, type PropType } from 'vue'
+import type { IssueProject, ProjectFilter } from '@/store/types/work'
 import DatePicker from '@/components/DatePicker/index.vue'
 import Multiselect from '@vueform/multiselect'
+
+defineProps({
+  allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
+})
 
 const emit = defineEmits(['filter-submit'])
 
@@ -92,8 +96,9 @@ const filterSubmit = () => {
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
                 <CFormSelect size="sm" data-width="20">
-                  <option value="1">사용중</option>
-                  <option value="2">닫힘</option>
+                  <option v-for="proj in allProjects" :key="proj.pk" :value="proj.slug">
+                    {{ proj.name }}
+                  </option>
                 </CFormSelect>
               </CCol>
             </CRow>
@@ -112,8 +117,7 @@ const filterSubmit = () => {
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
                 <CFormSelect size="sm" data-width="20">
-                  <option value="1">사용중</option>
-                  <option value="2">닫힘</option>
+                  <option v-for="proj in allProjects" :key="proj.pk" value="1">사용중</option>
                 </CFormSelect>
               </CCol>
             </CRow>
