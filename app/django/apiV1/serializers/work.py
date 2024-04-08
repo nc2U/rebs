@@ -482,11 +482,12 @@ class ActivityLogEntrySerializer(serializers.ModelSerializer):
 
 class IssueLogEntrySerializer(serializers.ModelSerializer):
     issue = IssueInRelatedSerializer(read_only=True)
+    comment = serializers.SlugRelatedField(slug_field='content', read_only=True)
     user = SimpleUserSerializer(read_only=True)
 
     class Meta:
         model = IssueLogEntry
-        fields = ('pk', 'log_id', 'issue', 'action', 'details', 'diff', 'timestamp', 'user')
+        fields = ('pk', 'log_id', 'issue', 'action', 'comment', 'details', 'diff', 'timestamp', 'user')
 
 
 class SearchSerializer(serializers.ModelSerializer):
