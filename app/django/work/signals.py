@@ -101,7 +101,7 @@ def issue_log_changes(sender, instance, created, **kwargs):
         details += f"|- **완료일**이 {desc}*{instance.due_date}*(으)로 {act}되었습니다."
     if hasattr(instance, '_old_done_ratio'):
         details += f"|- **진척도**가 *{instance._old_done_ratio}*에서 *{instance.done_ratio}*(으)로 변경되었습니다."
-    if hasattr(instance, '_old_closed'):
+    if not hasattr(instance, '_old_closed') and hasattr(instance, 'closed'):
         details += f"|- **해당 업무**가 *{instance.closed}*에 종료되었습니다."
 
     user = instance.creator if created else instance.updater
