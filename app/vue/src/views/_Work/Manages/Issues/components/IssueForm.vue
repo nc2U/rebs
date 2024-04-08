@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, onBeforeMount, type PropType, computed, watch, inject, type ComputedRef } from 'vue'
-import type { Issue, IssueProject } from '@/store/types/work'
+import type { ActLogEntry, CodeValue, Issue, IssueProject, IssueStatus } from '@/store/types/work'
 import type { User } from '@/store/types/accounts'
 import { isValidate } from '@/utils/helper'
 import { colorLight } from '@/utils/cssMixins'
@@ -15,6 +15,10 @@ const props = defineProps({
   issueProject: { type: Object as PropType<IssueProject>, default: null },
   issue: { type: Object as PropType<Issue>, default: null },
   allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
+  statusList: { type: Array as PropType<IssueStatus[]>, default: () => [] },
+  activityList: { type: Array as PropType<CodeValue[]>, default: () => [] },
+  priorityList: { type: Array as PropType<CodeValue[]>, default: () => [] },
+  getIssues: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
 })
 
 const validated = ref(false)
@@ -85,10 +89,6 @@ const memberList = computed(() =>
 const trackerList = computed(() =>
   props.issueProject ? props.issueProject.trackers : workStore.trackerList,
 )
-const statusList = computed(() => workStore.statusList)
-const activityList = computed(() => workStore.activityList)
-const priorityList = computed(() => workStore.priorityList)
-const getIssues = computed(() => workStore.getIssues)
 
 const onSubmit = (event: Event) => {
   if (isValidate(event)) {
@@ -139,16 +139,7 @@ onBeforeMount(() => {
     form.value.done_ratio = props.issue.done_ratio
     workStore.fetchIssueList({ status__closed: '', project: props.issue.project.slug })
   }
-  if (route.params.projId) {
-    // workStore.fetchIssueProject(route.params.projId as string)
-    form.value.project = route.params.projId as string
-  }
-  workStore.fetchMemberList()
-  workStore.fetchTrackerList()
-  workStore.fetchStatusList()
-  workStore.fetchActivityList()
-  workStore.fetchPriorityList()
-  workStore.fetchIssueList({ status__closed: '' })
+  if (route.params.projId) form.value.project = route.params.projId as string
 })
 </script>
 

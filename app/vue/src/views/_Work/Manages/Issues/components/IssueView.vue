@@ -1,6 +1,13 @@
 <script lang="ts" setup>
 import { ref, computed, type PropType, onBeforeMount } from 'vue'
-import type { Issue, IssueComment, IssueProject, TimeEntry } from '@/store/types/work'
+import type {
+  CodeValue,
+  Issue,
+  IssueComment,
+  IssueProject,
+  IssueStatus,
+  TimeEntry,
+} from '@/store/types/work'
 import { elapsedTime, diffDate } from '@/utils/baseMixins'
 import { useWork } from '@/store/pinia/work'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
@@ -14,6 +21,11 @@ const props = defineProps({
   allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
   issueCommentList: { type: Array as PropType<IssueComment[]>, default: () => [] },
   timeEntryList: { type: Array as PropType<TimeEntry[]>, default: () => [] },
+
+  statusList: { type: Array as PropType<IssueStatus[]>, default: () => [] },
+  activityList: { type: Array as PropType<CodeValue[]>, default: () => [] },
+  priorityList: { type: Array as PropType<CodeValue[]>, default: () => [] },
+  getIssues: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
 })
 
 const emit = defineEmits(['on-submit'])
@@ -267,6 +279,10 @@ onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue
       :issue-project="issueProject"
       :issue="issue"
       :all-projects="allProjects"
+      :status-list="statusList"
+      :activity-list="activityList"
+      :priority-list="priorityList"
+      :get-issues="getIssues"
       @on-submit="onSubmit"
       @close-form="() => (editForm = false)"
     />

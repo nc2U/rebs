@@ -18,6 +18,12 @@ const issueList = computed(() => workStore.issueList)
 const issueCommentList = computed(() => workStore.issueCommentList)
 const timeEntryList = computed(() => workStore.timeEntryList)
 
+///
+const statusList = computed(() => workStore.statusList)
+const activityList = computed(() => workStore.activityList)
+const priorityList = computed(() => workStore.priorityList)
+const getIssues = computed(() => workStore.getIssues)
+
 const onSubmit = (payload: any) => {
   if (payload.pk) workStore.updateIssue(payload)
   else {
@@ -55,6 +61,13 @@ onBeforeMount(async () => {
     await workStore.fetchIssueCommentList({ issue: Number(route.params.issueId) })
     await workStore.fetchTimeEntryList({ issue: Number(route.params.issueId) })
   }
+
+  ///////
+  await workStore.fetchMemberList()
+  await workStore.fetchTrackerList()
+  await workStore.fetchStatusList()
+  await workStore.fetchActivityList()
+  await workStore.fetchPriorityList()
 })
 </script>
 
@@ -66,6 +79,10 @@ onBeforeMount(async () => {
     :issue-project="issueProject ?? undefined"
     :issue="issue"
     :all-projects="allProjects"
+    :status-list="statusList"
+    :activity-list="activityList"
+    :priority-list="priorityList"
+    :get-issues="getIssues"
     :issue-comment-list="issueCommentList"
     :time-entry-list="timeEntryList"
     @on-submit="onSubmit"
@@ -74,6 +91,10 @@ onBeforeMount(async () => {
   <IssueForm
     v-if="route.name === '(업무) - 추가'"
     :all-projects="allProjects"
+    :status-list="statusList"
+    :activity-list="activityList"
+    :priority-list="priorityList"
+    :get-issues="getIssues"
     @on-submit="onSubmit"
     @close-form="router.push({ name: '(업무)' })"
   />

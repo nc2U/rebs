@@ -19,6 +19,12 @@ const workStore = useWork()
 const issueList = computed(() => workStore.issueList)
 const allProjects = computed(() => workStore.AllIssueProjects)
 
+///
+const statusList = computed(() => workStore.statusList)
+const activityList = computed(() => workStore.activityList)
+const priorityList = computed(() => workStore.priorityList)
+const getIssues = computed(() => workStore.getIssues)
+
 const router = useRouter()
 
 const onSubmit = (payload: any) => {
@@ -32,6 +38,13 @@ const onSubmit = (payload: any) => {
 onBeforeMount(async () => {
   await workStore.fetchAllIssueProjectList()
   await workStore.fetchIssueList({ status__closed: '' })
+
+  ///////
+  await workStore.fetchMemberList()
+  await workStore.fetchTrackerList()
+  await workStore.fetchStatusList()
+  await workStore.fetchActivityList()
+  await workStore.fetchPriorityList()
 })
 </script>
 
@@ -49,6 +62,10 @@ onBeforeMount(async () => {
       <IssueForm
         v-if="$route.name === '업무 - 추가'"
         :all-projects="allProjects"
+        :status-list="statusList"
+        :activity-list="activityList"
+        :priority-list="priorityList"
+        :get-issues="getIssues"
         @on-submit="onSubmit"
         @close-form="router.push({ name: '업무' })"
       />
