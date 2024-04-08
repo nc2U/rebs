@@ -11,7 +11,7 @@ const emit = defineEmits(['aside-visible'])
 const [route, router] = [useRoute(), useRouter()]
 
 const workStore = useWork()
-const iProject = computed(() => workStore.issueProject)
+const issueProject = computed(() => workStore.issueProject)
 const allProjects = computed(() => workStore.AllIssueProjects)
 const issue = computed(() => workStore.issue)
 const issueList = computed(() => workStore.issueList)
@@ -63,7 +63,7 @@ onBeforeMount(async () => {
 
   <IssueView
     v-if="route.name === '(업무) - 보기' && issue"
-    :i-project="iProject ?? undefined"
+    :issue-project="issueProject ?? undefined"
     :issue="issue"
     :all-projects="allProjects"
     :issue-comment-list="issueCommentList"

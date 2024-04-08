@@ -12,6 +12,7 @@ import MdEditor from '@/components/MdEditor/Index.vue'
 import { dateFormat } from '@/utils/baseMixins'
 
 const props = defineProps({
+  issueProject: { type: Object as PropType<IssueProject>, default: null },
   issue: { type: Object as PropType<Issue>, default: null },
   allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
 })
@@ -74,16 +75,15 @@ const formCheck = computed(() => {
 
 const route = useRoute()
 const workStore = useWork()
-const issueProject = computed(() => workStore.issueProject)
-watch(issueProject, nval => {
-  if (nval) form.value.project = nval?.slug
+watch(props, nval => {
+  if (nval.issueProject) form.value.project = nval?.issueProject.slug
 })
 
 const memberList = computed(() =>
-  issueProject.value ? issueProject.value.all_members : workStore.memberList,
+  props.issueProject ? props.issueProject.all_members : workStore.memberList,
 )
 const trackerList = computed(() =>
-  issueProject.value ? issueProject.value.trackers : workStore.trackerList,
+  props.issueProject ? props.issueProject.trackers : workStore.trackerList,
 )
 const statusList = computed(() => workStore.statusList)
 const activityList = computed(() => workStore.activityList)
@@ -140,7 +140,7 @@ onBeforeMount(() => {
     workStore.fetchIssueList({ status__closed: '', project: props.issue.project.slug })
   }
   if (route.params.projId) {
-    workStore.fetchIssueProject(route.params.projId as string)
+    // workStore.fetchIssueProject(route.params.projId as string)
     form.value.project = route.params.projId as string
   }
   workStore.fetchMemberList()

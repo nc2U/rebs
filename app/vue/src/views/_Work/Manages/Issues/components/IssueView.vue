@@ -9,7 +9,7 @@ import IssueHistory from './IssueHistory.vue'
 import IssueForm from '@/views/_Work/Manages/Issues/components/IssueForm.vue'
 
 const props = defineProps({
-  iProject: { type: Object as PropType<IssueProject>, default: null },
+  issueProject: { type: Object as PropType<IssueProject>, default: null },
   issue: { type: Object as PropType<Issue>, required: true },
   allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
   issueCommentList: { type: Array as PropType<IssueComment[]>, default: () => [] },
@@ -116,7 +116,7 @@ onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue
             <router-link
               :to="{
                 name: '(작업내역)',
-                params: { projId: iProject.slug },
+                params: { projId: issueProject?.slug },
                 query: { from: issue?.created.substring(0, 10) },
               }"
             >
@@ -126,7 +126,7 @@ onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue
             <router-link
               :to="{
                 name: '(작업내역)',
-                params: { projId: iProject.slug },
+                params: { projId: issueProject.slug },
                 query: { from: issue.updated.substring(0, 10) },
               }"
             >
@@ -264,7 +264,7 @@ onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue
   <div v-if="editForm">
     <IssueForm
       ref="issueFormRef"
-      :i-project="iProject"
+      :issue-project="issueProject"
       :issue="issue"
       :all-projects="allProjects"
       @on-submit="onSubmit"
