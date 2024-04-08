@@ -312,6 +312,7 @@ export interface IssueLogEntry {
     description: string
   }
   action: string
+  comment: string | null
   details: string
   diff: string
   timestamp: string
