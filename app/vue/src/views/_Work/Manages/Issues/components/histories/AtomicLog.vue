@@ -1,0 +1,65 @@
+<script lang="ts" setup="">
+import { type PropType } from 'vue'
+import type { IssueLogEntry } from '@/store/types/work'
+import { elapsedTime } from '@/utils/baseMixins'
+import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
+
+defineProps({ log: { type: Object as PropType<IssueLogEntry>, required: true } })
+
+const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
+</script>
+
+<template>
+  <CRow
+    :id="`note-${log.pk}`"
+    :class="{ 'bg-blue-lighten-5': $route.hash == `#note-${log.log_id}` }"
+  >
+    <CCol v-if="log.user">
+      <router-link :to="{ name: '사용자 - 보기', params: { userId: log.user.pk } }">
+        {{ log.user.username }}
+      </router-link>
+      이(가)
+      <router-link
+        :to="{
+          name: '(작업내역)',
+          params: { projId: 'redmine' },
+          query: { from: log.timestamp.substring(0, 10) },
+        }"
+      >
+        {{ elapsedTime(log.timestamp) }}
+      </router-link>
+      에 변경
+    </CCol>
+    <CCol class="text-right">
+      <router-link :to="{ hash: '#note-' + log.log_id }">#{{ log.log_id }}</router-link>
+    </CCol>
+  </CRow>
+  <v-divider class="mt-0 mb-2" />
+  <div class="history pl-4 mb-2">
+    <ul>
+      <li v-for="(src, i) in getHistory(log.details)" :key="i">
+        <VueMarkdownIt :source="src" />
+        <span v-if="log.diff && src.includes('**설명**')">
+          <router-link to="">
+            (변경 내용)
+            <v-tooltip activator="parent" location="start">
+              <VueMarkdownIt :source="log.diff" />
+            </v-tooltip>
+          </router-link>
+        </span>
+      </li>
+    </ul>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+.history {
+  color: #7f7f7f;
+}
+
+.vue-md-it-wrapper blockquote {
+  padding-left: 20px !important;
+  border-left: 3px solid #ddd !important;
+  font-style: italic;
+}
+</style>

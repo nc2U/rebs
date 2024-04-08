@@ -480,9 +480,15 @@ class ActivityLogEntrySerializer(serializers.ModelSerializer):
         # 'change_sets', 'news', 'document', 'file', 'wiki', 'message',
 
 
+class SimpleCommentInIssueLogEntrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IssueComment
+        fields = ('pk', 'content')
+
+
 class IssueLogEntrySerializer(serializers.ModelSerializer):
     issue = IssueInRelatedSerializer(read_only=True)
-    comment = serializers.SlugRelatedField(slug_field='content', read_only=True)
+    comment = SimpleCommentInIssueLogEntrySerializer(read_only=True)
     user = SimpleUserSerializer(read_only=True)
 
     class Meta:
