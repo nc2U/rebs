@@ -40,7 +40,11 @@ onBeforeMount(async () => {
 
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query">
     <template v-slot:default>
-      <IssueList v-if="$route.name === '업무'" :issue-list="issueList" />
+      <IssueList
+        v-if="$route.name === '업무'"
+        :issue-list="issueList"
+        :all-projects="allProjects"
+      />
 
       <IssueForm
         v-if="$route.name === '업무 - 추가'"

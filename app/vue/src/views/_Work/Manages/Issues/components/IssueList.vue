@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue'
-import type { Issue } from '@/store/types/work'
+import type { Issue, IssueProject } from '@/store/types/work'
 import { timeFormat } from '@/utils/baseMixins'
 import NoData from '@/views/_Work/components/NoData.vue'
-import SearchList from '@/views/_Work/Manages/Projects/components/SearchList.vue'
+import SearchList from './SearchList.vue'
 
 defineProps({
   issueList: { type: Array as PropType<Issue[]>, default: () => [] },
+  allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
 })
 </script>
 
@@ -27,7 +28,7 @@ defineProps({
       </CCol>
     </CRow>
 
-    <SearchList />
+    <SearchList :all-projects="allProjects" />
 
     <NoData v-if="!issueList.length" />
 
