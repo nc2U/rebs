@@ -101,7 +101,7 @@ onBeforeMount(() => {
               :class="{ 'bg-blue-lighten-5': $route.hash == `#note-${log.pk}` }"
             >
               <!--              {{ $route.fullPath }}-->
-              <CCol v-if="log.user">
+              <CCol v-if="log.user" class="pt-1">
                 <router-link :to="{ name: '사용자 - 보기', params: { userId: log.user.pk } }">
                   {{ log.user.username }}
                 </router-link>
@@ -143,7 +143,7 @@ onBeforeMount(() => {
                     </CDropdownMenu>
                   </CDropdown>
                 </span>
-                <router-link :to="{ hash: '#note-' + log.pk }">#{{ log.pk }}</router-link>
+                <router-link :to="{ hash: '#note-' + log.pk }">#{{ log.pk }} </router-link>
               </CCol>
             </CRow>
             <v-divider class="mt-0 mb-2" />
