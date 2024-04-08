@@ -98,7 +98,7 @@ onBeforeMount(() => {
           <div v-for="log in issueLogList" :key="log.pk">
             <CRow
               :id="`note-${log.pk}`"
-              :class="{ 'bg-blue-lighten-5': $route.hash == `#note-${log.pk}` }"
+              :class="{ 'bg-blue-lighten-5': $route.hash == `#note-${log.log_id}` }"
             >
               <!--              {{ $route.fullPath }}-->
               <CCol v-if="log.user" class="pt-1">
@@ -133,7 +133,7 @@ onBeforeMount(() => {
                     <CDropdownMenu>
                       <CDropdownItem
                         class="form-text"
-                        @click="copyLink($route.path, `#note-${log.pk}`)"
+                        @click="copyLink($route.path, `#note-${log.log_id}`)"
                       >
                         <router-link to="">
                           <v-icon icon="mdi-pencil" color="amber" size="sm" />
@@ -143,12 +143,12 @@ onBeforeMount(() => {
                     </CDropdownMenu>
                   </CDropdown>
                 </span>
-                <router-link :to="{ hash: '#note-' + log.pk }">#{{ log.pk }} </router-link>
+                <router-link :to="{ hash: '#note-' + log.log_id }">#{{ log.log_id }}</router-link>
               </CCol>
             </CRow>
             <v-divider class="mt-0 mb-2" />
             <div class="history pl-4 mb-2">
-              <ul>
+              <ul v-if="log.action === 'Updated' && !log.comment">
                 <li v-for="(src, i) in getHistory(log.details)" :key="i">
                   <VueMarkdownIt :source="src" />
                   <span v-if="log.diff && src.includes('**설명**')">
@@ -161,29 +161,31 @@ onBeforeMount(() => {
                   </span>
                 </li>
               </ul>
+              <span v-else> <VueMarkdownIt :source="log.comment ?? ''" /></span>
             </div>
           </div>
         </CTabPane>
 
         <CTabPane role="tabpanel" aria-labelledby="profile-tab" :visible="tabPaneActiveKey === 2">
-          <div v-for="comment in issueCommentList" :key="comment.pk">
+          <div v-for="log in issueLogList" :key="log.pk">
             <CRow
-              :id="`note-${comment.pk}`"
-              :class="{ 'bg-blue-lighten-5': $route.hash == `#note-${comment.pk}` }"
+              v-if="log.action === 'Comment' && log.comment"
+              :id="`note-${log.pk}`"
+              :class="{ 'bg-blue-lighten-5': $route.hash == `#note-${log.log_id}` }"
             >
-              <CCol v-if="comment.user">
-                <router-link :to="{ name: '사용자 - 보기', params: { userId: comment.user.pk } }">
-                  {{ comment.user.username }}
+              <CCol v-if="log.user">
+                <router-link :to="{ name: '사용자 - 보기', params: { userId: log.user.pk } }">
+                  {{ log.user.username }}
                 </router-link>
                 이(가)
                 <router-link
                   :to="{
                     name: '(작업내역)',
-                    params: { projId: comment.issue.project.slug },
-                    query: { from: comment.created.substring(0, 10) },
+                    params: { projId: 'redmine' },
+                    query: { from: log.timestamp.substring(0, 10) },
                   }"
                 >
-                  {{ elapsedTime(comment.created) }}
+                  {{ elapsedTime(log.timestamp) }}
                 </router-link>
                 에 변경
               </CCol>
@@ -203,7 +205,7 @@ onBeforeMount(() => {
                     <CDropdownMenu>
                       <CDropdownItem
                         class="form-text"
-                        @click="copyLink($route.path, `#note-${comment.pk}`)"
+                        @click="copyLink($route.path, `#note-${log.log_id}`)"
                       >
                         <router-link to="">
                           <v-icon icon="mdi-pencil" color="amber" size="sm" />
@@ -212,7 +214,7 @@ onBeforeMount(() => {
                       </CDropdownItem>
                       <CDropdownItem
                         class="form-text"
-                        @click="copyLink($route.path, `#note-${comment.pk}`)"
+                        @click="copyLink($route.path, `#note-${log.log_id}`)"
                       >
                         <router-link to="">
                           <v-icon icon="mdi-trash-can" color="grey" size="sm" />
@@ -222,12 +224,13 @@ onBeforeMount(() => {
                     </CDropdownMenu>
                   </CDropdown>
                 </span>
-                <router-link :to="{ hash: '#note-' + comment.pk }">#{{ comment.pk }}</router-link>
+
+                <router-link :to="{ hash: '#note-' + log.log_id }">#{{ log.log_id }}</router-link>
               </CCol>
             </CRow>
             <v-divider class="mt-0 mb-2" />
             <div class="history pl-4 mb-2">
-              <VueMarkdownIt :source="comment.content" class="markdown-body" />
+              <VueMarkdownIt :source="log.comment ?? ''" />
             </div>
           </div>
         </CTabPane>
@@ -235,8 +238,9 @@ onBeforeMount(() => {
         <CTabPane role="tabpanel" aria-labelledby="contact-tab" :visible="tabPaneActiveKey === 3">
           <div v-for="log in issueLogList" :key="log.pk">
             <CRow
+              v-if="!log.comment"
               :id="`note-${log.pk}`"
-              :class="{ 'bg-blue-lighten-5': $route.hash == `#note-${log.pk}` }"
+              :class="{ 'bg-blue-lighten-5': $route.hash == `#note-${log.log_id}` }"
             >
               <CCol v-if="log.user">
                 <router-link :to="{ name: '사용자 - 보기', params: { userId: log.user.pk } }">
@@ -255,7 +259,7 @@ onBeforeMount(() => {
                 에 변경
               </CCol>
               <CCol class="text-right">
-                <router-link :to="{ hash: '#note-' + log.pk }">#{{ log.pk }}</router-link>
+                <router-link :to="{ hash: '#note-' + log.log_id }">#{{ log.log_id }}</router-link>
               </CCol>
             </CRow>
             <v-divider class="mt-0 mb-2" />
