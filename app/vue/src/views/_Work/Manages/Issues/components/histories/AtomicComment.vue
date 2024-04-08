@@ -73,6 +73,6 @@ const copyLink = (path: string, hash: string) => {
   </CRow>
   <v-divider class="mt-0 mb-2" />
   <div class="history pl-4 mb-2">
-    <VueMarkdownIt :source="log.comment.content ?? ''" />
+    <VueMarkdownIt :source="log.comment?.content ?? ''" />
   </div>
 </template>
