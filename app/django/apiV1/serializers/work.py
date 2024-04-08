@@ -486,7 +486,7 @@ class IssueLogEntrySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = IssueLogEntry
-        fields = ('pk', 'issue', 'action', 'details', 'diff', 'timestamp', 'user')
+        fields = ('pk', 'log_id', 'issue', 'action', 'details', 'diff', 'timestamp', 'user')
 
 
 class SearchSerializer(serializers.ModelSerializer):

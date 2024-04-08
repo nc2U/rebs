@@ -481,7 +481,24 @@ class ActivityLogEntry(models.Model):
         ordering = ('-timestamp',)
 
 
+class SequentialIntegerField(models.IntegerField):
+    def pre_save(self, model_instance, add):
+        if add:
+            # Get the maximum value of the sequential field for the current issue
+            max_value = \
+                model_instance.__class__.objects.filter(issue=model_instance.issue).aggregate(models.Max(self.attname))[
+                    f'{self.attname}__max'
+                ]
+            # Increment the maximum value by 1 if it's not None, else start from 1
+            value = (max_value or 0) + 1
+            setattr(model_instance, self.attname, value)
+            return value
+        else:
+            return super().pre_save(model_instance, add)
+
+
 class IssueLogEntry(models.Model):
+    log_id = SequentialIntegerField()
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, verbose_name='업무')
     ACTION_CHOICES = (('Created', '추가'), ('Updated', '편집'), ('Comment', '댓글'))
     action = models.CharField('이벤트', max_length=7, choices=ACTION_CHOICES, default='Created')
