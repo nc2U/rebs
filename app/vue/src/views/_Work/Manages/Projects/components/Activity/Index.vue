@@ -8,6 +8,11 @@ import ActivityLogList from '@/views/_Work/Manages/Activity/components/ActivityL
 
 const emit = defineEmits(['aside-visible'])
 
+const workStore = useWork()
+const groupedActivities = computed<{ [key: string]: ActLogEntry[] }>(
+  () => workStore.groupedActivities,
+)
+
 const fromDate = computed(() => new Date(toDate.value.getTime() - 10 * 24 * 60 * 60 * 1000))
 
 const toDate = ref(new Date())
@@ -18,12 +23,11 @@ watch(toDate, nVal => {
   })
 })
 
-const workStore = useWork()
-const groupedActivities = computed<{ [key: string]: ActLogEntry[] }>(
-  () => workStore.groupedActivities,
-)
+const toBack = () => (toDate.value = new Date(toDate.value.setDate(toDate.value.getDate() - 10)))
+const toNext = () => (toDate.value = new Date(toDate.value.setDate(toDate.value.getDate() + 10)))
 
 const route = useRoute()
+
 onBeforeMount(() => {
   emit('aside-visible', true)
   workStore.fetchActivityLogList({
@@ -39,5 +43,7 @@ onBeforeMount(() => {
     :grouped-activities="groupedActivities"
     :from-date="fromDate"
     :to-date="toDate"
+    @to-back="toBack"
+    @to-next="toNext"
   />
 </template>
