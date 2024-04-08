@@ -72,7 +72,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <IssueList v-if="route.name === '(업무)'" :issue-list="issueList" />
+  <IssueList v-if="route.name === '(업무)'" :issue-list="issueList" :all-projects="allProjects" />
 
   <IssueView
     v-if="route.name === '(업무) - 보기' && issue"
