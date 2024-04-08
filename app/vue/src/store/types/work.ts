@@ -302,6 +302,7 @@ export interface ActLogEntry {
 
 export interface IssueLogEntry {
   pk: number
+  log_id: number
   issue: {
     pk: number
     project: { slug: string; name: string }
