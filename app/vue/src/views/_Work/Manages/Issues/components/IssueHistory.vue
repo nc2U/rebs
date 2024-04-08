@@ -34,7 +34,7 @@ onBeforeMount(() => {
         이력
       </CNavLink>
     </CNavItem>
-    <CNavItem v-if="issueLogList.map(l => l.comment).length">
+    <CNavItem v-if="issueLogList.filter(l => l.comment).length">
       <CNavLink
         href="javascript:void(0);"
         :active="tabPaneActiveKey === 2"
