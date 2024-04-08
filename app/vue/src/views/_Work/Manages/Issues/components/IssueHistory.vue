@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { onBeforeMount, type PropType, ref } from 'vue'
-import type { IssueComment, IssueLogEntry, TimeEntry } from '@/store/types/work'
+import type { IssueLogEntry, TimeEntry } from '@/store/types/work'
 import { useRoute } from 'vue-router'
 import { elapsedTime } from '@/utils/baseMixins'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 
 defineProps({
   issueLogList: { type: Array as PropType<IssueLogEntry[]>, default: () => [] },
-  issueCommentList: { type: Array as PropType<IssueComment[]>, default: () => [] },
   timeEntryList: { type: Array as PropType<TimeEntry[]>, default: () => [] },
 })
 
@@ -46,7 +45,7 @@ onBeforeMount(() => {
         이력
       </CNavLink>
     </CNavItem>
-    <CNavItem v-if="issueCommentList.length">
+    <CNavItem v-if="issueLogList.map(l => l.comment).length">
       <CNavLink
         href="javascript:void(0);"
         :active="tabPaneActiveKey === 2"
@@ -100,7 +99,6 @@ onBeforeMount(() => {
               :id="`note-${log.pk}`"
               :class="{ 'bg-blue-lighten-5': $route.hash == `#note-${log.log_id}` }"
             >
-              <!--              {{ $route.fullPath }}-->
               <CCol v-if="log.user" class="pt-1">
                 <router-link :to="{ name: '사용자 - 보기', params: { userId: log.user.pk } }">
                   {{ log.user.username }}
@@ -168,115 +166,117 @@ onBeforeMount(() => {
 
         <CTabPane role="tabpanel" aria-labelledby="profile-tab" :visible="tabPaneActiveKey === 2">
           <div v-for="log in issueLogList" :key="log.pk">
-            <CRow
-              v-if="log.action === 'Comment' && log.comment"
-              :id="`note-${log.pk}`"
-              :class="{ 'bg-blue-lighten-5': $route.hash == `#note-${log.log_id}` }"
-            >
-              <CCol v-if="log.user">
-                <router-link :to="{ name: '사용자 - 보기', params: { userId: log.user.pk } }">
-                  {{ log.user.username }}
-                </router-link>
-                이(가)
-                <router-link
-                  :to="{
-                    name: '(작업내역)',
-                    params: { projId: 'redmine' },
-                    query: { from: log.timestamp.substring(0, 10) },
-                  }"
-                >
-                  {{ elapsedTime(log.timestamp) }}
-                </router-link>
-                에 변경
-              </CCol>
-              <CCol class="text-right">
-                <span>
-                  <CDropdown color="secondary" variant="input-group" placement="bottom-end">
-                    <CDropdownToggle
-                      :caret="false"
-                      color="light"
-                      variant="ghost"
-                      size="sm"
-                      shape="rounded-pill"
-                    >
-                      <v-icon icon="mdi-dots-horizontal" class="pointer" color="grey-darken-1" />
-                      <v-tooltip activator="parent" location="top">Actions</v-tooltip>
-                    </CDropdownToggle>
-                    <CDropdownMenu>
-                      <CDropdownItem
-                        class="form-text"
-                        @click="copyLink($route.path, `#note-${log.log_id}`)"
+            <div v-if="log.action === 'Comment' && log.comment">
+              <CRow
+                :id="`note-${log.pk}`"
+                :class="{ 'bg-blue-lighten-5': $route.hash == `#note-${log.log_id}` }"
+              >
+                <CCol v-if="log.user">
+                  <router-link :to="{ name: '사용자 - 보기', params: { userId: log.user.pk } }">
+                    {{ log.user.username }}
+                  </router-link>
+                  이(가)
+                  <router-link
+                    :to="{
+                      name: '(작업내역)',
+                      params: { projId: 'redmine' },
+                      query: { from: log.timestamp.substring(0, 10) },
+                    }"
+                  >
+                    {{ elapsedTime(log.timestamp) }}
+                  </router-link>
+                  에 변경
+                </CCol>
+                <CCol class="text-right">
+                  <span>
+                    <CDropdown color="secondary" variant="input-group" placement="bottom-end">
+                      <CDropdownToggle
+                        :caret="false"
+                        color="light"
+                        variant="ghost"
+                        size="sm"
+                        shape="rounded-pill"
                       >
-                        <router-link to="">
-                          <v-icon icon="mdi-pencil" color="amber" size="sm" />
-                          링크 복사
-                        </router-link>
-                      </CDropdownItem>
-                      <CDropdownItem
-                        class="form-text"
-                        @click="copyLink($route.path, `#note-${log.log_id}`)"
-                      >
-                        <router-link to="">
-                          <v-icon icon="mdi-trash-can" color="grey" size="sm" />
-                          삭제
-                        </router-link>
-                      </CDropdownItem>
-                    </CDropdownMenu>
-                  </CDropdown>
-                </span>
+                        <v-icon icon="mdi-dots-horizontal" class="pointer" color="grey-darken-1" />
+                        <v-tooltip activator="parent" location="top">Actions</v-tooltip>
+                      </CDropdownToggle>
+                      <CDropdownMenu>
+                        <CDropdownItem
+                          class="form-text"
+                          @click="copyLink($route.path, `#note-${log.log_id}`)"
+                        >
+                          <router-link to="">
+                            <v-icon icon="mdi-pencil" color="amber" size="sm" />
+                            링크 복사
+                          </router-link>
+                        </CDropdownItem>
+                        <CDropdownItem
+                          class="form-text"
+                          @click="copyLink($route.path, `#note-${log.log_id}`)"
+                        >
+                          <router-link to="">
+                            <v-icon icon="mdi-trash-can" color="grey" size="sm" />
+                            삭제
+                          </router-link>
+                        </CDropdownItem>
+                      </CDropdownMenu>
+                    </CDropdown>
+                  </span>
 
-                <router-link :to="{ hash: '#note-' + log.log_id }">#{{ log.log_id }}</router-link>
-              </CCol>
-            </CRow>
-            <v-divider class="mt-0 mb-2" />
-            <div class="history pl-4 mb-2">
-              <VueMarkdownIt :source="log.comment ?? ''" />
+                  <router-link :to="{ hash: '#note-' + log.log_id }">#{{ log.log_id }}</router-link>
+                </CCol>
+              </CRow>
+              <v-divider class="mt-0 mb-2" />
+              <div class="history pl-4 mb-2">
+                <VueMarkdownIt :source="log.comment ?? ''" />
+              </div>
             </div>
           </div>
         </CTabPane>
 
         <CTabPane role="tabpanel" aria-labelledby="contact-tab" :visible="tabPaneActiveKey === 3">
           <div v-for="log in issueLogList" :key="log.pk">
-            <CRow
-              v-if="!log.comment"
-              :id="`note-${log.pk}`"
-              :class="{ 'bg-blue-lighten-5': $route.hash == `#note-${log.log_id}` }"
-            >
-              <CCol v-if="log.user">
-                <router-link :to="{ name: '사용자 - 보기', params: { userId: log.user.pk } }">
-                  {{ log.user.username }}
-                </router-link>
-                이(가)
-                <router-link
-                  :to="{
-                    name: '(작업내역)',
-                    params: { projId: 'redmine' },
-                    query: { from: log.timestamp.substring(0, 10) },
-                  }"
-                >
-                  {{ elapsedTime(log.timestamp) }}
-                </router-link>
-                에 변경
-              </CCol>
-              <CCol class="text-right">
-                <router-link :to="{ hash: '#note-' + log.log_id }">#{{ log.log_id }}</router-link>
-              </CCol>
-            </CRow>
-            <v-divider class="mt-0 mb-2" />
-            <div class="history pl-4 mb-2">
-              <ul>
-                <li v-for="(src, i) in getHistory(log.details)" :key="i">
-                  <VueMarkdownIt :source="src" />
-                  <span v-if="log.diff && src.includes('**설명**')">
-                    <router-link to="">
-                      (변경 내용)
-                      <v-tooltip activator="parent" location="start">
-                        <VueMarkdownIt :source="log.diff" />
-                      </v-tooltip>
-                    </router-link>
-                  </span>
-                </li>
-              </ul>
+            <div v-if="log.action === 'Updated' && !log.comment">
+              <CRow
+                :id="`note-${log.pk}`"
+                :class="{ 'bg-blue-lighten-5': $route.hash == `#note-${log.log_id}` }"
+              >
+                <CCol v-if="log.user">
+                  <router-link :to="{ name: '사용자 - 보기', params: { userId: log.user.pk } }">
+                    {{ log.user.username }}
+                  </router-link>
+                  이(가)
+                  <router-link
+                    :to="{
+                      name: '(작업내역)',
+                      params: { projId: 'redmine' },
+                      query: { from: log.timestamp.substring(0, 10) },
+                    }"
+                  >
+                    {{ elapsedTime(log.timestamp) }}
+                  </router-link>
+                  에 변경
+                </CCol>
+                <CCol class="text-right">
+                  <router-link :to="{ hash: '#note-' + log.log_id }">#{{ log.log_id }}</router-link>
+                </CCol>
+              </CRow>
+              <v-divider class="mt-0 mb-2" />
+              <div class="history pl-4 mb-2">
+                <ul>
+                  <li v-for="(src, i) in getHistory(log.details)" :key="i">
+                    <VueMarkdownIt :source="src" />
+                    <span v-if="log.diff && src.includes('**설명**')">
+                      <router-link to="">
+                        (변경 내용)
+                        <v-tooltip activator="parent" location="start">
+                          <VueMarkdownIt :source="log.diff" />
+                        </v-tooltip>
+                      </router-link>
+                    </span>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </CTabPane>
