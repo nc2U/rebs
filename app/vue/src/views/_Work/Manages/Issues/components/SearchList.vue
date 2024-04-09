@@ -34,18 +34,74 @@ const searchOptions = reactive([
       { value: 'updater', label: '수정자', disabled: true },
       { value: 'last_updater', label: '최근수정자', disabled: true },
       { value: 'issue', label: '업무', disabled: true },
-      { value: 'i', label: '', disabled: true },
-      { value: 'i', label: '', disabled: true },
-      { value: 'i', label: '', disabled: true },
-      { value: 'i', label: '', disabled: true },
     ],
   },
   {
     label: '문자열 검색',
     options: [
-      { value: 'name', label: '이름' },
+      { value: 'subject', label: '제목' },
       { value: 'description', label: '설명' },
+      { value: 'comment', label: '댓글' },
     ],
+    disabled: true,
+  },
+  {
+    label: '날짜별 검색',
+    options: [
+      { value: 'created', label: '등록일', disabled: true },
+      { value: 'updated', label: '변경일', disabled: true },
+      { value: 'start_date', label: '시작일', disabled: true },
+      { value: 'due_date', label: '완료기한', disabled: true },
+    ],
+    disabled: true,
+  },
+  {
+    label: '시간추적',
+    options: [
+      { value: 'estimated_hours', label: '추정시간', disabled: true },
+      { value: 'spent_time', label: '소요시간', disabled: true },
+    ],
+    disabled: true,
+  },
+  {
+    label: '파일',
+    options: [
+      { value: 'file', label: '파일', disabled: true },
+      { value: 'file_desc', label: '파일설명', disabled: true },
+    ],
+    disabled: true,
+  },
+  {
+    label: '담당',
+    options: [
+      { value: 'group', label: '할당된 사람의 그룹', disabled: true },
+      { value: 'role', label: '할당된 사람의 역할', disabled: true },
+    ],
+  },
+  {
+    label: '목표버전',
+    options: [
+      { value: 'version_date', label: '목표버전의 날짜', disabled: true },
+      { value: 'version_status', label: '목표버전의 상태', disabled: true },
+    ],
+    disabled: true,
+  },
+  {
+    label: '관계',
+    options: [
+      { value: 'related_to', label: '다음 업무와 관련됨:', disabled: true },
+      { value: 'is_duplicate_of', label: '다음 업무와 중복됨:', disabled: true },
+      { value: 'has_duplicate', label: '중복된 업무:', disabled: true },
+      { value: 'blocks', label: '다음 업무의 해결을 막고 있음:', disabled: true },
+      { value: 'blocked_by', label: '다음 업무에 막혀 있음:', disabled: true },
+      { value: 'precedes', label: '다음에 진행할 업무:', disabled: true },
+      { value: 'follows', label: '다음 업무를 우선 진행:', disabled: true },
+      { value: 'copied_to', label: '다음 업무로 복사됨:', disabled: true },
+      { value: 'copied_from', label: '다음 업무로부터 복사됨:', disabled: true },
+      { value: 'parent', label: '상위업무', disabled: true },
+      { value: 'sub_issues', label: '하위업무', disabled: true },
+    ],
+    disabled: true,
   },
 ])
 
