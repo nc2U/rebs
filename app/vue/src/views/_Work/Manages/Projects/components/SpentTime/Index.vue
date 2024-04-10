@@ -12,6 +12,7 @@ const timeEntryList = computed(() => workStore.timeEntryList)
 const allProjects = computed(() => workStore.AllIssueProjects)
 const createTimeEntry = (payload: any) => workStore.createTimeEntry(payload)
 const updateTimeEntry = (payload: any) => workStore.updateTimeEntry(payload)
+const deleteTimeEntry = (pk: number) => workStore.deleteTimeEntry(pk)
 
 const [route, router] = [useRoute(), useRouter()]
 
@@ -23,6 +24,8 @@ const onSubmit = async (payload: any) => {
   }
 }
 
+const delSubmit = (pk: number) => deleteTimeEntry(pk)
+
 onBeforeMount(async () => {
   emit('aside-visible', true)
   await workStore.fetchAllIssueProjectList()
@@ -33,7 +36,11 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <TimeEntryList v-if="$route.name === '(소요시간)'" :time-entry-list="timeEntryList" />
+  <TimeEntryList
+    v-if="$route.name === '(소요시간)'"
+    :time-entry-list="timeEntryList"
+    @del-submit="delSubmit"
+  />
 
   <TimeEntryForm
     v-if="$route.name === '(소요시간) - 추가'"

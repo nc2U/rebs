@@ -31,6 +31,8 @@ const onSubmit = async (payload: any) => {
   console.log(payload)
 }
 
+const delSubmit = (pk: number) => alert(pk)
+
 onBeforeMount(() => {
   workStore.fetchAllIssueProjectList()
   workStore.fetchTimeEntryList({})
@@ -42,7 +44,11 @@ onBeforeMount(() => {
 
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query">
     <template v-slot:default>
-      <TimeEntryList v-if="$route.name === '소요시간'" :time-entry-list="timeEntryList" />
+      <TimeEntryList
+        v-if="$route.name === '소요시간'"
+        :time-entry-list="timeEntryList"
+        @del-submit="delSubmit"
+      />
 
       <TimeEntryForm
         v-if="$route.name === '소요시간 - 추가'"

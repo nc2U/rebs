@@ -1,15 +1,37 @@
 <script lang="ts" setup>
-import { type PropType } from 'vue'
+import { ref, type PropType } from 'vue'
 import type { TimeEntry } from '@/store/types/work'
 import { dateFormat, numberToHour } from '@/utils/baseMixins'
 import NoData from '@/views/_Work/components/NoData.vue'
 import SearchList from '@/views/_Work/Manages/Projects/components/SearchList.vue'
 import HeaderTab from '@/views/_Work/Manages/SpentTime/components/HeaderTab.vue'
-import router from '@/router'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 defineProps({
   timeEntryList: { type: Array as PropType<TimeEntry[]>, default: () => [] },
 })
+
+const emit = defineEmits(['del-submit'])
+
+const RefDelConfirm = ref()
+
+const delPk = ref<null | number>(null)
+
+const delConfirm = (pk: number) => {
+  delPk.value = pk
+  RefDelConfirm.value.callModal(
+    '삭제 확인',
+    '소요시간 삭제를 계속 진행하시겠습니까?',
+    '',
+    'warning',
+  )
+}
+
+const delSubmit = () => {
+  emit('del-submit', delPk.value)
+  delPk.value = null
+  RefDelConfirm.value.close()
+}
 </script>
 
 <template>
@@ -97,6 +119,25 @@ defineProps({
               <span class="strong">{{ numberToHour(time.hours) }}</span>
             </CTableDataCell>
             <CTableDataCell class="p-0">
+              <v-icon
+                icon="mdi-pencil"
+                color="amber"
+                size="sm"
+                class="mr-1 pointer"
+                @click="
+                  $router.push({
+                    name: '(소요시간) - 편집',
+                    params: { projId: time.issue.project.slug, timeId: time.pk },
+                  })
+                "
+              />
+              <v-icon
+                icon="mdi-trash-can"
+                color="grey"
+                size="sm"
+                class="mr-1 pointer"
+                @click="delConfirm(time.pk)"
+              />
               <span>
                 <CDropdown color="secondary" variant="input-group" placement="bottom-end">
                   <CDropdownToggle
@@ -116,7 +157,7 @@ defineProps({
                     <CDropdownItem
                       class="form-text"
                       @click="
-                        router.push({
+                        $router.push({
                           name: '(소요시간) - 편집',
                           params: { projId: time.issue.project.slug, timeId: time.pk },
                         })
@@ -127,7 +168,7 @@ defineProps({
                         편집
                       </router-link>
                     </CDropdownItem>
-                    <CDropdownItem class="form-text">
+                    <CDropdownItem class="form-text" @click="delConfirm(time.pk)">
                       <router-link to="">
                         <v-icon icon="mdi-trash-can-outline" color="secondary" size="sm" />
                         삭제
@@ -142,6 +183,12 @@ defineProps({
       </CTable>
     </CCol>
   </CRow>
+
+  <ConfirmModal ref="RefDelConfirm">
+    <template #footer>
+      <CButton color="danger" @click="delSubmit">확인</CButton>
+    </template>
+  </ConfirmModal>
 </template>
 
 <style lang="scss" scoped>
