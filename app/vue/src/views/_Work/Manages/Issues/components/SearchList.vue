@@ -3,6 +3,7 @@ import { ref, reactive, type PropType, onBeforeMount } from 'vue'
 import type { IssueProject, ProjectFilter } from '@/store/types/work'
 import DatePicker from '@/components/DatePicker/index.vue'
 import Multiselect from '@vueform/multiselect'
+import { useRoute } from 'vue-router'
 
 const props = defineProps({
   allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
@@ -21,7 +22,6 @@ const searchOptions = reactive([
   {
     options: [
       { value: 'status', label: '상태', disabled: true },
-      { value: 'project', label: '프로젝트' },
       { value: 'tracker', label: '유형' },
       { value: 'priority', label: '우선순위', disabled: true },
       { value: 'author', label: '저자', disabled: true },
@@ -142,10 +142,11 @@ const filterSubmit = () => {
   emit('filter-submit', filterData)
 }
 
+const route = useRoute()
 onBeforeMount(() => {
-  if (props.allProjects.length) {
-    form.value.project = props.allProjects[0].slug
-  }
+  if (props.allProjects.length) form.value.project = props.allProjects[0].slug
+  if (route.name === '업무')
+    searchOptions[0].options.splice(1, 0, { value: 'project', label: '프로젝트' })
 })
 </script>
 
