@@ -149,9 +149,11 @@ class IssueCategoryViewSet(viewsets.ModelViewSet):
 
 
 class IssueFilter(FilterSet):
+    status__exclude = CharFilter(field_name='status', exclude=True, label='사용여부-제외')
+
     class Meta:
         model = Issue
-        fields = ('project__slug', 'status__closed')
+        fields = ('project__slug', 'status__closed', 'status')
 
     def filter_queryset(self, queryset):
         """
