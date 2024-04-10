@@ -2,6 +2,7 @@
 import { computed, onBeforeMount } from 'vue'
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
+import type { IssueFilter } from '@/store/types/work'
 import IssueList from '@/views/_Work/Manages/Issues/components/IssueList.vue'
 import IssueForm from '@/views/_Work/Manages/Issues/components/IssueForm.vue'
 import IssueView from '@/views/_Work/Manages/Issues/components/IssueView.vue'
@@ -30,6 +31,11 @@ const onSubmit = (payload: any) => {
     workStore.createIssue(payload)
     router.replace({ name: '(업무)' })
   }
+}
+
+const filterSubmit = (payload: IssueFilter) => {
+  console.log(payload)
+  workStore.fetchIssueList(payload)
 }
 
 onBeforeRouteUpdate(async to => {
@@ -72,7 +78,12 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <IssueList v-if="route.name === '(업무)'" :issue-list="issueList" :all-projects="allProjects" />
+  <IssueList
+    v-if="route.name === '(업무)'"
+    :issue-list="issueList"
+    :all-projects="allProjects"
+    @filter-submit="filterSubmit"
+  />
 
   <IssueView
     v-if="route.name === '(업무) - 보기' && issue"

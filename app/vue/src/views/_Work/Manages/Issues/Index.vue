@@ -4,6 +4,7 @@ import { navMenu2 as navMenu } from '@/views/_Work/_menu/headermixin1'
 import type { Company } from '@/store/types/settings'
 import { useRouter } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
+import type { IssueFilter } from '@/store/types/work'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import IssueList from './components/IssueList.vue'
@@ -35,6 +36,11 @@ const onSubmit = (payload: any) => {
   }
 }
 
+const filterSubmit = (payload: IssueFilter) => {
+  console.log(payload)
+  workStore.fetchIssueList(payload)
+}
+
 onBeforeMount(async () => {
   await workStore.fetchAllIssueProjectList()
   await workStore.fetchIssueList({ status__closed: '' })
@@ -57,6 +63,7 @@ onBeforeMount(async () => {
         v-if="$route.name === '업무'"
         :issue-list="issueList"
         :all-projects="allProjects"
+        @filter-submit="filterSubmit"
       />
 
       <IssueForm

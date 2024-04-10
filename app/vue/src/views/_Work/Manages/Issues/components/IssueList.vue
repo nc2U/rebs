@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue'
-import type { Issue, IssueProject } from '@/store/types/work'
+import type { Issue, IssueFilter, IssueProject } from '@/store/types/work'
 import { timeFormat } from '@/utils/baseMixins'
 import NoData from '@/views/_Work/components/NoData.vue'
 import SearchList from './SearchList.vue'
@@ -9,6 +9,10 @@ defineProps({
   issueList: { type: Array as PropType<Issue[]>, default: () => [] },
   allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
 })
+
+const emit = defineEmits(['filter-submit'])
+
+const filterSubmit = (payload: IssueFilter) => emit('filter-submit', payload)
 </script>
 
 <template>
@@ -28,7 +32,7 @@ defineProps({
       </CCol>
     </CRow>
 
-    <SearchList :all-projects="allProjects" />
+    <SearchList :all-projects="allProjects" @filter-submit="filterSubmit" />
 
     <NoData v-if="!issueList.length" />
 
