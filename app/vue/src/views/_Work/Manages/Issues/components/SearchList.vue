@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive, type PropType, onBeforeMount } from 'vue'
-import type { IssueProject, IssueStatus, ProjectFilter } from '@/store/types/work'
+import type { IssueProject, IssueStatus, IssueFilter } from '@/store/types/work'
 import { useRoute } from 'vue-router'
 import DatePicker from '@/components/DatePicker/index.vue'
 import Multiselect from '@vueform/multiselect'
@@ -115,8 +115,9 @@ const cond = ref({
   // description: 'contains',
 })
 
-const form = ref<ProjectFilter>({
-  status: '1',
+const form = ref<IssueFilter>({
+  status: null,
+  status__exclude: null,
   project: '',
   // is_public: '1',
   // name: '',
@@ -124,12 +125,16 @@ const form = ref<ProjectFilter>({
 })
 
 const filterSubmit = () => {
-  const filterData = {} as ProjectFilter
+  const filterData = {} as IssueFilter
 
-  if (cond.value.status === 'is') filterData.status = form.value.status
+  if (cond.value.status === 'open') filterData.status__closed = '0'
+  else if (cond.value.status === 'is') filterData.status = form.value.status
   else if (cond.value.status === 'exclude') filterData.status__exclude = form.value.status
-  if (cond.value.project === 'is') filterData.project = form.value.project
-  else if (cond.value.project === 'exclude') filterData.project__exclude = form.value.project
+  else if (cond.value.status === 'closed') filterData.status__closed = '1'
+  else if (cond.value.status === 'any') filterData.status__closed = ''
+
+  // if (cond.value.project === 'is') filterData.project = form.value.project
+  // else if (cond.value.project === 'exclude') filterData.project__exclude = form.value.project
 
   // if (cond.value.is_public === 'is' && searchCond.value.includes('is_public'))
   //   filterData.is_public = form.value.is_public

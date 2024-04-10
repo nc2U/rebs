@@ -217,7 +217,9 @@ export interface Issue {
 }
 
 export interface IssueFilter {
-  status__closed?: '1' | '0'
+  status__closed?: '' | '0' | '1' // '0: any' | '0: open' | '1: closed'
+  status?: number | null
+  status__exclude?: number | null
   project?: string
 }
 
