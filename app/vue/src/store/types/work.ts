@@ -216,6 +216,11 @@ export interface Issue {
   updated: string
 }
 
+export interface IssueFilter {
+  status__closed?: '1' | '0'
+  project?: string
+}
+
 export interface IssueComment {
   pk: number
   issue: {
