@@ -123,7 +123,7 @@ const delSubmit = () => {
                 icon="mdi-pencil"
                 color="amber"
                 size="sm"
-                class="mr-1 pointer"
+                class="mr-2 pointer"
                 @click="
                   $router.push({
                     name: '(소요시간) - 편집',
