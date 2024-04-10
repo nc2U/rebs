@@ -213,113 +213,113 @@ onBeforeMount(() => {
               </CCol>
             </CRow>
 
-            <CRow v-if="searchCond.includes('parent')">
-              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
-                <CFormCheck checked="true" label="상위 프로젝트" id="parent" readonly />
-              </CCol>
-              <CCol class="col-4 col-lg-3 col-xl-2">
-                <CFormSelect v-model="cond.parent" size="sm">
-                  <option value="all">any</option>
-                  <option value="none">none</option>
-                  <option value="is">is</option>
-                  <option value="exclude">is not</option>
-                </CFormSelect>
-              </CCol>
-              <CCol class="col-4 col-lg-3">
-                <CFormSelect size="sm">
-                  <option v-for="proj in allProjects" :key="proj.pk" value="1">사용중</option>
-                </CFormSelect>
-              </CCol>
-            </CRow>
+            <!--            <CRow v-if="searchCond.includes('parent')">-->
+            <!--              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">-->
+            <!--                <CFormCheck checked="true" label="상위 프로젝트" id="parent" readonly />-->
+            <!--              </CCol>-->
+            <!--              <CCol class="col-4 col-lg-3 col-xl-2">-->
+            <!--                <CFormSelect v-model="cond.parent" size="sm">-->
+            <!--                  <option value="all">any</option>-->
+            <!--                  <option value="none">none</option>-->
+            <!--                  <option value="is">is</option>-->
+            <!--                  <option value="exclude">is not</option>-->
+            <!--                </CFormSelect>-->
+            <!--              </CCol>-->
+            <!--              <CCol class="col-4 col-lg-3">-->
+            <!--                <CFormSelect size="sm">-->
+            <!--                  <option v-for="proj in allProjects" :key="proj.pk" value="1">사용중</option>-->
+            <!--                </CFormSelect>-->
+            <!--              </CCol>-->
+            <!--            </CRow>-->
 
-            <CRow v-if="searchCond.includes('is_public')">
-              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
-                <CFormCheck checked="true" label="공개여부" id="is_public" readonly />
-              </CCol>
-              <CCol class="col-4 col-lg-3 col-xl-2">
-                <CFormSelect v-model="cond.is_public" size="sm">
-                  <option value="is">is</option>
-                  <option value="exclude">is not</option>
-                </CFormSelect>
-              </CCol>
-              <CCol class="col-4 col-lg-3">
-                <CFormSelect v-model="form.is_public" size="sm">
-                  <option value="1">예</option>
-                  <option value="0">아니오</option>
-                </CFormSelect>
-              </CCol>
-            </CRow>
+            <!--            <CRow v-if="searchCond.includes('is_public')">-->
+            <!--              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">-->
+            <!--                <CFormCheck checked="true" label="공개여부" id="is_public" readonly />-->
+            <!--              </CCol>-->
+            <!--              <CCol class="col-4 col-lg-3 col-xl-2">-->
+            <!--                <CFormSelect v-model="cond.is_public" size="sm">-->
+            <!--                  <option value="is">is</option>-->
+            <!--                  <option value="exclude">is not</option>-->
+            <!--                </CFormSelect>-->
+            <!--              </CCol>-->
+            <!--              <CCol class="col-4 col-lg-3">-->
+            <!--                <CFormSelect v-model="form.is_public" size="sm">-->
+            <!--                  <option value="1">예</option>-->
+            <!--                  <option value="0">아니오</option>-->
+            <!--                </CFormSelect>-->
+            <!--              </CCol>-->
+            <!--            </CRow>-->
 
-            <CRow v-if="searchCond.includes('created')">
-              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
-                <CFormCheck checked="true" label="등록일자" id="created" readonly />
-              </CCol>
-              <CCol class="col-4 col-lg-3 col-xl-2">
-                <CFormSelect size="sm">
-                  <option value="1">is</option>
-                  <option value="2">&gt;=</option>
-                  <option value="3">&lt;=</option>
-                  <option value="4">between</option>
-                  <option value="5">less than days ago</option>
-                  <option value="6">more than days ago</option>
-                  <option value="7">is the past</option>
-                  <option value="8">days ago</option>
-                  <option value="9">today</option>
-                  <option value="10">yesterday</option>
-                  <option value="11">this week</option>
-                  <option value="12">last week</option>
-                  <option value="13">last 2 weeks</option>
-                  <option value="14">this month</option>
-                  <option value="15">last month</option>
-                  <option value="16">this year</option>
-                  <option value="17">none</option>
-                  <option value="18">any</option>
-                </CFormSelect>
-              </CCol>
-              <CCol class="col-4 col-lg-3 col-xl-2">
-                <DatePicker size="sm" />
-              </CCol>
-            </CRow>
+            <!--            <CRow v-if="searchCond.includes('created')">-->
+            <!--              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">-->
+            <!--                <CFormCheck checked="true" label="등록일자" id="created" readonly />-->
+            <!--              </CCol>-->
+            <!--              <CCol class="col-4 col-lg-3 col-xl-2">-->
+            <!--                <CFormSelect size="sm">-->
+            <!--                  <option value="1">is</option>-->
+            <!--                  <option value="2">&gt;=</option>-->
+            <!--                  <option value="3">&lt;=</option>-->
+            <!--                  <option value="4">between</option>-->
+            <!--                  <option value="5">less than days ago</option>-->
+            <!--                  <option value="6">more than days ago</option>-->
+            <!--                  <option value="7">is the past</option>-->
+            <!--                  <option value="8">days ago</option>-->
+            <!--                  <option value="9">today</option>-->
+            <!--                  <option value="10">yesterday</option>-->
+            <!--                  <option value="11">this week</option>-->
+            <!--                  <option value="12">last week</option>-->
+            <!--                  <option value="13">last 2 weeks</option>-->
+            <!--                  <option value="14">this month</option>-->
+            <!--                  <option value="15">last month</option>-->
+            <!--                  <option value="16">this year</option>-->
+            <!--                  <option value="17">none</option>-->
+            <!--                  <option value="18">any</option>-->
+            <!--                </CFormSelect>-->
+            <!--              </CCol>-->
+            <!--              <CCol class="col-4 col-lg-3 col-xl-2">-->
+            <!--                <DatePicker size="sm" />-->
+            <!--              </CCol>-->
+            <!--            </CRow>-->
 
-            <CRow v-if="searchCond.includes('name')">
-              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
-                <CFormCheck checked="true" label="이름" id="name" readonly />
-              </CCol>
-              <CCol class="col-4 col-lg-3 col-xl-2">
-                <CFormSelect v-model="cond.name" size="sm">
-                  <option value="contains">contains</option>
-                  <option value="2" disabled>contains any of</option>
-                  <option value="3" disabled>doesn't contain</option>
-                  <option value="4" disabled>starts with</option>
-                  <option value="5" disabled>ends with</option>
-                  <option value="6" disabled>none</option>
-                  <option value="7" disabled>any</option>
-                </CFormSelect>
-              </CCol>
-              <CCol class="col-4 col-lg-3">
-                <CFormInput v-model="form.name" size="sm" />
-              </CCol>
-            </CRow>
+            <!--            <CRow v-if="searchCond.includes('name')">-->
+            <!--              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">-->
+            <!--                <CFormCheck checked="true" label="이름" id="name" readonly />-->
+            <!--              </CCol>-->
+            <!--              <CCol class="col-4 col-lg-3 col-xl-2">-->
+            <!--                <CFormSelect v-model="cond.name" size="sm">-->
+            <!--                  <option value="contains">contains</option>-->
+            <!--                  <option value="2" disabled>contains any of</option>-->
+            <!--                  <option value="3" disabled>doesn't contain</option>-->
+            <!--                  <option value="4" disabled>starts with</option>-->
+            <!--                  <option value="5" disabled>ends with</option>-->
+            <!--                  <option value="6" disabled>none</option>-->
+            <!--                  <option value="7" disabled>any</option>-->
+            <!--                </CFormSelect>-->
+            <!--              </CCol>-->
+            <!--              <CCol class="col-4 col-lg-3">-->
+            <!--                <CFormInput v-model="form.name" size="sm" />-->
+            <!--              </CCol>-->
+            <!--            </CRow>-->
 
-            <CRow v-if="searchCond.includes('description')">
-              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
-                <CFormCheck checked="true" label="설명" id="description" readonly />
-              </CCol>
-              <CCol class="col-4 col-lg-3 col-xl-2">
-                <CFormSelect v-model="cond.description" size="sm">
-                  <option value="contains">contains</option>
-                  <option value="2">contains any of</option>
-                  <option value="3">doesn't contain</option>
-                  <option value="4">starts with</option>
-                  <option value="5">ends with</option>
-                  <option value="6">none</option>
-                  <option value="7">any</option>
-                </CFormSelect>
-              </CCol>
-              <CCol class="col-4 col-lg-3">
-                <CFormInput v-model="form.description" size="sm" />
-              </CCol>
-            </CRow>
+            <!--            <CRow v-if="searchCond.includes('description')">-->
+            <!--              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">-->
+            <!--                <CFormCheck checked="true" label="설명" id="description" readonly />-->
+            <!--              </CCol>-->
+            <!--              <CCol class="col-4 col-lg-3 col-xl-2">-->
+            <!--                <CFormSelect v-model="cond.description" size="sm">-->
+            <!--                  <option value="contains">contains</option>-->
+            <!--                  <option value="2">contains any of</option>-->
+            <!--                  <option value="3">doesn't contain</option>-->
+            <!--                  <option value="4">starts with</option>-->
+            <!--                  <option value="5">ends with</option>-->
+            <!--                  <option value="6">none</option>-->
+            <!--                  <option value="7">any</option>-->
+            <!--                </CFormSelect>-->
+            <!--              </CCol>-->
+            <!--              <CCol class="col-4 col-lg-3">-->
+            <!--                <CFormInput v-model="form.description" size="sm" />-->
+            <!--              </CCol>-->
+            <!--            </CRow>-->
           </CCol>
 
           <CCol md="4" class="text-right">
