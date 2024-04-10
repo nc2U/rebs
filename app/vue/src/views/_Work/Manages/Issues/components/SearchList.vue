@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { ref, reactive, type PropType, onBeforeMount } from 'vue'
-import type { IssueProject, ProjectFilter } from '@/store/types/work'
+import type { IssueProject, IssueStatus, ProjectFilter } from '@/store/types/work'
+import { useRoute } from 'vue-router'
 import DatePicker from '@/components/DatePicker/index.vue'
 import Multiselect from '@vueform/multiselect'
-import { useRoute } from 'vue-router'
 
 const props = defineProps({
   allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
+  statusList: { type: Array as PropType<IssueStatus[]>, default: () => [] },
 })
 
 const emit = defineEmits(['filter-submit'])
@@ -106,22 +107,20 @@ const searchOptions = reactive([
 ])
 
 const cond = ref({
-  status: 'is' as 'is' | 'exclude',
+  status: 'open' as 'open' | 'is' | 'exclude' | 'closed' | 'any',
   project: 'is' as 'is' | 'exclude',
-  parent: 'all' as 'all' | 'none' | 'is' | 'exclude',
-  is_public: 'is' as 'is' | 'exclude',
-
-  name: 'contains',
-  description: 'contains',
+  // parent: 'any' as 'any' | 'none' | 'is' | 'exclude',
+  // is_public: 'is' as 'is' | 'exclude',
+  // name: 'contains',
+  // description: 'contains',
 })
 
 const form = ref<ProjectFilter>({
   status: '1',
   project: '',
-  is_public: '1',
-
-  name: '',
-  description: '',
+  // is_public: '1',
+  // name: '',
+  // description: '',
 })
 
 const filterSubmit = () => {
@@ -131,13 +130,13 @@ const filterSubmit = () => {
   else if (cond.value.status === 'exclude') filterData.status__exclude = form.value.status
   if (cond.value.project === 'is') filterData.project = form.value.project
   else if (cond.value.project === 'exclude') filterData.project__exclude = form.value.project
-  if (cond.value.is_public === 'is' && searchCond.value.includes('is_public'))
-    filterData.is_public = form.value.is_public
-  else if (cond.value.is_public === 'exclude' && searchCond.value.includes('is_public'))
-    filterData.is_public__exclude = form.value.is_public
 
-  if (form.value.name) filterData.name = form.value.name
-  if (form.value.description) filterData.description = form.value.description
+  // if (cond.value.is_public === 'is' && searchCond.value.includes('is_public'))
+  //   filterData.is_public = form.value.is_public
+  // else if (cond.value.is_public === 'exclude' && searchCond.value.includes('is_public'))
+  //   filterData.is_public__exclude = form.value.is_public
+  // if (form.value.name) filterData.name = form.value.name
+  // if (form.value.description) filterData.description = form.value.description
 
   emit('filter-submit', filterData)
 }
@@ -168,16 +167,22 @@ onBeforeMount(() => {
               </CCol>
               <CCol class="d-none d-lg-block col-4 col-lg-3 col-xl-2">
                 <CFormSelect v-model="cond.status" size="sm">
-                  <option value="is">진행중</option>
+                  <option value="open">진행중</option>
                   <option value="is">이다</option>
-                  <option value="is">아니다</option>
-                  <option value="is">완료됨</option>
-                  <option value="exclude">모두</option>
+                  <option value="exclude">아니다</option>
+                  <option value="closed">완료됨</option>
+                  <option value="any">모두</option>
                 </CFormSelect>
               </CCol>
               <CCol class="col-8 col-lg-3">
-                <CFormSelect v-model="form.status" size="sm">
-                  <option value="1">신규</option>
+                <CFormSelect
+                  v-if="cond.status === 'is' || cond.status === 'exclude'"
+                  v-model="form.status"
+                  size="sm"
+                >
+                  <option v-for="status in statusList" :value="status.pk" :key="status.pk">
+                    {{ status.name }}
+                  </option>
                 </CFormSelect>
               </CCol>
             </CRow>
