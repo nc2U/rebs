@@ -85,7 +85,9 @@ defineProps({
             </CTableDataCell>
             <CTableDataCell>{{ time.activity.name }}</CTableDataCell>
             <CTableDataCell class="text-left">
-              <router-link to=""> {{ time.issue.tracker }} #{{ time.issue.pk }}</router-link>
+              <router-link to="" :class="{ closed: time.issue.status.closed }">
+                {{ time.issue.tracker }} #{{ time.issue.pk }}
+              </router-link>
               : {{ time.issue.subject }}
             </CTableDataCell>
             <CTableDataCell class="text-left">
@@ -141,3 +143,10 @@ defineProps({
     </CCol>
   </CRow>
 </template>
+
+<style lang="scss" scoped>
+.closed {
+  color: #999;
+  text-decoration: line-through;
+}
+</style>

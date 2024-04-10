@@ -248,7 +248,7 @@ export interface TimeEntry {
     pk: number
     project: { slug: string; name: string }
     tracker: string
-    status: string
+    status: { pk: number; name: string; closed: boolean }
     subject: string
     description: string
   }
