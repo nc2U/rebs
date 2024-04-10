@@ -44,21 +44,21 @@ onBeforeRouteUpdate(async to => {
     await workStore.fetchIssueLogList({ issue: Number(to.params.issueId) })
   } else {
     workStore.issue = null
-    await workStore.fetchIssueList({ status__closed: '' })
+    await workStore.fetchIssueList({ status__closed: '0', project: issue.value?.project.slug })
   }
 })
 
 onBeforeMount(async () => {
   emit('aside-visible', true)
   await workStore.fetchAllIssueProjectList()
-  await workStore.fetchIssueList({ status__closed: '' })
+  // await workStore.fetchIssueList({ status__closed: '0' })
 
   if (route.params.projId) {
     await workStore.fetchIssueProject(route.params.projId as string)
     await workStore.fetchAllIssueProjectList(route.params.projId as string)
     await workStore.fetchIssueList({
-      status__closed: '',
-      project: route.params.projId as string,
+      status__closed: '0',
+      project: issueProject.value?.slug,
     })
   }
 
@@ -68,7 +68,6 @@ onBeforeMount(async () => {
     await workStore.fetchTimeEntryList({ issue: Number(route.params.issueId) })
   }
 
-  ///////
   await workStore.fetchMemberList()
   await workStore.fetchTrackerList()
   await workStore.fetchStatusList()

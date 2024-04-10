@@ -182,7 +182,7 @@ class IssueFilter(FilterSet):
                     pass
             if subs is not None:
                 for sub in subs:
-                    queryset |= sub.issue_set.all()
+                    queryset |= sub.issue_set.filter(closed__isnull=True)
 
             queryset = self.filters[name].filter(queryset, value)
             assert isinstance(
