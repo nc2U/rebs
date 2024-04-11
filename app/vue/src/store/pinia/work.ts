@@ -304,7 +304,10 @@ export const useWork = defineStore('work', () => {
     api
       .delete(`/issue-comment/${pk}/`)
       .then(async () => {
-        if (issue) await fetchIssueCommentList({ issue })
+        if (issue) {
+          await fetchIssueCommentList({ issue })
+          await fetchIssueLogList({ issue })
+        }
         message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.')
       })
       .catch(err => errorHandle(err.response.data))

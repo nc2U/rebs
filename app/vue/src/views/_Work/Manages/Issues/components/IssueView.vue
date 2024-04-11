@@ -76,7 +76,7 @@ const callComment = () => {
   }, 100)
 }
 
-const delSubmit = (pk: number) => workStore.deleteIssueComment(pk)
+const delSubmit = (pk: number) => workStore.deleteIssueComment(pk, props.issue.pk)
 
 onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue.pk }))
 </script>
