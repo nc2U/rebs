@@ -125,7 +125,6 @@ def comment_log_changes(sender, instance, created, **kwargs):
 
 @receiver(post_delete, sender=IssueComment)
 def comment_log_delete(sender, instance, **kwargs):
-    pass
     # 로그 삭제 or 삭제된 코멘트인지 로그 업데이트
     try:
         issue_log = IssueLogEntry.objects.get(comment_id=instance.id)
