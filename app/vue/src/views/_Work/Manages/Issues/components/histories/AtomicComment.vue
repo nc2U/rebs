@@ -76,3 +76,17 @@ const copyLink = (path: string, hash: string) => {
     <VueMarkdownIt :source="log.comment?.content ?? ''" />
   </div>
 </template>
+
+<style lang="scss" scoped>
+.history {
+  color: #7f7f7f;
+
+  ::v-deep {
+    .vue-md-it-wrapper blockquote {
+      padding-left: 38px !important;
+      border-left: 3px solid #ddd !important;
+      font-style: italic !important;
+    }
+  }
+}
+</style>

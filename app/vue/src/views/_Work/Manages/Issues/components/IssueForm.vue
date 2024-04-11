@@ -109,7 +109,7 @@ const callComment = (edit?: true) => {
   comment_content.value = edit
     ? ''
     : userInfo?.value.username +
-      ' wrote: \n' +
+      '의 댓글: \n' +
       form.value.description
         .split('\n')
         .map(line => ` > ${line}`)

@@ -57,9 +57,8 @@ const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
   color: #7f7f7f;
 }
 
-.vue-md-it-wrapper blockquote {
-  padding-left: 20px !important;
-  border-left: 3px solid #ddd !important;
-  font-style: italic;
+.vue-md-it-wrapper {
+  float: left;
+  margin-right: 1rem;
 }
 </style>
