@@ -6,6 +6,9 @@ import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 
 defineProps({ log: { type: Object as PropType<IssueLogEntry>, required: true } })
 
+const toReply = (pk?: number | null) => alert(`reply - ${pk}`)
+const toEdit = (pk?: number | null) => alert(`edit - ${pk}`)
+
 const copyLink = (path: string, hash: string) => {
   // 가상의 textarea 엘리먼트를 생성하고 텍스트를 할당.
   const textarea = document.createElement('textarea')
@@ -39,6 +42,26 @@ const copyLink = (path: string, hash: string) => {
       에 변경
     </CCol>
     <CCol class="text-right">
+      <span>
+        <v-icon
+          icon="mdi-comment-processing-outline"
+          color="info"
+          size="16"
+          class="mr-2 pointer"
+          @click="toReply(log.comment?.pk)"
+        />
+        <v-tooltip activator="parent" location="top">댓글달기</v-tooltip>
+      </span>
+      <span>
+        <v-icon
+          icon="mdi-pencil"
+          color="amber"
+          size="16"
+          class="mr-1 pointer"
+          @click="toEdit(log.comment?.pk)"
+        />
+        <v-tooltip activator="parent" location="top">편집</v-tooltip>
+      </span>
       <span>
         <CDropdown color="secondary" variant="input-group" placement="bottom-end">
           <CDropdownToggle
