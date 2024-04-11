@@ -51,14 +51,3 @@ const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
     </ul>
   </div>
 </template>
-
-<style lang="scss" scoped>
-.history {
-  color: #7f7f7f;
-}
-
-.vue-md-it-wrapper {
-  float: left;
-  margin-right: 1rem;
-}
-</style>

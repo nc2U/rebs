@@ -46,22 +46,10 @@ defineProps({ time: { type: Object, default: () => null } })
     </CCol>
   </CRow>
   <v-divider class="mt-0 mb-2" />
-  <div class="history pl-4 mb-2">
-    <ul>
+  <div class="history pl-4">
+    <ul class="mb-2">
       <li>작업시간 : {{ time.hours }} 시간</li>
     </ul>
   </div>
-  <div class="mb-2">{{ time.comment }}</div>
+  <div class="mb-3 fst-italic">{{ time.comment }}</div>
 </template>
-
-<style lang="scss" scoped>
-.history {
-  color: #7f7f7f;
-}
-
-.vue-md-it-wrapper blockquote {
-  padding-left: 20px !important;
-  border-left: 3px solid #ddd !important;
-  font-style: italic;
-}
-</style>

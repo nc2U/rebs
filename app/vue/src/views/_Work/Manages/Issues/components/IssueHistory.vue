@@ -117,3 +117,20 @@ onBeforeMount(() => {
     </CCardBody>
   </CCard>
 </template>
+
+<style lang="scss" scoped>
+:deep(.history) {
+  color: #7f7f7f;
+
+  .vue-md-it-wrapper {
+    float: left;
+    margin-right: 1rem;
+  }
+
+  .vue-md-it-wrapper blockquote {
+    padding-left: 38px !important;
+    border-left: 3px solid #ddd !important;
+    font-style: italic;
+  }
+}
+</style>
