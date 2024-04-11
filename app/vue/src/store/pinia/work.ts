@@ -293,21 +293,20 @@ export const useWork = defineStore('work', () => {
   const updateIssueComment = (payload: any) =>
     api
       .put(`/issue-comment/${payload.pk}/`, payload)
-      .then(() =>
-        fetchIssueComment(payload.pk).then(() =>
-          fetchIssueCommentList({ issue: payload.issue }).then(() => message()),
-        ),
-      )
+      .then(async () => {
+        await fetchIssueComment(payload.pk)
+        await fetchIssueCommentList({ issue: payload.issue })
+        message()
+      })
       .catch(err => errorHandle(err.response.data))
 
-  const deleteIssueComment = (pk: number, issue: number) =>
+  const deleteIssueComment = (pk: number, issue?: number) =>
     api
       .delete(`/issue-comment/${pk}/`)
-      .then(() =>
-        fetchIssueCommentList({ issue }).then(() =>
-          message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.'),
-        ),
-      )
+      .then(async () => {
+        if (issue) await fetchIssueCommentList({ issue })
+        message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.')
+      })
       .catch(err => errorHandle(err.response.data))
 
   // time-entry states & getters
