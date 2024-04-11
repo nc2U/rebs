@@ -1,10 +1,16 @@
 <script lang="ts" setup>
-import type { PropType } from 'vue'
+import { type PropType, ref } from 'vue'
 import type { IssueLogEntry } from '@/store/types/work'
 import { elapsedTime } from '@/utils/baseMixins'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 defineProps({ log: { type: Object as PropType<IssueLogEntry>, required: true } })
+
+const emit = defineEmits(['del-submit'])
+
+const RefDelConfirm = ref()
+const delPk = ref<null | number>(null)
 
 const toReply = (pk?: number | null) => alert(`reply - ${pk}`)
 const toEdit = (pk?: number | null) => alert(`edit - ${pk}`)
@@ -17,6 +23,17 @@ const copyLink = (path: string, hash: string) => {
   textarea.select() // textarea의 텍스트를 선택합니다.
   document.execCommand('copy') // 복사 명령을 실행합니다.
   document.body.removeChild(textarea) // textarea를 삭제합니다.
+}
+
+const delConfirm = (pk: number) => {
+  delPk.value = pk
+  RefDelConfirm.value.callModal('삭제 확인', '계속 진행하시겠습니까?', '', 'warning')
+}
+
+const delSubmit = () => {
+  emit('del-submit', delPk.value)
+  delPk.value = null
+  RefDelConfirm.value.close()
 }
 </script>
 
@@ -81,7 +98,7 @@ const copyLink = (path: string, hash: string) => {
                 링크 복사
               </router-link>
             </CDropdownItem>
-            <CDropdownItem class="form-text" @click="copyLink($route.path, `#note-${log.log_id}`)">
+            <CDropdownItem class="form-text" @click="delConfirm(log.comment?.pk as number)">
               <router-link to="">
                 <v-icon icon="mdi-trash-can" color="grey" size="sm" />
                 삭제
@@ -98,6 +115,12 @@ const copyLink = (path: string, hash: string) => {
   <div class="history pl-4 mb-2">
     <VueMarkdownIt :source="log.comment?.content ?? ''" />
   </div>
+
+  <ConfirmModal ref="RefDelConfirm">
+    <template #footer>
+      <CButton color="danger" @click="delSubmit">확인</CButton>
+    </template>
+  </ConfirmModal>
 </template>
 
 <style lang="scss" scoped>

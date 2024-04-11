@@ -76,6 +76,8 @@ const callComment = () => {
   }, 100)
 }
 
+const delSubmit = (pk: number) => workStore.deleteIssueComment(pk)
+
 onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue.pk }))
 </script>
 
@@ -264,6 +266,7 @@ onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue
     :issue-log-list="issueLogList"
     :issue-comment-list="issueCommentList"
     :time-entry-list="timeEntryList"
+    @del-submit="delSubmit"
   />
 
   <div>

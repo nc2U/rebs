@@ -19,12 +19,7 @@ const delPk = ref<null | number>(null)
 
 const delConfirm = (pk: number) => {
   delPk.value = pk
-  RefDelConfirm.value.callModal(
-    '삭제 확인',
-    '소요시간 삭제를 계속 진행하시겠습니까?',
-    '',
-    'warning',
-  )
+  RefDelConfirm.value.callModal('삭제 확인', '계속 진행하시겠습니까?', '', 'warning')
 }
 
 const delSubmit = () => {
