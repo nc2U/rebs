@@ -42,7 +42,7 @@ const delSubmit = () => {
     :id="`note-${log.pk}`"
     :class="{ 'bg-blue-lighten-5': $route.hash == `#note-${log.log_id}` }"
   >
-    <CCol v-if="log.user">
+    <CCol v-if="log.user" class="pt-1">
       <router-link :to="{ name: '사용자 - 보기', params: { userId: log.user.pk } }">
         {{ log.user.username }}
       </router-link>
