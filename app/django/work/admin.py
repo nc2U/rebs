@@ -110,4 +110,4 @@ class ActivityLogEntryAdmin(admin.ModelAdmin):
 
 @admin.register(IssueLogEntry)
 class IssueLogEntryAdmin(admin.ModelAdmin):
-    list_display = ('issue', 'action', 'details', 'diff', 'timestamp',)
+    list_display = ('issue', 'action', 'comment_id', 'details', 'diff', 'timestamp')

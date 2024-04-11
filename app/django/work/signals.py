@@ -1,4 +1,4 @@
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import pre_save, post_save, post_delete
 from django.dispatch import receiver
 from .models import Issue, IssueComment, TimeEntry, ActivityLogEntry, IssueLogEntry
 
@@ -121,6 +121,22 @@ def comment_log_changes(sender, instance, created, **kwargs):
         IssueLogEntry.objects.create(issue=instance.issue, action='Comment', comment=instance, user=instance.user)
         ActivityLogEntry.objects.create(sort='2', project=instance.issue.project, issue=instance.issue,
                                         comment=instance, user=instance.user)
+
+
+@receiver(post_delete, sender=IssueComment)
+def comment_log_delete(sender, instance, **kwargs):
+    pass
+    # 로그 삭제 or 삭제된 코멘트인지 로그 업데이트
+    try:
+        issue_log = IssueLogEntry.objects.get(comment_id=instance.id)
+        issue_log.delete()
+    except IssueLogEntry.DoesNotExist:
+        pass
+    try:
+        act_log = ActivityLogEntry.objects.get(comment_id=instance.id)
+        act_log.delete()
+    except ActivityLogEntry.DoesNotExist:
+        pass
 
 
 @receiver(post_save, sender=TimeEntry)
