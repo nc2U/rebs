@@ -280,6 +280,38 @@ class ActivityLogFilter(FilterSet):
                   'spent_time__isnull', 'act_date', 'from_act_date', 'to_act_date', 'user')
         # 'change_sets_isnull', 'news__isnull', 'document__isnull', 'file__isnull', 'wiki__isnull', 'message__isnull',
 
+    def filter_queryset(self, queryset):
+        subs = None
+
+        def get_sub_projects(parent):
+            sub_projects = []
+            children = IssueProject.objects.filter(parent=parent)
+            for child in children:
+                sub_projects.append(child)
+                sub_projects.extend(get_sub_projects(child))
+            return sub_projects
+
+        for name, value in self.form.cleaned_data.items():
+            if name == 'project__slug':
+                try:
+                    project = IssueProject.objects.get(slug=value)
+                    subs = get_sub_projects(project)
+                except IssueProject.DoesNotExist:
+                    pass
+            if subs is not None:
+                for sub in subs:
+                    queryset |= sub.activitylogentry_set.all()
+
+            queryset = self.filters[name].filter(queryset, value)
+            assert isinstance(
+                queryset, models.QuerySet
+            ), "Expected '%s.%s' to return a QuerySet, but got a %s instead." % (
+                type(self).__name__,
+                name,
+                type(queryset).__name__,
+            )
+        return queryset
+
 
 class ActivityLogEntryViewSet(viewsets.ModelViewSet):
     queryset = ActivityLogEntry.objects.all()
