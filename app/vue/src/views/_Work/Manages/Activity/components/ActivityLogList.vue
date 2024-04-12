@@ -67,7 +67,9 @@ const toNext = () => emit('to-next')
                 class="mr-1"
               />
               <span class="form-text underline mr-2">{{ timeFormat(act.timestamp, true) }}</span>
-              <span v-if="!$route.params.projId">{{ act.project?.name }} - </span>
+              <span v-if="!$route.params.projId || act.project?.slug !== $route.params.projId">
+                {{ act.project?.name }} -
+              </span>
               <span v-if="act.sort === '1'">
                 <router-link
                   :to="{
