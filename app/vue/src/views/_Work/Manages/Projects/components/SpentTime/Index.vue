@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount } from 'vue'
+import { computed, onBeforeMount, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import TimeEntryList from '@/views/_Work/Manages/SpentTime/components/TimeEntryList.vue'
@@ -26,12 +26,19 @@ const onSubmit = async (payload: any) => {
 
 const delSubmit = (pk: number) => deleteTimeEntry(pk)
 
+const project = computed(() => (route.params.projId ? (route.params.projId as string) : ''))
+const issue = computed(() => (route.query.issue_id ? (route.query.issue_id as string) : ''))
+
+watch(route, async nVal => {
+  if (nVal.params.projId || nVal.params.issueId)
+    await workStore.fetchTimeEntryList({ project: project.value, issue: issue.value })
+})
+
 onBeforeMount(async () => {
   emit('aside-visible', true)
   await workStore.fetchAllIssueProjectList()
-  const project = route.params.projId ? (route.params.projId as string) : ''
-  const issue = route.query.issue_id ? (route.query.issue_id as string) : ''
-  await workStore.fetchTimeEntryList({ project, issue })
+
+  await workStore.fetchTimeEntryList({ project: project.value, issue: issue.value })
 })
 </script>
 
