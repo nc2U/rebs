@@ -7,7 +7,6 @@ import { useWork } from '@/store/pinia/work'
 import { useAccount } from '@/store/pinia/account'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
-
 import ProjectList from '@/views/_Work/Manages/Projects/components/ProjectList.vue'
 import ProjectForm from '@/views/_Work/Manages/Projects/components/ProjectForm.vue'
 import Overview from '@/views/_Work/Manages/Projects/components/Overview/Index.vue'
@@ -24,6 +23,7 @@ import Forums from '@/views/_Work/Manages/Projects/components/Forums/Index.vue'
 import Files from '@/views/_Work/Manages/Projects/components/Files/Index.vue'
 import Repository from '@/views/_Work/Manages/Projects/components/Repository/Index.vue'
 import Settings from '@/views/_Work/Manages/Projects/components/Settings/Index.vue'
+import AsideActivity from '@/views/_Work/Manages/Activity/components/aside/AsideActivity.vue'
 
 const cBody = ref()
 const aside = ref(true)
@@ -165,6 +165,11 @@ onBeforeMount(async () => {
       <Settings v-if="routeName === '(설정)'" @aside-visible="asideVisible" />
     </template>
 
-    <template v-slot:aside></template>
+    <template v-slot:aside>
+      <AsideActivity
+        v-if="routeName === '(작업내역)'"
+        :has-subs="!!issueProject?.sub_projects?.length"
+      />
+    </template>
   </ContentBody>
 </template>

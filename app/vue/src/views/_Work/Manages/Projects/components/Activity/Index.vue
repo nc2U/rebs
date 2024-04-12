@@ -30,11 +30,14 @@ const route = useRoute()
 
 onBeforeMount(() => {
   emit('aside-visible', true)
-  workStore.fetchActivityLogList({
-    project: route.params.projId,
-    from_act_date: dateFormat(fromDate.value),
-    to_act_date: dateFormat(toDate.value),
-  })
+  if (route.params.projId) {
+    workStore.fetchIssueProject(route.params.projId as string)
+    workStore.fetchActivityLogList({
+      project: route.params.projId,
+      from_act_date: dateFormat(fromDate.value),
+      to_act_date: dateFormat(toDate.value),
+    })
+  }
 })
 </script>
 

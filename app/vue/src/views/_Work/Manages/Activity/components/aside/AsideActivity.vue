@@ -26,16 +26,16 @@ const form = ref({
   <CRow class="mb-3">
     <CCol><h6 class="asideTitle">작업내역</h6></CCol>
   </CRow>
-  <CRow class="mb-3">
+  <CRow class="mb-2">
     <CFormLabel for="log-date" class="col-sm-4 col-form-label">10일 기록</CFormLabel>
-    <CCol>
+    <CCol class="col-xxl-5">
       <DatePicker v-model="form.upToDate" id="log-date" />
     </CCol>
   </CRow>
 
   <CRow class="mb-3">
     <CFormLabel for="log-user" class="col-sm-4 col-form-label">사용자</CFormLabel>
-    <CCol>
+    <CCol class="col-xxl-5">
       <CFormSelect v-model="form.user" id="log-user" size="sm">
         <option>---------</option>
         <option>austin1</option>
