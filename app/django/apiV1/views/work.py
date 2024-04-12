@@ -241,9 +241,41 @@ class TimeEntryFilter(FilterSet):
 
     class Meta:
         model = TimeEntry
-        fields = ('issue__project__slug', 'issue', 'user', 'activity', 'hours',
+        fields = ('project__slug', 'issue', 'user', 'activity', 'hours',
                   'from_spent_on', 'to_spent_on', 'issue__tracker', 'issue__parent',
                   'issue__status', 'issue__fixed_version', 'issue__category')
+
+    def filter_queryset(self, queryset):
+        subs = None
+
+        def get_sub_projects(parent):
+            sub_projects = []
+            children = IssueProject.objects.filter(parent=parent)
+            for child in children:
+                sub_projects.append(child)
+                sub_projects.extend(get_sub_projects(child))
+            return sub_projects
+
+        for name, value in self.form.cleaned_data.items():
+            if name == 'project__slug':
+                try:
+                    project = IssueProject.objects.get(slug=value)
+                    subs = get_sub_projects(project)
+                except IssueProject.DoesNotExist:
+                    pass
+            if subs is not None:
+                for sub in subs:
+                    queryset |= sub.timeentry_set.all()
+
+            queryset = self.filters[name].filter(queryset, value)
+            assert isinstance(
+                queryset, models.QuerySet
+            ), "Expected '%s.%s' to return a QuerySet, but got a %s instead." % (
+                type(self).__name__,
+                name,
+                type(queryset).__name__,
+            )
+        return queryset
 
 
 class TimeEntryViewSet(viewsets.ModelViewSet):

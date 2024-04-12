@@ -324,7 +324,7 @@ export const useWork = defineStore('work', () => {
 
   const fetchTimeEntryList = async (payload: TimeEntryFilter) => {
     let url = `/time-entry/?1=1`
-    if (payload.project) url += `&issue__project__slug=${payload.project}`
+    if (payload.project) url += `&project__slug=${payload.project}`
     if (payload.issue) url += `&issue=${payload.issue}`
     if (payload.user) url += `&user=${payload.user}`
     if (payload.activity) url += `&activity=${payload.activity}`

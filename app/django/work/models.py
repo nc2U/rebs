@@ -439,6 +439,7 @@ class IssueComment(models.Model):
 
 
 class TimeEntry(models.Model):
+    project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, verbose_name='업무')
     spent_on = models.DateField('작업일자', auto_now_add=True)
     hours = models.DecimalField('시간', max_digits=5, decimal_places=2)
