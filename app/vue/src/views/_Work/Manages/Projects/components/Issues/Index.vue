@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount } from 'vue'
-import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
+import { computed, onBeforeMount, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import type { IssueFilter } from '@/store/types/work'
 import IssueList from '@/views/_Work/Manages/Issues/components/IssueList.vue'
@@ -38,28 +38,24 @@ const filterSubmit = (payload: IssueFilter) => {
   workStore.fetchIssueList(payload)
 }
 
-onBeforeRouteUpdate(async to => {
-  if (to.params.issueId) {
-    await workStore.fetchIssue(Number(to.params.issueId))
-    await workStore.fetchIssueLogList({ issue: Number(to.params.issueId) })
-  } else {
-    workStore.issue = null
-    await workStore.fetchIssueList({ status__closed: '0', project: issue.value?.project.slug })
-  }
+watch(route, async nVal => {
+  const project = nVal.params.projId as string
+  await workStore.fetchIssueList({ status__closed: '0', project })
+  if (nVal.params.issueId) {
+    await workStore.fetchIssue(Number(nVal.params.issueId))
+    await workStore.fetchIssueLogList({ issue: Number(nVal.params.issueId) })
+  } else workStore.issue = null
 })
 
 onBeforeMount(async () => {
   emit('aside-visible', true)
   await workStore.fetchAllIssueProjectList()
-  // await workStore.fetchIssueList({ status__closed: '0' })
 
   if (route.params.projId) {
     await workStore.fetchIssueProject(route.params.projId as string)
     await workStore.fetchAllIssueProjectList(route.params.projId as string)
-    await workStore.fetchIssueList({
-      status__closed: '0',
-      project: issueProject.value?.slug,
-    })
+    const project = route.params.projId as string
+    await workStore.fetchIssueList({ status__closed: '0', project })
   }
 
   if (route.params.issueId) {

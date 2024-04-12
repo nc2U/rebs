@@ -20,7 +20,6 @@ const workStore = useWork()
 const issueList = computed(() => workStore.issueList)
 const allProjects = computed(() => workStore.AllIssueProjects)
 
-///
 const statusList = computed(() => workStore.statusList)
 const activityList = computed(() => workStore.activityList)
 const priorityList = computed(() => workStore.priorityList)
