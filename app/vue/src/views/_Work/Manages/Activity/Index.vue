@@ -8,6 +8,7 @@ import type { ActLogEntry } from '@/store/types/work'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import ActivityLogList from '@/views/_Work/Manages/Activity/components/ActivityLogList.vue'
+import AsideActivity from '@/views/_Work/Manages/Activity/components/aside/AsideActivity.vue'
 
 const cBody = ref()
 const company = inject<ComputedRef<Company>>('company')
@@ -61,6 +62,8 @@ onBeforeMount(() => {
       />
     </template>
 
-    <template v-slot:aside></template>
+    <template v-slot:aside>
+      <AsideActivity />
+    </template>
   </ContentBody>
 </template>
