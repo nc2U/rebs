@@ -384,7 +384,7 @@ class IssueSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         if hours and activity:
             activity = CodeActivity.objects.get(pk=activity)
-            TimeEntry.objects.create(issue=instance, hours=hours,
+            TimeEntry.objects.create(project=instance.project, issue=instance, hours=hours,
                                      activity=activity, comment=comment, user=user)
         # issue_comment logic
         comment_content = self.initial_data.get('comment_content', None)
@@ -447,7 +447,8 @@ class TimeEntrySerializer(serializers.ModelSerializer):
         issue = self.initial_data.get('issue', None)
         activity = self.initial_data.get('activity', None)
 
-        time_entry = TimeEntry.objects.create(issue_id=issue,
+        time_entry = TimeEntry.objects.create(project=issue.project,
+                                              issue_id=issue,
                                               activity_id=activity,
                                               **validated_data)
         return time_entry
@@ -456,6 +457,7 @@ class TimeEntrySerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.__dict__.update(**validated_data)
         instance.issue = Issue.objects.get(pk=self.initial_data.get('issue'))
+        instance.project = instance.issue.project
         instance.activity = CodeActivity.objects.get(pk=self.initial_data.get('activity'))
         return super().update(instance, validated_data)
 
