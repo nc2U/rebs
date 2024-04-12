@@ -29,14 +29,14 @@ const form = ref({
   <CRow class="mb-2">
     <CFormLabel for="log-date" class="col-sm-4 col-form-label">10일 기록</CFormLabel>
     <CCol class="col-xxl-5">
-      <DatePicker v-model="form.upToDate" id="log-date" />
+      <DatePicker v-model="form.upToDate" id="log-date" disabled />
     </CCol>
   </CRow>
 
   <CRow class="mb-3">
     <CFormLabel for="log-user" class="col-sm-4 col-form-label">사용자</CFormLabel>
     <CCol class="col-xxl-5">
-      <CFormSelect v-model="form.user" id="log-user" size="sm">
+      <CFormSelect v-model="form.user" id="log-user" size="sm" disabled>
         <option>---------</option>
         <option>austin1</option>
         <option>austin2</option>
@@ -46,26 +46,31 @@ const form = ref({
 
   <CRow class="mb-3">
     <CCol>
-      <CFormCheck v-model="form.issue" label="업무" id="issue-filter" />
-      <CFormCheck v-model="form.changeSet" label="변경묶음" id="changeset-filter" />
-      <CFormCheck v-model="form.news" label="공지" id="news-filter" />
-      <CFormCheck v-model="form.docs" label="문서" id="docs-filter" />
-      <CFormCheck v-model="form.file" label="파일" id="file-filter" />
-      <CFormCheck v-model="form.wiki" label="위키 편집" id="wiki-filter" />
-      <CFormCheck v-model="form.message" label="글" id="message-filter" />
-      <CFormCheck v-model="form.spentTime" label="작업시간" id="spent-time-filter" />
+      <CFormCheck v-model="form.issue" label="업무" id="issue-filter" disabled />
+      <CFormCheck v-model="form.changeSet" label="변경묶음" id="changeset-filter" disabled />
+      <CFormCheck v-model="form.news" label="공지" id="news-filter" disabled />
+      <CFormCheck v-model="form.docs" label="문서" id="docs-filter" disabled />
+      <CFormCheck v-model="form.file" label="파일" id="file-filter" disabled />
+      <CFormCheck v-model="form.wiki" label="위키 편집" id="wiki-filter" disabled />
+      <CFormCheck v-model="form.message" label="글" id="message-filter" disabled />
+      <CFormCheck v-model="form.spentTime" label="작업시간" id="spent-time-filter" disabled />
     </CCol>
   </CRow>
 
   <CRow v-if="hasSubs" class="mb-3">
     <CCol>
-      <CFormCheck v-model="form.subProjects" label="하위 프로젝트" id="sub-project-filter" />
+      <CFormCheck
+        v-model="form.subProjects"
+        label="하위 프로젝트"
+        id="sub-project-filter"
+        disabled
+      />
     </CCol>
   </CRow>
 
   <CRow>
     <CCol>
-      <CButton color="dark" size="sm">적용</CButton>
+      <CButton color="dark" size="sm" disabled>적용</CButton>
     </CCol>
   </CRow>
 </template>
