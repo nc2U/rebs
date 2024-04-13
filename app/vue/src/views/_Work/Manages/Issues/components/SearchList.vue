@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, type PropType, onBeforeMount } from 'vue'
+import { ref, reactive, type PropType, onBeforeMount, watch } from 'vue'
 import type { IssueProject, IssueStatus, IssueFilter } from '@/store/types/work'
 import { useRoute } from 'vue-router'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -146,9 +146,15 @@ const filterSubmit = () => {
   emit('filter-submit', filterData)
 }
 
+watch(props, nVal => {
+  if (nVal.allProjects.length) form.value.project = props.allProjects[0].slug
+  if (nVal.statusList.length) form.value.status = props.statusList[0]?.pk
+})
+
 const route = useRoute()
 onBeforeMount(() => {
-  if (props.allProjects.length) form.value.project = props.allProjects[0].slug
+  if (!!props.allProjects.length) form.value.project = props.allProjects[0].slug
+  if (!!props.statusList.length) form.value.status = props.statusList[0]?.pk
   if (route.name === '업무')
     searchOptions[0].options.splice(1, 0, { value: 'project', label: '프로젝트' })
 })

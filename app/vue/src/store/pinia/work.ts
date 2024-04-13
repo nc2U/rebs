@@ -16,6 +16,7 @@ import type {
   TimeEntry,
   TimeEntryFilter,
   IssueLogEntry,
+  IssueFilter,
 } from '@/store/types/work'
 
 export const useWork = defineStore('work', () => {
@@ -212,9 +213,11 @@ export const useWork = defineStore('work', () => {
       .then(res => (issue.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const fetchIssueList = async (payload: { status__closed?: '1' | '0' | ''; project?: string }) => {
+  const fetchIssueList = async (payload: IssueFilter) => {
     let url = `/issue/?1=1`
     if (payload.status__closed) url += `&status__closed=${payload.status__closed}`
+    if (payload.status) url += `&status=${payload.status}`
+    if (payload.status__exclude) url += `&status__exclude=${payload.status__exclude}`
     if (payload.project) url += `&project__slug=${payload.project}`
 
     return await api
