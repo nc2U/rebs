@@ -24,7 +24,7 @@ defineExpose({ toggle })
 
 <template>
   <CRow class="flex-grow-1">
-    <CCol class="text-body main p-4 px-lg-5">
+    <CCol md="9" class="text-body main p-4 px-lg-5">
       <slot> Under Construction!</slot>
     </CCol>
 
