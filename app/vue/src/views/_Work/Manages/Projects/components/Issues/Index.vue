@@ -77,6 +77,7 @@ onBeforeMount(async () => {
     v-if="route.name === '(업무)'"
     :issue-list="issueList"
     :all-projects="allProjects"
+    :status-list="statusList"
     @filter-submit="filterSubmit"
   />
 
