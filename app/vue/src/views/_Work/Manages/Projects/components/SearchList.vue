@@ -83,7 +83,7 @@ const filterSubmit = () => {
 
 onBeforeMount(() => {
   if (props.allProjects.length) {
-    form.value.project = props.allProjects[0].slug
+    form.value.project = props.allProjects[0]?.slug
   }
 })
 </script>

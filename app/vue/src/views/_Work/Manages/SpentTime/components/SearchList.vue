@@ -17,103 +17,50 @@ const viewMode = ref<'board' | 'list'>('board')
 const condVisible = ref(true)
 const optVisible = ref(false)
 
-const searchCond = ref(['status'])
+const searchCond = ref(['work_date'])
 const resetFilter = () => {
-  searchCond.value = ['status']
+  searchCond.value = ['work_date']
   filterSubmit()
 }
 
 const searchOptions = reactive([
   {
     options: [
-      { value: 'status', label: '상태', disabled: true },
-      { value: 'tracker', label: '유형' },
-      { value: 'priority', label: '우선순위', disabled: true },
-      { value: 'author', label: '저자', disabled: true },
-      { value: 'assignee', label: '담당자', disabled: true },
-      { value: 'version', label: '목표버전', disabled: true },
-      { value: 'category', label: '범주', disabled: true },
-      { value: 'done_ratio', label: '진척도', disabled: true },
-      { value: 'is_private', label: '비공개', disabled: true },
-      { value: 'watcher', label: '열람공유자', disabled: true },
-      { value: 'updater', label: '수정자', disabled: true },
-      { value: 'last_updater', label: '최근수정자', disabled: true },
       { value: 'issue', label: '업무', disabled: true },
+      { value: 'user', label: '사용자' },
+      { value: 'author', label: '저자', disabled: true },
+      { value: 'activity', label: '작업종류', disabled: true },
+      { value: 'hours', label: '시간', disabled: true },
+      { value: 'work_date', label: '작업시간' },
     ],
   },
   {
     label: '문자열 검색',
+    options: [{ value: 'comment', label: '설명' }],
+    disabled: true,
+  },
+  {
+    label: '업무',
     options: [
-      { value: 'subject', label: '제목' },
-      { value: 'description', label: '설명' },
-      { value: 'comment', label: '댓글' },
+      { value: 'tracker', label: '업무의 유형', disabled: true },
+      { value: 'parent', label: '업무의 상위업무', disabled: true },
+      { value: 'status', label: '업무의 상태', disabled: true },
+      { value: 'target_version', label: '업무의 목표버전', disabled: true },
+      { value: 'subject', label: '업무의 제목', disabled: true },
     ],
     disabled: true,
   },
   {
-    label: '날짜별 검색',
-    options: [
-      { value: 'created', label: '등록일', disabled: true },
-      { value: 'updated', label: '변경일', disabled: true },
-      { value: 'start_date', label: '시작일', disabled: true },
-      { value: 'due_date', label: '완료기한', disabled: true },
-    ],
-    disabled: true,
-  },
-  {
-    label: '시간추적',
-    options: [
-      { value: 'estimated_hours', label: '추정시간', disabled: true },
-      { value: 'spent_time', label: '소요시간', disabled: true },
-    ],
-    disabled: true,
-  },
-  {
-    label: '파일',
-    options: [
-      { value: 'file', label: '파일', disabled: true },
-      { value: 'file_desc', label: '파일설명', disabled: true },
-    ],
-    disabled: true,
-  },
-  {
-    label: '담당',
-    options: [
-      { value: 'group', label: '할당된 사람의 그룹', disabled: true },
-      { value: 'role', label: '할당된 사람의 역할', disabled: true },
-    ],
-  },
-  {
-    label: '목표버전',
-    options: [
-      { value: 'version_date', label: '목표버전의 날짜', disabled: true },
-      { value: 'version_status', label: '목표버전의 상태', disabled: true },
-    ],
-    disabled: true,
-  },
-  {
-    label: '관계',
-    options: [
-      { value: 'related_to', label: '다음 업무와 관련됨:', disabled: true },
-      { value: 'is_duplicate_of', label: '다음 업무와 중복됨:', disabled: true },
-      { value: 'has_duplicate', label: '중복된 업무:', disabled: true },
-      { value: 'blocks', label: '다음 업무의 해결을 막고 있음:', disabled: true },
-      { value: 'blocked_by', label: '다음 업무에 막혀 있음:', disabled: true },
-      { value: 'precedes', label: '다음에 진행할 업무:', disabled: true },
-      { value: 'follows', label: '다음 업무를 우선 진행:', disabled: true },
-      { value: 'copied_to', label: '다음 업무로 복사됨:', disabled: true },
-      { value: 'copied_from', label: '다음 업무로부터 복사됨:', disabled: true },
-      { value: 'parent', label: '상위업무', disabled: true },
-      { value: 'sub_issues', label: '하위업무', disabled: true },
-    ],
+    label: '프로젝트',
+    options: [{ value: 'project_status', label: '프로젝트의 상태', disabled: true }],
     disabled: true,
   },
 ])
 
 const cond = ref({
-  status: 'open' as 'open' | 'is' | 'exclude' | 'closed' | 'any',
-  project: 'is' as 'is' | 'exclude',
-  tracker: 'is' as 'is' | 'exclude',
+  issue: 'open' as 'open' | 'is' | 'exclude' | 'closed' | 'any',
+  user: 'is' as 'is' | 'exclude',
+  author: 'is' as 'is' | 'exclude',
   // parent: 'any' as 'any' | 'none' | 'is' | 'exclude',
   // is_public: 'is' as 'is' | 'exclude',
   // name: 'contains',
@@ -133,19 +80,19 @@ const form = ref<IssueFilter>({
 const filterSubmit = () => {
   const filterData = {} as IssueFilter
 
-  if (cond.value.status === 'open') filterData.status__closed = '0'
-  else if (cond.value.status === 'is') filterData.status = form.value.status
-  else if (cond.value.status === 'exclude') filterData.status__exclude = form.value.status
-  else if (cond.value.status === 'closed') filterData.status__closed = '1'
-  else if (cond.value.status === 'any') filterData.status__closed = ''
-
-  if (searchCond.value.includes('project'))
-    if (cond.value.project === 'is') filterData.project__search = form.value.project
-    else if (cond.value.project === 'exclude') filterData.project__exclude = form.value.project
-
-  if (searchCond.value.includes('tracker'))
-    if (cond.value.tracker === 'is') filterData.tracker = form.value.tracker
-    else if (cond.value.tracker === 'exclude') filterData.tracker__exclude = form.value.tracker
+  // if (cond.value.status === 'open') filterData.status__closed = '0'
+  // else if (cond.value.status === 'is') filterData.status = form.value.status
+  // else if (cond.value.status === 'exclude') filterData.status__exclude = form.value.status
+  // else if (cond.value.status === 'closed') filterData.status__closed = '1'
+  // else if (cond.value.status === 'any') filterData.status__closed = ''
+  //
+  // if (searchCond.value.includes('project'))
+  //   if (cond.value.project === 'is') filterData.project__search = form.value.project
+  //   else if (cond.value.project === 'exclude') filterData.project__exclude = form.value.project
+  //
+  // if (searchCond.value.includes('tracker'))
+  //   if (cond.value.tracker === 'is') filterData.tracker = form.value.tracker
+  //   else if (cond.value.tracker === 'exclude') filterData.tracker__exclude = form.value.tracker
 
   // if (cond.value.is_public === 'is' && searchCond.value.includes('is_public'))
   //   filterData.is_public = form.value.is_public
@@ -169,7 +116,7 @@ watch(props, nVal => {
 const route = useRoute()
 onBeforeMount(() => {
   if (!!props.statusList.length) form.value.status = props.statusList[0]?.pk
-  if (route.name === '업무')
+  if (route.name === '소요시간')
     searchOptions[0].options.splice(1, 0, { value: 'project', label: '프로젝트' })
 })
 </script>
