@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, type PropType } from 'vue'
-import type { TimeEntry } from '@/store/types/work'
+import type { IssueProject, TimeEntry } from '@/store/types/work'
 import { dateFormat, numberToHour } from '@/utils/baseMixins'
 import NoData from '@/views/_Work/components/NoData.vue'
 import HeaderTab from '@/views/_Work/Manages/SpentTime/components/HeaderTab.vue'
@@ -9,6 +9,7 @@ import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 defineProps({
   timeEntryList: { type: Array as PropType<TimeEntry[]>, default: () => [] },
+  allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
 })
 
 const emit = defineEmits(['del-submit'])
@@ -48,7 +49,7 @@ const delSubmit = () => {
     </CCol>
   </CRow>
 
-  <SearchList />
+  <SearchList :all-projects="allProjects" />
 
   <HeaderTab />
 
