@@ -223,6 +223,7 @@ export interface IssueFilter {
   project?: string
   project__exclude?: string
   tracker?: number | null
+  tracker__exclude?: number | null
 }
 
 export interface IssueComment {

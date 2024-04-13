@@ -122,6 +122,7 @@ const form = ref<IssueFilter>({
   status__exclude: null,
   project: '',
   tracker: null,
+  tracker__exclude: null,
   // name: '',
   // description: '',
 })
@@ -135,8 +136,13 @@ const filterSubmit = () => {
   else if (cond.value.status === 'closed') filterData.status__closed = '1'
   else if (cond.value.status === 'any') filterData.status__closed = ''
 
-  if (cond.value.project === 'is') filterData.project = form.value.project
-  else if (cond.value.project === 'exclude') filterData.project__exclude = form.value.project
+  if (searchCond.value.includes('project'))
+    if (cond.value.project === 'is') filterData.project = form.value.project
+    else if (cond.value.project === 'exclude') filterData.project__exclude = form.value.project
+
+  if (searchCond.value.includes('tracker'))
+    if (cond.value.tracker === 'is') filterData.tracker = form.value.tracker
+    else if (cond.value.tracker === 'exclude') filterData.tracker__exclude = form.value.tracker
 
   // if (cond.value.is_public === 'is' && searchCond.value.includes('is_public'))
   //   filterData.is_public = form.value.is_public
@@ -148,17 +154,18 @@ const filterSubmit = () => {
   emit('filter-submit', filterData)
 }
 
+watch(searchCond, nVal => {
+  if (nVal.includes('project')) form.value.project = props.allProjects[0].slug
+  if (nVal.includes('tracker')) form.value.tracker = props.trackerList[0]?.pk
+})
+
 watch(props, nVal => {
-  if (nVal.allProjects.length) form.value.project = props.allProjects[0].slug
   if (nVal.statusList.length) form.value.status = props.statusList[0]?.pk
-  if (nVal.trackerList.length) form.value.tracker = props.trackerList[0]?.pk
 })
 
 const route = useRoute()
 onBeforeMount(() => {
-  if (!!props.allProjects.length) form.value.project = props.allProjects[0].slug
   if (!!props.statusList.length) form.value.status = props.statusList[0]?.pk
-  if (!!props.trackerList.length) form.value.tracker = props.trackerList[0]?.pk
   if (route.name === '업무')
     searchOptions[0].options.splice(1, 0, { value: 'project', label: '프로젝트' })
 })
@@ -171,8 +178,6 @@ onBeforeMount(() => {
       검색조건
     </CCol>
     <v-divider class="mx-3 mt-2 mb-0" />
-
-    {{ searchCond }}
 
     <CCollapse :visible="condVisible">
       <slot name="condition">
@@ -236,7 +241,7 @@ onBeforeMount(() => {
                 </CFormSelect>
               </CCol>
               <CCol class="col-4 col-lg-3">
-                <CFormSelect size="sm">
+                <CFormSelect v-model="form.tracker" size="sm">
                   <option v-for="tracker in trackerList" :key="tracker.pk" :value="tracker.pk">
                     {{ tracker.name }}
                   </option>
