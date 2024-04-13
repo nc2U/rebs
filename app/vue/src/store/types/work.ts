@@ -221,6 +221,8 @@ export interface IssueFilter {
   status?: number | null
   status__exclude?: number | null
   project?: string
+  project__exclude?: string
+  tracker?: number | null
 }
 
 export interface IssueComment {

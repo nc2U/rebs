@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue'
-import type { Issue, IssueFilter, IssueProject, IssueStatus } from '@/store/types/work'
+import type { Issue, IssueFilter, IssueProject, IssueStatus, Tracker } from '@/store/types/work'
 import { timeFormat } from '@/utils/baseMixins'
 import NoData from '@/views/_Work/components/NoData.vue'
 import SearchList from './SearchList.vue'
@@ -9,6 +9,7 @@ defineProps({
   issueList: { type: Array as PropType<Issue[]>, default: () => [] },
   allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
   statusList: { type: Array as PropType<IssueStatus[]>, default: () => [] },
+  trackerList: { type: Array as PropType<Tracker[]>, default: () => [] },
 })
 
 const emit = defineEmits(['filter-submit'])
@@ -36,6 +37,7 @@ const filterSubmit = (payload: IssueFilter) => emit('filter-submit', payload)
     <SearchList
       :all-projects="allProjects"
       :status-list="statusList"
+      :tracker-list="trackerList"
       @filter-submit="filterSubmit"
     />
 

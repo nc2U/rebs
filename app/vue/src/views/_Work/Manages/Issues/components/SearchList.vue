@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive, type PropType, onBeforeMount, watch } from 'vue'
-import type { IssueProject, IssueStatus, IssueFilter } from '@/store/types/work'
+import type { IssueProject, IssueStatus, IssueFilter, Tracker } from '@/store/types/work'
 import { useRoute } from 'vue-router'
 import DatePicker from '@/components/DatePicker/index.vue'
 import Multiselect from '@vueform/multiselect'
@@ -8,6 +8,7 @@ import Multiselect from '@vueform/multiselect'
 const props = defineProps({
   allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
   statusList: { type: Array as PropType<IssueStatus[]>, default: () => [] },
+  trackerList: { type: Array as PropType<Tracker[]>, default: () => [] },
 })
 
 const emit = defineEmits(['filter-submit'])
@@ -109,6 +110,7 @@ const searchOptions = reactive([
 const cond = ref({
   status: 'open' as 'open' | 'is' | 'exclude' | 'closed' | 'any',
   project: 'is' as 'is' | 'exclude',
+  tracker: 'is' as 'is' | 'exclude',
   // parent: 'any' as 'any' | 'none' | 'is' | 'exclude',
   // is_public: 'is' as 'is' | 'exclude',
   // name: 'contains',
@@ -119,7 +121,7 @@ const form = ref<IssueFilter>({
   status: null,
   status__exclude: null,
   project: '',
-  // is_public: '1',
+  tracker: null,
   // name: '',
   // description: '',
 })
@@ -133,8 +135,8 @@ const filterSubmit = () => {
   else if (cond.value.status === 'closed') filterData.status__closed = '1'
   else if (cond.value.status === 'any') filterData.status__closed = ''
 
-  // if (cond.value.project === 'is') filterData.project = form.value.project
-  // else if (cond.value.project === 'exclude') filterData.project__exclude = form.value.project
+  if (cond.value.project === 'is') filterData.project = form.value.project
+  else if (cond.value.project === 'exclude') filterData.project__exclude = form.value.project
 
   // if (cond.value.is_public === 'is' && searchCond.value.includes('is_public'))
   //   filterData.is_public = form.value.is_public
@@ -149,12 +151,14 @@ const filterSubmit = () => {
 watch(props, nVal => {
   if (nVal.allProjects.length) form.value.project = props.allProjects[0].slug
   if (nVal.statusList.length) form.value.status = props.statusList[0]?.pk
+  if (nVal.trackerList.length) form.value.tracker = props.trackerList[0]?.pk
 })
 
 const route = useRoute()
 onBeforeMount(() => {
   if (!!props.allProjects.length) form.value.project = props.allProjects[0].slug
   if (!!props.statusList.length) form.value.status = props.statusList[0]?.pk
+  if (!!props.trackerList.length) form.value.tracker = props.trackerList[0]?.pk
   if (route.name === '업무')
     searchOptions[0].options.splice(1, 0, { value: 'project', label: '프로젝트' })
 })
@@ -167,6 +171,8 @@ onBeforeMount(() => {
       검색조건
     </CCol>
     <v-divider class="mx-3 mt-2 mb-0" />
+
+    {{ searchCond }}
 
     <CCollapse :visible="condVisible">
       <slot name="condition">
@@ -204,8 +210,8 @@ onBeforeMount(() => {
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
                 <CFormSelect v-model="cond.project" size="sm">
-                  <option value="is">is</option>
-                  <option value="exclude">is not</option>
+                  <option value="is">이다</option>
+                  <option value="exclude">아니다</option>
                 </CFormSelect>
               </CCol>
               <CCol class="col-4 col-lg-3">
@@ -219,24 +225,24 @@ onBeforeMount(() => {
               </CCol>
             </CRow>
 
-            <!--            <CRow v-if="searchCond.includes('parent')">-->
-            <!--              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">-->
-            <!--                <CFormCheck checked="true" label="상위 프로젝트" id="parent" readonly />-->
-            <!--              </CCol>-->
-            <!--              <CCol class="col-4 col-lg-3 col-xl-2">-->
-            <!--                <CFormSelect v-model="cond.parent" size="sm">-->
-            <!--                  <option value="all">any</option>-->
-            <!--                  <option value="none">none</option>-->
-            <!--                  <option value="is">is</option>-->
-            <!--                  <option value="exclude">is not</option>-->
-            <!--                </CFormSelect>-->
-            <!--              </CCol>-->
-            <!--              <CCol class="col-4 col-lg-3">-->
-            <!--                <CFormSelect size="sm">-->
-            <!--                  <option v-for="proj in allProjects" :key="proj.pk" value="1">사용중</option>-->
-            <!--                </CFormSelect>-->
-            <!--              </CCol>-->
-            <!--            </CRow>-->
+            <CRow v-if="searchCond.includes('tracker')">
+              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
+                <CFormCheck checked="true" label="유형" id="tracker" readonly />
+              </CCol>
+              <CCol class="col-4 col-lg-3 col-xl-2">
+                <CFormSelect v-model="cond.tracker" size="sm">
+                  <option value="is">이다</option>
+                  <option value="exclude">아니다</option>
+                </CFormSelect>
+              </CCol>
+              <CCol class="col-4 col-lg-3">
+                <CFormSelect size="sm">
+                  <option v-for="tracker in trackerList" :key="tracker.pk" :value="tracker.pk">
+                    {{ tracker.name }}
+                  </option>
+                </CFormSelect>
+              </CCol>
+            </CRow>
 
             <!--            <CRow v-if="searchCond.includes('is_public')">-->
             <!--              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">-->

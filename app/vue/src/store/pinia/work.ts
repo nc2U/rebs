@@ -219,6 +219,7 @@ export const useWork = defineStore('work', () => {
     if (payload.status) url += `&status=${payload.status}`
     if (payload.status__exclude) url += `&status__exclude=${payload.status__exclude}`
     if (payload.project) url += `&project__slug=${payload.project}`
+    if (payload.project__exclude) url += `&project__exclude=${payload.project__exclude}`
 
     return await api
       .get(url)

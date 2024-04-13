@@ -21,6 +21,7 @@ const issueList = computed(() => workStore.issueList)
 const allProjects = computed(() => workStore.AllIssueProjects)
 
 const statusList = computed(() => workStore.statusList)
+const trackerList = computed(() => workStore.trackerList)
 const activityList = computed(() => workStore.activityList)
 const priorityList = computed(() => workStore.priorityList)
 const getIssues = computed(() => workStore.getIssues)
@@ -62,6 +63,7 @@ onBeforeMount(async () => {
         :issue-list="issueList"
         :all-projects="allProjects"
         :status-list="statusList"
+        :tracker-list="trackerList"
         @filter-submit="filterSubmit"
       />
 
