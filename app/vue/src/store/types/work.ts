@@ -267,19 +267,20 @@ export interface TimeEntry {
 }
 
 export interface TimeEntryFilter {
+  work_date?: string
   project?: string
   issue?: number | string
-  user?: number
-  activity?: number
+  user?: number | null
+  author?: number | null
+  activity?: number | null
   hours?: number
-  from_spent_on?: string
-  to_spent_on?: string
-  issue__tracker?: number
-  issue__parent?: number
-  issue__status?: number
-  issue__fixed_version?: number
-  issue__category?: number
-  search?: string
+  comment?: string
+  tracker?: number | null
+  parent?: number | null
+  status?: number | null
+  version?: number | null
+  subject?: string
+  project_status?: number | null
 }
 
 export interface ActLogEntry {
