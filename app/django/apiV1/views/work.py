@@ -239,6 +239,7 @@ class IssueCommentViewSet(viewsets.ModelViewSet):
 
 
 class TimeEntryFilter(FilterSet):
+    project__search = CharFilter(field_name='project__slug', label='프로젝트-검색')
     from_spent_on = DateFilter(field_name='spent_on', lookup_expr='gte', label='작업일자부터')
     to_spent_on = DateFilter(field_name='spent_on', lookup_expr='lte', label='작업일자부터')
 
@@ -298,6 +299,7 @@ class TimeEntryViewSet(viewsets.ModelViewSet):
 
 
 class ActivityLogFilter(FilterSet):
+    project__search = CharFilter(field_name='project__slug', label='프로젝트-검색')
     issue__isnull = BooleanFilter(field_name='issue', lookup_expr='isnull', label='업무-없음')
     # change_sets_isnull = BooleanFilter(field_name='change_sets', lookup_expr='isnull', label='변경묶음-없음')
     # news__isnull = BooleanFilter(field_name='news', lookup_expr='isnull', label='공지-없음')
