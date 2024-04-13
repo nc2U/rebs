@@ -157,13 +157,14 @@ const filterSubmit = () => {
   emit('filter-submit', filterData)
 }
 
+watch(props, nVal => {
+  if (nVal.statusList.length) form.value.status = props.statusList[0]?.pk
+})
+
 watch(searchCond, nVal => {
   if (nVal.includes('project')) form.value.project = props.allProjects[0]?.slug
   if (nVal.includes('tracker')) form.value.tracker = props.trackerList[0]?.pk
-})
-
-watch(props, nVal => {
-  if (nVal.statusList.length) form.value.status = props.statusList[0]?.pk
+  if (!nVal.includes('status')) searchCond.value = ['status']
 })
 
 const route = useRoute()

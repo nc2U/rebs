@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, type PropType, onBeforeMount } from 'vue'
+import { ref, reactive, type PropType, onBeforeMount, watch } from 'vue'
 import type { IssueProject, ProjectFilter } from '@/store/types/work'
 import DatePicker from '@/components/DatePicker/index.vue'
 import Multiselect from '@vueform/multiselect'
@@ -80,6 +80,10 @@ const filterSubmit = () => {
 
   emit('filter-submit', filterData)
 }
+
+watch(searchCond, nVal => {
+  if (!nVal.includes('status')) searchCond.value = ['status']
+})
 
 onBeforeMount(() => {
   if (props.allProjects.length) {

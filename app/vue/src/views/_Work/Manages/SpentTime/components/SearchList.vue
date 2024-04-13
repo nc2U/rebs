@@ -26,12 +26,12 @@ const resetFilter = () => {
 const searchOptions = reactive([
   {
     options: [
-      { value: 'issue', label: '업무', disabled: true },
+      { value: 'issue', label: '업무' },
       { value: 'user', label: '사용자' },
       { value: 'author', label: '저자', disabled: true },
       { value: 'activity', label: '작업종류', disabled: true },
       { value: 'hours', label: '시간', disabled: true },
-      { value: 'work_date', label: '작업시간' },
+      { value: 'work_date', label: '작업시간', disabled: true },
     ],
   },
   {
@@ -95,6 +95,7 @@ const form = ref<TimeEntryFilter>({
   work_date: '',
   project: '',
   issue: '',
+  issue_keyword: '',
   user: null,
   author: null,
   activity: null,
@@ -134,13 +135,14 @@ const filterSubmit = () => {
   emit('filter-submit', filterData)
 }
 
+watch(props, nVal => {
+  if (nVal.statusList.length) form.value.status = props.statusList[0]?.pk
+})
+
 watch(searchCond, nVal => {
   if (nVal.includes('project')) form.value.project = props.allProjects[0]?.slug
   if (nVal.includes('tracker')) form.value.tracker = props.trackerList[0]?.pk
-})
-
-watch(props, nVal => {
-  if (nVal.statusList.length) form.value.status = props.statusList[0]?.pk
+  if (!nVal.includes('work_date')) searchCond.value = ['work_date']
 })
 
 const route = useRoute()
@@ -210,42 +212,53 @@ onBeforeMount(() => {
               </CCol>
             </CRow>
 
-            <!--            <CRow v-if="searchCond.includes('tracker')">-->
-            <!--              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">-->
-            <!--                <CFormCheck checked="true" label="유형" id="tracker" readonly />-->
-            <!--              </CCol>-->
-            <!--              <CCol class="col-4 col-lg-3 col-xl-2">-->
-            <!--                <CFormSelect v-model="cond.tracker" size="sm">-->
-            <!--                  <option value="is">이다</option>-->
-            <!--                  <option value="exclude">아니다</option>-->
-            <!--                </CFormSelect>-->
-            <!--              </CCol>-->
-            <!--              <CCol class="col-4 col-lg-3">-->
-            <!--                <CFormSelect v-model="form.tracker" size="sm">-->
-            <!--                  <option v-for="tracker in trackerList" :key="tracker.pk" :value="tracker.pk">-->
-            <!--                    {{ tracker.name }}-->
-            <!--                  </option>-->
-            <!--                </CFormSelect>-->
-            <!--              </CCol>-->
-            <!--            </CRow>-->
+            <CRow v-if="searchCond.includes('issue')">
+              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
+                <CFormCheck checked="true" label="업무" id="issue" readonly />
+              </CCol>
+              <CCol class="col-4 col-lg-3 col-xl-2">
+                <CFormSelect v-model="cond.issue" size="sm">
+                  <option value="is">이다</option>
+                  <option value="keyword">포함되는 키워드</option>
+                  <option value="none">없음</option>
+                  <option value="any">모두</option>
+                </CFormSelect>
+              </CCol>
+              <CCol class="col-4 col-lg-3">
+                <Multiselect
+                  v-if="cond.issue === 'is'"
+                  v-model="form.issue"
+                  placeholder="업무 선택"
+                />
+                <CFormInput
+                  v-if="cond.issue === 'keyword'"
+                  v-model="form.issue_keyword"
+                  tooltip-feedback
+                  placeholder="업무 키워드"
+                />
+              </CCol>
+            </CRow>
 
-            <!--            <CRow v-if="searchCond.includes('is_public')">-->
-            <!--              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">-->
-            <!--                <CFormCheck checked="true" label="공개여부" id="is_public" readonly />-->
-            <!--              </CCol>-->
-            <!--              <CCol class="col-4 col-lg-3 col-xl-2">-->
-            <!--                <CFormSelect v-model="cond.is_public" size="sm">-->
-            <!--                  <option value="is">is</option>-->
-            <!--                  <option value="exclude">is not</option>-->
-            <!--                </CFormSelect>-->
-            <!--              </CCol>-->
-            <!--              <CCol class="col-4 col-lg-3">-->
-            <!--                <CFormSelect v-model="form.is_public" size="sm">-->
-            <!--                  <option value="1">예</option>-->
-            <!--                  <option value="0">아니오</option>-->
-            <!--                </CFormSelect>-->
-            <!--              </CCol>-->
-            <!--            </CRow>-->
+            <CRow v-if="searchCond.includes('user')">
+              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
+                <CFormCheck checked="true" label="사용자" id="user" readonly />
+              </CCol>
+              <CCol class="col-4 col-lg-3 col-xl-2">
+                <CFormSelect v-model="cond.user" size="sm">
+                  <option value="is">이다</option>
+                  <option value="exclude">아니다</option>
+                  <option value="none">없음</option>
+                  <option value="any">모두</option>
+                </CFormSelect>
+              </CCol>
+              <CCol class="col-4 col-lg-3">
+                <Multiselect
+                  v-if="cond.user === 'is' || cond.user === 'exclude'"
+                  v-model="form.user"
+                  placeholder="사용자 선택"
+                />
+              </CCol>
+            </CRow>
 
             <!--            <CRow v-if="searchCond.includes('created')">-->
             <!--              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">-->
