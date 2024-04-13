@@ -137,7 +137,7 @@ const filterSubmit = () => {
   else if (cond.value.status === 'any') filterData.status__closed = ''
 
   if (searchCond.value.includes('project'))
-    if (cond.value.project === 'is') filterData.project = form.value.project
+    if (cond.value.project === 'is') filterData.project__search = form.value.project
     else if (cond.value.project === 'exclude') filterData.project__exclude = form.value.project
 
   if (searchCond.value.includes('tracker'))
