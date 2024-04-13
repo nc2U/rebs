@@ -371,13 +371,6 @@ onBeforeMount(() => {
               </CFormLabel>
               <div class="col-sm-3">
                 <CFormInput v-model="timeEntry.hours" maxlength="10" id="hours" />
-                <!--              <input-->
-                <!--                v-model="timeEntry.hours"-->
-                <!--                id="hours"-->
-                <!--                maxlength="10"-->
-                <!--                type="text"-->
-                <!--                class="form-control"-->
-                <!--              />-->
               </div>
               <div class="col-sm-1" style="padding-top: 6px">시간</div>
 

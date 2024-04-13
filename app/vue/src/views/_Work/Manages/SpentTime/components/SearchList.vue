@@ -17,21 +17,21 @@ const viewMode = ref<'board' | 'list'>('board')
 const condVisible = ref(true)
 const optVisible = ref(false)
 
-const searchCond = ref(['work_date'])
+const searchCond = ref(['spent_on'])
 const resetFilter = () => {
-  searchCond.value = ['work_date']
+  searchCond.value = ['spent_on']
   filterSubmit()
 }
 
 const searchOptions = reactive([
   {
     options: [
+      { value: 'spent_on', label: '작업일자', disabled: true },
       { value: 'issue', label: '업무' },
       { value: 'user', label: '사용자' },
       { value: 'author', label: '저자', disabled: true },
       { value: 'activity', label: '작업종류', disabled: true },
       { value: 'hours', label: '시간', disabled: true },
-      { value: 'work_date', label: '작업시간', disabled: true },
     ],
   },
   {
@@ -58,10 +58,10 @@ const searchOptions = reactive([
 ])
 
 const cond = ref({
-  work_date: 'any' as
+  spent_on: 'any' as
     | 'is'
-    | '>='
-    | '<='
+    | 'gte'
+    | 'lte'
     | 'between'
     | 'before_days'
     | 'today'
@@ -92,7 +92,10 @@ const cond = ref({
 })
 
 const form = ref<TimeEntryFilter>({
-  work_date: '',
+  spent_on: '',
+  from_spent_on: '',
+  to_spent_on: '',
+  before_days: null,
   project: '',
   issue: '',
   issue_keyword: '',
@@ -111,12 +114,21 @@ const form = ref<TimeEntryFilter>({
 const filterSubmit = () => {
   const filterData = {} as TimeEntryFilter
 
-  // if (cond.value.status === 'open') filterData.status__closed = '0'
-  // else if (cond.value.status === 'is') filterData.status = form.value.status
-  // else if (cond.value.status === 'exclude') filterData.status__exclude = form.value.status
-  // else if (cond.value.status === 'closed') filterData.status__closed = '1'
-  // else if (cond.value.status === 'any') filterData.status__closed = ''
-  //
+  if (cond.value.spent_on === 'any') filterData.spent_on = ''
+  else if (cond.value.spent_on === 'is') filterData.spent_on = form.value.spent_on
+  else if (cond.value.spent_on === 'gte') filterData.spent_on = form.value.spent_on
+  else if (cond.value.spent_on === 'lte') filterData.spent_on = form.value.spent_on
+  else if (cond.value.spent_on === 'between') filterData.spent_on = form.value.spent_on
+  else if (cond.value.spent_on === 'before_days') filterData.spent_on = form.value.spent_on
+  else if (cond.value.spent_on === 'today') filterData.spent_on = form.value.spent_on
+  else if (cond.value.spent_on === 'yesterday') filterData.spent_on = form.value.spent_on
+  else if (cond.value.spent_on === 'this_week') filterData.spent_on = form.value.spent_on
+  else if (cond.value.spent_on === 'last_week') filterData.spent_on = form.value.spent_on
+  else if (cond.value.spent_on === 'this_month') filterData.spent_on = form.value.spent_on
+  else if (cond.value.spent_on === 'last_month') filterData.spent_on = form.value.spent_on
+  else if (cond.value.spent_on === 'this_year') filterData.spent_on = form.value.spent_on
+  else if (cond.value.spent_on === 'none') filterData.spent_on = form.value.spent_on
+  
   // if (searchCond.value.includes('project'))
   //   if (cond.value.project === 'is') filterData.project__search = form.value.project
   //   else if (cond.value.project === 'exclude') filterData.project__exclude = form.value.project
@@ -142,14 +154,14 @@ watch(props, nVal => {
 watch(searchCond, nVal => {
   if (nVal.includes('project')) form.value.project = props.allProjects[0]?.slug
   if (nVal.includes('tracker')) form.value.tracker = props.trackerList[0]?.pk
-  if (!nVal.includes('work_date')) searchCond.value = ['work_date']
+  if (!nVal.includes('spent_on')) searchCond.value = ['spent_on']
 })
 
 const route = useRoute()
 onBeforeMount(() => {
   if (!!props.statusList.length) form.value.status = props.statusList[0]?.pk
   if (route.name === '소요시간')
-    searchOptions[0].options.splice(0, 0, { value: 'project', label: '프로젝트' })
+    searchOptions[0].options.splice(1, 0, { value: 'project', label: '프로젝트' })
 })
 </script>
 
@@ -167,13 +179,13 @@ onBeforeMount(() => {
           <CCol class="col-12 col-md-8">
             <CRow>
               <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
-                <CFormCheck label="작업시간" id="work_date" checked="true" readonly />
+                <CFormCheck label="작업일자" id="spent_on" checked="true" readonly />
               </CCol>
               <CCol class="d-none d-lg-block col-4 col-lg-3 col-xl-2">
-                <CFormSelect v-model="cond.work_date" size="sm">
+                <CFormSelect v-model="cond.spent_on" size="sm">
                   <option value="is">이다</option>
-                  <option value="<=">이전</option>
-                  <option value=">=">이후</option>
+                  <option value="lte">이전</option>
+                  <option value="gte">이후</option>
                   <option value="between">사이</option>
                   <option value="before_days">일 전</option>
                   <option value="today">오늘</option>
@@ -186,8 +198,32 @@ onBeforeMount(() => {
                   <option value="any">모두</option>
                 </CFormSelect>
               </CCol>
-              <CCol class="col-8 col-lg-3">
-                <DatePicker v-model="form.work_date" />
+              <CCol v-show="cond.spent_on !== 'lte'" class="col-8 col-lg-3">
+                <DatePicker v-model="form.spent_on" v-show="cond.spent_on === 'is'" />
+                <DatePicker
+                  v-model="form.from_spent_on"
+                  v-show="cond.spent_on === 'gte' || cond.spent_on === 'between'"
+                />
+
+                <div v-show="cond.spent_on === 'before_days'">
+                  <span class="col-sm-5" style="float: left">
+                    <CFormInput
+                      v-model.number="form.before_days"
+                      type="number"
+                      min="0"
+                      maxlength="10"
+                      id="before_days"
+                      size="sm"
+                    />
+                  </span>
+                  <span class="col-sm-5 pl-2">일</span>
+                </div>
+              </CCol>
+              <CCol
+                v-show="cond.spent_on === 'lte' || cond.spent_on === 'between'"
+                class="col-8 col-lg-3"
+              >
+                <DatePicker v-model="form.to_spent_on" />
               </CCol>
             </CRow>
 
@@ -259,57 +295,6 @@ onBeforeMount(() => {
                 />
               </CCol>
             </CRow>
-
-            <!--            <CRow v-if="searchCond.includes('created')">-->
-            <!--              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">-->
-            <!--                <CFormCheck checked="true" label="등록일자" id="created" readonly />-->
-            <!--              </CCol>-->
-            <!--              <CCol class="col-4 col-lg-3 col-xl-2">-->
-            <!--                <CFormSelect size="sm">-->
-            <!--                  <option value="1">is</option>-->
-            <!--                  <option value="2">&gt;=</option>-->
-            <!--                  <option value="3">&lt;=</option>-->
-            <!--                  <option value="4">between</option>-->
-            <!--                  <option value="5">less than days ago</option>-->
-            <!--                  <option value="6">more than days ago</option>-->
-            <!--                  <option value="7">is the past</option>-->
-            <!--                  <option value="8">days ago</option>-->
-            <!--                  <option value="9">today</option>-->
-            <!--                  <option value="10">yesterday</option>-->
-            <!--                  <option value="11">this week</option>-->
-            <!--                  <option value="12">last week</option>-->
-            <!--                  <option value="13">last 2 weeks</option>-->
-            <!--                  <option value="14">this month</option>-->
-            <!--                  <option value="15">last month</option>-->
-            <!--                  <option value="16">this year</option>-->
-            <!--                  <option value="17">none</option>-->
-            <!--                  <option value="18">any</option>-->
-            <!--                </CFormSelect>-->
-            <!--              </CCol>-->
-            <!--              <CCol class="col-4 col-lg-3 col-xl-2">-->
-            <!--                <DatePicker size="sm" />-->
-            <!--              </CCol>-->
-            <!--            </CRow>-->
-
-            <!--            <CRow v-if="searchCond.includes('name')">-->
-            <!--              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">-->
-            <!--                <CFormCheck checked="true" label="이름" id="name" readonly />-->
-            <!--              </CCol>-->
-            <!--              <CCol class="col-4 col-lg-3 col-xl-2">-->
-            <!--                <CFormSelect v-model="cond.name" size="sm">-->
-            <!--                  <option value="contains">contains</option>-->
-            <!--                  <option value="2" disabled>contains any of</option>-->
-            <!--                  <option value="3" disabled>doesn't contain</option>-->
-            <!--                  <option value="4" disabled>starts with</option>-->
-            <!--                  <option value="5" disabled>ends with</option>-->
-            <!--                  <option value="6" disabled>none</option>-->
-            <!--                  <option value="7" disabled>any</option>-->
-            <!--                </CFormSelect>-->
-            <!--              </CCol>-->
-            <!--              <CCol class="col-4 col-lg-3">-->
-            <!--                <CFormInput v-model="form.name" size="sm" />-->
-            <!--              </CCol>-->
-            <!--            </CRow>-->
 
             <!--            <CRow v-if="searchCond.includes('description')">-->
             <!--              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">-->

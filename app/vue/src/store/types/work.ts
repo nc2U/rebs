@@ -267,9 +267,13 @@ export interface TimeEntry {
 }
 
 export interface TimeEntryFilter {
-  work_date?: string
+  spent_on?: string
+  from_spent_on?: string
+  to_spent_on?: string
+  before_days: number | null
   project?: string
   issue?: number | string
+  issue_keyword?: string
   user?: number | null
   author?: number | null
   activity?: number | null
