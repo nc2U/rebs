@@ -15,7 +15,10 @@ const condVisible = ref(true)
 const optVisible = ref(false)
 
 const searchCond = ref(['status'])
-const resetFilter = () => (searchCond.value = ['status'])
+const resetFilter = () => {
+  searchCond.value = ['status']
+  filterSubmit()
+}
 
 const searchOptions = reactive([
   {
@@ -60,15 +63,20 @@ const filterSubmit = () => {
 
   if (cond.value.status === 'is') filterData.status = form.value.status
   else if (cond.value.status === 'exclude') filterData.status__exclude = form.value.status
-  if (cond.value.project === 'is') filterData.project = form.value.project
-  else if (cond.value.project === 'exclude') filterData.project__exclude = form.value.project
-  if (cond.value.is_public === 'is' && searchCond.value.includes('is_public'))
-    filterData.is_public = form.value.is_public
-  else if (cond.value.is_public === 'exclude' && searchCond.value.includes('is_public'))
-    filterData.is_public__exclude = form.value.is_public
 
-  if (form.value.name) filterData.name = form.value.name
-  if (form.value.description) filterData.description = form.value.description
+  if (searchCond.value.includes('project'))
+    if (cond.value.project === 'is') filterData.project = form.value.project
+    else if (cond.value.project === 'exclude') filterData.project__exclude = form.value.project
+
+  if (searchCond.value.includes('is_public'))
+    if (cond.value.is_public === 'is' && searchCond.value.includes('is_public'))
+      filterData.is_public = form.value.is_public
+    else if (cond.value.is_public === 'exclude' && searchCond.value.includes('is_public'))
+      filterData.is_public__exclude = form.value.is_public
+
+  if (searchCond.value.includes('name') && form.value.name) filterData.name = form.value.name
+  if (searchCond.value.includes('description') && form.value.description)
+    filterData.description = form.value.description
 
   emit('filter-submit', filterData)
 }

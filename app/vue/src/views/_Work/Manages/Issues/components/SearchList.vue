@@ -18,7 +18,10 @@ const condVisible = ref(true)
 const optVisible = ref(false)
 
 const searchCond = ref(['status'])
-const resetFilter = () => (searchCond.value = ['status'])
+const resetFilter = () => {
+  searchCond.value = ['status']
+  filterSubmit()
+}
 
 const searchOptions = reactive([
   {
