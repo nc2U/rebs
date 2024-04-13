@@ -221,6 +221,7 @@ export interface IssueFilter {
   status?: number | null
   status__exclude?: number | null
   project?: string
+  project__search?: string
   project__exclude?: string
   tracker?: number | null
   tracker__exclude?: number | null
