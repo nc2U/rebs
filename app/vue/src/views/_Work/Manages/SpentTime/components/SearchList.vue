@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive, type PropType, onBeforeMount, watch } from 'vue'
-import type { IssueProject, IssueStatus, IssueFilter, Tracker } from '@/store/types/work'
+import type { IssueProject, IssueStatus, Tracker, TimeEntryFilter } from '@/store/types/work'
 import { useRoute } from 'vue-router'
 import DatePicker from '@/components/DatePicker/index.vue'
 import Multiselect from '@vueform/multiselect'
@@ -58,27 +58,57 @@ const searchOptions = reactive([
 ])
 
 const cond = ref({
-  issue: 'open' as 'open' | 'is' | 'exclude' | 'closed' | 'any',
-  user: 'is' as 'is' | 'exclude',
-  author: 'is' as 'is' | 'exclude',
-  // parent: 'any' as 'any' | 'none' | 'is' | 'exclude',
-  // is_public: 'is' as 'is' | 'exclude',
-  // name: 'contains',
-  // description: 'contains',
+  work_date: 'any' as
+    | 'is'
+    | '>='
+    | '<='
+    | 'between'
+    | 'before_days'
+    | 'today'
+    | 'yesterday'
+    | 'this_week'
+    | 'last_week'
+    | 'this_month'
+    | 'last_month'
+    | 'this_year'
+    | 'none'
+    | 'any',
+  project: 'is' as 'is' | 'exclude',
+  issue: 'is' as 'is' | 'keyword' | 'none' | 'any',
+  user: 'is' as 'is' | 'exclude' | 'none' | 'any',
+  author: 'is' as 'is' | 'exclude' | 'none' | 'any',
+  activity: 'is' as 'is' | 'exclude',
+  hours: 'is' as 'is' | '>=' | '<=' | 'between' | 'none' | 'any',
+
+  comment: 'contain' as 'contain' | 'start_with' | 'end_with' | 'none' | 'any',
+
+  issue_tracker: 'is' as 'is' | 'exclude',
+  issue_parent: 'is' as 'is' | 'keyword' | 'none' | 'any',
+  issue_status: 'is' as 'is' | 'exclude',
+  issue_version: 'is' as 'is' | 'exclude',
+  issue_subject: 'contain' as 'contain' | 'start_with' | 'end_with' | 'none' | 'any',
+
+  project_status: 'is' as 'is' | 'exclude',
 })
 
-const form = ref<IssueFilter>({
-  status: null,
-  status__exclude: null,
+const form = ref<TimeEntryFilter>({
+  work_date: '',
   project: '',
+  issue: '',
+  user: null,
+  author: null,
+  activity: null,
+  comment: '',
   tracker: null,
-  tracker__exclude: null,
-  // name: '',
-  // description: '',
+  parent: null,
+  status: null,
+  version: null,
+  subject: '',
+  project_status: null,
 })
 
 const filterSubmit = () => {
-  const filterData = {} as IssueFilter
+  const filterData = {} as TimeEntryFilter
 
   // if (cond.value.status === 'open') filterData.status__closed = '0'
   // else if (cond.value.status === 'is') filterData.status = form.value.status
@@ -117,7 +147,7 @@ const route = useRoute()
 onBeforeMount(() => {
   if (!!props.statusList.length) form.value.status = props.statusList[0]?.pk
   if (route.name === '소요시간')
-    searchOptions[0].options.splice(1, 0, { value: 'project', label: '프로젝트' })
+    searchOptions[0].options.splice(0, 0, { value: 'project', label: '프로젝트' })
 })
 </script>
 
@@ -135,27 +165,27 @@ onBeforeMount(() => {
           <CCol class="col-12 col-md-8">
             <CRow>
               <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
-                <CFormCheck label="상태" id="status" checked="true" readonly />
+                <CFormCheck label="작업시간" id="work_date" checked="true" readonly />
               </CCol>
               <CCol class="d-none d-lg-block col-4 col-lg-3 col-xl-2">
-                <CFormSelect v-model="cond.status" size="sm">
-                  <option value="open">진행중</option>
+                <CFormSelect v-model="cond.work_date" size="sm">
                   <option value="is">이다</option>
-                  <option value="exclude">아니다</option>
-                  <option value="closed">완료됨</option>
+                  <option value="<=">이전</option>
+                  <option value=">=">이후</option>
+                  <option value="between">사이</option>
+                  <option value="before_days">일 전</option>
+                  <option value="today">오늘</option>
+                  <option value="yesterday">어제</option>
+                  <option value="this_week">이번 주</option>
+                  <option value="last_week">지난 주</option>
+                  <option value="this_month">이번 달</option>
+                  <option value="last_month">지난 달</option>
+                  <option value="this_year">올해</option>
                   <option value="any">모두</option>
                 </CFormSelect>
               </CCol>
               <CCol class="col-8 col-lg-3">
-                <CFormSelect
-                  v-if="cond.status === 'is' || cond.status === 'exclude'"
-                  v-model="form.status"
-                  size="sm"
-                >
-                  <option v-for="status in statusList" :value="status.pk" :key="status.pk">
-                    {{ status.name }}
-                  </option>
-                </CFormSelect>
+                <DatePicker v-model="form.work_date" />
               </CCol>
             </CRow>
 
@@ -180,24 +210,24 @@ onBeforeMount(() => {
               </CCol>
             </CRow>
 
-            <CRow v-if="searchCond.includes('tracker')">
-              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
-                <CFormCheck checked="true" label="유형" id="tracker" readonly />
-              </CCol>
-              <CCol class="col-4 col-lg-3 col-xl-2">
-                <CFormSelect v-model="cond.tracker" size="sm">
-                  <option value="is">이다</option>
-                  <option value="exclude">아니다</option>
-                </CFormSelect>
-              </CCol>
-              <CCol class="col-4 col-lg-3">
-                <CFormSelect v-model="form.tracker" size="sm">
-                  <option v-for="tracker in trackerList" :key="tracker.pk" :value="tracker.pk">
-                    {{ tracker.name }}
-                  </option>
-                </CFormSelect>
-              </CCol>
-            </CRow>
+            <!--            <CRow v-if="searchCond.includes('tracker')">-->
+            <!--              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">-->
+            <!--                <CFormCheck checked="true" label="유형" id="tracker" readonly />-->
+            <!--              </CCol>-->
+            <!--              <CCol class="col-4 col-lg-3 col-xl-2">-->
+            <!--                <CFormSelect v-model="cond.tracker" size="sm">-->
+            <!--                  <option value="is">이다</option>-->
+            <!--                  <option value="exclude">아니다</option>-->
+            <!--                </CFormSelect>-->
+            <!--              </CCol>-->
+            <!--              <CCol class="col-4 col-lg-3">-->
+            <!--                <CFormSelect v-model="form.tracker" size="sm">-->
+            <!--                  <option v-for="tracker in trackerList" :key="tracker.pk" :value="tracker.pk">-->
+            <!--                    {{ tracker.name }}-->
+            <!--                  </option>-->
+            <!--                </CFormSelect>-->
+            <!--              </CCol>-->
+            <!--            </CRow>-->
 
             <!--            <CRow v-if="searchCond.includes('is_public')">-->
             <!--              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">-->
