@@ -38,7 +38,7 @@ const isClosed = computed(() => props.issue?.closed)
 const workStore = useWork()
 const issueLogList = computed(() => workStore.issueLogList)
 
-const transTime = (n: number | null) => {
+const numToTime = (n: number | null) => {
   if (!n) return ''
   else {
     const hours = Math.floor(n)
@@ -222,13 +222,13 @@ onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue
           </CRow>
           <CRow>
             <CCol class="title">추정시간:</CCol>
-            <CCol v-if="issue?.estimated_hours">{{ transTime(issue?.estimated_hours) }} 시간</CCol>
+            <CCol v-if="issue?.estimated_hours">{{ numToTime(issue?.estimated_hours) }} 시간</CCol>
           </CRow>
           <CRow v-if="issue?.spent_time">
             <CCol class="title">소요시간:</CCol>
             <CCol>
               <router-link :to="{ name: '(소요시간)', query: { issue_id: issue.pk } }">
-                {{ transTime(issue?.spent_time) }} 시간
+                {{ numToTime(issue?.spent_time) }} 시간
               </router-link>
             </CCol>
           </CRow>

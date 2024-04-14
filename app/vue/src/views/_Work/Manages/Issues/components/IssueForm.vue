@@ -37,7 +37,7 @@ const form = ref({
   start_date: dateFormat(new Date()) as string | null,
   assigned_to: null as number | null,
   due_date: null as string | null,
-  estimated_hours: null as number | null,
+  estimated_hours: null as number | string | null,
   done_ratio: 0,
   watchers: [] as number[],
 })
@@ -67,7 +67,7 @@ const formCheck = computed(() => {
     const i = form.value.start_date === props.issue.start_date
     const j = form.value.assigned_to === props.issue.assigned_to?.pk
     const k = form.value.due_date === props.issue.due_date
-    const l = form.value.estimated_hours === props.issue.estimated_hours
+    const l = form.value.estimated_hours === numToTime(props.issue.estimated_hours)
     const m = form.value.done_ratio === props.issue.done_ratio
     const n = !timeEntry.value.hours
     const o = !timeEntry.value.activity
@@ -79,8 +79,8 @@ const formCheck = computed(() => {
 
 const route = useRoute()
 const workStore = useWork()
-watch(props, nval => {
-  if (nval.issueProject) form.value.project = nval?.issueProject.slug
+watch(props, nVal => {
+  if (nVal.issueProject) form.value.project = nVal?.issueProject.slug
 })
 
 const memberList = computed(() =>
@@ -93,17 +93,22 @@ const trackerList = computed(() =>
 const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
-  } else
-    emit('on-submit', {
-      ...form.value,
-      ...timeEntry.value,
-      comment_content: comment_content.value,
-    })
+  } else {
+    if (!!form.value.estimated_hours)
+      form.value.estimated_hours = timeToNum(form.value.estimated_hours)
+
+    // emit('on-submit', {
+    //   ...form.value,
+    //   ...timeEntry.value,
+    //   comment_content: comment_content.value,
+    // })
+  }
 }
 
 const closeForm = () => emit('close-form')
 
 const userInfo = inject<ComputedRef<User>>('userInfo')
+
 const callComment = (edit?: true) => {
   // 댓글 폼 불러오기
   comment_content.value = edit
@@ -118,6 +123,35 @@ const callComment = (edit?: true) => {
 }
 
 defineExpose({ callComment })
+
+const numToTime = (n: number | null) => {
+  if (!n) return ''
+  else {
+    const hours = Math.floor(n)
+    const minutes = Math.round((n - hours) * 60)
+    const str = minutes >= 10 ? '' : '0'
+    return `${hours}:${str}${minutes}`
+  }
+}
+
+const timeToNum = (n: number | string | null) => {
+  const timeNum = Number(n)
+
+  if (!!timeNum) return n
+  else {
+    const regex = /^(0|[1-9]\d*):(0[0-9]|[1-5][0-9])$/
+    const timeStr = String(n)
+
+    if (regex.test(timeStr)) {
+      const time = timeStr.split(':')
+      return Number(time[0]) + Number(Number(time[1]) / 60)
+    } else {
+      validated.value = true
+      document.getElementById('estimated_hours')?.setAttribute('required', 'required')
+      return null
+    }
+  }
+}
 
 onBeforeMount(() => {
   if (props.issue) {
@@ -135,7 +169,7 @@ onBeforeMount(() => {
     form.value.start_date = props.issue.start_date
     form.value.assigned_to = props.issue.assigned_to?.pk ?? null
     form.value.due_date = props.issue.due_date
-    form.value.estimated_hours = props.issue.estimated_hours
+    form.value.estimated_hours = numToTime(props.issue.estimated_hours)
     form.value.done_ratio = props.issue.done_ratio
     workStore.fetchIssueList({ status__closed: '', project: props.issue.project.slug })
   }
@@ -299,12 +333,13 @@ onBeforeMount(() => {
               추정시간
             </CFormLabel>
             <div class="col-sm-3">
-              <input
+              <CFormInput
                 v-model="form.estimated_hours"
                 id="estimated_hours"
                 maxlength="10"
                 type="text"
                 class="form-control"
+                feedbackInvalid="정수, 실수 또는 '12:59' 과 같이 시간 형식을 입력하세요."
               />
             </div>
             <div class="col-sm-1" style="padding-top: 6px">시간</div>
