@@ -9,6 +9,7 @@ import Multiselect from '@vueform/multiselect'
 const props = defineProps({
   subProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
   allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
+  getIssues: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
   statusList: { type: Array as PropType<IssueStatus[]>, default: () => [] },
   trackerList: { type: Array as PropType<Tracker[]>, default: () => [] },
 })
@@ -162,8 +163,8 @@ const filterSubmit = () => {
 }
 
 watch(props, nVal => {
-  if (nVal.statusList.length) form.value.status = props.statusList[0]?.pk
-  if (nVal.subProjects.length)
+  if (!!nVal.statusList.length) form.value.status = props.statusList[0]?.pk
+  if (!!nVal.subProjects.length && searchOptions[0].options.length === 6)
     searchOptions[0].options.splice(1, 0, { value: 'project', label: '하위 프로젝트' })
 })
 
@@ -178,7 +179,7 @@ const route = useRoute()
 onBeforeMount(() => {
   if (!!props.statusList.length) form.value.status = props.statusList[0]?.pk
 
-  if (route.name === '소요시간')
+  if (route.name === '소요시간' && searchOptions[0].options.length === 6)
     searchOptions[0].options.splice(1, 0, { value: 'project', label: '프로젝트' })
 })
 </script>
@@ -284,10 +285,12 @@ onBeforeMount(() => {
                   <option value="any">모두</option>
                 </CFormSelect>
               </CCol>
+
               <CCol class="col-4 col-lg-3">
                 <Multiselect
                   v-if="cond.issue === 'is'"
                   v-model="form.issue"
+                  :options="getIssues"
                   placeholder="업무 선택"
                 />
                 <CFormInput

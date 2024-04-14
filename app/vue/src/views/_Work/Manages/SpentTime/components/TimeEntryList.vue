@@ -11,6 +11,7 @@ defineProps({
   timeEntryList: { type: Array as PropType<TimeEntry[]>, default: () => [] },
   subProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
   allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
+  getIssues: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
 })
 
 const emit = defineEmits(['del-submit', 'filter-submit'])
@@ -55,6 +56,7 @@ const delSubmit = () => {
   <SearchList
     :sub-projects="subProjects"
     :all-projects="allProjects"
+    :getIssues="getIssues"
     @filter-submit="filterSubmit"
   />
 

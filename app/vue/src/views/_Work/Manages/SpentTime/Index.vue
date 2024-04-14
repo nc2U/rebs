@@ -17,8 +17,10 @@ const comName = computed(() => company?.value?.name)
 const sideNavCAll = () => cBody.value.toggle()
 
 const workStore = useWork()
-const timeEntryList = computed(() => workStore.timeEntryList)
 const allProjects = computed(() => workStore.AllIssueProjects)
+const timeEntryList = computed(() => workStore.timeEntryList)
+const getIssues = computed(() => workStore.getIssues)
+
 const createTimeEntry = (payload: any) => workStore.createTimeEntry(payload)
 const updateTimeEntry = (payload: any) => workStore.updateTimeEntry(payload)
 
@@ -41,6 +43,7 @@ const delSubmit = (pk: number) => alert(pk)
 
 onBeforeMount(() => {
   workStore.fetchAllIssueProjectList()
+  workStore.fetchIssueList({ status__closed: '0' })
   workStore.fetchTimeEntryList({})
 })
 </script>
@@ -54,6 +57,7 @@ onBeforeMount(() => {
         v-if="$route.name === '소요시간'"
         :time-entry-list="timeEntryList"
         :all-projects="allProjects"
+        :get-issues="getIssues"
         @filter-submit="filterSubmit"
         @del-submit="delSubmit"
       />

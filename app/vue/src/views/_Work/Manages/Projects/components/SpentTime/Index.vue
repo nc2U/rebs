@@ -10,8 +10,10 @@ const emit = defineEmits(['aside-visible'])
 
 const workStore = useWork()
 const issueProject = computed(() => workStore.issueProject)
-const timeEntryList = computed(() => workStore.timeEntryList)
 const allProjects = computed(() => workStore.AllIssueProjects)
+const timeEntryList = computed(() => workStore.timeEntryList)
+const getIssues = computed(() => workStore.getIssues)
+
 const createTimeEntry = (payload: any) => workStore.createTimeEntry(payload)
 const updateTimeEntry = (payload: any) => workStore.updateTimeEntry(payload)
 const deleteTimeEntry = (pk: number) => workStore.deleteTimeEntry(pk)
@@ -41,11 +43,11 @@ watch(route, async nVal => {
     await workStore.fetchTimeEntryList({ project: project.value, issue: Number(issue.value) })
 })
 
-onBeforeMount(async () => {
+onBeforeMount(() => {
   emit('aside-visible', true)
-  await workStore.fetchAllIssueProjectList()
-
-  await workStore.fetchTimeEntryList({ project: project.value, issue: Number(issue.value) })
+  workStore.fetchAllIssueProjectList()
+  workStore.fetchIssueList({ status__closed: '0', project: issueProject.value?.slug })
+  workStore.fetchTimeEntryList({ project: project.value, issue: Number(issue.value) })
 })
 </script>
 
@@ -55,6 +57,7 @@ onBeforeMount(async () => {
     :time-entry-list="timeEntryList"
     :sub-projects="issueProject?.sub_projects"
     :all-projects="allProjects"
+    :get-issues="getIssues"
     @filter-submit="filterSubmit"
     @del-submit="delSubmit"
   />
