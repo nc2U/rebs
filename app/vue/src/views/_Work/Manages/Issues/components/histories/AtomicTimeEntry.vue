@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { elapsedTime } from '@/utils/baseMixins'
+import { elapsedTime, timeFormat } from '@/utils/baseMixins'
 
 defineProps({ timeEntry: { type: Object, default: () => null } })
 </script>
@@ -11,15 +11,18 @@ defineProps({ timeEntry: { type: Object, default: () => null } })
         {{ timeEntry.user.username }}
       </router-link>
       이(가)
-      <router-link
-        :to="{
-          name: '(작업내역)',
-          params: { projId: 'redmine' },
-          query: { from: timeEntry.created.substring(0, 10) },
-        }"
-      >
-        {{ elapsedTime(timeEntry.created) }}
-      </router-link>
+      <span>
+        <router-link
+          :to="{
+            name: '(작업내역)',
+            params: { projId: 'redmine' },
+            query: { from: timeEntry.created.substring(0, 10) },
+          }"
+        >
+          {{ elapsedTime(timeEntry.created) }}
+        </router-link>
+        <v-tooltip activator="parent" location="top">{{ timeFormat(timeEntry.created) }}</v-tooltip>
+      </span>
       에 추가함
     </CCol>
     <CCol class="text-right pr-3">

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { type PropType, ref } from 'vue'
 import type { IssueLogEntry } from '@/store/types/work'
-import { elapsedTime } from '@/utils/baseMixins'
+import { elapsedTime, timeFormat } from '@/utils/baseMixins'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
@@ -47,15 +47,18 @@ const delSubmit = () => {
         {{ log.user.username }}
       </router-link>
       이(가)
-      <router-link
-        :to="{
-          name: '(작업내역)',
-          params: { projId: 'redmine' },
-          query: { from: log.timestamp.substring(0, 10) },
-        }"
-      >
-        {{ elapsedTime(log.timestamp) }}
-      </router-link>
+      <span>
+        <router-link
+          :to="{
+            name: '(작업내역)',
+            params: { projId: 'redmine' },
+            query: { from: log.timestamp.substring(0, 10) },
+          }"
+        >
+          {{ elapsedTime(log.timestamp) }}
+        </router-link>
+        <v-tooltip activator="parent" location="top">{{ timeFormat(log.timestamp) }}</v-tooltip>
+      </span>
       에 변경
     </CCol>
     <CCol class="text-right">
