@@ -60,11 +60,11 @@ export const elapsedTime = (date: Date | number | string): string => {
   const weeks = days / 7
   if (days < 30) return `${Math.floor(weeks)}주일 전`
 
-  const months = days / 30
+  const months = days / 30.4375
   if (months < 12) return `${Math.floor(months)}달 전`
 
-  const years = days / 365
-  return `${Math.floor(years)}년 전`
+  const years = days / 365.25
+  return `${Math.floor(years)}년 이상 전`
 }
 
 export const numberToHour = (digit: number | string) => {
