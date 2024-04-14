@@ -338,6 +338,7 @@ export const useWork = defineStore('work', () => {
     if (payload.from_spent_on) url += `&from_spent_on=${payload.from_spent_on}`
     if (payload.to_spent_on) url += `&to_spent_on=${payload.to_spent_on}`
     if (payload.issue) url += `&issue=${payload.issue}`
+    if (payload.issue__keyword) url += `&search=${payload.issue__keyword}`
     // if (payload.user) url += `&user=${payload.user}`
     // if (payload.activity) url += `&activity=${payload.activity}`
     // if (payload.hours) url += `&hours=${payload.hours}`

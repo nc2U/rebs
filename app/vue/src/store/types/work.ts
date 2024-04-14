@@ -273,20 +273,19 @@ export interface TimeEntryFilter {
   spent_on?: string
   from_spent_on?: string
   to_spent_on?: string
-  before_days?: number | null
-  issue?: number | null
-  issue_keyword?: string
-  user?: number | null
-  author?: number | null
-  activity?: number | null
+  issue?: number | ''
+  issue__keyword?: string
+  user?: number | ''
+  author?: number | ''
+  activity?: number | ''
   hours?: number
   comment?: string
-  tracker?: number | null
-  parent?: number | null
-  status?: number | null
-  version?: number | null
+  tracker?: number | ''
+  parent?: number | ''
+  status?: number | ''
+  version?: number | ''
   subject?: string
-  project_status?: number | null
+  project_status?: number | ''
 }
 
 export interface ActLogEntry {
