@@ -9,6 +9,7 @@ import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 defineProps({
   timeEntryList: { type: Array as PropType<TimeEntry[]>, default: () => [] },
+  subProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
   allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
 })
 
@@ -51,7 +52,11 @@ const delSubmit = () => {
     </CCol>
   </CRow>
 
-  <SearchList :all-projects="allProjects" @filter-submit="filterSubmit" />
+  <SearchList
+    :sub-projects="subProjects"
+    :all-projects="allProjects"
+    @filter-submit="filterSubmit"
+  />
 
   <HeaderTab />
 

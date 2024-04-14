@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, type PropType, onBeforeMount, watch } from 'vue'
+import { ref, reactive, type PropType, onBeforeMount, watch, computed } from 'vue'
 import type { IssueProject, IssueStatus, Tracker, TimeEntryFilter } from '@/store/types/work'
 import { useRoute } from 'vue-router'
 import { dateFormat } from '@/utils/baseMixins'
@@ -7,6 +7,7 @@ import DatePicker from '@/components/DatePicker/index.vue'
 import Multiselect from '@vueform/multiselect'
 
 const props = defineProps({
+  subProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
   allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
   statusList: { type: Array as PropType<IssueStatus[]>, default: () => [] },
   trackerList: { type: Array as PropType<Tracker[]>, default: () => [] },
@@ -111,6 +112,10 @@ const form = ref<TimeEntryFilter>({
   project_status: null,
 })
 
+const computedProjects = computed(() =>
+  props.subProjects.length ? props.subProjects : props.allProjects,
+)
+
 const filterSubmit = () => {
   const filterData = {} as TimeEntryFilter
 
@@ -138,10 +143,10 @@ const filterSubmit = () => {
   // else if (cond.value.spent_on === 'last_month') filterData.spent_on = form.value.spent_on
   // else if (cond.value.spent_on === 'this_year') filterData.spent_on = form.value.spent_on
 
-  // if (searchCond.value.includes('project'))
-  //   if (cond.value.project === 'is') filterData.project__search = form.value.project
-  //   else if (cond.value.project === 'exclude') filterData.project__exclude = form.value.project
-  //
+  if (searchCond.value.includes('project'))
+    if (cond.value.project === 'is') filterData.project__search = form.value.project
+    else if (cond.value.project === 'exclude') filterData.project__exclude = form.value.project
+
   // if (searchCond.value.includes('tracker'))
   //   if (cond.value.tracker === 'is') filterData.tracker = form.value.tracker
   //   else if (cond.value.tracker === 'exclude') filterData.tracker__exclude = form.value.tracker
@@ -171,6 +176,8 @@ onBeforeMount(() => {
   if (!!props.statusList.length) form.value.status = props.statusList[0]?.pk
   if (route.name === '소요시간')
     searchOptions[0].options.splice(1, 0, { value: 'project', label: '프로젝트' })
+  else if (props.subProjects.length)
+    searchOptions[0].options.splice(1, 0, { value: 'project', label: '하위 프로젝트' })
 })
 </script>
 
@@ -239,7 +246,12 @@ onBeforeMount(() => {
 
             <CRow v-if="searchCond.includes('project')">
               <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
-                <CFormCheck checked="true" label="프로젝트" id="project" readonly />
+                <CFormCheck
+                  checked="true"
+                  :label="subProjects.length ? '하위 프로젝트' : '프로젝트'"
+                  id="project"
+                  readonly
+                />
               </CCol>
               <CCol class="col-4 col-lg-3 col-xl-2">
                 <CFormSelect v-model="cond.project" size="sm">
@@ -250,7 +262,7 @@ onBeforeMount(() => {
               <CCol class="col-4 col-lg-3">
                 <CFormSelect v-model="form.project" size="sm">
                   <option value="">---------</option>
-                  <option v-for="proj in allProjects" :key="proj.pk" :value="proj.slug">
+                  <option v-for="proj in computedProjects" :key="proj.pk" :value="proj.slug">
                     <span v-if="proj.parent">{{ '&nbsp;'.repeat(proj.depth) }}</span>
                     {{ proj.name }}
                   </option>

@@ -9,6 +9,7 @@ import TimeEntryForm from '@/views/_Work/Manages/SpentTime/components/TimeEntryF
 const emit = defineEmits(['aside-visible'])
 
 const workStore = useWork()
+const issueProject = computed(() => workStore.issueProject)
 const timeEntryList = computed(() => workStore.timeEntryList)
 const allProjects = computed(() => workStore.AllIssueProjects)
 const createTimeEntry = (payload: any) => workStore.createTimeEntry(payload)
@@ -52,6 +53,7 @@ onBeforeMount(async () => {
   <TimeEntryList
     v-if="$route.name === '(소요시간)'"
     :time-entry-list="timeEntryList"
+    :sub-projects="issueProject.sub_projects"
     :all-projects="allProjects"
     @filter-submit="filterSubmit"
     @del-submit="delSubmit"
