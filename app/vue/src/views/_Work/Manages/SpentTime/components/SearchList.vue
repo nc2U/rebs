@@ -125,7 +125,7 @@ const filterSubmit = () => {
     filterData.to_spent_on = form.value.to_spent_on
   } else if (cond.value.spent_on === 'before_days')
     filterData.spent_on = dateFormat(
-      new Date(new Date(today).setDate(new Date(today).getDate() - form.value.before_days)),
+      new Date(new Date(today).setDate(new Date(today).getDate() - (form.value.before_days ?? 0))),
     )
   else if (cond.value.spent_on === 'today') filterData.spent_on = today
   else if (cond.value.spent_on === 'yesterday')

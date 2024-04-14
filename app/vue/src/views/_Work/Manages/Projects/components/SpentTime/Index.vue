@@ -37,14 +37,14 @@ const issue = computed(() => (route.query.issue_id ? (route.query.issue_id as st
 
 watch(route, async nVal => {
   if (nVal.params.projId || nVal.params.issueId)
-    await workStore.fetchTimeEntryList({ project: project.value, issue: issue.value })
+    await workStore.fetchTimeEntryList({ project: project.value, issue: Number(issue.value) })
 })
 
 onBeforeMount(async () => {
   emit('aside-visible', true)
   await workStore.fetchAllIssueProjectList()
 
-  await workStore.fetchTimeEntryList({ project: project.value, issue: issue.value })
+  await workStore.fetchTimeEntryList({ project: project.value, issue: Number(issue.value) })
 })
 </script>
 
