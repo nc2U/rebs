@@ -1,24 +1,24 @@
 <script lang="ts" setup>
 import { elapsedTime } from '@/utils/baseMixins'
 
-defineProps({ time: { type: Object, default: () => null } })
+defineProps({ timeEntry: { type: Object, default: () => null } })
 </script>
 
 <template>
   <CRow>
-    <CCol v-if="time.user">
-      <router-link :to="{ name: '사용자 - 보기', params: { userId: time.user.pk } }">
-        {{ time.user.username }}
+    <CCol v-if="timeEntry.user">
+      <router-link :to="{ name: '사용자 - 보기', params: { userId: timeEntry.user.pk } }">
+        {{ timeEntry.user.username }}
       </router-link>
       이(가)
       <router-link
         :to="{
           name: '(작업내역)',
           params: { projId: 'redmine' },
-          query: { from: time.created.substring(0, 10) },
+          query: { from: timeEntry.created.substring(0, 10) },
         }"
       >
-        {{ elapsedTime(time.created) }}
+        {{ elapsedTime(timeEntry.created) }}
       </router-link>
       에 추가함
     </CCol>
@@ -32,7 +32,7 @@ defineProps({ time: { type: Object, default: () => null } })
           @click="
             $router.push({
               name: '(소요시간) - 편집',
-              params: { projId: time.issue.project.slug, timeId: time.pk },
+              params: { projId: timeEntry.issue.project.slug, timeId: timeEntry.pk },
             })
           "
         />
@@ -48,8 +48,8 @@ defineProps({ time: { type: Object, default: () => null } })
   <v-divider class="mt-0 mb-2" />
   <div class="history pl-4">
     <ul class="mb-2">
-      <li>작업시간 : {{ time.hours }} 시간</li>
+      <li>작업시간 : {{ timeEntry.hours }} 시간</li>
     </ul>
   </div>
-  <div class="mb-3 fst-italic">{{ time.comment }}</div>
+  <div class="mb-3 fst-italic">{{ timeEntry.comment }}</div>
 </template>

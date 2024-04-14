@@ -4,7 +4,7 @@ import type { IssueLogEntry, TimeEntry } from '@/store/types/work'
 import { useRoute } from 'vue-router'
 import AtomicLog from './histories/AtomicLog.vue'
 import AtomicComment from './histories/AtomicComment.vue'
-import AtomicTimeEntry from '@/views/_Work/Manages/Issues/components/histories/AtomicTimeEntry.vue'
+import AtomicTimeEntry from './histories/AtomicTimeEntry.vue'
 
 defineProps({
   issueLogList: { type: Array as PropType<IssueLogEntry[]>, default: () => [] },
@@ -110,7 +110,7 @@ onBeforeMount(() => {
 
         <CTabPane role="tabpanel" aria-labelledby="profile-tab" :visible="tabPaneActiveKey === 4">
           <div v-for="time in timeEntryList" :key="time.pk">
-            <AtomicTimeEntry :time="time" />
+            <AtomicTimeEntry :time-entry="time" />
           </div>
         </CTabPane>
       </CTabContent>

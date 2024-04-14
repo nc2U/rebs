@@ -61,7 +61,7 @@ onBeforeMount(async () => {
   if (route.params.issueId) {
     await workStore.fetchIssue(Number(route.params.issueId))
     await workStore.fetchIssueCommentList({ issue: Number(route.params.issueId) })
-    await workStore.fetchTimeEntryList({ issue: Number(route.params.issueId) })
+    await workStore.fetchTimeEntryList({ ordering: 'pk', issue: Number(route.params.issueId) })
   }
 
   await workStore.fetchMemberList()
