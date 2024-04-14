@@ -13,7 +13,12 @@ const issueProject = computed(() => workStore.issueProject)
 const allProjects = computed(() => workStore.AllIssueProjects)
 const timeEntryList = computed(() => workStore.timeEntryList)
 const getIssues = computed(() => workStore.getIssues)
-const getMembers = computed(() => workStore.getMembers)
+const getMembers = computed(() =>
+  issueProject.value?.all_members.map(m => ({
+    value: m.user.pk,
+    label: m.user.username,
+  })),
+)
 
 const createTimeEntry = (payload: any) => workStore.createTimeEntry(payload)
 const updateTimeEntry = (payload: any) => workStore.updateTimeEntry(payload)

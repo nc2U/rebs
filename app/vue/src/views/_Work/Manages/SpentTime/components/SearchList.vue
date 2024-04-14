@@ -321,6 +321,7 @@ onBeforeMount(() => {
                 <Multiselect
                   v-if="cond.user === 'is' || cond.user === 'exclude'"
                   v-model="form.user"
+                  :options="getMembers"
                   placeholder="사용자 선택"
                   searchable
                 />

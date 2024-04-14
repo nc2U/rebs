@@ -27,7 +27,7 @@ export const useAccount = defineStore('account', () => {
 
   // getters
   const getUsers = computed(() =>
-    usersList.value.map((u: User) => ({ value: u.pk, label: u.username })),
+    usersList.value.map((u: User) => ({ value: u.pk as number, label: u.username })),
   )
   const isAuthorized = computed(() => !!accessToken.value && !!userInfo.value)
 

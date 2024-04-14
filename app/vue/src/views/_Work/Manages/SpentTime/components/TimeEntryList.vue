@@ -58,6 +58,7 @@ const delSubmit = () => {
     :sub-projects="subProjects"
     :all-projects="allProjects"
     :getIssues="getIssues"
+    :get-members="getMembers"
     @filter-submit="filterSubmit"
   />
 

@@ -9,6 +9,7 @@ import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import TimeEntryList from '@/views/_Work/Manages/SpentTime/components/TimeEntryList.vue'
 import TimeEntryForm from '@/views/_Work/Manages/SpentTime/components/TimeEntryForm.vue'
 import type { TimeEntryFilter } from '@/store/types/work'
+import { useAccount } from '@/store/pinia/account'
 
 const cBody = ref()
 const company = inject<ComputedRef<Company>>('company')
@@ -20,7 +21,7 @@ const workStore = useWork()
 const allProjects = computed(() => workStore.AllIssueProjects)
 const timeEntryList = computed(() => workStore.timeEntryList)
 const getIssues = computed(() => workStore.getIssues)
-const getMembers = computed(() => workStore.getMembers)
+const getMembers = computed(() => accStore.getUsers)
 
 const createTimeEntry = (payload: any) => workStore.createTimeEntry(payload)
 const updateTimeEntry = (payload: any) => workStore.updateTimeEntry(payload)
@@ -42,10 +43,12 @@ const filterSubmit = (payload: TimeEntryFilter) => {
 
 const delSubmit = (pk: number) => alert(pk)
 
+const accStore = useAccount()
 onBeforeMount(() => {
   workStore.fetchAllIssueProjectList()
   workStore.fetchTimeEntryList({})
   workStore.fetchIssueList({ status__closed: '0' })
+  accStore.fetchUsersList()
 })
 </script>
 
