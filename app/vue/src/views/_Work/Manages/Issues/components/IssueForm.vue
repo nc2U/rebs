@@ -94,14 +94,26 @@ const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
-    if (!!form.value.estimated_hours)
-      form.value.estimated_hours = timeToNum(form.value.estimated_hours)
-
-    // emit('on-submit', {
-    //   ...form.value,
-    //   ...timeEntry.value,
-    //   comment_content: comment_content.value,
-    // })
+    if (!!form.value.estimated_hours) {
+      const computed_hours = timeToNum(form.value.estimated_hours)
+      if (computed_hours) {
+        form.value.estimated_hours = timeToNum(form.value.estimated_hours)
+        emit('on-submit', {
+          ...form.value,
+          ...timeEntry.value,
+          comment_content: comment_content.value,
+        })
+      } else {
+        validated.value = true
+        form.value.estimated_hours = ''
+        document.getElementById('estimated_hours')?.setAttribute('required', 'true')
+      }
+    } else
+      emit('on-submit', {
+        ...form.value,
+        ...timeEntry.value,
+        comment_content: comment_content.value,
+      })
   }
 }
 
@@ -137,19 +149,18 @@ const numToTime = (n: number | null) => {
 const timeToNum = (n: number | string | null) => {
   const timeNum = Number(n)
 
-  if (!!timeNum) return n
-  else {
+  if (!!timeNum) {
+    return Math.floor(timeNum) < 1000 ? n : 999.99
+  } else {
     const regex = /^(0|[1-9]\d*):(0[0-9]|[1-5][0-9])$/
     const timeStr = String(n)
 
     if (regex.test(timeStr)) {
       const time = timeStr.split(':')
-      return Number(time[0]) + Number(Number(time[1]) / 60)
-    } else {
-      validated.value = true
-      document.getElementById('estimated_hours')?.setAttribute('required', 'required')
-      return null
-    }
+      return (
+        (Number(time[0]) < 999 ? Number(time[0]) : 999) + Number((Number(time[1]) / 60).toFixed(2))
+      )
+    } else return null
   }
 }
 
@@ -339,7 +350,7 @@ onBeforeMount(() => {
                 maxlength="10"
                 type="text"
                 class="form-control"
-                feedbackInvalid="정수, 실수 또는 '12:59' 과 같이 시간 형식을 입력하세요."
+                feedbackInvalid="999 이하의 정수, 실수 또는 '12:59' 과 같이 시간 형식을 입력하세요."
               />
             </div>
             <div class="col-sm-1" style="padding-top: 6px">시간</div>
