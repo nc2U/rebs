@@ -239,13 +239,14 @@ class IssueCommentViewSet(viewsets.ModelViewSet):
 
 
 class TimeEntryFilter(FilterSet):
+    project__search = CharFilter(field_name='project__slug', label='프로젝트-검색')
+    project__exclude = CharFilter(field_name='project__slug', exclude=True, label='프로젝트-검색')
     from_spent_on = DateFilter(field_name='spent_on', lookup_expr='gte', label='작업일자부터')
     to_spent_on = DateFilter(field_name='spent_on', lookup_expr='lte', label='작업일자부터')
-    project__search = CharFilter(field_name='project__slug', label='프로젝트-검색')
 
     class Meta:
         model = TimeEntry
-        fields = ('spent_on', 'project__slug', 'issue', 'user', 'activity', 'hours',
+        fields = ('project__slug', 'spent_on', 'issue', 'user', 'activity', 'hours',
                   'issue__tracker', 'issue__parent',
                   'issue__status', 'issue__fixed_version', 'issue__category')
 
