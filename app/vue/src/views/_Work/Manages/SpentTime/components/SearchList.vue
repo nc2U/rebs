@@ -154,10 +154,10 @@ const filterSubmit = () => {
     else if (cond.value.issue === 'keyword') filterData.issue__keyword = form.value.issue__keyword
     else if (cond.value.issue === 'any') filterData.issue = ''
 
-  if (cond.value.user === 'is' && searchCond.value.includes('user'))
-    filterData.user = form.value.user
-  else if (cond.value.user === 'exclude' && searchCond.value.includes('user'))
-    filterData.user__exclude = form.value.user
+  if (searchCond.value.includes('user'))
+    if (cond.value.user === 'is') filterData.user = form.value.user
+    else if (cond.value.user === 'exclude') filterData.user__exclude = form.value.user
+    else if (cond.value.user === 'any') filterData.user = ''
 
   // if (form.value.name) filterData.name = form.value.name
   // if (form.value.description) filterData.description = form.value.description
