@@ -163,17 +163,21 @@ const filterSubmit = () => {
 
 watch(props, nVal => {
   if (nVal.statusList.length) form.value.status = props.statusList[0]?.pk
+  if (nVal.subProjects.length)
+    searchOptions[0].options.splice(1, 0, { value: 'project', label: '하위 프로젝트' })
 })
 
 watch(searchCond, nVal => {
-  if (nVal.includes('project')) form.value.project = props.allProjects[0]?.slug
+  if (nVal.includes('project')) form.value.project = computedProjects.value[0]?.slug
   if (nVal.includes('tracker')) form.value.tracker = props.trackerList[0]?.pk
   if (!nVal.includes('spent_on')) searchCond.value = ['spent_on']
 })
 
 const route = useRoute()
+
 onBeforeMount(() => {
   if (!!props.statusList.length) form.value.status = props.statusList[0]?.pk
+
   if (route.name === '소요시간')
     searchOptions[0].options.splice(1, 0, { value: 'project', label: '프로젝트' })
   else if (props.subProjects.length)

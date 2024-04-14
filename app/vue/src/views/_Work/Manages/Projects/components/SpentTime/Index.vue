@@ -53,7 +53,7 @@ onBeforeMount(async () => {
   <TimeEntryList
     v-if="$route.name === '(소요시간)'"
     :time-entry-list="timeEntryList"
-    :sub-projects="issueProject.sub_projects"
+    :sub-projects="issueProject?.sub_projects"
     :all-projects="allProjects"
     @filter-submit="filterSubmit"
     @del-submit="delSubmit"

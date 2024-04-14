@@ -30,7 +30,8 @@ const aside = ref(true)
 
 const asideVisible = (visible: boolean) => (aside.value = visible)
 
-const route = useRoute()
+const [route, router] = [useRoute(), useRouter()]
+
 const routeName = computed(() => route.name as string)
 const company = inject<ComputedRef<Company>>('company')
 const comName = computed(() => company?.value?.name)
@@ -78,7 +79,6 @@ const navMenu = computed(() =>
 
 const sideNavCAll = () => cBody.value.toggle()
 
-const router = useRouter()
 const onSubmit = (payload: any) => {
   payload.company = company?.value.pk
   workStore.createIssueProject(payload)
@@ -116,7 +116,6 @@ onBeforeMount(async () => {
     :family-tree="issueProject?.family_tree"
     @side-nav-call="sideNavCAll"
   />
-
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query" :aside="aside">
     <template v-slot:default>
       <ProjectList
