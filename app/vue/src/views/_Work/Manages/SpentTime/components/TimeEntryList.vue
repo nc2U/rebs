@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, type PropType } from 'vue'
-import type { IssueProject, TimeEntry } from '@/store/types/work'
+import type { IssueProject, TimeEntry, TimeEntryFilter } from '@/store/types/work'
 import { dateFormat, numberToHour } from '@/utils/baseMixins'
 import NoData from '@/views/_Work/components/NoData.vue'
 import HeaderTab from '@/views/_Work/Manages/SpentTime/components/HeaderTab.vue'
@@ -12,7 +12,9 @@ defineProps({
   allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
 })
 
-const emit = defineEmits(['del-submit'])
+const emit = defineEmits(['del-submit', 'filter-submit'])
+
+const filterSubmit = (payload: TimeEntryFilter) => emit('filter-submit', payload)
 
 const RefDelConfirm = ref()
 
@@ -49,7 +51,7 @@ const delSubmit = () => {
     </CCol>
   </CRow>
 
-  <SearchList :all-projects="allProjects" />
+  <SearchList :all-projects="allProjects" @filter-submit="filterSubmit" />
 
   <HeaderTab />
 

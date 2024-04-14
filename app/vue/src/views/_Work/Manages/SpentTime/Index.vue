@@ -8,6 +8,7 @@ import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import TimeEntryList from '@/views/_Work/Manages/SpentTime/components/TimeEntryList.vue'
 import TimeEntryForm from '@/views/_Work/Manages/SpentTime/components/TimeEntryForm.vue'
+import type { TimeEntryFilter } from '@/store/types/work'
 
 const cBody = ref()
 const company = inject<ComputedRef<Company>>('company')
@@ -31,6 +32,11 @@ const onSubmit = async (payload: any) => {
   console.log(payload)
 }
 
+const filterSubmit = (payload: TimeEntryFilter) => {
+  console.log(payload)
+  workStore.fetchTimeEntryList(payload)
+}
+
 const delSubmit = (pk: number) => alert(pk)
 
 onBeforeMount(() => {
@@ -48,6 +54,7 @@ onBeforeMount(() => {
         v-if="$route.name === '소요시간'"
         :time-entry-list="timeEntryList"
         :all-projects="allProjects"
+        @filter-submit="filterSubmit"
         @del-submit="delSubmit"
       />
 

@@ -2,6 +2,7 @@
 import { ref, reactive, type PropType, onBeforeMount, watch } from 'vue'
 import type { IssueProject, IssueStatus, Tracker, TimeEntryFilter } from '@/store/types/work'
 import { useRoute } from 'vue-router'
+import { dateFormat } from '@/utils/baseMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 import Multiselect from '@vueform/multiselect'
 
@@ -71,7 +72,6 @@ const cond = ref({
     | 'this_month'
     | 'last_month'
     | 'this_year'
-    | 'none'
     | 'any',
   project: 'is' as 'is' | 'exclude',
   issue: 'is' as 'is' | 'keyword' | 'none' | 'any',
@@ -92,12 +92,12 @@ const cond = ref({
 })
 
 const form = ref<TimeEntryFilter>({
+  project: '',
   spent_on: '',
   from_spent_on: '',
   to_spent_on: '',
   before_days: null,
-  project: '',
-  issue: '',
+  issue: null,
   issue_keyword: '',
   user: null,
   author: null,
@@ -114,21 +114,30 @@ const form = ref<TimeEntryFilter>({
 const filterSubmit = () => {
   const filterData = {} as TimeEntryFilter
 
+  const today = dateFormat(new Date())
+
   if (cond.value.spent_on === 'any') filterData.spent_on = ''
   else if (cond.value.spent_on === 'is') filterData.spent_on = form.value.spent_on
-  else if (cond.value.spent_on === 'gte') filterData.spent_on = form.value.spent_on
-  else if (cond.value.spent_on === 'lte') filterData.spent_on = form.value.spent_on
-  else if (cond.value.spent_on === 'between') filterData.spent_on = form.value.spent_on
-  else if (cond.value.spent_on === 'before_days') filterData.spent_on = form.value.spent_on
-  else if (cond.value.spent_on === 'today') filterData.spent_on = form.value.spent_on
-  else if (cond.value.spent_on === 'yesterday') filterData.spent_on = form.value.spent_on
-  else if (cond.value.spent_on === 'this_week') filterData.spent_on = form.value.spent_on
-  else if (cond.value.spent_on === 'last_week') filterData.spent_on = form.value.spent_on
-  else if (cond.value.spent_on === 'this_month') filterData.spent_on = form.value.spent_on
-  else if (cond.value.spent_on === 'last_month') filterData.spent_on = form.value.spent_on
-  else if (cond.value.spent_on === 'this_year') filterData.spent_on = form.value.spent_on
-  else if (cond.value.spent_on === 'none') filterData.spent_on = form.value.spent_on
-  
+  else if (cond.value.spent_on === 'gte') filterData.from_spent_on = form.value.spent_on
+  else if (cond.value.spent_on === 'lte') filterData.to_spent_on = form.value.spent_on
+  else if (cond.value.spent_on === 'between') {
+    filterData.from_spent_on = form.value.spent_on
+    filterData.to_spent_on = form.value.to_spent_on
+  } else if (cond.value.spent_on === 'before_days')
+    filterData.spent_on = dateFormat(
+      new Date(new Date(today).setDate(new Date(today).getDate() - form.value.before_days)),
+    )
+  else if (cond.value.spent_on === 'today') filterData.spent_on = today
+  else if (cond.value.spent_on === 'yesterday')
+    filterData.spent_on = dateFormat(
+      new Date(new Date(today).setDate(new Date(today).getDate() - 1)),
+    )
+  // else if (cond.value.spent_on === 'this_week') filterData.spent_on = form.value.spent_on
+  // else if (cond.value.spent_on === 'last_week') filterData.spent_on = form.value.spent_on
+  // else if (cond.value.spent_on === 'this_month') filterData.spent_on = form.value.spent_on
+  // else if (cond.value.spent_on === 'last_month') filterData.spent_on = form.value.spent_on
+  // else if (cond.value.spent_on === 'this_year') filterData.spent_on = form.value.spent_on
+
   // if (searchCond.value.includes('project'))
   //   if (cond.value.project === 'is') filterData.project__search = form.value.project
   //   else if (cond.value.project === 'exclude') filterData.project__exclude = form.value.project
@@ -184,25 +193,29 @@ onBeforeMount(() => {
               <CCol class="d-none d-lg-block col-4 col-lg-3 col-xl-2">
                 <CFormSelect v-model="cond.spent_on" size="sm">
                   <option value="is">이다</option>
-                  <option value="lte">이전</option>
-                  <option value="gte">이후</option>
+                  <option value="lte">이전(까지)</option>
+                  <option value="gte">이후(부터)</option>
                   <option value="between">사이</option>
                   <option value="before_days">일 전</option>
                   <option value="today">오늘</option>
                   <option value="yesterday">어제</option>
-                  <option value="this_week">이번 주</option>
-                  <option value="last_week">지난 주</option>
-                  <option value="this_month">이번 달</option>
-                  <option value="last_month">지난 달</option>
-                  <option value="this_year">올해</option>
+                  <option value="this_week" disabled>이번 주</option>
+                  <option value="last_week" disabled>지난 주</option>
+                  <option value="this_month" disabled>이번 달</option>
+                  <option value="last_month" disabled>지난 달</option>
+                  <option value="this_year" disabled>올해</option>
                   <option value="any">모두</option>
                 </CFormSelect>
               </CCol>
-              <CCol v-show="cond.spent_on !== 'lte'" class="col-8 col-lg-3">
-                <DatePicker v-model="form.spent_on" v-show="cond.spent_on === 'is'" />
+              <CCol class="col-8 col-lg-3">
                 <DatePicker
-                  v-model="form.from_spent_on"
-                  v-show="cond.spent_on === 'gte' || cond.spent_on === 'between'"
+                  v-model="form.spent_on"
+                  v-if="
+                    cond.spent_on === 'is' ||
+                    cond.spent_on === 'lte' ||
+                    cond.spent_on === 'gte' ||
+                    cond.spent_on === 'between'
+                  "
                 />
 
                 <div v-show="cond.spent_on === 'before_days'">
@@ -219,10 +232,7 @@ onBeforeMount(() => {
                   <span class="col-sm-5 pl-2">일</span>
                 </div>
               </CCol>
-              <CCol
-                v-show="cond.spent_on === 'lte' || cond.spent_on === 'between'"
-                class="col-8 col-lg-3"
-              >
+              <CCol v-show="cond.spent_on === 'between'" class="col-8 col-lg-3">
                 <DatePicker v-model="form.to_spent_on" />
               </CCol>
             </CRow>

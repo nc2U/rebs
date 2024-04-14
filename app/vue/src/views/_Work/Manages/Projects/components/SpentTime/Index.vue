@@ -2,6 +2,7 @@
 import { computed, onBeforeMount, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
+import type { TimeEntryFilter } from '@/store/types/work'
 import TimeEntryList from '@/views/_Work/Manages/SpentTime/components/TimeEntryList.vue'
 import TimeEntryForm from '@/views/_Work/Manages/SpentTime/components/TimeEntryForm.vue'
 
@@ -22,6 +23,11 @@ const onSubmit = async (payload: any) => {
     await createTimeEntry(payload)
     await router.replace({ name: '(소요시간)' })
   }
+}
+
+const filterSubmit = (payload: TimeEntryFilter) => {
+  console.log(payload)
+  workStore.fetchTimeEntryList(payload)
 }
 
 const delSubmit = (pk: number) => deleteTimeEntry(pk)
@@ -47,6 +53,7 @@ onBeforeMount(async () => {
     v-if="$route.name === '(소요시간)'"
     :time-entry-list="timeEntryList"
     :all-projects="allProjects"
+    @filter-submit="filterSubmit"
     @del-submit="delSubmit"
   />
 
