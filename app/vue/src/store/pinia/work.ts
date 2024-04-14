@@ -330,8 +330,13 @@ export const useWork = defineStore('work', () => {
       .catch(err => errorHandle(err.response.data))
 
   const fetchTimeEntryList = async (payload: TimeEntryFilter) => {
-    let url = `/time-entry/?1=1`
+    let url = `/time-entry/?project__slug=`
     if (payload.project) url += `&project__slug=${payload.project}`
+    if (payload.project__search) url += `&project__search=${payload.project__search}`
+    if (payload.project__exclude) url += `&project__exclude=${payload.project__exclude}`
+    if (payload.spent_on) url += `&spent_on=${payload.spent_on}`
+    if (payload.from_spent_on) url += `&from_spent_on=${payload.from_spent_on}`
+    if (payload.to_spent_on) url += `&to_spent_on=${payload.to_spent_on}`
     if (payload.issue) url += `&issue=${payload.issue}`
     // if (payload.user) url += `&user=${payload.user}`
     // if (payload.activity) url += `&activity=${payload.activity}`

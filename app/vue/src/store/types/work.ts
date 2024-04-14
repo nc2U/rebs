@@ -267,12 +267,14 @@ export interface TimeEntry {
 }
 
 export interface TimeEntryFilter {
+  project?: string
+  project__search?: string
+  project__exclude?: string
   spent_on?: string
   from_spent_on?: string
   to_spent_on?: string
-  before_days: number | null
-  project?: string
-  issue?: number | string
+  before_days?: number | null
+  issue?: number | null
   issue_keyword?: string
   user?: number | null
   author?: number | null
