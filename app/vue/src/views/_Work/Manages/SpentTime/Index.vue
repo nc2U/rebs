@@ -20,6 +20,7 @@ const workStore = useWork()
 const allProjects = computed(() => workStore.AllIssueProjects)
 const timeEntryList = computed(() => workStore.timeEntryList)
 const getIssues = computed(() => workStore.getIssues)
+const getMembers = computed(() => workStore.getMembers)
 
 const createTimeEntry = (payload: any) => workStore.createTimeEntry(payload)
 const updateTimeEntry = (payload: any) => workStore.updateTimeEntry(payload)
@@ -43,8 +44,8 @@ const delSubmit = (pk: number) => alert(pk)
 
 onBeforeMount(() => {
   workStore.fetchAllIssueProjectList()
-  workStore.fetchIssueList({ status__closed: '0' })
   workStore.fetchTimeEntryList({})
+  workStore.fetchIssueList({ status__closed: '0' })
 })
 </script>
 
@@ -58,6 +59,7 @@ onBeforeMount(() => {
         :time-entry-list="timeEntryList"
         :all-projects="allProjects"
         :get-issues="getIssues"
+        :get-members="getMembers"
         @filter-submit="filterSubmit"
         @del-submit="delSubmit"
       />

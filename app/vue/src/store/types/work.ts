@@ -276,6 +276,7 @@ export interface TimeEntryFilter {
   issue?: number | ''
   issue__keyword?: string
   user?: number | ''
+  user__exclude?: number | ''
   author?: number | ''
   activity?: number | ''
   hours?: number

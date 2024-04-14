@@ -10,6 +10,7 @@ const props = defineProps({
   subProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
   allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
   getIssues: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
+  getMembers: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
   statusList: { type: Array as PropType<IssueStatus[]>, default: () => [] },
   trackerList: { type: Array as PropType<Tracker[]>, default: () => [] },
 })
@@ -77,7 +78,7 @@ const cond = ref({
     | 'any',
   project: 'is' as 'is' | 'exclude',
   issue: 'is' as 'is' | 'keyword' | 'any',
-  user: 'is' as 'is' | 'exclude' | 'none' | 'any',
+  user: 'is' as 'is' | 'exclude' | 'any',
   author: 'is' as 'is' | 'exclude' | 'none' | 'any',
   activity: 'is' as 'is' | 'exclude',
   hours: 'is' as 'is' | '>=' | '<=' | 'between' | 'none' | 'any',
@@ -153,10 +154,11 @@ const filterSubmit = () => {
     else if (cond.value.issue === 'keyword') filterData.issue__keyword = form.value.issue__keyword
     else if (cond.value.issue === 'any') filterData.issue = ''
 
-  // if (cond.value.is_public === 'is' && searchCond.value.includes('is_public'))
-  //   filterData.is_public = form.value.is_public
-  // else if (cond.value.is_public === 'exclude' && searchCond.value.includes('is_public'))
-  //   filterData.is_public__exclude = form.value.is_public
+  if (cond.value.user === 'is' && searchCond.value.includes('user'))
+    filterData.user = form.value.user
+  else if (cond.value.user === 'exclude' && searchCond.value.includes('user'))
+    filterData.user__exclude = form.value.user
+
   // if (form.value.name) filterData.name = form.value.name
   // if (form.value.description) filterData.description = form.value.description
 
@@ -312,7 +314,6 @@ onBeforeMount(() => {
                 <CFormSelect v-model="cond.user" size="sm">
                   <option value="is">이다</option>
                   <option value="exclude">아니다</option>
-                  <option value="none">없음</option>
                   <option value="any">모두</option>
                 </CFormSelect>
               </CCol>
@@ -321,6 +322,7 @@ onBeforeMount(() => {
                   v-if="cond.user === 'is' || cond.user === 'exclude'"
                   v-model="form.user"
                   placeholder="사용자 선택"
+                  searchable
                 />
               </CCol>
             </CRow>

@@ -13,6 +13,7 @@ const issueProject = computed(() => workStore.issueProject)
 const allProjects = computed(() => workStore.AllIssueProjects)
 const timeEntryList = computed(() => workStore.timeEntryList)
 const getIssues = computed(() => workStore.getIssues)
+const getMembers = computed(() => workStore.getMembers)
 
 const createTimeEntry = (payload: any) => workStore.createTimeEntry(payload)
 const updateTimeEntry = (payload: any) => workStore.updateTimeEntry(payload)
@@ -58,6 +59,7 @@ onBeforeMount(() => {
     :sub-projects="issueProject?.sub_projects"
     :all-projects="allProjects"
     :get-issues="getIssues"
+    :get-members="getMembers"
     @filter-submit="filterSubmit"
     @del-submit="delSubmit"
   />
