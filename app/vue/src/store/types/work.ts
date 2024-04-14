@@ -267,6 +267,7 @@ export interface TimeEntry {
 }
 
 export interface TimeEntryFilter {
+  ordering?: string
   project?: string
   project__search?: string
   project__exclude?: string
