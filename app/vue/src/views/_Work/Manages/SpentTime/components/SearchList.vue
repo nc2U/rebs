@@ -180,8 +180,6 @@ onBeforeMount(() => {
 
   if (route.name === '소요시간')
     searchOptions[0].options.splice(1, 0, { value: 'project', label: '프로젝트' })
-  else if (props.subProjects.length)
-    searchOptions[0].options.splice(1, 0, { value: 'project', label: '하위 프로젝트' })
 })
 </script>
 
