@@ -45,7 +45,7 @@ const form = ref({
 const timeEntry = ref({
   issue: null as number | null,
   spent_on: '',
-  hours: null as number | null,
+  hours: null as number | string | null,
   activity: null as number | null,
   comment: '',
 })
@@ -94,26 +94,29 @@ const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
+    let noSubmit = false
+    // Todo validate 개선
+    if (!!timeEntry.value.hours) {
+      const time_entry_hours = timeToNum(timeEntry.value.hours, false)
+      if (time_entry_hours) timeEntry.value.hours = time_entry_hours
+      else noSubmit = true
+    }
+
     if (!!form.value.estimated_hours) {
-      const computed_hours = timeToNum(form.value.estimated_hours)
-      if (computed_hours) {
-        form.value.estimated_hours = timeToNum(form.value.estimated_hours)
-        emit('on-submit', {
-          ...form.value,
-          ...timeEntry.value,
-          comment_content: comment_content.value,
-        })
-      } else {
-        validated.value = true
-        form.value.estimated_hours = ''
-        document.getElementById('estimated_hours')?.setAttribute('required', 'true')
-      }
-    } else
+      const estimated_hours = timeToNum(form.value.estimated_hours, true)
+      if (estimated_hours) form.value.estimated_hours = estimated_hours
+      else noSubmit = true
+    }
+
+    if (noSubmit) retrun
+    else {
       emit('on-submit', {
         ...form.value,
         ...timeEntry.value,
         comment_content: comment_content.value,
       })
+      validated.value = false
+    }
   }
 }
 
@@ -146,7 +149,7 @@ const numToTime = (n: number | null) => {
   }
 }
 
-const timeToNum = (n: number | string | null) => {
+const timeToNum = (n: number | string | null, estimated: boolean) => {
   const timeNum = Number(n)
 
   if (!!timeNum) {
@@ -160,7 +163,18 @@ const timeToNum = (n: number | string | null) => {
       return (
         (Number(time[0]) < 999 ? Number(time[0]) : 999) + Number((Number(time[1]) / 60).toFixed(2))
       )
-    } else return null
+    } else {
+      validated.value = true
+      if (estimated) {
+        form.value.estimated_hours = ''
+        document.getElementById('estimated_hours')?.setAttribute('required', 'true')
+        return null
+      } else {
+        timeEntry.value.hours = ''
+        document.getElementById('hours')?.setAttribute('required', 'true')
+        return null
+      }
+    }
   }
 }
 
@@ -347,7 +361,7 @@ onBeforeMount(() => {
               <CFormInput
                 v-model="form.estimated_hours"
                 id="estimated_hours"
-                maxlength="10"
+                maxlength="6"
                 type="text"
                 class="form-control"
                 feedbackInvalid="999 이하의 정수, 실수 또는 '12:59' 과 같이 시간 형식을 입력하세요."
@@ -416,7 +430,12 @@ onBeforeMount(() => {
                 소요시간
               </CFormLabel>
               <div class="col-sm-3">
-                <CFormInput v-model="timeEntry.hours" maxlength="10" id="hours" />
+                <CFormInput
+                  v-model="timeEntry.hours"
+                  maxlength="6"
+                  id="hours"
+                  feedbackInvalid="999 이하의 정수, 실수 또는 '12:59' 과 같이 시간 형식을 입력하세요."
+                />
               </div>
               <div class="col-sm-1" style="padding-top: 6px">시간</div>
 
