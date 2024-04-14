@@ -41,7 +41,7 @@ export const timeFormat = (date: Date | number | string, short = false) => {
   return !short ? formattedTime : formattedTime.substring(11, 16)
 }
 
-export const elapsedTime = (date: number | string): string => {
+export const elapsedTime = (date: Date | number | string): string => {
   const start = new Date(date)
   const end = new Date()
 
@@ -57,7 +57,14 @@ export const elapsedTime = (date: number | string): string => {
   const days = hours / 24
   if (days < 7) return `${Math.floor(days)}일 전`
 
-  return timeFormat(date)
+  const weeks = days / 7
+  if (days < 30) return `${Math.floor(weeks)}주일 전`
+
+  const months = days / 30
+  if (months < 12) return `${Math.floor(months)}달 전`
+
+  const years = days / 365
+  return `${Math.floor(years)}년 전`
 }
 
 export const numberToHour = (digit: number | string) => {
