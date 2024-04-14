@@ -8,7 +8,7 @@ import type {
   IssueStatus,
   TimeEntry,
 } from '@/store/types/work'
-import { elapsedTime, diffDate } from '@/utils/baseMixins'
+import { elapsedTime, diffDate, timeFormat } from '@/utils/baseMixins'
 import { useWork } from '@/store/pinia/work'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 import IssueControl from './IssueControl.vue'
@@ -127,25 +127,35 @@ onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue
               {{ issue.creator.username }}
             </router-link>
             이(가)
-            <router-link
-              :to="{
-                name: '(작업내역)',
-                params: { projId: issueProject?.slug },
-                query: { from: issue?.created.substring(0, 10) },
-              }"
-            >
-              {{ elapsedTime(issue?.created) }}
-            </router-link>
+            <span>
+              <router-link
+                :to="{
+                  name: '(작업내역)',
+                  params: { projId: issueProject?.slug },
+                  query: { from: issue?.created.substring(0, 10) },
+                }"
+              >
+                {{ elapsedTime(issue.created) }}
+              </router-link>
+              <v-tooltip activator="parent" location="top">
+                {{ timeFormat(issue.created) }}
+              </v-tooltip>
+            </span>
             전에 추가함.
-            <router-link
-              :to="{
-                name: '(작업내역)',
-                params: { projId: issueProject.slug },
-                query: { from: issue.updated.substring(0, 10) },
-              }"
-            >
-              {{ elapsedTime(issue.updated) }}
-            </router-link>
+            <span>
+              <router-link
+                :to="{
+                  name: '(작업내역)',
+                  params: { projId: issueProject.slug },
+                  query: { from: issue.updated.substring(0, 10) },
+                }"
+              >
+                {{ elapsedTime(issue.updated) }}
+              </router-link>
+              <v-tooltip activator="parent" location="top">
+                {{ timeFormat(issue?.updated) }}
+              </v-tooltip>
+            </span>
             전에 수정됨.
           </p>
         </CCol>
