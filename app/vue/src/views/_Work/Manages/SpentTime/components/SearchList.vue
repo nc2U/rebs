@@ -76,7 +76,7 @@ const cond = ref({
     | 'this_year'
     | 'any',
   project: 'is' as 'is' | 'exclude',
-  issue: 'is' as 'is' | 'keyword' | 'none' | 'any',
+  issue: 'is' as 'is' | 'keyword' | 'any',
   user: 'is' as 'is' | 'exclude' | 'none' | 'any',
   author: 'is' as 'is' | 'exclude' | 'none' | 'any',
   activity: 'is' as 'is' | 'exclude',
@@ -93,24 +93,24 @@ const cond = ref({
   project_status: 'is' as 'is' | 'exclude',
 })
 
-const form = ref<TimeEntryFilter>({
+const form = ref<TimeEntryFilter & { before_days: number | null }>({
   project: '',
   spent_on: '',
   from_spent_on: '',
   to_spent_on: '',
   before_days: null,
-  issue: null,
-  issue_keyword: '',
-  user: null,
-  author: null,
-  activity: null,
+  issue: '',
+  issue__keyword: '',
+  user: '',
+  author: '',
+  activity: '',
   comment: '',
-  tracker: null,
-  parent: null,
-  status: null,
-  version: null,
+  tracker: '',
+  parent: '',
+  status: '',
+  version: '',
   subject: '',
-  project_status: null,
+  project_status: '',
 })
 
 const computedProjects = computed(() =>
@@ -148,9 +148,10 @@ const filterSubmit = () => {
     if (cond.value.project === 'is') filterData.project__search = form.value.project
     else if (cond.value.project === 'exclude') filterData.project__exclude = form.value.project
 
-  // if (searchCond.value.includes('tracker'))
-  //   if (cond.value.tracker === 'is') filterData.tracker = form.value.tracker
-  //   else if (cond.value.tracker === 'exclude') filterData.tracker__exclude = form.value.tracker
+  if (searchCond.value.includes('issue'))
+    if (cond.value.issue === 'is') filterData.issue = form.value.issue
+    else if (cond.value.issue === 'keyword') filterData.issue__keyword = form.value.issue__keyword
+    else if (cond.value.issue === 'any') filterData.issue = ''
 
   // if (cond.value.is_public === 'is' && searchCond.value.includes('is_public'))
   //   filterData.is_public = form.value.is_public
@@ -281,7 +282,6 @@ onBeforeMount(() => {
                 <CFormSelect v-model="cond.issue" size="sm">
                   <option value="is">이다</option>
                   <option value="keyword">포함되는 키워드</option>
-                  <option value="none">없음</option>
                   <option value="any">모두</option>
                 </CFormSelect>
               </CCol>
@@ -291,13 +291,15 @@ onBeforeMount(() => {
                   v-if="cond.issue === 'is'"
                   v-model="form.issue"
                   :options="getIssues"
+                  searchable
                   placeholder="업무 선택"
                 />
                 <CFormInput
                   v-if="cond.issue === 'keyword'"
-                  v-model="form.issue_keyword"
+                  v-model="form.issue__keyword"
                   tooltip-feedback
                   placeholder="업무 키워드"
+                  @keydown.enter="filterSubmit"
                 />
               </CCol>
             </CRow>
