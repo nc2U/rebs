@@ -21,7 +21,7 @@ class IssueProject(models.Model):
     status = models.CharField('사용여부', max_length=1, default='1', choices=(('1', '사용'), ('9', '잠금보관(모든 접근이 차단됨)')))
     depth = models.PositiveSmallIntegerField('단계', default=1,
                                              help_text='프로젝트 간 상하 소속 관계에 의한 단계, 최상위인 경우 1단계 이후 각 뎁스 마다 1씩 증가')
-    members = models.ManyToManyField('Member', blank=True, related_name='projects', verbose_name='구성원')
+    members = models.ManyToManyField('Member', blank=True, verbose_name='구성원')
     created = models.DateTimeField('추가', auto_now_add=True)
     updated = models.DateTimeField('편집', auto_now=True)
     user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자')
@@ -447,7 +447,7 @@ class TimeEntry(models.Model):
     comment = models.CharField('설명', max_length=255, blank=True, default='')
     created = models.DateTimeField('추가', auto_now_add=True)
     updated = models.DateTimeField('편집', auto_now=True)
-    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자')
+    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='사용자')
 
     def __str__(self):
         return f'{self.issue} - {self.hours}'
