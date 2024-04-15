@@ -64,11 +64,11 @@ export const useWork = defineStore('work', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const fetchAllIssueProjectList = async (parent?: string) => {
+  const fetchAllIssueProjectList = async (project?: string) => {
     let url = superAuth.value
       ? `/issue-project/?parent__isnull=1`
       : `/issue-project/?parent__isnull=1&is_public=1`
-    if (parent) url += `&parent__slug=${parent}`
+    if (project) url += `&project=${project}`
 
     return await api
       .get(url)

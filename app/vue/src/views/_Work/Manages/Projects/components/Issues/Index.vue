@@ -81,7 +81,7 @@ onBeforeMount(async () => {
     :tracker-list="trackerList"
     @filter-submit="filterSubmit"
   />
-
+  
   <IssueView
     v-if="route.name === '(업무) - 보기' && issue"
     :issue-project="issueProject ?? undefined"
