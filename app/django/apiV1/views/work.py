@@ -25,7 +25,7 @@ class IssueProjectFilter(FilterSet):
 
     class Meta:
         model = IssueProject
-        fields = ('parent__isnull', 'status', 'project', 'is_public', 'name', 'description')
+        fields = ('parent__slug', 'status', 'project', 'is_public', 'name', 'description')
 
 
 class IssueProjectViewSet(viewsets.ModelViewSet):

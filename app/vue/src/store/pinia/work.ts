@@ -58,8 +58,6 @@ export const useWork = defineStore('work', () => {
     if (payload.name) url += `&name=${payload.name}`
     if (payload.description) url += `&description=${payload.description}`
 
-    console.log(url)
-
     return await api
       .get(url)
       .then(res => (issueProjects.value = res.data.results))
