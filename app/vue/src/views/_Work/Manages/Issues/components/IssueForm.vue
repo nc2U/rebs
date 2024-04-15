@@ -108,7 +108,7 @@ const onSubmit = (event: Event) => {
       else noSubmit = true
     }
 
-    if (noSubmit) retrun
+    if (noSubmit) return
     else {
       emit('on-submit', {
         ...form.value,
