@@ -46,13 +46,12 @@ const workStore = useWork()
 const issueProject = computed(() => workStore.issueProject)
 provide('iProject', issueProject)
 const issueProjects = computed(() => workStore.issueProjects)
-const issueProjectList = computed(() => workStore.issueProjectList)
 const allProjects = computed(() => workStore.AllIssueProjects)
 
 const version = computed(() => false)
 const modules = computed(() => issueProject.value?.module)
 
-const navMenus = computed(() => (!issueProjectList.value.length ? navMenu1 : navMenu2))
+const navMenus = computed(() => (!issueProjects.value.length ? navMenu1 : navMenu2))
 
 const projectNavMenus = computed(() => {
   let menus = [
@@ -103,9 +102,7 @@ onBeforeRouteUpdate(async to => {
 onBeforeMount(async () => {
   await workStore.fetchIssueProjectList({})
   await workStore.fetchAllIssueProjectList()
-  if (route.params.projId) {
-    await workStore.fetchIssueProject(route.params.projId as string)
-  }
+  if (route.params.projId) await workStore.fetchIssueProject(route.params.projId as string)
 })
 </script>
 
@@ -120,8 +117,7 @@ onBeforeMount(async () => {
     <template v-slot:default>
       <ProjectList
         v-if="routeName === '프로젝트'"
-        :projects="issueProjects"
-        :project-list="issueProjectList"
+        :project-list="issueProjects"
         :all-projects="allProjects"
         @aside-visible="asideVisible"
         @filter-submit="filterSubmit"

@@ -25,9 +25,9 @@ export const useWork = defineStore('work', () => {
 
   // Issue Project states & getters
   const issueProject = ref<IssueProject | null>(null)
-  const issueProjects = ref<IssueProject[]>([])
-  const issueProjectList = computed(() =>
-    issueProjects.value.filter(
+  const issueProjectList = ref<IssueProject[]>([])
+  const issueProjects = computed(() =>
+    issueProjectList.value.filter(
       proj => proj.parent === null && (superAuth.value || proj.is_public === true),
     ),
   )
@@ -60,7 +60,7 @@ export const useWork = defineStore('work', () => {
 
     return await api
       .get(url)
-      .then(res => (issueProjects.value = res.data.results))
+      .then(res => (issueProjectList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
 
@@ -431,8 +431,8 @@ export const useWork = defineStore('work', () => {
 
   return {
     issueProject,
-    issueProjects,
     issueProjectList,
+    issueProjects,
     AllIssueProjects,
     fetchIssueProjectList,
     fetchAllIssueProjectList,
