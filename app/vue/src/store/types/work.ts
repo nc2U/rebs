@@ -38,6 +38,7 @@ export interface IssueProject {
 
 export interface ProjectFilter {
   parent__isnull?: boolean
+  parent?: string
   status?: '1' | '9'
   status__exclude?: '1' | '9'
   project?: string
