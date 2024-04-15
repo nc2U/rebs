@@ -120,6 +120,11 @@ const onSubmit = (event: Event) => {
   }
 }
 
+const removeProperty = (e: Event) => {
+  const el = e.currentTarget as HTMLInputElement
+  el.removeAttribute('required')
+}
+
 const closeForm = () => emit('close-form')
 
 const userInfo = inject<ComputedRef<User>>('userInfo')
@@ -364,6 +369,7 @@ onBeforeMount(() => {
                 maxlength="6"
                 type="text"
                 class="form-control"
+                @input="removeProperty"
                 feedbackInvalid="999 이하의 정수, 실수 또는 '12:59' 과 같이 시간 형식을 입력하세요."
               />
             </div>
@@ -434,6 +440,7 @@ onBeforeMount(() => {
                   v-model="timeEntry.hours"
                   maxlength="6"
                   id="hours"
+                  @input="removeProperty"
                   feedbackInvalid="999 이하의 정수, 실수 또는 '12:59' 과 같이 시간 형식을 입력하세요."
                 />
               </div>
