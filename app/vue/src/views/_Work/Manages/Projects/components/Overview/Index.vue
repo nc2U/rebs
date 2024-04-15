@@ -1,9 +1,14 @@
 <script lang="ts" setup>
-import { computed, inject, onBeforeMount } from 'vue'
+import { ref, computed, inject, onBeforeMount } from 'vue'
 import { useWork } from '@/store/pinia/work'
 import type { SimpleMember } from '@/store/types/work'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const emit = defineEmits(['aside-visible'])
+
+const RefProjectCloseConfirm = ref()
+const RefProjectDeleteConfirm = ref()
+const idForDelete = ref('')
 
 const isDark = inject('isDark')
 
@@ -44,6 +49,18 @@ const computedMembers = computed(() => {
   return organizedData
 })
 
+const projectClose = () => {
+  alert('close!!')
+  RefProjectCloseConfirm.value.close()
+}
+
+const projectDelete = () => {
+  if (idForDelete.value === (iProject.value?.slug as string)) {
+    alert('delete!!')
+    RefProjectDeleteConfirm.value.close()
+  } else idForDelete.value = ''
+}
+
 onBeforeMount(() => emit('aside-visible', false))
 </script>
 
@@ -78,19 +95,19 @@ onBeforeMount(() => emit('aside-visible', false))
                 새 하위 프로젝트
               </router-link>
             </CDropdownItem>
-            <CDropdownItem class="form-text">
+            <CDropdownItem class="form-text" @click="RefProjectCloseConfirm.callModal()">
               <router-link to="">
                 <v-icon icon="mdi-lock" color="warning" size="sm" />
                 닫기
               </router-link>
             </CDropdownItem>
-            <CDropdownItem class="form-text">
+            <CDropdownItem class="form-text" @click="RefProjectDeleteConfirm.callModal()">
               <router-link to="">
                 <v-icon icon="mdi-trash-can-outline" color="danger" size="sm" />
                 삭제
               </router-link>
             </CDropdownItem>
-            <CDropdownItem class="form-text">
+            <CDropdownItem class="form-text" @click="$router.push({ name: '(설정)' })">
               <router-link to="">
                 <v-icon icon="mdi-cog" color="secondary" size="sm" />
                 설정
@@ -194,4 +211,36 @@ onBeforeMount(() => emit('aside-visible', false))
       </CCard>
     </CCol>
   </CRow>
+
+  <ConfirmModal ref="RefProjectCloseConfirm">
+    <template #icon>
+      <v-icon icon="mdi-arrow-right-bold-box" color="warning" class="mr-2" />
+    </template>
+    <template #default> '테스트' 프로젝트를 닫고 읽기 전용 프로젝트로 만드시겠습니까?</template>
+    <template #footer>
+      <CButton color="warning" @click="projectClose">확인</CButton>
+    </template>
+  </ConfirmModal>
+
+  <ConfirmModal ref="RefProjectDeleteConfirm">
+    <template #icon>
+      <v-icon icon="mdi-arrow-right-bold-box" color="danger" class="mr-2" />
+    </template>
+    <template #default>
+      <div class="bg-amber-lighten-4 p-4 text-center">
+        <h6>test</h6>
+        <p>이 프로젝트를 삭제하고 모든 데이터를 지우시겠습니까?</p>
+        <p>To confirm,m please enter the project's identifier (test) below.</p>
+        <CRow>
+          <CFormLabel for="identifier" class="col-sm-2 col-form-label">식별자</CFormLabel>
+          <CCol sm="10">
+            <CFormInput v-model="idForDelete" id="identifier" />
+          </CCol>
+        </CRow>
+      </div>
+    </template>
+    <template #footer>
+      <CButton color="danger" @click="projectDelete">삭제</CButton>
+    </template>
+  </ConfirmModal>
 </template>
