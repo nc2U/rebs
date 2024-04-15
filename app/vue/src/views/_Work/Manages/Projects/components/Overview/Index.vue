@@ -216,7 +216,9 @@ onBeforeMount(() => emit('aside-visible', false))
     <template #icon>
       <v-icon icon="mdi-arrow-right-bold-box" color="warning" class="mr-2" />
     </template>
-    <template #default> '테스트' 프로젝트를 닫고 읽기 전용 프로젝트로 만드시겠습니까?</template>
+    <template #default>
+      '{{ iProject?.name }}' 프로젝트를 닫고 읽기 전용 프로젝트로 만드시겠습니까?
+    </template>
     <template #footer>
       <CButton color="warning" @click="projectClose">확인</CButton>
     </template>
@@ -228,9 +230,9 @@ onBeforeMount(() => emit('aside-visible', false))
     </template>
     <template #default>
       <div class="bg-amber-lighten-4 p-4 text-center">
-        <h6>test</h6>
+        <h6>{{ iProject?.name }}</h6>
         <p>이 프로젝트를 삭제하고 모든 데이터를 지우시겠습니까?</p>
-        <p>To confirm,m please enter the project's identifier (test) below.</p>
+        <p>To confirm,m please enter the project's identifier ({{ iProject?.slug }}) below.</p>
         <CRow>
           <CFormLabel for="identifier" class="col-sm-2 col-form-label">식별자</CFormLabel>
           <CCol sm="10">
