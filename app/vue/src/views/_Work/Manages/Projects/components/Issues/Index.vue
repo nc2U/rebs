@@ -53,7 +53,6 @@ onBeforeMount(async () => {
 
   if (route.params.projId) {
     await workStore.fetchIssueProject(route.params.projId as string)
-    await workStore.fetchAllIssueProjectList(route.params.projId as string)
     const project = route.params.projId as string
     await workStore.fetchIssueList({ status__closed: '0', project })
   }
@@ -81,7 +80,7 @@ onBeforeMount(async () => {
     :tracker-list="trackerList"
     @filter-submit="filterSubmit"
   />
-  
+
   <IssueView
     v-if="route.name === '(업무) - 보기' && issue"
     :issue-project="issueProject ?? undefined"
