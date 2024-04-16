@@ -105,13 +105,31 @@ def issue_log_changes(sender, instance, created, **kwargs):
 
     user = instance.creator if created else instance.updater
     if created:
+        # 생성 시 activity 만 기록
         ActivityLogEntry.objects.create(sort='1', project=instance.project, issue=instance, user=user)
     else:
+        # 변경 시
         if details:
+            # 변경 내용 기록이 있으면 업무 로그 기록
             IssueLogEntry.objects.create(issue=instance, action=action, details=details, diff=diff, user=user)
             if hasattr(instance, '_old_status'):
+                # 변경 내용 기록과 상태 변경이 있으면 activity 도 기록
                 ActivityLogEntry.objects.create(sort='1', project=instance.project,
                                                 issue=instance, status_log=status_log, user=user)
+
+
+@receiver(post_save, sender=Issue)
+def issue_log_delete(sender, instance, **kwargs):
+    try:
+        issue_log = IssueLogEntry.objects.get(issue=instance)
+        issue_log.delete()
+    except IssueLogEntry.DoesNotExist:
+        pass
+    try:
+        act_log = ActivityLogEntry.objects.get(issue=instance)
+        act_log.delete()
+    except ActivityLogEntry.DoesNotExist:
+        pass
 
 
 @receiver(post_save, sender=IssueComment)
@@ -126,12 +144,12 @@ def comment_log_changes(sender, instance, created, **kwargs):
 def comment_log_delete(sender, instance, **kwargs):
     # 로그 삭제 or 삭제된 코멘트인지 로그 업데이트
     try:
-        issue_log = IssueLogEntry.objects.get(comment_id=instance.id)
+        issue_log = IssueLogEntry.objects.get(comment=instance)
         issue_log.delete()
     except IssueLogEntry.DoesNotExist:
         pass
     try:
-        act_log = ActivityLogEntry.objects.get(comment_id=instance.id)
+        act_log = ActivityLogEntry.objects.get(comment=instance)
         act_log.delete()
     except ActivityLogEntry.DoesNotExist:
         pass
@@ -142,3 +160,12 @@ def time_log_changes(sender, instance, created, **kwargs):
     if created:
         ActivityLogEntry.objects.create(sort='9', project=instance.issue.project, issue=instance.issue,
                                         spent_time=instance, user=instance.user)
+
+
+@receiver(post_delete, sender=TimeEntry)
+def time_log_delete(sender, instance, **kwargs):
+    try:
+        act_log = ActivityLogEntry.objects.get(spent_time=instance)
+        act_log.delete()
+    except ActivityLogEntry.DoesNotExist:
+        pass
