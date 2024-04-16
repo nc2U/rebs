@@ -44,6 +44,7 @@ watch(route, async nVal => {
   if (nVal.params.issueId) {
     await workStore.fetchIssue(Number(nVal.params.issueId))
     await workStore.fetchIssueLogList({ issue: Number(nVal.params.issueId) })
+    await workStore.fetchTimeEntryList({ ordering: 'pk', issue: Number(nVal.params.issueId) })
   } else workStore.issue = null
 })
 
@@ -59,7 +60,7 @@ onBeforeMount(async () => {
 
   if (route.params.issueId) {
     await workStore.fetchIssue(Number(route.params.issueId))
-    await workStore.fetchIssueCommentList({ issue: Number(route.params.issueId) })
+    await workStore.fetchIssueLogList({ issue: Number(route.params.issueId) })
     await workStore.fetchTimeEntryList({ ordering: 'pk', issue: Number(route.params.issueId) })
   }
 
