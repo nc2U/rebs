@@ -118,16 +118,16 @@ def issue_log_changes(sender, instance, created, **kwargs):
                                                 issue=instance, status_log=status_log, user=user)
 
 
-@receiver(post_save, sender=Issue)
+@receiver(post_delete, sender=Issue)
 def issue_log_delete(sender, instance, **kwargs):
     try:
-        issue_log = IssueLogEntry.objects.get(issue=instance)
-        issue_log.delete()
+        issue_logs = IssueLogEntry.objects.filter(issue=instance)
+        issue_logs.delete()
     except IssueLogEntry.DoesNotExist:
         pass
     try:
-        act_log = ActivityLogEntry.objects.get(issue=instance)
-        act_log.delete()
+        act_logs = ActivityLogEntry.objects.filter(issue=instance)
+        act_logs.delete()
     except ActivityLogEntry.DoesNotExist:
         pass
 
@@ -144,13 +144,13 @@ def comment_log_changes(sender, instance, created, **kwargs):
 def comment_log_delete(sender, instance, **kwargs):
     # 로그 삭제 or 삭제된 코멘트인지 로그 업데이트
     try:
-        issue_log = IssueLogEntry.objects.get(comment=instance)
-        issue_log.delete()
+        issue_logs = IssueLogEntry.objects.filter(comment=instance)
+        issue_logs.delete()
     except IssueLogEntry.DoesNotExist:
         pass
     try:
-        act_log = ActivityLogEntry.objects.get(comment=instance)
-        act_log.delete()
+        act_logs = ActivityLogEntry.objects.filter(comment=instance)
+        act_logs.delete()
     except ActivityLogEntry.DoesNotExist:
         pass
 
@@ -165,7 +165,7 @@ def time_log_changes(sender, instance, created, **kwargs):
 @receiver(post_delete, sender=TimeEntry)
 def time_log_delete(sender, instance, **kwargs):
     try:
-        act_log = ActivityLogEntry.objects.get(spent_time=instance)
-        act_log.delete()
+        act_logs = ActivityLogEntry.objects.filter(spent_time=instance)
+        act_logs.delete()
     except ActivityLogEntry.DoesNotExist:
         pass
