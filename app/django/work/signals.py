@@ -1,4 +1,4 @@
-from django.db.models.signals import pre_save, post_save, post_delete
+from django.db.models.signals import pre_save, post_save, pre_delete
 from django.dispatch import receiver
 from .models import Issue, IssueComment, TimeEntry, ActivityLogEntry, IssueLogEntry
 
@@ -118,7 +118,7 @@ def issue_log_changes(sender, instance, created, **kwargs):
                                                 issue=instance, status_log=status_log, user=user)
 
 
-@receiver(post_delete, sender=Issue)
+@receiver(pre_delete, sender=Issue)
 def issue_log_delete(sender, instance, **kwargs):
     try:
         issue_logs = IssueLogEntry.objects.filter(issue=instance)
@@ -140,7 +140,7 @@ def comment_log_changes(sender, instance, created, **kwargs):
                                         comment=instance, user=instance.user)
 
 
-@receiver(post_delete, sender=IssueComment)
+@receiver(pre_delete, sender=IssueComment)
 def comment_log_delete(sender, instance, **kwargs):
     # 로그 삭제 or 삭제된 코멘트인지 로그 업데이트
     try:
@@ -162,7 +162,7 @@ def time_log_changes(sender, instance, created, **kwargs):
                                         spent_time=instance, user=instance.user)
 
 
-@receiver(post_delete, sender=TimeEntry)
+@receiver(pre_delete, sender=TimeEntry)
 def time_log_delete(sender, instance, **kwargs):
     try:
         act_logs = ActivityLogEntry.objects.filter(spent_time=instance)
