@@ -17,7 +17,7 @@ const form = ref({
   file: true,
   wiki: false,
   message: false,
-  spentTime: false,
+  spentTime: true,
   subProjects: true,
 })
 </script>
