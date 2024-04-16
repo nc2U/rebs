@@ -354,30 +354,33 @@ export const useWork = defineStore('work', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const createTimeEntry = (payload: TimeEntry) =>
+  const createTimeEntry = (payload: TimeEntry, ord = '') =>
     api
       .post(`/time-entry/`, payload)
-      .then(res =>
-        fetchTimeEntry(res.data.pk).then(() => fetchTimeEntryList({}).then(() => message())),
-      )
+      .then(async res => {
+        await fetchTimeEntry(res.data.pk)
+        await fetchTimeEntryList({ ordering: ord })
+        message()
+      })
       .catch(err => errorHandle(err.response.data))
 
-  const updateTimeEntry = (payload: TimeEntry) =>
+  const updateTimeEntry = (payload: TimeEntry, ord = '') =>
     api
       .put(`/time-entry/${payload.pk}/`, payload)
-      .then(() =>
-        fetchTimeEntry(payload.pk).then(() => fetchTimeEntryList({}).then(() => message())),
-      )
+      .then(async () => {
+        await fetchTimeEntry(payload.pk)
+        await fetchTimeEntryList({ ordering: ord })
+        message()
+      })
       .catch(err => errorHandle(err.response.data))
 
-  const deleteTimeEntry = (pk: number) =>
+  const deleteTimeEntry = (pk: number, ord = '') =>
     api
       .delete(`/time-entry/${pk}/`)
-      .then(() =>
-        fetchTimeEntryList({}).then(() =>
-          message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.'),
-        ),
-      )
+      .then(async () => {
+        await fetchTimeEntryList({ ordering: ord })
+        message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.')
+      })
       .catch(err => errorHandle(err.response.data))
 
   // activity-log states & getters
