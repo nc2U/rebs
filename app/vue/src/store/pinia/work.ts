@@ -17,6 +17,7 @@ import type {
   TimeEntryFilter,
   IssueLogEntry,
   IssueFilter,
+  ActLogEntryFilter,
 } from '@/store/types/work'
 
 export const useWork = defineStore('work', () => {
@@ -392,17 +393,18 @@ export const useWork = defineStore('work', () => {
     }, {})
   })
 
-  const fetchActivityLogList = async (payload: any) => {
+  const fetchActivityLogList = async (payload: ActLogEntryFilter) => {
     let url = `/act-entry/?1=1`
     if (payload.project) url += `&project__slug=${payload.project}`
     else if (payload.project__search) url += `&project__search=${payload.project__search}`
-    if (payload.act_date) url += `&act_date=${payload.act_date}`
     if (payload.from_act_date) url += `&from_act_date=${payload.from_act_date}`
     if (payload.to_act_date) url += `&to_act_date=${payload.to_act_date}`
     if (payload.user) url += `&user=${payload.user}`
-    if (payload.sort) url += `&sort=${payload.sort}`
-    if (payload.action) url += `&action=${payload.action}`
-    if (payload.issue) url += `&issue=${payload.issue}`
+    if (!!payload.sort?.length) {
+      payload.sort.forEach(item => {
+        url += `&sort=${item}`
+      })
+    }
     return await api
       .get(url)
       .then(res => (activityLogList.value = res.data.results))

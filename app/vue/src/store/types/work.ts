@@ -321,7 +321,12 @@ export interface ActLogEntry {
 }
 
 export interface ActLogEntryFilter {
-  pk: number
+  project?: string
+  project__search?: string
+  to_act_date?: string
+  from_act_date?: string
+  user?: string
+  sort: Array<'1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'>
 }
 
 export interface IssueLogEntry {
