@@ -40,10 +40,20 @@ const getUsers = computed(() =>
 )
 
 const filterSubmit = () => {
+  const payload = {} as any
   const toDate = new Date(form.to_act_date)
-  form.to_act_date = dateFormat(toDate)
-  form.from_act_date = dateFormat(new Date(toDate.getTime() - 9 * 24 * 60 * 60 * 1000))
-  emit('filter-submit', { ...form })
+  payload.to_act_date = dateFormat(toDate)
+  payload.from_act_date = dateFormat(new Date(toDate.getTime() - 9 * 24 * 60 * 60 * 1000))
+  payload.user = form.user
+  payload.issue__isnull = !form.issue
+  payload.change_set__isnull = !form.changeSet
+  payload.news__isnull = !form.news
+  payload.docs__isnull = !form.docs
+  payload.file__isnull = !form.file
+  payload.wiki__isnull = !form.wiki
+  payload.message__isnull = !form.message
+  payload.spent_time__isnull = !form.spentTime
+  emit('filter-submit', { ...payload })
 }
 
 onBeforeMount(() => {

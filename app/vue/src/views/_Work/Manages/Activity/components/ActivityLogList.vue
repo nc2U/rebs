@@ -1,26 +1,29 @@
 <script lang="ts" setup>
-import { type PropType } from 'vue'
+import { ref, computed, onBeforeMount, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { useWork } from '@/store/pinia/work'
 import { cutString, dateFormat, timeFormat } from '@/utils/baseMixins'
-import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 import type { ActLogEntry } from '@/store/types/work'
+import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 import NoData from '@/views/_Work/components/NoData.vue'
 
-defineProps({
-  groupedActivities: {
-    type: Object as PropType<{ [key: string]: ActLogEntry[] }>,
-    default: () => {},
-  },
-  fromDate: {
-    type: Object as PropType<Date>,
-    default: () => {},
-  },
-  toDate: {
-    type: Object as PropType<Date>,
-    default: () => {},
-  },
+const workStore = useWork()
+const groupedActivities = computed<{ [key: string]: ActLogEntry[] }>(
+  () => workStore.groupedActivities,
+)
+
+const fromDate = computed(() => new Date(toDate.value.getTime() - 9 * 24 * 60 * 60 * 1000))
+
+const toDate = ref(new Date())
+watch(toDate, nVal => {
+  workStore.fetchActivityLogList({
+    from_act_date: dateFormat(fromDate.value),
+    to_act_date: dateFormat(nVal),
+  })
 })
 
-const emit = defineEmits(['to-back', 'to-next'])
+const toBack = () => (toDate.value = new Date(toDate.value.setDate(toDate.value.getDate() - 10)))
+const toNext = () => (toDate.value = new Date(toDate.value.setDate(toDate.value.getDate() + 10)))
 
 const getIcon = (sort: string, progress: boolean) => {
   if (sort === '1') return progress ? 'mdi-forward' : 'mdi-folder-plus'
@@ -29,8 +32,22 @@ const getIcon = (sort: string, progress: boolean) => {
   else return 'mdi-folder-plus'
 }
 
-const toBack = () => emit('to-back')
-const toNext = () => emit('to-next')
+const route = useRoute()
+
+onBeforeMount(() => {
+  if (route.params.projId) {
+    workStore.fetchIssueProject(route.params.projId as string)
+    workStore.fetchActivityLogList({
+      project: route.params.projId,
+      from_act_date: dateFormat(fromDate.value),
+      to_act_date: dateFormat(toDate.value),
+    })
+  } else
+    workStore.fetchActivityLogList({
+      from_act_date: dateFormat(fromDate.value),
+      to_act_date: dateFormat(toDate.value),
+    })
+})
 </script>
 
 <template>
