@@ -24,7 +24,7 @@ const groupedActivities = computed<{ [key: string]: ActLogEntry[] }>(
   () => workStore.groupedActivities,
 )
 
-const fromDate = computed(() => new Date(toDate.value.getTime() - 10 * 24 * 60 * 60 * 1000))
+const fromDate = computed(() => new Date(toDate.value.getTime() - 9 * 24 * 60 * 60 * 1000))
 
 const toDate = ref(new Date())
 watch(toDate, async nVal => {
