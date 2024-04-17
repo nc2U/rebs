@@ -1,6 +1,7 @@
-from django_filters import DateFilter, CharFilter
+from django.db.models import Q
 from rest_framework import viewsets
-from django_filters.rest_framework import FilterSet, BooleanFilter
+from django_filters.rest_framework import (FilterSet, BooleanFilter,
+                                           DateFilter, CharFilter)
 
 from ..permission import *
 from ..pagination import *
@@ -303,21 +304,25 @@ class ActivityLogFilter(FilterSet):
     project__search = CharFilter(field_name='project__slug', label='프로젝트-검색')
     from_act_date = DateFilter(field_name='act_date', lookup_expr='gte', label='로그일자부터')
     to_act_date = DateFilter(field_name='act_date', lookup_expr='lte', label='로그일자까지')
-
-    issue__isnull = BooleanFilter(field_name='issue', lookup_expr='isnull', label='업무-없음')
-    # change_sets_isnull = BooleanFilter(field_name='change_sets', lookup_expr='isnull', label='변경묶음-없음')
-    # news__isnull = BooleanFilter(field_name='news', lookup_expr='isnull', label='공지-없음')
-    # document__isnull = BooleanFilter(field_name='document', lookup_expr='isnull', label='문서-없음')
-    # file__isnull = BooleanFilter(field_name='file', lookup_expr='isnull', label='파일-없음')
-    # wiki__isnull = BooleanFilter(field_name='wiki', lookup_expr='isnull', label='위키 편집-없음')
-    # message__isnull = BooleanFilter(field_name='message', lookup_expr='isnull', label='글-없음')
-    spent_time__isnull = BooleanFilter(field_name='spent_time', lookup_expr='isnull', label='작업시간-없음')
+    sort = CharFilter(method='sort_filter')
 
     class Meta:
         model = ActivityLogEntry
-        fields = ('project__slug', 'from_act_date', 'to_act_date', 'user', 'issue', 'issue__isnull',
-                  'spent_time__isnull', 'act_date')
-        # 'change_sets_isnull', 'news__isnull', 'document__isnull', 'file__isnull', 'wiki__isnull', 'message__isnull',
+        fields = ('project__slug', 'from_act_date', 'to_act_date', 'user', 'sort')
+
+    def sort_filter(self, queryset, name, value):
+        # Initial Q object
+        q = Q()
+
+        # Get all sort values from the request (handling in view required)
+        sort_values = self.request.GET.getlist('sort')
+
+        # Combine all conditions with OR
+        for sort in sort_values:
+            if sort is not None:
+                q |= Q(sort=sort)
+
+        return queryset.filter(q)
 
     def filter_queryset(self, queryset):
         subs = None

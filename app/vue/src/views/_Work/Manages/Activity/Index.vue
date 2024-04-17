@@ -3,6 +3,7 @@ import { ref, computed, type ComputedRef, inject, onBeforeMount } from 'vue'
 import { navMenu1, navMenu2 } from '@/views/_Work/_menu/headermixin1'
 import { useWork } from '@/store/pinia/work'
 import type { Company } from '@/store/types/settings'
+import type { ActLogEntryFilter } from '@/store/types/work'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import ActivityLogList from '@/views/_Work/Manages/Activity/components/ActivityLogList.vue'
@@ -19,10 +20,9 @@ const navMenu = computed(() => (!issueProjectList.value.length ? navMenu1 : navM
 const workStore = useWork()
 const issueProjectList = computed(() => workStore.issueProjectList)
 
-const filterSubmit = (payload: any) => {
+const filterSubmit = (payload: ActLogEntryFilter) => {
   console.log(payload)
-
-  // workStore.fetchActivityLogList(payload)
+  workStore.fetchActivityLogList(payload)
 }
 
 onBeforeMount(() => {
@@ -36,11 +36,6 @@ onBeforeMount(() => {
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query">
     <template v-slot:default>
       <ActivityLogList />
-      <!--      :grouped-activities="groupedActivities"-->
-      <!--        :from-date="fromDate"-->
-      <!--        :to-date="toDate"-->
-      <!--        @to-back="toBack"-->
-      <!--        @to-next="toNext"-->
     </template>
 
     <template v-slot:aside>

@@ -25,8 +25,8 @@ const form = reactive<ActLogEntryFilter & { subProjects: boolean }>({
 
 const syncComment = () => {
   nextTick(() => {
-    if (form.sort.includes('1')) form.sort.push('2')
-    else form.sort = form.sort.filter(item => item !== '2')
+    if (form.sort?.includes('1')) form.sort.push('2')
+    else form.sort = form.sort?.filter(item => item !== '2')
   })
 }
 
@@ -46,13 +46,21 @@ const getUsers = computed(() =>
 const route = useRoute()
 const filterSubmit = () => {
   if (route.params.projId) {
-    if (form.subProjects) form.project = route.params.projId as string
-    else form.project__search = route.params.projId as string
+    if (form.subProjects) {
+      form.project = route.params.projId as string
+      form.project__search = ''
+    } else {
+      form.project = ''
+      form.project__search = route.params.projId as string
+    }
+  } else {
+    form.project = ''
+    form.project__search = ''
   }
   const toDate = new Date(form.to_act_date as string)
   form.to_act_date = dateFormat(toDate)
   form.from_act_date = dateFormat(new Date(toDate.getTime() - 9 * 24 * 60 * 60 * 1000))
-  const cookieSort = form.sort?.sort().join('-')
+  const cookieSort = form.sort ? form.sort?.sort().join('-') : ''
   Cookies.set('cookieSort', cookieSort)
   emit('filter-submit', { ...form })
 }

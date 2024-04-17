@@ -38,7 +38,7 @@ onBeforeMount(() => {
   if (route.params.projId) {
     workStore.fetchIssueProject(route.params.projId as string)
     workStore.fetchActivityLogList({
-      project: route.params.projId,
+      project: route.params.projId as string,
       from_act_date: dateFormat(fromDate.value),
       to_act_date: dateFormat(toDate.value),
     })
