@@ -24,6 +24,7 @@ import Files from '@/views/_Work/Manages/Projects/components/Files/Index.vue'
 import Repository from '@/views/_Work/Manages/Projects/components/Repository/Index.vue'
 import Settings from '@/views/_Work/Manages/Projects/components/Settings/Index.vue'
 import AsideActivity from '@/views/_Work/Manages/Activity/components/aside/AsideActivity.vue'
+import { dateFormat } from '@/utils/baseMixins'
 
 const cBody = ref()
 const aside = ref(true)
@@ -89,9 +90,18 @@ const onSubmit = (payload: any) => {
   }, 500)
 }
 
-const filterSubmit = (payload: any) => {
+const filteringProject = (payload: any) => {
   console.log(payload)
   workStore.fetchIssueProjectList(payload)
+}
+
+const filteringActivity = (payload: any) => {
+  const toDate = new Date(payload.upToDate)
+  payload.to_act_date = dateFormat(toDate)
+  payload.from_act_date = dateFormat(new Date(toDate.getTime() - 9 * 24 * 60 * 60 * 1000))
+  console.log(payload)
+
+  // workStore.fetchActivityLogList(payload)
 }
 
 onBeforeRouteUpdate(async to => {
@@ -120,7 +130,7 @@ onBeforeMount(async () => {
         :project-list="issueProjects"
         :all-projects="allProjects"
         @aside-visible="asideVisible"
-        @filter-submit="filterSubmit"
+        @filter-submit="filteringProject"
       />
 
       <ProjectForm
@@ -164,6 +174,7 @@ onBeforeMount(async () => {
       <AsideActivity
         v-if="routeName === '(작업내역)'"
         :has-subs="!!issueProject?.sub_projects?.length"
+        @filter-submit="filteringActivity"
       />
     </template>
   </ContentBody>

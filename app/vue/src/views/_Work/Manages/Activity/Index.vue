@@ -39,6 +39,15 @@ watch(toDate, async nVal => {
 const toBack = () => (toDate.value = new Date(toDate.value.setDate(toDate.value.getDate() - 10)))
 const toNext = () => (toDate.value = new Date(toDate.value.setDate(toDate.value.getDate() + 10)))
 
+const filterSubmit = (payload: any) => {
+  const toDate = new Date(payload.upToDate)
+  payload.to_act_date = dateFormat(toDate)
+  payload.from_act_date = dateFormat(new Date(toDate.getTime() - 9 * 24 * 60 * 60 * 1000))
+  console.log(payload)
+
+  // workStore.fetchActivityLogList(payload)
+}
+
 onBeforeMount(() => {
   workStore.fetchIssueProjectList({})
   workStore.fetchActivityLogList({
@@ -63,7 +72,7 @@ onBeforeMount(() => {
     </template>
 
     <template v-slot:aside>
-      <AsideActivity />
+      <AsideActivity @filter-submit="filterSubmit" />
     </template>
   </ContentBody>
 </template>
