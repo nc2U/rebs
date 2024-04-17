@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { reactive, computed, inject, onBeforeMount, type ComputedRef } from 'vue'
+import { reactive, computed, inject, onBeforeMount, type ComputedRef, nextTick } from 'vue'
+import type { ActLogEntryFilter, IssueProject } from '@/store/types/work'
+import { useRoute } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
 import { dateFormat } from '@/utils/baseMixins'
-import type { IssueProject } from '@/store/types/work'
 import Cookies from 'js-cookie'
 import DatePicker from '@/components/DatePicker/index.vue'
 
@@ -12,13 +13,22 @@ defineProps({
 
 const emit = defineEmits(['filter-submit'])
 
-const form = reactive({
+const form = reactive<ActLogEntryFilter & { subProjects: boolean }>({
+  project: '',
+  project__search: '',
   to_act_date: dateFormat(new Date()),
   from_act_date: '',
-  user: null as number | null,
-  sort: ['1', '9'],
+  user: '',
+  sort: ['1', '2', '9'],
   subProjects: true,
 })
+
+const syncComment = () => {
+  nextTick(() => {
+    if (form.sort.includes('1')) form.sort.push('2')
+    else form.sort = form.sort.filter(item => item !== '2')
+  })
+}
 
 const iProject = inject<ComputedRef<IssueProject>>('iProject')
 
@@ -33,18 +43,33 @@ const getUsers = computed(() =>
     : accStore.getUsers,
 )
 
+const route = useRoute()
 const filterSubmit = () => {
-  const toDate = new Date(form.to_act_date)
+  if (route.params.projId) {
+    if (form.subProjects) form.project = route.params.projId as string
+    else form.project__search = route.params.projId as string
+  }
+  const toDate = new Date(form.to_act_date as string)
   form.to_act_date = dateFormat(toDate)
   form.from_act_date = dateFormat(new Date(toDate.getTime() - 9 * 24 * 60 * 60 * 1000))
-  const cookieSort = form.sort.sort().join('-')
+  const cookieSort = form.sort?.sort().join('-')
   Cookies.set('cookieSort', cookieSort)
   emit('filter-submit', { ...form })
 }
 
 onBeforeMount(() => {
   accStore.fetchUsersList()
-  const cookieSort = Cookies.get('cookieSort')?.split('-')
+  const cookieSort = Cookies.get('cookieSort')?.split('-') as (
+    | '1'
+    | '2'
+    | '3'
+    | '4'
+    | '5'
+    | '6'
+    | '7'
+    | '8'
+    | '9'
+  )[]
   if (cookieSort?.length) form.sort = cookieSort
 })
 </script>
@@ -75,7 +100,13 @@ onBeforeMount(() => {
 
   <CRow class="mb-3">
     <CCol>
-      <CFormCheck v-model="form.sort" value="1" label="업무" id="issue-filter" />
+      <CFormCheck
+        v-model="form.sort"
+        value="1"
+        label="업무"
+        id="issue-filter"
+        @change="syncComment"
+      />
       <CFormCheck v-model="form.sort" value="3" label="변경묶음" id="changeset-filter" />
       <CFormCheck v-model="form.sort" value="4" label="공지" id="news-filter" />
       <CFormCheck v-model="form.sort" value="5" label="문서" id="docs-filter" />
