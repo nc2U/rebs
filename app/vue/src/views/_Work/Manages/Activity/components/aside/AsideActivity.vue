@@ -92,7 +92,7 @@ onBeforeMount(() => {
       <DatePicker v-model="form.to_act_date" id="log-date" />
     </CCol>
   </CRow>
-
+  
   <CRow class="mb-3">
     <CFormLabel for="log-user" class="col-sm-4 col-form-label">사용자</CFormLabel>
     <CCol class="col-xxl-5">

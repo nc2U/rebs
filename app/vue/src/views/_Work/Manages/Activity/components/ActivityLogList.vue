@@ -5,6 +5,7 @@ import { useWork } from '@/store/pinia/work'
 import { cutString, dateFormat, timeFormat } from '@/utils/baseMixins'
 import type { ActLogEntry } from '@/store/types/work'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
+import Cookies from 'js-cookie'
 import NoData from '@/views/_Work/components/NoData.vue'
 
 const workStore = useWork()
@@ -35,17 +36,21 @@ const getIcon = (sort: string, progress: boolean) => {
 const route = useRoute()
 
 onBeforeMount(() => {
+  const cookieSort = Cookies.get('cookieSort')?.split('-') as any
+  const sort = cookieSort?.length ? cookieSort : []
   if (route.params.projId) {
     workStore.fetchIssueProject(route.params.projId as string)
     workStore.fetchActivityLogList({
       project: route.params.projId as string,
       from_act_date: dateFormat(fromDate.value),
       to_act_date: dateFormat(toDate.value),
+      sort,
     })
   } else
     workStore.fetchActivityLogList({
       from_act_date: dateFormat(fromDate.value),
       to_act_date: dateFormat(toDate.value),
+      sort,
     })
 })
 </script>
