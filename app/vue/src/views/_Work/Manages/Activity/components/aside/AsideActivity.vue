@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { reactive, computed, inject, onBeforeMount, type ComputedRef, nextTick } from 'vue'
+import Cookies from 'js-cookie'
+import { reactive, computed, inject, onBeforeMount, type ComputedRef, nextTick, watch } from 'vue'
 import type { ActLogEntryFilter, IssueProject } from '@/store/types/work'
 import { useRoute } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
 import { dateFormat } from '@/utils/baseMixins'
-import Cookies from 'js-cookie'
 import DatePicker from '@/components/DatePicker/index.vue'
 
 defineProps({
@@ -21,6 +21,10 @@ const form = reactive<ActLogEntryFilter & { subProjects: boolean }>({
   user: '',
   sort: ['1', '2', '9'],
   subProjects: true,
+})
+
+watch(form, nVal => {
+  if (nVal.sort?.length === 0) form.sort = ['1', '2']
 })
 
 const syncComment = () => {
@@ -60,24 +64,18 @@ const filterSubmit = () => {
   const toDate = new Date(form.to_act_date as string)
   form.to_act_date = dateFormat(toDate)
   form.from_act_date = dateFormat(new Date(toDate.getTime() - 9 * 24 * 60 * 60 * 1000))
+
   const cookieSort = form.sort ? form.sort?.sort().join('-') : ''
-  Cookies.set('cookieSort', cookieSort)
+
+  if (cookieSort) Cookies.set('cookieSort', cookieSort)
+  else Cookies.remove('cookieSort')
+
   emit('filter-submit', { ...form })
 }
 
 onBeforeMount(() => {
   accStore.fetchUsersList()
-  const cookieSort = Cookies.get('cookieSort')?.split('-') as (
-    | '1'
-    | '2'
-    | '3'
-    | '4'
-    | '5'
-    | '6'
-    | '7'
-    | '8'
-    | '9'
-  )[]
+  const cookieSort = Cookies.get('cookieSort')?.split('-') as any[]
   if (cookieSort?.length) form.sort = cookieSort
 })
 </script>
@@ -113,6 +111,7 @@ onBeforeMount(() => {
         value="1"
         label="업무"
         id="issue-filter"
+        :disabled="form.sort?.length === 2 && form.sort[0] === '1'"
         @change="syncComment"
       />
       <CFormCheck v-model="form.sort" value="3" label="변경묶음" id="changeset-filter" />
