@@ -320,6 +320,10 @@ export interface ActLogEntry {
   }
 }
 
+export interface ActLogEntryFilter {
+  pk: number
+}
+
 export interface IssueLogEntry {
   pk: number
   log_id: number

@@ -3,6 +3,7 @@ import { reactive, computed, inject, onBeforeMount, type ComputedRef } from 'vue
 import { useAccount } from '@/store/pinia/account'
 import { dateFormat } from '@/utils/baseMixins'
 import type { IssueProject } from '@/store/types/work'
+import Cookies from 'js-cookie'
 import DatePicker from '@/components/DatePicker/index.vue'
 
 defineProps({
@@ -15,14 +16,7 @@ const form = reactive({
   to_act_date: dateFormat(new Date()),
   from_act_date: '',
   user: null as number | null,
-  issue: true,
-  changeSet: false,
-  news: false,
-  docs: false,
-  file: false,
-  wiki: false,
-  message: false,
-  spentTime: true,
+  sort: ['1', '9'],
   subProjects: true,
 })
 
@@ -40,24 +34,18 @@ const getUsers = computed(() =>
 )
 
 const filterSubmit = () => {
-  const payload = {} as any
   const toDate = new Date(form.to_act_date)
-  payload.to_act_date = dateFormat(toDate)
-  payload.from_act_date = dateFormat(new Date(toDate.getTime() - 9 * 24 * 60 * 60 * 1000))
-  payload.user = form.user
-  payload.issue__isnull = !form.issue
-  payload.change_set__isnull = !form.changeSet
-  payload.news__isnull = !form.news
-  payload.docs__isnull = !form.docs
-  payload.file__isnull = !form.file
-  payload.wiki__isnull = !form.wiki
-  payload.message__isnull = !form.message
-  payload.spent_time__isnull = !form.spentTime
-  emit('filter-submit', { ...payload })
+  form.to_act_date = dateFormat(toDate)
+  form.from_act_date = dateFormat(new Date(toDate.getTime() - 9 * 24 * 60 * 60 * 1000))
+  const cookieSort = form.sort.sort().join('-')
+  Cookies.set('cookieSort', cookieSort)
+  emit('filter-submit', { ...form })
 }
 
 onBeforeMount(() => {
   accStore.fetchUsersList()
+  const cookieSort = Cookies.get('cookieSort')?.split('-')
+  if (cookieSort?.length) form.sort = cookieSort
 })
 </script>
 
@@ -87,14 +75,14 @@ onBeforeMount(() => {
 
   <CRow class="mb-3">
     <CCol>
-      <CFormCheck v-model="form.issue" label="업무" id="issue-filter" />
-      <CFormCheck v-model="form.changeSet" label="변경묶음" id="changeset-filter" disabled />
-      <CFormCheck v-model="form.news" label="공지" id="news-filter" disabled />
-      <CFormCheck v-model="form.docs" label="문서" id="docs-filter" disabled />
-      <CFormCheck v-model="form.file" label="파일" id="file-filter" disabled />
-      <CFormCheck v-model="form.wiki" label="위키 편집" id="wiki-filter" disabled />
-      <CFormCheck v-model="form.message" label="글" id="message-filter" disabled />
-      <CFormCheck v-model="form.spentTime" label="작업시간" id="spent-time-filter" />
+      <CFormCheck v-model="form.sort" value="1" label="업무" id="issue-filter" />
+      <CFormCheck v-model="form.sort" value="3" label="변경묶음" id="changeset-filter" />
+      <CFormCheck v-model="form.sort" value="4" label="공지" id="news-filter" />
+      <CFormCheck v-model="form.sort" value="5" label="문서" id="docs-filter" />
+      <CFormCheck v-model="form.sort" value="6" label="파일" id="file-filter" />
+      <CFormCheck v-model="form.sort" value="7" label="위키 편집" id="wiki-filter" />
+      <CFormCheck v-model="form.sort" value="8" label="글" id="message-filter" />
+      <CFormCheck v-model="form.sort" value="9" label="작업시간" id="spent-time-filter" />
     </CCol>
   </CRow>
 
