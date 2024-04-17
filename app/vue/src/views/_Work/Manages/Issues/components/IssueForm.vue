@@ -95,7 +95,6 @@ const onSubmit = (event: Event) => {
     validated.value = true
   } else {
     let noSubmit = false
-    // Todo validate 개선
     if (!!timeEntry.value.hours) {
       const time_entry_hours = timeToNum(timeEntry.value.hours, false)
       if (time_entry_hours) timeEntry.value.hours = time_entry_hours
