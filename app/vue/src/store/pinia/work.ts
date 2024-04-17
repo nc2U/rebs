@@ -400,11 +400,11 @@ export const useWork = defineStore('work', () => {
     if (payload.from_act_date) url += `&from_act_date=${payload.from_act_date}`
     if (payload.to_act_date) url += `&to_act_date=${payload.to_act_date}`
     if (payload.user) url += `&user=${payload.user}`
-    if (!!payload.sort?.length) {
-      payload.sort.forEach(item => {
-        url += `&sort=${item}`
-      })
-    }
+    if (!!payload.sort?.length) url += `&sort=${payload.sort.join(',')}`
+    // payload.sort.forEach(item => {
+    //   url += `&sort=${item}`
+    // })
+
     return await api
       .get(url)
       .then(res => (activityLogList.value = res.data.results))

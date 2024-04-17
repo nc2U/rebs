@@ -300,29 +300,21 @@ class TimeEntryViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
+def sort_filter(queryset, name, value):
+    if value:
+        queryset = queryset.filter(sort__in=value.split(","))
+    return queryset
+
+
 class ActivityLogFilter(FilterSet):
     project__search = CharFilter(field_name='project__slug', label='프로젝트-검색')
     from_act_date = DateFilter(field_name='act_date', lookup_expr='gte', label='로그일자부터')
     to_act_date = DateFilter(field_name='act_date', lookup_expr='lte', label='로그일자까지')
-    sort = CharFilter(method='sort_filter')
+    sort = CharFilter(method=sort_filter)
 
     class Meta:
         model = ActivityLogEntry
         fields = ('project__slug', 'from_act_date', 'to_act_date', 'user', 'sort')
-
-    def sort_filter(self, queryset, name, value):
-        # Initial Q object
-        q = Q()
-
-        # Get all sort values from the request (handling in view required)
-        sort_values = self.request.GET.getlist('sort')
-
-        # Combine all conditions with OR
-        for sort in sort_values:
-            if sort is not None:
-                q |= Q(sort=sort)
-
-        return queryset.filter(q)
 
     def filter_queryset(self, queryset):
         subs = None
