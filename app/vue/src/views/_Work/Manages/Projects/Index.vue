@@ -24,7 +24,6 @@ import Files from '@/views/_Work/Manages/Projects/components/Files/Index.vue'
 import Repository from '@/views/_Work/Manages/Projects/components/Repository/Index.vue'
 import Settings from '@/views/_Work/Manages/Projects/components/Settings/Index.vue'
 import AsideActivity from '@/views/_Work/Manages/Activity/components/aside/AsideActivity.vue'
-import { dateFormat } from '@/utils/baseMixins'
 
 const cBody = ref()
 const aside = ref(true)
@@ -96,9 +95,6 @@ const filteringProject = (payload: any) => {
 }
 
 const filteringActivity = (payload: any) => {
-  const toDate = new Date(payload.upToDate)
-  payload.to_act_date = dateFormat(toDate)
-  payload.from_act_date = dateFormat(new Date(toDate.getTime() - 9 * 24 * 60 * 60 * 1000))
   console.log(payload)
 
   // workStore.fetchActivityLogList(payload)

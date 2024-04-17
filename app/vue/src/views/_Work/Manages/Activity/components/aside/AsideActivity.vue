@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, type ComputedRef, inject, onBeforeMount, ref } from 'vue'
+import { reactive, computed, inject, onBeforeMount, type ComputedRef } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { dateFormat } from '@/utils/baseMixins'
 import type { IssueProject } from '@/store/types/work'
@@ -11,14 +11,15 @@ defineProps({
 
 const emit = defineEmits(['filter-submit'])
 
-const form = ref({
-  upToDate: dateFormat(new Date()),
+const form = reactive({
+  to_act_date: dateFormat(new Date()),
+  from_act_date: '',
   user: null as number | null,
   issue: true,
-  changeSet: true,
-  news: true,
-  docs: true,
-  file: true,
+  changeSet: false,
+  news: false,
+  docs: false,
+  file: false,
   wiki: false,
   message: false,
   spentTime: true,
@@ -38,7 +39,12 @@ const getUsers = computed(() =>
     : accStore.getUsers,
 )
 
-const filterSubmit = () => emit('filter-submit', { ...form.value })
+const filterSubmit = () => {
+  const toDate = new Date(form.to_act_date)
+  form.to_act_date = dateFormat(toDate)
+  form.from_act_date = dateFormat(new Date(toDate.getTime() - 9 * 24 * 60 * 60 * 1000))
+  emit('filter-submit', { ...form })
+}
 
 onBeforeMount(() => {
   accStore.fetchUsersList()
@@ -52,7 +58,7 @@ onBeforeMount(() => {
   <CRow class="mb-2">
     <CFormLabel for="log-date" class="col-sm-4 col-form-label">10일 기록</CFormLabel>
     <CCol class="col-xxl-5">
-      <DatePicker v-model="form.upToDate" id="log-date" />
+      <DatePicker v-model="form.to_act_date" id="log-date" />
     </CCol>
   </CRow>
 
@@ -71,14 +77,14 @@ onBeforeMount(() => {
 
   <CRow class="mb-3">
     <CCol>
-      <CFormCheck v-model="form.issue" label="업무" id="issue-filter" disabled />
+      <CFormCheck v-model="form.issue" label="업무" id="issue-filter" />
       <CFormCheck v-model="form.changeSet" label="변경묶음" id="changeset-filter" disabled />
       <CFormCheck v-model="form.news" label="공지" id="news-filter" disabled />
       <CFormCheck v-model="form.docs" label="문서" id="docs-filter" disabled />
       <CFormCheck v-model="form.file" label="파일" id="file-filter" disabled />
       <CFormCheck v-model="form.wiki" label="위키 편집" id="wiki-filter" disabled />
       <CFormCheck v-model="form.message" label="글" id="message-filter" disabled />
-      <CFormCheck v-model="form.spentTime" label="작업시간" id="spent-time-filter" disabled />
+      <CFormCheck v-model="form.spentTime" label="작업시간" id="spent-time-filter" />
     </CCol>
   </CRow>
 
