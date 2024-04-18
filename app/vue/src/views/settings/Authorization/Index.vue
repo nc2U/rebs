@@ -8,7 +8,6 @@ import { write_auth_manage } from '@/utils/pageAuth'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import UserSelect from './components/UserSelect.vue'
-import ProjectManageAuth from './components/ProjectManageAuth.vue'
 import SideBarManageAuth from './components/SideBarManageAuth.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -232,13 +231,9 @@ onBeforeMount(() => {
       <SideBarManageAuth
         :user="user as User"
         :allowed="projectAuth.allowed_projects"
-        @select-auth="selectAuth"
-      />
-
-      <ProjectManageAuth
-        :user="user as User"
         @get-allowed="getAllowed"
         @get-assigned="getAssigned"
+        @select-auth="selectAuth"
       />
     </CCardBody>
 

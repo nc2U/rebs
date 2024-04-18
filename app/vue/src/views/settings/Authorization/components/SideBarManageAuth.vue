@@ -2,13 +2,15 @@
 import { ref, reactive, computed, nextTick, onMounted, onUpdated } from 'vue'
 import { type UserAuth } from '@/views/settings/Authorization/Index.vue'
 import { useStore } from '@/store'
+import type { User } from '@/store/types/accounts'
+import ProjectManageAuth from '@/views/settings/Authorization/components/ProjectManageAuth.vue'
 
 const props = defineProps({
   user: { type: Object, default: null },
   allowed: { type: Array, default: () => [] },
 })
 
-const emit = defineEmits(['select-auth'])
+const emit = defineEmits(['select-auth', 'get-allowed', 'get-assigned'])
 
 const store = useStore()
 const isDark = computed(() => store.theme === 'dark')
@@ -42,6 +44,10 @@ const getColor = (status: '0' | '1' | '2') => {
   else if (status === '2') return ['success', '#edf7f2']
   else return ['blue-grey-lighten-1', '']
 }
+
+const getAllowed = (payload: number[]) => emit('get-allowed', payload)
+
+const getAssigned = (payload: number | null) => emit('get-assigned', payload)
 
 const selectAuth = () =>
   nextTick(() => {
@@ -214,6 +220,10 @@ onUpdated(() => dataSetup())
       </CRow>
     </CCol>
   </CRow>
+
+  <v-divider />
+
+  <ProjectManageAuth :user="user as User" @get-allowed="getAllowed" @get-assigned="getAssigned" />
 
   <v-divider />
 
