@@ -501,7 +501,7 @@ onBeforeMount(() => {
               </CCol>
             </CRow>
 
-            <CRow>
+            <CRow class="mb-3">
               <CCol>
                 <h6>댓글</h6>
                 <v-divider class="mt-0" />
@@ -510,7 +510,7 @@ onBeforeMount(() => {
               </CCol>
             </CRow>
 
-            <CRow class="mt-3">
+            <CRow>
               <h6>파일</h6>
               <v-divider />
               <CCol sm="6">
