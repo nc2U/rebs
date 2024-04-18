@@ -54,7 +54,10 @@ const timeEntry = ref({
   comment: '',
 })
 
-const comment_content = ref('')
+const comment = ref({
+  content: '',
+  is_private: false,
+})
 
 const addUser = ref()
 
@@ -78,7 +81,7 @@ const formCheck = computed(() => {
     const n = !timeEntry.value.hours
     const o = !timeEntry.value.activity
     const p = !timeEntry.value.comment
-    const q = !comment_content.value
+    const q = !comment.value.content
     return a && b && c && d && e && f && g && h && i && j && k && l && m && n && o && p && q
   } else return false
 })
@@ -119,7 +122,7 @@ const onSubmit = (event: Event) => {
       emit('on-submit', {
         ...form.value,
         ...timeEntry.value,
-        comment_content: comment_content.value,
+        comment_content: comment.value.content,
       })
       validated.value = false
     }
@@ -137,7 +140,7 @@ const userInfo = inject<ComputedRef<User>>('userInfo')
 
 const callComment = (edit?: true) => {
   // 댓글 폼 불러오기
-  comment_content.value = edit
+  comment.value.content = edit
     ? ''
     : userInfo?.value.username +
       '의 댓글: \n' +
@@ -425,6 +428,9 @@ onBeforeMount(() => {
               <CCol sm="4">
                 <CFormInput id="file" type="file" />
               </CCol>
+              <!--              <CCol>-->
+              <!--                <CFormInput placeholder="부가적인 설명" />-->
+              <!--              </CCol>-->
             </CRow>
 
             <CRow class="mb-3">
@@ -495,9 +501,26 @@ onBeforeMount(() => {
               </CCol>
             </CRow>
 
-            <h6>댓글</h6>
-            <v-divider class="mt-0" />
-            <MdEditor v-model="comment_content" style="height: 180px" />
+            <CRow>
+              <CCol>
+                <h6>댓글</h6>
+                <v-divider class="mt-0" />
+                <MdEditor v-model="comment.content" style="height: 180px" class="mb-1" />
+                <CFormCheck v-model="comment.is_private" id="private_comment" label="비공개 댓글" />
+              </CCol>
+            </CRow>
+
+            <v-divider />
+
+            <CRow class="mb-3">
+              <h6>파일</h6>
+              <CCol sm="4">
+                <CFormInput id="file" type="file" />
+              </CCol>
+              <!--              <CCol>-->
+              <!--                <CFormInput placeholder="부가적인 설명" />-->
+              <!--              </CCol>-->
+            </CRow>
           </div>
         </CCardBody>
       </CCard>
