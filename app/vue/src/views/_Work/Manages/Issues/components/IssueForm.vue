@@ -3,13 +3,15 @@ import { ref, onBeforeMount, type PropType, computed, watch, inject, type Comput
 import type { CodeValue, Issue, IssueProject, IssueStatus } from '@/store/types/work'
 import type { User } from '@/store/types/accounts'
 import { isValidate } from '@/utils/helper'
-import { colorLight } from '@/utils/cssMixins'
 import { dateFormat } from '@/utils/baseMixins'
 import { useRoute } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
+import { useAccount } from '@/store/pinia/account'
+import { colorLight } from '@/utils/cssMixins'
 import Multiselect from '@vueform/multiselect'
 import MdEditor from '@/components/MdEditor/Index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const props = defineProps({
   issueProject: { type: Object as PropType<IssueProject>, default: null },
@@ -20,6 +22,8 @@ const props = defineProps({
   priorityList: { type: Array as PropType<CodeValue[]>, default: () => [] },
   getIssues: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
 })
+
+const RefUserSearch = ref()
 
 const validated = ref(false)
 const editDetails = ref(true)
@@ -51,6 +55,8 @@ const timeEntry = ref({
 })
 
 const comment_content = ref('')
+
+const addUser = ref()
 
 const emit = defineEmits(['on-submit', 'close-form'])
 
@@ -86,6 +92,7 @@ watch(props, nVal => {
 const memberList = computed(() =>
   props.issueProject ? props.issueProject.all_members : workStore.memberList,
 )
+
 const trackerList = computed(() =>
   props.issueProject ? props.issueProject.trackers : workStore.trackerList,
 )
@@ -182,6 +189,9 @@ const timeToNum = (n: number | string | null, estimated: boolean) => {
   }
 }
 
+const accStore = useAccount()
+const getUsers = computed(() => accStore.getUsers)
+
 onBeforeMount(() => {
   if (props.issue) {
     editDetails.value = false
@@ -203,6 +213,7 @@ onBeforeMount(() => {
     workStore.fetchIssueList({ status__closed: '', project: props.issue.project.slug })
   }
   if (route.params.projId) form.value.project = route.params.projId as string
+  accStore.fetchUsersList()
 })
 </script>
 
@@ -338,14 +349,24 @@ onBeforeMount(() => {
             <CFormLabel for="assigned_to" class="col-sm-2 col-form-label text-right">
               담당자
             </CFormLabel>
-            <CCol sm="4">
+            <div class="col-sm-3">
               <CFormSelect v-model.number="form.assigned_to" id="assigned_to">
                 <option value="">---------</option>
+                <option :value="userInfo?.pk">&lt;&lt; 나 &gt;&gt;</option>
                 <option v-for="mem in memberList" :value="mem.user.pk" :key="mem.pk">
                   {{ mem.user.username }}
                 </option>
               </CFormSelect>
-            </CCol>
+            </div>
+            <div class="col-sm-1" style="padding-top: 6px">
+              <router-link
+                v-if="form.assigned_to !== userInfo?.pk"
+                @click="form.assigned_to = userInfo?.pk as number"
+                to=""
+              >
+                나에게 할당
+              </router-link>
+            </div>
 
             <CFormLabel for="due_date" class="col-sm-2 col-form-label text-right">
               완료일
@@ -410,7 +431,7 @@ onBeforeMount(() => {
               <CFormLabel for="watcher" class="col-sm-2 col-form-label text-right">
                 업무 열람 공유자
               </CFormLabel>
-              <CCol sm="4" style="padding-top: 8px">
+              <CCol sm="10" style="padding-top: 8px">
                 <span v-for="mem in memberList" :key="mem.pk" class="mr-3">
                   <input
                     v-model="form.watchers"
@@ -423,6 +444,13 @@ onBeforeMount(() => {
                     {{ mem.user.username }}
                   </label>
                 </span>
+              </CCol>
+              <CCol class="col-sm-2"></CCol>
+              <CCol class="form-text">
+                <v-icon icon="mdi-plus-circle" color="success" size="sm" class="mr-2" />
+                <router-link to="" @click="RefUserSearch.callModal()">
+                  추가할 업무 열람 공유자 검색
+                </router-link>
               </CCol>
             </CRow>
           </div>
@@ -480,4 +508,22 @@ onBeforeMount(() => {
       <CButton type="button" color="light" @click="closeForm">취소</CButton>
     </CForm>
   </CRow>
+
+  <ConfirmModal ref="RefUserSearch">
+    <template #header>업무 열람 공유자 추가</template>
+
+    <template #default>
+      <Multiselect
+        v-model="addUser"
+        :options="getUsers"
+        searchable
+        placeholder="사용자 찾기"
+        class="mb-5"
+      />
+    </template>
+
+    <template #footer>
+      <CButton color="primary">추가</CButton>
+    </template>
+  </ConfirmModal>
 </template>
