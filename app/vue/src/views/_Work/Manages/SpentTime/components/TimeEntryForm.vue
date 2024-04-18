@@ -3,6 +3,7 @@ import { ref, computed, onBeforeMount, type PropType, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { isValidate } from '@/utils/helper'
 import { useWork } from '@/store/pinia/work'
+import { colorLight } from '@/utils/cssMixins'
 import { dateFormat } from '@/utils/baseMixins'
 import type { IssueProject } from '@/store/types/work'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -102,7 +103,7 @@ onBeforeMount(async () => {
 
   <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
     <CRow class="py-2">
-      <CCard color="light" class="mb-2">
+      <CCard :color="colorLight" class="mb-2">
         <CCardBody>
           <CRow class="mb-3">
             <CFormLabel
