@@ -510,11 +510,10 @@ onBeforeMount(() => {
               </CCol>
             </CRow>
 
-            <v-divider />
-
-            <CRow class="mb-3">
+            <CRow class="mt-3">
               <h6>파일</h6>
-              <CCol sm="4">
+              <v-divider />
+              <CCol sm="6">
                 <CFormInput id="file" type="file" />
               </CCol>
               <!--              <CCol>-->
