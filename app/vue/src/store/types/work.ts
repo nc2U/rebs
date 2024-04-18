@@ -239,6 +239,7 @@ export interface IssueComment {
     description: string
   }
   content: string
+  is_private: boolean
   created: string
   updated: string
   user: {
