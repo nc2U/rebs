@@ -416,7 +416,7 @@ class IssueCommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = IssueComment
-        fields = ('pk', 'issue', 'content', 'created', 'updated', 'user')
+        fields = ('pk', 'issue', 'content', 'is_private', 'created', 'updated', 'user')
 
 
 class SimpleCodeActivitySerializer(serializers.ModelSerializer):

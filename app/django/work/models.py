@@ -429,6 +429,7 @@ class IssueFile(models.Model):
 class IssueComment(models.Model):
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, verbose_name='업무', related_name='comments')
     content = models.TextField('내용')
+    is_private = models.BooleanField('비공개 댓글', default=False)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')
     created = models.DateTimeField('추가', auto_now_add=True)
     updated = models.DateTimeField('편집', auto_now=True)
