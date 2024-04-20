@@ -1,6 +1,5 @@
 import os
 import magic
-import hashlib
 
 from django.db import models
 from datetime import datetime, timedelta
@@ -365,24 +364,6 @@ class Post(models.Model):
     def restore(self):
         self.deleted = None
         self.save(update_fields=['deleted'])
-
-
-def get_file_name(filename):
-    file = filename.split('.')
-    ext = file.pop()
-    year = datetime.today().strftime('%Y')
-    month = datetime.today().strftime('%m')
-    h = hashlib.blake2b(digest_size=3)
-    h.update(bytes(f'{datetime.now().timestamp()}', 'utf-8'))
-    return f"{year}/{month}/{''.join(file)}_{h.hexdigest()}_.{ext}"
-
-
-def get_img_path(instance, filename):
-    return f"post/img/{get_file_name(filename)}"
-
-
-def get_file_path(instance, filename):
-    return f"post/docs/{get_file_name(filename)}"
 
 
 class Link(models.Model):
