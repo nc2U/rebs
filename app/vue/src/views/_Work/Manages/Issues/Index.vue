@@ -33,9 +33,8 @@ const onSubmit = (payload: any) => {
   const form = new FormData()
 
   for (const key in getData) {
-    if (key === 'file') form.append(key, JSON.stringify(getData[key]))
-    else if (key === 'watchers') getData[key]?.forEach(val => form.append(key, JSON.stringify(val)))
-    else form.append(key, getData[key] === null ? '' : getData[key])
+    if (key === 'watchers') getData[key]?.forEach(val => form.append(key, JSON.stringify(val)))
+    else form.append(key, getData[key] === null ? '' : (getData[key] as string | Blob))
   }
 
   if (pk) workStore.updateIssue(pk, form)

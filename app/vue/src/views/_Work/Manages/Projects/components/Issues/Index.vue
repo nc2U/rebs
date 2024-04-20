@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, watch } from 'vue'
+import { computed, onBeforeMount, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import type { IssueFilter } from '@/store/types/work'
@@ -30,9 +30,8 @@ const onSubmit = (payload: any) => {
   const form = new FormData()
 
   for (const key in getData) {
-    if (key === 'file') form.append(key, JSON.stringify(getData[key]))
-    else if (key === 'watchers') getData[key]?.forEach(val => form.append(key, JSON.stringify(val)))
-    else form.append(key, getData[key] === null ? '' : getData[key])
+    if (key === 'watchers') getData[key]?.forEach(val => form.append(key, JSON.stringify(val)))
+    else form.append(key, getData[key] === null ? '' : (getData[key] as string | Blob))
   }
 
   if (pk) workStore.updateIssue(pk, form)
