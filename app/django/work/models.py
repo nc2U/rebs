@@ -402,23 +402,10 @@ class Issue(models.Model):
         verbose_name_plural = '10. 업무(작업)'
 
 
-# def get_file_name(filename):
-#     file = filename.split('.')
-#     ext = file.pop()
-#     return f"{file}.{ext}"
-#
-#
-# def get_file_path(instance, filename):
-#     year = datetime.today().strftime('%Y')
-#     month = datetime.today().strftime('%m')
-#     day = datetime.today().strftime('%d')
-#     return f"work/issue/{year}/{month}/{day}/{get_file_name(filename)}"
-
-
 class IssueFile(models.Model):
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, default=None, verbose_name='업무', related_name='files')
-    # filename = models.CharField('파일명', max_length=100, default='')
     file = models.FileField(upload_to='work/issue/%Y/%m/%d/', verbose_name='파일')
+    filename = models.CharField('파일명', max_length=100, blank=True)
     filetype = models.CharField('타입', max_length=100, blank=True)
     filesize = models.PositiveSmallIntegerField('사이즈', blank=True, null=True)
     description = models.CharField('부가설명', max_length=255, blank=True, default='')
@@ -430,6 +417,7 @@ class IssueFile(models.Model):
 
     def save(self, *args, **kwargs):
         if self.file:
+            self.filename = self.file.name
             mime = magic.Magic(mime=True)
             self.filetype = mime.from_buffer(self.file.read())
             self.filesize = self.file.size

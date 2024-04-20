@@ -274,7 +274,7 @@ onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue
         </CCol>
       </CRow>
 
-      <v-divider />
+      <v-divider v-if="issue.files.length" />
 
       <CRow>
         <CCol class="title">하위 일감</CCol>
