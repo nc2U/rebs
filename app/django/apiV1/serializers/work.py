@@ -302,6 +302,12 @@ class CodePriorityInIssueSerializer(serializers.ModelSerializer):
         fields = ('pk', 'name')
 
 
+class IssueFileInIssueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IssueFile
+        fields = ('pk', 'file', 'description', 'created')
+
+
 class IssueSerializer(serializers.ModelSerializer):
     project = IProjectIssueSerializer(read_only=True)
     tracker = TrackerInIssueProjectSerializer(read_only=True)
@@ -310,15 +316,17 @@ class IssueSerializer(serializers.ModelSerializer):
     assigned_to = SimpleUserSerializer(read_only=True)
     parent = serializers.SerializerMethodField()
     spent_time = serializers.SerializerMethodField(read_only=True)
+    files = IssueFileInIssueSerializer(many=True, read_only=True)
     creator = SimpleUserSerializer(read_only=True)
     updater = SimpleUserSerializer(read_only=True)
 
     class Meta:
         model = Issue
         fields = ('pk', 'project', 'tracker', 'status', 'priority', 'subject',
-                  'description', 'category', 'fixed_version', 'assigned_to', 'parent',
-                  'watchers', 'is_private', 'estimated_hours', 'start_date', 'due_date',
-                  'done_ratio', 'closed', 'spent_time', 'creator', 'updater', 'created', 'updated')
+                  'description', 'category', 'fixed_version', 'assigned_to',
+                  'parent', 'watchers', 'is_private', 'estimated_hours', 'start_date',
+                  'due_date', 'done_ratio', 'closed', 'spent_time', 'files',
+                  'creator', 'updater', 'created', 'updated')
 
     @staticmethod
     def get_parent(obj):
@@ -412,7 +420,7 @@ class IssueInRelatedSerializer(serializers.ModelSerializer):
 class IssueFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = IssueFile
-        fields = ('pk', 'issue', 'file', 'description')
+        fields = ('pk', 'issue', 'file', 'description', 'created')
 
 
 class IssueCommentSerializer(serializers.ModelSerializer):

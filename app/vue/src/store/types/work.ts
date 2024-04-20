@@ -211,6 +211,7 @@ export interface Issue {
   done_ratio: number
   closed: string | null
   spent_time: number | null
+  files: Array<{ pk: number; file: string; description: string; created: string }>
   creator: { pk: number; username: string }
   updater: { pk: number; username: string } | null
   created: string
