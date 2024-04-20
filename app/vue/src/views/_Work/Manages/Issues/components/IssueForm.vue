@@ -139,7 +139,7 @@ const onSubmit = (event: Event) => {
       emit('on-submit', {
         ...form.value,
         ...timeEntry.value,
-        newFile: newFiles.value,
+        newFiles: newFiles.value,
         comment_content: comment.value.content,
       })
       validated.value = false
