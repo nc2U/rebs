@@ -1,3 +1,5 @@
+import json
+
 from django.db import transaction
 from django.db.models import Sum
 from django.utils import timezone
@@ -369,10 +371,10 @@ class IssueSerializer(serializers.ModelSerializer):
                 if not issue.watchers.filter(id=watcher.pk).exists():
                     issue.watchers.add(watcher)
         # File 처리
-        files = self.initial_data.getlist('files', [])
+        new_files = self.initial_data.getlist('new_files', [])
         descriptions = self.initial_data.getlist('descriptions', [])
-        if files:
-            for i, file in enumerate(files):
+        if new_files:
+            for i, file in enumerate(new_files):
                 issue_file = IssueFile(issue=issue, file=file,
                                        description=descriptions[i], user=user)
                 issue_file.save()
@@ -409,6 +411,23 @@ class IssueSerializer(serializers.ModelSerializer):
         comment_content = self.initial_data.get('comment_content', None)
         if comment_content:
             IssueComment.objects.create(issue=instance, content=comment_content, user=user)
+
+        # File 처리
+        new_files = self.initial_data.getlist('new_files', [])
+        descriptions = self.initial_data.getlist('descriptions', [])
+        if new_files:
+            for i, file in enumerate(new_files):
+                issue_file = IssueFile(issue=instance, file=file,
+                                       description=descriptions[i], user=user)
+                issue_file.save()
+        old_files = self.initial_data.getlist('files', [])
+        if old_files:
+            for json_file in old_files:
+                file = json.loads(json_file)
+                file_object = IssueFile.objects.get(pk=file.get('pk'))
+
+                if file.get('del'):
+                    file_object.delete()
 
         return super().update(instance, validated_data)
 
