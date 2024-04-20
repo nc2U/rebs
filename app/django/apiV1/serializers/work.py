@@ -307,7 +307,7 @@ class IssueFileInIssueSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = IssueFile
-        fields = ('pk', 'file', 'filetype', 'filesize', 'description', 'created', 'user')
+        fields = ('pk', 'file', 'filename', 'filetype', 'filesize', 'description', 'created', 'user')
 
 
 class IssueSerializer(serializers.ModelSerializer):

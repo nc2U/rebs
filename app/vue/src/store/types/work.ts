@@ -191,6 +191,20 @@ export interface CodeValue {
   order: number
 }
 
+interface IssueFile {
+  pk: number
+  file: string
+  filename: string
+  filetype: string
+  filesize: number
+  description: string
+  created: string
+  user: {
+    pk: number
+    username: string
+  }
+}
+
 export interface Issue {
   pk: number
   project: { slug: string; name: string }
@@ -211,7 +225,7 @@ export interface Issue {
   done_ratio: number
   closed: string | null
   spent_time: number | null
-  files: Array<{ pk: number; file: string; description: string; created: string }>
+  files: Array<IssueFile>
   creator: { pk: number; username: string }
   updater: { pk: number; username: string } | null
   created: string
