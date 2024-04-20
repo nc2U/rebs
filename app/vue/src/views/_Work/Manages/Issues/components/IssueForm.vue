@@ -107,11 +107,15 @@ const formCheck = computed(() => {
     const l = form.value.estimated_hours === numToTime(props.issue.estimated_hours)
     const m = form.value.done_ratio === props.issue.done_ratio
     const n = !form.value.files.map(f => f.del).some(f => f === true)
-    const o = !timeEntry.value.hours
-    const p = !timeEntry.value.activity
-    const q = !timeEntry.value.comment
-    const r = !comment.value.content
-    return a && b && c && d && e && f && g && h && i && j && k && l && m && n && o && p && q && r
+    const o = !newFiles.value.length
+    const p = !timeEntry.value.hours
+    const q = !timeEntry.value.activity
+    const r = !timeEntry.value.comment
+    const s = !comment.value.content
+
+    const first = a && b && c && d && e && f && g && h && i
+    const second = j && k && l && m && n && o && p && q && r && s
+    return first && second
   } else return false
 })
 
