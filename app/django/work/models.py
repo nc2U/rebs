@@ -1,3 +1,4 @@
+import os, magic
 from datetime import datetime
 
 from django.conf import settings
@@ -404,24 +405,39 @@ class Issue(models.Model):
 def get_file_name(filename):
     file = filename.split('.')
     ext = file.pop()
-    year = datetime.today().strftime('%Y')
-    month = datetime.today().strftime('%m')
-    day = datetime.today().strftime('%d')
-    return f"{year}/{month}/{day}/{file}.{ext}"
+    return f"{file}.{ext}"
 
 
 def get_file_path(instance, filename):
-    return f"work/issue/{get_file_name(filename)}"
+    year = datetime.today().strftime('%Y')
+    month = datetime.today().strftime('%m')
+    day = datetime.today().strftime('%d')
+    return f"work/issue/{year}/{month}/{day}/{get_file_name(filename)}"
+
+
+def get_file_type(filename):
+    return filename.split('.')[-1]
 
 
 class IssueFile(models.Model):
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, default=None, verbose_name='업무', related_name='files')
-    file = models.FileField(upload_to=get_file_path, verbose_name='파일')
+    # filename = models.CharField('파일명', max_length=100, default='')
+    file = models.FileField(upload_to='work/issue/%Y/%m/%d/', verbose_name='파일')
+    filetype = models.CharField('타입', max_length=100, blank=True)
+    filesize = models.PositiveSmallIntegerField('사이즈', blank=True, null=True)
     description = models.CharField('부가설명', max_length=255, blank=True, default='')
     created = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사용자')
 
     def __str__(self):
         return settings.MEDIA_URL
+
+    def save(self, *args, **kwargs):
+        if self.file:
+            mime = magic.Magic(mime=True)
+            self.filetype = mime.from_buffer(self.file.read())
+            self.filesize = self.file.size
+        super().save(*args, **kwargs)
 
 
 class IssueComment(models.Model):

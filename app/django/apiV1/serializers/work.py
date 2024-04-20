@@ -303,9 +303,11 @@ class CodePriorityInIssueSerializer(serializers.ModelSerializer):
 
 
 class IssueFileInIssueSerializer(serializers.ModelSerializer):
+    user = SimpleUserSerializer(read_only=True)
+
     class Meta:
         model = IssueFile
-        fields = ('pk', 'file', 'description', 'created')
+        fields = ('pk', 'file', 'filetype', 'filesize', 'description', 'created', 'user')
 
 
 class IssueSerializer(serializers.ModelSerializer):
@@ -359,10 +361,6 @@ class IssueSerializer(serializers.ModelSerializer):
                                      assigned_to=assigned_to,
                                      parent=parent,
                                      **validated_data)
-        # File 처리
-        file = self.initial_data.get('file', None)
-        if file:
-            IssueFile.objects.create(issue=issue, file=file, description=description)
         # Set the watchers of the instance to the list of watchers
         user = self.context['request'].user
         issue.watchers.add(user.pk)
@@ -370,6 +368,12 @@ class IssueSerializer(serializers.ModelSerializer):
             for watcher in watchers:
                 if not issue.watchers.filter(id=watcher.pk).exists():
                     issue.watchers.add(watcher)
+        # # File 처리
+        # file = self.initial_data.get('file', None)
+        # if file:
+        #     IssueFile.objects.create(issue=issue, file=file,
+        #                              filesize=filesize,
+        #                              description=description, user=user)
         return issue
 
     @transaction.atomic
