@@ -194,9 +194,9 @@ export interface CodeValue {
 interface IssueFile {
   pk: number
   file: string
-  filename: string
-  filetype: string
-  filesize: number
+  file_name: string
+  file_type: string
+  file_size: number
   description: string
   created: string
   user: {
