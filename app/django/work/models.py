@@ -409,7 +409,7 @@ class IssueFile(models.Model):
     file = models.FileField(upload_to='work/issue/%Y/%m/%d/', verbose_name='파일')
     file_name = models.CharField('파일명', max_length=100, blank=True)
     file_type = models.CharField('타입', max_length=100, blank=True)
-    file_size = models.PositiveSmallIntegerField('사이즈', blank=True, null=True)
+    file_size = models.PositiveBigIntegerField('사이즈', blank=True, null=True)
     description = models.CharField('부가설명', max_length=255, blank=True, default='')
     created = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사용자')

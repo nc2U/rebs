@@ -368,12 +368,12 @@ class IssueSerializer(serializers.ModelSerializer):
             for watcher in watchers:
                 if not issue.watchers.filter(id=watcher.pk).exists():
                     issue.watchers.add(watcher)
-        # # File 처리
-        # file = self.initial_data.get('file', None)
-        # if file:
-        #     IssueFile.objects.create(issue=issue, file=file,
-        #                              filesize=filesize,
-        #                              description=description, user=user)
+        # File 처리
+        file = self.initial_data.get('file', None)
+        if file:
+            issue_file = IssueFile(issue=issue, file=file,
+                                   description=description, user=user)
+            issue_file.save()
         return issue
 
     @transaction.atomic
