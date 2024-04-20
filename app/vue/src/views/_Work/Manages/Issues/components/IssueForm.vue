@@ -139,7 +139,7 @@ const onSubmit = (event: Event) => {
       emit('on-submit', {
         ...form.value,
         ...timeEntry.value,
-        ...newFiles.value,
+        newFile: newFiles.value,
         comment_content: comment.value.content,
       })
       validated.value = false
@@ -259,7 +259,7 @@ onBeforeMount(() => {
             </CFormLabel>
 
             <CCol sm="4">
-              <CFormSelect v-model="form.project">
+              <CFormSelect v-model="form.project" required>
                 <option value="">---------</option>
                 <option v-for="proj in allProjects" :value="proj.slug" :key="proj.slug">
                   <span v-if="proj.depth === 2"> &nbsp;&nbsp;» </span>
