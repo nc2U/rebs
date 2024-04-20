@@ -1,4 +1,4 @@
-import os, magic
+import magic
 from datetime import datetime
 
 from django.conf import settings
