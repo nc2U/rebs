@@ -1,7 +1,6 @@
-import hashlib
-
 from datetime import datetime
 
+from django.conf import settings
 from django.db import models
 
 
@@ -408,9 +407,7 @@ def get_file_name(filename):
     year = datetime.today().strftime('%Y')
     month = datetime.today().strftime('%m')
     day = datetime.today().strftime('%d')
-    h = hashlib.blake2b(digest_size=3)
-    h.update(bytes(f'{datetime.now().timestamp()}', 'utf-8'))
-    return f"{year}/{month}/{year}{month}{day}_{h.hexdigest()}_{''.join(file)}.{ext}"
+    return f"{year}/{month}/{day}/{file}.{ext}"
 
 
 def get_file_path(instance, filename):
@@ -424,7 +421,7 @@ class IssueFile(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.file
+        return settings.MEDIA_URL
 
 
 class IssueComment(models.Model):
