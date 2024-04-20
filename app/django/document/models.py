@@ -1,8 +1,12 @@
 import hashlib
+import os
+
 from django.db import models
 from datetime import datetime, timedelta
 from django.conf import settings
 from tinymce.models import HTMLField
+from django.dispatch import receiver
+from django.db.models.signals import pre_delete
 
 
 class Group(models.Model):
@@ -391,21 +395,37 @@ class Link(models.Model):
 
 class Image(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물', related_name='images')
-    image = models.ImageField(upload_to=get_img_path, verbose_name='이미지')
+    image = models.ImageField(upload_to='post/img/%Y/%m/%d/', verbose_name='이미지')
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return settings.MEDIA_URL
 
 
+@receiver(pre_delete, sender=Image)
+def delete_file_on_delete(sender, instance, **kwargs):
+    # Check if the file exists before attempting to delete it
+    if instance.image:
+        if os.path.isfile(instance.image.path):
+            os.remove(instance.image.path)
+
+
 class File(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물', related_name='files')
-    file = models.FileField(upload_to=get_file_path, verbose_name='파일')
+    file = models.FileField(upload_to='post/docs/%Y/%m/%d/', verbose_name='파일')
     hit = models.PositiveIntegerField('다운로드수', default=0)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return settings.MEDIA_URL
+
+
+@receiver(pre_delete, sender=File)
+def delete_file_on_delete(sender, instance, **kwargs):
+    # Check if the file exists before attempting to delete it
+    if instance.file:
+        if os.path.isfile(instance.file.path):
+            os.remove(instance.file.path)
 
 
 class Comment(models.Model):

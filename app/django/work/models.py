@@ -1,8 +1,10 @@
-import magic
-from datetime import datetime
+import os
 
-from django.conf import settings
+import magic
 from django.db import models
+from django.conf import settings
+from django.dispatch import receiver
+from django.db.models.signals import pre_delete
 
 
 class IssueProject(models.Model):
@@ -422,6 +424,14 @@ class IssueFile(models.Model):
             self.filetype = mime.from_buffer(self.file.read())
             self.filesize = self.file.size
         super().save(*args, **kwargs)
+
+
+@receiver(pre_delete, sender=IssueFile)
+def delete_file_on_delete(sender, instance, **kwargs):
+    # Check if the file exists before attempting to delete it
+    if instance.file:
+        if os.path.isfile(instance.file.path):
+            os.remove(instance.file.path)
 
 
 class IssueComment(models.Model):
