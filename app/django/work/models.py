@@ -1,6 +1,6 @@
 import os
-
 import magic
+
 from django.db import models
 from django.conf import settings
 from django.dispatch import receiver
@@ -407,9 +407,9 @@ class Issue(models.Model):
 class IssueFile(models.Model):
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, default=None, verbose_name='업무', related_name='files')
     file = models.FileField(upload_to='work/issue/%Y/%m/%d/', verbose_name='파일')
-    filename = models.CharField('파일명', max_length=100, blank=True)
-    filetype = models.CharField('타입', max_length=100, blank=True)
-    filesize = models.PositiveSmallIntegerField('사이즈', blank=True, null=True)
+    file_name = models.CharField('파일명', max_length=100, blank=True)
+    file_type = models.CharField('타입', max_length=100, blank=True)
+    file_size = models.PositiveSmallIntegerField('사이즈', blank=True, null=True)
     description = models.CharField('부가설명', max_length=255, blank=True, default='')
     created = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사용자')
@@ -419,10 +419,10 @@ class IssueFile(models.Model):
 
     def save(self, *args, **kwargs):
         if self.file:
-            self.filename = self.file.name.split('/')[-1]
+            self.file_name = self.file.name.split('/')[-1]
             mime = magic.Magic(mime=True)
-            self.filetype = mime.from_buffer(self.file.read())
-            self.filesize = self.file.size
+            self.file_type = mime.from_buffer(self.file.read())
+            self.file_size = self.file.size
         super().save(*args, **kwargs)
 
 
