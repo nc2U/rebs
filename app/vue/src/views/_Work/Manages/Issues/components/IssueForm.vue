@@ -9,7 +9,7 @@ import {
   type ComputedRef,
   nextTick,
 } from 'vue'
-import type { CodeValue, Issue, IssueProject, IssueStatus } from '@/store/types/work'
+import type { CodeValue, Issue, IssueFile, IssueProject, IssueStatus } from '@/store/types/work'
 import type { User } from '@/store/types/accounts'
 import { isValidate } from '@/utils/helper'
 import { dateFormat } from '@/utils/baseMixins'
@@ -56,7 +56,7 @@ const form = ref({
   estimated_hours: null as number | string | null,
   done_ratio: 0,
   watchers: [] as number[],
-  files: [],
+  files: [] as IssueFile[],
 })
 
 const timeEntry = ref({
@@ -575,7 +575,6 @@ onBeforeMount(() => {
                           v-model="form.files[i].del"
                           :id="`file-del-${file.pk}`"
                           label="삭제"
-                          @click="ctlFileDel(form.files[i].del)"
                         />
                       </CCol>
                     </CRow>

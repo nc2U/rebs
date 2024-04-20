@@ -191,7 +191,7 @@ export interface CodeValue {
   order: number
 }
 
-interface IssueFile {
+export interface IssueFile {
   pk: number
   file: string
   file_name: string
@@ -203,6 +203,7 @@ interface IssueFile {
     pk: number
     username: string
   }
+  del?: boolean
 }
 
 export interface Issue {
