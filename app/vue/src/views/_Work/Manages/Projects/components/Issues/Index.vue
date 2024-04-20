@@ -35,7 +35,7 @@ const onSubmit = (payload: any) => {
     else form.append(key, getData[key] === null ? '' : getData[key])
   }
 
-  if (pk) workStore.updateIssue(form)
+  if (pk) workStore.updateIssue(pk, form)
   else {
     workStore.createIssue(form)
     if (route.params.projId) router.replace({ name: '(업무)' })

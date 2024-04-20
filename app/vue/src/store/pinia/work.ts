@@ -241,15 +241,15 @@ export const useWork = defineStore('work', () => {
       })
       .catch(err => errorHandle(err.response.data))
 
-  const updateIssue = (payload: any) =>
+  const updateIssue = (pk: number, payload: any) =>
     api
-      .put(`/issue/${payload.pk}/`, payload, config_headers)
+      .put(`/issue/${pk}/`, payload, config_headers)
       .then(async () => {
-        await fetchIssue(payload.pk)
-        await fetchIssueLogList({ issue: payload.pk })
-        await fetchIssueLogList({ issue: payload.pk })
+        await fetchIssue(pk)
+        await fetchIssueLogList({ issue: pk })
+        await fetchIssueLogList({ issue: pk })
         // await fetchIssueCommentList({ issue: payload.pk })
-        await fetchTimeEntryList({ issue: payload.pk, ordering: 'pk' })
+        await fetchTimeEntryList({ issue: pk, ordering: 'pk' })
         message()
       })
       .catch(err => errorHandle(err.response.data))
