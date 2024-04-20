@@ -263,10 +263,10 @@ onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue
               <v-icon icon="mdi-paperclip" size="sm" color="grey" class="mr-2" />
               <span>
                 <router-link :to="file.file">
-                  {{ file.filename }}
+                  {{ file.file_name }}
                 </router-link>
               </span>
-              <span class="file-desc1 mr-1"> ({{ humanizeFileSize(file.filesize) }}) </span>
+              <span class="file-desc1 mr-1"> ({{ humanizeFileSize(file.file_size) }}) </span>
               <span class="mr-2">
                 <router-link to="">
                   <v-icon icon="mdi-download-box" size="16" color="secondary" />
