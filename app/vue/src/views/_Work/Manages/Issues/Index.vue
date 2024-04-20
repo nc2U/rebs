@@ -45,10 +45,7 @@ const onSubmit = (payload: any) => {
   }
 }
 
-const filterSubmit = (payload: IssueFilter) => {
-  console.log(payload)
-  workStore.fetchIssueList(payload)
-}
+const filterSubmit = (payload: IssueFilter) => workStore.fetchIssueList(payload)
 
 onBeforeMount(async () => {
   await workStore.fetchAllIssueProjectList()

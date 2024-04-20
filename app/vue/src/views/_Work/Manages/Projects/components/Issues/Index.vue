@@ -42,10 +42,7 @@ const onSubmit = (payload: any) => {
   }
 }
 
-const filterSubmit = (payload: IssueFilter) => {
-  console.log(payload)
-  workStore.fetchIssueList(payload)
-}
+const filterSubmit = (payload: IssueFilter) => workStore.fetchIssueList(payload)
 
 watch(route, async nVal => {
   const project = nVal.params.projId as string

@@ -62,23 +62,22 @@ const comment = ref({
   is_private: false,
 })
 
-const files = ref({
-  file: null as File | null,
-  description: '',
-})
+const newFiles = ref<{ file: File; description: string }[]>([])
 
 const loadFile = (data: Event) => {
   const el = data.target as HTMLInputElement
-  if (el.files && el.files[0]) {
-    files.value.file = el.files[0]
-  }
+  if (el.files && el.files[0]) newFiles.value.push({ file: el.files[0], description: '' })
 }
 
-const removeFile = () => {
-  files.value.file = null
-  files.value.description = ''
-  const issue_file = document.getElementById('issue_file') as HTMLInputElement
-  issue_file.value = ''
+const removeFile = (n: number) => {
+  if (n - 1 === 0) {
+    const file_form = document.getElementById(`file-${n}`) as HTMLInputElement
+    file_form.value = ''
+  } else {
+    const file_row = document.getElementById(`row-fn-${n}`)
+    file_row.parentNode.removeChild(file_row)
+  }
+  newFiles.value.splice(n - 1, 1)
 }
 
 const formCheck = computed(() => {
@@ -140,7 +139,7 @@ const onSubmit = (event: Event) => {
       emit('on-submit', {
         ...form.value,
         ...timeEntry.value,
-        ...files.value,
+        ...newFiles.value,
         comment_content: comment.value.content,
       })
       validated.value = false
@@ -442,20 +441,28 @@ onBeforeMount(() => {
           </CRow>
 
           <div v-if="!issue">
-            <CRow class="mb-3">
-              <CFormLabel for="file" class="col-sm-2 col-form-label text-right"> 파일</CFormLabel>
-              <CCol sm="4">
-                <CFormInput id="issue_file" type="file" @change="loadFile" />
-              </CCol>
-              <CCol v-if="files.file" sm="6">
-                <CInputGroup>
-                  <CFormInput v-model="files.description" placeholder="부가적인 설명" />
-                  <CInputGroupText @click="removeFile">
-                    <v-icon icon="mdi-trash-can-outline" size="16" />
-                  </CInputGroupText>
-                </CInputGroup>
-              </CCol>
-            </CRow>
+            <div v-for="n in newFiles.length + 1" :key="n">
+              <CRow :id="`row-fn-${n}`" class="mb-3">
+                <CFormLabel for="file" class="col-sm-2 col-form-label text-right">
+                  <span v-if="n === 1">파일</span>
+                </CFormLabel>
+                <CCol sm="4">
+                  <CFormInput :id="`file-${n}`" type="file" @change="loadFile" />
+                </CCol>
+                <CCol v-if="newFiles[n - 1]?.file" sm="6">
+                  <CInputGroup>
+                    <CFormInput v-model="newFiles[n - 1].description" placeholder="부가적인 설명" />
+                    <CInputGroupText
+                      v-if="newFiles.length === n"
+                      @click="removeFile(n)"
+                      :disabled="true"
+                    >
+                      <v-icon icon="mdi-trash-can-outline" size="16" />
+                    </CInputGroupText>
+                  </CInputGroup>
+                </CCol>
+              </CRow>
+            </div>
 
             <CRow class="mb-3">
               <CFormLabel for="watcher" class="col-sm-2 col-form-label text-right">
