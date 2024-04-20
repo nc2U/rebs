@@ -414,13 +414,14 @@ def get_file_name(filename):
 
 
 def get_file_path(instance, filename):
-    return f"issue/{get_file_name(filename)}"
+    return f"work/issue/{get_file_name(filename)}"
 
 
 class IssueFile(models.Model):
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, default=None, verbose_name='업무', related_name='files')
-    file = models.FileField(upload_to='files', verbose_name='파일')
+    file = models.FileField(upload_to=get_file_name, verbose_name='파일')
     description = models.CharField('부가설명', max_length=255, blank=True, default='')
+    created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.file

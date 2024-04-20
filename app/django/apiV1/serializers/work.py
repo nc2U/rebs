@@ -340,6 +340,8 @@ class IssueSerializer(serializers.ModelSerializer):
         assigned_to = User.objects.get(pk=assigned_to) if assigned_to else None
         parent = self.initial_data.get('parent', None)
         parent = Issue.objects.get(pk=parent) if parent else None
+        file = self.initial_data.get('file', None)
+        description = self.initial_data.get('description', None)
 
         # Pop 'watchers' from validated_data to avoid KeyError
         watchers = validated_data.pop('watchers', [])
@@ -350,6 +352,9 @@ class IssueSerializer(serializers.ModelSerializer):
                                      assigned_to=assigned_to,
                                      parent=parent,
                                      **validated_data)
+        # File 처리
+        if file:
+            IssueFile.objects.create(issue=issue, file=file, description=description)
         # Set the watchers of the instance to the list of watchers
         user = self.context['request'].user
         issue.watchers.add(user.pk)
