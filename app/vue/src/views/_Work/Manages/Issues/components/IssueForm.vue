@@ -75,7 +75,7 @@ const removeFile = (n: number) => {
     file_form.value = ''
   } else {
     const file_row = document.getElementById(`row-fn-${n}`)
-    file_row.parentNode.removeChild(file_row)
+    file_row?.parentNode?.removeChild(file_row)
   }
   newFiles.value.splice(n - 1, 1)
 }
