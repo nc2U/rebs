@@ -8,7 +8,7 @@ import type {
   IssueStatus,
   TimeEntry,
 } from '@/store/types/work'
-import { elapsedTime, diffDate, timeFormat } from '@/utils/baseMixins'
+import { elapsedTime, diffDate, timeFormat, humanizeFileSize } from '@/utils/baseMixins'
 import { useWork } from '@/store/pinia/work'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 import IssueControl from './IssueControl.vue'
@@ -237,7 +237,7 @@ onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue
 
       <v-divider />
 
-      <CRow class="mb-3">
+      <CRow class="mb-2">
         <CCol class="title">설명</CCol>
         <CCol class="text-right form-text">
           <v-icon icon="mdi-comment-text-outline" size="sm" color="grey" class="mr-2" />
@@ -246,7 +246,7 @@ onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue
       </CRow>
 
       <CRow>
-        <CCol class="pl-5">
+        <CCol class="pl-4">
           <VueMarkdownIt :source="issue?.description" />
         </CCol>
       </CRow>
@@ -255,20 +255,48 @@ onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue
 
       <CRow v-if="issue.files.length" class="mb-3">
         <CCol>
-          <CRow>
+          <CRow class="mb-2">
             <CCol class="title">파일</CCol>
           </CRow>
-          <CRow>
-            <CCol v-for="file in issue.files" :key="file.pk">
+          <CRow v-for="(file, i) in issue.files" :key="file.pk">
+            <CCol>
               <v-icon icon="mdi-paperclip" size="sm" color="grey" class="mr-2" />
               <span>
                 <router-link :to="file.file">
-                  {{ file.file.split('/')[file.file.split('/').length - 1] }}
+                  {{ file.filename }}
+                </router-link>
+              </span>
+              <span class="file-desc1 mr-1"> ({{ humanizeFileSize(file.filesize) }}) </span>
+              <span class="mr-2">
+                <router-link to="">
+                  <v-icon icon="mdi-download-box" size="16" color="secondary" />
+                  <v-tooltip activator="parent" location="top">다운로드</v-tooltip>
+                </router-link>
+              </span>
+              <span v-if="file.description" class="mr-2">{{ file.description }}</span>
+              <span class="file-desc2 mr-1"> {{ file.user.username }}, </span>
+              <span class="file-desc2 mr-2">{{ timeFormat(file.created) }}</span>
+              <span>
+                <router-link to="">
+                  <v-icon icon="mdi-trash-can-outline" size="16" color="secondary" class="mr-2" />
+                  <v-tooltip activator="parent" location="top">삭제</v-tooltip>
                 </router-link>
               </span>
             </CCol>
-            <CCol class="text-right form-text">
-              <router-link to="" @click="callComment">댓글달기</router-link>
+            <CCol v-if="i === 0" class="text-right form-text">
+              <span class="mr-2">
+                <router-link to="">
+                  <v-icon icon="mdi-pencil" color="amber" size="18" />
+                </router-link>
+                <v-tooltip activator="parent" location="top">첨부파일 편집</v-tooltip>
+              </span>
+
+              <span v-if="issue.files.length > 1" class="mr-2">
+                <router-link to="">
+                  <v-icon icon="mdi-download-box" color="secondary" size="18" />
+                </router-link>
+                <v-tooltip activator="parent" location="top">전체 다운로드</v-tooltip>
+              </span>
             </CCol>
           </CRow>
         </CCol>
@@ -334,5 +362,15 @@ onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue
   font-size: 1.1em;
   font-weight: bold;
   color: #0f192a;
+}
+
+.file-desc1 {
+  font-size: 0.9em;
+  color: #777;
+}
+
+.file-desc2 {
+  font-size: 0.85em;
+  color: #888;
 }
 </style>
