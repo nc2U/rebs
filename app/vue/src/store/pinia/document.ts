@@ -238,6 +238,8 @@ export const useDocument = defineStore('document', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
+  const config_headers = { headers: { 'Content-Type': 'multipart/form-data' } }
+
   const createPost = (
     payload: {
       form: FormData
@@ -246,9 +248,7 @@ export const useDocument = defineStore('document', () => {
     },
   ) =>
     api
-      .post(`/post/`, payload.form, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      })
+      .post(`/post/`, payload.form, config_headers)
       .then(res =>
         fetchPostList({
           company: res.data.company,
@@ -269,9 +269,7 @@ export const useDocument = defineStore('document', () => {
     },
   ) =>
     api
-      .put(`/post/${payload.pk}/`, payload.form, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      })
+      .put(`/post/${payload.pk}/`, payload.form, config_headers)
       .then(res =>
         fetchPostList({
           company: res.data.company,

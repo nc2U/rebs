@@ -228,9 +228,11 @@ export const useWork = defineStore('work', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
+  const config_headers = { headers: { 'Content-Type': 'multipart/form-data' } }
+
   const createIssue = (payload: any) =>
     api
-      .post(`/issue/`, payload, { headers: { 'Content-Type': 'multipart/form-data' } })
+      .post(`/issue/`, payload, config_headers)
       .then(async res => {
         await fetchIssue(res.data.pk)
         await fetchIssueList({ status__closed: '', project: res.data.project.slug })
@@ -241,7 +243,7 @@ export const useWork = defineStore('work', () => {
 
   const updateIssue = (payload: any) =>
     api
-      .put(`/issue/${payload.pk}/`, payload, { headers: { 'Content-Type': 'multipart/form-data' } })
+      .put(`/issue/${payload.pk}/`, payload, config_headers)
       .then(async () => {
         await fetchIssue(payload.pk)
         await fetchIssueLogList({ issue: payload.pk })
