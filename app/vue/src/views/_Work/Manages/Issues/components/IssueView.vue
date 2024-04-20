@@ -262,13 +262,13 @@ onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue
             <CCol>
               <v-icon icon="mdi-paperclip" size="sm" color="grey" class="mr-2" />
               <span>
-                <router-link :to="file.file">
+                <router-link :to="file.file" target="_blank">
                   {{ file.file_name }}
                 </router-link>
               </span>
               <span class="file-desc1 mr-1"> ({{ humanizeFileSize(file.file_size) }}) </span>
               <span class="mr-2">
-                <router-link to="">
+                <router-link :to="file.file" target="_blank">
                   <v-icon icon="mdi-download-box" size="16" color="secondary" />
                   <v-tooltip activator="parent" location="top">다운로드</v-tooltip>
                 </router-link>
