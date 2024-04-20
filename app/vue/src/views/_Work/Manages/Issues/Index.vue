@@ -29,10 +29,19 @@ const getIssues = computed(() => workStore.getIssues)
 const router = useRouter()
 
 const onSubmit = (payload: any) => {
-  if (payload.pk) workStore.updateIssue(payload)
+  const { pk, ...getData } = payload
+  const form = new FormData()
+
+  for (const key in getData) {
+    if (key === 'file') form.append(key, JSON.stringify(getData[key]))
+    else if (key === 'watchers') getData[key]?.forEach(val => form.append(key, JSON.stringify(val)))
+    else form.append(key, getData[key] === null ? '' : getData[key])
+  }
+
+  if (pk) workStore.updateIssue(form)
   else {
-    workStore.createIssue(payload)
-    router.replace({ name: '업무' })
+    workStore.createIssue(form)
+    router.replace({ name: '(업무)' })
   }
 }
 

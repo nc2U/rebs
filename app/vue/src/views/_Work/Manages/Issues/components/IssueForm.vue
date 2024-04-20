@@ -23,10 +23,13 @@ const props = defineProps({
   getIssues: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
 })
 
+const emit = defineEmits(['on-submit', 'close-form'])
+
 const RefUserSearch = ref()
 
 const validated = ref(false)
 const editDetails = ref(true)
+const addUser = ref()
 
 const form = ref({
   pk: null as number | null,
@@ -59,9 +62,24 @@ const comment = ref({
   is_private: false,
 })
 
-const addUser = ref()
+const files = ref({
+  file: null as File | null,
+  description: '',
+})
 
-const emit = defineEmits(['on-submit', 'close-form'])
+const loadFile = (data: Event) => {
+  const el = data.target as HTMLInputElement
+  if (el.files && el.files[0]) {
+    files.value.file = el.files[0]
+  }
+}
+
+const removeFile = () => {
+  files.value.file = null
+  files.value.description = ''
+  const issue_file = document.getElementById('issue_file') as HTMLInputElement
+  issue_file.value = ''
+}
 
 const formCheck = computed(() => {
   if (props.issue) {
@@ -122,6 +140,7 @@ const onSubmit = (event: Event) => {
       emit('on-submit', {
         ...form.value,
         ...timeEntry.value,
+        ...files.value,
         comment_content: comment.value.content,
       })
       validated.value = false
@@ -426,11 +445,16 @@ onBeforeMount(() => {
             <CRow class="mb-3">
               <CFormLabel for="file" class="col-sm-2 col-form-label text-right"> 파일</CFormLabel>
               <CCol sm="4">
-                <CFormInput id="file" type="file" />
+                <CFormInput id="issue_file" type="file" @change="loadFile" />
               </CCol>
-              <!--              <CCol>-->
-              <!--                <CFormInput placeholder="부가적인 설명" />-->
-              <!--              </CCol>-->
+              <CCol v-if="files.file" sm="6">
+                <CInputGroup>
+                  <CFormInput v-model="files.description" placeholder="부가적인 설명" />
+                  <CInputGroupText @click="removeFile">
+                    <v-icon icon="mdi-trash-can-outline" size="16" />
+                  </CInputGroupText>
+                </CInputGroup>
+              </CCol>
             </CRow>
 
             <CRow class="mb-3">
