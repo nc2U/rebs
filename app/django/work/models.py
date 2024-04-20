@@ -417,7 +417,7 @@ class IssueFile(models.Model):
 
     def save(self, *args, **kwargs):
         if self.file:
-            self.filename = self.file.name
+            self.filename = self.file.name.split('/')[-1]
             mime = magic.Magic(mime=True)
             self.filetype = mime.from_buffer(self.file.read())
             self.filesize = self.file.size
