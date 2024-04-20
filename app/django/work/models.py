@@ -402,21 +402,17 @@ class Issue(models.Model):
         verbose_name_plural = '10. 업무(작업)'
 
 
-def get_file_name(filename):
-    file = filename.split('.')
-    ext = file.pop()
-    return f"{file}.{ext}"
-
-
-def get_file_path(instance, filename):
-    year = datetime.today().strftime('%Y')
-    month = datetime.today().strftime('%m')
-    day = datetime.today().strftime('%d')
-    return f"work/issue/{year}/{month}/{day}/{get_file_name(filename)}"
-
-
-def get_file_type(filename):
-    return filename.split('.')[-1]
+# def get_file_name(filename):
+#     file = filename.split('.')
+#     ext = file.pop()
+#     return f"{file}.{ext}"
+#
+#
+# def get_file_path(instance, filename):
+#     year = datetime.today().strftime('%Y')
+#     month = datetime.today().strftime('%m')
+#     day = datetime.today().strftime('%d')
+#     return f"work/issue/{year}/{month}/{day}/{get_file_name(filename)}"
 
 
 class IssueFile(models.Model):
