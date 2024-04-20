@@ -253,6 +253,29 @@ onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue
 
       <v-divider />
 
+      <CRow v-if="issue.files.length" class="mb-3">
+        <CCol>
+          <CRow>
+            <CCol class="title">파일</CCol>
+          </CRow>
+          <CRow>
+            <CCol v-for="file in issue.files" :key="file.pk">
+              <v-icon icon="mdi-paperclip" size="sm" color="grey" class="mr-2" />
+              <span>
+                <router-link :to="file.file">
+                  {{ file.file.split('/')[file.file.split('/').length - 1] }}
+                </router-link>
+              </span>
+            </CCol>
+            <CCol class="text-right form-text">
+              <router-link to="" @click="callComment">댓글달기</router-link>
+            </CCol>
+          </CRow>
+        </CCol>
+      </CRow>
+
+      <v-divider />
+
       <CRow>
         <CCol class="title">하위 일감</CCol>
         <CCol class="text-right form-text">

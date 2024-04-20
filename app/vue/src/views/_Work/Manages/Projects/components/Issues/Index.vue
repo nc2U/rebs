@@ -38,7 +38,8 @@ const onSubmit = (payload: any) => {
   if (pk) workStore.updateIssue(form)
   else {
     workStore.createIssue(form)
-    router.replace({ name: '(업무)' })
+    if (route.params.projId) router.replace({ name: '(업무)' })
+    else router.replace({ name: '업무' })
   }
 }
 

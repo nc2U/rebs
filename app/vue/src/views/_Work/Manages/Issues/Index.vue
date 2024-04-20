@@ -2,7 +2,7 @@
 import { computed, type ComputedRef, inject, onBeforeMount, ref } from 'vue'
 import { navMenu2 as navMenu } from '@/views/_Work/_menu/headermixin1'
 import type { Company } from '@/store/types/settings'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import type { IssueFilter } from '@/store/types/work'
 import Header from '@/views/_Work/components/Header/Index.vue'
@@ -26,7 +26,7 @@ const activityList = computed(() => workStore.activityList)
 const priorityList = computed(() => workStore.priorityList)
 const getIssues = computed(() => workStore.getIssues)
 
-const router = useRouter()
+const [route, router] = [useRoute(), useRouter()]
 
 const onSubmit = (payload: any) => {
   const { pk, ...getData } = payload
@@ -41,7 +41,8 @@ const onSubmit = (payload: any) => {
   if (pk) workStore.updateIssue(form)
   else {
     workStore.createIssue(form)
-    router.replace({ name: '(업무)' })
+    if (route.params.projId) router.replace({ name: '(업무)' })
+    else router.replace({ name: '업무' })
   }
 }
 
