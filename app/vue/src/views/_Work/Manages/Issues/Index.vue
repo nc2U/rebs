@@ -33,7 +33,8 @@ const onSubmit = (payload: any) => {
   const form = new FormData()
 
   for (const key in getData) {
-    if (key === 'watchers') getData[key]?.forEach(val => form.append(key, JSON.stringify(val)))
+    if (key === 'watchers' || key === 'files')
+      getData[key]?.forEach(val => form.append(key, JSON.stringify(val)))
     else if (key === 'newFiles') {
       getData[key].forEach(val => {
         form.append('files', val.file as string | Blob)

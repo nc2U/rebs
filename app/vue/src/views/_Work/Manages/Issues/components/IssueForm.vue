@@ -1,5 +1,14 @@
 <script lang="ts" setup>
-import { ref, onBeforeMount, type PropType, computed, watch, inject, type ComputedRef } from 'vue'
+import {
+  ref,
+  onBeforeMount,
+  type PropType,
+  computed,
+  watch,
+  inject,
+  type ComputedRef,
+  nextTick,
+} from 'vue'
 import type { CodeValue, Issue, IssueProject, IssueStatus } from '@/store/types/work'
 import type { User } from '@/store/types/accounts'
 import { isValidate } from '@/utils/helper'
@@ -47,6 +56,7 @@ const form = ref({
   estimated_hours: null as number | string | null,
   done_ratio: 0,
   watchers: [] as number[],
+  files: [],
 })
 
 const timeEntry = ref({
@@ -62,6 +72,7 @@ const comment = ref({
   is_private: false,
 })
 
+const fileEdit = ref(false)
 const newFiles = ref<{ file: File; description: string }[]>([])
 
 const loadFile = (data: Event) => {
@@ -95,11 +106,12 @@ const formCheck = computed(() => {
     const k = form.value.due_date === props.issue.due_date
     const l = form.value.estimated_hours === numToTime(props.issue.estimated_hours)
     const m = form.value.done_ratio === props.issue.done_ratio
-    const n = !timeEntry.value.hours
-    const o = !timeEntry.value.activity
-    const p = !timeEntry.value.comment
-    const q = !comment.value.content
-    return a && b && c && d && e && f && g && h && i && j && k && l && m && n && o && p && q
+    const n = !form.value.files.map(f => f.del).some(f => f === true)
+    const o = !timeEntry.value.hours
+    const p = !timeEntry.value.activity
+    const q = !timeEntry.value.comment
+    const r = !comment.value.content
+    return a && b && c && d && e && f && g && h && i && j && k && l && m && n && o && p && q && r
   } else return false
 })
 
@@ -231,6 +243,7 @@ onBeforeMount(() => {
     form.value.due_date = props.issue.due_date
     form.value.estimated_hours = numToTime(props.issue.estimated_hours)
     form.value.done_ratio = props.issue.done_ratio
+    form.value.files = props.issue.files
     workStore.fetchIssueList({ status__closed: '', project: props.issue.project.slug })
   }
   if (route.params.projId) form.value.project = route.params.projId as string
@@ -442,8 +455,8 @@ onBeforeMount(() => {
 
           <div v-if="!issue">
             <div v-for="n in newFiles.length + 1" :key="n">
-              <CRow :id="`row-fn-${n}`" class="mb-3">
-                <CFormLabel for="file" class="col-sm-2 col-form-label text-right">
+              <CRow :id="`row-fn-${n}`" class="mb-2">
+                <CFormLabel :for="`file-${n}`" class="col-sm-2 col-form-label text-right">
                   <span v-if="n === 1">파일</span>
                 </CFormLabel>
                 <CCol sm="4">
@@ -542,14 +555,57 @@ onBeforeMount(() => {
             </CRow>
 
             <CRow>
-              <h6>파일</h6>
-              <v-divider />
-              <CCol sm="6">
-                <CFormInput id="file" type="file" />
+              <CCol>
+                <h6>파일</h6>
+
+                <CRow v-if="fileEdit" class="mb-2">
+                  <CCol>
+                    <CRow v-for="(file, i) in issue.files" :key="file.pk">
+                      <CCol class="cursor-not-allowed col-sm-4">
+                        <v-icon icon="mdi-paperclip" size="sm" color="grey" class="mr-2" />
+                        <span :class="{ del: form.files[i].del }"> {{ file.file_name }} </span>
+                      </CCol>
+
+                      <CCol>
+                        <CFormCheck
+                          v-model="form.files[i].del"
+                          :id="`file-del-${file.pk}`"
+                          label="삭제"
+                          @click="ctlFileDel(form.files[i].del)"
+                        />
+                      </CCol>
+                    </CRow>
+                  </CCol>
+                </CRow>
+
+                <v-divider class="mt-0" />
+
+                <div v-for="n in newFiles.length + 1" :key="n">
+                  <CRow :id="`row-fn-${n}`" class="mb-2">
+                    <CCol sm="4">
+                      <CFormInput :id="`file-${n}`" type="file" @change="loadFile" />
+                    </CCol>
+                    <CCol v-if="newFiles[n - 1]?.file" sm="4">
+                      <CInputGroup>
+                        <CFormInput
+                          v-model="newFiles[n - 1].description"
+                          placeholder="부가적인 설명"
+                        />
+                        <CInputGroupText
+                          v-if="newFiles.length === n"
+                          @click="removeFile(n)"
+                          :disabled="true"
+                        >
+                          <v-icon icon="mdi-trash-can-outline" size="16" />
+                        </CInputGroupText>
+                      </CInputGroup>
+                    </CCol>
+                    <CCol v-if="n === 1" class="text-right">
+                      <router-link to="" @click="fileEdit = !fileEdit">첨부파일 편집</router-link>
+                    </CCol>
+                  </CRow>
+                </div>
               </CCol>
-              <!--              <CCol>-->
-              <!--                <CFormInput placeholder="부가적인 설명" />-->
-              <!--              </CCol>-->
             </CRow>
           </div>
         </CCardBody>
@@ -580,3 +636,10 @@ onBeforeMount(() => {
     </template>
   </ConfirmModal>
 </template>
+
+<style lang="scss" scoped>
+.del {
+  color: #888;
+  text-decoration: line-through;
+}
+</style>
