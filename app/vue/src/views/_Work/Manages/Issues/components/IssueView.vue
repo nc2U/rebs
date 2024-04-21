@@ -305,7 +305,11 @@ onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue
       <CRow>
         <CCol class="title">하위 일감</CCol>
         <CCol class="text-right form-text">
-          <router-link to="">추가</router-link>
+          <router-link
+            :to="{ name: '(업무) - 추가', query: { parent: issue.pk, tracker: issue.tracker.pk } }"
+          >
+            추가
+          </router-link>
         </CCol>
       </CRow>
 

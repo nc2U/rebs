@@ -1,14 +1,5 @@
 <script lang="ts" setup>
-import {
-  ref,
-  onBeforeMount,
-  type PropType,
-  computed,
-  watch,
-  inject,
-  type ComputedRef,
-  nextTick,
-} from 'vue'
+import { ref, onBeforeMount, type PropType, computed, watch, inject, type ComputedRef } from 'vue'
 import type { CodeValue, Issue, IssueFile, IssueProject, IssueStatus } from '@/store/types/work'
 import type { User } from '@/store/types/accounts'
 import { isValidate } from '@/utils/helper'
@@ -58,6 +49,8 @@ const form = ref({
   watchers: [] as number[],
   files: [] as IssueFile[],
 })
+
+const assignedToMe = () => (form.value.assigned_to = userInfo?.value.pk as number)
 
 const timeEntry = ref({
   issue: null as number | null,
@@ -251,6 +244,8 @@ onBeforeMount(() => {
     workStore.fetchIssueList({ status__closed: '', project: props.issue.project.slug })
   }
   if (route.params.projId) form.value.project = route.params.projId as string
+  if (route.query.tracker) form.value.tracker = route.query.tracker as string
+  if (route.query.parent) form.value.parent = Number(route.query.parent)
   accStore.fetchUsersList()
 })
 </script>
@@ -270,7 +265,7 @@ onBeforeMount(() => {
             <h6>속성 변경</h6>
             <v-divider class="mt-0" />
           </div>
-          <CRow class="mb-3">
+          <CRow v-show="!route.query.parent" class="mb-3">
             <CFormLabel for="project" class="col-sm-2 col-form-label text-right required">
               프로젝트
             </CFormLabel>
@@ -397,13 +392,13 @@ onBeforeMount(() => {
               </CFormSelect>
             </div>
             <div class="col-sm-1" style="padding-top: 6px">
-              <router-link
+              <a
                 v-if="form.assigned_to !== userInfo?.pk"
-                @click="form.assigned_to = userInfo?.pk as number"
-                to=""
+                href="javascript:void(0)"
+                @click="assignedToMe"
               >
                 나에게 할당
-              </router-link>
+              </a>
             </div>
 
             <CFormLabel for="due_date" class="col-sm-2 col-form-label text-right">
