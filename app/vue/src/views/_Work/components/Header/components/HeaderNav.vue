@@ -5,7 +5,6 @@ import { type RouteRecordName } from 'vue-router'
 
 defineProps({
   menus: { type: Array, required: true },
-  query: { type: Object, default: null },
 })
 
 const superAuth = inject('superAuth')
@@ -41,7 +40,7 @@ const getTitle = (title: string) => title.replace(/[() ]/gim, '')
           ($route.name as string).includes(menu as string) ||
           ($route.meta.title as string).includes(menu as string)
         "
-        @click="$router.push({ name: menu as RouteRecordName, query })"
+        @click="$router.push({ name: menu as RouteRecordName })"
       >
         {{ getTitle(menu as string) }}
       </CNavLink>

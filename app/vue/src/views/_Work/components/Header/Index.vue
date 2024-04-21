@@ -88,7 +88,7 @@ watch(useRoute(), () => (visible.value = false))
 
       <CRow class="d-none d-md-block">
         <CCol>
-          <HeaderNav :menus="navMenu" :query="$route?.query" />
+          <HeaderNav :menus="navMenu" />
         </CCol>
       </CRow>
     </CCol>
