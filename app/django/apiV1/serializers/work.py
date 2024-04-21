@@ -312,6 +312,14 @@ class IssueFileInIssueSerializer(serializers.ModelSerializer):
         fields = ('pk', 'file', 'file_name', 'file_type', 'file_size', 'description', 'created', 'user')
 
 
+class IssueInIssueSerializer(serializers.ModelSerializer):
+    assigned_to = SimpleUserSerializer(read_only=True)
+
+    class Meta:
+        model = Issue
+        fields = ('pk', 'subject', 'status', 'assigned_to', 'start_date', 'done_ratio')
+
+
 class IssueSerializer(serializers.ModelSerializer):
     project = IProjectIssueSerializer(read_only=True)
     tracker = TrackerInIssueProjectSerializer(read_only=True)
@@ -321,6 +329,7 @@ class IssueSerializer(serializers.ModelSerializer):
     parent = serializers.SerializerMethodField()
     spent_time = serializers.SerializerMethodField(read_only=True)
     files = IssueFileInIssueSerializer(many=True, read_only=True)
+    sub_issues = serializers.SerializerMethodField()
     creator = SimpleUserSerializer(read_only=True)
     updater = SimpleUserSerializer(read_only=True)
 
@@ -329,7 +338,7 @@ class IssueSerializer(serializers.ModelSerializer):
         fields = ('pk', 'project', 'tracker', 'status', 'priority', 'subject',
                   'description', 'category', 'fixed_version', 'assigned_to',
                   'parent', 'watchers', 'is_private', 'estimated_hours', 'start_date',
-                  'due_date', 'done_ratio', 'closed', 'spent_time', 'files',
+                  'due_date', 'done_ratio', 'closed', 'spent_time', 'files', 'sub_issues',
                   'creator', 'updater', 'created', 'updated')
 
     @staticmethod
@@ -341,6 +350,10 @@ class IssueSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_spent_time(obj):
         return obj.timeentry_set.all().aggregate(Sum('hours'))['hours__sum']
+
+    @staticmethod
+    def get_sub_issues(obj):
+        return IssueInIssueSerializer(obj.issue_set.all(), many=True, read_only=True).data
 
     @transaction.atomic
     def create(self, validated_data):

@@ -376,8 +376,7 @@ class Issue(models.Model):
     fixed_version = models.ForeignKey(Version, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='목표 버전')
     assigned_to = models.ForeignKey('accounts.User', on_delete=models.SET_NULL,
                                     null=True, blank=True, verbose_name='담당자', related_name='assignees')
-    parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True,
-                               verbose_name='상위 업무', related_name='children')
+    parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='상위 업무')
     watchers = models.ManyToManyField('accounts.User', blank=True, verbose_name='업무 열람 공유자', related_name='watchers')
     is_private = models.BooleanField('비공개', default=False)
     estimated_hours = models.DecimalField('추정 소요시간', max_digits=5, decimal_places=2, null=True, blank=True)
