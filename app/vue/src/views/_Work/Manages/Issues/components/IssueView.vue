@@ -15,6 +15,7 @@ import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 import IssueControl from './IssueControl.vue'
 import IssueHistory from './IssueHistory.vue'
 import IssueForm from '@/views/_Work/Manages/Issues/components/IssueForm.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const props = defineProps({
   issueProject: { type: Object as PropType<IssueProject>, default: null },
@@ -32,6 +33,7 @@ const props = defineProps({
 const emit = defineEmits(['on-submit'])
 
 const issueFormRef = ref()
+const confirmModalRef = ref()
 const editForm = ref(false)
 
 const isClosed = computed(() => props.issue?.closed)
@@ -75,6 +77,11 @@ const callComment = () => {
     scrollToId('edit-form')
     issueFormRef.value.callComment()
   }, 100)
+}
+
+const unLinkConfirm = (pk: number) => {
+  alert('okk??')
+  confirmModalRef.value.close()
 }
 
 const delSubmit = (pk: number) => workStore.deleteIssueComment(pk, props.issue.pk)
@@ -372,7 +379,7 @@ onBeforeMount(async () => {
                 height="14"
               />
             </span>
-            <span class="mr-3">
+            <span class="mr-3" @click="confirmModalRef.callModal()">
               <v-icon icon="mdi-link-variant-off" size="sm" color="grey" class="pointer" />
               <v-tooltip activator="parent" location="top"> 관계 지우기 </v-tooltip>
             </span>
@@ -395,7 +402,7 @@ onBeforeMount(async () => {
                       $router.push({
                         name: '(업무) - 보기',
                         params: { issueId: sub.pk },
-                        query: { edit: true },
+                        query: { edit: '1' },
                       })
                     "
                   >
@@ -505,6 +512,14 @@ onBeforeMount(async () => {
       @close-form="() => (editForm = false)"
     />
   </div>
+
+  <ConfirmModal ref="confirmModalRef">
+    <template #header>관계 지우기 확인</template>
+    <template #default> 계속 진행하시겠습니까?</template>
+    <template #footer>
+      <CButton color="warning" @click="unLinkConfirm">확인</CButton>
+    </template>
+  </ConfirmModal>
 </template>
 
 <style lang="scss" scoped>

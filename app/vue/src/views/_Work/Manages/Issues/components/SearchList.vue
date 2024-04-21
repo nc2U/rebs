@@ -128,7 +128,7 @@ const form = ref<IssueFilter>({
   tracker__exclude: null,
   // name: '',
   // description: '',
-  parent: '',
+  parent: '' as string | number,
 })
 
 const filterSubmit = () => {
@@ -155,7 +155,8 @@ const filterSubmit = () => {
   // if (form.value.name) filterData.name = form.value.name
   if (form.value.parent)
     if (cond.value.parent === 'is') filterData.parent = form.value.parent
-    else if (cond.value.parent === 'contains') filterData.parent__subject = form.value.parent
+    else if (cond.value.parent === 'contains')
+      filterData.parent__subject = form.value.parent as string
     else if (cond.value.parent === 'none') filterData.parent__isnull = '1'
     else if (cond.value.parent === 'any') filterData.parent__isnull = '0'
 
@@ -180,9 +181,9 @@ onBeforeMount(() => {
   if (route.query) {
     if (route.query.parent) {
       searchCond.value.push('parent')
-      form.value.parent = route.query.parent
+      form.value.parent = Number(route.query.parent)
     }
-    if (route.query.status) cond.value.status = route.query.status
+    if (route.query.status) cond.value.status = route.query.status as 'open' | 'closed'
     setTimeout(() => filterSubmit(), 100)
   }
 })

@@ -244,7 +244,7 @@ onBeforeMount(() => {
     workStore.fetchIssueList({ status__closed: '', project: props.issue.project.slug })
   }
   if (route.params.projId) form.value.project = route.params.projId as string
-  if (route.query.tracker) form.value.tracker = route.query.tracker as string
+  if (route.query.tracker) form.value.tracker = Number(route.query.tracker)
   if (route.query.parent) form.value.parent = Number(route.query.parent)
   accStore.fetchUsersList()
 })

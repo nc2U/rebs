@@ -50,7 +50,7 @@ const onSubmit = (payload: any) => {
       if (route.query.parent)
         router.replace({
           name: '(업무) - 보기',
-          params: { projId: route.params.projId, issueId: route.query.parent },
+          params: { projId: route.params.projId, issueId: route.query.parent as string },
         })
       else router.replace({ name: '(업무)' })
     } else router.replace({ name: '업무' })
