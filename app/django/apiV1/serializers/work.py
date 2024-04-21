@@ -313,6 +313,7 @@ class IssueFileInIssueSerializer(serializers.ModelSerializer):
 
 
 class IssueInIssueSerializer(serializers.ModelSerializer):
+    status = serializers.SlugRelatedField(read_only=True, slug_field='name')
     assigned_to = SimpleUserSerializer(read_only=True)
 
     class Meta:
@@ -326,7 +327,6 @@ class IssueSerializer(serializers.ModelSerializer):
     status = IssueStatusInIssueSerializer(read_only=True)
     priority = CodePriorityInIssueSerializer(read_only=True)
     assigned_to = SimpleUserSerializer(read_only=True)
-    parent = serializers.SerializerMethodField()
     spent_time = serializers.SerializerMethodField(read_only=True)
     files = IssueFileInIssueSerializer(many=True, read_only=True)
     sub_issues = serializers.SerializerMethodField()
@@ -342,18 +342,12 @@ class IssueSerializer(serializers.ModelSerializer):
                   'creator', 'updater', 'created', 'updated')
 
     @staticmethod
-    def get_parent(obj):
-        # Check if there is a parent object corresponding to the parent field in the entire collection
-        parent_obj = IssueProject.objects.filter(id=obj.parent_id).first() if obj.parent else None
-        return obj.parent if parent_obj else None
-
-    @staticmethod
     def get_spent_time(obj):
         return obj.timeentry_set.all().aggregate(Sum('hours'))['hours__sum']
 
     @staticmethod
     def get_sub_issues(obj):
-        return IssueInIssueSerializer(obj.issue_set.all(), many=True, read_only=True).data
+        return IssueInIssueSerializer(obj.issue_set.all().order_by('id'), many=True, read_only=True).data
 
     @transaction.atomic
     def create(self, validated_data):
