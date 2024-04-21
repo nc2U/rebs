@@ -2,7 +2,7 @@
 import { ref, reactive, type PropType, onBeforeMount, watch } from 'vue'
 import type { IssueProject, IssueStatus, IssueFilter, Tracker } from '@/store/types/work'
 import { useRoute } from 'vue-router'
-import DatePicker from '@/components/DatePicker/index.vue'
+// import DatePicker from '@/components/DatePicker/index.vue'
 import Multiselect from '@vueform/multiselect'
 
 const props = defineProps({
@@ -103,10 +103,9 @@ const searchOptions = reactive([
       { value: 'follows', label: '다음 업무를 우선 진행:', disabled: true },
       { value: 'copied_to', label: '다음 업무로 복사됨:', disabled: true },
       { value: 'copied_from', label: '다음 업무로부터 복사됨:', disabled: true },
-      { value: 'parent', label: '상위업무', disabled: true },
+      { value: 'parent', label: '상위업무' },
       { value: 'sub_issues', label: '하위업무', disabled: true },
     ],
-    disabled: true,
   },
 ])
 
@@ -114,10 +113,10 @@ const cond = ref({
   status: 'open' as 'open' | 'is' | 'exclude' | 'closed' | 'any',
   project: 'is' as 'is' | 'exclude',
   tracker: 'is' as 'is' | 'exclude',
-  // parent: 'any' as 'any' | 'none' | 'is' | 'exclude',
   // is_public: 'is' as 'is' | 'exclude',
   // name: 'contains',
   // description: 'contains',
+  parent: 'is' as 'is' | 'contains' | 'none' | 'any',
 })
 
 const form = ref<IssueFilter>({
@@ -128,6 +127,7 @@ const form = ref<IssueFilter>({
   tracker__exclude: null,
   // name: '',
   // description: '',
+  parent: '',
 })
 
 const filterSubmit = () => {
@@ -152,7 +152,11 @@ const filterSubmit = () => {
   // else if (cond.value.is_public === 'exclude' && searchCond.value.includes('is_public'))
   //   filterData.is_public__exclude = form.value.is_public
   // if (form.value.name) filterData.name = form.value.name
-  // if (form.value.description) filterData.description = form.value.description
+  if (form.value.parent)
+    if (cond.value.parent === 'is') filterData.parent = form.value.parent
+    else if (cond.value.parent === 'contains') filterData.parent__subject = form.value.parent
+    else if (cond.value.parent === 'none') filterData.parent__isnull = '1'
+    else if (cond.value.parent === 'any') filterData.parent__isnull = '0'
 
   emit('filter-submit', filterData)
 }
@@ -302,25 +306,25 @@ onBeforeMount(() => {
             <!--              </CCol>-->
             <!--            </CRow>-->
 
-            <!--            <CRow v-if="searchCond.includes('name')">-->
-            <!--              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">-->
-            <!--                <CFormCheck checked="true" label="이름" id="name" readonly />-->
-            <!--              </CCol>-->
-            <!--              <CCol class="col-4 col-lg-3 col-xl-2">-->
-            <!--                <CFormSelect v-model="cond.name" size="sm">-->
-            <!--                  <option value="contains">contains</option>-->
-            <!--                  <option value="2" disabled>contains any of</option>-->
-            <!--                  <option value="3" disabled>doesn't contain</option>-->
-            <!--                  <option value="4" disabled>starts with</option>-->
-            <!--                  <option value="5" disabled>ends with</option>-->
-            <!--                  <option value="6" disabled>none</option>-->
-            <!--                  <option value="7" disabled>any</option>-->
-            <!--                </CFormSelect>-->
-            <!--              </CCol>-->
-            <!--              <CCol class="col-4 col-lg-3">-->
-            <!--                <CFormInput v-model="form.name" size="sm" />-->
-            <!--              </CCol>-->
-            <!--            </CRow>-->
+            <CRow v-if="searchCond.includes('parent')">
+              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
+                <CFormCheck checked="true" label="상위업무" id="parent" readonly />
+              </CCol>
+              <CCol class="col-4 col-lg-3 col-xl-2">
+                <CFormSelect v-model="cond.parent" size="sm">
+                  <option value="is">이다</option>
+                  <option value="contains">포함되는 키워드</option>
+                  <option value="none">없음</option>
+                  <option value="any">모두</option>
+                </CFormSelect>
+              </CCol>
+              <CCol
+                v-if="cond.parent === 'is' || cond.parent === 'contains'"
+                class="col-4 col-lg-3"
+              >
+                <CFormInput v-model="form.parent" size="sm" />
+              </CCol>
+            </CRow>
 
             <!--            <CRow v-if="searchCond.includes('description')">-->
             <!--              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">-->
