@@ -257,21 +257,20 @@ export const useWork = defineStore('work', () => {
       .then(async () => {
         await fetchIssue(pk)
         await fetchIssueLogList({ issue: pk })
-        await fetchIssueLogList({ issue: pk })
-        // await fetchIssueCommentList({ issue: payload.pk })
         await fetchTimeEntryList({ issue: pk, ordering: 'pk' })
         message()
       })
       .catch(err => errorHandle(err.response.data))
 
-  const patchIssue = (payload: any) =>
+  const patchIssue = (pk: number, payload: any) =>
     api
-      .patch(`/issue/${payload.pk}/`, payload)
-      .then(() =>
-        fetchIssue(payload.pk).then(() =>
-          fetchIssueLogList({ issue: payload.pk }).then(() => message()),
-        ),
-      )
+      .patch(`/issue/${pk}/`, payload)
+      .then(async () => {
+        await fetchIssue(pk)
+        await fetchIssueLogList({ issue: pk })
+        await fetchTimeEntryList({ issue: pk, ordering: 'pk' })
+        message()
+      })
       .catch(err => errorHandle(err.response.data))
 
   const deleteIssue = (pk: number) =>

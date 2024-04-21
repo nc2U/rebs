@@ -390,18 +390,29 @@ class IssueSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def update(self, instance, validated_data):
         instance.__dict__.update(**validated_data)
-        instance.project = IssueProject.objects.get(slug=self.initial_data.get('project', None))
-        instance.tracker = Tracker.objects.get(pk=self.initial_data.get('tracker'))
-        instance.status = IssueStatus.objects.get(pk=self.initial_data.get('status'))
+        if self.initial_data.get('project', None):
+            instance.project = IssueProject.objects.get(slug=self.initial_data.get('project', None))
+        if self.initial_data.get('tracker'):
+            instance.tracker = Tracker.objects.get(pk=self.initial_data.get('tracker'))
+        if self.initial_data.get('status'):
+            instance.status = IssueStatus.objects.get(pk=self.initial_data.get('status'))
         if instance.closed is None and instance.status.closed:
             instance.closed = timezone.now()
         elif instance.closed is not None and not instance.status.closed:
             instance.closed = None
-        instance.priority = CodeIssuePriority.objects.get(pk=self.initial_data.get('priority'))
+        if self.initial_data.get('priority'):
+            instance.priority = CodeIssuePriority.objects.get(pk=self.initial_data.get('priority'))
         assigned_to = self.initial_data.get('assigned_to', None)
         instance.assigned_to = User.objects.get(pk=assigned_to) if assigned_to else None
         parent = self.initial_data.get('parent', None)
         instance.parent = Issue.objects.get(pk=parent) if parent else None
+
+        # sub_issue 관계 지우기
+        del_child = self.initial_data.get('del_child', None)
+        if del_child:
+            child = instance.issue_set.get(pk=del_child)
+            child.parent = None
+            child.save()
 
         watchers = validated_data.get('watchers', [])
         if watchers:
@@ -423,14 +434,22 @@ class IssueSerializer(serializers.ModelSerializer):
             IssueComment.objects.create(issue=instance, content=comment_content, user=user)
 
         # File 처리
-        new_files = self.initial_data.getlist('new_files', [])
-        descriptions = self.initial_data.getlist('descriptions', [])
+        new_files = []
+        descriptions = []
+        old_files = []
+        try:
+            new_files = self.initial_data.getlist('new_files', [])
+            descriptions = self.initial_data.getlist('descriptions', [])
+            old_files = self.initial_data.getlist('files', [])
+        except AttributeError:
+            pass
+
         if new_files:
             for i, file in enumerate(new_files):
                 issue_file = IssueFile(issue=instance, file=file,
                                        description=descriptions[i], user=user)
                 issue_file.save()
-        old_files = self.initial_data.getlist('files', [])
+
         if old_files:
             for json_file in old_files:
                 file = json.loads(json_file)

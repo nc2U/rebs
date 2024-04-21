@@ -91,8 +91,16 @@ const callComment = () => {
   }, 100)
 }
 
-const unLinkConfirm = (pk: number) => {
-  alert('okk??')
+const child = ref<number | null>(null)
+
+const parentUnLink = (pk: number) => {
+  child.value = pk
+  confirmModalRef.value.callModal()
+}
+
+const unLinkConfirm = () => {
+  workStore.patchIssue(props.issue?.pk, { del_child: child.value })
+  child.value = null
   confirmModalRef.value.close()
 }
 
@@ -380,12 +388,12 @@ onBeforeMount(async () => {
           </CCol>
           <CCol class="text-right">
             <span class="mr-3">{{ sub.status }}</span>
-            <span class="mr-3">
+            <span v-if="sub.assigned_to" class="mr-3">
               <router-link :to="{ name: '사용자 - 보기', params: { userId: sub.assigned_to.pk } }">
                 {{ sub.assigned_to.username }}
               </router-link>
             </span>
-            <span class="mr-3">{{ sub.start_date }}</span>
+            <span class="mr-3">{{ sub?.start_date }}</span>
           </CCol>
           <CCol class="text-right">
             <span class="mr-3">
@@ -396,7 +404,7 @@ onBeforeMount(async () => {
                 height="14"
               />
             </span>
-            <span class="mr-3" @click="confirmModalRef.callModal()">
+            <span class="mr-3" @click="parentUnLink(sub.pk)">
               <v-icon icon="mdi-link-variant-off" size="sm" color="grey" class="pointer" />
               <v-tooltip activator="parent" location="top"> 관계 지우기 </v-tooltip>
             </span>
