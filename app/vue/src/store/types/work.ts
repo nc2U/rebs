@@ -234,6 +234,7 @@ export interface Issue {
     assigned_to: { pk: number; username: string }
     start_date: string
     done_ratio: number
+    closed: boolean
   }[]
   creator: { pk: number; username: string }
   updater: { pk: number; username: string } | null

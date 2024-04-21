@@ -318,7 +318,7 @@ class IssueInIssueSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Issue
-        fields = ('pk', 'subject', 'status', 'assigned_to', 'start_date', 'done_ratio')
+        fields = ('pk', 'subject', 'status', 'assigned_to', 'start_date', 'done_ratio', 'closed')
 
 
 class IssueSerializer(serializers.ModelSerializer):
