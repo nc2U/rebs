@@ -154,10 +154,12 @@ class IssueFilter(FilterSet):
     project__exclude = CharFilter(field_name='project__slug', exclude=True, label='프로젝트-제외')
     project__search = CharFilter(field_name='project__slug', label='프로젝트-검색')
     tracker__exclude = CharFilter(field_name='tracker', exclude=True, label='유형-제외')
+    parent__subject = CharFilter(field_name='parent__subject', lookup_expr='icontains', label='상위업무-제목')
+    parent__isnull = BooleanFilter(field_name='parent', lookup_expr='isnull', label='상위업무-없음')
 
     class Meta:
         model = Issue
-        fields = ('project__slug', 'status__closed', 'status', 'tracker')
+        fields = ('project__slug', 'status__closed', 'status', 'tracker', 'parent')
 
     def filter_queryset(self, queryset):
         """
