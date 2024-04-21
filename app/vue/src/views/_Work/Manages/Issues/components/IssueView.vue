@@ -41,14 +41,26 @@ const isClosed = computed(() => props.issue?.closed)
 const workStore = useWork()
 const issueLogList = computed(() => workStore.issueLogList)
 
+const doneRatio = computed(() => {
+  if (props.issue?.sub_issues.length) {
+    return (
+      props.issue.sub_issues.map(sub => sub.done_ratio).reduce((a, b) => a + b) /
+      props.issue.sub_issues.length
+    )
+  } else return props.issue?.done_ratio
+})
+
+const estimatedHours = computed(
+  () =>
+    props.issue.sub_issues.map(s => Number(s.estimated_hours ?? 0)).reduce((a, b) => a + b) +
+    (props.issue?.estimated_hours ?? 0),
+)
+
 const numToTime = (n: number | null) => {
-  if (!n) return ''
-  else {
-    const hours = Math.floor(n)
-    const minutes = Math.round((n - hours) * 60)
-    const str = minutes >= 10 ? '' : '0'
-    return `${hours}:${str}${minutes}`
-  }
+  const hours = Math.floor(n)
+  const minutes = Math.round((n - hours) * 60)
+  const str = minutes >= 10 ? '' : '0'
+  return `${hours}:${str}${minutes}`
 }
 
 const onSubmit = (payload: any) => {
@@ -227,17 +239,22 @@ onBeforeMount(async () => {
               <div>
                 <CProgress
                   color="green-lighten-3"
-                  :value="issue?.done_ratio ?? 0"
+                  :value="doneRatio ?? 0"
                   style="width: 110px; float: left; margin-top: 2px"
                   height="16"
                 />
-                <span class="ml-2 pt-0">{{ issue?.done_ratio ?? 0 }}%</span>
+                <span class="ml-2 pt-0">{{ doneRatio ?? 0 }}%</span>
               </div>
             </CCol>
           </CRow>
           <CRow>
             <CCol class="title">추정시간:</CCol>
-            <CCol v-if="issue?.estimated_hours">{{ numToTime(issue?.estimated_hours) }} 시간</CCol>
+            <CCol v-if="issue?.sub_issues.length">
+              (합계 : {{ numToTime(estimatedHours) }} 시간)
+            </CCol>
+            <CCol v-else-if="issue?.estimated_hours">
+              {{ numToTime(issue?.estimated_hours) }} 시간
+            </CCol>
           </CRow>
           <CRow v-if="issue?.spent_time">
             <CCol class="title">소요시간:</CCol>

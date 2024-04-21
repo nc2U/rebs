@@ -233,6 +233,7 @@ export interface Issue {
     status: string
     assigned_to: { pk: number; username: string }
     start_date: string
+    estimated_hours: string
     done_ratio: number
     closed: boolean
   }[]
