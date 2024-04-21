@@ -311,10 +311,16 @@ onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue
             </router-link>
           </span>
           <span v-if="issue.sub_issues.length" class="form-text">
-            (<router-link :to="{ name: '(업무)', query: { parent: issue.pk } }">
-              {{ 2 }}건 진행 중
+            (<router-link :to="{ name: '(업무)', query: { parent: issue.pk, status: 'open' } }">
+              {{ issue.sub_issues.filter(i => i.closed).length }} 건 진행 중
             </router-link>
-            - 모두 미완료)
+            -
+            <span v-if="issue.sub_issues.filter(i => !i.closed).length">
+              <router-link :to="{ name: '(업무)', query: { parent: issue.pk, status: 'closed' } }">
+                {{ issue.sub_issues.filter(i => !i.closed).length }} 건 완료
+              </router-link>
+            </span>
+            <span v-else>모두 미완료</span>)
           </span>
         </CCol>
         <CCol class="text-right form-text">
