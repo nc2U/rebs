@@ -57,8 +57,8 @@ const estimatedHours = computed(
 )
 
 const numToTime = (n: number | null) => {
-  const hours = Math.floor(n)
-  const minutes = Math.round((n - hours) * 60)
+  const hours = Math.floor(n ?? 0)
+  const minutes = Math.round((n ?? 0 - hours) * 60)
   const str = minutes >= 10 ? '' : '0'
   return `${hours}:${str}${minutes}`
 }
