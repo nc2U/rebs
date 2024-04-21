@@ -230,7 +230,7 @@ export interface Issue {
   sub_issues: {
     pk: number
     subject: string
-    status: number
+    status: string
     assigned_to: { pk: number; username: string }
     start_date: string
     done_ratio: number

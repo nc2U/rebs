@@ -303,7 +303,15 @@ onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue
       <v-divider v-if="issue.files.length" />
 
       <CRow>
-        <CCol class="title">하위 일감</CCol>
+        <CCol>
+          <span class="title mr-2">하위 업무</span>
+          <span v-if="issue.sub_issues.length" class="title mr-2">
+            <router-link to="">{{ issue.sub_issues.length }}</router-link>
+          </span>
+          <span v-if="issue.sub_issues.length" class="form-text">
+            (<router-link to="">{{ 2 }}건 진행 중</router-link> - 모두 미완료)
+          </span>
+        </CCol>
         <CCol class="text-right form-text">
           <router-link
             :to="{ name: '(업무) - 추가', query: { parent: issue.pk, tracker: issue.tracker.pk } }"
@@ -313,10 +321,72 @@ onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue
         </CCol>
       </CRow>
 
+      <div v-if="issue.sub_issues.length" class="pt-2">
+        <CRow v-for="sub in issue.sub_issues" :key="sub.pk">
+          <CCol sm="6">
+            <router-link :to="{ name: '(업무) - 보기', params: { issueId: sub.pk } }">
+              기능 #{{ sub.pk }}
+            </router-link>
+            : {{ sub.subject }}
+          </CCol>
+          <CCol class="text-right">
+            <span class="mr-3">{{ sub.status }}</span>
+            <span class="mr-3">
+              <router-link :to="{ name: '사용자 - 보기', params: { userId: sub.assigned_to.pk } }">
+                {{ sub.assigned_to.username }}
+              </router-link>
+            </span>
+            <span class="mr-3">{{ sub.start_date }}</span>
+          </CCol>
+          <CCol class="text-right">
+            <span class="mr-3">
+              <CProgress
+                color="green-lighten-3"
+                :value="sub?.done_ratio ?? 0"
+                style="width: 100px; float: left; margin-top: 3px"
+                height="14"
+              />
+            </span>
+            <span class="mr-3">
+              <v-icon icon="mdi-link-off" size="sm" color="grey" class="pointer" />
+              <v-tooltip activator="parent" location="top"> 관계 지우기 </v-tooltip>
+            </span>
+            <span>
+              <CDropdown color="secondary" variant="input-group" placement="bottom-end">
+                <CDropdownToggle
+                  :caret="false"
+                  color="light"
+                  variant="ghost"
+                  size="sm"
+                  shape="rounded-pill"
+                >
+                  <v-icon icon="mdi-dots-horizontal" class="pointer" color="grey-darken-1" />
+                  <v-tooltip activator="parent" location="top">Actions</v-tooltip>
+                </CDropdownToggle>
+                <CDropdownMenu>
+                  <CDropdownItem class="form-text">
+                    <router-link to="">
+                      <v-icon icon="mdi-link-plus" color="grey" size="sm" />
+                      링크 복사
+                    </router-link>
+                  </CDropdownItem>
+                  <CDropdownItem class="form-text">
+                    <router-link to="">
+                      <v-icon icon="mdi-trash-can-outline" color="grey" size="sm" />
+                      업무 삭제
+                    </router-link>
+                  </CDropdownItem>
+                </CDropdownMenu>
+              </CDropdown>
+            </span>
+          </CCol>
+        </CRow>
+      </div>
+
       <v-divider />
 
       <CRow>
-        <CCol class="title">연결된 일감</CCol>
+        <CCol class="title">연결된 업무</CCol>
         <CCol class="text-right form-text">
           <router-link to="">추가</router-link>
         </CCol>

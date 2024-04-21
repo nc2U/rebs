@@ -598,7 +598,7 @@ onBeforeMount(() => {
                         </CInputGroupText>
                       </CInputGroup>
                     </CCol>
-                    <CCol v-if="n === 1" class="text-right">
+                    <CCol v-if="form.files.length && n === 1" class="text-right">
                       <router-link to="" @click="fileEdit = !fileEdit">첨부파일 편집</router-link>
                     </CCol>
                   </CRow>
