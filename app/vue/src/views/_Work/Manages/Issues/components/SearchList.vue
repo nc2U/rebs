@@ -9,6 +9,7 @@ const props = defineProps({
   allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
   statusList: { type: Array as PropType<IssueStatus[]>, default: () => [] },
   trackerList: { type: Array as PropType<Tracker[]>, default: () => [] },
+  getIssues: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
 })
 
 const emit = defineEmits(['filter-submit'])
@@ -322,7 +323,21 @@ onBeforeMount(() => {
                 v-if="cond.parent === 'is' || cond.parent === 'contains'"
                 class="col-4 col-lg-3"
               >
-                <CFormInput v-model="form.parent" size="sm" />
+                <Multiselect
+                  v-if="cond.parent === 'is'"
+                  v-model="form.parent"
+                  :options="getIssues"
+                  placeholder="상위 업무"
+                  searchable
+                  size="sm"
+                  @keydown.enter="filterSubmit"
+                />
+                <CFormInput
+                  v-if="cond.parent === 'contains'"
+                  v-model="form.parent"
+                  size="sm"
+                  @keydown.enter="filterSubmit"
+                />
               </CCol>
             </CRow>
 

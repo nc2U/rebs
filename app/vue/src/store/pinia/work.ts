@@ -198,8 +198,9 @@ export const useWork = defineStore('work', () => {
   // issue states & getters
   const issue = ref<Issue | null>(null)
   const issueList = ref<Issue[]>([])
+  const allIssueList = ref<Issue[]>([])
   const getIssues = computed(() =>
-    issueList.value.map(i => ({
+    allIssueList.value.map(i => ({
       value: i.pk,
       label: i.subject,
     })),
@@ -209,6 +210,12 @@ export const useWork = defineStore('work', () => {
     api
       .get(`/issue/${pk}/`)
       .then(res => (issue.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchAllIssueList = (project?: string) =>
+    api
+      .get(`/issue/?status__closed=0&project__slug=${project ?? ''}`)
+      .then(res => (allIssueList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
   const fetchIssueList = async (payload: IssueFilter) => {
@@ -466,6 +473,7 @@ export const useWork = defineStore('work', () => {
     issueList,
     getIssues,
     fetchIssue,
+    fetchAllIssueList,
     fetchIssueList,
     createIssue,
     updateIssue,

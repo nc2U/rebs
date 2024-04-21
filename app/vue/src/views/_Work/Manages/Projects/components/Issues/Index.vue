@@ -73,6 +73,7 @@ onBeforeMount(async () => {
   if (route.params.projId) {
     await workStore.fetchIssueProject(route.params.projId as string)
     const project = route.params.projId as string
+    await workStore.fetchAllIssueList(project)
     await workStore.fetchIssueList({ status__closed: '0', project })
   }
 
@@ -97,6 +98,7 @@ onBeforeMount(async () => {
     :all-projects="allProjects"
     :status-list="statusList"
     :tracker-list="trackerList"
+    :get-issues="getIssues"
     @filter-submit="filterSubmit"
   />
 

@@ -10,6 +10,7 @@ defineProps({
   allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
   statusList: { type: Array as PropType<IssueStatus[]>, default: () => [] },
   trackerList: { type: Array as PropType<Tracker[]>, default: () => [] },
+  getIssues: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
 })
 
 const emit = defineEmits(['filter-submit'])
@@ -38,6 +39,7 @@ const filterSubmit = (payload: IssueFilter) => emit('filter-submit', payload)
       :all-projects="allProjects"
       :status-list="statusList"
       :tracker-list="trackerList"
+      :get-issues="getIssues"
       @filter-submit="filterSubmit"
     />
 

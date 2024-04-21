@@ -61,6 +61,7 @@ const filterSubmit = (payload: IssueFilter) => workStore.fetchIssueList(payload)
 
 onBeforeMount(async () => {
   await workStore.fetchAllIssueProjectList()
+  await workStore.fetchAllIssueList()
   await workStore.fetchIssueList({ status__closed: '0' })
 
   await workStore.fetchMemberList()
@@ -82,6 +83,7 @@ onBeforeMount(async () => {
         :all-projects="allProjects"
         :status-list="statusList"
         :tracker-list="trackerList"
+        :get-issues="getIssues"
         @filter-submit="filterSubmit"
       />
 
