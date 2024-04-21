@@ -250,6 +250,9 @@ export interface IssueFilter {
   project__exclude?: string
   tracker?: number | null
   tracker__exclude?: number | null
+  parent?: number | null
+  parent__subject?: string
+  parent__isnull?: string
 }
 
 export interface IssueComment {
