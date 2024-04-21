@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, type PropType, onBeforeMount } from 'vue'
+import { ref, computed, type PropType, onBeforeMount, watch } from 'vue'
 import type {
   CodeValue,
   Issue,
@@ -10,6 +10,7 @@ import type {
 } from '@/store/types/work'
 import { elapsedTime, diffDate, timeFormat, humanizeFileSize } from '@/utils/baseMixins'
 import { useWork } from '@/store/pinia/work'
+import { useRoute } from 'vue-router'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 import IssueControl from './IssueControl.vue'
 import IssueHistory from './IssueHistory.vue'
@@ -78,7 +79,14 @@ const callComment = () => {
 
 const delSubmit = (pk: number) => workStore.deleteIssueComment(pk, props.issue.pk)
 
-onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue.pk }))
+const route = useRoute()
+watch(route, async nVal => {
+  if (nVal.query.edit) callEditForm()
+})
+
+onBeforeMount(async () => {
+  await workStore.fetchIssueLogList({ issue: props.issue.pk })
+})
 </script>
 
 <template>
@@ -365,7 +373,7 @@ onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue
               />
             </span>
             <span class="mr-3">
-              <v-icon icon="mdi-link-off" size="sm" color="grey" class="pointer" />
+              <v-icon icon="mdi-link-variant-off" size="sm" color="grey" class="pointer" />
               <v-tooltip activator="parent" location="top"> 관계 지우기 </v-tooltip>
             </span>
             <span>
@@ -381,17 +389,74 @@ onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue
                   <v-tooltip activator="parent" location="top">Actions</v-tooltip>
                 </CDropdownToggle>
                 <CDropdownMenu>
-                  <CDropdownItem class="form-text">
+                  <CDropdownItem
+                    class="form-text"
+                    @click="
+                      $router.push({
+                        name: '(업무) - 보기',
+                        params: { issueId: sub.pk },
+                        query: { edit: true },
+                      })
+                    "
+                  >
                     <router-link to="">
-                      <v-icon icon="mdi-link-plus" color="grey" size="sm" />
-                      링크 복사
+                      <v-icon icon="mdi-pencil" color="amber" size="sm" />
+                      편집
                     </router-link>
                   </CDropdownItem>
-                  <CDropdownItem class="form-text">
-                    <router-link to="">
-                      <v-icon icon="mdi-trash-can-outline" color="grey" size="sm" />
-                      업무 삭제
-                    </router-link>
+                  <CDropdownItem class="form-text" disabled>
+                    <!--                    <router-link to="">-->
+                    <v-icon color="amber" size="sm" />
+                    유형
+                    <!--                    </router-link>-->
+                  </CDropdownItem>
+                  <CDropdownItem class="form-text" disabled>
+                    <v-icon color="amber" size="sm" />
+                    <!--                    <router-link to=""> -->
+                    우선순위
+                    <!--                    </router-link>-->
+                  </CDropdownItem>
+                  <CDropdownItem class="form-text" disabled>
+                    <v-icon color="amber" size="sm" />
+                    <!--                    <router-link to=""> -->
+                    담당자
+                    <!--                    </router-link>-->
+                  </CDropdownItem>
+                  <CDropdownItem class="form-text" disabled>
+                    <v-icon color="amber" size="sm" />
+                    <!--                    <router-link to=""> -->
+                    진척도
+                    <!--                    </router-link>-->
+                  </CDropdownItem>
+                  <CDropdownItem class="form-text" disabled>
+                    <!--                    <router-link to="">-->
+                    <v-icon icon="mdi-star" color="secondary" size="sm" />
+                    지켜보기
+                    <!--                    </router-link>-->
+                  </CDropdownItem>
+                  <CDropdownItem class="form-text" disabled>
+                    <!--                    <router-link to="">-->
+                    <v-icon icon="mdi-timer-edit-outline" color="grey" size="sm" />
+                    작업시간 기록
+                    <!--                    </router-link>-->
+                  </CDropdownItem>
+                  <CDropdownItem class="form-text" disabled>
+                    <!--                    <router-link to="">-->
+                    <v-icon icon="mdi-link-plus" color="grey" size="sm" />
+                    링크 복사
+                    <!--                    </router-link>-->
+                  </CDropdownItem>
+                  <CDropdownItem class="form-text" disabled>
+                    <!--                    <router-link to="">-->
+                    <v-icon icon="mdi-content-copy" color="grey" size="sm" />
+                    복사
+                    <!--                    </router-link>-->
+                  </CDropdownItem>
+                  <CDropdownItem class="form-text" disabled>
+                    <!--                    <router-link to="">-->
+                    <v-icon icon="mdi-trash-can-outline" color="grey" size="sm" />
+                    업무 삭제
+                    <!--                    </router-link>-->
                   </CDropdownItem>
                 </CDropdownMenu>
               </CDropdown>
