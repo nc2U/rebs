@@ -227,6 +227,14 @@ export interface Issue {
   closed: string | null
   spent_time: number | null
   files: Array<IssueFile>
+  sub_issues: {
+    pk: number
+    subject: string
+    status: number
+    assigned_to: { pk: number; username: string }
+    start_date: string
+    done_ratio: number
+  }[]
   creator: { pk: number; username: string }
   updater: { pk: number; username: string } | null
   created: string
