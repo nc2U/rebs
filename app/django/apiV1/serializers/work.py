@@ -393,7 +393,10 @@ class IssueSerializer(serializers.ModelSerializer):
         instance.project = IssueProject.objects.get(slug=self.initial_data.get('project', None))
         instance.tracker = Tracker.objects.get(pk=self.initial_data.get('tracker'))
         instance.status = IssueStatus.objects.get(pk=self.initial_data.get('status'))
-        instance.closed = timezone.now() if instance.closed is None and instance.status.closed else instance.closed
+        if instance.closed is None and instance.status.closed:
+            instance.closed = timezone.now()
+        elif instance.closed is not None and not instance.status.closed:
+            instance.closed = None
         instance.priority = CodeIssuePriority.objects.get(pk=self.initial_data.get('priority'))
         assigned_to = self.initial_data.get('assigned_to', None)
         instance.assigned_to = User.objects.get(pk=assigned_to) if assigned_to else None

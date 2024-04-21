@@ -311,13 +311,16 @@ onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue
             </router-link>
           </span>
           <span v-if="issue.sub_issues.length" class="form-text">
-            (<router-link :to="{ name: '(업무)', query: { parent: issue.pk, status: 'open' } }">
-              {{ issue.sub_issues.filter(i => i.closed).length }} 건 진행 중
-            </router-link>
+            (<span v-if="issue.sub_issues.filter(i => !i.closed).length">
+              <router-link :to="{ name: '(업무)', query: { parent: issue.pk, status: 'open' } }">
+                {{ issue.sub_issues.filter(i => !i.closed).length }} 건 진행 중
+              </router-link>
+            </span>
+            <span>모두 완료</span>
             -
-            <span v-if="issue.sub_issues.filter(i => !i.closed).length">
+            <span v-if="issue.sub_issues.filter(i => i.closed).length">
               <router-link :to="{ name: '(업무)', query: { parent: issue.pk, status: 'closed' } }">
-                {{ issue.sub_issues.filter(i => !i.closed).length }} 건 완료
+                {{ issue.sub_issues.filter(i => i.closed).length }} 건 완료
               </router-link>
             </span>
             <span v-else>모두 미완료</span>)
@@ -335,7 +338,10 @@ onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue
       <div v-if="issue.sub_issues.length" class="pt-2">
         <CRow v-for="sub in issue.sub_issues" :key="sub.pk">
           <CCol sm="6">
-            <router-link :to="{ name: '(업무) - 보기', params: { issueId: sub.pk } }">
+            <router-link
+              :to="{ name: '(업무) - 보기', params: { issueId: sub.pk } }"
+              :class="{ closed: sub.closed }"
+            >
               기능 #{{ sub.pk }}
             </router-link>
             : {{ sub.subject }}
@@ -455,5 +461,10 @@ onBeforeMount(async () => await workStore.fetchIssueLogList({ issue: props.issue
 .file-desc2 {
   font-size: 0.85em;
   color: #888;
+}
+
+.closed {
+  color: #999;
+  text-decoration: line-through;
 }
 </style>
