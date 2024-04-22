@@ -28,7 +28,7 @@ const form = reactive<ActLogEntryFilter & { subProjects: boolean }>({
   to_act_date: '',
   from_act_date: '',
   user: '',
-  sort: ['1', '2', '9'],
+  sort: ['1', '2', '4', '5', '6', '9'],
   subProjects: true,
 })
 

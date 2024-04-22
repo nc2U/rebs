@@ -16,7 +16,9 @@ const props = defineProps({
 const emit = defineEmits(['to-back', 'to-next'])
 
 const cookieSort = computed(() => Cookies.get('cookieSort')?.split('-') as any)
-const sort = computed(() => (cookieSort.value?.length ? cookieSort : ['1', '2', '4', '5', '6']))
+const sort = computed(() =>
+  cookieSort.value?.length ? cookieSort : ['1', '2', '4', '5', '6', '9'],
+)
 
 const workStore = useWork()
 const groupedActivities = computed<{ [key: string]: ActLogEntry[] }>(
