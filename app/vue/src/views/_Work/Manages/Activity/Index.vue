@@ -8,6 +8,7 @@ import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import ActivityLogList from '@/views/_Work/Manages/Activity/components/ActivityLogList.vue'
 import AsideActivity from '@/views/_Work/Manages/Activity/components/aside/AsideActivity.vue'
+import { dateFormat } from '@/utils/baseMixins'
 
 const cBody = ref()
 const company = inject<ComputedRef<Company>>('company')
@@ -28,8 +29,6 @@ const toNext = (date: Date) => (toDate.value = date)
 const activityFilter = ref({
   project: '',
   project__search: '',
-  to_act_date: '',
-  from_act_date: '',
   user: '',
   sort: [],
 })
@@ -37,6 +36,10 @@ const activityFilter = ref({
 const filterActivity = (payload: ActLogEntryFilter) => {
   console.log(payload)
   if (payload.to_act_date) toDate.value = payload.to_act_date
+  activityFilter.value.project = payload.project ?? ''
+  activityFilter.value.project__search = payload.project__search ?? ''
+  activityFilter.value.user = payload.user ?? ''
+  activityFilter.value.sort = payload.sort
   workStore.fetchActivityLogList(payload)
 }
 

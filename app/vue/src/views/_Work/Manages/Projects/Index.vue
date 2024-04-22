@@ -97,15 +97,16 @@ const filteringProject = (payload: any) => {
 }
 
 const toDate = ref(new Date())
+const fromDate = computed(() => new Date(toDate.value.getTime() - 9 * 24 * 60 * 60 * 1000))
 
 const toBack = (date: Date) => (toDate.value = date)
 const toNext = (date: Date) => (toDate.value = date)
 
 const activityFilter = ref<ActLogEntryFilter>({
-  project: '',
+  project: route.params.projId,
   project__search: '',
   to_act_date: dateFormat(toDate.value),
-  from_act_date: '',
+  from_act_date: dateFormat(fromDate.value),
   user: '',
   sort: [],
 })
@@ -113,7 +114,10 @@ const activityFilter = ref<ActLogEntryFilter>({
 const filterActivity = (payload: ActLogEntryFilter) => {
   console.log(payload)
   if (payload.to_act_date) toDate.value = payload.to_act_date
-
+  activityFilter.value.project = payload.project ?? ''
+  activityFilter.value.project__search = payload.project__search ?? ''
+  activityFilter.value.user = payload.user ?? ''
+  activityFilter.value.sort = payload.sort
   workStore.fetchActivityLogList(payload)
 }
 

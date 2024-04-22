@@ -15,6 +15,9 @@ const props = defineProps({
 
 const emit = defineEmits(['to-back', 'to-next'])
 
+const cookieSort = computed(() => Cookies.get('cookieSort')?.split('-') as any)
+const sort = computed(() => (cookieSort.value?.length ? cookieSort : ['1', '2', '4', '5', '6']))
+
 const workStore = useWork()
 const groupedActivities = computed<{ [key: string]: ActLogEntry[] }>(
   () => workStore.groupedActivities,
@@ -30,6 +33,8 @@ watch(
     workStore.fetchActivityLogList({
       from_act_date: dateFormat(fromDate.value),
       to_act_date: dateFormat(nVal),
+      sort: sort.value,
+      ...props.activityFilter,
     })
   },
   { deep: true },
@@ -50,22 +55,15 @@ const getIcon = (sort: string, progress: boolean) => {
 const route = useRoute()
 
 onBeforeMount(() => {
-  const cookieSort = Cookies.get('cookieSort')?.split('-') as any
-  const sort = cookieSort?.length ? cookieSort : []
   if (route.params.projId) {
     workStore.fetchIssueProject(route.params.projId as string)
-    workStore.fetchActivityLogList({
-      project: route.params.projId as string,
-      from_act_date: dateFormat(fromDate.value),
-      to_act_date: dateFormat(props.toDate),
-      sort,
-    })
-  } else
-    workStore.fetchActivityLogList({
-      from_act_date: dateFormat(fromDate.value),
-      to_act_date: dateFormat(props.toDate),
-      sort,
-    })
+  }
+  workStore.fetchActivityLogList({
+    from_act_date: dateFormat(fromDate.value),
+    to_act_date: dateFormat(props.toDate),
+    sort: sort.value,
+    ...props.activityFilter,
+  })
 })
 </script>
 
