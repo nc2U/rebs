@@ -22,6 +22,9 @@ const issueProjects = computed(() => workStore.issueProjects)
 
 const toDate = ref(new Date())
 
+const toBack = (date: Date) => (toDate.value = date)
+const toNext = (date: Date) => (toDate.value = date)
+
 const filteringActivity = (payload: ActLogEntryFilter) => {
   console.log(payload)
   workStore.fetchActivityLogList(payload)
@@ -37,7 +40,7 @@ onBeforeMount(() => {
 
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query">
     <template v-slot:default>
-      <ActivityLogList :to-date="toDate" />
+      <ActivityLogList :to-date="toDate" @to-back="toBack" @to-next="toNext" />
     </template>
 
     <template v-slot:aside>

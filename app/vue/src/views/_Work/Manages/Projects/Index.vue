@@ -25,6 +25,7 @@ import Files from '@/views/_Work/Manages/Projects/components/Files/Index.vue'
 import Repository from '@/views/_Work/Manages/Projects/components/Repository/Index.vue'
 import Settings from '@/views/_Work/Manages/Projects/components/Settings/Index.vue'
 import AsideActivity from '@/views/_Work/Manages/Activity/components/aside/AsideActivity.vue'
+import ActivityLogList from '@/views/_Work/Manages/Activity/components/ActivityLogList.vue'
 
 const cBody = ref()
 const aside = ref(true)
@@ -97,6 +98,9 @@ const filteringProject = (payload: any) => {
 
 const toDate = ref(new Date())
 
+const toBack = (date: Date) => (toDate.value = date)
+const toNext = (date: Date) => (toDate.value = date)
+
 const filteringActivity = (payload: ActLogEntryFilter) => {
   console.log(payload)
   workStore.fetchActivityLogList(payload)
@@ -141,7 +145,13 @@ onBeforeMount(async () => {
 
       <Overview v-if="routeName === '(개요)'" @aside-visible="asideVisible" />
 
-      <Activity v-if="routeName === '(작업내역)'" :to-date="toDate" @aside-visible="asideVisible" />
+      <Activity
+        v-if="routeName === '(작업내역)'"
+        :to-date="toDate"
+        @to-back="toBack"
+        @to-next="toNext"
+        @aside-visible="asideVisible"
+      />
 
       <Roadmap v-if="routeName === '(로드맵)'" @aside-visible="asideVisible" />
 

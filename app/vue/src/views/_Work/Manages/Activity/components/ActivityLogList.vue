@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import Cookies from 'js-cookie'
-import { ref, computed, onBeforeMount, watch } from 'vue'
+import { computed, onBeforeMount, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import { cutString, dateFormat, timeFormat } from '@/utils/baseMixins'
@@ -9,6 +9,8 @@ import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 import NoData from '@/views/_Work/components/NoData.vue'
 
 const props = defineProps({ toDate: { type: Date, required: true } })
+
+const emit = defineEmits(['to-back', 'to-next'])
 
 const workStore = useWork()
 const groupedActivities = computed<{ [key: string]: ActLogEntry[] }>(
@@ -25,8 +27,8 @@ watch(props.toDate, nVal => {
   })
 })
 
-const toBack = () => 1 // (props.toDate = new Date(props.toDate.setDate(props.toDate.getDate() - 10)))
-const toNext = () => 2 // (props.toDate = new Date(props.toDate.setDate(props.toDate.getDate() + 10)))
+const toBack = () => emit('to-back', new Date(props.toDate.setDate(props.toDate.getDate() - 10)))
+const toNext = () => emit('to-next', new Date(props.toDate.setDate(props.toDate.getDate() + 10)))
 
 const getIcon = (sort: string, progress: boolean) => {
   if (sort === '1') return progress ? 'mdi-forward' : 'mdi-folder-plus'
