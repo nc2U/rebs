@@ -113,6 +113,7 @@ watch(route, async nVal => {
 
 onBeforeMount(async () => {
   await workStore.fetchIssueLogList({ issue: props.issue.pk })
+  if (route.query.edit) callEditForm()
 })
 </script>
 
