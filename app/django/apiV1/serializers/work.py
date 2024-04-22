@@ -400,8 +400,6 @@ class IssueSerializer(serializers.ModelSerializer):
             instance.priority = CodeIssuePriority.objects.get(pk=self.initial_data.get('priority'))
         assigned_to = self.initial_data.get('assigned_to', None)
         instance.assigned_to = User.objects.get(pk=assigned_to) if assigned_to else None
-        parent = self.initial_data.get('parent', None)
-        instance.parent = Issue.objects.get(pk=parent) if parent else None
 
         # sub_issue 관계 지우기
         del_child = self.initial_data.get('del_child', None)
