@@ -104,13 +104,13 @@ router.register(r'company-bank-account', cash.ComBankAccountViewSet)
 router.register(r'balance-by-acc', cash.BalanceByAccountViewSet, basename='balance-by-acc')  # only list
 router.register(r'cashbook', cash.CashBookViewSet)
 router.register(r'com-cash-calc', cash.CompanyCashCalcViewSet)
-router.register(r'com-last-deal', cash.CompanyLastDealDateViewSet)
+router.register(r'com-last-deal', cash.CompanyLastDealDateViewSet, basename='com-last-deal')  # only list
 router.register(r'date-cashbook', cash.DateCashBookViewSet, basename='date-cashbook')  # only list
 router.register(r'project-bank-account', cash.ProjectBankAccountViewSet)
 router.register(r'pr-balance-by-acc', cash.PrBalanceByAccountViewSet, basename='pr-balance-by-acc')  # only list
 router.register(r'project-cashbook', cash.ProjectCashBookViewSet)
 router.register(r'pro-cash-calc', cash.ProjectCashCalcViewSet)
-router.register(r'pro-last-deal', cash.ProjectLastDealDateViewSet)
+router.register(r'pro-last-deal', cash.ProjectLastDealDateViewSet, basename='pro-last-deal')  # only list
 router.register(r'pr-date-cashbook', cash.ProjectDateCashBookViewSet, basename='pr-date-cashbook')  # only list
 router.register(r'project-imprest', cash.ProjectImprestViewSet, basename='pr-imprest')  # only list
 # contract
@@ -143,7 +143,7 @@ router.register(r'comment', document.CommentViewSet)
 router.register(r'comment-like', document.CommentLikeViewSet, basename='comment-like')
 router.register(r'comment-blame', document.CommentBlameViewSet, basename='comment-blame')
 router.register(r'tag', document.TagViewSet)
-router.register(r'post-trash-can', document.PostInTrashViewSet)
+router.register(r'post-trash-can', document.PostInTrashViewSet, basename='post-trash-can')
 
 urlpatterns = router.urls
 urlpatterns += [path('check-password/', accounts.CheckPasswordView.as_view(), name='check-password')]
