@@ -2,13 +2,13 @@
 import { ref, computed, type ComputedRef, inject, onBeforeMount } from 'vue'
 import { navMenu1, navMenu2 } from '@/views/_Work/_menu/headermixin1'
 import { useWork } from '@/store/pinia/work'
+import { dateFormat } from '@/utils/baseMixins'
 import type { Company } from '@/store/types/settings'
 import type { ActLogEntryFilter } from '@/store/types/work'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import ActivityLogList from '@/views/_Work/Manages/Activity/components/ActivityLogList.vue'
 import AsideActivity from '@/views/_Work/Manages/Activity/components/aside/AsideActivity.vue'
-import { dateFormat } from '@/utils/baseMixins'
 
 const cBody = ref()
 const company = inject<ComputedRef<Company>>('company')
@@ -22,16 +22,26 @@ const workStore = useWork()
 const issueProjects = computed(() => workStore.issueProjects)
 
 const toDate = ref(new Date())
-
-const toBack = (date: Date) => (toDate.value = date)
-const toNext = (date: Date) => (toDate.value = date)
+const fromDate = computed(() => new Date(toDate.value.getTime() - 9 * 24 * 60 * 60 * 1000))
 
 const activityFilter = ref({
   project: '',
   project__search: '',
+  to_act_date: dateFormat(toDate.value),
+  from_act_date: dateFormat(fromDate.value),
   user: '',
   sort: [],
 })
+
+const toMove = (date: Date) => {
+  toDate.value = date
+  activityFilter.value.to_act_date = dateFormat(date)
+  activityFilter.value.from_act_date = dateFormat(
+    new Date(date.getTime() - 9 * 24 * 60 * 60 * 1000),
+  )
+  console.log(dateFormat(new Date(date.getTime() - 9 * 24 * 60 * 60 * 1000)))
+  workStore.fetchActivityLogList(activityFilter.value)
+}
 
 const filterActivity = (payload: ActLogEntryFilter) => {
   console.log(payload)
@@ -56,8 +66,8 @@ onBeforeMount(() => {
       <ActivityLogList
         :to-date="toDate"
         :activity-filter="activityFilter"
-        @to-back="toBack"
-        @to-next="toNext"
+        @to-back="toMove"
+        @to-next="toMove"
       />
     </template>
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount, provide, inject, type ComputedRef, watch } from 'vue'
 import { navMenu1, navMenu2 } from '@/views/_Work/_menu/headermixin1'
+import { dateFormat } from '@/utils/baseMixins'
 import { useWork } from '@/store/pinia/work'
 import { useAccount } from '@/store/pinia/account'
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
@@ -25,7 +26,6 @@ import Files from '@/views/_Work/Manages/Projects/components/Files/Index.vue'
 import Repository from '@/views/_Work/Manages/Projects/components/Repository/Index.vue'
 import Settings from '@/views/_Work/Manages/Projects/components/Settings/Index.vue'
 import AsideActivity from '@/views/_Work/Manages/Activity/components/aside/AsideActivity.vue'
-import { dateFormat } from '@/utils/baseMixins'
 
 const cBody = ref()
 const aside = ref(true)
@@ -99,9 +99,6 @@ const filteringProject = (payload: any) => {
 const toDate = ref(new Date())
 const fromDate = computed(() => new Date(toDate.value.getTime() - 9 * 24 * 60 * 60 * 1000))
 
-const toBack = (date: Date) => (toDate.value = date)
-const toNext = (date: Date) => (toDate.value = date)
-
 const activityFilter = ref<ActLogEntryFilter>({
   project: '',
   project__search: '',
@@ -110,6 +107,16 @@ const activityFilter = ref<ActLogEntryFilter>({
   user: '',
   sort: [],
 })
+
+const toMove = (date: Date) => {
+  toDate.value = date
+  activityFilter.value.to_act_date = dateFormat(date)
+  activityFilter.value.from_act_date = dateFormat(
+    new Date(date.getTime() - 9 * 24 * 60 * 60 * 1000),
+  )
+  console.log(dateFormat(new Date(date.getTime() - 9 * 24 * 60 * 60 * 1000)))
+  workStore.fetchActivityLogList(activityFilter.value)
+}
 
 const filterActivity = (payload: ActLogEntryFilter) => {
   console.log(payload)
@@ -175,8 +182,8 @@ onBeforeMount(async () => {
         v-if="routeName === '(작업내역)'"
         :to-date="toDate"
         :activity-filter="activityFilter"
-        @to-back="toBack"
-        @to-next="toNext"
+        @to-back="toMove"
+        @to-next="toMove"
         @aside-visible="asideVisible"
       />
 

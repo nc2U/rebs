@@ -29,19 +29,6 @@ const fromDate = computed(
   () => new Date(new Date(props.toDate).getTime() - 9 * 24 * 60 * 60 * 1000),
 )
 
-watch(
-  () => props.toDate,
-  nVal => {
-    workStore.fetchActivityLogList({
-      from_act_date: dateFormat(fromDate.value),
-      to_act_date: dateFormat(nVal),
-      sort: sort.value,
-      ...props.activityFilter,
-    })
-  },
-  { deep: true },
-)
-
 const toBack = () =>
   emit('to-back', new Date(new Date(props.toDate).setDate(new Date(props.toDate).getDate() - 10)))
 const toNext = () =>
