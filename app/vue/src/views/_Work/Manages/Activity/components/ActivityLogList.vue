@@ -17,7 +17,9 @@ const groupedActivities = computed<{ [key: string]: ActLogEntry[] }>(
   () => workStore.groupedActivities,
 )
 
-const fromDate = computed(() => new Date(props.toDate.getTime() - 9 * 24 * 60 * 60 * 1000))
+const fromDate = computed(
+  () => new Date(new Date(props.toDate).getTime() - 9 * 24 * 60 * 60 * 1000),
+)
 
 // const toDate = ref(new Date())
 watch(props.toDate, nVal => {
@@ -27,8 +29,10 @@ watch(props.toDate, nVal => {
   })
 })
 
-const toBack = () => emit('to-back', new Date(props.toDate.setDate(props.toDate.getDate() - 10)))
-const toNext = () => emit('to-next', new Date(props.toDate.setDate(props.toDate.getDate() + 10)))
+const toBack = () =>
+  emit('to-back', new Date(new Date(props.toDate).setDate(new Date(props.toDate).getDate() - 10)))
+const toNext = () =>
+  emit('to-next', new Date(new Date(props.toDate).setDate(new Date(props.toDate).getDate() + 10)))
 
 const getIcon = (sort: string, progress: boolean) => {
   if (sort === '1') return progress ? 'mdi-forward' : 'mdi-folder-plus'

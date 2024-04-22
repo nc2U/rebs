@@ -11,7 +11,7 @@ defineProps({
   hasSubs: { type: Boolean, default: false },
 })
 
-const emit = defineEmits(['filter-submit'])
+const emit = defineEmits(['filter-activity'])
 
 const form = reactive<ActLogEntryFilter & { subProjects: boolean }>({
   project: '',
@@ -48,7 +48,7 @@ const getUsers = computed(() =>
 )
 
 const route = useRoute()
-const filterSubmit = () => {
+const filterActivity = () => {
   if (route.params.projId) {
     if (form.subProjects) {
       form.project = route.params.projId as string
@@ -70,7 +70,7 @@ const filterSubmit = () => {
   if (cookieSort) Cookies.set('cookieSort', cookieSort)
   else Cookies.remove('cookieSort')
 
-  emit('filter-submit', { ...form })
+  emit('filter-activity', { ...form })
 }
 
 onBeforeMount(() => {
@@ -90,7 +90,7 @@ onBeforeMount(() => {
       <DatePicker v-model="form.to_act_date" id="log-date" />
     </CCol>
   </CRow>
-  
+
   <CRow class="mb-3">
     <CFormLabel for="log-user" class="col-sm-4 col-form-label">사용자</CFormLabel>
     <CCol class="col-xxl-5">
@@ -132,7 +132,7 @@ onBeforeMount(() => {
 
   <CRow>
     <CCol>
-      <CButton color="dark" size="sm" @click="filterSubmit">적용</CButton>
+      <CButton color="dark" size="sm" @click="filterActivity">적용</CButton>
     </CCol>
   </CRow>
 </template>

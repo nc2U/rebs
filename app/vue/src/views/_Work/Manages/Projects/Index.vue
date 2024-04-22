@@ -101,8 +101,9 @@ const toDate = ref(new Date())
 const toBack = (date: Date) => (toDate.value = date)
 const toNext = (date: Date) => (toDate.value = date)
 
-const filteringActivity = (payload: ActLogEntryFilter) => {
+const filterActivity = (payload: ActLogEntryFilter) => {
   console.log(payload)
+  if (payload.to_act_date) toDate.value = payload.to_act_date
   workStore.fetchActivityLogList(payload)
 }
 
@@ -182,7 +183,7 @@ onBeforeMount(async () => {
       <AsideActivity
         v-if="routeName === '(작업내역)'"
         :has-subs="!!issueProject?.sub_projects?.length"
-        @filter-submit="filteringActivity"
+        @filter-activity="filterActivity"
       />
     </template>
   </ContentBody>

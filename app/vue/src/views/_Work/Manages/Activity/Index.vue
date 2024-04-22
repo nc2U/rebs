@@ -25,8 +25,9 @@ const toDate = ref(new Date())
 const toBack = (date: Date) => (toDate.value = date)
 const toNext = (date: Date) => (toDate.value = date)
 
-const filteringActivity = (payload: ActLogEntryFilter) => {
+const filterActivity = (payload: ActLogEntryFilter) => {
   console.log(payload)
+  if (payload.to_act_date) toDate.value = payload.to_act_date
   workStore.fetchActivityLogList(payload)
 }
 
@@ -44,7 +45,7 @@ onBeforeMount(() => {
     </template>
 
     <template v-slot:aside>
-      <AsideActivity @filter-submit="filteringActivity" />
+      <AsideActivity @filter-activity="filterActivity" />
     </template>
   </ContentBody>
 </template>
