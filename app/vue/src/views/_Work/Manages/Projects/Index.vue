@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onBeforeMount, provide, inject, type ComputedRef } from 'vue'
+import { ref, computed, onBeforeMount, provide, inject, type ComputedRef, watch } from 'vue'
 import { navMenu1, navMenu2 } from '@/views/_Work/_menu/headermixin1'
 import { useWork } from '@/store/pinia/work'
 import { useAccount } from '@/store/pinia/account'
@@ -103,7 +103,7 @@ const toBack = (date: Date) => (toDate.value = date)
 const toNext = (date: Date) => (toDate.value = date)
 
 const activityFilter = ref<ActLogEntryFilter>({
-  project: route.params.projId,
+  project: '',
   project__search: '',
   to_act_date: dateFormat(toDate.value),
   from_act_date: dateFormat(fromDate.value),
@@ -121,6 +121,14 @@ const filterActivity = (payload: ActLogEntryFilter) => {
   workStore.fetchActivityLogList(payload)
 }
 
+watch(
+  () => route.params,
+  nVal => {
+    if (nVal && nVal.projId) activityFilter.value.project = nVal.projId
+  },
+  { deep: true },
+)
+
 onBeforeRouteUpdate(async to => {
   if (to.params.projId) await workStore.fetchIssueProject(to.params.projId as string)
   else workStore.issueProject = null
@@ -129,7 +137,10 @@ onBeforeRouteUpdate(async to => {
 onBeforeMount(async () => {
   await workStore.fetchIssueProjectList({})
   await workStore.fetchAllIssueProjectList()
-  if (route.params.projId) await workStore.fetchIssueProject(route.params.projId as string)
+  if (route.params.projId) {
+    activityFilter.value.project = route.params.projId as string
+    await workStore.fetchIssueProject(route.params.projId as string)
+  }
 })
 </script>
 

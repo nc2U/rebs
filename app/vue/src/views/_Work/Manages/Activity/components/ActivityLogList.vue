@@ -56,16 +56,24 @@ const getIcon = (sort: string, progress: boolean) => {
 
 const route = useRoute()
 
-onBeforeMount(() => {
+onBeforeMount(async () => {
+  const projId = ((await route.params.projId) as string) ?? ''
   if (route.params.projId) {
-    workStore.fetchIssueProject(route.params.projId as string)
-  }
-  workStore.fetchActivityLogList({
-    from_act_date: dateFormat(fromDate.value),
-    to_act_date: dateFormat(props.toDate),
-    sort: sort.value,
-    ...props.activityFilter,
-  })
+    await workStore.fetchIssueProject(projId)
+    await workStore.fetchActivityLogList({
+      project: projId,
+      from_act_date: dateFormat(fromDate.value),
+      to_act_date: dateFormat(props.toDate),
+      sort: sort.value,
+      ...props.activityFilter,
+    })
+  } else
+    await workStore.fetchActivityLogList({
+      from_act_date: dateFormat(fromDate.value),
+      to_act_date: dateFormat(props.toDate),
+      sort: sort.value,
+      ...props.activityFilter,
+    })
 })
 </script>
 
