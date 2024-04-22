@@ -1,9 +1,10 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
-from .views import accounts, work
+from .views import accounts
 from .views import company
 from .views import rebs
+from .views import work
 from .views import project
 from .views import items
 from .views import payment
