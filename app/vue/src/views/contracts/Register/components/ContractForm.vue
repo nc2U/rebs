@@ -329,7 +329,7 @@ const formDataSetup = () => {
     form.status = props.contract.contractor.status
     form.reservation_date = props.contractor?.reservation_date
     form.contract_date = props.contractor?.contract_date
-    form.note = form.note ?? props.contract.contractor.note
+    form.note = props.contract.contractor.note
 
     // address
     if (props.contract.contractor.status === '2') {
