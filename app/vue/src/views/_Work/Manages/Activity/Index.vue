@@ -45,7 +45,8 @@ onBeforeMount(() => {
     </template>
 
     <template v-slot:aside>
-      <AsideActivity @filter-activity="filterActivity" />
+      {{ toDate }}
+      <AsideActivity :to-date="toDate" @filter-activity="filterActivity" />
     </template>
   </ContentBody>
 </template>

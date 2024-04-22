@@ -22,12 +22,16 @@ const fromDate = computed(
 )
 
 // const toDate = ref(new Date())
-watch(props.toDate, nVal => {
-  workStore.fetchActivityLogList({
-    from_act_date: dateFormat(fromDate.value),
-    to_act_date: dateFormat(nVal),
-  })
-})
+watch(
+  () => props.toDate,
+  nVal => {
+    workStore.fetchActivityLogList({
+      from_act_date: dateFormat(fromDate.value),
+      to_act_date: dateFormat(nVal),
+    })
+  },
+  { deep: true },
+)
 
 const toBack = () =>
   emit('to-back', new Date(new Date(props.toDate).setDate(new Date(props.toDate).getDate() - 10)))

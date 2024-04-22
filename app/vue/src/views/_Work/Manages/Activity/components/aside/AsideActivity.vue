@@ -7,16 +7,25 @@ import { useAccount } from '@/store/pinia/account'
 import { dateFormat } from '@/utils/baseMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 
-defineProps({
+const props = defineProps({
+  toDate: { type: Date, required: true },
   hasSubs: { type: Boolean, default: false },
 })
+
+watch(
+  () => props.toDate,
+  nVal => {
+    form.to_act_date = dateFormat(nVal)
+  },
+  { deep: true },
+)
 
 const emit = defineEmits(['filter-activity'])
 
 const form = reactive<ActLogEntryFilter & { subProjects: boolean }>({
   project: '',
   project__search: '',
-  to_act_date: dateFormat(new Date()),
+  to_act_date: '',
   from_act_date: '',
   user: '',
   sort: ['1', '2', '9'],
@@ -77,6 +86,7 @@ onBeforeMount(() => {
   accStore.fetchUsersList()
   const cookieSort = Cookies.get('cookieSort')?.split('-') as any[]
   if (cookieSort?.length) form.sort = cookieSort
+  if (props.toDate) form.to_act_date = dateFormat(props.toDate)
 })
 </script>
 

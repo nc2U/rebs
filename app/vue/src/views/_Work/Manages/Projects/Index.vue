@@ -25,7 +25,6 @@ import Files from '@/views/_Work/Manages/Projects/components/Files/Index.vue'
 import Repository from '@/views/_Work/Manages/Projects/components/Repository/Index.vue'
 import Settings from '@/views/_Work/Manages/Projects/components/Settings/Index.vue'
 import AsideActivity from '@/views/_Work/Manages/Activity/components/aside/AsideActivity.vue'
-import ActivityLogList from '@/views/_Work/Manages/Activity/components/ActivityLogList.vue'
 
 const cBody = ref()
 const aside = ref(true)
@@ -180,8 +179,10 @@ onBeforeMount(async () => {
     </template>
 
     <template v-slot:aside>
+      {{ toDate }}
       <AsideActivity
         v-if="routeName === '(작업내역)'"
+        :to-date="toDate"
         :has-subs="!!issueProject?.sub_projects?.length"
         @filter-activity="filterActivity"
       />
