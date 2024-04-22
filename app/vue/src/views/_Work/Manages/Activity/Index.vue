@@ -15,10 +15,10 @@ const comName = computed(() => company?.value?.name)
 
 const sideNavCAll = () => cBody.value.toggle()
 
-const navMenu = computed(() => (!issueProjectList.value.length ? navMenu1 : navMenu2))
+const navMenu = computed(() => (!issueProjects.value.length ? navMenu1 : navMenu2))
 
 const workStore = useWork()
-const issueProjectList = computed(() => workStore.issueProjectList)
+const issueProjects = computed(() => workStore.issueProjects)
 
 const filterSubmit = (payload: ActLogEntryFilter) => {
   console.log(payload)

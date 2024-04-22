@@ -6,14 +6,8 @@ import HeaderSearch from './components/Search.vue'
 import HeaderNav from './components/HeaderNav.vue'
 
 defineProps({
-  pageTitle: {
-    type: String,
-    default: 'Page Title',
-  },
-  navMenu: {
-    type: Array,
-    default: () => ['Base Menu'],
-  },
+  pageTitle: { type: String, default: '' },
+  navMenu: { type: Array, default: () => ['Base Menu'] },
   familyTree: {
     type: Array as PropType<{ pk: number; name: string; slug: string }[]>,
     default: () => [],
