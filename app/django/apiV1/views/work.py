@@ -162,43 +162,29 @@ class IssueFilter(FilterSet):
         fields = ('project__slug', 'status__closed', 'status', 'tracker', 'parent')
 
     def filter_queryset(self, queryset):
-        """
-        Filter the queryset with the underlying form's `cleaned_data`. You must
-        call `is_valid()` or `errors` before calling this method.
-
-        This method should be overridden if additional filtering needs to be
-        applied to the queryset before it is cached.
-        """
-        subs = None
-
-        def get_sub_projects(parent):
-            sub_projects = []
-            children = IssueProject.objects.filter(parent=parent)
-            for child in children:
-                sub_projects.append(child)
-                sub_projects.extend(get_sub_projects(child))
-            return sub_projects
-
         for name, value in self.form.cleaned_data.items():
             if name == 'project__slug':
                 try:
                     project = IssueProject.objects.get(slug=value)
-                    subs = get_sub_projects(project)
+                    subs = self.get_sub_projects(project)
+                    # Include activity log entries related to the specified project and its subprojects
+                    queryset = queryset.filter(
+                        Q(project__slug=project.slug) | Q(project__slug__in=[sub.slug for sub in subs]))
                 except IssueProject.DoesNotExist:
                     pass
-            if subs is not None:
-                for sub in subs:
-                    queryset |= sub.issue_set.filter(closed__isnull=True)
+            elif value is not None:
+                # Apply other filters
+                queryset = self.filters[name].filter(queryset, value)
 
-            queryset = self.filters[name].filter(queryset, value)
-            assert isinstance(
-                queryset, models.QuerySet
-            ), "Expected '%s.%s' to return a QuerySet, but got a %s instead." % (
-                type(self).__name__,
-                name,
-                type(queryset).__name__,
-            )
         return queryset
+
+    def get_sub_projects(self, parent):
+        sub_projects = []
+        children = IssueProject.objects.filter(parent=parent)
+        for child in children:
+            sub_projects.append(child)
+            sub_projects.extend(self.get_sub_projects(child))
+        return sub_projects
 
 
 class IssueViewSet(viewsets.ModelViewSet):
@@ -254,36 +240,29 @@ class TimeEntryFilter(FilterSet):
                   'issue__tracker', 'issue__parent', 'issue__fixed_version', 'issue__category')
 
     def filter_queryset(self, queryset):
-        subs = None
-
-        def get_sub_projects(parent):
-            sub_projects = []
-            children = IssueProject.objects.filter(parent=parent)
-            for child in children:
-                sub_projects.append(child)
-                sub_projects.extend(get_sub_projects(child))
-            return sub_projects
 
         for name, value in self.form.cleaned_data.items():
             if name == 'project__slug':
                 try:
                     project = IssueProject.objects.get(slug=value)
-                    subs = get_sub_projects(project)
+                    subs = self.get_sub_projects(project)
+                    queryset = queryset.filter(
+                        Q(project__slug=project.slug) | Q(project__slug__in=[sub.slug for sub in subs]))
                 except IssueProject.DoesNotExist:
                     pass
-            if subs is not None:
-                for sub in subs:
-                    queryset |= sub.timeentry_set.all()
+            elif value is not None:
+                # Apply other filters
+                queryset = self.filters[name].filter(queryset, value)
 
-            queryset = self.filters[name].filter(queryset, value)
-            assert isinstance(
-                queryset, models.QuerySet
-            ), "Expected '%s.%s' to return a QuerySet, but got a %s instead." % (
-                type(self).__name__,
-                name,
-                type(queryset).__name__,
-            )
         return queryset
+
+    def get_sub_projects(self, parent):
+        sub_projects = []
+        children = IssueProject.objects.filter(parent=parent)
+        for child in children:
+            sub_projects.append(child)
+            sub_projects.extend(self.get_sub_projects(child))
+        return sub_projects
 
 
 class TimeEntryViewSet(viewsets.ModelViewSet):
@@ -302,53 +281,46 @@ class TimeEntryViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-def sort_filter(queryset, name, value):
-    if value:
-        queryset = queryset.filter(sort__in=value.split(","))
-    return queryset
-
-
 class ActivityLogFilter(FilterSet):
-    project__search = CharFilter(field_name='project__slug', label='프로젝트-검색')
-    from_act_date = DateFilter(field_name='act_date', lookup_expr='gte', label='로그일자부터')
-    to_act_date = DateFilter(field_name='act_date', lookup_expr='lte', label='로그일자까지')
-    sort = CharFilter(method=sort_filter)
+    project__search = CharFilter(field_name='project__slug', label='project-search')
+    from_act_date = DateFilter(field_name='act_date', lookup_expr='gte', label='From log date')
+    to_act_date = DateFilter(field_name='act_date', lookup_expr='lte', label='To log date')
+    sort = CharFilter(method='sort_filter')
 
     class Meta:
         model = ActivityLogEntry
         fields = ('project__slug', 'from_act_date', 'to_act_date', 'user', 'sort')
 
     def filter_queryset(self, queryset):
-        subs = None
-
-        def get_sub_projects(parent):
-            sub_projects = []
-            children = IssueProject.objects.filter(parent=parent)
-            for child in children:
-                sub_projects.append(child)
-                sub_projects.extend(get_sub_projects(child))
-            return sub_projects
-
         for name, value in self.form.cleaned_data.items():
             if name == 'project__slug':
                 try:
                     project = IssueProject.objects.get(slug=value)
-                    subs = get_sub_projects(project)
+                    subs = self.get_sub_projects(project)
+                    # Include activity log entries related to the specified project and its subprojects
+                    queryset = queryset.filter(
+                        Q(project__slug=project.slug) | Q(project__slug__in=[sub.slug for sub in subs]))
                 except IssueProject.DoesNotExist:
                     pass
-            if subs is not None:
-                for sub in subs:
-                    queryset |= sub.activitylogentry_set.all()
+            elif value is not None:
+                # Apply other filters
+                queryset = self.filters[name].filter(queryset, value)
 
-            queryset = self.filters[name].filter(queryset, value)
-            assert isinstance(
-                queryset, models.QuerySet
-            ), "Expected '%s.%s' to return a QuerySet, but got a %s instead." % (
-                type(self).__name__,
-                name,
-                type(queryset).__name__,
-            )
         return queryset
+
+    @staticmethod
+    def sort_filter(queryset, name, value):
+        if value:
+            queryset = queryset.filter(sort__in=value.split(","))
+        return queryset
+
+    def get_sub_projects(self, parent):
+        sub_projects = []
+        children = IssueProject.objects.filter(parent=parent)
+        for child in children:
+            sub_projects.append(child)
+            sub_projects.extend(self.get_sub_projects(child))
+        return sub_projects
 
 
 class ActivityLogEntryViewSet(viewsets.ModelViewSet):
