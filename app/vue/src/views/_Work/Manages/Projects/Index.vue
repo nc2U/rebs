@@ -95,6 +95,8 @@ const filteringProject = (payload: any) => {
   workStore.fetchIssueProjectList(payload)
 }
 
+const toDate = ref(new Date())
+
 const filteringActivity = (payload: ActLogEntryFilter) => {
   console.log(payload)
   workStore.fetchActivityLogList(payload)
@@ -139,7 +141,7 @@ onBeforeMount(async () => {
 
       <Overview v-if="routeName === '(개요)'" @aside-visible="asideVisible" />
 
-      <Activity v-if="routeName === '(작업내역)'" @aside-visible="asideVisible" />
+      <Activity v-if="routeName === '(작업내역)'" :to-date="toDate" @aside-visible="asideVisible" />
 
       <Roadmap v-if="routeName === '(로드맵)'" @aside-visible="asideVisible" />
 

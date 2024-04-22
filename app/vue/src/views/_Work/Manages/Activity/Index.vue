@@ -20,7 +20,9 @@ const navMenu = computed(() => (!issueProjects.value.length ? navMenu1 : navMenu
 const workStore = useWork()
 const issueProjects = computed(() => workStore.issueProjects)
 
-const filterSubmit = (payload: ActLogEntryFilter) => {
+const toDate = ref(new Date())
+
+const filteringActivity = (payload: ActLogEntryFilter) => {
   console.log(payload)
   workStore.fetchActivityLogList(payload)
 }
@@ -35,11 +37,11 @@ onBeforeMount(() => {
 
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query">
     <template v-slot:default>
-      <ActivityLogList />
+      <ActivityLogList :to-date="toDate" />
     </template>
 
     <template v-slot:aside>
-      <AsideActivity @filter-submit="filterSubmit" />
+      <AsideActivity @filter-submit="filteringActivity" />
     </template>
   </ContentBody>
 </template>
