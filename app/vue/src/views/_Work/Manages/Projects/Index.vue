@@ -179,7 +179,6 @@ onBeforeMount(async () => {
     </template>
 
     <template v-slot:aside>
-      {{ toDate }}
       <AsideActivity
         v-if="routeName === '(작업내역)'"
         :to-date="toDate"

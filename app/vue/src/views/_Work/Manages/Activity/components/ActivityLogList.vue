@@ -21,7 +21,6 @@ const fromDate = computed(
   () => new Date(new Date(props.toDate).getTime() - 9 * 24 * 60 * 60 * 1000),
 )
 
-// const toDate = ref(new Date())
 watch(
   () => props.toDate,
   nVal => {
