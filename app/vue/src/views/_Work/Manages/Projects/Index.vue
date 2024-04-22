@@ -25,6 +25,7 @@ import Files from '@/views/_Work/Manages/Projects/components/Files/Index.vue'
 import Repository from '@/views/_Work/Manages/Projects/components/Repository/Index.vue'
 import Settings from '@/views/_Work/Manages/Projects/components/Settings/Index.vue'
 import AsideActivity from '@/views/_Work/Manages/Activity/components/aside/AsideActivity.vue'
+import { dateFormat } from '@/utils/baseMixins'
 
 const cBody = ref()
 const aside = ref(true)
@@ -100,9 +101,19 @@ const toDate = ref(new Date())
 const toBack = (date: Date) => (toDate.value = date)
 const toNext = (date: Date) => (toDate.value = date)
 
+const activityFilter = ref<ActLogEntryFilter>({
+  project: '',
+  project__search: '',
+  to_act_date: dateFormat(toDate.value),
+  from_act_date: '',
+  user: '',
+  sort: [],
+})
+
 const filterActivity = (payload: ActLogEntryFilter) => {
   console.log(payload)
   if (payload.to_act_date) toDate.value = payload.to_act_date
+
   workStore.fetchActivityLogList(payload)
 }
 
@@ -148,6 +159,7 @@ onBeforeMount(async () => {
       <Activity
         v-if="routeName === '(작업내역)'"
         :to-date="toDate"
+        :activity-filter="activityFilter"
         @to-back="toBack"
         @to-next="toNext"
         @aside-visible="asideVisible"

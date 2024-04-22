@@ -25,6 +25,15 @@ const toDate = ref(new Date())
 const toBack = (date: Date) => (toDate.value = date)
 const toNext = (date: Date) => (toDate.value = date)
 
+const activityFilter = ref({
+  project: '',
+  project__search: '',
+  to_act_date: '',
+  from_act_date: '',
+  user: '',
+  sort: [],
+})
+
 const filterActivity = (payload: ActLogEntryFilter) => {
   console.log(payload)
   if (payload.to_act_date) toDate.value = payload.to_act_date
@@ -41,7 +50,12 @@ onBeforeMount(() => {
 
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query">
     <template v-slot:default>
-      <ActivityLogList :to-date="toDate" @to-back="toBack" @to-next="toNext" />
+      <ActivityLogList
+        :to-date="toDate"
+        :activity-filter="activityFilter"
+        @to-back="toBack"
+        @to-next="toNext"
+      />
     </template>
 
     <template v-slot:aside>

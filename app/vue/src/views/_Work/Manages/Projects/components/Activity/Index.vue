@@ -1,8 +1,11 @@
 <script lang="ts" setup>
-import { onBeforeMount } from 'vue'
+import { onBeforeMount, type PropType } from 'vue'
 import ActivityLogList from '@/views/_Work/Manages/Activity/components/ActivityLogList.vue'
 
-defineProps({ toDate: { type: Date, required: true } })
+defineProps({
+  toDate: { type: Date, required: true },
+  activityFilter: { type: Object as PropType<any>, default: () => null },
+})
 
 const emit = defineEmits(['aside-visible', 'to-back', 'to-next'])
 
@@ -15,5 +18,10 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <ActivityLogList :to-date="toDate" @to-back="toBack" @to-next="toNext" />
+  <ActivityLogList
+    :to-date="toDate"
+    :activity-filter="activityFilter"
+    @to-back="toBack"
+    @to-next="toNext"
+  />
 </template>
