@@ -120,7 +120,7 @@ const toMove = (date: Date) => {
 
 const filterActivity = (payload: ActLogEntryFilter) => {
   console.log(payload)
-  if (payload.to_act_date) toDate.value = payload.to_act_date
+  if (payload.to_act_date) toDate.value = new Date(payload.to_act_date)
   activityFilter.value.project = payload.project ?? ''
   activityFilter.value.project__search = payload.project__search ?? ''
   activityFilter.value.user = payload.user ?? ''
@@ -131,7 +131,7 @@ const filterActivity = (payload: ActLogEntryFilter) => {
 watch(
   () => route.params,
   nVal => {
-    if (nVal && nVal.projId) activityFilter.value.project = nVal.projId
+    if (nVal && nVal.projId) activityFilter.value.project = nVal.projId as string
   },
   { deep: true },
 )

@@ -24,7 +24,7 @@ const issueProjects = computed(() => workStore.issueProjects)
 const toDate = ref(new Date())
 const fromDate = computed(() => new Date(toDate.value.getTime() - 9 * 24 * 60 * 60 * 1000))
 
-const activityFilter = ref({
+const activityFilter = ref<ActLogEntryFilter>({
   project: '',
   project__search: '',
   to_act_date: dateFormat(toDate.value),
@@ -45,7 +45,7 @@ const toMove = (date: Date) => {
 
 const filterActivity = (payload: ActLogEntryFilter) => {
   console.log(payload)
-  if (payload.to_act_date) toDate.value = payload.to_act_date
+  if (payload.to_act_date) toDate.value = new Date(payload.to_act_date)
   activityFilter.value.project = payload.project ?? ''
   activityFilter.value.project__search = payload.project__search ?? ''
   activityFilter.value.user = payload.user ?? ''
