@@ -3,10 +3,7 @@ import { ref } from 'vue'
 import { type RouteRecordName, useRouter } from 'vue-router'
 
 const props = defineProps({
-  navMenu: {
-    type: Array,
-    default: () => [],
-  },
+  navMenu: { type: Array, default: () => [] },
   query: { type: Object, default: null },
   aside: { type: Boolean, default: true },
 })
