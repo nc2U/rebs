@@ -178,7 +178,7 @@ onBeforeMount(() => {
   if (!!props.statusList.length) form.value.status = props.statusList[0]?.pk
   if (route.name === '업무')
     searchOptions[0].options.splice(1, 0, { value: 'project', label: '프로젝트' })
-  if (route.query) {
+  if (!!route.query.parent || !!route.query.status) {
     if (route.query.parent) {
       searchCond.value.push('parent')
       form.value.parent = Number(route.query.parent)

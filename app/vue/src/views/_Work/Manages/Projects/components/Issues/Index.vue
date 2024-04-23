@@ -56,31 +56,37 @@ const onSubmit = (payload: any) => {
 
 const filterSubmit = (payload: IssueFilter) => workStore.fetchIssueList(payload)
 
-watch(route, async nVal => {
-  const project = nVal.params.projId as string
-  await workStore.fetchIssueList({ status__closed: '0', project })
-  if (nVal.params.issueId) {
-    await workStore.fetchIssue(Number(nVal.params.issueId))
-    await workStore.fetchIssueLogList({ issue: Number(nVal.params.issueId) })
-    await workStore.fetchTimeEntryList({ ordering: 'pk', issue: Number(nVal.params.issueId) })
-  } else workStore.issue = null
-})
+watch(
+  route,
+  async nVal => {
+    if (nVal.params.projId) {
+      await workStore.fetchIssueList({ status__closed: '0', project: nVal.params.projId as string })
+    }
+
+    if (nVal.params.issueId) {
+      await workStore.fetchIssue(Number(nVal.params.issueId))
+      await workStore.fetchIssueLogList({ issue: Number(nVal.params.issueId) })
+      await workStore.fetchTimeEntryList({ ordering: 'pk', issue: Number(nVal.params.issueId) })
+    } else workStore.issue = null
+  },
+  { deep: true },
+)
+
+const projId = computed(() => (route.params.projId as string) ?? '')
+const issueId = computed(() => (route.params.issueId as string) ?? '')
 
 onBeforeMount(async () => {
   emit('aside-visible', true)
   await workStore.fetchAllIssueProjectList()
 
-  if (route.params.projId) {
-    await workStore.fetchIssueProject(route.params.projId as string)
-    const project = route.params.projId as string
-    await workStore.fetchAllIssueList(project)
-    await workStore.fetchIssueList({ status__closed: '0', project })
-  }
+  await workStore.fetchIssueProject(projId.value)
+  await workStore.fetchAllIssueList(projId.value)
+  await workStore.fetchIssueList({ status__closed: '0', project: projId.value })
 
-  if (route.params.issueId) {
-    await workStore.fetchIssue(Number(route.params.issueId))
-    await workStore.fetchIssueLogList({ issue: Number(route.params.issueId) })
-    await workStore.fetchTimeEntryList({ ordering: 'pk', issue: Number(route.params.issueId) })
+  if (issueId.value) {
+    await workStore.fetchIssue(Number(issueId.value))
+    await workStore.fetchIssueLogList({ issue: Number(issueId.value) })
+    await workStore.fetchTimeEntryList({ ordering: 'pk', issue: Number(issueId.value) })
   }
 
   await workStore.fetchMemberList()
