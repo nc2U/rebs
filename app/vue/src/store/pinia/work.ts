@@ -329,6 +329,9 @@ export const useWork = defineStore('work', () => {
   // time-entry states & getters
   const timeEntry = ref<TimeEntry | null>(null)
   const timeEntryList = ref<TimeEntry[]>([])
+  const timeEntryCount = ref<number>(0)
+
+  const timeEntryPages = (itemsPerPage: number) => Math.ceil(timeEntryCount.value / itemsPerPage)
 
   const fetchTimeEntry = (pk: number) =>
     api
@@ -337,7 +340,7 @@ export const useWork = defineStore('work', () => {
       .catch(err => errorHandle(err.response.data))
 
   const fetchTimeEntryList = async (payload: TimeEntryFilter) => {
-    let url = `/time-entry/?ordering=${payload.ordering ?? ''}`
+    let url = `/time-entry/?ordering=${payload.ordering ?? ''}&page=${payload.page ?? 1}`
     if (payload.project) url += `&project__slug=${payload.project}`
     if (payload.project__search) url += `&project__search=${payload.project__search}`
     if (payload.project__exclude) url += `&project__exclude=${payload.project__exclude}`
@@ -360,7 +363,10 @@ export const useWork = defineStore('work', () => {
 
     return await api
       .get(url)
-      .then(res => (timeEntryList.value = res.data.results))
+      .then(res => {
+        timeEntryList.value = res.data.results
+        timeEntryCount.value = res.data.count
+      })
       .catch(err => errorHandle(err.response.data))
   }
 
@@ -488,6 +494,8 @@ export const useWork = defineStore('work', () => {
 
     timeEntry,
     timeEntryList,
+    timeEntryCount,
+    timeEntryPages,
     fetchTimeEntry,
     fetchTimeEntryList,
     createTimeEntry,

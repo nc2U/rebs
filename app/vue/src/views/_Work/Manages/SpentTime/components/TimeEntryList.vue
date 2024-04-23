@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import { ref, type PropType } from 'vue'
 import type { IssueProject, TimeEntry, TimeEntryFilter } from '@/store/types/work'
+import { useWork } from '@/store/pinia/work'
 import { cutString, dateFormat, numberToHour } from '@/utils/baseMixins'
 import NoData from '@/views/_Work/components/NoData.vue'
 import HeaderTab from '@/views/_Work/Manages/SpentTime/components/HeaderTab.vue'
+import Pagination from '@/components/Pagination'
 import SearchList from './SearchList.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
@@ -15,11 +17,15 @@ defineProps({
   getMembers: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
 })
 
-const emit = defineEmits(['del-submit', 'filter-submit'])
+const emit = defineEmits(['page-select', 'del-submit', 'filter-submit'])
 
 const filterSubmit = (payload: TimeEntryFilter) => emit('filter-submit', payload)
 
 const RefDelConfirm = ref()
+
+const workStore = useWork()
+const timeEntryPages = (pageNum: number) => workStore.timeEntryPages(pageNum)
+const pageSelect = (page: number) => emit('page-select', page)
 
 const delPk = ref<null | number>(null)
 
@@ -189,6 +195,14 @@ const delSubmit = () => {
         </CTableBody>
       </CTable>
     </CCol>
+
+    <Pagination
+      :active-page="1"
+      :limit="8"
+      :pages="timeEntryPages(20)"
+      @active-page-change="pageSelect"
+      class="mt-3"
+    />
   </CRow>
 
   <ConfirmModal ref="RefDelConfirm">

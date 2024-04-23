@@ -319,6 +319,7 @@ export interface TimeEntryFilter {
   version?: number | ''
   subject?: string
   project_status?: number | ''
+  page?: number
 }
 
 export interface ActLogEntry {

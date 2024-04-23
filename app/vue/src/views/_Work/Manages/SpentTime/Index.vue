@@ -10,6 +10,7 @@ import TimeEntryList from '@/views/_Work/Manages/SpentTime/components/TimeEntryL
 import TimeEntryForm from '@/views/_Work/Manages/SpentTime/components/TimeEntryForm.vue'
 import type { TimeEntryFilter } from '@/store/types/work'
 import { useAccount } from '@/store/pinia/account'
+import ContractList from '@/views/contracts/List/components/ContractList.vue'
 
 const cBody = ref()
 const company = inject<ComputedRef<Company>>('company')
@@ -41,6 +42,8 @@ const filterSubmit = (payload: TimeEntryFilter) => {
   workStore.fetchTimeEntryList(payload)
 }
 
+const pageSelect = (page: number) => workStore.fetchTimeEntryList({ page })
+
 const delSubmit = (pk: number) => alert(pk)
 
 const accStore = useAccount()
@@ -64,6 +67,7 @@ onBeforeMount(() => {
         :get-issues="getIssues"
         :get-members="getMembers"
         @filter-submit="filterSubmit"
+        @page-select="pageSelect"
         @del-submit="delSubmit"
       />
 

@@ -5,6 +5,7 @@ import { useWork } from '@/store/pinia/work'
 import type { TimeEntryFilter } from '@/store/types/work'
 import TimeEntryList from '@/views/_Work/Manages/SpentTime/components/TimeEntryList.vue'
 import TimeEntryForm from '@/views/_Work/Manages/SpentTime/components/TimeEntryForm.vue'
+import ContractList from '@/views/contracts/List/components/ContractList.vue'
 
 const emit = defineEmits(['aside-visible'])
 
@@ -39,6 +40,13 @@ const filterSubmit = (payload: TimeEntryFilter) => {
   workStore.fetchTimeEntryList(payload)
 }
 
+const pageSelect = (page: number) =>
+  workStore.fetchTimeEntryList({
+    project: project.value,
+    issue: Number(issue.value),
+    page,
+  })
+
 const delSubmit = (pk: number) => deleteTimeEntry(pk)
 
 const project = computed(() => (route.params.projId ? (route.params.projId as string) : ''))
@@ -66,6 +74,7 @@ onBeforeMount(() => {
     :get-issues="getIssues"
     :get-members="getMembers"
     @filter-submit="filterSubmit"
+    @page-select="pageSelect"
     @del-submit="delSubmit"
   />
 
