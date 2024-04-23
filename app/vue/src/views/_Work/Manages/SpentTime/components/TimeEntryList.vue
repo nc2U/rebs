@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, type PropType } from 'vue'
 import type { IssueProject, TimeEntry, TimeEntryFilter } from '@/store/types/work'
-import { dateFormat, numberToHour } from '@/utils/baseMixins'
+import { cutString, dateFormat, numberToHour } from '@/utils/baseMixins'
 import NoData from '@/views/_Work/components/NoData.vue'
 import HeaderTab from '@/views/_Work/Manages/SpentTime/components/HeaderTab.vue'
 import SearchList from './SearchList.vue'
@@ -117,10 +117,10 @@ const delSubmit = () => {
               <router-link to="" :class="{ closed: time.issue.status.closed }">
                 {{ time.issue.tracker }} #{{ time.issue.pk }}
               </router-link>
-              : {{ time.issue.subject }}
+              : {{ cutString(time.issue.subject, 35) }}
             </CTableDataCell>
             <CTableDataCell class="text-left">
-              {{ time.comment }}
+              {{ cutString(time.comment, 35) }}
             </CTableDataCell>
             <CTableDataCell>
               <span class="strong">{{ numberToHour(time.hours) }}</span>
