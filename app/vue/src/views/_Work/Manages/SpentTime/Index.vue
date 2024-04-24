@@ -3,14 +3,13 @@ import { computed, type ComputedRef, inject, onBeforeMount, ref } from 'vue'
 import { navMenu2 as navMenu } from '@/views/_Work/_menu/headermixin1'
 import { useWork } from '@/store/pinia/work'
 import { useRouter } from 'vue-router'
+import { useAccount } from '@/store/pinia/account'
 import type { Company } from '@/store/types/settings'
+import type { TimeEntryFilter } from '@/store/types/work'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import TimeEntryList from '@/views/_Work/Manages/SpentTime/components/TimeEntryList.vue'
 import TimeEntryForm from '@/views/_Work/Manages/SpentTime/components/TimeEntryForm.vue'
-import type { TimeEntryFilter } from '@/store/types/work'
-import { useAccount } from '@/store/pinia/account'
-import ContractList from '@/views/contracts/List/components/ContractList.vue'
 
 const cBody = ref()
 const company = inject<ComputedRef<Company>>('company')

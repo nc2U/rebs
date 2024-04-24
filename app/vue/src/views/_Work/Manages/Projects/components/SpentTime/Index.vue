@@ -5,7 +5,6 @@ import { useWork } from '@/store/pinia/work'
 import type { TimeEntryFilter } from '@/store/types/work'
 import TimeEntryList from '@/views/_Work/Manages/SpentTime/components/TimeEntryList.vue'
 import TimeEntryForm from '@/views/_Work/Manages/SpentTime/components/TimeEntryForm.vue'
-import ContractList from '@/views/contracts/List/components/ContractList.vue'
 
 const emit = defineEmits(['aside-visible'])
 
