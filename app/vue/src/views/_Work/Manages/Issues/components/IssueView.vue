@@ -141,8 +141,6 @@ onBeforeMount(async () => {
     />
   </CRow>
 
-  {{ issueNums }}
-
   <CCard color="yellow-lighten-5 mb-3">
     <CCardBody>
       <CRow>

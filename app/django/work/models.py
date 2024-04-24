@@ -403,6 +403,27 @@ class Issue(models.Model):
         verbose_name_plural = '10. 업무(작업)'
 
 
+# class IssueRelations(models.Model):
+#     issue = models.OneToOneField(Issue, on_delete=models.CASCADE, verbose_name='업무', related_name='relation_issue')
+#     issue_to = models.OneToOneField(Issue, on_delete=models.CASCADE, verbose_name='연결된 업무',
+#                                     related_name='relation_issue_to')
+#     RELATION_CHOICES = (
+#         ('relates', '다음 업무와 관련됨'),
+#         ('duplicates', '다음 업무에 중복됨'),
+#         ('duplicated', '중복된 업무'),
+#         ('blocks', '다음 업무의 해결을 막고 있음'),
+#         ('blocked', '다음 업무에게 막혀 있음'),
+#         ('precedes', '다음에 진행할 업무'),
+#         ('follows', '다음 업무를 우선 진행'),
+#         ('copied_to', '다음 업무로 복사됨'),
+#         ('copied_from', '다음 업무로부터 복사됨'))
+#     relation_type = models.CharField('관계 유형', max_length=20, choices=RELATION_CHOICES, default='relates')
+#     delay = models.PositiveSmallIntegerField('지연일수', null=True, blank=True)
+#
+#     def __str__(self):
+#         return f'{self.issue.subject}-{self.relation_type}-{self.issue_to.subject}'
+
+
 class IssueFile(models.Model):
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, default=None, verbose_name='업무', related_name='files')
     file = models.FileField(upload_to='work/issue/%Y/%m/%d/', verbose_name='파일')
