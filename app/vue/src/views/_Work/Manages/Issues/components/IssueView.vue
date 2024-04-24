@@ -147,12 +147,37 @@ onBeforeMount(async () => {
           <span class="sub-title">{{ issue.subject }}</span>
         </CCol>
         <CCol class="text-right form-text">
-          <!--          <router-link to="">« 뒤로</router-link>-->
-          <!--          |-->
-          <!--          <router-link to="">2/2</router-link>-->
-          <!--          |-->
-          <!--          <router-link to="">다음 »</router-link>-->
-          <span>« 뒤로 | 2/2 | 다음 »</span>
+          <span v-if="issue.pk === getIssues[0].value">« 뒤로</span>
+          <router-link
+            v-else
+            :to="{
+              name: '(업무) - 보기',
+              params: {
+                issueId: getIssues.map(i => i.value)[
+                  getIssues.map(i => i.value).indexOf(issue.pk) - 1
+                ],
+              },
+            }"
+            >« 뒤로
+          </router-link>
+          <span class="mx-2">|</span>
+          <router-link :to="{ name: '(업무)' }">
+            {{ getIssues.map(i => i.value).indexOf(issue.pk) + 1 }}/{{ getIssues.length }}
+          </router-link>
+          <span class="mx-2">|</span>
+          <span v-if="issue.pk === getIssues[getIssues.length - 1].value">다음 »</span>
+          <router-link
+            v-else
+            :to="{
+              name: '(업무) - 보기',
+              params: {
+                issueId: getIssues.map(i => i.value)[
+                  getIssues.map(i => i.value).indexOf(issue.pk) + 1
+                ],
+              },
+            }"
+            >다음 »
+          </router-link>
         </CCol>
       </CRow>
 
