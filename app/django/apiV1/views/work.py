@@ -7,7 +7,6 @@ from ..permission import *
 from ..pagination import *
 from ..serializers.work import *
 
-from django.db import models
 from work.models import (IssueProject, Role, Permission, Member, Module, Version,
                          IssueCategory, Repository, Tracker, IssueStatus, Workflow,
                          CodeActivity, CodeIssuePriority, CodeDocsCategory, Issue,
