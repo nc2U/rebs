@@ -206,6 +206,8 @@ export const useWork = defineStore('work', () => {
     })),
   )
 
+  const issueNums = computed(() => issueList.value.map(i => i.pk))
+
   const fetchIssue = (pk: number) =>
     api
       .get(`/issue/${pk}/`)
@@ -476,6 +478,7 @@ export const useWork = defineStore('work', () => {
 
     issue,
     issueList,
+    issueNums,
     getIssues,
     fetchIssue,
     fetchAllIssueList,

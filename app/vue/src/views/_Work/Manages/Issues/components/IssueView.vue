@@ -39,6 +39,7 @@ const editForm = ref(false)
 const isClosed = computed(() => props.issue?.closed)
 
 const workStore = useWork()
+const issueNums = computed(() => workStore.issueNums)
 const issueLogList = computed(() => workStore.issueLogList)
 
 const doneRatio = computed(() => {
@@ -140,6 +141,8 @@ onBeforeMount(async () => {
     />
   </CRow>
 
+  {{ issueNums }}
+
   <CCard color="yellow-lighten-5 mb-3">
     <CCardBody>
       <CRow>
@@ -147,33 +150,29 @@ onBeforeMount(async () => {
           <span class="sub-title">{{ issue.subject }}</span>
         </CCol>
         <CCol class="text-right form-text">
-          <span v-if="issue.pk === getIssues[0].value">« 뒤로</span>
+          <span v-if="issue.pk === issueNums[0]">« 뒤로</span>
           <router-link
             v-else
             :to="{
               name: '(업무) - 보기',
               params: {
-                issueId: getIssues.map(i => i.value)[
-                  getIssues.map(i => i.value).indexOf(issue.pk) - 1
-                ],
+                issueId: issueNums[issueNums.indexOf(issue.pk) - 1],
               },
             }"
             >« 뒤로
           </router-link>
           <span class="mx-2">|</span>
           <router-link :to="{ name: '(업무)' }">
-            {{ getIssues.map(i => i.value).indexOf(issue.pk) + 1 }}/{{ getIssues.length }}
+            {{ issueNums.indexOf(issue.pk) + 1 }}/{{ issueNums.length }}
           </router-link>
           <span class="mx-2">|</span>
-          <span v-if="issue.pk === getIssues[getIssues.length - 1].value">다음 »</span>
+          <span v-if="issue.pk === issueNums[issueNums.length - 1]">다음 »</span>
           <router-link
             v-else
             :to="{
               name: '(업무) - 보기',
               params: {
-                issueId: getIssues.map(i => i.value)[
-                  getIssues.map(i => i.value).indexOf(issue.pk) + 1
-                ],
+                issueId: issueNums[issueNums.indexOf(issue.pk) + 1],
               },
             }"
             >다음 »
