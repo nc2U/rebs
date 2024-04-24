@@ -44,6 +44,21 @@ const getIcon = (sort: string, progress: boolean) => {
 const route = useRoute()
 const projId = computed(() => (route.params.projId as string) ?? '')
 
+watch(
+  () => route,
+  nVal => {
+    if (nVal.params.projId)
+      workStore.fetchActivityLogList({
+        project: nVal.params.projId,
+        from_act_date: dateFormat(fromDate.value),
+        to_act_date: dateFormat(props.toDate),
+        sort: sort.value,
+        ...props.activityFilter,
+      })
+  },
+  { deep: true },
+)
+
 onBeforeMount(() => {
   if (route.params.projId) workStore.fetchIssueProject(projId.value)
   setTimeout(() => {
