@@ -9,7 +9,7 @@ import type {
   IssueStatus,
   TimeEntry,
 } from '@/store/types/work'
-import { elapsedTime, diffDate, timeFormat, humanizeFileSize } from '@/utils/baseMixins'
+import { elapsedTime, diffDate, timeFormat, humanizeFileSize, cutString } from '@/utils/baseMixins'
 import { useWork } from '@/store/pinia/work'
 import { useRoute } from 'vue-router'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
@@ -115,6 +115,7 @@ watch(route, async nVal => {
 })
 
 const addRIssue = ref(false)
+const validated = ref(false)
 const relIssue = ref<IssueRelation>({
   issue: props.issue.pk,
   issue_to: null,
@@ -381,7 +382,7 @@ onBeforeMount(async () => {
       </template>
 
       <CRow class="mb-2">
-        <CCol>
+        <CCol class="col-10">
           <span class="title mr-2">하위 업무</span>
           <template v-if="issue.sub_issues.length">
             <span class="title mr-2">
@@ -419,7 +420,7 @@ onBeforeMount(async () => {
 
       <template v-if="issue.sub_issues.length">
         <CRow v-for="sub in issue.sub_issues" :key="sub.pk">
-          <CCol sm="6">
+          <CCol md="6" lg="4">
             <router-link
               :to="{ name: '(업무) - 보기', params: { issueId: sub.pk } }"
               :class="{ closed: sub.closed }"
@@ -428,16 +429,16 @@ onBeforeMount(async () => {
             </router-link>
             : {{ sub.subject }}
           </CCol>
-          <CCol class="text-right">
+          <CCol class="col-sm-6 col-md-3 col-lg-4 text-right">
             <span class="mr-3">{{ sub.status }}</span>
             <span v-if="sub.assigned_to" class="mr-3">
               <router-link :to="{ name: '사용자 - 보기', params: { userId: sub.assigned_to.pk } }">
-                {{ sub.assigned_to.username }}
+                {{ cutString(sub.assigned_to.username, 9) }}
               </router-link>
             </span>
             <span class="mr-3">{{ sub?.start_date }}</span>
           </CCol>
-          <CCol class="text-right">
+          <CCol class="col-sm-6 col-md-3 col-lg-4 text-right">
             <span class="mr-3">
               <CProgress
                 color="green-lighten-3"
@@ -542,7 +543,9 @@ onBeforeMount(async () => {
       <v-divider />
 
       <CRow class="mb-2">
-        <CCol class="title">연결된 업무</CCol>
+        <CCol class="col-10 title">
+          <span class="title mr-2">연결된 업무</span>
+        </CCol>
         <CCol class="text-right form-text">
           <router-link to="" @click="addRIssue = !addRIssue">추가</router-link>
         </CCol>
@@ -550,21 +553,21 @@ onBeforeMount(async () => {
 
       <template v-if="1 == 1">
         <CRow class="mb-2">
-          <CCol sm="6">
+          <CCol md="6" lg="4">
             <span>다음 업무와 관련됨 : </span>
             <span>기능 #12: test2</span>
           </CCol>
-          <CCol class="text-right">
+          <CCol class="col-sm-8 col-md-3 col-lg-4 text-right">
             <span class="mr-3">진행</span>
             <!--                        <span v-if="sub.assigned_to" class="mr-3">-->
             <!--                          <router-link :to="{ name: '사용자 - 보기', params: { userId: sub.assigned_to.pk } }">-->
             <!--                            {{ sub.assigned_to.username }}-->
-            <span class="mr-3">austin2 kho</span>
+            <span class="mr-3">{{ cutString('austin2 kho', 9) }}</span>
             <!--                          </router-link>-->
             <!--                        </span>-->
             <span class="mr-3">2024/04/21</span>
           </CCol>
-          <CCol class="text-right">
+          <CCol class="col-sm-4 col-md-3 col-lg-4 text-right">
             <span class="mr-3">
               <CProgress
                 color="green-lighten-3"
@@ -657,48 +660,55 @@ onBeforeMount(async () => {
         </CRow>
       </template>
 
-      <CRow v-if="addRIssue">
-        <CCol sm="4" md="3" lg="2">
-          <CFormSelect v-model="relIssue.relation_type">
-            <option value="relates">다음 업무와 관련됨 :</option>
-            <option value="duplicates">다음 업무에 중복됨 :</option>
-            <option value="duplicated">중복된 업무 :</option>
-            <option value="blocks">다음 업무의 해결을 막고 있음 :</option>
-            <option value="blocked">다음 업무에게 막혀 있음 :</option>
-            <option value="precedes">다음에 진행할 업무 :</option>
-            <option value="follows">다음 업무를 우선 진행 :</option>
-            <option value="copied_to">다음 업무로 복사됨 :</option>
-            <option value="copied_from">다음 업무로부터 복사됨 :</option>
-          </CFormSelect>
-        </CCol>
-        <CFormLabel for="colFormLabel" class="col-sm-1 col-form-label text-right">
-          업무 #
-        </CFormLabel>
-        <CCol sm="4" md="3" lg="2">
-          <Multiselect
-            v-model="relIssue.issue_to"
-            :options="getIssues"
-            placeholder="업무 검색"
-            searchable
-            required
-          />
-        </CCol>
-        <template
-          v-if="relIssue.relation_type === 'precedes' || relIssue.relation_type === 'follows'"
-        >
-          <CFormLabel for="colFormLabel" class="col-sm-1 col-form-label text-right">
-            지연 :
-          </CFormLabel>
-          <CCol sm="3" md="2" lg="1">
-            <CFormInput v-model="relIssue.delay" />
+      <CForm
+        class="needs-validation"
+        novalidate
+        :validated="validated"
+        @submit.prevent="addRelIssue"
+      >
+        <CRow v-if="addRIssue">
+          <CCol sm="4" md="3" lg="2">
+            <CFormSelect v-model="relIssue.relation_type">
+              <option value="relates">다음 업무와 관련됨 :</option>
+              <option value="duplicates">다음 업무에 중복됨 :</option>
+              <option value="duplicated">중복된 업무 :</option>
+              <option value="blocks">다음 업무의 해결을 막고 있음 :</option>
+              <option value="blocked">다음 업무에게 막혀 있음 :</option>
+              <option value="precedes">다음에 진행할 업무 :</option>
+              <option value="follows">다음 업무를 우선 진행 :</option>
+              <option value="copied_to">다음 업무로 복사됨 :</option>
+              <option value="copied_from">다음 업무로부터 복사됨 :</option>
+            </CFormSelect>
           </CCol>
-          <CFormLabel class="col-sm-1 col-form-label"> 일</CFormLabel>
-        </template>
-        <CCol class="pt-1">
-          <CButton color="primary" size="sm" @click="addRelIssue">추가</CButton>
-          <CButton color="light" size="sm" @click="addRIssue = false">취소</CButton>
-        </CCol>
-      </CRow>
+          <CFormLabel for="colFormLabel" class="col-sm-1 col-form-label text-right">
+            업무 #
+          </CFormLabel>
+          <CCol sm="4" md="3" lg="2">
+            <Multiselect
+              v-model="relIssue.issue_to"
+              :options="getIssues"
+              placeholder="업무 검색"
+              searchable
+              required
+            />
+          </CCol>
+          <template
+            v-if="relIssue.relation_type === 'precedes' || relIssue.relation_type === 'follows'"
+          >
+            <CFormLabel for="colFormLabel" class="col-sm-1 col-form-label text-right">
+              지연 :
+            </CFormLabel>
+            <CCol sm="3" md="2" lg="1">
+              <CFormInput v-model="relIssue.delay" />
+            </CCol>
+            <CFormLabel class="col-sm-1 col-form-label"> 일</CFormLabel>
+          </template>
+          <CCol class="pt-1">
+            <CButton type="submit" color="primary" size="sm">추가</CButton>
+            <CButton color="light" size="sm" @click="addRIssue = false">취소</CButton>
+          </CCol>
+        </CRow>
+      </CForm>
     </CCardBody>
   </CCard>
 
