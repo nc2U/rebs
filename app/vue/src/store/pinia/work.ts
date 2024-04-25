@@ -306,7 +306,7 @@ export const useWork = defineStore('work', () => {
     api
       .post(`/issue-relation/`, payload)
       .then(async res => {
-        await fetchIssue(payload.issue)
+        await fetchIssue(res.data.issue)
         await fetchIssueRelationList({ issue: res.data.pk })
         message()
       })
