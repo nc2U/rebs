@@ -239,6 +239,7 @@ export interface Issue {
   spent_time: number | null
   files: Array<IssueFile>
   sub_issues: SubIssue[]
+  related_issues: IssueRelation[]
   creator: { pk: number; username: string }
   updater: { pk: number; username: string } | null
   created: string

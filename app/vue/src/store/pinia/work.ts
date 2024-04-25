@@ -307,7 +307,7 @@ export const useWork = defineStore('work', () => {
       .post(`/issue-relation/`, payload)
       .then(async res => {
         await fetchIssue(res.data.issue)
-        await fetchIssueRelationList({ issue: res.data.pk })
+        await fetchIssueLogList({ issue: res.data.issue })
         message()
       })
       .catch(err => errorHandle(err.response.data))
@@ -315,8 +315,9 @@ export const useWork = defineStore('work', () => {
   const updateIssueRelation = (pk: number, payload: IssueRelation) =>
     api
       .put(`/issue-relation/${pk}/`, payload)
-      .then(async () => {
-        await fetchIssueRelation(pk)
+      .then(async res => {
+        await fetchIssue(res.data.issue)
+        await fetchIssueLogList({ issue: res.data.issue })
         message()
       })
       .catch(err => errorHandle(err.response.data))
