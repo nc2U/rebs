@@ -8,7 +8,7 @@ from rest_framework import serializers
 from accounts.models import User
 from work.models import (IssueProject, Role, Permission, Member, Module, Version,
                          IssueCategory, Repository, Tracker, IssueStatus, Workflow,
-                         CodeActivity, CodeIssuePriority, CodeDocsCategory, Issue,
+                         CodeActivity, CodeIssuePriority, CodeDocsCategory, Issue, IssueRelations,
                          IssueFile, IssueComment, TimeEntry, Search, ActivityLogEntry, IssueLogEntry)
 
 
@@ -453,6 +453,12 @@ class IssueSerializer(serializers.ModelSerializer):
                     file_object.delete()
 
         return super().update(instance, validated_data)
+
+
+class IssueRelationsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IssueRelations
+        fields = ('pk', 'issue', 'issue_to', 'relation_type', 'delay')
 
 
 class IssueInRelatedSerializer(serializers.ModelSerializer):
