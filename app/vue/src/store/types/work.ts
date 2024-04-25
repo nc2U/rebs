@@ -257,6 +257,23 @@ export interface IssueFilter {
   parent__isnull?: string
 }
 
+export interface IssueRelation {
+  pk: number
+  issue: number
+  issue_to: number
+  relation_type:
+    | 'relates'
+    | 'duplicates'
+    | 'duplicated'
+    | 'blocks'
+    | 'blocked'
+    | 'precedes'
+    | 'follows'
+    | 'copied_to'
+    | 'copied_from'
+  delay: number | null
+}
+
 export interface IssueComment {
   pk: number
   issue: {

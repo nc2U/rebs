@@ -18,6 +18,7 @@ import type {
   IssueLogEntry,
   IssueFilter,
   ActLogEntryFilter,
+  IssueRelation,
 } from '@/store/types/work'
 
 export const useWork = defineStore('work', () => {
@@ -285,6 +286,22 @@ export const useWork = defineStore('work', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
+  // issue-relations states & getters
+  const issueRelation = ref<IssueRelation | null>(null)
+  const issueRelationList = ref<IssueRelation[]>([])
+
+  const fetchIssueRelation = (pk: number) =>
+    api
+      .get(`/issue-relation/${pk}/`)
+      .then(res => (issueRelation.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchIssueRelationList = () =>
+    api
+      .get(`/issue-relation/`)
+      .then(res => (issueRelationList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
   // issue-comment states & getters
   const issueComment = ref<IssueComment | null>(null)
   const issueCommentList = ref<IssueComment[]>([])
@@ -487,6 +504,11 @@ export const useWork = defineStore('work', () => {
     updateIssue,
     patchIssue,
     deleteIssue,
+
+    issueRelation,
+    issueRelationList,
+    fetchIssueRelation,
+    fetchIssueRelationList,
 
     issueComment,
     issueCommentList,
