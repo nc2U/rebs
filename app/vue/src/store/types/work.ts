@@ -258,9 +258,9 @@ export interface IssueFilter {
 }
 
 export interface IssueRelation {
-  pk: number
+  pk?: number
   issue: number
-  issue_to: number
+  issue_to: number | null
   relation_type:
     | 'relates'
     | 'duplicates'
