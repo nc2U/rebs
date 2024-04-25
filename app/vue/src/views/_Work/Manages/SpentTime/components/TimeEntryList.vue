@@ -87,8 +87,8 @@ const delSubmit = () => {
           <col style="width: 10%" />
           <col style="width: 10%" />
           <col style="width: 8%" />
-          <col style="width: 20%" />
-          <col style="width: 20%" />
+          <col style="width: 22%" />
+          <col style="width: 18%" />
           <col style="width: 9%" />
           <col style="width: 5%" />
         </colgroup>
@@ -123,10 +123,10 @@ const delSubmit = () => {
               <router-link to="" :class="{ closed: time.issue.status.closed }">
                 {{ time.issue.tracker }} #{{ time.issue.pk }}
               </router-link>
-              : {{ cutString(time.issue.subject, 35) }}
+              : {{ cutString(time.issue.subject, 26) }}
             </CTableDataCell>
             <CTableDataCell class="text-left">
-              {{ cutString(time.comment, 35) }}
+              {{ cutString(time.comment, 24) }}
             </CTableDataCell>
             <CTableDataCell>
               <span class="strong">{{ numberToHour(time.hours) }}</span>
