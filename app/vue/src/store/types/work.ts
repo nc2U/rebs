@@ -206,6 +206,17 @@ export interface IssueFile {
   del?: boolean
 }
 
+interface SubIssue {
+  pk: number
+  subject: string
+  status: string
+  assigned_to: { pk: number; username: string }
+  start_date: string
+  estimated_hours: string | null
+  done_ratio: number
+  closed: string | null
+}
+
 export interface Issue {
   pk: number
   project: { slug: string; name: string }
@@ -227,16 +238,7 @@ export interface Issue {
   closed: string | null
   spent_time: number | null
   files: Array<IssueFile>
-  sub_issues: {
-    pk: number
-    subject: string
-    status: string
-    assigned_to: { pk: number; username: string }
-    start_date: string
-    estimated_hours: string
-    done_ratio: number
-    closed: boolean
-  }[]
+  sub_issues: SubIssue[]
   creator: { pk: number; username: string }
   updater: { pk: number; username: string } | null
   created: string
@@ -260,7 +262,7 @@ export interface IssueFilter {
 export interface IssueRelation {
   pk?: number
   issue: number
-  issue_to: number | null
+  issue_to: SubIssue | null
   relation_type:
     | 'relates'
     | 'duplicates'
@@ -271,6 +273,7 @@ export interface IssueRelation {
     | 'follows'
     | 'copied_to'
     | 'copied_from'
+  type_display?: string
   delay: number | null
 }
 
