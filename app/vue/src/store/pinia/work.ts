@@ -305,13 +305,19 @@ export const useWork = defineStore('work', () => {
   const createIssueRelation = (payload: IssueRelation) =>
     api
       .post(`/issue-relation/`, payload)
-      .then(async () => await fetchIssueRelationList())
+      .then(async () => {
+        await fetchIssueRelationList()
+        message()
+      })
       .catch(err => errorHandle(err.response.data))
 
   const updateIssueRelation = (pk: number, payload: IssueRelation) =>
     api
       .put(`/issue-relation/${pk}/`, payload)
-      .then(async () => await fetchIssueRelation(pk))
+      .then(async () => {
+        await fetchIssueRelation(pk)
+        message()
+      })
       .catch(err => errorHandle(err.response.data))
 
   // issue-comment states & getters

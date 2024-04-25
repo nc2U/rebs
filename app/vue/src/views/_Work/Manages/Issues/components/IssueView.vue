@@ -127,6 +127,7 @@ const addRelIssue = (event: Event) => {
   if (isValidate(event)) validated.value = true
   else {
     console.log({ ...relIssue.value })
+    workStore.createIssueRelation({ ...relIssue.value })
   }
 }
 
