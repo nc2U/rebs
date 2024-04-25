@@ -1,6 +1,6 @@
 import json
 
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from django.db.models import Sum
 from django.utils import timezone
 from rest_framework import serializers
@@ -462,6 +462,87 @@ class IssueRelationSerializer(serializers.ModelSerializer):
     class Meta:
         model = IssueRelation
         fields = ('pk', 'issue', 'issue_to', 'relation_type', 'type_display', 'delay')
+
+    @transaction.atomic
+    def create(self, validated_data):
+        issue_to = self.initial_data.get('issue_to', None)
+        issue_to = Issue.objects.get(pk=issue_to) if issue_to else None
+        try:
+            issue_relation = IssueRelation.objects.create(issue_to=issue_to, **validated_data)
+            return issue_relation
+        except IntegrityError:
+            raise serializers.ValidationError("해당 업무는 이미 등록되어 있는 연결된 업무입니다.")
+
+    # @transaction.atomic
+    # def update(self, instance, validated_data):
+    #     instance.__dict__.update(**validated_data)
+    #     if self.initial_data.get('project', None):
+    #         instance.project = IssueProject.objects.get(slug=self.initial_data.get('project', None))
+    #     if self.initial_data.get('tracker'):
+    #         instance.tracker = Tracker.objects.get(pk=self.initial_data.get('tracker'))
+    #     if self.initial_data.get('status'):
+    #         instance.status = IssueStatus.objects.get(pk=self.initial_data.get('status'))
+    #     if instance.closed is None and instance.status.closed:
+    #         instance.closed = timezone.now()
+    #     elif instance.closed is not None and not instance.status.closed:
+    #         instance.closed = None
+    #     if self.initial_data.get('priority'):
+    #         instance.priority = CodeIssuePriority.objects.get(pk=self.initial_data.get('priority'))
+    #     assigned_to = self.initial_data.get('assigned_to', None)
+    #     instance.assigned_to = User.objects.get(pk=assigned_to) if assigned_to else None
+    #
+    #     # sub_issue 관계 지우기
+    #     del_child = self.initial_data.get('del_child', None)
+    #     if del_child:
+    #         child = instance.issue_set.get(pk=del_child)
+    #         child.parent = None
+    #         child.save()
+    #
+    #     watchers = validated_data.get('watchers', [])
+    #     if watchers:
+    #         for watcher in watchers:
+    #             if not instance.watchers.filter(id=watcher.pk).exists():
+    #                 instance.watchers.set(watcher)
+    #     # time entry logic
+    #     hours = self.initial_data.get('hours', None)
+    #     activity = self.initial_data.get('activity', None)
+    #     comment = self.initial_data.get('comment', None)
+    #     user = self.context['request'].user
+    #     if hours and activity:
+    #         activity = CodeActivity.objects.get(pk=activity)
+    #         TimeEntry.objects.create(project=instance.project, issue=instance, hours=hours,
+    #                                  activity=activity, comment=comment, user=user)
+    #     # issue_comment logic
+    #     comment_content = self.initial_data.get('comment_content', None)
+    #     if comment_content:
+    #         IssueComment.objects.create(issue=instance, content=comment_content, user=user)
+    #
+    #     # File 처리
+    #     new_files = []
+    #     descriptions = []
+    #     old_files = []
+    #     try:
+    #         new_files = self.initial_data.getlist('new_files', [])
+    #         descriptions = self.initial_data.getlist('descriptions', [])
+    #         old_files = self.initial_data.getlist('files', [])
+    #     except AttributeError:
+    #         pass
+    #
+    #     if new_files:
+    #         for i, file in enumerate(new_files):
+    #             issue_file = IssueFile(issue=instance, file=file,
+    #                                    description=descriptions[i], user=user)
+    #             issue_file.save()
+    #
+    #     if old_files:
+    #         for json_file in old_files:
+    #             file = json.loads(json_file)
+    #             file_object = IssueFile.objects.get(pk=file.get('pk'))
+    #
+    #             if file.get('del'):
+    #                 file_object.delete()
+    #
+    #     return super().update(instance, validated_data)
 
 
 class IssueInRelatedSerializer(serializers.ModelSerializer):

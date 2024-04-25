@@ -67,6 +67,7 @@ watch(
       await workStore.fetchIssue(Number(nVal.params.issueId))
       await workStore.fetchIssueLogList({ issue: Number(nVal.params.issueId) })
       await workStore.fetchTimeEntryList({ ordering: 'pk', issue: Number(nVal.params.issueId) })
+      await workStore.fetchIssueRelationList({ issue: Number(nVal.params.issueId) })
     } else workStore.issue = null
   },
   { deep: true },

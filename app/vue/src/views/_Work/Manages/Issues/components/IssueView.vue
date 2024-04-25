@@ -549,7 +549,7 @@ onBeforeMount(async () => {
 
       <v-divider />
 
-      <CRow class="mb-2">
+      <CRow>
         <CCol class="col-10 title">
           <span class="title mr-2">연결된 업무</span>
         </CCol>
@@ -558,7 +558,7 @@ onBeforeMount(async () => {
         </CCol>
       </CRow>
 
-      <template v-if="issueRelationList.length">
+      <div v-if="issueRelationList.length" class="mt-2">
         <CRow v-for="rel in issueRelationList" :key="rel.pk">
           <CCol md="6">
             <span>{{ rel.type_display }} : </span>
@@ -680,7 +680,7 @@ onBeforeMount(async () => {
             </span>
           </CCol>
         </CRow>
-      </template>
+      </div>
 
       <CForm
         class="needs-validation"
