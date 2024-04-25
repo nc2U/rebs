@@ -321,6 +321,15 @@ class IssueInIssueSerializer(serializers.ModelSerializer):
         fields = ('pk', 'subject', 'status', 'assigned_to', 'start_date', 'estimated_hours', 'done_ratio', 'closed')
 
 
+class IssueRelationInIssueSerializer(serializers.ModelSerializer):
+    issue_to = IssueInIssueSerializer(read_only=True)
+    type_display = serializers.CharField(source='get_relation_type_display', read_only=True)
+
+    class Meta:
+        model = IssueRelation
+        fields = ('pk', 'issue', 'issue_to', 'relation_type', 'type_display', 'delay')
+
+
 class IssueSerializer(serializers.ModelSerializer):
     project = IProjectIssueSerializer(read_only=True)
     tracker = TrackerInIssueProjectSerializer(read_only=True)
@@ -330,6 +339,7 @@ class IssueSerializer(serializers.ModelSerializer):
     spent_time = serializers.SerializerMethodField(read_only=True)
     files = IssueFileInIssueSerializer(many=True, read_only=True)
     sub_issues = serializers.SerializerMethodField()
+    related_issues = serializers.SerializerMethodField()
     creator = SimpleUserSerializer(read_only=True)
     updater = SimpleUserSerializer(read_only=True)
 
@@ -339,7 +349,7 @@ class IssueSerializer(serializers.ModelSerializer):
                   'description', 'category', 'fixed_version', 'assigned_to',
                   'parent', 'watchers', 'is_private', 'estimated_hours', 'start_date',
                   'due_date', 'done_ratio', 'closed', 'spent_time', 'files', 'sub_issues',
-                  'creator', 'updater', 'created', 'updated')
+                  'related_issues', 'creator', 'updater', 'created', 'updated')
 
     @staticmethod
     def get_spent_time(obj):
@@ -348,6 +358,10 @@ class IssueSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_sub_issues(obj):
         return IssueInIssueSerializer(obj.issue_set.all().order_by('id'), many=True, read_only=True).data
+
+    @staticmethod
+    def get_related_issues(obj):
+        return IssueRelationInIssueSerializer(obj.relation_issues.all().order_by('id'), many=True, read_only=True).data
 
     @transaction.atomic
     def create(self, validated_data):
