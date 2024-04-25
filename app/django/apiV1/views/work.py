@@ -9,7 +9,7 @@ from ..serializers.work import *
 
 from work.models import (IssueProject, Role, Permission, Member, Module, Version,
                          IssueCategory, Repository, Tracker, IssueStatus, Workflow,
-                         CodeActivity, CodeIssuePriority, CodeDocsCategory, Issue, IssueRelations,
+                         CodeActivity, CodeIssuePriority, CodeDocsCategory, Issue, IssueRelation,
                          IssueFile, IssueComment, TimeEntry, Search, ActivityLogEntry, IssueLogEntry)
 
 
@@ -204,9 +204,9 @@ class IssueViewSet(viewsets.ModelViewSet):
         serializer.save(updater=self.request.user)
 
 
-class IssueRelationsViewSet(viewsets.ModelViewSet):
-    queryset = IssueRelations.objects.all()
-    serializer_class = IssueRelationsSerializer
+class IssueRelationViewSet(viewsets.ModelViewSet):
+    queryset = IssueRelation.objects.all()
+    serializer_class = IssueRelationSerializer
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = PageNumberPaginationTwenty
 

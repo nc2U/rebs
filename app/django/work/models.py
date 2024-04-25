@@ -403,7 +403,7 @@ class Issue(models.Model):
         verbose_name_plural = '10. 업무(작업)'
 
 
-class IssueRelations(models.Model):
+class IssueRelation(models.Model):
     issue = models.OneToOneField(Issue, on_delete=models.CASCADE, verbose_name='업무', related_name='relation_issue')
     issue_to = models.OneToOneField(Issue, on_delete=models.CASCADE, verbose_name='연결된 업무',
                                     related_name='relation_issue_to')
