@@ -5,6 +5,7 @@ import type {
   Issue,
   IssueComment,
   IssueProject,
+  IssueRelation,
   IssueStatus,
   TimeEntry,
 } from '@/store/types/work'
@@ -15,6 +16,7 @@ import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 import IssueControl from './IssueControl.vue'
 import IssueHistory from './IssueHistory.vue'
 import IssueForm from '@/views/_Work/Manages/Issues/components/IssueForm.vue'
+import Multiselect from '@vueform/multiselect'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const props = defineProps({
@@ -111,6 +113,17 @@ const route = useRoute()
 watch(route, async nVal => {
   if (nVal.query.edit) callEditForm()
 })
+
+const addRIssue = ref(false)
+const relIssue = ref<IssueRelation>({
+  issue: props.issue.pk,
+  issue_to: null,
+  relation_type: 'relates',
+  delay: null,
+})
+const addRelIssue = () => {
+  console.log({ ...relIssue.value })
+}
 
 onBeforeMount(async () => {
   await workStore.fetchIssueLogList({ issue: props.issue.pk })
@@ -316,78 +329,84 @@ onBeforeMount(async () => {
 
       <v-divider />
 
-      <CRow v-if="issue.files.length" class="mb-3">
-        <CCol>
-          <CRow class="mb-2">
-            <CCol class="title">파일</CCol>
-          </CRow>
-          <CRow v-for="(file, i) in issue.files" :key="file.pk">
-            <CCol>
-              <v-icon icon="mdi-paperclip" size="sm" color="grey" class="mr-2" />
-              <span>
-                <a :href="file.file" target="_blank"> {{ file.file_name }} </a>
-              </span>
-              <span class="file-desc1 mr-1"> ({{ humanizeFileSize(file.file_size) }}) </span>
-              <span class="mr-2">
-                <a :href="file.file" target="_blank">
-                  <v-icon icon="mdi-download-box" size="16" color="secondary" />
-                  <v-tooltip activator="parent" location="top">다운로드</v-tooltip>
-                </a>
-              </span>
-              <span v-if="file.description" class="mr-2">{{ file.description }}</span>
-              <span class="file-desc2 mr-1"> {{ file.user.username }}, </span>
-              <span class="file-desc2 mr-2">{{ timeFormat(file.created) }}</span>
-              <span>
-                <router-link to="">
-                  <v-icon icon="mdi-trash-can-outline" size="16" color="secondary" class="mr-2" />
-                  <v-tooltip activator="parent" location="top">삭제</v-tooltip>
-                </router-link>
-              </span>
-            </CCol>
-            <CCol v-if="i === 0" class="text-right form-text">
-              <span class="mr-2">
-                <router-link to="">
-                  <v-icon icon="mdi-pencil" color="amber" size="18" />
-                </router-link>
-                <v-tooltip activator="parent" location="top">첨부파일 편집</v-tooltip>
-              </span>
+      <template v-if="issue.files.length">
+        <CRow class="mb-3">
+          <CCol>
+            <CRow class="mb-2">
+              <CCol class="title">파일</CCol>
+            </CRow>
+            <CRow v-for="(file, i) in issue.files" :key="file.pk">
+              <CCol>
+                <v-icon icon="mdi-paperclip" size="sm" color="grey" class="mr-2" />
+                <span>
+                  <a :href="file.file" target="_blank"> {{ file.file_name }} </a>
+                </span>
+                <span class="file-desc1 mr-1"> ({{ humanizeFileSize(file.file_size) }}) </span>
+                <span class="mr-2">
+                  <a :href="file.file" target="_blank">
+                    <v-icon icon="mdi-download-box" size="16" color="secondary" />
+                    <v-tooltip activator="parent" location="top">다운로드</v-tooltip>
+                  </a>
+                </span>
+                <span v-if="file.description" class="mr-2">{{ file.description }}</span>
+                <span class="file-desc2 mr-1"> {{ file.user.username }}, </span>
+                <span class="file-desc2 mr-2">{{ timeFormat(file.created) }}</span>
+                <span>
+                  <router-link to="">
+                    <v-icon icon="mdi-trash-can-outline" size="16" color="secondary" class="mr-2" />
+                    <v-tooltip activator="parent" location="top">삭제</v-tooltip>
+                  </router-link>
+                </span>
+              </CCol>
+              <CCol v-if="i === 0" class="text-right form-text">
+                <span class="mr-2">
+                  <router-link to="">
+                    <v-icon icon="mdi-pencil" color="amber" size="18" />
+                  </router-link>
+                  <v-tooltip activator="parent" location="top">첨부파일 편집</v-tooltip>
+                </span>
 
-              <span v-if="issue.files.length > 1" class="mr-2">
-                <router-link to="">
-                  <v-icon icon="mdi-download-box" color="secondary" size="18" />
-                </router-link>
-                <v-tooltip activator="parent" location="top">전체 다운로드</v-tooltip>
-              </span>
-            </CCol>
-          </CRow>
-        </CCol>
-      </CRow>
+                <span v-if="issue.files.length > 1" class="mr-2">
+                  <router-link to="">
+                    <v-icon icon="mdi-download-box" color="secondary" size="18" />
+                  </router-link>
+                  <v-tooltip activator="parent" location="top">전체 다운로드</v-tooltip>
+                </span>
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
 
-      <v-divider v-if="issue.files.length" />
+        <v-divider />
+      </template>
 
-      <CRow>
+      <CRow class="mb-2">
         <CCol>
           <span class="title mr-2">하위 업무</span>
-          <span v-if="issue.sub_issues.length" class="title mr-2">
-            <router-link :to="{ name: '(업무)', query: { parent: issue.pk } }">
-              {{ issue.sub_issues.length }}
-            </router-link>
-          </span>
-          <span v-if="issue.sub_issues.length" class="form-text">
-            (<span v-if="issue.sub_issues.filter(i => !i.closed).length">
-              <router-link :to="{ name: '(업무)', query: { parent: issue.pk, status: 'open' } }">
-                {{ issue.sub_issues.filter(i => !i.closed).length }} 건 진행 중
+          <template v-if="issue.sub_issues.length">
+            <span class="title mr-2">
+              <router-link :to="{ name: '(업무)', query: { parent: issue.pk } }">
+                {{ issue.sub_issues.length }}
               </router-link>
             </span>
-            <span>모두 완료</span>
-            -
-            <span v-if="issue.sub_issues.filter(i => i.closed).length">
-              <router-link :to="{ name: '(업무)', query: { parent: issue.pk, status: 'closed' } }">
-                {{ issue.sub_issues.filter(i => i.closed).length }} 건 완료
-              </router-link>
+            <span class="form-text">
+              (<span v-if="issue.sub_issues.filter(i => !i.closed).length">
+                <router-link :to="{ name: '(업무)', query: { parent: issue.pk, status: 'open' } }">
+                  {{ issue.sub_issues.filter(i => !i.closed).length }} 건 진행 중
+                </router-link>
+              </span>
+              <span>모두 완료</span>
+              -
+              <span v-if="issue.sub_issues.filter(i => i.closed).length">
+                <router-link
+                  :to="{ name: '(업무)', query: { parent: issue.pk, status: 'closed' } }"
+                >
+                  {{ issue.sub_issues.filter(i => i.closed).length }} 건 완료
+                </router-link>
+              </span>
+              <span v-else>모두 미완료</span>)
             </span>
-            <span v-else>모두 미완료</span>)
-          </span>
+          </template>
         </CCol>
         <CCol class="text-right form-text">
           <router-link
@@ -398,7 +417,7 @@ onBeforeMount(async () => {
         </CCol>
       </CRow>
 
-      <div v-if="issue.sub_issues.length" class="pt-2">
+      <template v-if="issue.sub_issues.length">
         <CRow v-for="sub in issue.sub_issues" :key="sub.pk">
           <CCol sm="6">
             <router-link
@@ -518,14 +537,166 @@ onBeforeMount(async () => {
             </span>
           </CCol>
         </CRow>
-      </div>
+      </template>
 
       <v-divider />
 
-      <CRow>
+      <CRow class="mb-2">
         <CCol class="title">연결된 업무</CCol>
         <CCol class="text-right form-text">
-          <router-link to="">추가</router-link>
+          <router-link to="" @click="addRIssue = !addRIssue">추가</router-link>
+        </CCol>
+      </CRow>
+
+      <template v-if="1 == 1">
+        <CRow class="mb-2">
+          <CCol sm="6">
+            <span>다음 업무와 관련됨 : </span>
+            <span>기능 #12: test2</span>
+          </CCol>
+          <CCol class="text-right">
+            <span class="mr-3">진행</span>
+            <!--                        <span v-if="sub.assigned_to" class="mr-3">-->
+            <!--                          <router-link :to="{ name: '사용자 - 보기', params: { userId: sub.assigned_to.pk } }">-->
+            <!--                            {{ sub.assigned_to.username }}-->
+            <span class="mr-3">austin2 kho</span>
+            <!--                          </router-link>-->
+            <!--                        </span>-->
+            <span class="mr-3">2024/04/21</span>
+          </CCol>
+          <CCol class="text-right">
+            <span class="mr-3">
+              <CProgress
+                color="green-lighten-3"
+                value="20"
+                style="width: 100px; float: left; margin-top: 3px"
+                height="14"
+              />
+            </span>
+            <span class="mr-3" @click="parentUnLink(1)">
+              <v-icon icon="mdi-link-variant-off" size="sm" color="grey" class="pointer" />
+              <v-tooltip activator="parent" location="top"> 관계 지우기 </v-tooltip>
+            </span>
+            <span>
+              <CDropdown color="secondary" variant="input-group" placement="bottom-end">
+                <CDropdownToggle
+                  :caret="false"
+                  color="light"
+                  variant="ghost"
+                  size="sm"
+                  shape="rounded-pill"
+                >
+                  <v-icon icon="mdi-dots-horizontal" class="pointer" color="grey-darken-1" />
+                  <v-tooltip activator="parent" location="top">Actions</v-tooltip>
+                </CDropdownToggle>
+                <CDropdownMenu>
+                  <CDropdownItem class="form-text">
+                    <router-link to="">
+                      <v-icon icon="mdi-pencil" color="amber" size="sm" />
+                      편집
+                    </router-link>
+                  </CDropdownItem>
+                  <CDropdownItem class="form-text" disabled>
+                    <!--                    <router-link to="">-->
+                    <v-icon color="amber" size="sm" />
+                    유형
+                    <!--                    </router-link>-->
+                  </CDropdownItem>
+                  <CDropdownItem class="form-text" disabled>
+                    <v-icon color="amber" size="sm" />
+                    <!--                    <router-link to=""> -->
+                    우선순위
+                    <!--                    </router-link>-->
+                  </CDropdownItem>
+                  <CDropdownItem class="form-text" disabled>
+                    <v-icon color="amber" size="sm" />
+                    <!--                    <router-link to=""> -->
+                    담당자
+                    <!--                    </router-link>-->
+                  </CDropdownItem>
+                  <CDropdownItem class="form-text" disabled>
+                    <v-icon color="amber" size="sm" />
+                    <!--                    <router-link to=""> -->
+                    진척도
+                    <!--                    </router-link>-->
+                  </CDropdownItem>
+                  <CDropdownItem class="form-text" disabled>
+                    <!--                    <router-link to="">-->
+                    <v-icon icon="mdi-star" color="secondary" size="sm" />
+                    지켜보기
+                    <!--                    </router-link>-->
+                  </CDropdownItem>
+                  <CDropdownItem class="form-text" disabled>
+                    <!--                    <router-link to="">-->
+                    <v-icon icon="mdi-timer-edit-outline" color="grey" size="sm" />
+                    작업시간 기록
+                    <!--                    </router-link>-->
+                  </CDropdownItem>
+                  <CDropdownItem class="form-text" disabled>
+                    <!--                    <router-link to="">-->
+                    <v-icon icon="mdi-link-plus" color="grey" size="sm" />
+                    링크 복사
+                    <!--                    </router-link>-->
+                  </CDropdownItem>
+                  <CDropdownItem class="form-text" disabled>
+                    <!--                    <router-link to="">-->
+                    <v-icon icon="mdi-content-copy" color="grey" size="sm" />
+                    복사
+                    <!--                    </router-link>-->
+                  </CDropdownItem>
+                  <CDropdownItem class="form-text" disabled>
+                    <!--                    <router-link to="">-->
+                    <v-icon icon="mdi-trash-can-outline" color="grey" size="sm" />
+                    업무 삭제
+                    <!--                    </router-link>-->
+                  </CDropdownItem>
+                </CDropdownMenu>
+              </CDropdown>
+            </span>
+          </CCol>
+        </CRow>
+      </template>
+
+      <CRow v-if="addRIssue">
+        <CCol sm="4" md="3" lg="2">
+          <CFormSelect v-model="relIssue.relation_type">
+            <option value="relates">다음 업무와 관련됨 :</option>
+            <option value="duplicates">다음 업무에 중복됨 :</option>
+            <option value="duplicated">중복된 업무 :</option>
+            <option value="blocks">다음 업무의 해결을 막고 있음 :</option>
+            <option value="blocked">다음 업무에게 막혀 있음 :</option>
+            <option value="precedes">다음에 진행할 업무 :</option>
+            <option value="follows">다음 업무를 우선 진행 :</option>
+            <option value="copied_to">다음 업무로 복사됨 :</option>
+            <option value="copied_from">다음 업무로부터 복사됨 :</option>
+          </CFormSelect>
+        </CCol>
+        <CFormLabel for="colFormLabel" class="col-sm-1 col-form-label text-right">
+          업무 #
+        </CFormLabel>
+        <CCol sm="4" md="3" lg="2">
+          <Multiselect
+            v-model="relIssue.issue_to"
+            :options="getIssues"
+            placeholder="업무 검색"
+            searchable
+            required
+          />
+        </CCol>
+        <template
+          v-if="relIssue.relation_type === 'precedes' || relIssue.relation_type === 'follows'"
+        >
+          <CFormLabel for="colFormLabel" class="col-sm-1 col-form-label text-right">
+            지연 :
+          </CFormLabel>
+          <CCol sm="3" md="2" lg="1">
+            <CFormInput v-model="relIssue.delay" />
+          </CCol>
+          <CFormLabel class="col-sm-1 col-form-label"> 일</CFormLabel>
+        </template>
+        <CCol class="pt-1">
+          <CButton color="primary" size="sm" @click="addRelIssue">추가</CButton>
+          <CButton color="light" size="sm" @click="addRIssue = false">취소</CButton>
         </CCol>
       </CRow>
     </CCardBody>
