@@ -456,9 +456,12 @@ class IssueSerializer(serializers.ModelSerializer):
 
 
 class IssueRelationSerializer(serializers.ModelSerializer):
+    issue_to = IssueInIssueSerializer(read_only=True)
+    type_display = serializers.CharField(source='get_relation_type_display', read_only=True)
+
     class Meta:
         model = IssueRelation
-        fields = ('pk', 'issue', 'issue_to', 'relation_type', 'delay')
+        fields = ('pk', 'issue', 'issue_to', 'relation_type', 'type_display', 'delay')
 
 
 class IssueInRelatedSerializer(serializers.ModelSerializer):
