@@ -19,6 +19,8 @@ defineProps({
 
 const emit = defineEmits(['page-select', 'del-submit', 'filter-submit'])
 
+const selectedRow = ref<number | null>(null)
+
 const filterSubmit = (payload: TimeEntryFilter) => emit('filter-submit', payload)
 
 const RefDelConfirm = ref()
@@ -106,7 +108,13 @@ const delSubmit = () => {
         </CTableHead>
 
         <CTableBody>
-          <CTableRow v-for="time in timeEntryList" :key="time.pk" class="text-center">
+          <CTableRow
+            v-for="time in timeEntryList"
+            :key="time.pk"
+            class="text-center"
+            :color="selectedRow === time.pk ? 'primary' : ''"
+            @click="selectedRow = time.pk"
+          >
             <CTableDataCell v-if="!$route.params.projId">
               <router-link to="">{{ time.issue.project.name }}</router-link>
             </CTableDataCell>

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { PropType } from 'vue'
+import { type PropType, ref } from 'vue'
 import type { Issue, IssueFilter, IssueProject, IssueStatus, Tracker } from '@/store/types/work'
 import { timeFormat } from '@/utils/baseMixins'
 import NoData from '@/views/_Work/components/NoData.vue'
@@ -14,6 +14,8 @@ defineProps({
 })
 
 const emit = defineEmits(['filter-submit'])
+
+const selectedRow = ref<number | null>(null)
 
 const filterSubmit = (payload: IssueFilter) => emit('filter-submit', payload)
 </script>
@@ -74,7 +76,13 @@ const filterSubmit = (payload: IssueFilter) => emit('filter-submit', payload)
         </CTableHead>
 
         <CTableBody>
-          <CTableRow v-for="issue in issueList" :key="issue.pk" class="text-center">
+          <CTableRow
+            v-for="issue in issueList"
+            :key="issue.pk"
+            class="text-center"
+            :color="selectedRow === issue.pk ? 'primary' : ''"
+            @click="selectedRow = issue.pk"
+          >
             <CTableDataCell>
               <router-link
                 :to="{
