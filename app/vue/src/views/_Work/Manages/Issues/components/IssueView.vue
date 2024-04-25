@@ -12,6 +12,7 @@ import type {
 import { elapsedTime, diffDate, timeFormat, humanizeFileSize, cutString } from '@/utils/baseMixins'
 import { useWork } from '@/store/pinia/work'
 import { useRoute } from 'vue-router'
+import { isValidate } from '@/utils/helper'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 import IssueControl from './IssueControl.vue'
 import IssueHistory from './IssueHistory.vue'
@@ -122,8 +123,11 @@ const relIssue = ref<IssueRelation>({
   relation_type: 'relates',
   delay: null,
 })
-const addRelIssue = () => {
-  console.log({ ...relIssue.value })
+const addRelIssue = (event: Event) => {
+  if (isValidate(event)) validated.value = true
+  else {
+    console.log({ ...relIssue.value })
+  }
 }
 
 onBeforeMount(async () => {
@@ -687,9 +691,15 @@ onBeforeMount(async () => {
             <Multiselect
               v-model="relIssue.issue_to"
               :options="getIssues"
+              :classes="{
+                caret: 'multiselect-caret mr-4',
+                search: 'form-control multiselect-search',
+                tagsSearch: 'form-control multiselect-tags-search',
+              }"
+              :attrs="relIssue.issue_to ? {} : { required: true }"
               placeholder="업무 검색"
+              :add-option-on="['enter', 'tab']"
               searchable
-              required
             />
           </CCol>
           <template
