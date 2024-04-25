@@ -76,8 +76,8 @@ const module = reactive({
   wiki: true,
   repository: false,
   forum: true,
-  calendar: true,
-  gantt: true,
+  // calendar: true,
+  // gantt: true,
 })
 
 const route = useRoute()
@@ -114,8 +114,8 @@ const dataSetup = () => {
     module.wiki = !!props.project.module?.wiki
     module.repository = !!props.project.module?.repository
     module.forum = !!props.project.module?.forum
-    module.calendar = !!props.project.module?.calendar
-    module.gantt = !!props.project.module?.gantt
+    // module.calendar = !!props.project.module?.calendar
+    // module.gantt = !!props.project.module?.gantt
 
     if (props.project.parent) chkPublic()
   }
@@ -268,12 +268,12 @@ onBeforeMount(() => {
           <CCol sm="6" md="4" lg="3" xl="2">
             <CFormCheck v-model="module.forum" id="forum" label="게시판" />
           </CCol>
-          <CCol sm="6" md="4" lg="3" xl="2">
-            <CFormCheck v-model="module.calendar" id="calendar" label="달력" />
-          </CCol>
-          <CCol sm="6" md="4" lg="3" xl="2">
-            <CFormCheck v-model="module.gantt" id="gantt" label="Gantt 차트" />
-          </CCol>
+          <!--          <CCol sm="6" md="4" lg="3" xl="2">-->
+          <!--            <CFormCheck v-model="module.calendar" id="calendar" label="달력" />-->
+          <!--          </CCol>-->
+          <!--          <CCol sm="6" md="4" lg="3" xl="2">-->
+          <!--            <CFormCheck v-model="module.gantt" id="gantt" label="Gantt 차트" />-->
+          <!--          </CCol>-->
         </CRow>
       </CCardBody>
     </CCard>
