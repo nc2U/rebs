@@ -302,6 +302,18 @@ export const useWork = defineStore('work', () => {
       .then(res => (issueRelationList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
+  const createIssueRelation = (payload: IssueRelation) =>
+    api
+      .post(`/issue-relation/`, payload)
+      .then(async () => await fetchIssueRelationList())
+      .catch(err => errorHandle(err.response.data))
+
+  const updateIssueRelation = (pk: number, payload: IssueRelation) =>
+    api
+      .put(`/issue-relation/${pk}/`, payload)
+      .then(async () => await fetchIssueRelation(pk))
+      .catch(err => errorHandle(err.response.data))
+
   // issue-comment states & getters
   const issueComment = ref<IssueComment | null>(null)
   const issueCommentList = ref<IssueComment[]>([])
@@ -509,6 +521,8 @@ export const useWork = defineStore('work', () => {
     issueRelationList,
     fetchIssueRelation,
     fetchIssueRelationList,
+    createIssueRelation,
+    updateIssueRelation,
 
     issueComment,
     issueCommentList,
