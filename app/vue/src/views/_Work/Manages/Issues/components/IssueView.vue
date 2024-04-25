@@ -130,6 +130,8 @@ const addRelIssue = (event: Event) => {
     workStore.createIssueRelation({ ...relIssue.value })
   }
 }
+const issueRelationList = computed(() => workStore.issueRelationList)
+const relationUnLink = (pk: number) => {}
 
 onBeforeMount(async () => {
   await workStore.fetchIssueLogList({ issue: props.issue.pk })
@@ -556,32 +558,38 @@ onBeforeMount(async () => {
         </CCol>
       </CRow>
 
-      <template v-if="1 == 1">
-        <CRow class="mb-2">
-          <CCol md="6" lg="4">
-            <span>다음 업무와 관련됨 : </span>
-            <span>기능 #12: test2</span>
+      <template v-if="issueRelationList.length">
+        <CRow v-for="rel in issueRelationList" :key="rel.pk">
+          <CCol md="6">
+            <span>{{ rel.type_display }} : </span>
+            <span>
+              <router-link :to="{ name: '(업무) - 보기', params: { issueId: rel.issue_to?.pk } }">
+                기능 #{{ rel.issue_to?.pk }}
+              </router-link>
+              : {{ rel.issue_to?.subject }}
+            </span>
           </CCol>
-          <CCol class="col-sm-8 col-md-3 col-lg-4 text-right">
-            <span class="mr-3">진행</span>
-            <!--                        <span v-if="sub.assigned_to" class="mr-3">-->
-            <!--                          <router-link :to="{ name: '사용자 - 보기', params: { userId: sub.assigned_to.pk } }">-->
-            <!--                            {{ sub.assigned_to.username }}-->
-            <span class="mr-3">{{ cutString('austin2 kho', 9) }}</span>
-            <!--                          </router-link>-->
-            <!--                        </span>-->
-            <span class="mr-3">2024/04/21</span>
+          <CCol class="col-sm-8 col-md-3 text-right">
+            <span class="mr-3">{{ rel.issue_to?.status }}</span>
+            <span v-if="rel.issue_to" class="mr-3">
+              <router-link
+                :to="{ name: '사용자 - 보기', params: { userId: rel.issue_to.assigned_to.pk } }"
+              >
+                {{ cutString(rel.issue_to.assigned_to.username, 9) }}
+              </router-link>
+            </span>
+            <span class="mr-3">{{ rel.issue_to?.start_date }}</span>
           </CCol>
-          <CCol class="col-sm-4 col-md-3 col-lg-4 text-right">
+          <CCol class="col-sm-4 col-md-3 text-right">
             <span class="mr-3">
               <CProgress
                 color="green-lighten-3"
-                value="20"
+                :value="rel.issue_to?.done_ratio"
                 style="width: 100px; float: left; margin-top: 3px"
                 height="14"
               />
             </span>
-            <span class="mr-3" @click="parentUnLink(1)">
+            <span class="mr-3" @click="relationUnLink(rel.issue_to?.pk as number)">
               <v-icon icon="mdi-link-variant-off" size="sm" color="grey" class="pointer" />
               <v-tooltip activator="parent" location="top"> 관계 지우기 </v-tooltip>
             </span>
@@ -598,7 +606,16 @@ onBeforeMount(async () => {
                   <v-tooltip activator="parent" location="top">Actions</v-tooltip>
                 </CDropdownToggle>
                 <CDropdownMenu>
-                  <CDropdownItem class="form-text">
+                  <CDropdownItem
+                    class="form-text"
+                    @click="
+                      $router.push({
+                        name: '(업무) - 보기',
+                        params: { issueId: rel.issue_to?.pk },
+                        query: { edit: '1' },
+                      })
+                    "
+                  >
                     <router-link to="">
                       <v-icon icon="mdi-pencil" color="amber" size="sm" />
                       편집

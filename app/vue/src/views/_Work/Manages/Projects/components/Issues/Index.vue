@@ -87,6 +87,7 @@ onBeforeMount(async () => {
     await workStore.fetchIssue(Number(issueId.value))
     await workStore.fetchIssueLogList({ issue: Number(issueId.value) })
     await workStore.fetchTimeEntryList({ ordering: 'pk', issue: Number(issueId.value) })
+    await workStore.fetchIssueRelationList({ issue: Number(issueId.value) })
   }
 
   await workStore.fetchMemberList()
