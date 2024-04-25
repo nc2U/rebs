@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ref, computed, inject, watch, onBeforeMount } from 'vue'
+import { ref, computed, watch, onBeforeMount } from 'vue'
+import { useCompany } from '@/store/pinia/company'
 import { useAccount } from '@/store/pinia/account'
 import { type RouteLocationNormalizedLoaded as Loaded, useRoute, useRouter } from 'vue-router'
 import type { AFile, Attatches, Link, PatchPost, Post } from '@/store/types/document'
@@ -49,7 +50,7 @@ const pageSelect = (page: number) => {
   listFiltering(postFilter.value)
 }
 
-const comStore = inject('comStore') as any
+const comStore = useCompany()
 const company = computed(() => comStore.company?.pk)
 
 const accStore = useAccount()
@@ -75,7 +76,7 @@ const updatePost = (payload: { pk: number; form: FormData }) => docStore.updateP
 const patchPost = (payload: PatchPost & { filter: PostFilter }) => docStore.patchPost(payload)
 const patchLink = (payload: Link) => docStore.patchLink(payload)
 const patchFile = (payload: AFile) => docStore.patchFile(payload)
-const deletePost = (pk: number, filter: PostFilter) => docStore.deletePost(pk, filter)
+// const deletePost = (pk: number, filter: PostFilter) => docStore.deletePost(pk, filter)
 
 const [route, router] = [
   useRoute() as Loaded & {
