@@ -209,6 +209,7 @@ class IssueRelationViewSet(viewsets.ModelViewSet):
     serializer_class = IssueRelationSerializer
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = PageNumberPaginationTwenty
+    filterset_fields = ('issue',)
 
 
 class IssueFileViewSet(viewsets.ModelViewSet):
