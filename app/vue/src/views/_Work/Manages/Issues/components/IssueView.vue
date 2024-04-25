@@ -128,9 +128,11 @@ const addRelIssue = (event: Event) => {
   else {
     console.log({ ...relIssue.value })
     workStore.createIssueRelation({ ...relIssue.value })
+    relIssue.value.issue_to = null
+    relIssue.value.relation_type = 'relates'
+    relIssue.value.delay = null
   }
 }
-const issueRelationList = computed(() => workStore.issueRelationList)
 const relationUnLink = (pk: number) => {}
 
 onBeforeMount(async () => {
@@ -558,8 +560,8 @@ onBeforeMount(async () => {
         </CCol>
       </CRow>
 
-      <div v-if="issueRelationList.length" class="mt-2">
-        <CRow v-for="rel in issueRelationList" :key="rel.pk">
+      <div v-if="issue.related_issues.length" class="mt-2">
+        <CRow v-for="rel in issue.related_issues" :key="rel.pk">
           <CCol md="6">
             <span>{{ rel.type_display }} : </span>
             <span>

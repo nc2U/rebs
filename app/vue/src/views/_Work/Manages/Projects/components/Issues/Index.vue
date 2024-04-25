@@ -67,7 +67,6 @@ watch(
       await workStore.fetchIssue(Number(nVal.params.issueId))
       await workStore.fetchIssueLogList({ issue: Number(nVal.params.issueId) })
       await workStore.fetchTimeEntryList({ ordering: 'pk', issue: Number(nVal.params.issueId) })
-      await workStore.fetchIssueRelationList({ issue: Number(nVal.params.issueId) })
     } else workStore.issue = null
   },
   { deep: true },
@@ -88,7 +87,6 @@ onBeforeMount(async () => {
     await workStore.fetchIssue(Number(issueId.value))
     await workStore.fetchIssueLogList({ issue: Number(issueId.value) })
     await workStore.fetchTimeEntryList({ ordering: 'pk', issue: Number(issueId.value) })
-    await workStore.fetchIssueRelationList({ issue: Number(issueId.value) })
   }
 
   await workStore.fetchMemberList()
