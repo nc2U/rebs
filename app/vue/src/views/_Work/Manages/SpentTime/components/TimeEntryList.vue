@@ -85,14 +85,14 @@ const delSubmit = () => {
       <v-divider class="my-0" />
       <CTable striped hover small responsive>
         <colgroup>
-          <col v-if="!$route.params.projId" style="width: 18%" />
-          <col style="width: 10%" />
-          <col style="width: 10%" />
+          <col v-if="!$route.params.projId" style="width: 14%" />
           <col style="width: 8%" />
-          <col style="width: 22%" />
-          <col style="width: 18%" />
-          <col style="width: 9%" />
-          <col style="width: 5%" />
+          <col style="width: 8%" />
+          <col style="width: 8%" />
+          <col style="width: 28%" />
+          <col style="width: 20%" />
+          <col style="width: 6%" />
+          <col style="width: 8%" />
         </colgroup>
         <CTableHead>
           <CTableRow class="text-center">
@@ -131,7 +131,7 @@ const delSubmit = () => {
               <router-link to="" :class="{ closed: time.issue.status.closed }">
                 {{ time.issue.tracker }} #{{ time.issue.pk }}
               </router-link>
-              : {{ cutString(time.issue.subject, 26) }}
+              : {{ cutString(time.issue.subject, 24) }}
             </CTableDataCell>
             <CTableDataCell class="text-left">
               {{ cutString(time.comment, 24) }}
