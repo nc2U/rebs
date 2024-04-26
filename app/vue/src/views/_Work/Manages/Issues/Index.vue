@@ -57,7 +57,7 @@ const onSubmit = (payload: any) => {
   }
 }
 
-const listFilter = ref({ status__closed: '0' })
+const listFilter = ref<IssueFilter>({ status__closed: '0' })
 const filterSubmit = (payload: IssueFilter) => {
   listFilter.value = payload
   workStore.fetchIssueList(payload)

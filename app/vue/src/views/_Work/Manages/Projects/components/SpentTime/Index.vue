@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, watch } from 'vue'
+import { computed, onBeforeMount, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import type { TimeEntryFilter } from '@/store/types/work'
@@ -34,22 +34,21 @@ const onSubmit = async (payload: any) => {
   }
 }
 
+const project = computed(() => (route.params.projId ? (route.params.projId as string) : ''))
+const issue = computed(() => (route.query.issue_id ? (route.query.issue_id as string) : ''))
+
+const listFilter = ref<TimeEntryFilter>({ project: project.value, issue: Number(issue.value) })
 const filterSubmit = (payload: TimeEntryFilter) => {
-  console.log(payload)
+  listFilter.value = payload
   workStore.fetchTimeEntryList(payload)
 }
 
-const pageSelect = (page: number) =>
-  workStore.fetchTimeEntryList({
-    project: project.value,
-    issue: Number(issue.value),
-    page,
-  })
+const pageSelect = (page: number) => {
+  listFilter.value.page = page
+  workStore.fetchTimeEntryList(listFilter.value)
+}
 
 const delSubmit = (pk: number) => deleteTimeEntry(pk)
-
-const project = computed(() => (route.params.projId ? (route.params.projId as string) : ''))
-const issue = computed(() => (route.query.issue_id ? (route.query.issue_id as string) : ''))
 
 watch(route, async nVal => {
   if (nVal.params.projId || nVal.params.issueId)
