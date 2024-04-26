@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, type PropType } from 'vue'
+import { ref, type PropType, watchEffect } from 'vue'
 import { cutString } from '@/utils/baseMixins'
 import type { SubIssue } from '@/store/types/work'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -7,6 +7,17 @@ import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 defineProps({ subIssues: { type: Array as PropType<SubIssue[]>, default: () => [] } })
 
 const emit = defineEmits(['unlink-sub-issue'])
+
+const selected = ref<number | null>(null)
+
+const handleClickOutside = event => {
+  if (!event.target.closest('.sub-issue')) selected.value = null
+}
+
+watchEffect(() => {
+  if (selected.value) document.addEventListener('click', handleClickOutside)
+  else document.removeEventListener('click', handleClickOutside)
+})
 
 const delSubRef = ref()
 const child = ref<number | null>(null)
@@ -24,8 +35,14 @@ const unlinkSubIssue = () => {
 </script>
 
 <template>
-  <CRow v-for="sub in subIssues" :key="sub.pk">
-    <CCol md="6" lg="4">
+  <CRow
+    v-for="sub in subIssues"
+    :key="sub.pk"
+    :class="{ 'bg-info-lighten': selected === sub.pk }"
+    class="sub-issue cursor-text"
+    @click="selected = sub.pk"
+  >
+    <CCol md="6" lg="4" class="pt-1">
       <router-link
         :to="{ name: '(업무) - 보기', params: { issueId: sub.pk } }"
         :class="{ closed: sub.closed }"
@@ -34,7 +51,7 @@ const unlinkSubIssue = () => {
       </router-link>
       : {{ sub.subject }}
     </CCol>
-    <CCol class="col-sm-6 col-md-3 col-lg-4 text-right">
+    <CCol class="col-sm-6 col-md-3 col-lg-4 text-right pt-1">
       <span class="mr-3">{{ sub.status }}</span>
       <span v-if="sub.assigned_to" class="mr-3">
         <router-link :to="{ name: '사용자 - 보기', params: { userId: sub.assigned_to.pk } }">
@@ -48,7 +65,7 @@ const unlinkSubIssue = () => {
         <CProgress
           color="green-lighten-3"
           :value="sub?.done_ratio ?? 0"
-          style="width: 100px; float: left; margin-top: 3px"
+          style="width: 100px; float: left; margin-top: 7px"
           height="14"
         />
       </span>

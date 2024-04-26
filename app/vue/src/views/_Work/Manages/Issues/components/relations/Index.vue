@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { type PropType, ref } from 'vue'
+import { type PropType, ref, watchEffect } from 'vue'
 import { cutString } from '@/utils/baseMixins'
 import type { IssueRelation } from '@/store/types/work'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -11,6 +11,17 @@ defineProps({
 })
 
 const emit = defineEmits(['delete-relation'])
+
+const selected = ref<number | null>(null)
+
+const handleClickOutside = event => {
+  if (!event.target.closest('.rel-issue')) selected.value = null
+}
+
+watchEffect(() => {
+  if (selected.value) document.addEventListener('click', handleClickOutside)
+  else document.removeEventListener('click', handleClickOutside)
+})
 
 const delRelRef = ref()
 const relationPk = ref<number | null>(null)
@@ -29,8 +40,14 @@ const deleteRelConfirm = () => {
 
 <template>
   <div class="mt-2">
-    <CRow v-for="rel in relatedIssues" :key="rel.pk">
-      <CCol md="6">
+    <CRow
+      v-for="rel in relatedIssues"
+      :key="rel.pk"
+      :class="{ 'bg-info-lighten': selected === rel.pk }"
+      class="rel-issue cursor-text"
+      @click="selected = rel.pk"
+    >
+      <CCol md="6" class="pt-1">
         <span>{{ rel.type_display }} : </span>
         <span>
           <router-link :to="{ name: '(업무) - 보기', params: { issueId: rel.issue_to?.pk } }">
@@ -39,7 +56,7 @@ const deleteRelConfirm = () => {
           : {{ rel.issue_to?.subject }}
         </span>
       </CCol>
-      <CCol class="col-sm-8 col-md-3 text-right">
+      <CCol class="col-sm-8 col-md-3 text-right pt-1">
         <span class="mr-3">{{ rel.issue_to?.status }}</span>
         <span v-if="rel.issue_to" class="mr-3">
           <router-link
@@ -51,11 +68,11 @@ const deleteRelConfirm = () => {
         <span class="mr-3">{{ rel.issue_to?.start_date }}</span>
       </CCol>
       <CCol class="col-sm-4 col-md-3 text-right">
-        <span class="mr-3">
+        <span>
           <CProgress
             color="green-lighten-3"
             :value="rel.issue_to?.done_ratio"
-            style="width: 100px; float: left; margin-top: 3px"
+            style="width: 100px; float: left; margin-top: 7px"
             height="14"
           />
         </span>
