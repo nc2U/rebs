@@ -322,6 +322,15 @@ export const useWork = defineStore('work', () => {
       })
       .catch(err => errorHandle(err.response.data))
 
+  const deleteIssueRelation = (pk: number, issue: number) =>
+    api
+      .delete(`/issue-relation/${pk}/`)
+      .then(async () => {
+        await fetchIssue(issue)
+        message('warning', '알림!', '해당 업무와 연결 관계가 삭제되었습니다.')
+      })
+      .catch(err => errorHandle(err.response.data))
+
   // issue-comment states & getters
   const issueComment = ref<IssueComment | null>(null)
   const issueCommentList = ref<IssueComment[]>([])
@@ -531,6 +540,7 @@ export const useWork = defineStore('work', () => {
     fetchIssueRelationList,
     createIssueRelation,
     updateIssueRelation,
+    deleteIssueRelation,
 
     issueComment,
     issueCommentList,

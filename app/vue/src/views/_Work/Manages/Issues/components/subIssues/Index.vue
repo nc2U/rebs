@@ -6,10 +6,10 @@ import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 defineProps({ subIssues: { type: Array as PropType<SubIssue[]>, default: () => [] } })
 
+const emit = defineEmits(['unlink-sub-issue'])
+
 const delSubRef = ref()
 const child = ref<number | null>(null)
-
-const emit = defineEmits(['unlink-sub-issue'])
 
 const parentUnlink = (pk: number) => {
   child.value = pk
@@ -145,7 +145,7 @@ const unlinkSubIssue = () => {
   </CRow>
 
   <ConfirmModal ref="delSubRef">
-    <template #header>관계 지우기 확인</template>
+    <template #header>하위 업무 관계 지우기</template>
     <template #default> 계속 진행하시겠습니까?</template>
     <template #footer>
       <CButton color="warning" @click="unlinkSubIssue">확인</CButton>

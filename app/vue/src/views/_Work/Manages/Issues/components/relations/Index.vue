@@ -10,16 +10,19 @@ defineProps({
   getIssues: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
 })
 
-const delRelRef = ref()
+const emit = defineEmits(['delete-relation'])
 
-const relationUnLink = (pk: number) => {
-  // child.value = pk
+const delRelRef = ref()
+const relationPk = ref<number | null>(null)
+
+const deleteRelation = (pk: number) => {
+  relationPk.value = pk
   delRelRef.value.callModal()
 }
 
-const unLinkRelConfirm = (pk: number) => {
-  // workStore.updateIssueRelation(props.issue?.pk, { del_child: child.value })
-  // child.value = null
+const deleteRelConfirm = () => {
+  emit('delete-relation', relationPk.value)
+  relationPk.value = null
   delRelRef.value.close()
 }
 </script>
@@ -56,7 +59,7 @@ const unLinkRelConfirm = (pk: number) => {
             height="14"
           />
         </span>
-        <span class="mr-3" @click="relationUnLink(rel.issue_to?.pk as number)">
+        <span class="mr-3" @click="deleteRelation(rel.pk as number)">
           <v-icon icon="mdi-link-variant-off" size="sm" color="grey" class="pointer" />
           <v-tooltip activator="parent" location="top"> 관계 지우기 </v-tooltip>
         </span>
@@ -150,10 +153,10 @@ const unLinkRelConfirm = (pk: number) => {
   </div>
 
   <ConfirmModal ref="delRelRef">
-    <template #header>관계 지우기 확인</template>
+    <template #header>연결된 업무 관계 지우기</template>
     <template #default> 계속 진행하시겠습니까?</template>
     <template #footer>
-      <CButton color="warning" @click="unLinkRelConfirm">확인</CButton>
+      <CButton color="warning" @click="deleteRelConfirm">확인</CButton>
     </template>
   </ConfirmModal>
 </template>

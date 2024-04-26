@@ -103,6 +103,7 @@ const unlinkSubIssue = (del_child: number) => workStore.patchIssue(props.issue?.
 const addRIssue = ref(false)
 const addFormCtl = (bool: boolean) => (addRIssue.value = bool)
 const addRelIssue = (payload: any) => workStore.createIssueRelation(payload)
+const deleteRelation = (pk: number) => workStore.deleteIssueRelation(pk, props.issue?.pk)
 
 // issue comment 관련
 const delSubmit = (pk: number) => workStore.deleteIssueComment(pk, props.issue.pk)
@@ -412,6 +413,7 @@ onBeforeMount(async () => {
         :add-r-issue="addRIssue"
         :related-issues="issue.related_issues"
         :get-issues="getIssues"
+        @delete-relation="deleteRelation"
         class="mt-2"
       />
 
