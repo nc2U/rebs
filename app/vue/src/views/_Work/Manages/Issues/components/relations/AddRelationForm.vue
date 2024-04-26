@@ -33,7 +33,7 @@ const addRelIssue = (event: Event) => {
 
 <template>
   <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="addRelIssue">
-    <CRow>
+    <CRow class="mt-2">
       <CCol sm="4" md="3" lg="2">
         <CFormSelect v-model="relIssue.relation_type">
           <option value="relates">다음 업무와 관련됨 :</option>
