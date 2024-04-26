@@ -18,6 +18,7 @@ import IssueForm from '@/views/_Work/Manages/Issues/components/IssueForm.vue'
 import SubIssues from './subIssues/Index.vue'
 import SubSummary from './subIssues/Summary.vue'
 import Relations from './relations/Index.vue'
+import AddRelationForm from './relations/AddRelationForm.vue'
 
 const props = defineProps({
   issueProject: { type: Object as PropType<IssueProject>, default: null },
@@ -401,13 +402,18 @@ onBeforeMount(async () => {
 
       <Relations
         v-if="issue.related_issues.length"
-        :issue-pk="issue.pk"
         :add-r-issue="addRIssue"
         :related-issues="issue.related_issues"
         :get-issues="getIssues"
-        @add-rel-issue="addRelIssue"
-        @add-form-ctl="addFormCtl"
         class="mt-2"
+      />
+
+      <AddRelationForm
+        v-if="addRIssue"
+        :issue-pk="issue.pk"
+        :get-issues="getIssues"
+        @add-form-ctl="addFormCtl"
+        @add-rel-issue="addRelIssue"
       />
     </CCardBody>
   </CCard>
