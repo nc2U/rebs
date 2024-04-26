@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { type PropType, ref } from 'vue'
+import { type PropType, ref, watchEffect } from 'vue'
 import type { Issue, IssueFilter, IssueProject, IssueStatus, Tracker } from '@/store/types/work'
 import { timeFormat } from '@/utils/baseMixins'
 import NoData from '@/views/_Work/components/NoData.vue'
@@ -16,6 +16,14 @@ defineProps({
 const emit = defineEmits(['filter-submit'])
 
 const selectedRow = ref<number | null>(null)
+const handleClickOutside = event => {
+  if (!event.target.closest('.table-row')) selectedRow.value = null
+}
+
+watchEffect(() => {
+  if (selectedRow.value) document.addEventListener('click', handleClickOutside)
+  else document.removeEventListener('click', handleClickOutside)
+})
 
 const filterSubmit = (payload: IssueFilter) => emit('filter-submit', payload)
 </script>
@@ -79,7 +87,7 @@ const filterSubmit = (payload: IssueFilter) => emit('filter-submit', payload)
           <CTableRow
             v-for="issue in issueList"
             :key="issue.pk"
-            class="text-center"
+            class="text-center table-row cursor-pointer"
             :color="selectedRow === issue.pk ? 'primary' : ''"
             @click="selectedRow = issue.pk"
           >

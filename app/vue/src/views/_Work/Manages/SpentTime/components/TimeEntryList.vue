@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, type PropType } from 'vue'
+import { ref, type PropType, watchEffect } from 'vue'
 import type { IssueProject, TimeEntry, TimeEntryFilter } from '@/store/types/work'
 import { useWork } from '@/store/pinia/work'
 import { cutString, dateFormat, numberToHour } from '@/utils/baseMixins'
@@ -20,6 +20,14 @@ defineProps({
 const emit = defineEmits(['page-select', 'del-submit', 'filter-submit'])
 
 const selectedRow = ref<number | null>(null)
+const handleClickOutside = event => {
+  if (!event.target.closest('.table-row')) selectedRow.value = null
+}
+
+watchEffect(() => {
+  if (selectedRow.value) document.addEventListener('click', handleClickOutside)
+  else document.removeEventListener('click', handleClickOutside)
+})
 
 const filterSubmit = (payload: TimeEntryFilter) => emit('filter-submit', payload)
 
@@ -111,7 +119,7 @@ const delSubmit = () => {
           <CTableRow
             v-for="time in timeEntryList"
             :key="time.pk"
-            class="text-center"
+            class="text-center table-row cursor-pointer"
             :color="selectedRow === time.pk ? 'primary' : ''"
             @click="selectedRow = time.pk"
           >
