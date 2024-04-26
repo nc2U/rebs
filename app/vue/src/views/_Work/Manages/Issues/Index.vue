@@ -58,8 +58,7 @@ const onSubmit = (payload: any) => {
 }
 
 const filterSubmit = (payload: IssueFilter) => workStore.fetchIssueList(payload)
-const pageSelect = (page: number) =>
-  workStore.fetchIssueList({ status__closed: '0', project: projId.value, page })
+const pageSelect = (page: number) => workStore.fetchIssueList({ status__closed: '0', page })
 
 onBeforeMount(async () => {
   await workStore.fetchAllIssueProjectList()

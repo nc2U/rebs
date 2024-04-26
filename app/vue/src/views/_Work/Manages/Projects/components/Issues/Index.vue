@@ -54,6 +54,9 @@ const onSubmit = (payload: any) => {
   }
 }
 
+const projId = computed(() => (route.params.projId as string) ?? '')
+const issueId = computed(() => (route.params.issueId as string) ?? '')
+
 const filterSubmit = (payload: IssueFilter) => workStore.fetchIssueList(payload)
 const pageSelect = (page: number) =>
   workStore.fetchIssueList({ status__closed: '0', project: projId.value, page })
@@ -73,9 +76,6 @@ watch(
   },
   { deep: true },
 )
-
-const projId = computed(() => (route.params.projId as string) ?? '')
-const issueId = computed(() => (route.params.issueId as string) ?? '')
 
 onBeforeMount(async () => {
   emit('aside-visible', true)
