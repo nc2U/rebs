@@ -258,6 +258,7 @@ export interface IssueFilter {
   parent?: number | string
   parent__subject?: string
   parent__isnull?: string
+  page?: number
 }
 
 export interface IssueRelation {

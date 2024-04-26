@@ -226,7 +226,7 @@ export const useWork = defineStore('work', () => {
       .catch(err => errorHandle(err.response.data))
 
   const fetchIssueList = async (payload: IssueFilter) => {
-    let url = `/issue/?1=1`
+    let url = `/issue/?page=${payload.page ?? 1}`
     if (payload.status__closed) url += `&status__closed=${payload.status__closed}`
     if (payload.status) url += `&status=${payload.status}`
     if (payload.status__exclude) url += `&status__exclude=${payload.status__exclude}`
