@@ -48,7 +48,7 @@ const unLinkRelConfirm = (pk: number) => {
 </script>
 
 <template>
-  <div class="px-2">
+  <div class="mt-2">
     <CRow v-for="rel in relatedIssues" :key="rel.pk">
       <CCol md="6">
         <span>{{ rel.type_display }} : </span>

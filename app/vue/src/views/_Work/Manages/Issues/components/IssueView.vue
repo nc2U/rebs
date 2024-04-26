@@ -398,18 +398,18 @@ onBeforeMount(async () => {
           <router-link to="" @click="addRIssue = !addRIssue">추가</router-link>
         </CCol>
       </CRow>
-    </CCardBody>
 
-    <Relations
-      v-if="issue.related_issues.length"
-      :issue-pk="issue.pk"
-      :add-r-issue="addRIssue"
-      :related-issues="issue.related_issues"
-      :get-issues="getIssues"
-      @add-rel-issue="addRelIssue"
-      @add-form-ctl="addFormCtl"
-      class="mt-2"
-    />
+      <Relations
+        v-if="issue.related_issues.length"
+        :issue-pk="issue.pk"
+        :add-r-issue="addRIssue"
+        :related-issues="issue.related_issues"
+        :get-issues="getIssues"
+        @add-rel-issue="addRelIssue"
+        @add-form-ctl="addFormCtl"
+        class="mt-2"
+      />
+    </CCardBody>
   </CCard>
 
   <IssueHistory
