@@ -30,3 +30,9 @@ defineProps({
     <span v-else>모두 미완료</span>)
   </span>
 </template>
+
+<style lang="scss" scoped>
+.title {
+  font-weight: bold;
+}
+</style>

@@ -152,3 +152,10 @@ const unlinkSubIssue = () => {
     </template>
   </ConfirmModal>
 </template>
+
+<style lang="scss" scoped>
+.closed {
+  color: #999;
+  text-decoration: line-through;
+}
+</style>

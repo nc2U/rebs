@@ -6,6 +6,7 @@ import type {
   IssueComment,
   IssueProject,
   IssueStatus,
+  SubIssue,
   TimeEntry,
 } from '@/store/types/work'
 import { elapsedTime, diffDate, timeFormat, humanizeFileSize } from '@/utils/baseMixins'
@@ -398,7 +399,7 @@ onBeforeMount(async () => {
           <RelSummary
             v-if="issue.related_issues.length"
             :issue-pk="issue.pk"
-            :rel-issue-tos="issue.related_issues.map(i => i.issue_to)"
+            :rel-issue-tos="issue.related_issues.map(i => i.issue_to as SubIssue)"
           />
         </CCol>
         <CCol class="text-right form-text">
@@ -456,30 +457,23 @@ onBeforeMount(async () => {
 </template>
 
 <style lang="scss" scoped>
-:deep {
-  .title {
-    font-weight: bold;
-  }
+.title {
+  font-weight: bold;
+}
 
-  .sub-title {
-    font-size: 1.1em;
-    font-weight: bold;
-    color: #0f192a;
-  }
+.sub-title {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #0f192a;
+}
 
-  .file-desc1 {
-    font-size: 0.9em;
-    color: #777;
-  }
+.file-desc1 {
+  font-size: 0.9em;
+  color: #777;
+}
 
-  .file-desc2 {
-    font-size: 0.85em;
-    color: #888;
-  }
-
-  .closed {
-    color: #999;
-    text-decoration: line-through;
-  }
+.file-desc2 {
+  font-size: 0.85em;
+  color: #888;
 }
 </style>
