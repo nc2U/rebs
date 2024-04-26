@@ -18,7 +18,7 @@ import IssueControl from './IssueControl.vue'
 import IssueHistory from './IssueHistory.vue'
 import IssueForm from '@/views/_Work/Manages/Issues/components/IssueForm.vue'
 import Multiselect from '@vueform/multiselect'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import SubIssues from './subIssues/Index.vue'
 
 const props = defineProps({
   issueProject: { type: Object as PropType<IssueProject>, default: null },
@@ -36,7 +36,7 @@ const props = defineProps({
 const emit = defineEmits(['on-submit'])
 
 const issueFormRef = ref()
-const confirmModalRef = ref()
+const delRelRef = ref()
 const editForm = ref(false)
 
 const isClosed = computed(() => props.issue?.closed)
@@ -95,26 +95,10 @@ const callComment = () => {
   }, 100)
 }
 
-const child = ref<number | null>(null)
+// 하위 업무 관련 코드
+const unlinkSubIssue = (del_child: number) => workStore.patchIssue(props.issue?.pk, { del_child })
 
-const parentUnLink = (pk: number) => {
-  child.value = pk
-  confirmModalRef.value.callModal()
-}
-
-const unLinkConfirm = () => {
-  workStore.patchIssue(props.issue?.pk, { del_child: child.value })
-  child.value = null
-  confirmModalRef.value.close()
-}
-
-const delSubmit = (pk: number) => workStore.deleteIssueComment(pk, props.issue.pk)
-
-const route = useRoute()
-watch(route, async nVal => {
-  if (nVal.query.edit) callEditForm()
-})
-
+// 연결된 업무 관련 코드
 const addRIssue = ref(false)
 const validated = ref(false)
 const relIssue = ref<IssueRelation>({
@@ -123,17 +107,35 @@ const relIssue = ref<IssueRelation>({
   relation_type: 'relates',
   delay: null,
 })
+
 const addRelIssue = (event: Event) => {
   if (isValidate(event)) validated.value = true
   else {
-    console.log({ ...relIssue.value })
     workStore.createIssueRelation({ ...relIssue.value })
     relIssue.value.issue_to = null
     relIssue.value.relation_type = 'relates'
     relIssue.value.delay = null
   }
 }
-const relationUnLink = (pk: number) => {}
+
+const relationUnLink = (pk: number) => {
+  // child.value = pk
+  delRelRef.value.callModal()
+}
+
+const unLinkRelConfirm = (pk: number) => {
+  // workStore.updateIssueRelation(props.issue?.pk, { del_child: child.value })
+  // child.value = null
+  delRelRef.value.close()
+}
+
+// issue comment 관련
+const delSubmit = (pk: number) => workStore.deleteIssueComment(pk, props.issue.pk)
+
+const route = useRoute()
+watch(route, async nVal => {
+  if (nVal.query.edit) callEditForm()
+})
 
 onBeforeMount(async () => {
   await workStore.fetchIssueLogList({ issue: props.issue.pk })
@@ -427,127 +429,12 @@ onBeforeMount(async () => {
         </CCol>
       </CRow>
 
-      <template v-if="issue.sub_issues.length">
-        <CRow v-for="sub in issue.sub_issues" :key="sub.pk">
-          <CCol md="6" lg="4">
-            <router-link
-              :to="{ name: '(업무) - 보기', params: { issueId: sub.pk } }"
-              :class="{ closed: sub.closed }"
-            >
-              기능 #{{ sub.pk }}
-            </router-link>
-            : {{ sub.subject }}
-          </CCol>
-          <CCol class="col-sm-6 col-md-3 col-lg-4 text-right">
-            <span class="mr-3">{{ sub.status }}</span>
-            <span v-if="sub.assigned_to" class="mr-3">
-              <router-link :to="{ name: '사용자 - 보기', params: { userId: sub.assigned_to.pk } }">
-                {{ cutString(sub.assigned_to.username, 9) }}
-              </router-link>
-            </span>
-            <span class="mr-3">{{ sub?.start_date }}</span>
-          </CCol>
-          <CCol class="col-sm-6 col-md-3 col-lg-4 text-right">
-            <span class="mr-3">
-              <CProgress
-                color="green-lighten-3"
-                :value="sub?.done_ratio ?? 0"
-                style="width: 100px; float: left; margin-top: 3px"
-                height="14"
-              />
-            </span>
-            <span class="mr-3" @click="parentUnLink(sub.pk)">
-              <v-icon icon="mdi-link-variant-off" size="sm" color="grey" class="pointer" />
-              <v-tooltip activator="parent" location="top"> 관계 지우기 </v-tooltip>
-            </span>
-            <span>
-              <CDropdown color="secondary" variant="input-group" placement="bottom-end">
-                <CDropdownToggle
-                  :caret="false"
-                  color="light"
-                  variant="ghost"
-                  size="sm"
-                  shape="rounded-pill"
-                >
-                  <v-icon icon="mdi-dots-horizontal" class="pointer" color="grey-darken-1" />
-                  <v-tooltip activator="parent" location="top">Actions</v-tooltip>
-                </CDropdownToggle>
-                <CDropdownMenu>
-                  <CDropdownItem
-                    class="form-text"
-                    @click="
-                      $router.push({
-                        name: '(업무) - 보기',
-                        params: { issueId: sub.pk },
-                        query: { edit: '1' },
-                      })
-                    "
-                  >
-                    <router-link to="">
-                      <v-icon icon="mdi-pencil" color="amber" size="sm" />
-                      편집
-                    </router-link>
-                  </CDropdownItem>
-                  <CDropdownItem class="form-text" disabled>
-                    <!--                    <router-link to="">-->
-                    <v-icon color="amber" size="sm" />
-                    유형
-                    <!--                    </router-link>-->
-                  </CDropdownItem>
-                  <CDropdownItem class="form-text" disabled>
-                    <v-icon color="amber" size="sm" />
-                    <!--                    <router-link to=""> -->
-                    우선순위
-                    <!--                    </router-link>-->
-                  </CDropdownItem>
-                  <CDropdownItem class="form-text" disabled>
-                    <v-icon color="amber" size="sm" />
-                    <!--                    <router-link to=""> -->
-                    담당자
-                    <!--                    </router-link>-->
-                  </CDropdownItem>
-                  <CDropdownItem class="form-text" disabled>
-                    <v-icon color="amber" size="sm" />
-                    <!--                    <router-link to=""> -->
-                    진척도
-                    <!--                    </router-link>-->
-                  </CDropdownItem>
-                  <CDropdownItem class="form-text" disabled>
-                    <!--                    <router-link to="">-->
-                    <v-icon icon="mdi-star" color="secondary" size="sm" />
-                    지켜보기
-                    <!--                    </router-link>-->
-                  </CDropdownItem>
-                  <CDropdownItem class="form-text" disabled>
-                    <!--                    <router-link to="">-->
-                    <v-icon icon="mdi-timer-edit-outline" color="grey" size="sm" />
-                    작업시간 기록
-                    <!--                    </router-link>-->
-                  </CDropdownItem>
-                  <CDropdownItem class="form-text" disabled>
-                    <!--                    <router-link to="">-->
-                    <v-icon icon="mdi-link-plus" color="grey" size="sm" />
-                    링크 복사
-                    <!--                    </router-link>-->
-                  </CDropdownItem>
-                  <CDropdownItem class="form-text" disabled>
-                    <!--                    <router-link to="">-->
-                    <v-icon icon="mdi-content-copy" color="grey" size="sm" />
-                    복사
-                    <!--                    </router-link>-->
-                  </CDropdownItem>
-                  <CDropdownItem class="form-text" disabled>
-                    <!--                    <router-link to="">-->
-                    <v-icon icon="mdi-trash-can-outline" color="grey" size="sm" />
-                    업무 삭제
-                    <!--                    </router-link>-->
-                  </CDropdownItem>
-                </CDropdownMenu>
-              </CDropdown>
-            </span>
-          </CCol>
-        </CRow>
-      </template>
+      <SubIssues
+        v-if="issue.sub_issues.length"
+        :sub-issues="issue.sub_issues"
+        @parent-unlink="parentUnlink"
+        @unlink-sub-issue="unlinkSubIssue"
+      />
 
       <v-divider />
 
@@ -772,11 +659,19 @@ onBeforeMount(async () => {
     />
   </div>
 
-  <ConfirmModal ref="confirmModalRef">
+  <ConfirmModal ref="delSubRef">
     <template #header>관계 지우기 확인</template>
     <template #default> 계속 진행하시겠습니까?</template>
     <template #footer>
-      <CButton color="warning" @click="unLinkConfirm">확인</CButton>
+      <CButton color="warning" @click="unLinkSubConfirm">확인</CButton>
+    </template>
+  </ConfirmModal>
+
+  <ConfirmModal ref="delRelRef">
+    <template #header>관계 지우기 확인</template>
+    <template #default> 계속 진행하시겠습니까?</template>
+    <template #footer>
+      <CButton color="warning" @click="unLinkRelConfirm">확인</CButton>
     </template>
   </ConfirmModal>
 </template>
