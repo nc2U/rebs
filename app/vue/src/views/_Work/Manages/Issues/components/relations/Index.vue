@@ -44,7 +44,7 @@ const deleteRelConfirm = () => {
       v-for="rel in relatedIssues"
       :key="rel.pk"
       :class="{ 'bg-info-lighten': selected === rel.pk }"
-      class="rel-issue cursor-pointer"
+      class="rel-issue cursor-menu"
       @click="selected = rel.pk as number"
     >
       <CCol md="6" class="pt-1">

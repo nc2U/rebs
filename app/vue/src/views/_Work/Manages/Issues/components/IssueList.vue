@@ -87,7 +87,7 @@ const filterSubmit = (payload: IssueFilter) => emit('filter-submit', payload)
           <CTableRow
             v-for="issue in issueList"
             :key="issue.pk"
-            class="text-center table-row cursor-pointer"
+            class="text-center table-row cursor-menu"
             :color="selectedRow === issue.pk ? 'primary' : ''"
             @click="selectedRow = issue.pk"
           >

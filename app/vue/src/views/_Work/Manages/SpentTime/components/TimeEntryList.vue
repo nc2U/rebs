@@ -119,7 +119,7 @@ const delSubmit = () => {
           <CTableRow
             v-for="time in timeEntryList"
             :key="time.pk"
-            class="text-center table-row cursor-pointer"
+            class="text-center table-row cursor-menu"
             :color="selectedRow === time.pk ? 'primary' : ''"
             @click="selectedRow = time.pk"
           >

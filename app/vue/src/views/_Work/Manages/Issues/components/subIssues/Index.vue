@@ -39,7 +39,7 @@ const unlinkSubIssue = () => {
     v-for="sub in subIssues"
     :key="sub.pk"
     :class="{ 'bg-info-lighten': selected === sub.pk }"
-    class="sub-issue cursor-pointer"
+    class="sub-issue cursor-menu"
     @click="selected = sub.pk"
   >
     <CCol md="6" lg="4" class="pt-1">
