@@ -45,7 +45,7 @@ const deleteRelConfirm = () => {
       :key="rel.pk"
       :class="{ 'bg-info-lighten': selected === rel.pk }"
       class="rel-issue cursor-pointer"
-      @click="selected = rel.pk"
+      @click="selected = rel.pk as number"
     >
       <CCol md="6" class="pt-1">
         <span>{{ rel.type_display }} : </span>
