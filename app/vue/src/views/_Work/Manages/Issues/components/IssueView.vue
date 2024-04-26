@@ -18,6 +18,7 @@ import IssueForm from '@/views/_Work/Manages/Issues/components/IssueForm.vue'
 import SubIssues from './subIssues/Index.vue'
 import SubSummary from './subIssues/Summary.vue'
 import Relations from './relations/Index.vue'
+import RelSummary from './relations/Summary.vue'
 import AddRelationForm from './relations/AddRelationForm.vue'
 
 const props = defineProps({
@@ -392,8 +393,13 @@ onBeforeMount(async () => {
       <v-divider />
 
       <CRow>
-        <CCol class="col-10 title">
+        <CCol class="col-10">
           <span class="title mr-2">연결된 업무</span>
+          <RelSummary
+            v-if="issue.related_issues.length"
+            :issue-pk="issue.pk"
+            :rel-issue-tos="issue.related_issues.map(i => i.issue_to)"
+          />
         </CCol>
         <CCol class="text-right form-text">
           <router-link to="" @click="addRIssue = !addRIssue">추가</router-link>
@@ -450,28 +456,30 @@ onBeforeMount(async () => {
 </template>
 
 <style lang="scss" scoped>
-.title {
-  font-weight: bold;
-}
+:deep {
+  .title {
+    font-weight: bold;
+  }
 
-.sub-title {
-  font-size: 1.1em;
-  font-weight: bold;
-  color: #0f192a;
-}
+  .sub-title {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #0f192a;
+  }
 
-.file-desc1 {
-  font-size: 0.9em;
-  color: #777;
-}
+  .file-desc1 {
+    font-size: 0.9em;
+    color: #777;
+  }
 
-.file-desc2 {
-  font-size: 0.85em;
-  color: #888;
-}
+  .file-desc2 {
+    font-size: 0.85em;
+    color: #888;
+  }
 
-.closed {
-  color: #999;
-  text-decoration: line-through;
+  .closed {
+    color: #999;
+    text-decoration: line-through;
+  }
 }
 </style>

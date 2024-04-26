@@ -1,9 +1,7 @@
 <script lang="ts" setup>
 import { type PropType, ref } from 'vue'
-import { isValidate } from '@/utils/helper'
 import { cutString } from '@/utils/baseMixins'
 import type { IssueRelation } from '@/store/types/work'
-import Multiselect from '@vueform/multiselect'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 defineProps({
