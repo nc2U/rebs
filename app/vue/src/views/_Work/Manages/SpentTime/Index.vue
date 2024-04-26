@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, type ComputedRef, inject, onBeforeMount, ref } from 'vue'
+import { ref, computed, inject, onBeforeMount, type ComputedRef } from 'vue'
 import { navMenu2 as navMenu } from '@/views/_Work/_menu/headermixin1'
 import { useWork } from '@/store/pinia/work'
 import { useRouter } from 'vue-router'
@@ -33,15 +33,18 @@ const onSubmit = async (payload: any) => {
     await createTimeEntry(payload)
     await router.replace({ name: '소요시간' })
   }
-  console.log(payload)
 }
 
+const listFilter = ref<TimeEntryFilter>({})
 const filterSubmit = (payload: TimeEntryFilter) => {
-  console.log(payload)
+  listFilter.value = payload
   workStore.fetchTimeEntryList(payload)
 }
 
-const pageSelect = (page: number) => workStore.fetchTimeEntryList({ page })
+const pageSelect = (page: number) => {
+  listFilter.value.page = page
+  workStore.fetchTimeEntryList(listFilter.value)
+}
 
 const delSubmit = (pk: number) => alert(pk)
 

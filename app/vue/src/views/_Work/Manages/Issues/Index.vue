@@ -57,8 +57,15 @@ const onSubmit = (payload: any) => {
   }
 }
 
-const filterSubmit = (payload: IssueFilter) => workStore.fetchIssueList(payload)
-const pageSelect = (page: number) => workStore.fetchIssueList({ status__closed: '0', page })
+const listFilter = ref({ status__closed: '0' })
+const filterSubmit = (payload: IssueFilter) => {
+  listFilter.value = payload
+  workStore.fetchIssueList(payload)
+}
+const pageSelect = (page: number) => {
+  listFilter.value.page = page
+  workStore.fetchIssueList(listFilter.value)
+}
 
 onBeforeMount(async () => {
   await workStore.fetchAllIssueProjectList()

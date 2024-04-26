@@ -57,9 +57,15 @@ const onSubmit = (payload: any) => {
 const projId = computed(() => (route.params.projId as string) ?? '')
 const issueId = computed(() => (route.params.issueId as string) ?? '')
 
-const filterSubmit = (payload: IssueFilter) => workStore.fetchIssueList(payload)
-const pageSelect = (page: number) =>
-  workStore.fetchIssueList({ status__closed: '0', project: projId.value, page })
+const listFilter = ref({ status__closed: '0', project: projId.value })
+const filterSubmit = (payload: IssueFilter) => {
+  listFilter.value = payload
+  workStore.fetchIssueList(payload)
+}
+const pageSelect = (page: number) => {
+  listFilter.value.page = page
+  workStore.fetchIssueList(listFilter.value)
+}
 
 watch(
   route,
