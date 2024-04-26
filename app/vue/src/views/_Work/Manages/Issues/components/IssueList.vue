@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import { type PropType, ref, watchEffect } from 'vue'
 import type { Issue, IssueFilter, IssueProject, IssueStatus, Tracker } from '@/store/types/work'
+import { useWork } from '@/store/pinia/work'
 import { timeFormat } from '@/utils/baseMixins'
 import NoData from '@/views/_Work/components/NoData.vue'
 import SearchList from './SearchList.vue'
+import Pagination from '@/components/Pagination'
 
 defineProps({
   issueList: { type: Array as PropType<Issue[]>, default: () => [] },
@@ -13,7 +15,7 @@ defineProps({
   getIssues: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
 })
 
-const emit = defineEmits(['filter-submit'])
+const emit = defineEmits(['filter-submit', 'page-select'])
 
 const selectedRow = ref<number | null>(null)
 const handleClickOutside = event => {
@@ -26,6 +28,10 @@ watchEffect(() => {
 })
 
 const filterSubmit = (payload: IssueFilter) => emit('filter-submit', payload)
+
+const workStore = useWork()
+const issuePages = (pageNum: number) => workStore.issuePages(pageNum)
+const pageSelect = (page: number) => emit('page-select', page)
 </script>
 
 <template>
@@ -252,6 +258,14 @@ const filterSubmit = (payload: IssueFilter) => emit('filter-submit', payload)
           </CTableRow>
         </CTableBody>
       </CTable>
+
+      <Pagination
+        :active-page="1"
+        :limit="8"
+        :pages="issuePages(20)"
+        @active-page-change="pageSelect"
+        class="mt-3"
+      />
     </CCol>
   </CRow>
 </template>

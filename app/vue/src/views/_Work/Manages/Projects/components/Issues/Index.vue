@@ -55,6 +55,8 @@ const onSubmit = (payload: any) => {
 }
 
 const filterSubmit = (payload: IssueFilter) => workStore.fetchIssueList(payload)
+const pageSelect = (page: number) =>
+  workStore.fetchIssueList({ status__closed: '0', project: projId.value, page })
 
 watch(
   route,
@@ -106,6 +108,7 @@ onBeforeMount(async () => {
     :tracker-list="trackerList"
     :get-issues="getIssues"
     @filter-submit="filterSubmit"
+    @page-select="pageSelect"
   />
 
   <IssueView
