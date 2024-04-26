@@ -29,7 +29,6 @@ const props = defineProps({
   statusList: { type: Array as PropType<IssueStatus[]>, default: () => [] },
   activityList: { type: Array as PropType<CodeValue[]>, default: () => [] },
   priorityList: { type: Array as PropType<CodeValue[]>, default: () => [] },
-  getIssues: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
 })
 
 const emit = defineEmits(['on-submit'])
@@ -42,6 +41,7 @@ const isClosed = computed(() => props.issue?.closed)
 const workStore = useWork()
 const issueNums = computed(() => workStore.issueNums)
 const issueLogList = computed(() => workStore.issueLogList)
+const getIssues = computed(() => workStore.getIssues.filter(i => i.value !== props.issue.pk))
 
 const doneRatio = computed(() => {
   if (props.issue?.sub_issues.length) {

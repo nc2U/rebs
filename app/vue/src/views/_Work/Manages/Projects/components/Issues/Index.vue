@@ -116,7 +116,6 @@ onBeforeMount(async () => {
     :status-list="statusList"
     :activity-list="activityList"
     :priority-list="priorityList"
-    :get-issues="getIssues"
     :issue-comment-list="issueCommentList"
     :time-entry-list="timeEntryList"
     @on-submit="onSubmit"
