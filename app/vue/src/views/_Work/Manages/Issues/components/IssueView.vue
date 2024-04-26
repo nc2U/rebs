@@ -98,6 +98,7 @@ const unlinkSubIssue = (del_child: number) => workStore.patchIssue(props.issue?.
 
 // 연결된 업무 관련 코드
 const addRIssue = ref(false)
+const addFormCtl = (bool: boolean) => (addRIssue.value = bool)
 const addRelIssue = (payload: any) => workStore.createIssueRelation(payload)
 
 // issue comment 관련
@@ -404,7 +405,9 @@ onBeforeMount(async () => {
       :issue-pk="issue.pk"
       :add-r-issue="addRIssue"
       :related-issues="issue.related_issues"
+      :get-issues="getIssues"
       @add-rel-issue="addRelIssue"
+      @add-form-ctl="addFormCtl"
       class="mt-2"
     />
   </CCard>

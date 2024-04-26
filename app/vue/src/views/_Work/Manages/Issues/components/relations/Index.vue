@@ -10,9 +10,10 @@ const props = defineProps({
   issuePk: { type: Number, required: true },
   addRIssue: { type: Boolean, default: false },
   relatedIssues: { type: Array as PropType<IssueRelation[]>, default: () => [] },
+  getIssues: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
 })
 
-const emit = defineEmits(['add-rel-issue'])
+const emit = defineEmits(['add-rel-issue', 'add-form-ctl'])
 
 const relIssue = ref<IssueRelation>({
   issue: props.issuePk,
@@ -23,6 +24,8 @@ const relIssue = ref<IssueRelation>({
 
 const delRelRef = ref()
 const validated = ref(false)
+
+const addFormCtl = (bool: boolean) => emit('add-form-ctl', bool)
 
 const addRelIssue = (event: Event) => {
   if (isValidate(event)) validated.value = true
@@ -214,7 +217,7 @@ const unLinkRelConfirm = (pk: number) => {
         </template>
         <CCol class="pt-1">
           <CButton type="submit" color="primary" size="sm">추가</CButton>
-          <CButton color="light" size="sm" @click="addRIssue = false">취소</CButton>
+          <CButton color="light" size="sm" @click="addFormCtl(false)">취소</CButton>
         </CCol>
       </CRow>
     </CForm>

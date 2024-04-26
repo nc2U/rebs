@@ -1,7 +1,10 @@
 <script lang="ts" setup>
+import type { PropType } from 'vue'
+import type { SubIssue } from '@/store/types/work'
+
 defineProps({
   issuePk: { type: Number, required: true },
-  subIssues: { type: Array, default: () => [] },
+  subIssues: { type: Array as PropType<SubIssue[]>, default: () => [] },
 })
 </script>
 
