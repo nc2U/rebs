@@ -199,6 +199,10 @@ export const useWork = defineStore('work', () => {
   // issue states & getters
   const issue = ref<Issue | null>(null)
   const issueList = ref<Issue[]>([])
+  const issueCount = ref<number>(0)
+
+  const issuePages = (itemPerPage: number) => Math.ceil(issueCount.value / itemPerPage)
+
   const allIssueList = ref<Issue[]>([])
   const getIssues = computed(() =>
     allIssueList.value.map(i => ({
@@ -237,7 +241,10 @@ export const useWork = defineStore('work', () => {
 
     return await api
       .get(url)
-      .then(res => (issueList.value = res.data.results))
+      .then(res => {
+        issueList.value = res.data.results
+        issueCount.value = res.data.count
+      })
       .catch(err => errorHandle(err.response.data))
   }
 
@@ -524,8 +531,10 @@ export const useWork = defineStore('work', () => {
 
     issue,
     issueList,
+    issueCount,
     issueNums,
     getIssues,
+    issuePages,
     fetchIssue,
     fetchAllIssueList,
     fetchIssueList,
