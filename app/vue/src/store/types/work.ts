@@ -206,7 +206,7 @@ export interface IssueFile {
   del?: boolean
 }
 
-interface SubIssue {
+export interface SubIssue {
   pk: number
   subject: string
   status: string
