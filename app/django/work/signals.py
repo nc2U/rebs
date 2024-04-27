@@ -140,7 +140,7 @@ def issue_log_delete(sender, instance, **kwargs):
 
 @receiver(post_save, sender=IssueRelation)
 def issue_relation_create(sender, instance, created, **kwargs):
-    details = f"|- **{instance.get_relation_type_display()}**에 \
+    details = f"|- **{instance.get_relation_type_display()}** : 에 \
     *{instance.issue_to.tracker} {instance.issue_to.pk} {instance.issue_to}*이(가) 추가되었습니다."
     if created:
         IssueLogEntry.objects.create(issue=instance.issue, action='Updated',
@@ -149,8 +149,8 @@ def issue_relation_create(sender, instance, created, **kwargs):
 
 @receiver(pre_delete, sender=IssueRelation)
 def issue_relation_delete(sender, instance, **kwargs):
-    details = f"|- **{instance.get_relation_type_display()}**에 \
-    *{instance.issue_to.tracker} {instance.issue_to.pk} {instance.issue_to}*이(가) 삭제되었습니다."
+    details = f"|- **{instance.get_relation_type_display()}** : 값이 삭제되었습니다. \
+    (*{instance.issue_to.tracker} {instance.issue_to.pk} {instance.issue_to}*)"
     IssueLogEntry.objects.create(issue=instance.issue, action='Updated',
                                  details=details, user=instance.user)
 
