@@ -341,6 +341,12 @@ class ActivityLogEntryViewSet(viewsets.ModelViewSet):
         user = self.request.user
         return self.queryset if user.is_superuser else self.queryset.filter(project__is_public=True)
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
+
 
 class IssueLogEntryViewSet(viewsets.ModelViewSet):
     queryset = IssueLogEntry.objects.all()
@@ -352,6 +358,12 @@ class IssueLogEntryViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         return self.queryset if user.is_superuser else self.queryset.filter(issue__project__is_public=True)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class SearchViewSet(viewsets.ModelViewSet):
