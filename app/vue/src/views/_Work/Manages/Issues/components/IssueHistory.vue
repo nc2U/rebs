@@ -83,7 +83,7 @@ onBeforeMount(() => {
     class="border-top-0 p-2"
     :style="{ '--cui-card-border-radius': 0 }"
   >
-    <CCardBody>
+    <CCardBody class="pb-0">
       <CTabContent>
         <CTabPane role="tabpanel" aria-labelledby="home-tab" :visible="tabPaneActiveKey === 1">
           <div v-for="log in issueLogList" :key="log.pk">

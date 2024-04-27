@@ -40,7 +40,7 @@ const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
         </CCol>
       </CRow>
       <v-divider class="mt-0 mb-2" />
-      <div class="history pl-4 mb-2">
+      <div class="history pl-4">
         <ul>
           <li v-for="(src, i) in getHistory(log.details)" :key="i">
             <VueMarkdownIt :source="src" />
