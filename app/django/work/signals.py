@@ -106,21 +106,22 @@ def issue_log_changes(sender, instance, created, **kwargs):
     if hasattr(instance, '_old_closed'):
         details += f"|- **해당 업무**가 *{instance.closed}*에 종료되었습니다."
 
+    user = instance.creator if created else instance.updater
     if created:
         # 생성 시 activity 만 기록
-        ActivityLogEntry.objects.create(sort='1', project=instance.project, issue=instance)
+        ActivityLogEntry.objects.create(sort='1', project=instance.project, issue=instance, user=user)
     else:
         # 변경 시
         if details:
             # 변경 내용 기록이 있으면 업무 로그 기록
-            IssueLogEntry.objects.create(issue=instance, action=action, details=details, diff=diff)
+            IssueLogEntry.objects.create(issue=instance, action=action, details=details, diff=diff, user=user)
             if hasattr(instance, '_old_parent') and parent_details:
                 IssueLogEntry.objects.create(issue=instance.parent, action=action,
-                                             details=parent_details, diff=diff)
+                                             details=parent_details, diff=diff, user=user)
             if hasattr(instance, '_old_status'):
                 # 변경 내용 기록과 상태 변경이 있으면 activity 도 기록
                 ActivityLogEntry.objects.create(sort='1', project=instance.project,
-                                                issue=instance, status_log=status_log)
+                                                issue=instance, status_log=status_log, user=user)
 
 
 @receiver(pre_delete, sender=Issue)
@@ -142,22 +143,24 @@ def issue_relation_create(sender, instance, created, **kwargs):
     details = f"|- ** {instance.get_relation_type_display()} :**에 \
     *{instance.issue_to.tracker} {instance.issue_to.pk} {instance.issue_to}*이(가) 추가되었습니다."
     if created:
-        IssueLogEntry.objects.create(issue=instance.issue, action='Updated', details=details)
+        IssueLogEntry.objects.create(issue=instance.issue, action='Updated',
+                                     details=details, user=instance.user)
 
 
 @receiver(pre_delete, sender=IssueRelation)
 def issue_relation_delete(sender, instance, **kwargs):
     details = f"|- ** {instance.get_relation_type_display()} :**에 \
     *{instance.issue_to.tracker} {instance.issue_to.pk} {instance.issue_to}*이(가) 삭제되었습니다."
-    IssueLogEntry.objects.create(issue=instance.issue, action='Updated', details=details)
+    IssueLogEntry.objects.create(issue=instance.issue, action='Updated',
+                                 details=details, user=instance.user)
 
 
 @receiver(post_save, sender=IssueComment)
 def comment_log_changes(sender, instance, created, **kwargs):
     if created:
-        IssueLogEntry.objects.create(issue=instance.issue, action='Comment', comment=instance)
+        IssueLogEntry.objects.create(issue=instance.issue, action='Comment', comment=instance, user=instance.user)
         ActivityLogEntry.objects.create(sort='2', project=instance.issue.project, issue=instance.issue,
-                                        comment=instance)
+                                        comment=instance, user=instance.user)
 
 
 @receiver(pre_delete, sender=IssueComment)
@@ -179,7 +182,7 @@ def comment_log_delete(sender, instance, **kwargs):
 def time_log_changes(sender, instance, created, **kwargs):
     if created:
         ActivityLogEntry.objects.create(sort='9', project=instance.issue.project, issue=instance.issue,
-                                        spent_time=instance)
+                                        spent_time=instance, user=instance.user)
 
 
 @receiver(pre_delete, sender=TimeEntry)

@@ -419,6 +419,7 @@ class IssueRelation(models.Model):
         ('copied_from', '다음 업무로부터 복사됨'))
     relation_type = models.CharField('관계 유형', max_length=20, choices=RELATION_CHOICES, default='relates')
     delay = models.PositiveSmallIntegerField('지연일수', null=True, blank=True)
+    user = models.ForeignKey('accounts.User', models.SET_NULL, null=True, blank=True, verbose_name='사용자')
 
     def __str__(self):
         return f'{self.issue.subject}-{self.relation_type}-{self.issue_to.subject}'
