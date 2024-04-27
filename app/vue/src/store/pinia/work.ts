@@ -334,6 +334,7 @@ export const useWork = defineStore('work', () => {
       .delete(`/issue-relation/${pk}/`)
       .then(async () => {
         await fetchIssue(issue)
+        await fetchIssueLogList({ issue })
         message('warning', '알림!', '해당 업무와 연결 관계가 삭제되었습니다.')
       })
       .catch(err => errorHandle(err.response.data))
