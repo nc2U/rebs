@@ -1,6 +1,7 @@
 from django.db.models.signals import pre_save, post_save, pre_delete
 from django.dispatch import receiver
-from .models import Issue, IssueComment, TimeEntry, ActivityLogEntry, IssueLogEntry
+from .models import (Issue, IssueRelation, IssueComment, TimeEntry,
+                     ActivityLogEntry, IssueLogEntry)
 
 
 @receiver(pre_save, sender=Issue)
@@ -50,6 +51,7 @@ def issue_log_changes(sender, instance, created, **kwargs):
     status_log = ""
     details = f"**업무** - *{instance}(#{instance.id})*업무가 *{action}* 되었습니다." if created else ""
     diff = ""
+    parent_details = ""
     if hasattr(instance, '_old_project'):
         details += f"|- **프로젝트**가 *{instance._old_project}*에서 *{instance.project}*(으)로 변경되었습니다."
     if hasattr(instance, '_old_tracker'):
@@ -79,7 +81,8 @@ def issue_log_changes(sender, instance, created, **kwargs):
     if hasattr(instance, '_old_parent'):
         desc = f" *{instance._old_parent}*에서 " if instance._old_parent else ""
         act = "변경" if instance._old_parent else "지정"
-        details += f"|- **상위 업무**가 {desc}*{instance.parent}*(으)로 {act}되었습니다."
+        details += f"|- **상위 업무**가 {desc}#{instance.parent.pk} *{instance.parent}*(으)로 {act}되었습니다."
+        parent_details = f"|- **하위 업무**에 #{instance.pk} *{instance}*이(가) 추가되었습니다."
     if hasattr(instance, '_old_watchers'):
         desc = f" *{instance._old_watchers}*에서 " if instance._old_watchers else ""
         act = "변경" if instance._old_watchers else "지정"
@@ -112,6 +115,9 @@ def issue_log_changes(sender, instance, created, **kwargs):
         if details:
             # 변경 내용 기록이 있으면 업무 로그 기록
             IssueLogEntry.objects.create(issue=instance, action=action, details=details, diff=diff, user=user)
+            if hasattr(instance, '_old_parent') and parent_details:
+                IssueLogEntry.objects.create(issue=instance.parent, action=action,
+                                             details=parent_details, diff=diff, user=user)
             if hasattr(instance, '_old_status'):
                 # 변경 내용 기록과 상태 변경이 있으면 activity 도 기록
                 ActivityLogEntry.objects.create(sort='1', project=instance.project,
@@ -130,6 +136,23 @@ def issue_log_delete(sender, instance, **kwargs):
         act_logs.delete()
     except ActivityLogEntry.DoesNotExist:
         pass
+
+
+@receiver(post_save, sender=IssueRelation)
+def issue_relation_create(sender, instance, created, **kwargs):
+    details = f"|- ** {instance.get_relation_type_display()} :**에 \
+    *{instance.issue_to.tracker} {instance.issue_to.pk} {instance.issue_to}*이(가) 추가되었습니다."
+    if created:
+        IssueLogEntry.objects.create(issue=instance.issue, action='Updated',
+                                     details=details, user=instance.issue.updater)
+
+
+@receiver(pre_delete, sender=IssueRelation)
+def issue_relation_delete(sender, instance, **kwargs):
+    details = f"|- ** {instance.get_relation_type_display()} :**에 \
+    *{instance.issue_to.tracker} {instance.issue_to.pk} {instance.issue_to}*이(가) 삭제되었습니다."
+    IssueLogEntry.objects.create(issue=instance.issue, action='Updated',
+                                 details=details, user=instance.issue.updater)
 
 
 @receiver(post_save, sender=IssueComment)
