@@ -30,7 +30,6 @@ jobs:
           host: ${{ secrets.NFS_HOST }}
           username: ${{ secrets.NFS_USER }}
           password: ${{ secrets.NFS_PASS }}
-          port: 223
           source: 'app/django'
           target: ${{ secrets.NFS_PATH }}/prod/
       
