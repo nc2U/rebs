@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount } from 'vue'
 import { useWork } from '@/store/pinia/work'
-import type { SimpleMember } from '@/store/types/work'
+import type { IssueProject, SimpleMember } from '@/store/types/work'
 import OverViewHeader from './components/OverViewHeader.vue'
 import TimeSummary from './components/TimeSummary.vue'
 import IssueTracker from './components/IssueTracker.vue'
@@ -51,7 +51,8 @@ onBeforeMount(() => emit('aside-visible', false))
 </script>
 
 <template>
-  <OverViewHeader :project="iProject" />
+  <OverViewHeader :project="iProject as IssueProject" />
+  a
 
   <CRow class="mb-2">
     <CCol>{{ iProject?.description }}</CCol>

@@ -1,7 +1,12 @@
 <script lang="ts" setup>
-import { inject } from 'vue'
+import { inject, type PropType } from 'vue'
 
-defineProps({ projectMemgers: { type: Array, default: () => [] } }, {})
+defineProps({
+  projectMemgers: {
+    type: Object as PropType<{ [key: string]: { pk: number; username: string }[] }>,
+    default: () => null,
+  },
+})
 
 const isDark = inject('isDark')
 </script>
@@ -9,6 +14,7 @@ const isDark = inject('isDark')
 <template>
   <CCard :color="isDark ? '' : 'light'" class="mb-3">
     <CCardBody>
+      {{ projectMemgers }}
       <CCardSubtitle>구성원</CCardSubtitle>
       <CCardText>
         <div v-for="(val, key) in projectMemgers" :key="key">

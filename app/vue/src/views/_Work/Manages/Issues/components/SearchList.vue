@@ -186,7 +186,7 @@ onBeforeMount(() => {
     if (route.query.status) cond.value.status = route.query.status as 'open' | 'closed'
     if (route.query.tracker) {
       searchCond.value.push('tracker')
-      form.value.tracker = route.query.tracker
+      form.value.tracker = Number(route.query.tracker)
       cond.value.tracker = 'is'
     }
     setTimeout(() => filterSubmit(), 100)

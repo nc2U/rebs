@@ -1,8 +1,11 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { type PropType, ref } from 'vue'
+import type { IssueProject } from '@/store/types/work'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
-const props = defineProps({ project: { type: Object, required: true } }, {})
+const props = defineProps({
+  project: { type: Object as PropType<IssueProject>, required: true },
+})
 
 const RefProjectCloseConfirm = ref()
 const RefProjectDeleteConfirm = ref()

@@ -1,7 +1,9 @@
 <script lang="ts" setup>
-import { inject } from 'vue'
+import { inject, type PropType } from 'vue'
 
-defineProps({ trackers: { type: Array, default: () => [] } }, {})
+defineProps({
+  trackers: { type: Array as PropType<{ pk: number; name: string }[]>, default: () => [] },
+})
 
 const isDark = inject('isDark')
 </script>

@@ -1,7 +1,10 @@
 <script lang="ts" setup="">
-import { inject } from 'vue'
+import { inject, type PropType } from 'vue'
+import type { IssueProject } from '@/store/types/work'
 
-defineProps({ subProjects: { type: Array, default: () => [] } })
+defineProps({
+  subProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
+})
 
 const isDark = inject('isDark')
 </script>
