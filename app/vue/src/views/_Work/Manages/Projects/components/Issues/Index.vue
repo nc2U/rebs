@@ -89,7 +89,7 @@ onBeforeMount(async () => {
 
   await workStore.fetchIssueProject(projId.value)
   await workStore.fetchAllIssueList(projId.value)
-  await workStore.fetchIssueList({ status__closed: '0', project: projId.value })
+  await workStore.fetchIssueList({ ...listFilter.value })
 
   if (issueId.value) {
     await workStore.fetchIssue(Number(issueId.value))

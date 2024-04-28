@@ -60,7 +60,7 @@ onBeforeMount(() => emit('aside-visible', false))
   <CRow>
     <CCol lg="6">
       <CRow class="mb-3">
-        <IssueTracker />
+        <IssueTracker :trackers="iProject?.trackers" />
       </CRow>
 
       <CRow class="mb-3">

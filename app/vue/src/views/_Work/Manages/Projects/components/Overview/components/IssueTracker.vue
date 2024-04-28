@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { inject } from 'vue'
 
+defineProps({ trackers: { type: Array, default: () => [] } }, {})
+
 const isDark = inject('isDark')
 </script>
 
@@ -19,8 +21,12 @@ const isDark = inject('isDark')
         </CTableHead>
 
         <CTableBody>
-          <CTableRow v-for="i in 3" :key="i" class="text-center">
-            <CTableHeaderCell>결함</CTableHeaderCell>
+          <CTableRow v-for="tracker in trackers" :key="tracker.pk" class="text-center">
+            <CTableHeaderCell>
+              <router-link :to="{ name: '(업무)', query: { tracker: tracker.pk } }">
+                {{ tracker.name }}
+              </router-link>
+            </CTableHeaderCell>
             <CTableDataCell>0</CTableDataCell>
             <CTableDataCell>0</CTableDataCell>
             <CTableDataCell>0</CTableDataCell>
