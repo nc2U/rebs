@@ -52,7 +52,6 @@ onBeforeMount(() => emit('aside-visible', false))
 
 <template>
   <OverViewHeader :project="iProject as IssueProject" />
-  a
 
   <CRow class="mb-2">
     <CCol>{{ iProject?.description }}</CCol>
