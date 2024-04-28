@@ -95,6 +95,7 @@ class TrackerViewSet(viewsets.ModelViewSet):
 class IssueCountByTrackerViewSet(viewsets.ModelViewSet):
     queryset = Tracker.objects.all()
     serializer_class = IssueCountByTrackerSerializer
+    filterset_fields = ('projects',)
 
     def get_serializer_context(self):
         # Pass the request object as context to the serializer

@@ -1,7 +1,7 @@
 import json
 
 from django.db import transaction, IntegrityError
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.utils import timezone
 from rest_framework import serializers
 
@@ -259,18 +259,44 @@ class IssueCountByTrackerSerializer(serializers.ModelSerializer):
         fields = ['name', 'open', 'closed']
 
     def get_open(self, obj):
+        issues = Issue.objects.filter(tracker=obj, closed__isnull=True)
         # Access the request object from context
         request = self.context.get('request')
-        project = request.query_params.get('project__slug', None)
-        issues = Issue.objects.filter(tracker=obj, closed__isnull=True)
-        return issues.filter(project__slug=project).count() if project else issues.count()
+        project = request.query_params.get('projects', None)
+        if project is not None:
+            try:
+                project = IssueProject.objects.get(pk=project)
+                subs = self.get_sub_projects(project)
+                # Include activity log entries related to the specified project and its subprojects
+                issues = issues.filter(
+                    Q(project__slug=project.slug) | Q(project__slug__in=[sub.slug for sub in subs]))
+            except IssueProject.DoesNotExist:
+                pass
+        return issues.count()
 
     def get_closed(self, obj):
+        issues = Issue.objects.filter(tracker=obj).exclude(closed__isnull=True)
         # Access the request object from context
         request = self.context.get('request')
-        project = request.query_params.get('project__slug', None)
-        issues = Issue.objects.filter(tracker=obj).exclude(closed__isnull=True)
-        return issues.filter(project__slug=project).count() if project else issues.count()
+        project = request.query_params.get('projects', None)
+        if project is not None:
+            try:
+                project = IssueProject.objects.get(pk=project)
+                subs = self.get_sub_projects(project)
+                # Include activity log entries related to the specified project and its subprojects
+                issues = issues.filter(
+                    Q(project__slug=project.slug) | Q(project__slug__in=[sub.slug for sub in subs]))
+            except IssueProject.DoesNotExist:
+                pass
+        return issues.count()
+
+    def get_sub_projects(self, parent):
+        sub_projects = []
+        children = IssueProject.objects.filter(parent=parent)
+        for child in children:
+            sub_projects.append(child)
+            sub_projects.extend(self.get_sub_projects(child))
+        return sub_projects
 
 
 class IssueStatusSerializer(serializers.ModelSerializer):
