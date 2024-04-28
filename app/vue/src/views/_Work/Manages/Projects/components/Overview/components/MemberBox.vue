@@ -14,7 +14,6 @@ const isDark = inject('isDark')
 <template>
   <CCard :color="isDark ? '' : 'light'" class="mb-3">
     <CCardBody>
-      {{ projectMemgers }}
       <CCardSubtitle>구성원</CCardSubtitle>
       <CCardText>
         <div v-for="(val, key) in projectMemgers" :key="key">
