@@ -162,12 +162,27 @@ export const useWork = defineStore('work', () => {
 
   // tracker states & getters
   const trackerList = ref<Tracker[]>([])
+  const trackerSum = ref<
+    {
+      name: string
+      open: number
+      closed: number
+    }[]
+  >([])
 
   const fetchTrackerList = () =>
     api
       .get(`/tracker/`)
       .then(res => (trackerList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
+
+  const fetchTrackerSummary = async (projId?: number) => {
+    const url = projId ? `/tracker-summary/?projects=${projId}` : `/tracker-summary/`
+    return await api
+      .get(url)
+      .then(res => (trackerSum.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+  }
 
   // status states & getters
   const statusList = ref<IssueStatus[]>([])
@@ -519,7 +534,9 @@ export const useWork = defineStore('work', () => {
     patchMember,
 
     trackerList,
+    trackerSum,
     fetchTrackerList,
+    fetchTrackerSummary,
 
     statusList,
     fetchStatusList,
