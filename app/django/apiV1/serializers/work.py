@@ -256,7 +256,7 @@ class IssueCountByTrackerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tracker
-        fields = ['name', 'open', 'closed']
+        fields = ['pk', 'name', 'open', 'closed']
 
     def get_open(self, obj):
         issues = Issue.objects.filter(tracker=obj, closed__isnull=True)
