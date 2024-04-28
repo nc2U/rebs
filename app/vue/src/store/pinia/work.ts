@@ -164,6 +164,7 @@ export const useWork = defineStore('work', () => {
   const trackerList = ref<Tracker[]>([])
   const trackerSum = ref<
     {
+      pk: number
       name: string
       open: number
       closed: number

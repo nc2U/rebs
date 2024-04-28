@@ -50,7 +50,7 @@ const computedMembers = computed(() => {
 watch(
   () => iProject.value,
   nVal => {
-    if (nVal.pk) workStore.fetchTrackerSummary(nVal?.pk)
+    if (nVal?.pk) workStore.fetchTrackerSummary(nVal.pk)
   },
 )
 
