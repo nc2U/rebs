@@ -59,7 +59,7 @@ onBeforeMount(() => {
   emit('aside-visible', true)
   workStore.fetchAllIssueProjectList()
   workStore.fetchIssueList({ status__closed: '0', project: issueProject.value?.slug })
-  workStore.fetchTimeEntryList({ project: project.value, issue: Number(issue.value) })
+  workStore.fetchTimeEntryList({ ...listFilter.value })
 })
 </script>
 
