@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount } from 'vue'
+import { computed, onBeforeMount, watch } from 'vue'
 import { useWork } from '@/store/pinia/work'
 import type { IssueProject, SimpleMember } from '@/store/types/work'
 import OverViewHeader from './components/OverViewHeader.vue'
@@ -12,7 +12,7 @@ const emit = defineEmits(['aside-visible'])
 
 const workStore = useWork()
 const iProject = computed(() => workStore.issueProject)
-
+const trackerSum = computed(() => workStore.trackerSum)
 const allMembers = computed<SimpleMember[]>(() => workStore.issueProject?.all_members ?? [])
 
 const computedMembers = computed(() => {
@@ -47,7 +47,19 @@ const computedMembers = computed(() => {
   return organizedData
 })
 
-onBeforeMount(() => emit('aside-visible', false))
+watch(
+  () => iProject.value,
+  nVal => {
+    if (nVal.pk) workStore.fetchTrackerSummary(nVal?.pk)
+  },
+)
+
+onBeforeMount(() => {
+  emit('aside-visible', false)
+  if (iProject.value) {
+    workStore.fetchTrackerSummary(iProject.value?.pk)
+  }
+})
 </script>
 
 <template>
@@ -60,7 +72,7 @@ onBeforeMount(() => emit('aside-visible', false))
   <CRow>
     <CCol lg="6">
       <CRow class="mb-3">
-        <IssueTracker :trackers="iProject?.trackers" />
+        <IssueTracker :trackers="iProject?.trackers" :tracker-summary="trackerSum" />
       </CRow>
 
       <CRow class="mb-3">

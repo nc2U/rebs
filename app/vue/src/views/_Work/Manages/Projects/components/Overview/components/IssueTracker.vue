@@ -1,11 +1,17 @@
 <script lang="ts" setup>
 import { inject, type PropType } from 'vue'
 
-defineProps({
+const props = defineProps({
   trackers: { type: Array as PropType<{ pk: number; name: string }[]>, default: () => [] },
+  trackerSummary: {
+    type: Array as PropType<{ pk: number; name: string; open: number; closed: number }[]>,
+    default: () => [],
+  },
 })
 
 const isDark = inject('isDark')
+
+const getSummary = (pk: number) => props.trackerSummary.filter(t => t.pk === pk)[0]
 </script>
 
 <template>
@@ -29,9 +35,23 @@ const isDark = inject('isDark')
                 {{ tracker.name }}
               </router-link>
             </CTableHeaderCell>
-            <CTableDataCell>0</CTableDataCell>
-            <CTableDataCell>0</CTableDataCell>
-            <CTableDataCell>0</CTableDataCell>
+            <CTableDataCell>
+              <router-link :to="{ name: '(업무)', query: { tracker: tracker.pk } }">
+                {{ getSummary(tracker.pk)?.open ?? 0 }}
+              </router-link>
+            </CTableDataCell>
+            <CTableDataCell>
+              <router-link
+                :to="{ name: '(업무)', query: { status: 'closed', tracker: tracker.pk } }"
+              >
+                {{ getSummary(tracker.pk)?.closed ?? 0 }}
+              </router-link>
+            </CTableDataCell>
+            <CTableDataCell>
+              <router-link :to="{ name: '(업무)', query: { status: 'any', tracker: tracker.pk } }">
+                {{ (getSummary(tracker.pk)?.open ?? 0) + (getSummary(tracker.pk)?.closed ?? 0) }}
+              </router-link>
+            </CTableDataCell>
           </CTableRow>
         </CTableBody>
       </CTable>
