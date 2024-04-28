@@ -1,16 +1,16 @@
 from django.db.models import Q
-from rest_framework import viewsets
 from django_filters.rest_framework import (FilterSet, BooleanFilter,
                                            DateFilter, CharFilter)
-
-from ..permission import *
-from ..pagination import *
-from ..serializers.work import *
+from rest_framework import viewsets
+from rest_framework.response import Response
 
 from work.models import (IssueProject, Role, Permission, Member, Module, Version,
                          IssueCategory, Repository, Tracker, IssueStatus, Workflow,
                          CodeActivity, CodeIssuePriority, CodeDocsCategory, Issue, IssueRelation,
                          IssueFile, IssueComment, TimeEntry, Search, ActivityLogEntry, IssueLogEntry)
+from ..pagination import *
+from ..permission import *
+from ..serializers.work import *
 
 
 # Work --------------------------------------------------------------------------
@@ -90,6 +90,17 @@ class TrackerViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class IssueCountByTrackerViewSet(viewsets.ModelViewSet):
+    queryset = Tracker.objects.all()
+    serializer_class = IssueCountByTrackerSerializer
+
+    def get_serializer_context(self):
+        # Pass the request object as context to the serializer
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
 
 
 class IssueStatusViewSet(viewsets.ModelViewSet):

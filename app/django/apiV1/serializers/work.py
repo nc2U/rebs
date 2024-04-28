@@ -250,6 +250,29 @@ class TrackerSerializer(serializers.ModelSerializer):
                   'projects', 'order', 'user', 'created', 'updated')
 
 
+class IssueCountByTrackerSerializer(serializers.ModelSerializer):
+    open = serializers.SerializerMethodField()
+    closed = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Tracker
+        fields = ['name', 'open', 'closed']
+
+    def get_open(self, obj):
+        # Access the request object from context
+        request = self.context.get('request')
+        project = request.query_params.get('project__slug', None)
+        issues = Issue.objects.filter(tracker=obj, closed__isnull=True)
+        return issues.filter(project__slug=project).count() if project else issues.count()
+
+    def get_closed(self, obj):
+        # Access the request object from context
+        request = self.context.get('request')
+        project = request.query_params.get('project__slug', None)
+        issues = Issue.objects.filter(tracker=obj).exclude(closed__isnull=True)
+        return issues.filter(project__slug=project).count() if project else issues.count()
+
+
 class IssueStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = IssueStatus
