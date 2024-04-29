@@ -346,6 +346,15 @@ export interface TimeEntryFilter {
   page?: number
 }
 
+export interface News {
+  pk?: number
+  title: string
+  summary: string
+  description: string
+  author: { pk: number; username: string }
+  created: string
+}
+
 export interface ActLogEntry {
   pk: number
   sort: '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
