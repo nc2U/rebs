@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import Cookies from 'js-cookie'
 import { ref, computed, inject, type ComputedRef, onBeforeMount } from 'vue'
-import { useWork } from '@/store/pinia/work'
 import type { Company } from '@/store/types/settings'
-import ProjectForm from '@/views/_Work/Manages/Projects/components/ProjectForm.vue'
+import { useWork } from '@/store/pinia/work'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
+import ProjectForm from '@/views/_Work/Manages/Projects/components/ProjectForm.vue'
 import Member from '@/views/_Work/Manages/Projects/components/Settings/components/Member.vue'
 import IssueTracking from '@/views/_Work/Manages/Projects/components/Settings/components/IssueTracking.vue'
 import Version from '@/views/_Work/Manages/Projects/components/Settings/components/Version.vue'
@@ -84,6 +84,7 @@ onBeforeMount(() => {
           :value="m"
           :key="m"
           variant="tonal"
+          :active="menu === m"
           @click="Cookies.set('workSettingMenu', m)"
         >
           {{ m }}
