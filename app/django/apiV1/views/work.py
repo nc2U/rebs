@@ -311,6 +311,7 @@ class NewsViewSet(viewsets.ModelViewSet):
     serializer_class = NewsSerializer
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = PageNumberPaginationTwenty
+    filterset_fields = ('project__slug', 'author')
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
