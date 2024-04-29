@@ -95,6 +95,12 @@ const workProject = {
         {
           path: ':projId/news',
           name: '(공지)',
+          children: [
+            {
+              path: ':newsId',
+              name: '(공지) - 보기',
+            },
+          ],
         },
         {
           path: ':projId/document',

@@ -25,7 +25,6 @@ const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
             <router-link
               :to="{
                 name: '(작업내역)',
-                params: { projId: 'redmine' },
                 query: { from: log.timestamp.substring(0, 10) },
               }"
             >
