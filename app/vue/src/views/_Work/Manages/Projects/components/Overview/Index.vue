@@ -76,7 +76,7 @@ onBeforeMount(() => {
       </CRow>
 
       <CRow class="mb-3">
-        <TimeSummary />
+        <TimeSummary :project="iProject as IssueProject" />
       </CRow>
     </CCol>
 

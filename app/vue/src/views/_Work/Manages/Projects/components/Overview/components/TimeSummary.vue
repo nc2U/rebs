@@ -1,5 +1,9 @@
 <script lang="ts" setup>
-import { inject } from 'vue'
+import { inject, type PropType } from 'vue'
+import type { IssueProject } from '@/store/types/work'
+import { numberToHour } from '@/utils/baseMixins'
+
+defineProps({ project: { type: Object as PropType<IssueProject>, required: true } })
 
 const isDark = inject('isDark')
 </script>
@@ -12,8 +16,8 @@ const isDark = inject('isDark')
         시간추적
       </h6>
       <ul class="pl-4 mb-0">
-        <li>추정시간 : 48:00 시간</li>
-        <li>소요시간 : 0:00 시간</li>
+        <li>추정시간 : {{ numberToHour(project?.total_estimated_hours ?? 0) }} 시간</li>
+        <li>소요시간 : {{ numberToHour(project?.total_time_spent ?? 0) }} 시간</li>
       </ul>
     </CCardBody>
 
