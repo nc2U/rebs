@@ -17,7 +17,7 @@ const superAuth = inject<ComputedRef<boolean>>('superAuth')
 const userInfo = inject<ComputedRef<User>>('userInfo')
 
 const isOwnProject = (project: IssueProject) =>
-  project.all_members.map(m => m.user.pk).includes(userInfo?.value.pk as number)
+  project.all_members?.map(m => m.user.pk).includes(userInfo?.value.pk as number)
 
 const filterSubmit = (payload: ProjectFilter) => emit('filter-submit', payload)
 

@@ -14,7 +14,7 @@ const allProjects = computed(() => workStore.AllIssueProjects)
 const timeEntryList = computed(() => workStore.timeEntryList)
 const getIssues = computed(() => workStore.getIssues)
 const getMembers = computed(() =>
-  issueProject.value?.all_members.map(m => ({
+  issueProject.value?.all_members?.map(m => ({
     value: m.user.pk,
     label: m.user.username,
   })),

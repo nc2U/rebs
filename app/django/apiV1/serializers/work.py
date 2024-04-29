@@ -62,9 +62,9 @@ class IssueProjectSerializer(serializers.ModelSerializer):
     members = MemberInIssueProjectSerializer(many=True, read_only=True)
     trackers = TrackerInIssueProjectSerializer(many=True, read_only=True)
     module = ModuleInIssueProjectSerializer(read_only=True)
-    visible = serializers.SerializerMethodField()
-    total_estimated_hours = serializers.SerializerMethodField()
-    total_time_spent = serializers.SerializerMethodField()
+    visible = serializers.SerializerMethodField(read_only=True)
+    total_estimated_hours = serializers.SerializerMethodField(read_only=True)
+    total_time_spent = serializers.SerializerMethodField(read_only=True)
     user = serializers.SlugRelatedField('username', read_only=True)
 
     class Meta:

@@ -19,18 +19,20 @@ export interface IssueProject {
   description: string
   homepage: string | null
   is_public: boolean
-  family_tree: BCParent[]
+  family_tree?: BCParent[]
   parent: number | null
   is_inherit_members: boolean
   default_version: string | null
-  trackers: { pk: number; name: string }[]
+  trackers?: { pk: number; name: string }[]
   status: '1' | '9'
   depth: number
-  all_members: SimpleMember[]
-  members: SimpleMember[]
+  all_members?: SimpleMember[]
+  members?: SimpleMember[]
   sub_projects?: IssueProject[]
-  module: Module | null
-  visible: boolean
+  module?: Module | null
+  visible?: boolean
+  total_estimated_hours?: number
+  total_time_spent?: number
   user?: string
   created?: string
   updated?: string
