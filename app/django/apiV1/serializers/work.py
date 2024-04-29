@@ -9,7 +9,7 @@ from accounts.models import User
 from work.models import (IssueProject, Role, Permission, Member, Module, Version,
                          IssueCategory, Repository, Tracker, IssueStatus, Workflow,
                          CodeActivity, CodeIssuePriority, CodeDocsCategory, Issue, IssueRelation,
-                         IssueFile, IssueComment, TimeEntry, Search, ActivityLogEntry, IssueLogEntry)
+                         IssueFile, IssueComment, TimeEntry, Search, ActivityLogEntry, IssueLogEntry, News)
 
 
 # Work --------------------------------------------------------------------------
@@ -703,6 +703,12 @@ class TimeEntryInActivityLogSerializer(serializers.ModelSerializer):
     class Meta:
         model = TimeEntry
         fields = ('pk', 'hours', 'comment')
+
+
+class NewsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = News
+        fields = ('pk', 'title', 'summary', 'description', 'author', 'created')
 
 
 class ActivityLogEntrySerializer(serializers.ModelSerializer):

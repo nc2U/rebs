@@ -306,6 +306,16 @@ class TimeEntryViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
+class NewsViewSet(viewsets.ModelViewSet):
+    queryset = News.objects.all()
+    serializer_class = NewsSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    pagination_class = PageNumberPaginationTwenty
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+
 class ActivityLogFilter(FilterSet):
     project__search = CharFilter(field_name='project__slug', label='project-search')
     from_act_date = DateFilter(field_name='act_date', lookup_expr='gte', label='From log date')
