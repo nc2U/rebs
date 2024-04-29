@@ -99,7 +99,7 @@ const formCheck = computed(() => {
     const k = form.value.due_date === props.issue.due_date
     const l = form.value.estimated_hours === numToTime(props.issue.estimated_hours)
     const m = form.value.done_ratio === props.issue.done_ratio
-    const n = !form.value.files.map(f => f.del).some(f => f === true)
+    const n = !form.value.files?.map(f => f.del).some(f => f === true)
     const o = !newFiles.value.length
     const p = !timeEntry.value.hours
     const q = !timeEntry.value.activity
@@ -624,7 +624,7 @@ onBeforeMount(() => {
                         </CInputGroupText>
                       </CInputGroup>
                     </CCol>
-                    <CCol v-if="form.files.length && n === 1" class="text-right">
+                    <CCol v-if="form.files?.length && n === 1" class="text-right">
                       <router-link to="" @click="fileEdit = !fileEdit">첨부파일 편집</router-link>
                     </CCol>
                   </CRow>
