@@ -426,7 +426,8 @@ class IssueRelation(models.Model):
 
 
 class IssueFile(models.Model):
-    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, default=None, verbose_name='업무', related_name='files')
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, default=None, verbose_name='업무',
+                              related_name='issue_files')
     file = models.FileField(upload_to='work/issue/%Y/%m/%d/', verbose_name='파일')
     file_name = models.CharField('파일명', max_length=100, blank=True)
     file_type = models.CharField('타입', max_length=100, blank=True)
@@ -541,6 +542,45 @@ class IssueLogEntry(models.Model):
 
     def __str__(self):
         return f"{self.action} - {self.timestamp}"
+
+
+class News(models.Model):
+    project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
+    title = models.CharField('제목', max_length=255)
+    summary = models.CharField('요약', max_length=255, blank=True, default='')
+    description = models.TextField('설명', blank=True, default='')
+    author = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='저자')
+    created = models.DateTimeField('추가', auto_now_add=True)
+
+
+class NewsFile(models.Model):
+    news = models.ForeignKey(News, on_delete=models.CASCADE, default=None, verbose_name='공지', related_name='news_files')
+    file = models.FileField(upload_to='work/news/%Y/%m/%d/', verbose_name='파일')
+    file_name = models.CharField('파일명', max_length=100, blank=True)
+    file_type = models.CharField('타입', max_length=100, blank=True)
+    file_size = models.PositiveBigIntegerField('사이즈', blank=True, null=True)
+    description = models.CharField('부가설명', max_length=255, blank=True, default='')
+    created = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사용자')
+
+    def __str__(self):
+        return settings.MEDIA_URL
+
+    def save(self, *args, **kwargs):
+        if self.file:
+            self.file_name = self.file.name.split('/')[-1]
+            mime = magic.Magic(mime=True)
+            self.file_type = mime.from_buffer(self.file.read())
+            self.file_size = self.file.size
+        super().save(*args, **kwargs)
+
+
+@receiver(pre_delete, sender=NewsFile)
+def delete_file_on_delete(sender, instance, **kwargs):
+    # Check if the file exists before attempting to delete it
+    if instance.file:
+        if os.path.isfile(instance.file.path):
+            os.remove(instance.file.path)
 
 
 class Search(models.Model):
