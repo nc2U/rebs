@@ -2,8 +2,8 @@ from django.contrib import admin
 from import_export.admin import ImportExportMixin
 from .models import (IssueProject, Role, Permission, Member, Tracker, Module,
                      Version, IssueCategory, Repository, IssueStatus, Workflow,
-                     CodeActivity, CodeIssuePriority, CodeDocsCategory, Issue,
-                     IssueFile, IssueComment, TimeEntry, ActivityLogEntry, IssueLogEntry)
+                     CodeActivity, CodeIssuePriority, CodeDocsCategory, Issue, IssueRelation,
+                     IssueFile, IssueComment, TimeEntry, News, NewsFile, ActivityLogEntry, IssueLogEntry)
 
 
 class ModuleInline(admin.TabularInline):
@@ -95,12 +95,29 @@ class TimeEntryInline(admin.TabularInline):
     extra = 1
 
 
+class IssueRelationInline(admin.TabularInline):
+    model = IssueRelation
+    fk_name = 'issue'
+    extra = 1
+
+
 @admin.register(Issue)
-class IssueAdmin(admin.ModelAdmin):
+class IssueAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('project', 'tracker', 'is_private', 'subject',
                     'parent', 'status', 'priority', 'start_date', 'due_date')
     list_display_links = ('subject',)
-    inlines = (IssueFileInline, IssueCommentInline, TimeEntryInline)
+    inlines = (IssueFileInline, IssueCommentInline, TimeEntryInline, IssueRelationInline)
+
+
+class NewsFileInline(admin.TabularInline):
+    model = NewsFile
+    extra = 1
+
+
+@admin.register(News)
+class NewsAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ('project', 'title', 'summary', 'author')
+    inlines = (NewsFileInline,)
 
 
 @admin.register(ActivityLogEntry)
