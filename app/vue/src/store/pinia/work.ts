@@ -484,7 +484,7 @@ export const useWork = defineStore('work', () => {
 
   const fetchNewsList = (payload: { project?: string; author?: number }) =>
     api
-      .get(`/news/??project__slug=${payload.project ?? ''}&author=${payload.author ?? ''}`)
+      .get(`/news/?project__slug=${payload.project ?? ''}&author=${payload.author ?? ''}`)
       .then(res => (newsList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 

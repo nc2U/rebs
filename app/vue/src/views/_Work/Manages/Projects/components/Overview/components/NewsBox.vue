@@ -2,9 +2,7 @@
 import { inject, type PropType } from 'vue'
 import { type News } from '@/store/types/work'
 
-defineProps({
-  newsList: { type: Array as PropType<News[]>, default: () => [] },
-})
+defineProps({ newsList: { type: Array as PropType<News[]>, default: () => [] } })
 
 const isDark = inject('isDark')
 </script>
