@@ -317,7 +317,7 @@ onBeforeMount(async () => {
 
       <v-divider />
 
-      <template v-if="issue.files.length">
+      <template v-if="issue.files?.length">
         <CRow class="mb-3">
           <CCol>
             <CRow class="mb-2">
