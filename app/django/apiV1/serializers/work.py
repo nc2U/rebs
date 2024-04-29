@@ -63,14 +63,17 @@ class IssueProjectSerializer(serializers.ModelSerializer):
     trackers = TrackerInIssueProjectSerializer(many=True, read_only=True)
     module = ModuleInIssueProjectSerializer(read_only=True)
     visible = serializers.SerializerMethodField()
+    total_estimated_hours = serializers.SerializerMethodField()
+    total_time_spent = serializers.SerializerMethodField()
     user = serializers.SlugRelatedField('username', read_only=True)
 
     class Meta:
         model = IssueProject
-        fields = ('pk', 'company', 'name', 'slug', 'description', 'homepage', 'is_public',
-                  'family_tree', 'parent', 'is_inherit_members', 'default_version',
-                  'trackers', 'status', 'depth', 'all_members', 'members', 'sub_projects',
-                  'module', 'visible', 'user', 'created', 'updated')
+        fields = ('pk', 'company', 'name', 'slug', 'description', 'homepage',
+                  'is_public', 'family_tree', 'parent', 'is_inherit_members',
+                  'default_version', 'trackers', 'status', 'depth', 'all_members',
+                  'members', 'sub_projects', 'module', 'visible', 'total_estimated_hours',
+                  'total_time_spent', 'user', 'created', 'updated')
 
     def get_sub_projects(self, obj):
         return self.__class__(obj.issueproject_set.exclude(status='9'), many=True, read_only=True).data
@@ -94,6 +97,16 @@ class IssueProjectSerializer(serializers.ModelSerializer):
             return obj.is_public or user.pk in members or user.is_superuser
         else:
             return False
+
+    @staticmethod
+    def get_total_estimated_hours(obj):
+        hours = obj.issue_set.all().values('estimated_hours')
+        return sum([h['estimated_hours'] for h in hours if h['estimated_hours'] is not None])
+
+    @staticmethod
+    def get_total_time_spent(obj):
+        times = obj.timeentry_set.all().values('hours')
+        return sum([t['hours'] for t in times])
 
     @transaction.atomic
     def create(self, validated_data):
