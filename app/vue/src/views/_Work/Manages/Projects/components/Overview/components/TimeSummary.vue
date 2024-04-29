@@ -28,7 +28,7 @@ const isDark = inject('isDark')
       <span class="px-2">|</span>
       <router-link :to="{ name: '(소요시간)' }">자세히</router-link>
       <span class="px-2">|</span>
-      <router-link :to="{ name: '(소요시간) - 보고서' }">보고서</router-link>
+      <router-link :to="{ name: '(소요시간)', query: { report: '1' } }">보고서</router-link>
     </CCardText>
   </CCard>
 </template>

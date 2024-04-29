@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import { ref, type PropType, watchEffect } from 'vue'
+import { ref, type PropType, watchEffect, onBeforeMount } from 'vue'
 import type { IssueProject, TimeEntry, TimeEntryFilter } from '@/store/types/work'
+import { useRoute } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import { cutString, dateFormat, numberToHour } from '@/utils/baseMixins'
 import SearchList from './SearchList.vue'
 import Pagination from '@/components/Pagination'
 import NoData from '@/views/_Work/components/NoData.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import HeaderTab from '@/views/_Work/Manages/SpentTime/components/HeaderTab.vue'
 
 defineProps({
   timeEntryList: { type: Array as PropType<TimeEntry[]>, default: () => [] },
@@ -19,8 +19,10 @@ defineProps({
 
 const emit = defineEmits(['page-select', 'del-submit', 'filter-submit'])
 
+const menu = ref('detail')
+
 const selectedRow = ref<number | null>(null)
-const handleClickOutside = event => {
+const handleClickOutside = (event: any) => {
   if (!event.target.closest('.table-row')) selectedRow.value = null
 }
 
@@ -49,6 +51,11 @@ const delSubmit = () => {
   delPk.value = null
   RefDelConfirm.value.close()
 }
+
+const route = useRoute()
+onBeforeMount(() => {
+  if (route.query.report) menu.value = 'report'
+})
 </script>
 
 <template>
@@ -78,154 +85,169 @@ const delSubmit = () => {
     @filter-submit="filterSubmit"
   />
 
-  <HeaderTab />
-
-  <NoData v-if="!timeEntryList.length" />
-
-  <CRow v-else>
-    <CCol col="12">
-      <CRow class="mb-1 text-right pr-2">
-        <CCol class="">
-          <span>소요시간 합계 : </span>
-          <span class="bold">{{ numberToHour(timeEntryList[0].total_hours ?? 0) }}</span>
-        </CCol>
-      </CRow>
-      <v-divider class="my-0" />
-      <CTable striped hover small responsive>
-        <colgroup>
-          <col v-if="!$route.params.projId" style="width: 14%" />
-          <col style="width: 8%" />
-          <col style="width: 8%" />
-          <col style="width: 8%" />
-          <col style="width: 28%" />
-          <col style="width: 20%" />
-          <col style="width: 6%" />
-          <col style="width: 8%" />
-        </colgroup>
-        <CTableHead>
-          <CTableRow class="text-center">
-            <CTableHeaderCell v-if="!$route.params.projId" scope="col">프로젝트</CTableHeaderCell>
-            <CTableHeaderCell scope="col">작업일자</CTableHeaderCell>
-            <CTableHeaderCell scope="col">사용자</CTableHeaderCell>
-            <CTableHeaderCell scope="col">작업종류</CTableHeaderCell>
-            <CTableHeaderCell scope="col">업무</CTableHeaderCell>
-            <CTableHeaderCell scope="col">설명</CTableHeaderCell>
-            <CTableHeaderCell scope="col">시간</CTableHeaderCell>
-            <CTableHeaderCell scope="col"></CTableHeaderCell>
-          </CTableRow>
-        </CTableHead>
-
-        <CTableBody>
-          <CTableRow
-            v-for="time in timeEntryList"
-            :key="time.pk"
-            class="text-center table-row cursor-menu"
-            :color="selectedRow === time.pk ? 'primary' : ''"
-            @click="selectedRow = time.pk"
-          >
-            <CTableDataCell v-if="!$route.params.projId">
-              <router-link to="">{{ time.issue.project.name }}</router-link>
-            </CTableDataCell>
-            <CTableDataCell class="text-center">
-              {{ dateFormat(time.spent_on, '/') }}
-            </CTableDataCell>
-            <CTableDataCell>
-              <router-link :to="{ name: '사용자 - 보기', params: { userId: time.user.pk } }">
-                {{ time.user.username }}
-              </router-link>
-            </CTableDataCell>
-            <CTableDataCell>{{ time.activity.name }}</CTableDataCell>
-            <CTableDataCell class="text-left">
-              <router-link to="" :class="{ closed: time.issue.status.closed }">
-                {{ time.issue.tracker }} #{{ time.issue.pk }}
-              </router-link>
-              : {{ cutString(time.issue.subject, 24) }}
-            </CTableDataCell>
-            <CTableDataCell class="text-left">
-              {{ cutString(time.comment, 24) }}
-            </CTableDataCell>
-            <CTableDataCell>
-              <span class="strong">{{ numberToHour(time.hours) }}</span>
-            </CTableDataCell>
-            <CTableDataCell class="p-0">
-              <v-icon
-                icon="mdi-pencil"
-                color="amber"
-                size="sm"
-                class="mr-2 pointer"
-                @click="
-                  $router.push({
-                    name: '(소요시간) - 편집',
-                    params: { projId: time.issue.project.slug, timeId: time.pk },
-                  })
-                "
-              />
-              <v-icon
-                icon="mdi-trash-can"
-                color="grey"
-                size="sm"
-                class="mr-1 pointer"
-                @click="delConfirm(time.pk)"
-              />
-              <span>
-                <CDropdown color="secondary" variant="input-group" placement="bottom-end">
-                  <CDropdownToggle
-                    :caret="false"
-                    color="light"
-                    variant="ghost"
-                    size="sm"
-                    shape="rounded-pill"
-                  >
-                    <v-icon icon="mdi-dots-horizontal" class="pointer" color="grey-darken-1" />
-                    <v-tooltip activator="parent" location="top">Actions</v-tooltip>
-                  </CDropdownToggle>
-                  <CDropdownMenu>
-                    <CDropdownItem class="form-text">
-                      <router-link to=""> 작업종류 </router-link>
-                    </CDropdownItem>
-                    <CDropdownItem
-                      class="form-text"
-                      @click="
-                        $router.push({
-                          name: '(소요시간) - 편집',
-                          params: { projId: time.issue.project.slug, timeId: time.pk },
-                        })
-                      "
-                    >
-                      <router-link to="">
-                        <v-icon icon="mdi-pencil" color="amber" size="sm" />
-                        편집
-                      </router-link>
-                    </CDropdownItem>
-                    <CDropdownItem class="form-text" @click="delConfirm(time.pk)">
-                      <router-link to="">
-                        <v-icon icon="mdi-trash-can-outline" color="secondary" size="sm" />
-                        삭제
-                      </router-link>
-                    </CDropdownItem>
-                  </CDropdownMenu>
-                </CDropdown>
-              </span>
-            </CTableDataCell>
-          </CTableRow>
-        </CTableBody>
-      </CTable>
+  <CRow class="my-3 pt-2">
+    <CCol>
+      <v-tabs v-model="menu" density="compact">
+        <v-tab value="detail" variant="tonal" :active="menu === 'detail'" @click="menu = 'detail'">
+          자세히
+        </v-tab>
+        <v-tab value="report" variant="tonal" :active="menu === 'report'" @click="menu = 'report'">
+          보고서
+        </v-tab>
+      </v-tabs>
     </CCol>
-
-    <Pagination
-      :active-page="1"
-      :limit="8"
-      :pages="timeEntryPages(20)"
-      @active-page-change="pageSelect"
-      class="mt-3"
-    />
   </CRow>
 
-  <ConfirmModal ref="RefDelConfirm">
-    <template #footer>
-      <CButton color="danger" @click="delSubmit">확인</CButton>
-    </template>
-  </ConfirmModal>
+  <div v-if="menu === 'detail'">
+    <NoData v-if="!timeEntryList.length" />
+
+    <CRow v-else>
+      <CCol col="12">
+        <CRow class="mb-1 text-right pr-2">
+          <CCol class="">
+            <span>소요시간 합계 : </span>
+            <span class="bold">{{ numberToHour(timeEntryList[0].total_hours ?? 0) }}</span>
+          </CCol>
+        </CRow>
+        <v-divider class="my-0" />
+        <CTable striped hover small responsive>
+          <colgroup>
+            <col v-if="!$route.params.projId" style="width: 14%" />
+            <col style="width: 8%" />
+            <col style="width: 8%" />
+            <col style="width: 8%" />
+            <col style="width: 28%" />
+            <col style="width: 20%" />
+            <col style="width: 6%" />
+            <col style="width: 8%" />
+          </colgroup>
+          <CTableHead>
+            <CTableRow class="text-center">
+              <CTableHeaderCell v-if="!$route.params.projId" scope="col">프로젝트</CTableHeaderCell>
+              <CTableHeaderCell scope="col">작업일자</CTableHeaderCell>
+              <CTableHeaderCell scope="col">사용자</CTableHeaderCell>
+              <CTableHeaderCell scope="col">작업종류</CTableHeaderCell>
+              <CTableHeaderCell scope="col">업무</CTableHeaderCell>
+              <CTableHeaderCell scope="col">설명</CTableHeaderCell>
+              <CTableHeaderCell scope="col">시간</CTableHeaderCell>
+              <CTableHeaderCell scope="col"></CTableHeaderCell>
+            </CTableRow>
+          </CTableHead>
+
+          <CTableBody>
+            <CTableRow
+              v-for="time in timeEntryList"
+              :key="time.pk"
+              class="text-center table-row cursor-menu"
+              :color="selectedRow === time.pk ? 'primary' : ''"
+              @click="selectedRow = time.pk"
+            >
+              <CTableDataCell v-if="!$route.params.projId">
+                <router-link to="">{{ time.issue.project.name }}</router-link>
+              </CTableDataCell>
+              <CTableDataCell class="text-center">
+                {{ dateFormat(time.spent_on, '/') }}
+              </CTableDataCell>
+              <CTableDataCell>
+                <router-link :to="{ name: '사용자 - 보기', params: { userId: time.user.pk } }">
+                  {{ time.user.username }}
+                </router-link>
+              </CTableDataCell>
+              <CTableDataCell>{{ time.activity.name }}</CTableDataCell>
+              <CTableDataCell class="text-left">
+                <router-link to="" :class="{ closed: time.issue.status.closed }">
+                  {{ time.issue.tracker }} #{{ time.issue.pk }}
+                </router-link>
+                : {{ cutString(time.issue.subject, 24) }}
+              </CTableDataCell>
+              <CTableDataCell class="text-left">
+                {{ cutString(time.comment, 24) }}
+              </CTableDataCell>
+              <CTableDataCell>
+                <span class="strong">{{ numberToHour(time.hours) }}</span>
+              </CTableDataCell>
+              <CTableDataCell class="p-0">
+                <v-icon
+                  icon="mdi-pencil"
+                  color="amber"
+                  size="sm"
+                  class="mr-2 pointer"
+                  @click="
+                    $router.push({
+                      name: '(소요시간) - 편집',
+                      params: { projId: time.issue.project.slug, timeId: time.pk },
+                    })
+                  "
+                />
+                <v-icon
+                  icon="mdi-trash-can"
+                  color="grey"
+                  size="sm"
+                  class="mr-1 pointer"
+                  @click="delConfirm(time.pk)"
+                />
+                <span>
+                  <CDropdown color="secondary" variant="input-group" placement="bottom-end">
+                    <CDropdownToggle
+                      :caret="false"
+                      color="light"
+                      variant="ghost"
+                      size="sm"
+                      shape="rounded-pill"
+                    >
+                      <v-icon icon="mdi-dots-horizontal" class="pointer" color="grey-darken-1" />
+                      <v-tooltip activator="parent" location="top">Actions</v-tooltip>
+                    </CDropdownToggle>
+                    <CDropdownMenu>
+                      <CDropdownItem class="form-text">
+                        <router-link to=""> 작업종류 </router-link>
+                      </CDropdownItem>
+                      <CDropdownItem
+                        class="form-text"
+                        @click="
+                          $router.push({
+                            name: '(소요시간) - 편집',
+                            params: { projId: time.issue.project.slug, timeId: time.pk },
+                          })
+                        "
+                      >
+                        <router-link to="">
+                          <v-icon icon="mdi-pencil" color="amber" size="sm" />
+                          편집
+                        </router-link>
+                      </CDropdownItem>
+                      <CDropdownItem class="form-text" @click="delConfirm(time.pk)">
+                        <router-link to="">
+                          <v-icon icon="mdi-trash-can-outline" color="secondary" size="sm" />
+                          삭제
+                        </router-link>
+                      </CDropdownItem>
+                    </CDropdownMenu>
+                  </CDropdown>
+                </span>
+              </CTableDataCell>
+            </CTableRow>
+          </CTableBody>
+        </CTable>
+      </CCol>
+
+      <Pagination
+        :active-page="1"
+        :limit="8"
+        :pages="timeEntryPages(20)"
+        @active-page-change="pageSelect"
+        class="mt-3"
+      />
+    </CRow>
+
+    <ConfirmModal ref="RefDelConfirm">
+      <template #footer>
+        <CButton color="danger" @click="delSubmit">확인</CButton>
+      </template>
+    </ConfirmModal>
+  </div>
+
+  <div v-else>보고서</div>
 </template>
 
 <style lang="scss" scoped>

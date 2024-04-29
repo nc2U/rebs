@@ -9,7 +9,7 @@ const menu = ref('detail')
     <CCol>
       <v-tabs v-model="menu" density="compact">
         <v-tab value="detail" variant="tonal">자세히</v-tab>
-        <v-tab value="report" variant="tonal">보고서</v-tab>
+        <v-tab value="report" variant="tonal" @click>보고서</v-tab>
       </v-tabs>
     </CCol>
   </CRow>
