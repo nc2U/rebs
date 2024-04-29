@@ -17,6 +17,13 @@ const isDark = inject('isDark')
       </ul>
     </CCardBody>
 
-    <CCardText class="mx-3 mb-2"> 작업시간 기록 | 자세히 | 보고서</CCardText>
+    <CCardText class="mx-3 mb-2 form-text">
+      <router-link :to="{ name: '(소요시간) - 추가' }">작업시간 기록</router-link>
+
+      <span class="px-2">|</span>
+      <router-link :to="{ name: '(소요시간)' }">자세히</router-link>
+      <span class="px-2">|</span>
+      <router-link :to="{ name: '(소요시간) - 보고서' }">보고서</router-link>
+    </CCardText>
   </CCard>
 </template>

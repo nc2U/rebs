@@ -78,6 +78,10 @@ const workProject = {
               path: ':timeId/delete',
               name: '(소요시간) - 삭제',
             },
+            {
+              path: 'report',
+              name: '(소요시간) - 보고서',
+            },
           ],
         },
         {
