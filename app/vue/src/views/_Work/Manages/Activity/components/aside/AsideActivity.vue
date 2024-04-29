@@ -49,7 +49,7 @@ const accStore = useAccount()
 const userInfo = computed(() => accStore.userInfo)
 const getUsers = computed(() =>
   iProject?.value
-    ? iProject.value?.all_members.map(m => ({
+    ? iProject.value?.all_members?.map(m => ({
         value: m.user.pk,
         label: m.user.username,
       }))

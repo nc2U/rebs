@@ -53,12 +53,12 @@ const workProject = {
               name: '(업무) - 추가',
             },
             {
-              path: ':issueId/update',
-              name: '(업무) - 편집',
-            },
-            {
               path: ':issueId/delete',
               name: '(업무) - 삭제',
+            },
+            {
+              path: 'report',
+              name: '(업무) - 보고서',
             },
           ],
         },
@@ -77,6 +77,10 @@ const workProject = {
             {
               path: ':timeId/delete',
               name: '(소요시간) - 삭제',
+            },
+            {
+              path: 'report',
+              name: '(소요시간) - 보고서',
             },
           ],
         },

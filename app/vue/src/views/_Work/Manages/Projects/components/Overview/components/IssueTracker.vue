@@ -57,6 +57,18 @@ const getSummary = (pk: number) => props.trackerSummary.filter(t => t.pk === pk)
       </CTable>
     </CCardBody>
 
-    <CCardText class="mx-3 mb-2"> 모든 업무 보기 | 요약 | 달력 | Gantt 차트</CCardText>
+    <CCardText class="mx-3 mb-2 form-text">
+      <router-link :to="{ name: '(업무)' }">모든 업무 보기</router-link>
+      <span class="px-2">|</span>
+      <router-link :to="{ name: '(업무) - 보고서' }"> 요약</router-link>
+      <span class="px-2">|</span>
+      <!--            <router-link to="">-->
+      달력
+      <!--            </router-link>-->
+      <span class="px-2">|</span>
+      <!--            <router-link to="">-->
+      Gantt 차트
+      <!--            </router-link>-->
+    </CCardText>
   </CCard>
 </template>

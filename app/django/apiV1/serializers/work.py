@@ -62,15 +62,18 @@ class IssueProjectSerializer(serializers.ModelSerializer):
     members = MemberInIssueProjectSerializer(many=True, read_only=True)
     trackers = TrackerInIssueProjectSerializer(many=True, read_only=True)
     module = ModuleInIssueProjectSerializer(read_only=True)
-    visible = serializers.SerializerMethodField()
+    visible = serializers.SerializerMethodField(read_only=True)
+    total_estimated_hours = serializers.SerializerMethodField(read_only=True)
+    total_time_spent = serializers.SerializerMethodField(read_only=True)
     user = serializers.SlugRelatedField('username', read_only=True)
 
     class Meta:
         model = IssueProject
-        fields = ('pk', 'company', 'name', 'slug', 'description', 'homepage', 'is_public',
-                  'family_tree', 'parent', 'is_inherit_members', 'default_version',
-                  'trackers', 'status', 'depth', 'all_members', 'members', 'sub_projects',
-                  'module', 'visible', 'user', 'created', 'updated')
+        fields = ('pk', 'company', 'name', 'slug', 'description', 'homepage',
+                  'is_public', 'family_tree', 'parent', 'is_inherit_members',
+                  'default_version', 'trackers', 'status', 'depth', 'all_members',
+                  'members', 'sub_projects', 'module', 'visible', 'total_estimated_hours',
+                  'total_time_spent', 'user', 'created', 'updated')
 
     def get_sub_projects(self, obj):
         return self.__class__(obj.issueproject_set.exclude(status='9'), many=True, read_only=True).data
@@ -94,6 +97,26 @@ class IssueProjectSerializer(serializers.ModelSerializer):
             return obj.is_public or user.pk in members or user.is_superuser
         else:
             return False
+
+    def get_total_estimated_hours(self, obj):
+        return self.recursive_estimated_hours(obj)
+
+    def recursive_estimated_hours(self, project):
+        total_hours = project.issue_set.aggregate(total=Sum('estimated_hours'))['total'] or 0
+        sub_projects = project.issueproject_set.exclude(status='9')
+        for sub_project in sub_projects:
+            total_hours += self.recursive_estimated_hours(sub_project)
+        return total_hours
+
+    def get_total_time_spent(self, obj):
+        return self.recursive_time_spent(obj)
+
+    def recursive_time_spent(self, project):
+        total_hours = project.timeentry_set.aggregate(total=Sum('hours'))['total'] or 0
+        sub_projects = project.issueproject_set.exclude(status='9')
+        for sub_project in sub_projects:
+            total_hours += self.recursive_time_spent(sub_project)
+        return total_hours
 
     @transaction.atomic
     def create(self, validated_data):

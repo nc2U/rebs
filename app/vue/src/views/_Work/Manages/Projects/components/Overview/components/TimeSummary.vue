@@ -1,5 +1,9 @@
 <script lang="ts" setup>
-import { inject } from 'vue'
+import { inject, type PropType } from 'vue'
+import type { IssueProject } from '@/store/types/work'
+import { numberToHour } from '@/utils/baseMixins'
+
+defineProps({ project: { type: Object as PropType<IssueProject>, required: true } })
 
 const isDark = inject('isDark')
 </script>
@@ -12,11 +16,18 @@ const isDark = inject('isDark')
         시간추적
       </h6>
       <ul class="pl-4 mb-0">
-        <li>추정시간 : 48:00 시간</li>
-        <li>소요시간 : 0:00 시간</li>
+        <li>추정시간 : {{ numberToHour(project?.total_estimated_hours ?? 0) }} 시간</li>
+        <li>소요시간 : {{ numberToHour(project?.total_time_spent ?? 0) }} 시간</li>
       </ul>
     </CCardBody>
 
-    <CCardText class="mx-3 mb-2"> 작업시간 기록 | 자세히 | 보고서</CCardText>
+    <CCardText class="mx-3 mb-2 form-text">
+      <router-link :to="{ name: '(소요시간) - 추가' }">작업시간 기록</router-link>
+
+      <span class="px-2">|</span>
+      <router-link :to="{ name: '(소요시간)' }">자세히</router-link>
+      <span class="px-2">|</span>
+      <router-link :to="{ name: '(소요시간) - 보고서' }">보고서</router-link>
+    </CCardText>
   </CCard>
 </template>

@@ -4,8 +4,9 @@ import { useRoute, useRouter } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import type { IssueFilter } from '@/store/types/work'
 import IssueList from '@/views/_Work/Manages/Issues/components/IssueList.vue'
-import IssueForm from '@/views/_Work/Manages/Issues/components/IssueForm.vue'
 import IssueView from '@/views/_Work/Manages/Issues/components/IssueView.vue'
+import IssueForm from '@/views/_Work/Manages/Issues/components/IssueForm.vue'
+import IssueReport from '@/views/_Work/Manages/Issues/components/IssueReport.vue'
 
 const emit = defineEmits(['aside-visible'])
 
@@ -140,4 +141,6 @@ onBeforeMount(async () => {
     @on-submit="onSubmit"
     @close-form="router.push({ name: '(업무)' })"
   />
+
+  <IssueReport v-if="route.name === '(업무) - 보고서'" />
 </template>
