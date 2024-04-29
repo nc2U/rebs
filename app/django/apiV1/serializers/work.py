@@ -98,15 +98,25 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         else:
             return False
 
-    @staticmethod
-    def get_total_estimated_hours(obj):
-        hours = obj.issue_set.all().values('estimated_hours')
-        return sum([h['estimated_hours'] for h in hours if h['estimated_hours'] is not None])
+    def get_total_estimated_hours(self, obj):
+        return self.recursive_estimated_hours(obj)
 
-    @staticmethod
-    def get_total_time_spent(obj):
-        times = obj.timeentry_set.all().values('hours')
-        return sum([t['hours'] for t in times])
+    def recursive_estimated_hours(self, project):
+        total_hours = project.issue_set.aggregate(total=Sum('estimated_hours'))['total'] or 0
+        sub_projects = project.issueproject_set.exclude(status='9')
+        for sub_project in sub_projects:
+            total_hours += self.recursive_estimated_hours(sub_project)
+        return total_hours
+
+    def get_total_time_spent(self, obj):
+        return self.recursive_time_spent(obj)
+
+    def recursive_time_spent(self, project):
+        total_hours = project.timeentry_set.aggregate(total=Sum('hours'))['total'] or 0
+        sub_projects = project.issueproject_set.exclude(status='9')
+        for sub_project in sub_projects:
+            total_hours += self.recursive_time_spent(sub_project)
+        return total_hours
 
     @transaction.atomic
     def create(self, validated_data):
