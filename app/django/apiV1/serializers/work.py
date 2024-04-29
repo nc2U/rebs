@@ -243,54 +243,11 @@ class RepositorySerializer(serializers.ModelSerializer):
 
 class TrackerSerializer(serializers.ModelSerializer):
     projects = FamilyTreeSerializer(many=True, read_only=True)
-    open = serializers.SerializerMethodField()
-    closed = serializers.SerializerMethodField()
 
     class Meta:
         model = Tracker
-        fields = ('pk', 'name', 'description', 'is_in_roadmap',
-                  'default_status', 'projects', 'order', 'open',
-                  'closed', 'user', 'created', 'updated')
-
-    def get_open(self, obj):
-        issues = Issue.objects.filter(tracker=obj, closed__isnull=True)
-        # Access the request object from context
-        request = self.context.get('request')
-        project = request.query_params.get('projects', None)
-        if project is not None:
-            try:
-                project = IssueProject.objects.get(pk=project)
-                subs = self.get_sub_projects(project)
-                # Include activity log entries related to the specified project and its subprojects
-                issues = issues.filter(
-                    Q(project__slug=project.slug) | Q(project__slug__in=[sub.slug for sub in subs]))
-            except IssueProject.DoesNotExist:
-                pass
-        return issues.count()
-
-    def get_closed(self, obj):
-        issues = Issue.objects.filter(tracker=obj).exclude(closed__isnull=True)
-        # Access the request object from context
-        request = self.context.get('request')
-        project = request.query_params.get('projects', None)
-        if project is not None:
-            try:
-                project = IssueProject.objects.get(pk=project)
-                subs = self.get_sub_projects(project)
-                # Include activity log entries related to the specified project and its subprojects
-                issues = issues.filter(
-                    Q(project__slug=project.slug) | Q(project__slug__in=[sub.slug for sub in subs]))
-            except IssueProject.DoesNotExist:
-                pass
-        return issues.count()
-
-    def get_sub_projects(self, parent):
-        sub_projects = []
-        children = IssueProject.objects.filter(parent=parent)
-        for child in children:
-            sub_projects.append(child)
-            sub_projects.extend(self.get_sub_projects(child))
-        return sub_projects
+        fields = ('pk', 'name', 'description', 'is_in_roadmap', 'default_status',
+                  'projects', 'order', 'user', 'created', 'updated')
 
 
 class IssueCountByTrackerSerializer(serializers.ModelSerializer):

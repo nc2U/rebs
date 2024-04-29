@@ -91,12 +91,6 @@ class TrackerViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-    def get_serializer_context(self):
-        # Pass the request object as context to the serializer
-        context = super().get_serializer_context()
-        context['request'] = self.request
-        return context
-
 
 class IssueCountByTrackerViewSet(viewsets.ModelViewSet):
     queryset = Tracker.objects.all()
