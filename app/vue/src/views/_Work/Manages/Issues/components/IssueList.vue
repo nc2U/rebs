@@ -18,7 +18,7 @@ defineProps({
 const emit = defineEmits(['filter-submit', 'page-select'])
 
 const selectedRow = ref<number | null>(null)
-const handleClickOutside = (event: Event) => {
+const handleClickOutside = (event: any) => {
   if (!event.target.closest('.table-row')) selectedRow.value = null
 }
 
@@ -61,7 +61,11 @@ const pageSelect = (page: number) => emit('page-select', page)
             <v-tooltip activator="parent" location="top">Actions</v-tooltip>
           </CDropdownToggle>
           <CDropdownMenu>
-            <CDropdownItem class="form-text" @click="$router.push({ name: '(업무) - 보고서' })">
+            <CDropdownItem
+              v-if="$route.params.projId"
+              class="form-text"
+              @click="$router.push({ name: '(업무) - 보고서' })"
+            >
               <router-link to="">
                 <v-icon icon="mdi-chart-bar" color="amber" size="sm" />
                 요약
@@ -73,7 +77,11 @@ const pageSelect = (page: number) => emit('page-select', page)
               가져오기
               <!--              </router-link>-->
             </CDropdownItem>
-            <CDropdownItem class="form-text" @click="$router.push({ name: '(설정)' })">
+            <CDropdownItem
+              v-if="$route.params.projId"
+              class="form-text"
+              @click="$router.push({ name: '(설정)' })"
+            >
               <router-link to="">
                 <v-icon icon="mdi-cog" color="secondary" size="sm" />
                 설정
