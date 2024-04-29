@@ -18,7 +18,7 @@ const getSummary = (pk: number) => props.trackerSummary.filter(t => t.pk === pk)
   <CCard :color="isDark ? '' : 'light'">
     <CCardBody>
       <CCardSubtitle class="mb-2">
-        <v-icon icon="mdi-briefcase-edit" size="sm" color="info" class="mr-1" />
+        <v-icon icon="mdi-briefcase-edit" size="sm" color="grey" class="mr-1" />
         업무 추적
       </CCardSubtitle>
       <CTable bordered hover small striped class="mt-2 mb-0">

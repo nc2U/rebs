@@ -348,7 +348,7 @@ export interface TimeEntryFilter {
 
 export interface News {
   pk?: number
-  project?: { pk: number; slug: string; name: string }
+  project?: { slug: string; name: string }
   title: string
   summary: string
   description: string

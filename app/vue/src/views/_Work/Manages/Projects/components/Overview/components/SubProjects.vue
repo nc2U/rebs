@@ -13,7 +13,7 @@ const isDark = inject('isDark')
   <CCard :color="isDark ? '' : 'light'" class="mb-3">
     <CCardBody>
       <CCardSubtitle class="mb-2">
-        <v-icon icon="mdi-subdirectory-arrow-right" size="sm" color="grey" class="mr-1" />
+        <v-icon icon="mdi-subdirectory-arrow-right" size="sm" class="mr-1" />
         하위 프로젝트
       </CCardSubtitle>
       <CCardText>
