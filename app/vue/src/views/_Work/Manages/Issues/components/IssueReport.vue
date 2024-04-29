@@ -1,9 +1,9 @@
-<script lang="ts" setup="">
-import { ref } from 'vue'
-
-const msg = ref('보고서')
-</script>
+<script lang="ts" setup></script>
 
 <template>
-  <div>{{ msg }}</div>
+  <CRow class="py-2">
+    <CCol>
+      <h5>보고서</h5>
+    </CCol>
+  </CRow>
 </template>
