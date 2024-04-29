@@ -14,7 +14,10 @@ const isDark = inject('isDark')
 <template>
   <CCard :color="isDark ? '' : 'light'" class="mb-3">
     <CCardBody>
-      <CCardSubtitle>구성원</CCardSubtitle>
+      <CCardSubtitle class="mb-2">
+        <v-icon icon="mdi-account-multiple-check" size="sm" color="primary" class="mr-1" />
+        구성원
+      </CCardSubtitle>
       <CCardText>
         <div v-for="(val, key) in projectMemgers" :key="key">
           {{ key }} :

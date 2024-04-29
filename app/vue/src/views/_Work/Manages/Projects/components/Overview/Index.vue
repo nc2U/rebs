@@ -5,6 +5,7 @@ import type { IssueProject, SimpleMember } from '@/store/types/work'
 import OverViewHeader from './components/OverViewHeader.vue'
 import TimeSummary from './components/TimeSummary.vue'
 import IssueTracker from './components/IssueTracker.vue'
+import NewsBox from './components/NewsBox.vue'
 import MemberBox from './components/MemberBox.vue'
 import SubProjects from './components/SubProjects.vue'
 
@@ -14,6 +15,7 @@ const workStore = useWork()
 const iProject = computed(() => workStore.issueProject)
 const trackerSum = computed(() => workStore.trackerSum)
 const allMembers = computed<SimpleMember[]>(() => workStore.issueProject?.all_members ?? [])
+const newsList = computed(() => workStore.newsList)
 
 const computedMembers = computed(() => {
   const organizedData = {} as { [key: string]: Array<{ pk: number; username: string }> }
@@ -81,6 +83,8 @@ onBeforeMount(() => {
     </CCol>
 
     <CCol lg="6">
+      <NewsBox v-if="!!newsList.length" :news-list="newsList" />
+
       <MemberBox v-if="!!Object.keys(computedMembers).length" :project-memgers="computedMembers" />
 
       <SubProjects v-if="iProject?.sub_projects?.length" :sub-projects="iProject?.sub_projects" />

@@ -17,7 +17,10 @@ const getSummary = (pk: number) => props.trackerSummary.filter(t => t.pk === pk)
 <template>
   <CCard :color="isDark ? '' : 'light'">
     <CCardBody>
-      <CCardSubtitle>업무 추적</CCardSubtitle>
+      <CCardSubtitle class="mb-2">
+        <v-icon icon="mdi-briefcase-edit" size="sm" color="info" class="mr-1" />
+        업무 추적
+      </CCardSubtitle>
       <CTable bordered hover small striped class="mt-2 mb-0">
         <CTableHead>
           <CTableRow class="text-center">
@@ -61,13 +64,13 @@ const getSummary = (pk: number) => props.trackerSummary.filter(t => t.pk === pk)
       <router-link :to="{ name: '(업무)' }">모든 업무 보기</router-link>
       <span class="px-2">|</span>
       <router-link :to="{ name: '(업무) - 보고서' }"> 요약</router-link>
-      <span class="px-2">|</span>
+      <!--      <span class="px-2">|</span>-->
       <!--            <router-link to="">-->
-      달력
+      <!--      달력-->
       <!--            </router-link>-->
-      <span class="px-2">|</span>
+      <!--      <span class="px-2">|</span>-->
       <!--            <router-link to="">-->
-      Gantt 차트
+      <!--      Gantt 차트-->
       <!--            </router-link>-->
     </CCardText>
   </CCard>

@@ -131,14 +131,22 @@ const filterActivity = (payload: ActLogEntryFilter) => {
 watch(
   () => route.params,
   nVal => {
-    if (nVal && nVal.projId) activityFilter.value.project = nVal.projId as string
+    if (nVal && nVal.projId) {
+      activityFilter.value.project = nVal.projId as string
+      workStore.fetchNewsList({ project: nVal.projId as string })
+    }
   },
   { deep: true },
 )
 
 onBeforeRouteUpdate(async to => {
-  if (to.params.projId) await workStore.fetchIssueProject(to.params.projId as string)
-  else workStore.issueProject = null
+  if (to.params.projId) {
+    await workStore.fetchIssueProject(to.params.projId as string)
+    await workStore.fetchNewsList({ project: route.params.projId as string })
+  } else {
+    workStore.issueProject = null
+    workStore.newsList = []
+  }
 })
 
 onBeforeMount(async () => {
@@ -147,6 +155,7 @@ onBeforeMount(async () => {
   if (route.params.projId) {
     activityFilter.value.project = route.params.projId as string
     await workStore.fetchIssueProject(route.params.projId as string)
+    await workStore.fetchNewsList({ project: route.params.projId as string })
   }
 })
 </script>

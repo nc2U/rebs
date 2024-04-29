@@ -11,10 +11,11 @@ const isDark = inject('isDark')
 <template>
   <CCard :color="isDark ? '' : 'light'">
     <CCardBody>
-      <h6>
-        <v-icon icon="mdi-clock-outline" size="small" />
-        시간추적
-      </h6>
+      <CCardSubtitle class="mb-2">
+        <v-icon icon="mdi-clock-outline" size="small" class="mr-1" />
+        시간 추적
+      </CCardSubtitle>
+
       <ul class="pl-4 mb-0">
         <li>추정시간 : {{ numberToHour(project?.total_estimated_hours ?? 0) }} 시간</li>
         <li>소요시간 : {{ numberToHour(project?.total_time_spent ?? 0) }} 시간</li>

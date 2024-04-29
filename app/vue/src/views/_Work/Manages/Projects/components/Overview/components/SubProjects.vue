@@ -12,7 +12,10 @@ const isDark = inject('isDark')
 <template>
   <CCard :color="isDark ? '' : 'light'" class="mb-3">
     <CCardBody>
-      <CCardSubtitle>하위 프로젝트</CCardSubtitle>
+      <CCardSubtitle class="mb-2">
+        <v-icon icon="mdi-subdirectory-arrow-right" size="sm" color="grey" class="mr-1" />
+        하위 프로젝트
+      </CCardSubtitle>
       <CCardText>
         <router-link
           v-for="(sub, i) in subProjects"
