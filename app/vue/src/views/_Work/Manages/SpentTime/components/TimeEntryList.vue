@@ -8,6 +8,7 @@ import SearchList from './SearchList.vue'
 import Pagination from '@/components/Pagination'
 import NoData from '@/views/_Work/components/NoData.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import TimeEntryReport from './TimeEntryReport.vue'
 
 defineProps({
   timeEntryList: { type: Array as PropType<TimeEntry[]>, default: () => [] },
@@ -247,7 +248,9 @@ onBeforeMount(() => {
     </ConfirmModal>
   </div>
 
-  <div v-else>보고서</div>
+  <div v-else>
+    <TimeEntryReport />
+  </div>
 </template>
 
 <style lang="scss" scoped>
