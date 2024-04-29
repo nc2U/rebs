@@ -348,10 +348,11 @@ export interface TimeEntryFilter {
 
 export interface News {
   pk?: number
+  project?: { pk: number; slug: string; name: string } | string
   title: string
   summary: string
   description: string
-  author: { pk: number; username: string }
+  author?: { pk: number; username: string } | number
   created: string
 }
 
