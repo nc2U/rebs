@@ -83,7 +83,7 @@ onBeforeMount(() => {
     </CCol>
 
     <CCol lg="6">
-      <NewsBox v-if="!!newsList.length" :news-list="newsList" />
+      <NewsBox v-if="!!newsList.length" :news-list="newsList.slice(0, 5)" />
 
       <MemberBox v-if="!!Object.keys(computedMembers).length" :project-memgers="computedMembers" />
 
