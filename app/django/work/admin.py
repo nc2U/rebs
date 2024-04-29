@@ -117,6 +117,7 @@ class NewsFileInline(admin.TabularInline):
 @admin.register(News)
 class NewsAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('project', 'title', 'summary', 'author')
+    list_display_links = ('project', 'title')
     inlines = (NewsFileInline,)
 
 
