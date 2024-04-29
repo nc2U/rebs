@@ -310,7 +310,7 @@ class NewsViewSet(viewsets.ModelViewSet):
     queryset = News.objects.all()
     serializer_class = NewsSerializer
     permission_classes = (permissions.IsAuthenticated,)
-    pagination_class = PageNumberPaginationTwenty
+    pagination_class = PageNumberPaginationTen
     filterset_fields = ('project__slug', 'author')
 
     def perform_create(self, serializer):

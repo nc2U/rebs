@@ -707,6 +707,7 @@ class TimeEntryInActivityLogSerializer(serializers.ModelSerializer):
 
 class NewsSerializer(serializers.ModelSerializer):
     project = FamilyTreeSerializer(read_only=True)
+    author = SimpleUserSerializer(read_only=True)
 
     class Meta:
         model = News
