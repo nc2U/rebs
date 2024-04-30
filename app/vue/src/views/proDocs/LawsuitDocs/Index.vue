@@ -3,7 +3,12 @@ import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/proDocs/_menu/headermixin1'
 import { useAccount } from '@/store/pinia/account'
 import { useProject } from '@/store/pinia/project'
-import { type RouteLocationNormalizedLoaded as Loaded, useRoute, useRouter } from 'vue-router'
+import {
+  onBeforeRouteUpdate,
+  type RouteLocationNormalizedLoaded as Loaded,
+  useRoute,
+  useRouter,
+} from 'vue-router'
 import { useDocument, type PostFilter, type SuitCaseFilter } from '@/store/pinia/document'
 import type { AFile, Attatches, Link, Post, PatchPost } from '@/store/types/document'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -184,6 +189,8 @@ const projSelect = (target: number | null) => {
   dataReset()
   if (!!target) dataSetup(target)
 }
+
+onBeforeRouteUpdate(() => dataSetup(project.value || projStore.initProjId, route.params?.postId))
 
 onBeforeMount(() => dataSetup(project.value || projStore.initProjId, route.params?.postId))
 </script>

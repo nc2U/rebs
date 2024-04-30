@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin2'
-import { type RouteLocationNormalizedLoaded as LoadedRoute, useRoute, useRouter } from 'vue-router'
+import {
+  onBeforeRouteUpdate,
+  type RouteLocationNormalizedLoaded as LoadedRoute,
+  useRoute,
+  useRouter,
+} from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
 import { useCompany } from '@/store/pinia/company'
 import { type PostFilter, type SuitCaseFilter, useDocument } from '@/store/pinia/document'
@@ -194,6 +199,8 @@ const comSelect = (target: number | null) => {
   dataReset()
   if (target) dataSetup(target)
 }
+
+onBeforeRouteUpdate(() => dataSetup(company.value || comStore.initComId, route.params?.postId))
 
 onBeforeMount(() => dataSetup(company.value || comStore.initComId, route.params?.postId))
 </script>

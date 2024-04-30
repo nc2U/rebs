@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin2'
-import { type RouteLocationNormalizedLoaded as LoadedRoute, useRoute, useRouter } from 'vue-router'
+import {
+  onBeforeRouteUpdate,
+  type RouteLocationNormalizedLoaded as LoadedRoute,
+  useRoute,
+  useRouter,
+} from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
 import { useCompany } from '@/store/pinia/company'
 import { type SuitCaseFilter as cFilter, useDocument } from '@/store/pinia/document'
@@ -146,6 +151,8 @@ const caseRenewal = (page: number) => {
   caseFilter.value.page = page
   fetchSuitCaseList(caseFilter.value)
 }
+
+onBeforeRouteUpdate(() => dataSetup(company.value || comStore.initComId, route.params?.caseId))
 
 onBeforeMount(() => dataSetup(company.value || comStore.initComId, route.params?.caseId))
 </script>

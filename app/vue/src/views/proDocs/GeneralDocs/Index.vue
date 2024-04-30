@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/proDocs/_menu/headermixin1'
-import { type RouteLocationNormalizedLoaded as Loaded, useRoute, useRouter } from 'vue-router'
+import {
+  onBeforeRouteUpdate,
+  type RouteLocationNormalizedLoaded as Loaded,
+  useRoute,
+  useRouter,
+} from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
 import { useProject } from '@/store/pinia/project'
 import { useDocument, type PostFilter } from '@/store/pinia/document'
@@ -180,6 +185,8 @@ const projSelect = (target: number | null) => {
   dataReset()
   if (!!target) dataSetup(target)
 }
+
+onBeforeRouteUpdate(() => dataSetup(project.value || projStore.initProjId, route.params?.postId))
 
 onBeforeMount(() => dataSetup(project.value || projStore.initProjId, route.params?.postId))
 </script>

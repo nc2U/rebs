@@ -249,15 +249,16 @@ export const useDocument = defineStore('document', () => {
   ) =>
     api
       .post(`/post/`, payload.form, config_headers)
-      .then(res =>
-        fetchPostList({
+      .then(async res => {
+        await fetchPostList({
           company: res.data.company,
           project: res.data.project,
           board: res.data.board,
           is_com: !payload.isProject,
           page: 1,
-        }).then(() => message()),
-      )
+        })
+        message()
+      })
       .catch(err => errorHandle(err.response.data))
 
   const updatePost = (
@@ -270,15 +271,17 @@ export const useDocument = defineStore('document', () => {
   ) =>
     api
       .put(`/post/${payload.pk}/`, payload.form, config_headers)
-      .then(res =>
-        fetchPostList({
+      .then(async res => {
+        await fetchPostList({
           company: res.data.company,
           project: res.data.project,
           board: res.data.board,
           is_com: !payload.isProject,
           page: 1,
-        }).then(() => fetchPost(res.data.pk).then(() => message())),
-      )
+        })
+        await fetchPost(res.data.pk)
+        message()
+      })
       .catch(err => errorHandle(err.response.data))
 
   const patchPost = async (
