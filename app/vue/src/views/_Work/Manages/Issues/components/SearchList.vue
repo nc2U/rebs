@@ -120,10 +120,11 @@ const cond = ref({
   parent: 'is' as 'is' | 'contains' | 'none' | 'any',
 })
 
+const route = useRoute()
 const form = ref<IssueFilter>({
   status: null,
   status__exclude: null,
-  project: '',
+  project: (route.params.projId as string) ?? '',
   tracker: null,
   tracker__exclude: null,
   // name: '',
@@ -173,7 +174,6 @@ watch(searchCond, nVal => {
   if (!nVal.includes('status')) searchCond.value = ['status']
 })
 
-const route = useRoute()
 onBeforeMount(() => {
   if (!!props.statusList.length) form.value.status = props.statusList[0]?.pk
   if (route.name === '업무')
