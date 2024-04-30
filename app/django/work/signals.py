@@ -116,8 +116,11 @@ def issue_log_changes(sender, instance, created, **kwargs):
         ##########################################
         # 생성 사용자를 제외한, 담당자와 열람자들에게 메일 전달
         ##########################################
-        subject = '새 업무가 생성 되었습니다.'
-        message = f'''{user.username}님이 새 업무를 생성 하였습니다.'''
+        subject = f'새 업무 -#{instance.pk} {instance.subject}- 가 생성 되었습니다.'
+        message = f'''{user.username}님이 새 업무 -#{instance.pk} {instance.subject}-를 생성 하였습니다.
+        
+        https://brdnc.co.kr/#/work/project/redmine/issue/{instance.pk}
+        '''
         addresses = []
         if instance.assigned_to and instance.assigned_to != user:  # 생성자와 담당자가 다를 경우 담당자에게 메일 전달
             addresses.append(instance.assigned_to.email)
@@ -125,7 +128,10 @@ def issue_log_changes(sender, instance, created, **kwargs):
             for watcher in instance.watchers:
                 addresses.append(watcher.email)
         if addresses:
-            send_mail(subject, message, settings.EMAIL_DEFAULT_SENDER, addresses, fail_silently=False)
+            try:
+                send_mail(subject, message, settings.EMAIL_DEFAULT_SENDER, addresses, fail_silently=False)
+            except Exception:
+                pass
     else:
         # 변경 시
         if details:
@@ -141,8 +147,11 @@ def issue_log_changes(sender, instance, created, **kwargs):
                 ################################################
                 # 업데이트 사용자를 제외한 생성자, 담당자, 열람자에게 메일 전달
                 ################################################
-                subject = '업무 상태가 변경 되었습니다.'
-                message = f'''{user.username}님이 업무 상태를 변경 하였습니다.'''
+                subject = f'업무 -#{instance.pk} {instance.subject}- 의 상태가 변경 되었습니다.'
+                message = f'''{user.username}님이 업무 -#{instance.pk} {instance.subject}- 상태를 변경 하였습니다.
+                
+                https://brdnc.co.kr/#/work/project/redmine/issue/{instance.pk}
+                '''
                 addresses = []
                 if instance.assigned_to and instance.assigned_to != user:  # 변경자가 담당자가 아니면 담당자에게 메일 전달
                     addresses.append(instance.assigned_to.email)
@@ -152,7 +161,10 @@ def issue_log_changes(sender, instance, created, **kwargs):
                     for watcher in instance.watchers:
                         addresses.append(watcher.email)
                 if addresses:
-                    send_mail(subject, message, settings.EMAIL_DEFAULT_SENDER, addresses, fail_silently=False)
+                    try:
+                        send_mail(subject, message, settings.EMAIL_DEFAULT_SENDER, addresses, fail_silently=False)
+                    except Exception:
+                        pass
 
 
 @receiver(pre_delete, sender=Issue)
