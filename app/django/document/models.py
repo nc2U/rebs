@@ -380,7 +380,7 @@ class Image(models.Model):
     image = models.ImageField(upload_to='post/img/%Y/%m/%d/', verbose_name='이미지')
     image_name = models.CharField('파일명', max_length=100, blank=True)
     image_type = models.CharField('타입', max_length=100, blank=True)
-    image_size = models.PositiveSmallIntegerField('사이즈', blank=True, null=True)
+    image_size = models.PositiveBigIntegerField('사이즈', blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -408,7 +408,7 @@ class File(models.Model):
     file = models.FileField(upload_to='post/docs/%Y/%m/%d/', verbose_name='파일')
     file_name = models.CharField('파일명', max_length=100, blank=True)
     file_type = models.CharField('타입', max_length=100, blank=True)
-    file_size = models.PositiveSmallIntegerField('사이즈', blank=True, null=True)
+    file_size = models.PositiveBigIntegerField('사이즈', blank=True, null=True)
     hit = models.PositiveIntegerField('다운로드수', default=0)
     created = models.DateTimeField(auto_now_add=True)
 
