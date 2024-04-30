@@ -121,7 +121,7 @@ def issue_log_changes(sender, instance, created, **kwargs):
         addresses = []
         if instance.assigned_to and instance.assigned_to != user:  # 생성자와 담당자가 다를 경우 담당자에게 메일 전달
             addresses.append(instance.assigned_to.email)
-        if instance.watchers:  # 열람자들에게 메일 전달
+        if instance.watchers.all():  # 열람자들에게 메일 전달
             for watcher in instance.watchers:
                 addresses.append(watcher.email)
         if addresses:
@@ -148,7 +148,7 @@ def issue_log_changes(sender, instance, created, **kwargs):
                     addresses.append(instance.assigned_to.email)
                 if instance.creator != user:  # 변경자와 생성자가 다르면 생성자에게 메일 전달
                     addresses.append(instance.creator)
-                if instance.watchers:  # 열람자들에게 메일 전달
+                if instance.watchers.all():  # 열람자들에게 메일 전달
                     for watcher in instance.watchers:
                         addresses.append(watcher.email)
                 if addresses:
