@@ -1,7 +1,10 @@
-from django.db.models.signals import pre_save, post_save, pre_delete
+from django.conf import settings
 from django.dispatch import receiver
-from .models import (Issue, IssueRelation, IssueComment, TimeEntry,
-                     ActivityLogEntry, IssueLogEntry)
+from django.core.mail import send_mail
+from django.db.models.signals import pre_save, post_save, pre_delete
+
+from .models import (Issue, IssueRelation, IssueComment,
+                     TimeEntry, ActivityLogEntry, IssueLogEntry)
 
 
 @receiver(pre_save, sender=Issue)
@@ -110,6 +113,19 @@ def issue_log_changes(sender, instance, created, **kwargs):
     if created:
         # 생성 시 activity 만 기록
         ActivityLogEntry.objects.create(sort='1', project=instance.project, issue=instance, user=user)
+        ##########################################
+        # 생성 사용자를 제외한, 담당자와 열람자들에게 메일 전달
+        ##########################################
+        subject = '새 업무가 생성 되었습니다.'
+        message = f'''{user.username}님이 새 업무를 생성 하였습니다.'''
+        addresses = []
+        if instance.assigned_to and instance.assigned_to != user:  # 생성자와 담당자가 다를 경우 담당자에게 메일 전달
+            addresses.append(instance.assigned_to.email)
+        if instance.watchers:  # 열람자들에게 메일 전달
+            for watcher in instance.watchers:
+                addresses.append(watcher.email)
+        if addresses:
+            send_mail(subject, message, settings.EMAIL_DEFAULT_SENDER, addresses, fail_silently=False)
     else:
         # 변경 시
         if details:
@@ -122,6 +138,21 @@ def issue_log_changes(sender, instance, created, **kwargs):
                 # 변경 내용 기록과 상태 변경이 있으면 activity 도 기록
                 ActivityLogEntry.objects.create(sort='1', project=instance.project,
                                                 issue=instance, status_log=status_log, user=user)
+                ################################################
+                # 업데이트 사용자를 제외한 생성자, 담당자, 열람자에게 메일 전달
+                ################################################
+                subject = '업무 상태가 변경 되었습니다.'
+                message = f'''{user.username}님이 업무 상태를 변경 하였습니다.'''
+                addresses = []
+                if instance.assigned_to and instance.assigned_to != user:  # 변경자가 담당자가 아니면 담당자에게 메일 전달
+                    addresses.append(instance.assigned_to.email)
+                if instance.creator != user:  # 변경자와 생성자가 다르면 생성자에게 메일 전달
+                    addresses.append(instance.creator)
+                if instance.watchers:  # 열람자들에게 메일 전달
+                    for watcher in instance.watchers:
+                        addresses.append(watcher.email)
+                if addresses:
+                    send_mail(subject, message, settings.EMAIL_DEFAULT_SENDER, addresses, fail_silently=False)
 
 
 @receiver(pre_delete, sender=Issue)
