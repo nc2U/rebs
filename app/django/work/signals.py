@@ -116,19 +116,20 @@ def issue_log_changes(sender, instance, created, **kwargs):
         ##########################################
         # 생성 사용자를 제외한, 담당자와 열람자들에게 메일 전달
         ##########################################
-        subject = f'새 업무 -#{instance.pk} {instance.subject}- 이(가) {instance.assigned_to.username}님에게 할당 되었습니다.' \
-            if instance.assigned_to else f'새 업무 -#{instance.pk} {instance.subject}- 이(가) 생성 되었습니다.'
-        message = f'''{user.username}님이 새 업무 -#{instance.pk} {instance.subject}-를 생성 하였습니다.
+        subject = f'새 업무 [#{instance.pk}] - [{instance.subject}] 이(가) [{instance.assigned_to.username}]님에게 할당 되었습니다.' \
+            if instance.assigned_to else f'새 업무 [#{instance.pk}] - [{instance.subject}] 이(가) 생성 되었습니다.'
+        message = f'''<u>{user.username}님이 새 업무 #{instance.pk} {instance.subject}를 생성 하였습니다.</u>
         
-        주제 : #{instance.pk} {instance.subject}
+업무 : #{instance.pk} {instance.subject}
         
-        담당 : {instance.assigned_to.username if instance.assigned_to else ""}
+담당 : {instance.assigned_to.username if instance.assigned_to else ""}
         
-        기한 : {instance.due_date if instance.due_date else ""}
+기한 : {instance.due_date if instance.due_date else ""}
         
-        설명 : {instance.description}
+설명 : 
+{instance.description}
         
-        링크 : {settings.DOMAIN_HOST}#/work/project/redmine/issue/{instance.pk}
+링크 : {settings.DOMAIN_HOST}#/work/project/redmine/issue/{instance.pk}
         '''
         addresses = []
         if instance.assigned_to and instance.assigned_to != user:  # 생성자와 담당자가 다를 경우 담당자에게 메일 전달
