@@ -453,8 +453,6 @@ class IssueSerializer(serializers.ModelSerializer):
                                      assigned_to=assigned_to,
                                      **validated_data)
         # Set the watchers of the instance to the list of watchers
-        user = self.context['request'].user
-        issue.watchers.add(user.pk)
         if watchers:
             for watcher in watchers:
                 if not issue.watchers.filter(id=watcher.pk).exists():
@@ -487,6 +485,13 @@ class IssueSerializer(serializers.ModelSerializer):
         assigned_to = self.initial_data.get('assigned_to', None)
         instance.assigned_to = User.objects.get(pk=assigned_to) if assigned_to else None
 
+        # 공유자 업데이트
+        watchers = validated_data.pop('watchers', [])
+        if watchers:
+            for watcher in watchers:
+                if not instance.watchers.filter(id=watcher.pk).exists():
+                    instance.watchers.set(watcher)
+
         # sub_issue 관계 지우기
         del_child = self.initial_data.get('del_child', None)
         if del_child:
@@ -494,11 +499,6 @@ class IssueSerializer(serializers.ModelSerializer):
             child.parent = None
             child.save()
 
-        watchers = validated_data.get('watchers', [])
-        if watchers:
-            for watcher in watchers:
-                if not instance.watchers.filter(id=watcher.pk).exists():
-                    instance.watchers.set(watcher)
         # time entry logic
         hours = self.initial_data.get('hours', None)
         activity = self.initial_data.get('activity', None)

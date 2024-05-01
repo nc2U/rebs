@@ -114,32 +114,31 @@ def issue_log_changes(sender, instance, created, **kwargs):
         # 생성 시 activity 만 기록
         ActivityLogEntry.objects.create(sort='1', project=instance.project, issue=instance, user=user)
         ##########################################
-        # 생성 사용자를 제외한, 담당자와 열람자들에게 메일 전달
+        # 생성 사용자를 제외한, 담당자에게 메일 전달
         ##########################################
-        subject = f'새 업무 [#{instance.pk}] - [{instance.subject}] 이(가) [{instance.assigned_to.username}]님에게 할당 되었습니다.' \
-            if instance.assigned_to else f'새 업무 [#{instance.pk}] - [{instance.subject}] 이(가) 생성 되었습니다.'
-        message = f'''<u>{user.username}님이 새 업무 #{instance.pk} {instance.subject}를 생성 하였습니다.</u>
-        
-업무 : #{instance.pk} {instance.subject}
-        
-담당 : {instance.assigned_to.username if instance.assigned_to else ""}
-        
-기한 : {instance.due_date if instance.due_date else ""}
-        
-설명 : 
-{instance.description}
-        
-링크 : {settings.DOMAIN_HOST}#/work/project/redmine/issue/{instance.pk}
-        '''
-        addresses = []
         if instance.assigned_to and instance.assigned_to != user:  # 생성자와 담당자가 다를 경우 담당자에게 메일 전달
-            addresses.append(instance.assigned_to.email)
-        if instance.watchers.all():  # 열람자들에게 메일 전달
-            for watcher in instance.watchers:
-                addresses.append(watcher.email)
-        if addresses:
+            subject = f'새 업무 [#{instance.pk}] - {instance.subject} 이(가) [{instance.assigned_to.username}]님에게 (요청)배정 되었습니다.' \
+                if instance.assigned_to else f'새 업무 [#{instance.pk}] - {instance.subject} 이(가) 생성 되었습니다.'
+            message = f'''<div style="font-size: 1.2em;">
+            <h4><u>&lt;{user.username}&gt;님이 새 업무 [#{instance.pk}] "{instance.subject}"를 
+            생성{"하여 &lt;" + instance.assigned_to.username + "&gt;님에게 (요청)배정" if instance.assigned_to else ""} 하였습니다.</u></h4>
+            <div style="padding-left: 20px">
+            <p><strong>업무</strong> : [#{instance.pk}] {instance.subject}</p>
+            <p><strong>유형</strong> : {instance.tracker.name}
+            <p><strong>상태</strong> : {instance.status.name}
+            <p><strong>담당</strong> : {instance.assigned_to.username if instance.assigned_to else ""}</p>
+            <p><strong>설명</strong> : <br/><div style="background: #FFFFDD; padding: 10px">{instance.description} </div></p>
+            <p><strong>처리기한</strong> : {instance.due_date if instance.due_date else ""}</p>
+            <p><strong>링크</strong> : {settings.DOMAIN_HOST}#/work/project/redmine/issue/{instance.pk}</p>
+            <p><strong>등록자</strong> : {user.username} &lt;{user.email}&gt;</p>
+            </div></div>'''
+            addresses = [instance.assigned_to.email]
             try:
-                send_mail(subject, message, settings.EMAIL_DEFAULT_SENDER, addresses, fail_silently=False)
+                send_mail(subject=subject,
+                          message=message,
+                          html_message=message,
+                          from_email=settings.EMAIL_DEFAULT_SENDER,
+                          recipient_list=addresses)
             except Exception:
                 pass
     else:
@@ -157,22 +156,35 @@ def issue_log_changes(sender, instance, created, **kwargs):
                 ################################################
                 # 업데이트 사용자를 제외한 생성자, 담당자, 열람자에게 메일 전달
                 ################################################
-                subject = f'업무 -#{instance.pk} {instance.subject}- 의 상태가 변경 되었습니다.'
-                message = f'''{user.username}님이 업무 -#{instance.pk} {instance.subject}- 상태를 변경 하였습니다.
-                
-                https://brdnc.co.kr/#/work/project/redmine/issue/{instance.pk}
-                '''
-                addresses = []
-                if instance.assigned_to and instance.assigned_to != user:  # 변경자가 담당자가 아니면 담당자에게 메일 전달
+                watchers = instance.watchers.all()
+                addresses = [watcher.email for watcher in watchers]
+                if user != instance.creator:
+                    addresses.append(instance.creator.email)
+                if user != instance.assigned_to:
                     addresses.append(instance.assigned_to.email)
-                if instance.creator != user:  # 변경자와 생성자가 다르면 생성자에게 메일 전달
-                    addresses.append(instance.creator)
-                if instance.watchers.all():  # 열람자들에게 메일 전달
-                    for watcher in instance.watchers:
-                        addresses.append(watcher.email)
                 if addresses:
+                    subject = f'업무 [#{instance.pk}] - {instance.subject}(이)가 {instance.status}(으)로 변경 되었습니다.'
+                    message = f'''<div style="font-size: 1.2em;">
+                    <h4><u>&lt;{user.username}&gt;님이 업무 [#{instance.pk}] "{instance.subject}"의 진행 상태를
+                    &lt;{instance._old_status}&gt;에서 &lt;{instance.status}&gt;(으)로 변경 하였습니다.</u></h4>
+                    <div style="padding-left: 20px">
+                    <p><strong>업무</strong> : [#{instance.pk}] {instance.subject}</p>
+                    <p><strong>유형</strong> : {instance.tracker.name}
+                    <p><strong>상태</strong> : {instance.status.name}
+                    <p><strong>담당</strong> : {instance.assigned_to.username if instance.assigned_to else ""}</p>
+                    <p><strong>추정시간</strong> : {instance.estimated_hours} 시간
+                    <p><strong>진척도</strong> : {instance.done_ratio}%
+                    <p><strong>설명</strong> : <br/><div style="background: #FFFFDD; padding: 10px">{instance.description} </div></p>
+                    <p><strong>처리기한</strong> : {instance.due_date if instance.due_date else ""}</p>
+                    <p><strong>링크</strong> : {settings.DOMAIN_HOST}#/work/project/redmine/issue/{instance.pk}</p>
+                    <p><strong>등록자</strong> : {user.username} &lt;{user.email}&gt;</p>
+                    <p><strong>공유자</strong> : {str([w.username for w in watchers])}</p></div></div>'''
                     try:
-                        send_mail(subject, message, settings.EMAIL_DEFAULT_SENDER, addresses, fail_silently=False)
+                        send_mail(subject=subject,
+                                  message=message,
+                                  html_message=message,
+                                  from_email=settings.EMAIL_DEFAULT_SENDER,
+                                  recipient_list=addresses)
                     except Exception:
                         pass
 
