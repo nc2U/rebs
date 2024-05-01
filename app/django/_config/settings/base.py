@@ -225,7 +225,7 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 # ACCOUNT_USERNAME_REQUIRED = False  # username 필드 사용 x
 
 # EMAIL SETTINGS
-DOMAIN_HOST = os.getenv('DOMAIN_HOST')  # ex: 'https://abc.com/'
+DOMAIN_HOST = os.getenv('DOMAIN_HOST', 'http://localhost/')  # ex: 'https://abc.com/'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.getenv('EMAIL_HOST')  # 'your-smtp-server.com'
 EMAIL_PORT = os.getenv('EMAIL_PORT', 587)
