@@ -2,6 +2,7 @@ apiVersion: v1
 data:
   DATABASE_NAME: "{{ .Release.Name }}"
   DATABASE_USER: "{{ .Release.Name }}"
+  DOMAIN_HOST: "{{ .Values.global.domainHost }}"
   EMAIL_HOST: "{{ .Values.global.emailHost }}"
   EMAIL_HOST_USER: "{{ .Values.global.emailHostUser }}"
   EMAIL_DEFAULT_SENDER: "{{ .Values.global.emailDefaultSender }}"

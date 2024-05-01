@@ -9,6 +9,7 @@ global:
   nfsPath: "nfs-path" # nfs volume path
   cicdServerHost: "cicd-server-host"
   cicdPath: "cicd-path" # cicd server path
+  domainHost: "https://dev.brdnc.co.kr/"
   emailHost: "smtp-server.com" # your-smtp-server.com
   emailHostUser: "email@example.com" # 'your-email@example.com
   emailHostPassword: "{{ randAlphaNum 5 }}" # your-email-password
@@ -37,12 +38,12 @@ nginx:
       nginx.ingress.kubernetes.io/proxy-body-size: "100M"
       cert-manager.io/cluster-issuer: letsencrypt-prod
     hosts:
-    - host: "host-path" # Host address
-      paths:
-      - path: /
-        pathType: ImplementationSpecific
+      - host: "host-path" # Host address
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
     tls:
-    - secretName: web-devbox-kr-cert
-      hosts:
-      - "host-path" # Host address
+      - secretName: web-devbox-kr-cert
+        hosts:
+          - "host-path" # Host address
 
