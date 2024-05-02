@@ -231,7 +231,7 @@ export interface Issue {
   fixed_version: number | null
   assigned_to: { pk: number; username: string } | null
   parent: number | null
-  watchers: number[]
+  watchers: { pk: number; username: string }[]
   is_private: boolean
   estimated_hours: number | null
   start_date: string | null
