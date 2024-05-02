@@ -4,6 +4,8 @@ export declare interface User {
   username: string
   is_active: boolean
   is_superuser: boolean
+  rebs_manager: boolean
+  work_manager: boolean
   date_joined: string
   staffauth: StaffAuth | null
   profile: null | {
