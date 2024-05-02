@@ -377,7 +377,7 @@ class Issue(models.Model):
     assigned_to = models.ForeignKey('accounts.User', on_delete=models.SET_NULL,
                                     null=True, blank=True, verbose_name='담당자', related_name='assignees')
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='상위 업무')
-    watchers = models.ManyToManyField('accounts.User', blank=True, verbose_name='업무 열람 공유자', related_name='watchers')
+    watchers = models.ManyToManyField('accounts.User', blank=True, verbose_name='업무 관람자', related_name='watchers')
     is_private = models.BooleanField('비공개', default=False)
     estimated_hours = models.DecimalField('추정 소요시간', max_digits=5, decimal_places=2, null=True, blank=True)
     start_date = models.DateField('시작 일자', null=True, blank=True)
@@ -598,7 +598,7 @@ class IssueLogEntry(models.Model):
 
 class Search(models.Model):
     member = models.ForeignKey(Member, on_delete=models.CASCADE, verbose_name='내 검색어')
-    offset = models.BigIntegerField('오프셋', default=False)  # 응답에서 이 결과 수를 건너뚭니다.(선택사항)
+    offset = models.BigIntegerField('오프셋', default=False)  # 응답에서 이 결과 수를 건너뜁니다.(선택사항)
     limit = models.PositiveIntegerField('응답결과 수', blank=True, null=True)  # 응답 결과 수 (선택사항)
     q = models.CharField('검색어', max_length=255, blank=True, default='', help_text='공백으로 구분된 여러 값을 지정할 수 있습니다.')
     scope = models.CharField('검색 범위 조건', max_length=1, choices=(('0', '모두'), ('1', '프로젝트 내'), ('2', '하위 프로젝트 포함')))

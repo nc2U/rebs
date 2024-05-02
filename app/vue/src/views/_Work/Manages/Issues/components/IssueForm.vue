@@ -508,7 +508,7 @@ onBeforeMount(() => {
 
             <CRow class="mb-3">
               <CFormLabel for="watcher" class="col-sm-2 col-form-label text-right">
-                업무 열람 공유자
+                업무 관람자
               </CFormLabel>
               <CCol sm="10" style="padding-top: 8px">
                 <span v-for="mem in memberList" :key="mem.pk" class="mr-3">
@@ -528,7 +528,7 @@ onBeforeMount(() => {
               <CCol class="form-text">
                 <v-icon icon="mdi-plus-circle" color="success" size="sm" class="mr-2" />
                 <router-link to="" @click="RefUserSearch.callModal()">
-                  추가할 업무 열람 공유자 검색
+                  추가할 업무 관람자 검색
                 </router-link>
               </CCol>
             </CRow>
@@ -647,7 +647,7 @@ onBeforeMount(() => {
   </CRow>
 
   <ConfirmModal ref="RefUserSearch">
-    <template #header>업무 열람 공유자 추가</template>
+    <template #header>업무 관람자 추가</template>
 
     <template #default>
       <Multiselect

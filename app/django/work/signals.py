@@ -89,7 +89,7 @@ def issue_log_changes(sender, instance, created, **kwargs):
     if hasattr(instance, '_old_watchers'):
         desc = f" *{instance._old_watchers}*에서 " if instance._old_watchers else ""
         act = "변경" if instance._old_watchers else "지정"
-        details += f"|- **업무 열람 공유자**가 {desc}*{instance.watchers}*(으)로 {act}되었습니다."
+        details += f"|- **업무 관람자**가 {desc}*{instance.watchers}*(으)로 {act}되었습니다."
     if hasattr(instance, '_old_is_private'):
         details += f"|- **비공개 설정**이 *{instance._old_is_private}*에서 *{instance.is_private}*(으)로 변경되었습니다."
     if hasattr(instance, '_old_estimated_hours'):
@@ -109,8 +109,8 @@ def issue_log_changes(sender, instance, created, **kwargs):
     if hasattr(instance, '_old_closed'):
         details += f"|- **해당 업무**가 *{instance.closed}*에 종료되었습니다."
 
-    user = instance.creator if created else instance.updater
     if created:
+        user = instance.creator
         # 생성 시 activity 만 기록
         ActivityLogEntry.objects.create(sort='1', project=instance.project, issue=instance, user=user)
         ##########################################
@@ -142,6 +142,7 @@ def issue_log_changes(sender, instance, created, **kwargs):
             except Exception:
                 pass
     else:
+        user = instance.updater
         # 변경 시
         if details:
             # 변경 내용 기록이 있으면 업무 로그 기록
@@ -157,13 +158,13 @@ def issue_log_changes(sender, instance, created, **kwargs):
                 # 업데이트 사용자를 제외한 생성자, 담당자, 열람자에게 메일 전달
                 ################################################
                 watchers = instance.watchers.all()
-                addresses = [watcher.email for watcher in watchers]
-                if user != instance.creator:
+                addresses = [watcher.email for watcher in watchers if watcher != user]
+                if user != instance.creator and instance.creator not in watchers:
                     addresses.append(instance.creator.email)
-                if user != instance.assigned_to:
+                if instance.assigned_to and user != instance.assigned_to:
                     addresses.append(instance.assigned_to.email)
                 if addresses:
-                    subject = f'업무 [#{instance.pk}] - {instance.subject}(이)가 {instance.status}(으)로 변경 되었습니다.'
+                    subject = f'업무 [#{instance.pk}] - {instance.subject}의 상태가 {instance.status}(으)로 변경 되었습니다.'
                     message = f'''<div style="font-size: 1.2em;">
                     <h4><u>&lt;{user.username}&gt;님이 업무 [#{instance.pk}] "{instance.subject}"의 진행 상태를
                     &lt;{instance._old_status}&gt;에서 &lt;{instance.status}&gt;(으)로 변경 하였습니다.</u></h4>
@@ -172,13 +173,13 @@ def issue_log_changes(sender, instance, created, **kwargs):
                     <p><strong>유형</strong> : {instance.tracker.name}
                     <p><strong>상태</strong> : {instance.status.name}
                     <p><strong>담당</strong> : {instance.assigned_to.username if instance.assigned_to else ""}</p>
-                    <p><strong>추정시간</strong> : {instance.estimated_hours} 시간
+                    <p><strong>추정시간</strong> : {instance.estimated_hours if instance.estimated_hours else '-'} 시간
                     <p><strong>진척도</strong> : {instance.done_ratio}%
                     <p><strong>설명</strong> : <br/><div style="background: #FFFFDD; padding: 10px">{instance.description} </div></p>
                     <p><strong>처리기한</strong> : {instance.due_date if instance.due_date else ""}</p>
                     <p><strong>링크</strong> : {settings.DOMAIN_HOST}#/work/project/redmine/issue/{instance.pk}</p>
                     <p><strong>등록자</strong> : {user.username} &lt;{user.email}&gt;</p>
-                    <p><strong>공유자</strong> : {str([w.username for w in watchers])}</p></div></div>'''
+                    <p><strong>업무 관람자</strong> : {str([w.username for w in watchers])}</p></div></div>'''
                     try:
                         send_mail(subject=subject,
                                   message=message,

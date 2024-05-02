@@ -408,6 +408,7 @@ class IssueSerializer(serializers.ModelSerializer):
     status = IssueStatusInIssueSerializer(read_only=True)
     priority = CodePriorityInIssueSerializer(read_only=True)
     assigned_to = SimpleUserSerializer(read_only=True)
+    watchers = SimpleUserSerializer(many=True, read_only=True)
     spent_time = serializers.SerializerMethodField(read_only=True)
     files = IssueFileInIssueSerializer(many=True, read_only=True)
     sub_issues = serializers.SerializerMethodField()
@@ -445,7 +446,6 @@ class IssueSerializer(serializers.ModelSerializer):
         assigned_to = User.objects.get(pk=assigned_to) if assigned_to else None
 
         # Pop 'watchers' from validated_data to avoid KeyError
-        watchers = validated_data.pop('watchers', [])
         issue = Issue.objects.create(project=project,
                                      tracker=tracker,
                                      status=status,
@@ -453,9 +453,12 @@ class IssueSerializer(serializers.ModelSerializer):
                                      assigned_to=assigned_to,
                                      **validated_data)
         # Set the watchers of the instance to the list of watchers
+        user = self.context['request'].user
+        issue.watchers.add(user.pk)
+        watchers = self.initial_data.get('watchers', [])
         if watchers:
             for watcher in watchers:
-                if not issue.watchers.filter(id=watcher.pk).exists():
+                if not issue.watchers.filter(id=watcher).exists():
                     issue.watchers.add(watcher)
         # File 처리
         new_files = self.initial_data.getlist('new_files', [])

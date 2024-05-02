@@ -36,7 +36,7 @@ const searchOptions = reactive([
       { value: 'category', label: '범주', disabled: true },
       { value: 'done_ratio', label: '진척도', disabled: true },
       { value: 'is_private', label: '비공개', disabled: true },
-      { value: 'watcher', label: '열람공유자', disabled: true },
+      { value: 'watcher', label: '업무관람자', disabled: true },
       { value: 'updater', label: '수정자', disabled: true },
       { value: 'last_updater', label: '최근수정자', disabled: true },
       { value: 'issue', label: '업무', disabled: true },

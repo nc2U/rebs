@@ -11,7 +11,7 @@ defineProps({ watchers: { type: Array, default: () => [] } })
   <!--  </CRow>-->
 
   <CRow v-if="$route.name === '(업무) - 보기'" class="mb-3">
-    <CCol><h6 class="asideTitle">열람 공유자</h6></CCol>
+    <CCol><h6 class="asideTitle">업무 관람자</h6></CCol>
   </CRow>
   <CRow class="mb-2">
     <CCol class="col-xxl-5">
