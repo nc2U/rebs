@@ -42,9 +42,6 @@ const headerTitle = computed(() =>
   routeName.value.includes('프로젝트') ? comName.value : issueProject.value?.name,
 )
 
-const accStore = useAccount()
-const workManager = computed(() => accStore.workManager)
-
 const navMenus = computed(() => (!issueProjects.value.length ? navMenu1 : navMenu2))
 
 const projectNavMenus = computed(() => {
@@ -61,7 +58,7 @@ const projectNavMenus = computed(() => {
   if (modules.value?.document) menus = [...new Set([...menus, ...[{ no: 9, menu: '(문서)' }]])]
   if (modules.value?.wiki) menus = [...new Set([...menus, ...[{ no: 10, menu: '(위키)' }]])]
   if (modules.value?.file) menus = [...new Set([...menus, ...[{ no: 11, menu: '(파일)' }]])]
-  if (workManager.value) menus = [...menus, ...[{ no: 12, menu: '(설정)' }]]
+  menus = [...menus, ...[{ no: 12, menu: '(설정)' }]]
 
   return menus.sort((a, b) => a.no - b.no).map(m => m.menu)
 })
