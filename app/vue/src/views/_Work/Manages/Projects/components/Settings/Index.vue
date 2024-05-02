@@ -17,26 +17,26 @@ const emit = defineEmits(['aside-visible'])
 
 const menu = ref('프로젝트')
 
-const settingMenus = computed(() => {
-  let menus = [
-    { no: 1, menu: '프로젝트' },
-    { no: 2, menu: '구성원' },
-    { no: 4, menu: '버전' },
-  ]
+const workManager = inject<ComputedRef<boolean>>('workManager')
 
-  if (modules.value?.issue)
-    menus = [
-      ...new Set([
-        ...menus,
-        ...[
-          { no: 3, menu: '업무추적' },
-          { no: 5, menu: '업무범주' },
-        ],
-      ]),
-    ]
-  if (modules.value?.time) menus = [...new Set([...menus, ...[{ no: 8, menu: '시간추적' }]])]
-  if (modules.value?.repository) menus = [...new Set([...menus, ...[{ no: 6, menu: '저장소' }]])]
-  if (modules.value?.forum) menus = [...new Set([...menus, ...[{ no: 7, menu: '게시판' }]])]
+const settingMenus = computed(() => {
+  let menus = [{ no: 4, menu: '버전' }]
+
+  if (!!workManager?.value) {
+    menus = [...new Set([...menus, ...[{ no: 1, menu: '프로젝트' }]])]
+    menus = [...new Set([...menus, ...[{ no: 2, menu: '구성원' }]])]
+  }
+
+  if (!!workManager?.value && modules.value?.issue)
+    menus = [...new Set([...menus, ...[{ no: 3, menu: '업무추적' }]])]
+  if (modules.value?.issue) menus = [...new Set([...menus, ...[{ no: 5, menu: '업무범주' }]])]
+
+  if (!!workManager?.value && modules.value?.time)
+    menus = [...new Set([...menus, ...[{ no: 8, menu: '시간추적' }]])]
+  if (!!workManager?.value && modules.value?.repository)
+    menus = [...new Set([...menus, ...[{ no: 6, menu: '저장소' }]])]
+  if (!!workManager?.value && modules.value?.forum)
+    menus = [...new Set([...menus, ...[{ no: 7, menu: '게시판' }]])]
 
   return menus.sort((a, b) => a.no - b.no).map(m => m.menu)
 })
@@ -61,11 +61,13 @@ onBeforeRouteUpdate(async to => {
 })
 
 const route = useRoute()
+const initMenu = computed(() => (!!workManager?.value ? '프로젝트' : '버전'))
+
 onBeforeMount(() => {
   workStore.fetchIssueProjectList({})
   if (route.params.projId) workStore.fetchIssueProject(route.params.projId as string)
   emit('aside-visible', false)
-  menu.value = Cookies.get('workSettingMenu') ?? '프로젝트'
+  menu.value = Cookies.get('workSettingMenu') ?? initMenu.value
 })
 </script>
 
