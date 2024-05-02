@@ -325,7 +325,7 @@ class IssueCountByTrackerSerializer(serializers.ModelSerializer):
 class IssueStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = IssueStatus
-        fields = ('pk', 'name', 'description', 'closed', 'order', 'user', 'created', 'updated')
+        fields = ('pk', 'name', 'description', 'closed', 'order')
 
 
 class WorkflowSerializer(serializers.ModelSerializer):

@@ -41,7 +41,7 @@ const form = ref({
   status: 1 as number | null,
   parent: null as number | null,
   priority: 2 as number | null,
-  start_date: dateFormat(new Date()) as string | null,
+  start_date: null as string | null,
   assigned_to: null as number | null,
   due_date: null as string | null,
   estimated_hours: null as number | string | null,
@@ -49,6 +49,10 @@ const form = ref({
   watchers: [] as number[],
   files: [] as IssueFile[],
 })
+
+const statuses = computed(() =>
+  props.issue ? props.statusList : props.statusList.filter(s => s.pk === 1),
+)
 
 const assignedToMe = () => (form.value.assigned_to = userInfo?.value.pk as number)
 
@@ -333,7 +337,7 @@ onBeforeMount(() => {
             <CCol sm="4">
               <CFormSelect v-model.number="form.status" id="status" required>
                 <option value="">---------</option>
-                <option v-for="status in statusList" :value="status.pk" :key="status.pk">
+                <option v-for="status in statuses" :value="status.pk" :key="status.pk">
                   {{ status.name }}
                 </option>
               </CFormSelect>
