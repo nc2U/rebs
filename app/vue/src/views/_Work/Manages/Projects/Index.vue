@@ -26,6 +26,7 @@ import Files from '@/views/_Work/Manages/Projects/components/Files/Index.vue'
 import Repository from '@/views/_Work/Manages/Projects/components/Repository/Index.vue'
 import Settings from '@/views/_Work/Manages/Projects/components/Settings/Index.vue'
 import AsideActivity from '@/views/_Work/Manages/Activity/components/aside/AsideActivity.vue'
+import AsideIssue from '@/views/_Work/Manages/Issues/components/aside/AsideIssue.vue'
 
 const cBody = ref()
 const aside = ref(true)
@@ -43,15 +44,6 @@ const headerTitle = computed(() =>
 
 const accStore = useAccount()
 const superAuth = computed(() => accStore.superAuth)
-
-const workStore = useWork()
-const issueProject = computed(() => workStore.issueProject)
-provide('iProject', issueProject)
-const issueProjects = computed(() => workStore.issueProjects)
-const allProjects = computed(() => workStore.AllIssueProjects)
-
-const version = computed(() => false)
-const modules = computed(() => issueProject.value?.module)
 
 const navMenus = computed(() => (!issueProjects.value.length ? navMenu1 : navMenu2))
 
@@ -79,6 +71,17 @@ const navMenu = computed(() =>
 )
 
 const sideNavCAll = () => cBody.value.toggle()
+
+const workStore = useWork()
+const issueProject = computed(() => workStore.issueProject)
+provide('iProject', issueProject)
+const issueProjects = computed(() => workStore.issueProjects)
+const allProjects = computed(() => workStore.AllIssueProjects)
+
+const modules = computed(() => issueProject.value?.module)
+const version = computed(() => false)
+
+const issue = computed(() => workStore.issue)
 
 const onSubmit = (payload: any) => {
   payload.company = company?.value.pk
@@ -227,6 +230,11 @@ onBeforeMount(async () => {
         :to-date="toDate"
         :has-subs="!!issueProject?.sub_projects?.length"
         @filter-activity="filterActivity"
+      />
+
+      <AsideIssue
+        v-if="routeName === '(업무)' || routeName === '(업무) - 보기'"
+        :watchers="issue?.watchers"
       />
     </template>
   </ContentBody>
