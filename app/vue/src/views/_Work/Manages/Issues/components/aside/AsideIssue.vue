@@ -5,7 +5,7 @@ defineProps({
   watchers: { type: Array as PropType<{ pk: number; username: string }[]>, default: () => [] },
 })
 
-const superAuth = inject('superAuth')
+const workManager = inject('workManager')
 
 const delWatcher = (pk: number) => alert(pk)
 </script>
@@ -18,7 +18,7 @@ const delWatcher = (pk: number) => alert(pk)
   <!--    <CCol class="col-xxl-5"></CCol>-->
   <!--  </CRow>-->
 
-  <template v-if="superAuth && $route.name === '(업무) - 보기'">
+  <template v-if="workManager && $route.name === '(업무) - 보기'">
     <CRow class="mb-1">
       <CCol>
         <h6 class="asideTitle">업무 관람자 ({{ watchers.length }})</h6>

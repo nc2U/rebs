@@ -159,8 +159,8 @@ export const useAccount = defineStore('account', () => {
 
   // getters
   const superAuth = computed(() => userInfo.value?.is_superuser)
-  const rebsManager = computed(() => userInfo.value?.rebs_manager)
-  const workManager = computed(() => userInfo.value?.work_manager)
+  const rebsManager = computed(() => userInfo.value?.rebs_manager || superAuth.value)
+  const workManager = computed(() => userInfo.value?.work_manager || superAuth.value)
   const staffAuth = computed(() => (userInfo.value?.staffauth ? userInfo.value.staffauth : null))
 
   const writeComDocs = computed(() => superAuth.value || staffAuth.value?.company_docs == '2')
