@@ -7,6 +7,7 @@ const props = defineProps({
   query: { type: Object, default: null },
   aside: { type: Boolean, default: true },
 })
+
 const visible = ref(false)
 
 const router = useRouter()
@@ -21,7 +22,7 @@ defineExpose({ toggle })
 
 <template>
   <CRow class="flex-grow-1">
-    <CCol :md="aside ? 9 : 12" class="text-body main p-4 px-lg-5">
+    <CCol class="text-body main p-4 px-lg-5">
       <slot> Under Construction!</slot>
     </CCol>
 
