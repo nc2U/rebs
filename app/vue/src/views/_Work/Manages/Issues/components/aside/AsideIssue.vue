@@ -1,9 +1,12 @@
 <script lang="ts" setup>
-import { inject, type PropType } from 'vue'
+import { ref, inject, type PropType } from 'vue'
+import WatcherAdd from './WatcherAdd.vue'
 
 defineProps({
   watchers: { type: Array as PropType<{ pk: number; username: string }[]>, default: () => [] },
 })
+
+const refWatcherAdd = ref()
 
 const workManager = inject('workManager')
 
@@ -24,7 +27,7 @@ const delWatcher = (pk: number) => alert(pk)
         <h6 class="asideTitle">업무 관람자 ({{ watchers.length }})</h6>
       </CCol>
       <CCol class="text-right">
-        <router-link to="">추가</router-link>
+        <router-link to="" @click="refWatcherAdd.callModal()">추가</router-link>
       </CCol>
     </CRow>
     <CRow v-for="watcher in watchers" :key="watcher.pk">
@@ -38,6 +41,8 @@ const delWatcher = (pk: number) => alert(pk)
       </CCol>
     </CRow>
   </template>
+
+  <WatcherAdd ref="refWatcherAdd" />
 </template>
 
 <style lang="scss" scoped>

@@ -3,7 +3,6 @@ import { ref, onBeforeMount, type PropType, computed, watch, inject, type Comput
 import type { CodeValue, Issue, IssueFile, IssueProject, IssueStatus } from '@/store/types/work'
 import type { User } from '@/store/types/accounts'
 import { isValidate } from '@/utils/helper'
-import { dateFormat } from '@/utils/baseMixins'
 import { useRoute } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import { useAccount } from '@/store/pinia/account'
@@ -11,7 +10,7 @@ import { colorLight } from '@/utils/cssMixins'
 import Multiselect from '@vueform/multiselect'
 import MdEditor from '@/components/MdEditor/Index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import WatcherAdd from '@/views/_Work/Manages/Issues/components/aside/WatcherAdd.vue'
 
 const props = defineProps({
   issueProject: { type: Object as PropType<IssueProject>, default: null },
@@ -25,11 +24,10 @@ const props = defineProps({
 
 const emit = defineEmits(['on-submit', 'close-form'])
 
-const RefUserSearch = ref()
+const refWatcherAdd = ref()
 
 const validated = ref(false)
 const editDetails = ref(true)
-const addUser = ref()
 
 const form = ref({
   pk: null as number | null,
@@ -223,9 +221,6 @@ const timeToNum = (n: number | string | null, estimated: boolean) => {
   }
 }
 
-const accStore = useAccount()
-const getUsers = computed(() => accStore.getUsers)
-
 onBeforeMount(() => {
   if (props.issue) {
     editDetails.value = false
@@ -250,7 +245,6 @@ onBeforeMount(() => {
   if (route.params.projId) form.value.project = route.params.projId as string
   if (route.query.tracker) form.value.tracker = Number(route.query.tracker)
   if (route.query.parent) form.value.parent = Number(route.query.parent)
-  accStore.fetchUsersList()
 })
 </script>
 
@@ -527,7 +521,7 @@ onBeforeMount(() => {
               <CCol class="col-sm-2"></CCol>
               <CCol class="form-text">
                 <v-icon icon="mdi-plus-circle" color="success" size="sm" class="mr-2" />
-                <router-link to="" @click="RefUserSearch.callModal()">
+                <router-link to="" @click="refWatcherAdd.callModal()">
                   추가할 업무 관람자 검색
                 </router-link>
               </CCol>
@@ -646,23 +640,7 @@ onBeforeMount(() => {
     </CForm>
   </CRow>
 
-  <ConfirmModal ref="RefUserSearch">
-    <template #header>업무 관람자 추가</template>
-
-    <template #default>
-      <Multiselect
-        v-model="addUser"
-        :options="getUsers"
-        searchable
-        placeholder="사용자 찾기"
-        class="mb-5"
-      />
-    </template>
-
-    <template #footer>
-      <CButton color="primary">추가</CButton>
-    </template>
-  </ConfirmModal>
+  <WatcherAdd ref="refWatcherAdd" />
 </template>
 
 <style lang="scss" scoped>
