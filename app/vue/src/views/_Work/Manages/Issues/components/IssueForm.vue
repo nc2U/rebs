@@ -5,7 +5,6 @@ import type { User } from '@/store/types/accounts'
 import { isValidate } from '@/utils/helper'
 import { useRoute } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
-import { useAccount } from '@/store/pinia/account'
 import { colorLight } from '@/utils/cssMixins'
 import Multiselect from '@vueform/multiselect'
 import MdEditor from '@/components/MdEditor/Index.vue'
@@ -121,7 +120,7 @@ watch(props, nVal => {
 })
 
 const memberList = computed(() =>
-  props.issueProject ? props.issueProject.all_members : workStore.memberList,
+  (props.issueProject ? props.issueProject.all_members : workStore.memberList)?.map(m => m.user),
 )
 
 const trackerList = computed(() =>
@@ -384,8 +383,8 @@ onBeforeMount(() => {
               <CFormSelect v-model.number="form.assigned_to" id="assigned_to">
                 <option value="">---------</option>
                 <option :value="userInfo?.pk">&lt;&lt; 나 &gt;&gt;</option>
-                <option v-for="mem in memberList" :value="mem.user.pk" :key="mem.pk">
-                  {{ mem.user.username }}
+                <option v-for="user in memberList" :value="user.pk" :key="user.pk">
+                  {{ user.username }}
                 </option>
               </CFormSelect>
             </div>
@@ -505,16 +504,16 @@ onBeforeMount(() => {
                 업무 관람자
               </CFormLabel>
               <CCol sm="10" style="padding-top: 8px">
-                <span v-for="mem in memberList" :key="mem.pk" class="mr-3">
+                <span v-for="user in memberList" :key="user.pk" class="mr-3">
                   <input
                     v-model="form.watchers"
-                    :id="`user-${mem.user.pk}`"
-                    :value="mem.user.pk"
+                    :id="`user-${user.pk}`"
+                    :value="user.pk"
                     type="checkbox"
                     class="form-check-input"
                   />
-                  <label :for="`user-${mem.user.pk}`" class="form-label form-check-label ml-2">
-                    {{ mem.user.username }}
+                  <label :for="`user-${user.pk}`" class="form-label form-check-label ml-2">
+                    {{ user.username }}
                   </label>
                 </span>
               </CCol>
@@ -640,7 +639,7 @@ onBeforeMount(() => {
     </CForm>
   </CRow>
 
-  <WatcherAdd ref="refWatcherAdd" />
+  <WatcherAdd ref="refWatcherAdd" :watchers="issue?.watchers" />
 </template>
 
 <style lang="scss" scoped>

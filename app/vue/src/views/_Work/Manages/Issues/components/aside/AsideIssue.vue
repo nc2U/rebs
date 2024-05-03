@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, inject, type PropType } from 'vue'
+import { inject, type PropType, ref } from 'vue'
 import WatcherAdd from './WatcherAdd.vue'
 
 defineProps({
@@ -42,7 +42,7 @@ const delWatcher = (pk: number) => alert(pk)
     </CRow>
   </template>
 
-  <WatcherAdd ref="refWatcherAdd" />
+  <WatcherAdd ref="refWatcherAdd" :watchers="watchers" />
 </template>
 
 <style lang="scss" scoped>
