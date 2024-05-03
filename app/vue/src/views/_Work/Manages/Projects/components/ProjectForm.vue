@@ -11,6 +11,7 @@ import {
   nextTick,
 } from 'vue'
 import { useRoute } from 'vue-router'
+import { colorLight } from '@/utils/cssMixins'
 import type { IssueProject } from '@/store/types/work'
 import MdEditor from '@/components/MdEditor/Index.vue'
 
@@ -142,7 +143,7 @@ onBeforeMount(() => {
   <slot></slot>
 
   <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
-    <CCard class="mb-3">
+    <CCard :color="colorLight" class="mb-3">
       <CCardBody>
         <CRow class="mb-3">
           <CFormLabel class="required col-form-label text-right col-2">이름</CFormLabel>
