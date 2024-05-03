@@ -3,7 +3,6 @@ import { ref, computed, onBeforeMount, provide, inject, type ComputedRef, watch 
 import { navMenu1, navMenu2 } from '@/views/_Work/_menu/headermixin1'
 import { dateFormat } from '@/utils/baseMixins'
 import { useWork } from '@/store/pinia/work'
-import { useAccount } from '@/store/pinia/account'
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import type { Company } from '@/store/types/settings'
 import type { ActLogEntryFilter } from '@/store/types/work'

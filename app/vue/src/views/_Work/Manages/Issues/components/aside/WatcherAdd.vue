@@ -42,7 +42,11 @@ onBeforeMount(() => accStore.fetchUsersList())
         placeholder="사용자 찾기"
         class="mb-5"
       />
-      
+
+      {{ getUsers }}
+
+      <hr />
+
       {{ memberList }}
     </template>
 
