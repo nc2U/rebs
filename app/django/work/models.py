@@ -433,8 +433,7 @@ def get_issue_file_path(instance, filename):
 
 
 class IssueFile(models.Model):
-    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, default=None, verbose_name='업무',
-                              related_name='issue_files')
+    issue = models.ForeignKey(Issue, on_delete=models.CASCADE, default=None, verbose_name='업무', related_name='files')
     file = models.FileField(upload_to=get_issue_file_path, verbose_name='파일')
     file_name = models.CharField('파일명', max_length=100, blank=True)
     file_type = models.CharField('타입', max_length=100, blank=True)
@@ -517,7 +516,7 @@ def get_news_file_path(instance, filename):
 
 
 class NewsFile(models.Model):
-    news = models.ForeignKey(News, on_delete=models.CASCADE, default=None, verbose_name='공지', related_name='news_files')
+    news = models.ForeignKey(News, on_delete=models.CASCADE, default=None, verbose_name='공지', related_name='files')
     file = models.FileField(upload_to=get_news_file_path, verbose_name='파일')
     file_name = models.CharField('파일명', max_length=100, blank=True)
     file_type = models.CharField('타입', max_length=100, blank=True)
