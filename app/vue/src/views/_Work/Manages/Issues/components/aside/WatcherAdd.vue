@@ -59,7 +59,7 @@ defineExpose({ callModal })
 
 const watcherAddSubmit = () => {
   const users = addMembers.value.filter(m => addUsers.value.includes(m.pk))
-  emit('watcher-add-submit', [...users])
+  emit('watcher-add-submit', users)
   refConfirmModal.value.close()
 }
 

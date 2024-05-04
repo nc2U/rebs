@@ -455,10 +455,10 @@ class IssueSerializer(serializers.ModelSerializer):
         # Set the watchers of the instance to the list of watchers
         user = self.context['request'].user
         issue.watchers.add(user.pk)
-        watchers = self.initial_data.get('watchers', [])
+        watchers = self.initial_data.getlist('watchers', [])
         if watchers:
             for watcher in watchers:
-                if not issue.watchers.filter(id=watcher).exists():
+                if not issue.watchers.all().filter(id=watcher).exists():
                     issue.watchers.add(watcher)
         # File 처리
         new_files = self.initial_data.getlist('new_files', [])
@@ -489,10 +489,10 @@ class IssueSerializer(serializers.ModelSerializer):
         instance.assigned_to = User.objects.get(pk=assigned_to) if assigned_to else None
 
         # 공유자 업데이트
-        watchers = validated_data.pop('watchers', [])
+        watchers = self.initial_data.getlist('watchers', [])
         if watchers:
             for watcher in watchers:
-                if not instance.watchers.filter(id=watcher.pk).exists():
+                if not instance.watchers.all().filter(id=watcher.pk).exists():
                     instance.watchers.set(watcher)
 
         # sub_issue 관계 지우기
