@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { computed, type ComputedRef, inject, onBeforeMount, type PropType, ref } from 'vue'
-import { useAccount } from '@/store/pinia/account'
+import { computed, type ComputedRef, inject, onBeforeMount, type PropType, ref, watch } from 'vue'
 import { useWork } from '@/store/pinia/work'
+import { useAccount } from '@/store/pinia/account'
 import type { IssueProject } from '@/store/types/work'
 import Multiselect from '@vueform/multiselect'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -12,6 +12,9 @@ const props = defineProps({
 
 const addUser = ref()
 const refConfirmModal = ref()
+
+const addUsers = ref<number[]>([])
+const addMembers = ref<{ pk: number; username: string }[]>([])
 
 const workStore = useWork()
 const iProject = inject<ComputedRef<IssueProject>>('iProject')
@@ -29,10 +32,18 @@ const memberList = computed(() =>
   members.value?.map(m => m.user).filter(m => !props.watchers.map(m => m.pk).includes(m.pk)),
 ) // 즉시 추가 사용자 목록에서 members.value 목록 제외
 
+watch(
+  () => memberList.value,
+  nVal => (addMembers.value = nVal ?? []),
+)
+
 const callModal = () => refConfirmModal.value.callModal()
 defineExpose({ callModal })
 
-onBeforeMount(() => accStore.fetchUsersList())
+onBeforeMount(() => {
+  accStore.fetchUsersList()
+  addMembers.value = memberList.value ?? []
+})
 </script>
 
 <template>
@@ -48,7 +59,16 @@ onBeforeMount(() => accStore.fetchUsersList())
         class="mb-5"
       />
 
-      {{ memberList }}
+      {{ addUsers }}
+
+      <CFormCheck
+        v-model="addUsers"
+        v-for="mem in addMembers"
+        :value="mem.pk"
+        :id="`member-${mem.pk}`"
+        :label="mem.username"
+        :key="mem.pk"
+      />
     </template>
 
     <template #footer>
