@@ -13,16 +13,21 @@ const props = defineProps({
 const addUser = ref()
 const refConfirmModal = ref()
 
-const accStore = useAccount()
-const getUsers = computed(() => accStore.getUsers)
-
 const workStore = useWork()
 const iProject = inject<ComputedRef<IssueProject>>('iProject')
 
-const memberList = computed(() => {
-  const members = iProject?.value ? iProject?.value?.all_members : workStore?.memberList
-  return members?.map(m => m.user).filter(m => !props.watchers.map(m => m.pk).includes(m.pk))
-})
+const members = computed(() =>
+  iProject?.value ? iProject?.value?.all_members : workStore?.memberList,
+)
+
+const accStore = useAccount()
+const getUsers = computed(() =>
+  accStore.getUsers.filter(u => !members.value?.map(m => m.pk).includes(u.value)),
+) // 프로젝트 멤버외 추가 사용자 목록에서 members.value 목록 제외
+
+const memberList = computed(() =>
+  members.value?.map(m => m.user).filter(m => !props.watchers.map(m => m.pk).includes(m.pk)),
+) // 즉시 추가 사용자 목록에서 members.value 목록 제외
 
 const callModal = () => refConfirmModal.value.callModal()
 defineExpose({ callModal })
@@ -42,10 +47,6 @@ onBeforeMount(() => accStore.fetchUsersList())
         placeholder="사용자 찾기"
         class="mb-5"
       />
-
-      {{ getUsers }}
-
-      <hr />
 
       {{ memberList }}
     </template>
