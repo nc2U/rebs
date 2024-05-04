@@ -10,6 +10,8 @@ const refWatcherAdd = ref()
 
 const workManager = inject('workManager')
 
+const watcherAddSubmit = (payload: number[]) => console.log(payload)
+
 const delWatcher = (pk: number) => alert(pk)
 </script>
 
@@ -42,7 +44,7 @@ const delWatcher = (pk: number) => alert(pk)
     </CRow>
   </template>
 
-  <WatcherAdd ref="refWatcherAdd" :watchers="watchers" />
+  <WatcherAdd ref="refWatcherAdd" :watchers="watchers" @watcher-add-submit="watcherAddSubmit" />
 </template>
 
 <style lang="scss" scoped>

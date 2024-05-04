@@ -10,6 +10,8 @@ const props = defineProps({
   watchers: { type: Array as PropType<{ pk: number; username: string }[]>, default: () => [] },
 })
 
+const emit = defineEmits(['watcher-add-submit'])
+
 const addUser = ref()
 const refConfirmModal = ref()
 
@@ -55,6 +57,11 @@ watch(
 const callModal = () => refConfirmModal.value.callModal()
 defineExpose({ callModal })
 
+const watcherAddSubmit = () => {
+  emit('watcher-add-submit', [...addUsers.value])
+  refConfirmModal.value.close()
+}
+
 onBeforeMount(() => {
   accStore.fetchUsersList()
   addMembers.value = memberList.value ?? []
@@ -90,7 +97,7 @@ onBeforeMount(() => {
     </template>
 
     <template #footer>
-      <CButton color="primary">추가</CButton>
+      <CButton color="primary" @click="watcherAddSubmit">추가</CButton>
     </template>
   </ConfirmModal>
 </template>
