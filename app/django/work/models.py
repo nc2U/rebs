@@ -1,6 +1,7 @@
 import os
 import magic
 
+from datetime import datetime
 from django.db import models
 from django.conf import settings
 from django.dispatch import receiver
@@ -425,10 +426,16 @@ class IssueRelation(models.Model):
         return f'{self.issue.subject}-{self.relation_type}-{self.issue_to.subject}'
 
 
+def get_issue_file_path(instance, filename):
+    today = datetime.today()
+    date_path = today.strftime('%Y/%m/%d')
+    return os.path.join('work', f'{instance.issue.project.slug}/issue/{date_path}/', filename)
+
+
 class IssueFile(models.Model):
     issue = models.ForeignKey(Issue, on_delete=models.CASCADE, default=None, verbose_name='업무',
                               related_name='issue_files')
-    file = models.FileField(upload_to='work/issue/%Y/%m/%d/', verbose_name='파일')
+    file = models.FileField(upload_to=get_issue_file_path, verbose_name='파일')
     file_name = models.CharField('파일명', max_length=100, blank=True)
     file_type = models.CharField('타입', max_length=100, blank=True)
     file_size = models.PositiveBigIntegerField('사이즈', blank=True, null=True)
@@ -503,9 +510,15 @@ class News(models.Model):
         verbose_name_plural = '11. 공지'
 
 
+def get_news_file_path(instance, filename):
+    today = datetime.today()
+    date_path = today.strftime('%Y/%m/%d')
+    return os.path.join('work', f'{instance.issue.project.slug}/news/{date_path}/', filename)
+
+
 class NewsFile(models.Model):
     news = models.ForeignKey(News, on_delete=models.CASCADE, default=None, verbose_name='공지', related_name='news_files')
-    file = models.FileField(upload_to='work/news/%Y/%m/%d/', verbose_name='파일')
+    file = models.FileField(upload_to=get_news_file_path, verbose_name='파일')
     file_name = models.CharField('파일명', max_length=100, blank=True)
     file_type = models.CharField('타입', max_length=100, blank=True)
     file_size = models.PositiveBigIntegerField('사이즈', blank=True, null=True)
