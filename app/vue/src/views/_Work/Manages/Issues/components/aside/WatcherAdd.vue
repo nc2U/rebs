@@ -16,21 +16,36 @@ const refConfirmModal = ref()
 const addUsers = ref<number[]>([])
 const addMembers = ref<{ pk: number; username: string }[]>([])
 
+const userAdding = () => {
+  const user = getUsers.value
+    .filter(u => u.value === addUser.value)
+    .map(u => ({
+      pk: u.value,
+      username: u.label,
+    }))[0]
+  addMembers.value.push(user)
+  addUser.value = null
+}
+
 const workStore = useWork()
 const iProject = inject<ComputedRef<IssueProject>>('iProject')
 
 const members = computed(() =>
-  iProject?.value ? iProject?.value?.all_members : workStore?.memberList,
-)
+  (iProject?.value ? iProject?.value?.all_members : workStore?.memberList)?.map(m => m.user),
+) // 기본 멤버리스트
 
 const accStore = useAccount()
 const getUsers = computed(() =>
-  accStore.getUsers.filter(u => !members.value?.map(m => m.pk).includes(u.value)),
-) // 프로젝트 멤버외 추가 사용자 목록에서 members.value 목록 제외
+  accStore.getUsers.filter(
+    u =>
+      !members.value?.map(m => m.pk).includes(u.value) &&
+      !addMembers.value.map(m => m.pk).includes(u.value),
+  ),
+) // 전체 유저에서 기본 멤버리스트 제외 목록
 
 const memberList = computed(() =>
-  members.value?.map(m => m.user).filter(m => !props.watchers.map(m => m.pk).includes(m.pk)),
-) // 즉시 추가 사용자 목록에서 members.value 목록 제외
+  members.value?.filter(m => !props.watchers.map(m => m.pk).includes(m.pk)),
+) // 기본 멤버리스트에서 관람자 리스트 제외 목록
 
 watch(
   () => memberList.value,
@@ -51,24 +66,27 @@ onBeforeMount(() => {
     <template #header>업무 관람자 추가</template>
 
     <template #default>
-      <Multiselect
-        v-model="addUser"
-        :options="getUsers"
-        searchable
-        placeholder="사용자 찾기"
-        class="mb-5"
-      />
+      <Multiselect v-model="addUser" :options="getUsers" searchable placeholder="사용자 찾기" />
 
-      {{ addUsers }}
+      <CRow v-if="addUser">
+        <CCol class="text-right pt-3 mr-2">
+          <CButton color="warning" size="sm" @click="userAdding">목록추가</CButton>
+        </CCol>
+      </CRow>
 
-      <CFormCheck
-        v-model="addUsers"
-        v-for="mem in addMembers"
-        :value="mem.pk"
-        :id="`member-${mem.pk}`"
-        :label="mem.username"
-        :key="mem.pk"
-      />
+      <CRow class="mt-3">
+        <CCol>
+          <CFormCheck
+            v-model="addUsers"
+            v-for="mem in addMembers"
+            :value="mem.pk"
+            :id="`member-${mem.pk}`"
+            :label="mem.username"
+            :key="mem.pk"
+            inline
+          />
+        </CCol>
+      </CRow>
     </template>
 
     <template #footer>
