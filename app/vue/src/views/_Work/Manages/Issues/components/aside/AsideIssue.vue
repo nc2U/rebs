@@ -10,7 +10,7 @@ const refWatcherAdd = ref()
 
 const workManager = inject('workManager')
 
-const watcherAddSubmit = (payload: number[]) => console.log(payload)
+const watcherAddSubmit = (payload: { pk: number; username: string }[]) => console.log(payload)
 
 const delWatcher = (pk: number) => alert(pk)
 </script>

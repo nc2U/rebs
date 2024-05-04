@@ -119,13 +119,28 @@ watch(props, nVal => {
   if (nVal.issueProject) form.value.project = nVal?.issueProject.slug
 })
 
+const watcherList = ref<{ pk: number; username: string }[]>([])
+
 const memberList = computed(() =>
   (props.issueProject ? props.issueProject.all_members : workStore.memberList)?.map(m => m.user),
+)
+
+watch(
+  () => memberList.value,
+  nVal => (watcherList.value = nVal ?? []),
 )
 
 const trackerList = computed(() =>
   props.issueProject ? props.issueProject.trackers : workStore.trackerList,
 )
+
+const watcherAddSubmit = (payload: { pk: number; username: string }[]) => {
+  form.value.watchers = [...new Set([...form.value.watchers, ...payload.map(p => p.pk)])]
+  payload.forEach(p => {
+    if (!watcherList.value.map(w => w.pk).includes(p.pk))
+      watcherList.value.push({ pk: p.pk, username: p.username })
+  })
+}
 
 const onSubmit = (event: Event) => {
   if (isValidate(event)) {
@@ -221,6 +236,7 @@ const timeToNum = (n: number | string | null, estimated: boolean) => {
 }
 
 onBeforeMount(() => {
+  watcherList.value = memberList.value ?? []
   if (props.issue) {
     editDetails.value = false
 
@@ -504,7 +520,7 @@ onBeforeMount(() => {
                 업무 관람자
               </CFormLabel>
               <CCol sm="10" style="padding-top: 8px">
-                <span v-for="user in memberList" :key="user.pk" class="mr-3">
+                <span v-for="user in watcherList" :key="user.pk" class="mr-3">
                   <input
                     v-model="form.watchers"
                     :id="`user-${user.pk}`"
@@ -639,7 +655,11 @@ onBeforeMount(() => {
     </CForm>
   </CRow>
 
-  <WatcherAdd ref="refWatcherAdd" :watchers="issue?.watchers" />
+  <WatcherAdd
+    ref="refWatcherAdd"
+    :watchers="issue?.watchers"
+    @watcher-add-submit="watcherAddSubmit"
+  />
 </template>
 
 <style lang="scss" scoped>
