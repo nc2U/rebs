@@ -493,6 +493,10 @@ class IssueSerializer(serializers.ModelSerializer):
             for watcher in watchers:
                 instance.watchers.add(watcher)
 
+        del_watcher = self.initial_data.get('del_watcher', None)
+        if del_watcher:
+            instance.watchers.remove(del_watcher)
+
         # sub_issue 관계 지우기
         del_child = self.initial_data.get('del_child', None)
         if del_child:
@@ -515,15 +519,8 @@ class IssueSerializer(serializers.ModelSerializer):
             IssueComment.objects.create(issue=instance, content=comment_content, user=user)
 
         # File 처리
-        new_files = []
-        descriptions = []
-        old_files = []
-        try:
-            new_files = self.initial_data.getlist('new_files', [])
-            descriptions = self.initial_data.getlist('descriptions', [])
-            old_files = self.initial_data.getlist('files', [])
-        except AttributeError:
-            pass
+        new_files = self.initial_data.getlist('new_files', [])
+        descriptions = self.initial_data.getlist('descriptions', [])
 
         if new_files:
             for i, file in enumerate(new_files):
@@ -531,6 +528,7 @@ class IssueSerializer(serializers.ModelSerializer):
                                        description=descriptions[i], user=user)
                 issue_file.save()
 
+        old_files = self.initial_data.getlist('files', [])
         if old_files:
             for json_file in old_files:
                 file = json.loads(json_file)
@@ -538,6 +536,10 @@ class IssueSerializer(serializers.ModelSerializer):
 
                 if file.get('del'):
                     file_object.delete()
+
+        del_file = self.initial_data.get('del_file', None)
+        if del_file:
+            instance.files.remove(del_file)
 
         return super().update(instance, validated_data)
 

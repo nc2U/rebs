@@ -20,7 +20,11 @@ const watcherAddSubmit = (payload: { pk: number; username: string }[]) => {
   workStore.patchIssue(props.issuePk, form)
 }
 
-const delWatcher = (pk: number) => alert(pk)
+const delWatcher = (pk: number) => {
+  const form = new FormData()
+  form.append('del_watcher', JSON.stringify(pk))
+  workStore.patchIssue(props.issuePk, form)
+}
 </script>
 
 <template>
@@ -47,6 +51,7 @@ const delWatcher = (pk: number) => alert(pk)
         </router-link>
         <span @click="delWatcher(watcher.pk)">
           <v-icon icon="mdi-trash-can-outline" size="sm" color="grey" class="ml-2 pointer" />
+          <v-tooltip activator="parent" location="right">삭제</v-tooltip>
         </span>
       </CCol>
     </CRow>

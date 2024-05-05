@@ -41,6 +41,7 @@ const getUsers = computed(() =>
   accStore.getUsers.filter(
     u =>
       !members.value?.map(m => m.pk).includes(u.value) &&
+      !props.watchers.map(w => w.pk).includes(u.value) &&
       !addMembers.value.map(m => m.pk).includes(u.value),
   ),
 ) // 전체 유저에서 기본 멤버리스트 제외 목록
