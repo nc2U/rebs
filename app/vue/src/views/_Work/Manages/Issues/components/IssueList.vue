@@ -155,8 +155,25 @@ const pageSelect = (page: number) => emit('page-select', page)
             </router-link>
           </CTableDataCell>
           <CTableDataCell>{{ issue.tracker.name }}</CTableDataCell>
-          <CTableDataCell>{{ issue.status.name }}</CTableDataCell>
-          <CTableDataCell>{{ issue.priority.name }}</CTableDataCell>
+          <CTableDataCell
+            :class="{
+              'text-danger': issue.status.pk === 1,
+              'text-success': issue.status.pk === 3,
+              'text-warning': issue.status.pk === 4,
+            }"
+          >
+            {{ issue.status.name }}
+          </CTableDataCell>
+          <CTableDataCell
+            :class="{
+              'text-grey': issue.priority.pk === 1,
+              'text-warning': issue.priority.pk === 3,
+              'text-danger': [4, 5].includes(issue.priority.pk),
+              bold: issue.priority.pk === 5,
+            }"
+          >
+            {{ issue.priority.name }}
+          </CTableDataCell>
           <CTableDataCell class="text-left">
             <router-link
               :to="{
