@@ -384,7 +384,7 @@ onBeforeMount(() => {
             </CCol>
 
             <CFormLabel for="start_date" class="col-sm-2 col-form-label text-right">
-              시작일
+              시작일자
             </CFormLabel>
             <CCol sm="4">
               <DatePicker v-model="form.start_date" id="start_date" />
@@ -419,7 +419,7 @@ onBeforeMount(() => {
               for="due_date"
               class="col-sm-2 col-form-label text-right"
             >
-              완료일
+              완료기한
             </CFormLabel>
             <CCol v-if="!!issue && !issue.sub_issues.length" sm="4">
               <DatePicker v-model="form.due_date" id="due_date" />
