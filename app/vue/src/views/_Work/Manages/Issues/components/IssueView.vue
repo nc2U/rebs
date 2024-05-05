@@ -413,7 +413,11 @@ onBeforeMount(async () => {
                 </CCol>
                 <CCol class="col-7">
                   <CInputGroup>
-                    <CFormInput v-model="editDesc[i]" placeholder="부가적인 설명" />
+                    <CFormInput
+                      v-model="editDesc[i]"
+                      placeholder="부가적인 설명"
+                      @keydown.enter="editFileSubmit(file.pk, editDesc[i])"
+                    />
                     <CInputGroupText
                       v-if="file.description !== editDesc[i]"
                       :id="`file-desc-${file.pk}`"
