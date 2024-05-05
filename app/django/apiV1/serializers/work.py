@@ -539,7 +539,8 @@ class IssueSerializer(serializers.ModelSerializer):
 
         del_file = self.initial_data.get('del_file', None)
         if del_file:
-            instance.files.remove(del_file)
+            file = IssueFile.objects.get(pk=del_file)
+            file.delete()
 
         return super().update(instance, validated_data)
 

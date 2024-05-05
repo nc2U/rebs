@@ -21,6 +21,7 @@ import SubSummary from './subIssues/Summary.vue'
 import Relations from './relations/Index.vue'
 import RelSummary from './relations/Summary.vue'
 import AddRelationForm from './relations/AddRelationForm.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const props = defineProps({
   issueProject: { type: Object as PropType<IssueProject>, default: null },
@@ -38,6 +39,7 @@ const emit = defineEmits(['on-submit'])
 
 const issueFormRef = ref()
 const editForm = ref(false)
+const RefDelFile = ref()
 
 const isClosed = computed(() => props.issue?.closed)
 
@@ -94,6 +96,20 @@ const callComment = () => {
     scrollToId('edit-form')
     issueFormRef.value.callComment()
   }, 100)
+}
+
+// file 삭제 관련 코드
+const delFile = ref<number | null>(null)
+const delFileConfirm = (pk: number) => {
+  delFile.value = pk
+  RefDelFile.value.callModal()
+}
+const delFileSubmit = () => {
+  const form = new FormData()
+  form.append('del_file', JSON.stringify(delFile.value))
+  workStore.patchIssue(props.issue.pk, form)
+  delFile.value = null
+  RefDelFile.value.close()
 }
 
 // 하위 업무 관련 코드
@@ -341,7 +357,13 @@ onBeforeMount(async () => {
                 <span class="file-desc2 mr-2">{{ timeFormat(file.created) }}</span>
                 <span>
                   <router-link to="">
-                    <v-icon icon="mdi-trash-can-outline" size="16" color="secondary" class="mr-2" />
+                    <v-icon
+                      icon="mdi-trash-can-outline"
+                      size="16"
+                      color="secondary"
+                      class="mr-2"
+                      @click="delFileConfirm(file.pk)"
+                    />
                     <v-tooltip activator="parent" location="top">삭제</v-tooltip>
                   </router-link>
                 </span>
@@ -456,6 +478,13 @@ onBeforeMount(async () => {
       @close-form="() => (editForm = false)"
     />
   </div>
+
+  <ConfirmModal ref="RefDelFile">
+    <template #default>이 파일 삭제를 계속 진행하시겠습니까?</template>
+    <template #footer>
+      <CButton color="warning" @click="delFileSubmit">삭제</CButton>
+    </template>
+  </ConfirmModal>
 </template>
 
 <style lang="scss" scoped>
