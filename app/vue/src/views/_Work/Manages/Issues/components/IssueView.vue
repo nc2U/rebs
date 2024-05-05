@@ -9,7 +9,7 @@ import type {
   SubIssue,
   TimeEntry,
 } from '@/store/types/work'
-import { elapsedTime, diffDate, timeFormat, humanizeFileSize } from '@/utils/baseMixins'
+import { elapsedTime, diffDate, timeFormat, humanizeFileSize, cutString } from '@/utils/baseMixins'
 import { useWork } from '@/store/pinia/work'
 import { useRoute } from 'vue-router'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
@@ -98,7 +98,19 @@ const callComment = () => {
   }, 100)
 }
 
-// file 삭제 관련 코드
+// file 관련 코드
+const editFile = ref(false)
+const editFileName = ref<string[]>([])
+const editDesc = ref<string[]>([])
+
+const editFileSubmit = (pk: number, desc: string) => {
+  const form = new FormData()
+  form.append('edit_file', JSON.stringify(pk))
+  form.append('edit_file_desc', desc)
+  workStore.patchIssue(props.issue.pk, form)
+  editFile.value = false
+}
+
 const delFile = ref<number | null>(null)
 const delFileConfirm = (pk: number) => {
   delFile.value = pk
@@ -132,6 +144,12 @@ watch(route, async nVal => {
 onBeforeMount(async () => {
   await workStore.fetchIssueLogList({ issue: props.issue.pk })
   if (route.query.edit) callEditForm()
+  if (props.issue?.files) {
+    props.issue.files.forEach(file => {
+      editFileName.value.push(file.file_name)
+      editDesc.value.push(file.description)
+    })
+  }
 })
 </script>
 
@@ -340,10 +358,11 @@ onBeforeMount(async () => {
               <CCol class="title">파일</CCol>
             </CRow>
             <CRow v-for="(file, i) in issue.files" :key="file.pk">
-              <CCol>
+              <CCol class="col-10">
                 <v-icon icon="mdi-paperclip" size="sm" color="grey" class="mr-2" />
                 <span>
-                  <a :href="file.file" target="_blank"> {{ file.file_name }} </a>
+                  <a :href="file.file" target="_blank"> {{ cutString(file.file_name, 25) }} </a>
+                  <v-tooltip activator="parent" location="top">{{ file.file_name }}</v-tooltip>
                 </span>
                 <span class="file-desc1 mr-1"> ({{ humanizeFileSize(file.file_size) }}) </span>
                 <span class="mr-2">
@@ -368,10 +387,15 @@ onBeforeMount(async () => {
                   </router-link>
                 </span>
               </CCol>
-              <CCol v-if="i === 0" class="text-right form-text">
+              <CCol v-if="i === 0" class="text-right form-text col-2">
                 <span class="mr-2">
                   <router-link to="">
-                    <v-icon icon="mdi-pencil" color="amber" size="18" />
+                    <v-icon
+                      icon="mdi-pencil"
+                      color="amber"
+                      size="18"
+                      @click="editFile = !editFile"
+                    />
                   </router-link>
                   <v-tooltip activator="parent" location="top">첨부파일 편집</v-tooltip>
                 </span>
@@ -383,6 +407,23 @@ onBeforeMount(async () => {
                   <v-tooltip activator="parent" location="top">전체 다운로드</v-tooltip>
                 </span>
               </CCol>
+              <template v-if="editFile">
+                <CCol class="col-5">
+                  <CFormInput v-model="editFileName[i]" placeholder="파일명" disabled />
+                </CCol>
+                <CCol class="col-7">
+                  <CInputGroup>
+                    <CFormInput v-model="editDesc[i]" placeholder="부가적인 설명" />
+                    <CInputGroupText
+                      v-if="file.description !== editDesc[i]"
+                      :id="`file-desc-${file.pk}`"
+                      @click="editFileSubmit(file.pk, editDesc[i])"
+                    >
+                      업데이트
+                    </CInputGroupText>
+                  </CInputGroup>
+                </CCol>
+              </template>
             </CRow>
           </CCol>
         </CRow>

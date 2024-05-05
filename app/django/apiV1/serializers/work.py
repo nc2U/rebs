@@ -537,6 +537,13 @@ class IssueSerializer(serializers.ModelSerializer):
                 if file.get('del'):
                     file_object.delete()
 
+        edit_file = self.initial_data.get('edit_file', None)
+        edit_file_desc = self.initial_data.get('edit_file_desc', None)
+        if edit_file and edit_file_desc:
+            file = IssueFile.objects.get(pk=edit_file)
+            file.description = edit_file_desc
+            file.save()
+
         del_file = self.initial_data.get('del_file', None)
         if del_file:
             file = IssueFile.objects.get(pk=del_file)
