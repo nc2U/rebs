@@ -1,18 +1,26 @@
 <script lang="ts" setup>
-import { computed, inject } from 'vue'
+import { computed, type ComputedRef, inject, type PropType } from 'vue'
+import type { User } from '@/store/types/accounts'
 
-const props = defineProps({ watchers: { type: Array, default: () => [] } })
+const props = defineProps({
+  watchers: {
+    type: Array as PropType<{ pk: number; username: string }[]>,
+    default: () => [],
+  },
+})
 
 const emit = defineEmits(['call-edit-form', 'go-time-entry', 'watch-control'])
 
-const userInfo = inject('userInfo')
+const userInfo = inject<ComputedRef<User>>('userInfo')
 
-const isWatcher = computed(() => props.watchers.map(w => w.pk).includes(userInfo.value.pk))
+const isWatcher = computed(() =>
+  props.watchers.map(w => w.pk).includes(userInfo?.value.pk as number),
+)
 
 const watchControl = () => {
   const payload = isWatcher.value
-    ? { del_watcher: userInfo.value.pk }
-    : { watchers: [userInfo.value.pk] }
+    ? { del_watcher: userInfo?.value.pk }
+    : { watchers: [userInfo?.value.pk] }
   emit('watch-control', payload)
 }
 
