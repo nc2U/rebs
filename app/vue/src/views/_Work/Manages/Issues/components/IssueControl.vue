@@ -39,10 +39,10 @@ const goTimeEntry = () => emit('go-time-entry')
       </router-link>
     </span>
 
-    <span class="mr-2">
-      <v-icon icon="mdi-content-copy" color="grey" size="sm" />
-      <router-link to="" class="ml-1">복사</router-link>
-    </span>
+    <!--    <span class="mr-2">-->
+    <!--      <v-icon icon="mdi-content-copy" color="grey" size="sm" />-->
+    <!--      <router-link to="" class="ml-1">복사</router-link>-->
+    <!--    </span>-->
 
     <span>
       <CDropdown color="secondary" variant="input-group" placement="bottom-end">
