@@ -98,6 +98,15 @@ const callComment = () => {
   }, 100)
 }
 
+// 지켜보기 / 관심끄기
+const watchControl = (payload: any) => {
+  const form = new FormData()
+  if (payload.watchers)
+    payload.watchers.forEach(val => form.append('watchers', JSON.stringify(val)))
+  else if (payload.del_watcher) form.append('del_watcher', JSON.stringify(payload.del_watcher))
+  workStore.patchIssue(props.issue?.pk, form)
+}
+
 // file 관련 코드
 const editFile = ref(false)
 const editFileName = ref<string[]>([])
@@ -169,10 +178,12 @@ onBeforeMount(async () => {
     </CCol>
 
     <IssueControl
+      :watchers="issue.watchers"
       @call-edit-form="callEditForm"
       @go-time-entry="
         () => $router.push({ name: '(소요시간) - 추가', query: { issue_id: issue.pk } })
       "
+      @watch-control="watchControl"
     />
   </CRow>
 

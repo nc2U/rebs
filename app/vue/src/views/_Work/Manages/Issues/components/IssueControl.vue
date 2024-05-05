@@ -1,5 +1,20 @@
 <script lang="ts" setup>
-const emit = defineEmits(['call-edit-form', 'go-time-entry'])
+import { computed, inject } from 'vue'
+
+const props = defineProps({ watchers: { type: Array, default: () => [] } })
+
+const emit = defineEmits(['call-edit-form', 'go-time-entry', 'watch-control'])
+
+const userInfo = inject('userInfo')
+
+const isWatcher = computed(() => props.watchers.map(w => w.pk).includes(userInfo.value.pk))
+
+const watchControl = () => {
+  const payload = isWatcher.value
+    ? { del_watcher: userInfo.value.pk }
+    : { watchers: [userInfo.value.pk] }
+  emit('watch-control', payload)
+}
 
 const callEditForm = () => emit('call-edit-form')
 const goTimeEntry = () => emit('go-time-entry')
@@ -18,8 +33,10 @@ const goTimeEntry = () => emit('go-time-entry')
     </span>
 
     <span class="mr-2">
-      <v-icon icon="mdi-star" color="amber" size="sm" />
-      <router-link to="" class="ml-1">관심끄기</router-link>
+      <v-icon icon="mdi-star" :color="isWatcher ? 'amber' : 'secondary'" size="16" />
+      <router-link to="" class="ml-1" @click="watchControl">
+        {{ isWatcher ? '관심끄기' : '지켜보기' }}
+      </router-link>
     </span>
 
     <span class="mr-2">
