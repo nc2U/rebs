@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import { inject, type PropType, ref } from 'vue'
+import { useWork } from '@/store/pinia/work'
 import WatcherAdd from './WatcherAdd.vue'
 
-defineProps({
+const props = defineProps({
+  issuePk: { type: Number, required: true },
   watchers: { type: Array as PropType<{ pk: number; username: string }[]>, default: () => [] },
 })
 
@@ -10,7 +12,13 @@ const refWatcherAdd = ref()
 
 const workManager = inject('workManager')
 
-const watcherAddSubmit = (payload: { pk: number; username: string }[]) => console.log(payload)
+const workStore = useWork()
+const watcherAddSubmit = (payload: { pk: number; username: string }[]) => {
+  const form = new FormData()
+  const watchers = [...payload.map(p => p.pk)]
+  watchers.forEach(val => form.append('watchers', JSON.stringify(val)))
+  workStore.patchIssue(props.issuePk, form)
+}
 
 const delWatcher = (pk: number) => alert(pk)
 </script>

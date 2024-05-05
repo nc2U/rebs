@@ -458,8 +458,7 @@ class IssueSerializer(serializers.ModelSerializer):
         watchers = self.initial_data.getlist('watchers', [])
         if watchers:
             for watcher in watchers:
-                if not issue.watchers.all().filter(id=watcher).exists():
-                    issue.watchers.add(watcher)
+                issue.watchers.add(watcher)
         # File 처리
         new_files = self.initial_data.getlist('new_files', [])
         descriptions = self.initial_data.getlist('descriptions', [])
@@ -492,8 +491,7 @@ class IssueSerializer(serializers.ModelSerializer):
         watchers = self.initial_data.getlist('watchers', [])
         if watchers:
             for watcher in watchers:
-                if not instance.watchers.all().filter(id=watcher.pk).exists():
-                    instance.watchers.set(watcher)
+                instance.watchers.add(watcher)
 
         # sub_issue 관계 지우기
         del_child = self.initial_data.get('del_child', None)

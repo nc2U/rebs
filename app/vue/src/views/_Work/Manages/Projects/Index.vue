@@ -230,6 +230,7 @@ onBeforeMount(async () => {
 
       <AsideIssue
         v-if="routeName === '(업무)' || routeName === '(업무) - 보기'"
+        :issuePk="issue?.pk as number"
         :watchers="issue?.watchers"
       />
     </template>
