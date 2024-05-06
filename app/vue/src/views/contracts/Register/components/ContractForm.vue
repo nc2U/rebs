@@ -415,7 +415,7 @@ const loadFile = (data: Event) => {
 }
 
 const removeFile = () => {
-  const file_form = document.getElementById('scan-file')
+  const file_form = document.getElementById('scan-file') as HTMLInputElement
   file_form.value = ''
   form.newFile = []
 }
