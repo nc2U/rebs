@@ -205,7 +205,9 @@ export interface IssueFile {
     pk: number
     username: string
   }
+  newFile?: Blob
   del?: boolean
+  edit?: boolean
 }
 
 export interface SubIssue {
