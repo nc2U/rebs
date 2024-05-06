@@ -205,7 +205,7 @@ export interface IssueFile {
     pk: number
     username: string
   }
-  newFile?: Blob
+  newFile?: Blob | null
   del?: boolean
   edit?: boolean
 }

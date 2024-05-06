@@ -24,13 +24,16 @@ const editMode = ref(false)
 
 const editFiles = ref<IssueFile[]>([])
 
-const fileChange = (event: Event, pk: number) => {
-  // enableStore(event)
+const loadFile = (event: Event, i: number) => {
   const el = event.target as HTMLInputElement
-  if (el.files) {
-    const file = el.files[0]
-    emit('file-change', { pk, file })
-  }
+  if (el.files && el.files[0]) editFiles.value[i].newFile = el.files[0]
+}
+
+const removeFile = (filePk: number, i: number) => {
+  const file_form = document.getElementById(`issue-file-${filePk}`) as HTMLInputElement
+  file_form.value = ''
+  editFiles.value[i].newFile = null
+  editFiles.value[i].edit = false
 }
 
 const editFileSubmit = (payload: IssueFile) => {
@@ -118,27 +121,34 @@ onBeforeMount(async () => {
           <CCol class="col-5">
             <CInputGroup size="sm">
               <CFormInput
-                v-model="editFiles[i].newFile"
                 :id="`issue-file-${file.pk}`"
                 type="file"
                 placeholder="파일명"
-                @input="fileChange($event, file.pk as number)"
-                :disabled="!file.edit"
+                @change="loadFile($event, i)"
+                :disabled="!editFiles[i].edit"
               />
-              <CInputGroupText>
+              <CInputGroupText v-if="!editFiles[i].newFile" class="pb-0">
                 <CFormCheck
                   :id="`change-file-${file.pk}`"
                   label="변경"
-                  @click="file.edit = !file.edit"
-                  class="my-0 py-0"
-                  disabled
+                  @click="editFiles[i].edit = !editFiles[i].edit"
+                  size="sm"
+                />
+              </CInputGroupText>
+
+              <CInputGroupText v-else class="pb-0">
+                <v-icon
+                  icon="mdi-trash-can-outline"
+                  color="grey"
+                  size="sm"
+                  @click="removeFile(file.pk, i)"
                 />
               </CInputGroupText>
             </CInputGroup>
           </CCol>
 
           <CCol class="col-6">
-            <CInputGroup>
+            <CInputGroup size="sm">
               <CFormInput
                 v-model="editFiles[i].description"
                 placeholder="부가적인 설명"
