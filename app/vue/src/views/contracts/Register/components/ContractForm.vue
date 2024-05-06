@@ -961,6 +961,13 @@ onBeforeRouteLeave(() => formDataReset())
           <CFormTextarea v-model="form.note" placeholder="기타 특이사항" :disabled="noStatus" />
         </CCol>
       </CRow>
+
+      <CRow class="my-3 py-2 bg-light">
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 계약서 파일</CFormLabel>
+        <CCol sm="10" lg="5" class="mb-sm-3 mb-lg-0">
+          <CFormInput type="file" />
+        </CCol>
+      </CRow>
     </CCardBody>
 
     <CCardFooter class="text-right">

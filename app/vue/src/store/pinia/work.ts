@@ -291,7 +291,7 @@ export const useWork = defineStore('work', () => {
 
   const patchIssue = (pk: number, payload: any) =>
     api
-      .patch(`/issue/${pk}/`, payload)
+      .patch(`/issue/${pk}/`, payload, config_headers)
       .then(async () => {
         await fetchIssue(pk)
         await fetchIssueLogList({ issue: pk })
@@ -303,11 +303,10 @@ export const useWork = defineStore('work', () => {
   const deleteIssue = (pk: number) =>
     api
       .delete(`/issue/${pk}/`)
-      .then(() =>
-        fetchIssueList({}).then(() =>
-          message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.'),
-        ),
-      )
+      .then(async () => {
+        await fetchIssueList({})
+        message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.')
+      })
       .catch(err => errorHandle(err.response.data))
 
   // issue-relations states & getters

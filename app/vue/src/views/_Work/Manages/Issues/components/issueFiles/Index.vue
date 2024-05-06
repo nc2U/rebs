@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onBeforeMount, type PropType } from 'vue'
+import { ref, onBeforeMount, type PropType, watch } from 'vue'
 import type { IssueFile } from '@/store/types/work'
 import { cutString, humanizeFileSize, timeFormat } from '@/utils/baseMixins'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -7,6 +7,13 @@ import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 const props = defineProps({
   issueFiles: { type: Array as PropType<IssueFile[]>, default: () => [] },
 })
+
+watch(
+  () => props.issueFiles,
+  nVal => {
+    editFiles.value = JSON.parse(JSON.stringify(nVal))
+  },
+)
 
 const emit = defineEmits(['file-change', 'issue-file-control'])
 
