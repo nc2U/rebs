@@ -407,8 +407,12 @@ onBeforeMount(async () => {
 
   <div>
     <IssueControl
+      :watchers="issue.watchers"
       @call-edit-form="callEditForm"
-      @go-time-entry="() => $router.push({ name: '(소요시간) - 추가', query: { issue_id: 1 } })"
+      @go-time-entry="
+        () => $router.push({ name: '(소요시간) - 추가', query: { issue_id: issue.pk } })
+      "
+      @watch-control="watchControl"
     />
   </div>
 

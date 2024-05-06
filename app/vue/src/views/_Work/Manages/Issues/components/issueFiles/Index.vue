@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onBeforeMount, type PropType, ref } from 'vue'
+import { ref, onBeforeMount, type PropType } from 'vue'
 import type { IssueFile } from '@/store/types/work'
 import { cutString, humanizeFileSize, timeFormat } from '@/utils/baseMixins'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -13,16 +13,17 @@ const emit = defineEmits(['issue-file-control'])
 const RefDelFile = ref()
 
 // file 관련 코드
-const editFile = ref(false)
-const editNewFiles = ref<string | Blob[]>([])
-const editDesc = ref<string[]>([])
+const editMode = ref(false)
 
-const editFileSubmit = (pk: number, desc: string) => {
-  const form = new FormData()
-  form.append('edit_file', JSON.stringify(pk))
-  form.append('edit_file_desc', desc)
-  emit('issue-file-control', form)
-  editFile.value = false
+const editFiles = ref<IssueFile[]>([])
+
+const editFileSubmit = (payload: IssueFile) => {
+  console.log(payload)
+  // const form = new FormData()
+  // form.append('edit_file', JSON.stringify(pk))
+  // form.append('edit_file_desc', desc)
+  // emit('issue-file-control', form)
+  editMode.value = false
 }
 
 const delFile = ref<number | null>(null)
@@ -39,7 +40,7 @@ const delFileSubmit = () => {
 }
 
 onBeforeMount(async () => {
-  if (props.issueFiles) props.issueFiles.forEach(file => editDesc.value.push(file.description))
+  if (props.issueFiles) editFiles.value = props.issueFiles
 })
 </script>
 
@@ -83,7 +84,7 @@ onBeforeMount(async () => {
         <CCol v-if="i === 0" class="text-right form-text col-2">
           <span class="mr-2">
             <router-link to="">
-              <v-icon icon="mdi-pencil" color="amber" size="18" @click="editFile = !editFile" />
+              <v-icon icon="mdi-pencil" color="amber" size="18" @click="editMode = !editMode" />
             </router-link>
             <v-tooltip activator="parent" location="top">첨부파일 편집</v-tooltip>
           </span>
@@ -96,10 +97,11 @@ onBeforeMount(async () => {
           </span>
         </CCol>
 
-        <template v-if="editFile">
+        <template v-if="editMode">
           <CCol class="col-5">
             <CInputGroup size="sm">
               <CFormInput
+                v-model="editFiles[i].newFile"
                 :id="`issue-file-${file.pk}`"
                 type="file"
                 placeholder="파일명"
@@ -119,14 +121,14 @@ onBeforeMount(async () => {
           <CCol class="col-6">
             <CInputGroup>
               <CFormInput
-                v-model="editDesc[i]"
+                v-model="editFiles[i].description"
                 placeholder="부가적인 설명"
-                @keydown.enter="editFileSubmit(file.pk, editDesc[i])"
+                @keydown.enter="editFileSubmit(file.pk, editFiles[i].description)"
               />
               <CInputGroupText
-                v-if="editNewFiles[i] || file.description !== editDesc[i]"
+                v-if="file.description !== editFiles[i].description"
                 :id="`file-desc-${file.pk}`"
-                @click="editFileSubmit(file.pk, editDesc[i])"
+                @click="editFileSubmit(file.pk, editFiles[i].description)"
               >
                 업데이트
               </CInputGroupText>
