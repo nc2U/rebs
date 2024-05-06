@@ -120,6 +120,9 @@ class ContractorViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
+
 
 class ContAddressViewSet(viewsets.ModelViewSet):
     queryset = ContractorAddress.objects.all()
@@ -129,6 +132,9 @@ class ContAddressViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
+
 
 class ContContactViewSet(viewsets.ModelViewSet):
     queryset = ContractorContact.objects.all()
@@ -136,6 +142,9 @@ class ContContactViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
 
     def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def perform_update(self, serializer):
         serializer.save(user=self.request.user)
 
 

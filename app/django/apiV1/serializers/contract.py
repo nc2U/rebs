@@ -299,15 +299,15 @@ class ContractSetSerializer(serializers.ModelSerializer):
         contractor_contract_date = self.initial_data.get('contract_date')
         contractor_note = self.initial_data.get('note')
 
-        contractor = Contractor(contract=contract,
-                                name=contractor_name,
-                                birth_date=contractor_birth_date,
-                                gender=contractor_gender,
-                                qualification=contractor_qualification,
-                                status=contractor_status,
-                                reservation_date=contractor_reservation_date,
-                                contract_date=contractor_contract_date,
-                                note=contractor_note)
+        contractor = Contractor.objects.create(contract=contract,
+                                               name=contractor_name,
+                                               birth_date=contractor_birth_date,
+                                               gender=contractor_gender,
+                                               qualification=contractor_qualification,
+                                               status=contractor_status,
+                                               reservation_date=contractor_reservation_date,
+                                               contract_date=contractor_contract_date,
+                                               note=contractor_note)
         contractor.save()
 
         # 6. 계약자 주소 테이블 입력
@@ -320,15 +320,15 @@ class ContractSetSerializer(serializers.ModelSerializer):
         address_dm_address2 = self.initial_data.get('dm_address2')
         address_dm_address3 = self.initial_data.get('dm_address3')
 
-        contractor_address = ContractorAddress(contractor=contractor,
-                                               id_zipcode=address_id_zipcode,
-                                               id_address1=address_id_address1,
-                                               id_address2=address_id_address2,
-                                               id_address3=address_id_address3,
-                                               dm_zipcode=address_dm_zipcode,
-                                               dm_address1=address_dm_address1,
-                                               dm_address2=address_dm_address2,
-                                               dm_address3=address_dm_address3)
+        contractor_address = ContractorAddress.objects.create(contractor=contractor,
+                                                              id_zipcode=address_id_zipcode,
+                                                              id_address1=address_id_address1,
+                                                              id_address2=address_id_address2,
+                                                              id_address3=address_id_address3,
+                                                              dm_zipcode=address_dm_zipcode,
+                                                              dm_address1=address_dm_address1,
+                                                              dm_address2=address_dm_address2,
+                                                              dm_address3=address_dm_address3)
         contractor_address.save()
 
         # 7. 계약자 연락처 테이블 입력
@@ -337,11 +337,11 @@ class ContractSetSerializer(serializers.ModelSerializer):
         contact_other_phone = self.initial_data.get('other_phone')
         contact_email = self.initial_data.get('email')
 
-        contractor_contact = ContractorContact(contractor=contractor,
-                                               cell_phone=contact_cell_phone,
-                                               home_phone=contact_home_phone,
-                                               other_phone=contact_other_phone,
-                                               email=contact_email)
+        contractor_contact = ContractorContact.objects.create(contractor=contractor,
+                                                              cell_phone=contact_cell_phone,
+                                                              home_phone=contact_home_phone,
+                                                              other_phone=contact_other_phone,
+                                                              email=contact_email)
         contractor_contact.save()
 
         # 8. 계약금 -- 수납 정보 테이블 입력
@@ -361,17 +361,17 @@ class ContractSetSerializer(serializers.ModelSerializer):
             payment_income = self.initial_data.get('income')
             payment_deal_date = self.initial_data.get('deal_date')
 
-            down_payment = ProjectCashBook(project=payment_project,
-                                           sort=AccountSort.objects.get(pk=1),
-                                           project_account_d2=payment_account_d2,
-                                           project_account_d3=payment_account_d3,
-                                           contract=contract,
-                                           installment_order=payment_installment_order,
-                                           content=f'{contractor_name}[{payment_serial_number}] 대금납부',
-                                           trader=payment_trader,
-                                           bank_account=payment_bank_account,
-                                           income=payment_income,
-                                           deal_date=payment_deal_date)
+            down_payment = ProjectCashBook.objects.create(project=payment_project,
+                                                          sort=AccountSort.objects.get(pk=1),
+                                                          project_account_d2=payment_account_d2,
+                                                          project_account_d3=payment_account_d3,
+                                                          contract=contract,
+                                                          installment_order=payment_installment_order,
+                                                          content=f'{contractor_name}[{payment_serial_number}] 대금납부',
+                                                          trader=payment_trader,
+                                                          bank_account=payment_bank_account,
+                                                          income=payment_income,
+                                                          deal_date=payment_deal_date)
             down_payment.save()
 
         return contract
@@ -545,17 +545,17 @@ class ContractSetSerializer(serializers.ModelSerializer):
                 update_payment.deal_date = payment_deal_date
                 update_payment.save()
             else:
-                create_payment = ProjectCashBook(project=payment_project,
-                                                 sort=AccountSort.objects.get(pk=1),
-                                                 project_account_d2=payment_account_d2,
-                                                 project_account_d3=payment_account_d3,
-                                                 contract=instance,
-                                                 installment_order=payment_installment_order,
-                                                 content=f'{contractor_name}[{payment_serial_number}] 대금납부',
-                                                 trader=payment_trader,
-                                                 bank_account=payment_bank_account,
-                                                 income=payment_income,
-                                                 deal_date=payment_deal_date)
+                create_payment = ProjectCashBook.objects.create(project=payment_project,
+                                                                sort=AccountSort.objects.get(pk=1),
+                                                                project_account_d2=payment_account_d2,
+                                                                project_account_d3=payment_account_d3,
+                                                                contract=instance,
+                                                                installment_order=payment_installment_order,
+                                                                content=f'{contractor_name}[{payment_serial_number}] 대금납부',
+                                                                trader=payment_trader,
+                                                                bank_account=payment_bank_account,
+                                                                income=payment_income,
+                                                                deal_date=payment_deal_date)
                 create_payment.save()
 
         return instance

@@ -27,7 +27,7 @@ class IssueProject(models.Model):
     members = models.ManyToManyField('Member', blank=True, verbose_name='구성원')
     created = models.DateTimeField('추가', auto_now_add=True)
     updated = models.DateTimeField('편집', auto_now=True)
-    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='생성자')
 
     def __str__(self):
         return self.name
@@ -78,7 +78,7 @@ class Role(models.Model):
     order = models.PositiveSmallIntegerField('정렬', default=1)
     created = models.DateTimeField('추가', auto_now_add=True)
     updated = models.DateTimeField('편집', auto_now=True)
-    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='생성자')
 
     def __str__(self):
         return self.name
@@ -184,11 +184,11 @@ class Permission(models.Model):
 
 
 class Member(models.Model):
-    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='구성원')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='구성원')
     roles = models.ManyToManyField(Role, related_name='members', verbose_name='역할')
 
     def __str__(self):
-        return self.user.username
+        return self.user
 
     class Meta:
         verbose_name = '03. 구성원'
@@ -256,7 +256,7 @@ class Tracker(models.Model):
     order = models.PositiveSmallIntegerField('정렬', default=1)
     created = models.DateTimeField('추가', auto_now_add=True)
     updated = models.DateTimeField('편집', auto_now=True)
-    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='생성자')
 
     def __str__(self):
         return self.name
@@ -274,7 +274,7 @@ class IssueStatus(models.Model):
     order = models.PositiveSmallIntegerField('정렬', default=1)
     created = models.DateTimeField('추가', auto_now_add=True)
     updated = models.DateTimeField('편집', auto_now=True)
-    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='생성자')
 
     def __str__(self):
         return self.name
@@ -307,7 +307,7 @@ class CodeActivity(models.Model):
     order = models.PositiveSmallIntegerField('정렬', default=1)
     created = models.DateTimeField('추가', auto_now_add=True)
     updated = models.DateTimeField('수정', auto_now=True)
-    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='생성자')
 
     def __str__(self):
         return self.name
@@ -325,7 +325,7 @@ class CodeIssuePriority(models.Model):
     order = models.PositiveSmallIntegerField('정렬', default=1)
     created = models.DateTimeField('추가', auto_now_add=True)
     updated = models.DateTimeField('수정', auto_now=True)
-    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='생성자')
 
     def __str__(self):
         return self.name
@@ -343,7 +343,7 @@ class CodeDocsCategory(models.Model):
     order = models.PositiveSmallIntegerField('정렬', default=1)
     created = models.DateTimeField('추가', auto_now_add=True)
     updated = models.DateTimeField('수정', auto_now=True)
-    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='생성자')
 
     def __str__(self):
         return self.name
@@ -375,10 +375,11 @@ class Issue(models.Model):
     description = models.TextField(verbose_name='설명', blank=True, default='')
     category = models.ForeignKey(IssueCategory, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='범주')
     fixed_version = models.ForeignKey(Version, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='목표 버전')
-    assigned_to = models.ForeignKey('accounts.User', on_delete=models.SET_NULL,
+    assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
                                     null=True, blank=True, verbose_name='담당자', related_name='assignees')
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='상위 업무')
-    watchers = models.ManyToManyField('accounts.User', blank=True, verbose_name='업무 관람자', related_name='watchers')
+    watchers = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, verbose_name='업무 관람자',
+                                      related_name='watchers')
     is_private = models.BooleanField('비공개', default=False)
     estimated_hours = models.DecimalField('추정 소요시간', max_digits=5, decimal_places=2, null=True, blank=True)
     start_date = models.DateField('시작 일자', null=True, blank=True)
@@ -388,9 +389,9 @@ class Issue(models.Model):
         (60, '60%'), (70, '70%'), (80, '80%'), (90, '90%'), (100, '100%'))
     done_ratio = models.PositiveSmallIntegerField('진척도', choices=PROGRESS_RATIO, default=0)
     closed = models.DateTimeField('완료', null=True, blank=True, help_text='상태가 완료로 입력된 시간. 한 번 완료하면 다시 진행으로 변경해도 남아있음.')
-    creator = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='생성자',
+    creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='생성자',
                                 related_name='creator', null=True, blank=True)
-    updater = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='수정자',
+    updater = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='수정자',
                                 related_name='updater', null=True, blank=True)
     created = models.DateTimeField('추가', auto_now_add=True)
     updated = models.DateTimeField('편집', auto_now=True)
@@ -420,7 +421,7 @@ class IssueRelation(models.Model):
         ('copied_from', '다음 업무로부터 복사됨'))
     relation_type = models.CharField('관계 유형', max_length=20, choices=RELATION_CHOICES, default='relates')
     delay = models.PositiveSmallIntegerField('지연일수', null=True, blank=True)
-    user = models.ForeignKey('accounts.User', models.SET_NULL, null=True, blank=True, verbose_name='사용자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, models.SET_NULL, null=True, blank=True, verbose_name='사용자')
 
     def __str__(self):
         return f'{self.issue.subject}-{self.relation_type}-{self.issue_to.subject}'
@@ -440,7 +441,8 @@ class IssueFile(models.Model):
     file_size = models.PositiveBigIntegerField('사이즈', blank=True, null=True)
     description = models.CharField('부가설명', max_length=255, blank=True, default='')
     created = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사용자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+                             verbose_name='사용자')
 
     def __str__(self):
         return settings.MEDIA_URL
@@ -469,7 +471,7 @@ class IssueComment(models.Model):
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')
     created = models.DateTimeField('추가', auto_now_add=True)
     updated = models.DateTimeField('편집', auto_now=True)
-    user = models.ForeignKey('accounts.User', on_delete=models.CASCADE, verbose_name='생성자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='생성자')
 
     def __str__(self):
         return self.content
@@ -484,7 +486,7 @@ class TimeEntry(models.Model):
     comment = models.CharField('설명', max_length=255, blank=True, default='')
     created = models.DateTimeField('추가', auto_now_add=True)
     updated = models.DateTimeField('편집', auto_now=True)
-    user = models.ForeignKey('accounts.User', on_delete=models.PROTECT, verbose_name='사용자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='사용자')
 
     def __str__(self):
         return f'{self.issue} - {self.hours}'
@@ -498,7 +500,8 @@ class News(models.Model):
     title = models.CharField('제목', max_length=255)
     summary = models.CharField('요약', max_length=255, blank=True, default='')
     description = models.TextField('설명', blank=True, default='')
-    author = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='저자')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+                               verbose_name='저자')
     created = models.DateTimeField('추가', auto_now_add=True)
 
     def __str__(self):
@@ -523,7 +526,8 @@ class NewsFile(models.Model):
     file_size = models.PositiveBigIntegerField('사이즈', blank=True, null=True)
     description = models.CharField('부가설명', max_length=255, blank=True, default='')
     created = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사용자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+                             verbose_name='사용자')
 
     def __str__(self):
         return settings.MEDIA_URL
@@ -562,10 +566,11 @@ class ActivityLogEntry(models.Model):
     spent_time = models.ForeignKey(TimeEntry, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='소요시간')
     act_date = models.DateField('로그 일자', auto_now_add=True)
     timestamp = models.DateTimeField('로그 시간', auto_now_add=True)
-    user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사용자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+                             verbose_name='사용자')
 
     def __str__(self):
-        return f"{self.user.username} - {self.timestamp}"
+        return f"{self.user} - {self.timestamp}"
 
     class Meta:
         ordering = ('-timestamp',)
@@ -598,7 +603,8 @@ class IssueLogEntry(models.Model):
     details = models.TextField('설명', blank=True, default='')
     diff = models.TextField('차이점', blank=True, default='')
     timestamp = models.DateTimeField('로그 시간', auto_now_add=True)
-    user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사용자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+                             verbose_name='사용자')
 
     def __str__(self):
         return f"{self.action} - {self.timestamp}"
@@ -628,4 +634,4 @@ class Search(models.Model):
                                   choices=(('0', '설명 및 첨부파일 검색'), ('1', '설명에서만 검색'), ('2', '첨부파일에서만 검색')), default='0')
 
     def __str__(self):
-        return f'#{self.pk}. {self.member.user.username} - 검색조건'
+        return f'#{self.pk}. {self.member.user} - 검색조건'

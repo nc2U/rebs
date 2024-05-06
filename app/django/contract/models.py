@@ -1,5 +1,10 @@
+import os
+import magic
+
 from django.db import models
 from django.conf import settings
+from django.dispatch import receiver
+from django.db.models.signals import pre_delete
 
 
 class OrderGroup(models.Model):
@@ -28,7 +33,8 @@ class Contract(models.Model):
     sup_cont_date = models.DateField('공급계약 체결일', null=True, blank=True)
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+                             verbose_name='등록자')
 
     def __str__(self):
         return f'[{self.project.id}] {self.serial_number}'
@@ -58,9 +64,48 @@ class ContractPrice(models.Model):
         verbose_name_plural = '분양대금 정보'
 
 
+def get_contract_file_name(instance, filename):
+    return '/'.join(
+        ['contract',
+         str(instance.project.id),
+         instance.unit_type.name,
+         str(instance.order_group.order_number),
+         filename])
+
+
+class ContractFile(models.Model):
+    contract = models.ForeignKey(Contract, on_delete=models.CASCADE, default=None, verbose_name='계약서',
+                                 related_name='contract_files')
+    file = models.FileField(upload_to=get_contract_file_name, verbose_name='파일경로')
+    file_name = models.CharField('파일명', max_length=100, blank=True)
+    file_type = models.CharField('타입', max_length=100, blank=True)
+    file_size = models.PositiveBigIntegerField('사이즈', blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사용자')
+
+    def __str__(self):
+        return self.file_name
+
+    def save(self, *args, **kwargs):
+        if self.file:
+            self.file_name = self.file.name.split('/')[-1]
+            mime = magic.Magic(mime=True)
+            self.file_type = mime.from_buffer(self.file.read())
+            self.file_size = self.file.size
+        super().save(*args, **kwargs)
+
+
+@receiver(pre_delete, sender=ContractFile)
+def delete_file_on_delete(sender, instance, **kwargs):
+    # Check if the file exists before attempting to delete it
+    if instance.file:
+        if os.path.isfile(instance.file.path):
+            os.remove(instance.file.path)
+
+
 class Contractor(models.Model):
     contract = models.OneToOneField('Contract', on_delete=models.PROTECT, null=True, verbose_name='계약 정보')
-    prev_contract = models.ForeignKey('Contract', on_delete=models.SET_NULL, null=True,
+    prev_contract = models.ForeignKey('Contract', on_delete=models.SET_NULL, null=True, blank=True,
                                       related_name='prev_contractors', verbose_name='종전 계약건',
                                       help_text='계약해지/양도승계 전 계약건')
     name = models.CharField('계약자명', max_length=20)
@@ -77,7 +122,8 @@ class Contractor(models.Model):
     note = models.TextField('비고', blank=True)
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
+                             null=True, blank=True, verbose_name='등록자')
 
     def __str__(self):
         return f'{self.name}({self.contract.serial_number if self.contract else self.prev_contract.serial_number})'
@@ -99,7 +145,8 @@ class ContractorAddress(models.Model):
     dm_address3 = models.CharField('참고항목', max_length=30, blank=True)
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+                             verbose_name='등록자')
 
     def __str__(self):
         return f'[주소] - {self.contractor}'
@@ -117,7 +164,8 @@ class ContractorContact(models.Model):
     email = models.EmailField('이메일', max_length=30, blank=True)
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+                             verbose_name='등록자')
 
     def __str__(self):
         return f'[연락처] - {self.contractor}'
@@ -140,7 +188,8 @@ class Succession(models.Model):
     note = models.TextField('비고', blank=True)
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+                             verbose_name='등록자')
 
     def __str__(self):
         return f'{self.seller}'
@@ -165,7 +214,8 @@ class ContractorRelease(models.Model):
     note = models.TextField('비고', blank=True)
     created_at = models.DateTimeField('등록일', auto_now_add=True)
     updated_at = models.DateTimeField('수정일', auto_now=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+                             verbose_name='등록자')
 
     def __str__(self):
         return f'{self.contractor}'
