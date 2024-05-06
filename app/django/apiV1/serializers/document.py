@@ -1,4 +1,5 @@
 import json
+import os.path
 from urllib.parse import urlsplit, urlunsplit
 
 from django.conf import settings
@@ -343,6 +344,9 @@ class PostSerializer(serializers.ModelSerializer):
 
                     for cng_map in cng_maps:
                         if int(file.get('pk')) == int(cng_map[0]):
+                            old_file = file_object.file
+                            if os.path.isfile(old_file.path):
+                                os.remove(old_file.path)
                             file_object.file = cng_map[1]
                             file_object.save()
 
