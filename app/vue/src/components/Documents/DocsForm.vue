@@ -91,6 +91,11 @@ const enableStore = (event: Event) => {
   attach.value = !el.value
 }
 
+const editFile = (i: number) => {
+  form.files[i].del = false
+  form.files[i].edit = !form.files[i].edit
+}
+
 const fileChange = (event: Event, pk: number) => {
   enableStore(event)
   const el = event.target as HTMLInputElement
@@ -308,7 +313,24 @@ onUpdated(() => dataSetup())
                 <a :href="file.file" target="_blank">
                   {{ devideUri(file.file ?? ' ')[1] }}
                 </a>
-                <CRow>
+                <span>
+                  <CFormCheck
+                    v-model="form.files[i].del"
+                    :id="`del-file-${file.pk}`"
+                    @input="enableStore"
+                    label="삭제"
+                    inline
+                    :disabled="form.files[i].edit"
+                    class="ml-4"
+                  />
+                  <CFormCheck
+                    :id="`edit-file-${file.pk}`"
+                    label="변경"
+                    inline
+                    @click="editFile(i)"
+                  />
+                </span>
+                <CRow v-if="form.files[i].edit">
                   <CCol>
                     <CInputGroup>
                       변경 : &nbsp;
@@ -319,20 +341,6 @@ onUpdated(() => dataSetup())
                         type="file"
                         @input="fileChange($event, file.pk as number)"
                       />
-                      <CInputGroupText id="basic-addon2" class="py-0">
-                        <input
-                          :id="`del-file-${file.pk}`"
-                          v-model="form.files[i].del"
-                          :value="true"
-                          :disabled="!!form.files[i].newFile"
-                          @input="enableStore"
-                          type="checkbox"
-                          class="form-check-input mr-1"
-                        />
-                        <label :for="`del-file-${file.pk}`" class="form-label form-check-label">
-                          삭제
-                        </label>
-                      </CInputGroupText>
                     </CInputGroup>
                   </CCol>
                 </CRow>
