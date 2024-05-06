@@ -8,7 +8,7 @@ const props = defineProps({
   issueFiles: { type: Array as PropType<IssueFile[]>, default: () => [] },
 })
 
-const emit = defineEmits(['issue-file-control'])
+const emit = defineEmits(['file-change', 'issue-file-control'])
 
 const RefDelFile = ref()
 
@@ -17,12 +17,22 @@ const editMode = ref(false)
 
 const editFiles = ref<IssueFile[]>([])
 
+const fileChange = (event: Event, pk: number) => {
+  // enableStore(event)
+  const el = event.target as HTMLInputElement
+  if (el.files) {
+    const file = el.files[0]
+    emit('file-change', { pk, file })
+  }
+}
+
 const editFileSubmit = (payload: IssueFile) => {
   console.log(payload)
-  // const form = new FormData()
-  // form.append('edit_file', JSON.stringify(pk))
-  // form.append('edit_file_desc', desc)
-  // emit('issue-file-control', form)
+  const form = new FormData()
+  form.append('edit_file', JSON.stringify(payload.pk))
+  if (payload.newFile) form.append('newFile', payload.newFile)
+  form.append('edit_file_desc', payload.description)
+  emit('issue-file-control', form)
   editMode.value = false
 }
 
@@ -40,7 +50,7 @@ const delFileSubmit = () => {
 }
 
 onBeforeMount(async () => {
-  if (props.issueFiles) editFiles.value = props.issueFiles
+  if (props.issueFiles) editFiles.value = JSON.parse(JSON.stringify(props.issueFiles))
 })
 </script>
 
@@ -105,6 +115,7 @@ onBeforeMount(async () => {
                 :id="`issue-file-${file.pk}`"
                 type="file"
                 placeholder="파일명"
+                @input="fileChange($event, file.pk as number)"
                 :disabled="!file.edit"
               />
               <CInputGroupText>
@@ -113,6 +124,7 @@ onBeforeMount(async () => {
                   label="변경"
                   @click="file.edit = !file.edit"
                   class="my-0 py-0"
+                  disabled
                 />
               </CInputGroupText>
             </CInputGroup>
@@ -123,12 +135,12 @@ onBeforeMount(async () => {
               <CFormInput
                 v-model="editFiles[i].description"
                 placeholder="부가적인 설명"
-                @keydown.enter="editFileSubmit(file.pk, editFiles[i].description)"
+                @keydown.enter="editFileSubmit(editFiles[i])"
               />
               <CInputGroupText
-                v-if="file.description !== editFiles[i].description"
+                v-if="editFiles[i].newFile || file.description !== editFiles[i].description"
                 :id="`file-desc-${file.pk}`"
-                @click="editFileSubmit(file.pk, editFiles[i].description)"
+                @click="editFileSubmit(editFiles[i])"
               >
                 업데이트
               </CInputGroupText>
