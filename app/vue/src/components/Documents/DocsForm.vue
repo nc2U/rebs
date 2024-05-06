@@ -92,8 +92,10 @@ const enableStore = (event: Event) => {
 }
 
 const editFile = (i: number) => {
-  form.files[i].del = false
-  form.files[i].edit = !form.files[i].edit
+  if (form.files?.length) {
+    form.files[i].del = false
+    form.files[i].edit = !form.files[i].edit
+  }
 }
 
 const fileChange = (event: Event, pk: number) => {

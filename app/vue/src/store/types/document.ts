@@ -133,6 +133,7 @@ export interface AFile {
   newFile?: Blob
   hit: number
   del?: boolean
+  edit?: boolean
 }
 
 export type Attatches = {
