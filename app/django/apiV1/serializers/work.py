@@ -1,4 +1,5 @@
 import json
+import os.path
 
 from django.db import transaction, IntegrityError
 from django.db.models import Sum, Q
@@ -537,11 +538,18 @@ class IssueSerializer(serializers.ModelSerializer):
                 if file.get('del'):
                     file_object.delete()
 
-        edit_file = self.initial_data.get('edit_file', None)
+        edit_file = self.initial_data.get('edit_file', None)  # pk
+        cng_file = self.initial_data.get('cng_file', None)  # change file
         edit_file_desc = self.initial_data.get('edit_file_desc', None)
-        if edit_file and edit_file_desc:
+        if edit_file:
             file = IssueFile.objects.get(pk=edit_file)
-            file.description = edit_file_desc
+            if cng_file:
+                old_file = file.file
+                if os.path.isfile(old_file.path):
+                    os.remove(old_file.path)
+                file.file = cng_file
+            if edit_file_desc:
+                file.description = edit_file_desc
             file.save()
 
         del_file = self.initial_data.get('del_file', None)

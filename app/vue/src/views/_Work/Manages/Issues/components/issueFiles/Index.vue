@@ -26,21 +26,20 @@ const editFiles = ref<IssueFile[]>([])
 
 const loadFile = (event: Event, i: number) => {
   const el = event.target as HTMLInputElement
-  if (el.files && el.files[0]) editFiles.value[i].newFile = el.files[0]
+  if (el.files && el.files[0]) editFiles.value[i].cngFile = el.files[0]
 }
 
 const removeFile = (filePk: number, i: number) => {
   const file_form = document.getElementById(`issue-file-${filePk}`) as HTMLInputElement
   file_form.value = ''
-  editFiles.value[i].newFile = null
+  editFiles.value[i].cngFile = null
   editFiles.value[i].edit = false
 }
 
 const editFileSubmit = (payload: IssueFile) => {
-  console.log(payload)
   const form = new FormData()
   form.append('edit_file', JSON.stringify(payload.pk))
-  if (payload.newFile) form.append('newFile', payload.newFile)
+  if (payload.cngFile) form.append('cng_file', payload.cngFile)
   form.append('edit_file_desc', payload.description)
   emit('issue-file-control', form)
   editMode.value = false
@@ -127,7 +126,7 @@ onBeforeMount(async () => {
                 @change="loadFile($event, i)"
                 :disabled="!editFiles[i].edit"
               />
-              <CInputGroupText v-if="!editFiles[i].newFile" class="pb-0">
+              <CInputGroupText v-if="!editFiles[i].cngFile" class="pb-0">
                 <CFormCheck
                   :id="`change-file-${file.pk}`"
                   label="변경"
@@ -155,7 +154,7 @@ onBeforeMount(async () => {
                 @keydown.enter="editFileSubmit(editFiles[i])"
               />
               <CInputGroupText
-                v-if="editFiles[i].newFile || file.description !== editFiles[i].description"
+                v-if="editFiles[i].cngFile || file.description !== editFiles[i].description"
                 :id="`file-desc-${file.pk}`"
                 @click="editFileSubmit(editFiles[i])"
               >
