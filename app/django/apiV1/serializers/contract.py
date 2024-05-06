@@ -9,7 +9,7 @@ from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
 from rebs.models import AccountSort, ProjectAccountD2, ProjectAccountD3
 from contract.models import (OrderGroup, Contract, ContractPrice, Contractor,
                              ContractorAddress, ContractorContact,
-                             Succession, ContractorRelease)
+                             Succession, ContractorRelease, ContractFile)
 
 from .items import SimpleUnitTypeSerializer
 from .payment import SimpleInstallmentOrderSerializer, SimpleOrderGroupSerializer
@@ -197,6 +197,12 @@ class ProjectCashBookIncsInContractSerializer(serializers.ModelSerializer):
         fields = ('income',)
 
 
+class ContractFileInContractSetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContractFile
+        fields = ('pk', 'file', 'file_name', 'file_size', 'created', 'user')
+
+
 class ContractSetSerializer(serializers.ModelSerializer):
     order_group_sort = serializers.SerializerMethodField(read_only=True)
     keyunit = KeyUnitInContractSerializer(read_only=True)
@@ -207,12 +213,13 @@ class ContractSetSerializer(serializers.ModelSerializer):
     total_paid = serializers.SerializerMethodField(read_only=True)
     order_group_desc = SimpleOrderGroupSerializer(source='order_group', read_only=True)
     unit_type_desc = SimpleUnitTypeSerializer(source='unit_type', read_only=True)
+    contract_files = ContractFileInContractSetSerializer(many=True, read_only=True)
 
     class Meta:
         model = Contract
         fields = ('pk', 'project', 'order_group_sort', 'order_group', 'unit_type', 'serial_number',
                   'activation', 'is_sup_cont', 'sup_cont_date', 'keyunit', 'contractprice', 'contractor',
-                  'payments', 'last_paid_order', 'total_paid', 'order_group_desc', 'unit_type_desc')
+                  'payments', 'last_paid_order', 'total_paid', 'order_group_desc', 'unit_type_desc', 'contract_files')
 
     @staticmethod
     def get_order_group_sort(obj):
