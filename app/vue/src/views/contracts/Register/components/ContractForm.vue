@@ -99,6 +99,9 @@ const form = reactive({
   bank_account: null as number | null, // 17
   trader: '', // 18
   installment_order: null as number | null, // 19
+
+  // scan File
+  newFile: [] as File[],
 })
 
 const matchAddr = computed(() => {
@@ -177,9 +180,9 @@ const formsCheck = computed(() => {
     const c1 = form.dm_address3 === address.dm_address3
     const d1 = form.note === props.contract.contractor.note
 
-    const cond1 = a && b && c && d && e && f && g && h && i && j
-    const cond2 = k && l && m && n && o && p && q && r && s && t
-    const cond3 = u && v && w && x && y && z && a1 && b1 && c1 && d1
+    const cond1 = a && b && c && d && e && f && g && h && i && j && u
+    const cond2 = k && l && m && n && o && p && q && r && s && t && v
+    const cond3 = w && x && y && z && a1 && b1 && c1 && d1 // && e1
     return cond1 && cond2 && cond3
   } else return false
 })
@@ -404,6 +407,17 @@ const modalAction = () => {
   else emit('on-update', form)
   validated.value = false
   refConfirmModal.value.close()
+}
+
+const loadFile = (data: Event) => {
+  const el = data.target as HTMLInputElement
+  if (el.files && el.files[0]) form.newFile.push(el.files[0])
+}
+
+const removeFile = () => {
+  const file_form = document.getElementById('scan-file')
+  file_form.value = ''
+  form.newFile = []
 }
 
 defineExpose({ formDataReset })
@@ -965,7 +979,12 @@ onBeforeRouteLeave(() => formDataReset())
       <CRow class="my-3 py-2 bg-light">
         <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 계약서 파일</CFormLabel>
         <CCol sm="10" lg="5" class="mb-sm-3 mb-lg-0">
-          <CFormInput type="file" />
+          <CInputGroup>
+            <CFormInput id="scan-file" type="file" @change="loadFile" :disabled="!form.status" />
+            <CInputGroupText v-if="form.newFile.length">
+              <v-icon icon="mdi-trash-can-outline" color="grey" size="16" @click="removeFile" />
+            </CInputGroupText>
+          </CInputGroup>
         </CCol>
       </CRow>
     </CCardBody>
