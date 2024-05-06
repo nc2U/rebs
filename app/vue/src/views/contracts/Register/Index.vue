@@ -3,11 +3,11 @@ import { ref, computed, watch, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin'
 import { type UnitFilter, useContract } from '@/store/pinia/contract'
 import type { Contract, Contractor } from '@/store/types/contract'
+import { useRoute, useRouter } from 'vue-router'
 import { useProject } from '@/store/pinia/project'
-import { useProjectData } from '@/store/pinia/project_data'
 import { usePayment } from '@/store/pinia/payment'
 import { useProCash } from '@/store/pinia/proCash'
-import { useRoute, useRouter } from 'vue-router'
+import { useProjectData } from '@/store/pinia/project_data'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContractForm from './components/ContractForm.vue'
@@ -98,17 +98,26 @@ const typeSelect = (payload: {
   }
 }
 
-const onCreate = (payload: Contract & { status: '1' | '2' }) => {
-  if (project.value) payload.project = project.value
-  contStore.createContractSet({ ...payload })
-  if (payload.status === '1') {
-    router.replace({ name: '계약 내역 조회', query: { status: '1' } })
-  } else router.replace({ name: '계약 내역 조회' })
-}
+const onSubmit = (payload: Contract & { status: '1' | '2' }) => {
+  const { pk, ...getData } = payload
+  if (project.value) getData.project = project.value
 
-const onUpdate = (payload: Contract) => {
-  if (project.value) payload.project = project.value
-  contStore.updateContractSet({ ...payload })
+  const form = new FormData()
+
+  for (const key in getData) {
+    if (key === 'newFiles') getData[key].forEach(val => form.append(key, val as string | Blob))
+    else {
+      const formValue = getData[key] === null ? '' : getData[key]
+      form.append(key, formValue as string)
+    }
+  }
+
+  if (!pk) {
+    contStore.createContractSet(form)
+    if (payload.status === '1') {
+      router.replace({ name: '계약 내역 조회', query: { status: '1' } })
+    } else router.replace({ name: '계약 내역 조회' })
+  } else contStore.updateContractSet(pk, form)
 }
 
 const searchContractor = (search: string) => {
@@ -173,8 +182,7 @@ onBeforeMount(() => {
       :unit-set="unitSet"
       :is-union="isUnion"
       @type-select="typeSelect"
-      @on-create="onCreate"
-      @on-update="onUpdate"
+      @on-submit="onSubmit"
       @resume-form="resumeForm"
       @search-contractor="searchContractor"
     />

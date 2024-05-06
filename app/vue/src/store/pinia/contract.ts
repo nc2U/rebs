@@ -81,15 +81,17 @@ export const useContract = defineStore('contract', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
+  const config_headers = { headers: { 'Content-Type': 'multipart/form-data' } }
+
   const createContractSet = (payload: Contract) =>
     api
-      .post(`/contract-set/`, payload)
+      .post(`/contract-set/`, payload, config_headers)
       .then(() => message())
       .catch(err => errorHandle(err.response.data))
 
-  const updateContractSet = (payload: Contract) =>
+  const updateContractSet = (pk, payload: Contract) =>
     api
-      .put(`/contract-set/${payload.pk}/`, payload)
+      .put(`/contract-set/${pk}/`, payload, config_headers)
       .then(res => fetchContract(res.data.pk).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 

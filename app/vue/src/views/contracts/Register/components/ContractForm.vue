@@ -30,13 +30,7 @@ const props = defineProps({
   isUnion: { type: Boolean, default: false },
 })
 
-const emit = defineEmits([
-  'type-select',
-  'on-create',
-  'on-update',
-  'search-contractor',
-  'resume-form',
-])
+const emit = defineEmits(['type-select', 'on-submit', 'search-contractor', 'resume-form'])
 
 const refPostCode = ref()
 const address21 = ref()
@@ -101,7 +95,7 @@ const form = reactive({
   installment_order: null as number | null, // 19
 
   // scan File
-  newFile: [] as File[],
+  newFiles: [] as File[],
 })
 
 const matchAddr = computed(() => {
@@ -403,21 +397,20 @@ const onSubmit = (event: Event) => {
 }
 
 const modalAction = () => {
-  if (!props.contract) emit('on-create', form)
-  else emit('on-update', form)
+  emit('on-submit', form)
   validated.value = false
   refConfirmModal.value.close()
 }
 
 const loadFile = (data: Event) => {
   const el = data.target as HTMLInputElement
-  if (el.files && el.files[0]) form.newFile.push(el.files[0])
+  if (el.files && el.files[0]) form.newFiles.push(el.files[0])
 }
 
 const removeFile = () => {
   const file_form = document.getElementById('scan-file') as HTMLInputElement
   file_form.value = ''
-  form.newFile = []
+  form.newFiles = []
 }
 
 defineExpose({ formDataReset })
@@ -637,8 +630,8 @@ onBeforeRouteLeave(() => formDataReset())
           </div>
           <CFormFeedback invalid>성별을 선택하세요.</CFormFeedback>
         </CCol>
-
-        <CCol v-if="isContract && isUnion && contract?.order_group_sort === '1'" xs="6" lg="2">
+        
+        <CCol v-if="isContract && isUnion && form.order_group_sort === '1'" xs="6" lg="2">
           <CFormSelect v-model="form.qualification" required :disabled="!isContract">
             <option value="">---------</option>
             <option value="2">미인가</option>
@@ -981,7 +974,7 @@ onBeforeRouteLeave(() => formDataReset())
         <CCol sm="10" lg="5" class="mb-sm-3 mb-lg-0">
           <CInputGroup>
             <CFormInput id="scan-file" type="file" @change="loadFile" :disabled="!form.status" />
-            <CInputGroupText v-if="form.newFile.length">
+            <CInputGroupText v-if="form.newFiles.length">
               <v-icon icon="mdi-trash-can-outline" color="grey" size="16" @click="removeFile" />
             </CInputGroupText>
           </CInputGroup>

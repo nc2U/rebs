@@ -298,22 +298,22 @@ class ContractSetSerializer(serializers.ModelSerializer):
 
         # 5. 계약자 정보 테이블 입력
         contractor_name = self.initial_data.get('name')
-        contractor_birth_date = self.initial_data.get('birth_date')
+        birth_date = self.initial_data.get('birth_date', None)
         contractor_gender = self.initial_data.get('gender')
-        contractor_qualification = self.initial_data.get('qualification')
+        qualification = self.initial_data.get('qualification', None)
         contractor_status = self.initial_data.get('status')
-        contractor_reservation_date = self.initial_data.get('reservation_date')
-        contractor_contract_date = self.initial_data.get('contract_date')
+        reservation_date = self.initial_data.get('reservation_date', None)
+        contract_date = self.initial_data.get('contract_date', None)
         contractor_note = self.initial_data.get('note')
 
         contractor = Contractor.objects.create(contract=contract,
                                                name=contractor_name,
-                                               birth_date=contractor_birth_date,
+                                               birth_date=birth_date if birth_date else None,
                                                gender=contractor_gender,
-                                               qualification=contractor_qualification,
+                                               qualification=qualification if qualification else '1',
                                                status=contractor_status,
-                                               reservation_date=contractor_reservation_date,
-                                               contract_date=contractor_contract_date,
+                                               reservation_date=reservation_date if reservation_date else None,
+                                               contract_date=contract_date if contract_date else None,
                                                note=contractor_note)
         contractor.save()
 
@@ -473,22 +473,22 @@ class ContractSetSerializer(serializers.ModelSerializer):
 
         # 5. 계약자 정보 테이블 입력
         contractor_name = self.initial_data.get('name')
-        contractor_birth_date = self.initial_data.get('birth_date')
+        birth_date = self.initial_data.get('birth_date', None)
         contractor_gender = self.initial_data.get('gender')
-        contractor_qualification = self.initial_data.get('qualification')
+        qualification = self.initial_data.get('qualification', None)
         contractor_status = self.initial_data.get('status')
-        contractor_reservation_date = self.initial_data.get('reservation_date')
-        contractor_contract_date = self.initial_data.get('contract_date')
+        reservation_date = self.initial_data.get('reservation_date', None)
+        contract_date = self.initial_data.get('contract_date', None)
         contractor_note = self.initial_data.get('note')
 
         contractor = Contractor.objects.get(contract=instance)
         contractor.name = contractor_name
-        contractor.birth_date = contractor_birth_date
+        contractor.birth_date = birth_date if birth_date else contractor.birth_date
         contractor.gender = contractor_gender
-        contractor.qualification = contractor_qualification
+        contractor.qualification = qualification if qualification else '1'
         contractor.status = contractor_status
-        contractor.reservation_date = contractor_reservation_date
-        contractor.contract_date = contractor_contract_date
+        contractor.reservation_date = reservation_date if reservation_date else contractor.reservation_date
+        contractor.contract_date = contract_date if contract_date else contractor.contract_date
         contractor.note = contractor_note
         contractor.save()
 
