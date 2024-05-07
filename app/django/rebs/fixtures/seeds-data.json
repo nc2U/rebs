@@ -4688,7 +4688,7 @@
     "pk": 1,
     "fields": {
       "name": "결함",
-      "description": "",
+      "description": "프로그램 오류, 버그 수정",
       "is_in_roadmap": true,
       "default_status": 1,
       "order": 1,
@@ -4702,7 +4702,7 @@
     "pk": 2,
     "fields": {
       "name": "기능",
-      "description": "",
+      "description": "기능 개선 및 신규 기능 추가",
       "is_in_roadmap": true,
       "default_status": 1,
       "order": 1,
@@ -4716,7 +4716,49 @@
     "pk": 3,
     "fields": {
       "name": "지원",
-      "description": "",
+      "description": "QA 테스트, 오류보고 및 검증",
+      "is_in_roadmap": true,
+      "default_status": 1,
+      "order": 1,
+      "user": 1,
+      "created": "2024-02-29T13:19:32.152Z",
+      "updated": "2024-02-29T13:19:32.152Z"
+    }
+  },
+  {
+    "model": "work.tracker",
+    "pk": 4,
+    "fields": {
+      "name": "기획",
+      "description": "부지선정, 사업계획, 분양(마케팅), 사업구축",
+      "is_in_roadmap": true,
+      "default_status": 1,
+      "order": 1,
+      "user": 1,
+      "created": "2024-02-29T13:19:32.152Z",
+      "updated": "2024-02-29T13:19:32.152Z"
+    }
+  },
+  {
+    "model": "work.tracker",
+    "pk": 5,
+    "fields": {
+      "name": "개발",
+      "description": "부지매입, 인허가, 금융, 건축관리 및 준공",
+      "is_in_roadmap": true,
+      "default_status": 1,
+      "order": 1,
+      "user": 1,
+      "created": "2024-02-29T13:19:32.152Z",
+      "updated": "2024-02-29T13:19:32.152Z"
+    }
+  },
+  {
+    "model": "work.tracker",
+    "pk": 6,
+    "fields": {
+      "name": "운영",
+      "description": "고객관리, 업체관리, 대관업무, 자금관리 업무",
       "is_in_roadmap": true,
       "default_status": 1,
       "order": 1,

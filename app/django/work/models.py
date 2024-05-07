@@ -263,7 +263,7 @@ class Tracker(models.Model):
         return self.name
 
     class Meta:
-        ordering = ('order', 'created')
+        ordering = ('order', 'id')
         verbose_name = '04. 업무 유형'
         verbose_name_plural = '04. 업무 유형'
 
@@ -281,7 +281,7 @@ class IssueStatus(models.Model):
         return self.name
 
     class Meta:
-        ordering = ('order', 'created',)
+        ordering = ('order', 'id',)
         verbose_name = '05. 업무 상태'
         verbose_name_plural = '05. 업무 상태'
 
