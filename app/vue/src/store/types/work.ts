@@ -24,7 +24,7 @@ export interface IssueProject {
   is_inherit_members: boolean
   default_version: string | null
   roles?: { pk: number; name: string }[]
-  trackers?: { pk: number; name: string }[]
+  trackers?: { pk: number; name: string; description: string }[]
   status: '1' | '9'
   depth: number
   all_members?: SimpleMember[]
@@ -225,7 +225,7 @@ export interface SubIssue {
 export interface Issue {
   pk: number
   project: { slug: string; name: string }
-  tracker: { pk: number; name: string }
+  tracker: { pk: number; name: string; description: string }
   status: { pk: number; name: string }
   priority: { pk: number; name: string }
   subject: string
