@@ -39,7 +39,7 @@ const form = reactive({
   parent: null as number | null,
   slug: '',
   is_inherit_members: false,
-  roles: [1, 2, 3],
+  roles: [4, 5, 6],
   trackers: [4, 5, 6],
 })
 
