@@ -124,7 +124,7 @@ export const useWork = defineStore('work', () => {
   // Role & Permission states & getters
   const role = ref<Role | null>(null)
   const roleList = ref<Role[]>([])
-  const getRoles = roleList.value.map(r => ({ value: r.pk, label: r.name }))
+  const getRoles = computed(() => roleList.value.map(r => ({ value: r.pk, label: r.name })))
 
   const fetchRole = (pk: number) =>
     api
@@ -164,7 +164,7 @@ export const useWork = defineStore('work', () => {
 
   // tracker states & getters
   const trackerList = ref<Tracker[]>([])
-  const getTrackers = trackerList.value.map(t => ({ value: t.pk, label: t.name }))
+  const getTrackers = computed(() => trackerList.value.map(t => ({ value: t.pk, label: t.name })))
   const trackerSum = ref<
     {
       pk: number
