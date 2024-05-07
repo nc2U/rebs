@@ -133,6 +133,7 @@ onBeforeMount(async () => {
 
   <IssueForm
     v-if="route.name === '(업무) - 추가'"
+    :issue-project="issueProject"
     :all-projects="allProjects"
     :status-list="statusList"
     :activity-list="activityList"

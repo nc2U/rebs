@@ -314,6 +314,9 @@ onBeforeMount(() => {
                 </option>
               </CFormSelect>
             </CCol>
+            <CCol v-if="form.tracker" class="pt-1">
+              {{ trackerList.filter(t => t.pk === form.tracker).map(t => t.description)[0] }}
+            </CCol>
           </CRow>
 
           <CRow class="mb-3">
