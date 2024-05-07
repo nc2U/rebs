@@ -51,8 +51,8 @@ class MemberAdmin(ImportExportMixin, admin.ModelAdmin):
 
 @admin.register(Tracker)
 class TaskTrackerAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('name', 'is_in_roadmap', 'default_status', 'order')
-    list_editable = ('is_in_roadmap', 'default_status', 'order')
+    list_display = ('name', 'is_in_roadmap', 'default_status', 'description', 'order')
+    list_editable = ('is_in_roadmap', 'default_status', 'description', 'order')
 
 
 @admin.register(IssueStatus)
