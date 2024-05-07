@@ -113,8 +113,8 @@ const dataSetup = () => {
     form.is_public = props.project.is_public
     form.parent = props.project.parent
     form.is_inherit_members = props.project.is_inherit_members
-    form.roles = props.project.roles?.map(r => r.pk)
-    form.trackers = props.project.trackers?.map(t => t.pk)
+    form.roles = props.project.roles?.map(r => r.pk) ?? []
+    form.trackers = props.project.trackers?.map(t => t.pk) ?? []
 
     module.issue = !!props.project.module?.issue
     module.time = !!props.project.module?.time
@@ -244,7 +244,7 @@ onBeforeMount(() => {
             />
           </CCol>
         </CRow>
-        
+
         <CRow class="mb-3">
           <CFormLabel class="col-form-label text-right col-2">허용 역할</CFormLabel>
           <CCol class="pt-2">
