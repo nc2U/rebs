@@ -73,6 +73,8 @@ const issueProject = computed(() => workStore.issueProject)
 provide('iProject', issueProject)
 const issueProjects = computed(() => workStore.issueProjects)
 const allProjects = computed(() => workStore.AllIssueProjects)
+const getRoles = computed(() => workStore.getRoles)
+const getTrackers = computed(() => workStore.getTrackers)
 
 const modules = computed(() => issueProject.value?.module)
 const version = computed(() => false)
@@ -151,6 +153,8 @@ onBeforeRouteUpdate(async to => {
 onBeforeMount(async () => {
   await workStore.fetchIssueProjectList({})
   await workStore.fetchAllIssueProjectList()
+  await workStore.fetchRoleList()
+  await workStore.fetchTrackerList()
   if (route.params.projId) {
     activityFilter.value.project = route.params.projId as string
     await workStore.fetchIssueProject(route.params.projId as string)
@@ -180,6 +184,8 @@ onBeforeMount(async () => {
         v-if="routeName === '프로젝트 - 추가'"
         title="새 프로젝트"
         :all-projects="allProjects"
+        :all-roles="getRoles"
+        :all-trackers="getTrackers"
         @aside-visible="asideVisible"
         @on-submit="onSubmit"
       />

@@ -14,11 +14,14 @@ import { useRoute } from 'vue-router'
 import { colorLight } from '@/utils/cssMixins'
 import type { IssueProject } from '@/store/types/work'
 import MdEditor from '@/components/MdEditor/Index.vue'
+import MultiSelect from '@/components/MultiSelect/index.vue'
 
 const props = defineProps({
   title: { type: String, default: '' },
   project: { type: Object as PropType<IssueProject | null>, default: null },
   allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
+  allRoles: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
+  allTrackers: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
 })
 
 const emit = defineEmits(['aside-visible', 'on-submit'])
@@ -36,6 +39,8 @@ const form = reactive({
   parent: null as number | null,
   slug: '',
   is_inherit_members: false,
+  roles: [1, 2, 3],
+  trackers: [1, 2, 3],
 })
 
 const tempSpace = ref('')
@@ -108,6 +113,8 @@ const dataSetup = () => {
     form.is_public = props.project.is_public
     form.parent = props.project.parent
     form.is_inherit_members = props.project.is_inherit_members
+    form.roles = []
+    form.trackers = []
 
     module.issue = !!props.project.module?.issue
     module.time = !!props.project.module?.time
@@ -235,6 +242,20 @@ onBeforeMount(() => {
               label="상위 프로젝트 구성원 상속 여부"
               :disabled="!form.parent"
             />
+          </CCol>
+        </CRow>
+
+        <CRow class="mb-3">
+          <CFormLabel class="col-form-label text-right col-2">허용 역할</CFormLabel>
+          <CCol class="pt-2">
+            <MultiSelect v-model="form.roles" id="roles" :options="allRoles" />
+          </CCol>
+        </CRow>
+
+        <CRow class="mb-3">
+          <CFormLabel class="col-form-label text-right col-2">허용 유형</CFormLabel>
+          <CCol class="pt-2">
+            <MultiSelect v-model="form.trackers" id="trackers" :options="allTrackers" />
           </CCol>
         </CRow>
       </CCardBody>
