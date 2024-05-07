@@ -125,8 +125,12 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         validated_data['depth'] = 1 if parent is None else parent.depth + 1
         project = IssueProject.objects.create(**validated_data)
         # 프로젝트 생성시 설정된 기본 역할 및 유형 추가
-        # project.roles.add([1, 2, 3])
-        project.trackers.add(*[1, 2, 3])
+        roles = self.initial_data.get('roles', [])
+        if roles:
+            project.roles.add(*roles)
+        trackers = self.initial_data.get('trackers', [])
+        if trackers:
+            project.trackers.add(*trackers)
         project.save()
 
         Module(project=project,
