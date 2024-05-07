@@ -40,7 +40,7 @@ const form = reactive({
   slug: '',
   is_inherit_members: false,
   roles: [1, 2, 3],
-  trackers: [1, 2, 3],
+  trackers: [4, 5, 6],
 })
 
 const tempSpace = ref('')
