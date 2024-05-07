@@ -180,9 +180,9 @@ onBeforeMount(() => {
             <CFormInput
               v-model="form.slug"
               maxlength="100"
-              placeholder="프로젝트 식별자"
-              required
+              placeholder="프로젝트 식별자 (영문, 숫자, - 문자만 사용)"
               :disabled="!!project?.slug"
+              required
               text="1에서 100글자 소문자(a-z), 숫자, 대쉬(-)와 밑줄(_)만 가능합니다. 식별자 저장 후에는 수정할 수 없습니다."
             />
           </CCol>
