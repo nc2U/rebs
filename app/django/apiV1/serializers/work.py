@@ -72,9 +72,9 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         model = IssueProject
         fields = ('pk', 'company', 'name', 'slug', 'description', 'homepage',
                   'is_public', 'family_tree', 'parent', 'is_inherit_members',
-                  'default_version', 'trackers', 'status', 'depth', 'all_members',
-                  'members', 'sub_projects', 'module', 'visible', 'total_estimated_hours',
-                  'total_time_spent', 'user', 'created', 'updated')
+                  'default_version', 'roles', 'trackers', 'status', 'depth',
+                  'all_members', 'members', 'sub_projects', 'module', 'visible',
+                  'total_estimated_hours', 'total_time_spent', 'user', 'created', 'updated')
 
     def get_sub_projects(self, obj):
         return self.__class__(obj.issueproject_set.exclude(status='9'), many=True, read_only=True).data
@@ -124,7 +124,8 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         parent = validated_data.get('parent', None)
         validated_data['depth'] = 1 if parent is None else parent.depth + 1
         project = IssueProject.objects.create(**validated_data)
-        # 프로젝트 생성시 설정된 기본 유형 추가
+        # 프로젝트 생성시 설정된 기본 역할 및 유형 추가
+        # project.roles.add([1, 2, 3])
         project.trackers.add(*[1, 2, 3])
         project.save()
 
@@ -153,6 +154,15 @@ class IssueProjectSerializer(serializers.ModelSerializer):
             for sub in subs:
                 sub.is_public = is_public
                 sub.save()
+
+        # 역할 및 유형이 있는 경우 업데이트 로직
+        roles = self.initial_data.get('roles', [])
+        if roles and roles != [r.pk for r in instance.roles.all()]:
+            instance.roles.set(roles)
+
+        trackers = self.initial_data.get('trackers', [])
+        if trackers and trackers != [t.pk for t in instance.trackers]:
+            instance.trackers.set(trackers)
 
         status = validated_data.get('status', None)
         if status == '9':
