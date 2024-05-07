@@ -45,7 +45,9 @@ const company = inject<ComputedRef<Company>>('company')
 const workStore = useWork()
 const issueProject = computed(() => workStore.issueProject)
 const modules = computed(() => issueProject.value?.module)
-const AllIssueProjects = computed(() => workStore.AllIssueProjects)
+const AllProjects = computed(() => workStore.AllIssueProjects)
+const getRoles = computed(() => workStore.getRoles)
+const getTrackers = computed(() => workStore.getTrackers)
 
 const onSubmit = (payload: any) => {
   payload.company = company?.value.pk
@@ -63,9 +65,11 @@ onBeforeRouteUpdate(async to => {
 const route = useRoute()
 const initMenu = computed(() => (!!workManager?.value ? '프로젝트' : '버전'))
 
-onBeforeMount(() => {
-  workStore.fetchIssueProjectList({})
-  if (route.params.projId) workStore.fetchIssueProject(route.params.projId as string)
+onBeforeMount(async () => {
+  await workStore.fetchIssueProjectList({})
+  await workStore.fetchRoleList()
+  await workStore.fetchTrackerList()
+  if (route.params.projId) await workStore.fetchIssueProject(route.params.projId as string)
   emit('aside-visible', false)
   menu.value = Cookies.get('workSettingMenu') ?? initMenu.value
 })
@@ -98,7 +102,9 @@ onBeforeMount(() => {
   <ProjectForm
     v-if="menu === '프로젝트'"
     :project="issueProject"
-    :all-task-projects="AllIssueProjects"
+    :all-projects="AllProjects"
+    :all-roles="getRoles"
+    :all-trackers="getTrackers"
     @on-submit="onSubmit"
   />
 

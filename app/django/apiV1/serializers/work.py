@@ -172,7 +172,7 @@ class IssueProjectSerializer(serializers.ModelSerializer):
             instance.roles.set(roles)
 
         trackers = self.initial_data.get('trackers', [])
-        if trackers and trackers != [t.pk for t in instance.trackers]:
+        if trackers and trackers != [t.pk for t in instance.trackers.all()]:
             instance.trackers.set(trackers)
 
         status = validated_data.get('status', None)
