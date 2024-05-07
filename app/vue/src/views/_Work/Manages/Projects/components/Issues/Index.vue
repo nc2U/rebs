@@ -2,7 +2,7 @@
 import { computed, onBeforeMount, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
-import type { IssueFilter } from '@/store/types/work'
+import type { IssueFilter, IssueProject } from '@/store/types/work'
 import IssueList from '@/views/_Work/Manages/Issues/components/IssueList.vue'
 import IssueView from '@/views/_Work/Manages/Issues/components/IssueView.vue'
 import IssueForm from '@/views/_Work/Manages/Issues/components/IssueForm.vue'
@@ -120,7 +120,7 @@ onBeforeMount(async () => {
 
   <IssueView
     v-if="route.name === '(업무) - 보기' && issue"
-    :issue-project="issueProject ?? undefined"
+    :issue-project="issueProject as IssueProject"
     :issue="issue"
     :all-projects="allProjects"
     :status-list="statusList"
@@ -133,7 +133,7 @@ onBeforeMount(async () => {
 
   <IssueForm
     v-if="route.name === '(업무) - 추가'"
-    :issue-project="issueProject"
+    :issue-project="issueProject as IssueProject"
     :all-projects="allProjects"
     :status-list="statusList"
     :activity-list="activityList"
