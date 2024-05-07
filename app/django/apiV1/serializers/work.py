@@ -59,7 +59,7 @@ class RoleInIssueProjectSerializer(serializers.ModelSerializer):
 class TrackerInIssueProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tracker
-        fields = ('pk', 'name')
+        fields = ('pk', 'name', 'description')
 
 
 class IssueProjectSerializer(serializers.ModelSerializer):
