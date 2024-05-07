@@ -204,7 +204,7 @@ class Module(models.Model):
     document = models.BooleanField('문서', default=True)
     file = models.BooleanField('파일', default=True)
     wiki = models.BooleanField('위키', default=True)
-    repository = models.BooleanField('저장소', default=True)
+    repository = models.BooleanField('저장소', default=False)
     forum = models.BooleanField('게시판', default=True)
     calendar = models.BooleanField('달력', default=True)
     gantt = models.BooleanField('Gantt 차트', default=True)
