@@ -60,8 +60,10 @@ const getSlug = (event: { key: string; code: string }) => {
       event.code.includes('Digit') ||
       (event.code.includes('Key') && event.key.length === 1 && !pattern.test(event.key))
     ) {
-      slug = slug + tempSpace.value + event.key.toLowerCase()
-      tempSpace.value = ''
+      if (event.key !== 'Process') {
+        slug = slug + tempSpace.value + event.key.toLowerCase()
+        tempSpace.value = ''
+      }
     }
 
     form.slug = slug
