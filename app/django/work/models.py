@@ -188,7 +188,7 @@ class Member(models.Model):
     roles = models.ManyToManyField(Role, related_name='members', verbose_name='역할')
 
     def __str__(self):
-        return self.user
+        return self.user.__str__()
 
     class Meta:
         verbose_name = '03. 구성원'
@@ -570,7 +570,7 @@ class ActivityLogEntry(models.Model):
                              verbose_name='사용자')
 
     def __str__(self):
-        return f"{self.user} - {self.timestamp}"
+        return f"{self.user.__str__()} - {self.timestamp}"
 
     class Meta:
         ordering = ('-timestamp',)
