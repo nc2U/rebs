@@ -50,6 +50,12 @@ class ModuleInIssueProjectSerializer(serializers.ModelSerializer):
                   'file', 'wiki', 'repository', 'forum', 'calendar', 'gantt')
 
 
+class RoleInIssueProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = ('pk', 'name')
+
+
 class TrackerInIssueProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tracker
@@ -61,6 +67,7 @@ class IssueProjectSerializer(serializers.ModelSerializer):
     sub_projects = serializers.SerializerMethodField()
     all_members = MemberInIssueProjectSerializer(many=True, read_only=True)
     members = MemberInIssueProjectSerializer(many=True, read_only=True)
+    roles = RoleInIssueProjectSerializer(many=True, read_only=True)
     trackers = TrackerInIssueProjectSerializer(many=True, read_only=True)
     module = ModuleInIssueProjectSerializer(read_only=True)
     visible = serializers.SerializerMethodField(read_only=True)
