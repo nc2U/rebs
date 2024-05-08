@@ -1,9 +1,9 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
-from .models import (IssueProject, Role, Permission, Member, Tracker, Module,
-                     Version, IssueCategory, Repository, IssueStatus, Workflow,
-                     CodeActivity, CodeIssuePriority, CodeDocsCategory, Issue, IssueRelation,
-                     IssueFile, IssueComment, TimeEntry, News, NewsFile, ActivityLogEntry, IssueLogEntry)
+from .models import (IssueProject, Module, Role, Permission, Member, Tracker, IssueCategory,
+                     IssueStatus, Workflow, Version, Repository, CodeActivity, CodeIssuePriority,
+                     CodeDocsCategory, Issue, IssueRelation, IssueFile, IssueComment, TimeEntry,
+                     News, NewsFile, ActivityLogEntry, IssueLogEntry)
 
 
 class ModuleInline(admin.TabularInline):
@@ -29,8 +29,7 @@ class RepositoryInline(admin.TabularInline):
 @admin.register(IssueProject)
 class IssueProjectAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('name', 'homepage', 'is_public', 'parent', 'slug', 'status', 'created')
-    inlines = (ModuleInline, VersionInline,
-               IssueCategoryInline, RepositoryInline)
+    inlines = (ModuleInline, VersionInline, IssueCategoryInline, RepositoryInline)
 
 
 class PermissionInline(admin.StackedInline):
@@ -55,6 +54,11 @@ class TaskTrackerAdmin(ImportExportMixin, admin.ModelAdmin):
     list_editable = ('is_in_roadmap', 'default_status', 'description', 'order')
 
 
+@admin.register(IssueCategory)
+class IssueCategoryAdmin(ImportExportMixin, admin.ModelAdmin):
+    pass
+
+
 @admin.register(IssueStatus)
 class IssueStatusAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('name', 'closed')
@@ -62,6 +66,16 @@ class IssueStatusAdmin(ImportExportMixin, admin.ModelAdmin):
 
 @admin.register(Workflow)
 class WorkflowAdmin(ImportExportMixin, admin.ModelAdmin):
+    pass
+
+
+@admin.register(Version)
+class VersionAdmin(ImportExportMixin, admin.ModelAdmin):
+    pass
+
+
+@admin.register(Repository)
+class RepositoryAdmin(ImportExportMixin, admin.ModelAdmin):
     pass
 
 
