@@ -32,13 +32,15 @@ Check what must be defined in docker-compose.yml file.
 
 - required:
     - MYSQL_DATABASE
-    - MYSQL_ROOT_PASSWORD
     - MYSQL_USER
     - MYSQL_PASSWORD
+    - MYSQL_ROOT_PASSWORD
     - DATABASE_NAME
     - DATABASE_USER
     - DATABASE_PASSWORD
+    - DOMAIN_NAME
     - EMAIL_HOST
+    - EMAIL_PORT
     - EMAIL_HOST_USER
     - EMAIL_HOST_PASSWORD
     - EMAIL_DEFAULT_SENDER
@@ -56,7 +58,9 @@ Enter the actual data for your environment as described in the following items.
     - DATABASE_NAME: my-db-name # **mysql database information**
     - DATABASE_USER: my-db-user # **mysql database information**
     - DATABASE_PASSWORD: my-db-password # **mysql database information**
+    - DOMAIN_NAME: my-domain-name # **https://my-domain.com/**
     - EMAIL_HOST: **your-smtp-server.com**
+    - EMAIL_PORT: 588 # **default is 587**
     - EMAIL_HOST_USER: **your-access-id-or-email**
     - EMAIL_HOST_PASSWORD: **your-access-password**
     - EMAIL_DEFAULT_SENDER: **your-email@example.com**
@@ -196,6 +200,7 @@ create Repository secrets with the keys and values below.
 - DATABASE_USER: # db & db user name
 - DOCKERHUB_TOKEN: # docker hub user password (If you manage your images in your own Docker hub)
 - DOCKERHUB_USER: # docker hub user id (If you manage your images in your own Docker hub)
+- DOMAIN_HOST: # full address (https://abc.com/ for getting url)
 - DOMAIN_NANE: # domain address (for ingress)
 - EMAIL_DEFAULT_SENDER: # your-email@example.com
 - EMAIL_HOST: # your-smtp-server.com
