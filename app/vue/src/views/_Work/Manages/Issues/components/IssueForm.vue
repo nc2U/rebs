@@ -10,6 +10,7 @@ import Multiselect from '@vueform/multiselect'
 import MdEditor from '@/components/MdEditor/Index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import WatcherAdd from '@/views/_Work/Manages/Issues/components/aside/WatcherAdd.vue'
+import { dateFormat } from '@/utils/baseMixins'
 
 const props = defineProps({
   issueProject: { type: Object as PropType<IssueProject>, default: null },
@@ -38,7 +39,7 @@ const form = ref({
   status: 1 as number | null,
   parent: null as number | null,
   priority: 2 as number | null,
-  start_date: null as string | null,
+  start_date: dateFormat(new Date()) as string | null,
   assigned_to: null as number | null,
   due_date: null as string | null,
   estimated_hours: null as number | string | null,
