@@ -39,7 +39,7 @@ const form = reactive({
   parent: null as number | null,
   slug: '',
   is_inherit_members: false,
-  roles: [4, 5, 6],
+  allowed_roles: [4, 5, 6],
   trackers: [4, 5, 6],
 })
 
@@ -113,7 +113,7 @@ const dataSetup = () => {
     form.is_public = props.project.is_public
     form.parent = props.project.parent
     form.is_inherit_members = props.project.is_inherit_members
-    form.roles = props.project.roles?.map(r => r.pk) ?? []
+    form.allowed_roles = props.project.allowed_roles?.map(r => r.pk) ?? []
     form.trackers = props.project.trackers?.map(t => t.pk) ?? []
 
     module.issue = !!props.project.module?.issue
@@ -248,7 +248,7 @@ onBeforeMount(() => {
         <CRow class="mb-3">
           <CFormLabel class="col-form-label text-right col-2">허용 역할</CFormLabel>
           <CCol class="pt-2">
-            <MultiSelect v-model="form.roles" id="roles" :options="allRoles" />
+            <MultiSelect v-model="form.allowed_roles" id="allowed_roles" :options="allRoles" />
           </CCol>
         </CRow>
 
