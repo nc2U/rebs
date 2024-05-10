@@ -62,14 +62,23 @@ class TrackerInIssueProjectSerializer(serializers.ModelSerializer):
         fields = ('pk', 'name', 'description')
 
 
+class IssueCategoryInIssueProjectSerializer(serializers.ModelSerializer):
+    assigned_to = SimpleUserSerializer(read_only=True)
+
+    class Meta:
+        model = IssueCategory
+        fields = ('pk', 'name', 'assigned_to')
+
+
 class IssueProjectSerializer(serializers.ModelSerializer):
     family_tree = FamilyTreeSerializer(many=True, read_only=True)
     sub_projects = serializers.SerializerMethodField()
+    module = ModuleInIssueProjectSerializer(read_only=True)
     all_members = MemberInIssueProjectSerializer(many=True, read_only=True)
     members = MemberInIssueProjectSerializer(many=True, read_only=True)
     allowed_roles = RoleInIssueProjectSerializer(many=True, read_only=True)
     trackers = TrackerInIssueProjectSerializer(many=True, read_only=True)
-    module = ModuleInIssueProjectSerializer(read_only=True)
+    categories = IssueCategoryInIssueProjectSerializer(many=True, read_only=True)
     visible = serializers.SerializerMethodField(read_only=True)
     total_estimated_hours = serializers.SerializerMethodField(read_only=True)
     total_time_spent = serializers.SerializerMethodField(read_only=True)
@@ -78,9 +87,9 @@ class IssueProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = IssueProject
         fields = ('pk', 'company', 'name', 'slug', 'description', 'homepage',
-                  'is_public', 'family_tree', 'parent', 'is_inherit_members',
-                  'default_version', 'allowed_roles', 'trackers', 'status', 'depth',
-                  'all_members', 'members', 'sub_projects', 'module', 'visible',
+                  'is_public', 'family_tree', 'parent', 'sub_projects', 'module',
+                  'is_inherit_members', 'default_version', 'allowed_roles', 'trackers',
+                  'categories', 'status', 'depth', 'all_members', 'members', 'visible',
                   'total_estimated_hours', 'total_time_spent', 'user', 'created', 'updated')
 
     def get_sub_projects(self, obj):

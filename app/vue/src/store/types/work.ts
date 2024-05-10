@@ -21,16 +21,17 @@ export interface IssueProject {
   is_public: boolean
   family_tree?: BCParent[]
   parent: number | null
+  sub_projects?: IssueProject[]
+  module?: Module | null
   is_inherit_members: boolean
   default_version: string | null
   allowed_roles?: { pk: number; name: string }[]
   trackers?: { pk: number; name: string; description: string }[]
+  categories?: { pk: number; name: string; assigned_to: { pk: number; username: string } }[]
   status: '1' | '9'
   depth: number
   all_members?: SimpleMember[]
   members?: SimpleMember[]
-  sub_projects?: IssueProject[]
-  module?: Module | null
   visible?: boolean
   total_estimated_hours?: number
   total_time_spent?: number

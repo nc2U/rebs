@@ -88,5 +88,6 @@
     "vitest": "^0.33.0",
     "vue-cli-plugin-vuetify": "^2.5.8",
     "vue-tsc": "^1.8.27"
-  }
+  },
+  "packageManager": "pnpm@9.0.1+sha256.46d50ee2afecb42b185ebbd662dc7bdd52ef5be56bf035bb615cab81a75345df"
 }

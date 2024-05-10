@@ -218,7 +218,7 @@ onBeforeMount(() => accStore.fetchUsersList())
 
             <CTableDataCell class="pl-3">
               <div v-if="editMode === mem.pk">
-                <div v-for="role in iProject.allowed_roles" :key="role.pk">
+                <div v-for="role in iProject?.allowed_roles" :key="role.pk">
                   <CFormCheck
                     v-model="memberRole"
                     :label="role.name"
@@ -318,7 +318,7 @@ onBeforeMount(() => accStore.fetchUsersList())
             <CCardBody>
               <CFormCheck
                 inline
-                v-for="r in iProject.allowed_roles"
+                v-for="r in iProject?.allowed_roles"
                 :key="r.pk"
                 :value="r.pk"
                 :id="r.name"
