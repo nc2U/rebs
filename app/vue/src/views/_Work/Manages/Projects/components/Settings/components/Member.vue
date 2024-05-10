@@ -16,7 +16,6 @@ const workStore = useWork()
 const memberList = computed<SimpleMember[]>(() => workStore.issueProject?.members ?? [])
 const allMembers = computed<SimpleMember[]>(() => workStore.issueProject?.all_members ?? [])
 
-const roleList = computed(() => workStore.roleList)
 const patchIssueProject = (payload: {
   slug: string
   users: number[]
@@ -165,17 +164,14 @@ const onSubmit = (event: Event) => {
 
 const modalAction = () => {
   const _memList = [...users.value.sort((a, b) => a - b)]
-  const _roleList = [...roles.value.sort((a, b) => a - b)]
-  patchIssueProject({ slug: iProject?.value.slug as string, users: _memList, roles: _roleList })
+  const _roles = [...roles.value.sort((a, b) => a - b)]
+  patchIssueProject({ slug: iProject?.value.slug as string, users: _memList, roles: _roles })
   users.value = []
   roles.value = []
 }
 // FormModal End ------------------
 
-onBeforeMount(() => {
-  accStore.fetchUsersList()
-  workStore.fetchRoleList()
-})
+onBeforeMount(() => accStore.fetchUsersList())
 </script>
 
 <template>
@@ -222,7 +218,7 @@ onBeforeMount(() => {
 
             <CTableDataCell class="pl-3">
               <div v-if="editMode === mem.pk">
-                <div v-for="role in roleList" :key="role.pk">
+                <div v-for="role in iProject.allowed_roles" :key="role.pk">
                   <CFormCheck
                     v-model="memberRole"
                     :label="role.name"
@@ -322,7 +318,7 @@ onBeforeMount(() => {
             <CCardBody>
               <CFormCheck
                 inline
-                v-for="r in roleList"
+                v-for="r in iProject.allowed_roles"
                 :key="r.pk"
                 :value="r.pk"
                 :id="r.name"
