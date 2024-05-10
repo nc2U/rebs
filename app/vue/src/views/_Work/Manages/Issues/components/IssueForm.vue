@@ -373,7 +373,7 @@ onBeforeMount(() => {
             </CCol>
           </CRow>
 
-          <CRow v-show="!!issue && !issue.sub_issues.length" class="mb-3">
+          <CRow class="mb-3">
             <CFormLabel for="priority" class="col-sm-2 col-form-label text-right required">
               우선순위
             </CFormLabel>
@@ -417,42 +417,29 @@ onBeforeMount(() => {
               </a>
             </div>
 
-            <CFormLabel
-              v-if="!!issue && !issue.sub_issues.length"
-              for="due_date"
-              class="col-sm-2 col-form-label text-right"
-            >
+            <CFormLabel for="due_date" class="col-sm-2 col-form-label text-right">
               완료기한
             </CFormLabel>
-            <CCol v-if="!!issue && !issue.sub_issues.length" sm="4">
+            <CCol sm="4">
               <DatePicker v-model="form.due_date" id="due_date" />
             </CCol>
-
-            <CFormLabel v-else for="estimated_hours" class="col-sm-2 col-form-label text-right">
-              추정시간
-            </CFormLabel>
-            <div v-if="!!issue && issue.sub_issues.length" class="col-sm-3">
-              <CFormInput
-                v-model="form.estimated_hours"
-                id="estimated_hours"
-                maxlength="6"
-                type="text"
-                class="form-control"
-                @input="removeProperty"
-                feedbackInvalid="999 이하의 정수, 실수 또는 '12:59' 과 같이 시간 형식을 입력하세요."
-              />
-            </div>
-            <div
-              v-if="!!issue && issue.sub_issues.length"
-              class="col-sm-1"
-              style="padding-top: 6px"
-            >
-              시간
-            </div>
           </CRow>
 
-          <CRow v-if="!!issue && !issue.sub_issues.length" class="mb-3">
-            <CCol sm="6"></CCol>
+          <CRow class="mb-3">
+            <CCol class="col-6"></CCol>
+
+            <!--            <CFormLabel for="estimated_hours" class="col-sm-2 col-form-label text-right">-->
+            <!--              범주-->
+            <!--            </CFormLabel>-->
+            <!--            <CCol sm="4">-->
+            <!--              <CFormSelect v-model.number="form.assigned_to" id="assigned_to">-->
+            <!--                <option value="">-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
+            <!--                <option :value="userInfo?.pk">&lt;&lt; 나 &gt;&gt;</option>-->
+            <!--                <option v-for="user in memberList" :value="user.pk" :key="user.pk">-->
+            <!--                  {{ user.username }}-->
+            <!--                </option>-->
+            <!--              </CFormSelect>-->
+            <!--            </CCol>-->
 
             <CFormLabel for="estimated_hours" class="col-sm-2 col-form-label text-right">
               추정시간
@@ -471,7 +458,7 @@ onBeforeMount(() => {
             <div class="col-sm-1" style="padding-top: 6px">시간</div>
           </CRow>
 
-          <CRow v-if="!!issue && !issue.sub_issues.length" class="mb-3">
+          <CRow class="mb-3">
             <CCol sm="6"></CCol>
 
             <CFormLabel for="done_ratio" class="col-sm-2 col-form-label text-right">
