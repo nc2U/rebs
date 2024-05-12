@@ -89,7 +89,7 @@ const delFileSubmit = () => {
               :color="!deleted ? 'success' : 'secondary'"
               size="18"
               :class="{ pointer: !deleted }"
-              :disabled="deleted"
+              :disabled="!!deleted"
               @click="editMode = !editMode"
             />
             <v-icon
