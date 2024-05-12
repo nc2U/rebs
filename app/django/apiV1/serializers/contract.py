@@ -271,6 +271,12 @@ class ContractSetSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # 1. 계약정보 테이블 입력
         contract = Contract.objects.create(**validated_data)
+        new_files = self.initial_data.getlist('newFiles', [])
+        if new_files:
+            user = self.context['request'].user
+            for file in new_files:
+                cont_file = ContractFile(contract=contract, file=file, user=user)
+                cont_file.save()
         contract.save()
 
         # 2. 계약 유닛 연결
