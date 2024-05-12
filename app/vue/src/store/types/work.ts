@@ -27,7 +27,7 @@ export interface IssueProject {
   default_version: string | null
   allowed_roles?: { pk: number; name: string }[]
   trackers?: { pk: number; name: string; description: string }[]
-  categories?: { pk: number; name: string; assigned_to: { pk: number; username: string } }[]
+  categories?: { pk: number; name: string; assigned_to: { pk: number; username: string } | null }[]
   status: '1' | '9'
   depth: number
   all_members?: SimpleMember[]
