@@ -406,7 +406,7 @@ const modalAction = () => {
   emit('on-submit', {
     ...form,
     newFile: newFile.value,
-    editFil: editFile.value,
+    editFile: editFile.value,
     cngFile: cngFile.value,
     delFile: delFile.value,
   })

@@ -407,8 +407,8 @@ class ContractSetSerializer(serializers.ModelSerializer):
         instance.unit_type = validated_data.get('unit_type', instance.unit_type)
         instance.save()
 
-        edit_file = self.initial_data.get('edit_file', None)  # pk
-        cng_file = self.initial_data.get('cng_file', None)  # change file
+        edit_file = self.initial_data.get('editFile', None)  # pk
+        cng_file = self.initial_data.get('cngFile', None)  # change file
 
         if edit_file:
             file = ContractFile.objects.get(pk=edit_file)
@@ -419,7 +419,7 @@ class ContractSetSerializer(serializers.ModelSerializer):
                 file.file = cng_file
             file.save()
 
-        del_file = self.initial_data.get('del_file', None)
+        del_file = self.initial_data.get('delFile', None)
         if del_file:
             file = ContractFile.objects.get(pk=del_file)
             file.delete()

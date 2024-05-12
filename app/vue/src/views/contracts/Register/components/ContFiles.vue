@@ -16,17 +16,19 @@ const RefDelFile = ref()
 const newFile = ref<{ file: File } | null>(null)
 
 const editMode = ref(false)
-const editFile = ref<{ file: File } | null>(null)
+const editFile = ref<number | null>(null)
+const cngFile = ref<{ file: File } | null>(null)
 
-const loadFile = (data: Event) => {
+const loadFile = (data: Event, pk = null) => {
   const el = data.target as HTMLInputElement
   if (el.files && el.files[0]) {
     if (el.id === 'scan-new-file') {
       newFile.value = el.files[0]
       emit('cont-file-control', { newFile: newFile.value })
     } else {
-      editFile.value = el.files[0]
-      emit('cont-file-control', { editFile: editFile.value })
+      editFile.value = pk
+      cngFile.value = el.files[0]
+      emit('cont-file-control', { editFile: editFile.value, cngFile: cngFile.value })
     }
   }
 }
@@ -39,7 +41,8 @@ const removeFile = id => {
     emit('cont-file-control', { newFile: null })
   } else {
     editFile.value = null
-    emit('cont-file-control', { editFile: null })
+    cngFile.value = null
+    emit('cont-file-control', { editFile: null, cngFile: null })
   }
 }
 
@@ -100,8 +103,28 @@ const delFileSubmit = () => {
               @click="delFileConfirm(file.pk)"
             />
           </CCol>
+
+          <CRow>
+            <CInputGroup v-if="editMode" class="mt-2">
+              <CFormInput
+                id="scan-edit-file"
+                type="file"
+                @change="loadFile($event, file.pk)"
+                :disabled="!status"
+              />
+              <CInputGroupText v-if="editFile">
+                <v-icon
+                  icon="mdi-trash-can-outline"
+                  color="grey"
+                  size="16"
+                  @click="removeFile('scan-edit-file')"
+                />
+              </CInputGroupText>
+            </CInputGroup>
+          </CRow>
         </CRow>
       </template>
+
       <CInputGroup v-else>
         <CFormInput id="scan-new-file" type="file" @change="loadFile" :disabled="!status" />
         <CInputGroupText v-if="newFile">
@@ -110,18 +133,6 @@ const delFileSubmit = () => {
             color="grey"
             size="16"
             @click="removeFile('scan-new-file')"
-          />
-        </CInputGroupText>
-      </CInputGroup>
-
-      <CInputGroup v-if="editMode">
-        <CFormInput id="scan-edit-file" type="file" @change="loadFile" :disabled="!status" />
-        <CInputGroupText v-if="editFile">
-          <v-icon
-            icon="mdi-trash-can-outline"
-            color="grey"
-            size="16"
-            @click="removeFile('scan-edit-file')"
           />
         </CInputGroupText>
       </CInputGroup>
