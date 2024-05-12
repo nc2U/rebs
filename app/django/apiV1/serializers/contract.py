@@ -273,7 +273,7 @@ class ContractSetSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # 1. 계약정보 테이블 입력
         contract = Contract.objects.create(**validated_data)
-        new_file = self.initial_data.getlist('newFile', None)
+        new_file = self.initial_data.get('newFile', None)
         if new_file:
             user = self.context['request'].user
             cont_file = ContractFile(contract=contract, file=new_file, user=user)
@@ -406,6 +406,12 @@ class ContractSetSerializer(serializers.ModelSerializer):
         instance.order_group = validated_data.get('order_group', instance.order_group)
         instance.unit_type = validated_data.get('unit_type', instance.unit_type)
         instance.save()
+
+        new_file = self.initial_data.get('newFile', None)
+        if new_file:
+            user = self.context['request'].user
+            cont_file = ContractFile(contract=instance, file=new_file, user=user)
+            cont_file.save()
 
         edit_file = self.initial_data.get('editFile', None)  # pk
         cng_file = self.initial_data.get('cngFile', None)  # change file

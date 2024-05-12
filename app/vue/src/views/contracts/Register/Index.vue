@@ -99,6 +99,7 @@ const typeSelect = (payload: {
 }
 
 const onSubmit = (payload: Contract & { status: '1' | '2' }) => {
+  console.log(payload)
   const { pk, ...getData } = payload as { [key: string]: any }
   if (project.value) getData.project = project.value
 

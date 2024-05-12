@@ -56,11 +56,11 @@ const delFileConfirm = (pk: number) => {
 
 const delFileSubmit = () => {
   if (deleted.value) {
-    emit('cont-file-control', { del_file: '' })
+    emit('cont-file-control', { delFile: '' })
     deleted.value = null
     RefDelFile.value.close()
   } else {
-    emit('cont-file-control', { del_file: delFile.value })
+    emit('cont-file-control', { delFile: delFile.value })
     deleted.value = delFile.value
     delFile.value = null
     RefDelFile.value.close()
