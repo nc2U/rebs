@@ -173,9 +173,14 @@ const formsCheck = computed(() => {
     const c1 = form.dm_address3 === address.dm_address3
     const d1 = form.note === props.contract.contractor.note
 
+    const e1 = !newFile.value
+    const f1 = !editFile.value
+    const g1 = !cngFile.value
+    const h1 = !delFile.value
+
     const cond1 = a && b && c && d && e && f && g && h && i && j && u
     const cond2 = k && l && m && n && o && p && q && r && s && t && v
-    const cond3 = w && x && y && z && a1 && b1 && c1 && d1 // && e1
+    const cond3 = w && x && y && z && a1 && b1 && c1 && d1 && e1 && f1 && g1 && h1
     return cond1 && cond2 && cond3
   } else return false
 })
@@ -419,8 +424,8 @@ const fileControl = (payload: any) => {
   else newFile.value = ''
 
   if (payload.editFile) {
-    editFile.value = payload.editFile.pk
-    cngFile.value = payload.editFile.file
+    editFile.value = payload.editFile
+    cngFile.value = payload.cngFile
   } else {
     editFile.value = ''
     cngFile.value = ''

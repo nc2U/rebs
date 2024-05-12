@@ -106,8 +106,8 @@ const onSubmit = (payload: Contract & { status: '1' | '2' }) => {
   const form = new FormData()
 
   for (const key in getData) {
-    if (key === 'newFiles' || key === 'cngFile')
-      form.append(key, getData[key].file as string | Blob)
+    if (key === 'newFiles') form.append(key, getData[key].file as Blob)
+    else if (key === 'cngFile') form.append(key, getData[key].file as Blob)
     else {
       const formValue = getData[key] === null ? '' : getData[key]
       form.append(key, formValue as string)
