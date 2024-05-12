@@ -8,9 +8,9 @@ import { useProjectData } from '@/store/pinia/project_data'
 import { usePayment } from '@/store/pinia/payment'
 import { useProCash } from '@/store/pinia/proCash'
 import { type PayOrder } from '@/store/types/payment'
-import { type Payment, type Contractor } from '@/store/types/contract'
+import { type Payment, type Contractor, type ContractFile } from '@/store/types/contract'
 import { isValidate } from '@/utils/helper'
-import { numFormat, diffDate } from '@/utils/baseMixins'
+import { numFormat, diffDate, humanizeFileSize, cutString } from '@/utils/baseMixins'
 import { write_contract } from '@/utils/pageAuth'
 import { type AddressData, callAddress } from '@/components/DaumPostcode/address'
 import Multiselect from '@vueform/multiselect'
@@ -59,6 +59,7 @@ const form = reactive({
   houseunit_code: '',
   // cont_keyunit: '', // 디비 계약 유닛
   // cont_houseunit: '', // 디비 동호 유닛
+  contract_files: [] as ContractFile[], // scan File
 
   // contractor
   name: '', // 7
@@ -93,9 +94,6 @@ const form = reactive({
   bank_account: null as number | null, // 17
   trader: '', // 18
   installment_order: null as number | null, // 19
-
-  // scan File
-  newFiles: [] as File[],
 })
 
 const matchAddr = computed(() => {
@@ -267,6 +265,7 @@ const formDataReset = () => {
   form.keyunit = null
   form.houseunit = null
   form.keyunit_code = ''
+  form.contract_files = []
 
   // form.contractor = null
   form.name = ''
@@ -317,6 +316,7 @@ const formDataSetup = () => {
     form.keyunit = props.contract.keyunit?.pk
     form.keyunit_code = props.contract.keyunit?.unit_code
     form.houseunit = props.contract.keyunit?.houseunit?.pk
+    form.contract_files = props.contract.contract_files
 
     // contractor
     form.name = props.contract.contractor.name
@@ -402,15 +402,17 @@ const modalAction = () => {
   refConfirmModal.value.close()
 }
 
+const newFiles = ref<{ file: File; description: string }[]>([])
+
 const loadFile = (data: Event) => {
   const el = data.target as HTMLInputElement
-  if (el.files && el.files[0]) form.newFiles.push(el.files[0])
+  if (el.files && el.files[0]) newFiles.value.push({ file: el.files[0], description: '' })
 }
 
 const removeFile = () => {
   const file_form = document.getElementById('scan-file') as HTMLInputElement
   file_form.value = ''
-  form.newFiles = []
+  newFiles.value = []
 }
 
 defineExpose({ formDataReset })
@@ -630,7 +632,7 @@ onBeforeRouteLeave(() => formDataReset())
           </div>
           <CFormFeedback invalid>성별을 선택하세요.</CFormFeedback>
         </CCol>
-        
+
         <CCol v-if="isContract && isUnion && form.order_group_sort === '1'" xs="6" lg="2">
           <CFormSelect v-model="form.qualification" required :disabled="!isContract">
             <option value="">---------</option>
@@ -969,12 +971,31 @@ onBeforeRouteLeave(() => formDataReset())
         </CCol>
       </CRow>
 
-      <CRow class="my-3 py-2 bg-light">
+      <CRow class="my-3 py-2" :class="{ 'bg-light': !isDark }">
         <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 계약서 파일</CFormLabel>
-        <CCol sm="10" lg="5" class="mb-sm-3 mb-lg-0">
-          <CInputGroup>
+        <CCol sm="10" class="mb-sm-3 mb-lg-0" style="padding-top: 6px">
+          <template v-if="!!form.contract_files.length">
+            <CRow v-for="file in form.contract_files" :key="file.pk" class="mb-2">
+              <CCol>
+                <v-icon icon="mdi-paperclip" size="sm" color="grey" class="mr-2" />
+                <span>
+                  <a :href="file.file" target="_blank">
+                    {{ cutString(file.file_name, 50) }}
+                  </a>
+                </span>
+                <span class="file-desc1 form-text mr-1">
+                  ({{ humanizeFileSize(file.file_size) }})
+                </span>
+              </CCol>
+              <CCol class="text-right">
+                <v-icon icon="mdi-pencil" color="success" size="18" class="pointer" />
+                <v-icon icon="mdi-trash-can-outline" color="grey" size="18" class="pointer ml-2" />
+              </CCol>
+            </CRow>
+          </template>
+          <CInputGroup v-else>
             <CFormInput id="scan-file" type="file" @change="loadFile" :disabled="!form.status" />
-            <CInputGroupText v-if="form.newFiles.length">
+            <CInputGroupText v-if="!!newFiles.length">
               <v-icon icon="mdi-trash-can-outline" color="grey" size="16" @click="removeFile" />
             </CInputGroupText>
           </CInputGroup>
