@@ -7,6 +7,7 @@ from project.models import Project, ProjectIncBudget
 from items.models import UnitType, HouseUnit, KeyUnit
 from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
 from rebs.models import AccountSort, ProjectAccountD2, ProjectAccountD3
+from accounts.models import User
 from contract.models import (OrderGroup, Contract, ContractPrice, Contractor,
                              ContractorAddress, ContractorContact,
                              Succession, ContractorRelease, ContractFile)
@@ -197,7 +198,15 @@ class ProjectCashBookIncsInContractSerializer(serializers.ModelSerializer):
         fields = ('income',)
 
 
+class SimpleUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('pk', 'username')
+
+
 class ContractFileInContractSetSerializer(serializers.ModelSerializer):
+    user = SimpleUserSerializer(read_only=True)
+
     class Meta:
         model = ContractFile
         fields = ('pk', 'file', 'file_name', 'file_size', 'created', 'user')
