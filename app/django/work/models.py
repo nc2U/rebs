@@ -281,7 +281,7 @@ class Workflow(models.Model):
 
 
 class Version(models.Model):
-    project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
+    project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트', related_name='versions')
     name = models.CharField('이름', max_length=20)
     status = models.CharField('상태', max_length=1, choices=(('1', '진행'), ('2', '잠김'), ('3', '닫힘')), default='1')
     SHARING_CHOICES = (
@@ -289,7 +289,7 @@ class Version(models.Model):
     sharing = models.CharField('공유', max_length=1, choices=SHARING_CHOICES, default='1')
     due_date = models.DateField(verbose_name='날짜', blank=True, null=True)
     description = models.CharField('설명', max_length=255, blank=True, default='')
-    wiki_page_title = models.CharField('위키 페이지 주소', max_length=255, blank=True, null=True)
+    wiki_page_title = models.CharField('위키 페이지', max_length=255, blank=True, default='')
 
     def __str__(self):
         return self.name

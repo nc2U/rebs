@@ -62,6 +62,12 @@ class TrackerInIssueProjectSerializer(serializers.ModelSerializer):
         fields = ('pk', 'name', 'description')
 
 
+class VersionInIssueProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Version
+        fields = ('pk', 'name', 'status', 'sharing', 'due_date', 'description', 'wiki_page_title')
+
+
 class IssueCategoryInIssueProjectSerializer(serializers.ModelSerializer):
     assigned_to = SimpleUserSerializer(read_only=True)
 
@@ -78,6 +84,7 @@ class IssueProjectSerializer(serializers.ModelSerializer):
     members = MemberInIssueProjectSerializer(many=True, read_only=True)
     allowed_roles = RoleInIssueProjectSerializer(many=True, read_only=True)
     trackers = TrackerInIssueProjectSerializer(many=True, read_only=True)
+    versions = VersionInIssueProjectSerializer(many=True, read_only=True)
     categories = IssueCategoryInIssueProjectSerializer(many=True, read_only=True)
     visible = serializers.SerializerMethodField(read_only=True)
     total_estimated_hours = serializers.SerializerMethodField(read_only=True)
@@ -88,7 +95,7 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         model = IssueProject
         fields = ('pk', 'company', 'name', 'slug', 'description', 'homepage',
                   'is_public', 'family_tree', 'parent', 'sub_projects', 'module',
-                  'is_inherit_members', 'default_version', 'allowed_roles', 'trackers',
+                  'is_inherit_members', 'allowed_roles', 'trackers', 'versions', 'default_version',
                   'categories', 'status', 'depth', 'all_members', 'members', 'visible',
                   'total_estimated_hours', 'total_time_spent', 'user', 'created', 'updated')
 
