@@ -417,12 +417,14 @@ class ContractSetSerializer(serializers.ModelSerializer):
         cng_file = self.initial_data.get('cngFile', None)  # change file
 
         if edit_file and cng_file:
-            update_file = ContractFile.objects.get(pk=edit_file)
-            old_file = update_file.file
-            if os.path.isfile(old_file.path):
-                os.remove(old_file.path)
-            update_file.file = cng_file
-            update_file.save()
+            file = ContractFile.objects.get(pk=edit_file)
+            if cng_file:
+                old_file = file.file
+                if os.path.isfile(old_file.path):
+                    os.remove(old_file.path)
+                file.file = cng_file
+                # if file.file.path:
+                #     file.save()
 
         del_file = self.initial_data.get('delFile', None)
         if del_file:
