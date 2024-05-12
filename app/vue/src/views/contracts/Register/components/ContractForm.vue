@@ -397,13 +397,24 @@ const onSubmit = (event: Event) => {
   }
 }
 
+const newFile = ref()
+const editFile = ref()
+const delFile = ref()
+
 const modalAction = () => {
-  emit('on-submit', { ...form, newFiles: newFiles.value })
+  emit('on-submit', {
+    ...form,
+    newFile: newFile.value,
+    editFil: editFile.value,
+    delFile: delFile.value,
+  })
   validated.value = false
   refConfirmModal.value.close()
 }
 
-const fileControl = (payload: FormData) => console.log(payload) //workStore.patchIssue(props.issue?.pk, payload)
+const fileControl = (payload: any) => {
+  console.log(form.contract_files, payload)
+}
 
 defineExpose({ formDataReset })
 

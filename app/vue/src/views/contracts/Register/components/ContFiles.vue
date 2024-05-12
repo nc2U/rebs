@@ -13,38 +13,53 @@ const emit = defineEmits(['cont-file-control'])
 
 const RefDelFile = ref()
 
-const newFiles = ref<{ file: File }[]>([])
+const newFile = ref<{ file: File } | null>(null)
 
 const editMode = ref(false)
-const editFiles = ref<{ file: File }[]>([])
+const editFile = ref<{ file: File } | null>(null)
 
-const loadFile = (data: Event, mode = 'new') => {
+const loadFile = (data: Event) => {
   const el = data.target as HTMLInputElement
   if (el.files && el.files[0]) {
-    if (el.id === 'scan-new-file') newFiles.value.push({ file: el.files[0] })
-    else editFiles.value.push({ file: el.files[0] })
+    if (el.id === 'scan-new-file') {
+      newFile.value = el.files[0]
+      emit('cont-file-control', { newFile: newFile.value })
+    } else {
+      editFile.value = el.files[0]
+      emit('cont-file-control', { editFile: editFile.value })
+    }
   }
 }
 
 const removeFile = id => {
   const file_form = document.getElementById(id) as HTMLInputElement
   file_form.value = ''
-  if (id === 'scan-new-file') newFiles.value = []
-  else editFiles.value = []
+  if (id === 'scan-new-file') {
+    newFile.value = null
+    emit('cont-file-control', { newFile: null })
+  } else {
+    editFile.value = null
+    emit('cont-file-control', { editFile: null })
+  }
 }
 
 const delFile = ref<number | null>(null)
+const deleted = ref<number | null>(null)
 const delFileConfirm = (pk: number) => {
   delFile.value = pk
   RefDelFile.value.callModal()
 }
 
 const delFileSubmit = () => {
-  // const form = new FormData()
-  // form.append('del_file', JSON.stringify(delFile.value))
-  emit('cont-file-control', { del_file: delFile.value })
-  delFile.value = null
-  RefDelFile.value.close()
+  if (deleted.value) {
+    deleted.value = null
+    RefDelFile.value.close()
+  } else {
+    emit('cont-file-control', { del_file: delFile.value })
+    deleted.value = delFile.value
+    delFile.value = null
+    RefDelFile.value.close()
+  }
 }
 </script>
 
@@ -56,7 +71,7 @@ const delFileSubmit = () => {
         <CRow v-for="file in contractFiles" :key="file.pk" class="mb-2" style="padding-top: 6px">
           <CCol>
             <v-icon icon="mdi-paperclip" size="sm" color="grey" class="mr-2" />
-            <span>
+            <span :class="{ 'text-decoration-line-through': file.pk === deleted }">
               <a :href="file.file" target="_blank">
                 {{ cutString(file.file_name, 50) }}
               </a>
@@ -68,16 +83,18 @@ const delFileSubmit = () => {
           <CCol class="text-right">
             <v-icon
               icon="mdi-pencil"
-              color="success"
+              :color="!deleted ? 'success' : 'secondary'"
               size="18"
-              class="pointer"
+              :class="{ pointer: !deleted }"
+              :disabled="deleted"
               @click="editMode = !editMode"
             />
             <v-icon
-              icon="mdi-trash-can-outline"
-              color="grey"
+              :icon="!deleted ? 'mdi-delete' : 'mdi-delete-restore'"
+              :color="editMode ? 'secondary' : 'grey'"
               size="18"
               class="pointer ml-2"
+              :disabled="editMode"
               @click="delFileConfirm(file.pk)"
             />
           </CCol>
@@ -85,7 +102,7 @@ const delFileSubmit = () => {
       </template>
       <CInputGroup v-else>
         <CFormInput id="scan-new-file" type="file" @change="loadFile" :disabled="!status" />
-        <CInputGroupText v-if="!!newFiles.length">
+        <CInputGroupText v-if="newFile">
           <v-icon
             icon="mdi-trash-can-outline"
             color="grey"
@@ -97,7 +114,7 @@ const delFileSubmit = () => {
 
       <CInputGroup v-if="editMode">
         <CFormInput id="scan-edit-file" type="file" @change="loadFile" :disabled="!status" />
-        <CInputGroupText v-if="!!editFiles.length">
+        <CInputGroupText v-if="editFile">
           <v-icon
             icon="mdi-trash-can-outline"
             color="grey"
@@ -110,9 +127,15 @@ const delFileSubmit = () => {
   </CRow>
 
   <ConfirmModal ref="RefDelFile">
-    <template #default>이 파일 삭제를 계속 진행하시겠습니까?</template>
+    <template #default>
+      <span v-if="!deleted">이 파일 삭제를 계속 진행하시겠습니까?</span>
+      <span v-else>이 파일 삭제를 취소 하시겠습니까?</span>
+    </template>
     <template #footer>
-      <CButton color="warning" @click="delFileSubmit">삭제</CButton>
+      <CButton :color="!deleted ? 'warning' : 'success'" @click="delFileSubmit">
+        <span v-if="!deleted">삭제</span>
+        <span v-else>취소</span>
+      </CButton>
     </template>
   </ConfirmModal>
 </template>

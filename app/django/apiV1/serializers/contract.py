@@ -1,3 +1,5 @@
+import os
+
 from django.db import transaction
 from rest_framework import serializers
 from django.core.exceptions import ObjectDoesNotExist
@@ -405,6 +407,22 @@ class ContractSetSerializer(serializers.ModelSerializer):
         instance.order_group = validated_data.get('order_group', instance.order_group)
         instance.unit_type = validated_data.get('unit_type', instance.unit_type)
         instance.save()
+
+        edit_file = self.initial_data.get('edit_file', None)  # pk
+        cng_file = self.initial_data.get('cng_file', None)  # change file
+        if edit_file:
+            file = ContractFile.objects.get(pk=edit_file)
+            if cng_file:
+                old_file = file.file
+                if os.path.isfile(old_file.path):
+                    os.remove(old_file.path)
+                file.file = cng_file
+            file.save()
+
+        del_file = self.initial_data.get('del_file', None)
+        if del_file:
+            file = ContractFile.objects.get(pk=del_file)
+            file.delete()
 
         # 1-2. 동호수 변경 여부 확인 및 변경 사항 적용
         keyunit_pk = self.initial_data.get('keyunit')  # keyunit => pk
