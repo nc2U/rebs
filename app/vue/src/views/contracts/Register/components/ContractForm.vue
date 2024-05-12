@@ -10,13 +10,14 @@ import { useProCash } from '@/store/pinia/proCash'
 import { type PayOrder } from '@/store/types/payment'
 import { type Payment, type Contractor, type ContractFile } from '@/store/types/contract'
 import { isValidate } from '@/utils/helper'
-import { numFormat, diffDate, humanizeFileSize, cutString } from '@/utils/baseMixins'
+import { numFormat, diffDate } from '@/utils/baseMixins'
 import { write_contract } from '@/utils/pageAuth'
 import { type AddressData, callAddress } from '@/components/DaumPostcode/address'
 import Multiselect from '@vueform/multiselect'
 import ContNavigation from './ContNavigation.vue'
 import ContController from './ContController.vue'
 import ContractorAlert from './ContractorAlert.vue'
+import ContFiles from './ContFiles.vue'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -402,18 +403,7 @@ const modalAction = () => {
   refConfirmModal.value.close()
 }
 
-const newFiles = ref<{ file: File; description: string }[]>([])
-
-const loadFile = (data: Event) => {
-  const el = data.target as HTMLInputElement
-  if (el.files && el.files[0]) newFiles.value.push({ file: el.files[0], description: '' })
-}
-
-const removeFile = () => {
-  const file_form = document.getElementById('scan-file') as HTMLInputElement
-  file_form.value = ''
-  newFiles.value = []
-}
+const fileControl = (payload: FormData) => console.log(payload) //workStore.patchIssue(props.issue?.pk, payload)
 
 defineExpose({ formDataReset })
 
@@ -971,41 +961,13 @@ onBeforeRouteLeave(() => formDataReset())
         </CCol>
       </CRow>
 
-      <CRow v-show="isContract" class="my-3 py-2" :class="{ 'bg-light': !isDark }">
-        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 계약서 파일</CFormLabel>
-        <CCol sm="10" class="mb-sm-3 mb-lg-0">
-          <template v-if="!!form.contract_files.length">
-            <CRow
-              v-for="file in form.contract_files"
-              :key="file.pk"
-              class="mb-2"
-              style="padding-top: 6px"
-            >
-              <CCol>
-                <v-icon icon="mdi-paperclip" size="sm" color="grey" class="mr-2" />
-                <span>
-                  <a :href="file.file" target="_blank">
-                    {{ cutString(file.file_name, 50) }}
-                  </a>
-                </span>
-                <span class="file-desc1 form-text mr-1">
-                  ({{ humanizeFileSize(file.file_size) }})
-                </span>
-              </CCol>
-              <CCol class="text-right">
-                <v-icon icon="mdi-pencil" color="success" size="18" class="pointer" />
-                <v-icon icon="mdi-trash-can-outline" color="grey" size="18" class="pointer ml-2" />
-              </CCol>
-            </CRow>
-          </template>
-          <CInputGroup v-else>
-            <CFormInput id="scan-file" type="file" @change="loadFile" :disabled="!form.status" />
-            <CInputGroupText v-if="!!newFiles.length">
-              <v-icon icon="mdi-trash-can-outline" color="grey" size="16" @click="removeFile" />
-            </CInputGroupText>
-          </CInputGroup>
-        </CCol>
-      </CRow>
+      <ContFiles
+        v-show="isContract"
+        :is-dark="isDark"
+        :status="form.status"
+        :contract-files="form.contract_files"
+        @cont-file-control="fileControl"
+      />
     </CCardBody>
 
     <CCardFooter class="text-right">
