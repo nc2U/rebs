@@ -65,7 +65,7 @@ const form = reactive({
   name: '', // 7
   birth_date: null as string | null, // 8
   gender: '', // 9
-  qualification: '',
+  qualification: '2',
   status: null as null | string, // 1
   reservation_date: null as string | null, // 6-1
   contract_date: null as string | null, // 6-2
@@ -271,7 +271,7 @@ const formDataReset = () => {
   form.name = ''
   form.birth_date = null
   form.gender = ''
-  form.qualification = ''
+  form.qualification = '2'
   form.status = ''
   form.reservation_date = null
   form.contract_date = null
@@ -397,7 +397,7 @@ const onSubmit = (event: Event) => {
 }
 
 const modalAction = () => {
-  emit('on-submit', form)
+  emit('on-submit', { ...form, newFiles: newFiles.value })
   validated.value = false
   refConfirmModal.value.close()
 }
@@ -633,7 +633,7 @@ onBeforeRouteLeave(() => formDataReset())
           <CFormFeedback invalid>성별을 선택하세요.</CFormFeedback>
         </CCol>
 
-        <CCol v-if="isContract && isUnion && form.order_group_sort === '1'" xs="6" lg="2">
+        <CCol v-if="contract && isUnion && form.order_group_sort === '1'" xs="6" lg="2">
           <CFormSelect v-model="form.qualification" required :disabled="!isContract">
             <option value="">---------</option>
             <option value="2">미인가</option>
@@ -971,11 +971,16 @@ onBeforeRouteLeave(() => formDataReset())
         </CCol>
       </CRow>
 
-      <CRow class="my-3 py-2" :class="{ 'bg-light': !isDark }">
+      <CRow v-show="isContract" class="my-3 py-2" :class="{ 'bg-light': !isDark }">
         <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 계약서 파일</CFormLabel>
-        <CCol sm="10" class="mb-sm-3 mb-lg-0" style="padding-top: 6px">
+        <CCol sm="10" class="mb-sm-3 mb-lg-0">
           <template v-if="!!form.contract_files.length">
-            <CRow v-for="file in form.contract_files" :key="file.pk" class="mb-2">
+            <CRow
+              v-for="file in form.contract_files"
+              :key="file.pk"
+              class="mb-2"
+              style="padding-top: 6px"
+            >
               <CCol>
                 <v-icon icon="mdi-paperclip" size="sm" color="grey" class="mr-2" />
                 <span>
