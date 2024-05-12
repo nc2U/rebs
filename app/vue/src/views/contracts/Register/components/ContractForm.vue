@@ -417,6 +417,10 @@ const modalAction = () => {
   })
   validated.value = false
   refConfirmModal.value.close()
+  newFile.value = ''
+  editFile.value = ''
+  cngFile.value = ''
+  delFile.value = ''
 }
 
 const fileControl = (payload: any) => {
@@ -996,6 +1000,7 @@ onBeforeRouteLeave(() => formDataReset())
         :is-dark="isDark"
         :status="form.status"
         :contract-files="form.contract_files"
+        :deleted="delFile"
         @cont-file-control="fileControl"
       />
     </CCardBody>

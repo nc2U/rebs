@@ -3,10 +3,11 @@ import { ref } from 'vue'
 import { cutString, humanizeFileSize } from '@/utils/baseMixins'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
-defineProps({
+const props = defineProps({
   isDark: { type: Boolean, default: false },
   status: { type: String, default: '' },
   contractFiles: { type: Array, default: () => [] },
+  deleted: { type: Number, default: null },
 })
 
 const emit = defineEmits(['cont-file-control'])
@@ -47,7 +48,6 @@ const removeFile = id => {
 }
 
 const delFile = ref<number | null>(null)
-const deleted = ref<number | null>(null)
 
 const delFileConfirm = (pk: number) => {
   delFile.value = pk
@@ -55,13 +55,11 @@ const delFileConfirm = (pk: number) => {
 }
 
 const delFileSubmit = () => {
-  if (deleted.value) {
+  if (props.deleted) {
     emit('cont-file-control', { delFile: '' })
-    deleted.value = null
     RefDelFile.value.close()
   } else {
     emit('cont-file-control', { delFile: delFile.value })
-    deleted.value = delFile.value
     delFile.value = null
     RefDelFile.value.close()
   }
