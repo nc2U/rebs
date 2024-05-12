@@ -50,6 +50,11 @@ const form = ref({
   files: [] as IssueFile[],
 })
 
+watch(
+  () => form.value.project,
+  nVal => workStore.fetchIssueProject(nVal),
+)
+
 const statuses = computed(() =>
   props.issue ? props.statusList : props.statusList.filter(s => s.pk === 1),
 )
@@ -133,9 +138,12 @@ watch(
   nVal => (watcherList.value = nVal ?? []),
 )
 
-const trackerList = computed(() =>
-  props.issueProject ? props.issueProject.trackers : workStore.trackerList,
+const trackers = computed(() =>
+  workStore.issueProject ? workStore.issueProject.trackers : workStore.trackerList,
 )
+
+const categories = computed(() => workStore.issueProject?.categories ?? [])
+const versions = computed(() => workStore.issueProject?.versions ?? [])
 
 const watcherAddSubmit = (payload: { pk: number; username: string }[]) => {
   form.value.watchers = [...new Set([...form.value.watchers, ...payload.map(p => p.pk)])]
@@ -313,13 +321,13 @@ onBeforeMount(() => {
             <CCol sm="4">
               <CFormSelect v-model.number="form.tracker" id="tracker" required>
                 <option value="">---------</option>
-                <option v-for="tr in trackerList" :value="tr.pk" :key="tr.pk">
+                <option v-for="tr in trackers" :value="tr.pk" :key="tr.pk">
                   {{ tr.name }}
                 </option>
               </CFormSelect>
             </CCol>
             <CCol v-if="form.tracker" class="pt-1">
-              {{ trackerList?.filter(t => t.pk === form.tracker).map(t => t.description)[0] ?? '' }}
+              {{ trackers?.filter(t => t.pk === form.tracker).map(t => t.description)[0] ?? '' }}
             </CCol>
 
             <CCol v-if="issueProject" style="padding-top: 8px">
@@ -439,15 +447,16 @@ onBeforeMount(() => {
 
           <CRow class="mb-3">
             <CCol sm="6">
-              <CRow v-if="issueProject?.categories?.length">
+              <CRow v-if="categories?.length">
                 <CFormLabel for="category" class="col-sm-4 col-form-label text-right">
                   범주
                 </CFormLabel>
                 <CCol sm="6">
                   <CFormSelect v-model.number="form.category" id="category">
                     <option value="">---------</option>
-                    <option v-for="user in memberList" :value="user.pk" :key="user.pk">
-                      {{ user.username }}
+                    <option v-for="cate in categories" :value="cate.pk" :key="cate.pk">
+                      {{ cate.name }}
+                      <span v-if="cate.assigned_to">{{ cate.assigned_to.username }}</span>
                     </option>
                   </CFormSelect>
                 </CCol>
@@ -480,15 +489,15 @@ onBeforeMount(() => {
 
           <CRow class="mb-3">
             <CCol sm="6">
-              <CRow v-if="issueProject?.categories?.length">
+              <CRow v-if="versions?.length">
                 <CFormLabel for="fixed_version" class="col-sm-4 col-form-label text-right">
                   목표버전
                 </CFormLabel>
                 <CCol sm="6">
                   <CFormSelect v-model.number="form.fixed_version" id="fixed_version">
                     <option value="">---------</option>
-                    <option v-for="user in memberList" :value="user.pk" :key="user.pk">
-                      {{ user.username }}
+                    <option v-for="ver in versions" :value="ver.pk" :key="ver.pk">
+                      {{ ver.name }}
                     </option>
                   </CFormSelect>
                 </CCol>

@@ -24,9 +24,18 @@ export interface IssueProject {
   sub_projects?: IssueProject[]
   module?: Module | null
   is_inherit_members: boolean
-  default_version: string | null
   allowed_roles?: { pk: number; name: string }[]
   trackers?: { pk: number; name: string; description: string }[]
+  versions?: {
+    pk: number
+    name: '1.0'
+    status: '1' | '2' | '3'
+    sharing: '0' | '1' | '2' | '3' | '4'
+    due_date: string | null
+    description: string
+    wiki_page_title: string
+  }[]
+  default_version: string | null
   categories?: { pk: number; name: string; assigned_to: { pk: number; username: string } | null }[]
   status: '1' | '9'
   depth: number
