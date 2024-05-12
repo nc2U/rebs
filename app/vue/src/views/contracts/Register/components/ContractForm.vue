@@ -397,15 +397,17 @@ const onSubmit = (event: Event) => {
   }
 }
 
-const newFile = ref()
-const editFile = ref()
-const delFile = ref()
+const newFile = ref('')
+const editFile = ref('')
+const cngFile = ref('')
+const delFile = ref('')
 
 const modalAction = () => {
   emit('on-submit', {
     ...form,
     newFile: newFile.value,
     editFil: editFile.value,
+    cngFile: cngFile.value,
     delFile: delFile.value,
   })
   validated.value = false
@@ -413,7 +415,19 @@ const modalAction = () => {
 }
 
 const fileControl = (payload: any) => {
-  console.log(form.contract_files, payload)
+  if (payload.newFile) newFile.value = payload.newFile
+  else newFile.value = ''
+
+  if (payload.editFile) {
+    editFile.value = payload.editFile.pk
+    cngFile.value = payload.editFile.file
+  } else {
+    editFile.value = ''
+    cngFile.value = ''
+  }
+
+  if (payload.delFile) delFile.value = payload.delFile
+  else delFile.value = ''
 }
 
 defineExpose({ formDataReset })

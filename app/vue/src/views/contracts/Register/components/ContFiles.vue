@@ -45,6 +45,7 @@ const removeFile = id => {
 
 const delFile = ref<number | null>(null)
 const deleted = ref<number | null>(null)
+
 const delFileConfirm = (pk: number) => {
   delFile.value = pk
   RefDelFile.value.callModal()
@@ -52,6 +53,7 @@ const delFileConfirm = (pk: number) => {
 
 const delFileSubmit = () => {
   if (deleted.value) {
+    emit('cont-file-control', { del_file: '' })
     deleted.value = null
     RefDelFile.value.close()
   } else {
