@@ -18,6 +18,8 @@ const RefDelFile = ref()
 const newFile = ref<File | null>(null)
 
 const editMode = ref(false)
+const doneEdit = () => (editMode.value = false)
+defineExpose({ doneEdit })
 const editFile = ref<number | null>(null)
 const cngFile = ref<File | null>(null)
 
@@ -36,7 +38,7 @@ const loadFile = (data: Event, pk = null as null | number) => {
   }
 }
 
-const removeFile = id => {
+const removeFile = (id: string) => {
   const file_form = document.getElementById(id) as HTMLInputElement
   file_form.value = ''
   if (id === 'scan-new-file') {

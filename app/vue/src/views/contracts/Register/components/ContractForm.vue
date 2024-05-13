@@ -402,6 +402,7 @@ const onSubmit = (event: Event) => {
   }
 }
 
+const RefContFile = ref()
 const newFile = ref<File | ''>('')
 const editFile = ref<number | ''>('')
 const cngFile = ref<File | ''>('')
@@ -421,6 +422,7 @@ const modalAction = () => {
   editFile.value = ''
   cngFile.value = ''
   delFile.value = ''
+  RefContFile.value.doneEdit()
 }
 
 const fileControl = (payload: any) => {
@@ -996,6 +998,7 @@ onBeforeRouteLeave(() => formDataReset())
       </CRow>
 
       <ContFiles
+        ref="RefContFile"
         v-show="isContract"
         :is-dark="isDark"
         :status="form.status as string"
