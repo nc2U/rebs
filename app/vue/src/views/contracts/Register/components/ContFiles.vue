@@ -78,7 +78,7 @@ const delFileSubmit = () => {
             <v-icon icon="mdi-paperclip" size="sm" color="grey" class="mr-2" />
             <span :class="{ 'text-decoration-line-through': file.pk === deleted }">
               <a :href="file.file" target="_blank">
-                {{ cutString(file.file_name, 50) }}
+                {{ cutString(file.file_name, 46) }}
               </a>
             </span>
             <span class="file-desc1 form-text mr-1">
