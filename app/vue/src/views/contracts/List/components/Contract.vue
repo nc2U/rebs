@@ -67,6 +67,18 @@ const getColor = (q: '1' | '2' | '3' | '4' | undefined) =>
       {{ numFormat(contract.total_paid) }}
     </CTableDataCell>
     <CTableDataCell>
+      <span v-if="!!contract.contract_files.length" class="pointer">
+        <a :href="contract.contract_files[0].file" target="_blank">
+          <v-icon icon="mdi-download-box" color="primary" />
+        </a>
+        <v-tooltip activator="parent" location="top">다운로드</v-tooltip>
+      </span>
+      <span v-else>
+        <v-icon icon="mdi-download-box-outline" color="secondary" />
+        <v-tooltip activator="parent" location="top">미등록</v-tooltip>
+      </span>
+    </CTableDataCell>
+    <CTableDataCell>
       <CButton
         type="button"
         color="success"
