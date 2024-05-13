@@ -402,10 +402,10 @@ const onSubmit = (event: Event) => {
   }
 }
 
-const newFile = ref('')
-const editFile = ref('')
-const cngFile = ref('')
-const delFile = ref('')
+const newFile = ref<File | ''>('')
+const editFile = ref<number | ''>('')
+const cngFile = ref<File | ''>('')
+const delFile = ref<number | ''>('')
 
 const modalAction = () => {
   emit('on-submit', {
@@ -998,9 +998,9 @@ onBeforeRouteLeave(() => formDataReset())
       <ContFiles
         v-show="isContract"
         :is-dark="isDark"
-        :status="form.status"
+        :status="form.status as string"
         :contract-files="form.contract_files"
-        :deleted="delFile"
+        :deleted="delFile || undefined"
         @cont-file-control="fileControl"
       />
     </CCardBody>

@@ -1,12 +1,13 @@
 <script lang="ts" setup="">
-import { ref } from 'vue'
+import { type PropType, ref } from 'vue'
 import { cutString, humanizeFileSize } from '@/utils/baseMixins'
+import type { ContractFile } from '@/store/types/contract'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const props = defineProps({
   isDark: { type: Boolean, default: false },
   status: { type: String, default: '' },
-  contractFiles: { type: Array, default: () => [] },
+  contractFiles: { type: Array as PropType<ContractFile[]>, default: () => [] },
   deleted: { type: Number, default: null },
 })
 
@@ -14,14 +15,15 @@ const emit = defineEmits(['cont-file-control'])
 
 const RefDelFile = ref()
 
-const newFile = ref<{ file: File } | null>(null)
+const newFile = ref<File | null>(null)
 
 const editMode = ref(false)
 const editFile = ref<number | null>(null)
-const cngFile = ref<{ file: File } | null>(null)
+const cngFile = ref<File | null>(null)
 
-const loadFile = (data: Event, pk = null) => {
+const loadFile = (data: Event, pk = null as null | number) => {
   const el = data.target as HTMLInputElement
+
   if (el.files && el.files[0]) {
     if (el.id === 'scan-new-file') {
       newFile.value = el.files[0]
