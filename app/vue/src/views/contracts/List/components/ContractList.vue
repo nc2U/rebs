@@ -19,16 +19,17 @@ const pageSelect = (page: number) => emit('page-select', page)
     <colgroup>
       <col style="width: 6%" />
       <col style="width: 6%" />
-      <col style="width: 8%" />
+      <col style="width: 6%" />
       <col style="width: 5%" />
-      <col style="width: 8%" />
+      <col style="width: 7%" />
       <col style="width: 8%" />
       <col style="width: 8%" />
       <col style="width: 8%" />
       <col style="width: 9%" />
       <col style="width: 8%" />
-      <col style="width: 12%" />
-      <col style="width: 9%" />
+      <col style="width: 10%" />
+      <col style="width: 8%" />
+      <col style="width: 6%" />
       <col style="width: 5%" />
     </colgroup>
 
@@ -46,6 +47,7 @@ const pageSelect = (page: number) => emit('page-select', page)
         <CTableHeaderCell scope="col">회당 계약금</CTableHeaderCell>
         <CTableHeaderCell scope="col">최종납입회차</CTableHeaderCell>
         <CTableHeaderCell scope="col">납입금액합계</CTableHeaderCell>
+        <CTableHeaderCell scope="col">계약서</CTableHeaderCell>
         <CTableHeaderCell scope="col">비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>

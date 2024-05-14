@@ -7,6 +7,18 @@ export interface SimpleCont {
   activation: boolean
 }
 
+export interface ContractFile {
+  pk: number
+  file: string
+  file_name: string
+  file_size: number
+  created: string
+  user: { pk: number; username: string }
+  cngFile?: File | null
+  del?: boolean
+  edit?: boolean
+}
+
 export interface Contract {
   pk: number
   project: number
@@ -29,6 +41,7 @@ export interface Contract {
     order_group_name: string
   }
   unit_type_desc: UnitType
+  contract_files: ContractFile[]
 }
 
 export interface KeyUnit {

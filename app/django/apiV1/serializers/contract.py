@@ -1,3 +1,5 @@
+import os
+
 from django.db import transaction
 from rest_framework import serializers
 from django.core.exceptions import ObjectDoesNotExist
@@ -7,6 +9,7 @@ from project.models import Project, ProjectIncBudget
 from items.models import UnitType, HouseUnit, KeyUnit
 from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
 from rebs.models import AccountSort, ProjectAccountD2, ProjectAccountD3
+from accounts.models import User
 from contract.models import (OrderGroup, Contract, ContractPrice, Contractor,
                              ContractorAddress, ContractorContact,
                              Succession, ContractorRelease, ContractFile)
@@ -197,7 +200,15 @@ class ProjectCashBookIncsInContractSerializer(serializers.ModelSerializer):
         fields = ('income',)
 
 
+class SimpleUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('pk', 'username')
+
+
 class ContractFileInContractSetSerializer(serializers.ModelSerializer):
+    user = SimpleUserSerializer(read_only=True)
+
     class Meta:
         model = ContractFile
         fields = ('pk', 'file', 'file_name', 'file_size', 'created', 'user')
@@ -262,6 +273,11 @@ class ContractSetSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # 1. 계약정보 테이블 입력
         contract = Contract.objects.create(**validated_data)
+        new_file = self.initial_data.get('newFile', None)
+        if new_file:
+            user = self.context['request'].user
+            cont_file = ContractFile(contract=contract, file=new_file, user=user)
+            cont_file.save()
         contract.save()
 
         # 2. 계약 유닛 연결
@@ -390,6 +406,29 @@ class ContractSetSerializer(serializers.ModelSerializer):
         instance.order_group = validated_data.get('order_group', instance.order_group)
         instance.unit_type = validated_data.get('unit_type', instance.unit_type)
         instance.save()
+
+        new_file = self.initial_data.get('newFile', None)
+        if new_file:
+            user = self.context['request'].user
+            cont_file = ContractFile(contract=instance, file=new_file, user=user)
+            cont_file.save()
+
+        edit_file = self.initial_data.get('editFile', None)  # pk
+        cng_file = self.initial_data.get('cngFile', None)  # change file
+
+        if edit_file and cng_file:
+            file = ContractFile.objects.get(pk=edit_file)
+            if cng_file:
+                old_file = file.file
+                if os.path.isfile(old_file.path):
+                    os.remove(old_file.path)
+                file.file = cng_file
+                file.save()
+
+        del_file = self.initial_data.get('delFile', None)
+        if del_file:
+            file = ContractFile.objects.get(pk=del_file)
+            file.delete()
 
         # 1-2. 동호수 변경 여부 확인 및 변경 사항 적용
         keyunit_pk = self.initial_data.get('keyunit')  # keyunit => pk

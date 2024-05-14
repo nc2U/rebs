@@ -10,6 +10,7 @@ import Multiselect from '@vueform/multiselect'
 import MdEditor from '@/components/MdEditor/Index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import WatcherAdd from '@/views/_Work/Manages/Issues/components/aside/WatcherAdd.vue'
+import { dateFormat } from '@/utils/baseMixins'
 
 const props = defineProps({
   issueProject: { type: Object as PropType<IssueProject>, default: null },
@@ -38,14 +39,21 @@ const form = ref({
   status: 1 as number | null,
   parent: null as number | null,
   priority: 2 as number | null,
-  start_date: null as string | null,
+  start_date: dateFormat(new Date()) as string | null,
   assigned_to: null as number | null,
   due_date: null as string | null,
+  category: null as number | null,
   estimated_hours: null as number | string | null,
+  fixed_version: null as number | null,
   done_ratio: 0,
   watchers: [] as number[],
   files: [] as IssueFile[],
 })
+
+watch(
+  () => form.value.project,
+  nVal => workStore.fetchIssueProject(nVal),
+)
 
 const statuses = computed(() =>
   props.issue ? props.statusList : props.statusList.filter(s => s.pk === 1),
@@ -130,9 +138,12 @@ watch(
   nVal => (watcherList.value = nVal ?? []),
 )
 
-const trackerList = computed(() =>
-  props.issueProject ? props.issueProject.trackers : workStore.trackerList,
+const trackers = computed(() =>
+  workStore.issueProject ? workStore.issueProject.trackers : workStore.trackerList,
 )
+
+const categories = computed(() => workStore.issueProject?.categories ?? [])
+const versions = computed(() => workStore.issueProject?.versions ?? [])
 
 const watcherAddSubmit = (payload: { pk: number; username: string }[]) => {
   form.value.watchers = [...new Set([...form.value.watchers, ...payload.map(p => p.pk)])]
@@ -278,7 +289,7 @@ onBeforeMount(() => {
             <h6>속성 변경</h6>
             <v-divider class="mt-0" />
           </div>
-          <CRow v-show="!route.query.parent" class="mb-3">
+          <CRow v-show="!issueProject" class="mb-3">
             <CFormLabel for="project" class="col-sm-2 col-form-label text-right required">
               프로젝트
             </CFormLabel>
@@ -297,6 +308,7 @@ onBeforeMount(() => {
                 </option>
               </CFormSelect>
             </CCol>
+
             <CCol style="padding-top: 8px">
               <CFormCheck v-model="form.is_private" id="is_private" label="비공개" />
             </CCol>
@@ -309,13 +321,17 @@ onBeforeMount(() => {
             <CCol sm="4">
               <CFormSelect v-model.number="form.tracker" id="tracker" required>
                 <option value="">---------</option>
-                <option v-for="tr in trackerList" :value="tr.pk" :key="tr.pk">
+                <option v-for="tr in trackers" :value="tr.pk" :key="tr.pk">
                   {{ tr.name }}
                 </option>
               </CFormSelect>
             </CCol>
             <CCol v-if="form.tracker" class="pt-1">
-              {{ trackerList?.filter(t => t.pk === form.tracker).map(t => t.description)[0] ?? '' }}
+              {{ trackers?.filter(t => t.pk === form.tracker).map(t => t.description)[0] ?? '' }}
+            </CCol>
+
+            <CCol v-if="issueProject" style="padding-top: 8px">
+              <CFormCheck v-model="form.is_private" id="is_private" label="비공개" />
             </CCol>
           </CRow>
 
@@ -373,7 +389,7 @@ onBeforeMount(() => {
             </CCol>
           </CRow>
 
-          <CRow v-show="!!issue && !issue.sub_issues.length" class="mb-3">
+          <CRow class="mb-3">
             <CFormLabel for="priority" class="col-sm-2 col-form-label text-right required">
               우선순위
             </CFormLabel>
@@ -395,84 +411,101 @@ onBeforeMount(() => {
           </CRow>
 
           <CRow class="mb-3">
-            <CFormLabel for="assigned_to" class="col-sm-2 col-form-label text-right">
-              담당자
-            </CFormLabel>
-            <div class="col-sm-3">
-              <CFormSelect v-model.number="form.assigned_to" id="assigned_to">
-                <option value="">---------</option>
-                <option :value="userInfo?.pk">&lt;&lt; 나 &gt;&gt;</option>
-                <option v-for="user in memberList" :value="user.pk" :key="user.pk">
-                  {{ user.username }}
-                </option>
-              </CFormSelect>
-            </div>
-            <div class="col-sm-1" style="padding-top: 6px">
-              <a
-                v-if="form.assigned_to !== userInfo?.pk"
-                href="javascript:void(0)"
-                @click="assignedToMe"
-              >
-                나에게 할당
-              </a>
-            </div>
-
-            <CFormLabel
-              v-if="!!issue && !issue.sub_issues.length"
-              for="due_date"
-              class="col-sm-2 col-form-label text-right"
-            >
-              완료기한
-            </CFormLabel>
-            <CCol v-if="!!issue && !issue.sub_issues.length" sm="4">
-              <DatePicker v-model="form.due_date" id="due_date" />
+            <CCol sm="6">
+              <CRow>
+                <CFormLabel for="assigned_to" class="col-sm-4 col-form-label text-right">
+                  담당자
+                </CFormLabel>
+                <CCol sm="6">
+                  <CFormSelect v-model.number="form.assigned_to" id="assigned_to">
+                    <option value="">---------</option>
+                    <option :value="userInfo?.pk">&lt;&lt; 나 &gt;&gt;</option>
+                    <option v-for="user in memberList" :value="user.pk" :key="user.pk">
+                      {{ user.username }}
+                    </option>
+                  </CFormSelect>
+                </CCol>
+                <CCol style="padding-top: 6px">
+                  <a
+                    v-if="form.assigned_to !== userInfo?.pk"
+                    href="javascript:void(0)"
+                    @click="assignedToMe"
+                  >
+                    나에게 할당
+                  </a>
+                </CCol>
+              </CRow>
             </CCol>
 
-            <CFormLabel v-else for="estimated_hours" class="col-sm-2 col-form-label text-right">
-              추정시간
+            <CFormLabel for="due_date" class="col-sm-2 col-form-label text-right">
+              완료기한
             </CFormLabel>
-            <div v-if="!!issue && issue.sub_issues.length" class="col-sm-3">
-              <CFormInput
-                v-model="form.estimated_hours"
-                id="estimated_hours"
-                maxlength="6"
-                type="text"
-                class="form-control"
-                @input="removeProperty"
-                feedbackInvalid="999 이하의 정수, 실수 또는 '12:59' 과 같이 시간 형식을 입력하세요."
-              />
-            </div>
-            <div
-              v-if="!!issue && issue.sub_issues.length"
-              class="col-sm-1"
-              style="padding-top: 6px"
-            >
-              시간
-            </div>
+            <CCol sm="4">
+              <DatePicker v-model="form.due_date" id="due_date" />
+            </CCol>
           </CRow>
 
-          <CRow v-if="!!issue && !issue.sub_issues.length" class="mb-3">
-            <CCol sm="6"></CCol>
+          <CRow class="mb-3">
+            <CCol sm="6">
+              <CRow v-if="categories?.length">
+                <CFormLabel for="category" class="col-sm-4 col-form-label text-right">
+                  범주
+                </CFormLabel>
+                <CCol sm="6">
+                  <CFormSelect v-model.number="form.category" id="category">
+                    <option value="">---------</option>
+                    <option v-for="cate in categories" :value="cate.pk" :key="cate.pk">
+                      {{ cate.name }}
+                      <span v-if="cate.assigned_to">{{ cate.assigned_to.username }}</span>
+                    </option>
+                  </CFormSelect>
+                </CCol>
+                <CCol style="padding-top: 6px">
+                  <v-icon icon="mdi-plus-circle" color="success" class="pointer" />
+                </CCol>
+              </CRow>
+            </CCol>
 
-            <CFormLabel for="estimated_hours" class="col-sm-2 col-form-label text-right">
-              추정시간
-            </CFormLabel>
-            <div class="col-sm-3">
-              <CFormInput
-                v-model="form.estimated_hours"
-                id="estimated_hours"
-                maxlength="6"
-                type="text"
-                class="form-control"
-                @input="removeProperty"
-                feedbackInvalid="999 이하의 정수, 실수 또는 '12:59' 과 같이 시간 형식을 입력하세요."
-              />
-            </div>
-            <div class="col-sm-1" style="padding-top: 6px">시간</div>
+            <CCol sm="6">
+              <CRow>
+                <CFormLabel for="estimated_hours" class="col-sm-4 col-form-label text-right">
+                  추정시간
+                </CFormLabel>
+                <CCol sm="6">
+                  <CFormInput
+                    v-model="form.estimated_hours"
+                    id="estimated_hours"
+                    maxlength="6"
+                    type="text"
+                    class="form-control"
+                    @input="removeProperty"
+                    feedbackInvalid="999 이하의 정수, 실수 또는 '12:59' 과 같이 시간 형식을 입력하세요."
+                  />
+                </CCol>
+                <CCol style="padding-top: 6px">시간</CCol>
+              </CRow>
+            </CCol>
           </CRow>
 
-          <CRow v-if="!!issue && !issue.sub_issues.length" class="mb-3">
-            <CCol sm="6"></CCol>
+          <CRow class="mb-3">
+            <CCol sm="6">
+              <CRow v-if="versions?.length">
+                <CFormLabel for="fixed_version" class="col-sm-4 col-form-label text-right">
+                  목표버전
+                </CFormLabel>
+                <CCol sm="6">
+                  <CFormSelect v-model.number="form.fixed_version" id="fixed_version">
+                    <option value="">---------</option>
+                    <option v-for="ver in versions" :value="ver.pk" :key="ver.pk">
+                      {{ ver.name }}
+                    </option>
+                  </CFormSelect>
+                </CCol>
+                <CCol style="padding-top: 6px">
+                  <v-icon icon="mdi-plus-circle" color="success" class="pointer" />
+                </CCol>
+              </CRow>
+            </CCol>
 
             <CFormLabel for="done_ratio" class="col-sm-2 col-form-label text-right">
               진척도

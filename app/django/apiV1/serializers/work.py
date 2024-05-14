@@ -62,14 +62,30 @@ class TrackerInIssueProjectSerializer(serializers.ModelSerializer):
         fields = ('pk', 'name', 'description')
 
 
+class VersionInIssueProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Version
+        fields = ('pk', 'name', 'status', 'sharing', 'due_date', 'description', 'wiki_page_title')
+
+
+class IssueCategoryInIssueProjectSerializer(serializers.ModelSerializer):
+    assigned_to = SimpleUserSerializer(read_only=True)
+
+    class Meta:
+        model = IssueCategory
+        fields = ('pk', 'name', 'assigned_to')
+
+
 class IssueProjectSerializer(serializers.ModelSerializer):
     family_tree = FamilyTreeSerializer(many=True, read_only=True)
     sub_projects = serializers.SerializerMethodField()
+    module = ModuleInIssueProjectSerializer(read_only=True)
     all_members = MemberInIssueProjectSerializer(many=True, read_only=True)
     members = MemberInIssueProjectSerializer(many=True, read_only=True)
-    roles = RoleInIssueProjectSerializer(many=True, read_only=True)
+    allowed_roles = RoleInIssueProjectSerializer(many=True, read_only=True)
     trackers = TrackerInIssueProjectSerializer(many=True, read_only=True)
-    module = ModuleInIssueProjectSerializer(read_only=True)
+    versions = VersionInIssueProjectSerializer(many=True, read_only=True)
+    categories = IssueCategoryInIssueProjectSerializer(many=True, read_only=True)
     visible = serializers.SerializerMethodField(read_only=True)
     total_estimated_hours = serializers.SerializerMethodField(read_only=True)
     total_time_spent = serializers.SerializerMethodField(read_only=True)
@@ -78,9 +94,9 @@ class IssueProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = IssueProject
         fields = ('pk', 'company', 'name', 'slug', 'description', 'homepage',
-                  'is_public', 'family_tree', 'parent', 'is_inherit_members',
-                  'default_version', 'roles', 'trackers', 'status', 'depth',
-                  'all_members', 'members', 'sub_projects', 'module', 'visible',
+                  'is_public', 'family_tree', 'parent', 'sub_projects', 'module',
+                  'is_inherit_members', 'allowed_roles', 'trackers', 'versions', 'default_version',
+                  'categories', 'status', 'depth', 'all_members', 'members', 'visible',
                   'total_estimated_hours', 'total_time_spent', 'user', 'created', 'updated')
 
     def get_sub_projects(self, obj):
@@ -132,9 +148,9 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         validated_data['depth'] = 1 if parent is None else parent.depth + 1
         project = IssueProject.objects.create(**validated_data)
         # 프로젝트 생성시 설정된 기본 역할 및 유형 추가
-        roles = self.initial_data.get('roles', [])
-        if roles:
-            project.roles.add(*roles)
+        allowed_roles = self.initial_data.get('allowed_roles', [])
+        if allowed_roles:
+            project.allowed_roles.add(*allowed_roles)
         trackers = self.initial_data.get('trackers', [])
         if trackers:
             project.trackers.add(*trackers)
@@ -167,9 +183,9 @@ class IssueProjectSerializer(serializers.ModelSerializer):
                 sub.save()
 
         # 역할 및 유형이 있는 경우 업데이트 로직
-        roles = self.initial_data.get('roles', [])
-        if roles and roles != [r.pk for r in instance.roles.all()]:
-            instance.roles.set(roles)
+        allowed_roles = self.initial_data.get('allowed_roles', [])
+        if allowed_roles and allowed_roles != [r.pk for r in instance.allowed_roles.all()]:
+            instance.allowed_roles.set(allowed_roles)
 
         trackers = self.initial_data.get('trackers', [])
         if trackers and trackers != [t.pk for t in instance.trackers.all()]:
@@ -203,8 +219,8 @@ class IssueProjectSerializer(serializers.ModelSerializer):
 
         if users:
             for user in users:
-                user_instance = User.objects.get(pk=user)
-                member_instance = Member.objects.create(user=user_instance)
+                # user_instance = User.objects.get(pk=user)
+                member_instance = Member.objects.create(user_id=user)
                 member_instance.roles.add(*roles)
                 member_instance.save()
                 members.append(member_instance.pk)

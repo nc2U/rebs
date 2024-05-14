@@ -20,7 +20,7 @@ class IssueProject(models.Model):
     is_inherit_members = models.BooleanField('상위 프로젝트 멤버 상속', default=False)
     default_version = models.ForeignKey('Version', on_delete=models.SET_NULL, null=True, blank=True,
                                         verbose_name='기본 버전', help_text='기존 공유 버전에서만 작동합니다.')
-    roles = models.ManyToManyField('Role', blank=True, related_name='projects', verbose_name='허용 역할')
+    allowed_roles = models.ManyToManyField('Role', blank=True, related_name='projects', verbose_name='허용 역할')
     trackers = models.ManyToManyField('Tracker', blank=True, related_name='projects', verbose_name='허용유형')
     status = models.CharField('사용여부', max_length=1, default='1', choices=(('1', '사용'), ('9', '잠금보관(모든 접근이 차단됨)')))
     depth = models.PositiveSmallIntegerField('단계', default=1,
@@ -233,9 +233,10 @@ class Tracker(models.Model):
 
 
 class IssueCategory(models.Model):
-    project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
+    project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트', related_name='categories')
     name = models.CharField('범주', max_length=100)
-    assigned_to = models.ForeignKey(Member, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='담당자')
+    assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+                                    verbose_name='담당자')
 
     def __str__(self):
         return self.name
@@ -280,7 +281,7 @@ class Workflow(models.Model):
 
 
 class Version(models.Model):
-    project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
+    project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트', related_name='versions')
     name = models.CharField('이름', max_length=20)
     status = models.CharField('상태', max_length=1, choices=(('1', '진행'), ('2', '잠김'), ('3', '닫힘')), default='1')
     SHARING_CHOICES = (
@@ -288,7 +289,7 @@ class Version(models.Model):
     sharing = models.CharField('공유', max_length=1, choices=SHARING_CHOICES, default='1')
     due_date = models.DateField(verbose_name='날짜', blank=True, null=True)
     description = models.CharField('설명', max_length=255, blank=True, default='')
-    wiki_page_title = models.CharField('위키 페이지 주소', max_length=255, blank=True, null=True)
+    wiki_page_title = models.CharField('위키 페이지', max_length=255, blank=True, default='')
 
     def __str__(self):
         return self.name

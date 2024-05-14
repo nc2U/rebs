@@ -8,7 +8,7 @@ import { useProjectData } from '@/store/pinia/project_data'
 import { usePayment } from '@/store/pinia/payment'
 import { useProCash } from '@/store/pinia/proCash'
 import { type PayOrder } from '@/store/types/payment'
-import { type Payment, type Contractor } from '@/store/types/contract'
+import { type Payment, type Contractor, type ContractFile } from '@/store/types/contract'
 import { isValidate } from '@/utils/helper'
 import { numFormat, diffDate } from '@/utils/baseMixins'
 import { write_contract } from '@/utils/pageAuth'
@@ -17,6 +17,7 @@ import Multiselect from '@vueform/multiselect'
 import ContNavigation from './ContNavigation.vue'
 import ContController from './ContController.vue'
 import ContractorAlert from './ContractorAlert.vue'
+import ContFiles from './ContFiles.vue'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -59,12 +60,13 @@ const form = reactive({
   houseunit_code: '',
   // cont_keyunit: '', // 디비 계약 유닛
   // cont_houseunit: '', // 디비 동호 유닛
+  contract_files: [] as ContractFile[], // scan File
 
   // contractor
   name: '', // 7
   birth_date: null as string | null, // 8
   gender: '', // 9
-  qualification: '',
+  qualification: '2',
   status: null as null | string, // 1
   reservation_date: null as string | null, // 6-1
   contract_date: null as string | null, // 6-2
@@ -93,9 +95,6 @@ const form = reactive({
   bank_account: null as number | null, // 17
   trader: '', // 18
   installment_order: null as number | null, // 19
-
-  // scan File
-  newFiles: [] as File[],
 })
 
 const matchAddr = computed(() => {
@@ -174,9 +173,14 @@ const formsCheck = computed(() => {
     const c1 = form.dm_address3 === address.dm_address3
     const d1 = form.note === props.contract.contractor.note
 
+    const e1 = !newFile.value
+    const f1 = !editFile.value
+    const g1 = !cngFile.value
+    const h1 = !delFile.value
+
     const cond1 = a && b && c && d && e && f && g && h && i && j && u
     const cond2 = k && l && m && n && o && p && q && r && s && t && v
-    const cond3 = w && x && y && z && a1 && b1 && c1 && d1 // && e1
+    const cond3 = w && x && y && z && a1 && b1 && c1 && d1 && e1 && f1 && g1 && h1
     return cond1 && cond2 && cond3
   } else return false
 })
@@ -267,12 +271,13 @@ const formDataReset = () => {
   form.keyunit = null
   form.houseunit = null
   form.keyunit_code = ''
+  form.contract_files = []
 
   // form.contractor = null
   form.name = ''
   form.birth_date = null
   form.gender = ''
-  form.qualification = ''
+  form.qualification = '2'
   form.status = ''
   form.reservation_date = null
   form.contract_date = null
@@ -317,6 +322,7 @@ const formDataSetup = () => {
     form.keyunit = props.contract.keyunit?.pk
     form.keyunit_code = props.contract.keyunit?.unit_code
     form.houseunit = props.contract.keyunit?.houseunit?.pk
+    form.contract_files = props.contract.contract_files
 
     // contractor
     form.name = props.contract.contractor.name
@@ -396,21 +402,43 @@ const onSubmit = (event: Event) => {
   }
 }
 
+const RefContFile = ref()
+const newFile = ref<File | ''>('')
+const editFile = ref<number | ''>('')
+const cngFile = ref<File | ''>('')
+const delFile = ref<number | ''>('')
+
 const modalAction = () => {
-  emit('on-submit', form)
+  emit('on-submit', {
+    ...form,
+    newFile: newFile.value,
+    editFile: editFile.value,
+    cngFile: cngFile.value,
+    delFile: delFile.value,
+  })
   validated.value = false
   refConfirmModal.value.close()
+  newFile.value = ''
+  editFile.value = ''
+  cngFile.value = ''
+  delFile.value = ''
+  RefContFile.value.doneEdit()
 }
 
-const loadFile = (data: Event) => {
-  const el = data.target as HTMLInputElement
-  if (el.files && el.files[0]) form.newFiles.push(el.files[0])
-}
+const fileControl = (payload: any) => {
+  if (payload.newFile) newFile.value = payload.newFile
+  else newFile.value = ''
 
-const removeFile = () => {
-  const file_form = document.getElementById('scan-file') as HTMLInputElement
-  file_form.value = ''
-  form.newFiles = []
+  if (payload.editFile) {
+    editFile.value = payload.editFile
+    cngFile.value = payload.cngFile
+  } else {
+    editFile.value = ''
+    cngFile.value = ''
+  }
+
+  if (payload.delFile) delFile.value = payload.delFile
+  else delFile.value = ''
 }
 
 defineExpose({ formDataReset })
@@ -630,8 +658,8 @@ onBeforeRouteLeave(() => formDataReset())
           </div>
           <CFormFeedback invalid>성별을 선택하세요.</CFormFeedback>
         </CCol>
-        
-        <CCol v-if="isContract && isUnion && form.order_group_sort === '1'" xs="6" lg="2">
+
+        <CCol v-if="contract && isUnion && form.order_group_sort === '1'" xs="6" lg="2">
           <CFormSelect v-model="form.qualification" required :disabled="!isContract">
             <option value="">---------</option>
             <option value="2">미인가</option>
@@ -969,17 +997,15 @@ onBeforeRouteLeave(() => formDataReset())
         </CCol>
       </CRow>
 
-      <CRow class="my-3 py-2 bg-light">
-        <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 계약서 파일</CFormLabel>
-        <CCol sm="10" lg="5" class="mb-sm-3 mb-lg-0">
-          <CInputGroup>
-            <CFormInput id="scan-file" type="file" @change="loadFile" :disabled="!form.status" />
-            <CInputGroupText v-if="form.newFiles.length">
-              <v-icon icon="mdi-trash-can-outline" color="grey" size="16" @click="removeFile" />
-            </CInputGroupText>
-          </CInputGroup>
-        </CCol>
-      </CRow>
+      <ContFiles
+        ref="RefContFile"
+        v-show="isContract"
+        :is-dark="isDark"
+        :status="form.status as string"
+        :contract-files="form.contract_files"
+        :deleted="delFile || undefined"
+        @cont-file-control="fileControl"
+      />
     </CCardBody>
 
     <CCardFooter class="text-right">

@@ -99,17 +99,14 @@ const typeSelect = (payload: {
 }
 
 const onSubmit = (payload: Contract & { status: '1' | '2' }) => {
-  const { pk, ...getData } = payload
+  const { pk, ...getData } = payload as { [key: string]: any }
   if (project.value) getData.project = project.value
 
   const form = new FormData()
 
   for (const key in getData) {
-    if (key === 'newFiles') getData[key].forEach(val => form.append(key, val as string | Blob))
-    else {
-      const formValue = getData[key] === null ? '' : getData[key]
-      form.append(key, formValue as string)
-    }
+    const formValue = getData[key] === null ? '' : getData[key]
+    form.append(key, formValue as string)
   }
 
   if (!pk) {
