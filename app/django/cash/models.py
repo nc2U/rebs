@@ -49,8 +49,8 @@ class CashBook(models.Model):
                                       help_text='각기 다른 계정 항목이 1회에 같이 출금된 경우 이 항목을 체크')
     separated = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='sepItems',
                                   verbose_name='분할 계정')
-    content = models.CharField('적요', max_length=50)
-    trader = models.CharField('거래처', max_length=20, blank=True)
+    content = models.CharField('적요', max_length=50, blank=True, default='')
+    trader = models.CharField('거래처', max_length=20, blank=True, default='')
     bank_account = models.ForeignKey(CompanyBankAccount, on_delete=models.PROTECT, verbose_name='거래계좌')
     income = models.PositiveBigIntegerField('입금액', null=True, blank=True)
     outlay = models.PositiveBigIntegerField('출금액', null=True, blank=True)
@@ -58,8 +58,8 @@ class CashBook(models.Model):
         ('0', '증빙 없음'), ('1', '세금계산서'), ('2', '계산서(면세)'),
         ('3', '카드전표/현금영수증'), ('4', '간이영수증'), ('5', '거래명세서'),
         ('6', '입금표'), ('7', '지출결의서'))
-    evidence = models.CharField('지출증빙', max_length=1, choices=EVIDENCE_CHOICES, blank=True)
-    note = models.CharField('비고', max_length=255, blank=True)
+    evidence = models.CharField('지출증빙', max_length=1, choices=EVIDENCE_CHOICES, null=True, blank=True)
+    note = models.CharField('비고', max_length=255, blank=True, default='')
     deal_date = models.DateField('거래일자')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
     created_at = models.DateTimeField('등록일시', auto_now_add=True)
@@ -117,8 +117,8 @@ class ProjectCashBook(models.Model):
     refund_contractor = models.ForeignKey('contract.Contractor', on_delete=models.PROTECT, null=True,
                                           blank=True, verbose_name='환불 계약자',
                                           help_text='이 건 거래가 환불금 출금인 경우 이 건을 납부한 계약자를 선택')  # 환불 종결 여부
-    content = models.CharField('적요', max_length=50, blank=True)
-    trader = models.CharField('거래처', max_length=20, blank=True,
+    content = models.CharField('적요', max_length=50, blank=True, default='')
+    trader = models.CharField('거래처', max_length=20, blank=True, default='',
                               help_text='분양대금(분담금) 수납 건인 경우 반드시 해당 계좌에 기재된 입금자를 기재')  # icp=True -> 분양대금 납입자
     bank_account = models.ForeignKey(ProjectBankAccount, on_delete=models.PROTECT,
                                      verbose_name='거래계좌')  # icp=True -> 분양대금 납입계좌
@@ -128,8 +128,8 @@ class ProjectCashBook(models.Model):
         ('0', '증빙 없음'), ('1', '세금계산서'), ('2', '계산서(면세)'),
         ('3', '카드전표/현금영수증'), ('4', '간이영수증'), ('5', '거래명세서'),
         ('6', '입금표'), ('7', '지출결의서'))
-    evidence = models.CharField('지출증빙', max_length=1, choices=EVIDENCE_CHOICES, blank=True)
-    note = models.TextField('비고', blank=True)
+    evidence = models.CharField('지출증빙', max_length=1, choices=EVIDENCE_CHOICES, null=True, blank=True)
+    note = models.TextField('비고', blank=True, default='')
     deal_date = models.DateField('거래일자')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
     created_at = models.DateTimeField('등록일시', auto_now_add=True)
