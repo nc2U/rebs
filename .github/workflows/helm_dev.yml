@@ -25,11 +25,6 @@ jobs:
         with:
           ref: 'develop'
       
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-      
       # Necessary dir Check
       - name: media dir check
         uses: garygrossgarten/github-action-ssh@release
