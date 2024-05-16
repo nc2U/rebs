@@ -68,22 +68,22 @@ jobs:
             --set global.emailHostUser=${{ secrets.EMAIL_HOST_USER }} \
             --set global.emailHostPassword=${{ secrets.EMAIL_HOST_PASSWORD }} \
             --set global.emailDefaultSender=${{ secrets.EMAIL_DEFAULT_SENDER }} \
-            --set 'nginx.ingress.tls[0].hosts[0]'=${{ secrets.DOMAIN_NAME }} \
-            --set 'nginx.ingress.tls[0].hosts[1]'=www.${{ secrets.DOMAIN_NAME }} \
-            --set 'nginx.ingress.tls[0].hosts[2]'=api.${{ secrets.DOMAIN_NAME }} \
-            --set 'nginx.ingress.tls[0].hosts[3]'=info.${{ secrets.DOMAIN_NAME }} \
-            --set 'nginx.ingress.hosts[0].host'=${{ secrets.DOMAIN_NAME }} \
-            --set 'nginx.ingress.hosts[1].host'=www.${{ secrets.DOMAIN_NAME }} \
-            --set 'nginx.ingress.hosts[2].host'=api.${{ secrets.DOMAIN_NAME }} \
-            --set 'nginx.ingress.hosts[3].host'=info.${{ secrets.DOMAIN_NAME }} \
-            --set 'nginx.ingress.hosts[0].paths[0].path'=/ \
-            --set 'nginx.ingress.hosts[0].paths[0].pathType'=ImplementationSpecific \
-            --set 'nginx.ingress.hosts[1].paths[0].path'=/ \
-            --set 'nginx.ingress.hosts[1].paths[0].pathType'=ImplementationSpecific \
-            --set 'nginx.ingress.hosts[2].paths[0].path'=/ \
-            --set 'nginx.ingress.hosts[2].paths[0].pathType'=ImplementationSpecific \
-            --set 'nginx.ingress.hosts[3].paths[0].path'=/ \
-            --set 'nginx.ingress.hosts[3].paths[0].pathType'=ImplementationSpecific
+            --set nginx.ingress.tls[0].hosts[0]=${{ secrets.DOMAIN_NAME }} \
+            --set nginx.ingress.tls[0].hosts[1]=www.${{ secrets.DOMAIN_NAME }} \
+            --set nginx.ingress.tls[0].hosts[2]=api.${{ secrets.DOMAIN_NAME }} \
+            --set nginx.ingress.tls[0].hosts[3]=info.${{ secrets.DOMAIN_NAME }} \
+            --set nginx.ingress.hosts[0].host=${{ secrets.DOMAIN_NAME }} \
+            --set nginx.ingress.hosts[1].host=www.${{ secrets.DOMAIN_NAME }} \
+            --set nginx.ingress.hosts[2].host=api.${{ secrets.DOMAIN_NAME }} \
+            --set nginx.ingress.hosts[3].host=info.${{ secrets.DOMAIN_NAME }} \
+            --set nginx.ingress.hosts[0].paths[0].path=/ \
+            --set nginx.ingress.hosts[0].paths[0].pathType=ImplementationSpecific \
+            --set nginx.ingress.hosts[1].paths[0].path=/ \
+            --set nginx.ingress.hosts[1].paths[0].pathType=ImplementationSpecific \
+            --set nginx.ingress.hosts[2].paths[0].path=/ \
+            --set nginx.ingress.hosts[2].paths[0].pathType=ImplementationSpecific \
+            --set nginx.ingress.hosts[3].paths[0].path=/ \
+            --set nginx.ingress.hosts[3].paths[0].pathType=ImplementationSpecific
       
       # slack --> notification
       - name: Send slack when failed
