@@ -114,14 +114,6 @@ class StaffAuth(models.Model):
         verbose_name_plural = '스태프 권한'
 
 
-def get_image_filename(instance, filename):
-    year = datetime.today().strftime('%Y')
-    month = datetime.today().strftime('%m')
-    username = instance.user
-    hash_value = hashlib.blake2b(digest_size=3).hexdigest()
-    return f"users/{year}/{month}/{username}_{hash_value}_{filename}"
-
-
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField('성명', max_length=20, blank=True)
