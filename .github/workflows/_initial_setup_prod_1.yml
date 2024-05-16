@@ -10,14 +10,14 @@ on:
 jobs:
   build:
     name: Build
-
+    
     runs-on: ubuntu-latest
-
+    
     steps:
       # 레파지터리 체크 아웃
       - name: Check out source code
-        uses: actions/checkout@v3
-
+        uses: actions/checkout@v4
+      
       # Source to NFS server copy transfer
       - name: App Source to NFS server
         uses: appleboy/scp-action@master
@@ -27,7 +27,7 @@ jobs:
           password: ${{ secrets.NFS_PASS }}
           source: '.'
           target: ${{ secrets.NFS_PATH }}/prod/
-
+      
       # NFS server source cleanup
       - name: NFS server source cleanup
         uses: garygrossgarten/github-action-ssh@release
@@ -40,7 +40,7 @@ jobs:
             mkdir -p ./app/django/media
             echo '${{ secrets.NFS_PASS }}' | sudo -S chmod -R 755 ./app/django/media
             rm -rf .git* README.md app/vue app/svelte deploy
-
+      
       # Source to CI/CD server copy transfer
       - name: Helm Source to CI/CD server
         uses: appleboy/scp-action@master
@@ -50,7 +50,7 @@ jobs:
           password: ${{ secrets.CICD_PASS }}
           source: 'deploy'
           target: ${{ secrets.CICD_PATH }}/prod/
-
+      
       # Helm source to CI/CD server copy transfer
       - name: SSH Remote Commands from ci/cd server
         uses: garygrossgarten/github-action-ssh@release
@@ -81,14 +81,14 @@ jobs:
               --set 'nginx.ingress.hosts[1].paths[0].pathType'=ImplementationSpecific \
               --set 'nginx.ingress.hosts[2].paths[0].path'=/ \
               --set 'nginx.ingress.hosts[2].paths[0].pathType'=ImplementationSpecific
-
+      
       # slack --> notification
       - name: Send slack when failed
         if: ${{ failure() }}                    # 실패했을 때 실행
         uses: ./.github/actions/slack-notify    # 직접 '만든' Action이므로 uses 키워드를 이용해서 아래 경로를 입력해줍니다.
         with:
           slack_incoming_url: ${{ secrets.SLACK_INCOMING_URL }}
-
+      
       - name: Send slack if completed
         if: ${{ success() }}                    # 성공할 때만 실행
         uses: ./.github/actions/slack-notify

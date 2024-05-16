@@ -10,14 +10,14 @@ on:
 jobs:
   build:
     name: Build
-
+    
     runs-on: ubuntu-latest
-
+    
     steps:
       # 레파지터리 체크 아웃
       - name: Check out source code
-        uses: actions/checkout@v3
-
+        uses: actions/checkout@v4
+      
       # Django collectstatic & migrate
       - name: Django collectstatic & migrate (ci/cd server)
         uses: garygrossgarten/github-action-ssh@release
@@ -36,20 +36,20 @@ jobs:
             kubectl exec -it -n prod-hrebs $web_pod -- python manage.py collectstatic --no-input
             kubectl exec -it -n prod-hrebs $web_pod -- python manage.py makemigrations accounts book cash company contract document items notice payment project rebs
             kubectl exec -it -n prod-hrebs $web_pod -- python manage.py migrate
-
+      
       # Node.js 사용
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
-
+      
       # pnpm use
       - uses: pnpm/action-setup@v2
         name: Install pnpm
         with:
           version: 8
           run_install: false
-
+      
       # node_modules 캐싱
       - name: Cache vue node
         uses: actions/cache@v3
@@ -57,29 +57,29 @@ jobs:
         with:
           path: ./app/vue/node_modules
           key: pnpm-packages-${{ hashFiles('**/pnpm.lock') }}
-
+      
       # node_modules 변화기 있으면 빌드
       - name: Install Dependencies
         if: steps.cache_vue.outputs.cache-hit != 'true'
         run: cd app/vue && pnpm i
-
+      
       #      - run: pnpm lint
       #        # `if: ${{ always() }}`
       #        # 만약 `pnpm lint`라는 곳에서 에러가 났을 경우 이후 build를 실행하지 않고 해당 workflow가 종료됨.
       #        # `if: ${{ always() }}`라는 문법을 사용 시 `pnpm lint`라는 곳에서 에러가 나도
       #        # 이후의 build까지 다 실행을 해보고 난 뒤 종료 하므로 모든 테스트 스크립트에 `if: ${{ always() }}`를 붙임.
       #        if: ${{ always() }}
-
+      
       - run: cd app/vue && pnpm build && pnpm docs:build
         if: ${{ always() }}
-
+      
       # Docs deploy
       - name: Docs Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: app/vue/docs/.vitepress/dist
-
+      
       # Source to NFS server copy transfer
       - name: Copy Vue -> django static/dist (NFS server)
         uses: appleboy/scp-action@master
@@ -89,7 +89,7 @@ jobs:
           password: ${{ secrets.NFS_PASS }}
           source: 'app/django'
           target: ${{ secrets.NFS_PATH }}/prod/
-
+      
       # node_modules 캐싱
       - name: Cache svelte node
         uses: actions/cache@v3
@@ -97,15 +97,15 @@ jobs:
         with:
           path: ./app/svelte/node_modules
           key: pnpm-packages-${{ hashFiles('**/pnpm.lock') }}
-
+      
       # node_modules 변화기 있으면 빌드
       - name: Install Dependencies
         if: steps.cache_svelte.outputs.cache-hit != 'true'
         run: cd app/svelte && pnpm i
-
+      
       - run: cd app/svelte && pnpm build
         if: ${{ always() }}
-
+      
       # Source to NFS server copy transfer
       - name: Copy Svelte -> django static/dist (NFS server)
         uses: appleboy/scp-action@master
@@ -115,14 +115,14 @@ jobs:
           password: ${{ secrets.NFS_PASS }}
           source: 'app/django'
           target: ${{ secrets.NFS_PATH }}/prod/
-
+      
       # slack --> notification
       - name: Send slack when failed
         if: ${{ failure() }}                    # 실패했을 때 실행
         uses: ./.github/actions/slack-notify    # 직접 '만든' Action이므로 uses 키워드를 이용해서 아래 경로를 입력해줍니다.
         with:
           slack_incoming_url: ${{ secrets.SLACK_INCOMING_URL }}
-
+      
       - name: Send slack if completed
         if: ${{ success() }}                    # 성공할 때만 실행
         uses: ./.github/actions/slack-notify

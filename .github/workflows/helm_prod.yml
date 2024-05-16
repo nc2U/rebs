@@ -22,7 +22,7 @@ jobs:
     steps:
       # 레파지터리 체크 아웃
       - name: Check out source code
-        uses: actions/checkout@main
+        uses: actions/checkout@v4
       
       # Necessary dir Check
       - name: media dir check
