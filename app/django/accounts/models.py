@@ -127,6 +127,7 @@ class Profile(models.Model):
     name = models.CharField('성명', max_length=20, blank=True)
     birth_date = models.DateField('생년월일', null=True, blank=True)
     cell_phone = models.CharField('휴대폰', max_length=13, blank=True)
+    image = models.ImageField(upload_to='users/', null=True, blank=True, verbose_name='프로필 이미지')
     like_posts = models.ManyToManyField(Post, blank=True, related_name='post_likes')
     like_comments = models.ManyToManyField(Comment, blank=True, related_name='comment_likes')
     blame_posts = models.ManyToManyField(Post, blank=True, related_name='post_blames')
@@ -141,32 +142,32 @@ class Profile(models.Model):
         verbose_name_plural = '사용자 프로필'
 
 
-class ProfileImage(models.Model):
-    profile = models.OneToOneField(Profile, on_delete=models.CASCADE, related_name='profile_image')
-    image = models.ImageField(upload_to='users/%Y/%m/%d/', verbose_name='프로필 이미지')
-    image_name = models.CharField('파일명', max_length=100, blank=True)
-    image_type = models.CharField('타입', max_length=100, blank=True)
-    image_size = models.PositiveBigIntegerField('사이즈', blank=True, null=True)
-    created = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return settings.MEDIA_URL
-
-    def save(self, *args, **kwargs):
-        if self.image:
-            self.image_name = self.image.name.split('/')[-1]
-            mime = magic.Magic(mime=True)
-            self.image_type = mime.from_buffer(self.image.read())
-            self.image_size = self.image.size
-        super().save(*args, **kwargs)
-
-
-@receiver(pre_delete, sender=ProfileImage)
-def delete_file_on_delete(sender, instance, **kwargs):
-    # Check if the file exists before attempting to delete it
-    if instance.image:
-        if os.path.isfile(instance.image.path):
-            os.remove(instance.image.path)
+# class ProfileImage(models.Model):
+#     profile = models.OneToOneField(Profile, on_delete=models.CASCADE, related_name='profile_image')
+#     image = models.ImageField(upload_to='users/%Y/%m/%d/', verbose_name='프로필 이미지')
+#     image_name = models.CharField('파일명', max_length=100, blank=True)
+#     image_type = models.CharField('타입', max_length=100, blank=True)
+#     image_size = models.PositiveBigIntegerField('사이즈', blank=True, null=True)
+#     created = models.DateTimeField(auto_now_add=True)
+#
+#     def __str__(self):
+#         return settings.MEDIA_URL
+#
+#     def save(self, *args, **kwargs):
+#         if self.image:
+#             self.image_name = self.image.name.split('/')[-1]
+#             mime = magic.Magic(mime=True)
+#             self.image_type = mime.from_buffer(self.image.read())
+#             self.image_size = self.image.size
+#         super().save(*args, **kwargs)
+#
+#
+# @receiver(pre_delete, sender=ProfileImage)
+# def delete_file_on_delete(sender, instance, **kwargs):
+#     # Check if the file exists before attempting to delete it
+#     if instance.image:
+#         if os.path.isfile(instance.image.path):
+#             os.remove(instance.image.path)
 
 
 class Scrape(models.Model):
