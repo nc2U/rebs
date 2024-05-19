@@ -14,13 +14,13 @@ const emit = defineEmits(['call-edit-form', 'go-time-entry', 'watch-control'])
 const userInfo = inject<ComputedRef<User>>('userInfo')
 
 const isWatcher = computed(() =>
-  props.watchers.map(w => w.pk).includes(userInfo?.value.pk as number),
+  props.watchers.map(w => w.pk).includes(userInfo?.value?.pk as number),
 )
 
 const watchControl = () => {
   const payload = isWatcher.value
-    ? { del_watcher: userInfo?.value.pk }
-    : { watchers: [userInfo?.value.pk] }
+    ? { del_watcher: userInfo?.value?.pk }
+    : { watchers: [userInfo?.value?.pk] }
   emit('watch-control', payload)
 }
 
