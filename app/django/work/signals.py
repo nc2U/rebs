@@ -1,3 +1,5 @@
+import markdown2
+
 from django.conf import settings
 from django.dispatch import receiver
 from django.core.mail import send_mail
@@ -123,11 +125,11 @@ def issue_log_changes(sender, instance, created, **kwargs):
             <h4><u>&lt;{user.username}&gt;님이 새 업무 [#{instance.pk}] "{instance.subject}"를 
             생성{"하여 &lt;" + instance.assigned_to.username + "&gt;님에게 (요청)배정" if instance.assigned_to else ""} 하였습니다.</u></h4>
             <div style="padding-left: 20px">
-            <p><strong>업무</strong> : [#{instance.pk}] {instance.subject}</p>
-            <p><strong>유형</strong> : {instance.tracker.name}
-            <p><strong>상태</strong> : {instance.status.name}
+            <div style="background: #FFFFDD; padding: 10px"><strong>업무</strong> : <strong>[#{instance.pk}] {instance.subject}</strong></div>
+            <div style="background: #FFFFDD; padding: 10px"><strong>설명</strong> : <br/>{markdown2.markdown(instance.description)} </div>
+            <p><strong>유형</strong> : {instance.tracker.name}</p>
+            <p><strong>상태</strong> : {instance.status.name}</p>
             <p><strong>담당</strong> : {instance.assigned_to.username if instance.assigned_to else ""}</p>
-            <p><strong>설명</strong> : <br/><div style="background: #FFFFDD; padding: 10px">{instance.description} </div></p>
             <p><strong>처리기한</strong> : {instance.due_date if instance.due_date else ""}</p>
             <p><strong>링크</strong> : {settings.DOMAIN_HOST}#/work/project/redmine/issue/{instance.pk}</p>
             <p><strong>등록자</strong> : {user.username} &lt;{user.email}&gt;</p>
@@ -169,13 +171,13 @@ def issue_log_changes(sender, instance, created, **kwargs):
                     <h4><u>&lt;{user.username}&gt;님이 업무 [#{instance.pk}] "{instance.subject}"의 진행 상태를
                     &lt;{instance._old_status}&gt;에서 &lt;{instance.status}&gt;(으)로 변경 하였습니다.</u></h4>
                     <div style="padding-left: 20px">
-                    <p><strong>업무</strong> : [#{instance.pk}] {instance.subject}</p>
-                    <p><strong>유형</strong> : {instance.tracker.name}
-                    <p><strong>상태</strong> : {instance.status.name}
+                    <div style="background: #FFFFDD; padding: 10px"><strong>업무</strong> : <strong>[#{instance.pk}] {instance.subject}</strong></div>
+                    <div style="background: #FFFFDD; padding: 10px"><strong>설명</strong> : <br/>{markdown2.markdown(instance.description)} </div>
+                    <p><strong>유형</strong> : {instance.tracker.name}</p>
+                    <p><strong>상태</strong> : {instance.status.name}</p>
                     <p><strong>담당</strong> : {instance.assigned_to.username if instance.assigned_to else ""}</p>
-                    <p><strong>추정시간</strong> : {instance.estimated_hours if instance.estimated_hours else '-'} 시간
-                    <p><strong>진척도</strong> : {instance.done_ratio}%
-                    <p><strong>설명</strong> : <br/><div style="background: #FFFFDD; padding: 10px">{instance.description} </div></p>
+                    <p><strong>추정시간</strong> : {instance.estimated_hours if instance.estimated_hours else '-'} 시간</p>
+                    <p><strong>진척도</strong> : {instance.done_ratio}%</p>
                     <p><strong>처리기한</strong> : {instance.due_date if instance.due_date else ""}</p>
                     <p><strong>링크</strong> : {settings.DOMAIN_HOST}#/work/project/redmine/issue/{instance.pk}</p>
                     <p><strong>등록자</strong> : {user.username} &lt;{user.email}&gt;</p>
