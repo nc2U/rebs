@@ -119,8 +119,8 @@ def issue_log_changes(sender, instance, created, **kwargs):
         # 생성 사용자를 제외한, 담당자에게 메일 전달
         ##########################################
         if instance.assigned_to and instance.assigned_to != user:  # 생성자와 담당자가 다를 경우 담당자에게 메일 전달
-            subject = f'새 업무 [#{instance.pk}] - {instance.subject} 이(가) [{instance.assigned_to.username}]님에게 (요청)배정 되었습니다.' \
-                if instance.assigned_to else f'새 업무 [#{instance.pk}] - {instance.subject} 이(가) 생성 되었습니다.'
+            subject = f'새 업무 [#{instance.pk}] - "{instance.subject}" 이(가) [{instance.assigned_to.username}]님에게 (요청)배정 되었습니다.' \
+                if instance.assigned_to else f'새 업무 [#{instance.pk}] - "{instance.subject}" 이(가) 생성 되었습니다.'
             message = f'''<div style="font-size: 1.2em;">
             <h4><u>&lt;{user.username}&gt;님이 새 업무 [#{instance.pk}] "{instance.subject}"를 
             생성{"하여 &lt;" + instance.assigned_to.username + "&gt;님에게 (요청)배정" if instance.assigned_to else ""} 하였습니다.</u></h4>
@@ -166,7 +166,7 @@ def issue_log_changes(sender, instance, created, **kwargs):
                 if instance.assigned_to and user != instance.assigned_to:
                     addresses.append(instance.assigned_to.email)
                 if addresses:
-                    subject = f'업무 [#{instance.pk}] - {instance.subject}의 상태가 {instance.status}(으)로 변경 되었습니다.'
+                    subject = f'업무 [#{instance.pk}] - "{instance.subject}"의 상태가 {instance.status}(으)로 변경 되었습니다.'
                     message = f'''<div style="font-size: 1.2em;">
                     <h4><u>&lt;{user.username}&gt;님이 업무 [#{instance.pk}] "{instance.subject}"의 진행 상태를
                     &lt;{instance._old_status}&gt;에서 &lt;{instance.status}&gt;(으)로 변경 하였습니다.</u></h4>
