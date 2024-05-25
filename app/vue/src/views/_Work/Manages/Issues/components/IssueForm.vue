@@ -5,12 +5,12 @@ import type { User } from '@/store/types/accounts'
 import { isValidate } from '@/utils/helper'
 import { useRoute } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
+import { dateFormat } from '@/utils/baseMixins'
 import { colorLight } from '@/utils/cssMixins'
 import Multiselect from '@vueform/multiselect'
 import MdEditor from '@/components/MdEditor/Index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import WatcherAdd from '@/views/_Work/Manages/Issues/components/aside/WatcherAdd.vue'
-import { dateFormat } from '@/utils/baseMixins'
 
 const props = defineProps({
   issueProject: { type: Object as PropType<IssueProject>, default: null },
@@ -50,6 +50,8 @@ const form = ref({
   files: [] as IssueFile[],
 })
 
+const assigned = ref(0)
+
 watch(
   () => form.value.project,
   async nVal => {
@@ -57,6 +59,23 @@ watch(
       await workStore.fetchIssueProject(nVal)
       watcherList.value = workStore.issueProject?.all_members?.map(m => m.user) ?? []
     } else watcherList.value = memberList.value ?? []
+  },
+)
+
+watch(
+  () => form.value.assigned_to,
+  () => (assigned.value += 1),
+)
+
+watch(
+  () => form.value.category,
+  nVal => {
+    if (assigned.value < 2) {
+      if (nVal)
+        form.value.assigned_to =
+          categories.value.filter(c => c.pk === nVal)[0].assigned_to?.pk ?? null
+      else form.value.assigned_to = null
+    }
   },
 )
 
@@ -289,6 +308,8 @@ onBeforeMount(() => {
         {{ !issue ? '새 업무만들기' : '편집' }}
       </h5>
     </CCol>
+
+    {{ categories }}
 
     <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
       <CCard :color="colorLight" class="mb-2">
