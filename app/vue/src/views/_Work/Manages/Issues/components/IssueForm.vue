@@ -50,8 +50,6 @@ const form = ref({
   files: [] as IssueFile[],
 })
 
-const assigned = ref(0)
-
 watch(
   () => form.value.project,
   async nVal => {
@@ -62,6 +60,7 @@ watch(
   },
 )
 
+const assigned = ref(0)
 watch(
   () => form.value.assigned_to,
   () => (assigned.value += 1),
