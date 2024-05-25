@@ -39,6 +39,24 @@ const workProject = {
         {
           path: ':projId/roadmap',
           name: '(로드맵)',
+          children: [
+            {
+              path: ':verId',
+              name: '(로드맵) - 보기',
+            },
+            {
+              path: 'create',
+              name: '(로드맵) - 추가',
+            },
+            {
+              path: ':verId/update',
+              name: '(로드맵) - 수정',
+            },
+            {
+              path: ':verId/delete',
+              name: '(로드맵) - 삭제',
+            },
+          ],
         },
         {
           path: ':projId/issue',
