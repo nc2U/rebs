@@ -48,7 +48,8 @@ const projectNavMenus = computed(() => {
     { no: 1, menu: '(개요)' },
     { no: 2, menu: '(작업내역)' },
   ]
-  if (version.value) menus = [...new Set([...menus, ...[{ no: 3, menu: '(로드맵)' }]])]
+  if (issueProject.value?.versions?.length)
+    menus = [...new Set([...menus, ...[{ no: 3, menu: '(로드맵)' }]])]
   if (modules.value?.issue) menus = [...new Set([...menus, ...[{ no: 4, menu: '(업무)' }]])]
   if (modules.value?.time) menus = [...new Set([...menus, ...[{ no: 5, menu: '(소요시간)' }]])]
   // if (modules.value?.gantt) menus = [...new Set([...menus, ...[{ no: 6, menu: '(차트)' }]])]
