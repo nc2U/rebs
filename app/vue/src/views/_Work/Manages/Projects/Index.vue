@@ -78,7 +78,6 @@ const getRoles = computed(() => workStore.getRoles)
 const getTrackers = computed(() => workStore.getTrackers)
 
 const modules = computed(() => issueProject.value?.module)
-const version = computed(() => false)
 
 const issue = computed(() => workStore.issue)
 
