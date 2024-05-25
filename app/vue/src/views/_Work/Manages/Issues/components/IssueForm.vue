@@ -52,7 +52,12 @@ const form = ref({
 
 watch(
   () => form.value.project,
-  nVal => workStore.fetchIssueProject(nVal),
+  async nVal => {
+    if (nVal) {
+      await workStore.fetchIssueProject(nVal)
+      watcherList.value = workStore.issueProject?.all_members?.map(m => m.user) ?? []
+    } else watcherList.value = memberList.value ?? []
+  },
 )
 
 const statuses = computed(() =>
@@ -130,7 +135,10 @@ watch(props, nVal => {
 const watcherList = ref<{ pk: number; username: string }[]>([])
 
 const memberList = computed(() =>
-  (props.issueProject ? props.issueProject.all_members : workStore.memberList)?.map(m => m.user),
+  (props.issueProject
+    ? props.issueProject.all_members
+    : [...new Map(workStore.memberList.map(m => [m.user.pk, m])).values()]
+  )?.map(m => m.user),
 )
 
 watch(
