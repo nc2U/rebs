@@ -7,6 +7,7 @@ import type {
   IssueProject,
   ProjectFilter,
   Member,
+  Version,
   Role,
   Tracker,
   IssueStatus,
@@ -159,6 +160,30 @@ export const useWork = defineStore('work', () => {
       .patch(`/member/${payload.pk}/`, payload)
       .then(res =>
         fetchIssueProject(payload.slug).then(() => fetchMember(res.data.pk).then(() => message())),
+      )
+      .catch(err => errorHandle(err.response.data))
+
+  // version states & getters
+  const version = ref<Version | null>(null)
+  const versionList = ref<Version[]>([])
+
+  const fetchVersion = (pk: number) =>
+    api
+      .get(`/version/${pk}/`)
+      .then(res => (version.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchVersionList = () =>
+    api
+      .get(`/version/`)
+      .then(res => (versionList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
+  const patchVersion = (payload: { pk: number; user?: number; roles?: number[]; slug: string }) =>
+    api
+      .patch(`/version/${payload.pk}/`, payload)
+      .then(res =>
+        fetchIssueProject(payload.slug).then(() => fetchVersion(res.data.pk).then(() => message())),
       )
       .catch(err => errorHandle(err.response.data))
 
@@ -578,6 +603,12 @@ export const useWork = defineStore('work', () => {
     fetchMember,
     fetchMemberList,
     patchMember,
+
+    version,
+    versionList,
+    fetchVersion,
+    fetchVersionList,
+    patchVersion,
 
     trackerList,
     getTrackers,

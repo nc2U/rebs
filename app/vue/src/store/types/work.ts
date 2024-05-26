@@ -178,6 +178,17 @@ export interface Member {
   roles: { pk: number; name: string }[]
 }
 
+export interface Version {
+  pk: number
+  project: number
+  name: string
+  status: '1' | '2' | '3'
+  sharing: '0' | '1' | '2' | '3' | '4'
+  due_date: string | null
+  description: string
+  wiki_page_title: string
+}
+
 export interface Tracker {
   pk: number
   name: string
