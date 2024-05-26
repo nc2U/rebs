@@ -183,7 +183,14 @@ export interface Version {
   project: number
   name: string
   status: '1' | '2' | '3'
+  status_desc: '진행' | '잠김' | '닫힘'
   sharing: '0' | '1' | '2' | '3' | '4'
+  sharing_desc:
+    | '공유 없음'
+    | '하위 프로젝트'
+    | '상위 및 하위 프로젝트'
+    | '최상위 및 모든 하위 프로젝트'
+    | '모든 프로젝트'
   due_date: string | null
   description: string
   wiki_page_title: string
