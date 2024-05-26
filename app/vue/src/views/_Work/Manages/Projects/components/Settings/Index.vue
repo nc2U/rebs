@@ -71,7 +71,9 @@ onBeforeMount(async () => {
   await workStore.fetchTrackerList()
   if (route.params.projId) await workStore.fetchIssueProject(route.params.projId as string)
   emit('aside-visible', false)
-  menu.value = Cookies.get('workSettingMenu') ?? initMenu.value
+
+  if (route.query.menu) menu.value = route.query.menu as string
+  else menu.value = Cookies.get('workSettingMenu') ?? initMenu.value
 })
 </script>
 

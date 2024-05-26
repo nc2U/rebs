@@ -30,7 +30,7 @@ import { ref } from 'vue'
             <CDropdownItem
               v-if="$route.params.projId"
               class="form-text"
-              @click="$router.push({ name: '(설정)' })"
+              @click="$router.push({ name: '(설정)', query: { menu: '버전' } })"
             >
               <router-link to="">
                 <v-icon icon="mdi-cog" color="grey" size="sm" />
