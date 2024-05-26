@@ -10,6 +10,13 @@ const emit = defineEmits(['aside-visible'])
 const workStore = useWork()
 const versionList = computed(() => workStore.versionList)
 
+const onSubmit = (payload: any) => {
+  console.log(payload)
+
+  if (!payload.pk) alert('create!')
+  else alert('update!')
+}
+
 onBeforeMount(() => {
   emit('aside-visible', true)
   workStore.fetchVersionList()
@@ -21,5 +28,5 @@ onBeforeMount(() => {
 
   <VersionView v-if="$route.name === '(로드맵) - 보기'" />
 
-  <VersionForm v-if="$route.name === '(로드맵) - 추가'" />
+  <VersionForm v-if="$route.name === '(로드맵) - 추가'" @on-submit="onSubmit" />
 </template>

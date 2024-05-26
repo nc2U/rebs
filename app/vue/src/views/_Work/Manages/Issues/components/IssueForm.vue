@@ -308,8 +308,6 @@ onBeforeMount(() => {
       </h5>
     </CCol>
 
-    {{ categories }}
-
     <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
       <CCard :color="colorLight" class="mb-2">
         <CCardBody>
