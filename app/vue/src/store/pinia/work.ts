@@ -179,12 +179,23 @@ export const useWork = defineStore('work', () => {
       .then(res => (versionList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const patchVersion = (payload: { pk: number; user?: number; roles?: number[]; slug: string }) =>
+  const createVersion = (payload: Version) =>
     api
-      .patch(`/version/${payload.pk}/`, payload)
-      .then(res =>
-        fetchIssueProject(payload.slug).then(() => fetchVersion(res.data.pk).then(() => message())),
-      )
+      .post(`/version/`, payload)
+      .then(async res => {
+        await fetchVersion(res.data.pk)
+        await fetchVersionList()
+        message()
+      })
+      .catch(err => errorHandle(err.response.data))
+
+  const updateVersion = (payload: Version) =>
+    api
+      .put(`/version/${payload.pk}/`, payload)
+      .then(async res => {
+        await fetchVersion(res.data.pk)
+        message()
+      })
       .catch(err => errorHandle(err.response.data))
 
   // tracker states & getters
@@ -608,7 +619,8 @@ export const useWork = defineStore('work', () => {
     versionList,
     fetchVersion,
     fetchVersionList,
-    patchVersion,
+    createVersion,
+    updateVersion,
 
     trackerList,
     getTrackers,

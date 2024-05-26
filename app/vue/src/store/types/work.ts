@@ -180,7 +180,7 @@ export interface Member {
 
 export interface Version {
   pk: number
-  project: number
+  project: string
   name: string
   status: '1' | '2' | '3'
   status_desc: '진행' | '잠김' | '닫힘'
