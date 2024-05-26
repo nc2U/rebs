@@ -213,73 +213,6 @@ class Member(models.Model):
         verbose_name_plural = '03. 구성원'
 
 
-class Tracker(models.Model):
-    name = models.CharField('이름', max_length=100)
-    description = models.CharField('설명', max_length=255, blank=True, default='')
-    is_in_roadmap = models.BooleanField('로드맵에 표시', default=True)
-    default_status = models.ForeignKey('IssueStatus', on_delete=models.PROTECT, verbose_name='초기 상태')
-    order = models.PositiveSmallIntegerField('정렬', default=1)
-    created = models.DateTimeField('추가', auto_now_add=True)
-    updated = models.DateTimeField('편집', auto_now=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='생성자')
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        ordering = ('order', 'id')
-        verbose_name = '04. 업무 유형'
-        verbose_name_plural = '04. 업무 유형'
-
-
-class IssueCategory(models.Model):
-    project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트', related_name='categories')
-    name = models.CharField('범주', max_length=100)
-    assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
-                                    verbose_name='담당자')
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        ordering = ('id',)
-        verbose_name = '05. 업무 범주'
-        verbose_name_plural = '05. 업무 범주'
-
-
-class IssueStatus(models.Model):
-    name = models.CharField('이름', max_length=20)
-    description = models.CharField('설명', max_length=255, blank=True, default='')
-    closed = models.BooleanField('완료 상태', default=False)
-    order = models.PositiveSmallIntegerField('정렬', default=1)
-    created = models.DateTimeField('추가', auto_now_add=True)
-    updated = models.DateTimeField('편집', auto_now=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='생성자')
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        ordering = ('order', 'id',)
-        verbose_name = '06. 업무 상태'
-        verbose_name_plural = '06. 업무 상태'
-
-
-class Workflow(models.Model):
-    role = models.ForeignKey(Role, on_delete=models.CASCADE, verbose_name='역할')
-    tracker = models.ForeignKey(Tracker, on_delete=models.CASCADE, verbose_name='업무 유형')
-    old_status = models.OneToOneField(IssueStatus, on_delete=models.CASCADE, verbose_name='업무 상태',
-                                      related_name='each_status')
-    new_statuses = models.ManyToManyField(IssueStatus, verbose_name='허용 업무 상태', blank=True)
-
-    def __str__(self):
-        return f'{self.role} - {self.tracker}'
-
-    class Meta:
-        verbose_name = '07. 업무 흐름'
-        verbose_name_plural = '07. 업무 흐름'
-
-
 class Version(models.Model):
     project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트', related_name='versions')
     name = models.CharField('이름', max_length=20)
@@ -296,8 +229,75 @@ class Version(models.Model):
 
     class Meta:
         ordering = ('id',)
-        verbose_name = '08. 버전'
-        verbose_name_plural = '08. 버전'
+        verbose_name = '04. 버전'
+        verbose_name_plural = '04. 버전'
+
+
+class Tracker(models.Model):
+    name = models.CharField('이름', max_length=100)
+    description = models.CharField('설명', max_length=255, blank=True, default='')
+    is_in_roadmap = models.BooleanField('로드맵에 표시', default=True)
+    default_status = models.ForeignKey('IssueStatus', on_delete=models.PROTECT, verbose_name='초기 상태')
+    order = models.PositiveSmallIntegerField('정렬', default=1)
+    created = models.DateTimeField('추가', auto_now_add=True)
+    updated = models.DateTimeField('편집', auto_now=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='생성자')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ('order', 'id')
+        verbose_name = '05. 업무 유형'
+        verbose_name_plural = '05. 업무 유형'
+
+
+class IssueCategory(models.Model):
+    project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트', related_name='categories')
+    name = models.CharField('범주', max_length=100)
+    assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
+                                    verbose_name='담당자')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ('id',)
+        verbose_name = '06. 업무 범주'
+        verbose_name_plural = '06. 업무 범주'
+
+
+class IssueStatus(models.Model):
+    name = models.CharField('이름', max_length=20)
+    description = models.CharField('설명', max_length=255, blank=True, default='')
+    closed = models.BooleanField('완료 상태', default=False)
+    order = models.PositiveSmallIntegerField('정렬', default=1)
+    created = models.DateTimeField('추가', auto_now_add=True)
+    updated = models.DateTimeField('편집', auto_now=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='생성자')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ('order', 'id',)
+        verbose_name = '07. 업무 상태'
+        verbose_name_plural = '07. 업무 상태'
+
+
+class Workflow(models.Model):
+    role = models.ForeignKey(Role, on_delete=models.CASCADE, verbose_name='역할')
+    tracker = models.ForeignKey(Tracker, on_delete=models.CASCADE, verbose_name='업무 유형')
+    old_status = models.OneToOneField(IssueStatus, on_delete=models.CASCADE, verbose_name='업무 상태',
+                                      related_name='each_status')
+    new_statuses = models.ManyToManyField(IssueStatus, verbose_name='허용 업무 상태', blank=True)
+
+    def __str__(self):
+        return f'{self.role} - {self.tracker}'
+
+    class Meta:
+        verbose_name = '08. 업무 흐름'
+        verbose_name_plural = '08. 업무 흐름'
 
 
 class Repository(models.Model):
