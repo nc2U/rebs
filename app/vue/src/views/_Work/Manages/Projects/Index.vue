@@ -201,7 +201,7 @@ onBeforeMount(async () => {
         @aside-visible="asideVisible"
       />
 
-      <Roadmap v-if="routeName === '(로드맵)'" @aside-visible="asideVisible" />
+      <Roadmap v-if="routeName.includes('(로드맵)')" @aside-visible="asideVisible" />
 
       <Issues v-if="routeName.includes('(업무)')" @aside-visible="asideVisible" />
 

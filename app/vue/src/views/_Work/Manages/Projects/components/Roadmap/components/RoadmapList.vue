@@ -13,6 +13,33 @@ import { ref } from 'vue'
         <v-icon icon="mdi-plus-circle" color="success" size="sm" />
         <router-link :to="{ name: '(로드맵) - 추가' }" class="ml-1"> 새 버전 </router-link>
       </span>
+
+      <span>
+        <CDropdown color="secondary" variant="input-group" placement="bottom-end">
+          <CDropdownToggle
+            :caret="false"
+            color="light"
+            variant="ghost"
+            size="sm"
+            shape="rounded-pill"
+          >
+            <v-icon icon="mdi-dots-horizontal" class="pointer" color="grey-darken-1" />
+            <v-tooltip activator="parent" location="top">Actions</v-tooltip>
+          </CDropdownToggle>
+          <CDropdownMenu>
+            <CDropdownItem
+              v-if="$route.params.projId"
+              class="form-text"
+              @click="$router.push({ name: '(설정)' })"
+            >
+              <router-link to="">
+                <v-icon icon="mdi-cog" color="grey" size="sm" />
+                설정
+              </router-link>
+            </CDropdownItem>
+          </CDropdownMenu>
+        </CDropdown>
+      </span>
     </CCol>
   </CRow>
 </template>
