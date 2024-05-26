@@ -42,7 +42,7 @@ const onSubmit = (event: Event) => {
               이름
             </CFormLabel>
 
-            <CCol sm="6">
+            <CCol sm="10" lg="6">
               <CFormInput v-model="form.name" required />
             </CCol>
           </CRow>
@@ -50,7 +50,7 @@ const onSubmit = (event: Event) => {
           <CRow class="mb-3">
             <CFormLabel for="name" class="col-sm-2 col-form-label text-right"> 설명</CFormLabel>
 
-            <CCol sm="6">
+            <CCol sm="10" lg="6">
               <CFormInput v-model="form.description" />
             </CCol>
           </CRow>
@@ -60,7 +60,7 @@ const onSubmit = (event: Event) => {
               위키 페이지
             </CFormLabel>
 
-            <CCol sm="6">
+            <CCol sm="10" lg="6">
               <CFormInput v-model="form.wiki_page_title" />
             </CCol>
           </CRow>
