@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { type PropType } from 'vue'
+import type { Version } from '@/store/types/work'
+
+defineProps({ versionList: { type: Array as PropType<Version[]>, default: () => [] } })
 </script>
 
 <template>
@@ -41,5 +44,9 @@ import { ref } from 'vue'
         </CDropdown>
       </span>
     </CCol>
+  </CRow>
+
+  <CRow v-for="ver in versionList" :key="ver.pk">
+    <CCol>{{ ver }}</CCol>
   </CRow>
 </template>

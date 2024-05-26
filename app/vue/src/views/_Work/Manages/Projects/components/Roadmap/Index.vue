@@ -1,15 +1,22 @@
 <script lang="ts" setup>
-import { onBeforeMount } from 'vue'
+import { computed, onBeforeMount } from 'vue'
+import { useWork } from '@/store/pinia/work'
 import RoadmapList from './components/RoadmapList.vue'
 import VersionForm from './components/VersionForm.vue'
 
 const emit = defineEmits(['aside-visible'])
 
-onBeforeMount(() => emit('aside-visible', true))
+const workStore = useWork()
+const versionList = computed(() => workStore.versionList)
+
+onBeforeMount(() => {
+  emit('aside-visible', true)
+  workStore.fetchVersionList()
+})
 </script>
 
 <template>
-  <RoadmapList v-if="$route.name === '(로드맵)'" />
+  <RoadmapList v-if="$route.name === '(로드맵)'" :version-list="versionList" />
 
   <VersionForm v-if="$route.name === '(로드맵) - 추가'" />
 </template>
