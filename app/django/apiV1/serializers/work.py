@@ -289,6 +289,7 @@ class ModuleSerializer(serializers.ModelSerializer):
 
 
 class VersionSerializer(serializers.ModelSerializer):
+    project = serializers.SlugRelatedField(slug_field='slug', read_only=True)
     status_desc = serializers.CharField(source='get_status_display', read_only=True)
     sharing_desc = serializers.CharField(source='get_sharing_display', read_only=True)
 
@@ -296,6 +297,27 @@ class VersionSerializer(serializers.ModelSerializer):
         model = Version
         fields = ('pk', 'project', 'name', 'status', 'status_desc', 'sharing',
                   'sharing_desc', 'due_date', 'description', 'wiki_page_title')
+
+    @transaction.atomic
+    def create(self, validated_data):
+        project_slug = self.initial_data.get('project')
+        try:
+            project = IssueProject.objects.get(slug=project_slug)
+        except IssueProject.DoesNotExist:
+            raise serializers.ValidationError({'project': 'Project does not exist'})
+
+        version = Version.objects.create(**validated_data, project=project)
+        return version
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        project_slug = self.initial_data.get('project')
+        try:
+            project = IssueProject.objects.get(slug=project_slug)
+        except IssueProject.DoesNotExist:
+            raise serializers.ValidationError({'project': 'Project does not exist'})
+
+        return instance.update(**validated_data, project=project)
 
 
 class RepositorySerializer(serializers.ModelSerializer):
