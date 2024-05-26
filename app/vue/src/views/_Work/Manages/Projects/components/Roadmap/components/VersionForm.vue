@@ -10,7 +10,7 @@ const validated = ref(false)
 
 const form = ref({
   pk: null as number | null,
-  // project: null,
+  project: null,
   name: '',
   description: '',
   wiki_page_title: '',
