@@ -289,10 +289,13 @@ class ModuleSerializer(serializers.ModelSerializer):
 
 
 class VersionSerializer(serializers.ModelSerializer):
+    status_desc = serializers.CharField(source='get_status_display', read_only=True)
+    sharing_desc = serializers.CharField(source='get_sharing_display', read_only=True)
+
     class Meta:
         model = Version
-        fields = ('pk', 'project', 'name', 'status', 'sharing',
-                  'due_date', 'description', 'wiki_page_title')
+        fields = ('pk', 'project', 'name', 'status', 'status_desc', 'sharing',
+                  'sharing_desc', 'due_date', 'description', 'wiki_page_title')
 
 
 class RepositorySerializer(serializers.ModelSerializer):
