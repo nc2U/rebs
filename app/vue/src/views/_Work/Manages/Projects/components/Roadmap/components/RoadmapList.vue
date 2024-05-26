@@ -3,6 +3,8 @@ import { type PropType } from 'vue'
 import type { Version } from '@/store/types/work'
 
 defineProps({ versionList: { type: Array as PropType<Version[]>, default: () => [] } })
+
+const boxClass = ['primary-box', 'danger-box', 'success-box']
 </script>
 
 <template>
@@ -36,7 +38,7 @@ defineProps({ versionList: { type: Array as PropType<Version[]>, default: () => 
               @click="$router.push({ name: '(설정)', query: { menu: '버전' } })"
             >
               <router-link to="">
-                <v-icon icon="mdi-cog" color="grey" size="sm" />
+                <v-icon icon="mdi-cog" color="grey" size="sm" class="mr-2" />
                 설정
               </router-link>
             </CDropdownItem>
@@ -47,6 +49,24 @@ defineProps({ versionList: { type: Array as PropType<Version[]>, default: () => 
   </CRow>
 
   <CRow v-for="ver in versionList" :key="ver.pk">
-    <CCol>{{ ver }}</CCol>
+    <CCol>
+      <CRow>
+        <CCol>
+          <v-icon icon="mdi-star-box-multiple" color="amber" class="mr-2" />
+          <span class="mr-2 bold" style="font-size: large">
+            <router-link :to="{ name: '(로드맵) - 보기', params: { verId: ver.pk } }">
+              {{ ver.name }}
+            </router-link>
+          </span>
+
+          <span :class="boxClass[Number(ver.status) - 1]">
+            {{ ver.status_desc }}
+          </span>
+        </CCol>
+        <CCol class="text-right">
+          <v-icon icon="mdi-pencil" color="amber" size="18" />
+        </CCol>
+      </CRow>
+    </CCol>
   </CRow>
 </template>

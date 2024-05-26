@@ -449,3 +449,35 @@ label.required::after {
 .bold, .strong {
   font-weight: bold;
 }
+
+.default-box {
+  padding: 2px 4px;
+  border: 1px solid grey;
+  font-size: 0.8em;
+  font-weight: 500;
+  color: grey;
+}
+
+.primary-box {
+  padding: 2px 4px;
+  border: 1px solid #206cd4;
+  font-size: 0.8em;
+  font-weight: 500;
+  color: #206cd4;
+}
+
+.success-box {
+  padding: 2px 4px;
+  border: 1px solid #1d781d;
+  font-size: 0.8em;
+  font-weight: 500;
+  color: #1d781d;
+}
+
+.danger-box {
+  padding: 2px 4px;
+  border: 1px solid darkred;
+  font-size: 0.8em;
+  font-weight: 500;
+  color: darkred;
+}
