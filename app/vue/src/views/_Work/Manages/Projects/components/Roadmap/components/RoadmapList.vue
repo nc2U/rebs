@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import { type PropType } from 'vue'
 import type { Version } from '@/store/types/work'
+import Roadmap from './Roadmap.vue'
 
 defineProps({ versionList: { type: Array as PropType<Version[]>, default: () => [] } })
-
-const boxClass = ['primary-box', 'danger-box', 'success-box']
 </script>
 
 <template>
@@ -48,25 +47,5 @@ const boxClass = ['primary-box', 'danger-box', 'success-box']
     </CCol>
   </CRow>
 
-  <CRow v-for="ver in versionList" :key="ver.pk">
-    <CCol>
-      <CRow>
-        <CCol>
-          <v-icon icon="mdi-star-box-multiple" color="amber" class="mr-2" />
-          <span class="mr-2 bold" style="font-size: large">
-            <router-link :to="{ name: '(로드맵) - 보기', params: { verId: ver.pk } }">
-              {{ ver.name }}
-            </router-link>
-          </span>
-
-          <span :class="boxClass[Number(ver.status) - 1]">
-            {{ ver.status_desc }}
-          </span>
-        </CCol>
-        <CCol class="text-right">
-          <v-icon icon="mdi-pencil" color="amber" size="18" />
-        </CCol>
-      </CRow>
-    </CCol>
-  </CRow>
+  <Roadmap v-for="ver in versionList" :key="ver.pk" :version="ver" />
 </template>
