@@ -2,7 +2,7 @@
 import { type PropType } from 'vue'
 import type { Version } from '@/store/types/work'
 
-defineProps({ version: { type: Array as PropType<Version[]>, default: () => [] } })
+defineProps({ version: { type: Object as PropType<Version>, required: true } })
 
 const boxClass = ['primary-box', 'danger-box', 'success-box']
 </script>
@@ -13,7 +13,7 @@ const boxClass = ['primary-box', 'danger-box', 'success-box']
       <CCol>
         <v-icon icon="mdi-star-box-multiple" color="amber" class="mr-2" />
         <span class="mr-2 bold" style="font-size: large">
-          <router-link :to="{ name: '(로드맵) - 보기', params: { verId: version?.pk } }">
+          <router-link :to="{ name: '(로드맵) - 보기', params: { verId: version.pk } }">
             {{ version.name }}
           </router-link>
         </span>
