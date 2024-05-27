@@ -222,7 +222,7 @@ class Version(models.Model):
     sharing = models.CharField('공유', max_length=1, choices=SHARING_CHOICES, default='1')
     effective_date = models.DateField(verbose_name='날짜', blank=True, null=True)
     description = models.CharField('설명', max_length=255, blank=True, default='')
-    wiki_page_title = models.URLField('위키 페이지', max_length=255, blank=True, default='')
+    wiki_page_title = models.CharField('위키 페이지', max_length=200, blank=True, default='')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
