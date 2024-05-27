@@ -2,10 +2,6 @@ from django_filters.rest_framework import (FilterSet, BooleanFilter,
                                            DateFilter, CharFilter)
 from rest_framework import viewsets
 
-# from work.models import (IssueProject, Role, Permission, Member, Module, Version,
-#                          IssueCategory, Repository, Tracker, IssueStatus, Workflow,
-#                          CodeActivity, CodeIssuePriority, CodeDocsCategory, Issue, IssueRelation,
-#                          IssueFile, IssueComment, TimeEntry, Search, ActivityLogEntry, IssueLogEntry)
 from ..pagination import *
 from ..permission import *
 from ..serializers.work import *
@@ -71,6 +67,7 @@ class VersionViewSet(viewsets.ModelViewSet):
     queryset = Version.objects.all()
     serializer_class = VersionSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    filterset_fields = ('project__slug',)
 
 
 class RepositoryViewSet(viewsets.ModelViewSet):
