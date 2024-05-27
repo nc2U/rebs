@@ -12,9 +12,16 @@ defineProps({ versions: { type: Array as PropType<Version[]>, default: () => [] 
     <CCol>
       <span class="mr-2 form-text">
         <v-icon icon="mdi-plus-circle" color="success" size="sm" />
-        <router-link :to="{ name: '(로드맵) - 추가', query: { back: 1 } }" class="ml-1">
-          새 버전
+        <router-link :to="{ name: '(로드맵) - 추가', query: { back: 1 } }" class="ml-1"
+          >새 버전
         </router-link>
+      </span>
+    </CCol>
+
+    <CCol class="text-right">
+      <span class="mr-2 form-text">
+        <v-icon icon="mdi-lock" color="warning" size="sm" />
+        <router-link to="" class="ml-1">완료된 버전 닫기 </router-link>
       </span>
     </CCol>
   </CRow>
@@ -72,11 +79,11 @@ defineProps({ versions: { type: Array as PropType<Version[]>, default: () => [] 
       <CTable small striped responsive hover>
         <colgroup>
           <col style="width: 10%" />
-          <col style="width: 10%" />
-          <col style="width: 10%" />
+          <col style="width: 5%" />
+          <col style="width: 15%" />
           <col style="width: 20%" />
-          <col style="width: 10%" />
-          <col style="width: 10%" />
+          <col style="width: 5%" />
+          <col style="width: 15%" />
           <col style="width: 20%" />
           <col style="width: 10%" />
         </colgroup>
@@ -95,7 +102,7 @@ defineProps({ versions: { type: Array as PropType<Version[]>, default: () => [] 
 
         <CTableBody>
           <CTableRow v-for="ver in versions" :key="ver.pk" class="text-center">
-            <CTableDataCell class="text-left">{{ ver.name }}</CTableDataCell>
+            <CTableDataCell>{{ ver.name }}</CTableDataCell>
             <CTableDataCell>
               <v-icon v-if="ver.is_default" icon="mdi-check-bold" color="success" size="sm" />
             </CTableDataCell>
@@ -103,7 +110,14 @@ defineProps({ versions: { type: Array as PropType<Version[]>, default: () => [] 
             <CTableDataCell class="text-left">{{ ver.description }}</CTableDataCell>
             <CTableDataCell>{{ ver.status_desc }}</CTableDataCell>
             <CTableDataCell>{{ ver.sharing_desc }}</CTableDataCell>
-            <CTableDataCell>{{ ver.wiki_page_title }}</CTableDataCell>
+            <CTableDataCell class="text-left">
+              <router-link
+                v-if="ver.wiki_page_title"
+                :to="{ name: '(위키) - 제목', params: { title: ver.wiki_page_title } }"
+              >
+                {{ ver.wiki_page_title }}
+              </router-link>
+            </CTableDataCell>
             <CTableDataCell class="form-text">
               <span class="mr-2">
                 <v-icon icon="mdi-pencil" color="amber" size="sm" class="mr-1" />

@@ -123,6 +123,12 @@ const workProject = {
         {
           path: ':projId/wiki',
           name: '(위키)',
+          children: [
+            {
+              path: ':title',
+              name: '(위키) - 제목',
+            },
+          ],
         },
         {
           path: ':projId/forum',

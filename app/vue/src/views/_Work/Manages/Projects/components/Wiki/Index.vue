@@ -1,7 +1,16 @@
 <script lang="ts" setup>
-import { onBeforeMount } from 'vue'
+import { computed, onBeforeMount } from 'vue'
+import { useRoute } from 'vue-router'
 
 const emit = defineEmits(['aside-visible'])
+
+const route = useRoute()
+
+const capitalize = (str: string) => `${str.charAt(0).toUpperCase()}${str.slice(1)}`
+
+const wikiTitle = computed(() =>
+  route.params.title ? capitalize(route.params.title as string) : 'Wiki',
+)
 
 onBeforeMount(() => emit('aside-visible', false))
 </script>
@@ -9,13 +18,13 @@ onBeforeMount(() => emit('aside-visible', false))
 <template>
   <CRow class="py-2">
     <CCol>
-      <h5>위키(Wiki)</h5>
+      <h5>{{ wikiTitle }}</h5>
     </CCol>
   </CRow>
 
   <CRow>
     <CCol>
-      <CFormTextarea></CFormTextarea>
+      <CFormTextarea> #{{ wikiTitle }}</CFormTextarea>
     </CCol>
   </CRow>
 

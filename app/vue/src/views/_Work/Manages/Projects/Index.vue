@@ -215,7 +215,7 @@ onBeforeMount(async () => {
 
       <Documents v-if="routeName === '(문서)'" @aside-visible="asideVisible" />
 
-      <Wiki v-if="routeName === '(위키)'" @aside-visible="asideVisible" />
+      <Wiki v-if="routeName.includes('(위키)')" @aside-visible="asideVisible" />
 
       <Forums v-if="routeName === '(게시판)'" @aside-visible="asideVisible" />
 
