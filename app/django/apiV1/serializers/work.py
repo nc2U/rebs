@@ -298,16 +298,24 @@ class ModuleSerializer(serializers.ModelSerializer):
                   'file', 'wiki', 'repository', 'forum', 'calendar', 'gantt')
 
 
+class IssueInVersionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Issue
+        fields = ('pk', 'subject', 'status', 'tracker', 'priority',
+                  'fixed_version', 'assigned_to', 'category', 'done_ratio')
+
+
 class VersionSerializer(serializers.ModelSerializer):
     project = serializers.SlugRelatedField(slug_field='slug', read_only=True)
     status_desc = serializers.CharField(source='get_status_display', read_only=True)
     sharing_desc = serializers.CharField(source='get_sharing_display', read_only=True)
     is_default = serializers.SerializerMethodField(read_only=True)
+    issues = IssueInVersionSerializer(many=True, read_only=True)
 
     class Meta:
         model = Version
         fields = ('pk', 'project', 'name', 'status', 'status_desc', 'sharing', 'sharing_desc',
-                  'is_default', 'effective_date', 'description', 'wiki_page_title')
+                  'effective_date', 'description', 'wiki_page_title', 'issues', 'is_default')
 
     @staticmethod
     def get_is_default(obj):
