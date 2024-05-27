@@ -30,7 +30,7 @@ watch(useRoute(), () => (visible.value = false))
     <CCol>
       <CRow class="px-3">
         <CCol class="mb-2 p-4 col-9 col-md-6 col-lg-7 col-xl-9">
-          <CRow v-if="!!familyTree.length" class="d-none d-md-block">
+          <CRow v-if="!!familyTree.length" class="d-none d-lg-block">
             <CCol>
               <span v-for="p in familyTree" :key="p.pk" class="mr-1 text-blue-grey">
                 <router-link :to="{ name: $route.name ?? '(개요)', params: { projId: p.slug } }">
@@ -41,12 +41,12 @@ watch(useRoute(), () => (visible.value = false))
             </CCol>
           </CRow>
           <CRow>
-            <CCol class="text-body d-none d-md-block">
+            <CCol class="text-body d-none d-lg-block">
               <strong class="title pl-1"> {{ pageTitle }}</strong>
             </CCol>
 
             <CCol
-              class="text-body d-md-none"
+              class="text-body d-lg-none"
               :class="{ pointer: !!familyTree.length }"
               @click="visible = !visible"
             >
@@ -72,15 +72,15 @@ watch(useRoute(), () => (visible.value = false))
           </CRow>
         </CCol>
 
-        <CCol class="text-body d-md-none text-right p-3">
+        <CCol class="text-body d-lg-none text-right p-3">
           <v-app-bar-nav-icon @click="sideNavCall" />
         </CCol>
-        <CCol class="d-none d-md-block text-right">
+        <CCol class="d-none d-lg-block text-right">
           <HeaderSearch />
         </CCol>
       </CRow>
 
-      <CRow class="d-none d-md-block">
+      <CRow class="d-none d-lg-block">
         <CCol>
           <HeaderNav :menus="navMenu" />
         </CCol>

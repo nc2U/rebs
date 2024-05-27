@@ -22,11 +22,11 @@ defineExpose({ toggle })
 
 <template>
   <CRow class="flex-grow-1">
-    <CCol class="text-body main p-4 px-lg-5">
+    <CCol class="text-body main p-4 px-lg-5 col-lg-9">
       <slot> Under Construction!</slot>
     </CCol>
 
-    <CCol v-if="aside" md="3" class="text-body p-4 d-none d-md-block">
+    <CCol v-if="aside" class="text-body p-4 d-none d-lg-block col-lg-3">
       <slot name="aside"> Under Construction!</slot>
     </CCol>
 
@@ -57,7 +57,7 @@ defineExpose({ toggle })
       <v-divider />
 
       <COffcanvasBody class="p-0">
-        <CRow class="mb-3">
+        <CRow class="lg-3">
           <CCol class="d-grid gap-2">
             <CNavbarNav vertical role="group" aria-label="Vertical button group" class="m-0">
               <CNavItem v-for="(menu, i) in navMenu" :key="i">
