@@ -481,3 +481,8 @@ label.required::after {
   font-weight: 500;
   color: darkred;
 }
+
+.closed {
+  color: #999;
+  text-decoration: line-through;
+}
