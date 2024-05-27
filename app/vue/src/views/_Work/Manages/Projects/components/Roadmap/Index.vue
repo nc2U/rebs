@@ -13,13 +13,12 @@ const versionList = computed(() => workStore.versionList)
 
 const [route, router] = [useRoute(), useRouter()]
 const onSubmit = (payload: any, back = false) => {
-  payload.project = route.params.projId as string
-
   if (!payload.pk) {
+    payload.project = route.params.projId as string
     workStore.createVersion(payload)
-    if (back) router.replace({ name: '(설정)', query: { menu: '버전' } })
-    else router.replace({ name: '(로드맵)' })
+    if (!back) router.replace({ name: '(로드맵)' })
   } else workStore.updateVersion(payload)
+  if (back) router.replace({ name: '(설정)', query: { menu: '버전' } })
 }
 
 onBeforeMount(() => {
@@ -33,5 +32,8 @@ onBeforeMount(() => {
 
   <VersionView v-if="route.name === '(로드맵) - 보기'" />
 
-  <VersionForm v-if="route.name === '(로드맵) - 추가'" @on-submit="onSubmit" />
+  <VersionForm
+    v-if="route.name === '(로드맵) - 추가' || route.name === '(로드맵) - 수정'"
+    @on-submit="onSubmit"
+  />
 </template>

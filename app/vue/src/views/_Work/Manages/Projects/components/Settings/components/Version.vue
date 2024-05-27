@@ -107,7 +107,11 @@ defineProps({ versions: { type: Array as PropType<Version[]>, default: () => [] 
             <CTableDataCell class="form-text">
               <span class="mr-2">
                 <v-icon icon="mdi-pencil" color="amber" size="sm" class="mr-1" />
-                <router-link to="">편집</router-link>
+                <router-link
+                  :to="{ name: '(로드맵) - 수정', params: { verId: ver.pk }, query: { back: 1 } }"
+                >
+                  편집
+                </router-link>
               </span>
               <span>
                 <v-icon icon="mdi-trash-can" color="grey" size="sm" class="mr-1" />

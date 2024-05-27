@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, computed, onBeforeMount } from 'vue'
 import { useRoute } from 'vue-router'
+import { useWork } from '@/store/pinia/work'
 import { isValidate } from '@/utils/helper'
 import { colorLight } from '@/utils/cssMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -11,7 +12,7 @@ const validated = ref(false)
 
 const form = ref({
   pk: null as number | null,
-  project: null,
+  project: '',
   name: '',
   description: '',
   wiki_page_title: '',
@@ -21,6 +22,10 @@ const form = ref({
 })
 
 const route = useRoute()
+
+const workStore = useWork()
+const version = computed(() => workStore.version)
+
 const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
@@ -29,6 +34,37 @@ const onSubmit = (event: Event) => {
     emit('on-submit', { ...form.value }, is_back)
   }
 }
+
+const setupForm = () => {
+  if (version.value) {
+    form.value.pk = version.value.pk as number
+    form.value.project = version.value.project as string
+    form.value.name = version.value.name
+    form.value.description = version.value.description
+    form.value.wiki_page_title = version.value.wiki_page_title
+    form.value.effective_date = version.value.effective_date
+    form.value.sharing = version.value.sharing
+    form.value.is_default = !!version.value.is_default
+  }
+}
+
+const resetForm = () => {
+  form.value.pk = null
+  form.value.project = ''
+  form.value.name = ''
+  form.value.description = ''
+  form.value.wiki_page_title = ''
+  form.value.effective_date = null
+  form.value.sharing = '0'
+  form.value.is_default = false
+}
+
+onBeforeMount(async () => {
+  if (route.params.verId) {
+    await workStore.fetchVersion(Number(route.params.verId))
+    setupForm()
+  } else resetForm()
+})
 </script>
 
 <template>
