@@ -129,17 +129,19 @@ const formCheck = computed(() => {
     const i = form.value.start_date === props.issue.start_date
     const j = form.value.assigned_to === props.issue.assigned_to?.pk
     const k = form.value.due_date === props.issue.due_date
-    const l = form.value.estimated_hours === numToTime(props.issue.estimated_hours)
-    const m = form.value.done_ratio === props.issue.done_ratio
-    const n = !form.value.files?.map(f => f.del).some(f => f === true)
-    const o = !newFiles.value.length
-    const p = !timeEntry.value.hours
-    const q = !timeEntry.value.activity
-    const r = !timeEntry.value.comment
-    const s = !comment.value.content
+    const l = form.value.category === props.issue.category
+    const m = form.value.estimated_hours === numToTime(props.issue.estimated_hours)
+    const n = form.value.fixed_version === props.issue.fixed_version
+    const o = form.value.done_ratio === props.issue.done_ratio
+    const p = !form.value.files?.map(f => f.del).some(f => f === true)
+    const q = !newFiles.value.length
+    const r = !timeEntry.value.hours
+    const s = !timeEntry.value.activity
+    const t = !timeEntry.value.comment
+    const u = !comment.value.content
 
-    const first = a && b && c && d && e && f && g && h && i
-    const second = j && k && l && m && n && o && p && q && r && s
+    const first = a && b && c && d && e && f && g && h && i && j && k
+    const second = l && m && n && o && p && q && r && s && t && u
     return first && second
   } else return false
 })
