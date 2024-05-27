@@ -191,7 +191,7 @@ export interface Version {
     | '상위 및 하위 프로젝트'
     | '최상위 및 모든 하위 프로젝트'
     | '모든 프로젝트'
-  due_date: string | null
+  effective_date: string | null
   description: string
   wiki_page_title: string
 }

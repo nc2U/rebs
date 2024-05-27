@@ -15,7 +15,7 @@ const form = ref({
   name: '',
   description: '',
   wiki_page_title: '',
-  due_date: null as string | null,
+  effective_date: null as string | null,
   sharing: '0' as '0' | '1' | '2' | '3' | '4',
   is_default: false,
 })
@@ -72,7 +72,7 @@ const onSubmit = (event: Event) => {
             <CFormLabel for="name" class="col-sm-2 col-form-label text-right"> 날짜</CFormLabel>
 
             <CCol sm="6">
-              <DatePicker v-model="form.due_date" />
+              <DatePicker v-model="form.effective_date" />
             </CCol>
           </CRow>
 

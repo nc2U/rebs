@@ -65,7 +65,7 @@ class TrackerInIssueProjectSerializer(serializers.ModelSerializer):
 class VersionInIssueProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Version
-        fields = ('pk', 'name', 'status', 'sharing', 'due_date', 'description', 'wiki_page_title')
+        fields = ('pk', 'name', 'status', 'sharing', 'effective_date', 'description', 'wiki_page_title')
 
 
 class IssueCategoryInIssueProjectSerializer(serializers.ModelSerializer):
@@ -296,7 +296,7 @@ class VersionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Version
         fields = ('pk', 'project', 'name', 'status', 'status_desc', 'sharing',
-                  'sharing_desc', 'due_date', 'description', 'wiki_page_title')
+                  'sharing_desc', 'effective_date', 'description', 'wiki_page_title')
 
     @transaction.atomic
     def create(self, validated_data):
