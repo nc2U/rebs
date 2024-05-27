@@ -1,10 +1,29 @@
 <script lang="ts" setup>
-import { type PropType } from 'vue'
+import { computed, type PropType } from 'vue'
 import type { Version } from '@/store/types/work'
 
-defineProps({ version: { type: Object as PropType<Version>, required: true } })
+const props = defineProps({ version: { type: Object as PropType<Version>, required: true } })
 
 const boxClass = ['primary-box', 'danger-box', 'success-box']
+
+const closedNum = computed(() => props.version?.issues?.filter(i => i.closed).length ?? 0)
+const closedStr = computed(() => {
+  if (closedNum.value === 0) return '모두 미완료'
+  else if (closedNum.value === 1) return '한 건 완료'
+  else return `${closedNum.value} 건 완료`
+})
+
+const progressNum = computed(() => props.version?.issues?.filter(i => !i.closed).length ?? 0)
+const progressStr = computed(() => {
+  if (progressNum.value === 0) return '모두 완료'
+  else if (progressNum.value === 1) return '한 건 진행 중'
+  else return `${progressNum.value} 건 진행 중`
+})
+
+const done_ratio = computed(() => {
+  if (!props.version?.issues?.length) return 0
+  else return Math.round((closedNum.value / props.version?.issues?.length) * 100)
+})
 </script>
 
 <template>
@@ -30,18 +49,23 @@ const boxClass = ['primary-box', 'danger-box', 'success-box']
 
     <CRow>
       <CCol class="col-sm-10 col-md-8 col-lg-6 col-xl-4 p-0 mx-2">
-        <CProgress color="success" :value="50" :style="{ '--cui-border-radius': 0 }">
-          50%
+        <CProgress color="success" :value="done_ratio" :style="{ '--cui-border-radius': 0 }">
+          {{ done_ratio }}%
         </CProgress>
       </CCol>
     </CRow>
     <CRow class="mb-4">
       <CCol class="form-text">
         <span>
-          <router-link to="">6 업무</router-link>
+          <router-link to="">업무 {{ version?.issues?.length }} 건</router-link>
         </span>
-        <span>( <router-link to="">5 건 완료</router-link> - </span>
-        <span> <router-link to="">한 건 진행 중</router-link>) </span>
+        <span>
+          ( <router-link to="">{{ closedStr }}</router-link> -
+        </span>
+        <span>
+          <router-link to="">{{ progressStr }}</router-link
+          >)
+        </span>
       </CCol>
     </CRow>
 
@@ -51,14 +75,19 @@ const boxClass = ['primary-box', 'danger-box', 'success-box']
         <v-divider class="mb-0" />
         <CTable responsive hover small striped>
           <colgroup>
-            <col style="width: 3%" />
-            <col style="width: 94%" />
-            <col style="width: 3%" />
+            <col style="width: 95%" />
+            <col style="width: 5%" />
           </colgroup>
           <CTableBody>
-            <CTableRow v-for="i in 3" :key="i">
-              <CTableDataCell>a</CTableDataCell>
-              <CTableDataCell>b</CTableDataCell>
+            <CTableRow v-for="issue in version.issues" :key="issue.pk">
+              <CTableDataCell>
+                <span>
+                  <router-link to="" :class="{ closed: issue.closed }">
+                    기능 #{{ issue.pk }}</router-link
+                  >
+                </span>
+                <span> : {{ issue.subject }}</span>
+              </CTableDataCell>
               <CTableDataCell class="text-center">c</CTableDataCell>
             </CTableRow>
           </CTableBody>

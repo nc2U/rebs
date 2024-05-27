@@ -23,7 +23,7 @@ const onSubmit = (payload: any, back = false) => {
 
 onBeforeMount(() => {
   emit('aside-visible', true)
-  workStore.fetchVersionList()
+  workStore.fetchVersionList(route.params.projId as string)
 })
 </script>
 

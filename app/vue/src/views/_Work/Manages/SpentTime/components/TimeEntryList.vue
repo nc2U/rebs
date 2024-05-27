@@ -252,10 +252,3 @@ onBeforeMount(() => {
     <TimeEntryReport />
   </div>
 </template>
-
-<style lang="scss" scoped>
-.closed {
-  color: #999;
-  text-decoration: line-through;
-}
-</style>
