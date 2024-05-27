@@ -298,11 +298,20 @@ class ModuleSerializer(serializers.ModelSerializer):
                   'file', 'wiki', 'repository', 'forum', 'calendar', 'gantt')
 
 
+class IProjectIssueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IssueProject
+        fields = ('slug', 'name')
+
+
 class IssueInVersionSerializer(serializers.ModelSerializer):
+    project = IProjectIssueSerializer(read_only=True)
+    tracker = TrackerInIssueProjectSerializer(read_only=True)
+
     class Meta:
         model = Issue
-        fields = ('pk', 'subject', 'status', 'tracker', 'priority', 'fixed_version',
-                  'assigned_to', 'category', 'done_ratio', 'closed')
+        fields = ('pk', 'project', 'subject', 'status', 'tracker', 'priority',
+                  'fixed_version', 'assigned_to', 'category', 'done_ratio', 'closed')
 
 
 class VersionSerializer(serializers.ModelSerializer):
@@ -454,12 +463,6 @@ class IssueCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = IssueCategory
         fields = ('pk', 'project', 'name', 'assigned_to')
-
-
-class IProjectIssueSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = IssueProject
-        fields = ('slug', 'name')
 
 
 class IssueStatusInIssueSerializer(serializers.ModelSerializer):

@@ -170,6 +170,27 @@ export interface Member {
   roles: { pk: number; name: string }[]
 }
 
+export interface SimpleIssue {
+  pk: number
+  project: {
+    slug: string
+    name: string
+  }
+  subject: string
+  status: number
+  tracker: {
+    pk: number
+    name: string
+    description: string
+  }
+  priority: number
+  fixed_version: number | null
+  assigned_to: number | null
+  category: number | null
+  done_ratio: number
+  closed: string | null
+}
+
 export interface Version {
   pk?: number
   project?: string
@@ -186,18 +207,7 @@ export interface Version {
   effective_date: string | null
   description: string
   wiki_page_title: string
-  issues?: {
-    pk: number
-    subject: string
-    status: number
-    tracker: number
-    priority: number
-    fixed_version: number | null
-    assigned_to: number | null
-    category: number | null
-    done_ratio: number
-    closed: string | null
-  }[]
+  issues?: SimpleIssue[]
   is_default?: boolean
 }
 

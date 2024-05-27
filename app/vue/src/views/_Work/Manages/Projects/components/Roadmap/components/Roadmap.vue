@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, type PropType } from 'vue'
 import type { Version } from '@/store/types/work'
+import IssueDropDown from '@/views/_Work/Manages/Issues/components/IssueDropDown.vue'
 
 const props = defineProps({ version: { type: Object as PropType<Version>, required: true } })
 
@@ -87,13 +88,18 @@ const done_ratio = computed(() => {
             <CTableRow v-for="issue in version.issues" :key="issue.pk">
               <CTableDataCell>
                 <span>
-                  <router-link to="" :class="{ closed: issue.closed }">
-                    기능 #{{ issue.pk }}</router-link
+                  <router-link
+                    :to="{ name: '(업무) - 보기', params: { issueId: issue.pk } }"
+                    :class="{ closed: issue.closed }"
                   >
+                    기능 #{{ issue.pk }}
+                  </router-link>
                 </span>
                 <span> : {{ issue.subject }}</span>
               </CTableDataCell>
-              <CTableDataCell class="text-center">c</CTableDataCell>
+              <CTableDataCell class="text-center">
+                <IssueDropDown :issue="issue" />
+              </CTableDataCell>
             </CTableRow>
           </CTableBody>
         </CTable>
