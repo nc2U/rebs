@@ -252,7 +252,7 @@ export interface Issue {
   subject: string
   description: string
   category: number | null
-  fixed_version: number | null
+  fixed_version: { pk: number; name: string } | null
   assigned_to: { pk: number; username: string } | null
   parent: number | null
   watchers: { pk: number; username: string }[]
