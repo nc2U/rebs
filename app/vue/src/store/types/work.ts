@@ -26,15 +26,7 @@ export interface IssueProject {
   is_inherit_members: boolean
   allowed_roles?: { pk: number; name: string }[]
   trackers?: { pk: number; name: string; description: string }[]
-  versions?: {
-    pk: number
-    name: '1.0'
-    status: '1' | '2' | '3'
-    sharing: '0' | '1' | '2' | '3' | '4'
-    due_date: string | null
-    description: string
-    wiki_page_title: string
-  }[]
+  versions?: Version[]
   default_version: string | null
   categories?: { pk: number; name: string; assigned_to: { pk: number; username: string } | null }[]
   status: '1' | '9'
@@ -179,13 +171,13 @@ export interface Member {
 }
 
 export interface Version {
-  pk: number
-  project: string
+  pk?: number
+  project?: string
   name: string
   status: '1' | '2' | '3'
-  status_desc: '진행' | '잠김' | '닫힘'
+  status_desc?: '진행' | '잠김' | '닫힘'
   sharing: '0' | '1' | '2' | '3' | '4'
-  sharing_desc:
+  sharing_desc?:
     | '공유 없음'
     | '하위 프로젝트'
     | '상위 및 하위 프로젝트'

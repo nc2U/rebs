@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { type PropType } from 'vue'
+import type { Version } from '@/store/types/work'
 import { colorLight } from '@/utils/cssMixins'
 import NoData from '@/views/_Work/components/NoData.vue'
 
-defineProps({ versions: { type: Array, default: () => [] } })
+defineProps({ versions: { type: Array as PropType<Version[]>, default: () => [] } })
 </script>
 
 <template>
@@ -66,9 +67,54 @@ defineProps({ versions: { type: Array, default: () => [] } })
 
   <NoData v-if="!versions.length" />
 
-  <template v-else>
-    <CRow>
-      <CCol> aa</CCol>
-    </CRow>
-  </template>
+  <CRow v-else>
+    <CCol>
+      <CTable small striped responsive hover>
+        <colgroup>
+          <col style="width: 10%" />
+          <col style="width: 10%" />
+          <col style="width: 10%" />
+          <col style="width: 20%" />
+          <col style="width: 10%" />
+          <col style="width: 10%" />
+          <col style="width: 20%" />
+          <col style="width: 10%" />
+        </colgroup>
+        <CTableHead>
+          <CTableRow class="text-center">
+            <CTableHeaderCell>버전</CTableHeaderCell>
+            <CTableHeaderCell>기본 버전</CTableHeaderCell>
+            <CTableHeaderCell>날짜</CTableHeaderCell>
+            <CTableHeaderCell>설명</CTableHeaderCell>
+            <CTableHeaderCell>상태</CTableHeaderCell>
+            <CTableHeaderCell>공유</CTableHeaderCell>
+            <CTableHeaderCell>위키 페이지</CTableHeaderCell>
+            <CTableHeaderCell></CTableHeaderCell>
+          </CTableRow>
+        </CTableHead>
+
+        <CTableBody>
+          <CTableRow v-for="ver in versions" :key="ver.pk" class="text-center">
+            <CTableDataCell class="text-left">{{ ver.name }}</CTableDataCell>
+            <CTableDataCell></CTableDataCell>
+            <CTableDataCell>{{ ver.effective_date }}</CTableDataCell>
+            <CTableDataCell class="text-left">{{ ver.description }}</CTableDataCell>
+            <CTableDataCell>{{ ver.status_desc }}</CTableDataCell>
+            <CTableDataCell>{{ ver.sharing_desc }}</CTableDataCell>
+            <CTableDataCell>{{ ver.wiki_page_title }}</CTableDataCell>
+            <CTableDataCell class="form-text">
+              <span class="mr-2">
+                <v-icon icon="mdi-pencil" color="amber" size="sm" class="mr-1" />
+                <router-link to="">편집</router-link>
+              </span>
+              <span>
+                <v-icon icon="mdi-trash-can" color="grey" size="sm" class="mr-1" />
+                <router-link to="">삭제</router-link>
+              </span>
+            </CTableDataCell>
+          </CTableRow>
+        </CTableBody>
+      </CTable>
+    </CCol>
+  </CRow>
 </template>
