@@ -96,7 +96,9 @@ defineProps({ versions: { type: Array as PropType<Version[]>, default: () => [] 
         <CTableBody>
           <CTableRow v-for="ver in versions" :key="ver.pk" class="text-center">
             <CTableDataCell class="text-left">{{ ver.name }}</CTableDataCell>
-            <CTableDataCell></CTableDataCell>
+            <CTableDataCell>
+              <v-icon v-if="ver.is_default" icon="mdi-check-bold" color="success" size="sm" />
+            </CTableDataCell>
             <CTableDataCell>{{ ver.effective_date }}</CTableDataCell>
             <CTableDataCell class="text-left">{{ ver.description }}</CTableDataCell>
             <CTableDataCell>{{ ver.status_desc }}</CTableDataCell>

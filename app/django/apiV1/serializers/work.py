@@ -63,9 +63,18 @@ class TrackerInIssueProjectSerializer(serializers.ModelSerializer):
 
 
 class VersionInIssueProjectSerializer(serializers.ModelSerializer):
+    status_desc = serializers.CharField(source='get_status_display', read_only=True)
+    sharing_desc = serializers.CharField(source='get_sharing_display', read_only=True)
+    is_default = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Version
-        fields = ('pk', 'name', 'status', 'sharing', 'effective_date', 'description', 'wiki_page_title')
+        fields = ('pk', 'name', 'status', 'status_desc', 'sharing', 'sharing_desc',
+                  'is_default', 'effective_date', 'description', 'wiki_page_title')
+
+    @staticmethod
+    def get_is_default(obj):
+        return True if obj.project.default_version else False
 
 
 class IssueCategoryInIssueProjectSerializer(serializers.ModelSerializer):
