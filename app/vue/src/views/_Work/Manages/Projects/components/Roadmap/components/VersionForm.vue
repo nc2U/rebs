@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { useRoute } from 'vue-router'
+import { isValidate } from '@/utils/helper'
 import { colorLight } from '@/utils/cssMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
-import { isValidate } from '@/utils/helper'
 
 const emit = defineEmits(['on-submit'])
 
@@ -19,11 +20,13 @@ const form = ref({
   isDefault: false,
 })
 
+const route = useRoute()
 const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
-    emit('on-submit', { ...form.value })
+    const is_back = !!route.query.back
+    emit('on-submit', { ...form.value }, is_back)
   }
 }
 </script>
@@ -77,7 +80,7 @@ const onSubmit = (event: Event) => {
             <CFormLabel for="name" class="col-sm-2 col-form-label text-right"> 공유</CFormLabel>
 
             <CCol sm="6">
-              <CFormSelect v-model="form.name">
+              <CFormSelect v-model="form.sharing">
                 <option value="0">공유 없음</option>
                 <option value="1">하위 프로젝트</option>
                 <option value="2">상위 및 하위 프로젝트</option>

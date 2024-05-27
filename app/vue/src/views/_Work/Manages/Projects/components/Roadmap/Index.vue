@@ -12,12 +12,13 @@ const workStore = useWork()
 const versionList = computed(() => workStore.versionList)
 
 const [route, router] = [useRoute(), useRouter()]
-const onSubmit = (payload: any) => {
+const onSubmit = (payload: any, back = false) => {
   payload.project = route.params.projId as string
 
   if (!payload.pk) {
     workStore.createVersion(payload)
-    router.replace({ name: '(로드맵)' })
+    if (back) router.replace({ name: '(설정)', query: { menu: '버전' } })
+    else router.replace({ name: '(로드맵)' })
   } else workStore.updateVersion(payload)
 }
 
