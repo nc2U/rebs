@@ -466,6 +466,12 @@ class CodePriorityInIssueSerializer(serializers.ModelSerializer):
         fields = ('pk', 'name')
 
 
+class VersionInIssueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Version
+        fields = ('pk', 'name')
+
+
 class IssueFileInIssueSerializer(serializers.ModelSerializer):
     user = SimpleUserSerializer(read_only=True)
 
@@ -497,6 +503,7 @@ class IssueSerializer(serializers.ModelSerializer):
     tracker = TrackerInIssueProjectSerializer(read_only=True)
     status = IssueStatusInIssueSerializer(read_only=True)
     priority = CodePriorityInIssueSerializer(read_only=True)
+    fixed_version = VersionInIssueSerializer(read_only=True)
     assigned_to = SimpleUserSerializer(read_only=True)
     watchers = SimpleUserSerializer(many=True, read_only=True)
     spent_time = serializers.SerializerMethodField(read_only=True)
@@ -532,6 +539,7 @@ class IssueSerializer(serializers.ModelSerializer):
         tracker = Tracker.objects.get(pk=self.initial_data.get('tracker'))
         status = IssueStatus.objects.get(pk=self.initial_data.get('status'))
         priority = CodeIssuePriority.objects.get(pk=self.initial_data.get('priority'))
+        fixed_version = self.initial_data.get('fixed_version', None)
         assigned_to = self.initial_data.get('assigned_to', None)
         assigned_to = User.objects.get(pk=assigned_to) if assigned_to else None
 
@@ -540,6 +548,7 @@ class IssueSerializer(serializers.ModelSerializer):
                                      tracker=tracker,
                                      status=status,
                                      priority=priority,
+                                     fixed_version_id=fixed_version,
                                      assigned_to=assigned_to,
                                      **validated_data)
         # Set the watchers of the instance to the list of watchers
@@ -574,6 +583,8 @@ class IssueSerializer(serializers.ModelSerializer):
             instance.closed = None
         if self.initial_data.get('priority'):
             instance.priority = CodeIssuePriority.objects.get(pk=self.initial_data.get('priority'))
+        if self.initial_data.get('fixed_version'):
+            instance.fixed_version = Version.objects.get(pk=self.initial_data.get('fixed_version'))
         assigned_to = self.initial_data.get('assigned_to', None)
         instance.assigned_to = User.objects.get(pk=assigned_to) if assigned_to else None
 
