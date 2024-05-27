@@ -301,11 +301,16 @@ class VersionSerializer(serializers.ModelSerializer):
     project = serializers.SlugRelatedField(slug_field='slug', read_only=True)
     status_desc = serializers.CharField(source='get_status_display', read_only=True)
     sharing_desc = serializers.CharField(source='get_sharing_display', read_only=True)
+    is_default = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Version
-        fields = ('pk', 'project', 'name', 'status', 'status_desc', 'sharing',
-                  'sharing_desc', 'effective_date', 'description', 'wiki_page_title')
+        fields = ('pk', 'project', 'name', 'status', 'status_desc', 'sharing', 'sharing_desc',
+                  'is_default', 'effective_date', 'description', 'wiki_page_title')
+
+    @staticmethod
+    def get_is_default(obj):
+        return True if obj.project.default_version else False
 
     @transaction.atomic
     def create(self, validated_data):
@@ -334,7 +339,10 @@ class VersionSerializer(serializers.ModelSerializer):
         except IssueProject.DoesNotExist:
             raise serializers.ValidationError({'project': 'Project does not exist'})
 
-        return instance.update(**validated_data, project=project)
+        instance.__dict__.update(validated_data)
+        instance.project = project
+        instance.save()
+        return instance
 
 
 class RepositorySerializer(serializers.ModelSerializer):
