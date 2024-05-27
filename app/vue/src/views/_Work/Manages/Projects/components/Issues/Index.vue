@@ -59,6 +59,7 @@ const projId = computed(() => (route.params.projId as string) ?? '')
 const issueId = computed(() => (route.params.issueId as string) ?? '')
 
 const listFilter = ref<IssueFilter>({ status__closed: '0', project: projId.value })
+
 const filterSubmit = (payload: IssueFilter) => {
   listFilter.value = payload
   workStore.fetchIssueList(payload)
@@ -68,12 +69,12 @@ const pageSelect = (page: number) => {
   workStore.fetchIssueList(listFilter.value)
 }
 
-watch(
-  () => route.params.projId,
-  async nVal => {
-    if (nVal) await workStore.fetchIssueList({ status__closed: '0', project: nVal as string })
-  },
-)
+// watch(
+//   () => route.params.projId,
+//   async nVal => {
+//     if (nVal) await workStore.fetchIssueList({ status__closed: '0', project: nVal as string })
+//   },
+// )
 
 watch(
   () => route.params.issueId,
@@ -84,6 +85,7 @@ watch(
       await workStore.fetchTimeEntryList({ ordering: 'pk', issue: Number(nVal) })
     } else workStore.issue = null
   },
+  { deep: true },
 )
 
 // watch(

@@ -189,8 +189,9 @@ onBeforeMount(() => {
       form.value.tracker = Number(route.query.tracker)
       cond.value.tracker = 'is'
     }
-    setTimeout(() => filterSubmit(), 100)
+    // setTimeout(() => filterSubmit(), 50)
   }
+  setTimeout(() => filterSubmit(), 50)
 })
 </script>
 
