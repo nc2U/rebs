@@ -133,7 +133,7 @@ const form = ref<IssueFilter>({
 })
 
 const filterSubmit = () => {
-  const filterData = {} as IssueFilter
+  const filterData = { project: form.value.project } as IssueFilter
 
   if (cond.value.status === 'open') filterData.status__closed = '0'
   else if (cond.value.status === 'is') filterData.status = form.value.status
