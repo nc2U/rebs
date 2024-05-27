@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { colorLight } from '@/utils/cssMixins'
 import NoData from '@/views/_Work/components/NoData.vue'
 
-const versionList = computed(() => [])
+defineProps({ versions: { type: Array, default: () => [] } })
 </script>
 
 <template>
@@ -64,9 +64,11 @@ const versionList = computed(() => [])
     </CCol>
   </CRow>
 
-  <NoData v-if="!versionList.length" />
+  <NoData v-if="!versions.length" />
 
-  <CRow v-else>
-    <CCol></CCol>
-  </CRow>
+  <template v-else>
+    <CRow>
+      <CCol> aa</CCol>
+    </CRow>
+  </template>
 </template>

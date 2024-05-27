@@ -114,7 +114,7 @@ onBeforeMount(async () => {
 
   <IssueTracking v-if="menu === '업무추적'" />
 
-  <Version v-if="menu === '버전'" />
+  <Version v-if="menu === '버전'" :versions="issueProject?.versions" />
 
   <IssueCategory v-if="menu === '업무범주'" />
 
