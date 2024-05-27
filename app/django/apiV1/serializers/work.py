@@ -74,7 +74,8 @@ class VersionInIssueProjectSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_is_default(obj):
-        return True if obj.pk == obj.project.default_version.pk else False
+        default_ver = obj.project.default_version
+        return True if default_ver and default_ver.pk == obj.pk else False
 
 
 class IssueCategoryInIssueProjectSerializer(serializers.ModelSerializer):
@@ -310,7 +311,8 @@ class VersionSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_is_default(obj):
-        return True if obj.pk == obj.project.default_version.pk else False
+        default_ver = obj.project.default_version
+        return True if default_ver and default_ver.pk == obj.pk else False
 
     @transaction.atomic
     def create(self, validated_data):
