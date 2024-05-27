@@ -307,6 +307,10 @@ class VersionSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({'project': 'Project does not exist'})
 
         version = Version.objects.create(**validated_data, project=project)
+        is_default = self.initial_data.get('is_default', False)
+        if is_default:
+            project.default_version = version
+            project.save()
         return version
 
     @transaction.atomic
@@ -314,6 +318,10 @@ class VersionSerializer(serializers.ModelSerializer):
         project_slug = self.initial_data.get('project')
         try:
             project = IssueProject.objects.get(slug=project_slug)
+            is_default = self.initial_data.get('is_default', False)
+            default_version = instance if is_default else None
+            project.default_version = default_version
+            project.save()
         except IssueProject.DoesNotExist:
             raise serializers.ValidationError({'project': 'Project does not exist'})
 
