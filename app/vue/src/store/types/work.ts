@@ -183,10 +183,21 @@ export interface Version {
     | '상위 및 하위 프로젝트'
     | '최상위 및 모든 하위 프로젝트'
     | '모든 프로젝트'
-  is_default?: boolean
   effective_date: string | null
   description: string
   wiki_page_title: string
+  issues?: {
+    pk: number
+    subject: string
+    status: number
+    tracker: number
+    priority: number
+    fixed_version: number | null
+    assigned_to: number | null
+    category: number | null
+    done_ratio: number
+  }[]
+  is_default?: boolean
 }
 
 export interface Tracker {
