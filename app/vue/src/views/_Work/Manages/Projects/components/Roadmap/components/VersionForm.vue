@@ -17,7 +17,7 @@ const form = ref({
   wiki_page_title: '',
   due_date: null as string | null,
   sharing: '0' as '0' | '1' | '2' | '3' | '4',
-  isDefault: false,
+  is_default: false,
 })
 
 const route = useRoute()
@@ -96,7 +96,7 @@ const onSubmit = (event: Event) => {
             </CFormLabel>
 
             <CCol sm="6" class="pt-2">
-              <CFormCheck v-model="form.isDefault" />
+              <CFormCheck v-model="form.is_default" />
             </CCol>
           </CRow>
         </CCardBody>

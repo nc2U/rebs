@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { computed, inject } from 'vue'
+import { computed } from 'vue'
+import { colorLight } from '@/utils/cssMixins'
 import NoData from '@/views/_Work/components/NoData.vue'
-
-const isDark = inject('isDark')
 
 const versionList = computed(() => [])
 </script>
@@ -30,7 +29,7 @@ const versionList = computed(() => [])
 
   <CRow>
     <CCol>
-      <CCard class="mb-3" :color="!isDark ? 'light' : ''">
+      <CCard class="mb-3" :color="colorLight">
         <CCardBody>
           <CRow>
             <CFormLabel for="inputEmail3" class="col-sm-1 col-form-label text-right">
