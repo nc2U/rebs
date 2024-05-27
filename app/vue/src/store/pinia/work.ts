@@ -173,9 +173,9 @@ export const useWork = defineStore('work', () => {
       .then(res => (version.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const fetchVersionList = () =>
+  const fetchVersionList = (project = '') =>
     api
-      .get(`/version/`)
+      .get(`/version/?project__slug=${project}`)
       .then(res => (versionList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 

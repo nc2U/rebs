@@ -196,6 +196,7 @@ export interface Version {
     assigned_to: number | null
     category: number | null
     done_ratio: number
+    closed: string | null
   }[]
   is_default?: boolean
 }
