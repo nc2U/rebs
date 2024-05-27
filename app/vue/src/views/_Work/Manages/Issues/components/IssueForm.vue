@@ -293,7 +293,7 @@ onBeforeMount(() => {
     form.value.due_date = props.issue.due_date
     form.value.category = props.issue.category
     form.value.estimated_hours = numToTime(props.issue.estimated_hours)
-    form.value.fixed_version = props.issue.fixed_version
+    form.value.fixed_version = props.issue.fixed_version?.pk ?? null
     form.value.done_ratio = props.issue.done_ratio
     form.value.files = props.issue.files
     workStore.fetchIssueList({ status__closed: '', project: props.issue.project.slug })

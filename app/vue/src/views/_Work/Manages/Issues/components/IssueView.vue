@@ -256,9 +256,21 @@ onBeforeMount(async () => {
               </router-link>
             </CCol>
           </CRow>
-          <CRow>
-            <CCol class="title"></CCol>
-            <CCol></CCol>
+
+          <CRow v-if="issueProject.categories?.length">
+            <CCol class="title">범주 :</CCol>
+            <CCol>{{ issue.category }}</CCol>
+          </CRow>
+
+          <CRow v-if="issue.fixed_version">
+            <CCol class="title">목표버전 :</CCol>
+            <CCol>
+              <router-link
+                :to="{ name: '(로드맵) - 보기', params: { verId: issue.fixed_version.pk } }"
+              >
+                {{ issue.fixed_version.name }}
+              </router-link>
+            </CCol>
           </CRow>
         </CCol>
 
