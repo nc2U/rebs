@@ -301,8 +301,8 @@ class ModuleSerializer(serializers.ModelSerializer):
 class IssueInVersionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Issue
-        fields = ('pk', 'subject', 'status', 'tracker', 'priority',
-                  'fixed_version', 'assigned_to', 'category', 'done_ratio')
+        fields = ('pk', 'subject', 'status', 'tracker', 'priority', 'fixed_version',
+                  'assigned_to', 'category', 'done_ratio', 'closed')
 
 
 class VersionSerializer(serializers.ModelSerializer):
