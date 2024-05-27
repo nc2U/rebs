@@ -163,6 +163,7 @@ onBeforeMount(async () => {
         <CCol>
           <span class="sub-title">{{ issue.subject }}</span>
         </CCol>
+
         <CCol class="text-right form-text">
           <span v-if="issue.pk === issueNums[0]">« 뒤로</span>
           <router-link

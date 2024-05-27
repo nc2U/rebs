@@ -69,20 +69,38 @@ const pageSelect = (page: number) => {
 }
 
 watch(
-  route,
+  () => route.params.projId,
   async nVal => {
-    if (nVal.params.projId) {
-      await workStore.fetchIssueList({ status__closed: '0', project: nVal.params.projId as string })
-    }
+    if (nVal) await workStore.fetchIssueList({ status__closed: '0', project: nVal as string })
+  },
+)
 
-    if (nVal.params.issueId) {
-      await workStore.fetchIssue(Number(nVal.params.issueId))
-      await workStore.fetchIssueLogList({ issue: Number(nVal.params.issueId) })
-      await workStore.fetchTimeEntryList({ ordering: 'pk', issue: Number(nVal.params.issueId) })
+watch(
+  () => route.params.issueId,
+  async nVal => {
+    if (nVal) {
+      await workStore.fetchIssue(Number(nVal))
+      await workStore.fetchIssueLogList({ issue: Number(nVal) })
+      await workStore.fetchTimeEntryList({ ordering: 'pk', issue: Number(nVal) })
     } else workStore.issue = null
   },
-  { deep: true },
 )
+
+// watch(
+//   route,
+//   async nVal => {
+//     if (nVal.params.projId) {
+//       await workStore.fetchIssueList({ status__closed: '0', project: nVal.params.projId as string })
+//     }
+//
+//     if (nVal.params.issueId) {
+//       await workStore.fetchIssue(Number(nVal.params.issueId))
+//       await workStore.fetchIssueLogList({ issue: Number(nVal.params.issueId) })
+//       await workStore.fetchTimeEntryList({ ordering: 'pk', issue: Number(nVal.params.issueId) })
+//     } else workStore.issue = null
+//   },
+//   { deep: true },
+// )
 
 onBeforeMount(async () => {
   emit('aside-visible', true)
