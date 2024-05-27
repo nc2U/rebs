@@ -43,7 +43,12 @@ const done_ratio = computed(() => {
       </CCol>
       <CCol v-if="1 == 1" class="text-right">
         <!-- 관리자 권한 있을 때 렌더링 -->
-        <v-icon icon="mdi-pencil" color="amber" size="18" />
+        <v-icon
+          icon="mdi-pencil"
+          color="amber"
+          size="18"
+          @click="$router.push({ name: '(로드맵) - 수정', params: { verId: version.pk } })"
+        />
       </CCol>
     </CRow>
 
