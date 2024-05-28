@@ -44,9 +44,25 @@ onBeforeMount(() => {
 <template>
   <CRow class="py-2">
     <CCol>
-      <span class="title bold mr-2" style="font-size: large">{{ version?.name }}</span>
-
+      <span class="title bold mr-2" style="font-size: 1.4em">{{ version?.name }}</span>
       <span :class="boxClass[Number(version?.status) - 1]">{{ version?.status_desc }}</span>
+    </CCol>
+
+    <CCol class="text-right form-text">
+      <span class="mr-3">
+        <v-icon icon="mdi-pencil" color="amber" size="16" class="mr-1" />
+        <router-link :to="{ name: '(로드맵) - 수정', params: { verId: version.pk } }">
+          편집
+        </router-link>
+      </span>
+      <span class="mr-3">
+        <v-icon icon="mdi-trash-can-outline" color="grey" size="16" class="mr-1" />
+        <router-link to="">삭제</router-link>
+      </span>
+      <span class="mr-3">
+        <v-icon icon="mdi-plus-circle" color="success" size="16" class="mr-1" />
+        <router-link :to="{ name: '(로드맵) - 추가' }">새 업무 만들기</router-link>
+      </span>
     </CCol>
   </CRow>
 
