@@ -400,7 +400,7 @@ class Issue(models.Model):
         (60, '60%'), (70, '70%'), (80, '80%'), (90, '90%'), (100, '100%'))
     done_ratio = models.PositiveSmallIntegerField('진척도', choices=PROGRESS_RATIO, default=0)
     closed = models.DateTimeField('완료', null=True, blank=True, help_text='상태가 완료로 입력된 시간. 한 번 완료하면 다시 진행으로 변경해도 남아있음.')
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='생성자',
+    creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='작성자',
                                 related_name='creator', null=True, blank=True)
     updater = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='수정자',
                                 related_name='updater', null=True, blank=True)
