@@ -24,7 +24,9 @@ const getTitle = (title: string) => title.replace(/[() ]/gim, '')
           새 업무 만들기
         </CDropdownItem>
         <CDropdownItem v-if="superAuth" disabled>새 업무 카테고리</CDropdownItem>
-        <CDropdownItem v-if="superAuth" disabled>새 버전</CDropdownItem>
+        <CDropdownItem v-if="superAuth" @click="$router.push({ name: '(로드맵) - 추가' })">
+          새 버전
+        </CDropdownItem>
         <CDropdownItem v-if="superAuth" @click="$router.push({ name: '(소요시간) - 추가' })">
           작업시간 기록
         </CDropdownItem>
