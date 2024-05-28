@@ -54,7 +54,7 @@ const done_ratio = computed(() => {
     </CRow>
 
     <template v-if="!version.issues?.length">
-      <span class="form-text">이 버전에 해당하는 업무 없음</span>
+      <div class="form-text mb-3">이 버전에 해당하는 업무 없음</div>
     </template>
     <template v-else>
       <CRow>
