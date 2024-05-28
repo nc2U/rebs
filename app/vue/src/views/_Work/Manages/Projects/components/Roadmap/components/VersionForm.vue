@@ -6,7 +6,7 @@ import { isValidate } from '@/utils/helper'
 import { colorLight } from '@/utils/cssMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 
-const emit = defineEmits(['on-submit'])
+const emit = defineEmits(['aside-visible', 'on-submit'])
 
 const validated = ref(false)
 
@@ -60,6 +60,8 @@ const resetForm = () => {
 }
 
 onBeforeMount(async () => {
+  emit('aside-visible', false)
+
   if (route.params.verId) {
     await workStore.fetchVersion(Number(route.params.verId))
     setupForm()

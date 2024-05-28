@@ -22,8 +22,10 @@ const progressStr = computed(() => {
 })
 
 const done_ratio = computed(() => {
+  const done_sum = props.version.issues?.reduce((sum, issue) => sum + issue.done_ratio, 0) ?? 0
+
   if (!props.version?.issues?.length) return 0
-  else return Math.round((closedNum.value / props.version?.issues?.length) * 100)
+  else return Math.round(done_sum / props.version?.issues?.length)
 })
 </script>
 

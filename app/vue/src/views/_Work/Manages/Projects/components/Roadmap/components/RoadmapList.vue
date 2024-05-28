@@ -1,9 +1,13 @@
 <script lang="ts" setup>
-import { type PropType } from 'vue'
+import { onBeforeMount, type PropType } from 'vue'
 import type { Version } from '@/store/types/work'
 import Roadmap from './Roadmap.vue'
 
 defineProps({ versionList: { type: Array as PropType<Version[]>, default: () => [] } })
+
+const emit = defineEmits(['aside-visible'])
+
+onBeforeMount(() => emit('aside-visible', true))
 </script>
 
 <template>

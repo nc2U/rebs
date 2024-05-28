@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
+import { useRoute, useRouter } from 'vue-router'
+import type { Version } from '@/store/types/work'
 import RoadmapList from './components/RoadmapList.vue'
 import VersionView from './components/VersionView.vue'
 import VersionForm from './components/VersionForm.vue'
@@ -9,6 +10,7 @@ import VersionForm from './components/VersionForm.vue'
 const emit = defineEmits(['aside-visible'])
 
 const workStore = useWork()
+const version = computed(() => workStore.version)
 const versionList = computed(() => workStore.versionList)
 
 const [route, router] = [useRoute(), useRouter()]
@@ -21,19 +23,29 @@ const onSubmit = (payload: any, back = false) => {
   if (back) router.replace({ name: '(설정)', query: { menu: '버전' } })
 }
 
+const asideVisible = (visible: boolean) => emit('aside-visible', visible)
+
 onBeforeMount(() => {
-  emit('aside-visible', true)
   workStore.fetchVersionList(route.params.projId as string)
 })
 </script>
 
 <template>
-  <RoadmapList v-if="route.name === '(로드맵)'" :version-list="versionList" />
+  <RoadmapList
+    v-if="route.name === '(로드맵)'"
+    :version-list="versionList"
+    @aside-visible="asideVisible"
+  />
 
-  <VersionView v-if="route.name === '(로드맵) - 보기'" />
+  <VersionView
+    v-if="route.name === '(로드맵) - 보기'"
+    :version="version as Version"
+    @aside-visible="asideVisible"
+  />
 
   <VersionForm
     v-if="route.name === '(로드맵) - 추가' || route.name === '(로드맵) - 수정'"
+    @aside-visible="asideVisible"
     @on-submit="onSubmit"
   />
 </template>
