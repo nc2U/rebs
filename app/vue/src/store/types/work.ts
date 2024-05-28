@@ -185,8 +185,10 @@ export interface SimpleIssue {
   }
   priority: number
   fixed_version: number | null
-  assigned_to: number | null
   category: number | null
+  assigned_to: number | null
+  estimated_hours: number | null
+  total_spent_time: number
   done_ratio: number
   closed: string | null
 }
