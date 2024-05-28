@@ -307,11 +307,17 @@ class IProjectIssueSerializer(serializers.ModelSerializer):
 class IssueInVersionSerializer(serializers.ModelSerializer):
     project = IProjectIssueSerializer(read_only=True)
     tracker = TrackerInIssueProjectSerializer(read_only=True)
+    total_spent_time = serializers.SerializerMethodField()
 
     class Meta:
         model = Issue
         fields = ('pk', 'project', 'subject', 'status', 'tracker', 'priority',
-                  'fixed_version', 'assigned_to', 'category', 'done_ratio', 'closed')
+                  'fixed_version', 'category', 'assigned_to', 'estimated_hours',
+                  'total_spent_time', 'done_ratio', 'closed')
+
+    @staticmethod
+    def get_total_spent_time(obj):
+        return obj.timeentry_set.aggregate(total=Sum('hours'))['total'] or 0
 
 
 class VersionSerializer(serializers.ModelSerializer):
