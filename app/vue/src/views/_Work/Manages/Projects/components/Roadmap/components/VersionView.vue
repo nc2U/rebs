@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, type PropType } from 'vue'
+import type { Version } from '@/store/types/work'
 import { useRoute } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
-import type { Version } from '@/store/types/work'
+import { numberToHour } from '@/utils/baseMixins'
 import IssueDropDown from '@/views/_Work/Manages/Issues/components/IssueDropDown.vue'
 
 const props = defineProps({ version: { type: Object as PropType<Version>, required: true } })
@@ -34,6 +35,15 @@ const done_ratio = computed(() => {
   else return Math.round(done_sum / props.version?.issues?.length)
 })
 
+const get_total_estimated_hours = computed(
+  () =>
+    props.version.issues?.reduce((sum, issue) => sum + Number(issue.estimated_hours ?? 0), 0) ?? 0,
+)
+
+const get_total_spent_times = computed(
+  () => props.version.issues?.reduce((sum, issue) => sum + issue.spent_times, 0) ?? 0,
+)
+
 const route = useRoute()
 onBeforeMount(() => {
   emit('aside-visible', false)
@@ -51,7 +61,7 @@ onBeforeMount(() => {
     <CCol class="text-right form-text">
       <span class="mr-3">
         <v-icon icon="mdi-pencil" color="amber" size="16" class="mr-1" />
-        <router-link :to="{ name: '(로드맵) - 수정', params: { verId: version.pk } }">
+        <router-link :to="{ name: '(로드맵) - 수정', params: { verId: version?.pk } }">
           편집
         </router-link>
       </span>
@@ -135,10 +145,19 @@ onBeforeMount(() => {
               <h6>시간추적</h6>
               <CRow class="my-2">
                 <CCol class="col-6 text-center">추정시간</CCol>
-                <CCol class="col-6 text-right pr-5"> 5:00 시간</CCol>
-
+                <CCol class="col-6 text-right pr-5">
+                  <!-- 목표버전 필터링 업무 리스트 구현-->
+                  <router-link :to="{ name: '(업무)' }">
+                    {{ numberToHour(get_total_estimated_hours) }} 시간
+                  </router-link>
+                </CCol>
                 <CCol class="col-6 text-center">소요시간</CCol>
-                <CCol class="col-6 text-right pr-5"> 0:00 시간</CCol>
+                <CCol class="col-6 text-right pr-5">
+                  <!-- 목표버전 필터링 소요시간 리스트 구현-->
+                  <router-link :to="{ name: '(소요시간)' }">
+                    {{ numberToHour(get_total_spent_times) }} 시간
+                  </router-link>
+                </CCol>
               </CRow>
             </div>
           </CCol>
@@ -153,7 +172,7 @@ onBeforeMount(() => {
                     <option>유형</option>
                     <option>상태</option>
                     <option>우선순위</option>
-                    <option>저자</option>
+                    <option>작성자</option>
                     <option>담당자</option>
                     <option>범주</option>
                   </CFormSelect>

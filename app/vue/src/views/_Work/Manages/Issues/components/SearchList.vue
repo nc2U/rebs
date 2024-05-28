@@ -30,7 +30,7 @@ const searchOptions = reactive([
       { value: 'status', label: '상태', disabled: true },
       { value: 'tracker', label: '유형' },
       { value: 'priority', label: '우선순위', disabled: true },
-      { value: 'author', label: '저자', disabled: true },
+      { value: 'author', label: '작성자', disabled: true },
       { value: 'assignee', label: '담당자', disabled: true },
       { value: 'version', label: '목표버전', disabled: true },
       { value: 'category', label: '범주', disabled: true },
