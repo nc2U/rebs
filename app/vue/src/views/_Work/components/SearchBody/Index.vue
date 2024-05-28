@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, type ComputedRef, inject, onBeforeMount, ref, watch } from 'vue'
 import { navMenu2 as navMenu } from '@/views/_Work/_menu/headermixin1'
+import { colorLight } from '@/utils/cssMixins'
 import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
 import type { Company } from '@/store/types/settings'
 import Header from '@/views/_Work/components/Header/Index.vue'
@@ -61,7 +62,7 @@ onBeforeRouteLeave((to, from, next) => {
         </CCol>
       </CRow>
 
-      <CCard color="light">
+      <CCard :color="colorLight">
         <CCardBody>
           <CRow>
             <CCol sm="12" md="8" lg="6" xl="3">
@@ -80,7 +81,7 @@ onBeforeRouteLeave((to, from, next) => {
           </CRow>
 
           <CRow class="mt-3 m-1">
-            <CCard class="mt-3" color="light">
+            <CCard class="mt-3" :color="colorLight">
               <CCardBody>
                 <CFormCheck v-model="searchCond.issue" inline label="업무" id="issue-search" />
                 <CFormCheck v-model="searchCond.news" inline label="공지" id="news-search" />
