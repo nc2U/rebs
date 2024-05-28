@@ -53,57 +53,63 @@ const done_ratio = computed(() => {
       </CCol>
     </CRow>
 
-    <CRow>
-      <CCol class="col-sm-10 col-md-8 col-lg-6 col-xl-4 p-0 mx-2">
-        <CProgress color="success" :value="done_ratio" :style="{ '--cui-border-radius': 0 }">
-          {{ done_ratio }}%
-        </CProgress>
-      </CCol>
-    </CRow>
-    <CRow class="mb-4">
-      <CCol class="form-text">
-        <span>
-          <router-link to="">업무 {{ version?.issues?.length }} 건</router-link>
-        </span>
-        <span>
-          ( <router-link to="">{{ closedStr }}</router-link> -
-        </span>
-        <span>
-          <router-link to="">{{ progressStr }}</router-link
-          >)
-        </span>
-      </CCol>
-    </CRow>
+    <template v-if="!version.issues?.length">
+      <span class="form-text">이 버전에 해당하는 업무 없음</span>
+    </template>
+    <template v-else>
+      <CRow>
+        <CCol class="col-sm-10 col-md-8 col-lg-6 col-xl-4 p-0 mx-2">
+          <CProgress color="success" :value="done_ratio" :style="{ '--cui-border-radius': 0 }">
+            {{ done_ratio }}%
+          </CProgress>
+        </CCol>
+      </CRow>
 
-    <CRow>
-      <CCol class="mb-4">
-        <h6>연결된 업무</h6>
-        <v-divider class="mb-0" />
-        <CTable responsive hover small striped>
-          <colgroup>
-            <col style="width: 95%" />
-            <col style="width: 5%" />
-          </colgroup>
-          <CTableBody>
-            <CTableRow v-for="issue in version.issues" :key="issue.pk">
-              <CTableDataCell>
-                <span>
-                  <router-link
-                    :to="{ name: '(업무) - 보기', params: { issueId: issue.pk } }"
-                    :class="{ closed: issue.closed }"
-                  >
-                    기능 #{{ issue.pk }}
-                  </router-link>
-                </span>
-                <span> : {{ issue.subject }}</span>
-              </CTableDataCell>
-              <CTableDataCell class="text-center">
-                <IssueDropDown :issue="issue" />
-              </CTableDataCell>
-            </CTableRow>
-          </CTableBody>
-        </CTable>
-      </CCol>
-    </CRow>
+      <CRow class="mb-4">
+        <CCol class="form-text">
+          <span>
+            <router-link to="">업무 {{ version?.issues?.length }} 건</router-link>
+          </span>
+          <span>
+            ( <router-link to="">{{ closedStr }}</router-link> -
+          </span>
+          <span>
+            <router-link to="">{{ progressStr }}</router-link
+            >)
+          </span>
+        </CCol>
+      </CRow>
+
+      <CRow>
+        <CCol class="mb-4">
+          <h6>연결된 업무</h6>
+          <v-divider class="mb-0" />
+          <CTable responsive hover small striped>
+            <colgroup>
+              <col style="width: 95%" />
+              <col style="width: 5%" />
+            </colgroup>
+            <CTableBody>
+              <CTableRow v-for="issue in version.issues" :key="issue.pk">
+                <CTableDataCell>
+                  <span>
+                    <router-link
+                      :to="{ name: '(업무) - 보기', params: { issueId: issue.pk } }"
+                      :class="{ closed: issue.closed }"
+                    >
+                      기능 #{{ issue.pk }}
+                    </router-link>
+                  </span>
+                  <span> : {{ issue.subject }}</span>
+                </CTableDataCell>
+                <CTableDataCell class="text-center p-0">
+                  <IssueDropDown :issue="issue" />
+                </CTableDataCell>
+              </CTableRow>
+            </CTableBody>
+          </CTable>
+        </CCol>
+      </CRow>
+    </template>
   </CCol>
 </template>
