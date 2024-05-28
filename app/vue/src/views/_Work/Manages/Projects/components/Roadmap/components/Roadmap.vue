@@ -53,9 +53,14 @@ const done_ratio = computed(() => {
       </CCol>
     </CRow>
 
+    <CRow v-if="version.description" class="mb-2">
+      <CCol>{{ version.description }}</CCol>
+    </CRow>
+
     <template v-if="!version.issues?.length">
       <div class="form-text mb-3">이 버전에 해당하는 업무 없음</div>
     </template>
+
     <template v-else>
       <CRow>
         <CCol class="col-sm-10 col-md-8 col-lg-6 col-xl-4 p-0 mx-2">
