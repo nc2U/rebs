@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, type PropType } from 'vue'
+import { ref, computed, onBeforeMount, type PropType } from 'vue'
 import type { Version } from '@/store/types/work'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import { numberToHour } from '@/utils/baseMixins'
 import IssueDropDown from '@/views/_Work/Manages/Issues/components/IssueDropDown.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const props = defineProps({ version: { type: Object as PropType<Version>, required: true } })
 
@@ -44,7 +45,16 @@ const get_total_spent_times = computed(
   () => props.version.issues?.reduce((sum, issue) => sum + issue.spent_times, 0) ?? 0,
 )
 
-const route = useRoute()
+const [route, router] = [useRoute(), useRouter()]
+
+const RefVersionConfirm = ref()
+
+const deleteSubmit = () => {
+  RefVersionConfirm.value.close()
+  workStore.deleteVersion(props.version?.pk as number, props.version.project)
+  router.replace({ name: '(로드맵)' })
+}
+
 onBeforeMount(() => {
   emit('aside-visible', false)
   workStore.fetchVersion(Number(route.params.verId))
@@ -67,7 +77,14 @@ onBeforeMount(() => {
       </span>
       <span class="mr-3">
         <v-icon icon="mdi-trash-can-outline" color="grey" size="16" class="mr-1" />
-        <router-link to="">삭제</router-link>
+        <router-link
+          to=""
+          @click="
+            RefVersionConfirm.callModal('', '이 버전 삭제를 계속 진행 하시겠습니까?', '', 'warning')
+          "
+        >
+          삭제
+        </router-link>
       </span>
       <span class="mr-3">
         <v-icon icon="mdi-plus-circle" color="success" size="16" class="mr-1" />
@@ -198,4 +215,10 @@ onBeforeMount(() => {
       </CCol>
     </CRow>
   </template>
+
+  <ConfirmModal ref="RefVersionConfirm">
+    <template #footer>
+      <CButton color="warning" @click="deleteSubmit">삭제</CButton>
+    </template>
+  </ConfirmModal>
 </template>
