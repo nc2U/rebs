@@ -1,10 +1,27 @@
 <script lang="ts" setup>
-import { type PropType } from 'vue'
+import { ref, type PropType } from 'vue'
 import type { Version } from '@/store/types/work'
 import { colorLight } from '@/utils/cssMixins'
 import NoData from '@/views/_Work/components/NoData.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 defineProps({ versions: { type: Array as PropType<Version[]>, default: () => [] } })
+
+const emit = defineEmits(['delete-version'])
+
+const RefVersionConfirm = ref()
+
+const deleteVersion = ref<number | null>(null)
+
+const toDelete = (ver: number) => {
+  deleteVersion.value = ver
+  RefVersionConfirm.value.callModal('', '이 버전 삭제를 계속 진행 하시겠습니까?', '', 'warning')
+}
+
+const deleteSubmit = () => {
+  emit('delete-version', deleteVersion.value)
+  RefVersionConfirm.value.close()
+}
 </script>
 
 <template>
@@ -12,8 +29,8 @@ defineProps({ versions: { type: Array as PropType<Version[]>, default: () => [] 
     <CCol>
       <span class="mr-2 form-text">
         <v-icon icon="mdi-plus-circle" color="success" size="sm" />
-        <router-link :to="{ name: '(로드맵) - 추가', query: { back: 1 } }" class="ml-1"
-          >새 버전
+        <router-link :to="{ name: '(로드맵) - 추가', query: { back: 1 } }" class="ml-1">
+          새 버전
         </router-link>
       </span>
     </CCol>
@@ -129,7 +146,7 @@ defineProps({ versions: { type: Array as PropType<Version[]>, default: () => [] 
               </span>
               <span>
                 <v-icon icon="mdi-trash-can" color="grey" size="sm" class="mr-1" />
-                <router-link to="">삭제</router-link>
+                <router-link to="" @click="toDelete(ver?.pk as number)">삭제</router-link>
               </span>
             </CTableDataCell>
           </CTableRow>
@@ -137,4 +154,10 @@ defineProps({ versions: { type: Array as PropType<Version[]>, default: () => [] 
       </CTable>
     </CCol>
   </CRow>
+
+  <ConfirmModal ref="RefVersionConfirm">
+    <template #footer>
+      <CButton color="warning" @click="deleteSubmit">삭제</CButton>
+    </template>
+  </ConfirmModal>
 </template>

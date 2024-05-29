@@ -42,6 +42,7 @@ const settingMenus = computed(() => {
 })
 
 const company = inject<ComputedRef<Company>>('company')
+
 const workStore = useWork()
 const issueProject = computed(() => workStore.issueProject)
 const modules = computed(() => issueProject.value?.module)
@@ -53,6 +54,8 @@ const onSubmit = (payload: any) => {
   payload.company = company?.value.pk
   workStore.updateIssueProject(payload)
 }
+
+const deleteVersion = (pk: number) => workStore.deleteVersion(pk, issueProject.value?.slug)
 
 onBeforeRouteUpdate(async to => {
   if (to.params.projId) await workStore.fetchIssueProject(to.params.projId as string)
@@ -114,7 +117,11 @@ onBeforeMount(async () => {
 
   <IssueTracking v-if="menu === '업무추적'" />
 
-  <Version v-if="menu === '버전'" :versions="issueProject?.versions" />
+  <Version
+    v-if="menu === '버전'"
+    :versions="issueProject?.versions"
+    @delete-version="deleteVersion"
+  />
 
   <IssueCategory v-if="menu === '업무범주'" />
 

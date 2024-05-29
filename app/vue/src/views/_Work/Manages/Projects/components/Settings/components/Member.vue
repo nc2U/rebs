@@ -109,14 +109,14 @@ const editSubmit = (mem: number, user: number) => {
   cancelEdit()
 }
 
-const toDelete = (mem: SimpleMember) => {
+const toDelete = (memPk: number) => {
   memberConfirmModal.value.callModal(
     '',
     '이 구성원을 프로젝트에서 삭제하시겠습니까?',
     '',
     'warning',
   )
-  deleteMember.value = mem.pk
+  deleteMember.value = memPk
 }
 
 const deleteMember = ref<number | null>(null)
@@ -276,7 +276,7 @@ onBeforeMount(() => accStore.fetchUsersList())
 
               <span v-if="noInheritMem(mem.pk)">
                 <v-icon icon="mdi-trash-can-outline" color="grey" size="sm" />
-                <router-link to="" @click="toDelete(mem)">삭제</router-link>
+                <router-link to="" @click="toDelete(mem.pk)">삭제</router-link>
               </span>
             </CTableDataCell>
           </CTableRow>
