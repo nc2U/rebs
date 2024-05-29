@@ -16,6 +16,7 @@ defineProps({
   allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
   getIssues: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
   getMembers: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
+  getVersions: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
 })
 
 const emit = defineEmits(['page-select', 'del-submit', 'filter-submit'])
@@ -83,6 +84,7 @@ onBeforeMount(() => {
     :all-projects="allProjects"
     :getIssues="getIssues"
     :get-members="getMembers"
+    :get-versions="getVersions"
     @filter-submit="filterSubmit"
   />
 

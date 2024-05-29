@@ -13,6 +13,7 @@ const props = defineProps({
   getMembers: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
   statusList: { type: Array as PropType<IssueStatus[]>, default: () => [] },
   trackerList: { type: Array as PropType<Tracker[]>, default: () => [] },
+  getVersions: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
 })
 
 const emit = defineEmits(['filter-submit'])
@@ -157,6 +158,10 @@ const filterSubmit = () => {
     if (cond.value.user === 'is') filterData.user = form.value.user
     else if (cond.value.user === 'exclude') filterData.user__exclude = form.value.user
     else if (cond.value.user === 'any') filterData.user = ''
+
+  if (searchCond.value.includes('issue_target_version'))
+    if (cond.value.issue_target_version === 'is') filterData.user = form.value.version
+    else if (cond.value.user === 'exclude') filterData.user__exclude = form.value.version
 
   // if (form.value.name) filterData.name = form.value.name
   // if (form.value.description) filterData.description = form.value.description
@@ -343,7 +348,7 @@ onBeforeMount(() => {
                 <Multiselect
                   v-if="cond.issue_target_version"
                   v-model="form.version"
-                  :options="[]"
+                  :options="getVersions"
                   placeholder="버전 선택"
                   searchable
                 />

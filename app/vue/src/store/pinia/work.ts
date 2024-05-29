@@ -166,6 +166,12 @@ export const useWork = defineStore('work', () => {
   // version states & getters
   const version = ref<Version | null>(null)
   const versionList = ref<Version[]>([])
+  const getVersions = computed(() =>
+    versionList.value.map(v => ({
+      value: v.pk as number,
+      label: `${v.project} - ${v.name}`,
+    })),
+  )
 
   const fetchVersion = (pk: number) =>
     api
@@ -629,6 +635,7 @@ export const useWork = defineStore('work', () => {
 
     version,
     versionList,
+    getVersions,
     fetchVersion,
     fetchVersionList,
     createVersion,

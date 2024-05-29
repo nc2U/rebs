@@ -22,6 +22,7 @@ const allProjects = computed(() => workStore.AllIssueProjects)
 const timeEntryList = computed(() => workStore.timeEntryList)
 const getIssues = computed(() => workStore.getIssues)
 const getMembers = computed(() => accStore.getUsers)
+const getVersions = computed(() => workStore.getVersions)
 
 const createTimeEntry = (payload: any) => workStore.createTimeEntry(payload)
 const updateTimeEntry = (payload: any) => workStore.updateTimeEntry(payload)
@@ -53,6 +54,7 @@ onBeforeMount(() => {
   workStore.fetchAllIssueProjectList()
   workStore.fetchTimeEntryList({})
   workStore.fetchIssueList({ status__closed: '0' })
+  workStore.fetchVersionList()
   accStore.fetchUsersList()
 })
 </script>
@@ -68,6 +70,7 @@ onBeforeMount(() => {
         :all-projects="allProjects"
         :get-issues="getIssues"
         :get-members="getMembers"
+        :get-versions="getVersions"
         @filter-submit="filterSubmit"
         @page-select="pageSelect"
         @del-submit="delSubmit"
