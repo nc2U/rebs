@@ -478,7 +478,9 @@ export const useWork = defineStore('work', () => {
     // if (payload.issue__tracker) url += `&issue__tracker=${payload.issue__tracker}`
     // if (payload.issue__parent) url += `&issue__parent=${payload.issue__parent}`
     // if (payload.issue__status) url += `&issue__status=${payload.issue__status}`
-    // if (payload.issue__fixed_version) url += `&issue__fixed_version=${payload.issue__fixed_version}`
+    if (payload.version) url += `&issue__fixed_version=${payload.version}`
+    if (payload.version__exclude)
+      url += `&issue__fixed_version__exclude=${payload.version__exclude}`
     // if (payload.issue__category) url += `&issue__category=${payload.issue__category}`
 
     return await api
