@@ -253,6 +253,7 @@ class TimeEntryFilter(FilterSet):
     from_spent_on = DateFilter(field_name='spent_on', lookup_expr='gte', label='작업일자부터')
     to_spent_on = DateFilter(field_name='spent_on', lookup_expr='lte', label='작업일자부터')
     user__exclude = CharFilter(field_name='user', exclude=True, label='사용자-제외')
+    issue__fixed_version__exclude = CharFilter(field_name='issue__fixed_version', exclude=True, label='목표버전-제외')
 
     class Meta:
         model = TimeEntry
