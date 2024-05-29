@@ -159,9 +159,9 @@ const filterSubmit = () => {
     else if (cond.value.user === 'exclude') filterData.user__exclude = form.value.user
     else if (cond.value.user === 'any') filterData.user = ''
 
-  if (searchCond.value.includes('issue_target_version'))
-    if (cond.value.issue_target_version === 'is') filterData.user = form.value.version
-    else if (cond.value.user === 'exclude') filterData.user__exclude = form.value.version
+  if (searchCond.value.includes('target_version'))
+    if (cond.value.issue_target_version === 'is') filterData.version = form.value.version
+    else if (cond.value.user === 'exclude') filterData.version__exclude = form.value.version
 
   // if (form.value.name) filterData.name = form.value.name
   // if (form.value.description) filterData.description = form.value.description
@@ -198,6 +198,8 @@ onBeforeMount(() => {
       검색조건
     </CCol>
     <v-divider class="mx-3 mt-2 mb-0" />
+
+    {{ searchCond }}/
 
     <CCollapse :visible="condVisible">
       <slot name="condition">

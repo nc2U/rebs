@@ -42,6 +42,7 @@ const listFilter = ref<TimeEntryFilter>({ project: project.value, issue: Number(
 const filterSubmit = (payload: TimeEntryFilter) => {
   listFilter.value = payload
   workStore.fetchTimeEntryList(payload)
+  console.log(payload)
 }
 
 const pageSelect = (page: number) => {
