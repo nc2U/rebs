@@ -184,7 +184,7 @@ export const useWork = defineStore('work', () => {
       .post(`/version/`, payload)
       .then(async res => {
         await fetchVersion(res.data.pk)
-        await fetchVersionList()
+        await fetchVersionList(res.data.project.slug)
         message()
       })
       .catch(err => errorHandle(err.response.data))
@@ -195,6 +195,16 @@ export const useWork = defineStore('work', () => {
       .then(async res => {
         await fetchVersion(res.data.pk)
         message()
+      })
+      .catch(err => errorHandle(err.response.data))
+
+  const deleteVersion = (pk: number, project = '') =>
+    api
+      .delete(`/version/${pk}/`)
+      .then(async res => {
+        await fetchVersionList(project)
+        await fetchIssueProject(project)
+        message('warning', '알림!', '해당 버전이 삭제되었습니다!')
       })
       .catch(err => errorHandle(err.response.data))
 
@@ -621,6 +631,7 @@ export const useWork = defineStore('work', () => {
     fetchVersionList,
     createVersion,
     updateVersion,
+    deleteVersion,
 
     trackerList,
     getTrackers,
