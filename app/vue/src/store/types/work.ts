@@ -195,7 +195,7 @@ export interface SimpleIssue {
 
 export interface Version {
   pk?: number
-  project?: string
+  project?: { slug: string; name: string }
   name: string
   status: '1' | '2' | '3'
   status_desc?: '진행' | '잠김' | '닫힘'
