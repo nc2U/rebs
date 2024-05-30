@@ -160,12 +160,14 @@ class IssueFilter(FilterSet):
     project__exclude = CharFilter(field_name='project__slug', exclude=True, label='프로젝트-제외')
     project__search = CharFilter(field_name='project__slug', label='프로젝트-검색')
     tracker__exclude = CharFilter(field_name='tracker', exclude=True, label='유형-제외')
+    fixed_version__exclude = CharFilter(field_name='fixed_version', exclude=True, label='목표버전-제외')
+    fixed_version__isnull = BooleanFilter(field_name='fixed_version', lookup_expr='isnull', label='목표버전-없음')
     parent__subject = CharFilter(field_name='parent__subject', lookup_expr='icontains', label='상위업무-제목')
     parent__isnull = BooleanFilter(field_name='parent', lookup_expr='isnull', label='상위업무-없음')
 
     class Meta:
         model = Issue
-        fields = ('project__slug', 'status__closed', 'status', 'tracker', 'parent')
+        fields = ('project__slug', 'status__closed', 'status', 'tracker', 'fixed_version', 'parent')
 
     def filter_queryset(self, queryset):
         for name, value in self.form.cleaned_data.items():
