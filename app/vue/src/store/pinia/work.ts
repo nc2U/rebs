@@ -306,6 +306,9 @@ export const useWork = defineStore('work', () => {
     if (payload.project__exclude) url += `&project__exclude=${payload.project__exclude}`
     if (payload.tracker) url += `&tracker=${payload.tracker}`
     if (payload.tracker__exclude) url += `&tracker__exclude=${payload.tracker__exclude}`
+    if (payload.version) url += `&fixed_version=${payload.version}`
+    if (payload.version__exclude) url += `&fixed_version__exclude=${payload.version__exclude}`
+    if (payload.version__isnull) url += `&fixed_version__isnull=${payload.version__isnull}`
     if (payload.parent) url += `&parent=${payload.parent}`
     if (payload.parent__subject) url += `&parent__subject=${payload.parent__subject}`
     if (payload.parent__isnull) url += `&parent__isnull=${payload.parent__isnull}`

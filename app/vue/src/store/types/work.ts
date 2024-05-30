@@ -306,6 +306,8 @@ export interface IssueFilter {
   tracker?: number | null
   tracker__exclude?: number | null
   version?: number | null
+  version__exclude?: number | null
+  version__isnull?: '0' | '1'
   parent?: number | string
   parent__subject?: string
   parent__isnull?: string
