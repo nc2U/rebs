@@ -169,7 +169,7 @@ export const useWork = defineStore('work', () => {
   const getVersions = computed(() =>
     versionList.value.map(v => ({
       value: v.pk as number,
-      label: `${v.project} - ${v.name}`,
+      label: `${v.project?.name} - ${v.name}`,
     })),
   )
 
