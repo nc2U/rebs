@@ -321,7 +321,7 @@ class IssueInVersionSerializer(serializers.ModelSerializer):
 
 
 class VersionSerializer(serializers.ModelSerializer):
-    project = serializers.SlugRelatedField(slug_field='slug', read_only=True)
+    project = IProjectIssueSerializer(read_only=True)  # serializers.SlugRelatedField(slug_field='slug', read_only=True)
     status_desc = serializers.CharField(source='get_status_display', read_only=True)
     sharing_desc = serializers.CharField(source='get_sharing_display', read_only=True)
     is_default = serializers.SerializerMethodField(read_only=True)
