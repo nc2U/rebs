@@ -25,6 +25,7 @@ const trackerList = computed(() => workStore.trackerList)
 const activityList = computed(() => workStore.activityList)
 const priorityList = computed(() => workStore.priorityList)
 const getIssues = computed(() => workStore.getIssues)
+const getVersions = computed(() => workStore.getVersions)
 
 const [route, router] = [useRoute(), useRouter()]
 
@@ -77,6 +78,7 @@ onBeforeMount(async () => {
   await workStore.fetchStatusList()
   await workStore.fetchActivityList()
   await workStore.fetchPriorityList()
+  await workStore.fetchVersionList()
 })
 </script>
 
@@ -92,6 +94,7 @@ onBeforeMount(async () => {
         :status-list="statusList"
         :tracker-list="trackerList"
         :get-issues="getIssues"
+        :get-versions="getVersions"
         @filter-submit="filterSubmit"
         @page-select="pageSelect"
       />

@@ -25,6 +25,7 @@ const trackerList = computed(() => workStore.trackerList)
 const activityList = computed(() => workStore.activityList)
 const priorityList = computed(() => workStore.priorityList)
 const getIssues = computed(() => workStore.getIssues)
+const getVersions = computed(() => workStore.getVersions)
 
 const onSubmit = (payload: any) => {
   const { pk, ...getData } = payload
@@ -123,6 +124,7 @@ onBeforeMount(async () => {
   await workStore.fetchStatusList()
   await workStore.fetchActivityList()
   await workStore.fetchPriorityList()
+  await workStore.fetchVersionList(projId.value)
 })
 </script>
 
@@ -134,6 +136,7 @@ onBeforeMount(async () => {
     :status-list="statusList"
     :tracker-list="trackerList"
     :get-issues="getIssues"
+    :get-versions="getVersions"
     @filter-submit="filterSubmit"
     @page-select="pageSelect"
   />

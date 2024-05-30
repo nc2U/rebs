@@ -14,6 +14,7 @@ defineProps({
   statusList: { type: Array as PropType<IssueStatus[]>, default: () => [] },
   trackerList: { type: Array as PropType<Tracker[]>, default: () => [] },
   getIssues: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
+  getVersions: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
 })
 
 const emit = defineEmits(['filter-submit', 'page-select'])
@@ -99,6 +100,7 @@ const pageSelect = (page: number) => emit('page-select', page)
     :status-list="statusList"
     :tracker-list="trackerList"
     :get-issues="getIssues"
+    :get-versions="getVersions"
     @filter-submit="filterSubmit"
   />
 

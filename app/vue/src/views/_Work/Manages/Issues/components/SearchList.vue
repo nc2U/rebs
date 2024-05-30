@@ -10,6 +10,7 @@ const props = defineProps({
   statusList: { type: Array as PropType<IssueStatus[]>, default: () => [] },
   trackerList: { type: Array as PropType<Tracker[]>, default: () => [] },
   getIssues: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
+  getVersions: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
 })
 
 const emit = defineEmits(['filter-submit'])
@@ -32,7 +33,7 @@ const searchOptions = reactive([
       { value: 'priority', label: '우선순위', disabled: true },
       { value: 'author', label: '작성자', disabled: true },
       { value: 'assignee', label: '담당자', disabled: true },
-      { value: 'version', label: '목표버전', disabled: true },
+      { value: 'version', label: '목표버전' },
       { value: 'category', label: '범주', disabled: true },
       { value: 'done_ratio', label: '진척도', disabled: true },
       { value: 'is_private', label: '비공개', disabled: true },
@@ -117,6 +118,8 @@ const cond = ref({
   // is_public: 'is' as 'is' | 'exclude',
   // name: 'contains',
   // description: 'contains',
+  version: 'is' as 'is' | 'exclude' | 'none' | 'any',
+
   parent: 'is' as 'is' | 'contains' | 'none' | 'any',
 })
 
@@ -129,6 +132,7 @@ const form = ref<IssueFilter>({
   tracker__exclude: null,
   // name: '',
   // description: '',
+  version: null,
   parent: '' as string | number,
 })
 
@@ -154,6 +158,7 @@ const filterSubmit = () => {
   // else if (cond.value.is_public === 'exclude' && searchCond.value.includes('is_public'))
   //   filterData.is_public__exclude = form.value.is_public
   // if (form.value.name) filterData.name = form.value.name
+
   if (form.value.parent)
     if (cond.value.parent === 'is') filterData.parent = form.value.parent
     else if (cond.value.parent === 'contains')
@@ -268,6 +273,27 @@ onBeforeMount(() => {
                 <CFormSelect v-model="form.tracker" size="sm">
                   <option v-for="tracker in trackerList" :key="tracker.pk" :value="tracker.pk">
                     {{ tracker.name }}
+                  </option>
+                </CFormSelect>
+              </CCol>
+            </CRow>
+
+            <CRow v-if="searchCond.includes('version')">
+              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
+                <CFormCheck checked="true" label="목표버전" id="version" readonly />
+              </CCol>
+              <CCol class="col-4 col-lg-3 col-xl-2">
+                <CFormSelect v-model="cond.version" size="sm">
+                  <option value="is">이다</option>
+                  <option value="exclude">아니다</option>
+                  <option value="none">없음</option>
+                  <option value="any">모두</option>
+                </CFormSelect>
+              </CCol>
+              <CCol class="col-4 col-lg-3">
+                <CFormSelect v-model="form.version" size="sm">
+                  <option v-for="ver in getVersions" :key="ver.value" :value="ver.value">
+                    {{ ver.label }}
                   </option>
                 </CFormSelect>
               </CCol>
