@@ -159,6 +159,12 @@ const filterSubmit = () => {
   //   filterData.is_public__exclude = form.value.is_public
   // if (form.value.name) filterData.name = form.value.name
 
+  if (searchCond.value.includes('version'))
+    if (cond.value.version === 'is') filterData.version = form.value.version
+    else if (cond.value.version === 'exclude') filterData.version__exclude = form.value.version
+    else if (cond.value.version === 'none') filterData.version__isnull = '1'
+    else if (cond.value.version === 'any') filterData.version__isnull = '0'
+
   if (form.value.parent)
     if (cond.value.parent === 'is') filterData.parent = form.value.parent
     else if (cond.value.parent === 'contains')
@@ -291,11 +297,15 @@ onBeforeMount(() => {
                 </CFormSelect>
               </CCol>
               <CCol class="col-4 col-lg-3">
-                <CFormSelect v-model="form.version" size="sm">
-                  <option v-for="ver in getVersions" :key="ver.value" :value="ver.value">
-                    {{ ver.label }}
-                  </option>
-                </CFormSelect>
+                <Multiselect
+                  v-if="cond.version === 'is' || cond.version === 'exclude'"
+                  v-model="form.version"
+                  :options="getVersions"
+                  placeholder="목표버전"
+                  searchable
+                  size="sm"
+                  @keydown.enter="filterSubmit"
+                />
               </CCol>
             </CRow>
 
