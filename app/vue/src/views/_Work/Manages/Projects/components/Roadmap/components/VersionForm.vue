@@ -38,7 +38,7 @@ const onSubmit = (event: Event) => {
 const setupForm = () => {
   if (version.value) {
     form.value.pk = version.value.pk as number
-    form.value.project = version.value.project as string
+    form.value.project = version.value.project?.slug as string
     form.value.name = version.value.name
     form.value.description = version.value.description
     form.value.wiki_page_title = version.value.wiki_page_title

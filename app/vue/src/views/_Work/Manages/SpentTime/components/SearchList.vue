@@ -188,6 +188,12 @@ onBeforeMount(() => {
 
   if (route.name === '소요시간' && searchOptions[0].options.length === 6)
     searchOptions[0].options.splice(1, 0, { value: 'project', label: '프로젝트' })
+
+  if (!!route.query.version) {
+    searchCond.value.push('target_version')
+    cond.value.issue_target_version = 'is'
+    form.value.version = Number(route.query.version)
+  }
 })
 </script>
 
@@ -198,8 +204,6 @@ onBeforeMount(() => {
       검색조건
     </CCol>
     <v-divider class="mx-3 mt-2 mb-0" />
-
-    {{ searchCond }}/
 
     <CCollapse :visible="condVisible">
       <slot name="condition">

@@ -67,7 +67,6 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  {{ getVersions }}
   <TimeEntryList
     v-if="$route.name === '(소요시간)'"
     :time-entry-list="timeEntryList"

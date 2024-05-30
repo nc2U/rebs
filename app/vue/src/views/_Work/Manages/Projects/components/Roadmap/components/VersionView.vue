@@ -44,7 +44,7 @@ const RefVersionConfirm = ref()
 
 const deleteSubmit = () => {
   RefVersionConfirm.value.close()
-  workStore.deleteVersion(props.version?.pk as number, props.version.project)
+  workStore.deleteVersion(props.version?.pk as number, props.version.project?.slug as string)
   router.replace({ name: '(로드맵)' })
 }
 
@@ -149,7 +149,7 @@ onBeforeMount(() => {
       </CCol>
 
       <CCol md="4" class="mb-4">
-        <VersionTimes :issues="version.issues" />
+        <VersionTimes :issues="version.issues" :version-pk="version.pk as number" />
 
         <VersionSummay />
       </CCol>
