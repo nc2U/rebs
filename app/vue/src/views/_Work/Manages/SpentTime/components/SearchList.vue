@@ -3,8 +3,8 @@ import { ref, reactive, type PropType, onBeforeMount, watch, computed } from 'vu
 import type { IssueProject, IssueStatus, Tracker, TimeEntryFilter } from '@/store/types/work'
 import { useRoute } from 'vue-router'
 import { dateFormat } from '@/utils/baseMixins'
-import DatePicker from '@/components/DatePicker/index.vue'
 import Multiselect from '@vueform/multiselect'
+import DatePicker from '@/components/DatePicker/index.vue'
 
 const props = defineProps({
   subProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
@@ -13,6 +13,7 @@ const props = defineProps({
   getMembers: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
   statusList: { type: Array as PropType<IssueStatus[]>, default: () => [] },
   trackerList: { type: Array as PropType<Tracker[]>, default: () => [] },
+  getVersions: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
 })
 
 const emit = defineEmits(['filter-submit'])
@@ -49,10 +50,9 @@ const searchOptions = reactive([
       { value: 'tracker', label: '업무의 유형', disabled: true },
       { value: 'parent', label: '업무의 상위업무', disabled: true },
       { value: 'status', label: '업무의 상태', disabled: true },
-      { value: 'target_version', label: '업무의 목표버전', disabled: true },
+      { value: 'target_version', label: '업무의 목표버전' },
       { value: 'subject', label: '업무의 제목', disabled: true },
     ],
-    disabled: true,
   },
   {
     label: '프로젝트',
@@ -88,7 +88,7 @@ const cond = ref({
   issue_tracker: 'is' as 'is' | 'exclude',
   issue_parent: 'is' as 'is' | 'keyword' | 'none' | 'any',
   issue_status: 'is' as 'is' | 'exclude',
-  issue_version: 'is' as 'is' | 'exclude',
+  issue_target_version: 'is' as 'is' | 'exclude',
   issue_subject: 'contain' as 'contain' | 'start_with' | 'end_with' | 'none' | 'any',
 
   project_status: 'is' as 'is' | 'exclude',
@@ -159,6 +159,10 @@ const filterSubmit = () => {
     else if (cond.value.user === 'exclude') filterData.user__exclude = form.value.user
     else if (cond.value.user === 'any') filterData.user = ''
 
+  if (searchCond.value.includes('target_version'))
+    if (cond.value.issue_target_version === 'is') filterData.version = form.value.version
+    else if (cond.value.user === 'exclude') filterData.version__exclude = form.value.version
+
   // if (form.value.name) filterData.name = form.value.name
   // if (form.value.description) filterData.description = form.value.description
 
@@ -194,6 +198,8 @@ onBeforeMount(() => {
       검색조건
     </CCol>
     <v-divider class="mx-3 mt-2 mb-0" />
+
+    {{ searchCond }}/
 
     <CCollapse :visible="condVisible">
       <slot name="condition">
@@ -323,6 +329,29 @@ onBeforeMount(() => {
                   v-model="form.user"
                   :options="getMembers"
                   placeholder="사용자 선택"
+                  searchable
+                />
+              </CCol>
+            </CRow>
+
+            <CRow v-if="searchCond.includes('target_version')">
+              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
+                <CFormCheck checked="true" label="업무의 목표버전" id="issue_version" readonly />
+              </CCol>
+
+              <CCol class="col-4 col-lg-3 col-xl-2">
+                <CFormSelect v-model="cond.issue_target_version" size="sm">
+                  <option value="is">이다</option>
+                  <option value="exclude">아니다</option>
+                </CFormSelect>
+              </CCol>
+
+              <CCol class="col-4 col-lg-3">
+                <Multiselect
+                  v-if="cond.issue_target_version"
+                  v-model="form.version"
+                  :options="getVersions"
+                  placeholder="버전 선택"
                   searchable
                 />
               </CCol>

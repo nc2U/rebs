@@ -19,6 +19,7 @@ const getMembers = computed(() =>
     label: m.user.username,
   })),
 )
+const getVersions = computed(() => workStore.getVersions)
 
 const createTimeEntry = (payload: any) => workStore.createTimeEntry(payload)
 const updateTimeEntry = (payload: any) => workStore.updateTimeEntry(payload)
@@ -41,6 +42,7 @@ const listFilter = ref<TimeEntryFilter>({ project: project.value, issue: Number(
 const filterSubmit = (payload: TimeEntryFilter) => {
   listFilter.value = payload
   workStore.fetchTimeEntryList(payload)
+  console.log(payload)
 }
 
 const pageSelect = (page: number) => {
@@ -60,10 +62,12 @@ onBeforeMount(() => {
   workStore.fetchAllIssueProjectList()
   workStore.fetchIssueList({ status__closed: '0', project: issueProject.value?.slug })
   workStore.fetchTimeEntryList({ ...listFilter.value })
+  workStore.fetchVersionList()
 })
 </script>
 
 <template>
+  {{ getVersions }}
   <TimeEntryList
     v-if="$route.name === '(소요시간)'"
     :time-entry-list="timeEntryList"
@@ -71,6 +75,7 @@ onBeforeMount(() => {
     :all-projects="allProjects"
     :get-issues="getIssues"
     :get-members="getMembers"
+    :get-versions="getVersions"
     @filter-submit="filterSubmit"
     @page-select="pageSelect"
     @del-submit="delSubmit"

@@ -166,6 +166,12 @@ export const useWork = defineStore('work', () => {
   // version states & getters
   const version = ref<Version | null>(null)
   const versionList = ref<Version[]>([])
+  const getVersions = computed(() =>
+    versionList.value.map(v => ({
+      value: v.pk as number,
+      label: `${v.project} - ${v.name}`,
+    })),
+  )
 
   const fetchVersion = (pk: number) =>
     api
@@ -184,7 +190,7 @@ export const useWork = defineStore('work', () => {
       .post(`/version/`, payload)
       .then(async res => {
         await fetchVersion(res.data.pk)
-        await fetchVersionList()
+        await fetchVersionList(res.data.project.slug)
         message()
       })
       .catch(err => errorHandle(err.response.data))
@@ -195,6 +201,16 @@ export const useWork = defineStore('work', () => {
       .then(async res => {
         await fetchVersion(res.data.pk)
         message()
+      })
+      .catch(err => errorHandle(err.response.data))
+
+  const deleteVersion = (pk: number, project = '') =>
+    api
+      .delete(`/version/${pk}/`)
+      .then(async res => {
+        await fetchVersionList(project)
+        await fetchIssueProject(project)
+        message('warning', '알림!', '해당 버전이 삭제되었습니다!')
       })
       .catch(err => errorHandle(err.response.data))
 
@@ -468,7 +484,9 @@ export const useWork = defineStore('work', () => {
     // if (payload.issue__tracker) url += `&issue__tracker=${payload.issue__tracker}`
     // if (payload.issue__parent) url += `&issue__parent=${payload.issue__parent}`
     // if (payload.issue__status) url += `&issue__status=${payload.issue__status}`
-    // if (payload.issue__fixed_version) url += `&issue__fixed_version=${payload.issue__fixed_version}`
+    if (payload.version) url += `&issue__fixed_version=${payload.version}`
+    if (payload.version__exclude)
+      url += `&issue__fixed_version__exclude=${payload.version__exclude}`
     // if (payload.issue__category) url += `&issue__category=${payload.issue__category}`
 
     return await api
@@ -617,10 +635,12 @@ export const useWork = defineStore('work', () => {
 
     version,
     versionList,
+    getVersions,
     fetchVersion,
     fetchVersionList,
     createVersion,
     updateVersion,
+    deleteVersion,
 
     trackerList,
     getTrackers,

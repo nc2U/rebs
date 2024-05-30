@@ -389,6 +389,7 @@ export interface TimeEntryFilter {
   parent?: number | ''
   status?: number | ''
   version?: number | ''
+  version__exclude?: number | ''
   subject?: string
   project_status?: number | ''
   page?: number
