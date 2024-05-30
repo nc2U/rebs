@@ -86,6 +86,12 @@ class IssueCategoryInIssueProjectSerializer(serializers.ModelSerializer):
         fields = ('pk', 'name', 'assigned_to')
 
 
+class CodeActivityInIssueProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CodeActivity
+        fields = ('pk', 'name', 'active', 'default')
+
+
 class IssueProjectSerializer(serializers.ModelSerializer):
     family_tree = FamilyTreeSerializer(many=True, read_only=True)
     sub_projects = serializers.SerializerMethodField()
@@ -96,6 +102,7 @@ class IssueProjectSerializer(serializers.ModelSerializer):
     trackers = TrackerInIssueProjectSerializer(many=True, read_only=True)
     versions = VersionInIssueProjectSerializer(many=True, read_only=True)
     categories = IssueCategoryInIssueProjectSerializer(many=True, read_only=True)
+    activities = CodeActivityInIssueProjectSerializer(many=True, read_only=True)
     visible = serializers.SerializerMethodField(read_only=True)
     total_estimated_hours = serializers.SerializerMethodField(read_only=True)
     total_time_spent = serializers.SerializerMethodField(read_only=True)
@@ -106,7 +113,7 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         fields = ('pk', 'company', 'name', 'slug', 'description', 'homepage',
                   'is_public', 'family_tree', 'parent', 'sub_projects', 'module',
                   'is_inherit_members', 'allowed_roles', 'trackers', 'versions', 'default_version',
-                  'categories', 'status', 'depth', 'all_members', 'members', 'visible',
+                  'categories', 'status', 'depth', 'all_members', 'members', 'activities', 'visible',
                   'total_estimated_hours', 'total_time_spent', 'user', 'created', 'updated')
 
     def get_sub_projects(self, obj):
