@@ -26,6 +26,7 @@ class IssueProject(models.Model):
     depth = models.PositiveSmallIntegerField('단계', default=1,
                                              help_text='프로젝트 간 상하 소속 관계에 의한 단계, 최상위인 경우 1단계 이후 각 뎁스 마다 1씩 증가')
     members = models.ManyToManyField('Member', blank=True, verbose_name='구성원')
+    activities = models.ManyToManyField('CodeActivity', blank=True, verbose_name='작업분류(시간추적)')
     created = models.DateTimeField('추가', auto_now_add=True)
     updated = models.DateTimeField('편집', auto_now=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='작성자')
