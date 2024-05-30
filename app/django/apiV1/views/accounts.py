@@ -141,7 +141,7 @@ class PasswordResetRequestView(APIView):
 
             # Send the password reset email
             subject = f'[Rebs] {user.username}님 계정 비밀번호 초기화 링크 안내드립니다.'
-            message = f'비밀번호를 재설정 하기 위해서 다음 링크를 클릭 하세요.: {reset_link}'
+            message = f'비밀번호를 재설정 하기 위해서 다음 링크를 클릭 하세요.: \n{reset_link}\n\n이 링크는 발송 후 10분간 만 유효합니다.'
             send_mail(subject, message, settings.EMAIL_DEFAULT_SENDER, [email])
 
             return Response({'detail': '비밀번호 재설정을 위한 이메일을 발송했습니다.'}, status=status.HTTP_200_OK)
