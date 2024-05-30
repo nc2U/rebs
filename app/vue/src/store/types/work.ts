@@ -305,6 +305,7 @@ export interface IssueFilter {
   project__exclude?: string
   tracker?: number | null
   tracker__exclude?: number | null
+  version?: number | null
   parent?: number | string
   parent__subject?: string
   parent__isnull?: string
