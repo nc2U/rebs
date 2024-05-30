@@ -189,18 +189,20 @@ onBeforeMount(() => {
   if (!!props.statusList.length) form.value.status = props.statusList[0]?.pk
   if (route.name === '업무')
     searchOptions[0].options.splice(1, 0, { value: 'project', label: '프로젝트' })
-  if (!!route.query.parent || !!route.query.status || !!route.query.tracker) {
-    if (route.query.parent) {
-      searchCond.value.push('parent')
-      form.value.parent = Number(route.query.parent)
-    }
-    if (route.query.status) cond.value.status = route.query.status as 'open' | 'closed'
-    if (route.query.tracker) {
-      searchCond.value.push('tracker')
-      form.value.tracker = Number(route.query.tracker)
-      cond.value.tracker = 'is'
-    }
-    // setTimeout(() => filterSubmit(), 50)
+
+  if (!!route.query.status) cond.value.status = route.query.status as 'open' | 'closed'
+  if (!!route.query.tracker) {
+    searchCond.value.push('tracker')
+    form.value.tracker = Number(route.query.tracker)
+    cond.value.tracker = 'is'
+  }
+  if (!!route.query.version) {
+    searchCond.value.push('version')
+    form.value.version = Number(route.query.version)
+  }
+  if (!!route.query.parent) {
+    searchCond.value.push('parent')
+    form.value.parent = Number(route.query.parent)
   }
   setTimeout(() => filterSubmit(), 50)
 })

@@ -26,7 +26,7 @@ const get_total_spent_times = computed(
           <CCol class="col-6 text-center">추정시간</CCol>
           <CCol class="col-6 text-right pr-5">
             <!-- 목표버전 필터링 업무 리스트 구현-->
-            <router-link :to="{ name: '(업무)' }">
+            <router-link :to="{ name: '(업무)', query: { version: versionPk } }">
               {{ numberToHour(get_total_estimated_hours) }} 시간
             </router-link>
           </CCol>
