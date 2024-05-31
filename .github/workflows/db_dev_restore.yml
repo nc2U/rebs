@@ -41,7 +41,7 @@ jobs:
             sh /mnt/nfs/prod/volume/backups/script_dev_copy.sh
             master_pod=$(kubectl get pod -n dev-hrebs | grep master | cut -d ' ' -f1)
             kubectl exec -it -n dev-hrebs $master_pod -- sh /var/backups/script_dev_restore.sh
-            kubectl exec -it -n dev-hrebs $master_pod -- rm /docker-entrypoint-initdb.d/db*
+            kubectl exec -it -n dev-hrebs $master_pod --  bash -c 'rm /docker-entrypoint-initdb.d/db-rebs*'
       
       # slack --> notification
       - name: Send slack when failed
