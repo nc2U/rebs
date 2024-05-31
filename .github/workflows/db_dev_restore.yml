@@ -40,7 +40,7 @@ jobs:
           command: |
             sh /mnt/nfs/prod/volume/backups/script_dev_copy.sh
             master_pod=$(kubectl get pod -n dev-hrebs | grep master | cut -d ' ' -f1)
-            kubectl exec -it -n dev-hrebs $master_pod -- sh /var/backups/script_dev_backup.sh
+            kubectl exec -it -n dev-hrebs $master_pod -- sh /var/backups/script_dev_restore.sh
       
       # slack --> notification
       - name: Send slack when failed
