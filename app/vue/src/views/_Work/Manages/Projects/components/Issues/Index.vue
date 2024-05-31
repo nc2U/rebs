@@ -22,7 +22,6 @@ const timeEntryList = computed(() => workStore.timeEntryList)
 
 const statusList = computed(() => workStore.statusList)
 const trackerList = computed(() => workStore.trackerList)
-const activityList = computed(() => workStore.activityList)
 const priorityList = computed(() => workStore.priorityList)
 const getIssues = computed(() => workStore.getIssues)
 const getVersions = computed(() => workStore.getVersions)
@@ -122,7 +121,6 @@ onBeforeMount(async () => {
   await workStore.fetchMemberList()
   await workStore.fetchTrackerList()
   await workStore.fetchStatusList()
-  await workStore.fetchActivityList()
   await workStore.fetchPriorityList()
   await workStore.fetchVersionList(projId.value)
 })
@@ -147,7 +145,6 @@ onBeforeMount(async () => {
     :issue="issue"
     :all-projects="allProjects"
     :status-list="statusList"
-    :activity-list="activityList"
     :priority-list="priorityList"
     :issue-comment-list="issueCommentList"
     :time-entry-list="timeEntryList"
@@ -159,7 +156,6 @@ onBeforeMount(async () => {
     :issue-project="issueProject as IssueProject"
     :all-projects="allProjects"
     :status-list="statusList"
-    :activity-list="activityList"
     :priority-list="priorityList"
     :get-issues="getIssues"
     @on-submit="onSubmit"

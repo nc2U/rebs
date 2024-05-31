@@ -31,7 +31,6 @@ const props = defineProps({
   timeEntryList: { type: Array as PropType<TimeEntry[]>, default: () => [] },
 
   statusList: { type: Array as PropType<IssueStatus[]>, default: () => [] },
-  activityList: { type: Array as PropType<CodeValue[]>, default: () => [] },
   priorityList: { type: Array as PropType<CodeValue[]>, default: () => [] },
 })
 
@@ -436,7 +435,6 @@ onBeforeMount(async () => {
       :issue="issue"
       :all-projects="allProjects"
       :status-list="statusList"
-      :activity-list="activityList"
       :priority-list="priorityList"
       :get-issues="getIssues"
       @on-submit="onSubmit"

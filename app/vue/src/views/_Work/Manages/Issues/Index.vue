@@ -22,7 +22,6 @@ const allProjects = computed(() => workStore.AllIssueProjects)
 
 const statusList = computed(() => workStore.statusList)
 const trackerList = computed(() => workStore.trackerList)
-const activityList = computed(() => workStore.activityList)
 const priorityList = computed(() => workStore.priorityList)
 const getIssues = computed(() => workStore.getIssues)
 const getVersions = computed(() => workStore.getVersions)
@@ -76,7 +75,6 @@ onBeforeMount(async () => {
   await workStore.fetchMemberList()
   await workStore.fetchTrackerList()
   await workStore.fetchStatusList()
-  await workStore.fetchActivityList()
   await workStore.fetchPriorityList()
   await workStore.fetchVersionList()
 })
@@ -103,7 +101,6 @@ onBeforeMount(async () => {
         v-if="$route.name === '업무 - 추가'"
         :all-projects="allProjects"
         :status-list="statusList"
-        :activity-list="activityList"
         :priority-list="priorityList"
         :get-issues="getIssues"
         @on-submit="onSubmit"

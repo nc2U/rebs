@@ -17,7 +17,6 @@ const props = defineProps({
   issue: { type: Object as PropType<Issue>, default: null },
   allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
   statusList: { type: Array as PropType<IssueStatus[]>, default: () => [] },
-  activityList: { type: Array as PropType<CodeValue[]>, default: () => [] },
   priorityList: { type: Array as PropType<CodeValue[]>, default: () => [] },
   getIssues: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
 })
@@ -154,6 +153,10 @@ watch(props, nVal => {
 
 const watcherList = ref<{ pk: number; username: string }[]>([])
 
+const activities = computed(() =>
+  props.issueProject.activities ? props.issueProject.activities : [],
+)
+
 const memberList = computed(() =>
   (props.issueProject
     ? props.issueProject.all_members
@@ -276,6 +279,7 @@ const timeToNum = (n: number | string | null, estimated: boolean) => {
 
 onBeforeMount(() => {
   watcherList.value = memberList.value ?? []
+
   if (props.issue) {
     editDetails.value = false
 
@@ -633,7 +637,7 @@ onBeforeMount(() => {
               <CCol sm="4">
                 <CFormSelect v-model="timeEntry.activity" :required="!!timeEntry.hours">
                   <option value="">---------</option>
-                  <option v-for="act in activityList" :value="act.pk" :key="act.pk">
+                  <option v-for="act in activities" :value="act.pk" :key="act.pk">
                     {{ act.name }}
                   </option>
                 </CFormSelect>
