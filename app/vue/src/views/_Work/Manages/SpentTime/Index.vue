@@ -51,12 +51,12 @@ const pageSelect = (page: number) => {
 const delSubmit = (pk: number) => alert(pk)
 
 const accStore = useAccount()
-onBeforeMount(() => {
-  workStore.fetchAllIssueProjectList()
-  workStore.fetchTimeEntryList({})
-  workStore.fetchIssueList({ status__closed: '0' })
-  workStore.fetchVersionList()
-  accStore.fetchUsersList()
+onBeforeMount(async () => {
+  await workStore.fetchAllIssueProjectList()
+  await workStore.fetchTimeEntryList({})
+  await workStore.fetchIssueList({ status__closed: '0' })
+  await workStore.fetchVersionList()
+  await accStore.fetchUsersList()
 })
 </script>
 

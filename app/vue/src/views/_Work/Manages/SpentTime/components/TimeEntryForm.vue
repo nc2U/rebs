@@ -29,7 +29,10 @@ const form = ref({
 watch(
   () => form.value.project,
   nVal => {
-    if (nVal) workStore.fetchIssueProject(nVal)
+    if (nVal) {
+      workStore.fetchIssueProject(nVal)
+      workStore.fetchAllIssueList(nVal)
+    }
   },
 )
 
@@ -92,7 +95,8 @@ onBeforeMount(() => {
     workStore.fetchIssueProject(route.params.projId as string)
     form.value.project = route.params.projId as string
     workStore.fetchIssueList({ status__closed: '', project: form.value.project })
-  }
+    workStore.fetchAllIssueList(route.params.projId as string)
+  } else workStore.fetchAllIssueList()
   if (route.params.timeId) workStore.fetchTimeEntry(Number(route.params.timeId))
   else workStore.timeEntry = null
 
@@ -100,7 +104,6 @@ onBeforeMount(() => {
 
   workStore.fetchMemberList()
   workStore.fetchActivityList()
-  workStore.fetchIssueList({ status__closed: '' })
   dataSetup()
 })
 </script>
