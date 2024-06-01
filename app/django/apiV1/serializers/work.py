@@ -89,7 +89,7 @@ class IssueCategoryInIssueProjectSerializer(serializers.ModelSerializer):
 class CodeActivityInIssueProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = CodeActivity
-        fields = ('pk', 'name', 'active', 'default')
+        fields = ('pk', 'name', 'active', 'default', 'order')
 
 
 class IssueProjectSerializer(serializers.ModelSerializer):

@@ -33,12 +33,7 @@ export interface IssueProject {
   depth: number
   all_members?: SimpleMember[]
   members?: SimpleMember[]
-  activities?: {
-    pk: number
-    name: string
-    active: boolean
-    default: boolean
-  }[]
+  activities?: CodeValue[]
   visible?: boolean
   total_estimated_hours?: number
   total_time_spent?: number
