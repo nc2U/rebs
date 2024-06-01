@@ -10,6 +10,7 @@ import { colorLight } from '@/utils/cssMixins'
 import Multiselect from '@vueform/multiselect'
 import MdEditor from '@/components/MdEditor/Index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
+import FormModal from '@/components/Modals/FormModal.vue'
 import WatcherAdd from '@/views/_Work/Manages/Issues/components/aside/WatcherAdd.vue'
 
 const props = defineProps({
@@ -23,6 +24,8 @@ const props = defineProps({
 
 const emit = defineEmits(['on-submit', 'close-form'])
 
+const RefCategoryModal = ref()
+const RefVersionModal = ref()
 const refWatcherAdd = ref()
 
 const validated = ref(false)
@@ -76,6 +79,20 @@ watch(
     }
   },
 )
+
+const nCategory = ref({
+  name: '',
+  assigned_to: null,
+})
+
+const nVersion = ref({
+  name: '',
+  description: '',
+  wiki_page_title: '',
+  effective_date: null as string | null,
+  sharing: '0' as '0' | '1' | '2' | '3' | '4',
+  is_default: false,
+})
 
 const statuses = computed(() =>
   props.issue ? props.statusList : props.statusList.filter(s => s.pk === 1),
@@ -495,7 +512,13 @@ onBeforeMount(() => {
                   </CFormSelect>
                 </CCol>
                 <CCol style="padding-top: 6px">
-                  <v-icon icon="mdi-plus-circle" color="success" class="pointer" />
+                  <v-icon
+                    icon="mdi-plus-circle"
+                    color="success"
+                    class="pointer"
+                    @click="RefCategoryModal.callModal()"
+                  />
+                  <v-tooltip location="left" activator="parent">새 업무 범주</v-tooltip>
                 </CCol>
               </CRow>
             </CCol>
@@ -536,7 +559,13 @@ onBeforeMount(() => {
                   </CFormSelect>
                 </CCol>
                 <CCol style="padding-top: 6px">
-                  <v-icon icon="mdi-plus-circle" color="success" class="pointer" />
+                  <v-icon
+                    icon="mdi-plus-circle"
+                    color="success"
+                    class="pointer"
+                    @click="RefVersionModal.callModal()"
+                  />
+                  <v-tooltip location="left" activator="parent">새 버전</v-tooltip>
                 </CCol>
               </CRow>
             </CCol>
@@ -724,6 +753,114 @@ onBeforeMount(() => {
       <CButton type="button" color="light" @click="closeForm">취소</CButton>
     </CForm>
   </CRow>
+
+  <FormModal ref="RefCategoryModal">
+    <template #header>새 업무 범주</template>
+    <template #default>
+      <CForm>
+        <CModalBody class="text-body">
+          <CRow class="mb-3">
+            <CFormLabel for="category-name" class="col-3 col-form-label required text-right">
+              이름
+            </CFormLabel>
+            <CCol class="col-7">
+              <CFormInput v-model="nCategory.name" required />
+            </CCol>
+          </CRow>
+          <CRow class="mb-3">
+            <CFormLabel for="category-name" class="col-3 col-form-label text-right">
+              담당자
+            </CFormLabel>
+            <CCol class="col-7">
+              <CFormSelect v-model="nCategory.assigned_to">
+                <option value=""></option>
+              </CFormSelect>
+            </CCol>
+          </CRow>
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="light" @click="RefCategoryModal.close()"> 닫기</CButton>
+          <CButton color="primary">저장</CButton>
+        </CModalFooter>
+      </CForm>
+    </template>
+  </FormModal>
+
+  <FormModal ref="RefVersionModal">
+    <template #header>새 버전</template>
+    <template #default>
+      <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
+        <CModalBody class="text-body">
+          <CRow class="mb-3">
+            <CFormLabel for="name" class="col-sm-3 col-form-label text-right required">
+              이름
+            </CFormLabel>
+
+            <CCol class="col-7">
+              <CFormInput v-model="nVersion.name" required />
+            </CCol>
+          </CRow>
+
+          <CRow class="mb-3">
+            <CFormLabel for="description" class="col-sm-3 col-form-label text-right">
+              설명
+            </CFormLabel>
+
+            <CCol class="col-7">
+              <CFormInput v-model="nVersion.description" />
+            </CCol>
+          </CRow>
+
+          <CRow class="mb-3">
+            <CFormLabel for="name" class="col-sm-3 col-form-label text-right">
+              위키 페이지
+            </CFormLabel>
+
+            <CCol class="col-7">
+              <CFormInput v-model="nVersion.wiki_page_title" />
+            </CCol>
+          </CRow>
+
+          <CRow class="mb-3">
+            <CFormLabel for="name" class="col-sm-3 col-form-label text-right"> 날짜</CFormLabel>
+
+            <CCol class="col-7">
+              <DatePicker v-model="nVersion.effective_date" />
+            </CCol>
+          </CRow>
+
+          <CRow class="mb-3">
+            <CFormLabel for="name" class="col-sm-3 col-form-label text-right"> 공유</CFormLabel>
+
+            <CCol class="col-7">
+              <CFormSelect v-model="nVersion.sharing">
+                <option value="0">공유 없음</option>
+                <option value="1">하위 프로젝트</option>
+                <option value="2">상위 및 하위 프로젝트</option>
+                <option value="3">최상위 및 모든 하위 프로젝트</option>
+                <option value="4">모든 프로젝트</option>
+              </CFormSelect>
+            </CCol>
+          </CRow>
+
+          <CRow class="mb-3">
+            <CFormLabel for="name" class="col-sm-3 col-form-label text-right">
+              기본 버전
+            </CFormLabel>
+
+            <CCol class="col-7 pt-2">
+              <CFormCheck v-model="nVersion.is_default" />
+            </CCol>
+          </CRow>
+        </CModalBody>
+
+        <CModalFooter>
+          <CButton color="light" @click="RefCategoryModal.close()"> 닫기</CButton>
+          <CButton color="primary">저장</CButton>
+        </CModalFooter>
+      </CForm>
+    </template>
+  </FormModal>
 
   <WatcherAdd
     ref="refWatcherAdd"
