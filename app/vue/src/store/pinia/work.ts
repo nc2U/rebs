@@ -191,7 +191,9 @@ export const useWork = defineStore('work', () => {
       .then(async res => {
         await fetchVersion(res.data.pk)
         await fetchVersionList(res.data.project.slug)
+        await fetchIssueProject(res.data.project.slug)
         message()
+        return res.data.pk
       })
       .catch(err => errorHandle(err.response.data))
 
