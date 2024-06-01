@@ -54,7 +54,7 @@ const accStore = useAccount()
 onBeforeMount(async () => {
   await workStore.fetchAllIssueProjectList()
   await workStore.fetchTimeEntryList({})
-  await workStore.fetchIssueList({ status__closed: '0' })
+  await workStore.fetchAllIssueList()
   await workStore.fetchVersionList()
   await accStore.fetchUsersList()
 })

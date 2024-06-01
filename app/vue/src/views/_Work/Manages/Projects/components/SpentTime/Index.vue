@@ -60,7 +60,7 @@ watch(route, async nVal => {
 onBeforeMount(() => {
   emit('aside-visible', true)
   workStore.fetchAllIssueProjectList()
-  workStore.fetchIssueList({ status__closed: '0', project: project.value })
+  workStore.fetchAllIssueList(project.value)
   workStore.fetchTimeEntryList({ ...listFilter.value })
   workStore.fetchVersionList(project.value)
 })
