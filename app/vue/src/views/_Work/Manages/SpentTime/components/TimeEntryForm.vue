@@ -26,6 +26,13 @@ const form = ref({
   activity: null as number | null,
 })
 
+watch(
+  () => form.value.project,
+  nVal => {
+    if (nVal) workStore.fetchIssueProject(nVal)
+  },
+)
+
 const emit = defineEmits(['on-submit', 'close-form'])
 
 const formCheck = computed(() => {
@@ -52,11 +59,14 @@ const closeForm = () => emit('close-form')
 const workStore = useWork()
 const timeEntry = computed(() => workStore.timeEntry)
 const issueProject = computed(() => workStore.issueProject)
-const activityList = computed(() => workStore.activityList)
+const getIssues = computed(() => workStore.getIssues)
 const memberList = computed(() =>
   issueProject.value ? issueProject.value.all_members : workStore.memberList,
 )
-const getIssues = computed(() => workStore.getIssues)
+const activityList = computed(() => workStore.activityList)
+const activities = computed(() =>
+  issueProject.value ? issueProject.value.activities : activityList.value,
+)
 
 const route = useRoute()
 
@@ -77,21 +87,20 @@ watch(timeEntry, nVal => {
   if (nVal) dataSetup()
 })
 
-onBeforeMount(async () => {
+onBeforeMount(() => {
   if (route.params.projId) {
-    await workStore.fetchIssueProject(route.params.projId as string)
+    workStore.fetchIssueProject(route.params.projId as string)
     form.value.project = route.params.projId as string
-    await workStore.fetchIssueList({ status__closed: '', project: form.value.project })
+    workStore.fetchIssueList({ status__closed: '', project: form.value.project })
   }
-  if (route.params.timeId) await workStore.fetchTimeEntry(Number(route.params.timeId))
+  if (route.params.timeId) workStore.fetchTimeEntry(Number(route.params.timeId))
   else workStore.timeEntry = null
 
   if (route.query.issue_id) form.value.issue = Number(route.query.issue_id)
 
-  await workStore.fetchMemberList()
-  await workStore.fetchActivityList()
-  await workStore.fetchIssueList({ status__closed: '' })
-
+  workStore.fetchMemberList()
+  workStore.fetchActivityList()
+  workStore.fetchIssueList({ status__closed: '' })
   dataSetup()
 })
 </script>
@@ -107,14 +116,14 @@ onBeforeMount(async () => {
         <CCardBody>
           <CRow class="mb-3">
             <CFormLabel
-              v-show="!issueProject || timeEntry"
+              v-show="!route.params.projId || timeEntry"
               for="project"
               class="col-sm-2 col-form-label text-right required"
             >
               프로젝트
             </CFormLabel>
 
-            <CCol v-show="!issueProject || timeEntry" sm="4">
+            <CCol v-show="!route.params.projId || timeEntry" sm="4">
               <CFormSelect v-model="form.project" id="project" required>
                 <option value="">---------</option>
                 <option v-for="proj in allProjects" :value="proj.slug" :key="proj.slug">
@@ -191,7 +200,7 @@ onBeforeMount(async () => {
             <CCol sm="4">
               <CFormSelect v-model.number="form.activity" id="activity" required>
                 <option value="">---------</option>
-                <option v-for="act in activityList" :value="act.pk" :key="act.pk">
+                <option v-for="act in activities" :value="act.pk" :key="act.pk">
                   {{ act.name }}
                 </option>
               </CFormSelect>
