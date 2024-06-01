@@ -224,6 +224,13 @@ export interface Tracker {
   order: number
 }
 
+export interface IssueCategory {
+  pk: number
+  project: number
+  name: string
+  assigned_to: number | null
+}
+
 export interface IssueStatus {
   pk: number
   name: string

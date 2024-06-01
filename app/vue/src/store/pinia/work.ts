@@ -10,6 +10,7 @@ import type {
   Version,
   Role,
   Tracker,
+  IssueCategory,
   IssueStatus,
   CodeValue,
   Issue,
@@ -241,6 +242,45 @@ export const useWork = defineStore('work', () => {
       .then(res => (trackerSum.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
   }
+
+  // category states & getters
+  const category = ref<IssueCategory>()
+  const categoryList = ref<IssueCategory[]>([])
+
+  const fetchCategory = (pk: number) =>
+    api
+      .get(`/issue-category/${pk}/`)
+      .then(res => (category.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchCategoryList = () =>
+    api
+      .get('/issue-category/')
+      .then(async res => (categoryList.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
+  const createCategory = (payload: IssueCategory) =>
+    api
+      .post(`/issue-category`, payload)
+      .then(res => {
+        message()
+        return res.data.pk
+      })
+      .catch(err => errorHandle(err.response.data))
+
+  const updateCategory = (payload: IssueCategory) =>
+    api
+      .put(`/issue-category/${payload.pk}/`, payload)
+      .then(res => {
+        message()
+      })
+      .catch(err => errorHandle(err.response.data))
+
+  const deleteCategory = (pk: number) =>
+    api
+      .delete(`/issue-category/${pk}/`)
+      .then(res => message())
+      .catch(err => errorHandle(err.response.data))
 
   // status states & getters
   const statusList = ref<IssueStatus[]>([])
@@ -652,6 +692,15 @@ export const useWork = defineStore('work', () => {
     trackerSum,
     fetchTrackerList,
     fetchTrackerSummary,
+
+    category,
+    categoryList,
+
+    fetchCategory,
+    fetchCategoryList,
+    createCategory,
+    updateCategory,
+    deleteCategory,
 
     statusList,
     fetchStatusList,
