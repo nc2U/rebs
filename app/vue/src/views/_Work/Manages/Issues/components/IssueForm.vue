@@ -152,6 +152,7 @@ const formCheck = computed(() => {
 
 const route = useRoute()
 const workStore = useWork()
+
 watch(props, nVal => {
   if (nVal.issueProject) form.value.project = nVal?.issueProject.slug
 })
@@ -222,6 +223,17 @@ const onSubmit = (event: Event) => {
 const removeProperty = (e: Event) => {
   const el = e.currentTarget as HTMLInputElement
   el.removeAttribute('required')
+}
+
+const createCategory = (payload: any) => {
+  console.log(payload)
+  workStore.createCategory(payload)
+}
+
+const createVersion = (payload: any) => {
+  payload.project = workStore.issueProject?.slug ?? ''
+  console.log(payload)
+  workStore.createVersion(payload).then(res => (form.value.fixed_version = res))
 }
 
 const closeForm = () => emit('close-form')
@@ -745,14 +757,14 @@ onBeforeMount(() => {
   <FormModal ref="RefCategoryModal">
     <template #header>새 업무 범주</template>
     <template #default>
-      <FormInIssueCategory @close="RefCategoryModal.close()" />
+      <FormInIssueCategory @close="RefCategoryModal.close()" @create-category="createCategory" />
     </template>
   </FormModal>
 
   <FormModal ref="RefVersionModal">
     <template #header>새 버전</template>
     <template #default>
-      <FormInIssueVersion @close="RefVersionModal.close()" />
+      <FormInIssueVersion @close="RefVersionModal.close()" @create-version="createVersion" />
     </template>
   </FormModal>
 

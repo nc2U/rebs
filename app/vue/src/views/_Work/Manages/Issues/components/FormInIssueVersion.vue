@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { isValidate } from '@/utils/helper'
 import DatePicker from '@/components/DatePicker/index.vue'
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(['create-version', 'close'])
 
 const validated = ref(false)
 
@@ -20,14 +20,9 @@ const createVersion = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
-    alert('created!')
-    // emit('on-submit', {
-    //   ...form.value,
-    //   ...timeEntry.value,
-    //   newFiles: newFiles.value,
-    //   comment_content: comment.value.content,
-    // })
+    emit('create-version', { ...nVersion.value })
     validated.value = false
+    emit('close')
   }
 }
 

@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { isValidate } from '@/utils/helper'
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(['create-category', 'close'])
 
 const validated = ref(false)
 
@@ -15,14 +15,9 @@ const createCategory = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
-    alert('created!')
-    // emit('on-submit', {
-    //   ...form.value,
-    //   ...timeEntry.value,
-    //   newFiles: newFiles.value,
-    //   comment_content: comment.value.content,
-    // })
+    emit('create-category', { ...nCategory.value })
     validated.value = false
+    emit('close')
   }
 }
 
