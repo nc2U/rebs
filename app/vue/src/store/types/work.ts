@@ -28,7 +28,12 @@ export interface IssueProject {
   trackers?: { pk: number; name: string; description: string }[]
   versions?: Version[]
   default_version: string | null
-  categories?: { pk: number; name: string; assigned_to: { pk: number; username: string } | null }[]
+  categories?: {
+    pk: number
+    project: string
+    name: string
+    assigned_to: { pk: number; username: string } | null
+  }[]
   status: '1' | '9'
   depth: number
   all_members?: SimpleMember[]

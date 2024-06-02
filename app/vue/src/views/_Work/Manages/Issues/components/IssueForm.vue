@@ -509,13 +509,15 @@ onBeforeMount(() => {
                   </CFormSelect>
                 </CCol>
                 <CCol style="padding-top: 6px">
-                  <v-icon
-                    icon="mdi-plus-circle"
-                    color="success"
-                    class="pointer"
-                    @click="RefCategoryModal.callModal()"
-                  />
-                  <v-tooltip location="left" activator="parent">새 업무 범주</v-tooltip>
+                  <span>
+                    <v-icon
+                      icon="mdi-plus-circle"
+                      color="success"
+                      class="pointer"
+                      @click="RefCategoryModal.callModal()"
+                    />
+                    <v-tooltip location="top" activator="parent">새 업무 범주</v-tooltip>
+                  </span>
                 </CCol>
               </CRow>
             </CCol>
@@ -556,13 +558,15 @@ onBeforeMount(() => {
                   </CFormSelect>
                 </CCol>
                 <CCol style="padding-top: 6px">
-                  <v-icon
-                    icon="mdi-plus-circle"
-                    color="success"
-                    class="pointer"
-                    @click="RefVersionModal.callModal()"
-                  />
-                  <v-tooltip location="left" activator="parent">새 버전</v-tooltip>
+                  <span>
+                    <v-icon
+                      icon="mdi-plus-circle"
+                      color="success"
+                      class="pointer"
+                      @click="RefVersionModal.callModal()"
+                    />
+                    <v-tooltip location="top" activator="parent">새 버전</v-tooltip>
+                  </span>
                 </CCol>
               </CRow>
             </CCol>

@@ -220,7 +220,7 @@ onBeforeMount(async () => {
               <router-link
                 :to="{
                   name: '(작업내역)',
-                  params: { projId: issueProject.slug },
+                  params: { projId: issueProject.slug ?? '' },
                   query: { from: issue.updated.substring(0, 10) },
                 }"
               >
