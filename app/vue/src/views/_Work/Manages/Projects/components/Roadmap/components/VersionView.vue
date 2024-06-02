@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount, type PropType } from 'vue'
+import { computed, onBeforeMount, type PropType, ref, watchEffect } from 'vue'
 import type { Version } from '@/store/types/work'
 import { useRoute, useRouter } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
-import { numberToHour } from '@/utils/baseMixins'
 import IssueDropDown from '@/views/_Work/Manages/Issues/components/IssueDropDown.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import VersionSummay from '@/views/_Work/Manages/Projects/components/Roadmap/components/VersionSummay.vue'
@@ -16,6 +15,16 @@ const emit = defineEmits(['aside-visible'])
 const workStore = useWork()
 
 const boxClass = ['primary-box', 'danger-box', 'success-box']
+
+const selectedRow = ref<number | null>(null)
+const handleClickOutside = (event: any) => {
+  if (!event.target.closest('.table-row')) selectedRow.value = null
+}
+
+watchEffect(() => {
+  if (selectedRow.value) document.addEventListener('click', handleClickOutside)
+  else document.removeEventListener('click', handleClickOutside)
+})
 
 const closedNum = computed(() => props.version?.issues?.filter(i => i.closed).length ?? 0)
 const closedStr = computed(() => {
@@ -128,7 +137,13 @@ onBeforeMount(() => {
             <col style="width: 5%" />
           </colgroup>
           <CTableBody>
-            <CTableRow v-for="issue in version.issues" :key="issue.pk">
+            <CTableRow
+              v-for="issue in version.issues"
+              :key="issue.pk"
+              class="table-row cursor-menu"
+              :color="selectedRow === issue.pk ? 'primary' : ''"
+              @click="selectedRow = issue.pk"
+            >
               <CTableDataCell>
                 <span>
                   <router-link
