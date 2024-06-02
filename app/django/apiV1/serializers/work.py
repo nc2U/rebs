@@ -385,6 +385,30 @@ class IssueCategorySerializer(serializers.ModelSerializer):
         model = IssueCategory
         fields = ('pk', 'project', 'name', 'assigned_to')
 
+    @transaction.atomic
+    def create(self, validated_data):
+        project_slug = self.initial_data.get('project')
+        try:
+            project = IssueProject.objects.get(slug=project_slug)
+        except IssueProject.DoesNotExist:
+            raise serializers.ValidationError({'project': 'Project does not exist'})
+
+        category = IssueCategory.objects.create(**validated_data, project=project)
+        return category
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        project_slug = self.initial_data.get('project')
+        try:
+            project = IssueProject.objects.get(slug=project_slug)
+        except IssueProject.DoesNotExist:
+            raise serializers.ValidationError({'project': 'Project does not exist'})
+
+        instance.__dict__.update(validated_data)
+        instance.project = project
+        instance.save()
+        return instance
+
 
 class IssueCountByTrackerSerializer(serializers.ModelSerializer):
     open = serializers.SerializerMethodField()
