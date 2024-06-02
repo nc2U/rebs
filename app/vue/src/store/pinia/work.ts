@@ -261,7 +261,7 @@ export const useWork = defineStore('work', () => {
 
   const createCategory = (payload: IssueCategory) =>
     api
-      .post(`/issue-category`, payload)
+      .post(`/issue-category/`, payload)
       .then(async res => {
         await fetchCategory(res.data.pk)
         await fetchCategoryList(res.data.project.slug)
