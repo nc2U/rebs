@@ -244,7 +244,7 @@ export const useWork = defineStore('work', () => {
   }
 
   // category states & getters
-  const category = ref<IssueCategory>()
+  const category = ref<IssueCategory | null>()
   const categoryList = ref<IssueCategory[]>([])
 
   const fetchCategory = (pk: number) =>
