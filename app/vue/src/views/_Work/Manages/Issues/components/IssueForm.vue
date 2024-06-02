@@ -225,8 +225,10 @@ const removeProperty = (e: Event) => {
   el.removeAttribute('required')
 }
 
-const createCategory = (payload: any) =>
+const createCategory = (payload: any) => {
+  payload.project = workStore.issueProject?.slug ?? ''
   workStore.createCategory(payload).then(res => (form.value.category = res))
+}
 
 const createVersion = (payload: any) => {
   payload.project = workStore.issueProject?.slug ?? ''
