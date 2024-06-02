@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { type PropType } from 'vue'
 import NoData from '@/views/_Work/components/NoData.vue'
+import type { SimpleCategory } from '@/store/types/work'
 
-const iCategoryList = computed(() => [])
+defineProps({ categories: { type: Array as PropType<SimpleCategory[]>, default: () => [] } })
 </script>
 
 <template>
@@ -15,9 +16,41 @@ const iCategoryList = computed(() => [])
     </CCol>
   </CRow>
 
-  <NoData v-if="!iCategoryList.length" />
+  <NoData v-if="!categories.length" />
 
   <CRow v-else>
-    <CCol></CCol>
+    <CCol>
+      <CTable small striped responsive hover>
+        <colgroup>
+          <col style="width: 65%" />
+          <col style="width: 20%" />
+          <col style="width: 15%" />
+        </colgroup>
+        <CTableHead>
+          <CTableRow class="text-center">
+            <CTableHeaderCell>업무 범주</CTableHeaderCell>
+            <CTableHeaderCell>담당자</CTableHeaderCell>
+            <CTableHeaderCell></CTableHeaderCell>
+          </CTableRow>
+        </CTableHead>
+
+        <CTableBody>
+          <CTableRow v-for="category in categories" :key="category.pk" class="text-center">
+            <CTableDataCell>{{ category.name }}</CTableDataCell>
+            <CTableDataCell>{{ category.assigned_to?.username }}</CTableDataCell>
+            <CTableDataCell class="form-text">
+              <span class="mr-2">
+                <v-icon icon="mdi-pencil" color="amber" size="sm" class="mr-1" />
+                <router-link to=""> 편집 </router-link>
+              </span>
+              <span>
+                <v-icon icon="mdi-trash-can" color="grey" size="sm" class="mr-1" />
+                <router-link to="">삭제</router-link>
+              </span>
+            </CTableDataCell>
+          </CTableRow>
+        </CTableBody>
+      </CTable>
+    </CCol>
   </CRow>
 </template>

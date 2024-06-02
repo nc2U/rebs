@@ -123,7 +123,7 @@ onBeforeMount(async () => {
     @delete-version="deleteVersion"
   />
 
-  <IssueCategory v-if="menu === '업무범주'" />
+  <IssueCategory v-if="menu === '업무범주'" :categories="issueProject?.categories" />
 
   <Repository v-if="menu === '저장소'" />
 
