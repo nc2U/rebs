@@ -150,6 +150,10 @@ const workProject = {
               path: 'category/create',
               name: '(설정) - 범주추가',
             },
+            {
+              path: 'category/:cateId/update',
+              name: '(설정) - 범주수정',
+            },
           ],
         },
         {
