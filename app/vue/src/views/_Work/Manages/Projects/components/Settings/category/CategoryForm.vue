@@ -1,45 +1,52 @@
 <script lang="ts" setup>
-import { ref, onBeforeMount, inject, type ComputedRef, type PropType } from 'vue'
+import { ref, onBeforeMount, inject, type ComputedRef, type PropType, computed } from 'vue'
 import { colorLight } from '@/utils/cssMixins'
 import { useRoute } from 'vue-router'
 import { isValidate } from '@/utils/helper'
 import type { User } from '@/store/types/accounts'
+import { useWork } from '@/store/pinia/work'
 
-const props = defineProps({
+defineProps({
   memberList: { type: Array as PropType<{ pk: number; username: string }[]>, default: () => [] },
-  category: { type: Object, default: () => null },
 })
 
-const emit = defineEmits(['aside-visible', 'create-category'])
+const emit = defineEmits(['aside-visible', 'category-submit'])
 
 const userInfo = inject<ComputedRef<User>>('userInfo')
 
 const validated = ref(false)
 
 const form = ref({
+  pk: null as null | number,
   project: '',
   name: '',
-  assigned_to: null,
+  assigned_to: null as number | null,
 })
 
 const route = useRoute()
 
-const createCategory = (event: Event) => {
+const categorySubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
-    emit('create-category', { ...form.value })
+    emit('category-submit', { ...form.value })
     validated.value = false
   }
 }
 
+const workStore = useWork()
+const category = computed(() => workStore.category)
+
 onBeforeMount(async () => {
   emit('aside-visible', false)
 
-  if (props.category) {
-    form.value.project = props.category.project
-    form.value.name = props.category.name
-    form.value.assigned_to = props.category.assigned_to
+  if (route.params.cateId) await workStore.fetchCategory(Number(route.params.cateId))
+
+  if (category.value) {
+    form.value.pk = category.value.pk as number
+    form.value.project = category.value.project.slug
+    form.value.name = category.value.name
+    form.value.assigned_to = category.value.assigned_to ?? null
   } else form.value.project = route.params.projId as string
 })
 </script>
@@ -55,7 +62,7 @@ onBeforeMount(async () => {
     class="needs-validation"
     novalidate
     :validated="validated"
-    @submit.prevent="createCategory"
+    @submit.prevent="categorySubmit"
   >
     <CCard :color="colorLight" class="mb-3">
       <CCardBody>

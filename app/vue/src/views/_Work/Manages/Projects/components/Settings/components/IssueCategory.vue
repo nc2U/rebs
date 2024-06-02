@@ -42,7 +42,9 @@ defineProps({ categories: { type: Array as PropType<SimpleCategory[]>, default: 
             <CTableDataCell class="form-text">
               <span class="mr-2">
                 <v-icon icon="mdi-pencil" color="amber" size="sm" class="mr-1" />
-                <router-link to=""> 편집 </router-link>
+                <router-link :to="{ name: '(설정) - 범주수정', params: { cateId: category.pk } }">
+                  편집
+                </router-link>
               </span>
               <span>
                 <v-icon icon="mdi-trash-can" color="grey" size="sm" class="mr-1" />

@@ -68,8 +68,9 @@ const onSubmit = (payload: any) => {
 
 const deleteVersion = (pk: number) => workStore.deleteVersion(pk, issueProject.value?.slug)
 
-const createCategory = (payload: any) => {
-  workStore.createCategory(payload)
+const categorySubmit = (payload: any) => {
+  if (payload.pk) workStore.updateCategory(payload)
+  else workStore.createCategory(payload)
   router.push({ name: '(설정)' })
 }
 
@@ -82,14 +83,16 @@ onBeforeRouteUpdate(async to => {
 })
 
 onBeforeMount(async () => {
-  await workStore.fetchIssueProjectList({})
-  await workStore.fetchRoleList()
-  await workStore.fetchTrackerList()
-  if (route.params.projId) await workStore.fetchIssueProject(route.params.projId as string)
   emit('aside-visible', false)
 
   if (route.query.menu) menu.value = route.query.menu as string
   else menu.value = Cookies.get('workSettingMenu') ?? initMenu.value
+
+  await workStore.fetchIssueProjectList({})
+  await workStore.fetchRoleList()
+  await workStore.fetchTrackerList()
+
+  if (route.params.projId) await workStore.fetchIssueProject(route.params.projId as string)
 })
 </script>
 
@@ -146,7 +149,7 @@ onBeforeMount(async () => {
     <TimeTracking v-if="menu === '시간추적'" />
   </template>
 
-  <template v-if="route.name === '(설정) - 범주추가'">
-    <CategoryForm :member-list="memberList" @create-category="createCategory" />
+  <template v-if="route.name === '(설정) - 범주추가' || route.name === '(설정) - 범주수정'">
+    <CategoryForm :member-list="memberList" @category-submit="categorySubmit" />
   </template>
 </template>
