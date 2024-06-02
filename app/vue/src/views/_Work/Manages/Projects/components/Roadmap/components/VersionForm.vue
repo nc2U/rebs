@@ -21,6 +21,18 @@ const form = ref({
   is_default: false,
 })
 
+const formsCheck = computed(() => {
+  if (version.value) {
+    const a = version.value.name === form.value.name
+    const b = version.value.description === form.value.description
+    const c = version.value.wiki_page_title === form.value.wiki_page_title
+    const d = version.value.effective_date === form.value.effective_date
+    const e = version.value.sharing === form.value.sharing
+    const f = version.value.is_default === form.value.is_default
+    return a && b && c && d && e && f
+  } else return false
+})
+
 const route = useRoute()
 
 const workStore = useWork()
@@ -140,7 +152,9 @@ onBeforeMount(async () => {
         </CCardBody>
       </CCard>
 
-      <CButton type="submit" color="primary"> 저장</CButton>
+      <CButton type="submit" :color="version ? 'success' : 'primary'" :disabled="formsCheck">
+        저장
+      </CButton>
     </CForm>
   </CRow>
 </template>
