@@ -54,6 +54,13 @@ const AllProjects = computed(() => workStore.AllIssueProjects)
 const getRoles = computed(() => workStore.getRoles)
 const getTrackers = computed(() => workStore.getTrackers)
 
+const memberList = computed(() =>
+  (issueProject.value
+    ? issueProject.value.all_members
+    : [...new Map(workStore.memberList.map(m => [m.user.pk, m])).values()]
+  )?.map(m => m.user),
+)
+
 const onSubmit = (payload: any) => {
   payload.company = company?.value.pk
   workStore.updateIssueProject(payload)
@@ -62,7 +69,7 @@ const onSubmit = (payload: any) => {
 const deleteVersion = (pk: number) => workStore.deleteVersion(pk, issueProject.value?.slug)
 
 const createCategory = (payload: any) => {
-  console.log(payload)
+  workStore.createCategory(payload)
   router.push({ name: '(설정)' })
 }
 
@@ -140,6 +147,6 @@ onBeforeMount(async () => {
   </template>
 
   <template v-if="route.name === '(설정) - 범주추가'">
-    <CategoryForm @create-category="createCategory" />
+    <CategoryForm :member-list="memberList" @create-category="createCategory" />
   </template>
 </template>
