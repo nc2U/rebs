@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { ref, onBeforeMount, inject, type ComputedRef, type PropType } from 'vue'
 import { colorLight } from '@/utils/cssMixins'
-import type { User } from '@/store/types/accounts'
+import { useRoute } from 'vue-router'
 import { isValidate } from '@/utils/helper'
-import { useRoute, useRouter } from 'vue-router'
+import type { User } from '@/store/types/accounts'
 
 const props = defineProps({
   memberList: { type: Array as PropType<{ pk: number; username: string }[]>, default: () => [] },
@@ -22,7 +22,7 @@ const form = ref({
   assigned_to: null,
 })
 
-const [route, router] = [useRoute(), useRouter()]
+const route = useRoute()
 
 const createCategory = (event: Event) => {
   if (isValidate(event)) {
@@ -30,7 +30,6 @@ const createCategory = (event: Event) => {
   } else {
     emit('create-category', { ...form.value })
     validated.value = false
-    router.push({ name: '(설정)' })
   }
 }
 

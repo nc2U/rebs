@@ -3,7 +3,7 @@ import Cookies from 'js-cookie'
 import { ref, computed, inject, type ComputedRef, onBeforeMount } from 'vue'
 import type { Company } from '@/store/types/settings'
 import { useWork } from '@/store/pinia/work'
-import { onBeforeRouteUpdate, useRoute } from 'vue-router'
+import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import ProjectForm from '@/views/_Work/Manages/Projects/components/ProjectForm.vue'
 import Member from '@/views/_Work/Manages/Projects/components/Settings/components/Member.vue'
 import IssueTracking from '@/views/_Work/Manages/Projects/components/Settings/components/IssueTracking.vue'
@@ -19,6 +19,11 @@ const emit = defineEmits(['aside-visible'])
 const menu = ref('프로젝트')
 
 const workManager = inject<ComputedRef<boolean>>('workManager')
+
+const company = inject<ComputedRef<Company>>('company')
+
+const [route, router] = [useRoute(), useRouter()]
+const initMenu = computed(() => (!!workManager?.value ? '프로젝트' : '버전'))
 
 const settingMenus = computed(() => {
   let menus = [{ no: 4, menu: '버전' }]
@@ -42,8 +47,6 @@ const settingMenus = computed(() => {
   return menus.sort((a, b) => a.no - b.no).map(m => m.menu)
 })
 
-const company = inject<ComputedRef<Company>>('company')
-
 const workStore = useWork()
 const issueProject = computed(() => workStore.issueProject)
 const modules = computed(() => issueProject.value?.module)
@@ -58,6 +61,11 @@ const onSubmit = (payload: any) => {
 
 const deleteVersion = (pk: number) => workStore.deleteVersion(pk, issueProject.value?.slug)
 
+const createCategory = (payload: any) => {
+  console.log(payload)
+  router.push({ name: '(설정)' })
+}
+
 onBeforeRouteUpdate(async to => {
   if (to.params.projId) await workStore.fetchIssueProject(to.params.projId as string)
   else {
@@ -65,9 +73,6 @@ onBeforeRouteUpdate(async to => {
     await workStore.fetchIssueProjectList({})
   }
 })
-
-const route = useRoute()
-const initMenu = computed(() => (!!workManager?.value ? '프로젝트' : '버전'))
 
 onBeforeMount(async () => {
   await workStore.fetchIssueProjectList({})
@@ -135,6 +140,6 @@ onBeforeMount(async () => {
   </template>
 
   <template v-if="route.name === '(설정) - 범주추가'">
-    <CategoryForm />
+    <CategoryForm @create-category="createCategory" />
   </template>
 </template>
