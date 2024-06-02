@@ -84,7 +84,7 @@ onBeforeMount(async () => {
             </CFormLabel>
 
             <CCol sm="10" lg="6">
-              <CFormInput v-model="form.name" required />
+              <CFormInput v-model="form.name" placeholder="새 버전 이름" required />
             </CCol>
           </CRow>
 
@@ -92,7 +92,7 @@ onBeforeMount(async () => {
             <CFormLabel for="name" class="col-sm-2 col-form-label text-right"> 설명</CFormLabel>
 
             <CCol sm="10" lg="6">
-              <CFormInput v-model="form.description" />
+              <CFormInput v-model="form.description" placeholder="새 버전에 대한 설명" />
             </CCol>
           </CRow>
 
@@ -102,7 +102,7 @@ onBeforeMount(async () => {
             </CFormLabel>
 
             <CCol sm="10" lg="6">
-              <CFormInput v-model="form.wiki_page_title" />
+              <CFormInput v-model="form.wiki_page_title" placeholder="위키 페이지 제목" />
             </CCol>
           </CRow>
 
@@ -110,7 +110,7 @@ onBeforeMount(async () => {
             <CFormLabel for="name" class="col-sm-2 col-form-label text-right"> 날짜</CFormLabel>
 
             <CCol sm="6">
-              <DatePicker v-model="form.effective_date" />
+              <DatePicker v-model="form.effective_date" placeholder="버전 출시 기한" />
             </CCol>
           </CRow>
 

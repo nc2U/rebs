@@ -159,10 +159,6 @@ watch(props, nVal => {
 
 const watcherList = ref<{ pk: number; username: string }[]>([])
 
-const activities = computed(() =>
-  props.issueProject.activities ? props.issueProject.activities : [],
-)
-
 const memberList = computed(() =>
   (props.issueProject
     ? props.issueProject.all_members
@@ -181,6 +177,10 @@ const trackers = computed(() =>
 
 const categories = computed(() => workStore.issueProject?.categories ?? [])
 const versions = computed(() => workStore.issueProject?.versions ?? [])
+
+const activities = computed(() =>
+  props.issueProject.activities ? props.issueProject.activities : [],
+)
 
 const watcherAddSubmit = (payload: { pk: number; username: string }[]) => {
   form.value.watchers = [...new Set([...form.value.watchers, ...payload.map(p => p.pk)])]
@@ -760,7 +760,11 @@ onBeforeMount(() => {
   <FormModal ref="RefCategoryModal">
     <template #header>새 업무 범주</template>
     <template #default>
-      <FormInIssueCategory @close="RefCategoryModal.close()" @create-category="createCategory" />
+      <FormInIssueCategory
+        :member-list="memberList"
+        @close="RefCategoryModal.close()"
+        @create-category="createCategory"
+      />
     </template>
   </FormModal>
 

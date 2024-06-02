@@ -1,7 +1,10 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { type PropType, ref } from 'vue'
 import { isValidate } from '@/utils/helper'
 
+defineProps({
+  memberList: { type: Array as PropType<{ pk: number; username: string }[]>, default: () => [] },
+})
 const emit = defineEmits(['create-category', 'close'])
 
 const validated = ref(false)
@@ -31,13 +34,14 @@ const closeModal = () => emit('close')
     :validated="validated"
     @submit.prevent="createCategory"
   >
+    {{ watcherList }}
     <CModalBody class="text-body">
       <CRow class="mb-3">
         <CFormLabel for="category-name" class="col-3 col-form-label required text-right">
           이름
         </CFormLabel>
         <CCol class="col-7">
-          <CFormInput v-model="nCategory.name" required />
+          <CFormInput v-model="nCategory.name" placeholder="새 업무 범주 이름" required />
         </CCol>
       </CRow>
       <CRow class="mb-3">
@@ -45,8 +49,12 @@ const closeModal = () => emit('close')
           담당자
         </CFormLabel>
         <CCol class="col-7">
-          <CFormSelect v-model="nCategory.assigned_to">
-            <option value=""></option>
+          <CFormSelect v-model.number="nCategory.assigned_to">
+            <option value="">---------</option>
+            <option :value="userInfo?.pk">&lt;&lt; 나 &gt;&gt;</option>
+            <option v-for="user in memberList" :value="user.pk" :key="user.pk">
+              {{ user.username }}
+            </option>
           </CFormSelect>
         </CCol>
       </CRow>
