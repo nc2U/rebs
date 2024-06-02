@@ -1,9 +1,31 @@
 <script lang="ts" setup>
-import { type PropType } from 'vue'
+import { ref, type PropType } from 'vue'
 import type { SimpleCategory } from '@/store/types/work'
 import NoData from '@/views/_Work/components/NoData.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 defineProps({ categories: { type: Array as PropType<SimpleCategory[]>, default: () => [] } })
+
+const emit = defineEmits(['delete-category'])
+
+const RefCateDelConfirm = ref()
+
+const deleteCatePk = ref()
+
+const toDelete = (pk: number) => {
+  deleteCatePk.value = pk
+  RefCateDelConfirm.value.callModal(
+    '',
+    '이 업무 범주 삭제를 계속 진행 하시겠습니까?',
+    '',
+    'warning',
+  )
+}
+
+const deleteCategory = () => {
+  emit('delete-category', deleteCatePk.value)
+  RefCateDelConfirm.value.close()
+}
 </script>
 
 <template>
@@ -48,7 +70,7 @@ defineProps({ categories: { type: Array as PropType<SimpleCategory[]>, default: 
               </span>
               <span>
                 <v-icon icon="mdi-trash-can" color="grey" size="sm" class="mr-1" />
-                <router-link to="">삭제</router-link>
+                <router-link to="" @click="toDelete(category.pk)">삭제</router-link>
               </span>
             </CTableDataCell>
           </CTableRow>
@@ -56,4 +78,10 @@ defineProps({ categories: { type: Array as PropType<SimpleCategory[]>, default: 
       </CTable>
     </CCol>
   </CRow>
+
+  <ConfirmModal ref="RefCateDelConfirm">
+    <template #footer>
+      <CButton color="danger" @click="deleteCategory">삭제</CButton>
+    </template>
+  </ConfirmModal>
 </template>

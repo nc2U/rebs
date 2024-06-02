@@ -74,6 +74,8 @@ const categorySubmit = (payload: any) => {
   router.push({ name: '(설정)' })
 }
 
+const deleteCategory = (pk: number) => workStore.deleteCategory(pk, issueProject.value?.slug)
+
 onBeforeRouteUpdate(async to => {
   if (to.params.projId) await workStore.fetchIssueProject(to.params.projId as string)
   else {
@@ -140,7 +142,11 @@ onBeforeMount(async () => {
       @delete-version="deleteVersion"
     />
 
-    <IssueCategory v-if="menu === '업무범주'" :categories="issueProject?.categories" />
+    <IssueCategory
+      v-if="menu === '업무범주'"
+      :categories="issueProject?.categories"
+      @delete-category="deleteCategory"
+    />
 
     <Repository v-if="menu === '저장소'" />
 

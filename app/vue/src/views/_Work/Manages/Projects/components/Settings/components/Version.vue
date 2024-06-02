@@ -158,7 +158,7 @@ const deleteSubmit = () => {
 
   <ConfirmModal ref="RefVersionConfirm">
     <template #footer>
-      <CButton color="warning" @click="deleteSubmit">삭제</CButton>
+      <CButton color="danger" @click="deleteSubmit">삭제</CButton>
     </template>
   </ConfirmModal>
 </template>
