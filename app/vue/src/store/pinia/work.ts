@@ -286,7 +286,7 @@ export const useWork = defineStore('work', () => {
       .then(async () => {
         await fetchVersionList(project)
         await fetchIssueProject(project)
-        message()
+        message('warning', '알림!', '해당 업무 범주가 삭제되었습니다!')
       })
       .catch(err => errorHandle(err.response.data))
 
