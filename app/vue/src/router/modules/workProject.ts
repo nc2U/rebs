@@ -145,6 +145,12 @@ const workProject = {
         {
           path: ':projId/setting',
           name: '(설정)',
+          children: [
+            {
+              path: 'category/create',
+              name: '(설정) - 범주추가',
+            },
+          ],
         },
         {
           path: ':projId/search',

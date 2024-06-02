@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { type PropType } from 'vue'
-import NoData from '@/views/_Work/components/NoData.vue'
 import type { SimpleCategory } from '@/store/types/work'
+import NoData from '@/views/_Work/components/NoData.vue'
 
 defineProps({ categories: { type: Array as PropType<SimpleCategory[]>, default: () => [] } })
 </script>
@@ -11,7 +11,7 @@ defineProps({ categories: { type: Array as PropType<SimpleCategory[]>, default: 
     <CCol>
       <span class="mr-2 form-text">
         <v-icon icon="mdi-plus-circle" color="success" size="sm" />
-        <router-link to="" class="ml-1">새 업무범주</router-link>
+        <router-link :to="{ name: '(설정) - 범주추가' }" class="ml-1">새 업무범주</router-link>
       </span>
     </CCol>
   </CRow>

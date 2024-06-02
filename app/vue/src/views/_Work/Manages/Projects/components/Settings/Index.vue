@@ -12,6 +12,7 @@ import IssueCategory from '@/views/_Work/Manages/Projects/components/Settings/co
 import Repository from '@/views/_Work/Manages/Projects/components/Settings/components/Repository.vue'
 import Forum from '@/views/_Work/Manages/Projects/components/Settings/components/Forum.vue'
 import TimeTracking from '@/views/_Work/Manages/Projects/components/Settings/components/TimeTracking.vue'
+import CategoryForm from '@/views/_Work/Manages/Projects/components/Settings/category/CategoryForm.vue'
 
 const emit = defineEmits(['aside-visible'])
 
@@ -81,53 +82,59 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <CRow class="py-2">
-    <CCol>
-      <h5>설정</h5>
-    </CCol>
-  </CRow>
+  <template v-if="route.name === '(설정)'">
+    <CRow class="py-2">
+      <CCol>
+        <h5>설정</h5>
+      </CCol>
+    </CRow>
 
-  <CRow class="mb-3">
-    <CCol>
-      <v-tabs v-model="menu" density="compact">
-        <v-tab
-          v-for="m in settingMenus"
-          :value="m"
-          :key="m"
-          variant="tonal"
-          :active="menu === m"
-          @click="Cookies.set('workSettingMenu', m)"
-        >
-          {{ m }}
-        </v-tab>
-      </v-tabs>
-    </CCol>
-  </CRow>
+    <CRow class="mb-3">
+      <CCol>
+        <v-tabs v-model="menu" density="compact">
+          <v-tab
+            v-for="m in settingMenus"
+            :value="m"
+            :key="m"
+            variant="tonal"
+            :active="menu === m"
+            @click="Cookies.set('workSettingMenu', m)"
+          >
+            {{ m }}
+          </v-tab>
+        </v-tabs>
+      </CCol>
+    </CRow>
 
-  <ProjectForm
-    v-if="menu === '프로젝트'"
-    :project="issueProject"
-    :all-projects="AllProjects"
-    :all-roles="getRoles"
-    :all-trackers="getTrackers"
-    @on-submit="onSubmit"
-  />
+    <ProjectForm
+      v-if="menu === '프로젝트'"
+      :project="issueProject"
+      :all-projects="AllProjects"
+      :all-roles="getRoles"
+      :all-trackers="getTrackers"
+      @on-submit="onSubmit"
+    />
 
-  <Member v-if="menu === '구성원'" />
+    <Member v-if="menu === '구성원'" />
 
-  <IssueTracking v-if="menu === '업무추적'" />
+    <IssueTracking v-if="menu === '업무추적'" />
 
-  <Version
-    v-if="menu === '버전'"
-    :versions="issueProject?.versions"
-    @delete-version="deleteVersion"
-  />
+    <Version
+      v-if="menu === '버전'"
+      :versions="issueProject?.versions"
+      @delete-version="deleteVersion"
+    />
 
-  <IssueCategory v-if="menu === '업무범주'" :categories="issueProject?.categories" />
+    <IssueCategory v-if="menu === '업무범주'" :categories="issueProject?.categories" />
 
-  <Repository v-if="menu === '저장소'" />
+    <Repository v-if="menu === '저장소'" />
 
-  <Forum v-if="menu === '게시판'" />
+    <Forum v-if="menu === '게시판'" />
 
-  <TimeTracking v-if="menu === '시간추적'" />
+    <TimeTracking v-if="menu === '시간추적'" />
+  </template>
+
+  <template v-if="route.name === '(설정) - 범주추가'">
+    <CategoryForm />
+  </template>
 </template>

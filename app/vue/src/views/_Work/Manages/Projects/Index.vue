@@ -223,7 +223,7 @@ onBeforeMount(async () => {
 
       <Repository v-if="routeName === '(저장소)'" @aside-visible="asideVisible" />
 
-      <Settings v-if="routeName === '(설정)'" @aside-visible="asideVisible" />
+      <Settings v-if="routeName.includes('(설정)')" @aside-visible="asideVisible" />
     </template>
 
     <template v-slot:aside>

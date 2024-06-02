@@ -76,7 +76,7 @@ onBeforeMount(async () => {
     </CCol>
 
     <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
-      <CCard :color="colorLight" class="mb-2">
+      <CCard :color="colorLight" class="mb-3">
         <CCardBody>
           <CRow class="mb-3">
             <CFormLabel for="name" class="col-sm-2 col-form-label text-right required">
