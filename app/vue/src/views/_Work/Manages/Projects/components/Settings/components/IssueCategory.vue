@@ -20,11 +20,12 @@ defineProps({ categories: { type: Array as PropType<SimpleCategory[]>, default: 
 
   <CRow v-else>
     <CCol>
+      <v-divider class="mb-0" />
       <CTable small striped responsive hover>
         <colgroup>
-          <col style="width: 65%" />
-          <col style="width: 20%" />
-          <col style="width: 15%" />
+          <col style="width: 60%" />
+          <col style="width: 30%" />
+          <col style="width: 10%" />
         </colgroup>
         <CTableHead>
           <CTableRow class="text-center">
@@ -36,7 +37,7 @@ defineProps({ categories: { type: Array as PropType<SimpleCategory[]>, default: 
 
         <CTableBody>
           <CTableRow v-for="category in categories" :key="category.pk" class="text-center">
-            <CTableDataCell>{{ category.name }}</CTableDataCell>
+            <CTableDataCell class="text-left">{{ category.name }}</CTableDataCell>
             <CTableDataCell>{{ category.assigned_to?.username }}</CTableDataCell>
             <CTableDataCell class="form-text">
               <span class="mr-2">

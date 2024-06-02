@@ -93,6 +93,7 @@ const deleteSubmit = () => {
 
   <CRow v-else>
     <CCol>
+      <v-divider class="mb-0" />
       <CTable small striped responsive hover>
         <colgroup>
           <col style="width: 10%" />
