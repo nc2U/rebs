@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { ref, onBeforeMount, inject, type ComputedRef, type PropType, computed } from 'vue'
+import type { User } from '@/store/types/accounts'
 import { colorLight } from '@/utils/cssMixins'
 import { useRoute } from 'vue-router'
 import { isValidate } from '@/utils/helper'
-import type { User } from '@/store/types/accounts'
 import { useWork } from '@/store/pinia/work'
 
 defineProps({
@@ -21,6 +21,14 @@ const form = ref({
   project: '',
   name: '',
   assigned_to: null as number | null,
+})
+
+const formsCheck = computed(() => {
+  if (category.value) {
+    const a = category.value.name === form.value.name
+    const b = category.value.assigned_to === form.value.assigned_to
+    return a && b
+  } else return false
 })
 
 const route = useRoute()
@@ -41,6 +49,7 @@ onBeforeMount(async () => {
   emit('aside-visible', false)
 
   if (route.params.cateId) await workStore.fetchCategory(Number(route.params.cateId))
+  else workStore.category = null
 
   if (category.value) {
     form.value.pk = category.value.pk as number
@@ -54,7 +63,7 @@ onBeforeMount(async () => {
 <template>
   <CRow class="py-2">
     <CCol>
-      <h5>새 업무 범주</h5>
+      <h5><span v-if="!route.params.cateId">새</span> 업무 범주</h5>
     </CCol>
   </CRow>
 
@@ -95,7 +104,9 @@ onBeforeMount(async () => {
 
     <CRow>
       <CCol>
-        <CButton type="submit" color="primary">저장</CButton>
+        <CButton type="submit" :color="category ? 'success' : 'primary'" :disabled="formsCheck">
+          저장
+        </CButton>
       </CCol>
     </CRow>
   </CForm>

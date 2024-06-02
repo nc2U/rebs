@@ -2,6 +2,7 @@
 import Cookies from 'js-cookie'
 import { ref, computed, inject, type ComputedRef, onBeforeMount } from 'vue'
 import type { Company } from '@/store/types/settings'
+import { type IssueCategory as ICategory } from '@/store/types/work'
 import { useWork } from '@/store/pinia/work'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import ProjectForm from '@/views/_Work/Manages/Projects/components/ProjectForm.vue'
@@ -68,7 +69,7 @@ const onSubmit = (payload: any) => {
 
 const deleteVersion = (pk: number) => workStore.deleteVersion(pk, issueProject.value?.slug)
 
-const categorySubmit = (payload: any) => {
+const categorySubmit = (payload: ICategory) => {
   if (payload.pk) workStore.updateCategory(payload)
   else workStore.createCategory(payload)
   router.push({ name: '(설정)' })

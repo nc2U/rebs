@@ -42,7 +42,7 @@ const deleteCategory = () => {
 
   <CRow v-else>
     <CCol>
-      <v-divider class="mb-0" />
+      <v-divider class="my-0" />
       <CTable small striped responsive hover>
         <colgroup>
           <col style="width: 60%" />
