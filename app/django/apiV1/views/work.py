@@ -70,12 +70,6 @@ class VersionViewSet(viewsets.ModelViewSet):
     filterset_fields = ('project__slug',)
 
 
-class RepositoryViewSet(viewsets.ModelViewSet):
-    queryset = Repository.objects.all()
-    serializer_class = RepositorySerializer
-    permission_classes = (permissions.IsAuthenticated,)
-
-
 class TrackerViewSet(viewsets.ModelViewSet):
     queryset = Tracker.objects.all()
     serializer_class = TrackerSerializer
@@ -85,6 +79,13 @@ class TrackerViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class IssueCategoryViewSet(viewsets.ModelViewSet):
+    queryset = IssueCategory.objects.all()
+    serializer_class = IssueCategorySerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    filterset_fields = ('project__slug',)
 
 
 class IssueCountByTrackerViewSet(viewsets.ModelViewSet):
@@ -113,6 +114,12 @@ class IssueStatusViewSet(viewsets.ModelViewSet):
 class WorkflowViewSet(viewsets.ModelViewSet):
     queryset = Workflow.objects.all()
     serializer_class = WorkflowSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+
+class RepositoryViewSet(viewsets.ModelViewSet):
+    queryset = Repository.objects.all()
+    serializer_class = RepositorySerializer
     permission_classes = (permissions.IsAuthenticated,)
 
 
@@ -147,12 +154,6 @@ class CodeDocsCategoryViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-
-
-class IssueCategoryViewSet(viewsets.ModelViewSet):
-    queryset = IssueCategory.objects.all()
-    serializer_class = IssueCategorySerializer
-    permission_classes = (permissions.IsAuthenticated,)
 
 
 class IssueFilter(FilterSet):

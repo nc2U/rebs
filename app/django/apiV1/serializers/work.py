@@ -14,9 +14,7 @@ from work.models import (IssueProject, Role, Permission, Member, Module, Version
 
 
 # Work --------------------------------------------------------------------------
-class FamilyTreeSerializer(serializers.ModelSerializer):
-    """ recursive get patents -> for bread crumb """
-
+class SimpleIssueProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = IssueProject
         fields = ('pk', 'name', 'slug')
@@ -93,7 +91,7 @@ class CodeActivityInIssueProjectSerializer(serializers.ModelSerializer):
 
 
 class IssueProjectSerializer(serializers.ModelSerializer):
-    family_tree = FamilyTreeSerializer(many=True, read_only=True)
+    family_tree = SimpleIssueProjectSerializer(many=True, read_only=True)
     sub_projects = serializers.SerializerMethodField()
     module = ModuleInIssueProjectSerializer(read_only=True)
     all_members = MemberInIssueProjectSerializer(many=True, read_only=True)
@@ -305,14 +303,8 @@ class ModuleSerializer(serializers.ModelSerializer):
                   'file', 'wiki', 'repository', 'forum', 'calendar', 'gantt')
 
 
-class IProjectIssueSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = IssueProject
-        fields = ('slug', 'name')
-
-
 class IssueInVersionSerializer(serializers.ModelSerializer):
-    project = IProjectIssueSerializer(read_only=True)
+    project = SimpleIssueProjectSerializer(read_only=True)
     tracker = TrackerInIssueProjectSerializer(read_only=True)
     spent_times = serializers.SerializerMethodField()
 
@@ -328,7 +320,7 @@ class IssueInVersionSerializer(serializers.ModelSerializer):
 
 
 class VersionSerializer(serializers.ModelSerializer):
-    project = IProjectIssueSerializer(read_only=True)  # serializers.SlugRelatedField(slug_field='slug', read_only=True)
+    project = SimpleIssueProjectSerializer(read_only=True)
     status_desc = serializers.CharField(source='get_status_display', read_only=True)
     sharing_desc = serializers.CharField(source='get_sharing_display', read_only=True)
     is_default = serializers.SerializerMethodField(read_only=True)
@@ -377,20 +369,21 @@ class VersionSerializer(serializers.ModelSerializer):
         return instance
 
 
-class RepositorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Repository
-        fields = ('pk', 'project', 'scm', 'is_default',
-                  'slug', 'path', 'path_encoding', 'is_report')
-
-
 class TrackerSerializer(serializers.ModelSerializer):
-    projects = FamilyTreeSerializer(many=True, read_only=True)
+    projects = SimpleIssueProjectSerializer(many=True, read_only=True)
 
     class Meta:
         model = Tracker
         fields = ('pk', 'name', 'description', 'is_in_roadmap', 'default_status',
                   'projects', 'order', 'user', 'created', 'updated')
+
+
+class IssueCategorySerializer(serializers.ModelSerializer):
+    project = SimpleIssueProjectSerializer(read_only=True)
+
+    class Meta:
+        model = IssueCategory
+        fields = ('pk', 'project', 'name', 'assigned_to')
 
 
 class IssueCountByTrackerSerializer(serializers.ModelSerializer):
@@ -454,6 +447,13 @@ class WorkflowSerializer(serializers.ModelSerializer):
         fields = ('pk', 'role', 'tracker', 'old_status', 'new_statuses')
 
 
+class RepositorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Repository
+        fields = ('pk', 'project', 'scm', 'is_default',
+                  'slug', 'path', 'path_encoding', 'is_report')
+
+
 class CodeActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = CodeActivity
@@ -470,12 +470,6 @@ class CodeDocsCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = CodeDocsCategory
         fields = ('pk', 'name', 'active', 'default', 'order', 'user', 'created', 'updated')
-
-
-class IssueCategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = IssueCategory
-        fields = ('pk', 'project', 'name', 'assigned_to')
 
 
 class IssueStatusInIssueSerializer(serializers.ModelSerializer):
@@ -523,7 +517,7 @@ class IssueRelationInIssueSerializer(serializers.ModelSerializer):
 
 
 class IssueSerializer(serializers.ModelSerializer):
-    project = IProjectIssueSerializer(read_only=True)
+    project = SimpleIssueProjectSerializer(read_only=True)
     tracker = TrackerInIssueProjectSerializer(read_only=True)
     status = IssueStatusInIssueSerializer(read_only=True)
     priority = CodePriorityInIssueSerializer(read_only=True)
@@ -704,7 +698,7 @@ class IssueRelationSerializer(serializers.ModelSerializer):
 
 
 class IssueInRelatedSerializer(serializers.ModelSerializer):
-    project = IProjectIssueSerializer(read_only=True)
+    project = SimpleIssueProjectSerializer(read_only=True)
     tracker = serializers.SlugRelatedField(slug_field='name', read_only=True)
     status = IssueStatusInIssueSerializer(read_only=True)
 
@@ -778,7 +772,7 @@ class TimeEntryInActivityLogSerializer(serializers.ModelSerializer):
 
 
 class NewsSerializer(serializers.ModelSerializer):
-    project = IProjectIssueSerializer(read_only=True)
+    project = SimpleIssueProjectSerializer(read_only=True)
     author = SimpleUserSerializer(read_only=True)
 
     class Meta:
@@ -803,7 +797,7 @@ class NewsSerializer(serializers.ModelSerializer):
 
 
 class ActivityLogEntrySerializer(serializers.ModelSerializer):
-    project = IProjectIssueSerializer(read_only=True)
+    project = SimpleIssueProjectSerializer(read_only=True)
     issue = IssueInRelatedSerializer(read_only=True)
     comment = IssueCommentSerializer(read_only=True)
     spent_time = TimeEntryInActivityLogSerializer(read_only=True)
