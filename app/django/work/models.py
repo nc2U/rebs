@@ -221,7 +221,7 @@ class Version(models.Model):
     SHARING_CHOICES = (
         ('0', '공유 없음'), ('1', '하위 프로젝트'), ('2', '상위 및 하위 프로젝트'), ('3', '최상위 및 모든 하위 프로젝트'), ('4', '모든 프로젝트'))
     sharing = models.CharField('공유', max_length=1, choices=SHARING_CHOICES, default='1')
-    effective_date = models.DateField(verbose_name='날짜', blank=True, null=True)
+    effective_date = models.DateField(verbose_name='버전 출시 기한', blank=True, null=True)
     description = models.CharField('설명', max_length=255, blank=True, default='')
     wiki_page_title = models.CharField('위키 페이지', max_length=200, blank=True, default='')
     created = models.DateTimeField(auto_now_add=True)
