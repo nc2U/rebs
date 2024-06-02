@@ -11,6 +11,12 @@ export interface SimpleMember {
   add_roles?: { pk: number; name: string }[]
 }
 
+export interface SimpleProject {
+  pk: number
+  name: string
+  slug: string
+}
+
 export interface IssueProject {
   pk?: number
   company: number
@@ -178,10 +184,7 @@ export interface Member {
 
 export interface SimpleIssue {
   pk: number
-  project: {
-    slug: string
-    name: string
-  }
+  project: SimpleProject
   subject: string
   status: number
   tracker: {
@@ -201,7 +204,7 @@ export interface SimpleIssue {
 
 export interface Version {
   pk?: number
-  project?: { slug: string; name: string }
+  project?: SimpleProject
   name: string
   status: '1' | '2' | '3'
   status_desc?: '진행' | '잠김' | '닫힘'
@@ -225,13 +228,13 @@ export interface Tracker {
   description: string
   is_in_roadmap: boolean
   default_status: number
-  projects: number[]
+  projects: SimpleProject[]
   order: number
 }
 
 export interface IssueCategory {
   pk: number
-  project: number
+  project: SimpleProject
   name: string
   assigned_to: number | null
 }
@@ -282,7 +285,7 @@ export interface SubIssue {
 
 export interface Issue {
   pk: number
-  project: { slug: string; name: string }
+  project: SimpleProject
   tracker: { pk: number; name: string; description: string }
   status: { pk: number; name: string }
   priority: { pk: number; name: string }
@@ -349,7 +352,7 @@ export interface IssueComment {
   pk: number
   issue: {
     pk: number
-    project: { slug: string; name: string }
+    project: SimpleProject
     tracker: string
     status: string
     subject: string
@@ -369,7 +372,7 @@ export interface TimeEntry {
   pk: number
   issue: {
     pk: number
-    project: { slug: string; name: string }
+    project: SimpleProject
     tracker: string
     status: { pk: number; name: string; closed: boolean }
     subject: string
@@ -413,7 +416,7 @@ export interface TimeEntryFilter {
 
 export interface News {
   pk?: number
-  project?: { slug: string; name: string }
+  project?: SimpleProject
   title: string
   summary: string
   description: string
@@ -424,10 +427,10 @@ export interface News {
 export interface ActLogEntry {
   pk: number
   sort: '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
-  project: { slug: string; name: string } | null
+  project: SimpleProject | null
   issue: {
     pk: number
-    project: { slug: string; name: string }
+    project: SimpleProject
     tracker: string
     status: { pk: number; name: string; closed: boolean }
     subject: string
@@ -464,7 +467,7 @@ export interface IssueLogEntry {
   log_id: number
   issue: {
     pk: number
-    project: { slug: string; name: string }
+    project: SimpleProject
     tracker: string
     status: { pk: number; name: string; closed: boolean }
     subject: string

@@ -210,7 +210,7 @@ export const useWork = defineStore('work', () => {
   const deleteVersion = (pk: number, project = '') =>
     api
       .delete(`/version/${pk}/`)
-      .then(async res => {
+      .then(async () => {
         await fetchVersionList(project)
         await fetchIssueProject(project)
         message('warning', '알림!', '해당 버전이 삭제되었습니다!')
@@ -253,16 +253,19 @@ export const useWork = defineStore('work', () => {
       .then(res => (category.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const fetchCategoryList = () =>
+  const fetchCategoryList = (project = '') =>
     api
-      .get('/issue-category/')
+      .get(`/issue-category/?project__slug=${project}`)
       .then(async res => (categoryList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
   const createCategory = (payload: IssueCategory) =>
     api
       .post(`/issue-category`, payload)
-      .then(res => {
+      .then(async res => {
+        await fetchCategory(res.data.pk)
+        await fetchCategoryList(res.data.project.slug)
+        await fetchIssueProject(res.data.project.slug)
         message()
         return res.data.pk
       })
@@ -271,15 +274,20 @@ export const useWork = defineStore('work', () => {
   const updateCategory = (payload: IssueCategory) =>
     api
       .put(`/issue-category/${payload.pk}/`, payload)
-      .then(res => {
+      .then(async res => {
+        await fetchCategory(res.data.pk)
         message()
       })
       .catch(err => errorHandle(err.response.data))
 
-  const deleteCategory = (pk: number) =>
+  const deleteCategory = (pk: number, project = '') =>
     api
       .delete(`/issue-category/${pk}/`)
-      .then(res => message())
+      .then(async () => {
+        await fetchVersionList(project)
+        await fetchIssueProject(project)
+        message()
+      })
       .catch(err => errorHandle(err.response.data))
 
   // status states & getters
