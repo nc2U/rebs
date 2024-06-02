@@ -258,8 +258,8 @@ class Tracker(models.Model):
 class IssueCategory(models.Model):
     project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트', related_name='categories')
     name = models.CharField('범주', max_length=100)
-    assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
-                                    verbose_name='담당자')
+    assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
+                                    null=True, blank=True, verbose_name='담당자')
 
     def __str__(self):
         return self.name

@@ -404,8 +404,9 @@ class IssueCategorySerializer(serializers.ModelSerializer):
         except IssueProject.DoesNotExist:
             raise serializers.ValidationError({'project': 'Project does not exist'})
 
-        instance.__dict__.update(validated_data)
+        instance.__dict__.update(**validated_data)
         instance.project = project
+        instance.assigned_to = validated_data.get('assigned_to', instance.assigned_to)
         instance.save()
         return instance
 
