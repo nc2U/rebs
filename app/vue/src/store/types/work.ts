@@ -4,9 +4,14 @@ interface BCParent {
   slug: string
 }
 
+export interface SimpleUser {
+  pk: number
+  username: string
+}
+
 export interface SimpleMember {
   pk: number
-  user: { pk: number; username: string }
+  user: SimpleUser
   roles: { pk: number; name: string }[]
   add_roles?: { pk: number; name: string }[]
 }
@@ -15,6 +20,12 @@ export interface SimpleProject {
   pk: number
   name: string
   slug: string
+}
+
+export interface SimpleCategory {
+  pk: number
+  name: string
+  assigned_to: SimpleUser | null
 }
 
 export interface IssueProject {
@@ -34,12 +45,7 @@ export interface IssueProject {
   trackers?: { pk: number; name: string; description: string }[]
   versions?: Version[]
   default_version: string | null
-  categories?: {
-    pk: number
-    project: string
-    name: string
-    assigned_to: { pk: number; username: string } | null
-  }[]
+  categories?: SimpleCategory[]
   status: '1' | '9'
   depth: number
   all_members?: SimpleMember[]
@@ -178,7 +184,7 @@ export interface Permission {
 
 export interface Member {
   pk: number
-  user: { pk: number; username: string }
+  user: SimpleUser
   roles: { pk: number; name: string }[]
 }
 
@@ -276,7 +282,7 @@ export interface SubIssue {
   pk: number
   subject: string
   status: string
-  assigned_to: { pk: number; username: string }
+  assigned_to: SimpleUser
   start_date: string
   estimated_hours: string | null
   done_ratio: number
@@ -293,9 +299,9 @@ export interface Issue {
   description: string
   category: number | null
   fixed_version: { pk: number; name: string } | null
-  assigned_to: { pk: number; username: string } | null
+  assigned_to: SimpleUser | null
   parent: number | null
-  watchers: { pk: number; username: string }[]
+  watchers: SimpleUser[]
   is_private: boolean
   estimated_hours: number | null
   start_date: string | null
@@ -306,8 +312,8 @@ export interface Issue {
   files: Array<IssueFile>
   sub_issues: SubIssue[]
   related_issues: IssueRelation[]
-  creator: { pk: number; username: string }
-  updater: { pk: number; username: string } | null
+  creator: SimpleUser
+  updater: SimpleUser | null
   created: string
   updated: string
 }
@@ -384,7 +390,7 @@ export interface TimeEntry {
   comment: string
   created: string
   updated: string
-  user: { pk: number; username: string }
+  user: SimpleUser
   total_hours: number
 }
 
@@ -420,7 +426,7 @@ export interface News {
   title: string
   summary: string
   description: string
-  author?: { pk: number; username: string }
+  author?: SimpleUser
   created: string
 }
 
