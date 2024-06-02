@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-import { type PropType, ref } from 'vue'
+import { type ComputedRef, inject, type PropType, ref } from 'vue'
 import { isValidate } from '@/utils/helper'
+import type { User } from '@/store/types/accounts'
 
 defineProps({
   memberList: { type: Array as PropType<{ pk: number; username: string }[]>, default: () => [] },
 })
 const emit = defineEmits(['create-category', 'close'])
+const userInfo = inject<ComputedRef<User>>('userInfo')
 
 const validated = ref(false)
 
@@ -34,7 +36,6 @@ const closeModal = () => emit('close')
     :validated="validated"
     @submit.prevent="createCategory"
   >
-    {{ watcherList }}
     <CModalBody class="text-body">
       <CRow class="mb-3">
         <CFormLabel for="category-name" class="col-3 col-form-label required text-right">
