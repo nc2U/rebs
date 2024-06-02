@@ -120,7 +120,7 @@ const removeFile = (n: number) => {
   newFiles.value.splice(n - 1, 1)
 }
 
-const formCheck = computed(() => {
+const formsCheck = computed(() => {
   if (props.issue) {
     const a = form.value.project === props.issue.project.slug
     const b = form.value.is_private === props.issue.is_private
@@ -135,7 +135,7 @@ const formCheck = computed(() => {
     const k = form.value.due_date === props.issue.due_date
     const l = form.value.category === props.issue.category
     const m = form.value.estimated_hours === numToTime(props.issue.estimated_hours)
-    const n = form.value.fixed_version === props.issue.fixed_version
+    const n = form.value.fixed_version === props.issue.fixed_version?.pk
     const o = form.value.done_ratio === props.issue.done_ratio
     const p = !form.value.files?.map(f => f.del).some(f => f === true)
     const q = !newFiles.value.length
@@ -750,7 +750,7 @@ onBeforeMount(() => {
         </CCardBody>
       </CCard>
 
-      <CButton type="submit" :color="issue ? 'success' : 'primary'" :disabled="formCheck">
+      <CButton type="submit" :color="issue ? 'success' : 'primary'" :disabled="formsCheck">
         확인
       </CButton>
       <CButton type="button" color="light" @click="closeForm">취소</CButton>
