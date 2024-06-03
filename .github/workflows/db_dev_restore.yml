@@ -27,7 +27,7 @@ jobs:
           host: ${{ secrets.NFS_HOST }}
           username: ${{ secrets.NFS_USER }}
           password: ${{ secrets.NFS_PASS }}
-          source: 'volume/backup'
+          source: 'volume/backups'
           target: ${{ secrets.NFS_PATH }}/dev/
       
       # mysql pod --> database copy
