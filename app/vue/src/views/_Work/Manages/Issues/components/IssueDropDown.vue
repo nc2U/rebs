@@ -1,8 +1,31 @@
 <script lang="ts" setup>
-import { type PropType } from 'vue'
-import type { Issue, SimpleIssue } from '@/store/types/work'
+import { ref, computed, type ComputedRef, inject, type PropType, onBeforeMount } from 'vue'
+import type { Issue } from '@/store/types/work'
+import type { User } from '@/store/types/accounts'
 
-defineProps({ issue: { type: Object as PropType<Issue | SimpleIssue>, required: true } })
+const props = defineProps({
+  issue: { type: Object as PropType<Issue>, required: true },
+})
+
+const emit = defineEmits(['watch-control'])
+
+const userInfo = inject<ComputedRef<User>>('userInfo')
+
+const isWatcher = ref(false)
+
+const isCumputedWatcher = computed(() =>
+  props.issue.watchers.map(w => w.pk).includes(userInfo?.value?.pk as number),
+)
+
+const watchControl = () => {
+  const payload = isWatcher.value
+    ? { del_watcher: userInfo?.value?.pk }
+    : { watchers: [userInfo?.value?.pk] }
+  emit('watch-control', payload, props.issue.pk)
+  isWatcher.value = !isWatcher.value
+}
+
+onBeforeMount(() => (isWatcher.value = isCumputedWatcher.value))
 </script>
 
 <template>
@@ -64,11 +87,11 @@ defineProps({ issue: { type: Object as PropType<Issue | SimpleIssue>, required: 
           업무 관람자
           <!--                      </router-link>-->
         </CDropdownItem>
-        <CDropdownItem class="form-text" disabled>
-          <!--                      <router-link to="">-->
-          <v-icon icon="mdi-star" color="secondary" size="sm" />
-          지켜보기
-          <!--                      </router-link>-->
+        <CDropdownItem class="form-text" @click="watchControl">
+          <router-link to="">
+            <v-icon icon="mdi-star" :color="isWatcher ? 'amber' : 'secondary'" size="sm" />
+            {{ isWatcher ? '관심끄기' : '지켜보기' }}
+          </router-link>
         </CDropdownItem>
         <CDropdownItem
           class="form-text"

@@ -34,6 +34,15 @@ const filterSubmit = (payload: IssueFilter) => emit('filter-submit', payload)
 const workStore = useWork()
 const issuePages = (pageNum: number) => workStore.issuePages(pageNum)
 const pageSelect = (page: number) => emit('page-select', page)
+
+// 지켜보기 / 관심끄기
+const watchControl = (payload: any, issuePk: number) => {
+  const form = new FormData()
+  if (payload.watchers)
+    payload.watchers.forEach(val => form.append('watchers', JSON.stringify(val)))
+  else if (payload.del_watcher) form.append('del_watcher', JSON.stringify(payload.del_watcher))
+  workStore.patchIssue(issuePk, form)
+}
 </script>
 
 <template>
@@ -197,7 +206,7 @@ const pageSelect = (page: number) => emit('page-select', page)
           </CTableDataCell>
           <CTableDataCell class="text-center">{{ timeFormat(issue.updated) }}</CTableDataCell>
           <CTableDataCell class="p-0">
-            <IssueDropDown :issue="issue" />
+            <IssueDropDown :issue="issue" @watch-control="watchControl" />
           </CTableDataCell>
         </CTableRow>
       </CTableBody>
