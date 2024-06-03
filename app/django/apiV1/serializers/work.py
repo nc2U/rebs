@@ -582,7 +582,8 @@ class IssueSerializer(serializers.ModelSerializer):
         tracker = Tracker.objects.get(pk=self.initial_data.get('tracker'))
         status = IssueStatus.objects.get(pk=self.initial_data.get('status'))
         priority = CodeIssuePriority.objects.get(pk=self.initial_data.get('priority'))
-        fixed_version = self.initial_data.get('fixed_version', None)
+        fixed_version = self.initial_data.get('fixed_version')
+        fixed_version = fixed_version if fixed_version else None
         assigned_to = self.initial_data.get('assigned_to', None)
         assigned_to = User.objects.get(pk=assigned_to) if assigned_to else None
 
