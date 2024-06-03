@@ -190,7 +190,8 @@ onBeforeMount(() => {
   if (route.name === '업무')
     searchOptions[0].options.splice(1, 0, { value: 'project', label: '프로젝트' })
 
-  if (!!route.query.status) cond.value.status = route.query.status as 'open' | 'closed'
+  if (!!route.query.status)
+    cond.value.status = route.query.status as 'open' | 'is' | 'exclude' | 'closed' | 'any'
   if (!!route.query.tracker) {
     searchCond.value.push('tracker')
     form.value.tracker = Number(route.query.tracker)

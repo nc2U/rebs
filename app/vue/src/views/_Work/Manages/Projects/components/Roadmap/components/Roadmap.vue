@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { computed, type PropType } from 'vue'
 import type { Version } from '@/store/types/work'
-import IssueDropDown from '@/views/_Work/Manages/Issues/components/IssueDropDown.vue'
 
 const props = defineProps({ version: { type: Object as PropType<Version>, required: true } })
 
@@ -75,13 +74,19 @@ const done_ratio = computed(() => {
       <CRow class="mb-4">
         <CCol class="form-text">
           <span>
-            <router-link to="">업무 {{ version?.issues?.length }} 건</router-link>
+            <router-link :to="{ name: '(업무)', query: { status: 'any' } }">
+              업무 {{ version?.issues?.length }} 건
+            </router-link>
           </span>
           <span>
-            ( <router-link to="">{{ closedStr }}</router-link> -
+            (<router-link :to="{ name: '(업무)', query: { status: 'closed' } }">
+              {{ closedStr }}
+            </router-link>
+            -
           </span>
           <span>
-            <router-link to="">{{ progressStr }}</router-link
+            <router-link :to="{ name: '(업무)', query: { status: 'open' } }">
+              {{ progressStr }} </router-link
             >)
           </span>
         </CCol>

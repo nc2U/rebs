@@ -115,13 +115,19 @@ onBeforeMount(() => {
     <CRow class="mb-4">
       <CCol class="form-text">
         <span>
-          <router-link to="">업무 {{ version?.issues?.length }} 건</router-link>
+          <router-link :to="{ name: '(업무)', query: { status: 'any' } }">
+            업무 {{ version?.issues?.length }} 건
+          </router-link>
         </span>
         <span>
-          ( <router-link to="">{{ closedStr }}</router-link> -
+          (<router-link :to="{ name: '(업무)', query: { status: 'closed' } }">
+            {{ closedStr }}
+          </router-link>
+          -
         </span>
         <span>
-          <router-link to="">{{ progressStr }}</router-link
+          <router-link :to="{ name: '(업무)', query: { status: 'open' } }">
+            {{ progressStr }} </router-link
           >)
         </span>
       </CCol>
