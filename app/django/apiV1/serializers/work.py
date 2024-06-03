@@ -306,13 +306,14 @@ class ModuleSerializer(serializers.ModelSerializer):
 class IssueInVersionSerializer(serializers.ModelSerializer):
     project = SimpleIssueProjectSerializer(read_only=True)
     tracker = TrackerInIssueProjectSerializer(read_only=True)
+    watchers = SimpleUserSerializer(many=True, read_only=True)
     spent_times = serializers.SerializerMethodField()
 
     class Meta:
         model = Issue
         fields = ('pk', 'project', 'subject', 'status', 'tracker', 'priority',
-                  'fixed_version', 'category', 'assigned_to', 'estimated_hours',
-                  'spent_times', 'done_ratio', 'closed')
+                  'fixed_version', 'category', 'assigned_to', 'watchers',
+                  'estimated_hours', 'spent_times', 'done_ratio', 'closed')
 
     @staticmethod
     def get_spent_times(obj):
