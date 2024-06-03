@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { ref, computed, type ComputedRef, inject, type PropType, onBeforeMount } from 'vue'
-import type { Issue } from '@/store/types/work'
+import type { Issue, SimpleIssue } from '@/store/types/work'
 import type { User } from '@/store/types/accounts'
 
 const props = defineProps({
-  issue: { type: Object as PropType<Issue>, required: true },
+  issue: { type: Object as PropType<Issue | SimpleIssue>, required: true },
 })
 
 const emit = defineEmits(['watch-control'])

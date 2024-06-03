@@ -76,6 +76,7 @@ const issueProjects = computed(() => workStore.issueProjects)
 const allProjects = computed(() => workStore.AllIssueProjects)
 const getRoles = computed(() => workStore.getRoles)
 const getTrackers = computed(() => workStore.getTrackers)
+const getActivities = computed(() => workStore.getActivities)
 
 const modules = computed(() => issueProject.value?.module)
 
@@ -155,6 +156,7 @@ onBeforeMount(async () => {
   await workStore.fetchAllIssueProjectList()
   await workStore.fetchRoleList()
   await workStore.fetchTrackerList()
+  await workStore.fetchActivityList()
   if (route.params.projId) {
     activityFilter.value.project = route.params.projId as string
     await workStore.fetchIssueProject(route.params.projId as string)
@@ -186,6 +188,7 @@ onBeforeMount(async () => {
         :all-projects="allProjects"
         :all-roles="getRoles"
         :all-trackers="getTrackers"
+        :get-activities="getActivities"
         @aside-visible="asideVisible"
         @on-submit="onSubmit"
       />

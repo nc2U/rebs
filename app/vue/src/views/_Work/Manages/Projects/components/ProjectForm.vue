@@ -22,6 +22,7 @@ const props = defineProps({
   allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
   allRoles: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
   allTrackers: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
+  getActivities: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
 })
 
 const emit = defineEmits(['aside-visible', 'on-submit'])
@@ -41,6 +42,7 @@ const form = reactive({
   is_inherit_members: false,
   allowed_roles: [4, 5, 6],
   trackers: [4, 5, 6],
+  activities: [1, 2],
 })
 
 const tempSpace = ref('')
@@ -256,6 +258,13 @@ onBeforeMount(() => {
           <CFormLabel class="col-form-label text-right col-2">허용 유형</CFormLabel>
           <CCol class="pt-2">
             <MultiSelect v-model="form.trackers" id="trackers" :options="allTrackers" />
+          </CCol>
+        </CRow>
+
+        <CRow class="mb-3">
+          <CFormLabel class="col-form-label text-right col-2">시간 추적</CFormLabel>
+          <CCol class="pt-2">
+            <MultiSelect v-model="form.activities" id="trackers" :options="getActivities" />
           </CCol>
         </CRow>
       </CCardBody>

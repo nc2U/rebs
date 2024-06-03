@@ -5,7 +5,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import IssueDropDown from '@/views/_Work/Manages/Issues/components/IssueDropDown.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import VersionSummay from '@/views/_Work/Manages/Projects/components/Roadmap/components/VersionSummay.vue'
+import VersionSummary from '@/views/_Work/Manages/Projects/components/Roadmap/components/VersionSummary.vue'
 import VersionTimes from '@/views/_Work/Manages/Projects/components/Roadmap/components/VersionTimes.vue'
 
 const props = defineProps({ version: { type: Object as PropType<Version>, required: true } })
@@ -172,7 +172,7 @@ onBeforeMount(() => {
       <CCol md="4" class="mb-4">
         <VersionTimes :issues="version.issues" :version-pk="version.pk as number" />
 
-        <VersionSummay />
+        <VersionSummary />
       </CCol>
     </CRow>
   </template>
