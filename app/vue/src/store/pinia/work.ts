@@ -301,6 +301,9 @@ export const useWork = defineStore('work', () => {
 
   // code-activity states & getters
   const activityList = ref<CodeValue[]>([])
+  const getActivities = computed(() =>
+    activityList.value.map(a => ({ value: a.pk, label: a.name })),
+  )
 
   const fetchActivityList = () =>
     api
@@ -714,6 +717,7 @@ export const useWork = defineStore('work', () => {
     fetchStatusList,
 
     activityList,
+    getActivities,
     fetchActivityList,
 
     priorityList,

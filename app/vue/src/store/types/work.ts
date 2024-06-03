@@ -202,6 +202,7 @@ export interface SimpleIssue {
   fixed_version: number | null
   category: number | null
   assigned_to: number | null
+  watchers: SimpleUser[]
   estimated_hours: number | null
   spent_times: number
   done_ratio: number
