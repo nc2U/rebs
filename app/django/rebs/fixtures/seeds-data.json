@@ -5026,42 +5026,28 @@
     "model": "work.tracker",
     "pk": 4,
     "fields": {
-      "name": "기획",
-      "description": "부지선정, 설계, 사업계획, 분양(마케팅) 업무",
+      "name": "기획 및 개발",
+      "description": "부지선정, 사업계획, 분양(마케팅), 설계, 인허가, 금융, 건설관리",
       "is_in_roadmap": true,
       "default_status": 1,
       "order": 1,
-      "user": 1,
-      "created": "2024-02-29T13:19:32.152Z",
-      "updated": "2024-02-29T13:19:32.152Z"
+      "created": "2024-06-01T09:47:05.276Z",
+      "updated": "2024-06-01T09:47:05.276Z",
+      "user": 1
     }
   },
   {
     "model": "work.tracker",
     "pk": 5,
     "fields": {
-      "name": "개발",
-      "description": "부지매입, 인허가, 금융, 건축관리 및 준공 업무",
+      "name": "운영 및 관리",
+      "description": "데이터 관리, 고객관리 및 민원처리, 자금관리, 통상 대관 업무",
       "is_in_roadmap": true,
       "default_status": 1,
       "order": 1,
-      "user": 1,
-      "created": "2024-02-29T13:19:32.152Z",
-      "updated": "2024-02-29T13:19:32.152Z"
-    }
-  },
-  {
-    "model": "work.tracker",
-    "pk": 6,
-    "fields": {
-      "name": "운영",
-      "description": "데이터, 고객관리, 통상 대관업무, 자금관리 업무",
-      "is_in_roadmap": true,
-      "default_status": 1,
-      "order": 1,
-      "user": 1,
-      "created": "2024-02-29T13:19:32.152Z",
-      "updated": "2024-02-29T13:19:32.152Z"
+      "created": "2024-06-01T09:47:05.279Z",
+      "updated": "2024-06-01T09:47:05.279Z",
+      "user": 1
     }
   },
   {
@@ -5166,6 +5152,110 @@
       "user": 1,
       "created": "2024-02-29T13:28:43.642Z",
       "updated": "2024-02-29T13:28:43.642Z"
+    }
+  },
+  {
+    "model": "work.codeactivity",
+    "pk": 3,
+    "fields": {
+      "name": "데이터입력",
+      "active": true,
+      "default": false,
+      "order": 1,
+      "created": "2024-06-03T15:18:47.674Z",
+      "updated": "2024-06-03T15:18:47.674Z",
+      "user": 1
+    }
+  },
+  {
+    "model": "work.codeactivity",
+    "pk": 4,
+    "fields": {
+      "name": "문서작성/검토",
+      "active": true,
+      "default": false,
+      "order": 1,
+      "created": "2024-06-03T15:18:47.677Z",
+      "updated": "2024-06-03T15:18:47.677Z",
+      "user": 1
+    }
+  },
+  {
+    "model": "work.codeactivity",
+    "pk": 5,
+    "fields": {
+      "name": "민원처리",
+      "active": true,
+      "default": false,
+      "order": 1,
+      "created": "2024-06-03T15:18:47.680Z",
+      "updated": "2024-06-03T15:18:47.680Z",
+      "user": 1
+    }
+  },
+  {
+    "model": "work.codeactivity",
+    "pk": 6,
+    "fields": {
+      "name": "고객관리",
+      "active": true,
+      "default": false,
+      "order": 1,
+      "created": "2024-06-03T15:18:47.682Z",
+      "updated": "2024-06-03T15:18:47.682Z",
+      "user": 1
+    }
+  },
+  {
+    "model": "work.codeactivity",
+    "pk": 7,
+    "fields": {
+      "name": "거래처협력",
+      "active": true,
+      "default": false,
+      "order": 1,
+      "created": "2024-06-03T15:18:47.684Z",
+      "updated": "2024-06-03T15:18:47.684Z",
+      "user": 1
+    }
+  },
+  {
+    "model": "work.codeactivity",
+    "pk": 8,
+    "fields": {
+      "name": "대관업무",
+      "active": true,
+      "default": false,
+      "order": 1,
+      "created": "2024-06-03T15:18:47.687Z",
+      "updated": "2024-06-03T15:18:47.687Z",
+      "user": 1
+    }
+  },
+  {
+    "model": "work.codeactivity",
+    "pk": 9,
+    "fields": {
+      "name": "회의",
+      "active": true,
+      "default": false,
+      "order": 1,
+      "created": "2024-06-03T15:18:47.689Z",
+      "updated": "2024-06-03T15:18:47.689Z",
+      "user": 1
+    }
+  },
+  {
+    "model": "work.codeactivity",
+    "pk": 10,
+    "fields": {
+      "name": "출장",
+      "active": true,
+      "default": false,
+      "order": 1,
+      "created": "2024-06-03T15:18:47.690Z",
+      "updated": "2024-06-03T15:18:47.690Z",
+      "user": 1
     }
   },
   {
