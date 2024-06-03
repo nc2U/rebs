@@ -482,19 +482,19 @@ class RepositorySerializer(serializers.ModelSerializer):
 class CodeActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = CodeActivity
-        fields = ('pk', 'name', 'active', 'default', 'order', 'user', 'created', 'updated')
+        fields = ('pk', 'name', 'active', 'default', 'order')
 
 
 class CodeIssuePrioritySerializer(serializers.ModelSerializer):
     class Meta:
         model = CodeIssuePriority
-        fields = ('pk', 'name', 'active', 'default', 'order', 'user', 'created', 'updated')
+        fields = ('pk', 'name', 'active', 'default', 'order')
 
 
 class CodeDocsCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = CodeDocsCategory
-        fields = ('pk', 'name', 'active', 'default', 'order', 'user', 'created', 'updated')
+        fields = ('pk', 'name', 'active', 'default', 'order')
 
 
 class IssueStatusInIssueSerializer(serializers.ModelSerializer):

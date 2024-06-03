@@ -61,6 +61,7 @@ const memberList = computed(() =>
     : [...new Map(workStore.memberList.map(m => [m.user.pk, m])).values()]
   )?.map(m => m.user),
 )
+const activityList = computed(() => workStore.activityList)
 
 const onSubmit = (payload: any) => {
   payload.company = company?.value.pk
@@ -94,6 +95,7 @@ onBeforeMount(async () => {
   await workStore.fetchIssueProjectList({})
   await workStore.fetchRoleList()
   await workStore.fetchTrackerList()
+  await workStore.fetchActivityList()
 
   if (route.params.projId) await workStore.fetchIssueProject(route.params.projId as string)
 })
@@ -153,7 +155,11 @@ onBeforeMount(async () => {
 
     <Forum v-if="menu === '게시판'" />
 
-    <TimeTracking v-if="menu === '시간추적'" />
+    <TimeTracking
+      v-if="menu === '시간추적'"
+      :activities="issueProject?.activities"
+      :activity-list="activityList"
+    />
   </template>
 
   <template v-if="route.name === '(설정) - 범주추가' || route.name === '(설정) - 범주수정'">

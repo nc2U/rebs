@@ -1,4 +1,12 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import type { PropType } from 'vue'
+import type { CodeValue } from '@/store/types/work'
+
+defineProps({
+  activities: { type: Array as PropType<CodeValue[]>, default: () => [] },
+  activityList: { type: Array as PropType<CodeValue[]>, default: () => [] },
+})
+</script>
 
 <template>
   <CRow class="py-2">
@@ -14,24 +22,30 @@
       </span>
     </CCol>
   </CRow>
-
+  {{ activities }}
   <CRow>
     <CCol>
       <v-divider class="my-0" />
       <CTable hover small striped responsive>
+        <colgroup>
+          <col style="width: 30%" />
+          <col style="width: 30%" />
+          <col style="width: 30%" />
+        </colgroup>
         <CTableHead>
           <CTableRow class="text-center">
-            <CTableHeaderCell scope="col"></CTableHeaderCell>
             <CTableHeaderCell scope="col">이름</CTableHeaderCell>
             <CTableHeaderCell scope="col">시스템 작업</CTableHeaderCell>
-            <CTableHeaderCell scope="col">사용중</CTableHeaderCell>
+            <CTableHeaderCell scope="col">
+              <v-icon icon="mdi-check" size="sm" color="success" />
+              사용중
+            </CTableHeaderCell>
           </CTableRow>
         </CTableHead>
 
         <CTableBody>
-          <CTableRow v-for="i in 2" :key="i" class="text-center">
-            <CTableHeaderCell>디자인</CTableHeaderCell>
-            <CTableDataCell></CTableDataCell>
+          <CTableRow v-for="act in activityList" :key="act.pk" class="text-center">
+            <CTableDataCell class="text-left pl-2">{{ act.name }}</CTableDataCell>
             <CTableDataCell>
               <v-icon icon="mdi-check" size="sm" color="success" />
             </CTableDataCell>
