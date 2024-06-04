@@ -2,7 +2,7 @@ from django.contrib import admin
 from import_export.admin import ImportExportMixin
 
 from .models import (SalesPriceByGT, InstallmentPaymentOrder, DownPayment, OverDueRule,
-                     SpecialPaymentOrder, SpecialDownPayment, SpecialOverDueRule)
+                     SpecialPaymentOrder, SpecialOverDueRule)
 
 
 @admin.register(SalesPriceByGT)
@@ -51,14 +51,6 @@ class SpecialPaymentOrderAdmin(ImportExportMixin, admin.ModelAdmin):
     list_editable = ('alias_name', 'is_pm_cost', 'days_since_prev', 'pay_due_date', 'extra_due_date')
     list_display_links = ('project', 'pay_name',)
     list_filter = ('project', 'pay_sort')
-
-
-@admin.register(SpecialDownPayment)
-class SpecialDownPaymentAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'project', 'order_group', 'unit_type', 'payment_amount')
-    list_display_links = ('project', 'order_group', 'unit_type')
-    list_editable = ('payment_amount',)
-    list_filter = ('project', 'order_group', 'unit_type')
 
 
 @admin.register(SpecialOverDueRule)
