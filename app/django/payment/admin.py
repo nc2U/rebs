@@ -7,9 +7,8 @@ from .models import (SalesPriceByGT, InstallmentPaymentOrder, DownPayment, OverD
 
 @admin.register(SalesPriceByGT)
 class SalesPriceByGTAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = (
-        'id', 'project', 'order_group', 'unit_type', 'unit_floor_type', 'price_build', 'price_land', 'price_tax',
-        'price')
+    list_display = ('id', 'project', 'order_group', 'unit_type', 'unit_floor_type',
+                    'price_build', 'price_land', 'price_tax', 'price')
     list_display_links = ('project', 'unit_type', 'unit_floor_type')
     list_editable = ('price_build', 'price_land', 'price_tax', 'price')
     list_filter = ('project', 'order_group', 'unit_type')
@@ -17,9 +16,9 @@ class SalesPriceByGTAdmin(ImportExportMixin, admin.ModelAdmin):
 
 @admin.register(InstallmentPaymentOrder)
 class InstallmentPaymentOrderAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = (
-        'id', 'project', 'pay_name', 'pay_sort', 'pay_code', 'pay_time', 'pay_ratio',
-        'alias_name', 'is_pm_cost', 'days_since_prev', 'pay_due_date', 'extra_due_date')
+    list_display = ('id', 'project', 'pay_name', 'pay_sort', 'pay_code', 'pay_time',
+                    'pay_ratio', 'alias_name', 'is_pm_cost', 'days_since_prev',
+                    'pay_due_date', 'extra_due_date')
     search_fields = ('pay_name', 'alias_name',)
     list_editable = ('alias_name', 'is_pm_cost', 'days_since_prev', 'pay_due_date', 'extra_due_date')
     list_display_links = ('project', 'pay_name',)
