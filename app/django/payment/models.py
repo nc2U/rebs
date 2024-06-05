@@ -90,12 +90,6 @@ class SpecialPaymentOrder(models.Model):  # 가산금 / 할인액 계산을 위�
     pay_time = models.PositiveSmallIntegerField('납부순서',
                                                 help_text='''동일 납부회차에 2가지 항목을 별도로 납부하여야 하는 경우(ex: 분담금 + 업무대행료)
                                                 하나의 납입회차 코드(ex: 1)에 2개의 납부순서(ex: 1, 2)를 등록한다.''')
-    is_pm_cost = models.BooleanField('PM용역비 여부', default=False)
-    pay_amount = models.PositiveIntegerField('회당 납부금액', null=True, blank=True,
-                                             help_text='이 항목에 값이 있으면 pay_ratio 컬럼 보다 우선 적용')
-    pay_ratio = models.DecimalField('회당 납부비율(%)', max_digits=7, decimal_places=4, null=True, blank=True,
-                                    help_text='''분양가 대비 납부비율, pay_amount 항목에 값이 있으면 해당
-                                    컬럼 데이터 우선, 잔금 항목인 경우 잔금 전 납부 총액과 분양가와 비교 차액 데이터 우선''')
     pay_name = models.CharField('납부회차 명', max_length=20)
     alias_name = models.CharField('회차 별칭', max_length=20, blank=True)
     days_since_prev = models.PositiveSmallIntegerField('전회 기준 경과일수', null=True, blank=True,
