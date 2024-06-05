@@ -107,6 +107,22 @@ class SpecialPaymentOrder(models.Model):  # 가산금 / 할인액 계산을 위�
         verbose_name_plural = '05. 특별 납입회차'
 
 
+class SpecialDownPay(models.Model):
+    project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
+    order_group = models.ForeignKey('contract.OrderGroup', on_delete=models.CASCADE, verbose_name='차수정보')
+    unit_type = models.ForeignKey('items.UnitType', on_delete=models.CASCADE, verbose_name='타입정보')
+    payment_amount = models.PositiveIntegerField('회차별 계약금액',
+                                                 help_text='차수 및 타입별 고정 납부 계약금액, 납부 회수는 납부 회차 모델에서 별도 등록/설정')
+
+    def __str__(self):
+        return f'{self.payment_amount}'
+
+    class Meta:
+        ordering = ('id',)
+        verbose_name = '06. 타입별 계약금 관리'
+        verbose_name_plural = '06. 타입별 계약금 관리'
+
+
 class SpecialOverDueRule(models.Model):  # 가산금 / 할인액 계산을 위한 별도 테이블
     project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
     term_start = models.IntegerField('최소연체일', null=True, blank=True, help_text='비어 있을 경우 최대 음수')
@@ -120,5 +136,5 @@ class SpecialOverDueRule(models.Model):  # 가산금 / 할인액 계산을 위�
 
     class Meta:
         ordering = ('-id',)
-        verbose_name = '06. 특별 선납할인/연체이율'
-        verbose_name_plural = '06. 특별 선납할인/연체이율'
+        verbose_name = '07. 특별 선납할인/연체이율'
+        verbose_name_plural = '07. 특별 선납할인/연체이율'
