@@ -119,8 +119,8 @@ class SpecialDownPay(models.Model):
 
     class Meta:
         ordering = ('id',)
-        verbose_name = '06. 타입별 계약금 관리'
-        verbose_name_plural = '06. 타입별 계약금 관리'
+        verbose_name = '06. 특별 타입별 계약금'
+        verbose_name_plural = '06. 특별 타입별 계약금'
 
 
 class SpecialOverDueRule(models.Model):  # 가산금 / 할인액 계산을 위한 별도 테이블
