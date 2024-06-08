@@ -111,7 +111,7 @@ class SpecialDownPay(models.Model):
     project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
     order_group = models.ForeignKey('contract.OrderGroup', on_delete=models.CASCADE, verbose_name='차수정보')
     unit_type = models.ForeignKey('items.UnitType', on_delete=models.CASCADE, verbose_name='타입정보')
-    pay_orders = models.ManyToManyField(SpecialPaymentOrder, related_name='pay_orders', verbose_name='적용 납부회차')
+    pay_orders = models.ManyToManyField(SpecialPaymentOrder, related_name='down_pays', verbose_name='적용 납부회차')
     payment_amount = models.PositiveIntegerField('회차별 계약금액',
                                                  help_text='차수 및 타입별 고정 납부 계약금액, 납부 회수는 납부 회차 모델에서 별도 등록/설정')
 
@@ -120,8 +120,8 @@ class SpecialDownPay(models.Model):
 
     class Meta:
         ordering = ('id',)
-        verbose_name = '06. 특별 타입별 계약금'
-        verbose_name_plural = '06. 특별 타입별 계약금'
+        verbose_name = '06. 특별 회차별 납입금'
+        verbose_name_plural = '06. 특별 회차별 납입금'
 
 
 class SpecialOverDueRule(models.Model):  # 가산금 / 할인액 계산을 위한 별도 테이블
