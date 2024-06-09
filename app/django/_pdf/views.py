@@ -30,7 +30,7 @@ def get_paid(contract, simple_orders, is_past=False):
     :: ■ 기 납부금액 구하기
     :param contract: 계약정보
     :param simple_orders: 회차정보
-    :param past: 변경 약정에 의한 가산금 산출 여부
+    :param is_past: 변경 약정에 의한 가산금 산출 여부
     :return list(paid_list: 납부 건 리스트), int(paid_sum_total: 납부 총액):
     """
     paid_list = ProjectCashBook.objects.filter(
