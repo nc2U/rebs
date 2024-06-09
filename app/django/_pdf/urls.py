@@ -7,4 +7,5 @@ urlpatterns = [
     # pdf url
     path('bill/', PdfExportBill.as_view(), name='bill'),
     path('payments/', PdfExportPayments.as_view(), name='payments'),
+    path('calculation/', PdfExportCalculation.as_view(), name='calculation'),
 ]

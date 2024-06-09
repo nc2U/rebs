@@ -632,3 +632,64 @@ class PdfExportPayments(View):
         for order in due_orders:
             total_amounts += amount[order.pay_sort]
         return total_amounts
+
+
+class PdfExportCalculation(View):
+
+    def get(self, request):
+        context = dict()
+
+        project = request.GET.get('project')  # 프로젝트 ID
+        # 계약 건 객체
+        cont_id = request.GET.get('contract')
+        context['contract'] = contract = self.get_contract(cont_id)
+        context['pdfSelect'] = request.GET.get('sel')
+
+        inspay_orders = InstallmentPaymentOrder.objects.filter(project=project)  # 전체 납부회차 컬렉션
+
+        try:
+            unit = contract.keyunit.houseunit
+        except ObjectDoesNotExist:
+            unit = None
+
+        # 동호수
+        context['unit'] = unit
+
+        # 1. 이 계약 건 분양가격 (계약금, 중도금, 잔금 약정액)
+        cont_price = contract.contractprice  # 공급가격
+        price = cont_price.price
+        price_build = cont_price.price_build
+        price_land = cont_price.price_land
+        price_tax = cont_price.price_tax
+        context['price'] = price if unit else '동호 지정 후 고지'  # 이 건 분양가격
+        context['price_build'] = price_build if unit else '-'  # 이 건 건물가
+        context['price_land'] = price_land if unit else '-'  # 이 건 대지가
+        context['price_tax'] = price_tax if unit else '-'  # 이 건 부가세
+
+        down = cont_price.down_pay  # 계약금
+        middle = cont_price.middle_pay  # 중도금
+        remain = cont_price.remain_pay  # 잔금
+        amount = {'1': down, '2': middle, '3': remain}
+
+        # 2. 요약 테이블 데이터
+        context['due_amount'] = self.get_due_amount(inspay_orders, contract, amount)  # 약정금 누계
+        context['now_order'] = max([(o.pay_code, o.alias_name) for o in get_due_orders(contract, inspay_orders)])
+        # 2. 간단 차수 정보
+        context['simple_orders'] = simple_orders = self.get_simple_orders(inspay_orders, contract, amount)
+
+        # 3. 납부목록, 완납금액 구하기 ------------------------------------------
+        paid_dicts, paid_sum_total = self.get_paid(contract, simple_orders)
+        context['paid_dicts'] = paid_dicts
+        context['paid_sum_total'] = paid_sum_total  # paid_list.aggregate(Sum('income'))['income__sum']  # 기 납부총액
+        # ----------------------------------------------------------------
+
+        html_string = render_to_string('pdf/calculation_by_contractor.html', context)
+
+        html = HTML(string=html_string)
+        html.write_pdf(target='/tmp/mypdf.pdf')
+
+        fs = FileSystemStorage('/tmp')
+        with fs.open('mypdf.pdf') as pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            response['Content-Disposition'] = f'attachment; filename="calculation_contractor.pdf"'
+            return response

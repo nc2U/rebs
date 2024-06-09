@@ -31,6 +31,13 @@ const paymentUrl = computed(() => {
   return `${url}?project=${proj}&contract=${cont}&sel=${pdfPayConf.value}`
 })
 
+const calcUrl = computed(() => {
+  const url = '/pdf/calculation/'
+  const proj = project.value ?? ''
+  const cont = contract.value?.pk ?? ''
+  return `${url}?project=${proj}&contract=${cont}`
+})
+
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
 
@@ -216,7 +223,18 @@ onBeforeRouteLeave(() => {
           style="font-size: 0.8em"
           :disabled="!project"
         >
-          <v-radio label="일반내역" value="1" class="pr-3" />
+          <v-btn
+            color="light"
+            :href="calcUrl"
+            size="small"
+            flat
+            :disabled="!project || !contract"
+            class="mr-4"
+            style="text-decoration: none"
+          >
+            가산(할인) 내역
+          </v-btn>
+          <v-radio label="일반내역" value="1" />
           <v-radio label="담당확인" value="2" />
         </v-radio-group>
       </TableTitleRow>
