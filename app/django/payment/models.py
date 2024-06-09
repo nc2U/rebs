@@ -111,7 +111,6 @@ class SpecialDownPay(models.Model):
     project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
     order_group = models.ForeignKey('contract.OrderGroup', on_delete=models.CASCADE, verbose_name='차수정보')
     unit_type = models.ForeignKey('items.UnitType', on_delete=models.CASCADE, verbose_name='타입정보')
-    pay_orders = models.ManyToManyField(SpecialPaymentOrder, related_name='down_pays', verbose_name='적용 납부회차')
     payment_amount = models.PositiveIntegerField('회차별 계약금액',
                                                  help_text='차수 및 타입별 고정 납부 계약금액, 납부 회수는 납부 회차 모델에서 별도 등록/설정')
     payment_remain = models.IntegerField('나머지 계약금액', default=0)
