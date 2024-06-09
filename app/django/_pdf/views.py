@@ -25,12 +25,11 @@ def get_contract(cont_id):
     return Contract.objects.get(pk=cont_id)
 
 
-def get_paid(contract, simple_orders, is_past=False):
+def get_paid(contract, simple_orders):
     """
     :: ■ 기 납부금액 구하기
     :param contract: 계약정보
     :param simple_orders: 회차정보
-    :param is_past: 변경 약정에 의한 가산금 산출 여부
     :return list(paid_list: 납부 건 리스트), int(paid_sum_total: 납부 총액):
     """
     paid_list = ProjectCashBook.objects.filter(
@@ -38,8 +37,6 @@ def get_paid(contract, simple_orders, is_past=False):
         project_account_d3__in=(1, 4),  # 분(부)담금 or 분양수입금
         contract=contract
     ).order_by('deal_date', 'id')  # 해당 계약 건 납부 데이터
-
-    paid_list = paid_list.filter(installment_order__pay_sort='1') if is_past else paid_list
 
     pay_list = [p.income for p in paid_list]  # 입금액 추출 리스트
     paid_sum_list = list(accumulate(pay_list))  # 입금액 리스트를 시간 순 누계액 리스트로 변경
@@ -671,7 +668,7 @@ class PdfExportCalculation(View):
         context['simple_orders'] = simple_orders = self.get_past_orders(pay_orders, contract, amount)
 
         # 3. 납부목록, 완납금액 구하기 ------------------------------------------
-        paid_dicts, paid_sum_total = get_paid(contract, simple_orders, True)
+        paid_dicts, paid_sum_total = self.get_paid(contract, simple_orders, True)
         context['paid_dicts'] = paid_dicts
         context['paid_sum_total'] = paid_sum_total  # paid_list.aggregate(Sum('income'))['income__sum']  # 기 납부총액
         # ----------------------------------------------------------------
@@ -696,9 +693,9 @@ class PdfExportCalculation(View):
     def get_past_orders(pay_orders, contract, amount):
         """
         :: 약식 납부회차 구하기
-        :param pay_orders:
-        :param contract:
-        :param amount:
+        :param pay_orders: 1 ~ 5차 계약금
+        :param contract: 현재 계약건
+        :param amount: 1 ~ 4차 및 5차(나머지) 계약금
         :return: dict 형식 납부회차 리스트
         """
 
@@ -706,14 +703,58 @@ class PdfExportCalculation(View):
 
         amount_total = 0
         for order in pay_orders:
-            amount_total += amount[order.pay_sort]  # 회차별 계약금 누계
+            amt = amount['1'] if order.pay_code < 5 else amount['2']
+            amount_total += amt  # amount[order.pay_sort]  # 회차별 계약금 누계
+
             ord_info = {
                 'name': order.alias_name if order.alias_name else order.pay_name,  # 회차별 별칭
                 'due_date': get_due_date_per_order(contract, order, pay_orders),  # 회차별 납부기한
-                'amount1': amount['1'],  # 회차별 계약금
-                'amount2': amount['2'],  # 나머지 계약금
+                'amount': amt,  # 회차별 계약금
                 'amount_total': amount_total,  # 회차별 계약금 누계
             }
             simple_orders.append(ord_info)
 
         return simple_orders
+
+    @staticmethod
+    def get_paid(contract, simple_orders, is_past=False):
+        """
+        :: ■ 기 납부금액 구하기
+        :param contract: 계약정보
+        :param simple_orders: 회차정보
+        :param is_past: 변경 약정에 의한 가산금 산출 여부
+        :return list(paid_list: { 납부 건 딕셔너리 }), int(paid_sum_total: 납부 총액):
+        """
+        paid_list = ProjectCashBook.objects.filter(
+            income__isnull=False,
+            project_account_d3__in=(1, 4),  # 분(부)담금 or 분양수입금
+            contract=contract
+        ).order_by('deal_date', 'id')  # 해당 계약 건 납부 데이터
+
+        paid_list = paid_list.filter(installment_order__pay_sort='1') if is_past else paid_list
+
+        pay_list = [p.income for p in paid_list]  # 입금액 추출 리스트
+        paid_sum_list = list(accumulate(pay_list))  # 입금액 리스트를 시간 순 누계액 리스트로 변경
+
+        ord_list = []
+        paid_dict_list = []
+
+        for i, paid in enumerate(paid_list):  # 입금액 리스트를 순회
+            curr_total = paid_sum_list[i]  # 회차별 납부액 누계 추출
+
+            # 약정액누계 보다 납부액 누계가 큰(<=)인 회차 별칭 리스트
+            paid_ords = [o['name'] for o in list(filter(lambda o: o['amount_total'] <= curr_total, simple_orders))]
+
+            paid_ord_name = paid_ords[len(paid_ords) - 1] if len(paid_ords) > 0 else None  # 당회 완납이면 회차 별칭 추출
+            paid_ord_name = paid_ord_name if paid_ord_name not in ord_list else None  # ord_list 요소와 중복이 아니면 완납회차 별칭 추출
+            ord_list.append(paid_ord_name)  # 납부회차 별칭 리스트 추가
+            diff = [curr_total - o['amount_total'] for o in simple_orders if
+                    o['amount_total'] <= curr_total]  # 회차별 납부액누계가 약정액누계 보다 크면 그 차액 리스트 생성
+            diff = diff[len(diff) - 1] if len(diff) else 0  # 당회 과납 차액 추출
+            # {'paid': 회별납부액, 'sum': 회별납부액누계, 'order': '당회 완납 시 별칭', 'diff': 당회 과납차액}
+            paid_dict = {'paid': paid, 'sum': curr_total, 'order': paid_ord_name, 'diff': diff}
+            paid_dict_list.append(paid_dict)
+        paid_sum_total = paid_list.aggregate(Sum('income'))['income__sum']  # 완납 총금액
+        paid_sum_total = paid_sum_total if paid_sum_total else 0
+
+        return paid_dict_list, paid_sum_total
