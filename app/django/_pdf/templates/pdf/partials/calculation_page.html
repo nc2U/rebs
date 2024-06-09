@@ -10,21 +10,11 @@
         </tr>
         <tr>
             <td colspan="2"></td>
-            <td rowspan="2" class="center" style="padding: 0; letter-spacing: 1.2em;"><h1>분양대금납부확인서</h1></td>
-            {% if pdfSelect == '1' %}
-                <td rowspan="2" class="ba center" style="padding: 0;">직인생략</td>
-            {% elif pdfSelect == '2' %}
-                <td class="ba center" style="padding: 0; height: 18px;">납부확인</td>
-            {% endif %}
-
+            <td rowspan="2" class="center" style="padding: 0; letter-spacing: 1.2em;"><h1>선납할인/연체가산금 내역</h1></td>
             <td></td>
         </tr>
         <tr>
             <td colspan="2"></td>
-            {% if pdfSelect == '2' %}
-                <td class="ba" style="padding: 0; height: 35px;">&nbsp;</td>
-            {% endif %}
-
             <td></td>
         </tr>
         <tr>
@@ -98,7 +88,13 @@
                     <tr>
                         <td class="bt br center {% if forloop.last %}bb2{% endif %}">{{ order.name }}</td>
                         <td class="bt br center {% if forloop.last %}bb2{% endif %}">{{ order.due_date|default:""|date:"Y/m/d" }}</td>
-                        <td class="bt br2 right {% if forloop.last %}bb2{% endif %}">{{ order.amount|default:"-"|intcomma }}</td>
+                        <td class="bt br2 right {% if forloop.last %}bb2{% endif %}">
+                        {% if forloop.last %}
+                          {{ order.amount2|default:"-"|intcomma }}
+                        {% else %}
+                          {{ order.amount1|default:"-"|intcomma }}
+                        {% endif %}
+                        </td>
                     </tr>
                 {% endfor %}
             </table>
@@ -135,7 +131,7 @@
             <td colspan="22">&nbsp;</td>
         </tr>
         <tr>
-            <td style="padding-left: 20px; font-size: 11px;" colspan="22">※ 납입내역 요약의 분양금에 추가납부가 포함됩니다.</td>
+            <td style="padding-left: 20px; font-size: 11px;" colspan="22">※ 1차 및 2차 납부의 경우에는 선납할인 또는 연체가산 금액을 적용하지 않습니다.</td>
         </tr>
         {% if not unit %}
             <tr>
