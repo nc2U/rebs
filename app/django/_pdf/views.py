@@ -25,7 +25,7 @@ def get_contract(cont_id):
     return Contract.objects.get(pk=cont_id)
 
 
-def get_paid(contract, simple_orders, past=None):
+def get_paid(contract, simple_orders, is_past=False):
     """
     :: ■ 기 납부금액 구하기
     :param contract: 계약정보
@@ -39,7 +39,7 @@ def get_paid(contract, simple_orders, past=None):
         contract=contract
     ).order_by('deal_date', 'id')  # 해당 계약 건 납부 데이터
 
-    paid_list = paid_list.filter(installment_order__pay_sort='1') if past else paid_list
+    paid_list = paid_list.filter(installment_order__pay_sort='1') if is_past else paid_list
 
     pay_list = [p.income for p in paid_list]  # 입금액 추출 리스트
     paid_sum_list = list(accumulate(pay_list))  # 입금액 리스트를 시간 순 누계액 리스트로 변경
