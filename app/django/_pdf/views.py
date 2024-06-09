@@ -25,11 +25,12 @@ def get_contract(cont_id):
     return Contract.objects.get(pk=cont_id)
 
 
-def get_paid(contract, simple_orders):
+def get_paid(contract, simple_orders, past=None):
     """
     :: ■ 기 납부금액 구하기
     :param contract: 계약정보
     :param simple_orders: 회차정보
+    :param past: 변경 약정에 의한 가산금 산출 여부
     :return list(paid_list: 납부 건 리스트), int(paid_sum_total: 납부 총액):
     """
     paid_list = ProjectCashBook.objects.filter(
@@ -37,6 +38,8 @@ def get_paid(contract, simple_orders):
         project_account_d3__in=(1, 4),  # 분(부)담금 or 분양수입금
         contract=contract
     ).order_by('deal_date', 'id')  # 해당 계약 건 납부 데이터
+
+    paid_list = paid_list.filter(installment_order__pay_sort='1') if past else paid_list
 
     pay_list = [p.income for p in paid_list]  # 입금액 추출 리스트
     paid_sum_list = list(accumulate(pay_list))  # 입금액 리스트를 시간 순 누계액 리스트로 변경
@@ -662,13 +665,13 @@ class PdfExportCalculation(View):
         amount = {'1': down1, '2': down2}
 
         # 2. 요약 테이블 데이터
-        context['due_amount'] = get_due_amount(pay_orders, contract, amount)  # 약정금 누계
+        context['due_amount'] = (down1 * 4) + down2  # 약정금 누계
         context['now_order'] = max([(o.pay_code, o.alias_name) for o in get_due_orders(contract, pay_orders)])
         # 2. 간단 차수 정보
         context['simple_orders'] = simple_orders = self.get_past_orders(pay_orders, contract, amount)
 
         # 3. 납부목록, 완납금액 구하기 ------------------------------------------
-        paid_dicts, paid_sum_total = get_paid(contract, simple_orders)
+        paid_dicts, paid_sum_total = get_paid(contract, simple_orders, True)
         context['paid_dicts'] = paid_dicts
         context['paid_sum_total'] = paid_sum_total  # paid_list.aggregate(Sum('income'))['income__sum']  # 기 납부총액
         # ----------------------------------------------------------------
