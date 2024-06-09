@@ -339,7 +339,7 @@ onBeforeMount(() => {
             <h6>속성 변경</h6>
             <v-divider class="mt-0" />
           </div>
-          <CRow v-show="!issueProject" class="mb-3">
+          <CRow v-show="!issueProject || issue" class="mb-3">
             <CFormLabel for="project" class="col-sm-2 col-form-label text-right required">
               프로젝트
             </CFormLabel>
