@@ -53,9 +53,9 @@ class SpecialPaymentOrderAdmin(ImportExportMixin, admin.ModelAdmin):
 
 @admin.register(SpecialDownPay)
 class SpecialDownPayAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'project', 'order_group', 'unit_type', 'payment_amount')
+    list_display = ('id', 'project', 'order_group', 'unit_type', 'payment_amount', 'payment_remain')
     list_display_links = ('project',)
-    list_editable = ('order_group', 'unit_type', 'payment_amount',)
+    list_editable = ('order_group', 'unit_type', 'payment_amount', 'payment_remain')
     list_filter = ('project', 'order_group', 'unit_type')
 
 
