@@ -120,7 +120,7 @@ const watchControl = (payload: any, issuePk: number) => {
     <CTable striped hover small responsive>
       <colgroup>
         <col style="width: 8%" />
-        <col v-if="!$route.params.projId" style="width: 16%" />
+        <col style="width: 16%" />
         <col style="width: 8%" />
         <col style="width: 8%" />
         <col style="width: 8%" />
@@ -132,7 +132,7 @@ const watchControl = (payload: any, issuePk: number) => {
       <CTableHead>
         <CTableRow class="text-center">
           <CTableHeaderCell scope="col">#</CTableHeaderCell>
-          <CTableHeaderCell v-if="!$route.params.projId" scope="col">프로젝트</CTableHeaderCell>
+          <CTableHeaderCell scope="col">프로젝트</CTableHeaderCell>
           <CTableHeaderCell scope="col">유형</CTableHeaderCell>
           <CTableHeaderCell scope="col">상태</CTableHeaderCell>
           <CTableHeaderCell scope="col">우선순위</CTableHeaderCell>
@@ -161,7 +161,7 @@ const watchControl = (payload: any, issuePk: number) => {
               {{ issue.pk }}
             </router-link>
           </CTableDataCell>
-          <CTableDataCell v-if="!$route.params.projId">
+          <CTableDataCell>
             <router-link :to="{ name: '(개요)', params: { projId: issue.project.slug } }">
               {{ issue.project.name }}
             </router-link>

@@ -69,12 +69,13 @@ const pageSelect = (page: number) => {
   workStore.fetchIssueList(listFilter.value)
 }
 
-// watch(
-//   () => route.params.projId,
-//   async nVal => {
-//     if (nVal) await workStore.fetchIssueList({ status__closed: '0', project: nVal as string })
-//   },
-// )
+watch(
+  () => projId.value,
+  nVal => {
+    if (nVal && nVal.length > 0)
+      workStore.fetchIssueList({ status__closed: '0', project: nVal as string })
+  },
+)
 
 watch(
   () => route.params.issueId,
@@ -87,22 +88,6 @@ watch(
   },
   { deep: true },
 )
-
-// watch(
-//   route,
-//   async nVal => {
-//     if (nVal.params.projId) {
-//       await workStore.fetchIssueList({ status__closed: '0', project: nVal.params.projId as string })
-//     }
-//
-//     if (nVal.params.issueId) {
-//       await workStore.fetchIssue(Number(nVal.params.issueId))
-//       await workStore.fetchIssueLogList({ issue: Number(nVal.params.issueId) })
-//       await workStore.fetchTimeEntryList({ ordering: 'pk', issue: Number(nVal.params.issueId) })
-//     } else workStore.issue = null
-//   },
-//   { deep: true },
-// )
 
 onBeforeMount(async () => {
   emit('aside-visible', true)
