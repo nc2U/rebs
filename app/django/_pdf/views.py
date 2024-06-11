@@ -736,11 +736,13 @@ class PdfExportCalculation(View):
         pay_list = [p.income for p in paid_list]  # 입금액 추출 리스트
         paid_sum_list = list(accumulate(pay_list))  # 입금액 리스트를 시간 순 누계액 리스트로 변경
 
+        zip_pay_list = list(zip(paid_list, paid_sum_list))
+
         ord_list = []
         paid_dict_list = []
 
-        for i, paid in enumerate(paid_list):  # 입금액 리스트를 순회
-            curr_total = paid_sum_list[i]  # 회차별 납부액 누계 추출
+        for paid in zip_pay_list:  # 입금액 리스트를 순회
+            curr_total = paid[1]  # 회차별 납부액 누계 추출
 
             # 약정액누계 보다 납부액 누계가 큰(<=)인 회차 별칭 리스트
             paid_ords = [o['name'] for o in list(filter(lambda o: o['amount_total'] <= curr_total, simple_orders))]
@@ -752,7 +754,7 @@ class PdfExportCalculation(View):
                     o['amount_total'] <= curr_total]  # 회차별 납부액누계가 약정액누계 보다 크면 그 차액 리스트 생성
             diff = diff[len(diff) - 1] if len(diff) else 0  # 당회 과납 차액 추출
             # {'paid': 회별납부액, 'sum': 회별납부액누계, 'order': '당회 완납 시 별칭', 'diff': 당회 과납차액}
-            paid_dict = {'paid': paid, 'sum': curr_total, 'order': paid_ord_name, 'diff': diff}
+            paid_dict = {'paid': paid[0], 'sum': curr_total, 'order': paid_ord_name, 'diff': diff}
             paid_dict_list.append(paid_dict)
         paid_sum_total = paid_list.aggregate(Sum('income'))['income__sum']  # 완납 총금액
         paid_sum_total = paid_sum_total if paid_sum_total else 0
