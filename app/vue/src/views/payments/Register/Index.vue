@@ -2,6 +2,7 @@
 import Cookies from 'js-cookie'
 import { ref, computed, onBeforeMount, onMounted, onUpdated, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/payments/_menu/headermixin'
+import { dateFormat } from '@/utils/baseMixins'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
 import { type Contract } from '@/store/types/contract'
@@ -17,8 +18,10 @@ import PaymentListAll from '@/views/payments/Register/components/PaymentListAll.
 import OrdersBoard from '@/views/payments/Register/components/OrdersBoard.vue'
 import CreateButton from '@/views/payments/Register/components/CreateButton.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
+import DatePicker from '@/components/DatePicker/Index.vue'
 
 const paymentId = ref<string>('')
+const date = ref(dateFormat(new Date()))
 
 const pdfPayConf = ref(Cookies.get('pdfPayConf') ?? '1')
 
@@ -28,14 +31,14 @@ const paymentUrl = computed(() => {
   const url = '/pdf/payments/'
   const proj = project.value ?? ''
   const cont = contract.value?.pk ?? ''
-  return `${url}?project=${proj}&contract=${cont}&sel=${pdfPayConf.value}`
+  return `${url}?project=${proj}&contract=${cont}&sel=${pdfPayConf.value}&date=${date.value}`
 })
 
 const calcUrl = computed(() => {
   const url = '/pdf/calculation/'
   const proj = project.value ?? ''
   const cont = contract.value?.pk ?? ''
-  return `${url}?project=${proj}&contract=${cont}`
+  return `${url}?project=${proj}&contract=${cont}&date=${date.value}`
 })
 
 const projStore = useProject()
@@ -229,13 +232,17 @@ onBeforeRouteLeave(() => {
             size="small"
             flat
             :disabled="!project || !contract"
-            class="mr-4"
+            class="mt-1 mr-2"
             style="text-decoration: none"
           >
             가산(할인) 내역
           </v-btn>
-          <v-radio label="일반내역" value="1" />
-          <v-radio label="담당확인" value="2" />
+          <span v-show="project && contract" class="mr-4">
+            <DatePicker v-model="date" placeholder="발행일자" />
+          </span>
+
+          <v-radio label="일반내역" value="1" class="mt-1" />
+          <v-radio label="담당확인" value="2" class="mt-1" />
         </v-radio-group>
       </TableTitleRow>
       <CRow>
