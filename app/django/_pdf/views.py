@@ -636,6 +636,11 @@ class PdfExportCalculation(View):
         cont_id = request.GET.get('contract')
         context['contract'] = contract = get_contract(cont_id)
 
+        # 발행일자
+        pub_date = request.GET.get('date')
+        pub_date = datetime.strptime(pub_date, '%Y-%m-%d').date() if pub_date else TODAY
+        context['pub_date'] = pub_date
+
         pay_orders = SpecialPaymentOrder.objects.filter(project=project)  # 전체 납부회차 컬렉션
 
         try:
@@ -668,7 +673,7 @@ class PdfExportCalculation(View):
         context['simple_orders'] = simple_orders = self.get_past_orders(pay_orders, contract, amount)
 
         # 3. 납부목록, 완납금액 구하기 ------------------------------------------
-        paid_dicts, paid_sum_total, calc_sums = self.get_paid(contract, simple_orders, True)
+        paid_dicts, paid_sum_total, calc_sums = self.get_paid(contract, simple_orders, pub_date, True)
         context['paid_dicts'] = paid_dicts
         context['paid_sum_total'] = paid_sum_total  # paid_list.aggregate(Sum('income'))['income__sum']  # 기 납부총액
         context['calc_sums'] = calc_sums
@@ -719,11 +724,12 @@ class PdfExportCalculation(View):
         return simple_orders
 
     @staticmethod
-    def get_paid(contract, simple_orders, is_past=False):
+    def get_paid(contract, simple_orders, pub_date, is_past=False):
         """
         :: ■ 기 납부금액 구하기
         :param contract: 계약정보
         :param simple_orders: 회차정보
+        :param pub_date: 발행일자
         :param is_past: 변경 약정에 의한 가산금 산출 여부
         :return list(paid_list: { 납부 건 딕셔너리 }), int(paid_sum_total: 납부 총액):
         """
@@ -804,7 +810,7 @@ class PdfExportCalculation(View):
         penalty = 22
         discount = 11
         delay_days = 11
-        paid_dict = {'paid': {'due_date': TODAY}, 'sum': 0, 'order': '', 'diff': 0,
+        paid_dict = {'paid': {'due_date': pub_date}, 'sum': 0, 'order': '', 'diff': 0,
                      'delay_days': delay_days,
                      'penalty': penalty,
                      'discount': discount}
