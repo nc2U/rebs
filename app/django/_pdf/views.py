@@ -117,6 +117,7 @@ def get_due_date_per_order(contract, order, pay_orders):
     :: 회차 별 납부 일자 구하기
     :param contract: 계약자 객체
     :param order: 납부 회차 객체
+    :param pay_orders: 전체 회차 객체 리스트
     :return str(due_date): 회차 별 약정 납부 일자
     """
 
@@ -777,17 +778,24 @@ class PdfExportCalculation(View):
         ord_list = []
         ord_i_list = []
         paid_dict_list = []
+        first_date = None
 
         curr_total = 0
         penalty_sum = 0
         discount_sum = 0
         for i, paid in enumerate(sorted_combined):  # 입금액 리스트를 순회
+            if i == 0:
+                first_date = paid[0].deal_date
 
-            try:  # 다음 회차 납부일 or 약정일
+            try:  # 이전 / 다음 회차 납부일 or 약정일
+                pre_date = sorted_combined[i - 1][0].deal_date \
+                    if isinstance(sorted_combined[i - 1], tuple) \
+                    else sorted_combined[i - 1].get('due_date', None)
                 next_date = sorted_combined[i + 1][0].deal_date \
                     if isinstance(sorted_combined[i + 1], tuple) \
                     else sorted_combined[i + 1].get('due_date', None)
             except IndexError:  # 마지막은 발행일
+                pre_date = first_date
                 next_date = pub_date
 
             if isinstance(paid, tuple):
@@ -804,18 +812,22 @@ class PdfExportCalculation(View):
                 diff = diff[len(diff) - 1] if len(diff) else 0  # 당회 과납 차액 추출
                 # {'paid': 회별납부액, 'sum': 회별납부액누계, 'order': '당회 완납 시 별칭', 'diff': 당회 과납차액}
 
+                prepay_days = (pre_date - paid[0].deal_date).days \
+                    if ord_i_list and ord_i_list[0] < i and diff else 0
                 delay_days = (next_date - paid[0].deal_date).days \
                     if ord_i_list and ord_i_list[0] < i and diff else 0
 
-                calc = self.get_past_late_fee(diff, delay_days)
+                days = prepay_days if diff < 0 else delay_days
 
-                penalty = calc if ord_i_list and ord_i_list[0] < i and calc > 0 else 0
-                discount = calc if ord_i_list and ord_i_list[0] < i and calc < 0 else 0
+                calc = self.get_past_late_fee(diff, days)
+
+                penalty = calc if ord_i_list and ord_i_list[0] < i and diff > 0 else 0
+                discount = calc if ord_i_list and ord_i_list[0] < i and diff < 0 else 0
 
                 penalty_sum += penalty
                 discount_sum += discount
                 paid_dict = {'paid': paid[0], 'sum': curr_total, 'order': paid_ord_name, 'diff': diff,
-                             'delay_days': delay_days,
+                             'delay_days': days,
                              'penalty': penalty,
                              'discount': discount}
                 paid_dict_list.append(paid_dict)
@@ -824,12 +836,15 @@ class PdfExportCalculation(View):
 
                 diff = paid['amount_total'] - curr_total
 
+                prepay_days = (pre_date - paid['due_date']).days if diff else 0
                 delay_days = (next_date - paid['due_date']).days if diff else 0
 
-                calc = self.get_past_late_fee(diff, delay_days)
+                days = prepay_days if diff < 0 else delay_days
 
-                penalty = calc if calc > 0 else 0
-                discount = calc if calc < 0 else 0
+                calc = self.get_past_late_fee(diff, days)
+
+                penalty = calc if diff > 0 else 0
+                discount = calc if diff < 0 else 0
 
                 penalty_sum += penalty
                 discount_sum += discount
@@ -838,25 +853,12 @@ class PdfExportCalculation(View):
                     'sum': 0,
                     'order': paid['name'],
                     'diff': diff,
-                    'delay_days': delay_days,
+                    'delay_days': days,
                     'penalty': penalty,
                     'discount': discount,
                 }
                 paid_dict_list.append(paid_dict)
-        # else:
-        #     penalty = 22
-        #     discount = 11
-        #     penalty_sum = penalty_sum + penalty
-        #     discount_sum = discount_sum + discount
 
-        # penalty = 22
-        # discount = 11
-        # delay_days = 11
-        # paid_dict = {'paid': {'due_date': pub_date}, 'sum': 0, 'order': '', 'diff': 0,
-        #              'delay_days': delay_days,
-        #              'penalty': penalty,
-        #              'discount': discount}
-        # paid_dict_list.append(paid_dict)
         paid_sum_total = paid_list.aggregate(Sum('income'))['income__sum']  # 완납 총금액
         paid_sum_total = paid_sum_total if paid_sum_total else 0
         calc_sums = (penalty_sum, discount_sum, ord_i_list)
@@ -874,7 +876,9 @@ class PdfExportCalculation(View):
 
         calc_fee = 0
 
-        if days <= 29:
+        if days < 0:
+            rate = 0.04
+        elif days <= 29:
             rate = 0.08
         elif days <= 90:
             calc_fee = late_amt * 0.00635616438356164
