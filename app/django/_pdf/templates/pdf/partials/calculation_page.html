@@ -97,7 +97,7 @@
         <div style="float: left; padding-left: 6px; width: 73%;">
             <table style="font-size: 10px;">
                 <tr>
-                    <td class="title center bl2 bt2 br">납부일자</td>
+                    <td class="title center bl2 bt2 br">납부(약정)일자</td>
                     <td class="title center bt2 br">실입금액</td>
                     <td class="title center bt2 br">완납차수</td>
                     <td class="title center bt2 br">미(초과)납 금액</td>
@@ -106,8 +106,11 @@
                     <td class="title center bt2">할인금</td>
                 </tr>
                 {% for p in paid_dicts %}
-                    <tr>
-                        <td class="center bl2 br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{{ p.paid.deal_date|date:"Y-m-d" }}</td>
+                    <tr style="background: {% if p.paid.due_date %}#eee{% endif %};">
+                        <td class="center bl2 br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">
+                            {% if p.paid.due_date %}{{ p.paid.due_date|date:"Y-m-d" }}{% else %}
+                                {{ p.paid.deal_date|date:"Y-m-d" }}{% endif %}
+                        </td>
                         <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{{ p.paid.income|default:"-"|intcomma }}</td>
                         <td class="center br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{{ p.order|default:"" }}</td>
                         <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{{ p.diff|default:"-"|intcomma }}</td>
@@ -125,7 +128,9 @@
             <td colspan="22">&nbsp;</td>
         </tr>
         <tr>
-            <td style="padding-left: 20px; font-size: 11px;" colspan="22">※ 1차 및 2차 계약금의 경우 선납할인 또는 연체가산 금액을 적용하지 않습니다.</td>
+            <td style="padding-left: 20px; font-size: 11px;" colspan="22">※ 1차 및 2차 계약금의 경우 선납할인 또는 연체가산 금액을 적용하지
+                않습니다.
+            </td>
         </tr>
         {% if not unit %}
             <tr>
