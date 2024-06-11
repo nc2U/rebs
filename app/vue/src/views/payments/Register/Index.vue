@@ -18,7 +18,7 @@ import PaymentListAll from '@/views/payments/Register/components/PaymentListAll.
 import OrdersBoard from '@/views/payments/Register/components/OrdersBoard.vue'
 import CreateButton from '@/views/payments/Register/components/CreateButton.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
-import DatePicker from '@/components/DatePicker/Index.vue'
+import DatePicker from '@/components/DatePicker/index.vue'
 
 const paymentId = ref<string>('')
 const date = ref(dateFormat(new Date()))
