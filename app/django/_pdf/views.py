@@ -147,6 +147,28 @@ def get_due_orders(contract, pay_orders):
     return [o for o in pay_orders if is_due(get_due_date_per_order(contract, o, pay_orders))]
 
 
+def get_late_fee(late_amt, days):
+    """
+    :: 회차별 지연 가산금 계산 함수
+    :param late_amt: 지연금액
+    :param days: 지연일수
+    :return int(floor_fee: 가산금), str(적용 이자율):
+    """
+    rate = 0
+    if days < 30:
+        rate = 0.08
+    elif days <= 90:
+        rate = 0.1
+    elif days <= 180:
+        rate = 0.11
+    else:
+        rate = 0.12
+
+    floor_fee = int(late_amt * days * rate / 365000) * 1000
+
+    return floor_fee, f'{int(rate * 100)}%'
+
+
 class PdfExportBill(View):
     """고지서 리스트"""
 
@@ -723,8 +745,7 @@ class PdfExportCalculation(View):
 
         return simple_orders
 
-    @staticmethod
-    def get_paid(contract, simple_orders, pub_date, is_past=False):
+    def get_paid(self, contract, simple_orders, pub_date, is_past=False):
         """
         :: ■ 기 납부금액 구하기
         :param contract: 계약정보
@@ -761,6 +782,14 @@ class PdfExportCalculation(View):
         penalty_sum = 0
         discount_sum = 0
         for i, paid in enumerate(sorted_combined):  # 입금액 리스트를 순회
+
+            try:  # 다음 회차 납부일 or 약정일
+                next_date = sorted_combined[i + 1][0].deal_date \
+                    if isinstance(sorted_combined[i + 1], tuple) \
+                    else sorted_combined[i + 1].get('due_date', None)
+            except IndexError:  # 마지막은 발행일
+                next_date = pub_date
+
             if isinstance(paid, tuple):
                 curr_total = paid[1]  # 회차별 납부액 누계 추출
 
@@ -774,9 +803,15 @@ class PdfExportCalculation(View):
                         o['amount_total'] <= curr_total]  # 회차별 납부액누계가 약정액누계 보다 크면 그 차액 리스트 생성
                 diff = diff[len(diff) - 1] if len(diff) else 0  # 당회 과납 차액 추출
                 # {'paid': 회별납부액, 'sum': 회별납부액누계, 'order': '당회 완납 시 별칭', 'diff': 당회 과납차액}
-                penalty = 22 if ord_i_list and ord_i_list[0] < i else 0
-                discount = 11 if ord_i_list and ord_i_list[0] < i else 0
-                delay_days = 11 if ord_i_list and ord_i_list[0] < i else 0
+
+                delay_days = (next_date - paid[0].deal_date).days \
+                    if ord_i_list and ord_i_list[0] < i and diff else 0
+
+                calc = self.get_past_late_fee(diff, delay_days)
+
+                penalty = calc if ord_i_list and ord_i_list[0] < i and calc > 0 else 0
+                discount = calc if ord_i_list and ord_i_list[0] < i and calc < 0 else 0
+
                 penalty_sum += penalty
                 discount_sum += discount
                 paid_dict = {'paid': paid[0], 'sum': curr_total, 'order': paid_ord_name, 'diff': diff,
@@ -785,38 +820,76 @@ class PdfExportCalculation(View):
                              'discount': discount}
                 paid_dict_list.append(paid_dict)
             else:  # 약정 데이터 삽입
-                ord_i_list.append(i)
-                penalty = 22
-                discount = 11
-                delay_days = 11
+                ord_i_list.append(i)  # 연체 적용 약정회차 기록 배열
+
+                diff = paid['amount_total'] - curr_total
+
+                delay_days = (next_date - paid['due_date']).days if diff else 0
+
+                calc = self.get_past_late_fee(diff, delay_days)
+
+                penalty = calc if calc > 0 else 0
+                discount = calc if calc < 0 else 0
+
                 penalty_sum += penalty
                 discount_sum += discount
                 paid_dict = {
                     'paid': paid,
                     'sum': 0,
                     'order': paid['name'],
-                    'diff': paid['amount_total'] - curr_total,
+                    'diff': diff,
                     'delay_days': delay_days,
                     'penalty': penalty,
                     'discount': discount,
                 }
                 paid_dict_list.append(paid_dict)
-        else:
-            penalty = 22
-            discount = 11
-            penalty_sum = penalty_sum + penalty
-            discount_sum = discount_sum + discount
+        # else:
+        #     penalty = 22
+        #     discount = 11
+        #     penalty_sum = penalty_sum + penalty
+        #     discount_sum = discount_sum + discount
 
-        penalty = 22
-        discount = 11
-        delay_days = 11
-        paid_dict = {'paid': {'due_date': pub_date}, 'sum': 0, 'order': '', 'diff': 0,
-                     'delay_days': delay_days,
-                     'penalty': penalty,
-                     'discount': discount}
-        paid_dict_list.append(paid_dict)
+        # penalty = 22
+        # discount = 11
+        # delay_days = 11
+        # paid_dict = {'paid': {'due_date': pub_date}, 'sum': 0, 'order': '', 'diff': 0,
+        #              'delay_days': delay_days,
+        #              'penalty': penalty,
+        #              'discount': discount}
+        # paid_dict_list.append(paid_dict)
         paid_sum_total = paid_list.aggregate(Sum('income'))['income__sum']  # 완납 총금액
         paid_sum_total = paid_sum_total if paid_sum_total else 0
         calc_sums = (penalty_sum, discount_sum, ord_i_list)
 
         return paid_dict_list, paid_sum_total, calc_sums
+
+    @staticmethod
+    def get_past_late_fee(late_amt, days):
+        """
+        :: 회차별 지연 가산금 계산 함수
+        :param late_amt: 지연금액
+        :param days: 지연일수
+        :return int(floor_fee: 가산금), str(적용 이자율):
+        """
+
+        calc_fee = 0
+
+        if days <= 29:
+            rate = 0.08
+        elif days <= 90:
+            calc_fee = late_amt * 0.00635616438356164
+            rate = 0.1
+            days = days - 29
+
+        elif days <= 180:
+            calc_fee = late_amt * 0.0230684931506849
+            rate = 0.11
+            days = days - 90
+        else:
+            calc_fee = late_amt * 0.0501917808219178
+            rate = 0.12
+            days = days - 180
+
+        floor_fee = int(calc_fee + (late_amt * days * rate / 365))
+
+        return floor_fee
