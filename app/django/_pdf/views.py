@@ -739,8 +739,8 @@ class PdfExportCalculation(View):
                 'name': order.alias_name if order.alias_name else order.pay_name,  # 회차별 별칭
                 'pay_code': order.pay_code,
                 'due_date': get_due_date_per_order(contract, order, pay_orders),  # 회차별 납부기한
-                'amount': amt,  # 회차별 계약금
-                'amount_total': amount_total,  # 회차별 계약금 누계
+                'amount': amt,  # 회차별 약정금
+                'amount_total': amount_total,  # 회차별 약정금 누계
             }
             simple_orders.append(ord_info)
 
@@ -775,14 +775,16 @@ class PdfExportCalculation(View):
         combined = zip_pay_list + calc_orders
         sorted_combined = sorted(combined, key=get_date)
 
-        ord_list = []
-        ord_i_list = []
-        paid_dict_list = []
-        first_date = None
+        ord_list = []  # 완납 회차 별칭 리스트
+        ord_i_list = []  # 납부 내역 중 약정회차 순차 삽입 index 리스트
+        paid_dict_list = []  # 메인 데이타 딕셔너리 리스트
+        first_date = None  # 첫 번째 납입 일자
 
-        curr_total = 0
-        penalty_sum = 0
-        discount_sum = 0
+        curr_total = 0  # 납부 금액 누계
+        curr_amt_total = 0  # 약정 금액 누계
+        penalty_sum = 0  # 가산금 합계
+        discount_sum = 0  # 할인금 합계
+
         for i, paid in enumerate(sorted_combined):  # 입금액 리스트를 순회
             if i == 0:
                 first_date = paid[0].deal_date
@@ -799,25 +801,39 @@ class PdfExportCalculation(View):
                 next_date = pub_date
 
             if isinstance(paid, tuple):
-                curr_total = paid[1]  # 회차별 납부액 누계 추출
+                curr_total = paid[1]  # 납부 금액 누계 추출 기록
 
                 # 약정액누계 보다 납부액 누계가 큰(<=)인 회차 별칭 리스트
                 paid_ords = [o['name'] for o in list(filter(lambda o: o['amount_total'] <= curr_total, simple_orders))]
 
-                paid_ord_name = paid_ords[len(paid_ords) - 1] if len(paid_ords) > 0 else None  # 당회 완납이면 회차 별칭 추출
-                paid_ord_name = paid_ord_name if paid_ord_name not in ord_list else None  # ord_list 요소와 중복이 아니면 완납회차 별칭 추출
+                # 당회 완납이면 회차 별칭 추출
+                paid_ord_name = paid_ords[len(paid_ords) - 1] if paid_ords else None
+                # ord_list 요소와 중복이 아니면 완납회차 별칭 추출
+                paid_ord_name = paid_ord_name if paid_ord_name not in ord_list else None
                 ord_list.append(paid_ord_name)  # 납부회차 별칭 리스트 추가
-                diff = [curr_total - o['amount_total'] for o in simple_orders if
-                        o['amount_total'] <= curr_total]  # 회차별 납부액누계가 약정액누계 보다 크면 그 차액 리스트 생성
-                diff = diff[len(diff) - 1] if len(diff) else 0  # 당회 과납 차액 추출
-                # {'paid': 회별납부액, 'sum': 회별납부액누계, 'order': '당회 완납 시 별칭', 'diff': 당회 과납차액}
 
-                prepay_days = (pre_date - paid[0].deal_date).days \
-                    if ord_i_list and ord_i_list[0] < i and diff else 0
-                delay_days = (next_date - paid[0].deal_date).days \
-                    if ord_i_list and ord_i_list[0] < i and diff else 0
+                # 회차별 납부액누계가 회차별 약정액누계 보다 크면 그 차액 리스트 생성
+
+                if curr_total > curr_amt_total:  # 현재 완납 상태인지 확인(현재 납부총액이 약정총액보다 크면)
+                    # 납부총액 - 약정총액
+                    diff = [o['amount_total'] - curr_total
+                            for o in simple_orders if o['amount_total'] <= curr_total]
+                    prepay_days = (paid[0].deal_date - next_date).days \
+                        if ord_i_list and ord_i_list[0] < i else 0
+                    delay_days = (paid[0].deal_date - pre_date).days \
+                        if ord_i_list and ord_i_list[0] < i else 0
+                else:
+                    diff = [curr_total - o['amount_total']
+                            for o in simple_orders if o['amount_total'] <= curr_total]
+                    prepay_days = (pre_date - paid[0].deal_date).days \
+                        if ord_i_list and ord_i_list[0] < i and diff else 0
+                    delay_days = (next_date - paid[0].deal_date).days \
+                        if ord_i_list and ord_i_list[0] < i and diff else 0
+
+                diff = diff[len(diff) - 1] if diff else 0  # 당회 과납 차액 추출
 
                 days = prepay_days if diff < 0 else delay_days
+                days = days if diff else 0
 
                 calc = self.get_past_late_fee(diff, days)
 
@@ -833,6 +849,8 @@ class PdfExportCalculation(View):
                 paid_dict_list.append(paid_dict)
             else:  # 약정 데이터 삽입
                 ord_i_list.append(i)  # 연체 적용 약정회차 기록 배열
+
+                curr_amt_total = paid['amount_total']
 
                 diff = paid['amount_total'] - curr_total
 
