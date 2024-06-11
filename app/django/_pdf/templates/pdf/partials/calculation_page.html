@@ -59,18 +59,18 @@
             <td class="title center bt2 br bb">약정금 총액</td>
             <td class="title center bt2 br bb">약정금 누계 ({{ now_order.1 }})</td>
             <td class="title center bt2 br bb">실 납부총액</td>
-            <td class="title center bt2 br bb">미(초과)납 금액</td>
-            <td class="title center bt2 br bb">납부 연체료</td>
-            <td class="title center bt2 bb">납부 할인료</td>
+            <td class="title center bt2 br bb">연체금 계</td>
+            <td class="title center bt2 br bb">할인금 계</td>
+            <td class="title center bt2 bb">정산금(연체-할인)</td>
         </tr>
         <tr>
             <td class="title center br bb2">납부현황</td>
             <td class="right br bb2">{{ price|default:"-"|intcomma }}</td>
             <td class="right br bb2">{{ due_amount|default:"-"|intcomma }}</td>
             <td class="right br bb2">{{ paid_sum_total|default:"-"|intcomma }}</td>
-            <td class="right br bb2">{{ paid_sum_total|sub:due_amount|default:"-"|intcomma }}</td>
-            <td class="right br bb2">-</td>
-            <td class="right bb2">-</td>
+            <td class="right br bb2">{{ calc_sums.0|default:"-"|intcomma }}</td>
+            <td class="right br bb2">{{ calc_sums.1|default:"-"|intcomma }}</td>
+            <td class="right bb2">{{ calc_sums.0|sub:calc_sums.1|default:"-"|intcomma }}</td>
         </tr>
         <tr>
             <td colspan="7">&nbsp;</td>
@@ -114,9 +114,9 @@
                         <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{{ p.paid.income|default:"-"|intcomma }}</td>
                         <td class="center br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{{ p.order|default:"" }}</td>
                         <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{{ p.diff|default:"-"|intcomma }}</td>
-                        <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}"></td>
-                        <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}"></td>
-                        <td class="right bt {% if forloop.last %}bb2{% else %}bb{% endif %}"></td>
+                        <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{{ p.delay_days|default:"" }}</td>
+                        <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{{ p.penalty|default:""|intcomma }}</td>
+                        <td class="right bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{{ p.discount|default:""|intcomma }}</td>
                     </tr>
                 {% endfor %}
             </table>

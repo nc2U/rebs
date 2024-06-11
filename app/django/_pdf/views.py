@@ -668,9 +668,10 @@ class PdfExportCalculation(View):
         context['simple_orders'] = simple_orders = self.get_past_orders(pay_orders, contract, amount)
 
         # 3. 납부목록, 완납금액 구하기 ------------------------------------------
-        paid_dicts, paid_sum_total = self.get_paid(contract, simple_orders, True)
+        paid_dicts, paid_sum_total, calc_sums = self.get_paid(contract, simple_orders, True)
         context['paid_dicts'] = paid_dicts
         context['paid_sum_total'] = paid_sum_total  # paid_list.aggregate(Sum('income'))['income__sum']  # 기 납부총액
+        context['calc_sums'] = calc_sums
         # ----------------------------------------------------------------
 
         html_string = render_to_string('pdf/calculation_by_contractor.html', context)
@@ -749,7 +750,10 @@ class PdfExportCalculation(View):
         ord_list = []
         paid_dict_list = []
 
-        for paid in sorted_combined:  # 입금액 리스트를 순회
+        curr_total = 0
+        penalty_sum = 0
+        discount_sum = 0
+        for i, paid in enumerate(sorted_combined):  # 입금액 리스트를 순회
             if isinstance(paid, tuple):
                 curr_total = paid[1]  # 회차별 납부액 누계 추출
 
@@ -765,10 +769,36 @@ class PdfExportCalculation(View):
                 # {'paid': 회별납부액, 'sum': 회별납부액누계, 'order': '당회 완납 시 별칭', 'diff': 당회 과납차액}
                 paid_dict = {'paid': paid[0], 'sum': curr_total, 'order': paid_ord_name, 'diff': diff}
                 paid_dict_list.append(paid_dict)
-            else:
-                paid_dict_list.append({'paid': paid, 'sum': 0, 'order': paid['name'], 'diff': 0})
-        paid_dict_list.append({'paid': {'due_date': TODAY}, 'sum': 0, 'order': '', 'diff': 0})
+            else:  # 약정 데이터 삽입
+                penalty = 22
+                discount = 11
+                penalty_sum += penalty
+                discount_sum += discount
+                paid_dict = {
+                    'paid': paid,
+                    'sum': 0,
+                    'order': paid['name'],
+                    'diff': paid['amount_total'] - curr_total,
+                    'delay_days': 11,
+                    'penalty': penalty,
+                    'discount': discount,
+                }
+                paid_dict_list.append(paid_dict)
+        else:
+            penalty = 22
+            discount = 11
+            penalty_sum = penalty_sum + penalty
+            discount_sum = discount_sum + discount
+
+        penalty = 22
+        discount = 11
+        paid_dict = {'paid': {'due_date': TODAY}, 'sum': 0, 'order': '', 'diff': 0,
+                     'delay_days': 11,
+                     'penalty': penalty,
+                     'discount': discount}
+        paid_dict_list.append(paid_dict)
         paid_sum_total = paid_list.aggregate(Sum('income'))['income__sum']  # 완납 총금액
         paid_sum_total = paid_sum_total if paid_sum_total else 0
+        calc_sums = (penalty_sum, discount_sum)
 
-        return paid_dict_list, paid_sum_total
+        return paid_dict_list, paid_sum_total, calc_sums
