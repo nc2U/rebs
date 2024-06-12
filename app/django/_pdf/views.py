@@ -850,8 +850,8 @@ class PdfExportCalculation(View):
 
                 calc = self.get_past_late_fee(diff, days)
 
-                penalty = calc if ord_i_list and ord_i_list[0] < i and diff > 0 else 0
-                discount = calc if ord_i_list and ord_i_list[0] < i and diff < 0 else 0
+                penalty = calc if diff > 0 else 0
+                discount = calc if diff < 0 else 0
 
                 penalty_sum += penalty
                 discount_sum += discount
