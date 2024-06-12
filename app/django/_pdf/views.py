@@ -827,7 +827,7 @@ class PdfExportCalculation(View):
                         if paid_pay_code >= 3:
                             is_first_pre = True
                     else:
-                        diff = -paid[0].income if paid_pay_code and paid_pay_code >= 3 else 0
+                        diff = -paid[0].income
                     # --------------------------------
 
                     try:
@@ -844,6 +844,8 @@ class PdfExportCalculation(View):
                 else:
                     # 납부 총액 - 약정 총액(미납금 추출)
                     diff = curr_amt_total - curr_paid_total
+                    if paid_pay_code >= 3:
+                        is_first_pre = False
                     prepay_days = (pre_date - paid[0].deal_date).days \
                         if ord_i_list and ord_i_list[0] < i and diff else 0
                     delay_days = (next_date - paid[0].deal_date).days \
