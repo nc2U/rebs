@@ -807,7 +807,7 @@ class PdfExportCalculation(View):
                 paid_ords = [o for o in list(filter(lambda o: o['amount_total'] <= curr_paid_total, simple_orders))]
 
                 # 당회 완납이면 회차 별칭 추출
-                paid_pay_code = paid_ords[len(paid_ords) - 1]['pay_code'] if paid_ords else None
+                paid_pay_code = paid_ords[len(paid_ords) - 1]['pay_code'] if paid_ords else 0
                 paid_ord_name = paid_ords[len(paid_ords) - 1]['name'] if paid_ords else None
 
                 # ord_list 요소와 중복이 아니면 완납회차 별칭 추출
@@ -819,10 +819,22 @@ class PdfExportCalculation(View):
 
                 if curr_paid_total > curr_amt_total:  # 현재 선납 상태인지 확인(현재 납부총액이 약정총액보다 크면)
                     # 약정 총액 - 납부 총액 (선납금 추출)
+
+                    # Todo start
+                    # --------------------------------
                     diff = curr_amt_total - curr_paid_total if paid_pay_code and paid_pay_code >= 3 else 0
-                    prepay_days = (paid[0].deal_date - next_date).days \
-                        if ord_i_list and ord_i_list[0] < i else 0
+                    code = paid_pay_code + 1
+                    try:
+                        next_due_date = [o['due_date'] for o in simple_orders if o.get('pay_code', 0) == code][0]
+                    except IndexError:
+                        next_due_date = simple_orders[len(simple_orders) - 1]['due_date']
+                    prepay_days = (paid[0].deal_date - next_due_date).days
+
+                    # --------------------------------
+                    # Todo end
+
                     diff = diff if prepay_days < -30 else 0  # 납부기한 30일 이내 납부는 선납 적용하지 않음
+
                     delay_days = (paid[0].deal_date - pre_date).days \
                         if ord_i_list and ord_i_list[0] < i else 0
                 else:
@@ -853,10 +865,8 @@ class PdfExportCalculation(View):
                 curr_amt_total = paid['amount_total']  # 현재 약정금 합계
 
                 diff = paid['amount_total'] - curr_paid_total
-                prepay_days = (pre_date - next_date).days if diff else 0
-                delay_days = (next_date - paid['due_date']).days if diff else 0
-
-                days = prepay_days if diff < 0 else delay_days
+                diff = diff if diff > 0 else 0
+                days = (next_date - paid['due_date']).days if diff else 0
 
                 calc = self.get_past_late_fee(diff, days)
 
