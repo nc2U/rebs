@@ -822,11 +822,12 @@ class PdfExportCalculation(View):
                     diff = curr_amt_total - curr_paid_total if paid_pay_code and paid_pay_code >= 3 else 0
                     prepay_days = (paid[0].deal_date - next_date).days \
                         if ord_i_list and ord_i_list[0] < i else 0
+                    diff = diff if prepay_days < -30 else 0  # 납부기한 30일 이내 납부는 선납 적용하지 않음
                     delay_days = (paid[0].deal_date - pre_date).days \
                         if ord_i_list and ord_i_list[0] < i else 0
                 else:
                     # 납부 총액 - 약정 총액(미납금 추출)
-                    diff = curr_paid_total - curr_amt_total
+                    diff = curr_amt_total - curr_paid_total
                     prepay_days = (pre_date - paid[0].deal_date).days \
                         if ord_i_list and ord_i_list[0] < i and diff else 0
                     delay_days = (next_date - paid[0].deal_date).days \
