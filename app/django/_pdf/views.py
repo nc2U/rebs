@@ -899,16 +899,16 @@ class PdfExportCalculation(View):
         elif days <= 29:
             rate = 0.08
         elif days <= 90:
-            calc_fee = late_amt * 0.00635616438356164
+            calc_fee = late_amt * 0.00635616438356164  # a = late_amt * 29 * 8%/year
             rate = 0.1
             days = days - 29
 
         elif days <= 180:
-            calc_fee = late_amt * 0.0230684931506849
+            calc_fee = late_amt * 0.0230684931506849  # b = a + (late_amt * 61 * 10%/year)
             rate = 0.11
             days = days - 90
         else:
-            calc_fee = late_amt * 0.0501917808219178
+            calc_fee = late_amt * 0.0501917808219178  # c = b + (late_amt * 90 * 11%/year)
             rate = 0.12
             days = days - 180
 
