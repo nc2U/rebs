@@ -782,6 +782,7 @@ class PdfExportCalculation(View):
 
         curr_paid_total = 0  # 납부 금액 합계
         curr_pay_code = 0  # 현재 약정 코드
+        is_first_pre = False
         curr_amt_total = 0  # 약정 금액 합계
         penalty_sum = 0  # 가산금 합계
         discount_sum = 0  # 할인금 합계
@@ -820,12 +821,13 @@ class PdfExportCalculation(View):
 
                 if curr_paid_total > curr_amt_total:  # 현재 선납 상태인지 확인(현재 납부총액이 약정총액보다 크면)
                     # 약정 총액 - 납부 총액 (선납금 추출)
-
                     # --------------------------------
-                    if curr_pay_code == 0:  # calc 약정 개시 전이면
+                    if not is_first_pre:  # calc 약정 개시 전이면
                         diff = curr_amt_total - curr_paid_total if paid_pay_code and paid_pay_code >= 3 else 0
+                        if paid_pay_code >= 3:
+                            is_first_pre = True
                     else:
-                        diff = -paid[0].income
+                        diff = -paid[0].income if paid_pay_code and paid_pay_code >= 3 else 0
                     # --------------------------------
 
                     try:
