@@ -782,7 +782,7 @@ class PdfExportCalculation(View):
 
         curr_paid_total = 0  # 납부 금액 합계
         curr_pay_code = 0  # 현재 약정 코드
-        is_first_pre = False
+        is_first_pre = True
         curr_amt_total = 0  # 약정 금액 합계
         penalty_sum = 0  # 가산금 합계
         discount_sum = 0  # 할인금 합계
@@ -822,10 +822,10 @@ class PdfExportCalculation(View):
                 if curr_paid_total > curr_amt_total:  # 현재 선납 상태인지 확인(현재 납부총액이 약정총액보다 크면)
                     # 약정 총액 - 납부 총액 (선납금 추출)
                     # --------------------------------
-                    if not is_first_pre:  # calc 약정 개시 전이면
+                    if is_first_pre:  # calc 약정 개시 전이면
                         diff = curr_amt_total - curr_paid_total if paid_pay_code and paid_pay_code >= 3 else 0
                         if paid_pay_code >= 3:
-                            is_first_pre = True
+                            is_first_pre = False  # 최초 선납의 경우에만 계산하기 위해 이후 False로 변경
                     else:
                         diff = -paid[0].income
                     # --------------------------------
@@ -845,7 +845,7 @@ class PdfExportCalculation(View):
                     # 납부 총액 - 약정 총액(미납금 추출)
                     diff = curr_amt_total - curr_paid_total
                     if paid_pay_code >= 3:
-                        is_first_pre = False
+                        is_first_pre = True  # 미납이 발생된 경우 최초 선납 초기화
                     prepay_days = (pre_date - paid[0].deal_date).days \
                         if ord_i_list and ord_i_list[0] < i and diff else 0
                     delay_days = (next_date - paid[0].deal_date).days \
