@@ -854,7 +854,7 @@ class PdfExportCalculation(View):
 
                 diff = paid['amount_total'] - curr_total
 
-                prepay_days = (pre_date - paid['due_date']).days if diff else 0
+                prepay_days = (pre_date - next_date).days if diff else 0
                 delay_days = (next_date - paid['due_date']).days if diff else 0
 
                 days = prepay_days if diff < 0 else delay_days
