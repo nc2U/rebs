@@ -831,10 +831,11 @@ class PdfExportCalculation(View):
                     # --------------------------------
 
                     try:
-                        code = paid_pay_code + 1
+                        code = paid_pay_code + 1 if curr_pay_code == 0 else curr_pay_code + 1
                         next_due_date = [o['due_date'] for o in simple_orders if o.get('pay_code', 0) == code][0]
                     except IndexError:
                         next_due_date = simple_orders[len(simple_orders) - 1]['due_date']
+
                     prepay_days = (paid[0].deal_date - next_due_date).days
 
                     diff = diff if prepay_days < -30 else 0  # 납부기한 30일 이내 납부는 선납 적용하지 않음
