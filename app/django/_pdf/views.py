@@ -781,6 +781,7 @@ class PdfExportCalculation(View):
         first_date = None  # 첫 번째 납입 일자
 
         curr_paid_total = 0  # 납부 금액 합계
+        curr_pay_code = 0  # 현재 약정 코드
         curr_amt_total = 0  # 약정 금액 합계
         penalty_sum = 0  # 가산금 합계
         discount_sum = 0  # 할인금 합계
@@ -820,18 +821,19 @@ class PdfExportCalculation(View):
                 if curr_paid_total > curr_amt_total:  # 현재 선납 상태인지 확인(현재 납부총액이 약정총액보다 크면)
                     # 약정 총액 - 납부 총액 (선납금 추출)
 
-                    # Todo start
                     # --------------------------------
-                    diff = curr_amt_total - curr_paid_total if paid_pay_code and paid_pay_code >= 3 else 0
-                    code = paid_pay_code + 1
+                    if curr_pay_code == 0:  # calc 약정 개시 전이면
+                        diff = curr_amt_total - curr_paid_total if paid_pay_code and paid_pay_code >= 3 else 0
+                    else:
+                        diff = -paid[0].income
+                    # --------------------------------
+
                     try:
+                        code = paid_pay_code + 1
                         next_due_date = [o['due_date'] for o in simple_orders if o.get('pay_code', 0) == code][0]
                     except IndexError:
                         next_due_date = simple_orders[len(simple_orders) - 1]['due_date']
                     prepay_days = (paid[0].deal_date - next_due_date).days
-
-                    # --------------------------------
-                    # Todo end
 
                     diff = diff if prepay_days < -30 else 0  # 납부기한 30일 이내 납부는 선납 적용하지 않음
 
@@ -862,6 +864,7 @@ class PdfExportCalculation(View):
                 paid_dict_list.append(paid_dict)
             else:  # 약정 데이터 삽입
                 ord_i_list.append(i)  # 연체 적용 약정회차 기록 배열
+                curr_pay_code = paid['pay_code'] if paid else 0
                 curr_amt_total = paid['amount_total']  # 현재 약정금 합계
 
                 diff = paid['amount_total'] - curr_paid_total
