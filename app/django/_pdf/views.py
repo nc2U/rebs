@@ -813,7 +813,7 @@ class PdfExportCalculation(View):
                 pre_date = first_date
                 next_date = pub_date
 
-            next_date = next_date if contract.sup_cont_date >= pub_date else contract.sup_cont_date
+            next_date = next_date if contract.sup_cont_date >= next_date else contract.sup_cont_date
 
             if isinstance(paid, tuple):
                 curr_paid_total = paid[1]  # 납부 금액 누계 추출 기록
