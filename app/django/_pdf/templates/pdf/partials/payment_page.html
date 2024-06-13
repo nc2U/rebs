@@ -79,13 +79,9 @@
         <tr>
             <td class="title center br bb">분양금</td>
             <td class="right br bb">{{ price|default:"-"|intcomma }}</td>
-
-
             <td class="right br bb">{{ due_amount|default:"-"|intcomma }}</td>
             <td class="right br bb">{{ paid_sum_total|default:"-"|intcomma }}</td>
-            <td class="right br bb">{{ due_amount|sub:paid_sum_total|default:"-"|intcomma }}</td>
-
-
+            <td class="right br bb">{{ price|sub:paid_sum_total|default:"-"|intcomma }}</td>
             <td class="right br bb">-</td>
             <td class="right bb">-</td>
         </tr>
