@@ -827,7 +827,7 @@ class PdfExportCalculation(View):
                 paid_ord_name = paid_ord_name if paid_ord_name not in ord_list else None
                 ord_list.append(paid_ord_name)  # 납부회차 별칭 리스트 추가
 
-                if curr_amt_total == 0 and paid_pay_code == 3:
+                if curr_amt_total == 0 and paid_pay_code >= 3:
                     curr_amt_total = paid_ords[len(paid_ords) - 1]['amount_total'] if paid_ords else None
 
                 if curr_paid_total > curr_amt_total:  # 선납 시 (납부 총액 > 약정 총액)
@@ -835,6 +835,7 @@ class PdfExportCalculation(View):
                     if is_first_pre:  # calc 약정 개시 전이면
                         # 약정 총액 - 납부 총액 (선납금 추출)
                         diff = curr_amt_total - curr_paid_total if paid_pay_code and paid_pay_code >= 3 else 0
+                        diff = diff if paid[0].deal_date > contract.contractor.contract_date else 0
                         if paid_pay_code >= 3:
                             is_first_pre = False  # 최초 선납의 경우에만 계산하기 위해 이후 False로 변경
                     else:
@@ -883,9 +884,10 @@ class PdfExportCalculation(View):
                 curr_pay_code = paid['pay_code'] if paid else 0
                 curr_amt_total = paid['amount_total']  # 현재 약정금 합계
 
-                diff = paid['amount_total'] - curr_paid_total
-                diff = diff if diff > 0 else 0
+                diff = curr_amt_total - curr_paid_total
+
                 days = (next_date - paid['due_date']).days if diff else 0
+                days = days if diff > 0 else days * -1
 
                 calc = self.get_past_late_fee(diff, days)
 
