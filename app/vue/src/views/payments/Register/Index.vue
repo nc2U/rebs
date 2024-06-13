@@ -227,17 +227,18 @@ onBeforeRouteLeave(() => {
           :disabled="!project"
         >
           <v-btn
-            color="light"
+            v-if="project === 1"
             :href="calcUrl"
-            size="small"
             flat
             :disabled="!project || !contract"
+            color="light"
+            size="small"
             class="mt-1 mr-2"
             style="text-decoration: none"
           >
             가산(할인) 내역
           </v-btn>
-          <span v-show="project && contract" class="mr-4">
+          <span v-if="project === 1" v-show="project && contract" class="mr-4">
             <DatePicker v-model="date" placeholder="발행일자" />
           </span>
 
