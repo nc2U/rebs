@@ -70,18 +70,22 @@
         <tr>
             <td class="title center bt2 br bb">구 분</td>
             <td class="title center bt2 br bb">약정금 총액</td>
-            <td class="title center bt2 br bb">납부 원금({{ now_order.1 }})</td>
+            <td class="title center bt2 br bb">납부 원금</td>
             <td class="title center bt2 br bb">실입금액 합계</td>
             <td class="title center bt2 br bb">미수금</td>
             <td class="title center bt2 br bb">연체료 합계</td>
             <td class="title center bt2 bb">할인료 합계</td>
         </tr>
         <tr>
-            <td class="title center br bb">분 양 금</td>
+            <td class="title center br bb">분양금</td>
             <td class="right br bb">{{ price|default:"-"|intcomma }}</td>
+
+
             <td class="right br bb">{{ due_amount|default:"-"|intcomma }}</td>
             <td class="right br bb">{{ paid_sum_total|default:"-"|intcomma }}</td>
             <td class="right br bb">{{ due_amount|sub:paid_sum_total|default:"-"|intcomma }}</td>
+
+
             <td class="right br bb">-</td>
             <td class="right bb">-</td>
         </tr>
@@ -147,7 +151,7 @@
             <td colspan="22">&nbsp;</td>
         </tr>
         <tr>
-          <td style="padding-left: 20px; font-size: 11px;" colspan="22">※ 납입내역 요약의 공급가에 추가납부가 포함됩니다.
+          <td style="padding-left: 20px; font-size: 11px;" colspan="22">※ 요약 납입내역의 분양금에 추가납부가 포함됩니다.
           </td>
         </tr>
         <tr>
