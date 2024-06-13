@@ -70,20 +70,29 @@
         <tr>
             <td class="title center bt2 br bb">구 분</td>
             <td class="title center bt2 br bb">약정금 총액</td>
-            <td class="title center bt2 br bb">약정금 누계 ({{ now_order.1 }})</td>
-            <td class="title center bt2 br bb">실 납부총액</td>
-            <td class="title center bt2 br bb">미(초과)납 금액</td>
-            <td class="title center bt2 br bb">납부 연체료</td>
-            <td class="title center bt2 bb">납부 할인료</td>
+            <td class="title center bt2 br bb">납부 원금({{ now_order.1 }})</td>
+            <td class="title center bt2 br bb">실입금액 합계</td>
+            <td class="title center bt2 br bb">미수금</td>
+            <td class="title center bt2 br bb">연체료 합계</td>
+            <td class="title center bt2 bb">할인료 합계</td>
         </tr>
         <tr>
-            <td class="title center br bb2">납부현황</td>
-            <td class="right br bb2">{{ price|default:"-"|intcomma }}</td>
-            <td class="right br bb2">{{ due_amount|default:"-"|intcomma }}</td>
-            <td class="right br bb2">{{ paid_sum_total|default:"-"|intcomma }}</td>
-            <td class="right br bb2">{{ paid_sum_total|sub:due_amount|default:"-"|intcomma }}</td>
-            <td class="right br bb2">-</td>
-            <td class="right bb2">-</td>
+            <td class="title center br bb">분 양 금</td>
+            <td class="right br bb">{{ price|default:"-"|intcomma }}</td>
+            <td class="right br bb">{{ due_amount|default:"-"|intcomma }}</td>
+            <td class="right br bb">{{ paid_sum_total|default:"-"|intcomma }}</td>
+            <td class="right br bb">{{ due_amount|sub:paid_sum_total|default:"-"|intcomma }}</td>
+            <td class="right br bb">-</td>
+            <td class="right bb">-</td>
+        </tr>
+        <tr>
+          <td class="title center br bb2">추가납부</td>
+          <td class="right br bb2">-</td>
+          <td class="right br bb2">-</td>
+          <td class="right br bb2">-</td>
+          <td class="right br bb2">-</td>
+          <td class="right br bb2">-</td>
+          <td class="right bb2">-</td>
         </tr>
         <tr>
             <td colspan="7">&nbsp;</td>
@@ -113,8 +122,8 @@
                     <td class="title center bl2 bt2 br">납부일자</td>
                     <td class="title center bt2 br">실입금액</td>
                     <td class="title center bt2 br">완납차수</td>
-                    <td class="title center bt2 br">미(초과)납 금액</td>
-                    <td class="title center bt2 br">지연(선납) 일수</td>
+                    <td class="title center bt2 br">미(과)납액</td>
+                    <td class="title center bt2 br">일수</td>
                     <td class="title center bt2 br">연체료</td>
                     <td class="title center bt2">할인료</td>
                 </tr>
