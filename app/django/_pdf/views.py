@@ -25,17 +25,19 @@ def get_contract(cont_id):
     return Contract.objects.get(pk=cont_id)
 
 
-def get_paid(contract, simple_orders):
+def get_paid(contract, simple_orders, pub_date):
     """
     :: ■ 기 납부금액 구하기
     :param contract: 계약정보
     :param simple_orders: 회차정보
+    :param pub_date: 발행일자
     :return list(paid_list: 납부 건 리스트), int(paid_sum_total: 납부 총액):
     """
     paid_list = ProjectCashBook.objects.filter(
         income__isnull=False,
         project_account_d3__in=(1, 4),  # 분(부)담금 or 분양수입금
-        contract=contract
+        contract=contract,
+        deal_date__lte=pub_date
     ).order_by('deal_date', 'id')  # 해당 계약 건 납부 데이터
 
     pay_list = [p.income for p in paid_list]  # 입금액 추출 리스트
@@ -601,7 +603,8 @@ class PdfExportBill(View):
 
 class PdfExportPayments(View):
 
-    def get(self, request):
+    @staticmethod
+    def get(request):
         context = dict()
 
         project = request.GET.get('project')  # 프로젝트 ID
@@ -609,6 +612,11 @@ class PdfExportPayments(View):
         cont_id = request.GET.get('contract')
         context['contract'] = contract = get_contract(cont_id)
         context['pdfSelect'] = request.GET.get('sel')
+
+        # 발행일자
+        pub_date = request.GET.get('pub_date', None)
+        pub_date = datetime.strptime(pub_date, '%Y-%m-%d').date() if pub_date else TODAY
+        context['pub_date'] = pub_date
 
         pay_orders = InstallmentPaymentOrder.objects.filter(project=project)  # 전체 납부회차 컬렉션
 
@@ -643,7 +651,7 @@ class PdfExportPayments(View):
         context['simple_orders'] = simple_orders = get_simple_orders(pay_orders, contract, amount)
 
         # 3. 납부목록, 완납금액 구하기 ------------------------------------------
-        paid_dicts, paid_sum_total = get_paid(contract, simple_orders)
+        paid_dicts, paid_sum_total = get_paid(contract, simple_orders, pub_date)
         context['paid_dicts'] = paid_dicts
         context['paid_sum_total'] = paid_sum_total  # paid_list.aggregate(Sum('income'))['income__sum']  # 기 납부총액
         # ----------------------------------------------------------------
@@ -671,7 +679,7 @@ class PdfExportCalculation(View):
         context['contract'] = contract = get_contract(cont_id)
 
         # 발행일자
-        pub_date = request.GET.get('date')
+        pub_date = request.GET.get('pub_date', None)
         pub_date = datetime.strptime(pub_date, '%Y-%m-%d').date() if pub_date else TODAY
         context['pub_date'] = pub_date
 
@@ -771,7 +779,8 @@ class PdfExportCalculation(View):
         paid_list = ProjectCashBook.objects.filter(
             income__isnull=False,
             project_account_d3__in=(1, 4),  # 분(부)담금 or 분양수입금
-            contract=contract
+            contract=contract,
+            deal_date__lte=pub_date
         ).order_by('deal_date', 'id')  # 해당 계약 건 납부 데이터
 
         paid_list = paid_list.filter(installment_order__pay_sort='1') if is_past else paid_list

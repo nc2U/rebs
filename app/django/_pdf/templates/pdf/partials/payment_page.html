@@ -30,6 +30,9 @@
         <tr>
             <td colspan="5">&nbsp;</td>
         </tr>
+        <tr>
+            <td colspan="5" style="text-align: right">{{ pub_date }} 현재</td>
+        </tr>
     </table>
 
     <table>
@@ -48,7 +51,7 @@
             <td class="bb" colspan="18">{{ contract.contractor }}</td>
         </tr>
         <tr>
-            <td class="title br2 bb" colspan="4">분양금</td>
+            <td class="title br2 bb" colspan="4">공급가</td>
             <td class="bb" colspan="7">{{ price|default:"-"|intcomma }}</td>
             <td class="title bl2 br2 bb" colspan="4">건물가</td>
             <td class="bb" colspan="7">{{ price_build|default:"-"|intcomma }}</td>
@@ -134,12 +137,9 @@
         <tr>
             <td colspan="22">&nbsp;</td>
         </tr>
-        <tr>
-            <td style="padding-left: 20px; font-size: 11px;" colspan="22">※ 납입내역 요약의 분양금에 추가납부가 포함됩니다.</td>
-        </tr>
         {% if not unit %}
             <tr>
-                <td style="padding-left: 20px; font-size: 11px;" colspan="22">※ 동호수 미지정인 경우 상기 분양가격 등은 타입별 평균가격으로, 동호
+                <td style="padding-left: 20px; font-size: 11px;" colspan="22">※ 동호수 미지정인 경우 상기 공급가격 등은 타입별 평균가격으로, 동호
                     지정후 변경됩니다.
                 </td>
             </tr>
