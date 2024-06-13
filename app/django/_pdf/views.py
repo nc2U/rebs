@@ -766,6 +766,8 @@ class PdfExportCalculation(View):
         :param is_past: 변경 약정에 의한 가산금 산출 여부
         :return list(paid_list: { 납부 건 딕셔너리 }), int(paid_sum_total: 납부 총액):
         """
+
+        calc_start_pay_code = 3  # 연체/가산 적용 시작 회차 코드
         paid_list = ProjectCashBook.objects.filter(
             income__isnull=False,
             project_account_d3__in=(1, 4),  # 분(부)담금 or 분양수입금
@@ -782,7 +784,7 @@ class PdfExportCalculation(View):
         def get_date(item):
             return item[0].deal_date if isinstance(item, tuple) else item['due_date']
 
-        calc_orders = [item for item in simple_orders if item.get('pay_code', 0) >= 3]
+        calc_orders = [item for item in simple_orders if item.get('pay_code', 0) >= calc_start_pay_code]
         combined = zip_pay_list + calc_orders
         sorted_combined = sorted(combined, key=get_date)
 
@@ -845,7 +847,7 @@ class PdfExportCalculation(View):
                     # --------------------------------
 
                     try:
-                        code = paid_pay_code + 1 if curr_pay_code == 0 else curr_pay_code + 1
+                        code = calc_start_pay_code if curr_pay_code == 0 else curr_pay_code + 1
                         next_due_date = [o['due_date'] for o in simple_orders if o.get('pay_code', 0) == code][0]
                     except IndexError:
                         next_due_date = simple_orders[len(simple_orders) - 1]['due_date']
