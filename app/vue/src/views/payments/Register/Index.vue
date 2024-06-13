@@ -31,14 +31,14 @@ const paymentUrl = computed(() => {
   const url = '/pdf/payments/'
   const proj = project.value ?? ''
   const cont = contract.value?.pk ?? ''
-  return `${url}?project=${proj}&contract=${cont}&sel=${pdfPayConf.value}&pub_date=${date.value}`
+  return `${url}?project=${proj}&contract=${cont}&sel=${pdfPayConf.value}&pub_date=${date.value ?? ''}`
 })
 
 const calcUrl = computed(() => {
   const url = '/pdf/calculation/'
   const proj = project.value ?? ''
   const cont = contract.value?.pk ?? ''
-  return `${url}?project=${proj}&contract=${cont}&pub_date=${date.value}`
+  return `${url}?project=${proj}&contract=${cont}&pub_date=${date.value ?? ''}`
 })
 
 const projStore = useProject()
