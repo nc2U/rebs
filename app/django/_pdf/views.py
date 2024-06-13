@@ -646,11 +646,11 @@ class PdfExportPayments(View):
 
         # 2. 요약 테이블 데이터
         context['due_amount'] = get_due_amount(payment_orders, contract, amount)  # 약정금 누계
-        context['now_order'] = max([(o.pay_code, o.alias_name) for o in get_due_orders(contract, payment_orders)])
-        # 2. 간단 차수 정보
+
+        # 3. 간단 차수 정보
         context['simple_orders'] = simple_orders = get_simple_orders(payment_orders, contract, amount)
 
-        # 3. 납부목록, 완납금액 구하기 ------------------------------------------
+        # 4. 납부목록, 완납금액 구하기 ------------------------------------------
         paid_dicts, paid_sum_total = get_paid(contract, simple_orders, pub_date)
         context['paid_dicts'] = paid_dicts
         context['paid_sum_total'] = paid_sum_total  # paid_list.aggregate(Sum('income'))['income__sum']  # 기 납부총액
@@ -710,11 +710,11 @@ class PdfExportCalculation(View):
 
         # 2. 요약 테이블 데이터
         context['due_amount'] = (down1 * 4) + down2  # 약정금 누계
-        context['now_order'] = max([(o.pay_code, o.alias_name) for o in get_due_orders(contract, payment_orders)])
-        # 2. 간단 차수 정보
+
+        # 3. 간단 차수 정보
         context['simple_orders'] = simple_orders = self.get_past_orders(payment_orders, contract, amount)
 
-        # 3. 납부목록, 완납금액 구하기 ------------------------------------------
+        # 4. 납부목록, 완납금액 구하기 ------------------------------------------
         paid_dicts, paid_sum_total, calc_sums = self.get_paid(contract, simple_orders, pub_date, True)
         context['paid_dicts'] = paid_dicts
         context['paid_sum_total'] = paid_sum_total  # paid_list.aggregate(Sum('income'))['income__sum']  # 기 납부총액
