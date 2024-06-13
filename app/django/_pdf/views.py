@@ -126,17 +126,13 @@ def get_due_date_per_order(contract, order, payment_orders):
     due_date = contract.contractor.contract_date  # 계약일 (default 납부기한 = 계약일)
 
     if order.pay_code >= 2:
-        elapsed_days = payment_orders.filter(pay_code__lte=order.pay_code) \
-            .aggregate(elapsed_days=Sum('days_since_prev'))['elapsed_days']
-        due_date = due_date + timedelta(days=elapsed_days) if elapsed_days else due_date
-
+        si_date = order.days_since_prev
         pd_date = order.pay_due_date
         ed_date = order.extra_due_date
 
-        if pd_date and pd_date > due_date:
-            due_date = pd_date
-        if ed_date and ed_date > due_date:
-            due_date = ed_date
+        due_date = due_date + timedelta(days=si_date) if si_date else None
+        due_date = pd_date if pd_date and pd_date else due_date
+        due_date = ed_date if ed_date and ed_date else due_date
     return due_date
 
 
