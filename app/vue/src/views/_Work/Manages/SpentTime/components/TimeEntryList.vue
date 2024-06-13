@@ -158,7 +158,13 @@ onBeforeMount(() => {
               </CTableDataCell>
               <CTableDataCell>{{ time.activity.name }}</CTableDataCell>
               <CTableDataCell class="text-left">
-                <router-link to="" :class="{ closed: time.issue.status.closed }">
+                <router-link
+                  :to="{
+                    name: '(업무) - 보기',
+                    params: { projId: time.issue.project.slug, issueId: time.issue.pk },
+                  }"
+                  :class="{ closed: time.issue.status.closed }"
+                >
                   {{ time.issue.tracker }} #{{ time.issue.pk }}
                 </router-link>
                 : {{ cutString(time.issue.subject, 24) }}
