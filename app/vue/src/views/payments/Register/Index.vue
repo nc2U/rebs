@@ -31,14 +31,14 @@ const paymentUrl = computed(() => {
   const url = '/pdf/payments/'
   const proj = project.value ?? ''
   const cont = contract.value?.pk ?? ''
-  return `${url}?project=${proj}&contract=${cont}&sel=${pdfPayConf.value}&date=${date.value}`
+  return `${url}?project=${proj}&contract=${cont}&sel=${pdfPayConf.value}&pub_date=${date.value}`
 })
 
 const calcUrl = computed(() => {
   const url = '/pdf/calculation/'
   const proj = project.value ?? ''
   const cont = contract.value?.pk ?? ''
-  return `${url}?project=${proj}&contract=${cont}&date=${date.value}`
+  return `${url}?project=${proj}&contract=${cont}&pub_date=${date.value}`
 })
 
 const projStore = useProject()
@@ -226,6 +226,11 @@ onBeforeRouteLeave(() => {
           style="font-size: 0.8em"
           :disabled="!project"
         >
+          <span v-show="project && contract" class="mr-3">
+            <DatePicker v-model="date" placeholder="발행일자" />
+            <v-tooltip activator="parent" location="right">발행일자</v-tooltip>
+          </span>
+
           <v-btn
             v-if="project === 1"
             :href="calcUrl"
@@ -238,9 +243,6 @@ onBeforeRouteLeave(() => {
           >
             가산(할인) 내역
           </v-btn>
-          <span v-if="project === 1" v-show="project && contract" class="mr-4">
-            <DatePicker v-model="date" placeholder="발행일자" />
-          </span>
 
           <v-radio label="일반내역" value="1" class="mt-1" />
           <v-radio label="담당확인" value="2" class="mt-1" />
