@@ -201,7 +201,7 @@ class PdfExportBill(View):
             'issue_date': issue_date,
             'bill_info': SalesBillIssue.objects.get(project=project)
         }  # 전체 데이터 딕셔너리
-        inspay_order = InstallmentPaymentOrder.objects.filter(project=project)  # 전체 납부회차 리스트
+        payment_orders = InstallmentPaymentOrder.objects.filter(project=project)  # 전체 납부회차 리스트
         now_due_order = context['bill_info'].now_payment_order.pay_code \
             if context['bill_info'].now_payment_order else 2  # 당회 납부 회차
 
@@ -209,7 +209,7 @@ class PdfExportBill(View):
 
         # 해당 계약건에 대한 데이터 정리 --------------------------------------- start
 
-        context['data_list'] = (self.get_bill_data(cont_id, inspay_order, now_due_order, issue_date, np, nl) \
+        context['data_list'] = (self.get_bill_data(cont_id, payment_orders, now_due_order, issue_date, np, nl) \
                                 for cont_id in contractor_list)
 
         # 해당 계약건에 대한 데이터 정리 --------------------------------------- end
@@ -224,11 +224,11 @@ class PdfExportBill(View):
             response['Content-Disposition'] = f'attachment; filename="payment_bill({len(contractor_list)}).pdf"'
             return response
 
-    def get_bill_data(self, cont_id, inspay_order, now_due_order, issue_date, np, nl):
+    def get_bill_data(self, cont_id, payment_orders, now_due_order, issue_date, np, nl):
         """
         :: 계약 건 당 전달 데이터 생성 함수
         :param cont_id: 계약자 아이디
-        :param inspay_order: 전체 납부 회차
+        :param payment_orders: 전체 납부 회차
         :param now_due_order: 금회 납부 회차
         :param issue_date: 발행일
         :param np: no price 가격 미표시 여부
@@ -269,7 +269,7 @@ class PdfExportBill(View):
 
         # 해당 계약 건의 회차별 관련 정보
         amount = {'1': down, '2': middle, '3': remain}
-        orders_info = self.get_orders_info(inspay_order, amount, paid_sum_total)
+        orders_info = self.get_orders_info(payment_orders, amount, paid_sum_total)
         # 완납 회차
         paid_code = self.get_paid_code(orders_info, paid_sum_total)
 
@@ -279,7 +279,7 @@ class PdfExportBill(View):
         # ■ 납부대금 안내 ----------------------------------------------
         bill_data['this_pay_info'] = self.get_this_pay_info(contract,
                                                             orders_info,
-                                                            inspay_order,
+                                                            payment_orders,
                                                             now_due_order,
                                                             paid_code)
 
@@ -297,15 +297,15 @@ class PdfExportBill(View):
 
         # ■ 납부약정 및 납입내역 -------------------------------------------
         bill_data['due_orders'] = self.get_due_orders(contract, orders_info,
-                                                      inspay_order, now_due_order,
+                                                      payment_orders, now_due_order,
                                                       paid_code, issue_date, is_late_fee=False)
 
         bill_data['remain_orders'] = self.get_remain_orders(contract, orders_info,
-                                                            inspay_order, now_due_order)
+                                                            payment_orders, now_due_order)
 
         bill_data['paid_sum_total'] = paid_sum_total
         bill_data['late_fee_sum'] = self.get_due_orders(contract, orders_info,
-                                                        inspay_order, now_due_order,
+                                                        payment_orders, now_due_order,
                                                         paid_code, issue_date, is_late_fee=True)
 
         # 표시 정보 제한 여부
@@ -318,7 +318,7 @@ class PdfExportBill(View):
 
         bill_data['blank_line'] = self.get_blank_line(unpaid_count,
                                                       pm_cost_sum,
-                                                      inspay_order.count())
+                                                      payment_orders.count())
 
         # --------------------------------------------------------------
         return bill_data
@@ -376,20 +376,20 @@ class PdfExportBill(View):
 
     @staticmethod
     def get_this_pay_info(contract,
-                          orders_info, inspay_order,
+                          orders_info, payment_orders,
                           now_due_order, paid_code):
         """
         :: ■ 납부대금 안내
         :param cont_id: 계약자 아이디
         :param orders_info: 회차별 부가정보
-        :param inspay_order: 회차 정보
+        :param payment_orders: 회차 정보
         :param now_due_order: 당회 납부 회차
         :param paid_code: 완납 회차
         :return list(dict(order: 납부회차, due_date: 납부기한, amount: 약정금액, unpaid: 미납금액, penalty: 연체가산금, sum_amount: 납부금액)):
         """
         payment_list = []
-        unpaid_orders = inspay_order.filter(pay_code__gt=paid_code,
-                                            pay_code__lte=now_due_order)  # 최종 기납부회차 이후부터 납부지정회차 까지 회차그룹
+        unpaid_orders = payment_orders.filter(pay_code__gt=paid_code,
+                                              pay_code__lte=now_due_order)  # 최종 기납부회차 이후부터 납부지정회차 까지 회차그룹
         for order in unpaid_orders:
             ord_info = list(filter(lambda o: o['order'] == order, orders_info))[0]
 
@@ -410,13 +410,13 @@ class PdfExportBill(View):
         return payment_list
 
     def get_due_orders(self, contract, orders_info,
-                       inspay_order, now_due_order,
+                       payment_orders, now_due_order,
                        paid_code, issue_date, is_late_fee=False):
         """
         :: ■ 납부약정 및 납입내역 - 납입내역
         :param contract: 계약 건
         :param orders_info: 납부 회차별 부가정보
-        :param inspay_order: 전체 납부회차
+        :param payment_orders: 전체 납부회차
         :param now_due_order: 금회 납부 회차
         :param paid_code: 완납회차
         :param issue_date: 발행일자
@@ -430,7 +430,7 @@ class PdfExportBill(View):
 
         # 전체 리턴 데이터 목록
         paid_amt_list = []
-        due_orders = inspay_order.filter(pay_code__lte=now_due_order)  # 금 회차까지 납부 회차
+        due_orders = payment_orders.filter(pay_code__lte=now_due_order)  # 금 회차까지 납부 회차
 
         excess = 0  # 회차별 초과 납부분
         paid_amt_sum = 0  # 실 수납액 누계
@@ -506,17 +506,17 @@ class PdfExportBill(View):
             return paid_amt_list
 
     @staticmethod
-    def get_remain_orders(contract, orders_info, inspay_order, now_due_order):
+    def get_remain_orders(contract, orders_info, payment_orders, now_due_order):
         """
         :: ■ 납부약정 및 납입내역 - 잔여회차
         :param contract: 계약 건
         :param orders_info: 납부 회차별 부가정보
-        :param inspay_order: 전체 납부 회차
+        :param payment_orders: 전체 납부 회차
         :param now_due_order: 금회 납부 회차
         :return list(dict(remain_amt_list)): 잔여 회차(dict) 목록:
         """
         remain_amt_list = []
-        remain_orders = inspay_order.filter(pay_code__gt=now_due_order)
+        remain_orders = payment_orders.filter(pay_code__gt=now_due_order)
 
         for order in remain_orders:
             ord_info = list(filter(lambda o: o['order'] == order, orders_info))[0]
@@ -537,10 +537,10 @@ class PdfExportBill(View):
         return remain_amt_list
 
     @staticmethod
-    def get_orders_info(inspay_order, amount, paid_sum_total):
+    def get_orders_info(payment_orders, amount, paid_sum_total):
         """
         :: 회차별 부가정보
-        :param inspay_order: 회차 정보
+        :param payment_orders: 회차 정보
         :param amount: 전체 약정액 리스트
         :param paid_sum_total: 기 납부 총액
         :return list(dict(order_info_list)): 회차별 부가정보 딕셔너리 리스트
@@ -549,7 +549,7 @@ class PdfExportBill(View):
         sum_pay_amount = 0  # 회당 납부 약정액 누계
         pm_cost_sum = 0  # PM 용역비 합계
 
-        for order in inspay_order:
+        for order in payment_orders:
             info = {'order': order}
             pay_amount = amount[order.pay_sort]  # 회당 납부 약정액
             info['pay_amount'] = pay_amount  # 회당 납부 약정액
