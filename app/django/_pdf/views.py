@@ -65,10 +65,10 @@ def get_paid(contract, simple_orders, pub_date):
     return paid_dict_list, paid_sum_total
 
 
-def get_simple_orders(pay_orders, contract, amount):
+def get_simple_orders(payment_orders, contract, amount):
     """
     :: 약식 납부회차 구하기
-    :param pay_orders:
+    :param payment_orders:
     :param contract:
     :param amount:
     :return: dict 형식 납부회차 리스트
@@ -76,11 +76,11 @@ def get_simple_orders(pay_orders, contract, amount):
     simple_orders = []
 
     amount_total = 0
-    for order in pay_orders:
+    for order in payment_orders:
         amount_total += amount[order.pay_sort]  # 회차별 약정금 누계
         ord_info = {
             'name': order.alias_name if order.alias_name else order.pay_name,  # 회차별 별칭
-            'due_date': get_due_date_per_order(contract, order, pay_orders),  # 회차별 납부기한
+            'due_date': get_due_date_per_order(contract, order, payment_orders),  # 회차별 납부기한
             'amount': amount[order.pay_sort],  # 회차별 약정금
             'amount_total': amount_total,  # 회차별 약정금 누계
         }
@@ -89,17 +89,17 @@ def get_simple_orders(pay_orders, contract, amount):
     return simple_orders
 
 
-def get_due_amount(pay_orders, contract, amount):
+def get_due_amount(payment_orders, contract, amount):
     """
     :: 약정금 누계 계산 함수
-    :param pay_orders: 전체 납부회차 쿼리셋
+    :param payment_orders: 전체 납부회차 쿼리셋
     :param contract: contract 객체
     :param amount: {'1': down, '2': middle, '3': remain}
     :return: int 현재 회차까지 납부 약정액 합계
     """
     total_amounts = 0
     # 약정회차 리스트
-    due_orders = get_due_orders(contract, pay_orders)
+    due_orders = get_due_orders(contract, payment_orders)
     for order in due_orders:
         total_amounts += amount[order.pay_sort]
     return total_amounts
@@ -114,19 +114,19 @@ def is_due(due_date):
     return due_date and due_date <= TODAY
 
 
-def get_due_date_per_order(contract, order, pay_orders):
+def get_due_date_per_order(contract, order, payment_orders):
     """
     :: 회차 별 납부 일자 구하기
     :param contract: 계약자 객체
     :param order: 납부 회차 객체
-    :param pay_orders: 전체 회차 객체 리스트
+    :param payment_orders: 전체 회차 객체 리스트
     :return str(due_date): 회차 별 약정 납부 일자
     """
 
     due_date = contract.contractor.contract_date  # 계약일 (default 납부기한 = 계약일)
 
     if order.pay_code >= 2:
-        elapsed_days = pay_orders.filter(pay_code__lte=order.pay_code) \
+        elapsed_days = payment_orders.filter(pay_code__lte=order.pay_code) \
             .aggregate(elapsed_days=Sum('days_since_prev'))['elapsed_days']
         due_date = due_date + timedelta(days=elapsed_days) if elapsed_days else due_date
 
@@ -140,17 +140,17 @@ def get_due_date_per_order(contract, order, pay_orders):
     return due_date
 
 
-def get_due_orders(contract, pay_orders):
+def get_due_orders(contract, payment_orders):
     """
     :: 기도래 납부 회차 객체 리스트 구하기
     :param contract: 
-    :param pay_orders:
+    :param payment_orders:
     :return: list -> 납부회차 객체
     """
-    return [o for o in pay_orders if is_due(get_due_date_per_order(contract, o, pay_orders))]
+    return [o for o in payment_orders if is_due(get_due_date_per_order(contract, o, payment_orders))]
 
 
-def get_past_late_fee(late_amt, days):
+def get_late_fee(late_amt, days):
     """
     :: 회차별 지연 가산금 계산 함수
     :param late_amt: 지연금액
@@ -618,7 +618,7 @@ class PdfExportPayments(View):
         pub_date = datetime.strptime(pub_date, '%Y-%m-%d').date() if pub_date else TODAY
         context['pub_date'] = pub_date
 
-        pay_orders = InstallmentPaymentOrder.objects.filter(project=project)  # 전체 납부회차 컬렉션
+        payment_orders = InstallmentPaymentOrder.objects.filter(project=project)  # 전체 납부회차 컬렉션
 
         try:
             unit = contract.keyunit.houseunit
@@ -645,10 +645,10 @@ class PdfExportPayments(View):
         amount = {'1': down, '2': middle, '3': remain}
 
         # 2. 요약 테이블 데이터
-        context['due_amount'] = get_due_amount(pay_orders, contract, amount)  # 약정금 누계
-        context['now_order'] = max([(o.pay_code, o.alias_name) for o in get_due_orders(contract, pay_orders)])
+        context['due_amount'] = get_due_amount(payment_orders, contract, amount)  # 약정금 누계
+        context['now_order'] = max([(o.pay_code, o.alias_name) for o in get_due_orders(contract, payment_orders)])
         # 2. 간단 차수 정보
-        context['simple_orders'] = simple_orders = get_simple_orders(pay_orders, contract, amount)
+        context['simple_orders'] = simple_orders = get_simple_orders(payment_orders, contract, amount)
 
         # 3. 납부목록, 완납금액 구하기 ------------------------------------------
         paid_dicts, paid_sum_total = get_paid(contract, simple_orders, pub_date)
@@ -683,7 +683,7 @@ class PdfExportCalculation(View):
         pub_date = datetime.strptime(pub_date, '%Y-%m-%d').date() if pub_date else TODAY
         context['pub_date'] = pub_date
 
-        pay_orders = SpecialPaymentOrder.objects.filter(project=project)  # 전체 납부회차 컬렉션
+        payment_orders = SpecialPaymentOrder.objects.filter(project=project)  # 전체 납부회차 컬렉션
 
         try:
             unit = contract.keyunit.houseunit
@@ -710,9 +710,9 @@ class PdfExportCalculation(View):
 
         # 2. 요약 테이블 데이터
         context['due_amount'] = (down1 * 4) + down2  # 약정금 누계
-        context['now_order'] = max([(o.pay_code, o.alias_name) for o in get_due_orders(contract, pay_orders)])
+        context['now_order'] = max([(o.pay_code, o.alias_name) for o in get_due_orders(contract, payment_orders)])
         # 2. 간단 차수 정보
-        context['simple_orders'] = simple_orders = self.get_past_orders(pay_orders, contract, amount)
+        context['simple_orders'] = simple_orders = self.get_past_orders(payment_orders, contract, amount)
 
         # 3. 납부목록, 완납금액 구하기 ------------------------------------------
         paid_dicts, paid_sum_total, calc_sums = self.get_paid(contract, simple_orders, pub_date, True)
@@ -738,10 +738,10 @@ class PdfExportCalculation(View):
         return down.payment_amount, down.payment_remain
 
     @staticmethod
-    def get_past_orders(pay_orders, contract, amount):
+    def get_past_orders(payment_orders, contract, amount):
         """
         :: 약식 납부회차 구하기
-        :param pay_orders: 1 ~ 5차 계약금
+        :param payment_orders: 1 ~ 5차 계약금
         :param contract: 현재 계약건
         :param amount: 1 ~ 4차 및 5차(나머지) 계약금
         :return: dict 형식 납부회차 리스트
@@ -750,14 +750,14 @@ class PdfExportCalculation(View):
         simple_orders = []
 
         amount_total = 0
-        for order in pay_orders:
+        for order in payment_orders:
             amt = amount['1'] if order.pay_code < 5 else amount['2']
             amount_total += amt  # amount[order.pay_sort]  # 회차별 계약금 누계
 
             ord_info = {
                 'name': order.alias_name if order.alias_name else order.pay_name,  # 회차별 별칭
                 'pay_code': order.pay_code,
-                'due_date': get_due_date_per_order(contract, order, pay_orders),  # 회차별 납부기한
+                'due_date': get_due_date_per_order(contract, order, payment_orders),  # 회차별 납부기한
                 'amount': amt,  # 회차별 약정금
                 'amount_total': amount_total,  # 회차별 약정금 누계
             }
