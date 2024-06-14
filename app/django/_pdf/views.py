@@ -860,7 +860,8 @@ class PdfExportCalculation(View):
 
                     prepay_days = (paid[0].deal_date - next_due_date).days
 
-                    diff = diff if prepay_days < -30 else 0  # 납부기한 30일 이내 납부는 선납 적용하지 않음
+                    buffer_days = 30
+                    diff = diff if prepay_days < -buffer_days else 0  # 납부기한 30일 이내 납부는 선납 적용하지 않음
 
                     delay_days = (paid[0].deal_date - pre_date).days \
                         if ord_i_list and ord_i_list[0] < i else 0
