@@ -9,6 +9,7 @@ import Pagination from '@/components/Pagination'
 import NoData from '@/views/_Work/components/NoData.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import TimeEntryReport from './TimeEntryReport.vue'
+import { tr } from 'vuetify/locale'
 
 defineProps({
   timeEntryList: { type: Array as PropType<TimeEntry[]>, default: () => [] },
@@ -209,8 +210,17 @@ onBeforeMount(() => {
                     </CDropdownToggle>
                     <CDropdownMenu>
                       <CDropdownItem class="form-text">
-                        <router-link to=""> 작업종류 </router-link>
+                        <!-- aaaa----------------------------------------aaaa -->
+                        <CDropdown direction="dropend">
+                          <CDropdownToggle trigger="focus" size="sm">작업종류</CDropdownToggle>
+                          <CDropdownMenu>
+                            <CDropdownItem href="#" class="form-text">디자인</CDropdownItem>
+                            <CDropdownItem href="#" class="form-text">개발</CDropdownItem>
+                          </CDropdownMenu>
+                        </CDropdown>
+                        <!-- aaaa----------------------------------------aaaa -->
                       </CDropdownItem>
+
                       <CDropdownItem
                         class="form-text"
                         @click="
