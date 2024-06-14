@@ -19,6 +19,7 @@ const emit = defineEmits(['to-submit', 'reset-form', 'close'])
 const form = reactive<Project>({
   pk: undefined,
   company: null,
+  issue_project: null,
   name: '',
   order: null,
   kind: '',
