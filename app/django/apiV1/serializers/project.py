@@ -25,7 +25,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ('pk', 'company', 'name', 'order', 'kind', 'kind_desc', 'start_year',
+        fields = ('pk', 'company', 'issue_project', 'name', 'order', 'kind', 'kind_desc', 'start_year',
                   'is_direct_manage', 'is_returned_area', 'is_unit_set', 'local_zipcode',
                   'local_address1', 'local_address2', 'local_address3', 'area_usage',
                   'build_size', 'num_unit', 'buy_land_extent', 'scheme_land_extent',
