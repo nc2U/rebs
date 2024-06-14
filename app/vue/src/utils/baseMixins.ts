@@ -69,7 +69,7 @@ export const elapsedTime = (date: Date | number | string): string => {
 
 export const numberToHour = (digit: number | string) => {
   const a = Math.floor(Number(digit))
-  const b = (Number(digit) - a) * 60
+  const b = Math.round((Number(digit) - a) * 60)
   const c = b < 10 ? '0' : ''
   return String(a) + ':' + c + String(b)
 }
