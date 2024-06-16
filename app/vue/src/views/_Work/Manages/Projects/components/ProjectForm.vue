@@ -9,8 +9,10 @@ import {
   onUpdated,
   type PropType,
   nextTick,
+  computed,
 } from 'vue'
 import { useRoute } from 'vue-router'
+import { useProject } from '@/store/pinia/project'
 import { colorLight } from '@/utils/cssMixins'
 import type { IssueProject } from '@/store/types/work'
 import MdEditor from '@/components/MdEditor/Index.vue'
@@ -34,6 +36,7 @@ const validated = ref(false)
 const form = reactive({
   pk: undefined as number | undefined,
   name: '',
+  real_project: null as null | number,
   description: '',
   homepage: null as string | null,
   is_public: true,
@@ -109,6 +112,7 @@ const dataSetup = () => {
   if (props.project) {
     form.pk = props.project.pk
     form.name = props.project.name
+    form.real_project = props.project?.real_project
     form.description = props.project.description
     form.slug = props.project.slug
     form.homepage = props.project.homepage
@@ -135,12 +139,16 @@ const dataSetup = () => {
 
 onMounted(() => dataSetup())
 onUpdated(() => dataSetup())
+
+const projStore = useProject()
+const getProjects = computed(() => projStore.getProjects)
 onBeforeMount(() => {
   emit('aside-visible', false)
   if (!!route.query.parent) {
     form.parent = Number(route.query.parent)
     chkPublic()
   }
+  projStore.fetchProjectList()
 })
 </script>
 
@@ -166,6 +174,18 @@ onBeforeMount(() => {
               required
               placeholder="프로젝트 이름"
             />
+          </CCol>
+        </CRow>
+
+        <CRow class="mb-3">
+          <CFormLabel class="col-form-label text-right col-2">부동산 개발 프로젝트</CFormLabel>
+          <CCol>
+            <CFormSelect v-model.number="form.real_project">
+              <option value="">관련 부동산 개발 프로젝트</option>
+              <option v-for="proj in getProjects" :value="proj.value" :key="proj.value">
+                {{ proj.label }}
+              </option>
+            </CFormSelect>
           </CCol>
         </CRow>
 
