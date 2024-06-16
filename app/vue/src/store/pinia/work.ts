@@ -345,7 +345,7 @@ export const useWork = defineStore('work', () => {
 
   const fetchAllIssueList = (project?: string) =>
     api
-      .get(`/issue/?status__closed=0&project__slug=${project ?? ''}`)
+      .get(`/issue/?project__slug=${project ?? ''}`)
       .then(res => (allIssueList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
