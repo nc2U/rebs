@@ -81,7 +81,7 @@ onBeforeMount(async () => {
           </CFormLabel>
 
           <CCol sm="10" lg="6">
-            <CFormInput v-model="form.name" placeholder="새 버전 이름" required />
+            <CFormInput v-model="form.name" placeholder="업무 범주 이름" required />
           </CCol>
         </CRow>
 
