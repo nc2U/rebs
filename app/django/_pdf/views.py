@@ -12,7 +12,7 @@ from weasyprint import HTML
 from cash.models import ProjectCashBook
 from contract.models import Contract
 from notice.models import SalesBillIssue
-from payment.models import InstallmentPaymentOrder, SpecialPaymentOrder, SpecialDownPay
+from payment.models import InstallmentPaymentOrder, OverDueRule, SpecialPaymentOrder, SpecialDownPay
 
 TODAY = date.today()
 
@@ -148,13 +148,16 @@ def get_due_orders(contract, payment_orders):
     return [o for o in payment_orders if is_due(get_due_date_per_order(contract, o))]
 
 
-def get_late_fee(late_amt, days):
+def get_late_fee(project, late_amt, days):
     """
     :: 회차별 지연 가산금 계산 함수
+    :param project: 프로젝트
     :param late_amt: 지연금액
     :param days: 지연일수
     :return int(floor_fee: 가산금), str(적용 이자율):
     """
+
+    rules = OverDueRule.objects.filter(project=project)
 
     calc_fee = 0
 
@@ -785,7 +788,7 @@ class PdfExportPayments(View):
                 days = prepay_days if diff < 0 else delay_days
                 days = days if diff else 0
 
-                calc = get_late_fee(diff, days)
+                calc = get_late_fee(contract.project, diff, days)
 
                 penalty = calc if diff > 0 else 0
                 discount = calc if diff < 0 else 0
@@ -807,7 +810,7 @@ class PdfExportPayments(View):
                 days = (next_date - paid['due_date']).days if diff else 0
                 days = days if diff > 0 else days * -1
 
-                calc = get_late_fee(diff, days)
+                calc = get_late_fee(contract.project, diff, days)
 
                 penalty = calc if diff > 0 else 0
                 discount = calc if diff < 0 else 0
