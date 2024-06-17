@@ -743,14 +743,15 @@ class PdfExportPayments(View):
                 paid_ord_name = paid_ord_name if paid_ord_name not in ord_list else None
                 ord_list.append(paid_ord_name)  # 납부회차 별칭 리스트 추가
 
-                if curr_amt_total == 0 and paid_pay_code >= 3:
+                if curr_amt_total == 0 and paid_pay_code >= calc_start_pay_code:
                     curr_amt_total = paid_ords[-1]['amount_total'] if paid_ords else None
 
                 if curr_paid_total > curr_amt_total:  # 선납 시 (납부 총액 > 약정 총액)
                     # --------------------------------
                     if is_first_pre:  # calc 약정 개시 전이면
                         # 약정 총액 - 납부 총액 (선납금 추출)
-                        diff = curr_amt_total - curr_paid_total if paid_pay_code and paid_pay_code >= 3 else 0
+                        diff = curr_amt_total - curr_paid_total \
+                            if paid_pay_code and paid_pay_code >= calc_start_pay_code else 0
                         diff = diff if paid[0].deal_date > contract.contractor.contract_date else 0
                         if paid_pay_code >= calc_start_pay_code:
                             is_first_pre = False  # 최초 선납의 경우에만 계산하기 위해 이후 False로 변경
