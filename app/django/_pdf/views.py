@@ -664,7 +664,7 @@ class PdfExportPayments(View):
             response = HttpResponse(pdf, content_type='application/pdf')
             response['Content-Disposition'] = f'attachment; filename="payments_contractor.pdf"'
             return response
-
+    
     @staticmethod
     def get_paid(contract, simple_orders, pub_date, is_past=False):
         """
@@ -694,7 +694,7 @@ class PdfExportPayments(View):
         def get_date(item):
             return item[0].deal_date if isinstance(item, tuple) else item['due_date']
 
-        # Todo --- 범위 지정 소스 개발
+        # 적용시작회차부터 현재 납부 의무 회차까지
         calc_orders = [item for item in simple_orders
                        if item.get('pay_code', 0) >= calc_start_pay_code
                        and is_due(get_due_date_per_order(contract, item))]
@@ -755,7 +755,7 @@ class PdfExportPayments(View):
                         # 약정 총액 - 납부 총액 (선납금 추출)
                         diff = curr_amt_total - curr_paid_total if paid_pay_code and paid_pay_code >= 3 else 0
                         diff = diff if paid[0].deal_date > contract.contractor.contract_date else 0
-                        if paid_pay_code >= 3:
+                        if paid_pay_code >= calc_start_pay_code:
                             is_first_pre = False  # 최초 선납의 경우에만 계산하기 위해 이후 False로 변경
                     else:
                         diff = -paid[0].income
@@ -777,7 +777,7 @@ class PdfExportPayments(View):
                 else:  # 미납 시 (약정 총액 > 납부 총액)
                     # 납부 총액 - 약정 총액(미납금 추출)
                     diff = curr_amt_total - curr_paid_total
-                    if paid_pay_code >= 3:
+                    if paid_pay_code >= calc_start_pay_code:
                         is_first_pre = True  # 미납이 발생된 경우 최초 선납 초기화
                     prepay_days = (pre_date - paid[0].deal_date).days \
                         if ord_i_list and ord_i_list[0] < i and diff else 0
@@ -1007,16 +1007,16 @@ class PdfExportCalculation(View):
                 paid_ord_name = paid_ord_name if paid_ord_name not in ord_list else None
                 ord_list.append(paid_ord_name)  # 납부회차 별칭 리스트 추가
 
-                if curr_amt_total == 0 and paid_pay_code >= 3:
+                if curr_amt_total == 0 and paid_pay_code >= calc_start_pay_code:
                     curr_amt_total = paid_ords[-1]['amount_total'] if paid_ords else None
 
                 if curr_paid_total > curr_amt_total:  # 선납 시 (납부 총액 > 약정 총액)
                     # --------------------------------
                     if is_first_pre:  # calc 약정 개시 전이면
                         # 약정 총액 - 납부 총액 (선납금 추출)
-                        diff = curr_amt_total - curr_paid_total if paid_pay_code and paid_pay_code >= 3 else 0
+                        diff = curr_amt_total - curr_paid_total if paid_pay_code and paid_pay_code >= calc_start_pay_code else 0
                         diff = diff if paid[0].deal_date > contract.contractor.contract_date else 0
-                        if paid_pay_code >= 3:
+                        if paid_pay_code >= calc_start_pay_code:
                             is_first_pre = False  # 최초 선납의 경우에만 계산하기 위해 이후 False로 변경
                     else:
                         diff = -paid[0].income

@@ -224,7 +224,7 @@ onBeforeRouteLeave(() => {
           color="success"
           class="d-flex flex-row-reverse"
           style="font-size: 0.8em"
-          :disabled="!project"
+          :disabled="!project || !contract"
         >
           <span v-show="project && contract" class="mr-3">
             <DatePicker v-model="date" placeholder="발행일자" />
@@ -244,8 +244,8 @@ onBeforeRouteLeave(() => {
             가산(할인) 내역
           </v-btn>
 
-          <v-radio label="일반내역" value="1" class="mt-1" />
-          <v-radio label="담당확인" value="2" class="mt-1" />
+          <v-radio label="일반용(미납내역)" value="1" class="mt-1" />
+          <v-radio label="확인용" value="2" class="mt-1" />
         </v-radio-group>
       </TableTitleRow>
       <CRow>
