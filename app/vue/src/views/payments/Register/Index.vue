@@ -23,15 +23,15 @@ import DatePicker from '@/components/DatePicker/index.vue'
 const paymentId = ref<string>('')
 const date = ref(dateFormat(new Date()))
 
-const pdfPayConf = ref(Cookies.get('pdfPayConf') ?? '1')
+const isGeneral = ref(Cookies.get('isGeneral') ?? '1')
 
-watch(pdfPayConf, newVal => Cookies.set('pdfPayConf', newVal))
+watch(isGeneral, newVal => Cookies.set('isGeneral', newVal))
 
 const paymentUrl = computed(() => {
   const url = '/pdf/payments/'
   const proj = project.value ?? ''
   const cont = contract.value?.pk ?? ''
-  return `${url}?project=${proj}&contract=${cont}&sel=${pdfPayConf.value}&pub_date=${date.value ?? ''}`
+  return `${url}?project=${proj}&contract=${cont}&is_general=${isGeneral.value}&pub_date=${date.value ?? ''}`
 })
 
 const calcUrl = computed(() => {
@@ -217,7 +217,7 @@ onBeforeRouteLeave(() => {
       />
       <TableTitleRow :disabled="!project || !contract" pdf :url="paymentUrl">
         <v-radio-group
-          v-model="pdfPayConf"
+          v-model="isGeneral"
           inline
           size="sm"
           density="compact"
@@ -245,7 +245,7 @@ onBeforeRouteLeave(() => {
           </v-btn>
 
           <v-radio label="일반용(미납내역)" value="1" class="mt-1" />
-          <v-radio label="확인용" value="2" class="mt-1" />
+          <v-radio label="확인용" value="" class="mt-1" />
         </v-radio-group>
       </TableTitleRow>
       <CRow>

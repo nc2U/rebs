@@ -11,9 +11,9 @@
         <tr>
             <td colspan="2"></td>
             <td rowspan="2" class="center" style="padding: 0; letter-spacing: 1.2em;"><h1>분양대금납부확인서</h1></td>
-            {% if pdfSelect == '1' %}
+            {% if is_general == '1' %}
                 <td rowspan="2" class="ba center" style="padding: 0;">직인생략</td>
-            {% elif pdfSelect == '2' %}
+            {% else %}
                 <td class="ba center" style="padding: 0; height: 18px;">납부확인</td>
             {% endif %}
 
@@ -21,7 +21,7 @@
         </tr>
         <tr>
             <td colspan="2"></td>
-            {% if pdfSelect == '2' %}
+            {% if not is_general %}
                 <td class="ba" style="padding: 0; height: 35px;">&nbsp;</td>
             {% endif %}
 

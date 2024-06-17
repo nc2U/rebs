@@ -608,7 +608,7 @@ class PdfExportPayments(View):
         # 계약 건 객체
         cont_id = request.GET.get('contract')
         context['contract'] = contract = get_contract(cont_id)
-        context['pdfSelect'] = pdf_select = request.GET.get('sel')  # 1 = 일반용(할인가산 포함) / 2 = 확인용
+        context['is_general'] = is_general = request.GET.get('is_general')  # 1 = 일반용(할인가산 포함) / 2 = 확인용
 
         # 발행일자
         pub_date = request.GET.get('pub_date', None)
@@ -648,7 +648,7 @@ class PdfExportPayments(View):
         context['simple_orders'] = simple_orders = get_simple_orders(payment_orders, contract, amount)
 
         # 4. 납부목록, 완납금액 구하기 ------------------------------------------
-        paid_dicts, paid_sum_total, calc_sums = self.get_paid(contract, simple_orders, pub_date)
+        paid_dicts, paid_sum_total, calc_sums = self.get_paid(contract, simple_orders, pub_date, is_general)
         context['paid_dicts'] = paid_dicts
         context['paid_sum_total'] = paid_sum_total  # paid_list.aggregate(Sum('income'))['income__sum']  # 기 납부총액
         context['calc_sums'] = calc_sums
@@ -664,14 +664,15 @@ class PdfExportPayments(View):
             response = HttpResponse(pdf, content_type='application/pdf')
             response['Content-Disposition'] = f'attachment; filename="payments_contractor.pdf"'
             return response
-    
+
     @staticmethod
-    def get_paid(contract, simple_orders, pub_date, is_past=False):
+    def get_paid(contract, simple_orders, pub_date, is_general=False, is_past=False):
         """
         :: ■ 기 납부금액 구하기
         :param contract: 계약정보
         :param simple_orders: 회차정보
         :param pub_date: 발행일자
+        :param is_general: True - 일반용 / False - 확인용
         :param is_past: 변경 약정에 의한 가산금 산출 여부
         :return list(paid_list: { 납부 건 딕셔너리 }), int(paid_sum_total: 납부 총액):
         """
@@ -698,6 +699,8 @@ class PdfExportPayments(View):
         calc_orders = [item for item in simple_orders
                        if item.get('pay_code', 0) >= calc_start_pay_code
                        and is_due(get_due_date_per_order(contract, item))]
+
+        calc_orders = calc_orders if is_general else []  # 일반용일 경우에만 적용
 
         combined = zip_pay_list + calc_orders
         sorted_combined = sorted(combined, key=get_date)
@@ -729,7 +732,7 @@ class PdfExportPayments(View):
                 pre_date = first_date
                 next_date = pub_date
 
-            if contract.sup_cont_date:
+            if is_past and contract.sup_cont_date:  #
                 next_date = next_date if contract.sup_cont_date >= next_date else contract.sup_cont_date
 
             if isinstance(paid, tuple):
@@ -990,7 +993,7 @@ class PdfExportCalculation(View):
                 pre_date = first_date
                 next_date = pub_date
 
-            if contract.sup_cont_date:
+            if is_past and contract.sup_cont_date:
                 next_date = next_date if contract.sup_cont_date >= next_date else contract.sup_cont_date
 
             if isinstance(paid, tuple):
