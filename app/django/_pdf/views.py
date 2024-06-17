@@ -55,7 +55,7 @@ def get_paid(contract, simple_orders, pub_date):
         ord_list.append(paid_ord_name)  # 납부회차 별칭 리스트 추가
         diff = [curr_paid_total - o['amount_total'] for o in simple_orders if
                 o['amount_total'] <= curr_paid_total]  # 회차별 납부액누계가 약정액누계 보다 크면 그 차액 리스트 생성
-        diff = diff[len(diff) - 1] if len(diff) else 0  # 당회 과납 차액 추출
+        diff = diff[-1] if diff else 0  # 당회 과납 차액 추출
         paid_dict = {'paid': paid, 'sum': curr_paid_total, 'order': paid_ord_name,
                      'diff': diff}  # {'paid': 회별납부액, 'sum': 회별납부액누계, 'order': '당회 완납 시 별칭', 'diff': 당회 과납차액}
         paid_dict_list.append(paid_dict)
@@ -80,6 +80,7 @@ def get_simple_orders(payment_orders, contract, amount):
         amount_total += amount[order.pay_sort]  # 회차별 약정금 누계
         ord_info = {
             'name': order.alias_name if order.alias_name else order.pay_name,  # 회차별 별칭
+            'pay_code': order.pay_code,
             'due_date': get_due_date_per_order(contract, order, payment_orders),  # 회차별 납부기한
             'amount': amount[order.pay_sort],  # 회차별 약정금
             'amount_total': amount_total,  # 회차별 약정금 누계
@@ -674,7 +675,7 @@ class PdfExportPayments(View):
         :return list(paid_list: { 납부 건 딕셔너리 }), int(paid_sum_total: 납부 총액):
         """
 
-        calc_start_pay_code = 3  # 연체/가산 적용 시작 회차 코드
+        calc_start_pay_code = 4  # 연체/가산 적용 시작 회차 코드
         paid_list = ProjectCashBook.objects.filter(
             income__isnull=False,
             project_account_d3__in=(1, 4),  # 분(부)담금 or 분양수입금
@@ -759,7 +760,7 @@ class PdfExportPayments(View):
                         code = calc_start_pay_code if curr_pay_code == 0 else curr_pay_code + 1
                         next_due_date = [o['due_date'] for o in simple_orders if o.get('pay_code', 0) == code][0]
                     except IndexError:
-                        next_due_date = simple_orders[len(simple_orders) - 1]['due_date']
+                        next_due_date = simple_orders[-1]['due_date']
 
                     prepay_days = (paid[0].deal_date - next_due_date).days
 
@@ -1020,7 +1021,7 @@ class PdfExportCalculation(View):
                         code = calc_start_pay_code if curr_pay_code == 0 else curr_pay_code + 1
                         next_due_date = [o['due_date'] for o in simple_orders if o.get('pay_code', 0) == code][0]
                     except IndexError:
-                        next_due_date = simple_orders[len(simple_orders) - 1]['due_date']
+                        next_due_date = simple_orders[-1]['due_date']
 
                     prepay_days = (paid[0].deal_date - next_due_date).days
 
