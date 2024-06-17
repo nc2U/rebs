@@ -81,7 +81,7 @@ def get_simple_orders(payment_orders, contract, amount):
         ord_info = {
             'name': order.alias_name if order.alias_name else order.pay_name,  # 회차별 별칭
             'pay_code': order.pay_code,
-            'due_date': get_due_date_per_order(contract, order, payment_orders),  # 회차별 납부기한
+            'due_date': get_due_date_per_order(contract, order),  # 회차별 납부기한
             'amount': amount[order.pay_sort],  # 회차별 약정금
             'amount_total': amount_total,  # 회차별 약정금 누계
         }
@@ -115,18 +115,21 @@ def is_due(due_date):
     return due_date and due_date <= TODAY
 
 
-def get_due_date_per_order(contract, order, payment_orders):
+def get_due_date_per_order(contract, order):
     """
     :: 회차 별 납부 일자 구하기
     :param contract: 계약자 객체
     :param order: 납부 회차 객체
-    :param payment_orders: 전체 회차 객체 리스트
     :return str(due_date): 회차 별 약정 납부 일자
     """
 
     due_date = contract.contractor.contract_date  # 계약일 (default 납부기한 = 계약일)
 
-    if order.pay_code >= 2:
+    if type(order) is dict and order.get('pay_code') >= 2:
+        si_date = order.get('days_since_prev', None)
+        pd_date = order.get('pay_due_date', None)
+        ed_date = order.get('extra_due_date', None)
+    elif order.pay_code >= 2:
         si_date = order.days_since_prev
         pd_date = order.pay_due_date
         ed_date = order.extra_due_date
@@ -144,7 +147,7 @@ def get_due_orders(contract, payment_orders):
     :param payment_orders:
     :return: list -> 납부회차 객체
     """
-    return [o for o in payment_orders if is_due(get_due_date_per_order(contract, o, payment_orders))]
+    return [o for o in payment_orders if is_due(get_due_date_per_order(contract, o))]
 
 
 def get_late_fee(late_amt, days):
@@ -396,7 +399,7 @@ class PdfExportBill(View):
 
             payment_dict = {
                 'order': order,
-                'due_date': get_due_date_per_order(contract, order, unpaid_orders),
+                'due_date': get_due_date_per_order(contract, order),
                 'amount': amount,
                 'unpaid': unpaid,
                 'penalty': penalty,
@@ -435,7 +438,7 @@ class PdfExportBill(View):
         late_fee_sum = 0
 
         for order in due_orders:
-            due_date = get_due_date_per_order(contract, order, due_orders)  # 납부기한
+            due_date = get_due_date_per_order(contract, order)  # 납부기한
             ord_info = list(filter(lambda o: o['order'] == order, orders_info))[0]  # 금 회차 orders_info
             amount = ord_info['pay_amount']  # 금 회차 납부 약정액
 
@@ -521,7 +524,7 @@ class PdfExportBill(View):
 
             paid_dict = {
                 'order': order.pay_name,
-                'due_date': get_due_date_per_order(contract, order, remain_orders),
+                'due_date': get_due_date_per_order(contract, order),
                 'amount': amount,
                 'paid_date': '',
                 'paid_amt': 0,
@@ -693,7 +696,11 @@ class PdfExportPayments(View):
         def get_date(item):
             return item[0].deal_date if isinstance(item, tuple) else item['due_date']
 
-        calc_orders = [item for item in simple_orders if item.get('pay_code', 0) >= calc_start_pay_code]
+        # Todo --- 범위 지정 소스 개발
+        calc_orders = [item for item in simple_orders
+                       if item.get('pay_code', 0) >= calc_start_pay_code
+                       and is_due(get_due_date_per_order(contract, item))]
+
         combined = zip_pay_list + calc_orders
         sorted_combined = sorted(combined, key=get_date)
 
@@ -918,7 +925,7 @@ class PdfExportCalculation(View):
             ord_info = {
                 'name': order.alias_name if order.alias_name else order.pay_name,  # 회차별 별칭
                 'pay_code': order.pay_code,
-                'due_date': get_due_date_per_order(contract, order, payment_orders),  # 회차별 납부기한
+                'due_date': get_due_date_per_order(contract, order),  # 회차별 납부기한
                 'amount': amt,  # 회차별 약정금
                 'amount_total': amount_total,  # 회차별 약정금 누계
             }
