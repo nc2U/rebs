@@ -138,7 +138,7 @@ def get_due_date_per_order(contract, order, payment_orders):
 
 def get_due_orders(contract, payment_orders):
     """
-    :: 기도래 납부 회차 객체 리스트 구하기
+    :: 오늘 날짜 기준 기도래 납부 회차 객체 리스트 구하기
     :param contract: 
     :param payment_orders:
     :return: list -> 납부회차 객체
@@ -607,7 +607,7 @@ class PdfExportPayments(View):
         # 계약 건 객체
         cont_id = request.GET.get('contract')
         context['contract'] = contract = get_contract(cont_id)
-        context['pdfSelect'] = request.GET.get('sel')
+        context['pdfSelect'] = pdf_select = request.GET.get('sel')  # 1 = 일반용(할인가산 포함) / 2 = 확인용
 
         # 발행일자
         pub_date = request.GET.get('pub_date', None)
