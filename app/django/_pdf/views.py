@@ -126,9 +126,7 @@ def get_due_date_per_order(contract, order):
     due_date = contract.contractor.contract_date  # 계약일 (default 납부기한 = 계약일)
 
     if type(order) is dict and order.get('pay_code') >= 2:
-        si_date = order.get('days_since_prev', None)
-        pd_date = order.get('pay_due_date', None)
-        ed_date = order.get('extra_due_date', None)
+        due_date = order.get('due_date', None)
     elif order.pay_code >= 2:
         si_date = order.days_since_prev
         pd_date = order.pay_due_date
