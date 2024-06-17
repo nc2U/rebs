@@ -50,7 +50,7 @@ def get_paid(contract, simple_orders, pub_date):
         curr_paid_total = paid_sum_list[i]  # 회차별 납부액 누계 추출
         # 약정액누계 보다 납부액 누계가 큰(<=)인 회차 별칭 리스트
         paid_ords = [o['name'] for o in list(filter(lambda o: o['amount_total'] <= curr_paid_total, simple_orders))]
-        paid_ord_name = paid_ords[len(paid_ords) - 1] if len(paid_ords) > 0 else None  # 당회 완납이면 회차 별칭 추출
+        paid_ord_name = paid_ords[-1] if paid_ords else None  # 당회 완납이면 회차 별칭 추출
         paid_ord_name = paid_ord_name if paid_ord_name not in ord_list else None  # ord_list 요소와 중복이 아니면 완납회차 별칭 추출
         ord_list.append(paid_ord_name)  # 납부회차 별칭 리스트 추가
         diff = [curr_paid_total - o['amount_total'] for o in simple_orders if
@@ -733,15 +733,15 @@ class PdfExportPayments(View):
                 paid_ords = [o for o in list(filter(lambda o: o['amount_total'] <= curr_paid_total, simple_orders))]
 
                 # 당회 완납이면 회차 별칭 추출
-                paid_pay_code = paid_ords[len(paid_ords) - 1]['pay_code'] if paid_ords else 0
-                paid_ord_name = paid_ords[len(paid_ords) - 1]['name'] if paid_ords else None
+                paid_pay_code = paid_ords[-1]['pay_code'] if paid_ords else 0
+                paid_ord_name = paid_ords[-1]['name'] if paid_ords else None
 
                 # ord_list 요소와 중복이 아니면 완납회차 별칭 추출
                 paid_ord_name = paid_ord_name if paid_ord_name not in ord_list else None
                 ord_list.append(paid_ord_name)  # 납부회차 별칭 리스트 추가
 
                 if curr_amt_total == 0 and paid_pay_code >= 3:
-                    curr_amt_total = paid_ords[len(paid_ords) - 1]['amount_total'] if paid_ords else None
+                    curr_amt_total = paid_ords[-1]['amount_total'] if paid_ords else None
 
                 if curr_paid_total > curr_amt_total:  # 선납 시 (납부 총액 > 약정 총액)
                     # --------------------------------
@@ -994,15 +994,15 @@ class PdfExportCalculation(View):
                 paid_ords = [o for o in list(filter(lambda o: o['amount_total'] <= curr_paid_total, simple_orders))]
 
                 # 당회 완납이면 회차 별칭 추출
-                paid_pay_code = paid_ords[len(paid_ords) - 1]['pay_code'] if paid_ords else 0
-                paid_ord_name = paid_ords[len(paid_ords) - 1]['name'] if paid_ords else None
+                paid_pay_code = paid_ords[-1]['pay_code'] if paid_ords else 0
+                paid_ord_name = paid_ords[-1]['name'] if paid_ords else None
 
                 # ord_list 요소와 중복이 아니면 완납회차 별칭 추출
                 paid_ord_name = paid_ord_name if paid_ord_name not in ord_list else None
                 ord_list.append(paid_ord_name)  # 납부회차 별칭 리스트 추가
 
                 if curr_amt_total == 0 and paid_pay_code >= 3:
-                    curr_amt_total = paid_ords[len(paid_ords) - 1]['amount_total'] if paid_ords else None
+                    curr_amt_total = paid_ords[-1]['amount_total'] if paid_ords else None
 
                 if curr_paid_total > curr_amt_total:  # 선납 시 (납부 총액 > 약정 총액)
                     # --------------------------------
