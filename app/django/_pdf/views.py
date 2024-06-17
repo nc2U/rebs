@@ -666,14 +666,13 @@ class PdfExportPayments(View):
             return response
 
     @staticmethod
-    def get_paid(contract, simple_orders, pub_date, is_general=False, is_past=False):
+    def get_paid(contract, simple_orders, pub_date, is_general):
         """
         :: ■ 기 납부금액 구하기
         :param contract: 계약정보
         :param simple_orders: 회차정보
         :param pub_date: 발행일자
         :param is_general: True - 일반용 / False - 확인용
-        :param is_past: 변경 약정에 의한 가산금 산출 여부
         :return list(paid_list: { 납부 건 딕셔너리 }), int(paid_sum_total: 납부 총액):
         """
 
@@ -684,8 +683,6 @@ class PdfExportPayments(View):
             contract=contract,
             deal_date__lte=pub_date
         ).order_by('deal_date', 'id')  # 해당 계약 건 납부 데이터
-
-        paid_list = paid_list.filter(installment_order__pay_sort='1') if is_past else paid_list
 
         pay_list = [p.income for p in paid_list]  # 입금액 추출 리스트
         paid_sum_list = list(accumulate(pay_list))  # 입금액 리스트를 시간 순 누계액 리스트로 변경
@@ -731,9 +728,6 @@ class PdfExportPayments(View):
             except IndexError:  # 마지막은 발행일
                 pre_date = first_date
                 next_date = pub_date
-
-            if is_past and contract.sup_cont_date:  #
-                next_date = next_date if contract.sup_cont_date >= next_date else contract.sup_cont_date
 
             if isinstance(paid, tuple):
                 curr_paid_total = paid[1]  # 납부 금액 누계 추출 기록

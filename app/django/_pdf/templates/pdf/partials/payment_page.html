@@ -82,8 +82,8 @@
             <td class="right br bb">{{ due_amount|default:"-"|intcomma }}</td>
             <td class="right br bb">{{ paid_sum_total|default:"-"|intcomma }}</td>
             <td class="right br bb">{{ price|sub:paid_sum_total|default:"-"|intcomma }}</td>
-            <td class="right br bb">-</td>
-            <td class="right bb">-</td>
+            <td class="right br bb">{{ calc_sums.0|default:"-"|intcomma }}</td>
+            <td class="right bb">{{ calc_sums.1|default:"-"|intcomma }}</td>
         </tr>
         <tr>
           <td class="title center br bb2">추가납부</td>
@@ -133,9 +133,9 @@
                         <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{{ p.paid.income|default:"-"|intcomma }}</td>
                         <td class="center br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{{ p.order|default:"" }}</td>
                         <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{{ p.diff|default:"-"|intcomma }}</td>
-                        <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}"></td>
-                        <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}"></td>
-                        <td class="right bt {% if forloop.last %}bb2{% else %}bb{% endif %}"></td>
+                        <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{{ p.delay_days|default:"" }}</td>
+                        <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{{ p.penalty|default:""|intcomma }}</td>
+                        <td class="right bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{{ p.discount|default:""|intcomma }}</td>
                     </tr>
                 {% endfor %}
             </table>
