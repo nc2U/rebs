@@ -12,7 +12,8 @@ from weasyprint import HTML
 from cash.models import ProjectCashBook
 from contract.models import Contract
 from notice.models import SalesBillIssue
-from payment.models import InstallmentPaymentOrder, OverDueRule, SpecialPaymentOrder, SpecialDownPay
+from payment.models import (InstallmentPaymentOrder, OverDueRule,
+                            SpecialPaymentOrder, SpecialDownPay, SpecialOverDueRule)
 
 TODAY = date.today()
 
@@ -159,31 +160,32 @@ def get_late_fee(project, late_amt, days):
 
     rules = OverDueRule.objects.filter(project=project)
 
-    # calc_fee = 0
-    #
-    # if days < 0:
-    #     rate = 0.04
-    # elif days <= 29:
-    #     rate = 0.08
-    # elif days <= 90:
-    #     calc_fee = late_amt * 0.00635616438356164  # a = late_amt * 29 * 8%/year
-    #     rate = 0.1
-    #     days = days - 29
-    #
-    # elif days <= 180:
-    #     calc_fee = late_amt * 0.0230684931506849  # b = a + (late_amt * 61 * 10%/year)
-    #     rate = 0.11
-    #     days = days - 90
-    # else:
-    #     calc_fee = late_amt * 0.0501917808219178  # c = b + (late_amt * 90 * 11%/year)
-    #     rate = 0.12
-    #     days = days - 180
-    #
-    # floor_fee = int(calc_fee + (late_amt * days * rate / 365))
+    calc_fee = 0
+    calc_days = 0
 
-    floor_fee = int(late_amt * days * 8.04 / 365)
+    for rule in rules:
+        start = rule.term_start
+        end = rule.term_end
+        rate = rule.rate_year
 
-    return floor_fee
+        if start is None and (end is None or end <= 0):  # 단일 가산율 적용 이거나 선납인 경우
+            return int(late_amt * days * rate / 365)
+        elif start > 0 and end > 0:  # 특정 기간 동안 연체인 경우
+            if start is 1:  # 연체 시작 구간일 경우
+                if days <= end:
+                    return int(late_amt * days * rate / 365)
+                else:
+                    calc_fee += late_amt * end * rate / 365
+                    calc_days = end
+            else:  # 연체 진행 구간일 경우
+                if days <= end:
+                    return int(late_amt * (days - calc_days) * rate / 365)
+                else:
+                    calc_fee += late_amt * (end - calc_days) * rate / 365
+                    calc_days = end
+
+        elif start > 0 and end is None:  # 특정 기간 이상 연체인 경우
+            return int(calc_fee + (late_amt * (days - calc_days) * rate / 365))
 
 
 class PdfExportBill(View):
@@ -1129,3 +1131,42 @@ class PdfExportCalculation(View):
         floor_fee = int(calc_fee + (late_amt * days * rate / 365))
 
         return floor_fee
+
+    @staticmethod
+    def get_late_fee(project, late_amt, days):
+        """
+        :: 회차별 지연 가산금 계산 함수
+        :param project: 프로젝트
+        :param late_amt: 지연금액
+        :param days: 지연일수
+        :return int(floor_fee: 가산금), str(적용 이자율):
+        """
+
+        rules = SpecialOverDueRule.objects.filter(project=project)
+
+        calc_fee = 0
+        calc_days = 0
+
+        for rule in rules:
+            start = rule.term_start
+            end = rule.term_end
+            rate = rule.rate_year
+
+            if start is None and (end is None or end <= 0):  # 단일 가산율 적용 이거나 선납인 경우
+                return int(late_amt * days * rate / 365)
+            elif start > 0 and end > 0:  # 특정 기간 동안 연체인 경우
+                if start is 1:  # 연체 시작 구간일 경우
+                    if days <= end:
+                        return int(late_amt * days * rate / 365)
+                    else:
+                        calc_fee += late_amt * end * rate / 365
+                        calc_days = end
+                else:  # 연체 진행 구간일 경우
+                    if days <= end:
+                        return int(late_amt * (days - calc_days) * rate / 365)
+                    else:
+                        calc_fee += late_amt * (end - calc_days) * rate / 365
+                        calc_days = end
+
+            elif start > 0 and end is None:  # 특정 기간 이상 연체인 경우
+                return int(calc_fee + (late_amt * (days - calc_days) * rate / 365))
