@@ -67,9 +67,9 @@ class DownPayment(models.Model):
 
 class OverDueRule(models.Model):
     project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
-    term_start = models.IntegerField('최소연체일', null=True, blank=True, help_text='비어 있을 경우 최대 음수')
-    term_end = models.IntegerField('최대연체일', null=True, blank=True, help_text='비어 있을 경우 최대 양수')
-    rate_year = models.DecimalField('연체이율', max_digits=4, decimal_places=2)
+    term_start = models.IntegerField('최소연체(선납)일', null=True, blank=True, help_text='비어 있을 경우 최대 음수')
+    term_end = models.IntegerField('최대연체(선납)일', null=True, blank=True, help_text='비어 있을 경우 최대 양수')
+    rate_year = models.DecimalField('연체(할인)이율', max_digits=4, decimal_places=2, help_text='연체일이 0 또는 음수 구간인 경우 할인 적용')
 
     def __str__(self):
         ts = str(self.term_start) + '일' if self.term_start != None else 'Min'
@@ -126,9 +126,9 @@ class SpecialDownPay(models.Model):
 
 class SpecialOverDueRule(models.Model):  # 가산금 / 할인액 계산을 위한 별도 테이블
     project = models.ForeignKey('project.Project', on_delete=models.CASCADE, verbose_name='프로젝트')
-    term_start = models.IntegerField('최소연체일', null=True, blank=True, help_text='비어 있을 경우 최대 음수')
-    term_end = models.IntegerField('최대연체일', null=True, blank=True, help_text='비어 있을 경우 최대 양수')
-    rate_year = models.DecimalField('연체이율', max_digits=4, decimal_places=2)
+    term_start = models.IntegerField('최소연체(선납)일', null=True, blank=True, help_text='비어 있을 경우 최대 음수')
+    term_end = models.IntegerField('최대연체(선납)일', null=True, blank=True, help_text='비어 있을 경우 최대 양수')
+    rate_year = models.DecimalField('연체(할인)이율', max_digits=4, decimal_places=2, help_text='연체일이 0 또는 음수 구간인 경우 할인 적용')
 
     def __str__(self):
         ts = str(self.term_start) + '일' if self.term_start != None else 'Min'
