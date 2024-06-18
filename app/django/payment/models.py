@@ -77,7 +77,7 @@ class OverDueRule(models.Model):
         return f'{ts} - {te}'
 
     class Meta:
-        ordering = ('-id',)
+        ordering = ('-project', 'term_start', 'term_end')
         verbose_name = '04. 선납할인/연체이율 관리'
         verbose_name_plural = '04. 선납할인/연체이율 관리'
 
@@ -136,6 +136,6 @@ class SpecialOverDueRule(models.Model):  # 가산금 / 할인액 계산을 위�
         return f'{ts} - {te}'
 
     class Meta:
-        ordering = ('-id',)
+        ordering = ('-project', 'term_start', 'term_end')
         verbose_name = '07. 특별 선납할인/연체이율'
         verbose_name_plural = '07. 특별 선납할인/연체이율'
