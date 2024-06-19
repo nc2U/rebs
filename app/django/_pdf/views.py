@@ -1061,8 +1061,8 @@ class PdfExportCalculation(View):
                 days = prepay_days if diff < 0 else delay_days
                 days = days if diff else 0
 
-                # calc = self.get_late_fee(contract.project, diff, days)
-                calc = self.get_past_late_fee(diff, days)
+                calc = self.get_late_fee(contract.project, diff, days)
+                # calc = self.get_past_late_fee(diff, days)
 
                 penalty = calc if diff > 0 else 0
                 discount = calc if diff < 0 else 0
@@ -1084,8 +1084,8 @@ class PdfExportCalculation(View):
                 days = (next_date - paid['due_date']).days if diff else 0
                 days = days if diff > 0 else days * -1
 
-                # calc = self.get_late_fee(contract.project, diff, days)
-                calc = self.get_past_late_fee(diff, days)
+                calc = self.get_late_fee(contract.project, diff, days)
+                # calc = self.get_past_late_fee(diff, days)
 
                 penalty = calc if diff > 0 else 0
                 discount = calc if diff < 0 else 0
