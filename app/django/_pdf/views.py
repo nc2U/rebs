@@ -82,7 +82,7 @@ def get_simple_orders(payment_orders, contract, amount):
         ord_info = {
             'name': order.alias_name if order.alias_name else order.pay_name,  # 회차별 별칭
             'pay_code': order.pay_code,
-            'due_date': get_due_date_per_order(contract, order),  # 회차별 납부기한
+            'due_date': get_due_date_per_order(contract, order, payment_orders),  # 회차별 납부기한
             'amount': amount[order.pay_sort],  # 회차별 약정금
             'amount_total': amount_total,  # 회차별 약정금 누계
         }
@@ -116,11 +116,12 @@ def is_due(due_date):
     return due_date and due_date <= TODAY
 
 
-def get_due_date_per_order(contract, order):
+def get_due_date_per_order(contract, order, payment_orders):
     """
     :: 회차 별 납부 일자 구하기
     :param contract: 계약자 객체
     :param order: 납부 회차 객체
+    :param payment_orders: 납부 회차 컬렉션
     :return str(due_date): 회차 별 약정 납부 일자
     """
 
@@ -133,9 +134,16 @@ def get_due_date_per_order(contract, order):
         pd_date = order.pay_due_date
         ed_date = order.extra_due_date
 
-        due_date = due_date + timedelta(days=si_date) if si_date else None
-        due_date = pd_date if pd_date and pd_date else due_date
-        due_date = ed_date if ed_date and ed_date else due_date
+        due_date = due_date + timedelta(days=si_date) if si_date else ed_date or pd_date
+
+        if order.pay_code > 2:
+            pre_ord = payment_orders.filter(pay_code__lt=order.pay_code).last()
+            pre_si = pre_ord.days_since_prev
+            pre_pd = pre_ord.pay_due_date
+            pre_ed = pre_ord.extra_due_date
+            pre_due = due_date + timedelta(days=pre_si) if pre_si else pre_ed or pre_pd
+            due_date = due_date if pre_due and due_date > pre_due else pre_due
+
     return due_date
 
 
@@ -146,7 +154,7 @@ def get_due_orders(contract, payment_orders):
     :param payment_orders:
     :return: list -> 납부회차 객체
     """
-    return [o for o in payment_orders if is_due(get_due_date_per_order(contract, o))]
+    return [o for o in payment_orders if is_due(get_due_date_per_order(contract, o, payment_orders))]
 
 
 def get_late_fee(project, late_amt, days):
@@ -412,7 +420,7 @@ class PdfExportBill(View):
 
             payment_dict = {
                 'order': order,
-                'due_date': get_due_date_per_order(contract, order),
+                'due_date': get_due_date_per_order(contract, order, unpaid_orders),
                 'amount': amount,
                 'unpaid': unpaid,
                 'penalty': penalty,
@@ -451,7 +459,7 @@ class PdfExportBill(View):
         late_fee_sum = 0
 
         for order in due_orders:
-            due_date = get_due_date_per_order(contract, order)  # 납부기한
+            due_date = get_due_date_per_order(contract, order, due_orders)  # 납부기한
             ord_info = list(filter(lambda o: o['order'] == order, orders_info))[0]  # 금 회차 orders_info
             amount = ord_info['pay_amount']  # 금 회차 납부 약정액
 
@@ -537,7 +545,7 @@ class PdfExportBill(View):
 
             paid_dict = {
                 'order': order.pay_name,
-                'due_date': get_due_date_per_order(contract, order),
+                'due_date': get_due_date_per_order(contract, order, remain_orders),
                 'amount': amount,
                 'paid_date': '',
                 'paid_amt': 0,
@@ -710,7 +718,7 @@ class PdfExportPayments(View):
         # 적용시작회차부터 현재 납부 의무 회차까지
         calc_orders = [item for item in simple_orders
                        if item.get('pay_code', 0) >= calc_start_pay_code
-                       and is_due(get_due_date_per_order(contract, item))]
+                       and is_due(get_due_date_per_order(contract, item, simple_orders))]
 
         calc_orders = calc_orders if is_general else []  # 일반용일 경우에만 적용
 
@@ -936,7 +944,7 @@ class PdfExportCalculation(View):
             ord_info = {
                 'name': order.alias_name if order.alias_name else order.pay_name,  # 회차별 별칭
                 'pay_code': order.pay_code,
-                'due_date': get_due_date_per_order(contract, order),  # 회차별 납부기한
+                'due_date': get_due_date_per_order(contract, order, payment_orders),  # 회차별 납부기한
                 'amount': amt,  # 회차별 약정금
                 'amount_total': amount_total,  # 회차별 약정금 누계
             }
