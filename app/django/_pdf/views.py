@@ -187,7 +187,7 @@ def get_late_fee(project, late_amt, days):
                     calc_days = end
             else:  # 연체 진행 구간일 경우
                 if days <= end:
-                    return int(late_amt * (days - calc_days) * rate / 365)
+                    return int(calc_fee + (late_amt * (days - calc_days) * rate / 365))
                 else:
                     calc_fee += late_amt * (end - calc_days) * rate / 365
                     calc_days = end
@@ -1146,7 +1146,7 @@ class PdfExportCalculation(View):
                         calc_days = end
                 else:  # 연체 진행 구간일 경우
                     if days <= end:
-                        return int(late_amt * (days - calc_days) * rate / 365)
+                        return int(calc_fee + (late_amt * (days - calc_days) * rate / 365))
                     else:
                         calc_fee += late_amt * (end - calc_days) * rate / 365
                         calc_days = end
