@@ -125,7 +125,8 @@ def get_due_date_per_order(contract, order, payment_orders):
     :return str(due_date): 회차 별 약정 납부 일자
     """
 
-    due_date = contract.contractor.contract_date  # 계약일 (default 납부기한 = 계약일)
+    cont_date = contract.contractor.contract_date  # 계약일 (default 납부기한 = 계약일)
+    due_date = cont_date
 
     if type(order) is dict and order.get('pay_code') >= 2:
         due_date = order.get('due_date', None)
@@ -134,15 +135,15 @@ def get_due_date_per_order(contract, order, payment_orders):
         pd_date = order.pay_due_date
         ed_date = order.extra_due_date
 
-        due_date = due_date + timedelta(days=si_date) if si_date else ed_date or pd_date
+        due_date = cont_date + timedelta(days=si_date) if si_date else ed_date or pd_date
 
-        if order.pay_code > 2:
-            pre_ord = payment_orders.filter(pay_code__lt=order.pay_code).last()
-            pre_si = pre_ord.days_since_prev
-            pre_pd = pre_ord.pay_due_date
-            pre_ed = pre_ord.extra_due_date
-            pre_due = due_date + timedelta(days=pre_si) if pre_si else pre_ed or pre_pd
-            due_date = due_date if pre_due and due_date > pre_due else pre_due
+        if order.pay_code >= 3:
+            pre_ords = payment_orders.filter(pay_code__lt=order.pay_code)
+            pre_si = pre_ords.aggregate(total=Sum('days_since_prev'))['total']
+            si_due = cont_date + timedelta(days=pre_si)
+
+            due = ed_date or pd_date
+            due_date = due if due > si_due else si_due
 
     return due_date
 
@@ -998,7 +999,10 @@ class PdfExportCalculation(View):
 
         for i, paid in enumerate(sorted_combined):  # 입금액 리스트를 순회
             if i == 0:
-                first_date = paid[0].deal_date
+                try:
+                    first_date = paid[0].deal_date
+                except KeyError:
+                    pass
 
             try:  # 이전 / 다음 회차 납부일 or 약정일
                 pre_date = sorted_combined[i - 1][0].deal_date \
