@@ -103,7 +103,7 @@ export interface PaymentPaid {
   installment_order: string
   bank_account: string
   trader: string
-  // note: string
+  note: string
 }
 
 interface ContractInPayment {

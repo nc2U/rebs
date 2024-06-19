@@ -58,6 +58,9 @@ const payMatch = (payload: ProjectCashBook) => emit('pay-match', payload)
       <router-link to="" @click="toManage">
         {{ payment.contract ? payment.contractor : '계약정보 확인' }}
       </router-link>
+      <v-tooltip activator="parent" location="top">
+        {{ payment.trader }} / {{ payment.note }}
+      </v-tooltip>
     </CTableDataCell>
     <CTableDataCell class="text-right">
       <router-link to="" @click="toManage">
