@@ -228,7 +228,7 @@ onBeforeRouteLeave(() => {
         >
           <span v-show="project && contract" class="mr-3">
             <DatePicker v-model="date" placeholder="발행일자" />
-            <v-tooltip activator="parent" location="right">발행일자</v-tooltip>
+            <v-tooltip activator="parent" location="top">발행일자</v-tooltip>
           </span>
 
           <v-btn
@@ -244,8 +244,14 @@ onBeforeRouteLeave(() => {
             가산(할인) 내역
           </v-btn>
 
-          <v-radio label="일반용(미납내역)" value="1" class="mt-1" />
-          <v-radio label="확인용" value="" class="mt-1" />
+          <span>
+            <v-radio label="일반용(미납내역)" value="1" class="mt-1" />
+            <v-tooltip activator="parent" location="top">연체/가산정보 포함</v-tooltip>
+          </span>
+          <span>
+            <v-radio label="확인용" value="" class="mt-1" />
+            <v-tooltip activator="parent" location="top">연체/가산정보 미포함</v-tooltip>
+          </span>
         </v-radio-group>
       </TableTitleRow>
       <CRow>
