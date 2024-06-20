@@ -279,9 +279,6 @@ class PdfExportBill(View):
         price_build = cont_price.price_build
         price_land = cont_price.price_land
         price_tax = cont_price.price_tax
-        down = cont_price.down_pay
-        middle = cont_price.middle_pay
-        remain = cont_price.remain_pay
 
         bill_data['price'] = price if unit else '동호 지정 후 고지'  # 이 건 분양가격
         bill_data['price_build'] = price_build if unit else '-'  # 이 건 건물가
@@ -293,8 +290,12 @@ class PdfExportBill(View):
         # --------------------------------------------------------------
 
         # 해당 계약 건의 회차별 관련 정보
+        down = cont_price.down_pay
+        middle = cont_price.middle_pay
+        remain = cont_price.remain_pay
         amount = {'1': down, '2': middle, '3': remain}
         orders_info = self.get_orders_info(payment_orders, amount, paid_sum_total)
+
         # 완납 회차
         paid_code = self.get_paid_code(orders_info, paid_sum_total)
 
@@ -377,6 +378,7 @@ class PdfExportBill(View):
         cont_date = contract.contractor.contract_date
         cont_no = contract.keyunit.houseunit if unit else contract.serial_number
         cont_type = contract.keyunit.unit_type
+
         return {
             'contractor': contractor,
             'cont_date': cont_date,
