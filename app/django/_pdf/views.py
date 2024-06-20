@@ -1095,6 +1095,7 @@ class PdfExportCalculation(View):
                 curr_amt_total = paid['amount_total']  # 현재 약정금 합계
 
                 diff = curr_amt_total - curr_paid_total if is_first_pre else 0
+                is_first_pre = True
 
                 days = (next_date - paid['due_date']).days if diff else 0
                 days = days if diff > 0 else days * -1
