@@ -3689,8 +3689,8 @@
       "sort": 1,
       "d2": 3,
       "code": "821",
-      "name": "영업외 수익(이자수입)",
-      "description": "영업외 수익(이자수입)"
+      "name": "영업외 수익(출자금 - 위약금수입)",
+      "description": "출자금에 대한 위약금 수익"
     }
   },
   {
@@ -3700,8 +3700,8 @@
       "sort": 1,
       "d2": 3,
       "code": "822",
-      "name": "영업외 수익(기타잡수입)",
-      "description": "영업외 수익(기타잡수입)"
+      "name": "영업외 수익(출자금 - 가산금수입)",
+      "description": "출자금에 대한 가산금 수익"
     }
   },
   {
@@ -3711,8 +3711,8 @@
       "sort": 1,
       "d2": 3,
       "code": "823",
-      "name": "영업외 수익(위약금수입)",
-      "description": "영업외 수익(위약금수입)"
+      "name": "영업외 수익(매출금 - 위약금수입)",
+      "description": "매출금에 대한 위약금 수익"
     }
   },
   {
@@ -3720,10 +3720,10 @@
     "pk": 10,
     "fields": {
       "sort": 1,
-      "d2": 4,
-      "code": "211",
-      "name": "차입금(브리지)",
-      "description": "브리지 대출"
+      "d2": 3,
+      "code": "824",
+      "name": "영업외 수익(매출금 - 가산금수입)",
+      "description": "매출금에 대한 가산금 수익"
     }
   },
   {
@@ -3731,10 +3731,10 @@
     "pk": 11,
     "fields": {
       "sort": 1,
-      "d2": 4,
-      "code": "212",
-      "name": "차입금(PF대출)",
-      "description": "PF 대출"
+      "d2": 3,
+      "code": "825",
+      "name": "영업외 수익(이자수입)",
+      "description": "영업외 수익(이자수입)"
     }
   },
   {
@@ -3742,10 +3742,10 @@
     "pk": 12,
     "fields": {
       "sort": 1,
-      "d2": 4,
-      "code": "213",
-      "name": "차입금(기타)",
-      "description": "기타 차입금"
+      "d2": 3,
+      "code": "826",
+      "name": "영업외 수익(기타잡수입)",
+      "description": "영업외 수익(기타잡수입)"
     }
   },
   {
@@ -3754,6 +3754,39 @@
     "fields": {
       "sort": 2,
       "d2": 4,
+      "code": "211",
+      "name": "차입금(브리지)",
+      "description": "브리지 대출"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd3",
+    "pk": 14,
+    "fields": {
+      "sort": 2,
+      "d2": 4,
+      "code": "212",
+      "name": "차입금(PF대출)",
+      "description": "PF 대출"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd3",
+    "pk": 15,
+    "fields": {
+      "sort": 2,
+      "d2": 4,
+      "code": "213",
+      "name": "차입금(기타)",
+      "description": "기타 차입금"
+    }
+  },
+  {
+    "model": "rebs.projectaccountd3",
+    "pk": 16,
+    "fields": {
+      "sort": 1,
+      "d2": 4,
       "code": "214",
       "name": "[상환]→차입금(브리지)",
       "description": "브리지 대출 상환"
@@ -3761,7 +3794,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 14,
+    "pk": 17,
     "fields": {
       "sort": 2,
       "d2": 4,
@@ -3772,7 +3805,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 15,
+    "pk": 18,
     "fields": {
       "sort": 2,
       "d2": 4,
@@ -3783,7 +3816,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 16,
+    "pk": 19,
     "fields": {
       "sort": 1,
       "d2": 5,
@@ -3794,7 +3827,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 17,
+    "pk": 20,
     "fields": {
       "sort": 2,
       "d2": 5,
@@ -3805,7 +3838,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 18,
+    "pk": 21,
     "fields": {
       "sort": 2,
       "d2": 6,
@@ -3816,9 +3849,9 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 19,
+    "pk": 22,
     "fields": {
-      "sort": 1,
+      "sort": 2,
       "d2": 6,
       "code": "322",
       "name": "[회수]→대여금",
@@ -3827,9 +3860,9 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 20,
+    "pk": 23,
     "fields": {
-      "sort": 2,
+      "sort": 1,
       "d2": 7,
       "code": "326",
       "name": "기타자산(법원공탁금)",
@@ -3838,9 +3871,9 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 21,
+    "pk": 24,
     "fields": {
-      "sort": 2,
+      "sort": 1,
       "d2": 7,
       "code": "327",
       "name": "기타자산(보증금·예치금)",
@@ -3849,9 +3882,9 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 22,
+    "pk": 25,
     "fields": {
-      "sort": 2,
+      "sort": 1,
       "d2": 7,
       "code": "328",
       "name": "기타자산(중도금이자대납)",
@@ -3860,9 +3893,9 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 23,
+    "pk": 26,
     "fields": {
-      "sort": 1,
+      "sort": 2,
       "d2": 7,
       "code": "321",
       "name": "[회수]→기타자산(법원공탁금)",
@@ -3871,9 +3904,9 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 24,
+    "pk": 27,
     "fields": {
-      "sort": 1,
+      "sort": 2,
       "d2": 7,
       "code": "322",
       "name": "[회수]→기타자산(보증금·예치금)",
@@ -3882,9 +3915,9 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 25,
+    "pk": 28,
     "fields": {
-      "sort": 1,
+      "sort": 2,
       "d2": 7,
       "code": "323",
       "name": "[회수]→기타자산(중도금이자대납)",
@@ -3893,7 +3926,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 26,
+    "pk": 29,
     "fields": {
       "sort": 2,
       "d2": 8,
@@ -3904,7 +3937,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 27,
+    "pk": 30,
     "fields": {
       "sort": 2,
       "d2": 8,
@@ -3915,7 +3948,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 28,
+    "pk": 31,
     "fields": {
       "sort": 2,
       "d2": 8,
@@ -3926,7 +3959,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 29,
+    "pk": 32,
     "fields": {
       "sort": 2,
       "d2": 8,
@@ -3937,7 +3970,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 30,
+    "pk": 33,
     "fields": {
       "sort": 2,
       "d2": 9,
@@ -3948,7 +3981,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 31,
+    "pk": 34,
     "fields": {
       "sort": 2,
       "d2": 9,
@@ -3959,7 +3992,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 32,
+    "pk": 35,
     "fields": {
       "sort": 2,
       "d2": 9,
@@ -3970,7 +4003,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 33,
+    "pk": 36,
     "fields": {
       "sort": 2,
       "d2": 9,
@@ -3981,7 +4014,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 34,
+    "pk": 37,
     "fields": {
       "sort": 2,
       "d2": 10,
@@ -3992,7 +4025,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 35,
+    "pk": 38,
     "fields": {
       "sort": 2,
       "d2": 10,
@@ -4003,7 +4036,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 36,
+    "pk": 39,
     "fields": {
       "sort": 2,
       "d2": 10,
@@ -4014,7 +4047,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 37,
+    "pk": 40,
     "fields": {
       "sort": 2,
       "d2": 10,
@@ -4025,7 +4058,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 38,
+    "pk": 41,
     "fields": {
       "sort": 2,
       "d2": 11,
@@ -4036,7 +4069,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 39,
+    "pk": 42,
     "fields": {
       "sort": 2,
       "d2": 11,
@@ -4047,7 +4080,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 40,
+    "pk": 43,
     "fields": {
       "sort": 2,
       "d2": 11,
@@ -4058,7 +4091,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 41,
+    "pk": 44,
     "fields": {
       "sort": 2,
       "d2": 11,
@@ -4069,7 +4102,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 42,
+    "pk": 45,
     "fields": {
       "sort": 2,
       "d2": 11,
@@ -4080,7 +4113,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 43,
+    "pk": 46,
     "fields": {
       "sort": 2,
       "d2": 12,
@@ -4091,7 +4124,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 44,
+    "pk": 47,
     "fields": {
       "sort": 2,
       "d2": 12,
@@ -4102,7 +4135,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 45,
+    "pk": 48,
     "fields": {
       "sort": 2,
       "d2": 13,
@@ -4113,7 +4146,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 46,
+    "pk": 49,
     "fields": {
       "sort": 2,
       "d2": 13,
@@ -4124,7 +4157,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 47,
+    "pk": 50,
     "fields": {
       "sort": 2,
       "d2": 13,
@@ -4135,7 +4168,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 48,
+    "pk": 51,
     "fields": {
       "sort": 2,
       "d2": 13,
@@ -4146,7 +4179,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 49,
+    "pk": 52,
     "fields": {
       "sort": 2,
       "d2": 13,
@@ -4157,7 +4190,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 50,
+    "pk": 53,
     "fields": {
       "sort": 2,
       "d2": 13,
@@ -4168,7 +4201,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 51,
+    "pk": 54,
     "fields": {
       "sort": 2,
       "d2": 13,
@@ -4179,7 +4212,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 52,
+    "pk": 55,
     "fields": {
       "sort": 2,
       "d2": 13,
@@ -4190,7 +4223,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 53,
+    "pk": 56,
     "fields": {
       "sort": 2,
       "d2": 13,
@@ -4201,7 +4234,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 54,
+    "pk": 57,
     "fields": {
       "sort": 2,
       "d2": 13,
@@ -4212,7 +4245,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 55,
+    "pk": 58,
     "fields": {
       "sort": 2,
       "d2": 14,
@@ -4223,7 +4256,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 56,
+    "pk": 59,
     "fields": {
       "sort": 2,
       "d2": 14,
@@ -4234,7 +4267,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 57,
+    "pk": 60,
     "fields": {
       "sort": 2,
       "d2": 14,
@@ -4245,7 +4278,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 58,
+    "pk": 61,
     "fields": {
       "sort": 2,
       "d2": 14,
@@ -4256,7 +4289,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 59,
+    "pk": 62,
     "fields": {
       "sort": 2,
       "d2": 14,
@@ -4267,7 +4300,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 60,
+    "pk": 63,
     "fields": {
       "sort": 2,
       "d2": 15,
@@ -4278,7 +4311,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 61,
+    "pk": 64,
     "fields": {
       "sort": 2,
       "d2": 15,
@@ -4289,7 +4322,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 62,
+    "pk": 65,
     "fields": {
       "sort": 2,
       "d2": 15,
@@ -4300,7 +4333,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 63,
+    "pk": 66,
     "fields": {
       "sort": 2,
       "d2": 15,
@@ -4311,7 +4344,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 64,
+    "pk": 67,
     "fields": {
       "sort": 2,
       "d2": 16,
@@ -4322,9 +4355,9 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 65,
+    "pk": 68,
     "fields": {
-      "sort": 2,
+      "sort": 1,
       "d2": 16,
       "code": "692",
       "name": "영업외 비용(기타잡손실)",
@@ -4333,7 +4366,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 66,
+    "pk": 69,
     "fields": {
       "sort": 2,
       "d2": 16,
@@ -4344,9 +4377,9 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 67,
+    "pk": 70,
     "fields": {
-      "sort": 2,
+      "sort": 1,
       "d2": 17,
       "code": "512",
       "name": "대체(출금)",
@@ -4355,7 +4388,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 68,
+    "pk": 71,
     "fields": {
       "sort": 1,
       "d2": 17,
@@ -4366,9 +4399,9 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 69,
+    "pk": 72,
     "fields": {
-      "sort": 2,
+      "sort": 1,
       "d2": 18,
       "code": "412",
       "name": "거래취소(출금)",
@@ -4377,7 +4410,7 @@
   },
   {
     "model": "rebs.projectaccountd3",
-    "pk": 70,
+    "pk": 73,
     "fields": {
       "sort": 1,
       "d2": 18,
