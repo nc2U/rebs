@@ -46,7 +46,8 @@ const dueTotal = computed(() => {
   const dueOrder = payOrderList.value
     .filter(
       (o: PayOrder) =>
-        (o.pay_code ?? 0) <= 2 ||
+        (o.pay_code ?? 0) === 1 ||
+        ((o.pay_code ?? 0) === 2 && o.days_since_prev) ||
         (o.pay_due_date && o.pay_due_date <= today && !o.extra_due_date) ||
         (o.extra_due_date && o.extra_due_date <= today),
     )
