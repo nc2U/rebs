@@ -16,6 +16,7 @@ const props = defineProps({
 const dueDate = computed(() => props.order.extra_due_date || props.order.pay_due_date || '-')
 
 const paidByOrder = computed(() => {
+  // 당회차 납부 총액
   const paid = props.paymentList
     .filter((p: AllPayment) => !!p.installment_order)
     .filter(p => p.installment_order.pk === props.order.pk)

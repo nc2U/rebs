@@ -55,9 +55,8 @@ const dueTotal = computed(() => {
   return commitment.length !== 0 ? commitment.reduce((x, y) => x + y) : 0
 })
 
-const commit = (pay_time: number) => getCommits(pay_time)
-
 const getCommits = (el: number | undefined) => {
+  // 약정금 구하기
   const down = downPayList.value
     .filter((d: DownPay) => d.order_group === props.contract.order_group)
     .filter(d => d.unit_type === props.contract.unit_type)
@@ -108,7 +107,7 @@ const getCommits = (el: number | undefined) => {
           :contract="contract"
           :price="thisPrice"
           :order="po"
-          :commit="commit(po.pay_time as number)"
+          :commit="getCommits(po.pay_time as number)"
           :num-down="numDown"
           :num-mid="numMid"
           :payment-list="paymentList"
