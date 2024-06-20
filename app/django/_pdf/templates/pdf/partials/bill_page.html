@@ -242,10 +242,12 @@
 
 <table style="width:100%; font-size:10px; border-spacing: 0 0;>
     <tr>
-        <td colspan="{% if bill_info.agency %}5{% else %}3{% endif %}" style="padding-bottom: 5px;">
-            <span style="font-size: 9px;">
-                ※ {% if not data.unit %}<u>총 공급가액 및 전체 약정금액은 동호 지정 이후 고지됩니다.</u>{% endif %}
-                미 도래 납부회차의 납부기한 및 약정금액은 예정사항이며 추후 변동 시 변경고지될 수 있습니다.</span>
+        <td colspan="{% if bill_info.agency %}5{% else %}3{% endif %}" style="padding-bottom: 5px; font-size: 9px;">
+
+            <span>
+                {% if not data.unit %}※  <u>총 공급가액 및 전체 약정금액은 동호 지정 이후 고지됩니다.</u>{% endif %}
+                {% if not data.contract.sup_cont_date %}※ 미 도래 납부회차의 납부기한 및 약정금액은 예정사항이며 추후 변동 시 변경고지될 수 있습니다.{% endif %}
+            </span>
         </td>
     </tr>
     <tr>
