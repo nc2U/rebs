@@ -26,47 +26,6 @@ def get_contract(cont_id):
     return Contract.objects.get(pk=cont_id)
 
 
-def get_paid(contract, simple_orders, pub_date=None):
-    """
-    :: ■ 기 납부금액 구하기
-    :param contract: 계약정보
-    :param simple_orders: 회차정보
-    :param pub_date: 발행일자
-    :return list(paid_list: 납부 건 리스트), int(paid_sum_total: 납부 총액):
-    """
-    paid_list = ProjectCashBook.objects.filter(
-        income__isnull=False,
-        project_account_d3__in=(1, 4),  # 분(부)담금 or 분양수입금
-        contract=contract
-    ).order_by('deal_date', 'id')  # 해당 계약 건 납부 데이터
-
-    paid_list = paid_list.filter(deal_date__lte=pub_date) if pub_date else paid_list
-
-    pay_list = [p.income for p in paid_list]  # 입금액 추출 리스트
-    paid_sum_list = list(accumulate(pay_list))  # 입금액 리스트를 시간 순 누계액 리스트로 변경
-
-    ord_list = []
-    paid_dict_list = []
-
-    for i, paid in enumerate(paid_list):  # 입금액 리스트를 순회
-        curr_paid_total = paid_sum_list[i]  # 회차별 납부액 누계 추출
-        # 약정액누계 보다 납부액 누계가 큰(<=)인 회차 별칭 리스트
-        paid_ords = [o['name'] for o in list(filter(lambda o: o['amount_total'] <= curr_paid_total, simple_orders))]
-        paid_ord_name = paid_ords[-1] if paid_ords else None  # 당회 완납이면 회차 별칭 추출
-        paid_ord_name = paid_ord_name if paid_ord_name not in ord_list else None  # ord_list 요소와 중복이 아니면 완납회차 별칭 추출
-        ord_list.append(paid_ord_name)  # 납부회차 별칭 리스트 추가
-        diff = [curr_paid_total - o['amount_total'] for o in simple_orders if
-                o['amount_total'] <= curr_paid_total]  # 회차별 납부액누계가 약정액누계 보다 크면 그 차액 리스트 생성
-        diff = diff[-1] if diff else 0  # 당회 과납 차액 추출
-        paid_dict = {'paid': paid, 'sum': curr_paid_total, 'order': paid_ord_name,
-                     'diff': diff}  # {'paid': 회별납부액, 'sum': 회별납부액누계, 'order': '당회 완납 시 별칭', 'diff': 당회 과납차액}
-        paid_dict_list.append(paid_dict)
-    paid_sum_total = paid_list.aggregate(Sum('income'))['income__sum']  # 완납 총금액
-    paid_sum_total = paid_sum_total if paid_sum_total else 0
-
-    return paid_dict_list, paid_sum_total
-
-
 def get_simple_orders(payment_orders, contract, amount):
     """
     :: 약식 납부회차 구하기
@@ -286,15 +245,17 @@ class PdfExportBill(View):
         bill_data['price_land'] = price_land if unit else '-'  # 이 건 대지가
         bill_data['price_tax'] = price_tax if unit else '-'  # 이 건 부가세
 
-        # 납부목록, 완납금액 구하기 ------------------------------------------
-        paid_list, paid_sum_total = self.get_paid(contract, pub_date)
-        # --------------------------------------------------------------
-
-        # 해당 계약 건의 회차별 관련 정보
         down = cont_price.down_pay
         middle = cont_price.middle_pay
         remain = cont_price.remain_pay
         amount = {'1': down, '2': middle, '3': remain}
+
+        # 납부목록, 완납금액 구하기 ------------------------------------------
+        paid_list, paid_sum_total = self.get_paid(contract)
+        # --------------------------------------------------------------
+
+        # 해당 계약 건의 회차별 관련 정보
+
         orders_info = self.get_orders_info(payment_orders, amount, paid_sum_total)
 
         # 완납 회차
