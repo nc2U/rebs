@@ -161,6 +161,7 @@ export const usePayment = defineStore('payment', () => {
           installment_order: p.contract && p.installment_order ? p.installment_order.__str__ : '-',
           bank_account: p.bank_account.alias_name,
           trader: p.trader,
+          note: p.note,
         }))
       : [],
   )
