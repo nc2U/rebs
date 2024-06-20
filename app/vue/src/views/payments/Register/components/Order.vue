@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, type PropType } from 'vue'
 import { type AllPayment, type PayOrder } from '@/store/types/payment'
-import { dateFormat, numFormat, getToday, addDays, addDaysToDate } from '@/utils/baseMixins'
+import { numFormat, getToday, addDaysToDate } from '@/utils/baseMixins'
 
 const props = defineProps({
   contract: { type: Object, default: null },

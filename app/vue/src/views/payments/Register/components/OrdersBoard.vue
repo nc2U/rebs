@@ -42,13 +42,16 @@ const paidTotal = computed(() => {
 const dueTotal = computed(() => {
   const commitment: number[] = []
   const today = getToday()
+
   const dueOrder = payOrderList.value
     .filter(
       (o: PayOrder) =>
+        (o.pay_code ?? 0) <= 2 ||
         (o.pay_due_date && o.pay_due_date <= today && !o.extra_due_date) ||
         (o.extra_due_date && o.extra_due_date <= today),
     )
     .map((o: PayOrder) => o.pay_time)
+
   dueOrder.forEach((el: number | undefined) => {
     commitment.push(getCommits(el))
   })
@@ -121,7 +124,8 @@ const getCommits = (el: number | undefined) => {
         <CTableHeaderCell></CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(thisPrice || 0) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(paidTotal) }}</CTableHeaderCell>
-        <CTableHeaderCell :class="paidTotal - dueTotal < 0 ? 'text-danger' : ''">
+
+        <CTableHeaderCell class="paidTotal - dueTotal < 0 ? 'text-danger' : ''">
           {{ numFormat(paidTotal - dueTotal) }}
         </CTableHeaderCell>
       </CTableRow>
