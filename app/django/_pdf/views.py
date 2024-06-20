@@ -26,7 +26,7 @@ def get_contract(cont_id):
     return Contract.objects.get(pk=cont_id)
 
 
-def get_paid(contract, simple_orders, pub_date):
+def get_paid(contract, simple_orders, pub_date=None):
     """
     :: ■ 기 납부금액 구하기
     :param contract: 계약정보
@@ -37,9 +37,10 @@ def get_paid(contract, simple_orders, pub_date):
     paid_list = ProjectCashBook.objects.filter(
         income__isnull=False,
         project_account_d3__in=(1, 4),  # 분(부)담금 or 분양수입금
-        contract=contract,
-        deal_date__lte=pub_date
+        contract=contract
     ).order_by('deal_date', 'id')  # 해당 계약 건 납부 데이터
+
+    paid_list = paid_list.filter(deal_date__lte=pub_date) if pub_date else paid_list
 
     pay_list = [p.income for p in paid_list]  # 입금액 추출 리스트
     paid_sum_list = list(accumulate(pay_list))  # 입금액 리스트를 시간 순 누계액 리스트로 변경
@@ -249,13 +250,13 @@ class PdfExportBill(View):
             response['Content-Disposition'] = f'attachment; filename="payment_bill({len(contractor_list)}).pdf"'
             return response
 
-    def get_bill_data(self, cont_id, payment_orders, now_due_order, issue_date, np, nl):
+    def get_bill_data(self, cont_id, payment_orders, now_due_order, pub_date, np, nl):
         """
         :: 계약 건 당 전달 데이터 생성 함수
         :param cont_id: 계약자 아이디
         :param payment_orders: 전체 납부 회차
         :param now_due_order: 금회 납부 회차
-        :param issue_date: 발행일
+        :param pub_date: 발행일
         :param np: no price 가격 미표시 여부
         :param nl: no late 연체 미표시 여부
         :return dict(bill_data: 계약 건당 데이터):
@@ -286,7 +287,7 @@ class PdfExportBill(View):
         bill_data['price_tax'] = price_tax if unit else '-'  # 이 건 부가세
 
         # 납부목록, 완납금액 구하기 ------------------------------------------
-        paid_list, paid_sum_total = self.get_paid(contract)
+        paid_list, paid_sum_total = self.get_paid(contract, pub_date)
         # --------------------------------------------------------------
 
         # 해당 계약 건의 회차별 관련 정보
@@ -324,7 +325,7 @@ class PdfExportBill(View):
         # ■ 납부약정 및 납입내역 -------------------------------------------
         bill_data['due_orders'] = self.get_due_orders(contract, orders_info,
                                                       payment_orders, now_due_order,
-                                                      paid_code, issue_date, is_late_fee=False)
+                                                      paid_code, pub_date, is_late_fee=False)
 
         bill_data['remain_orders'] = self.get_remain_orders(contract, orders_info,
                                                             payment_orders, now_due_order)
@@ -332,7 +333,7 @@ class PdfExportBill(View):
         bill_data['paid_sum_total'] = paid_sum_total
         bill_data['late_fee_sum'] = self.get_due_orders(contract, orders_info,
                                                         payment_orders, now_due_order,
-                                                        paid_code, issue_date, is_late_fee=True)
+                                                        paid_code, pub_date, is_late_fee=True)
 
         # 표시 정보 제한 여부
         bill_data['no_price'] = np
@@ -354,12 +355,13 @@ class PdfExportBill(View):
         """
         :: ■ 기 납부금액 구하기
         :param contract: 계약정보
+        :param pub_date: 발행일
         :return list(paid_list: 납부 건 리스트), int(paid_sum_total: 납부 총액):
         """
         paid_list = ProjectCashBook.objects.filter(
             income__isnull=False,
             project_account_d3__in=(1, 4),  # 분(부)담금 or 분양수입금
-            contract=contract
+            contract=contract,
         ).order_by('deal_date', 'id')  # 해당 계약 건 납부 데이터
 
         paid_sum_total = paid_list.aggregate(Sum('income'))['income__sum']  # 완납 총금액
