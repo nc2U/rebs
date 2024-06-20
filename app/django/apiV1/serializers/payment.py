@@ -1,10 +1,8 @@
 from rest_framework import serializers
 
-from items.models import UnitType
+from cash.models import ProjectBankAccount, ProjectCashBook
 from contract.models import OrderGroup, Contract, Contractor
 from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment, OverDueRule
-from cash.models import ProjectBankAccount, ProjectCashBook
-
 from .items import SimpleUnitTypeSerializer
 
 
@@ -57,22 +55,6 @@ class PaymentSummarySerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectCashBook
         fields = ('order_group', 'unit_type', 'paid_sum')
-
-
-# class ContNumByTypeSerializer(serializers.ModelSerializer):
-#     order_group = serializers.IntegerField()
-#     unit_type = serializers.IntegerField()
-#     num_cont = serializers.IntegerField()
-#
-#     class Meta:
-#         model = UnitType
-#         fields = ('order_group', 'unit_type', 'num_cont')
-
-
-# class PaidByContSummarySerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Contract
-#         fields = '__all__'
 
 
 class SalesPriceSerializer(serializers.ModelSerializer):
