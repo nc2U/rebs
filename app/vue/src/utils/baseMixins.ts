@@ -17,6 +17,17 @@ export const diffDate = (date1: Date | string, date2?: Date) => {
 
 export const addDays = (date: Date, days: number) => date.setDate(date.getDate() + days)
 
+export const addDaysToDate = (dateString: Date | string, days: number) => {
+  const date = new Date(dateString)
+  date.setDate(date.getDate() + days)
+
+  const year = date.getFullYear()
+  const month = (date.getMonth() + 1).toString().padStart(2, '0')
+  const day = date.getDate().toString().padStart(2, '0')
+
+  return `${year}-${month}-${day}`
+}
+
 export const dateFormat = (date: Date | string, split?: string) => {
   const computedDate = typeof date === 'string' ? new Date(date) : date
   const formattedDate = computedDate

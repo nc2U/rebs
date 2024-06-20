@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, type PropType } from 'vue'
 import { type AllPayment, type PayOrder } from '@/store/types/payment'
-import { numFormat, getToday } from '@/utils/baseMixins'
+import { dateFormat, numFormat, getToday, addDays, addDaysToDate } from '@/utils/baseMixins'
 
 const props = defineProps({
   contract: { type: Object, default: null },
@@ -13,7 +13,14 @@ const props = defineProps({
   paymentList: { type: Array as PropType<AllPayment[]>, default: () => [] },
 })
 
-const dueDate = computed(() => props.order.extra_due_date || props.order.pay_due_date || '-')
+const dueDate = computed(() => {
+  const contDate = props.contract.contractor.contract_date
+  if (props.order.pay_code === 1) return contDate
+  else {
+    if (props.order.days_since_prev) return addDaysToDate(contDate, 30)
+    else return props.order.extra_due_date || props.order.pay_due_date || '-'
+  }
+})
 
 const paidByOrder = computed(() => {
   // 당회차 납부 총액
@@ -29,6 +36,7 @@ const calculated = computed(() => {
   const duePay = paidByOrder.value - props.commit
   return dueDate.value !== '-' && dueDate.value <= getToday() ? duePay : 0
 })
+
 const calcClass = () => {
   const calc = calculated.value > 0 ? 'text-primary' : 'text-danger'
   return calculated.value === 0 ? '' : calc
@@ -36,9 +44,7 @@ const calcClass = () => {
 </script>
 
 <template>
-  <CTableDataCell class="text-center">
-    {{ dueDate }}
-  </CTableDataCell>
+  <CTableDataCell class="text-center"> {{ dueDate }}</CTableDataCell>
   <CTableDataCell class="text-center">
     {{ order.pay_name }}
   </CTableDataCell>
@@ -49,6 +55,7 @@ const calcClass = () => {
     {{ numFormat(paidByOrder) }}
   </CTableDataCell>
   <CTableDataCell :class="calcClass">
-    {{ numFormat(calculated) }}
+    <!--    {{ numFormat(calculated) }}-->
+    {{ numFormat(paidByOrder - commit) }}
   </CTableDataCell>
 </template>
