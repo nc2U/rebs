@@ -143,7 +143,10 @@ def get_due_date_per_order(contract, order, payment_orders):
             si_due = cont_date + timedelta(days=pre_si)
 
             due = ed_date or pd_date
-            due_date = due if due > si_due else si_due
+            if not due:
+                due_date = None
+            else:
+                due_date = due if due > si_due else si_due
 
     return due_date
 
