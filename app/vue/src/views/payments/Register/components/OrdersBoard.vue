@@ -125,7 +125,7 @@ const getCommits = (el: number | undefined) => {
         <CTableHeaderCell>{{ numFormat(thisPrice || 0) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(paidTotal) }}</CTableHeaderCell>
 
-        <CTableHeaderCell class="paidTotal - dueTotal < 0 ? 'text-danger' : ''">
+        <CTableHeaderCell :class="paidTotal - dueTotal < 0 ? 'text-danger' : ''">
           {{ numFormat(paidTotal - dueTotal) }}
         </CTableHeaderCell>
       </CTableRow>
