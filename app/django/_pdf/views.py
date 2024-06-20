@@ -140,7 +140,7 @@ def get_due_date_per_order(contract, order, payment_orders):
         if order.pay_code >= 3:
             pre_ords = payment_orders.filter(pay_code__lt=order.pay_code)
             pre_si = pre_ords.aggregate(total=Sum('days_since_prev'))['total']
-            si_due = cont_date + timedelta(days=pre_si)
+            si_due = cont_date + timedelta(days=pre_si) if pre_si else cont_date
 
             due = ed_date or pd_date
             if not due:
@@ -1172,36 +1172,3 @@ class PdfExportCalculation(View):
 
             elif start is not None and end is None:  # 특정 기간 이상 연체인 경우
                 return int(calc_fee + (late_amt * (days - calc_days) * rate / 365))
-
-    # @staticmethod
-    # def get_past_late_fee(late_amt, days):
-    #     """
-    #     :: 회차별 지연 가산금 계산 함수
-    #     :param late_amt: 지연금액
-    #     :param days: 지연일수
-    #     :return int(floor_fee: 가산금), str(적용 이자율):
-    #     """
-    #
-    #     calc_fee = 0
-    #
-    #     if days < 0:
-    #         rate = 0.04
-    #     elif days <= 29:
-    #         rate = 0.08
-    #     elif days <= 90:
-    #         calc_fee = late_amt * 0.00635616438356164  # a = late_amt * 29 * 8%/year
-    #         rate = 0.1
-    #         days = days - 29
-    #
-    #     elif days <= 180:
-    #         calc_fee = late_amt * 0.0230684931506849  # b = a + (late_amt * 61 * 10%/year)
-    #         rate = 0.11
-    #         days = days - 90
-    #     else:
-    #         calc_fee = late_amt * 0.0501917808219178  # c = b + (late_amt * 90 * 11%/year)
-    #         rate = 0.12
-    #         days = days - 180
-    #
-    #     floor_fee = int(calc_fee + (late_amt * days * rate / 365))
-    #
-    #     return floor_fee
