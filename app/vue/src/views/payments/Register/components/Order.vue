@@ -55,7 +55,6 @@ const calcClass = () => {
     {{ numFormat(paidByOrder) }}
   </CTableDataCell>
   <CTableDataCell :class="calcClass">
-    <!--    {{ numFormat(calculated) }}-->
-    {{ numFormat(paidByOrder - commit) }}
+    {{ numFormat(calculated) }}
   </CTableDataCell>
 </template>
