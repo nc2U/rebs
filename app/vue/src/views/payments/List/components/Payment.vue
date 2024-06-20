@@ -67,14 +67,8 @@ const payMatch = (payload: ProjectCashBook) => emit('pay-match', payload)
         {{ numFormat(payment.income) }}
       </router-link>
     </CTableDataCell>
-    <CTableDataCell
-      :class="payment.contract && payment.installment_order === '-' ? 'text-danger' : ''"
-    >
-      {{
-        payment.contract && payment.installment_order === '-'
-          ? '납입회차 확인'
-          : payment.installment_order
-      }}
+    <CTableDataCell :class="payment.installment_order === '-' ? 'text-danger' : ''">
+      {{ payment.installment_order === '-' ? '납입회차 확인' : payment.installment_order }}
     </CTableDataCell>
     <CTableDataCell>{{ payment.bank_account }}</CTableDataCell>
     <CTableDataCell>{{ payment.trader }}</CTableDataCell>
