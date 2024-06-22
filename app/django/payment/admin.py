@@ -45,8 +45,8 @@ class OverDueRuleAdmin(ImportExportMixin, admin.ModelAdmin):
 class SpecialPaymentOrderAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'project', 'pay_name', 'pay_sort', 'pay_code', 'is_calc_start',
                     'pay_time', 'alias_name', 'days_since_prev', 'pay_due_date', 'extra_due_date')
-    search_fields = ('is_calc_start', 'pay_name', 'alias_name',)
-    list_editable = ('alias_name', 'days_since_prev', 'pay_due_date', 'extra_due_date')
+    search_fields = ('pay_name', 'alias_name',)
+    list_editable = ('is_calc_start', 'alias_name', 'days_since_prev', 'pay_due_date', 'extra_due_date')
     list_display_links = ('project', 'pay_name',)
     list_filter = ('project', 'pay_sort')
 
