@@ -17,10 +17,10 @@ class SalesPriceByGTAdmin(ImportExportMixin, admin.ModelAdmin):
 @admin.register(InstallmentPaymentOrder)
 class InstallmentPaymentOrderAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'project', 'pay_name', 'pay_sort', 'pay_code', 'pay_time',
-                    'pay_ratio', 'alias_name', 'is_pm_cost', 'days_since_prev',
+                    'pay_ratio', 'alias_name', 'is_pm_cost', 'is_calc_start', 'days_since_prev',
                     'pay_due_date', 'extra_due_date')
     search_fields = ('pay_name', 'alias_name',)
-    list_editable = ('alias_name', 'is_pm_cost', 'days_since_prev', 'pay_due_date', 'extra_due_date')
+    list_editable = ('alias_name', 'is_pm_cost', 'is_calc_start', 'days_since_prev', 'pay_due_date', 'extra_due_date')
     list_display_links = ('project', 'pay_name',)
     list_filter = ('project', 'pay_sort')
 
@@ -43,9 +43,9 @@ class OverDueRuleAdmin(ImportExportMixin, admin.ModelAdmin):
 
 @admin.register(SpecialPaymentOrder)
 class SpecialPaymentOrderAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'project', 'pay_name', 'pay_sort', 'pay_code', 'pay_time',
+    list_display = ('id', 'project', 'pay_name', 'pay_sort', 'pay_code', 'pay_time', 'is_calc_start',
                     'alias_name', 'days_since_prev', 'pay_due_date', 'extra_due_date')
-    search_fields = ('pay_name', 'alias_name',)
+    search_fields = ('is_calc_start', 'pay_name', 'alias_name',)
     list_editable = ('alias_name', 'days_since_prev', 'pay_due_date', 'extra_due_date')
     list_display_links = ('project', 'pay_name',)
     list_filter = ('project', 'pay_sort')

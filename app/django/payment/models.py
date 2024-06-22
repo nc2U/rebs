@@ -32,6 +32,7 @@ class InstallmentPaymentOrder(models.Model):  # 분할 납부 차수 등록
                                     help_text='''분양가 대비 납부비율, 계약금 항목인 경우 Downpayment 
                                     테이블 데이터 우선, 잔금 항목인 경우 분양가와 비교 차액 데이터 우선''')
     is_pm_cost = models.BooleanField('PM용역비 여부', default=False)
+    is_calc_start = models.BooleanField('할인/가산 시작 여부', default=False)
     pay_name = models.CharField('납부회차 명', max_length=20)
     alias_name = models.CharField('회차 별칭', max_length=20, blank=True)
     days_since_prev = models.PositiveSmallIntegerField('전회 기준 경과일수', null=True, blank=True,
@@ -90,6 +91,7 @@ class SpecialPaymentOrder(models.Model):  # 가산금 / 할인액 계산을 위�
     pay_time = models.PositiveSmallIntegerField('납부순서',
                                                 help_text='''동일 납부회차에 2가지 항목을 별도로 납부하여야 하는 경우(ex: 분담금 + 업무대행료)
                                                 하나의 납입회차 코드(ex: 1)에 2개의 납부순서(ex: 1, 2)를 등록한다.''')
+    is_calc_start = models.BooleanField('할인/가산 시작 여부', default=False)
     pay_name = models.CharField('납부회차 명', max_length=20)
     alias_name = models.CharField('회차 별칭', max_length=20, blank=True)
     days_since_prev = models.PositiveSmallIntegerField('전회 기준 경과일수', null=True, blank=True,
