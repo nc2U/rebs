@@ -23,15 +23,14 @@ import DatePicker from '@/components/DatePicker/index.vue'
 const paymentId = ref<string>('')
 const date = ref(dateFormat(new Date()))
 
-const isGeneral = ref(Cookies.get('isGeneral') ?? '1')
-
-watch(isGeneral, newVal => Cookies.set('isGeneral', newVal))
+const isCalc = ref(Cookies.get('isCalc') ?? '1')
+watch(isCalc, newVal => Cookies.set('isCalc', newVal))
 
 const paymentUrl = computed(() => {
   const url = '/pdf/payments/'
   const proj = project.value ?? ''
   const cont = contract.value?.pk ?? ''
-  return `${url}?project=${proj}&contract=${cont}&is_general=${isGeneral.value}&pub_date=${date.value ?? ''}`
+  return `${url}?project=${proj}&contract=${cont}&is_calc=${isCalc.value}&pub_date=${date.value ?? ''}`
 })
 
 const calcUrl = computed(() => {
@@ -217,7 +216,7 @@ onBeforeRouteLeave(() => {
       />
       <TableTitleRow :disabled="!project || !contract" pdf :url="paymentUrl">
         <v-radio-group
-          v-model="isGeneral"
+          v-model="isCalc"
           inline
           size="sm"
           density="compact"
