@@ -370,7 +370,7 @@ class PdfExportBill(View):
                           now_due_order, paid_code):
         """
         :: ■ 납부대금 안내
-        :param cont_id: 계약자 아이디
+        :param contract: 계약 정보
         :param orders_info: 회차별 부가정보
         :param payment_orders: 회차 정보
         :param now_due_order: 당회 납부 회차
