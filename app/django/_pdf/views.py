@@ -32,7 +32,7 @@ def get_simple_orders(payment_orders, contract, amount, is_past=False):
     :param payment_orders:
     :param contract:
     :param amount:
-    :param is_past:
+    :param is_past: 종전 선납/연체 계산 여부
     :return: dict 형식 납부회차 리스트
     """
     simple_orders = []
