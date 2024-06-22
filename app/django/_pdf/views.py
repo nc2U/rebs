@@ -131,16 +131,20 @@ def get_due_orders(contract, payment_orders):
     return [o for o in payment_orders if is_due(get_due_date_per_order(contract, o, payment_orders))]
 
 
-def get_late_fee(project, late_amt, days):
+def get_late_fee(project, late_amt, days, is_past=False):
     """
     :: 회차별 지연 가산금 계산 함수
     :param project: 프로젝트
     :param late_amt: 지연금액
     :param days: 지연일수
+    :param is_past: 종전 선납/연체 계산 여부
     :return int(floor_fee: 가산금), str(적용 이자율):
     """
 
-    rules = OverDueRule.objects.filter(project=project)
+    if not is_past:
+        rules = OverDueRule.objects.filter(project=project)
+    else:
+        rules = SpecialOverDueRule.objects.filter(project=project)
 
     calc_fee = 0
     calc_days = 0
@@ -196,6 +200,8 @@ def get_paid(contract, simple_orders, pub_date, **kwargs):
         deal_date__lte=pub_date
     ).order_by('deal_date', 'id')  # 해당 계약 건 납부 데이터
 
+    paid_list = paid_list.filter(installment_order__pay_sort='1') if kwargs.get('is_past', None) else paid_list
+
     pay_list = [p.income for p in paid_list]  # 입금액 추출 리스트
     paid_sum_list = list(accumulate(pay_list))  # 입금액 리스트를 시간 순 누계액 리스트로 변경
 
@@ -228,7 +234,10 @@ def get_paid(contract, simple_orders, pub_date, **kwargs):
 
     for i, paid in enumerate(sorted_combined):  # 입금액 리스트를 순회
         if i == 0:
-            first_date = paid[0].deal_date
+            try:
+                first_date = paid[0].deal_date
+            except KeyError:
+                pass
 
         try:  # 이전 / 다음 회차 납부일 or 약정일
             pre_date = sorted_combined[i - 1][0].deal_date \
@@ -240,6 +249,9 @@ def get_paid(contract, simple_orders, pub_date, **kwargs):
         except IndexError:  # 마지막은 발행일
             pre_date = first_date
             next_date = pub_date
+
+        if kwargs.get('is_past', None) and contract.sup_cont_date:
+            next_date = next_date if contract.sup_cont_date >= next_date else contract.sup_cont_date
 
         if isinstance(paid, tuple):
             curr_paid_total = paid[1]  # 납부 금액 누계 추출 기록
@@ -1025,7 +1037,7 @@ class PdfExportCalculation(View):
                 days = prepay_days if diff < 0 else delay_days
                 days = days if diff else 0
 
-                calc = self.get_late_fee(contract.project, diff, days)
+                calc = get_late_fee(contract.project, diff, days, True)
                 # calc = self.get_past_late_fee(diff, days)
 
                 penalty = calc if diff > 0 else 0
@@ -1049,7 +1061,7 @@ class PdfExportCalculation(View):
                 days = (next_date - paid['due_date']).days if diff else 0
                 days = days if diff > 0 else days * -1
 
-                calc = self.get_late_fee(contract.project, diff, days)
+                calc = get_late_fee(contract.project, diff, days, True)
                 # calc = self.get_past_late_fee(diff, days)
 
                 penalty = calc if diff > 0 else 0
@@ -1073,50 +1085,3 @@ class PdfExportCalculation(View):
         calc_sums = (penalty_sum, discount_sum, ord_i_list)
 
         return paid_dict_list, paid_sum_total, calc_sums
-
-    @staticmethod
-    def get_late_fee(project, late_amt, days):
-        """
-        :: 회차별 지연 가산금 계산 함수
-        :param project: 프로젝트
-        :param late_amt: 지연금액
-        :param days: 지연일수
-        :return int(floor_fee: 가산금), str(적용 이자율):
-        """
-
-        rules = SpecialOverDueRule.objects.filter(project=project)
-
-        calc_fee = 0
-        calc_days = 0
-
-        for rule in rules:
-            start = rule.term_start
-            end = rule.term_end
-            rate = rule.rate_year / 100
-
-            if start is None and end is None:  # 단일 가산율 적용인 경우
-                return int(late_amt * days * rate / 365)
-
-            elif start is None and end is not None:  # 선납 률이 규정 되어 있는 경우
-                if days <= 0:  # 선납인 경우
-                    return int(late_amt * days * rate / 365)
-                else:
-                    pass
-
-            elif start is not None and end is not None:  # 특정 기간 동안 연체인 경우
-
-                if start is 1:  # 연체 시작 구간일 경우
-                    if days <= end:
-                        return int(late_amt * days * rate / 365)
-                    else:
-                        calc_fee += late_amt * end * rate / 365
-                        calc_days = end
-                else:  # 연체 진행 구간일 경우
-                    if days <= end:
-                        return int(calc_fee + (late_amt * (days - calc_days) * rate / 365))
-                    else:
-                        calc_fee += late_amt * (end - calc_days) * rate / 365
-                        calc_days = end
-
-            elif start is not None and end is None:  # 특정 기간 이상 연체인 경우
-                return int(calc_fee + (late_amt * (days - calc_days) * rate / 365))
