@@ -26,24 +26,34 @@ def get_contract(cont_id):
     return Contract.objects.get(pk=cont_id)
 
 
-def get_simple_orders(payment_orders, contract, amount):
+def get_simple_orders(payment_orders, contract, amount, is_past=False):
     """
     :: 약식 납부회차 구하기
     :param payment_orders:
     :param contract:
     :param amount:
+    :param is_past:
     :return: dict 형식 납부회차 리스트
     """
     simple_orders = []
 
     amount_total = 0
+    try:
+        calc_start = payment_orders.filter(is_calc_start=True).first().pay_code
+    except AttributeError:
+        calc_start = 3
     for order in payment_orders:
-        amount_total += amount[order.pay_sort]  # 회차별 약정금 누계
+        if is_past:
+            amt = amount['1'] if order.pay_code < 5 else amount['2']
+        else:
+            amt = amount[order.pay_sort]
+        amount_total += amt  # 회차별 약정금 누계
         ord_info = {
             'name': order.alias_name if order.alias_name else order.pay_name,  # 회차별 별칭
             'pay_code': order.pay_code,
+            'calc_start': calc_start,
             'due_date': get_due_date_per_order(contract, order, payment_orders),  # 회차별 납부기한
-            'amount': amount[order.pay_sort],  # 회차별 약정금
+            'amount': amt,  # 회차별 약정금
             'amount_total': amount_total,  # 회차별 약정금 누계
         }
         simple_orders.append(ord_info)
@@ -668,7 +678,7 @@ class PdfExportPayments(View):
         :return list(paid_list: { 납부 건 딕셔너리 }), int(paid_sum_total: 납부 총액):
         """
 
-        calc_start_pay_code = 4  # 연체/가산 적용 시작 회차 코드
+        calc_start_pay_code = simple_orders[0].get('calc_start')  # 연체/가산 적용 시작 회차 코드
         paid_list = ProjectCashBook.objects.filter(
             income__isnull=False,
             project_account_d3__in=(1, 4),  # 분(부)담금 or 분양수입금
@@ -869,12 +879,12 @@ class PdfExportCalculation(View):
         context['due_amount'] = (down1 * 4) + down2  # 약정금 누계
 
         # 3. 간단 차수 정보
-        context['simple_orders'] = simple_orders = self.get_past_orders(payment_orders, contract, amount)
+        context['simple_orders'] = simple_orders = get_simple_orders(payment_orders, contract, amount, True)
 
         # 4. 납부목록, 완납금액 구하기 ------------------------------------------
         paid_dicts, paid_sum_total, calc_sums = self.get_paid(contract, simple_orders, pub_date, True)
         context['paid_dicts'] = paid_dicts
-        context['paid_sum_total'] = paid_sum_total  # paid_list.aggregate(Sum('income'))['income__sum']  # 기 납부총액
+        context['paid_sum_total'] = paid_sum_total  # pad_list.aggregate(Sum('income'))['income__sum']  # 기 납부총액
         context['calc_sums'] = calc_sums
         # ----------------------------------------------------------------
 
@@ -894,34 +904,6 @@ class PdfExportCalculation(View):
         down = SpecialDownPay.objects.get(order_group=contract.order_group, unit_type=contract.unit_type)
         return down.payment_amount, down.payment_remain
 
-    @staticmethod
-    def get_past_orders(payment_orders, contract, amount):
-        """
-        :: 약식 납부회차 구하기
-        :param payment_orders: 1 ~ 5차 계약금
-        :param contract: 현재 계약건
-        :param amount: 1 ~ 4차 및 5차(나머지) 계약금
-        :return: dict 형식 납부회차 리스트
-        """
-
-        simple_orders = []
-
-        amount_total = 0
-        for order in payment_orders:
-            amt = amount['1'] if order.pay_code < 5 else amount['2']
-            amount_total += amt  # amount[order.pay_sort]  # 회차별 계약금 누계
-
-            ord_info = {
-                'name': order.alias_name if order.alias_name else order.pay_name,  # 회차별 별칭
-                'pay_code': order.pay_code,
-                'due_date': get_due_date_per_order(contract, order, payment_orders),  # 회차별 납부기한
-                'amount': amt,  # 회차별 약정금
-                'amount_total': amount_total,  # 회차별 약정금 누계
-            }
-            simple_orders.append(ord_info)
-
-        return simple_orders
-
     def get_paid(self, contract, simple_orders, pub_date, is_past=False):
         """
         :: ■ 기 납부금액 구하기
@@ -932,7 +914,7 @@ class PdfExportCalculation(View):
         :return list(paid_list: { 납부 건 딕셔너리 }), int(paid_sum_total: 납부 총액):
         """
 
-        calc_start_pay_code = 3  # 연체/가산 적용 시작 회차 코드
+        calc_start_pay_code = simple_orders[0].get('calc_start')  # 연체/가산 적용 시작 회차 코드
         paid_list = ProjectCashBook.objects.filter(
             income__isnull=False,
             project_account_d3__in=(1, 4),  # 분(부)담금 or 분양수입금
