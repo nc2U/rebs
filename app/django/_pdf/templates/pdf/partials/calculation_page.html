@@ -57,8 +57,8 @@
             <td class="title center bt2 br bb">약정금 총액</td>
             <td class="title center bt2 br bb">납부 원금</td>
             <td class="title center bt2 br bb">실입금액 합계</td>
-            <td class="title center bt2 br bb">연체금 합계</td>
-            <td class="title center bt2 br bb">할인금 합계</td>
+            <td class="title center bt2 br bb">연체료 합계</td>
+            <td class="title center bt2 br bb">할인료 합계</td>
             <td class="title center bt2 bb">정산금(연체-할인)</td>
         </tr>
         <tr>
@@ -100,8 +100,8 @@
                     <td class="title center bt2 br">완납차수</td>
                     <td class="title center bt2 br">미(과)납액</td>
                     <td class="title center bt2 br">일수</td>
-                    <td class="title center bt2 br">연체금</td>
-                    <td class="title center bt2">할인금</td>
+                    <td class="title center bt2 br">연체료</td>
+                    <td class="title center bt2">할인료</td>
                 </tr>
                 {% for p in paid_dicts %}
                     <tr style="background: {% if p.paid.due_date %}#eee{% endif %};">

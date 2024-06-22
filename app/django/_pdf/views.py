@@ -210,7 +210,7 @@ def get_paid(contract: Contract, simple_orders, pub_date, **kwargs):
     def get_date(item):
         return item[0].deal_date if isinstance(item, tuple) else item['due_date']
 
-    # 적용시작회차부터 현재 납부 의무 회차까지
+    # 선납/할인 적용 시작 회차부터 현재 납부 의무 회차까지
     calc_orders = [item for item in simple_orders
                    if item.get('pay_code', 0) >= calc_start_pay_code
                    and is_due(get_due_date_per_order(contract, item, simple_orders))]

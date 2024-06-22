@@ -11,7 +11,7 @@
         <tr>
             <td colspan="2"></td>
             <td rowspan="2" class="center" style="padding: 0; letter-spacing: 1.2em;"><h1>분양대금납부확인서</h1></td>
-            {% if is_calc == '1' %}
+            {% if is_calc %}
                 <td rowspan="2" class="ba center" style="padding: 0;">직인생략</td>
             {% else %}
                 <td class="ba center" style="padding: 0; height: 18px;">납부확인</td>
@@ -119,8 +119,8 @@
         <div style="float: left; padding-left: 6px; width: 73%;">
             <table style="font-size: 10px;">
                 <tr>
-                    <td class="title center bl2 bt2 br">납부일자</td>
-                    <td class="title center bt2 br">실입금액</td>
+                    <td class="title center bl2 bt2 br">납부(약정)일자</td>
+                    <td class="title center bt2 br">실 납부액</td>
                     <td class="title center bt2 br">완납차수</td>
                     <td class="title center bt2 br">미(과)납액</td>
                     <td class="title center bt2 br">일수</td>
@@ -128,8 +128,11 @@
                     <td class="title center bt2">할인료</td>
                 </tr>
                 {% for p in paid_dicts %}
-                    <tr>
-                        <td class="center bl2 br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{{ p.paid.deal_date|date:"Y-m-d" }}</td>
+                    <tr style="background: {% if p.paid.due_date %}#eee{% endif %};">
+                        <td class="center bl2 br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">
+                          {% if p.paid.due_date %}{{ p.paid.due_date|date:"Y-m-d" }}{% else %}
+                            {{ p.paid.deal_date|date:"Y-m-d" }}{% endif %}
+                        </td>
                         <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{{ p.paid.income|default:"-"|intcomma }}</td>
                         <td class="center br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{{ p.order|default:"" }}</td>
                         <td class="right br bt {% if forloop.last %}bb2{% else %}bb{% endif %}">{{ p.diff|default:"-"|intcomma }}</td>
