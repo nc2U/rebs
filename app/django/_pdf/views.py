@@ -182,7 +182,7 @@ def get_late_fee(project, late_amt, days, is_past=False):
             return int(calc_fee + (late_amt * (days - calc_days) * rate / 365))
 
 
-def get_paid(contract, simple_orders, pub_date, **kwargs):
+def get_paid(contract: Contract, simple_orders, pub_date, **kwargs):
     """
     :: ■ 기 납부금액 구하기
     :param contract: 계약정보
@@ -790,7 +790,7 @@ class PdfExportPayments(View):
         # 계약 건 객체
         cont_id = request.GET.get('contract')
         context['contract'] = contract = get_contract(cont_id)
-        context['is_calc'] = is_calc = request.GET.get('is_calc')  # 1 = 일반용(할인가산 포함) / 2 = 확인용
+        context['is_calc'] = calc = True if request.GET.get('is_calc') else False  # 1 = 일반용(할인가산 포함) / '' = 확인용
 
         # 발행일자
         pub_date = request.GET.get('pub_date', None)
@@ -830,7 +830,7 @@ class PdfExportPayments(View):
         context['simple_orders'] = simple_orders = get_simple_orders(payment_orders, contract, amount)
 
         # 4. 납부목록, 완납금액 구하기 ------------------------------------------
-        paid_dicts, paid_sum_total, calc_sums = get_paid(contract, simple_orders, pub_date, is_calc=is_calc)
+        paid_dicts, paid_sum_total, calc_sums = get_paid(contract, simple_orders, pub_date, is_calc=calc)
         context['paid_dicts'] = paid_dicts
         context['paid_sum_total'] = paid_sum_total  # paid_list.aggregate(Sum('income'))['income__sum']  # 기 납부총액
         context['calc_sums'] = calc_sums
