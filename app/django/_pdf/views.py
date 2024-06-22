@@ -188,7 +188,7 @@ def get_paid(contract, simple_orders, pub_date, **kwargs):
     :param contract: 계약정보
     :param simple_orders: 회차정보
     :param pub_date: 발행일자
-    :param kwargs: is_general => True - 일반용 / False - 확인용 / is_past => 변경 약정에 의한 가산금 산출 여부
+    :param kwargs: is_calc => True - 일반용 / False - 확인용 / is_past => 변경 약정에 의한 가산금 산출 여부
     :return list(paid_list: { 납부 건 딕셔너리 }), int(paid_sum_total: 납부 총액):
     """
 
@@ -215,7 +215,7 @@ def get_paid(contract, simple_orders, pub_date, **kwargs):
                    if item.get('pay_code', 0) >= calc_start_pay_code
                    and is_due(get_due_date_per_order(contract, item, simple_orders))]
 
-    calc_orders = calc_orders if kwargs.get('is_general', None) else []  # 일반용일 경우에만 적용
+    calc_orders = calc_orders if kwargs.get('is_calc', None) else []  # 일반용일 경우에만 적용
 
     combined = zip_pay_list + calc_orders
     sorted_combined = sorted(combined, key=get_date)
@@ -790,7 +790,7 @@ class PdfExportPayments(View):
         # 계약 건 객체
         cont_id = request.GET.get('contract')
         context['contract'] = contract = get_contract(cont_id)
-        context['is_general'] = is_general = request.GET.get('is_general')  # 1 = 일반용(할인가산 포함) / 2 = 확인용
+        context['is_calc'] = is_calc = request.GET.get('is_calc')  # 1 = 일반용(할인가산 포함) / 2 = 확인용
 
         # 발행일자
         pub_date = request.GET.get('pub_date', None)
@@ -830,7 +830,7 @@ class PdfExportPayments(View):
         context['simple_orders'] = simple_orders = get_simple_orders(payment_orders, contract, amount)
 
         # 4. 납부목록, 완납금액 구하기 ------------------------------------------
-        paid_dicts, paid_sum_total, calc_sums = get_paid(contract, simple_orders, pub_date, is_general=is_general)
+        paid_dicts, paid_sum_total, calc_sums = get_paid(contract, simple_orders, pub_date, is_calc=is_calc)
         context['paid_dicts'] = paid_dicts
         context['paid_sum_total'] = paid_sum_total  # paid_list.aggregate(Sum('income'))['income__sum']  # 기 납부총액
         context['calc_sums'] = calc_sums
@@ -895,7 +895,8 @@ class PdfExportCalculation(View):
         context['simple_orders'] = simple_orders = get_simple_orders(payment_orders, contract, amount, True)
 
         # 4. 납부목록, 완납금액 구하기 ------------------------------------------
-        paid_dicts, paid_sum_total, calc_sums = self.get_paid(contract, simple_orders, pub_date, True)
+        paid_dicts, paid_sum_total, calc_sums = get_paid(contract, simple_orders, pub_date,
+                                                         is_calc=True, is_past=True)
         context['paid_dicts'] = paid_dicts
         context['paid_sum_total'] = paid_sum_total  # pad_list.aggregate(Sum('income'))['income__sum']  # 기 납부총액
         context['calc_sums'] = calc_sums
@@ -917,7 +918,8 @@ class PdfExportCalculation(View):
         down = SpecialDownPay.objects.get(order_group=contract.order_group, unit_type=contract.unit_type)
         return down.payment_amount, down.payment_remain
 
-    def get_paid(self, contract, simple_orders, pub_date, is_past=False):
+    @staticmethod
+    def get_paid(contract, simple_orders, pub_date, is_past=False):
         """
         :: ■ 기 납부금액 구하기
         :param contract: 계약정보
