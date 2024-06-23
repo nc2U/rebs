@@ -473,14 +473,17 @@ class PdfExportBill(View):
         bill_data['pay_method'] = (bill_data['this_pay_sum']['amount_total'], pm_cost_sum)
 
         # ■ 납부약정 및 납입내역 -------------------------------------------
+        # 기 도래한 약정 회차 내역
         bill_data['due_orders'] = self.get_due_orders(contract, orders_info,
                                                       payment_orders, now_due_order,
                                                       paid_code, pub_date, is_late_fee=False)
 
+        # 미 도래한 약정 회차 내역
         bill_data['remain_orders'] = self.get_remain_orders(contract, orders_info,
                                                             payment_orders, now_due_order)
 
-        bill_data['paid_sum_total'] = paid_sum_total
+        bill_data['paid_sum_total'] = paid_sum_total  # 기 납부 총액
+        # 연체료 합계
         bill_data['late_fee_sum'] = self.get_due_orders(contract, orders_info,
                                                         payment_orders, now_due_order,
                                                         paid_code, pub_date, is_late_fee=True)
