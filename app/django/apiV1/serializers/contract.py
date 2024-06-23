@@ -233,28 +233,35 @@ class ContractSetSerializer(serializers.ModelSerializer):
                   'payments', 'last_paid_order', 'total_paid', 'order_group_desc', 'unit_type_desc', 'contract_files')
 
     @staticmethod
-    def get_order_group_sort(obj):
+    def get_order_group_sort(obj):  # '1': 조합모집 or '2': 일반분양
         return obj.order_group.sort
 
     @staticmethod
     def get_payment_list(instance):
         return instance.payments.filter(project_account_d3__in=(1, 4))
 
-    def get_payments(self, instance):
+    def get_payments(self, instance):  # 납부 분담금/분양대금 리스트
         payments = self.get_payment_list(instance).order_by('deal_date', 'id')
         return ProjectCashBookInContractSerializer(payments, many=True, read_only=True).data
 
-    def get_last_paid_order(self, instance):
-        due_amt = 0
-        order_data = {}
-        install_order = InstallmentPaymentOrder.objects.filter(project=instance.project)
+    def get_total_paid(self, instance):
+        inc_data = ProjectCashBookIncsInContractSerializer(self.get_payment_list(instance),
+                                                           many=True,
+                                                           read_only=True).data
+        return sum([inc.get('income') for inc in inc_data])
 
-        total_paid = self.get_total_paid(instance)
-        price = get_cont_price(instance)
-        amount = get_pay_amount(instance, price[0])
+    def get_last_paid_order(self, instance):  # 완납 회차 구하기
+        price = get_cont_price(instance)  # 분양가 [price, price_build, price_land, price_tax]
+        amount = get_pay_amount(instance, price[0])  # 계약금, 중도금, 잔금
+        total_paid = self.get_total_paid(instance)  # 총 납부액
 
-        for order in install_order:
-            due_amt += amount[int(order.pay_sort) - 1]
+        due_amt = 0  # 총 약정액
+        order_data = {}  # 회차 데이터
+        payment_orders = InstallmentPaymentOrder.objects.filter(project=instance.project)
+
+        for order in payment_orders:
+            sort = int(order.pay_sort) - 1
+            due_amt += amount[sort]  # 0: 계약금, 1: 중도금, 2: 잔금
             if total_paid >= due_amt:
                 project_cash = ProjectCashBook.objects.filter(installment_order=order).first()
                 order_data = ProjectCashBookOrderInContractSerializer(project_cash, read_only=True).data
@@ -262,12 +269,6 @@ class ContractSetSerializer(serializers.ModelSerializer):
                 break
 
         return order_data.get('installment_order') if order_data else None
-
-    def get_total_paid(self, instance):
-        inc_data = ProjectCashBookIncsInContractSerializer(self.get_payment_list(instance),
-                                                           many=True,
-                                                           read_only=True).data
-        return sum([i.get('income') for i in inc_data])
 
     @transaction.atomic
     def create(self, validated_data):
