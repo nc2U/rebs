@@ -74,36 +74,41 @@ class ContractorInContractSerializer(serializers.ModelSerializer):
 
 
 def get_cont_price(instance, houseunit=None):
-    try:
-        price = ProjectIncBudget.objects.get(project=instance.project,
-                                             order_group=instance.order_group,
-                                             unit_type=instance.unit_type).average_price
-    except ProjectIncBudget.DoesNotExist:
-        price = UnitType.objects.get(pk=instance.unit_type).average_price
-    except UnitType.DoesNotExist:
-        price = 0
-
-    price_build = None
-    price_land = None
-    price_tax = None
-
-    if houseunit:
+    if instance.contractprice:
+        price = instance.contractprice.price
+        price_build = instance.contractprice.price_build
+        price_land = instance.contractprice.price_land
+        price_tax = instance.contractprice.price_tax
+    else:
         try:
-            sales_price = SalesPriceByGT.objects.get(order_group=instance.order_group,
-                                                     unit_type=instance.unit_type,
-                                                     unit_floor_type=houseunit.floor_type)
-            price = sales_price.price
-            price_build = sales_price.price_build
-            price_land = sales_price.price_land
-            price_tax = sales_price.price_tax
-        except SalesPriceByGT.DoesNotExist:
-            pass
+            price = ProjectIncBudget.objects.get(project=instance.project,
+                                                 order_group=instance.order_group,
+                                                 unit_type=instance.unit_type).average_price
+        except ProjectIncBudget.DoesNotExist:
+            price = UnitType.objects.get(pk=instance.unit_type).average_price
+        except UnitType.DoesNotExist:
+            price = 0
+
+        price_build = None
+        price_land = None
+        price_tax = None
+
+        if houseunit:
+            try:
+                sales_price = SalesPriceByGT.objects.get(order_group=instance.order_group,
+                                                         unit_type=instance.unit_type,
+                                                         unit_floor_type=houseunit.floor_type)
+                price = sales_price.price
+                price_build = sales_price.price_build
+                price_land = sales_price.price_land
+                price_tax = sales_price.price_tax
+            except SalesPriceByGT.DoesNotExist:
+                pass
 
     return price, price_build, price_land, price_tax
 
 
 def get_pay_amount(instance, price):
-    # ### 회차 데이터
     install_order = InstallmentPaymentOrder.objects.filter(project=instance.project)
 
     downs = install_order.filter(pay_sort='1')  # 계약금 분류 회차 리스트
