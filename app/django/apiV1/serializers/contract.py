@@ -74,6 +74,12 @@ class ContractorInContractSerializer(serializers.ModelSerializer):
 
 
 def get_cont_price(instance, houseunit=None, is_set=False):
+    """
+    :: 계약 객체의 가격 쓰기 또는 읽기 함수
+    :param instance: 계약 객체 (읽기일 때 이 객체의 가격 객체가 있으면 이 파라미터만 사용)
+    :param houseunit: 쓰기일 때 해당 계약 객체의 타입을 특정하기 위한 파라미터
+    :param is_set: 쓰기 여부 -> 계약건 가격 설정을 위한 값을 불러올 때 True
+    """
     if instance.contractprice and not is_set:
         price = instance.contractprice.price
         price_build = instance.contractprice.price_build
@@ -81,10 +87,12 @@ def get_cont_price(instance, houseunit=None, is_set=False):
         price_tax = instance.contractprice.price_tax
     else:
         try:
+            # 기본값 설정 -> 2. 프로젝트 예산에서 설정한 타입별 평균값을 불러와 기본값으로 설정
             price = ProjectIncBudget.objects.get(project=instance.project,
                                                  order_group=instance.order_group,
                                                  unit_type=instance.unit_type).average_price
         except ProjectIncBudget.DoesNotExist:
+            # 기본값 설정 -> 1. 예산 설정 값이 없으면 프로젝트 타입별 평균값을 불러와 기본값으로 설정
             price = UnitType.objects.get(pk=instance.unit_type).average_price
         except UnitType.DoesNotExist:
             price = 0
@@ -95,6 +103,7 @@ def get_cont_price(instance, houseunit=None, is_set=False):
 
         if houseunit:
             try:
+                # 공급가격 테이블 객체를 불러와 가격 데이터 반환
                 sales_price = SalesPriceByGT.objects.get(order_group=instance.order_group,
                                                          unit_type=instance.unit_type,
                                                          unit_floor_type=houseunit.floor_type)
@@ -109,6 +118,12 @@ def get_cont_price(instance, houseunit=None, is_set=False):
 
 
 def get_pay_amount(instance, price, is_set=False):
+    """
+    :: 납입회차 종류별 약정금 읽기 / 쓰기 함수
+    :param instance: 계약 객체 (읽기일 때 이 객체의 가격 객체가 있으면 이 파라미터만 사용)
+    :param price: 쓰기일 때 회차별 비율에 의한 값 설정 시 기준 값(가격)
+    :param is_set: 쓰기 여부
+    """
     if instance.contractprice and not is_set:
         down = instance.contractprice.down_pay
         middle = instance.contractprice.middle_pay
