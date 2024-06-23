@@ -73,8 +73,8 @@ class ContractorInContractSerializer(serializers.ModelSerializer):
                   'reservation_date', 'contract_date', 'is_active', 'note')
 
 
-def get_cont_price(instance, houseunit=None):
-    if instance.contractprice:
+def get_cont_price(instance, houseunit=None, is_set=False):
+    if instance.contractprice and not is_set:
         price = instance.contractprice.price
         price_build = instance.contractprice.price_build
         price_land = instance.contractprice.price_land
@@ -108,8 +108,8 @@ def get_cont_price(instance, houseunit=None):
     return price, price_build, price_land, price_tax
 
 
-def get_pay_amount(instance, price):
-    if instance.contractprice:
+def get_pay_amount(instance, price, is_set=False):
+    if instance.contractprice and not is_set:
         down = instance.contractprice.down_pay
         middle = instance.contractprice.middle_pay
         remain = instance.contractprice.remain_pay
@@ -155,8 +155,8 @@ class ContractSerializer(serializers.ModelSerializer):
                 house_unit = contract.keyunit.houseunit
             except ObjectDoesNotExist:
                 house_unit = None
-            price = get_cont_price(contract, house_unit)
-            pay_amount = get_pay_amount(contract, price[0])
+            price = get_cont_price(contract, house_unit, True)
+            pay_amount = get_pay_amount(contract, price[0], True)
 
             try:  # 계약가격 정보 존재 여부 확인
                 cont_price = contract.contractprice
