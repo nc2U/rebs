@@ -444,7 +444,6 @@ class PdfExportBill(View):
         # --------------------------------------------------------------
 
         # 해당 계약 건의 회차별 관련 정보
-
         orders_info = self.get_orders_info(payment_orders, amount, paid_sum_total)
 
         # 완납 회차
@@ -633,16 +632,18 @@ class PdfExportBill(View):
                     paid_date = paid[1]  # 납부일 = deal_date(loop 마지막 납부건 납부일)
                     is_over_amt = (excess + paid_amt) >= amount  # (전회 초과 납부분 + 납부액) >= 약정액
                     # 현재 회차 == 금회 직전 회차 (이 경우 루프 마지막까지 순회하기 위해서 루프탈출 조건에서 제외)
+
                     is_last_ord = order.pay_code + 1 == now_due_order
                     if is_over_amt and not is_last_ord:  # loop 탈출 조건
                         excess += (paid_amt + excess - amount)  # 금회 초과 납부분 += (금회 납부액 + 전회 초과납부분 - 약정액)
                         break
-                except IndexError:  # .pop() 에러 시 탈출
+                except IndexError:  # .pop(0) 에러 시 탈출
                     break
 
             paid_date = paid_date if paid_amt else ''  # 납부 금액이 있을 때만 납부일 저장
 
-            unpaid_amt = ord_info['unpaid_amount'] if order.pay_code != now_due_order else 0
+            # 납부 지연금
+            unpaid_amt = ord_info['unpaid_amount']
 
             if unpaid_amt == 0 or (order.pay_code == 1 and paid_code >= 1):  # 지연금 없거나 1회차 일때 완납코드가 1 이상이면,
                 unpaid_days = 0
@@ -668,20 +669,19 @@ class PdfExportBill(View):
             late_fee_sum += (get_late_fee(project, unpaid_amt, unpaid_days) +
                              get_late_fee(project, delayed_amt, delayed_days))
 
-            paid_dict = {
-                'order': order.pay_name,
-                'due_date': due_date,
-                'amount': amount,
-                'paid_date': paid_date,
-                'paid_amt': paid_amt,
-                'unpaid_amt': unpaid_amt,
-                'unpaid_days': unpaid_days,
-                'unpaid_result': get_late_fee(project, unpaid_amt, unpaid_days),
-                'delayed_amt': delayed_amt,
-                'delayed_days': delayed_days,
-                'delayed_result': get_late_fee(project, delayed_amt, delayed_days),
-                'note': f'(+)' if unpaid_days and delayed_days else '',
-            }
+            paid_dict = dict()
+            paid_dict['order'] = order.pay_name
+            paid_dict['due_date'] = due_date
+            paid_dict['amount'] = amount
+            paid_dict['paid_date'] = paid_date
+            paid_dict['paid_amt'] = paid_amt
+            paid_dict['unpaid_amt'] = unpaid_amt
+            paid_dict['unpaid_days'] = unpaid_days
+            paid_dict['unpaid_result'] = get_late_fee(project, unpaid_amt, unpaid_days)
+            paid_dict['delayed_amt'] = delayed_amt
+            paid_dict['delayed_days'] = delayed_days
+            paid_dict['delayed_result'] = get_late_fee(project, delayed_amt, delayed_days)
+            paid_dict['note'] = f'(+)' if unpaid_days and delayed_days else ''
             paid_amt_list.append(paid_dict)
 
         if is_late_fee:
@@ -733,6 +733,12 @@ class PdfExportBill(View):
         sum_pay_amount = 0  # 회당 납부 약정액 누계
         pm_cost_sum = 0  # PM 용역비 합계
 
+        # 지연가산금 관련 계산 시작 회차 ----------------------------------------------
+        try:
+            calc_start_code = payment_orders.filter(is_calc_start=True)[0].pay_code
+        except IndexError:
+            calc_start_code = 2
+
         for order in payment_orders:
             info = {'order': order}
             pay_amount = amount[order.pay_sort]  # 회당 납부 약정액
@@ -741,7 +747,8 @@ class PdfExportBill(View):
             info['sum_pay_amount'] = sum_pay_amount  # 회당 납부 약정액 누계
             unpaid = sum_pay_amount - paid_sum_total  # 약정액 누계 - 총 납부액
             unpaid = unpaid if unpaid > 0 else 0  # 음수(초과 납부 시)는 0 으로 설정
-            info['unpaid_amount'] = unpaid if unpaid < pay_amount else pay_amount  # 미납액
+            unpaid_amount = unpaid if unpaid < pay_amount else pay_amount  # 미납액
+            info['unpaid_amount'] = unpaid_amount if order.pay_code >= calc_start_code else 0  # 미납액
             pm_cost_sum += pay_amount if order.is_pm_cost else 0  # PM 용역비 합계
             info['pm_cost_sum'] = pm_cost_sum  # PM 용역비 합계
 
