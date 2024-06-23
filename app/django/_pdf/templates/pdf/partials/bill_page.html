@@ -194,12 +194,12 @@
 
             <td style="padding-right:5px; text-align:right;">{% if not data.no_late %}{{ paid_order.unpaid_amt|default:paid_order.delayed_amt|default:"-"|intcomma }}{% endif %}</td>
             <td style="text-align:right;">{% if not data.no_late %}{{ paid_order.unpaid_days|default:paid_order.delayed_days|default:"-"|intcomma }}{% endif %}</td>
-            <td style="text-align:right;">{% if not data.no_late %}{{ paid_order.unpaid_result.0|add:paid_order.delayed_result.0|default:"-"|intcomma }}{% endif %}</td>
+            <td style="text-align:right;">{% if not data.no_late %}{{ paid_order.unpaid_result|add:paid_order.delayed_result|default:"-"|intcomma }}{% endif %}</td>
             <td style="font-size: 9px; text-align: center; border-right: solid 1px">
                 {% if not data.no_late %}
-                {% if paid_order.unpaid_result.0|add:paid_order.delayed_result.0 %}
-                {{ paid_order.unpaid_result.1|default:paid_order.delayed_result.1|default:"" }}
-                {% endif %}{{ paid_order.note }}
+{#                {% if paid_order.unpaid_result|add:paid_order.delayed_result %}#}
+{#                {{ paid_order.unpaid_result.1|default:paid_order.delayed_result.1|default:"" }}#}
+{#                {% endif %}{{ paid_order.note }}#}
                 {% endif %}
             </td>
         </tr>

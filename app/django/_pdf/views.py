@@ -608,6 +608,7 @@ class PdfExportBill(View):
 
         # 해당 계약 건 전체 납부 목록 -> [(income, deal_date), ...]
         paid_list = [(p.income, p.deal_date) for p in self.get_paid(contract)[0]]
+        paid_date = paid_list[0][1]
 
         # 전체 리턴 데이터 목록
         paid_amt_list = []
@@ -627,7 +628,7 @@ class PdfExportBill(View):
 
             while True:  # 납입회차별 납입금 구하기
                 try:
-                    paid = paid_list.pop(0)  # (income, deal_date) <- 마지막 요소(가장 빠른 납부일자)
+                    paid = paid_list.pop(0)  # (income, deal_date) <- 첫번째 요소(가장 빠른 납부일자)
                     paid_amt += paid[0]  # 납부액 += income (loop 동안 income 을 모두 더함)
                     paid_date = paid[1]  # 납부일 = deal_date(loop 마지막 납부건 납부일)
                     is_over_amt = (excess + paid_amt) >= amount  # (전회 초과 납부분 + 납부액) >= 약정액
@@ -639,7 +640,8 @@ class PdfExportBill(View):
                 except IndexError:  # .pop() 에러 시 탈출
                     break
 
-            paid_date = paid_date if paid_amt else ''
+            paid_date = paid_date if paid_amt else ''  # 납부 금액이 있을 때만 납부일 저장
+
             unpaid_amt = ord_info['unpaid_amount'] if order.pay_code != now_due_order else 0
 
             if unpaid_amt == 0 or (order.pay_code == 1 and paid_code >= 1):  # 지연금 없거나 1회차 일때 완납코드가 1 이상이면,
@@ -647,7 +649,7 @@ class PdfExportBill(View):
             else:
                 try:
                     unpaid_days = (issue_date - due_date).days
-                except Exception:
+                except AttributeError:
                     unpaid_days = 0
 
             delayed_amt = 0  # 당회 납부 지연 시 납부 전 지연금 계산
@@ -662,8 +664,9 @@ class PdfExportBill(View):
                 if delayed_amt > 0:
                     delayed_days = (paid_date - due_date).days
 
-            late_fee_sum += self.get_late_fee(unpaid_amt, unpaid_days)[0] + \
-                            self.get_late_fee(delayed_amt, delayed_days)[0]
+            project = contract.project
+            late_fee_sum += (get_late_fee(project, unpaid_amt, unpaid_days) +
+                             get_late_fee(project, delayed_amt, delayed_days))
 
             paid_dict = {
                 'order': order.pay_name,
@@ -673,10 +676,10 @@ class PdfExportBill(View):
                 'paid_amt': paid_amt,
                 'unpaid_amt': unpaid_amt,
                 'unpaid_days': unpaid_days,
-                'unpaid_result': self.get_late_fee(unpaid_amt, unpaid_days),
+                'unpaid_result': get_late_fee(project, unpaid_amt, unpaid_days),
                 'delayed_amt': delayed_amt,
                 'delayed_days': delayed_days,
-                'delayed_result': self.get_late_fee(delayed_amt, delayed_days),
+                'delayed_result': get_late_fee(project, delayed_amt, delayed_days),
                 'note': f'(+)' if unpaid_days and delayed_days else '',
             }
             paid_amt_list.append(paid_dict)
@@ -746,27 +749,27 @@ class PdfExportBill(View):
 
         return order_info_list
 
-    @staticmethod
-    def get_late_fee(late_amt, days):
-        """
-        :: 회차별 지연 가산금 계산 함수
-        :param late_amt: 지연금액
-        :param days: 지연일수
-        :return int(floor_fee: 가산금), str(적용 이자율):
-        """
-        rate = 0
-        if days < 30:
-            rate = 0.08
-        elif days <= 90:
-            rate = 0.1
-        elif days <= 180:
-            rate = 0.11
-        else:
-            rate = 0.12
-
-        floor_fee = int(late_amt * days * rate / 365000) * 1000
-
-        return floor_fee, f'{int(rate * 100)}%'
+    # @staticmethod
+    # def get_late_fee(late_amt, days):
+    #     """
+    #     :: 회차별 지연 가산금 계산 함수
+    #     :param late_amt: 지연금액
+    #     :param days: 지연일수
+    #     :return int(floor_fee: 가산금), str(적용 이자율):
+    #     """
+    #     rate = 0
+    #     if days < 30:
+    #         rate = 0.08
+    #     elif days <= 90:
+    #         rate = 0.1
+    #     elif days <= 180:
+    #         rate = 0.11
+    #     else:
+    #         rate = 0.12
+    #
+    #     floor_fee = int(late_amt * days * rate / 365000) * 1000
+    #
+    #     return floor_fee, f'{int(rate * 100)}%'
 
     @staticmethod
     def get_blank_line(unpaid_count, pm, total_orders_count):
