@@ -367,13 +367,13 @@ class PdfExportBill(View):
         :return:
         """
         project = request.GET.get('project')  # 프로젝트 ID
-        issue_date = datetime.strptime(request.GET.get('date'), '%Y-%m-%d').date()
+        pub_date = datetime.strptime(request.GET.get('date'), '%Y-%m-%d').date()
         bill_info = SalesBillIssue.objects.get(project=project)
         np = True if request.GET.get('np') else False
         nl = True if request.GET.get('nl') else False
 
         context = {
-            'issue_date': issue_date,
+            'pub_date': pub_date,
             'bill_info': bill_info
         }  # 전체 데이터 딕셔너리
         payment_orders = InstallmentPaymentOrder.objects.filter(project=project)  # 전체 납부회차 리스트
@@ -383,7 +383,7 @@ class PdfExportBill(View):
 
         # 해당 계약건에 대한 데이터 정리 --------------------------------------- start
 
-        context['data_list'] = (self.get_bill_data(cont_id, payment_orders, now_due_order, issue_date, np, nl) \
+        context['data_list'] = (self.get_bill_data(cont_id, payment_orders, now_due_order, pub_date, np, nl) \
                                 for cont_id in contractor_list)
 
         # 해당 계약건에 대한 데이터 정리 --------------------------------------- end
@@ -592,7 +592,7 @@ class PdfExportBill(View):
 
     def get_due_orders(self, contract, orders_info,
                        payment_orders, now_due_order,
-                       paid_code, issue_date, is_late_fee=False):
+                       paid_code, pub_date, is_late_fee=False):
         """
         :: ■ 납부약정 및 납입내역 - 납입내역
         :param contract: 계약 건
@@ -600,7 +600,7 @@ class PdfExportBill(View):
         :param payment_orders: 전체 납부회차
         :param now_due_order: 금회 납부 회차
         :param paid_code: 완납회차
-        :param issue_date: 발행일자
+        :param pub_date: 발행일자
         :param is_late_fee: 연체료 발행여부
         :return list(paid_list: 왼납 회차 목록):
         """
@@ -647,33 +647,33 @@ class PdfExportBill(View):
 
             paid_date = paid_date if paid_amt else ''  # 납부 금액이 있을 때만 납부일 저장
 
-            # 납부 지연금
-            unpaid_amt = ord_info['unpaid_amount'] if order.pay_code >= calc_start_code else 0
+            if paid_date:  # 당 회차 완납인 경우(지연 납부일 계산)
+                unpaid_amt = 0  # 당회 납부 지연 시 납부 전 지연금 계산
+                unpaid_days = 0  # 당회 납부 지연 시 납부 전 지연금 지연일 계산
 
-            if unpaid_amt == 0 or (order.pay_code == 1 and paid_code >= 1):  # 지연금 없거나 1회차 일때 완납코드가 1 이상이면,
-                unpaid_days = 0
-            else:
-                try:
-                    unpaid_days = (issue_date - due_date).days
-                except AttributeError:
+                paid_amt_sum += paid_amt  # 당 회차 납부액 누계
+
+                # 납부코드 2 회차 이상 and 납부 금액 and 납부 날짜 > 약정 날짜
+                if order.pay_code >= calc_start_code and paid_amt and paid_date > due_date:
+                    sum_p_amt = ord_info['sum_pay_amount']  # 금 회차 납부 약정액
+                    sum_p_paid = paid_amt_sum - paid_amt
+                    unpaid_amt = sum_p_amt - sum_p_paid if sum_p_amt - sum_p_paid > 0 else 0
+                    if unpaid_amt > 0:
+                        unpaid_days = (datetime.strptime(paid_date, '%Y-%m-%d').date() - due_date).days
+            else:  # 당 회차 미납인 경우
+                # 납부 지연금
+                unpaid_amt = ord_info['unpaid_amount'] if order.pay_code >= calc_start_code else 0
+
+                if unpaid_amt == 0 or (order.pay_code == 1 and paid_code >= 1):  # 지연금 없거나 1회차 일때 완납코드가 1 이상이면,
                     unpaid_days = 0
-
-            delayed_amt = 0  # 당회 납부 지연 시 납부 전 지연금 계산
-            delayed_days = 0  # 당회 납부 지연 시 납부 전 지연금 지연일 계산
-
-            paid_amt_sum += paid_amt  # 당 회차 납부액 누계
-
-            # 납부코드 2 회차 이상 and 납부 금액 and 납부 날짜 > 약정 날짜
-            if order.pay_code >= calc_start_code and paid_amt and paid_date > due_date:
-                sum_p_amt = ord_info['sum_pay_amount']  # 금 회차 납부 약정액
-                sum_p_paid = paid_amt_sum - paid_amt
-                delayed_amt = sum_p_amt - sum_p_paid if sum_p_amt - sum_p_paid > 0 else 0
-                if delayed_amt > 0:
-                    delayed_days = (paid_date - due_date).days
+                else:
+                    try:
+                        unpaid_days = (pub_date - due_date).days
+                    except AttributeError:
+                        unpaid_days = 0
 
             project = contract.project
-            late_fee_sum += (get_late_fee(project, unpaid_amt, unpaid_days) +
-                             get_late_fee(project, delayed_amt, delayed_days))
+            late_fee_sum += get_late_fee(project, unpaid_amt, unpaid_days)
 
             paid_dict = dict()
             paid_dict['order'] = order.pay_name
@@ -681,13 +681,12 @@ class PdfExportBill(View):
             paid_dict['amount'] = amount
             paid_dict['paid_date'] = paid_date
             paid_dict['paid_amt'] = paid_amt
+
             paid_dict['unpaid_amt'] = unpaid_amt
             paid_dict['unpaid_days'] = unpaid_days
             paid_dict['unpaid_result'] = get_late_fee(project, unpaid_amt, unpaid_days)
-            paid_dict['delayed_amt'] = 0  # delayed_amt
-            paid_dict['delayed_days'] = 0  # delayed_days
-            paid_dict['delayed_result'] = 0  # get_late_fee(project, delayed_amt, delayed_days)
-            paid_dict['note'] = f'(+)' if unpaid_days and delayed_days else ''
+
+            paid_dict['note'] = f'(+)' if unpaid_days else ''
             paid_amt_list.append(paid_dict)
 
         if is_late_fee:
@@ -718,7 +717,7 @@ class PdfExportBill(View):
                 'amount': amount,
                 'paid_date': '',
                 'paid_amt': 0,
-                'delayed_amt': 0,
+                # 'delayed_amt': 0,
                 'penalty_days': 0,
                 'panalty_amt': 0,
             }
