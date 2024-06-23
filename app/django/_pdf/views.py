@@ -618,6 +618,11 @@ class PdfExportBill(View):
 
         late_fee_sum = 0
 
+        try:
+            calc_start_code = payment_orders.filter(is_calc_start=True)[0].pay_code
+        except IndexError:
+            calc_start_code = 2
+
         for order in due_orders:
             due_date = get_due_date_per_order(contract, order, due_orders)  # 납부기한
             ord_info = list(filter(lambda o: o['order'] == order, orders_info))[0]  # 금 회차 orders_info
@@ -643,7 +648,7 @@ class PdfExportBill(View):
             paid_date = paid_date if paid_amt else ''  # 납부 금액이 있을 때만 납부일 저장
 
             # 납부 지연금
-            unpaid_amt = ord_info['unpaid_amount']
+            unpaid_amt = ord_info['unpaid_amount'] if order.pay_code >= calc_start_code else 0
 
             if unpaid_amt == 0 or (order.pay_code == 1 and paid_code >= 1):  # 지연금 없거나 1회차 일때 완납코드가 1 이상이면,
                 unpaid_days = 0
@@ -656,9 +661,10 @@ class PdfExportBill(View):
             delayed_amt = 0  # 당회 납부 지연 시 납부 전 지연금 계산
             delayed_days = 0  # 당회 납부 지연 시 납부 전 지연금 지연일 계산
 
-            paid_amt_sum += paid_amt
+            paid_amt_sum += paid_amt  # 당 회차 납부액 누계
 
-            if order.pay_code > 1 and paid_amt and paid_date > due_date:
+            # 납부코드 2 회차 이상 and 납부 금액 and 납부 날짜 > 약정 날짜
+            if order.pay_code >= calc_start_code and paid_amt and paid_date > due_date:
                 sum_p_amt = ord_info['sum_pay_amount']  # 금 회차 납부 약정액
                 sum_p_paid = paid_amt_sum - paid_amt
                 delayed_amt = sum_p_amt - sum_p_paid if sum_p_amt - sum_p_paid > 0 else 0
@@ -745,12 +751,9 @@ class PdfExportBill(View):
             info['pay_amount'] = pay_amount  # 회당 납부 약정액
             sum_pay_amount += pay_amount  # 회당 납부 약정액 누계
             info['sum_pay_amount'] = sum_pay_amount  # 회당 납부 약정액 누계
-
             unpaid = sum_pay_amount - paid_sum_total  # 약정액 누계 - 총 납부액
             unpaid = unpaid if unpaid > 0 else 0  # 음수(초과 납부 시)는 0 으로 설정
-            unpaid_amount = unpaid if unpaid < pay_amount else pay_amount  # 미납액
-            info['unpaid_amount'] = unpaid_amount if order.pay_code >= calc_start_code else 0  # 미납액
-
+            info['unpaid_amount'] = unpaid if unpaid < pay_amount else pay_amount  # 미납액
             pm_cost_sum += pay_amount if order.is_pm_cost else 0  # PM 용역비 합계
             info['pm_cost_sum'] = pm_cost_sum  # PM 용역비 합계
 
