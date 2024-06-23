@@ -608,7 +608,6 @@ class PdfExportBill(View):
 
         # 해당 계약 건 전체 납부 목록 -> [(income, deal_date), ...]
         paid_list = [(p.income, p.deal_date) for p in self.get_paid(contract)[0]]
-        paid_date = paid_list[-1][1] if paid_list else None  # 마지막 요소의 deal_date (납부일)
 
         # 전체 리턴 데이터 목록
         paid_amt_list = []
@@ -628,7 +627,7 @@ class PdfExportBill(View):
 
             while True:  # 납입회차별 납입금 구하기
                 try:
-                    paid = paid_list.pop()  # (income, deal_date) <- 마지막 요소(가장 빠른 납부일자)
+                    paid = paid_list.pop(0)  # (income, deal_date) <- 마지막 요소(가장 빠른 납부일자)
                     paid_amt += paid[0]  # 납부액 += income (loop 동안 income 을 모두 더함)
                     paid_date = paid[1]  # 납부일 = deal_date(loop 마지막 납부건 납부일)
                     is_over_amt = (excess + paid_amt) >= amount  # (전회 초과 납부분 + 납부액) >= 약정액
