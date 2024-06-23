@@ -678,9 +678,9 @@ class PdfExportBill(View):
             paid_dict['unpaid_amt'] = unpaid_amt
             paid_dict['unpaid_days'] = unpaid_days
             paid_dict['unpaid_result'] = get_late_fee(project, unpaid_amt, unpaid_days)
-            paid_dict['delayed_amt'] = delayed_amt
-            paid_dict['delayed_days'] = delayed_days
-            paid_dict['delayed_result'] = get_late_fee(project, delayed_amt, delayed_days)
+            paid_dict['delayed_amt'] = 0  # delayed_amt
+            paid_dict['delayed_days'] = 0  # delayed_days
+            paid_dict['delayed_result'] = 0  # get_late_fee(project, delayed_amt, delayed_days)
             paid_dict['note'] = f'(+)' if unpaid_days and delayed_days else ''
             paid_amt_list.append(paid_dict)
 
@@ -725,7 +725,7 @@ class PdfExportBill(View):
         """
         :: 회차별 부가정보
         :param payment_orders: 회차 정보
-        :param amount: 전체 약정액 리스트
+        :param amount: {'1': down_pay, '2': middle_pay, '3': remain_pay}
         :param paid_sum_total: 기 납부 총액
         :return list(dict(order_info_list)): 회차별 부가정보 딕셔너리 리스트
         """
@@ -745,10 +745,12 @@ class PdfExportBill(View):
             info['pay_amount'] = pay_amount  # 회당 납부 약정액
             sum_pay_amount += pay_amount  # 회당 납부 약정액 누계
             info['sum_pay_amount'] = sum_pay_amount  # 회당 납부 약정액 누계
+
             unpaid = sum_pay_amount - paid_sum_total  # 약정액 누계 - 총 납부액
             unpaid = unpaid if unpaid > 0 else 0  # 음수(초과 납부 시)는 0 으로 설정
             unpaid_amount = unpaid if unpaid < pay_amount else pay_amount  # 미납액
             info['unpaid_amount'] = unpaid_amount if order.pay_code >= calc_start_code else 0  # 미납액
+
             pm_cost_sum += pay_amount if order.is_pm_cost else 0  # PM 용역비 합계
             info['pm_cost_sum'] = pm_cost_sum  # PM 용역비 합계
 
