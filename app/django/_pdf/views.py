@@ -749,28 +749,6 @@ class PdfExportBill(View):
 
         return order_info_list
 
-    # @staticmethod
-    # def get_late_fee(late_amt, days):
-    #     """
-    #     :: 회차별 지연 가산금 계산 함수
-    #     :param late_amt: 지연금액
-    #     :param days: 지연일수
-    #     :return int(floor_fee: 가산금), str(적용 이자율):
-    #     """
-    #     rate = 0
-    #     if days < 30:
-    #         rate = 0.08
-    #     elif days <= 90:
-    #         rate = 0.1
-    #     elif days <= 180:
-    #         rate = 0.11
-    #     else:
-    #         rate = 0.12
-    #
-    #     floor_fee = int(late_amt * days * rate / 365000) * 1000
-    #
-    #     return floor_fee, f'{int(rate * 100)}%'
-
     @staticmethod
     def get_blank_line(unpaid_count, pm, total_orders_count):
         """
