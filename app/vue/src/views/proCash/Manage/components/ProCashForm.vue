@@ -7,6 +7,7 @@ import { diffDate, getToday, cutString, numFormat } from '@/utils/baseMixins'
 import { write_project_cash } from '@/utils/pageAuth'
 import { type ProBankAcc, type ProjectCashBook, type ProSepItems } from '@/store/types/proCash'
 import { isValidate } from '@/utils/helper'
+import Multiselect from '@/components/MultiSelect/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -92,6 +93,7 @@ const formsCheck = computed(() => {
 
 const paymentStore = usePayment()
 const payOrderList = computed(() => paymentStore.payOrderList)
+const fetchPayOrderList = (project: number) => paymentStore.fetchPayOrderList(project)
 
 const proCashStore = useProCash()
 const formAccD2List = computed(() => proCashStore.formAccD2List)
@@ -405,13 +407,13 @@ onBeforeMount(() => formDataSetup())
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label"> 계약정보</CFormLabel>
               <CCol sm="8">
-                <CFormSelect
+                <Multiselect
                   v-model.number="form.contract"
-                  :required="!form.is_separate"
+                  :options="[{ value: 688, label: 'aaa' }]"
                   :disabled="!form.sort || form.is_separate"
-                >
-                  <option value="">---------</option>
-                </CFormSelect>
+                  placeholder="계약 정보 선택"
+                  :classes="{ search: 'form-control multiselect-search' }"
+                />
               </CCol>
             </CRow>
           </CCol>
@@ -421,7 +423,6 @@ onBeforeMount(() => formDataSetup())
               <CCol sm="8">
                 <CFormSelect
                   v-model.number="form.installment_order"
-                  :required="!form.is_separate"
                   :disabled="!form.project_account_d2 || form.is_separate || !form.contract"
                 >
                   <option value="">---------</option>
