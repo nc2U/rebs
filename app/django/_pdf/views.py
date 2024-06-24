@@ -521,6 +521,41 @@ class PdfExportBill(View):
         return paid_list, paid_sum_total
 
     @staticmethod
+    def get_orders_info(payment_orders, amount, paid_sum_total):
+        """
+        :: 회차별 부가정보
+        :param payment_orders: 회차 정보
+        :param amount: {'1': down_pay, '2': middle_pay, '3': remain_pay}
+        :param paid_sum_total: 기 납부 총액
+        :return list(dict(order_info_list)): 회차별 부가정보 딕셔너리 리스트
+        """
+        order_info_list = []
+        sum_pay_amount = 0  # 회당 납부 약정액 누계
+        pm_cost_sum = 0  # PM 용역비 합계
+
+        # 지연가산금 관련 계산 시작 회차 ----------------------------------------------
+        try:
+            calc_start_code = payment_orders.filter(is_calc_start=True)[0].pay_code
+        except IndexError:
+            calc_start_code = 2
+
+        for order in payment_orders:
+            info = {'order': order}
+            pay_amount = amount[order.pay_sort]  # 회당 납부 약정액
+            info['pay_amount'] = pay_amount  # 회당 납부 약정액
+            sum_pay_amount += pay_amount  # 회당 납부 약정액 누계
+            info['sum_pay_amount'] = sum_pay_amount  # 회당 납부 약정액 누계
+            unpaid = sum_pay_amount - paid_sum_total  # 약정액 누계 - 총 납부액
+            unpaid = unpaid if unpaid > 0 else 0  # 음수(초과 납부 시)는 0 으로 설정
+            info['unpaid_amount'] = unpaid if unpaid < pay_amount else pay_amount  # 미납액
+            pm_cost_sum += pay_amount if order.is_pm_cost else 0  # PM 용역비 합계
+            info['pm_cost_sum'] = pm_cost_sum  # PM 용역비 합계
+
+            order_info_list.append(info)
+
+        return order_info_list
+
+    @staticmethod
     def get_cont_content(contract, unit):
         """
         :: ■ 계약 내용
@@ -695,6 +730,19 @@ class PdfExportBill(View):
             return paid_amt_list
 
     @staticmethod
+    def get_blank_line(unpaid_count, pm, total_orders_count):
+        """
+        :: 공백 라인 개수 구하기
+        :param unpaid_count: 미납내역 개수
+        :param pm: pm 용역비 적용여부
+        :param total_orders_count: 전체 납부회차 개수
+        :return str(. * 공백라인 수):
+        """
+        num = unpaid_count + 1 if pm else unpaid_count
+        blank_line = (14 - (num + total_orders_count))
+        return '.' * blank_line
+
+    @staticmethod
     def get_remain_orders(contract, orders_info, payment_orders, now_due_order):
         """
         :: ■ 납부약정 및 납입내역 - 잔여회차
@@ -724,54 +772,6 @@ class PdfExportBill(View):
             remain_amt_list.append(paid_dict)
 
         return remain_amt_list
-
-    @staticmethod
-    def get_orders_info(payment_orders, amount, paid_sum_total):
-        """
-        :: 회차별 부가정보
-        :param payment_orders: 회차 정보
-        :param amount: {'1': down_pay, '2': middle_pay, '3': remain_pay}
-        :param paid_sum_total: 기 납부 총액
-        :return list(dict(order_info_list)): 회차별 부가정보 딕셔너리 리스트
-        """
-        order_info_list = []
-        sum_pay_amount = 0  # 회당 납부 약정액 누계
-        pm_cost_sum = 0  # PM 용역비 합계
-
-        # 지연가산금 관련 계산 시작 회차 ----------------------------------------------
-        try:
-            calc_start_code = payment_orders.filter(is_calc_start=True)[0].pay_code
-        except IndexError:
-            calc_start_code = 2
-
-        for order in payment_orders:
-            info = {'order': order}
-            pay_amount = amount[order.pay_sort]  # 회당 납부 약정액
-            info['pay_amount'] = pay_amount  # 회당 납부 약정액
-            sum_pay_amount += pay_amount  # 회당 납부 약정액 누계
-            info['sum_pay_amount'] = sum_pay_amount  # 회당 납부 약정액 누계
-            unpaid = sum_pay_amount - paid_sum_total  # 약정액 누계 - 총 납부액
-            unpaid = unpaid if unpaid > 0 else 0  # 음수(초과 납부 시)는 0 으로 설정
-            info['unpaid_amount'] = unpaid if unpaid < pay_amount else pay_amount  # 미납액
-            pm_cost_sum += pay_amount if order.is_pm_cost else 0  # PM 용역비 합계
-            info['pm_cost_sum'] = pm_cost_sum  # PM 용역비 합계
-
-            order_info_list.append(info)
-
-        return order_info_list
-
-    @staticmethod
-    def get_blank_line(unpaid_count, pm, total_orders_count):
-        """
-        :: 공백 라인 개수 구하기
-        :param unpaid_count: 미납내역 개수
-        :param pm: pm 용역비 적용여부
-        :param total_orders_count: 전체 납부회차 개수
-        :return str(. * 공백라인 수):
-        """
-        num = unpaid_count + 1 if pm else unpaid_count
-        blank_line = (14 - (num + total_orders_count))
-        return '.' * blank_line
 
 
 class PdfExportPayments(View):
