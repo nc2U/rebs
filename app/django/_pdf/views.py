@@ -703,7 +703,7 @@ class PdfExportBill(View):
                     unpaid_days = 0
                 else:
                     try:
-                        unpaid_days = (pub_date - due_date).days
+                        unpaid_days = (pub_date - due_date).days if pub_date >= due_date else 0
                     except AttributeError:
                         unpaid_days = 0
 
