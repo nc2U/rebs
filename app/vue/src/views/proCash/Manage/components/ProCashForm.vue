@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { type PropType, ref, reactive, computed, watch, onBeforeMount, nextTick, inject } from 'vue'
+import { usePayment } from '@/store/pinia/payment'
 import { useProCash } from '@/store/pinia/proCash'
 import { useAccount } from '@/store/pinia/account'
 import { diffDate, getToday, cutString, numFormat } from '@/utils/baseMixins'
@@ -50,11 +51,11 @@ const form = reactive<
   sort: null,
   project_account_d2: null,
   project_account_d3: null,
-
   is_separate: false,
   separated: null,
   is_imprest: false,
-
+  contract: null,
+  installment_order: null,
   content: '',
   trader: '',
   bank_account: null,
@@ -73,19 +74,24 @@ const formsCheck = computed(() => {
     const b = form.sort === props.proCash.sort
     const c = form.project_account_d2 === props.proCash.project_account_d2
     const d = form.project_account_d3 === props.proCash.project_account_d3
-    const e = form.content === props.proCash.content
-    const f = form.trader === props.proCash.trader
-    const g = form.bank_account === props.proCash.bank_account
-    const h = form.income === props.proCash.income
-    const i = form.outlay === props.proCash.outlay
-    const j = form.evidence === props.proCash.evidence
-    const k = form.note === props.proCash.note
-    const l = form.deal_date === props.proCash.deal_date
-    const m = form.is_separate === props.proCash.is_separate
+    const e = form.contract === props.proCash.contract
+    const f = form.installment_order === props.proCash.installment_order
+    const g = form.content === props.proCash.content
+    const h = form.trader === props.proCash.trader
+    const i = form.bank_account === props.proCash.bank_account
+    const j = form.income === props.proCash.income
+    const k = form.outlay === props.proCash.outlay
+    const l = form.evidence === props.proCash.evidence
+    const m = form.note === props.proCash.note
+    const n = form.deal_date === props.proCash.deal_date
+    const o = form.is_separate === props.proCash.is_separate
 
-    return a && b && c && d && e && f && g && h && i && j && k && l && m
+    return a && b && c && d && e && f && g && h && i && j && k && l && m && n && o
   } else return false
 })
+
+const paymentStore = usePayment()
+const payOrderList = computed(() => paymentStore.payOrderList)
 
 const proCashStore = useProCash()
 const formAccD2List = computed(() => proCashStore.formAccD2List)
@@ -280,6 +286,8 @@ const formDataSetup = () => {
     form.sort = props.proCash.sort
     form.project_account_d2 = props.proCash.project_account_d2
     form.project_account_d3 = props.proCash.project_account_d3
+    form.contract = props.proCash.contract
+    form.installment_order = props.proCash.installment_order
     form.content = props.proCash.content
     form.trader = props.proCash.trader
     form.bank_account = props.proCash.bank_account
@@ -375,6 +383,50 @@ onBeforeMount(() => formDataSetup())
                     <template v-if="form.sort === 3">대체</template>
                     <template v-else-if="form.sort === 4">취소</template>
                     <template v-else>{{ d2.name }}</template>
+                  </option>
+                </CFormSelect>
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
+
+        <CRow
+          v-show="
+            (form.project_account_d2 && form.project_account_d2 <= 2) ||
+            (form.project_account_d3 &&
+              (form.project_account_d3 === 7 ||
+                form.project_account_d3 === 8 ||
+                form.project_account_d3 === 9 ||
+                form.project_account_d3 === 10))
+          "
+          class="mb-3"
+        >
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label"> 계약정보</CFormLabel>
+              <CCol sm="8">
+                <CFormSelect
+                  v-model.number="form.contract"
+                  :required="!form.is_separate"
+                  :disabled="!form.sort || form.is_separate"
+                >
+                  <option value="">---------</option>
+                </CFormSelect>
+              </CCol>
+            </CRow>
+          </CCol>
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label"> 회차정보</CFormLabel>
+              <CCol sm="8">
+                <CFormSelect
+                  v-model.number="form.installment_order"
+                  :required="!form.is_separate"
+                  :disabled="!form.project_account_d2 || form.is_separate || !form.contract"
+                >
+                  <option value="">---------</option>
+                  <option v-for="order in payOrderList" :value="order.pk" :key="order?.pk ?? 0">
+                    <template>{{ order.alias_name }}</template>
                   </option>
                 </CFormSelect>
               </CCol>
