@@ -165,7 +165,7 @@ def get_late_fee(project, late_amt, days, is_past=False):
 
         elif start is not None and end is not None:  # 특정 기간 동안 연체인 경우
 
-            if start is 1:  # 연체 시작 구간일 경우
+            if start == 1:  # 연체 시작 구간일 경우
                 if days <= end:
                     return int(late_amt * days * rate / 365)
                 else:
