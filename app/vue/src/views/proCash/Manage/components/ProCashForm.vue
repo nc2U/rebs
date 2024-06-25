@@ -3,15 +3,16 @@ import { type PropType, ref, reactive, computed, watch, onBeforeMount, nextTick,
 import { usePayment } from '@/store/pinia/payment'
 import { useProCash } from '@/store/pinia/proCash'
 import { useAccount } from '@/store/pinia/account'
+import { useContract } from '@/store/pinia/contract'
 import { diffDate, getToday, cutString, numFormat } from '@/utils/baseMixins'
 import { write_project_cash } from '@/utils/pageAuth'
 import { type ProBankAcc, type ProjectCashBook, type ProSepItems } from '@/store/types/proCash'
 import { isValidate } from '@/utils/helper'
-import Multiselect from '@/components/MultiSelect/index.vue'
-import DatePicker from '@/components/DatePicker/index.vue'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import AlertModal from '@/components/Modals/AlertModal.vue'
 import BankAcc from './BankAcc.vue'
+import DatePicker from '@/components/DatePicker/index.vue'
+import MultiSelect from '@/components/MultiSelect/index.vue'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const props = defineProps({
   proCash: { type: Object as PropType<ProjectCashBook>, default: null },
@@ -93,7 +94,6 @@ const formsCheck = computed(() => {
 
 const paymentStore = usePayment()
 const payOrderList = computed(() => paymentStore.payOrderList)
-const fetchPayOrderList = (project: number) => paymentStore.fetchPayOrderList(project)
 
 const proCashStore = useProCash()
 const formAccD2List = computed(() => proCashStore.formAccD2List)
@@ -226,7 +226,14 @@ const sepD1_change = () => {
 
 watch(form, val => {
   form.is_imprest = val.project_account_d3 === (transfers ?? [17, 70])[1] + 1 // 대체(입금)
+  if (!form.project_account_d3 || form.project_account_d3 > 10) {
+    form.contract = null
+    form.installment_order = null
+  }
 })
+
+const contStore = useContract()
+const getContracts = computed(() => contStore.getContracts)
 
 const accountStore = useAccount()
 const allowedPeriod = computed(
@@ -392,34 +399,25 @@ onBeforeMount(() => formDataSetup())
           </CCol>
         </CRow>
 
-        <CRow
-          v-show="
-            (form.project_account_d2 && form.project_account_d2 <= 2) ||
-            (form.project_account_d3 &&
-              (form.project_account_d3 === 7 ||
-                form.project_account_d3 === 8 ||
-                form.project_account_d3 === 9 ||
-                form.project_account_d3 === 10))
-          "
-          class="mb-3"
-        >
+        <CRow v-show="form.project_account_d3 && form.project_account_d3 <= 10" class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 계약정보</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label"> 계약(자)정보</CFormLabel>
               <CCol sm="8">
-                <Multiselect
+                <MultiSelect
                   v-model.number="form.contract"
-                  :options="[{ value: 688, label: 'aaa' }]"
+                  mode="single"
+                  :options="getContracts"
+                  :multiple="false"
                   :disabled="!form.sort || form.is_separate"
                   placeholder="계약 정보 선택"
-                  :classes="{ search: 'form-control multiselect-search' }"
                 />
               </CCol>
             </CRow>
           </CCol>
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 회차정보</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label">납부회차정보</CFormLabel>
               <CCol sm="8">
                 <CFormSelect
                   v-model.number="form.installment_order"
@@ -427,7 +425,7 @@ onBeforeMount(() => formDataSetup())
                 >
                   <option value="">---------</option>
                   <option v-for="order in payOrderList" :value="order.pk" :key="order?.pk ?? 0">
-                    <template>{{ order.alias_name }}</template>
+                    <template>{{ order.pay_name }}</template>
                   </option>
                 </CFormSelect>
               </CCol>

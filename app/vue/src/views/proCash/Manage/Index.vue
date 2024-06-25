@@ -4,6 +4,7 @@ import { pageTitle, navMenu } from '@/views/proCash/_menu/headermixin'
 import { useComCash } from '@/store/pinia/comCash'
 import { useProCash } from '@/store/pinia/proCash'
 import { useProject } from '@/store/pinia/project'
+import { useContract } from '@/store/pinia/contract'
 import {
   type CashBookFilter,
   type ProBankAcc,
@@ -16,6 +17,7 @@ import ListController from '@/views/proCash/Manage/components/ListController.vue
 import AddProCash from '@/views/proCash/Manage/components/AddProCash.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import ProCashList from '@/views/proCash/Manage/components/ProCashList.vue'
+import { usePayment } from '@/store/pinia/payment'
 
 const listControl = ref()
 
@@ -72,6 +74,9 @@ const excelUrl = computed(() => {
   const q = dataFilter.value.search
   return `/excel/p-cashbook/?project=${pj}&sdate=${sd}&edate=${ed}&sort=${st}&d1=${d1}&d2=${d2}&bank_acc=${ba}&q=${q}`
 })
+
+const paymentStore = usePayment()
+const fetchPayOrderList = (project: number) => paymentStore.fetchPayOrderList(project)
 
 const comCashStore = useComCash()
 const fetchBankCodeList = () => comCashStore.fetchBankCodeList()
@@ -220,6 +225,9 @@ const projSelect = (target: number | null) => {
   if (!!target) dataSetup(target)
 }
 
+const contStore = useContract()
+const fetchAllContracts = (projId: number) => contStore.fetchAllContracts(projId)
+
 onBeforeMount(() => {
   fetchBankCodeList()
   fetchProAccSortList()
@@ -227,6 +235,8 @@ onBeforeMount(() => {
   fetchProAllAccD3List()
   fetchProFormAccD2List()
   fetchProFormAccD3List()
+  fetchPayOrderList(project.value || projStore.initProjId)
+  fetchAllContracts(project.value || projStore.initProjId)
   dataSetup(project.value || projStore.initProjId)
 })
 </script>
