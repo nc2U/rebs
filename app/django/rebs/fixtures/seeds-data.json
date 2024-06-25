@@ -3752,7 +3752,7 @@
     "model": "rebs.projectaccountd3",
     "pk": 13,
     "fields": {
-      "sort": 2,
+      "sort": 1,
       "d2": 4,
       "code": "211",
       "name": "차입금(브리지)",
@@ -3763,7 +3763,7 @@
     "model": "rebs.projectaccountd3",
     "pk": 14,
     "fields": {
-      "sort": 2,
+      "sort": 1,
       "d2": 4,
       "code": "212",
       "name": "차입금(PF대출)",
@@ -3774,7 +3774,7 @@
     "model": "rebs.projectaccountd3",
     "pk": 15,
     "fields": {
-      "sort": 2,
+      "sort": 1,
       "d2": 4,
       "code": "213",
       "name": "차입금(기타)",
@@ -3785,7 +3785,7 @@
     "model": "rebs.projectaccountd3",
     "pk": 16,
     "fields": {
-      "sort": 1,
+      "sort": 2,
       "d2": 4,
       "code": "214",
       "name": "[상환]→차입금(브리지)",
@@ -3851,7 +3851,7 @@
     "model": "rebs.projectaccountd3",
     "pk": 22,
     "fields": {
-      "sort": 2,
+      "sort": 1,
       "d2": 6,
       "code": "322",
       "name": "[회수]→대여금",
@@ -4357,7 +4357,7 @@
     "model": "rebs.projectaccountd3",
     "pk": 68,
     "fields": {
-      "sort": 1,
+      "sort": 2,
       "d2": 16,
       "code": "692",
       "name": "영업외 비용(기타잡손실)",
@@ -4379,7 +4379,7 @@
     "model": "rebs.projectaccountd3",
     "pk": 70,
     "fields": {
-      "sort": 1,
+      "sort": 2,
       "d2": 17,
       "code": "512",
       "name": "대체(출금)",
@@ -4401,7 +4401,7 @@
     "model": "rebs.projectaccountd3",
     "pk": 72,
     "fields": {
-      "sort": 1,
+      "sort": 2,
       "d2": 18,
       "code": "412",
       "name": "거래취소(출금)",
