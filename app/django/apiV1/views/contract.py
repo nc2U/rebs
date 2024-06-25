@@ -5,6 +5,7 @@ from django_filters import ChoiceFilter, ModelChoiceFilter, DateFilter, BooleanF
 
 from ..permission import *
 from ..serializers.contract import *
+from ..pagination import PageNumberPaginationThreeThousand
 
 from contract.models import (OrderGroup, Contract, ContractPrice, Contractor,
                              ContractorAddress, ContractorContact,
@@ -63,6 +64,14 @@ class ContractViewSet(viewsets.ModelViewSet):
 
 class ContractSetViewSet(ContractViewSet):
     serializer_class = ContractSetSerializer
+
+
+class SimpleContractViewSet(ContractViewSet):
+    serializer_class = SimpleContractSerializer
+    pagination_class = PageNumberPaginationThreeThousand
+
+    def get_queryset(self):
+        return Contract.objects.filter(activation=True, contractor__is_active=True)
 
 
 class ContractPriceViewSet(viewsets.ModelViewSet):

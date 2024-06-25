@@ -633,6 +633,22 @@ class ContractSetSerializer(serializers.ModelSerializer):
         return instance
 
 
+class SimpleContractSerializer(serializers.ModelSerializer):
+    value = serializers.SerializerMethodField()
+    label = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Contract
+        fields = ('value', 'label')
+
+    def get_value(self, obj):
+        return obj.pk
+
+    @staticmethod
+    def get_label(obj):
+        return str(obj.contractor)
+
+
 class ContractPriceSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContractPrice
