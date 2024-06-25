@@ -46,8 +46,15 @@ export const useContract = defineStore('contract', () => {
   const contract = ref<Contract | null>(null)
   const contractList = ref<Contract[]>([])
   const contractsCount = ref<number>(0)
+  const getContracts = ref<{ value: number; label: string }[]>([])
 
   // actions
+  const fetchAllContracts = async (project: number) =>
+    await api
+      .get(`/simple-contract/?project=${project}`)
+      .then(res => (getContracts.value = res.data.results))
+      .catch(err => errorHandle(err.response.data))
+
   const contractPages = (itemsPerPage: number) => Math.ceil(contractsCount.value / itemsPerPage)
 
   const fetchContract = (pk: number) =>
@@ -353,7 +360,9 @@ export const useContract = defineStore('contract', () => {
     contract,
     contractList,
     contractsCount,
+    getContracts,
 
+    fetchAllContracts,
     contractPages,
     fetchContract,
     fetchContractList,
