@@ -330,8 +330,8 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
             if not sep_data.get('pk'):
                 sep_pr_cashbook = ProjectCashBook(project=instance.project,
                                                   sort=instance.sort,
-                                                  project_account_d2=sep_pr_cashbook_project_account_d2,
-                                                  project_account_d3=sep_pr_cashbook_project_account_d3,
+                                                  project_account_d2_id=sep_pr_cashbook_project_account_d2,
+                                                  project_account_d3_id=sep_pr_cashbook_project_account_d3,
                                                   separated=instance,
                                                   is_imprest=sep_pr_cashbook_is_imprest,
                                                   contract_id=sep_pr_cashbook_contract,
