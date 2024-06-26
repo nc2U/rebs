@@ -252,9 +252,11 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
         # 2. sep 정보 확인
         sep_data = self.initial_data.get('sepData')
         if sep_data:
-            sep_pr_cashbook_project_account_d2 = ProjectAccountD2.objects.get(pk=sep_data.get('project_account_d2'))
-            sep_pr_cashbook_project_account_d3 = ProjectAccountD3.objects.get(pk=sep_data.get('project_account_d3'))
+            sep_pr_cashbook_project_account_d2 = sep_data.get('project_account_d2')
+            sep_pr_cashbook_project_account_d3 = sep_data.get('project_account_d3')
             sep_pr_cashbook_is_imprest = sep_data.get('is_imprest')
+            sep_pr_cashbook_contract = sep_data.get('contract')
+            sep_pr_cashbook_installment_order = sep_data.get('installment_order')
             sep_pr_cashbook_content = sep_data.get('content')
             sep_pr_cashbook_trader = sep_data.get('trader')
             sep_pr_cashbook_income = sep_data.get('income')
@@ -264,10 +266,12 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
             if not sep_data.get('pk'):
                 sep_pr_cashbook = ProjectCashBook(project=pr_cashbook.project,
                                                   sort=pr_cashbook.sort,
-                                                  project_account_d2=sep_pr_cashbook_project_account_d2,
-                                                  project_account_d3=sep_pr_cashbook_project_account_d3,
+                                                  project_account_d2_id=sep_pr_cashbook_project_account_d2,
+                                                  project_account_d3_id=sep_pr_cashbook_project_account_d3,
                                                   separated=pr_cashbook,
                                                   is_imprest=sep_pr_cashbook_is_imprest,
+                                                  contract_id=sep_pr_cashbook_contract,
+                                                  installment_order_id=sep_pr_cashbook_installment_order,
                                                   content=sep_pr_cashbook_content,
                                                   trader=sep_pr_cashbook_trader,
                                                   bank_account=pr_cashbook.bank_account,
@@ -281,10 +285,12 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
                 sep_pr_cashbook = ProjectCashBook.objects.get(pk=sep_data.get('pk'))
                 sep_pr_cashbook.project = pr_cashbook.project
                 sep_pr_cashbook.sort = pr_cashbook.sort
-                sep_pr_cashbook.project_account_d2 = sep_pr_cashbook_project_account_d2
-                sep_pr_cashbook.project_account_d3 = sep_pr_cashbook_project_account_d3
+                sep_pr_cashbook.project_account_d2_id = sep_pr_cashbook_project_account_d2
+                sep_pr_cashbook.project_account_d3_id = sep_pr_cashbook_project_account_d3
                 sep_pr_cashbook.separated = pr_cashbook
                 sep_pr_cashbook.is_imprest = sep_pr_cashbook_is_imprest
+                sep_pr_cashbook.contract_id = sep_pr_cashbook_contract
+                sep_pr_cashbook.installment_order_id = sep_pr_cashbook_installment_order
                 sep_pr_cashbook.content = sep_pr_cashbook_content
                 sep_pr_cashbook.trader = sep_pr_cashbook_trader
                 sep_pr_cashbook.bank_account = pr_cashbook.bank_account
@@ -310,9 +316,11 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
         # 2. sep 정보 확인
         sep_data = self.initial_data.get('sepData')
         if sep_data:
-            sep_pr_cashbook_project_account_d2 = ProjectAccountD2.objects.get(pk=sep_data.get('project_account_d2'))
-            sep_pr_cashbook_project_account_d3 = ProjectAccountD3.objects.get(pk=sep_data.get('project_account_d3'))
+            sep_pr_cashbook_project_account_d2 = sep_data.get('project_account_d2')
+            sep_pr_cashbook_project_account_d3 = sep_data.get('project_account_d3')
             sep_pr_cashbook_is_imprest = sep_data.get('is_imprest')
+            sep_pr_cashbook_contract = sep_data.get('contract')
+            sep_pr_cashbook_installment_order = sep_data.get('installment_order')
             sep_pr_cashbook_content = sep_data.get('content')
             sep_pr_cashbook_trader = sep_data.get('trader')
             sep_pr_cashbook_income = sep_data.get('income')
@@ -326,6 +334,8 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
                                                   project_account_d3=sep_pr_cashbook_project_account_d3,
                                                   separated=instance,
                                                   is_imprest=sep_pr_cashbook_is_imprest,
+                                                  contract_id=sep_pr_cashbook_contract,
+                                                  installment_order_id=sep_pr_cashbook_installment_order,
                                                   content=sep_pr_cashbook_content,
                                                   trader=sep_pr_cashbook_trader,
                                                   bank_account=instance.bank_account,
@@ -339,10 +349,12 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
                 sep_pr_cashbook = ProjectCashBook.objects.get(pk=sep_data.get('pk'))
                 sep_pr_cashbook.project = instance.project
                 sep_pr_cashbook.sort = instance.sort
-                sep_pr_cashbook.project_account_d2 = sep_pr_cashbook_project_account_d2
-                sep_pr_cashbook.project_account_d3 = sep_pr_cashbook_project_account_d3
+                sep_pr_cashbook.project_account_d2_id = sep_pr_cashbook_project_account_d2
+                sep_pr_cashbook.project_account_d3_id = sep_pr_cashbook_project_account_d3
                 sep_pr_cashbook.separated = instance
                 sep_pr_cashbook.is_imprest = sep_pr_cashbook_is_imprest
+                sep_pr_cashbook.contract_id = sep_pr_cashbook_contract
+                sep_pr_cashbook.installment_order_id = sep_pr_cashbook_installment_order
                 sep_pr_cashbook.content = sep_pr_cashbook_content
                 sep_pr_cashbook.trader = sep_pr_cashbook_trader
                 sep_pr_cashbook.bank_account = instance.bank_account
