@@ -10,6 +10,7 @@ export interface ProjectAccountD3 {
   pk: number
   d2: number
   code: string
+  is_related_contract: boolean
   name: string
   description: string
 }
