@@ -434,7 +434,13 @@ onBeforeMount(() => formDataSetup())
               <CCol sm="8">
                 <CFormSelect
                   v-model.number="form.installment_order"
-                  :disabled="!form.project_account_d2 || form.is_separate || !form.contract"
+                  :disabled="
+                    !form.project_account_d2 ||
+                    form.project_account_d2 > 2 ||
+                    form.is_separate ||
+                    form.sort === 2 ||
+                    !form.contract
+                  "
                 >
                   <option value="">---------</option>
                   <option v-for="order in payOrderList" :value="order.pk" :key="order?.pk ?? 0">
