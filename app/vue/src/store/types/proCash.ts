@@ -47,6 +47,8 @@ export interface ProSepItems {
   project_account_d3_desc?: string
   separated?: number | null
   is_imprest?: boolean
+  contract?: number | null
+  installment_order?: number | null
   content: string
   trader: string
   income?: number | null
@@ -63,8 +65,6 @@ export interface ProjectCashBook extends ProSepItems {
   is_separate?: boolean
   sepItems: Array<ProSepItems>
   rmCont?: boolean
-  contract?: number | null
-  installment_order?: number | null
   refund_contractor?: number | null
   bank_account: number | null
   bank_account_desc?: string

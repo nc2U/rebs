@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { type PropType, ref, reactive, computed, watch, onBeforeMount, nextTick, inject } from 'vue'
+import { isValidate } from '@/utils/helper'
+import { write_project_cash } from '@/utils/pageAuth'
+import { diffDate, getToday, cutString, numFormat } from '@/utils/baseMixins'
 import { usePayment } from '@/store/pinia/payment'
 import { useProCash } from '@/store/pinia/proCash'
 import { useAccount } from '@/store/pinia/account'
 import { useContract } from '@/store/pinia/contract'
-import { diffDate, getToday, cutString, numFormat } from '@/utils/baseMixins'
-import { write_project_cash } from '@/utils/pageAuth'
 import { type ProBankAcc, type ProjectCashBook, type ProSepItems } from '@/store/types/proCash'
-import { isValidate } from '@/utils/helper'
 import BankAcc from './BankAcc.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import MultiSelect from '@/components/MultiSelect/index.vue'
@@ -32,6 +32,8 @@ const sepItem = reactive<ProSepItems>({
   project_account_d2: null,
   project_account_d3: null,
   is_imprest: false,
+  contract: null,
+  installment_order: null,
   content: '',
   trader: '',
   income: null,
@@ -146,6 +148,8 @@ const sepUpdate = (sep: ProSepItems) => {
   sepItem.pk = sep.pk
   sepItem.project_account_d2 = sep.project_account_d2
   sepItem.project_account_d3 = sep.project_account_d3
+  sepItem.installment_order = sep.installment_order
+  sepItem.content = sep.content
   sepItem.content = sep.content
   sepItem.trader = sep.trader
   sepItem.evidence = sep.evidence
@@ -158,6 +162,8 @@ const sepRemove = () => {
   sepItem.pk = null
   sepItem.project_account_d2 = null
   sepItem.project_account_d3 = null
+  sepItem.contract = null
+  sepItem.installment_order = null
   sepItem.content = ''
   sepItem.trader = ''
   sepItem.evidence = ''
@@ -230,18 +236,35 @@ const isRelatedCont = (d3: number) =>
 
 watch(form, val => {
   form.is_imprest = val.project_account_d3 === (transfers ?? [17, 70])[1] + 1 // 대체(입금)
-  if (form.project_account_d3) {
-    if (isRelatedCont(form.project_account_d3)) {
+  if (val.project_account_d3) {
+    if (isRelatedCont(val.project_account_d3)) {
       isContFormShow.value = true
     } else {
       isContFormShow.value = false
-      form.contract = null
-      form.installment_order = null
+      val.contract = null
+      val.installment_order = null
     }
   } else {
     isContFormShow.value = false
-    form.contract = null
-    form.installment_order = null
+    val.contract = null
+    val.installment_order = null
+  }
+})
+
+const isSepItemContShow = ref(false)
+watch(sepItem, val => {
+  if (val.project_account_d3) {
+    if (isRelatedCont(val.project_account_d3)) {
+      isSepItemContShow.value = true
+    } else {
+      isSepItemContShow.value = false
+      val.contract = null
+      val.installment_order = null
+    }
+  } else {
+    isSepItemContShow.value = false
+    val.contract = null
+    val.installment_order = null
   }
 })
 
@@ -685,6 +708,44 @@ onBeforeMount(() => formDataSetup())
                       <option value="">---------</option>
                       <option v-for="d2 in formAccD3List" :key="d2.pk" :value="d2.pk">
                         {{ d2.name }}
+                      </option>
+                    </CFormSelect>
+                  </CCol>
+                </CRow>
+              </CCol>
+            </CRow>
+
+            <CRow v-show="isSepItemContShow" class="mt-3">
+              <CCol sm="6">
+                <CRow>
+                  <CFormLabel class="col-sm-4 col-form-label"> 계약(자)정보</CFormLabel>
+                  <CCol sm="8">
+                    <MultiSelect
+                      v-model.number="sepItem.contract"
+                      mode="single"
+                      :options="getContracts"
+                      :disabled="!sepItem.project_account_d3"
+                      placeholder="계약 정보 선택"
+                    />
+                  </CCol>
+                </CRow>
+              </CCol>
+              <CCol sm="6">
+                <CRow>
+                  <CFormLabel class="col-sm-4 col-form-label">납부회차정보</CFormLabel>
+                  <CCol sm="8">
+                    <CFormSelect
+                      v-model.number="sepItem.installment_order"
+                      :disabled="
+                        !sepItem.project_account_d2 ||
+                        sepItem.project_account_d2 > 2 ||
+                        form.sort === 2 ||
+                        !sepItem.contract
+                      "
+                    >
+                      <option value="">---------</option>
+                      <option v-for="order in payOrderList" :value="order.pk" :key="order?.pk ?? 0">
+                        <template>{{ order.pay_name }}</template>
                       </option>
                     </CFormSelect>
                   </CCol>
