@@ -43,8 +43,8 @@ const formsCheck = computed(() => {
   return a && b && c && d && e && f && g && h
 })
 
-watch(from_date, val => listFiltering(1))
-watch(to_date, val => listFiltering(1))
+watch(from_date, () => listFiltering(1))
+watch(to_date, () => listFiltering(1))
 
 const sortSelect = () => {
   listFiltering(1)
