@@ -421,7 +421,6 @@ onBeforeMount(() => formDataSetup())
                   v-model.number="form.contract"
                   mode="single"
                   :options="getContracts"
-                  :multiple="false"
                   :disabled="!form.sort || form.is_separate"
                   placeholder="계약 정보 선택"
                 />

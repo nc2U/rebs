@@ -161,6 +161,7 @@ export const useProCash = defineStore('proCash', () => {
     if (payload.pro_acc_d2) url += `&project_account_d2=${payload.pro_acc_d2}`
     if (payload.pro_acc_d3) url += `&project_account_d3=${payload.pro_acc_d3}`
     if (payload.bank_account) url += `&bank_account=${payload.bank_account}`
+    if (payload.contract) url += `&contract=${payload.contract}`
     if (payload.search) url += `&search=${payload.search}`
     const page = payload.page ? payload.page : 1
     if (payload.page) url += `&page=${page}`

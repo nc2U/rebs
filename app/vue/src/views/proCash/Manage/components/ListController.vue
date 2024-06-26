@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, watch, nextTick } from 'vue'
 import { useProCash } from '@/store/pinia/proCash'
+import { useContract } from '@/store/pinia/contract'
 import { numFormat } from '@/utils/baseMixins'
 import { bgLight } from '@/utils/cssMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
+import MultiSelect from '@/components/MultiSelect/index.vue'
 
 const emit = defineEmits(['list-filtering'])
 
@@ -15,6 +17,7 @@ const form = reactive({
   pro_acc_d2: '',
   pro_acc_d3: '',
   bank_account: '',
+  contract: '',
   search: '',
 })
 
@@ -25,6 +28,9 @@ const formAccD3List = computed(() => proCashStore.formAccD3List)
 const allProBankAccs = computed(() => proCashStore.allProBankAccountList)
 const proCashesCount = computed(() => proCashStore.proCashesCount)
 
+const contStore = useContract()
+const getContracts = computed(() => contStore.getContracts)
+
 const formsCheck = computed(() => {
   const a = !from_date.value
   const b = !to_date.value
@@ -32,8 +38,9 @@ const formsCheck = computed(() => {
   const d = !form.pro_acc_d2
   const e = !form.pro_acc_d3
   const f = !form.bank_account
-  const g = form.search.trim() === ''
-  return a && b && c && d && e && f && g
+  const g = !form.contract
+  const h = form.search.trim() === ''
+  return a && b && c && d && e && f && g && h
 })
 
 watch(from_date, val => listFiltering(1))
@@ -70,6 +77,7 @@ const resetForm = () => {
   form.pro_acc_d2 = ''
   form.pro_acc_d3 = ''
   form.bank_account = ''
+  form.contract = ''
   form.search = ''
   listFiltering(1)
 }
@@ -78,7 +86,7 @@ const resetForm = () => {
 <template>
   <CCallout color="success" class="pb-0 mb-3" :class="bgLight">
     <CRow>
-      <CCol lg="9">
+      <CCol lg="8">
         <CRow>
           <CCol md="6" lg="2" class="mb-3">
             <DatePicker
@@ -134,9 +142,20 @@ const resetForm = () => {
         </CRow>
       </CCol>
 
-      <CCol lg="3">
+      <CCol lg="4">
         <CRow>
-          <CCol class="mb-3">
+          <CCol md="6" lg="5" class="mb-3">
+            <MultiSelect
+              v-model.number="form.contract"
+              mode="single"
+              :options="getContracts"
+              placeholder="계약 정보 선택"
+              @select="listFiltering(1)"
+              @clear="resetForm"
+            />
+          </CCol>
+
+          <CCol md="6" lg="7" class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.search"
@@ -156,7 +175,7 @@ const resetForm = () => {
         <strong> 거래 건수 조회 결과 : {{ numFormat(proCashesCount, 0, 0) }} 건 </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
-        <CButton color="info" size="sm" @click="resetForm"> 검색조건 초기화 </CButton>
+        <CButton color="info" size="sm" @click="resetForm"> 검색조건 초기화</CButton>
       </CCol>
     </CRow>
   </CCallout>
