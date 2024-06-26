@@ -78,7 +78,6 @@ export interface StatusOutBudget {
   account_d3: {
     pk: number
     name: string
-    sub_title: string
   }
   account_opt: string
   basis_calc: string
