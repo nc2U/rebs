@@ -224,9 +224,22 @@ const sepD1_change = () => {
   })
 }
 
+const isContFormShow = ref(false)
+const isRelatedCont = (d3: number) =>
+  formAccD3List.value.filter(d => d.pk === d3)[0].is_related_contract
+
 watch(form, val => {
   form.is_imprest = val.project_account_d3 === (transfers ?? [17, 70])[1] + 1 // 대체(입금)
-  if (!form.project_account_d3 || form.project_account_d3 > 10) {
+  if (form.project_account_d3) {
+    if (isRelatedCont(form.project_account_d3)) {
+      isContFormShow.value = true
+    } else {
+      isContFormShow.value = false
+      form.contract = null
+      form.installment_order = null
+    }
+  } else {
+    isContFormShow.value = false
     form.contract = null
     form.installment_order = null
   }
@@ -399,7 +412,7 @@ onBeforeMount(() => formDataSetup())
           </CCol>
         </CRow>
 
-        <CRow v-show="form.project_account_d3 && form.project_account_d3 <= 10" class="mb-3">
+        <CRow v-show="isContFormShow" class="mb-3">
           <CCol sm="6">
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label"> 계약(자)정보</CFormLabel>
