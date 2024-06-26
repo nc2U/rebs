@@ -133,6 +133,9 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
         </CTableDataCell>
         <CTableDataCell class="text-left" :colspan="obj.account_opt ? 1 : 2">
           {{ obj.account_d3.name }}
+          <v-tooltip v-if="obj.basis_calc" activator="parent" location="right">
+            {{ obj.basis_calc }}
+          </v-tooltip>
         </CTableDataCell>
         <CTableDataCell
           class="py-0 bg-blue-grey-lighten-5"
@@ -151,6 +154,9 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
               @keydown.enter="patchBudget(obj.pk as number, $event.target.value, obj.budget)"
             />
           </span>
+          <v-tooltip v-if="obj.basis_calc" activator="parent" location="left">
+            {{ obj.basis_calc }}
+          </v-tooltip>
         </CTableDataCell>
         <CTableDataCell>
           {{ numFormat(getEASum(obj.account_d3.pk) - getEAMonth(obj.account_d3.pk)) }}
