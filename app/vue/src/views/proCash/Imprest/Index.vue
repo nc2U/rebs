@@ -3,6 +3,10 @@ import { ref, computed, onBeforeMount, provide } from 'vue'
 import { pageTitle, navMenu } from '@/views/proCash/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
 import { useProCash } from '@/store/pinia/proCash'
+import { useComCash } from '@/store/pinia/comCash'
+import { useContract } from '@/store/pinia/contract'
+import { usePayment } from '@/store/pinia/payment'
+import { cutString } from '@/utils/baseMixins'
 import {
   type CashBookFilter,
   type ProBankAcc,
@@ -14,8 +18,6 @@ import ListController from '@/views/proCash/Imprest/components/ListController.vu
 import AddProImprest from '@/views/proCash/Imprest/components/AddProImprest.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import ProImprestList from '@/views/proCash/Imprest/components/ProImprestList.vue'
-import { useComCash } from '@/store/pinia/comCash'
-import { cutString } from '@/utils/baseMixins'
 
 const listControl = ref()
 
@@ -51,6 +53,9 @@ const excelUrl = computed(() => {
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
+
+const paymentStore = usePayment()
+const fetchPayOrderList = (project: number) => paymentStore.fetchPayOrderList(project)
 
 const comCashStore = useComCash()
 const fetchBankCodeList = () => comCashStore.fetchBankCodeList()
@@ -219,6 +224,9 @@ const projSelect = (target: number | null) => {
   if (!!target) dataSetup(target)
 }
 
+const contStore = useContract()
+const fetchAllContracts = (projId: number) => contStore.fetchAllContracts(projId)
+
 onBeforeMount(() => {
   fetchBankCodeList()
   fetchProAccSortList()
@@ -226,6 +234,8 @@ onBeforeMount(() => {
   fetchProAllAccD3List()
   fetchProFormAccD2List()
   fetchProFormAccD3List()
+  fetchPayOrderList(project.value || projStore.initProjId)
+  fetchAllContracts(project.value || projStore.initProjId)
   dataSetup(project.value || projStore.initProjId)
 })
 </script>

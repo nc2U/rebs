@@ -1,12 +1,15 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, nextTick, onBeforeMount, type PropType, inject } from 'vue'
+import { ref, reactive, computed, nextTick, onBeforeMount, type PropType, inject, watch } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { useProCash } from '@/store/pinia/proCash'
+import { usePayment } from '@/store/pinia/payment'
 import { isValidate } from '@/utils/helper'
+import { useContract } from '@/store/pinia/contract'
 import { getToday, diffDate, numFormat, cutString } from '@/utils/baseMixins'
 import { write_project_cash } from '@/utils/pageAuth'
 import { type ProBankAcc, type ProjectCashBook, type ProSepItems } from '@/store/types/proCash'
 import DatePicker from '@/components/DatePicker/index.vue'
+import MultiSelect from '@/components/MultiSelect/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import BankAcc from '../../Manage/components/BankAcc.vue'
@@ -55,7 +58,8 @@ const form = reactive<
   is_separate: false,
   separated: null,
   is_imprest: true,
-
+  contract: null,
+  installment_order: null,
   content: '',
   trader: '',
   bank_account: null,
@@ -75,24 +79,28 @@ const formsCheck = computed(() => {
     const b = form.sort === props.imprest.sort
     const c = form.project_account_d2 === props.imprest.project_account_d2
     const d = form.project_account_d3 === props.imprest.project_account_d3
-    const e = form.content === props.imprest.content
-    const f = form.trader === props.imprest.trader
-    const g = form.bank_account === props.imprest.bank_account
-    const h = form.income === props.imprest.income
-    const i = form.outlay === props.imprest.outlay
-    const j = form.evidence === props.imprest.evidence
-    const k = form.note === props.imprest.note
-    const l = form.deal_date === props.imprest.deal_date
-    const m = form.is_separate === props.imprest.is_separate
+    const e = form.contract === props.imprest.contract
+    const f = form.installment_order === props.imprest.installment_order
+    const g = form.content === props.imprest.content
+    const h = form.trader === props.imprest.trader
+    const i = form.bank_account === props.imprest.bank_account
+    const j = form.income === props.imprest.income
+    const k = form.outlay === props.imprest.outlay
+    const l = form.evidence === props.imprest.evidence
+    const m = form.note === props.imprest.note
+    const n = form.deal_date === props.imprest.deal_date
+    const o = form.is_separate === props.imprest.is_separate
 
-    return a && b && c && d && e && f && g && h && i && j && k && l && m
+    return a && b && c && d && e && f && g && h && i && j && k && l && m && n && o
   } else return false
 })
+
+const paymentStore = usePayment()
+const payOrderList = computed(() => paymentStore.payOrderList)
 
 const proCashStore = useProCash()
 const formAccD2List = computed(() => proCashStore.formAccD2List)
 const formAccD3List = computed(() => proCashStore.formAccD3List)
-
 const getImpBankAccs = computed(() => proCashStore.getImpBankAccs)
 const allProBankAccList = computed(() => proCashStore.allProBankAccountList)
 
@@ -225,6 +233,29 @@ const sepD1_change = () => {
   })
 }
 
+const isContFormShow = ref(false)
+const isRelatedCont = (d3: number) =>
+  formAccD3List.value.filter(d => d.pk === d3)[0].is_related_contract
+
+watch(form, val => {
+  if (form.project_account_d3) {
+    if (isRelatedCont(form.project_account_d3)) {
+      isContFormShow.value = true
+    } else {
+      isContFormShow.value = false
+      form.contract = null
+      form.installment_order = null
+    }
+  } else {
+    isContFormShow.value = false
+    form.contract = null
+    form.installment_order = null
+  }
+})
+
+const contStore = useContract()
+const getContracts = computed(() => contStore.getContracts)
+
 const accountStore = useAccount()
 const allowedPeriod = computed(() =>
   props.imprest?.deal_date ? accountStore.superAuth || diffDate(props.imprest.deal_date) <= 30 : 0,
@@ -286,6 +317,8 @@ const formDataSetup = () => {
     form.sort = props.imprest.sort
     form.project_account_d2 = props.imprest.project_account_d2
     form.project_account_d3 = props.imprest.project_account_d3
+    form.contract = props.imprest.contract
+    form.installment_order = props.imprest.installment_order
     form.content = props.imprest.content
     form.trader = props.imprest.trader
     form.bank_account = props.imprest.bank_account
@@ -381,6 +414,45 @@ onBeforeMount(() => formDataSetup())
                     <template v-if="form.sort === 3">대체</template>
                     <template v-else-if="form.sort === 4">취소</template>
                     <template v-else>{{ d2.name }}</template>
+                  </option>
+                </CFormSelect>
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
+
+        <CRow v-show="isContFormShow" class="mb-3">
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label"> 계약(자)정보</CFormLabel>
+              <CCol sm="8">
+                <MultiSelect
+                  v-model.number="form.contract"
+                  mode="single"
+                  :options="getContracts"
+                  :disabled="!form.sort || form.is_separate"
+                  placeholder="계약 정보 선택"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label">납부회차정보</CFormLabel>
+              <CCol sm="8">
+                <CFormSelect
+                  v-model.number="form.installment_order"
+                  :disabled="
+                    !form.project_account_d2 ||
+                    form.project_account_d2 > 2 ||
+                    form.is_separate ||
+                    form.sort === 2 ||
+                    !form.contract
+                  "
+                >
+                  <option value="">---------</option>
+                  <option v-for="order in payOrderList" :value="order.pk" :key="order?.pk ?? 0">
+                    <template>{{ order.pay_name }}</template>
                   </option>
                 </CFormSelect>
               </CCol>
