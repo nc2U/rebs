@@ -2,6 +2,9 @@
 import { computed, inject, onBeforeMount, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
+import { tr } from 'vuetify/locale'
+
+const emit = defineEmits(['aside-visible'])
 
 const menu = ref<'일반' | '프로젝트'>('일반')
 
@@ -17,6 +20,7 @@ onBeforeRouteUpdate(async to => {
 })
 
 onBeforeMount(() => {
+  emit('aside-visible', true)
   if (route.params.userId) accStore.fetchUser(Number(route.params.userId))
   if (route.query.tab) router.replace({ name: '사용자 - 수정', params: { userId: user.value?.pk } })
 })

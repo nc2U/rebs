@@ -9,6 +9,10 @@ import UserView from '@/views/_Work/Settings/Users/components/UserView.vue'
 import UserForm from '@/views/_Work/Settings/Users/components/UserForm.vue'
 
 const cBody = ref()
+const aside = ref(true)
+
+const asideVisible = (visible: boolean) => (aside.value = visible)
+
 const sideNavCAll = () => cBody.value.toggle()
 
 const accStore = useAccount()
@@ -19,15 +23,20 @@ onBeforeMount(() => accStore.fetchUsersList())
 <template>
   <Header :page-title="pageTitle" :nav-menu="navMenu" @side-nav-call="sideNavCAll" />
 
-  <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query">
+  <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query" :aside="aside">
     <template v-slot:default>
-      <UserList v-if="$route.name === '사용자'" :user-list="usersList" />
+      {{ aside }}
+      <UserList
+        v-if="$route.name === '사용자'"
+        :user-list="usersList"
+        @aside-visible="asideVisible"
+      />
 
-      <UserView v-else-if="$route.name === '사용자 - 보기'" />
+      <UserView v-else-if="$route.name === '사용자 - 보기'" @aside-visible="asideVisible" />
 
-      <UserForm v-else-if="$route.name === '사용자 - 생성'" />
+      <UserForm v-else-if="$route.name === '사용자 - 생성'" @aside-visible="asideVisible" />
 
-      <UserForm v-else-if="$route.name === '사용자 - 수정'" />
+      <UserForm v-else-if="$route.name === '사용자 - 수정'" @aside-visible="asideVisible" />
     </template>
 
     <template v-slot:aside></template>

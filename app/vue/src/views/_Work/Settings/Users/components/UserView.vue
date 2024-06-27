@@ -4,6 +4,8 @@ import { computed, inject, onBeforeMount } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { dateFormat } from '@/utils/baseMixins'
 
+const emit = defineEmits(['aside-visible'])
+
 const superAuth = inject('superAuth', false)
 
 const accStore = useAccount()
@@ -15,12 +17,13 @@ onBeforeRouteUpdate(async to => {
 })
 const route = useRoute()
 onBeforeMount(() => {
+  emit('aside-visible', false)
   if (route.params.userId) accStore.fetchUser(Number(route.params.userId))
 })
 </script>
 
 <template>
-  <CRow class="py-2">
+  <CRow class="py-2 mb-2">
     <CCol>
       <span class="h5 mr-2" style="font-size: 1.15em">
         {{ user?.profile?.name ?? user?.username }}

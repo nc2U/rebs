@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { inject, type PropType } from 'vue'
+import { inject, onBeforeMount, type PropType } from 'vue'
 import NoData from '@/views/_Work/components/NoData.vue'
 import SearchList from '@/views/_Work/Manages/Projects/components/SearchList.vue'
 import UserTable from '@/views/_Work/Settings/Users/components/UserTable.vue'
@@ -9,7 +9,11 @@ defineProps({
   userList: { type: Array as PropType<User[]>, default: () => [] },
 })
 
+const emit = defineEmits(['aside-visible'])
+
 const superAuth = inject('superAuth', false)
+
+onBeforeMount(() => emit('aside-visible', true))
 </script>
 
 <template>
