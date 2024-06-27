@@ -1,9 +1,12 @@
 <script lang="ts" setup>
+import { computed, inject, onBeforeMount, type PropType } from 'vue'
+import type { Member } from '@/store/types/work'
 import { useAccount } from '@/store/pinia/account'
-import { computed, inject, onBeforeMount } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { dateFormat } from '@/utils/baseMixins'
 import ActivityLogList from '@/views/_Work/Manages/Activity/components/ActivityLogList.vue'
+
+defineProps({ memberList: { type: Array as PropType<Member[]>, default: () => [] } })
 
 const emit = defineEmits(['aside-visible'])
 
@@ -121,27 +124,20 @@ onBeforeMount(() => {
                 <CTableHeaderCell class="text-center">등록시각</CTableHeaderCell>
               </CTableRow>
             </CTableHead>
+
             <CTableBody>
-              <CTableRow>
+              <CTableRow v-for="mem in memberList" :key="mem.pk">
                 <CTableDataCell class="text-left">
-                  <router-link to="">Rebs</router-link>
+                  <router-link
+                    :to="{ name: '(개요)', params: { projId: mem.issue_projects[0].slug } }"
+                  >
+                    {{ mem.issue_projects[0].name }}
+                  </router-link>
                 </CTableDataCell>
-                <CTableDataCell>관리자, 개발자</CTableDataCell>
-                <CTableDataCell class="text-center">2024/04/04</CTableDataCell>
-              </CTableRow>
-              <CTableRow>
-                <CTableDataCell class="text-left">
-                  <router-link to="">redmine 클론</router-link>
+                <CTableDataCell>{{ mem.roles.map(r => r.name).join(', ') }}</CTableDataCell>
+                <CTableDataCell class="text-center">
+                  {{ dateFormat(mem.created, '/') }}
                 </CTableDataCell>
-                <CTableDataCell>관리자, 개발자</CTableDataCell>
-                <CTableDataCell class="text-center">2024/04/04</CTableDataCell>
-              </CTableRow>
-              <CTableRow>
-                <CTableDataCell class="text-left">
-                  <router-link to="">동춘1구역 지역주택조합</router-link>
-                </CTableDataCell>
-                <CTableDataCell>프로젝트 관리자</CTableDataCell>
-                <CTableDataCell class="text-center">2024/04/04</CTableDataCell>
               </CTableRow>
             </CTableBody>
           </CTable>

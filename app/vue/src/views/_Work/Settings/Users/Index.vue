@@ -7,6 +7,7 @@ import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import UserList from '@/views/_Work/Settings/Users/components/UserList.vue'
 import UserView from '@/views/_Work/Settings/Users/components/UserView.vue'
 import UserForm from '@/views/_Work/Settings/Users/components/UserForm.vue'
+import { useWork } from '@/store/pinia/work'
 
 const cBody = ref()
 const aside = ref(true)
@@ -16,8 +17,15 @@ const asideVisible = (visible: boolean) => (aside.value = visible)
 const sideNavCAll = () => cBody.value.toggle()
 
 const accStore = useAccount()
+const userInfo = computed(() => accStore.userInfo)
 const usersList = computed(() => accStore.usersList)
-onBeforeMount(() => accStore.fetchUsersList())
+
+const workStore = useWork()
+const memberList = computed(() => workStore.memberList)
+onBeforeMount(() => {
+  accStore.fetchUsersList()
+  workStore.fetchMemberList(userInfo.value?.pk)
+})
 </script>
 
 <template>
@@ -32,7 +40,11 @@ onBeforeMount(() => accStore.fetchUsersList())
         @aside-visible="asideVisible"
       />
 
-      <UserView v-else-if="$route.name === '사용자 - 보기'" @aside-visible="asideVisible" />
+      <UserView
+        v-else-if="$route.name === '사용자 - 보기'"
+        :member-list="memberList"
+        @aside-visible="asideVisible"
+      />
 
       <UserForm v-else-if="$route.name === '사용자 - 생성'" @aside-visible="asideVisible" />
 
