@@ -150,9 +150,9 @@ export const useWork = defineStore('work', () => {
       .then(res => (member.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const fetchMemberList = () =>
+  const fetchMemberList = (user?: number) =>
     api
-      .get(`/member/`)
+      .get(`/member/?user=${user ?? ''}`)
       .then(res => (memberList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 

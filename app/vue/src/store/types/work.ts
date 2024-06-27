@@ -183,10 +183,20 @@ export interface Permission {
   wiki_manage: boolean
 }
 
+interface ProjectInMember {
+  pk: number
+  name: string
+  slug: string
+  sub_projects: ProjectInMember[]
+  depth: number
+}
+
 export interface Member {
   pk: number
   user: SimpleUser
   roles: { pk: number; name: string }[]
+  issue_projects: ProjectInMember[]
+  created: string
 }
 
 export interface SimpleIssue {
