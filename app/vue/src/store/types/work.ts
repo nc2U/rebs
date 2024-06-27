@@ -14,6 +14,7 @@ export interface SimpleMember {
   user: SimpleUser
   roles: { pk: number; name: string }[]
   add_roles?: { pk: number; name: string }[]
+  created: string
 }
 
 export interface SimpleProject {
@@ -70,6 +71,7 @@ export interface ProjectFilter {
   is_public?: '1' | '0'
   is_public__exclude?: '1' | '0'
   name?: string
+  member?: number
   description?: string
 }
 

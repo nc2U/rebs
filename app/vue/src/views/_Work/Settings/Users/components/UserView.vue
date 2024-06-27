@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { computed, inject, onBeforeMount, type PropType } from 'vue'
-import type { Member } from '@/store/types/work'
+import type { IssueProject } from '@/store/types/work'
 import { useAccount } from '@/store/pinia/account'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { dateFormat } from '@/utils/baseMixins'
 import ActivityLogList from '@/views/_Work/Manages/Activity/components/ActivityLogList.vue'
 
-defineProps({ memberList: { type: Array as PropType<Member[]>, default: () => [] } })
+defineProps({ projectList: { type: Array as PropType<IssueProject[]>, default: () => [] } })
 
 const emit = defineEmits(['aside-visible'])
 
@@ -126,17 +126,15 @@ onBeforeMount(() => {
             </CTableHead>
 
             <CTableBody>
-              <CTableRow v-for="mem in memberList" :key="mem.pk">
+              <CTableRow v-for="proj in projectList" :key="proj.pk">
                 <CTableDataCell class="text-left">
-                  <router-link
-                    :to="{ name: '(개요)', params: { projId: mem.issue_projects[0].slug } }"
-                  >
-                    {{ mem.issue_projects[0].name }}
+                  <router-link :to="{ name: '(개요)', params: { projId: proj.slug } }">
+                    {{ proj.name }}
                   </router-link>
                 </CTableDataCell>
-                <CTableDataCell>{{ mem.roles.map(r => r.name).join(', ') }}</CTableDataCell>
+                <CTableDataCell></CTableDataCell>
                 <CTableDataCell class="text-center">
-                  {{ dateFormat(mem.created, '/') }}
+                  <!--                  {{ dateFormat(proj.members?.created, '/') }}-->
                 </CTableDataCell>
               </CTableRow>
             </CTableBody>

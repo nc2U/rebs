@@ -21,10 +21,10 @@ const userInfo = computed(() => accStore.userInfo)
 const usersList = computed(() => accStore.usersList)
 
 const workStore = useWork()
-const memberList = computed(() => workStore.memberList)
+const issueProjectList = computed(() => workStore.issueProjectList)
 onBeforeMount(() => {
   accStore.fetchUsersList()
-  workStore.fetchMemberList(userInfo.value?.pk)
+  workStore.fetchIssueProjectList({ member: userInfo.value?.pk })
 })
 </script>
 
@@ -41,7 +41,7 @@ onBeforeMount(() => {
 
       <UserView
         v-else-if="$route.name === '사용자 - 보기'"
-        :member-list="memberList"
+        :project-list="issueProjectList"
         @aside-visible="asideVisible"
       />
 
