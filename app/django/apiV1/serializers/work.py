@@ -290,10 +290,11 @@ class RoleSerializer(serializers.ModelSerializer):
 class MemberSerializer(serializers.ModelSerializer):
     user = SimpleUserSerializer(read_only=True)
     roles = RoleInMemberSerializer(many=True, read_only=True)
+    issue_projects = SimpleIssueProjectSerializer(many=True, read_only=True)
 
     class Meta:
         model = Member
-        fields = ('pk', 'user', 'roles')
+        fields = ('pk', 'user', 'roles', 'issue_projects')
 
 
 class ModuleSerializer(serializers.ModelSerializer):

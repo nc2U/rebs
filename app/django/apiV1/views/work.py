@@ -55,6 +55,7 @@ class MemberViewSet(viewsets.ModelViewSet):
     queryset = Member.objects.all()
     serializer_class = MemberSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    filterset_fields = ('user',)
 
 
 class ModuleViewSet(viewsets.ModelViewSet):
