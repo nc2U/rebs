@@ -15,11 +15,18 @@ class IssueProjectFilter(FilterSet):
     project__exclude = CharFilter(field_name='slug', exclude=True, label='프로젝트-제외')
     is_public__exclude = BooleanFilter(field_name='is_public', exclude=True, label='공개여부-제외')
     name = CharFilter(field_name='name', lookup_expr='icontains', label='이름')
+    members__user = CharFilter(method='filter_by_user', label='구성원 사용자')
     description = CharFilter(field_name='description', lookup_expr='icontains', label='설명')
 
     class Meta:
         model = IssueProject
-        fields = ('parent__slug', 'status', 'project', 'is_public', 'name', 'description')
+        fields = ('parent__slug', 'status', 'project', 'is_public',
+                  'name', 'members__user', 'description')
+
+    @staticmethod
+    def filter_by_user(queryset, name, value):
+        return queryset.filter(Q(members__user_id=value) |
+                               Q(parent__members__user_id=value, is_inherit_members=True))
 
 
 class IssueProjectViewSet(viewsets.ModelViewSet):
