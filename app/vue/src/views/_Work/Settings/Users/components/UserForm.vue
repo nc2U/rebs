@@ -38,7 +38,7 @@ onBeforeMount(() => {
 
     <CCol v-if="user && superAuth" class="text-right form-text">
       <span class="mr-2">
-        <v-icon icon="mdi-plus-circle" color="success" size="sm" />
+        <v-icon icon="mdi-account" color="success" size="sm" />
         <router-link :to="{ name: '사용자 - 보기', params: { userId: user.pk } }" class="ml-1">
           사용자 정보
         </router-link>

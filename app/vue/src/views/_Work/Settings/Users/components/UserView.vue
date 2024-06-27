@@ -3,6 +3,7 @@ import { useAccount } from '@/store/pinia/account'
 import { computed, inject, onBeforeMount } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { dateFormat } from '@/utils/baseMixins'
+import ActivityLogList from '@/views/_Work/Manages/Activity/components/ActivityLogList.vue'
 
 const emit = defineEmits(['aside-visible'])
 
@@ -32,7 +33,7 @@ onBeforeMount(() => {
 
     <CCol v-if="user && superAuth" class="text-right form-text">
       <span class="mr-2">
-        <v-icon icon="mdi-plus-circle" color="success" size="sm" />
+        <v-icon icon="mdi-pencil" color="amber" size="sm" />
         <router-link :to="{ name: '사용자 - 수정', params: { userId: user.pk } }" class="ml-1">
           편집
         </router-link>
@@ -126,6 +127,11 @@ onBeforeMount(() => {
           <h5 style="font-size: 1.15em">
             <router-link :to="{ name: '작업내역' }">작업내역</router-link>
           </h5>
+        </CCol>
+      </CRow>
+      <CRow>
+        <CCol>
+          <!--          <ActivityLogList />-->
         </CCol>
       </CRow>
     </CCol>
