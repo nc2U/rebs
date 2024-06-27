@@ -2,6 +2,7 @@
 import { useAccount } from '@/store/pinia/account'
 import { computed, inject, onBeforeMount } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
+import { dateFormat } from '@/utils/baseMixins'
 
 const superAuth = inject('superAuth', false)
 
@@ -21,8 +22,8 @@ onBeforeMount(() => {
 <template>
   <CRow class="py-2">
     <CCol>
-      <span class="h5 mr-2">
-        {{ user?.username }}
+      <span class="h5 mr-2" style="font-size: 1.15em">
+        {{ user?.profile?.name ?? user?.username }}
       </span>
     </CCol>
 
@@ -38,17 +39,92 @@ onBeforeMount(() => {
 
   <CRow>
     <CCol>
-      <ul>
-        <li>로그인 :</li>
-        <li>등록시각 :</li>
-        <li>마지막 로그인 :</li>
-      </ul>
-    </CCol>
-  </CRow>
+      <CRow class="mb-3">
+        <CCol class="pl-5">
+          <ul>
+            <li>로그인 : {{ user?.username }}</li>
+            <li>등록시각 : {{ user ? dateFormat(user.date_joined, '/') : '' }}</li>
+            <li>마지막 로그인 : {{ user?.last_login ? dateFormat(user.last_login, '/') : '' }}</li>
+          </ul>
+        </CCol>
+      </CRow>
 
-  <CRow>
-    <CCol>
-      <h6>업무</h6>
+      <CRow class="mb-3">
+        <CCol>
+          <h5 style="font-size: 1.15em">업무</h5>
+        </CCol>
+      </CRow>
+
+      <CRow class="mb-3">
+        <CCol>
+          <v-divider class="mb-0" />
+          <CTable small striped hover responsive class="text-center">
+            <CTableHead>
+              <CTableRow>
+                <CTableHeaderCell></CTableHeaderCell>
+                <CTableHeaderCell>진행중</CTableHeaderCell>
+                <CTableHeaderCell>완료됨</CTableHeaderCell>
+                <CTableHeaderCell>합계</CTableHeaderCell>
+              </CTableRow>
+            </CTableHead>
+            <CTableBody>
+              <CTableRow>
+                <CTableDataCell class="text-left">할당된 업무</CTableDataCell>
+                <CTableDataCell>a</CTableDataCell>
+                <CTableDataCell></CTableDataCell>
+                <CTableDataCell></CTableDataCell>
+              </CTableRow>
+              <CTableRow>
+                <CTableDataCell class="text-left">보고한 업무</CTableDataCell>
+                <CTableDataCell>a</CTableDataCell>
+                <CTableDataCell></CTableDataCell>
+                <CTableDataCell></CTableDataCell>
+              </CTableRow>
+            </CTableBody>
+          </CTable>
+        </CCol>
+      </CRow>
+
+      <CRow>
+        <CCol>
+          <h5 style="font-size: 1.15em">프로젝트</h5>
+        </CCol>
+      </CRow>
+      <CRow>
+        <CCol>
+          <v-divider class="mb-0" />
+          <CTable small striped hover responsive>
+            <CTableHead class="text-center">
+              <CTableRow>
+                <CTableHeaderCell>프로젝트</CTableHeaderCell>
+                <CTableHeaderCell>역할</CTableHeaderCell>
+                <CTableHeaderCell>등록시각</CTableHeaderCell>
+              </CTableRow>
+            </CTableHead>
+            <CTableBody>
+              <CTableRow>
+                <CTableDataCell class="text-left">a</CTableDataCell>
+                <CTableDataCell></CTableDataCell>
+                <CTableDataCell></CTableDataCell>
+              </CTableRow>
+              <CTableRow>
+                <CTableDataCell class="text-left">a</CTableDataCell>
+                <CTableDataCell></CTableDataCell>
+                <CTableDataCell></CTableDataCell>
+              </CTableRow>
+            </CTableBody>
+          </CTable>
+        </CCol>
+      </CRow>
+    </CCol>
+    <CCol class="pl-2">
+      <CRow>
+        <CCol>
+          <h5 style="font-size: 1.15em">
+            <router-link :to="{ name: '작업내역' }">작업내역</router-link>
+          </h5>
+        </CCol>
+      </CRow>
     </CCol>
   </CRow>
 </template>
