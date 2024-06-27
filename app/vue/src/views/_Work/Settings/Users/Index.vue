@@ -33,7 +33,6 @@ onBeforeMount(() => {
 
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query" :aside="aside">
     <template v-slot:default>
-      {{ aside }}
       <UserList
         v-if="$route.name === '사용자'"
         :user-list="usersList"
