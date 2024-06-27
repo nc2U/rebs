@@ -73,16 +73,32 @@ onBeforeMount(() => {
             </CTableHead>
             <CTableBody>
               <CTableRow>
-                <CTableDataCell class="text-left">할당된 업무</CTableDataCell>
-                <CTableDataCell>a</CTableDataCell>
-                <CTableDataCell></CTableDataCell>
-                <CTableDataCell></CTableDataCell>
+                <CTableDataCell class="text-left">
+                  <router-link to="">할당된 업무</router-link>
+                </CTableDataCell>
+                <CTableDataCell>
+                  <router-link to="">4</router-link>
+                </CTableDataCell>
+                <CTableDataCell>
+                  <router-link to="">3</router-link>
+                </CTableDataCell>
+                <CTableDataCell>
+                  <router-link to="">7</router-link>
+                </CTableDataCell>
               </CTableRow>
               <CTableRow>
-                <CTableDataCell class="text-left">보고한 업무</CTableDataCell>
-                <CTableDataCell>a</CTableDataCell>
-                <CTableDataCell></CTableDataCell>
-                <CTableDataCell></CTableDataCell>
+                <CTableDataCell class="text-left">
+                  <router-link to="">보고한 업무</router-link>
+                </CTableDataCell>
+                <CTableDataCell>
+                  <router-link to="">5</router-link>
+                </CTableDataCell>
+                <CTableDataCell>
+                  <router-link to="">6</router-link>
+                </CTableDataCell>
+                <CTableDataCell>
+                  <router-link to="">11</router-link>
+                </CTableDataCell>
               </CTableRow>
             </CTableBody>
           </CTable>
@@ -102,19 +118,30 @@ onBeforeMount(() => {
               <CTableRow>
                 <CTableHeaderCell>프로젝트</CTableHeaderCell>
                 <CTableHeaderCell>역할</CTableHeaderCell>
-                <CTableHeaderCell>등록시각</CTableHeaderCell>
+                <CTableHeaderCell class="text-center">등록시각</CTableHeaderCell>
               </CTableRow>
             </CTableHead>
             <CTableBody>
               <CTableRow>
-                <CTableDataCell class="text-left">a</CTableDataCell>
-                <CTableDataCell></CTableDataCell>
-                <CTableDataCell></CTableDataCell>
+                <CTableDataCell class="text-left">
+                  <router-link to="">Rebs</router-link>
+                </CTableDataCell>
+                <CTableDataCell>관리자, 개발자</CTableDataCell>
+                <CTableDataCell class="text-center">2024/04/04</CTableDataCell>
               </CTableRow>
               <CTableRow>
-                <CTableDataCell class="text-left">a</CTableDataCell>
-                <CTableDataCell></CTableDataCell>
-                <CTableDataCell></CTableDataCell>
+                <CTableDataCell class="text-left">
+                  <router-link to="">redmine 클론</router-link>
+                </CTableDataCell>
+                <CTableDataCell>관리자, 개발자</CTableDataCell>
+                <CTableDataCell class="text-center">2024/04/04</CTableDataCell>
+              </CTableRow>
+              <CTableRow>
+                <CTableDataCell class="text-left">
+                  <router-link to="">동춘1구역 지역주택조합</router-link>
+                </CTableDataCell>
+                <CTableDataCell>프로젝트 관리자</CTableDataCell>
+                <CTableDataCell class="text-center">2024/04/04</CTableDataCell>
               </CTableRow>
             </CTableBody>
           </CTable>
