@@ -294,7 +294,7 @@ class MemberSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Member
-        fields = ('pk', 'user', 'roles', 'issue_projects')
+        fields = ('pk', 'user', 'roles', 'issue_projects', 'created')
 
 
 class ModuleSerializer(serializers.ModelSerializer):
