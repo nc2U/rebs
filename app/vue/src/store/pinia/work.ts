@@ -237,7 +237,7 @@ export const useWork = defineStore('work', () => {
       .catch(err => errorHandle(err.response.data))
 
   const fetchTrackerSummary = async (projId?: number) => {
-    const url = projId ? `/tracker-summary/?projects=${projId}` : `/tracker-summary/`
+    const url = `/issue-by-tracker-summary/?projects=${projId ?? ''}`
     return await api
       .get(url)
       .then(res => (trackerSum.value = res.data.results))
@@ -337,6 +337,28 @@ export const useWork = defineStore('work', () => {
   )
 
   const issueNums = computed(() => issueList.value.map(i => i.pk))
+
+  const issueNumByMember = ref<{
+    open_charged: number
+    closed_charged: number
+    all_charged: number
+    open_created: number
+    closed_created: number
+    all_created: number
+  }>({
+    open_charged: 0,
+    closed_charged: 0,
+    all_charged: 0,
+    open_created: 0,
+    closed_created: 0,
+    all_created: 0,
+  })
+
+  const fetchIssueByMember = (userId?: string) =>
+    api
+      .get(`/issue-by-member/?user=${userId ?? ''}`)
+      .then(res => (issueNumByMember.value = res.data))
+      .catch(err => errorHandle(err.response.data))
 
   const fetchIssue = (pk: number) =>
     api
@@ -729,6 +751,8 @@ export const useWork = defineStore('work', () => {
     issueCount,
     issueNums,
     getIssues,
+    issueNumByMember,
+    fetchIssueByMember,
     issuePages,
     fetchIssue,
     fetchAllIssueList,
