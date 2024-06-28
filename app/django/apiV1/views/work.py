@@ -173,10 +173,11 @@ class IssueFilter(FilterSet):
     tracker__exclude = CharFilter(field_name='tracker', exclude=True, label='유형-제외')
     creator__exclude = CharFilter(field_name='creator', exclude=True, label='작성자-제외')
     assigned_to__exclude = CharFilter(field_name='assigned_to', exclude=True, label='담당자-제외')
+    assigned_to_isnull = CharFilter(field_name='assigned_to', lookup_expr='isnull', label='담당자-유무')
     fixed_version__exclude = CharFilter(field_name='fixed_version', exclude=True, label='목표버전-제외')
-    fixed_version__isnull = BooleanFilter(field_name='fixed_version', lookup_expr='isnull', label='목표버전-없음')
+    fixed_version__isnull = BooleanFilter(field_name='fixed_version', lookup_expr='isnull', label='목표버전-유무')
     parent__subject = CharFilter(field_name='parent__subject', lookup_expr='icontains', label='상위업무-제목')
-    parent__isnull = BooleanFilter(field_name='parent', lookup_expr='isnull', label='상위업무-없음')
+    parent__isnull = BooleanFilter(field_name='parent', lookup_expr='isnull', label='상위업무-유무')
 
     class Meta:
         model = Issue
