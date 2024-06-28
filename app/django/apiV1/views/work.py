@@ -1,6 +1,8 @@
 from django_filters.rest_framework import (FilterSet, BooleanFilter,
                                            DateFilter, CharFilter)
 from rest_framework import viewsets
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 from ..pagination import *
 from ..permission import *
@@ -220,6 +222,40 @@ class IssueViewSet(viewsets.ModelViewSet):
 
     def perform_update(self, serializer):
         serializer.save(updater=self.request.user)
+
+
+class IssueCountByMemberView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    # filterset_fields = ('projects',)
+
+    @staticmethod
+    def get(request, *args, **kwargs):
+        user = request.query_params.get('user', None)
+
+        # Count issues assigned to the user
+        issues_in_charge = Issue.objects.filter(assigned_to=user)
+        open_charged = issues_in_charge.filter(closed__isnull=True).count()
+        closed_charged = issues_in_charge.filter(closed__isnull=False).count()
+        all_charged = open_charged + closed_charged
+
+        # Count issues created by the user
+        issues_in_created = Issue.objects.filter(creator=user)
+        open_created = issues_in_created.filter(closed__isnull=True).count()
+        closed_created = issues_in_created.filter(closed__isnull=False).count()
+        all_created = open_created + closed_created
+
+        summary_data = {
+            'open_charged': open_charged,
+            'closed_charged': closed_charged,
+            'all_charged': all_charged,
+            'open_created': open_created,
+            'closed_created': closed_created,
+            'all_created': all_created
+        }
+
+        serializer = IssueCountByMemberSerializer(summary_data)
+        return Response(serializer.data)
 
 
 class IssueRelationViewSet(viewsets.ModelViewSet):

@@ -53,7 +53,7 @@ router.register(r'module', work.ModuleViewSet)
 router.register(r'version', work.VersionViewSet)
 router.register(r'repository', work.RepositoryViewSet)
 router.register(r'tracker', work.TrackerViewSet)
-router.register(r'tracker-summary', work.IssueCountByTrackerViewSet, basename='tracker-summary')
+router.register(r'issue-by-tracker-summary', work.IssueCountByTrackerViewSet, basename='issue-by-tracker-summary')
 router.register(r'issue-status', work.IssueStatusViewSet)
 router.register(r'workflow', work.WorkflowViewSet)
 router.register(r'code-activity', work.CodeActivityViewSet)
@@ -151,6 +151,8 @@ router.register(r'tag', document.TagViewSet)
 router.register(r'post-trash-can', document.PostInTrashViewSet, basename='post-trash-can')
 
 urlpatterns = router.urls
+urlpatterns += [path('issue-by-member/', work.IssueCountByMemberView.as_view(), name='issue-by-member')]
+
 urlpatterns += [path('check-password/', accounts.CheckPasswordView.as_view(), name='check-password')]
 urlpatterns += [path('change-password/', accounts.ChangePasswordView.as_view(), name='change-password')]
 urlpatterns += [path('password-reset/', accounts.PasswordResetRequestView.as_view(), name='password-reset')]

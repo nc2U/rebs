@@ -436,41 +436,34 @@ class IssueCountByTrackerSerializer(serializers.ModelSerializer):
         issues = Issue.objects.filter(tracker=obj, closed__isnull=True)
         # Access the request object from context
         request = self.context.get('request')
-        project = request.query_params.get('projects', None)
-        if project is not None:
-            try:
-                project = IssueProject.objects.get(pk=project)
-                subs = self.get_sub_projects(project)
-                # Include activity log entries related to the specified project and its subprojects
-                issues = issues.filter(
-                    Q(project__slug=project.slug) | Q(project__slug__in=[sub.slug for sub in subs]))
-            except IssueProject.DoesNotExist:
-                pass
+        issues = self.filter_project(request, issues)
         return issues.count()
 
     def get_closed(self, obj):
         issues = Issue.objects.filter(tracker=obj).exclude(closed__isnull=True)
         # Access the request object from context
         request = self.context.get('request')
-        project = request.query_params.get('projects', None)
-        if project is not None:
-            try:
-                project = IssueProject.objects.get(pk=project)
-                subs = self.get_sub_projects(project)
-                # Include activity log entries related to the specified project and its subprojects
-                issues = issues.filter(
-                    Q(project__slug=project.slug) | Q(project__slug__in=[sub.slug for sub in subs]))
-            except IssueProject.DoesNotExist:
-                pass
+        issues = self.filter_project(request, issues)
         return issues.count()
 
     def get_sub_projects(self, parent):
         sub_projects = []
+
         children = IssueProject.objects.filter(parent=parent)
         for child in children:
             sub_projects.append(child)
             sub_projects.extend(self.get_sub_projects(child))
         return sub_projects
+
+    def filter_project(self, request, issues):
+        project = request.query_params.get('projects', None)
+        if project is not None:
+            try:
+                project = IssueProject.objects.get(pk=project)
+                subs = self.get_sub_projects(project)
+                return issues.filter(Q(project__slug=project.slug) | Q(project__slug__in=[sub.slug for sub in subs]))
+            except IssueProject.DoesNotExist:
+                return issues
 
 
 class IssueStatusSerializer(serializers.ModelSerializer):
@@ -715,6 +708,15 @@ class IssueSerializer(serializers.ModelSerializer):
             file.delete()
 
         return super().update(instance, validated_data)
+
+
+class IssueCountByMemberSerializer(serializers.Serializer):
+    open_charged = serializers.IntegerField(read_only=True)
+    closed_charged = serializers.IntegerField(read_only=True)
+    all_charged = serializers.IntegerField(read_only=True)
+    open_created = serializers.IntegerField(read_only=True)
+    closed_created = serializers.IntegerField(read_only=True)
+    all_created = serializers.IntegerField(read_only=True)
 
 
 class IssueRelationSerializer(serializers.ModelSerializer):
