@@ -200,7 +200,8 @@ def get_paid(contract: Contract, simple_orders, pub_date, **kwargs):
         deal_date__lte=pub_date
     ).order_by('deal_date', 'id')  # 해당 계약 건 납부 데이터
 
-    paid_list = paid_list.filter(installment_order__pay_sort='1') if kwargs.get('is_past', None) else paid_list
+    is_past = True if kwargs.get('is_past') else False
+    paid_list = paid_list.filter(installment_order__pay_sort='1') if is_past else paid_list
 
     pay_list = [p.income for p in paid_list]  # 입금액 추출 리스트
     paid_sum_list = list(accumulate(pay_list))  # 입금액 리스트를 시간 순 누계액 리스트로 변경
@@ -250,7 +251,7 @@ def get_paid(contract: Contract, simple_orders, pub_date, **kwargs):
             pre_date = first_date
             next_date = pub_date
 
-        if kwargs.get('is_past', None) and contract.sup_cont_date:
+        if is_past and contract.sup_cont_date:
             next_date = next_date if contract.sup_cont_date >= next_date else contract.sup_cont_date
 
         if isinstance(paid, tuple):
@@ -309,7 +310,7 @@ def get_paid(contract: Contract, simple_orders, pub_date, **kwargs):
             days = prepay_days if diff < 0 else delay_days
             days = days if diff else 0
 
-            calc = get_late_fee(contract.project, diff, days)
+            calc = get_late_fee(contract.project, diff, days, is_past)
 
             penalty = calc if diff > 0 else 0
             discount = calc if diff < 0 else 0
@@ -332,7 +333,7 @@ def get_paid(contract: Contract, simple_orders, pub_date, **kwargs):
             days = (next_date - paid['due_date']).days if diff else 0
             days = days if diff > 0 else days * -1
 
-            calc = get_late_fee(contract.project, diff, days)
+            calc = get_late_fee(contract.project, diff, days, is_past)
 
             penalty = calc if diff > 0 else 0
             discount = calc if diff < 0 else 0
