@@ -19,7 +19,9 @@ onBeforeRouteUpdate(async to => {
   if (to.params.userId) await accStore.fetchUser(Number(to.params.userId))
   else accStore.user = null
 })
+
 const route = useRoute()
+
 onBeforeMount(() => {
   emit('aside-visible', false)
   if (route.params.userId) accStore.fetchUser(Number(route.params.userId))
@@ -29,7 +31,7 @@ onBeforeMount(() => {
 <template>
   <CRow class="py-2 mb-2">
     <CCol>
-      <span class="h5 mr-2" style="font-size: 1.15em">
+      <span class="h5" style="font-size: 1.15em">
         {{ user?.profile?.name ?? user?.username }}
       </span>
     </CCol>
@@ -45,7 +47,7 @@ onBeforeMount(() => {
   </CRow>
 
   <CRow>
-    <CCol>
+    <CCol lg="6">
       <CRow class="mb-3">
         <CCol class="pl-5">
           <ul>
@@ -56,9 +58,9 @@ onBeforeMount(() => {
         </CCol>
       </CRow>
 
-      <CRow class="mb-3">
+      <CRow>
         <CCol>
-          <h5 style="font-size: 1.15em">업무</h5>
+          <span class="h5" style="font-size: 1.15em">업무</span>
         </CCol>
       </CRow>
 
@@ -110,10 +112,11 @@ onBeforeMount(() => {
 
       <CRow>
         <CCol>
-          <h5 style="font-size: 1.15em">프로젝트</h5>
+          <span class="h5" style="font-size: 1.15em">프로젝트</span>
         </CCol>
       </CRow>
-      <CRow>
+
+      <CRow class="mb-3">
         <CCol>
           <v-divider class="mb-0" />
           <CTable small striped hover responsive>
@@ -142,7 +145,8 @@ onBeforeMount(() => {
         </CCol>
       </CRow>
     </CCol>
-    <CCol class="pl-2">
+
+    <CCol lg="6" class="pl-2">
       <CRow>
         <CCol>
           <h5 style="font-size: 1.15em">
@@ -150,7 +154,7 @@ onBeforeMount(() => {
           </h5>
         </CCol>
       </CRow>
-      <CRow>
+      <CRow class="mb-3">
         <CCol>
           <!--          <ActivityLogList />-->
         </CCol>
