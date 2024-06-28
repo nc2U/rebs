@@ -345,6 +345,7 @@ export interface IssueFilter {
   author__exclude?: number | null
   assignee?: number | null
   assignee__exclude?: number | null
+  assignee__isnull?: string
   version?: number | null
   version__exclude?: number | null
   version__isnull?: '0' | '1'

@@ -384,10 +384,9 @@ export const useWork = defineStore('work', () => {
     if (payload.tracker__exclude) url += `&tracker__exclude=${payload.tracker__exclude}`
     if (payload.author) url += `&creator=${payload.author}`
     if (payload.author__exclude) url += `&creator__exclude=${payload.author__exclude}`
-
     if (payload.assignee) url += `&assigned_to=${payload.assignee}`
     if (payload.assignee__exclude) url += `&assigned_to__exclude=${payload.assignee__exclude}`
-
+    if (payload.assignee__isnull) url += `&assigned_to__isnull=${payload.assignee__isnull}`
     if (payload.version) url += `&fixed_version=${payload.version}`
     if (payload.version__exclude) url += `&fixed_version__exclude=${payload.version__exclude}`
     if (payload.version__isnull) url += `&fixed_version__isnull=${payload.version__isnull}`
