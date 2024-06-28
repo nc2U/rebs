@@ -204,7 +204,7 @@ watch(searchCond, nVal => {
   if (!nVal.includes('status')) searchCond.value = ['status']
 })
 
-onBeforeMount(() => {
+onBeforeMount(async () => {
   if (!!props.statusList.length) form.value.status = props.statusList[0]?.pk
   if (route.name === '업무')
     searchOptions[0].options.splice(1, 0, { value: 'project', label: '프로젝트' })
@@ -215,6 +215,14 @@ onBeforeMount(() => {
     searchCond.value.push('tracker')
     form.value.tracker = Number(route.query.tracker)
     cond.value.tracker = 'is'
+  }
+  if (!!route.query.author) {
+    searchCond.value.push('author')
+    form.value.author = Number(route.query.author)
+  }
+  if (!!route.query.assignee) {
+    searchCond.value.push('assignee')
+    form.value.assignee = Number(route.query.assignee)
   }
   if (!!route.query.version) {
     searchCond.value.push('version')

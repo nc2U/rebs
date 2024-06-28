@@ -74,7 +74,7 @@ const pageSelect = (page: number) => {
 onBeforeMount(async () => {
   await workStore.fetchAllIssueProjectList()
   await workStore.fetchAllIssueList()
-  await workStore.fetchIssueList({ status__closed: '0' })
+  if (!route.query) await workStore.fetchIssueList({ status__closed: '0' })
 
   await workStore.fetchMemberList()
   await workStore.fetchTrackerList()

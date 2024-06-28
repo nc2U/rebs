@@ -85,40 +85,71 @@ onBeforeMount(() => {
             <CTableBody>
               <CTableRow>
                 <CTableDataCell class="text-left">
-                  <router-link to="">할당된 업무</router-link>
+                  <router-link :to="{ name: '업무', query: { assignee: route.params.userId } }">
+                    할당된 업무
+                  </router-link>
                 </CTableDataCell>
                 <CTableDataCell>
-                  <router-link to="">
+                  <router-link
+                    :to="{ name: '업무', query: { status: 'open', assignee: route.params.userId } }"
+                  >
                     {{ issueNum.open_charged }}
                   </router-link>
                 </CTableDataCell>
                 <CTableDataCell>
-                  <router-link to="">
+                  <router-link
+                    :to="{
+                      name: '업무',
+                      query: { status: 'closed', assignee: route.params.userId },
+                    }"
+                  >
                     {{ issueNum.closed_charged }}
                   </router-link>
                 </CTableDataCell>
                 <CTableDataCell>
-                  <router-link to="">
+                  <router-link
+                    :to="{
+                      name: '업무',
+                      query: { status: 'any', assignee: route.params.userId },
+                    }"
+                  >
                     {{ issueNum.all_charged }}
                   </router-link>
                 </CTableDataCell>
               </CTableRow>
               <CTableRow>
                 <CTableDataCell class="text-left">
-                  <router-link to="">보고한 업무</router-link>
+                  <router-link :to="{ name: '업무', query: { author: route.params.userId } }">
+                    작성한 업무
+                  </router-link>
                 </CTableDataCell>
                 <CTableDataCell>
-                  <router-link to="">
+                  <router-link
+                    :to="{
+                      name: '업무',
+                      query: { status: 'open', author: route.params.userId },
+                    }"
+                  >
                     {{ issueNum.open_created }}
                   </router-link>
                 </CTableDataCell>
                 <CTableDataCell>
-                  <router-link to="">
+                  <router-link
+                    :to="{
+                      name: '업무',
+                      query: { status: 'closed', author: route.params.userId },
+                    }"
+                  >
                     {{ issueNum.closed_created }}
                   </router-link>
                 </CTableDataCell>
                 <CTableDataCell>
-                  <router-link to="">
+                  <router-link
+                    :to="{
+                      name: '업무',
+                      query: { status: 'any', author: route.params.userId },
+                    }"
+                  >
                     {{ issueNum.all_created }}
                   </router-link>
                 </CTableDataCell>
