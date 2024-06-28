@@ -14,6 +14,7 @@ defineProps({
   statusList: { type: Array as PropType<IssueStatus[]>, default: () => [] },
   trackerList: { type: Array as PropType<Tracker[]>, default: () => [] },
   getIssues: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
+  getUsers: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
   getVersions: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
 })
 
@@ -109,6 +110,7 @@ const watchControl = (payload: any, issuePk: number) => {
     :status-list="statusList"
     :tracker-list="trackerList"
     :get-issues="getIssues"
+    :get-users="getUsers"
     :get-versions="getVersions"
     @filter-submit="filterSubmit"
   />

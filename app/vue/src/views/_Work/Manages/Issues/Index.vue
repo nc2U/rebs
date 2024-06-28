@@ -9,12 +9,16 @@ import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import IssueList from './components/IssueList.vue'
 import IssueForm from '@/views/_Work/Manages/Issues/components/IssueForm.vue'
+import { useAccount } from '@/store/pinia/account'
 
 const cBody = ref()
 const company = inject<ComputedRef<Company>>('company')
 const comName = computed(() => company?.value?.name)
 
 const sideNavCAll = () => cBody.value.toggle()
+
+const accStore = useAccount()
+const getUsers = computed(() => accStore.getUsers)
 
 const workStore = useWork()
 const issueList = computed(() => workStore.issueList)
@@ -77,6 +81,8 @@ onBeforeMount(async () => {
   await workStore.fetchStatusList()
   await workStore.fetchPriorityList()
   await workStore.fetchVersionList()
+
+  await accStore.fetchUsersList()
 })
 </script>
 
@@ -92,6 +98,7 @@ onBeforeMount(async () => {
         :status-list="statusList"
         :tracker-list="trackerList"
         :get-issues="getIssues"
+        :get-users="getUsers"
         :get-versions="getVersions"
         @filter-submit="filterSubmit"
         @page-select="pageSelect"

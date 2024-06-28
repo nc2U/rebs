@@ -10,6 +10,7 @@ const props = defineProps({
   statusList: { type: Array as PropType<IssueStatus[]>, default: () => [] },
   trackerList: { type: Array as PropType<Tracker[]>, default: () => [] },
   getIssues: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
+  getUsers: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
   getVersions: { type: Array as PropType<{ value: number; label: string }[]>, default: () => [] },
 })
 
@@ -31,8 +32,8 @@ const searchOptions = reactive([
       { value: 'status', label: '상태', disabled: true },
       { value: 'tracker', label: '유형' },
       { value: 'priority', label: '우선순위', disabled: true },
-      { value: 'author', label: '작성자', disabled: true },
-      { value: 'assignee', label: '담당자', disabled: true },
+      { value: 'author', label: '작성자' },
+      { value: 'assignee', label: '담당자' },
       { value: 'version', label: '목표버전' },
       { value: 'category', label: '범주', disabled: true },
       { value: 'done_ratio', label: '진척도', disabled: true },
@@ -115,6 +116,8 @@ const cond = ref({
   status: 'open' as 'open' | 'is' | 'exclude' | 'closed' | 'any',
   project: 'is' as 'is' | 'exclude',
   tracker: 'is' as 'is' | 'exclude',
+  author: 'is' as 'is' | 'exclude',
+  assignee: 'is' as 'is' | 'exclude' | 'none' | 'any',
   // is_public: 'is' as 'is' | 'exclude',
   // name: 'contains',
   // description: 'contains',
@@ -130,8 +133,14 @@ const form = ref<IssueFilter>({
   project: (route.params.projId as string) ?? '',
   tracker: null,
   tracker__exclude: null,
+  author: null,
+  author__exclude: null,
+  assignee: null,
+  assignee__exclude: null,
+
   // name: '',
   // description: '',
+
   version: null,
   parent: '' as string | number,
 })
@@ -152,6 +161,16 @@ const filterSubmit = () => {
   if (searchCond.value.includes('tracker'))
     if (cond.value.tracker === 'is') filterData.tracker = form.value.tracker
     else if (cond.value.tracker === 'exclude') filterData.tracker__exclude = form.value.tracker
+
+  if (searchCond.value.includes('author'))
+    if (cond.value.author === 'is') filterData.author = form.value.author
+    else if (cond.value.author === 'exclude') filterData.author__exclude = form.value.author
+
+  if (searchCond.value.includes('assignee'))
+    if (cond.value.assignee === 'is') filterData.assignee = form.value.assignee
+    else if (cond.value.assignee === 'exclude') filterData.assignee__exclude = form.value.assignee
+    else if (cond.value.assignee === 'none') filterData.assignee__isnull = '1'
+    else if (cond.value.assignee === 'any') filterData.assignee__isnull = '0'
 
   // if (cond.value.is_public === 'is' && searchCond.value.includes('is_public'))
   //   filterData.is_public = form.value.is_public
@@ -284,6 +303,53 @@ onBeforeMount(() => {
                     {{ tracker.name }}
                   </option>
                 </CFormSelect>
+              </CCol>
+            </CRow>
+
+            <CRow v-if="searchCond.includes('author')">
+              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
+                <CFormCheck checked="true" label="작성자" id="author" readonly />
+              </CCol>
+              <CCol class="col-4 col-lg-3 col-xl-2">
+                <CFormSelect v-model="cond.author" size="sm">
+                  <option value="is">이다</option>
+                  <option value="exclude">아니다</option>
+                </CFormSelect>
+              </CCol>
+              <CCol class="col-4 col-lg-3">
+                <Multiselect
+                  v-model="form.author"
+                  :options="getUsers"
+                  placeholder="작성자"
+                  searchable
+                  size="sm"
+                  @keydown.enter="filterSubmit"
+                />
+              </CCol>
+            </CRow>
+
+            <CRow v-if="searchCond.includes('assignee')">
+              <CCol class="col-4 col-lg-3 col-xl-2 pt-1 mb-3">
+                <CFormCheck checked="true" label="담당자" id="assignee" readonly />
+              </CCol>
+              <CCol class="col-4 col-lg-3 col-xl-2">
+                <CFormSelect v-model="cond.assignee" size="sm">
+                  <option value="is">이다</option>
+                  <option value="exclude">아니다</option>
+                  <option value="none">없음</option>
+                  <option value="any">모두</option>
+                </CFormSelect>
+              </CCol>
+              <CCol class="col-4 col-lg-3">
+                <Multiselect
+                  v-if="cond.assignee === 'is' || cond.assignee === 'exclude'"
+                  v-model="form.assignee"
+                  :options="getUsers"
+                  placeholder="담당자"
+                  searchable
+                  size="sm"
+                  @keydown.enter="filterSubmit"
+                />
               </CCol>
             </CRow>
 
