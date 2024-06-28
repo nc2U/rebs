@@ -4,6 +4,8 @@ import type { IssueProject } from '@/store/types/work'
 import { dateFormat } from '@/utils/baseMixins'
 import { useAccount } from '@/store/pinia/account'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
+import IssueSummary from './atomicViews/IssueSummary.vue'
+import ProjectSummary from './atomicViews/ProjectSummary.vue'
 import ActivityLogList from '@/views/_Work/Manages/Activity/components/ActivityLogList.vue'
 
 defineProps({
@@ -70,94 +72,7 @@ onBeforeMount(() => {
         </CCol>
       </CRow>
 
-      <CRow class="mb-3">
-        <CCol>
-          <v-divider class="mb-0" />
-          <CTable small striped hover responsive class="text-center">
-            <CTableHead>
-              <CTableRow>
-                <CTableHeaderCell></CTableHeaderCell>
-                <CTableHeaderCell>진행중</CTableHeaderCell>
-                <CTableHeaderCell>완료됨</CTableHeaderCell>
-                <CTableHeaderCell>합계</CTableHeaderCell>
-              </CTableRow>
-            </CTableHead>
-            <CTableBody>
-              <CTableRow>
-                <CTableDataCell class="text-left">
-                  <router-link :to="{ name: '업무', query: { assignee: route.params.userId } }">
-                    할당된 업무
-                  </router-link>
-                </CTableDataCell>
-                <CTableDataCell>
-                  <router-link
-                    :to="{ name: '업무', query: { status: 'open', assignee: route.params.userId } }"
-                  >
-                    {{ issueNum.open_charged }}
-                  </router-link>
-                </CTableDataCell>
-                <CTableDataCell>
-                  <router-link
-                    :to="{
-                      name: '업무',
-                      query: { status: 'closed', assignee: route.params.userId },
-                    }"
-                  >
-                    {{ issueNum.closed_charged }}
-                  </router-link>
-                </CTableDataCell>
-                <CTableDataCell>
-                  <router-link
-                    :to="{
-                      name: '업무',
-                      query: { status: 'any', assignee: route.params.userId },
-                    }"
-                  >
-                    {{ issueNum.all_charged }}
-                  </router-link>
-                </CTableDataCell>
-              </CTableRow>
-              <CTableRow>
-                <CTableDataCell class="text-left">
-                  <router-link :to="{ name: '업무', query: { author: route.params.userId } }">
-                    작성한 업무
-                  </router-link>
-                </CTableDataCell>
-                <CTableDataCell>
-                  <router-link
-                    :to="{
-                      name: '업무',
-                      query: { status: 'open', author: route.params.userId },
-                    }"
-                  >
-                    {{ issueNum.open_created }}
-                  </router-link>
-                </CTableDataCell>
-                <CTableDataCell>
-                  <router-link
-                    :to="{
-                      name: '업무',
-                      query: { status: 'closed', author: route.params.userId },
-                    }"
-                  >
-                    {{ issueNum.closed_created }}
-                  </router-link>
-                </CTableDataCell>
-                <CTableDataCell>
-                  <router-link
-                    :to="{
-                      name: '업무',
-                      query: { status: 'any', author: route.params.userId },
-                    }"
-                  >
-                    {{ issueNum.all_created }}
-                  </router-link>
-                </CTableDataCell>
-              </CTableRow>
-            </CTableBody>
-          </CTable>
-        </CCol>
-      </CRow>
+      <IssueSummary :issue-num="issueNum" />
 
       <CRow>
         <CCol>
@@ -165,34 +80,7 @@ onBeforeMount(() => {
         </CCol>
       </CRow>
 
-      <CRow class="mb-3">
-        <CCol>
-          <v-divider class="mb-0" />
-          <CTable small striped hover responsive>
-            <CTableHead class="text-center">
-              <CTableRow>
-                <CTableHeaderCell>프로젝트</CTableHeaderCell>
-                <CTableHeaderCell>역할</CTableHeaderCell>
-                <CTableHeaderCell class="text-center">등록시각</CTableHeaderCell>
-              </CTableRow>
-            </CTableHead>
-
-            <CTableBody>
-              <CTableRow v-for="proj in projectList" :key="proj.pk">
-                <CTableDataCell class="text-left">
-                  <router-link :to="{ name: '(개요)', params: { projId: proj.slug } }">
-                    {{ proj.name }}
-                  </router-link>
-                </CTableDataCell>
-                <CTableDataCell></CTableDataCell>
-                <CTableDataCell class="text-center">
-                  <!--                  {{ dateFormat(proj.members?.created, '/') }}-->
-                </CTableDataCell>
-              </CTableRow>
-            </CTableBody>
-          </CTable>
-        </CCol>
-      </CRow>
+      <ProjectSummary :project-list="projectList" />
     </CCol>
 
     <CCol lg="6" class="pl-2">
@@ -203,6 +91,7 @@ onBeforeMount(() => {
           </h5>
         </CCol>
       </CRow>
+
       <CRow class="mb-3">
         <CCol>
           <!--          <ActivityLogList />-->
