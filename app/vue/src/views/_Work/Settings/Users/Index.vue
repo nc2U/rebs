@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/_Work/_menu/headermixin3'
+import { useRoute } from 'vue-router'
+import { useWork } from '@/store/pinia/work'
 import { useAccount } from '@/store/pinia/account'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import UserList from '@/views/_Work/Settings/Users/components/UserList.vue'
 import UserView from '@/views/_Work/Settings/Users/components/UserView.vue'
 import UserForm from '@/views/_Work/Settings/Users/components/UserForm.vue'
-import { useWork } from '@/store/pinia/work'
 
 const cBody = ref()
 const aside = ref(true)
@@ -22,9 +23,14 @@ const usersList = computed(() => accStore.usersList)
 
 const workStore = useWork()
 const issueProjectList = computed(() => workStore.issueProjectList)
+const issueNumByMember = computed(() => workStore.issueNumByMember)
+const fetchIssueByMember = (userId: string) => workStore.fetchIssueByMember(userId)
+
+const route = useRoute()
 onBeforeMount(() => {
   accStore.fetchUsersList()
   workStore.fetchIssueProjectList({ member: userInfo.value?.pk })
+  if (route.params.userId) fetchIssueByMember(route.params.userId as string)
 })
 </script>
 
@@ -42,6 +48,7 @@ onBeforeMount(() => {
       <UserView
         v-else-if="$route.name === '사용자 - 보기'"
         :project-list="issueProjectList"
+        :issue-num="issueNumByMember"
         @aside-visible="asideVisible"
       />
 

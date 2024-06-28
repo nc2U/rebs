@@ -1,12 +1,18 @@
 <script lang="ts" setup>
 import { computed, inject, onBeforeMount, type PropType } from 'vue'
 import type { IssueProject } from '@/store/types/work'
+import { dateFormat } from '@/utils/baseMixins'
 import { useAccount } from '@/store/pinia/account'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
-import { dateFormat } from '@/utils/baseMixins'
 import ActivityLogList from '@/views/_Work/Manages/Activity/components/ActivityLogList.vue'
 
-defineProps({ projectList: { type: Array as PropType<IssueProject[]>, default: () => [] } })
+defineProps({
+  projectList: { type: Array as PropType<IssueProject[]>, default: () => [] },
+  issueNum: {
+    type: Object,
+    default: () => {},
+  },
+})
 
 const emit = defineEmits(['aside-visible'])
 
@@ -82,13 +88,19 @@ onBeforeMount(() => {
                   <router-link to="">할당된 업무</router-link>
                 </CTableDataCell>
                 <CTableDataCell>
-                  <router-link to="">4</router-link>
+                  <router-link to="">
+                    {{ issueNum.open_charged }}
+                  </router-link>
                 </CTableDataCell>
                 <CTableDataCell>
-                  <router-link to="">3</router-link>
+                  <router-link to="">
+                    {{ issueNum.closed_charged }}
+                  </router-link>
                 </CTableDataCell>
                 <CTableDataCell>
-                  <router-link to="">7</router-link>
+                  <router-link to="">
+                    {{ issueNum.all_charged }}
+                  </router-link>
                 </CTableDataCell>
               </CTableRow>
               <CTableRow>
@@ -96,13 +108,19 @@ onBeforeMount(() => {
                   <router-link to="">보고한 업무</router-link>
                 </CTableDataCell>
                 <CTableDataCell>
-                  <router-link to="">5</router-link>
+                  <router-link to="">
+                    {{ issueNum.open_created }}
+                  </router-link>
                 </CTableDataCell>
                 <CTableDataCell>
-                  <router-link to="">6</router-link>
+                  <router-link to="">
+                    {{ issueNum.closed_created }}
+                  </router-link>
                 </CTableDataCell>
                 <CTableDataCell>
-                  <router-link to="">11</router-link>
+                  <router-link to="">
+                    {{ issueNum.all_created }}
+                  </router-link>
                 </CTableDataCell>
               </CTableRow>
             </CTableBody>
