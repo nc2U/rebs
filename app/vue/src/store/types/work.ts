@@ -341,6 +341,10 @@ export interface IssueFilter {
   project__exclude?: string
   tracker?: number | null
   tracker__exclude?: number | null
+  author?: number | null
+  author__exclude?: number | null
+  assignee?: number | null
+  assignee__exclude?: number | null
   version?: number | null
   version__exclude?: number | null
   version__isnull?: '0' | '1'
