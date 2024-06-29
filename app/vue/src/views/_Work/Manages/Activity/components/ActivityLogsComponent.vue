@@ -1,0 +1,104 @@
+<script lang="ts" setup>
+import Cookies from 'js-cookie'
+import { computed, onBeforeMount, type PropType, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { useWork } from '@/store/pinia/work'
+import { dateFormat } from '@/utils/baseMixins'
+import type { ActLogEntry } from '@/store/types/work'
+import NoData from '@/views/_Work/components/NoData.vue'
+import ActivityLogs from '@/views/_Work/Manages/Activity/components/ActivityLogs.vue'
+
+const props = defineProps({
+  toDate: { type: Date, required: true },
+  activityFilter: { type: Object as PropType<any>, default: () => null },
+})
+
+const emit = defineEmits(['to-back', 'to-next'])
+
+const cookieSort = computed(() => Cookies.get('cookieSort')?.split('-') as any)
+const sort = computed(() =>
+  cookieSort.value?.length ? cookieSort : ['1', '2', '4', '5', '6', '9'],
+)
+
+const workStore = useWork()
+const groupedActivities = computed<{ [key: string]: ActLogEntry[] }>(
+  () => workStore.groupedActivities,
+)
+
+const fromDate = computed(
+  () => new Date(new Date(props.toDate).getTime() - 9 * 24 * 60 * 60 * 1000),
+)
+
+const toBack = () =>
+  emit('to-back', new Date(new Date(props.toDate).setDate(new Date(props.toDate).getDate() - 10)))
+const toNext = () =>
+  emit('to-next', new Date(new Date(props.toDate).setDate(new Date(props.toDate).getDate() + 10)))
+
+const route = useRoute()
+const projId = computed(() => (route.params.projId as string) ?? '')
+
+watch(
+  () => route,
+  nVal => {
+    if (nVal.params.projId)
+      workStore.fetchActivityLogList({
+        project: nVal.params.projId,
+        from_act_date: dateFormat(fromDate.value),
+        to_act_date: dateFormat(props.toDate),
+        sort: sort.value,
+        ...props.activityFilter,
+      })
+  },
+  { deep: true },
+)
+
+onBeforeMount(() => {
+  if (route.params.projId) workStore.fetchIssueProject(projId.value)
+  setTimeout(() => {
+    workStore.fetchActivityLogList({
+      project: projId.value,
+      from_act_date: dateFormat(fromDate.value),
+      to_act_date: dateFormat(props.toDate),
+      sort: sort.value,
+      ...props.activityFilter,
+    })
+  }, 300)
+})
+</script>
+
+<template>
+  <CRow class="py-2">
+    <CCol>
+      <h5>작업내역</h5>
+    </CCol>
+  </CRow>
+
+  <CRow class="fst-italic">
+    <CCol> {{ dateFormat(fromDate, '/') }}부터 {{ dateFormat(toDate, '/') }}까지</CCol>
+  </CRow>
+
+  <NoData v-if="!Object.getOwnPropertyNames(groupedActivities).length" />
+
+  <CRow v-else class="my-3">
+    <CCol>
+      <ActivityLogs :grouped-activities="groupedActivities" />
+    </CCol>
+  </CRow>
+
+  <CRow>
+    <CCol>
+      <CButtonGroup role="group">
+        <CButton color="primary" variant="outline" size="sm" @click="toBack">« 뒤로</CButton>
+        <CButton
+          v-if="dateFormat(toDate) < dateFormat(new Date())"
+          color="primary"
+          variant="outline"
+          size="sm"
+          @click="toNext"
+        >
+          다음 »
+        </CButton>
+      </CButtonGroup>
+    </CCol>
+  </CRow>
+</template>

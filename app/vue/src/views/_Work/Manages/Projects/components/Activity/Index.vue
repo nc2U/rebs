@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onBeforeMount, type PropType } from 'vue'
-import ActivityLogList from '@/views/_Work/Manages/Activity/components/ActivityLogList.vue'
+import ActivityLogList from '@/views/_Work/Manages/Activity/components/ActivityLogsComponent.vue'
 
 defineProps({
   toDate: { type: Date, required: true },

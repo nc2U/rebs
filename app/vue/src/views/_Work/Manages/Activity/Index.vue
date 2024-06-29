@@ -7,7 +7,7 @@ import type { Company } from '@/store/types/settings'
 import type { ActLogEntryFilter } from '@/store/types/work'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
-import ActivityLogList from '@/views/_Work/Manages/Activity/components/ActivityLogList.vue'
+import ActivityLogList from '@/views/_Work/Manages/Activity/components/ActivityLogsComponent.vue'
 import AsideActivity from '@/views/_Work/Manages/Activity/components/aside/AsideActivity.vue'
 
 const cBody = ref()

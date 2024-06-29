@@ -6,7 +6,7 @@ import { useWork } from '@/store/pinia/work'
 import { useAccount } from '@/store/pinia/account'
 import IssueSummary from './atomicViews/IssueSummary.vue'
 import ProjectSummary from './atomicViews/ProjectSummary.vue'
-import UserActivities from './atomicViews/UserActivities.vue'
+import ActivityLogs from '@/views/_Work/Manages/Activity/components/ActivityLogs.vue'
 
 const props = defineProps({
   projectList: { type: Array as PropType<IssueProject[]>, default: () => [] },
@@ -94,7 +94,7 @@ onBeforeMount(() => {
           </CCol>
         </CRow>
 
-        <UserActivities :grouped-activities="groupedActivities" />
+        <ActivityLogs :grouped-activities="groupedActivities" />
       </template>
     </CCol>
   </CRow>
