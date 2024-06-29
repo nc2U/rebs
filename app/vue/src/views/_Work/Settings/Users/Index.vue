@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onBeforeMount } from 'vue'
+import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/_Work/_menu/headermixin3'
 import { useRoute } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
@@ -18,19 +18,29 @@ const asideVisible = (visible: boolean) => (aside.value = visible)
 const sideNavCAll = () => cBody.value.toggle()
 
 const accStore = useAccount()
-const userInfo = computed(() => accStore.userInfo)
 const usersList = computed(() => accStore.usersList)
 
 const workStore = useWork()
 const issueProjectList = computed(() => workStore.issueProjectList)
 const issueNumByMember = computed(() => workStore.issueNumByMember)
 const fetchIssueByMember = (userId: string) => workStore.fetchIssueByMember(userId)
+const fetchIssueProjectList = (payload: any) => workStore.fetchIssueProjectList(payload)
 
 const route = useRoute()
+watch(route, nVal => {
+  if (nVal.params.userId) {
+    fetchIssueByMember(nVal.params.userId as string)
+    fetchIssueProjectList({ member: Number(nVal.params.userId) })
+  }
+})
+
 onBeforeMount(() => {
   accStore.fetchUsersList()
-  workStore.fetchIssueProjectList({ member: userInfo.value?.pk })
-  if (route.params.userId) fetchIssueByMember(route.params.userId as string)
+
+  if (route.params.userId) {
+    fetchIssueByMember(route.params.userId as string)
+    fetchIssueProjectList({ member: Number(route.params.userId) })
+  }
 })
 </script>
 
