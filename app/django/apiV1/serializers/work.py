@@ -38,7 +38,7 @@ class MemberInIssueProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Member
-        fields = ('pk', 'user', 'roles')
+        fields = ('pk', 'user', 'roles', 'created')
 
 
 class ModuleInIssueProjectSerializer(serializers.ModelSerializer):
