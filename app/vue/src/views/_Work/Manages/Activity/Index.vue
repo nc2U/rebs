@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, type ComputedRef, inject, onBeforeMount } from 'vue'
 import { navMenu1, navMenu2 } from '@/views/_Work/_menu/headermixin1'
+import { useRoute } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import { dateFormat } from '@/utils/baseMixins'
 import type { Company } from '@/store/types/settings'
@@ -21,7 +22,14 @@ const navMenu = computed(() => (!issueProjects.value.length ? navMenu1 : navMenu
 const workStore = useWork()
 const issueProjects = computed(() => workStore.issueProjects)
 
-const toDate = ref(new Date())
+const route = useRoute()
+
+const today = ref(new Date())
+const toDate = computed(() => {
+  if (route.query.from) {
+    return new Date(new Date(route.query.from as string).getTime() + 9 * 24 * 60 * 60 * 1000)
+  } else return today.value
+})
 const fromDate = computed(() => new Date(toDate.value.getTime() - 9 * 24 * 60 * 60 * 1000))
 
 const activityFilter = ref<ActLogEntryFilter>({
@@ -34,18 +42,16 @@ const activityFilter = ref<ActLogEntryFilter>({
 })
 
 const toMove = (date: Date) => {
-  toDate.value = date
+  today.value = date
   activityFilter.value.to_act_date = dateFormat(date)
   activityFilter.value.from_act_date = dateFormat(
     new Date(date.getTime() - 9 * 24 * 60 * 60 * 1000),
   )
-  console.log(dateFormat(new Date(date.getTime() - 9 * 24 * 60 * 60 * 1000)))
   workStore.fetchActivityLogList(activityFilter.value)
 }
 
 const filterActivity = (payload: ActLogEntryFilter) => {
-  console.log(payload)
-  if (payload.to_act_date) toDate.value = new Date(payload.to_act_date)
+  if (payload.to_act_date) today.value = new Date(payload.to_act_date)
   activityFilter.value.project = payload.project ?? ''
   activityFilter.value.project__search = payload.project__search ?? ''
   activityFilter.value.user = payload.user ?? ''
@@ -55,6 +61,7 @@ const filterActivity = (payload: ActLogEntryFilter) => {
 
 onBeforeMount(() => {
   workStore.fetchIssueProjectList({})
+  if (route.query.user) activityFilter.value.user = route.query.user as string
 })
 </script>
 
@@ -63,6 +70,7 @@ onBeforeMount(() => {
 
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query">
     <template v-slot:default>
+      {{ dateFormat(toDate, '/') }}
       <ActivityLogList
         :to-date="toDate"
         :activity-filter="activityFilter"

@@ -87,6 +87,14 @@ onBeforeMount(() => {
   const cookieSort = Cookies.get('cookieSort')?.split('-') as any[]
   if (cookieSort?.length) form.sort = cookieSort
   if (props.toDate) form.to_act_date = dateFormat(props.toDate)
+  if (route.query.user) {
+    form.user = route.query.user as string
+    // const from = new Date(route.query.to_act_date as string)
+    // toDate.value = new Date(from.getTime() + 9 * 24 * 60 * 60 * 1000)
+    // activityFilter.value.from_act_date = route.query.from as string
+    // activityFilter.value.user = route.query.user as string
+    // filterActivity(activityFilter.value)
+  }
 })
 </script>
 
