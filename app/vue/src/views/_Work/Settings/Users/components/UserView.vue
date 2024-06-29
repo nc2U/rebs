@@ -2,11 +2,11 @@
 import { computed, inject, onBeforeMount, type PropType } from 'vue'
 import type { ActLogEntry, IssueProject } from '@/store/types/work'
 import { dateFormat } from '@/utils/baseMixins'
+import { useWork } from '@/store/pinia/work'
 import { useAccount } from '@/store/pinia/account'
 import IssueSummary from './atomicViews/IssueSummary.vue'
 import ProjectSummary from './atomicViews/ProjectSummary.vue'
 import UserActivities from './atomicViews/UserActivities.vue'
-import { useWork } from '@/store/pinia/work'
 
 const props = defineProps({
   projectList: { type: Array as PropType<IssueProject[]>, default: () => [] },
@@ -85,7 +85,7 @@ onBeforeMount(() => {
     </CCol>
 
     <CCol lg="6" class="pl-2">
-      <template v-if="!!groupedActivities">
+      <template v-if="!!Object.keys(groupedActivities).length">
         <CRow>
           <CCol>
             <h5 style="font-size: 1.15em">
