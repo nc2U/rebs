@@ -9,6 +9,7 @@ import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import UserList from '@/views/_Work/Settings/Users/components/UserList.vue'
 import UserView from '@/views/_Work/Settings/Users/components/UserView.vue'
 import UserForm from '@/views/_Work/Settings/Users/components/UserForm.vue'
+import type { ActLogEntryFilter } from '@/store/types/work'
 
 const cBody = ref()
 const aside = ref(true)
@@ -25,12 +26,15 @@ const issueProjectList = computed(() => workStore.issueProjectList)
 const issueNumByMember = computed(() => workStore.issueNumByMember)
 const fetchIssueByMember = (userId: string) => workStore.fetchIssueByMember(userId)
 const fetchIssueProjectList = (payload: any) => workStore.fetchIssueProjectList(payload)
+const fetchActivityLogList = (payload: ActLogEntryFilter) => workStore.fetchActivityLogList(payload)
 
 const route = useRoute()
 watch(route, nVal => {
   if (nVal.params.userId) {
+    accStore.fetchUser(Number(nVal.params.userId))
     fetchIssueByMember(nVal.params.userId as string)
     fetchIssueProjectList({ member: Number(nVal.params.userId) })
+    fetchActivityLogList({ user: nVal.params.userId as string })
   }
 })
 
@@ -38,8 +42,10 @@ onBeforeMount(() => {
   accStore.fetchUsersList()
 
   if (route.params.userId) {
+    accStore.fetchUser(Number(route.params.userId))
     fetchIssueByMember(route.params.userId as string)
     fetchIssueProjectList({ member: Number(route.params.userId) })
+    fetchActivityLogList({ user: route.params.userId as string })
   }
 })
 </script>

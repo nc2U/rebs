@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { computed, inject, onBeforeMount, type PropType, ref } from 'vue'
-import type { ActLogEntry, ActLogEntryFilter, IssueProject } from '@/store/types/work'
+import { computed, inject, onBeforeMount, type PropType } from 'vue'
+import type { ActLogEntry, IssueProject } from '@/store/types/work'
 import { dateFormat } from '@/utils/baseMixins'
 import { useAccount } from '@/store/pinia/account'
-import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import IssueSummary from './atomicViews/IssueSummary.vue'
 import ProjectSummary from './atomicViews/ProjectSummary.vue'
 import UserActivities from './atomicViews/UserActivities.vue'
@@ -31,21 +30,8 @@ const groupedActivities = computed<{ [key: string]: ActLogEntry[] }>(
 
 const issueProjects = computed(() => props.projectList.slice().reverse())
 
-const fetchActivityLogList = (payload: ActLogEntryFilter) => workStore.fetchActivityLogList(payload)
-
-onBeforeRouteUpdate(async to => {
-  if (to.params.userId) await accStore.fetchUser(Number(to.params.userId))
-  else accStore.user = null
-})
-
-const route = useRoute()
-
 onBeforeMount(() => {
   emit('aside-visible', false)
-  if (route.params.userId) {
-    accStore.fetchUser(Number(route.params.userId))
-    fetchActivityLogList({ user: route.params.userId as string })
-  }
 })
 </script>
 
@@ -53,7 +39,7 @@ onBeforeMount(() => {
   <CRow class="py-2 mb-2">
     <CCol>
       <span class="h5" style="font-size: 1.15em">
-        {{ user?.profile?.name ?? user?.username }}
+        {{ user?.profile?.name || user?.username }}
       </span>
     </CCol>
 
