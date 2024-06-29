@@ -69,7 +69,7 @@ const getMember = (members: any[]) => {
                   }}
                 </CTableDataCell>
                 <CTableDataCell class="text-center">
-                  <!--                  {{ dateFormat(getMember(subs1.all_members ?? [])?.created, '/') }}-->
+                  {{ dateFormat(getMember(subs1.all_members ?? [])?.created, '/') }}
                 </CTableDataCell>
               </CTableRow>
               <template v-for="subs2 in subs1.sub_projects" :key="subs2.pk">
@@ -92,7 +92,7 @@ const getMember = (members: any[]) => {
                     }}
                   </CTableDataCell>
                   <CTableDataCell class="text-center">
-                    <!--                    {{ dateFormat(getMember(subs2.all_members ?? [])?.created, '/') }}-->
+                    {{ dateFormat(getMember(subs2.all_members ?? [])?.created, '/') }}
                   </CTableDataCell>
                 </CTableRow>
                 <template v-for="subs3 in subs2.sub_projects" :key="subs3.pk">
