@@ -90,7 +90,10 @@ onBeforeMount(() => {
           <CCol>
             <h5 style="font-size: 1.15em">
               <router-link
-                :to="{ name: '작업내역', query: { from: '', user: $route.params.userId } }"
+                :to="{
+                  name: '작업내역',
+                  query: { from: Object.keys(groupedActivities)[0], user: $route.params.userId },
+                }"
               >
                 작업내역
               </router-link>
