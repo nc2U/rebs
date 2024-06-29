@@ -86,10 +86,14 @@ onBeforeMount(() => {
 
     <CCol lg="6" class="pl-2">
       <template v-if="!!Object.keys(groupedActivities).length">
-        <CRow>
+        <CRow class="mb-2">
           <CCol>
             <h5 style="font-size: 1.15em">
-              <router-link :to="{ name: '작업내역' }">작업내역</router-link>
+              <router-link
+                :to="{ name: '작업내역', query: { from: '', user: $route.params.userId } }"
+              >
+                작업내역
+              </router-link>
             </h5>
           </CCol>
         </CRow>
