@@ -9,7 +9,7 @@ import ProjectSummary from './atomicViews/ProjectSummary.vue'
 import UserActivities from './atomicViews/UserActivities.vue'
 import { useWork } from '@/store/pinia/work'
 
-defineProps({
+const props = defineProps({
   projectList: { type: Array as PropType<IssueProject[]>, default: () => [] },
   issueNum: {
     type: Object,
@@ -28,6 +28,8 @@ const workStore = useWork()
 const groupedActivities = computed<{ [key: string]: ActLogEntry[] }>(
   () => workStore.groupedActivities,
 )
+
+const issueProjects = computed(() => props.projectList.slice().reverse())
 
 const fetchActivityLogList = (payload: ActLogEntryFilter) => workStore.fetchActivityLogList(payload)
 
@@ -92,7 +94,7 @@ onBeforeMount(() => {
           </CCol>
         </CRow>
 
-        <ProjectSummary :project-list="projectList" />
+        <ProjectSummary :project-list="issueProjects" />
       </template>
     </CCol>
 

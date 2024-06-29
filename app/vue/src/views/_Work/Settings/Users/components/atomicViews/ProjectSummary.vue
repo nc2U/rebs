@@ -1,10 +1,19 @@
 <script lang="ts" setup>
-import { type PropType } from 'vue'
+import { computed, type PropType } from 'vue'
 import type { IssueProject } from '@/store/types/work'
+import { useRoute } from 'vue-router'
+import { dateFormat } from '../../../../../../utils/baseMixins'
 
 defineProps({
   projectList: { type: Array as PropType<IssueProject[]>, default: () => [] },
 })
+
+const route = useRoute()
+const userId = computed(() => route.params.userId)
+
+const getMember = (members: any[]) => {
+  return members.filter(m => m.user.pk == userId.value)[0]
+}
 </script>
 
 <template>
@@ -21,17 +30,146 @@ defineProps({
         </CTableHead>
 
         <CTableBody>
-          <CTableRow v-for="proj in projectList" :key="proj.pk">
-            <CTableDataCell class="text-left">
-              <router-link :to="{ name: '(개요)', params: { projId: proj.slug } }">
-                {{ proj.name }}
-              </router-link>
-            </CTableDataCell>
-            <CTableDataCell></CTableDataCell>
-            <CTableDataCell class="text-center">
-              <!--                  {{ dateFormat(proj.members?.created, '/') }}-->
-            </CTableDataCell>
-          </CTableRow>
+          <template v-for="proj in projectList" :key="proj.pk">
+            <CTableRow>
+              <CTableDataCell class="text-left">
+                <router-link :to="{ name: '(개요)', params: { projId: proj.slug } }">
+                  {{ proj.name }}
+                </router-link>
+              </CTableDataCell>
+              <CTableDataCell>
+                {{
+                  getMember(proj.all_members ?? [])
+                    ?.roles.map((r: any) => r.name)
+                    .join(', ')
+                }}
+              </CTableDataCell>
+              <CTableDataCell class="text-center">
+                {{ dateFormat(getMember(proj.all_members ?? [])?.created, '/') }}
+              </CTableDataCell>
+            </CTableRow>
+
+            <template v-for="subs1 in proj.sub_projects" :key="subs1.pk">
+              <CTableRow>
+                <CTableDataCell>
+                  <v-icon
+                    icon="mdi-chevron-right"
+                    color="secondary"
+                    :class="`ml-${subs1.depth - 1}`"
+                  />
+                  <router-link :to="{ name: '(개요)', params: { projId: subs1.slug } }">
+                    {{ subs1.name }}
+                  </router-link>
+                </CTableDataCell>
+                <CTableDataCell>
+                  {{
+                    getMember(subs1.all_members ?? [])
+                      ?.roles.map((r: any) => r.name)
+                      .join(', ')
+                  }}
+                </CTableDataCell>
+                <CTableDataCell class="text-center">
+                  {{ dateFormat(getMember(subs1.all_members ?? [])?.created, '/') }}
+                </CTableDataCell>
+              </CTableRow>
+              <template v-for="subs2 in subs1.sub_projects" :key="subs2.pk">
+                <CTableRow>
+                  <CTableDataCell>
+                    <v-icon
+                      icon="mdi-chevron-right"
+                      color="secondary"
+                      :class="`ml-${subs2.depth - 1}`"
+                    />
+                    <router-link :to="{ name: '(개요)', params: { projId: subs2.slug } }">
+                      {{ subs2.name }}
+                    </router-link>
+                  </CTableDataCell>
+                  <CTableDataCell>
+                    {{
+                      getMember(subs2.all_members ?? [])
+                        ?.roles.map((r: any) => r.name)
+                        .join(', ')
+                    }}
+                  </CTableDataCell>
+                  <CTableDataCell class="text-center">
+                    {{ dateFormat(getMember(subs2.all_members ?? [])?.created, '/') }}
+                  </CTableDataCell>
+                </CTableRow>
+                <template v-for="subs3 in subs2.sub_projects" :key="subs3.pk">
+                  <CTableRow>
+                    <CTableDataCell>
+                      <v-icon
+                        icon="mdi-chevron-right"
+                        color="secondary"
+                        :class="`ml-${subs3.depth - 1}`"
+                      />
+                      <router-link :to="{ name: '(개요)', params: { projId: subs3.slug } }">
+                        {{ subs3.name }}
+                      </router-link>
+                    </CTableDataCell>
+                    <CTableDataCell>
+                      {{
+                        getMember(subs3.all_members ?? [])
+                          ?.roles.map((r: any) => r.name)
+                          .join(', ')
+                      }}
+                    </CTableDataCell>
+                    <CTableDataCell class="text-center">
+                      {{ dateFormat(getMember(subs3.all_members ?? [])?.created, '/') }}
+                    </CTableDataCell>
+                  </CTableRow>
+                  <template v-for="subs4 in subs3.sub_projects" :key="subs4.pk">
+                    <CTableRow>
+                      <CTableDataCell>
+                        <v-icon
+                          icon="mdi-chevron-right"
+                          color="secondary"
+                          :class="`ml-${subs4.depth - 1}`"
+                        />
+                        <router-link :to="{ name: '(개요)', params: { projId: subs4.slug } }">
+                          {{ subs4.name }}
+                        </router-link>
+                      </CTableDataCell>
+                      <CTableDataCell>
+                        {{
+                          getMember(subs4.all_members ?? [])
+                            ?.roles.map((r: any) => r.name)
+                            .join(', ')
+                        }}
+                      </CTableDataCell>
+                      <CTableDataCell class="text-center">
+                        {{ dateFormat(getMember(subs4.all_members ?? [])?.created, '/') }}
+                      </CTableDataCell>
+                    </CTableRow>
+                    <template v-for="subs5 in subs4.sub_projects" :key="subs5.pk">
+                      <CTableRow>
+                        <CTableDataCell>
+                          <v-icon
+                            icon="mdi-chevron-right"
+                            color="secondary"
+                            :class="`ml-${subs5.depth - 1}`"
+                          />
+                          <router-link :to="{ name: '(개요)', params: { projId: subs5.slug } }">
+                            {{ subs5.name }}
+                          </router-link>
+                        </CTableDataCell>
+                        <CTableDataCell>
+                          {{
+                            getMember(subs5.all_members ?? [])
+                              ?.roles.map((r: any) => r.name)
+                              .join(', ')
+                          }}
+                        </CTableDataCell>
+                        <CTableDataCell class="text-center">
+                          {{ dateFormat(getMember(subs5.all_members ?? [])?.created, '/') }}
+                        </CTableDataCell>
+                      </CTableRow>
+                    </template>
+                  </template>
+                </template>
+              </template>
+            </template>
+          </template>
         </CTableBody>
       </CTable>
     </CCol>
