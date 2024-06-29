@@ -12,7 +12,8 @@ const route = useRoute()
 const userId = computed(() => route.params.userId)
 
 const getMember = (members: any[]) => {
-  return members.filter(m => m.user.pk == userId.value)[0]
+  let member = members.filter(m => m.user.pk == userId.value)[0]
+  return member ? [member.roles, member.created] : [[], '1900-01-01']
 }
 </script>
 
@@ -39,13 +40,13 @@ const getMember = (members: any[]) => {
               </CTableDataCell>
               <CTableDataCell>
                 {{
-                  getMember(proj.all_members ?? [])
-                    ?.roles.map((r: any) => r.name)
+                  getMember(proj.all_members ?? [])[0]
+                    .map((r: any) => r.name)
                     .join(', ')
                 }}
               </CTableDataCell>
               <CTableDataCell class="text-center">
-                {{ dateFormat(getMember(proj.all_members ?? [])?.created, '/') }}
+                {{ dateFormat(getMember(proj.all_members ?? [])[1], '/') }}
               </CTableDataCell>
             </CTableRow>
 
@@ -63,13 +64,13 @@ const getMember = (members: any[]) => {
                 </CTableDataCell>
                 <CTableDataCell>
                   {{
-                    getMember(subs1.all_members ?? [])
-                      ?.roles.map((r: any) => r.name)
+                    getMember(subs1.all_members ?? [])[0]
+                      .map((r: any) => r.name)
                       .join(', ')
                   }}
                 </CTableDataCell>
                 <CTableDataCell class="text-center">
-                  {{ dateFormat(getMember(subs1.all_members ?? [])?.created, '/') }}
+                  {{ dateFormat(getMember(subs1.all_members ?? [])[1], '/') }}
                 </CTableDataCell>
               </CTableRow>
               <template v-for="subs2 in subs1.sub_projects" :key="subs2.pk">
@@ -86,13 +87,13 @@ const getMember = (members: any[]) => {
                   </CTableDataCell>
                   <CTableDataCell>
                     {{
-                      getMember(subs2.all_members ?? [])
-                        ?.roles.map((r: any) => r.name)
+                      getMember(subs2.all_members ?? [])[0]
+                        .map((r: any) => r.name)
                         .join(', ')
                     }}
                   </CTableDataCell>
                   <CTableDataCell class="text-center">
-                    {{ dateFormat(getMember(subs2.all_members ?? [])?.created, '/') }}
+                    {{ dateFormat(getMember(subs2.all_members ?? [])[1], '/') }}
                   </CTableDataCell>
                 </CTableRow>
                 <template v-for="subs3 in subs2.sub_projects" :key="subs3.pk">
@@ -109,13 +110,13 @@ const getMember = (members: any[]) => {
                     </CTableDataCell>
                     <CTableDataCell>
                       {{
-                        getMember(subs3.all_members ?? [])
-                          ?.roles.map((r: any) => r.name)
+                        getMember(subs3.all_members ?? [])[0]
+                          .map((r: any) => r.name)
                           .join(', ')
                       }}
                     </CTableDataCell>
                     <CTableDataCell class="text-center">
-                      {{ dateFormat(getMember(subs3.all_members ?? [])?.created, '/') }}
+                      {{ dateFormat(getMember(subs3.all_members ?? [])[1], '/') }}
                     </CTableDataCell>
                   </CTableRow>
                   <template v-for="subs4 in subs3.sub_projects" :key="subs4.pk">
@@ -132,13 +133,13 @@ const getMember = (members: any[]) => {
                       </CTableDataCell>
                       <CTableDataCell>
                         {{
-                          getMember(subs4.all_members ?? [])
-                            ?.roles.map((r: any) => r.name)
+                          getMember(subs4.all_members ?? [])[0]
+                            .map((r: any) => r.name)
                             .join(', ')
                         }}
                       </CTableDataCell>
                       <CTableDataCell class="text-center">
-                        {{ dateFormat(getMember(subs4.all_members ?? [])?.created, '/') }}
+                        {{ dateFormat(getMember(subs4.all_members ?? [])[1], '/') }}
                       </CTableDataCell>
                     </CTableRow>
                     <template v-for="subs5 in subs4.sub_projects" :key="subs5.pk">
@@ -155,13 +156,13 @@ const getMember = (members: any[]) => {
                         </CTableDataCell>
                         <CTableDataCell>
                           {{
-                            getMember(subs5.all_members ?? [])
-                              ?.roles.map((r: any) => r.name)
+                            getMember(subs5.all_members ?? [])[0]
+                              .map((r: any) => r.name)
                               .join(', ')
                           }}
                         </CTableDataCell>
                         <CTableDataCell class="text-center">
-                          {{ dateFormat(getMember(subs5.all_members ?? [])?.created, '/') }}
+                          {{ dateFormat(getMember(subs5.all_members ?? [])[1], '/') }}
                         </CTableDataCell>
                       </CTableRow>
                     </template>
