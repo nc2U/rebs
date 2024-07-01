@@ -120,7 +120,7 @@ const deleteSubmit = () => {
 
         <CTableBody>
           <CTableRow v-for="ver in versions" :key="ver.pk" class="text-center">
-            <CTableDataCell>{{ ver.name }}</CTableDataCell>
+            <CTableDataCell class="text-left pl-4">{{ ver.name }}</CTableDataCell>
             <CTableDataCell>
               <v-icon v-if="ver.is_default" icon="mdi-check-bold" color="success" size="sm" />
             </CTableDataCell>
