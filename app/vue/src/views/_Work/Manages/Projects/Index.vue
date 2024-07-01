@@ -152,7 +152,7 @@ onBeforeRouteUpdate(async to => {
 })
 
 onBeforeMount(async () => {
-  await workStore.fetchIssueProjectList({})
+  await workStore.fetchIssueProjectList({ status: '1' })
   await workStore.fetchAllIssueProjectList()
   await workStore.fetchRoleList()
   await workStore.fetchTrackerList()
