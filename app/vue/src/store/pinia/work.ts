@@ -26,16 +26,12 @@ import type {
 
 export const useWork = defineStore('work', () => {
   const accStore = useAccount()
-  const superAuth = computed(() => accStore.superAuth)
+  const workManager = computed(() => accStore.workManager)
 
   // Issue Project states & getters
   const issueProject = ref<IssueProject | null>(null)
   const issueProjectList = ref<IssueProject[]>([])
-  const issueProjects = computed(() =>
-    issueProjectList.value.filter(
-      proj => proj.parent === null && (superAuth.value || proj.is_public === true),
-    ),
-  )
+  const issueProjects = computed(() => issueProjectList.value.filter(proj => proj.parent === null))
 
   const allProjects = ref<IssueProject[]>([])
   const AllIssueProjects = computed(() => {
@@ -71,7 +67,7 @@ export const useWork = defineStore('work', () => {
   }
 
   const fetchAllIssueProjectList = async () => {
-    const url = superAuth.value
+    const url = workManager.value
       ? `/issue-project/?parent__isnull=1`
       : `/issue-project/?parent__isnull=1&is_public=1`
 
