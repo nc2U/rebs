@@ -1,4 +1,4 @@
-name: Database Dev Restore
+name: Database Dev Restore1
 
 on:
   schedule:
@@ -16,19 +16,19 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      # 레파지터리 체크 아웃
-      - name: Check out source code
-        uses: actions/checkout@v4
+      #      # 레파지터리 체크 아웃
+      #      - name: Check out source code
+      #        uses: actions/checkout@v4
       
-      # data to server copy transfer
-      - name: Copy backup script to NFS server
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.NFS_HOST }}
-          username: ${{ secrets.NFS_USER }}
-          password: ${{ secrets.NFS_PASS }}
-          source: 'volume/backups'
-          target: ${{ secrets.NFS_PATH }}/dev/
+      #      # data to server copy transfer
+      #      - name: Copy backup script to NFS server
+      #        uses: appleboy/scp-action@master
+      #        with:
+      #          host: ${{ secrets.NFS_HOST }}
+      #          username: ${{ secrets.NFS_USER }}
+      #          password: ${{ secrets.NFS_PASS }}
+      #          source: 'volume/backups'
+      #          target: ${{ secrets.NFS_PATH }}/dev/
       
       # mysql pod --> database copy
       - name: database copy
@@ -41,7 +41,6 @@ jobs:
             sh /mnt/nfs/prod/volume/backups/script_dev_copy.sh
             master_pod=$(kubectl get pod -n dev-hrebs | grep master | cut -d ' ' -f1)
             kubectl exec -it -n dev-hrebs $master_pod -- sh /var/backups/script_dev_restore.sh
-            kubectl exec -it -n dev-hrebs $master_pod --  bash -c 'rm /docker-entrypoint-initdb.d/db-rebs*'
       
       # slack --> notification
       - name: Send slack when failed

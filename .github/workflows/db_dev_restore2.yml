@@ -1,0 +1,35 @@
+name: Database Dev Restore2
+
+on:
+  schedule:
+    - cron: "0 18 * * *"
+  
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# job은 사용자가 정한 플랫폼을 통해 steps 라는 일련의 과정을 실행.
+# 여러 개의 job 을 사용할 수 있으며, 여러 개의 job 을 사용할 때는 서로 정보도 교환 가능.
+# 각각 독립적으로도 실행 가능.
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    
+    steps:
+      # remove /docker-entrypoint-initdb.d/db-rebs*
+      - name: remove backup file
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          host: ${{ secrets.CICD_HOST }}
+          username: ${{ secrets.CICD_USER }}
+          password: ${{ secrets.CICD_PASS }}
+          command: |
+            master_pod=$(kubectl get pod -n dev-hrebs | grep master | cut -d ' ' -f1)
+            kubectl exec -it -n dev-hrebs $master_pod --  bash -c 'rm /docker-entrypoint-initdb.d/db-rebs*'
+      
+      # slack --> notification
+      - name: Send slack when failed
+        if: ${{ failure() }}                    # 실패했을 때 실행
+        uses: ./.github/actions/slack-notify    # 직접 '만든' Action이므로 uses 키워드를 이용해서 아래 경로를 입력해줍니다.
+        with:
+          slack_incoming_url: ${{ secrets.SLACK_INCOMING_URL }}
