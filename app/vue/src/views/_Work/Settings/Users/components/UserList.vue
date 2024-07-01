@@ -11,7 +11,7 @@ defineProps({
 
 const emit = defineEmits(['aside-visible'])
 
-const superAuth = inject('superAuth', false)
+const workManager = inject('workManager', false)
 
 onBeforeMount(() => emit('aside-visible', true))
 </script>
@@ -22,7 +22,7 @@ onBeforeMount(() => emit('aside-visible', true))
       <h5>{{ $route.name }}</h5>
     </CCol>
 
-    <CCol v-if="superAuth" class="text-right form-text">
+    <CCol v-if="workManager" class="text-right form-text">
       <span class="mr-2">
         <v-icon icon="mdi-plus-circle" color="success" size="sm" />
         <router-link :to="{ name: '사용자 - 생성' }" class="ml-1">새 사용자</router-link>

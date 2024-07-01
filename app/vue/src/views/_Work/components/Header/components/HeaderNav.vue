@@ -7,7 +7,7 @@ defineProps({
   menus: { type: Array, required: true },
 })
 
-const superAuth = inject('superAuth')
+const workManager = inject('workManager')
 
 const store = useStore()
 const isDark = computed(() => store.theme === 'dark')
@@ -23,17 +23,17 @@ const getTitle = (title: string) => title.replace(/[() ]/gim, '')
         <CDropdownItem @click="$router.push({ name: '(업무) - 추가' })">
           새 업무 만들기
         </CDropdownItem>
-        <CDropdownItem v-if="superAuth" disabled>새 업무 카테고리</CDropdownItem>
-        <CDropdownItem v-if="superAuth" @click="$router.push({ name: '(로드맵) - 추가' })">
+        <CDropdownItem v-if="workManager" disabled>새 업무 카테고리</CDropdownItem>
+        <CDropdownItem v-if="workManager" @click="$router.push({ name: '(로드맵) - 추가' })">
           새 버전
         </CDropdownItem>
-        <CDropdownItem v-if="superAuth" @click="$router.push({ name: '(소요시간) - 추가' })">
+        <CDropdownItem v-if="workManager" @click="$router.push({ name: '(소요시간) - 추가' })">
           작업시간 기록
         </CDropdownItem>
-        <CDropdownItem v-if="superAuth" disabled>새 뉴스</CDropdownItem>
-        <CDropdownItem v-if="superAuth" disabled>새 문서</CDropdownItem>
-        <CDropdownItem v-if="superAuth" disabled>새 위키</CDropdownItem>
-        <CDropdownItem v-if="superAuth" disabled>파일추가</CDropdownItem>
+        <CDropdownItem v-if="workManager" disabled>새 뉴스</CDropdownItem>
+        <CDropdownItem v-if="workManager" disabled>새 문서</CDropdownItem>
+        <CDropdownItem v-if="workManager" disabled>새 위키</CDropdownItem>
+        <CDropdownItem v-if="workManager" disabled>파일추가</CDropdownItem>
       </CDropdownMenu>
     </CDropdown>
     <CNavItem v-for="(menu, i) in menus" :key="i">

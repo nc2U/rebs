@@ -2,13 +2,12 @@
 import { computed, inject, onBeforeMount, ref } from 'vue'
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
-import { tr } from 'vuetify/locale'
 
 const emit = defineEmits(['aside-visible'])
 
 const menu = ref<'일반' | '프로젝트'>('일반')
 
-const superAuth = inject('superAuth', false)
+const workManager = inject('workManager', false)
 
 const accStore = useAccount()
 const user = computed(() => accStore.user)
@@ -36,7 +35,7 @@ onBeforeMount(() => {
       <span class="h5">{{ user ? 'austin1' : '새 사용자' }}</span>
     </CCol>
 
-    <CCol v-if="user && superAuth" class="text-right form-text">
+    <CCol v-if="user && workManager" class="text-right form-text">
       <span class="mr-2">
         <v-icon icon="mdi-account" color="success" size="sm" />
         <router-link :to="{ name: '사용자 - 보기', params: { userId: user.pk } }" class="ml-1">

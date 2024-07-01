@@ -18,7 +18,7 @@ const props = defineProps({
 
 const emit = defineEmits(['aside-visible'])
 
-const superAuth = inject('superAuth', false)
+const workManager = inject('workManager', false)
 
 const accStore = useAccount()
 const user = computed(() => accStore.user)
@@ -43,7 +43,7 @@ onBeforeMount(() => {
       </span>
     </CCol>
 
-    <CCol v-if="user && superAuth" class="text-right form-text">
+    <CCol v-if="user && workManager" class="text-right form-text">
       <span class="mr-2">
         <v-icon icon="mdi-pencil" color="amber" size="sm" />
         <router-link :to="{ name: '사용자 - 수정', params: { userId: user.pk } }" class="ml-1">
