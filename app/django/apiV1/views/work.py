@@ -11,8 +11,8 @@ from ..serializers.work import *
 
 # Work --------------------------------------------------------------------------
 class IssueProjectFilter(FilterSet):
-    parent__isnull = BooleanFilter(field_name='parent', lookup_expr='isnull', label='최상위 프로젝트')
     status__exclude = CharFilter(field_name='status', exclude=True, label='사용여부-제외')
+    parent__isnull = BooleanFilter(field_name='parent', lookup_expr='isnull', label='최상위 프로젝트')
     project = CharFilter(field_name='slug', lookup_expr='exact', label='프로젝트')
     project__exclude = CharFilter(field_name='slug', exclude=True, label='프로젝트-제외')
     is_public__exclude = BooleanFilter(field_name='is_public', exclude=True, label='공개여부-제외')
@@ -21,8 +21,7 @@ class IssueProjectFilter(FilterSet):
 
     class Meta:
         model = IssueProject
-        fields = ('parent__slug', 'status', 'project', 'is_public',
-                  'name', 'members__user', 'description')
+        fields = ('status', 'parent__slug', 'project', 'is_public', 'name', 'members__user', 'description')
 
 
 class IssueProjectViewSet(viewsets.ModelViewSet):
