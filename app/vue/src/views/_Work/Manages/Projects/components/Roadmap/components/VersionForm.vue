@@ -15,6 +15,7 @@ const form = ref({
   project: '',
   name: '',
   description: '',
+  status: '1' as '1' | '2' | '3',
   wiki_page_title: '',
   effective_date: null as string | null,
   sharing: '0' as '0' | '1' | '2' | '3' | '4',
@@ -25,11 +26,12 @@ const formsCheck = computed(() => {
   if (version.value) {
     const a = version.value.name === form.value.name
     const b = version.value.description === form.value.description
-    const c = version.value.wiki_page_title === form.value.wiki_page_title
-    const d = version.value.effective_date === form.value.effective_date
-    const e = version.value.sharing === form.value.sharing
-    const f = version.value.is_default === form.value.is_default
-    return a && b && c && d && e && f
+    const c = version.value.status === form.value.status
+    const d = version.value.wiki_page_title === form.value.wiki_page_title
+    const e = version.value.effective_date === form.value.effective_date
+    const f = version.value.sharing === form.value.sharing
+    const g = version.value.is_default === form.value.is_default
+    return a && b && c && d && e && f && g
   } else return false
 })
 
@@ -53,6 +55,7 @@ const setupForm = () => {
     form.value.project = version.value.project?.slug as string
     form.value.name = version.value.name
     form.value.description = version.value.description
+    form.value.status = version.value.status
     form.value.wiki_page_title = version.value.wiki_page_title
     form.value.effective_date = version.value.effective_date
     form.value.sharing = version.value.sharing
@@ -64,6 +67,7 @@ const resetForm = () => {
   form.value.pk = null
   form.value.project = ''
   form.value.name = ''
+  form.value.status = '1'
   form.value.description = ''
   form.value.wiki_page_title = ''
   form.value.effective_date = null
@@ -105,6 +109,18 @@ onBeforeMount(async () => {
 
             <CCol sm="10" lg="6">
               <CFormInput v-model="form.description" placeholder="새 버전에 대한 설명" />
+            </CCol>
+          </CRow>
+
+          <CRow class="mb-3">
+            <CFormLabel for="name" class="col-sm-2 col-form-label text-right"> 상태</CFormLabel>
+
+            <CCol sm="10" lg="6">
+              <CFormSelect v-model="form.status">
+                <option value="1">진행</option>
+                <option value="2">잠김</option>
+                <option value="3">닫힘</option>
+              </CFormSelect>
             </CCol>
           </CRow>
 
