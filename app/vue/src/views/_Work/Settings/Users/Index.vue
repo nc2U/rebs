@@ -34,7 +34,7 @@ watch(route, nVal => {
     accStore.fetchUser(Number(nVal.params.userId))
     fetchIssueByMember(nVal.params.userId as string)
     fetchIssueProjectList({ member: Number(nVal.params.userId) })
-    fetchActivityLogList({ user: nVal.params.userId as string })
+    fetchActivityLogList({ user: nVal.params.userId as string, limit: 10 })
   }
 })
 
@@ -45,7 +45,7 @@ onBeforeMount(() => {
     accStore.fetchUser(Number(route.params.userId))
     fetchIssueByMember(route.params.userId as string)
     fetchIssueProjectList({ member: Number(route.params.userId) })
-    fetchActivityLogList({ user: route.params.userId as string })
+    fetchActivityLogList({ user: route.params.userId as string, limit: 10 })
   }
 })
 </script>
