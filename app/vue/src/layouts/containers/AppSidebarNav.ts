@@ -20,7 +20,6 @@ type Item = {
   to?: string
 }
 
-const superAuth = computed(() => useAccount().superAuth)
 const workManager = computed(() => useAccount().workManager)
 const isStaff = computed(() => useAccount().isStaff)
 const isComCash = computed(() => useAccount().isComCash)
