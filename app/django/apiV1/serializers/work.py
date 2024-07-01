@@ -120,12 +120,12 @@ class IssueProjectSerializer(serializers.ModelSerializer):
     def get_visible(self, obj):
         request = self.context.get('request')
 
-        def final_members(proj):
+        def final_members(obj):
             # 상속받는 상위 멤버 모두 구하기
-            total_members = proj.members.all()
+            total_members = obj.members.all()
 
-            if proj.is_inherit_members and proj.parent:
-                parent_members = final_members(proj.parent)
+            if obj.is_inherit_members and obj.parent:
+                parent_members = final_members(obj.parent)
                 total_members |= parent_members
 
             return total_members
@@ -133,7 +133,7 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         if request and hasattr(request, 'user'):
             user = request.user
             members = [m.user.pk for m in final_members(obj)]
-            return obj.is_public or user.pk in members or user.is_superuser
+            return obj.is_public or user.pk in members or user.work_manager
         else:
             return False
 

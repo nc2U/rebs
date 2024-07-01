@@ -64,8 +64,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('pk', 'email', 'username', 'is_active', 'is_superuser', 'rebs_manager', 'work_manager',
-                  'date_joined', 'password', 'staffauth', 'profile', 'last_login')
+        fields = ('pk', 'email', 'username', 'is_active', 'is_superuser', 'is_staff',
+                  'work_manager', 'date_joined', 'password', 'staffauth', 'profile', 'last_login')
         read_only_fields = ('date_joined', 'last_login')
 
     def create(self, validated_data):

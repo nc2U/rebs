@@ -30,11 +30,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         },
     )
     email = models.EmailField(_('email address'), max_length=255, unique=True)
-    is_staff = models.BooleanField(
-        _('staff status'),
-        default=False,
-        help_text=_('Designates whether the user can log into this admin site.'),
-    )
     is_active = models.BooleanField(
         _('active'),
         default=True,
@@ -43,8 +38,11 @@ class User(AbstractBaseUser, PermissionsMixin):
             'Unselect this instead of deleting accounts.'
         ),
     )
-    rebs_manager = models.BooleanField(_('Rebs 관리자'), default=False,
-                                       help_text=_('업무 외 시스템 관리자인지 여부.'))
+    is_staff = models.BooleanField(
+        _('staff status'),
+        default=False,
+        help_text=_('Designates whether the user can log into this admin site.'),
+    )
     work_manager = models.BooleanField(_('업무 시스템 관리자'), default=False,
                                        help_text=_('업무(redmine) 시스템 관리자인지 여부.'))
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
