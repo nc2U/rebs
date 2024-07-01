@@ -50,22 +50,27 @@ onBeforeMount(() => emit('aside-visible', true))
     <CCol v-for="proj in projectList" :key="proj.pk" sm="12" lg="6" xl="4">
       <CCard class="my-2">
         <CCardBody class="project-set">
-          <router-link :to="{ name: '(개요)', params: { projId: proj.slug } }">
-            {{ proj.name }}
-          </router-link>
-          <v-icon
-            v-if="isOwnProject(proj)"
-            icon="mdi-account-tag"
-            color="success"
-            size="15"
-            class="ml-1"
-          />
-          <VueMarkdownIt :source="proj.description" />
+          <span v-if="proj.visible">
+            <router-link :to="{ name: '(개요)', params: { projId: proj.slug } }">
+              {{ proj.name }}
+            </router-link>
+            <v-icon
+              v-if="isOwnProject(proj)"
+              icon="mdi-account-tag"
+              color="success"
+              size="15"
+              class="ml-1"
+            />
+            <VueMarkdownIt :source="proj.description" />
+          </span>
 
           <!-- c1 -->
-          <div v-if="!!proj.sub_projects?.length" class="child">
+          <div
+            v-if="!!proj.sub_projects?.length"
+            :class="{ child: proj.visible, 'project-set': !proj.visible }"
+          >
             <blockquote v-for="c1 in proj.sub_projects" :key="c1.pk">
-              <span>
+              <span v-if="c1.visible">
                 <router-link :to="{ name: '(개요)', params: { projId: c1.slug } }">
                   {{ c1.name }}
                 </router-link>
@@ -80,9 +85,12 @@ onBeforeMount(() => emit('aside-visible', true))
               </span>
 
               <!-- c2 -->
-              <div v-if="!!c1.sub_projects?.length" class="child">
+              <div
+                v-if="!!c1.sub_projects?.length"
+                :class="{ child: c1.visible, 'project-set': !c1.visible }"
+              >
                 <blockquote v-for="c2 in c1.sub_projects" :key="c2.pk">
-                  <span>
+                  <span v-if="c2.visible">
                     <router-link :to="{ name: '(개요)', params: { projId: c2.slug } }">
                       {{ c2.name }}
                     </router-link>
@@ -97,9 +105,12 @@ onBeforeMount(() => emit('aside-visible', true))
                   </span>
 
                   <!-- c3 -->
-                  <div v-if="!!c2.sub_projects?.length" class="child">
+                  <div
+                    v-if="!!c2.sub_projects?.length"
+                    :class="{ child: c2.visible, 'project-set': !c2.visible }"
+                  >
                     <blockquote v-for="c3 in c2.sub_projects" :key="c3.pk">
-                      <span>
+                      <span v-if="c3.visible">
                         <router-link :to="{ name: '(개요)', params: { projId: c3.slug } }">
                           {{ c3.name }}
                         </router-link>
@@ -114,9 +125,12 @@ onBeforeMount(() => emit('aside-visible', true))
                       </span>
 
                       <!-- c4 -->
-                      <div v-if="!!c3.sub_projects?.length" class="child">
+                      <div
+                        v-if="!!c3.sub_projects?.length"
+                        :class="{ child: c3.visible, 'project-set': !c3.visible }"
+                      >
                         <blockquote v-for="c4 in c3.sub_projects" :key="c4.pk">
-                          <span>
+                          <span v-if="c4.visible">
                             <router-link :to="{ name: '(개요)', params: { projId: c4.slug } }">
                               {{ c4.name }}
                             </router-link>
@@ -131,9 +145,12 @@ onBeforeMount(() => emit('aside-visible', true))
                           </span>
 
                           <!-- c5 -->
-                          <div v-if="!!c4.sub_projects?.length" class="child">
+                          <div
+                            v-if="!!c4.sub_projects?.length"
+                            :class="{ child: c4.visible, 'project-set': !c4.visible }"
+                          >
                             <blockquote v-for="c5 in c4.sub_projects" :key="c5.pk">
-                              <span>
+                              <span v-if="c5.visible">
                                 <router-link :to="{ name: '(개요)', params: { projId: c5.slug } }">
                                   {{ c5.name }}
                                 </router-link>

@@ -109,31 +109,35 @@ class IssueProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = IssueProject
         fields = ('pk', 'company', 'real_project', 'name', 'slug', 'description', 'homepage',
-                  'is_public', 'family_tree', 'parent', 'sub_projects', 'module',
-                  'is_inherit_members', 'allowed_roles', 'trackers', 'versions', 'default_version',
-                  'categories', 'status', 'depth', 'all_members', 'members', 'activities', 'visible',
-                  'total_estimated_hours', 'total_time_spent', 'user', 'created', 'updated')
+                  'is_public', 'module', 'is_inherit_members', 'allowed_roles', 'trackers', 'versions',
+                  'default_version', 'categories', 'status', 'depth', 'all_members', 'members', 'activities',
+                  'visible', 'total_estimated_hours', 'total_time_spent', 'user', 'created', 'updated',
+                  'family_tree', 'parent', 'sub_projects')
 
     def get_sub_projects(self, obj):
-        return self.__class__(obj.issueproject_set.exclude(status='9'), many=True, read_only=True).data
+        sub_projects = obj.issueproject_set.exclude(status='9')
+        request = self.context.get('request')
+
+        return self.__class__(sub_projects, many=True, read_only=True, context=self.context).data
+
+    @staticmethod
+    def _is_visible(obj, request):
+        if request and hasattr(request, 'user'):
+            user = request.user
+            all_members = obj.all_members()
+            members = [m.user.pk for m in all_members]
+            return obj.is_public or user.pk in members or user.work_manager or user.is_superuser
+        else:
+            return False
 
     def get_visible(self, obj):
         request = self.context.get('request')
 
-        def final_members(obj):
-            # 상속받는 상위 멤버 모두 구하기
-            total_members = obj.members.all()
-
-            if obj.is_inherit_members and obj.parent:
-                parent_members = final_members(obj.parent)
-                total_members |= parent_members
-
-            return total_members
-
         if request and hasattr(request, 'user'):
             user = request.user
-            members = [m.user.pk for m in final_members(obj)]
-            return obj.is_public or user.pk in members or user.work_manager
+            all_members = obj.all_members()
+            members = [m.user.pk for m in all_members]
+            return obj.is_public or user.pk in members or user.work_manager or user.is_superuser
         else:
             return False
 
