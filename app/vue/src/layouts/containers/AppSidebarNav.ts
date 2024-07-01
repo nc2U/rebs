@@ -19,15 +19,11 @@ type Item = {
   name?: string
   to?: string
 }
-const isStaff = computed(
-  () => useAccount().superAuth || Number(useAccount().staffAuth?.is_staff || null),
-)
 
-const isSuper = computed(() => useAccount().superAuth)
-
-const isCash = computed(
-  () => useAccount().superAuth || Number(useAccount().staffAuth?.company_cash || null),
-)
+const superAuth = computed(() => useAccount().superAuth)
+const workManager = computed(() => useAccount().workManager)
+const isStaff = computed(() => useAccount().isStaff)
+const isComCash = computed(() => useAccount().isComCash)
 
 const normalizePath = (path: string) =>
   decodeURI(path)
@@ -129,8 +125,8 @@ const AppSidebarNav = defineComponent({
         : h(resolveComponent(item.component), {}, () => item.name)
     }
 
-    if (!isSuper.value) nav.splice(2, 1) // 관리자 관련 메뉴 제외
-    const wmNum = isSuper.value ? 3 : 2
+    if (!workManager.value) nav.splice(2, 1) // 업무 설정 관리 메뉴 제외
+    const wmNum = workManager.value ? 3 : 2 // 업무 설정 관리 메뉴 제외
     const prNum = 6 // 현장 메뉴 개수
 
     if (!isStaff.value) {
@@ -139,7 +135,7 @@ const AppSidebarNav = defineComponent({
       nav.splice(wmNum + prNum + 1, 2) // 환경 설정 메뉴 제외
     }
     // 본사 자금 관리 권한 없으면 자금 관리 메뉴 제외
-    else if (!isCash.value) nav.splice(wmNum + 1, 1)
+    else if (!isComCash.value) nav.splice(wmNum + 1, 1)
 
     return () =>
       h(

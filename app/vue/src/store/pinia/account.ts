@@ -162,11 +162,13 @@ export const useAccount = defineStore('account', () => {
   const rebsManager = computed(() => userInfo.value?.rebs_manager || superAuth.value)
   const workManager = computed(() => userInfo.value?.work_manager || superAuth.value)
   const staffAuth = computed(() => (userInfo.value?.staffauth ? userInfo.value.staffauth : null))
+  const isStaff = computed(() => staffAuth.value?.is_staff || superAuth.value)
 
   const writeComDocs = computed(() => superAuth.value || staffAuth.value?.company_docs == '2')
   const writeProDocs = computed(
     () => superAuth.value || writeComDocs.value || staffAuth.value?.project_docs == '2',
   )
+  const isComCash = computed(() => superAuth.value || Number(staffAuth.value?.company_cash || null))
   const writeComCash = computed(() => superAuth.value || staffAuth.value?.company_cash == '2')
   const writeProCash = computed(
     () => superAuth.value || writeComCash.value || staffAuth.value?.project_cash == '2',
@@ -354,8 +356,10 @@ export const useAccount = defineStore('account', () => {
     rebsManager,
     workManager,
     staffAuth,
+    isStaff,
     writeComDocs,
     writeProDocs,
+    isComCash,
     writeComCash,
     writeProCash,
 
