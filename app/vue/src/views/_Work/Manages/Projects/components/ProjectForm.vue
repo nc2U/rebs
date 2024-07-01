@@ -219,12 +219,7 @@ onBeforeMount(() => {
         <CRow class="mb-3">
           <CFormLabel class="col-form-label text-right col-2">공개여부</CFormLabel>
           <CCol class="pt-2">
-            <CFormSwitch
-              v-model="form.is_public"
-              id="is_public"
-              label="프로젝트 공개 여부"
-              :disabled="form.parent"
-            />
+            <CFormSwitch v-model="form.is_public" id="is_public" label="프로젝트 공개 여부" />
             <div class="form-text">
               공개 프로젝트는 네트워크의 모든 사용자가 접속할 수 있습니다.
             </div>
