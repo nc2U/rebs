@@ -98,7 +98,10 @@ export const useWork = defineStore('work', () => {
   const updateIssueProject = (payload: IssueProject) =>
     api
       .put(`/issue-project/${payload.slug}/`, payload)
-      .then(res => fetchIssueProject(res.data.slug).then(() => message()))
+      .then(async res => {
+        await fetchIssueProject(res.data.slug)
+        message()
+      })
       .catch(err => errorHandle(err.response.data))
 
   const patchIssueProject = async (payload: {
@@ -110,18 +113,20 @@ export const useWork = defineStore('work', () => {
     const type = payload.del_mem ? 'warning' : 'success'
     return await api
       .patch(`/issue-project/${payload.slug}/`, payload)
-      .then(res => fetchIssueProject(res.data.slug).then(() => message(type)))
+      .then(async res => {
+        await fetchIssueProject(res.data.slug)
+        message(type)
+      })
       .catch(err => errorHandle(err.response.data))
   }
 
   const deleteIssueProject = (pk: number) =>
     api
       .delete(`/issue-project/${pk}/`)
-      .then(() =>
-        fetchIssueProjectList({}).then(() =>
-          message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.'),
-        ),
-      )
+      .then(async () => {
+        await fetchIssueProjectList({})
+        message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.')
+      })
       .catch(err => errorHandle(err.response.data))
 
   // Role & Permission states & getters
@@ -160,9 +165,11 @@ export const useWork = defineStore('work', () => {
   const patchMember = (payload: { pk: number; user?: number; roles?: number[]; slug: string }) =>
     api
       .patch(`/member/${payload.pk}/`, payload)
-      .then(res =>
-        fetchIssueProject(payload.slug).then(() => fetchMember(res.data.pk).then(() => message())),
-      )
+      .then(async res => {
+        await fetchIssueProject(payload.slug)
+        await fetchMember(res.data.pk)
+        message()
+      })
       .catch(err => errorHandle(err.response.data))
 
   // version states & getters

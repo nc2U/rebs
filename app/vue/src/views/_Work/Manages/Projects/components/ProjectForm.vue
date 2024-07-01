@@ -50,12 +50,6 @@ const form = reactive({
 
 const tempSpace = ref('')
 
-const chkPublic = () =>
-  nextTick(() => {
-    const parent = form.parent ? props.allProjects.filter(p => p.pk === form.parent)[0] : null
-    form.is_public = !!parent?.is_public
-  })
-
 const getSlug = (event: { key: string; code: string }) => {
   if (!props.project?.slug) {
     const pattern = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/ //한글
@@ -131,8 +125,6 @@ const dataSetup = () => {
     module.forum = !!props.project.module?.forum
     // module.calendar = !!props.project.module?.calendar
     // module.gantt = !!props.project.module?.gantt
-
-    if (props.project.parent) chkPublic()
   }
 }
 
@@ -145,7 +137,6 @@ onBeforeMount(() => {
   emit('aside-visible', false)
   if (!!route.query.parent) {
     form.parent = Number(route.query.parent)
-    chkPublic()
   }
   projStore.fetchProjectList()
 })
@@ -222,6 +213,7 @@ onBeforeMount(() => {
             <CFormSwitch v-model="form.is_public" id="is_public" label="프로젝트 공개 여부" />
             <div class="form-text">
               공개 프로젝트는 네트워크의 모든 사용자가 접속할 수 있습니다.
+              {{ form.is_public }} / {{ project?.is_public }}
             </div>
           </CCol>
         </CRow>
@@ -229,7 +221,7 @@ onBeforeMount(() => {
         <CRow class="mb-3">
           <CFormLabel class="col-form-label text-right col-2">상위 프로젝트</CFormLabel>
           <CCol>
-            <CFormSelect v-model.number="form.parent" @change="chkPublic">
+            <CFormSelect v-model.number="form.parent">
               <option value="">상위 프로젝트 선택</option>
               <option
                 v-for="proj in allProjects"

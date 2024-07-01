@@ -190,13 +190,6 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         parent = validated_data.get('parent', None)
         instance.depth = 1 if parent is None else parent.depth + 1
 
-        subs = instance.issueproject_set.all()
-        is_public = validated_data.get('is_public', None)
-        if is_public and is_public is not instance.is_public:
-            for sub in subs:
-                sub.is_public = is_public
-                sub.save()
-
         # 역할 및 유형이 있는 경우 업데이트 로직
         allowed_roles = self.initial_data.get('allowed_roles', [])
         if allowed_roles and allowed_roles != [r.pk for r in instance.allowed_roles.all()]:
@@ -205,12 +198,6 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         trackers = self.initial_data.get('trackers', [])
         if trackers and trackers != [t.pk for t in instance.trackers.all()]:
             instance.trackers.set(trackers)
-
-        status = validated_data.get('status', None)
-        if status == '9':
-            for sub in subs:
-                sub.status = status
-                sub.save()
 
         module = instance.module
         module.issue = self.initial_data.get('issue', True)
