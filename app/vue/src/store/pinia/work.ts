@@ -672,6 +672,7 @@ export const useWork = defineStore('work', () => {
     if (payload.to_act_date) url += `&to_act_date=${payload.to_act_date}`
     if (payload.user) url += `&user=${payload.user}`
     if (!!payload.sort?.length) url += `&sort=${payload.sort.join(',')}`
+    if (!!payload.limit) url += `&limit=${payload.limit}`
 
     return await api
       .get(url)

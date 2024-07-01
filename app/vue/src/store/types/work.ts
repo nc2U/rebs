@@ -485,6 +485,7 @@ export interface ActLogEntryFilter {
   from_act_date?: string
   user?: string
   sort?: Array<'1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'>
+  limit?: number
 }
 
 export interface IssueLogEntry {
