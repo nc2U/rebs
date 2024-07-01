@@ -8,7 +8,6 @@ import {
   onMounted,
   onUpdated,
   type PropType,
-  nextTick,
   computed,
 } from 'vue'
 import { useRoute } from 'vue-router'
