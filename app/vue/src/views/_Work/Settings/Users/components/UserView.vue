@@ -28,7 +28,7 @@ const groupedActivities = computed<{ [key: string]: ActLogEntry[] }>(
   () => workStore.groupedActivities,
 )
 
-const issueProjects = computed(() => props.projectList.slice().reverse())
+const issueProjects = computed(() => props.projectList.slice())
 
 onBeforeMount(() => {
   emit('aside-visible', false)
