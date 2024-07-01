@@ -24,12 +24,7 @@ const issueProjects = computed(() => workStore.issueProjects)
 
 const route = useRoute()
 
-const today = ref(new Date())
-const toDate = computed(() => {
-  if (route.query.from) {
-    return new Date(new Date(route.query.from as string).getTime() + 9 * 24 * 60 * 60 * 1000)
-  } else return today.value
-})
+const toDate = ref(new Date())
 const fromDate = computed(() => new Date(toDate.value.getTime() - 9 * 24 * 60 * 60 * 1000))
 
 const activityFilter = ref<ActLogEntryFilter>({
@@ -42,7 +37,7 @@ const activityFilter = ref<ActLogEntryFilter>({
 })
 
 const toMove = (date: Date) => {
-  today.value = date
+  toDate.value = date
   activityFilter.value.to_act_date = dateFormat(date)
   activityFilter.value.from_act_date = dateFormat(
     new Date(date.getTime() - 9 * 24 * 60 * 60 * 1000),
@@ -51,7 +46,7 @@ const toMove = (date: Date) => {
 }
 
 const filterActivity = (payload: ActLogEntryFilter) => {
-  if (payload.to_act_date) today.value = new Date(payload.to_act_date)
+  if (payload.to_act_date) toDate.value = new Date(payload.to_act_date)
   activityFilter.value.project = payload.project ?? ''
   activityFilter.value.project__search = payload.project__search ?? ''
   activityFilter.value.user = payload.user ?? ''

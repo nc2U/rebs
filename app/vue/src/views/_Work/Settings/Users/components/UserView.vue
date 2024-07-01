@@ -92,7 +92,7 @@ onBeforeMount(() => {
               <router-link
                 :to="{
                   name: '작업내역',
-                  query: { from: Object.keys(groupedActivities)[0], user: $route.params.userId },
+                  query: { user: $route.params.userId },
                 }"
               >
                 작업내역
