@@ -176,7 +176,12 @@ const trackers = computed(() =>
 )
 
 const categories = computed(() => workStore.issueProject?.categories ?? [])
+const default_version = ref<number | null>(null)
 const versions = computed(() => workStore.issueProject?.versions ?? [])
+watch(versions, nVal => {
+  const def_vers = nVal.filter(v => v.is_default)
+  if (!!def_vers.length) form.value.fixed_version = def_vers[0].pk ?? null
+})
 
 const activities = computed(() =>
   props.issueProject.activities ? props.issueProject.activities : [],
@@ -295,7 +300,6 @@ const timeToNum = (n: number | string | null, estimated: boolean) => {
 
 onBeforeMount(() => {
   watcherList.value = memberList.value ?? []
-
   if (props.issue) {
     editDetails.value = false
 
@@ -317,7 +321,7 @@ onBeforeMount(() => {
     form.value.done_ratio = props.issue.done_ratio
     form.value.files = props.issue.files
     workStore.fetchIssueList({ status__closed: '', project: props.issue.project.slug })
-  }
+  } else form.value.fixed_version = default_version.value
   if (route.params.projId) form.value.project = route.params.projId as string
   if (route.query.tracker) form.value.tracker = Number(route.query.tracker)
   if (route.query.parent) form.value.parent = Number(route.query.parent)
