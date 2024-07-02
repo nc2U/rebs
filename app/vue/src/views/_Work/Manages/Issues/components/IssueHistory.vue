@@ -50,7 +50,7 @@ onBeforeMount(() => {
         댓글
       </CNavLink>
     </CNavItem>
-    <CNavItem>
+    <CNavItem v-if="timeEntryList.length">
       <CNavLink
         href="javascript:void(0);"
         :active="tabPaneActiveKey === 3"
