@@ -2,16 +2,14 @@
 import { ref, computed, type PropType, watch } from 'vue'
 import { useStore } from '@/store'
 import { useRoute } from 'vue-router'
+import type { SimpleProject } from '@/store/types/work'
 import HeaderSearch from './components/Search.vue'
 import HeaderNav from './components/HeaderNav.vue'
 
 defineProps({
   pageTitle: { type: String, default: '' },
   navMenu: { type: Array, default: () => ['Base Menu'] },
-  familyTree: {
-    type: Array as PropType<{ pk: number; name: string; slug: string }[]>,
-    default: () => [],
-  },
+  familyTree: { type: Array as PropType<SimpleProject[]>, default: () => [] },
 })
 
 const visible = ref(false)
@@ -32,11 +30,13 @@ watch(useRoute(), () => (visible.value = false))
         <CCol class="mb-2 p-4 col-9 col-md-6 col-lg-7 col-xl-9">
           <CRow v-if="!!familyTree.length" class="d-none d-lg-block">
             <CCol>
-              <span v-for="p in familyTree" :key="p.pk" class="mr-1 text-blue-grey">
-                <router-link :to="{ name: $route.name ?? '(개요)', params: { projId: p.slug } }">
-                  {{ p.name }}
-                </router-link>
-                »
+              <span v-for="p in familyTree" :key="p.pk">
+                <span v-if="p.visible" class="mr-1 text-blue-grey">
+                  <router-link :to="{ name: $route.name ?? '(개요)', params: { projId: p.slug } }">
+                    {{ p.name }}
+                  </router-link>
+                  »
+                </span>
               </span>
             </CCol>
           </CRow>
