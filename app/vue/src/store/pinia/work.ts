@@ -25,9 +25,6 @@ import type {
 } from '@/store/types/work'
 
 export const useWork = defineStore('work', () => {
-  const accStore = useAccount()
-  const workManager = computed(() => accStore.workManager)
-
   // Issue Project states & getters
   const issueProject = ref<IssueProject | null>(null)
   const issueProjectList = ref<IssueProject[]>([])
@@ -35,10 +32,15 @@ export const useWork = defineStore('work', () => {
 
   const allProjects = ref<IssueProject[]>([])
   const AllIssueProjects = computed(() => {
+    const regsted: number[] = []
     const result: IssueProject[] = []
 
     function flatten(proj: IssueProject) {
-      result.push(proj)
+      if (!regsted.includes(proj.pk) && proj.visible) {
+        regsted.push(proj.pk)
+        result.push(proj)
+      }
+
       if (!!proj.sub_projects?.length) proj.sub_projects.forEach(sub => flatten(sub))
     }
 
@@ -66,16 +68,11 @@ export const useWork = defineStore('work', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const fetchAllIssueProjectList = async () => {
-    const url = workManager.value
-      ? `/issue-project/?parent__isnull=1`
-      : `/issue-project/?parent__isnull=1&is_public=1`
-
-    return await api
-      .get(url)
+  const fetchAllIssueProjectList = async () =>
+    await api
+      .get(`/issue-project/?parent__isnull=1`)
       .then(res => (allProjects.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
-  }
 
   const fetchIssueProject = (slug: string) =>
     api
