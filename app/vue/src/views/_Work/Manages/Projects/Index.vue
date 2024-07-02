@@ -169,7 +169,7 @@ onBeforeMount(async () => {
   <Header
     :page-title="headerTitle"
     :nav-menu="navMenu"
-    :family-tree="issueProject?.family_tree"
+    :family-tree="issueProject?.family_tree ?? []"
     @side-nav-call="sideNavCAll"
   />
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query" :aside="aside">

@@ -1,9 +1,3 @@
-interface BCParent {
-  pk: number
-  name: string
-  slug: string
-}
-
 export interface SimpleUser {
   pk: number
   username: string
@@ -39,7 +33,7 @@ export interface IssueProject {
   description: string
   homepage: string | null
   is_public: boolean
-  family_tree?: BCParent[]
+  family_tree?: SimpleProject[]
   parent: number | null
   sub_projects?: IssueProject[]
   module?: Module | null
