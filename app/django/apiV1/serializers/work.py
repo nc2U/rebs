@@ -623,7 +623,7 @@ class IssueSerializer(serializers.ModelSerializer):
         if self.initial_data.get('status'):
             instance.status = IssueStatus.objects.get(pk=self.initial_data.get('status'))
         if instance.closed is None and instance.status.closed:
-            instance.closed = timezone.now()
+            instance.closed = timezone.localtime()
         elif instance.closed is not None and not instance.status.closed:
             instance.closed = None
         if self.initial_data.get('priority'):
