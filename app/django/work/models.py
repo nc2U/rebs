@@ -403,10 +403,7 @@ class Issue(models.Model):
     estimated_hours = models.DecimalField('추정 소요시간', max_digits=5, decimal_places=2, null=True, blank=True)
     start_date = models.DateField('시작 일자', null=True, blank=True)
     due_date = models.DateField('완료 기한', null=True, blank=True)
-    PROGRESS_RATIO = (
-        (0, '0%'), (10, '10%'), (20, '20%'), (30, '30%'), (40, '40%'), (50, '50%'),
-        (60, '60%'), (70, '70%'), (80, '80%'), (90, '90%'), (100, '100%'))
-    done_ratio = models.PositiveSmallIntegerField('진척도', choices=PROGRESS_RATIO, default=0)
+    done_ratio = models.PositiveSmallIntegerField('진척도', default=0)
     closed = models.DateTimeField('완료', null=True, blank=True, help_text='상태가 완료로 입력된 시간. 한 번 완료하면 다시 진행으로 변경해도 남아있음.')
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='작성자',
                                 related_name='creator', null=True, blank=True)
