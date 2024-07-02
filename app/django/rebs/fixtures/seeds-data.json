@@ -5133,7 +5133,7 @@
     "pk": 4,
     "fields": {
       "name": "기획 및 개발",
-      "description": "부지선정, 사업계획, 분양(마케팅), 설계, 인허가, 금융, 건설관리",
+      "description": "부지 선정, 사업 계획, 분양(마케팅), 설계, 인허가, 금융 관련 지원",
       "is_in_roadmap": true,
       "default_status": 1,
       "order": 1,
@@ -5147,12 +5147,26 @@
     "pk": 5,
     "fields": {
       "name": "운영 및 관리",
-      "description": "데이터 관리, 고객관리 및 민원처리, 자금관리, 통상 대관 업무",
+      "description": "데이터 관리, 고객 관리 및 민원 처리, 자금 관리, 통상 대관 업무",
       "is_in_roadmap": true,
       "default_status": 1,
       "order": 1,
-      "created": "2024-06-01T09:47:05.279Z",
-      "updated": "2024-06-01T09:47:05.279Z",
+      "created": "2024-06-01T09:47:06.279Z",
+      "updated": "2024-06-01T09:47:06.279Z",
+      "user": 1
+    }
+  },
+  {
+    "model": "work.tracker",
+    "pk": 6,
+    "fields": {
+      "name": "공사업무 지원",
+      "description": "현장 인계, 공사 관련 민원 처리 지원, 건설 관리 지원 및 현황 공개",
+      "is_in_roadmap": true,
+      "default_status": 1,
+      "order": 1,
+      "created": "2024-06-01T09:47:07.279Z",
+      "updated": "2024-06-01T09:47:07.279Z",
       "user": 1
     }
   },
