@@ -10,6 +10,7 @@ const validated = ref(false)
 const nVersion = ref({
   name: '',
   description: '',
+  status: '1' as '1' | '2' | '3',
   wiki_page_title: '',
   effective_date: null as string | null,
   sharing: '0' as '0' | '1' | '2' | '3' | '4',
@@ -47,6 +48,18 @@ const closeModal = () => emit('close')
 
         <CCol class="col-7">
           <CFormInput v-model="nVersion.description" placeholder="새 버전에 대한 설명" />
+        </CCol>
+      </CRow>
+
+      <CRow class="mb-3">
+        <CFormLabel for="name" class="col-sm-3 col-form-label text-right"> 상태</CFormLabel>
+
+        <CCol class="col-7">
+          <CFormSelect v-model="nVersion.status">
+            <option value="1">진행</option>
+            <option value="2">잠김</option>
+            <option value="3">닫힘</option>
+          </CFormSelect>
         </CCol>
       </CRow>
 
