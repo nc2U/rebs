@@ -168,8 +168,6 @@ class IssueProjectSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        parent = validated_data.get('parent', None)
-        validated_data['depth'] = 1 if parent is None else parent.depth + 1
         project = IssueProject.objects.create(**validated_data)
         # 프로젝트 생성시 설정된 기본 역할 및 유형 추가
         allowed_roles = self.initial_data.get('allowed_roles', [])
@@ -196,9 +194,6 @@ class IssueProjectSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def update(self, instance, validated_data):
-        parent = validated_data.get('parent', None)
-        instance.depth = 1 if parent is None else parent.depth + 1
-
         # 역할 및 유형이 있는 경우 업데이트 로직
         allowed_roles = self.initial_data.get('allowed_roles', [])
         if allowed_roles and allowed_roles != [r.pk for r in instance.allowed_roles.all()]:
