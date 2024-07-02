@@ -143,6 +143,7 @@ onBeforeMount(async () => {
           rounded="1"
           class="ml-2"
         />
+        <v-badge v-if="issue.is_private" color="danger" content="비공개" inline rounded="1" />
       </h5>
     </CCol>
 
