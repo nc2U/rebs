@@ -54,6 +54,12 @@ class ProfileInUserSerializer(serializers.ModelSerializer):
         fields = ('pk', 'name', 'birth_date', 'cell_phone')
 
 
+class IssueProjectInUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IssueProject
+        fields = ('pk', 'slug', 'name')
+
+
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         write_only=True,
@@ -63,7 +69,7 @@ class UserSerializer(serializers.ModelSerializer):
     )
     staffauth = StaffAuthInUserSerializer(read_only=True)
     profile = ProfileInUserSerializer(read_only=True)
-    assigned_projects = serializers.SerializerMethodField(read_only=True)
+    assigned_projects = IssueProjectInUserSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
@@ -71,21 +77,6 @@ class UserSerializer(serializers.ModelSerializer):
                   'is_staff', 'work_manager', 'date_joined', 'password',
                   'staffauth', 'profile', 'assigned_projects', 'last_login')
         read_only_fields = ('date_joined', 'last_login')
-
-    @staticmethod
-    def get_assigned_projects(obj):
-        project_list = []
-        projects = IssueProject.objects.all()
-        for project in projects:
-            all_members = [m.user.pk for m in project.all_members()]
-            if obj.pk in all_members:
-                proj = {
-                    'pk': project.pk,
-                    'slug': project.slug,
-                    'name': project.name,
-                }
-                project_list.append(proj)
-        return project_list
 
     def create(self, validated_data):
         user = User(email=validated_data['email'],

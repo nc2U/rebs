@@ -7,6 +7,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from work.models import IssueProject
 from document.models import Post, Comment
 
 
@@ -66,8 +67,24 @@ class User(AbstractBaseUser, PermissionsMixin):
         self.email = self.__class__.objects.normalize_email(self.email)
 
     def email_user(self, subject, message, from_email=None, **kwargs):
-        """Send an email to this user."""
+        """
+        :: 이 유저에게 이메일 보내기
+        :param subject: 제목
+        :param message: 내용
+        :param from_email: 보낸 사람
+        :param kwargs: 기타 첨가 내용
+        :return: 발송 성공 여부
+        """
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
+    def assigned_projects(self):
+        projects = IssueProject.objects.all()
+        project_list = []
+        for project in projects:
+            all_members = [m.user.pk for m in project.all_members()]
+            if self.pk in all_members:
+                project_list.append(project.pk)
+        return IssueProject.objects.filter(pk__in=project_list)
 
 
 class StaffAuth(models.Model):
