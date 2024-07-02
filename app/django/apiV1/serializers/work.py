@@ -26,9 +26,10 @@ class SimpleIssueProjectSerializer(serializers.ModelSerializer):
 
         if request and hasattr(request, 'user'):
             user = request.user
+            visible_auth = user.work_manager or user.is_superuser
             all_members = obj.all_members()
             members = [m.user.pk for m in all_members]
-            return obj.is_public or user.pk in members or user.work_manager or user.is_superuser
+            return obj.is_public or user.pk in members or visible_auth
         else:
             return False
 
@@ -138,9 +139,10 @@ class IssueProjectSerializer(serializers.ModelSerializer):
 
         if request and hasattr(request, 'user'):
             user = request.user
+            visible_auth = user.work_manager or user.is_superuser
             all_members = obj.all_members()
             members = [m.user.pk for m in all_members]
-            return obj.is_public or user.pk in members or user.work_manager or user.is_superuser
+            return obj.is_public or user.pk in members or visible_auth
         else:
             return False
 

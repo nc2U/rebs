@@ -408,7 +408,8 @@ class ActivityLogEntryViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        return self.queryset if user.is_superuser else self.queryset.filter(project__is_public=True)
+        work_auth = user.work_manager or user.is_superuser
+        return self.queryset if work_auth else self.queryset.filter(project__is_public=True)
 
 
 class IssueLogEntryViewSet(viewsets.ModelViewSet):
@@ -420,7 +421,8 @@ class IssueLogEntryViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        return self.queryset if user.is_superuser else self.queryset.filter(issue__project__is_public=True)
+        work_auth = user.work_manager or user.is_superuser
+        return self.queryset if work_auth else self.queryset.filter(issue__project__is_public=True)
 
 
 class SearchViewSet(viewsets.ModelViewSet):
