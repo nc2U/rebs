@@ -244,6 +244,7 @@ const createVersion = (payload: any) => {
 const closeForm = () => emit('close-form')
 
 const userInfo = inject<ComputedRef<User>>('userInfo')
+const workManager = inject('workManager')
 
 const callComment = (edit?: true) => {
   // 댓글 폼 불러오기
@@ -554,7 +555,7 @@ onBeforeMount(() => {
                   <CFormLabel for="fixed_version" class="col-sm-4 col-form-label text-right">
                     목표버전
                   </CFormLabel>
-                  <CCol sm="6">
+                  <CCol :sm="workManager ? 6 : 8">
                     <CFormSelect v-model.number="form.fixed_version" id="fixed_version">
                       <option value="">---------</option>
                       <option v-for="ver in versions" :value="ver.pk" :key="ver.pk">
@@ -562,7 +563,7 @@ onBeforeMount(() => {
                       </option>
                     </CFormSelect>
                   </CCol>
-                  <CCol style="padding-top: 6px">
+                  <CCol v-if="workManager" style="padding-top: 6px">
                     <span>
                       <v-icon
                         icon="mdi-plus-circle"
@@ -621,7 +622,7 @@ onBeforeMount(() => {
               </CRow>
             </div>
 
-            <CRow class="mb-3">
+            <CRow v-if="workManager" class="mb-3">
               <CFormLabel for="watcher" class="col-sm-2 col-form-label text-right">
                 업무 관람자
               </CFormLabel>
