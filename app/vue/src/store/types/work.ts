@@ -21,6 +21,7 @@ export interface SimpleProject {
   pk: number
   name: string
   slug: string
+  visible: boolean
 }
 
 export interface SimpleCategory {
