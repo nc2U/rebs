@@ -37,14 +37,39 @@ const form = reactive({
   name: '',
   real_project: null as null | number,
   description: '',
+  slug: '',
   homepage: null as string | null,
   is_public: true,
   parent: null as number | null,
-  slug: '',
   is_inherit_members: false,
   allowed_roles: [4, 5, 6],
   trackers: [4, 5, 6],
   activities: [1, 2],
+})
+
+const formsCheck = computed(() => {
+  if (props.project) {
+    const a = form.name === props.project.name
+    const b = form.real_project === props.project.real_project
+    const c = form.description === props.project.description
+    const d = form.homepage === props.project.homepage
+    const e = form.is_public === props.project.is_public
+    const f = Number(form.parent) === Number(props.project.parent)
+    const g = form.is_inherit_members === props.project.is_inherit_members
+    const h =
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      JSON.stringify(form.allowed_roles.sort((a, b) => a - b)) ===
+      JSON.stringify(props.project.allowed_roles?.map(r => r.pk).sort((a, b) => a - b))
+    const i =
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      JSON.stringify(form.trackers.sort((a, b) => a - b)) ===
+      JSON.stringify(props.project.trackers?.map(t => t.pk).sort((a, b) => a - b))
+    const j =
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      JSON.stringify(form.activities.sort((a, b) => a - b)) ===
+      JSON.stringify(props.project.activities?.map(a => a.pk).sort((a, b) => a - b))
+    return a && b && c && d && e && f && g && h && i && j
+  } else return false
 })
 
 const tempSpace = ref('')
@@ -219,7 +244,7 @@ onBeforeMount(() => {
         <CRow class="mb-3">
           <CFormLabel class="col-form-label text-right col-2">상위 프로젝트</CFormLabel>
           <CCol>
-            <CFormSelect v-model.number="form.parent">
+            <CFormSelect v-model.number.lazy="form.parent">
               <option value="">---------</option>
               <option
                 v-for="proj in allProjects"
@@ -314,7 +339,9 @@ onBeforeMount(() => {
 
     <CRow>
       <CCol>
-        <CButton :color="!project ? 'primary' : 'success'" type="submit">저장</CButton>
+        <CButton type="submit" :color="!project ? 'primary' : 'success'" :disabled="formsCheck">
+          저장
+        </CButton>
         <!--        <CButton color="primary" type="submit">저장 후 계속하기</CButton>-->
       </CCol>
     </CRow>
