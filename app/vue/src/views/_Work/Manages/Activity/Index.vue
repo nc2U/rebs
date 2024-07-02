@@ -65,7 +65,6 @@ onBeforeMount(() => {
 
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query">
     <template v-slot:default>
-      {{ dateFormat(toDate, '/') }}
       <ActivityLogList
         :to-date="toDate"
         :activity-filter="activityFilter"

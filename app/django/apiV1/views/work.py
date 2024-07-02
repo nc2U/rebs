@@ -211,7 +211,12 @@ class IssueViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        return self.queryset if user.is_superuser else self.queryset.filter(project__is_public=True)
+        work_auth = user.work_manager or user.is_superuser
+        projects = user.assigned_projects()
+        return self.queryset \
+            if work_auth \
+            else self.queryset.filter(Q(project__is_public=True) |
+                                      Q(project__in=projects))
 
     def perform_create(self, serializer):
         serializer.save(creator=self.request.user)
@@ -339,7 +344,12 @@ class TimeEntryViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        return self.queryset if user.is_superuser else self.queryset.filter(issue__project__is_public=True)
+        work_auth = user.work_manager or user.is_superuser
+        projects = user.assigned_projects()
+        return self.queryset \
+            if work_auth \
+            else self.queryset.filter(Q(issue__project__is_public=True) |
+                                      Q(issue__project__in=projects))
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -408,7 +418,11 @@ class ActivityLogEntryViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         work_auth = user.work_manager or user.is_superuser
-        return self.queryset if work_auth else self.queryset.filter(project__is_public=True)
+        projects = user.assigned_projects()
+        return self.queryset \
+            if work_auth \
+            else self.queryset.filter(Q(project__is_public=True) |
+                                      Q(project__in=projects))
 
 
 class IssueLogEntryViewSet(viewsets.ModelViewSet):
@@ -418,10 +432,10 @@ class IssueLogEntryViewSet(viewsets.ModelViewSet):
     pagination_class = PageNumberPaginationThreeHundred
     filterset_fields = ('issue', 'user')
 
-    def get_queryset(self):
-        user = self.request.user
-        work_auth = user.work_manager or user.is_superuser
-        return self.queryset if work_auth else self.queryset.filter(issue__project__is_public=True)
+    # def get_queryset(self):
+    #     user = self.request.user
+    #     work_auth = user.work_manager or user.is_superuser
+    #     return self.queryset if work_auth else self.queryset.filter(issue__project__is_public=True)
 
 
 class SearchViewSet(viewsets.ModelViewSet):
