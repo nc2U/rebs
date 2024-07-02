@@ -23,7 +23,10 @@ const filterSubmit = (payload: ProjectFilter) => emit('filter-submit', payload)
 
 const hasVisible = (project: IssueProject) => {
   if (project.visible) return true
-  if (project.sub_projects?.length) project.sub_projects.forEach(sub => hasVisible(sub))
+  if (project.sub_projects && project.sub_projects.length > 0)
+    for (let sub of project.sub_projects) {
+      if (hasVisible(sub)) return true
+    }
   return false
 }
 
