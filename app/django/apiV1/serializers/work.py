@@ -106,7 +106,6 @@ class CodeActivityInIssueProjectSerializer(serializers.ModelSerializer):
 
 class IssueProjectSerializer(serializers.ModelSerializer):
     family_tree = SimpleIssueProjectSerializer(many=True, read_only=True)
-    sub_projects = serializers.SerializerMethodField()
     module = ModuleInIssueProjectSerializer(read_only=True)
     all_members = MemberInIssueProjectSerializer(many=True, read_only=True)
     members = MemberInIssueProjectSerializer(many=True, read_only=True)
@@ -118,6 +117,8 @@ class IssueProjectSerializer(serializers.ModelSerializer):
     visible = serializers.SerializerMethodField(read_only=True)
     total_estimated_hours = serializers.SerializerMethodField(read_only=True)
     total_time_spent = serializers.SerializerMethodField(read_only=True)
+    parent_visible = serializers.SerializerMethodField(read_only=True)
+    sub_projects = serializers.SerializerMethodField()
     user = serializers.SlugRelatedField('username', read_only=True)
 
     class Meta:
@@ -125,8 +126,8 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         fields = ('pk', 'company', 'real_project', 'name', 'slug', 'description', 'homepage',
                   'is_public', 'module', 'is_inherit_members', 'allowed_roles', 'trackers', 'versions',
                   'default_version', 'categories', 'status', 'depth', 'all_members', 'members', 'activities',
-                  'visible', 'total_estimated_hours', 'total_time_spent', 'user', 'created', 'updated',
-                  'family_tree', 'parent', 'sub_projects')
+                  'visible', 'total_estimated_hours', 'total_time_spent', 'family_tree', 'parent',
+                  'parent_visible', 'sub_projects', 'user', 'created', 'updated',)
 
     def get_sub_projects(self, obj):
         sub_projects = obj.issueproject_set.exclude(status='9')
@@ -145,6 +146,9 @@ class IssueProjectSerializer(serializers.ModelSerializer):
             return obj.is_public or user.pk in members or visible_auth
         else:
             return False
+
+    def get_parent_visible(self, obj):
+        return self.get_visible(obj.parent) if obj.parent else False
 
     def get_total_estimated_hours(self, obj):
         return self.recursive_estimated_hours(obj)

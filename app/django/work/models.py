@@ -36,7 +36,7 @@ class IssueProject(models.Model):
 
     def depth(self):
         if self.parent is None:
-            return 1
+            return 0
         else:
             return self.parent.depth() + 1
 
