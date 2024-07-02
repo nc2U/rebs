@@ -11,6 +11,7 @@ import Multiselect from '@vueform/multiselect'
 import MdEditor from '@/components/MdEditor/Index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
+import IProjectSelect from '@/views/_Work/components/IProjectSelect.vue'
 import WatcherAdd from '@/views/_Work/Manages/Issues/components/aside/WatcherAdd.vue'
 import FormInIssueCategory from '@/views/_Work/Manages/Issues/components/FormInIssueCategory.vue'
 import FormInIssueVersion from '@/views/_Work/Manages/Issues/components/FormInIssueVersion.vue'
@@ -349,18 +350,7 @@ onBeforeMount(() => {
             </CFormLabel>
 
             <CCol sm="4">
-              <CFormSelect v-model="form.project" required>
-                <option value="">---------</option>
-                <option v-for="proj in allProjects" :value="proj.slug" :key="proj.slug">
-                  <span v-if="proj.depth === 2"> &nbsp;&nbsp;» </span>
-                  <span v-if="proj.depth === 3"> &nbsp;&nbsp;&nbsp;&nbsp;» </span>
-                  <span v-if="proj.depth === 4"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;» </span>
-                  <span v-if="proj.depth === 5">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;»
-                  </span>
-                  {{ proj.name }}
-                </option>
-              </CFormSelect>
+              <IProjectSelect v-model="form.project" :all-projects="allProjects" :required="true" />
             </CCol>
 
             <CCol style="padding-top: 8px">
