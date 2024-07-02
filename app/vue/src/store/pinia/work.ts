@@ -36,7 +36,7 @@ export const useWork = defineStore('work', () => {
     const result: IssueProject[] = []
 
     function flatten(proj: IssueProject) {
-      if (!reg_arr.includes(proj.pk) && proj.visible) {
+      if (proj?.pk && !reg_arr.includes(proj.pk) && proj.visible) {
         reg_arr.push(proj.pk)
         result.push(proj)
       }
