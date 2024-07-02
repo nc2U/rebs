@@ -5,6 +5,7 @@ import { useRoute } from 'vue-router'
 import { dateFormat } from '@/utils/baseMixins'
 import Multiselect from '@vueform/multiselect'
 import DatePicker from '@/components/DatePicker/index.vue'
+import IProjectSelect from '@/views/_Work/components/IProjectSelect.vue'
 
 const props = defineProps({
   subProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
@@ -276,13 +277,7 @@ onBeforeMount(() => {
                 </CFormSelect>
               </CCol>
               <CCol class="col-4 col-lg-3">
-                <CFormSelect v-model="form.project" size="sm">
-                  <option value="">---------</option>
-                  <option v-for="proj in computedProjects" :key="proj.pk" :value="proj.slug">
-                    <span v-if="proj.parent">{{ '&nbsp;'.repeat(proj.depth) }}</span>
-                    {{ proj.name }}
-                  </option>
-                </CFormSelect>
+                <IProjectSelect v-model="form.project" :all-projects="allProjects" size="sm" />
               </CCol>
             </CRow>
 

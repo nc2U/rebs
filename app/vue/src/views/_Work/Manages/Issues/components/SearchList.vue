@@ -2,8 +2,9 @@
 import { ref, reactive, type PropType, onBeforeMount, watch } from 'vue'
 import type { IssueProject, IssueStatus, IssueFilter, Tracker } from '@/store/types/work'
 import { useRoute } from 'vue-router'
-// import DatePicker from '@/components/DatePicker/index.vue'
 import Multiselect from '@vueform/multiselect'
+// import DatePicker from '@/components/DatePicker/index.vue'
+import IProjectSelect from '@/views/_Work/components/IProjectSelect.vue'
 
 const props = defineProps({
   allProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
@@ -285,13 +286,7 @@ onBeforeMount(async () => {
                 </CFormSelect>
               </CCol>
               <CCol class="col-4 col-lg-3">
-                <CFormSelect v-model="form.project" size="sm">
-                  <option value="">---------</option>
-                  <option v-for="proj in allProjects" :key="proj.pk" :value="proj.slug">
-                    <span v-if="proj.parent">{{ '&nbsp;'.repeat(proj.depth) }}</span>
-                    {{ proj.name }}
-                  </option>
-                </CFormSelect>
+                <IProjectSelect v-model="form.project" :all-projects="allProjects" size="sm" />
               </CCol>
             </CRow>
 

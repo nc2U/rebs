@@ -212,7 +212,6 @@ onBeforeMount(() => {
             <CFormSwitch v-model="form.is_public" id="is_public" label="프로젝트 공개 여부" />
             <div class="form-text">
               공개 프로젝트는 네트워크의 모든 사용자가 접속할 수 있습니다.
-              {{ form.is_public }} / {{ project?.is_public }}
             </div>
           </CCol>
         </CRow>
@@ -221,18 +220,15 @@ onBeforeMount(() => {
           <CFormLabel class="col-form-label text-right col-2">상위 프로젝트</CFormLabel>
           <CCol>
             <CFormSelect v-model.number="form.parent">
-              <option value="">상위 프로젝트 선택</option>
+              <option value="">---------</option>
               <option
                 v-for="proj in allProjects"
                 :value="proj.pk"
                 :key="proj.pk"
                 v-show="project?.pk !== proj.pk"
               >
-                <span v-if="proj.depth === 2"> &nbsp;&nbsp;» </span>
-                <span v-if="proj.depth === 3"> &nbsp;&nbsp;&nbsp;&nbsp;» </span>
-                <span v-if="proj.depth === 4"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;» </span>
-                <span v-if="proj.depth === 5">
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;»
+                <span v-if="!!proj.depth && proj.parent_visible">
+                  {{ '&nbsp;'.repeat(proj.depth) }} »
                 </span>
                 {{ proj.name }}
               </option>

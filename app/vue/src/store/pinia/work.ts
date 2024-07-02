@@ -32,12 +32,12 @@ export const useWork = defineStore('work', () => {
 
   const allProjects = ref<IssueProject[]>([])
   const AllIssueProjects = computed(() => {
-    const regsted: number[] = []
+    const reg_arr: number[] = [] // 등록된 프로젝트 / 중복 방지용
     const result: IssueProject[] = []
 
     function flatten(proj: IssueProject) {
-      if (!regsted.includes(proj.pk) && proj.visible) {
-        regsted.push(proj.pk)
+      if (!reg_arr.includes(proj.pk) && proj.visible) {
+        reg_arr.push(proj.pk)
         result.push(proj)
       }
 
