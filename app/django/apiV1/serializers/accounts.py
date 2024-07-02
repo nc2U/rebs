@@ -1,9 +1,11 @@
+import json
 from django.conf import settings
 from django.db import transaction
 from django.core.mail import send_mail
 from rest_framework import serializers
 
 from accounts.models import User, StaffAuth, Profile, Todo, Scrape, PasswordResetToken
+from work.models import IssueProject
 from document.models import Post
 
 
@@ -61,12 +63,29 @@ class UserSerializer(serializers.ModelSerializer):
     )
     staffauth = StaffAuthInUserSerializer(read_only=True)
     profile = ProfileInUserSerializer(read_only=True)
+    assigned_projects = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
-        fields = ('pk', 'email', 'username', 'is_active', 'is_superuser', 'is_staff',
-                  'work_manager', 'date_joined', 'password', 'staffauth', 'profile', 'last_login')
+        fields = ('pk', 'email', 'username', 'is_active', 'is_superuser',
+                  'is_staff', 'work_manager', 'date_joined', 'password',
+                  'staffauth', 'profile', 'assigned_projects', 'last_login')
         read_only_fields = ('date_joined', 'last_login')
+
+    @staticmethod
+    def get_assigned_projects(obj):
+        project_list = []
+        projects = IssueProject.objects.all()
+        for project in projects:
+            all_members = [m.user.pk for m in project.all_members()]
+            if obj.pk in all_members:
+                proj = {
+                    'pk': project.pk,
+                    'slug': project.slug,
+                    'name': project.name,
+                }
+                project_list.append(proj)
+        return project_list
 
     def create(self, validated_data):
         user = User(email=validated_data['email'],
