@@ -722,7 +722,12 @@ onBeforeMount(() => {
               <CCol>
                 <h6>댓글</h6>
                 <v-divider class="mt-0" />
-                <MdEditor v-model="comment.content" style="height: 180px" class="mb-1" />
+                <MdEditor
+                  v-model="comment.content"
+                  style="height: 180px"
+                  class="mb-1"
+                  placeholder="업무 관련 코멘트..."
+                />
                 <CFormCheck v-model="comment.is_private" id="private_comment" label="비공개 댓글" />
               </CCol>
             </CRow>
