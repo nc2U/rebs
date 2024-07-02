@@ -15,9 +15,22 @@ from work.models import (IssueProject, Role, Permission, Member, Module, Version
 
 # Work --------------------------------------------------------------------------
 class SimpleIssueProjectSerializer(serializers.ModelSerializer):
+    visible = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = IssueProject
-        fields = ('pk', 'name', 'slug')
+        fields = ('pk', 'name', 'slug', 'visible')
+
+    def get_visible(self, obj):
+        request = self.context.get('request')
+
+        if request and hasattr(request, 'user'):
+            user = request.user
+            all_members = obj.all_members()
+            members = [m.user.pk for m in all_members]
+            return obj.is_public or user.pk in members or user.work_manager or user.is_superuser
+        else:
+            return False
 
 
 class SimpleUserSerializer(serializers.ModelSerializer):
@@ -119,16 +132,6 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
 
         return self.__class__(sub_projects, many=True, read_only=True, context=self.context).data
-
-    @staticmethod
-    def _is_visible(obj, request):
-        if request and hasattr(request, 'user'):
-            user = request.user
-            all_members = obj.all_members()
-            members = [m.user.pk for m in all_members]
-            return obj.is_public or user.pk in members or user.work_manager or user.is_superuser
-        else:
-            return False
 
     def get_visible(self, obj):
         request = self.context.get('request')
