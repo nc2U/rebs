@@ -33,9 +33,6 @@ export interface IssueProject {
   description: string
   homepage: string | null
   is_public: boolean
-  family_tree?: SimpleProject[]
-  parent: number | null
-  sub_projects?: IssueProject[]
   module?: Module | null
   is_inherit_members: boolean
   allowed_roles?: { pk: number; name: string }[]
@@ -51,6 +48,10 @@ export interface IssueProject {
   visible?: boolean
   total_estimated_hours?: number
   total_time_spent?: number
+  family_tree?: SimpleProject[]
+  parent: number | null
+  parent_visible: boolean
+  sub_projects?: IssueProject[]
   user?: string
   created?: string
   updated?: string
