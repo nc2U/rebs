@@ -220,27 +220,23 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         module.gantt = self.initial_data.get('gantt', True)
         module.save()
 
-        # # user에 대응하는 member 모델 생성
-        # users = self.initial_data.get('users')
-        # roles = self.initial_data.get('roles')
-        # del_mem = self.initial_data.get('del_mem', None)
+        # user에 대응하는 member 모델 생성
+        users = self.initial_data.get('users')
+        roles = self.initial_data.get('roles')
+        del_mem = self.initial_data.get('del_mem', None)
 
-        # members = []
-        #
-        # if users:
-        #     for user in users:
-        #         # user_instance = User.objects.get(pk=user)
-        #         member_instance = Member.objects.create(user_id=user)
-        #         member_instance.roles.add(*roles)
-        #         member_instance.save()
-        #         members.append(member_instance.pk)
-        #
-        #     for member in members:
-        #         instance.members.add(member)
-        # elif del_mem is not None:
-        #     instance.members.remove(del_mem)
-        #     member = Member.objects.get(pk=del_mem)
-        #     member.delete()
+        members = []
+
+        if users:
+            for user in users:
+                member_instance = Member.objects.create(user_id=user, project=instance)
+                member_instance.roles.add(*roles)
+                member_instance.save()
+                members.append(member_instance.pk)
+
+        elif del_mem is not None:
+            member = Member.objects.get(pk=del_mem)
+            member.delete()
 
         return super().update(instance, validated_data)
 
