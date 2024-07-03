@@ -50,20 +50,60 @@ class IssueProject(models.Model):
 
     def all_members(self):
         """
-        # member 와 조상 member를 user 기준 유니크하게 조인하고,
-        조인 시 member.Role 역시 유니크하게 조인한다.
+        멤버와 조상 멤버를 user 기준으로 유니크하게 합치고,
+        멤버의 역할(Role)도 유니크하게 합치는 함수
         """
-        members = self.members.all()
+        all_members = {}
+        members = self.members.all()  # 자신의 모든 멤버
 
-        if self.is_inherit_members and self.parent:
-            parent_members = self.parent.all_members()
-            for mem in members:
-                user = mem.user
-                if user.pk in parent_members.values_list('user', flat=True):
-                    parent_roles = parent_members.get(user_id=user.pk).roles.all()
-                    mem.roles.add(*parent_roles)
-            members |= parent_members.exclude(user__in=members.values_list('user', flat=True))
-        return members
+        # 부모 프로젝트의 멤버를 재귀적으로 가져옴
+        def get_all_parent_members(project):
+            parent_members = {}
+            if project.is_inherit_members and project.parent:
+                parent_members.update(get_all_parent_members(project.parent))
+            for mem in project.members.all():
+                if mem.user.pk not in parent_members:
+                    parent_members[mem.user.pk] = {
+                        'pk': mem.pk,
+                        'user': {'pk': mem.user.pk, 'username': mem.user.username},
+                        'roles': {role.pk: {'pk': role.pk, 'name': role.name} for role in mem.roles.all()},
+                        'created': mem.created,
+                    }
+                else:
+                    parent_members[mem.user.pk]['roles'].update(
+                        {role.pk: {'pk': role.pk, 'name': role.name} for role in mem.roles.all()}
+                    )
+            return parent_members
+
+        parent_members = get_all_parent_members(self)
+
+        # 현재 프로젝트의 멤버와 부모 프로젝트의 멤버를 합침
+        for mem in members:
+            if mem.user.pk in parent_members:
+                parent_roles = parent_members[mem.user.pk]['roles']
+                union_roles = parent_roles.copy()
+                union_roles.update({role.pk: {'pk': role.pk, 'name': role.name} for role in mem.roles.all()})
+                parent_members[mem.user.pk]['roles'] = union_roles
+            else:
+                parent_members[mem.user.pk] = {
+                    'pk': mem.pk,
+                    'user': {'pk': mem.user.pk, 'username': mem.user.username},
+                    'roles': {role.pk: {'pk': role.pk, 'name': role.name} for role in mem.roles.all()},
+                    'created': mem.created,
+                }
+
+        # dict -> list로 변환
+        all_members = [
+            {
+                'pk': mem['pk'],
+                'user': mem['user'],
+                'roles': list(mem['roles'].values()),
+                'created': mem['created']
+            }
+            for mem in parent_members.values()
+        ]
+
+        return all_members
 
     class Meta:
         ordering = ('id',)

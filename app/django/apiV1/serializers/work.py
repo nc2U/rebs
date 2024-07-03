@@ -28,7 +28,7 @@ class SimpleIssueProjectSerializer(serializers.ModelSerializer):
             user = request.user
             visible_auth = user.work_manager or user.is_superuser
             all_members = obj.all_members()
-            members = [m.user.pk for m in all_members]
+            members = [m['user']['pk'] for m in all_members]
             return obj.is_public or user.pk in members or visible_auth
         else:
             return False
@@ -142,7 +142,7 @@ class IssueProjectSerializer(serializers.ModelSerializer):
             user = request.user
             visible_auth = user.work_manager or user.is_superuser
             all_members = obj.all_members()
-            members = [m.user.pk for m in all_members]
+            members = [m['user']['pk'] for m in all_members]
             return obj.is_public or user.pk in members or visible_auth
         else:
             return False
