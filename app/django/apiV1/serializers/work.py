@@ -287,6 +287,17 @@ class MemberSerializer(serializers.ModelSerializer):
         model = Member
         fields = ('pk', 'user', 'project', 'roles', 'created')
 
+    def update(self, instance, validated_data):
+        user = self.initial_data.get('user', None)
+        project = self.initial_data.get('project', None)
+        project = project if project else instance.project.pk
+        roles = self.initial_data.get('roles', [])
+        instance.user_id = user
+        instance.project_id = project
+        instance.roles.set(roles)
+        instance.save()
+        return instance
+
 
 class ModuleSerializer(serializers.ModelSerializer):
     class Meta:
