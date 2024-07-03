@@ -120,7 +120,7 @@ const delSubmit = () => {
         </CCol>
       </CRow>
       <v-divider class="mt-0 mb-2" />
-      <div class="history pl-4">
+      <div class="pl-0 text-body">
         <VueMarkdownIt :source="log.comment?.content + '\n' ?? '\n'" />
       </div>
 
