@@ -65,7 +65,7 @@ def issue_log_changes(sender, instance, created, **kwargs):
         status_log = instance.status.name
         details += f"|- **상태**가 *{instance._old_status}*에서 *{instance.status}*(으)로 변경되었습니다."
     if hasattr(instance, '_old_priority'):
-        details += f"|- **우선순위**가 _{instance._old_priority}_ 에서 _{instance.priority}*(으)로 변경되었습니다."
+        details += f"|- **우선순위**가 _{instance._old_priority}_ 에서 *{instance.priority}*(으)로 변경되었습니다."
     if hasattr(instance, '_old_subject'):
         details += f"|- **제목**이 *{instance._old_subject}*에서 *{instance.subject}*(으)로 변경되었습니다."
     if hasattr(instance, '_old_description'):
