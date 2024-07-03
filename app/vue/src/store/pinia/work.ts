@@ -1,27 +1,26 @@
 import api from '@/api'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { useAccount } from '@/store/pinia/account'
 import { errorHandle, message } from '@/utils/helper'
 import type {
-  IssueProject,
-  ProjectFilter,
-  Member,
-  Version,
-  Role,
-  Tracker,
-  IssueCategory,
-  IssueStatus,
+  ActLogEntryFilter,
   CodeValue,
   Issue,
+  IssueCategory,
   IssueComment,
+  IssueFilter,
+  IssueLogEntry,
+  IssueProject,
+  IssueRelation,
+  IssueStatus,
+  Member,
+  News,
+  ProjectFilter,
+  Role,
   TimeEntry,
   TimeEntryFilter,
-  IssueLogEntry,
-  IssueFilter,
-  ActLogEntryFilter,
-  IssueRelation,
-  News,
+  Tracker,
+  Version,
 } from '@/store/types/work'
 
 export const useWork = defineStore('work', () => {
