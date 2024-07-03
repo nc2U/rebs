@@ -43,7 +43,7 @@ export interface IssueProject {
   status: '1' | '9'
   depth: number
   all_members?: SimpleMember[]
-  member_set?: SimpleMember[]
+  members?: SimpleMember[]
   activities?: CodeValue[]
   visible?: boolean
   total_estimated_hours?: number

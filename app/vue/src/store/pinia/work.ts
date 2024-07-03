@@ -58,7 +58,7 @@ export const useWork = defineStore('work', () => {
     if (payload.is_public) url += `&is_public=${payload.is_public}`
     else if (payload.is_public__exclude) url += `&is_public__exclude=${payload.is_public__exclude}`
     if (payload.name) url += `&name=${payload.name}`
-    if (payload.member) url += `&member__user=${payload.member}`
+    if (payload.member) url += `&members__user=${payload.member}`
     if (payload.description) url += `&description=${payload.description}`
 
     return await api

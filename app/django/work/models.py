@@ -25,7 +25,6 @@ class IssueProject(models.Model):
     allowed_roles = models.ManyToManyField('Role', blank=True, related_name='projects', verbose_name='허용 역할')
     trackers = models.ManyToManyField('Tracker', blank=True, related_name='projects', verbose_name='허용유형')
     status = models.CharField('사용여부', max_length=1, default='1', choices=(('1', '사용'), ('9', '잠금보관(모든 접근이 차단됨)')))
-    # members = models.ManyToManyField('Member', blank=True, verbose_name='구성원-폐기예정')
     activities = models.ManyToManyField('CodeActivity', blank=True, verbose_name='작업분류(시간추적)')
     created = models.DateTimeField('추가', auto_now_add=True)
     updated = models.DateTimeField('편집', auto_now=True)
@@ -54,7 +53,7 @@ class IssueProject(models.Model):
         # member 와 조상 member를 user 기준 유니크하게 조인하고,
         조인 시 member.Role 역시 유니크하게 조인한다.
         """
-        members = self.member_set.all()
+        members = self.members.all()
 
         if self.is_inherit_members and self.parent:
             parent_members = self.parent.all_members()
@@ -210,7 +209,7 @@ class Permission(models.Model):
 
 class Member(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='구성원')
-    project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
+    project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트', related_name='members')
     roles = models.ManyToManyField(Role, related_name='members', verbose_name='역할')
     created = models.DateTimeField('추가', auto_now_add=True)
 

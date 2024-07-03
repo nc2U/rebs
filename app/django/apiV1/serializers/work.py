@@ -108,7 +108,7 @@ class IssueProjectSerializer(serializers.ModelSerializer):
     family_tree = SimpleIssueProjectSerializer(many=True, read_only=True)
     module = ModuleInIssueProjectSerializer(read_only=True)
     all_members = MemberInIssueProjectSerializer(many=True, read_only=True)
-    member_set = MemberInIssueProjectSerializer(many=True, read_only=True)
+    members = MemberInIssueProjectSerializer(many=True, read_only=True)
     allowed_roles = RoleInIssueProjectSerializer(many=True, read_only=True)
     trackers = TrackerInIssueProjectSerializer(many=True, read_only=True)
     versions = VersionInIssueProjectSerializer(many=True, read_only=True)
@@ -125,7 +125,7 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         model = IssueProject
         fields = ('pk', 'company', 'real_project', 'name', 'slug', 'description', 'homepage',
                   'is_public', 'module', 'is_inherit_members', 'allowed_roles', 'trackers', 'versions',
-                  'default_version', 'categories', 'status', 'depth', 'all_members', 'member_set', 'activities',
+                  'default_version', 'categories', 'status', 'depth', 'all_members', 'members', 'activities',
                   'visible', 'total_estimated_hours', 'total_time_spent', 'family_tree', 'parent',
                   'parent_visible', 'sub_projects', 'user', 'created', 'updated',)
 
