@@ -516,8 +516,7 @@ class News(models.Model):
     title = models.CharField('제목', max_length=255)
     summary = models.CharField('요약', max_length=255, blank=True, default='')
     description = models.TextField('설명', blank=True, default='')
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True,
-                               verbose_name='저자')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='저자')
     created = models.DateTimeField('추가', auto_now_add=True)
 
     def __str__(self):
