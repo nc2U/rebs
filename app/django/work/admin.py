@@ -1,4 +1,5 @@
 from django.contrib import admin
+from rangefilter.filters import DateRangeFilter
 from import_export.admin import ImportExportMixin
 from .models import (IssueProject, Module, Role, Permission, Member, Tracker, IssueCategory,
                      IssueStatus, Workflow, Version, Repository, CodeActivity, CodeIssuePriority,
@@ -45,53 +46,71 @@ class RoleAdmin(ImportExportMixin, admin.ModelAdmin):
 
 @admin.register(Member)
 class MemberAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
+    list_display = ('user', 'project', 'get_roles', 'created')
+    list_editable = ('project',)
+
+    def get_roles(self, obj):
+        return ", ".join([role.name for role in obj.roles.all()]) if obj.roles.all() else '-'
+
+    get_roles.short_description = '역할'
+
+
+@admin.register(Version)
+class VersionAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ('project', 'name', 'status', 'get_sharing_display', 'effective_date', 'wiki_page_title')
+    list_display_links = ('name',)
 
 
 @admin.register(Tracker)
 class TaskTrackerAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('name', 'is_in_roadmap', 'default_status', 'description', 'order')
     list_editable = ('is_in_roadmap', 'default_status', 'description', 'order')
+    list_filter = ('default_status',)
 
 
 @admin.register(IssueCategory)
 class IssueCategoryAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
+    list_display = ('project', 'name', 'assigned_to')
+    list_display_links = ('name',)
+    list_editable = ('project', 'assigned_to')
 
 
 @admin.register(IssueStatus)
 class IssueStatusAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('name', 'closed')
+    list_display = ('name', 'closed', 'order', 'user')
 
 
 @admin.register(Workflow)
 class WorkflowAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
+    list_display = ('role', 'tracker', 'old_status', 'get_new_statuses')
 
+    def get_new_statuses(self, obj):
+        return ", ".join([status.name for status in obj.new_statuses.all()]) if obj.new_statuses.all() else '-'
 
-@admin.register(Version)
-class VersionAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
+    get_new_statuses.short_description = '허용 업무 상태'
 
 
 @admin.register(Repository)
 class RepositoryAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
+    list_display = ('project', 'get_scm_display', 'is_default', 'slug', 'path', 'path_encoding', 'is_report')
 
 
 @admin.register(CodeActivity)
 class CodeActivityAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('name', 'default', 'active')
+    list_display = ('name', 'active', 'default', 'user')
+    list_editable = ('active', 'default')
 
 
 @admin.register(CodeIssuePriority)
 class CodeIssuePriorityAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('name', 'default', 'active')
+    list_display = ('name', 'active', 'default', 'user')
+    list_editable = ('active', 'default')
 
 
 @admin.register(CodeDocsCategory)
 class CodeDocsCategoryAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('name', 'default', 'active')
+    list_display = ('name', 'active', 'default', 'user')
+    list_editable = ('active', 'default')
 
 
 class IssueFileInline(admin.TabularInline):
@@ -120,6 +139,9 @@ class IssueAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('project', 'tracker', 'is_private', 'subject',
                     'parent', 'status', 'priority', 'start_date', 'due_date')
     list_display_links = ('subject',)
+    list_filter = ('project', 'tracker', 'status', 'priority',
+                   ('start_date', DateRangeFilter), ('due_date', DateRangeFilter))
+    search_fields = ('subject',)
     inlines = (IssueFileInline, IssueCommentInline, TimeEntryInline, IssueRelationInline)
 
 
@@ -131,7 +153,7 @@ class NewsFileInline(admin.TabularInline):
 @admin.register(News)
 class NewsAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('project', 'title', 'summary', 'author')
-    list_display_links = ('project', 'title')
+    list_display_links = ('title',)
     inlines = (NewsFileInline,)
 
 

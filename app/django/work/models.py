@@ -238,7 +238,7 @@ class Version(models.Model):
         return self.name
 
     class Meta:
-        ordering = ('name', 'id')
+        ordering = ('-project', 'id')
         verbose_name = '04. 버전'
         verbose_name_plural = '04. 버전'
 
@@ -272,7 +272,7 @@ class IssueCategory(models.Model):
         return self.name
 
     class Meta:
-        ordering = ('id',)
+        ordering = ('-project', 'id',)
         verbose_name = '06. 업무 범주'
         verbose_name_plural = '06. 업무 범주'
 
@@ -313,7 +313,7 @@ class Workflow(models.Model):
 class Repository(models.Model):
     project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트')
     SCM_CHOICES = (('1', 'Git'),)
-    scm = models.CharField('종류', max_length=10, default='1')
+    scm = models.CharField('종류', max_length=10, choices=SCM_CHOICES, default='1')
     is_default = models.BooleanField('주저장소', default=True)
     slug = models.CharField('식별자', max_length=20, unique=True, blank=True, null=True,
                             help_text='1 에서 255 글자 소문자(a-z),숫자,대쉬(-)와 밑줄(_)만 가능합니다. 식별자는 저장후에는 수정할 수 없습니다.')
