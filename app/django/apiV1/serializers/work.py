@@ -282,25 +282,14 @@ class RoleSerializer(serializers.ModelSerializer):
                   'default_time_activity', 'permission', 'order', 'user', 'created', 'updated')
 
 
-class SimpleIssuesInMemberProjectSerializer(serializers.ModelSerializer):
-    sub_projects = serializers.SerializerMethodField()
-
-    class Meta:
-        model = IssueProject
-        fields = ('pk', 'name', 'slug', 'sub_projects', 'depth')
-
-    def get_sub_projects(self, obj):
-        return self.__class__(obj.issueproject_set.exclude(status='9'), many=True, read_only=True).data
-
-
 class MemberSerializer(serializers.ModelSerializer):
     user = SimpleUserSerializer(read_only=True)
+    project = SimpleIssueProjectSerializer(read_only=True)
     roles = RoleInMemberSerializer(many=True, read_only=True)
-    issue_projects = SimpleIssuesInMemberProjectSerializer(many=True, read_only=True)
 
     class Meta:
         model = Member
-        fields = ('pk', 'user', 'roles', 'issue_projects', 'created')
+        fields = ('pk', 'user', 'project', 'roles', 'created')
 
 
 class ModuleSerializer(serializers.ModelSerializer):
