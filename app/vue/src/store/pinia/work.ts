@@ -154,6 +154,16 @@ export const useWork = defineStore('work', () => {
       .then(res => (memberList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
+  const createMember = (payload: { user?: number; roles?: number[]; slug: string }) =>
+    api
+      .post(`/member/`, payload)
+      .then(async res => {
+        await fetchIssueProject(payload.slug)
+        await fetchMember(res.data.pk)
+        message()
+      })
+      .catch(err => errorHandle(err.response.data))
+
   const patchMember = (payload: { pk: number; user?: number; roles?: number[]; slug: string }) =>
     api
       .patch(`/member/${payload.pk}/`, payload)
@@ -715,6 +725,7 @@ export const useWork = defineStore('work', () => {
     memberList,
     fetchMember,
     fetchMemberList,
+    createMember,
     patchMember,
 
     version,
