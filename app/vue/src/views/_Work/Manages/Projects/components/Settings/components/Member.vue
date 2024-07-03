@@ -22,6 +22,8 @@ const patchIssueProject = (payload: {
   roles: number[]
   del_mem?: number
 }) => workStore.patchIssueProject(payload)
+const patchMember = (payload: { pk: number; user?: number; roles?: number[]; slug: string }) =>
+  workStore.patchMember(payload)
 
 const accStore = useAccount()
 const userList = computed(() => {
@@ -68,6 +70,7 @@ const cancelEdit = () => {
 const editSubmit = (mem: number, user: number) => {
   const currRoles = allMembers.value.filter(m => m.pk === mem)[0]?.roles.map(r => r.pk)
   const slug = iProject?.value.slug as string
+  const roles = Object.values(memberRole.value).sort((a, b) => a - b)
 
   if (currRoles) {
     // 현재 역할이 존재하면
@@ -76,12 +79,7 @@ const editSubmit = (mem: number, user: number) => {
 
     if (isMember) {
       // 현재 프로젝트 멤버이면
-      alert('this! => ')
-
-      if (memberRole.value.length > currRoles.length) {
-        // 추가할 역할이 있는 경우에만 해당 역할을 추가한다.
-        return
-      } else alert('수정할 역할을 선택하세요!')
+      patchMember({ pk: mem, user, roles, slug })
     } else {
       // 부모 프로젝트 멤버이면
       // 1. currRoles의 역할은 수정할 수 없다. ??
@@ -103,7 +101,6 @@ const editSubmit = (mem: number, user: number) => {
   } else {
     // 멤버의 기존 역할이 없으면 새로 생성한다.
     // 멤버 정보 수정
-    const roles = memberRole.value
     workStore.patchMember({ pk: mem, roles, slug })
   }
   cancelEdit()
