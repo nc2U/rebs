@@ -210,7 +210,7 @@ class Permission(models.Model):
 class Member(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='구성원')
     project = models.ForeignKey(IssueProject, on_delete=models.CASCADE, verbose_name='프로젝트', related_name='members')
-    roles = models.ManyToManyField(Role, related_name='members', verbose_name='역할')
+    roles = models.ManyToManyField(Role, verbose_name='역할')
     created = models.DateTimeField('추가', auto_now_add=True)
 
     def __str__(self):

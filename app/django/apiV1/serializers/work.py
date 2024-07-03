@@ -287,13 +287,26 @@ class MemberSerializer(serializers.ModelSerializer):
         model = Member
         fields = ('pk', 'user', 'project', 'roles', 'created')
 
+    def create(self, validated_data):
+        user = self.initial_data.get('user', None)
+        slug = self.initial_data.get('slug', None)
+        project = IssueProject.objects.get(slug=slug)
+        roles = self.initial_data.get('roles', [])
+        member = Member(user_id=user, project=project)
+        member.save()
+        print(member.roles.all())
+        member.roles.set(roles)
+        print(member.roles.all())
+        return member
+
     def update(self, instance, validated_data):
         user = self.initial_data.get('user', None)
-        project = self.initial_data.get('project', None)
-        project = project if project else instance.project.pk
+        slug = self.initial_data.get('slug', None)
+        project = IssueProject.objects.get(slug=slug)
+        project = project if project else instance.project
         roles = self.initial_data.get('roles', [])
         instance.user_id = user
-        instance.project_id = project
+        instance.project = project
         instance.roles.set(roles)
         instance.save()
         return instance
