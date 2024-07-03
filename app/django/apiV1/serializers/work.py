@@ -291,12 +291,10 @@ class MemberSerializer(serializers.ModelSerializer):
         user = self.initial_data.get('user', None)
         slug = self.initial_data.get('slug', None)
         project = IssueProject.objects.get(slug=slug)
-        roles = self.initial_data.get('roles', [])
         member = Member(user_id=user, project=project)
         member.save()
-        print(member.roles.all())
+        roles = self.initial_data.get('roles', [])
         member.roles.set(roles)
-        print(member.roles.all())
         return member
 
     def update(self, instance, validated_data):
