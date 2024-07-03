@@ -25,7 +25,7 @@ class IssueProject(models.Model):
     allowed_roles = models.ManyToManyField('Role', blank=True, related_name='projects', verbose_name='허용 역할')
     trackers = models.ManyToManyField('Tracker', blank=True, related_name='projects', verbose_name='허용유형')
     status = models.CharField('사용여부', max_length=1, default='1', choices=(('1', '사용'), ('9', '잠금보관(모든 접근이 차단됨)')))
-    members = models.ManyToManyField('Member', blank=True, verbose_name='구성원-폐기예정')
+    # members = models.ManyToManyField('Member', blank=True, verbose_name='구성원-폐기예정')
     activities = models.ManyToManyField('CodeActivity', blank=True, verbose_name='작업분류(시간추적)')
     created = models.DateTimeField('추가', auto_now_add=True)
     updated = models.DateTimeField('편집', auto_now=True)
