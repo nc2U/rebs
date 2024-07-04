@@ -41,20 +41,6 @@ const noInheritMem = (mem: number) => {
   return !!member && member.roles.length === duplicate.roles.length
 }
 
-const inheritRole = (mem: number, role: number) => {
-  if (noInheritMem(mem)) return false
-  else {
-    const member = memberList.value.filter(m => m.pk === mem)[0]
-    return (
-      !member &&
-      allMembers.value
-        .filter(m => m.pk === mem)[0]
-        .roles.map(r => r.pk)
-        .includes(role)
-    )
-  }
-}
-
 const toEdit = (member: SimpleMember) => {
   editMode.value = member.pk
   const pRoles = member.roles.map((r: { pk: number; name: string }) => r.pk)
@@ -200,9 +186,9 @@ onBeforeMount(() => accStore.fetchUsersList())
           <col style="width: 25%" />
         </colgroup>
         <CTableHead>
-          <CTableRow class="text-center">
-            <CTableHeaderCell scope="col">사용자</CTableHeaderCell>
-            <CTableHeaderCell scope="col">역할</CTableHeaderCell>
+          <CTableRow>
+            <CTableHeaderCell class="pl-5" scope="col">사용자</CTableHeaderCell>
+            <CTableHeaderCell class="pl-3" scope="col">역할</CTableHeaderCell>
             <CTableHeaderCell scope="col"></CTableHeaderCell>
           </CTableRow>
         </CTableHead>
@@ -210,23 +196,23 @@ onBeforeMount(() => accStore.fetchUsersList())
         <CTableBody>
           <CTableRow v-for="mem in allMembers" :key="mem.pk" align="middle">
             <CTableDataCell class="pl-5">
-              <router-link to="">{{ mem.user.username }}</router-link>
+              <router-link :to="{ name: '사용자 - 보기', params: { userId: mem.user.pk } }">
+                {{ mem.user.username }}
+              </router-link>
             </CTableDataCell>
 
             <CTableDataCell class="pl-3">
               <div v-if="editMode === mem.pk">
-                <div v-for="role in iProject?.allowed_roles" :key="role.pk">
+                <div v-for="role in mem.roles" :key="role.pk">
                   <CFormCheck
                     v-model="memberRole"
                     :label="role.name"
                     :value="role.pk"
                     :id="'role-' + role.pk"
-                    :disabled="inheritRole(mem.pk, role.pk)"
+                    :disabled="role?.inherited"
                     class="text-left"
                   />
-                  <span v-if="inheritRole(mem.pk, role.pk)" class="form-text">
-                    상위 프로젝트로부터 상속
-                  </span>
+                  <span v-if="role?.inherited" class="form-text"> 상위 프로젝트로부터 상속 </span>
                 </div>
 
                 <CButton
@@ -267,12 +253,12 @@ onBeforeMount(() => accStore.fetchUsersList())
                 <router-link to="" @click="toEdit(mem)">편집</router-link>
               </span>
               <span v-else class="mr-2">
-                <v-icon icon="mdi-pencil" color="amber" size="sm" />
+                <v-icon icon="mdi-close-octagon-outline" color="grey" size="sm" class="mr-1" />
                 <router-link to="" @click="cancelEdit">취소</router-link>
               </span>
 
               <span v-if="noInheritMem(mem.pk)">
-                <v-icon icon="mdi-trash-can-outline" color="grey" size="sm" />
+                <v-icon icon="mdi-trash-can-outline" color="grey" size="sm" class="mr-1" />
                 <router-link to="" @click="toDelete(mem.pk)">삭제</router-link>
               </span>
             </CTableDataCell>

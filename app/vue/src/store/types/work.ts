@@ -35,7 +35,7 @@ export interface IssueProject {
   is_public: boolean
   module?: Module | null
   is_inherit_members: boolean
-  allowed_roles?: { pk: number; name: string }[]
+  allowed_roles?: { pk: number; name: string; inherited: boolean }[]
   trackers?: { pk: number; name: string; description: string }[]
   versions?: Version[]
   default_version: string | null
