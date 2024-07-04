@@ -279,7 +279,7 @@ class Version(models.Model):
         return self.name
 
     class Meta:
-        ordering = ('-project', 'id')
+        ordering = ('project', 'id')
         verbose_name = '04. 버전'
         verbose_name_plural = '04. 버전'
 

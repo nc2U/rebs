@@ -46,13 +46,16 @@ class PermissionInline(admin.StackedInline):
 
 @admin.register(Role)
 class RoleAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('name', 'issue_visible', 'time_entry_visible', 'user_visible', 'default_time_activity')
+    list_display = ('pk', 'name', 'issue_visible', 'time_entry_visible',
+                    'user_visible', 'default_time_activity')
+    list_display_links = ('name',)
     inlines = (PermissionInline,)
 
 
 @admin.register(Member)
 class MemberAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('user', 'project', 'get_roles', 'created')
+    list_display = ('pk', 'user', 'project', 'get_roles', 'created')
+    list_display_links = ('user',)
     list_editable = ('project',)
 
     def get_roles(self, obj):
@@ -63,7 +66,7 @@ class MemberAdmin(ImportExportMixin, admin.ModelAdmin):
 
 @admin.register(Version)
 class VersionAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('project', 'name', 'status', 'get_sharing_display', 'effective_date', 'wiki_page_title')
+    list_display = ('pk', 'name', 'project', 'status', 'get_sharing_display', 'effective_date', 'wiki_page_title')
     list_display_links = ('name',)
 
 
@@ -77,19 +80,21 @@ class TrackerAdmin(ImportExportMixin, admin.ModelAdmin):
 
 @admin.register(IssueCategory)
 class IssueCategoryAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('project', 'name', 'assigned_to')
+    list_display = ('pk', 'name', 'project', 'assigned_to')
     list_display_links = ('name',)
     list_editable = ('project', 'assigned_to')
 
 
 @admin.register(IssueStatus)
 class IssueStatusAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('name', 'closed', 'order', 'user')
+    list_display = ('pk', 'name', 'closed', 'order', 'user')
+    list_display_links = ('name',)
 
 
 @admin.register(Workflow)
 class WorkflowAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('role', 'tracker', 'old_status', 'get_new_statuses')
+    list_display = ('pk', 'role', 'tracker', 'old_status', 'get_new_statuses')
+    list_display_links = ('name',)
 
     def get_new_statuses(self, obj):
         return ", ".join([status.name for status in obj.new_statuses.all()]) if obj.new_statuses.all() else '-'
@@ -104,19 +109,22 @@ class RepositoryAdmin(ImportExportMixin, admin.ModelAdmin):
 
 @admin.register(CodeActivity)
 class CodeActivityAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('name', 'active', 'default', 'user')
+    list_display = ('pk', 'name', 'active', 'default', 'user')
+    list_display_links = ('name',)
     list_editable = ('active', 'default')
 
 
 @admin.register(CodeIssuePriority)
 class CodeIssuePriorityAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('name', 'active', 'default', 'user')
+    list_display = ('pk', 'name', 'active', 'default', 'user')
+    list_display_links = ('name',)
     list_editable = ('active', 'default')
 
 
 @admin.register(CodeDocsCategory)
 class CodeDocsCategoryAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('name', 'active', 'default', 'user')
+    list_display = ('pk', 'name', 'active', 'default', 'user')
+    list_display_links = ('name',)
     list_editable = ('active', 'default')
 
 
@@ -143,7 +151,7 @@ class IssueRelationInline(admin.TabularInline):
 
 @admin.register(Issue)
 class IssueAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('project', 'tracker', 'is_private', 'subject',
+    list_display = ('pk', 'tracker', 'is_private', 'subject', 'project',
                     'parent', 'status', 'priority', 'start_date', 'due_date')
     list_display_links = ('subject',)
     list_filter = ('project', 'tracker', 'status', 'priority',
@@ -159,16 +167,20 @@ class NewsFileInline(admin.TabularInline):
 
 @admin.register(News)
 class NewsAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('project', 'title', 'summary', 'author')
+    list_display = ('pk', 'title', 'project', 'summary', 'author')
     list_display_links = ('title',)
     inlines = (NewsFileInline,)
 
 
 @admin.register(ActivityLogEntry)
 class ActivityLogEntryAdmin(admin.ModelAdmin):
-    list_display = ('sort', 'project', 'issue', 'spent_time', 'act_date')
+    list_display = ('pk', 'sort', 'issue', 'project', 'spent_time', 'act_date')
+    list_display_links = ('issue',)
+    list_filter = ('project', 'sort', ('act_date', DateRangeFilter))
 
 
 @admin.register(IssueLogEntry)
 class IssueLogEntryAdmin(admin.ModelAdmin):
-    list_display = ('issue', 'action', 'comment_id', 'details', 'diff', 'timestamp')
+    list_display = ('pk', 'action', 'issue', 'comment_id', 'details', 'diff', 'timestamp')
+    list_display_links = ('issue',)
+    list_filter = ('issue', 'action')
