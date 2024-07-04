@@ -164,11 +164,11 @@ export const useWork = defineStore('work', () => {
       })
       .catch(err => errorHandle(err.response.data))
 
-  const patchMember = (payload: { pk: number; user?: number; roles?: number[]; slug: string }) =>
+  const patchMember = (payload: { pk: number; user?: number; roles?: number[]; slug?: string }) =>
     api
       .patch(`/member/${payload.pk}/`, payload)
       .then(async res => {
-        await fetchIssueProject(payload.slug)
+        await fetchIssueProject(res.data.project.slug)
         await fetchMember(res.data.pk)
         message()
       })
