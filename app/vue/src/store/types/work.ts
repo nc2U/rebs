@@ -6,7 +6,7 @@ export interface SimpleUser {
 export interface SimpleMember {
   pk: number
   user: SimpleUser
-  roles: { pk: number; name: string }[]
+  roles: { pk: number; name: string; inherited?: boolean }[]
   add_roles?: { pk: number; name: string }[]
   created: string
 }
