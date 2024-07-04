@@ -44,11 +44,12 @@ export const dateFormat = (date: Date | string, split?: string) => {
 export const getToday = () =>
   new Date(new Date().getTime() + 32400000).toISOString().replace(/T.*$/, '')
 
-export const timeFormat = (date: Date | number | string, short = false) => {
-  const formattedTime = new Date(+new Date(date) + 32400000)
+export const timeFormat = (date: Date | number | string, short = false, split?: string) => {
+  let formattedTime = new Date(+new Date(date) + 32400000)
     .toISOString()
     .replace('T', ' ')
     .replace(/\..*/, '')
+  formattedTime = !split ? formattedTime : formattedTime.replace(/-/g, split)
   return !short ? formattedTime : formattedTime.substring(11, 16)
 }
 

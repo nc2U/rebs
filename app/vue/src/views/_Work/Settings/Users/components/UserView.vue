@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, inject, onBeforeMount, type PropType } from 'vue'
 import type { ActLogEntry, IssueProject } from '@/store/types/work'
-import { dateFormat } from '@/utils/baseMixins'
+import { dateFormat, elapsedTime, timeFormat } from '@/utils/baseMixins'
 import { useWork } from '@/store/pinia/work'
 import { useAccount } from '@/store/pinia/account'
 import IssueSummary from './atomicViews/IssueSummary.vue'
@@ -60,7 +60,11 @@ onBeforeMount(() => {
           <ul>
             <li>로그인 : {{ user?.username }}</li>
             <li>등록시각 : {{ user ? dateFormat(user.date_joined, '/') : '' }}</li>
-            <li>마지막 로그인 : {{ user?.last_login ? dateFormat(user.last_login, '/') : '' }}</li>
+            <li>
+              마지막 로그인 :
+              {{ user?.last_login ? timeFormat(user.last_login, false, '/') : '' }}
+              {{ user?.last_login ? `(${elapsedTime(user?.last_login)})` : '' }}
+            </li>
           </ul>
         </CCol>
       </CRow>
