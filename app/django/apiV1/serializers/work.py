@@ -41,9 +41,11 @@ class SimpleUserSerializer(serializers.ModelSerializer):
 
 
 class RoleInMemberSerializer(serializers.ModelSerializer):
+    is_parent = serializers.BooleanField(read_only=True)
+
     class Meta:
         model = Role
-        fields = ('pk', 'name')
+        fields = ('pk', 'name', 'is_parent')
 
 
 class MemberInIssueProjectSerializer(serializers.ModelSerializer):
