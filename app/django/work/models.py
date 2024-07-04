@@ -57,22 +57,23 @@ class IssueProject(models.Model):
 
         # 부모 프로젝트의 멤버를 재귀적으로 가져옴
         def get_all_parent_members(project):
-            parent_mems = {}
+            p_members = {}
             if project.is_inherit_members and project.parent:
-                parent_mems.update(get_all_parent_members(project.parent))
+                p_members.update(get_all_parent_members(project.parent))
             for member in project.members.all():
-                if member.user.pk not in parent_mems:
-                    parent_mems[member.user.pk] = {
+                if member.user.pk not in p_members:
+                    p_members[member.user.pk] = {
                         'pk': member.pk,
                         'user': {'pk': member.user.pk, 'username': member.user.username},
-                        'roles': {role.pk: {'pk': role.pk, 'name': role.name} for role in member.roles.all()},
+                        'roles': {role.pk: {'pk': role.pk, 'name': role.name, 'inherited': True} for role in
+                                  member.roles.all()},
                         'created': member.created,
                     }
                 else:
-                    parent_mems[member.user.pk]['roles'].update(
-                        {role.pk: {'pk': role.pk, 'name': role.name} for role in member.roles.all()}
-                    )
-            return parent_mems
+                    p_members[member.user.pk]['roles'] \
+                        .update(
+                        {role.pk: {'pk': role.pk, 'name': role.name, 'inherited': True} for role in member.roles.all()})
+            return p_members
 
         parent_members = get_all_parent_members(self)
 
@@ -81,13 +82,15 @@ class IssueProject(models.Model):
             if mem.user.pk in parent_members:
                 parent_roles = parent_members[mem.user.pk]['roles']
                 union_roles = parent_roles.copy()
-                union_roles.update({role.pk: {'pk': role.pk, 'name': role.name} for role in mem.roles.all()})
+                union_roles.update(
+                    {role.pk: {'pk': role.pk, 'name': role.name, 'inherited': False} for role in mem.roles.all()})
                 parent_members[mem.user.pk]['roles'] = union_roles
             else:
                 parent_members[mem.user.pk] = {
                     'pk': mem.pk,
                     'user': {'pk': mem.user.pk, 'username': mem.user.username},
-                    'roles': {role.pk: {'pk': role.pk, 'name': role.name} for role in mem.roles.all()},
+                    'roles': {role.pk: {'pk': role.pk, 'name': role.name, 'inherited': False} for role in
+                              mem.roles.all()},
                     'created': mem.created,
                 }
 
