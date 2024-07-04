@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
-import { message } from '@/utils/helper'
 import LoginForm from './components/LoginForm.vue'
 import FindPassword from '@/views/_Accounts/components/FindPassword.vue'
 import SocialLogin from '@/views/_Accounts/components/SocialLogin.vue'
@@ -11,15 +10,8 @@ const formName = ref('login')
 const accStore = useAccount()
 const router = useRouter()
 
-const onSubmit = (payload: { email: string; password: string; redirect: string }) => {
-  accStore.login(payload).then(res => {
-    if (!!res.profile || res.is_superuser) {
-      if (payload.redirect) router.push({ path: payload.redirect })
-      else router.push({ name: 'Home' })
-      message('info', '', '로그인 성공 알림!', 2000, 'top-center', 'bounce')
-    } else message('default', '', '계정이 생성되었으며 관리자 승인 대기중입니다.', 10000)
-  })
-}
+const onSubmit = (payload: { email: string; password: string; redirect: string }) =>
+  accStore.login(payload).then(() => router.push({ name: 'Home' }))
 
 const toLogin = () => (formName.value = 'login')
 const findPass = () => (formName.value = 'pass')

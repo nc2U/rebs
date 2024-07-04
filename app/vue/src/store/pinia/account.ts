@@ -8,7 +8,7 @@ import type { User, StaffAuth, Profile, Scrape, Todo } from '@/store/types/accou
 import { useDocument } from '@/store/pinia/document'
 import type { LocationQueryValue } from 'vue-router'
 
-type LoginUser = { email: string; password: string }
+type LoginUser = { email: string; password: string; redirect?: string }
 
 const extractId = (token: string) => {
   const base64Payload = token.split('.')[1]
@@ -61,19 +61,48 @@ export const useAccount = defineStore('account', () => {
     fetchTodoList().then(() => fetchProfile())
   }
 
-  const login = async (payload: LoginUser) => {
-    Cookies.remove('accessToken')
-    return await api
-      .post('/token/', payload)
-      .then(res => {
-        setToken(res.data.access)
-        return api.get(`/user/${extractId(accessToken.value)}/`)
-      })
-      .then(res => {
-        if (!!res.data.profile) setUser(res.data)
-        return res.data
-      })
-      .catch(() => message('warning', '', '이메일 또는 비밀번호를 확인하여 주세요.'))
+  // const login = async (payload: LoginUser) => {
+  //   Cookies.remove('accessToken')
+  //   return await api
+  //     .post('/token/', payload)
+  //     .then(res => {
+  //       setToken(res.data.access)
+  //       return api.get(`/user/${extractId(accessToken.value)}/`)
+  //     })
+  //     .then(res => {
+  //       if (!!res.data.profile) setUser(res.data)
+  //       return res.data
+  //     })
+  //     .catch(() => message('warning', '', '이메일 또는 비밀번호를 확인하여 주세요.'))
+  // }
+
+  const login = async (payload: { email: string; password: string; redirect: string }) => {
+    try {
+      // 로그인 요청
+      const tokenResponse = await api.post('/token/', payload)
+      const accessToken = tokenResponse.data.access
+      setToken(accessToken)
+
+      // 사용자 정보 요청
+      const userId = extractId(accessToken)
+      const userResponse = await api.get(`/user/${userId}/`)
+
+      // API 응답을 확인하고 처리
+      if (userResponse.data && (userResponse.data.profile || userResponse.data.is_superuser)) {
+        setUser(userResponse.data)
+        // 성공 메시지
+        message('info', '', '로그인 성공 알림!', 2000, 'top-center', 'bounce')
+      } else {
+        // 관리자 승인 대기 중 메시지
+        message('default', '', '계정이 생성되었으며 관리자 승인 대기중입니다.', 10000)
+      }
+
+      return userResponse.data
+    } catch (error) {
+      // 에러 처리
+      console.error('Login failed:', error)
+      message('warning', '', '이메일 또는 비밀번호를 확인하여 주세요.', 5000)
+    }
   }
 
   const loginByToken = async (token?: string) => {
