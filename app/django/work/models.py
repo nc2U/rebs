@@ -149,7 +149,7 @@ class Role(models.Model):
         return self.name
 
     class Meta:
-        ordering = ('order', 'created',)
+        ordering = ('order', 'id',)
         verbose_name = '02. 역할 및 권한'
         verbose_name_plural = '02. 역할 및 권한'
 
@@ -457,7 +457,7 @@ class Issue(models.Model):
         return self.subject
 
     class Meta:
-        ordering = ('-created',)
+        ordering = ('-id',)
         verbose_name = '13. 업무(작업)'
         verbose_name_plural = '13. 업무(작업)'
 
@@ -549,7 +549,7 @@ class TimeEntry(models.Model):
         return f'{self.issue} - {self.hours}'
 
     class Meta:
-        ordering = ('-created',)
+        ordering = ('-id',)
 
 
 class News(models.Model):
@@ -629,7 +629,7 @@ class ActivityLogEntry(models.Model):
         return f"{self.user.__str__()} - {self.timestamp}"
 
     class Meta:
-        ordering = ('-timestamp',)
+        ordering = ('-id',)
         verbose_name = '15. 작업 내역'
         verbose_name_plural = '15. 작업 내역'
 
