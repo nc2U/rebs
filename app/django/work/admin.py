@@ -94,7 +94,7 @@ class IssueStatusAdmin(ImportExportMixin, admin.ModelAdmin):
 @admin.register(Workflow)
 class WorkflowAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('pk', 'role', 'tracker', 'old_status', 'get_new_statuses')
-    list_display_links = ('name',)
+    list_display_links = ('role', 'tracker', 'old_status')
 
     def get_new_statuses(self, obj):
         return ", ".join([status.name for status in obj.new_statuses.all()]) if obj.new_statuses.all() else '-'
