@@ -384,7 +384,7 @@ class CodeActivity(models.Model):
         return self.name
 
     class Meta:
-        ordering = ('order', 'created',)
+        ordering = ('order', 'id',)
         verbose_name = '10. 작업분류(시간추적)'
         verbose_name_plural = '10. 작업분류(시간추적)'
 
@@ -402,7 +402,7 @@ class CodeIssuePriority(models.Model):
         return self.name
 
     class Meta:
-        ordering = ('order', 'created',)
+        ordering = ('order', 'id',)
         verbose_name = '11. 업무 우선순위'
         verbose_name_plural = '11. 업무 우선순위'
 
@@ -420,7 +420,7 @@ class CodeDocsCategory(models.Model):
         return self.name
 
     class Meta:
-        ordering = ('order', 'created',)
+        ordering = ('order', 'id',)
         verbose_name = '12. 문서 범주'
         verbose_name_plural = '12. 문서 범주'
 
