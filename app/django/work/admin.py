@@ -68,8 +68,9 @@ class VersionAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 @admin.register(Tracker)
-class TaskTrackerAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('name', 'is_in_roadmap', 'default_status', 'description', 'order')
+class TrackerAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ('pk', 'name', 'is_in_roadmap', 'default_status', 'description', 'order')
+    list_display_links = ('name',)
     list_editable = ('is_in_roadmap', 'default_status', 'description', 'order')
     list_filter = ('default_status',)
 
