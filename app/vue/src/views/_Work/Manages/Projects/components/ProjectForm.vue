@@ -275,22 +275,37 @@ onBeforeMount(() => {
 
         <CRow class="mb-3">
           <CFormLabel class="col-form-label text-right col-2">허용 역할</CFormLabel>
-          <CCol class="pt-2">
-            <MultiSelect v-model="form.allowed_roles" id="allowed_roles" :options="allRoles" />
+          <CCol>
+            <MultiSelect
+              v-model="form.allowed_roles"
+              id="allowed_roles"
+              :options="allRoles"
+              placeholder="허용 역할 항목 선택"
+            />
           </CCol>
         </CRow>
 
         <CRow class="mb-3">
           <CFormLabel class="col-form-label text-right col-2">허용 유형</CFormLabel>
-          <CCol class="pt-2">
-            <MultiSelect v-model="form.trackers" id="trackers" :options="allTrackers" />
+          <CCol>
+            <MultiSelect
+              v-model="form.trackers"
+              id="trackers"
+              :options="allTrackers"
+              placeholder="허용 유형 항목 선택"
+            />
           </CCol>
         </CRow>
 
         <CRow class="mb-3">
           <CFormLabel class="col-form-label text-right col-2">시간 추적</CFormLabel>
-          <CCol class="pt-2">
-            <MultiSelect v-model="form.activities" id="trackers" :options="getActivities" />
+          <CCol>
+            <MultiSelect
+              v-model="form.activities"
+              id="trackers"
+              :options="getActivities"
+              placeholder="시간 추적 항목 선택"
+            />
           </CCol>
         </CRow>
       </CCardBody>
