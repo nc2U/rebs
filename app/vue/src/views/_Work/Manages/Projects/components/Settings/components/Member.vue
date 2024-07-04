@@ -125,7 +125,7 @@ const isInherit = (memRoles: any[], role: number) =>
   memRoles
     .filter(r => r.pk === role)
     .map(r => r.inherited)
-    .some(() => true)
+    .some(i => i === true)
 
 // FormModal Start ------------------
 
