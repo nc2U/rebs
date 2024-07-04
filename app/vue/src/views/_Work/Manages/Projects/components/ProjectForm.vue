@@ -44,7 +44,7 @@ const form = reactive({
   is_inherit_members: false,
   allowed_roles: [4, 5, 6],
   trackers: [4, 5, 6],
-  activities: [1, 2],
+  activities: [3, 4, 5, 6, 7, 8, 9, 10],
 })
 
 const formsCheck = computed(() => {
