@@ -81,7 +81,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         projects = IssueProject.objects.all()
         project_list = []
         for project in projects:
-            all_members = [m.user.pk for m in project.all_members()]
+            all_members = [m['user']['pk'] for m in project.all_members()]
             if self.pk in all_members:
                 project_list.append(project.pk)
         return IssueProject.objects.filter(pk__in=project_list)

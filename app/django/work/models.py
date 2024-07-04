@@ -53,7 +53,6 @@ class IssueProject(models.Model):
         멤버와 조상 멤버를 user 기준으로 유니크하게 합치고,
         멤버의 역할(Role)도 유니크하게 합치는 함수
         """
-        all_members = {}
         members = self.members.all()  # 자신의 모든 멤버
 
         # 부모 프로젝트의 멤버를 재귀적으로 가져옴
@@ -92,15 +91,14 @@ class IssueProject(models.Model):
                     'created': mem.created,
                 }
 
-        # dict -> list로 변환
         all_members = [
-            # {
-            #     'pk': mem['pk'],
-            #     'user': mem['user'],
-            #     'roles': list(mem['roles'].values()),
-            #     'created': mem['created']
-            # }
-            # for mem in parent_members.values()
+            {
+                'pk': mem['pk'],
+                'user': mem['user'],
+                'roles': list(mem['roles'].values()),
+                'created': mem['created']
+            }
+            for mem in parent_members.values()
         ]
 
         return all_members
