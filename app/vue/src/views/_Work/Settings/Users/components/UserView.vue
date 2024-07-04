@@ -9,7 +9,7 @@ import ProjectSummary from './atomicViews/ProjectSummary.vue'
 import ActivityLogs from '@/views/_Work/Manages/Activity/components/ActivityLogs.vue'
 
 const props = defineProps({
-  projectList: { type: Array as PropType<IssueProject[]>, default: () => [] },
+  issueProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
   issueNum: {
     type: Object,
     default: () => {},
@@ -28,7 +28,7 @@ const groupedActivities = computed<{ [key: string]: ActLogEntry[] }>(
   () => workStore.groupedActivities,
 )
 
-const issueProjects = computed(() => props.projectList.slice())
+const issueProjects = computed(() => props.issueProjects.slice())
 
 onBeforeMount(() => {
   emit('aside-visible', false)
@@ -77,14 +77,14 @@ onBeforeMount(() => {
 
       <IssueSummary :issue-num="issueNum" />
 
-      <template v-if="projectList.length">
+      <template v-if="issueProjects.length">
         <CRow>
           <CCol>
             <span class="h5" style="font-size: 1.15em">프로젝트</span>
           </CCol>
         </CRow>
 
-        <ProjectSummary :project-list="issueProjects" />
+        <ProjectSummary :issue-projects="issueProjects" />
       </template>
     </CCol>
 
