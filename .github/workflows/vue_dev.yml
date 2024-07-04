@@ -32,7 +32,7 @@ jobs:
           node-version: 20
       
       # pnpm use
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v4
         name: Install pnpm
         with:
           version: 8
