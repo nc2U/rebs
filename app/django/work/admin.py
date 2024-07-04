@@ -12,6 +12,11 @@ class ModuleInline(admin.TabularInline):
     extra = 1
 
 
+class MemberInline(admin.TabularInline):
+    model = Member
+    extra = 0
+
+
 class VersionInline(admin.TabularInline):
     model = Version
     extra = 0
@@ -31,7 +36,7 @@ class RepositoryInline(admin.TabularInline):
 class IssueProjectAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('pk', 'name', 'real_project', 'homepage', 'is_public', 'parent', 'slug', 'status', 'created')
     list_display_links = ('name',)
-    inlines = (ModuleInline, VersionInline, IssueCategoryInline, RepositoryInline)
+    inlines = (ModuleInline, MemberInline, VersionInline, IssueCategoryInline, RepositoryInline)
 
 
 class PermissionInline(admin.StackedInline):
