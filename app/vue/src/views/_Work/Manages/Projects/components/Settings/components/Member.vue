@@ -121,6 +121,12 @@ const mergedMembers = (
 
 const addComma = (n: number, i: number) => n > i + 1
 
+const isInherit = (memRoles: any[], role: number) =>
+  memRoles
+    .filter(r => r.pk === role)
+    .map(r => r.inherited)
+    .some(() => true)
+
 // FormModal Start ------------------
 
 const validated = ref(false)
@@ -203,16 +209,18 @@ onBeforeMount(() => accStore.fetchUsersList())
 
             <CTableDataCell class="pl-3">
               <div v-if="editMode === mem.pk">
-                <div v-for="role in mem.roles" :key="role.pk">
+                <div v-for="role in iProject?.allowed_roles" :key="role.pk">
                   <CFormCheck
                     v-model="memberRole"
                     :label="role.name"
                     :value="role.pk"
                     :id="'role-' + role.pk"
-                    :disabled="role?.inherited"
+                    :disabled="isInherit(mem.roles, role.pk)"
                     class="text-left"
                   />
-                  <span v-if="role?.inherited" class="form-text"> 상위 프로젝트로부터 상속 </span>
+                  <span v-if="isInherit(mem.roles, role.pk)" class="form-text">
+                    상위 프로젝트로부터 상속
+                  </span>
                 </div>
 
                 <CButton
