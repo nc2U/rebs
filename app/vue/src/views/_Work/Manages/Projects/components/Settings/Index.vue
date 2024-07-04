@@ -54,6 +54,7 @@ const modules = computed(() => issueProject.value?.module)
 const AllProjects = computed(() => workStore.AllIssueProjects)
 const getRoles = computed(() => workStore.getRoles)
 const getTrackers = computed(() => workStore.getTrackers)
+const getActivities = computed(() => workStore.getActivities)
 
 const memberList = computed(() =>
   (issueProject.value
@@ -132,6 +133,7 @@ onBeforeMount(async () => {
       :all-projects="AllProjects"
       :all-roles="getRoles"
       :all-trackers="getTrackers"
+      :get-activities="getActivities"
       @on-submit="onSubmit"
     />
 
