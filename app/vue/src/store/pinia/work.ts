@@ -164,7 +164,7 @@ export const useWork = defineStore('work', () => {
       })
       .catch(err => errorHandle(err.response.data))
 
-  const patchMember = (payload: { pk: number; user?: number; roles?: number[]; slug?: string }) =>
+  const patchMember = (payload: { pk: number; user?: number; roles?: number[] }) =>
     api
       .patch(`/member/${payload.pk}/`, payload)
       .then(async res => {

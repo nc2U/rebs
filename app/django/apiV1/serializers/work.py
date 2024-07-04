@@ -301,11 +301,8 @@ class MemberSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         user = self.initial_data.get('user', None)
-        slug = self.initial_data.get('slug', None)
-        project = IssueProject.objects.get(slug=slug) if slug else instance.project
         roles = self.initial_data.get('roles', [])
         instance.user_id = user if user else instance.user.id
-        instance.project = project
         instance.roles.set(roles)
         instance.save()
         return instance

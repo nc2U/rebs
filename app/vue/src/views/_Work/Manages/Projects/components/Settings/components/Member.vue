@@ -22,7 +22,11 @@ const patchIssueProject = (payload: {
   roles: number[]
   del_mem?: number
 }) => workStore.patchIssueProject(payload)
-const patchMember = (payload: { pk: number; user?: number; roles?: number[]; slug: string }) =>
+
+const createMember = (payload: { user?: number; roles?: number[]; slug: string }) =>
+  workStore.createMember(payload)
+
+const patchMember = (payload: { pk: number; user?: number; roles?: number[]; slug?: string }) =>
   workStore.patchMember(payload)
 
 const accStore = useAccount()
@@ -53,42 +57,15 @@ const cancelEdit = () => {
   memberRole.value = []
 }
 
-const editSubmit = (mem: number, user: number) => {
-  const currRoles = allMembers.value.filter(m => m.pk === mem)[0]?.roles.map(r => r.pk)
+const editSubmit = (mem: SimpleMember, roles: number[]) => {
   const slug = iProject?.value.slug as string
-  const roles = Object.values(memberRole.value).sort((a, b) => a - b)
+  const parent_roles = mem.roles.filter(r => r.inherited).map(r => r.pk)
+  const calc_roles = roles.filter(r => !parent_roles.includes(r))
+  const me = memberList.value.filter(m => m.user.pk === mem.user.pk).map(m => m.pk)[0]
 
-  if (currRoles) {
-    // 현재 역할이 존재하면
+  if (!!me) patchMember({ pk: me, roles: calc_roles })
+  else createMember({ user: mem.user.pk, roles: calc_roles, slug })
 
-    const isMember = !!memberList.value.filter(m => m.pk === mem).length
-
-    if (isMember) {
-      // 현재 프로젝트 멤버이면
-      patchMember({ pk: mem, user, roles, slug })
-    } else {
-      // 부모 프로젝트 멤버이면
-      // 1. currRoles의 역할은 수정할 수 없다. ??
-      // 2. 그러므로 멤버의 역할을 추출한다.
-      // 3. 멤버의 기존 역할이 있을 때
-      if (memberRole.value.length > currRoles.length) {
-        // 추가할 역할이 있으면
-        // 멤버 정보 등록
-        const roles = memberRole.value.filter(r => !currRoles.includes(r)) // 부모 권한 대비 추가 권한
-        patchIssueProject({ slug, users: [user], roles })
-      } else {
-        // // 추가할 역할이 없으면
-        // // 멤버의 권한이 없으면 멤버를 삭제한다.
-        // const member = memberList.value.filter(m => m.user.pk === user)[0].pk
-        // patchIssueProject({ slug, users: [], roles: [], del_mem: member })
-        alert('추가할 역할을 선택하세요!')
-      }
-    }
-  } else {
-    // 멤버의 기존 역할이 없으면 새로 생성한다.
-    // 멤버 정보 수정
-    workStore.patchMember({ pk: mem, roles, slug })
-  }
   cancelEdit()
 }
 
@@ -228,7 +205,7 @@ onBeforeMount(() => accStore.fetchUsersList())
                   size="sm"
                   type="button"
                   class="mt-2"
-                  @click="editSubmit(mem.pk, mem.user.pk)"
+                  @click="editSubmit(mem, memberRole)"
                 >
                   저장
                 </CButton>
