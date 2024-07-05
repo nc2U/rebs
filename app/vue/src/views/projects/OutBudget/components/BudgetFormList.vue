@@ -17,11 +17,12 @@ const onDeleteOrder = (pk: number) => emit('on-delete', pk)
 <template>
   <CTable hover responsive>
     <colgroup>
-      <col style="width: 15%" />
-      <col style="width: 15%" />
+      <col style="width: 14%" />
+      <col style="width: 14%" />
+      <col style="width: 14%" />
       <col style="width: 20%" />
-      <col style="width: 25%" />
-      <col style="width: 15%" />
+      <col style="width: 14%" />
+      <col style="width: 14%" />
       <col style="width: 10%" />
     </colgroup>
     <CTableHead :color="TableSecondary" class="text-center">
@@ -30,7 +31,8 @@ const onDeleteOrder = (pk: number) => emit('on-delete', pk)
         <CTableHeaderCell>중분류</CTableHeaderCell>
         <CTableHeaderCell>소분류</CTableHeaderCell>
         <CTableHeaderCell>산출근거</CTableHeaderCell>
-        <CTableHeaderCell>지출예산</CTableHeaderCell>
+        <CTableHeaderCell>인준지출예산</CTableHeaderCell>
+        <CTableHeaderCell>현황지출예산</CTableHeaderCell>
         <CTableHeaderCell>비 고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
