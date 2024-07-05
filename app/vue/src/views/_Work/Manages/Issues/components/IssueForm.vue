@@ -477,35 +477,33 @@ onBeforeMount(() => {
                   </CCol>
                 </CRow>
 
-                <CRow :class="{ 'mb-3': !!categories.length }">
-                  <CRow v-if="categories?.length">
-                    <CFormLabel for="category" class="col-sm-4 col-form-label text-right">
-                      범주
-                    </CFormLabel>
-                    <CCol sm="6">
-                      <CFormSelect v-model.number="form.category" id="category">
-                        <option value="">---------</option>
-                        <option v-for="cate in categories" :value="cate.pk" :key="cate.pk">
-                          {{ cate.name }}
-                          <span v-if="cate.assigned_to">{{ cate.assigned_to.username }}</span>
-                        </option>
-                      </CFormSelect>
-                    </CCol>
-                    <CCol style="padding-top: 6px">
-                      <span>
-                        <v-icon
-                          icon="mdi-plus-circle"
-                          color="success"
-                          class="pointer"
-                          @click="RefCategoryModal.callModal()"
-                        />
-                        <v-tooltip location="top" activator="parent">새 업무 범주</v-tooltip>
-                      </span>
-                    </CCol>
-                  </CRow>
+                <CRow v-if="categories?.length" class="mb-3">
+                  <CFormLabel for="category" class="col-sm-4 col-form-label text-right">
+                    범주
+                  </CFormLabel>
+                  <CCol sm="6">
+                    <CFormSelect v-model.number="form.category" id="category">
+                      <option value="">---------</option>
+                      <option v-for="cate in categories" :value="cate.pk" :key="cate.pk">
+                        {{ cate.name }}
+                        <span v-if="cate.assigned_to">{{ cate.assigned_to.username }}</span>
+                      </option>
+                    </CFormSelect>
+                  </CCol>
+                  <CCol style="padding-top: 6px">
+                    <span>
+                      <v-icon
+                        icon="mdi-plus-circle"
+                        color="success"
+                        class="pointer"
+                        @click="RefCategoryModal.callModal()"
+                      />
+                      <v-tooltip location="top" activator="parent">새 업무 범주</v-tooltip>
+                    </span>
+                  </CCol>
                 </CRow>
 
-                <CRow class="mb-3">
+                <CRow v-if="versions?.length" class="mb-3">
                   <CFormLabel for="fixed_version" class="col-sm-4 col-form-label text-right">
                     목표버전
                   </CFormLabel>
