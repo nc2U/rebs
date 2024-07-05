@@ -14,19 +14,19 @@ class ProjectAdmin(ImportExportMixin, admin.ModelAdmin):
 
 class ProjectIncBudgetAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'project', 'account_d2', 'account_d3', 'order_group',
-                    'unit_type', 'item_name', 'average_price', 'quantity', 'budget')
+                    'unit_type', 'item_name', 'average_price', 'quantity', 'budget', 'revised_budget')
     list_display_links = ('project',)
     list_editable = ('account_d2', 'account_d3', 'order_group', 'unit_type',
-                     'item_name', 'average_price', 'quantity', 'budget')
+                     'item_name', 'average_price', 'quantity', 'budget', 'revised_budget')
     list_filter = ('project', 'order_group', 'unit_type')
 
 
 class ProjectOutBudgetAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'project', 'order', 'account_d2', 'account_d3',
-                    'account_opt', 'budget', 'basis_calc')
+                    'account_opt', 'budget', 'revised_budget', 'basis_calc')
     list_display_links = ('project',)
     list_editable = ('order', 'account_d2', 'account_d3', 'account_opt',
-                     'budget', 'basis_calc')
+                     'budget', 'revised_budget', 'basis_calc')
     list_filter = ('project', 'account_d2', 'account_d3')
 
 

@@ -64,7 +64,8 @@ class ProjectIncBudget(models.Model):
     average_price = models.PositiveBigIntegerField(verbose_name='평균 가격', null=True, blank=True,
                                                    help_text='이 항목 생략 시 수량 및 수입 예산을 바탕으로 자동 계산')
     quantity = models.PositiveSmallIntegerField(verbose_name='수량')
-    budget = models.PositiveBigIntegerField(verbose_name='수입 예산')
+    budget = models.PositiveBigIntegerField(verbose_name='인준 수입 예산')
+    revised_budget = models.PositiveBigIntegerField(verbose_name='현황 수입 예산', null=True, blank=True)
 
     def __str__(self):
         return self.item_name
@@ -84,7 +85,8 @@ class ProjectOutBudget(models.Model):
     account_opt = models.CharField('중분류', max_length=10, blank=True, default='')
     basis_calc = models.CharField('산출근거', max_length=255, blank=True, default='',
                                   help_text='사업수지표 항목 상 해당 금액의 산출 근거 기재')
-    budget = models.PositiveBigIntegerField(verbose_name='지출 예산')
+    budget = models.PositiveBigIntegerField(verbose_name='인준 지출 예산')
+    revised_budget = models.PositiveBigIntegerField(verbose_name='현황 지출 예산', null=True, blank=True)
 
     def __str__(self):
         return self.account_d3.name
