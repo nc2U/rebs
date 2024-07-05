@@ -54,6 +54,7 @@ export interface ProIncBudget {
   average_price: number | null
   quantity: number
   budget: number
+  revised_budget: number | null
 }
 
 export interface ProOutBudget {
@@ -64,6 +65,7 @@ export interface ProOutBudget {
   account_opt: string
   basis_calc: string
   budget: number
+  revised_budget: number | null
 }
 
 export interface StatusOutBudget {
@@ -82,6 +84,7 @@ export interface StatusOutBudget {
   account_opt: string
   basis_calc: string
   budget: number
+  revised_budget: number | null
 }
 
 export interface ExecAmountToBudget {
