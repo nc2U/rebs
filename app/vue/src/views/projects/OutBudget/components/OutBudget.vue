@@ -109,6 +109,7 @@ onBeforeMount(() => dataSetup())
         v-model.number="form.budget"
         type="number"
         min="0"
+        required
         placeholder="인준 지출 예산"
         @keydown.enter="onUpdateBudget"
       />

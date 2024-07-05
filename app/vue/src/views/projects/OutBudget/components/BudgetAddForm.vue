@@ -80,7 +80,6 @@ const resetForm = () => {
               placeholder="중분류(필요시 기재)"
               maxlength="20"
               :disabled="disabled"
-              :required="!form.account_d3"
             />
           </CCol>
 
@@ -125,7 +124,6 @@ const resetForm = () => {
               placeholder="현황 지출 예산"
               type="number"
               maxlength="18"
-              required
               :disabled="disabled"
             />
           </CCol>
