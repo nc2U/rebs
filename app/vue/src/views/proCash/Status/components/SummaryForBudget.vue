@@ -9,6 +9,7 @@ import { type StatusOutBudget, type ExecAmountToBudget as ExeBudget } from '@/st
 defineProps({ date: { type: String, default: '' } })
 
 const formNumber = ref(1000)
+const budGetSort = ref('2')
 
 const projStore = useProject()
 const execAmountList = computed(() => projStore.execAmountList)
@@ -88,12 +89,32 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
     </colgroup>
     <CTableHead>
       <CTableRow>
-        <CTableDataCell colspan="8">
+        <CTableDataCell colspan="6">
           <strong>
             <CIcon name="cilFolderOpen" />
             사업예산 및 집행현황
           </strong>
           <small class="text-medium-emphasis"> ({{ date }}) 기준 </small>
+        </CTableDataCell>
+        <CTableDataCell colspan="2" class="text-center bg-yellow-lighten-5">
+          <CFormCheck
+            v-model="budGetSort"
+            inline
+            type="radio"
+            name="select_budget"
+            id="official_budget"
+            value="1"
+            label="총회 의결 예산"
+          />
+          <CFormCheck
+            v-model="budGetSort"
+            inline
+            type="radio"
+            name="select_budget"
+            id="current_budget"
+            value="2"
+            label="현황 반영 예산"
+          />
         </CTableDataCell>
         <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
