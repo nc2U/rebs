@@ -89,14 +89,14 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
     </colgroup>
     <CTableHead>
       <CTableRow>
-        <CTableDataCell colspan="6">
+        <CTableDataCell colspan="4">
           <strong>
             <CIcon name="cilFolderOpen" />
             사업예산 및 집행현황
           </strong>
           <small class="text-medium-emphasis"> ({{ date }}) 기준 </small>
         </CTableDataCell>
-        <CTableDataCell colspan="2" class="text-center bg-yellow-lighten-5">
+        <CTableDataCell class="text-center bg-yellow-lighten-5">
           <CFormCheck
             v-model="budGetSort"
             inline
@@ -104,7 +104,7 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
             name="select_budget"
             id="official_budget"
             value="1"
-            label="총회 의결 예산"
+            label="인준 예산"
           />
           <CFormCheck
             v-model="budGetSort"
@@ -113,10 +113,10 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
             name="select_budget"
             id="current_budget"
             value="2"
-            label="현황 반영 예산"
+            label="현황 예산"
           />
         </CTableDataCell>
-        <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
+        <CTableDataCell colspan="4" class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
       <CTableRow :color="TableSecondary" class="text-center">
         <CTableHeaderCell colspan="4">구분</CTableHeaderCell>
