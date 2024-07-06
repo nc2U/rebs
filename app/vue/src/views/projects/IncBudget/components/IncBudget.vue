@@ -25,6 +25,7 @@ const form = reactive({
   average_price: null,
   quantity: null,
   budget: null,
+  revised_budget: null,
 })
 
 const refAlertModal = ref()
@@ -40,7 +41,8 @@ const formsCheck = computed(() => {
   const g = form.average_price === props.budget.average_price
   const h = form.quantity === props.budget.quantity
   const i = form.budget === props.budget.budget
-  return a && b && c && d && e && f && g && h && i
+  const j = form.revised_budget === props.budget.revised_budget
+  return a && b && c && d && e && f && g && h && i && j
 })
 
 const onUpdateBudget = () => {
@@ -76,6 +78,7 @@ const dataSetup = () => {
   form.average_price = props.budget.average_price
   form.quantity = props.budget.quantity
   form.budget = props.budget.budget
+  form.revised_budget = props.budget.revised_budget
 }
 
 onBeforeMount(() => dataSetup())
@@ -141,7 +144,16 @@ onBeforeMount(() => dataSetup())
         v-model.number="form.budget"
         type="number"
         min="0"
-        placeholder="수입예산"
+        placeholder="인준수입예산"
+        @keydown.enter="onUpdateBudget"
+      />
+    </CTableDataCell>
+    <CTableDataCell>
+      <CFormInput
+        v-model.number="form.revised_budget"
+        type="number"
+        min="0"
+        placeholder="현황수입예산"
         @keydown.enter="onUpdateBudget"
       />
     </CTableDataCell>

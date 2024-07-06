@@ -37,6 +37,7 @@ const form = reactive({
   average_price: null,
   quantity: null,
   budget: null,
+  revised_budget: null,
 })
 
 watch(props, newVal => {
@@ -73,6 +74,7 @@ const resetForm = () => {
   form.average_price = null
   form.quantity = null
   form.budget = null
+  form.revised_budget = null
 }
 </script>
 
@@ -119,9 +121,9 @@ const resetForm = () => {
         </CRow>
       </CCol>
 
-      <CCol lg="12" xl="5">
+      <CCol lg="12" xl="7">
         <CRow>
-          <CCol md="3" lg="3" class="mb-2">
+          <CCol md="4" lg="2" class="mb-2">
             <CFormInput
               v-model="form.item_name"
               placeholder="항목명칭"
@@ -131,7 +133,7 @@ const resetForm = () => {
             />
           </CCol>
 
-          <CCol md="3" lg="3" class="mb-2">
+          <CCol md="4" lg="2" class="mb-2">
             <CFormInput
               v-model.number="form.average_price"
               min="0"
@@ -141,7 +143,7 @@ const resetForm = () => {
               :disabled="disabled"
             />
           </CCol>
-          <CCol md="3" lg="3" class="mb-2">
+          <CCol md="4" lg="2" class="mb-2">
             <CFormInput
               v-model.number="form.quantity"
               min="0"
@@ -152,22 +154,32 @@ const resetForm = () => {
               :disabled="disabled"
             />
           </CCol>
-          <CCol md="3" lg="3" class="mb-2">
+          <CCol md="4" lg="2" class="mb-2">
             <CFormInput
               v-model.number="form.budget"
               min="0"
-              placeholder="수입예산"
+              placeholder="인준수입예산"
               type="number"
               maxlength="18"
               required
               :disabled="disabled"
             />
           </CCol>
-        </CRow>
-      </CCol>
+          <CCol md="4" lg="2" class="mb-2">
+            <CFormInput
+              v-model.number="form.revised_budget"
+              min="0"
+              placeholder="현황수입예산"
+              type="number"
+              maxlength="18"
+              :disabled="disabled"
+            />
+          </CCol>
 
-      <CCol lg="12" xl="2" class="d-grid gap-2 d-md-block mb-3">
-        <CButton color="primary" type="submit" :disabled="disabled"> 수입 예산 추가</CButton>
+          <CCol md="4" lg="2" class="d-grid gap-2 d-md-block mb-3">
+            <CButton color="primary" type="submit" :disabled="disabled"> 수입 예산 추가</CButton>
+          </CCol>
+        </CRow>
       </CCol>
     </CRow>
   </CForm>
