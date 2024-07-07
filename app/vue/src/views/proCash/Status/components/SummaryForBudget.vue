@@ -54,13 +54,15 @@ const sumTotal = computed(() => {
   const preExecAmt = totalExecAmtCalc - monthExecAmtCalc
   const monthExecAmt = monthExecAmtCalc
   const totalExecAmt = totalExecAmtCalc
-  const availableBudget = !isRevised.value ? totalBudgetCalc : totalRevisedBudgetCalc - totalExecAmtCalc
+  const availableBudget = totalBudgetCalc - totalExecAmtCalc
+  const availableRevisedBudget = totalRevisedBudgetCalc - totalExecAmtCalc
   return {
     totalBudget,
     preExecAmt,
     monthExecAmt,
     totalExecAmt,
     availableBudget,
+    availableRevisedBudget,
   }
 })
 
@@ -244,7 +246,7 @@ const patchBudget = (pk: number, budget: string, oldBudget: number, isRevised = 
           {{ numFormat(sumTotal.availableBudget) }}
         </CTableHeaderCell>
         <CTableHeaderCell v-show="isRevised">
-          {{ numFormat(sumTotal.availableBudget) }}
+          {{ numFormat(sumTotal.availableRevisedBudget) }}
         </CTableHeaderCell>
       </CTableRow>
     </CTableBody>
