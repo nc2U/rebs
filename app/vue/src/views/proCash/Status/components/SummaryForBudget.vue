@@ -110,12 +110,6 @@ const patchBudget = (pk: number, budget: string, oldBudget: number, isRevised = 
             hide-details
             style="font-size: 0.8em"
           >
-            <img src="" />
-
-            <p>
-              <img src="" alt="" />
-            </p>
-
             <v-radio label="기초 예산" :value="0" />
             <v-radio label="현황 예산" :value="1" />
           </v-radio-group>
@@ -163,27 +157,8 @@ const patchBudget = (pk: number, budget: string, oldBudget: number, isRevised = 
             {{ obj.basis_calc }}
           </v-tooltip>
         </CTableDataCell>
-        <CTableDataCell
-          v-show="!isRevised"
-          class="py-0 bg-blue-grey-lighten-5"
-          style="cursor: pointer"
-          @dblclick="formNumber = i"
-        >
-          <span v-if="formNumber !== i">
-            {{ numFormat(obj.budget) }}
-          </span>
-          <span v-else class="p-0">
-            <CFormInput
-              type="text"
-              class="form-control text-right"
-              :value="obj.budget"
-              @blur="patchBudget(obj.pk as number, $event.target.value, obj.budget)"
-              @keydown.enter="patchBudget(obj.pk as number, $event.target.value, obj.budget)"
-            />
-          </span>
-          <v-tooltip v-if="obj.basis_calc" activator="parent" location="left">
-            {{ obj.basis_calc }}
-          </v-tooltip>
+        <CTableDataCell v-show="!isRevised" class="py-0 bg-blue-grey-lighten-5">
+          <span>{{ numFormat(obj.budget) }}</span>
         </CTableDataCell>
         <CTableDataCell
           v-show="isRevised"
@@ -207,9 +182,6 @@ const patchBudget = (pk: number, budget: string, oldBudget: number, isRevised = 
               "
             />
           </span>
-          <v-tooltip v-if="obj.basis_calc" activator="parent" location="left">
-            {{ obj.basis_calc }}
-          </v-tooltip>
         </CTableDataCell>
         <CTableDataCell>
           {{ numFormat(getEASum(obj.account_d3.pk) - getEAMonth(obj.account_d3.pk)) }}
