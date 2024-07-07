@@ -13,7 +13,7 @@ import xlsxwriter
 import xlwt
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Q, F, Max, Sum, Count, When, Case
+from django.db.models import Q, F, Max, Sum, Count, When, Case, PositiveBigIntegerField
 from django.http import HttpResponse
 from django.views.generic import View
 
@@ -1953,7 +1953,7 @@ class ExportProjectDateCashbook(View):
 
 
 class ExportBudgetExecutionStatus(View):
-    """프로젝트 예산대비 현황"""
+    """프로젝트 예산 대비 현황"""
 
     def get(self, request):
         # Create an in-memory output file for the new workbook.
@@ -1972,6 +1972,8 @@ class ExportBudgetExecutionStatus(View):
 
         project = Project.objects.get(pk=request.GET.get('project'))
         date = request.GET.get('date')
+        revised = request.GET.get('revised')
+        is_revised = int(revised) if revised in ('0', '1') else 0
 
         # 1. Title
         row_num = 0
@@ -2002,7 +2004,8 @@ class ExportBudgetExecutionStatus(View):
         worksheet.set_column(3, 3, 18)
         worksheet.merge_range(row_num, 0, row_num, 3, '구분', h_format)
         worksheet.set_column(4, 4, 20)
-        worksheet.write(row_num, 4, '예산', h_format)
+        budget_str = '현황 예산' if is_revised else '기초 예산'
+        worksheet.write(row_num, 4, budget_str, h_format)
         worksheet.set_column(5, 5, 20)
         worksheet.write(row_num, 5, '전월 인출 금액 누계', h_format)
         worksheet.set_column(6, 6, 20)
@@ -2019,46 +2022,61 @@ class ExportBudgetExecutionStatus(View):
         b_format.set_num_format(41)
         b_format.set_align('left')
 
-        budget = ProjectOutBudget.objects.filter(project=project)
-        budget_sum = budget.aggregate(Sum('budget'))['budget__sum']
+        budgets = ProjectOutBudget.objects.filter(project=project)
+        budget_sum = budgets.aggregate(Sum('budget'))['budget__sum']
+        revised_budget_sum = budgets.aggregate(
+            revised_budget_sum=Sum(
+                Case(
+                    When(revised_budget__isnull=True, then=F('budget')),
+                    When(revised_budget=0, then=F('budget')),
+                    default=F('revised_budget'),
+                    output_field=PositiveBigIntegerField()  # budget 및 revised_budget의 필드 타입에 맞게 조정
+                )
+            )
+        )['revised_budget_sum']
+
+        calc_budget_sum = revised_budget_sum if is_revised else budget_sum
+
         budget_month_sum = 0
         budget_total_sum = 0
 
-        for row, bg in enumerate(budget):
+        for row, budget in enumerate(budgets):
             row_num += 1
             co_budget = ProjectCashBook.objects.filter(project=project,
-                                                       project_account_d3=bg.account_d3,
+                                                       project_account_d3=budget.account_d3,
                                                        deal_date__lte=date)
 
             co_budget_month = co_budget.filter(deal_date__gte=date[:8] + '01').aggregate(Sum('outlay'))['outlay__sum']
             co_budget_month = co_budget_month if co_budget_month else 0
             budget_month_sum += co_budget_month
 
+            calc_budget = budget.revised_budget or budget.budget if is_revised else budget.budget
             co_budget_total = co_budget.aggregate(Sum('outlay'))['outlay__sum']
             co_budget_total = co_budget_total if co_budget_total else 0
             budget_total_sum += co_budget_total
 
-            opt_budgets = self.get_sub_title(project, bg.account_opt, bg.account_d2.pk)
+            opt_budgets = self.get_sub_title(project, budget.account_opt, budget.account_d2.pk)
 
             for col in range(9):
                 if col == 0 and row == 0:
-                    worksheet.merge_range(row_num, col, budget.count() + 2, col, '사업비', b_format)
+                    worksheet.merge_range(row_num, col, budgets.count() + 2, col, '사업비', b_format)
                 if col == 1:
-                    if int(bg.account_d3.code) == int(bg.account_d2.code) + 1:
-                        worksheet.merge_range(row_num, col, row_num + bg.account_d2.projectoutbudget_set.count() - 1,
-                                              col, bg.account_d2.name, b_format)
+                    if int(budget.account_d3.code) == int(budget.account_d2.code) + 1:
+                        worksheet.merge_range(row_num, col,
+                                              row_num + budget.account_d2.projectoutbudget_set.count() - 1,
+                                              col, budget.account_d2.name, b_format)
                 if col == 2:
-                    if bg.account_opt:
-                        if bg.account_d3.pk == opt_budgets[0][4]:
+                    if budget.account_opt:
+                        if budget.account_d3.pk == opt_budgets[0][4]:
                             worksheet.merge_range(row_num, col, row_num + len(opt_budgets) - 1,
-                                                  col, bg.account_opt, b_format)
+                                                  col, budget.account_opt, b_format)
                     else:
-                        worksheet.merge_range(row_num, col, row_num, col + 1, bg.account_d3.name, b_format)
+                        worksheet.merge_range(row_num, col, row_num, col + 1, budget.account_d3.name, b_format)
                 if col == 3:
-                    if bg.account_opt:
-                        worksheet.write(row_num, col, bg.account_d3.name, b_format)
+                    if budget.account_opt:
+                        worksheet.write(row_num, col, budget.account_d3.name, b_format)
                 if col == 4:
-                    worksheet.write(row_num, col, bg.budget, b_format)
+                    worksheet.write(row_num, col, calc_budget, b_format)
                 if col == 5:
                     worksheet.write(row_num, col, co_budget_total - co_budget_month, b_format)
                 if col == 6:
@@ -2066,16 +2084,16 @@ class ExportBudgetExecutionStatus(View):
                 if col == 7:
                     worksheet.write(row_num, col, co_budget_total, b_format)
                 if col == 8:
-                    worksheet.write(row_num, col, bg.budget - co_budget_total, b_format)
+                    worksheet.write(row_num, col, calc_budget - co_budget_total, b_format)
 
         # 5. Sum row
         row_num += 1
         worksheet.merge_range(row_num, 0, row_num, 3, '합 계', b_format)
-        worksheet.write(row_num, 4, budget_sum, b_format)
+        worksheet.write(row_num, 4, calc_budget_sum, b_format)
         worksheet.write(row_num, 5, budget_total_sum - budget_month_sum, b_format)
         worksheet.write(row_num, 6, budget_month_sum, b_format)
         worksheet.write(row_num, 7, budget_total_sum, b_format)
-        worksheet.write(row_num, 8, budget_sum - budget_total_sum, b_format)
+        worksheet.write(row_num, 8, calc_budget_sum - budget_total_sum, b_format)
 
         # data end ----------------------------------------------- #
 
