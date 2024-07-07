@@ -9,7 +9,7 @@ import { type StatusOutBudget, type ExecAmountToBudget as ExeBudget } from '@/st
 defineProps({ date: { type: String, default: '' } })
 
 const formNumber = ref(1000)
-const budGetSort = ref('2')
+const isRevised = ref(1)
 
 const projStore = useProject()
 const execAmountList = computed(() => projStore.execAmountList)
@@ -97,30 +97,30 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
           <small class="text-medium-emphasis"> ({{ date }}) 기준 </small>
         </CTableDataCell>
         <CTableDataCell class="text-center bg-yellow-lighten-5">
-          <CFormCheck
-            v-model="budGetSort"
+          <v-radio-group
+            v-model="isRevised"
             inline
-            type="radio"
-            name="select_budget"
-            id="official_budget"
-            value="1"
-            label="인준 예산"
-          />
-          <CFormCheck
-            v-model="budGetSort"
-            inline
-            type="radio"
-            name="select_budget"
-            id="current_budget"
-            value="2"
-            label="현황 예산"
-          />
+            size="sm"
+            density="compact"
+            hide-details
+            style="font-size: 0.8em"
+          >
+            <img src="" />
+
+            <p>
+              <img src="" alt="" />
+            </p>
+
+            <v-radio label="기초 예산" :value="0" />
+            <v-radio label="현황 예산" :value="1" />
+          </v-radio-group>
         </CTableDataCell>
         <CTableDataCell colspan="4" class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
       <CTableRow :color="TableSecondary" class="text-center">
         <CTableHeaderCell colspan="4">구분</CTableHeaderCell>
-        <CTableHeaderCell>예산액</CTableHeaderCell>
+        <CTableHeaderCell color="dark" v-show="!isRevised">기초 예산액</CTableHeaderCell>
+        <CTableHeaderCell v-show="isRevised">현황 예산액</CTableHeaderCell>
         <CTableHeaderCell>전월 집행금액 누계</CTableHeaderCell>
         <CTableHeaderCell>당월 집행금액</CTableHeaderCell>
         <CTableHeaderCell>집행금액 합계</CTableHeaderCell>
@@ -159,6 +159,29 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
           </v-tooltip>
         </CTableDataCell>
         <CTableDataCell
+          v-show="!isRevised"
+          class="py-0 bg-blue-grey-lighten-4"
+          style="cursor: pointer"
+          @dblclick="formNumber = i"
+        >
+          <span v-if="formNumber !== i">
+            {{ numFormat(obj.budget) }}
+          </span>
+          <span v-else class="p-0">
+            <CFormInput
+              type="text"
+              class="form-control text-right"
+              :value="obj.budget"
+              @blur="patchBudget(obj.pk as number, $event.target.value, obj.budget)"
+              @keydown.enter="patchBudget(obj.pk as number, $event.target.value, obj.budget)"
+            />
+          </span>
+          <v-tooltip v-if="obj.basis_calc" activator="parent" location="left">
+            {{ obj.basis_calc }}
+          </v-tooltip>
+        </CTableDataCell>
+        <CTableDataCell
+          v-show="isRevised"
           class="py-0 bg-blue-grey-lighten-5"
           style="cursor: pointer"
           @dblclick="formNumber = i"
@@ -188,7 +211,16 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
         <CTableDataCell>
           {{ numFormat(getEASum(obj.account_d3.pk) || 0) }}
         </CTableDataCell>
-        <CTableDataCell :class="obj.budget < getEASum(obj.account_d3.pk) ? 'text-danger' : ''">
+        <CTableDataCell
+          v-show="!isRevised"
+          :class="obj.budget < getEASum(obj.account_d3.pk) ? 'text-danger' : ''"
+        >
+          {{ numFormat(obj.budget - (getEASum(obj.account_d3.pk) || 0)) }}
+        </CTableDataCell>
+        <CTableDataCell
+          v-show="isRevised"
+          :class="obj.budget < getEASum(obj.account_d3.pk) ? 'text-danger' : ''"
+        >
           {{ numFormat(obj.budget - (getEASum(obj.account_d3.pk) || 0)) }}
         </CTableDataCell>
       </CTableRow>
@@ -199,7 +231,12 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
         <CTableHeaderCell>{{ numFormat(sumTotal.preExecAmt) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(sumTotal.monthExecAmt) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(sumTotal.totalExecAmt) }}</CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(sumTotal.availableBudget) }}</CTableHeaderCell>
+        <CTableHeaderCell v-show="!isRevised">
+          {{ numFormat(sumTotal.availableBudget) }}
+        </CTableHeaderCell>
+        <CTableHeaderCell v-show="isRevised">
+          {{ numFormat(sumTotal.availableBudget) }}
+        </CTableHeaderCell>
       </CTableRow>
     </CTableBody>
   </CTable>
