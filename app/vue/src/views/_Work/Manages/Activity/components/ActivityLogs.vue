@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { cutString, dateFormat, timeFormat } from '@/utils/baseMixins'
+import { cutString, dateFormat, numberToHour, timeFormat } from '@/utils/baseMixins'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 
 defineProps({
@@ -92,9 +92,10 @@ const getIcon = (sort: string, progress: boolean) => {
                 query: { issue: act.issue?.pk },
               }"
             >
-              {{ act.spent_time?.hours }} 시간 ({{ act.issue?.tracker }} #{{ act.issue?.pk }} ({{
-                act.status_log || act.issue?.status.name
-              }}) {{ act.issue?.subject }})
+              {{ numberToHour(act.spent_time?.hours ?? 0) }} 시간 ({{ act.issue?.tracker }} #{{
+                act.issue?.pk
+              }}
+              ({{ act.status_log || act.issue?.status.name }}) {{ act.issue?.subject }})
             </router-link>
 
             <div class="ml-4 pl-3 fst-italic">
