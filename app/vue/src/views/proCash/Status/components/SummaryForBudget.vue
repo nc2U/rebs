@@ -63,11 +63,11 @@ const sumTotal = computed(() => {
 
 const emit = defineEmits(['patch-budget'])
 
-const patchBudget = (pk: number, budget: string, oldBudget: number) => {
+const patchBudget = (pk: number, budget: string, oldBudget: number, isRevised = false) => {
   formNumber.value = 1000
   if (write_project_cash.value) {
     const bg = parseInt(budget)
-    if (bg !== oldBudget) emit('patch-budget', pk, bg)
+    if (bg !== oldBudget) emit('patch-budget', pk, bg, isRevised)
   } else {
     alert('예산수정 권한없음!')
   }
@@ -160,7 +160,7 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
         </CTableDataCell>
         <CTableDataCell
           v-show="!isRevised"
-          class="py-0 bg-blue-grey-lighten-4"
+          class="py-0 bg-blue-grey-lighten-5"
           style="cursor: pointer"
           @dblclick="formNumber = i"
         >
@@ -182,20 +182,24 @@ const patchBudget = (pk: number, budget: string, oldBudget: number) => {
         </CTableDataCell>
         <CTableDataCell
           v-show="isRevised"
-          class="py-0 bg-blue-grey-lighten-5"
+          class="py-0 bg-amber-lighten-5"
           style="cursor: pointer"
           @dblclick="formNumber = i"
         >
           <span v-if="formNumber !== i">
-            {{ numFormat(obj.budget) }}
+            {{ numFormat(obj.revised_budget ?? obj.budget) }}
           </span>
           <span v-else class="p-0">
             <CFormInput
               type="text"
               class="form-control text-right"
-              :value="obj.budget"
-              @blur="patchBudget(obj.pk as number, $event.target.value, obj.budget)"
-              @keydown.enter="patchBudget(obj.pk as number, $event.target.value, obj.budget)"
+              :value="obj.revised_budget ?? obj.budget"
+              @blur="
+                patchBudget(obj.pk as number, $event.target.value, obj.revised_budget ?? 0, true)
+              "
+              @keydown.enter="
+                patchBudget(obj.pk as number, $event.target.value, obj.revised_budget ?? 0, true)
+              "
             />
           </span>
           <v-tooltip v-if="obj.basis_calc" activator="parent" location="left">

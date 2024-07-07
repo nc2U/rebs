@@ -10,6 +10,7 @@ import {
   type StatusOutBudget,
   type ExecAmountToBudget,
 } from '@/store/types/project'
+import { numberToHour } from '@/utils/baseMixins'
 
 export const useProject = defineStore('project', () => {
   const accountStore = useAccount()
@@ -191,8 +192,15 @@ export const useProject = defineStore('project', () => {
       .then(res => (statusOutBudgetList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const patchStatusOutBudgetList = (project: number, pk: number, budget: number) =>
-    api.patch(`/status-budget/${pk}/`, { budget }).then(() => fetchStatusOutBudgetList(project))
+  const patchStatusOutBudget = (payload: {
+    project: number
+    pk: number
+    budget?: number
+    revised_budget?: number
+  }) =>
+    api
+      .patch(`/status-budget/${payload.pk}/`, payload)
+      .then(() => fetchStatusOutBudgetList(payload.project))
 
   // states & getters
   const execAmountList = ref<ExecAmountToBudget[]>([])
@@ -239,7 +247,7 @@ export const useProject = defineStore('project', () => {
 
     statusOutBudgetList,
     fetchStatusOutBudgetList,
-    patchStatusOutBudgetList,
+    patchStatusOutBudget,
 
     execAmountList,
     fetchExecAmountList,

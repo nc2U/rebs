@@ -24,8 +24,14 @@ const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
 
 const fetchStatusOutBudgetList = (proj: number) => projStore.fetchStatusOutBudgetList(proj)
-const patchStatusOutBudgetList = (proj: number, pk: number, budget: number) =>
-  projStore.patchStatusOutBudgetList(proj, pk, budget)
+
+const patchStatusOutBudget = (payload: {
+  pk: number
+  project: number
+  budget?: number
+  revised_budget?: number
+}) => projStore.patchStatusOutBudget(payload)
+
 const fetchExecAmountList = (project: number, date?: string) =>
   projStore.fetchExecAmountList(project, date)
 
@@ -93,8 +99,11 @@ const setDate = (dt: string) => {
   }
 }
 
-const patchBudget = (pk: number, budget: number) => {
-  if (project.value) patchStatusOutBudgetList(project.value as number, pk, budget)
+const patchBudget = (pk: number, budget: number, isRevised: boolean) => {
+  if (project.value) {
+    if (!isRevised) patchStatusOutBudget({ project: project.value as number, pk, budget })
+    else patchStatusOutBudget({ project: project.value as number, pk, revised_budget: budget })
+  }
 }
 
 const directBalance = (val: boolean) => {
