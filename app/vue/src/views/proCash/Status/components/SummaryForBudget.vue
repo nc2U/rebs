@@ -78,7 +78,7 @@ const patchBudget = (pk: number, budget: string, oldBudget: number, isRevised = 
   }
 }
 
-const updateRevised = () => nextTick(() => emit('update-revised', isRevised.value))
+const updateRevised = ($event: any) => emit('update-revised', $event.target.value)
 </script>
 
 <template>
