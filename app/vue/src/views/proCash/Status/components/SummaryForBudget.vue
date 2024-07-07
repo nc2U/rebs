@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, nextTick } from 'vue'
+import { ref, computed } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { write_project_cash } from '@/utils/pageAuth'
 import { numFormat } from '@/utils/baseMixins'
