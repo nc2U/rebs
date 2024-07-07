@@ -68,6 +68,9 @@ const checkBalance = () => {
   else createProCashCalc(payload)
 }
 
+const revised = ref(1)
+const updateRevised = (isRevised: number) => (revised.value = isRevised)
+
 const excelUrl = computed(() => {
   const comp = compName.value
   const pj = project.value
@@ -77,7 +80,8 @@ const excelUrl = computed(() => {
   if (comp === 'StatusByAccount')
     url = `/excel/p-balance/?project=${pj}&date=${dt}&bank_account__directpay=${dr}`
   else if (comp === 'CashListByDate') url = `/excel/p-daily-cash/?project=${pj}&date=${dt}`
-  else if (comp === 'SummaryForBudget') url = `/excel/p-budget/?project=${pj}&date=${dt}`
+  else if (comp === 'SummaryForBudget')
+    url = `/excel/p-budget/?project=${pj}&date=${dt}&revised=${revised.value}`
   return `${url}`
 })
 
@@ -176,6 +180,7 @@ onBeforeMount(() => {
         v-if="compName === 'SummaryForBudget'"
         :date="date"
         @patch-budget="patchBudget"
+        @update-revised="updateRevised"
       />
 
       <Calculated

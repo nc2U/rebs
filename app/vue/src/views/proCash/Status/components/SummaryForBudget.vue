@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 import { useProject } from '@/store/pinia/project'
 import { write_project_cash } from '@/utils/pageAuth'
 import { numFormat } from '@/utils/baseMixins'
@@ -7,6 +7,8 @@ import { TableInfo, TableSecondary } from '@/utils/cssMixins'
 import { type StatusOutBudget, type ExecAmountToBudget as ExeBudget } from '@/store/types/project'
 
 defineProps({ date: { type: String, default: '' } })
+
+const emit = defineEmits(['patch-budget', 'update-revised'])
 
 const formNumber = ref(1000)
 const isRevised = ref(1)
@@ -66,17 +68,17 @@ const sumTotal = computed(() => {
   }
 })
 
-const emit = defineEmits(['patch-budget'])
-
 const patchBudget = (pk: number, budget: string, oldBudget: number, isRevised = false) => {
   formNumber.value = 1000
   if (write_project_cash.value) {
     const bg = parseInt(budget)
     if (bg !== oldBudget) emit('patch-budget', pk, bg, isRevised)
   } else {
-    alert('예산수정 권한없음!')
+    alert('예산 수정 권한 없음!')
   }
 }
+
+const updateRevised = () => nextTick(() => emit('update-revised', isRevised.value))
 </script>
 
 <template>
@@ -110,20 +112,20 @@ const patchBudget = (pk: number, budget: string, oldBudget: number, isRevised = 
             hide-details
             style="font-size: 0.8em"
           >
-            <v-radio label="기초 예산" :value="0" />
-            <v-radio label="현황 예산" :value="1" />
+            <v-radio label="기초 예산" :value="0" @click="updateRevised" />
+            <v-radio label="현황 예산" :value="1" @click="updateRevised" />
           </v-radio-group>
         </CTableDataCell>
         <CTableDataCell colspan="4" class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
       <CTableRow :color="TableSecondary" class="text-center">
         <CTableHeaderCell colspan="4">구분</CTableHeaderCell>
-        <CTableHeaderCell color="dark" v-show="!isRevised">기초 예산액</CTableHeaderCell>
-        <CTableHeaderCell v-show="isRevised">현황 예산액</CTableHeaderCell>
-        <CTableHeaderCell>전월 집행금액 누계</CTableHeaderCell>
-        <CTableHeaderCell>당월 집행금액</CTableHeaderCell>
+        <CTableHeaderCell color="dark" v-show="!isRevised">기초 예산 금액</CTableHeaderCell>
+        <CTableHeaderCell v-show="isRevised">현황 예산 금액</CTableHeaderCell>
+        <CTableHeaderCell>전월 집행 금액 누계</CTableHeaderCell>
+        <CTableHeaderCell>당월 집행 금액</CTableHeaderCell>
         <CTableHeaderCell>집행금액 합계</CTableHeaderCell>
-        <CTableHeaderCell>가용(잔여) 예산합계</CTableHeaderCell>
+        <CTableHeaderCell>가용(잔여) 예산 합계</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 
