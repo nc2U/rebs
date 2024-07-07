@@ -40,6 +40,9 @@ const sumTotal = computed(() => {
   const totalBudgetCalc = statusOutBudgetList.value
     .map((b: StatusOutBudget) => b.budget)
     .reduce((res: number, val: number) => res + val, 0)
+  const totalRevisedBudgetCalc = statusOutBudgetList.value
+    .map((b: StatusOutBudget) => b.revised_budget || b.budget)
+    .reduce((res: number, val: number) => res + val, 0)
   const monthExecAmtCalc = execAmountList.value
     .map((a: ExeBudget) => a.month_sum)
     .reduce((r: number, v: number) => r + v, 0)
@@ -51,7 +54,7 @@ const sumTotal = computed(() => {
   const preExecAmt = totalExecAmtCalc - monthExecAmtCalc
   const monthExecAmt = monthExecAmtCalc
   const totalExecAmt = totalExecAmtCalc
-  const availableBudget = totalBudgetCalc - totalExecAmtCalc
+  const availableBudget = !isRevised.value ? totalBudgetCalc : totalRevisedBudgetCalc - totalExecAmtCalc
   return {
     totalBudget,
     preExecAmt,
@@ -187,13 +190,13 @@ const patchBudget = (pk: number, budget: string, oldBudget: number, isRevised = 
           @dblclick="formNumber = i"
         >
           <span v-if="formNumber !== i">
-            {{ numFormat(obj.revised_budget ?? obj.budget) }}
+            {{ numFormat(obj.revised_budget || obj.budget) }}
           </span>
           <span v-else class="p-0">
             <CFormInput
               type="text"
               class="form-control text-right"
-              :value="obj.revised_budget ?? obj.budget"
+              :value="obj.revised_budget || obj.budget"
               @blur="
                 patchBudget(obj.pk as number, $event.target.value, obj.revised_budget ?? 0, true)
               "
@@ -223,9 +226,11 @@ const patchBudget = (pk: number, budget: string, oldBudget: number, isRevised = 
         </CTableDataCell>
         <CTableDataCell
           v-show="isRevised"
-          :class="obj.budget < getEASum(obj.account_d3.pk) ? 'text-danger' : ''"
+          :class="
+            (obj.revised_budget || obj.budget) < getEASum(obj.account_d3.pk) ? 'text-danger' : ''
+          "
         >
-          {{ numFormat(obj.budget - (getEASum(obj.account_d3.pk) || 0)) }}
+          {{ numFormat((obj.revised_budget || obj.budget) - (getEASum(obj.account_d3.pk) || 0)) }}
         </CTableDataCell>
       </CTableRow>
 
