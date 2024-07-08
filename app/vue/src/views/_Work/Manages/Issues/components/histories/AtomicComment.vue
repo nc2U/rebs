@@ -4,6 +4,7 @@ import type { IssueLogEntry } from '@/store/types/work'
 import { elapsedTime, timeFormat } from '@/utils/baseMixins'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import MdEditor from '@/components/MdEditor/Index.vue'
 
 defineProps({ log: { type: Object as PropType<IssueLogEntry>, required: true } })
 
@@ -13,7 +14,25 @@ const RefDelConfirm = ref()
 const delPk = ref<null | number>(null)
 
 const toReply = (pk?: number | null) => alert(`reply - ${pk}`)
-const toEdit = (pk?: number | null) => alert(`edit - ${pk}`)
+
+const editMode = ref(false)
+
+const toEdit = (pk: number, content: string) => {
+  // alert(`edit - ${pk}`)
+  editMode.value = !editMode.value
+  form.value.pk = pk
+  form.value.content = content
+}
+
+const form = ref({
+  pk: null as null | number,
+  content: '',
+})
+
+const commentSubmit = () => {
+  alert('ok!!')
+  editMode.value = false
+}
 
 const copyLink = (path: string, hash: string) => {
   // 가상의 textarea 엘리먼트를 생성하고 텍스트를 할당.
@@ -80,7 +99,7 @@ const delSubmit = () => {
               color="amber"
               size="16"
               class="mr-1 pointer"
-              @click="toEdit(log.comment?.pk)"
+              @click="toEdit(log.comment?.pk as number, log.comment?.content ?? '')"
             />
             <v-tooltip activator="parent" location="top">편집</v-tooltip>
           </span>
@@ -121,7 +140,20 @@ const delSubmit = () => {
       </CRow>
       <v-divider class="mt-0 mb-2" />
       <div class="pl-0 text-body">
-        <VueMarkdownIt :source="log.comment?.content + '\n' ?? '\n'" />
+        <VueMarkdownIt v-if="!editMode" :source="log.comment?.content + '\n' ?? '\n'" />
+        <span v-else>
+          <MdEditor
+            v-model="form.content"
+            style="height: 150px"
+            class="mb-1"
+            placeholder="Comment.."
+          />
+          <CFormCheck id="private_comment" label="비공개 댓글" />
+          <div class="my-3">
+            <CButton color="success" size="sm" @click="commentSubmit">저장</CButton>
+            <CButton color="light" size="sm" @click="() => (editMode = false)">취소</CButton>
+          </div>
+        </span>
       </div>
 
       <ConfirmModal ref="RefDelConfirm">
