@@ -11,7 +11,7 @@ defineProps({ date: { type: String, default: '' } })
 const emit = defineEmits(['patch-budget', 'update-revised'])
 
 const formNumber = ref(1000)
-const isRevised = ref(1)
+const isRevised = ref('1')
 
 const projStore = useProject()
 const execAmountList = computed(() => projStore.execAmountList)
@@ -103,25 +103,38 @@ const updateRevised = ($event: any) => emit('update-revised', $event.target.valu
           </strong>
           <small class="text-medium-emphasis"> ({{ date }}) 기준 </small>
         </CTableDataCell>
-        <CTableDataCell class="text-center bg-yellow-lighten-5">
-          <v-radio-group
-            v-model="isRevised"
-            color="indigo"
-            inline
-            size="sm"
-            density="compact"
-            hide-details
-          >
-            <v-radio label="기초 예산" :value="0" @click="updateRevised" />
-            <v-radio label="현황 예산" :value="1" @click="updateRevised" />
-          </v-radio-group>
+        <CTableDataCell class="text-center">
+          <CButtonGroup size="sm" role="group" aria-label="Basic checkbox toggle button group">
+            <CFormCheck
+              type="radio"
+              :button="{ color: 'primary', variant: 'outline' }"
+              name="budget_select"
+              id="budget0"
+              autocomplete="off"
+              label="기초 예산"
+              value="0"
+              v-model="isRevised"
+              @click="updateRevised"
+            />
+            <CFormCheck
+              type="radio"
+              :button="{ color: 'primary', variant: 'outline' }"
+              name="budget_select"
+              id="budget1"
+              autocomplete="off"
+              label="현황 예산"
+              value="1"
+              v-model="isRevised"
+              @click="updateRevised"
+            />
+          </CButtonGroup>
         </CTableDataCell>
         <CTableDataCell colspan="4" class="text-right">(단위: 원)</CTableDataCell>
       </CTableRow>
       <CTableRow :color="TableSecondary" class="text-center">
         <CTableHeaderCell colspan="4">구분</CTableHeaderCell>
-        <CTableHeaderCell color="dark" v-show="!isRevised">기초 예산 금액</CTableHeaderCell>
-        <CTableHeaderCell v-show="isRevised">현황 예산 금액</CTableHeaderCell>
+        <CTableHeaderCell color="dark" v-show="isRevised === '0'">기초 예산 금액</CTableHeaderCell>
+        <CTableHeaderCell v-show="isRevised === '1'">현황 예산 금액</CTableHeaderCell>
         <CTableHeaderCell>전월 집행 금액 누계</CTableHeaderCell>
         <CTableHeaderCell>당월 집행 금액</CTableHeaderCell>
         <CTableHeaderCell>집행금액 합계</CTableHeaderCell>
@@ -159,11 +172,11 @@ const updateRevised = ($event: any) => emit('update-revised', $event.target.valu
             {{ obj.basis_calc }}
           </v-tooltip>
         </CTableDataCell>
-        <CTableDataCell v-show="!isRevised" class="py-0 bg-blue-grey-lighten-5">
+        <CTableDataCell v-show="isRevised === '0'" class="py-0 bg-blue-grey-lighten-5">
           <span>{{ numFormat(obj.budget) }}</span>
         </CTableDataCell>
         <CTableDataCell
-          v-show="isRevised"
+          v-show="isRevised === '1'"
           class="py-0 bg-amber-lighten-5"
           style="cursor: pointer"
           @dblclick="formNumber = i"
@@ -195,13 +208,13 @@ const updateRevised = ($event: any) => emit('update-revised', $event.target.valu
           {{ numFormat(getEASum(obj.account_d3.pk) || 0) }}
         </CTableDataCell>
         <CTableDataCell
-          v-show="!isRevised"
+          v-show="isRevised === '0'"
           :class="obj.budget < getEASum(obj.account_d3.pk) ? 'text-danger' : ''"
         >
           {{ numFormat(obj.budget - (getEASum(obj.account_d3.pk) || 0)) }}
         </CTableDataCell>
         <CTableDataCell
-          v-show="isRevised"
+          v-show="isRevised === '1'"
           :class="
             (obj.revised_budget || obj.budget) < getEASum(obj.account_d3.pk) ? 'text-danger' : ''
           "
@@ -212,19 +225,19 @@ const updateRevised = ($event: any) => emit('update-revised', $event.target.valu
 
       <CTableRow :color="TableSecondary" class="text-right">
         <CTableHeaderCell colspan="4" class="text-center"> 합계</CTableHeaderCell>
-        <CTableHeaderCell v-show="!isRevised">
+        <CTableHeaderCell v-show="isRevised === '0'">
           {{ numFormat(sumTotal.totalBudgetCalc) }}
         </CTableHeaderCell>
-        <CTableHeaderCell v-show="isRevised">
+        <CTableHeaderCell v-show="isRevised === '1'">
           {{ numFormat(sumTotal.totalRevisedBudgetCalc) }}
         </CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(sumTotal.preExecAmt) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(sumTotal.monthExecAmt) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(sumTotal.totalExecAmt) }}</CTableHeaderCell>
-        <CTableHeaderCell v-show="!isRevised">
+        <CTableHeaderCell v-show="isRevised === '0'">
           {{ numFormat(sumTotal.availableBudget) }}
         </CTableHeaderCell>
-        <CTableHeaderCell v-show="isRevised">
+        <CTableHeaderCell v-show="isRevised === '1'">
           {{ numFormat(sumTotal.availableRevisedBudget) }}
         </CTableHeaderCell>
       </CTableRow>
