@@ -52,14 +52,14 @@ const sumTotal = computed(() => {
     .map((a: ExeBudget) => a.all_sum)
     .reduce((r: number, v: number) => r + v, 0)
 
-  const totalBudget = totalBudgetCalc
   const preExecAmt = totalExecAmtCalc - monthExecAmtCalc
   const monthExecAmt = monthExecAmtCalc
   const totalExecAmt = totalExecAmtCalc
   const availableBudget = totalBudgetCalc - totalExecAmtCalc
   const availableRevisedBudget = totalRevisedBudgetCalc - totalExecAmtCalc
   return {
-    totalBudget,
+    totalBudgetCalc,
+    totalRevisedBudgetCalc,
     preExecAmt,
     monthExecAmt,
     totalExecAmt,
@@ -106,11 +106,11 @@ const updateRevised = ($event: any) => emit('update-revised', $event.target.valu
         <CTableDataCell class="text-center bg-yellow-lighten-5">
           <v-radio-group
             v-model="isRevised"
+            color="indigo"
             inline
             size="sm"
             density="compact"
             hide-details
-            style="font-size: 0.8em"
           >
             <v-radio label="기초 예산" :value="0" @click="updateRevised" />
             <v-radio label="현황 예산" :value="1" @click="updateRevised" />
@@ -212,7 +212,12 @@ const updateRevised = ($event: any) => emit('update-revised', $event.target.valu
 
       <CTableRow :color="TableSecondary" class="text-right">
         <CTableHeaderCell colspan="4" class="text-center"> 합계</CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(sumTotal.totalBudget) }}</CTableHeaderCell>
+        <CTableHeaderCell v-show="!isRevised">
+          {{ numFormat(sumTotal.totalBudgetCalc) }}
+        </CTableHeaderCell>
+        <CTableHeaderCell v-show="isRevised">
+          {{ numFormat(sumTotal.totalRevisedBudgetCalc) }}
+        </CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(sumTotal.preExecAmt) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(sumTotal.monthExecAmt) }}</CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(sumTotal.totalExecAmt) }}</CTableHeaderCell>
