@@ -13,7 +13,8 @@ defineProps({
 
 const tabPaneActiveKey = ref(1)
 
-const emit = defineEmits(['del-submit'])
+const emit = defineEmits(['del-submit', 'call-edit-form'])
+const callEditForm = () => emit('call-edit-form')
 const delSubmit = (pk: number) => emit('del-submit', pk)
 
 const route = useRoute()
@@ -88,7 +89,12 @@ onBeforeMount(() => {
         <CTabPane role="tabpanel" aria-labelledby="home-tab" :visible="tabPaneActiveKey === 1">
           <div v-for="log in issueLogList" :key="log.pk">
             <AtomicLog v-if="log.action === 'Updated' && !log.comment" :log="log" />
-            <AtomicComment v-else :log="log" @del-submit="delSubmit" />
+            <AtomicComment
+              v-else
+              :log="log"
+              @call-edit-form="callEditForm"
+              @del-submit="delSubmit"
+            />
           </div>
         </CTabPane>
 
@@ -97,6 +103,7 @@ onBeforeMount(() => {
             <AtomicComment
               v-if="log.action === 'Comment' && log.comment"
               :log="log"
+              @call-edit-form="callEditForm"
               @del-submit="delSubmit"
             />
           </div>

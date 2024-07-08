@@ -9,17 +9,16 @@ import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const props = defineProps({ log: { type: Object as PropType<IssueLogEntry>, required: true } })
 
-const emit = defineEmits(['del-submit'])
+const emit = defineEmits(['del-submit', 'call-edit-form'])
 
 const RefDelConfirm = ref()
 const delPk = ref<null | number>(null)
 
-const toReply = (pk?: number | null) => alert(`reply - ${pk}`)
+const callEditForm = () => emit('call-edit-form')
 
 const editMode = ref(false)
 
 const toEdit = (comment: string) => {
-  // alert(`edit - ${pk}`)
   editMode.value = !editMode.value
   content.value = comment
 }
@@ -89,7 +88,7 @@ const delSubmit = () => {
               color="info"
               size="16"
               class="mr-2 pointer"
-              @click="toReply(log.comment?.pk)"
+              @click="callEditForm"
             />
             <v-tooltip activator="parent" location="top">댓글달기</v-tooltip>
           </span>

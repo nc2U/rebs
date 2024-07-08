@@ -415,6 +415,7 @@ onBeforeMount(async () => {
     :issue-log-list="issueLogList"
     :issue-comment-list="issueCommentList"
     :time-entry-list="timeEntryList"
+    @call-edit-form="callEditForm"
     @del-submit="delSubmit"
   />
 
