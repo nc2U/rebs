@@ -37,8 +37,8 @@ const onDeleteOrder = (pk: number) => emit('on-delete', pk)
         <CTableHeaderCell>항목명칭</CTableHeaderCell>
         <CTableHeaderCell>단위세대 (평균)단가</CTableHeaderCell>
         <CTableHeaderCell>수량</CTableHeaderCell>
-        <CTableHeaderCell>인준수입예산</CTableHeaderCell>
-        <CTableHeaderCell>현황수입예산</CTableHeaderCell>
+        <CTableHeaderCell>기초(인준)수입예산</CTableHeaderCell>
+        <CTableHeaderCell>현황(변경)수입예산</CTableHeaderCell>
         <CTableHeaderCell>비 고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
@@ -54,7 +54,7 @@ const onDeleteOrder = (pk: number) => emit('on-delete', pk)
 
     <CTableBody v-else>
       <CTableRow>
-        <CTableDataCell colspan="9" class="text-center p-5 text-danger">
+        <CTableDataCell colspan="10" class="text-center p-5 text-danger">
           등록된 데이터가 없습니다.
         </CTableDataCell>
       </CTableRow>
