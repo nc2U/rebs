@@ -384,7 +384,7 @@ onBeforeMount(() => {
                 {{ trackers?.filter(t => t.pk === form.tracker).map(t => t.description)[0] ?? '' }}
               </CCol>
 
-              <CCol v-if="issueProject" style="padding-top: 8px">
+              <CCol v-if="issueProject && !issue" style="padding-top: 8px">
                 <CFormCheck
                   v-if="workManager"
                   v-model="form.is_private"
