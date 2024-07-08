@@ -158,7 +158,7 @@ const resetForm = () => {
             <CFormInput
               v-model.number="form.budget"
               min="0"
-              placeholder="인준수입예산"
+              placeholder="기초 수입 예산"
               type="number"
               maxlength="18"
               required
@@ -169,7 +169,7 @@ const resetForm = () => {
             <CFormInput
               v-model.number="form.revised_budget"
               min="0"
-              placeholder="현황수입예산"
+              placeholder="현황 수입 예산"
               type="number"
               maxlength="18"
               :disabled="disabled"

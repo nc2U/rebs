@@ -32,13 +32,13 @@ const onDeleteOrder = (pk: number) => emit('on-delete', pk)
       <CTableRow>
         <CTableHeaderCell>대분류</CTableHeaderCell>
         <CTableHeaderCell>중분류</CTableHeaderCell>
-        <CTableHeaderCell>차수그룹명</CTableHeaderCell>
+        <CTableHeaderCell>차수 그룹명</CTableHeaderCell>
         <CTableHeaderCell>타입명</CTableHeaderCell>
-        <CTableHeaderCell>항목명칭</CTableHeaderCell>
-        <CTableHeaderCell>단위세대 (평균)단가</CTableHeaderCell>
+        <CTableHeaderCell>항목 명칭</CTableHeaderCell>
+        <CTableHeaderCell>단위 세대 (평균)단가</CTableHeaderCell>
         <CTableHeaderCell>수량</CTableHeaderCell>
-        <CTableHeaderCell>기초(인준)수입예산</CTableHeaderCell>
-        <CTableHeaderCell>현황(변경)수입예산</CTableHeaderCell>
+        <CTableHeaderCell>기초 수입 예산</CTableHeaderCell>
+        <CTableHeaderCell>현황 수입 예산</CTableHeaderCell>
         <CTableHeaderCell>비 고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
