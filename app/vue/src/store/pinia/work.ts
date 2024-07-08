@@ -523,12 +523,13 @@ export const useWork = defineStore('work', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const updateIssueComment = (payload: any) =>
+  const patchIssueComment = (payload: any) =>
     api
-      .put(`/issue-comment/${payload.pk}/`, payload)
+      .patch(`/issue-comment/${payload.pk}/`, payload)
       .then(async () => {
         await fetchIssueComment(payload.pk)
         await fetchIssueCommentList({ issue: payload.issue })
+        await fetchIssueLogList({ issue: payload.issue })
         message()
       })
       .catch(err => errorHandle(err.response.data))
@@ -790,7 +791,7 @@ export const useWork = defineStore('work', () => {
     issueCommentList,
     fetchIssueComment,
     fetchIssueCommentList,
-    updateIssueComment,
+    patchIssueComment,
     deleteIssueComment,
 
     timeEntry,

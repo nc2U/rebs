@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { type PropType, ref } from 'vue'
 import type { IssueLogEntry } from '@/store/types/work'
-import { elapsedTime, timeFormat } from '@/utils/baseMixins'
+import { useWork } from '@/store/pinia/work'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import { elapsedTime, timeFormat } from '@/utils/baseMixins'
 import MdEditor from '@/components/MdEditor/Index.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
-defineProps({ log: { type: Object as PropType<IssueLogEntry>, required: true } })
+const props = defineProps({ log: { type: Object as PropType<IssueLogEntry>, required: true } })
 
 const emit = defineEmits(['del-submit'])
 
@@ -17,20 +18,19 @@ const toReply = (pk?: number | null) => alert(`reply - ${pk}`)
 
 const editMode = ref(false)
 
-const toEdit = (pk: number, content: string) => {
+const toEdit = (comment: string) => {
   // alert(`edit - ${pk}`)
   editMode.value = !editMode.value
-  form.value.pk = pk
-  form.value.content = content
+  content.value = comment
 }
 
-const form = ref({
-  pk: null as null | number,
-  content: '',
-})
+const content = ref('')
 
+const workStore = useWork()
 const commentSubmit = () => {
-  alert('ok!!')
+  const pk = props.log?.comment?.pk
+  const issue = props.log.issue?.pk
+  workStore.patchIssueComment({ pk, issue, content: content.value })
   editMode.value = false
 }
 
@@ -99,7 +99,7 @@ const delSubmit = () => {
               color="amber"
               size="16"
               class="mr-1 pointer"
-              @click="toEdit(log.comment?.pk as number, log.comment?.content ?? '')"
+              @click="toEdit(log.comment?.content ?? '')"
             />
             <v-tooltip activator="parent" location="top">편집</v-tooltip>
           </span>
@@ -142,12 +142,7 @@ const delSubmit = () => {
       <div class="pl-0 text-body">
         <VueMarkdownIt v-if="!editMode" :source="log.comment?.content + '\n' ?? '\n'" />
         <span v-else>
-          <MdEditor
-            v-model="form.content"
-            style="height: 150px"
-            class="mb-1"
-            placeholder="Comment.."
-          />
+          <MdEditor v-model="content" style="height: 150px" class="mb-1" placeholder="Comment.." />
           <CFormCheck id="private_comment" label="비공개 댓글" />
           <div class="my-3">
             <CButton color="success" size="sm" @click="commentSubmit">저장</CButton>
