@@ -251,7 +251,7 @@ const callComment = (edit?: true) => {
   comment.value.content = edit
     ? ''
     : userInfo?.value.username +
-      '의 댓글: \n' +
+      '의 댓글: \n\n' +
       form.value.description
         .split('\n')
         .map(line => ` > ${line}`)
@@ -259,7 +259,19 @@ const callComment = (edit?: true) => {
       '\n\n'
 }
 
-defineExpose({ callComment })
+const callReply = (payload: { id: number; user: string; content: string }) => {
+  // 댓글 폼 불러오기
+  comment.value.content =
+    payload.user +
+    `의 댓글  ([](#note-${payload.id})): \n\n` +
+    payload.content
+      .split('\n')
+      .map(line => ` > ${line}`)
+      .join('  \n') +
+    '\n\n'
+}
+
+defineExpose({ callComment, callReply })
 
 const numToTime = (n: number | null) => {
   if (!n) return ''

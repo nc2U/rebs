@@ -96,6 +96,15 @@ const callComment = () => {
   }, 100)
 }
 
+const callReply = (payload?: { id: number; user: string; content: string }) => {
+  editForm.value = true
+
+  setTimeout(() => {
+    scrollToId('edit-form')
+    issueFormRef.value.callReply(payload)
+  }, 100)
+}
+
 // 지켜보기 / 관심끄기
 const watchControl = (payload: any) => {
   const form = new FormData()
@@ -415,7 +424,7 @@ onBeforeMount(async () => {
     :issue-log-list="issueLogList"
     :issue-comment-list="issueCommentList"
     :time-entry-list="timeEntryList"
-    @call-edit-form="callEditForm"
+    @call-reply="callReply"
     @del-submit="delSubmit"
   />
 

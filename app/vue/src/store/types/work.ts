@@ -488,7 +488,7 @@ export interface IssueLogEntry {
     description: string
   }
   action: string
-  comment: { pk: number; content: string } | null
+  comment: { pk: number; content: string; user: string } | null
   details: string
   diff: string
   timestamp: string
