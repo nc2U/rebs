@@ -363,8 +363,13 @@ onBeforeMount(() => {
                 />
               </CCol>
 
-              <CCol v-if="workManager" style="padding-top: 8px">
-                <CFormCheck v-model="form.is_private" id="is_private" label="비공개" />
+              <CCol style="padding-top: 8px">
+                <CFormCheck
+                  v-if="workManager"
+                  v-model="form.is_private"
+                  id="is_private"
+                  label="비공개"
+                />
               </CCol>
             </CRow>
 
