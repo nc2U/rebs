@@ -107,7 +107,7 @@ const updateRevised = ($event: any) => emit('update-revised', $event.target.valu
           <CButtonGroup size="sm" role="group" aria-label="Basic checkbox toggle button group">
             <CFormCheck
               type="radio"
-              :button="{ color: 'primary', variant: 'outline' }"
+              :button="{ color: 'dark', variant: 'outline' }"
               name="budget_select"
               id="budget0"
               autocomplete="off"
@@ -118,7 +118,7 @@ const updateRevised = ($event: any) => emit('update-revised', $event.target.valu
             />
             <CFormCheck
               type="radio"
-              :button="{ color: 'primary', variant: 'outline' }"
+              :button="{ color: 'dark', variant: 'outline' }"
               name="budget_select"
               id="budget1"
               autocomplete="off"
@@ -133,8 +133,8 @@ const updateRevised = ($event: any) => emit('update-revised', $event.target.valu
       </CTableRow>
       <CTableRow :color="TableSecondary" class="text-center">
         <CTableHeaderCell colspan="4">구분</CTableHeaderCell>
-        <CTableHeaderCell color="dark" v-show="isRevised === '0'">기초 예산 금액</CTableHeaderCell>
-        <CTableHeaderCell v-show="isRevised === '1'">현황 예산 금액</CTableHeaderCell>
+        <CTableHeaderCell color="light" v-show="isRevised === '0'">기초 예산 금액</CTableHeaderCell>
+        <CTableHeaderCell color="light" v-show="isRevised === '1'">현황 예산 금액</CTableHeaderCell>
         <CTableHeaderCell>전월 집행 금액 누계</CTableHeaderCell>
         <CTableHeaderCell>당월 집행 금액</CTableHeaderCell>
         <CTableHeaderCell>집행금액 합계</CTableHeaderCell>
