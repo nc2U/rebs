@@ -1,6 +1,7 @@
 import json
 import os.path
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction, IntegrityError
 from django.db.models import Sum, Q
 from django.utils import timezone
@@ -122,6 +123,7 @@ class IssueProjectSerializer(serializers.ModelSerializer):
     parent_visible = serializers.SerializerMethodField(read_only=True)
     sub_projects = serializers.SerializerMethodField()
     user = serializers.SlugRelatedField('username', read_only=True)
+    my_perms = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = IssueProject
@@ -129,7 +131,7 @@ class IssueProjectSerializer(serializers.ModelSerializer):
                   'is_public', 'module', 'is_inherit_members', 'allowed_roles', 'trackers', 'versions',
                   'default_version', 'categories', 'status', 'depth', 'all_members', 'members', 'activities',
                   'visible', 'total_estimated_hours', 'total_time_spent', 'family_tree', 'parent',
-                  'parent_visible', 'sub_projects', 'user', 'created', 'updated',)
+                  'parent_visible', 'sub_projects', 'user', 'my_perms', 'created', 'updated',)
 
     def get_sub_projects(self, obj):
         sub_projects = obj.issueproject_set.exclude(status='9')
@@ -171,6 +173,200 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         for sub_project in sub_projects:
             total_hours += self.recursive_time_spent(sub_project)
         return total_hours
+
+    def get_my_perms(self, obj):
+        request = self.context.get('request')
+        user = request.user
+        try:
+            roles = user.member_set.get(project=obj).roles.all()
+        except ObjectDoesNotExist:
+            roles = []
+        perms = Permission.objects.filter(role__in=roles)
+
+        combined = {
+            # 프로젝트
+            'project_create': False,
+            'project_update': False,
+            'project_close': False,
+            'project_delete': False,
+            'project_public': False,
+            'project_module': False,
+            'project_member': False,
+            'project_version': False,
+            'project_create_sub': False,
+            'project_pub_query': False,
+            'project_save_query': False,
+            # 게시판
+            'forum_read': False,
+            'forum_create': False,
+            'forum_update': False,
+            'forum_own_update': False,
+            'forum_delete': False,
+            'forum_own_delete': False,
+            'forum_watcher_read': False,
+            'forum_watcher_create': False,
+            'forum_watcher_delete': False,
+            'forum_manage': False,
+            # 달력
+            'calendar_read': False,
+            # 문서
+            'document_read': False,
+            'document_create': False,
+            'document_update': False,
+            'document_delete': False,
+            # 파일
+            'file_read': False,
+            'file_manage': False,
+            # 간트차트
+            'gantt_read': False,
+            # 업무
+            'issue_read': False,
+            'issue_create': False,
+            'issue_update': False,
+            'issue_own_update': False,
+            'issue_copy': False,
+            'issue_rel_manage': False,
+            'issue_sub_manage': False,
+            'issue_public': False,
+            'issue_own_public': False,
+            'issue_comment_create': False,
+            'issue_comment_update': False,
+            'issue_comment_own_update': False,
+            'issue_private_comment_read': False,
+            'issue_private_comment_set': False,
+            'issue_delete': False,
+            'issue_watcher_read': False,
+            'issue_watcher_create': False,
+            'issue_watcher_delete': False,
+            'issue_import': False,
+            'issue_category_manage': False,
+            # 공지(뉴스)
+            'news_read': False,
+            'news_manage': False,
+            'news_comment': False,
+            # 저장소(레파지토리)
+            'repo_changesets_read': False,
+            'repo_read': False,
+            'repo_commit_access': False,
+            'repo_rel_issue_manage': False,
+            'repo_manage': False,
+            # 시간추적
+            'time_read': False,
+            'time_create': False,
+            'time_update': False,
+            'time_own_update': False,
+            'time_pro_act_manage': False,
+            'time_other_user_log': False,
+            'time_entries_import': False,
+            # 위키
+            'wiki_read': False,
+            'wiki_history_read': False,
+            'wiki_page_export': False,
+            'wiki_page_update': False,
+            'wiki_page_rename': False,
+            'wiki_page_delete': False,
+            'wiki_attachment_delete': False,
+            'wiki_watcher_read': False,
+            'wiki_watcher_create': False,
+            'wiki_watcher_delete': False,
+            'wiki_page_project': False,
+            'wiki_manage': False
+        }
+
+        # Combine permissions
+        for perm in perms:
+            # 프로젝트
+            combined['project_create'] = combined['project_create'] or perm.project_create
+            combined['project_update'] = combined['project_update'] or perm.project_update
+            combined['project_close'] = combined['project_close'] or perm.project_close
+            combined['project_delete'] = combined['project_delete'] or perm.project_delete
+            combined['project_public'] = combined['project_public'] or perm.project_public
+            combined['project_module'] = combined['project_module'] or perm.project_module
+            combined['project_member'] = combined['project_member'] or perm.project_member
+            combined['project_version'] = combined['project_version'] or perm.project_version
+            combined['project_create_sub'] = combined['project_create_sub'] or perm.project_create_sub
+            combined['project_pub_query'] = combined['project_pub_query'] or perm.project_pub_query
+            combined['project_save_query'] = combined['project_save_query'] or perm.project_save_query
+            # 게시판
+            combined['forum_read'] = combined['forum_read'] or perm.forum_read
+            combined['forum_create'] = combined['forum_create'] or perm.forum_create
+            combined['forum_update'] = combined['forum_update'] or perm.forum_update
+            combined['forum_own_update'] = combined['forum_own_update'] or perm.forum_own_update
+            combined['forum_delete'] = combined['forum_delete'] or perm.forum_delete
+            combined['forum_own_delete'] = combined['forum_own_delete'] or perm.forum_own_delete
+            combined['forum_watcher_read'] = combined['forum_watcher_read'] or perm.forum_watcher_read
+            combined['forum_watcher_create'] = combined['forum_watcher_create'] or perm.forum_watcher_create
+            combined['forum_watcher_delete'] = combined['forum_watcher_delete'] or perm.forum_watcher_delete
+            combined['forum_manage'] = combined['forum_manage'] or perm.forum_manage
+            # 달력
+            combined['calendar_read'] = combined['calendar_read'] or perm.calendar_read
+            # 문서
+            combined['document_read'] = combined['document_read'] or perm.document_read
+            combined['document_create'] = combined['document_create'] or perm.document_create
+            combined['document_update'] = combined['document_update'] or perm.document_update
+            combined['document_delete'] = combined['document_delete'] or perm.document_delete
+            # 파일
+            combined['file_read'] = combined['file_read'] or perm.file_read
+            combined['file_manage'] = combined['file_manage'] or perm.file_manage
+            # 간트차트
+            combined['gantt_read'] = combined['gantt_read'] or perm.gantt_read
+            # 업무
+            combined['issue_read'] = combined['issue_read'] or perm.issue_read
+            combined['issue_create'] = combined['issue_create'] or perm.issue_create
+            combined['issue_update'] = combined['issue_update'] or perm.issue_update
+            combined['issue_own_update'] = combined['issue_own_update'] or perm.issue_own_update
+            combined['issue_copy'] = combined['issue_copy'] or perm.issue_copy
+            combined['issue_rel_manage'] = combined['issue_rel_manage'] or perm.issue_rel_manage
+            combined['issue_sub_manage'] = combined['issue_sub_manage'] or perm.issue_sub_manage
+            combined['issue_public'] = combined['issue_public'] or perm.issue_public
+            combined['issue_own_public'] = combined['issue_own_public'] or perm.issue_own_public
+            combined['issue_comment_create'] = combined['issue_comment_create'] or perm.issue_comment_create
+            combined['issue_comment_update'] = combined['issue_comment_update'] or perm.issue_comment_update
+            combined['issue_comment_own_update'] = combined[
+                                                       'issue_comment_own_update'] or perm.issue_comment_own_update
+            combined['issue_private_comment_read'] = combined[
+                                                         'issue_private_comment_read'] or perm.issue_private_comment_read
+            combined['issue_private_comment_set'] = combined[
+                                                        'issue_private_comment_set'] or perm.issue_private_comment_set
+            combined['issue_delete'] = combined['issue_delete'] or perm.issue_delete
+            combined['issue_watcher_read'] = combined['issue_watcher_read'] or perm.issue_watcher_read
+            combined['issue_watcher_create'] = combined['issue_watcher_create'] or perm.issue_watcher_create
+            combined['issue_watcher_delete'] = combined['issue_watcher_delete'] or perm.issue_watcher_delete
+            combined['issue_import'] = combined['issue_import'] or perm.issue_import
+            combined['issue_category_manage'] = combined['issue_category_manage'] or perm.issue_category_manage
+            # 공지(뉴스)
+            combined['news_read'] = combined['news_read'] or perm.news_read
+            combined['news_manage'] = combined['news_manage'] or perm.news_manage
+            combined['news_comment'] = combined['news_comment'] or perm.news_comment
+            # 저장소(레파지토리)
+            combined['repo_changesets_read'] = combined['repo_changesets_read'] or perm.repo_changesets_read
+            combined['repo_read'] = combined['repo_read'] or perm.repo_read
+            combined['repo_commit_access'] = combined['repo_commit_access'] or perm.repo_commit_access
+            combined['repo_rel_issue_manage'] = combined['repo_rel_issue_manage'] or perm.repo_rel_issue_manage
+            combined['repo_manage'] = combined['repo_manage'] or perm.repo_manage
+            # 시간추적
+            combined['time_read'] = combined['time_read'] or perm.time_read
+            combined['time_create'] = combined['time_create'] or perm.time_create
+            combined['time_update'] = combined['time_update'] or perm.time_update
+            combined['time_own_update'] = combined['time_own_update'] or perm.time_own_update
+            combined['time_pro_act_manage'] = combined['time_pro_act_manage'] or perm.time_pro_act_manage
+            combined['time_other_user_log'] = combined['time_other_user_log'] or perm.time_other_user_log
+            combined['time_entries_import'] = combined['time_entries_import'] or perm.time_entries_import
+            # 위키
+            combined['wiki_read'] = combined['wiki_read'] or perm.wiki_read
+            combined['wiki_history_read'] = combined['wiki_history_read'] or perm.wiki_history_read
+            combined['wiki_page_export'] = combined['wiki_page_export'] or perm.wiki_page_export
+            combined['wiki_page_update'] = combined['wiki_page_update'] or perm.wiki_page_update
+            combined['wiki_page_rename'] = combined['wiki_page_rename'] or perm.wiki_page_rename
+            combined['wiki_page_delete'] = combined['wiki_page_delete'] or perm.wiki_page_delete
+            combined['wiki_attachment_delete'] = combined['wiki_attachment_delete'] or perm.wiki_attachment_delete
+            combined['wiki_watcher_read'] = combined['wiki_watcher_read'] or perm.wiki_watcher_read
+            combined['wiki_watcher_create'] = combined['wiki_watcher_create'] or perm.wiki_watcher_create
+            combined['wiki_watcher_delete'] = combined['wiki_watcher_delete'] or perm.wiki_watcher_delete
+            combined['wiki_page_project'] = combined['wiki_page_project'] or perm.wiki_page_project
+            combined['wiki_manage'] = combined['wiki_manage'] or perm.wiki_manage
+
+        return combined
 
     @transaction.atomic
     def create(self, validated_data):
