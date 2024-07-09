@@ -431,7 +431,7 @@ class IssueLogEntryViewSet(viewsets.ModelViewSet):
     queryset = IssueLogEntry.objects.all()
     serializer_class = IssueLogEntrySerializer
     permission_classes = (permissions.IsAuthenticated,)
-    pagination_class = PageNumberPaginationThreeHundred
+    pagination_class = PageNumberPaginationFifty
     filterset_fields = ('issue', 'user')
 
     # def get_queryset(self):
