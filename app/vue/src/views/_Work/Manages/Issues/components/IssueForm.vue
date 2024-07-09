@@ -246,17 +246,18 @@ const closeForm = () => emit('close-form')
 const userInfo = inject<ComputedRef<User>>('userInfo')
 const workManager = inject('workManager')
 
-const callComment = (edit?: true) => {
+const cmtFocus = ref(false) // 댓글 폼 포커스
+const callComment = () => {
+  cmtFocus.value = true
   // 댓글 폼 불러오기
-  comment.value.content = edit
-    ? ''
-    : userInfo?.value.username +
-      '의 댓글: \n\n' +
-      form.value.description
-        .split('\n')
-        .map(line => ` > ${line}`)
-        .join('  \n') +
-      '\n\n'
+  comment.value.content =
+    userInfo?.value.username +
+    '의 댓글: \n' +
+    form.value.description
+      .split('\n')
+      .map(line => ` > ${line}`)
+      .join('') +
+    '  \n\n'
 }
 
 const callReply = (payload: { id: number; user: string; content: string }) => {
@@ -744,9 +745,10 @@ onBeforeMount(() => {
                 <v-divider class="mt-0" />
                 <MdEditor
                   v-model="comment.content"
+                  :auto-focus="cmtFocus"
                   style="height: 180px"
                   class="mb-1"
-                  placeholder="Comment.."
+                  placeholder="Comment"
                 />
                 <CFormCheck v-model="comment.is_private" id="private_comment" label="비공개 댓글" />
               </CCol>

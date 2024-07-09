@@ -128,12 +128,12 @@ onBeforeMount(() => {
   .vue-md-it-wrapper {
     float: left;
     margin-right: 1rem;
-  }
 
-  .vue-md-it-wrapper blockquote {
-    padding-left: 38px !important;
-    border-left: 3px solid #ddd !important;
-    font-style: italic;
+    blockquote {
+      padding-left: 28px !important;
+      border-left: 3px solid #ddd !important;
+      font-style: italic !important;
+    }
   }
 }
 </style>
