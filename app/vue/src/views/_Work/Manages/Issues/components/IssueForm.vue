@@ -261,15 +261,16 @@ const callComment = () => {
 }
 
 const callReply = (payload: { id: number; user: string; content: string }) => {
+  console.log(`#${route.path}#note-${payload.id}`)
   // 댓글 폼 불러오기
   comment.value.content =
     payload.user +
-    `의 댓글  ([](#note-${payload.id})): \n\n` +
+    `의 댓글 ([#note-${payload.id}](#${route.path}#note-${payload.id})): \n` +
     payload.content
       .split('\n')
       .map(line => ` > ${line}`)
-      .join('  \n') +
-    '\n\n'
+      .join('') +
+    '  \n\n'
 }
 
 defineExpose({ callComment, callReply })
