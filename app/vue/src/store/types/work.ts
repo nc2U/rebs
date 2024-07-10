@@ -53,7 +53,7 @@ export interface IssueProject {
   parent_visible: boolean
   sub_projects?: IssueProject[]
   user?: string
-  my_perms?: any
+  my_perms?: Permission
   created?: string
   updated?: string
 }
@@ -103,7 +103,7 @@ export interface Role {
 }
 
 export interface Permission {
-  pk: 1
+  pk?: number
   project_create: boolean
   project_update: boolean
   project_close: boolean
