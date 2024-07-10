@@ -137,7 +137,14 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         sub_projects = obj.issueproject_set.exclude(status='9')
         request = self.context.get('request')
 
-        return self.__class__(sub_projects, many=True, read_only=True, context=self.context).data
+        # Create a new serializer class without the 'my_perms' field
+        class SubProjectSerializer(self.__class__):
+            class Meta(self.__class__.Meta):
+                fields = tuple(
+                    f for f in self.__class__.Meta.fields if
+                    f not in ('company', 'module', 'allowed_roles', 'my_perms'))
+
+        return SubProjectSerializer(sub_projects, many=True, read_only=True, context=self.context).data
 
     def get_visible(self, obj):
         request = self.context.get('request')
