@@ -58,6 +58,11 @@ jobs:
           command: |
             cd ${{ secrets.CICD_PATH }}/dev
             mkdir -p ./volume/mysql; cd deploy/helm
+            if [ ! -d "./volume/mysql/${{ secrets.DATABASE_USER }}" ]; then
+            mkdir -p ./volume/mysql/${{ secrets.DATABASE_USER }}
+            chown lxd:999 ./volume/mysql/${{ secrets.DATABASE_USER }}
+            chmod 700 ./volume/mysql${{ secrets.DATABASE_USER }}
+            else echo "Directory already exists."; fi
             helm upgrade ${{ secrets.DATABASE_USER }} . --install -f ./values-dev.yaml \
               --install -n dev-hrebs --create-namespace --history-max 5 --wait --timeout 10m \
               --set global.dbPassword=${{ secrets.DATABASE_PASS }} \
