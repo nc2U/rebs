@@ -137,7 +137,14 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         sub_projects = obj.issueproject_set.exclude(status='9')
         request = self.context.get('request')
 
-        return self.__class__(sub_projects, many=True, read_only=True, context=self.context).data
+        # Create a new serializer class without the 'my_perms' field
+        class SubProjectSerializer(self.__class__):
+            class Meta(self.__class__.Meta):
+                fields = tuple(
+                    f for f in self.__class__.Meta.fields if
+                    f not in ('company', 'module', 'allowed_roles', 'my_perms'))
+
+        return SubProjectSerializer(sub_projects, many=True, read_only=True, context=self.context).data
 
     def get_visible(self, obj):
         request = self.context.get('request')
@@ -175,13 +182,17 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         return total_hours
 
     def get_my_perms(self, obj):
+        def get_roles_by_user_pk(data, user_pk):
+            for item in data:
+                if item['user']['pk'] == user_pk:
+                    return item['roles']
+            return None
+
+        mems = obj.all_members()
         request = self.context.get('request')
         user = request.user
-        try:
-            roles = user.member_set.get(project=obj).roles.all()
-        except ObjectDoesNotExist:
-            roles = []
-        perms = Permission.objects.filter(role__in=roles)
+        roles = [r['pk'] for r in get_roles_by_user_pk(mems, user.pk)]
+        perms = Permission.objects.filter(role_id__in=roles)
 
         combined = {
             # 프로젝트
