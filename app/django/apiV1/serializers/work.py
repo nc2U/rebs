@@ -186,12 +186,12 @@ class IssueProjectSerializer(serializers.ModelSerializer):
             for item in data:
                 if item['user']['pk'] == user_pk:
                     return item['roles']
-            return None
+            return []
 
         mems = obj.all_members()
         request = self.context.get('request')
         user = request.user
-        roles = [r['pk'] for r in get_roles_by_user_pk(mems, user.pk) or []]
+        roles = [r['pk'] for r in get_roles_by_user_pk(mems, user.pk)]
         perms = Permission.objects.filter(role_id__in=roles)
 
         combined = {
