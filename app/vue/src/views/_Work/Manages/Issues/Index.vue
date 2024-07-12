@@ -2,14 +2,14 @@
 import { computed, type ComputedRef, inject, onBeforeMount, ref } from 'vue'
 import { navMenu2 as navMenu } from '@/views/_Work/_menu/headermixin1'
 import type { Company } from '@/store/types/settings'
-import { useRoute, useRouter } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
+import { useAccount } from '@/store/pinia/account'
+import { useRoute, useRouter } from 'vue-router'
 import type { IssueFilter } from '@/store/types/work'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import IssueList from './components/IssueList.vue'
 import IssueForm from '@/views/_Work/Manages/Issues/components/IssueForm.vue'
-import { useAccount } from '@/store/pinia/account'
 
 const cBody = ref()
 const company = inject<ComputedRef<Company>>('company')
