@@ -191,7 +191,7 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         mems = obj.all_members()
         request = self.context.get('request')
         user = request.user
-        roles = [r['pk'] for r in get_roles_by_user_pk(mems, user.pk)]
+        roles = [r['pk'] for r in get_roles_by_user_pk(mems, user.pk) or []]
         perms = Permission.objects.filter(role_id__in=roles)
 
         combined = {
