@@ -56,26 +56,27 @@ jobs:
           username: ${{ secrets.CICD_USER }}
           password: ${{ secrets.CICD_PASS }}
           command: |
-            cd ${{ secrets.CICD_PATH }}/dev
-            mkdir -p ./volume/mysql; cd deploy/helm
-            if [ ! -d "./volume/mysql/${{ secrets.DATABASE_USER }}" ]; then
-            mkdir -p ./volume/mysql/${{ secrets.DATABASE_USER }}
-            chown lxd:999 ./volume/mysql/${{ secrets.DATABASE_USER }}
-            chmod 700 ./volume/mysql${{ secrets.DATABASE_USER }}
-            else echo "Directory already exists."; fi
-            helm upgrade ${{ secrets.DATABASE_USER }} . --install -f ./values-dev.yaml \
-              --install -n dev-hrebs --create-namespace --history-max 5 --wait --timeout 10m \
-              --set global.dbPassword=${{ secrets.DATABASE_PASS }} \
-              --set global.cicdPath=${{ secrets.CICD_PATH }} \
-              --set global.cicdServerHost=${{ secrets.CICD_HOST }} \
-              --set global.nfsPath=${{ secrets.NFS_PATH }} \
-              --set global.nfsServerHost=${{ secrets.NFS_HOST }} \
-              --set global.emailHost=${{ secrets.EMAIL_HOST }} \
-              --set global.emailHostUser=${{ secrets.EMAIL_HOST_USER }} \
-              --set global.emailHostPassword=${{ secrets.EMAIL_HOST_PASSWORD }} \
-              --set global.emailDefaultSender=${{ secrets.EMAIL_DEFAULT_SENDER }} \
-              --set 'nginx.ingress.tls[0].hosts[0]'=dev.${{ secrets.DOMAIN_NAME }} \
-              --set 'nginx.ingress.hosts[0].host'=dev.${{ secrets.DOMAIN_NAME }}
+                     cd ${{ secrets.CICD_PATH }}/dev
+            #            if [ ! -d "./volume/mysql" ]; then
+            #            mkdir -p ./volume/mysql; fi
+                     if [ ! -d "./volume/mysql/${{ secrets.DATABASE_USER }}" ]; then
+                     mkdir -p ./volume/mysql/${{ secrets.DATABASE_USER }}
+                     chown lxd:999 ./volume/mysql/${{ secrets.DATABASE_USER }}
+                     chmod 700 ./volume/mysql${{ secrets.DATABASE_USER }}
+                     else echo "Directory already exists."; fi; cd deploy/helm
+                     helm upgrade ${{ secrets.DATABASE_USER }} . --install -f ./values-dev.yaml \
+                     --install -n dev-hrebs --create-namespace --history-max 5 --wait --timeout 10m \
+                     --set global.dbPassword=${{ secrets.DATABASE_PASS }} \
+                     --set global.cicdPath=${{ secrets.CICD_PATH }} \
+                     --set global.cicdServerHost=${{ secrets.CICD_HOST }} \
+                     --set global.nfsPath=${{ secrets.NFS_PATH }} \
+                     --set global.nfsServerHost=${{ secrets.NFS_HOST }} \
+                     --set global.emailHost=${{ secrets.EMAIL_HOST }} \
+                     --set global.emailHostUser=${{ secrets.EMAIL_HOST_USER }} \
+                     --set global.emailHostPassword=${{ secrets.EMAIL_HOST_PASSWORD }} \
+                     --set global.emailDefaultSender=${{ secrets.EMAIL_DEFAULT_SENDER }} \
+                     --set 'nginx.ingress.tls[0].hosts[0]'=dev.${{ secrets.DOMAIN_NAME }} \
+                     --set 'nginx.ingress.hosts[0].host'=dev.${{ secrets.DOMAIN_NAME }}
       
       # slack --> notification
       - name: Send slack when failed
