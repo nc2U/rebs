@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, type ComputedRef, inject, onBeforeMount } from 'vue'
+import { ref, computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/_Work/_menu/headermixin3'
-import { useRouter } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
@@ -12,16 +11,10 @@ import ProjectTable from './components/ProjectTable.vue'
 const cBody = ref()
 const sideNavCAll = () => cBody.value.toggle()
 
-const workManager = inject<ComputedRef>('workManager', false)
-
 const workStore = useWork()
 const projectList = computed(() => workStore.AllIssueProjects)
 
-const router = useRouter()
-onBeforeMount(() => {
-  if (!workManager.value) router.push({ name: '프로젝트' })
-  else workStore.fetchIssueProjectList({})
-})
+onBeforeMount(() => workStore.fetchIssueProjectList({}))
 </script>
 
 <template>
