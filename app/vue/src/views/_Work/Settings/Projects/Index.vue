@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onBeforeMount } from 'vue'
+import { ref, computed, inject, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/_Work/_menu/headermixin3'
 import { useWork } from '@/store/pinia/work'
 import Header from '@/views/_Work/components/Header/Index.vue'
@@ -10,6 +10,8 @@ import ProjectTable from './components/ProjectTable.vue'
 
 const cBody = ref()
 const sideNavCAll = () => cBody.value.toggle()
+
+const workManager = inject<boolean>('workManager', false)
 
 const workStore = useWork()
 const projectList = computed(() => workStore.AllIssueProjects)
