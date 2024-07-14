@@ -153,6 +153,7 @@ const formsCheck = computed(() => {
 
 const route = useRoute()
 const workStore = useWork()
+const my_perms = computed(() => workStore.issueProject?.my_perms)
 
 watch(props, nVal => {
   if (nVal.issueProject) form.value.project = nVal?.issueProject.slug
@@ -740,7 +741,7 @@ onBeforeMount(() => {
               </CRow>
             </div>
 
-            <CRow class="mb-3">
+            <CRow v-if="workManager || my_perms?.issue_comment_create" class="mb-3">
               <CCol>
                 <h6>댓글</h6>
                 <v-divider class="mt-0" />

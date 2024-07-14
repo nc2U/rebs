@@ -94,7 +94,7 @@ const delSubmit = () => {
           에 변경
         </CCol>
         <CCol class="text-right">
-          <span>
+          <span v-if="workManager || my_perms?.issue_comment_create">
             <v-icon
               icon="mdi-comment-processing-outline"
               color="info"

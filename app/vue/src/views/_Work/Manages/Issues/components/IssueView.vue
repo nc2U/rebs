@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, type PropType, ref, watch } from 'vue'
+import { computed, type ComputedRef, inject, onBeforeMount, type PropType, ref, watch } from 'vue'
 import type {
   CodeValue,
   Issue,
@@ -39,11 +39,14 @@ const emit = defineEmits(['on-submit'])
 const issueFormRef = ref()
 const editForm = ref(false)
 
+const workManager = inject<ComputedRef<boolean>>('workManager')
+
 const isClosed = computed(() => props.issue?.closed)
 
 const workStore = useWork()
 const issueNums = computed(() => workStore.issueNums)
 const issueLogList = computed(() => workStore.issueLogList)
+const my_perms = computed(() => workStore.issueProject?.my_perms)
 const getIssues = computed(() => workStore.getIssues.filter(i => i.value !== props.issue.pk))
 
 const doneRatio = computed(() => {
@@ -339,7 +342,7 @@ onBeforeMount(async () => {
 
       <CRow class="mb-2">
         <CCol class="title">설명</CCol>
-        <CCol class="text-right form-text">
+        <CCol v-if="workManager || my_perms?.issue_comment_create" class="text-right form-text">
           <v-icon icon="mdi-comment-text-outline" size="sm" color="grey" class="mr-2" />
           <router-link to="" @click="callComment">댓글달기</router-link>
         </CCol>
