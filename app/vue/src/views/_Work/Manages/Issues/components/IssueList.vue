@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { inject, type PropType, ref, watchEffect } from 'vue'
+import { computed, inject, type PropType, ref, watchEffect } from 'vue'
 import type { Issue, IssueFilter, IssueProject, IssueStatus, Tracker } from '@/store/types/work'
 import { useWork } from '@/store/pinia/work'
 import { timeFormat } from '@/utils/baseMixins'
@@ -35,6 +35,7 @@ watchEffect(() => {
 const filterSubmit = (payload: IssueFilter) => emit('filter-submit', payload)
 
 const workStore = useWork()
+const my_perms = computed(() => workStore.issueProject?.my_perms)
 const issuePages = (pageNum: number) => workStore.issuePages(pageNum)
 const pageSelect = (page: number) => emit('page-select', page)
 
@@ -55,10 +56,7 @@ const watchControl = (payload: any, issuePk: number) => {
     </CCol>
 
     <CCol class="text-right">
-      <span
-        v-if="workManager || workStore.issueProject?.my_perms?.issue_create"
-        class="mr-2 form-text"
-      >
+      <span v-if="workManager || my_perms?.issue_create" class="mr-2 form-text">
         <v-icon icon="mdi-plus-circle" color="success" size="sm" />
         <router-link :to="{ name: `${String($route.name)} - 추가` }" class="ml-1"
           >새 업무만들기</router-link

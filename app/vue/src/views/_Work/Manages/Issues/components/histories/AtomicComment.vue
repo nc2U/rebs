@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { type PropType, ref } from 'vue'
+import { computed, type ComputedRef, inject, type PropType, ref } from 'vue'
 import type { IssueLogEntry } from '@/store/types/work'
 import { useWork } from '@/store/pinia/work'
+import type { User } from '@/store/types/accounts'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 import { elapsedTime, timeFormat } from '@/utils/baseMixins'
 import MdEditor from '@/components/MdEditor/Index.vue'
@@ -13,6 +14,9 @@ const emit = defineEmits(['del-submit', 'call-reply'])
 
 const RefDelConfirm = ref()
 const delPk = ref<null | number>(null)
+
+const userInfo = inject<ComputedRef<User>>('userInfo')
+const workManager = inject<ComputedRef<boolean>>('workManager')
 
 const callReply = (log_id: number, user: string, content: string) => {
   return emit('call-reply', {
@@ -32,6 +36,8 @@ const toEdit = (comment: string) => {
 const content = ref('')
 
 const workStore = useWork()
+const my_perms = computed(() => workStore.issueProject?.my_perms)
+
 const commentSubmit = () => {
   const pk = props.log?.comment?.pk
   const issue = props.log.issue?.pk
@@ -94,11 +100,18 @@ const delSubmit = () => {
               color="info"
               size="16"
               class="mr-2 pointer"
-              @click="callReply(log.log_id, log.comment?.user ?? '', log.comment?.content ?? '')"
+              @click="
+                callReply(log.log_id, log.comment?.user.username ?? '', log.comment?.content ?? '')
+              "
             />
             <v-tooltip activator="parent" location="top">댓글달기</v-tooltip>
           </span>
-          <span>
+          <span
+            v-if="
+              workManager ||
+              (my_perms?.issue_comment_own_update && userInfo?.pk === log.comment?.user.pk)
+            "
+          >
             <v-icon
               icon="mdi-pencil"
               color="amber"
