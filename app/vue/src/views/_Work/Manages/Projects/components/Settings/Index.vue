@@ -19,18 +19,21 @@ const emit = defineEmits(['aside-visible'])
 
 const menu = ref('프로젝트')
 
+const company = inject<ComputedRef<Company>>('company')
 const workManager = inject<ComputedRef<boolean>>('workManager')
 
-const company = inject<ComputedRef<Company>>('company')
-
 const [route, router] = [useRoute(), useRouter()]
+
 const initMenu = computed(() => (!!workManager?.value ? '프로젝트' : '버전'))
 
 const settingMenus = computed(() => {
   let menus = [{ no: 4, menu: '버전' }]
 
-  if (!!workManager?.value) {
+  if (!!workManager?.value || my_perms.value?.project_update) {
     menus = [...new Set([...menus, ...[{ no: 1, menu: '프로젝트' }]])]
+  }
+
+  if (!!workManager?.value || my_perms.value?.project_member) {
     menus = [...new Set([...menus, ...[{ no: 2, menu: '구성원' }]])]
   }
 
@@ -50,6 +53,7 @@ const settingMenus = computed(() => {
 
 const workStore = useWork()
 const issueProject = computed(() => workStore.issueProject)
+const my_perms = computed(() => workStore.issueProject?.my_perms)
 const modules = computed(() => issueProject.value?.module)
 const AllProjects = computed(() => workStore.AllIssueProjects)
 const getRoles = computed(() => workStore.getRoles)

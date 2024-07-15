@@ -9,6 +9,7 @@ import {
   onUpdated,
   type PropType,
   computed,
+  type ComputedRef,
 } from 'vue'
 import { useRoute } from 'vue-router'
 import { useProject } from '@/store/pinia/project'
@@ -29,6 +30,7 @@ const props = defineProps({
 const emit = defineEmits(['aside-visible', 'on-submit'])
 
 const isDark = inject('isDark')
+const workManager = inject<ComputedRef<boolean>>('workManager')
 
 const validated = ref(false)
 
@@ -231,7 +233,7 @@ onBeforeMount(() => {
           </CCol>
         </CRow>
 
-        <CRow class="mb-3">
+        <CRow v-if="workManager || project?.my_perms?.project_public" class="mb-3">
           <CFormLabel class="col-form-label text-right col-2">공개여부</CFormLabel>
           <CCol class="pt-2">
             <CFormSwitch v-model="form.is_public" id="is_public" label="프로젝트 공개 여부" />
