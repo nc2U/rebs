@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { type PropType, ref } from 'vue'
 import { type Duty } from '@/store/types/company'
+import { write_human_resource } from '@/utils/pageAuth'
 import FormModal from '@/components/Modals/FormModal.vue'
 import StaffForm from './DutyForm.vue'
 
@@ -20,7 +21,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
     <CTableDataCell>{{ duty.pk }}</CTableDataCell>
     <CTableDataCell>{{ duty.name }}</CTableDataCell>
     <CTableDataCell class="text-left">{{ duty.desc }}</CTableDataCell>
-    <CTableDataCell>
+    <CTableDataCell v-if="write_human_resource">
       <CButton color="info" size="sm" @click="showDetail">확인</CButton>
     </CTableDataCell>
   </CTableRow>

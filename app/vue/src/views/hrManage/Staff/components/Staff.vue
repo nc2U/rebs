@@ -3,6 +3,7 @@ import { type PropType, ref } from 'vue'
 import { type Staff } from '@/store/types/company'
 import FormModal from '@/components/Modals/FormModal.vue'
 import StaffForm from './StaffForm.vue'
+import { write_human_resource } from '@/utils/pageAuth'
 
 defineProps({
   staff: { type: Object as PropType<Staff>, required: true },
@@ -35,7 +36,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         {{ staff.status_desc }}
       </CBadge>
     </CTableDataCell>
-    <CTableDataCell>
+    <CTableDataCell v-if="write_human_resource">
       <CButton color="info" size="sm" @click="showDetail">확인</CButton>
     </CTableDataCell>
   </CTableRow>

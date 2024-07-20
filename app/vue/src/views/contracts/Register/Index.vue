@@ -59,7 +59,9 @@ watch(route, val => {
 const resumeForm = (contor: string) => getContract(contor)
 
 watch(contractor, val => {
-  if (!!val) if (!!contract.value && contract.value.pk !== val.contract) fetchContract(val.contract)
+  if (!!val)
+    if (val.contract && !!contract.value && contract.value.pk !== val.contract)
+      fetchContract(val.contract)
 })
 
 watch(contract, newVal => {
@@ -85,7 +87,9 @@ watch(contract, newVal => {
 })
 
 const getContract = (contor: string) =>
-  fetchContractor(Number(contor), project.value).then(res => fetchContract(res.contract))
+  fetchContractor(Number(contor), project.value).then(res => {
+    if (res.contract) fetchContract(res.contract)
+  })
 
 const typeSelect = (payload: {
   unit_type?: number

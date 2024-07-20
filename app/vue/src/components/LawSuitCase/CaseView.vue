@@ -436,8 +436,8 @@ onBeforeMount(() => {
       </CCol>
       <CCol class="text-right">
         <CButton
+          v-if="writeAuth"
           color="primary"
-          :disabled="!writeAuth"
           @click="$router.push({ name: `${viewRoute} - 작성` })"
         >
           신규등록

@@ -2,6 +2,7 @@
 import { ref, computed, type PropType } from 'vue'
 import { useCompany } from '@/store/pinia/company'
 import { type Position } from '@/store/types/company'
+import { write_human_resource } from '@/utils/pageAuth'
 import FormModal from '@/components/Modals/FormModal.vue'
 import PositionForm from './PositionForm.vue'
 
@@ -35,7 +36,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
     <CTableDataCell>{{ position.name }}</CTableDataCell>
     <CTableDataCell class="text-left">{{ grades }}</CTableDataCell>
     <CTableDataCell class="text-left">{{ position.desc }}</CTableDataCell>
-    <CTableDataCell>
+    <CTableDataCell v-if="write_human_resource">
       <CButton color="info" size="sm" @click="showDetail">확인</CButton>
     </CTableDataCell>
   </CTableRow>

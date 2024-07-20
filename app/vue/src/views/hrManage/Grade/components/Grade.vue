@@ -2,6 +2,7 @@
 import { computed, type PropType, ref } from 'vue'
 import { useCompany } from '@/store/pinia/company'
 import { type Grade } from '@/store/types/company'
+import { write_human_resource } from '@/utils/pageAuth'
 import FormModal from '@/components/Modals/FormModal.vue'
 import StaffForm from './GradeForm.vue'
 
@@ -36,7 +37,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
     <CTableDataCell>{{ grade.promotion_period }}</CTableDataCell>
     <CTableDataCell class="text-left">{{ positions }}</CTableDataCell>
     <CTableDataCell class="text-left">{{ grade.criteria_new }}</CTableDataCell>
-    <CTableDataCell>
+    <CTableDataCell v-if="write_human_resource">
       <CButton color="info" size="sm" @click="showDetail">확인</CButton>
     </CTableDataCell>
   </CTableRow>

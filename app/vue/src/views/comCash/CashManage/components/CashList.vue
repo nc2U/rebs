@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { useComCash } from '@/store/pinia/comCash'
 import type { CompanyBank, CashBook } from '@/store/types/comCash'
 import { TableSecondary } from '@/utils/cssMixins'
+import { write_company_cash } from '@/utils/pageAuth'
 import Cash from '@/views/comCash/CashManage/components/Cash.vue'
 import Pagination from '@/components/Pagination'
 import AccDepth from './AccDepth.vue'
@@ -50,7 +51,7 @@ const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
       <col style="width: 10%" />
       <col style="width: 10%" />
       <col style="width: 11%" />
-      <col style="width: 6%" />
+      <col v-if="write_company_cash" style="width: 6%" />
     </colgroup>
 
     <CTableHead>
@@ -75,7 +76,7 @@ const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
         <CTableHeaderCell scope="col">입금액</CTableHeaderCell>
         <CTableHeaderCell scope="col">출금액</CTableHeaderCell>
         <CTableHeaderCell scope="col">지출증빙</CTableHeaderCell>
-        <CTableHeaderCell scope="col">비고</CTableHeaderCell>
+        <CTableHeaderCell v-if="write_company_cash" scope="col">비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 

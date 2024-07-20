@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useCompany } from '@/store/pinia/company'
 import { TableSecondary } from '@/utils/cssMixins'
+import { write_human_resource } from '@/utils/pageAuth'
 import { type Duty as DutyType } from '@/store/types/company'
 import Pagination from '@/components/Pagination'
 import Duty from './Duty.vue'
@@ -24,7 +25,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
       <col style="width: 7%" />
       <col style="width: 13%" />
       <col style="width: 73%" />
-      <col style="width: 7%" />
+      <col v-if="write_human_resource" style="width: 7%" />
     </colgroup>
 
     <CTableHead :color="TableSecondary">
@@ -32,7 +33,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         <CTableHeaderCell scope="col">No</CTableHeaderCell>
         <CTableHeaderCell scope="col">직책명</CTableHeaderCell>
         <CTableHeaderCell scope="col">설명</CTableHeaderCell>
-        <CTableHeaderCell scope="col">비고</CTableHeaderCell>
+        <CTableHeaderCell v-if="write_human_resource" scope="col">비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 

@@ -3,6 +3,7 @@ import { ref, computed, onBeforeMount } from 'vue'
 import { navMenu, pageTitle } from '@/views/comCash/_menu/headermixin'
 import { cutString } from '@/utils/baseMixins'
 import { useCompany } from '@/store/pinia/company'
+import { write_company_cash } from '@/utils/pageAuth'
 import { useComCash, type DataFilter as Filter, type DataFilter } from '@/store/pinia/comCash'
 import type { CashBook, CompanyBank, SepItems } from '@/store/types/comCash'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -219,6 +220,7 @@ onBeforeMount(() => {
     <CCardBody class="pb-5">
       <ListController ref="listControl" @list-filtering="listFiltering" />
       <AddCash
+        v-if="write_company_cash"
         :company="company as number"
         @multi-submit="multiSubmit"
         @patch-d3-hide="patchD3Hide"

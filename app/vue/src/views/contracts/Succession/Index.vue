@@ -58,7 +58,7 @@ watch(route, val => {
 })
 
 watch(contractor, val => {
-  if (val) fetchContract(val.contract)
+  if (val?.contract) fetchContract(val.contract)
   if (val?.succession) fetchSuccession(val.succession.pk)
   else {
     contStore.contract = null

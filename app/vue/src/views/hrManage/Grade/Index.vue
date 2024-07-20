@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin2'
 import { useCompany } from '@/store/pinia/company'
+import { write_human_resource } from '@/utils/pageAuth'
 import { type Grade, type ComFilter } from '@/store/types/company'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -91,7 +92,7 @@ onMounted(() => dataSetup(company.value || comStore.initComId))
   <ContentBody>
     <CCardBody>
       <ListController ref="listControl" @list-filtering="listFiltering" />
-      <AddGrade :company="comName" @multi-submit="multiSubmit" />
+      <AddGrade v-if="write_human_resource" :company="comName" @multi-submit="multiSubmit" />
       <TableTitleRow title="직급 목록" excel :url="excelUrl" :disabled="!company" />
       <GradeList @multi-submit="multiSubmit" @on-delete="onDelete" @page-select="pageSelect" />
     </CCardBody>

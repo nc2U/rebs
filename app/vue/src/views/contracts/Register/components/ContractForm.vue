@@ -1013,8 +1013,16 @@ onBeforeRouteLeave(() => formDataReset())
         목록으로
       </CButton>
       <CButton type="button" color="light" @click="formDataReset"> 취소</CButton>
-      <CButton v-if="contract" type="button" color="danger" @click="deleteContract"> 삭제</CButton>
       <CButton
+        v-if="write_contract && contract"
+        type="button"
+        color="danger"
+        @click="deleteContract"
+      >
+        삭제
+      </CButton>
+      <CButton
+        v-if="write_contract"
         type="submit"
         :color="contract ? 'success' : 'primary'"
         :disabled="!form.status || formsCheck"

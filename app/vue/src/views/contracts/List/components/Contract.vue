@@ -2,6 +2,7 @@
 import { computed, type PropType } from 'vue'
 import { numFormat } from '@/utils/baseMixins'
 import { useRouter } from 'vue-router'
+import { write_contract } from '@/utils/pageAuth'
 import { type Contract } from '@/store/types/contract'
 
 const props = defineProps({
@@ -78,7 +79,7 @@ const getColor = (q: '1' | '2' | '3' | '4' | undefined) =>
         <v-tooltip activator="parent" location="top">미등록</v-tooltip>
       </span>
     </CTableDataCell>
-    <CTableDataCell>
+    <CTableDataCell v-if="write_contract">
       <CButton
         type="button"
         color="success"

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { type PropType, ref } from 'vue'
 import { type Department } from '@/store/types/company'
+import { write_human_resource } from '@/utils/pageAuth'
 import FormModal from '@/components/Modals/FormModal.vue'
 import DepartmentForm from './DepartmentForm.vue'
 
@@ -36,7 +37,7 @@ const getUpperName = (up: number | null) => {
     </CTableDataCell>
     <CTableDataCell>{{ department.name }}</CTableDataCell>
     <CTableDataCell class="text-left">{{ department.task }}</CTableDataCell>
-    <CTableDataCell>
+    <CTableDataCell v-if="write_human_resource">
       <CButton color="info" size="sm" @click="showDetail">확인</CButton>
     </CTableDataCell>
   </CTableRow>

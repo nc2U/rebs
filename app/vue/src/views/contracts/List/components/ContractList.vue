@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useContract } from '@/store/pinia/contract'
+import { write_contract } from '@/utils/pageAuth'
 import { TableSecondary } from '@/utils/cssMixins'
 import Pagination from '@/components/Pagination'
 import Contract from '@/views/contracts/List/components/Contract.vue'
@@ -30,7 +31,7 @@ const pageSelect = (page: number) => emit('page-select', page)
       <col style="width: 10%" />
       <col style="width: 8%" />
       <col style="width: 6%" />
-      <col style="width: 5%" />
+      <col v-if="write_contract" style="width: 5%" />
     </colgroup>
 
     <CTableHead>
@@ -48,7 +49,7 @@ const pageSelect = (page: number) => emit('page-select', page)
         <CTableHeaderCell scope="col">최종납입회차</CTableHeaderCell>
         <CTableHeaderCell scope="col">납입금액합계</CTableHeaderCell>
         <CTableHeaderCell scope="col">계약서</CTableHeaderCell>
-        <CTableHeaderCell scope="col">비고</CTableHeaderCell>
+        <CTableHeaderCell v-if="write_contract" scope="col">비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 
