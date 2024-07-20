@@ -56,7 +56,7 @@ const resumeForm = () => {
         </strong>
       </CCol>
       <CCol class="text-right">
-        <router-link v-if="!isBlank" to="">
+        <router-link v-if="!isBlank || !contractor.contract" to="">
           <v-icon icon="mdi mdi-close" @click="removeContractor" />
           <v-tooltip activator="parent" location="start"> 계약자 선택 해제</v-tooltip>
         </router-link>
