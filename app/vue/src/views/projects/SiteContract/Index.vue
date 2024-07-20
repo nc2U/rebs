@@ -5,6 +5,7 @@ import { useProject } from '@/store/pinia/project'
 import { useSite } from '@/store/pinia/project_site'
 import { type SiteContract } from '@/store/types/project'
 import { numFormat } from '@/utils/baseMixins'
+import { write_project_site } from '@/utils/pageAuth'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
@@ -99,7 +100,11 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
         :project="project as number"
         @list-filtering="listFiltering"
       />
-      <AddSiteContract :project="project as number" @multi-submit="multiSubmit" />
+      <AddSiteContract
+        v-if="write_project_site"
+        :project="project as number"
+        @multi-submit="multiSubmit"
+      />
       <TableTitleRow title="부지 매입계약 목록" excel :url="excelUrl" :disabled="!project">
         <span v-if="project" class="pt-1 text-success">
           총 계약 면적 :

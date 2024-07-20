@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useSite } from '@/store/pinia/project_site'
-import { type SiteContract as siteCont } from '@/store/types/project'
 import { TableSecondary } from '@/utils/cssMixins'
+import { write_project_site } from '@/utils/pageAuth'
+import { type SiteContract as siteCont } from '@/store/types/project'
 import SiteContract from './SiteContract.vue'
 import Pagination from '@/components/Pagination'
 
@@ -33,7 +34,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
       <col style="width: 9%" />
       <col style="width: 10%" />
       <col style="width: 5%" />
-      <col style="width: 6%" />
+      <col v-if="write_project_site" style="width: 6%" />
     </colgroup>
 
     <CTableHead :color="TableSecondary">
@@ -49,7 +50,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         <CTableHeaderCell rowspan="2" scope="col">중도금</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">잔금</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col"> 지급<br />여부</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2" scope="col">비고</CTableHeaderCell>
+        <CTableHeaderCell v-if="write_project_site" rowspan="2" scope="col">비고</CTableHeaderCell>
       </CTableRow>
       <CTableRow class="text-center">
         <CTableHeaderCell scope="col">m<sup>2</sup></CTableHeaderCell>

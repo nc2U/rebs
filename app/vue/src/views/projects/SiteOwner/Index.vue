@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { ref, computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin3'
+import { numFormat } from '@/utils/baseMixins'
 import { useProject } from '@/store/pinia/project'
 import { useSite } from '@/store/pinia/project_site'
+import { write_project_site } from '@/utils/pageAuth'
 import { type Relation, type SiteOwner } from '@/store/types/project'
-import { numFormat } from '@/utils/baseMixins'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from '@/views/projects/SiteOwner/components/ListController.vue'
@@ -110,7 +111,11 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
         :project="project as number"
         @list-filtering="listFiltering"
       />
-      <AddSiteOwner :project="project as number" @multi-submit="multiSubmit" />
+      <AddSiteOwner
+        v-if="write_project_site"
+        :project="project as number"
+        @multi-submit="multiSubmit"
+      />
       <TableTitleRow title="부지 소유자 목록" excel :url="excelUrl" :disabled="!project">
         <span v-if="project" class="pt-1 text-success">
           소유자 면적 :

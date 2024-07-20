@@ -2,6 +2,7 @@
 import { computed, type PropType, ref } from 'vue'
 import { type Site } from '@/store/types/project'
 import { numFormat } from '@/utils/baseMixins'
+import { write_project_site } from '@/utils/pageAuth'
 import FormModal from '@/components/Modals/FormModal.vue'
 import SiteForm from './SiteForm.vue'
 
@@ -48,7 +49,7 @@ const onDelete = (payload: { pk: number; project: number }) => emit('on-delete',
     <CTableDataCell class="text-left">
       {{ owners.length ? owners.join(', ') : '' }}
     </CTableDataCell>
-    <CTableDataCell>
+    <CTableDataCell v-if="write_project_site">
       <CButton color="info" size="sm" @click="showDetail">확인</CButton>
     </CTableDataCell>
   </CTableRow>

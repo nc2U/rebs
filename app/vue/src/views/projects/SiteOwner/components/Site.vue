@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, type PropType, reactive, ref, watch } from 'vue'
 import { numFormat } from '@/utils/baseMixins'
+import { write_project_site } from '@/utils/pageAuth'
 import { type SiteOwner, type SimpleSite } from '@/store/types/project'
 import DatePicker from '@/components/DatePicker/index.vue'
 
@@ -111,10 +112,10 @@ onBeforeMount(() => {
       @keydown.enter="relPatch"
     />
   </CTableDataCell>
-  <CTableDataCell>
+  <CTableDataCell v-if="write_project_site">
     <CButton color="success" size="sm" :disabled="formsCheck" @click="relPatch"> 적용</CButton>
   </CTableDataCell>
-  <CTableDataCell v-if="index === 0" :rowspan="sitesNum">
+  <CTableDataCell v-if="index === 0 && write_project_site" :rowspan="sitesNum">
     <CButton color="info" size="sm" @click="showDetail"> 확인</CButton>
   </CTableDataCell>
 </template>

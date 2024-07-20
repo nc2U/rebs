@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { ref, computed, onBeforeMount } from 'vue'
+import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin3'
 import { useProject } from '@/store/pinia/project'
 import { useSite } from '@/store/pinia/project_site'
 import { type Site } from '@/store/types/project'
 import { numFormat } from '@/utils/baseMixins'
-import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin3'
+import { write_project_site } from '@/utils/pageAuth'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from './components/ListController.vue'
@@ -96,7 +97,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
         :is-returned="isReturned"
         @list-filtering="listFiltering"
       />
-      <AddSite :project="project as number" @multi-submit="multiSubmit" />
+      <AddSite v-if="write_project_site" :project="project as number" @multi-submit="multiSubmit" />
       <TableTitleRow title="사업 부지 목록" excel :url="excelUrl" :disabled="!project">
         <span v-if="project" class="pt-1 text-success">
           총 면적 : {{ numFormat(totalArea as number, 2) }}m<sup>2</sup> ({{

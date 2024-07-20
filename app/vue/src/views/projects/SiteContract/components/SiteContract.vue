@@ -2,6 +2,7 @@
 import { type PropType, ref } from 'vue'
 import { type SiteContract } from '@/store/types/project'
 import { numFormat } from '@/utils/baseMixins'
+import { write_project_site } from '@/utils/pageAuth'
 import FormModal from '@/components/Modals/FormModal.vue'
 import SiteContractForm from './SiteContractForm.vue'
 
@@ -52,7 +53,7 @@ const isDoneClass = (bool: boolean) => (bool ? 'bg-success' : '')
     <CTableDataCell :class="isDoneClass(contract.remain_pay_is_paid)">
       {{ isDoneText(contract.remain_pay_is_paid) }}
     </CTableDataCell>
-    <CTableDataCell>
+    <CTableDataCell v-if="write_project_site">
       <CButton color="info" size="sm" @click="showDetail">확인</CButton>
     </CTableDataCell>
   </CTableRow>
