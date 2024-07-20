@@ -38,6 +38,7 @@ export interface StaffAuth {
   project_cash: Auth
   project_docs: Auth
   project: Auth
+  project_site: Auth
   company_cash: Auth
   company_docs: Auth
   human_resource: Auth
