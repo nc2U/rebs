@@ -23,6 +23,7 @@ const authData = ref<UserAuth>({
   project_cash: '0',
   project_docs: '0',
   project: '0',
+  project_site: '0',
   company_cash: '0',
   company_docs: '0',
   human_resource: '0',
@@ -352,6 +353,26 @@ onUpdated(() => dataSetup())
                   :disabled="isPrInActive"
                   :style="{
                     backgroundColor: isDark ? '' : getColor(authData.project)[1],
+                  }"
+                  @change="selectAuth"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+
+          <CCol md="6" lg="4">
+            <CRow class="m-1">
+              <CFormLabel class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3">
+                <v-icon icon="mdi mdi-account-arrow-left" :color="getColor(authData.project)[0]" />
+                사업 부지 관리
+              </CFormLabel>
+              <CCol>
+                <CFormSelect
+                  v-model="authData.project_site"
+                  :options="auths"
+                  :disabled="isPrInActive"
+                  :style="{
+                    backgroundColor: isDark ? '' : getColor(authData.project_site)[1],
                   }"
                   @change="selectAuth"
                 />

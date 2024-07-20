@@ -43,6 +43,7 @@ export type UserAuth = {
   payment: Auth
   notice: Auth
   project: Auth
+  project_site: Auth
   project_cash: Auth
   project_docs: Auth
   human_resource: Auth
@@ -59,6 +60,7 @@ const menuAuth = ref<UserAuth>({
   project_cash: '0',
   project_docs: '0',
   project: '0',
+  project_site: '0',
   company_cash: '0',
   company_docs: '0',
   human_resource: '0',
@@ -83,13 +85,14 @@ const formsCheck = computed(() => {
       const h = ma.project_cash === sa.project_cash
       const i = ma.project_docs === sa.project_docs
       const j = ma.project === sa.project
-      const k = ma.company_cash === sa.company_cash
-      const l = ma.company_docs === sa.company_docs
-      const m = ma.human_resource === sa.human_resource
-      const n = ma.company_settings === sa.company_settings
-      const o = ma.auth_manage === sa.auth_manage
+      const k = ma.project_site === sa.project_site
+      const l = ma.company_cash === sa.company_cash
+      const m = ma.company_docs === sa.company_docs
+      const n = ma.human_resource === sa.human_resource
+      const o = ma.company_settings === sa.company_settings
+      const p = ma.auth_manage === sa.auth_manage
 
-      return a && b && c && d && e && f && g && h && i && j && k && l && m && n && o
+      return a && b && c && d && e && f && g && h && i && j && k && l && m && n && o && p
     } else {
       const a = comInfo.value.is_staff === false
       const b = pa.is_project_staff === false
@@ -101,13 +104,14 @@ const formsCheck = computed(() => {
       const h = ma.project_cash === '0'
       const i = ma.project_docs === '0'
       const j = ma.project === '0'
-      const k = ma.company_cash === '0'
-      const l = ma.company_docs === '0'
-      const m = ma.human_resource === '0'
-      const n = ma.company_settings === '0'
-      const o = ma.auth_manage === '0'
+      const k = ma.project_site === '0'
+      const l = ma.company_cash === '0'
+      const m = ma.company_docs === '0'
+      const n = ma.human_resource === '0'
+      const o = ma.company_settings === '0'
+      const p = ma.auth_manage === '0'
 
-      return a && b && c && d && e && f && g && h && i && j && k && l && m && n && o
+      return a && b && c && d && e && f && g && h && i && j && k && l && m && n && o && p
     }
   } else return true
 })
@@ -147,6 +151,7 @@ const authReset = () => {
   menuAuth.value.project_cash = '0'
   menuAuth.value.project_docs = '0'
   menuAuth.value.project = '0'
+  menuAuth.value.project_site = '0'
   menuAuth.value.company_cash = '0'
   menuAuth.value.company_docs = '0'
   menuAuth.value.human_resource = '0'
@@ -187,6 +192,7 @@ watch(
       menuAuth.value.project_cash = sa.project_cash
       menuAuth.value.project_docs = sa.project_docs
       menuAuth.value.project = sa.project
+      menuAuth.value.project_site = sa.project_site
       menuAuth.value.company_cash = sa.company_cash
       menuAuth.value.company_docs = sa.company_docs
       menuAuth.value.human_resource = sa.human_resource
