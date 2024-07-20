@@ -110,7 +110,7 @@ const toCreate = () => {
     </CRow>
   </CCardBody>
 
-  <CCardFooter>
+  <CCardFooter v-if="write_company_settings">
     <CRow class="justify-content-between">
       <CCol xs="auto">
         <CButton type="button" color="success" :disabled="!company" @click="toEdit">
