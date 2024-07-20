@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { usePayment } from '@/store/pinia/payment'
 import { type ProjectCashBook, type PaymentPaid } from '@/store/types/proCash'
+import { write_payment } from '@/utils/pageAuth'
 import { TableSecondary } from '@/utils/cssMixins'
 import Payment from '@/views/payments/List/components/Payment.vue'
 import Pagination from '@/components/Pagination'
@@ -33,7 +34,7 @@ const pageSelect = (page: number) => emit('page-select', page)
       <col style="width: 14%" />
       <col style="width: 13%" />
       <col style="width: 13%" />
-      <col style="width: 6%" />
+      <col v-if="write_payment" style="width: 6%" />
     </colgroup>
 
     <CTableHead>
@@ -47,7 +48,7 @@ const pageSelect = (page: number) => emit('page-select', page)
         <CTableHeaderCell scope="col">납입회차</CTableHeaderCell>
         <CTableHeaderCell scope="col">수납계좌</CTableHeaderCell>
         <CTableHeaderCell scope="col">입금자</CTableHeaderCell>
-        <CTableHeaderCell scope="col">비고</CTableHeaderCell>
+        <CTableHeaderCell v-if="write_payment" scope="col">비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 

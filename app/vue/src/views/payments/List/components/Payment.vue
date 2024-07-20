@@ -2,6 +2,7 @@
 import { ref, computed, type PropType } from 'vue'
 import { useRouter } from 'vue-router'
 import { numFormat } from '@/utils/baseMixins'
+import { write_payment } from '@/utils/pageAuth'
 import { type PaymentPaid, type ProjectCashBook } from '@/store/types/proCash'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ContChoicer from './ContChoicer.vue'
@@ -72,7 +73,7 @@ const payMatch = (payload: ProjectCashBook) => emit('pay-match', payload)
     </CTableDataCell>
     <CTableDataCell>{{ payment.bank_account }}</CTableDataCell>
     <CTableDataCell>{{ payment.trader }}</CTableDataCell>
-    <CTableDataCell>
+    <CTableDataCell v-if="write_payment">
       <CButton type="button" color="info" size="sm" @click="toManage"> 확인</CButton>
     </CTableDataCell>
   </CTableRow>

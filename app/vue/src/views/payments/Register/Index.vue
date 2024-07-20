@@ -3,6 +3,7 @@ import Cookies from 'js-cookie'
 import { ref, computed, onBeforeMount, onMounted, onUpdated, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/payments/_menu/headermixin'
 import { dateFormat } from '@/utils/baseMixins'
+import { write_payment } from '@/utils/pageAuth'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
 import { type Contract } from '@/store/types/contract'
@@ -263,7 +264,11 @@ onBeforeRouteLeave(() => {
             @on-delete="onDelete"
           />
 
-          <CreateButton :contract="contract as Contract" @on-create="onCreate" />
+          <CreateButton
+            v-if="write_payment"
+            :contract="contract as Contract"
+            @on-create="onCreate"
+          />
         </CCol>
         <CCol lg="5">
           <OrdersBoard :contract="contract as Contract" :payment-list="AllPaymentList" />

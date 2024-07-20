@@ -3,6 +3,7 @@ import { ref, onMounted, type PropType } from 'vue'
 import { type ProjectCashBook } from '@/store/types/proCash'
 import { useRouter } from 'vue-router'
 import { numFormat } from '@/utils/baseMixins'
+import { write_payment } from '@/utils/pageAuth'
 import { TableSecondary } from '@/utils/cssMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import PaymentForm from '@/views/payments/Register/components/PaymentForm.vue'
@@ -53,7 +54,7 @@ const deleteObject = () => emit('on-delete', props.payment.pk)
     </CTableDataCell>
     <CTableDataCell>{{ payment.bank_account.alias_name }}</CTableDataCell>
     <CTableDataCell>{{ payment.trader }}</CTableDataCell>
-    <CTableDataCell>
+    <CTableDataCell v-if="write_payment">
       <CButton type="button" color="info" size="sm" @click="showDetail"> 보기</CButton>
     </CTableDataCell>
   </CTableRow>

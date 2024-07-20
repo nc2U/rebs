@@ -4,6 +4,7 @@ import { type Contract } from '@/store/types/contract'
 import { type AllPayment } from '@/store/types/payment'
 import { type ProjectCashBook } from '@/store/types/proCash'
 import { numFormat } from '@/utils/baseMixins'
+import { write_payment } from '@/utils/pageAuth'
 import { TableSecondary } from '@/utils/cssMixins'
 import Payment from '@/views/payments/Register/components/Payment.vue'
 
@@ -33,7 +34,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
       <col style="width: 16%" />
       <col style="width: 22%" />
       <col style="width: 18%" />
-      <col style="width: 10%" />
+      <col v-if="write_payment" style="width: 10%" />
     </colgroup>
 
     <CTableHead :color="TableSecondary">
@@ -43,7 +44,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         <CTableHeaderCell>수납금액</CTableHeaderCell>
         <CTableHeaderCell>수납계좌</CTableHeaderCell>
         <CTableHeaderCell>입금자명</CTableHeaderCell>
-        <CTableHeaderCell>비고</CTableHeaderCell>
+        <CTableHeaderCell v-if="write_payment">비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 
