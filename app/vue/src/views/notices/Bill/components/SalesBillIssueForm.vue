@@ -404,7 +404,7 @@ onUpdated(() => formDataSetup())
         <CCol class="d-none d-md-block d-lg-none" md="6" />
       </CRow>
 
-      <CAlert color="secondary" class="text-right">
+      <CAlert v-if="write_notice" color="secondary" class="text-right">
         <CButton type="submit" :color="btnClass" :disabled="!project || formsCheck">
           {{ confirmText }}
         </CButton>

@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { useProCash } from '@/store/pinia/proCash'
 import { type ProBankAcc, type ProjectCashBook } from '@/store/types/proCash'
 import { TableSecondary } from '@/utils/cssMixins'
+import { write_project_cash } from '@/utils/pageAuth'
 import ProCash from '@/views/proCash/Manage/components/ProCash.vue'
 import Pagination from '@/components/Pagination'
 import AccDepth from './AccDepth.vue'
@@ -41,7 +42,7 @@ const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
       <col style="width: 10%" />
       <col style="width: 10%" />
       <col style="width: 9%" />
-      <col style="width: 6%" />
+      <col v-if="write_project_cash" style="width: 6%" />
     </colgroup>
 
     <CTableHead>
@@ -66,7 +67,7 @@ const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
         <CTableHeaderCell scope="col">입금액</CTableHeaderCell>
         <CTableHeaderCell scope="col">출금액</CTableHeaderCell>
         <CTableHeaderCell scope="col">지출증빙</CTableHeaderCell>
-        <CTableHeaderCell scope="col">비고</CTableHeaderCell>
+        <CTableHeaderCell v-if="write_project_cash" scope="col">비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 

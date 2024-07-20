@@ -11,6 +11,7 @@ import {
   type ProjectCashBook as PrCashBook,
 } from '@/store/types/proCash'
 import { cutString } from '@/utils/baseMixins'
+import { write_project_cash } from '@/utils/pageAuth'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from '@/views/proCash/Manage/components/ListController.vue'
@@ -252,7 +253,12 @@ onBeforeMount(() => {
   <ContentBody>
     <CCardBody class="pb-5">
       <ListController ref="listControl" @list-filtering="listFiltering" />
-      <AddProCash :project="project" @multi-submit="multiSubmit" @on-bank-update="onBankUpdate" />
+      <AddProCash
+        v-if="write_project_cash"
+        :project="project"
+        @multi-submit="multiSubmit"
+        @on-bank-update="onBankUpdate"
+      />
       <TableTitleRow
         title="프로젝트 입출금 내역"
         color="indigo"

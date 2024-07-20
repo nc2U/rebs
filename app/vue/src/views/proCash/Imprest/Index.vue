@@ -12,6 +12,7 @@ import {
   type ProBankAcc,
   type ProjectCashBook as PrCashBook,
 } from '@/store/types/proCash'
+import { write_project_cash } from '@/utils/pageAuth'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from '@/views/proCash/Imprest/components/ListController.vue'
@@ -252,6 +253,7 @@ onBeforeMount(() => {
     <CCardBody class="pb-5">
       <ListController ref="listControl" @list-filtering="listFiltering" />
       <AddProImprest
+        v-if="write_project_cash"
         :project="project"
         @multi-submit="multiSubmit"
         @on-bank-update="onBankUpdate"

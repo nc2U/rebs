@@ -2,6 +2,7 @@
 import { ref, computed, type PropType } from 'vue'
 import { useStore } from '@/store'
 import { useAccount } from '@/store/pinia/account'
+import { write_project_cash } from '@/utils/pageAuth'
 import { numFormat, cutString, diffDate } from '@/utils/baseMixins'
 import { type ProBankAcc, type ProjectCashBook } from '@/store/types/proCash'
 import FormModal from '@/components/Modals/FormModal.vue'
@@ -91,7 +92,7 @@ const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
       {{ numFormat(imprest.outlay || 0) }}
     </CTableDataCell>
     <CTableDataCell>{{ imprest.evidence_desc }}</CTableDataCell>
-    <CTableDataCell>
+    <CTableDataCell v-if="write_project_cash">
       <CButton color="info" size="sm" @click="showDetail" :disabled="!allowedPeriod">확인</CButton>
     </CTableDataCell>
   </CTableRow>
