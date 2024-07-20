@@ -156,7 +156,7 @@ onBeforeMount(() => dataSetup())
       />
     </CTableDataCell>
 
-    <CTableDataCell class="text-center">
+    <CTableDataCell v-if="write_project" class="text-center">
       <CButton color="success" size="sm" :disabled="formsCheck" @click="onUpdateOption">
         수정
       </CButton>

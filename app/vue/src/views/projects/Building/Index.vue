@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount } from 'vue'
+import { write_project } from '@/utils/pageAuth'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
 import { type BuildingUnit } from '@/store/types/project'
@@ -46,7 +47,7 @@ onBeforeMount(() => fetchBuildingList(project.value || projStore.initProjId))
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <BuildingAddForm :disabled="!project" @on-submit="onCreateBuilding" />
+      <BuildingAddForm v-if="write_project" :disabled="!project" @on-submit="onCreateBuilding" />
       <BuildingFormList @on-update="onUpdateBuilding" @on-delete="onDeleteBuilding" />
     </CCardBody>
   </ContentBody>

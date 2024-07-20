@@ -89,7 +89,7 @@ onBeforeMount(() => dataSetup())
         @keypress.enter="formCheck(form.order_group_name !== order.order_group_name)"
       />
     </CTableDataCell>
-    <CTableDataCell class="text-center">
+    <CTableDataCell v-if="write_project" class="text-center">
       <CButton color="success" size="sm" :disabled="formsCheck" @click="onUpdateOrder">
         수정
       </CButton>

@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { useProjectData } from '@/store/pinia/project_data'
+import { write_project } from '@/utils/pageAuth'
 import { usePayment } from '@/store/pinia/payment'
+import { useProjectData } from '@/store/pinia/project_data'
 import { TableSecondary } from '@/utils/cssMixins'
 import { type Price as P } from '@/store/types/payment'
 import Price from '@/views/projects/Price/components/Price.vue'
@@ -35,7 +36,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
       <col style="width: 12%" />
       <col style="width: 12%" />
       <col style="width: 13%" />
-      <col style="width: 13%" />
+      <col v-if="write_project" style="width: 13%" />
     </colgroup>
     <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
@@ -46,7 +47,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         <CTableHeaderCell>대지가(단위:원)</CTableHeaderCell>
         <CTableHeaderCell>부가세(단위:원)</CTableHeaderCell>
         <CTableHeaderCell>분양가격(단위:원)</CTableHeaderCell>
-        <CTableHeaderCell>비고</CTableHeaderCell>
+        <CTableHeaderCell v-if="write_project">비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
     <CTableBody v-if="!msg">

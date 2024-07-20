@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, provide } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
+import { write_project } from '@/utils/pageAuth'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
 import type { OptionItem } from '@/store/types/project'
@@ -59,7 +60,12 @@ onBeforeMount(() => {
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <OptionAddForm :disabled="!project" :get-types="getTypes" @on-submit="onSubmit" />
+      <OptionAddForm
+        v-if="write_project"
+        :disabled="!project"
+        :get-types="getTypes"
+        @on-submit="onSubmit"
+      />
       <OptionFormList @on-update="onUpdateOption" @on-delete="onDeleteOption" />
     </CCardBody>
   </ContentBody>

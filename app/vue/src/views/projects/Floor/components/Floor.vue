@@ -117,7 +117,7 @@ onBeforeMount(() => dataSetup())
         @keypress.enter="formCheck(form.alias_name !== floor.alias_name)"
       />
     </CTableDataCell>
-    <CTableDataCell class="text-center">
+    <CTableDataCell v-if="write_project" class="text-center">
       <CButton color="success" size="sm" :disabled="formsCheck" @click="onUpdateFloor">
         수정
       </CButton>

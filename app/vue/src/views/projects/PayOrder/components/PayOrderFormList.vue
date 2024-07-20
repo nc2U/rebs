@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
+import { write_project } from '@/utils/pageAuth'
 import { usePayment } from '@/store/pinia/payment'
 import { type PayOrder as po } from '@/store/types/payment'
 import { TableSecondary } from '@/utils/cssMixins'
@@ -27,7 +28,7 @@ const onDeletePayOrder = (pk: number) => emit('on-delete', pk)
       <col style="width: 9%" />
       <col style="width: 9%" />
       <col style="width: 9%" />
-      <col style="width: 10%" />
+      <col v-if="write_project" style="width: 10%" />
     </colgroup>
     <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
@@ -41,7 +42,7 @@ const onDeletePayOrder = (pk: number) => emit('on-delete', pk)
         <CTableHeaderCell>전회기준 경과일수</CTableHeaderCell>
         <CTableHeaderCell>납부기한일</CTableHeaderCell>
         <CTableHeaderCell>납부유예일</CTableHeaderCell>
-        <CTableHeaderCell>비고</CTableHeaderCell>
+        <CTableHeaderCell v-if="write_project">비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
     <CTableBody v-if="payOrderList.length > 0">

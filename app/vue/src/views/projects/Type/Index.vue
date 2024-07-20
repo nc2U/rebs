@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, provide } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin1'
+import { write_project } from '@/utils/pageAuth'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
 import { type UnitType } from '@/store/types/project'
@@ -54,7 +55,7 @@ onBeforeMount(() => fetchTypeList(project.value || projStore.initProjId))
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <TypeAddForm :disabled="!project" @on-submit="onSubmit" />
+      <TypeAddForm v-if="write_project" :disabled="!project" @on-submit="onSubmit" />
       <TypeFormList @on-update="onUpdateType" @on-delete="onDeleteType" />
     </CCardBody>
   </ContentBody>

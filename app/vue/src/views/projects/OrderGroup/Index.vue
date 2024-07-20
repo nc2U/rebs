@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin1'
+import { write_project } from '@/utils/pageAuth'
 import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
 import { type OrderGroup } from '@/store/types/contract'
@@ -47,7 +48,7 @@ onBeforeMount(() => fetchOrderGroupList(project.value || projStore.initProjId))
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <OrderAddForm :disabled="!project" @on-submit="onSubmit" />
+      <OrderAddForm v-if="write_project" :disabled="!project" @on-submit="onSubmit" />
       <OrderFormList @on-update="onUpdateOrder" @on-delete="onDeleteOrder" />
     </CCardBody>
   </ContentBody>

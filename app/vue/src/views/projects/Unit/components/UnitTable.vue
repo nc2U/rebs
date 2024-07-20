@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
+import { write_project } from '@/utils/pageAuth'
 import { useProjectData } from '@/store/pinia/project_data'
 import { type HouseUnit } from '@/store/types/project'
 import Unit from '@/views/projects/Unit/components/Unit.vue'
@@ -66,7 +67,7 @@ const onDelete = (payload: { pk: number; type: number }) => emit('on-delete', pa
             <col style="width: 10%" />
             <col style="width: 6%" />
             <col style="width: 18%" />
-            <col style="width: 10%" />
+            <col v-if="write_project" style="width: 10%" />
           </colgroup>
           <CTableHead>
             <CTableRow class="text-center">
@@ -78,7 +79,7 @@ const onDelete = (payload: { pk: number; type: number }) => emit('on-delete', pa
               <CTableHeaderCell>층수</CTableHeaderCell>
               <CTableHeaderCell>홀딩여부</CTableHeaderCell>
               <CTableHeaderCell>홀딩사유</CTableHeaderCell>
-              <CTableHeaderCell>비고</CTableHeaderCell>
+              <CTableHeaderCell v-if="write_project">비고</CTableHeaderCell>
             </CTableRow>
           </CTableHead>
 

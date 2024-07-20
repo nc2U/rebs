@@ -168,7 +168,7 @@ const toUpdate = () => {
     </CRow>
   </CCardBody>
 
-  <CCardFooter>
+  <CCardFooter v-if="write_project">
     <CRow class="justify-content-between">
       <CCol xs="auto">
         <CButton type="button" color="success" :disabled="!project" @click="toUpdate">

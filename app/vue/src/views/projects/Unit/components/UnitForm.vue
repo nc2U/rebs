@@ -137,7 +137,7 @@ onMounted(() => dataSetup())
         @keydown.enter="onUpdateUnit"
       />
     </CTableDataCell>
-    <CTableDataCell>
+    <CTableDataCell v-if="write_project">
       <CButton color="success" size="sm" :disabled="formCheck" @click="onUpdateUnit">
         수정
       </CButton>

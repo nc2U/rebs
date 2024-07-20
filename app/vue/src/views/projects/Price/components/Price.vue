@@ -148,7 +148,7 @@ onUpdated(() => {
         @keydown.enter="onStorePrice"
       />
     </CTableDataCell>
-    <CTableDataCell class="text-center">
+    <CTableDataCell v-if="write_project" class="text-center">
       <CButton :color="btnColor" size="sm" :disabled="formsCheck" @click="onStorePrice">
         {{ btnTitle }}
       </CButton>

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
+import { write_project } from '@/utils/pageAuth'
 import { usePayment } from '@/store/pinia/payment'
 import { type DownPay as dp } from '@/store/types/payment'
 import { TableSecondary } from '@/utils/cssMixins'
@@ -20,14 +21,14 @@ const onDeleteDownPay = (pk: number) => emit('on-delete', pk)
       <col style="width: 25%" />
       <col style="width: 25%" />
       <col style="width: 35%" />
-      <col style="width: 15%" />
+      <col v-if="write_project" style="width: 15%" />
     </colgroup>
     <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>차수</CTableHeaderCell>
         <CTableHeaderCell>타입</CTableHeaderCell>
         <CTableHeaderCell>회별 납부금액</CTableHeaderCell>
-        <CTableHeaderCell>비고</CTableHeaderCell>
+        <CTableHeaderCell v-if="write_project">비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
     <CTableBody v-if="downPayList.length > 0">

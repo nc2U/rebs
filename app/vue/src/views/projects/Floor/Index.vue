@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin1'
+import { write_project } from '@/utils/pageAuth'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
 import { type UnitFloorType } from '@/store/types/project'
@@ -46,7 +47,7 @@ onBeforeMount(() => fetchFloorTypeList(project.value || projStore.initProjId))
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <FloorAddForm :disabled="!project" @on-submit="onSubmit" />
+      <FloorAddForm v-if="write_project" :disabled="!project" @on-submit="onSubmit" />
       <FloorFormList @on-update="onUpdateFloor" @on-delete="onDeleteFloor" />
     </CCardBody>
   </ContentBody>

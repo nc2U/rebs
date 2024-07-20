@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
+import { write_project } from '@/utils/pageAuth'
 import { useProject } from '@/store/pinia/project'
 import { usePayment } from '@/store/pinia/payment'
 import { type PayOrder } from '@/store/types/payment'
@@ -46,7 +47,7 @@ onBeforeMount(() => fetchPayOrderList(project.value || projStore.initProjId))
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <PayOrderAddForm :disabled="!project" @on-submit="onSubmit" />
+      <PayOrderAddForm v-if="write_project" :disabled="!project" @on-submit="onSubmit" />
       <PayOrderFormList @on-update="onUpdatePayOrder" @on-delete="onDeletePayOrder" />
     </CCardBody>
   </ContentBody>

@@ -147,7 +147,7 @@ const modalAction = () => {
     </CRow>
   </CCallout>
 
-  <CCallout color="danger" class="pb-2">
+  <CCallout v-if="write_project" color="danger" class="pb-2">
     <CRow>
       <CCol md="3" class="mb-2">
         <CRow>
@@ -219,7 +219,7 @@ const modalAction = () => {
     등록되지 않도록 신중하게 진행하여 주십시요.
   </CAlert>
 
-  <CAlert :color="AlertLight" variant="solid" class="text-right">
+  <CAlert v-if="write_project" :color="AlertLight" variant="solid" class="text-right">
     <CButton color="primary" :disabled="!project || !form.minFloor" @click="unitRegister">
       호수(유니트) 일괄등록
     </CButton>

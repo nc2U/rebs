@@ -146,7 +146,7 @@ onBeforeMount(() => dataSetup())
         @keypress.enter="formCheck(form.num_unit !== type.num_unit)"
       />
     </CTableDataCell>
-    <CTableDataCell class="text-center">
+    <CTableDataCell v-if="write_project" class="text-center">
       <CButton color="success" size="sm" :disabled="formsCheck" @click="onUpdateType">
         수정
       </CButton>

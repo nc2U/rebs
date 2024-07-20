@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
+import { write_project } from '@/utils/pageAuth'
 import { useProjectData } from '@/store/pinia/project_data'
 import { type UnitFloorType } from '@/store/types/project'
 import { TableSecondary } from '@/utils/cssMixins'
@@ -22,7 +23,7 @@ const onDeleteFloor = (pk: number) => emit('on-delete', pk)
       <col style="width: 18%" />
       <col style="width: 18%" />
       <col style="width: 18%" />
-      <col style="width: 10%" />
+      <col v-if="write_project" style="width: 10%" />
     </colgroup>
     <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
@@ -31,7 +32,7 @@ const onDeleteFloor = (pk: number) => emit('on-delete', pk)
         <CTableHeaderCell>종료 층</CTableHeaderCell>
         <CTableHeaderCell>방향/위치(옵션)</CTableHeaderCell>
         <CTableHeaderCell>층별 범위 명칭</CTableHeaderCell>
-        <CTableHeaderCell>비 고</CTableHeaderCell>
+        <CTableHeaderCell v-if="write_project">비 고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
     <CTableBody v-if="floorTypeList.length > 0">

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, provide } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin1'
+import { write_project } from '@/utils/pageAuth'
 import { useProject } from '@/store/pinia/project'
 import { useProCash } from '@/store/pinia/proCash'
 import { useContract } from '@/store/pinia/contract'
@@ -89,7 +90,7 @@ onBeforeMount(() => {
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <BudgetAddForm :disabled="!project" @on-submit="onSubmit" />
+      <BudgetAddForm v-if="write_project" :disabled="!project" @on-submit="onSubmit" />
       <BudgetFormList @on-update="onUpdateBudget" @on-delete="onDeleteBudget" />
     </CCardBody>
   </ContentBody>

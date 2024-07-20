@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
+import { write_project } from '@/utils/pageAuth'
 import { useProject } from '@/store/pinia/project'
 import { TableSecondary } from '@/utils/cssMixins'
 import { type ProIncBudget } from '@/store/types/project'
@@ -26,7 +27,7 @@ const onDeleteOrder = (pk: number) => emit('on-delete', pk)
       <col style="width: 10%" />
       <col style="width: 11%" />
       <col style="width: 11%" />
-      <col style="width: 8%" />
+      <col v-if="write_project" style="width: 8%" />
     </colgroup>
     <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
@@ -39,7 +40,7 @@ const onDeleteOrder = (pk: number) => emit('on-delete', pk)
         <CTableHeaderCell>수량</CTableHeaderCell>
         <CTableHeaderCell>기초 수입 예산</CTableHeaderCell>
         <CTableHeaderCell>현황 수입 예산</CTableHeaderCell>
-        <CTableHeaderCell>비 고</CTableHeaderCell>
+        <CTableHeaderCell v-if="write_project">비 고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
     <CTableBody v-if="proIncBudgetList.length > 0">

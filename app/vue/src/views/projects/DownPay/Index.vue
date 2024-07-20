@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, provide, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
+import { write_project } from '@/utils/pageAuth'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
 import { useContract } from '@/store/pinia/contract'
@@ -72,7 +73,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
 
   <ContentBody>
     <CCardBody class="pb-5">
-      <DownPayAddForm :disabled="!project" @on-submit="onCreateDownPay" />
+      <DownPayAddForm v-if="write_project" :disabled="!project" @on-submit="onCreateDownPay" />
       <DownPayFormList @on-update="onUpdateDownPay" @on-delete="onDeleteDownPay" />
     </CCardBody>
   </ContentBody>
