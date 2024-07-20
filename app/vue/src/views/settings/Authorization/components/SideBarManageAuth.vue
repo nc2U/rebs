@@ -67,6 +67,7 @@ const dataSetup = () => {
     authData.value.project_cash = props.user.staffauth.project_cash
     authData.value.project_docs = props.user.staffauth.project_docs
     authData.value.project = props.user.staffauth.project
+    authData.value.project_site = props.user.staffauth.project_site
     authData.value.company_cash = props.user.staffauth.company_cash
     authData.value.company_docs = props.user.staffauth.company_docs
     authData.value.human_resource = props.user.staffauth.human_resource
@@ -80,6 +81,7 @@ const dataSetup = () => {
     authData.value.project_cash = '0'
     authData.value.project_docs = '0'
     authData.value.project = '0'
+    authData.value.project_site = '0'
     authData.value.company_cash = '0'
     authData.value.company_docs = '0'
     authData.value.human_resource = '0'
