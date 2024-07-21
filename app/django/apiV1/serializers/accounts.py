@@ -112,11 +112,11 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    # image = serializers.ImageField(use_url=True, allow_empty_file=False, required=False)
+    image = serializers.ImageField(use_url=True, allow_empty_file=False, required=False)
 
     class Meta:
         model = Profile
-        fields = ('pk', 'user', 'name', 'birth_date', 'cell_phone',
+        fields = ('pk', 'user', 'name', 'birth_date', 'cell_phone', 'image',
                   'like_posts', 'like_comments', 'blame_posts', 'blame_comments')
 
     @transaction.atomic
