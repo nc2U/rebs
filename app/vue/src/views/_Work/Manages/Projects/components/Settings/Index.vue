@@ -84,7 +84,8 @@ const categorySubmit = (payload: ICategory) => {
 const deleteCategory = (pk: number) => workStore.deleteCategory(pk, issueProject.value?.slug)
 
 const submitActs = (payload: number[]) => {
-  const acts = payload.sort((a, b) => a - b)
+  const activities = payload.sort((a, b) => a - b)
+  workStore.patchIssueProject({ slug: issueProject.value?.slug, activities, users: [], roles: [] })
 }
 
 onBeforeRouteUpdate(async to => {

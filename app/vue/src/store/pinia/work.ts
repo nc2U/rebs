@@ -98,6 +98,7 @@ export const useWork = defineStore('work', () => {
 
   const patchIssueProject = async (payload: {
     slug: string
+    activities?: number[]
     users: number[]
     roles: number[]
     del_mem?: number
