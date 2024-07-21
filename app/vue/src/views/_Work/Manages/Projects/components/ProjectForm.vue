@@ -140,6 +140,7 @@ const dataSetup = () => {
     form.is_inherit_members = props.project.is_inherit_members
     form.allowed_roles = props.project.allowed_roles?.map(r => r.pk) ?? []
     form.trackers = props.project.trackers?.map(t => t.pk) ?? []
+    form.activities = props.project.activities?.map(t => t.pk) ?? []
 
     module.issue = !!props.project.module?.issue
     module.time = !!props.project.module?.time

@@ -1,10 +1,20 @@
 <script lang="ts" setup>
-import type { PropType } from 'vue'
+import { ref, type PropType, onBeforeMount } from 'vue'
 import type { CodeValue } from '@/store/types/work'
 
-defineProps({
+const props = defineProps({
   activities: { type: Array as PropType<CodeValue[]>, default: () => [] },
   activityList: { type: Array as PropType<CodeValue[]>, default: () => [] },
+})
+
+const emit = defineEmits(['submit-acts'])
+
+const inUseActs = ref<number[]>([])
+
+const submitActs = () => emit('submit-acts', inUseActs.value)
+
+onBeforeMount(() => {
+  inUseActs.value = props.activities.map(a => a.pk)
 })
 </script>
 
@@ -22,7 +32,7 @@ defineProps({
       </span>
     </CCol>
   </CRow>
-  {{ activities }}
+
   <CRow>
     <CCol>
       <v-divider class="my-0" />
@@ -50,7 +60,7 @@ defineProps({
               <v-icon icon="mdi-check" size="sm" color="success" />
             </CTableDataCell>
             <CTableDataCell>
-              <CFormCheck />
+              <CFormCheck v-model="inUseActs" :value="act.pk" :id="act.name" />
             </CTableDataCell>
           </CTableRow>
         </CTableBody>
@@ -60,7 +70,7 @@ defineProps({
 
   <CRow>
     <CCol>
-      <CButton color="primary" size="sm" variant="outline">저장</CButton>
+      <CButton color="primary" size="sm" variant="outline" @click="submitActs">저장</CButton>
     </CCol>
   </CRow>
 </template>

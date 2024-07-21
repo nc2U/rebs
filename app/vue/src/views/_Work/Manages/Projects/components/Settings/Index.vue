@@ -83,6 +83,10 @@ const categorySubmit = (payload: ICategory) => {
 
 const deleteCategory = (pk: number) => workStore.deleteCategory(pk, issueProject.value?.slug)
 
+const submitActs = (payload: number[]) => {
+  const acts = payload.sort((a, b) => a - b)
+}
+
 onBeforeRouteUpdate(async to => {
   if (to.params.projId) await workStore.fetchIssueProject(to.params.projId as string)
   else {
@@ -165,6 +169,7 @@ onBeforeMount(async () => {
       v-if="menu === '시간추적'"
       :activities="issueProject?.activities"
       :activity-list="activityList"
+      @submit-acts="submitActs"
     />
   </template>
 

@@ -390,6 +390,9 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         trackers = self.initial_data.get('trackers', [])
         if trackers:
             project.trackers.add(*trackers)
+        activities = self.initial_data.get('activities', [])
+        if activities:
+            project.activities.add(*activities)
         project.save()
 
         Module(project=project,
@@ -412,10 +415,12 @@ class IssueProjectSerializer(serializers.ModelSerializer):
         allowed_roles = self.initial_data.get('allowed_roles', [])
         if allowed_roles and allowed_roles != [r.pk for r in instance.allowed_roles.all()]:
             instance.allowed_roles.set(allowed_roles)
-
         trackers = self.initial_data.get('trackers', [])
         if trackers and trackers != [t.pk for t in instance.trackers.all()]:
             instance.trackers.set(trackers)
+        activities = self.initial_data.get('activities', [])
+        if activities and activities != [a.pk for a in instance.activities.all()]:
+            instance.activities.set(activities)
 
         module = instance.module
         module.issue = self.initial_data.get('issue', True)
