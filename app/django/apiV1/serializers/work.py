@@ -1,7 +1,6 @@
 import json
 import os.path
 
-from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction, IntegrityError
 from django.db.models import Sum, Q
 from django.utils import timezone
