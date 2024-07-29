@@ -23,7 +23,9 @@ const getTitle = (title: string) => title.replace(/[() ]/gim, '')
         <CDropdownItem @click="$router.push({ name: '(업무) - 추가' })">
           새 업무 만들기
         </CDropdownItem>
-        <CDropdownItem v-if="workManager" disabled>새 업무 카테고리</CDropdownItem>
+        <CDropdownItem v-if="workManager" @click="$router.push({ name: '(설정) - 범주추가' })">
+          새 업무 범주
+        </CDropdownItem>
         <CDropdownItem v-if="workManager" @click="$router.push({ name: '(로드맵) - 추가' })">
           새 버전
         </CDropdownItem>
