@@ -1,7 +1,10 @@
 <script lang="ts" setup>
+import { useRouter } from 'vue-router'
 import { elapsedTime, timeFormat } from '@/utils/baseMixins'
 
 defineProps({ timeEntry: { type: Object, default: () => null } })
+
+const router = useRouter()
 </script>
 
 <template>
@@ -37,7 +40,7 @@ defineProps({ timeEntry: { type: Object, default: () => null } })
               class="mr-2 pointer"
               size="18"
               @click="
-                $router.push({
+                router.push({
                   name: '(소요시간) - 편집',
                   params: { projId: timeEntry.issue.project.slug, timeId: timeEntry.pk },
                 })

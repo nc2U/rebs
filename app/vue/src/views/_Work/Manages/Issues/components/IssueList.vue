@@ -3,6 +3,7 @@ import { computed, inject, type PropType, ref, watchEffect } from 'vue'
 import type { Issue, IssueFilter, IssueProject, IssueStatus, Tracker } from '@/store/types/work'
 import { useWork } from '@/store/pinia/work'
 import { timeFormat } from '@/utils/baseMixins'
+import { useRoute, useRouter } from 'vue-router'
 import NoData from '@/views/_Work/components/NoData.vue'
 import SearchList from './SearchList.vue'
 import IssueDropDown from './IssueDropDown.vue'
@@ -19,6 +20,8 @@ defineProps({
 })
 
 const emit = defineEmits(['filter-submit', 'page-select'])
+
+const [route, router] = [useRoute(), useRouter()]
 
 const workManager = inject('workManager')
 
@@ -58,7 +61,7 @@ const watchControl = (payload: any, issuePk: number) => {
     <CCol class="text-right">
       <span v-if="workManager || my_perms?.issue_create" class="mr-2 form-text">
         <v-icon icon="mdi-plus-circle" color="success" size="sm" />
-        <router-link :to="{ name: `${String($route.name)} - 추가` }" class="ml-1"
+        <router-link :to="{ name: `${String(route.name)} - 추가` }" class="ml-1"
           >새 업무만들기</router-link
         >
       </span>
@@ -77,9 +80,9 @@ const watchControl = (payload: any, issuePk: number) => {
           </CDropdownToggle>
           <CDropdownMenu>
             <CDropdownItem
-              v-if="$route.params.projId"
+              v-if="route.params.projId"
               class="form-text"
-              @click="$router.push({ name: '(업무) - 보고서' })"
+              @click="router.push({ name: '(업무) - 보고서' })"
             >
               <router-link to="">
                 <v-icon icon="mdi-chart-bar" color="amber" size="sm" />
@@ -93,9 +96,9 @@ const watchControl = (payload: any, issuePk: number) => {
               <!--              </router-link>-->
             </CDropdownItem>
             <CDropdownItem
-              v-if="$route.params.projId && workManager"
+              v-if="route.params.projId && workManager"
               class="form-text"
-              @click="$router.push({ name: '(설정)', query: { menu: '업무추적' } })"
+              @click="router.push({ name: '(설정)', query: { menu: '업무추적' } })"
             >
               <router-link to="">
                 <v-icon icon="mdi-cog" color="secondary" size="sm" />

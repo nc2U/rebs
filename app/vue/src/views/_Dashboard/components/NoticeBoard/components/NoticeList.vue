@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { type PropType } from 'vue'
+import { useRouter } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
 import { TableSecondary } from '@/utils/cssMixins'
 import type { Post } from '@/store/types/document'
@@ -15,6 +16,8 @@ defineProps({
 })
 
 const emit = defineEmits(['page-select'])
+
+const router = useRouter()
 
 const docStore = useDocument()
 const postPages = (num: number) => docStore.postPages(num)
@@ -59,14 +62,14 @@ const pageSelect = (page: number) => emit('page-select', page)
       />
     </CCol>
     <CCol lg="4" class="text-right pt-3">
-      <CButton color="light" class="px-5" @click="$router.push({ name: `대 시 보 드` })">
+      <CButton color="light" class="px-5" @click="router.push({ name: `대 시 보 드` })">
         홈으로
       </CButton>
       <CButton
         v-if="writeAuth"
         color="primary"
         class="px-5"
-        @click="$router.push({ name: `공지 사항 - 작성` })"
+        @click="router.push({ name: `공지 사항 - 작성` })"
       >
         등록하기
       </CButton>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const emit = defineEmits(['onSubmit'])
 
@@ -31,6 +32,8 @@ const onSubmit = (event: Event) => {
     validated.value = false
   }
 }
+
+const router = useRouter()
 </script>
 
 <template>
@@ -99,7 +102,7 @@ const onSubmit = (event: Event) => {
 
     <CRow>
       <CCol class="text-right">
-        <CButton type="button" color="link" class="px-0" @click="$router.push({ name: 'Login' })">
+        <CButton type="button" color="link" class="px-0" @click="router.push({ name: 'Login' })">
           로그인하러 가기
         </CButton>
       </CCol>

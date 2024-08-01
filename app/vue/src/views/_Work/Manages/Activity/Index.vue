@@ -63,7 +63,7 @@ onBeforeMount(() => {
 <template>
   <Header :page-title="comName" :nav-menu="navMenu" @side-nav-call="sideNavCAll" />
 
-  <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query">
+  <ContentBody ref="cBody" :nav-menu="navMenu" :query="route?.query">
     <template v-slot:default>
       <ActivityLogList
         :to-date="toDate"

@@ -1,8 +1,11 @@
 <script lang="ts" setup>
 import { type ComputedRef, inject } from 'vue'
+import { useRouter } from 'vue-router'
 import type { User } from '@/store/types/accounts'
 
 const userInfo = inject<ComputedRef<User>>('userInfo')
+
+const router = useRouter()
 </script>
 
 <template>
@@ -44,7 +47,7 @@ const userInfo = inject<ComputedRef<User>>('userInfo')
 
         <CRow class="mb-3">
           <CCol class="text-right">
-            <CButton color="info" @click="$router.push({ name: '정보 수정' })">
+            <CButton color="info" @click="router.push({ name: '정보 수정' })">
               회원정보 변경
             </CButton>
           </CCol>

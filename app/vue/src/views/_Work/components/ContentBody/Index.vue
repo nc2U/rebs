@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { type RouteRecordName, useRouter } from 'vue-router'
+import { type RouteRecordName, useRoute, useRouter } from 'vue-router'
 
 const props = defineProps({
   navMenu: { type: Array, default: () => [] },
@@ -10,7 +10,7 @@ const props = defineProps({
 
 const visible = ref(false)
 
-const router = useRouter()
+const [route, router] = [useRoute(), useRouter()]
 
 const goToMenu = (menu: string) => {
   router.push({ name: menu as RouteRecordName, query: props.query })
@@ -63,7 +63,7 @@ defineExpose({ toggle })
               <CNavItem v-for="(menu, i) in navMenu" :key="i">
                 <CNavLink
                   @click="goToMenu(menu as string)"
-                  :active="$route.name === menu || $route.meta.title === menu"
+                  :active="route.name === menu || route.meta.title === menu"
                   class="pl-3"
                 >
                   {{ menu }}

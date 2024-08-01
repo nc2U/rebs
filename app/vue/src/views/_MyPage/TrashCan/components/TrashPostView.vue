@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { type PropType } from 'vue'
+import { useRouter } from 'vue-router'
 import { timeFormat } from '@/utils/baseMixins'
 import type { TrashPost } from '@/store/types/document'
 import sanitizeHtml from 'sanitize-html'
@@ -14,6 +15,8 @@ const props = defineProps({
 const emit = defineEmits(['restore-post'])
 
 const restorePost = () => emit('restore-post', props.post.pk)
+
+const router = useRouter()
 </script>
 
 <template>
@@ -59,7 +62,7 @@ const restorePost = () => emit('restore-post', props.post.pk)
     <CRow class="py-2">
       <CCol class="text-right">
         <CButtonGroup role="group">
-          <CButton color="secondary" @click="$router.push({ name: `${viewRoute}` })">
+          <CButton color="secondary" @click="router.push({ name: `${viewRoute}` })">
             목록으로
           </CButton>
           <CButton color="success" @click="restorePost"> 복원하기</CButton>

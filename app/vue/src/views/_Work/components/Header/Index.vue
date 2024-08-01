@@ -20,7 +20,8 @@ const backGround = computed(() => (isDark.value ? 'bg-blue-grey-darken-5' : 'bg-
 const emit = defineEmits(['side-nav-call'])
 const sideNavCall = () => emit('side-nav-call')
 
-watch(useRoute(), () => (visible.value = false))
+const route = useRoute()
+watch(route, () => (visible.value = false))
 </script>
 
 <template>
@@ -32,7 +33,7 @@ watch(useRoute(), () => (visible.value = false))
             <CCol>
               <span v-for="p in familyTree" :key="p.pk">
                 <span v-if="p.visible" class="mr-1 text-blue-grey">
-                  <router-link :to="{ name: $route.name ?? '(개요)', params: { projId: p.slug } }">
+                  <router-link :to="{ name: route.name ?? '(개요)', params: { projId: p.slug } }">
                     {{ p.name }}
                   </router-link>
                   »

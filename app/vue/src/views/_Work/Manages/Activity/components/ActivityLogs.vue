@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { cutString, dateFormat, numberToHour, timeFormat } from '@/utils/baseMixins'
+import { useRoute } from 'vue-router'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
+import { cutString, dateFormat, numberToHour, timeFormat } from '@/utils/baseMixins'
 
 defineProps({
   groupedActivities: Object,
@@ -13,6 +14,8 @@ const getIcon = (sort: string, progress: boolean) => {
   else if (sort === '9') return 'mdi-folder-clock-outline'
   else return 'mdi-folder-plus'
 }
+
+const route = useRoute()
 </script>
 
 <template>
@@ -33,7 +36,7 @@ const getIcon = (sort: string, progress: boolean) => {
             class="mr-1"
           />
           <span class="form-text underline mr-2">{{ timeFormat(act.timestamp, true) }}</span>
-          <span v-if="!$route.params.projId || act.project?.slug !== $route.params.projId">
+          <span v-if="!route.params.projId || act.project?.slug !== route.params.projId">
             {{ act.project?.name }} -
           </span>
           <span v-if="act.sort === '1'">

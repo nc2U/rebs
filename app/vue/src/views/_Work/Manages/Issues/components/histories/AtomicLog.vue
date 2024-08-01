@@ -1,5 +1,6 @@
 <script lang="ts" setup="">
 import { type PropType } from 'vue'
+import { useRoute } from 'vue-router'
 import type { IssueLogEntry } from '@/store/types/work'
 import { elapsedTime, timeFormat } from '@/utils/baseMixins'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
@@ -7,6 +8,8 @@ import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 defineProps({ log: { type: Object as PropType<IssueLogEntry>, required: true } })
 
 const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
+
+const route = useRoute()
 </script>
 
 <template>
@@ -14,7 +17,7 @@ const getHistory = (h: string) => h.split('|').filter(str => str.trim() !== '')
     <CCol>
       <CRow
         :id="`note-${log.pk}`"
-        :class="{ 'bg-blue-lighten-5': $route.hash == `#note-${log.log_id}` }"
+        :class="{ 'bg-blue-lighten-5': route.hash == `#note-${log.log_id}` }"
       >
         <CCol v-if="log.user">
           <router-link :to="{ name: '사용자 - 보기', params: { userId: log.user.pk } }">

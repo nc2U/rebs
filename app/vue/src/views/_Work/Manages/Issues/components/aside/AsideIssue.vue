@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { inject, type PropType, ref } from 'vue'
+import { useRoute } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import WatcherAdd from './WatcherAdd.vue'
 
@@ -11,6 +12,8 @@ const props = defineProps({
 const refWatcherAdd = ref()
 
 const workManager = inject('workManager')
+
+const route = useRoute()
 
 const workStore = useWork()
 const watcherAddSubmit = (payload: { pk: number; username: string }[]) => {
@@ -35,7 +38,7 @@ const delWatcher = (pk: number) => {
   <!--    <CCol class="col-xxl-5"></CCol>-->
   <!--  </CRow>-->
 
-  <template v-if="workManager && $route.name === '(업무) - 보기'">
+  <template v-if="workManager && route.name === '(업무) - 보기'">
     <CRow class="mb-1">
       <CCol>
         <h6 class="asideTitle">업무 관람자 ({{ watchers.length }})</h6>

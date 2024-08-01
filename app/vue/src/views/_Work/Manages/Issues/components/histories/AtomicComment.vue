@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, type ComputedRef, inject, type PropType, ref } from 'vue'
 import type { IssueLogEntry } from '@/store/types/work'
+import { useRoute } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import type { User } from '@/store/types/accounts'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
@@ -14,6 +15,8 @@ const emit = defineEmits(['del-submit', 'call-reply'])
 
 const RefDelConfirm = ref()
 const delPk = ref<null | number>(null)
+
+const route = useRoute()
 
 const userInfo = inject<ComputedRef<User>>('userInfo')
 const workManager = inject<ComputedRef<boolean>>('workManager')
@@ -72,7 +75,7 @@ const delSubmit = () => {
     <CCol>
       <CRow
         :id="`note-${log.pk}`"
-        :class="{ 'bg-blue-lighten-5': $route.hash == `#note-${log.log_id}` }"
+        :class="{ 'bg-blue-lighten-5': route.hash == `#note-${log.log_id}` }"
       >
         <CCol v-if="log.user" class="pt-1">
           <router-link :to="{ name: '사용자 - 보기', params: { userId: log.user.pk } }">
@@ -136,7 +139,7 @@ const delSubmit = () => {
               <CDropdownMenu>
                 <CDropdownItem
                   class="form-text"
-                  @click="copyLink($route.path, `#note-${log.log_id}`)"
+                  @click="copyLink(route.path, `#note-${log.log_id}`)"
                 >
                   <router-link to="">
                     <v-icon icon="mdi-pencil" color="amber" size="sm" />

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { message } from '@/utils/helper'
 
 const emit = defineEmits(['on-submit'])
@@ -25,6 +26,8 @@ const onSubmit = (event: Event) => {
     } else message('warning', '', '입력하신 비밀번호가 서로 같지 않습니다.')
   }
 }
+
+const router = useRouter()
 </script>
 
 <template>
@@ -74,12 +77,7 @@ const onSubmit = (event: Event) => {
     </CRow>
     <CRow>
       <CCol class="text-right">
-        <CButton
-          type="button"
-          color="link"
-          class="px-0"
-          @click="$router.replace({ name: 'Login' })"
-        >
+        <CButton type="button" color="link" class="px-0" @click="router.replace({ name: 'Login' })">
           로그인 화면으로
         </CButton>
       </CCol>

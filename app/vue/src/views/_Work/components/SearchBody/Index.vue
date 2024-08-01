@@ -54,7 +54,7 @@ onBeforeRouteLeave((to, from, next) => {
 <template>
   <Header :page-title="comName" :nav-menu="navMenu" @side-nav-call="sideNavCAll" />
 
-  <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query" :aside="false">
+  <ContentBody ref="cBody" :nav-menu="navMenu" :query="route?.query" :aside="false">
     <template v-slot:default>
       <CRow class="py-2">
         <CCol>

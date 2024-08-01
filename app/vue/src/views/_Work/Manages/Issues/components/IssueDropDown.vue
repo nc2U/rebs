@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed, type ComputedRef, inject, type PropType, onBeforeMount } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import type { Issue, SimpleIssue } from '@/store/types/work'
 import type { User } from '@/store/types/accounts'
 
@@ -8,6 +9,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['watch-control'])
+
+const [route, router] = [useRoute(), useRouter()]
 
 const userInfo = inject<ComputedRef<User>>('userInfo')
 
@@ -39,7 +42,7 @@ onBeforeMount(() => (isWatcher.value = isCumputedWatcher.value))
         <CDropdownItem
           class="form-text"
           @click="
-            $router.push({
+            router.push({
               name: '(업무) - 보기',
               params: { projId: issue.project.slug, issueId: issue.pk },
               query: { edit: '1' },
@@ -96,8 +99,8 @@ onBeforeMount(() => (isWatcher.value = isCumputedWatcher.value))
         <CDropdownItem
           class="form-text"
           @click="
-            $router.push({
-              name: $route.params.projId ? '(소요시간) - 추가' : '소요시간 - 추가',
+            router.push({
+              name: route.params.projId ? '(소요시간) - 추가' : '소요시간 - 추가',
               query: { issue_id: issue.pk },
             })
           "
@@ -110,7 +113,7 @@ onBeforeMount(() => (isWatcher.value = isCumputedWatcher.value))
         <CDropdownItem
           class="form-text"
           @click="
-            $router.push({
+            router.push({
               name: '(업무) - 추가',
               query: { parent: issue.pk, tracker: issue.tracker.pk },
             })
