@@ -470,12 +470,12 @@ onMounted(() => {
           <CButton v-if="editAuth" color="danger" :disabled="!writeAuth" @click="deleteConfirm">
             삭제
           </CButton>
-          <CButton color="secondary" @click="$router.push({ name: `${viewRoute}` })"> 목록</CButton>
+          <CButton color="secondary" @click="router.push({ name: `${viewRoute}` })"> 목록</CButton>
           <CButton
             color="light"
             :disabled="!prev || reOrder"
             @click="
-              $router.push({
+              router.push({
                 name: `${viewRoute} - 보기`,
                 params: { postId: prev },
               })
@@ -487,7 +487,7 @@ onMounted(() => {
             color="light"
             :disabled="!next || reOrder"
             @click="
-              $router.push({
+              router.push({
                 name: `${viewRoute} - 보기`,
                 params: { postId: next },
               })
@@ -501,7 +501,7 @@ onMounted(() => {
         <CButton
           v-if="writeAuth"
           color="primary"
-          @click="$router.push({ name: `${viewRoute} - 작성` })"
+          @click="router.push({ name: `${viewRoute} - 작성` })"
         >
           신규등록
         </CButton>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
+import { useRouter } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
 import { TableSecondary } from '@/utils/cssMixins'
 import type { SuitCase } from '@/store/types/document'
@@ -15,6 +16,8 @@ defineProps({
 })
 
 const emit = defineEmits(['page-select', 'agency-filter', 'agency-search', 'related-filter'])
+
+const router = useRouter()
 
 const documentStore = useDocument()
 
@@ -85,7 +88,7 @@ const pageSelect = (page: number) => emit('page-select', page)
         color="primary"
         class="px-5"
         :disabled="!company"
-        @click="$router.push({ name: `${viewRoute} - 작성` })"
+        @click="router.push({ name: `${viewRoute} - 작성` })"
       >
         등록하기
       </CButton>

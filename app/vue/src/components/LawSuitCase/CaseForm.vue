@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted, onUpdated, type PropType } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { type SuitCase } from '@/store/types/document'
 import { courtChoices } from './components/court'
 import Multiselect from '@vueform/multiselect'
@@ -73,7 +73,7 @@ const formsCheck = computed(() => {
   } else return false
 })
 
-const route = useRoute()
+const [route, router] = [useRoute(), useRouter()]
 const btnClass = computed(() => (route.params.caseId ? 'success' : 'primary'))
 
 const onSubmit = (event: Event) => {
@@ -361,8 +361,8 @@ onUpdated(() => dataSetup())
 
     <CRow>
       <CCol class="text-right">
-        <CButton color="light" @click="$router.push({ name: `${viewRoute}` })"> 목록으로</CButton>
-        <CButton v-if="route.params.caseId" color="light" @click="$router.go(-1)"> 뒤로</CButton>
+        <CButton color="light" @click="router.push({ name: `${viewRoute}` })"> 목록으로</CButton>
+        <CButton v-if="route.params.caseId" color="light" @click="router.go(-1)"> 뒤로</CButton>
         <CButton :color="btnClass" type="submit" :disabled="formsCheck"> 저장하기</CButton>
       </CCol>
     </CRow>

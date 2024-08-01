@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
+import { useRouter } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
 import { TableSecondary } from '@/utils/cssMixins'
 import type { Post } from '@/store/types/document'
@@ -20,8 +21,9 @@ defineProps({
 
 const emit = defineEmits(['page-select'])
 
-const documentStore = useDocument()
+const router = useRouter()
 
+const documentStore = useDocument()
 const postPages = (num: number) => documentStore.postPages(num)
 const pageSelect = (page: number) => emit('page-select', page)
 </script>
@@ -95,7 +97,7 @@ const pageSelect = (page: number) => emit('page-select', page)
         color="primary"
         class="px-5"
         :disabled="!company && !project"
-        @click="$router.push({ name: `${viewRoute} - 작성` })"
+        @click="router.push({ name: `${viewRoute} - 작성` })"
       >
         등록하기
       </CButton>

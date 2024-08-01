@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
+
+const router = useRouter()
 </script>
 
 <template>
@@ -13,7 +16,7 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
         are heading.
       </blockquote>
 
-      <v-btn color="info" variant="outlined" rounded="pill" @click="$router.go(-1)">
+      <v-btn color="info" variant="outlined" rounded="pill" @click="router.go(-1)">
         To previous
       </v-btn>
 
@@ -23,7 +26,7 @@ import ContentBody from '@/layouts/ContentBody/Index.vue'
         color="success"
         variant="outlined"
         rounded="pill"
-        @click="$router.replace({ path: '/' })"
+        @click="router.replace({ path: '/' })"
       >
         Take me home
       </v-btn>
