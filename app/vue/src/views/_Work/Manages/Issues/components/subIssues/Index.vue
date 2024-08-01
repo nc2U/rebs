@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref, type PropType, watchEffect } from 'vue'
+import { useRouter } from 'vue-router'
 import { cutString } from '@/utils/baseMixins'
 import type { SubIssue } from '@/store/types/work'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -8,9 +9,11 @@ defineProps({ subIssues: { type: Array as PropType<SubIssue[]>, default: () => [
 
 const emit = defineEmits(['unlink-sub-issue'])
 
+const router = useRouter()
+
 const selected = ref<number | null>(null)
 
-const handleClickOutside = event => {
+const handleClickOutside = (event: any) => {
   if (!event.target.closest('.sub-issue')) selected.value = null
 }
 
@@ -89,7 +92,7 @@ const unlinkSubIssue = () => {
             <CDropdownItem
               class="form-text"
               @click="
-                $router.push({
+                router.push({
                   name: '(업무) - 보기',
                   params: { issueId: sub.pk },
                   query: { edit: '1' },

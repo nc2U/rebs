@@ -2,10 +2,13 @@
 import { onBeforeMount, type PropType } from 'vue'
 import type { Version } from '@/store/types/work'
 import Roadmap from './Roadmap.vue'
+import { useRoute, useRouter } from 'vue-router'
 
 defineProps({ versionList: { type: Array as PropType<Version[]>, default: () => [] } })
 
 const emit = defineEmits(['aside-visible'])
+
+const [route, router] = [useRoute(), useRouter()]
 
 onBeforeMount(() => emit('aside-visible', true))
 </script>
@@ -36,9 +39,9 @@ onBeforeMount(() => emit('aside-visible', true))
           </CDropdownToggle>
           <CDropdownMenu>
             <CDropdownItem
-              v-if="$route.params.projId"
+              v-if="route.params.projId"
               class="form-text"
-              @click="$router.push({ name: '(설정)', query: { menu: '버전' } })"
+              @click="router.push({ name: '(설정)', query: { menu: '버전' } })"
             >
               <router-link to="">
                 <v-icon icon="mdi-cog" color="grey" size="sm" class="mr-2" />

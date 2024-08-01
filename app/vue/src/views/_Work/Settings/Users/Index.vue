@@ -4,12 +4,12 @@ import { pageTitle, navMenu } from '@/views/_Work/_menu/headermixin3'
 import { useRoute } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import { useAccount } from '@/store/pinia/account'
+import type { ActLogEntryFilter } from '@/store/types/work'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import UserList from '@/views/_Work/Settings/Users/components/UserList.vue'
 import UserView from '@/views/_Work/Settings/Users/components/UserView.vue'
 import UserForm from '@/views/_Work/Settings/Users/components/UserForm.vue'
-import type { ActLogEntryFilter } from '@/store/types/work'
 
 const cBody = ref()
 const aside = ref(true)
@@ -53,24 +53,24 @@ onBeforeMount(() => {
 <template>
   <Header :page-title="pageTitle" :nav-menu="navMenu" @side-nav-call="sideNavCAll" />
 
-  <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query" :aside="aside">
+  <ContentBody ref="cBody" :nav-menu="navMenu" :query="route?.query" :aside="aside">
     <template v-slot:default>
       <UserList
-        v-if="$route.name === '사용자'"
+        v-if="route.name === '사용자'"
         :user-list="usersList"
         @aside-visible="asideVisible"
       />
 
       <UserView
-        v-else-if="$route.name === '사용자 - 보기'"
+        v-else-if="route.name === '사용자 - 보기'"
         :issue-projects="issueProjects"
         :issue-num="issueNumByMember"
         @aside-visible="asideVisible"
       />
 
-      <UserForm v-else-if="$route.name === '사용자 - 생성'" @aside-visible="asideVisible" />
+      <UserForm v-else-if="route.name === '사용자 - 생성'" @aside-visible="asideVisible" />
 
-      <UserForm v-else-if="$route.name === '사용자 - 수정'" @aside-visible="asideVisible" />
+      <UserForm v-else-if="route.name === '사용자 - 수정'" @aside-visible="asideVisible" />
     </template>
 
     <template v-slot:aside></template>

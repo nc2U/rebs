@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { inject, onBeforeMount, type ComputedRef, type PropType } from 'vue'
 import type { User } from '@/store/types/accounts'
+import { useRoute } from 'vue-router'
 import type { IssueProject, ProjectFilter } from '@/store/types/work'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 import SearchList from './SearchList.vue'
@@ -15,6 +16,8 @@ const emit = defineEmits(['aside-visible', 'filter-submit'])
 
 const workManager = inject<ComputedRef<boolean>>('workManager')
 const userInfo = inject<ComputedRef<User>>('userInfo')
+
+const route = useRoute()
 
 const isOwnProject = (project: IssueProject) =>
   project.all_members?.map(m => m.user.pk).includes(userInfo?.value?.pk as number)
@@ -40,7 +43,7 @@ onBeforeMount(() => emit('aside-visible', true))
     </CCol>
 
     <CCol v-if="workManager" class="text-right form-text">
-      <span v-show="$route.name !== '프로젝트 - 추가'" class="mr-2">
+      <span v-show="route.name !== '프로젝트 - 추가'" class="mr-2">
         <v-icon icon="mdi-plus-circle" color="success" size="sm" />
         <router-link :to="{ name: '프로젝트 - 추가' }" class="ml-1">새 프로젝트</router-link>
       </span>

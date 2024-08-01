@@ -2,6 +2,7 @@
 import { computed, inject, onBeforeMount, type PropType } from 'vue'
 import type { ActLogEntry, IssueProject } from '@/store/types/work'
 import { dateFormat, elapsedTime, timeFormat } from '@/utils/baseMixins'
+import { useRoute } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import { useAccount } from '@/store/pinia/account'
 import IssueSummary from './atomicViews/IssueSummary.vue'
@@ -17,6 +18,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['aside-visible'])
+
+const route = useRoute()
 
 const workManager = inject('workManager', false)
 
@@ -96,7 +99,7 @@ onBeforeMount(() => {
               <router-link
                 :to="{
                   name: '작업내역',
-                  query: { user: $route.params.userId },
+                  query: { user: route.params.userId },
                 }"
               >
                 작업내역

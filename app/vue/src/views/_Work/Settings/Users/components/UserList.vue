@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { inject, onBeforeMount, type PropType } from 'vue'
+import { useRoute } from 'vue-router'
 import NoData from '@/views/_Work/components/NoData.vue'
 import SearchList from '@/views/_Work/Manages/Projects/components/SearchList.vue'
 import UserTable from '@/views/_Work/Settings/Users/components/UserTable.vue'
@@ -11,6 +12,8 @@ defineProps({
 
 const emit = defineEmits(['aside-visible'])
 
+const route = useRoute()
+
 const workManager = inject('workManager', false)
 
 onBeforeMount(() => emit('aside-visible', true))
@@ -19,7 +22,7 @@ onBeforeMount(() => emit('aside-visible', true))
 <template>
   <CRow class="py-2">
     <CCol>
-      <h5>{{ $route.name }}</h5>
+      <h5>{{ route.name }}</h5>
     </CCol>
 
     <CCol v-if="workManager" class="text-right form-text">

@@ -68,7 +68,7 @@ onBeforeMount(() => {
 
 <template>
   <TimeEntryList
-    v-if="$route.name === '(소요시간)'"
+    v-if="route.name === '(소요시간)'"
     :time-entry-list="timeEntryList"
     :sub-projects="issueProject?.sub_projects"
     :all-projects="allProjects"
@@ -81,16 +81,16 @@ onBeforeMount(() => {
   />
 
   <TimeEntryForm
-    v-if="$route.name === '(소요시간) - 추가'"
+    v-if="route.name === '(소요시간) - 추가'"
     :all-projects="allProjects"
     @on-submit="onSubmit"
-    @close-form="$router.push({ name: '(소요시간)' })"
+    @close-form="router.push({ name: '(소요시간)' })"
   />
 
   <TimeEntryForm
-    v-if="$route.name === '(소요시간) - 편집'"
+    v-if="route.name === '(소요시간) - 편집'"
     :all-projects="allProjects"
     @on-submit="onSubmit"
-    @close-form="$router.push({ name: '(소요시간)' })"
+    @close-form="router.push({ name: '(소요시간)' })"
   />
 </template>

@@ -1,8 +1,11 @@
 <script lang="ts" setup>
 import { computed, type PropType } from 'vue'
+import { useRouter } from 'vue-router'
 import type { Version } from '@/store/types/work'
 
 const props = defineProps({ version: { type: Object as PropType<Version>, required: true } })
+
+const router = useRouter()
 
 const boxClass = ['primary-box', 'danger-box', 'success-box']
 
@@ -49,7 +52,7 @@ const done_ratio = computed(() => {
           icon="mdi-pencil"
           color="amber"
           size="18"
-          @click="$router.push({ name: '(로드맵) - 수정', params: { verId: version.pk } })"
+          @click="router.push({ name: '(로드맵) - 수정', params: { verId: version.pk } })"
         />
       </CCol>
     </CRow>

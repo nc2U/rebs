@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 import { onBeforeMount } from 'vue'
+import { useRoute } from 'vue-router'
 
 const emit = defineEmits(['aside-visible'])
+
+const route = useRoute()
 
 onBeforeMount(() => emit('aside-visible', false))
 </script>
@@ -13,7 +16,7 @@ onBeforeMount(() => emit('aside-visible', false))
     </CCol>
 
     <CCol class="text-right">
-      <span v-show="$route.name !== '프로젝트 - 추가'" class="mr-2 form-text">
+      <span v-show="route.name !== '프로젝트 - 추가'" class="mr-2 form-text">
         <v-icon icon="mdi-plus-circle" color="success" size="sm" />
         <router-link to="" class="ml-1">파일추가</router-link>
       </span>

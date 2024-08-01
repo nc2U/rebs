@@ -1,10 +1,14 @@
 <script lang="ts" setup>
+import { useRoute } from 'vue-router'
+
 defineProps({
   issueNum: {
     type: Object,
     default: () => {},
   },
 })
+
+const route = useRoute()
 </script>
 
 <template>
@@ -23,13 +27,13 @@ defineProps({
         <CTableBody>
           <CTableRow>
             <CTableDataCell class="text-left">
-              <router-link :to="{ name: '업무', query: { assignee: $route.params.userId } }">
+              <router-link :to="{ name: '업무', query: { assignee: route.params.userId } }">
                 할당된 업무
               </router-link>
             </CTableDataCell>
             <CTableDataCell>
               <router-link
-                :to="{ name: '업무', query: { status: 'open', assignee: $route.params.userId } }"
+                :to="{ name: '업무', query: { status: 'open', assignee: route.params.userId } }"
               >
                 {{ issueNum.open_charged }}
               </router-link>
@@ -38,7 +42,7 @@ defineProps({
               <router-link
                 :to="{
                   name: '업무',
-                  query: { status: 'closed', assignee: $route.params.userId },
+                  query: { status: 'closed', assignee: route.params.userId },
                 }"
               >
                 {{ issueNum.closed_charged }}
@@ -48,7 +52,7 @@ defineProps({
               <router-link
                 :to="{
                   name: '업무',
-                  query: { status: 'any', assignee: $route.params.userId },
+                  query: { status: 'any', assignee: route.params.userId },
                 }"
               >
                 {{ issueNum.all_charged }}
@@ -57,7 +61,7 @@ defineProps({
           </CTableRow>
           <CTableRow>
             <CTableDataCell class="text-left">
-              <router-link :to="{ name: '업무', query: { author: $route.params.userId } }">
+              <router-link :to="{ name: '업무', query: { author: route.params.userId } }">
                 작성한 업무
               </router-link>
             </CTableDataCell>
@@ -65,7 +69,7 @@ defineProps({
               <router-link
                 :to="{
                   name: '업무',
-                  query: { status: 'open', author: $route.params.userId },
+                  query: { status: 'open', author: route.params.userId },
                 }"
               >
                 {{ issueNum.open_created }}
@@ -75,7 +79,7 @@ defineProps({
               <router-link
                 :to="{
                   name: '업무',
-                  query: { status: 'closed', author: $route.params.userId },
+                  query: { status: 'closed', author: route.params.userId },
                 }"
               >
                 {{ issueNum.closed_created }}
@@ -85,7 +89,7 @@ defineProps({
               <router-link
                 :to="{
                   name: '업무',
-                  query: { status: 'any', author: $route.params.userId },
+                  query: { status: 'any', author: route.params.userId },
                 }"
               >
                 {{ issueNum.all_created }}

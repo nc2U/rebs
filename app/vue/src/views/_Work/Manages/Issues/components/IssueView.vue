@@ -11,7 +11,7 @@ import type {
 } from '@/store/types/work'
 import { diffDate, elapsedTime, timeFormat } from '@/utils/baseMixins'
 import { useWork } from '@/store/pinia/work'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it'
 import IssueControl from './IssueControl.vue'
 import IssueHistory from './IssueHistory.vue'
@@ -131,7 +131,7 @@ const deleteRelation = (pk: number) => workStore.deleteIssueRelation(pk, props.i
 // issue comment 관련
 const delSubmit = (pk: number) => workStore.deleteIssueComment(pk, props.issue.pk)
 
-const route = useRoute()
+const [route, router] = [useRoute(), useRouter()]
 watch(route, async nVal => {
   if (nVal.query.edit) callEditForm()
 })
@@ -162,7 +162,7 @@ onBeforeMount(async () => {
       :watchers="issue.watchers"
       @call-edit-form="callEditForm"
       @go-time-entry="
-        () => $router.push({ name: '(소요시간) - 추가', query: { issue_id: issue.pk } })
+        () => router.push({ name: '(소요시간) - 추가', query: { issue_id: issue.pk } })
       "
       @watch-control="watchControl"
     />
@@ -435,7 +435,7 @@ onBeforeMount(async () => {
       :watchers="issue.watchers"
       @call-edit-form="callEditForm"
       @go-time-entry="
-        () => $router.push({ name: '(소요시간) - 추가', query: { issue_id: issue.pk } })
+        () => router.push({ name: '(소요시간) - 추가', query: { issue_id: issue.pk } })
       "
       @watch-control="watchControl"
     />

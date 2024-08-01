@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { type PropType, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import type { IssueProject } from '@/store/types/work'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
@@ -10,6 +11,8 @@ const props = defineProps({
 const RefProjectCloseConfirm = ref()
 const RefProjectDeleteConfirm = ref()
 const idForDelete = ref('')
+
+const router = useRouter()
 
 const projectClose = () => {
   alert('close!!')
@@ -67,7 +70,7 @@ const projectDelete = () => {
                 삭제
               </router-link>
             </CDropdownItem>
-            <CDropdownItem class="form-text" @click="$router.push({ name: '(설정)' })">
+            <CDropdownItem class="form-text" @click="router.push({ name: '(설정)' })">
               <router-link to="">
                 <v-icon icon="mdi-cog" color="secondary" size="sm" />
                 설정

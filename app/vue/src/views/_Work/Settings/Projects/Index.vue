@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { ref, computed, inject, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/_Work/_menu/headermixin3'
+import { useRoute } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import SearchList from '@/views/_Work/Manages/Projects/components/SearchList.vue'
 import NoData from '@/views/_Work/components/NoData.vue'
 import ProjectTable from './components/ProjectTable.vue'
+
+const route = useRoute()
 
 const cBody = ref()
 const sideNavCAll = () => cBody.value.toggle()
@@ -22,7 +25,7 @@ onBeforeMount(() => workStore.fetchIssueProjectList({}))
 <template>
   <Header :page-title="pageTitle" :nav-menu="navMenu" @side-nav-call="sideNavCAll" />
 
-  <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query">
+  <ContentBody ref="cBody" :nav-menu="navMenu" :query="route?.query">
     <template v-slot:default>
       <CRow class="py-2">
         <CCol>
@@ -30,7 +33,7 @@ onBeforeMount(() => workStore.fetchIssueProjectList({}))
         </CCol>
 
         <CCol v-if="workManager" class="text-right form-text">
-          <span v-show="$route.name !== '프로젝트 - 추가'" class="mr-2">
+          <span v-show="route.name !== '프로젝트 - 추가'" class="mr-2">
             <v-icon icon="mdi-plus-circle" color="success" size="sm" />
             <router-link :to="{ name: '프로젝트 - 추가' }" class="ml-1">새 프로젝트</router-link>
           </span>

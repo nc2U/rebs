@@ -1,11 +1,14 @@
 <script lang="ts" setup>
 import { type PropType } from 'vue'
+import { useRouter } from 'vue-router'
 import { timeFormat, elapsedTime } from '@/utils/baseMixins'
 import type { User } from '@/store/types/accounts'
 
 defineProps({
   userList: { type: Array as PropType<User[]>, default: () => [] },
 })
+
+const router = useRouter()
 </script>
 
 <template>
@@ -56,7 +59,7 @@ defineProps({
               </CDropdownToggle>
               <CDropdownMenu>
                 <CDropdownItem
-                  @click="$router.push({ name: '사용자 - 수정', params: { userId: user.pk } })"
+                  @click="router.push({ name: '사용자 - 수정', params: { userId: user.pk } })"
                 >
                   <span>
                     <v-icon icon="mdi-pencil" color="yellow-darken-2" size="sm" />

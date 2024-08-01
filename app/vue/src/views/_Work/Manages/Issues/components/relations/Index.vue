@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { type PropType, ref, watchEffect } from 'vue'
+import { useRouter } from 'vue-router'
 import { cutString } from '@/utils/baseMixins'
 import type { IssueRelation } from '@/store/types/work'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -14,7 +15,9 @@ const emit = defineEmits(['delete-relation'])
 
 const selected = ref<number | null>(null)
 
-const handleClickOutside = event => {
+const router = useRouter()
+
+const handleClickOutside = (event: any) => {
   if (!event.target.closest('.rel-issue')) selected.value = null
 }
 
@@ -96,7 +99,7 @@ const deleteRelConfirm = () => {
               <CDropdownItem
                 class="form-text"
                 @click="
-                  $router.push({
+                  router.push({
                     name: '(업무) - 보기',
                     params: { issueId: rel.issue_to?.pk },
                     query: { edit: '1' },

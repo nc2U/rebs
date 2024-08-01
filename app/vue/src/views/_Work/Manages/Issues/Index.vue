@@ -89,10 +89,10 @@ onBeforeMount(async () => {
 <template>
   <Header :page-title="comName" :nav-menu="navMenu" @side-nav-call="sideNavCAll" />
 
-  <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query">
+  <ContentBody ref="cBody" :nav-menu="navMenu" :query="route?.query">
     <template v-slot:default>
       <IssueList
-        v-if="$route.name === '업무'"
+        v-if="route.name === '업무'"
         :issue-list="issueList"
         :all-projects="allProjects"
         :status-list="statusList"
@@ -105,7 +105,7 @@ onBeforeMount(async () => {
       />
 
       <IssueForm
-        v-if="$route.name === '업무 - 추가'"
+        v-if="route.name === '업무 - 추가'"
         :all-projects="allProjects"
         :status-list="statusList"
         :priority-list="priorityList"

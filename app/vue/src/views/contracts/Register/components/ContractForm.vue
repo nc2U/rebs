@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, nextTick, watch, onMounted, onUpdated, type PropType } from 'vue'
 import { useStore } from '@/store'
-import { onBeforeRouteLeave } from 'vue-router'
+import { useRouter, onBeforeRouteLeave } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
 import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
@@ -32,6 +32,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['type-select', 'on-submit', 'search-contractor', 'resume-form'])
+
+const router = useRouter()
 
 const refPostCode = ref()
 const address21 = ref()
@@ -1009,7 +1011,7 @@ onBeforeRouteLeave(() => formDataReset())
     </CCardBody>
 
     <CCardFooter class="text-right">
-      <CButton type="button" color="secondary" @click="$router.push({ name: '계약 내역 조회' })">
+      <CButton type="button" color="secondary" @click="router.push({ name: '계약 내역 조회' })">
         목록으로
       </CButton>
       <CButton type="button" color="light" @click="formDataReset"> 취소</CButton>

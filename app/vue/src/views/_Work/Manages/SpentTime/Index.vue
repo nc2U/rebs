@@ -2,7 +2,7 @@
 import { ref, computed, inject, onBeforeMount, type ComputedRef } from 'vue'
 import { navMenu2 as navMenu } from '@/views/_Work/_menu/headermixin1'
 import { useWork } from '@/store/pinia/work'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
 import type { Company } from '@/store/types/settings'
 import type { TimeEntryFilter } from '@/store/types/work'
@@ -27,7 +27,8 @@ const getVersions = computed(() => workStore.getVersions)
 const createTimeEntry = (payload: any) => workStore.createTimeEntry(payload)
 const updateTimeEntry = (payload: any) => workStore.updateTimeEntry(payload)
 
-const router = useRouter()
+const [route, router] = [useRoute(), useRouter()]
+
 const onSubmit = async (payload: any) => {
   if (payload.pk) await updateTimeEntry(payload)
   else {
@@ -63,10 +64,10 @@ onBeforeMount(async () => {
 <template>
   <Header :page-title="comName" :nav-menu="navMenu" @side-nav-call="sideNavCAll" />
 
-  <ContentBody ref="cBody" :nav-menu="navMenu" :query="$route?.query">
+  <ContentBody ref="cBody" :nav-menu="navMenu" :query="route?.query">
     <template v-slot:default>
       <TimeEntryList
-        v-if="$route.name === '소요시간'"
+        v-if="route.name === '소요시간'"
         :time-entry-list="timeEntryList"
         :all-projects="allProjects"
         :get-issues="getIssues"
@@ -78,10 +79,10 @@ onBeforeMount(async () => {
       />
 
       <TimeEntryForm
-        v-if="$route.name === '소요시간 - 추가'"
+        v-if="route.name === '소요시간 - 추가'"
         :all-projects="allProjects"
         @on-submit="onSubmit"
-        @close-form="$router.push({ name: '소요시간' })"
+        @close-form="router.push({ name: '소요시간' })"
       />
     </template>
 

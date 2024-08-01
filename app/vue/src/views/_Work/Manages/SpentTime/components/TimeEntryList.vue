@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { ref, type PropType, watchEffect, onBeforeMount } from 'vue'
+import { onBeforeMount, type PropType, ref, watchEffect } from 'vue'
 import type { IssueProject, TimeEntry, TimeEntryFilter } from '@/store/types/work'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useWork } from '@/store/pinia/work'
 import { cutString, dateFormat, numberToHour } from '@/utils/baseMixins'
 import SearchList from './SearchList.vue'
@@ -9,7 +9,6 @@ import Pagination from '@/components/Pagination'
 import NoData from '@/views/_Work/components/NoData.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import TimeEntryReport from './TimeEntryReport.vue'
-import { tr } from 'vuetify/locale'
 
 defineProps({
   timeEntryList: { type: Array as PropType<TimeEntry[]>, default: () => [] },
@@ -55,7 +54,8 @@ const delSubmit = () => {
   RefDelConfirm.value.close()
 }
 
-const route = useRoute()
+const [route, router] = [useRoute(), useRouter()]
+
 onBeforeMount(() => {
   if (route.query.report) menu.value = 'report'
 })
@@ -68,10 +68,10 @@ onBeforeMount(() => {
     </CCol>
 
     <CCol class="text-right">
-      <span v-show="$route.name !== '프로젝트 - 추가'" class="mr-2 form-text">
+      <span v-show="route.name !== '프로젝트 - 추가'" class="mr-2 form-text">
         <v-icon icon="mdi-plus-circle" color="success" size="sm" />
         <router-link
-          :to="{ name: $route.params.projId ? '(소요시간) - 추가' : '소요시간 - 추가' }"
+          :to="{ name: route.params.projId ? '(소요시간) - 추가' : '소요시간 - 추가' }"
           class="ml-1"
         >
           작업시간 기록
@@ -116,7 +116,7 @@ onBeforeMount(() => {
         <v-divider class="my-0" />
         <CTable striped hover small responsive>
           <colgroup>
-            <col v-if="!$route.params.projId" style="width: 14%" />
+            <col v-if="!route.params.projId" style="width: 14%" />
             <col style="width: 8%" />
             <col style="width: 8%" />
             <col style="width: 8%" />
@@ -127,7 +127,7 @@ onBeforeMount(() => {
           </colgroup>
           <CTableHead>
             <CTableRow class="text-center">
-              <CTableHeaderCell v-if="!$route.params.projId" scope="col">프로젝트</CTableHeaderCell>
+              <CTableHeaderCell v-if="!route.params.projId" scope="col">프로젝트</CTableHeaderCell>
               <CTableHeaderCell scope="col">작업일자</CTableHeaderCell>
               <CTableHeaderCell scope="col">사용자</CTableHeaderCell>
               <CTableHeaderCell scope="col">작업종류</CTableHeaderCell>
@@ -146,7 +146,7 @@ onBeforeMount(() => {
               :color="selectedRow === time.pk ? 'primary' : ''"
               @click="selectedRow = time.pk"
             >
-              <CTableDataCell v-if="!$route.params.projId">
+              <CTableDataCell v-if="!route.params.projId">
                 <router-link to="">{{ time.issue.project.name }}</router-link>
               </CTableDataCell>
               <CTableDataCell class="text-center">
@@ -183,7 +183,7 @@ onBeforeMount(() => {
                   size="sm"
                   class="mr-2 pointer"
                   @click="
-                    $router.push({
+                    router.push({
                       name: '(소요시간) - 편집',
                       params: { projId: time.issue.project.slug, timeId: time.pk },
                     })
@@ -224,7 +224,7 @@ onBeforeMount(() => {
                       <CDropdownItem
                         class="form-text"
                         @click="
-                          $router.push({
+                          router.push({
                             name: '(소요시간) - 편집',
                             params: { projId: time.issue.project.slug, timeId: time.pk },
                           })
