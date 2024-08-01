@@ -1,9 +1,13 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount } from 'vue'
+import { useRouter } from 'vue-router'
+
 import { useProject } from '@/store/pinia/project'
 import Multiselect from '@vueform/multiselect'
 
 const emit = defineEmits(['proj-select'])
+
+const router = useRouter()
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
@@ -38,7 +42,7 @@ onBeforeMount(() => {
       <v-icon
         icon="mdi mdi-plus-thick"
         color="success"
-        @click="$router.push({ name: '프로젝트 등록' })"
+        @click="router.push({ name: '프로젝트 등록' })"
       />
     </CCol>
   </CRow>

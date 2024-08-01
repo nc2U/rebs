@@ -1,9 +1,12 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount } from 'vue'
-import Multiselect from '@vueform/multiselect'
+import { useRouter } from 'vue-router'
 import { useCompany } from '@/store/pinia/company'
+import Multiselect from '@vueform/multiselect'
 
 const emit = defineEmits(['com-select'])
+
+const router = useRouter()
 
 const comStore = useCompany()
 const company = computed(() => comStore?.company?.pk)
@@ -35,7 +38,7 @@ onBeforeMount(() => comStore?.fetchCompanyList())
       <v-icon
         icon="mdi mdi-plus-thick"
         color="primary"
-        @click="$router.push({ name: '회사 정보 관리' })"
+        @click="router.push({ name: '회사 정보 관리' })"
       />
     </CCol>
   </CRow>
