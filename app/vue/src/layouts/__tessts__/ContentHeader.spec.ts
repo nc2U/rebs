@@ -33,7 +33,7 @@ describe('ContentHeader Test', () => {
       global: {
         plugins: [createTestingPinia(), vuetify, CoreuiVue],
         mocks: {
-          $route: mockRoute,
+          route: mockRoute,
         },
         stubs: ['Multiselect'],
       },

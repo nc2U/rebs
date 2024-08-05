@@ -21,7 +21,7 @@ describe('Content Body Testing', () => {
       global: {
         plugins: [vuetify, CoreuiVue],
         mocks: {
-          $route: mockRoute,
+          route: mockRoute,
         },
       },
       slots: {
