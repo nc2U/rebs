@@ -13,7 +13,7 @@ const [route, router] = [useRoute(), useRouter()]
   <CNav variant="tabs" class="mb-5">
     <CNavItem v-for="(menu, i) in menus" :key="i">
       <CNavLink
-        :active="route.name === menu || route.meta.title === menu"
+        :active="route?.name === menu || route?.meta.title === menu"
         @click="router.push({ name: menu as RouteRecordName, query })"
       >
         {{ menu }}
