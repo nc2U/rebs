@@ -7,6 +7,7 @@ export interface Group {
 export interface Board {
   pk: number | null
   group: number | null
+  issue_project: number | null
   name: string
   order: number | null
   search_able: boolean
