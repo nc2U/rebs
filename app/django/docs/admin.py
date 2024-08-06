@@ -3,19 +3,11 @@ from import_export.admin import ImportExportMixin
 from .models import DocType, Category, LawsuitCase, Document, Link, File, Image
 
 
-class CategoryInline(admin.TabularInline):
-    model = Category
-    extra = 1
-
-
 @admin.register(DocType)
 class DocTypeAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'project', 'issue_project', 'name', 'order', 'search_able')
+    list_display = ('id', 'name')
     list_display_links = ('name',)
-    list_editable = ('project', 'issue_project', 'order', 'search_able')
     search_fields = ('name',)
-    list_filter = ('company', 'project', 'issue_project')
-    inlines = (CategoryInline,)
 
 
 @admin.register(Category)

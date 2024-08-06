@@ -10,16 +10,8 @@ from django.db.models.signals import pre_delete
 
 
 class DocType(models.Model):
-    company = models.ForeignKey('company.Company', on_delete=models.CASCADE, verbose_name='회사')
-    project = models.ForeignKey('project.Project', on_delete=models.SET_NULL,
-                                null=True, blank=True, verbose_name='프로젝트')
-    issue_project = models.ForeignKey('work.IssueProject', on_delete=models.SET_NULL,
-                                      null=True, blank=True, verbose_name='업무 프로젝트')
-    name = models.CharField('이름', max_length=255)
-    order = models.PositiveSmallIntegerField('정렬 순서', default=0)
-    search_able = models.BooleanField('검색사용', default=True)
-    manager = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, verbose_name='관리자',
-                                     related_name='doc_groups')
+    TYPE_CHOICES = (('1', '일반 문서'), ('2', '소송 기록'))
+    name = models.CharField('이름', max_length=1, choices=TYPE_CHOICES)
 
     def __str__(self):
         return self.name
@@ -283,21 +275,21 @@ class LawsuitCase(models.Model):
         ('-', '------------'),
         ('000110', '법원행정처')
     )
-    court = models.CharField('법원명', max_length=10, choices=COURT_CHOICES, blank=True)
-    other_agency = models.CharField('기타 처리기관', max_length=30, blank=True,
+    court = models.CharField('법원명', max_length=10, choices=COURT_CHOICES, blank=True, default='')
+    other_agency = models.CharField('기타 처리기관', max_length=30, blank=True, default='',
                                     help_text='사건 유형이 기소 전 형사 사건인 경우 해당 수사기관을 기재')
     case_number = models.CharField('사건번호', max_length=20)
     case_name = models.CharField('사건명', max_length=30)
-    plaintiff = models.CharField('원고(신청인)', max_length=30, blank=True)
-    plaintiff_attorney = models.CharField('원고 대리인', max_length=50, blank=True)
+    plaintiff = models.CharField('원고(신청인)', max_length=30, blank=True, default='')
+    plaintiff_attorney = models.CharField('원고 대리인', max_length=50, blank=True, default='')
     plaintiff_case_price = models.PositiveIntegerField('원고 소가', null=True, blank=True)
     defendant = models.CharField('피고(피신청인)', max_length=30)
-    defendant_attorney = models.CharField('피고 대리인', max_length=50, blank=True)
+    defendant_attorney = models.CharField('피고 대리인', max_length=50, blank=True, default='')
     defendant_case_price = models.PositiveIntegerField('피고 소가', null=True, blank=True)
-    related_debtor = models.CharField('제3채무자', max_length=30, blank=True)
+    related_debtor = models.CharField('제3채무자', max_length=30, blank=True, default='')
     case_start_date = models.DateField('사건개시일')
     case_end_date = models.DateField('사건종결일', null=True, blank=True)
-    summary = models.TextField('개요 및 경과', blank=True)
+    summary = models.TextField('개요 및 경과', blank=True, default='')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자',
                              related_name='lawsuitcases')
     created = models.DateTimeField('등록일시', auto_now_add=True)
