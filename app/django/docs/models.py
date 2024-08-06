@@ -322,8 +322,6 @@ class Document(models.Model):
     device = models.CharField('등록기기', max_length=255, blank=True, default='')
     is_secret = models.BooleanField('비밀글', default=False)
     password = models.CharField('패스워드', max_length=255, blank=True, default='')
-    is_hide_comment = models.BooleanField('댓글숨기기', default=False)
-    is_notice = models.BooleanField('공지', default=False)
     is_blind = models.BooleanField('숨김', default=False)
     deleted = models.DateTimeField('휴지통', null=True, blank=True, default=None)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
