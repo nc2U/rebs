@@ -14,9 +14,15 @@ from docs.models import DocType, Category, LawsuitCase, Document, Link, File, Im
 
 # Docs --------------------------------------------------------------------------
 class DocTypeSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+
     class Meta:
         model = DocType
-        fields = ('pk', 'type', '__str__')
+        fields = ('pk', 'type', 'name')
+
+    @staticmethod
+    def get_name(obj):
+        return obj.get_type_display()
 
 
 class CategorySerializer(serializers.ModelSerializer):
