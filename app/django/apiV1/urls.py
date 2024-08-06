@@ -170,4 +170,6 @@ urlpatterns += [path('password-reset/', accounts.PasswordResetRequestView.as_vie
 urlpatterns += [path('password-reset-confirm/<str:user_id>/<str:token>/',
                      accounts.PasswordResetConfirmView.as_view(), name='password-reset-confirm')]
 urlpatterns += [
+    path('docs/<int:pk>/copy/', docs.DocumentViewSet.as_view({'docs': 'copy_and_create'}), name='docs-copy')]
+urlpatterns += [
     path('post/<int:pk>/copy/', document.PostViewSet.as_view({'post': 'copy_and_create'}), name='post-copy')]
