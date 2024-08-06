@@ -11,6 +11,7 @@ from django.db.models.signals import pre_save, post_delete
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from docs.models import Document
 from document.models import Post, Comment
 from work.models import IssueProject
 
@@ -168,7 +169,21 @@ def delete_image_on_delete(sender, instance, **kwargs):
         os.remove(instance.image.path)
 
 
-class Scrape(models.Model):
+class DocScrape(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    docs = models.ForeignKey(Document, on_delete=models.CASCADE)
+    title = models.CharField('스크랩 타이틀', max_length=50, blank=True, default='')
+    created = models.DateTimeField('보관일', auto_now_add=True)
+
+    def __str__(self):
+        return self.title if self.title else self.post.title
+
+    class Meta:
+        verbose_name = '문서 스크랩'
+        verbose_name_plural = '문서 스크랩'
+
+
+class PostScrape(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     title = models.CharField('스크랩 타이틀', max_length=50, blank=True, default='')
@@ -178,8 +193,8 @@ class Scrape(models.Model):
         return self.title if self.title else self.post.title
 
     class Meta:
-        verbose_name = '스크랩'
-        verbose_name_plural = '스크랩'
+        verbose_name = '게시글 스크랩'
+        verbose_name_plural = '게시글 스크랩'
 
 
 class Todo(models.Model):

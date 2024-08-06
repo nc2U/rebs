@@ -1,22 +1,18 @@
 import base64
 
 from allauth.account.forms import default_token_generator
-from django.conf import settings
-from django.core.mail import send_mail
 from django.contrib.auth import authenticate, update_session_auth_hash
 from django.contrib.auth.hashers import check_password
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..permission import *
-from ..pagination import *
-from ..serializers.accounts import *
-
 from accounts.models import User, StaffAuth, Profile, Todo, PasswordResetToken
+from ..pagination import *
+from ..permission import *
+from ..serializers.accounts import *
 
 
 # Accounts --------------------------------------------------------------------------
@@ -43,9 +39,17 @@ class ProfileViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 
-class ScrapeViewSet(viewsets.ModelViewSet):
-    queryset = Scrape.objects.all()
-    serializer_class = ScrapeSerializer
+class DocScrapeViewSet(viewsets.ModelViewSet):
+    queryset = DocScrape.objects.all()
+    serializer_class = DocScrapeSerializer
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOnly)
+    filterset_fields = ('user',)
+    search_fields = ('title', 'post__title', 'post__content')
+
+
+class PostScrapeViewSet(viewsets.ModelViewSet):
+    queryset = PostScrape.objects.all()
+    serializer_class = PostScrapeSerializer
     permission_classes = (permissions.IsAuthenticated, IsOwnerOnly)
     filterset_fields = ('user',)
     search_fields = ('title', 'post__title', 'post__content')

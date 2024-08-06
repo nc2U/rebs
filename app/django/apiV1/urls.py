@@ -21,7 +21,8 @@ router = DefaultRouter()
 router.register(r'user', accounts.UserViewSet)
 router.register(r'staff-auth', accounts.StaffAuthViewSet)
 router.register(r'profile', accounts.ProfileViewSet)
-router.register(r'scrape', accounts.ScrapeViewSet)
+router.register(r'doc-scrape', accounts.DocScrapeViewSet)
+router.register(r'post-scrape', accounts.PostScrapeViewSet)
 router.register(r'todo', accounts.TodoViewSet)
 router.register(r'pass-reset-token', accounts.PasswordResetTokenViewSet)
 # company
@@ -134,7 +135,7 @@ router.register(r'contractor-release', contract.ContReleaseViewSet)
 # notice
 router.register(r'sales-bill-issue', notice.BillIssueViewSet)
 # docs
-router.register(r'doc_type', docs.DocTypeViewSet)
+router.register(r'doc-type', docs.DocTypeViewSet)
 router.register(r'category', docs.CategoryViewSet)
 router.register(r'suitcase', docs.LawSuitCaseViewSet)
 router.register(r'all-suitcase', docs.AllLawSuitCaseViewSet, basename='all-suitcase')

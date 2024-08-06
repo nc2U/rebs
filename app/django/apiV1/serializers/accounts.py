@@ -4,8 +4,9 @@ from django.db import transaction
 from django.core.mail import send_mail
 from rest_framework import serializers
 
-from accounts.models import User, StaffAuth, Profile, Todo, Scrape, PasswordResetToken
+from accounts.models import User, StaffAuth, Profile, Todo, DocScrape, PostScrape, PasswordResetToken
 from work.models import IssueProject
+from docs.models import Document
 from document.models import Post
 
 
@@ -139,6 +140,33 @@ class ProfileSerializer(serializers.ModelSerializer):
         return instance
 
 
+class DocsInScrapeSerializer(serializers.ModelSerializer):
+    type_name = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Document
+        fields = ('pk', 'doc_type', 'type_name', 'project', 'title')
+
+    @staticmethod
+    def get_type_name(obj):
+        return obj.get_doc_type_display()
+
+
+class DocScrapeSerializer(serializers.ModelSerializer):
+    post = DocsInScrapeSerializer(read_only=True)
+
+    class Meta:
+        model = DocScrape
+        fields = ('pk', 'user', 'docs', 'title', 'created')
+
+    def create(self, validated_data):
+        docs = self.initial_data.get('docs')
+        user = validated_data.get('user')
+        scrape = DocScrape(docs_id=docs, user=user)
+        scrape.save()
+        return scrape
+
+
 class PostInScrapeSerializer(serializers.ModelSerializer):
     board_name = serializers.SlugField(source='board', read_only=True)
 
@@ -147,17 +175,17 @@ class PostInScrapeSerializer(serializers.ModelSerializer):
         fields = ('pk', 'board', 'board_name', 'project', 'title')
 
 
-class ScrapeSerializer(serializers.ModelSerializer):
+class PostScrapeSerializer(serializers.ModelSerializer):
     post = PostInScrapeSerializer(read_only=True)
 
     class Meta:
-        model = Scrape
+        model = PostScrape
         fields = ('pk', 'user', 'post', 'title', 'created')
 
     def create(self, validated_data):
         post = self.initial_data.get('post')
         user = validated_data.get('user')
-        scrape = Scrape(post_id=post, user=user)
+        scrape = PostScrape(post_id=post, user=user)
         scrape.save()
         return scrape
 
