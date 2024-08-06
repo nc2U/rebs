@@ -9,8 +9,8 @@ import {
 } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
 import { useCompany } from '@/store/pinia/company'
-import { type SuitCaseFilter as cFilter, useDocument } from '@/store/pinia/document'
-import type { AFile, Link, SuitCase } from '@/store/types/document'
+import { type SuitCaseFilter as cFilter, useDocs } from '@/store/pinia/docs'
+import type { AFile, Link, SuitCase } from '@/store/types/docs'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
@@ -57,7 +57,7 @@ const writeAuth = computed(() => accStore.writeComDocs)
 const comStore = useCompany()
 const company = computed(() => comStore.company?.pk)
 
-const docStore = useDocument()
+const docStore = useDocs()
 const suitcase = computed(() => docStore.suitcase)
 const suitcaseList = computed(() => docStore.suitcaseList)
 const getSuitCase = computed(() => docStore.getSuitCase)
