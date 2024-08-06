@@ -78,6 +78,7 @@ INSTALLED_APPS += [  # app
     'cash.apps.CashConfig',
     'company.apps.CompanyConfig',
     'contract.apps.ContractConfig',
+    'docs.apps.DocsConfig',
     'document.apps.DocumentConfig',
     'items.apps.ItemsConfig',
     'notice.apps.NoticeConfig',
