@@ -281,20 +281,6 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
-APP_ORDER = [
-    'company',
-    'project',
-    'items',
-    'payment',
-    'contract',
-    'cash',
-    'rebs',
-    'notice',
-    'document',
-    'work',
-    'accounts',
-    'book',
-]
 MDEDITOR_CONFIGS = {
     'default': {
         'language': 'en',
@@ -323,3 +309,20 @@ MDEDITOR_CONFIGS = {
         'lineNumbers': True  # lineNumbers
     }
 }
+
+APP_ORDER = [
+    'company',
+    'project',
+    'items',
+    'payment',
+    'contract',
+    'cash',
+    'rebs',
+    'notice',
+    'document',
+    'docs',
+    'board',
+    'work',
+    'accounts',
+    'book',
+]
