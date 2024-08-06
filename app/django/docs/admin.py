@@ -5,9 +5,9 @@ from .models import DocType, Category, LawsuitCase, Document, Link, File, Image
 
 @admin.register(DocType)
 class DocTypeAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'name')
-    list_display_links = ('name',)
-    search_fields = ('name',)
+    list_display = ('id', 'type')
+    list_display_links = ('type',)
+    search_fields = ('type',)
 
 
 @admin.register(Category)

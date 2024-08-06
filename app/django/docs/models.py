@@ -11,10 +11,10 @@ from django.db.models.signals import pre_delete
 
 class DocType(models.Model):
     TYPE_CHOICES = (('1', '일반 문서'), ('2', '소송 기록'))
-    name = models.CharField('이름', max_length=1, choices=TYPE_CHOICES)
+    type = models.CharField('이름', max_length=1, choices=TYPE_CHOICES)
 
     def __str__(self):
-        return self.name
+        return self.get_type_display()
 
     class Meta:
         ordering = ['id']
