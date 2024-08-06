@@ -363,7 +363,7 @@ class Link(models.Model):
 
 class File(models.Model):
     docs = models.ForeignKey(Document, on_delete=models.CASCADE, default=None, verbose_name='문서', related_name='files')
-    file = models.FileField(upload_to='docs/docs/%Y/%m/%d/', verbose_name='파일')
+    file = models.FileField(upload_to='docs/%Y/%m/%d/', verbose_name='파일')
     file_name = models.CharField('파일명', max_length=100, blank=True)
     file_type = models.CharField('타입', max_length=100, blank=True)
     file_size = models.PositiveBigIntegerField('사이즈', blank=True, null=True)
