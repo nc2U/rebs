@@ -17,9 +17,9 @@ class CategoryInline(admin.TabularInline):
 
 @admin.register(Board)
 class BoardAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'group', 'issue_project', 'name', 'order', 'search_able')
+    list_display = ('id', 'group', 'project', 'issue_project', 'name', 'order', 'search_able')
     list_display_links = ('name',)
-    list_editable = ('group', 'issue_project', 'order', 'search_able')
+    list_editable = ('group', 'project', 'issue_project', 'order', 'search_able')
     search_fields = ('name',)
     list_filter = ('group',)
     inlines = (CategoryInline,)
