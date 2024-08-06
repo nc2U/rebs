@@ -3,17 +3,17 @@ import type { PropType } from 'vue'
 import { useRouter } from 'vue-router'
 import { useDocument } from '@/store/pinia/document'
 import { TableSecondary } from '@/utils/cssMixins'
-import type { Post } from '@/store/types/document'
+import type { Post as P } from '@/store/types/document'
 import Pagination from '@/components/Pagination'
-import Docs from './components/Docs.vue'
-import TopDocs from '@/components/Documents/components/TopDocs.vue'
+import Post from './components/Post.vue'
+import TopPosts from '@/components/Documents/components/TopPosts.vue'
 
 defineProps({
   company: { type: Number, default: null },
   project: { type: Number, default: null },
   page: { type: Number, default: 1 },
-  noticeList: { type: Array as PropType<Post[]>, default: () => [] },
-  postList: { type: Array as PropType<Post[]>, default: () => [] },
+  noticeList: { type: Array as PropType<P[]>, default: () => [] },
+  postList: { type: Array as PropType<P[]>, default: () => [] },
   viewRoute: { type: String, required: true },
   isLawsuit: { type: Boolean, default: false },
   writeAuth: { type: Boolean, default: true },
@@ -64,14 +64,14 @@ const pageSelect = (page: number) => emit('page-select', page)
     </CTableHead>
 
     <CTableBody>
-      <TopDocs
+      <TopPosts
         v-for="post in noticeList"
         :key="post.pk"
         :post="post"
         :view-route="viewRoute"
         :is-lawsuit="isLawsuit"
       />
-      <Docs
+      <Post
         v-for="post in postList"
         :key="post.pk"
         :post="post"
