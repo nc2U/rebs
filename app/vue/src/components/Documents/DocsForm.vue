@@ -2,7 +2,7 @@
 import type { PropType } from 'vue'
 import { ref, reactive, computed, onMounted, onUpdated } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { Post, Link } from '@/store/types/document'
+import type { Docs, Link } from '@/store/types/docs'
 import { AlertSecondary } from '@/utils/cssMixins'
 import QuillEditor from '@/components/QuillEditor/index.vue'
 import DatePicker from '@/components/DatePicker/index.vue'
@@ -12,10 +12,10 @@ import Multiselect from '@vueform/multiselect'
 
 const props = defineProps({
   sortName: { type: String, default: '【본사】' },
-  boardNum: { type: Number, default: 2 },
+  typeNum: { type: Number, default: 1 },
   categoryList: { type: Object, required: true },
   getSuitCase: { type: Object, default: null },
-  post: { type: Object as PropType<Post>, default: null },
+  docs: { type: Object as PropType<Docs>, default: null },
   viewRoute: { type: String, required: true },
   writeAuth: { type: Boolean, default: true },
 })
@@ -28,11 +28,11 @@ const refConfirmModal = ref()
 
 const attach = ref(true)
 const validated = ref(false)
-const form = reactive<Post>({
+const form = reactive<Docs>({
   pk: undefined,
   company: null,
   project: null,
-  board: props.boardNum,
+  doc_type: props.typeNum,
   category: null,
   lawsuit: null,
   title: '',
@@ -42,8 +42,6 @@ const form = reactive<Post>({
   device: '',
   is_secret: false,
   password: '',
-  is_hide_comment: false,
-  is_notice: false,
   is_blind: false,
   links: [],
   files: [],
@@ -52,20 +50,20 @@ const form = reactive<Post>({
 const newLinks = ref<Link[]>([])
 
 const formsCheck = computed(() => {
-  if (props.post) {
-    const a = form.category === props.post.category
-    const b = form.lawsuit === props.post.lawsuit
-    const c = form.title === props.post.title
-    const d = form.execution_date === props.post.execution_date
-    const e = form.content === props.post.content
-    const f = form.is_notice === props.post.is_notice
+  if (props.docs) {
+    const a = form.category === props.docs.category
+    const b = form.lawsuit === props.docs.lawsuit
+    const c = form.title === props.docs.title
+    const d = form.execution_date === props.docs.execution_date
+    const e = form.content === props.docs.content
+    const f = form.is_notice === props.docs.is_notice
 
     return a && b && c && d && e && f && attach.value
   } else return false
 })
 
 const [route, router] = [useRoute(), useRouter()]
-const btnClass = computed(() => (route.params.postId ? 'success' : 'primary'))
+const btnClass = computed(() => (route.params.docsId ? 'success' : 'primary'))
 
 const range = (from: number, to: number): number[] =>
   from < to ? [from, ...range(from + 1, to)] : []
@@ -140,28 +138,26 @@ const devideUri = (uri: string) => {
 }
 
 const dataSetup = () => {
-  if (props.post) {
-    form.pk = props.post.pk
-    form.company = props.post.company
-    form.project = props.post.project
-    form.board = props.post.board
-    form.category = props.post.category
-    form.lawsuit = props.post.lawsuit
-    form.title = props.post.title
-    form.execution_date = props.post.execution_date
-    form.content = props.post.content
-    // form.hit = props.post.hit
-    // form.like = props.post.like
-    // form.blame = props.post.blame
-    form.ip = props.post.ip
-    form.device = props.post.device
-    form.is_secret = props.post.is_secret
-    form.password = props.post.password
-    form.is_hide_comment = props.post.is_hide_comment
-    form.is_notice = props.post.is_notice
-    form.is_blind = props.post.is_blind
-    form.links = props.post.links
-    form.files = props.post.files
+  if (props.docs) {
+    form.pk = props.docs.pk
+    form.company = props.docs.company
+    form.project = props.docs.project
+    form.doc_type = props.docs.doc_type
+    form.category = props.docs.category
+    form.lawsuit = props.docs.lawsuit
+    form.title = props.docs.title
+    form.execution_date = props.docs.execution_date
+    form.content = props.docs.content
+    // form.hit = props.docs.hit
+    // form.like = props.docs.like
+    // form.blame = props.docs.blame
+    form.ip = props.docs.ip
+    form.device = props.docs.device
+    form.is_secret = props.docs.is_secret
+    form.password = props.docs.password
+    form.is_blind = props.docs.is_blind
+    form.links = props.docs.links
+    form.files = props.docs.files
   }
 }
 
@@ -191,19 +187,19 @@ onUpdated(() => dataSetup())
   >
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">제목</CFormLabel>
-      <CCol :md="boardNum === 3 ? 9 : 8">
+      <CCol :md="typeNum === 2 ? 9 : 8">
         <CFormInput id="title" v-model="form.title" required placeholder="게시물 제목" />
       </CCol>
-      <CCol v-if="boardNum !== 3">
+      <CCol v-if="typeNum !== 2">
         <v-checkbox-btn v-model="form.is_notice" label="공지글" />
       </CCol>
     </CRow>
 
     <CRow class="mb-3">
-      <CFormLabel v-if="boardNum === 3" for="inputPassword" class="col-sm-2 col-form-label">
+      <CFormLabel v-if="typeNum === 2" for="inputPassword" class="col-sm-2 col-form-label">
         사건번호 (사건번호 등록)
       </CFormLabel>
-      <CCol v-if="boardNum === 3" md="3">
+      <CCol v-if="typeNum === 2" md="3">
         <Multiselect
           v-model="form.lawsuit"
           :options="getSuitCase"
@@ -219,11 +215,11 @@ onUpdated(() => dataSetup())
       <CFormLabel
         for="category"
         class="col-sm-2 col-form-label"
-        :class="{ 'col-lg-1': boardNum === 3 }"
+        :class="{ 'col-lg-1': typeNum === 2 }"
       >
         카테고리
       </CFormLabel>
-      <CCol :md="boardNum === 3 ? 2 : 3">
+      <CCol :md="typeNum === 2 ? 2 : 3">
         <CFormSelect id="category" v-model="form.category" required>
           <option value="">카테고리 선택</option>
           <option v-for="cate in categoryList" :key="cate.pk" :value="cate.pk">
@@ -235,14 +231,14 @@ onUpdated(() => dataSetup())
       <CFormLabel
         for="inputPassword"
         class="col-sm-2 col-form-label"
-        :class="{ 'col-lg-1': boardNum === 3 }"
+        :class="{ 'col-lg-1': typeNum === 2 }"
       >
         문서 발행일자
       </CFormLabel>
-      <CCol :md="boardNum === 3 ? 2 : 3">
+      <CCol :md="typeNum === 2 ? 2 : 3">
         <DatePicker v-model="form.execution_date" placeholder="문서 발행일자" />
       </CCol>
-      <CCol v-if="boardNum !== 3">
+      <CCol v-if="typeNum !== 2">
         <v-checkbox-btn v-model="form.is_secret" label="비밀글" />
       </CCol>
     </CRow>
@@ -257,12 +253,12 @@ onUpdated(() => dataSetup())
     <CRow>
       <CFormLabel for="title" class="col-md-2 col-form-label">링크</CFormLabel>
       <CCol md="10" lg="8" xl="6">
-        <CRow v-if="post && form.links?.length">
+        <CRow v-if="docs && form.links?.length">
           <CAlert :color="AlertSecondary">
             <CCol>
               <CInputGroup v-for="(link, i) in form.links" :key="link.pk" class="mb-2">
                 <CFormInput
-                  :id="`post-link-${link.pk}`"
+                  :id="`docs-link-${link.pk}`"
                   v-model="form.links[i].link"
                   size="sm"
                   placeholder="파일 링크"
@@ -306,7 +302,7 @@ onUpdated(() => dataSetup())
     <CRow class="mb-3">
       <CFormLabel for="title" class="col-md-2 col-form-label">파일</CFormLabel>
       <CCol md="10" lg="8" xl="6">
-        <CRow v-if="post && form.files?.length">
+        <CRow v-if="docs && form.files?.length">
           <CAlert :color="AlertSecondary">
             <small>{{ devideUri(form.files[0].file ?? ' ')[0] }}</small>
             <CCol v-for="(file, i) in form.files" :key="file.pk" xs="12" color="primary">
@@ -337,7 +333,7 @@ onUpdated(() => dataSetup())
                     <CInputGroup>
                       변경 : &nbsp;
                       <CFormInput
-                        :id="`post-file-${file.pk}`"
+                        :id="`docs-file-${file.pk}`"
                         v-model="form.files[i].newFile"
                         size="sm"
                         type="file"
@@ -370,9 +366,8 @@ onUpdated(() => dataSetup())
     <CRow>
       <CCol class="text-right">
         <CButton color="light" @click="router.push({ name: `${viewRoute}` })"> 목록으로</CButton>
-        <CButton v-if="route.params.postId" color="light" @click="router.go(-1)"> 뒤로</CButton>
-        <!--        <CButton :color="btnClass" type="submit" :disabled="formsCheck"> 저장하기</CButton>-->
-        <CButton color="warning" type="submit" disabled> 업데이트 중 ...</CButton>
+        <CButton v-if="route.params.docsId" color="light" @click="router.go(-1)"> 뒤로</CButton>
+        <CButton :color="btnClass" type="submit" :disabled="formsCheck"> 저장하기</CButton>
       </CCol>
     </CRow>
   </CForm>

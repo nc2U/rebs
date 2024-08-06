@@ -9,8 +9,8 @@ import {
   useRoute,
   useRouter,
 } from 'vue-router'
-import { useDocument, type PostFilter, type SuitCaseFilter } from '@/store/pinia/document'
-import type { AFile, Attatches, Link, Post, PatchPost } from '@/store/types/document'
+import { useDocs, type DocsFilter, type SuitCaseFilter } from '@/store/pinia/docs'
+import type { AFile, Attatches, Link, Docs, PatchDocs } from '@/store/types/docs'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from '@/components/Documents/ListController.vue'
@@ -20,10 +20,10 @@ import DocsView from '@/components/Documents/DocsView.vue'
 import DocsForm from '@/components/Documents/DocsForm.vue'
 
 const fController = ref()
-const boardNumber = ref(3)
+const typeNumber = ref(2)
 const mainViewName = ref('현장 소송 문서')
-const postFilter = ref<PostFilter>({
-  board: boardNumber.value,
+const docsFilter = ref<DocsFilter>({
+  doc_type: typeNumber.value,
   category: '',
   is_com: false,
   project: '',
@@ -38,22 +38,22 @@ const heatedPage = ref<number[]>([])
 const newFiles = ref<File[]>([])
 const cngFiles = ref<{ pk: number; file: File }[]>([])
 
-const listFiltering = (payload: PostFilter) => {
-  postFilter.value.lawsuit = payload.lawsuit
-  postFilter.value.ordering = payload.ordering
-  postFilter.value.search = payload.search
-  if (project.value) fetchPostList({ ...postFilter.value })
+const listFiltering = (payload: DocsFilter) => {
+  docsFilter.value.lawsuit = payload.lawsuit
+  docsFilter.value.ordering = payload.ordering
+  docsFilter.value.search = payload.search
+  if (project.value) fetchDocsList({ ...docsFilter.value })
 }
 
 const selectCate = (cate: number) => {
-  postFilter.value.page = 1
-  postFilter.value.category = cate
-  listFiltering(postFilter.value)
+  docsFilter.value.page = 1
+  docsFilter.value.category = cate
+  listFiltering(docsFilter.value)
 }
 
 const pageSelect = (page: number) => {
-  postFilter.value.page = page
-  listFiltering(postFilter.value)
+  docsFilter.value.page = page
+  listFiltering(docsFilter.value)
 }
 
 const projStore = useProject()
@@ -64,50 +64,49 @@ const company = computed(() => projStore.project?.company)
 const accStore = useAccount()
 const writeAuth = computed(() => accStore.writeProDocs)
 
-const createScrape = (payload: { post: number; user: number }) => accStore.createScrape(payload)
+const createScrape = (payload: { docs: number; user: number }) => accStore.createScrape(payload)
 
-const docStore = useDocument()
-const post = computed(() => docStore.post)
-const postList = computed(() => docStore.postList)
-const noticeList = computed(() => docStore.noticeList)
+const docStore = useDocs()
+const docs = computed(() => docStore.docs)
+const docsList = computed(() => docStore.docsList)
 const categoryList = computed(() => docStore.categoryList)
 const getSuitCase = computed(() => docStore.getSuitCase)
 
-const fetchBoardList = () => docStore.fetchBoardList()
+const fetchDocTypeList = () => docStore.fetchDocTypeList()
 const fetchLink = (pk: number) => docStore.fetchLink(pk)
 const fetchFile = (pk: number) => docStore.fetchFile(pk)
-const fetchPost = (pk: number) => docStore.fetchPost(pk)
-const fetchPostList = (payload: PostFilter) => docStore.fetchPostList(payload)
-const fetchCategoryList = (board: number) => docStore.fetchCategoryList(board)
+const fetchDocs = (pk: number) => docStore.fetchDocs(pk)
+const fetchDocsList = (payload: DocsFilter) => docStore.fetchDocsList(payload)
+const fetchCategoryList = (type: number) => docStore.fetchCategoryList(type)
 const fetchAllSuitCaseList = (payload: SuitCaseFilter) => docStore.fetchAllSuitCaseList(payload)
 
-const createPost = (payload: { form: FormData }) => docStore.createPost(payload)
-const updatePost = (payload: { pk: number; form: FormData }) => docStore.updatePost(payload)
-const patchPost = (payload: PatchPost & { filter: PostFilter }) => docStore.patchPost(payload)
+const createDocs = (payload: { form: FormData }) => docStore.createDocs(payload)
+const updateDocs = (payload: { pk: number; form: FormData }) => docStore.updateDocs(payload)
+const patchDocs = (payload: PatchDocs & { filter: DocsFilter }) => docStore.patchDocs(payload)
 const patchLink = (payload: Link) => docStore.patchLink(payload)
 const patchFile = (payload: AFile) => docStore.patchFile(payload)
 
 const [route, router] = [useRoute() as Loaded & { name: string }, useRouter()]
 
 watch(route, val => {
-  if (val.params.postId) fetchPost(Number(val.params.postId))
-  else docStore.post = null
+  if (val.params.docsId) fetchDocs(Number(val.params.docsId))
+  else docStore.docs = null
 })
 
-const postsRenewal = (page: number) => {
-  postFilter.value.page = page
-  fetchPostList(postFilter.value)
+const docsRenewal = (page: number) => {
+  docsFilter.value.page = page
+  fetchDocsList(docsFilter.value)
 }
 const fileChange = (payload: { pk: number; file: File }) => cngFiles.value.push(payload)
 
 const fileUpload = (file: File) => newFiles.value.push(file)
 
-const postScrape = (post: number) => {
+const docsScrape = (docs: number) => {
   const user = accStore.userInfo?.pk as number
-  createScrape({ post, user }) // 스크랩 추가
+  createScrape({ docs, user }) // 스크랩 추가
 }
 
-const onSubmit = async (payload: Post & Attatches) => {
+const onSubmit = async (payload: Docs & Attatches) => {
   if (project.value) {
     const { pk, ...getData } = payload
     getData.company = company.value as null | number
@@ -134,13 +133,13 @@ const onSubmit = async (payload: Post & Attatches) => {
     }
 
     if (pk) {
-      await updatePost({ pk, form, ...{ isProject: true } })
+      await updateDocs({ pk, form, ...{ isProject: true } })
       await router.replace({
         name: `${mainViewName.value} - 보기`,
-        params: { postId: pk },
+        params: { docsId: pk },
       })
     } else {
-      await createPost({ form, ...{ isProject: true } })
+      await createDocs({ form, ...{ isProject: true } })
       await router.replace({ name: `${mainViewName.value}` })
       fController.value.resetForm()
     }
@@ -149,12 +148,12 @@ const onSubmit = async (payload: Post & Attatches) => {
   }
 }
 
-const postHit = async (pk: number) => {
+const docsHit = async (pk: number) => {
   if (!heatedPage.value.includes(pk)) {
     heatedPage.value.push(pk)
-    await fetchPost(pk)
-    const hit = (post.value?.hit ?? 0) + 1
-    await patchPost({ pk, hit, filter: postFilter.value })
+    await fetchDocs(pk)
+    const hit = (docs.value?.hit ?? 0) + 1
+    await patchDocs({ pk, hit, filter: docsFilter.value })
   }
 }
 const linkHit = async (pk: number) => {
@@ -168,20 +167,20 @@ const fileHit = async (pk: number) => {
   await patchFile({ pk, hit })
 }
 
-const dataSetup = (pk: number, postId?: string | string[]) => {
-  fetchBoardList()
-  postFilter.value.project = pk
-  fetchCategoryList(boardNumber.value)
+const dataSetup = (pk: number, docsId?: string | string[]) => {
+  fetchDocTypeList()
+  docsFilter.value.project = pk
+  fetchCategoryList(typeNumber.value)
   fetchAllSuitCaseList({ company: company.value ?? '', project: pk, is_com: false })
-  fetchPostList(postFilter.value)
-  if (postId) fetchPost(Number(postId))
+  fetchDocsList(docsFilter.value)
+  if (docsId) fetchDocs(Number(docsId))
 }
 
 const dataReset = () => {
-  docStore.post = null
-  docStore.postList = []
-  docStore.postCount = 0
-  postFilter.value.project = ''
+  docStore.docs = null
+  docStore.docsList = []
+  docStore.docsCount = 0
+  docsFilter.value.project = ''
   router.replace({ name: `${mainViewName.value}` })
 }
 
@@ -190,9 +189,9 @@ const projSelect = (target: number | null) => {
   if (!!target) dataSetup(target)
 }
 
-onBeforeRouteUpdate(() => dataSetup(project.value || projStore.initProjId, route.params?.postId))
+onBeforeRouteUpdate(to => dataSetup(project.value || projStore.initProjId, to.params?.docsId))
 
-onBeforeMount(() => dataSetup(project.value || projStore.initProjId, route.params?.postId))
+onBeforeMount(() => dataSetup(project.value || projStore.initProjId, route.params?.docsId))
 </script>
 
 <template>
@@ -209,21 +208,20 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId, route.param
         <ListController
           ref="fController"
           :get-suit-case="getSuitCase"
-          :post-filter="postFilter"
+          :docs-filter="docsFilter"
           @list-filter="listFiltering"
         />
 
         <CategoryTabs
-          :category="postFilter.category as number"
+          :category="docsFilter.category as number"
           :category-list="categoryList"
           @select-cate="selectCate"
         />
 
         <DocsList
           :project="project as number"
-          :page="postFilter.page ?? 1"
-          :notice-list="noticeList"
-          :post-list="postList"
+          :page="docsFilter.page ?? 1"
+          :docs-list="docsList"
           :view-route="mainViewName"
           :is-lawsuit="true"
           :write-auth="writeAuth"
@@ -233,27 +231,27 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId, route.param
 
       <div v-else-if="route.name.includes('보기')">
         <DocsView
-          :board-num="boardNumber"
+          :type-num="typeNumber"
           :heated-page="heatedPage"
-          :re-order="postFilter.ordering !== '-created'"
-          :category="postFilter.category as number"
-          :post="post as Post"
+          :re-order="docsFilter.ordering !== '-created'"
+          :category="docsFilter.category as number"
+          :docs="docs as Docs"
           :view-route="mainViewName"
-          :curr-page="postFilter.page ?? 1"
+          :curr-page="docsFilter.page ?? 1"
           :write-auth="writeAuth"
-          :post-filter="postFilter"
-          @post-hit="postHit"
+          :docs-filter="docsFilter"
+          @docs-hit="docsHit"
           @link-hit="linkHit"
           @file-hit="fileHit"
-          @post-scrape="postScrape"
-          @posts-renewal="postsRenewal"
+          @docs-scrape="docsScrape"
+          @docs-renewal="docsRenewal"
         />
       </div>
 
       <div v-else-if="route.name.includes('작성')">
         <DocsForm
           :sort-name="projName"
-          :board-num="boardNumber"
+          :type-num="typeNumber"
           :get-suit-case="getSuitCase"
           :category-list="categoryList"
           :view-route="mainViewName"
@@ -266,10 +264,10 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId, route.param
       <div v-else-if="route.name.includes('수정')">
         <DocsForm
           :sort-name="projName"
-          :board-num="boardNumber"
+          :type-num="typeNumber"
           :get-suit-case="getSuitCase"
           :category-list="categoryList"
-          :post="post as Post"
+          :docs="docs as Docs"
           :view-route="mainViewName"
           :write-auth="writeAuth"
           @file-change="fileChange"

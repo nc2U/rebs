@@ -28,11 +28,11 @@ const proDocs = {
       meta: { title: '현장 일반 문서', auth: true },
       children: [
         {
-          path: ':postId(\\d+)',
+          path: ':docsId(\\d+)',
           name: '현장 일반 문서 - 보기',
         },
         {
-          path: ':postId(\\d+)/update',
+          path: ':docsId(\\d+)/update',
           name: '현장 일반 문서 - 수정',
         },
         {
@@ -51,11 +51,11 @@ const proDocs = {
       meta: { title: '현장 소송 문서', auth: true },
       children: [
         {
-          path: ':postId(\\d+)',
+          path: ':docsId(\\d+)',
           name: '현장 소송 문서 - 보기',
         },
         {
-          path: ':postId(\\d+)/update',
+          path: ':docsId(\\d+)/update',
           name: '현장 소송 문서 - 수정',
         },
         {
