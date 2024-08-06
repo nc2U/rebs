@@ -8,7 +8,7 @@ import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ListController from '@/views/_MyPage/OwnDocs/components/ListController.vue'
 import DocsList from '@/views/_MyPage/OwnDocs/components/DocsList.vue'
 
-const mainViewName = ref('내 등록문서')
+const mainViewName = ref('내 등록 문서')
 const userInfo = inject<ComputedRef<User>>('userInfo')
 
 const docsFilter = ref<DocsFilter>({

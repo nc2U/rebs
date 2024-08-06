@@ -22,7 +22,7 @@ const viewRoute = computed(() => {
   <CTableRow v-if="docs" class="text-center">
     <CTableDataCell>{{ docs.pk }}</CTableDataCell>
     <CTableDataCell>
-      <router-link :to="{ name: viewRoute }" target="_blank">{{ docs.board_name }}</router-link>
+      {{ docs.type_name }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
       <router-link

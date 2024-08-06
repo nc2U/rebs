@@ -11,11 +11,8 @@ import type {
   SuitCase,
   SimpleSuitCase,
   Docs,
-  Comment as Cm,
   TrashDocs as TP,
 } from '@/store/types/docs'
-
-import { useAccount } from '@/store/pinia/account'
 
 export type SuitCaseFilter = {
   company?: number | ''
@@ -33,7 +30,7 @@ export type SuitCaseFilter = {
 export type DocsFilter = {
   company?: number | ''
   project?: number | ''
-  board?: number
+  doc_type?: number
   is_notice?: boolean | ''
   is_com?: boolean
   category?: number | ''
@@ -170,7 +167,6 @@ export const useDocs = defineStore('docs', () => {
       .then(() => fetchAllSuitCaseList({}).then(() => fetchSuitCaseList({}).then(() => message())))
       .catch(err => errorHandle(err.response.data))
 
-  const accStore = useAccount()
   const docs = ref<Docs | null>(null)
   const docsList = ref<Docs[]>([])
   const noticeList = ref<Docs[]>([])
@@ -193,19 +189,10 @@ export const useDocs = defineStore('docs', () => {
       })
       .catch(err => errorHandle(err.response.data))
 
-  const fetchNoticeList = async (board: number | undefined) => {
-    let url = `/docs/?is_notice=true`
-    url = board ? `${url}&board=${board}` : url
-    return await api
-      .get(url)
-      .then(res => (noticeList.value = res.data.results))
-      .catch(err => errorHandle(err.response.data))
-  }
-
   const fetchDocsList = async (payload: DocsFilter) => {
-    const { board, page } = payload
+    const { doc_type, page } = payload
     let url = `/docs/?page=${page ?? 1}&is_notice=false`
-    if (payload.board) url += `&board=${board}`
+    if (payload.doc_type) url += `&doc_type=${doc_type}`
     if (payload.company) url += `&company=${payload.company}`
     if (payload.is_com) url += `&is_com=${payload.is_com}`
     if (payload.project) url += `&project=${payload.project}`
@@ -214,7 +201,6 @@ export const useDocs = defineStore('docs', () => {
     if (payload.user) url += `&user=${payload.user}`
     if (payload.ordering) url += `&ordering=${payload.ordering}`
     if (payload.search) url += `&search=${payload.search}`
-    await fetchNoticeList(board)
 
     return await api
       .get(url)
@@ -240,7 +226,7 @@ export const useDocs = defineStore('docs', () => {
         await fetchDocsList({
           company: res.data.company,
           project: res.data.project,
-          board: res.data.board,
+          doc_type: res.data.doc_type,
           is_com: !payload.isProject,
           page: 1,
         })
@@ -262,7 +248,7 @@ export const useDocs = defineStore('docs', () => {
         await fetchDocsList({
           company: res.data.company,
           project: res.data.project,
-          board: res.data.board,
+          doc_type: res.data.doc_type,
           is_com: !payload.isProject,
           page: 1,
         })
@@ -335,7 +321,7 @@ export const useDocs = defineStore('docs', () => {
         fetchDocsList({
           company: res.data.company,
           project: res.data.project,
-          board: res.data.board,
+          doc_type: res.data.doc_type,
           is_com: !isProject,
           page: 1,
         }).then(() =>

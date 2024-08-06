@@ -49,6 +49,32 @@ const myPage = {
       ],
     },
     {
+      path: 'own-docs',
+      name: '내 등록 문서',
+      component: () => import('@/views/_MyPage/OwnDocs/Index.vue'),
+      meta: { title: '내 등록 문서', auth: true, except: true },
+      children: [
+        {
+          path: ':postId(\\d+)',
+          name: '내 등록 문서 - 보기',
+          component: () => import('@/views/_MyPage/OwnDocs/Index.vue'),
+          meta: { title: '내 등록 문서', auth: true, except: true },
+        },
+        {
+          path: ':postId(\\d+)/update',
+          name: '내 등록 문서 - 수정',
+          component: () => import('@/views/_MyPage/OwnDocs/Index.vue'),
+          meta: { title: '내 등록 문서', auth: true, except: true },
+        },
+        {
+          path: 'create',
+          name: '내 등록 문서 - 작성',
+          component: () => import('@/views/_MyPage/OwnDocs/Index.vue'),
+          meta: { title: '내 등록 문서', auth: true, except: true },
+        },
+      ],
+    },
+    {
       path: 'own-scrap',
       name: '스크랩',
       component: () => import('@/views/_MyPage/OwnScrap/Index.vue'),

@@ -32,7 +32,7 @@ const pageSelect = (page: number) => emit('page-select', page)
     <CTableHead>
       <CTableRow :color="TableSecondary" class="text-center border-top-1">
         <CTableHeaderCell scope="col">번호</CTableHeaderCell>
-        <CTableHeaderCell scope="col">게시판</CTableHeaderCell>
+        <CTableHeaderCell scope="col">분류</CTableHeaderCell>
         <CTableHeaderCell scope="col">제목</CTableHeaderCell>
         <CTableHeaderCell scope="col">등록일시</CTableHeaderCell>
       </CTableRow>
