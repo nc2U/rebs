@@ -371,7 +371,8 @@ onUpdated(() => dataSetup())
       <CCol class="text-right">
         <CButton color="light" @click="router.push({ name: `${viewRoute}` })"> 목록으로</CButton>
         <CButton v-if="route.params.postId" color="light" @click="router.go(-1)"> 뒤로</CButton>
-        <CButton :color="btnClass" type="submit" :disabled="formsCheck"> 저장하기</CButton>
+        <!--        <CButton :color="btnClass" type="submit" :disabled="formsCheck"> 저장하기</CButton>-->
+        <CButton color="warning" type="submit" disabled> 업데이트 중 ...</CButton>
       </CCol>
     </CRow>
   </CForm>
