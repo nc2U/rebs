@@ -51,3 +51,18 @@ class DocumentAdmin(ImportExportMixin, admin.ModelAdmin):
     search_fields = ('title', 'content')
     list_filter = ('doc_type', 'is_notice', 'project', 'category')
     inlines = (LinkInline, FileInline, ImageInline)
+
+
+@admin.register(Link)
+class LinkAdmin(ImportExportMixin, admin.ModelAdmin):
+    pass
+
+
+@admin.register(File)
+class FileAdmin(ImportExportMixin, admin.ModelAdmin):
+    pass
+
+
+@admin.register(Image)
+class ImageAdmin(ImportExportMixin, admin.ModelAdmin):
+    pass
