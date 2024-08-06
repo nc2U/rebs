@@ -68,21 +68,6 @@ class PostAdmin(ImportExportMixin, admin.ModelAdmin):
     inlines = (LinkInline, FileInline, CommentInline)
 
 
-@admin.register(Link)
-class LinkAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
-
-
-@admin.register(File)
-class FileAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
-
-
-@admin.register(Image)
-class ImageAdmin(ImportExportMixin, admin.ModelAdmin):
-    pass
-
-
 @admin.register(Tag)
 class TagAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'board', 'name')
