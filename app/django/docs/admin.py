@@ -45,9 +45,9 @@ class ImageInline(admin.TabularInline):
 
 @admin.register(Document)
 class DocumentAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'doc_type', 'is_notice', 'project', 'category', 'title', 'execution_date')
+    list_display = ('id', 'doc_type', 'project', 'category', 'title', 'execution_date')
     list_display_links = ('title',)
-    list_editable = ('doc_type', 'is_notice', 'project', 'category', 'execution_date')
+    list_editable = ('doc_type', 'project', 'category', 'execution_date')
     search_fields = ('title', 'content')
-    list_filter = ('doc_type', 'is_notice', 'project', 'category')
+    list_filter = ('doc_type', 'project', 'category')
     inlines = (LinkInline, FileInline, ImageInline)
