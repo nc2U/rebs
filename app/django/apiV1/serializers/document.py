@@ -219,11 +219,11 @@ class PostSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_scrape(obj):
-        return len(obj.scrape_set.all())
+        return len(obj.postscrape_set.all())
 
     def get_my_scrape(self, obj):
         user = self.context['request'].user
-        scrapes = obj.scrape_set.all()
+        scrapes = obj.postscrape_set.all()
         users = [s.user for s in scrapes]
         return user in users
 
