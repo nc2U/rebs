@@ -317,7 +317,7 @@ class Document(models.Model):
     company = models.ForeignKey('company.Company', on_delete=models.CASCADE, verbose_name='회사')
     project = models.ForeignKey('project.Project', on_delete=models.SET_NULL,
                                 null=True, blank=True, verbose_name='프로젝트')
-    group = models.ForeignKey(Group, on_delete=models.PROTECT, verbose_name='게시판')
+    group = models.ForeignKey(Group, on_delete=models.PROTECT, verbose_name='그룹')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='카테고리')
     lawsuit = models.ForeignKey(LawsuitCase, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사건번호')
     title = models.CharField('제목', max_length=255)
@@ -361,7 +361,7 @@ class Document(models.Model):
 
 
 class Link(models.Model):
-    docs = models.ForeignKey(Document, on_delete=models.CASCADE, default=None, verbose_name='게시물', related_name='links')
+    docs = models.ForeignKey(Document, on_delete=models.CASCADE, default=None, verbose_name='문서', related_name='links')
     link = models.URLField(max_length=500, verbose_name='링크')
     hit = models.PositiveIntegerField('클릭수', default=0)
 
@@ -370,7 +370,7 @@ class Link(models.Model):
 
 
 class File(models.Model):
-    docs = models.ForeignKey(Document, on_delete=models.CASCADE, default=None, verbose_name='게시물', related_name='files')
+    docs = models.ForeignKey(Document, on_delete=models.CASCADE, default=None, verbose_name='문서', related_name='files')
     file = models.FileField(upload_to='docs/docs/%Y/%m/%d/', verbose_name='파일')
     file_name = models.CharField('파일명', max_length=100, blank=True)
     file_type = models.CharField('타입', max_length=100, blank=True)
@@ -399,7 +399,7 @@ def delete_file_on_delete(sender, instance, **kwargs):
 
 
 class Image(models.Model):
-    docs = models.ForeignKey(Document, on_delete=models.CASCADE, default=None, verbose_name='게시물',
+    docs = models.ForeignKey(Document, on_delete=models.CASCADE, default=None, verbose_name='문서',
                              related_name='images')
     image = models.ImageField(upload_to='docs/img/%Y/%m/%d/', verbose_name='이미지')
     image_name = models.CharField('파일명', max_length=100, blank=True)
