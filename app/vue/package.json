@@ -45,9 +45,9 @@
     "md-editor-v3": "^4.18.0",
     "mosha-vue-toastify": "^1.0.23",
     "nprogress": "^0.2.0",
-    "pinia": "^2.2.0",
+    "pinia": "^2.2.1",
     "roboto-fontface": "^0.10.0",
-    "vue": "^3.4.35",
+    "vue": "^3.4.36",
     "vue-advanced-cropper": "^2.8.9",
     "vue-fullscreen": "^2.6.1",
     "vue-router": "^4.4.2",
@@ -55,7 +55,7 @@
     "webfontloader": "^1.6.28"
   },
   "devDependencies": {
-    "@pinia/testing": "^0.1.4",
+    "@pinia/testing": "^0.1.5",
     "@rushstack/eslint-patch": "^1.10.4",
     "@tsconfig/node18": "^18.2.4",
     "@types/js-cookie": "^3.0.6",
