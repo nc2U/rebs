@@ -132,6 +132,6 @@ class ImageViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
 
 
-class PostInTrashViewSet(DocumentViewSet):
+class DocsInTrashViewSet(DocumentViewSet):
     queryset = Document.objects.filter(deleted__isnull=False)
     serializer_class = DocumentInTrashSerializer

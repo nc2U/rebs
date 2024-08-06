@@ -143,7 +143,7 @@ router.register(r'docs', docs.DocumentViewSet, basename='docs')
 router.register(r'link', docs.LinkViewSet)
 router.register(r'file', docs.FileViewSet)
 router.register(r'image', docs.ImageViewSet)
-router.register(r'post-trash-can', docs.PostInTrashViewSet, basename='post-trash-can')
+router.register(r'docs-trash-can', docs.DocsInTrashViewSet, basename='docs-trash-can')
 # # document
 router.register(r'group', document.GroupViewSet)
 router.register(r'board', document.BoardViewSet)
@@ -160,7 +160,7 @@ router.register(r'comment', document.CommentViewSet)
 router.register(r'comment-like', document.CommentLikeViewSet, basename='comment-like')
 router.register(r'comment-blame', document.CommentBlameViewSet, basename='comment-blame')
 router.register(r'tag', document.TagViewSet)
-# router.register(r'post-trash-can', document.PostInTrashViewSet, basename='post-trash-can')
+router.register(r'post-trash-can', document.PostInTrashViewSet, basename='post-trash-can')
 
 urlpatterns = router.urls
 urlpatterns += [path('issue-by-member/', work.IssueCountByMemberView.as_view(), name='issue-by-member')]
