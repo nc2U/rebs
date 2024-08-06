@@ -11,7 +11,7 @@ const pageViewAuth = computed(
 const comDocs = {
   path: 'docs',
   name: '본사 문서 관리',
-  redirect: '/docs/general/posts',
+  redirect: '/docs/general/docs',
   component: {
     render() {
       return h(resolveComponent('router-view'))
@@ -19,7 +19,7 @@ const comDocs = {
   },
   children: [
     {
-      path: 'general/posts',
+      path: 'general/docs',
       name: '본사 일반 문서',
       component: () =>
         pageViewAuth.value
@@ -28,11 +28,11 @@ const comDocs = {
       meta: { title: '본사 일반 문서', auth: true },
       children: [
         {
-          path: ':postId(\\d+)',
+          path: ':docsId(\\d+)',
           name: '본사 일반 문서 - 보기',
         },
         {
-          path: ':postId(\\d+)/update',
+          path: ':docsId(\\d+)/update',
           name: '본사 일반 문서 - 수정',
         },
         {
@@ -65,7 +65,7 @@ const comDocs = {
       ],
     },
     {
-      path: 'lawsuit/posts',
+      path: 'lawsuit/docs',
       name: '본사 소송 문서',
       component: () =>
         pageViewAuth.value
@@ -74,11 +74,11 @@ const comDocs = {
       meta: { title: '본사 소송 문서', auth: true },
       children: [
         {
-          path: ':postId(\\d+)',
+          path: ':docsId(\\d+)',
           name: '본사 소송 문서 - 보기',
         },
         {
-          path: ':postId(\\d+)/update',
+          path: ':docsId(\\d+)/update',
           name: '본사 소송 문서 - 수정',
         },
         {

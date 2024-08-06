@@ -51,7 +51,7 @@ const company_docs = {
     {
       component: 'CNavItem',
       name: '본사 일반 문서',
-      to: '/docs/general/posts',
+      to: '/docs/general/docs',
     },
     {
       component: 'CNavItem',
@@ -65,7 +65,7 @@ const company_docs = {
     {
       component: 'CNavItem',
       name: '본사 소송 문서',
-      to: '/docs/lawsuit/posts',
+      to: '/docs/lawsuit/docs',
     },
     {
       component: 'CNavItem',
@@ -257,12 +257,12 @@ const project_docs = {
     {
       component: 'CNavItem',
       name: '현장 일반 문서',
-      to: '/project-docs/general/posts',
+      to: '/project-docs/general/docs',
     },
     {
       component: 'CNavItem',
       name: '현장 소송 문서',
-      to: '/project-docs/lawsuit/posts',
+      to: '/project-docs/lawsuit/docs',
     },
     {
       component: 'CNavItem',

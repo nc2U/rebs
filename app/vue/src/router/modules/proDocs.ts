@@ -11,7 +11,7 @@ const pageViewAuth = computed(
 const proDocs = {
   path: 'project-docs',
   name: '현장 문서 관리',
-  redirect: '/project-docs/general/posts',
+  redirect: '/project-docs/general/docs',
   component: {
     render() {
       return h(resolveComponent('router-view'))
@@ -19,7 +19,7 @@ const proDocs = {
   },
   children: [
     {
-      path: 'general/posts',
+      path: 'general/docs',
       name: '현장 일반 문서',
       component: () =>
         pageViewAuth.value
@@ -42,7 +42,7 @@ const proDocs = {
       ],
     },
     {
-      path: 'lawsuit/posts',
+      path: 'lawsuit/docs',
       name: '현장 소송 문서',
       component: () =>
         pageViewAuth.value
