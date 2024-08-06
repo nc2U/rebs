@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { ref, type PropType, onBeforeMount, nextTick } from 'vue'
-import type { Category } from '@/store/types/document'
+import { type PropType, ref } from 'vue'
+import type { Category } from '@/store/types/docs'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 defineProps({

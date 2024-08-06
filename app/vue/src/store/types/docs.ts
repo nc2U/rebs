@@ -69,7 +69,6 @@ export type Docs = {
     | SimpleUser
     | Link[]
     | AFile[]
-    | Comment[]
   pk?: number
   company: number | null
   project: number | null
@@ -133,7 +132,7 @@ export interface PatchDocs {
   pk: number
   company?: number
   project?: number
-  board?: number
+  doc_type?: number
   category?: number | null
   lawsuit?: number | null
   title?: string
@@ -145,15 +144,13 @@ export interface PatchDocs {
   blame?: number
   is_secret?: boolean
   password?: string
-  is_hide_comment?: boolean
-  is_notice?: boolean
   is_blind?: boolean
   deleted?: string | null
 }
 
 export interface TrashDocs {
   pk: number
-  board_name: string
+  type_name: string
   cate_name: string
   title: string
   content: string

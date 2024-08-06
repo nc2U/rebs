@@ -273,7 +273,7 @@ export const useDocs = defineStore('docs', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const copyDocs = (payload: { docs: number; board: number; project: number | null }) =>
+  const copyDocs = (payload: { docs: number; doc_type: number; project: number | null }) =>
     api
       .post(`docs/${payload.docs}/copy/`, payload)
       .then(() => message('success', '', '게시물 복사가 완료되었습니다.'))

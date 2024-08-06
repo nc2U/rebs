@@ -11,8 +11,8 @@ import sanitizeHtml from 'sanitize-html'
 import Comments from '@/components/Comments/Index.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import BoardListModal from '@/components/Documents/components/BoardListModal.vue'
-import CateListModal from '@/components/Documents/components/CateListModal.vue'
+import BoardListModal from '@/components/Posts/components/BoardListModal.vue'
+import CateListModal from '@/components/Posts/components/CateListModal.vue'
 
 const props = defineProps({
   heatedPage: { type: Array as PropType<number[]>, default: () => [] },

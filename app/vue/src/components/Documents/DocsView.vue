@@ -5,11 +5,12 @@ import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { useDocs } from '@/store/pinia/docs'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 import { type Docs } from '@/store/types/docs'
-import { toPrint, toPostLike, toPostBlame, postManageItems, toPostManage } from '@/utils/postMixins'
+import { toPrint, docsManageItems, toDocsManage } from '@/utils/docsMixins'
 import sanitizeHtml from 'sanitize-html'
 import type { User } from '@/store/types/accounts'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
+import TypeListModal from '@/components/Documents/components/TypeListModal.vue'
 import CateListModal from '@/components/Documents/components/CateListModal.vue'
 
 const props = defineProps({
@@ -27,8 +28,9 @@ const props = defineProps({
 const emit = defineEmits(['docs-hit', 'link-hit', 'file-hit', 'docs-scrape', 'docs-renewal'])
 
 const refDelModal = ref()
-const refBlameModal = ref()
 const refAlertModal = ref()
+const refTypeListModal = ref()
+const isCopy = ref(false)
 const refCateListModal = ref()
 const refTrashModal = ref()
 
@@ -44,20 +46,12 @@ const sortName = computed(() => props.docs?.proj_name || '본사 문서')
 const docsId = computed(() => Number(route.params.docsId))
 
 const docStore = useDocs()
+const docTypeList = computed(() => docStore.docTypeList)
 const categoryList = computed(() => docStore.categoryList)
 const getDocsNav = computed(() => docStore.getDocsNav)
 
 const getPrev = (pk: number) => getDocsNav.value.filter(p => p.pk === pk).map(p => p.prev_pk)[0]
 const getNext = (pk: number) => getDocsNav.value.filter(p => p.pk === pk).map(p => p.next_pk)[0]
-
-const toLike = () => toPostLike(props.docs.pk as number)
-
-const blameConfirm = () => refBlameModal.value.callModal()
-
-const blameAction = () => {
-  refBlameModal.value.close()
-  toPostBlame(props.docs.pk as number)
-}
 
 const linkHitUp = async (pk: number) => emit('link-hit', pk)
 const fileHitUp = async (pk: number) => emit('file-hit', pk)
@@ -112,42 +106,51 @@ const toScrape = () => {
 }
 
 const toManage = (fn: number, el?: { nBrd?: number; nProj?: number; nCate?: number }) => {
-  const docs = props.docs.pk
+  const post = props.post.pk
   let state: boolean = false
   if (fn < 4) {
-    if (fn === 3) {
+    if (fn === 1) {
+      isCopy.value = true
+      refBoardListModal.value.callModal()
+    } else if (fn === 2) {
+      isCopy.value = false
+      refBoardListModal.value.callModal()
+    } else if (fn === 3) {
       refCateListModal.value.callModal()
     }
   } else {
     if (fn === 4)
-      state = props.docs.is_secret // is_secret
+      state = props.post.is_secret // is_secret
+    else if (fn === 5) state = props.post.is_hide_comment
+    else if (fn === 6)
+      state = props.post.is_notice // is_notice
     else if (fn === 7)
-      state = props.docs.is_blind // is_blind
+      state = props.post.is_blind // is_blind
     else if (fn === 8)
       refTrashModal.value.callModal() // deleted confirm
     else if (fn === 88) {
       // soft delete
-      state = !!props.docs.deleted // is_deleted
+      state = !!props.post.deleted // is_deleted
       refTrashModal.value.close()
       router.replace({ name: props.viewRoute })
     }
     const payload = {
       board: el?.nBrd,
-      board_name: props.docs.board_name,
+      board_name: props.post.board_name,
       project: el?.nProj,
       category: el?.nCate,
-      content: props.docs?.content,
-      docs: docs as number,
+      content: props.post?.content,
+      post: post as number,
       state,
-      filter: props.docsFilter,
+      filter: props.postFilter,
       manager: userInfo?.value.username as string,
     }
-    toPostManage(fn, payload)
+    toDocsManage(fn, payload)
   }
 }
 
-// const copyDocs = (nBrd?: number, nProj?: number) => toManage(11, { nBrd, nProj })
-// const moveDocs = (nBrd?: number, nProj?: number) => toManage(22, { nBrd, nProj })
+const copyDocs = (nType?: number, nProj?: number) => toManage(11, { nType, nProj })
+const moveDocs = (nType?: number, nProj?: number) => toManage(22, { nType, nProj })
 const changeCate = (nCate?: number) => toManage(33, { nCate })
 
 const getFileName = (file: string) => {
@@ -393,16 +396,6 @@ onMounted(() => {
           스크랩 {{ docs.scrape ? `+${docs.scrape}` : '' }}
         </v-btn>
         <v-btn
-          variant="tonal"
-          :color="docs.my_blame ? 'primary' : ''"
-          size="small"
-          :rounded="0"
-          class="mr-1"
-          @click="blameConfirm"
-        >
-          신고 {{ docs.blame ? `+${docs.blame}` : '' }}
-        </v-btn>
-        <v-btn
           v-if="userInfo?.is_superuser"
           prepend-icon="mdi-cog"
           variant="tonal"
@@ -413,7 +406,7 @@ onMounted(() => {
           <v-menu activator="parent" open-on-hover>
             <v-list density="compact">
               <v-list-item
-                v-for="(item, index) in postManageItems"
+                v-for="(item, index) in docsManageItems"
                 :key="index"
                 :value="index"
                 @click="toManage(index + 1)"
@@ -489,17 +482,15 @@ onMounted(() => {
     </template>
   </ConfirmModal>
 
-  <ConfirmModal ref="refBlameModal">
-    <template #header>알림</template>
-    <template #default>
-      이 게시글을 신고 {{ docs.my_blame ? '를 취소' : '' }} 하시겠습니까?<br /><br />
-    </template>
-    <template #footer>
-      <CButton :color="docs.my_blame ? 'secondary' : 'danger'" @click="blameAction">
-        {{ docs.my_blame ? '취소' : '신고' }}
-      </CButton>
-    </template>
-  </ConfirmModal>
+  <TypeListModal
+    ref="refTypeListModal"
+    :now-type="docs?.doc_type ?? undefined"
+    :now-project="docs?.project ?? undefined"
+    :doc-type-list="docTypeList"
+    :is-copy="isCopy"
+    @copy-post="copyDocs"
+    @move-post="moveDocs"
+  />
 
   <CateListModal
     ref="refCateListModal"

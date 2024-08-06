@@ -10,7 +10,7 @@ import sanitizeHtml from 'sanitize-html'
 import type { User } from '@/store/types/accounts'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import BoardListModal from '@/components/Documents/components/BoardListModal.vue'
+import BoardListModal from '@/components/Documents/components/TypeListModal.vue'
 import CateListModal from '@/components/Documents/components/CateListModal.vue'
 import Comments from '@/components/Comments/Index.vue'
 
