@@ -11,6 +11,7 @@ from .views import payment
 from .views import cash
 from .views import contract
 from .views import notice
+from .views import docs
 from .views import document
 
 app_name = 'api'
@@ -132,23 +133,33 @@ router.register(r'succession', contract.SuccessionViewSet)
 router.register(r'contractor-release', contract.ContReleaseViewSet)
 # notice
 router.register(r'sales-bill-issue', notice.BillIssueViewSet)
-# document
+# docs
+router.register(r'doc_type', docs.DocTypeViewSet)
+router.register(r'category', docs.CategoryViewSet)
+router.register(r'suitcase', docs.LawSuitCaseViewSet)
+router.register(r'all-suitcase', docs.AllLawSuitCaseViewSet, basename='all-suitcase')
+router.register(r'docs', docs.DocumentViewSet, basename='docs')
+router.register(r'link', docs.LinkViewSet)
+router.register(r'file', docs.FileViewSet)
+router.register(r'image', docs.ImageViewSet)
+router.register(r'post-trash-can', docs.PostInTrashViewSet, basename='post-trash-can')
+# # document
 router.register(r'group', document.GroupViewSet)
 router.register(r'board', document.BoardViewSet)
-router.register(r'category', document.CategoryViewSet)
-router.register(r'suitcase', document.LawSuitCaseViewSet)
-router.register(r'all-suitcase', document.AllLawSuitCaseViewSet, basename='all-suitcase')
+# router.register(r'category', document.CategoryViewSet)
+# router.register(r'suitcase', document.LawSuitCaseViewSet)
+# router.register(r'all-suitcase', document.AllLawSuitCaseViewSet, basename='all-suitcase')
 router.register(r'post', document.PostViewSet, basename='post')
 router.register(r'post-like', document.PostLikeViewSet, basename='post-like')
 router.register(r'post-blame', document.PostBlameViewSet, basename='post-blame')
-router.register(r'link', document.LinkViewSet)
-router.register(r'image', document.ImageViewSet)
-router.register(r'file', document.FileViewSet)
+# router.register(r'link', document.LinkViewSet)
+# router.register(r'image', document.ImageViewSet)
+# router.register(r'file', document.FileViewSet)
 router.register(r'comment', document.CommentViewSet)
 router.register(r'comment-like', document.CommentLikeViewSet, basename='comment-like')
 router.register(r'comment-blame', document.CommentBlameViewSet, basename='comment-blame')
 router.register(r'tag', document.TagViewSet)
-router.register(r'post-trash-can', document.PostInTrashViewSet, basename='post-trash-can')
+# router.register(r'post-trash-can', document.PostInTrashViewSet, basename='post-trash-can')
 
 urlpatterns = router.urls
 urlpatterns += [path('issue-by-member/', work.IssueCountByMemberView.as_view(), name='issue-by-member')]
