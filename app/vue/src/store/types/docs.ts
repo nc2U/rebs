@@ -74,8 +74,8 @@ export type Docs = {
   company: number | null
   project: number | null
   proj_name?: string
-  board: number | null
-  board_name?: string
+  doc_type: number | null
+  type_name?: string
   category: number | null
   cate_name?: string
   lawsuit: number | null | string
@@ -84,23 +84,16 @@ export type Docs = {
   execution_date: string | null
   content: string
   hit?: number
-  like?: number
-  my_like?: boolean
   scrape?: number
   my_scrape?: boolean
-  blame?: number
-  my_blame?: boolean
   ip: string | null
   device: string
   is_secret: boolean
   password: string
-  is_hide_comment: boolean
-  is_notice: boolean
   is_blind: boolean
   deleted?: string | null
   links?: Link[]
   files?: AFile[]
-  comments?: number[]
   user?: SimpleUser
   created?: string
   updated?: string
@@ -156,28 +149,6 @@ export interface PatchDocs {
   is_notice?: boolean
   is_blind?: boolean
   deleted?: string | null
-}
-
-export interface Comment {
-  pk?: number
-  docs: {
-    pk?: number
-    company: number | null
-    project: number | null
-    board: number | null
-  }
-  content: string
-  parent: number | null
-  replies?: Comment[]
-  like?: number
-  my_like?: boolean
-  blame?: number
-  my_blame?: boolean
-  ip?: string
-  device?: string
-  secret: boolean
-  user?: SimpleUser
-  created?: string
 }
 
 export interface TrashDocs {
