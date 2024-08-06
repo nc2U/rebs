@@ -5,6 +5,7 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
 import type { User, StaffAuth, Profile, Scrape, Todo } from '@/store/types/accounts'
+import { useDocs } from '@/store/pinia/docs'
 import { useDocument } from '@/store/pinia/document'
 import type { LocationQueryValue } from 'vue-router'
 
@@ -257,6 +258,52 @@ export const useAccount = defineStore('account', () => {
   }
 
   // states
+  const docScrape = ref<Scrape | null>(null)
+  const docScrapeList = ref<Scrape[]>([])
+  const docScrapeCount = ref(0)
+
+  // actions
+  const docScrapePages = (itemsPerPage: number) => Math.ceil(scrapeCount.value / itemsPerPage)
+  const fetchDocScrape = (pk: number) =>
+    api
+      .get(`/doc-scrape/${pk}/`)
+      .then(res => (docScrape.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
+  const fetchDocScrapeList = (page = 1) =>
+    api
+      .get(`/doc-scrape/?user=${userInfo.value?.pk ?? ''}&page=${page}`)
+      .then(res => {
+        docScrapeList.value = res.data.results
+        docScrapeCount.value = res.data.count
+      })
+      .catch(err => errorHandle(err.response.data))
+
+  const docStore = useDocs()
+
+  const createDocScrape = (payload: { docs: number; user: number }) =>
+    api
+      .post('/doc-scrape/', payload)
+      .then(() => docStore.fetchDocs(payload.docs))
+      .catch(err => errorHandle(err.response.data))
+
+  const patchDocScrape = (pk: number, title: string) =>
+    api
+      .patch(`/doc-scrape/${pk}/`, { title })
+      .then(() => fetchScrapeList().then(() => message()))
+      .catch(err => errorHandle(err.response.data))
+
+  const deleteDocScrape = (pk: number) =>
+    api
+      .delete(`/doc-scrape/${pk}/`)
+      .then(() =>
+        fetchScrapeList().then(() =>
+          message('warning', '', '해당 포스트 스크랩을 취소하였습니다.'),
+        ),
+      )
+      .catch(err => errorHandle(err.response.data))
+
+  // states
   const scrape = ref<Scrape | null>(null)
   const scrapeList = ref<Scrape[]>([])
   const scrapeCount = ref(0)
@@ -265,36 +312,36 @@ export const useAccount = defineStore('account', () => {
   const scrapePages = (itemsPerPage: number) => Math.ceil(scrapeCount.value / itemsPerPage)
   const fetchScrape = (pk: number) =>
     api
-      .get(`/scrape/${pk}/`)
+      .get(`/post-scrape/${pk}/`)
       .then(res => (scrape.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
   const fetchScrapeList = (page = 1) =>
     api
-      .get(`/scrape/?user=${userInfo.value?.pk ?? ''}&page=${page}`)
+      .get(`/post-scrape/?user=${userInfo.value?.pk ?? ''}&page=${page}`)
       .then(res => {
         scrapeList.value = res.data.results
         scrapeCount.value = res.data.count
       })
       .catch(err => errorHandle(err.response.data))
 
-  const docStore = useDocument()
+  const documentStore = useDocument()
 
   const createScrape = (payload: { post: number; user: number }) =>
     api
-      .post('/scrape/', payload)
-      .then(() => docStore.fetchPost(payload.post))
+      .post('/post-scrape/', payload)
+      .then(() => documentStore.fetchPost(payload.post))
       .catch(err => errorHandle(err.response.data))
 
   const patchScrape = (pk: number, title: string) =>
     api
-      .patch(`/scrape/${pk}/`, { title })
+      .patch(`/post-scrape/${pk}/`, { title })
       .then(() => fetchScrapeList().then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
   const deleteScrape = (pk: number) =>
     api
-      .delete(`/scrape/${pk}/`)
+      .delete(`/post-scrape/${pk}/`)
       .then(() =>
         fetchScrapeList().then(() =>
           message('warning', '', '해당 포스트 스크랩을 취소하였습니다.'),
@@ -398,6 +445,17 @@ export const useAccount = defineStore('account', () => {
     fetchProfile,
     createProfile,
     patchProfile,
+
+    docScrape,
+    docScrapeList,
+    docScrapeCount,
+
+    docScrapePages,
+    fetchDocScrape,
+    fetchDocScrapeList,
+    createDocScrape,
+    patchDocScrape,
+    deleteDocScrape,
 
     scrape,
     scrapeList,

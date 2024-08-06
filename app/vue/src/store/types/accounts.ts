@@ -63,15 +63,24 @@ export type Profile = {
 export interface Scrape {
   pk?: number
   user: number
-  post: {
+  docs?: {
     pk: number
-    board: number
-    board_name: string
+    doc_type: number
+    type_name: string
     project: number | null
     title: string
   }
+  post?: Post
   title: string
   created: string
+}
+
+interface Post {
+  pk: number
+  board: number
+  board_name: string
+  project: number | null
+  title: string
 }
 
 export interface Todo {

@@ -44,7 +44,7 @@ export type DocsFilter = {
   page?: number
 }
 
-export const useDocument = defineStore('document', () => {
+export const useDocs = defineStore('docs', () => {
   // state & getters
   const docType = ref<DocType | null>(null)
   const docTypeList = ref<DocType[]>([])
