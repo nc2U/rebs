@@ -295,21 +295,21 @@ class LawsuitCase(models.Model):
         ('-', '------------'),
         ('000110', '법원행정처')
     )
-    court = models.CharField('법원명', max_length=10, choices=COURT_CHOICES, blank=True)
-    other_agency = models.CharField('기타 처리기관', max_length=30, blank=True,
+    court = models.CharField('법원명', max_length=10, choices=COURT_CHOICES, blank=True, default='')
+    other_agency = models.CharField('기타 처리기관', max_length=30, blank=True, default='',
                                     help_text='사건 유형이 기소 전 형사 사건인 경우 해당 수사기관을 기재')
     case_number = models.CharField('사건번호', max_length=20)
     case_name = models.CharField('사건명', max_length=30)
-    plaintiff = models.CharField('원고(신청인)', max_length=30, blank=True)
-    plaintiff_attorney = models.CharField('원고 대리인', max_length=50, blank=True)
+    plaintiff = models.CharField('원고(신청인)', max_length=30, blank=True, default='')
+    plaintiff_attorney = models.CharField('원고 대리인', max_length=50, blank=True, default='')
     plaintiff_case_price = models.PositiveIntegerField('원고 소가', null=True, blank=True)
     defendant = models.CharField('피고(피신청인)', max_length=30)
-    defendant_attorney = models.CharField('피고 대리인', max_length=50, blank=True)
+    defendant_attorney = models.CharField('피고 대리인', max_length=50, blank=True, default='')
     defendant_case_price = models.PositiveIntegerField('피고 소가', null=True, blank=True)
-    related_debtor = models.CharField('제3채무자', max_length=30, blank=True)
+    related_debtor = models.CharField('제3채무자', max_length=30, blank=True, default='')
     case_start_date = models.DateField('사건개시일')
     case_end_date = models.DateField('사건종결일', null=True, blank=True)
-    summary = models.TextField('개요 및 경과', blank=True)
+    summary = models.TextField('개요 및 경과', blank=True, default='')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
     created = models.DateTimeField('등록일시', auto_now_add=True)
     updated = models.DateTimeField('수정일시', auto_now=True)
@@ -333,14 +333,14 @@ class Post(models.Model):
     lawsuit = models.ForeignKey(LawsuitCase, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사건번호')
     title = models.CharField('제목', max_length=255)
     execution_date = models.DateField('문서 시행일자', null=True, blank=True, help_text='문서 발신/수신/시행일자')
-    content = HTMLField('내용', blank=True)
+    content = HTMLField('내용', blank=True, default='')
     hit = models.PositiveIntegerField('조회수', default=0)
     like = models.PositiveIntegerField('좋아요', default=0)
     blame = models.PositiveSmallIntegerField('신고', default=0)
     ip = models.GenericIPAddressField('아이피', null=True, blank=True)
-    device = models.CharField('등록기기', max_length=255, blank=True)
+    device = models.CharField('등록기기', max_length=255, blank=True, default='')
     is_secret = models.BooleanField('비밀글', default=False)
-    password = models.CharField('패스워드', max_length=255, blank=True)
+    password = models.CharField('패스워드', max_length=255, blank=True, default='')
     is_hide_comment = models.BooleanField('댓글숨기기', default=False)
     is_notice = models.BooleanField('공지', default=False)
     is_blind = models.BooleanField('숨김', default=False)
@@ -380,34 +380,6 @@ class Link(models.Model):
         return self.link
 
 
-class Image(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물', related_name='images')
-    image = models.ImageField(upload_to='post/img/%Y/%m/%d/', verbose_name='이미지')
-    image_name = models.CharField('파일명', max_length=100, blank=True)
-    image_type = models.CharField('타입', max_length=100, blank=True)
-    image_size = models.PositiveBigIntegerField('사이즈', blank=True, null=True)
-    created = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return settings.MEDIA_URL
-
-    def save(self, *args, **kwargs):
-        if self.image:
-            self.image_name = self.image.name.split('/')[-1]
-            mime = magic.Magic(mime=True)
-            self.image_type = mime.from_buffer(self.image.read())
-            self.image_size = self.image.size
-        super().save(*args, **kwargs)
-
-
-@receiver(pre_delete, sender=Image)
-def delete_file_on_delete(sender, instance, **kwargs):
-    # Check if the file exists before attempting to delete it
-    if instance.image:
-        if os.path.isfile(instance.image.path):
-            os.remove(instance.image.path)
-
-
 class File(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물', related_name='files')
     file = models.FileField(upload_to='post/docs/%Y/%m/%d/', verbose_name='파일')
@@ -435,6 +407,34 @@ def delete_file_on_delete(sender, instance, **kwargs):
     if instance.file:
         if os.path.isfile(instance.file.path):
             os.remove(instance.file.path)
+
+
+class Image(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물', related_name='images')
+    image = models.ImageField(upload_to='post/img/%Y/%m/%d/', verbose_name='이미지')
+    image_name = models.CharField('파일명', max_length=100, blank=True)
+    image_type = models.CharField('타입', max_length=100, blank=True)
+    image_size = models.PositiveBigIntegerField('사이즈', blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return settings.MEDIA_URL
+
+    def save(self, *args, **kwargs):
+        if self.image:
+            self.image_name = self.image.name.split('/')[-1]
+            mime = magic.Magic(mime=True)
+            self.image_type = mime.from_buffer(self.image.read())
+            self.image_size = self.image.size
+        super().save(*args, **kwargs)
+
+
+@receiver(pre_delete, sender=Image)
+def delete_file_on_delete(sender, instance, **kwargs):
+    # Check if the file exists before attempting to delete it
+    if instance.image:
+        if os.path.isfile(instance.image.path):
+            os.remove(instance.image.path)
 
 
 class Comment(models.Model):
