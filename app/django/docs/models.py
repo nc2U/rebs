@@ -26,8 +26,8 @@ class DocType(models.Model):
 
     class Meta:
         ordering = ['id']
-        verbose_name = '01. 그룹 관리'
-        verbose_name_plural = '01. 그룹 관리'
+        verbose_name = '01. 유형'
+        verbose_name_plural = '01. 유형'
 
 
 class Category(models.Model):
@@ -42,8 +42,8 @@ class Category(models.Model):
 
     class Meta:
         ordering = ['id']
-        verbose_name = '02. 카테고리 관리'
-        verbose_name_plural = '02. 카테고리 관리'
+        verbose_name = '02. 카테고리'
+        verbose_name_plural = '02. 카테고리'
 
 
 class LawsuitCase(models.Model):
@@ -309,8 +309,8 @@ class LawsuitCase(models.Model):
 
     class Meta:
         ordering = ['-case_start_date', '-id']
-        verbose_name = '03. 소송사건 관리'
-        verbose_name_plural = '03. 소송사건 관리'
+        verbose_name = '03. 소송사건'
+        verbose_name_plural = '03. 소송사건'
 
 
 class Document(models.Model):
@@ -348,8 +348,8 @@ class Document(models.Model):
 
     class Meta:
         ordering = ['-created']
-        verbose_name = '04. 문서 관리'
-        verbose_name_plural = '04. 문서 관리'
+        verbose_name = '04. 문서'
+        verbose_name_plural = '04. 문서'
 
     def delete(self, using=None, keep_parents=False):
         self.deleted = datetime.now()
