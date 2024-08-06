@@ -9,7 +9,7 @@ from django.dispatch import receiver
 from django.db.models.signals import pre_delete
 
 
-class Group(models.Model):
+class DocType(models.Model):
     company = models.ForeignKey('company.Company', on_delete=models.CASCADE, verbose_name='회사')
     project = models.ForeignKey('project.Project', on_delete=models.SET_NULL,
                                 null=True, blank=True, verbose_name='프로젝트')
@@ -31,7 +31,7 @@ class Group(models.Model):
 
 
 class Category(models.Model):
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, verbose_name='그룹')
+    doc_type = models.ForeignKey(DocType, on_delete=models.CASCADE, verbose_name='유형')
     color = models.CharField('색상', max_length=21, null=True, blank=True)
     name = models.CharField('이름', max_length=100)
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='상위 카테고리')
@@ -317,7 +317,7 @@ class Document(models.Model):
     company = models.ForeignKey('company.Company', on_delete=models.CASCADE, verbose_name='회사')
     project = models.ForeignKey('project.Project', on_delete=models.SET_NULL,
                                 null=True, blank=True, verbose_name='프로젝트')
-    group = models.ForeignKey(Group, on_delete=models.PROTECT, verbose_name='그룹')
+    doc_type = models.ForeignKey(DocType, on_delete=models.PROTECT, verbose_name='유형')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='카테고리')
     lawsuit = models.ForeignKey(LawsuitCase, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사건번호')
     title = models.CharField('제목', max_length=255)

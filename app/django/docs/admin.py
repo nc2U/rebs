@@ -1,6 +1,6 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
-from .models import Group, Category, LawsuitCase, Document, Link, File, Image
+from .models import DocType, Category, LawsuitCase, Document, Link, File, Image
 
 
 class CategoryInline(admin.TabularInline):
@@ -8,8 +8,8 @@ class CategoryInline(admin.TabularInline):
     extra = 1
 
 
-@admin.register(Group)
-class GroupAdmin(ImportExportMixin, admin.ModelAdmin):
+@admin.register(DocType)
+class DocTypeAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'project', 'issue_project', 'name', 'order', 'search_able')
     list_display_links = ('name',)
     list_editable = ('project', 'issue_project', 'order', 'search_able')
@@ -20,11 +20,11 @@ class GroupAdmin(ImportExportMixin, admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'group', 'color', 'name', 'parent', 'order')
+    list_display = ('id', 'doc_type', 'color', 'name', 'parent', 'order')
     list_display_links = ('name',)
-    list_editable = ('group', 'color', 'parent', 'order')
+    list_editable = ('doc_type', 'color', 'parent', 'order')
     search_fields = ('name',)
-    list_filter = ('group',)
+    list_filter = ('doc_type',)
 
 
 @admin.register(LawsuitCase)
@@ -53,9 +53,9 @@ class ImageInline(admin.TabularInline):
 
 @admin.register(Document)
 class DocumentAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'group', 'is_notice', 'project', 'category', 'title', 'execution_date')
+    list_display = ('id', 'doc_type', 'is_notice', 'project', 'category', 'title', 'execution_date')
     list_display_links = ('title',)
-    list_editable = ('group', 'is_notice', 'project', 'category', 'execution_date')
+    list_editable = ('doc_type', 'is_notice', 'project', 'category', 'execution_date')
     search_fields = ('title', 'content')
-    list_filter = ('group', 'is_notice', 'project', 'category')
+    list_filter = ('doc_type', 'is_notice', 'project', 'category')
     inlines = (LinkInline, FileInline, ImageInline)
