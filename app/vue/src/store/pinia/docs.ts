@@ -191,7 +191,7 @@ export const useDocs = defineStore('docs', () => {
 
   const fetchDocsList = async (payload: DocsFilter) => {
     const { doc_type, page } = payload
-    let url = `/docs/?page=${page ?? 1}&is_notice=false`
+    let url = `/docs/?page=${page ?? 1}`
     if (payload.doc_type) url += `&doc_type=${doc_type}`
     if (payload.company) url += `&company=${payload.company}`
     if (payload.is_com) url += `&is_com=${payload.is_com}`
