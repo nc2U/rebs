@@ -30,7 +30,7 @@ export type SuitCaseFilter = {
 export type DocsFilter = {
   company?: number | ''
   project?: number | ''
-  doc_type?: number
+  doc_type?: number | ''
   is_notice?: boolean | ''
   is_com?: boolean
   category?: number | ''
@@ -64,9 +64,9 @@ export const useDocs = defineStore('docs', () => {
 
   const categoryList = ref<Category[]>([])
 
-  const fetchCategoryList = (board: number) =>
+  const fetchCategoryList = (doc_type: number) =>
     api
-      .get(`/category/?board=${board}`)
+      .get(`/category/?doc_type=${doc_type}`)
       .then(res => (categoryList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
@@ -169,7 +169,6 @@ export const useDocs = defineStore('docs', () => {
 
   const docs = ref<Docs | null>(null)
   const docsList = ref<Docs[]>([])
-  const noticeList = ref<Docs[]>([])
   const docsCount = ref(0)
   const getDocsNav = computed(() =>
     docsList.value.map(p => ({
@@ -393,7 +392,6 @@ export const useDocs = defineStore('docs', () => {
 
     docs,
     docsList,
-    noticeList,
     docsCount,
     getDocsNav,
 

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
 import { useRouter } from 'vue-router'
-import { useDocument } from '@/store/pinia/document'
+import { useDocs } from '@/store/pinia/docs'
 import { TableSecondary } from '@/utils/cssMixins'
-import type { Post } from '@/store/types/document'
+import type { Docs as D } from '@/store/types/docs'
 import Pagination from '@/components/Pagination'
 import Docs from './components/Docs.vue'
 import TopDocs from '@/components/Documents/components/TopDocs.vue'
@@ -12,8 +12,8 @@ defineProps({
   company: { type: Number, default: null },
   project: { type: Number, default: null },
   page: { type: Number, default: 1 },
-  noticeList: { type: Array as PropType<Post[]>, default: () => [] },
-  postList: { type: Array as PropType<Post[]>, default: () => [] },
+  noticeList: { type: Array as PropType<D[]>, default: () => [] },
+  docsList: { type: Array as PropType<D[]>, default: () => [] },
   viewRoute: { type: String, required: true },
   isLawsuit: { type: Boolean, default: false },
   writeAuth: { type: Boolean, default: true },
@@ -23,8 +23,8 @@ const emit = defineEmits(['page-select'])
 
 const router = useRouter()
 
-const documentStore = useDocument()
-const postPages = (num: number) => documentStore.postPages(num)
+const docsStore = useDocs()
+const docsPages = (num: number) => docsStore.docsPages(num)
 const pageSelect = (page: number) => emit('page-select', page)
 </script>
 
@@ -65,16 +65,16 @@ const pageSelect = (page: number) => emit('page-select', page)
 
     <CTableBody>
       <TopDocs
-        v-for="post in noticeList"
-        :key="post.pk"
-        :post="post"
+        v-for="docs in noticeList"
+        :key="docs.pk"
+        :docs="docs"
         :view-route="viewRoute"
         :is-lawsuit="isLawsuit"
       />
       <Docs
-        v-for="post in postList"
-        :key="post.pk"
-        :post="post"
+        v-for="docs in docsList"
+        :key="docs.pk"
+        :docs="docs"
         :view-route="viewRoute"
         :is-lawsuit="isLawsuit"
       />
@@ -86,7 +86,7 @@ const pageSelect = (page: number) => emit('page-select', page)
       <Pagination
         :active-page="page"
         :limit="8"
-        :pages="postPages(10)"
+        :pages="docsPages(10)"
         class="mt-3"
         @active-page-change="pageSelect"
       />

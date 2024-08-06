@@ -2,67 +2,61 @@
 import type { ComputedRef, PropType } from 'vue'
 import { ref, computed, watch, inject, onBeforeMount, onMounted } from 'vue'
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
-import { useDocument } from '@/store/pinia/document'
+import { useDocs } from '@/store/pinia/docs'
 import { cutString, timeFormat } from '@/utils/baseMixins'
-import { type Post } from '@/store/types/document'
+import { type Docs } from '@/store/types/docs'
 import { toPrint, toPostLike, toPostBlame, postManageItems, toPostManage } from '@/utils/postMixins'
 import sanitizeHtml from 'sanitize-html'
 import type { User } from '@/store/types/accounts'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import BoardListModal from '@/components/Documents/components/BoardListModal.vue'
 import CateListModal from '@/components/Documents/components/CateListModal.vue'
-import Comments from '@/components/Comments/Index.vue'
 
 const props = defineProps({
-  boardNum: { type: Number, default: 2 },
+  typeNum: { type: Number, default: 1 },
   heatedPage: { type: Array as PropType<number[]>, default: () => [] },
   reOrder: { type: Boolean, default: false },
   category: { type: Number, default: undefined },
-  post: { type: Object as PropType<Post>, default: null },
+  docs: { type: Object as PropType<Docs>, default: null },
   viewRoute: { type: String, required: true },
   currPage: { type: Number, required: true },
   writeAuth: { type: Boolean, default: true },
-  postFilter: { type: Object, default: null },
+  docsFilter: { type: Object, default: null },
 })
 
-const emit = defineEmits(['post-hit', 'link-hit', 'file-hit', 'post-scrape', 'posts-renewal'])
+const emit = defineEmits(['docs-hit', 'link-hit', 'file-hit', 'docs-scrape', 'docs-renewal'])
 
 const refDelModal = ref()
 const refBlameModal = ref()
 const refAlertModal = ref()
-const refBoardListModal = ref()
-const isCopy = ref(false)
 const refCateListModal = ref()
 const refTrashModal = ref()
 
 const userInfo = inject<ComputedRef<User>>('userInfo')
 const editAuth = computed(
-  () => userInfo?.value?.is_superuser || props.post.user?.pk === userInfo?.value?.pk,
+  () => userInfo?.value?.is_superuser || props.docs.user?.pk === userInfo?.value?.pk,
 )
 
 const prev = ref<number | null>()
 const next = ref<number | null>()
 
-const sortName = computed(() => props.post?.proj_name || '본사 문서')
-const postId = computed(() => Number(route.params.postId))
+const sortName = computed(() => props.docs?.proj_name || '본사 문서')
+const docsId = computed(() => Number(route.params.docsId))
 
-const docStore = useDocument()
-const boardList = computed(() => docStore.boardList)
+const docStore = useDocs()
 const categoryList = computed(() => docStore.categoryList)
-const commentList = computed(() => docStore.commentList)
-const getPostNav = computed(() => docStore.getPostNav)
+const getDocsNav = computed(() => docStore.getDocsNav)
 
-const getPrev = (pk: number) => getPostNav.value.filter(p => p.pk === pk).map(p => p.prev_pk)[0]
-const getNext = (pk: number) => getPostNav.value.filter(p => p.pk === pk).map(p => p.next_pk)[0]
+const getPrev = (pk: number) => getDocsNav.value.filter(p => p.pk === pk).map(p => p.prev_pk)[0]
+const getNext = (pk: number) => getDocsNav.value.filter(p => p.pk === pk).map(p => p.next_pk)[0]
 
-const toLike = () => toPostLike(props.post.pk as number)
+const toLike = () => toPostLike(props.docs.pk as number)
 
 const blameConfirm = () => refBlameModal.value.callModal()
 
 const blameAction = () => {
   refBlameModal.value.close()
-  toPostBlame(props.post.pk as number)
+  toPostBlame(props.docs.pk as number)
 }
 
 const linkHitUp = async (pk: number) => emit('link-hit', pk)
@@ -81,7 +75,7 @@ const shareKakaoTalk = () => {
     objectType: 'feed',
     content: {
       title: '주식회사 바램디앤씨',
-      description: `#공지사항 #${props.post?.title}`,
+      description: `#공지사항 #${props.docs?.title}`,
       imageUrl: 'https://brdnc.co.kr/static/dist/img/icons/ms-icon-310x310.png',
       link: {
         // [내 애플리케이션] > [플랫폼] 에서 등록한 사이트 도메인과 일치해야 함
@@ -90,8 +84,7 @@ const shareKakaoTalk = () => {
       },
     },
     social: {
-      likeCount: props.post.like,
-      commentCount: props.post.comments?.length ?? 0,
+      likeCount: props.docs.like,
       // sharedCount: 45,
     },
     buttons: [
@@ -114,56 +107,47 @@ const shareKakaoTalk = () => {
 }
 
 const toScrape = () => {
-  if (props.post.my_scrape) refAlertModal.value.callModal('', '이미 이 포스트를 스크랩 하였습니다.')
-  else emit('post-scrape', props.post.pk)
+  if (props.docs.my_scrape) refAlertModal.value.callModal('', '이미 이 포스트를 스크랩 하였습니다.')
+  else emit('docs-scrape', props.docs.pk)
 }
 
 const toManage = (fn: number, el?: { nBrd?: number; nProj?: number; nCate?: number }) => {
-  const post = props.post.pk
+  const docs = props.docs.pk
   let state: boolean = false
   if (fn < 4) {
-    if (fn === 1) {
-      isCopy.value = true
-      refBoardListModal.value.callModal()
-    } else if (fn === 2) {
-      isCopy.value = false
-      refBoardListModal.value.callModal()
-    } else if (fn === 3) {
+    if (fn === 3) {
       refCateListModal.value.callModal()
     }
   } else {
     if (fn === 4)
-      state = props.post.is_secret // is_secret
-    else if (fn === 5) state = props.post.is_hide_comment
-    else if (fn === 6)
-      state = props.post.is_notice // is_notice
+      state = props.docs.is_secret // is_secret
     else if (fn === 7)
-      state = props.post.is_blind // is_blind
+      state = props.docs.is_blind // is_blind
     else if (fn === 8)
       refTrashModal.value.callModal() // deleted confirm
     else if (fn === 88) {
       // soft delete
-      state = !!props.post.deleted // is_deleted
+      state = !!props.docs.deleted // is_deleted
       refTrashModal.value.close()
       router.replace({ name: props.viewRoute })
     }
     const payload = {
       board: el?.nBrd,
-      board_name: props.post.board_name,
+      board_name: props.docs.board_name,
       project: el?.nProj,
       category: el?.nCate,
-      content: props.post?.content,
-      post: post as number,
+      content: props.docs?.content,
+      docs: docs as number,
       state,
-      filter: props.postFilter,
+      filter: props.docsFilter,
       manager: userInfo?.value.username as string,
     }
     toPostManage(fn, payload)
   }
 }
 
-const copyPost = (nBrd?: number, nProj?: number) => toManage(11, { nBrd, nProj })
-const movePost = (nBrd?: number, nProj?: number) => toManage(22, { nBrd, nProj })
+// const copyDocs = (nBrd?: number, nProj?: number) => toManage(11, { nBrd, nProj })
+// const moveDocs = (nBrd?: number, nProj?: number) => toManage(22, { nBrd, nProj })
 const changeCate = (nCate?: number) => toManage(33, { nCate })
 
 const getFileName = (file: string) => {
@@ -172,30 +156,25 @@ const getFileName = (file: string) => {
 }
 
 const toEdit = () => {
-  if ((props.post.comments?.length ?? 0) >= 5)
-    refAlertModal.value.callModal('', '5개 이상의 댓글이 달린 게시물은 수정할 수 없습니다.')
-  else
-    router.push({
-      name: `${props.viewRoute} - 수정`,
-      params: { postId: props.post?.pk },
-    })
+  router.push({
+    name: `${props.viewRoute} - 수정`,
+    params: { docsId: props.docs?.pk },
+  })
 }
 
 const deleteConfirm = () => refDelModal.value.callModal()
 
 const toDelete = () => {
   if (userInfo?.value.is_superuser) toManage(88)
-  else if ((props.post.comments?.length ?? 0) < 5) toManage(88)
-  else refAlertModal.value.callModal('', '5개 이상의 댓글이 달린 게시물은 삭제할 수 없습니다.')
   refDelModal.value.close()
 }
 
 watch(
-  () => getPostNav.value,
+  () => getDocsNav.value,
   () => {
-    if (postId.value) {
-      prev.value = getPrev(postId.value)
-      next.value = getNext(postId.value)
+    if (docsId.value) {
+      prev.value = getPrev(docsId.value)
+      next.value = getNext(docsId.value)
     }
   },
 )
@@ -203,52 +182,52 @@ watch(
 onBeforeRouteUpdate((to, from) => {
   const toRoute = (to.name ?? '') as string
   if (toRoute.includes('보기')) {
-    const fromPostId = from.params.postId ? Number(from.params.postId) : null
-    const toPostId = to.params.postId ? Number(to.params.postId) : null
+    const fromDocsId = from.params.docsId ? Number(from.params.docsId) : null
+    const toDocsId = to.params.docsId ? Number(to.params.docsId) : null
 
-    const last = getPostNav.value.length - 1
-    const getLast = getPostNav.value[last]
-    if (toPostId && getLast.pk === fromPostId && getLast.prev_pk === toPostId)
+    const last = getDocsNav.value.length - 1
+    const getLast = getDocsNav.value[last]
+    if (toDocsId && getLast.pk === fromDocsId && getLast.prev_pk === toDocsId)
       // 다음 페이지 목록으로
-      emit('posts-renewal', props.currPage + 1)
+      emit('docs-renewal', props.currPage + 1)
 
-    const getFirst = getPostNav.value[0]
-    if (toPostId && getFirst.pk === fromPostId && getFirst.next_pk === toPostId)
+    const getFirst = getDocsNav.value[0]
+    if (toDocsId && getFirst.pk === fromDocsId && getFirst.next_pk === toDocsId)
       // 이전 페이지 목록으로
-      emit('posts-renewal', props.currPage - 1)
+      emit('docs-renewal', props.currPage - 1)
 
-    if (toPostId) {
-      prev.value = getPrev(toPostId)
-      next.value = getNext(toPostId)
+    if (toDocsId) {
+      prev.value = getPrev(toDocsId)
+      next.value = getNext(toDocsId)
     }
   }
 })
 
 onBeforeMount(() => {
-  if (postId.value) {
-    prev.value = getPrev(postId.value)
-    next.value = getNext(postId.value)
+  if (docsId.value) {
+    prev.value = getPrev(docsId.value)
+    next.value = getNext(docsId.value)
   }
 })
 
 onMounted(() => {
-  if (postId.value && !props.heatedPage?.includes(postId.value)) {
-    emit('post-hit', postId.value)
+  if (docsId.value && !props.heatedPage?.includes(docsId.value)) {
+    emit('docs-hit', docsId.value)
   }
 })
 </script>
 
 <template>
-  <div v-if="post" class="m-0 p-0">
+  <div v-if="docs" class="m-0 p-0">
     <CRow class="mt-5">
       <CCol md="8">
         <h5>
-          <v-icon v-if="post.is_notice" icon="mdi-bullhorn" size="sm" color="blue-grey-darken-1" />
-          {{ post.title }}
+          <v-icon v-if="docs.is_notice" icon="mdi-bullhorn" size="sm" color="blue-grey-darken-1" />
+          {{ docs.title }}
         </h5>
       </CCol>
-      <CCol v-if="post.cate_name" class="pt-1 text-right">
-        <span>[{{ sortName }}] [{{ post.cate_name }}]</span>
+      <CCol v-if="docs.cate_name" class="pt-1 text-right">
+        <span>[{{ sortName }}] [{{ docs.cate_name }}]</span>
       </CCol>
     </CRow>
 
@@ -256,20 +235,16 @@ onMounted(() => {
 
     <CRow class="text-blue-grey mb-5">
       <CCol>
-        <small class="mr-3">작성자 : {{ post.user?.username }}</small>
-        <small class="mr-2">
-          <v-icon icon="mdi-comment-text-multiple" size="sm" />
-          <span class="ml-1">{{ post.comments?.length || 0 }}</span>
-        </small>
+        <small class="mr-3">작성자 : {{ docs.user?.username }}</small>
         <small class="mr-2">
           <v-icon icon="mdi-eye" size="sm" />
-          <span class="ml-1">{{ post.hit }}</span>
+          <span class="ml-1">{{ docs.hit }}</span>
         </small>
         <small class="mr-2">
           <v-icon icon="mdi-heart" size="sm" />
-          <span class="ml-1">{{ post.like }}</span>
+          <span class="ml-1">{{ docs.like }}</span>
         </small>
-        <small class="mr-2 text-btn" @click="toPrint(post.title)">
+        <small class="mr-2 text-btn" @click="toPrint(docs.title)">
           <v-icon icon="mdi-printer" size="sm" />
           <span class="ml-1">프린트</span>
         </small>
@@ -278,12 +253,12 @@ onMounted(() => {
       <CCol class="text-right" md="3">
         <small>
           <v-icon icon="mdi-calendar-clock" size="small" />
-          <span class="ml-2">{{ timeFormat(post.created ?? '') }}</span>
+          <span class="ml-2">{{ timeFormat(docs.created ?? '') }}</span>
         </small>
       </CCol>
     </CRow>
 
-    <CRow v-if="post.is_secret">
+    <CRow v-if="docs.is_secret">
       <CCol>
         <CAlert color="info">
           이 글은 비밀글입니다. 작성자 본인과 관리자만 열람할 수 있습니다.
@@ -291,7 +266,7 @@ onMounted(() => {
       </CCol>
     </CRow>
 
-    <CRow v-if="post.is_blind">
+    <CRow v-if="docs.is_blind">
       <CCol>
         <CAlert color="danger">
           이 글은 블라인드 처리된 글입니다. 작성자 본인과 관리자만 확인이 가능합니다.
@@ -299,39 +274,36 @@ onMounted(() => {
       </CCol>
     </CRow>
 
-    <div v-show="!post.is_blind || userInfo?.pk === post.user?.pk || userInfo?.is_superuser">
+    <div v-show="!docs.is_blind || userInfo?.pk === docs.user?.pk || userInfo?.is_superuser">
       <CRow class="py-2 justify-content-between">
         <CCol md="7" lg="6" xl="5">
-          <table
-            v-if="boardNum !== 1 && post.execution_date"
-            class="table table-bordered mt-2 mb-3"
-          >
+          <table v-if="typeNum !== 1 && docs.execution_date" class="table table-bordered mt-2 mb-3">
             <tbody>
-              <tr v-if="post.lawsuit">
+              <tr v-if="docs.lawsuit">
                 <td class="p-2 bg-blue-grey-lighten-4 text-center">관련사건</td>
                 <td class="p-2">
                   <router-link
-                    :to="{ name: '현장 소송 사건 - 보기', params: { caseId: post.lawsuit } }"
+                    :to="{ name: '현장 소송 사건 - 보기', params: { caseId: docs.lawsuit } }"
                   >
-                    {{ post.lawsuit_name }}
+                    {{ docs.lawsuit_name }}
                   </router-link>
                 </td>
               </tr>
               <tr>
                 <td class="p-2 bg-blue-grey-lighten-4 text-center">발행일자</td>
-                <td class="p-2">{{ post.execution_date }}</td>
+                <td class="p-2">{{ docs.execution_date }}</td>
               </tr>
             </tbody>
           </table>
         </CCol>
 
         <CCol md="7" lg="6" xl="5">
-          <CRow v-if="!!post.links && post.links.length" class="mb-3">
+          <CRow v-if="!!docs.links && docs.links.length" class="mb-3">
             <CCol>
               <CListGroup>
                 <CListGroupItem>Link</CListGroupItem>
                 <CListGroupItem
-                  v-for="l in post.links"
+                  v-for="l in docs.links"
                   :key="l.pk"
                   class="d-flex justify-content-between align-items-center"
                 >
@@ -349,12 +321,12 @@ onMounted(() => {
             </CCol>
           </CRow>
 
-          <CRow v-if="post.files && post.files.length">
+          <CRow v-if="docs.files && docs.files.length">
             <CCol>
               <CListGroup>
                 <CListGroupItem>File</CListGroupItem>
                 <CListGroupItem
-                  v-for="f in post.files"
+                  v-for="f in docs.files"
                   :key="f.pk"
                   class="d-flex justify-content-between align-items-center"
                 >
@@ -376,7 +348,7 @@ onMounted(() => {
 
       <CRow class="my-5 p-3" id="print-area">
         <CCol>
-          <div v-html="sanitizeHtml(post.content)" />
+          <div v-html="sanitizeHtml(docs.content)" />
         </CCol>
       </CRow>
     </div>
@@ -384,9 +356,9 @@ onMounted(() => {
     <CRow class="py-3">
       <CCol class="text-center">
         <v-btn @click="toLike" variant="outlined" icon="true" color="grey" size="small">
-          <v-icon :icon="post.my_like ? 'mdi-heart' : 'mdi-heart-outline'" size="small" />
+          <v-icon :icon="docs.my_like ? 'mdi-heart' : 'mdi-heart-outline'" size="small" />
           <v-tooltip activator="parent" location="end">
-            {{ post.my_like ? '취소' : '좋아요' }}
+            {{ docs.my_like ? '취소' : '좋아요' }}
           </v-tooltip>
         </v-btn>
       </CCol>
@@ -412,23 +384,23 @@ onMounted(() => {
       <CCol class="text-right">
         <v-btn
           variant="tonal"
-          :color="post.my_scrape ? 'primary' : ''"
+          :color="docs.my_scrape ? 'primary' : ''"
           size="small"
           :rounded="0"
           class="mr-1"
           @click="toScrape"
         >
-          스크랩 {{ post.scrape ? `+${post.scrape}` : '' }}
+          스크랩 {{ docs.scrape ? `+${docs.scrape}` : '' }}
         </v-btn>
         <v-btn
           variant="tonal"
-          :color="post.my_blame ? 'primary' : ''"
+          :color="docs.my_blame ? 'primary' : ''"
           size="small"
           :rounded="0"
           class="mr-1"
           @click="blameConfirm"
         >
-          신고 {{ post.blame ? `+${post.blame}` : '' }}
+          신고 {{ docs.blame ? `+${docs.blame}` : '' }}
         </v-btn>
         <v-btn
           v-if="userInfo?.is_superuser"
@@ -459,8 +431,6 @@ onMounted(() => {
 
     <v-divider />
 
-    <Comments :post="post.pk as number" :is-hide="post.is_hide_comment" :comments="commentList" />
-
     <CRow class="py-2">
       <CCol>
         <CButtonGroup role="group">
@@ -477,7 +447,7 @@ onMounted(() => {
             @click="
               router.push({
                 name: `${viewRoute} - 보기`,
-                params: { postId: prev },
+                params: { docsId: prev },
               })
             "
           >
@@ -489,7 +459,7 @@ onMounted(() => {
             @click="
               router.push({
                 name: `${viewRoute} - 보기`,
-                params: { postId: next },
+                params: { docsId: next },
               })
             "
           >
@@ -522,28 +492,18 @@ onMounted(() => {
   <ConfirmModal ref="refBlameModal">
     <template #header>알림</template>
     <template #default>
-      이 게시글을 신고 {{ post.my_blame ? '를 취소' : '' }} 하시겠습니까?<br /><br />
+      이 게시글을 신고 {{ docs.my_blame ? '를 취소' : '' }} 하시겠습니까?<br /><br />
     </template>
     <template #footer>
-      <CButton :color="post.my_blame ? 'secondary' : 'danger'" @click="blameAction">
-        {{ post.my_blame ? '취소' : '신고' }}
+      <CButton :color="docs.my_blame ? 'secondary' : 'danger'" @click="blameAction">
+        {{ docs.my_blame ? '취소' : '신고' }}
       </CButton>
     </template>
   </ConfirmModal>
 
-  <BoardListModal
-    ref="refBoardListModal"
-    :now-board="post?.board ?? undefined"
-    :now-project="post?.project ?? undefined"
-    :board-list="boardList"
-    :is-copy="isCopy"
-    @copy-post="copyPost"
-    @move-post="movePost"
-  />
-
   <CateListModal
     ref="refCateListModal"
-    :now-cate="post?.category ?? undefined"
+    :now-cate="docs?.category ?? undefined"
     :category-list="categoryList"
     @change-cate="changeCate"
   />

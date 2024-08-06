@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onBeforeMount, watch } from 'vue'
+import { ref, computed, onBeforeMount, watch, nextTick } from 'vue'
 import { pageTitle, navMenu } from '@/views/comDocs/_menu/headermixin1'
 import {
   onBeforeRouteUpdate,
@@ -9,8 +9,8 @@ import {
 } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
 import { useCompany } from '@/store/pinia/company'
-import { useDocument, type PostFilter } from '@/store/pinia/document'
-import type { AFile, Attatches, Link, Post, PatchPost } from '@/store/types/document'
+import { useDocs, type DocsFilter } from '@/store/pinia/docs'
+import type { AFile, Attatches, Link, Docs, PatchDocs } from '@/store/types/docs'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ListController from '@/components/Documents/ListController.vue'
@@ -20,12 +20,12 @@ import DocsView from '@/components/Documents/DocsView.vue'
 import DocsForm from '@/components/Documents/DocsForm.vue'
 
 const fController = ref()
-const boardNumber = ref(2)
+const typeNumber = ref(1)
 const mainViewName = ref('본사 일반 문서')
-const postFilter = ref<PostFilter>({
+const docsFilter = ref<DocsFilter>({
   company: '',
   project: '',
-  board: boardNumber.value,
+  doc_type: typeNumber.value,
   is_com: true,
   category: '',
   ordering: '-created',
@@ -43,23 +43,23 @@ const cngFiles = ref<
   }[]
 >([])
 
-const listFiltering = (payload: PostFilter) => {
-  postFilter.value.project = !!payload.is_com ? '' : payload.project
-  postFilter.value.is_com = payload.is_com
-  postFilter.value.ordering = payload.ordering
-  postFilter.value.search = payload.search
-  if (company.value) fetchPostList({ ...postFilter.value })
+const listFiltering = (payload: DocsFilter) => {
+  docsFilter.value.project = !!payload.is_com ? '' : payload.project
+  docsFilter.value.is_com = payload.is_com
+  docsFilter.value.ordering = payload.ordering
+  docsFilter.value.search = payload.search
+  if (company.value) fetchDocsList({ ...docsFilter.value })
 }
 
 const selectCate = (cate: number) => {
-  postFilter.value.page = 1
-  postFilter.value.category = cate
-  listFiltering(postFilter.value)
+  docsFilter.value.page = 1
+  docsFilter.value.category = cate
+  listFiltering(docsFilter.value)
 }
 
 const pageSelect = (page: number) => {
-  postFilter.value.page = page
-  listFiltering(postFilter.value)
+  docsFilter.value.page = page
+  listFiltering(docsFilter.value)
 }
 
 const comStore = useCompany()
@@ -68,24 +68,24 @@ const company = computed(() => comStore.company?.pk)
 const accStore = useAccount()
 const writeAuth = computed(() => accStore.writeComDocs)
 
-const createScrape = (payload: { post: number; user: number }) => accStore.createScrape(payload)
+const createDocScrape = (payload: { docs: number; user: number }) =>
+  accStore.createDocScrape(payload)
 
-const docStore = useDocument()
-const post = computed(() => docStore.post)
-const postList = computed(() => docStore.postList)
-const noticeList = computed(() => docStore.noticeList)
+const docStore = useDocs()
+const docs = computed(() => docStore.docs)
+const docsList = computed(() => docStore.docsList)
 const categoryList = computed(() => docStore.categoryList)
 
-const fetchBoardList = () => docStore.fetchBoardList()
+const fetchDocTypeList = () => docStore.fetchDocTypeList()
 const fetchLink = (pk: number) => docStore.fetchLink(pk)
 const fetchFile = (pk: number) => docStore.fetchFile(pk)
-const fetchPost = (pk: number) => docStore.fetchPost(pk)
-const fetchPostList = (payload: PostFilter) => docStore.fetchPostList(payload)
-const fetchCategoryList = (board: number) => docStore.fetchCategoryList(board)
+const fetchDocs = (pk: number) => docStore.fetchDocs(pk)
+const fetchDocsList = (payload: DocsFilter) => docStore.fetchDocsList(payload)
+const fetchCategoryList = (type: number) => docStore.fetchCategoryList(type)
 
-const createPost = (payload: { form: FormData }) => docStore.createPost(payload)
-const updatePost = (payload: { pk: number; form: FormData }) => docStore.updatePost(payload)
-const patchPost = (payload: PatchPost & { filter: PostFilter }) => docStore.patchPost(payload)
+const createDocs = (payload: { form: FormData }) => docStore.createDocs(payload)
+const updateDocs = (payload: { pk: number; form: FormData }) => docStore.updateDocs(payload)
+const patchDocs = (payload: PatchDocs & { filter: DocsFilter }) => docStore.patchDocs(payload)
 const patchLink = (payload: Link) => docStore.patchLink(payload)
 const patchFile = (payload: AFile) => docStore.patchFile(payload)
 
@@ -97,25 +97,25 @@ const [route, router] = [
 ]
 
 watch(route, val => {
-  if (val.params.postId) fetchPost(Number(val.params.postId))
-  else docStore.post = null
+  if (val.params.DocsId) fetchDocs(Number(val.params.docsId))
+  else docStore.docs = null
 })
 
-const postsRenewal = (page: number) => {
-  postFilter.value.page = page
-  fetchPostList(postFilter.value)
+const docsRenewal = (page: number) => {
+  docsFilter.value.page = page
+  fetchDocsList(docsFilter.value)
 }
 
 const fileChange = (payload: { pk: number; file: File }) => cngFiles.value.push(payload)
 
 const fileUpload = (file: File) => newFiles.value.push(file)
 
-const postScrape = (post: number) => {
+const docsScrape = (docs: number) => {
   const user = accStore.userInfo?.pk as number
-  createScrape({ post, user }) // 스크랩 추가
+  createDocScrape({ docs, user }) // 스크랩 추가
 }
 
-const onSubmit = async (payload: Post & Attatches) => {
+const onSubmit = async (payload: Docs & Attatches) => {
   if (company.value) {
     const { pk, ...getData } = payload
     getData.company = company.value
@@ -141,13 +141,13 @@ const onSubmit = async (payload: Post & Attatches) => {
     }
 
     if (pk) {
-      await updatePost({ pk, form })
+      await updateDocs({ pk, form })
       await router.replace({
         name: `${mainViewName.value} - 보기`,
-        params: { postId: pk },
+        params: { docsId: pk },
       })
     } else {
-      await createPost({ form })
+      await createDocs({ form })
       await router.replace({ name: `${mainViewName.value}` })
       fController.value.resetForm()
     }
@@ -156,12 +156,12 @@ const onSubmit = async (payload: Post & Attatches) => {
   }
 }
 
-const postHit = async (pk: number) => {
+const docsHit = async (pk: number) => {
   if (!heatedPage.value.includes(pk)) {
     heatedPage.value.push(pk)
-    await fetchPost(pk)
-    const hit = (post.value?.hit ?? 0) + 1
-    await patchPost({ pk, hit, filter: postFilter.value })
+    await fetchDocs(pk)
+    const hit = (docs.value?.hit ?? 0) + 1
+    await patchDocs({ pk, hit, filter: docsFilter.value })
   }
 }
 const linkHit = async (pk: number) => {
@@ -175,19 +175,19 @@ const fileHit = async (pk: number) => {
   await patchFile({ pk, hit })
 }
 
-const dataSetup = (pk: number, postId?: string | string[]) => {
-  fetchBoardList()
-  postFilter.value.company = pk
-  fetchCategoryList(boardNumber.value)
-  fetchPostList(postFilter.value)
-  if (postId) fetchPost(Number(postId))
+const dataSetup = (pk: number, docsId?: string | string[]) => {
+  fetchDocTypeList()
+  docsFilter.value.company = pk
+  fetchCategoryList(typeNumber.value)
+  fetchDocsList(docsFilter.value)
+  if (docsId) fetchDocs(Number(docsId))
 }
 
 const dataReset = () => {
-  docStore.post = null
-  docStore.postList = []
-  docStore.postCount = 0
-  postFilter.value.company = ''
+  docStore.docs = null
+  docStore.docsList = []
+  docStore.docsCount = 0
+  docsFilter.value.company = ''
   router.replace({ name: `${mainViewName.value}` })
 }
 
@@ -196,9 +196,9 @@ const comSelect = (target: number | null) => {
   if (!!target) dataSetup(target)
 }
 
-onBeforeRouteUpdate(() => dataSetup(company.value || comStore.initComId, route.params?.postId))
+onBeforeRouteUpdate(to => dataSetup(company.value || comStore.initComId, to.params?.docsId))
 
-onBeforeMount(() => dataSetup(company.value || comStore.initComId, route.params?.postId))
+onBeforeMount(() => dataSetup(company.value || comStore.initComId, route.params?.docsId))
 </script>
 
 <template>
@@ -215,21 +215,20 @@ onBeforeMount(() => dataSetup(company.value || comStore.initComId, route.params?
         <ListController
           ref="fController"
           :com-from="true"
-          :post-filter="postFilter"
+          :docs-filter="docsFilter"
           @list-filter="listFiltering"
         />
 
         <CategoryTabs
-          :category="postFilter.category as number"
+          :category="docsFilter.category as number"
           :category-list="categoryList"
           @select-cate="selectCate"
         />
 
         <DocsList
           :company="company as number"
-          :page="postFilter.page"
-          :notice-list="noticeList"
-          :post-list="postList"
+          :page="docsFilter.page"
+          :docs-list="docsList"
           :view-route="mainViewName"
           :write-auth="writeAuth"
           @page-select="pageSelect"
@@ -238,26 +237,26 @@ onBeforeMount(() => dataSetup(company.value || comStore.initComId, route.params?
 
       <div v-else-if="route.name.includes('보기')">
         <DocsView
-          :board-num="boardNumber"
+          :type-num="typeNumber"
           :heated-page="heatedPage"
-          :re-order="postFilter.ordering !== '-created'"
-          :category="postFilter.category as number"
-          :post="post as Post"
+          :re-order="docsFilter.ordering !== '-created'"
+          :category="docsFilter.category as number"
+          :docs="docs as Docs"
           :view-route="mainViewName"
-          :curr-page="postFilter.page ?? 1"
+          :curr-page="docsFilter.page ?? 1"
           :write-auth="writeAuth"
-          :post-filter="postFilter"
-          @post-hit="postHit"
+          :docs-filter="docsFilter"
+          @docs-hit="docsHit"
           @link-hit="linkHit"
           @file-hit="fileHit"
-          @post-scrape="postScrape"
-          @posts-renewal="postsRenewal"
+          @docs-scrape="docsScrape"
+          @docs-renewal="docsRenewal"
         />
       </div>
 
       <div v-else-if="route.name.includes('작성')">
         <DocsForm
-          :board-num="boardNumber"
+          :board-num="typeNumber"
           :category-list="categoryList"
           :view-route="mainViewName"
           :write-auth="writeAuth"
@@ -268,9 +267,9 @@ onBeforeMount(() => dataSetup(company.value || comStore.initComId, route.params?
 
       <div v-else-if="route.name.includes('수정')">
         <DocsForm
-          :board-num="boardNumber"
+          :board-num="typeNumber"
           :category-list="categoryList"
-          :post="post as Post"
+          :docs="docs as Docs"
           :view-route="mainViewName"
           :write-auth="writeAuth"
           @file-change="fileChange"
