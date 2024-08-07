@@ -6,7 +6,7 @@ import { TableSecondary } from '@/utils/cssMixins'
 import type { Post as P } from '@/store/types/document'
 import Pagination from '@/components/Pagination'
 import Post from './components/Post.vue'
-import TopPosts from '@/components/Documents/components/TopPosts.vue'
+import TopPosts from '@/components/Posts/components/TopPosts.vue'
 
 defineProps({
   company: { type: Number, default: null },
