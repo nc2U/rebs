@@ -176,7 +176,7 @@ class DocScrape(models.Model):
     created = models.DateTimeField('보관일', auto_now_add=True)
 
     def __str__(self):
-        return self.title if self.title else self.post.title
+        return self.title if self.title else self.docs.title
 
     class Meta:
         verbose_name = '문서 스크랩'
