@@ -153,7 +153,7 @@ class DocsInScrapeSerializer(serializers.ModelSerializer):
 
 
 class DocScrapeSerializer(serializers.ModelSerializer):
-    post = DocsInScrapeSerializer(read_only=True)
+    docs = DocsInScrapeSerializer(read_only=True)
 
     class Meta:
         model = DocScrape
