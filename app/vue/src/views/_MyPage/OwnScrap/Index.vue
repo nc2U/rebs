@@ -10,6 +10,7 @@ const mainViewName = ref('스크랩')
 const page = ref<number>(1)
 
 const accStore = useAccount()
+const docScrapeList = computed(() => accStore.docScrapeList)
 const scrapeList = computed(() => accStore.scrapeList)
 const scrapeCount = computed(() => accStore.scrapeCount)
 
@@ -35,6 +36,7 @@ onBeforeMount(() => fetchScrapeList(page.value))
     <CCardBody class="pb-5">
       <div class="pt-3">
         <ScrapeList
+          :doc-scrape-list="docScrapeList"
           :scrape-list="scrapeList"
           :scrape-count="scrapeCount"
           :view-route="mainViewName"
