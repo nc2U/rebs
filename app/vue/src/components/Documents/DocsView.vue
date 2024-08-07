@@ -105,44 +105,41 @@ const toScrape = () => {
   else emit('docs-scrape', props.docs.pk)
 }
 
-const toManage = (fn: number, el?: { nBrd?: number; nProj?: number; nCate?: number }) => {
-  const post = props.post.pk
+const toManage = (fn: number, el?: { nType?: number; nProj?: number; nCate?: number }) => {
+  const docs = props.docs.pk
   let state: boolean = false
   if (fn < 4) {
     if (fn === 1) {
       isCopy.value = true
-      refBoardListModal.value.callModal()
+      refTypeListModal.value.callModal()
     } else if (fn === 2) {
       isCopy.value = false
-      refBoardListModal.value.callModal()
+      refTypeListModal.value.callModal()
     } else if (fn === 3) {
       refCateListModal.value.callModal()
     }
   } else {
     if (fn === 4)
-      state = props.post.is_secret // is_secret
-    else if (fn === 5) state = props.post.is_hide_comment
-    else if (fn === 6)
-      state = props.post.is_notice // is_notice
+      state = props.docs.is_secret // is_secret
     else if (fn === 7)
-      state = props.post.is_blind // is_blind
+      state = props.docs.is_blind // is_blind
     else if (fn === 8)
       refTrashModal.value.callModal() // deleted confirm
     else if (fn === 88) {
       // soft delete
-      state = !!props.post.deleted // is_deleted
+      state = !!props.docs.deleted // is_deleted
       refTrashModal.value.close()
       router.replace({ name: props.viewRoute })
     }
     const payload = {
-      board: el?.nBrd,
-      board_name: props.post.board_name,
+      doc_type: el?.nType,
+      type_name: props.docs.type_name,
       project: el?.nProj,
       category: el?.nCate,
-      content: props.post?.content,
-      post: post as number,
+      content: props.docs?.content,
+      docs: docs as number,
       state,
-      filter: props.postFilter,
+      filter: props.docsFilter,
       manager: userInfo?.value.username as string,
     }
     toDocsManage(fn, payload)
@@ -350,22 +347,11 @@ onMounted(() => {
       </CRow>
 
       <CRow class="my-5 p-3" id="print-area">
-        <CCol>
+        <CCol class="pb-5">
           <div v-html="sanitizeHtml(docs.content)" />
         </CCol>
       </CRow>
     </div>
-
-    <CRow class="py-3">
-      <CCol class="text-center">
-        <v-btn @click="toLike" variant="outlined" icon="true" color="grey" size="small">
-          <v-icon :icon="docs.my_like ? 'mdi-heart' : 'mdi-heart-outline'" size="small" />
-          <v-tooltip activator="parent" location="end">
-            {{ docs.my_like ? '취소' : '좋아요' }}
-          </v-tooltip>
-        </v-btn>
-      </CCol>
-    </CRow>
 
     <CRow class="my-3 px-3">
       <CCol class="text-grey-darken-1 pt-2 social">
@@ -488,8 +474,8 @@ onMounted(() => {
     :now-project="docs?.project ?? undefined"
     :doc-type-list="docTypeList"
     :is-copy="isCopy"
-    @copy-post="copyDocs"
-    @move-post="moveDocs"
+    @copy-docs="copyDocs"
+    @move-docs="moveDocs"
   />
 
   <CateListModal

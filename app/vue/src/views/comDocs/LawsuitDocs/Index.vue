@@ -70,7 +70,8 @@ const company = computed(() => comStore.company?.pk)
 const accStore = useAccount()
 const writeAuth = computed(() => accStore.writeComDocs)
 
-const createScrape = (payload: { docs: number; user: number }) => accStore.createScrape(payload)
+const createDocScrape = (payload: { docs: number; user: number }) =>
+  accStore.createDocScrape(payload)
 
 const docStore = useDocs()
 const docs = computed(() => docStore.docs)
@@ -114,7 +115,7 @@ const fileUpload = (file: File) => newFiles.value.push(file)
 
 const docsScrape = (docs: number) => {
   const user = accStore.userInfo?.pk as number
-  createScrape({ docs, user }) // 스크랩 추가
+  createDocScrape({ docs, user }) // 스크랩 추가
 }
 
 const onSubmit = async (payload: Docs & Attatches) => {
