@@ -12,7 +12,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from docs.models import Document
-# from document.models import Post, Comment
+from board.models import Post, Comment
 from work.models import IssueProject
 
 
@@ -133,11 +133,10 @@ class Profile(models.Model):
     birth_date = models.DateField('생년월일', null=True, blank=True)
     cell_phone = models.CharField('휴대폰', max_length=13, blank=True)
     image = models.ImageField(upload_to='users/', null=True, blank=True, verbose_name='프로필 이미지')
-
-    # like_posts = models.ManyToManyField(Post, blank=True, related_name='post_likes')
-    # like_comments = models.ManyToManyField(Comment, blank=True, related_name='comment_likes')
-    # blame_posts = models.ManyToManyField(Post, blank=True, related_name='post_blames')
-    # blame_comments = models.ManyToManyField(Comment, blank=True, related_name='comment_blames')
+    like_posts = models.ManyToManyField(Post, blank=True, related_name='post_likes')
+    like_comments = models.ManyToManyField(Comment, blank=True, related_name='comment_likes')
+    blame_posts = models.ManyToManyField(Post, blank=True, related_name='post_blames')
+    blame_comments = models.ManyToManyField(Comment, blank=True, related_name='comment_blames')
 
     def __str__(self):
         return self.name
@@ -184,18 +183,18 @@ class DocScrape(models.Model):
         verbose_name_plural = '문서 스크랩'
 
 
-# class PostScrape(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     post = models.ForeignKey(Post, on_delete=models.CASCADE)
-#     title = models.CharField('스크랩 타이틀', max_length=50, blank=True, default='')
-#     created = models.DateTimeField('보관일', auto_now_add=True)
-#
-#     def __str__(self):
-#         return self.title if self.title else self.post.title
-#
-#     class Meta:
-#         verbose_name = '게시글 스크랩'
-#         verbose_name_plural = '게시글 스크랩'
+class PostScrape(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    title = models.CharField('스크랩 타이틀', max_length=50, blank=True, default='')
+    created = models.DateTimeField('보관일', auto_now_add=True)
+
+    def __str__(self):
+        return self.title if self.title else self.post.title
+
+    class Meta:
+        verbose_name = '게시글 스크랩'
+        verbose_name_plural = '게시글 스크랩'
 
 
 class Todo(models.Model):
