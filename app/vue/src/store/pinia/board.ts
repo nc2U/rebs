@@ -29,7 +29,7 @@ export type PostFilter = {
   page?: number
 }
 
-export const useDocument = defineStore('document', () => {
+export const useBoard = defineStore('board', () => {
   // state & getters
   const groupList = ref<Group[]>([])
 
