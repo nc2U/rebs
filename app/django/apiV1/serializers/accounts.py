@@ -4,10 +4,12 @@ from django.db import transaction
 from django.core.mail import send_mail
 from rest_framework import serializers
 
-from accounts.models import User, StaffAuth, Profile, Todo, DocScrape, PostScrape, PasswordResetToken
+from accounts.models import User, StaffAuth, Profile, Todo, DocScrape, PasswordResetToken  # , PostScrape
 from work.models import IssueProject
 from docs.models import Document
-from document.models import Post
+
+
+# from document.models import Post
 
 
 # Accounts --------------------------------------------------------------------------
@@ -167,27 +169,27 @@ class DocScrapeSerializer(serializers.ModelSerializer):
         return scrape
 
 
-class PostInScrapeSerializer(serializers.ModelSerializer):
-    board_name = serializers.SlugField(source='board', read_only=True)
-
-    class Meta:
-        model = Post
-        fields = ('pk', 'board', 'board_name', 'project', 'title')
-
-
-class PostScrapeSerializer(serializers.ModelSerializer):
-    post = PostInScrapeSerializer(read_only=True)
-
-    class Meta:
-        model = PostScrape
-        fields = ('pk', 'user', 'post', 'title', 'created')
-
-    def create(self, validated_data):
-        post = self.initial_data.get('post')
-        user = validated_data.get('user')
-        scrape = PostScrape(post_id=post, user=user)
-        scrape.save()
-        return scrape
+# class PostInScrapeSerializer(serializers.ModelSerializer):
+#     board_name = serializers.SlugField(source='board', read_only=True)
+#
+#     class Meta:
+#         model = Post
+#         fields = ('pk', 'board', 'board_name', 'project', 'title')
+#
+#
+# class PostScrapeSerializer(serializers.ModelSerializer):
+#     post = PostInScrapeSerializer(read_only=True)
+#
+#     class Meta:
+#         model = PostScrape
+#         fields = ('pk', 'user', 'post', 'title', 'created')
+#
+#     def create(self, validated_data):
+#         post = self.initial_data.get('post')
+#         user = validated_data.get('user')
+#         scrape = PostScrape(post_id=post, user=user)
+#         scrape.save()
+#         return scrape
 
 
 class TodoSerializer(serializers.ModelSerializer):

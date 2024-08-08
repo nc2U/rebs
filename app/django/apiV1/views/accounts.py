@@ -47,12 +47,12 @@ class DocScrapeViewSet(viewsets.ModelViewSet):
     search_fields = ('title', 'post__title', 'post__content')
 
 
-class PostScrapeViewSet(viewsets.ModelViewSet):
-    queryset = PostScrape.objects.all()
-    serializer_class = PostScrapeSerializer
-    permission_classes = (permissions.IsAuthenticated, IsOwnerOnly)
-    filterset_fields = ('user',)
-    search_fields = ('title', 'post__title', 'post__content')
+# class PostScrapeViewSet(viewsets.ModelViewSet):
+#     queryset = PostScrape.objects.all()
+#     serializer_class = PostScrapeSerializer
+#     permission_classes = (permissions.IsAuthenticated, IsOwnerOnly)
+#     filterset_fields = ('user',)
+#     search_fields = ('title', 'post__title', 'post__content')
 
 
 class TodoViewSet(viewsets.ModelViewSet):

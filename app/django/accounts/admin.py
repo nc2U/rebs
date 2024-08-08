@@ -4,7 +4,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
 
 from .forms import UserCreationForm, UserChangeForm
-from .models import User, StaffAuth, Profile, Todo, DocScrape, PostScrape
+from .models import User, StaffAuth, Profile, Todo, DocScrape  # , PostScrape
 
 
 # class StaffAuthInline(admin.StackedInline):
@@ -55,8 +55,7 @@ class DocScrapeAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('pk', 'user', 'docs', 'title', 'created')
     list_display_links = ('user', 'docs')
 
-
-@admin.register(PostScrape)
-class DocScrapeAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('pk', 'user', 'post', 'title', 'created')
-    list_display_links = ('user', 'post')
+# @admin.register(PostScrape)
+# class DocScrapeAdmin(ImportExportMixin, admin.ModelAdmin):
+#     list_display = ('pk', 'user', 'post', 'title', 'created')
+#     list_display_links = ('user', 'post')

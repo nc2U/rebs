@@ -4,7 +4,7 @@ from rest_framework import serializers
 from cash.models import BankCode, CompanyBankAccount, ProjectBankAccount, CashBook, ProjectCashBook, \
     CompanyCashBookCalculation, ProjectCashBookCalculation
 from rebs.models import AccountSubD1, AccountSubD2, AccountSubD3, ProjectAccountD2, ProjectAccountD3
-from .document import UserInDocumentsSerializer
+from .contract import SimpleUserSerializer
 
 
 # Cash --------------------------------------------------------------------------
@@ -188,7 +188,7 @@ class CashBookSerializer(serializers.ModelSerializer):
 
 
 class CompanyCashCalcSerializer(serializers.ModelSerializer):
-    user = UserInDocumentsSerializer(read_only=True)
+    user = SimpleUserSerializer(read_only=True)
 
     class Meta:
         model = CompanyCashBookCalculation
@@ -368,7 +368,7 @@ class ProjectCashBookSerializer(serializers.ModelSerializer):
 
 
 class ProjectCashCalcSerializer(serializers.ModelSerializer):
-    user = UserInDocumentsSerializer(read_only=True)
+    user = SimpleUserSerializer(read_only=True)
 
     class Meta:
         model = ProjectCashBookCalculation

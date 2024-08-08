@@ -20,7 +20,7 @@ from django.views.generic import View
 from cash.models import CashBook, ProjectCashBook
 from company.models import Company, Staff, Department, JobGrade, Position, DutyTitle
 from contract.models import Contract, Succession, ContractorRelease, OrderGroup
-from document.models import LawsuitCase
+from docs.models import LawsuitCase
 from items.models import UnitType, BuildingUnit, HouseUnit
 from notice.models import SalesBillIssue
 from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
