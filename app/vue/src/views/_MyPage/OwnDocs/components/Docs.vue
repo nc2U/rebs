@@ -6,15 +6,14 @@ import { cutString, timeFormat } from '@/utils/baseMixins'
 const props = defineProps({ docs: { type: Object as PropType<Docs>, default: null } })
 
 const viewRoute = computed(() => {
-  if (props.docs?.board === 1) return '공지 사항'
   if (!!props.docs?.project) {
-    if (props.docs.board === 2) return '현장 일반 문서'
-    else if (props.docs.board === 3) return '현장 소송 문서'
+    if (props.docs.doc_type === 1) return '현장 일반 문서'
+    else if (props.docs.doc_type === 2) return '현장 소송 문서'
   } else {
-    if (props.docs.board === 2) return '본사 일반 문서'
-    else if (props.docs.board === 3) return '본사 소송 문서'
+    if (props.docs.doc_type === 1) return '본사 일반 문서'
+    else if (props.docs.doc_type === 2) return '본사 소송 문서'
   }
-  return '공지 사항'
+  return '현장 일반 문서'
 })
 </script>
 
