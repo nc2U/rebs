@@ -105,7 +105,7 @@ class Post(models.Model):
         self.save(update_fields=['deleted'])
 
 
-class Link(models.Model):
+class PostLink(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물', related_name='links')
     link = models.URLField(max_length=500, verbose_name='링크')
     hit = models.PositiveIntegerField('클릭수', default=0)
@@ -114,7 +114,7 @@ class Link(models.Model):
         return self.link
 
 
-class File(models.Model):
+class PostFile(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물', related_name='files')
     file = models.FileField(upload_to='post/docs/%Y/%m/%d/', verbose_name='파일')
     file_name = models.CharField('파일명', max_length=100, blank=True)
@@ -135,7 +135,7 @@ class File(models.Model):
         super().save(*args, **kwargs)
 
 
-@receiver(pre_delete, sender=File)
+@receiver(pre_delete, sender=PostFile)
 def delete_file_on_delete(sender, instance, **kwargs):
     # Check if the file exists before attempting to delete it
     if instance.file:
@@ -143,7 +143,7 @@ def delete_file_on_delete(sender, instance, **kwargs):
             os.remove(instance.file.path)
 
 
-class Image(models.Model):
+class PostImage(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, default=None, verbose_name='게시물', related_name='images')
     image = models.ImageField(upload_to='post/img/%Y/%m/%d/', verbose_name='이미지')
     image_name = models.CharField('파일명', max_length=100, blank=True)
@@ -163,7 +163,7 @@ class Image(models.Model):
         super().save(*args, **kwargs)
 
 
-@receiver(pre_delete, sender=Image)
+@receiver(pre_delete, sender=PostImage)
 def delete_file_on_delete(sender, instance, **kwargs):
     # Check if the file exists before attempting to delete it
     if instance.image:

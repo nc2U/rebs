@@ -8,7 +8,7 @@ from django.db.models import Q
 from rest_framework import serializers
 
 from accounts.models import User, Profile
-from board.models import Group, Board, PostCategory, Post, Image, Link, File, Comment, Tag
+from board.models import Group, Board, PostCategory, Post, PostLink, PostFile, PostImage, Comment, Tag
 
 
 # Board --------------------------------------------------------------------------
@@ -38,13 +38,13 @@ class UserInDocumentsSerializer(serializers.ModelSerializer):
 
 class LinksInPostSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Link
+        model = PostLink
         fields = ('pk', 'post', 'link', 'hit')
 
 
 class FilesInPostSerializer(serializers.ModelSerializer):
     class Meta:
-        model = File
+        model = PostFile
         fields = ('pk', 'post', 'file', 'hit')
 
 
@@ -171,14 +171,14 @@ class PostSerializer(serializers.ModelSerializer):
             new_links = self.initial_data.getlist('newLinks')
             if new_links:
                 for link in new_links:
-                    Link.objects.create(post=post, link=self.to_python(link))
+                    PostLink.objects.create(post=post, link=self.to_python(link))
 
         # Files 처리
         if self.initial_data.get('newFiles'):
             new_files = self.initial_data.getlist('newFiles')
             if new_files:
                 for file in new_files:
-                    File.objects.create(post=post, file=file)
+                    PostFile.objects.create(post=post, file=file)
 
         return post
 
@@ -198,7 +198,7 @@ class PostSerializer(serializers.ModelSerializer):
             if old_links:
                 for json_link in old_links:
                     link = json.loads(json_link)
-                    link_object = Link.objects.get(pk=link.get('pk'))
+                    link_object = PostLink.objects.get(pk=link.get('pk'))
                     if link.get('del'):
                         link_object.delete()
                     else:
@@ -208,7 +208,7 @@ class PostSerializer(serializers.ModelSerializer):
             new_links = self.initial_data.getlist('newLinks')
             if new_links:
                 for link in new_links:
-                    Link.objects.create(post=instance, link=self.to_python(link))
+                    PostLink.objects.create(post=instance, link=self.to_python(link))
 
             # Files 처리
             old_files = self.initial_data.getlist('files')
@@ -219,7 +219,7 @@ class PostSerializer(serializers.ModelSerializer):
 
                 for json_file in old_files:
                     file = json.loads(json_file)
-                    file_object = File.objects.get(pk=file.get('pk'))
+                    file_object = PostFile.objects.get(pk=file.get('pk'))
 
                     if file.get('del'):
                         file_object.delete()
@@ -235,7 +235,7 @@ class PostSerializer(serializers.ModelSerializer):
             new_files = self.initial_data.getlist('newFiles')
             if new_files:
                 for file in new_files:
-                    File.objects.create(post=instance, file=file)
+                    PostFile.objects.create(post=instance, file=file)
         except AttributeError:
             pass
 
@@ -284,22 +284,22 @@ class PostBlameSerializer(serializers.ModelSerializer):
         return instance
 
 
-class ImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Image
-        fields = ('pk', 'post', 'image')
-
-
 class LinkSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Link
+        model = PostLink
         fields = ('pk', 'post', 'link', 'hit')
 
 
 class FileSerializer(serializers.ModelSerializer):
     class Meta:
-        model = File
+        model = PostFile
         fields = ('pk', 'post', 'file', 'hit')
+
+
+class ImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostImage
+        fields = ('pk', 'post', 'image')
 
 
 class SimplePostInCommentSerializer(serializers.ModelSerializer):

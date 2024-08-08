@@ -98,19 +98,19 @@ class PostBlameViewSet(viewsets.ModelViewSet):
 
 
 class PostLinkViewSet(viewsets.ModelViewSet):
-    queryset = Link.objects.all()
+    queryset = PostLink.objects.all()
     serializer_class = LinkSerializer
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
 
 
 class PostFileViewSet(viewsets.ModelViewSet):
-    queryset = File.objects.all()
+    queryset = PostFile.objects.all()
     serializer_class = FileSerializer
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
 
 
 class PostImageViewSet(viewsets.ModelViewSet):
-    queryset = Image.objects.all()
+    queryset = PostImage.objects.all()
     serializer_class = ImageSerializer
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
 

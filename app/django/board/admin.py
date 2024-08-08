@@ -1,6 +1,6 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
-from .models import Group, Board, PostCategory, Post, Image, File, Link, Comment, Tag
+from .models import Group, Board, PostCategory, Post, PostLink, PostFile, PostImage, Comment, Tag
 
 
 @admin.register(Group)
@@ -35,12 +35,17 @@ class CategoryAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class LinkInline(admin.TabularInline):
-    model = Link
+    model = PostLink
     extra = 1
 
 
 class FileInline(admin.TabularInline):
-    model = File
+    model = PostFile
+    extra = 1
+
+
+class ImageInline(admin.TabularInline):
+    model = PostImage
     extra = 1
 
 
@@ -56,7 +61,7 @@ class PostAdmin(ImportExportMixin, admin.ModelAdmin):
     list_editable = ('board', 'is_notice', 'project', 'category')
     search_fields = ('title', 'content')
     list_filter = ('board', 'is_notice', 'project', 'category')
-    inlines = (LinkInline, FileInline, CommentInline)
+    inlines = (LinkInline, FileInline, ImageInline, CommentInline)
 
 
 @admin.register(Tag)
