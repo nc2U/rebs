@@ -87,7 +87,7 @@ const myPage = {
       meta: { title: '휴지통', auth: true, except: true },
       children: [
         {
-          path: ':postId(\\d+)',
+          path: ':docsId(\\d+)',
           name: '휴지통 - 보기',
           component: () => import('@/views/_MyPage/TrashCan/Index.vue'),
           meta: { title: '휴지통', auth: true, except: true },
