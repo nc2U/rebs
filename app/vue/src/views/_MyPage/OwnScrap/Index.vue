@@ -7,6 +7,7 @@ import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ScrapeList from '@/views/_MyPage/OwnScrap/components/ScrapeList.vue'
 
 const mainViewName = ref('스크랩')
+const sort = ref<'docs' | 'board'>('docs')
 const page = ref<number>(1)
 
 const accStore = useAccount()
@@ -35,7 +36,41 @@ onBeforeMount(() => fetchScrapeList(page.value))
   <ContentBody>
     <CCardBody class="pb-5">
       <div class="pt-3">
+        <CRow class="pb-2">
+          <CCol sm="12" lg="9" xl="6">
+            <CRow>
+              <CCol class="d-grid gap-2 pr-0">
+                <CFormCheck
+                  v-model="sort"
+                  value="docs"
+                  :button="{
+                    color: 'primary',
+                    variant: 'outline',
+                    shape: 'rounded-0',
+                  }"
+                  type="radio"
+                  name="options-outlined"
+                  id="primary-outlined"
+                  label="문서"
+                />
+              </CCol>
+              <CCol class="d-grid gap-2 pl-0">
+                <CFormCheck
+                  v-model="sort"
+                  value="board"
+                  :button="{ color: 'success', variant: 'outline', shape: 'rounded-0' }"
+                  type="radio"
+                  name="options-outlined"
+                  id="success-outlined"
+                  label="게시글"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
+
         <ScrapeList
+          v-if="sort === 'docs'"
           :doc-scrape-list="docScrapeList"
           :scrape-list="scrapeList"
           :scrape-count="scrapeCount"
@@ -45,6 +80,7 @@ onBeforeMount(() => fetchScrapeList(page.value))
           @del-scrape="delScrape"
           @page-select="pageSelect"
         />
+        <div v-else>???</div>
       </div>
     </CCardBody>
   </ContentBody>

@@ -12,6 +12,7 @@ import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const mainViewName = ref('휴지통')
 const category = ref()
+const sort = ref<'docs' | 'board'>('docs')
 const page = ref<number>(1)
 
 const docStore = useDocs()
@@ -68,7 +69,41 @@ onBeforeMount(() => {
   <ContentBody>
     <CCardBody class="pb-5">
       <div v-if="route.name === mainViewName" class="pt-3">
+        <CRow class="pb-2">
+          <CCol sm="12" lg="9" xl="6">
+            <CRow>
+              <CCol class="d-grid gap-2 pr-0">
+                <CFormCheck
+                  v-model="sort"
+                  value="docs"
+                  :button="{
+                    color: 'primary',
+                    variant: 'outline',
+                    shape: 'rounded-0',
+                  }"
+                  type="radio"
+                  name="options-outlined"
+                  id="primary-outlined"
+                  label="문서"
+                />
+              </CCol>
+              <CCol class="d-grid gap-2 pl-0">
+                <CFormCheck
+                  v-model="sort"
+                  value="board"
+                  :button="{ color: 'success', variant: 'outline', shape: 'rounded-0' }"
+                  type="radio"
+                  name="options-outlined"
+                  id="success-outlined"
+                  label="게시글"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
+
         <TrashDocsList
+          v-if="sort === 'docs'"
           :trash-docs-list="trashDocsList"
           :trash-docs-count="trashDocsCount"
           :view-route="mainViewName"
@@ -76,10 +111,12 @@ onBeforeMount(() => {
           @page-select="pageSelect"
           @restore-docs="callRestoreDocs"
         />
+        <div v-else>??</div>
       </div>
 
       <div v-else-if="route.name.includes('보기')" class="pt-3">
         <TrashDocsView
+          v-if="sort === 'docs'"
           :category="category as undefined"
           :docs="trashDocs as TP"
           :view-route="mainViewName"
@@ -87,6 +124,7 @@ onBeforeMount(() => {
           @restore-docs="callRestoreDocs"
         />
       </div>
+      <div v-else>??</div>
     </CCardBody>
   </ContentBody>
 
