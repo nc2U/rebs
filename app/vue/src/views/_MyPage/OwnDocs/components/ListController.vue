@@ -21,7 +21,7 @@ const formsCheck = computed(() => {
 })
 
 const docStore = useDocs()
-const postCount = computed(() => docStore.docsCount)
+const docsCount = computed(() => docStore.docsCount)
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
@@ -84,7 +84,7 @@ onBeforeMount(() => {
     </CRow>
     <CRow>
       <CCol color="warning" class="p-2 pl-3">
-        <strong> 문서 건수 조회 결과 : {{ numFormat(postCount, 0, 0) }} 건 </strong>
+        <strong> 문서 건수 조회 결과 : {{ numFormat(docsCount, 0, 0) }} 건 </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
         <CButton color="info" size="sm" @click="resetForm"> 검색조건 초기화</CButton>
