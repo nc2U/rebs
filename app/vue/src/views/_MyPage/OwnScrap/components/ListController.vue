@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { reactive, computed, nextTick, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
-import { type PostFilter, useDocument } from '@/store/pinia/document'
+import { type DocsFilter, useDocs } from '@/store/pinia/docs'
+// import { type PostFilter, useDocument } from '@/store/pinia/document'
 import { numFormat } from '@/utils/baseMixins'
 import { bgLight } from '@/utils/cssMixins'
 import Multiselect from '@vueform/multiselect'
@@ -9,11 +10,11 @@ import Multiselect from '@vueform/multiselect'
 const props = defineProps({
   comFrom: { type: Boolean, default: false },
   getSuitCase: { type: Object, default: null },
-  postFilter: { type: Object, required: true },
+  docsFilter: { type: Object, required: true },
 })
 const emit = defineEmits(['list-filter'])
 
-const form = reactive<PostFilter>({
+const form = reactive<DocsFilter>({
   company: '',
   project: '',
   is_com: props.comFrom,
@@ -31,8 +32,8 @@ const formsCheck = computed(() => {
   return a && b && c && d && e
 })
 
-const documentStore = useDocument()
-const postCount = computed(() => documentStore.postCount)
+const docStore = useDocs()
+const docsCount = computed(() => docStore.docsCount)
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
@@ -71,13 +72,13 @@ const projSelect = computed(() => projectStore.projSelect)
 const fetchProjectList = () => projectStore.fetchProjectList()
 onBeforeMount(() => {
   fetchProjectList()
-  if (props.postFilter) {
-    form.company = props.postFilter.company
-    form.project = props.postFilter.project
-    form.is_com = props.postFilter.is_com
-    form.ordering = props.postFilter.ordering
-    form.search = props.postFilter.search
-    form.page = props.postFilter.page
+  if (props.docsFilter) {
+    form.company = props.docsFilter.company
+    form.project = props.docsFilter.project
+    form.is_com = props.docsFilter.is_com
+    form.ordering = props.docsFilter.ordering
+    form.search = props.docsFilter.search
+    form.page = props.docsFilter.page
   }
 })
 </script>
@@ -140,7 +141,7 @@ onBeforeMount(() => {
     </CRow>
     <CRow>
       <CCol color="warning" class="p-2 pl-3">
-        <strong> 문서 건수 조회 결과 : {{ numFormat(postCount, 0, 0) }} 건 </strong>
+        <strong> 문서 건수 조회 결과 : {{ numFormat(docsCount, 0, 0) }} 건 </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
         <CButton color="info" size="sm" @click="resetForm"> 검색조건 초기화</CButton>

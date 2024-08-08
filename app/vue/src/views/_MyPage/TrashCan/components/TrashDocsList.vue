@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
+import { useDocs } from '@/store/pinia/docs'
 import { numFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 import type { TrashDocs as TP } from '@/store/types/docs'
 import TrashDocs from './TrashDocs.vue'
 import Pagination from '@/components/Pagination'
-import { useDocs } from '@/store/pinia/docs'
 
 defineProps({
   trashDocsList: { type: Array as PropType<TP[]>, default: () => [] },

@@ -9,7 +9,7 @@ import Multiselect from '@vueform/multiselect'
 const props = defineProps({
   comFrom: { type: Boolean, default: false },
   getSuitCase: { type: Object, default: null },
-  postFilter: { type: Object, required: true },
+  docsFilter: { type: Object, required: true },
 })
 const emit = defineEmits(['list-filter'])
 

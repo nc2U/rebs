@@ -26,7 +26,7 @@ const viewRoute = computed(() => {
     </CTableDataCell>
     <CTableDataCell class="text-left">
       <router-link
-        :to="{ name: `${viewRoute} - 보기`, params: { postId: docs.pk } }"
+        :to="{ name: `${viewRoute} - 보기`, params: { docsId: docs.pk } }"
         target="_blank"
       >
         {{ cutString(docs.title, 50) }}
