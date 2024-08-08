@@ -370,7 +370,7 @@ class DocumentInTrashSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_type_name(obj):
-        return obj.get_doc_type_display()
+        return obj.doc_type.get_type_display()
 
     def update(self, instance, validated_data):
         instance.restore()
