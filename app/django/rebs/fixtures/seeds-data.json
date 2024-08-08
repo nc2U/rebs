@@ -1,6 +1,6 @@
 [
   {
-    "model": "document.group",
+    "model": "board.group",
     "pk": 1,
     "fields": {
       "name": "기본그룹",
@@ -8,7 +8,7 @@
     }
   },
   {
-    "model": "document.board",
+    "model": "board.board",
     "pk": 1,
     "fields": {
       "group": 1,
@@ -19,29 +19,7 @@
     }
   },
   {
-    "model": "document.board",
-    "pk": 2,
-    "fields": {
-      "group": 1,
-      "name": "일반문서 게시판",
-      "order": 2,
-      "search_able": true,
-      "manager": []
-    }
-  },
-  {
-    "model": "document.board",
-    "pk": 3,
-    "fields": {
-      "group": 1,
-      "name": "소송기록 게시판",
-      "order": 3,
-      "search_able": true,
-      "manager": []
-    }
-  },
-  {
-    "model": "document.category",
+    "model": "docs.category",
     "pk": 1,
     "fields": {
       "board": 2,
@@ -52,7 +30,7 @@
     }
   },
   {
-    "model": "document.category",
+    "model": "docs.category",
     "pk": 2,
     "fields": {
       "board": 2,
@@ -63,7 +41,7 @@
     }
   },
   {
-    "model": "document.category",
+    "model": "docs.category",
     "pk": 3,
     "fields": {
       "board": 2,
@@ -74,7 +52,7 @@
     }
   },
   {
-    "model": "document.category",
+    "model": "docs.category",
     "pk": 4,
     "fields": {
       "board": 2,
@@ -85,7 +63,7 @@
     }
   },
   {
-    "model": "document.category",
+    "model": "docs.category",
     "pk": 5,
     "fields": {
       "board": 2,
@@ -96,7 +74,7 @@
     }
   },
   {
-    "model": "document.category",
+    "model": "docs.category",
     "pk": 6,
     "fields": {
       "board": 2,
@@ -107,7 +85,7 @@
     }
   },
   {
-    "model": "document.category",
+    "model": "docs.category",
     "pk": 7,
     "fields": {
       "board": 2,
@@ -118,7 +96,7 @@
     }
   },
   {
-    "model": "document.category",
+    "model": "docs.category",
     "pk": 8,
     "fields": {
       "board": 3,
@@ -129,7 +107,7 @@
     }
   },
   {
-    "model": "document.category",
+    "model": "docs.category",
     "pk": 9,
     "fields": {
       "board": 3,
@@ -140,7 +118,7 @@
     }
   },
   {
-    "model": "document.category",
+    "model": "docs.category",
     "pk": 10,
     "fields": {
       "board": 3,
@@ -151,7 +129,7 @@
     }
   },
   {
-    "model": "document.category",
+    "model": "docs.category",
     "pk": 11,
     "fields": {
       "board": 3,
@@ -162,7 +140,7 @@
     }
   },
   {
-    "model": "document.category",
+    "model": "docs.category",
     "pk": 12,
     "fields": {
       "board": 3,
@@ -173,7 +151,7 @@
     }
   },
   {
-    "model": "document.category",
+    "model": "docs.category",
     "pk": 13,
     "fields": {
       "board": 3,
