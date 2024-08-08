@@ -1,6 +1,6 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
-from .models import Group, Board, Category, Post, Image, File, Link, Comment, Tag
+from .models import Group, Board, PostCategory, Post, Image, File, Link, Comment, Tag
 
 
 @admin.register(Group)
@@ -11,7 +11,7 @@ class GroupAdmin(ImportExportMixin, admin.ModelAdmin):
 
 
 class CategoryInline(admin.TabularInline):
-    model = Category
+    model = PostCategory
     extra = 1
 
 
@@ -25,7 +25,7 @@ class BoardAdmin(ImportExportMixin, admin.ModelAdmin):
     inlines = (CategoryInline,)
 
 
-@admin.register(Category)
+@admin.register(PostCategory)
 class CategoryAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'board', 'color', 'name', 'parent', 'order')
     list_display_links = ('name',)

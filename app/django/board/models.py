@@ -43,7 +43,7 @@ class Board(models.Model):
         verbose_name_plural = '02. 게시판 관리'
 
 
-class Category(models.Model):
+class PostCategory(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE, verbose_name='게시판')
     color = models.CharField('색상', max_length=21, null=True, blank=True)
     name = models.CharField('이름', max_length=100)
@@ -64,7 +64,7 @@ class Post(models.Model):
     project = models.ForeignKey('project.Project', on_delete=models.SET_NULL,
                                 null=True, blank=True, verbose_name='프로젝트')
     board = models.ForeignKey(Board, on_delete=models.PROTECT, verbose_name='게시판')
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='카테고리')
+    category = models.ForeignKey(PostCategory, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='카테고리')
     title = models.CharField('제목', max_length=255)
     execution_date = models.DateField('문서 시행일자', null=True, blank=True, help_text='문서 발신/수신/시행일자')
     content = HTMLField('내용', blank=True, default='')

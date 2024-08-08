@@ -11,9 +11,8 @@ from .views import payment
 from .views import cash
 from .views import contract
 from .views import notice
+from .views import board
 from .views import docs
-
-# from .views import document
 
 app_name = 'api'
 
@@ -135,6 +134,21 @@ router.register(r'succession', contract.SuccessionViewSet)
 router.register(r'contractor-release', contract.ContReleaseViewSet)
 # notice
 router.register(r'sales-bill-issue', notice.BillIssueViewSet)
+# board
+router.register(r'group', board.GroupViewSet)
+router.register(r'board', board.BoardViewSet)
+router.register(r'post-category', board.CategoryViewSet)
+router.register(r'post', board.PostViewSet, basename='post')
+router.register(r'post-like', board.PostLikeViewSet, basename='post-like')
+router.register(r'post-blame', board.PostBlameViewSet, basename='post-blame')
+# router.register(r'post-link', board.PostLinkViewSet)
+# router.register(r'post-file', board.PostFileViewSet)
+# router.register(r'post-image', board.PostImageViewSet)
+# router.register(r'comment', board.CommentViewSet)
+# router.register(r'comment-like', board.CommentLikeViewSet, basename='comment-like')
+# router.register(r'comment-blame', board.CommentBlameViewSet, basename='comment-blame')
+# router.register(r'tag', board.TagViewSet)
+# router.register(r'post-trash-can', board.PostInTrashViewSet, basename='post-trash-can')
 # docs
 router.register(r'doc-type', docs.DocTypeViewSet)
 router.register(r'category', docs.CategoryViewSet)
@@ -145,23 +159,6 @@ router.register(r'link', docs.LinkViewSet)
 router.register(r'file', docs.FileViewSet)
 router.register(r'image', docs.ImageViewSet)
 router.register(r'docs-trash-can', docs.DocsInTrashViewSet, basename='docs-trash-can')
-# # document
-# router.register(r'group', document.GroupViewSet)
-# router.register(r'board', document.BoardViewSet)
-# # router.register(r'category', document.CategoryViewSet)
-# # router.register(r'suitcase', document.LawSuitCaseViewSet)
-# # router.register(r'all-suitcase', document.AllLawSuitCaseViewSet, basename='all-suitcase')
-# router.register(r'post', document.PostViewSet, basename='post')
-# router.register(r'post-like', document.PostLikeViewSet, basename='post-like')
-# router.register(r'post-blame', document.PostBlameViewSet, basename='post-blame')
-# # router.register(r'link', document.LinkViewSet)
-# # router.register(r'image', document.ImageViewSet)
-# # router.register(r'file', document.FileViewSet)
-# router.register(r'comment', document.CommentViewSet)
-# router.register(r'comment-like', document.CommentLikeViewSet, basename='comment-like')
-# router.register(r'comment-blame', document.CommentBlameViewSet, basename='comment-blame')
-# router.register(r'tag', document.TagViewSet)
-# router.register(r'post-trash-can', document.PostInTrashViewSet, basename='post-trash-can')
 
 urlpatterns = router.urls
 urlpatterns += [path('issue-by-member/', work.IssueCountByMemberView.as_view(), name='issue-by-member')]
@@ -171,7 +168,7 @@ urlpatterns += [path('change-password/', accounts.ChangePasswordView.as_view(), 
 urlpatterns += [path('password-reset/', accounts.PasswordResetRequestView.as_view(), name='password-reset')]
 urlpatterns += [path('password-reset-confirm/<str:user_id>/<str:token>/',
                      accounts.PasswordResetConfirmView.as_view(), name='password-reset-confirm')]
+# urlpatterns += [
+#     path('post/<int:pk>/copy/', board.PostViewSet.as_view({'post': 'copy_and_create'}), name='post-copy')]
 urlpatterns += [
     path('docs/<int:pk>/copy/', docs.DocumentViewSet.as_view({'docs': 'copy_and_create'}), name='docs-copy')]
-# urlpatterns += [
-#     path('post/<int:pk>/copy/', document.PostViewSet.as_view({'post': 'copy_and_create'}), name='post-copy')]
