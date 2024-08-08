@@ -55,13 +55,13 @@ const myPage = {
       meta: { title: '내 등록 문서', auth: true, except: true },
       children: [
         {
-          path: ':postId(\\d+)',
+          path: ':docsId(\\d+)',
           name: '내 등록 문서 - 보기',
           component: () => import('@/views/_MyPage/OwnDocs/Index.vue'),
           meta: { title: '내 등록 문서', auth: true, except: true },
         },
         {
-          path: ':postId(\\d+)/update',
+          path: ':docsId(\\d+)/update',
           name: '내 등록 문서 - 수정',
           component: () => import('@/views/_MyPage/OwnDocs/Index.vue'),
           meta: { title: '내 등록 문서', auth: true, except: true },
