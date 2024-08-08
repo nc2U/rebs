@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { reactive, computed, nextTick, onBeforeMount } from 'vue'
 import { useProject } from '@/store/pinia/project'
-import { type SuitCaseFilter, useDocument } from '@/store/pinia/document'
+import { type SuitCaseFilter, useDocs } from '@/store/pinia/docs'
 import { numFormat } from '@/utils/baseMixins'
 import { bgLight } from '@/utils/cssMixins'
 import { courtChoices } from './components/court'
@@ -43,9 +43,9 @@ const projSelect = computed(() => projectStore.projSelect)
 
 const fetchProjectList = () => projectStore.fetchProjectList()
 
-const documentStore = useDocument()
-const suitcaseCount = computed(() => documentStore.suitcaseCount)
-const getSuitCase = computed(() => documentStore.getSuitCase)
+const docStore = useDocs()
+const suitcaseCount = computed(() => docStore.suitcaseCount)
+const getSuitCase = computed(() => docStore.getSuitCase)
 
 const listFiltering = (page = 1) => {
   nextTick(() => {

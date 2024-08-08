@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted, onUpdated, type PropType } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { type SuitCase } from '@/store/types/document'
+import { type SuitCase } from '@/store/types/docs'
 import { courtChoices } from './components/court'
 import Multiselect from '@vueform/multiselect'
 import DatePicker from '@/components/DatePicker/index.vue'

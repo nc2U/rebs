@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
 import { useRouter } from 'vue-router'
-import { useDocument } from '@/store/pinia/document'
+import { useDocs } from '@/store/pinia/docs'
+import type { SuitCase } from '@/store/types/docs'
 import { TableSecondary } from '@/utils/cssMixins'
-import type { SuitCase } from '@/store/types/document'
 import Pagination from '@/components/Pagination'
 import Case from './components/Case.vue'
 
@@ -19,13 +19,13 @@ const emit = defineEmits(['page-select', 'agency-filter', 'agency-search', 'rela
 
 const router = useRouter()
 
-const documentStore = useDocument()
+const docStore = useDocs()
 
 const agencyFilter = (court: string) => emit('agency-filter', court)
 const agencySearch = (agent: string) => emit('agency-search', agent)
 const relatedFilter = (related: number) => emit('related-filter', related)
 
-const casePages = (num: number) => documentStore.casePages(num)
+const casePages = (num: number) => docStore.casePages(num)
 const pageSelect = (page: number) => emit('page-select', page)
 </script>
 

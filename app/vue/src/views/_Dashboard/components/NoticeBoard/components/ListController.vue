@@ -1,23 +1,23 @@
 <script lang="ts" setup>
 import { reactive, computed, nextTick, onBeforeMount } from 'vue'
-import { type PostFilter, useDocument } from '@/store/pinia/document'
+import { type DocsFilter, useDocs } from '@/store/pinia/docs'
 import { numFormat } from '@/utils/baseMixins'
 import { bgLight } from '@/utils/cssMixins'
 
 const props = defineProps({
-  postFilter: { type: Object, required: true },
+  docsFilter: { type: Object, required: true },
 })
 const emit = defineEmits(['list-filter'])
 
-const form = reactive<PostFilter>({
+const form = reactive<DocsFilter>({
   ordering: '-created',
   search: '',
 })
 
 const formsCheck = computed(() => form.ordering === '-created' && form.search === '')
 
-const documentStore = useDocument()
-const postCount = computed(() => documentStore.postCount)
+const docStore = useDocs()
+const docsCount = computed(() => docStore.docsCount)
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
@@ -40,10 +40,10 @@ defineExpose({
 })
 
 onBeforeMount(() => {
-  if (props.postFilter) {
-    form.ordering = props.postFilter.ordering
-    form.search = props.postFilter.search
-    form.page = props.postFilter.page
+  if (props.docsFilter) {
+    form.ordering = props.docsFilter.ordering
+    form.search = props.docsFilter.search
+    form.page = props.docsFilter.page
   }
 })
 </script>
@@ -81,7 +81,7 @@ onBeforeMount(() => {
     </CRow>
     <CRow>
       <CCol color="warning" class="p-2 pl-3">
-        <strong> 공지 건수 조회 결과 : {{ numFormat(postCount, 0, 0) }} 건 </strong>
+        <strong> 공지 건수 조회 결과 : {{ numFormat(docsCount, 0, 0) }} 건 </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
         <CButton color="info" size="sm" @click="resetForm"> 검색조건 초기화</CButton>

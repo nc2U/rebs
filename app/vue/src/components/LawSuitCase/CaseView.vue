@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { ref, computed, type PropType, watch, onBeforeMount, inject, type ComputedRef } from 'vue'
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
-import { useDocument } from '@/store/pinia/document'
-import { timeFormat, numFormat } from '@/utils/baseMixins'
-import type { SuitCase } from '@/store/types/document'
+import { useDocs } from '@/store/pinia/docs'
+import type { SuitCase } from '@/store/types/docs'
 import { TableSecondary } from '@/utils/cssMixins'
 import type { User } from '@/store/types/accounts'
+import { timeFormat, numFormat } from '@/utils/baseMixins'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
@@ -33,7 +33,7 @@ const sortName = computed(() => props.suitcase?.proj_name || '본사')
 const sortDesc = computed(() => props.suitcase.sort_desc)
 const levelDesc = computed(() => props.suitcase.level_desc)
 
-const docStore = useDocument()
+const docStore = useDocs()
 const getCaseNav = computed(() => docStore.getCaseNav)
 
 const getPrev = (pk: number) => getCaseNav.value.filter(c => c.pk === pk).map(c => c.prev_pk)[0]

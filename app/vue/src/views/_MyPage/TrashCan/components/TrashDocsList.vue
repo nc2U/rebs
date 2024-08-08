@@ -2,31 +2,31 @@
 import type { PropType } from 'vue'
 import { numFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
-import type { TrashPost as TP } from '@/store/types/document'
-import TrashPost from './TrashPost.vue'
+import type { TrashDocs as TP } from '@/store/types/docs'
+import TrashDocs from './TrashDocs.vue'
 import Pagination from '@/components/Pagination'
-import { useDocument } from '@/store/pinia/document'
+import { useDocs } from '@/store/pinia/docs'
 
 defineProps({
-  trashPostList: { type: Array as PropType<TP[]>, default: () => [] },
-  trashPostCount: { type: Number, default: 0 },
+  trashDocsList: { type: Array as PropType<TP[]>, default: () => [] },
+  trashDocsCount: { type: Number, default: 0 },
   viewRoute: { type: String, required: true },
   page: { type: Number, default: 1 },
 })
 
-const emit = defineEmits(['page-select', 'restore-post'])
+const emit = defineEmits(['page-select', 'restore-docs'])
 
-const docStore = useDocument()
-const trashPostPages = (pages: number) => docStore.trashPostPages(pages)
+const docStore = useDocs()
+const trashDocsPages = (pages: number) => docStore.trashDocsPages(pages)
 const pageSelect = (page: number) => emit('page-select', page)
 
-const restorePost1 = (pk: number) => emit('restore-post', pk)
+const restoreDocs1 = (pk: number) => emit('restore-docs', pk)
 </script>
 
 <template>
-  <h5 v-if="trashPostCount">삭제 게시물 : 총 {{ numFormat(trashPostCount) }}건</h5>
+  <h5 v-if="trashDocsCount">삭제 게시물 : 총 {{ numFormat(trashDocsCount) }}건</h5>
 
-  <v-divider v-if="trashPostCount" />
+  <v-divider v-if="trashDocsCount" />
 
   <CTable hover responsive align="middle">
     <colgroup>
@@ -48,12 +48,12 @@ const restorePost1 = (pk: number) => emit('restore-post', pk)
     </CTableHead>
 
     <CTableBody>
-      <TrashPost
-        v-for="post in trashPostList"
-        :key="post.pk"
-        :trash-post="post"
+      <TrashDocs
+        v-for="docs in trashDocsList"
+        :key="docs.pk"
+        :trash-docs="docs"
         :view-route="viewRoute"
-        @restore-post="restorePost1"
+        @restore-docs="restoreDocs1"
       />
     </CTableBody>
   </CTable>
@@ -63,7 +63,7 @@ const restorePost1 = (pk: number) => emit('restore-post', pk)
       <Pagination
         :active-page="page"
         :limit="8"
-        :pages="trashPostPages(10)"
+        :pages="trashDocsPages(10)"
         class="mt-3"
         @active-page-change="pageSelect"
       />

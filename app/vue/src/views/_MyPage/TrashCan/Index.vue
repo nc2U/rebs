@@ -1,27 +1,27 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref, watch } from 'vue'
 import { navMenu, pageTitle } from '@/views/_MyPage/_menu/headermixin'
-import { useDocument } from '@/store/pinia/document'
-import type { TrashPost as TP } from '@/store/types/document'
+import { useDocs } from '@/store/pinia/docs'
+import type { TrashDocs as TP } from '@/store/types/docs'
 import { type RouteLocationNormalizedLoaded as LoadedRoute, useRoute, useRouter } from 'vue-router'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
-import TrashPostList from './components/TrashPostList.vue'
-import TrashPostView from './components/TrashPostView.vue'
+import TrashDocsList from './components/TrashDocsList.vue'
+import TrashDocsView from './components/TrashDocsView.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const mainViewName = ref('휴지통')
 const category = ref()
 const page = ref<number>(1)
 
-const docStore = useDocument()
-const trashPost = computed(() => docStore.trashPost)
-const trashPostList = computed(() => docStore.trashPostList)
-const trashPostCount = computed(() => docStore.trashPostCount)
+const docStore = useDocs()
+const trashDocs = computed(() => docStore.trashDocs)
+const trashDocsList = computed(() => docStore.trashDocsList)
+const trashDocsCount = computed(() => docStore.trashDocsCount)
 
-const fetchTrashPost = (pk: number) => docStore.fetchTrashPost(pk)
-const fetchTrashPostList = (page?: number) => docStore.fetchTrashPostList(page)
-const restorePost = (pk: number) => docStore.restorePost(pk)
+const fetchTrashDocs = (pk: number) => docStore.fetchTrashDocs(pk)
+const fetchTrashDocsList = (page?: number) => docStore.fetchTrashDocsList(page)
+const restoreDocs = (pk: number) => docStore.restoreDocs(pk)
 
 const [route, router] = [
   useRoute() as LoadedRoute & {
@@ -31,34 +31,34 @@ const [route, router] = [
 ]
 
 watch(route, val => {
-  if (val.params.postId) fetchTrashPost(Number(val.params.postId))
-  else docStore.trashPost = null
+  if (val.params.docsId) fetchTrashDocs(Number(val.params.docsId))
+  else docStore.trashDocs = null
 })
 
 const pageSelect = (p: number) => {
   page.value = p
-  fetchTrashPostList(p)
+  fetchTrashDocsList(p)
 }
 
 const restoreId = ref<number | null>(null)
 
 const refRestoreModal = ref()
-const callRestorePost = (pk: number) => {
+const callRestoreDocs = (pk: number) => {
   restoreId.value = pk
   refRestoreModal.value.callModal()
 }
 
 const modalAction = () => {
-  restorePost(restoreId.value as number)
+  restoreDocs(restoreId.value as number)
   refRestoreModal.value.close()
   router.replace({ name: mainViewName.value })
 }
 
-const postId = computed(() => Number(route.params.postId))
+const docsId = computed(() => Number(route.params.docsId))
 
 onBeforeMount(() => {
-  fetchTrashPostList(page.value)
-  if (postId.value) fetchTrashPost(postId.value)
+  fetchTrashDocsList(page.value)
+  if (docsId.value) fetchTrashDocs(docsId.value)
 })
 </script>
 
@@ -68,23 +68,23 @@ onBeforeMount(() => {
   <ContentBody>
     <CCardBody class="pb-5">
       <div v-if="route.name === mainViewName" class="pt-3">
-        <TrashPostList
-          :trash-post-list="trashPostList"
-          :trash-post-count="trashPostCount"
+        <TrashDocsList
+          :trash-docs-list="trashDocsList"
+          :trash-docs-count="trashDocsCount"
           :view-route="mainViewName"
           :page="page"
           @page-select="pageSelect"
-          @restore-post="callRestorePost"
+          @restore-docs="callRestoreDocs"
         />
       </div>
 
       <div v-else-if="route.name.includes('보기')" class="pt-3">
-        <TrashPostView
+        <TrashDocsView
           :category="category as undefined"
-          :post="trashPost as TP"
+          :docs="trashDocs as TP"
           :view-route="mainViewName"
           :curr-page="page"
-          @restore-post="callRestorePost"
+          @restore-docs="callRestoreDocs"
         />
       </div>
     </CCardBody>

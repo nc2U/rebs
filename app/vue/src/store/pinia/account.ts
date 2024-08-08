@@ -6,7 +6,7 @@ import { defineStore } from 'pinia'
 import { errorHandle, message } from '@/utils/helper'
 import type { User, StaffAuth, Profile, Scrape, Todo } from '@/store/types/accounts'
 import { useDocs } from '@/store/pinia/docs'
-import { useDocument } from '@/store/pinia/document'
+// import { useDocument } from '@/store/pinia/document'
 import type { LocationQueryValue } from 'vue-router'
 
 type LoginUser = { email: string; password: string; redirect?: string }
@@ -325,12 +325,12 @@ export const useAccount = defineStore('account', () => {
       })
       .catch(err => errorHandle(err.response.data))
 
-  const documentStore = useDocument()
+  // const documentStore = useDocument()
 
   const createScrape = (payload: { post: number; user: number }) =>
     api
       .post('/post-scrape/', payload)
-      .then(() => documentStore.fetchPost(payload.post))
+      .then(() => console.log('fetchPost()')) //documentStore.fetchPost(payload.post))
       .catch(err => errorHandle(err.response.data))
 
   const patchScrape = (pk: number, title: string) =>

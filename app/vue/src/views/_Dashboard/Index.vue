@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed, onBeforeMount } from 'vue'
-import { useDocument } from '@/store/pinia/document'
+// import { useDocument } from '@/store/pinia/document'
 import MainCarousel from './components/MainCarousel.vue'
 import WiseWord from '@/views/_Dashboard/components/WiseWord.vue'
 import NoticeBoard from './components/NoticeBoard/ListComp.vue'
@@ -10,11 +10,11 @@ import WidgetsStatsC from './components/Widgets/WidgetsStatsTypeC.vue'
 
 const noticeRoute = ref('공지 사항')
 
-const docStore = useDocument()
-const postList = computed(() => docStore.postList)
-const noticeList = computed(() => docStore.noticeList)
+// const docStore = useDocument()
+const postList = [] //computed(() => docStore.postList)
+const noticeList = [] // computed(() => docStore.noticeList)
 
-onBeforeMount(() => docStore.fetchPostList({ board: 1 }))
+// onBeforeMount(() => docStore.fetchPostList({ board: 1 }))
 </script>
 
 <template>
