@@ -47,7 +47,7 @@ jobs:
             kubectl exec -it -n dev-hrebs $web_pod -- mkdir -p media
             kubectl exec -it -n dev-hrebs $web_pod -- chmod -R 755 media
             kubectl exec -it -n dev-hrebs $web_pod -- python manage.py collectstatic --no-input
-            kubectl exec -it -n dev-hrebs $web_pod -- python manage.py makemigrations accounts book board cash company contract docs document items notice payment project rebs work
+            kubectl exec -it -n dev-hrebs $web_pod -- python manage.py makemigrations accounts book board cash company contract docs items notice payment project rebs work
             kubectl exec -it -n dev-hrebs $web_pod -- python manage.py migrate
       
       # slack --> notification

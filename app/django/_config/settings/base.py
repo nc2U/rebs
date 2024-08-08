@@ -309,7 +309,6 @@ MDEDITOR_CONFIGS = {
         'lineNumbers': True  # lineNumbers
     }
 }
-
 APP_ORDER = [
     'company',
     'project',
@@ -319,9 +318,8 @@ APP_ORDER = [
     'cash',
     'rebs',
     'notice',
-    'document',
-    'docs',
     'board',
+    'docs',
     'work',
     'accounts',
     'book',
