@@ -9,7 +9,6 @@ from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
-from accounts.models import User, StaffAuth, Profile, Todo, PasswordResetToken
 from ..pagination import *
 from ..permission import *
 from ..serializers.accounts import *
@@ -47,12 +46,12 @@ class DocScrapeViewSet(viewsets.ModelViewSet):
     search_fields = ('title', 'post__title', 'post__content')
 
 
-# class PostScrapeViewSet(viewsets.ModelViewSet):
-#     queryset = PostScrape.objects.all()
-#     serializer_class = PostScrapeSerializer
-#     permission_classes = (permissions.IsAuthenticated, IsOwnerOnly)
-#     filterset_fields = ('user',)
-#     search_fields = ('title', 'post__title', 'post__content')
+class PostScrapeViewSet(viewsets.ModelViewSet):
+    queryset = PostScrape.objects.all()
+    serializer_class = PostScrapeSerializer
+    permission_classes = (permissions.IsAuthenticated, IsOwnerOnly)
+    filterset_fields = ('user',)
+    search_fields = ('title', 'post__title', 'post__content')
 
 
 class TodoViewSet(viewsets.ModelViewSet):

@@ -22,7 +22,7 @@ router.register(r'user', accounts.UserViewSet)
 router.register(r'staff-auth', accounts.StaffAuthViewSet)
 router.register(r'profile', accounts.ProfileViewSet)
 router.register(r'doc-scrape', accounts.DocScrapeViewSet)
-# router.register(r'post-scrape', accounts.PostScrapeViewSet)
+router.register(r'post-scrape', accounts.PostScrapeViewSet)
 router.register(r'todo', accounts.TodoViewSet)
 router.register(r'pass-reset-token', accounts.PasswordResetTokenViewSet)
 # company
