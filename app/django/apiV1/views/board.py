@@ -44,9 +44,7 @@ class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     filterset_class = PostFilterSet
-    search_fields = (
-        'lawsuit__case_number', 'lawsuit__case_name', 'title',
-        'content', 'links__link', 'files__file', 'user__username')
+    search_fields = ('title', 'content', 'links__link', 'files__file', 'user__username')
 
     def copy_and_create(self, request, *args, **kwargs):
         # 복사할 행의 ID를 저장한다.
