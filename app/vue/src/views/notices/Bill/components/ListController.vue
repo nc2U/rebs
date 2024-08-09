@@ -69,7 +69,7 @@ defineExpose({ listFiltering })
               <option value="10">10 개</option>
               <option value="30">30 개</option>
               <option value="50">50 개</option>
-              <option value="100">100 개</option>
+              <!--              <option value="100">100 개</option>-->
             </CFormSelect>
           </CCol>
 
