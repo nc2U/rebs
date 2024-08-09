@@ -32,7 +32,6 @@ const pageSelect = (page: number) => emit('page-select', page)
   <CTable hover responsive align="middle">
     <colgroup>
       <col style="width: 8%" />
-      <col style="width: 10%" />
       <col style="width: 34%" />
       <col style="width: 12%" />
       <col style="width: 15%" />
@@ -42,8 +41,7 @@ const pageSelect = (page: number) => emit('page-select', page)
     <CTableHead>
       <CTableRow :color="TableSecondary" class="text-center border-top-1">
         <CTableHeaderCell scope="col">번호</CTableHeaderCell>
-        <CTableHeaderCell scope="col">구분</CTableHeaderCell>
-        <CTableHeaderCell scope="col">문서 제목</CTableHeaderCell>
+        <CTableHeaderCell scope="col">제목</CTableHeaderCell>
         <CTableHeaderCell scope="col">등록자</CTableHeaderCell>
         <CTableHeaderCell scope="col">등록일시</CTableHeaderCell>
         <CTableHeaderCell scope="col">조회수</CTableHeaderCell>
