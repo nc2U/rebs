@@ -12,6 +12,7 @@ services:
       TZ: Asia/Seoul
     volumes:
       - ../volume/mysql:/var/lib/mysql
+      - ../volume/backups:/var/backups
       - ../volume/sql:/docker-entrypoint-initdb.d
 
   web:
