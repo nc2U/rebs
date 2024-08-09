@@ -32,6 +32,7 @@ export interface ContFilter {
   to_date?: string
   search?: string
   page?: number
+  limit?: number
 }
 
 export type UnitFilter = {
@@ -64,8 +65,10 @@ export const useContract = defineStore('contract', () => {
       .catch(err => errorHandle(err.response.data))
 
   const fetchContractList = async (payload: ContFilter) => {
-    const status = payload.status || '2'
-    let url = `/contract-set/?project=${payload.project}&activation=true&contractor__status=${status}`
+    const status = payload.status ?? '2'
+    const limit = payload.limit ?? 10
+    let url = `/contract-set/`
+    url += `?project=${payload.project}&activation=true&contractor__status=${status}&limit=${limit}`
     if (payload.order_group) url += `&order_group=${payload.order_group}`
     if (payload.unit_type) url += `&unit_type=${payload.unit_type}`
     if (payload.building) url += `&keyunit__houseunit__building_unit=${payload.building}`
