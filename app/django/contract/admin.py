@@ -28,7 +28,8 @@ class ContractFileAdmin(admin.StackedInline):
 
 class ContractAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'project', 'serial_number', 'order_group', 'unit_type',
-                    'activation', 'is_sup_cont', 'sup_cont_date', 'created_at', 'user')
+                    'activation', 'contractor', 'contractprice', 'is_sup_cont',
+                    'sup_cont_date', 'created_at', 'user')
     list_display_links = ('project', 'serial_number',)
     list_filter = ('project', 'order_group', 'unit_type', 'activation')
     search_fields = ('serial_number',)
