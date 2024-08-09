@@ -93,68 +93,6 @@ export const useCompany = defineStore('company', () => {
       .then(() => message('warning', '', '해당 오브젝트가 삭제되었습니다.'))
       .catch(err => errorHandle(err.response.data))
 
-  const staffList = ref<Staff[]>([])
-  const staff = ref<Staff | null>(null)
-  const staffsCount = ref<number>(0)
-
-  // actions
-  const staffPages = (itemsPerPage: number) => Math.ceil(staffsCount.value / itemsPerPage)
-
-  const fetchStaffList = async (payload: StaffFilter) => {
-    const {
-      page = 1,
-      com = 1,
-      sort = '',
-      dep = '',
-      gra = '',
-      pos = '',
-      dut = '',
-      sts = '1',
-      q = '',
-    } = payload
-    const qStr = `?page=${page}&company=${com}&sort=${sort}&department=${dep}&grade=${gra}&position=${pos}&duty=${dut}&status=${sts}&search=${q}`
-
-    return await api
-      .get(`/staff/${qStr}`)
-      .then(res => {
-        staffList.value = res.data.results
-        staffsCount.value = res.data.count
-      })
-      .catch(err => errorHandle(err.response.data))
-  }
-
-  const fetchStaff = (pk: number) =>
-    api
-      .get(`/staff/${pk}/`)
-      .then(res => (staff.value = res.data))
-      .catch(err => errorHandle(err.response.data))
-
-  const createStaff = (payload: Staff, page = 1, com = 1) =>
-    api
-      .post(`/staff/`, payload)
-      .then(res =>
-        fetchStaffList({ page, com }).then(() => fetchStaff(res.data.pk).then(() => message())),
-      )
-      .catch(err => errorHandle(err.response.data))
-
-  const updateStaff = (payload: Staff, page = 1, com = 1) =>
-    api
-      .put(`/staff/${payload.pk}/`, payload)
-      .then(res => {
-        fetchStaffList({ page, com }).then(() => fetchStaff(res.data.pk).then(() => message()))
-      })
-      .catch(err => errorHandle(err.response.data))
-
-  const deleteStaff = (pk: number, com = 1) =>
-    api
-      .delete(`/staff/${pk}/`)
-      .then(() =>
-        fetchStaffList({ com }).then(() =>
-          message('warning', '', '해당 오브젝트가 삭제되었습니다.'),
-        ),
-      )
-      .catch(err => errorHandle(err.response.data))
-
   const departmentList = ref<Department[]>([])
   const allDepartList = ref<Department[]>([])
   const department = ref<Department | null>(null)
@@ -486,6 +424,68 @@ export const useCompany = defineStore('company', () => {
       })
       .catch(err => errorHandle(err.response.data))
 
+  const staffList = ref<Staff[]>([])
+  const staff = ref<Staff | null>(null)
+  const staffsCount = ref<number>(0)
+
+  // actions
+  const staffPages = (itemsPerPage: number) => Math.ceil(staffsCount.value / itemsPerPage)
+
+  const fetchStaffList = async (payload: StaffFilter) => {
+    const {
+      page = 1,
+      com = 1,
+      sort = '',
+      dep = '',
+      gra = '',
+      pos = '',
+      dut = '',
+      sts = '1',
+      q = '',
+    } = payload
+    const qStr = `?page=${page}&company=${com}&sort=${sort}&department=${dep}&grade=${gra}&position=${pos}&duty=${dut}&status=${sts}&search=${q}`
+
+    return await api
+      .get(`/staff/${qStr}`)
+      .then(res => {
+        staffList.value = res.data.results
+        staffsCount.value = res.data.count
+      })
+      .catch(err => errorHandle(err.response.data))
+  }
+
+  const fetchStaff = (pk: number) =>
+    api
+      .get(`/staff/${pk}/`)
+      .then(res => (staff.value = res.data))
+      .catch(err => errorHandle(err.response.data))
+
+  const createStaff = (payload: Staff, page = 1, com = 1) =>
+    api
+      .post(`/staff/`, payload)
+      .then(res =>
+        fetchStaffList({ page, com }).then(() => fetchStaff(res.data.pk).then(() => message())),
+      )
+      .catch(err => errorHandle(err.response.data))
+
+  const updateStaff = (payload: Staff, page = 1, com = 1) =>
+    api
+      .put(`/staff/${payload.pk}/`, payload)
+      .then(res => {
+        fetchStaffList({ page, com }).then(() => fetchStaff(res.data.pk).then(() => message()))
+      })
+      .catch(err => errorHandle(err.response.data))
+
+  const deleteStaff = (pk: number, com = 1) =>
+    api
+      .delete(`/staff/${pk}/`)
+      .then(() =>
+        fetchStaffList({ com }).then(() =>
+          message('warning', '', '해당 오브젝트가 삭제되었습니다.'),
+        ),
+      )
+      .catch(err => errorHandle(err.response.data))
+
   return {
     companyList,
     company,
@@ -502,16 +502,6 @@ export const useCompany = defineStore('company', () => {
     createLogo,
     updateLogo,
     deleteLogo,
-
-    staffList,
-    staff,
-    staffsCount,
-    staffPages,
-    fetchStaffList,
-    fetchStaff,
-    createStaff,
-    updateStaff,
-    deleteStaff,
 
     departmentList,
     department,
@@ -569,5 +559,15 @@ export const useCompany = defineStore('company', () => {
     createDuty,
     updateDuty,
     deleteDuty,
+
+    staffList,
+    staff,
+    staffsCount,
+    staffPages,
+    fetchStaffList,
+    fetchStaff,
+    createStaff,
+    updateStaff,
+    deleteStaff,
   }
 })
