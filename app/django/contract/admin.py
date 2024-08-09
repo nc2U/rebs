@@ -32,7 +32,7 @@ class ContractAdmin(ImportExportMixin, admin.ModelAdmin):
                     'sup_cont_date', 'created_at', 'user')
     list_display_links = ('project', 'serial_number',)
     list_filter = ('project', 'order_group', 'unit_type', 'activation')
-    search_fields = ('serial_number',)
+    search_fields = ('serial_number', 'contractor__name')
     inlines = [ContractPriceInline, ContractorInline, ContractFileAdmin]
 
 
