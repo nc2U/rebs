@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed, reactive, nextTick } from 'vue'
+import { bgLight } from '@/utils/cssMixins'
 import { useContract } from '@/store/pinia/contract'
 import { useProjectData } from '@/store/pinia/project_data'
-import { bgLight } from '@/utils/cssMixins'
 
 defineProps({ nowOrderName: { type: String, default: '' } })
 const emit = defineEmits(['list-filtering'])
@@ -16,27 +16,28 @@ const buildingList = computed(() => projectDataStore.buildingList)
 const simpleTypes = computed(() => projectDataStore.simpleTypes)
 
 const form = reactive({
+  limit: '' as '' | number,
   order_group: '',
   unit_type: '',
   building: '',
   ordering: 'contractor__name',
   search: '',
-  // limit: '',
 })
 
 const formsCheck = computed(() => {
-  const a = form.order_group === ''
-  const b = form.unit_type === ''
-  const c = form.building === ''
-  const d = form.ordering === 'contractor__name'
-  const e = form.search.trim() === ''
-  // const a = form.limit === ''
-  return a && b && c && d && e
+  const a = form.limit === ''
+  const b = form.order_group === ''
+  const c = form.unit_type === ''
+  const d = form.building === ''
+  const e = form.ordering === 'contractor__name'
+  const f = form.search.trim() === ''
+  return a && b && c && d && e && f
 })
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
     form.search = form.search.trim()
+    form.limit = form.limit || 10
     emit('list-filtering', {
       ...{ page },
       ...form,
@@ -45,12 +46,12 @@ const listFiltering = (page = 1) => {
 }
 
 const resetForm = () => {
+  form.limit = ''
   form.order_group = ''
   form.unit_type = ''
   form.building = ''
   form.ordering = 'contractor__name'
   form.search = ''
-  // form.limit = ''
   listFiltering(1)
 }
 
@@ -63,14 +64,12 @@ defineExpose({ listFiltering })
       <CCol lg="7">
         <CRow>
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect disabled @change="listFiltering(1)">
+            <CFormSelect v-model="form.limit" @change="listFiltering(1)">
               <option value="">표시 개수</option>
-              <option value="5">5 개</option>
               <option value="10">10 개</option>
-              <option value="15">15 개</option>
-              <option value="20">20 개</option>
-              <option value="25">25 개</option>
               <option value="30">30 개</option>
+              <option value="50">50 개</option>
+              <option value="100">100 개</option>
             </CFormSelect>
           </CCol>
 
@@ -141,7 +140,7 @@ defineExpose({ listFiltering })
         <strong>계약 건수 조회 결과 : {{ contractsCount }} 건</strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
-        <CButton color="info" size="sm" @click="resetForm"> 검색조건 초기화 </CButton>
+        <CButton color="info" size="sm" @click="resetForm"> 검색조건 초기화</CButton>
       </CCol>
     </CRow>
   </CCallout>

@@ -1,11 +1,15 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
-import { useContract } from '@/store/pinia/contract'
 import { TableSecondary } from '@/utils/cssMixins'
+import { useContract } from '@/store/pinia/contract'
 import Contract from '@/views/notices/Bill/components/Contract.vue'
 import Pagination from '@/components/Pagination'
 
-defineProps({ nowOrder: { type: Number, default: null } })
+defineProps({
+  nowOrder: { type: Number, default: null },
+  limit: { type: Number, default: 10 },
+})
+
 const emit = defineEmits(['page-select', 'on-ctor-chk', 'all-un-checked'])
 
 const page = ref(1)
@@ -74,7 +78,7 @@ const onCtorChk = (payload: { chk: boolean; pk: number }) => emit('on-ctor-chk',
   <Pagination
     :active-page="1"
     :limit="8"
-    :pages="contractPages(10)"
+    :pages="contractPages(limit)"
     class="mt-3"
     @on-ctor-pk="onCtorChk"
     @active-page-change="pageSelect"

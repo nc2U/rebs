@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, onBeforeMount } from 'vue'
-import { pageTitle, navMenu } from '@/views/notices/_menu/headermixin'
-import { useProject } from '@/store/pinia/project'
-import { useProjectData } from '@/store/pinia/project_data'
+import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
+import { navMenu, pageTitle } from '@/views/notices/_menu/headermixin'
+import { getToday } from '@/utils/baseMixins'
 import { useNotice } from '@/store/pinia/notice'
-import { type SalesBillIssue } from '@/store/types/notice'
+import { useProject } from '@/store/pinia/project'
 import { usePayment } from '@/store/pinia/payment'
 import { type PayOrder } from '@/store/types/payment'
+import { type SalesBillIssue } from '@/store/types/notice'
+import { useProjectData } from '@/store/pinia/project_data'
 import { type ContFilter, useContract } from '@/store/pinia/contract'
-import { getToday } from '@/utils/baseMixins'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import SalesBillIssueForm from '@/views/notices/Bill/components/SalesBillIssueForm.vue'
@@ -17,6 +17,7 @@ import DownloadButton from '@/views/notices/Bill/components/DownloadButton.vue'
 import ContractList from '@/views/notices/Bill/components/ContractList.vue'
 
 const listControl = ref()
+const limit = ref(10)
 
 const ctor_ids = ref([])
 const printData = reactive({
@@ -72,6 +73,7 @@ const pageSelect = (page: number) => {
 const listFiltering = (payload: ContFilter) => {
   ctor_ids.value = []
   payload.project = project.value
+  limit.value = payload.limit ?? 10
   if (payload.project) fetchContractList(payload)
 }
 
@@ -167,6 +169,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
       <DownloadButton :print-data="printData" :contractors="ctor_ids" />
       <ContractList
         :now-order="payOrderTime || undefined"
+        :limit="limit"
         @on-ctor-chk="onCtorChk"
         @page-select="pageSelect"
         @all-un-checked="allUnChecked"
