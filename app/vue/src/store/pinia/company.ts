@@ -186,7 +186,7 @@ export const useCompany = defineStore('company', () => {
 
   const fetchDepartmentList = async (payload: DepFilter) => {
     const { page = 1, com = 1, upp = '', q = '' } = payload
-    const queryStr = `?page=${page}&company=${com}&upper_depart=${upp}&search=${q}`
+    const queryStr = `?limit=10&page=${page}&company=${com}&upper_depart=${upp}&search=${q}`
 
     return await api
       .get(`/department/${queryStr}`)
@@ -199,7 +199,7 @@ export const useCompany = defineStore('company', () => {
 
   const fetchAllDepartList = (com = 1) =>
     api
-      .get(`/all-departs/?company=${com}`)
+      .get(`/department/?company=${com}`)
       .then(res => {
         allDepartList.value = res.data.results
       })
@@ -214,31 +214,33 @@ export const useCompany = defineStore('company', () => {
   const createDepartment = (payload: Department, page = 1, com = 1) =>
     api
       .post(`/department/`, payload)
-      .then(res =>
-        fetchDepartmentList({ page, com }).then(() =>
-          fetchDepartment(res.data.pk).then(() => message()),
-        ),
-      )
+      .then(async res => {
+        await fetchAllDepartList(com)
+        await fetchDepartmentList({ page, com })
+        await fetchDepartment(res.data.pk)
+        message()
+      })
       .catch(err => errorHandle(err.response.data))
 
   const updateDepartment = (payload: Department, page = 1, com = 1) =>
     api
       .put(`/department/${payload.pk}/`, payload)
-      .then(res =>
-        fetchDepartmentList({ page, com }).then(() =>
-          fetchDepartment(res.data.pk).then(() => message()),
-        ),
-      )
+      .then(async res => {
+        await fetchAllDepartList(com)
+        await fetchDepartmentList({ page, com })
+        await fetchDepartment(res.data.pk)
+        message()
+      })
       .catch(err => errorHandle(err.response.data))
 
   const deleteDepartment = (pk: number, com = 1) =>
     api
       .delete(`/department/${pk}/`)
-      .then(() =>
-        fetchDepartmentList({ com }).then(() =>
-          message('warning', '', '해당 오브젝트가 삭제되었습니다.'),
-        ),
-      )
+      .then(async () => {
+        await fetchAllDepartList(com)
+        await fetchDepartmentList({ com })
+        message('warning', '', '해당 오브젝트가 삭제되었습니다.')
+      })
       .catch(err => errorHandle(err.response.data))
 
   const gradeList = ref<Grade[]>([])
@@ -266,7 +268,7 @@ export const useCompany = defineStore('company', () => {
 
   const fetchGradeList = async (payload: ComFilter) => {
     const { page = 1, com = 1, q = '' } = payload
-    const queryStr = `?page=${page}&company=${com}&search=${q}`
+    const queryStr = `?limit=10&page=${page}&company=${com}&search=${q}`
     return await api
       .get(`/grade/${queryStr}`)
       .then(res => {
@@ -278,7 +280,7 @@ export const useCompany = defineStore('company', () => {
 
   const fetchAllGradeList = (com = 1) =>
     api
-      .get(`/all-grades/?company=${com}`)
+      .get(`/grade/?company=${com}`)
       .then(res => {
         allGradeList.value = res.data.results
       })
@@ -293,27 +295,33 @@ export const useCompany = defineStore('company', () => {
   const createGrade = (payload: Grade, page = 1, com = 1) =>
     api
       .post(`/grade/`, payload)
-      .then(res =>
-        fetchGradeList({ page, com }).then(() => fetchGrade(res.data.pk).then(() => message())),
-      )
+      .then(async res => {
+        await fetchAllGradeList(com)
+        await fetchGradeList({ page, com })
+        await fetchGrade(res.data.pk)
+        message()
+      })
       .catch(err => errorHandle(err.response.data))
 
   const updateGrade = (payload: Grade, page = 1, com = 1) =>
     api
       .put(`/grade/${payload.pk}/`, payload)
-      .then(res => {
-        fetchGradeList({ page, com }).then(() => fetchGrade(res.data.pk).then(() => message()))
+      .then(async res => {
+        await fetchAllGradeList(com)
+        await fetchGradeList({ page, com })
+        await fetchGrade(res.data.pk)
+        message()
       })
       .catch(err => errorHandle(err.response.data))
 
   const deleteGrade = (pk: number, com = 1) =>
     api
       .delete(`/grade/${pk}/`)
-      .then(() =>
-        fetchGradeList({ com }).then(() =>
-          message('warning', '', '해당 오브젝트가 삭제되었습니다.'),
-        ),
-      )
+      .then(async () => {
+        await fetchAllGradeList(com)
+        await fetchGradeList({ com })
+        message('warning', '', '해당 오브젝트가 삭제되었습니다.')
+      })
       .catch(err => errorHandle(err.response.data))
 
   const positionList = ref<Position[]>([])
@@ -341,7 +349,7 @@ export const useCompany = defineStore('company', () => {
 
   const fetchPositionList = async (payload: ComFilter) => {
     const { page = 1, com = 1, q = '' } = payload
-    const queryStr = `?page=${page}&company=${com}&search=${q}`
+    const queryStr = `?limit=10&page=${page}&company=${com}&search=${q}`
     return await api
       .get(`/position/${queryStr}`)
       .then(res => {
@@ -353,7 +361,7 @@ export const useCompany = defineStore('company', () => {
 
   const fetchAllPositionList = (com = 1) =>
     api
-      .get(`/all-positions/?company=${com}`)
+      .get(`/position/?company=${com}`)
       .then(res => {
         allPositionList.value = res.data.results
       })
@@ -368,31 +376,33 @@ export const useCompany = defineStore('company', () => {
   const createPosition = (payload: Position, page = 1, com = 1) =>
     api
       .post(`/position/`, payload)
-      .then(res =>
-        fetchPositionList({ page, com }).then(() =>
-          fetchPosition(res.data.pk).then(() => message()),
-        ),
-      )
+      .then(async res => {
+        await fetchAllPositionList(com)
+        await fetchPositionList({ page, com })
+        await fetchPosition(res.data.pk)
+        message()
+      })
       .catch(err => errorHandle(err.response.data))
 
   const updatePosition = (payload: Position, page = 1, com = 1) =>
     api
       .put(`/position/${payload.pk}/`, payload)
-      .then(res => {
-        fetchPositionList({ page, com }).then(() =>
-          fetchPosition(res.data.pk).then(() => message()),
-        )
+      .then(async res => {
+        await fetchAllPositionList(com)
+        await fetchPositionList({ page, com })
+        await fetchPosition(res.data.pk)
+        message()
       })
       .catch(err => errorHandle(err.response.data))
 
   const deletePosition = (pk: number, com = 1) =>
     api
       .delete(`/position/${pk}/`)
-      .then(() =>
-        fetchPositionList({ com }).then(() =>
-          message('warning', '', '해당 오브젝트가 삭제되었습니다.'),
-        ),
-      )
+      .then(async () => {
+        await fetchAllPositionList(com)
+        await fetchPositionList({ com })
+        message('warning', '', '해당 오브젝트가 삭제되었습니다.')
+      })
       .catch(err => errorHandle(err.response.data))
 
   const dutyList = ref<Duty[]>([])
@@ -420,7 +430,7 @@ export const useCompany = defineStore('company', () => {
 
   const fetchDutyList = async (payload: ComFilter) => {
     const { page = 1, com = 1, q = '' } = payload
-    const queryStr = `?page=${page}&company=${com}&search=${q}`
+    const queryStr = `?limit=10&page=${page}&company=${com}&search=${q}`
     return await api
       .get(`/duty-title/${queryStr}`)
       .then(res => {
@@ -432,7 +442,7 @@ export const useCompany = defineStore('company', () => {
 
   const fetchAllDutyList = (com = 1) =>
     api
-      .get(`/all-dutys/?company=${com}`)
+      .get(`/duty-title/?company=${com}`)
       .then(res => {
         allDutyList.value = res.data.results
       })
@@ -447,27 +457,33 @@ export const useCompany = defineStore('company', () => {
   const createDuty = (payload: Duty, page = 1, com = 1) =>
     api
       .post(`/duty-title/`, payload)
-      .then(res =>
-        fetchDutyList({ page, com }).then(() => fetchDuty(res.data.pk).then(() => message())),
-      )
+      .then(async res => {
+        await fetchAllDutyList(com)
+        await fetchDutyList({ page, com })
+        await fetchDuty(res.data.pk)
+        message()
+      })
       .catch(err => errorHandle(err.response.data))
 
   const updateDuty = (payload: Duty, page = 1, com = 1) =>
     api
       .put(`/duty-title/${payload.pk}/`, payload)
-      .then(res => {
-        fetchDutyList({ page, com }).then(() => fetchDuty(res.data.pk).then(() => message()))
+      .then(async res => {
+        await fetchAllDutyList(com)
+        await fetchDutyList({ page, com })
+        await fetchDuty(res.data.pk)
+        message()
       })
       .catch(err => errorHandle(err.response.data))
 
   const deleteDuty = (pk: number, com = 1) =>
     api
       .delete(`/duty-title/${pk}/`)
-      .then(() =>
-        fetchDutyList({ com }).then(() =>
-          message('warning', '', '해당 오브젝트가 삭제되었습니다.'),
-        ),
-      )
+      .then(async () => {
+        await fetchAllDutyList(com)
+        await fetchDutyList({ com })
+        message('warning', '', '해당 오브젝트가 삭제되었습니다.')
+      })
       .catch(err => errorHandle(err.response.data))
 
   return {

@@ -24,52 +24,36 @@ class DepartmentViewSet(viewsets.ModelViewSet):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    pagination_class = PageNumberPaginationOneThousand
     filterset_fields = ('company', 'upper_depart')
     search_fields = ('name', 'task')
-
-
-class AllDepartsViewSet(DepartmentViewSet):
-    pagination_class = PageNumberPaginationOneHundred
-    filterset_fields = ('company',)
 
 
 class JobGradeViewSet(viewsets.ModelViewSet):
     queryset = JobGrade.objects.all()
     serializer_class = JobGradeSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    pagination_class = PageNumberPaginationOneThousand
     filterset_fields = ('company',)
     search_fields = ('name', 'promotion_period', 'positions__name', 'criteria_new')
-
-
-class AllGradesViewSet(JobGradeViewSet):
-    pagination_class = PageNumberPaginationOneHundred
-    filterset_fields = ('company',)
 
 
 class PositionViewSet(viewsets.ModelViewSet):
     queryset = Position.objects.all()
     serializer_class = PositionSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    pagination_class = PageNumberPaginationOneThousand
     filterset_fields = ('company',)
     search_fields = ('name',)
-
-
-class AllPositionsViewSet(PositionViewSet):
-    pagination_class = PageNumberPaginationOneHundred
-    filterset_fields = ('company',)
 
 
 class DutyTitleViewSet(viewsets.ModelViewSet):
     queryset = DutyTitle.objects.all()
     serializer_class = DutyTitleSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly)
+    pagination_class = PageNumberPaginationOneThousand
     filterset_fields = ('company',)
     search_fields = ('name',)
-
-
-class AllDutyViewSet(DutyTitleViewSet):
-    pagination_class = PageNumberPaginationOneHundred
-    filterset_fields = ('company',)
 
 
 class StaffViewSet(viewsets.ModelViewSet):
