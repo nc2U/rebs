@@ -80,39 +80,45 @@ def get_cont_price(instance, houseunit=None, is_set=False):
     :param houseunit: 쓰기일 때 해당 계약 객체의 타입을 특정하기 위한 파라미터
     :param is_set: 쓰기 여부 -> 계약건 가격 설정을 위한 값을 불러올 때 True
     """
-    if instance.contractprice and not is_set:
-        price = instance.contractprice.price
-        price_build = instance.contractprice.price_build
-        price_land = instance.contractprice.price_land
-        price_tax = instance.contractprice.price_tax
-    else:
-        try:
-            # 기본값 설정 -> 2. 프로젝트 예산에서 설정한 타입별 평균값을 불러와 기본값으로 설정
-            price = ProjectIncBudget.objects.get(project=instance.project,
-                                                 order_group=instance.order_group,
-                                                 unit_type=instance.unit_type).average_price
-        except ProjectIncBudget.DoesNotExist:
-            # 기본값 설정 -> 1. 예산 설정 값이 없으면 프로젝트 타입별 평균값을 불러와 기본값으로 설정
-            price = UnitType.objects.get(pk=instance.unit_type).average_price
-        except UnitType.DoesNotExist:
-            price = 0
-
-        price_build = None
-        price_land = None
-        price_tax = None
-
-        if houseunit:
+    try:
+        if instance.contractprice and not is_set:
+            price = instance.contractprice.price
+            price_build = instance.contractprice.price_build
+            price_land = instance.contractprice.price_land
+            price_tax = instance.contractprice.price_tax
+        else:
             try:
-                # 공급가격 테이블 객체를 불러와 가격 데이터 반환
-                sales_price = SalesPriceByGT.objects.get(order_group=instance.order_group,
-                                                         unit_type=instance.unit_type,
-                                                         unit_floor_type=houseunit.floor_type)
-                price = sales_price.price
-                price_build = sales_price.price_build
-                price_land = sales_price.price_land
-                price_tax = sales_price.price_tax
-            except SalesPriceByGT.DoesNotExist:
-                pass
+                # 기본값 설정 -> 2. 프로젝트 예산에서 설정한 타입별 평균값을 불러와 기본값으로 설정
+                price = ProjectIncBudget.objects.get(project=instance.project,
+                                                     order_group=instance.order_group,
+                                                     unit_type=instance.unit_type).average_price
+            except ProjectIncBudget.DoesNotExist:
+                # 기본값 설정 -> 1. 예산 설정 값이 없으면 프로젝트 타입별 평균값을 불러와 기본값으로 설정
+                price = UnitType.objects.get(pk=instance.unit_type).average_price
+            except UnitType.DoesNotExist:
+                price = 0
+
+            price_build = None
+            price_land = None
+            price_tax = None
+
+            if houseunit:
+                try:
+                    # 공급가격 테이블 객체를 불러와 가격 데이터 반환
+                    sales_price = SalesPriceByGT.objects.get(order_group=instance.order_group,
+                                                             unit_type=instance.unit_type,
+                                                             unit_floor_type=houseunit.floor_type)
+                    price = sales_price.price
+                    price_build = sales_price.price_build
+                    price_land = sales_price.price_land
+                    price_tax = sales_price.price_tax
+                except SalesPriceByGT.DoesNotExist:
+                    pass
+    except ObjectDoesNotExist:
+        price = 0
+        price_build = 0
+        price_land = 0
+        price_tax = 0
 
     return price, price_build, price_land, price_tax
 
@@ -124,33 +130,39 @@ def get_pay_amount(instance, price, is_set=False):
     :param price: 쓰기일 때 회차별 비율에 의한 값 설정 시 기준 값(가격)
     :param is_set: 쓰기 여부
     """
-    if instance.contractprice and not is_set:
-        down = instance.contractprice.down_pay
-        middle = instance.contractprice.middle_pay
-        remain = instance.contractprice.remain_pay
-    else:
-        install_order = InstallmentPaymentOrder.objects.filter(project=instance.project)
+    try:
+        if instance.contractprice and not is_set:
+            down = instance.contractprice.down_pay
+            middle = instance.contractprice.middle_pay
+            remain = instance.contractprice.remain_pay
+        else:
+            install_order = InstallmentPaymentOrder.objects.filter(project=instance.project)
 
-        downs = install_order.filter(pay_sort='1')  # 계약금 분류 회차 리스트
-        middles = install_order.filter(pay_sort='2')  # 중도금 분류 회차 리스트
-        remains = install_order.filter(pay_sort='3')  # 잔금 분류 회차 리스트
+            downs = install_order.filter(pay_sort='1')  # 계약금 분류 회차 리스트
+            middles = install_order.filter(pay_sort='2')  # 중도금 분류 회차 리스트
+            remains = install_order.filter(pay_sort='3')  # 잔금 분류 회차 리스트
 
-        down_num = len(downs.distinct().values_list('pay_code'))  # 계약금 분납 회수
-        middle_num = len(middles.distinct().values_list('pay_code'))  # 중도금 분납 회수
-        remain_num = len(remains.distinct().values_list('pay_code'))  # 잔금 분납 회수
+            down_num = len(downs.distinct().values_list('pay_code'))  # 계약금 분납 회수
+            middle_num = len(middles.distinct().values_list('pay_code'))  # 중도금 분납 회수
+            remain_num = len(remains.distinct().values_list('pay_code'))  # 잔금 분납 회수
 
-        down_ratio = downs.first().pay_ratio / 100 if downs.first().pay_ratio else 0.1  # 회차별 계약금 비율(기본값 10%)
-        middle_ratio = middles.first().pay_ratio / 100 if middles.first().pay_ratio else 0.1  # 회차별 중도금 비율(기본값 10%)
+            down_ratio = downs.first().pay_ratio / 100 if downs.first().pay_ratio else 0.1  # 회차별 계약금 비율(기본값 10%)
+            middle_ratio = middles.first().pay_ratio / 100 if middles.first().pay_ratio else 0.1  # 회차별 중도금 비율(기본값 10%)
 
-        try:
-            down_data = DownPayment.objects.get(order_group=instance.order_group,
-                                                unit_type=instance.unit_type)  # 현재 차수 및 타입의 계약금 데이터
-            down = down_data.payment_amount  # 계약금 데이터가 있으면 해당 데이터가 회차별 계약금 금액
-        except DownPayment.DoesNotExist:
-            down = price * down_ratio  # 계약금 데이터 없을 경우 회차별 계약금 금액
-        remain = (price - (price * middle_ratio * middle_num) - (down * down_num)) / remain_num  # 계약금/중도금 공제 잔금액
+            try:
+                down_data = DownPayment.objects.get(order_group=instance.order_group,
+                                                    unit_type=instance.unit_type)  # 현재 차수 및 타입의 계약금 데이터
+                down = down_data.payment_amount  # 계약금 데이터가 있으면 해당 데이터가 회차별 계약금 금액
+            except DownPayment.DoesNotExist:
+                down = price * down_ratio  # 계약금 데이터 없을 경우 회차별 계약금 금액
+            remain = (price - (price * middle_ratio * middle_num) - (down * down_num)) / remain_num  # 계약금/중도금 공제 잔금액
 
-        middle = price * middle_ratio
+            middle = price * middle_ratio
+    except ObjectDoesNotExist:
+        down = 0
+        middle = 0
+        remain = 0
+
     return down, middle, remain
 
 

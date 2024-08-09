@@ -64,6 +64,7 @@ class ContractViewSet(viewsets.ModelViewSet):
 
 class ContractSetViewSet(ContractViewSet):
     serializer_class = ContractSetSerializer
+    pagination_class = PageNumberPaginationThreeThousand
 
 
 class SimpleContractViewSet(ContractViewSet):
