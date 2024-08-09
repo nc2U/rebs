@@ -424,20 +424,31 @@ class PdfExportBill(View):
         bill_data['unit'] = unit
 
         # 이 계약 건 분양가 (계약금, 중도금, 잔금 약정액)
-        cont_price = contract.contractprice
-        price = cont_price.price
-        price_build = cont_price.price_build
-        price_land = cont_price.price_land
-        price_tax = cont_price.price_tax
+        try:
+            cont_price = contract.contractprice
+            price = cont_price.price
+            price_build = cont_price.price_build
+            price_land = cont_price.price_land
+            price_tax = cont_price.price_tax
+
+            down = cont_price.down_pay
+            middle = cont_price.middle_pay
+            remain = cont_price.remain_pay
+        except ObjectDoesNotExist:
+            price = 0
+            price_build = 0
+            price_land = 0
+            price_tax = 0
+
+            down = 0
+            middle = 0
+            remain = 0
 
         bill_data['price'] = price if unit else '동호 지정 후 고지'  # 이 건 분양가격
         bill_data['price_build'] = price_build if unit else '-'  # 이 건 건물가
         bill_data['price_land'] = price_land if unit else '-'  # 이 건 대지가
         bill_data['price_tax'] = price_tax if unit else '-'  # 이 건 부가세
 
-        down = cont_price.down_pay
-        middle = cont_price.middle_pay
-        remain = cont_price.remain_pay
         amount = {'1': down, '2': middle, '3': remain}
 
         # 납부목록, 완납금액 구하기 ------------------------------------------
@@ -695,7 +706,8 @@ class PdfExportBill(View):
                     sum_p_paid = paid_amt_sum - paid_amt
                     unpaid_amt = sum_p_amt - sum_p_paid if sum_p_amt - sum_p_paid > 0 else 0
                     if unpaid_amt > 0:
-                        unpaid_days = (datetime.strptime(paid_date, '%Y-%m-%d').date() - due_date).days
+                        # unpaid_days = (datetime.strptime(paid_date, '%Y-%m-%d').date() - due_date).days
+                        unpaid_days = (paid_date - due_date).days
             else:  # 당 회차 미납인 경우
                 # 납부 지연금
                 unpaid_amt = ord_info['unpaid_amount'] if order.pay_code >= calc_start_code else 0
@@ -803,19 +815,30 @@ class PdfExportPayments(View):
         context['unit'] = unit
 
         # 1. 이 계약 건 분양가격 (계약금, 중도금, 잔금 약정액)
-        cont_price = contract.contractprice  # 공급가격
-        price = cont_price.price
-        price_build = cont_price.price_build
-        price_land = cont_price.price_land
-        price_tax = cont_price.price_tax
+        try:
+            cont_price = contract.contractprice  # 공급가격
+            price = cont_price.price
+            price_build = cont_price.price_build
+            price_land = cont_price.price_land
+            price_tax = cont_price.price_tax
+
+            down = cont_price.down_pay  # 계약금
+            middle = cont_price.middle_pay  # 중도금
+            remain = cont_price.remain_pay  # 잔금
+        except ObjectDoesNotExist:
+            price = 0
+            price_build = 0
+            price_land = 0
+            price_tax = 0
+
+            down = 0  # 계약금
+            middle = 0  # 중도금
+            remain = 0  # 잔금
         context['price'] = price if unit else '동호 지정 후 고지'  # 이 건 분양가격
         context['price_build'] = price_build if unit else '-'  # 이 건 건물가
         context['price_land'] = price_land if unit else '-'  # 이 건 대지가
         context['price_tax'] = price_tax if unit else '-'  # 이 건 부가세
 
-        down = cont_price.down_pay  # 계약금
-        middle = cont_price.middle_pay  # 중도금
-        remain = cont_price.remain_pay  # 잔금
         amount = {'1': down, '2': middle, '3': remain}
 
         # 2. 요약 테이블 데이터
@@ -869,11 +892,17 @@ class PdfExportCalculation(View):
         context['unit'] = unit
 
         # 1. 이 계약 건 분양가격 (계약금, 중도금, 잔금 약정액)
-        cont_price = contract.contractprice  # 공급가격
-        price = cont_price.price
-        price_build = cont_price.price_build
-        price_land = cont_price.price_land
-        price_tax = cont_price.price_tax
+        try:
+            cont_price = contract.contractprice  # 공급가격
+            price = cont_price.price
+            price_build = cont_price.price_build
+            price_land = cont_price.price_land
+            price_tax = cont_price.price_tax
+        except ObjectDoesNotExist:
+            price = 0
+            price_build = 0
+            price_land = 0
+            price_tax = 0
         context['price'] = price if unit else '동호 지정 후 고지'  # 이 건 분양가격
         context['price_build'] = price_build if unit else '-'  # 이 건 건물가
         context['price_land'] = price_land if unit else '-'  # 이 건 대지가
