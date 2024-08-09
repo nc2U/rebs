@@ -578,7 +578,7 @@ class PdfExportBill(View):
         contractor = contract.contractor.name
         cont_date = contract.contractor.contract_date
         cont_no = contract.keyunit.houseunit if unit else contract.serial_number
-        cont_type = contract.keyunit.unit_type
+        cont_type = contract.unit_type or contract.keyunit.unit_type
 
         return {
             'contractor': contractor,
