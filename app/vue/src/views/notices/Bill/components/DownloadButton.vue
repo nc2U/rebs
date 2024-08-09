@@ -18,7 +18,8 @@ watch(noPrice, newVal => {
   Cookies.set('noPrice', val)
 })
 
-const noLate = ref(Boolean(Cookies.get('noLate')) ?? false)
+// const noLate = ref(Boolean(Cookies.get('noLate')) ?? true)
+const noLate = ref(true)
 
 watch(noLate, newVal => {
   const val = newVal ? '1' : ''
@@ -54,7 +55,7 @@ const printBill = () => {
       </CCol>
       <CCol class="text-right">
         <v-checkbox-btn v-model="noPrice" color="success" label="가격정보 미표시" inline />
-        <v-checkbox-btn v-model="noLate" color="success" label="연체정보 미표시" inline />
+        <v-checkbox-btn v-model="noLate" color="success" label="연체정보 미표시" inline disabled />
       </CCol>
     </CRow>
   </CAlert>
