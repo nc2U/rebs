@@ -75,7 +75,8 @@ const pageSelect = (page: number) => {
 const listFiltering = (payload: ContFilter) => {
   cont_ids.value = []
   payload.project = project.value
-  limit.value = payload.limit ?? 10
+  payload.limit = limit.value ?? 10
+  limit.value = payload.limit
   if (payload.project) fetchContractList(payload)
 }
 
