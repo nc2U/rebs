@@ -46,6 +46,7 @@ export const useContract = defineStore('contract', () => {
   // state & getters
   const contract = ref<Contract | null>(null)
   const contractList = ref<Contract[]>([])
+  const isLoading = ref(false)
   const contractsCount = ref<number>(0)
   const getContracts = ref<{ value: number; label: string }[]>([])
 
@@ -65,6 +66,7 @@ export const useContract = defineStore('contract', () => {
       .catch(err => errorHandle(err.response.data))
 
   const fetchContractList = async (payload: ContFilter) => {
+    isLoading.value = true
     const status = payload.status ?? '2'
     const limit = payload.limit ?? 10
     let url = `/contract-set/`
@@ -87,6 +89,7 @@ export const useContract = defineStore('contract', () => {
       .then(res => {
         contractList.value = res.data.results
         contractsCount.value = res.data.count
+        isLoading.value = false
       })
       .catch(err => errorHandle(err.response.data))
   }
@@ -362,6 +365,7 @@ export const useContract = defineStore('contract', () => {
   return {
     contract,
     contractList,
+    isLoading,
     contractsCount,
     getContracts,
 

@@ -187,7 +187,7 @@ export const useProjectData = defineStore('projectData', () => {
 
   // actions
   const fetchHouseUnitList = async (project: number, bldg?: number) => {
-    if (houseUnitList.value.length === 0) isLoading.value = true
+    isLoading.value = true
     let apiUri = `/all-house-unit/?building_unit__project=${project}`
     if (bldg) apiUri += `&building_unit=${bldg}`
     return await api

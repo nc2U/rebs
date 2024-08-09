@@ -15,6 +15,7 @@ import SalesBillIssueForm from '@/views/notices/Bill/components/SalesBillIssueFo
 import ListController from '@/views/notices/Bill/components/ListController.vue'
 import DownloadButton from '@/views/notices/Bill/components/DownloadButton.vue'
 import ContractList from '@/views/notices/Bill/components/ContractList.vue'
+import Loading from 'vue-loading-overlay'
 
 const listControl = ref()
 const limit = ref(10)
@@ -51,6 +52,7 @@ const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
 const fetchBuildingList = (projId: number) => projectDataStore.fetchBuildingList(projId)
 
 const contractStore = useContract()
+const isLoading = computed(() => contractStore.isLoading)
 const fetchOrderGroupList = (projId: number) => contractStore.fetchOrderGroupList(projId)
 const fetchContractList = (payload: ContFilter) => contractStore.fetchContractList(payload)
 const fetchSalePriceList = (payload: { project: number }) =>
@@ -145,6 +147,12 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
 </script>
 
 <template>
+  <Loading
+    v-model:active="isLoading"
+    :can-cancel="true"
+    :is-full-page="true"
+    background-color="#333"
+  />
   <ContentHeader
     :page-title="pageTitle"
     :nav-menu="navMenu"
