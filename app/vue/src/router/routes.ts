@@ -1,7 +1,7 @@
 import { computed } from 'vue'
-import { useAccount } from '@/store/pinia/account'
 import { useStore } from '@/store'
 import { hashCode } from '@/utils/helper'
+import { useAccount } from '@/store/pinia/account'
 import { type RouteRecordRaw } from 'vue-router'
 
 /* Layout Containers */
