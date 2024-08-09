@@ -10,7 +10,7 @@ defineProps({
   limit: { type: Number, default: 10 },
 })
 
-const emit = defineEmits(['page-select', 'on-ctor-chk', 'all-un-checked'])
+const emit = defineEmits(['page-select', 'on-cont-chk', 'all-un-checked'])
 
 const page = ref(1)
 const allChecked = ref(false)
@@ -29,7 +29,7 @@ const allUnChecked = () => {
   if (!allChecked.value) emit('all-un-checked')
 }
 
-const onCtorChk = (payload: { chk: boolean; pk: number }) => emit('on-ctor-chk', payload)
+const onContChk = (payload: { chk: boolean; pk: number }) => emit('on-cont-chk', payload)
 </script>
 
 <template>
@@ -70,7 +70,7 @@ const onCtorChk = (payload: { chk: boolean; pk: number }) => emit('on-ctor-chk',
         :now-order="nowOrder"
         :all-checked="allChecked"
         :contract="contract"
-        @on-ctor-chk="onCtorChk"
+        @on-cont-chk="onContChk"
       />
     </CTableBody>
   </CTable>
@@ -80,7 +80,7 @@ const onCtorChk = (payload: { chk: boolean; pk: number }) => emit('on-ctor-chk',
     :limit="8"
     :pages="contractPages(limit)"
     class="mt-3"
-    @on-ctor-pk="onCtorChk"
+    @on-ctor-pk="onContChk"
     @active-page-change="pageSelect"
   />
 </template>

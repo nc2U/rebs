@@ -10,7 +10,7 @@ const props = defineProps({
   allChecked: { type: Boolean, default: false },
 })
 
-const emit = defineEmits(['on-ctor-chk'])
+const emit = defineEmits(['on-cont-chk'])
 
 const checked = ref(false)
 
@@ -29,14 +29,14 @@ const get_paid_name = computed(() => {
 watch(props, (n, o) => {
   if (!paidCompleted.value) {
     checked.value = !n.allChecked
-    ctorChk(n.contract.contractor?.pk as number)
+    contChk(n.contract.pk as number)
   }
   if (n.page !== o.page) checked.value = false
 })
 
-const ctorChk = (ctorPk: number) => {
+const contChk = (ctorPk: number) => {
   checked.value = !checked.value
-  emit('on-ctor-chk', { chk: checked.value, pk: ctorPk })
+  emit('on-cont-chk', { chk: checked.value, pk: ctorPk })
 }
 </script>
 
@@ -44,12 +44,12 @@ const ctorChk = (ctorPk: number) => {
   <CTableRow v-if="contract" class="text-center" :color="checked ? 'secondary' : ''">
     <CTableDataCell>
       <CFormCheck
-        :id="'check_' + contract.contractor?.pk"
+        :id="'check_' + contract.pk"
         v-model="checked"
-        :value="contract.contractor?.pk"
+        :value="contract.pk"
         :disabled="paidCompleted"
         label="선택"
-        @change="ctorChk(contract.contractor?.pk as number)"
+        @change="contChk(contract.pk as number)"
       />
     </CTableDataCell>
 

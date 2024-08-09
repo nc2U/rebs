@@ -6,7 +6,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
   printData: { type: Object, default: null },
-  contractors: { type: Array, default: () => [] },
+  contracts: { type: Array, default: () => [] },
 })
 
 const refAlertModal = ref()
@@ -30,11 +30,11 @@ const printBill = () => {
   if (!is_bill_issue) {
     refAlertModal.value.callModal('', '고지서 관련 기본 설정 데이터를 입력하여 주십시요.')
   } else {
-    if (props.contractors?.length === 0) {
+    if (props.contracts?.length === 0) {
       refAlertModal.value.callModal('', '다운로드(출력)할 계약 건을 선택하여 주십시요.')
     } else {
       const { project, pub_date } = props.printData
-      const seq = props.contractors?.join('-')
+      const seq = props.contracts?.join('-')
       const url = 'pdf/bill/'
       const np = noPrice.value || ''
       const nl = noLate.value || ''
@@ -48,7 +48,7 @@ const printBill = () => {
   <CAlert :color="AlertSecondary" class="pb-2">
     <CRow class="p-0 m-0">
       <CCol>
-        <CButton color="primary" :disabled="!contractors.length" @click="printBill">
+        <CButton color="primary" :disabled="!contracts.length" @click="printBill">
           선택 건별 고지서 내려받기
         </CButton>
       </CCol>

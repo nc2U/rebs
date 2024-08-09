@@ -19,7 +19,7 @@ import ContractList from '@/views/notices/Bill/components/ContractList.vue'
 const listControl = ref()
 const limit = ref(10)
 
-const ctor_ids = ref([])
+const cont_ids = ref([])
 const printData = reactive({
   is_bill_issue: false,
   project: null as null | number,
@@ -66,19 +66,19 @@ watch(billIssue, val => {
 })
 
 const pageSelect = (page: number) => {
-  ctor_ids.value = []
+  cont_ids.value = []
   listControl.value.listFiltering(page)
 }
 
 const listFiltering = (payload: ContFilter) => {
-  ctor_ids.value = []
+  cont_ids.value = []
   payload.project = project.value
   limit.value = payload.limit ?? 10
   if (payload.project) fetchContractList(payload)
 }
 
-const onCtorChk = (payload: { chk: boolean; pk: number }) => {
-  const contractors: number[] = ctor_ids.value
+const onContChk = (payload: { chk: boolean; pk: number }) => {
+  const contractors: number[] = cont_ids.value
   if (payload.chk) {
     if (!contractors.includes(payload.pk)) contractors.push(payload.pk)
   } else {
@@ -87,7 +87,7 @@ const onCtorChk = (payload: { chk: boolean; pk: number }) => {
   }
 }
 
-const allUnChecked = () => (ctor_ids.value = [])
+const allUnChecked = () => (cont_ids.value = [])
 
 const getNowOrder = (orderPk: number) => fetchPayOrder(orderPk)
 
@@ -166,11 +166,11 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
         :now-order-name="payOrderName"
         @list-filtering="listFiltering"
       />
-      <DownloadButton :print-data="printData" :contractors="ctor_ids" />
+      <DownloadButton :print-data="printData" :contracts="cont_ids" />
       <ContractList
         :now-order="payOrderTime || undefined"
         :limit="limit"
-        @on-ctor-chk="onCtorChk"
+        @on-cont-chk="onContChk"
         @page-select="pageSelect"
         @all-un-checked="allUnChecked"
       />
