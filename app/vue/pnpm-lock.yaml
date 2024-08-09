@@ -101,6 +101,9 @@ importers:
       vue-fullscreen:
         specifier: ^2.6.1
         version: 2.6.1
+      vue-loading-overlay:
+        specifier: ^6.0.4
+        version: 6.0.4(vue@3.4.37(typescript@5.1.6))
       vue-router:
         specifier: ^4.4.3
         version: 4.4.3(vue@3.4.37(typescript@5.1.6))
@@ -3554,6 +3557,12 @@ packages:
   vue-fullscreen@2.6.1:
     resolution: {integrity: sha512-bbMJDKj2ZhsAwLcsvh8oV8WJeqAr2zxTHysvf7H8wSqaJTn5CnHXMSMbP9Tz4L/54I7jNQIdyA7VZ+EKAG+svg==}
     engines: {node: '>=4', npm: '>=3'}
+
+  vue-loading-overlay@6.0.4:
+    resolution: {integrity: sha512-DmMqLjQULk4bJ6C1IyDQzasgxb03KLrcj6nitlMIJkh6np0rQkWpgdu0upS3lJcrF9q+dmrhnU+A8I5pz41bqw==}
+    engines: {node: '>=12.13.0'}
+    peerDependencies:
+      vue: ^3.2.0
 
   vue-router@4.4.3:
     resolution: {integrity: sha512-sv6wmNKx2j3aqJQDMxLFzs/u/mjA9Z5LCgy6BE0f7yFWMjrPLnS/sPNn8ARY/FXw6byV18EFutn5lTO6+UsV5A==}
@@ -7606,6 +7615,10 @@ snapshots:
   vue-fullscreen@2.6.1:
     dependencies:
       screenfull: 5.2.0
+
+  vue-loading-overlay@6.0.4(vue@3.4.37(typescript@5.1.6)):
+    dependencies:
+      vue: 3.4.37(typescript@5.1.6)
 
   vue-router@4.4.3(vue@3.4.37(typescript@5.1.6)):
     dependencies:
