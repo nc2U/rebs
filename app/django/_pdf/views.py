@@ -654,7 +654,7 @@ class PdfExportBill(View):
 
         # 해당 계약 건 전체 납부 목록 -> [(income, deal_date), ...]
         paid_list = [(p.income, p.deal_date) for p in self.get_paid(contract)[0]]
-        paid_date = paid_list[0][1]
+        paid_date = paid_list[0][1] if len(paid_list) > 0 else None
 
         # 전체 리턴 데이터 목록
         paid_amt_list = []
