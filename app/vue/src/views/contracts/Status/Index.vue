@@ -6,10 +6,10 @@ import { useProjectData } from '@/store/pinia/project_data'
 import { useContract } from '@/store/pinia/contract'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
+import Loading from '@/components/Loading/Index.vue'
 import ContSummary from '@/views/contracts/Status/components/ContSummary.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import ContractBoard from '@/views/contracts/Status/components/ContractBoard.vue'
-import Loading from 'vue-loading-overlay'
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
@@ -59,12 +59,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <Loading
-    v-model:active="isLoading"
-    :can-cancel="true"
-    :is-full-page="true"
-    background-color="#333"
-  />
+  <Loading v-model:active="isLoading" />
   <ContentHeader
     :page-title="pageTitle"
     :nav-menu="navMenu"

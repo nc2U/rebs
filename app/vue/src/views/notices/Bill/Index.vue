@@ -11,11 +11,11 @@ import { useProjectData } from '@/store/pinia/project_data'
 import { type ContFilter, useContract } from '@/store/pinia/contract'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
+import Loading from '@/components/Loading/Index.vue'
 import SalesBillIssueForm from '@/views/notices/Bill/components/SalesBillIssueForm.vue'
 import ListController from '@/views/notices/Bill/components/ListController.vue'
 import DownloadButton from '@/views/notices/Bill/components/DownloadButton.vue'
 import ContractList from '@/views/notices/Bill/components/ContractList.vue'
-import Loading from 'vue-loading-overlay'
 
 const listControl = ref()
 const limit = ref(10)
@@ -147,12 +147,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
 </script>
 
 <template>
-  <Loading
-    v-model:active="isLoading"
-    :can-cancel="true"
-    :is-full-page="true"
-    background-color="#333"
-  />
+  <Loading v-model:active="isLoading" />
   <ContentHeader
     :page-title="pageTitle"
     :nav-menu="navMenu"
