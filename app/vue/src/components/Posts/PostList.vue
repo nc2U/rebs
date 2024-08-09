@@ -4,13 +4,14 @@ import { useRouter } from 'vue-router'
 import { useBoard } from '@/store/pinia/board'
 import { TableSecondary } from '@/utils/cssMixins'
 import type { Post as P } from '@/store/types/board'
-import Pagination from '@/components/Pagination'
-import Post from './components/Post.vue'
 import TopPosts from '@/components/Posts/components/TopPosts.vue'
+import Post from './components/Post.vue'
+import Pagination from '@/components/Pagination'
 
 defineProps({
   company: { type: Number, default: null },
   project: { type: Number, default: null },
+  toHome: { type: String, default: '' },
   page: { type: Number, default: 1 },
   noticeList: { type: Array as PropType<P[]>, default: () => [] },
   postList: { type: Array as PropType<P[]>, default: () => [] },
@@ -31,8 +32,8 @@ const pageSelect = (page: number) => emit('page-select', page)
 <template>
   <CTable hover responsive align="middle">
     <colgroup>
-      <col style="width: 8%" />
-      <col style="width: 34%" />
+      <col style="width: 13%" />
+      <col style="width: 50%" />
       <col style="width: 12%" />
       <col style="width: 15%" />
       <col style="width: 10%" />
@@ -77,6 +78,14 @@ const pageSelect = (page: number) => emit('page-select', page)
       />
     </CCol>
     <CCol lg="4" class="text-right pt-3">
+      <CButton
+        v-if="toHome"
+        color="light"
+        class="px-5"
+        @click="router.push({ name: `대 시 보 드` })"
+      >
+        홈으로
+      </CButton>
       <CButton
         v-if="writeAuth"
         color="primary"

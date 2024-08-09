@@ -5,11 +5,14 @@ import { useAccount } from '@/store/pinia/account'
 import { type RouteLocationNormalizedLoaded as Loaded, useRoute, useRouter } from 'vue-router'
 import type { PostFile, Attatches, PostLink, PatchPost, Post } from '@/store/types/board'
 import { type PostFilter, useBoard } from '@/store/pinia/board'
-import CategoryTabs from './components/CategoryTabs.vue'
-import ListController from './components/ListController.vue'
-import NoticeList from './components/NoticeList.vue'
-import NoticeView from './components/NoticeView.vue'
-import NoticeForm from './components/NoticeForm.vue'
+import ListController from '@/components/Posts/ListController.vue'
+import CategoryTabs from '@/components/Posts/CategoryTabs.vue'
+// import NoticeList from './components/NoticeList.vue'
+// import NoticeView from './components/NoticeView.vue'
+// import NoticeForm from './components/NoticeForm.vue'
+import PostList from '@/components/Posts/PostList.vue'
+import PostView from '@/components/Posts/PostView.vue'
+import PostForm from '@/components/Posts/PostForm.vue'
 
 const lController = ref()
 const boardNumber = ref(1)
@@ -195,8 +198,9 @@ onBeforeMount(() => dataSetup(company.value ?? comStore.initComId, route.params?
             :category-list="categoryList"
             @select-cate="selectCate"
           />
-          <NoticeList
+          <PostList
             :company="company as number"
+            :to-home="mainViewName"
             :page="postFilter.page"
             :notice-list="noticeList"
             :post-list="postList"
@@ -207,7 +211,7 @@ onBeforeMount(() => dataSetup(company.value ?? comStore.initComId, route.params?
         </div>
 
         <div v-else-if="route.name.includes('보기')">
-          <NoticeView
+          <PostView
             :board-num="boardNumber"
             :heated-page="heatedPage"
             :re-order="postFilter.ordering !== '-created'"
@@ -226,7 +230,7 @@ onBeforeMount(() => dataSetup(company.value ?? comStore.initComId, route.params?
         </div>
 
         <div v-else-if="route.name.includes('작성')">
-          <NoticeForm
+          <PostForm
             :board-num="boardNumber"
             :category-list="categoryList"
             :view-route="mainViewName"
@@ -237,7 +241,7 @@ onBeforeMount(() => dataSetup(company.value ?? comStore.initComId, route.params?
         </div>
 
         <div v-else-if="route.name.includes('수정')">
-          <NoticeForm
+          <PostForm
             :board-num="boardNumber"
             :category-list="categoryList"
             :post="post as Post"

@@ -47,20 +47,17 @@ const routes: Array<RouteRecordRaw> = [
           {
             path: ':postId(\\d+)',
             name: '공지 사항 - 보기',
-            component: () =>
-              import('@/views/_Dashboard/components/NoticeBoard/components/NoticeView.vue'),
+            component: () => import('@/views/_Dashboard/components/NoticeBoard/Index.vue'),
           },
           {
             path: 'create',
             name: '공지 사항 - 작성',
-            component: () =>
-              import('@/views/_Dashboard/components/NoticeBoard/components/NoticeForm.vue'),
+            component: () => import('@/views/_Dashboard/components/NoticeBoard/Index.vue'),
           },
           {
             path: ':postId(\\d+)/update',
             name: '공지 사항 - 수정',
-            component: () =>
-              import('@/views/_Dashboard/components/NoticeBoard/components/NoticeForm.vue'),
+            component: () => import('@/views/_Dashboard/components/NoticeBoard/Index.vue'),
           },
         ],
       },
