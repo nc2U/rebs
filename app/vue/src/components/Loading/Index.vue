@@ -12,7 +12,8 @@ import 'vue-loading-overlay/dist/css/index.css'
     loader="spinner"
     height="56"
     width="56"
-    color="#777"
-    background-color="#333"
+    color="#6CBC6F"
+    opacity="0.1"
+    background-color="#000"
   />
 </template>
