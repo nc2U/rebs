@@ -1003,7 +1003,8 @@ class ExportPayments(View):
             ['입금 금액', 'income', 12],
             ['납입회차', 'installment_order__pay_name', 13],
             ['수납계좌', 'bank_account__alias_name', 20],
-            ['입금자', 'trader', 20]
+            ['입금자', 'trader', 20],
+            ['공급계약체결일', 'contract__sup_cont_date', 15],
         ]
 
         if project.is_unit_set:
@@ -1113,7 +1114,7 @@ class ExportPayments(View):
             row_num += 1
 
             for col_num, cell_data in enumerate(row):
-                if col_num == 0:
+                if col_num == 0 or col_num == 11:
                     body_format['num_format'] = 'yyyy-mm-dd'
                 else:
                     body_format['num_format'] = 41
