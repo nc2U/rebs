@@ -7,7 +7,7 @@
 #
 import io
 import json
-from datetime import datetime
+import datetime
 
 import xlsxwriter
 import xlwt
@@ -22,11 +22,10 @@ from company.models import Company, Staff, Department, JobGrade, Position, DutyT
 from contract.models import Contract, Succession, ContractorRelease, OrderGroup
 from docs.models import LawsuitCase
 from items.models import UnitType, BuildingUnit, HouseUnit
-from notice.models import SalesBillIssue
 from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment
 from project.models import Project, ProjectIncBudget, ProjectOutBudget, Site, SiteOwner, SiteContract
 
-TODAY = datetime.today().strftime('%Y-%m-%d')
+TODAY = datetime.date.today().strftime('%Y-%m-%d')
 
 
 class ExportContracts(View):
@@ -1161,20 +1160,22 @@ class ExportPaymentsByCont(View):
         date = request.GET.get('date')
         date = TODAY if not date or date == 'null' else date
         # ----------------- get_queryset finish ----------------- #
+        # 현재 납부 회차 구하기
+        now_date = datetime.date.today()
+        pay_orders = InstallmentPaymentOrder.objects.filter(project=project)
+        now_order = pay_orders.first()
+        for o in pay_orders:
+            if o.pay_due_date is None or o.pay_due_date <= now_date:
+                now_order = o
+            else:
+                break
 
         # get pay order
         max_order = ProjectCashBook.objects \
             .filter(project=project, installment_order__isnull=False) \
-            .order_by('-installment_order').first().installment_order.id
-        pay_orders = InstallmentPaymentOrder.objects.filter(project=project, id__lte=max_order)
-
-        # 현재 납부 회차 구하기
-        bill_data = SalesBillIssue.objects.get(project=project)
-        try:
-            now_order = bill_data.now_payment_order
-            pay_orders = pay_orders.filter(pay_code__lte=now_order.pay_code)
-        except SalesBillIssue.DoesNotExist:
-            now_order = pay_orders.first()
+            .order_by('-installment_order').first().installment_order  # 실제 납부 최대 회차
+        calc_order = now_order if now_order.pay_code >= max_order.pay_code else max_order  # 금회차 -> 선납자가 있을 경우 선납회차
+        due_pay_orders = pay_orders.filter(project=project, id__lte=calc_order.id)
 
         add_order_cols = now_order.pay_code * 2  # 납부회차 * 2
 
@@ -1235,7 +1236,7 @@ class ExportPaymentsByCont(View):
             header_src.insert(5, ['호수', 'keyunit__houseunit__name', 7])
 
         # PayOrders columns insert
-        for i, po in enumerate(pay_orders):
+        for i, po in enumerate(due_pay_orders):
             header_src.insert(6 + (i * 2) + is_us_cn, [po.pay_name, '', 12])
             header_src.insert(7 + (i * 2) + is_us_cn, ['', '', 13])
 
@@ -1324,7 +1325,7 @@ class ExportPaymentsByCont(View):
         paid_dict = paid_data.values_list(*paid_params)
 
         # 계약금 분납 횟수
-        down_num = pay_orders.filter(pay_sort='1').count()
+        down_num = due_pay_orders.filter(pay_sort='1').count()
         # ----------------------------------------------------------------- #
 
         for i, row in enumerate(data):
@@ -1354,7 +1355,7 @@ class ExportPaymentsByCont(View):
                 price = contract.keyunit.unit_type.average_price
                 cont_price = price if price else 0  # 분양가
 
-            for pi, po in enumerate(pay_orders):  # 회차별 납입 내역 삽입
+            for pi, po in enumerate(due_pay_orders):  # 회차별 납입 내역 삽입
                 dates = [p[3] for p in paid_dict if p[0] == row[0] and p[2] == po.pay_code]
                 paid_date = max(dates).strftime('%Y-%m-%d') if dates else None
                 paid_amount = sum([p[1] for p in paid_dict if p[0] == row[0] and p[2] == po.pay_code])
@@ -1382,7 +1383,7 @@ class ExportPaymentsByCont(View):
                 unpaid_amt = due_amt_sum - paid_sum if due_amt_sum > paid_sum else 0
                 next_col += 1
 
-            row.insert(next_col + len(pay_orders) + 1, unpaid_amt)  # 미납 내역 삽입
+            row.insert(next_col + len(due_pay_orders) + 1, unpaid_amt)  # 미납 내역 삽입
 
             row[0] = i + 1  # pk 대신 순서 삽입
 
