@@ -1,6 +1,6 @@
 # base image
 FROM python:3.12
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED=1
 
 # set working directory
 RUN mkdir -pv /app/django
@@ -18,4 +18,4 @@ RUN apt update && apt upgrade -y && apt autoremove -y \
     && pip install --trusted-host pypi.python.org -r requirements.txt
 
 # startup commands
-ENTRYPOINT uwsgi --socket :8000 --module _config.wsgi --py-autoreload 1 --logto /tmp/mylog.log
+ENTRYPOINT ["uwsgi", "--socket", ":8000", "--module", "_config.wsgi", "--py-autoreload", "1", "--logto", "/tmp/mylog.log"]
