@@ -30,7 +30,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: {{ include "nginx.fullname" . }}-media-{{ .Values.global.appMode }}-nfs-pv
+  name: {{ include "nginx.fullname" . }}-{{ .Values.global.appMode }}-media-pv
 spec:
   storageClassName: {{ include "nginx.fullname" . }}-media-{{ .Values.global.appMode }}
   capacity:

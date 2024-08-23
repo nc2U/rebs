@@ -19,7 +19,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "mariadb.fullname" . }}-sql-{{ .Values.global.appMode }}-nfs-pvc
+  name: {{ include "mariadb.fullname" . }}-{{ .Values.global.appMode }}-sql-pvc
 spec:
   storageClassName: init-sql-{{ .Values.global.appMode }}
   accessModes:
@@ -33,7 +33,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "mariadb.fullname" . }}-backup-{{ .Values.global.appMode }}-nfs-pvc
+  name: {{ include "mariadb.fullname" . }}-{{ .Values.global.appMode }}-backup-pvc
 spec:
   storageClassName: dump-backup-{{ .Values.global.appMode }}
   accessModes:
