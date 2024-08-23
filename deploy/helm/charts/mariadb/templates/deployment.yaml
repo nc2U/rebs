@@ -76,13 +76,13 @@ spec:
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
-            claimName: {{ include "mariadb.fullname" . }}-data-{{ .Values.global.appMode }}-nfs-pvc
+            claimName: {{ include "mariadb.fullname" . }}-{{ .Values.global.appMode }}-data-pvc
         - name: init-sql
           persistentVolumeClaim:
-            claimName: {{ include "mariadb.fullname" . }}-sql-{{ .Values.global.appMode }}-nfs-pvc
+            claimName: {{ include "mariadb.fullname" . }}-{{ .Values.global.appMode }}-sql-pvc
         - name: dump-backup
           persistentVolumeClaim:
-            claimName: {{ include "mariadb.fullname" . }}-backup-{{ .Values.global.appMode }}-nfs-pvc
+            claimName: {{ include "mariadb.fullname" . }}-{{ .Values.global.appMode }}-backup-pvc
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
