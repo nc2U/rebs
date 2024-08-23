@@ -46,4 +46,3 @@ nginx:
       - secretName: web-devbox-kr-cert
         hosts:
           - "host-path" # Host address
-

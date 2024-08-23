@@ -59,7 +59,7 @@ spec:
       volumes:
         - name: django-source
           persistentVolumeClaim:
-            claimName: {{ include "web.fullname" . }}-{{ .Values.global.appMode }}-django-pvc
+            claimName: {{ .Release.Name }}-{{ include "web.fullname" . }}-{{ .Values.global.appMode }}-django-pvc
         - name: tz-seoul
           hostPath:
             path: /usr/share/zoneinfo/Asia/Seoul

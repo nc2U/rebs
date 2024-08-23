@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ include "web.fullname" . }}-{{ .Values.global.appMode }}-django-pvc
 spec:
-  storageClassName: {{ include "web.fullname" . }}-app-{{ .Values.global.appMode }}
+  storageClassName: {{ .Release.Name }}-{{ include "web.fullname" . }}-app-{{ .Values.global.appMode }}
   accessModes:
   {{- range .Values.volumes.djangoAccessModes }}
     - {{ . }}

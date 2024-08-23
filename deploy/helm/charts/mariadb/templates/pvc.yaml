@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "mariadb.fullname" . }}-{{ .Values.global.appMode }}-data-pvc
+  name: {{ .Release.Name }}-{{ include "mariadb.fullname" . }}-{{ .Values.global.appMode }}-data-pvc
 spec:
   storageClassName: mysql-data-{{ .Values.global.appMode }}
   accessModes:
@@ -19,7 +19,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "mariadb.fullname" . }}-{{ .Values.global.appMode }}-sql-pvc
+  name: {{ .Release.Name }}-{{ include "mariadb.fullname" . }}-{{ .Values.global.appMode }}-sql-pvc
 spec:
   storageClassName: init-sql-{{ .Values.global.appMode }}
   accessModes:
@@ -33,7 +33,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "mariadb.fullname" . }}-{{ .Values.global.appMode }}-backup-pvc
+  name: {{ .Release.Name }}-{{ include "mariadb.fullname" . }}-{{ .Values.global.appMode }}-backup-pvc
 spec:
   storageClassName: dump-backup-{{ .Values.global.appMode }}
   accessModes:

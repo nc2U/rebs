@@ -3,7 +3,7 @@ kind: PersistentVolume
 metadata:
   name: {{ include "web.fullname" . }}-{{ .Values.global.appMode }}-django-pv
 spec:
-  storageClassName: {{ include "web.fullname" . }}-app-{{ .Values.global.appMode }}
+  storageClassName: {{ .Release.Name }}-{{ include "web.fullname" . }}-app-{{ .Values.global.appMode }}
   capacity:
   {{- if eq .Values.global.appMode "prod" }}
     storage: {{ .Values.volumes.djangoPvStorageProd }}

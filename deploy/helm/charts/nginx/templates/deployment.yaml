@@ -78,10 +78,10 @@ spec:
                 path: public.conf
         - name: static
           persistentVolumeClaim:
-            claimName: {{ include "nginx.fullname" . }}-{{ .Values.global.appMode }}-static-pvc
+            claimName: {{ .Release.Name }}-{{ include "nginx.fullname" . }}-{{ .Values.global.appMode }}-static-pvc
         - name: media
           persistentVolumeClaim:
-            claimName: {{ include "nginx.fullname" . }}-{{ .Values.global.appMode }}-media-pvc
+            claimName: {{ .Release.Name }}-{{ include "nginx.fullname" . }}-{{ .Values.global.appMode }}-media-pvc
         - name: tz-seoul
           hostPath:
             path: /usr/share/zoneinfo/Asia/Seoul

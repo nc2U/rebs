@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "nginx.fullname" . }}-{{ .Values.global.appMode }}-static-pvc
+  name: {{ .Release.Name }}-{{ include "nginx.fullname" . }}-{{ .Values.global.appMode }}-static-pvc
 spec:
   storageClassName: {{ include "nginx.fullname" . }}-static-{{ .Values.global.appMode }}
   accessModes:
@@ -21,7 +21,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "nginx.fullname" . }}-{{ .Values.global.appMode }}-media-pvc
+  name: {{ .Release.Name }}-{{ include "nginx.fullname" . }}-{{ .Values.global.appMode }}-media-pvc
 spec:
   storageClassName: {{ include "nginx.fullname" . }}-media-{{ .Values.global.appMode }}
   accessModes:
