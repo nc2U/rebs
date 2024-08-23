@@ -15,8 +15,8 @@
 #### 1. Clone this Repository
 
 ```bash
-clone https://github.com/nc2U/Rebs
-cd Rebs
+clone https://github.com/nc2U/rebs
+cd rebs
 ```
 
 #### 2. Copy docker-compose.yml
@@ -137,7 +137,9 @@ pnpm dev    # npm run dev (or) yarn dev
 
 or Svelte application deploy -> node build
 
-```bashpnpm build # npm run build (or) yarn build```
+```bash
+pnpm build # npm run build (or) yarn build
+```
 
 ## Or Deploy Using Kubernetes
 
