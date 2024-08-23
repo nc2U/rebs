@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "nginx.fullname" . }}-static-{{ .Values.global.appMode }}-nfs-pvc
+  name: {{ include "nginx.fullname" . }}-{{ .Values.global.appMode }}-static-pvc
 spec:
   storageClassName: {{ include "nginx.fullname" . }}-static-{{ .Values.global.appMode }}
   accessModes:

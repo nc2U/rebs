@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "web.fullname" . }}-django-{{ .Values.global.appMode }}-nfs-pvc
+  name: {{ include "web.fullname" . }}-{{ .Values.global.appMode }}-django-pvc
 spec:
   storageClassName: {{ include "web.fullname" . }}-app-{{ .Values.global.appMode }}
   accessModes:

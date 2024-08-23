@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "mariadb.fullname" . }}-data-{{ .Values.global.appMode }}-nfs-pvc
+  name: {{ include "mariadb.fullname" . }}-{{ .Values.global.appMode }}-data-pvc
 spec:
   storageClassName: mysql-data-{{ .Values.global.appMode }}
   accessModes:

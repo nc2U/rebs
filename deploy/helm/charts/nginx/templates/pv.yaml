@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: {{ include "nginx.fullname" . }}-static-{{ .Values.global.appMode }}-nfs-pv
+  name: {{ include "nginx.fullname" . }}-{{ .Values.global.appMode }}-static-pv
 spec:
   storageClassName: {{ include "nginx.fullname" . }}-static-{{ .Values.global.appMode }}
   capacity:
