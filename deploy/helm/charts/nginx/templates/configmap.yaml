@@ -33,9 +33,7 @@ data:
 
         gzip  on;
 
-        include /etc/nginx/conf.d/log.conf;
-        include /etc/nginx/conf.d/upstream.conf;
-        include /etc/nginx/conf.d/public.conf;
+        include /etc/nginx/conf.d/*.conf;
     }
   LOG.CONF: |
     log_format json '{'
