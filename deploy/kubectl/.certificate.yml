@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: my-certificate
+  namespace: default  # You can change it to any namespace you want.
+spec:
+  secretName: my-certificate-tls  # Secret name where the certificate will be stored
+  issuerRef:
+    name: letsencrypt-ub
+    kind: ClusterIssuer
+  commonName: yourdomain.com
+  dnsNames:
+  - yourdomain.com
+  - www.yourdomain.com
+
