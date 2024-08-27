@@ -15,7 +15,7 @@
 #### 1. Clone this Repository
 
 ```bash
-clone https://github.com/nc2U/rebs
+git clone https://github.com/nc2U/rebs
 cd rebs
 ```
 
