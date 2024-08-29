@@ -78,12 +78,12 @@ jobs:
             --set nginx.ingress.tls\[0\].hosts\[0\]=${{ secrets.DOMAIN_NAME }} \
             --set nginx.ingress.tls\[0\].hosts\[1\]=www.${{ secrets.DOMAIN_NAME }} \
             --set nginx.ingress.tls\[0\].hosts\[2\]=api.${{ secrets.DOMAIN_NAME }} \
-            --set nginx.ingress.hosts\[0\].paths\[0\].path=/
-      #            --set nginx.ingress.hosts\[0\].paths\[0\].pathType=Prefix \
-      #            --set nginx.ingress.hosts\[1\].paths\[0\].path=/ \
-      #            --set nginx.ingress.hosts\[1\].paths\[0\].pathType=Prefix \
-      #            --set nginx.ingress.hosts\[2\].paths\[0\].path=/ \
-      #            --set nginx.ingress.hosts\[2\].paths\[0\].pathType=Prefix \
+            --set nginx.ingress.hosts\[0\].paths\[0\].path=/ \
+            --set nginx.ingress.hosts\[0\].paths\[0\].pathType=Prefix \
+            --set nginx.ingress.hosts\[1\].paths\[0\].path=/ \
+            --set nginx.ingress.hosts\[1\].paths\[0\].pathType=Prefix \
+            --set nginx.ingress.hosts\[2\].paths\[0\].path=/ \
+            --set nginx.ingress.hosts\[2\].paths\[0\].pathType=Prefix
       
       # slack --> notification
       - name: Send slack when failed
