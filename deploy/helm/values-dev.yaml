@@ -13,11 +13,11 @@ nginx:
   
   ingress:
     hosts:
-    - host: "host-path" # Host address
-      paths:
-      - path: /
-        pathType: ImplementationSpecific
+      - host: "host-path" # Host address
+        paths:
+          - path: /
+            pathType: Prefix
     tls:
-    - secretName: web-devbox-kr-cert
-      hosts:
-      - "host-path" # Host address
+      - secretName: web-devbox-kr-cert
+        hosts:
+          - "host-path" # Host address
