@@ -341,19 +341,19 @@ const formDataSetup = () => {
       const address = props.contract.contractor.contractoraddress
       form.id_zipcode = address.id_zipcode // 20
       form.id_address1 = address.id_address1 // 21
-      form.id_address2 = form.id_address2 ?? address.id_address2 // 22
-      form.id_address3 = form.id_address3 ?? address.id_address3 // 23
+      form.id_address2 = form.id_address2 || address.id_address2 // 22
+      form.id_address3 = form.id_address3 || address.id_address3 // 23
       form.dm_zipcode = address.dm_zipcode // 24
       form.dm_address1 = address.dm_address1
-      form.dm_address2 = form.dm_address2 ?? address.dm_address2 // 26
-      form.dm_address3 = form.dm_address3 ?? address.dm_address3 // 27
+      form.dm_address2 = form.dm_address2 || address.dm_address2 // 26
+      form.dm_address3 = form.dm_address3 || address.dm_address3 // 27
     }
     // contact
     const contact = props.contract.contractor?.contractorcontact
     form.cell_phone = contact.cell_phone
-    form.home_phone = form.home_phone ?? contact.home_phone // 11 // 12
-    form.other_phone = form.other_phone ?? contact.other_phone // 13
-    form.email = form.email ?? contact.email // 14
+    form.home_phone = form.home_phone || contact.home_phone // 11 // 12
+    form.other_phone = form.other_phone || contact.other_phone // 13
+    form.email = form.email || contact.email // 14
 
     sameAddrBtnSet(matchAddr.value)
   }
