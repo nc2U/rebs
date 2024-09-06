@@ -71,6 +71,9 @@ importers:
       core-js:
         specifier: ^3.38.1
         version: 3.38.1
+      grid-layout-plus:
+        specifier: ^1.0.5
+        version: 1.0.5(vue@3.5.2(typescript@5.1.6))
       js-cookie:
         specifier: ^3.0.5
         version: 3.0.5
@@ -622,6 +625,15 @@ packages:
     peerDependencies:
       vue: ^3.3.4
 
+  '@floating-ui/core@1.6.7':
+    resolution: {integrity: sha512-yDzVT/Lm101nQ5TCVeK65LtdN7Tj4Qpr9RTXJ2vPFLqtLxwOrpoxAHAJI8J3yYWUc40J0BDBheaitK5SJmno2g==}
+
+  '@floating-ui/dom@1.6.10':
+    resolution: {integrity: sha512-fskgCFv8J8OamCmyun8MfjB1Olfn+uZKjOKZ0vhYF3gRmEUXcGOjxWL8bBr7i4kIuPZ2KD2S3EUIOxnjC8kl2A==}
+
+  '@floating-ui/utils@0.2.7':
+    resolution: {integrity: sha512-X8R8Oj771YRl/w+c1HqAC1szL8zWQRwFvgDwT129k9ACdBoud/+/rX9V0qiMl6LWUdP9voC2nDVZYPMQQsb6eA==}
+
   '@fullcalendar/core@6.1.15':
     resolution: {integrity: sha512-BuX7o6ALpLb84cMw1FCB9/cSgF4JbVO894cjJZ6kP74jzbUZNjtwffwRdA+Id8rrLjT30d/7TrkW90k4zbXB5Q==}
 
@@ -665,6 +677,9 @@ packages:
     resolution: {integrity: sha512-93zYdMES/c1D69yZiKDBj0V24vqNzB/koF26KPaagAfd3P/4gUlh3Dys5ogAK+Exi9QyzlD8x/08Zt7wIKcDcA==}
     deprecated: Use @eslint/object-schema instead
 
+  '@interactjs/types@1.10.27':
+    resolution: {integrity: sha512-BUdv0cvs4H5ODuwft2Xp4eL8Vmi3LcihK42z0Ft/FbVJZoRioBsxH+LlsBdK4tAie7PqlKGy+1oyOncu1nQ6eA==}
+
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
     engines: {node: '>=12'}
@@ -693,6 +708,9 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
+
+  '@juggle/resize-observer@3.4.0':
+    resolution: {integrity: sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==}
 
   '@lezer/common@1.2.1':
     resolution: {integrity: sha512-yemX0ZD2xS/73llMZIK6KplkjIjf2EvAHcinDi/TfJ9hS25G0388+ClHt6/3but0oOxinTcQHJLDXh6w1crzFQ==}
@@ -1003,6 +1021,17 @@ packages:
 
   '@vavt/util@2.0.0':
     resolution: {integrity: sha512-zf1sY9Gy4jj5SE7FuSTXu7PrUdnKJf0zKvhNLAHWiGg1t8IkMfYwRN5567HcUgZSaSuJ8FR3dr+w6E2XzxoPiQ==}
+
+  '@vexip-ui/hooks@2.5.0':
+    resolution: {integrity: sha512-T3ikfvkXkm6Et6tnh872GcdMpdEMKgZ9m4sggrddVwW1AvzZTGCY00pW5J64VfAW2Ite8AnSunCrqO1OpiempA==}
+    peerDependencies:
+      vue: ^3.2.25
+
+  '@vexip-ui/utils@2.15.0':
+    resolution: {integrity: sha512-8YPWShNmlAs9PAhKfUbixinpYR37WfwarJyZFS2h+zTSRqGIEmIBCikrdnA3m0Oh8U4r5G0D6v5P26mXlZnIbw==}
+
+  '@vexip-ui/utils@2.16.1':
+    resolution: {integrity: sha512-P0xHHu7j1fXS+DLkVp6ipJNAM2QonymVsBUQai1Ym7/JPyZgHMeEOCMzAfJWwv/qLDfRk5XXJXDjRQDz/qlF7A==}
 
   '@vitejs/plugin-vue@4.6.2':
     resolution: {integrity: sha512-kqf7SGFoG+80aZG6Pf+gsZIVvGSCKE98JbiWqcCV9cThtg91Jav0yvYFC9Zb+jKetNGF6ZKeoaxgZfND21fWKw==}
@@ -2113,6 +2142,11 @@ packages:
   graphemer@1.4.0:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
 
+  grid-layout-plus@1.0.5:
+    resolution: {integrity: sha512-5EUNN4soj4k/yiFw3Y6u9PLRyOrDu/uBUaVLZ9MsoPWicSLRIin+EBnF8SUKnA9mjIhrDdYRG7sJSbdaXCHdPg==}
+    peerDependencies:
+      vue: ^3.0.0
+
   has-bigints@1.0.2:
     resolution: {integrity: sha512-tSvCKtBr9lkF0Ex0aQiP9N+OpV4zi2r/Nee5VkRDbaqv35RLYMzbwQfFSZZH0kR+Rd6302UJZ2p/bJCEoR3VoQ==}
 
@@ -2216,6 +2250,9 @@ packages:
   ini@2.0.0:
     resolution: {integrity: sha512-7PnF4oN3CvZF23ADhA5wRaYEQpJ8qygSkbtTXWBeXWXmEVRXK+1ITciHWwHhsjv1TmW0MgacIv6hEi5pX5NQdA==}
     engines: {node: '>=10'}
+
+  interactjs@1.10.27:
+    resolution: {integrity: sha512-y/8RcCftGAF24gSp76X2JS3XpHiUvDQyhF8i7ujemBz77hwiHDuJzftHx7thY8cxGogwGiPJ+o97kWB6eAXnsA==}
 
   internal-slot@1.0.7:
     resolution: {integrity: sha512-NGnrKwXzSms2qUUih/ILZ5JBqNTSa1+ZmP6flaIp6KmSElgE9qdndzS3cqjrDovwFdmwsGsLdeFgB6suw+1e9g==}
@@ -4322,6 +4359,17 @@ snapshots:
       - supports-color
       - typescript
 
+  '@floating-ui/core@1.6.7':
+    dependencies:
+      '@floating-ui/utils': 0.2.7
+
+  '@floating-ui/dom@1.6.10':
+    dependencies:
+      '@floating-ui/core': 1.6.7
+      '@floating-ui/utils': 0.2.7
+
+  '@floating-ui/utils@0.2.7': {}
+
   '@fullcalendar/core@6.1.15':
     dependencies:
       preact: 10.12.1
@@ -4362,6 +4410,8 @@ snapshots:
 
   '@humanwhocodes/object-schema@2.0.3': {}
 
+  '@interactjs/types@1.10.27': {}
+
   '@isaacs/cliui@8.0.2':
     dependencies:
       string-width: 5.1.2
@@ -4396,6 +4446,8 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
+
+  '@juggle/resize-observer@3.4.0': {}
 
   '@lezer/common@1.2.1': {}
 
@@ -4803,6 +4855,17 @@ snapshots:
       - typescript
 
   '@vavt/util@2.0.0': {}
+
+  '@vexip-ui/hooks@2.5.0(vue@3.5.2(typescript@5.1.6))':
+    dependencies:
+      '@floating-ui/dom': 1.6.10
+      '@juggle/resize-observer': 3.4.0
+      '@vexip-ui/utils': 2.15.0
+      vue: 3.5.2(typescript@5.1.6)
+
+  '@vexip-ui/utils@2.15.0': {}
+
+  '@vexip-ui/utils@2.16.1': {}
 
   '@vitejs/plugin-vue@4.6.2(vite@4.5.3(@types/node@20.16.5)(sass@1.78.0)(terser@5.31.6))(vue@3.5.2(typescript@5.1.6))':
     dependencies:
@@ -6160,6 +6223,13 @@ snapshots:
 
   graphemer@1.4.0: {}
 
+  grid-layout-plus@1.0.5(vue@3.5.2(typescript@5.1.6)):
+    dependencies:
+      '@vexip-ui/hooks': 2.5.0(vue@3.5.2(typescript@5.1.6))
+      '@vexip-ui/utils': 2.16.1
+      interactjs: 1.10.27
+      vue: 3.5.2(typescript@5.1.6)
+
   has-bigints@1.0.2: {}
 
   has-flag@3.0.0: {}
@@ -6251,6 +6321,10 @@ snapshots:
   ini@1.3.8: {}
 
   ini@2.0.0: {}
+
+  interactjs@1.10.27:
+    dependencies:
+      '@interactjs/types': 1.10.27
 
   internal-slot@1.0.7:
     dependencies:
