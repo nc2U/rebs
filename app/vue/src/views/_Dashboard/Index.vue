@@ -2,7 +2,8 @@
 import { ref, computed, onBeforeMount } from 'vue'
 import { useBoard } from '@/store/pinia/board'
 import MainCarousel from './components/MainCarousel.vue'
-import WiseWord from '@/views/_Dashboard/components/WiseWord.vue'
+import WiseWord from './components/WiseWord.vue'
+import MyIssue from '@/views/_Work/MyIssue/Index.vue'
 import NoticeBoard from './components/NoticeBoard/ListComp.vue'
 import WidgetsStatsA from './components/Widgets/WidgetsStatsTypeA.vue'
 import WidgetsStatsB from './components/Widgets/WidgetsStatsTypeB.vue'
@@ -49,6 +50,11 @@ onBeforeMount(() => boardStore.fetchPostList({ board: 1 }))
     <CRow>
       <CCol>
         <WidgetsStatsC />
+      </CCol>
+    </CRow>
+    <CRow class="mb-3">
+      <CCol>
+        <MyIssue />
       </CCol>
     </CRow>
   </CContainer>
