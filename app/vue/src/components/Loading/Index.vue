@@ -10,10 +10,10 @@ import 'vue-loading-overlay/dist/css/index.css'
     :can-cancel="true"
     :is-full-page="true"
     loader="spinner"
-    height="56"
-    width="56"
+    :height="56"
+    :width="56"
     color="#6CBC6F"
-    opacity="0.1"
+    :opacity="0.1"
     background-color="#000"
   />
 </template>
