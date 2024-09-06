@@ -107,9 +107,6 @@ importers:
       vue-router:
         specifier: ^4.4.3
         version: 4.4.3(vue@3.5.2(typescript@5.1.6))
-      vue3-grid-layout-next:
-        specifier: ^1.0.7
-        version: 1.0.7(typescript@5.1.6)
       vuetify:
         specifier: ^3.7.1
         version: 3.7.1(typescript@5.1.6)(vite-plugin-vuetify@1.0.2)(vue@3.5.2(typescript@5.1.6))
@@ -667,54 +664,6 @@ packages:
   '@humanwhocodes/object-schema@2.0.3':
     resolution: {integrity: sha512-93zYdMES/c1D69yZiKDBj0V24vqNzB/koF26KPaagAfd3P/4gUlh3Dys5ogAK+Exi9QyzlD8x/08Zt7wIKcDcA==}
     deprecated: Use @eslint/object-schema instead
-
-  '@interactjs/actions@1.10.27':
-    resolution: {integrity: sha512-FCRg5KwB+stkPcAMx/Cn0fgGP6p4LyMX9S/Upcn/W+hpYme31bPi54PCqmOebzz6myTthN6zFf9jMyLOqtI/gg==}
-    peerDependencies:
-      '@interactjs/core': 1.10.27
-      '@interactjs/utils': 1.10.27
-
-  '@interactjs/auto-scroll@1.10.27':
-    resolution: {integrity: sha512-zPg5TnVsZv+9Hnt4qnbxLvBMf+rIWHkoJVoSETEbLNaj90C8hIyr0pVwukSUySSgDhCgQ7np0f3pg4INLq9beQ==}
-    peerDependencies:
-      '@interactjs/utils': 1.10.27
-
-  '@interactjs/auto-start@1.10.27':
-    resolution: {integrity: sha512-ECLBO/nxmaF1knncJKIE5F7la3KKRgEkn0Cu2JTPOYj9xy/LpfYElo3wkRHsodgOqF651nR70GK2/IzPR2lO9A==}
-    peerDependencies:
-      '@interactjs/core': 1.10.27
-      '@interactjs/utils': 1.10.27
-
-  '@interactjs/core@1.10.27':
-    resolution: {integrity: sha512-SliUr/3ZbLAdED8LokzYzWHWMdCB5Cq+UnpXuRy+BIod1j97m4IUFf/D1iIKUBBjBcucgXbz28z96WnenVCB7Q==}
-    peerDependencies:
-      '@interactjs/utils': 1.10.27
-
-  '@interactjs/dev-tools@1.10.27':
-    resolution: {integrity: sha512-YolmBwRaKH1gWbvyLeV3m5QSwtD38lOZnCBA87PCAlcd9PQAC2gb03fEPeEyD336bE20oLB8f0WZt4Wre+afiw==}
-    peerDependencies:
-      '@interactjs/modifiers': 1.10.27
-      '@interactjs/utils': 1.10.27
-
-  '@interactjs/interact@1.10.27':
-    resolution: {integrity: sha512-XdH3A2UUzjEFGGJgFuJlhiz99tE8jB8xNh/DmnoMuL6uOQPxNA+sWRnzEVjG0+zY2P3/dbhEpi4Cn3FLPzydwA==}
-
-  '@interactjs/modifiers@1.10.27':
-    resolution: {integrity: sha512-ei/qfoQ+9/8k6WzNzdNqHI6cWkIV576N4Ap16r5CoqOWwhA6Xzj3OMHf1g0t1O4eSq2HdJsVJn3eLNfw9HsbeQ==}
-    peerDependencies:
-      '@interactjs/core': 1.10.27
-      '@interactjs/utils': 1.10.27
-
-  '@interactjs/snappers@1.10.27':
-    resolution: {integrity: sha512-HZLZ0XSi6HI08OmTv/HKG6AltQoaKAALLQ+KDW92utj3XSgw7oren0KsWUKPhaPg3Av7R1jFQd08s+uafqIlLw==}
-    peerDependencies:
-      '@interactjs/utils': 1.10.27
-
-  '@interactjs/types@1.10.27':
-    resolution: {integrity: sha512-BUdv0cvs4H5ODuwft2Xp4eL8Vmi3LcihK42z0Ft/FbVJZoRioBsxH+LlsBdK4tAie7PqlKGy+1oyOncu1nQ6eA==}
-
-  '@interactjs/utils@1.10.27':
-    resolution: {integrity: sha512-+qfLOio2OxQqg1cXSnRaCl+N8MQDQLDS9w+aOGxH8YLAhIMyt7Asxx/46//sT8orgsi16pmlBPtngPHT9s8zKw==}
 
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -1419,9 +1368,6 @@ packages:
   base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
 
-  batch-processor@1.0.0:
-    resolution: {integrity: sha512-xoLQD8gmmR32MeuBHgH0Tzd5PuSZx71ZsbhVxOCRbgktZEPe4SQy7s9Z50uPp0F/f7iw2XmkHN2xkgbMfckMDA==}
-
   bcrypt-pbkdf@1.0.2:
     resolution: {integrity: sha512-qeFIXtP4MSoi6NLqO12WfqARWWuCKi2Rn/9hJLEmtB5yTNr9DqFWkJRCf2qShWzPeAMRnOgCrq0sg/KLv5ES9w==}
 
@@ -1789,9 +1735,6 @@ packages:
 
   electron-to-chromium@1.5.15:
     resolution: {integrity: sha512-Z4rIDoImwEJW+YYKnPul4DzqsWVqYetYVN3XqDmRpgV0mjz0hYTaeeh+8/9CL1bk3AHYmF4freW/NTiVoXA2gA==}
-
-  element-resize-detector@1.2.4:
-    resolution: {integrity: sha512-Fl5Ftk6WwXE0wqCgNoseKWndjzZlDCwuPTcoVZfCP9R3EHQF8qUtr3YUPNETegRBOKqQKPW3n4kiIWngGi8tKg==}
 
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -2274,9 +2217,6 @@ packages:
     resolution: {integrity: sha512-7PnF4oN3CvZF23ADhA5wRaYEQpJ8qygSkbtTXWBeXWXmEVRXK+1ITciHWwHhsjv1TmW0MgacIv6hEi5pX5NQdA==}
     engines: {node: '>=10'}
 
-  interactjs@1.10.27:
-    resolution: {integrity: sha512-y/8RcCftGAF24gSp76X2JS3XpHiUvDQyhF8i7ujemBz77hwiHDuJzftHx7thY8cxGogwGiPJ+o97kWB6eAXnsA==}
-
   internal-slot@1.0.7:
     resolution: {integrity: sha512-NGnrKwXzSms2qUUih/ILZ5JBqNTSa1+ZmP6flaIp6KmSElgE9qdndzS3cqjrDovwFdmwsGsLdeFgB6suw+1e9g==}
     engines: {node: '>= 0.4'}
@@ -2654,9 +2594,6 @@ packages:
 
   minisearch@6.3.0:
     resolution: {integrity: sha512-ihFnidEeU8iXzcVHy74dhkxh/dn8Dc08ERl0xwoMMGqp4+LvRSCgicb+zGqWthVokQKvCSxITlh3P08OzdTYCQ==}
-
-  mitt@3.0.1:
-    resolution: {integrity: sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==}
 
   mlly@1.7.1:
     resolution: {integrity: sha512-rrVRZRELyQzrIUAVMHxP97kv+G786pHmOKzuFII8zDYahFBS7qnHh2AlYSl1GAHhaMPCz6/oHjVMcfFYgFYHgA==}
@@ -3652,9 +3589,6 @@ packages:
     peerDependencies:
       typescript: '*'
 
-  vue3-grid-layout-next@1.0.7:
-    resolution: {integrity: sha512-0MPPqF+CiOrDZZ1SwyOfsere7VpKXh/KIev4N09cMWio5uf7leM3McvZW0cJO/jOWC1thU26rmWnXjiKThIoxg==}
-
   vue@3.5.2:
     resolution: {integrity: sha512-w1YB4lAwC9ByH6AnFY0JvZF+y70Usul9jDfKIKtM5xA97q/JPS5R7mqq0fhA6D2PQxYPZdgb5jzFKLyOga5pnw==}
     peerDependencies:
@@ -4427,63 +4361,6 @@ snapshots:
   '@humanwhocodes/module-importer@1.0.1': {}
 
   '@humanwhocodes/object-schema@2.0.3': {}
-
-  '@interactjs/actions@1.10.27(@interactjs/core@1.10.27(@interactjs/utils@1.10.27))(@interactjs/utils@1.10.27)':
-    dependencies:
-      '@interactjs/core': 1.10.27(@interactjs/utils@1.10.27)
-      '@interactjs/utils': 1.10.27
-    optionalDependencies:
-      '@interactjs/interact': 1.10.27
-
-  '@interactjs/auto-scroll@1.10.27(@interactjs/utils@1.10.27)':
-    dependencies:
-      '@interactjs/utils': 1.10.27
-    optionalDependencies:
-      '@interactjs/interact': 1.10.27
-
-  '@interactjs/auto-start@1.10.27(@interactjs/core@1.10.27(@interactjs/utils@1.10.27))(@interactjs/utils@1.10.27)':
-    dependencies:
-      '@interactjs/core': 1.10.27(@interactjs/utils@1.10.27)
-      '@interactjs/utils': 1.10.27
-    optionalDependencies:
-      '@interactjs/interact': 1.10.27
-
-  '@interactjs/core@1.10.27(@interactjs/utils@1.10.27)':
-    dependencies:
-      '@interactjs/utils': 1.10.27
-
-  '@interactjs/dev-tools@1.10.27(@interactjs/modifiers@1.10.27(@interactjs/core@1.10.27(@interactjs/utils@1.10.27))(@interactjs/utils@1.10.27))(@interactjs/utils@1.10.27)(typescript@5.1.6)':
-    dependencies:
-      '@interactjs/modifiers': 1.10.27(@interactjs/core@1.10.27(@interactjs/utils@1.10.27))(@interactjs/utils@1.10.27)
-      '@interactjs/utils': 1.10.27
-    optionalDependencies:
-      '@interactjs/interact': 1.10.27
-      vue: 3.5.2(typescript@5.1.6)
-    transitivePeerDependencies:
-      - typescript
-
-  '@interactjs/interact@1.10.27':
-    dependencies:
-      '@interactjs/core': 1.10.27(@interactjs/utils@1.10.27)
-      '@interactjs/utils': 1.10.27
-
-  '@interactjs/modifiers@1.10.27(@interactjs/core@1.10.27(@interactjs/utils@1.10.27))(@interactjs/utils@1.10.27)':
-    dependencies:
-      '@interactjs/core': 1.10.27(@interactjs/utils@1.10.27)
-      '@interactjs/snappers': 1.10.27(@interactjs/utils@1.10.27)
-      '@interactjs/utils': 1.10.27
-    optionalDependencies:
-      '@interactjs/interact': 1.10.27
-
-  '@interactjs/snappers@1.10.27(@interactjs/utils@1.10.27)':
-    dependencies:
-      '@interactjs/utils': 1.10.27
-    optionalDependencies:
-      '@interactjs/interact': 1.10.27
-
-  '@interactjs/types@1.10.27': {}
-
-  '@interactjs/utils@1.10.27': {}
 
   '@isaacs/cliui@8.0.2':
     dependencies:
@@ -5351,8 +5228,6 @@ snapshots:
 
   base64-js@1.5.1: {}
 
-  batch-processor@1.0.0: {}
-
   bcrypt-pbkdf@1.0.2:
     dependencies:
       tweetnacl: 0.14.5
@@ -5762,10 +5637,6 @@ snapshots:
       semver: 7.6.3
 
   electron-to-chromium@1.5.15: {}
-
-  element-resize-detector@1.2.4:
-    dependencies:
-      batch-processor: 1.0.0
 
   emoji-regex@8.0.0: {}
 
@@ -6381,10 +6252,6 @@ snapshots:
 
   ini@2.0.0: {}
 
-  interactjs@1.10.27:
-    dependencies:
-      '@interactjs/types': 1.10.27
-
   internal-slot@1.0.7:
     dependencies:
       es-errors: 1.3.0
@@ -6776,8 +6643,6 @@ snapshots:
   minipass@7.1.2: {}
 
   minisearch@6.3.0: {}
-
-  mitt@3.0.1: {}
 
   mlly@1.7.1:
     dependencies:
@@ -7787,22 +7652,6 @@ snapshots:
       '@vue/language-core': 1.8.27(typescript@5.1.6)
       semver: 7.6.3
       typescript: 5.1.6
-
-  vue3-grid-layout-next@1.0.7(typescript@5.1.6):
-    dependencies:
-      '@interactjs/actions': 1.10.27(@interactjs/core@1.10.27(@interactjs/utils@1.10.27))(@interactjs/utils@1.10.27)
-      '@interactjs/auto-scroll': 1.10.27(@interactjs/utils@1.10.27)
-      '@interactjs/auto-start': 1.10.27(@interactjs/core@1.10.27(@interactjs/utils@1.10.27))(@interactjs/utils@1.10.27)
-      '@interactjs/core': 1.10.27(@interactjs/utils@1.10.27)
-      '@interactjs/dev-tools': 1.10.27(@interactjs/modifiers@1.10.27(@interactjs/core@1.10.27(@interactjs/utils@1.10.27))(@interactjs/utils@1.10.27))(@interactjs/utils@1.10.27)(typescript@5.1.6)
-      '@interactjs/interact': 1.10.27
-      '@interactjs/modifiers': 1.10.27(@interactjs/core@1.10.27(@interactjs/utils@1.10.27))(@interactjs/utils@1.10.27)
-      '@interactjs/utils': 1.10.27
-      element-resize-detector: 1.2.4
-      interactjs: 1.10.27
-      mitt: 3.0.1
-    transitivePeerDependencies:
-      - typescript
 
   vue@3.5.2(typescript@5.1.6):
     dependencies:
