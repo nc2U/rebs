@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
-import { GridItem, GridLayout } from 'grid-layout-plus'
+import { GridLayout } from 'grid-layout-plus'
 
 const layout = reactive([
-  { x: 0, y: 0, w: 6, h: 4, i: '0' },
-  { x: 6, y: 0, w: 6, h: 4, i: '1' },
+  { x: 0, y: 0, w: 6, h: 3, i: '0' },
+  { x: 6, y: 0, w: 6, h: 3, i: '1' },
 ])
 </script>
 
 <template>
   <CCard>
     <CCardBody>
-      <CRow class="text-right">
-        <CCol class="text-right">
-          <CFormSelect style="width: 200px">
+      <CRow>
+        <CCol>
+          <CFormSelect style="width: 200px" class="align-self-end">
             <option>추가하기</option>
             <option>내가 맡은 업무</option>
             <option>보고한 업무</option>
@@ -28,28 +28,24 @@ const layout = reactive([
           </CFormSelect>
         </CCol>
       </CRow>
-      <!-- Default slot usage -->
+      <!-- Item slot usage -->
       <GridLayout
         v-model:layout="layout"
         :col-num="12"
         :row-height="30"
         is-draggable
-        :is-resizable="false"
+        is-resizable
         vertical-compact
         use-css-transforms
       >
-        <GridItem
-          v-for="item in layout"
-          :key="item.i"
-          :x="item.x"
-          :y="item.y"
-          :w="item.w"
-          :h="item.h"
-          :i="item.i"
-          class="bg-light"
-        >
-          {{ item.i }}
-        </GridItem>
+        <template #item="{ item }">
+          <div class="w-100 h-100 border p-3">
+            <CRow class="text-right px-2 mb-1">
+              <CCol>{{ item.i }}</CCol>
+            </CRow>
+            <CAlert color="warning">표시할 데이터가 없습니다.</CAlert>
+          </div>
+        </template>
       </GridLayout>
     </CCardBody>
   </CCard>
