@@ -1,6 +1,6 @@
 {
-  "name": "vite-test-by-pnpm",
-  "version": "0.0.0",
+  "name": "vite-rebs-by-pnpm",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
