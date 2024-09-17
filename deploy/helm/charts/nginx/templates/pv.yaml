@@ -3,7 +3,7 @@ kind: PersistentVolume
 metadata:
   name: {{ .Release.Name }}-{{ include "nginx.fullname" . }}-{{ .Values.global.appMode }}-static-pv
 spec:
-  storageClassName: {{ include "nginx.fullname" . }}-static-{{ .Values.global.appMode }}
+  storageClassName: "local-path"
   capacity:
   {{- if eq .Values.global.appMode "prod" }}
     storage: {{ .Values.volumes.staticStorageProd }}
@@ -32,7 +32,7 @@ kind: PersistentVolume
 metadata:
   name: {{ .Release.Name }}-{{ include "nginx.fullname" . }}-{{ .Values.global.appMode }}-media-pv
 spec:
-  storageClassName: {{ include "nginx.fullname" . }}-media-{{ .Values.global.appMode }}
+  storageClassName: "local-path"
   capacity:
   {{- if eq .Values.global.appMode "prod" }}
     storage: {{ .Values.volumes.mediaStorageProd }}
