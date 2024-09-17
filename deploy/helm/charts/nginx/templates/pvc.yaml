@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ .Release.Name }}-{{ include "nginx.fullname" . }}-{{ .Values.global.appMode }}-static-pvc
 spec:
-  storageClassName: local-path
+  storageClassName: "local-path"
   accessModes:
   {{- range .Values.volumes.RWMAccessModes }}
     - {{ . }}
@@ -23,7 +23,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ .Release.Name }}-{{ include "nginx.fullname" . }}-{{ .Values.global.appMode }}-media-pvc
 spec:
-  storageClassName: local-path
+  storageClassName: "local-path"
   accessModes:
   {{- range .Values.volumes.RWMAccessModes }}
     - {{ . }}
