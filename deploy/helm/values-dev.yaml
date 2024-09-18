@@ -12,12 +12,14 @@ nginx:
     port: 8881
   
   ingress:
+    enabled: true
     hosts:
       - host: "host-path" # Host address
         paths:
           - path: /
             pathType: Prefix
     tls:
-      - secretName: web-devbox-kr-cert
-        hosts:
-          - "host-path" # Host address
+      enabled: true
+      secretName: web-devbox-kr-cert
+      hosts:
+        - "host-path" # Host address
