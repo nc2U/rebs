@@ -18,4 +18,3 @@ nginx:
 web:
   imageConfigMaps:
     djangoSettingsModule: _config.settings.prod
-	
