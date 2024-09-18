@@ -63,6 +63,9 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
+livenessProbe:
+  host: ""
+
 volumes:
   RWMAccessModes:
     - ReadWriteMany
