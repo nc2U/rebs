@@ -59,8 +59,8 @@ ingress:
         - path: /
           pathType: ImplementationSpecific
   tls: [ ]
-  #  enabled: false
-  #  - secretName: chart-example-tls
+  #  - enabled: false
+  #    secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
 
