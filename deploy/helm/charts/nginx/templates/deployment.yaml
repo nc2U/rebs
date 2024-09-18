@@ -57,13 +57,14 @@ spec:
 {{/*            periodSeconds: 10       # 10초마다 MariaDB 상태 확인*/}}
 {{/*            timeoutSeconds: 5       # 연결 시도 후 5초 동안 응답이 없으면 실패로 간주*/}}
 {{/*            failureThreshold: 3     # 5번 실패하면 Pod를 Ready 상태가 아니라고 판단*/}}
-          livenessProbe:
-            httpGet: # HttpGet 메소드로 점검
-              path: /         # 체크할 경로
-              port: {{ .Values.service.port }} # 체크할 Port
-            initialDelaySeconds: 180  # 최초 5초 후에 LivenessProbe 체크를 시작함
-            periodSeconds: 30         # 10초마다 LivenessProbe 체크
-            failureThreshold: 3       # 3번 실패시 Pod Restart
+{{/*          livenessProbe:*/}}
+{{/*            httpGet: # HttpGet 메소드로 점검*/}}
+{{/*              host: {{ .Values.ingress.hosts[0].host }}*/}}
+{{/*              path: /         # 체크할 경로*/}}
+{{/*              port: {{ .Values.service.port }} # 체크할 Port*/}}
+{{/*            initialDelaySeconds: 180  # 최초 5초 후에 LivenessProbe 체크를 시작함*/}}
+{{/*            periodSeconds: 30         # 10초마다 LivenessProbe 체크*/}}
+{{/*            failureThreshold: 3       # 3번 실패시 Pod Restart*/}}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
