@@ -2,14 +2,14 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-nginx:
-  ingress:
-    hosts:
-      - host: "host-path" # Host address
-        paths:
-          - path: /
-            pathType: Prefix
-    tls:
-      - secretName: web-devbox-kr-cert
-        hosts:
-          - "host-path" # Host address
+#nginx:
+#  ingress:
+#    hosts:
+#      - host: "host-path" # Host address
+#        paths:
+#          - path: /
+#            pathType: Prefix
+#    tls:
+#      - secretName: web-devbox-kr-cert
+#        hosts:
+#          - "host-path" # Host address

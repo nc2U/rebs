@@ -10,17 +10,17 @@ nginx:
   
   service:
     port: 8881
-  
-  ingress:
-    hosts:
-      - host: "host-path" # Host address
-        paths:
-          - path: /
-            pathType: Prefix
-    tls:
-      - secretName: web-devbox-kr-cert
-        hosts:
-          - "host-path" # Host address
+
+#  ingress:
+#    hosts:
+#      - host: "host-path" # Host address
+#        paths:
+#          - path: /
+#            pathType: Prefix
+#    tls:
+#      - secretName: web-devbox-kr-cert
+#        hosts:
+#          - "host-path" # Host address
 
 web:
   imageConfigMaps:
