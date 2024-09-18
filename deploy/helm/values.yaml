@@ -9,7 +9,7 @@ global:
   nfsPath: "nfs-path" # nfs volume path
   cicdServerHost: "cicd-server-host"
   cicdPath: "cicd-path" # cicd server path
-  domainHost: "https://dev.brdnc.co.kr/"
+  domainHost: "abc.com"
   emailHost: "smtp-server.com" # your-smtp-server.com
   emailHostUser: "email@example.com" # 'your-email@example.com
   emailHostPassword: "{{ randAlphaNum 5 }}" # your-email-password
