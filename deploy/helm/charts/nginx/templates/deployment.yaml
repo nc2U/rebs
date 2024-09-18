@@ -46,10 +46,10 @@ spec:
 {{/*          livenessProbe:*/}}
 {{/*            httpGet: # HttpGet 메소드로 점검*/}}
 {{/*              host: brdnc.co.kr*/}}
+{{/*              path: /                 # 체크할 경로*/}}
+{{/*              port: 443               # 체크할 Port*/}}
 {{/*              scheme: HTTPS*/}}
-{{/*              path: /                           # 체크할 경로*/}}
-{{/*              port: {{ .Values.service.port }}  # 체크할 Port*/}}
-{{/*            initialDelaySeconds: 180  # 최초 5초 후에 LivenessProbe 체크를 시작함*/}}
+{{/*            initialDelaySeconds: 5    # 최초 5초 후에 LivenessProbe 체크를 시작함*/}}
 {{/*            periodSeconds: 30         # 10초마다 LivenessProbe 체크*/}}
 {{/*            failureThreshold: 3       # 3번 실패시 Pod Restart*/}}
           resources:
