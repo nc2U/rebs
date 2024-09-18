@@ -6,7 +6,6 @@ app_name = 'rebs'
 
 urlpatterns = [
     path('', RedirectView.as_view(url='/rebs/dashboard/'), name='home'),
-    path('healthz/', health_check, name='health_check'),
     path('dashboard/', Dashboard.as_view(), name='dashboard'),
     path('schedule/', menu2_1, name='menu2_1'),
     path('cash/', include('cash.urls')),

@@ -20,10 +20,6 @@ def install_check(request):
         return redirect('/install/')
 
 
-def health_check(request):
-    return HttpResponse('OK', status=200)
-
-
 class Dashboard(LoginRequiredMixin, TemplateView):
     template_name = 'rebs/main/1_1_dashboard.html'
 
