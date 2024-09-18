@@ -1,4 +1,4 @@
-name: Image [web:python] Update
+name: Image [server:nginx] Update
 
 on:
   push:
