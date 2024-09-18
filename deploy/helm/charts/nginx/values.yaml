@@ -5,10 +5,10 @@
 replicaCount: 3
 
 image:
-  repository: dokube/nginx
-  pullPolicy: Always # IfNotPresent
+  repository: nginx
+  pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  tag: "1.27.1"
 
 imagePullSecrets: [ ]
 nameOverride: ""

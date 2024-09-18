@@ -32,6 +32,8 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          command: [ "/bin/sh", "-c" ]
+          args: [ "apt-get update && apt-get install -y netcat-openbsd" ]
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           envFrom:
             - configMapRef:
@@ -44,9 +46,9 @@ spec:
               containerPort: 443
               protocol: TCP
           readinessProbe:
-            tcpSocket: # TCP 소켓으로 MariaDB의 3306 포트에 연결이 가능한지 확인
-              port: 3306  # MariaDB가 사용하는 포트
-              host: master  # MariaDB 서비스 이름
+{{/*            tcpSocket: # TCP 소켓으로 MariaDB의 3306 포트에 연결이 가능한지 확인*/}}
+{{/*              port: 3306  # MariaDB가 사용하는 포트*/}}
+{{/*              host: master  # MariaDB 서비스 이름*/}}
             exec:
               command:
                 - nc
