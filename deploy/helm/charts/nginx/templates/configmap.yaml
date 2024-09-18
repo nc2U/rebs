@@ -6,7 +6,7 @@ data:
   {{- with .Values.imageConfigMaps }}
   NGINX.CONF: |
     user  nginx;
-    worker_processes {{ .workerProcesses | default "auto" }};
+    worker_processes {{ .workerProcesses | default "1" }};
 
     error_log  /var/log/nginx/error.log notice;
     pid        /var/run/nginx.pid;
