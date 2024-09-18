@@ -78,6 +78,9 @@ jobs:
             --set nginx.ingress.tls\[0\].hosts\[0\]=${{ secrets.DOMAIN_NAME }} \
             --set nginx.ingress.tls\[1\].hosts\[1\]=www.${{ secrets.DOMAIN_NAME }} \
             --set nginx.ingress.tls\[2\].hosts\[2\]=api.${{ secrets.DOMAIN_NAME }} \
+            --set nginx.ingress.tls\[0\].enabled='true' \
+            --set nginx.ingress.tls\[1\].enabled='true' \
+            --set nginx.ingress.tls\[2\].enabled='true' \
             --set nginx.ingress.hosts\[0\].paths\[0\].path=/ \
             --set nginx.ingress.hosts\[0\].paths\[0\].pathType=Prefix \
             --set nginx.ingress.hosts\[1\].paths\[0\].path=/ \
