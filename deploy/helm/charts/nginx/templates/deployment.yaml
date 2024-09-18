@@ -50,7 +50,11 @@ spec:
 {{/*              port: 3306  # MariaDB가 사용하는 포트*/}}
 {{/*              host: master  # MariaDB 서비스 이름*/}}
             exec:
-              command: [ "nc -zv master 3306" ]
+              command:
+                - nc
+                - -zv
+                - master
+                - "3306"
             initialDelaySeconds: 5  # 컨테이너 시작 후 5초 뒤에 Probe 시작
             periodSeconds: 10       # 10초마다 MariaDB 상태 확인
             timeoutSeconds: 5       # 연결 시도 후 5초 동안 응답이 없으면 실패로 간주
