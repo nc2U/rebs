@@ -83,7 +83,8 @@ jobs:
             --set nginx.ingress.hosts\[1\].paths\[0\].path=/ \
             --set nginx.ingress.hosts\[1\].paths\[0\].pathType=Prefix \
             --set nginx.ingress.hosts\[2\].paths\[0\].path=/ \
-            --set nginx.ingress.hosts\[2\].paths\[0\].pathType=Prefix
+            --set nginx.ingress.hosts\[2\].paths\[0\].pathType=Prefix \
+            --debug
       
       # slack --> notification
       - name: Send slack when failed
