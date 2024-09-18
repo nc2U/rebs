@@ -43,20 +43,6 @@ spec:
             - name: https
               containerPort: 443
               protocol: TCP
-          readinessProbe:
-            tcpSocket: # TCP 소켓으로 MariaDB의 3306 포트에 연결이 가능한지 확인
-              port: 3306  # MariaDB가 사용하는 포트
-              host: master  # MariaDB 서비스 이름
-{{/*            exec:*/}}
-{{/*              command:*/}}
-{{/*                - nc*/}}
-{{/*                - -zv*/}}
-{{/*                - master*/}}
-{{/*                - "3306"*/}}
-            initialDelaySeconds: 5  # 컨테이너 시작 후 5초 뒤에 Probe 시작
-            periodSeconds: 10       # 10초마다 MariaDB 상태 확인
-            timeoutSeconds: 5       # 연결 시도 후 5초 동안 응답이 없으면 실패로 간주
-            failureThreshold: 3     # 5번 실패하면 Pod를 Ready 상태가 아니라고 판단
 {{/*          livenessProbe:*/}}
 {{/*            httpGet: # HttpGet 메소드로 점검*/}}
 {{/*              host: brdnc.co.kr*/}}
