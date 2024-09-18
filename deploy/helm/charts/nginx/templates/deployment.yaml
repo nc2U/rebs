@@ -43,7 +43,6 @@ spec:
             - name: https
               containerPort: 443
               protocol: TCP
-          {{ if eq .Values.global.appMode "dev" }}
           readinessProbe:
             exec:
               command:
@@ -56,7 +55,6 @@ spec:
             timeoutSeconds: 5          # 5초 후에 실패로 간주
             successThreshold: 1        # 몇 번 성공해야 Ready 상태로 간주할 것인지
             failureThreshold: 3        # 몇 번 실패해야 Pod를 Ready 상태가 아니라고 판단할 것인지
-          {{ end }}
           livenessProbe:
             httpGet: # HttpGet 메소드로 점검
               {{ if and (eq .Values.global.appMode "prod") (gt (len .Values.ingress.hosts) 0) }}
