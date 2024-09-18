@@ -43,15 +43,15 @@ spec:
             - name: https
               containerPort: 443
               protocol: TCP
-          livenessProbe:
-            httpGet: # HttpGet 메소드로 점검
-              host: {{ .Values.livenessProbe.host | default "localhost" }}
-              path: /                 # 체크할 경로
-              port: {{ if gt (len .Values.ingress.tls) 0 }}443{{ else }}80{{ end }}  # 체크할 Port
-              scheme: {{ if gt (len .Values.ingress.tls) 0 }}HTTPS{{ else }}HTTP{{ end }}
-            initialDelaySeconds: 60     # 최초 60초 후에 LivenessProbe 체크를 시작함
-            periodSeconds: 10           # 10초마다 LivenessProbe 체크
-            failureThreshold: 3         # 3번 실패시 Pod Restart
+{{/*          livenessProbe:*/}}
+{{/*            httpGet: # HttpGet 메소드로 점검*/}}
+{{/*              host: {{ .Values.livenessProbe.host | default "localhost" }}*/}}
+{{/*              path: /                 # 체크할 경로*/}}
+{{/*              port: {{ if gt (len .Values.ingress.tls) 0 }}443{{ else }}80{{ end }}  # 체크할 Port*/}}
+{{/*              scheme: {{ if gt (len .Values.ingress.tls) 0 }}HTTPS{{ else }}HTTP{{ end }}*/}}
+{{/*            initialDelaySeconds: 60     # 최초 60초 후에 LivenessProbe 체크를 시작함*/}}
+{{/*            periodSeconds: 10           # 10초마다 LivenessProbe 체크*/}}
+{{/*            failureThreshold: 3         # 3번 실패시 Pod Restart*/}}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
