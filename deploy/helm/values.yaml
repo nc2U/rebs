@@ -28,6 +28,7 @@ nginx:
     port: 8880
   
   ingress:
+    enabled: true
     className: nginx
     annotations:
       kubernetes.io/tls-acme: "true"
