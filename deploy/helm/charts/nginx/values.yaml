@@ -60,9 +60,9 @@ ingress:
           pathType: ImplementationSpecific
   tls: [ ]
   #  enabled: false
-  #  secretName: chart-example-tls
-  #  hosts:
-  #    - chart-example.local
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
 volumes:
   RWMAccessModes:

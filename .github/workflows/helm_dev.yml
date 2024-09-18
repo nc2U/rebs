@@ -74,7 +74,7 @@ jobs:
             --set global.emailHostPassword=${{ secrets.EMAIL_HOST_PASSWORD }} \
             --set global.emailDefaultSender=${{ secrets.EMAIL_DEFAULT_SENDER }} \
             --set 'nginx.ingress.hosts[0].host'=dev.${{ secrets.DOMAIN_NAME }} \
-            --set 'nginx.ingress.tls.hosts[0]'=dev.${{ secrets.DOMAIN_NAME }}
+            --set 'nginx.ingress.tls[0].hosts[0]'=dev.${{ secrets.DOMAIN_NAME }}
       
       # slack --> notification
       - name: Send slack when failed
