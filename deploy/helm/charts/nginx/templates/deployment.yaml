@@ -45,7 +45,7 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet: # HttpGet 메소드로 점검
-              host: brdnc.co.kr
+              host: {{ .Values.global.domainHost }}
               path: /                 # 체크할 경로
               port: {{ if gt (len .Values.ingress.tls) 0 }}443{{ else }}80{{ end }}  # 체크할 Port
               scheme: {{ if gt (len .Values.ingress.tls) 0 }}HTTPS{{ else }}HTTP{{ end }}
