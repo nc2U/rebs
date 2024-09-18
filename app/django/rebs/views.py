@@ -1,4 +1,6 @@
 from datetime import date
+
+from django.http import HttpResponse
 from django.views import generic
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
@@ -16,6 +18,10 @@ def install_check(request):
         return render(request, 'base-vue.html')
     else:
         return redirect('/install/')
+
+
+def health_check(request):
+    return HttpResponse('OK', status=200)
 
 
 class Dashboard(LoginRequiredMixin, TemplateView):
