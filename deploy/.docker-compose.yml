@@ -1,5 +1,5 @@
 services:
-
+  
   master:
     container_name: rebs-mariadb
     image: mariadb
@@ -15,7 +15,7 @@ services:
       - ../volume/mysql:/var/lib/mysql
       - ../volume/backups:/var/backups
       - ../volume/sql:/docker-entrypoint-initdb.d
-
+  
   web:
     container_name: rebs-web
     build: docker/python
@@ -38,10 +38,11 @@ services:
       DJANGO_SETTINGS_MODULE: _config.settings.local # Django settings 모드 지정 (.local or .prod)
     depends_on:
       - master
-
+  
   nginx:
     container_name: rebs-nginx
-    image: nginx
+    build: docker/nginx/dev
+    image: dokube/nginx
     ports:
       - "80:80"
       - "443:443"
