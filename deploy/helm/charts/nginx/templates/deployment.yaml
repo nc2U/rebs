@@ -58,7 +58,7 @@ spec:
             failureThreshold: 8        # 몇 번 실패해야 Pod를 Ready 상태가 아니라고 판단할 것인지
           livenessProbe:
             httpGet: # HttpGet 메소드로 점검
-              host: "nginx"
+              host: "localhost"
               path: /                 # 체크할 경로
               port: {{ .Values.service.port }}  # 체크할 Port
             initialDelaySeconds: 120    # 최초 120초 후에 LivenessProbe 체크를 시작함
