@@ -48,13 +48,14 @@ spec:
               command:
                 - mariadb
                 - -V
-            failureThreshold: 30
           readinessProbe:
             exec:
-              command: [ "ls", "/var/lib/mysql/{{ .Release.Name }}" ]
+              command:
+                - ls
+                - /var/lib/mysql/{{ .Release.Name }}
             initialDelaySeconds: 10    # 컨테이너 시작 후 10초 후에 Probe 시작
             periodSeconds: 10          # 10초마다 상태 확인
-            timeoutSeconds: 3          # 5초 후에 실패로 간주
+            timeoutSeconds: 3          # 3초 후에 실패로 간주
             successThreshold: 1        # 몇 번 성공해야 Ready 상태로 간주할 것인지
             failureThreshold: 10        # 몇 번 실패해야 Pod를 Ready 상태가 아니라고 판단할 것인지
           livenessProbe:
