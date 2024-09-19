@@ -61,6 +61,7 @@ spec:
               {{ if and (eq .Values.global.appMode "prod") (gt (len .Values.ingress.hosts) 0) }}
               scheme: {{ if gt (len .Values.ingress.tls) 0 }}HTTPS{{ else }}HTTP{{ end }}
               host: {{ .Values.livenessProbe.host | default include "nginx.fullname" . }}
+              port: 80
               {{ else }}
               host: "localhost"
               port: {{ .Values.service.port }}
