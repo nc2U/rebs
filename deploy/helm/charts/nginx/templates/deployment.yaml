@@ -60,13 +60,8 @@ spec:
             httpGet: # HttpGet 메소드로 점검
               {{ if and (eq .Values.global.appMode "prod") (gt (len .Values.ingress.hosts) 0) }}
               host: {{ .Values.livenessProbe.host | default include "nginx.fullname" . }}
-              {{ if gt (len .Values.ingress.tls) 0 }}
-              scheme: HTTPS
-              port: 443
-              {{ else }}
-              scheme: HTTP
-              port: 80
-              {{ end }}
+              scheme: {{ if gt (len .Values.ingress.tls) 0 }}HTTPS{{ else }}HTTP{{ end }}
+              port: {{ if gt (len .Values.ingress.tls) 0 }}443{{ else }}80{{ end }}
               {{ else }}
               host: "localhost"
               port: {{ .Values.service.port }}
