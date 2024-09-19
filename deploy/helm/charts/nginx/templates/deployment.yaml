@@ -59,8 +59,9 @@ spec:
           livenessProbe:
             httpGet: # HttpGet 메소드로 점검
               {{ if and (eq .Values.global.appMode "prod") (gt (len .Values.ingress.hosts) 0) }}
+              scheme: {{ if gt (len .Values.ingress.tls) 0 }}HTTPS{{ else }}HTTP{{ end }}
               host: {{ .Values.livenessProbe.host | default "localhost" }}
-              port: {{ if gt(len .Values.ingress.tls) 0 }}443{{ else }}80{{ end }}
+              port: {{ if gt (len .Values.ingress.tls) 0 }}443{{ else }}80{{ end }}
               {{ else }}
               host: "localhost"
               port: {{ .Values.service.port }}
