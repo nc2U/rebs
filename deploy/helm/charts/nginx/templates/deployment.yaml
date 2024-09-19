@@ -58,8 +58,8 @@ spec:
             failureThreshold: 8        # 몇 번 실패해야 Pod를 Ready 상태가 아니라고 판단할 것인지
           livenessProbe:
             httpGet: # HttpGet 메소드로 점검
-              {{ if gt (len .Values.ingress.hosts) 0 }}
-              host: {{ .Values.livenessProbe.host | default "nginx" }}
+              {{ if and (gt (len .Values.ingress.hosts) 0) (.Values.livenessProbe.host) }}
+              host: {{ .Values.livenessProbe.host }}
               scheme: {{ if gt (len .Values.ingress.tls) 0 }}HTTPS{{ else }}HTTP{{ end }}
               port: {{ if gt (len .Values.ingress.tls) 0 }}443{{ else }}80{{ end }}
               {{ else }}
