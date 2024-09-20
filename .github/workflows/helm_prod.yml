@@ -60,7 +60,7 @@ jobs:
             chown lxd:999 ./volume/mysql/${{ secrets.DATABASE_USER }}
             chmod 700 ./volume/mysql${{ secrets.DATABASE_USER }}
             else echo "Directory already exists."; fi; cd deploy/helm
-            helm upgrade ${{ secrets.DATABASE_USER }} . -f ./values-prod.yaml \
+            helm upgrade ${{ secrets.DATABASE_USER }} . -f ./values.yaml \
             --install -n prod-hrebs --create-namespace --history-max 5 --wait --timeout 10m \
             --set global.dbPassword=${{ secrets.DATABASE_PASS }} \
             --set global.cicdPath=${{ secrets.CICD_PATH }} \
