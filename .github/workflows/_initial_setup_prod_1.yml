@@ -34,11 +34,11 @@ jobs:
         with:
           host: ${{ secrets.NFS_HOST }}
           username: ${{ secrets.NFS_USER }}
-          password: ${{ secrets.NFS_PASS }}
+          password: "${{ secrets.NFS_PASS }}"
           command: |
             cd ${{ secrets.NFS_PATH }}/prod/
             mkdir -p ./app/django/media
-            echo '${{ secrets.NFS_PASS }}' | sudo -S chmod -R 755 ./app/django/media
+            echo "${{ secrets.NFS_PASS }}" | sudo -S chmod -R 755 ./app/django/media
             rm -rf .git* README.md app/vue app/svelte deploy
       
       # Source to CI/CD server copy transfer
@@ -47,7 +47,7 @@ jobs:
         with:
           host: ${{ secrets.CICD_HOST }}
           username: ${{ secrets.CICD_USER }}
-          password: ${{ secrets.CICD_PASS }}
+          password: "${{ secrets.CICD_PASS }}"
           source: 'deploy'
           target: ${{ secrets.CICD_PATH }}/prod/
       
@@ -57,7 +57,7 @@ jobs:
         with:
           host: ${{ secrets.CICD_HOST }}
           username: ${{ secrets.CICD_USER }}
-          password: ${{ secrets.CICD_PASS }}
+          password: "${{ secrets.CICD_PASS }}"
           command: |
             cd ${{ secrets.CICD_PATH }}/prod
             if [ ! -d "./volume/mysql/${{ secrets.DATABASE_USER }}" ]; then
@@ -67,7 +67,7 @@ jobs:
             else echo "Directory already exists."; fi; cd deploy/helm
             helm upgrade ${{ secrets.DATABASE_USER }} . -f ./values.yaml \
             --install -n prod-hrebs --create-namespace --history-max 5 --wait --timeout 10m \
-            --set global.dbPassword=${{ secrets.DATABASE_PASS }} \
+            --set global.dbPassword="${{ secrets.DATABASE_PASS }}" \
             --set global.cicdPath=${{ secrets.CICD_PATH }} \
             --set global.cicdServerHost=${{ secrets.CICD_HOST }} \
             --set global.nfsPath=${{ secrets.NFS_PATH }} \
@@ -75,7 +75,7 @@ jobs:
             --set global.domainHost=${{ secrets.DOMAIN_HOST }} \
             --set global.emailHost=${{ secrets.EMAIL_HOST }} \
             --set global.emailHostUser=${{ secrets.EMAIL_HOST_USER }} \
-            --set global.emailHostPassword=${{ secrets.EMAIL_HOST_PASSWORD }} \
+            --set global.emailHostPassword="${{ secrets.EMAIL_HOST_PASSWORD }}" \
             --set global.emailDefaultSender=${{ secrets.EMAIL_DEFAULT_SENDER }} \
             --set nginx.livenessProbe.host=${{ secrets.DOMAIN_NAME }} \
             --set 'nginx.ingress.hosts[0].host'=${{ secrets.DOMAIN_NAME }} \
