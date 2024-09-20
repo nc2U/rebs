@@ -71,8 +71,8 @@ volumes:
     - ReadWriteMany
   staticStorageProd: 500Mi
   staticStorageDev: 200Mi
-  mediaStorageProd: 500Mi
-  mediaStorageDev: 300Mi
+  mediaStorageProd: 20Gi
+  mediaStorageDev: 10Gi
 
 resources: { }
 # We usually recommend not to specify default resources and to leave this as a conscious
