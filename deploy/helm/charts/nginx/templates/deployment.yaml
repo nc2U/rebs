@@ -52,7 +52,7 @@ spec:
                 - master
                 - "3306"
             initialDelaySeconds: 20    # 컨테이너 시작 후 20초 후에 Probe 시작
-            periodSeconds: 10          # 10초마다 상태 확인
+            periodSeconds: 30          # 10초마다 상태 확인
             timeoutSeconds: 5          # 5초 후에 실패로 간주
             successThreshold: 1        # 몇 번 성공해야 Ready 상태로 간주할 것인지
             failureThreshold: 8        # 몇 번 실패해야 Pod를 Ready 상태가 아니라고 판단할 것인지
