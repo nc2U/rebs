@@ -50,17 +50,8 @@ jobs:
           version: 9
           run_install: false
       
-      # node_modules 캐싱
-      - name: Cache vue node
-        uses: actions/cache@v3
-        id: cache_vue
-        with:
-          path: ./app/vue/node_modules
-          key: pnpm-packages-${{ hashFiles('**/pnpm.lock') }}
-      
-      # node_modules 변화기 있으면 빌드
+      # 패키지 빌드
       - name: Install Dependencies
-        if: steps.cache_vue.outputs.cache-hit != 'true'
         run: cd app/vue && pnpm i
       
       #      - run: pnpm lint
@@ -70,11 +61,14 @@ jobs:
       #        # 이후의 build까지 다 실행을 해보고 난 뒤 종료 하므로 모든 테스트 스크립트에 `if: ${{ always() }}`를 붙임.
       #        if: ${{ always() }}
       
-      - run: cd app/vue && pnpm build && pnpm docs:build
+      # 소스코드 빌드
+      - name: Build the Source Code
+        run: cd app/vue && pnpm build && pnpm docs:build
         if: ${{ always() }}
       
-      # 단위 테스트 :: Vue Unit Test using Vitest
-      - run: cd app/vue && pnpm test:unit
+      # 단위 테스트
+      - name: Vue Unit Test using Vitest
+        run: cd app/vue && pnpm test:unit
         if: ${{ always() }}
       
       # Docs deploy
