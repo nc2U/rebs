@@ -44,6 +44,10 @@ spec:
             - name: https
               containerPort: 443
               protocol: TCP
+          startupProbe:
+            exec:
+              command:
+                - ls
           readinessProbe:
             exec:
               command:
