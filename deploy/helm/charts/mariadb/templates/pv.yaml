@@ -5,25 +5,25 @@ metadata:
 spec:
   storageClassName: mysql-data-{{ .Values.global.appMode }}
   capacity:
-  {{- if eq .Values.global.appMode "prod" }}
+    {{- if eq .Values.global.appMode "prod" }}
     storage: {{ .Values.volumes.dataPvStorageProd }}
-  {{- else if eq .Values.global.appMode "dev" }}
+    {{- else if eq .Values.global.appMode "dev" }}
     storage: {{ .Values.volumes.dataPvStorageDev }}
-  {{- end }}
+    {{- end }}
   accessModes:
-  {{- range .Values.volumes.dataAccessModes }}
+    {{- range .Values.volumes.dataAccessModes }}
     - {{ . }}
-  {{- end }}
+    {{- end }}
   mountOptions:
     - hard
     - nfsvers=4.1
   nfs:
+    server: {{ .Values.global.cicdServerHost }}
     {{- if eq .Values.global.appMode "prod" }}
     path: {{ .Values.global.cicdPath }}/prod/volume/mysql
     {{- else if eq .Values.global.appMode "dev" }}
     path: {{ .Values.global.cicdPath }}/dev/volume/mysql
     {{- end }}
-    server: {{ .Values.global.cicdServerHost }}
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -34,19 +34,19 @@ spec:
   capacity:
     storage: {{ .Values.volumes.sqlPvStorage }}
   accessModes:
-  {{- range .Values.volumes.sqlAccessModes }}
+    {{- range .Values.volumes.sqlAccessModes }}
     - {{ . }}
-  {{- end }}
+    {{- end }}
   mountOptions:
     - hard
     - nfsvers=4.1
   nfs:
-  {{- if eq .Values.global.appMode "prod" }}
-    path: {{ .Values.global.nfsPath }}/prod/volume/sql
-  {{- else if eq .Values.global.appMode "dev" }}
-    path: {{ .Values.global.nfsPath }}/dev/volume/sql
-  {{- end }}
     server: {{ .Values.global.nfsServerHost }}
+    {{- if eq .Values.global.appMode "prod" }}
+    path: {{ .Values.global.nfsPath }}/prod/volume/sql
+    {{- else if eq .Values.global.appMode "dev" }}
+    path: {{ .Values.global.nfsPath }}/dev/volume/sql
+    {{- end }}
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -55,22 +55,22 @@ metadata:
 spec:
   storageClassName: dump-backup-{{ .Values.global.appMode }}
   capacity:
-  {{- if eq .Values.global.appMode "prod" }}
+    {{- if eq .Values.global.appMode "prod" }}
     storage: {{ .Values.volumes.backupPvStorageProd }}
-  {{- else if eq .Values.global.appMode "dev" }}
+    {{- else if eq .Values.global.appMode "dev" }}
     storage: {{ .Values.volumes.backupPvStorageDev }}
-  {{- end }}
+    {{- end }}
   accessModes:
-  {{- range .Values.volumes.backupAccessModes }}
+    {{- range .Values.volumes.backupAccessModes }}
     - {{ . }}
-  {{- end }}
+    {{- end }}
   mountOptions:
     - hard
     - nfsvers=4.1
   nfs:
-  {{- if eq .Values.global.appMode "prod" }}
+    {{- if eq .Values.global.appMode "prod" }}
     path: {{ .Values.global.nfsPath }}/prod/volume/backups
-  {{- else if eq .Values.global.appMode "dev" }}
+    {{- else if eq .Values.global.appMode "dev" }}
     path: {{ .Values.global.nfsPath }}/dev/volume/backups
-  {{- end}}
+    {{- end}}
     server: {{ .Values.global.nfsServerHost }}
