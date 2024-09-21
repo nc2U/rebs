@@ -44,7 +44,7 @@ jobs:
           username: ${{ secrets.CICD_USER }}
           password: ${{ secrets.CICD_PASS }}
           source: 'deploy/helm'
-          target: ${{ secrets.CICD_PATH }}/prod/deploy
+          target: ${{ secrets.CICD_PATH }}/prod/
       
       # helm upgrade --> install
       - name: SSH Remote Commands from ci/cd server
