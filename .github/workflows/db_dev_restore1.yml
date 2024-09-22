@@ -26,8 +26,8 @@ jobs:
           command: |
             sh ${{ secrets.NFS_PATH }}/rebs/prod/volume/backups/script_dev_copy.sh
       
-      # mysql pod --> database copy
-      - name: database copy
+      # mysql pod --> database restore
+      - name: database restore
         uses: garygrossgarten/github-action-ssh@release
         with:
           host: ${{ secrets.CICD_HOST }}
