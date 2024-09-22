@@ -16,6 +16,16 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      # Helm source to CI/CD server copy transfer
+      - name: Copy backups, to NFS server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.NFS_HOST }}
+          username: ${{ secrets.NFS_USER }}
+          password: ${{ secrets.NFS_PASS }}
+          source: 'volumes/backups'
+          target: ${{ secrets.NFS_PATH }}/prod/
+      
       # mysql pod --> database copy
       - name: database copy
         uses: garygrossgarten/github-action-ssh@release
@@ -24,7 +34,7 @@ jobs:
           username: ${{ secrets.NFS_USER }}
           password: ${{ secrets.NFS_PASS }}
           command: |
-            sh "${{ secrets.NFS_PATH }}"/rebs/prod/volume/backups/script_dev_copy.sh
+            sh "${{ secrets.NFS_PATH }}"/prod/volume/backups/script_dev_copy.sh
       
       # mysql pod --> database restore
       - name: database restore
