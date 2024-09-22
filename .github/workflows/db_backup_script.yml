@@ -1,8 +1,11 @@
 name: Database Dev Restore1
 
 on:
-  schedule:
-    - cron: "0 17 * * *"
+  push:
+    paths:
+      - "volume/backups/**"
+      - ".github/workflows/db_backup_script.yml"
+    branches: [ "master" ]
   
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -16,26 +19,19 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      # mysql pod --> database copy
-      - name: database copy
-        uses: garygrossgarten/github-action-ssh@release
+      # 레파지터리 체크 아웃
+      - name: Check out source code
+        uses: actions/checkout@v4
+      
+      # backups script to NFS server copy transfer
+      - name: Copy backups, to NFS server
+        uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.NFS_HOST }}
           username: ${{ secrets.NFS_USER }}
           password: ${{ secrets.NFS_PASS }}
-          command: |
-            sh "${{ secrets.NFS_PATH }}"/prod/volume/backups/script_dev_copy.sh
-      
-      # mysql pod --> database restore
-      - name: database restore
-        uses: garygrossgarten/github-action-ssh@release
-        with:
-          host: ${{ secrets.CICD_HOST }}
-          username: ${{ secrets.CICD_USER }}
-          password: ${{ secrets.CICD_PASS }}
-          command: |
-            master_pod=$(kubectl get pod -n dev-hrebs | grep master | cut -d ' ' -f1)
-            kubectl exec -it -n dev-hrebs $master_pod -- sh /var/backups/script_dev_restore.sh
+          source: 'volume/backups'
+          target: ${{ secrets.NFS_PATH }}/prod/
       
       # slack --> notification
       - name: Send slack when failed
