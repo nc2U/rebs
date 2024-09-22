@@ -5,24 +5,24 @@ metadata:
 spec:
   storageClassName: {{ include "nginx.fullname" . }}-static-{{ .Values.global.appMode }}
   capacity:
-  {{- if eq .Values.global.appMode "prod" }}
+    {{- if eq .Values.global.appMode "prod" }}
     storage: {{ .Values.volumes.staticStorageProd }}
-  {{- else if eq .Values.global.appMode "dev" }}
+    {{- else if eq .Values.global.appMode "dev" }}
     storage: {{ .Values.volumes.staticStorageDev }}
-  {{- end }}
+    {{- end }}
   accessModes:
-  {{- range .Values.volumes.RWMAccessModes }}
+    {{- range .Values.volumes.RWMAccessModes }}
     - {{ . }}
-  {{- end }}
+    {{- end }}
   mountOptions:
     - hard
     - nfsvers=4.1
   nfs:
-  {{- if eq .Values.global.appMode "prod" }}
+    {{- if eq .Values.global.appMode "prod" }}
     path: {{ .Values.global.nfsPath }}/prod/app/django/static
-  {{- else if eq .Values.global.appMode "dev" }}
+    {{- else if eq .Values.global.appMode "dev" }}
     path: {{ .Values.global.nfsPath }}/dev/app/django/static
-  {{- end }}
+    {{- end }}
     server: {{ .Values.global.nfsServerHost }}
 
 ---
@@ -34,22 +34,22 @@ metadata:
 spec:
   storageClassName: {{ include "nginx.fullname" . }}-media-{{ .Values.global.appMode }}
   capacity:
-  {{- if eq .Values.global.appMode "prod" }}
+    {{- if eq .Values.global.appMode "prod" }}
     storage: {{ .Values.volumes.mediaStorageProd }}
-  {{- else if eq .Values.global.appMode "dev" }}
+    {{- else if eq .Values.global.appMode "dev" }}
     storage: {{ .Values.volumes.mediaStorageDev }}
-  {{- end }}
+    {{- end }}
   accessModes:
-  {{- range .Values.volumes.RWMAccessModes }}
+    {{- range .Values.volumes.RWMAccessModes }}
     - {{ . }}
-  {{- end }}
+    {{- end }}
   mountOptions:
     - hard
     - nfsvers=4.1
   nfs:
-  {{- if eq .Values.global.appMode "prod" }}
+    {{- if eq .Values.global.appMode "prod" }}
     path: {{ .Values.global.nfsPath }}/prod/app/django/media
-  {{- else if eq .Values.global.appMode "dev" }}
+    {{- else if eq .Values.global.appMode "dev" }}
     path: {{ .Values.global.nfsPath }}/dev/app/django/media
-  {{- end }}
+    {{- end }}
     server: {{ .Values.global.nfsServerHost }}
