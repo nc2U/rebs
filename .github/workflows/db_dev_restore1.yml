@@ -20,11 +20,20 @@ jobs:
       - name: database copy
         uses: garygrossgarten/github-action-ssh@release
         with:
+          host: ${{ secrets.NFS_HOST }}
+          username: ${{ secrets.NFS_USER }}
+          password: ${{ secrets.NFS_PASS }}
+          command: |
+            sh ${{ secrets.NFS_PATH }}/rebs/prod/volume/backups/script_dev_copy.sh
+      
+      # mysql pod --> database copy
+      - name: database copy
+        uses: garygrossgarten/github-action-ssh@release
+        with:
           host: ${{ secrets.CICD_HOST }}
           username: ${{ secrets.CICD_USER }}
           password: ${{ secrets.CICD_PASS }}
           command: |
-            sh /mnt/nfs/prod/volume/backups/script_dev_copy.sh
             master_pod=$(kubectl get pod -n dev-hrebs | grep master | cut -d ' ' -f1)
             kubectl exec -it -n dev-hrebs $master_pod -- sh /var/backups/script_dev_restore.sh
       
