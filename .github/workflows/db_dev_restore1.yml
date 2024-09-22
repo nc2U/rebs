@@ -16,14 +16,14 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      # Helm source to CI/CD server copy transfer
+      # backups script to NFS server copy transfer
       - name: Copy backups, to NFS server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.NFS_HOST }}
           username: ${{ secrets.NFS_USER }}
           password: ${{ secrets.NFS_PASS }}
-          source: 'volumes/backups'
+          source: 'volume/backups'
           target: ${{ secrets.NFS_PATH }}/prod/
       
       # mysql pod --> database copy
