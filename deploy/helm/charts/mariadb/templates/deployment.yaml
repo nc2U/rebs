@@ -49,24 +49,32 @@ spec:
               command:
                 - mariadb
                 - -V
+            initialDelaySeconds: 120
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 10
+            successThreshold: 1
           readinessProbe:
             exec:
               command:
                 - ls
                 - /var/lib/mysql/{{ .Release.Name }}
-            initialDelaySeconds: 10    # 컨테이너 시작 후 10초 후에 Probe 시작
+            initialDelaySeconds: 30    # 컨테이너 시작 후 30초 후에 Probe 시작
             periodSeconds: 10          # 10초마다 상태 확인
-            timeoutSeconds: 3          # 3초 후에 실패로 간주
+            timeoutSeconds: 1          # 1초 후에 실패로 간주
+            failureThreshold: 3        # 몇 번 실패해야 Pod를 실패로 판단할 것인지
             successThreshold: 1        # 몇 번 성공해야 Ready 상태로 간주할 것인지
-            failureThreshold: 10        # 몇 번 실패해야 Pod를 Ready 상태가 아니라고 판단할 것인지
           livenessProbe:
             exec:
               command:
                 - mariadb
                 - -V
-            initialDelaySeconds: 120    # 최초 120초 후에 LivenessProbe 체크를 시작함
-            periodSeconds: 30           # 30초마다 LivenessProbe 체크
-            failureThreshold: 2         # 2번 실패시 Pod Restart
+            initialDelaySeconds: 120    # 컨테이너 시작 후 120초 후에 Probe 체크를 시작함
+            periodSeconds: 10           # 30초마다 Probe 상태 체크
+            timeoutSeconds: 1           # 1초 후에 실패로 간주
+            failureThreshold: 3         # 3번 실패시 Pod Restart
+            successThreshold: 1         # 몇 번 성공해야 Ready 상태로 간주할 것인지
+
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
