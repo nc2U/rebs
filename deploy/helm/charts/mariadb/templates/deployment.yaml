@@ -47,10 +47,15 @@ spec:
           startupProbe:
             exec:
               command:
-                - "mariadb-ammin"
-                - ping
+                - mariadb
                 - -u$MYSQL_USER
                 - -p$MYSQL_PASSWORD
+                - -e
+                - "SELECT 1"
+{{/*                - "mariadb-ammin"*/}}
+{{/*                - ping*/}}
+{{/*                - -u$MYSQL_USER*/}}
+{{/*                - -p$MYSQL_PASSWORD*/}}
             initialDelaySeconds: 30
             periodSeconds: 15
             timeoutSeconds: 5
@@ -72,10 +77,15 @@ spec:
           livenessProbe:
             exec:
               command:
-                - "mariadb-ammin"
-                - ping
+                - mariadb
                 - -u$MYSQL_USER
                 - -p$MYSQL_PASSWORD
+                - -e
+                - "SELECT 1"
+{{/*                - "mariadb-ammin"*/}}
+{{/*                - ping*/}}
+{{/*                - -u$MYSQL_USER*/}}
+{{/*                - -p$MYSQL_PASSWORD*/}}
             initialDelaySeconds: 45     # 컨테이너 시작 후 45초 후에 Probe 체크를 시작함
             periodSeconds: 10           # 30초마다 Probe 상태 체크
             timeoutSeconds: 1           # 1초 후에 실패로 간주
