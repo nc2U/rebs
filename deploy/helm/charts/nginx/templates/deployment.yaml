@@ -48,6 +48,11 @@ spec:
             exec:
               command:
                 - ls
+            initialDelaySeconds: 120
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 10
+            successThreshold: 1
           readinessProbe:
             exec:
               command:
@@ -55,11 +60,11 @@ spec:
                 - -zv
                 - master
                 - "3306"
-            initialDelaySeconds: 20    # 컨테이너 시작 후 20초 후에 Probe 시작
-            periodSeconds: 30          # 10초마다 상태 확인
-            timeoutSeconds: 5          # 5초 후에 실패로 간주
+            initialDelaySeconds: 30    # 컨테이너 시작 후 20초 후에 Probe 시작
+            periodSeconds: 10          # 10초마다 상태 확인
+            timeoutSeconds: 1          # 5초 후에 실패로 간주
+            failureThreshold: 5        # 몇 번 실패해야 Pod를 Ready 상태가 아니라고 판단할 것인지
             successThreshold: 1        # 몇 번 성공해야 Ready 상태로 간주할 것인지
-            failureThreshold: 8        # 몇 번 실패해야 Pod를 Ready 상태가 아니라고 판단할 것인지
           livenessProbe:
             httpGet: # HttpGet 메소드로 점검
               {{ if and (gt (len .Values.ingress.hosts) 0) (.Values.livenessProbe.host) }}
@@ -75,6 +80,7 @@ spec:
             periodSeconds: 10           # 10초마다 LivenessProbe 체크
             timeoutSeconds: 5           # 5초 후에 실패로 간주
             failureThreshold: 3         # 3번 실패시 Pod Restart
+            successThreshold: 1         # 몇 번 성공해야 Ready 상태로 간주할 것인지
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
