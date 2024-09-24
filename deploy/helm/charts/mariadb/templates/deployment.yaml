@@ -51,7 +51,7 @@ spec:
                 - ping
                 - -u$MYSQL_USER
                 - -p$MYSQL_PASSWORD
-            initialDelaySeconds: 120
+            initialDelaySeconds: 30
             periodSeconds: 15
             timeoutSeconds: 5
             failureThreshold: 10
@@ -76,7 +76,7 @@ spec:
                 - ping
                 - -u$MYSQL_USER
                 - -p$MYSQL_PASSWORD
-            initialDelaySeconds: 120    # 컨테이너 시작 후 120초 후에 Probe 체크를 시작함
+            initialDelaySeconds: 45     # 컨테이너 시작 후 45초 후에 Probe 체크를 시작함
             periodSeconds: 10           # 30초마다 Probe 상태 체크
             timeoutSeconds: 1           # 1초 후에 실패로 간주
             failureThreshold: 3         # 3번 실패시 Pod Restart
