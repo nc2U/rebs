@@ -54,7 +54,7 @@ spec:
             successThreshold: 1
           readinessProbe:
             exec:
-              command: [ "mariadb", "-u$MYSQL_USER", "-p$MYSQL_PASSWORD", "-e", "SELECT 1" ]
+              command: [ "mariadb", "-u", "$MYSQL_USER", "-p$MYSQL_PASSWORD", "-e", "SELECT 1" ]
             initialDelaySeconds: 30    # 컨테이너 시작 후 30초 후에 Probe 시작
             periodSeconds: 10          # 10초마다 상태 확인
             timeoutSeconds: 1          # 1초 후에 실패로 간주
