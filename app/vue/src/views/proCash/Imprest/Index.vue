@@ -22,12 +22,12 @@ import ProImprestList from '@/views/proCash/Imprest/components/ProImprestList.vu
 
 const listControl = ref()
 
-const bankFees = ref([14, 58]) // 은행수수료 d2(id), d3(id)
-const transferD3 = ref([70, 71]) // 대체 출금(id), 입금(id)
-const cancelD3 = ref([72, 73]) // 취소 출금(id), 입금(id)
+const bankFees = ref([14, 59]) // 은행수수료 d2(id), d3(id)
+const transferD3 = ref([71, 72]) // 대체 출금(id), 입금(id)
+const cancelD3 = ref([73, 74]) // 취소 출금(id), 입금(id)
 
-provide('transfers', [17, 70]) // 대체 출금 d2(id), d3(id)
-provide('cancels', [18, 72]) // 취소 출금 d2(id), d3(id)
+provide('transfers', [17, 71]) // 대체 출금 d2(id), d3(id)
+provide('cancels', [18, 73]) // 취소 출금 d2(id), d3(id)
 
 const dataFilter = ref<CashBookFilter>({
   page: 1,
