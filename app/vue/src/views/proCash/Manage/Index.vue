@@ -5,6 +5,7 @@ import { useComCash } from '@/store/pinia/comCash'
 import { useProCash } from '@/store/pinia/proCash'
 import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
+import { usePayment } from '@/store/pinia/payment'
 import {
   type CashBookFilter,
   type ProBankAcc,
@@ -18,7 +19,6 @@ import ListController from '@/views/proCash/Manage/components/ListController.vue
 import AddProCash from '@/views/proCash/Manage/components/AddProCash.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import ProCashList from '@/views/proCash/Manage/components/ProCashList.vue'
-import { usePayment } from '@/store/pinia/payment'
 
 const listControl = ref()
 
