@@ -41,7 +41,7 @@ services:
   
   nginx:
     container_name: rebs-nginx
-    build: docker/nginx/dev
+    build: docker/nginx
     image: dokube/nginx
     ports:
       - "80:80"
