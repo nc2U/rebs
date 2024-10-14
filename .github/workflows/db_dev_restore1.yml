@@ -34,8 +34,9 @@ jobs:
           username: ${{ secrets.CICD_USER }}
           password: ${{ secrets.CICD_PASS }}
           command: |
-            master_pod=$(kubectl get pod -n dev-hrebs | grep master | cut -d ' ' -f1)
-            kubectl exec -it -n dev-hrebs $master_pod -- sh /var/backups/script_dev_restore.sh
+            echo '1'
+      #            db_pod=$(kubectl get pod -n dev-hrebs | grep mariadb | cut -d ' ' -f1)
+      #            kubectl exec -it -n dev-hrebs $db_pod -- sh /var/backups/script_dev_restore.sh
       
       # slack --> notification
       - name: Send slack when failed

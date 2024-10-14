@@ -24,8 +24,9 @@ jobs:
           username: ${{ secrets.CICD_USER }}
           password: ${{ secrets.CICD_PASS }}
           command: |
-            master_pod=$(kubectl get pod -n dev-hrebs | grep master | cut -d ' ' -f1)
-            kubectl exec -it -n dev-hrebs $master_pod --  bash -c 'rm /docker-entrypoint-initdb.d/db-rebs*'
+            echo '1'
+      #            db_pod=$(kubectl get pod -n dev-hrebs | grep mariadb | cut -d ' ' -f1)
+      #            kubectl exec -it -n dev-hrebs $db_pod --  bash -c 'rm /docker-entrypoint-initdb.d/db-rebs*'
       
       # slack --> notification
       - name: Send slack when failed
