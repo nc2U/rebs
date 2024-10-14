@@ -43,7 +43,7 @@ jobs:
           host: ${{ secrets.CICD_HOST }}
           username: ${{ secrets.CICD_USER }}
           password: ${{ secrets.CICD_PASS }}
-          source: 'deploy/*'
+          source: 'deploy/helm,deploy/kubectl'
           target: ${{ secrets.CICD_PATH }}/
       
       # helm upgrade --> install
