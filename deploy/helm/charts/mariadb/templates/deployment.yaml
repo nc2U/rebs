@@ -107,8 +107,6 @@ metadata:
   name: nfs-client-provisioner
   labels:
     app: nfs-client-provisioner
-  # replace with namespace where provisioner is deployed
-{{/*  namespace: default*/}}
 spec:
   replicas: 1
   strategy:
@@ -132,11 +130,11 @@ spec:
             - name: PROVISIONER_NAME
               value: k8s-sigs.io/nfs-subdir-external-provisioner
             - name: NFS_SERVER
-              value: {{ .Values.global.nfsServerHost }}
+              value: {{ .Values.global.cicdServerHost }}
             - name: NFS_PATH
-              value: /mnt/nfs/rebs/{{ .Values.global.appMode }}/volume/data
+              value: {{ .Values.global.cicdPath }}{{ .Values.global.appMode }}/volume
       volumes:
         - name: nfs-client-root
           nfs:
-            server: {{ .Values.global.nfsServerHost }}
-            path: /mnt/nfs/rebs/{{ .Values.global.appMode }}/volume/data
+            server: {{ .Values.global.cicdServerHost }}
+            path: {{ .Values.global.cicdPath }}{{ .Values.global.appMode }}/volume
