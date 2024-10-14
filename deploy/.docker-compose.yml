@@ -1,6 +1,6 @@
 services:
   
-  master:
+  mariadb:
     container_name: rebs-mariadb
     image: mariadb
     restart: always
