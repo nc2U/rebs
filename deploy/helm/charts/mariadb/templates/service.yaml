@@ -13,3 +13,17 @@ spec:
       name: mysql
   selector:
     {{- include "mariadb.selectorLabels" . | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "mariadb.fullname" . }}-service
+  labels:
+    app: mariadb
+spec:
+  ports:
+    - port: 3306
+      name: mariadb-port
+  clusterIP: None
+  selector:
+    app: mariadb
