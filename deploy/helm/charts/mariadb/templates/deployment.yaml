@@ -132,9 +132,9 @@ spec:
             - name: NFS_SERVER
               value: {{ .Values.global.cicdServerHost }}
             - name: NFS_PATH
-              value: {{ .Values.global.cicdPath }}{{ .Values.global.appMode }}/volume
+              value: {{ .Values.global.cicdPath }}/{{ .Values.global.appMode }}/volume
       volumes:
         - name: nfs-client-root
           nfs:
             server: {{ .Values.global.cicdServerHost }}
-            path: {{ .Values.global.cicdPath }}{{ .Values.global.appMode }}/volume
+            path: {{ .Values.global.cicdPath }}/{{ .Values.global.appMode }}/volume
