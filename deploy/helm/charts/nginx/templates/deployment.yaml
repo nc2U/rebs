@@ -58,7 +58,7 @@ spec:
               command:
                 - nc
                 - -zv
-                - mariadb-service
+                - mariadb
                 - "3306"
             initialDelaySeconds: 30    # 컨테이너 시작 후 20초 후에 Probe 시작
             periodSeconds: 10          # 10초마다 상태 확인
