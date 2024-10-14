@@ -5,6 +5,9 @@
 global:
   appMode: dev
 
+mariadb:
+  replicaCount: 1
+
 nginx:
   image:
     repository: dokube/nginx
