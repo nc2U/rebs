@@ -37,7 +37,7 @@ services:
       EMAIL_DEFAULT_SENDER: sender name <your@djangoapp.com> # 실제 데이터로 수정
       DJANGO_SETTINGS_MODULE: _config.settings.local # Django settings 모드 지정 (.local or .prod)
     depends_on:
-      - master
+      - mariadb
   
   nginx:
     container_name: rebs-nginx
