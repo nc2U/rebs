@@ -131,7 +131,7 @@ DATABASES = {
         'USER': os.getenv('DATABASE_USER'),
         'PASSWORD': os.getenv('DATABASE_PASSWORD'),
         "DEFAULT-CHARACTER-SET": 'utf8',
-        'HOST': 'mariadb',
+        'HOST': 'mariadb-svc',
         'PORT': 3306,
     },
     'slave1': {
