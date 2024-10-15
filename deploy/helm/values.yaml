@@ -19,8 +19,9 @@ nameOverride: ""
 fullnameOverride: ""
 
 mariadb:
-  volumes:
-    nfsServerHost: ""
+  replicaCount: 3
+#  volumes:
+#    nfsServerHost: ""
 
 nginx:
   service:
