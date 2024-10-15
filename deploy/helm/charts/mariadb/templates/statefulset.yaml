@@ -3,7 +3,7 @@ kind: StatefulSet
 metadata:
   name: mariadb
 spec:
-  serviceName: "mariadb-service"
+  serviceName: {{ include "mariadb.fullname" . }}
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
