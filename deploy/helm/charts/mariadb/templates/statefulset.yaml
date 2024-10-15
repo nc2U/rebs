@@ -102,8 +102,8 @@ spec:
             failureThreshold: 3         # 3번 실패시 Pod Restart
             successThreshold: 1         # 몇 번 성공해야 Ready 상태로 간주할 것인지
           volumeMounts:
-            - name: data
-              mountPath: /var/lib/mysql/
+{{/*            - name: data*/}}
+{{/*              mountPath: /var/lib/mysql/*/}}
             - name: mariadb-config
               mountPath: /etc/mysql/conf.d/
             - name: initdb
@@ -123,16 +123,16 @@ spec:
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-{{ include "mariadb.fullname" . }}-{{ .Values.global.appMode }}-backup-pvc
 
-  volumeClaimTemplates:
-    - metadata:
-        name: data
-      spec:
-        storageClassName: "nfs-client"
-        accessModes: [ "ReadWriteOnce" ]
-        resources:
-          requests:
-          {{- if eq .Values.global.appMode "prod" }}
-            storage: {{ .Values.volumes.dataPvcStorageProd }}
-          {{- else if eq .Values.global.appMode "dev" }}
-            storage: {{ .Values.volumes.dataPvcStorageDev }}
-          {{- end }}
+{{/*  volumeClaimTemplates:*/}}
+{{/*    - metadata:*/}}
+{{/*        name: data*/}}
+{{/*      spec:*/}}
+{{/*        storageClassName: "nfs-client"*/}}
+{{/*        accessModes: [ "ReadWriteOnce" ]*/}}
+{{/*        resources:*/}}
+{{/*          requests:*/}}
+{{/*          {{- if eq .Values.global.appMode "prod" }}*/}}
+{{/*            storage: {{ .Values.volumes.dataPvcStorageProd }}*/}}
+{{/*          {{- else if eq .Values.global.appMode "dev" }}*/}}
+{{/*            storage: {{ .Values.volumes.dataPvcStorageDev }}*/}}
+{{/*          {{- end }}*/}}
