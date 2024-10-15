@@ -14,6 +14,7 @@ global:
   emailHostUser: "email@example.com" # 'your-email@example.com
   emailHostPassword: "{{ randAlphaNum 5 }}" # your-email-password
   emailDefaultSender: "email@example.com"
+  databaseServiceName: "mariadb"
 
 nameOverride: ""
 fullnameOverride: ""
