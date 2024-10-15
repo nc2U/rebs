@@ -55,7 +55,7 @@ jobs:
           password: ${{ secrets.CICD_PASS }}
           command: |
             cd ${{ secrets.CICD_PATH }}/prod
-            kubectl apply -f ./kubectl/storageclass.yaml
+            kubectl apply -f kubectl/storageclass.yaml
             if [ ! -d "./volume/mysql/${{ secrets.DATABASE_USER }}" ]; then
             mkdir -p ./volume/mysql/${{ secrets.DATABASE_USER }}
             chown lxd:999 ./volume/mysql/${{ secrets.DATABASE_USER }}
