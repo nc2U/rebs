@@ -22,7 +22,7 @@ metadata:
     app: mariadb
 spec:
   ports:
-    - port: 3306
+    - port: {{ .Values.service.port }}
       name: mariadb-port
   clusterIP: None
   selector:
