@@ -48,7 +48,6 @@ spec:
             exec:
               command: [ "nginx", "-t" ]
             initialDelaySeconds: 20
-            periodSeconds: 15
             timeoutSeconds: 5
             failureThreshold: 10
             successThreshold: 1
@@ -56,7 +55,7 @@ spec:
             exec:
               command: [ "nc", "-zv", "mariadb", "3306" ]
             initialDelaySeconds: 30    # 컨테이너 시작 후 30초 후에 Probe 시작
-            periodSeconds: 10          # 10초마다 상태 확인
+            periodSeconds: 30          # 30초마다 상태 확인
             timeoutSeconds: 1          # 5초 후에 실패로 간주
             failureThreshold: 5        # 몇 번 실패해야 Pod를 Ready 상태가 아니라고 판단할 것인지
             successThreshold: 1        # 몇 번 성공해야 Ready 상태로 간주할 것인지
@@ -72,7 +71,7 @@ spec:
               {{ end }}
               path: /                   # 체크할 경로
             initialDelaySeconds: 40     # 최초 40초 후에 LivenessProbe 체크를 시작함
-            periodSeconds: 10           # 10초마다 LivenessProbe 체크
+            periodSeconds: 30           # 30초마다 LivenessProbe 체크
             timeoutSeconds: 5           # 5초 후에 실패로 간주
             failureThreshold: 3         # 3번 실패시 Pod Restart
             successThreshold: 1         # 몇 번 성공해야 Ready 상태로 간주할 것인지
