@@ -45,7 +45,7 @@ spec:
           startupProbe:
             exec:
               command: [ "mariadb-admin", "ping", "-u$MYSQL_USER", "-p$MYSQL_PASSWORD" ]
-            initialDelaySeconds: 30
+            initialDelaySeconds: 10
             periodSeconds: 15
             timeoutSeconds: 5
             failureThreshold: 10
@@ -53,7 +53,7 @@ spec:
           readinessProbe:
             exec:
               command: [ "mariadb-admin", "ping", "-u$MYSQL_USER", "-p$MYSQL_PASSWORD" ]
-            initialDelaySeconds: 40    # 컨테이너 시작 후 40초 후에 Probe 시작
+            initialDelaySeconds: 20    # 컨테이너 시작 후 20초 후에 Probe 시작
             periodSeconds: 10          # 10초마다 상태 확인
             timeoutSeconds: 1          # 1초 후에 실패로 간주
             failureThreshold: 3        # 몇 번 실패해야 Pod를 실패로 판단할 것인지
@@ -61,7 +61,7 @@ spec:
           livenessProbe:
             exec:
               command: [ "mariadb-admin", "ping", "-u$MYSQL_USER", "-p$MYSQL_PASSWORD" ]
-            initialDelaySeconds: 50     # 컨테이너 시작 후 50초 후에 Probe 체크를 시작함
+            initialDelaySeconds: 30     # 컨테이너 시작 후 30초 후에 Probe 체크를 시작함
             periodSeconds: 10           # 30초마다 Probe 상태 체크
             timeoutSeconds: 1           # 1초 후에 실패로 간주
             failureThreshold: 3         # 3번 실패시 Pod Restart
