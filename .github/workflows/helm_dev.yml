@@ -57,7 +57,7 @@ jobs:
           password: ${{ secrets.CICD_PASS }}
           command: |
             cd ${{ secrets.CICD_PATH }}/dev
-            kubectl apply -f kubectl/dinamic-provision
+            kubectl apply -f ./kubectl/storageclass.yaml
             if [ ! -d "./volume/mysql/${{ secrets.DATABASE_USER }}" ]; then
             mkdir -p ./volume/mysql/${{ secrets.DATABASE_USER }}
             chown lxd:999 ./volume/mysql/${{ secrets.DATABASE_USER }}
