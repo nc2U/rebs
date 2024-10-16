@@ -83,9 +83,9 @@ spec:
           startupProbe:
             exec:
               command: [ "mariadb-admin", "ping", "-u$MYSQL_USER", "-p$MYSQL_PASSWORD" ]
-            initialDelaySeconds: 15
+            initialDelaySeconds: 30
             timeoutSeconds: 5
-            failureThreshold: 10
+            failureThreshold: 20
             successThreshold: 1
           # Mount volume from persistent volume claim
           volumeMounts:
