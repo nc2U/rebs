@@ -80,13 +80,13 @@ spec:
                   key: mariadb-root-password
             - name: MYSQL_INITDB_SKIP_TZINFO
               value: "1"
-          startupProbe:
-            exec:
-              command: [ "mariadb-admin", "ping", "-u$MYSQL_USER", "-p$MYSQL_PASSWORD" ]
-            initialDelaySeconds: 30
-            timeoutSeconds: 5
-            failureThreshold: 20
-            successThreshold: 1
+{{/*          startupProbe:*/}}
+{{/*            exec:*/}}
+{{/*              command: [ "mariadb-admin", "ping", "-u$MYSQL_USER", "-p$MYSQL_PASSWORD" ]*/}}
+{{/*            initialDelaySeconds: 30*/}}
+{{/*            timeoutSeconds: 5*/}}
+{{/*            failureThreshold: 20*/}}
+{{/*            successThreshold: 1*/}}
           # Mount volume from persistent volume claim
           volumeMounts:
             - name: data
