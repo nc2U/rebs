@@ -103,7 +103,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nfs-client-provisioner
+  name: {{ .Values.global.appMode }}-nfs-client-provisioner
   labels:
     app: nfs-client-provisioner
 spec:
