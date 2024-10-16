@@ -6,6 +6,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: nfs-client-provisioner
+    namespace: {{ .Release.Namespace | quote }}
 roleRef:
   kind: ClusterRole
   name: nfs-client-provisioner-runner
