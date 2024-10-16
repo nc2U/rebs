@@ -111,17 +111,17 @@ spec:
             - name: backup
               mountPath: /var/backups/
       volumes:
-        - name: mariadb-replica-config
+        - name: mariadb-replica-config # for init to main
           configMap:
             name: {{ include "mariadb.fullname" . }}-replica-config
             #defaultMode: 0544
-        - name: mariadb-config
+        - name: mariadb-config # for init to main
           emptyDir: { }
-        - name: initdb
+        - name: initdb # for init to main
           emptyDir: { }
-        - name: backup
-          persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-{{ include "mariadb.fullname" . }}-{{ .Values.global.appMode }}-backup-pvc
+{{/*        - name: backup*/}}
+{{/*          persistentVolumeClaim:*/}}
+{{/*            claimName: {{ .Release.Name }}-{{ include "mariadb.fullname" . }}-{{ .Values.global.appMode }}-backup-pvc*/}}
 
   volumeClaimTemplates:
     - metadata:
