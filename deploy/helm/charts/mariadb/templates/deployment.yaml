@@ -112,11 +112,11 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      app: nfs-client-provisioner-{{ .Values.global.appMode }}
+      app: nfs-client-provisioner
   template:
     metadata:
       labels:
-        app: nfs-client-provisioner-{{ .Values.global.appMode }}
+        app: nfs-client-provisioner
     spec:
       serviceAccountName: nfs-client-provisioner
       containers:
@@ -127,7 +127,7 @@ spec:
               mountPath: /persistentvolumes
           env:
             - name: PROVISIONER_NAME
-              value: k8s-sigs.io/nfs-subdir-external-provisioner
+              value: k8s-sigs.io/nfs-subdir-external-provisioner-{{ .Values.global.appMode }}
             - name: NFS_SERVER
               value: {{ .Values.global.cicdServerHost }}
             - name: NFS_PATH
