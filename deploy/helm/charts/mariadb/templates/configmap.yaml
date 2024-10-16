@@ -10,7 +10,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "mariadb.fullname" . }}-replica-config
+  name: {{ include "mariadb.fullname" . }}-replica-conf
 data:
   primary.cnf: |
     [mariadb]

@@ -50,7 +50,7 @@ spec:
               ls /etc/mysql/conf.d/
               cat /etc/mysql/conf.d/server-id.cnf
           volumeMounts:
-            - name: mariadb-replica-config
+            - name: mariadb-replica-conf
               mountPath: /mnt/replica-conf
             - name: mariadb-conf-d
               mountPath: /etc/mysql/conf.d/
@@ -60,9 +60,9 @@ spec:
       containers:
         - name: mariadb
           image: mariadb
-          args:
-            - --character-set-server=utf8mb4
-            - --collation-server=utf8mb4_unicode_ci
+{{/*          args:*/}}
+{{/*            - --character-set-server=utf8mb4*/}}
+{{/*            - --collation-server=utf8mb4_unicode_ci*/}}
           ports:
             - containerPort: 3306
               name: mariadb-port
@@ -89,9 +89,9 @@ spec:
             - name: initdb-d
               mountPath: /docker-entrypoint-initdb.d
       volumes:
-        - name: mariadb-replica-config # for init to main
+        - name: mariadb-replica-conf # for init to main
           configMap:
-            name: {{ include "mariadb.fullname" . }}-replica-config
+            name: {{ include "mariadb.fullname" . }}-replica-conf
             #defaultMode: 0544
         - name: mariadb-conf-d # for init to main
           emptyDir: { }
