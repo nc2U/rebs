@@ -105,18 +105,18 @@ kind: Deployment
 metadata:
   name: nfs-client-provisioner
   labels:
-    app: nfs-client-provisioner-{{ .Values.global.appMode }}"
+    app: nfs-client-provisioner-{{ .Values.global.appMode }}
 spec:
   replicas: 1
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: nfs-client-provisioner-{{ .Values.global.appMode }}"
+      app: nfs-client-provisioner-{{ .Values.global.appMode }}
   template:
     metadata:
       labels:
-        app: nfs-client-provisioner-{{ .Values.global.appMode }}"
+        app: nfs-client-provisioner-{{ .Values.global.appMode }}
     spec:
       serviceAccountName: nfs-client-provisioner
       containers:
