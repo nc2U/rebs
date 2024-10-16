@@ -80,13 +80,6 @@ spec:
                   key: mariadb-root-password
             - name: MYSQL_INITDB_SKIP_TZINFO
               value: "1"
-{{/*          startupProbe:*/}}
-{{/*            exec:*/}}
-{{/*              command: [ "mariadb-admin", "ping", "-u$MYSQL_USER", "-p$MYSQL_PASSWORD" ]*/}}
-{{/*            initialDelaySeconds: 30*/}}
-{{/*            timeoutSeconds: 5*/}}
-{{/*            failureThreshold: 20*/}}
-{{/*            successThreshold: 1*/}}
           # Mount volume from persistent volume claim
           volumeMounts:
             - name: data
@@ -95,8 +88,6 @@ spec:
               mountPath: /etc/mysql/conf.d/
             - name: initdb-d
               mountPath: /docker-entrypoint-initdb.d
-{{/*            - name: backup*/}}
-{{/*              mountPath: /var/backups/*/}}
       volumes:
         - name: mariadb-replica-config # for init to main
           configMap:
@@ -106,9 +97,6 @@ spec:
           emptyDir: { }
         - name: initdb-d # for init to main
           emptyDir: { }
-{{/*        - name: backup*/}}
-{{/*          persistentVolumeClaim:*/}}
-{{/*            claimName: {{ .Release.Name }}-{{ include "mariadb.fullname" . }}-{{ .Values.global.appMode }}-backup-pvc*/}}
 
   volumeClaimTemplates:
     - metadata:
