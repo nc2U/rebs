@@ -5,3 +5,42 @@ metadata:
 provisioner: k8s-sigs.io/nfs-subdir-external-provisioner # or choose another name, must match deployment's env PROVISIONER_NAME'
 parameters:
   archiveOnDelete: "false"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: kube-system
+  name: nfs-client-provisioner
+  labels:
+    app: nfs-client-provisioner
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: nfs-client-provisioner
+  template:
+    metadata:
+      labels:
+        app: nfs-client-provisioner
+    spec:
+      serviceAccountName: nfs-client-provisioner
+      containers:
+        - name: nfs-client-provisioner
+          image: registry.k8s.io/sig-storage/nfs-subdir-external-provisioner:v4.0.2
+          volumeMounts:
+            - name: nfs-client-root
+              mountPath: /persistentvolumes
+          env:
+            - name: PROVISIONER_NAME
+              value: k8s-sigs.io/nfs-subdir-external-provisioner
+            - name: NFS_SERVER
+              value: 49.247.26.88
+            - name: NFS_PATH
+              value: $PWD/volume
+      volumes:
+        - name: nfs-client-root
+          nfs:
+            server: 49.247.26.88
+            path: $PWD/volume
