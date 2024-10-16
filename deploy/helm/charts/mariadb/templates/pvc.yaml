@@ -10,11 +10,7 @@ spec:
   {{- end }}
   resources:
     requests:
-    {{- if eq .Values.global.appMode "prod" }}
-      storage: {{ .Values.volumes.dataPvcStorageProd }}
-    {{- else if eq .Values.global.appMode "dev" }}
-      storage: {{ .Values.volumes.dataPvcStorageDev }}
-    {{- end }}
+      storage: {{ .Values.volumes.dataPvcStorage }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -42,8 +38,4 @@ spec:
   {{- end }}
   resources:
     requests:
-    {{- if eq .Values.global.appMode "prod" }}
-      storage: {{ .Values.volumes.backupPvcStorageProd }}
-    {{- else if eq .Values.global.appMode "dev" }}
-      storage: {{ .Values.volumes.backupPvcStorageDev }}
-    {{- end }}
+      storage: {{ .Values.volumes.backupPvcStorage }}
