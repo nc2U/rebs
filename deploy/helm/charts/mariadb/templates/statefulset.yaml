@@ -115,7 +115,7 @@ spec:
         name: data
         namespace: {{ .Release.Namespace | quote }}
       spec:
-        storageClassName: "nfs-client-{{ .Values.global.appMode }}"
+        storageClassName: "nfs-client"
         accessModes: [ "ReadWriteOnce" ]
         resources:
           requests:
