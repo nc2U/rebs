@@ -52,9 +52,9 @@ spec:
           volumeMounts:
             - name: mariadb-replica-config
               mountPath: /mnt/replica-conf
-            - name: mariadb-config
+            - name: mariadb-conf-d
               mountPath: /etc/mysql/conf.d/
-            - name: initdb
+            - name: initdb-d
               mountPath: /docker-entrypoint-initdb.d
       restartPolicy: Always
       containers:
@@ -84,9 +84,9 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /var/lib/mysql/
-            - name: mariadb-config
+            - name: mariadb-conf-d
               mountPath: /etc/mysql/conf.d/
-            - name: initdb
+            - name: initdb-d
               mountPath: /docker-entrypoint-initdb.d
 {{/*            - name: backup*/}}
 {{/*              mountPath: /var/backups/*/}}
@@ -95,9 +95,9 @@ spec:
           configMap:
             name: {{ include "mariadb.fullname" . }}-replica-config
             #defaultMode: 0544
-        - name: mariadb-config # for init to main
+        - name: mariadb-conf-d # for init to main
           emptyDir: { }
-        - name: initdb # for init to main
+        - name: initdb-d # for init to main
           emptyDir: { }
 {{/*        - name: backup*/}}
 {{/*          persistentVolumeClaim:*/}}
