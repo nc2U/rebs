@@ -38,9 +38,9 @@ spec:
             - name: NFS_SERVER
               value: 49.247.26.88
             - name: NFS_PATH
-              value: "$PWD/volume"
+              value: /mnt/nfs/rebs/prod/volume
       volumes:
         - name: nfs-client-root
           nfs:
             server: 49.247.26.88
-            path: "$PWD/volume"
+            path: /mnt/nfs/rebs/prod/volume
