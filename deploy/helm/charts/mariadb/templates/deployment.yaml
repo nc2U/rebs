@@ -127,7 +127,7 @@ spec:
               mountPath: /persistentvolumes
           env:
             - name: PROVISIONER_NAME
-              value: k8s-sigs.io/nfs-subdir-external-provisioner-{{ .Values.global.appMode }}
+              value: k8s-sigs.io/nfs-subdir-external-provisioner
             - name: NFS_SERVER
               value: {{ .Values.global.cicdServerHost }}
             - name: NFS_PATH
