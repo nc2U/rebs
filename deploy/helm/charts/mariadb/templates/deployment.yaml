@@ -116,7 +116,7 @@ spec:
   template:
     metadata:
       labels:
-        app: nfs-client-provisioner
+        app: nfs-client-provisioner-{{ .Values.global.appMode }}"
     spec:
       serviceAccountName: nfs-client-provisioner
       containers:
