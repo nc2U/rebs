@@ -108,8 +108,8 @@ spec:
               mountPath: /etc/mysql/conf.d/
             - name: initdb
               mountPath: /docker-entrypoint-initdb.d
-            - name: backup
-              mountPath: /var/backups/
+{{/*            - name: backup*/}}
+{{/*              mountPath: /var/backups/*/}}
       volumes:
         - name: mariadb-replica-config # for init to main
           configMap:
