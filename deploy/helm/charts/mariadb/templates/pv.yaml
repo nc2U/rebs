@@ -5,11 +5,7 @@ metadata:
 spec:
   storageClassName: mysql-data-{{ .Values.global.appMode }}
   capacity:
-    {{- if eq .Values.global.appMode "prod" }}
-    storage: {{ .Values.volumes.dataPvStorageProd }}
-    {{- else if eq .Values.global.appMode "dev" }}
-    storage: {{ .Values.volumes.dataPvStorageDev }}
-    {{- end }}
+    storage: {{ .Values.volumes.dataPvStorage }}
   accessModes:
     {{- range .Values.volumes.dataAccessModes }}
     - {{ . }}
@@ -55,11 +51,7 @@ metadata:
 spec:
   storageClassName: dump-backup-{{ .Values.global.appMode }}
   capacity:
-    {{- if eq .Values.global.appMode "prod" }}
-    storage: {{ .Values.volumes.backupPvStorageProd }}
-    {{- else if eq .Values.global.appMode "dev" }}
-    storage: {{ .Values.volumes.backupPvStorageDev }}
-    {{- end }}
+    storage: {{ .Values.volumes.backupPvStorage }}
   accessModes:
     {{- range .Values.volumes.backupAccessModes }}
     - {{ . }}

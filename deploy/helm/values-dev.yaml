@@ -7,6 +7,12 @@ global:
 
 mariadb:
   replicaCount: 2
+  volumes:
+    dataPvStorage: 500Mi
+    dataPvcStorage: 500Mi
+    
+    backupPvStorage: 200Mi
+    backupPvcStorage: 200Mi
 
 nginx:
   image:
