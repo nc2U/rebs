@@ -60,6 +60,7 @@ spec:
       containers:
         - name: mariadb
           image: mariadb
+          command: [ "--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci" ]
           ports:
             - containerPort: 3306
               name: mariadb-port
@@ -78,29 +79,6 @@ spec:
             - name: MYSQL_INITDB_SKIP_TZINFO
               value: "1"
           # Mount volume from persistent volume claim
-{{/*          startupProbe:*/}}
-{{/*            exec:*/}}
-{{/*              command: [ "mariadb-admin", "ping", "-u$MYSQL_USER", "-p$MYSQL_PASSWORD" ]*/}}
-{{/*            initialDelaySeconds: 15*/}}
-{{/*            timeoutSeconds: 5*/}}
-{{/*            failureThreshold: 10*/}}
-{{/*            successThreshold: 1*/}}
-{{/*          readinessProbe:*/}}
-{{/*            exec:*/}}
-{{/*              command: [ "mariadb-admin", "ping", "-u$MYSQL_USER", "-p$MYSQL_PASSWORD" ]*/}}
-{{/*            initialDelaySeconds: 25    # 컨테이너 시작 후 25초 후에 Probe 시작*/}}
-{{/*            periodSeconds: 30          # 30초마다 상태 확인*/}}
-{{/*            timeoutSeconds: 1          # 1초 후에 실패로 간주*/}}
-{{/*            failureThreshold: 3        # 몇 번 실패해야 Pod를 실패로 판단할 것인지*/}}
-{{/*            successThreshold: 1        # 몇 번 성공해야 Ready 상태로 간주할 것인지*/}}
-{{/*          livenessProbe:*/}}
-{{/*            exec:*/}}
-{{/*              command: [ "mariadb-admin", "ping", "-u$MYSQL_USER", "-p$MYSQL_PASSWORD" ]*/}}
-{{/*            initialDelaySeconds: 35     # 컨테이너 시작 후 35초 후에 Probe 체크를 시작함*/}}
-{{/*            periodSeconds: 30           # 30초마다 Probe 상태 체크*/}}
-{{/*            timeoutSeconds: 1           # 1초 후에 실패로 간주*/}}
-{{/*            failureThreshold: 3         # 3번 실패시 Pod Restart*/}}
-{{/*            successThreshold: 1         # 몇 번 성공해야 Ready 상태로 간주할 것인지*/}}
           volumeMounts:
             - name: data
               mountPath: /var/lib/mysql/
