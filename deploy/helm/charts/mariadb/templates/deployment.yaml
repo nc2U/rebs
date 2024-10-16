@@ -105,7 +105,7 @@ kind: Deployment
 metadata:
   name: nfs-client-provisioner
   labels:
-    app: nfs-client-provisioner-{{ .Values.global.appMode }}
+    app: nfs-client-provisioner
 spec:
   replicas: 1
   strategy:
