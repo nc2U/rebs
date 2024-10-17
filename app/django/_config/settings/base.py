@@ -133,6 +133,11 @@ DATABASES = {
         "DEFAULT-CHARACTER-SET": 'utf8',
         'HOST': 'mariadb-svc',
         'PORT': 3306,
+        # 'OPTIONS': {
+        #     'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",  # 초기 명령어 설정
+        #     'charset': 'utf8mb4',  # 캐릭터셋 설정
+        #     'connect_timeout': 10,  # 연결 타임아웃 설정
+        # },
     },
     'slave1': {
         'ENGINE': 'django.db.backends.mysql',
@@ -142,6 +147,10 @@ DATABASES = {
         "DEFAULT-CHARACTER-SET": 'utf8',
         'HOST': 'slave1',
         'PORT': 3306,
+        # 'OPTIONS': {
+        #     'charset': 'utf8mb4',
+        #     'connect_timeout': 10,
+        # },
     },
     'slave2': {
         'ENGINE': 'django.db.backends.mysql',
@@ -151,6 +160,10 @@ DATABASES = {
         "DEFAULT-CHARACTER-SET": 'utf8',
         'HOST': 'slave2',
         'PORT': 3306,
+        # 'OPTIONS': {
+        #     'charset': 'utf8mb4',
+        #     'connect_timeout': 10,
+        # },
     }
 }
 
