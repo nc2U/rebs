@@ -2,19 +2,22 @@ import random
 
 
 class MasterSlaveRouter:
-    def db_for_read(self, model, **hints):
+    @staticmethod
+    def db_for_read(model, **hints):
         """
         읽기 작업은 slave1 또는 slave2에서 처리
         """
         return random.choice(['slave1', 'slave2'])
 
-    def db_for_write(self, model, **hints):
+    @staticmethod
+    def db_for_write(model, **hints):
         """
         쓰기 작업은 master에서 처리
         """
         return 'default'
 
-    def allow_relation(self, obj1, obj2, **hints):
+    @staticmethod
+    def allow_relation(obj1, obj2, **hints):
         """
         두 객체가 동일한 DB에 있을 때 관계 허용
         """
@@ -23,7 +26,8 @@ class MasterSlaveRouter:
             return True
         return None
 
-    def allow_migrate(self, db, app_label, model_name=None, **hints):
+    @staticmethod
+    def allow_migrate(db, app_label, model_name=None, **hints):
         """
         마이그레이션 작업은 master에서만 실행
         """
