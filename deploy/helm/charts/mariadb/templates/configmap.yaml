@@ -24,7 +24,6 @@ data:
   primary.sql: |
     CREATE USER 'rebs'@'%' IDENTIFIED BY 'secret';
     GRANT ALL PRIVILEGES ON *.* TO 'rebs'@'%' WITH GRANT OPTION;
-    GRANT REPLICATION SLAVE ON *.* TO 'rebs'@'%' IDENTIFIED BY '{{ .Values.global.dbPassword }}';
     FLUSH PRIVILEGES;
     CREATE DATABASE rebs;
 
@@ -34,6 +33,4 @@ data:
     MASTER_HOST='mariadb-0.{{ .Values.global.dbServiceName }}.{{ .Release.Namespace }}.svc.cluster.local', # mariadb-0.<headless service name>.<namespace name>.svc.cluster.local
     MASTER_USER='{{ .Release.Name }}',
     MASTER_PASSWORD='{{ .Values.global.dbPassword }}',
-    MASTER_LOG_FILE='log-bin.000001',
-    MASTER_LOG_POS=4,
     MASTER_CONNECT_RETRY=10;
