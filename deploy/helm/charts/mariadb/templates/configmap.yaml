@@ -40,7 +40,7 @@ data:
     CHANGE MASTER TO
     # MASTER_HOST는 만약 namespace나 service 이름 등을 본인의 환경에 맞춰서 배포하는 경우 MASTER_HOST 값을 변경.
     # mariadb-0.<headless service name>.<namespace name>.svc.cluster.local
-    MASTER_HOST='mariadb-0.mariadb-service.{{ .Release.Namespace | quote }}.svc.cluster.local',
+    MASTER_HOST="mariadb-0.{{ .Values.global.dbServiceName }}.{{ .Release.Namespace | quote }}.svc.cluster.local",
     MASTER_USER='{{ .Release.Name }}',
     MASTER_PASSWORD='{{ tpl .Values.global.dbPassword . | b64enc }}',
     MASTER_CONNECT_RETRY=10;

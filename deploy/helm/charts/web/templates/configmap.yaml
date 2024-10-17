@@ -6,7 +6,7 @@ data:
   EMAIL_HOST: "{{ .Values.global.emailHost }}"
   EMAIL_HOST_USER: "{{ .Values.global.emailHostUser }}"
   EMAIL_DEFAULT_SENDER: "{{ .Values.global.emailDefaultSender }}"
-  DB_SERVICE_NAME: "{{ .Values.global.databaseServiceName }}"
+  DB_SERVICE_NAME: "{{ .Values.global.dbServiceName }}"
   NAMESPACE: "{{ .Release.Namespace }}"
 
   {{- with  .Values.imageConfigMaps }}

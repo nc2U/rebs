@@ -4,6 +4,7 @@
 
 global:
   appMode: prod
+  dbServiceName: "mariadb"
   dbPassword: "{{ randAlphaNum 5 }}"
   nfsServerHost: "nfs-server-host"
   nfsPath: "nfs-path" # nfs volume path
@@ -14,7 +15,6 @@ global:
   emailHostUser: "email@example.com" # 'your-email@example.com
   emailHostPassword: "{{ randAlphaNum 5 }}" # your-email-password
   emailDefaultSender: "email@example.com"
-  databaseServiceName: "mariadb"
 
 nameOverride: ""
 fullnameOverride: ""
