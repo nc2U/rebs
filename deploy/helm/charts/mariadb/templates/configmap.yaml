@@ -22,19 +22,13 @@ data:
     log-basename=rebs-mariadb   # used to be independent of hostname changes (otherwise is in data/mysql)
 
   primary.sql: |
-    CREATE
-    USER 'rebs'@'%' IDENTIFIED BY 'secret';
-    -- GRANT REPLICATION REPLICA ON *.* TO 'rebs'@'%';
-    GRANT ALL PRIVILEGES ON *.* TO
-    'rebs'@'%';
-    FLUSH
-    PRIVILEGES;
-    CREATE
-    DATABASE rebs;
+    CREATE USER 'rebs'@'%' IDENTIFIED BY 'secret';
+    GRANT ALL PRIVILEGES ON *.* TO 'rebs'@'%';
+    FLUSH PRIVILEGES;
+    CREATE DATABASE rebs;
 
   secondary.sql: |
-    #
-    We have to know name of sts (`mariadb`) and
+    # We have to know name of sts (`mariadb`) and
     # service `mariadb-service` in advance as an FQDN.
     # No need to use master_port
     CHANGE MASTER TO
