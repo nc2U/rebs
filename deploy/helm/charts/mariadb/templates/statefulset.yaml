@@ -92,7 +92,7 @@ spec:
               command: [ "mariadb-admin", "ping", "-u$MYSQL_USER", "-p$MYSQL_PASSWORD" ]
             periodSeconds: 30          # 30초마다 상태 확인
             timeoutSeconds: 1          # 1초 후에 실패로 간주
-            failureThreshold: 2        # 몇 번 실패해야 Pod를 실패로 판단할 것인지
+            failureThreshold: 5        # 몇 번 실패해야 Pod를 실패로 판단할 것인지
             successThreshold: 1        # 몇 번 성공해야 Ready 상태로 간주할 것인지
           volumeMounts:
             - name: data

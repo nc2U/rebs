@@ -49,7 +49,7 @@ spec:
               command: [ "nginx", "-t" ]
             initialDelaySeconds: 20
             timeoutSeconds: 5
-            failureThreshold: 10
+            failureThreshold: 3
             successThreshold: 1
           readinessProbe:
             exec:
@@ -70,10 +70,10 @@ spec:
               port: {{ .Values.service.port }}
               {{ end }}
               path: /                   # 체크할 경로
-            initialDelaySeconds: 40     # 최초 40초 후에 LivenessProbe 체크를 시작함
+            initialDelaySeconds: 90     # 최초 90초 후에 LivenessProbe 체크를 시작함
             periodSeconds: 30           # 30초마다 LivenessProbe 체크
             timeoutSeconds: 5           # 5초 후에 실패로 간주
-            failureThreshold: 3         # 3번 실패시 Pod Restart
+            failureThreshold: 5         # 5번 실패시 Pod Restart
             successThreshold: 1         # 몇 번 성공해야 Ready 상태로 간주할 것인지
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
