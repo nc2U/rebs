@@ -31,19 +31,18 @@ data:
 
   slave-init.sh: |
     #!/bin/bash
-    MASTER_HOST='mariadb-0.{{ .Values.global.dbServiceName }}.{{ .Release.Namespace }}.svc.cluster.local'
-    MASTER_USER='{{ .Release.Name }}',
     MASTER_PASSWORD='{{ .Values.global.dbPassword }}',
 
-    MASTER_STATUS=$(mariadb -h $MASTER_HOST -u$MASTER_USER -p$MASTER_PASSWORD -e "SHOW MASTER STATUS\G")
+    MASTER_STATUS=$(mariadb -h mariadb-0.{{ .Values.global.dbServiceName }}.{{ .Release.Namespace }}.svc.cluster.local \
+    -u{{ .Release.Name }} -p{{ .Values.global.dbPassword }} -e "SHOW MASTER STATUS\G")
     MASTER_LOG_FILE=$(echo "$MASTER_STATUS" | grep File: | awk '{print $2}')
     MASTER_LOG_POS=$(echo "$MASTER_STATUS" | grep Position: | awk '{print $2}')
     mariadb -h localhost -u root -p$MYSQL_ROOT_PASSWORD -e "
         STOP SLAVE;
         CHANGE MASTER TO
-            MASTER_HOST='$MASTER_HOST',
-            MASTER_USER='$MASTER_USER',
-            MASTER_PASSWORD='$MASTER_PASSWORD',
+            MASTER_HOST='mariadb-0.{{ .Values.global.dbServiceName }}.{{ .Release.Namespace }}.svc.cluster.local',
+            MASTER_USER='{{ .Release.Name }}',
+            MASTER_PASSWORD='{{ .Values.global.dbPassword }}',
             MASTER_LOG_FILE='$MASTER_LOG_FILE',
             MASTER_LOG_POS=$MASTER_LOG_POS,
             MASTER_CONNECT_RETRY=10;
