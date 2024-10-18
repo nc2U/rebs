@@ -16,6 +16,7 @@ data:
     [mariadb]
     log-bin                # enable binary logging
     log-basename=rebs-db   # used to be independent of hostname changes (otherwise is in data/mysql)
+    bind-address = 0.0.0.0
 
   replica.cnf: |
     [mariadb]
