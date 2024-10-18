@@ -31,10 +31,8 @@ data:
 
   slave-init.sh: |
     #!/bin/bash
-    MASTER_PASSWORD='{{ .Values.global.dbPassword }}',
-
     MASTER_STATUS=$(mariadb -h mariadb-0.{{ .Values.global.dbServiceName }}.{{ .Release.Namespace }}.svc.cluster.local \
-    -u{{ .Release.Name }} -p{{ .Values.global.dbPassword }} -e "SHOW MASTER STATUS\G")
+    -uroot -p$MYSQL_ROOT_PASSWORD -e "SHOW MASTER STATUS\G")
     MASTER_LOG_FILE=$(echo "$MASTER_STATUS" | grep File: | awk '{print $2}')
     MASTER_LOG_POS=$(echo "$MASTER_STATUS" | grep Position: | awk '{print $2}')
     mariadb -h localhost -u root -p$MYSQL_ROOT_PASSWORD -e "
