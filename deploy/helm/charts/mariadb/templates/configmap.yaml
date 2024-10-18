@@ -24,6 +24,7 @@ data:
 
   primary.sql: |
     CREATE USER '{{ .Release.Name }}'@'%';
+    GRANT BINLOG MONITOR ON *.* TO '{{ .Release.Name }}'@'%';
     GRANT ALL PRIVILEGES ON *.* TO '{{ .Release.Name }}'@'%';
     CREATE DATABASE {{ .Release.Name }};
 
