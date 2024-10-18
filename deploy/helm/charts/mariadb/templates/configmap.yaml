@@ -25,9 +25,9 @@ data:
     log-basename=rebs           # used to be independent of hostname changes (otherwise is in data/mysql)
 
   primary.sql: |
-    CREATE USER 'rebs'@'%';
-    GRANT ALL PRIVILEGES ON *.* TO 'rebs'@'%';
-    CREATE DATABASE rebs;
+    CREATE USER '{{ .Release.Name }}'@'%';
+    GRANT ALL PRIVILEGES ON *.* TO '{{ .Release.Name }}'@'%';
+    CREATE DATABASE {{ .Release.Name }};
 
   slave-init.sh: |
     #!/bin/bash
