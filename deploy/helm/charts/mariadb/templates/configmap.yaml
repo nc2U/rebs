@@ -25,7 +25,7 @@ data:
     log-basename=rebs           # used to be independent of hostname changes (otherwise is in data/mysql)
 
   primary.sql: |
-    CREATE USER 'rebs'@'%' IDENTIFIED BY 'secret';
+    CREATE USER 'rebs'@'%';
     GRANT ALL PRIVILEGES ON *.* TO 'rebs'@'%';
     CREATE DATABASE rebs;
 
