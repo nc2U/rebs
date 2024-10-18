@@ -14,18 +14,22 @@ metadata:
 data:
   primary.cnf: |
     [mariadb]
-    log-bin                # enable binary logging
-    log-basename=rebs-db   # used to be independent of hostname changes (otherwise is in data/mysql)
-    bind-address = 0.0.0.0
+    log-bin                     # enable binary logging
+    log-basename=rebs-mariadb   # used to be independent of hostname changes (otherwise is in data/mysql)
+    gtid_strict_mode=1          # Enable strict GTID mode
+    enforce-gtid-consistency=ON
+    binlog_expire_logs_seconds = 604800  # 7일(7*24*60*60 초) 동안 보관 후 삭제
+
+
 
   replica.cnf: |
     [mariadb]
-    log-basename=rebs-db   # used to be independent of hostname changes (otherwise is in data/mysql)
+    log-basename=rebs-db        # used to be independent of hostname changes (otherwise is in data/mysql)
+    gtid_strict_mode=1          # Enable strict GTID mode
+    enforce-gtid-consistency=ON
 
   primary.sql: |
     CREATE USER 'rebs'@'%' IDENTIFIED BY 'secret';
-    GRANT REPLICATION SLAVE ON *.* TO 'rebs'@'%';
-    GRANT REPLICATION SLAVE ADMIN ON *.* TO 'rebs'@'%';
     GRANT ALL PRIVILEGES ON *.* TO 'rebs'@'%';
     CREATE DATABASE rebs;
 
@@ -35,4 +39,5 @@ data:
     MASTER_HOST='mariadb-0.{{ .Values.global.dbServiceName }}.{{ .Release.Namespace }}.svc.cluster.local', # mariadb-0.<headless service name>.<namespace name>.svc.cluster.local
     MASTER_USER='{{ .Release.Name }}',
     MASTER_PASSWORD='{{ .Values.global.dbPassword }}',
-    MASTER_CONNECT_RETRY=10;
+    MASTER_CONNECT_RETRY=10,
+    MASTER_USE_GTID=slave_pos;
