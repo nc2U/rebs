@@ -15,14 +15,14 @@ data:
   primary.cnf: |
     [mariadb]
     log-bin                     # enable binary logging
-    log-basename=rebs-mariadb   # used to be independent of hostname changes (otherwise is in data/mysql)
+    log-basename=rebs           # used to be independent of hostname changes (otherwise is in data/mysql)
     binlog_expire_logs_seconds=604800  # 7일(7*24*60*60 초) 동안 보관 후 삭제
 
 
 
   replica.cnf: |
     [mariadb]
-    log-basename=rebs-db        # used to be independent of hostname changes (otherwise is in data/mysql)
+    log-basename=rebs           # used to be independent of hostname changes (otherwise is in data/mysql)
 
   primary.sql: |
     CREATE USER 'rebs'@'%' IDENTIFIED BY 'secret';
