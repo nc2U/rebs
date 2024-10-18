@@ -14,16 +14,18 @@ metadata:
 data:
   primary.cnf: |
     [mariadb]
-    log-bin                     # enable binary logging
-    log-basename=rebs-mariadb   # used to be independent of hostname changes (otherwise is in data/mysql)
+    log-bin                # enable binary logging
+    log-basename=rebs-db   # used to be independent of hostname changes (otherwise is in data/mysql)
 
   replica.cnf: |
     [mariadb]
-    log-basename=rebs-mariadb   # used to be independent of hostname changes (otherwise is in data/mysql)
+    log-basename=rebs-db   # used to be independent of hostname changes (otherwise is in data/mysql)
 
   primary.sql: |
     CREATE USER 'rebs'@'%' IDENTIFIED BY 'secret';
-    GRANT ALL PRIVILEGES ON *.* TO 'rebs'@'%' WITH GRANT OPTION;
+    GRANT REPLICATION SLAVE ON *.* TO 'rebs'@'%';
+    GRANT REPLICATION SLAVE ADMIN ON *.* TO 'rebs'@'%';
+    GRANT ALL PRIVILEGES ON *.* TO 'rebs'@'%';
     CREATE DATABASE rebs;
 
   secondary.sql: |
