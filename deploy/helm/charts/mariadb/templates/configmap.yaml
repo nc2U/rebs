@@ -14,7 +14,7 @@ metadata:
 data:
   primary.cnf: |
     [mariadb]
-    log-bin                     # enable binary logging
+    log-bin=mariadb-bin         # enable binary logging
     log-basename=rebs-mariadb   # used to be independent of hostname changes (otherwise is in data/mysql)
 
   replica.cnf: |
