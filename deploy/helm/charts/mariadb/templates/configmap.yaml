@@ -10,11 +10,11 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "mariadb.fullname" . }}-replica-conf
+  name: {{ include "mariadb.fullname" . }}-replica-cm
 data:
   primary.cnf: |
     [mariadb]
-    log-bin=mariadb-bin         # enable binary logging
+    log-bin                     # enable binary logging
     log-basename=rebs-mariadb   # used to be independent of hostname changes (otherwise is in data/mysql)
 
   replica.cnf: |
@@ -24,7 +24,6 @@ data:
   primary.sql: |
     CREATE USER 'rebs'@'%' IDENTIFIED BY 'secret';
     GRANT ALL PRIVILEGES ON *.* TO 'rebs'@'%' WITH GRANT OPTION;
-    FLUSH PRIVILEGES;
     CREATE DATABASE rebs;
 
   secondary.sql: |
