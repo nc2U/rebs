@@ -10,7 +10,6 @@ spec:
   selector:
     matchLabels:
       app: mariadb-svc
-      {{- include "mariadb.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -19,7 +18,6 @@ spec:
       {{- end }}
       labels:
         app: mariadb-svc
-        {{- include "mariadb.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

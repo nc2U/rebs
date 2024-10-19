@@ -9,12 +9,10 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      app: mariadb
       {{- include "mariadb.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: mariadb
         {{- include "mariadb.selectorLabels" . | nindent 8 }}
     spec:
       initContainers:
