@@ -42,7 +42,7 @@ jobs:
       - name: Copy helm, to CI/CD server
         uses: appleboy/scp-action@master
         with:
-          host: ${{ secrets.CICD_HOST }}
+          host: ${{ secrets.CICD_HOST
           username: ${{ secrets.CICD_USER }}
           password: ${{ secrets.CICD_PASS }}
           source: 'deploy/helm,deploy/kubectl'
@@ -57,7 +57,12 @@ jobs:
           password: ${{ secrets.CICD_PASS }}
           command: |
             cd ${{ secrets.CICD_PATH }}/dev
-            kubectl apply -f deploy/kubectl/class-roles; cd deploy/helm
+            kubectl apply -f deploy/kubectl/class-roles
+            helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/
+            helm upgrade --install -n kube-system nfs-subdir-external-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
+              --set nfs.server=${{ secrets.CICD_HOST }} \
+              --set nfs.path=${{ secrets.CICD_PATH }}/volume
+            cd deploy/helm
             helm upgrade ${{ secrets.DATABASE_USER }} . --install -f ./values-dev.yaml \
             --install -n dev-hrebs --create-namespace --history-max 5 --wait --timeout 10m \
             --set global.dbPassword=${{ secrets.DATABASE_PASS }} \

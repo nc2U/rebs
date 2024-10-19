@@ -89,41 +89,41 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nfs-{{ .Values.global.appMode }}-client-provisioner
-  labels:
-    app: nfs-client-provisioner
-spec:
-  replicas: 1
-  strategy:
-    type: Recreate
-  selector:
-    matchLabels:
-      app: nfs-client-provisioner
-  template:
-    metadata:
-      labels:
-        app: nfs-client-provisioner
-    spec:
-      serviceAccountName: nfs-client-provisioner
-      containers:
-        - name: nfs-client-provisioner
-          image: registry.k8s.io/sig-storage/nfs-subdir-external-provisioner:v4.0.2
-          volumeMounts:
-            - name: nfs-client-root
-              mountPath: /persistentvolumes
-          env:
-            - name: PROVISIONER_NAME
-              value: k8s-sigs.io/nfs-subdir-external-provisioner
-            - name: NFS_SERVER
-              value: {{ .Values.global.cicdServerHost }}
-            - name: NFS_PATH
-              value: {{ .Values.global.cicdPath }}/{{ .Values.global.appMode }}/volume
-      volumes:
-        - name: nfs-client-root
-          nfs:
-            server: {{ .Values.global.cicdServerHost }}
-            path: {{ .Values.global.cicdPath }}/{{ .Values.global.appMode }}/volume
+{{/*---*/}}
+{{/*apiVersion: apps/v1*/}}
+{{/*kind: Deployment*/}}
+{{/*metadata:*/}}
+{{/*  name: nfs-{{ .Values.global.appMode }}-client-provisioner*/}}
+{{/*  labels:*/}}
+{{/*    app: nfs-client-provisioner*/}}
+{{/*spec:*/}}
+{{/*  replicas: 1*/}}
+{{/*  strategy:*/}}
+{{/*    type: Recreate*/}}
+{{/*  selector:*/}}
+{{/*    matchLabels:*/}}
+{{/*      app: nfs-client-provisioner*/}}
+{{/*  template:*/}}
+{{/*    metadata:*/}}
+{{/*      labels:*/}}
+{{/*        app: nfs-client-provisioner*/}}
+{{/*    spec:*/}}
+{{/*      serviceAccountName: nfs-client-provisioner*/}}
+{{/*      containers:*/}}
+{{/*        - name: nfs-client-provisioner*/}}
+{{/*          image: registry.k8s.io/sig-storage/nfs-subdir-external-provisioner:v4.0.2*/}}
+{{/*          volumeMounts:*/}}
+{{/*            - name: nfs-client-root*/}}
+{{/*              mountPath: /persistentvolumes*/}}
+{{/*          env:*/}}
+{{/*            - name: PROVISIONER_NAME*/}}
+{{/*              value: k8s-sigs.io/nfs-subdir-external-provisioner*/}}
+{{/*            - name: NFS_SERVER*/}}
+{{/*              value: {{ .Values.global.cicdServerHost }}*/}}
+{{/*            - name: NFS_PATH*/}}
+{{/*              value: {{ .Values.global.cicdPath }}/{{ .Values.global.appMode }}/volume*/}}
+{{/*      volumes:*/}}
+{{/*        - name: nfs-client-root*/}}
+{{/*          nfs:*/}}
+{{/*            server: {{ .Values.global.cicdServerHost }}*/}}
+{{/*            path: {{ .Values.global.cicdPath }}/{{ .Values.global.appMode }}/volume*/}}
