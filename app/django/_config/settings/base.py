@@ -124,6 +124,9 @@ WSGI_APPLICATION = '_config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
+MASTER_HOST = 'mariadb' if 'local' in os.getenv('DJANGO_SETTINGS_MODULE') \
+    else f'mariadb-0.{os.getenv("DB_SERVICE_NAME")}.{os.getenv("NAMESPACE")}.svc.cluster.local'
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -131,7 +134,7 @@ DATABASES = {
         'USER': os.getenv('DATABASE_USER'),
         'PASSWORD': os.getenv('DATABASE_PASSWORD'),
         "DEFAULT-CHARACTER-SET": 'utf8',
-        'HOST': f'mariadb-0.{os.getenv("DB_SERVICE_NAME")}.{os.getenv("NAMESPACE")}.svc.cluster.local',
+        'HOST': MASTER_HOST,
         'PORT': 3306,
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",  # 초기 명령어 설정
@@ -167,7 +170,8 @@ DATABASES = {
     }
 }
 
-DATABASE_ROUTERS = [BASE_DIR / "_config.database_router.MasterSlaveRouter"]
+DATABASE_ROUTERS = None if 'local' in os.getenv('DJANGO_SETTINGS_MODULE') \
+    else [BASE_DIR / "_config.database_router.MasterSlaveRouter"]
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
