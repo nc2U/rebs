@@ -1,7 +1,6 @@
 #!/bin/bash
 DATE=$(date +"%Y-%m-%d")
-SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
-SQL_FILE="${SCRIPT_DIR}/backup-${DATE}.sql"
+SQL_FILE="/var/backups/backup-${DATE}.sql"
 
 mariadb -u"${USER}" -p"${PASSWORD}" "${DATABASE}" < "${SQL_FILE}"
 
