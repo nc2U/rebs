@@ -66,11 +66,11 @@ spec:
           ports:
             - containerPort: 3306
               name: mariadb-port
-          envFrom:
-            - configMapRef:
-                name: {{ include "mariadb.fullname" . }}-config
-            - secretRef:
-                name: {{ include "mariadb.fullname" . }}-db-auth
+{{/*          envFrom:*/}}
+{{/*            - configMapRef:*/}}
+{{/*                name: {{ include "mariadb.fullname" . }}-config*/}}
+{{/*            - secretRef:*/}}
+{{/*                name: {{ include "mariadb.fullname" . }}-db-auth*/}}
           env:
             # Using Secrets
             - name: MARIADB_ROOT_PASSWORD

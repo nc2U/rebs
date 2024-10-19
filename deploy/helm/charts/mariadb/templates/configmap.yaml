@@ -23,7 +23,10 @@ data:
     log-basename=rebs           # used to be independent of hostname changes (otherwise is in data/mysql)
 
   primary.sql: |
-    GRANT REPLICATION REPLICA ON *.* TO 'rebs'@'%';
+    CREATE USER '{{ .Release.Name }}'@'%' IDENTIFIED BY '{{ .Values.global.dbPassword }}';
+    GRANT REPLICATION REPLICA ON *.* TO '{{ .Release.Name }}'@'%';
+    GRANT ALL PRIVILEGES ON *.* TO '{{ .Release.Name }}'@'%';
+    CREATE DATABASE rebs;
 
   secondary.sql: |
     # We have to know name of sts (`mariadb`) and service `mariadb-service` in advance as an FQDN.No need to use master_port
