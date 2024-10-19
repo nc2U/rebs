@@ -1,6 +1,6 @@
 #!/bin/bash
 DATE=$(date +"%Y-%m-%d")
-SQL_FILE=backup-${DATE}.sql
+SQL_FILE=./backup-${DATE}.sql
 
 mariadb -u"${USER}" -p"${PASSWORD}" "${DATABASE}" < "${SQL_FILE}"
 
