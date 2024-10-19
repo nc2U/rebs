@@ -1,4 +1,4 @@
-name: DB Script [Prod]
+name: DB Script Set [Prod]
 
 on:
   push:
