@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mariadb
+  name: {{ include "mariadb.fullname" . }}
 spec:
   serviceName: {{ include "mariadb.fullname" . }}
   {{- if not .Values.autoscaling.enabled }}
