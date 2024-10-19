@@ -63,10 +63,12 @@ jobs:
           password: ${{ secrets.CICD_PASS }}
           command: |
             cd ${{ secrets.CICD_PATH }}/dev
-            helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/
-            helm upgrade --install -n kube-system nfs-subdir-external-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
-              --set nfs.server=${{ secrets.CICD_HOST }} \
-              --set nfs.path=${{ secrets.CICD_PATH }}/volume
+            if ! helm repo list | grep -q 'nfs-subdir-external-provisioner'; then
+              helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner fi
+            if ! kubectl get po -n kube-system | grep nfs-subdir-external-provisioner; then
+              helm upgrade --install -n kube-system nfs-subdir-external-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
+                --set nfs.server=${{ secrets.CICD_HOST }} \
+                --set nfs.path=/mnt/nfs-subdir-external-provisioner fi
             kubectl apply -f deploy/kubectl/class-roles; cd deploy/helm
             helm upgrade ${{ secrets.DATABASE_USER }} . --install -f ./values-dev.yaml \
             --install -n dev-hrebs --create-namespace --history-max 5 --wait --timeout 10m \
