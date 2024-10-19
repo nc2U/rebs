@@ -170,7 +170,7 @@ DATABASES = {
     }
 }
 
-DATABASE_ROUTERS = None if 'local' in os.getenv('DJANGO_SETTINGS_MODULE') \
+DATABASE_ROUTERS = [] if 'local' in os.getenv('DJANGO_SETTINGS_MODULE') \
     else [BASE_DIR / "_config.database_router.MasterSlaveRouter"]
 
 # Password validation
