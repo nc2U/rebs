@@ -1,4 +1,4 @@
-name: Database Dev Restore
+name: Database Dev Synchronization
 
 on:
   schedule:
