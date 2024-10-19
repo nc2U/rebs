@@ -1,8 +1,8 @@
-name: Database Dev Restore2
+name: Database Dev Restore
 
 on:
   schedule:
-    - cron: "0 18 * * *"
+    - cron: "0 17 * * *"
   
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -16,15 +16,25 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      # remove /docker-entrypoint-initdb.d/db-rebs*
-      - name: remove backup file
+      # mysql pod --> database copy
+      - name: database copy
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          host: ${{ secrets.NFS_HOST }}
+          username: ${{ secrets.NFS_USER }}
+          password: ${{ secrets.NFS_PASS }}
+          command: |
+            sh "${{ secrets.NFS_PATH }}"/prod/volume/backups/script_copy.sh
+      
+      # mysql pod --> database restore
+      - name: database restore
         uses: garygrossgarten/github-action-ssh@release
         with:
           host: ${{ secrets.CICD_HOST }}
           username: ${{ secrets.CICD_USER }}
           password: ${{ secrets.CICD_PASS }}
           command: |
-                  kubectl exec -it -n dev-hrebs mariadb-0 --  bash -c 'rm /docker-entrypoint-initdb.d/db-rebs*'
+                  kubectl exec -it -n dev-hrebs mariadb-0 -- sh /var/backups/script_restore.sh
       
       # slack --> notification
       - name: Send slack when failed
