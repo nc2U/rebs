@@ -16,9 +16,9 @@ spec:
         {{- include "mariadb.selectorLabels" . | nindent 8 }}
     spec:
       initContainers:
-        - name: init-mariadb
-          image: mariadb
-          imagePullPolicy: Always
+        - name: init-{{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - bash
             - "-c"
@@ -58,14 +58,14 @@ spec:
               mountPath: /docker-entrypoint-initdb.d
       restartPolicy: Always
       containers:
-        - name: mariadb
-          image: mariadb
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
             - --character-set-server=utf8mb4
             - --collation-server=utf8mb4_unicode_ci
-          ports:
-            - containerPort: 3306
-              name: mariadb-port
           env:
             # Using Secrets
             - name: MARIADB_ROOT_PASSWORD
@@ -75,6 +75,10 @@ spec:
                   key: mariadb-root-password
             - name: MYSQL_INITDB_SKIP_TZINFO
               value: "1"
+          ports:
+            - containerPort: 3306
+              name: mariadb-port
+              protocol: TCP
           startupProbe:
             exec:
               command: [ "mariadb-admin", "ping", "-u{{ .Release.Name }}", "-p{{ .Values.global.dbPassword }}" ]
@@ -98,6 +102,8 @@ spec:
               mountPath: /docker-entrypoint-initdb.d
             - name: dump-backup
               mountPath: /var/backups
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
       volumes:
         - name: {{ include "mariadb.fullname" . }}-replica # for init to main
           configMap:
@@ -110,7 +116,18 @@ spec:
         - name: dump-backup
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-{{ include "mariadb.fullname" . }}-{{ .Values.global.appMode }}-backup-pvc
-
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
   volumeClaimTemplates:
     - metadata:
         name: data

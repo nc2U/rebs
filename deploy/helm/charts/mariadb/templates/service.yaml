@@ -24,6 +24,7 @@ spec:
   ports:
     - port: {{ .Values.service.port }}
       name: mariadb-port
+      protocol: TCP
   clusterIP: None
   selector:
     {{- include "mariadb.selectorLabels" . | nindent 4 }}

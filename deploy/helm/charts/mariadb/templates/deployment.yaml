@@ -63,8 +63,6 @@ spec:
               mountPath: /var/lib/mysql
             - name: init-sql
               mountPath: /docker-entrypoint-initdb.d
-{{/*            - name: dump-backup*/}}
-{{/*              mountPath: /var/backups*/}}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
@@ -74,9 +72,6 @@ spec:
         - name: init-sql
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-{{ include "mariadb.fullname" . }}-{{ .Values.global.appMode }}-sql-pvc
-{{/*        - name: dump-backup*/}}
-{{/*          persistentVolumeClaim:*/}}
-{{/*            claimName: {{ .Release.Name }}-{{ include "mariadb.fullname" . }}-{{ .Values.global.appMode }}-backup-pvc*/}}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
