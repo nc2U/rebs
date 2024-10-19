@@ -34,7 +34,7 @@ jobs:
           username: ${{ secrets.CICD_USER }}
           password: ${{ secrets.CICD_PASS }}
           command: |
-                  kubectl exec -it -n dev-hrebs mariadb-0 -- sh /var/backups/script_restore.sh
+                  kubectl exec -it -n dev-hrebs mariadb-0 -- bash /var/backups/script_restore.sh
       
       # slack --> notification
       - name: Send slack when failed
