@@ -1,4 +1,4 @@
-name: Database Script [Dev]
+name: DB Script [Dev]
 
 on:
   push:
