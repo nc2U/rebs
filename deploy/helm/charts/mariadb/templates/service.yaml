@@ -4,7 +4,7 @@ metadata:
   name: {{ include "mariadb.fullname" . }}-svc
   labels:
     app: mariadb-svc
-{{/*    {{- include "mariadb.labels" . | nindent 4 }}*/}}
+    {{- include "mariadb.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -14,7 +14,7 @@ spec:
       name: mysql
   selector:
     app: mariadb-svc
-{{/*    {{- include "mariadb.selectorLabels" . | nindent 4 }}*/}}
+    {{- include "mariadb.selectorLabels" . | nindent 4 }}
 ---
 apiVersion: v1
 kind: Service
