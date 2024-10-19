@@ -131,7 +131,7 @@ DATABASES = {
         'USER': os.getenv('DATABASE_USER'),
         'PASSWORD': os.getenv('DATABASE_PASSWORD'),
         "DEFAULT-CHARACTER-SET": 'utf8',
-        'HOST': 'mariadb-svc', # f'mariadb-0.{os.getenv("DB_SERVICE_NAME")}.{os.getenv("NAMESPACE")}.svc.cluster.local',
+        'HOST': f'mariadb-0.{os.getenv("DB_SERVICE_NAME")}.{os.getenv("NAMESPACE")}.svc.cluster.local',
         'PORT': 3306,
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",  # 초기 명령어 설정
@@ -145,7 +145,7 @@ DATABASES = {
         'USER': os.getenv('DATABASE_USER'),
         'PASSWORD': os.getenv('DATABASE_PASSWORD'),
         "DEFAULT-CHARACTER-SET": 'utf8',
-        'HOST': 'mariadb-svc', # f'mariadb-1.{os.getenv("DB_SERVICE_NAME")}.{os.getenv("NAMESPACE")}.svc.cluster.local',
+        'HOST': f'mariadb-1.{os.getenv("DB_SERVICE_NAME")}.{os.getenv("NAMESPACE")}.svc.cluster.local',
         'PORT': 3306,
         'OPTIONS': {
             'charset': 'utf8mb4',
@@ -158,7 +158,7 @@ DATABASES = {
         'USER': os.getenv('DATABASE_USER'),
         'PASSWORD': os.getenv('DATABASE_PASSWORD'),
         "DEFAULT-CHARACTER-SET": 'utf8',
-        'HOST': 'mariadb-svc', # f'mariadb-2.{os.getenv("DB_SERVICE_NAME")}.{os.getenv("NAMESPACE")}.svc.cluster.local',
+        'HOST': f'mariadb-2.{os.getenv("DB_SERVICE_NAME")}.{os.getenv("NAMESPACE")}.svc.cluster.local',
         'PORT': 3306,
         'OPTIONS': {
             'charset': 'utf8mb4',
@@ -167,7 +167,7 @@ DATABASES = {
     }
 }
 
-# DATABASE_ROUTERS = [BASE_DIR / "_config.database_router.MasterSlaveRouter"]
+DATABASE_ROUTERS = [BASE_DIR / "_config.database_router.MasterSlaveRouter"]
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
