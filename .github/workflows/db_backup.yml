@@ -38,9 +38,7 @@ jobs:
           username: ${{ secrets.CICD_USER }}
           password: ${{ secrets.CICD_PASS }}
           command: |
-            echo '1'
-      #            db_pod=$(kubectl get pod -n prod-hrebs | grep mariadb | cut -d ' ' -f1)
-      #            kubectl exec -it -n prod-hrebs $db_pod -- sh /var/backups/script_dump.sh
+                  kubectl exec -it -n prod-hrebs mariadb-0 -- sh /var/backups/script_dump.sh
       
       # slack --> notification
       - name: Send slack when failed
