@@ -9,7 +9,8 @@ spec:
   revisionHistoryLimit: 1
   selector:
     matchLabels:
-      {{- include "mariadb.selectorLabels" . | nindent 6 }}
+      app: mariadb-svc
+{{/*      {{- include "mariadb.selectorLabels" . | nindent 6 }}*/}}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -17,7 +18,8 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "mariadb.selectorLabels" . | nindent 8 }}
+        app: mariadb-svc
+{{/*        {{- include "mariadb.selectorLabels" . | nindent 8 }}*/}}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
