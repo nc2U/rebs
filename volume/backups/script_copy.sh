@@ -5,7 +5,7 @@ SQL_FILE=db-rebs-${DATE}.sql
 # 파일 존재 여부 확인
 if [ -f "${SQL_FILE}" ]; then
     # 디렉토리 존재 여부 확인 및 없으면 생성
-    DEST_DIR=../../../dev/volume/sql/
+    DEST_DIR=../../../dev/volume/backups/
     if [ ! -d "${DEST_DIR}" ]; then
         mkdir -p "${DEST_DIR}"
     fi
