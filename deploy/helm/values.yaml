@@ -19,9 +19,6 @@ global:
 nameOverride: ""
 fullnameOverride: ""
 
-mariadb:
-  replicaCount: 3
-
 nginx:
   service:
     type: LoadBalancer
