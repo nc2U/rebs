@@ -1,6 +1,6 @@
 #!/bin/bash
 DATE=$(date +"%Y-%m-%d")
-SQL_FILE=db-rebs-${DATE}.sql
+SQL_FILE=backup-${DATE}.sql
 
 # 파일 존재 여부 확인
 if [ -f "${SQL_FILE}" ]; then

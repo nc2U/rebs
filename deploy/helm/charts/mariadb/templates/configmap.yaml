@@ -3,9 +3,8 @@ kind: ConfigMap
 metadata:
   name: {{ include "mariadb.fullname" . }}-config
 data:
-  MYSQL_DATABASE: "{{ .Release.Name }}"
-  MYSQL_USER: "{{ .Release.Name }}"
-  TZ: "{{ .Values.timeZone }}"
+  USER: "{{ .Release.Name }}"
+  DATABASE: "{{ .Release.Name }}"
 ---
 apiVersion: v1
 kind: ConfigMap

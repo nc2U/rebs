@@ -1,9 +1,6 @@
 #!/bin/bash
 DATE=$(date +"%Y-%m-%d")
-SQL_FILE=/var/backups/db-${MYSQL_DATABASE}-${DATE}.sql
-DATABASE=${MYSQL_DATABASE}
-USER=${MYSQL_USER}
-PASSWORD=${MYSQL_PASSWORD}
+SQL_FILE=/var/backups/backup-${DATE}.sql
 
 # (2) in case you run this more than once a day,
 # remove the previous version of the file

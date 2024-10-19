@@ -68,13 +68,21 @@ spec:
             - --collation-server=utf8mb4_unicode_ci
           env:
             # Using Secrets
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mariadb-db-auth
+                  key: PASSWORD
             - name: MARIADB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mariadb-secret
+                  name: mariadb-db-auth
                   key: mariadb-root-password
             - name: MYSQL_INITDB_SKIP_TZINFO
               value: "1"
+          envFrom:
+            - configMapRef:
+                name: {{ include "mariadb.fullname" . }}-config
           ports:
             - containerPort: 3306
               name: mariadb-port
