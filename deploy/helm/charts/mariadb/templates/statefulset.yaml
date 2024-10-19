@@ -114,9 +114,9 @@ spec:
   volumeClaimTemplates:
     - metadata:
         name: data
-        namespace: {{ .Release.Namespace | quote }}
+{{/*        namespace: {{ .Release.Namespace | quote }}*/}}
       spec:
-        storageClassName: "nfs-client-{{ .Values.global.appMode }}"
+        storageClassName: "nfs-client"
         accessModes: [ "ReadWriteOnce" ]
         resources:
           requests:
