@@ -5,7 +5,6 @@ metadata:
 data:
   USER: "{{ .Release.Name }}"
   DATABASE: "{{ .Release.Name }}"
-  TZ: "Asia/Seoul"
 ---
 apiVersion: v1
 kind: ConfigMap
