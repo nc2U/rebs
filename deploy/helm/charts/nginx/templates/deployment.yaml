@@ -70,7 +70,7 @@ spec:
               port: {{ .Values.service.port }}
               {{ end }}
               path: /                   # 체크할 경로
-            initialDelaySeconds: 300    # 최초 300초 후에 LivenessProbe 체크를 시작함
+            initialDelaySeconds: 420    # 최초 420초 후에 LivenessProbe 체크를 시작함
             periodSeconds: 30           # 30초마다 LivenessProbe 체크
             timeoutSeconds: 5           # 5초 후에 실패로 간주
             failureThreshold: 5         # 5번 실패시 Pod Restart
