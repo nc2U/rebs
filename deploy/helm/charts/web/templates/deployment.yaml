@@ -35,7 +35,7 @@ spec:
             - bash
             - "-c"
             - |
-              if [ ! -d "./media" ]; then mkdir media; chmod -R 755 ./media fi
+              # if [ ! -d "./media" ]; then mkdir media; chmod -R 755 ./media fi
               python manage.py collectstatic --no-input
               python manage.py makemigrations accounts book board cash company contract docs items notice payment project rebs work
               python manage.py migrate
