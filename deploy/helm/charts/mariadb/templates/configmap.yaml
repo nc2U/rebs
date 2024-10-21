@@ -16,7 +16,6 @@ data:
     [mariadb]
     log-bin                     # enable binary logging
     log-basename=rebs           # used to be independent of hostname changes (otherwise is in data/mysql)
-    # default-time-zone = '+9:00'
     binlog_expire_logs_seconds=432000  # 5일(5*24*60*60 초) 동안 보관 후 삭제
 
   replica.cnf: |
