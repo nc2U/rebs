@@ -28,18 +28,17 @@ spec:
       serviceAccountName: {{ include "web.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-{{/*      initContainers:*/}}
-{{/*        - name: init-web*/}}
-{{/*          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"*/}}
-{{/*          command:*/}}
-{{/*            - bash*/}}
-{{/*            - "-c"*/}}
-{{/*            - |*/}}
-{{/*              if [ ! -d "./media" ]; then*/}}
-{{/*              mkdir media; chmod -R 755 ./media*/}}
-{{/*              python manage.py collectstatic --no-input*/}}
-{{/*              python manage.py makemigrations accounts book board cash company contract docs items notice payment project rebs work*/}}
-{{/*              python manage.py migrate*/}}
+      initContainers:
+        - name: init-web
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          command:
+            - bash
+            - "-c"
+            - |
+              if [ ! -d "./media" ]; then mkdir media; chmod -R 755 ./media fi
+              python manage.py collectstatic --no-input
+              python manage.py makemigrations accounts book board cash company contract docs items notice payment project rebs work
+              python manage.py migrate
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -57,11 +56,6 @@ spec:
             - name: web
               containerPort: 8000
               protocol: TCP
-          livenessProbe:
-            exec:
-              command:
-                - python
-                - --version
           volumeMounts:
             - name: django-source
               mountPath: /app/django
