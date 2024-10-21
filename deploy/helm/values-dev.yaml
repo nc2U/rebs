@@ -6,7 +6,7 @@ global:
   appMode: dev
 
 mariadb:
-  replicaCount: 1
+  replicaCount: 2
   volumes:
     dataPvStorage: 500Mi
     dataPvcStorage: 500Mi
