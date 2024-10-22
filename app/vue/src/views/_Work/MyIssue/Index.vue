@@ -1,6 +1,20 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 import { GridLayout, type LayoutItemRequired } from 'grid-layout-plus'
+import MultiSelect from '@/components/MultiSelect/index.vue'
+
+const selectOptions = [
+  { value: '1', label: '내가 맡은 업무' },
+  { value: '2', label: '보고한 업무' },
+  { value: '3', label: '수정한 업무' },
+  { value: '4', label: '지켜 보고 있는 업무' },
+  { value: '5', label: '업무' },
+  { value: '6', label: '최근 뉴스' },
+  { value: '7', label: '달력' },
+  { value: '8', label: '문서' },
+  { value: '9', label: '소요시간' },
+  { value: '10', label: '작업내역' },
+]
 
 const layouts = reactive([
   { x: 0, y: 0, w: 6, h: 3, i: '내가 맡은 업무 (0)' },
@@ -29,19 +43,7 @@ type ResponsiveLayout = Record<Breakpoint, Layout>
     <CCardBody>
       <CRow class="px-2">
         <CCol style="display: flex; justify-content: flex-end">
-          <CFormSelect style="width: 200px">
-            <option>추가하기</option>
-            <option>내가 맡은 업무</option>
-            <option>보고한 업무</option>
-            <option>수정한 업무</option>
-            <option>지켜보고 있는 업무</option>
-            <option>업무</option>
-            <option>최근 뉴스</option>
-            <option>달력</option>
-            <option>문서</option>
-            <option>소요시간</option>
-            <option>작업내역</option>
-          </CFormSelect>
+          <MultiSelect :options="selectOptions" placeholder="추가하기" class="multiselect-blue" />
         </CCol>
       </CRow>
       <!-- Item slot usage -->
@@ -66,3 +68,10 @@ type ResponsiveLayout = Record<Breakpoint, Layout>
     </CCardBody>
   </CCard>
 </template>
+
+<style lang="scss" scoped>
+.multiselect-blue {
+  --ms-tag-bg: #dbeafe;
+  --ms-tag-color: #2563eb;
+}
+</style>
