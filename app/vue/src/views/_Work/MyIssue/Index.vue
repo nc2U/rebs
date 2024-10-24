@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { ref, reactive, onBeforeMount } from 'vue'
 import { GridLayout, type LayoutItemRequired } from 'grid-layout-plus'
 import MultiSelect from '@/components/MultiSelect/index.vue'
+
+const showItems = ref(['1', '2'])
 
 const selectOptions = [
   { value: '1', label: '내가 맡은 업무' },
@@ -16,10 +18,28 @@ const selectOptions = [
   { value: '10', label: '작업내역' },
 ]
 
-const layouts = reactive([
-  { x: 0, y: 0, w: 6, h: 3, i: '내가 맡은 업무 (0)' },
-  { x: 6, y: 0, w: 6, h: 3, i: '보고한 업무 (0)' },
-])
+const layouts = reactive([])
+
+const item1 = reactive({ x: 0, y: 0, w: 6, h: 3, i: '내가 맡은 업무 (0)' })
+const item2 = reactive({ x: 6, y: 0, w: 6, h: 3, i: '보고한 업무 (0)' })
+const item3 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '수정한 업무 (0)' })
+const item4 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '지켜 보고 있는 업무 (0)' })
+const item5 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '업무 (0)' })
+const item6 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '최근 뉴스 (0)' })
+const item7 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '달력 (0)' })
+const item8 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '문서 (0)' })
+const item9 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '소요시간 (0)' })
+const item10 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '작업내역 (0)' })
+
+const itemPush = (item: string) => {
+  layouts.push(eval(`item${item}`))
+  layouts.sort((a, b) => a.localeCompare(b))
+}
+
+const itemRemove = (item: string) => {
+  let index = layouts.indexOf(eval(`item${item}`))
+  if (index > -1) layouts.splice(index, 1)
+}
 
 interface LayoutItem extends LayoutItemRequired {
   minW?: number
@@ -36,6 +56,12 @@ type Layout = Array<LayoutItem>
 type Breakpoint = 'xxs' | 'xs' | 'sm' | 'md' | 'lg'
 type Breakpoints = Record<Breakpoint, number>
 type ResponsiveLayout = Record<Breakpoint, Layout>
+
+onBeforeMount(() => {
+  showItems.value.forEach(item => {
+    layouts.push(eval(`item${item}`))
+  })
+})
 </script>
 
 <template>
@@ -43,7 +69,14 @@ type ResponsiveLayout = Record<Breakpoint, Layout>
     <CCardBody>
       <CRow class="px-2">
         <CCol style="display: flex; justify-content: flex-end">
-          <MultiSelect :options="selectOptions" placeholder="추가하기" class="multiselect-blue" />
+          <MultiSelect
+            v-model="showItems"
+            :options="selectOptions"
+            placeholder="추가하기"
+            class="multiselect-blue"
+            @select="itemPush($event)"
+            @deselect="itemRemove($event)"
+          />
         </CCol>
       </CRow>
       <!-- Item slot usage -->
