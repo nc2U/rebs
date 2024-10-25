@@ -18,7 +18,7 @@ const selectOptions = [
   { value: '10', label: '작업내역' },
 ]
 
-const layouts = reactive([])
+const layouts = reactive<LayoutItemRequired[]>([])
 
 const item1 = reactive({ x: 0, y: 0, w: 6, h: 3, i: '내가 맡은 업무 (0)' })
 const item2 = reactive({ x: 6, y: 0, w: 6, h: 3, i: '보고한 업무 (0)' })
@@ -31,9 +31,9 @@ const item8 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '문서 (0)' })
 const item9 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '소요시간 (0)' })
 const item10 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '작업내역 (0)' })
 
-const itemPush = (item: string) => {
-  layouts.push(eval(`item${item}`))
-  layouts.sort((a, b) => a.localeCompare(b))
+const itemPush = (i: string) => {
+  const item = eval(`item${i}`) as LayoutItemRequired
+  if (item) layouts.push(item)
 }
 
 const itemRemove = (item: string) => {
