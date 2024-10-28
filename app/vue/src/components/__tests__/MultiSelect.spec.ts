@@ -13,7 +13,7 @@ describe('MultiSelect Component Test', () => {
     expect(wrapper.find('.multiselect-tags').exists()).toBeTruthy()
     expect(wrapper.find('.multiselect-tags-search-wrapper').exists()).toBeTruthy()
     expect(wrapper.find('span.multiselect-tags-search-copy').exists()).toBeTruthy()
-    expect(wrapper.find('input.form-control.multiselect-tags-search').exists()).toBeTruthy()
+    expect(wrapper.find('input.multiselect-tags-search').exists()).toBeTruthy()
 
     expect(wrapper.find('.multiselect-dropdown').exists()).toBeTruthy()
     expect(wrapper.find('ul.multiselect-options').exists()).toBeTruthy()
