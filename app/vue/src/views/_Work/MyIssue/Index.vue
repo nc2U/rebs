@@ -20,8 +20,8 @@ const selectOptions = [
 
 const layouts = reactive<LayoutItemRequired[]>([])
 
-const item1 = reactive({ x: 0, y: 0, w: 6, h: 3, i: '내가 맡은 업무 (0)' })
-const item2 = reactive({ x: 6, y: 0, w: 6, h: 3, i: '보고한 업무 (0)' })
+const item1 = reactive({ x: 0, y: 0, w: 6, h: 4, i: '내가 맡은 업무 (0)' })
+const item2 = reactive({ x: 6, y: 0, w: 6, h: 4, i: '보고한 업무 (0)' })
 const item3 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '수정한 업무 (0)' })
 const item4 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '지켜 보고 있는 업무 (0)' })
 const item5 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '업무 (0)' })
@@ -40,22 +40,6 @@ const itemRemove = (item: string) => {
   let index = layouts.indexOf(eval(`item${item}`))
   if (index > -1) layouts.splice(index, 1)
 }
-
-interface LayoutItem extends LayoutItemRequired {
-  minW?: number
-  minH?: number
-  maxW?: number
-  maxH?: number
-  moved?: boolean
-  static?: boolean
-  isDraggable?: boolean
-  isResizable?: boolean
-}
-
-type Layout = Array<LayoutItem>
-type Breakpoint = 'xxs' | 'xs' | 'sm' | 'md' | 'lg'
-type Breakpoints = Record<Breakpoint, number>
-type ResponsiveLayout = Record<Breakpoint, Layout>
 
 onBeforeMount(() => {
   showItems.value.forEach(item => {
@@ -76,6 +60,7 @@ onBeforeMount(() => {
             class="multiselect-blue"
             @select="itemPush($event)"
             @deselect="itemRemove($event)"
+            @clear="layouts.length = 0"
           />
         </CCol>
       </CRow>
@@ -88,13 +73,26 @@ onBeforeMount(() => {
         is-resizable
         vertical-compact
         use-css-transforms
+        auto-size
       >
         <template #item="{ item }">
           <div class="w-100 h-100 border p-3">
             <CRow class="px-2 mb-1">
               <CCol>{{ item.i }}</CCol>
+              <CCol class="text-right">
+                <span class="p-1">
+                  <v-icon icon="mdi-cog" color="grey" size="sm" class="pointer mr-2" />
+                  <v-icon
+                    icon="mdi-close-box-outline"
+                    color="grey"
+                    size="16"
+                    class="pointer"
+                    @click="layouts.splice(item.i, 1)"
+                  />
+                </span>
+              </CCol>
             </CRow>
-            <CAlert color="warning">표시할 데이터가 없습니다.</CAlert>
+            <CAlert color="warning"> 표시할 데이터가 없습니다.{{ layouts }} </CAlert>
           </div>
         </template>
       </GridLayout>
@@ -106,5 +104,9 @@ onBeforeMount(() => {
 .multiselect-blue {
   --ms-tag-bg: #dbeafe;
   --ms-tag-color: #2563eb;
+}
+
+.vgl-layout {
+  --vgl-placeholder-bg: green;
 }
 </style>
