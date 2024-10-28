@@ -32,8 +32,17 @@ const item9 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '소요시간 (0)' })
 const item10 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '작업내역 (0)' })
 
 const itemPush = (i: string) => {
-  const item = eval(`item${i}`) as LayoutItemRequired
-  if (item) layouts.push(item)
+  // const item = eval(`item${i}`) as LayoutItemRequired
+  if (i === '1') layouts.push(item1)
+  if (i === '2') layouts.push(item2)
+  if (i === '3') layouts.push(item3)
+  if (i === '4') layouts.push(item4)
+  if (i === '5') layouts.push(item5)
+  if (i === '6') layouts.push(item6)
+  if (i === '7') layouts.push(item7)
+  if (i === '8') layouts.push(item8)
+  if (i === '9') layouts.push(item9)
+  if (i === '10') layouts.push(item10)
 }
 
 const itemRemove = (item: string) => {
