@@ -96,7 +96,7 @@ onBeforeMount(() => {
                     color="grey"
                     size="16"
                     class="pointer"
-                    @click="layouts.splice(item.i, 1)"
+                    @click="console.log(item.i)"
                   />
                 </span>
               </CCol>
