@@ -18,18 +18,20 @@ const selectOptions = [
   { value: '10', label: '작업내역' },
 ]
 
+const getTitle = (n: string) => selectOptions.filter(o => o.value === n).map(o => o.label)[0]
+
 const layouts = reactive<LayoutItemRequired[]>([])
 
-const item1 = reactive({ x: 0, y: 0, w: 6, h: 4, i: '내가 맡은 업무 (0)' })
-const item2 = reactive({ x: 6, y: 0, w: 6, h: 4, i: '보고한 업무 (0)' })
-const item3 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '수정한 업무 (0)' })
-const item4 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '지켜 보고 있는 업무 (0)' })
-const item5 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '업무 (0)' })
-const item6 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '최근 뉴스 (0)' })
-const item7 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '달력 (0)' })
-const item8 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '문서 (0)' })
-const item9 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '소요시간 (0)' })
-const item10 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '작업내역 (0)' })
+const item1 = reactive({ x: 0, y: 0, w: 6, h: 4, i: '1' })
+const item2 = reactive({ x: 6, y: 0, w: 6, h: 4, i: '2' })
+const item3 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '3' })
+const item4 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '4' })
+const item5 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '5' })
+const item6 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '6' })
+const item7 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '7' })
+const item8 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '8' })
+const item9 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '9' })
+const item10 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '10' })
 
 const itemPush = (i: string) => {
   // const item = eval(`item${i}`) as LayoutItemRequired
@@ -48,6 +50,14 @@ const itemPush = (i: string) => {
 const itemRemove = (item: string) => {
   let index = layouts.indexOf(eval(`item${item}`))
   if (index > -1) layouts.splice(index, 1)
+}
+
+const itemClose = (n: string) => {
+  const sIndex = showItems.value.indexOf(n)
+  showItems.value.splice(sIndex, 1)
+
+  const lIndex = layouts.findIndex(layout => layout.i === n)
+  if (lIndex > -1) layouts.splice(lIndex, 1)
 }
 
 onBeforeMount(() => {
@@ -87,16 +97,19 @@ onBeforeMount(() => {
         <template #item="{ item }">
           <div class="w-100 h-100 border p-3">
             <CRow class="px-2 mb-1">
-              <CCol>{{ item.i }}</CCol>
+              <CCol>
+                <router-link to="">{{ getTitle(item.i) }}</router-link>
+                (0)
+              </CCol>
               <CCol class="text-right">
                 <span class="p-1">
                   <v-icon icon="mdi-cog" color="grey" size="sm" class="pointer mr-2" />
                   <v-icon
-                    icon="mdi-close-box-outline"
+                    :icon="'mdi-close-box-outline'"
                     color="grey"
                     size="16"
                     class="pointer"
-                    @click="console.log(item.i)"
+                    @click="itemClose(item.i)"
                   />
                 </span>
               </CCol>
