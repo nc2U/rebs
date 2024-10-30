@@ -1,58 +1,59 @@
 <script setup lang="ts">
 import { ref, reactive, onBeforeMount } from 'vue'
-import { GridLayout, type LayoutItemRequired } from 'grid-layout-plus'
+import { GridLayout, type LayoutItem } from 'grid-layout-plus'
 import MultiSelect from '@/components/MultiSelect/index.vue'
 
-const showItems = ref(['1', '2'])
+const showItems = ref<number[]>([1, 2])
 
 const selectOptions = [
-  { value: '1', label: '내가 맡은 업무' },
-  { value: '2', label: '보고한 업무' },
-  { value: '3', label: '수정한 업무' },
-  { value: '4', label: '지켜 보고 있는 업무' },
-  { value: '5', label: '업무' },
-  { value: '6', label: '최근 뉴스' },
-  { value: '7', label: '달력' },
-  { value: '8', label: '문서' },
-  { value: '9', label: '소요시간' },
-  { value: '10', label: '작업내역' },
+  { value: 1, label: '내가 맡은 업무' },
+  { value: 2, label: '보고한 업무' },
+  { value: 3, label: '수정한 업무' },
+  { value: 4, label: '지켜 보고 있는 업무' },
+  { value: 5, label: '업무' },
+  { value: 6, label: '최근 뉴스' },
+  { value: 7, label: '달력' },
+  { value: 8, label: '문서' },
+  { value: 9, label: '소요시간' },
+  { value: 10, label: '작업내역' },
 ]
 
-const getTitle = (n: string) => selectOptions.filter(o => o.value === n).map(o => o.label)[0]
+const getTitle = (n: number | string) =>
+  selectOptions.filter(o => o.value === n).map(o => o.label)[0]
 
-const layouts = reactive<LayoutItemRequired[]>([])
+const layouts = reactive<LayoutItem[]>([])
 
-const item1 = reactive({ x: 0, y: 0, w: 6, h: 4, i: '1' })
-const item2 = reactive({ x: 6, y: 0, w: 6, h: 4, i: '2' })
-const item3 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '3' })
-const item4 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '4' })
-const item5 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '5' })
-const item6 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '6' })
-const item7 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '7' })
-const item8 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '8' })
-const item9 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '9' })
-const item10 = reactive({ x: 0, y: 0, w: 12, h: 3, i: '10' })
+const item1 = reactive({ x: 0, y: 0, w: 6, h: 4, i: 1 })
+const item2 = reactive({ x: 6, y: 0, w: 6, h: 4, i: 2 })
+const item3 = reactive({ x: 0, y: 0, w: 12, h: 3, i: 3 })
+const item4 = reactive({ x: 0, y: 0, w: 12, h: 3, i: 4 })
+const item5 = reactive({ x: 0, y: 0, w: 12, h: 3, i: 5 })
+const item6 = reactive({ x: 0, y: 0, w: 12, h: 3, i: 6 })
+const item7 = reactive({ x: 0, y: 0, w: 12, h: 3, i: 7 })
+const item8 = reactive({ x: 0, y: 0, w: 12, h: 3, i: 8 })
+const item9 = reactive({ x: 0, y: 0, w: 12, h: 3, i: 9 })
+const item10 = reactive({ x: 0, y: 0, w: 12, h: 3, i: 10 })
 
-const itemPush = (i: string) => {
+const itemPush = (i: number) => {
   // const item = eval(`item${i}`) as LayoutItemRequired
-  if (i === '1') layouts.push(item1)
-  if (i === '2') layouts.push(item2)
-  if (i === '3') layouts.push(item3)
-  if (i === '4') layouts.push(item4)
-  if (i === '5') layouts.push(item5)
-  if (i === '6') layouts.push(item6)
-  if (i === '7') layouts.push(item7)
-  if (i === '8') layouts.push(item8)
-  if (i === '9') layouts.push(item9)
-  if (i === '10') layouts.push(item10)
+  if (i === 1) layouts.push(item1)
+  if (i === 2) layouts.push(item2)
+  if (i === 3) layouts.push(item3)
+  if (i === 4) layouts.push(item4)
+  if (i === 5) layouts.push(item5)
+  if (i === 6) layouts.push(item6)
+  if (i === 7) layouts.push(item7)
+  if (i === 8) layouts.push(item8)
+  if (i === 9) layouts.push(item9)
+  if (i === 10) layouts.push(item10)
 }
 
-const itemRemove = (item: string) => {
+const itemRemove = (item: number) => {
   let index = layouts.indexOf(eval(`item${item}`))
   if (index > -1) layouts.splice(index, 1)
 }
 
-const itemClose = (n: string) => {
+const itemClose = (n: number | string) => {
   const sIndex = showItems.value.indexOf(n)
   showItems.value.splice(sIndex, 1)
 
@@ -92,7 +93,6 @@ onBeforeMount(() => {
         is-resizable
         vertical-compact
         use-css-transforms
-        auto-size
       >
         <template #item="{ item }">
           <div class="w-100 h-100 border p-3">
@@ -114,7 +114,7 @@ onBeforeMount(() => {
                 </span>
               </CCol>
             </CRow>
-            <CAlert color="warning"> 표시할 데이터가 없습니다.{{ layouts }} </CAlert>
+            <CAlert color="warning"> 표시할 데이터가 없습니다.{{ layouts }}</CAlert>
           </div>
         </template>
       </GridLayout>
