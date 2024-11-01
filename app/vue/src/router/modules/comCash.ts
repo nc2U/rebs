@@ -29,12 +29,12 @@ const comCash = {
     },
     {
       path: 'index',
-      name: '본사 출납 관리',
+      name: '본사 출납 내역',
       component: () =>
         pageViewAuth.value
           ? import('@/views/comCash/CashManage/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '본사 출납 관리', auth: true },
+      meta: { title: '본사 출납 내역', auth: true },
     },
     {
       path: 'debt',

@@ -36,7 +36,7 @@ const company_cash = {
     },
     {
       component: 'CNavItem',
-      name: '본사 출납 관리',
+      name: '본사 출납 내역',
       to: '/cashes/index',
     },
   ],
@@ -237,12 +237,12 @@ const project_cash = {
     },
     {
       component: 'CNavItem',
-      name: '현장 출납 관리',
+      name: '현장 출납 내역',
       to: '/project-cash/index',
     },
     {
       component: 'CNavItem',
-      name: '운영 비용 관리',
+      name: '운영 비용 내역',
       to: '/project-cash/imprest',
     },
   ],
