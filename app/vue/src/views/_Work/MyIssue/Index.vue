@@ -53,7 +53,7 @@ const itemRemove = (item: number) => {
   if (index > -1) layouts.splice(index, 1)
 }
 
-const itemClose = (n: number | string) => {
+const itemClose = (n: number) => {
   const sIndex = showItems.value.indexOf(n)
   showItems.value.splice(sIndex, 1)
 
