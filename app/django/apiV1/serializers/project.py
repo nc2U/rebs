@@ -19,6 +19,7 @@ class SallesBillInProjectSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
+    issue_project = serializers.PrimaryKeyRelatedField(read_only=True)
     kind = serializers.ChoiceField(choices=Project.KIND_CHOICES)
     kind_desc = serializers.CharField(source='get_kind_display', read_only=True)
     salesbillissue = SallesBillInProjectSerializer(read_only=True)

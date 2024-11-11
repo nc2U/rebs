@@ -3,9 +3,6 @@ from datetime import datetime
 from django.db.models import Sum, F, Case, When
 from rest_framework import viewsets
 
-from cash.models import ProjectCashBook
-from project.models import (Project, ProjectIncBudget, ProjectOutBudget,
-                            Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
 from ..pagination import *
 from ..permission import *
 from ..serializers.project import *
