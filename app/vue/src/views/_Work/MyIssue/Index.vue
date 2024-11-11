@@ -23,8 +23,8 @@ const getTitle = (n: number | string) =>
 
 const layouts = reactive<LayoutItem[]>([])
 
-const item1 = reactive({ x: 0, y: 0, w: 6, h: 4, i: 1 })
-const item2 = reactive({ x: 6, y: 0, w: 6, h: 4, i: 2 })
+const item1 = reactive({ x: 0, y: 0, w: 6, h: 3, i: 1 })
+const item2 = reactive({ x: 6, y: 0, w: 6, h: 3, i: 2 })
 const item3 = reactive({ x: 0, y: 0, w: 12, h: 3, i: 3 })
 const item4 = reactive({ x: 0, y: 0, w: 12, h: 3, i: 4 })
 const item5 = reactive({ x: 0, y: 0, w: 12, h: 3, i: 5 })
@@ -114,7 +114,7 @@ onBeforeMount(() => {
                 </span>
               </CCol>
             </CRow>
-            <CAlert color="warning"> 표시할 데이터가 없습니다.{{ layouts }}</CAlert>
+            <CAlert color="warning"> 표시할 데이터가 없습니다.</CAlert>
           </div>
         </template>
       </GridLayout>
