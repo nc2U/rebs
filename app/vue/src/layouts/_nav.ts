@@ -402,7 +402,7 @@ const nav = [
   human_resource,
   {
     component: 'CNavTitle',
-    name: '현장 관리',
+    name: '프로젝트 관리',
   },
   contract,
   payment,

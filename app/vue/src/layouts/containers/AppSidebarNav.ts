@@ -124,17 +124,22 @@ const AppSidebarNav = defineComponent({
         : h(resolveComponent(item.component), {}, () => item.name)
     }
 
-    if (!workManager.value) nav.splice(2, 1) // 업무 설정 관리 메뉴 제외
-    const wmNum = workManager.value ? 3 : 2 // 업무 설정 관리 메뉴 제외
-    const prNum = 6 // 현장 메뉴 개수
+    const wmPos = 2 // 업무 설정 위치
+    const coPos = workManager.value ? 3 : 2 // 본사 관리 위치
+    const coNum = 1 + 3 // 본사 메뉴 개수
+    const caPos = coPos + 1 // 자금 메뉴 위치
+    const etPos = coPos + 7 // 기타 메뉴 위치
+    const etNum = 1 + 1 // 기타 메뉴 개수
+
+    if (!workManager.value) nav.splice(wmPos, 1) // 업무 설정 관리 메뉴 제외
 
     if (!isStaff.value) {
       // 본사 관리 직원 권한이 없으면
-      nav.splice(wmNum, 4) // 본사 관련 메뉴 제외
-      nav.splice(wmNum + prNum + 1, 2) // 환경 설정 메뉴 제외
+      nav.splice(coPos, coNum) // 본사 관련 메뉴 제외
+      nav.splice(etPos, etNum) // 기타 설정 메뉴 제외
     }
     // 본사 자금 관리 권한 없으면 자금 관리 메뉴 제외
-    else if (!isComCash.value) nav.splice(wmNum + 1, 1)
+    else if (!isComCash.value) nav.splice(caPos, 1)
 
     return () =>
       h(
