@@ -5,7 +5,7 @@ SQL_FILE=backup-${DATE}.sql
 # 파일 존재 여부 확인
 if [ -f "${SQL_FILE}" ]; then
     # 디렉토리 존재 여부 확인 및 없으면 생성
-    DEST_DIR=../../../dev/volume/backups/
+    DEST_DIR=/volume1/mnt/rebs/dev/volume/backups/
     if [ ! -d "${DEST_DIR}" ]; then
         mkdir -p "${DEST_DIR}"
     fi
