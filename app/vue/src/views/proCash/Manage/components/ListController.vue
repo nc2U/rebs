@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, watch, nextTick } from 'vue'
+import { useComCash } from '@/store/pinia/comCash'
 import { useProCash } from '@/store/pinia/proCash'
 import { useContract } from '@/store/pinia/contract'
 import { numFormat } from '@/utils/baseMixins'
@@ -20,6 +21,9 @@ const form = reactive({
   contract: '',
   search: '',
 })
+
+const useComCashStore = useComCash()
+const formAccD1List = computed(() => useComCashStore.formAccD1List)
 
 const proCashStore = useProCash()
 const sortList = computed(() => proCashStore.sortList)
@@ -114,6 +118,15 @@ const resetForm = () => {
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
+            <CFormSelect v-model="form.bank_account" @change="listFiltering(1)">
+              <option value="">계정[대분류]</option>
+              <option v-for="acc1 in formAccD1List" :key="acc1.pk" :value="acc1.pk">
+                {{ acc1.name }}
+              </option>
+            </CFormSelect>
+          </CCol>
+
+          <CCol md="6" lg="2" class="mb-3">
             <CFormSelect v-model="form.pro_acc_d2" @change="proAccD1Select">
               <option value="">상위 항목</option>
               <option v-for="d1 in formAccD2List" :key="d1.pk" :value="d1.pk">
@@ -130,8 +143,12 @@ const resetForm = () => {
               </option>
             </CFormSelect>
           </CCol>
+        </CRow>
+      </CCol>
 
-          <CCol md="6" lg="2" class="mb-3">
+      <CCol lg="4">
+        <CRow>
+          <CCol md="6" lg="4" class="mb-3">
             <CFormSelect v-model="form.bank_account" @change="listFiltering(1)">
               <option value="">거래계좌</option>
               <option v-for="acc in allProBankAccs" :key="acc.pk as number" :value="acc.pk">
@@ -139,12 +156,8 @@ const resetForm = () => {
               </option>
             </CFormSelect>
           </CCol>
-        </CRow>
-      </CCol>
 
-      <CCol lg="4">
-        <CRow>
-          <CCol md="6" lg="5" class="mb-3">
+          <CCol md="6" lg="4" class="mb-3">
             <MultiSelect
               v-model.number="form.contract"
               mode="single"
@@ -155,7 +168,7 @@ const resetForm = () => {
             />
           </CCol>
 
-          <CCol md="6" lg="7" class="mb-3">
+          <CCol md="12" lg="4" class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.search"

@@ -81,6 +81,7 @@ const fetchPayOrderList = (project: number) => paymentStore.fetchPayOrderList(pr
 
 const comCashStore = useComCash()
 const fetchBankCodeList = () => comCashStore.fetchBankCodeList()
+const fetchFormAccD1List = () => comCashStore.fetchFormAccD1List()
 
 const proCashStore = useProCash()
 const fetchProAccSortList = () => proCashStore.fetchProAccSortList()
@@ -231,6 +232,7 @@ const fetchAllContracts = (projId: number) => contStore.fetchAllContracts(projId
 
 onBeforeMount(() => {
   fetchBankCodeList()
+  fetchFormAccD1List()
   fetchProAccSortList()
   fetchProAllAccD2List()
   fetchProAllAccD3List()
