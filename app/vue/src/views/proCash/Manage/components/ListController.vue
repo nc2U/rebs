@@ -14,7 +14,9 @@ const from_date = ref('')
 const to_date = ref('')
 
 const form = reactive({
+  page: 1,
   sort: '',
+  account_d1: '',
   pro_acc_d2: '',
   pro_acc_d3: '',
   bank_account: '',
@@ -39,18 +41,26 @@ const formsCheck = computed(() => {
   const a = !from_date.value
   const b = !to_date.value
   const c = !form.sort
-  const d = !form.pro_acc_d2
-  const e = !form.pro_acc_d3
-  const f = !form.bank_account
-  const g = !form.contract
-  const h = form.search.trim() === ''
-  return a && b && c && d && e && f && g && h
+  const d = !form.account_d1
+  const e = !form.pro_acc_d2
+  const f = !form.pro_acc_d3
+  const g = !form.bank_account
+  const h = !form.contract
+  const i = form.search.trim() === ''
+  return a && b && c && d && e && f && g && h && i
 })
 
 watch(from_date, () => listFiltering(1))
 watch(to_date, () => listFiltering(1))
 
 const sortSelect = () => {
+  listFiltering(1)
+  form.account_d1 = ''
+  form.pro_acc_d2 = ''
+  form.pro_acc_d3 = ''
+}
+
+const accountD1Select = () => {
   listFiltering(1)
   form.pro_acc_d2 = ''
   form.pro_acc_d3 = ''
@@ -63,6 +73,7 @@ const proAccD1Select = () => {
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
+    form.page = page
     form.search = form.search.trim()
 
     emit('list-filtering', {
@@ -78,6 +89,7 @@ const resetForm = () => {
   from_date.value = ''
   to_date.value = ''
   form.sort = ''
+  form.account_d1 = ''
   form.pro_acc_d2 = ''
   form.pro_acc_d3 = ''
   form.bank_account = ''
@@ -118,7 +130,7 @@ const resetForm = () => {
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.bank_account" @change="listFiltering(1)">
+            <CFormSelect v-model="form.account_d1" @change="accountD1Select">
               <option value="">계정[대분류]</option>
               <option v-for="acc1 in formAccD1List" :key="acc1.pk" :value="acc1.pk">
                 {{ acc1.name }}

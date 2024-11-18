@@ -34,6 +34,7 @@ const dataFilter = ref<CashBookFilter>({
   from_date: '',
   to_date: '',
   sort: null,
+  accout_d1: null,
   pro_acc_d2: null,
   pro_acc_d3: null,
   bank_account: null,
@@ -51,9 +52,10 @@ const pageSelect = (page: number) => {
 const listFiltering = (payload: CashBookFilter) => {
   dataFilter.value = payload
   const sort = payload.sort ? payload.sort : null
-  const d1 = payload.pro_acc_d2 ? payload.pro_acc_d2 : null
-  fetchProFormAccD2List(sort)
-  fetchProFormAccD3List(d1, sort)
+  const d1 = payload.account_d1 ? payload.account_d1 : null
+  const d2 = payload.pro_acc_d2 ? payload.pro_acc_d2 : null
+  fetchProFormAccD2List(d1, sort)
+  fetchProFormAccD3List(d2, sort)
   if (project.value) {
     fetchProjectCashList({
       ...{ project: project.value },
@@ -81,16 +83,17 @@ const fetchPayOrderList = (project: number) => paymentStore.fetchPayOrderList(pr
 
 const comCashStore = useComCash()
 const fetchBankCodeList = () => comCashStore.fetchBankCodeList()
-const fetchFormAccD1List = () => comCashStore.fetchFormAccD1List()
+const fetchFormAccD1List = (sort: number | null) => comCashStore.fetchFormAccD1List(sort)
 
 const proCashStore = useProCash()
 const fetchProAccSortList = () => proCashStore.fetchProAccSortList()
 const fetchProAllAccD2List = () => proCashStore.fetchProAllAccD2List()
 const fetchProAllAccD3List = () => proCashStore.fetchProAllAccD3List()
 
-const fetchProFormAccD2List = (sort?: number | null) => proCashStore.fetchProFormAccD2List(sort)
-const fetchProFormAccD3List = (d1?: number | null, sort?: number | null) =>
-  proCashStore.fetchProFormAccD3List(d1, sort)
+const fetchProFormAccD2List = (d1: number | null, sort?: number | null) =>
+  proCashStore.fetchProFormAccD2List(d1, sort)
+const fetchProFormAccD3List = (d2?: number | null, sort?: number | null) =>
+  proCashStore.fetchProFormAccD3List(d2, sort)
 
 const fetchProBankAccList = (projId: number) => proCashStore.fetchProBankAccList(projId)
 const fetchAllProBankAccList = (projId: number) => proCashStore.fetchAllProBankAccList(projId)

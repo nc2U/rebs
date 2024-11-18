@@ -79,6 +79,7 @@ export type CashBookFilter = {
   order_group?: string
   unit_type?: string
   sort?: number | null
+  account_d1?: number | null
   pro_acc_d2?: number | null
   pro_acc_d3?: number | null
   bank_account?: number | null

@@ -2,7 +2,7 @@ import api from '@/api'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { message, errorHandle } from '@/utils/helper'
-import { type AccountSort } from '@/store/types/comCash'
+import { type AccountD1, type AccountSort } from '@/store/types/comCash'
 import {
   type ProjectAccountD2,
   type ProjectAccountD3,
@@ -40,10 +40,16 @@ export const useProCash = defineStore('proCash', () => {
       .then(res => (allAccD3List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
+  const formAccD1List = ref<AccountD1[]>([])
+
+  const fetchProAccD1List = () => {}
+
   const formAccD2List = ref<ProjectAccountD2[]>([])
 
-  const fetchProFormAccD2List = (sort: number | null = null) => {
-    const queryStr = sort ? `?d1__sorts=${sort}` : ''
+  const fetchProFormAccD2List = (d1: number | null, sort: number | null = null) => {
+    let queryStr = sort ? `?d1__sorts=${sort}` : `?1=1`
+    queryStr = d1 ? `${queryStr}&d1=${d1}` : queryStr
+
     api
       .get(`/project-account-depth2/${queryStr}`)
       .then(res => (formAccD2List.value = res.data.results))
