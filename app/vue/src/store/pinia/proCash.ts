@@ -175,7 +175,6 @@ export const useProCash = defineStore('proCash', () => {
     const { project } = payload
     let url = `/project-cashbook/?project=${project}`
     url += getUrl(payload)
-    console.log(url)
 
     return await api
       .get(url)
