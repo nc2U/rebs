@@ -6,6 +6,7 @@ import { bgLight } from '@/utils/cssMixins'
 import DatePicker from '@/components/DatePicker/index.vue'
 import MultiSelect from '@/components/MultiSelect/index.vue'
 import { useContract } from '@/store/pinia/contract'
+import { useComCash } from '@/store/pinia/comCash'
 
 const emit = defineEmits(['list-filtering'])
 
@@ -13,13 +14,18 @@ const from_date = ref('')
 const to_date = ref('')
 
 const form = reactive({
+  page: 1,
   sort: '',
+  account_d1: '',
   pro_acc_d2: '',
   pro_acc_d3: '',
   bank_account: '',
   contract: '',
   search: '',
 })
+
+const useComCashStore = useComCash()
+const formAccD1List = computed(() => useComCashStore.formAccD1List)
 
 const proCashStore = useProCash()
 const sortList = computed(() => proCashStore.sortList)
@@ -35,12 +41,13 @@ const formsCheck = computed(() => {
   const a = !from_date.value
   const b = !to_date.value
   const c = !form.sort
-  const d = !form.pro_acc_d2
-  const e = !form.pro_acc_d3
-  const f = !form.bank_account
-  const g = !form.contract
-  const h = form.search.trim() === ''
-  return a && b && c && d && e && f && g && h
+  const d = !form.account_d1
+  const e = !form.pro_acc_d2
+  const f = !form.pro_acc_d3
+  const g = !form.bank_account
+  const h = !form.contract
+  const i = form.search.trim() === ''
+  return a && b && c && d && e && f && g && h && i
 })
 
 watch(from_date, () => listFiltering(1))
@@ -48,17 +55,25 @@ watch(to_date, () => listFiltering(1))
 
 const sortSelect = () => {
   listFiltering(1)
+  form.account_d1 = ''
   form.pro_acc_d2 = ''
   form.pro_acc_d3 = ''
 }
 
-const pro_acc_d2Select = () => {
+const accountD1Select = () => {
+  listFiltering(1)
+  form.pro_acc_d2 = ''
+  form.pro_acc_d3 = ''
+}
+
+const proAccD2Select = () => {
   listFiltering(1)
   form.pro_acc_d3 = ''
 }
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
+    form.page = page
     form.search = form.search.trim()
 
     emit('list-filtering', {
@@ -74,6 +89,7 @@ const resetForm = () => {
   from_date.value = ''
   to_date.value = ''
   form.sort = ''
+  form.account_d1 = ''
   form.pro_acc_d2 = ''
   form.pro_acc_d3 = ''
   form.bank_account = ''
@@ -114,7 +130,16 @@ const resetForm = () => {
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.pro_acc_d2" @change="pro_acc_d2Select">
+            <CFormSelect v-model="form.account_d1" @change="accountD1Select">
+              <option value="">계정[대분류]</option>
+              <option v-for="acc1 in formAccD1List" :key="acc1.pk" :value="acc1.pk">
+                {{ acc1.name }}
+              </option>
+            </CFormSelect>
+          </CCol>
+
+          <CCol md="6" lg="2" class="mb-3">
+            <CFormSelect v-model="form.pro_acc_d2" @change="proAccD2Select">
               <option value="">상위 항목</option>
               <option v-for="d1 in formAccD2List" :key="d1.pk" :value="d1.pk">
                 {{ d1.name }}
@@ -130,8 +155,12 @@ const resetForm = () => {
               </option>
             </CFormSelect>
           </CCol>
+        </CRow>
+      </CCol>
 
-          <CCol md="6" lg="2" class="mb-3">
+      <CCol lg="4">
+        <CRow>
+          <CCol md="6" lg="4" class="mb-3">
             <CFormSelect v-model="form.bank_account" @change="listFiltering(1)">
               <option value="">거래계좌</option>
               <option v-for="acc in imprestBAccount" :key="acc.pk as number" :value="acc.pk">
@@ -139,12 +168,8 @@ const resetForm = () => {
               </option>
             </CFormSelect>
           </CCol>
-        </CRow>
-      </CCol>
 
-      <CCol lg="4">
-        <CRow>
-          <CCol md="6" lg="5" class="mb-3">
+          <CCol md="6" lg="4" class="mb-3">
             <MultiSelect
               v-model.number="form.contract"
               mode="single"
@@ -155,7 +180,7 @@ const resetForm = () => {
             />
           </CCol>
 
-          <CCol md="6" lg="7" class="mb-3">
+          <CCol md="12" lg="4" class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.search"

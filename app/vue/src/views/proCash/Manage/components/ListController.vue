@@ -66,7 +66,7 @@ const accountD1Select = () => {
   form.pro_acc_d3 = ''
 }
 
-const proAccD1Select = () => {
+const proAccD2Select = () => {
   listFiltering(1)
   form.pro_acc_d3 = ''
 }
@@ -139,7 +139,7 @@ const resetForm = () => {
           </CCol>
 
           <CCol md="6" lg="2" class="mb-3">
-            <CFormSelect v-model="form.pro_acc_d2" @change="proAccD1Select">
+            <CFormSelect v-model="form.pro_acc_d2" @change="proAccD2Select">
               <option value="">상위 항목</option>
               <option v-for="d1 in formAccD2List" :key="d1.pk" :value="d1.pk">
                 {{ d1.name }}

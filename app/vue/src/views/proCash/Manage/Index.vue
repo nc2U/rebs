@@ -237,8 +237,8 @@ const fetchAllContracts = (projId: number) => contStore.fetchAllContracts(projId
 
 onBeforeMount(() => {
   fetchBankCodeList()
-  fetchFormAccD1List()
   fetchProAccSortList()
+  fetchFormAccD1List()
   fetchProAllAccD2List()
   fetchProAllAccD3List()
   fetchProFormAccD2List()

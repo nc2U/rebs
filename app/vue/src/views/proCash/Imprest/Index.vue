@@ -34,6 +34,7 @@ const dataFilter = ref<CashBookFilter>({
   from_date: '',
   to_date: '',
   sort: null,
+  account_d1: null,
   pro_acc_d2: null,
   pro_acc_d3: null,
   bank_account: null,
@@ -60,13 +61,15 @@ const fetchPayOrderList = (project: number) => paymentStore.fetchPayOrderList(pr
 
 const comCashStore = useComCash()
 const fetchBankCodeList = () => comCashStore.fetchBankCodeList()
+const fetchFormAccD1List = (sort?: number | null) => comCashStore.fetchFormAccD1List(sort)
 
 const pCashStore = useProCash()
 const fetchProAccSortList = () => pCashStore.fetchProAccSortList()
 const fetchProAllAccD2List = () => pCashStore.fetchProAllAccD2List()
 const fetchProAllAccD3List = () => pCashStore.fetchProAllAccD3List()
 
-const fetchProFormAccD2List = (sort?: number | null) => pCashStore.fetchProFormAccD2List(sort)
+const fetchProFormAccD2List = (d1?: number | null, sort?: number | null) =>
+  pCashStore.fetchProFormAccD2List(d1, sort)
 const fetchProFormAccD3List = (d2?: number | null, sort?: number | null) =>
   pCashStore.fetchProFormAccD3List(d2, sort)
 
@@ -104,8 +107,9 @@ const pageSelect = (page: number) => {
 const listFiltering = (payload: CashBookFilter) => {
   dataFilter.value = payload
   const sort = payload.sort ? payload.sort : null
+  const d1 = payload.account_d1 ? payload.account_d1 : null
   const d2 = payload.pro_acc_d2 ? payload.pro_acc_d2 : null
-  fetchProFormAccD2List(sort)
+  fetchProFormAccD2List(d1, sort)
   fetchProFormAccD3List(d2, sort)
   if (project.value) fetchProjectImprestList({ ...{ project: project.value }, ...payload })
 }
@@ -231,6 +235,7 @@ const fetchAllContracts = (projId: number) => contStore.fetchAllContracts(projId
 onBeforeMount(() => {
   fetchBankCodeList()
   fetchProAccSortList()
+  fetchFormAccD1List()
   fetchProAllAccD2List()
   fetchProAllAccD3List()
   fetchProFormAccD2List()
