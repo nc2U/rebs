@@ -34,7 +34,7 @@ const dataFilter = ref<CashBookFilter>({
   from_date: '',
   to_date: '',
   sort: null,
-  accout_d1: null,
+  account_d1: null,
   pro_acc_d2: null,
   pro_acc_d3: null,
   bank_account: null,

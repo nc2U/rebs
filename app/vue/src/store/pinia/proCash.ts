@@ -160,6 +160,7 @@ export const useProCash = defineStore('proCash', () => {
     if (payload.from_date) url += `&from_deal_date=${payload.from_date}`
     if (payload.to_date) url += `&to_deal_date=${payload.to_date}`
     if (payload.sort) url += `&sort=${payload.sort}`
+    if (payload.account_d1) url += `&project_account_d2__d1=${payload.account_d1}`
     if (payload.pro_acc_d2) url += `&project_account_d2=${payload.pro_acc_d2}`
     if (payload.pro_acc_d3) url += `&project_account_d3=${payload.pro_acc_d3}`
     if (payload.bank_account) url += `&bank_account=${payload.bank_account}`
