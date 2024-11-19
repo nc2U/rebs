@@ -54,6 +54,8 @@ const listFiltering = (payload: CashBookFilter) => {
   const sort = payload.sort ? payload.sort : null
   const d1 = payload.account_d1 ? payload.account_d1 : null
   const d2 = payload.pro_acc_d2 ? payload.pro_acc_d2 : null
+
+  fetchFormAccD1List(sort)
   fetchProFormAccD2List(d1, sort)
   fetchProFormAccD3List(d2, sort)
   if (project.value) {
@@ -83,14 +85,14 @@ const fetchPayOrderList = (project: number) => paymentStore.fetchPayOrderList(pr
 
 const comCashStore = useComCash()
 const fetchBankCodeList = () => comCashStore.fetchBankCodeList()
-const fetchFormAccD1List = (sort: number | null) => comCashStore.fetchFormAccD1List(sort)
+const fetchFormAccD1List = (sort?: number | null) => comCashStore.fetchFormAccD1List(sort)
 
 const proCashStore = useProCash()
 const fetchProAccSortList = () => proCashStore.fetchProAccSortList()
 const fetchProAllAccD2List = () => proCashStore.fetchProAllAccD2List()
 const fetchProAllAccD3List = () => proCashStore.fetchProAllAccD3List()
 
-const fetchProFormAccD2List = (d1: number | null, sort?: number | null) =>
+const fetchProFormAccD2List = (d1?: number | null, sort?: number | null) =>
   proCashStore.fetchProFormAccD2List(d1, sort)
 const fetchProFormAccD3List = (d2?: number | null, sort?: number | null) =>
   proCashStore.fetchProFormAccD3List(d2, sort)

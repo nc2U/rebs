@@ -40,13 +40,9 @@ export const useProCash = defineStore('proCash', () => {
       .then(res => (allAccD3List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const formAccD1List = ref<AccountD1[]>([])
-
-  const fetchProAccD1List = () => {}
-
   const formAccD2List = ref<ProjectAccountD2[]>([])
 
-  const fetchProFormAccD2List = (d1: number | null, sort: number | null = null) => {
+  const fetchProFormAccD2List = (d1?: number | null, sort?: number | null) => {
     let queryStr = sort ? `?d1__sorts=${sort}` : `?1=1`
     queryStr = d1 ? `${queryStr}&d1=${d1}` : queryStr
 
@@ -494,18 +490,15 @@ export const useProCash = defineStore('proCash', () => {
 
   return {
     sortList,
-    fetchProAccSortList,
-
     allAccD2List,
-    fetchProAllAccD2List,
-
     allAccD3List,
+    fetchProAccSortList,
+    fetchProAllAccD2List,
     fetchProAllAccD3List,
 
     formAccD2List,
-    fetchProFormAccD2List,
-
     formAccD3List,
+    fetchProFormAccD2List,
     fetchProFormAccD3List,
 
     proBankAccountList,

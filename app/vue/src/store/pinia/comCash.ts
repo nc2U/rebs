@@ -82,7 +82,7 @@ export const useComCash = defineStore('comCash', () => {
 
   const formAccD1List = ref<AccountD1[]>([])
 
-  const fetchFormAccD1List = async (sort: number | null) => {
+  const fetchFormAccD1List = async (sort?: number | null) => {
     const uSort = sort ? `?sorts=${sort}` : ''
     return await api
       .get(`/account-depth1/${uSort}`)
