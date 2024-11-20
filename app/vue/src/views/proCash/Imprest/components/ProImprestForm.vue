@@ -126,9 +126,10 @@ const isImprest = computed(() =>
     : true,
 )
 
-const fetchProFormAccD2List = (sort: number | null) => proCashStore.fetchProFormAccD2List(sort)
-const fetchProFormAccD3List = (d1: number | null, sort: number | null) =>
-  proCashStore.fetchProFormAccD3List(d1, sort)
+const fetchProFormAccD2List = (d1: number | null, sort: number | null) =>
+  proCashStore.fetchProFormAccD2List(d1, sort)
+const fetchProFormAccD3List = (d2: number | null, sort: number | null) =>
+  proCashStore.fetchProFormAccD3List(d2, sort)
 
 const requireItem = computed(() => !!form.project_account_d2 && !!form.project_account_d3)
 
@@ -189,9 +190,9 @@ const isModify = computed(() => {
 const callAccount = () => {
   nextTick(() => {
     const sort = form.sort === 1 || form.sort === 2 ? form.sort : null
-    const d1 = form.project_account_d2
-    fetchProFormAccD2List(sort)
-    fetchProFormAccD3List(d1, sort)
+    const d2 = form.project_account_d2
+    fetchProFormAccD2List(null, sort)
+    fetchProFormAccD3List(d2, sort)
   })
 }
 
@@ -233,9 +234,9 @@ const sepD1_change = () => {
   sepItem.project_account_d3 = null
   nextTick(() => {
     const sort = form.sort
-    const d1 = sepItem.project_account_d2
-    fetchProFormAccD2List(sort)
-    fetchProFormAccD3List(d1, sort)
+    const d2 = sepItem.project_account_d2
+    fetchProFormAccD2List(null, sort)
+    fetchProFormAccD3List(d2, sort)
   })
 }
 
