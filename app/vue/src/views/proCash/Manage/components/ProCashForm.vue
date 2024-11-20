@@ -193,12 +193,12 @@ const sort_change = (event: Event) => {
     if (el.value === '1') form.outlay = null
     if (el.value === '2') form.income = null
     if (el.value === '3') {
-      form.project_account_d2 = (transfers ?? [17, 70])[0]
-      form.project_account_d3 = (transfers ?? [17, 70])[1]
+      form.project_account_d2 = (transfers ?? [17, 71])[0]
+      form.project_account_d3 = (transfers ?? [17, 71])[1]
       form.trader = ''
     } else if (el.value === '4') {
-      form.project_account_d2 = (cancels ?? [18, 72])[0]
-      form.project_account_d3 = (cancels ?? [18, 72])[1]
+      form.project_account_d2 = (cancels ?? [18, 73])[0]
+      form.project_account_d3 = (cancels ?? [18, 73])[1]
     } else {
       form.project_account_d2 = null
       form.project_account_d3 = null
@@ -235,7 +235,7 @@ const isRelatedCont = (d3: number) =>
   formAccD3List.value.filter(d => d.pk === d3)[0].is_related_contract
 
 watch(form, val => {
-  form.is_imprest = val.project_account_d3 === (transfers ?? [17, 70])[1] + 1 // 대체(입금)
+  form.is_imprest = val.project_account_d3 === (transfers ?? [17, 71])[1] + 1 // 대체(입금)
   if (val.project_account_d3) {
     if (isRelatedCont(val.project_account_d3)) {
       isContFormShow.value = true
