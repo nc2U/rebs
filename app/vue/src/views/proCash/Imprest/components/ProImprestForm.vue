@@ -202,12 +202,12 @@ const sort_change = (event: Event) => {
     if (el.value === '1') form.outlay = null
     if (el.value === '2') form.income = null
     if (el.value === '3') {
-      form.project_account_d2 = (transfers ?? [17, 71])[0]
-      form.project_account_d3 = (transfers ?? [17, 71])[1]
+      form.project_account_d2 = (transfers ?? [17, 73])[0]
+      form.project_account_d3 = (transfers ?? [17, 73])[1]
       form.trader = ''
     } else if (el.value === '4') {
-      form.project_account_d2 = (cancels ?? [18, 73])[0]
-      form.project_account_d3 = (cancels ?? [18, 73])[1]
+      form.project_account_d2 = (cancels ?? [18, 75])[0]
+      form.project_account_d3 = (cancels ?? [18, 75])[1]
     } else {
       form.project_account_d2 = null
       form.project_account_d3 = null
