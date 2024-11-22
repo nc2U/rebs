@@ -5,7 +5,7 @@ from django_filters.rest_framework import FilterSet
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 
-from ..pagination import PageNumberPaginationThreeThousand
+from ..pagination import PageNumberPaginationOneHundred, PageNumberPaginationThreeThousand
 from ..permission import *
 from ..serializers.docs import *
 
@@ -38,6 +38,7 @@ class LawSuitCaseBase(viewsets.ModelViewSet):
     queryset = LawsuitCase.objects.all()
     serializer_class = LawSuitCaseSerializer
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
+    pagination_class = PageNumberPaginationOneHundred
     filterset_class = LawSuitCaseFilterSet
     search_fields = ('other_agency', 'case_number', 'case_name', 'plaintiff', 'plaintiff_attorney',
                      'defendant', 'defendant_attorney', 'case_start_date', 'case_end_date', 'summary')
@@ -72,6 +73,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
     queryset = Document.objects.filter(deleted=None)
     serializer_class = DocumentSerializer
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
+    pagination_class = PageNumberPaginationOneHundred
     filterset_class = DocumentFilterSet
     search_fields = (
         'lawsuit__case_number', 'lawsuit__case_name', 'title',
