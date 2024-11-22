@@ -93,7 +93,7 @@ onBeforeMount(() => {
         <CRow>
           <CCol md="6" lg="2" class="mb-3">
             <CFormSelect v-model.number="form.limit" @change="listFiltering(1)">
-              <option value="">1표시 개수</option>
+              <option value="">표시 개수</option>
               <option :value="10" :disabled="form.limit === '' || form.limit === 10">10 개</option>
               <option :value="30" :disabled="form.limit === 30">30 개</option>
               <option :value="50" :disabled="form.limit === 50">50 개</option>

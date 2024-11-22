@@ -32,7 +32,7 @@ const caseFilter = ref<cFilter>({
   in_progress: '',
   search: '',
   page: 1,
-  limit: 10,
+  limit: '',
 })
 
 const excelFilter = computed(
