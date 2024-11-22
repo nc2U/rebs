@@ -32,6 +32,7 @@ const docsFilter = ref<DocsFilter>({
   ordering: '-created',
   search: '',
   page: 1,
+  limit: 10,
 })
 
 const heatedPage = ref<number[]>([])
@@ -45,11 +46,13 @@ const cngFiles = ref<
 >([])
 
 const listFiltering = (payload: DocsFilter) => {
+  payload.limit = payload.limit || 10
   docsFilter.value.project = !!payload.is_com ? '' : payload.project
   docsFilter.value.is_com = payload.is_com
   docsFilter.value.lawsuit = payload.lawsuit
   docsFilter.value.ordering = payload.ordering
   docsFilter.value.search = payload.search
+  docsFilter.value.limit = payload.limit
   if (company.value) fetchDocsList({ ...docsFilter.value })
 }
 

@@ -14,6 +14,7 @@ const props = defineProps({
 const emit = defineEmits(['list-filter'])
 
 const form = reactive<DocsFilter>({
+  limit: '',
   company: '',
   project: '',
   is_com: props.comFrom,
@@ -23,12 +24,13 @@ const form = reactive<DocsFilter>({
 })
 
 const formsCheck = computed(() => {
-  const a = form.is_com === !!props.comFrom
-  const b = !!props.comFrom ? form.project === '' : true
-  const c = !form.lawsuit
-  const d = form.ordering === '-created'
-  const e = form.search === ''
-  return a && b && c && d && e
+  const a = form.limit === ''
+  const b = form.is_com === !!props.comFrom
+  const c = !!props.comFrom ? form.project === '' : true
+  const d = !form.lawsuit
+  const e = form.ordering === '-created'
+  const f = form.search === ''
+  return a && b && c && d && e && f
 })
 
 const docsStore = useDocs()
@@ -56,6 +58,7 @@ const firstSorting = (event: { target: { value: number | null } }) => {
 const projectChange = (project: number | null) => (form.project = project ?? '')
 
 const resetForm = () => {
+  form.limit = ''
   form.is_com = !!props.comFrom
   form.project = ''
   form.lawsuit = ''
@@ -72,6 +75,7 @@ const fetchProjectList = () => projectStore.fetchProjectList()
 onBeforeMount(() => {
   fetchProjectList()
   if (props.docsFilter) {
+    form.limit = props.docsFilter.limit
     form.company = props.docsFilter.company
     form.project = props.docsFilter.project
     form.is_com = props.docsFilter.is_com
@@ -87,6 +91,16 @@ onBeforeMount(() => {
     <CRow>
       <CCol lg="6">
         <CRow>
+          <CCol md="6" lg="2" class="mb-3">
+            <CFormSelect v-model.number="form.limit" @change="listFiltering(1)">
+              <option value="">1표시 개수</option>
+              <option :value="10" :disabled="form.limit === '' || form.limit === 10">10 개</option>
+              <option :value="30" :disabled="form.limit === 30">30 개</option>
+              <option :value="50" :disabled="form.limit === 50">50 개</option>
+              <!--              <option value="100">100 개</option>-->
+            </CFormSelect>
+          </CCol>
+
           <CCol v-if="comFrom" md="6" lg="5" xl="4" class="mb-3">
             <CFormSelect v-model="form.project" @change="firstSorting">
               <option value="">본사</option>

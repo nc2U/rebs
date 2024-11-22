@@ -30,6 +30,7 @@ const docsFilter = ref<DocsFilter>({
   ordering: '-created',
   search: '',
   page: 1,
+  limit: 10,
 })
 
 const heatedPage = ref<number[]>([])
@@ -38,6 +39,8 @@ const newFiles = ref<File[]>([])
 const cngFiles = ref<{ pk: number; file: File }[]>([])
 
 const listFiltering = (payload: DocsFilter) => {
+  payload.limit = payload.limit || 10
+  docsFilter.value.limit = payload.limit
   docsFilter.value.ordering = payload.ordering
   docsFilter.value.search = payload.search
   if (project.value) fetchDocsList({ ...docsFilter.value })

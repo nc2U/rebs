@@ -14,6 +14,7 @@ const props = defineProps({
 const emit = defineEmits(['list-filter'])
 
 const form = reactive<SuitCaseFilter>({
+  limit: '',
   company: '',
   project: '',
   is_com: props.comFrom,
@@ -27,15 +28,16 @@ const form = reactive<SuitCaseFilter>({
 })
 
 const formsCheck = computed(() => {
-  const a = form.is_com === !!props.comFrom
-  const b = !!props.comFrom ? form.project === '' : true
-  const c = form.court === ''
-  const d = form.related_case === ''
-  const e = form.sort === ''
-  const f = form.level === ''
-  const g = form.in_progress === ''
-  const h = form.search === ''
-  return a && b && c && d && e && f && g && h
+  const a = form.limit === ''
+  const b = form.is_com === !!props.comFrom
+  const c = !!props.comFrom ? form.project === '' : true
+  const d = form.court === ''
+  const e = form.related_case === ''
+  const f = form.sort === ''
+  const g = form.level === ''
+  const h = form.in_progress === ''
+  const i = form.search === ''
+  return a && b && c && d && e && f && g && h && i
 })
 
 const projectStore = useProject()
@@ -70,6 +72,7 @@ const relatedChange = (related: number) => (form.related_case = related)
 const projectChange = (project: number | null) => (form.project = project ?? '')
 
 const resetForm = () => {
+  form.limit = ''
   form.is_com = !!props.comFrom
   form.project = ''
   form.court = ''
@@ -98,6 +101,7 @@ const sortChange = () => {
 onBeforeMount(() => {
   fetchProjectList()
   if (props.caseFilter) {
+    form.limit = props.caseFilter.limit
     form.company = props.caseFilter.company
     form.project = props.caseFilter.project
     form.court = props.caseFilter.court
@@ -116,6 +120,16 @@ onBeforeMount(() => {
     <CRow>
       <CCol :lg="comFrom ? 6 : 4">
         <CRow>
+          <CCol :md="comFrom ? 4 : 6" class="mb-3">
+            <CFormSelect v-model.number="form.limit" @change="listFiltering(1)">
+              <option value="">표시 개수</option>
+              <option :value="10" :disabled="form.limit === '' || form.limit === 10">10 개</option>
+              <option :value="30" :disabled="form.limit === 30">30 개</option>
+              <option :value="50" :disabled="form.limit === 50">50 개</option>
+              <!--              <option value="100">100 개</option>-->
+            </CFormSelect>
+          </CCol>
+
           <CCol v-if="comFrom" :md="comFrom ? 4 : 6" class="mb-3">
             <CFormSelect v-model="form.project" @change="firstSorting">
               <option value="">본사</option>

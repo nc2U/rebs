@@ -32,6 +32,7 @@ const caseFilter = ref<cFilter>({
   in_progress: '',
   search: '',
   page: 1,
+  limit: 10,
 })
 
 const excelFilter = computed(
@@ -41,6 +42,7 @@ const excelFilter = computed(
 const excelUrl = computed(() => `excel/suitcases/?company=${company.value}&${excelFilter.value}`)
 
 const listFiltering = (payload: cFilter) => {
+  payload.limit = payload.limit || 10
   caseFilter.value = payload
   caseFilter.value.project = !!payload.is_com ? '' : payload.project
   if (company.value) fetchSuitCaseList({ ...caseFilter.value })
