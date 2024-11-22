@@ -25,9 +25,7 @@ const onSubmit = (payload: any, back = false) => {
 
 const asideVisible = (visible: boolean) => emit('aside-visible', visible)
 
-onBeforeMount(() => {
-  workStore.fetchVersionList(route.params.projId as string)
-})
+onBeforeMount(() => workStore.fetchVersionList(route.params.projId as string))
 </script>
 
 <template>

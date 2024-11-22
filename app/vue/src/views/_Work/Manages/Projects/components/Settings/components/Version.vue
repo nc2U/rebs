@@ -13,6 +13,8 @@ const RefVersionConfirm = ref()
 
 const deleteVersion = ref<number | null>(null)
 
+const textClass = ['text-primary', 'text-warning', 'text-secondary']
+
 const toDelete = (ver: number) => {
   deleteVersion.value = ver
   RefVersionConfirm.value.callModal('', '이 버전 삭제를 계속 진행 하시겠습니까?', '', 'warning')
@@ -126,7 +128,9 @@ const deleteSubmit = () => {
             </CTableDataCell>
             <CTableDataCell>{{ ver.effective_date }}</CTableDataCell>
             <CTableDataCell class="text-left">{{ ver.description }}</CTableDataCell>
-            <CTableDataCell>{{ ver.status_desc }}</CTableDataCell>
+            <CTableDataCell :class="textClass[Number(ver.status) - 1]">
+              {{ ver.status_desc }}
+            </CTableDataCell>
             <CTableDataCell>{{ ver.sharing_desc }}</CTableDataCell>
             <CTableDataCell class="text-left">
               <router-link
