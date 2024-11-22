@@ -25,6 +25,7 @@ export type SuitCaseFilter = {
   in_progress?: boolean | ''
   search?: string
   page?: number
+  limit?: number | ''
 }
 
 export type DocsFilter = {
@@ -39,6 +40,7 @@ export type DocsFilter = {
   ordering?: string
   search?: string
   page?: number
+  limit?: number | ''
 }
 
 export const useDocs = defineStore('docs', () => {
@@ -119,11 +121,12 @@ export const useDocs = defineStore('docs', () => {
   }
 
   const fetchSuitCaseList = async (payload: SuitCaseFilter) => {
+    const limit = payload.limit ?? 10
     const page = payload.page ?? 1
     const company = payload.company ?? ''
     const queryStr = getQueryStr(payload)
     return await api
-      .get(`/suitcase/?page=${page}&company=${company}${queryStr}`)
+      .get(`/suitcase/?limit=${limit}&page=${page}&company=${company}${queryStr}`)
       .then(res => {
         suitcaseList.value = res.data.results
         suitcaseCount.value = res.data.count
@@ -190,7 +193,8 @@ export const useDocs = defineStore('docs', () => {
 
   const fetchDocsList = async (payload: DocsFilter) => {
     const { doc_type, page } = payload
-    let url = `/docs/?page=${page ?? 1}`
+    const limit = payload.limit ?? 10
+    let url = `/docs/?limit=${limit}&page=${page ?? 1}`
     if (payload.doc_type) url += `&doc_type=${doc_type}`
     if (payload.company) url += `&company=${payload.company}`
     if (payload.is_com) url += `&is_com=${payload.is_com}`
