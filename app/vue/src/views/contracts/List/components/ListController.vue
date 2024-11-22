@@ -4,6 +4,7 @@ import { useProjectData } from '@/store/pinia/project_data'
 import { useContract, type ContFilter } from '@/store/pinia/contract'
 import { numFormat } from '@/utils/baseMixins'
 import { bgLight } from '@/utils/cssMixins'
+import DatePicker from '@/components/DatePicker/index.vue'
 
 const props = defineProps({ status: { type: String, default: '2' } })
 const emit = defineEmits(['cont-filtering'])
@@ -25,18 +26,19 @@ const form = reactive<ContFilter>({
 })
 
 const formsCheck = computed(() => {
-  const a = form.status === '2'
-  const b = form.order_group === ''
-  const c = form.unit_type === ''
-  const d = form.null_unit === false
-  const e = form.building === ''
-  const f = form.qualification === ''
-  const g = !from_date.value
-  const h = !to_date.value
-  const i = form.ordering === '-created_at'
-  const j = form.search?.trim() === ''
+  const a = form.limit === ''
+  const b = form.status === '2'
+  const c = form.order_group === ''
+  const d = form.unit_type === ''
+  const e = form.null_unit === false
+  const f = form.building === ''
+  const g = form.qualification === ''
+  const h = !from_date.value
+  const i = !to_date.value
+  const j = form.ordering === '-created_at'
+  const k = form.search?.trim() === ''
   const groupA = a && b && c && d && e
-  const groupB = f && g && h && i && j
+  const groupB = f && g && h && i && j && k
   return groupA && groupB
 })
 
@@ -67,6 +69,7 @@ const listFiltering = (page = 1) => {
 defineExpose({ listFiltering })
 
 const resetForm = () => {
+  form.limit = ''
   form.status = '2'
   form.order_group = ''
   form.unit_type = ''
@@ -88,8 +91,17 @@ onMounted(() => {
 <template>
   <CCallout color="info" class="pb-0 mb-4" :class="bgLight">
     <CRow>
-      <CCol lg="7">
+      <CCol lg="6">
         <CRow>
+          <CCol md="4" xl="2" class="mb-3">
+            <CFormSelect v-model.number="form.limit" @change="listFiltering(1)">
+              <option value="">표시 개수</option>
+              <option :value="10" :disabled="form.limit === '' || form.limit === 10">10 개</option>
+              <option :value="30" :disabled="form.limit === 30">30 개</option>
+              <option :value="50" :disabled="form.limit === 50">50 개</option>
+              <!--              <option value="100">100 개</option>-->
+            </CFormSelect>
+          </CCol>
           <CCol md="4" xl="2" class="mb-3">
             <CFormSelect v-model="form.ordering" @change="listFiltering(1)">
               <option value="-created_at">등록일시 내림차순</option>
@@ -137,6 +149,18 @@ onMounted(() => {
               </option>
             </CFormSelect>
           </CCol>
+        </CRow>
+      </CCol>
+
+      <CCol lg="6">
+        <CRow>
+          <CCol md="4" xl="2" class="mb-3">
+            <CFormSelect v-model="form.is_sup_cont" @change="listFiltering(1)">
+              <option value="">공급계약 (전체)</option>
+              <option value="true">체결</option>
+              <option value="false">미체결</option>
+            </CFormSelect>
+          </CCol>
 
           <CCol md="4" xl="2" class="mb-3">
             <CFormSelect v-model="form.building" @change="listFiltering(1)">
@@ -146,63 +170,43 @@ onMounted(() => {
               </option>
             </CFormSelect>
           </CCol>
-        </CRow>
-      </CCol>
 
-      <CCol lg="5">
-        <CRow>
-          <CCol md="12" lg="8">
-            <CRow>
-              <CCol md="4" lg="6" xl="4" class="pt-2 mb-3 col-form-label">
-                <CFormSwitch
-                  id="null_unit"
-                  v-model="form.null_unit"
-                  label="동호 미지정"
-                  @change="listFiltering(1)"
-                />
-              </CCol>
-
-              <CCol md="4" lg="6" xl="4">
-                <CFormSelect v-model="form.is_sup_cont" @change="listFiltering(1)">
-                  <option value="">공급계약 (전체)</option>
-                  <option value="true">체결</option>
-                  <option value="false">미체결</option>
-                </CFormSelect>
-              </CCol>
-
-              <!--              <CCol md="4" lg="6" xl="4" class="mb-3">-->
-              <!--                <DatePicker-->
-              <!--                  v-model="from_date"-->
-              <!--                  placeholder="계약일 (From)"-->
-              <!--                  @keydown.enter="listFiltering(1)"-->
-              <!--                />-->
-              <!--              </CCol>-->
-
-              <!--              <CCol md="4" lg="6" xl="4" class="mb-3">-->
-              <!--                <DatePicker-->
-              <!--                  v-model="to_date"-->
-              <!--                  placeholder="계약일 (To)"-->
-              <!--                  @keydown.enter="listFiltering(1)"-->
-              <!--                />-->
-              <!--              </CCol>-->
-            </CRow>
+          <CCol md="4" xl="2" class="pt-2 mb-3 col-form-label">
+            <CFormSwitch
+              id="null_unit"
+              v-model="form.null_unit"
+              label="동호 미지정"
+              @change="listFiltering(1)"
+            />
           </CCol>
 
-          <CCol>
-            <CRow>
-              <CCol class="mb-3">
-                <CInputGroup class="flex-nowrap">
-                  <CFormInput
-                    v-model="form.search"
-                    placeholder="계약자, 전화번호, 일련번호, 비고"
-                    aria-label="Username"
-                    aria-describedby="addon-wrapping"
-                    @keydown.enter="listFiltering(1)"
-                  />
-                  <CInputGroupText @click="listFiltering(1)">검색</CInputGroupText>
-                </CInputGroup>
-              </CCol>
-            </CRow>
+          <CCol md="4" xl="2" class="mb-3">
+            <DatePicker
+              v-model="from_date"
+              placeholder="계약일 (From)"
+              @keydown.enter="listFiltering(1)"
+            />
+          </CCol>
+
+          <CCol md="4" xl="2" class="mb-3">
+            <DatePicker
+              v-model="to_date"
+              placeholder="계약일 (To)"
+              @keydown.enter="listFiltering(1)"
+            />
+          </CCol>
+
+          <CCol md="4" xl="2" class="mb-3">
+            <CInputGroup class="flex-nowrap">
+              <CFormInput
+                v-model="form.search"
+                placeholder="계약자, 전화번호, 일련번호, 비고"
+                aria-label="Username"
+                aria-describedby="addon-wrapping"
+                @keydown.enter="listFiltering(1)"
+              />
+              <CInputGroupText @click="listFiltering(1)">검색</CInputGroupText>
+            </CInputGroup>
           </CCol>
         </CRow>
       </CCol>

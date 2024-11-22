@@ -13,8 +13,9 @@ import TableTitleRow from '@/components/TableTitleRow.vue'
 import SelectItems from '@/views/contracts/List/components/SelectItems.vue'
 import ContractList from '@/views/contracts/List/components/ContractList.vue'
 
-const status = ref('2')
 const listControl = ref()
+const status = ref('2')
+const limit = ref(10)
 
 const visible = ref(false)
 const unitSet = ref(false)
@@ -66,7 +67,9 @@ const onContFiltering = (payload: ContFilter) => {
   } = payload
   payload.project = project.value?.pk
   const is_unit = null_unit ? '1' : ''
-  filteredStr.value = `&status=${status}&group=${order_group}&type=${unit_type}&dong=${building}&is_null=${is_unit}&quali=${qualification}&sup=${is_sup_cont}&sdate=${from_date}&edate=${to_date}&q=${search}`
+  payload.limit = payload.limit || 10
+  limit.value = payload.limit
+  filteredStr.value = `&limit=${limit.value}&status=${status}&group=${order_group}&type=${unit_type}&dong=${building}&is_null=${is_unit}&quali=${qualification}&sup=${is_sup_cont}&sdate=${from_date}&edate=${to_date}&q=${search}`
   if (payload.project) fetchContractList(payload)
 }
 const setItems = (arr: string[]) => (printItems.value = arr)
