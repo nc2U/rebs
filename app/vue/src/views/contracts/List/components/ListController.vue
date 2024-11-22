@@ -12,6 +12,7 @@ const from_date = ref('')
 const to_date = ref('')
 
 const form = reactive<ContFilter>({
+  limit: '',
   status: props.status,
   order_group: '',
   unit_type: '',

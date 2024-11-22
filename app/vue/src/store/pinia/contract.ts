@@ -32,7 +32,7 @@ export interface ContFilter {
   to_date?: string
   search?: string
   page?: number
-  limit?: number
+  limit?: number | ''
 }
 
 export type UnitFilter = {
