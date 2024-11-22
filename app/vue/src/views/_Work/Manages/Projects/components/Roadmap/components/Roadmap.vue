@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, type PropType } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAccount } from '@/store/pinia/account'
 import type { Version } from '@/store/types/work'
 
 const props = defineProps({ version: { type: Object as PropType<Version>, required: true } })
@@ -8,6 +9,8 @@ const props = defineProps({ version: { type: Object as PropType<Version>, requir
 const router = useRouter()
 
 const boxClass = ['primary-box', 'danger-box', 'success-box']
+
+const workManager = computed(() => useAccount().workManager)
 
 const closedNum = computed(() => props.version?.issues?.filter(i => i.closed).length ?? 0)
 const closedStr = computed(() => {
@@ -46,7 +49,7 @@ const done_ratio = computed(() => {
           {{ version.status_desc }}
         </span>
       </CCol>
-      <CCol v-if="1 == 1" class="text-right">
+      <CCol v-if="workManager" class="text-right">
         <!-- 관리자 권한 있을 때 렌더링 -->
         <v-icon
           icon="mdi-pencil"
