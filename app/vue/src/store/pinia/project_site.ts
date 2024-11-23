@@ -11,6 +11,13 @@ import {
   type SiteContract,
 } from '@/store/types/project'
 
+export type SiteFilter = {
+  project: number | null
+  limit?: number | ''
+  page?: number
+  search?: string
+}
+
 export const useSite = defineStore('site', () => {
   const allSites = ref<AllSite[]>([])
   const getSites = computed(() =>
@@ -55,12 +62,7 @@ export const useSite = defineStore('site', () => {
   )
   const siteCount = ref(0)
 
-  const fetchSiteList = (payload: {
-    project: number
-    limit?: number
-    page?: number
-    search?: string
-  }) => {
+  const fetchSiteList = (payload: SiteFilter) => {
     const { project, limit, page, search } = payload
     api
       .get(
@@ -69,12 +71,12 @@ export const useSite = defineStore('site', () => {
       .then(res => {
         siteList.value = res.data.results
         siteCount.value = res.data.count
-        fetchSitesTotal(project)
+        fetchSitesTotal(project as number)
       })
       .catch(err => errorHandle(err.response.data))
   }
 
-  const createSite = (payload: Site & { page: number; search: string }) => {
+  const createSite = (payload: Site & { page?: number; search?: string }) => {
     const { page, search, ...formData } = payload
     api
       .post(`/site/`, formData)
@@ -85,7 +87,7 @@ export const useSite = defineStore('site', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const updateSite = (payload: { page: number; search: string } & Site) => {
+  const updateSite = (payload: { page?: number; search?: string } & Site) => {
     const { pk, page, search, ...formData } = payload
     api
       .put(`/site/${pk}/`, formData)

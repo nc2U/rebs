@@ -2,7 +2,7 @@
 import { ref, computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin3'
 import { useProject } from '@/store/pinia/project'
-import { useSite } from '@/store/pinia/project_site'
+import { useSite, type SiteFilter } from '@/store/pinia/project_site'
 import { type Site } from '@/store/types/project'
 import { numFormat } from '@/utils/baseMixins'
 import { write_project_site } from '@/utils/pageAuth'
@@ -15,7 +15,9 @@ import SiteList from './components/SiteList.vue'
 
 const listControl = ref()
 
-const dataFilter = ref({
+const dataFilter = ref<SiteFilter>({
+  project: null,
+  limit: '',
   page: 1,
   search: '',
 })
@@ -34,29 +36,29 @@ const excelUrl = computed(
   () => `excel/sites/?project=${project.value}&search=${dataFilter.value.search}`,
 )
 
-type filter = {
-  page: number
-  search: string
-}
-
-const listFiltering = (payload: filter) => {
+const listFiltering = (payload: SiteFilter) => {
+  payload.project = project.value as number
   dataFilter.value = payload
-  if (project.value) siteStore.fetchSiteList(project.value, payload.page, payload.search)
+  if (project.value) siteStore.fetchSiteList(payload)
 }
 
 const pageSelect = (page: number) => {
   dataFilter.value.page = page
-  if (project.value) siteStore.fetchSiteList(project.value, page)
+  if (project.value) siteStore.fetchSiteList({ project: project.value, page })
   listControl.value.listFiltering(page)
 }
 
-const onCreate = (payload: Site & filter) => siteStore.createSite(payload)
+const onCreate = (payload: Site & { page?: number; search?: string }) =>
+  siteStore.createSite(payload)
 
-const onUpdate = (payload: Site & filter) => siteStore.updateSite(payload)
+const onUpdate = (payload: Site & { page?: number; search?: string }) =>
+  siteStore.updateSite(payload)
 
 const multiSubmit = (payload: Site) => {
   const { page, search } = dataFilter.value
+
   const submitData = { ...payload, page, search }
+
   if (payload.pk) onUpdate(submitData)
   else onCreate(submitData)
 }
@@ -66,7 +68,7 @@ const onDelete = (payload: { pk: number; project: number }) => {
   siteStore.deleteSite(pk, project)
 }
 
-const dataSetup = (pk: number) => siteStore.fetchSiteList(pk)
+const dataSetup = (pk: number) => siteStore.fetchSiteList({ project: pk })
 
 const dataReset = () => {
   siteStore.siteList = []
