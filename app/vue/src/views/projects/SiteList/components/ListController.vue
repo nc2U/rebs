@@ -7,23 +7,24 @@ import { bgLight } from '@/utils/cssMixins'
 defineProps({ project: { type: Number, default: null } })
 const emit = defineEmits(['list-filtering'])
 
-const form = reactive({ search: '' })
+const form = reactive({ limit: '' as '' | number, search: '' })
 
 const siteStore = useSite()
 
 const siteCount = computed(() => siteStore.siteCount)
 
-const formsCheck = computed(() => form.search.trim() === '')
+const formsCheck = computed(() => form.limit === '' && form.search.trim() === '')
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
-    emit('list-filtering', { page, search: form.search.trim() })
+    emit('list-filtering', { page, limit: form.limit, search: form.search.trim() })
   })
 }
 
 defineExpose({ listFiltering })
 
 const resetForm = () => {
+  form.limit = ''
   form.search = ''
   listFiltering(1)
 }
@@ -32,9 +33,18 @@ const resetForm = () => {
 <template>
   <CCallout color="info" class="pb-0 mb-3" :class="bgLight">
     <CRow>
-      <CCol lg="4" md="6">
+      <CCol md="12" lg="6">
         <CRow>
-          <CCol class="mb-3">
+          <CCol md="6" lg="4" xl="2" class="mb-3">
+            <CFormSelect v-model.number="form.limit" @change="listFiltering(1)">
+              <option value="">표시 개수</option>
+              <option :value="10" :disabled="form.limit === '' || form.limit === 10">10 개</option>
+              <option :value="30" :disabled="form.limit === 30">30 개</option>
+              <option :value="50" :disabled="form.limit === 50">50 개</option>
+              <!--              <option :value="100" :disabled="form.limit === 1000">100 개</option>-->
+            </CFormSelect>
+          </CCol>
+          <CCol md="6" lg="5" xl="3" class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.search"
@@ -54,7 +64,7 @@ const resetForm = () => {
         <strong> 필지 건수 조회 결과 : {{ numFormat(siteCount) }} 건 </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
-        <CButton color="info" size="sm" @click="resetForm"> 검색조건 초기화 </CButton>
+        <CButton color="info" size="sm" @click="resetForm"> 검색조건 초기화</CButton>
       </CCol>
     </CRow>
   </CCallout>
