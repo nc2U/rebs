@@ -91,7 +91,7 @@ onBeforeMount(() => {
     <CRow>
       <CCol lg="6">
         <CRow>
-          <CCol md="6" lg="2" class="mb-3">
+          <CCol md="6" lg="4" xl="3" class="mb-3">
             <CFormSelect v-model.number="form.limit" @change="listFiltering(1)">
               <option value="">표시 개수</option>
               <option :value="10" :disabled="form.limit === '' || form.limit === 10">10 개</option>
@@ -101,7 +101,7 @@ onBeforeMount(() => {
             </CFormSelect>
           </CCol>
 
-          <CCol v-if="comFrom" md="6" lg="5" xl="4" class="mb-3">
+          <CCol v-if="comFrom" md="6" lg="4" xl="3" class="mb-3">
             <CFormSelect v-model="form.project" @change="firstSorting">
               <option value="">본사</option>
               <option v-for="proj in projSelect" :key="proj.value" :value="proj.value">
@@ -110,7 +110,7 @@ onBeforeMount(() => {
             </CFormSelect>
           </CCol>
 
-          <CCol md="6" lg="5" xl="4" class="mb-3">
+          <CCol md="6" lg="4" xl="3" class="mb-3">
             <CFormSelect v-model="form.ordering" @change="listFiltering(1)">
               <option value="created">작성일자 오름차순</option>
               <option value="-created">작성일자 내림차순</option>
@@ -125,7 +125,7 @@ onBeforeMount(() => {
 
       <CCol lg="6">
         <CRow class="justify-content-md-end">
-          <CCol v-if="getSuitCase" md="6" lg="5" class="mb-3">
+          <CCol v-if="getSuitCase" md="6" lg="5" xl="3" class="mb-3">
             <Multiselect
               v-model="form.lawsuit"
               :options="getSuitCase"
@@ -137,7 +137,7 @@ onBeforeMount(() => {
               @change="listFiltering(1)"
             />
           </CCol>
-          <CCol md="6" lg="5" class="mb-3">
+          <CCol md="6" lg="5" xl="4" class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.search"
