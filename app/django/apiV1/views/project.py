@@ -81,6 +81,7 @@ class SiteViewSet(viewsets.ModelViewSet):
     queryset = Site.objects.all()
     serializer_class = SiteSerializer
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
+    pagination_class = PageNumberPaginationOneHundred
     filterset_fields = ('project',)
     search_fields = ('district', 'lot_number', 'site_purpose', 'owners__owner')
 
@@ -107,6 +108,7 @@ class SiteOwnerViewSet(viewsets.ModelViewSet):
     queryset = SiteOwner.objects.all()
     serializer_class = SiteOwnerSerializer
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
+    pagination_class = PageNumberPaginationOneHundred
     filterset_fields = ('project', 'own_sort')
     search_fields = ('owner', 'phone1', 'phone2', 'sites__lot_number', 'counsel_record')
 
@@ -117,7 +119,7 @@ class SiteOwnerViewSet(viewsets.ModelViewSet):
 class AllOwnerViewSet(SiteOwnerViewSet):
     queryset = SiteOwner.objects.all().order_by('id')
     serializer_class = AllOwnerSerializer
-    pagination_class = PageNumberPaginationFiveHundred
+    pagination_class = PageNumberPaginationOneThousand
     filterset_fields = ('project',)
 
 
@@ -141,6 +143,7 @@ class SiteContractViewSet(viewsets.ModelViewSet):
     queryset = SiteContract.objects.all()
     serializer_class = SiteContractSerializer
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
+    pagination_class = PageNumberPaginationOneHundred
     filterset_fields = ('project', 'owner__own_sort')
     search_fields = ('owner__owner', 'owner__phone1', 'acc_bank', 'acc_owner', 'note')
 
