@@ -55,9 +55,17 @@ export const useSite = defineStore('site', () => {
   )
   const siteCount = ref(0)
 
-  const fetchSiteList = (project: number, page = 1, search = '') => {
+  const fetchSiteList = (payload: {
+    project: number
+    limit?: number
+    page?: number
+    search?: string
+  }) => {
+    const { project, limit, page, search } = payload
     api
-      .get(`/site/?project=${project}&page=${page}&search=${search}`)
+      .get(
+        `/site/?project=${project}&limit=${limit || 10}&page=${page || 1}&search=${search || ''}`,
+      )
       .then(res => {
         siteList.value = res.data.results
         siteCount.value = res.data.count
@@ -71,7 +79,7 @@ export const useSite = defineStore('site', () => {
     api
       .post(`/site/`, formData)
       .then(res => {
-        fetchSiteList(res.data.project, page, search)
+        fetchSiteList({ project: res.data.project, page, search })
         message()
       })
       .catch(err => errorHandle(err.response.data))
@@ -82,7 +90,7 @@ export const useSite = defineStore('site', () => {
     api
       .put(`/site/${pk}/`, formData)
       .then(res => {
-        fetchSiteList(res.data.project, page, search)
+        fetchSiteList({ project: res.data.project, page, search })
         message()
       })
       .catch(err => errorHandle(err.response.data))
@@ -92,7 +100,7 @@ export const useSite = defineStore('site', () => {
     api
       .delete(`/site/${pk}/`)
       .then(() => {
-        fetchSiteList(project)
+        fetchSiteList({ project })
         message('warning', '', '해당 부지 정보가 삭제되었습니다.')
       })
       .catch(err => errorHandle(err.response.data))
