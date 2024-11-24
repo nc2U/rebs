@@ -110,6 +110,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
       </TableTitleRow>
       <SiteList
         :is-returned="isReturned"
+        :limit="dataFilter.limit || 10"
         @page-select="pageSelect"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
