@@ -7,7 +7,7 @@ import { TableInfo, TableSuccess, TableSecondary } from '@/utils/cssMixins'
 import SiteOwner from '@/views/projects/SiteOwner/components/SiteOwner.vue'
 import Pagination from '@/components/Pagination'
 
-defineProps({ isReturned: { type: Boolean } })
+defineProps({ isReturned: { type: Boolean }, limit: { type: Number, default: 10 } })
 const emit = defineEmits(['relation-patch', 'page-select', 'on-delete', 'multi-submit'])
 
 const siteStore = useSite()
@@ -82,7 +82,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
     v-if="siteOwnerCount > 10"
     :active-page="1"
     :limit="8"
-    :pages="ownerPages(10)"
+    :pages="ownerPages(limit)"
     class="mt-3"
     @active-page-change="pageSelect"
   />

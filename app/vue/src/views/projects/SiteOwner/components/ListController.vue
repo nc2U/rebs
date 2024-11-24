@@ -4,7 +4,7 @@ import { useSite } from '@/store/pinia/project_site'
 import { numFormat } from '@/utils/baseMixins'
 import { bgLight } from '@/utils/cssMixins'
 
-defineProps({ project: { type: Number, default: null } })
+const props = defineProps({ project: { type: Number, default: null } })
 const emit = defineEmits(['list-filtering'])
 
 const form = reactive({
@@ -29,7 +29,9 @@ const formsCheck = computed(
 const listFiltering = (page = 1) => {
   nextTick(() => {
     emit('list-filtering', {
+      project: props.project,
       page,
+      limit: form.limit,
       own_sort: form.own_sort,
       search: form.search.trim(),
     })

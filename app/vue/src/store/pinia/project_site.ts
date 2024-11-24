@@ -20,8 +20,8 @@ export type SiteFilter = {
 }
 
 export type OwnerFilter = {
-  project: number
-  limit?: number
+  project: number | null
+  limit?: number | ''
   page?: number
   own_sort?: string
   search?: string
@@ -163,13 +163,13 @@ export const useSite = defineStore('site', () => {
       .then(res => {
         siteOwnerList.value = res.data.results
         siteOwnerCount.value = res.data.count
-        fetchOwnersTotal(project)
+        fetchOwnersTotal(project as number)
       })
       .catch(err => errorHandle(err.response.data))
   }
 
   const createSiteOwner = (
-    payload: SiteOwner & { limit?: number; page?: number; own_sort?: string; search?: string },
+    payload: SiteOwner & { limit: number; page: number; own_sort: string; search: string },
   ) => {
     const { limit, page, own_sort, search, ...formData } = payload
     api
@@ -183,7 +183,7 @@ export const useSite = defineStore('site', () => {
   }
 
   const updateSiteOwner = (
-    payload: SiteOwner & { limit?: number; page?: number; own_sort?: string; search?: string },
+    payload: SiteOwner & { limit: number; page: number; own_sort: string; search: string },
   ) => {
     const { pk, limit, page, own_sort, search, ...formData } = payload
     api

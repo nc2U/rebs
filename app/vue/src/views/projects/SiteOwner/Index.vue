@@ -3,7 +3,7 @@ import { ref, computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin3'
 import { numFormat } from '@/utils/baseMixins'
 import { useProject } from '@/store/pinia/project'
-import { useSite } from '@/store/pinia/project_site'
+import { useSite, type OwnerFilter } from '@/store/pinia/project_site'
 import { write_project_site } from '@/utils/pageAuth'
 import { type Relation, type SiteOwner } from '@/store/types/project'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -15,13 +15,9 @@ import SiteOwnerList from '@/views/projects/SiteOwner/components/SiteOwnerList.v
 
 const listControl = ref()
 
-type filter = {
-  page: number
-  own_sort: string
-  search: string
-}
-
-const dataFilter = ref<filter>({
+const dataFilter = ref<OwnerFilter>({
+  project: null,
+  limit: '',
   page: 1,
   own_sort: '',
   search: '',
@@ -42,21 +38,27 @@ const excelUrl = computed(() => {
   return `${url}${queryStr}`
 })
 
-const listFiltering = (payload: filter) => {
+const listFiltering = (payload: OwnerFilter) => {
   dataFilter.value = payload
-  if (project.value)
-    siteStore.fetchSiteOwnerList(project.value, payload.page, payload.own_sort, payload.search)
+  if (project.value) siteStore.fetchSiteOwnerList(payload)
 }
 
 const pageSelect = (page: number) => {
+  dataFilter.value.project = project.value as number
   dataFilter.value.page = page
-  if (project.value) siteStore.fetchSiteOwnerList(project.value, page)
-  listControl.value.listFiltering(page)
+  if (project.value) siteStore.fetchSiteOwnerList(dataFilter.value)
 }
 
-const onCreate = (payload: SiteOwner & filter) => siteStore.createSiteOwner(payload)
+type inputData = SiteOwner & {
+  limit: number
+  page: number
+  own_sort: string
+  search: string
+}
 
-const onUpdate = (payload: SiteOwner & filter) => siteStore.updateSiteOwner(payload)
+const onCreate = (payload: inputData) => siteStore.createSiteOwner(payload)
+
+const onUpdate = (payload: inputData) => siteStore.updateSiteOwner(payload)
 
 const relationPatch = (payload: Relation) => {
   const { page, own_sort, search } = dataFilter.value
@@ -67,8 +69,8 @@ const relationPatch = (payload: Relation) => {
 }
 
 const multiSubmit = (payload: SiteOwner) => {
-  const { page, own_sort, search } = dataFilter.value
-  const submitData = { ...payload, page, own_sort, search }
+  const { limit, page, own_sort, search } = dataFilter.value
+  const submitData = { ...payload, limit, page, own_sort, search } as inputData
   if (payload.pk) onUpdate(submitData)
   else onCreate(submitData)
 }
@@ -80,7 +82,7 @@ const onDelete = (payload: { pk: number; project: number }) => {
 
 const dataSetup = (pk: number) => {
   siteStore.fetchAllSites(pk)
-  siteStore.fetchSiteOwnerList(pk)
+  siteStore.fetchSiteOwnerList({ project: pk })
 }
 
 const dataReset = () => {
@@ -126,6 +128,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
       </TableTitleRow>
       <SiteOwnerList
         :is-returned="isReturned"
+        :limit="dataFilter.limit || 10"
         @page-select="pageSelect"
         @relation-patch="relationPatch"
         @multi-submit="multiSubmit"
