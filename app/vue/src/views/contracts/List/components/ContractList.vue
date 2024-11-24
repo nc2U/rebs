@@ -8,6 +8,8 @@ import Contract from '@/views/contracts/List/components/Contract.vue'
 
 const emit = defineEmits(['page-select'])
 
+defineProps({ limit: { type: Number, default: 10 } })
+
 const contractStore = useContract()
 const contractList = computed(() => contractStore.contractList)
 
@@ -61,7 +63,7 @@ const pageSelect = (page: number) => emit('page-select', page)
   <Pagination
     :active-page="1"
     :limit="8"
-    :pages="contractPages(10)"
+    :pages="contractPages(limit)"
     class="mt-3"
     @active-page-change="pageSelect"
   />

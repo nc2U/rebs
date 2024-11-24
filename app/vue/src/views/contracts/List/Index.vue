@@ -133,7 +133,7 @@ onBeforeMount(() => {
         </v-btn>
       </TableTitleRow>
       <SelectItems :visible="visible" :unit-set="unitSet" @print-items="setItems" />
-      <ContractList @page-select="pageSelect" />
+      <ContractList :limit="limit" @page-select="pageSelect" />
     </CCardBody>
   </ContentBody>
 </template>
