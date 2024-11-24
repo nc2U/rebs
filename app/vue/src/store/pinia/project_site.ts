@@ -10,11 +10,20 @@ import {
   type Relation,
   type SiteContract,
 } from '@/store/types/project'
+import exp from 'node:constants'
 
 export type SiteFilter = {
   project: number | null
   limit?: number | ''
   page?: number
+  search?: string
+}
+
+export type OwnerFilter = {
+  project: number
+  limit?: number
+  page?: number
+  own_sort?: string
   search?: string
 }
 
@@ -145,9 +154,12 @@ export const useSite = defineStore('site', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const fetchSiteOwnerList = (project: number, page = 1, own_sort = '', search = '') => {
+  const fetchSiteOwnerList = (payload: OwnerFilter) => {
+    const { project, limit, page, own_sort, search } = payload
     api
-      .get(`/site-owner/?project=${project}&page=${page}&own_sort=${own_sort}&search=${search}`)
+      .get(
+        `/site-owner/?project=${project}&limit=${limit || 10}&page=${page || 1}&own_sort=${own_sort || ''}&search=${search || ''}`,
+      )
       .then(res => {
         siteOwnerList.value = res.data.results
         siteOwnerCount.value = res.data.count
@@ -157,13 +169,13 @@ export const useSite = defineStore('site', () => {
   }
 
   const createSiteOwner = (
-    payload: SiteOwner & { page: number; own_sort: string; search: string },
+    payload: SiteOwner & { limit?: number; page?: number; own_sort?: string; search?: string },
   ) => {
-    const { page, own_sort, search, ...formData } = payload
+    const { limit, page, own_sort, search, ...formData } = payload
     api
       .post(`/site-owner/`, formData)
       .then(res => {
-        fetchSiteOwnerList(res.data.project, page, own_sort, search)
+        fetchSiteOwnerList({ project: res.data.project, limit, page, own_sort, search })
         message()
         console.log('--->', res.data, res.data.sites)
       })
@@ -171,13 +183,13 @@ export const useSite = defineStore('site', () => {
   }
 
   const updateSiteOwner = (
-    payload: SiteOwner & { page: number; own_sort: string; search: string },
+    payload: SiteOwner & { limit?: number; page?: number; own_sort?: string; search?: string },
   ) => {
-    const { pk, page, own_sort, search, ...formData } = payload
+    const { pk, limit, page, own_sort, search, ...formData } = payload
     api
       .put(`/site-owner/${pk}/`, formData)
       .then(res => {
-        fetchSiteOwnerList(res.data.project, page, own_sort, search)
+        fetchSiteOwnerList({ project: res.data.project, limit, page, own_sort, search })
         message()
       })
       .catch(err => errorHandle(err.response.data))
@@ -187,7 +199,7 @@ export const useSite = defineStore('site', () => {
     api
       .delete(`/site-owner/${pk}/`)
       .then(() => {
-        fetchSiteOwnerList(project)
+        fetchSiteOwnerList({ project })
         message('warning', '', '해당 소유자 정보가 삭제되었습니다.')
       })
       .catch(err => errorHandle(err.response.data))
@@ -198,16 +210,17 @@ export const useSite = defineStore('site', () => {
   const patchRelation = (
     payload: Relation & {
       project: number
-      page: number
-      own_sort: string
-      search: string
+      limit?: number
+      page?: number
+      own_sort?: string
+      search?: string
     },
   ) => {
-    const { pk, project, page, own_sort, search, ...relationData } = payload
+    const { pk, project, limit, page, own_sort, search, ...relationData } = payload
     api
       .patch(`/site-relation/${pk}/`, relationData)
       .then(() => {
-        fetchSiteOwnerList(project, page, own_sort, search)
+        fetchSiteOwnerList({ project, limit, page, own_sort, search })
         message()
       })
       .catch(err => errorHandle(err.response.data))
