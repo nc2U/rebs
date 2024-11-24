@@ -9,6 +9,7 @@ import Case from './components/Case.vue'
 
 defineProps({
   company: { type: Number, default: null },
+  limit: { type: Number, default: 10 },
   page: { type: Number, required: true },
   caseList: { type: Array as PropType<SuitCase[]>, default: () => [] },
   viewRoute: { type: String, required: true },
@@ -77,7 +78,7 @@ const pageSelect = (page: number) => emit('page-select', page)
       <Pagination
         :active-page="page"
         :limit="8"
-        :pages="casePages(10)"
+        :pages="casePages(limit)"
         class="mt-3"
         @active-page-change="pageSelect"
       />

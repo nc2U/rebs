@@ -11,6 +11,7 @@ import TopDocs from '@/components/Documents/components/TopDocs.vue'
 defineProps({
   company: { type: Number, default: null },
   project: { type: Number, default: null },
+  limit: { type: Number, default: 10 },
   page: { type: Number, default: 1 },
   noticeList: { type: Array as PropType<D[]>, default: () => [] },
   docsList: { type: Array as PropType<D[]>, default: () => [] },
@@ -86,7 +87,7 @@ const pageSelect = (page: number) => emit('page-select', page)
       <Pagination
         :active-page="page"
         :limit="8"
-        :pages="docsPages(10)"
+        :pages="docsPages(limit)"
         class="mt-3"
         @active-page-change="pageSelect"
       />

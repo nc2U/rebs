@@ -215,7 +215,8 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId, route.param
 
         <DocsList
           :project="project as number"
-          :page="docsFilter.page ?? 1"
+          :limit="docsFilter.limit || 10"
+          :page="docsFilter.page || 1"
           :docs-list="docsList"
           :view-route="mainViewName"
           :write-auth="writeAuth"

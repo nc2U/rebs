@@ -230,6 +230,7 @@ onBeforeMount(() => dataSetup(company.value || comStore.initComId, route.params?
 
         <DocsList
           :company="company as number"
+          :limit="docsFilter.limit || 10"
           :page="docsFilter.page"
           :docs-list="docsList"
           :view-route="mainViewName"

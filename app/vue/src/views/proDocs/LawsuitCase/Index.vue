@@ -190,7 +190,8 @@ onBeforeMount(() => {
 
         <CaseList
           :company="company || undefined"
-          :page="caseFilter.page ?? 1"
+          :limit="caseFilter.limit || 10"
+          :page="caseFilter.page || 1"
           :case-list="suitcaseList"
           :view-route="mainViewName"
           :write-auth="writeAuth"
