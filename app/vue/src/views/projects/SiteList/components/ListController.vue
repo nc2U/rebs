@@ -33,7 +33,7 @@ const resetForm = () => {
 <template>
   <CCallout color="info" class="pb-0 mb-3" :class="bgLight">
     <CRow>
-      <CCol md="12" lg="6">
+      <CCol md="12" lg="8" xl="6">
         <CRow>
           <CCol md="6" lg="4" xl="2" class="mb-3">
             <CFormSelect v-model.number="form.limit" @change="listFiltering(1)">

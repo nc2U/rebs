@@ -8,6 +8,7 @@ defineProps({ project: { type: Number, default: null } })
 const emit = defineEmits(['list-filtering'])
 
 const form = reactive({
+  limit: '' as '' | number,
   own_sort: '',
   search: '',
 })
@@ -21,7 +22,9 @@ const own_sort_select = [
 const siteStore = useSite()
 const siteOwnerCount = computed(() => siteStore.siteOwnerCount)
 
-const formsCheck = computed(() => form.own_sort === '' && form.search.trim() === '')
+const formsCheck = computed(
+  () => form.limit === '' && form.own_sort === '' && form.search.trim() === '',
+)
 
 const listFiltering = (page = 1) => {
   nextTick(() => {
@@ -34,6 +37,7 @@ const listFiltering = (page = 1) => {
 }
 
 const resetForm = () => {
+  form.limit = ''
   form.own_sort = ''
   form.search = ''
   listFiltering(1)
@@ -45,9 +49,18 @@ defineExpose({ listFiltering })
 <template>
   <CCallout color="warning" class="pb-0 mb-3" :class="bgLight">
     <CRow>
-      <CCol lg="4" md="6">
+      <CCol md="12" lg="8" xl="6">
         <CRow>
-          <CCol md="4" class="mb-3">
+          <CCol md="6" lg="4" xl="2" class="mb-3">
+            <CFormSelect v-model.number="form.limit" @change="listFiltering(1)">
+              <option value="">표시 개수</option>
+              <option :value="10" :disabled="form.limit === '' || form.limit === 10">10 개</option>
+              <option :value="30" :disabled="form.limit === 30">30 개</option>
+              <option :value="50" :disabled="form.limit === 50">50 개</option>
+              <option :value="100" :disabled="form.limit === 1000">100 개</option>
+            </CFormSelect>
+          </CCol>
+          <CCol md="6" lg="4" xl="2" class="mb-3">
             <CFormSelect v-model="form.own_sort" :disabled="!project" @change="listFiltering(1)">
               <option value="">소유구분</option>
               <option v-for="sort in own_sort_select" :key="sort.val" :value="sort.val">
@@ -55,7 +68,7 @@ defineExpose({ listFiltering })
               </option>
             </CFormSelect>
           </CCol>
-          <CCol class="mb-3">
+          <CCol md="12" lg="4" xl="3" class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.search"
@@ -75,7 +88,7 @@ defineExpose({ listFiltering })
         <strong> 소유자 수 조회 결과 : {{ numFormat(siteOwnerCount) }} 건 </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
-        <CButton color="info" size="sm" @click="resetForm"> 검색조건 초기화 </CButton>
+        <CButton color="info" size="sm" @click="resetForm"> 검색조건 초기화</CButton>
       </CCol>
     </CRow>
   </CCallout>
