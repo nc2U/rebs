@@ -10,7 +10,6 @@ import {
   type Relation,
   type SiteContract,
 } from '@/store/types/project'
-import exp from 'node:constants'
 
 export type SiteFilter = {
   project: number | null
@@ -20,6 +19,14 @@ export type SiteFilter = {
 }
 
 export type OwnerFilter = {
+  project: number | null
+  limit?: number | ''
+  page?: number
+  own_sort?: string
+  search?: string
+}
+
+export type ContFilter = {
   project: number | null
   limit?: number | ''
   page?: number
@@ -239,15 +246,16 @@ export const useSite = defineStore('site', () => {
     })
   }
 
-  const fetchSiteContList = (project: number, page = 1, own_sort = '', search = '') => {
+  const fetchSiteContList = (payload: ContFilter) => {
+    const { project, limit, page, own_sort, search } = payload
     api
       .get(
-        `/site-contract/?project=${project}&page=${page}&owner__own_sort=${own_sort}&search=${search}`,
+        `/site-contract/?project=${project}&limit=${limit || 10}&page=${page || 1}&owner__own_sort=${own_sort || ''}&search=${search || ''}`,
       )
       .then(res => {
         siteContList.value = res.data.results
         siteContCount.value = res.data.count
-        fetchContsTotal(project)
+        fetchContsTotal(project as number)
       })
       .catch(err => errorHandle(err.response.data))
   }
@@ -256,7 +264,7 @@ export const useSite = defineStore('site', () => {
     api
       .post(`/site-contract/`, payload)
       .then(res => {
-        fetchSiteContList(res.data.project)
+        fetchSiteContList({ project: res.data.project })
         message()
       })
       .catch(err => errorHandle(err.response.data))
@@ -267,7 +275,7 @@ export const useSite = defineStore('site', () => {
     api
       .put(`/site-contract/${pk}/`, contData)
       .then(res => {
-        fetchSiteContList(res.data.project)
+        fetchSiteContList({ project: res.data.project })
         message()
       })
       .catch(err => errorHandle(err.response.data))
@@ -277,7 +285,7 @@ export const useSite = defineStore('site', () => {
     api
       .delete(`/site-contract/${pk}/`)
       .then(() => {
-        fetchSiteContList(project)
+        fetchSiteContList({ project })
         message('warning', '', '해당 부지 매입계약 정보가 삭제되었습니다.')
       })
       .catch(err => errorHandle(err.response.data))

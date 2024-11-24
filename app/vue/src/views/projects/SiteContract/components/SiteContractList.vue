@@ -7,6 +7,7 @@ import { type SiteContract as siteCont } from '@/store/types/project'
 import SiteContract from './SiteContract.vue'
 import Pagination from '@/components/Pagination'
 
+defineProps({ limit: { type: Number, default: 10 } })
 const emit = defineEmits(['page-select', 'on-delete', 'multi-submit'])
 
 const siteStore = useSite()
@@ -73,7 +74,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
     v-if="siteContCount > 10"
     :active-page="1"
     :limit="8"
-    :pages="siteContPages(10)"
+    :pages="siteContPages(limit)"
     class="mt-3"
     @active-page-change="pageSelect"
   />

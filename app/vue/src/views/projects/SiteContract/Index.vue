@@ -2,7 +2,7 @@
 import { ref, computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin3'
 import { useProject } from '@/store/pinia/project'
-import { useSite } from '@/store/pinia/project_site'
+import { useSite, type ContFilter } from '@/store/pinia/project_site'
 import { type SiteContract } from '@/store/types/project'
 import { numFormat } from '@/utils/baseMixins'
 import { write_project_site } from '@/utils/pageAuth'
@@ -15,13 +15,9 @@ import SiteContractList from './components/SiteContractList.vue'
 
 const listControl = ref()
 
-type filter = {
-  page: number
-  own_sort: string
-  search: string
-}
-
-const dataFilter = ref<filter>({
+const dataFilter = ref<ContFilter>({
+  project: null,
+  limit: '',
   page: 1,
   own_sort: '',
   search: '',
@@ -41,16 +37,18 @@ const excelUrl = computed(() => {
   return `${url}${queryStr}`
 })
 
-const listFiltering = (payload: filter) => {
-  dataFilter.value = payload
-  if (project.value)
-    siteStore.fetchSiteContList(project.value, payload.page, payload.own_sort, payload.search)
+const listFiltering = (payload: ContFilter) => {
+  if (project.value) {
+    payload.project = project.value
+    dataFilter.value = payload
+    siteStore.fetchSiteContList(payload)
+  }
 }
 
 const pageSelect = (page: number) => {
+  dataFilter.value.project = project.value as number
   dataFilter.value.page = page
-  if (project.value) siteStore.fetchSiteContList(project.value, page)
-  listControl.value.listFiltering(page)
+  if (project.value) siteStore.fetchSiteContList(dataFilter.value)
 }
 
 const onCreate = (payload: SiteContract) => siteStore.createSiteCont(payload)
@@ -69,7 +67,7 @@ const onDelete = (payload: { pk: number; project: number }) => {
 
 const dataSetup = (pk: number) => {
   siteStore.fetchAllOwners(pk)
-  siteStore.fetchSiteContList(pk)
+  siteStore.fetchSiteContList({ project: pk })
 }
 
 const dataReset = () => {
@@ -114,6 +112,7 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
         </span>
       </TableTitleRow>
       <SiteContractList
+        :limit="dataFilter.limit || 10"
         @page-select="pageSelect"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
