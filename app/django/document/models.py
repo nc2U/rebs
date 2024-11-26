@@ -4,7 +4,6 @@
 # from django.db import models
 # from datetime import datetime, timedelta
 # from django.conf import settings
-# from tinymce.models import HTMLField
 # from django.dispatch import receiver
 # from django.db.models.signals import pre_delete
 #
@@ -333,7 +332,7 @@
 #     lawsuit = models.ForeignKey(LawsuitCase, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사건번호')
 #     title = models.CharField('제목', max_length=255)
 #     execution_date = models.DateField('문서 시행일자', null=True, blank=True, help_text='문서 발신/수신/시행일자')
-#     content = HTMLField('내용', blank=True, default='')
+#     content = models.TextField('내용', blank=True, default='')
 #     hit = models.PositiveIntegerField('조회수', default=0)
 #     like = models.PositiveIntegerField('좋아요', default=0)
 #     blame = models.PositiveSmallIntegerField('신고', default=0)
