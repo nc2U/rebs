@@ -56,7 +56,6 @@ url = [
     path('svelte/', TemplateView.as_view(template_name='base-svelte.html')),
 
     path('mdeditor/', include('mdeditor.urls')),
-    path('tinymce/', include('tinymce.urls')),
 ]
 
 urlpatterns = url if not settings.DEBUG else url + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
