@@ -57,7 +57,6 @@ INSTALLED_APPS += [  # plugin
     'widget_tweaks',
     'django_markdown2',
     'mdeditor',
-    'tinymce',
     'storages',
     'mathfilters',
     'rest_framework',
