@@ -106,6 +106,8 @@ onBeforeMount(() => dataSetup())
   <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
     <CModalBody class="p-4">
       <div>
+        <h6 class="mb-3">■ 필수 정보</h6>
+
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
@@ -191,6 +193,8 @@ onBeforeMount(() => dataSetup())
 
         <v-divider />
 
+        <h6 class="mb-3">■ 선택 정보</h6>
+
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
@@ -215,7 +219,7 @@ onBeforeMount(() => dataSetup())
                 <CFormTextarea
                   v-model="form.rights_a"
                   rows="4"
-                  placeholder="소유권 외 권리 제한 사항"
+                  placeholder="갑구 권리 제한 사항 (소유권 외)"
                 />
               </CCol>
             </CRow>
@@ -227,7 +231,7 @@ onBeforeMount(() => dataSetup())
             <CRow>
               <CFormLabel class="col-sm-2 col-form-label"> 을구 권리 제한 사항</CFormLabel>
               <CCol sm="10">
-                <CFormTextarea v-model="form.rights_a" rows="4" placeholder="을구 권리 제한 사항" />
+                <CFormTextarea v-model="form.rights_b" rows="4" placeholder="을구 권리 제한 사항" />
               </CCol>
             </CRow>
           </CCol>
