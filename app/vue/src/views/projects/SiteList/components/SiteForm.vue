@@ -119,22 +119,6 @@ onBeforeMount(() => dataSetup())
             </CRow>
           </CCol>
 
-          <CCol v-if="!isReturned" sm="6">
-            <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 등기부 발급일</CFormLabel>
-              <CCol sm="8">
-                <DatePicker
-                  v-model="form.dup_issue_date"
-                  :required="false"
-                  maxlength="10"
-                  placeholder="등기부 발급일"
-                />
-              </CCol>
-            </CRow>
-          </CCol>
-        </CRow>
-
-        <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">행정 동</CFormLabel>
@@ -143,12 +127,28 @@ onBeforeMount(() => dataSetup())
               </CCol>
             </CRow>
           </CCol>
+        </CRow>
 
+        <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">지번</CFormLabel>
               <CCol sm="8">
                 <CFormInput v-model="form.lot_number" required maxlength="10" placeholder="지번" />
+              </CCol>
+            </CRow>
+          </CCol>
+
+          <CCol sm="6">
+            <CRow>
+              <CFormLabel class="col-sm-4 col-form-label">지목</CFormLabel>
+              <CCol sm="8">
+                <CFormInput
+                  v-model="form.site_purpose"
+                  required
+                  maxlength="10"
+                  placeholder="지목"
+                />
               </CCol>
             </CRow>
           </CCol>
@@ -170,25 +170,8 @@ onBeforeMount(() => dataSetup())
               </CCol>
             </CRow>
           </CCol>
-
           <CCol sm="6">
-            <CRow>
-              <CFormLabel class="col-sm-4 col-form-label">지목</CFormLabel>
-              <CCol sm="8">
-                <CFormInput
-                  v-model="form.site_purpose"
-                  required
-                  maxlength="10"
-                  placeholder="지목"
-                />
-              </CCol>
-            </CRow>
-          </CCol>
-        </CRow>
-
-        <CRow v-if="isReturned" class="mb-3">
-          <CCol sm="6">
-            <CRow>
+            <CRow v-if="isReturned">
               <CFormLabel class="col-sm-4 col-form-label"> 환지 면적 - m<sup>2</sup></CFormLabel>
               <CCol sm="8">
                 <CFormInput
@@ -201,7 +184,11 @@ onBeforeMount(() => dataSetup())
               </CCol>
             </CRow>
           </CCol>
+        </CRow>
 
+        <v-divider />
+
+        <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label"> 등기부 발급일</CFormLabel>
