@@ -27,7 +27,8 @@ const form = reactive({
   site_purpose: '',
   official_area: '',
   returned_area: null as number | null,
-  rights_restrictions: '',
+  rights_a: '',
+  rights_b: '',
   dup_issue_date: null as null | string,
 })
 
@@ -46,10 +47,11 @@ const formsCheck = computed(() => {
     const e = form.site_purpose === props.site.site_purpose
     const f = form.official_area === props.site.official_area
     const g = form.returned_area === props.site.returned_area
-    const h = form.rights_restrictions === props.site.rights_restrictions
-    const i = form.dup_issue_date === props.site.dup_issue_date
+    const h = form.rights_a === props.site.rights_a
+    const i = form.rights_b === props.site.rights_b
+    const j = form.dup_issue_date === props.site.dup_issue_date
 
-    return a && b && c && d && e && f && g && h && i
+    return a && b && c && d && e && f && g && h && i && j
   } else return false
 })
 
@@ -88,7 +90,8 @@ const dataSetup = () => {
     form.site_purpose = props.site.site_purpose
     form.official_area = props.site.official_area
     form.returned_area = props.site.returned_area
-    form.rights_restrictions = props.site.rights_restrictions
+    form.rights_a = props.site.rights_a
+    form.rights_b = props.site.rights_b
     form.dup_issue_date = props.site.dup_issue_date
   } else {
     form.project = project.value
@@ -207,13 +210,24 @@ onBeforeMount(() => dataSetup())
         <CRow class="mb-3">
           <CCol sm="12">
             <CRow>
-              <CFormLabel class="col-sm-2 col-form-label"> 주요 권리 제한 사항</CFormLabel>
+              <CFormLabel class="col-sm-2 col-form-label"> 갑구 권리 제한 사항</CFormLabel>
               <CCol sm="10">
                 <CFormTextarea
-                  v-model="form.rights_restrictions"
+                  v-model="form.rights_a"
                   rows="4"
-                  placeholder="주요 권리 제한 사항"
+                  placeholder="소유권 외 권리 제한 사항"
                 />
+              </CCol>
+            </CRow>
+          </CCol>
+        </CRow>
+
+        <CRow class="mb-3">
+          <CCol sm="12">
+            <CRow>
+              <CFormLabel class="col-sm-2 col-form-label"> 을구 권리 제한 사항</CFormLabel>
+              <CCol sm="10">
+                <CFormTextarea v-model="form.rights_a" rows="4" placeholder="을구 권리 제한 사항" />
               </CCol>
             </CRow>
           </CCol>

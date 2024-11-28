@@ -188,7 +188,8 @@ export interface Site {
   site_purpose: string
   official_area: string
   returned_area: number | null
-  rights_restrictions: string
+  rights_a: string
+  rights_b: string
   dup_issue_date: string | null
   owners?: SimpleOwner[]
 }

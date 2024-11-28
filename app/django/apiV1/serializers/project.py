@@ -105,7 +105,7 @@ class SiteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Site
         fields = ('pk', 'project', 'order', 'district', 'lot_number', 'site_purpose',
-                  'official_area', 'returned_area', 'rights_restrictions', 'dup_issue_date', 'owners')
+                  'official_area', 'returned_area', 'rights_a', 'rights_b', 'dup_issue_date', 'owners')
 
 
 class AllSiteSerializer(serializers.ModelSerializer):
