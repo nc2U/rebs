@@ -2452,10 +2452,16 @@ class ExportSites(View):
                 worksheet.write(row_num, col_num, '', sum_format)
             elif col_num == 4:
                 worksheet.write(row_num, col_num, sum_area, sum_format)
-            elif col_num == 5 or (project.is_returned_area and int(col_num) == 7):
+            elif col_num == 5:
                 worksheet.write(row_num, col_num, float(sum_area) * 0.3025, sum_format)
             else:
-                worksheet.write(row_num, col_num, sum_ret_area, sum_format)
+                if project.is_returned_area:
+                    if col_num == 6:
+                        worksheet.write(row_num, col_num, sum_ret_area, sum_format)
+                    else:
+                        worksheet.write(row_num, col_num, float(sum_ret_area) * 0.3025, sum_format)
+
+
         #################################################################
 
         # data finish -------------------------------------------- #
