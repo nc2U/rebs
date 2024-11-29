@@ -2460,6 +2460,11 @@ class ExportSites(View):
                         worksheet.write(row_num, col_num, sum_ret_area, sum_format)
                     elif col_num == 7:
                         worksheet.write(row_num, col_num, float(sum_ret_area) * 0.3025, sum_format)
+                    else:
+                        worksheet.write(row_num, col_num, '', sum_format)
+                else:
+                    worksheet.write(row_num, col_num, '', sum_format)
+
 
 
         #################################################################
