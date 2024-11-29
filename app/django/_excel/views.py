@@ -2414,15 +2414,15 @@ class ExportSites(View):
 
                 bf = workbook.add_format(body_format)
 
-                if int(col_num) < 5:
+                if col_num < 5:
                     worksheet.write(row_num, col_num, row[col_num], bf)
-                elif int(col_num) == 5:
+                elif col_num == 5:
                     worksheet.write(row_num, col_num, float(row[col_num - 1]) * 0.3025, bf)
                 else:
                     if project.is_returned_area:
-                        if int(col_num) == 6:
+                        if col_num == 6:
                             worksheet.write(row_num, col_num, row[col_num - 1], bf)
-                        elif int(col_num) == 7:
+                        elif col_num == 7:
                             worksheet.write(row_num, col_num, float(row[col_num - 2]) * 0.3025, bf)
                         else:
                             worksheet.write(row_num, col_num, row[col_num - 2], bf)
@@ -2458,7 +2458,7 @@ class ExportSites(View):
                 if project.is_returned_area:
                     if col_num == 6:
                         worksheet.write(row_num, col_num, sum_ret_area, sum_format)
-                    else:
+                    elif col_num == 7:
                         worksheet.write(row_num, col_num, float(sum_ret_area) * 0.3025, sum_format)
 
 
