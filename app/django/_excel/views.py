@@ -2464,9 +2464,6 @@ class ExportSites(View):
                         worksheet.write(row_num, col_num, '', sum_format)
                 else:
                     worksheet.write(row_num, col_num, '', sum_format)
-
-
-
         #################################################################
 
         # data finish -------------------------------------------- #
