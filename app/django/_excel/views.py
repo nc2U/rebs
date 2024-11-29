@@ -2289,6 +2289,7 @@ class ExportSites(View):
         # -------------------- get_queryset start -------------------- #
         project = Project.objects.get(pk=request.GET.get('project'))
         search = request.GET.get('search')
+        rights = request.GET.get('rights')
         obj_list = Site.objects.filter(project=project).order_by('order')
         obj_list = obj_list.filter(
             Q(district__icontains=search) |
@@ -2299,6 +2300,7 @@ class ExportSites(View):
         # -------------------- get_queryset finish -------------------- #
 
         rows_cnt = 7 if project.is_returned_area else 5
+        rows_cnt = rows_cnt if not rights else rows_cnt + 2
 
         # 1. Title
         row_num = 0
@@ -2342,6 +2344,10 @@ class ExportSites(View):
         if project.is_returned_area:
             header_src.append(['환지면적', 'returned_area', 13])
             header_src.append(['', '', 13])
+
+        if rights:
+            header_src.append(['갑구 권리제한사항', 'rights_a', 18])
+            header_src.append(['을구 권리제한사항', 'rights_b', 18])
 
         titles = []  # 헤더명
         params = []  # 헤더 컬럼(db)
@@ -2410,12 +2416,10 @@ class ExportSites(View):
 
                 if int(col_num) < 5:
                     worksheet.write(row_num, col_num, row[col_num], bf)
-                elif int(col_num) == 5:
+                elif int(col_num) == 5 or (project.is_returned_area and int(col_num) == 7):
                     worksheet.write(row_num, col_num, float(row[col_num - 1]) * 0.3025, bf)
-                elif int(col_num) == 6:
-                    worksheet.write(row_num, col_num, row[col_num - 1], bf)
                 else:
-                    worksheet.write(row_num, col_num, float(row[col_num - 2]) * 0.3025, bf)
+                    worksheet.write(row_num, col_num, row[col_num - 1], bf)
 
         row_num += 1
         worksheet.set_row(row_num, 23)
@@ -2438,12 +2442,10 @@ class ExportSites(View):
                 worksheet.write(row_num, col_num, '', sum_format)
             elif col_num == 4:
                 worksheet.write(row_num, col_num, sum_area, sum_format)
-            elif col_num == 5:
+            elif col_num == 5 or (project.is_returned_area and int(col_num) == 7):
                 worksheet.write(row_num, col_num, float(sum_area) * 0.3025, sum_format)
-            elif col_num == 6:
+            else:
                 worksheet.write(row_num, col_num, sum_ret_area, sum_format)
-            elif col_num == 7:
-                worksheet.write(row_num, col_num, float(sum_ret_area) * 0.3025, sum_format)
         #################################################################
 
         # data finish -------------------------------------------- #
