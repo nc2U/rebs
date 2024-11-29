@@ -2416,10 +2416,20 @@ class ExportSites(View):
 
                 if int(col_num) < 5:
                     worksheet.write(row_num, col_num, row[col_num], bf)
-                elif int(col_num) == 5 or (project.is_returned_area and int(col_num) == 7):
+                elif int(col_num) == 5:
                     worksheet.write(row_num, col_num, float(row[col_num - 1]) * 0.3025, bf)
                 else:
-                    worksheet.write(row_num, col_num, row[col_num - 1], bf)
+                    if project.is_returned_area:
+                        if int(col_num) == 6:
+                            worksheet.write(row_num, col_num, row[col_num - 1], bf)
+                        elif int(col_num) == 7:
+                            worksheet.write(row_num, col_num, float(row[col_num - 2]) * 0.3025, bf)
+                        else:
+                            worksheet.write(row_num, col_num, row[col_num - 2], bf)
+                    else:
+                        worksheet.write(row_num, col_num, row[col_num - 1], bf)
+
+
 
         row_num += 1
         worksheet.set_row(row_num, 23)

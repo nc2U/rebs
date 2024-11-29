@@ -32,8 +32,10 @@ const totalArea = computed(() =>
   isReturned.value ? getSitesTotal.value?.returned : getSitesTotal.value?.official,
 )
 
+const rights = ref(false)
 const excelUrl = computed(
-  () => `excel/sites/?project=${project.value}&search=${dataFilter.value.search}`,
+  () =>
+    `excel/sites/?project=${project.value}&search=${dataFilter.value.search}&rights=${rights.value || ''}`,
 )
 
 const listFiltering = (payload: SiteFilter) => {
@@ -107,6 +109,12 @@ onBeforeMount(() => dataSetup(project.value || projStore.initProjId))
           }}
           평) 등록
         </span>
+        <CFormCheck
+          v-model="rights"
+          id="include-rights"
+          label="권리제한사항 포함"
+          class="ml-3 pt-1"
+        />
       </TableTitleRow>
       <SiteList
         :is-returned="isReturned"
