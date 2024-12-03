@@ -308,7 +308,7 @@ const project = {
     {
       component: 'CNavItem',
       name: '예산 등록 관리',
-      icon: 'cil-location-pin',
+      icon: 'cil-exposure',
       items: [
         {
           component: 'CNavItem',
@@ -325,7 +325,7 @@ const project = {
     {
       component: 'CNavItem',
       name: '차수 타입 관리',
-      icon: 'cil-location-pin',
+      icon: 'cil-list-numbered',
       items: [
         {
           component: 'CNavItem',
@@ -347,7 +347,7 @@ const project = {
     {
       component: 'CNavItem',
       name: '유닛 등록 관리',
-      icon: 'cil-location-pin',
+      icon: 'cil-room',
       items: [
         {
           component: 'CNavItem',
