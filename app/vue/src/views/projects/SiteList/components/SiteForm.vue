@@ -216,11 +216,7 @@ onBeforeMount(() => dataSetup())
             <CRow>
               <CFormLabel class="col-sm-2 col-form-label"> 갑구 권리 제한 사항</CFormLabel>
               <CCol sm="10">
-                <CFormTextarea
-                  v-model="form.rights_a"
-                  rows="4"
-                  placeholder="갑구 권리 제한 사항 (소유권 외)"
-                />
+                <CFormTextarea v-model="form.rights_a" rows="4" placeholder="갑구 권리 제한 사항" />
               </CCol>
             </CRow>
           </CCol>
