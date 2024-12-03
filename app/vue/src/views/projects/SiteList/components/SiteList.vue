@@ -24,15 +24,16 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 <template>
   <CTable hover responsive bordered align="middle">
     <colgroup>
+      <col style="width: 5%" />
       <col style="width: 6%" />
       <col style="width: 7%" />
-      <col style="width: 8%" />
-      <col style="width: 8%" />
+      <col style="width: 5%" />
       <col style="width: 8%" />
       <col style="width: 8%" />
       <col v-if="isReturned" style="width: 8%" />
       <col v-if="isReturned" style="width: 8%" />
-      <col style="width: 33%" />
+      <col style="width: 32%" />
+      <col style="width: 7%" />
       <col v-if="write_project_site" style="width: 6%" />
     </colgroup>
 
@@ -45,6 +46,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         <CTableHeaderCell colspan="2" scope="col">공부상 면적</CTableHeaderCell>
         <CTableHeaderCell v-if="isReturned" colspan="2" scope="col"> 환지 면적</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">소유자 목록</CTableHeaderCell>
+        <CTableHeaderCell rowspan="2" scope="col">등본 발급일</CTableHeaderCell>
         <CTableHeaderCell v-if="write_project_site" rowspan="2" scope="col">비고</CTableHeaderCell>
       </CTableRow>
       <CTableRow class="text-center">

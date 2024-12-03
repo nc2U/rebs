@@ -49,6 +49,9 @@ const onDelete = (payload: { pk: number; project: number }) => emit('on-delete',
     <CTableDataCell class="text-left">
       {{ owners.length ? owners.join(', ') : '' }}
     </CTableDataCell>
+    <CTableDataCell>
+      {{ site.dup_issue_date }}
+    </CTableDataCell>
     <CTableDataCell v-if="write_project_site">
       <CButton color="info" size="sm" @click="showDetail">확인</CButton>
     </CTableDataCell>
