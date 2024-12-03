@@ -28,6 +28,33 @@ const projects = {
       meta: { title: '신규 현장 등록', auth: true },
     },
     {
+      path: 'site/index',
+      name: '지번 목록 관리',
+      component: () =>
+        pageViewAuth.value
+          ? import('@/views/projects/SiteList/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '지번 목록 관리', auth: true },
+    },
+    {
+      path: 'site/owner',
+      name: '소유자 별 관리',
+      component: () =>
+        pageViewAuth.value
+          ? import('@/views/projects/SiteOwner/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '소유자 별 관리', auth: true },
+    },
+    {
+      path: 'site/contract',
+      name: '매입 계약 관리',
+      component: () =>
+        pageViewAuth.value
+          ? import('@/views/projects/SiteContract/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '매입 계약 관리', auth: true },
+    },
+    {
       path: 'manage/inc-budget',
       name: '수입 예산 등록',
       component: () =>
@@ -63,7 +90,15 @@ const projects = {
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '타입 정보 등록', auth: true },
     },
-
+    {
+      path: 'settings/floor',
+      name: '층별 조건 등록',
+      component: () =>
+        pageViewAuth.value
+          ? import('@/views/projects/Floor/Index.vue')
+          : import('@/views/_Accounts/NoAuth.vue'),
+      meta: { title: '층별 조건 등록', auth: true },
+    },
     {
       path: 'settings/bldg',
       name: '동(건물) 등록',
@@ -83,13 +118,13 @@ const projects = {
       meta: { title: '호(유닛) 등록', auth: true },
     },
     {
-      path: 'settings/floor',
-      name: '층별 조건 등록',
+      path: 'settings/price',
+      name: '공급 가격 등록',
       component: () =>
         pageViewAuth.value
-          ? import('@/views/projects/Floor/Index.vue')
+          ? import('@/views/projects/Price/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '층별 조건 등록', auth: true },
+      meta: { title: '공급 가격 등록', auth: true },
     },
     {
       path: 'settings/payment-order',
@@ -110,15 +145,6 @@ const projects = {
       meta: { title: '계약 금액 등록', auth: true },
     },
     {
-      path: 'settings/price',
-      name: '공급 가격 등록',
-      component: () =>
-        pageViewAuth.value
-          ? import('@/views/projects/Price/Index.vue')
-          : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '공급 가격 등록', auth: true },
-    },
-    {
       path: 'settings/options',
       name: '옵션 품목 등록',
       component: () =>
@@ -126,33 +152,6 @@ const projects = {
           ? import('@/views/projects/PaidOption/Index.vue')
           : import('@/views/_Accounts/NoAuth.vue'),
       meta: { title: '옵션 품목 등록', auth: true },
-    },
-    {
-      path: 'site/index',
-      name: '지번 목록 관리',
-      component: () =>
-        pageViewAuth.value
-          ? import('@/views/projects/SiteList/Index.vue')
-          : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '지번 목록 관리', auth: true },
-    },
-    {
-      path: 'site/owner',
-      name: '소유자 별 관리',
-      component: () =>
-        pageViewAuth.value
-          ? import('@/views/projects/SiteOwner/Index.vue')
-          : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '소유자 별 관리', auth: true },
-    },
-    {
-      path: 'site/contract',
-      name: '매입 계약 관리',
-      component: () =>
-        pageViewAuth.value
-          ? import('@/views/projects/SiteContract/Index.vue')
-          : import('@/views/_Accounts/NoAuth.vue'),
-      meta: { title: '매입 계약 관리', auth: true },
     },
   ],
 }
