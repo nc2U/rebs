@@ -363,7 +363,7 @@ const project = {
     },
     {
       component: 'CNavItem',
-      name: '분양 조건 관리',
+      name: '분양 계약 조건',
       icon: 'cil-cog',
       items: [
         {
