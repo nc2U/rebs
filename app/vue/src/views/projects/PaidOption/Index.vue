@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, provide } from 'vue'
-import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
+import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin6'
 import { write_project } from '@/utils/pageAuth'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'

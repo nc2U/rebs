@@ -1,9 +1,2 @@
-export const pageTitle = '세부 설정 관리'
-export const navMenu = [
-  '동(건물) 등록',
-  '호(유닛) 등록',
-  '납부 회차 등록',
-  '계약 금액 등록',
-  '공급 가격 등록',
-  '옵션 품목 등록',
-]
+export const pageTitle = '사업 부지 관리'
+export const navMenu = ['지번 목록 관리', '소유자 별 관리', '매입 계약 관리']

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount } from 'vue'
+import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin5'
 import { write_project } from '@/utils/pageAuth'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
 import { type BuildingUnit } from '@/store/types/project'
-import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import BuildingAddForm from '@/views/projects/Building/components/BuildingAddForm.vue'

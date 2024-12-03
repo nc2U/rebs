@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onBeforeMount, provide } from 'vue'
-import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
+import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin6'
 import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
 import { usePayment, type PriceFilter } from '@/store/pinia/payment'
