@@ -2927,7 +2927,7 @@
       "sort": 1,
       "d2": 6,
       "code": "181",
-      "name": "[반환] - 임차보증금",
+      "name": "[회수] - 임차보증금",
       "is_hide": false,
       "is_special": false,
       "description": "사무실, 공장 등의 임차보증금"
