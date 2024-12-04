@@ -95,7 +95,7 @@ defineExpose({ callModal })
             </CCol>
           </CRow>
 
-          <v-divider />
+          <v-divider class="mb-4" />
 
           <CRow>
             <CCol class="mb-3">
