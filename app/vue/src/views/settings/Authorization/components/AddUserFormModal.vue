@@ -10,11 +10,14 @@ const form = ref({
   username: '',
   email: '',
   password: '',
+  passConf: '',
 
   sendMail: true,
   sendOption: '1',
   expired: 24,
 })
+
+const genPass = ref()
 
 const validated = ref()
 
@@ -29,6 +32,25 @@ const onSubmit = (event: Event) => {
     emit('on-submit', form.value)
     validated.value = false
   }
+}
+
+const generatePassword = () => {
+  const chars =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+[]{}|;:,.<>?'
+  let password = ''
+
+  for (let i = 0; i < 8; i++) {
+    const randomIndex = Math.floor(Math.random() * chars.length)
+    password += chars[randomIndex]
+  }
+
+  genPass.value = password
+}
+
+const applyGen = () => {
+  form.value.password = genPass.value
+  form.value.passConf = genPass.value
+  genPass.value = ''
 }
 
 const callModal = () => refFormModal.value.callModal()
@@ -57,7 +79,7 @@ defineExpose({ callModal })
               <CFormInput
                 v-model="form.username"
                 id="username"
-                maxlength="20"
+                maxlength="30"
                 placeholder="아이디"
                 required
               />
@@ -76,7 +98,7 @@ defineExpose({ callModal })
               />
             </CCol>
           </CRow>
-          <CRow class="mb-4">
+          <CRow class="mb-3">
             <CFormLabel for="password" class="col-sm-3 col-form-label required">
               비밀번호
             </CFormLabel>
@@ -85,13 +107,38 @@ defineExpose({ callModal })
                 v-model="form.password"
                 id="password"
                 type="password"
-                maxlength="100"
+                maxlength="20"
                 placeholder="비밀번호"
                 required
               />
             </CCol>
             <CCol sm="4">
-              <CButton color="secondary" size="sm" class="mt-1">임의 패스워드 생성</CButton>
+              <CButton color="secondary" size="sm" class="mt-1" @click="generatePassword">
+                임의 패스워드 생성
+              </CButton>
+            </CCol>
+          </CRow>
+          <CRow class="mb-4">
+            <CFormLabel for="passConf" class="col-sm-3 col-form-label required">
+              비밀번호 확인
+            </CFormLabel>
+            <CCol sm="5">
+              <CFormInput
+                v-model="form.passConf"
+                id="passConf"
+                type="password"
+                maxlength="20"
+                placeholder="비밀번호 확인"
+                required
+              />
+            </CCol>
+          </CRow>
+          <CRow v-if="genPass">
+            <CCol sm="3"></CCol>
+            <CCol sm="9">
+              <span class="p-2 px-3 mr-3 bg-yellow-lighten-1">{{ genPass }}</span>
+              <CButton color="light" size="sm" @click="genPass = ''">취소</CButton>
+              <CButton color="success" size="sm" @click="applyGen">적용</CButton>
             </CCol>
           </CRow>
 
