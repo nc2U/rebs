@@ -12,9 +12,9 @@ const form = ref({
   password: '',
 
   sendMail: true,
+  sendOption: '1',
   expired: 24,
 })
-const contentOption = ref(1)
 
 const validated = ref()
 
@@ -111,43 +111,48 @@ defineExpose({ callModal })
           <CRow>
             <CCol sm="12" class="pl-5 mb-3">
               <CFormCheck
-                v-model="contentOption"
+                v-model="form.sendOption"
+                value="1"
                 type="radio"
                 name="content-option"
                 id="content-option1"
                 label="패스워드 재설정 링크 포함"
-                :value="1"
+                :disabled="!form.sendMail"
               />
             </CCol>
             <CRow>
               <CCol sm="5" class="pl-5 mb-3">
-                <span class="pl-4">링크 만료 날짜 : </span>
+                <span class="pl-4">링크 만료 시간 : </span>
               </CCol>
               <CCol sm="4">
-                <CFormSelect v-model="form.expired" size="sm">
-                  <option :value="24">24</option>
+                <CFormSelect v-model.number="form.expired" size="sm" :disabled="!form.sendMail">
+                  <option v-for="i in 24" :value="i" :key="i">
+                    <span v-if="i < 10">0</span>{{ i }}
+                  </option>
                 </CFormSelect>
               </CCol>
               <CCol>시간</CCol>
             </CRow>
             <CCol sm="12" class="pl-5 mb-3">
               <CFormCheck
-                v-model="contentOption"
-                :value="2"
+                v-model="form.sendOption"
+                value="2"
                 type="radio"
                 name="content-option"
                 id="content-option2"
                 label="사용자 패스워드 포함"
+                :disabled="!form.sendMail"
               />
             </CCol>
             <CCol sm="12" class="pl-5">
               <CFormCheck
-                v-model="contentOption"
-                :value="3"
+                v-model="form.sendOption"
+                value="3"
                 type="radio"
                 name="content-option"
                 id="content-option3"
                 label="재설정 링크 및 패스워드 모두 제외"
+                :disabled="!form.sendMail"
               />
             </CCol>
           </CRow>
