@@ -244,7 +244,8 @@ onBeforeMount(() => {
     </CCardBody>
 
     <template #footer>
-      <CCardFooter v-if="write_auth_manage" class="text-right">
+      <!--      <CCardFooter v-if="write_auth_manage" class="text-right">-->
+      <CCardFooter class="text-right">
         <CButton
           type="button"
           :color="isStaffAuth ? 'success' : 'primary'"

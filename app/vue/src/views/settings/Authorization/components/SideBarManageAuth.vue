@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, nextTick, onMounted, onUpdated } from 'vue'
 import { type UserAuth } from '@/views/settings/Authorization/Index.vue'
-import { useStore } from '@/store'
 import type { User } from '@/store/types/accounts'
+import { write_auth_manage } from '@/utils/pageAuth'
+import { useStore } from '@/store'
 import ProjectManageAuth from '@/views/settings/Authorization/components/ProjectManageAuth.vue'
 
 const props = defineProps({
@@ -37,8 +38,8 @@ const auths = reactive([
   { label: '쓰기권한', value: '2' },
 ])
 
-const isPrInActive = computed(() => !props.user || props.allowed?.length === 0)
 const isCoInActive = computed(() => !props.user)
+const isPrInActive = computed(() => !props.user || props.allowed?.length === 0)
 
 const getColor = (status: '0' | '1' | '2') => {
   if (status === '1') return ['yellow-darken-2', '#fcfced']
@@ -118,7 +119,7 @@ onUpdated(() => dataSetup())
                 <CFormSelect
                   v-model="authData.company_cash"
                   :options="auths"
-                  :disabled="isCoInActive"
+                  :disabled="isCoInActive || !write_auth_manage"
                   :style="{
                     backgroundColor: isDark ? '' : getColor(authData.company_cash)[1],
                   }"
@@ -140,7 +141,7 @@ onUpdated(() => dataSetup())
                 <CFormSelect
                   v-model="authData.company_docs"
                   :options="auths"
-                  :disabled="isCoInActive"
+                  :disabled="isCoInActive || !write_auth_manage"
                   :style="{
                     backgroundColor: isDark ? '' : getColor(authData.company_docs)[1],
                   }"
@@ -162,7 +163,7 @@ onUpdated(() => dataSetup())
                 <CFormSelect
                   v-model="authData.human_resource"
                   :options="auths"
-                  :disabled="isCoInActive"
+                  :disabled="isCoInActive || !write_auth_manage"
                   :style="{
                     backgroundColor: isDark ? '' : getColor(authData.human_resource)[1],
                   }"
@@ -185,7 +186,7 @@ onUpdated(() => dataSetup())
                 <CFormSelect
                   v-model="authData.company_settings"
                   :options="auths"
-                  :disabled="isCoInActive"
+                  :disabled="isCoInActive || !write_auth_manage"
                   :style="{
                     backgroundColor: isDark ? '' : getColor(authData.company_settings)[1],
                   }"
@@ -207,7 +208,7 @@ onUpdated(() => dataSetup())
                 <CFormSelect
                   v-model="authData.auth_manage"
                   :options="auths"
-                  :disabled="isCoInActive"
+                  :disabled="isCoInActive || !write_auth_manage"
                   :style="{
                     backgroundColor: isDark ? '' : getColor(authData.auth_manage)[1],
                   }"
@@ -250,7 +251,7 @@ onUpdated(() => dataSetup())
                 <CFormSelect
                   v-model="authData.contract"
                   :options="auths"
-                  :disabled="isPrInActive"
+                  :disabled="isPrInActive || !write_auth_manage"
                   :style="{
                     backgroundColor: isDark ? '' : getColor(authData.contract)[1],
                   }"
@@ -269,7 +270,7 @@ onUpdated(() => dataSetup())
                 <CFormSelect
                   v-model="authData.payment"
                   :options="auths"
-                  :disabled="isPrInActive"
+                  :disabled="isPrInActive || !write_auth_manage"
                   :style="{
                     backgroundColor: isDark ? '' : getColor(authData.payment)[1],
                   }"
@@ -288,7 +289,7 @@ onUpdated(() => dataSetup())
                 <CFormSelect
                   v-model="authData.notice"
                   :options="auths"
-                  :disabled="isPrInActive"
+                  :disabled="isPrInActive || !write_auth_manage"
                   :style="{
                     backgroundColor: isDark ? '' : getColor(authData.notice)[1],
                   }"
@@ -311,7 +312,7 @@ onUpdated(() => dataSetup())
                 <CFormSelect
                   v-model="authData.project_cash"
                   :options="auths"
-                  :disabled="isPrInActive"
+                  :disabled="isPrInActive || !write_auth_manage"
                   :style="{
                     backgroundColor: isDark ? '' : getColor(authData.project_cash)[1],
                   }"
@@ -333,7 +334,7 @@ onUpdated(() => dataSetup())
                 <CFormSelect
                   v-model="authData.project_docs"
                   :options="auths"
-                  :disabled="isPrInActive"
+                  :disabled="isPrInActive || !write_auth_manage"
                   :style="{
                     backgroundColor: isDark ? '' : getColor(authData.project_docs)[1],
                   }"
@@ -352,7 +353,7 @@ onUpdated(() => dataSetup())
                 <CFormSelect
                   v-model="authData.project"
                   :options="auths"
-                  :disabled="isPrInActive"
+                  :disabled="isPrInActive || !write_auth_manage"
                   :style="{
                     backgroundColor: isDark ? '' : getColor(authData.project)[1],
                   }"
@@ -372,7 +373,7 @@ onUpdated(() => dataSetup())
                 <CFormSelect
                   v-model="authData.project_site"
                   :options="auths"
-                  :disabled="isPrInActive"
+                  :disabled="isPrInActive || !write_auth_manage"
                   :style="{
                     backgroundColor: isDark ? '' : getColor(authData.project_site)[1],
                   }"

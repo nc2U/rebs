@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed, onBeforeMount, watch, nextTick } from 'vue'
+import { write_auth_manage } from '@/utils/pageAuth'
 import { useProject } from '@/store/pinia/project'
 import { bgLight } from '@/utils/cssMixins'
 import Multiselect from '@vueform/multiselect'
@@ -15,6 +16,9 @@ const isInActive = computed(() => !props.user)
 
 const project = useProject()
 const getProjects = computed(() => project.getProjects)
+const getAssigneds = computed(() =>
+  getProjects.value.filter(p => allowedProjects.value.includes(p.value ?? 0)),
+)
 
 const getAllowed = () =>
   nextTick(() => {
@@ -55,7 +59,7 @@ onBeforeMount(() => project.fetchProjectList())
               :classes="{ search: 'form-control multiselect-search' }"
               :add-option-on="['enter', 'tab']"
               searchable
-              :disabled="isInActive"
+              :disabled="isInActive || !write_auth_manage"
               @change="getAllowed"
             />
             <small class="form-text">
@@ -71,7 +75,7 @@ onBeforeMount(() => project.fetchProjectList())
           <CCol>
             <Multiselect
               v-model="assignedProject"
-              :options="getProjects"
+              :options="getAssigneds"
               placeholder="프로젝트"
               autocomplete="label"
               :classes="{ search: 'form-control multiselect-search' }"
