@@ -71,7 +71,7 @@ onBeforeMount(() => {
 <template>
   <CCallout color="dark" class="mb-4" :class="bgLight">
     <CRow>
-      <CCol md="10" lg="8" xl="6">
+      <CCol lg="6" xl="4">
         <CRow class="m-1">
           <CFormLabel class="col-md-4 col-form-label"> 사용자 선택</CFormLabel>
           <CCol>
@@ -88,7 +88,7 @@ onBeforeMount(() => {
           </CCol>
         </CRow>
       </CCol>
-      <CCol class="pt-2">
+      <CCol md="6" lg="3" xl="2" class="pt-2">
         <CFormSwitch
           v-model="staff"
           label="본사 관리자 (프로젝트 관리 가능)"
@@ -97,7 +97,7 @@ onBeforeMount(() => {
           :disabled="!superAuth"
         />
       </CCol>
-      <CCol class="pt-2">
+      <CCol md="6" lg="3" xl="2" class="pt-2">
         <CFormSwitch
           v-model="projectStaff"
           label="프로젝트 관리자"
@@ -105,6 +105,9 @@ onBeforeMount(() => {
           id="is_project_staff"
           :disabled="!superAuth"
         />
+      </CCol>
+      <CCol xl="2" v-if="superAuth" class="pt-1">
+        <v-btn variant="tonal" color="primary">사용자 생성</v-btn>
       </CCol>
     </CRow>
   </CCallout>
