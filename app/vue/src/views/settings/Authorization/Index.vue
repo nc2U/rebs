@@ -9,7 +9,7 @@ import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import UserSelect from './components/UserSelect.vue'
 import SideBarManageAuth from './components/SideBarManageAuth.vue'
-import FormModal from '@/components/Modals/FormModal.vue'
+import AddUserFormModal from './components/AddUserFormModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
@@ -161,9 +161,14 @@ const authReset = () => {
   menuAuth.value.auth_manage = '0'
 }
 
-const onSubmit = () => {
+const toSave = () => {
   if (write_auth_manage.value) refConfirmModal.value.callModal()
   else refAlertModal.value.callModal()
+}
+
+const onSubmit = (payload: any) => {
+  alert('aa')
+  console.log(payload)
 }
 
 const modalAction = () => {
@@ -252,7 +257,7 @@ onBeforeMount(() => {
           type="button"
           :color="isStaffAuth ? 'success' : 'primary'"
           :disabled="!comId || formsCheck"
-          @click="onSubmit"
+          @click="toSave"
         >
           <CIcon name="cil-check-circle" />
           저장
@@ -260,7 +265,7 @@ onBeforeMount(() => {
       </CCardFooter>
     </template>
 
-    <FormModal ref="refFormModal"></FormModal>
+    <AddUserFormModal ref="refFormModal" @on-submit="onSubmit" />
 
     <ConfirmModal ref="refConfirmModal">
       <template #header>사용자 권한설정</template>
