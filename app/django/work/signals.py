@@ -118,7 +118,7 @@ def issue_log_changes(sender, instance, created, **kwargs):
         ##########################################
         # 생성 사용자를 제외한, 담당자에게 메일 전달
         ##########################################
-        if instance.assigned_to and instance.assigned_to != user:  # 생성자와 담당자가 다를 경우 담당자에게 메일 전달
+        if instance.assigned_to: # and instance.assigned_to != user:  # 담당자에게 메일 전달
             subject = f'새 업무 [#{instance.pk}] - "{instance.subject}" 이(가) [{instance.assigned_to.username}]님에게 (요청)배정 되었습니다.' \
                 if instance.assigned_to else f'새 업무 [#{instance.pk}] - "{instance.subject}" 이(가) 생성 되었습니다.'
             message = f'''<div style="font-size: 1.2em;">
