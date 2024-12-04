@@ -9,7 +9,7 @@ const props = defineProps({
   isStaff: { type: Boolean, default: false },
   isProjectStaff: { type: Boolean, default: false },
 })
-const emit = defineEmits(['select-user', 'change-staff', 'change-pro-staff'])
+const emit = defineEmits(['select-user', 'change-staff', 'change-pro-staff', 'add-user-modal'])
 
 const userId = ref<number | null>(null)
 const staff = ref(false)
@@ -62,6 +62,8 @@ const changeProStaff = () =>
     emit('change-pro-staff', projectStaff.value)
   })
 
+const addUserModal = () => emit('add-user-modal')
+
 onBeforeMount(() => {
   if (props.isStaff) staff.value = props.isStaff
   if (props.isProjectStaff) projectStaff.value = props.isProjectStaff
@@ -107,7 +109,7 @@ onBeforeMount(() => {
         />
       </CCol>
       <CCol xl="2" v-if="superAuth" class="pt-1">
-        <v-btn variant="tonal" color="primary">사용자 생성</v-btn>
+        <v-btn variant="tonal" color="primary" @click="addUserModal">사용자 생성</v-btn>
       </CCol>
     </CRow>
   </CCallout>

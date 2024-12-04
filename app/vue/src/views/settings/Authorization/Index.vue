@@ -9,9 +9,11 @@ import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import UserSelect from './components/UserSelect.vue'
 import SideBarManageAuth from './components/SideBarManageAuth.vue'
+import FormModal from '@/components/Modals/FormModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
+const refFormModal = ref()
 const refAlertModal = ref()
 const refConfirmModal = ref()
 
@@ -232,6 +234,7 @@ onBeforeMount(() => {
         @change-staff="changeStaff"
         @change-pro-staff="changeProStaff"
         @select-user="selectUser"
+        @add-user-modal="refFormModal.callModal()"
       />
 
       <SideBarManageAuth
@@ -244,7 +247,6 @@ onBeforeMount(() => {
     </CCardBody>
 
     <template #footer>
-      <!--      <CCardFooter v-if="write_auth_manage" class="text-right">-->
       <CCardFooter class="text-right">
         <CButton
           type="button"
@@ -257,6 +259,8 @@ onBeforeMount(() => {
         </CButton>
       </CCardFooter>
     </template>
+
+    <FormModal ref="refFormModal"></FormModal>
 
     <ConfirmModal ref="refConfirmModal">
       <template #header>사용자 권한설정</template>
