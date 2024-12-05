@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount, watch } from 'vue'
-import { pageTitle, navMenu } from '@/views/settings/_menu/headermixin'
+import { computed, onBeforeMount, ref, watch } from 'vue'
+import { navMenu, pageTitle } from '@/views/settings/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
 import { type User } from '@/store/types/accounts'
 import { useAccount } from '@/store/pinia/account'
-import { write_auth_manage } from '@/utils/pageAuth'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import UserSelect from './components/UserSelect.vue'
