@@ -33,7 +33,7 @@ const onSubmit = (event: Event) => {
       alert('비밀번호가 일치하지 않습니다.')
       return
     }
-    emit('on-submit', form)
+    emit('on-submit', { ...form })
     validated.value = false
     formReset()
     refFormModal.value.close()
