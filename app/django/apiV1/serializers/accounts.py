@@ -1,13 +1,12 @@
-import json
 from django.conf import settings
-from django.db import transaction
 from django.core.mail import send_mail
+from django.db import transaction
 from rest_framework import serializers
 
 from accounts.models import User, StaffAuth, Profile, Todo, DocScrape, PasswordResetToken, PostScrape
-from work.models import IssueProject
-from docs.models import Document
 from board.models import Post
+from docs.models import Document
+from work.models import IssueProject
 
 
 # Accounts --------------------------------------------------------------------------
