@@ -118,7 +118,7 @@ defineExpose({ callModal })
               </CButton>
             </CCol>
           </CRow>
-          <CRow class="mb-4">
+          <CRow class="mb-4" style="height: 45px">
             <CFormLabel for="passConf" class="col-sm-3 col-form-label required">
               비밀번호 확인
             </CFormLabel>
@@ -132,11 +132,10 @@ defineExpose({ callModal })
                 required
               />
             </CCol>
-          </CRow>
-          <CRow v-if="genPass">
-            <CCol sm="3"></CCol>
-            <CCol sm="9">
-              <span class="p-2 px-3 mr-3 bg-yellow-lighten-1">{{ genPass }}</span>
+            <CCol v-if="genPass" sm="4">
+              <div class="p-1 mb-1 bg-yellow-lighten-1 text-center" style="width: 90px">
+                {{ genPass }}
+              </div>
               <CButton color="light" size="sm" @click="genPass = ''">취소</CButton>
               <CButton color="success" size="sm" @click="applyGen">적용</CButton>
             </CCol>
