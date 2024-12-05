@@ -51,8 +51,8 @@ url = [
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain')),
 
     path('', include('django.contrib.auth.urls')),  # 로그아웃 등 페이지 코드에 필요
-    path('', RedirectView.as_view(url='/dms/'), name='homepage'),
-    path('dms/', install_check, name='home'),
+    path('', RedirectView.as_view(url='/cms/'), name='homepage'),
+    path('cms/', install_check, name='home'),
     path('rebs/', include('rebs.urls')),
     path('svelte/', TemplateView.as_view(template_name='base-svelte.html')),
 
