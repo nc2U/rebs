@@ -2,10 +2,10 @@ import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   lang: 'ko-KR',
-  title: 'REBS',
-  titleTemplate: 'REBS | Real-Estate Build System',
+  title: 'IBS',
+  titleTemplate: 'IBS | Intelligent Build System',
   description: '부동산 개발관리 프로그램 매뉴얼',
-  base: process.env.NODE_ENV === 'production' ? '/rebs/' : '',
+  base: process.env.NODE_ENV === 'production' ? '/ibs/' : '',
   head: [
     [
       'link',
@@ -23,14 +23,14 @@ export default defineConfig({
   },
   themeConfig: {
     logo: 'https://raw.githubusercontent.com/nc2U/rebs/5787dbf80bf9ccbb16a8b3a49d052199cafdb171/app/vue/docs/favicon.svg',
-    siteTitle: 'REBS',
+    siteTitle: 'IBS',
     nav: [
       { text: '가이드', link: '/intro/getting-started' },
       {
         text: '관련 사이트',
         items: [
-          { text: 'REBS', link: 'https://brdnc.co.kr' },
-          { text: '관리자 페이지', link: 'https://brdnc.co.kr/admin/' },
+          { text: 'IBS', link: 'https://dyibs.com' },
+          { text: '관리자 페이지', link: 'https://dyibs.com/admin/' },
         ],
       },
     ],
@@ -38,7 +38,7 @@ export default defineConfig({
       {
         text: '소개',
         items: [
-          { text: 'REBS란?', link: '/' },
+          { text: 'IBS란?', link: '/' },
           { text: '시작하기', link: '/intro/getting-started' },
         ],
       },
@@ -95,7 +95,7 @@ export default defineConfig({
     },
     footer: {
       message: 'Released under the MIT License.',
-      copyright: 'Copyright © 2019-present REBS',
+      copyright: 'Copyright © 2020-present IBS',
     },
   },
 })
