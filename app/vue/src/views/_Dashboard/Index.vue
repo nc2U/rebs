@@ -5,9 +5,6 @@ import MainCarousel from './components/MainCarousel.vue'
 import WiseWord from './components/WiseWord.vue'
 import MyIssue from '@/views/_Work/MyIssue/Index.vue'
 import NoticeBoard from './components/NoticeBoard/ListComp.vue'
-// import WidgetsStatsA from './components/Widgets/WidgetsStatsTypeA.vue'
-import WidgetsStatsB from './components/Widgets/WidgetsStatsTypeB.vue'
-// import WidgetsStatsC from './components/Widgets/WidgetsStatsTypeC.vue'
 
 const noticeRoute = ref('공지 사항')
 
@@ -30,16 +27,6 @@ onBeforeMount(() => boardStore.fetchPostList({ board: 1 }))
         <WiseWord />
       </CCol>
     </CRow>
-    <!--    <CRow>-->
-    <!--      <CCol>-->
-    <!--        <WidgetsStatsA />-->
-    <!--      </CCol>-->
-    <!--    </CRow>-->
-    <!--    <CRow>-->
-    <!--      <CCol>-->
-    <!--        <WidgetsStatsC />-->
-    <!--      </CCol>-->
-    <!--    </CRow>-->
     <CRow class="mb-3">
       <CCol>
         <MyIssue />
@@ -53,9 +40,6 @@ onBeforeMount(() => boardStore.fetchPostList({ board: 1 }))
           :post-list="postList"
         />
       </CCol>
-      <!--      <CCol xl="6">-->
-      <!--        <WidgetsStatsB />-->
-      <!--      </CCol>-->
     </CRow>
   </CContainer>
 </template>
