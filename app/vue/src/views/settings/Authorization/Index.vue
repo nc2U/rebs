@@ -161,10 +161,7 @@ const authReset = () => {
   menuAuth.value.auth_manage = '0'
 }
 
-const toSave = () => {
-  if (write_auth_manage.value) refConfirmModal.value.callModal()
-  else refAlertModal.value.callModal()
-}
+const toSave = () => refConfirmModal.value.callModal()
 
 const onSubmit = (payload: any) => {
   alert('submited!')
