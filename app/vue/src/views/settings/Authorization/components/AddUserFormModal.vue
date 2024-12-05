@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 
 const emit = defineEmits(['on-submit'])
 
 const refFormModal = ref()
-const refConfForm = ref()
 
-const form = ref({
+const form = reactive({
   username: '',
   email: '',
   password: '',
@@ -30,15 +29,25 @@ const onSubmit = (event: Event) => {
 
     validated.value = true
   } else {
-    if (form.value.password !== form.value.passConf) {
+    if (form.password !== form.passConf) {
       alert('비밀번호가 일치하지 않습니다.')
-      refConfForm.value.focus()
       return
     }
-    emit('on-submit', form.value)
+    emit('on-submit', form)
     validated.value = false
+    formReset()
     refFormModal.value.close()
   }
+}
+
+const formReset = () => {
+  form.username = ''
+  form.email = ''
+  form.password = ''
+  form.passConf = ''
+  form.sendMail = true
+  form.sendOption = '1'
+  form.expired = 24
 }
 
 const generatePassword = () => {
@@ -55,8 +64,8 @@ const generatePassword = () => {
 }
 
 const applyGen = () => {
-  form.value.password = genPass.value
-  form.value.passConf = genPass.value
+  form.password = genPass.value
+  form.passConf = genPass.value
   genPass.value = ''
 }
 
@@ -127,7 +136,6 @@ defineExpose({ callModal })
             </CFormLabel>
             <CCol sm="5">
               <CFormInput
-                ref="refConfForm"
                 v-model="form.passConf"
                 id="passConf"
                 type="password"

@@ -4,8 +4,6 @@ import { useRouter } from 'vue-router'
 
 const emit = defineEmits(['onSubmit'])
 
-const passwordForm = ref()
-
 const form = reactive({
   username: '',
   email: '',
@@ -25,7 +23,6 @@ const onSubmit = (event: Event) => {
   } else {
     if (form.password !== form.passwordConfirm) {
       alert('비밀번호가 일치하지 않습니다.')
-      passwordForm.value.focus()
       return
     }
     emit('onSubmit', { ...form })
@@ -70,7 +67,6 @@ const router = useRouter()
         <CIcon icon="cil-lock-locked" />
       </CInputGroupText>
       <CFormInput
-        ref="passwordForm"
         v-model="form.password"
         type="password"
         autocomplete="password"
