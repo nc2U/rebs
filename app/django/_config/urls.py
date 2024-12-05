@@ -52,7 +52,7 @@ url = [
 
     path('', include('django.contrib.auth.urls')),  # 로그아웃 등 페이지 코드에 필요
     path('', RedirectView.as_view(url='/pms/'), name='homepage'),
-    path('pms', install_check, name='home'),
+    path('pms/', install_check, name='home'),
     path('rebs/', include('rebs.urls')),
     path('svelte/', TemplateView.as_view(template_name='base-svelte.html')),
 
