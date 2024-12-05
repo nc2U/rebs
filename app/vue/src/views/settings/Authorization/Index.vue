@@ -167,7 +167,7 @@ const toSave = () => {
 }
 
 const onSubmit = (payload: any) => {
-  alert('aa')
+  alert('submited!')
   console.log(payload)
 }
 

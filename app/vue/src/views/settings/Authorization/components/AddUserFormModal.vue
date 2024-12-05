@@ -5,6 +5,7 @@ import FormModal from '@/components/Modals/FormModal.vue'
 const emit = defineEmits(['on-submit'])
 
 const refFormModal = ref()
+const refConfForm = ref()
 
 const form = ref({
   username: '',
@@ -29,8 +30,14 @@ const onSubmit = (event: Event) => {
 
     validated.value = true
   } else {
+    if (form.value.password !== form.value.passConf) {
+      alert('비밀번호가 일치하지 않습니다.')
+      refConfForm.value.focus()
+      return
+    }
     emit('on-submit', form.value)
     validated.value = false
+    refFormModal.value.close()
   }
 }
 
@@ -65,13 +72,7 @@ defineExpose({ callModal })
     </template>
     <template #header>사용자 정보 입력</template>
     <template #default>
-      <CForm
-        class="needs-validation"
-        autocomplete="off"
-        novalidate
-        :validated="validated"
-        @submit.prevent="onSubmit"
-      >
+      <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
         <CModalBody class="text-body p-4">
           <CRow class="mb-3">
             <CFormLabel for="username" class="col-sm-3 col-form-label required">아이디</CFormLabel>
@@ -81,6 +82,7 @@ defineExpose({ callModal })
                 id="username"
                 maxlength="30"
                 placeholder="아이디"
+                autocomplete="off"
                 required
               />
             </CCol>
@@ -109,6 +111,7 @@ defineExpose({ callModal })
                 type="password"
                 maxlength="20"
                 placeholder="비밀번호"
+                autocomplete="off"
                 required
               />
             </CCol>
@@ -124,6 +127,7 @@ defineExpose({ callModal })
             </CFormLabel>
             <CCol sm="5">
               <CFormInput
+                ref="refConfForm"
                 v-model="form.passConf"
                 id="passConf"
                 type="password"
