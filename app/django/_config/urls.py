@@ -21,7 +21,7 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
     TokenRefreshView,
 )
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, RedirectView
 from django.conf import settings
 from django.conf.urls.static import static
 from rebs.views import CustomHandler404, install_check
@@ -51,6 +51,7 @@ url = [
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain')),
 
     path('', include('django.contrib.auth.urls')),  # 로그아웃 등 페이지 코드에 필요
+    # path('', RedirectView.as_view(url='/ps/'), name='homepage'),
     path('', install_check, name='home'),
     path('rebs/', include('rebs.urls')),
     path('svelte/', TemplateView.as_view(template_name='base-svelte.html')),
