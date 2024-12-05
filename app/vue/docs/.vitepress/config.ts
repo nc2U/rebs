@@ -11,7 +11,7 @@ export default defineConfig({
       'link',
       {
         rel: 'shortcut icon',
-        href: 'https://github.com/nc2U/rebs/blob/master/app/vue/docs/favicon.png?raw=true',
+        href: 'https://github.com/nc2U/ibs/blob/master/app/vue/docs/favicon.png?raw=true',
       },
     ],
   ],
@@ -22,7 +22,7 @@ export default defineConfig({
     // lineNumbers: true,
   },
   themeConfig: {
-    logo: 'https://raw.githubusercontent.com/nc2U/rebs/5787dbf80bf9ccbb16a8b3a49d052199cafdb171/app/vue/docs/favicon.svg',
+    logo: 'https://raw.githubusercontent.com/nc2U/ibs/5787dbf80bf9ccbb16a8b3a49d052199cafdb171/app/vue/docs/favicon.svg',
     siteTitle: 'IBS',
     nav: [
       { text: '가이드', link: '/intro/getting-started' },
@@ -82,11 +82,11 @@ export default defineConfig({
       },
     ],
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/nc2U/rebs' },
+      { icon: 'github', link: 'https://github.com/nc2U/ibs' },
       { icon: 'slack', link: 'https://br-on.slack.com' },
     ],
     editLink: {
-      pattern: 'https://github.com/nc2U/rebs/blob/master/app/vue/docs/:path',
+      pattern: 'https://github.com/nc2U/ibs/blob/master/app/vue/docs/:path',
       text: 'Edit this page on GitHub',
     },
     carbonAds: {
