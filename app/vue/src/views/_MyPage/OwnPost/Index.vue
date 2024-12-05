@@ -5,9 +5,9 @@ import type { User } from '@/store/types/accounts'
 import { type PostFilter, useBoard } from '@/store/pinia/board'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
-import ListController from '@/views/_MyPage/OwnPost/components/ListController.vue'
-import PostList from '@/views/_MyPage/OwnPost/components/PostList.vue'
-import CommentList from '@/views/_MyPage/OwnPost/components/CommentList.vue'
+import ListController from './components/ListController.vue'
+import PostList from './components/PostList.vue'
+import CommentList from './components/CommentList.vue'
 
 const mainViewName = ref('내 작성글')
 const sort = ref<'post' | 'comment'>('post')

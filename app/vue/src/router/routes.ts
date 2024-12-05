@@ -40,23 +40,23 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: 'dashboard/notices',
-        name: '공지 사항',
+        name: '공지 게시판',
         component: () => import('@/views/_Dashboard/components/NoticeBoard/Index.vue'),
         meta: { title: '대 시 보 드', auth: true, affix: true },
         children: [
           {
             path: ':postId(\\d+)',
-            name: '공지 사항 - 보기',
+            name: '공지 게시판 - 보기',
             component: () => import('@/views/_Dashboard/components/NoticeBoard/Index.vue'),
           },
           {
             path: 'create',
-            name: '공지 사항 - 작성',
+            name: '공지 게시판 - 작성',
             component: () => import('@/views/_Dashboard/components/NoticeBoard/Index.vue'),
           },
           {
             path: ':postId(\\d+)/update',
-            name: '공지 사항 - 수정',
+            name: '공지 게시판 - 수정',
             component: () => import('@/views/_Dashboard/components/NoticeBoard/Index.vue'),
           },
         ],

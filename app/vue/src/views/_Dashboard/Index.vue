@@ -6,7 +6,7 @@ import WiseWord from './components/WiseWord.vue'
 import MyIssue from '@/views/_Work/MyIssue/Index.vue'
 import NoticeBoard from './components/NoticeBoard/ListComp.vue'
 
-const noticeRoute = ref('공지 사항')
+const noticeRoute = ref('공지 게시판')
 
 const boardStore = useBoard()
 const postList = computed(() => boardStore.postList)

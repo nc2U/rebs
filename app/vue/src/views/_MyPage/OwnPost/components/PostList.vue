@@ -2,13 +2,12 @@
 import type { PropType } from 'vue'
 import { useBoard } from '@/store/pinia/board'
 import { TableSecondary } from '@/utils/cssMixins'
-import type { Board, Post as P } from '@/store/types/board'
-import Pagination from '@/components/Pagination'
+import type { Post as P } from '@/store/types/board'
 import Post from './Post.vue'
+import Pagination from '@/components/Pagination'
 
 defineProps({
   page: { type: Number, default: 1 },
-  boardList: { type: Array as PropType<Board[]>, default: () => [] },
   postList: { type: Array as PropType<P[]>, default: () => [] },
   viewRoute: { type: String, required: true },
 })
@@ -40,13 +39,7 @@ const pageSelect = (page: number) => emit('page-select', page)
     </CTableHead>
 
     <CTableBody>
-      <Post
-        v-for="post in postList"
-        :key="post.pk"
-        :board-list="boardList"
-        :post="post"
-        :view-route="viewRoute"
-      />
+      <Post v-for="post in postList" :key="post.pk" :post="post" :view-route="viewRoute" />
     </CTableBody>
   </CTable>
 

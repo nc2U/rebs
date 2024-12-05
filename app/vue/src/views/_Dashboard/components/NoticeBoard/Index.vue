@@ -13,7 +13,7 @@ import PostForm from '@/components/Posts/PostForm.vue'
 
 const lController = ref()
 const boardNumber = ref(1)
-const mainViewName = ref('공지 사항')
+const mainViewName = ref('공지 게시판')
 
 const postFilter = ref<PostFilter>({
   company: '',
