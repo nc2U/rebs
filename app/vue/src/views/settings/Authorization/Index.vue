@@ -131,7 +131,7 @@ const selectUser = (pk: number | null) => {
       if (user.value && !user.value.staffauth) authReset()
     })
   } else {
-    accStore.delUser()
+    accStore.removeUser()
     authReset()
   }
 }

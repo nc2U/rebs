@@ -45,7 +45,7 @@ export const useAccount = defineStore('account', () => {
       .then(res => (user.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const delUser = () => (user.value = null)
+  const removeUser = () => (user.value = null)
 
   const signup = (payload: LoginUser & { username: string }) =>
     api
@@ -417,7 +417,7 @@ export const useAccount = defineStore('account', () => {
 
     fetchUsersList,
     fetchUser,
-    delUser,
+    removeUser,
     signup,
     login,
     loginByToken,
