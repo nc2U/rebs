@@ -44,7 +44,7 @@ onBeforeMount(() => project.fetchProjectList())
 </script>
 
 <template>
-  <CCallout color="secondary" :class="bgLight">
+  <CCallout color="secondary" :class="bgLight" class="mt-1">
     <CRow>
       <CCol md="10" lg="8" xl="6">
         <CRow class="m-1">

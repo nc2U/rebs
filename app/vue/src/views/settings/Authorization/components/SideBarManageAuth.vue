@@ -28,8 +28,8 @@ const authData = ref<UserAuth>({
   company_cash: '0',
   company_docs: '0',
   human_resource: '0',
-  company_settings: '0',
-  auth_manage: '0',
+  company_settings: '1',
+  auth_manage: '1',
 })
 
 const auths = reactive([
@@ -86,8 +86,8 @@ const dataSetup = () => {
     authData.value.company_cash = '0'
     authData.value.company_docs = '0'
     authData.value.human_resource = '0'
-    authData.value.company_settings = '0'
-    authData.value.auth_manage = '0'
+    authData.value.company_settings = '1'
+    authData.value.auth_manage = '1'
   }
 }
 
@@ -99,153 +99,105 @@ onUpdated(() => dataSetup())
   <CRow v-if="user?.staffauth?.is_staff">
     <CCol>
       <CRow>
-        <CRow>
-          <CCol>
-            <h6 class="font-weight-bold">
-              <v-icon icon="mdi-domain" color="primary" size="sm" />
-              본사 관리
-            </h6>
-          </CCol>
-        </CRow>
+        <CCol>
+          <h6 class="font-weight-bold">
+            <v-icon icon="mdi-domain" color="primary" size="sm" />
+            본사 관리
+          </h6>
+        </CCol>
+      </CRow>
 
-        <CRow>
-          <CCol md="6" lg="4">
-            <CRow class="m-1">
-              <CFormLabel class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3">
-                <v-icon
-                  icon="mdi mdi-account-arrow-left"
-                  :color="getColor(authData.company_cash)[0]"
-                />
-                본사 자금 관리
-              </CFormLabel>
-              <CCol>
-                <CFormSelect
-                  v-model="authData.company_cash"
-                  :options="auths"
-                  :disabled="isCoInActive || !write_auth_manage"
-                  :style="{
-                    backgroundColor: isDark ? '' : getColor(authData.company_cash)[1],
-                  }"
-                  @change="selectAuth"
-                />
-              </CCol>
-            </CRow>
-          </CCol>
-          <CCol md="6" lg="4">
-            <CRow class="m-1">
-              <CFormLabel class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3">
-                <v-icon
-                  icon="mdi mdi-account-arrow-left"
-                  :color="getColor(authData.company_docs)[0]"
-                />
-                본사 문서 관리
-              </CFormLabel>
-              <CCol>
-                <CFormSelect
-                  v-model="authData.company_docs"
-                  :options="auths"
-                  :disabled="isCoInActive || !write_auth_manage"
-                  :style="{
-                    backgroundColor: isDark ? '' : getColor(authData.company_docs)[1],
-                  }"
-                  @change="selectAuth"
-                />
-              </CCol>
-            </CRow>
-          </CCol>
-          <CCol md="6" lg="4">
-            <CRow class="m-1">
-              <CFormLabel class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3">
-                <v-icon
-                  icon="mdi mdi-account-arrow-left"
-                  :color="getColor(authData.human_resource)[0]"
-                />
-                본사 인사 관리
-              </CFormLabel>
-              <CCol>
-                <CFormSelect
-                  v-model="authData.human_resource"
-                  :options="auths"
-                  :disabled="isCoInActive || !write_auth_manage"
-                  :style="{
-                    backgroundColor: isDark ? '' : getColor(authData.human_resource)[1],
-                  }"
-                  @change="selectAuth"
-                />
-              </CCol>
-            </CRow>
-          </CCol>
-
-          <CCol md="6" lg="4">
-            <CRow class="m-1">
-              <CFormLabel class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3">
-                <v-icon
-                  icon="mdi mdi-account-arrow-left"
-                  :color="getColor(authData.company_settings)[0]"
-                />
-                회사 정보 관리
-              </CFormLabel>
-              <CCol>
-                <CFormSelect
-                  v-model="authData.company_settings"
-                  :options="auths"
-                  :disabled="isCoInActive || !write_auth_manage"
-                  :style="{
-                    backgroundColor: isDark ? '' : getColor(authData.company_settings)[1],
-                  }"
-                  @change="selectAuth"
-                />
-              </CCol>
-            </CRow>
-          </CCol>
-          <CCol md="6" lg="4">
-            <CRow class="m-1">
-              <CFormLabel class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3">
-                <v-icon
-                  icon="mdi mdi-account-arrow-left"
-                  :color="getColor(authData.auth_manage)[0]"
-                />
-                권한 설정 관리
-              </CFormLabel>
-              <CCol>
-                <CFormSelect
-                  v-model="authData.auth_manage"
-                  :options="auths"
-                  :disabled="isCoInActive || !write_auth_manage"
-                  :style="{
-                    backgroundColor: isDark ? '' : getColor(authData.auth_manage)[1],
-                  }"
-                  @change="selectAuth"
-                />
-              </CCol>
-            </CRow>
-          </CCol>
-          <CCol md="6" lg="4">
-            <CRow class="m-1"></CRow>
-          </CCol>
-        </CRow>
+      <CRow>
+        <CCol md="6" lg="4">
+          <CRow class="m-1">
+            <CFormLabel class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3">
+              <v-icon
+                icon="mdi mdi-account-arrow-left"
+                :color="getColor(authData.company_cash)[0]"
+              />
+              본사 자금 관리
+            </CFormLabel>
+            <CCol>
+              <CFormSelect
+                v-model="authData.company_cash"
+                :options="auths"
+                :disabled="isCoInActive || !write_auth_manage"
+                :style="{
+                  backgroundColor: isDark ? '' : getColor(authData.company_cash)[1],
+                }"
+                @change="selectAuth"
+              />
+            </CCol>
+          </CRow>
+        </CCol>
+        <CCol md="6" lg="4">
+          <CRow class="m-1">
+            <CFormLabel class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3">
+              <v-icon
+                icon="mdi mdi-account-arrow-left"
+                :color="getColor(authData.company_docs)[0]"
+              />
+              본사 문서 관리
+            </CFormLabel>
+            <CCol>
+              <CFormSelect
+                v-model="authData.company_docs"
+                :options="auths"
+                :disabled="isCoInActive || !write_auth_manage"
+                :style="{
+                  backgroundColor: isDark ? '' : getColor(authData.company_docs)[1],
+                }"
+                @change="selectAuth"
+              />
+            </CCol>
+          </CRow>
+        </CCol>
+        <CCol md="6" lg="4">
+          <CRow class="m-1">
+            <CFormLabel class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3">
+              <v-icon
+                icon="mdi mdi-account-arrow-left"
+                :color="getColor(authData.human_resource)[0]"
+              />
+              본사 인사 관리
+            </CFormLabel>
+            <CCol>
+              <CFormSelect
+                v-model="authData.human_resource"
+                :options="auths"
+                :disabled="isCoInActive || !write_auth_manage"
+                :style="{
+                  backgroundColor: isDark ? '' : getColor(authData.human_resource)[1],
+                }"
+                @change="selectAuth"
+              />
+            </CCol>
+          </CRow>
+        </CCol>
       </CRow>
     </CCol>
   </CRow>
 
   <v-divider v-if="user?.staffauth?.is_staff" />
 
-  <ProjectManageAuth :user="user as User" @get-allowed="getAllowed" @get-assigned="getAssigned" />
+  <CRow>
+    <CCol>
+      <CRow>
+        <CCol>
+          <h6 class="font-weight-bold">
+            <v-icon icon="mdi-sitemap" color="success" size="sm" />
+            현장 관리
+          </h6>
+        </CCol>
+      </CRow>
+    </CCol>
+  </CRow>
 
-  <v-divider />
+  <ProjectManageAuth :user="user as User" @get-allowed="getAllowed" @get-assigned="getAssigned" />
 
   <CRow>
     <CCol>
       <CRow class="mb-3">
-        <CRow>
-          <CCol>
-            <h6 class="font-weight-bold">
-              <v-icon icon="mdi-sitemap" color="success" size="sm" />
-              현장 관리
-            </h6>
-          </CCol>
-        </CRow>
-
         <CRow>
           <CCol md="6" lg="4">
             <CRow class="m-1">
@@ -387,6 +339,73 @@ onUpdated(() => dataSetup())
                 />
               </CCol>
             </CRow>
+          </CCol>
+        </CRow>
+      </CRow>
+    </CCol>
+  </CRow>
+
+  <v-divider />
+
+  <CRow>
+    <CCol>
+      <CRow>
+        <CRow>
+          <CCol>
+            <h6 class="font-weight-bold">
+              <v-icon icon="mdi-cog" color="secondary" size="sm" />
+              기타 관리
+            </h6>
+          </CCol>
+        </CRow>
+
+        <CRow>
+          <CCol md="6" lg="4">
+            <CRow class="m-1">
+              <CFormLabel class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3">
+                <v-icon
+                  icon="mdi mdi-account-arrow-left"
+                  :color="getColor(authData.company_settings)[0]"
+                />
+                회사 정보 관리
+              </CFormLabel>
+              <CCol>
+                <CFormSelect
+                  v-model="authData.company_settings"
+                  :options="auths"
+                  :disabled="isCoInActive || !write_auth_manage"
+                  :style="{
+                    backgroundColor: isDark ? '' : getColor(authData.company_settings)[1],
+                  }"
+                  @change="selectAuth"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+          <CCol md="6" lg="4">
+            <CRow class="m-1">
+              <CFormLabel class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3">
+                <v-icon
+                  icon="mdi mdi-account-arrow-left"
+                  :color="getColor(authData.auth_manage)[0]"
+                />
+                권한 설정 관리
+              </CFormLabel>
+              <CCol>
+                <CFormSelect
+                  v-model="authData.auth_manage"
+                  :options="auths"
+                  :disabled="isCoInActive || !write_auth_manage"
+                  :style="{
+                    backgroundColor: isDark ? '' : getColor(authData.auth_manage)[1],
+                  }"
+                  @change="selectAuth"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+          <CCol md="6" lg="4">
+            <CRow class="m-1"></CRow>
           </CCol>
         </CRow>
       </CRow>
