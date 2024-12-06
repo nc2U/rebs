@@ -186,7 +186,7 @@ onUpdated(() => dataSetup())
         <CCol>
           <h6 class="font-weight-bold">
             <v-icon icon="mdi-sitemap" color="success" size="sm" />
-            현장 관리
+            프로젝트 관리
           </h6>
         </CCol>
       </CRow>
