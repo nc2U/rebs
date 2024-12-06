@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { type ComputedRef, inject, ref } from 'vue'
 import { useStore } from '@/store'
 import { useRouter } from 'vue-router'
 import { hashCode } from '@/utils/helper'
+import type { Company } from '@/store/types/settings'
 
 const alertModal = ref()
 
@@ -11,6 +12,8 @@ const validated = ref(false)
 
 const store = useStore()
 const router = useRouter()
+
+const company = inject<ComputedRef<Company>>('company')
 
 const onSubmit = (event: Event) => {
   const form = event.currentTarget as HTMLInputElement
@@ -48,7 +51,7 @@ const onSubmit = (event: Event) => {
               <CRow>
                 <CCol>
                   <p class="text-medium-emphasis">
-                    이 사이트는 (주)바램디앤씨의 업무관리 시스템입니다.
+                    이 사이트는 {{ company?.name }}의 업무관리 시스템입니다.
                   </p>
                   <p class="text-medium-emphasis">
                     계정 등록을 위하여 <u>계정 생성코드</u>가 필요합니다.

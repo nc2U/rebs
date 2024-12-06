@@ -3,8 +3,9 @@ import { ref, computed, type PropType, watch, onBeforeMount, inject, type Comput
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { useDocs } from '@/store/pinia/docs'
 import type { SuitCase } from '@/store/types/docs'
-import { TableSecondary } from '@/utils/cssMixins'
 import type { User } from '@/store/types/accounts'
+import type { Company } from '@/store/types/settings'
+import { TableSecondary } from '@/utils/cssMixins'
 import { timeFormat, numFormat } from '@/utils/baseMixins'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -28,6 +29,8 @@ const editAuth = computed(
 
 const prev = ref<number | null>()
 const next = ref<number | null>()
+
+const company = inject<ComputedRef<Company>>('company')
 
 const sortName = computed(() => props.suitcase?.proj_name || '본사')
 const sortDesc = computed(() => props.suitcase.sort_desc)
@@ -80,7 +83,7 @@ const shareKakaoTalk = () => {
     container: '#kakaotalk-sharing-btn',
     objectType: 'feed',
     content: {
-      title: '주식회사 바램디앤씨',
+      title: company?.value.name,
       description: `#공지사항 #${props.suitcase?.case_number}`,
       imageUrl: 'https://brdnc.co.kr/static/dist/img/icons/ms-icon-310x310.png',
       link: {

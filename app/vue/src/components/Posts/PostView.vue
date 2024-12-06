@@ -4,6 +4,7 @@ import { ref, computed, watch, inject, onBeforeMount, onMounted } from 'vue'
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { useBoard } from '@/store/pinia/board'
 import { type Post } from '@/store/types/board'
+import type { Company } from '@/store/types/settings'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 import { toPrint, toPostLike, toPostBlame, postManageItems, toPostManage } from '@/utils/postMixins'
 import sanitizeHtml from 'sanitize-html'
@@ -44,6 +45,8 @@ const editAuth = computed(
 const prev = ref<number | null>()
 const next = ref<number | null>()
 
+const company = inject<ComputedRef<Company>>('company')
+
 const sortName = computed(() => props.post?.proj_name || '본사 문서')
 const postId = computed(() => Number(route.params.postId))
 
@@ -80,7 +83,7 @@ const shareKakaoTalk = () => {
     container: '#kakaotalk-sharing-btn',
     objectType: 'feed',
     content: {
-      title: '주식회사 바램디앤씨',
+      title: company?.value.name,
       description: `#공지사항 #${props.post?.title}`,
       imageUrl: 'https://brdnc.co.kr/static/dist/img/icons/ms-icon-310x310.png',
       link: {

@@ -5,9 +5,10 @@ import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { useDocs } from '@/store/pinia/docs'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 import { type Docs } from '@/store/types/docs'
+import type { User } from '@/store/types/accounts'
+import type { Company } from '@/store/types/settings'
 import { toPrint, docsManageItems, toDocsManage } from '@/utils/docsMixins'
 import sanitizeHtml from 'sanitize-html'
-import type { User } from '@/store/types/accounts'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import TypeListModal from '@/components/Documents/components/TypeListModal.vue'
@@ -42,6 +43,8 @@ const editAuth = computed(
 const prev = ref<number | null>()
 const next = ref<number | null>()
 
+const company = inject<ComputedRef<Company>>('company')
+
 const sortName = computed(() => props.docs?.proj_name || '본사 문서')
 const docsId = computed(() => Number(route.params.docsId))
 
@@ -68,7 +71,7 @@ const shareKakaoTalk = () => {
     container: '#kakaotalk-sharing-btn',
     objectType: 'feed',
     content: {
-      title: '주식회사 바램디앤씨',
+      title: company?.value.name,
       description: `#공지사항 #${props.docs?.title}`,
       imageUrl: 'https://brdnc.co.kr/static/dist/img/icons/ms-icon-310x310.png',
       link: {
