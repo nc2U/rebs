@@ -96,12 +96,15 @@ onUpdated(() => dataSetup())
 </script>
 
 <template>
-  <CRow>
+  <CRow v-if="1 == 2">
     <CCol>
       <CRow>
         <CRow>
           <CCol>
-            <h6 class="font-weight-bold">1. 본사 관리</h6>
+            <h6 class="font-weight-bold">
+              <v-icon icon="mdi-domain" color="primary" size="sm" />
+              본사 관리
+            </h6>
           </CCol>
         </CRow>
 
@@ -225,7 +228,7 @@ onUpdated(() => dataSetup())
     </CCol>
   </CRow>
 
-  <v-divider />
+  <v-divider v-if="1 == 3" />
 
   <ProjectManageAuth :user="user as User" @get-allowed="getAllowed" @get-assigned="getAssigned" />
 
@@ -236,7 +239,10 @@ onUpdated(() => dataSetup())
       <CRow class="mb-3">
         <CRow>
           <CCol>
-            <h6 class="font-weight-bold">2. 현장 관리</h6>
+            <h6 class="font-weight-bold">
+              <v-icon icon="mdi-sitemap" color="success" size="sm" />
+              현장 관리
+            </h6>
           </CCol>
         </CRow>
 

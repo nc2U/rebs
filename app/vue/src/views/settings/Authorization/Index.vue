@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref, watch } from 'vue'
 import { navMenu, pageTitle } from '@/views/settings/_menu/headermixin'
-import { useCompany } from '@/store/pinia/company'
 import { type User } from '@/store/types/accounts'
+import { useCompany } from '@/store/pinia/company'
 import { useAccount } from '@/store/pinia/account'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -131,7 +131,7 @@ const selectUser = (pk: number | null) => {
       if (user.value && !user.value.staffauth) authReset()
     })
   } else {
-    accStore.user = null
+    accStore.delUser()
     authReset()
   }
 }
