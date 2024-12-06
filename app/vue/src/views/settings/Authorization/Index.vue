@@ -180,7 +180,7 @@ const modalAction = () => {
 }
 
 watch(
-  () => user.value.staffauth,
+  () => user.value?.staffauth,
   nVal => {
     if (nVal) {
       comInfo.value.is_staff = nVal.is_staff
