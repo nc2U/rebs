@@ -122,7 +122,7 @@ const comId = computed(() => comStore.company?.pk)
 const fetchCompany = (pk: number) => comStore.fetchCompany(pk)
 
 const accStore = useAccount()
-const user = computed(() => accStore.user)
+const user = computed<User>(() => accStore.user)
 const isStaffAuth = computed(() => !!user.value?.staffauth)
 
 const selectUser = (pk: number | null) => {
@@ -180,27 +180,26 @@ const modalAction = () => {
 }
 
 watch(
-  () => user.value,
+  () => user.value.staffauth,
   nVal => {
-    const sa = nVal?.staffauth
-    if (nVal && sa) {
-      comInfo.value.is_staff = sa.is_staff
-      projectAuth.value.is_project_staff = sa.is_project_staff
-      projectAuth.value.assigned_project = sa.assigned_project
-      projectAuth.value.allowed_projects = sa.allowed_projects
-      menuAuth.value.pk = sa.pk
-      menuAuth.value.contract = sa.contract
-      menuAuth.value.payment = sa.payment
-      menuAuth.value.notice = sa.notice
-      menuAuth.value.project_cash = sa.project_cash
-      menuAuth.value.project_docs = sa.project_docs
-      menuAuth.value.project = sa.project
-      menuAuth.value.project_site = sa.project_site
-      menuAuth.value.company_cash = sa.company_cash
-      menuAuth.value.company_docs = sa.company_docs
-      menuAuth.value.human_resource = sa.human_resource
-      menuAuth.value.company_settings = sa.company_settings
-      menuAuth.value.auth_manage = sa.auth_manage
+    if (nVal) {
+      comInfo.value.is_staff = nVal.is_staff
+      projectAuth.value.is_project_staff = nVal.is_project_staff
+      projectAuth.value.assigned_project = nVal.assigned_project
+      projectAuth.value.allowed_projects = nVal.allowed_projects
+      menuAuth.value.pk = nVal.pk
+      menuAuth.value.contract = nVal.contract
+      menuAuth.value.payment = nVal.payment
+      menuAuth.value.notice = nVal.notice
+      menuAuth.value.project_cash = nVal.project_cash
+      menuAuth.value.project_docs = nVal.project_docs
+      menuAuth.value.project = nVal.project
+      menuAuth.value.project_site = nVal.project_site
+      menuAuth.value.company_cash = nVal.company_cash
+      menuAuth.value.company_docs = nVal.company_docs
+      menuAuth.value.human_resource = nVal.human_resource
+      menuAuth.value.company_settings = nVal.company_settings
+      menuAuth.value.auth_manage = nVal.auth_manage
     }
   },
 )
@@ -212,10 +211,7 @@ const dataSetup = (pk: number) => {
   comInfo.value.company = pk
 }
 
-const dataReset = () => {
-  comInfo.value.company = null
-  comStore.company = null
-}
+const dataReset = () => (comInfo.value.company = null)
 
 onBeforeMount(() => {
   accStore.fetchUsersList()
