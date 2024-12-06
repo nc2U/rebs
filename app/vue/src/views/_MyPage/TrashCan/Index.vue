@@ -23,6 +23,7 @@ const trashDocsCount = computed(() => docStore.trashDocsCount)
 const fetchTrashDocs = (pk: number) => docStore.fetchTrashDocs(pk)
 const fetchTrashDocsList = (page?: number) => docStore.fetchTrashDocsList(page)
 const restoreDocs = (pk: number) => docStore.restoreDocs(pk)
+const deleteTrashDocs = (pk: number, page: number) => docStore.deleteTrashDocs(pk, page)
 
 const [route, router] = [
   useRoute() as LoadedRoute & {
@@ -62,9 +63,7 @@ const deleteDocs = (pk: number) => {
 }
 
 const delModalAction = () => {
-  // restoreDocs(deleteId.value as number)
-  // docs // board 구분하여 삭제 로직 구현
-  alert('준비중입니다!')
+  deleteTrashDocs(deleteId.value as number, page.value)
   refDeleteModal.value.close()
   router.replace({ name: mainViewName.value })
 }

@@ -283,11 +283,13 @@ export const useDocs = defineStore('docs', () => {
       .then(() => message('success', '', '게시물 복사가 완료되었습니다.'))
       .catch(err => errorHandle(err.response.data))
 
-  const deleteDocs = (pk: number, filter: DocsFilter, hard = '') =>
+  const deleteDocs = (pk: number, filter: DocsFilter) =>
     api
-      .delete(`/docs/${pk}/?hard=${hard}`)
+      .delete(`/docs/${pk}/`)
       .then(() =>
-        fetchDocsList(filter).then(() => message('warning', '', '해당 게시물이 삭제되었습니다.')),
+        fetchDocsList(filter).then(() =>
+          message('warning', '', '해당 게시물이 휴지통으로 삭제되었습니다.'),
+        ),
       )
       .catch(err => errorHandle(err.response.data))
 
@@ -329,8 +331,18 @@ export const useDocs = defineStore('docs', () => {
           page: 1,
         }).then(() =>
           fetchTrashDocsList().then(() =>
-            message('success', '', '해당 게시물 휴지통에서 복원되었습니다.'),
+            message('success', '', '해당 게시물이 휴지통에서 복원되었습니다.'),
           ),
+        ),
+      )
+      .catch(err => errorHandle(err.response.data))
+
+  const deleteTrashDocs = (pk: number, page = 1) =>
+    api
+      .delete(`/docs-trash-can/${pk}/?hard=1`)
+      .then(() =>
+        fetchTrashDocsList(page).then(() =>
+          message('danger', '', '해당 게시물이 영구 삭제되었습니다.'),
         ),
       )
       .catch(err => errorHandle(err.response.data))
@@ -417,6 +429,7 @@ export const useDocs = defineStore('docs', () => {
     removeTrashDocs,
     fetchTrashDocsList,
     restoreDocs,
+    deleteTrashDocs,
 
     link,
     fetchLink,
