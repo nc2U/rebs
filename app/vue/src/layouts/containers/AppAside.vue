@@ -71,7 +71,7 @@ onBeforeMount(async () => {
             Today
           </CListGroupItem>
           <CListGroupItem href="#" class="border-start-4 border-start-warning">
-            <CAvatar :src="avatar7" size="lg" class="float-end" />
+            <CAvatar :src="avatar7 as any" size="lg" class="float-end" />
             <div>Meeting with <strong>Lucas</strong></div>
             <small class="text-medium-emphasis me-3">
               <CIcon icon="cil-calendar" />
@@ -83,7 +83,7 @@ onBeforeMount(async () => {
             </small>
           </CListGroupItem>
           <CListGroupItem href="#" class="border-start-4 border-start-info">
-            <CAvatar :src="avatar4" size="lg" class="float-end" />
+            <CAvatar :src="avatar4 as any" size="lg" class="float-end" />
             <div>Skype with <strong>Megan</strong></div>
             <small class="text-medium-emphasis me-3">
               <CIcon icon="cil-calendar" />
@@ -111,11 +111,11 @@ onBeforeMount(async () => {
               creativeLabs HQ
             </small>
             <div class="avatars-stack mt-2">
-              <CAvatar :src="avatar2" size="sm" />
-              <CAvatar :src="avatar3" size="sm" />
-              <CAvatar :src="avatar4" size="sm" />
-              <CAvatar :src="avatar5" size="sm" />
-              <CAvatar :src="avatar6" size="sm" />
+              <CAvatar :src="avatar2 as any" size="sm" />
+              <CAvatar :src="avatar3 as any" size="sm" />
+              <CAvatar :src="avatar4 as any" size="sm" />
+              <CAvatar :src="avatar5 as any" size="sm" />
+              <CAvatar :src="avatar6 as any" size="sm" />
             </div>
           </CListGroupItem>
           <CListGroupItem href="#" class="border-start-4 border-start-success">
@@ -142,13 +142,13 @@ onBeforeMount(async () => {
               creativeLabs HQ
             </small>
             <div class="/avatars-stack mt-2">
-              <CAvatar :src="avatar2" size="sm" />
-              <CAvatar :src="avatar3" size="sm" />
-              <CAvatar :src="avatar4" size="sm" />
-              <CAvatar :src="avatar5" size="sm" />
-              <CAvatar :src="avatar6" size="sm" />
-              <CAvatar :src="avatar7" size="sm" />
-              <CAvatar :src="avatar8" size="sm" />
+              <CAvatar :src="avatar2 as any" size="sm" />
+              <CAvatar :src="avatar3 as any" size="sm" />
+              <CAvatar :src="avatar4 as any" size="sm" />
+              <CAvatar :src="avatar5 as any" size="sm" />
+              <CAvatar :src="avatar6 as any" size="sm" />
+              <CAvatar :src="avatar7 as any" size="sm" />
+              <CAvatar :src="avatar8 as any" size="sm" />
             </div>
           </CListGroupItem>
         </CListGroup>
@@ -156,7 +156,7 @@ onBeforeMount(async () => {
       <CTabPane class="p-3" :visible="activeKey == 2">
         <div class="message">
           <div class="py-3 pb-5 me-3 float-start">
-            <CAvatar :src="avatar7" status="success" size="md" />
+            <CAvatar :src="avatar7 as any" status="success" size="md" />
           </div>
           <div>
             <small class="text-medium-emphasis">Lukasz Holeczek</small>
@@ -173,7 +173,7 @@ onBeforeMount(async () => {
 
         <div class="message">
           <div class="py-3 pb-5 me-3 float-start">
-            <CAvatar :src="avatar7" status="success" size="md" />
+            <CAvatar :src="avatar7 as any" status="success" size="md" />
           </div>
           <div>
             <small class="text-medium-emphasis">Lukasz Holeczek</small>
@@ -190,7 +190,7 @@ onBeforeMount(async () => {
 
         <div class="message">
           <div class="py-3 pb-5 me-3 float-start">
-            <CAvatar :src="avatar7" status="success" size="md" />
+            <CAvatar :src="avatar7 as any" status="success" size="md" />
           </div>
           <div>
             <small class="text-medium-emphasis">Lukasz Holeczek</small>
@@ -207,7 +207,7 @@ onBeforeMount(async () => {
 
         <div class="message">
           <div class="py-3 pb-5 me-3 float-start">
-            <CAvatar :src="avatar7" status="success" size="md" />
+            <CAvatar :src="avatar7 as any" status="success" size="md" />
           </div>
           <div>
             <small class="text-medium-emphasis">Lukasz Holeczek</small>
@@ -224,7 +224,7 @@ onBeforeMount(async () => {
 
         <div class="message">
           <div class="py-3 pb-5 me-3 float-start">
-            <CAvatar :src="avatar7" status="success" size="md" />
+            <CAvatar :src="avatar7 as any" status="success" size="md" />
           </div>
           <div>
             <small class="text-medium-emphasis">Lukasz Holeczek</small>
