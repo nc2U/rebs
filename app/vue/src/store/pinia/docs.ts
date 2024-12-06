@@ -287,9 +287,7 @@ export const useDocs = defineStore('docs', () => {
     api
       .delete(`/docs/${pk}/`)
       .then(() =>
-        fetchDocsList(filter).then(() =>
-          message('warning', '', '해당 게시물이 휴지통으로 삭제되었습니다.'),
-        ),
+        fetchDocsList(filter).then(() => message('warning', '', '해당 게시물이 삭제되었습니다.')),
       )
       .catch(err => errorHandle(err.response.data))
 

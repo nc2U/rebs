@@ -304,7 +304,29 @@ class LawsuitCase(models.Model):
         verbose_name_plural = '03. 소송사건'
 
 
-class Document(models.Model):
+class BaseModel(models.Model):
+    deleted = models.DateTimeField('휴지통', null=True, blank=True)
+
+    class Meta:
+        abstract = True
+
+    def soft_delete(self):
+        """Mark the instance as deleted."""
+        self.deleted = datetime.now()
+        self.save()
+
+    def restore(self):
+        """Restore a soft-deleted instance."""
+        self.deleted = None
+        self.save()
+
+
+class SoftDeleteManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(deleted=None)
+
+
+class Document(BaseModel):
     company = models.ForeignKey('company.Company', on_delete=models.CASCADE, verbose_name='회사')
     project = models.ForeignKey('project.Project', on_delete=models.SET_NULL,
                                 null=True, blank=True, verbose_name='프로젝트')
@@ -320,10 +342,13 @@ class Document(models.Model):
     is_secret = models.BooleanField('비밀글', default=False)
     password = models.CharField('패스워드', max_length=255, blank=True, default='')
     is_blind = models.BooleanField('숨김', default=False)
-    deleted = models.DateTimeField('휴지통', null=True, blank=True, default=None)
+    # deleted = models.DateTimeField('휴지통', null=True, blank=True, default=None)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    objects = SoftDeleteManager()  # Default manager (exclude soft-deleted)
+    all_objects = models.Manager()  # Include all objects
 
     def __str__(self):
         return self.title
@@ -338,13 +363,13 @@ class Document(models.Model):
         verbose_name = '04. 문서'
         verbose_name_plural = '04. 문서'
 
-    def delete(self, using=None, keep_parents=False):
-        self.deleted = datetime.now()
-        self.save(update_fields=['deleted'])
-
-    def restore(self):
-        self.deleted = None
-        self.save(update_fields=['deleted'])
+    # def soft_delete(self, using=None, keep_parents=False):
+    #     self.deleted = datetime.now()
+    #     self.save(update_fields=['deleted'])
+    #
+    # def restore(self):
+    #     self.deleted = None
+    #     self.save(update_fields=['deleted'])
 
 
 class Link(models.Model):

@@ -70,7 +70,7 @@ class DocumentFilterSet(FilterSet):
 
 
 class DocumentViewSet(viewsets.ModelViewSet):
-    queryset = Document.objects.filter(deleted=None)
+    queryset = Document.objects.all()
     serializer_class = DocumentSerializer
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     pagination_class = PageNumberPaginationOneHundred
@@ -114,6 +114,19 @@ class DocumentViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        # Check for soft delete
+        if request.query_params.get('hard') == 'true':
+            # Hard delete
+            instance.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            # Soft delete
+            instance.soft_delete()
+            return Response({'status': 'soft-deleted'}, status=status.HTTP_200_OK)
 
 
 class LinkViewSet(viewsets.ModelViewSet):
