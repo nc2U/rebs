@@ -283,9 +283,9 @@ export const useDocs = defineStore('docs', () => {
       .then(() => message('success', '', '게시물 복사가 완료되었습니다.'))
       .catch(err => errorHandle(err.response.data))
 
-  const deleteDocs = (pk: number, filter: DocsFilter) =>
+  const deleteDocs = (pk: number, filter: DocsFilter, hard = '') =>
     api
-      .delete(`/docs/${pk}/`)
+      .delete(`/docs/${pk}/?hard=${hard}`)
       .then(() =>
         fetchDocsList(filter).then(() => message('warning', '', '해당 게시물이 삭제되었습니다.')),
       )
