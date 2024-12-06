@@ -79,6 +79,18 @@ class DocumentViewSet(viewsets.ModelViewSet):
         'lawsuit__case_number', 'lawsuit__case_name', 'title',
         'content', 'links__link', 'files__file', 'user__username')
 
+    def get_queryset(self):
+        # 기본적으로 소프트 삭제된 객체 제외
+        queryset = Document.objects.all()
+
+        # Query parameter: ?deleted=1
+        only_deleted = self.request.query_params.get('deleted', '')
+        if only_deleted:
+            # 소프트 삭제된 객체만 필터링
+            queryset = Document.all_objects.filter(deleted__isnull=False)
+
+        return queryset
+
     def copy_and_create(self, request, *args, **kwargs):
         # 복사할 행의 ID를 저장한다.
         origin_pk = kwargs.get('pk')
