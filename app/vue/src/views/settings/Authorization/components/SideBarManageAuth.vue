@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, nextTick, onMounted, onUpdated } from 'vue'
+import { ref, reactive, computed, nextTick, onMounted, onUpdated, type PropType } from 'vue'
 import { type UserAuth } from '@/views/settings/Authorization/Index.vue'
 import type { User } from '@/store/types/accounts'
 import { write_auth_manage } from '@/utils/pageAuth'
@@ -7,7 +7,7 @@ import { useStore } from '@/store'
 import ProjectManageAuth from '@/views/settings/Authorization/components/ProjectManageAuth.vue'
 
 const props = defineProps({
-  user: { type: Object, default: null },
+  user: { type: Object as PropType<User | null>, default: null },
   allowed: { type: Array, default: () => [] },
 })
 
@@ -54,7 +54,7 @@ const getAssigned = (payload: number | null) => emit('get-assigned', payload)
 const selectAuth = () =>
   nextTick(() => {
     const auth = { ...authData.value }
-    if (!!props.user.staffauth) auth.pk = props.user.staffauth.pk
+    if (!!props.user?.staffauth) auth.pk = props.user.staffauth.pk
     else auth.pk = undefined
     emit('select-auth', auth)
   })
@@ -96,7 +96,7 @@ onUpdated(() => dataSetup())
 </script>
 
 <template>
-  <CRow v-if="1 == 2">
+  <CRow v-if="user?.staffauth?.is_staff">
     <CCol>
       <CRow>
         <CRow>
@@ -228,7 +228,7 @@ onUpdated(() => dataSetup())
     </CCol>
   </CRow>
 
-  <v-divider v-if="1 == 3" />
+  <v-divider v-if="user?.staffauth?.is_staff" />
 
   <ProjectManageAuth :user="user as User" @get-allowed="getAllowed" @get-assigned="getAssigned" />
 

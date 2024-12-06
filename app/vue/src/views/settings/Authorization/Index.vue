@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, ref, watch } from 'vue'
+import { computed, type ComputedRef, onBeforeMount, ref, watch } from 'vue'
 import { navMenu, pageTitle } from '@/views/settings/_menu/headermixin'
 import { type User } from '@/store/types/accounts'
 import { useCompany } from '@/store/pinia/company'
@@ -122,7 +122,7 @@ const comId = computed(() => comStore.company?.pk)
 const fetchCompany = (pk: number) => comStore.fetchCompany(pk)
 
 const accStore = useAccount()
-const user = computed<User>(() => accStore.user)
+const user = computed<User | null>(() => accStore.user)
 const isStaffAuth = computed(() => !!user.value?.staffauth)
 
 const selectUser = (pk: number | null) => {
