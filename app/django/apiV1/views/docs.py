@@ -118,15 +118,9 @@ class DocumentViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
 
-        # Check for soft delete
-        if request.query_params.get('hard') == 'true':
-            # Hard delete
-            instance.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            # Soft delete
-            instance.soft_delete()
-            return Response({'status': 'soft-deleted'}, status=status.HTTP_200_OK)
+        instance.soft_delete()
+        return Response({'status': 'soft-deleted'}, status=status.HTTP_200_OK)
+
 
 
 class LinkViewSet(viewsets.ModelViewSet):
@@ -150,3 +144,10 @@ class ImageViewSet(viewsets.ModelViewSet):
 class DocsInTrashViewSet(DocumentViewSet):
     queryset = Document.all_objects.filter(deleted__isnull=False)
     serializer_class = DocumentInTrashSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
