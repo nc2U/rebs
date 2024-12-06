@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount } from 'vue'
+import { ref, computed, onBeforeMount, inject, type ComputedRef } from 'vue'
 import { useStore } from '@/store'
 import { useCompany } from '@/store/pinia/company'
+import type { Company } from '@/store/types/settings'
 import avatar2 from '@/assets/images/avatars/2.jpg'
 import avatar3 from '@/assets/images/avatars/3.jpg'
 import avatar4 from '@/assets/images/avatars/4.jpg'
@@ -11,6 +12,8 @@ import avatar7 from '@/assets/images/avatars/7.jpg'
 import avatar8 from '@/assets/images/avatars/8.jpg'
 
 const activeKey = ref(1)
+
+const company = inject<ComputedRef<Company>>('company')
 
 const store = useStore()
 const isDark = computed(() => store.theme === 'dark')
@@ -22,10 +25,8 @@ const active = (key: number) => key === activeKey.value
 
 const updateActiveKey = (key: number) => (activeKey.value = key)
 
-const comStore = useCompany()
 onBeforeMount(async () => {
-  const company = await comStore.fetchCompany(comStore.initComId)
-  if (company) document.title = company.name + ' :: Rebs'
+  if (company) document.title = company?.value.name + ' :: IBS'
 })
 </script>
 
