@@ -306,6 +306,8 @@ export const useDocs = defineStore('docs', () => {
       })
       .catch(err => errorHandle(err.response.data))
 
+  const removeTrashDocs = () => (trashDocs.value = null)
+
   const fetchTrashDocsList = (page = 1) =>
     api
       .get(`/docs-trash-can/?page=${page}`)
@@ -412,6 +414,7 @@ export const useDocs = defineStore('docs', () => {
 
     trashDocsPages,
     fetchTrashDocs,
+    removeTrashDocs,
     fetchTrashDocsList,
     restoreDocs,
 

@@ -33,7 +33,7 @@ const [route, router] = [
 
 watch(route, val => {
   if (val.params.docsId) fetchTrashDocs(Number(val.params.docsId))
-  else docStore.trashDocs = null
+  else docStore.removeTrashDocs()
 })
 
 const pageSelect = (p: number) => {
