@@ -14,13 +14,14 @@ defineProps({
   page: { type: Number, default: 1 },
 })
 
-const emit = defineEmits(['page-select', 'restore-docs'])
+const emit = defineEmits(['page-select', 'restore-docs', 'delete-docs'])
 
 const docStore = useDocs()
 const trashDocsPages = (pages: number) => docStore.trashDocsPages(pages)
 const pageSelect = (page: number) => emit('page-select', page)
 
-const restoreDocs1 = (pk: number) => emit('restore-docs', pk)
+const restoreDocs = (pk: number) => emit('restore-docs', pk)
+const deleteDocs = (pk: number) => emit('delete-docs', pk)
 </script>
 
 <template>
@@ -34,7 +35,8 @@ const restoreDocs1 = (pk: number) => emit('restore-docs', pk)
       <col style="width: 20%" />
       <col style="width: 35%" />
       <col style="width: 20%" />
-      <col style="width: 20%" />
+      <col style="width: 10%" />
+      <col style="width: 10%" />
     </colgroup>
 
     <CTableHead>
@@ -44,6 +46,7 @@ const restoreDocs1 = (pk: number) => emit('restore-docs', pk)
         <CTableHeaderCell scope="col">제목</CTableHeaderCell>
         <CTableHeaderCell scope="col">삭제일시</CTableHeaderCell>
         <CTableHeaderCell scope="col">삭제복원</CTableHeaderCell>
+        <CTableHeaderCell scope="col">완적삭제</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 
@@ -53,7 +56,8 @@ const restoreDocs1 = (pk: number) => emit('restore-docs', pk)
         :key="docs.pk"
         :trash-docs="docs"
         :view-route="viewRoute"
-        @restore-docs="restoreDocs1"
+        @restore-docs="restoreDocs"
+        @delete-docs="deleteDocs"
       />
     </CTableBody>
   </CTable>

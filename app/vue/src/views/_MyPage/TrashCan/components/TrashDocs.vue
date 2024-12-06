@@ -8,9 +8,11 @@ const props = defineProps({
   viewRoute: { type: String, default: '' },
 })
 
-const emit = defineEmits(['restore-docs'])
+const emit = defineEmits(['restore-docs', 'delete-docs'])
 
 const restoreDocs = () => emit('restore-docs', props.trashDocs.pk)
+
+const deleteDocs = () => emit('delete-docs', props.trashDocs.pk)
 </script>
 
 <template>
@@ -35,6 +37,16 @@ const restoreDocs = () => emit('restore-docs', props.trashDocs.pk)
         rounded="1"
         color="success"
         @click="restoreDocs"
+      />
+    </CTableDataCell>
+    <CTableDataCell>
+      <v-btn
+        density="compact"
+        icon="mdi-delete-off-outline"
+        size="sm"
+        rounded="1"
+        color="danger"
+        @click="deleteDocs"
       />
     </CTableDataCell>
   </CTableRow>

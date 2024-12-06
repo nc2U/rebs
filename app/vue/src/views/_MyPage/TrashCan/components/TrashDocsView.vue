@@ -12,9 +12,10 @@ const props = defineProps({
   currPage: { type: Number, required: true },
 })
 
-const emit = defineEmits(['restore-docs'])
+const emit = defineEmits(['restore-docs', 'delete-docs'])
 
 const restoreDocs = () => emit('restore-docs', props.docs.pk)
+const deleteDocs = () => emit('delete-docs', props.docs.pk)
 
 const router = useRouter()
 </script>
@@ -66,6 +67,7 @@ const router = useRouter()
             목록으로
           </CButton>
           <CButton color="success" @click="restoreDocs"> 복원하기</CButton>
+          <CButton color="danger" @click="deleteDocs"> 삭제하기</CButton>
         </CButtonGroup>
       </CCol>
     </CRow>

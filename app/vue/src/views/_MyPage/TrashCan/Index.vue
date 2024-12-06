@@ -42,16 +42,30 @@ const pageSelect = (p: number) => {
 }
 
 const restoreId = ref<number | null>(null)
-
 const refRestoreModal = ref()
 const callRestoreDocs = (pk: number) => {
   restoreId.value = pk
   refRestoreModal.value.callModal()
 }
 
-const modalAction = () => {
+const resModalAction = () => {
   restoreDocs(restoreId.value as number)
   refRestoreModal.value.close()
+  router.replace({ name: mainViewName.value })
+}
+
+const deleteId = ref<number | null>(null)
+const refDeleteModal = ref()
+const deleteDocs = (pk: number) => {
+  deleteId.value = pk
+  refDeleteModal.value.callModal()
+}
+
+const delModalAction = () => {
+  // restoreDocs(deleteId.value as number)
+  // docs // board 구분하여 삭제 로직 구현
+  alert('준비중입니다!')
+  refDeleteModal.value.close()
   router.replace({ name: mainViewName.value })
 }
 
@@ -110,6 +124,7 @@ onBeforeMount(() => {
           :page="page"
           @page-select="pageSelect"
           @restore-docs="callRestoreDocs"
+          @delete-docs="deleteDocs"
         />
         <div v-else>??</div>
       </div>
@@ -122,6 +137,7 @@ onBeforeMount(() => {
           :view-route="mainViewName"
           :curr-page="page"
           @restore-docs="callRestoreDocs"
+          @delete-docs="deleteDocs"
         />
       </div>
       <div v-else>??</div>
@@ -132,7 +148,15 @@ onBeforeMount(() => {
     <template #header>알림</template>
     <template #default>이 게시물을 휴지통으로부터 복원 하시겠습니까?</template>
     <template #footer>
-      <CButton color="success" @click="modalAction">삭제 복원</CButton>
+      <CButton color="success" @click="resModalAction">삭제 복원</CButton>
+    </template>
+  </ConfirmModal>
+
+  <ConfirmModal ref="refDeleteModal">
+    <template #header>알림</template>
+    <template #default>삭제 후 복원할 수 없읍니다. 이 게시물을 삭제 하시겠습니까?</template>
+    <template #footer>
+      <CButton color="danger" @click="delModalAction">완전 삭제</CButton>
     </template>
   </ConfirmModal>
 </template>
