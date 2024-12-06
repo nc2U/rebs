@@ -1,8 +1,8 @@
 <template>
   <CFooter class="mt-0">
     <div>
-      <a href="/">Rebs</a>
-      <span class="ms-1">&copy; {{ new Date().getFullYear() }} creativeLabs.</span>
+      <a href="/">Dyibs.com</a>
+      <span class="ms-1">&copy; {{ new Date().getFullYear() }} developLabs.</span>
     </div>
     <div class="ms-auto">
       <span class="me-1">Powered by</span>
