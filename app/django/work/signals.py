@@ -124,7 +124,7 @@ def issue_log_changes(sender, instance, created, **kwargs):
             message = f'''<div style="font-size: 1.2em;">
             <h4><u>&lt;{user.username}&gt;님이 새 업무 [#{instance.pk}] "{instance.subject}"를 
             생성{"하여 &lt;" + instance.assigned_to.username + "&gt;님에게 (요청)배정" if instance.assigned_to else ""} 하였습니다.</u></h4>
-            <div style="padding-left: 20px">
+            <div style="padding-left: 20px; margin-top: 20px; margin-bottom: 20px;">
             <div style="background: #FFFFDD; padding: 10px"><strong>업무</strong> : <strong>[#{instance.pk}] {instance.subject}</strong></div>
             <div style="background: #FFFFDD; padding: 10px"><strong>설명</strong> : <br/>{markdown2.markdown(instance.description)} </div>
             <p><strong>유형</strong> : {instance.tracker.name}</p>
