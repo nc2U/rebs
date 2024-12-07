@@ -74,6 +74,7 @@ jobs:
             --set global.cicdServerHost=${{ secrets.CICD_HOST }} \
             --set global.nfsPath=${{ secrets.NFS_PATH }} \
             --set global.nfsServerHost=${{ secrets.NFS_HOST }} \
+            --set global.domainHost=${{ secrets.DOMAIN_HOST }} \
             --set global.emailHost=${{ secrets.EMAIL_HOST }} \
             --set global.emailHostUser=${{ secrets.EMAIL_HOST_USER }} \
             --set global.emailHostPassword=${{ secrets.EMAIL_HOST_PASSWORD }} \
