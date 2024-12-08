@@ -131,7 +131,7 @@ def issue_log_changes(sender, instance, created, **kwargs):
             <p><strong>상태</strong> : {instance.status.name}</p>
             <p><strong>담당</strong> : {instance.assigned_to.username if instance.assigned_to else ""}</p>
             <p><strong>처리기한</strong> : {instance.due_date if instance.due_date else ""}</p>
-            <p><strong>링크</strong> : <a href="{settings.DOMAIN_HOST}/cms/#/work/project/redmine/issue/{instance.pk}">#Issue: {instance.pk}</a></p>
+            <p><strong>링크</strong> : <a href="{settings.DOMAIN_HOST}/cms/#/work/project/redmine/issue/{instance.pk}">[#{instance.pk}] 업무 - {instance.subject}</a></p>
             <p><strong>등록자</strong> : <a href="mailto:{user.email}">{user.username} &lt;{user.email}&gt;</a></p>
             </div></div>'''
             addresses = [instance.assigned_to.email]
