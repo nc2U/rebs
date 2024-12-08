@@ -179,8 +179,8 @@ def issue_log_changes(sender, instance, created, **kwargs):
                     <p><strong>추정시간</strong> : {instance.estimated_hours if instance.estimated_hours else '-'} 시간</p>
                     <p><strong>진척도</strong> : {instance.done_ratio}%</p>
                     <p><strong>처리기한</strong> : {instance.due_date if instance.due_date else ""}</p>
-                    <p><strong>링크</strong> : {settings.DOMAIN_HOST}#/work/project/redmine/issue/{instance.pk}</p>
-                    <p><strong>등록자</strong> : {user.username} &lt;{user.email}&gt;</p>
+                    <p><strong>링크</strong> : <a href="{settings.DOMAIN_HOST}/cms/#/work/project/redmine/issue/{instance.pk}">[#{instance.pk}] 업무 - {instance.subject}</a></p>
+                    <p><strong>등록자</strong> : <a href="mailto:{user.email}">{user.username} &lt;{user.email}&gt;</a></p>
                     <p><strong>업무 관람자</strong> : {str([w.username for w in watchers])}</p></div></div>'''
                     try:
                         send_mail(subject=subject,
