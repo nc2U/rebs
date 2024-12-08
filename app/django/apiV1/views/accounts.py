@@ -143,7 +143,7 @@ class PasswordResetRequestView(APIView):
             reset_link = f'{scheme}://{request.get_host()}/#/accounts/pass-reset/?uidb64={uidb64}&token={token}'
 
             # Send the password reset email
-            subject = f'[Rebs] {user.username}님 계정 비밀번호 초기화 링크 안내드립니다.'
+            subject = f'[IBS] {user.username}님 계정 비밀번호 초기화 링크 안내드립니다.'
             message = f'비밀번호를 재설정 하기 위해서 다음 링크를 클릭 하세요.: \n{reset_link}\n\n이 링크는 발송 후 10분간 만 유효합니다.'
             send_mail(subject, message, settings.EMAIL_DEFAULT_SENDER, [email])
 
