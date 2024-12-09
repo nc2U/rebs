@@ -30,7 +30,7 @@ const siteStore = useSite()
 const getContsTotal = computed(() => siteStore.getContsTotal?.contracted_area)
 
 const excelUrl = computed(() => {
-  const url = `excel/sites-contracts/?project=${project.value}`
+  const url = `/excel/sites-contracts/?project=${project.value}`
   const filter = dataFilter.value
   let queryStr = filter.own_sort ? `&own_sort=${filter.own_sort}` : ''
   queryStr = filter.search ? `${queryStr}&search=${filter.search}` : queryStr

@@ -35,7 +35,7 @@ const totalArea = computed(() =>
 const rights = ref(false)
 const excelUrl = computed(
   () =>
-    `excel/sites/?project=${project.value}&search=${dataFilter.value.search}&rights=${rights.value || ''}`,
+    `/excel/sites/?project=${project.value}&search=${dataFilter.value.search}&rights=${rights.value || ''}`,
 )
 
 const listFiltering = (payload: SiteFilter) => {

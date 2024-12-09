@@ -27,7 +27,7 @@ const fetchContSummaryList = (projId: number) => contStore.fetchContSummaryList(
 
 const isContor = ref<boolean>(true)
 const excelUrl = computed(() =>
-  project.value ? `excel/status/?project=${project.value}&iscontor=${isContor.value}` : '',
+  project.value ? `/excel/status/?project=${project.value}&iscontor=${isContor.value}` : '',
 )
 
 provide('isContor', isContor)
