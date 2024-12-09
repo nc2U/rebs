@@ -138,9 +138,10 @@ class PasswordResetRequestView(APIView):
 
             # Create a password reset link
             uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
-
             scheme = 'http' if settings.DEBUG else 'https'
-            reset_link = f'{scheme}://{request.get_host()}/#/accounts/pass-reset/?uidb64={uidb64}&token={token}'
+            curr_host = request.get_host()
+
+            reset_link = f'{scheme}://{curr_host}/#/accounts/pass-reset/?uidb64={uidb64}&token={token}'
 
             # Send the password reset email
             subject = f'[IBS] {user.username}님 계정 비밀번호 초기화 링크 안내드립니다.'
