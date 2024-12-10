@@ -32,7 +32,7 @@ const form = reactive<semiRel>({
 const calcArea = ref(0)
 
 watch(form, val => {
-  if (val.owned_area) calcArea.value = parseInt(val.owned_area) * 0.3025
+  if (val.owned_area) calcArea.value = Number(val.owned_area) * 0.3025
   else calcArea.value = 0
 })
 
