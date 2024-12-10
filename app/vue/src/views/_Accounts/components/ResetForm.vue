@@ -72,7 +72,7 @@ const router = useRouter()
 
     <CRow>
       <CCol xs="12" class="d-grid">
-        <CButton color="danger" class="px-4" size="lg" type="submit">비밀번호 재설정하기</CButton>
+        <CButton color="warning" class="px-4" size="lg" type="submit">비밀번호 재설정하기</CButton>
       </CCol>
     </CRow>
     <CRow>

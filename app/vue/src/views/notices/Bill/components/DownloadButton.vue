@@ -11,7 +11,7 @@ const props = defineProps({
 
 const refAlertModal = ref()
 
-const noPrice = ref(Boolean(Cookies.get('noPrice')) ?? false)
+const noPrice = ref(Boolean(Cookies.get('noPrice')))
 
 watch(noPrice, newVal => {
   const val = newVal ? '1' : ''
@@ -36,7 +36,7 @@ const printBill = () => {
     } else {
       const { project, pub_date } = props.printData
       const seq = props.contracts?.join('-')
-      const url = 'pdf/bill/'
+      const url = '/pdf/bill/'
       const np = noPrice.value || ''
       const nl = noLate.value || ''
       location.href = `${url}?project=${project}&date=${pub_date}&seq=${seq}&np=${np}&nl=${nl}`
