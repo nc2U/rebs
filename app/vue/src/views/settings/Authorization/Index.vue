@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { computed, type ComputedRef, onBeforeMount, ref, watch } from 'vue'
+import { computed, onBeforeMount, ref, watch } from 'vue'
 import { navMenu, pageTitle } from '@/views/settings/_menu/headermixin'
 import { type User } from '@/store/types/accounts'
 import { useCompany } from '@/store/pinia/company'
-import { useAccount } from '@/store/pinia/account'
+import { useAccount, type UserByAdmin } from '@/store/pinia/account'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import UserSelect from './components/UserSelect.vue'
@@ -125,6 +125,8 @@ const accStore = useAccount()
 const user = computed<User | null>(() => accStore.user)
 const isStaffAuth = computed(() => !!user.value?.staffauth)
 
+const adminCreateUser = (payload: UserByAdmin) => accStore.adminCreateUser(payload)
+
 const selectUser = (pk: number | null) => {
   if (!!pk) {
     accStore.fetchUser(pk).then(() => {
@@ -163,8 +165,8 @@ const authReset = () => {
 const toSave = () => refConfirmModal.value.callModal()
 
 const onSubmit = (payload: any) => {
-  alert('submited!')
   console.log(payload)
+  adminCreateUser(payload)
 }
 
 const modalAction = () => {

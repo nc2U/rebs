@@ -10,10 +10,10 @@ const form = reactive({
   username: '',
   email: '',
   password: '',
-  passConf: '',
+  pass_conf: '',
 
-  sendMail: true,
-  sendOption: '1',
+  send_mail: true,
+  send_option: '1',
   expired: 24,
 })
 
@@ -29,7 +29,7 @@ const onSubmit = (event: Event) => {
 
     validated.value = true
   } else {
-    if (form.password !== form.passConf) {
+    if (form.password !== form.pass_conf) {
       alert('비밀번호가 일치하지 않습니다.')
       return
     }
@@ -44,9 +44,9 @@ const formReset = () => {
   form.username = ''
   form.email = ''
   form.password = ''
-  form.passConf = ''
-  form.sendMail = true
-  form.sendOption = '1'
+  form.pass_conf = ''
+  form.send_mail = true
+  form.send_option = '1'
   form.expired = 24
 }
 
@@ -65,7 +65,7 @@ const generatePassword = () => {
 
 const applyGen = () => {
   form.password = genPass.value
-  form.passConf = genPass.value
+  form.pass_conf = genPass.value
   genPass.value = ''
 }
 
@@ -131,13 +131,13 @@ defineExpose({ callModal })
             </CCol>
           </CRow>
           <CRow class="mb-4" style="height: 45px">
-            <CFormLabel for="passConf" class="col-sm-3 col-form-label required">
+            <CFormLabel for="pass_conf" class="col-sm-3 col-form-label required">
               비밀번호 확인
             </CFormLabel>
             <CCol sm="5">
               <CFormInput
-                v-model="form.passConf"
-                id="passConf"
+                v-model="form.pass_conf"
+                id="pass_conf"
                 type="password"
                 maxlength="20"
                 placeholder="비밀번호 확인"
@@ -158,7 +158,7 @@ defineExpose({ callModal })
           <CRow>
             <CCol class="mb-3">
               <CFormCheck
-                v-model="form.sendMail"
+                v-model="form.send_mail"
                 type="checkbox"
                 id="inform-mail"
                 label="새로 생성한 사용자에게 알림 메일 보내기"
@@ -169,13 +169,13 @@ defineExpose({ callModal })
           <CRow>
             <CCol sm="12" class="pl-5 mb-3">
               <CFormCheck
-                v-model="form.sendOption"
+                v-model="form.send_option"
                 value="1"
                 type="radio"
                 name="content-option"
                 id="content-option1"
                 label="패스워드 재설정 링크 포함"
-                :disabled="!form.sendMail"
+                :disabled="!form.send_mail"
               />
             </CCol>
             <CRow>
@@ -183,7 +183,7 @@ defineExpose({ callModal })
                 <span class="pl-4">링크 만료 시간 : </span>
               </CCol>
               <CCol sm="4">
-                <CFormSelect v-model.number="form.expired" size="sm" :disabled="!form.sendMail">
+                <CFormSelect v-model.number="form.expired" size="sm" :disabled="!form.send_mail">
                   <option v-for="i in 24" :value="i" :key="i">
                     <span v-if="i < 10">0</span>{{ i }}
                   </option>
@@ -193,24 +193,13 @@ defineExpose({ callModal })
             </CRow>
             <CCol sm="12" class="pl-5 mb-3">
               <CFormCheck
-                v-model="form.sendOption"
+                v-model="form.send_option"
                 value="2"
                 type="radio"
                 name="content-option"
                 id="content-option2"
                 label="사용자 패스워드 포함"
-                :disabled="!form.sendMail"
-              />
-            </CCol>
-            <CCol sm="12" class="pl-5">
-              <CFormCheck
-                v-model="form.sendOption"
-                value="3"
-                type="radio"
-                name="content-option"
-                id="content-option3"
-                label="재설정 링크 및 패스워드 모두 제외"
-                :disabled="!form.sendMail"
+                :disabled="!form.send_mail"
               />
             </CCol>
           </CRow>

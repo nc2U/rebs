@@ -3,12 +3,19 @@ import Cookies from 'js-cookie'
 import { Buffer } from 'buffer'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { errorHandle, message } from '@/utils/helper'
-import type { User, StaffAuth, Profile, Scrape, Todo } from '@/store/types/accounts'
 import { useDocs } from '@/store/pinia/docs'
-// import { useDocument } from '@/store/pinia/document'
+import { errorHandle, message } from '@/utils/helper'
 import type { LocationQueryValue } from 'vue-router'
+import type { User, StaffAuth, Profile, Scrape, Todo } from '@/store/types/accounts'
 
+export type UserByAdmin = {
+  username: string
+  email: string
+  password: string
+  send_mail: boolean
+  send_option: '1' | '2'
+  expired: number
+}
 type LoginUser = { email: string; password: string; redirect?: string }
 
 const extractId = (token: string) => {
@@ -47,6 +54,12 @@ export const useAccount = defineStore('account', () => {
 
   const removeUser = () => (user.value = null)
 
+  const adminCreateUser = (payload: UserByAdmin) =>
+    api
+      .post('/admin-create-user/', payload)
+      .then(() => message('info', '', '사용자를 생성하고 메일을 발송했습니다.'))
+      .catch(err => errorHandle(err.response.data))
+
   const signup = (payload: LoginUser & { username: string }) =>
     api
       .post('/user/', payload)
@@ -63,21 +76,6 @@ export const useAccount = defineStore('account', () => {
     userInfo.value = user
     fetchTodoList().then(() => fetchProfile())
   }
-
-  // const login = async (payload: LoginUser) => {
-  //   Cookies.remove('accessToken')
-  //   return await api
-  //     .post('/token/', payload)
-  //     .then(res => {
-  //       setToken(res.data.access)
-  //       return api.get(`/user/${extractId(accessToken.value)}/`)
-  //     })
-  //     .then(res => {
-  //       if (!!res.data.profile) setUser(res.data)
-  //       return res.data
-  //     })
-  //     .catch(() => message('warning', '', '이메일 또는 비밀번호를 확인하여 주세요.'))
-  // }
 
   const login = async (payload: { email: string; password: string; redirect: string }) => {
     try {
@@ -418,6 +416,7 @@ export const useAccount = defineStore('account', () => {
     fetchUsersList,
     fetchUser,
     removeUser,
+    adminCreateUser,
     signup,
     login,
     loginByToken,
