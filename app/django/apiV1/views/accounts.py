@@ -1,8 +1,10 @@
 import base64
+from datetime import datetime, timedelta
 
 from allauth.account.forms import default_token_generator
 from django.contrib.auth import authenticate, update_session_auth_hash
 from django.contrib.auth.hashers import check_password
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from rest_framework import viewsets, status
@@ -145,7 +147,7 @@ class PasswordResetRequestView(APIView):
 
             # Send the password reset email
             subject = f'[IBS] {user.username}님 계정 비밀번호 초기화 링크 안내드립니다.'
-            message = f'비밀번호를 재설정 하기 위해서 다음 링크를 클릭 하세요.: \n{reset_link}\n\n이 링크는 발송 후 10분간 만 유효합니다.'
+            message = f'비밀번호를 재설정 하기 위해서 다음 링크를 클릭 하세요: \n{reset_link}\n\n이 링크는 발송 후 10분 후에 만료됩니다.'
             send_mail(subject, message, settings.EMAIL_DEFAULT_SENDER, [email])
 
             return Response({'detail': '비밀번호 재설정을 위한 이메일을 발송했습니다.'}, status=status.HTTP_200_OK)
@@ -193,3 +195,111 @@ class PasswordResetTokenViewSet(viewsets.ModelViewSet):
     serializer_class = PasswordResetTokenSerializer
     permission_classes = (permissions.AllowAny,)
     filterset_fields = ('user', 'token')
+
+
+class AdminCreateUserView(APIView):
+    """비밀번호 분실 시 재설정 링크를 요청하는 API"""
+    permission_classes = (permissions.IsAdminUser,)
+
+    @staticmethod
+    def post(request, *args, **kwargs):
+        serializer = AdminCreateUserSerializer(data=request.data)
+        if serializer.is_valid():
+            # Find the user with the given email
+            email = serializer.validated_data.get('email')
+            username = serializer.validated_data.get('username')
+            password = serializer.validated_data.get('password')
+            expiration_hours = serializer.validated_data.get('expiration_hours')
+            print("Serializer is valid:", serializer.validated_data)
+
+            try:
+                User.objects.get(email=email)
+                print(f"User with email {email} already exists.")
+                return Response({'detail': '입력한 이메일로 등록된 사용자가 이미 존재합니다.'}, status=status.HTTP_400_BAD_REQUEST)
+            except User.DoesNotExist:
+                print(f"No user found with email {email}. Proceeding with user creation.")
+
+            # 1. 관리자가 입력한 계정 정보(임의 패스워드 포함)로 계정 생성
+            user = User(email=email, username=username)
+            user.set_password(password)
+            user.save()
+            print(f"User {username} created successfully with email {email}.")
+
+            # 2. 기본 스태프 권한 및 프로필 등록
+            StaffAuth.objects.create(user=user, company_id=1, is_project_staff=True)
+            Profile.objects.create(user=user)
+
+            # Generate a password reset token
+            token_generator = CustomPasswordResetTokenGenerator(expiration_hours=expiration_hours)
+            token = token_generator.make_token(user)
+            print(f"Generated token: {token}")
+            try:
+                token_db = PasswordResetToken.objects.get(user=user)
+                token_db.token = token
+                print(f"Updated token for user {user.username}.")
+            except PasswordResetToken.DoesNotExist:
+                token_db = PasswordResetToken(user=user, token=token)
+                print(f"Created new token for user {user.username}.")
+            token_db.save()
+
+            # Create a password reset link
+            uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+            scheme = 'http' if settings.DEBUG else 'https'
+            curr_host = request.get_host()
+
+            reset_link = f'{scheme}://{curr_host}/#/accounts/pass-reset/?uidb64={uidb64}&token={token}'
+            print(f"Password reset link: {reset_link}")
+
+            # Send the password reset email
+            subject = f'[IBS] {user.username}님 새 계정이 생성 되었습니다.'
+            message = f'''[IBS]를 시작하기 위해 다음 링크를 클릭하여 비밀번호를 설정 하세요.: \n{reset_link}\n\n
+            이 링크는 발송 후 {expiration_hours}시간 후에 만료됩니다. 만료되기 전에 패스워드를 설정하지 않은 경우 관리자에게 문의하십시오.'''
+            try:
+                send_mail(subject, message, settings.EMAIL_DEFAULT_SENDER, [email])
+                print(f"Password reset email sent to {email}.")
+            except Exception as e:
+                print(f"Failed to send email: {str(e)}")
+                return Response({'detail': '이메일 발송 중 오류가 발생했습니다.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            print(f"Final response: 새 계정을 생성하고 이메일 발송 완료.")
+            return Response({'detail': '새 계정을 생성하고 비밀번호 설정을 위한 이메일을 발송했습니다.'}, status=status.HTTP_200_OK)
+        else:
+            print("Serializer errors:", serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CustomPasswordResetTokenGenerator(PasswordResetTokenGenerator):
+    """
+    사용자 정의 토큰 생성기로 만료 시간을 동적으로 설정할 수 있음
+    """
+    def __init__(self, expiration_hours=24):
+        """
+        expiration_hours: 토큰의 만료 시간을 시간 단위로 설정
+        """
+        super().__init__()
+        self.expiration_hours = expiration_hours
+
+    def _make_hash_value(self, user, timestamp):
+        return f"{user.pk}{user.password}{timestamp}"
+
+    def check_token(self, user, token):
+        """
+        토큰 유효성을 검사하면서 만료 시간을 확인
+        """
+        # 기본 토큰 유효성 검사
+        if not super().check_token(user, token):
+            return False
+
+        # 토큰 생성 시간 추출
+        try:
+            timestamp = self._get_timestamp(token)
+            token_time = datetime.fromtimestamp(timestamp)
+        except ValueError:
+            return False
+
+        # 현재 시간과 비교하여 만료 여부 확인
+        expiration_time = timedelta(hours=self.expiration_hours)
+        if datetime.now() - token_time > expiration_time:
+            return False
+
+        return True

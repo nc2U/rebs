@@ -208,3 +208,10 @@ class PasswordResetTokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = PasswordResetToken
         fields = ('pk', 'user', 'token', 'updated', 'is_expired')
+
+
+class AdminCreateUserSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
+    expiration_hours = serializers.IntegerField()
