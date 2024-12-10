@@ -33,13 +33,12 @@ const router = useRouter()
 <template>
   <CForm novalidate :validated="validated" class="needs-validation" @submit.prevent="onSubmit">
     <CRow>
-      <!--      <CCol><h3>이메일 찾기</h3></CCol>-->
-      <CCol><h3>비밀번호 재설정</h3></CCol>
+      <CCol><h3>비밀번호 변경</h3></CCol>
     </CRow>
 
     <v-divider />
 
-    <p class="text-muted mb-4">새로운 비밀번호를 입력해 주세요.</p>
+    <p class="text-muted mb-4">계정의 새 비밀번호를 설정합니다.</p>
 
     <CInputGroup class="mb-3">
       <CInputGroupText>
@@ -50,10 +49,10 @@ const router = useRouter()
         v-model="form.password"
         type="password"
         autocomplete="password"
-        placeholder="새 비밀번호 입력"
+        placeholder="새 비밀번호"
         required
       />
-      <CFormFeedback invalid>새로운 비밀번호를 입력하세요.</CFormFeedback>
+      <CFormFeedback invalid>새 비밀번호를 입력하세요.</CFormFeedback>
     </CInputGroup>
 
     <CInputGroup class="mb-4">
@@ -64,7 +63,7 @@ const router = useRouter()
         v-model="form.passwordConfirm"
         type="password"
         autocomplete="password-confirm"
-        placeholder="새 비밀번호 확인"
+        placeholder="비밀번호 확인"
         required
       />
       <CFormFeedback invalid>비밀번호를 한번 더 입력하세요.</CFormFeedback>
@@ -72,7 +71,7 @@ const router = useRouter()
 
     <CRow>
       <CCol xs="12" class="d-grid">
-        <CButton color="warning" class="px-4" size="lg" type="submit">비밀번호 재설정하기</CButton>
+        <CButton color="warning" size="lg" class="px-4" type="submit">비밀번호 제출</CButton>
       </CCol>
     </CRow>
     <CRow>

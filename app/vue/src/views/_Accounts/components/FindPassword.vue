@@ -34,9 +34,9 @@ const toLogin = () => emit('to-login')
     <v-divider />
     <p class="info">
       가입하신 이메일 주소를 입력해 주세요.<br />
-      이메일 주소로 비밀번호를 재설정할 수 있는 링크를 이메일을 보내드립니다.
+      이메일 주소로 비밀번호를 재설정할 수 있는 링크를 보내드립니다.
     </p>
-    <p class="info mb-4">발송된 비밀번호 재설정 링크는 10분 간 유효합니다.</p>
+    <p class="info mb-4">비밀번호 재설정 링크는 10분 간 유효합니다.</p>
     <CInputGroup class="mb-3">
       <CInputGroupText>
         <CIcon icon="cil-user" />
@@ -69,7 +69,7 @@ const toLogin = () => emit('to-login')
     <template #header>비밀번호 재설정 확인</template>
     <template #default> 비밀번호 재설정을 위한 이메일을 전송하시겠습니까?</template>
     <template #footer>
-      <CButton color="danger" @click="modalAction"> 확인</CButton>
+      <CButton color="warning" @click="modalAction"> 확인</CButton>
     </template>
   </ConfirmModal>
 </template>
