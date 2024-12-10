@@ -305,26 +305,6 @@ onUpdated(() => dataSetup())
             <CRow class="m-1">
               <CFormLabel class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3">
                 <v-icon icon="mdi mdi-account-arrow-left" :color="getColor(authData.project)[0]" />
-                신규 프로젝트
-              </CFormLabel>
-              <CCol>
-                <CFormSelect
-                  v-model="authData.project"
-                  :options="auths"
-                  :disabled="isPrInActive || !write_auth_manage"
-                  :style="{
-                    backgroundColor: isDark ? '' : getColor(authData.project)[1],
-                  }"
-                  @change="selectAuth"
-                />
-              </CCol>
-            </CRow>
-          </CCol>
-
-          <CCol md="6" lg="4">
-            <CRow class="m-1">
-              <CFormLabel class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3">
-                <v-icon icon="mdi mdi-account-arrow-left" :color="getColor(authData.project)[0]" />
                 사업 부지 관리
               </CFormLabel>
               <CCol>
@@ -334,6 +314,25 @@ onUpdated(() => dataSetup())
                   :disabled="isPrInActive || !write_auth_manage"
                   :style="{
                     backgroundColor: isDark ? '' : getColor(authData.project_site)[1],
+                  }"
+                  @change="selectAuth"
+                />
+              </CCol>
+            </CRow>
+          </CCol>
+          <CCol md="6" lg="4">
+            <CRow class="m-1">
+              <CFormLabel class="col-md-4 col-form-label mb-2 mb-md-1 bg-grey-lighten-3">
+                <v-icon icon="mdi mdi-account-arrow-left" :color="getColor(authData.project)[0]" />
+                현장 등록 관리
+              </CFormLabel>
+              <CCol>
+                <CFormSelect
+                  v-model="authData.project"
+                  :options="auths"
+                  :disabled="isPrInActive || !write_auth_manage"
+                  :style="{
+                    backgroundColor: isDark ? '' : getColor(authData.project)[1],
                   }"
                   @change="selectAuth"
                 />
