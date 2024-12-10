@@ -25,7 +25,6 @@ router.register(r'doc-scrape', accounts.DocScrapeViewSet)
 router.register(r'post-scrape', accounts.PostScrapeViewSet)
 router.register(r'todo', accounts.TodoViewSet)
 router.register(r'pass-reset-token', accounts.PasswordResetTokenViewSet)
-router.register(r'admin-create-user', accounts.AdminCreateUserView)
 # company
 router.register(r'company', company.CompanyViewSet)
 router.register(r'logo', company.LogoViewSet)
@@ -160,6 +159,7 @@ router.register(r'docs-trash-can', docs.DocsInTrashViewSet, basename='docs-trash
 urlpatterns = router.urls
 urlpatterns += [path('issue-by-member/', work.IssueCountByMemberView.as_view(), name='issue-by-member')]
 
+urlpatterns += [path('admin-create-user/', accounts.AdminCreateUserView.as_view(), name='admin-create-user')]
 urlpatterns += [path('check-password/', accounts.CheckPasswordView.as_view(), name='check-password')]
 urlpatterns += [path('change-password/', accounts.ChangePasswordView.as_view(), name='change-password')]
 urlpatterns += [path('password-reset/', accounts.PasswordResetRequestView.as_view(), name='password-reset')]
