@@ -209,7 +209,9 @@ class AdminCreateUserView(APIView):
             email = serializer.validated_data.get('email')
             username = serializer.validated_data.get('username')
             password = serializer.validated_data.get('password')
-            expiration_hours = serializer.validated_data.get('expiration_hours')
+            send_mail = serializer.validated_data.get('send_mail')
+            send_option = serializer.validated_data.get('send_option')
+            expired = serializer.validated_data.get('expired')
             print("Serializer is valid:", serializer.validated_data)
 
             try:
@@ -223,48 +225,52 @@ class AdminCreateUserView(APIView):
             user = User(email=email, username=username)
             user.set_password(password)
             user.save()
-            print(f"User {username} created successfully with email {email}.")
 
             # 2. 기본 스태프 권한 및 프로필 등록
             StaffAuth.objects.create(user=user, company_id=1, is_project_staff=True)
             Profile.objects.create(user=user)
 
-            # Generate a password reset token
-            token_generator = CustomPasswordResetTokenGenerator(expiration_hours=expiration_hours)
-            token = token_generator.make_token(user)
-            print(f"Generated token: {token}")
-            try:
-                token_db = PasswordResetToken.objects.get(user=user)
-                token_db.token = token
-                print(f"Updated token for user {user.username}.")
-            except PasswordResetToken.DoesNotExist:
-                token_db = PasswordResetToken(user=user, token=token)
-                print(f"Created new token for user {user.username}.")
-            token_db.save()
 
-            # Create a password reset link
-            uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
-            scheme = 'http' if settings.DEBUG else 'https'
-            curr_host = request.get_host()
 
-            reset_link = f'{scheme}://{curr_host}/#/accounts/pass-reset/?uidb64={uidb64}&token={token}'
-            print(f"Password reset link: {reset_link}")
+            if send_mail:
+                scheme = 'http' if settings.DEBUG else 'https'
+                curr_host = request.get_host()
 
-            # Send the password reset email
-            subject = f'[IBS] {user.username}님 새 계정이 생성 되었습니다.'
-            message = f'''[IBS]를 시작하기 위해 다음 링크를 클릭하여 비밀번호를 설정 하세요.: \n{reset_link}\n\n
-            이 링크는 발송 후 {expiration_hours}시간 후에 만료됩니다. 만료되기 전에 패스워드를 설정하지 않은 경우 관리자에게 문의하십시오.'''
-            try:
-                send_mail(subject, message, settings.EMAIL_DEFAULT_SENDER, [email])
-                print(f"Password reset email sent to {email}.")
-            except Exception as e:
-                print(f"Failed to send email: {str(e)}")
-                return Response({'detail': '이메일 발송 중 오류가 발생했습니다.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                if send_option == '1':
+                    # Generate a password reset token
+                    token_generator = CustomPasswordResetTokenGenerator(expiration_hours=expired)
+                    token = token_generator.make_token(user)
 
-            print(f"Final response: 새 계정을 생성하고 이메일 발송 완료.")
-            return Response({'detail': '새 계정을 생성하고 비밀번호 설정을 위한 이메일을 발송했습니다.'}, status=status.HTTP_200_OK)
+                    try:
+                        token_db = PasswordResetToken.objects.get(user=user)
+                        token_db.token = token
+                    except PasswordResetToken.DoesNotExist:
+                        token_db = PasswordResetToken(user=user, token=token)
+                    token_db.save()
+
+                    # Create a password reset link
+                    uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+                    reset_link = f'{scheme}://{curr_host}/#/accounts/pass-reset/?uidb64={uidb64}&token={token}'
+
+                    # Send the password reset email
+                    subject = f'[IBS] {user.username}님 새 계정이 생성 되었습니다.'
+                    message = f'''[IBS]를 시작하기 위해 다음 링크를 클릭하여 비밀번호를 설정 하세요.: \n{reset_link}\n\n
+                    이 링크는 발송 후 {expired}시간 후에 만료됩니다. 만료되기 전에 패스워드를 설정하지 않은 경우 관리자에게 문의하십시오.'''
+                else:
+                    # Send the password reset email
+                    subject = f'[IBS] {user.username}님 새 계정이 생성 되었습니다.'
+                    message = f'''[IBS]를 시작하기 위해 다음 사용자 정보를 이용해 로그인 하세요.: \n{scheme}://{curr_host} \n\n
+                    이메일 : {email}\n비밀번호 : {password}\n\n로그인 및 각 메뉴에 대한 접근 권한은 관리자에게 문의하십시오.'''
+
+                try:
+                    send_mail(subject, message, settings.EMAIL_DEFAULT_SENDER, [email])
+                except Exception as e:
+                    return Response({'detail': '이메일 발송 중 오류가 발생했습니다.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+                return Response({'detail': '새 계정을 생성하고 비밀번호 설정을 위한 이메일을 발송했습니다.'}, status=status.HTTP_200_OK)
+
+            return Response({'detail': '새 계정을 생성하였습니다.'}, status=status.HTTP_200_OK)
         else:
-            print("Serializer errors:", serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
