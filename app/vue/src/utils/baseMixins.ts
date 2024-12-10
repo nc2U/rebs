@@ -1,6 +1,6 @@
-export const numFormat = (val: number | string, n?: number, zero: string | 0 = '-') => {
-  const value = typeof val === 'number' ? val : parseInt(val) || 0
-  const parts = n ? value.toFixed(n).split('.') : value.toString().split('.')
+export const numFormat = (val: number | string, n = 0, zero: string | 0 = '-') => {
+  const value = Number.isNaN(val) ? 0 : Number(val)
+  const parts = value.toFixed(n).split('.')
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
   return !value || value === 0 ? zero : parts.join('.')
 }
