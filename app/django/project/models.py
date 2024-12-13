@@ -123,7 +123,7 @@ class Site(models.Model):
 
 class SiteOwner(models.Model):
     project = models.ForeignKey('project.Project', on_delete=models.PROTECT, verbose_name='프로젝트')
-    owner = models.CharField('소유자', max_length=10)
+    owner = models.CharField('소유자', max_length=20)
     date_of_birth = models.DateField('생년월일', null=True, blank=True)
     phone1 = models.CharField('주연락처', max_length=13, blank=True)
     phone2 = models.CharField('비상연락처', max_length=13, blank=True)

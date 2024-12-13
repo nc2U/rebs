@@ -155,7 +155,7 @@ onBeforeMount(() => dataSetup())
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">소유자</CFormLabel>
               <CCol sm="8">
-                <CFormInput v-model="form.owner" maxlength="10" required placeholder="소유자" />
+                <CFormInput v-model="form.owner" maxlength="20" required placeholder="소유자" />
               </CCol>
             </CRow>
           </CCol>
