@@ -9,11 +9,11 @@ const emit = defineEmits(['list-filtering'])
 
 const form = reactive({
   limit: '' as '' | number,
-  own_sort: '',
+  sort: '',
   search: '',
 })
 
-const own_sort_select = [
+const sort_select = [
   { val: '1', text: '개인' },
   { val: '2', text: '법인' },
   { val: '3', text: '국공유지' },
@@ -23,7 +23,7 @@ const siteStore = useSite()
 const siteOwnerCount = computed(() => siteStore.siteOwnerCount)
 
 const formsCheck = computed(
-  () => form.limit === '' && form.own_sort === '' && form.search.trim() === '',
+  () => form.limit === '' && form.sort === '' && form.search.trim() === '',
 )
 
 const listFiltering = (page = 1) => {
@@ -32,7 +32,7 @@ const listFiltering = (page = 1) => {
       project: props.project,
       page,
       limit: form.limit,
-      own_sort: form.own_sort,
+      sort: form.sort,
       search: form.search.trim(),
     })
   })
@@ -40,7 +40,7 @@ const listFiltering = (page = 1) => {
 
 const resetForm = () => {
   form.limit = ''
-  form.own_sort = ''
+  form.sort = ''
   form.search = ''
   listFiltering(1)
 }
@@ -63,9 +63,9 @@ defineExpose({ listFiltering })
             </CFormSelect>
           </CCol>
           <CCol md="6" lg="4" xl="2" class="mb-3">
-            <CFormSelect v-model="form.own_sort" :disabled="!project" @change="listFiltering(1)">
+            <CFormSelect v-model="form.sort" :disabled="!project" @change="listFiltering(1)">
               <option value="">소유구분</option>
-              <option v-for="sort in own_sort_select" :key="sort.val" :value="sort.val">
+              <option v-for="sort in sort_select" :key="sort.val" :value="sort.val">
                 {{ sort.text }}
               </option>
             </CFormSelect>

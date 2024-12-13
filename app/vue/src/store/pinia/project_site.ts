@@ -22,7 +22,7 @@ export type OwnerFilter = {
   project: number | null
   limit?: number | ''
   page?: number
-  own_sort?: string
+  sort?: string
   search?: string
 }
 
@@ -163,10 +163,10 @@ export const useSite = defineStore('site', () => {
   }
 
   const fetchSiteOwnerList = (payload: OwnerFilter) => {
-    const { project, limit, page, own_sort, search } = payload
+    const { project, limit, page, sort, search } = payload
     api
       .get(
-        `/site-owner/?project=${project}&limit=${limit || 10}&page=${page || 1}&own_sort=${own_sort || ''}&search=${search || ''}`,
+        `/site-owner/?project=${project}&limit=${limit || 10}&page=${page || 1}&own_sort=${sort || ''}&search=${search || ''}`,
       )
       .then(res => {
         siteOwnerList.value = res.data.results
@@ -177,27 +177,25 @@ export const useSite = defineStore('site', () => {
   }
 
   const createSiteOwner = (
-    payload: SiteOwner & { limit: number; page: number; own_sort: string; search: string },
+    payload: SiteOwner & { limit: number; page: number; sort: string; search: string },
   ) => {
-    const { limit, page, own_sort, search, ...formData } = payload
+    const { limit, page, sort, search, ...formData } = payload
     api
       .post(`/site-owner/`, formData)
       .then(res => {
-        fetchSiteOwnerList({ project: res.data.project, limit, page, own_sort, search })
+        fetchSiteOwnerList({ project: res.data.project, limit, page, sort, search })
         message()
         console.log('--->', res.data, res.data.sites)
       })
       .catch(err => errorHandle(err.response.data))
   }
 
-  const updateSiteOwner = (
-    payload: SiteOwner & { limit: number; page: number; own_sort: string; search: string },
-  ) => {
-    const { pk, limit, page, own_sort, search, ...formData } = payload
+  const updateSiteOwner = (payload: SiteOwner & OwnerFilter) => {
+    const { pk, limit, page, sort, search, ...formData } = payload
     api
       .put(`/site-owner/${pk}/`, formData)
       .then(res => {
-        fetchSiteOwnerList({ project: res.data.project, limit, page, own_sort, search })
+        fetchSiteOwnerList({ project: res.data.project, limit, page, sort, search })
         message()
       })
       .catch(err => errorHandle(err.response.data))
@@ -215,20 +213,12 @@ export const useSite = defineStore('site', () => {
 
   const relationList = ref<Relation[]>([])
 
-  const patchRelation = (
-    payload: Relation & {
-      project: number
-      limit?: number
-      page?: number
-      own_sort?: string
-      search?: string
-    },
-  ) => {
-    const { pk, project, limit, page, own_sort, search, ...relationData } = payload
+  const patchRelation = (payload: Relation & OwnerFilter) => {
+    const { pk, project, limit, page, sort, search, ...relationData } = payload
     api
       .patch(`/site-relation/${pk}/`, relationData)
       .then(() => {
-        fetchSiteOwnerList({ project, limit, page, own_sort, search })
+        fetchSiteOwnerList({ project, limit, page, sort, search })
         message()
       })
       .catch(err => errorHandle(err.response.data))

@@ -19,7 +19,7 @@ const dataFilter = ref<OwnerFilter>({
   project: null,
   limit: '',
   page: 1,
-  own_sort: '',
+  sort: '',
   search: '',
 })
 
@@ -33,7 +33,7 @@ const getOwnersTotal = computed(() => siteStore.getOwnersTotal?.owned_area)
 const excelUrl = computed(() => {
   const url = `/excel/sites-by-owner/?project=${project.value}`
   const filter = dataFilter.value
-  let queryStr = filter.own_sort ? `&own_sort=${filter.own_sort}` : ''
+  let queryStr = filter.sort ? `&own_sort=${filter.sort}` : ''
   queryStr = filter.search ? `${queryStr}&search=${filter.search}` : queryStr
   return `${url}${queryStr}`
 })
@@ -52,7 +52,7 @@ const pageSelect = (page: number) => {
 type inputData = SiteOwner & {
   limit: number
   page: number
-  own_sort: string
+  sort: string
   search: string
 }
 
@@ -61,16 +61,16 @@ const onCreate = (payload: inputData) => siteStore.createSiteOwner(payload)
 const onUpdate = (payload: inputData) => siteStore.updateSiteOwner(payload)
 
 const relationPatch = (payload: Relation) => {
-  const { page, own_sort, search } = dataFilter.value
+  const { page, sort, search } = dataFilter.value
   if (project.value) {
-    const data = { project: project.value, page, own_sort, search, ...payload }
+    const data = { project: project.value, page, sort, search, ...payload }
     siteStore.patchRelation(data)
   }
 }
 
 const multiSubmit = (payload: SiteOwner) => {
-  const { limit, page, own_sort, search } = dataFilter.value
-  const submitData = { ...payload, limit, page, own_sort, search } as inputData
+  const { limit, page, sort, search } = dataFilter.value
+  const submitData = { ...payload, limit, page, sort, search } as inputData
   if (payload.pk) onUpdate(submitData)
   else onCreate(submitData)
 }
