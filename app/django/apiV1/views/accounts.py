@@ -1,10 +1,8 @@
 import base64
-from datetime import datetime, timedelta
 
 from allauth.account.forms import default_token_generator
 from django.contrib.auth import authenticate, update_session_auth_hash
 from django.contrib.auth.hashers import check_password
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from rest_framework import viewsets, status
@@ -230,22 +228,18 @@ class AdminCreateUserView(APIView):
             StaffAuth.objects.create(user=user, company_id=1, is_project_staff=True)
             Profile.objects.create(user=user)
 
-
-
             if mail_sending is not None:
                 scheme = 'http' if settings.DEBUG else 'https'
                 curr_host = request.get_host()
 
                 if send_option == '1':
                     # Generate a password reset token
-                    token_generator = CustomPasswordResetTokenGenerator(expiration_hours=expired)
-                    token = token_generator.make_token(user)
-
+                    token = default_token_generator.make_token(user)
                     try:
                         token_db = PasswordResetToken.objects.get(user=user)
                         token_db.token = token
                     except PasswordResetToken.DoesNotExist:
-                        token_db = PasswordResetToken(user=user, token=token)
+                        token_db = PasswordResetToken(user=user, token=token, expired=expired*3600)
                     token_db.save()
 
                     # Create a password reset link
@@ -254,13 +248,11 @@ class AdminCreateUserView(APIView):
 
                     # Send the password reset email
                     subject = f'[IBS] {user.username}님 새 계정이 생성 되었습니다.'
-                    message = f'''[IBS]를 시작하기 위해 다음 링크를 클릭하여 비밀번호를 설정 하세요.: \n{reset_link}\n\n
-                    이 링크는 발송 후 {expired}시간 후에 만료됩니다. 만료되기 전에 패스워드를 설정하지 않은 경우 관리자에게 문의하십시오.'''
+                    message = f'''[IBS]를 시작하기 위해 다음 링크를 클릭하여 비밀번호를 설정 하세요.: \n{reset_link}\n\n이 링크는 발송 후 {expired}시간 후에 만료됩니다. 만료되기 전에 패스워드를 설정하지 않은 경우 관리자에게 문의하십시오.'''
                 else:
                     # Send the password reset email
                     subject = f'[IBS] {user.username}님 새 계정이 생성 되었습니다.'
-                    message = f'''[IBS]를 시작하기 위해 다음 사용자 정보를 이용해 로그인 하세요.: \n{scheme}://{curr_host} \n\n
-                    이메일 : {email}\n비밀번호 : {password}\n\n로그인 및 각 메뉴에 대한 접근 권한은 관리자에게 문의하십시오.'''
+                    message = f'''[IBS]를 시작하기 위해 다음 사용자 정보를 이용해 로그인 하세요.: \n\n메일주소 : {email}\n비밀번호 : {password}\n\nURL 주소 : {scheme}://{curr_host}\n\n로그인 및 각 메뉴에 대한 접근 권한은 관리자에게 문의하십시오.'''
 
                 try:
                     send_mail(subject, message, settings.EMAIL_DEFAULT_SENDER, [email])
@@ -269,43 +261,6 @@ class AdminCreateUserView(APIView):
 
                 return Response({'detail': '새 계정을 생성하고 비밀번호 설정을 위한 이메일을 발송했습니다.'}, status=status.HTTP_200_OK)
 
-            return Response({'detail': mail_sending + '새 계정을 생성하였습니다.111' }, status=status.HTTP_200_OK)
+            return Response({ 'detail': '새 계정을 생성하였습니다.' }, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class CustomPasswordResetTokenGenerator(PasswordResetTokenGenerator):
-    """
-    사용자 정의 토큰 생성기로 만료 시간을 동적으로 설정할 수 있음
-    """
-    def __init__(self, expiration_hours=24):
-        """
-        expiration_hours: 토큰의 만료 시간을 시간 단위로 설정
-        """
-        super().__init__()
-        self.expiration_hours = expiration_hours
-
-    def _make_hash_value(self, user, timestamp):
-        return f"{user.pk}{user.password}{timestamp}"
-
-    def check_token(self, user, token):
-        """
-        토큰 유효성을 검사하면서 만료 시간을 확인
-        """
-        # 기본 토큰 유효성 검사
-        if not super().check_token(user, token):
-            return False
-
-        # 토큰 생성 시간 추출
-        try:
-            timestamp = self._get_timestamp(token)
-            token_time = datetime.fromtimestamp(timestamp)
-        except ValueError:
-            return False
-
-        # 현재 시간과 비교하여 만료 여부 확인
-        expiration_time = timedelta(hours=self.expiration_hours)
-        if datetime.now() - token_time > expiration_time:
-            return False
-
-        return True

@@ -215,10 +215,11 @@ class Todo(models.Model):
 class PasswordResetToken(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='users')
     token = models.CharField('토큰', max_length=255)
+    expired = models.PositiveIntegerField('만료시간(초)', blank=True, null=True, default=600)
     created = models.DateTimeField('등록일시', auto_now_add=True)
     updated = models.DateTimeField('수정일시', auto_now=True)
 
     def is_expired(self):
         # Check if 10 minutes have passed since the last update
         time_diff = timezone.localtime() - self.updated
-        return time_diff.total_seconds() >= 600
+        return time_diff.total_seconds() >= self.expired
