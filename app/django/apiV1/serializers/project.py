@@ -133,6 +133,14 @@ class RelationsInSiteOwnerSerializer(serializers.ModelSerializer):
 
 
 class SiteOwnerSerializer(serializers.ModelSerializer):
+    date_of_birth = serializers.DateField(
+        input_formats=["%Y-%m-%d"],  # 허용할 날짜 형식
+        required=False,  # 필수 입력이 아님
+        allow_null=True,  # Null 값 허용
+        error_messages={
+            "invalid": "날짜 형식이 잘못되었습니다. YYYY-MM-DD 형식으로 입력하세요."
+        }
+    )
     own_sort_desc = serializers.CharField(source='get_own_sort_display', read_only=True)
     sites = RelationsInSiteOwnerSerializer(source='relations', many=True, read_only=True)
 
