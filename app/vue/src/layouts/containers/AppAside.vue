@@ -26,7 +26,7 @@ const active = (key: number) => key === activeKey.value
 const updateActiveKey = (key: number) => (activeKey.value = key)
 
 onBeforeMount(async () => {
-  if (company) document.title = company?.value.name + ' :: IBS'
+  if (company) document.title = company.value?.name + ' :: IBS'
 })
 </script>
 
