@@ -57,7 +57,10 @@ export const useAccount = defineStore('account', () => {
   const adminCreateUser = (payload: UserByAdmin) =>
     api
       .post('/admin-create-user/', payload)
-      .then(() => message('info', '', '사용자를 생성하고 메일을 발송했습니다.'))
+      .then(res => {
+        console.log(res)
+        fetchUsersList().then(r => message('info', '', '사용자를 생성하고 메일을 발송했습니다.'))
+      })
       .catch(err => errorHandle(err.response.data))
 
   const signup = (payload: LoginUser & { username: string }) =>

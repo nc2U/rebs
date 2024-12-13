@@ -12,7 +12,7 @@ const form = reactive({
   password: '',
   pass_conf: '',
 
-  send_mail: true,
+  mail_sending: true,
   send_option: '1',
   expired: 24,
 })
@@ -45,7 +45,7 @@ const formReset = () => {
   form.email = ''
   form.password = ''
   form.pass_conf = ''
-  form.send_mail = true
+  form.mail_sending = true
   form.send_option = '1'
   form.expired = 24
 }
@@ -158,7 +158,7 @@ defineExpose({ callModal })
           <CRow>
             <CCol class="mb-3">
               <CFormCheck
-                v-model="form.send_mail"
+                v-model="form.mail_sending"
                 type="checkbox"
                 id="inform-mail"
                 label="새로 생성한 사용자에게 알림 메일 보내기"
@@ -175,7 +175,7 @@ defineExpose({ callModal })
                 name="content-option"
                 id="content-option1"
                 label="패스워드 재설정 링크 포함"
-                :disabled="!form.send_mail"
+                :disabled="!form.mail_sending"
               />
             </CCol>
             <CRow>
@@ -183,7 +183,7 @@ defineExpose({ callModal })
                 <span class="pl-4">링크 만료 시간 : </span>
               </CCol>
               <CCol sm="4">
-                <CFormSelect v-model.number="form.expired" size="sm" :disabled="!form.send_mail">
+                <CFormSelect v-model.number="form.expired" size="sm" :disabled="!form.mail_sending">
                   <option v-for="i in 24" :value="i" :key="i">
                     <span v-if="i < 10">0</span>{{ i }}
                   </option>
@@ -199,7 +199,7 @@ defineExpose({ callModal })
                 name="content-option"
                 id="content-option2"
                 label="사용자 패스워드 포함"
-                :disabled="!form.send_mail"
+                :disabled="!form.mail_sending"
               />
             </CCol>
           </CRow>

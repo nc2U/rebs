@@ -209,7 +209,7 @@ class AdminCreateUserView(APIView):
             email = serializer.validated_data.get('email')
             username = serializer.validated_data.get('username')
             password = serializer.validated_data.get('password')
-            send_mail = serializer.validated_data.get('send_mail')
+            mail_sending = serializer.validated_data.get('mail_sending')
             send_option = serializer.validated_data.get('send_option')
             expired = serializer.validated_data.get('expired')
             print("Serializer is valid:", serializer.validated_data)
@@ -232,7 +232,7 @@ class AdminCreateUserView(APIView):
 
 
 
-            if send_mail:
+            if mail_sending is not None:
                 scheme = 'http' if settings.DEBUG else 'https'
                 curr_host = request.get_host()
 
@@ -269,7 +269,7 @@ class AdminCreateUserView(APIView):
 
                 return Response({'detail': '새 계정을 생성하고 비밀번호 설정을 위한 이메일을 발송했습니다.'}, status=status.HTTP_200_OK)
 
-            return Response({'detail': '새 계정을 생성하였습니다.'}, status=status.HTTP_200_OK)
+            return Response({'detail': mail_sending + '새 계정을 생성하였습니다.111' }, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

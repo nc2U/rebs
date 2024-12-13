@@ -214,6 +214,6 @@ class AdminCreateUserSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
     username = serializers.CharField(required=True)
     password = serializers.CharField(required=True)
-    send_mail = serializers.BooleanField(read_only=True)
+    mail_sending = serializers.BooleanField(read_only=True)
     send_option = serializers.CharField(read_only=True)
     expired = serializers.IntegerField()
