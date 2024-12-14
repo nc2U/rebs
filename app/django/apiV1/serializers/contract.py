@@ -311,6 +311,12 @@ class ContractSetSerializer(serializers.ModelSerializer):
             cont_file.save()
         contract.save()
 
+        new_file = self.initial_data.get('newFile', None)
+        if new_file:
+            user = self.context['request'].user
+            cont_file = ContractFile(contract=contract, file=new_file, user=user)
+            cont_file.save()
+
         # 2. 계약 유닛 연결
         keyunit_data = self.initial_data.get('keyunit')
         keyunit = KeyUnit.objects.get(pk=keyunit_data)

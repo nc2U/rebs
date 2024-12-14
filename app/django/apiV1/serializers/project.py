@@ -1,3 +1,5 @@
+import os
+
 from django.db import transaction
 from rest_framework import serializers
 
@@ -232,3 +234,44 @@ class SiteContractSerializer(serializers.ModelSerializer):
                   'inter_pay2_date', 'inter_pay2_is_paid', 'remain_pay', 'remain_pay_date',
                   'remain_pay_is_paid', 'ownership_completion', 'acc_bank', 'acc_number',
                   'acc_owner', 'site_cont_files', 'note')
+
+    @transaction.atomic
+    def create(self, validated_data):
+        site_contract = SiteContract.objects.create(**validated_data)
+        site_contract.save()
+        
+        new_file = self.initial_data.get('newFile', None)
+        if new_file:
+            user = self.context['request'].user
+            cont_file = SiteContractFile(site_contract=site_contract, file=new_file, user=user)
+            cont_file.save()
+        return site_contract
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        instance.__dict__.update(**validated_data)
+        instance.save()
+
+        new_file = self.initial_data.get('newFile', None)
+        if new_file:
+            user = self.context['request'].user
+            cont_file = SiteContractFile(site_contract=instance, file=new_file, user=user)
+            cont_file.save()
+
+        edit_file = self.initial_data.get('editFile', None)  # pk
+        cng_file = self.initial_data.get('cngFile', None)  # change file
+
+        if edit_file and cng_file:
+            file = SiteContractFile.objects.get(pk=edit_file)
+            if cng_file:
+                old_file = file.file
+                if os.path.isfile(old_file.path):
+                    os.remove(old_file.path)
+                file.file = cng_file
+                file.save()
+
+        del_file = self.initial_data.get('delFile', None)
+        if del_file:
+            file = SiteContractFile.objects.get(pk=del_file)
+            file.delete()
+        return instance

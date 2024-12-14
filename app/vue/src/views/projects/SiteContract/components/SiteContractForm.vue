@@ -479,7 +479,6 @@ onBeforeMount(() => dataSetup())
           :deleted="delFile || undefined"
           @file-control="fileControl"
         />
-        {{ newFile }} / {{ editFile }} / {{ cngFile }} / {{ delFile }}
       </div>
     </CModalBody>
 
