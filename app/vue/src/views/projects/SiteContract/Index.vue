@@ -56,8 +56,9 @@ const onCreate = (payload: SiteContract) => siteStore.createSiteCont(payload)
 const onUpdate = (payload: SiteContract) => siteStore.updateSiteCont(payload)
 
 const multiSubmit = (payload: SiteContract) => {
-  if (payload.pk) onUpdate(payload)
-  else onCreate(payload)
+  // if (payload.pk) onUpdate(payload)
+  // else onCreate(payload)
+  console.log(payload)
 }
 
 const onDelete = (payload: { pk: number; project: number }) => {

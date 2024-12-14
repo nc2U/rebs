@@ -78,9 +78,14 @@ const formsCheck = computed(() => {
     const u = form.acc_owner === props.contract.acc_owner
     const v = form.note === props.contract.note
 
+    const w = !newFile.value
+    const x = !editFile.value
+    const y = !cngFile.value
+    const z = !delFile.value
+
     const sky = a && b && c && d && e && f && g && h && i
     const sea = j && k && l && m && n && o && p && q && r
-    const air = s && t && u && v
+    const air = s && t && u && v && w && x && y && z
 
     return sky && sea && air
   } else return false
@@ -104,11 +109,18 @@ const onSubmit = (event: Event) => {
   } else {
     if (write_project.value) multiSubmit({ ...form })
     else refAlertModal.value.callModal()
+    validated.value = false
   }
 }
 
-const multiSubmit = (multiPayload: SiteContract) => {
-  emit('multi-submit', multiPayload)
+const multiSubmit = (payload: SiteContract) => {
+  emit('multi-submit', {
+    ...payload,
+    newFile: newFile.value,
+    editFile: editFile.value,
+    cngFile: cngFile.value,
+    delFile: delFile.value,
+  })
   emit('close')
 }
 
@@ -149,6 +161,7 @@ const dataSetup = () => {
     form.acc_number = props.contract.acc_number
     form.acc_owner = props.contract.acc_owner
     form.note = props.contract.note
+    form.site_cont_files = props.contract.site_cont_files
   } else form.project = props.project as number
 }
 

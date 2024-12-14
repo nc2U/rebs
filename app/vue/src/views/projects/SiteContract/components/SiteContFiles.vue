@@ -9,7 +9,7 @@ const props = defineProps({
   deleted: { type: Number, default: null },
 })
 
-const emit = defineEmits(['cont-file-control'])
+const emit = defineEmits(['file-control'])
 
 const RefDelFile = ref()
 
@@ -29,11 +29,11 @@ const loadFile = (data: Event, pk = null as null | number) => {
   if (el.files && el.files[0]) {
     if (el.id === 'scan-new-file') {
       newFile.value = el.files[0]
-      emit('cont-file-control', { newFile: newFile.value })
+      emit('file-control', { newFile: newFile.value })
     } else {
       editFile.value = pk
       cngFile.value = el.files[0]
-      emit('cont-file-control', { editFile: editFile.value, cngFile: cngFile.value })
+      emit('file-control', { editFile: editFile.value, cngFile: cngFile.value })
     }
   }
 }
@@ -43,11 +43,11 @@ const removeFile = (id: string) => {
   file_form.value = ''
   if (id === 'scan-new-file') {
     newFile.value = null
-    emit('cont-file-control', { newFile: null })
+    emit('file-control', { newFile: null })
   } else {
     editFile.value = null
     cngFile.value = null
-    emit('cont-file-control', { editFile: null, cngFile: null })
+    emit('file-control', { editFile: null, cngFile: null })
   }
 }
 
@@ -60,10 +60,10 @@ const delFileConfirm = (pk: number) => {
 
 const delFileSubmit = () => {
   if (props.deleted) {
-    emit('cont-file-control', { delFile: '' })
+    emit('file-control', { delFile: '' })
     RefDelFile.value.close()
   } else {
-    emit('cont-file-control', { delFile: delFile.value })
+    emit('file-control', { delFile: delFile.value })
     delFile.value = null
     RefDelFile.value.close()
   }
