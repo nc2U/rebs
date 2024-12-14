@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, nextTick, watch, onMounted, onUpdated, type PropType } from 'vue'
-import { useStore } from '@/store'
+import { ref, reactive, computed, nextTick, watch, onMounted, onUpdated, type PropType, inject } from 'vue'
 import { useRouter, onBeforeRouteLeave } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
 import { useContract } from '@/store/pinia/contract'
@@ -109,8 +108,7 @@ const matchAddr = computed(() => {
 
 watch(matchAddr, val => sameAddrBtnSet(val))
 
-const store = useStore()
-const isDark = computed(() => store.theme === 'dark')
+const isDark = inject('isDark')
 
 const contractStore = useContract()
 const getOrderGroups = computed(() => contractStore.getOrderGroups)
@@ -307,7 +305,7 @@ const formDataReset = () => {
   form.home_phone = ''
   form.other_phone = ''
   form.email = ''
-  contractStore.contract = null
+  contractStore.removeContract()
   sameAddr.value = false
 }
 

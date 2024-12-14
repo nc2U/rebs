@@ -65,6 +65,8 @@ export const useContract = defineStore('contract', () => {
       .then(res => (contract.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
+  const removeContract = () => (contract.value = null)
+
   const fetchContractList = async (payload: ContFilter) => {
     isLoading.value = true
     const status = payload.status ?? '2'
@@ -374,6 +376,7 @@ export const useContract = defineStore('contract', () => {
     fetchAllContracts,
     contractPages,
     fetchContract,
+    removeContract,
     fetchContractList,
     createContractSet,
     updateContractSet,
