@@ -185,6 +185,8 @@ const fileControl = (payload: any) => {
 
   if (payload.delFile) delFile.value = payload.delFile
   else delFile.value = ''
+
+  console.log({ newFile: newFile.value })
 }
 
 onBeforeMount(() => dataSetup())
@@ -475,8 +477,9 @@ onBeforeMount(() => dataSetup())
           ref="RefSiteContFile"
           :contract-files="form.site_cont_files"
           :deleted="delFile || undefined"
-          @cont-file-control="fileControl"
+          @file-control="fileControl"
         />
+        {{ newFile }} / {{ editFile }} / {{ cngFile }} / {{ delFile }}
       </div>
     </CModalBody>
 

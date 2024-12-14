@@ -86,10 +86,10 @@ watch(contract, newVal => {
   }
 })
 
-const getContract = (contor: string) =>
-  fetchContractor(Number(contor), project.value).then(res => {
-    if (res.contract) fetchContract(res.contract)
-  })
+const getContract = async (contor: string) => {
+  await fetchContractor(Number(contor), project.value)
+  await fetchContract(contractor.value?.contract as number)
+}
 
 const typeSelect = (payload: {
   unit_type?: number
@@ -137,8 +137,8 @@ const dataSetup = (pk: number) => {
 }
 
 const dataReset = () => {
-  contStore.contract = null
-  contStore.contractor = null
+  contStore.removeContract()
+  contStore.removeContractor()
   contStore.orderGroupList = []
   contStore.keyUnitList = []
   contStore.houseUnitList = []
@@ -160,8 +160,8 @@ onBeforeMount(() => {
 
   if (route.query.contractor) getContract(route.query.contractor as string)
   else {
-    contStore.contract = null
-    contStore.contractor = null
+    contStore.removeContract()
+    contStore.removeContractor()
   }
 })
 </script>
