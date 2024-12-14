@@ -1,5 +1,10 @@
-from django.db import models
+import os
+
+import magic
 from django.conf import settings
+from django.db import models
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 
 
 class Project(models.Model):
@@ -201,3 +206,41 @@ class SiteContract(models.Model):
         ordering = ('-id',)
         verbose_name = '07. 사업부지 계약현황'
         verbose_name_plural = '07. 사업부지 계약현황'
+
+
+def get_cont_file(instance, filename):
+    return '/'.join(
+        ['sites',
+         f'project_{instance.site_contract.project.id}',
+         instance.contract.owner.owner,
+         filename])
+
+
+class SiteContractFile(models.Model):
+    site_contract = models.ForeignKey(SiteContract, on_delete=models.CASCADE, default=None, verbose_name='계약서',
+                                 related_name='site_cont_files')
+    file = models.FileField(upload_to=get_cont_file, verbose_name='파일경로')
+    file_name = models.CharField('파일명', max_length=100, blank=True)
+    file_type = models.CharField('타입', max_length=100, blank=True)
+    file_size = models.PositiveBigIntegerField('사이즈', blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사용자')
+
+    def __str__(self):
+        return self.file_name
+
+    def save(self, *args, **kwargs):
+        if self.file:
+            self.file_name = self.file.name.split('/')[-1]
+            mime = magic.Magic(mime=True)
+            self.file_type = mime.from_buffer(self.file.read())
+            self.file_size = self.file.size
+        super().save(*args, **kwargs)
+
+
+@receiver(pre_delete, sender=SiteContractFile)
+def delete_file_on_delete(sender, instance, **kwargs):
+    # Check if the file exists before attempting to delete it
+    if instance.file:
+        if os.path.isfile(instance.file.path):
+            os.remove(instance.file.path)
