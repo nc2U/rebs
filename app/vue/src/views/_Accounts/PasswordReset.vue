@@ -67,9 +67,6 @@ onBeforeMount(() => fetchResetTokenList(uid.value))
   </div>
 
   <AlertModal ref="refAlertModal">
-    <!--    <template #icon>-->
-    <!--      <v-icon icon="mdi-alert-circle" color="warning" class="mr-2"/>-->
-    <!--    </template>-->
     <template #header>성공!</template>
     <template #default>비밀번호가 변경되었습니다. 새 비밀번호로 다시 로그인하십시오.</template>
     <template #footer>
