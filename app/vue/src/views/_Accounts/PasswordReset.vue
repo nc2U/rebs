@@ -1,9 +1,12 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount } from 'vue'
+import { ref, computed, onBeforeMount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useAccount } from '@/store/pinia/account'
 import ResetForm from '@/views/_Accounts/components/ResetForm.vue'
 import SocialLogin from '@/views/_Accounts/components/SocialLogin.vue'
-import { useAccount } from '@/store/pinia/account'
+import AlertModal from '@/components/Modals/AlertModal.vue'
+
+const refAlertModal = ref()
 
 const accStore = useAccount()
 const [route, router] = [useRoute(), useRouter()]
@@ -13,7 +16,8 @@ const token = computed(() => route.query.token)
 const isExpired = computed(() => {
   const resetToken = accStore.resetTokenList.length ? accStore.resetTokenList[0] : null
   if (!!resetToken) {
-    if (resetToken.is_expired) return true // expired!
+    if (resetToken.is_expired)
+      return true // expired!
     else return token.value !== resetToken.token // if tokenCheck true -> not expired!, false -> expired!
   } else return true
 })
@@ -27,7 +31,7 @@ const onSubmit = async (new_password: string) => {
     new_password,
   }
   accStore.passResetConfirm(payload)
-  await router.push({ name: 'Home' })
+  await refAlertModal.value.callModal()
 }
 
 onBeforeMount(() => fetchResetTokenList(uid.value))
@@ -52,13 +56,24 @@ onBeforeMount(() => fetchResetTokenList(uid.value))
               </div>
             </CCardBody>
             <CCardBody v-else class="text-body">
-              <ResetForm @on-submit="onSubmit" />
+              <ResetForm @on-submit="onSubmit"/>
 
-              <SocialLogin />
+              <SocialLogin/>
             </CCardBody>
           </CCard>
         </CCol>
       </CRow>
     </CContainer>
   </div>
+
+  <AlertModal ref="refAlertModal">
+    <!--    <template #icon>-->
+    <!--      <v-icon icon="mdi-alert-circle" color="warning" class="mr-2"/>-->
+    <!--    </template>-->
+    <template #header>성공!</template>
+    <template #default>비밀번호가 변경되었습니다. 새 비밀번호로 다시 로그인하십시오.</template>
+    <template #footer>
+      <CButton color="primary" @click="router.push({name: 'Home'})">지금 로그인</CButton>
+    </template>
+  </AlertModal>
 </template>

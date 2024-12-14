@@ -71,7 +71,7 @@ const router = useRouter()
 
     <CRow>
       <CCol xs="12" class="d-grid">
-        <CButton color="warning" size="lg" class="px-4" type="submit">비밀번호 제출</CButton>
+        <CButton color="info" size="lg" class="px-4" type="submit">비밀번호 제출</CButton>
       </CCol>
     </CRow>
     <CRow>

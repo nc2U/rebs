@@ -53,7 +53,7 @@ const toLogin = () => emit('to-login')
 
     <CRow>
       <CCol xs="12" class="d-grid">
-        <CButton color="warning" class="px-4" size="lg" type="submit">이메일 전송하기</CButton>
+        <CButton color="info" class="px-4" size="lg" type="submit">이메일 전송하기</CButton>
       </CCol>
     </CRow>
     <CRow>
@@ -69,7 +69,7 @@ const toLogin = () => emit('to-login')
     <template #header>비밀번호 재설정 확인</template>
     <template #default> 비밀번호 재설정을 위한 이메일을 전송하시겠습니까?</template>
     <template #footer>
-      <CButton color="warning" @click="modalAction"> 확인</CButton>
+      <CButton color="info" @click="modalAction"> 확인</CButton>
     </template>
   </ConfirmModal>
 </template>
