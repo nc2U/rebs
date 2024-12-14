@@ -1,5 +1,15 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, nextTick, watch, onMounted, onUpdated, type PropType, inject } from 'vue'
+import {
+  ref,
+  reactive,
+  computed,
+  nextTick,
+  watch,
+  onMounted,
+  onUpdated,
+  type PropType,
+  inject,
+} from 'vue'
 import { useRouter, onBeforeRouteLeave } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
 import { useContract } from '@/store/pinia/contract'
@@ -330,8 +340,8 @@ const formDataSetup = () => {
     form.gender = props.contract.contractor.gender // 9
     form.qualification = props.contract.contractor.qualification // 10
     form.status = props.contract.contractor.status
-    form.reservation_date = props.contractor?.reservation_date
-    form.contract_date = props.contractor?.contract_date
+    form.reservation_date = props.contractor?.reservation_date ?? null
+    form.contract_date = props.contractor?.contract_date ?? null
     form.note = props.contract.contractor.note
 
     // address
@@ -1000,7 +1010,7 @@ onBeforeRouteLeave(() => formDataReset())
       <ContFiles
         ref="RefContFile"
         v-show="isContract"
-        :is-dark="isDark"
+        :is-dark="isDark as boolean"
         :status="form.status as string"
         :contract-files="form.contract_files"
         :deleted="delFile || undefined"

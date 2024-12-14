@@ -1,12 +1,10 @@
 <script lang="ts" setup="">
-import { type PropType, ref } from 'vue'
+import { inject, type PropType, ref } from 'vue'
 import { cutString, humanizeFileSize } from '@/utils/baseMixins'
 import type { ContractFile } from '@/store/types/contract'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const props = defineProps({
-  isDark: { type: Boolean, default: false },
-  status: { type: String, default: '' },
   contractFiles: { type: Array as PropType<ContractFile[]>, default: () => [] },
   deleted: { type: Number, default: null },
 })
@@ -16,6 +14,8 @@ const emit = defineEmits(['cont-file-control'])
 const RefDelFile = ref()
 
 const newFile = ref<File | null>(null)
+
+const isDark = inject('isDark')
 
 const editMode = ref(false)
 const doneEdit = () => (editMode.value = false)
@@ -72,8 +72,8 @@ const delFileSubmit = () => {
 
 <template>
   <CRow class="my-3 py-2" :class="{ 'bg-light': !isDark }">
-    <CFormLabel class="col-sm-2 col-lg-1 col-form-label"> 계약서 파일</CFormLabel>
-    <CCol sm="10" class="mb-sm-3 mb-lg-0">
+    <CFormLabel class="col-sm-2 col-form-label"> 계약서 파일</CFormLabel>
+    <CCol sm="10">
       <template v-if="!!contractFiles.length">
         <CRow v-for="file in contractFiles" :key="file.pk" class="mb-2" style="padding-top: 6px">
           <CCol>
@@ -108,12 +108,7 @@ const delFileSubmit = () => {
 
           <CRow>
             <CInputGroup v-if="editMode" class="mt-2">
-              <CFormInput
-                id="scan-edit-file"
-                type="file"
-                @change="loadFile($event, file.pk)"
-                :disabled="!status"
-              />
+              <CFormInput id="scan-edit-file" type="file" @change="loadFile($event, file.pk)" />
               <CInputGroupText v-if="editFile">
                 <v-icon
                   icon="mdi-trash-can-outline"
@@ -128,7 +123,7 @@ const delFileSubmit = () => {
       </template>
 
       <CInputGroup v-else>
-        <CFormInput id="scan-new-file" type="file" @change="loadFile" :disabled="!status" />
+        <CFormInput id="scan-new-file" type="file" @change="loadFile" />
         <CInputGroupText v-if="newFile">
           <v-icon
             icon="mdi-trash-can-outline"

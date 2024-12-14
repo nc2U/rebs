@@ -263,6 +263,7 @@ export interface SiteContract {
   acc_number: string
   acc_owner: string
   note: string
+  site_cont_files: []
 }
 
 export interface OptionItem {

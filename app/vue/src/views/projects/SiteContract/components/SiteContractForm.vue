@@ -6,6 +6,7 @@ import { type SiteContract } from '@/store/types/project'
 import { write_project } from '@/utils/pageAuth'
 import Multiselect from '@vueform/multiselect'
 import DatePicker from '@/components/DatePicker/index.vue'
+import SiteContFiles from './SiteContFiles.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
@@ -46,6 +47,7 @@ const form = reactive<SiteContract>({
   acc_number: '',
   acc_owner: '',
   note: '',
+  site_cont_files: [],
 })
 
 const siteStore = useSite()
@@ -147,7 +149,29 @@ const dataSetup = () => {
     form.acc_number = props.contract.acc_number
     form.acc_owner = props.contract.acc_owner
     form.note = props.contract.note
-  } else form.project = props.project
+  } else form.project = props.project as number
+}
+
+const RefSiteContFile = ref()
+const newFile = ref<File | ''>('')
+const editFile = ref<number | ''>('')
+const cngFile = ref<File | ''>('')
+const delFile = ref<number | ''>('')
+
+const fileControl = (payload: any) => {
+  if (payload.newFile) newFile.value = payload.newFile
+  else newFile.value = ''
+
+  if (payload.editFile) {
+    editFile.value = payload.editFile
+    cngFile.value = payload.cngFile
+  } else {
+    editFile.value = ''
+    cngFile.value = ''
+  }
+
+  if (payload.delFile) delFile.value = payload.delFile
+  else delFile.value = ''
 }
 
 onBeforeMount(() => dataSetup())
@@ -433,6 +457,13 @@ onBeforeMount(() => dataSetup())
             </CRow>
           </CCol>
         </CRow>
+
+        <SiteContFiles
+          ref="RefSiteContFile"
+          :contract-files="form.site_cont_files"
+          :deleted="delFile || undefined"
+          @cont-file-control="fileControl"
+        />
       </div>
     </CModalBody>
 
