@@ -1,9 +1,10 @@
 from django.db import transaction
 from rest_framework import serializers
 
+from apiV1.serializers.accounts import SimpleUserSerializer
 from notice.models import SalesBillIssue
-from project.models import (Project, ProjectIncBudget, ProjectOutBudget,
-                            Site, SiteOwner, SiteOwnshipRelationship, SiteContract)
+from project.models import (Project, ProjectIncBudget, ProjectOutBudget, Site, SiteOwner,
+                            SiteOwnshipRelationship, SiteContract, SiteContractFile)
 from rebs.models import ProjectAccountD2, ProjectAccountD3
 from cash.models import ProjectCashBook
 
@@ -211,8 +212,17 @@ class TotalContractedAreaSerializer(serializers.ModelSerializer):
         fields = ('project', 'contracted_area')
 
 
+class ContractFileInSiteContractSetSerializer(serializers.ModelSerializer):
+    user = SimpleUserSerializer(read_only=True)
+
+    class Meta:
+        model = SiteContractFile
+        fields = ('pk', 'file', 'file_name', 'file_size', 'created', 'user')
+
+
 class SiteContractSerializer(serializers.ModelSerializer):
     owner_desc = SiteOwnerInSiteSerializer(source='owner', read_only=True)
+    site_cont_files = ContractFileInSiteContractSetSerializer(many=True, read_only=True)
 
     class Meta:
         model = SiteContract
@@ -221,4 +231,4 @@ class SiteContractSerializer(serializers.ModelSerializer):
                   'inter_pay1', 'inter_pay1_date', 'inter_pay1_is_paid', 'inter_pay2',
                   'inter_pay2_date', 'inter_pay2_is_paid', 'remain_pay', 'remain_pay_date',
                   'remain_pay_is_paid', 'ownership_completion', 'acc_bank', 'acc_number',
-                  'acc_owner', 'note')
+                  'acc_owner', 'site_cont_files', 'note')

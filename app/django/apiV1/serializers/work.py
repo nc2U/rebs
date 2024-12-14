@@ -7,6 +7,7 @@ from django.utils import timezone
 from rest_framework import serializers
 
 from accounts.models import User
+from apiV1.serializers.accounts import SimpleUserSerializer
 from work.models import (IssueProject, Role, Permission, Member, Module, Version,
                          IssueCategory, Repository, Tracker, IssueStatus, Workflow,
                          CodeActivity, CodeIssuePriority, CodeDocsCategory, Issue, IssueRelation,
@@ -32,12 +33,6 @@ class SimpleIssueProjectSerializer(serializers.ModelSerializer):
             return obj.is_public or user.pk in members or visible_auth
         else:
             return False
-
-
-class SimpleUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('pk', 'username')
 
 
 class RoleInMemberSerializer(serializers.ModelSerializer):

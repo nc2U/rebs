@@ -10,6 +10,12 @@ from work.models import IssueProject
 
 
 # Accounts --------------------------------------------------------------------------
+class SimpleUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('pk', 'username')
+
+
 class StaffAuthInUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = StaffAuth
