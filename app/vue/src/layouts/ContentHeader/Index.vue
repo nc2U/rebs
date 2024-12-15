@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import Cookies from 'js-cookie'
 import { useRoute } from 'vue-router'
 import { useProject } from '@/store/pinia/project'
 import { useCompany } from '@/store/pinia/company'
@@ -28,14 +29,18 @@ const companyStore = useCompany()
 const projectStore = useProject()
 
 const comSelect = (com: number | null) => {
-  if (!!com) companyStore.fetchCompany(com)
-  else companyStore.company = null
+  if (!!com) {
+    Cookies.set('curr-company', `${ com }`)
+    companyStore.fetchCompany(com)
+  } else companyStore.company = null
   emit('com-select', com)
 }
 
 const projSelect = (proj: number | null) => {
-  if (!!proj) projectStore.fetchProject(proj)
-  else projectStore.project = null
+  if (!!proj) {
+    Cookies.set('curr-project', `${ proj }`)
+    projectStore.fetchProject(proj)
+  } else projectStore.project = null
   emit('proj-select', proj)
 }
 </script>
@@ -43,18 +48,18 @@ const projSelect = (proj: number | null) => {
 <template>
   <CCard class="text-body mt-4 mx-2 mx-md-3 mx-xl-5">
     <CCardHeader>
-      <v-icon icon="mdi mdi-text-box-check-outline" size="small" />
+      <v-icon icon="mdi mdi-text-box-check-outline" size="small"/>
       <strong class="pl-1"> {{ pageTitle }}</strong>
     </CCardHeader>
 
     <CCardBody>
-      <HeaderNav :menus="navMenu" :query="route?.query" />
+      <HeaderNav :menus="navMenu" :query="route?.query"/>
 
-      <CompanySelect v-if="selector === 'CompanySelect'" @com-select="comSelect" />
+      <CompanySelect v-if="selector === 'CompanySelect'" @com-select="comSelect"/>
 
-      <ProjectSelect v-if="selector === 'ProjectSelect'" @proj-select="projSelect" />
+      <ProjectSelect v-if="selector === 'ProjectSelect'" @proj-select="projSelect"/>
 
-      <slot />
+      <slot/>
     </CCardBody>
   </CCard>
 </template>
