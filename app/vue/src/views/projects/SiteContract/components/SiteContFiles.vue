@@ -88,19 +88,23 @@ const delFileSubmit = () => {
             </span>
           </CCol>
           <CCol class="text-right">
-            <v-icon
+            <v-btn
+              density="compact"
               icon="mdi-pencil"
               :color="!deleted ? 'success' : 'secondary'"
-              size="18"
+              size="small"
               :class="{ pointer: !deleted }"
+              variant="text"
               :disabled="!!deleted"
               @click="editMode = !editMode"
             />
-            <v-icon
+            <v-btn
+              density="compact"
               :icon="!deleted ? 'mdi-delete' : 'mdi-delete-restore'"
               :color="editMode ? 'secondary' : 'grey'"
-              size="18"
-              class="pointer ml-2"
+              size="small"
+              class="ml-2"
+              variant="text"
               :disabled="editMode"
               @click="delFileConfirm(file.pk)"
             />
