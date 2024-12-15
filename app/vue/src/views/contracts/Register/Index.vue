@@ -104,7 +104,6 @@ const typeSelect = (payload: {
 
 const onSubmit = (payload: Contract & { status: '1' | '2' }) => {
   const { pk, ...getData } = payload as { [key: string]: any }
-  if (project.value) getData.project = project.value
 
   const form = new FormData()
 
@@ -150,7 +149,7 @@ const dataReset = () => {
 const projSelect = (target: number | null) => {
   dataReset()
   if (!!target) {
-    contForm.value.formReset()
+    contForm.value.formDataReset()
     dataSetup(target)
   }
 }

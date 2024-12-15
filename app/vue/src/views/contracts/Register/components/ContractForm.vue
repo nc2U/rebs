@@ -56,6 +56,7 @@ const validated = ref(false)
 const form = reactive({
   // contract
   pk: null as number | null,
+  project: null as null | number,
   order_group: null as number | null,
   order_group_sort: '',
   unit_type: null as number | null,
@@ -272,6 +273,7 @@ const remove_sup_cDate = () => (form.is_sup_cont ? (form.sup_cont_date = null) :
 
 const formDataReset = () => {
   form.pk = null
+  form.project = null
   form.order_group = null
   form.order_group_sort = ''
   form.unit_type = null
@@ -365,6 +367,7 @@ const formDataSetup = () => {
 
     sameAddrBtnSet(matchAddr.value)
   }
+  form.project = props.project as number
 }
 
 const resumeForm = (contor: string) => emit('resume-form', contor)
