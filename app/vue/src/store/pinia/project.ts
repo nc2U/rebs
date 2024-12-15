@@ -1,16 +1,16 @@
 import api from '@/api'
+import Cookies from 'js-cookie'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useAccount } from '@/store/pinia/account'
 import { errorHandle, message } from '@/utils/helper'
 import {
-  type Project,
+  type ExecAmountToBudget,
   type ProIncBudget,
+  type Project,
   type ProOutBudget,
   type StatusOutBudget,
-  type ExecAmountToBudget,
 } from '@/store/types/project'
-import { numberToHour } from '@/utils/baseMixins'
 
 export const useProject = defineStore('project', () => {
   const accountStore = useAccount()
@@ -52,10 +52,9 @@ export const useProject = defineStore('project', () => {
       ? accountStore.userInfo.staffauth.assigned_project
       : 0,
   )
-  const firstProject = computed(() => (projectsCount.value ? 1 : 0))
-  const initProjId = computed(() =>
-    assingedProject.value ? assingedProject.value : firstProject.value,
-  )
+
+  const currentProject = Number(Cookies.get('curr-project'))
+  const initProjId = computed(() => (currentProject ? currentProject : assingedProject.value))
 
   // actions
   const fetchProject = (pk: number) =>

@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
-
 import { useProject } from '@/store/pinia/project'
 import Multiselect from '@vueform/multiselect'
 
