@@ -210,15 +210,14 @@ class SiteContract(models.Model):
 
 def get_cont_file(instance, filename):
     return '/'.join(
-        ['sites',
+        ['sites_cont',
          f'project_{instance.site_contract.project.id}',
-         instance.contract.owner.owner,
          filename])
 
 
 class SiteContractFile(models.Model):
     site_contract = models.ForeignKey(SiteContract, on_delete=models.CASCADE, default=None, verbose_name='계약서',
-                                 related_name='site_cont_files')
+                                      related_name='site_cont_files')
     file = models.FileField(upload_to=get_cont_file, verbose_name='파일경로')
     file_name = models.CharField('파일명', max_length=100, blank=True)
     file_type = models.CharField('타입', max_length=100, blank=True)
