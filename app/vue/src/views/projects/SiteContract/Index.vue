@@ -51,13 +51,19 @@ const pageSelect = (page: number) => {
   if (project.value) siteStore.fetchSiteContList(dataFilter.value)
 }
 
-const onCreate = (payload: SiteContract) => siteStore.createSiteCont(payload)
+const onCreate = (payload: FormData) => siteStore.createSiteCont(payload)
 
-const onUpdate = (payload: SiteContract) => siteStore.updateSiteCont(payload)
+const onUpdate = (pk: number, payload: FormData) => siteStore.updateSiteCont(pk, payload)
 
 const multiSubmit = (payload: SiteContract) => {
-  if (payload.pk) onUpdate(payload)
-  else onCreate(payload)
+  const { pk, ...data } = payload as { [key: string]: any }
+
+  const form = new FormData()
+
+  for (const key in data) form.set(key, data[key] ?? '')
+
+  if (payload.pk) onUpdate(pk, form)
+  else onCreate(form)
 }
 
 const onDelete = (payload: { pk: number; project: number }) => {

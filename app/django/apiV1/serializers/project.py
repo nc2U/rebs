@@ -249,8 +249,6 @@ class SiteContractSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def update(self, instance, validated_data):
-        # instance.__dict__.update(**validated_data)
-        # Update fields using ModelSerializer's update mechanism
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()

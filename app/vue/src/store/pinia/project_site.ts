@@ -251,7 +251,7 @@ export const useSite = defineStore('site', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const createSiteCont = (payload: SiteContract) => {
+  const createSiteCont = (payload: FormData) => {
     api
       .post(`/site-contract/`, payload)
       .then(res => {
@@ -261,10 +261,9 @@ export const useSite = defineStore('site', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const updateSiteCont = (payload: SiteContract) => {
-    const { pk, ...contData } = payload
+  const updateSiteCont = (pk, payload: FormData) => {
     api
-      .put(`/site-contract/${pk}/`, contData)
+      .put(`/site-contract/${pk}/`, payload)
       .then(res => {
         fetchSiteContList({ project: res.data.project })
         message()
