@@ -239,7 +239,7 @@ class SiteContractSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         site_contract = SiteContract.objects.create(**validated_data)
         site_contract.save()
-        
+
         new_file = self.initial_data.get('newFile', None)
         if new_file:
             user = self.context['request'].user
@@ -249,29 +249,41 @@ class SiteContractSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def update(self, instance, validated_data):
-        instance.__dict__.update(**validated_data)
+        # instance.__dict__.update(**validated_data)
+        # Update fields using ModelSerializer's update mechanism
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
         instance.save()
 
         new_file = self.initial_data.get('newFile', None)
         if new_file:
             user = self.context['request'].user
-            cont_file = SiteContractFile(site_contract=instance, file=new_file, user=user)
-            cont_file.save()
+            SiteContractFile.objects.create(site_contract=instance, file=new_file, user=user)
 
-        edit_file = self.initial_data.get('editFile', None)  # pk
-        cng_file = self.initial_data.get('cngFile', None)  # change file
+        edit_file = self.initial_data.get('editFile', None)  # pk of file to edit
+        cng_file = self.initial_data.get('cngFile', None)  # new file to replace
 
         if edit_file and cng_file:
-            file = SiteContractFile.objects.get(pk=edit_file)
-            if cng_file:
-                old_file = file.file
-                if os.path.isfile(old_file.path):
-                    os.remove(old_file.path)
-                file.file = cng_file
-                file.save()
+            try:
+                file_to_edit = SiteContractFile.objects.get(pk=edit_file)
+                old_file_path = file_to_edit.file.path
+                # Remove old file if it exists
+                if os.path.isfile(old_file_path):
+                    os.remove(old_file_path)
+                # Save new file
+                file_to_edit.file = cng_file
+                file_to_edit.save()
+            except SiteContractFile.DoesNotExist:
+                raise serializers.ValidationError(f"File with ID {edit_file} does not exist.")
+            except Exception as e:
+                raise serializers.ValidationError(f'Error while replacing file: {str(e)}')
 
         del_file = self.initial_data.get('delFile', None)
         if del_file:
-            file = SiteContractFile.objects.get(pk=del_file)
-            file.delete()
+            try:
+                file_to_delete = SiteContractFile.objects.get(pk=del_file)
+                file_to_delete.delete()
+            except SiteContractFile.DoesNotExist:
+                raise serializers.ValidationError(f"File with ID {del_file} does not exist.")
+
         return instance

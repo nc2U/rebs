@@ -185,8 +185,6 @@ const fileControl = (payload: any) => {
 
   if (payload.delFile) delFile.value = payload.delFile
   else delFile.value = ''
-
-  console.log({ newFile: newFile.value })
 }
 
 onBeforeMount(() => dataSetup())

@@ -264,6 +264,7 @@ export interface SiteContract {
   acc_owner: string
   note: string
   site_cont_files: []
+  newFile: File | string
 }
 
 export interface OptionItem {
