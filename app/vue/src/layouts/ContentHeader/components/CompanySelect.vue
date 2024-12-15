@@ -15,7 +15,10 @@ const comSelectList = computed(() => comStore?.comSelect)
 const comSelect = (e: { originalEvent: Event; value: any; option: any }) => emit('com-select', e)
 const comClear = () => emit('com-select', null)
 
-onBeforeMount(() => comStore?.fetchCompanyList())
+onBeforeMount(() => {
+  comStore?.fetchCompanyList()
+  comStore.fetchCompany(company.value || comStore.initComId)
+})
 </script>
 
 <template>
@@ -24,7 +27,7 @@ onBeforeMount(() => comStore?.fetchCompanyList())
     <CCol md="6" lg="3">
       <Multiselect
         :value="company"
-        :options="comSelectList"
+        :options="comSelectList as { value: number; label: string }[]"
         placeholder="회사선택"
         autocomplete="label"
         :classes="{ search: 'form-control multiselect-search' }"

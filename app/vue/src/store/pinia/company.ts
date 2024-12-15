@@ -1,4 +1,5 @@
 import api from '@/api'
+import Cookies from 'js-cookie'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useAccount } from '@/store/pinia/account'
@@ -22,14 +23,16 @@ export const useCompany = defineStore('company', () => {
   const companyList = ref<Company[]>([])
   const company = ref<Company | null>(null)
 
-  const initComId = computed(() =>
+  const currentCompany = Number(Cookies.get('curr-company'))
+  const userCompany = computed(() =>
     accountStore.userInfo?.staffauth?.company ? accountStore.userInfo.staffauth.company : 1,
   )
+  const initComId = computed(() => (currentCompany ? currentCompany : userCompany.value))
 
-  const comSelect = computed(() => {
+  const comSelect = computed<{ value: number; label: string }[]>(() => {
     return companyList.value.map((com: Company) => ({
-      value: com.pk,
-      label: com.name,
+      value: com.pk as number,
+      label: com.name as string,
     }))
   })
 
