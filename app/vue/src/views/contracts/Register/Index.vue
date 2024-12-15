@@ -107,10 +107,7 @@ const onSubmit = (payload: Contract & { status: '1' | '2' }) => {
 
   const form = new FormData()
 
-  for (const key in getData) {
-    const formValue = getData[key] === null ? '' : getData[key]
-    form.append(key, formValue as string)
-  }
+  for (const key in getData) form.set(key, getData[key] ?? '')
 
   if (!pk) {
     contStore.createContractSet(form)
