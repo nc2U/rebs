@@ -32,7 +32,7 @@ handler500 = 'rebs.views.handler500'
 admin.site.site_header = '관리자 페이지'  # default: "Django Administration"
 admin.site.site_title = 'Rebs 사이트 관리'  # default: "Django site admin"
 
-url = [
+urlpatterns = [
     path('install/', include('accounts.urls'), name='install'),
 
     path('book/', include('book.urls')),
@@ -59,4 +59,6 @@ url = [
     path('mdeditor/', include('mdeditor.urls')),
 ]
 
-urlpatterns = url if not settings.DEBUG else url + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# DEBUG 모드에서 MEDIA 파일 제공
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

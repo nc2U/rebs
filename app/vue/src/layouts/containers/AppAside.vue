@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount, inject, type ComputedRef } from 'vue'
+import { computed, type ComputedRef, inject, onBeforeMount, ref } from 'vue'
 import { useStore } from '@/store'
-import { useCompany } from '@/store/pinia/company'
 import type { Company } from '@/store/types/settings'
 import avatar2 from '@/assets/images/avatars/2.jpg'
 import avatar3 from '@/assets/images/avatars/3.jpg'
