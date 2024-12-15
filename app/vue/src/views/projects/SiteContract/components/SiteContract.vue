@@ -24,8 +24,16 @@ const isDoneClass = (bool: boolean) => (bool ? 'bg-success' : '')
 <template>
   <CTableRow v-if="contract" class="text-center">
     <CTableDataCell>{{ contract.owner_desc?.own_sort_desc }}</CTableDataCell>
-    <CTableDataCell>{{ contract.owner_desc?.owner }}</CTableDataCell>
-    <CTableDataCell>{{ contract.contract_date }}</CTableDataCell>
+    <CTableDataCell>
+      <a href="javascript:void(0);" @click="showDetail">
+        {{ contract.owner_desc?.owner }}
+      </a>
+    </CTableDataCell>
+    <CTableDataCell>
+      <a href="javascript:void(0);" @click="showDetail">
+        {{ contract.contract_date }}
+      </a></CTableDataCell
+    >
     <CTableDataCell class="text-right">
       {{ numFormat(contract.contract_area as number, 2) }}
     </CTableDataCell>
@@ -42,16 +50,24 @@ const isDoneClass = (bool: boolean) => (bool ? 'bg-success' : '')
       {{ isDoneText(contract.down_pay1_is_paid) }}
     </CTableDataCell>
     <CTableDataCell class="text-right">
-      {{ numFormat(contract.down_pay2 as number) }}
-    </CTableDataCell>
-    <CTableDataCell class="text-right">
-      {{ numFormat(contract.inter_pay1 as number) }}
-    </CTableDataCell>
-    <CTableDataCell class="text-right">
       {{ numFormat(contract.remain_pay as number) }}
     </CTableDataCell>
     <CTableDataCell :class="isDoneClass(contract.remain_pay_is_paid)">
       {{ isDoneText(contract.remain_pay_is_paid) }}
+    </CTableDataCell>
+    <CTableDataCell>
+      <span v-if="!!contract.site_cont_files.length" class="pointer">
+        <a :href="contract.site_cont_files[0].file" target="_blank">
+          <v-icon icon="mdi-download-box" color="primary" />
+        </a>
+        <v-tooltip activator="parent" location="top">
+          {{ contract.site_cont_files[0]?.file_name }} 다운로드
+        </v-tooltip>
+      </span>
+      <span v-else>
+        <v-icon icon="mdi-download-box-outline" color="secondary" />
+        <v-tooltip activator="parent" location="top">미등록</v-tooltip>
+      </span>
     </CTableDataCell>
     <CTableDataCell v-if="write_project_site">
       <CButton color="info" size="sm" @click="showDetail">확인</CButton>

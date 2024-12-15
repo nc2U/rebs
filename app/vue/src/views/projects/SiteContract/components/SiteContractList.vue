@@ -23,19 +23,18 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 <template>
   <CTable hover responsive bordered align="middle">
     <colgroup>
-      <col style="width: 5%" />
-      <col style="width: 9%" />
-      <col style="width: 9%" />
       <col style="width: 7%" />
+      <col style="width: 12%" />
+      <col style="width: 10%" />
+      <col style="width: 8%" />
+      <col style="width: 8%" />
+      <col style="width: 10%" />
+      <col style="width: 10%" />
+      <col style="width: 6%" />
+      <col style="width: 10%" />
+      <col style="width: 6%" />
       <col style="width: 7%" />
-      <col style="width: 10%" />
-      <col style="width: 9%" />
-      <col style="width: 5%" />
-      <col style="width: 9%" />
-      <col style="width: 9%" />
-      <col style="width: 10%" />
-      <col style="width: 5%" />
-      <col v-if="write_project_site" style="width: 6%" />
+      <col v-if="write_project_site" style="width: 7%" />
     </colgroup>
 
     <CTableHead :color="TableSecondary">
@@ -47,10 +46,9 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         <CTableHeaderCell rowspan="2" scope="col"> 총매매<br />대금</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">계약금1</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col"> 지급<br />여부</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2" scope="col">계약금2</CTableHeaderCell>
-        <CTableHeaderCell rowspan="2" scope="col">중도금</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">잔금</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col"> 지급<br />여부</CTableHeaderCell>
+        <CTableHeaderCell rowspan="2" scope="col"> 계약서</CTableHeaderCell>
         <CTableHeaderCell v-if="write_project_site" rowspan="2" scope="col">비고</CTableHeaderCell>
       </CTableRow>
       <CTableRow class="text-center">

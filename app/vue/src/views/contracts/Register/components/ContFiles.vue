@@ -76,7 +76,7 @@ const delFileSubmit = () => {
     <CCol sm="10" class="mb-sm-3 mb-lg-0">
       <template v-if="!!contractFiles.length">
         <CRow v-for="file in contractFiles" :key="file.pk" class="mb-2" style="padding-top: 6px">
-          <CCol>
+          <CCol sm="10">
             <v-icon icon="mdi-paperclip" size="sm" color="grey" class="mr-2" />
             <span :class="{ 'text-decoration-line-through': file.pk === deleted }">
               <a :href="file.file" target="_blank">

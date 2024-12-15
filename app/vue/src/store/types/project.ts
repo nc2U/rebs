@@ -263,7 +263,17 @@ export interface SiteContract {
   acc_number: string
   acc_owner: string
   note: string
-  site_cont_files: []
+  site_cont_files: {
+    pk: number
+    file: string
+    file_name: string
+    file_size: number
+    created: string
+    user: {
+      pk: number
+      username: string
+    }
+  }[]
   newFile?: File | string
   editFile?: string
   cngFile?: File
