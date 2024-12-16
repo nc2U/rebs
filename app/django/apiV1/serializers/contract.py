@@ -458,7 +458,12 @@ class ContractSetSerializer(serializers.ModelSerializer):
             except ContractFile.DoesNotExist:
                 raise serializers.ValidationError(f"File with ID {edit_file} does not exist.")
             except Exception as e:
-                raise serializers.ValidationError(f'Error while replacing file: {str(e)}')
+                # Log the detailed error message
+                import logging
+                logger = logging.getLogger(__name__)
+                logger.error(f'Error while replacing file: {str(e)}')
+                # Raise a generic error message
+                raise serializers.ValidationError('An error occurred while replacing the file.')
 
         del_file = self.initial_data.get('delFile', None)
         if del_file:
