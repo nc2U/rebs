@@ -8,6 +8,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 const emit = defineEmits(['on-bank-update'])
 
 const comBankAcc = ref()
+const addBankAcc = ref()
 
 const comCashStore = useComCash()
 const allComBankList = computed(() => comCashStore.allComBankList)
@@ -23,7 +24,7 @@ defineExpose({ callModal })
   <AlertModal ref="comBankAcc" size="lg">
     <template #header> 본사 거래 계좌 관리</template>
     <template #default>
-      <CAccordion>
+      <CAccordion class="mb-3">
         <CAccordionItem v-for="bank in allComBankList" :key="bank.pk" :item-key="bank.pk as number">
           <CAccordionHeader>
             {{ `${bank.alias_name}  :: ${bank.number}` }}
@@ -33,7 +34,25 @@ defineExpose({ callModal })
           </CAccordionBody>
         </CAccordionItem>
       </CAccordion>
+
+      <CRow>
+        <CCol class="text-right">
+          <v-btn prepend-icon="mdi-plus-circle" variant="text" @click="addBankAcc.callModal()">
+            <template v-slot:prepend>
+              <v-icon color="success"></v-icon>
+            </template>
+            계좌 추가
+          </v-btn>
+        </CCol>
+      </CRow>
     </template>
     <template #footer></template>
+  </AlertModal>
+
+  <AlertModal ref="addBankAcc" size="lg">
+    <template #header>계좌 추가</template>
+    <template #default>
+      <BankAccForm />
+    </template>
   </AlertModal>
 </template>
