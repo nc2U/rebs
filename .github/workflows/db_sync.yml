@@ -2,7 +2,7 @@ name: Database Dev Sync
 
 on:
   schedule:
-    - cron: "0 17 * * 7" # 일요일 새벽 5시 마다 실행
+    - cron: "0 17 * * 6" # UTC 기준으로 매주 토요일 오후 5시 (KST 일요일 새벽 2시) 마다 실행
   
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
