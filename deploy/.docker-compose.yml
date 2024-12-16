@@ -1,7 +1,7 @@
 services:
   
   mariadb:
-    container_name: rebs-mariadb
+    container_name: ibs-mariadb
     image: mariadb
     restart: always
     command: [ "--character-set-server=utf8", "--collation-server=utf8_unicode_ci" ]
@@ -17,7 +17,7 @@ services:
       - ../volume/sql:/docker-entrypoint-initdb.d
   
   web:
-    container_name: rebs-web
+    container_name: ibs-web
     build: docker/python
     image: dokube/django
     volumes:
@@ -40,7 +40,7 @@ services:
       - mariadb
   
   nginx:
-    container_name: rebs-nginx
+    container_name: ibs-nginx
     build: docker/nginx
     image: dokube/nginx
     ports:
