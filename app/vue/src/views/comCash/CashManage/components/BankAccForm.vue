@@ -10,7 +10,7 @@ import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
-  bankAcc: { type: Object as PropType<CompanyBank>, required: true },
+  bankAcc: { type: Object as PropType<CompanyBank>, default: () => null },
 })
 const emit = defineEmits(['on-bank-update'])
 
@@ -67,6 +67,7 @@ const onSubmit = (event: Event) => {
 const onBankUpdate = () => {
   emit('on-bank-update', { ...form })
   refConfirmModal.value.close()
+  dataReset()
 }
 
 const dataSetup = () => {
@@ -83,6 +84,19 @@ const dataSetup = () => {
     form.is_hide = props.bankAcc.is_hide
     form.inactive = props.bankAcc.inactive
   }
+}
+
+const dataReset = () => {
+  form.pk = undefined
+  form.depart = null
+  form.bankcode = null
+  form.alias_name = ''
+  form.number = ''
+  form.holder = ''
+  form.open_date = null
+  form.note = ''
+  form.is_hide = false
+  form.inactive = false
 }
 
 onBeforeMount(() => dataSetup())
