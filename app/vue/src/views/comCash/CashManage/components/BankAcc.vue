@@ -8,7 +8,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 const emit = defineEmits(['on-bank-update'])
 
 const comBankAcc = ref()
-const addBankAcc = ref()
+const bankAccAdd = ref(false)
 
 const comCashStore = useComCash()
 const allComBankList = computed(() => comCashStore.allComBankList)
@@ -35,24 +35,28 @@ defineExpose({ callModal })
         </CAccordionItem>
       </CAccordion>
 
+      <CRow v-if="bankAccAdd">
+        <CCol>
+          <h5 class="p-3 bg-light">
+          <v-icon icon="mdi-plus-circle" color="primary" class="mr-1" />
+            계좌 추가
+          </h5>
+          <BankAccForm />
+        </CCol>
+      </CRow>
+
       <CRow>
         <CCol class="text-right">
-          <v-btn prepend-icon="mdi-plus-circle" variant="text" @click="addBankAcc.callModal()">
+          <v-btn :prepend-icon="`mdi-${!bankAccAdd?'plus':'minus'}-circle`" variant="text" @click="bankAccAdd = !bankAccAdd">
             <template v-slot:prepend>
-              <v-icon color="success"></v-icon>
+              <v-icon :color="!bankAccAdd ? 'success' : 'secondary'"></v-icon>
             </template>
-            계좌 추가
+            <span v-if="!bankAccAdd">계좌 추가</span>
+            <span v-else>추가 취소</span>
           </v-btn>
         </CCol>
       </CRow>
     </template>
     <template #footer></template>
-  </AlertModal>
-
-  <AlertModal ref="addBankAcc" size="lg">
-    <template #header>계좌 추가</template>
-    <template #default>
-      <BankAccForm />
-    </template>
   </AlertModal>
 </template>

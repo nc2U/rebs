@@ -257,11 +257,11 @@ onBeforeMount(() => dataSetup())
           <CCol sm="12" class="text-right pt-1">
             <CButton
               v-if="form.alias_name !== '현금'"
-              color="success"
+              :color="bankAcc?'success':'primary'"
               type="submit"
               :disabled="formsCheck"
             >
-              거래 계좌 정보 저장하기
+              거래계좌 정보 <span v-if="bankAcc">저장</span><span v-else>추가</span>하기
             </CButton>
           </CCol>
         </CRow>
@@ -270,10 +270,12 @@ onBeforeMount(() => dataSetup())
   </CForm>
 
   <ConfirmModal ref="refConfirmModal">
-    <template #header>거래계좌 정보 업데이트</template>
-    <template #default> 거래계좌 정보를 업데이트하시겠습니까?</template>
+    <template #header>
+      거래계좌 정보 <span v-if="bankAcc">저장</span><span v-else>추가</span>
+    </template>
+    <template #default> 거래계좌 정보를 <span v-if="bankAcc">저장</span><span v-else>추가</span>하시겠습니까?</template>
     <template #footer>
-      <CButton color="success" @click="onBankUpdate">저장</CButton>
+      <CButton :color="bankAcc?'success':'primary'" @click="onBankUpdate">저장</CButton>
     </template>
   </ConfirmModal>
 
