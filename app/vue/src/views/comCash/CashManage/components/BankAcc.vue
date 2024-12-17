@@ -36,10 +36,10 @@ defineExpose({ callModal })
         </CAccordionItem>
       </CAccordion>
 
-      <CRow v-if="bankAccAdd">
+      <CRow v-show="bankAccAdd">
         <CCol>
           <h5 class="p-3 bg-light">
-          <v-icon icon="mdi-plus-circle" color="primary" class="mr-1" />
+            <v-icon icon="mdi-plus-circle" color="primary" class="mr-1" />
             계좌 추가
           </h5>
           <BankAccForm @on-bank-create="onBankCreate" />
@@ -48,7 +48,11 @@ defineExpose({ callModal })
 
       <CRow>
         <CCol class="text-right">
-          <v-btn :prepend-icon="`mdi-${!bankAccAdd?'plus':'minus'}-circle`" variant="text" @click="bankAccAdd = !bankAccAdd">
+          <v-btn
+            :prepend-icon="`mdi-${!bankAccAdd ? 'plus' : 'minus'}-circle`"
+            variant="text"
+            @click="bankAccAdd = !bankAccAdd"
+          >
             <template v-slot:prepend>
               <v-icon :color="!bankAccAdd ? 'success' : 'secondary'"></v-icon>
             </template>

@@ -36,7 +36,7 @@ defineExpose({ callModal })
         </CAccordionItem>
       </CAccordion>
 
-      <CRow v-if="bankAccAdd">
+      <CRow v-show="bankAccAdd">
         <CCol>
           <h5 class="p-3 bg-light">
             <v-icon icon="mdi-plus-circle" color="primary" class="mr-1" />
