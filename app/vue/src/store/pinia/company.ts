@@ -49,7 +49,7 @@ export const useCompany = defineStore('company', () => {
       .then(res => (company.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
-  const removeCompany = (pk: number) => (company.value = null)
+  const removeCompany = () => (company.value = null)
 
   const createCompany = (payload: Company) =>
     api

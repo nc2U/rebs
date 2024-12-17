@@ -172,7 +172,6 @@ const onDelete = (payload: CashBook) =>
 const patchD3Hide = (payload: { pk: number; is_hide: boolean }) => patchAccD3(payload)
 
 const onBankCreate = (payload: CompanyBank) => {
-  console.log(payload)
   payload.company = company.value
   createComBankAcc(payload)
 }
@@ -190,7 +189,7 @@ const dataSetup = (pk: number) => {
 
 const dataReset = () => {
   comStore.allDepartList = []
-  comStore.company = null
+  comStore.removeCompany()
   cashStore.comBankList = []
   cashStore.allComBankList = []
   cashStore.cashBookList = []
