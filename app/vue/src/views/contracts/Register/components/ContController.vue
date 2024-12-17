@@ -31,7 +31,7 @@ const setContractor = (pk: number) => {
     <CRow>
       <CCol>
         <CRow>
-          <CCol md="4" class="mb-3">
+          <CCol md="6" lg="5" xl="4" class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="search"
@@ -41,7 +41,7 @@ const setContractor = (pk: number) => {
                 :disabled="!project"
                 @keydown.enter="searchContractor"
               />
-              <CInputGroupText @click="searchContractor"> 계약 건 찾기 </CInputGroupText>
+              <CInputGroupText @click="searchContractor"> 계약 건 찾기</CInputGroupText>
             </CInputGroup>
           </CCol>
           <CCol
@@ -60,6 +60,9 @@ const setContractor = (pk: number) => {
             >
               {{ contractor.__str__ }}
             </CButton>
+          </CCol>
+          <CCol v-if="search && contractorList.length === 0" class="text-danger py-2">
+            검색 결과가 없습니다.
           </CCol>
         </CRow>
       </CCol>
