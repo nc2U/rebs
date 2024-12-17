@@ -9,6 +9,7 @@ import Pagination from '@/components/Pagination'
 import AccDepth from '../../Manage/components/AccDepth.vue'
 import BankAcc from '../../Manage/components/BankAcc.vue'
 
+const props = defineProps({ project: Number, default: () => null })
 const emit = defineEmits([
   'page-select',
   'multi-submit',
@@ -34,6 +35,9 @@ const onDelete = (payload: { project: number; pk: number }) => emit('on-delete',
 
 const onBankCreate = (payload: ProBankAcc) => emit('on-bank-create', payload)
 const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
+const accCallModal = () => {
+  if (props.project) refBankAcc.value.callModal()
+}
 </script>
 
 <template>
@@ -68,7 +72,7 @@ const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
         <CTableHeaderCell scope="col">
           거래계좌
           <a href="javascript:void(0)">
-            <CIcon name="cilCog" @click="refBankAcc.callModal()" />
+            <CIcon name="cilCog" @click="accCallModal" />
           </a>
         </CTableHeaderCell>
         <CTableHeaderCell scope="col">입금액</CTableHeaderCell>

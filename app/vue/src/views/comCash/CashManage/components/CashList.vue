@@ -9,7 +9,7 @@ import Pagination from '@/components/Pagination'
 import AccDepth from './AccDepth.vue'
 import BankAcc from './BankAcc.vue'
 
-const props = defineProps({ company: Object, default: () => null })
+const props = defineProps({ company: Number, default: () => null })
 const emit = defineEmits([
   'page-select',
   'multi-submit',

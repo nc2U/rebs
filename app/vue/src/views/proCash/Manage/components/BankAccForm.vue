@@ -11,7 +11,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 const props = defineProps({
   bankAcc: { type: Object as PropType<ProBankAcc>, default: () => null },
 })
-const emit = defineEmits(['on-bank-update'])
+const emit = defineEmits(['on-bank-create', 'on-bank-update'])
 
 const refConfirmModal = ref()
 const refAlertModal = ref()

@@ -9,7 +9,7 @@ import Pagination from '@/components/Pagination'
 import AccDepth from './AccDepth.vue'
 import BankAcc from './BankAcc.vue'
 
-const props = defineProps({ project: Object, default: () => null })
+const props = defineProps({ project: Number, default: () => null })
 const emit = defineEmits([
   'page-select',
   'on-delete',

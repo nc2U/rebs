@@ -291,7 +291,7 @@ onBeforeMount(() => {
         </v-radio-group>
       </TableTitleRow>
       <ProCashList
-        :project="project"
+        :project="project as number"
         @page-select="pageSelect"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"

@@ -172,7 +172,7 @@ const onDelete = (payload: CashBook) =>
 const patchD3Hide = (payload: { pk: number; is_hide: boolean }) => patchAccD3(payload)
 
 const onBankCreate = (payload: CompanyBank) => {
-  payload.company = company.value
+  payload.company = company.value as number
   createComBankAcc(payload)
 }
 const onBankUpdate = (payload: CompanyBank) => patchComBankAcc(payload)
@@ -240,7 +240,7 @@ onBeforeMount(() => {
         :disabled="!company"
       />
       <CashList
-        :company="company"
+        :company="company as number"
         @page-select="pageSelect"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
