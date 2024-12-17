@@ -101,6 +101,7 @@ const fetchProBankAccList = (projId: number) => proCashStore.fetchProBankAccList
 const fetchAllProBankAccList = (projId: number) => proCashStore.fetchAllProBankAccList(projId)
 const fetchProjectCashList = (payload: CashBookFilter) => proCashStore.fetchProjectCashList(payload)
 
+const createProBankAcc = (payload: ProBankAcc) => proCashStore.createProBankAcc(payload)
 const patchProBankAcc = (payload: ProBankAcc) => proCashStore.patchProBankAcc(payload)
 
 const createPrCashBook = (
@@ -211,6 +212,7 @@ const multiSubmit = (payload: {
 const onDelete = (payload: { pk: number; project: number }) =>
   deletePrCashBook({ ...{ filters: dataFilter.value }, ...payload })
 
+const onBankCreate = (payload: ProBankAcc) => createProBankAcc(payload)
 const onBankUpdate = (payload: ProBankAcc) => patchProBankAcc(payload)
 
 const dataSetup = (pk: number) => {
@@ -289,6 +291,7 @@ onBeforeMount(() => {
         @page-select="pageSelect"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
+        @on-bank-create="onBankCreate"
         @on-bank-update="onBankUpdate"
       />
     </CCardBody>

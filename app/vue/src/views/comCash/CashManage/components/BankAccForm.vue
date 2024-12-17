@@ -65,7 +65,7 @@ const onSubmit = (event: Event) => {
   }
 }
 
-const onBankUpdate = () => {
+const onBankAccSubmit = () => {
   if (props.bankAcc) emit('on-bank-update', { ...form })
   else emit('on-bank-create', { ...form })
   refConfirmModal.value.close()
@@ -280,7 +280,7 @@ onBeforeUpdate(() => dataSetup())
       거래계좌 정보를 <span v-if="bankAcc">저장</span><span v-else>추가</span>하시겠습니까?
     </template>
     <template #footer>
-      <CButton :color="bankAcc ? 'success' : 'primary'" @click="onBankUpdate">저장</CButton>
+      <CButton :color="bankAcc ? 'success' : 'primary'" @click="onBankAccSubmit">저장</CButton>
     </template>
   </ConfirmModal>
 

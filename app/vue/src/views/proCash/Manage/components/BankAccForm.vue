@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted, onUpdated } from 'vue'
+import { ref, reactive, computed, onMounted, onUpdated, type PropType } from 'vue'
 import { useComCash } from '@/store/pinia/comCash'
 import { type ProBankAcc } from '@/store/types/proCash'
 import { write_project_cash } from '@/utils/pageAuth'
@@ -8,7 +8,9 @@ import DatePicker from '@/components/DatePicker/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({ bankAcc: { type: Object, required: true } })
+const props = defineProps({
+  bankAcc: { type: Object as PropType<ProBankAcc>, default: () => null },
+})
 const emit = defineEmits(['on-bank-update'])
 
 const refConfirmModal = ref()
@@ -58,12 +60,15 @@ const onSubmit = (event: Event) => {
     if (write_project_cash.value) {
       refConfirmModal.value.callModal()
     } else refAlertModal.value.callModal()
+    validated.value = false
   }
 }
 
-const onBankUpdate = () => {
-  emit('on-bank-update', { ...form })
+const onBankAccSubmit = () => {
+  if (props.bankAcc) emit('on-bank-update', { ...form })
+  else emit('on-bank-create', { ...form })
   refConfirmModal.value.close()
+  formDataReset()
 }
 
 const formDataSetup = () => {
@@ -81,6 +86,21 @@ const formDataSetup = () => {
     form.directpay = props.bankAcc.directpay
     form.is_imprest = props.bankAcc.is_imprest
   }
+}
+
+const formDataReset = () => {
+  form.pk = null
+  form.project = null
+  form.bankcode = null
+  form.alias_name = ''
+  form.number = ''
+  form.holder = ''
+  form.open_date = null
+  form.note = ''
+  form.is_hide = false
+  form.inactive = false
+  form.directpay = false
+  form.is_imprest = false
 }
 
 onMounted(() => formDataSetup())
@@ -231,8 +251,8 @@ onUpdated(() => formDataSetup())
 
         <CRow>
           <CCol sm="12" class="text-right pt-1">
-            <CButton color="success" type="submit" :disabled="formsCheck">
-              거래 계좌 정보 저장하기
+            <CButton :color="bankAcc ? 'success' : 'primary'" type="submit" :disabled="formsCheck">
+              거래계좌 정보 <span v-if="bankAcc">저장</span><span v-else>추가</span>하기
             </CButton>
           </CCol>
         </CRow>
@@ -241,10 +261,14 @@ onUpdated(() => formDataSetup())
   </CForm>
 
   <ConfirmModal ref="refConfirmModal">
-    <template #header>거래계좌 정보 업데이트</template>
-    <template #default> 거래계좌 정보를 업데이트하시겠습니까?</template>
+    <template #header>
+      거래계좌 정보 <span v-if="bankAcc">저장</span><span v-else>추가</span>
+    </template>
+    <template #default>
+      거래계좌 정보를 <span v-if="bankAcc">저장</span><span v-else>추가</span>하시겠습니까?
+    </template>
     <template #footer>
-      <CButton color="success" @click="onBankUpdate">저장</CButton>
+      <CButton :color="bankAcc ? 'success' : 'primary'" @click="onBankAccSubmit">저장</CButton>
     </template>
   </ConfirmModal>
 

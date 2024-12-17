@@ -9,7 +9,13 @@ import Pagination from '@/components/Pagination'
 import AccDepth from './AccDepth.vue'
 import BankAcc from './BankAcc.vue'
 
-const emit = defineEmits(['page-select', 'on-delete', 'multi-submit', 'on-bank-update'])
+const emit = defineEmits([
+  'page-select',
+  'on-delete',
+  'multi-submit',
+  'on-bank-create',
+  'on-bank-update',
+])
 
 const refAccDepth = ref()
 const refBankAcc = ref()
@@ -26,6 +32,7 @@ const multiSubmit = (payload: { formData: ProjectCashBook; sepData: ProjectCashB
 
 const onDelete = (payload: { project: number; pk: number }) => emit('on-delete', payload)
 
+const onBankCreate = (payload: ProBankAcc) => emit('on-bank-create', payload)
 const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
 </script>
 
@@ -93,5 +100,5 @@ const onBankUpdate = (payload: ProBankAcc) => emit('on-bank-update', payload)
   />
   <AccDepth ref="refAccDepth" />
 
-  <BankAcc ref="refBankAcc" @on-bank-update="onBankUpdate" />
+  <BankAcc ref="refBankAcc" @on-bank-create="onBankCreate" @on-bank-update="onBankUpdate" />
 </template>
