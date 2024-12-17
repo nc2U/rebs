@@ -32,40 +32,40 @@ export const useComCash = defineStore('comCash', () => {
   // state & getters
   const bankCodeList = ref<BankCode[]>([])
 
-  const fetchBankCodeList = () =>
-    api
+  const fetchBankCodeList = async () =>
+    await api
       .get('/bank-code/')
       .then(res => (bankCodeList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
   const sortList = ref<AccountSort[]>([])
 
-  const fetchAccSortList = () =>
-    api
+  const fetchAccSortList = async () =>
+    await api
       .get(`/account-sort/`)
       .then(res => (sortList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
   const listAccD1List = ref<AccountD1[]>([])
 
-  const fetchAllAccD1List = () =>
-    api
+  const fetchAllAccD1List = async () =>
+    await api
       .get(`/account-depth1/`)
       .then(res => (listAccD1List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
   const listAccD2List = ref<AccountD2[]>([])
 
-  const fetchAllAccD2List = () =>
-    api
+  const fetchAllAccD2List = async () =>
+    await api
       .get(`/account-depth2/`)
       .then(res => (listAccD2List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
   const listAccD3List = ref<AccountD3[]>([])
 
-  const fetchAllAccD3List = () =>
-    api
+  const fetchAllAccD3List = async () =>
+    await api
       .get(`/account-depth3/`)
       .then(res => (listAccD3List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
@@ -74,8 +74,9 @@ export const useComCash = defineStore('comCash', () => {
     const { pk, ...hideData } = payload
     return await api
       .patch(`/account-depth3/${pk}/`, hideData)
-      .then(() => {
-        fetchAllAccD3List().then(() => fetchFormAccD3List(null, null, null).then(() => message()))
+      .then(async () => {
+        await fetchAllAccD3List()
+        await fetchFormAccD3List(null, null, null).then(() => message())
       })
       .catch(err => errorHandle(err.response.data))
   }
@@ -119,58 +120,53 @@ export const useComCash = defineStore('comCash', () => {
   )
   const allComBankList = ref<CompanyBank[]>([])
 
-  const fetchComBankAccList = (company: number) =>
-    api
+  const fetchComBankAccList = async (company: number) =>
+    await api
       .get(`/company-bank-account/?company=${company}&is_hide=false&inactive=false`)
       .then(res => (comBankList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const fetchAllComBankAccList = (company: number) =>
-    api
+  const fetchAllComBankAccList = async (company: number) =>
+    await api
       .get(`/company-bank-account/?company=${company}`)
       .then(res => (allComBankList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const createComBankAcc = (payload: CompanyBank) =>
-    api
+  const createComBankAcc = async (payload: CompanyBank) =>
+    await api
       .post(`/company-bank-account/`, payload)
-      .then(res =>
-        fetchAllComBankAccList(res.data.company).then(() =>
-          fetchComBankAccList(res.data.company).then(() => message()),
-        ),
-      )
+      .then(async res => {
+        await fetchAllComBankAccList(res.data.company)
+        await fetchComBankAccList(res.data.company).then(() => message())
+      })
       .catch(err => errorHandle(err.response.data))
 
-  const updateComBankAcc = (payload: CompanyBank) =>
-    api
+  const updateComBankAcc = async (payload: CompanyBank) =>
+    await api
       .put(`/company-bank-account/${payload.pk}/`, payload)
-      .then(res =>
-        fetchAllComBankAccList(res.data.company).then(() =>
-          fetchComBankAccList(res.data.company).then(() => message()),
-        ),
-      )
+      .then(async res => {
+        await fetchAllComBankAccList(res.data.company)
+        await fetchComBankAccList(res.data.company).then(() => message())
+      })
       .catch(err => errorHandle(err.response.data))
 
-  const patchComBankAcc = (payload: CompanyBank) =>
-    api
+  const patchComBankAcc = async (payload: CompanyBank) =>
+    await api
       .patch(`company-bank-account/${payload.pk}/`, payload)
-      .then(res =>
-        fetchAllComBankAccList(res.data.company).then(() =>
-          fetchComBankAccList(res.data.company).then(() => message()),
-        ),
-      )
+      .then(async res => {
+        await fetchAllComBankAccList(res.data.company)
+        await fetchComBankAccList(res.data.company).then(() => message())
+      })
       .catch(err => errorHandle(err.response.data))
 
-  const deleteComBankAcc = (pk: number, company: number) =>
-    api
+  const deleteComBankAcc = async (pk: number, company: number) =>
+    await api
       .delete(`/company-bank-account/${pk}/`)
-      .then(() =>
-        fetchAllComBankAccList(company).then(() =>
-          fetchComBankAccList(company).then(() =>
-            message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.'),
-          ),
-        ),
-      )
+      .then(async () => {
+        await fetchAllComBankAccList(company)
+        await fetchComBankAccList(company)
+        message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
+      })
       .catch(err => errorHandle(err.response.data))
 
   const comBalanceByAccList = ref<BalanceByAccount[]>([])
@@ -222,10 +218,12 @@ export const useComCash = defineStore('comCash', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const createCashBook = (payload: CashBook & { sepData: SepItems | null }) =>
-    api
+  const createCashBook = async (payload: CashBook & { sepData: SepItems | null }) =>
+    await api
       .post(`/cashbook/`, payload)
-      .then(res => fetchCashBookList({ company: res.data.company }).then(() => message()))
+      .then(async res => {
+        return await fetchCashBookList({ company: res.data.company }).then(() => message())
+      })
       .catch(err => errorHandle(err.response.data))
 
   const updateCashBook = async (
@@ -257,27 +255,27 @@ export const useComCash = defineStore('comCash', () => {
 
   const comCashCalc = ref<ComCalculated[]>([])
 
-  const fetchComCashCalc = (com: number) =>
-    api
+  const fetchComCashCalc = async (com: number) =>
+    await api
       .get(`/com-cash-calc/?company=${com}`)
       .then(res => (comCashCalc.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const createComCashCalc = (payload: ComCalculated) =>
-    api
+  const createComCashCalc = async (payload: ComCalculated) =>
+    await api
       .post(`/com-cash-calc/`, payload)
       .then(res => fetchComCashCalc(res.data.company).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
-  const patchComCashCalc = (payload: ComCalculated) =>
-    api
+  const patchComCashCalc = async (payload: ComCalculated) =>
+    await api
       .patch(`/com-cash-calc/${payload.pk}/`, payload)
       .then(res => fetchComCashCalc(res.data.company).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
   const comLastDeal = ref<{ deal_date: string }[]>([])
-  const fetchComLastDeal = (com: number) =>
-    api
+  const fetchComLastDeal = async (com: number) =>
+    await api
       .get(`/com-last-deal/?company=${com}`)
       .then(res => (comLastDeal.value = res.data.results))
       .catch(err => errorHandle(err.response.data))

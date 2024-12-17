@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount, type PropType } from 'vue'
+import { computed, onBeforeMount, onBeforeUpdate, type PropType, reactive, ref } from 'vue'
 import { useCompany } from '@/store/pinia/company'
 import { useComCash } from '@/store/pinia/comCash'
 import type { CompanyBank } from '@/store/types/comCash'
@@ -65,7 +65,7 @@ const onSubmit = (event: Event) => {
 }
 
 const onBankUpdate = () => {
-  if (props.bankAcc)  emit('on-bank-update', { ...form })
+  if (props.bankAcc) emit('on-bank-update', { ...form })
   else emit('on-bank-create', { ...form })
   refConfirmModal.value.close()
   dataReset()
@@ -101,6 +101,7 @@ const dataReset = () => {
 }
 
 onBeforeMount(() => dataSetup())
+onBeforeUpdate(() => dataSetup())
 </script>
 
 <template>
@@ -258,7 +259,7 @@ onBeforeMount(() => dataSetup())
           <CCol sm="12" class="text-right pt-1">
             <CButton
               v-if="form.alias_name !== '현금'"
-              :color="bankAcc?'success':'primary'"
+              :color="bankAcc ? 'success' : 'primary'"
               type="submit"
               :disabled="formsCheck"
             >
@@ -274,9 +275,12 @@ onBeforeMount(() => dataSetup())
     <template #header>
       거래계좌 정보 <span v-if="bankAcc">저장</span><span v-else>추가</span>
     </template>
-    <template #default> 거래계좌 정보를 <span v-if="bankAcc">저장</span><span v-else>추가</span>하시겠습니까?</template>
+    <template #default>
+      거래계좌 정보를 <span v-if="bankAcc">저장</span
+      ><span v-else>추가</span>하시겠습니까?</template
+    >
     <template #footer>
-      <CButton :color="bankAcc?'success':'primary'" @click="onBankUpdate">저장</CButton>
+      <CButton :color="bankAcc ? 'success' : 'primary'" @click="onBankUpdate">저장</CButton>
     </template>
   </ConfirmModal>
 
