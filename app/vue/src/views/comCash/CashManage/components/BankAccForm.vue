@@ -114,11 +114,7 @@ onBeforeUpdate(() => dataSetup())
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">거래은행</CFormLabel>
               <CCol sm="8">
-                <CFormSelect
-                  v-model.number="form.bankcode"
-                  required
-                  :disabled="form.alias_name === '현금'"
-                >
+                <CFormSelect v-model.number="form.bankcode" required>
                   <option value="">---------</option>
                   <option v-for="bank in bankCodeList" :key="bank.pk" :value="bank.pk">
                     {{ bank.name }}
@@ -132,7 +128,7 @@ onBeforeUpdate(() => dataSetup())
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">관리부서</CFormLabel>
               <CCol sm="8">
-                <CFormSelect v-model.number="form.depart" :disabled="form.alias_name === '현금'">
+                <CFormSelect v-model.number="form.depart">
                   <option value="">---------</option>
                   <option v-for="dep in getSlugDeparts" :key="dep.value" :value="dep.value">
                     {{ dep.label }}
@@ -153,7 +149,6 @@ onBeforeUpdate(() => dataSetup())
                   maxlength="20"
                   placeholder="계좌별칭"
                   required
-                  :disabled="form.alias_name === '현금'"
                 />
               </CCol>
             </CRow>
@@ -162,12 +157,7 @@ onBeforeUpdate(() => dataSetup())
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label"> 계좌번호</CFormLabel>
               <CCol sm="8">
-                <CFormInput
-                  v-model="form.number"
-                  maxlength="30"
-                  placeholder="계좌번호"
-                  :disabled="form.alias_name === '현금'"
-                />
+                <CFormInput v-model="form.number" maxlength="30" placeholder="계좌번호" />
               </CCol>
             </CRow>
           </CCol>
@@ -178,12 +168,7 @@ onBeforeUpdate(() => dataSetup())
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label"> 예금주</CFormLabel>
               <CCol sm="8">
-                <CFormInput
-                  v-model="form.holder"
-                  maxlength="20"
-                  placeholder="예금주"
-                  :disabled="form.alias_name === '현금'"
-                />
+                <CFormInput v-model="form.holder" maxlength="20" placeholder="예금주" />
               </CCol>
             </CRow>
           </CCol>
@@ -191,12 +176,7 @@ onBeforeUpdate(() => dataSetup())
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label">개설일자</CFormLabel>
               <CCol sm="8">
-                <DatePicker
-                  v-model="form.open_date"
-                  maxlength="10"
-                  placeholder="개설일자"
-                  :disabled="form.alias_name === '현금'"
-                />
+                <DatePicker v-model="form.open_date" maxlength="10" placeholder="개설일자" />
               </CCol>
             </CRow>
           </CCol>
@@ -207,12 +187,7 @@ onBeforeUpdate(() => dataSetup())
             <CRow>
               <CFormLabel class="col-sm-2 col-form-label">비고</CFormLabel>
               <CCol sm="10">
-                <CFormTextarea
-                  v-model="form.note"
-                  maxlength="50"
-                  placeholder="비고"
-                  :disabled="form.alias_name === '현금'"
-                />
+                <CFormTextarea v-model="form.note" maxlength="50" placeholder="비고" />
               </CCol>
             </CRow>
           </CCol>
@@ -228,7 +203,6 @@ onBeforeUpdate(() => dataSetup())
                   label="입출금 등록시 숨김"
                   color="indigo"
                   hide-details
-                  :disabled="form.alias_name === '현금'"
                 />
                 <v-tooltip activator="parent" location="end">
                   입출금 등록 시 이 계좌 항목을 숨김.
@@ -246,7 +220,6 @@ onBeforeUpdate(() => dataSetup())
                   label="사용종료 계좌"
                   color="danger"
                   hide-details
-                  :disabled="form.alias_name === '현금'"
                 />
                 <v-tooltip activator="parent" location="start">
                   해지된 계좌로 내역만 확인 가능.
@@ -258,12 +231,7 @@ onBeforeUpdate(() => dataSetup())
 
         <CRow>
           <CCol sm="12" class="text-right pt-1">
-            <CButton
-              v-if="form.alias_name !== '현금'"
-              :color="bankAcc ? 'success' : 'primary'"
-              type="submit"
-              :disabled="formsCheck"
-            >
+            <CButton :color="bankAcc ? 'success' : 'primary'" type="submit" :disabled="formsCheck">
               거래계좌 정보 <span v-if="bankAcc">저장</span><span v-else>추가</span>하기
             </CButton>
           </CCol>

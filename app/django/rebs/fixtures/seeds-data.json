@@ -354,21 +354,6 @@
     }
   },
   {
-    "model": "cash.companybankaccount",
-    "pk": 1,
-    "fields": {
-      "company": 1,
-      "depart": null,
-      "bankcode": 24,
-      "alias_name": "현금",
-      "number": "",
-      "holder": "",
-      "open_date": null,
-      "note": "",
-      "inactive": false
-    }
-  },
-  {
     "model": "rebs.accountsort",
     "pk": 1,
     "fields": {
