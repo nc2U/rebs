@@ -18,35 +18,35 @@ export const useProCash = defineStore('proCash', () => {
   // state & getters
   const sortList = ref<AccountSort[]>([])
 
-  const fetchProAccSortList = () =>
-    api
+  const fetchProAccSortList = async () =>
+    await api
       .get(`/account-sort/`)
       .then(res => (sortList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
   const allAccD2List = ref<ProjectAccountD2[]>([])
 
-  const fetchProAllAccD2List = () =>
-    api
+  const fetchProAllAccD2List = async () =>
+    await api
       .get(`/project-account-depth2/`)
       .then(res => (allAccD2List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
   const allAccD3List = ref<ProjectAccountD3[]>([])
 
-  const fetchProAllAccD3List = () =>
-    api
+  const fetchProAllAccD3List = async () =>
+    await api
       .get(`/project-account-depth3/`)
       .then(res => (allAccD3List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
   const formAccD2List = ref<ProjectAccountD2[]>([])
 
-  const fetchProFormAccD2List = (d1?: number | null, sort?: number | null) => {
+  const fetchProFormAccD2List = async (d1?: number | null, sort?: number | null) => {
     let queryStr = sort ? `?d1__sorts=${sort}` : `?1=1`
     queryStr = d1 ? `${queryStr}&d1=${d1}` : queryStr
 
-    api
+    return await api
       .get(`/project-account-depth2/${queryStr}`)
       .then(res => (formAccD2List.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
@@ -71,58 +71,53 @@ export const useProCash = defineStore('proCash', () => {
   )
   const allProBankAccountList = ref<ProBankAcc[]>([])
 
-  const fetchProBankAccList = (project: number) =>
-    api
+  const fetchProBankAccList = async (project: number) =>
+    await api
       .get(`/project-bank-account/?project=${project}&is_hide=false&inactive=false`)
       .then(res => (proBankAccountList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const fetchAllProBankAccList = (project: number) =>
-    api
+  const fetchAllProBankAccList = async (project: number) =>
+    await api
       .get(`/project-bank-account/?project=${project}`)
       .then(res => (allProBankAccountList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const createProBankAcc = (payload: ProBankAcc) =>
-    api
+  const createProBankAcc = async (payload: ProBankAcc) =>
+    await api
       .post(`/project-bank-account/`, payload)
-      .then(res =>
-        fetchAllProBankAccList(res.data.project).then(() =>
-          fetchProBankAccList(res.data.project).then(() => message()),
-        ),
-      )
+      .then(async res => {
+        await fetchAllProBankAccList(res.data.project)
+        await fetchProBankAccList(res.data.project).then(() => message())
+      })
       .catch(err => errorHandle(err.response.data))
 
-  const updateProBankAcc = (payload: ProBankAcc) =>
-    api
+  const updateProBankAcc = async (payload: ProBankAcc) =>
+    await api
       .put(`/project-bank-account/${payload.pk}/`, payload)
-      .then(res =>
-        fetchAllProBankAccList(res.data.project).then(() =>
-          fetchProBankAccList(res.data.project).then(() => message()),
-        ),
-      )
+      .then(async res => {
+        await fetchAllProBankAccList(res.data.project)
+        await fetchProBankAccList(res.data.project).then(() => message())
+      })
       .catch(err => errorHandle(err.response.data))
 
-  const patchProBankAcc = (payload: ProBankAcc) =>
-    api
+  const patchProBankAcc = async (payload: ProBankAcc) =>
+    await api
       .patch(`project-bank-account/${payload.pk}/`, payload)
-      .then(res =>
-        fetchAllProBankAccList(res.data.project).then(() =>
-          fetchProBankAccList(res.data.project).then(() => message()),
-        ),
-      )
+      .then(async res => {
+        await fetchAllProBankAccList(res.data.project)
+        await fetchProBankAccList(res.data.project).then(() => message())
+      })
       .catch(err => errorHandle(err.response.data))
 
-  const deleteProBankAcc = (pk: number, project: number) =>
-    api
+  const deleteProBankAcc = async (pk: number, project: number) =>
+    await api
       .delete(`/project-bank-account/${pk}/`)
-      .then(() =>
-        fetchAllProBankAccList(project).then(() =>
-          fetchProBankAccList(project).then(() =>
-            message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.'),
-          ),
-        ),
-      )
+      .then(async () => {
+        await fetchAllProBankAccList(project)
+        await fetchProBankAccList(project)
+        message('danger', '알림!', '해당 오브젝트가 삭제되었습니다.')
+      })
       .catch(err => errorHandle(err.response.data))
 
   const balanceByAccList = ref<BalanceByAccount[]>([])
@@ -189,44 +184,38 @@ export const useProCash = defineStore('proCash', () => {
 
   const paymentStore = usePayment()
 
-  const createPrCashBook = (
+  const createPrCashBook = async (
     payload: ProjectCashBook & { sepData: ProjectCashBook | null } & {
       filters: CashBookFilter
     },
   ) => {
     const { filters, ...formData } = payload
-    api
+    return await api
       .post(`/project-cashbook/`, formData)
-      .then(res => {
-        fetchProjectCashList({
+      .then(async res => {
+        await fetchProjectCashList({
           project: res.data.project,
           ...filters,
-        }).then(() => {
-          fetchProjectImprestList({
-            project: res.data.project,
-            ...filters,
-          }).then(() => {
-            paymentStore
-              .fetchAllPaymentList({
-                project: res.data.project,
-                contract: res.data.contract,
-                ordering: 'deal_date',
-              })
-              .then(() =>
-                paymentStore
-                  .fetchPaymentList({
-                    project: res.data.project,
-                    ...filters,
-                  })
-                  .then(() => message()),
-              )
-          })
         })
+        await fetchProjectImprestList({
+          project: res.data.project,
+          ...filters,
+        })
+        await paymentStore.fetchAllPaymentList({
+          project: res.data.project,
+          contract: res.data.contract,
+          ordering: 'deal_date',
+        })
+        await paymentStore.fetchPaymentList({
+          project: res.data.project,
+          ...filters,
+        })
+        message()
       })
       .catch(err => errorHandle(err.response.data))
   }
 
-  const updatePrCashBook = (
+  const updatePrCashBook = async (
     payload: ProjectCashBook & { sepData: ProjectCashBook | null } & {
       isPayment?: boolean
     } & {
@@ -236,27 +225,24 @@ export const useProCash = defineStore('proCash', () => {
     const cont = payload.contract
     const { pk, isPayment, filters, ...formData } = payload
     if (formData.rmCont) formData.contract = null
-    api
+    return await api
       .put(`/project-cashbook/${pk}/`, formData)
-      .then(res => {
+      .then(async res => {
         if (isPayment) {
-          paymentStore
-            .fetchAllPaymentList({
+          await paymentStore.fetchAllPaymentList({
+            project: res.data.project,
+            contract: cont || undefined,
+            ordering: 'deal_date',
+            ...filters,
+          })
+          await paymentStore
+            .fetchPaymentList({
               project: res.data.project,
-              contract: cont || undefined,
-              ordering: 'deal_date',
               ...filters,
             })
-            .then(() =>
-              paymentStore
-                .fetchPaymentList({
-                  project: res.data.project,
-                  ...filters,
-                })
-                .then(() => message()),
-            )
+            .then(() => message())
         } else
-          fetchProjectCashList({
+          await fetchProjectCashList({
             project: res.data.project,
             ...filters,
           }).then(() => message())
@@ -274,25 +260,22 @@ export const useProCash = defineStore('proCash', () => {
     if (formData.rmCont) formData.contract = null
     return await api
       .patch(`/project-cashbook/${pk}/`, formData)
-      .then(res => {
+      .then(async res => {
         if (isPayment) {
-          paymentStore
-            .fetchAllPaymentList({
+          await paymentStore.fetchAllPaymentList({
+            project: res.data.project,
+            contract: cont || undefined,
+            ordering: 'deal_date',
+            ...filters,
+          })
+          await paymentStore
+            .fetchPaymentList({
               project: res.data.project,
-              contract: cont || undefined,
-              ordering: 'deal_date',
               ...filters,
             })
-            .then(() =>
-              paymentStore
-                .fetchPaymentList({
-                  project: res.data.project,
-                  ...filters,
-                })
-                .then(() => message()),
-            )
+            .then(() => message())
         } else
-          fetchProjectCashList({
+          await fetchProjectCashList({
             project: res.data.project,
             ...filters,
           }).then(() => message())
@@ -300,7 +283,7 @@ export const useProCash = defineStore('proCash', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const deletePrCashBook = (
+  const deletePrCashBook = async (
     payload: {
       pk: number
       project: number
@@ -311,30 +294,25 @@ export const useProCash = defineStore('proCash', () => {
   ) => {
     const { pk, project, filters, contract } = payload
 
-    api
+    return await api
       .delete(`/project-cashbook/${pk}/`)
-      .then(() => {
-        fetchProjectCashList({
+      .then(async () => {
+        await fetchProjectCashList({
           project,
           ...filters,
-        }).then(() => {
-          if (contract) {
-            paymentStore
-              .fetchAllPaymentList({
-                project,
-                contract,
-                ordering: 'deal_date',
-              })
-              .then(() =>
-                paymentStore
-                  .fetchPaymentList({
-                    project,
-                    ...filters,
-                  })
-                  .then(() => message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.')),
-              )
-          }
         })
+        if (contract) {
+          await paymentStore.fetchAllPaymentList({
+            project,
+            contract,
+            ordering: 'deal_date',
+          })
+          await paymentStore.fetchPaymentList({
+            project,
+            ...filters,
+          })
+          message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.')
+        }
       })
       .catch(err => errorHandle(err.response.data))
   }
@@ -364,124 +342,110 @@ export const useProCash = defineStore('proCash', () => {
     imprestBAccount.value.map(i => ({ value: i.pk, label: i.alias_name })),
   )
 
-  const updatePrImprestBook = (
+  const updatePrImprestBook = async (
     payload: ProjectCashBook & { sepData: ProjectCashBook | null } & {
       filters: CashBookFilter
     },
   ) => {
     const { pk, filters, ...formData } = payload
-    api
+    return await api
       .put(`/project-imprest/${pk}/`, formData)
-      .then(res => {
-        fetchProjectImprestList({
+      .then(async res => {
+        await fetchProjectImprestList({
           project: res.data.project,
           ...filters,
-        }).then(() => {
-          paymentStore
-            .fetchAllPaymentList({
-              project: res.data.project,
-              contract: res.data.contract,
-              ordering: 'deal_date',
-            })
-            .then(() =>
-              paymentStore
-                .fetchPaymentList({
-                  project: res.data.project,
-                  ...filters,
-                })
-                .then(() => message()),
-            )
         })
+        await paymentStore.fetchAllPaymentList({
+          project: res.data.project,
+          contract: res.data.contract,
+          ordering: 'deal_date',
+        })
+        await paymentStore.fetchPaymentList({
+          project: res.data.project,
+          ...filters,
+        })
+        message()
       })
       .catch(err => errorHandle(err.response.data))
   }
 
-  const patchPrImprestBook = (payload: ProjectCashBook & { filters: CashBookFilter }) => {
+  const patchPrImprestBook = async (payload: ProjectCashBook & { filters: CashBookFilter }) => {
     const { pk, filters, ...formData } = payload
-    api
+    return await api
       .patch(`/project-imprest/${pk}/`, formData)
-      .then(res => {
-        fetchProjectImprestList({
+      .then(async res => {
+        await fetchProjectImprestList({
           project: res.data.project,
           ...filters,
-        }).then(() => {
-          paymentStore
-            .fetchAllPaymentList({
-              project: res.data.project,
-              contract: res.data.contract,
-              ordering: 'deal_date',
-            })
-            .then(() =>
-              paymentStore
-                .fetchPaymentList({
-                  project: res.data.project,
-                  ...filters,
-                })
-                .then(() => message()),
-            )
         })
+        await paymentStore.fetchAllPaymentList({
+          project: res.data.project,
+          contract: res.data.contract,
+          ordering: 'deal_date',
+        })
+        await paymentStore.fetchPaymentList({
+          project: res.data.project,
+          ...filters,
+        })
+        message()
       })
       .catch(err => errorHandle(err.response.data))
   }
 
-  const deletePrImprestBook = (
+  const deletePrImprestBook = async (
     payload: { pk: number; project: number; contract?: number | null } & {
       filters?: CashBookFilter
     },
   ) => {
     const { pk, project, filters, contract } = payload
 
-    api
+    return await api
       .delete(`/project-imprest/${pk}/`)
-      .then(() => {
-        fetchProjectImprestList({
+      .then(async () => {
+        await fetchProjectImprestList({
           project,
           ...filters,
-        }).then(() => {
-          if (contract) {
-            paymentStore
-              .fetchAllPaymentList({
-                project,
-                contract,
-                ordering: 'deal_date',
-              })
-              .then(() =>
-                paymentStore
-                  .fetchPaymentList({
-                    project,
-                    ...filters,
-                  })
-                  .then(() => message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.')),
-              )
-          }
         })
+        if (contract) {
+          await paymentStore.fetchAllPaymentList({
+            project,
+            contract,
+            ordering: 'deal_date',
+          })
+          await paymentStore.fetchPaymentList({
+            project,
+            ...filters,
+          })
+          message('warning', '알림!', '해당 오브젝트가 삭제되었습니다.')
+        }
       })
       .catch(err => errorHandle(err.response.data))
   }
 
   const proCashCalc = ref<ProCalculated[]>([])
 
-  const fetchProCashCalc = (com: number) =>
-    api
+  const fetchProCashCalc = async (com: number) =>
+    await api
       .get(`/pro-cash-calc/?company=${com}`)
       .then(res => (proCashCalc.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const createProCashCalc = (payload: ProCalculated) =>
-    api
+  const createProCashCalc = async (payload: ProCalculated) =>
+    await api
       .post(`/pro-cash-calc/`, payload)
       .then(res => fetchProCashCalc(res.data.project).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
-  const patchProCashCalc = (payload: ProCalculated) =>
-    api
+  const patchProCashCalc = async (payload: ProCalculated) =>
+    await api
       .patch(`/pro-cash-calc/${payload.pk}/`, payload)
       .then(res => fetchProCashCalc(res.data.project).then(() => message()))
       .catch(err => errorHandle(err.response.data))
 
   const proLastDeal = ref<{ deal_date: string }[]>([])
-  const fetchProLastDeal = (proj: number) =>
-    api
+
+  const fetchProLastDeal = async (proj: number) =>
+    await api
       .get(`/pro-last-deal/?project=${proj}`)
       .then(res => (proLastDeal.value = res.data.results))
       .catch(err => errorHandle(err.response.data))

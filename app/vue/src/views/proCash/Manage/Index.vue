@@ -212,7 +212,10 @@ const multiSubmit = (payload: {
 const onDelete = (payload: { pk: number; project: number }) =>
   deletePrCashBook({ ...{ filters: dataFilter.value }, ...payload })
 
-const onBankCreate = (payload: ProBankAcc) => createProBankAcc(payload)
+const onBankCreate = (payload: ProBankAcc) => {
+  payload.project = project.value as number
+  createProBankAcc(payload)
+}
 const onBankUpdate = (payload: ProBankAcc) => patchProBankAcc(payload)
 
 const dataSetup = (pk: number) => {
@@ -288,6 +291,7 @@ onBeforeMount(() => {
         </v-radio-group>
       </TableTitleRow>
       <ProCashList
+        :project="project"
         @page-select="pageSelect"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"

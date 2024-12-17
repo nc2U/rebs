@@ -9,6 +9,7 @@ import Pagination from '@/components/Pagination'
 import AccDepth from './AccDepth.vue'
 import BankAcc from './BankAcc.vue'
 
+const props = defineProps({ company: Object, default: () => null })
 const emit = defineEmits([
   'page-select',
   'multi-submit',
@@ -38,6 +39,10 @@ const patchD3Hide = (payload: { pk: number; is_hide: boolean }) => emit('patch-d
 
 const onBankCreate = (payload: CompanyBank) => emit('on-bank-create', payload)
 const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
+
+const accCallModal = () => {
+  if (props.company) refBankAcc.value.callModal()
+}
 </script>
 
 <template>
@@ -72,7 +77,7 @@ const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
         <CTableHeaderCell scope="col">
           거래계좌
           <a href="javascript:void(0)">
-            <CIcon name="cilCog" @click="refBankAcc.callModal()" />
+            <CIcon name="cilCog" @click="accCallModal" />
           </a>
         </CTableHeaderCell>
         <CTableHeaderCell scope="col">입금액</CTableHeaderCell>

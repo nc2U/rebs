@@ -240,6 +240,7 @@ onBeforeMount(() => {
         :disabled="!company"
       />
       <CashList
+        :company="company"
         @page-select="pageSelect"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
