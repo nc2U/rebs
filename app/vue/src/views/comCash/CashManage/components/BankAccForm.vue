@@ -61,6 +61,7 @@ const onSubmit = (event: Event) => {
     if (write_company_cash.value) {
       refConfirmModal.value.callModal()
     } else refAlertModal.value.callModal()
+    validated.value = false
   }
 }
 
@@ -276,9 +277,8 @@ onBeforeUpdate(() => dataSetup())
       거래계좌 정보 <span v-if="bankAcc">저장</span><span v-else>추가</span>
     </template>
     <template #default>
-      거래계좌 정보를 <span v-if="bankAcc">저장</span
-      ><span v-else>추가</span>하시겠습니까?</template
-    >
+      거래계좌 정보를 <span v-if="bankAcc">저장</span><span v-else>추가</span>하시겠습니까?
+    </template>
     <template #footer>
       <CButton :color="bankAcc ? 'success' : 'primary'" @click="onBankUpdate">저장</CButton>
     </template>
