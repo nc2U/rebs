@@ -5,7 +5,7 @@ import type { CompanyBank } from '@/store/types/comCash'
 import BankAccForm from './BankAccForm.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const emit = defineEmits(['on-bank-update'])
+const emit = defineEmits(['on-bank-create', 'on-bank-update'])
 
 const comBankAcc = ref()
 const bankAccAdd = ref(false)
@@ -13,6 +13,7 @@ const bankAccAdd = ref(false)
 const comCashStore = useComCash()
 const allComBankList = computed(() => comCashStore.allComBankList)
 
+const onBankCreate = (payload: CompanyBank) => emit('on-bank-create', payload)
 const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
 
 const callModal = () => comBankAcc.value.callModal()
@@ -41,7 +42,7 @@ defineExpose({ callModal })
           <v-icon icon="mdi-plus-circle" color="primary" class="mr-1" />
             계좌 추가
           </h5>
-          <BankAccForm />
+          <BankAccForm @on-bank-create="onBankCreate" />
         </CCol>
       </CRow>
 

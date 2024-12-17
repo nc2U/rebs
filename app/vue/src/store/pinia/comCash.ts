@@ -131,7 +131,7 @@ export const useComCash = defineStore('comCash', () => {
       .then(res => (allComBankList.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 
-  const createCompanyBankAccount = (payload: CompanyBank) =>
+  const createComBankAcc = (payload: CompanyBank) =>
     api
       .post(`/company-bank-account/`, payload)
       .then(res =>
@@ -141,7 +141,7 @@ export const useComCash = defineStore('comCash', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
-  const updateCompanyBankAccount = (payload: CompanyBank) =>
+  const updateComBankAcc = (payload: CompanyBank) =>
     api
       .put(`/company-bank-account/${payload.pk}/`, payload)
       .then(res =>
@@ -161,7 +161,7 @@ export const useComCash = defineStore('comCash', () => {
       )
       .catch(err => errorHandle(err.response.data))
 
-  const deleteCompanyBankAccount = (pk: number, company: number) =>
+  const deleteComBankAcc = (pk: number, company: number) =>
     api
       .delete(`/company-bank-account/${pk}/`)
       .then(() =>
@@ -312,10 +312,10 @@ export const useComCash = defineStore('comCash', () => {
     allComBankList,
     fetchComBankAccList,
     fetchAllComBankAccList,
-    createCompanyBankAccount,
-    updateCompanyBankAccount,
+    createComBankAcc,
+    updateComBankAcc,
     patchComBankAcc,
-    deleteCompanyBankAccount,
+    deleteComBankAcc,
 
     comBalanceByAccList,
     fetchComBalanceByAccList,

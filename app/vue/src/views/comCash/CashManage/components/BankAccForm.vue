@@ -12,7 +12,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 const props = defineProps({
   bankAcc: { type: Object as PropType<CompanyBank>, default: () => null },
 })
-const emit = defineEmits(['on-bank-update'])
+const emit = defineEmits(['on-bank-create', 'on-bank-update'])
 
 const refConfirmModal = ref()
 const refAlertModal = ref()
@@ -65,7 +65,8 @@ const onSubmit = (event: Event) => {
 }
 
 const onBankUpdate = () => {
-  emit('on-bank-update', { ...form })
+  if (props.bankAcc)  emit('on-bank-update', { ...form })
+  else emit('on-bank-create', { ...form })
   refConfirmModal.value.close()
   dataReset()
 }

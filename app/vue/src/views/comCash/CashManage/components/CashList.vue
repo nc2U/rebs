@@ -15,6 +15,7 @@ const emit = defineEmits([
   'on-delete',
   'patch-d3-hide',
   'patch-bank-hide',
+  'on-bank-create',
   'on-bank-update',
 ])
 
@@ -35,6 +36,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 
 const patchD3Hide = (payload: { pk: number; is_hide: boolean }) => emit('patch-d3-hide', payload)
 
+const onBankCreate = (payload: CompanyBank) => emit('on-bank-create', payload)
 const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
 </script>
 
@@ -104,5 +106,5 @@ const onBankUpdate = (payload: CompanyBank) => emit('on-bank-update', payload)
 
   <AccDepth ref="refAccDepth" @patch-d3-hide="patchD3Hide" />
 
-  <BankAcc ref="refBankAcc" @on-bank-update="onBankUpdate" />
+  <BankAcc ref="refBankAcc" @on-bank-create="onBankCreate" @on-bank-update="onBankUpdate" />
 </template>

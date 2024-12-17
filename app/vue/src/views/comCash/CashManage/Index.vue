@@ -60,6 +60,8 @@ const fetchFormAccD3List = (sort: number | null, d1: number | null, d2: number |
   cashStore.fetchFormAccD3List(sort, d1, d2)
 const fetchComBankAccList = (pk: number) => cashStore.fetchComBankAccList(pk)
 const fetchAllComBankAccList = (pk: number) => cashStore.fetchAllComBankAccList(pk)
+
+const createComBankAcc = (payload: CompanyBank) => cashStore.createComBankAcc(payload)
 const patchComBankAcc = (payload: CompanyBank) => cashStore.patchComBankAcc(payload)
 
 const fetchCashBookList = (payload: Filter) => cashStore.fetchCashBookList(payload)
@@ -169,6 +171,7 @@ const onDelete = (payload: CashBook) =>
 
 const patchD3Hide = (payload: { pk: number; is_hide: boolean }) => patchAccD3(payload)
 
+const onBankCreate = (payload: CompanyBank) => createComBankAcc(payload)
 const onBankUpdate = (payload: CompanyBank) => patchComBankAcc(payload)
 
 const dataSetup = (pk: number) => {
@@ -238,6 +241,7 @@ onBeforeMount(() => {
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
         @patch-d3-hide="patchD3Hide"
+        @on-bank-create="onBankCreate"
         @on-bank-update="onBankUpdate"
       />
     </CCardBody>
