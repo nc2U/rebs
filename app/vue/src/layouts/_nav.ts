@@ -285,45 +285,6 @@ const project = {
     },
     {
       component: 'CNavItem',
-      name: '사업 부지 관리',
-      icon: 'cil-location-pin',
-      items: [
-        {
-          component: 'CNavItem',
-          name: '지번 목록 관리',
-          to: '/project/site/index',
-        },
-        {
-          component: 'CNavItem',
-          name: '소유자 별 관리',
-          to: '/project/site/owner',
-        },
-        {
-          component: 'CNavItem',
-          name: '매입 계약 관리',
-          to: '/project/site/contract',
-        },
-      ],
-    },
-    {
-      component: 'CNavItem',
-      name: '예산 등록 관리',
-      icon: 'cil-exposure',
-      items: [
-        {
-          component: 'CNavItem',
-          name: '수입 예산 등록',
-          to: '/project/manage/inc-budget',
-        },
-        {
-          component: 'CNavItem',
-          name: '지출 예산 등록',
-          to: '/project/manage/out-budget',
-        },
-      ],
-    },
-    {
-      component: 'CNavItem',
       name: '차수 타입 관리',
       icon: 'cil-list-numbered',
       items: [
@@ -385,6 +346,45 @@ const project = {
           component: 'CNavItem',
           name: '옵션 품목 등록',
           to: '/project/settings/options',
+        },
+      ],
+    },
+    {
+      component: 'CNavItem',
+      name: '예산 등록 관리',
+      icon: 'cil-exposure',
+      items: [
+        {
+          component: 'CNavItem',
+          name: '수입 예산 등록',
+          to: '/project/manage/inc-budget',
+        },
+        {
+          component: 'CNavItem',
+          name: '지출 예산 등록',
+          to: '/project/manage/out-budget',
+        },
+      ],
+    },
+    {
+      component: 'CNavItem',
+      name: '사업 부지 관리',
+      icon: 'cil-location-pin',
+      items: [
+        {
+          component: 'CNavItem',
+          name: '지번 목록 관리',
+          to: '/project/site/index',
+        },
+        {
+          component: 'CNavItem',
+          name: '소유자 별 관리',
+          to: '/project/site/owner',
+        },
+        {
+          component: 'CNavItem',
+          name: '매입 계약 관리',
+          to: '/project/site/contract',
         },
       ],
     },
