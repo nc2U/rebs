@@ -82,7 +82,7 @@ export type CashBookFilter = {
   account_d1?: number | null
   pro_acc_d2?: number | null
   pro_acc_d3?: number | null
-  is_imprest?: boolean
+  is_imprest?: '' | '0' | 'false'
   bank_account?: number | null
   pay_order?: string
   pay_account?: string

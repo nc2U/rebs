@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import Cookies from 'js-cookie'
 import { ref, computed, onBeforeMount, provide } from 'vue'
 import { pageTitle, navMenu } from '@/views/proCash/_menu/headermixin'
 import { useComCash } from '@/store/pinia/comCash'
@@ -37,16 +38,33 @@ const dataFilter = ref<CashBookFilter>({
   account_d1: null,
   pro_acc_d2: null,
   pro_acc_d3: null,
+  is_imprest: 'false',
   bank_account: null,
   search: '',
 })
+
+const imprest = ref(false)
+
+const setImprest = () => {
+  dataFilter.value.page = 1
+  imprest.value = !imprest.value
+  dataFilter.value.is_imprest = imprest.value ? '' : '0'
+  Cookies.set('get-imprest', dataFilter.value.is_imprest)
+  fetchProjectCashList({
+    ...{ project: project.value },
+    ...dataFilter.value,
+  })
+}
 
 const projStore = useProject()
 const project = computed(() => projStore.project?.pk)
 
 const pageSelect = (page: number) => {
   dataFilter.value.page = page
-  listControl.value.listFiltering(page)
+  fetchProjectCashList({
+    ...{ project: project.value },
+    ...dataFilter.value,
+  })
 }
 
 const listFiltering = (payload: CashBookFilter) => {
@@ -65,8 +83,6 @@ const listFiltering = (payload: CashBookFilter) => {
     })
   }
 }
-
-const excelSelect = ref('1')
 
 const excelUrl = computed(() => {
   const pj = project.value
@@ -221,7 +237,7 @@ const onBankUpdate = (payload: ProBankAcc) => patchProBankAcc(payload)
 const dataSetup = (pk: number) => {
   fetchProBankAccList(pk)
   fetchAllProBankAccList(pk)
-  fetchProjectCashList({ project: pk })
+  fetchProjectCashList({ project: pk, ...dataFilter.value })
   fetchProCashCalc(pk)
 }
 
@@ -241,6 +257,8 @@ const contStore = useContract()
 const fetchAllContracts = (projId: number) => contStore.fetchAllContracts(projId)
 
 onBeforeMount(() => {
+  imprest.value = Cookies.get('get-imprest') === ''
+  dataFilter.value.is_imprest = imprest.value ? '' : '0'
   fetchBankCodeList()
   fetchProAccSortList()
   fetchFormAccD1List()
@@ -278,17 +296,16 @@ onBeforeMount(() => {
         :disabled="!project"
         :url="excelUrl"
       >
-        <v-radio-group
-          v-model="excelSelect"
-          inline
-          size="sm"
-          density="compact"
-          class="d-flex flex-row-reverse"
-          style="font-size: 0.8em"
+        <v-tooltip activator="parent" location="top">
+          엑셀은 항상 전체(운영비용 포함) 내역 출력
+        </v-tooltip>
+        <CFormSwitch
+          v-model="imprest"
+          label="전체(운영비용 포함) 보기"
+          id="all-list-view"
+          @click="setImprest"
           :disabled="!project"
-        >
-          <v-radio label="전체(운영비용 포함)" value="1" class="pr-3" />
-        </v-radio-group>
+        ></CFormSwitch>
       </TableTitleRow>
       <ProCashList
         :project="project as number"
