@@ -161,12 +161,16 @@ const chargeCreate = (
 const onCreate = (
   payload: PrCashBook & { sepData: PrCashBook | null } & {
     filters: CashBookFilter
-  } & { bank_account_to: null | number; charge: null | number },
+  } & {
+    bank_account_to: null | number
+    ba_is_imprest: boolean
+    charge: null | number
+  },
 ) => {
   if (project.value) payload.project = project.value
   if (payload.sort === 3 && payload.bank_account_to) {
     // 대체 거래일 때
-    const { bank_account_to, charge, ...inputData } = payload
+    const { bank_account_to, ba_is_imprest, charge, ...inputData } = payload
 
     inputData.sort = 2
     inputData.trader = '내부대체'
@@ -175,6 +179,7 @@ const onCreate = (
 
     inputData.sort = 1
     inputData.project_account_d3 = transferD3.value[1]
+    if (ba_is_imprest) inputData.is_imprest = ba_is_imprest
     inputData.income = inputData.outlay
     inputData.outlay = null
     inputData.bank_account = bank_account_to
@@ -212,6 +217,7 @@ const multiSubmit = (payload: {
   formData: PrCashBook
   sepData: PrCashBook | null
   bank_account_to: null | number
+  ba_is_imprest: boolean
   charge: null | number
 }) => {
   const { formData, ...sepData } = payload

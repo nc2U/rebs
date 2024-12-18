@@ -47,6 +47,7 @@ const validated = ref(false)
 const form = reactive<
   Omit<ProjectCashBook, 'sepItems'> & {
     bank_account_to: null | number
+    ba_is_imprest: boolean
     charge: null | number
   }
 >({
@@ -64,6 +65,7 @@ const form = reactive<
   trader: '',
   bank_account: null,
   bank_account_to: null,
+  ba_is_imprest: false,
   income: null,
   outlay: null,
   charge: null,
@@ -116,7 +118,7 @@ const proBankAccs = computed(() => {
 const isImprest = computed(() =>
   form.bank_account_to
     ? allProBankAccList.value.filter(ba => ba.pk === form.bank_account_to)[0].is_imprest
-    : true,
+    : false,
 )
 
 const fetchProFormAccD2List = (d1: number | null, sort: number | null) =>
@@ -283,6 +285,7 @@ const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
+    form.ba_is_imprest = isImprest.value
     const payload = !form.is_separate
       ? { formData: form, sepData: null }
       : { formData: form, sepData: sepItem }
@@ -563,6 +566,7 @@ onBeforeMount(() => formDataSetup())
                   v-model.number="form.bank_account_to"
                   required
                   :disabled="form.sort !== 3"
+                  @change="isImprest"
                 >
                   <option value="">---------</option>
                   <option v-for="ba in proBankAccs" :key="ba.value as number" :value="ba.value">
