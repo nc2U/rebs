@@ -157,14 +157,14 @@ class ProjectCashBookFilterSet(FilterSet):
 
     class Meta:
         model = ProjectCashBook
-        fields = ('project', 'sort', 'project_account_d2__d1', 'project_account_d2', 'project_account_d3',
-                  'from_deal_date', 'to_deal_date', 'deal_date', 'installment_order',
-                  'bank_account', 'contract', 'contract__order_group',
-                  'contract__unit_type', 'no_contract', 'no_install')
+        fields = ('project', 'sort', 'project_account_d2__d1', 'project_account_d2',
+                  'project_account_d3', 'is_imprest', 'from_deal_date', 'to_deal_date',
+                  'deal_date', 'installment_order', 'bank_account', 'contract',
+                  'contract__order_group', 'contract__unit_type', 'no_contract', 'no_install')
 
 
 class ProjectCashBookViewSet(viewsets.ModelViewSet):
-    queryset = ProjectCashBook.objects.filter(Q(is_imprest=False) | Q(project_account_d3=63, income__isnull=True))
+    queryset = ProjectCashBook.objects.all()  # filter(is_imprest=False)
     serializer_class = ProjectCashBookSerializer
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
     pagination_class = PageNumberPaginationFifteen
@@ -206,4 +206,4 @@ class ProjectDateCashBookViewSet(ProjectCashBookViewSet):
 
 
 class ProjectImprestViewSet(ProjectCashBookViewSet):
-    queryset = ProjectCashBook.objects.filter(is_imprest=True).exclude(project_account_d3=63, income__isnull=True)
+    queryset = ProjectCashBook.objects.filter(is_imprest=True)  # .exclude(project_account_d3=63, income__isnull=True)
