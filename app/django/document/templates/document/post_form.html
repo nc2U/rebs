@@ -1,0 +1,35 @@
+{% extends 'document/layouts/docs_board.html' %}
+
+{% block board %}
+    {% load static %}
+
+    <div class="row">
+        <div class="col-12 border-bottom mb-4">
+            <h4>
+                {% if co %}{% if not object.project %}본사{% else %}{{ object.project }}{% endif %}
+                    {% if not object.category %} <i class="uil-angle-double-right"></i> {% endif %}{% endif %}
+                {{ this_board }}
+            </h4>
+        </div>
+
+        <div class="col-12">
+            {% include 'document/partials/form.html' %}
+        </div>
+    </div>
+
+
+
+{% endblock %}
+
+
+{% block third_party_js %}
+
+    <script>
+      {% if not co %}
+        window.onload = function () {
+          document.getElementById('id_project_sel').setAttribute('onchange', 'submit()')
+        }
+      {% endif %}
+    </script>
+
+{% endblock %}
