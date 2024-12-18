@@ -101,6 +101,7 @@ const proCashStore = useProCash()
 const formAccD2List = computed(() => proCashStore.formAccD2List)
 const formAccD3List = computed(() => proCashStore.formAccD3List)
 const getProBanks = computed(() => proCashStore.getProBanks)
+const allProBankAccList = computed(() => proCashStore.allProBankAccountList)
 
 const proBankAccs = computed(() => {
   const ba = props.proCash ? props.proCash.bank_account : 0
@@ -111,6 +112,12 @@ const proBankAccs = computed(() => {
     ? getProBanks.value
     : [...[{ value: ba, label: ba_desc }], ...getProBanks.value]
 })
+
+const isImprest = computed(() =>
+  form.bank_account_to
+    ? allProBankAccList.value.filter(ba => ba.pk === form.bank_account_to)[0].is_imprest
+    : true,
+)
 
 const fetchProFormAccD2List = (d1: number | null, sort: number | null) =>
   proCashStore.fetchProFormAccD2List(d1, sort)
@@ -295,6 +302,7 @@ const onSubmit = (event: Event) => {
         emit('close')
       }
     } else refAlertModal.value.callModal()
+    validated.value = false
   }
 }
 

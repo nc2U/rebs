@@ -108,17 +108,13 @@ const allProBankAccList = computed(() => proCashStore.allProBankAccountList)
 
 const proImpBankAccs = computed(() => {
   const ba = props.imprest ? props.imprest.bank_account : 0
+  const ba_desc = props.imprest ? props.imprest.bank_account_desc : ''
   const isExist = !!getImpBankAccs.value.filter(b => b.value === ba).length
 
   return !ba || isExist
     ? getImpBankAccs.value
-    : [...getImpBankAccs.value, ...[{ value: ba, label: getAccName(ba) }]].sort(
-        (prev, curr) => (prev.value || 0) - (curr.value || 0),
-      )
+    : [...[{ value: ba, label: ba_desc }], ...getImpBankAccs.value]
 })
-
-const getAccName = (pk: number) =>
-  allProBankAccList.value.filter(b => b.pk === pk).map(b => b.alias_name)[0]
 
 const isImprest = computed(() =>
   form.bank_account_to
@@ -309,6 +305,7 @@ const onSubmit = (event: Event) => {
         emit('close')
       }
     } else refAlertModal.value.callModal()
+    validated.value = false
   }
 }
 
