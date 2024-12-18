@@ -158,6 +158,7 @@ export const useProCash = defineStore('proCash', () => {
     if (payload.account_d1) url += `&project_account_d2__d1=${payload.account_d1}`
     if (payload.pro_acc_d2) url += `&project_account_d2=${payload.pro_acc_d2}`
     if (payload.pro_acc_d3) url += `&project_account_d3=${payload.pro_acc_d3}`
+    if (payload.is_imprest) url += `&is_imprest=${payload.is_imprest}`
     if (payload.bank_account) url += `&bank_account=${payload.bank_account}`
     if (payload.contract) url += `&contract=${payload.contract}`
     if (payload.search) url += `&search=${payload.search}`
@@ -167,8 +168,8 @@ export const useProCash = defineStore('proCash', () => {
   }
 
   const fetchProjectCashList = async (payload: CashBookFilter) => {
-    const { project } = payload
-    let url = `/project-cashbook/?project=${project}`
+    const { project, is_imprest } = payload
+    let url = `/project-cashbook/?project=${project}&is_imprest=${is_imprest}`
     url += getUrl(payload)
 
     return await api
