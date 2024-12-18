@@ -1,7 +1,7 @@
 <template>
   <CFooter class="mt-0">
     <div>
-      <a href="/">Dyibs.com</a>
+      <a href="/">dyIBS.com</a>
       <span class="ms-1">&copy; {{ new Date().getFullYear() }} developLabs.</span>
     </div>
     <div class="ms-auto">
