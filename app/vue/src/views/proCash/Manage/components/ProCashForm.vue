@@ -101,21 +101,16 @@ const proCashStore = useProCash()
 const formAccD2List = computed(() => proCashStore.formAccD2List)
 const formAccD3List = computed(() => proCashStore.formAccD3List)
 const getProBanks = computed(() => proCashStore.getProBanks)
-const allProBankAccList = computed(() => proCashStore.allProBankAccountList)
 
 const proBankAccs = computed(() => {
   const ba = props.proCash ? props.proCash.bank_account : 0
+  const ba_desc = props.proCash ? props.proCash.bank_account_desc : ''
   const isExist = !!getProBanks.value.filter(b => b.value === ba).length
 
   return !ba || isExist
     ? getProBanks.value
-    : [...getProBanks.value, ...[{ value: ba, label: getAccName(ba) }]].sort(
-        (prev, curr) => (prev.value || 0) - (curr.value || 0),
-      )
+    : [...[{ value: ba, label: ba_desc }], ...getProBanks.value]
 })
-
-const getAccName = (pk: number) =>
-  allProBankAccList.value.filter(b => b.pk === pk).map(b => b.alias_name)[0]
 
 const fetchProFormAccD2List = (d1: number | null, sort: number | null) =>
   proCashStore.fetchProFormAccD2List(d1, sort)
