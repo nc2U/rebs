@@ -299,13 +299,15 @@ onBeforeMount(() => {
         <v-tooltip activator="parent" location="top">
           엑셀은 항상 전체(운영비용 포함) 내역 출력
         </v-tooltip>
-        <CFormSwitch
-          v-model="imprest"
-          label="전체(운영비용 포함) 보기"
-          id="all-list-view"
-          @click="setImprest"
-          :disabled="!project"
-        ></CFormSwitch>
+        <div style="padding-top: 7px">
+          <CFormSwitch
+            v-model="imprest"
+            label="전체(운영비용 포함) 보기"
+            id="all-list-view"
+            @click="setImprest"
+            :disabled="!project"
+          ></CFormSwitch>
+        </div>
       </TableTitleRow>
       <ProCashList
         :project="project as number"
