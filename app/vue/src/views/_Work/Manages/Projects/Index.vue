@@ -5,7 +5,7 @@ import { dateFormat } from '@/utils/baseMixins'
 import { useWork } from '@/store/pinia/work'
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import type { Company } from '@/store/types/settings'
-import type { ActLogEntryFilter } from '@/store/types/work'
+import type { ActLogEntryFilter, IssueProject } from '@/store/types/work'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import ProjectList from '@/views/_Work/Manages/Projects/components/ProjectList.vue'
@@ -52,8 +52,8 @@ const projectNavMenus = computed(() => {
     menus = [...new Set([...menus, ...[{ no: 3, menu: '(로드맵)' }]])]
   if (modules.value?.issue) menus = [...new Set([...menus, ...[{ no: 4, menu: '(업무)' }]])]
   if (modules.value?.time) menus = [...new Set([...menus, ...[{ no: 5, menu: '(소요시간)' }]])]
-  // if (modules.value?.gantt) menus = [...new Set([...menus, ...[{ no: 6, menu: '(차트)' }]])]
-  // if (modules.value?.calendar) menus = [...new Set([...menus, ...[{ no: 7, menu: '(달력)' }]])]
+  if (modules.value?.gantt) menus = [...new Set([...menus, ...[{ no: 6, menu: '(간트차트)' }]])]
+  if (modules.value?.calendar) menus = [...new Set([...menus, ...[{ no: 7, menu: '(달력)' }]])]
   if (modules.value?.news) menus = [...new Set([...menus, ...[{ no: 8, menu: '(공지)' }]])]
   if (modules.value?.document) menus = [...new Set([...menus, ...[{ no: 9, menu: '(문서)' }]])]
   if (modules.value?.wiki) menus = [...new Set([...menus, ...[{ no: 10, menu: '(위키)' }]])]
@@ -70,7 +70,7 @@ const navMenu = computed(() =>
 const sideNavCAll = () => cBody.value.toggle()
 
 const workStore = useWork()
-const issueProject = computed(() => workStore.issueProject)
+const issueProject = computed(() => workStore.issueProject as IssueProject)
 provide('iProject', issueProject)
 const issueProjects = computed(() => workStore.issueProjects)
 const allProjects = computed(() => workStore.AllIssueProjects)
