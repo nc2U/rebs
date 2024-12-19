@@ -100,7 +100,7 @@ const workProject = {
         },
         {
           path: ':projId/gantt',
-          name: '(차트)',
+          name: '(간트차트)',
         },
         {
           path: ':projId/calendar',
@@ -199,7 +199,7 @@ const workProject = {
     },
     {
       path: 'gantt',
-      name: '차트',
+      name: '간트차트',
       component: () => import('@/views/_Work/Manages/Gantt/Index.vue'),
     },
     {
