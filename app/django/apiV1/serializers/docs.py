@@ -8,7 +8,7 @@ from django.db import transaction
 from django.db.models import Q
 from rest_framework import serializers
 
-from accounts.models import User
+from apiV1.serializers.accounts import SimpleUserSerializer
 from docs.models import DocType, Category, LawsuitCase, Document, Link, File, Image
 
 
@@ -37,19 +37,13 @@ class FilesInLawSuitCaseSerializer(serializers.ModelSerializer):
         fields = ('file',)
 
 
-class UserInDocumentsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('pk', 'username')
-
-
 class LawSuitCaseSerializer(serializers.ModelSerializer):
     proj_name = serializers.SlugField(source='project', read_only=True)
     sort_desc = serializers.CharField(source='get_sort_display', read_only=True)
     level_desc = serializers.CharField(source='get_level_display', read_only=True)
     related_case_name = serializers.SlugField(source='related_case', read_only=True)
     court_desc = serializers.CharField(source='get_court_display', read_only=True)
-    user = UserInDocumentsSerializer(read_only=True)
+    user = SimpleUserSerializer(read_only=True)
     links = serializers.SerializerMethodField(read_only=True)
     files = serializers.SerializerMethodField(read_only=True)
     prev_pk = serializers.SerializerMethodField(read_only=True)
@@ -166,7 +160,7 @@ class DocumentSerializer(serializers.ModelSerializer):
     lawsuit_name = serializers.SlugField(source='lawsuit', read_only=True)
     links = LinksInDocumentSerializer(many=True, read_only=True)
     files = FilesInDocumentSerializer(many=True, read_only=True)
-    user = UserInDocumentsSerializer(read_only=True)
+    user = SimpleUserSerializer(read_only=True)
     scrape = serializers.SerializerMethodField(read_only=True)
     my_scrape = serializers.SerializerMethodField(read_only=True)
     prev_pk = serializers.SerializerMethodField(read_only=True)

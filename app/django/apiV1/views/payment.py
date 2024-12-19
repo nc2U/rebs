@@ -1,17 +1,16 @@
 from datetime import datetime
-from django.db.models import Sum, Count, F
-from rest_framework import viewsets
-from django_filters.rest_framework import FilterSet
+
+from django.db.models import Sum, F
 from django_filters import DateFilter
+from django_filters.rest_framework import FilterSet
+from rest_framework import viewsets
 
-from ..permission import *
-from ..pagination import *
-from ..serializers.payment import *
-from .cash import ProjectCashBookViewSet
-
-from contract.models import Contract
 from cash.models import ProjectCashBook
 from payment.models import SalesPriceByGT, InstallmentPaymentOrder, DownPayment, OverDueRule
+from .cash import ProjectCashBookViewSet
+from ..pagination import *
+from ..permission import *
+from ..serializers.payment import *
 
 TODAY = datetime.today().strftime('%Y-%m-%d')
 

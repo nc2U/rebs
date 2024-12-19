@@ -8,6 +8,7 @@ from django.db.models import Q
 from rest_framework import serializers
 
 from accounts.models import User, Profile
+from apiV1.serializers.accounts import SimpleUserSerializer
 from board.models import Group, Board, PostCategory, Post, PostLink, PostFile, PostImage, Comment, Tag
 
 
@@ -30,12 +31,6 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ('pk', 'board', 'color', 'name', 'parent', 'order')
 
 
-class UserInDocumentsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('pk', 'username')
-
-
 class LinksInPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostLink
@@ -54,7 +49,7 @@ class PostSerializer(serializers.ModelSerializer):
     cate_name = serializers.SlugField(source='category', read_only=True)
     links = LinksInPostSerializer(many=True, read_only=True)
     files = FilesInPostSerializer(many=True, read_only=True)
-    user = UserInDocumentsSerializer(read_only=True)
+    user = SimpleUserSerializer(read_only=True)
     my_like = serializers.SerializerMethodField(read_only=True)
     scrape = serializers.SerializerMethodField(read_only=True)
     my_scrape = serializers.SerializerMethodField(read_only=True)
@@ -313,7 +308,7 @@ class CommentSerializer(serializers.ModelSerializer):
     replies = serializers.SerializerMethodField(read_only=True)
     my_like = serializers.SerializerMethodField(read_only=True)
     my_blame = serializers.SerializerMethodField(read_only=True)
-    user = UserInDocumentsSerializer(read_only=True)
+    user = SimpleUserSerializer(read_only=True)
 
     class Meta:
         model = Comment
