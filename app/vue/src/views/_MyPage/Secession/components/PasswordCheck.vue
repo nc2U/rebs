@@ -43,7 +43,7 @@ defineExpose({ passReset, getPass })
       @submit.prevent="onSubmit"
     >
       <CRow class="pt-3 mb-3">
-        <CFormLabel class="col-sm-2 col-lg-1 col-form-label">아이디</CFormLabel>
+        <CFormLabel class="col-sm-2 col-lg-1 col-form-label">이름</CFormLabel>
         <CCol sm="6" lg="4" xl="3" class="pt-2">{{ username }}</CCol>
       </CRow>
 

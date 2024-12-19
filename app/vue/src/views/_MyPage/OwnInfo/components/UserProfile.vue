@@ -14,7 +14,7 @@ const router = useRouter()
       <CCol md="4">
         <CRow class="mb-3">
           <h6>사용자 계정</h6>
-          <CFormLabel for="companyCeo" class="col-sm-4 col-form-label"> 아이디</CFormLabel>
+          <CFormLabel for="companyCeo" class="col-sm-4 col-form-label"> 이름</CFormLabel>
 
           <CCol sm="8">{{ userInfo?.username || '' }}</CCol>
         </CRow>
@@ -29,7 +29,7 @@ const router = useRouter()
 
         <CRow class="mb-3">
           <h6>사용자 프로필</h6>
-          <CFormLabel for="companyName" class="col-sm-4 col-form-label"> 성명</CFormLabel>
+          <CFormLabel for="companyName" class="col-sm-4 col-form-label"> 닉네임</CFormLabel>
 
           <CCol sm="8">{{ userInfo?.profile?.name || '' }}</CCol>
         </CRow>

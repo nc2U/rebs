@@ -105,7 +105,7 @@ onMounted(() => formDataSetup())
         <CCol md="4">
           <CRow class="mb-3">
             <h6>사용자 계정</h6>
-            <CFormLabel class="col-sm-4 col-form-label"> 아이디</CFormLabel>
+            <CFormLabel class="col-sm-4 col-form-label"> 이름</CFormLabel>
 
             <CCol sm="8">{{ userInfo?.username ?? '' }}</CCol>
           </CRow>
@@ -138,7 +138,7 @@ onMounted(() => formDataSetup())
 
           <CRow class="mb-3">
             <h6>사용자 프로필</h6>
-            <CFormLabel for="name" class="col-sm-4 col-form-label"> 성명</CFormLabel>
+            <CFormLabel for="name" class="col-sm-4 col-form-label"> 닉네임</CFormLabel>
 
             <CCol sm="8">
               <CFormInput
