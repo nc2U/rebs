@@ -60,13 +60,11 @@ class Subject(models.Model):
 
     # created_at 기준으로 이전 포스트 반환
     def get_previous_post(self):
-        previous_seq = self.seq - 1
-        return Subject.objects.get(book=self.book_id, seq=previous_seq)
+        return Subject.objects.filter(book=self.book_id, seq__lt=self.seq).order_by('-seq').first()
 
     # created_at 기준으로 다음 포스트 반환
     def get_next_post(self):
-        next_seq = self.seq + 1
-        return Subject.objects.get(book=self.book_id, seq=next_seq)
+        return Subject.objects.filter(book=self.book_id, seq__gt=self.seq).order_by('seq').first()
 
 
 def get_image_filename(instance, filename):
