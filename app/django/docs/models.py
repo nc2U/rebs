@@ -330,6 +330,8 @@ class Document(BaseModel):
     company = models.ForeignKey('company.Company', on_delete=models.CASCADE, verbose_name='회사')
     project = models.ForeignKey('project.Project', on_delete=models.SET_NULL,
                                 null=True, blank=True, verbose_name='프로젝트')
+    work_project = models.ForeignKey('work.IssueProject', on_delete=models.SET_NULL, null=True, blank=True,
+                                     verbose_name='업무 프로젝트')
     doc_type = models.ForeignKey(DocType, on_delete=models.PROTECT, verbose_name='유형')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='카테고리')
     lawsuit = models.ForeignKey(LawsuitCase, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='사건번호')
@@ -342,10 +344,10 @@ class Document(BaseModel):
     is_secret = models.BooleanField('비밀글', default=False)
     password = models.CharField('패스워드', max_length=255, blank=True, default='')
     is_blind = models.BooleanField('숨김', default=False)
-    # deleted = models.DateTimeField('휴지통', null=True, blank=True, default=None)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name='등록자')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    # deleted = models.DateTimeField('휴지통', null=True, blank=True, default=None)
 
     objects = SoftDeleteManager()  # Default manager (exclude soft-deleted)
     all_objects = models.Manager()  # Include all objects
