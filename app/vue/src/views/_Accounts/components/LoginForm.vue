@@ -9,6 +9,7 @@ const email = ref('')
 const password = ref('')
 const redirect = ref()
 const validated = ref(false)
+const showPassword = ref(false)
 
 const onSubmit = (event: Event) => {
   const el = event.currentTarget as HTMLInputElement
@@ -61,11 +62,20 @@ onMounted(() => (redirect.value = route.query?.redirect))
       </CInputGroupText>
       <CFormInput
         v-model="password"
-        type="password"
+        :type="!showPassword ? 'password' : ''"
         auto-complete="current-password"
         placeholder="비밀번호를 입력해주세요"
         required
       />
+      <CButton
+        type="button"
+        color="secondary"
+        variant="outline"
+        id="button-addon2"
+        @click="showPassword = !showPassword"
+      >
+        <v-icon :icon="!showPassword ? 'mdi-eye' : 'mdi-eye-off'" />
+      </CButton>
       <CFormFeedback invalid>비밀번호를 입력하세요.</CFormFeedback>
     </CInputGroup>
     <CRow>

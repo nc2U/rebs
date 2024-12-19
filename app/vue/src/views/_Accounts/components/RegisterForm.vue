@@ -4,6 +4,8 @@ import { useRouter } from 'vue-router'
 
 const emit = defineEmits(['onSubmit'])
 
+const showPassword = ref(false)
+
 const form = reactive({
   username: '',
   email: '',
@@ -44,7 +46,7 @@ const router = useRouter()
       <CFormInput
         v-model="form.username"
         autocomplete="username"
-        placeholder="아이디를 입력해주세요"
+        placeholder="실명을 입력해주세요"
         required
       />
       <CFormFeedback invalid>아이디를 입력하세요.</CFormFeedback>
@@ -68,11 +70,20 @@ const router = useRouter()
       </CInputGroupText>
       <CFormInput
         v-model="form.password"
-        type="password"
+        :type="!showPassword ? 'password' : ''"
         autocomplete="password"
         placeholder="비밀번호를 입력해주세요"
         required
       />
+      <CButton
+        type="button"
+        color="secondary"
+        variant="outline"
+        id="button-addon1"
+        @click="showPassword = !showPassword"
+      >
+        <v-icon :icon="!showPassword ? 'mdi-eye' : 'mdi-eye-off'" />
+      </CButton>
       <CFormFeedback invalid>비밀번호를 입력하세요.</CFormFeedback>
     </CInputGroup>
 
@@ -82,11 +93,20 @@ const router = useRouter()
       </CInputGroupText>
       <CFormInput
         v-model="form.passwordConfirm"
-        type="password"
+        :type="!showPassword ? 'password' : ''"
         autocomplete="password-confirm"
         placeholder="비밀번호 확인"
         required
       />
+      <CButton
+        type="button"
+        color="secondary"
+        variant="outline"
+        id="button-addon2"
+        @click="showPassword = !showPassword"
+      >
+        <v-icon :icon="!showPassword ? 'mdi-eye' : 'mdi-eye-off'" />
+      </CButton>
       <CFormFeedback invalid>비밀번호를 한번 더 입력하세요.</CFormFeedback>
     </CInputGroup>
 
