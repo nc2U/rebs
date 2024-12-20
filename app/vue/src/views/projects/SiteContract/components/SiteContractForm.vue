@@ -249,7 +249,12 @@ onBeforeMount(() => dataSetup())
             <CRow>
               <CFormLabel class="col-sm-4 col-form-label"> 계약 체결일</CFormLabel>
               <CCol sm="8">
-                <DatePicker v-model="form.contract_date" maxlength="10" placeholder="계약 체결일" />
+                <DatePicker
+                  v-model="form.contract_date"
+                  maxlength="10"
+                  placeholder="계약 체결일"
+                  required
+                />
               </CCol>
             </CRow>
           </CCol>
