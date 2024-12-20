@@ -15,7 +15,7 @@ const listControl = ref()
 
 const dataFilter = ref<DepFilter>({
   page: 1,
-  com: 1,
+  com: undefined,
   upp: '',
   q: '',
 })
@@ -55,10 +55,10 @@ const deleteDepartment = (pk: number, com: number) => comStore.deleteDepartment(
 
 const multiSubmit = (payload: Depart) => {
   const { page } = dataFilter.value
-  if (!!payload.pk) updateDepartment(payload, page)
+  if (!!payload.pk) updateDepartment(payload, page, company.value)
   else {
     if (payload.upper_depart) payload.level = getLevel(payload.upper_depart)
-    createDepartment(payload, page)
+    createDepartment(payload, page, company.value)
   }
 }
 const onDelete = (pk: number) => {
@@ -90,7 +90,10 @@ const comSelect = (target: number | null) => {
   if (!!target) dataSetup(target)
 }
 
-onMounted(() => dataSetup(company.value || comStore.initComId))
+onMounted(() => {
+  dataFilter.value.com = comStore.initComId
+  dataSetup(company.value || comStore.initComId)
+})
 </script>
 
 <template>
