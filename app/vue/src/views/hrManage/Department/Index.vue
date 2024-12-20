@@ -55,10 +55,10 @@ const deleteDepartment = (pk: number, com: number) => comStore.deleteDepartment(
 
 const multiSubmit = (payload: Depart) => {
   const { page } = dataFilter.value
-  if (!!payload.pk) updateDepartment(payload, page, company.value)
+  if (!!payload.pk) updateDepartment(payload, page, company.value as number)
   else {
     if (payload.upper_depart) payload.level = getLevel(payload.upper_depart)
-    createDepartment(payload, page, company.value)
+    createDepartment(payload, page, company.value as number)
   }
 }
 const onDelete = (pk: number) => {
