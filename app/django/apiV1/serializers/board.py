@@ -59,7 +59,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ('pk', 'company', 'project', 'proj_name', 'board', 'board_name', 'category',
+        fields = ('pk', 'project', 'proj_name', 'board', 'board_name', 'category',
                   'cate_name', 'title', 'execution_date', 'content', 'hit', 'like', 'my_like',
                   'scrape', 'my_scrape', 'blame', 'my_blame', 'ip', 'device', 'is_secret', 'password',
                   'is_hide_comment', 'is_notice', 'is_blind', 'deleted', 'links', 'files',
@@ -69,7 +69,6 @@ class PostSerializer(serializers.ModelSerializer):
     def get_collection(self):
         queryset = Post.objects.all()
         query = self.context['request'].query_params
-        company = query.get('company')
         project = query.get('project')
         is_com = query.get('is_com')
         board = query.get('board')
@@ -77,7 +76,6 @@ class PostSerializer(serializers.ModelSerializer):
         category = query.get('category')
         search = query.get('search')
 
-        queryset = queryset.filter(company_id=company) if company else queryset
         queryset = queryset.filter(project_id=project) if project else queryset
         queryset = queryset.filter(project__isnull=True) if is_com == 'true' else queryset
         queryset = queryset.filter(project__isnull=False) if is_com == 'false' else queryset
@@ -300,7 +298,7 @@ class ImageSerializer(serializers.ModelSerializer):
 class SimplePostInCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ('pk', 'company', 'project', 'board')
+        fields = ('pk', 'project', 'board')
 
 
 class CommentSerializer(serializers.ModelSerializer):

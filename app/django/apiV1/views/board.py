@@ -36,7 +36,7 @@ class PostFilterSet(FilterSet):
 
     class Meta:
         model = Post
-        fields = ('company', 'project', 'is_com', 'board', 'is_notice', 'category', 'user')
+        fields = ('project', 'is_com', 'board', 'is_notice', 'category', 'user')
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -60,7 +60,6 @@ class PostViewSet(viewsets.ModelViewSet):
 
             # 기존 행의 정보를 사용하여 새로운 행을 생성한다.
             new_instance_data = {
-                'company': org_instance.company.pk,
                 'project': project if project else None,
                 'board': board,
                 'category': org_instance.category.pk if org_instance.category else None,
