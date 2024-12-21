@@ -28,6 +28,7 @@ export interface IssueProject {
   pk?: number
   company: number
   name: string
+  is_real_dev: boolean
   slug: string
   description: string
   homepage: string | null

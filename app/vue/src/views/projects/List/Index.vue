@@ -30,9 +30,9 @@ const toSubmit = (payload: Project) => {
 
 const workStore = useWork()
 const getAllProjects = computed(() => workStore.getAllProjects)
-const fetchAllIssueProjectList = () => workStore.fetchAllIssueProjectList()
+const fetchAllIssueProjectList = (is_dev: '' | '1') => workStore.fetchAllIssueProjectList(is_dev)
 
-onBeforeMount(() => fetchAllIssueProjectList())
+onBeforeMount(() => fetchAllIssueProjectList('1'))
 </script>
 
 <template>

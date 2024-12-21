@@ -190,7 +190,6 @@ onBeforeMount(() => formDataSetup())
       <CRow>
         <CCol xl="11" class="pt-3">
           <CRow>
-            {{ getProjects }}
             <CFormLabel class="col-md-2 col-form-label">업무 프로젝트</CFormLabel>
             <CCol md="10" lg="4" class="mb-md-3">
               <MultiSelect

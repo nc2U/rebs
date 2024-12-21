@@ -20,7 +20,8 @@ class IssueProjectFilter(FilterSet):
 
     class Meta:
         model = IssueProject
-        fields = ('status', 'parent__slug', 'project', 'is_public', 'name', 'members__user', 'description')
+        fields = ('is_real_dev', 'status', 'parent__slug', 'project',
+                  'is_public', 'name', 'members__user', 'description')
 
 
 class IssueProjectViewSet(viewsets.ModelViewSet):

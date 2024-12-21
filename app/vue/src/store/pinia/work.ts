@@ -48,7 +48,7 @@ export const useWork = defineStore('work', () => {
   })
 
   const getAllProjects = computed(() =>
-    AllIssueProjects.value.map(i => ({
+    allProjects.value.map(i => ({
       value: i.pk,
       label: i.name,
     })),
@@ -74,9 +74,9 @@ export const useWork = defineStore('work', () => {
       .catch(err => errorHandle(err.response.data))
   }
 
-  const fetchAllIssueProjectList = async () =>
+  const fetchAllIssueProjectList = async (is_dev = '') =>
     await api
-      .get(`/issue-project/?parent__isnull=1`)
+      .get(`/issue-project/?parent__isnull=1&is_real_dev=${is_dev}`)
       .then(res => (allProjects.value = res.data.results))
       .catch(err => errorHandle(err.response.data))
 

@@ -36,7 +36,7 @@ const validated = ref(false)
 const form = reactive({
   pk: undefined as number | undefined,
   name: '',
-  real_project: null as null | number,
+  is_real_dev: false,
   description: '',
   slug: '',
   homepage: null as string | null,
@@ -51,7 +51,7 @@ const form = reactive({
 const formsCheck = computed(() => {
   if (props.project) {
     const a = form.name === props.project.name
-    const b = form.real_project === props.project.real_project
+    const b = form.is_real_dev === props.project.is_real_dev
     const c = form.description === props.project.description
     const d = form.homepage === props.project.homepage
     const e = form.is_public === props.project.is_public
@@ -130,7 +130,7 @@ const dataSetup = () => {
   if (props.project) {
     form.pk = props.project.pk
     form.name = props.project.name
-    form.real_project = props.project?.real_project
+    form.is_real_dev = props.project?.is_real_dev
     form.description = props.project.description
     form.slug = props.project.slug
     form.homepage = props.project.homepage
@@ -186,6 +186,17 @@ onBeforeMount(() => {
               maxlength="100"
               required
               placeholder="프로젝트 이름"
+            />
+          </CCol>
+        </CRow>
+
+        <CRow class="mb-3">
+          <CFormLabel class="col-form-label text-right col-2">확인</CFormLabel>
+          <CCol>
+            <CFormCheck
+              v-model="form.is_real_dev"
+              label="부동산 개발 프로젝트인지 여부"
+              id="is_real_dev"
             />
           </CCol>
         </CRow>
