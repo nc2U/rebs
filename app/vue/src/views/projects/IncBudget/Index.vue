@@ -18,7 +18,7 @@ const project = computed(() => projStore.project?.pk)
 const pCashStore = useProCash()
 const allAccD2List = computed(() => pCashStore.allAccD2List.filter(d1 => d1.pk <= 2))
 const allAccD3List = computed(() =>
-  pCashStore.allAccD3List.filter(d3 => d3.pk === 1 || d3.pk === 4),
+  pCashStore.allAccD3List.filter(d3 => d3.pk === 1 || d3.pk === 5),
 )
 
 const contStore = useContract()
