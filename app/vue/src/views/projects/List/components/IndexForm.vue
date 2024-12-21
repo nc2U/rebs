@@ -208,12 +208,15 @@ onBeforeUpdate(() => formDataSetup())
               <CFormFeedback invalid>업무 프로젝트를 선택하세요.</CFormFeedback>
             </CCol>
             <CCol style="padding-top: 7px">
-              <v-icon
-                icon="mdi-plus-circle"
-                color="success"
-                class="pointer"
-                @click="refIssueForm.callModal()"
-              ></v-icon>
+              <div style="width: 20px">
+                <v-icon
+                  icon="mdi-plus-circle"
+                  color="success"
+                  class="pointer"
+                  @click="refIssueForm.callModal()"
+                />
+                <v-tooltip activator="parent" location="end">새 업무 프로젝트 생성하기</v-tooltip>
+              </div>
             </CCol>
           </CRow>
           <CRow>
