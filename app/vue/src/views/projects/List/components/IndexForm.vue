@@ -69,35 +69,36 @@ const btnClass = computed(() => (props.project ? 'success' : 'primary'))
 
 const formsCheck = computed(() => {
   if (props.project) {
-    const a = form.name === props.project.name
-    const b = form.order === props.project.order
-    const c = form.kind === props.project.kind
-    const d = form.start_year === props.project.start_year
-    const e = form.is_direct_manage === props.project.is_direct_manage
-    const f = form.is_returned_area === props.project.is_returned_area
-    const g = form.is_unit_set === props.project.is_unit_set
-    const h = form.local_zipcode === props.project.local_zipcode
-    const i = form.local_address1 === props.project.local_address1
-    const j = form.local_address2 === props.project.local_address2
-    const k = form.local_address3 === props.project.local_address3
-    const l = form.area_usage === props.project.area_usage
-    const m = form.build_size === props.project.build_size
-    const n = form.num_unit === props.project.num_unit
-    const o = form.buy_land_extent === props.project.buy_land_extent
-    const p = form.scheme_land_extent === props.project.scheme_land_extent
-    const q = form.donation_land_extent === props.project.donation_land_extent
-    const r = form.on_floor_area === props.project.on_floor_area
-    const s = form.under_floor_area === props.project.under_floor_area
-    const t = form.total_floor_area === props.project.total_floor_area
-    const u = form.build_area === props.project.build_area
-    const v = form.floor_area_ratio === props.project.floor_area_ratio
-    const w = form.build_to_land_ratio === props.project.build_to_land_ratio
-    const x = form.num_legal_parking === props.project.num_legal_parking
-    const y = form.num_planed_parking === props.project.num_planed_parking
+    const a = form.issue_project === props.project.issue_project
+    const b = form.name === props.project.name
+    const c = form.order === props.project.order
+    const d = form.kind === props.project.kind
+    const e = form.start_year === props.project.start_year
+    const f = form.is_direct_manage === props.project.is_direct_manage
+    const g = form.is_returned_area === props.project.is_returned_area
+    const h = form.is_unit_set === props.project.is_unit_set
+    const i = form.local_zipcode === props.project.local_zipcode
+    const j = form.local_address1 === props.project.local_address1
+    const k = form.local_address2 === props.project.local_address2
+    const l = form.local_address3 === props.project.local_address3
+    const m = form.area_usage === props.project.area_usage
+    const n = form.build_size === props.project.build_size
+    const o = form.num_unit === props.project.num_unit
+    const p = form.buy_land_extent === props.project.buy_land_extent
+    const q = form.scheme_land_extent === props.project.scheme_land_extent
+    const r = form.donation_land_extent === props.project.donation_land_extent
+    const s = form.on_floor_area === props.project.on_floor_area
+    const t = form.under_floor_area === props.project.under_floor_area
+    const u = form.total_floor_area === props.project.total_floor_area
+    const v = form.build_area === props.project.build_area
+    const w = form.floor_area_ratio === props.project.floor_area_ratio
+    const x = form.build_to_land_ratio === props.project.build_to_land_ratio
+    const y = form.num_legal_parking === props.project.num_legal_parking
+    const z = form.num_planed_parking === props.project.num_planed_parking
 
     const group1 = a && b && c && d && e && f && g && h
-    const group2 = i && j && k && l && m && n && o && p
-    const group3 = q && r && s && t && u && v && w && x && y
+    const group2 = i && j && k && l && m && n && o && p && q
+    const group3 = r && s && t && u && v && w && x && y && z
 
     return group1 && group2 && group3
   } else return false
@@ -153,6 +154,7 @@ const addressCallback = (data: AddressData) => {
 const formDataSetup = () => {
   if (props.project) {
     form.pk = props.project.pk
+    form.issue_project = props.project.issue_project
     form.name = props.project.name
     form.order = props.project.order
     form.kind = props.project.kind
@@ -194,6 +196,7 @@ onBeforeMount(() => formDataSetup())
             <CCol md="10" lg="4" class="mb-md-3">
               <MultiSelect
                 v-model="form.issue_project"
+                mode="single"
                 :options="getProjects"
                 required
                 placeholder="업무 프로젝트를 선택하세요."
