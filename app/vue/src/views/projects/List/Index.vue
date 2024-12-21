@@ -4,6 +4,7 @@ import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin1'
 import { useWork } from '@/store/pinia/work'
 import { useProject } from '@/store/pinia/project'
 import { type Project } from '@/store/types/project'
+import type { IssueProject } from '@/store/types/work'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import IndexForm from '@/views/projects/List/components/IndexForm.vue'
@@ -31,6 +32,7 @@ const toSubmit = (payload: Project) => {
 const workStore = useWork()
 const getAllProjects = computed(() => workStore.getAllProjects)
 const fetchAllIssueProjectList = (is_dev: '' | '1') => workStore.fetchAllIssueProjectList(is_dev)
+const createIssueProject = (payload: IssueProject) => workStore.createIssueProject(payload)
 
 onBeforeMount(() => fetchAllIssueProjectList('1'))
 </script>
@@ -52,6 +54,7 @@ onBeforeMount(() => fetchAllIssueProjectList('1'))
       :get-projects="getAllProjects"
       @to-submit="toSubmit"
       @reset-form="resetForm"
+      @issue-pr-submit="createIssueProject"
     />
 
     <IndexForm
@@ -60,6 +63,7 @@ onBeforeMount(() => fetchAllIssueProjectList('1'))
       :get-projects="getAllProjects"
       @to-submit="toSubmit"
       @reset-form="resetForm"
+      @issue-pr-submit="createIssueProject"
     />
 
     <template #footer>
