@@ -6,19 +6,23 @@ import { type Project } from '@/store/types/project'
 import { callAddress, type AddressData } from '@/components/DaumPostcode/address'
 import { write_project } from '@/utils/pageAuth'
 import Datepicker from '@vuepic/vue-datepicker'
+import MultiSelect from '@/components/MultiSelect/index.vue'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({
   project: { type: Object as PropType<Project>, default: null },
+  getProjects: {
+    type: Array as PropType<{ value: number | undefined; label: string }[]>,
+    default: () => [],
+  },
 })
 
 const emit = defineEmits(['to-submit', 'reset-form', 'close'])
 
 const form = reactive<Project>({
   pk: undefined,
-  company: null,
   issue_project: null,
   name: '',
   order: null,
@@ -149,7 +153,6 @@ const addressCallback = (data: AddressData) => {
 const formDataSetup = () => {
   if (props.project) {
     form.pk = props.project.pk
-    form.company = props.project.company
     form.name = props.project.name
     form.order = props.project.order
     form.kind = props.project.kind
@@ -175,7 +178,7 @@ const formDataSetup = () => {
     form.build_to_land_ratio = props.project.build_to_land_ratio
     form.num_legal_parking = props.project.num_legal_parking
     form.num_planed_parking = props.project.num_planed_parking
-  } else form.company = accountStore.staffAuth?.company || null
+  }
 }
 
 onBeforeMount(() => formDataSetup())
@@ -186,6 +189,22 @@ onBeforeMount(() => formDataSetup())
     <CCardBody>
       <CRow>
         <CCol xl="11" class="pt-3">
+          <CRow>
+            {{ getProjects }}
+            <CFormLabel class="col-md-2 col-form-label">업무 프로젝트</CFormLabel>
+            <CCol md="10" lg="4" class="mb-md-3">
+              <MultiSelect
+                v-model="form.issue_project"
+                :options="getProjects"
+                required
+                placeholder="업무 프로젝트를 선택하세요."
+              />
+              <CFormFeedback invalid>업무 프로젝트를 선택하세요.</CFormFeedback>
+            </CCol>
+            <CCol style="padding-top: 7px">
+              <v-icon icon="mdi-plus-circle" color="success" class="pointer"></v-icon>
+            </CCol>
+          </CRow>
           <CRow>
             <CFormLabel class="col-md-2 col-form-label"> 프로젝트명</CFormLabel>
             <CCol md="10" lg="4" class="mb-md-3">

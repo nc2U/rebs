@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onBeforeMount } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin1'
+import { useWork } from '@/store/pinia/work'
 import { useProject } from '@/store/pinia/project'
 import { type Project } from '@/store/types/project'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -26,6 +27,12 @@ const toSubmit = (payload: Project) => {
   if (payload.pk) toUpdate(payload)
   else toCreate(payload)
 }
+
+const workStore = useWork()
+const getAllProjects = computed(() => workStore.getAllProjects)
+const fetchAllIssueProjectList = () => workStore.fetchAllIssueProjectList()
+
+onBeforeMount(() => fetchAllIssueProjectList())
 </script>
 
 <template>
@@ -40,11 +47,17 @@ const toSubmit = (payload: Project) => {
       @update-form="updateForm"
     />
 
-    <IndexForm v-if="compName === 'CreateForm'" @to-submit="toSubmit" @reset-form="resetForm" />
+    <IndexForm
+      v-if="compName === 'CreateForm'"
+      :get-projects="getAllProjects"
+      @to-submit="toSubmit"
+      @reset-form="resetForm"
+    />
 
     <IndexForm
       v-if="compName === 'UpdateForm'"
       :project="project as Project"
+      :get-projects="getAllProjects"
       @to-submit="toSubmit"
       @reset-form="resetForm"
     />

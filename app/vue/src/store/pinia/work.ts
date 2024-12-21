@@ -47,6 +47,13 @@ export const useWork = defineStore('work', () => {
     return result
   })
 
+  const getAllProjects = computed(() =>
+    AllIssueProjects.value.map(i => ({
+      value: i.pk,
+      label: i.name,
+    })),
+  )
+
   // actions
   const fetchIssueProjectList = async (payload: ProjectFilter) => {
     let url = `/issue-project/?1=1`
@@ -709,6 +716,7 @@ export const useWork = defineStore('work', () => {
     issueProjectList,
     issueProjects,
     AllIssueProjects,
+    getAllProjects,
     fetchIssueProjectList,
     fetchAllIssueProjectList,
     fetchIssueProject,
