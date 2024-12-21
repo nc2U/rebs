@@ -44,7 +44,6 @@ class FilesInPostSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
-    proj_name = serializers.SlugField(source='project', read_only=True)
     board_name = serializers.SlugField(source='board', read_only=True)
     cate_name = serializers.SlugField(source='category', read_only=True)
     links = LinksInPostSerializer(many=True, read_only=True)
@@ -59,7 +58,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ('pk', 'project', 'proj_name', 'board', 'board_name', 'category',
+        fields = ('pk', 'board', 'board_name', 'category',
                   'cate_name', 'title', 'execution_date', 'content', 'hit', 'like', 'my_like',
                   'scrape', 'my_scrape', 'blame', 'my_blame', 'ip', 'device', 'is_secret', 'password',
                   'is_hide_comment', 'is_notice', 'is_blind', 'deleted', 'links', 'files',
@@ -69,16 +68,12 @@ class PostSerializer(serializers.ModelSerializer):
     def get_collection(self):
         queryset = Post.objects.all()
         query = self.context['request'].query_params
-        project = query.get('project')
         is_com = query.get('is_com')
         board = query.get('board')
         is_notice = True if query.get('is_notice') == 'true' else False
         category = query.get('category')
         search = query.get('search')
 
-        queryset = queryset.filter(project_id=project) if project else queryset
-        queryset = queryset.filter(project__isnull=True) if is_com == 'true' else queryset
-        queryset = queryset.filter(project__isnull=False) if is_com == 'false' else queryset
         queryset = queryset.filter(board_id=board) if board else queryset
         queryset = queryset.filter(is_notice=True) if is_notice == 'true' else queryset
         queryset = queryset.filter(is_notice=False) if is_notice == 'false' else queryset
