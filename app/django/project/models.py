@@ -8,8 +8,6 @@ from django.dispatch import receiver
 
 
 class Project(models.Model):
-    company = models.ForeignKey('company.Company', on_delete=models.PROTECT, related_name='projects',
-                                verbose_name='회사정보')
     name = models.CharField('프로젝트명', max_length=30, unique=True)
     order = models.PositiveSmallIntegerField('정렬순서', default=100)
     KIND_CHOICES = (
