@@ -6,6 +6,7 @@ const emit = defineEmits(['remove-confirm'])
 
 const validated = ref(false)
 const password = ref('')
+const showPassword = ref(false)
 
 const onSubmit = (event: Event) => {
   const e = event.currentTarget as HTMLInputElement
@@ -50,15 +51,28 @@ defineExpose({ passReset, getPass })
       <CRow class="my-3">
         <CFormLabel class="col-sm-2 col-lg-1 col-form-label">패스워드</CFormLabel>
         <CCol sm="6" lg="4" xl="3">
-          <CFormInput
-            v-model="password"
-            type="password"
-            required
-            placeholder="패스워드 입력"
-            aria-label="password"
-            aria-describedby="password"
-            text="외부로부터 회원님의 정보를 안전하게 보호하기 위해 비밀번호를 확인하셔야 합니다."
-          />
+          <CInputGroup>
+            <CFormInput
+              v-model="password"
+              :type="!showPassword ? 'password' : ''"
+              required
+              placeholder="패스워드 입력"
+              aria-label="password"
+              aria-describedby="password"
+            />
+            <CButton
+              type="button"
+              color="secondary"
+              variant="outline"
+              id="button-addon2"
+              @click="showPassword = !showPassword"
+            >
+              <v-icon :icon="!showPassword ? 'mdi-eye' : 'mdi-eye-off'" />
+            </CButton>
+          </CInputGroup>
+          <div class="form-text">
+            외부로부터 회원님의 정보를 안전하게 보호하기 위해 비밀번호를 확인하셔야 합니다.
+          </div>
         </CCol>
       </CRow>
       <CRow class="mb-3">
