@@ -121,7 +121,7 @@ class IssueProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = IssueProject
-        fields = ('pk', 'company', 'real_project', 'name', 'slug', 'description', 'homepage',
+        fields = ('pk', 'company', 'name', 'slug', 'description', 'homepage',
                   'is_public', 'module', 'is_inherit_members', 'allowed_roles', 'trackers', 'versions',
                   'default_version', 'categories', 'status', 'depth', 'all_members', 'members', 'activities',
                   'visible', 'total_estimated_hours', 'total_time_spent', 'family_tree', 'parent',
