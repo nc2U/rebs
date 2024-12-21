@@ -63,6 +63,8 @@ export const useProject = defineStore('project', () => {
       .then(res => (project.value = res.data))
       .catch(err => errorHandle(err.response.data))
 
+  const removeProject = () => (project.value = null)
+
   const createProject = (payload: Project) =>
     api
       .post('/project/', payload)
@@ -222,6 +224,7 @@ export const useProject = defineStore('project', () => {
     project,
     initProjId,
     fetchProject,
+    removeProject,
     createProject,
     updateProject,
     deleteProject,

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount } from 'vue'
+import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin1'
 import { useWork } from '@/store/pinia/work'
 import { useProject } from '@/store/pinia/project'

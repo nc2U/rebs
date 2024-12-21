@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, computed, onBeforeMount, type PropType } from 'vue'
+import { ref, reactive, computed, onBeforeMount, type PropType, onBeforeUpdate } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { useStore } from '@/store'
 import { type Project } from '@/store/types/project'
@@ -184,6 +184,7 @@ const formDataSetup = () => {
 }
 
 onBeforeMount(() => formDataSetup())
+onBeforeUpdate(() => formDataSetup())
 </script>
 
 <template>
