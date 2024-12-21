@@ -34,7 +34,7 @@ class RepositoryInline(admin.TabularInline):
 
 @admin.register(IssueProject)
 class IssueProjectAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('pk', 'name', 'real_project', 'homepage', 'is_public', 'parent', 'slug', 'status', 'created')
+    list_display = ('pk', 'name', 'homepage', 'is_public', 'parent', 'slug', 'status', 'created')
     list_display_links = ('name',)
     inlines = (ModuleInline, MemberInline, VersionInline, IssueCategoryInline, RepositoryInline)
 
