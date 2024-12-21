@@ -1,18 +1,17 @@
 <script lang="ts" setup>
 import Cookies from 'js-cookie'
 import {
-  ref,
-  reactive,
+  computed,
+  type ComputedRef,
   inject,
   onBeforeMount,
   onMounted,
   onUpdated,
   type PropType,
-  computed,
-  type ComputedRef,
+  reactive,
+  ref,
 } from 'vue'
 import { useRoute } from 'vue-router'
-import { useProject } from '@/store/pinia/project'
 import { colorLight } from '@/utils/cssMixins'
 import type { IssueProject } from '@/store/types/work'
 import MdEditor from '@/components/MdEditor/Index.vue'
@@ -108,8 +107,8 @@ const module = reactive({
   wiki: true,
   repository: false,
   forum: true,
-  // calendar: true,
-  // gantt: true,
+  calendar: true,
+  gantt: true,
 })
 
 const route = useRoute()
@@ -150,22 +149,19 @@ const dataSetup = () => {
     module.wiki = !!props.project.module?.wiki
     module.repository = !!props.project.module?.repository
     module.forum = !!props.project.module?.forum
-    // module.calendar = !!props.project.module?.calendar
-    // module.gantt = !!props.project.module?.gantt
+    module.calendar = !!props.project.module?.calendar
+    module.gantt = !!props.project.module?.gantt
   }
 }
 
 onMounted(() => dataSetup())
 onUpdated(() => dataSetup())
 
-const projStore = useProject()
-const getProjects = computed(() => projStore.getProjects)
 onBeforeMount(() => {
   emit('aside-visible', false)
   if (!!route.query.parent) {
     form.parent = Number(route.query.parent)
   }
-  projStore.fetchProjectList()
 })
 </script>
 
@@ -191,18 +187,6 @@ onBeforeMount(() => {
               required
               placeholder="프로젝트 이름"
             />
-          </CCol>
-        </CRow>
-
-        <CRow class="mb-3">
-          <CFormLabel class="col-form-label text-right col-2">부동산 개발 프로젝트</CFormLabel>
-          <CCol>
-            <CFormSelect v-model.number="form.real_project">
-              <option value="">관련 부동산 개발 프로젝트</option>
-              <option v-for="proj in getProjects" :value="proj.value" :key="proj.value">
-                {{ proj.label }}
-              </option>
-            </CFormSelect>
           </CCol>
         </CRow>
 
@@ -345,12 +329,12 @@ onBeforeMount(() => {
           <CCol sm="6" md="4" lg="3" xl="2">
             <CFormCheck v-model="module.forum" id="forum" label="게시판" />
           </CCol>
-          <!--          <CCol sm="6" md="4" lg="3" xl="2">-->
-          <!--            <CFormCheck v-model="module.calendar" id="calendar" label="달력" />-->
-          <!--          </CCol>-->
-          <!--          <CCol sm="6" md="4" lg="3" xl="2">-->
-          <!--            <CFormCheck v-model="module.gantt" id="gantt" label="Gantt 차트" />-->
-          <!--          </CCol>-->
+          <CCol sm="6" md="4" lg="3" xl="2">
+            <CFormCheck v-model="module.calendar" id="calendar" label="달력" />
+          </CCol>
+          <CCol sm="6" md="4" lg="3" xl="2">
+            <CFormCheck v-model="module.gantt" id="gantt" label="간트차트" />
+          </CCol>
         </CRow>
       </CCardBody>
     </CCard>
