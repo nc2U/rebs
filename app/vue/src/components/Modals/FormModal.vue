@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 
+defineProps({ size: { type: String, default: '' } })
+
 const visible = ref(false)
 
 const callModal = () => (visible.value = true)
@@ -10,6 +12,7 @@ defineExpose({ callModal, close })
 
 <template>
   <CModal
+    :size="size"
     alignment="center"
     :visible="visible"
     @close="() => (visible = false)"

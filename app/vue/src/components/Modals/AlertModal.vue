@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 
+defineProps({ size: { type: String, default: '' } })
+
 const headMessage = ref('')
 const bodyMessage = ref('')
 const headIcon = ref('mdi-alert-circle')
@@ -20,6 +22,7 @@ defineExpose({ callModal, close })
 <template>
   <CModal
     alignment="center"
+    :size="size"
     :visible="visible"
     @close="() => (visible = false)"
     @keydown.esc="() => (visible = false)"

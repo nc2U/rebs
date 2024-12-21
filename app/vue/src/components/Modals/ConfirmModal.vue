@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 
+defineProps({ size: { type: String, default: '' } })
+
 const visible = ref(false)
 const headerMessage = ref('알림')
 const bodyMessage = ref('')
@@ -21,6 +23,7 @@ defineExpose({ callModal, close })
 <template>
   <CModal
     alignment="center"
+    :size="size"
     :visible="visible"
     @close="() => (visible = false)"
     @keydown.esc="() => (visible = false)"

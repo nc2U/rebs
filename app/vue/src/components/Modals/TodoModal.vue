@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import TodoListApp from '@/components/TodoListApp/index.vue'
 
+defineProps({ size: { type: String, default: '' } })
+
 const visible = ref(false)
 
 const callModal = () => (visible.value = true)
@@ -10,7 +12,7 @@ defineExpose({ callModal, close })
 </script>
 
 <template>
-  <CModal :visible="visible" scrollable @close="close" @keydown.esc="close">
+  <CModal :size="size" :visible="visible" scrollable @close="close" @keydown.esc="close">
     <CModalHeader>
       <CModalTitle class="text-body">
         <CIcon name="cilCalendarCheck" class="mr-2" />
