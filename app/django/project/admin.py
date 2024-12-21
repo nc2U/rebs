@@ -7,9 +7,9 @@ from .models import (Project, ProjectIncBudget, ProjectOutBudget,
 
 
 class ProjectAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'name', 'order', 'kind', 'num_unit', 'build_size', 'area_usage')
+    list_display = ('id', 'issue_project', 'name', 'order', 'kind', 'num_unit', 'build_size', 'area_usage')
     list_display_links = ('name',)
-    list_editable = ('order', 'kind', 'num_unit', 'build_size', 'area_usage')
+    list_editable = ('issue_project', 'order', 'kind', 'num_unit', 'build_size', 'area_usage')
 
 
 class ProjectIncBudgetAdmin(ImportExportMixin, admin.ModelAdmin):
