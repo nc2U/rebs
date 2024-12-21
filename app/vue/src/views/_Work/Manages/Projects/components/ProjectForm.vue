@@ -12,6 +12,7 @@ import {
   ref,
 } from 'vue'
 import { useRoute } from 'vue-router'
+import { useCompany } from '@/store/pinia/company'
 import { colorLight } from '@/utils/cssMixins'
 import type { IssueProject } from '@/store/types/work'
 import MdEditor from '@/components/MdEditor/Index.vue'
@@ -33,8 +34,12 @@ const workManager = inject<ComputedRef<boolean>>('workManager')
 
 const validated = ref(false)
 
+const comStore = useCompany()
+const comSelect = computed(() => comStore.comSelect)
+
 const form = reactive({
   pk: undefined as number | undefined,
+  company: null as null | number,
   name: '',
   is_real_dev: false,
   description: '',
@@ -50,26 +55,27 @@ const form = reactive({
 
 const formsCheck = computed(() => {
   if (props.project) {
-    const a = form.name === props.project.name
-    const b = form.is_real_dev === props.project.is_real_dev
-    const c = form.description === props.project.description
-    const d = form.homepage === props.project.homepage
-    const e = form.is_public === props.project.is_public
-    const f = Number(form.parent) === Number(props.project.parent)
-    const g = form.is_inherit_members === props.project.is_inherit_members
-    const h =
+    const a = (form.company = props.project.company)
+    const b = form.name === props.project.name
+    const c = form.is_real_dev === props.project.is_real_dev
+    const d = form.description === props.project.description
+    const e = form.homepage === props.project.homepage
+    const f = form.is_public === props.project.is_public
+    const g = Number(form.parent) === Number(props.project.parent)
+    const h = form.is_inherit_members === props.project.is_inherit_members
+    const i =
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       JSON.stringify(form.allowed_roles.sort((a, b) => a - b)) ===
       JSON.stringify(props.project.allowed_roles?.map(r => r.pk).sort((a, b) => a - b))
-    const i =
+    const j =
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       JSON.stringify(form.trackers.sort((a, b) => a - b)) ===
       JSON.stringify(props.project.trackers?.map(t => t.pk).sort((a, b) => a - b))
-    const j =
+    const k =
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       JSON.stringify(form.activities.sort((a, b) => a - b)) ===
       JSON.stringify(props.project.activities?.map(a => a.pk).sort((a, b) => a - b))
-    return a && b && c && d && e && f && g && h && i && j
+    return a && b && c && d && e && f && g && h && i && j && k
   } else return false
 })
 
@@ -129,8 +135,9 @@ const onSubmit = (event: Event) => {
 const dataSetup = () => {
   if (props.project) {
     form.pk = props.project.pk
+    form.company = props.project.company
     form.name = props.project.name
-    form.is_real_dev = props.project?.is_real_dev
+    form.is_real_dev = !!props.project?.is_real_dev
     form.description = props.project.description
     form.slug = props.project.slug
     form.homepage = props.project.homepage
@@ -162,6 +169,7 @@ onBeforeMount(() => {
   if (!!route.query.parent) {
     form.parent = Number(route.query.parent)
   }
+  comStore.fetchCompanyList()
 })
 </script>
 
@@ -178,6 +186,20 @@ onBeforeMount(() => {
     <CCard :color="colorLight" class="mb-3">
       <CCardBody>
         <CRow class="mb-3">
+          <CFormLabel class="required col-form-label text-right col-2">회사</CFormLabel>
+          <CCol class="col-sm-10 col-md-6 col-lg-4 col-xl-3">
+            <MultiSelect v-model="form.company" :options="comSelect" mode="single" />
+          </CCol>
+          <CCol class="col-md-4 pt-2">
+            <CFormCheck
+              v-model="form.is_real_dev"
+              label="부동산 개발 프로젝트 여부"
+              id="is_real_dev"
+            />
+          </CCol>
+        </CRow>
+
+        <CRow class="mb-3">
           <CFormLabel class="required col-form-label text-right col-2">이름</CFormLabel>
           <CCol>
             <CFormInput
@@ -186,17 +208,6 @@ onBeforeMount(() => {
               maxlength="100"
               required
               placeholder="프로젝트 이름"
-            />
-          </CCol>
-        </CRow>
-
-        <CRow class="mb-3">
-          <CFormLabel class="col-form-label text-right col-2">확인</CFormLabel>
-          <CCol>
-            <CFormCheck
-              v-model="form.is_real_dev"
-              label="부동산 개발 프로젝트인지 여부"
-              id="is_real_dev"
             />
           </CCol>
         </CRow>
