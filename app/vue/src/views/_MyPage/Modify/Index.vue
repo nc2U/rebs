@@ -60,7 +60,11 @@ const onSubmit = (payload: Profile) => {
   <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" />
 
   <ContentBody>
-    <PasswordChange v-if="passChangeVue" @change-password="changePass" />
+    <PasswordChange
+      v-if="passChangeVue"
+      :username="userInfo?.username"
+      @change-password="changePass"
+    />
     <PasswordCheck
       v-else-if="!passChecked"
       :username="userInfo?.username"

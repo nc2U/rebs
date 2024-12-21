@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
 
+defineProps({ username: String })
 const emit = defineEmits(['change-password'])
 
 const validated = ref(false)
+const showPassword = ref(false)
 const confirm_message = ref('비밀번호를 한번 더 입력하세요.')
 
 const form = reactive({
@@ -41,54 +43,87 @@ const onSubmit = (event: Event) => {
       @submit.prevent="onSubmit"
     >
       <CRow class="pt-3 mb-3">
-        <CFormLabel class="col-sm-2 col-lg-1 col-form-label">아이디</CFormLabel>
-        <CCol sm="6" lg="4" xl="3" class="pt-2">admin</CCol>
+        <CFormLabel class="col-sm-4 col-lg-2 col-form-label">이름</CFormLabel>
+        <CCol sm="6" lg="4" xl="2" class="pt-2">{{ username }}</CCol>
       </CRow>
 
       <CRow class="my-3">
-        <CFormLabel class="col-sm-2 col-lg-1 col-form-label">현재비밀번호</CFormLabel>
+        <CFormLabel class="col-sm-4 col-lg-2 col-form-label">현재비밀번호</CFormLabel>
         <CCol sm="6" lg="4" xl="3">
-          <CFormInput
-            v-model="form.old_password"
-            type="password"
-            required
-            placeholder="현재 패스워드"
-            aria-label="password"
-            aria-describedby="password"
-          />
-          <CFormFeedback invalid>현재 비밀번호를 입력하세요.</CFormFeedback>
+          <CInputGroup>
+            <CFormInput
+              v-model="form.old_password"
+              :type="!showPassword ? 'password' : ''"
+              required
+              placeholder="현재 패스워드"
+              aria-label="password"
+              aria-describedby="password"
+            />
+            <CButton
+              type="button"
+              color="secondary"
+              variant="outline"
+              id="button-addon2"
+              @click="showPassword = !showPassword"
+            >
+              <v-icon :icon="!showPassword ? 'mdi-eye' : 'mdi-eye-off'" />
+            </CButton>
+            <CFormFeedback invalid>현재 비밀번호를 입력하세요.</CFormFeedback>
+          </CInputGroup>
         </CCol>
       </CRow>
       <CRow class="my-3">
-        <CFormLabel class="col-sm-2 col-lg-1 col-form-label">새로운비밀번호</CFormLabel>
+        <CFormLabel class="col-sm-4 col-lg-2 col-form-label">새로운비밀번호</CFormLabel>
         <CCol sm="6" lg="4" xl="3">
-          <CFormInput
-            v-model="form.new_password"
-            type="password"
-            required
-            placeholder="새로운 패스워드"
-            aria-label="password"
-            aria-describedby="password"
-          />
-          <CFormFeedback invalid>새로운 비밀번호를 입력하세요.</CFormFeedback>
+          <CInputGroup>
+            <CFormInput
+              v-model="form.new_password"
+              :type="!showPassword ? 'password' : ''"
+              required
+              placeholder="새로운 패스워드"
+              aria-label="password"
+              aria-describedby="password"
+            />
+            <CButton
+              type="button"
+              color="secondary"
+              variant="outline"
+              id="button-addon2"
+              @click="showPassword = !showPassword"
+            >
+              <v-icon :icon="!showPassword ? 'mdi-eye' : 'mdi-eye-off'" />
+            </CButton>
+            <CFormFeedback invalid>새로운 비밀번호를 입력하세요.</CFormFeedback>
+          </CInputGroup>
         </CCol>
       </CRow>
       <CRow class="my-3">
-        <CFormLabel class="col-sm-2 col-lg-1 col-form-label">재입력</CFormLabel>
+        <CFormLabel class="col-sm-4 col-lg-2 col-form-label">재입력</CFormLabel>
         <CCol sm="6" lg="4" xl="3">
-          <CFormInput
-            v-model="form.confirm_password"
-            type="password"
-            required
-            placeholder="패스워드 재입력"
-            aria-label="password"
-            aria-describedby="password"
-          />
-          <CFormFeedback invalid>비밀번호를 한번 더 입력하세요.</CFormFeedback>
+          <CInputGroup>
+            <CFormInput
+              v-model="form.confirm_password"
+              :type="!showPassword ? 'password' : ''"
+              required
+              placeholder="패스워드 재입력"
+              aria-label="password"
+              aria-describedby="password"
+            />
+            <CButton
+              type="button"
+              color="secondary"
+              variant="outline"
+              id="button-addon2"
+              @click="showPassword = !showPassword"
+            >
+              <v-icon :icon="!showPassword ? 'mdi-eye' : 'mdi-eye-off'" />
+            </CButton>
+            <CFormFeedback invalid>비밀번호를 한번 더 입력하세요.</CFormFeedback>
+          </CInputGroup>
         </CCol>
       </CRow>
       <CRow class="mb-3">
-        <CCol class="col-sm-2 col-lg-1"></CCol>
+        <CCol class="col-sm-4 col-lg-2"></CCol>
         <CCol sm="6" lg="4" xl="3" class="text-right">
           <CButton type="submit" color="success">수정하기</CButton>
         </CCol>

@@ -16,13 +16,13 @@ const router = useRouter()
           <h6>사용자 계정</h6>
           <CFormLabel for="companyCeo" class="col-sm-4 col-form-label"> 이름</CFormLabel>
 
-          <CCol sm="8">{{ userInfo?.username || '' }}</CCol>
+          <CCol sm="8" class="pt-1">{{ userInfo?.username || '' }}</CCol>
         </CRow>
 
         <CRow class="mb-3">
           <CFormLabel for="companyName" class="col-sm-4 col-form-label"> 이메일 주소</CFormLabel>
 
-          <CCol sm="8">{{ userInfo?.email || '' }}</CCol>
+          <CCol sm="8" class="pt-1">{{ userInfo?.email || '' }}</CCol>
         </CRow>
 
         <v-divider class="my-4" />
@@ -31,18 +31,18 @@ const router = useRouter()
           <h6>사용자 프로필</h6>
           <CFormLabel for="companyName" class="col-sm-4 col-form-label"> 닉네임</CFormLabel>
 
-          <CCol sm="8">{{ userInfo?.profile?.name || '' }}</CCol>
+          <CCol sm="8" class="pt-1">{{ userInfo?.profile?.name || '' }}</CCol>
         </CRow>
         <CRow class="mb-3">
           <CFormLabel for="companyCeo" class="col-sm-4 col-form-label"> 생년월일</CFormLabel>
 
-          <CCol sm="8">{{ userInfo?.profile?.birth_date || '' }}</CCol>
+          <CCol sm="8" class="pt-1">{{ userInfo?.profile?.birth_date || '' }}</CCol>
         </CRow>
 
         <CRow class="mb-3">
           <CFormLabel for="companyCeo" class="col-sm-4 col-form-label"> 휴대전화</CFormLabel>
 
-          <CCol sm="8">{{ userInfo?.profile?.cell_phone || '' }}</CCol>
+          <CCol sm="8" class="pt-1">{{ userInfo?.profile?.cell_phone || '' }}</CCol>
         </CRow>
 
         <CRow class="mb-3">
