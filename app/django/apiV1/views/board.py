@@ -36,7 +36,8 @@ class PostFilterSet(FilterSet):
 
     class Meta:
         model = Post
-        fields = ('project', 'is_com', 'board', 'is_notice', 'category', 'user')
+        # fields = ('project', 'is_com', 'board', 'is_notice', 'category', 'user')
+        fields = ('is_com', 'board', 'is_notice', 'category', 'user')
 
 
 class PostViewSet(viewsets.ModelViewSet):

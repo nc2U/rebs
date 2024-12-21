@@ -23,10 +23,10 @@ class Group(models.Model):
 
 class Board(models.Model):
     group = models.ForeignKey(Group, on_delete=models.PROTECT, verbose_name='그룹')
-    project = models.ForeignKey('project.Project', on_delete=models.SET_NULL,
-                                null=True, blank=True, verbose_name='프로젝트')
-    issue_project = models.ForeignKey('work.IssueProject', on_delete=models.SET_NULL,
-                                      null=True, blank=True, verbose_name='업무 프로젝트')
+    # project = models.ForeignKey('project.Project', on_delete=models.SET_NULL,
+    #                             null=True, blank=True, verbose_name='프로젝트')
+    # issue_project = models.ForeignKey('work.IssueProject', on_delete=models.SET_NULL,
+    #                                   null=True, blank=True, verbose_name='업무 프로젝트')
     name = models.CharField('이름', max_length=255)
     is_notice = models.BooleanField('공지 게시판', default=False)
     order = models.PositiveSmallIntegerField('정렬 순서', default=0)
@@ -59,8 +59,8 @@ class PostCategory(models.Model):
 
 
 class Post(models.Model):
-    project = models.ForeignKey('project.Project', on_delete=models.SET_NULL,
-                                null=True, blank=True, verbose_name='프로젝트')
+    # project = models.ForeignKey('project.Project', on_delete=models.SET_NULL,
+    #                             null=True, blank=True, verbose_name='프로젝트')
     board = models.ForeignKey(Board, on_delete=models.PROTECT, verbose_name='게시판')
     category = models.ForeignKey(PostCategory, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='카테고리')
     title = models.CharField('제목', max_length=255)
