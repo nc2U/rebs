@@ -5,6 +5,7 @@ import { useStore } from '@/store'
 import { type Project } from '@/store/types/project'
 import { callAddress, type AddressData } from '@/components/DaumPostcode/address'
 import { write_project } from '@/utils/pageAuth'
+import IssueProjectForm from './IssueProjectForm.vue'
 import Datepicker from '@vuepic/vue-datepicker'
 import MultiSelect from '@/components/MultiSelect/index.vue'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
@@ -20,6 +21,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['to-submit', 'reset-form', 'close'])
+
+const refIssueForm = ref()
 
 const form = reactive<Project>({
   pk: undefined,
@@ -205,7 +208,12 @@ onBeforeUpdate(() => formDataSetup())
               <CFormFeedback invalid>업무 프로젝트를 선택하세요.</CFormFeedback>
             </CCol>
             <CCol style="padding-top: 7px">
-              <v-icon icon="mdi-plus-circle" color="success" class="pointer"></v-icon>
+              <v-icon
+                icon="mdi-plus-circle"
+                color="success"
+                class="pointer"
+                @click="refIssueForm.callModal()"
+              ></v-icon>
             </CCol>
           </CRow>
           <CRow>
@@ -569,4 +577,6 @@ onBeforeUpdate(() => formDataSetup())
   </ConfirmModal>
 
   <AlertModal ref="refAlertModal" />
+
+  <IssueProjectForm ref="refIssueForm" />
 </template>
