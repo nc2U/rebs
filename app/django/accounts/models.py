@@ -97,9 +97,9 @@ class StaffAuth(models.Model):
     company = models.ForeignKey('company.Company', on_delete=models.PROTECT, verbose_name='회사정보')
     is_staff = models.BooleanField('본사 관리자', default=False, help_text='외부 관계자가 아닌 본사 직원(관리자)일 경우 선택')
     is_project_staff = models.BooleanField('프로젝트 관리자', default=False, help_text='본사 직원 외 프로젝트 관리 직원(관리자)일 경우 선택')
-    allowed_projects = models.ManyToManyField('project.Project', related_name='allowed_projects',
-                                              blank=True, verbose_name='허용 프로젝트',
-                                              help_text='사용자가 조회 및 관리할 수 있는 프로젝트들을 선택합니다.')
+    # allowed_projects = models.ManyToManyField('project.Project', related_name='allowed_projects',
+    #                                           blank=True, verbose_name='허용 프로젝트',
+    #                                           help_text='사용자가 조회 및 관리할 수 있는 프로젝트들을 선택합니다.')
     assigned_project = models.ForeignKey('project.Project',
                                          on_delete=models.SET_NULL, null=True,
                                          blank=True, verbose_name='담당 메인 프로젝트',

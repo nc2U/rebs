@@ -8,6 +8,7 @@ from django.dispatch import receiver
 
 
 class Project(models.Model):
+    # issue_project = models.OneToOneField('work.IssueProject', on_delete=models.CASCADE, verbose_name="업무 프로젝트")
     name = models.CharField('프로젝트명', max_length=30, unique=True)
     order = models.PositiveSmallIntegerField('정렬순서', default=100)
     KIND_CHOICES = (
