@@ -8,6 +8,7 @@ export interface Board {
   pk: number | null
   group: number | null
   issue_project: number | null
+  is_notice: boolean
   name: string
   order: number | null
   search_able: boolean
@@ -41,9 +42,6 @@ export type Post = {
     | PostFile[]
     | Comment[]
   pk?: number
-  company: number | null
-  project: number | null
-  proj_name?: string
   board: number | null
   board_name?: string
   category: number | null
