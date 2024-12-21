@@ -1,6 +1,5 @@
 export interface Project {
   pk?: number
-  company: number | null
   issue_project: number | null
   name: string
   order: number | null
