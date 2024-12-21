@@ -27,7 +27,6 @@ export interface SimpleCategory {
 export interface IssueProject {
   pk?: number
   company: number
-  real_project: number | null
   name: string
   slug: string
   description: string
