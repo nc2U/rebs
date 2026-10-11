@@ -1,3 +1,4 @@
+import hashlib
 import logging
 import uuid
 
@@ -992,3 +993,165 @@ class ImportJob(models.Model):
             self.status = status
             update_fields.append('status')
         self.save(update_fields=update_fields)
+
+
+# ============================================
+# Bank Scraping Domain - 은행 거래 자동 수집 및 버퍼
+# ============================================
+
+class BankApiCredential(models.Model):
+    """
+    은행 API 계정 연동 정보
+    
+    본사 또는 프로젝트 은행 계좌와 CODEF의 connectedId를 매핑하여
+    자동 수집 대상 계좌 및 인증 상태를 관리합니다.
+    """
+    STATUS_CHOICES = [
+        ('ready', '대기'),
+        ('success', '정상'),
+        ('error', '오류'),
+    ]
+
+    company_bank_account = models.OneToOneField(
+        'CompanyBankAccount', on_delete=models.CASCADE, null=True, blank=True,
+        related_name='api_credential', verbose_name='본사 관리 계좌'
+    )
+    project_bank_account = models.OneToOneField(
+        'ProjectBankAccount', on_delete=models.CASCADE, null=True, blank=True,
+        related_name='api_credential', verbose_name='프로젝트 관리 계좌'
+    )
+
+    connected_id = models.CharField('CODEF 커넥티드ID', max_length=100, db_index=True)
+    bank_code = models.CharField('은행기관코드', max_length=10, help_text='CODEF 기관코드 (예: 0004 국민, 0088 신한, 0020 우리)')
+    account_number = models.CharField('계좌번호', max_length=50)
+
+    is_active = models.BooleanField('자동수집 활성화', default=True, help_text='체크 시 정기 수집 스케줄 대상에 포함')
+    last_scraped_at = models.DateTimeField('최종수집일시', null=True, blank=True)
+    last_status = models.CharField('최종상태', max_length=20, choices=STATUS_CHOICES, default='ready')
+    last_error_message = models.TextField('최종에러메시지', blank=True, default='')
+
+    created_at = models.DateTimeField('등록일시', auto_now_add=True)
+    updated_at = models.DateTimeField('수정일시', auto_now=True)
+
+    class Meta:
+        verbose_name = '13. 은행 API 연동 계좌'
+        verbose_name_plural = '13. 은행 API 연동 계좌'
+        ordering = ['-created_at']
+
+    def clean(self):
+        super().clean()
+        if not self.company_bank_account and not self.project_bank_account:
+            raise ValidationError('본사 계좌 또는 프로젝트 계좌 중 하나를 반드시 선택해야 합니다.')
+        if self.company_bank_account and self.project_bank_account:
+            raise ValidationError('본사 계좌와 프로젝트 계좌를 동시에 선택할 수 없습니다.')
+
+    @property
+    def target_account(self):
+        """연결된 실제 은행 계좌 객체 반환"""
+        return self.company_bank_account or self.project_bank_account
+
+    @property
+    def is_project(self) -> bool:
+        """프로젝트 계좌 여부"""
+        return self.project_bank_account is not None
+
+    def __str__(self):
+        acc = self.target_account
+        alias = acc.alias_name if acc else self.account_number
+        return f"[{self.bank_code}] {alias} ({self.account_number})"
+
+
+class RawBankTransaction(models.Model):
+    """
+    은행 API 수집 원시 거래내역 (Staging Buffer)
+    
+    은행에서 스크래핑/API로 수집된 미가공 거래 데이터입니다.
+    중복 검증 후 저장되며, AI/규칙 기반 잠정 계정 분류를 거쳐
+    담당자의 승인(Confirm) 후 정식 원장(ProjectBankTransaction 등)으로 승격됩니다.
+    """
+    STATUS_CHOICES = [
+        ('pending', 'AI분류 대기'),
+        ('ready', '컨펌 대기'),
+        ('confirmed', '원장 반영 완료'),
+        ('ignored', '제외/무시'),
+    ]
+
+    SORT_CHOICES = [
+        ('deposit', '입금'),
+        ('withdraw', '출금'),
+    ]
+
+    # 은행 수집 기본 데이터
+    credential = models.ForeignKey(
+        BankApiCredential, on_delete=models.CASCADE, related_name='raw_transactions',
+        verbose_name='연동 계좌'
+    )
+    deal_date = models.DateField('거래일자', db_index=True)
+    deal_time = models.TimeField('거래시간', null=True, blank=True)
+    sort_type = models.CharField('입출금구분', max_length=10, choices=SORT_CHOICES, db_index=True)
+    amount = models.PositiveBigIntegerField('거래금액')
+    balance = models.PositiveBigIntegerField('거래후잔액', null=True, blank=True)
+    client_name = models.CharField('거래처/입금자명', max_length=100, blank=True, default='')
+    content = models.CharField('적요', max_length=100, blank=True, default='')
+    branch_name = models.CharField('취급점', max_length=100, blank=True, default='')
+    raw_data = models.JSONField('은행 원본 JSON', null=True, blank=True)
+
+    # 멱등성 보장 (중복 수집 방지 해시)
+    tx_hash = models.CharField(
+        '거래 식별 해시', max_length=64, unique=True, db_index=True,
+        help_text='중복 수집 방지를 위한 SHA-256 고유 해시'
+    )
+
+    # AI / 규칙 기반 잠정 추천 데이터
+    status = models.CharField('처리상태', max_length=20, choices=STATUS_CHOICES, default='pending', db_index=True)
+    suggested_company_account = models.ForeignKey(
+        'CompanyAccount', on_delete=models.SET_NULL, null=True, blank=True,
+        verbose_name='추천 본사계정'
+    )
+    suggested_project_account = models.ForeignKey(
+        'ProjectAccount', on_delete=models.SET_NULL, null=True, blank=True,
+        verbose_name='추천 프로젝트계정'
+    )
+    suggested_contract = models.ForeignKey(
+        'contract.Contract', on_delete=models.SET_NULL, null=True, blank=True,
+        verbose_name='추천 분양계약'
+    )
+    confidence_score = models.PositiveSmallIntegerField('AI 신뢰도점수(%)', default=0)
+    ai_reason = models.CharField('추천 사유', max_length=255, blank=True, default='')
+
+    # 담당자 컨펌 및 원장 승격 정보
+    confirmed_by = models.ForeignKey(
+        'accounts.User', on_delete=models.SET_NULL, null=True, blank=True,
+        verbose_name='승인자'
+    )
+    confirmed_at = models.DateTimeField('승인일시', null=True, blank=True)
+    created_company_transaction = models.ForeignKey(
+        'CompanyBankTransaction', on_delete=models.SET_NULL, null=True, blank=True,
+        verbose_name='생성된 본사 거래'
+    )
+    created_project_transaction = models.ForeignKey(
+        'ProjectBankTransaction', on_delete=models.SET_NULL, null=True, blank=True,
+        verbose_name='생성된 프로젝트 거래'
+    )
+
+    created_at = models.DateTimeField('수집일시', auto_now_add=True, db_index=True)
+    updated_at = models.DateTimeField('수정일시', auto_now=True)
+
+    class Meta:
+        verbose_name = '14. 수집 원시 거래내역'
+        verbose_name_plural = '14. 수집 원시 거래내역'
+        ordering = ['-deal_date', '-deal_time', '-id']
+        indexes = [
+            models.Index(fields=['credential', 'deal_date']),
+            models.Index(fields=['status', 'deal_date']),
+        ]
+
+    @staticmethod
+    def generate_hash(account_no: str, date: Any, time: Any, sort_type: str, amount: int, balance: Any, client_name: str, content: str) -> str:
+        """은행 거래 고유 복합 해시 생성 (Idempotency Key)"""
+        raw_key = f"{account_no}_{date}_{time or ''}_{sort_type}_{amount}_{balance or ''}_{client_name or ''}_{content or ''}"
+        return hashlib.sha256(raw_key.encode('utf-8')).hexdigest()
+
+    def __str__(self):
+        time_str = f" {self.deal_time}" if self.deal_time else ""
+        return f"[{self.get_sort_type_display()}] {self.deal_date}{time_str} - {self.amount:,}원 ({self.client_name or self.content})"

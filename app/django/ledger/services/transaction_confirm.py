@@ -1,0 +1,180 @@
+import logging
+from typing import Any, Dict, List, Optional
+
+from django.db import transaction
+from django.utils import timezone
+
+from ibs.models import AccountSort
+from ledger.models import (
+    CompanyAccountingEntry, CompanyBankTransaction,
+    ProjectAccountingEntry, ProjectBankTransaction,
+    RawBankTransaction
+)
+
+logger = logging.getLogger(__name__)
+
+
+@transaction.atomic
+def confirm_raw_transaction(
+    raw_tx: RawBankTransaction,
+    user=None,
+    custom_account=None,
+    custom_contract=None
+) -> Dict[str, Any]:
+    """
+    수집된 RawBankTransaction을 승인(Confirm)하여 정식 원장 및 분양수납(payment)으로 반영
+    
+    Args:
+        raw_tx: 승인할 RawBankTransaction 인스턴스
+        user: 승인자 (User 인스턴스)
+        custom_account: 담당자가 직접 변경/선택한 회계계정 (없으면 AI 추천 계정 사용)
+        custom_contract: 담당자가 직접 변경/선택한 분양계약 (없으면 AI 추천 계약 사용)
+    
+    Returns:
+        Dict: 생성된 거래 및 분개 정보
+    """
+    if raw_tx.status == 'confirmed':
+        raise ValueError(f"RawBankTransaction #{raw_tx.id}는 이미 승인 완료된 거래입니다.")
+
+    cred = raw_tx.credential
+    is_project = cred.is_project
+
+    # 1. 입금(1)/출금(2) sort 매핑
+    sort_id = 1 if raw_tx.sort_type == 'deposit' else 2
+    sort_obj = AccountSort.objects.get(id=sort_id)
+
+    # 2. 계정과목 확정
+    account = custom_account or (raw_tx.suggested_project_account if is_project else raw_tx.suggested_company_account)
+    if not account:
+        raise ValueError("회계 계정과목이 지정되지 않았습니다. 계정을 선택해 주세요.")
+
+    # 3. 프로젝트 거래 생성
+    if is_project:
+        project_bank_acc = cred.project_bank_account
+        project = project_bank_acc.project
+        contract = custom_contract or raw_tx.suggested_contract
+
+        # (1) ProjectBankTransaction 생성
+        bank_tx = ProjectBankTransaction.objects.create(
+            project=project,
+            bank_account=project_bank_acc,
+            deal_date=raw_tx.deal_date,
+            sort=sort_obj,
+            amount=raw_tx.amount,
+            content=raw_tx.content or raw_tx.client_name or '은행 거래',
+            note=f"자동수집승인 (취급점: {raw_tx.branch_name})" if raw_tx.branch_name else "자동수집승인",
+            creator=user,
+            updator=user
+        )
+
+        # (2) ProjectAccountingEntry 생성 (save 시 내부에서 trigger_sync_contract_payment 동작)
+        contractor = contract.contractor if contract and hasattr(contract, 'contractor') else None
+        entry = ProjectAccountingEntry.objects.create(
+            project=project,
+            transaction_id=bank_tx.transaction_id,
+            account=account,
+            amount=raw_tx.amount,
+            trader=raw_tx.client_name or (contractor.name if contractor else ''),
+            contract=contract,
+            contractor=contractor
+        )
+
+        # (3) RawBankTransaction 상태 업데이트
+        raw_tx.status = 'confirmed'
+        raw_tx.confirmed_by = user
+        raw_tx.confirmed_at = timezone.now()
+        raw_tx.created_project_transaction = bank_tx
+        raw_tx.save(update_fields=[
+            'status', 'confirmed_by', 'confirmed_at',
+            'created_project_transaction', 'updated_at'
+        ])
+
+        logger.info(
+            "RawBankTransaction #%d 승인 완료 -> ProjectBankTransaction #%d, ProjectAccountingEntry #%d 생성",
+            raw_tx.id, bank_tx.id, entry.id
+        )
+
+        return {
+            'success': True,
+            'bank_transaction_id': bank_tx.id,
+            'accounting_entry_id': entry.id,
+            'is_project': True
+        }
+
+    # 4. 본사 거래 생성
+    else:
+        com_bank_acc = cred.company_bank_account
+        company = com_bank_acc.company
+
+        # (1) CompanyBankTransaction 생성
+        bank_tx = CompanyBankTransaction.objects.create(
+            company=company,
+            bank_account=com_bank_acc,
+            deal_date=raw_tx.deal_date,
+            sort=sort_obj,
+            amount=raw_tx.amount,
+            content=raw_tx.content or raw_tx.client_name or '은행 거래',
+            note=f"자동수집승인 (취급점: {raw_tx.branch_name})" if raw_tx.branch_name else "자동수집승인",
+            creator=user,
+            updator=user
+        )
+
+        # (2) CompanyAccountingEntry 생성
+        entry = CompanyAccountingEntry.objects.create(
+            company=company,
+            transaction_id=bank_tx.transaction_id,
+            account=account,
+            amount=raw_tx.amount,
+            trader=raw_tx.client_name
+        )
+
+        # (3) RawBankTransaction 상태 업데이트
+        raw_tx.status = 'confirmed'
+        raw_tx.confirmed_by = user
+        raw_tx.confirmed_at = timezone.now()
+        raw_tx.created_company_transaction = bank_tx
+        raw_tx.save(update_fields=[
+            'status', 'confirmed_by', 'confirmed_at',
+            'created_company_transaction', 'updated_at'
+        ])
+
+        logger.info(
+            "RawBankTransaction #%d 승인 완료 -> CompanyBankTransaction #%d, CompanyAccountingEntry #%d 생성",
+            raw_tx.id, bank_tx.id, entry.id
+        )
+
+        return {
+            'success': True,
+            'bank_transaction_id': bank_tx.id,
+            'accounting_entry_id': entry.id,
+            'is_project': False
+        }
+
+
+def bulk_confirm_high_confidence(user=None, min_confidence: int = 90) -> Dict[str, Any]:
+    """
+    신뢰도가 기준점(기본 90%) 이상인 대기 상태 거래들을 일괄 승인
+    """
+    targets = RawBankTransaction.objects.filter(
+        status='ready',
+        confidence_score__gte=min_confidence
+    )
+
+    total = targets.count()
+    success_count = 0
+    errors = []
+
+    for raw in targets:
+        try:
+            confirm_raw_transaction(raw, user=user)
+            success_count += 1
+        except Exception as e:
+            errors.append(f"#{raw.id}: {str(e)}")
+            logger.error("일괄 승인 중 #%d 실패: %s", raw.id, str(e))
+
+    return {
+        'total_targets': total,
+        'success_count': success_count,
+        'error_count': len(errors),
+        'errors': errors
+    }
