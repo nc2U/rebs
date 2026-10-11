@@ -805,6 +805,7 @@ class IssueCategoryViewSet(viewsets.ModelViewSet):
 class IssueCountByTrackerViewSet(viewsets.ModelViewSet):
     queryset = Tracker.objects.all()
     serializer_class = IssueCountByTrackerSerializer
+    pagination_class = PageNumberPaginationTwenty
     filterset_fields = ('projects',)
 
     def get_queryset(self):
@@ -818,14 +819,14 @@ class IssueCountByTrackerViewSet(viewsets.ModelViewSet):
                 else:
                     project = IssueProject.objects.get(slug=project_param)
                 slugs = [project.slug] + list(project.get_descendants().values_list('slug', flat=True))
-                filter_kwargs['issues__project__slug__in'] = slugs
+                filter_kwargs['issue__project__slug__in'] = slugs
             except IssueProject.DoesNotExist:
                 pass
 
         return qs.annotate(
-            open_issues_count=Count('issues', filter=Q(issues__closed__isnull=True, **filter_kwargs), distinct=True),
-            closed_issues_count=Count('issues', filter=Q(issues__closed__isnull=False, **filter_kwargs), distinct=True)
-        )
+            open_issues_count=Count('issue', filter=Q(issue__closed__isnull=True, **filter_kwargs), distinct=True),
+            closed_issues_count=Count('issue', filter=Q(issue__closed__isnull=False, **filter_kwargs), distinct=True)
+        ).order_by('order', 'id')
 
     def get_serializer_context(self):
         # Pass the request object as context to the serializer

@@ -1409,4 +1409,68 @@ class IssueProjectHiddenTests(APITestCase):
         self.assertIn(self.project_hidden.slug, slugs_include)
 
 
+class IssueCountByTrackerApiTests(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='trackeruser', email='tracker@example.com', password='password')
+        self.client.force_authenticate(user=self.user)
+        self.company = Company.objects.create(name='Tracker Company')
+
+        self.project = IssueProject.objects.create(
+            company=self.company,
+            name='Tracker Project',
+            slug='tracker-project',
+            creator=self.user
+        )
+
+        self.status_open = IssueStatus.objects.create(name='진행', creator=self.user)
+        self.status_closed = IssueStatus.objects.create(name='완료', closed=True, creator=self.user)
+        self.tracker = Tracker.objects.create(name='버그', default_status=self.status_open, creator=self.user)
+        self.project.trackers.add(self.tracker)
+        self.priority = CodeIssuePriority.objects.create(name='보통', creator=self.user)
+
+        # 1 open issue
+        self.issue_open = Issue.objects.create(
+            project=self.project,
+            tracker=self.tracker,
+            status=self.status_open,
+            priority=self.priority,
+            subject='오픈 이슈',
+            start_date=timezone.now().date(),
+            creator=self.user
+        )
+
+        # 1 closed issue
+        self.issue_closed = Issue.objects.create(
+            project=self.project,
+            tracker=self.tracker,
+            status=self.status_closed,
+            priority=self.priority,
+            subject='완료 이슈',
+            start_date=timezone.now().date(),
+            closed=timezone.now(),
+            creator=self.user
+        )
+
+    def test_issue_count_by_tracker_summary_without_param(self):
+        """파라미터 없이 조회 시 200 OK 및 트래커별 이슈 수 집계 검증"""
+        res = self.client.get('/api/v1/issue-by-tracker-summary/')
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        results = res.data.get('results', res.data)
+        tracker_data = next((item for item in results if item['pk'] == self.tracker.pk), None)
+        self.assertIsNotNone(tracker_data)
+        self.assertEqual(tracker_data['open'], 1)
+        self.assertEqual(tracker_data['closed'], 1)
+
+    def test_issue_count_by_tracker_summary_with_project_pk(self):
+        """projects={pk} 파라미터 전달 시 정상 동작 및 해당 프로젝트 집계 검증 (이전 FieldError 버그 재발 방지)"""
+        res = self.client.get(f'/api/v1/issue-by-tracker-summary/?projects={self.project.pk}')
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        results = res.data.get('results', res.data)
+        tracker_data = next((item for item in results if item['pk'] == self.tracker.pk), None)
+        self.assertIsNotNone(tracker_data)
+        self.assertEqual(tracker_data['open'], 1)
+        self.assertEqual(tracker_data['closed'], 1)
+
+
+
 
