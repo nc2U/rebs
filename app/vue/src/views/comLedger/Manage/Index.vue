@@ -229,7 +229,11 @@ onBeforeRouteLeave(() => {
             @list-filtering="listFiltering"
           />
 
-          <AddTransaction v-if="canComLedgerCreate" :company="company as number" />
+          <AddTransaction
+            v-if="canComLedgerCreate"
+            :company="company as number"
+            @open-scraping="isBankScrapingOpen = true"
+          />
 
           <TableTitleRow
             title="본사 입출금 관리"
@@ -238,22 +242,7 @@ onBeforeRouteLeave(() => {
             :url="excelUrl"
             filename="본사_출납내역.xls"
             :disabled="!company"
-          >
-            <div style="padding-top: 7px" class="d-flex align-center">
-              <v-btn
-                v-if="canComLedgerCreate"
-                color="indigo"
-                size="small"
-                variant="elevated"
-                prepend-icon="mdi-bank-transfer-in"
-                class="mr-3"
-                :disabled="!company"
-                @click="isBankScrapingOpen = true"
-              >
-                은행 거래 AI 가져오기
-              </v-btn>
-            </div>
-          </TableTitleRow>
+          />
           <TransactionList
             :company="company as number"
             :highlight-id="highlightId ?? undefined"

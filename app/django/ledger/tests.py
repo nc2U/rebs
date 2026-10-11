@@ -1060,3 +1060,240 @@ class LedgerRlsSecurityIsolationTests(LedgerTestBase):
         pks_admin = list(qs_admin.values_list('pk', flat=True))
         self.assertIn(self.tx_pr_a.pk, pks_admin)
         self.assertIn(self.tx_pr_b.pk, pks_admin)
+
+
+class BankScrapingAPITests(LedgerTestBase):
+    """은행 API 자동 수집 및 도메인(회사/프로젝트/전도금) 격리/승인 테스트"""
+
+    def setUp(self):
+        super().setUp()
+        self.client.force_authenticate(user=self.admin_user)
+
+        # 1. 제2회사 생성 (멀티 컴퍼니 검증용)
+        self.company2 = Company.objects.create(name='(주)테스트시행사')
+
+        # 2. 본사 계좌 생성
+        self.com1_bank = CompanyBankAccount.objects.create(
+            company=self.company,
+            bankcode=self.bank_code,
+            alias_name='본사1 국민계좌',
+            number='111-11-11111',
+            holder='(주)테스트건설',
+            order=1
+        )
+        self.com2_bank = CompanyBankAccount.objects.create(
+            company=self.company2,
+            bankcode=self.bank_code,
+            alias_name='본사2 국민계좌',
+            number='222-22-22222',
+            holder='(주)테스트시행사',
+            order=2
+        )
+
+        # 3. 프로젝트 계좌 생성 (신탁계좌 vs 운영비 전도금 계좌)
+        self.proj_trust_bank = ProjectBankAccount.objects.create(
+            project=self.project_a,
+            bankcode=self.bank_code,
+            alias_name='프로젝트A 신탁수납계좌',
+            number='333-33-33333',
+            holder='한국신탁(프로젝트A)',
+            is_imprest=False,
+            order=1
+        )
+        self.proj_imprest_bank = ProjectBankAccount.objects.create(
+            project=self.project_a,
+            bankcode=self.bank_code,
+            alias_name='프로젝트A 운영비전도금계좌',
+            number='444-44-44444',
+            holder='프로젝트A 현장전도금',
+            is_imprest=True,
+            order=2
+        )
+
+        # 4. 연동 계좌(BankApiCredential) 생성
+        from ledger.models import BankApiCredential, RawBankTransaction
+        self.cred_com1 = BankApiCredential.objects.create(
+            company_bank_account=self.com1_bank,
+            connected_id='cid_com1',
+            bank_code='0004',
+            account_number='1111111111',
+            is_active=True
+        )
+        self.cred_com2 = BankApiCredential.objects.create(
+            company_bank_account=self.com2_bank,
+            connected_id='cid_com2',
+            bank_code='0004',
+            account_number='2222222222',
+            is_active=True
+        )
+        self.cred_proj_trust = BankApiCredential.objects.create(
+            project_bank_account=self.proj_trust_bank,
+            connected_id='cid_proj_trust',
+            bank_code='0004',
+            account_number='3333333333',
+            is_active=True
+        )
+        self.cred_proj_imprest = BankApiCredential.objects.create(
+            project_bank_account=self.proj_imprest_bank,
+            connected_id='cid_proj_imprest',
+            bank_code='0004',
+            account_number='4444444444',
+            is_active=True
+        )
+
+        # 5. 회계 계정과목 생성
+        self.com_account = CompanyAccount.objects.create(
+            code='5110', name='여비교통비', category='expense', depth=2
+        )
+        self.proj_account = ProjectAccount.objects.create(
+            code='5210', name='현장운영비', category='expense', depth=2
+        )
+
+    def test_credential_filtering_by_company_and_project(self):
+        """BankApiCredential 목록 조회 시 회사 및 프로젝트 파라미터 격리 필터링 검증"""
+        # (1) 본사 1 필터링: 본사 1 계좌만 반환
+        res = self.client.get(f'/api/v1/ledger/credentials/?company={self.company.pk}')
+        self.assertEqual(res.status_code, http_status.HTTP_200_OK)
+        pks = [item['pk'] for item in res.data['results']]
+        self.assertIn(self.cred_com1.pk, pks)
+        self.assertNotIn(self.cred_com2.pk, pks)
+        self.assertNotIn(self.cred_proj_trust.pk, pks)
+
+        # (2) 본사 2 필터링: 본사 2 계좌만 반환
+        res2 = self.client.get(f'/api/v1/ledger/credentials/?company={self.company2.pk}')
+        self.assertEqual(res2.status_code, http_status.HTTP_200_OK)
+        pks2 = [item['pk'] for item in res2.data['results']]
+        self.assertIn(self.cred_com2.pk, pks2)
+        self.assertNotIn(self.cred_com1.pk, pks2)
+
+        # (3) 프로젝트 A 필터링: 프로젝트 A의 계좌 2개만 반환
+        res_pr = self.client.get(f'/api/v1/ledger/credentials/?project={self.project_a.pk}')
+        self.assertEqual(res_pr.status_code, http_status.HTTP_200_OK)
+        pks_pr = [item['pk'] for item in res_pr.data['results']]
+        self.assertEqual(len(pks_pr), 2)
+        self.assertIn(self.cred_proj_trust.pk, pks_pr)
+        self.assertIn(self.cred_proj_imprest.pk, pks_pr)
+
+        # (4) 프로젝트 A 내 운영비 전도금(is_imprest=true) 필터링: 전도금 계좌 1개만 반환
+        res_imp = self.client.get(f'/api/v1/ledger/credentials/?project={self.project_a.pk}&is_imprest=true')
+        self.assertEqual(res_imp.status_code, http_status.HTTP_200_OK)
+        pks_imp = [item['pk'] for item in res_imp.data['results']]
+        self.assertEqual(len(pks_imp), 1)
+        self.assertIn(self.cred_proj_imprest.pk, pks_imp)
+        self.assertNotIn(self.cred_proj_trust.pk, pks_imp)
+
+    def test_raw_transaction_filtering_by_domain(self):
+        """RawBankTransaction 조회 시 회사별/프로젝트별/전도금별 필터링 검증"""
+        from ledger.models import RawBankTransaction
+
+        # 각 계좌별 거래 생성
+        tx_c1 = RawBankTransaction.objects.create(
+            credential=self.cred_com1,
+            deal_date=date(2026, 7, 1),
+            sort_type='withdraw',
+            amount=50000,
+            client_name='본사1 지출처',
+            tx_hash=RawBankTransaction.generate_hash('1111111111', '2026-07-01', None, 'withdraw', 50000, None, '본사1 지출처', '')
+        )
+        tx_c2 = RawBankTransaction.objects.create(
+            credential=self.cred_com2,
+            deal_date=date(2026, 7, 2),
+            sort_type='withdraw',
+            amount=80000,
+            client_name='본사2 지출처',
+            tx_hash=RawBankTransaction.generate_hash('2222222222', '2026-07-02', None, 'withdraw', 80000, None, '본사2 지출처', '')
+        )
+        tx_trust = RawBankTransaction.objects.create(
+            credential=self.cred_proj_trust,
+            deal_date=date(2026, 7, 3),
+            sort_type='deposit',
+            amount=50000000,
+            client_name='홍길동 101-101',
+            tx_hash=RawBankTransaction.generate_hash('3333333333', '2026-07-03', None, 'deposit', 50000000, None, '홍길동 101-101', '')
+        )
+        tx_imprest = RawBankTransaction.objects.create(
+            credential=self.cred_proj_imprest,
+            deal_date=date(2026, 7, 4),
+            sort_type='withdraw',
+            amount=300000,
+            client_name='현장 식대',
+            tx_hash=RawBankTransaction.generate_hash('4444444444', '2026-07-04', None, 'withdraw', 300000, None, '현장 식대', '')
+        )
+
+        # (1) 본사 1 거래 필터링
+        res_c1 = self.client.get(f'/api/v1/ledger/raw-transactions/?company={self.company.pk}')
+        self.assertEqual(res_c1.status_code, http_status.HTTP_200_OK)
+        tx_pks_c1 = [item['pk'] for item in res_c1.data['results']]
+        self.assertIn(tx_c1.pk, tx_pks_c1)
+        self.assertNotIn(tx_c2.pk, tx_pks_c1)
+        self.assertNotIn(tx_trust.pk, tx_pks_c1)
+
+        # (2) 프로젝트 A 내 신탁수납(is_imprest=false) 필터링
+        res_trust = self.client.get(f'/api/v1/ledger/raw-transactions/?project={self.project_a.pk}&is_imprest=false')
+        self.assertEqual(res_trust.status_code, http_status.HTTP_200_OK)
+        tx_pks_trust = [item['pk'] for item in res_trust.data['results']]
+        self.assertIn(tx_trust.pk, tx_pks_trust)
+        self.assertNotIn(tx_imprest.pk, tx_pks_trust)
+
+        # (3) 프로젝트 A 내 운영비 전도금(is_imprest=true) 필터링
+        res_imp = self.client.get(f'/api/v1/ledger/raw-transactions/?project={self.project_a.pk}&is_imprest=true')
+        self.assertEqual(res_imp.status_code, http_status.HTTP_200_OK)
+        tx_pks_imp = [item['pk'] for item in res_imp.data['results']]
+        self.assertIn(tx_imprest.pk, tx_pks_imp)
+        self.assertNotIn(tx_trust.pk, tx_pks_imp)
+
+    def test_confirm_raw_transaction_creates_proper_ledger_records(self):
+        """수집 거래 단건 승인 시 정식 원장(본사 vs 프로젝트)으로 정확히 승격되는지 검증"""
+        from ledger.models import RawBankTransaction, CompanyBankTransaction, ProjectBankTransaction
+
+        # 본사 거래 생성 및 승인
+        raw_com = RawBankTransaction.objects.create(
+            credential=self.cred_com1,
+            deal_date=date(2026, 7, 5),
+            sort_type='withdraw',
+            amount=120000,
+            client_name='교통비 테스트',
+            status='ready',
+            suggested_company_account=self.com_account,
+            confidence_score=95,
+            tx_hash='hash_test_com_confirm'
+        )
+
+        res = self.client.post(f'/api/v1/ledger/raw-transactions/{raw_com.pk}/confirm/', {})
+        self.assertEqual(res.status_code, http_status.HTTP_200_OK)
+
+        raw_com.refresh_from_db()
+        self.assertEqual(raw_com.status, 'confirmed')
+        self.assertEqual(raw_com.confirmed_by, self.admin_user)
+        self.assertIsNotNone(raw_com.created_company_transaction)
+
+        com_tx = raw_com.created_company_transaction
+        self.assertEqual(com_tx.company, self.company)
+        self.assertEqual(com_tx.amount, 120000)
+        self.assertEqual(com_tx.accounting_entries.first().account, self.com_account)
+
+        # 프로젝트 전도금 거래 생성 및 승인
+        raw_proj = RawBankTransaction.objects.create(
+            credential=self.cred_proj_imprest,
+            deal_date=date(2026, 7, 6),
+            sort_type='withdraw',
+            amount=450000,
+            client_name='현장 문구류',
+            status='ready',
+            suggested_project_account=self.proj_account,
+            confidence_score=90,
+            tx_hash='hash_test_proj_confirm'
+        )
+
+        res_pr = self.client.post(f'/api/v1/ledger/raw-transactions/{raw_proj.pk}/confirm/', {})
+        self.assertEqual(res_pr.status_code, http_status.HTTP_200_OK)
+
+        raw_proj.refresh_from_db()
+        self.assertEqual(raw_proj.status, 'confirmed')
+        self.assertIsNotNone(raw_proj.created_project_transaction)
+
+        pr_tx = raw_proj.created_project_transaction
+        self.assertEqual(pr_tx.project, self.project_a)
+        self.assertEqual(pr_tx.amount, 450000)
+        self.assertEqual(pr_tx.accounting_entries.first().account, self.proj_account)
+

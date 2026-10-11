@@ -251,7 +251,11 @@ onBeforeRouteLeave(() => {
             @list-filtering="listFiltering"
           />
 
-          <AddProTrans v-if="canLedgerCreate" :project="project as number" />
+          <AddProTrans
+            v-if="canLedgerCreate"
+            :project="project as number"
+            @open-scraping="isBankScrapingOpen = true"
+          />
 
           <TableTitleRow
             title="프로젝트 입출금 관리"
@@ -262,17 +266,6 @@ onBeforeRouteLeave(() => {
             :disabled="!project"
           >
             <div style="padding-top: 7px" class="d-flex align-center">
-              <v-btn
-                v-if="canLedgerCreate"
-                color="indigo"
-                size="small"
-                variant="elevated"
-                prepend-icon="mdi-bank-transfer-in"
-                class="mr-3"
-                @click="isBankScrapingOpen = true"
-              >
-                은행 거래 AI 가져오기
-              </v-btn>
               <CFormSwitch
                 v-model="imprest"
                 label="전체(운영비용 포함) 보기"
