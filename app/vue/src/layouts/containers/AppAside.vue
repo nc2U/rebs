@@ -26,10 +26,6 @@ const userInfo = computed(() => accountStore.userInfo)
 const isStaff = computed(() => accountStore.isStaff)
 const asideVisible = computed(() => store.asideVisible)
 
-const isDark = computed(() => store.theme === 'dark')
-const white = computed(() => (isDark.value ? 'dark-theme' : 'bg-white'))
-const light = computed(() => (isDark.value ? 'dark-theme' : 'bg-more-light'))
-
 const active = (key: number) => key === activeKey.value
 const updateActiveKey = (key: number) => (activeKey.value = key)
 
@@ -87,7 +83,7 @@ const openExternal = (url: string) => {
     overlaid
     position="end"
     :visible="asideVisible"
-    :class="white"
+    class="app-aside-sidebar bg-more-white"
   >
     <CSidebarHeader class="bg-transparent p-0 aside-header">
       <CNav class="w-100 aside-nav-tabs">
@@ -438,9 +434,17 @@ const openExternal = (url: string) => {
 </template>
 
 <style lang="scss" scoped>
-//.aside-header {
-//  border-bottom: 1px solid var(--cui-border-color, #e9ecef);
-//}
+:global(.app-aside-sidebar) {
+  border-left: 1px solid #d8dbe0 !important;
+  box-shadow: -8px 0 24px -4px rgba(0, 0, 0, 0.16), -2px 0 8px -2px rgba(0, 0, 0, 0.08) !important;
+  transition: box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+:global(.app-aside-sidebar.dark-theme),
+:global([data-coreui-theme='dark'] .app-aside-sidebar) {
+  border-left: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.65) !important;
+}
 
 .aside-nav-tabs {
   position: relative;
@@ -464,11 +468,6 @@ const openExternal = (url: string) => {
   &:hover:not(.active) {
     border-bottom: 2px solid var(--cui-border-color, #dee2e6);
   }
-}
-
-// 첫 번째 탭 (오늘/할일) 시작 부분(좌측)에 옅은 회색 세로 경계선 추가 (기존 헤더와 사이드바 간의 시각적 경계 구분)
-.aside-first-tab {
-  border-left: 1px solid var(--cui-border-color, #f2f2f2);
 }
 
 .aside-nav-link {
