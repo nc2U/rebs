@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted, type PropType } from 'vue'
-import { btnLight } from '@/utils/cssMixins.ts'
+import { computed, onMounted, type PropType, reactive, ref } from 'vue'
 import { type Profile, type User } from '@/store/types/accounts'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
 import AvatarInput from './AvatarInput.vue'
 import SignInput from './SignInput.vue'
-import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const props = defineProps({
   userInfo: { type: Object as PropType<User | null>, default: null },
@@ -139,7 +138,7 @@ onMounted(() => formDataSetup())
             <CFormLabel class="col-sm-4 col-form-label"> 패스워드</CFormLabel>
 
             <CCol sm="8">
-              <v-btn type="button" @click="passChange" :color="btnLight">패스워드 변경</v-btn>
+              <v-btn type="button" @click="passChange" color="light" flat>패스워드 변경</v-btn>
             </CCol>
           </CRow>
 
@@ -215,11 +214,11 @@ onMounted(() => formDataSetup())
     </CCardBody>
 
     <CCardFooter class="text-right">
-      <v-btn type="button" :color="btnLight" @click="formDataReset"> 취소</v-btn>
       <v-btn type="submit" :color="btnClass" :disabled="formsCheck">
         <CIcon name="cil-check-circle" />
         {{ confirmText }}
       </v-btn>
+      <v-btn type="button" color="light" @click="formDataReset" flat> 취소</v-btn>
     </CCardFooter>
   </CForm>
 

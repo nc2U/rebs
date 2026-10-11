@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, onBeforeUnmount, type PropType, ref } from 'vue'
+import { useStore } from '@/store'
+import { useContract } from '@/store/pinia/contract.ts'
 import { isValidate } from '@/utils/helper.ts'
 import { dateFormat } from '@/utils/baseMixins.ts'
-import { useStore } from '@/store'
-import { btnLight } from '@/utils/cssMixins.ts'
-import { useContract } from '@/store/pinia/contract.ts'
 import type { AddressInContractor, ContractorAddress } from '@/store/types/contract.ts'
 import { type AddressData, callAddress } from '@/components/DaumPostcode/address.ts'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
@@ -54,7 +53,7 @@ const sameAddr = ref(false)
 
 // 테이블 색상 상태 관리
 const currentTableColor = ref<'info' | 'warning'>('info')
-const colorTimeout = ref<NodeJS.Timeout | null>(null)
+const colorTimeout = ref<any | null>(null)
 
 const contStore = useContract()
 const contAddressList = computed<ContractorAddress[]>(() => contStore.contAddressList)
@@ -347,7 +346,7 @@ onBeforeUnmount(() => {
     </CModalBody>
     <CModalFooter>
       <v-btn type="submit" color="primary" size="small">확인</v-btn>
-      <v-btn :color="btnLight" size="small" @click="$emit('close')" flat>닫기</v-btn>
+      <v-btn color="light" size="small" @click="$emit('close')" flat>닫기</v-btn>
     </CModalFooter>
   </CForm>
 

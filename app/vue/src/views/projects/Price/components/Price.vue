@@ -3,14 +3,13 @@ import { computed, inject, onMounted, onUpdated, type PropType, reactive, ref, w
 import { numFormat } from '@/utils/baseMixins.ts'
 import { useAccount } from '@/store/pinia/account'
 import type {
+  PaymentPerInstallment as PayInstallType,
+  PaymentPerInstallmentPayload,
   PayOrder,
   Price,
   PriceFilter,
-  PaymentPerInstallment as PayInstallType,
-  PaymentPerInstallmentPayload,
 } from '@/store/types/payment'
 import { type UnitFloorType } from '@/store/types/project'
-import { btnLight } from '@/utils/cssMixins.ts'
 import { usePayment } from '@/store/pinia/payment'
 import { usePerms } from '@/composables/usePerms.ts'
 import PaymentPerInstallment from './PaymentPerInstallment.vue'
@@ -466,8 +465,8 @@ onUpdated(() => {
           </CRow>
         </CModalBody>
         <CModalFooter>
-          <v-btn :color="btnLight" size="small" @click="refFormModal.close()"> 닫기</v-btn>
           <v-btn color="primary" size="small">확인</v-btn>
+          <v-btn color="light" size="small" @click="refFormModal.close()" flat> 닫기</v-btn>
         </CModalFooter>
       </CForm>
     </template>

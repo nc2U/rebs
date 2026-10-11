@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { type PropType } from 'vue'
 import { useRouter } from 'vue-router'
-import { btnLight } from '@/utils/cssMixins.ts'
 import { timeFormat } from '@/utils/baseMixins'
 import type { TrashDocs } from '@/store/types/docs'
 import DOMPurify from 'dompurify'
@@ -64,7 +63,7 @@ const router = useRouter()
     <CRow class="py-2">
       <CCol class="text-right">
         <v-btn-group density="compact" role="group">
-          <v-btn :color="btnLight" @click="router.push({ name: `${viewRoute}` })"> 목록으로</v-btn>
+          <v-btn color="light" @click="router.push({ name: `${viewRoute}` })"> 목록으로</v-btn>
           <v-btn color="success" @click="restoreDocs"> 복원하기</v-btn>
           <v-btn color="warning" @click="deleteDocs"> 삭제하기</v-btn>
         </v-btn-group>

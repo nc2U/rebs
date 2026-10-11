@@ -2,7 +2,6 @@
 import Multiselect from '@vueform/multiselect'
 import { type PropType, ref } from 'vue'
 import { isValidate } from '@/utils/helper'
-import { btnLight } from '@/utils/cssMixins.ts'
 
 const props = defineProps({
   issuePk: { type: Number, required: true },
@@ -82,7 +81,7 @@ const addRelIssue = (event: Event) => {
       <CFormLabel class="col-sm-1 col-form-label"> 일</CFormLabel>
       <CCol class="pt-1">
         <v-btn type="submit" color="primary" size="small">추가</v-btn>
-        <v-btn :color="btnLight" size="small" @click="addFormCtl(false)">취소</v-btn>
+        <v-btn color="light" size="small" @click="addFormCtl(false)" flat>취소</v-btn>
       </CCol>
     </CRow>
   </CForm>

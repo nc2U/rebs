@@ -7,7 +7,6 @@ import { usePerms } from '@/composables/usePerms.ts'
 import { type Docs } from '@/store/types/docs'
 import type { Company } from '@/store/types/settings'
 import { type DocsFilter, useDocs } from '@/store/pinia/docs'
-import { btnLight } from '@/utils/cssMixins.ts'
 import { useCompany } from '@/store/pinia/company.ts'
 import { useAccount } from '@/store/pinia/account.ts'
 import { docsManageItems, toDocsManage } from '@/utils/docsMixins'
@@ -419,7 +418,7 @@ onMounted(() => {
           <v-btn v-if="canDocsDelete" color="warning" size="small" @click="deleteConfirm">
             삭제
           </v-btn>
-          <v-btn :color="btnLight" size="small" @click="router.push({ name: `${viewRoute}` })">
+          <v-btn color="light" size="small" @click="router.push({ name: `${viewRoute}` })">
             목록
           </v-btn>
           <v-btn
