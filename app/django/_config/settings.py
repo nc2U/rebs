@@ -473,6 +473,12 @@ IWINV_AUTH_KEY = config('IWINV_AUTH_KEY', default='')
 # Google Gemini API Settings (for AI Meeting Minutes & Audio STT/Summary)
 GEMINI_API_KEY = config('GEMINI_API_KEY', default='')
 
+# CODEF B2B Bank API Settings
+CODEF_CLIENT_ID = config('CODEF_CLIENT_ID', default='')
+CODEF_CLIENT_SECRET = config('CODEF_CLIENT_SECRET', default='')
+CODEF_HOST = config('CODEF_HOST', default='https://development.codef.io')
+CODEF_PUBLIC_KEY = config('CODEF_PUBLIC_KEY', default='')
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,

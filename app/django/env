@@ -55,8 +55,15 @@ IWINV_REGISTERED_SENDER_NUMBERS= # SMS 사전 등록 발신번호 (예: 010-XXXX
 ### FOR AI SERVICE (Google Gemini) --------------------------------------------------------
 GEMINI_API_KEY=               # Google AI Studio API Key (AI 회의록 생성 및 음성 STT/요약용)
 
+### FOR B2B BANK API (CODEF) ----------------------------------------------------
+CODEF_CLIENT_ID=                  # CODEF API Client ID (데모 또는 운영)
+CODEF_CLIENT_SECRET=              # CODEF API Client Secret
+CODEF_HOST=                       # CODEF API Host (개발: https://development.codef.io | 운영: https://api.codef.io)
+CODEF_PUBLIC_KEY=                 # CODEF RSA 공개키 (비밀번호 암호화용)
+
 ### FOR DEVELOPMENT & ALERTS (OPTIONAL) ------------------------------------------------
 DOCKERHUB_USER=               # Docker Hub 사용자 계정
 DOCKERHUB_TOKEN=              # Docker Hub Access Token
 SLACK_INCOMING_URL=           # CI/CD 빌드 및 배포 결과 알림 Slack 웹훅 URL
 SLACK_COMPANY_URL=            # 전사 본사 공통 알림 Slack 웹훅 URL
+
