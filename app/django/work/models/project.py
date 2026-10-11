@@ -20,6 +20,12 @@ class IssueProject(models.Model):
     description = models.TextField('설명', blank=True, default='')
     homepage = models.URLField('홈페이지', max_length=255, null=True, blank=True)
     is_public = models.BooleanField('공개', default=True, help_text='공개 워크스페이스는 모든 로그인한 사용자가 접속할 수 있습니다.')
+    is_hidden = models.BooleanField(
+        '목록 숨김',
+        default=False,
+        db_index=True,
+        help_text='체크 시 일반 워크스페이스 목록에서 기본 숨김 처리되며, 직접 접근 및 회계/관리 기능은 정상 작동합니다.'
+    )
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='상위 워크스페이스')
     is_inherit_members = models.BooleanField('상위 워크스페이스 멤버 상속', default=False)
     default_version = models.ForeignKey('Version', on_delete=models.SET_NULL, null=True, blank=True,

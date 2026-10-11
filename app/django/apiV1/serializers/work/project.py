@@ -108,7 +108,7 @@ class SimpleIssueProjectSerializer(ProjectPermissionMixin, serializers.ModelSeri
 
     class Meta:
         model = IssueProject
-        fields = ('pk', 'type', 'name', 'slug', 'visible', 'status')
+        fields = ('pk', 'type', 'name', 'slug', 'visible', 'status', 'is_hidden')
 
 
 class RoleInMemberSerializer(serializers.ModelSerializer):
@@ -190,7 +190,7 @@ class IssueProjectListSerializer(ProjectPermissionMixin, serializers.ModelSerial
 
     class Meta:
         model = IssueProject
-        fields = ('pk', 'company', 'project', 'type', 'name', 'slug', 'description', 'is_public',
+        fields = ('pk', 'company', 'project', 'type', 'name', 'slug', 'description', 'is_public', 'is_hidden',
                   'parent', 'parent_name', 'allowed_roles', 'status', 'status_display', 'sub_projects',
                   'chat_channel_enabled', 'slack_notifications_enabled', 'created', 'updated', 'creator',
                   'depth', 'module', 'my_role', 'my_perms', 'all_members', 'visible', 'parent_visible',
@@ -207,6 +207,13 @@ class IssueProjectListSerializer(ProjectPermissionMixin, serializers.ModelSerial
     def get_sub_projects(self, obj):
         sub_projects = obj.issueproject_set.exclude(status='9')
         request = self.context.get('request')
+        include_hidden = request and (
+            request.query_params.get('include_hidden') == 'true' or
+            request.query_params.get('is_hidden') == 'true'
+        )
+        if not include_hidden:
+            sub_projects = sub_projects.filter(is_hidden=False)
+
         user = getattr(request, 'user', None) if request else None
         if user and user.is_authenticated:
             if not (user.is_superuser or getattr(user, 'work_manager', False)):

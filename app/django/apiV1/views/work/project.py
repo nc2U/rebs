@@ -43,6 +43,11 @@ class IssueProjectFilter(FilterSet):
 
     bookmark = BooleanFilter(method='filter_bookmark', label='북마크 여부')
     my_project = BooleanFilter(method='filter_my_project', label='내 워크스페이스 여부')
+    is_hidden = BooleanFilter(field_name='is_hidden', label='숨김 여부')
+    include_hidden = BooleanFilter(method='filter_include_hidden', label='숨김 워크스페이스 포함 여부')
+
+    def filter_include_hidden(self, queryset, name, value):
+        return queryset
 
     def filter_bookmark(self, queryset, name, value):
         if value and self.request and self.request.user.is_authenticated:
@@ -62,7 +67,7 @@ class IssueProjectFilter(FilterSet):
 
     class Meta:
         model = IssueProject
-        fields = ('company', 'type', 'status', 'parent__slug', 'project', 'is_public',
+        fields = ('company', 'type', 'status', 'parent__slug', 'project', 'is_public', 'is_hidden',
                   'name', 'members__user', 'description', 'bookmark', 'my_project')
 
 
@@ -74,6 +79,15 @@ class IssueProjectViewSet(viewsets.ModelViewSet):
     pagination_class = PageNumberPaginationTwenty
     filterset_class = IssueProjectFilter
 
+    def filter_queryset(self, queryset):
+        qs = super().filter_queryset(queryset)
+        # detail 액션(retrieve, toggle_* 등)에서는 slug 직접 접근이므로 is_hidden 기본 필터링을 생략
+        if not getattr(self, 'detail', False):
+            params = self.request.query_params
+            if 'is_hidden' not in params and str(params.get('include_hidden', '')).lower() != 'true':
+                qs = qs.filter(is_hidden=False)
+        return qs
+
     @property
     def required_permission(self):
         mapping = {  # 매핑 로직 정의
@@ -81,6 +95,7 @@ class IssueProjectViewSet(viewsets.ModelViewSet):
             'update': 'project.update',
             'partial_update': 'project.update',
             'toggle_public': 'project.public',
+            'toggle_hidden': 'project.update',
             'toggle_close': 'project.close',
             'toggle_lock': 'project.delete',
             'update_members': 'project.member',
@@ -198,6 +213,13 @@ class IssueProjectViewSet(viewsets.ModelViewSet):
         project.is_public = not project.is_public
         project.save()
         return Response({'is_public': project.is_public})
+
+    @action(detail=True, methods=['post'])
+    def toggle_hidden(self, request, slug=None):
+        project = self.get_object()
+        project.is_hidden = not project.is_hidden
+        project.save()
+        return Response({'is_hidden': project.is_hidden})
 
     @action(detail=True, methods=['post'])
     def update_members(self, request, slug=None):

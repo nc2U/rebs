@@ -30,17 +30,17 @@ class IssueCategoryInline(admin.TabularInline):
 
 @admin.register(IssueProject)
 class IssueProjectAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('pk', 'company', 'type', 'name', 'homepage', 'is_public', 'parent', 'slug', 'status',
+    list_display = ('pk', 'company', 'type', 'name', 'homepage', 'is_public', 'is_hidden', 'parent', 'slug', 'status',
                     'chat_channel_enabled', 'slack_notifications_enabled', 'order')
     list_display_links = ('name',)
-    list_editable = ('company', 'type', 'chat_channel_enabled', 'slack_notifications_enabled', 'order')
+    list_editable = ('company', 'type', 'is_hidden', 'chat_channel_enabled', 'slack_notifications_enabled', 'order')
     list_select_related = ('company', 'parent', 'creator')
     inlines = (ModuleInline, MemberInline, VersionInline, IssueCategoryInline)
-    list_filter = ('company', 'type', 'is_public', 'status', 'chat_channel_enabled', 'slack_notifications_enabled')
+    list_filter = ('company', 'type', 'is_public', 'is_hidden', 'status', 'chat_channel_enabled', 'slack_notifications_enabled')
 
     fieldsets = (
         ('기본 정보', {
-            'fields': ('company', 'type', 'name', 'slug', 'description', 'homepage', 'is_public', 'parent',
+            'fields': ('company', 'type', 'name', 'slug', 'description', 'homepage', 'is_public', 'is_hidden', 'parent',
                        'is_inherit_members')
         }),
         ('프로젝트 설정', {

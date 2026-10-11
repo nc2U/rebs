@@ -1323,3 +1323,90 @@ class NotificationProfileSettingsTests(TestCase):
         self.assertIn('(확정)', confirm_log.title)
 
 
+class IssueProjectHiddenTests(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_superuser(
+            username='admin_hidden', email='admin_hidden@test.com', password='password123'
+        )
+        self.company = Company.objects.create(name='테스트건설')
+        self.client.force_authenticate(user=self.user)
+
+        self.project_visible = IssueProject.objects.create(
+            company=self.company,
+            name='노출 워크스페이스',
+            slug='visible-proj',
+            is_hidden=False,
+            creator=self.user
+        )
+        self.project_hidden = IssueProject.objects.create(
+            company=self.company,
+            name='숨김 워크스페이스',
+            slug='hidden-proj',
+            is_hidden=True,
+            creator=self.user
+        )
+
+    def test_default_project_list_excludes_hidden(self):
+        """기본 워크스페이스 목록 조회 시 is_hidden=True인 워크스페이스는 제외(은닉)되어야 한다."""
+        res = self.client.get('/api/v1/issue-project/')
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        slugs = [item['slug'] for item in res.data['results']]
+        self.assertIn(self.project_visible.slug, slugs)
+        self.assertNotIn(self.project_hidden.slug, slugs)
+
+    def test_include_hidden_parameter_includes_all(self):
+        """include_hidden=true 쿼리 시 숨김 워크스페이스도 포함하여 모두 조회되어야 한다."""
+        res = self.client.get('/api/v1/issue-project/?include_hidden=true')
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        slugs = [item['slug'] for item in res.data['results']]
+        self.assertIn(self.project_visible.slug, slugs)
+        self.assertIn(self.project_hidden.slug, slugs)
+
+    def test_is_hidden_parameter_filters_only_hidden(self):
+        """is_hidden=true 쿼리 시 숨김 워크스페이스만 조회되어야 한다."""
+        res = self.client.get('/api/v1/issue-project/?is_hidden=true')
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        slugs = [item['slug'] for item in res.data['results']]
+        self.assertNotIn(self.project_visible.slug, slugs)
+        self.assertIn(self.project_hidden.slug, slugs)
+
+    def test_hidden_project_direct_access_and_normal_operation(self):
+        """is_hidden=True인 워크스페이스라도 slug 직접 접근 상세 조회 및 수정이 정상 동작해야 한다."""
+        res = self.client.get(f'/api/v1/issue-project/{self.project_hidden.slug}/')
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data['slug'], self.project_hidden.slug)
+        self.assertTrue(res.data['is_hidden'])
+
+    def test_toggle_hidden_action(self):
+        """toggle_hidden API 호출 시 is_hidden 상태가 반전되어야 한다."""
+        # 1. 숨김 -> 노출로 토글
+        res = self.client.post(f'/api/v1/issue-project/{self.project_hidden.slug}/toggle_hidden/')
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertFalse(res.data['is_hidden'])
+        self.project_hidden.refresh_from_db()
+        self.assertFalse(self.project_hidden.is_hidden)
+
+        # 2. 노출 -> 숨김으로 다시 토글
+        res2 = self.client.post(f'/api/v1/issue-project/{self.project_hidden.slug}/toggle_hidden/')
+        self.assertEqual(res2.status_code, status.HTTP_200_OK)
+        self.assertTrue(res2.data['is_hidden'])
+        self.project_hidden.refresh_from_db()
+        self.assertTrue(self.project_hidden.is_hidden)
+
+    def test_my_projects_action_excludes_hidden(self):
+        """my_projects 엔드포인트에서도 숨김 워크스페이스는 기본 제외되어야 한다."""
+        res = self.client.get('/api/v1/issue-project/my_projects/')
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        slugs = [item['slug'] for item in res.data]
+        self.assertIn(self.project_visible.slug, slugs)
+        self.assertNotIn(self.project_hidden.slug, slugs)
+
+        # include_hidden=true 시 포함
+        res_include = self.client.get('/api/v1/issue-project/my_projects/?include_hidden=true')
+        self.assertEqual(res_include.status_code, status.HTTP_200_OK)
+        slugs_include = [item['slug'] for item in res_include.data]
+        self.assertIn(self.project_visible.slug, slugs_include)
+        self.assertIn(self.project_hidden.slug, slugs_include)
+
+
+
