@@ -22,10 +22,12 @@ import AddTransaction from './components/AddTransaction.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import TransactionList from './components/TransactionList.vue'
 import TransForm from './components/TransForm.vue'
+import BankScrapingDialog from '@/components/BankScraping/BankScrapingDialog.vue'
 
 const { canGlobal, PERM } = usePerms()
 const canComLedgerCreate = computed(() => canGlobal(PERM.HQ_LEDGER_CREATE))
 
+const isBankScrapingOpen = ref(false)
 const listControl = ref()
 const [route, router] = [useRoute() as Loaded & { name: string }, useRouter()]
 
@@ -236,12 +238,35 @@ onBeforeRouteLeave(() => {
             :url="excelUrl"
             filename="본사_출납내역.xls"
             :disabled="!company"
-          />
+          >
+            <div style="padding-top: 7px" class="d-flex align-center">
+              <v-btn
+                v-if="canComLedgerCreate"
+                color="indigo"
+                size="small"
+                variant="elevated"
+                prepend-icon="mdi-bank-transfer-in"
+                class="mr-3"
+                :disabled="!company"
+                @click="isBankScrapingOpen = true"
+              >
+                은행 거래 AI 가져오기
+              </v-btn>
+            </div>
+          </TableTitleRow>
           <TransactionList
             :company="company as number"
             :highlight-id="highlightId ?? undefined"
             :current-page="dataFilter.page || 1"
             @page-select="pageSelect"
+          />
+
+          <!-- 은행 거래 AI 가져오기 다이얼로그 (본사 모드) -->
+          <BankScrapingDialog
+            v-model="isBankScrapingOpen"
+            mode="company"
+            :company-id="company as number"
+            @confirmed="company && dataSetup(company as number)"
           />
         </div>
 

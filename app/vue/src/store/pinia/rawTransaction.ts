@@ -16,9 +16,9 @@ export const useRawTransaction = defineStore('rawTransaction', () => {
   const isLoading = ref<boolean>(false)
 
   // Actions
-  const fetchCredentialList = async () => {
+  const fetchCredentialList = async (params: Record<string, any> = {}) => {
     try {
-      const res = await api.get('/ledger/credentials/')
+      const res = await api.get('/ledger/credentials/', { params })
       credentialList.value = res.data.results || res.data
     } catch (err: any) {
       errorHandle(err.response?.data)
@@ -95,6 +95,29 @@ export const useRawTransaction = defineStore('rawTransaction', () => {
     }
   }
 
+  const syncAllCredentials = async (startDate?: string, endDate?: string) => {
+    isLoading.value = true
+    try {
+      const payload: Record<string, any> = {}
+      if (startDate) payload.start_date = startDate
+      if (endDate) payload.end_date = endDate
+
+      const res = await api.post('/ledger/credentials/sync_all/', payload)
+      const { total_accounts, success_accounts, total_created, total_skipped } = res.data
+      message(
+        'success',
+        '알림',
+        `전체 계좌 수집 완료: 총 ${total_accounts}개 계좌 중 ${success_accounts}개 성공 (신규 ${total_created}건, 기존 중복 ${total_skipped}건)`,
+      )
+      return res.data
+    } catch (err: any) {
+      errorHandle(err.response?.data)
+      throw err
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   return {
     rawTransList,
     rawTransCount,
@@ -105,5 +128,6 @@ export const useRawTransaction = defineStore('rawTransaction', () => {
     confirmRawTransaction,
     bulkConfirm,
     syncCredential,
+    syncAllCredentials,
   }
 })

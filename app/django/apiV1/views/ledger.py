@@ -1305,11 +1305,30 @@ class ProjectLedgerLastDealDateViewSet(viewsets.ModelViewSet):
 class BankApiCredentialViewSet(viewsets.ModelViewSet):
     """은행 API 연동 계좌 ViewSet"""
     queryset = BankApiCredential.objects.all().select_related(
-        'company_bank_account', 'project_bank_account'
+        'company_bank_account__company', 'project_bank_account__project'
     )
     serializer_class = BankApiCredentialSerializer
     permission_classes = (permissions.IsAuthenticated,)
     pagination_class = PageNumberPaginationFifty
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        company = self.request.query_params.get('company')
+        project = self.request.query_params.get('project')
+        is_imprest = self.request.query_params.get('is_imprest')
+        is_active = self.request.query_params.get('is_active')
+
+        if company:
+            qs = qs.filter(company_bank_account__company_id=company)
+        if project:
+            qs = qs.filter(project_bank_account__project_id=project)
+        if is_imprest is not None:
+            val = is_imprest.lower() in ('true', '1')
+            qs = qs.filter(project_bank_account__is_imprest=val)
+        if is_active is not None:
+            val = is_active.lower() in ('true', '1')
+            qs = qs.filter(is_active=val)
+        return qs
 
     @action(detail=True, methods=['post'])
     def sync(self, request, pk=None):
@@ -1322,11 +1341,22 @@ class BankApiCredentialViewSet(viewsets.ModelViewSet):
         result = sync_credential_transactions(cred, start_date=start_date, end_date=end_date)
         return Response(result, status=status.HTTP_200_OK)
 
+    @action(detail=False, methods=['post'])
+    def sync_all(self, request):
+        """활성화된 전체 은행 연동 계좌 거래내역 일괄 동기화 (1회 통합 호출)"""
+        from ledger.services.bank_scraping import sync_all_active_credentials
+        start_date = request.data.get('start_date')
+        end_date = request.data.get('end_date')
+
+        summary = sync_all_active_credentials(start_date=start_date, end_date=end_date)
+        return Response(summary, status=status.HTTP_200_OK)
+
 
 class RawBankTransactionViewSet(viewsets.ModelViewSet):
     """수집 원시 거래내역 ViewSet"""
     queryset = RawBankTransaction.objects.all().select_related(
-        'credential',
+        'credential__company_bank_account__company',
+        'credential__project_bank_account__project',
         'suggested_company_account',
         'suggested_project_account',
         'suggested_contract__contractor',
@@ -1338,6 +1368,21 @@ class RawBankTransactionViewSet(viewsets.ModelViewSet):
     pagination_class = PageNumberPaginationFifty
     filterset_fields = ('status', 'credential', 'deal_date', 'sort_type')
     search_fields = ('client_name', 'content')
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        company = self.request.query_params.get('company')
+        project = self.request.query_params.get('project')
+        is_imprest = self.request.query_params.get('is_imprest')
+
+        if company:
+            qs = qs.filter(credential__company_bank_account__company_id=company)
+        if project:
+            qs = qs.filter(credential__project_bank_account__project_id=project)
+        if is_imprest is not None:
+            val = is_imprest.lower() in ('true', '1')
+            qs = qs.filter(credential__project_bank_account__is_imprest=val)
+        return qs
 
     @action(detail=True, methods=['post'])
     def confirm(self, request, pk=None):

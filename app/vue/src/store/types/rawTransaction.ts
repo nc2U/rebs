@@ -4,6 +4,12 @@ export interface BankApiCredential {
   project_bank_account: number | null
   account_alias: string
   is_project: boolean
+  company_id?: number | null
+  company_name?: string | null
+  project_id?: number | null
+  project_name?: string | null
+  is_imprest?: boolean
+  directpay?: boolean
   connected_id: string
   bank_code: string
   account_number: string
@@ -22,6 +28,12 @@ export interface RawBankTransaction {
   bank_code: string
   account_number: string
   is_project: boolean
+  company_id?: number | null
+  company_name?: string | null
+  project_id?: number | null
+  project_name?: string | null
+  is_imprest?: boolean
+  directpay?: boolean
   deal_date: string
   deal_time: string | null
   sort_type: 'deposit' | 'withdraw'
@@ -51,6 +63,9 @@ export interface RawBankTransaction {
 export interface RawTransactionFilter {
   page?: number
   credential?: number | null
+  company?: number | null
+  project?: number | null
+  is_imprest?: boolean | string
   status?: string
   deal_date?: string
   sort_type?: string

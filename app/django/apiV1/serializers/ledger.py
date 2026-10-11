@@ -1173,13 +1173,20 @@ class BankApiCredentialSerializer(serializers.ModelSerializer):
     """은행 API 연동 계좌 Serializer"""
     account_alias = serializers.CharField(source='target_account.alias_name', read_only=True)
     is_project = serializers.BooleanField(read_only=True)
+    company_id = serializers.IntegerField(source='company_bank_account.company_id', read_only=True, allow_null=True)
+    company_name = serializers.CharField(source='company_bank_account.company.name', read_only=True, allow_null=True)
+    project_id = serializers.IntegerField(source='project_bank_account.project_id', read_only=True, allow_null=True)
+    project_name = serializers.CharField(source='project_bank_account.project.name', read_only=True, allow_null=True)
+    is_imprest = serializers.BooleanField(source='project_bank_account.is_imprest', read_only=True, default=False)
+    directpay = serializers.BooleanField(source='project_bank_account.directpay', read_only=True, default=False)
 
     class Meta:
         model = BankApiCredential
         fields = (
             'pk', 'company_bank_account', 'project_bank_account',
-            'account_alias', 'is_project', 'connected_id',
-            'bank_code', 'account_number', 'is_active',
+            'account_alias', 'is_project',
+            'company_id', 'company_name', 'project_id', 'project_name', 'is_imprest', 'directpay',
+            'connected_id', 'bank_code', 'account_number', 'is_active',
             'last_scraped_at', 'last_status', 'last_error_message',
             'created_at', 'updated_at'
         )
@@ -1193,6 +1200,13 @@ class RawBankTransactionSerializer(serializers.ModelSerializer):
     account_number = serializers.CharField(source='credential.account_number', read_only=True)
     is_project = serializers.BooleanField(source='credential.is_project', read_only=True)
 
+    company_id = serializers.IntegerField(source='credential.company_bank_account.company_id', read_only=True, allow_null=True)
+    company_name = serializers.CharField(source='credential.company_bank_account.company.name', read_only=True, allow_null=True)
+    project_id = serializers.IntegerField(source='credential.project_bank_account.project_id', read_only=True, allow_null=True)
+    project_name = serializers.CharField(source='credential.project_bank_account.project.name', read_only=True, allow_null=True)
+    is_imprest = serializers.BooleanField(source='credential.project_bank_account.is_imprest', read_only=True, default=False)
+    directpay = serializers.BooleanField(source='credential.project_bank_account.directpay', read_only=True, default=False)
+
     suggested_company_account_name = serializers.CharField(source='suggested_company_account.name', read_only=True)
     suggested_project_account_name = serializers.CharField(source='suggested_project_account.name', read_only=True)
     suggested_contract_name = serializers.SerializerMethodField(read_only=True)
@@ -1203,6 +1217,7 @@ class RawBankTransactionSerializer(serializers.ModelSerializer):
         model = RawBankTransaction
         fields = (
             'pk', 'credential', 'account_alias', 'bank_code', 'account_number', 'is_project',
+            'company_id', 'company_name', 'project_id', 'project_name', 'is_imprest', 'directpay',
             'deal_date', 'deal_time', 'sort_type', 'amount', 'balance',
             'client_name', 'content', 'branch_name',
             'status', 'confidence_score', 'ai_reason',
