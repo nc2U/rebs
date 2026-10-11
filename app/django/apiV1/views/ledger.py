@@ -19,6 +19,7 @@ from ledger.models import (
     CompanyBankTransaction, ProjectBankTransaction,
     CompanyAccountingEntry, ProjectAccountingEntry,
     CompanyLedgerCalculation, ProjectLedgerCalculation,
+    BankApiCredential, RawBankTransaction,
 )
 from ledger.services.company_transaction import get_company_transactions, prefetch_company_transactions
 from ledger.services.project_transaction import get_project_transactions, prefetch_project_transactions
@@ -34,6 +35,8 @@ from ..serializers.ledger import (
     CompanyCompositeTransactionSerializer, ProjectCompositeTransactionSerializer,
     CompanyLedgerCalculationSerializer, ProjectLedgerCalculationSerializer, CompanyLedgerLastDealDateSerializer,
     ProjectLedgerLastDealDateSerializer,
+    BankApiCredentialSerializer, RawBankTransactionSerializer,
+    RawBankTransactionConfirmSerializer, RawBankTransactionBulkConfirmSerializer,
 )
 
 
@@ -1293,3 +1296,94 @@ class ProjectLedgerLastDealDateViewSet(viewsets.ModelViewSet):
         if project:
             qs = qs.filter(project_id=project)
         return qs.order_by('-deal_date')[:1]
+
+
+# ============================================
+# Bank Scraping ViewSets
+# ============================================
+
+class BankApiCredentialViewSet(viewsets.ModelViewSet):
+    """은행 API 연동 계좌 ViewSet"""
+    queryset = BankApiCredential.objects.all().select_related(
+        'company_bank_account', 'project_bank_account'
+    )
+    serializer_class = BankApiCredentialSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    pagination_class = PageNumberPaginationFifty
+
+    @action(detail=True, methods=['post'])
+    def sync(self, request, pk=None):
+        """특정 계좌의 거래내역 즉시 동기화"""
+        from ledger.services.bank_scraping import sync_credential_transactions
+        cred = self.get_object()
+        start_date = request.data.get('start_date')
+        end_date = request.data.get('end_date')
+
+        result = sync_credential_transactions(cred, start_date=start_date, end_date=end_date)
+        return Response(result, status=status.HTTP_200_OK)
+
+
+class RawBankTransactionViewSet(viewsets.ModelViewSet):
+    """수집 원시 거래내역 ViewSet"""
+    queryset = RawBankTransaction.objects.all().select_related(
+        'credential',
+        'suggested_company_account',
+        'suggested_project_account',
+        'suggested_contract__contractor',
+        'suggested_contract__key_unit',
+        'confirmed_by'
+    )
+    serializer_class = RawBankTransactionSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    pagination_class = PageNumberPaginationFifty
+    filterset_fields = ('status', 'credential', 'deal_date', 'sort_type')
+    search_fields = ('client_name', 'content')
+
+    @action(detail=True, methods=['post'])
+    def confirm(self, request, pk=None):
+        """단건 승인 및 원장 반영"""
+        from ledger.services.transaction_confirm import confirm_raw_transaction
+        from ledger.models import CompanyAccount, ProjectAccount
+        from contract.models import Contract
+
+        raw_tx = self.get_object()
+        serializer = RawBankTransactionConfirmSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        custom_account_id = serializer.validated_data.get('custom_account_id')
+        custom_contract_id = serializer.validated_data.get('custom_contract_id')
+
+        custom_account = None
+        if custom_account_id:
+            if raw_tx.credential.is_project:
+                custom_account = ProjectAccount.objects.filter(id=custom_account_id).first()
+            else:
+                custom_account = CompanyAccount.objects.filter(id=custom_account_id).first()
+
+        custom_contract = None
+        if custom_contract_id and raw_tx.credential.is_project:
+            custom_contract = Contract.objects.filter(id=custom_contract_id).first()
+
+        try:
+            result = confirm_raw_transaction(
+                raw_tx=raw_tx,
+                user=request.user,
+                custom_account=custom_account,
+                custom_contract=custom_contract
+            )
+            return Response(result, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=False, methods=['post'])
+    def bulk_confirm(self, request):
+        """고신뢰도 거래 일괄 승인"""
+        from ledger.services.transaction_confirm import bulk_confirm_high_confidence
+
+        serializer = RawBankTransactionBulkConfirmSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        min_confidence = serializer.validated_data.get('min_confidence', 90)
+
+        result = bulk_confirm_high_confidence(user=request.user, min_confidence=min_confidence)
+        return Response(result, status=status.HTTP_200_OK)
+

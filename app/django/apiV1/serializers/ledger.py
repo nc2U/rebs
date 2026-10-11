@@ -8,6 +8,7 @@ from ledger.models import (
     CompanyBankTransaction, ProjectBankTransaction,
     CompanyAccountingEntry, ProjectAccountingEntry,
     CompanyLedgerCalculation, ProjectLedgerCalculation,
+    BankApiCredential, RawBankTransaction,
 )
 from payment.models import ContractPayment
 
@@ -1162,3 +1163,74 @@ class ProjectLedgerLastDealDateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectBankTransaction
         fields = ('deal_date',)
+
+
+# ============================================
+# Bank Scraping Serializers
+# ============================================
+
+class BankApiCredentialSerializer(serializers.ModelSerializer):
+    """은행 API 연동 계좌 Serializer"""
+    account_alias = serializers.CharField(source='target_account.alias_name', read_only=True)
+    is_project = serializers.BooleanField(read_only=True)
+
+    class Meta:
+        model = BankApiCredential
+        fields = (
+            'pk', 'company_bank_account', 'project_bank_account',
+            'account_alias', 'is_project', 'connected_id',
+            'bank_code', 'account_number', 'is_active',
+            'last_scraped_at', 'last_status', 'last_error_message',
+            'created_at', 'updated_at'
+        )
+        read_only_fields = ('last_scraped_at', 'last_status', 'last_error_message', 'created_at', 'updated_at')
+
+
+class RawBankTransactionSerializer(serializers.ModelSerializer):
+    """수집 원시 거래내역 Serializer"""
+    account_alias = serializers.CharField(source='credential.target_account.alias_name', read_only=True)
+    bank_code = serializers.CharField(source='credential.bank_code', read_only=True)
+    account_number = serializers.CharField(source='credential.account_number', read_only=True)
+    is_project = serializers.BooleanField(source='credential.is_project', read_only=True)
+
+    suggested_company_account_name = serializers.CharField(source='suggested_company_account.name', read_only=True)
+    suggested_project_account_name = serializers.CharField(source='suggested_project_account.name', read_only=True)
+    suggested_contract_name = serializers.SerializerMethodField(read_only=True)
+
+    confirmed_by_name = serializers.CharField(source='confirmed_by.username', read_only=True)
+
+    class Meta:
+        model = RawBankTransaction
+        fields = (
+            'pk', 'credential', 'account_alias', 'bank_code', 'account_number', 'is_project',
+            'deal_date', 'deal_time', 'sort_type', 'amount', 'balance',
+            'client_name', 'content', 'branch_name',
+            'status', 'confidence_score', 'ai_reason',
+            'suggested_company_account', 'suggested_company_account_name',
+            'suggested_project_account', 'suggested_project_account_name',
+            'suggested_contract', 'suggested_contract_name',
+            'confirmed_by', 'confirmed_by_name', 'confirmed_at',
+            'created_company_transaction', 'created_project_transaction',
+            'created_at', 'updated_at'
+        )
+        read_only_fields = ('tx_hash', 'raw_data', 'created_at', 'updated_at')
+
+    def get_suggested_contract_name(self, obj):
+        if obj.suggested_contract:
+            c = obj.suggested_contract
+            contractor_name = c.contractor.name if hasattr(c, 'contractor') and c.contractor else ''
+            unit_str = str(c.key_unit) if c.key_unit else ''
+            return f"{contractor_name} ({unit_str})"
+        return None
+
+
+class RawBankTransactionConfirmSerializer(serializers.Serializer):
+    """단건 승인 요청용 Serializer"""
+    custom_account_id = serializers.IntegerField(required=False, allow_null=True)
+    custom_contract_id = serializers.IntegerField(required=False, allow_null=True)
+
+
+class RawBankTransactionBulkConfirmSerializer(serializers.Serializer):
+    """일괄 승인 요청용 Serializer"""
+    min_confidence = serializers.IntegerField(required=False, default=90)
+
