@@ -114,8 +114,8 @@ const loadData = async () => {
       await comLedgerStore.fetchCompanyAccounts()
     }
   } else {
-    if (proLedgerStore.proAccounts.length === 0 && props.projectId) {
-      await proLedgerStore.fetchProAccounts(props.projectId)
+    if (proLedgerStore.proAccounts.length === 0) {
+      await proLedgerStore.fetchProjectAccounts()
     }
   }
 
@@ -290,12 +290,12 @@ onMounted(() => {
                 <v-list-item
                   v-bind="itemProps"
                   :subtitle="
-                    item.raw.pk
-                      ? `${item.raw.bank_code || ''} | ${item.raw.account_number || ''}`
+                    (item as any)?.raw?.pk
+                      ? `${(item as any)?.raw?.bank_code || ''} | ${(item as any)?.raw?.account_number || ''}`
                       : '모든 연동 계좌의 거래내역 표시'
                   "
                 >
-                  <template #append v-if="item.raw.is_imprest">
+                  <template #append v-if="(item as any)?.raw?.is_imprest">
                     <v-chip size="x-small" color="teal" variant="flat">운영비 전도금</v-chip>
                   </template>
                 </v-list-item>
