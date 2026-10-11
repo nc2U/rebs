@@ -198,10 +198,11 @@ onMounted(() => {
             >
               고신뢰도 일괄 승인 ({{ highConfidenceCount }}건)
             </v-btn>
-          </v-card-text>
+          </v-col>
+        </v-row>
 
-          <!-- 메인 데이터 테이블 -->
-          <v-table density="compact" hover class="border mt-2">
+        <!-- 메인 데이터 테이블 -->
+        <v-table density="compact" hover class="border mt-2">
             <thead class="bg-grey-lighten-4">
               <tr>
                 <th class="text-center" style="width: 100px">거래일시</th>
