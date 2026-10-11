@@ -750,6 +750,23 @@ label.required::after {
     --cui-table-color: #ffffff;
     --cui-table-border-color: rgba(115, 115, 115, 0.3) !important;
   }
+
+  // Dark 색상 - 다크모드 TableSecondary 등 헤더 셀에 적용되는 table-dark
+  .table-dark,
+  .table-dark > th,
+  .table-dark > td,
+  th.table-dark {
+    --cui-table-color: #ffffff;
+    --cui-table-hover-color: #ffffff;
+  }
+
+  // 테이블 행 hover 시 배경색은 현재설정 유지하고 글자색은 흰색 유지
+  .table-hover > tbody > tr:hover > th.table-dark,
+  .table-hover > tbody > tr:hover > td.table-dark,
+  .table-hover > tbody > tr:hover > .table-dark {
+    --cui-table-color-state: #ffffff;
+    color: #ffffff !important;
+  }
 }
 
 .bold,
