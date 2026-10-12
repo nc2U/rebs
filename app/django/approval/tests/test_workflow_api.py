@@ -551,3 +551,39 @@ class ApprovalWorkflowAPITestCase(APITestCase):
         res_detail = self.client.get(f'/api/v1/approval-document/{confidential_doc.id}/')
         self.assertEqual(res_detail.status_code, status.HTTP_200_OK)
         self.assertEqual(res_detail.data['title'], '극비 전략 기획서')
+
+    def test_approval_delegation_creation_defaults_to_request_user(self):
+        """대결(위임) 등록 시 delegator_id가 누락되어도 슈퍼유저 및 일반 유저 모두 요청 유저로 정상 생성되는지 검증"""
+        # 1. 슈퍼유저 생성
+        admin_user = User.objects.create_superuser(
+            username='admin_boss', email='admin@example.com', password='password123'
+        )
+
+        # 2. 슈퍼유저가 본인의 대결 등록 (delegator_id 미전달)
+        self.client.force_authenticate(user=admin_user)
+        payload = {
+            'delegatee_id': self.user_leader.id,
+            'start_date': '2026-10-12',
+            'end_date': '2026-10-19',
+            'reason': '출장으로 인한 대결 위임',
+            'is_active': True,
+        }
+        res_admin = self.client.post('/api/v1/approval-delegation/', payload)
+        self.assertEqual(res_admin.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(res_admin.data['delegator']['id'], admin_user.id)
+        self.assertEqual(res_admin.data['delegatee']['id'], self.user_leader.id)
+
+        # 3. 일반 사용자(user_leader)가 본인의 대결 등록 (delegator_id 미전달)
+        self.client.force_authenticate(user=self.user_leader)
+        payload_leader = {
+            'delegatee_id': self.user_drafter.id,
+            'start_date': '2026-10-20',
+            'end_date': '2026-10-25',
+            'reason': '휴가',
+            'is_active': True,
+        }
+        res_leader = self.client.post('/api/v1/approval-delegation/', payload_leader)
+        self.assertEqual(res_leader.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(res_leader.data['delegator']['id'], self.user_leader.id)
+        self.assertEqual(res_leader.data['delegatee']['id'], self.user_drafter.id)
+

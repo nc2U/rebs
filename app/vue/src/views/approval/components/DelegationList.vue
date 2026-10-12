@@ -138,7 +138,7 @@ const toggleActive = async (item: ApprovalDelegation) => {
       </CCardHeader>
 
       <CCardBody class="p-0">
-        <CTable hover bordered responsive align="middle">
+        <CTable hover responsive align="middle">
           <CTableHead color="light">
             <CTableRow class="bg-more-light">
               <CTableHeaderCell class="text-center" style="width: 70px">No</CTableHeaderCell>

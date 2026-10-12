@@ -53,8 +53,8 @@ class ApprovalDelegationViewSet(viewsets.ModelViewSet):
         ).select_related('delegator__profile', 'delegatee__profile')
 
     def perform_create(self, serializer):
-        # delegator가 지정되지 않았고 슈퍼유저가 아닌 경우에만 본인을 위임자로 설정
-        if 'delegator' not in serializer.validated_data and not self.request.user.is_superuser:
+        # 슈퍼유저가 명시적으로 다른 delegator를 지정한 경우를 제외하고는 항상 요청 유저를 delegator로 설정
+        if not self.request.user.is_superuser or 'delegator' not in serializer.validated_data:
             serializer.save(delegator=self.request.user)
         else:
             serializer.save()
