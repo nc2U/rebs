@@ -1323,7 +1323,7 @@ class BankScrapingAPITests(LedgerTestBase):
                 }
             ]
 
-            # 1. register_certificate 호출
+            # 1-A. der + key 분리형 호출
             der_file = SimpleUploadedFile("signCert.der", b"fake_der_content", content_type="application/octet-stream")
             key_file = SimpleUploadedFile("signPri.key", b"fake_key_content", content_type="application/octet-stream")
 
@@ -1345,6 +1345,22 @@ class BankScrapingAPITests(LedgerTestBase):
             # 첫 번째 계좌는 기존 com1_bank와 자동 매칭되어야 함
             self.assertEqual(data['accounts'][0]['matched_type'], 'company')
             self.assertEqual(data['accounts'][0]['matched_account_id'], self.com1_bank.id)
+
+            # 1-B. cert_file 단일 통합 파일 (.pfx, .p12, .pt2) 호출
+            single_file = SimpleUploadedFile("company_cert.pt2", b"fake_pfx_content", content_type="application/octet-stream")
+            res_single = self.client.post(
+                '/api/v1/ledger/credentials/register_certificate/',
+                {
+                    'bank_code': '0004',
+                    'login_type': '0',
+                    'password': 'password123!',
+                    'cert_file': single_file
+                },
+                format='multipart'
+            )
+            self.assertEqual(res_single.status_code, http_status.HTTP_200_OK)
+            self.assertEqual(res_single.json()['connected_id'], 'MOCK-CONNECTED-ID-123')
+
 
             # 2. batch_link 호출 (두 계좌 일괄 연동)
             link_payload = {

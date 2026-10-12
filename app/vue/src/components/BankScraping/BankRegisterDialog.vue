@@ -57,6 +57,8 @@ const bankOptions = [
 // Step 1 Form State
 const selectedBank = ref<string>('0004')
 const loginType = ref<'0' | '1'>('0') // '0': 공동인증서, '1': ID/PW
+const certFormat = ref<'single' | 'split'>('single') // 'single': .pfx/.p12/.pt2 단일 파일, 'split': der + key 2개 파일
+const singleCertFile = ref<File | null>(null)
 const loginId = ref<string>('')
 const password = ref<string>('')
 const derFile = ref<File | null>(null)
@@ -98,7 +100,11 @@ const projectOptions = computed(() => {
 const isStep1Valid = computed(() => {
   if (!selectedBank.value || !password.value) return false
   if (loginType.value === '0') {
-    return derFile.value !== null && keyFile.value !== null
+    if (certFormat.value === 'single') {
+      return singleCertFile.value !== null
+    } else {
+      return derFile.value !== null && keyFile.value !== null
+    }
   } else {
     return loginId.value.trim().length > 0
   }
@@ -116,8 +122,12 @@ const handleRegisterCertificate = async () => {
     formData.append('password', password.value)
 
     if (loginType.value === '0') {
-      if (derFile.value) formData.append('der_file', derFile.value)
-      if (keyFile.value) formData.append('key_file', keyFile.value)
+      if (certFormat.value === 'single') {
+        if (singleCertFile.value) formData.append('cert_file', singleCertFile.value)
+      } else {
+        if (derFile.value) formData.append('der_file', derFile.value)
+        if (keyFile.value) formData.append('key_file', keyFile.value)
+      }
     } else {
       formData.append('id', loginId.value)
     }
@@ -125,6 +135,7 @@ const handleRegisterCertificate = async () => {
     const res = await rawStore.registerCertificate(formData)
     connectedId.value = res.connected_id
     discoveredAccounts.value = res.accounts || []
+
 
     // Step 2 링크 상태 초기화
     linkStates.value = {}
@@ -224,6 +235,8 @@ const resetForm = () => {
   currentStep.value = 1
   selectedBank.value = '0004'
   loginType.value = '0'
+  certFormat.value = 'single'
+  singleCertFile.value = null
   loginId.value = ''
   password.value = ''
   derFile.value = null
@@ -358,41 +371,78 @@ onMounted(() => {
 
           <!-- 공동인증서 업로드 영역 -->
           <div v-if="loginType === '0'" class="mt-2 pa-3 bg-grey-lighten-5 border rounded">
-            <div class="text-subtitle-2 font-weight-bold mb-1 d-flex align-center">
-              <v-icon size="18" color="primary" class="mr-1">mdi-file-certificate-outline</v-icon>
-              공동인증서 파일 2종 업로드 (.der & .key)
-            </div>
-            <div class="text-caption text-grey-darken-1 mb-3">
-              💡 PC 하드디스크의 <code>C:\Users\사용자\AppData\LocalLow\NPKI</code> 또는 USB 이동식 디스크의 은행용 인증서 폴더에서
-              <code>signCert.der</code> 파일과 <code>signPri.key</code> 파일을 각각 선택해 주세요.
+            <div class="d-flex align-center justify-space-between mb-2 flex-wrap ga-2">
+              <div class="text-subtitle-2 font-weight-bold d-flex align-center">
+                <v-icon size="18" color="primary" class="mr-1">mdi-file-certificate-outline</v-icon>
+                공동인증서 파일 업로드
+              </div>
+              <v-btn-toggle
+                v-model="certFormat"
+                mandatory
+                density="compact"
+                variant="outlined"
+                color="primary"
+              >
+                <v-btn value="single" size="x-small">
+                  통합 파일 (.pfx / .p12 / .pt2) 추천
+                </v-btn>
+                <v-btn value="split" size="x-small">
+                  폴더 분리형 (.der + .key)
+                </v-btn>
+              </v-btn-toggle>
             </div>
 
-            <v-row dense>
-              <v-col cols="12" sm="6">
-                <v-file-input
-                  v-model="derFile"
-                  accept=".der"
-                  label="인증서 파일 (signCert.der) *"
-                  density="compact"
-                  variant="outlined"
-                  show-size
-                  prepend-icon=""
-                  prepend-inner-icon="mdi-file-document-outline"
-                />
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-file-input
-                  v-model="keyFile"
-                  accept=".key"
-                  label="인증서 개인키 (signPri.key) *"
-                  density="compact"
-                  variant="outlined"
-                  show-size
-                  prepend-icon=""
-                  prepend-inner-icon="mdi-key-variant"
-                />
-              </v-col>
-            </v-row>
+            <!-- 단일 통합 파일 업로드 (.pfx, .p12, .pt2 등) -->
+            <div v-if="certFormat === 'single'">
+              <div class="text-caption text-grey-darken-1 mb-2">
+                💡 은행 인터넷뱅킹 또는 인증센터에서 '인증서 내보내기/백업'으로 저장한 단일 통합 파일(<strong>.pfx</strong>, <strong>.p12</strong>, 또는 <strong>.pt2</strong>) 1개만 선택해 주세요.
+              </div>
+              <v-file-input
+                v-model="singleCertFile"
+                accept=".pfx,.p12,.pt2"
+                label="통합 인증서 파일 (.pfx / .p12 / .pt2) *"
+                density="compact"
+                variant="outlined"
+                show-size
+                prepend-icon=""
+                prepend-inner-icon="mdi-file-lock-outline"
+                placeholder="인증서 백업 파일 선택"
+              />
+            </div>
+
+            <!-- 폴더 분리형 2개 파일 업로드 (.der + .key) -->
+            <div v-else>
+              <div class="text-caption text-grey-darken-1 mb-2">
+                💡 PC의 <code>C:\Users\사용자\AppData\LocalLow\NPKI</code> 또는 USB 이동식 디스크의 은행용 인증서 폴더에서
+                <code>signCert.der</code> 파일과 <code>signPri.key</code> 파일을 각각 선택해 주세요.
+              </div>
+              <v-row dense>
+                <v-col cols="12" sm="6">
+                  <v-file-input
+                    v-model="derFile"
+                    accept=".der"
+                    label="인증서 파일 (signCert.der) *"
+                    density="compact"
+                    variant="outlined"
+                    show-size
+                    prepend-icon=""
+                    prepend-inner-icon="mdi-file-document-outline"
+                  />
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-file-input
+                    v-model="keyFile"
+                    accept=".key"
+                    label="인증서 개인키 (signPri.key) *"
+                    density="compact"
+                    variant="outlined"
+                    show-size
+                    prepend-icon=""
+                    prepend-inner-icon="mdi-key-variant"
+                  />
+                </v-col>
+              </v-row>
+            </div>
           </div>
 
           <!-- 인터넷뱅킹 아이디 영역 -->

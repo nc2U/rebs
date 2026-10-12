@@ -1,4 +1,5 @@
 import base64
+import json
 import logging
 import urllib.parse
 from typing import Any, Dict, List, Optional
@@ -126,21 +127,54 @@ class CodefClient:
 
         try:
             resp = requests.post(url, json=body, headers=headers, timeout=30)
-            res_json = resp.json()
+            raw_text = resp.text.strip() if resp.text else ""
+
+            # CODEF API는 응답 본문 전체를 URL 인코딩(%7B...%7D)하여 반환할 수 있으므로 unquote 처리
+            if raw_text.startswith('%'):
+                decoded_text = urllib.parse.unquote_plus(raw_text)
+            else:
+                decoded_text = raw_text
+
+            try:
+                res_json = json.loads(decoded_text)
+            except json.JSONDecodeError:
+                try:
+                    res_json = resp.json()
+                except Exception:
+                    logger.error("CODEF 응답 JSON 파싱 실패 (HTTP %d): %s", resp.status_code, raw_text[:500])
+                    raise CodefException("PARSE_ERROR", f"CODEF 응답을 JSON으로 파싱할 수 없습니다 (HTTP {resp.status_code})", raw_text[:200])
 
             # URL 디코딩 처리 (CODEF는 일부 응답 문자열을 URL 인코딩하여 반환할 수 있음)
             result = res_json.get("result", {})
             code = result.get("code", "")
-            message = result.get("message", "")
-            extra_msg = result.get("extraMessage", "")
+            raw_msg = result.get("message", "")
+            message = urllib.parse.unquote_plus(raw_msg) if raw_msg else ""
+            raw_extra = result.get("extraMessage", "")
+            extra_msg = urllib.parse.unquote_plus(raw_extra) if raw_extra else ""
+
+            # data 내부의 errorList 확인 (계정 등록 등에서 실패한 세부 항목 정보)
+            data_part = res_json.get("data", {})
+            if isinstance(data_part, dict) and "errorList" in data_part:
+                err_items = data_part.get("errorList", [])
+                if err_items:
+                    detail_msgs = []
+                    for item in err_items:
+                        item_msg = urllib.parse.unquote_plus(item.get("message", ""))
+                        item_extra = urllib.parse.unquote_plus(item.get("extraMessage", ""))
+                        detail_msgs.append(f"{item_msg}" + (f" ({item_extra})" if item_extra else ""))
+                    if detail_msgs:
+                        joined_detail = "; ".join(detail_msgs)
+                        extra_msg = f"{extra_msg} [{joined_detail}]" if extra_msg else joined_detail
 
             # 성공 코드: CF-00000
             if code == "CF-00000":
                 return res_json.get("data", {})
             else:
-                logger.warning("CODEF API 응답 오류 [%s]: %s (추가: %s)", code, message, extra_msg)
+                logger.warning("CODEF API 응답 오류 [%s]: %s (추가: %s) / 원본 데이터: %s", code, message, extra_msg, res_json)
                 raise CodefException(code=code, message=message, extra_message=extra_msg)
 
+        except CodefException:
+            raise
         except requests.RequestException as e:
             logger.error("CODEF API 요청 통신 오류: %s", str(e))
             raise CodefException("NETWORK_ERROR", f"CODEF API 호출 실패 ({endpoint})", str(e))

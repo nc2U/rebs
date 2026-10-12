@@ -1369,6 +1369,7 @@ class BankApiCredentialViewSet(viewsets.ModelViewSet):
         login_type = serializer.validated_data['login_type']
         raw_id = serializer.validated_data.get('id', '')
         password = serializer.validated_data['password']
+        cert_file = serializer.validated_data.get('cert_file')
         der_file = serializer.validated_data.get('der_file')
         key_file = serializer.validated_data.get('key_file')
 
@@ -1382,29 +1383,42 @@ class BankApiCredentialViewSet(viewsets.ModelViewSet):
             "loginType": login_type,
         }
 
-        if login_type == '0':  # 공동인증서
-            if not der_file or not key_file:
-                return Response(
-                    {'error': '공동인증서 파일(der 및 key)을 모두 업로드해야 합니다.'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            der_b64 = base64.b64encode(der_file.read()).decode('utf-8')
-            key_b64 = base64.b64encode(key_file.read()).decode('utf-8')
-            account_item['derFile'] = der_b64
-            account_item['keyFile'] = key_b64
-            account_item['password'] = client.encrypt_rsa(password)
-        else:  # 아이디/비밀번호
-            if not raw_id:
-                return Response({'error': '인터넷뱅킹 아이디를 입력해야 합니다.'}, status=status.HTTP_400_BAD_REQUEST)
-            account_item['id'] = raw_id
-            account_item['password'] = client.encrypt_rsa(password)
-
         try:
+            if login_type == '0':  # 공동인증서
+                if cert_file:  # 통합 인증서 포맷 (.pfx, .p12, .pt2 등)
+                    cert_b64 = base64.b64encode(cert_file.read()).decode('utf-8')
+                    account_item['certType'] = 'pfx'
+                    account_item['certFile'] = cert_b64
+                    account_item['password'] = client.encrypt_rsa(password)
+                elif der_file and key_file:  # der + key 분리 포맷
+                    der_b64 = base64.b64encode(der_file.read()).decode('utf-8')
+                    key_b64 = base64.b64encode(key_file.read()).decode('utf-8')
+                    account_item['certType'] = '1'
+                    account_item['derFile'] = der_b64
+                    account_item['keyFile'] = key_b64
+                    account_item['password'] = client.encrypt_rsa(password)
+                else:
+                    return Response(
+                        {'error': '통합 인증서 파일(.pfx, .p12, .pt2) 또는 der/key 파일 쌍을 업로드해야 합니다.'},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+            else:  # 아이디/비밀번호
+                if not raw_id:
+                    return Response({'error': '인터넷뱅킹 아이디를 입력해야 합니다.'}, status=status.HTTP_400_BAD_REQUEST)
+                account_item['id'] = raw_id
+                account_item['password'] = client.encrypt_rsa(password)
+
             connected_id = client.create_account([account_item])
         except CodefException as ce:
-            return Response({'error': f"CODEF 계정 등록 실패 [{ce.code}]: {ce.message}"}, status=status.HTTP_400_BAD_REQUEST)
+            msg = f"CODEF 계정 등록 실패 [{ce.code}]: {ce.message}"
+            if ce.extra_message:
+                msg += f" ({ce.extra_message})"
+            return Response({'error': msg}, status=status.HTTP_400_BAD_REQUEST)
+        except ValueError as ve:
+            return Response({'error': f"CODEF 설정 오류: {str(ve)} (.env 파일 설정을 확인해 주세요)"}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'error': f"계정 등록 중 오류가 발생했습니다: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
 
         # 즉시 해당 은행의 보유 계좌 목록 조회
         try:

@@ -1258,6 +1258,8 @@ class BankCertificateRegisterSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=255, required=True, help_text="인증서 또는 뱅킹 비밀번호")
     der_file = serializers.FileField(required=False, allow_null=True)
     key_file = serializers.FileField(required=False, allow_null=True)
+    cert_file = serializers.FileField(required=False, allow_null=True, help_text="통합 인증서 파일 (.pfx, .p12, .pt2 등)")
+
 
 
 class BankCredentialBatchLinkItemSerializer(serializers.Serializer):
