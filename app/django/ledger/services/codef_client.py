@@ -208,3 +208,37 @@ class CodefClient:
                 or []
             )
         return []
+
+    def fetch_account_list(
+        self,
+        connected_id: str,
+        organization: str,
+        is_business: bool = True
+    ) -> List[Dict[str, Any]]:
+        """
+        보유 은행 계좌 목록 조회 API (/v1/kr/bank/b/account/list 또는 /p/account/list)
+        
+        Args:
+            connected_id: 계정 등록 식별자
+            organization: 은행 기관코드 (예: '0004' 국민, '0088' 신한 등)
+            is_business: True면 법인(/b/), False면 개인(/p/)
+        """
+        client_type = "b" if is_business else "p"
+        endpoint = f"/v1/kr/bank/{client_type}/account/list"
+        body = {
+            "connectedId": connected_id,
+            "organization": organization
+        }
+        data = self._request(endpoint, body)
+
+        if isinstance(data, list):
+            return data
+        elif isinstance(data, dict):
+            return (
+                data.get("resAccountList")
+                or data.get("resList")
+                or data.get("resAccountTrList")
+                or []
+            )
+        return []
+

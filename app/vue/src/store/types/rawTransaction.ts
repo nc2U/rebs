@@ -71,3 +71,36 @@ export interface RawTransactionFilter {
   sort_type?: string
   search?: string
 }
+
+export interface BankDiscoveredAccount {
+  account_number: string
+  account_name: string
+  holder: string
+  balance: number | null
+  matched_type: 'company' | 'project' | null
+  matched_account_id: number | null
+  matched_account_alias: string | null
+  company_id: number | null
+  project_id: number | null
+  is_imprest: boolean
+  is_already_registered: boolean
+}
+
+export interface RegisterCertificateResponse {
+  connected_id: string
+  bank_code: string
+  accounts: BankDiscoveredAccount[]
+}
+
+export interface BatchLinkAccountItem {
+  account_number: string
+  account_name?: string
+  holder?: string
+  target_type: 'company' | 'project'
+  company_id?: number | null
+  project_id?: number | null
+  is_imprest?: boolean
+  existing_account_id?: number | null
+  alias_name?: string
+}
+

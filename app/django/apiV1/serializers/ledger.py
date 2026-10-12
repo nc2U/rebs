@@ -1249,3 +1249,34 @@ class RawBankTransactionBulkConfirmSerializer(serializers.Serializer):
     """일괄 승인 요청용 Serializer"""
     min_confidence = serializers.IntegerField(required=False, default=90)
 
+
+class BankCertificateRegisterSerializer(serializers.Serializer):
+    """공동인증서/계정 등록 및 보유 계좌 조회 요청 Serializer"""
+    bank_code = serializers.CharField(max_length=10, help_text="CODEF 은행 기관코드 (예: 0004, 0088)")
+    login_type = serializers.ChoiceField(choices=[('0', '공동인증서'), ('1', '아이디/비밀번호')], default='0')
+    id = serializers.CharField(max_length=100, required=False, allow_blank=True, default='')
+    password = serializers.CharField(max_length=255, required=True, help_text="인증서 또는 뱅킹 비밀번호")
+    der_file = serializers.FileField(required=False, allow_null=True)
+    key_file = serializers.FileField(required=False, allow_null=True)
+
+
+class BankCredentialBatchLinkItemSerializer(serializers.Serializer):
+    """일괄 연동 대상 개별 계좌 항목 Serializer"""
+    account_number = serializers.CharField(max_length=50)
+    account_name = serializers.CharField(max_length=100, required=False, allow_blank=True, default='')
+    holder = serializers.CharField(max_length=50, required=False, allow_blank=True, default='')
+    target_type = serializers.ChoiceField(choices=[('company', '본사 계좌'), ('project', '프로젝트 계좌')])
+    company_id = serializers.IntegerField(required=False, allow_null=True)
+    project_id = serializers.IntegerField(required=False, allow_null=True)
+    is_imprest = serializers.BooleanField(required=False, default=False)
+    existing_account_id = serializers.IntegerField(required=False, allow_null=True)
+    alias_name = serializers.CharField(max_length=50, required=False, allow_blank=True, default='')
+
+
+class BankCredentialBatchLinkSerializer(serializers.Serializer):
+    """보유 계좌 일괄 등록/연동 Serializer"""
+    connected_id = serializers.CharField(max_length=100)
+    bank_code = serializers.CharField(max_length=10)
+    items = serializers.ListField(child=BankCredentialBatchLinkItemSerializer())
+
+

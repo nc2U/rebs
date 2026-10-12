@@ -4,6 +4,7 @@ import { useRawTransaction } from '@/store/pinia/rawTransaction'
 import { useProLedger } from '@/store/pinia/proLedger'
 import { useComLedger } from '@/store/pinia/comLedger'
 import type { RawBankTransaction } from '@/store/types/rawTransaction'
+import BankRegisterDialog from './BankRegisterDialog.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -28,7 +29,9 @@ const rawStore = useRawTransaction()
 const proLedgerStore = useProLedger()
 const comLedgerStore = useComLedger()
 
+const isBankRegisterOpen = ref<boolean>(false)
 const selectedCredential = ref<number | null>(null)
+
 const selectedStatus = ref<string>('ready')
 const imprestFilter = ref<'all' | 'trust' | 'imprest'>('all')
 const selectedAccounts = ref<Record<number, number | null>>({})
@@ -265,7 +268,18 @@ onMounted(() => {
             </v-chip>
           </span>
         </div>
-        <v-btn icon="mdi-close" variant="text" size="small" @click="emit('update:modelValue', false)" />
+        <div class="d-flex align-center ga-2">
+          <v-btn
+            color="primary"
+            variant="tonal"
+            size="small"
+            prepend-icon="mdi-shield-key-outline"
+            @click="isBankRegisterOpen = true"
+          >
+            + 새 계좌/인증서 연동
+          </v-btn>
+          <v-btn icon="mdi-close" variant="text" size="small" @click="emit('update:modelValue', false)" />
+        </div>
       </v-card-title>
 
       <!-- 툴바 컨트롤러 -->
@@ -527,5 +541,12 @@ onMounted(() => {
         </v-btn>
       </v-card-actions>
     </v-card>
+
+    <BankRegisterDialog
+      v-model="isBankRegisterOpen"
+      :company-id="props.companyId"
+      :project-id="props.projectId"
+      @registered="loadData"
+    />
   </v-dialog>
 </template>

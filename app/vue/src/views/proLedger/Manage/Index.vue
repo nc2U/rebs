@@ -23,10 +23,12 @@ import AddProTrans from './components/AddProTrans.vue'
 import ProTransList from './components/ProTransList.vue'
 import ProTransForm from './components/ProTransForm.vue'
 import BankScrapingDialog from './components/BankScrapingDialog.vue'
+import BankRegisterDialog from '@/components/BankScraping/BankRegisterDialog.vue'
 
 const { can, PERM } = usePerms()
 const canLedgerCreate = computed(() => can(PERM.LEDGER_CREATE))
 const isBankScrapingOpen = ref(false)
+const isBankRegisterOpen = ref(false)
 
 const listControl = ref()
 const [route, router] = [useRoute() as Loaded & { name: string }, useRouter()]
@@ -255,6 +257,7 @@ onBeforeRouteLeave(() => {
             v-if="canLedgerCreate"
             :project="project as number"
             @open-scraping="isBankScrapingOpen = true"
+            @open-register="isBankRegisterOpen = true"
           />
 
           <TableTitleRow
@@ -287,10 +290,18 @@ onBeforeRouteLeave(() => {
             @page-select="pageSelect"
           />
 
+          <!-- 은행 거래 AI 가져오기 다이얼로그 (프로젝트 모드) -->
           <BankScrapingDialog
             v-model="isBankScrapingOpen"
             :project-id="project as number"
             @confirmed="fetchProBankTransList({ ...dataFilter })"
+          />
+
+          <!-- 공동인증서/은행 계좌 등록 다이얼로그 (프로젝트 모드) -->
+          <BankRegisterDialog
+            v-model="isBankRegisterOpen"
+            :project-id="project as number"
+            @registered="fetchProBankTransList({ ...dataFilter })"
           />
         </div>
 

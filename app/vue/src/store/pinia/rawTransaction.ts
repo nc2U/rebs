@@ -118,6 +118,31 @@ export const useRawTransaction = defineStore('rawTransaction', () => {
     }
   }
 
+  const registerCertificate = async (formData: FormData): Promise<any> => {
+    try {
+      const res = await api.post('/ledger/credentials/register_certificate/', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      message('success', '계정 등록 완료', `총 ${res.data.accounts?.length || 0}개의 보유 계좌를 조회했습니다.`)
+      return res.data
+    } catch (err: any) {
+      errorHandle(err.response?.data)
+      throw err
+    }
+  }
+
+  const batchLinkCredentials = async (payload: any) => {
+    try {
+      const res = await api.post('/ledger/credentials/batch_link/', payload)
+      message('success', '계좌 연동 완료', `${res.data.linked_count}개 계좌가 시스템에 정상 연동되었습니다.`)
+      await fetchCredentialList()
+      return res.data
+    } catch (err: any) {
+      errorHandle(err.response?.data)
+      throw err
+    }
+  }
+
   return {
     rawTransList,
     rawTransCount,
@@ -129,5 +154,8 @@ export const useRawTransaction = defineStore('rawTransaction', () => {
     bulkConfirm,
     syncCredential,
     syncAllCredentials,
+    registerCertificate,
+    batchLinkCredentials,
   }
 })
+
