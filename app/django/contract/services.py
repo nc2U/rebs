@@ -461,12 +461,19 @@ class ContractorRegistrationService:
             Contractor 인스턴스
         """
 
+        # 차수 종류에 따른 등록상태(qualification) 기본값 처리:
+        # 일반분양(sort='2')이면 무조건 일반('1'), 조합(sort='1')이면 전달값 또는 기본 미인가('2')
+        if contract.order_group and contract.order_group.sort == '2':
+            qualification = '1'
+        else:
+            qualification = data.get('qualification') or '2'
+
         contractor = Contractor.objects.create(
             contract=contract,
             name=data.get('name'),
             birth_date=clean_date_value(data.get('birth_date')),
             gender=data.get('gender'),
-            qualification=data.get('qualification') or '1',
+            qualification=qualification,
             status=data.get('status', '1'),  # 프론트에서 'status' 키로 전송
             change_type=data.get('change_type'),
             reservation_date=clean_date_value(data.get('reservation_date')),
@@ -513,7 +520,10 @@ class ContractorRegistrationService:
         # 계약자 기본 정보 수정
         contractor.name = data.get('name')
         contractor.gender = data.get('gender')
-        contractor.qualification = data.get('qualification') or '1'
+        if contractor.contract and contractor.contract.order_group and contractor.contract.order_group.sort == '2':
+            contractor.qualification = '1'
+        else:
+            contractor.qualification = data.get('qualification') or contractor.qualification or '2'
         contractor.status = data.get('status', '1')  # 프론트에서 'status' 키로 전송
         contractor.change_type = data.get('change_type')
         contractor.note = data.get('note', '')
