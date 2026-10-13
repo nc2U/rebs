@@ -21,6 +21,20 @@ body.dark-theme {
   border-radius: 2px !important; // 혹은 프로젝트 기존 스타일
 }
 
+/* 다크모드에서 v-btn variant="tonal" 글자색 및 아이콘 가독성 확보 */
+body.dark-theme,
+.dark-theme {
+  .v-btn.v-btn--variant-tonal,
+  .v-btn--variant-tonal {
+    color: #ffffff !important;
+
+    .v-btn__content,
+    .v-icon {
+      color: #ffffff !important;
+    }
+  }
+}
+
 /* 2. v-radio 및 v-checkbox / v-checkbox-btn 정렬 보정 */
 .v-radio-group .v-selection-control-group {
   display: flex !important;

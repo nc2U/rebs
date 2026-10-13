@@ -21,7 +21,7 @@ const emit = defineEmits<{
       공동인증서/계좌 연동
     </v-btn>
     <v-btn
-      color="indigo"
+      color="teal"
       variant="flat"
       :disabled="!project"
       prepend-icon="mdi-bank-transfer-in"
