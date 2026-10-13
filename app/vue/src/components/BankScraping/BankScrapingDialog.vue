@@ -113,10 +113,10 @@ const displayedTransactions = computed(() => {
 })
 
 // 고신뢰도(90% 이상) 대기 건수
-const highConfidenceCount = computed(() =>
-  displayedTransactions.value.filter(
-    t => t.status === 'ready' && t.confidence_score >= 90,
-  ).length,
+const highConfidenceCount = computed(
+  () =>
+    displayedTransactions.value.filter(t => t.status === 'ready' && t.confidence_score >= 90)
+      .length,
 )
 
 const loadData = async () => {
@@ -215,11 +215,8 @@ const handleConfirm = async (tx: RawBankTransaction) => {
   try {
     const customAccount =
       selectedAccounts.value[tx.pk] ||
-      (props.mode === 'company'
-        ? tx.suggested_company_account
-        : tx.suggested_project_account)
-    const customContract =
-      props.mode === 'project' ? tx.suggested_contract : null
+      (props.mode === 'company' ? tx.suggested_company_account : tx.suggested_project_account)
+    const customContract = props.mode === 'project' ? tx.suggested_contract : null
 
     await rawStore.confirmRawTransaction(tx.pk, customAccount, customContract)
     await fetchTransactions()
@@ -232,11 +229,7 @@ const handleConfirm = async (tx: RawBankTransaction) => {
 // 90% 이상 고신뢰도 일괄 승인
 const handleBulkConfirm = async () => {
   if (highConfidenceCount.value === 0) return
-  if (
-    !confirm(
-      `신뢰도 90% 이상인 ${highConfidenceCount.value}건의 거래를 일괄 승인하시겠습니까?`,
-    )
-  )
+  if (!confirm(`신뢰도 90% 이상인 ${highConfidenceCount.value}건의 거래를 일괄 승인하시겠습니까?`))
     return
 
   try {
@@ -266,15 +259,25 @@ onMounted(() => {
     scrollable
     @update:model-value="emit('update:modelValue', $event)"
   >
-    <v-card class="pa-2">
+    <v-card class="pa-2 bg-more-white text-body">
       <!-- 헤더 -->
       <v-card-title class="d-flex align-center justify-space-between pb-2 border-b">
         <div class="d-flex align-center">
           <v-icon color="primary" class="mr-2">mdi-bank-transfer-in</v-icon>
           <span class="text-h6 font-weight-bold">
             은행 거래내역 자동 수집 & AI 회계 분류 검토
-            <v-chip size="small" :color="mode === 'company' ? 'info' : props.isImprest ? 'teal' : 'primary'" class="ml-2 font-weight-bold">
-              {{ mode === 'company' ? '본사 회계 관리' : props.isImprest ? '운영비(전도금) 관리' : '프로젝트 출납/원장' }}
+            <v-chip
+              size="small"
+              :color="mode === 'company' ? 'info' : props.isImprest ? 'teal' : 'primary'"
+              class="ml-2 font-weight-bold"
+            >
+              {{
+                mode === 'company'
+                  ? '본사 회계 관리'
+                  : props.isImprest
+                    ? '운영비(전도금) 관리'
+                    : '프로젝트 출납/원장'
+              }}
             </v-chip>
           </span>
         </div>
@@ -288,7 +291,12 @@ onMounted(() => {
           >
             + 새 계좌/인증서 연동
           </v-btn>
-          <v-btn icon="mdi-close" variant="text" size="small" @click="emit('update:modelValue', false)" />
+          <v-btn
+            icon="mdi-close"
+            variant="text"
+            size="small"
+            @click="emit('update:modelValue', false)"
+          />
         </div>
       </v-card-title>
 
@@ -299,10 +307,7 @@ onMounted(() => {
           <v-col cols="12" sm="4" md="3">
             <v-select
               v-model="selectedCredential"
-              :items="[
-                { pk: null, account_alias: '전체 계좌 보기' },
-                ...filteredCredentials,
-              ]"
+              :items="[{ pk: null, account_alias: '전체 계좌 보기' }, ...filteredCredentials]"
               item-title="account_alias"
               item-value="pk"
               label="연동 계좌 선택"
@@ -371,6 +376,7 @@ onMounted(() => {
             <v-btn
               color="primary"
               variant="flat"
+              size="large"
               density="compact"
               prepend-icon="mdi-sync"
               :loading="isSyncingAll"
@@ -385,6 +391,7 @@ onMounted(() => {
               v-if="selectedCredential"
               color="primary"
               variant="outlined"
+              size="large"
               density="compact"
               prepend-icon="mdi-bank-sync"
               :loading="isSyncingSingle"
@@ -397,6 +404,7 @@ onMounted(() => {
             <v-btn
               color="success"
               variant="elevated"
+              size="large"
               density="compact"
               prepend-icon="mdi-check-all"
               :disabled="highConfidenceCount === 0"
@@ -434,7 +442,8 @@ onMounted(() => {
             </tr>
             <tr v-else-if="displayedTransactions.length === 0">
               <td :colspan="mode === 'project' ? 8 : 7" class="text-center py-6 text-grey">
-                조회된 거래내역이 없습니다. (상단의 [전체 일괄 수집] 버튼을 눌러 은행 거래를 가져오세요)
+                조회된 거래내역이 없습니다. (상단의 [전체 일괄 수집] 버튼을 눌러 은행 거래를
+                가져오세요)
               </td>
             </tr>
             <tr
@@ -445,7 +454,9 @@ onMounted(() => {
               <!-- 일시 -->
               <td class="text-center text-caption font-weight-medium">
                 <div>{{ tx.deal_date }}</div>
-                <div class="text-grey text-caption" style="font-size: 11px">{{ tx.deal_time || '' }}</div>
+                <div class="text-grey text-caption" style="font-size: 11px">
+                  {{ tx.deal_time || '' }}
+                </div>
               </td>
 
               <!-- 구분 -->
@@ -461,16 +472,27 @@ onMounted(() => {
               </td>
 
               <!-- 금액 -->
-              <td class="text-right font-weight-bold" :class="tx.sort_type === 'deposit' ? 'text-primary' : 'text-error'">
+              <td
+                class="text-right font-weight-bold"
+                :class="tx.sort_type === 'deposit' ? 'text-primary' : 'text-error'"
+              >
                 {{ (tx.amount || 0).toLocaleString() }}원
               </td>
 
               <!-- 거래처 / 적요 -->
               <td class="text-left">
-                <div class="font-weight-bold text-truncate" style="max-width: 170px" :title="tx.client_name">
+                <div
+                  class="font-weight-bold text-truncate"
+                  style="max-width: 170px"
+                  :title="tx.client_name"
+                >
                   {{ tx.client_name || '-' }}
                 </div>
-                <div class="text-caption text-grey text-truncate" style="max-width: 170px" :title="tx.content">
+                <div
+                  class="text-caption text-grey text-truncate"
+                  style="max-width: 170px"
+                  :title="tx.content"
+                >
                   {{ tx.content || '-' }}
                 </div>
               </td>
@@ -488,7 +510,11 @@ onMounted(() => {
                   placeholder="계정 선택"
                 />
                 <span v-else class="text-caption font-weight-medium text-success">
-                  {{ mode === 'company' ? tx.suggested_company_account_name : tx.suggested_project_account_name || '반영 완료' }}
+                  {{
+                    mode === 'company'
+                      ? tx.suggested_company_account_name
+                      : tx.suggested_project_account_name || '반영 완료'
+                  }}
                 </span>
               </td>
 
@@ -496,7 +522,10 @@ onMounted(() => {
               <td v-if="mode === 'project'" class="text-left">
                 <div v-if="tx.suggested_contract_name" class="d-flex align-center">
                   <v-icon size="small" color="success" class="mr-1">mdi-home-check</v-icon>
-                  <span class="text-caption font-weight-bold text-truncate" style="max-width: 140px">
+                  <span
+                    class="text-caption font-weight-bold text-truncate"
+                    style="max-width: 140px"
+                  >
                     {{ tx.suggested_contract_name }}
                   </span>
                 </div>
@@ -514,7 +543,11 @@ onMounted(() => {
                   >
                     {{ tx.confidence_score }}%
                   </v-chip>
-                  <span class="text-caption text-truncate" style="max-width: 250px" :title="tx.ai_reason">
+                  <span
+                    class="text-caption text-truncate"
+                    style="max-width: 250px"
+                    :title="tx.ai_reason"
+                  >
                     {{ tx.ai_reason || '-' }}
                   </span>
                 </div>
@@ -532,9 +565,7 @@ onMounted(() => {
                 >
                   승인
                 </v-btn>
-                <v-chip v-else size="x-small" color="grey" variant="tonal">
-                  완료
-                </v-chip>
+                <v-chip v-else size="x-small" color="grey" variant="tonal"> 완료 </v-chip>
               </td>
             </tr>
           </tbody>
@@ -542,11 +573,12 @@ onMounted(() => {
       </v-card-text>
 
       <!-- 푸터 -->
-      <v-card-actions class="d-flex justify-space-between px-4 py-2 border-t bg-grey-lighten-4">
+      <v-card-actions class="d-flex justify-space-between px-4 py-2 border-t bg-more-light">
         <div class="text-caption text-grey-darken-1">
-          * 은행 API 수집 거래는 임시 버퍼에 안전하게 보관되며, [승인] 시 정식 출납 장부로 반영됩니다.
+          * 은행 API 수집 거래는 임시 버퍼에 안전하게 보관되며, [승인] 시 정식 출납 장부로
+          반영됩니다.
         </div>
-        <v-btn variant="text" size="small" @click="emit('update:modelValue', false)">
+        <v-btn variant="flat" color="light" size="small" @click="emit('update:modelValue', false)">
           닫기
         </v-btn>
       </v-card-actions>

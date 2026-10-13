@@ -187,7 +187,6 @@ const handleRegisterCertificate = async () => {
     connectedId.value = res.connected_id
     discoveredAccounts.value = res.accounts || []
 
-
     // Step 2 링크 상태 초기화
     linkStates.value = {}
     selectedAccountIndexes.value = []
@@ -206,10 +205,12 @@ const handleRegisterCertificate = async () => {
 
       if (acc.matched_type === 'company') {
         target_type = 'company'
-        target_company = acc.company_id || props.companyId || (companyOptions.value[0]?.value ?? null)
+        target_company =
+          acc.company_id || props.companyId || (companyOptions.value[0]?.value ?? null)
       } else if (acc.matched_type === 'project') {
         target_type = 'project'
-        target_project = acc.project_id || props.projectId || (projectOptions.value[0]?.value ?? null)
+        target_project =
+          acc.project_id || props.projectId || (projectOptions.value[0]?.value ?? null)
         is_imprest = acc.is_imprest
       } else {
         // 미매칭 시 props의 컨텍스트 우선
@@ -231,7 +232,8 @@ const handleRegisterCertificate = async () => {
         project_id: target_project,
         is_imprest,
         existing_account_id: acc.matched_account_id,
-        alias_name: acc.matched_account_alias || acc.account_name || `계좌 ${acc.account_number.slice(-4)}`,
+        alias_name:
+          acc.matched_account_alias || acc.account_name || `계좌 ${acc.account_number.slice(-4)}`,
       }
     })
 
@@ -323,7 +325,7 @@ onMounted(() => {
     persistent
     @update:model-value="emit('update:modelValue', $event)"
   >
-    <v-card class="pa-2">
+    <v-card class="pa-2 bg-more-white text-body">
       <!-- 헤더 -->
       <v-card-title class="d-flex align-center justify-space-between pb-3 border-b">
         <div class="d-flex align-center">
@@ -332,7 +334,12 @@ onMounted(() => {
             은행 계좌 자동 연동 (공동인증서 / 계정 등록 마법사)
           </span>
         </div>
-        <v-btn icon="mdi-close" variant="text" size="small" @click="emit('update:modelValue', false)" />
+        <v-btn
+          icon="mdi-close"
+          variant="text"
+          size="small"
+          @click="emit('update:modelValue', false)"
+        />
       </v-card-title>
 
       <!-- 단계 안내 배너 -->
@@ -341,14 +348,21 @@ onMounted(() => {
           <v-col cols="12">
             <v-sheet
               rounded="lg"
-              class="d-flex align-center justify-space-around py-3 px-4 bg-grey-lighten-4 border"
+              class="d-flex align-center justify-space-around py-3 px-4 bg-more-light border"
             >
               <div class="d-flex align-center ga-2">
-                <v-avatar size="28" :color="currentStep === 1 ? 'primary' : 'grey-lighten-1'" class="text-white font-weight-bold">
+                <v-avatar
+                  size="28"
+                  :color="currentStep === 1 ? 'primary' : 'grey-lighten-1'"
+                  class="text-white font-weight-bold"
+                >
                   1
                 </v-avatar>
                 <div>
-                  <div class="font-weight-bold" :class="currentStep === 1 ? 'text-primary' : 'text-grey'">
+                  <div
+                    class="font-weight-bold"
+                    :class="currentStep === 1 ? 'text-primary' : 'text-grey'"
+                  >
                     은행 및 인증서 등록
                   </div>
                   <div class="text-caption text-grey">인증서 업로드 및 Connected ID 발급</div>
@@ -358,11 +372,18 @@ onMounted(() => {
               <v-icon color="grey-lighten-1">mdi-chevron-right</v-icon>
 
               <div class="d-flex align-center ga-2">
-                <v-avatar size="28" :color="currentStep === 2 ? 'primary' : 'grey-lighten-1'" class="text-white font-weight-bold">
+                <v-avatar
+                  size="28"
+                  :color="currentStep === 2 ? 'primary' : 'grey-lighten-1'"
+                  class="text-white font-weight-bold"
+                >
                   2
                 </v-avatar>
                 <div>
-                  <div class="font-weight-bold" :class="currentStep === 2 ? 'text-primary' : 'text-grey'">
+                  <div
+                    class="font-weight-bold"
+                    :class="currentStep === 2 ? 'text-primary' : 'text-grey'"
+                  >
                     보유 계좌 확인 및 매핑
                   </div>
                   <div class="text-caption text-grey">발견된 계좌를 본사/프로젝트에 일괄 연결</div>
@@ -383,8 +404,9 @@ onMounted(() => {
             icon="mdi-shield-check"
             class="mb-4 text-caption"
           >
-            <strong>보안 안내:</strong> 업로드하신 공동인증서 파일 및 비밀번호는 서버에 절대 영구 저장되지 않으며,
-            메모리 상에서 코드에프(CODEF) 인증 식별키(Connected ID) 발급 요청 1회에 한해 사용된 후 즉시 안전하게 소멸됩니다.
+            <strong>보안 안내:</strong> 업로드하신 공동인증서 파일 및 비밀번호는 서버에 절대 영구
+            저장되지 않으며, 메모리 상에서 코드에프(CODEF) 인증 식별키(Connected ID) 발급 요청 1회에
+            한해 사용된 후 즉시 안전하게 소멸됩니다.
           </v-alert>
 
           <v-row dense>
@@ -408,12 +430,12 @@ onMounted(() => {
                 color="primary"
                 density="compact"
                 variant="outlined"
-                class="w-100"
+                class="w-100 text-body"
               >
                 <v-btn value="0" size="small" class="flex-grow-1" prepend-icon="mdi-certificate">
                   법인 공동인증서
                 </v-btn>
-                <v-btn value="fast" size="small" class="flex-grow-1 text-teal-darken-2 font-weight-bold" prepend-icon="mdi-flash">
+                <v-btn value="fast" size="small" class="flex-grow-1" prepend-icon="mdi-flash">
                   신탁/조합 빠른조회
                 </v-btn>
                 <v-btn value="1" size="small" class="flex-grow-1" prepend-icon="mdi-account-key">
@@ -424,9 +446,90 @@ onMounted(() => {
           </v-row>
 
           <!-- ============================================== -->
-          <!-- A. 신탁사/조합 빠른조회 폼 (인증서 불필요) -->
+          <!-- A. 공동인증서 업로드 영역 -->
           <!-- ============================================== -->
-          <div v-if="loginType === 'fast'" class="mt-2 pa-3 bg-teal-lighten-5 border border-teal rounded">
+          <div v-if="loginType === '0'" class="mt-2 pa-3 bg-more-light border rounded">
+            <div class="d-flex align-center justify-space-between mb-2 flex-wrap ga-2">
+              <div class="text-subtitle-2 font-weight-bold d-flex align-center">
+                <v-icon size="18" color="primary" class="mr-1">mdi-file-certificate-outline</v-icon>
+                공동인증서 파일 업로드
+              </div>
+              <v-btn-toggle
+                v-model="certFormat"
+                mandatory
+                density="compact"
+                variant="outlined"
+                color="primary"
+                class="text-body"
+              >
+                <v-btn value="single" size="x-small"> 통합 파일 (.pfx / .p12 / .pt2) 추천 </v-btn>
+                <v-btn value="split" size="x-small"> 폴더 분리형 (.der + .key) </v-btn>
+              </v-btn-toggle>
+            </div>
+
+            <!-- 단일 통합 파일 업로드 (.pfx, .p12, .pt2 등) -->
+            <div v-if="certFormat === 'single'">
+              <div class="text-caption text-grey-darken-1 mb-2">
+                💡 은행 인터넷뱅킹 또는 인증센터에서 '인증서 내보내기/백업'으로 저장한 단일 통합
+                파일(<strong>.pfx</strong>, <strong>.p12</strong>, 또는 <strong>.pt2</strong>) 1개만
+                선택해 주세요.
+              </div>
+              <v-file-input
+                v-model="singleCertFile"
+                accept=".pfx,.p12,.pt2"
+                label="통합 인증서 파일 (.pfx / .p12 / .pt2) *"
+                density="compact"
+                variant="outlined"
+                show-size
+                prepend-icon=""
+                prepend-inner-icon="mdi-file-lock-outline"
+                placeholder="인증서 백업 파일 선택"
+              />
+            </div>
+
+            <!-- 폴더 분리형 2개 파일 업로드 (.der + .key) -->
+            <div v-else>
+              <div class="text-caption text-grey-darken-1 mb-2">
+                💡 PC의 <code>C:\Users\사용자\AppData\LocalLow\NPKI</code> 또는 USB 이동식 디스크의
+                은행용 인증서 폴더에서 <code>signCert.der</code> 파일과
+                <code>signPri.key</code> 파일을 각각 선택해 주세요.
+              </div>
+              <v-row dense>
+                <v-col cols="12" sm="6">
+                  <v-file-input
+                    v-model="derFile"
+                    accept=".der"
+                    label="인증서 파일 (signCert.der) *"
+                    density="compact"
+                    variant="outlined"
+                    show-size
+                    prepend-icon=""
+                    prepend-inner-icon="mdi-file-document-outline"
+                  />
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-file-input
+                    v-model="keyFile"
+                    accept=".key"
+                    label="인증서 개인키 (signPri.key) *"
+                    density="compact"
+                    variant="outlined"
+                    show-size
+                    prepend-icon=""
+                    prepend-inner-icon="mdi-key-variant"
+                  />
+                </v-col>
+              </v-row>
+            </div>
+          </div>
+
+          <!-- ============================================== -->
+          <!-- B. 신탁사/조합 빠른조회 폼 (인증서 불필요) -->
+          <!-- ============================================== -->
+          <div
+            v-else-if="loginType === 'fast'"
+            class="mt-2 pa-3 bg-more-light border border-teal rounded"
+          >
             <div class="d-flex align-center mb-2">
               <v-icon size="20" color="teal-darken-2" class="mr-1">mdi-bank-check</v-icon>
               <span class="text-subtitle-2 font-weight-bold text-teal-darken-3">
@@ -434,8 +537,10 @@ onMounted(() => {
               </span>
             </div>
             <div class="text-caption text-grey-darken-2 mb-3">
-              💡 신탁사 신탁계좌나 조합 계좌처럼 <strong>공동인증서를 직접 보관할 수 없는 계좌</strong>를 위한 전용 방식입니다.<br />
-              신탁사 또는 조합이 해당 은행 인터넷뱅킹에 '빠른조회/스피드조회 서비스'로 등록한 정보를 입력하시면 <strong>인증서 없이 즉시 실시간 입출금 내역을 수집</strong>합니다.
+              💡 신탁사 신탁계좌나 조합 계좌처럼
+              <strong>공동인증서를 직접 보관할 수 없는 계좌</strong>를 위한 전용 방식입니다.<br />
+              신탁사 또는 조합이 해당 은행 인터넷뱅킹에 '빠른조회/스피드조회 서비스'로 등록한 정보를
+              입력하시면 <strong>인증서 없이 즉시 실시간 입출금 내역을 수집</strong>합니다.
             </div>
 
             <v-row dense>
@@ -529,7 +634,12 @@ onMounted(() => {
                 />
               </v-col>
 
-              <v-col v-if="fastTargetType === 'project'" cols="12" sm="3" class="d-flex align-center">
+              <v-col
+                v-if="fastTargetType === 'project'"
+                cols="12"
+                sm="3"
+                class="d-flex align-center"
+              >
                 <v-checkbox
                   v-model="fastIsImprest"
                   label="운영비(전도금) 계좌"
@@ -542,87 +652,9 @@ onMounted(() => {
           </div>
 
           <!-- ============================================== -->
-          <!-- B. 공동인증서 업로드 영역 -->
-          <!-- ============================================== -->
-          <div v-else-if="loginType === '0'" class="mt-2 pa-3 bg-grey-lighten-5 border rounded">
-            <div class="d-flex align-center justify-space-between mb-2 flex-wrap ga-2">
-              <div class="text-subtitle-2 font-weight-bold d-flex align-center">
-                <v-icon size="18" color="primary" class="mr-1">mdi-file-certificate-outline</v-icon>
-                공동인증서 파일 업로드
-              </div>
-              <v-btn-toggle
-                v-model="certFormat"
-                mandatory
-                density="compact"
-                variant="outlined"
-                color="primary"
-              >
-                <v-btn value="single" size="x-small">
-                  통합 파일 (.pfx / .p12 / .pt2) 추천
-                </v-btn>
-                <v-btn value="split" size="x-small">
-                  폴더 분리형 (.der + .key)
-                </v-btn>
-              </v-btn-toggle>
-            </div>
-
-            <!-- 단일 통합 파일 업로드 (.pfx, .p12, .pt2 등) -->
-            <div v-if="certFormat === 'single'">
-              <div class="text-caption text-grey-darken-1 mb-2">
-                💡 은행 인터넷뱅킹 또는 인증센터에서 '인증서 내보내기/백업'으로 저장한 단일 통합 파일(<strong>.pfx</strong>, <strong>.p12</strong>, 또는 <strong>.pt2</strong>) 1개만 선택해 주세요.
-              </div>
-              <v-file-input
-                v-model="singleCertFile"
-                accept=".pfx,.p12,.pt2"
-                label="통합 인증서 파일 (.pfx / .p12 / .pt2) *"
-                density="compact"
-                variant="outlined"
-                show-size
-                prepend-icon=""
-                prepend-inner-icon="mdi-file-lock-outline"
-                placeholder="인증서 백업 파일 선택"
-              />
-            </div>
-
-            <!-- 폴더 분리형 2개 파일 업로드 (.der + .key) -->
-            <div v-else>
-              <div class="text-caption text-grey-darken-1 mb-2">
-                💡 PC의 <code>C:\Users\사용자\AppData\LocalLow\NPKI</code> 또는 USB 이동식 디스크의 은행용 인증서 폴더에서
-                <code>signCert.der</code> 파일과 <code>signPri.key</code> 파일을 각각 선택해 주세요.
-              </div>
-              <v-row dense>
-                <v-col cols="12" sm="6">
-                  <v-file-input
-                    v-model="derFile"
-                    accept=".der"
-                    label="인증서 파일 (signCert.der) *"
-                    density="compact"
-                    variant="outlined"
-                    show-size
-                    prepend-icon=""
-                    prepend-inner-icon="mdi-file-document-outline"
-                  />
-                </v-col>
-                <v-col cols="12" sm="6">
-                  <v-file-input
-                    v-model="keyFile"
-                    accept=".key"
-                    label="인증서 개인키 (signPri.key) *"
-                    density="compact"
-                    variant="outlined"
-                    show-size
-                    prepend-icon=""
-                    prepend-inner-icon="mdi-key-variant"
-                  />
-                </v-col>
-              </v-row>
-            </div>
-          </div>
-
-          <!-- ============================================== -->
           <!-- C. 인터넷뱅킹 아이디 영역 -->
           <!-- ============================================== -->
-          <v-row v-else-if="loginType === '1'" dense class="mt-2">
+          <v-row v-else-if="loginType === '1'" dense class="mt-4">
             <v-col cols="12">
               <v-text-field
                 v-model="loginId"
@@ -641,7 +673,9 @@ onMounted(() => {
               <v-text-field
                 v-model="password"
                 type="password"
-                :label="loginType === '0' ? '공동인증서 비밀번호 *' : '인터넷뱅킹 로그인 비밀번호 *'"
+                :label="
+                  loginType === '0' ? '공동인증서 비밀번호 *' : '인터넷뱅킹 로그인 비밀번호 *'
+                "
                 density="compact"
                 variant="outlined"
                 prepend-inner-icon="mdi-lock-outline"
@@ -664,8 +698,8 @@ onMounted(() => {
             class="mb-3 text-caption"
           >
             <strong>계정 연동 성공!</strong> 코드에프(CODEF)로부터 커넥티드 ID가 정상 발급되었으며,
-            해당 은행에서 <strong>총 {{ discoveredAccounts.length }}개</strong>의 계좌를 확인했습니다.
-            시스템에 연동할 계좌를 선택하고 본사/프로젝트를 지정해 주세요.
+            해당 은행에서 <strong>총 {{ discoveredAccounts.length }}개</strong>의 계좌를
+            확인했습니다. 시스템에 연동할 계좌를 선택하고 본사/프로젝트를 지정해 주세요.
           </v-alert>
 
           <v-table density="compact" hover class="border">
@@ -681,9 +715,7 @@ onMounted(() => {
             </thead>
             <tbody>
               <tr v-if="discoveredAccounts.length === 0">
-                <td colspan="6" class="text-center py-6 text-grey">
-                  발견된 계좌가 없습니다.
-                </td>
+                <td colspan="6" class="text-center py-6 text-grey">발견된 계좌가 없습니다.</td>
               </tr>
               <tr
                 v-for="(acc, idx) in discoveredAccounts"
@@ -734,7 +766,10 @@ onMounted(() => {
 
                 <!-- 연결 대상 (회사 또는 프로젝트) -->
                 <td>
-                  <div v-if="linkStates[idx].target_type === 'company'" class="d-flex align-center ga-2">
+                  <div
+                    v-if="linkStates[idx].target_type === 'company'"
+                    class="d-flex align-center ga-2"
+                  >
                     <v-select
                       v-model="linkStates[idx].company_id"
                       :items="companyOptions"
@@ -771,15 +806,23 @@ onMounted(() => {
 
                 <!-- 매칭 상태 뱃지 -->
                 <td class="text-center">
-                  <v-chip v-if="acc.is_already_registered" size="x-small" color="grey" variant="flat">
+                  <v-chip
+                    v-if="acc.is_already_registered"
+                    size="x-small"
+                    color="grey"
+                    variant="flat"
+                  >
                     연동 완료됨
                   </v-chip>
-                  <v-chip v-else-if="acc.matched_type" size="x-small" color="success" variant="tonal">
+                  <v-chip
+                    v-else-if="acc.matched_type"
+                    size="x-small"
+                    color="success"
+                    variant="tonal"
+                  >
                     기존 계좌 일치
                   </v-chip>
-                  <v-chip v-else size="x-small" color="info" variant="outlined">
-                    신규 생성
-                  </v-chip>
+                  <v-chip v-else size="x-small" color="info" variant="outlined"> 신규 생성 </v-chip>
                 </td>
               </tr>
             </tbody>
@@ -801,15 +844,11 @@ onMounted(() => {
         </div>
 
         <div class="d-flex ga-2">
-          <v-btn variant="outlined" color="grey" @click="emit('update:modelValue', false)">
-            닫기
-          </v-btn>
-
           <!-- Step 1 버튼 -->
           <v-btn
             v-if="currentStep === 1"
             :color="loginType === 'fast' ? 'teal' : 'primary'"
-            variant="flat"
+            variant="elevated"
             :prepend-icon="loginType === 'fast' ? 'mdi-flash' : 'mdi-magnify-scan'"
             :loading="isRegistering"
             :disabled="!isStep1Valid"
@@ -829,6 +868,10 @@ onMounted(() => {
             @click="handleBatchLink"
           >
             선택 계좌 연동 완료 ({{ selectedAccountIndexes.length }}건)
+          </v-btn>
+
+          <v-btn variant="outlined" color="grey" @click="emit('update:modelValue', false)">
+            닫기
           </v-btn>
         </div>
       </v-card-actions>
