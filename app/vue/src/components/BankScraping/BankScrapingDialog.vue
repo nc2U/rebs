@@ -12,11 +12,13 @@ const props = withDefaults(
     mode?: 'company' | 'project'
     companyId?: number | null
     projectId?: number | null
+    isImprest?: boolean | null
   }>(),
   {
     mode: 'project',
     companyId: null,
     projectId: null,
+    isImprest: null,
   },
 )
 
@@ -33,7 +35,9 @@ const isBankRegisterOpen = ref<boolean>(false)
 const selectedCredential = ref<number | null>(null)
 
 const selectedStatus = ref<string>('ready')
-const imprestFilter = ref<'all' | 'trust' | 'imprest'>('all')
+const imprestFilter = ref<'all' | 'trust' | 'imprest'>(
+  props.isImprest === true ? 'imprest' : props.isImprest === false ? 'trust' : 'all',
+)
 const selectedAccounts = ref<Record<number, number | null>>({})
 const isSyncingAll = ref<boolean>(false)
 const isSyncingSingle = ref<boolean>(false)
@@ -58,7 +62,7 @@ const availableAccounts = computed(() => {
   }
 })
 
-// 현재 모드 및 컨텍스트(회사 / 프로젝트)에 해당하는 계좌 목록
+// 현재 모드 및 컨텍스트(회사 / 프로젝트 / 운영비)에 해당하는 계좌 목록
 const filteredCredentials = computed(() => {
   return rawStore.credentialList.filter(c => {
     if (props.mode === 'company') {
@@ -68,8 +72,13 @@ const filteredCredentials = computed(() => {
     } else {
       if (!c.is_project) return false
       if (props.projectId && c.project_id !== props.projectId) return false
-      if (imprestFilter.value === 'imprest' && !c.is_imprest) return false
-      if (imprestFilter.value === 'trust' && c.is_imprest) return false
+      if (props.isImprest !== null) {
+        if (props.isImprest && !c.is_imprest) return false
+        if (!props.isImprest && c.is_imprest) return false
+      } else {
+        if (imprestFilter.value === 'imprest' && !c.is_imprest) return false
+        if (imprestFilter.value === 'trust' && c.is_imprest) return false
+      }
       return true
     }
   })
@@ -176,11 +185,12 @@ watch(
   },
 )
 
-// 전체 은행 일괄 동기화 (1회 통합 호출)
+// 도메인 해당 계좌 일괄 동기화 (관련 계좌만 타겟팅하여 API 호출 비용 최적화)
 const handleSyncAll = async () => {
   isSyncingAll.value = true
   try {
-    await rawStore.syncAllCredentials()
+    const targetCredIds = filteredCredentials.value.map(c => c.pk)
+    await rawStore.syncAllCredentials(undefined, undefined, targetCredIds)
     await fetchTransactions()
   } finally {
     isSyncingAll.value = false
@@ -263,8 +273,8 @@ onMounted(() => {
           <v-icon color="primary" class="mr-2">mdi-bank-transfer-in</v-icon>
           <span class="text-h6 font-weight-bold">
             은행 거래내역 자동 수집 & AI 회계 분류 검토
-            <v-chip size="small" :color="mode === 'company' ? 'info' : 'primary'" class="ml-2 font-weight-bold">
-              {{ mode === 'company' ? '본사 회계 관리' : '프로젝트 출납/원장' }}
+            <v-chip size="small" :color="mode === 'company' ? 'info' : props.isImprest ? 'teal' : 'primary'" class="ml-2 font-weight-bold">
+              {{ mode === 'company' ? '본사 회계 관리' : props.isImprest ? '운영비(전도금) 관리' : '프로젝트 출납/원장' }}
             </v-chip>
           </span>
         </div>
@@ -317,8 +327,8 @@ onMounted(() => {
             </v-select>
           </v-col>
 
-          <!-- 프로젝트 모드일 때: 계좌 성격 필터 (신탁수납 vs 운영비전도금) -->
-          <v-col v-if="mode === 'project'" cols="12" sm="3" md="2">
+          <!-- 프로젝트 모드일 때: 계좌 성격 필터 (신탁수납 vs 운영비전도금) - isImprest prop이 고정되지 않은 경우에만 표시 -->
+          <v-col v-if="mode === 'project' && isImprest === null" cols="12" sm="3" md="2">
             <v-select
               v-model="imprestFilter"
               :items="[

@@ -95,19 +95,24 @@ export const useRawTransaction = defineStore('rawTransaction', () => {
     }
   }
 
-  const syncAllCredentials = async (startDate?: string, endDate?: string) => {
+  const syncAllCredentials = async (
+    startDate?: string,
+    endDate?: string,
+    credentialIds?: number[],
+  ) => {
     isLoading.value = true
     try {
       const payload: Record<string, any> = {}
       if (startDate) payload.start_date = startDate
       if (endDate) payload.end_date = endDate
+      if (credentialIds && credentialIds.length > 0) payload.credential_ids = credentialIds
 
       const res = await api.post('/ledger/credentials/sync_all/', payload)
       const { total_accounts, success_accounts, total_created, total_skipped } = res.data
       message(
         'success',
         '알림',
-        `전체 계좌 수집 완료: 총 ${total_accounts}개 계좌 중 ${success_accounts}개 성공 (신규 ${total_created}건, 기존 중복 ${total_skipped}건)`,
+        `계좌 수집 완료: 총 ${total_accounts}개 계좌 중 ${success_accounts}개 성공 (신규 ${total_created}건, 기존 중복 ${total_skipped}건)`,
       )
       return res.data
     } catch (err: any) {

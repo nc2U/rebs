@@ -1345,12 +1345,13 @@ class BankApiCredentialViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def sync_all(self, request):
-        """활성화된 전체 은행 연동 계좌 거래내역 일괄 동기화 (1회 통합 호출)"""
+        """활성화된 은행 연동 계좌 거래내역 일괄 동기화 (특정 credential_ids 지정 가능)"""
         from ledger.services.bank_scraping import sync_all_active_credentials
         start_date = request.data.get('start_date')
         end_date = request.data.get('end_date')
+        credential_ids = request.data.get('credential_ids')
 
-        summary = sync_all_active_credentials(start_date=start_date, end_date=end_date)
+        summary = sync_all_active_credentials(start_date=start_date, end_date=end_date, credential_ids=credential_ids)
         return Response(summary, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'], parser_classes=[MultiPartParser, FormParser, JSONParser])

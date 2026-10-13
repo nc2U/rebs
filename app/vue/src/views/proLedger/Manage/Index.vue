@@ -290,10 +290,11 @@ onBeforeRouteLeave(() => {
             @page-select="pageSelect"
           />
 
-          <!-- 은행 거래 AI 가져오기 다이얼로그 (프로젝트 모드) -->
+          <!-- 은행 거래 AI 가져오기 다이얼로그 (프로젝트 일반/신탁 수납 모드: is-imprest=false) -->
           <BankScrapingDialog
             v-model="isBankScrapingOpen"
             :project-id="project as number"
+            :is-imprest="false"
             @confirmed="fetchProBankTransList({ ...dataFilter })"
           />
 
