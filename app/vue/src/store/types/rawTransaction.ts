@@ -10,6 +10,8 @@ export interface BankApiCredential {
   project_name?: string | null
   is_imprest?: boolean
   directpay?: boolean
+  auth_type?: 'cert' | 'fast'
+  fast_business_number?: string
   connected_id: string
   bank_code: string
   account_number: string
@@ -19,6 +21,20 @@ export interface BankApiCredential {
   last_error_message: string
   created_at: string
   updated_at: string
+}
+
+export interface RegisterFastAccountPayload {
+  bank_code: string
+  account_number: string
+  business_number: string
+  account_password: string
+  target_type: 'project' | 'company'
+  project_id?: number | null
+  company_id?: number | null
+  existing_account_id?: number | null
+  alias_name?: string
+  holder?: string
+  is_imprest?: boolean
 }
 
 export interface RawBankTransaction {

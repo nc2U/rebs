@@ -1560,6 +1560,7 @@ class BankApiCredentialViewSet(viewsets.ModelViewSet):
                         continue
 
                 cred_defaults = {
+                    'auth_type': 'cert',
                     'connected_id': connected_id,
                     'bank_code': bank_code_str,
                     'account_number': acc_num,
@@ -1582,6 +1583,107 @@ class BankApiCredentialViewSet(viewsets.ModelViewSet):
             'success': True,
             'linked_count': len(created_credentials),
             'credential_ids': created_credentials
+        }, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['post'])
+    def register_fast_account(self, request):
+        """
+        신탁사/조합 빠른조회 계좌 직접 연동
+        공동인증서/connectedId 없이 사업자번호 + 계좌비밀번호로 즉시 연동 및 초기 테스트
+        """
+        from apiV1.serializers.ledger import BankFastAccountRegisterSerializer
+        serializer = BankFastAccountRegisterSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        bank_code_str = serializer.validated_data['bank_code']
+        acc_num = serializer.validated_data['account_number']
+        biz_num = serializer.validated_data['business_number']
+        acc_pwd = serializer.validated_data['account_password']
+        target_type = serializer.validated_data['target_type']
+        project_id = serializer.validated_data.get('project_id')
+        company_id = serializer.validated_data.get('company_id')
+        existing_id = serializer.validated_data.get('existing_account_id')
+        alias_name = serializer.validated_data.get('alias_name') or f"신탁/빠른조회 ({acc_num[-4:]})"
+        holder = serializer.validated_data.get('holder', '')
+        is_imprest = serializer.validated_data.get('is_imprest', False)
+
+        bank_obj = BankCode.objects.filter(code=bank_code_str[-3:]).first() or BankCode.objects.filter(code=bank_code_str).first()
+        if not bank_obj:
+            bank_obj = BankCode.objects.first()
+
+        com_bank_acc = None
+        proj_bank_acc = None
+
+        with db_transaction.atomic():
+            if target_type == 'project':
+                if not project_id and not existing_id:
+                    return Response({'error': '프로젝트를 선택해야 합니다.'}, status=status.HTTP_400_BAD_REQUEST)
+                if existing_id:
+                    proj_bank_acc = ProjectBankAccount.objects.filter(id=existing_id).first()
+                elif project_id:
+                    proj_bank_acc, _ = ProjectBankAccount.objects.get_or_create(
+                        project_id=project_id,
+                        number=acc_num,
+                        defaults={
+                            'bankcode': bank_obj,
+                            'alias_name': alias_name,
+                            'holder': holder,
+                            'is_imprest': is_imprest,
+                        }
+                    )
+            else:
+                if not company_id and not existing_id:
+                    return Response({'error': '회사를 선택해야 합니다.'}, status=status.HTTP_400_BAD_REQUEST)
+                if existing_id:
+                    com_bank_acc = CompanyBankAccount.objects.filter(id=existing_id).first()
+                elif company_id:
+                    com_bank_acc, _ = CompanyBankAccount.objects.get_or_create(
+                        company_id=company_id,
+                        number=acc_num,
+                        defaults={
+                            'bankcode': bank_obj,
+                            'alias_name': alias_name,
+                            'holder': holder,
+                        }
+                    )
+
+            target_acc = proj_bank_acc or com_bank_acc
+            if not target_acc:
+                return Response({'error': '계좌 생성 또는 조회가 실패했습니다.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            cred_defaults = {
+                'auth_type': 'fast',
+                'connected_id': '',
+                'bank_code': bank_code_str,
+                'account_number': acc_num,
+                'fast_business_number': biz_num.replace('-', '').strip(),
+                'fast_password': acc_pwd,
+                'is_active': True,
+                'last_status': 'ready'
+            }
+
+            if proj_bank_acc:
+                cred, _ = BankApiCredential.objects.update_or_create(
+                    project_bank_account=proj_bank_acc,
+                    defaults=cred_defaults
+                )
+            else:
+                cred, _ = BankApiCredential.objects.update_or_create(
+                    company_bank_account=com_bank_acc,
+                    defaults=cred_defaults
+                )
+
+        # 연동 완료 후 즉시 1회 거래내역 수집 시도 (테스트 및 초기 데이터 로드)
+        try:
+            from ledger.services.bank_scraping import sync_credential_transactions
+            sync_credential_transactions(cred)
+        except Exception as e:
+            logger.warning("신탁/빠른조회 초기 수집 실패 (등록은 완료됨): %s", str(e))
+
+        return Response({
+            'success': True,
+            'credential_id': cred.pk,
+            'message': f"신탁/빠른조회 계좌({alias_name})가 성공적으로 연동되었습니다."
         }, status=status.HTTP_200_OK)
 
 

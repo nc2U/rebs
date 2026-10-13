@@ -148,6 +148,18 @@ export const useRawTransaction = defineStore('rawTransaction', () => {
     }
   }
 
+  const registerFastAccount = async (payload: any) => {
+    try {
+      const res = await api.post('/ledger/credentials/register_fast_account/', payload)
+      message('success', '신탁/빠른조회 연동 완료', res.data.message || '계좌가 성공적으로 연동되었습니다.')
+      await fetchCredentialList()
+      return res.data
+    } catch (err: any) {
+      errorHandle(err.response?.data)
+      throw err
+    }
+  }
+
   return {
     rawTransList,
     rawTransCount,
@@ -161,6 +173,7 @@ export const useRawTransaction = defineStore('rawTransaction', () => {
     syncAllCredentials,
     registerCertificate,
     batchLinkCredentials,
+    registerFastAccount,
   }
 })
 

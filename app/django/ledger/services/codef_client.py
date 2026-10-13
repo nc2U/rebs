@@ -264,14 +264,74 @@ class CodefClient:
             "organization": organization
         }
         data = self._request(endpoint, body)
+        if isinstance(data, list):
+            return data
+        elif isinstance(data, dict):
+            return data.get("resAccountList") or data.get("resList") or []
+        return []
+
+    def fetch_fast_transactions(
+        self,
+        organization: str,
+        account_number: str,
+        start_date: str,
+        end_date: str,
+        account_password: str = "",
+        identity: str = "",
+        fast_id: str = "",
+        fast_password: str = "",
+        order_by: str = "0",
+        is_business: bool = True
+    ) -> List[Dict[str, Any]]:
+        """
+        신탁사/조합 은행 빠른조회(스피드조회) 거래내역 조회
+        공동인증서/connectedId 없이 사업자번호 + 계좌비밀번호 등으로 즉시 조회
+        
+        Args:
+            organization: 은행 기관코드 (예: '0004' 국민, '0088' 신한 등)
+            account_number: 계좌번호
+            start_date: 조회시작일 (YYYYMMDD)
+            end_date: 조회종료일 (YYYYMMDD)
+            account_password: 계좌 비밀번호 (평문 - 내부에서 RSA 암호화)
+            identity: 사업자등록번호 (10자리 숫자) 또는 주민번호
+            fast_id: 빠른조회 전용 아이디 (있는 경우)
+            fast_password: 빠른조회 전용 비밀번호 (평문 - 내부에서 RSA 암호화)
+            order_by: "0"(최신순), "1"(과거순)
+            is_business: True면 기업(/b/), False면 개인(/p/)
+        """
+        client_type = "b" if is_business else "p"
+        endpoint = f"/v1/kr/bank/{client_type}/fast-account/transaction-list"
+        body: Dict[str, Any] = {
+            "organization": organization,
+            "account": account_number,
+            "startDate": start_date,
+            "endDate": end_date,
+            "orderBy": order_by,
+        }
+
+        if identity:
+            clean_biz_no = identity.replace("-", "").strip()
+            body["identity"] = clean_biz_no
+
+        if account_password:
+            body["accountPassword"] = self.encrypt_rsa(account_password)
+
+        if fast_id:
+            body["fastId"] = fast_id
+
+        if fast_password:
+            body["fastPassword"] = self.encrypt_rsa(fast_password)
+
+        data = self._request(endpoint, body)
 
         if isinstance(data, list):
             return data
         elif isinstance(data, dict):
             return (
-                data.get("resAccountList")
-                or data.get("resList")
+                data.get("resTrHistoryList")
+                or data.get("resTrList")
                 or data.get("resAccountTrList")
+                or data.get("resList")
                 or []
             )
         return []

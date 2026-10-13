@@ -1186,6 +1186,7 @@ class BankApiCredentialSerializer(serializers.ModelSerializer):
             'pk', 'company_bank_account', 'project_bank_account',
             'account_alias', 'is_project',
             'company_id', 'company_name', 'project_id', 'project_name', 'is_imprest', 'directpay',
+            'auth_type', 'fast_business_number',
             'connected_id', 'bank_code', 'account_number', 'is_active',
             'last_scraped_at', 'last_status', 'last_error_message',
             'created_at', 'updated_at'
@@ -1260,6 +1261,20 @@ class BankCertificateRegisterSerializer(serializers.Serializer):
     key_file = serializers.FileField(required=False, allow_null=True)
     cert_file = serializers.FileField(required=False, allow_null=True, help_text="통합 인증서 파일 (.pfx, .p12, .pt2 등)")
 
+
+class BankFastAccountRegisterSerializer(serializers.Serializer):
+    """신탁사/조합 빠른조회 계좌 직접 연동 요청 Serializer"""
+    bank_code = serializers.CharField(max_length=10, help_text="은행 기관코드 (예: 0004, 0088)")
+    account_number = serializers.CharField(max_length=50, help_text="계좌번호")
+    business_number = serializers.CharField(max_length=20, help_text="신탁사/조합 사업자등록번호 (10자리 숫자)")
+    account_password = serializers.CharField(max_length=50, help_text="통장 비밀번호 또는 빠른조회 비밀번호")
+    target_type = serializers.ChoiceField(choices=[('project', '프로젝트 계좌'), ('company', '본사 계좌')], default='project')
+    project_id = serializers.IntegerField(required=False, allow_null=True)
+    company_id = serializers.IntegerField(required=False, allow_null=True)
+    existing_account_id = serializers.IntegerField(required=False, allow_null=True)
+    alias_name = serializers.CharField(max_length=50, required=False, allow_blank=True, default='')
+    holder = serializers.CharField(max_length=50, required=False, allow_blank=True, default='')
+    is_imprest = serializers.BooleanField(required=False, default=False)
 
 
 class BankCredentialBatchLinkItemSerializer(serializers.Serializer):

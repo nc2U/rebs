@@ -46,14 +46,27 @@ def sync_credential_transactions(
     created_raw_txs = []
 
     try:
-        raw_list = client.fetch_transactions(
-            connected_id=credential.connected_id,
-            organization=credential.bank_code,
-            account_number=credential.account_number,
-            start_date=s_date,
-            end_date=e_date,
-            is_business=True  # 기본 법인
-        )
+        if credential.auth_type == 'fast':
+            # 빠른조회 (신탁사/조합 계좌: connectedId 없이 사업자번호+비밀번호로 즉시 조회)
+            raw_list = client.fetch_fast_transactions(
+                organization=credential.bank_code,
+                account_number=credential.account_number,
+                start_date=s_date,
+                end_date=e_date,
+                account_password=credential.fast_password,
+                identity=credential.fast_business_number,
+                is_business=True
+            )
+        else:
+            # 일반 공동인증서/아이디 연동 (connectedId 기반)
+            raw_list = client.fetch_transactions(
+                connected_id=credential.connected_id,
+                organization=credential.bank_code,
+                account_number=credential.account_number,
+                start_date=s_date,
+                end_date=e_date,
+                is_business=True  # 기본 법인
+            )
     except CodefException as ce:
         error_msg = f"CODEF API 실패 [{ce.code}]: {ce.message}"
         logger.error("계좌 %s 수집 오류: %s", credential.account_number, error_msg)

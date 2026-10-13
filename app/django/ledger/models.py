@@ -1007,6 +1007,11 @@ class BankApiCredential(models.Model):
     본사 또는 프로젝트 은행 계좌와 CODEF의 connectedId를 매핑하여
     자동 수집 대상 계좌 및 인증 상태를 관리합니다.
     """
+    AUTH_TYPE_CHOICES = [
+        ('cert', '공동인증서/아이디'),
+        ('fast', '빠른조회 (신탁/조합)'),
+    ]
+
     STATUS_CHOICES = [
         ('ready', '대기'),
         ('success', '정상'),
@@ -1022,7 +1027,10 @@ class BankApiCredential(models.Model):
         related_name='api_credential', verbose_name='프로젝트 관리 계좌'
     )
 
-    connected_id = models.CharField('CODEF 커넥티드ID', max_length=100, db_index=True)
+    auth_type = models.CharField('인증방식', max_length=10, choices=AUTH_TYPE_CHOICES, default='cert', help_text='인증서 방식 또는 신탁사 빠른조회 방식')
+    connected_id = models.CharField('CODEF 커넥티드ID', max_length=100, blank=True, default='', db_index=True, help_text='공동인증서/ID 연동 시 필수, 빠른조회 시 비워둠')
+    fast_business_number = models.CharField('빠른조회 사업자번호', max_length=20, blank=True, default='', help_text='신탁사/조합 사업자등록번호 (숫자 10자리)')
+    fast_password = models.CharField('빠른조회 비밀번호(암호화)', max_length=255, blank=True, default='', help_text='통장 또는 빠른조회 비밀번호')
     bank_code = models.CharField('은행기관코드', max_length=10, help_text='CODEF 기관코드 (예: 0004 국민, 0088 신한, 0020 우리)')
     account_number = models.CharField('계좌번호', max_length=50)
 

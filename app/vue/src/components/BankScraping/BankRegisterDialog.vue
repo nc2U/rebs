@@ -56,13 +56,25 @@ const bankOptions = [
 
 // Step 1 Form State
 const selectedBank = ref<string>('0004')
-const loginType = ref<'0' | '1'>('0') // '0': 공동인증서, '1': ID/PW
+const loginType = ref<'0' | '1' | 'fast'>('0') // '0': 공동인증서, '1': ID/PW, 'fast': 신탁사/조합 빠른조회
 const certFormat = ref<'single' | 'split'>('single') // 'single': .pfx/.p12/.pt2 단일 파일, 'split': der + key 2개 파일
 const singleCertFile = ref<File | null>(null)
 const loginId = ref<string>('')
 const password = ref<string>('')
 const derFile = ref<File | null>(null)
 const keyFile = ref<File | null>(null)
+
+// 신탁사/조합 빠른조회 전용 Form State
+const fastAccount = ref<string>('')
+const fastBizNumber = ref<string>('')
+const fastPassword = ref<string>('')
+const fastAlias = ref<string>('')
+const fastHolder = ref<string>('')
+const fastTargetType = ref<'project' | 'company'>(props.projectId ? 'project' : 'company')
+const fastProjectId = ref<number | null>(props.projectId || null)
+const fastCompanyId = ref<number | null>(props.companyId || null)
+const fastIsImprest = ref<boolean>(false)
+
 const isRegistering = ref<boolean>(false)
 
 // Step 2 Form State
@@ -98,7 +110,17 @@ const projectOptions = computed(() => {
 
 // Step 1 유효성
 const isStep1Valid = computed(() => {
-  if (!selectedBank.value || !password.value) return false
+  if (!selectedBank.value) return false
+  if (loginType.value === 'fast') {
+    return (
+      fastAccount.value.trim().length >= 8 &&
+      fastBizNumber.value.replace(/[^0-9]/g, '').length >= 10 &&
+      fastPassword.value.trim().length >= 4 &&
+      ((fastTargetType.value === 'project' && !!fastProjectId.value) ||
+        (fastTargetType.value === 'company' && !!fastCompanyId.value))
+    )
+  }
+  if (!password.value) return false
   if (loginType.value === '0') {
     if (certFormat.value === 'single') {
       return singleCertFile.value !== null
@@ -110,8 +132,37 @@ const isStep1Valid = computed(() => {
   }
 })
 
+// 신탁사/조합 빠른조회 계좌 직접 연동 실행
+const handleRegisterFast = async () => {
+  if (!isStep1Valid.value) return
+  isRegistering.value = true
+
+  try {
+    await rawStore.registerFastAccount({
+      bank_code: selectedBank.value,
+      account_number: fastAccount.value.trim(),
+      business_number: fastBizNumber.value.replace(/[^0-9]/g, '').trim(),
+      account_password: fastPassword.value.trim(),
+      target_type: fastTargetType.value,
+      project_id: fastTargetType.value === 'project' ? fastProjectId.value : null,
+      company_id: fastTargetType.value === 'company' ? fastCompanyId.value : null,
+      alias_name: fastAlias.value.trim() || undefined,
+      holder: fastHolder.value.trim() || undefined,
+      is_imprest: fastTargetType.value === 'project' ? fastIsImprest.value : false,
+    })
+
+    emit('registered')
+    emit('update:modelValue', false)
+  } finally {
+    isRegistering.value = false
+  }
+}
+
 // Step 1: 인증서/계정 등록 실행
 const handleRegisterCertificate = async () => {
+  if (loginType.value === 'fast') {
+    return handleRegisterFast()
+  }
   if (!isStep1Valid.value) return
   isRegistering.value = true
 
@@ -349,8 +400,8 @@ onMounted(() => {
               />
             </v-col>
 
-            <!-- 로그인 방식 -->
-            <v-col cols="12" md="6">
+            <!-- 로그인/연동 방식 선택 (공동인증서 vs ID/PW vs 신탁사 빠른조회) -->
+            <v-col cols="12" md="7">
               <v-btn-toggle
                 v-model="loginType"
                 mandatory
@@ -359,18 +410,141 @@ onMounted(() => {
                 variant="outlined"
                 class="w-100"
               >
-                <v-btn value="0" class="flex-grow-1" prepend-icon="mdi-certificate">
-                  법인 공동인증서 (추천)
+                <v-btn value="0" size="small" class="flex-grow-1" prepend-icon="mdi-certificate">
+                  법인 공동인증서
                 </v-btn>
-                <v-btn value="1" class="flex-grow-1" prepend-icon="mdi-account-key">
-                  기업 인터넷뱅킹 ID/PW
+                <v-btn value="fast" size="small" class="flex-grow-1 text-teal-darken-2 font-weight-bold" prepend-icon="mdi-flash">
+                  신탁/조합 빠른조회
+                </v-btn>
+                <v-btn value="1" size="small" class="flex-grow-1" prepend-icon="mdi-account-key">
+                  인터넷뱅킹 ID
                 </v-btn>
               </v-btn-toggle>
             </v-col>
           </v-row>
 
-          <!-- 공동인증서 업로드 영역 -->
-          <div v-if="loginType === '0'" class="mt-2 pa-3 bg-grey-lighten-5 border rounded">
+          <!-- ============================================== -->
+          <!-- A. 신탁사/조합 빠른조회 폼 (인증서 불필요) -->
+          <!-- ============================================== -->
+          <div v-if="loginType === 'fast'" class="mt-2 pa-3 bg-teal-lighten-5 border border-teal rounded">
+            <div class="d-flex align-center mb-2">
+              <v-icon size="20" color="teal-darken-2" class="mr-1">mdi-bank-check</v-icon>
+              <span class="text-subtitle-2 font-weight-bold text-teal-darken-3">
+                신탁사 및 조합 전용 빠른조회(스피드조회) 계좌 연동
+              </span>
+            </div>
+            <div class="text-caption text-grey-darken-2 mb-3">
+              💡 신탁사 신탁계좌나 조합 계좌처럼 <strong>공동인증서를 직접 보관할 수 없는 계좌</strong>를 위한 전용 방식입니다.<br />
+              신탁사 또는 조합이 해당 은행 인터넷뱅킹에 '빠른조회/스피드조회 서비스'로 등록한 정보를 입력하시면 <strong>인증서 없이 즉시 실시간 입출금 내역을 수집</strong>합니다.
+            </div>
+
+            <v-row dense>
+              <v-col cols="12" sm="6">
+                <v-text-field
+                  v-model="fastAccount"
+                  label="계좌번호 *"
+                  placeholder="'-' 없이 숫자만 입력"
+                  density="compact"
+                  variant="outlined"
+                  prepend-inner-icon="mdi-numeric"
+                  hide-details="auto"
+                  class="mb-2"
+                />
+              </v-col>
+
+              <v-col cols="12" sm="6">
+                <v-text-field
+                  v-model="fastBizNumber"
+                  label="신탁사/조합 사업자등록번호 (10자리) *"
+                  placeholder="예: 1234567890"
+                  density="compact"
+                  variant="outlined"
+                  prepend-inner-icon="mdi-domain"
+                  hide-details="auto"
+                  class="mb-2"
+                />
+              </v-col>
+
+              <v-col cols="12" sm="6">
+                <v-text-field
+                  v-model="fastPassword"
+                  type="password"
+                  label="통장 비밀번호 또는 빠른조회 비밀번호 *"
+                  placeholder="비밀번호 4자리 이상"
+                  density="compact"
+                  variant="outlined"
+                  prepend-inner-icon="mdi-lock-outline"
+                  hide-details="auto"
+                  class="mb-2"
+                />
+              </v-col>
+
+              <v-col cols="12" sm="6">
+                <v-text-field
+                  v-model="fastAlias"
+                  label="계좌 별칭 (선택)"
+                  placeholder="예: 무궁화신탁 수납계좌 / A구역 조합통장"
+                  density="compact"
+                  variant="outlined"
+                  prepend-inner-icon="mdi-tag-outline"
+                  hide-details="auto"
+                  class="mb-2"
+                />
+              </v-col>
+
+              <!-- 귀속 구분 (프로젝트 vs 본사) -->
+              <v-col cols="12" sm="4">
+                <v-select
+                  v-model="fastTargetType"
+                  :items="[
+                    { title: '프로젝트 계좌 (추천)', value: 'project' },
+                    { title: '본사 관리 계좌', value: 'company' },
+                  ]"
+                  label="귀속 구분 *"
+                  density="compact"
+                  variant="outlined"
+                  hide-details="auto"
+                />
+              </v-col>
+
+              <v-col v-if="fastTargetType === 'project'" cols="12" sm="5">
+                <v-select
+                  v-model="fastProjectId"
+                  :items="projectOptions"
+                  label="연결할 프로젝트 선택 *"
+                  density="compact"
+                  variant="outlined"
+                  hide-details="auto"
+                />
+              </v-col>
+
+              <v-col v-if="fastTargetType === 'company'" cols="12" sm="5">
+                <v-select
+                  v-model="fastCompanyId"
+                  :items="companyOptions"
+                  label="연결할 회사 선택 *"
+                  density="compact"
+                  variant="outlined"
+                  hide-details="auto"
+                />
+              </v-col>
+
+              <v-col v-if="fastTargetType === 'project'" cols="12" sm="3" class="d-flex align-center">
+                <v-checkbox
+                  v-model="fastIsImprest"
+                  label="운영비(전도금) 계좌"
+                  color="teal"
+                  density="compact"
+                  hide-details
+                />
+              </v-col>
+            </v-row>
+          </div>
+
+          <!-- ============================================== -->
+          <!-- B. 공동인증서 업로드 영역 -->
+          <!-- ============================================== -->
+          <div v-else-if="loginType === '0'" class="mt-2 pa-3 bg-grey-lighten-5 border rounded">
             <div class="d-flex align-center justify-space-between mb-2 flex-wrap ga-2">
               <div class="text-subtitle-2 font-weight-bold d-flex align-center">
                 <v-icon size="18" color="primary" class="mr-1">mdi-file-certificate-outline</v-icon>
@@ -445,8 +619,10 @@ onMounted(() => {
             </div>
           </div>
 
-          <!-- 인터넷뱅킹 아이디 영역 -->
-          <v-row v-else dense class="mt-2">
+          <!-- ============================================== -->
+          <!-- C. 인터넷뱅킹 아이디 영역 -->
+          <!-- ============================================== -->
+          <v-row v-else-if="loginType === '1'" dense class="mt-2">
             <v-col cols="12">
               <v-text-field
                 v-model="loginId"
@@ -459,8 +635,8 @@ onMounted(() => {
             </v-col>
           </v-row>
 
-          <!-- 비밀번호 공통 입력 -->
-          <v-row dense class="mt-2">
+          <!-- 공동인증서 / ID 로그인일 때만 비밀번호 공통 입력 필드 표시 -->
+          <v-row v-if="loginType !== 'fast'" dense class="mt-2">
             <v-col cols="12">
               <v-text-field
                 v-model="password"
@@ -632,14 +808,14 @@ onMounted(() => {
           <!-- Step 1 버튼 -->
           <v-btn
             v-if="currentStep === 1"
-            color="primary"
+            :color="loginType === 'fast' ? 'teal' : 'primary'"
             variant="flat"
-            prepend-icon="mdi-magnify-scan"
+            :prepend-icon="loginType === 'fast' ? 'mdi-flash' : 'mdi-magnify-scan'"
             :loading="isRegistering"
             :disabled="!isStep1Valid"
             @click="handleRegisterCertificate"
           >
-            인증서 등록 및 계좌 탐색
+            {{ loginType === 'fast' ? '신탁/빠른조회 계좌 즉시 연동' : '인증서 등록 및 계좌 탐색' }}
           </v-btn>
 
           <!-- Step 2 버튼 -->
