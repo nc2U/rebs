@@ -44,16 +44,21 @@ const urlCompanyId = computed(() => {
   return id ? parseInt(id as string, 10) : null
 })
 
+const PAGE_SIZE = 15 // Django 목록 페이지 크기와 동일하게 유지
+
 const excelUrl = computed(() => {
-  const from_deal_date = dataFilter.value.from_date || ''
-  const to_deal_date = dataFilter.value.to_date || ''
-  const sort = dataFilter.value.sort || ''
-  const account = dataFilter.value.account || ''
-  const affiliate = dataFilter.value.affiliate || ''
-  const bank_account = dataFilter.value.bank_account || ''
-  const search = dataFilter.value.search || ''
-  const url = `/excel/com-trans/?company=${company.value}`
-  return `${url}&from_deal_date=${from_deal_date}&to_deal_date=${to_deal_date}&sort=${sort}&account=${account}&affiliate=${affiliate}&bank_account=${bank_account}&search=${search}`
+  const f = dataFilter.value
+  const params = new URLSearchParams({
+    company: String(company.value ?? ''),
+    from_deal_date: f.from_date || '',
+    to_deal_date: f.to_date || '',
+    sort: String(f.sort || ''),
+    account: String(f.account || ''),
+    affiliate: String(f.affiliate || ''),
+    bank_account: String(f.bank_account || ''),
+    search: f.search || '',
+  })
+  return `/excel/com-trans/?${params.toString()}`
 })
 
 const comStore = useCompany()
@@ -87,7 +92,7 @@ const findBankTransactionPage = (highlightId: number, filters: Filter) =>
   ledgerStore.findBankTransactionPage(highlightId, filters)
 const fetchComLedgerCalc = (com: number) => ledgerStore.fetchComLedgerCalculation(com)
 
-const pageSelect = (page: number) => listControl.value.listFiltering(page)
+const pageSelect = (page: number) => listControl.value?.listFiltering(page)
 
 const listFiltering = (payload: Filter) => {
   // 필터링 시 query string 정리
@@ -97,13 +102,25 @@ const listFiltering = (payload: Filter) => {
 }
 
 const dataSetup = async (pk: number) => {
-  await fetchCompany(pk)
-  await fetchAllDepartList(pk)
-  await fetchComBankAccList(pk)
-  await fetchAllComBankAccList(pk)
-  await fetchBankTransactionList({ company: pk })
-  await fetchComLedgerCalc(pk)
+  // 거래 목록 조회 전에 필터의 company 설정
   ledgerStore.bankTransactionFilter.company = pk
+  // 서로 독립적인 호출은 병렬로 실행
+  await Promise.all([
+    fetchCompany(pk),
+    fetchAllDepartList(pk),
+    fetchComBankAccList(pk),
+    fetchAllComBankAccList(pk),
+  ])
+  await Promise.all([fetchBankTransactionList({ company: pk }), fetchComLedgerCalc(pk)])
+}
+
+// 다이얼로그 완료 후 목록과 잔액만 재조회
+const refreshList = async () => {
+  if (!company.value) return
+  await Promise.all([
+    fetchBankTransactionList({ ...dataFilter.value, company: company.value }),
+    fetchComLedgerCalc(company.value),
+  ])
 }
 
 const dataReset = () => {
@@ -123,7 +140,6 @@ const comSelect = async (target: number | null, skipClearQuery = false) => {
   }
   dataReset()
   if (!!target) {
-    await fetchCompany(target)
     await dataSetup(target)
   }
 }
@@ -131,12 +147,13 @@ const comSelect = async (target: number | null, skipClearQuery = false) => {
 // Query string 정리 함수
 const clearQueryString = () => {
   if (route.query.highlight_id) {
+    // highlight_id만 제거하고 나머지 query(company 등)는 보존
+    const { highlight_id: _omit, ...rest } = route.query
     router
       .replace({
         name: route.name,
         params: route.params,
-        // query를 빈 객체로 설정하여 모든 query string 제거
-        query: {},
+        query: rest,
       })
       .catch(() => {
         // 같은 경로로의 이동에서 발생하는 NavigationDuplicated 에러 무시
@@ -162,7 +179,7 @@ const loadHighlightPage = async () => {
       const targetPage = await findBankTransactionPage(highlightId.value, {
         ...dataFilter.value,
         company: company.value,
-        limit: 15, // Django에서 사용하는 페이지 크기와 동일하게 설정
+        limit: PAGE_SIZE,
       })
       // 해당 페이지로 이동 (1페이지여도 page 값 명시적 설정)
       ledgerStore.bankTransactionFilter.page = targetPage
@@ -182,24 +199,26 @@ onBeforeMount(async () => {
     // URL에서 회사 ID가 지정되어 있으면 해당 회사로 전환
     let companyId = company.value || comStore.initComId
     if (urlCompanyId.value && urlCompanyId.value !== companyId) {
-      console.log(`Switching to company ${urlCompanyId.value} from URL parameter`)
       // 회사 전환 (query string 정리 건너뛰기)
       await comSelect(urlCompanyId.value, true)
       companyId = urlCompanyId.value
     }
 
-    await fetchBankCodeList()
-    await fetchAffiliateList()
-    await fetchCompanyAccounts()
+    await Promise.all([fetchBankCodeList(), fetchAffiliateList(), fetchCompanyAccounts()])
 
-    // 하이라이트 항목이 있으면 해당 페이지로 이동 후 스크롤
-    if (highlightId.value) {
-      await loadHighlightPage()
-    } else {
-      await dataSetup(companyId)
+    if (companyId) {
+      // 하이라이트 항목이 있으면 해당 페이지로 이동 후 스크롤
+      if (highlightId.value) {
+        // company가 아직 로드되지 않았다면 먼저 기본 데이터 로딩
+        if (!company.value) await dataSetup(companyId)
+        await loadHighlightPage()
+      } else {
+        await dataSetup(companyId)
+      }
+      await scrollToHighlight()
     }
-    await scrollToHighlight()
   } catch (err) {
+    console.error('Error loading page:', err)
     message('warning', '알림!', '페이지 로딩 중 에러가 발생하였습니다.')
   } finally {
     loading.value = false
@@ -258,14 +277,14 @@ onBeforeRouteLeave(() => {
             v-model="isBankScrapingOpen"
             mode="company"
             :company-id="company as number"
-            @confirmed="company && dataSetup(company as number)"
+            @confirmed="refreshList"
           />
 
           <!-- 공동인증서/은행 계좌 등록 다이얼로그 (본사 모드) -->
           <BankRegisterDialog
             v-model="isBankRegisterOpen"
             :company-id="company as number"
-            @registered="company && dataSetup(company as number)"
+            @registered="refreshList"
           />
         </div>
 
