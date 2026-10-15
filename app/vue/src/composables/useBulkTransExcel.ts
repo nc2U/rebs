@@ -19,11 +19,19 @@ interface Option {
   label: string
 }
 
+export type BulkSystemType = 'project' | 'company'
+
 export interface BulkParseOptions {
   bankAccounts: Option[]
   accounts: Array<{ value: number; label: string; is_cate_only?: boolean }>
+  // 프로젝트: 계약자 후보 / 본사: 관계회사(프로젝트) 후보
   contracts: Array<{ value: number; label: string }>
+  systemType?: BulkSystemType
 }
+
+// 시스템별 '연관 대상' 열 이름 (프로젝트=계약자, 본사=관계회사(프로젝트))
+export const relatedLabelOf = (t: BulkSystemType = 'project') =>
+  t === 'project' ? '계약자' : '관계회사(프로젝트)'
 
 export interface BulkEntry {
   rowNumber: number
@@ -32,7 +40,7 @@ export interface BulkEntry {
   trader: string
   amount: number
   evidence_type: '' | '0' | '1' | '2' | '3' | '4' | '5' | '6'
-  contract: number | null
+  contract: number | null // 프로젝트: 계약자 ID / 본사: 관계회사(affiliate) ID
   contract_name: string
   errors: string[]
   warnings: string[]
@@ -79,7 +87,7 @@ export const BULK_COLUMNS = [
   { header: '구분(입금/출금)', key: 'sort', width: 16 },
   { header: '입출금액', key: 'amount', width: 16 },
   { header: '계정이름', key: 'account_name', width: 25 },
-  { header: '계약자', key: 'contract_name', width: 22 },
+  { header: '__RELATED__', key: 'contract_name', width: 22 },
   { header: '거래처', key: 'trader', width: 25 },
   { header: '분류금액', key: 'entry_amount', width: 16 },
   { header: '지출증빙', key: 'evidence_type', width: 22 },
@@ -120,10 +128,15 @@ export function useBulkTransExcel() {
   const downloadBulkTemplate = async (ref_: {
     bankAccounts: Option[]
     accounts: Array<{ label: string; is_cate_only?: boolean }>
+    systemType?: BulkSystemType
   }) => {
     const workbook = new ExcelJS.Workbook()
     const ws = workbook.addWorksheet('거래내역 대량입력')
-    ws.columns = BULK_COLUMNS.map(c => ({ ...c }))
+    const relatedLabel = relatedLabelOf(ref_.systemType)
+    ws.columns = BULK_COLUMNS.map(c => ({
+      ...c,
+      header: c.header === '__RELATED__' ? relatedLabel : c.header,
+    }))
 
     const header = ws.getRow(1)
     header.font = { bold: true }
@@ -152,7 +165,7 @@ export function useBulkTransExcel() {
       '3. 은행거래 정보(거래일자, 메모, 거래계좌, 적요, 구분, 입출금액)는 그룹의 첫 번째 행에만 입력하세요.',
       '4. 같은 그룹의 분류금액 합계는 입출금액과 반드시 일치해야 합니다.',
       '5. 거래일자는 YYYY-MM-DD 형식, 구분은 "입금" 또는 "출금"으로 입력하세요.',
-      '6. 거래계좌/계정이름/계약자는 시스템에 등록된 이름과 정확히 일치해야 합니다. (참조목록 시트 확인)',
+      '6. 거래계좌/계정이름/' + relatedLabel + '은(는) 시스템에 등록된 이름과 정확히 일치해야 합니다. (참조목록 시트 확인)',
       '7. 지출증빙: ' + Object.keys(EVIDENCE_TYPE_MAP).join(', '),
       '8. 예시 행(1~3번 거래)은 삭제하고 입력하세요.',
     ].forEach(t => guide.addRow([t]))
@@ -284,7 +297,10 @@ export function useBulkTransExcel() {
         if (contractName) {
           const c = opts.contracts.find(o => o.label.includes(contractName))
           if (c) entry.contract = c.value
-          else entry.warnings.push(`계약자 '${contractName}'을(를) 찾을 수 없음 - 업로드 후 선택 필요`)
+          else
+            entry.warnings.push(
+              `${relatedLabelOf(opts.systemType)} '${contractName}'을(를) 찾을 수 없음 - 업로드 후 선택 필요`,
+            )
         }
 
         current!.entries.push(entry)

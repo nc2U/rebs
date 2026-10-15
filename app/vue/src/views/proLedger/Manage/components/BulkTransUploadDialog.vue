@@ -7,6 +7,8 @@ const props = defineProps<{
   result: BulkParseResult | null
   // 현재 폼에 입력된 거래가 있는지 (있으면 기본값을 '추가'로 둔다)
   hasExisting: boolean
+  // 연관 대상 열 이름 (프로젝트: 계약자, 본사: 관계회사(프로젝트))
+  relatedLabel?: string
 }>()
 
 const emit = defineEmits<{
@@ -102,7 +104,7 @@ const handleConfirm = () => {
                     <th class="pa-1 text-left">계정이름</th>
                     <th class="pa-1 text-left">거래처</th>
                     <th class="pa-1 text-right">분류금액</th>
-                    <th class="pa-1 text-left">계약자</th>
+                    <th class="pa-1 text-left">{{ relatedLabel ?? '계약자' }}</th>
                     <th class="pa-1 text-left">검증</th>
                   </tr>
                 </thead>
