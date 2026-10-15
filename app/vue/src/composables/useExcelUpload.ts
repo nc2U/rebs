@@ -54,7 +54,7 @@ export interface ParseResult {
   }
 }
 
-const EVIDENCE_TYPE_MAP: { [key: string]: string } = {
+export const EVIDENCE_TYPE_MAP: { [key: string]: string } = {
   증빙없음: '0',
   세금계산서: '1',
   '계산서(면세)': '2',
@@ -65,7 +65,7 @@ const EVIDENCE_TYPE_MAP: { [key: string]: string } = {
 }
 
 // 코드값('0'~'6')을 한글 라벨로 역변환하는 매핑
-const CODE_TO_EVIDENCE_MAP: { [key: string]: string } = Object.entries(EVIDENCE_TYPE_MAP).reduce(
+export const CODE_TO_EVIDENCE_MAP: { [key: string]: string } = Object.entries(EVIDENCE_TYPE_MAP).reduce(
   (acc, [label, code]) => {
     acc[code] = label
     return acc
@@ -76,7 +76,7 @@ const CODE_TO_EVIDENCE_MAP: { [key: string]: string } = Object.entries(EVIDENCE_
 /**
  * ExcelJS 셀에서 텍스트 값을 안전하게 추출 (RichText, 수식, 하이퍼링크 등 대응)
  */
-function extractCellValue(cell: ExcelJS.Cell): string {
+export function extractCellValue(cell: ExcelJS.Cell): string {
   const val = cell.value
   if (val === null || val === undefined) return ''
 
@@ -109,7 +109,7 @@ function extractCellValue(cell: ExcelJS.Cell): string {
 /**
  * ExcelJS 셀에서 숫자(금액)를 안전하게 추출 (쉼표, 공백, 통화기호 제거)
  */
-function extractCellNumber(cell: ExcelJS.Cell): number {
+export function extractCellNumber(cell: ExcelJS.Cell): number {
   const str = extractCellValue(cell).replace(/,/g, '').replace(/\s/g, '')
   if (!str) return 0
   const parsed = parseFloat(str)

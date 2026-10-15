@@ -45,6 +45,8 @@ interface Emits {
   (e: 'update:transaction', value: BankTransactionData): void
   (e: 'remove'): void
   (e: 'detectTransferWithdraw', sourceData: BankTransactionData): void
+  (e: 'downloadTemplate'): void
+  (e: 'uploadEntries'): void
 }
 
 const emit = defineEmits<Emits>()
@@ -244,12 +246,28 @@ watch(
           style="width: 120px"
           class="text-right mr-2"
         />
+        <v-icon
+          icon="mdi-download"
+          size="16"
+          color="info"
+          class="ml-auto mr-1 pointer"
+          @click="emit('downloadTemplate')"
+          v-tooltip="'이 거래건의 회계 계정 템플릿 다운로드'"
+        />
+        <v-icon
+          icon="mdi-upload"
+          size="16"
+          color="success"
+          class="mr-1 pointer"
+          @click="emit('uploadEntries')"
+          v-tooltip="'이 거래건의 회계 계정 엑셀 업로드'"
+        />
         <v-btn
           v-if="index > 0"
           density="compact"
           rounded="1"
           size="22"
-          class="ml-auto pointer"
+          class="pointer"
           @click="emit('remove')"
         >
           <v-icon icon="mdi-minus" color="error" />
@@ -258,8 +276,7 @@ watch(
           density="compact"
           rounded="1"
           size="22"
-          :class="index === 0 ? 'ml-auto' : 'ml-1'"
-          class="pointer"
+          class="ml-1 pointer"
           @click="addRow"
         >
           <v-icon icon="mdi-plus" color="success" />
