@@ -45,12 +45,22 @@ const handleConfirm = () => {
 
       <v-card-text v-if="result">
         <v-alert :type="result.isValid ? 'success' : 'warning'" variant="tonal" class="mb-4">
-          <strong>은행거래:</strong> {{ result.summary.transactionCount }}건 |
-          <strong>회계 계정:</strong> {{ result.summary.entryCount }}건 |
-          <strong class="text-success">정상:</strong> {{ result.summary.validTransactions }}건 |
-          <strong class="text-error">오류:</strong> {{ result.summary.invalidTransactions }}건
-          <div v-if="!result.isValid" class="mt-1">
-            오류가 있는 거래는 반영되지 않습니다. 정상 거래만 폼에 반영할 수 있습니다.
+          <div class="d-flex align-center justify-space-between flex-wrap">
+            <div>
+              <strong>은행거래:</strong> {{ result.summary.transactionCount }}건 (최대 50건) |
+              <strong>회계 계정:</strong> {{ result.summary.entryCount }}건 (최대 200행) |
+              <strong class="text-success">정상:</strong> {{ result.summary.validTransactions }}건 |
+              <strong class="text-error">오류:</strong> {{ result.summary.invalidTransactions }}건
+            </div>
+            <v-chip size="x-small" color="primary" variant="outlined" class="ml-auto">
+              1회 권장 상한: 50건 / 200행
+            </v-chip>
+          </div>
+          <div v-if="!result.isValid" class="mt-1 text-caption text-error">
+            ※ 오류가 있는 거래는 제외되며, 정상 거래만 선택적으로 폼에 반영됩니다.
+          </div>
+          <div class="mt-1 text-caption text-grey-darken-1">
+            ※ 폼에 반영된 데이터는 화면에서 확인 및 수정 후 상단의 [생성] 버튼을 눌러야 최종 저장됩니다.
           </div>
         </v-alert>
 

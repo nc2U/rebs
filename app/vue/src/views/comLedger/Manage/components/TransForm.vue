@@ -797,7 +797,10 @@ const hasUnsavedChanges = computed(() => {
   if (!isCreateMode.value) return false
 
   return (
-    bankForm.amount !== null || bankForm.content !== '' || editableEntries.value.some(e => e.amount)
+    hasEnteredTransactions.value ||
+    bankForm.amount !== null ||
+    bankForm.content !== '' ||
+    editableEntries.value.some(e => e.amount)
   )
 })
 
@@ -900,7 +903,7 @@ onBeforeRouteLeave((to, from, next) => {
                 color="success"
                 class="pointer"
                 @click="handleBulkUploadClick"
-                v-tooltip="'다수 은행거래 + 회계 계정 엑셀 업로드'"
+                v-tooltip="'다수 은행거래 + 회계 계정 엑셀 업로드 (1회 최대 50건 / 200행)'"
               />
               <input
                 ref="bulkFileInputRef"

@@ -33,6 +33,10 @@ export interface BulkParseOptions {
 export const relatedLabelOf = (t: BulkSystemType = 'project') =>
   t === 'project' ? '계약자' : '관계회사(프로젝트)'
 
+// 1회 대량 입력 상한선 (브라우저 반응성 및 네트워크 안정성 보장)
+export const MAX_BULK_ROWS = 200 // 최대 허용 엑셀 행 수
+export const MAX_BULK_TRANSACTIONS = 50 // 최대 허용 은행거래 건수
+
 export interface BulkEntry {
   rowNumber: number
   account: number | null
@@ -157,7 +161,9 @@ export function useBulkTransExcel() {
     const guide = workbook.addWorksheet('작성안내')
     guide.columns = [{ width: 100 }]
     ;[
-      '■ 작성 방법',
+      '■ 작성 방법 및 제한사항',
+      `★ [입력 제한] 화면 렌더링 및 안정성을 위해 1회 업로드 시 최대 ${MAX_BULK_ROWS}행 / 은행거래 ${MAX_BULK_TRANSACTIONS}건 이하로 작성해 주세요.`,
+      `   - 데이터가 많은 경우 파일을 나누어(예: 30~50건 단위) 순차적으로 등록해 주시기 바랍니다.`,
       '1. 1행 = 회계 계정(분류) 1건입니다. 시트 첫 번째 탭("거래내역 대량입력")에 입력하세요.',
       '2. [그룹번호]는 같은 은행거래에 속하는 행을 묶기 위한 엑셀 내 번호입니다. DB의 거래 번호(pk)가 아니며 저장되지 않습니다.',
       '   - 같은 그룹번호가 연속된 행은 하나의 은행거래로 묶입니다. (1, 2, 3 또는 A, B 등 아무 값이나 가능)',
@@ -170,6 +176,7 @@ export function useBulkTransExcel() {
       '8. 예시 행(1~3번 거래)은 삭제하고 입력하세요.',
     ].forEach(t => guide.addRow([t]))
     guide.getRow(1).font = { bold: true }
+    guide.getRow(2).font = { bold: true, color: { argb: 'FFC00000' } }
 
     const refSheet = workbook.addWorksheet('참조목록')
     refSheet.columns = [
@@ -207,6 +214,7 @@ export function useBulkTransExcel() {
       const transactions: BulkTransaction[] = []
       let current: BulkTransaction | null = null
       let lastKey = ''
+      let validRowCount = 0
 
       for (let i = 2; i <= ws.rowCount; i++) {
         const row = ws.getRow(i)
@@ -232,11 +240,23 @@ export function useBulkTransExcel() {
           continue
         }
 
+        validRowCount++
+        if (validRowCount > MAX_BULK_ROWS) {
+          throw new Error(
+            `1회 업로드 최대 허용 행 수(${MAX_BULK_ROWS}행)를 초과하였습니다. (현재 데이터 ${validRowCount}행 이상)\n파일을 나누어 업로드해 주세요.`,
+          )
+        }
+
         // 새 그룹 시작: 그룹번호가 바뀌었거나, 그룹번호가 비어 있으면서 은행거래 정보가 입력된 경우
         const hasBankInfo = !!(dealDate || bankName || sortRaw || content || bankAmount)
         const startsNew = !current || (key ? key !== lastKey : hasBankInfo)
 
         if (startsNew) {
+          if (transactions.length >= MAX_BULK_TRANSACTIONS) {
+            throw new Error(
+              `1회 업로드 최대 허용 거래 건수(${MAX_BULK_TRANSACTIONS}건)를 초과하였습니다.\n안정적인 처리를 위해 파일을 나누어 등록해 주세요.`,
+            )
+          }
           const sort = SORT_MAP[sortRaw]
           const bank = opts.bankAccounts.find(b => b.value && b.label === bankName)
           current = {
