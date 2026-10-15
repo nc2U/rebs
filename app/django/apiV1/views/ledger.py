@@ -1,5 +1,8 @@
+import logging
 from collections import defaultdict
 from datetime import datetime
+
+logger = logging.getLogger(__name__)
 
 from django.db import transaction as db_transaction
 from django.db.models import Sum, F, Case, When, Count, Q
@@ -1414,11 +1417,14 @@ class BankApiCredentialViewSet(viewsets.ModelViewSet):
             msg = f"CODEF 계정 등록 실패 [{ce.code}]: {ce.message}"
             if ce.extra_message:
                 msg += f" ({ce.extra_message})"
+            logger.warning("CODEF 계정 등록 실패: %s", msg)
             return Response({'error': msg}, status=status.HTTP_400_BAD_REQUEST)
         except ValueError as ve:
-            return Response({'error': f"CODEF 설정 오류: {str(ve)} (.env 파일 설정을 확인해 주세요)"}, status=status.HTTP_400_BAD_REQUEST)
+            logger.warning("CODEF 설정 오류: %s", str(ve))
+            return Response({'error': "CODEF 설정 정보가 올바르지 않습니다. 시스템 관리자에게 문의하세요."}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return Response({'error': f"계정 등록 중 오류가 발생했습니다: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+            logger.exception("계정 등록 처리 중 예외 발생")
+            return Response({'error': "계정 등록 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."}, status=status.HTTP_400_BAD_REQUEST)
 
 
         # 즉시 해당 은행의 보유 계좌 목록 조회
@@ -1754,7 +1760,8 @@ class RawBankTransactionViewSet(viewsets.ModelViewSet):
             )
             return Response(result, status=status.HTTP_200_OK)
         except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            logger.exception("거래 승인 처리 중 예외 발생 (#%s)", raw_tx.pk)
+            return Response({'error': "거래 승인 처리 중 오류가 발생했습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=['post'])
     def bulk_confirm(self, request):
