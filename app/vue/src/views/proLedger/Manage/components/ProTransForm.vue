@@ -111,23 +111,24 @@ const editableEntries = ref<NewEntryForm[]>([])
 
 // 신규 생성 모드용: 다수 은행거래건 배열
 const bankTransactions = ref<BankTransactionData[]>([])
+let nextTransUid = 1
+const createNewTransaction = (data?: Partial<BankTransactionData>): BankTransactionData => ({
+  uid: nextTransUid++,
+  bankForm: data?.bankForm || {
+    deal_date: getToday(),
+    bank_account: '',
+    amount: null,
+    sort: 2,
+    content: '',
+    note: '',
+  },
+  entries: data?.entries || [{}],
+})
 
 // 폼 초기화 함수들
 const initializeCreateForm = () => {
   // 신규 모드: 다수 거래건 구조로 초기화 (기본 1개 거래건)
-  bankTransactions.value = [
-    {
-      bankForm: {
-        deal_date: getToday(),
-        bank_account: '',
-        amount: null,
-        sort: 2,
-        content: '',
-        note: '',
-      },
-      entries: [{}],
-    },
-  ]
+  bankTransactions.value = [createNewTransaction()]
 
   // 기존 단일 거래건 폼도 초기화 (하위 호환성 유지)
   Object.assign(bankForm, {
@@ -432,24 +433,26 @@ const handleBulkConfirm = ({ replace }: { replace: boolean }) => {
 
   const imported: BankTransactionData[] = bulkResult.value.transactions
     .filter(t => t.isValid)
-    .map(t => ({
-      bankForm: {
-        deal_date: t.bankForm.deal_date,
-        bank_account: t.bankForm.bank_account,
-        amount: t.bankForm.amount,
-        sort: t.bankForm.sort,
-        content: t.bankForm.content,
-        note: t.bankForm.note,
-      },
-      entries: t.entries.map(e => ({
-        account: e.account,
-        trader: e.trader,
-        amount: e.amount,
-        evidence_type: e.evidence_type,
-        contract: e.contract,
-        contractor: null,
-      })),
-    }))
+    .map(t =>
+      createNewTransaction({
+        bankForm: {
+          deal_date: t.bankForm.deal_date,
+          bank_account: t.bankForm.bank_account,
+          amount: t.bankForm.amount,
+          sort: t.bankForm.sort,
+          content: t.bankForm.content,
+          note: t.bankForm.note,
+        },
+        entries: t.entries.map(e => ({
+          account: e.account,
+          trader: e.trader,
+          amount: e.amount,
+          evidence_type: e.evidence_type,
+          contract: e.contract,
+          contractor: null,
+        })),
+      }),
+    )
 
   if (!imported.length) return
   bankTransactions.value = replace ? imported : [...bankTransactions.value, ...imported]
@@ -507,17 +510,7 @@ const insertTransferFeeEntry = (index: number) => {
 
 // 새 은행거래건 추가
 const addBankTransaction = () => {
-  bankTransactions.value.push({
-    bankForm: {
-      deal_date: getToday(),
-      bank_account: '',
-      amount: null,
-      sort: 2,
-      content: '',
-      note: '',
-    },
-    entries: [{}],
-  })
+  bankTransactions.value.push(createNewTransaction())
 }
 
 // 은행거래건 삭제
@@ -977,7 +970,7 @@ onBeforeMount(async () => {
         <template v-if="isCreateMode">
           <BankTransactionRow
             v-for="(trans, idx) in bankTransactions"
-            :key="`trans-${idx}`"
+            :key="trans.uid ?? `trans-${idx}`"
             :transaction="trans"
             :index="idx"
             :bank-accounts="formBankAccounts"

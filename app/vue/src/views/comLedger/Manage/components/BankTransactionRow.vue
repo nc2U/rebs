@@ -25,6 +25,7 @@ interface EntryForm {
 
 // 전체 거래건 데이터 구조
 export interface BankTransactionData {
+  uid?: string | number
   bankForm: BankForm
   entries: EntryForm[]
 }
@@ -51,12 +52,17 @@ const emit = defineEmits<Emits>()
 
 // 로컬 상태 관리 - props를 직접 수정하지 않고 emit으로 업데이트
 const localBankForm = reactive<BankForm>({ ...props.transaction.bankForm })
+let isSyncingFromProps = false
 
 // props 변경 시 localBankForm 동기화
 watch(
   () => props.transaction.bankForm,
   newBankForm => {
+    isSyncingFromProps = true
     Object.assign(localBankForm, newBankForm)
+    setTimeout(() => {
+      isSyncingFromProps = false
+    }, 0)
   },
   { deep: true },
 )
@@ -64,15 +70,17 @@ watch(
 const localEntries = computed({
   get: () => props.transaction.entries,
   set: value => {
-    emit('update:transaction', { bankForm: localBankForm, entries: value })
+    emit('update:transaction', { uid: props.transaction.uid, bankForm: localBankForm, entries: value })
   },
 })
 
-// bankForm 변경 시 부모에게 알림
+// bankForm 변경 시 부모에게 알림 (props로 인한 변경 시 루프 방지)
 watch(
   localBankForm,
   () => {
-    emit('update:transaction', { bankForm: localBankForm, entries: props.transaction.entries })
+    if (!isSyncingFromProps) {
+      emit('update:transaction', { uid: props.transaction.uid, bankForm: localBankForm, entries: props.transaction.entries })
+    }
   },
   { deep: true },
 )
