@@ -39,7 +39,8 @@ const contStore = useContract()
 const clearContractor = () => {
   contStore.contract = null
   contStore.contractor = null
-  // router.replace({ name: props.clearRoute })
+  contStore.contAddressList = []
+  router.replace({ name: props.clearRoute }).catch(() => {})
 }
 
 const route = useRoute()
