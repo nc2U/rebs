@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { ref, computed, onBeforeMount, provide } from 'vue'
+import { useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { pageTitle, navMenu } from '@/views/contracts/_menu/headermixin'
-import type { Project } from '@/store/types/project.ts'
+import type { Project } from '@/store/types/project'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
 import { useContract } from '@/store/pinia/contract'
@@ -9,42 +10,48 @@ import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContractAuthGuard from '@/components/AuthGuard/ContractAuthGuard.vue'
 import Loading from '@/components/Loading/Index.vue'
-import ContSummary from '@/views/contracts/Status/components/ContSummary.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
-import ContractBoard from '@/views/contracts/Status/components/ContractBoard.vue'
+import ContSummary from './components/ContSummary.vue'
+import ContractBoard from './components/ContractBoard.vue'
 
+const route = useRoute()
 const projStore = useProject()
-const project = computed(() => (projStore.project as Project)?.pk)
-
 const pDataStore = useProjectData()
-const fetchTypeList = (projId: number) => pDataStore.fetchTypeList(projId)
-const fetchBuildingList = (projId: number) => pDataStore.fetchBuildingList(projId)
-const fetchHouseUnitList = (projId: number) => pDataStore.fetchHouseUnitList(projId)
-
 const contStore = useContract()
-const fetchContractList = (payload: { project: number }) => contStore.fetchContractList(payload)
-const fetchSubsSummaryList = (projId: number) => contStore.fetchSubsSummaryList(projId)
-const fetchContSummaryList = (projId: number) => contStore.fetchContSummaryList(projId)
 
 const isContor = ref<boolean>(true)
 const isPageLoading = ref<boolean>(false)
+
+// 계약자명 표시 상태 주입 (하위 컴포넌트 호환)
+provide('isContor', isContor)
+
+// 쿼리 파라미터 안전 파싱
+const parseQueryNumber = (val: unknown): number | null => {
+  if (!val) return null
+  const parsed = parseInt(String(val), 10)
+  return Number.isNaN(parsed) ? null : parsed
+}
+
+const urlProjectId = computed(() => parseQueryNumber(route.query.project))
+const project = computed<number | null>(() => (projStore.project as Project)?.pk ?? null)
+
 const excelUrl = computed(() =>
   project.value ? `/excel/status/?project=${project.value}&iscontor=${isContor.value}` : '',
 )
 
-provide('isContor', isContor)
-
+// 프로젝트 데이터 세팅 (불필요한 fetchContractList 제거 및 병렬 처리)
 const dataSetup = async (pk: number) => {
   isPageLoading.value = true
   try {
     await Promise.all([
-      fetchTypeList(pk),
-      fetchBuildingList(pk),
-      fetchHouseUnitList(pk),
-      fetchSubsSummaryList(pk),
-      fetchContractList({ project: pk }),
-      fetchContSummaryList(pk),
+      pDataStore.fetchTypeList(pk),
+      pDataStore.fetchBuildingList(pk),
+      pDataStore.fetchHouseUnitList(pk),
+      contStore.fetchSubsSummaryList(pk),
+      contStore.fetchContSummaryList(pk),
     ])
+  } catch (error) {
+    console.error('동호수 현황 데이터를 불러오는 중 오류가 발생했습니다:', error)
   } finally {
     isPageLoading.value = false
   }
@@ -63,14 +70,31 @@ const dataReset = () => {
   })
 }
 
-const projSelect = (target: number | null) => {
+const projSelect = async (target: number | null, isAuto = false) => {
   dataReset()
-  if (!!target) dataSetup(target)
+  if (target) {
+    if (isAuto) await projStore.fetchProject(target)
+    await dataSetup(target)
+  }
 }
 
-onBeforeMount(() => {
-  const projId = project.value || projStore.currentProject
-  if (projId) dataSetup(projId)
+// 라우트 쿼리 변경 감지
+onBeforeRouteUpdate(async to => {
+  const toProjectId = parseQueryNumber(to.query.project)
+  if (toProjectId && toProjectId !== project.value) {
+    await projSelect(toProjectId, true)
+  }
+})
+
+onBeforeMount(async () => {
+  const targetId = urlProjectId.value || project.value || projStore.currentProject
+  if (targetId) {
+    if (urlProjectId.value && urlProjectId.value !== project.value) {
+      await projSelect(urlProjectId.value, true)
+    } else {
+      await dataSetup(targetId)
+    }
+  }
 })
 </script>
 
@@ -81,7 +105,7 @@ onBeforeMount(() => {
       :page-title="pageTitle"
       :nav-menu="navMenu"
       selector="ProjectSelect"
-      @proj-select="projSelect"
+      @proj-select="projSelect($event, false)"
     />
 
     <ContentBody>
