@@ -1,12 +1,23 @@
 <script lang="ts" setup>
-defineProps({ summary: { type: Object, required: true } })
+import type { PropType } from 'vue'
+
+defineProps({
+  summary: {
+    type: Object as PropType<{ total: number; open: number; closed: number }>,
+    required: true,
+  },
+  title: {
+    type: String,
+    default: '이번 달 업무 현황',
+  },
+})
 </script>
 
 <template>
   <v-card variant="outlined" class="mt-4 pa-4 border-dashed rounded-lg">
     <CRow align="center">
       <CCol md="4" class="border-right d-none d-md-block">
-        <div class="text-subtitle-2 text-grey mb-2">이번 달 업무 현황</div>
+        <div class="text-subtitle-2 text-grey mb-2">{{ title }}</div>
         <div class="d-flex justify-space-around align-center">
           <div class="text-center">
             <div class="text-h6 font-weight-bold">{{ summary.total }}</div>

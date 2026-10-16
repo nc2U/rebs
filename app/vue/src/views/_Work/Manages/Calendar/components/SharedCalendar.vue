@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed, type PropType, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { message } from '@/utils/helper.ts'
-import { usePerms } from '@/composables/usePerms.ts'
+import { message } from '@/utils/helper'
+import { usePerms } from '@/composables/usePerms'
 import { addDaysToDate, getToday } from '@/utils/baseMixins'
 import { useStore } from '@/store'
 import { useCalendar } from '@/store/pinia/work_calendar'
@@ -109,7 +109,7 @@ const handleEventClick = (info: any) => {
         params: { projId: project, meetingId: pk },
       })
     } else {
-      message('warning', '', '소속 프로젝트 슬러그가 없어 회의록 상세 페이지로 이동할 수 없습니다.')
+      message('warning', '', '소속 워크스페이스 슬러그가 없어 회의록 상세 페이지로 이동할 수 없습니다.')
     }
   }
 }

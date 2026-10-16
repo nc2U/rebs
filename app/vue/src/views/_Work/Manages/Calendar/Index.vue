@@ -4,9 +4,9 @@ import { navMenu2 as navMenu } from '@/views/_Work/_menu/headermixin1'
 import { useRoute } from 'vue-router'
 import { usePerms } from '@/composables/usePerms'
 import { useWork } from '@/store/pinia/work_project'
-import { useCompany } from '@/store/pinia/company.ts'
+import { useCompany } from '@/store/pinia/company'
 import { useCalendar } from '@/store/pinia/work_calendar'
-import { useCalendarFilter } from '@/store/pinia/work_calendar_filter.ts'
+import { useCalendarFilter } from '@/store/pinia/work_calendar_filter'
 import { useAccount } from '@/store/pinia/account'
 import { useIssue } from '@/store/pinia/work_issue'
 import { useMeeting } from '@/store/pinia/work_meeting'
@@ -20,8 +20,8 @@ import SummaryStatus from '@/views/_Work/Manages/Calendar/components/SummaryStat
 import SavedQueryAside from '@/views/_Work/components/asides/SavedQueryAside.vue'
 import Loading from '@/components/Loading/Index.vue'
 
-const cBody = ref()
-const sideNavCAll = () => cBody.value.toggle()
+const cBody = ref<InstanceType<typeof ContentBody> | null>(null)
+const sideNavCall = () => cBody.value?.toggle()
 
 const { can, PERM } = usePerms()
 const canPubQuery = computed(() => can(PERM.PROJECT_PUB_QUERY))
@@ -50,8 +50,8 @@ const meetingCategories = computed(() => meetingStore.categoryList)
 const calendarFilterStore = useCalendarFilter()
 const activeProject = ref<string | undefined>(route.query.project as string | undefined)
 const activeFilters = ref<Record<string, any>>(calendarFilterStore.buildFilterPayload())
-const calendarRef = ref()
-const querySectionRef = ref()
+const calendarRef = ref<InstanceType<typeof SharedCalendar> | null>(null)
+const querySectionRef = ref<InstanceType<typeof QuerySection> | null>(null)
 const activeQueryId = computed(() => calendarFilterStore.activeQueryId)
 
 const filterSubmit = (payload: IssueFilter) => {
@@ -94,7 +94,7 @@ const summary = computed(() => {
 
 <template>
   <Loading :active="loading || calendarStore.loading" />
-  <Header :page-title="comName" :nav-menu="navMenu" @side-nav-call="sideNavCAll" />
+  <Header :page-title="comName" :nav-menu="navMenu" @side-nav-call="sideNavCall" />
 
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="route?.query" :aside="true">
     <template v-slot:default>

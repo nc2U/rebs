@@ -1,22 +1,30 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, ref } from 'vue'
+import { computed, onBeforeMount, type PropType, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useWork } from '@/store/pinia/work_project'
 import { useIssue } from '@/store/pinia/work_issue'
 import { useMeeting } from '@/store/pinia/work_meeting'
 import { useCalendar } from '@/store/pinia/work_calendar'
-import { useCalendarFilter } from '@/store/pinia/work_calendar_filter.ts'
+import { useCalendarFilter } from '@/store/pinia/work_calendar_filter'
 import { useAccount } from '@/store/pinia/account'
 import { usePerms } from '@/composables/usePerms'
 import type { IssueFilter } from '@/store/types/work_issue'
+import type { IssueProject } from '@/store/types/work_project'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import QuerySection from '@/views/_Work/Manages/Calendar/components/QuerySection.vue'
 import SharedCalendar from '@/views/_Work/Manages/Calendar/components/SharedCalendar.vue'
+import SummaryStatus from '@/views/_Work/Manages/Calendar/components/SummaryStatus.vue'
 import SavedQueryAside from '@/views/_Work/components/asides/SavedQueryAside.vue'
 import Loading from '@/components/Loading/Index.vue'
 
-const cBody = ref()
-const toggle = () => cBody.value.toggle()
+defineProps({
+  navMenu: { type: Array as PropType<string[]>, default: () => [] },
+  currentProject: { type: Object as PropType<IssueProject | null>, default: null },
+  query: { type: Object, default: () => ({}) },
+})
+
+const cBody = ref<InstanceType<typeof ContentBody> | null>(null)
+const toggle = () => cBody.value?.toggle()
 defineExpose({ toggle })
 
 const { can, PERM } = usePerms()
@@ -40,8 +48,8 @@ const calendarFilterStore = useCalendarFilter()
 const activeFilters = ref<Record<string, any>>(
   calendarFilterStore.buildFilterPayload((route.params.projId as string) || ''),
 )
-const calendarRef = ref()
-const querySectionRef = ref()
+const calendarRef = ref<InstanceType<typeof SharedCalendar> | null>(null)
+const querySectionRef = ref<InstanceType<typeof QuerySection> | null>(null)
 const activeQueryId = computed(() => calendarFilterStore.activeQueryId)
 
 const filterSubmit = (payload: IssueFilter) => {
@@ -86,7 +94,7 @@ onBeforeMount(async () => {
 
 <template>
   <Loading :active="combinedLoading" />
-  <ContentBody ref="cBody" :aside="true">
+  <ContentBody ref="cBody" :nav-menu="navMenu" :aside="true">
     <template v-slot:default>
       <CRow class="py-2">
         <CCol>
@@ -122,47 +130,11 @@ onBeforeMount(async () => {
         </CCol>
       </CRow>
 
-      <v-card variant="outlined" class="mt-4 pa-4 border-dashed rounded-lg">
-        <CRow align="center">
-          <CCol md="4" class="border-right d-none d-md-block">
-            <div class="text-subtitle-2 text-grey mb-2">프로젝트 업무 현황</div>
-            <div class="d-flex justify-space-around align-center">
-              <div class="text-center">
-                <div class="text-h6 font-weight-bold">{{ summary.total }}</div>
-                <div class="text-caption text-grey">전체</div>
-              </div>
-              <div class="text-center">
-                <div class="text-h6 font-weight-bold text-info">{{ summary.open }}</div>
-                <div class="text-caption text-grey">진행중</div>
-              </div>
-              <div class="text-center">
-                <div class="text-h6 font-weight-bold text-success">{{ summary.closed }}</div>
-                <div class="text-caption text-grey">완료</div>
-              </div>
-            </div>
-          </CCol>
-          <CCol md="8" class="pl-md-6">
-            <div class="text-subtitle-2 text-grey mb-2">일정 가이드</div>
-            <div class="d-flex flex-wrap gap-4">
-              <div class="d-flex align-center mr-4">
-                <v-icon icon="mdi-arrow-right-bold" color="success" size="small" class="mr-1" />
-                <span class="text-body-2">오늘 시작</span>
-              </div>
-              <div class="d-flex align-center mr-4">
-                <v-icon icon="mdi-arrow-left-bold" color="danger" size="small" class="mr-1" />
-                <span class="text-body-2">오늘 종료</span>
-              </div>
-              <div class="d-flex align-center">
-                <v-icon icon="mdi-rhombus" color="danger" size="small" class="mr-1" />
-                <span class="text-body-2">오늘 시작/종료</span>
-              </div>
-            </div>
-            <div class="mt-2 text-caption text-grey-darken-1">
-              * 바(Bar)의 색상은 업무의 현재 상태(신규/진행/완료 등)를 나타냅니다.
-            </div>
-          </CCol>
-        </CRow>
-      </v-card>
+      <CRow class="mb-3">
+        <CCol>
+          <SummaryStatus :summary="summary" title="워크스페이스 업무 현황" />
+        </CCol>
+      </CRow>
     </template>
 
     <template v-slot:aside>
@@ -176,14 +148,3 @@ onBeforeMount(async () => {
     </template>
   </ContentBody>
 </template>
-
-<style lang="scss" scoped>
-.border-dashed {
-  border-style: dashed !important;
-  border-width: 1.5px !important;
-}
-
-.gap-4 {
-  gap: 1rem;
-}
-</style>

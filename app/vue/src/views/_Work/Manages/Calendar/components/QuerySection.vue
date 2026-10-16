@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { computed, onMounted, type PropType, reactive, ref, watch } from 'vue'
 import { usePerms } from '@/composables/usePerms'
-import type { selectProject } from '@/store/types/work_project.ts'
-import type { IssueStatus, Tracker } from '@/store/types/work_issue.ts'
-import type { MeetingCategory } from '@/store/types/work_meeting.ts'
+import type { selectProject } from '@/store/types/work_project'
+import type { IssueStatus, Tracker } from '@/store/types/work_issue'
+import type { MeetingCategory } from '@/store/types/work_meeting'
 import Multiselect from '@vueform/multiselect'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
 import IssueProjectSelector from '@/views/_Work/components/atomics/IssueProjectSelector.vue'
@@ -14,7 +14,7 @@ import { useRoute } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
 
 import { storeToRefs } from 'pinia'
-import { useCalendarFilter } from '@/store/pinia/work_calendar_filter.ts'
+import { useCalendarFilter } from '@/store/pinia/work_calendar_filter'
 
 const route = useRoute()
 const { can, PERM } = usePerms()
@@ -37,7 +37,7 @@ const props = defineProps({
 
 const emit = defineEmits(['filter-submit'])
 
-const refQuerySaveModal = ref()
+const refQuerySaveModal = ref<InstanceType<typeof SaveQueryModal> | null>(null)
 const openSaveModal = () => {
   refQuerySaveModal.value?.callModal()
 }
@@ -56,7 +56,7 @@ const searchOptions = reactive([
     : [
         {
           label: '공통',
-          options: [{ value: 'project', label: '프로젝트' }],
+          options: [{ value: 'project', label: '워크스페이스' }],
         },
       ]),
   {
@@ -113,7 +113,7 @@ const filterFieldsConfig = computed(() => [
     : [
         {
           key: 'project',
-          label: '프로젝트',
+          label: '워크스페이스',
           type: 'project',
           condOptions: [
             { value: 'is', label: '이다' },
@@ -421,7 +421,7 @@ defineExpose({ applyQuery, resetFilter })
                   <IssueProjectSelector
                     v-model="form.project"
                     :issue-project-list="searchProjects"
-                    default-title="<< 내 프로젝트 >>"
+                    default-title="<< 내 워크스페이스 >>"
                     show-book-mark-option
                     show-closed-option
                     value-type="slug"
