@@ -1,220 +1,133 @@
 <script lang="ts" setup>
 import { computed, nextTick, onBeforeMount, ref, watch } from 'vue'
+import { onBeforeRouteLeave, onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import { navMenu, pageTitle } from '@/views/contracts/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
-import { useProLedger } from '@/store/pinia/proLedger.ts'
+import { useProLedger } from '@/store/pinia/proLedger'
 import { useProjectData } from '@/store/pinia/project_data'
 import { useContract } from '@/store/pinia/contract'
-import { usePerms } from '@/composables/usePerms.ts'
-import { onBeforeRouteLeave, onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
+import { usePerms } from '@/composables/usePerms'
 import type { Project } from '@/store/types/project'
 import type { ContFilter, UnitFilter } from '@/store/types/contract'
 import Loading from '@/components/Loading/Index.vue'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import ContractAuthGuard from '@/components/AuthGuard/ContractAuthGuard.vue'
-import ContractSummary from './components/ContractSummary.vue'
-import ListController from '@/views/contracts/List/components/ListController.vue'
-import AddContract from '@/views/contracts/List/components/AddContract.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
-import SelectItems from '@/views/contracts/List/components/SelectItems.vue'
-import ContractList from '@/views/contracts/List/components/ContractList.vue'
+import ContractSummary from './components/ContractSummary.vue'
+import ListController from './components/ListController.vue'
+import AddContract from './components/AddContract.vue'
+import SelectItems from './components/SelectItems.vue'
+import ContractList from './components/ContractList.vue'
 
 const { can, PERM } = usePerms()
 const canContractCreate = computed(() => can(PERM.CONTRACT_CREATE))
 
 const route = useRoute()
-const listControl = ref()
+const router = useRouter()
+const listControl = ref<InstanceType<typeof ListController> | null>(null)
 const curr_status = ref<'1' | '2'>('2')
 const limit = ref(10)
-
-const highlightId = computed(() => {
-  const id = route.query.highlight_id
-  return id ? parseInt(id as string, 10) : null
-})
-
-// URL에서 project 파라미터 읽기
-const urlProjectId = computed(() => {
-  const id = route.query.project
-  return id ? parseInt(id as string, 10) : null
-})
-
-// URL에서 page 파라미터 읽기
-const urlPage = computed(() => {
-  const page = route.query.page
-  return page ? parseInt(page as string, 10) : null
-})
-
+const loading = ref(true)
 const visible = ref(false)
 
-const filteredStr = ref(`&is_contract=true`)
-const printItems = ref(['1', '3', '4', '5', '8', '13', '14'])
+// 쿼리 파라미터 안전 파싱 (NaN 방지)
+const parseQueryNumber = (val: unknown): number | null => {
+  if (!val) return null
+  const parsed = parseInt(String(val), 10)
+  return Number.isNaN(parsed) ? null : parsed
+}
+
+const highlightId = computed(() => parseQueryNumber(route.query.highlight_id))
+const urlProjectId = computed(() => parseQueryNumber(route.query.project))
+const urlPage = computed(() => parseQueryNumber(route.query.page))
+
+// 인쇄/엑셀 컬럼 관리
+const defaultPrintItems = ['1', '3', '4', '5', '8', '13', '14']
+const printItems = ref<string[]>([...defaultPrintItems])
+
+// 스토어
+const projStore = useProject()
+const contStore = useContract()
+const proDataStore = useProjectData()
+const proLedgerStore = useProLedger()
+
+const project = computed<Project | null>(() => (projStore.project as Project) || null)
+const unitSet = computed(() => !!project.value?.is_unit_set)
+
+// 단지 설정 여부에 따른 엑셀 출력항목 동기화
+watch(
+  unitSet,
+  isSet => {
+    if (isSet && !printItems.value.includes('6-7')) {
+      printItems.value.splice(4, 0, '6-7')
+    } else if (!isSet && printItems.value.includes('6-7')) {
+      printItems.value = printItems.value.filter(item => item !== '6-7')
+    }
+  },
+  { immediate: true },
+)
+
+// 엑셀 내보내기 URL 생성 (URLSearchParams 활용 및 status, ordering 파라미터 연동)
+const currentFilters = ref<ContFilter>({})
 
 const excelUrl = computed(() => {
-  const pk = project.value ? project.value?.pk : ''
-  const items = printItems.value.join('-')
-  return `/excel/contracts/?project=${pk}${filteredStr.value}&col=${items}`
+  const pk = project.value?.pk
+  if (!pk) return ''
+
+  const params = new URLSearchParams()
+  params.set('project', String(pk))
+  params.set('status', curr_status.value)
+  params.set('is_contract', curr_status.value === '2' ? 'true' : 'false')
+  params.set('col', printItems.value.join('-'))
+  params.set('limit', String(limit.value))
+
+  const f = currentFilters.value
+  if (f.order_group) params.set('group', String(f.order_group))
+  if (f.unit_type) params.set('type', String(f.unit_type))
+  if (f.building) params.set('dong', String(f.building))
+  if (f.null_unit) params.set('is_null', '1')
+  if (f.qualification) params.set('quali', String(f.qualification))
+  if (f.change_type) params.set('change_type', String(f.change_type))
+  if (f.is_completed) params.set('completed', String(f.is_completed))
+  if (f.is_sup_cont) params.set('sup', String(f.is_sup_cont))
+  if (f.from_date) params.set('sdate', String(f.from_date))
+  if (f.to_date) params.set('edate', String(f.to_date))
+  if (f.search) params.set('q', String(f.search))
+
+  if (f.ordering) {
+    const orderList = [
+      '-created',
+      'created',
+      '-contractor__contract_date',
+      'contractor__contract_date',
+      '-serial_number',
+      'serial_number',
+      '-contractor__name',
+      'contractor__name',
+    ]
+    const orderIdx = orderList.indexOf(String(f.ordering))
+    if (orderIdx !== -1) params.set('order', String(orderIdx))
+  }
+
+  return `/excel/contracts/?${params.toString()}`
 })
 
 const title = computed(() => (curr_status.value === '1' ? '청약현황' : '계약현황'))
 
-const projStore = useProject()
-const project = computed(() => projStore.project as Project)
-const unitSet = computed(() => (projStore.project as Project)?.is_unit_set)
-watch(project, nVal => {
-  if (!!nVal)
-    if (nVal?.is_unit_set && !printItems.value.includes('6-7')) printItems.value.splice(4, 0, '6-7')
-})
-
-watch(curr_status, () => {
-  if (listControl.value) {
-    listControl.value.listFiltering(1)
-  }
-})
-
-const contStore = useContract()
-const fetchOrderGroupList = (pk: number) => contStore.fetchOrderGroupList(pk)
-const fetchContractList = (payload: ContFilter) => contStore.fetchContractList(payload)
-const findContractPage = (highlightId: number, filters: ContFilter) =>
-  contStore.findContractPage(highlightId, filters)
-const fetchSubsSummaryList = (pk: number) => contStore.fetchSubsSummaryList(pk)
-const fetchContSummaryList = (pk: number) => contStore.fetchContSummaryList(pk)
-const fetchKeyUnitList = (payload: UnitFilter) => contStore.fetchKeyUnitList(payload)
-const fetchHouseUnitList = (payload: UnitFilter) => contStore.fetchHouseUnitList(payload)
-
-const proDataStore = useProjectData()
-const fetchTypeList = (projId: number) => proDataStore.fetchTypeList(projId)
-const fetchBuildingList = (projId: number) => proDataStore.fetchBuildingList(projId)
-
-const proLedgerStore = useProLedger()
-const fetchAllProBankAccList = (projId: number) => proLedgerStore.fetchAllProBankAccList(projId)
-
-const pageSelect = (page: number) => {
-  // 페이지 변경 시 query string 정리
-  clearQueryString()
-  listControl.value.listFiltering(page)
-}
-
-const onContFiltering = (payload: ContFilter) => {
-  // 필터링 시 query string 정리
-  clearQueryString()
-
-  payload.status = curr_status.value
-  const {
-    status,
-    order_group,
-    unit_type,
-    building,
-    null_unit,
-    qualification,
-    change_type,
-    is_completed,
-    is_sup_cont,
-    from_date,
-    to_date,
-    search,
-  } = payload
-  payload.project = project.value?.pk
-  const is_unit = null_unit ? '1' : ''
-  payload.limit = payload.limit || 10
-  limit.value = payload.limit
-  curr_status.value = status as '1' | '2'
-  const isContractParam = status === '2' ? 'true' : 'false'
-  filteredStr.value = `&limit=${limit.value}&is_contract=${isContractParam}&group=${order_group}&type=${unit_type}&dong=${building}&is_null=${is_unit}&quali=${qualification}&change_type=${change_type ?? ''}&completed=${is_completed ?? ''}&sup=${is_sup_cont}&sdate=${from_date}&edate=${to_date}&q=${search}`
-
-  if (payload.project) fetchContractList(payload)
-}
-const setItems = (arr: string[]) => (printItems.value = arr)
-
-const handleSubscription = async () => {
-  curr_status.value = '1'
-  await nextTick()
-  listControl.value.listFiltering(1)
-  if (project.value?.pk) {
-    await fetchSubsSummaryList(project.value.pk)
-    await fetchContSummaryList(project.value.pk)
-  }
-}
-
-const handleContract = async () => {
-  curr_status.value = '2'
-  await nextTick()
-  listControl.value.listFiltering(1)
-  if (project.value?.pk) {
-    await fetchSubsSummaryList(project.value.pk)
-    await fetchContSummaryList(project.value.pk)
-  }
-}
-
+// 하이라이트 위치로 스크롤 이동
 const scrollToHighlight = async () => {
-  if (highlightId.value) {
-    await nextTick()
+  if (!highlightId.value) return
+  await nextTick()
+  setTimeout(() => {
     const element = document.querySelector(`[data-contract-id="${highlightId.value}"]`)
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      // highlightId는 computed이므로 URL 파라미터가 있는 동안 자동으로 유지됩니다
     }
-  }
+  }, 100)
 }
 
-const loadHighlightPage = async (projectId: number) => {
-  if (highlightId.value && projectId) {
-    try {
-      // 기본 필터 조건으로 해당 항목이 몇 번째 페이지에 있는지 찾기
-      const filters = {
-        ...contStore.contractFilter,
-        project: projectId,
-        limit: limit.value,
-        status: curr_status.value,
-      }
-
-      // 해당 페이지로 이동 (1페이지여도 page 값 명시적 설정)
-      filters.page = await findContractPage(highlightId.value, filters)
-      await fetchContractList(filters)
-    } catch (error) {
-      console.error('Error finding highlight page:', error)
-      // 오류 발생시 기본 첫 페이지 로드
-      await fetchContractList({ project: projectId })
-    }
-  }
-}
-
-const dataSetup = async (proj: number, initialPage?: number) => {
-  await fetchOrderGroupList(proj)
-  await fetchTypeList(proj)
-  await fetchBuildingList(proj)
-  await fetchAllProBankAccList(proj)
-  await fetchKeyUnitList({ project: proj })
-  await fetchHouseUnitList({ project: proj })
-
-  // 초기 필터 설정 (URL에서 page가 있으면 해당 페이지로)
-  const filters: ContFilter = {
-    project: proj,
-    limit: limit.value,
-    status: curr_status.value,
-    ...(initialPage && { page: initialPage }),
-  }
-
-  // page 파라미터가 명시적으로 있으면 그 페이지를 사용하고 스크롤만
-  // page가 없고 highlight_id만 있으면 자동으로 페이지 찾기
-  if (highlightId.value && !initialPage) {
-    // highlight_id만 있을 때: 자동으로 해당 항목이 있는 페이지 찾기
-    await loadHighlightPage(proj)
-  } else {
-    // page가 명시되었거나 highlight_id가 없을 때: 지정된 페이지 로드
-    await fetchContractList(filters)
-  }
-
-  // 하이라이트 처리 후에도 목록이 비어있다면 기본 목록 로드
-  if (highlightId.value && contStore.contractList.length === 0)
-    await fetchContractList({ project: proj })
-
-  await scrollToHighlight()
-
-  await fetchSubsSummaryList(proj)
-  await fetchContSummaryList(proj)
-}
-
+// 데이터 초기화
 const dataReset = () => {
   contStore.orderGroupList = []
   contStore.subsSummaryList = []
@@ -224,106 +137,165 @@ const dataReset = () => {
   contStore.keyUnitList = []
   contStore.houseUnitList = []
   proDataStore.buildingList = []
+  proDataStore.unitTypeList = []
   proLedgerStore.allProBankList = []
 }
 
-const projSelect = async (target: number | null, skipClearQuery = false) => {
-  // 프로젝트 변경 시 query string 정리 (URL 파라미터로부터 자동 전환하는 경우는 제외)
-  if (!skipClearQuery) clearQueryString()
+// 병렬 데이터 로딩 (Waterfall 제거)
+const loadProjectMeta = async (projId: number) => {
+  await Promise.all([
+    contStore.fetchOrderGroupList(projId),
+    proDataStore.fetchTypeList(projId),
+    proDataStore.fetchBuildingList(projId),
+    proLedgerStore.fetchAllProBankAccList(projId),
+    contStore.fetchKeyUnitList({ project: projId } as UnitFilter),
+    contStore.fetchHouseUnitList({ project: projId } as UnitFilter),
+  ])
+}
 
-  dataReset()
-  if (!!target) {
-    // ContentHeader의 projSelect가 이미 fetchProject를 완료한 뒤 이벤트를 emit하므로
-    // 수동 선택(@proj-select 이벤트) 시에는 중복 호출 생략
-    // skipClearQuery=true인 경우(onBeforeMount, onBeforeRouteUpdate 내부 직접 호출)에만 fetchProject 실행
-    if (skipClearQuery) await projStore.fetchProject(target)
+const loadSummaryData = async (projId: number) => {
+  await Promise.all([
+    contStore.fetchSubsSummaryList(projId),
+    contStore.fetchContSummaryList(projId),
+  ])
+}
 
-    // 수동 프로젝트 선택 시에는 하이라이트 없이 일반 목록만 로드
-    if (!skipClearQuery) {
-      // 수동 선택 시에는 하이라이트 기능 비활성화
-      await fetchOrderGroupList(target)
-      await fetchTypeList(target)
-      await fetchBuildingList(target)
-      await fetchAllProBankAccList(target)
-      await fetchKeyUnitList({ project: target })
-      await fetchHouseUnitList({ project: target })
-      await fetchContractList({ project: target, limit: limit.value, status: curr_status.value })
-      await fetchSubsSummaryList(target)
-      await fetchContSummaryList(target)
-    } else {
-      // 슬랙 링크 등 자동 전환 시에만 하이라이트 기능 사용
-      // URL에서 page가 있으면 해당 페이지로 진입
-      await dataSetup(target, urlPage.value ?? undefined)
+const loadHighlightPage = async (projectId: number) => {
+  if (!highlightId.value || !projectId) return
+  try {
+    const filters: ContFilter = {
+      ...contStore.contractFilter,
+      project: projectId,
+      limit: limit.value,
+      status: curr_status.value,
+    }
+    filters.page = await contStore.findContractPage(highlightId.value, filters)
+    await contStore.fetchContractList(filters)
+  } catch (error) {
+    console.error('Error finding highlight page:', error)
+    await contStore.fetchContractList({ project: projectId, limit: limit.value, status: curr_status.value })
+  }
+}
+
+// 전체 데이터 세팅
+const dataSetup = async (projId: number, initialPage?: number) => {
+  await loadProjectMeta(projId)
+
+  const filters: ContFilter = {
+    ...currentFilters.value,
+    project: projId,
+    limit: limit.value,
+    status: curr_status.value,
+    ...(initialPage && { page: initialPage }),
+  }
+
+  if (highlightId.value && !initialPage) {
+    await loadHighlightPage(projId)
+  } else {
+    await contStore.fetchContractList(filters)
+  }
+
+  if (highlightId.value && contStore.contractList.length === 0) {
+    await contStore.fetchContractList({ project: projId, limit: limit.value, status: curr_status.value })
+  }
+
+  await scrollToHighlight()
+  await loadSummaryData(projId)
+}
+
+// 임시 쿼리만 선택적으로 정리 (project 등 다른 쿼리 보존)
+const clearTransientQueries = () => {
+  if (route.query.page || route.query.highlight_id) {
+    const nextQuery = { ...route.query }
+    delete nextQuery.page
+    delete nextQuery.highlight_id
+    router.replace({ query: nextQuery }).catch(() => {})
+  }
+}
+
+const pageSelect = (page: number) => {
+  clearTransientQueries()
+  listControl.value?.listFiltering(page)
+}
+
+const onContFiltering = (payload: ContFilter) => {
+  clearTransientQueries()
+  currentFilters.value = { ...payload }
+  limit.value = payload.limit || 10
+  payload.status = curr_status.value
+  payload.project = project.value?.pk
+
+  if (payload.project) {
+    contStore.fetchContractList(payload)
+  }
+}
+
+// 탭 전환 감시 (중복 호출 방지 및 통계 최신화)
+watch(curr_status, async (newStatus, oldStatus) => {
+  if (newStatus !== oldStatus && listControl.value) {
+    listControl.value.listFiltering(1)
+    if (project.value?.pk) {
+      await loadSummaryData(project.value.pk)
+    }
+  }
+})
+
+// 상태 전환 핸들러 (이중 호출 제거)
+const handleStatusChange = async (targetStatus: '1' | '2') => {
+  if (curr_status.value !== targetStatus) {
+    curr_status.value = targetStatus
+  } else {
+    listControl.value?.listFiltering(1)
+    if (project.value?.pk) {
+      await loadSummaryData(project.value.pk)
     }
   }
 }
 
-const router = useRouter()
+const projSelect = async (target: number | null, isAuto = false) => {
+  if (!isAuto) clearTransientQueries()
+  dataReset()
 
-// Query string 정리 함수
-const clearQueryString = () => {
-  if (route.query.page || route.query.highlight_id) {
-    router
-      .replace({
-        name: route.name,
-        params: route.params,
-        // query를 빈 객체로 설정하여 모든 query string 제거
-        query: {},
-      })
-      .catch(() => {
-        // 같은 경로로의 이동에서 발생하는 NavigationDuplicated 에러 무시
-      })
+  if (target) {
+    if (isAuto) await projStore.fetchProject(target)
+    await dataSetup(target, isAuto ? (urlPage.value ?? undefined) : undefined)
   }
 }
 
 onBeforeRouteUpdate(async to => {
-  // URL에서 프로젝트 ID 파라미터 확인
-  const toProjectId = to.query.project ? parseInt(to.query.project as string, 10) : null
-  const toPage = to.query.page ? parseInt(to.query.page as string, 10) : undefined
+  const toProjectId = parseQueryNumber(to.query.project)
+  const toPage = parseQueryNumber(to.query.page) ?? undefined
 
   if (toProjectId && toProjectId !== project.value?.pk) {
     await projSelect(toProjectId, true)
-  } else {
-    // URL에 highlight_id가 있으면 하이라이트 기능이 필요한 경우이므로 dataSetup 실행
-    if (to.query.highlight_id) {
-      await dataSetup(project.value?.pk || projStore.currentProject, toPage)
+  } else if (to.query.highlight_id || to.query.page) {
+    const currentProjId = project.value?.pk || projStore.currentProject
+    if (currentProjId) {
+      await dataSetup(currentProjId, toPage)
     }
-    // 단순히 project 파라미터만 있는 경우는 이미 올바른 프로젝트가 선택되어 있으므로 추가 작업 불필요
   }
 })
 
-// 다른 라우트로 이동 시 query string 정리
 onBeforeRouteLeave(() => {
-  clearQueryString()
+  // 라우트 이동 중 router.replace 실행 방지
 })
 
-const loading = ref(true)
 onBeforeMount(async () => {
-  // store에 저장된 필터 상태 복원 (페이지 재진입 시)
   const storedFilter = contStore.contractFilter
-  if (storedFilter.status) {
-    curr_status.value = storedFilter.status as '1' | '2'
-  }
-  if (storedFilter.limit) {
-    limit.value = storedFilter.limit
-  }
+  if (storedFilter.status) curr_status.value = storedFilter.status as '1' | '2'
+  if (storedFilter.limit) limit.value = storedFilter.limit
 
-  if (route.query?.status) {
-    await router.replace({ name: '계약 등록 조회' })
-    curr_status.value = '1'
+  if (route.query.status === '1' || route.query.status === '2') {
+    curr_status.value = route.query.status
   }
 
-  // URL에서 프로젝트 ID가 지정되어 있으면 해당 프로젝트로 전환
-  let projectId = project.value?.pk || projStore.currentProject
+  const targetProjectId = urlProjectId.value || project.value?.pk || projStore.currentProject
 
-  if (projectId) {
-    if (urlProjectId.value && urlProjectId.value !== projectId) {
-      // 프로젝트 전환 (query string 정리 건너뛰기)
+  if (targetProjectId) {
+    if (urlProjectId.value && urlProjectId.value !== project.value?.pk) {
       await projSelect(urlProjectId.value, true)
     } else {
-      // URL에 프로젝트 파라미터가 없거나 같은 경우 일반 데이터 설정
-      // URL에 page 파라미터가 있으면 해당 페이지로 진입
-      await dataSetup(projectId, urlPage.value ?? undefined)
+      await dataSetup(targetProjectId, urlPage.value ?? undefined)
     }
   }
 
@@ -338,7 +310,7 @@ onBeforeMount(async () => {
       :page-title="pageTitle"
       :nav-menu="navMenu"
       selector="ProjectSelect"
-      @proj-select="projSelect"
+      @proj-select="projSelect($event, false)"
     >
       <ContractSummary :project="project ?? undefined" />
     </ContentHeader>
@@ -350,10 +322,10 @@ onBeforeMount(async () => {
           v-if="canContractCreate"
           :project="project?.pk"
           :unit-set="unitSet"
-          @subscription-created="handleSubscription"
-          @contract-converted="handleContract"
+          @subscription-created="handleStatusChange('1')"
+          @contract-converted="handleStatusChange('2')"
         />
-        <TableTitleRow excel :url="excelUrl" :filename="`${title}.xlsx`" :disabled="!project">
+        <TableTitleRow excel :url="excelUrl" :filename="`${title}.xlsx`" :disabled="!project?.pk">
           <template #title>
             <v-tabs v-model="curr_status" density="compact" class="mb-0">
               <v-tab value="2" variant="tonal" :active="curr_status === '2'">계약 현황</v-tab>
@@ -371,7 +343,7 @@ onBeforeMount(async () => {
             [엑셀 출력항목 선택]
           </v-btn>
         </TableTitleRow>
-        <SelectItems :visible="visible" :unit-set="unitSet" @print-items="setItems" />
+        <SelectItems :visible="visible" :unit-set="unitSet" @print-items="printItems = $event" />
         <ContractList
           :limit="limit"
           :unit-set="unitSet"
@@ -379,7 +351,7 @@ onBeforeMount(async () => {
           :current-page="contStore.contractFilter.page || 1"
           :border-top="!visible"
           @page-select="pageSelect"
-          @contract-converted="handleContract"
+          @contract-converted="handleStatusChange('2')"
         />
       </CCardBody>
     </ContentBody>
