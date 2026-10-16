@@ -2,23 +2,23 @@
 import { computed, provide, ref } from 'vue'
 import { navMenu1, navMenu2 } from '@/views/_Work/_menu/headermixin1'
 import { useRoute } from 'vue-router'
-import { useWork } from '@/store/pinia/work_project.ts'
-import { useLogging } from '@/store/pinia/work_logging.ts'
-import { useCompany } from '@/store/pinia/company.ts'
+import { useWork } from '@/store/pinia/work_project'
+import { useLogging } from '@/store/pinia/work_logging'
+import { useCompany } from '@/store/pinia/company'
 import type { Company } from '@/store/types/settings'
-import type { ActLogEntry } from '@/store/types/work_logging.ts'
+import type { ActLogEntry } from '@/store/types/work_logging'
 import Loading from '@/components/Loading/Index.vue'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import ActivityLogList from './components/ActivityLogList.vue'
 import AsideController from './components/aside/AsideController.vue'
 
-const cBody = ref()
+const cBody = ref<InstanceType<typeof ContentBody> | null>(null)
 const comStore = useCompany()
 const company = computed<Company | null>(() => comStore.company)
 const comName = computed(() => company?.value?.name)
 
-const sideNavCAll = () => cBody.value.toggle()
+const sideNavCall = () => cBody.value?.toggle()
 
 const navMenu = computed(() => (!allReadableProjectsFlat.value.length ? navMenu1 : navMenu2))
 
@@ -38,14 +38,16 @@ const groupedActivities = computed<{ [key: string]: ActLogEntry[] }>(
   () => logStore.groupedActivities,
 )
 
-const toMove = async (date: Date) => (toDate.value = date)
+const toMove = (date: Date) => {
+  toDate.value = date
+}
 
 const loading = ref<boolean>(true)
 </script>
 
 <template>
   <Loading v-model:active="loading" />
-  <Header :page-title="comName" :nav-menu="navMenu" @side-nav-call="sideNavCAll" />
+  <Header :page-title="comName" :nav-menu="navMenu" @side-nav-call="sideNavCall" />
 
   <ContentBody ref="cBody" :nav-menu="navMenu">
     <template v-slot:default>
@@ -67,7 +69,6 @@ const loading = ref<boolean>(true)
 
     <template v-slot:aside>
       <AsideController
-        ref="RefActCont"
         :to-date="toDate"
         :from-date="fromDate"
         @update:to-date="toDate = $event"
