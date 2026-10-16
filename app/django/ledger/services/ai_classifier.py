@@ -274,10 +274,13 @@ class TransactionClassifier:
 }}
 """
 
-        candidate_models = ["gemini-3.8-flash", "gemini-2.5-flash", "gemini-1.5-flash"]
+        candidate_models = ["gemini-2.5-flash", "gemini-1.5-flash"]
         for model_name in candidate_models:
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={self.gemini_api_key}"
-            headers = {"Content-Type": "application/json"}
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent"
+            headers = {
+                "Content-Type": "application/json",
+                "x-goog-api-key": self.gemini_api_key
+            }
             body = {
                 "contents": [{"parts": [{"text": prompt}]}],
                 "generationConfig": {
@@ -289,7 +292,7 @@ class TransactionClassifier:
             try:
                 resp = requests.post(url, json=body, headers=headers, timeout=15)
                 if not resp.ok:
-                    logger.warning("Gemini LLM [%s] 호출 실패 (%d): %s", model_name, resp.status_code, resp.text)
+                    logger.warning("Gemini LLM [%s] 호출 실패 (HTTP %d)", model_name, resp.status_code)
                     continue
 
                 result_json = resp.json()

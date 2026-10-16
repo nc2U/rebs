@@ -10,7 +10,9 @@ import { useContract } from '@/store/pinia/contract.ts'
 import { TableSecondary } from '@/utils/cssMixins.ts'
 import type { ProBankTrans } from '@/store/types/proLedger.ts'
 import type { ParseResult } from '@/composables/useExcelUpload'
+import { type BulkParseResult, useBulkTransExcel } from '@/composables/useBulkTransExcel'
 import BankTransactionRow, { type BankTransactionData } from './BankTransactionRow.vue'
+import BulkTransUploadDialog from './BulkTransUploadDialog.vue'
 import ExcelUploadDialog from '@/components/LedgerAccount/ExcelUploadDialog.vue'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -109,23 +111,24 @@ const editableEntries = ref<NewEntryForm[]>([])
 
 // 신규 생성 모드용: 다수 은행거래건 배열
 const bankTransactions = ref<BankTransactionData[]>([])
+let nextTransUid = 1
+const createNewTransaction = (data?: Partial<BankTransactionData>): BankTransactionData => ({
+  uid: nextTransUid++,
+  bankForm: data?.bankForm || {
+    deal_date: getToday(),
+    bank_account: '',
+    amount: null,
+    sort: 2,
+    content: '',
+    note: '',
+  },
+  entries: data?.entries || [{}],
+})
 
 // 폼 초기화 함수들
 const initializeCreateForm = () => {
   // 신규 모드: 다수 거래건 구조로 초기화 (기본 1개 거래건)
-  bankTransactions.value = [
-    {
-      bankForm: {
-        deal_date: getToday(),
-        bank_account: '',
-        amount: null,
-        sort: 2,
-        content: '',
-        note: '',
-      },
-      entries: [{}],
-    },
-  ]
+  bankTransactions.value = [createNewTransaction()]
 
   // 기존 단일 거래건 폼도 초기화 (하위 호환성 유지)
   Object.assign(bankForm, {
@@ -236,38 +239,48 @@ const formBankAccounts = computed(() => {
   return activeBanks // 혹시 전체 목록에도 없으면 활성 목록만 반환
 })
 
-// Excel upload state
+// === 엑셀: 1건의 은행거래에 대한 다수 회계 계정 입력 ===
 const fileInputRef = ref<HTMLInputElement | null>(null)
 const uploadDialogVisible = ref(false)
 const parseResult = ref<ParseResult | null>(null)
 const { parseExcelFile, downloadTemplate } = useExcelUpload()
 
+// 업로드/다운로드 대상 거래건 (신규 모드: 행 index, 수정 모드: 단일 거래건)
+const uploadTargetIndex = ref<number>(0)
+const targetEntries = computed<NewEntryForm[]>(() =>
+  isCreateMode.value
+    ? (bankTransactions.value[uploadTargetIndex.value]?.entries ?? [])
+    : editableEntries.value,
+)
+const targetAmount = computed(() =>
+  isCreateMode.value
+    ? bankTransactions.value[uploadTargetIndex.value]?.bankForm.amount || 0
+    : bankForm.amount || 0,
+)
+
+// ID → 이름 변환 (엑셀 표기/매칭용)
+const resolveEntryNames = (entry: NewEntryForm) => {
+  const account = proLedgerStore.proAccounts.find(acc => acc.value === entry.account)
+  const contract = contractStore.getContracts.find(c => c.value === entry.contract)
+  return { account_name: account?.label || '', contract_name: contract?.label || '' }
+}
+
 // Download template handler
-const handleDownloadTemplate = () => {
-  // Resolve account and contract IDs to names
-  const entries = editableEntries.value.map(entry => {
-    // Find the account name from ID
-    const account = proLedgerStore.proAccounts.find(acc => acc.value === entry.account)
-    const account_name = account?.label || ''
+const handleDownloadTemplate = (index = 0) => {
+  uploadTargetIndex.value = index
+  const entries = targetEntries.value.map(entry => ({
+    ...resolveEntryNames(entry),
+    trader: entry.trader || '',
+    amount: entry.amount || 0,
+    evidence_type: entry.evidence_type || '',
+  }))
 
-    // Find a contract name from ID
-    const contract = contractStore.getContracts.find(c => c.value === entry.contract)
-    const contract_name = contract?.label || ''
-
-    return {
-      account_name,
-      trader: entry.trader || '',
-      amount: entry.amount || 0,
-      evidence_type: entry.evidence_type || '',
-      contract_name,
-    }
-  })
-
-  downloadTemplate({ amount: bankForm.amount || 0, entries }, 'project')
+  downloadTemplate({ amount: targetAmount.value, entries }, 'project')
 }
 
 // Upload click handler
-const handleUploadClick = () => {
+const handleUploadClick = (index = 0) => {
+  uploadTargetIndex.value = index
   fileInputRef.value?.click()
 }
 
@@ -280,33 +293,22 @@ const handleFileChange = async (event: Event) => {
 
   try {
     // Prepare existing entries for matching - resolve IDs to names
-    const existingEntries = editableEntries.value.map(entry => {
-      // Find the account name from ID
-      const account = proLedgerStore.proAccounts.find(acc => acc.value === entry.account)
-      const account_name = account?.label || ''
-
-      // Find a contract name from ID
-      const contract = contractStore.getContracts.find(c => c.value === entry.contract)
-      const contract_name = contract?.label || ''
-
-      return {
-        pk: entry.pk,
-        account: entry.account ?? undefined,
-        account_name,
-        trader: entry.trader || '',
-        amount: entry.amount || 0,
-        evidence_type: entry.evidence_type || '',
-        contract: entry.contract ?? undefined, // Convert null to undefined
-        contract_name,
-      }
-    })
+    const existingEntries = targetEntries.value.map(entry => ({
+      pk: entry.pk,
+      account: entry.account ?? undefined,
+      ...resolveEntryNames(entry),
+      trader: entry.trader || '',
+      amount: entry.amount || 0,
+      evidence_type: entry.evidence_type || '',
+      contract: entry.contract ?? undefined, // Convert null to undefined
+    }))
 
     // Parse Excel file with matching
     await parseExcelFile(
       file,
       proLedgerStore.proAccounts,
       existingEntries,
-      bankForm.amount || 0,
+      targetAmount.value,
       'project',
       contractStore.getContracts,
     ).then(result => {
@@ -326,46 +328,135 @@ const handleFileChange = async (event: Event) => {
 const handleUploadConfirm = () => {
   if (!parseResult.value) return
 
-  // Step 1: Update existing entries (preserve pk)
-  parseResult.value.entriesToUpdate.forEach(parsedEntry => {
-    if (!parsedEntry.isValid) return // Skip invalid
-
-    const existingEntry = editableEntries.value.find(e => e.pk === parsedEntry.existingPk)
-
-    if (existingEntry) {
-      // Update fields (keep pk)
-      existingEntry.account = parsedEntry.account ?? null
-      existingEntry.trader = parsedEntry.trader
-      existingEntry.amount = parsedEntry.amount
-      existingEntry.evidence_type = parsedEntry.evidence_type as NewEntryForm['evidence_type']
-      existingEntry.contract = parsedEntry.contract ?? null
-    }
+  const toEntry = (p: ParseResult['entriesToCreate'][number]): NewEntryForm => ({
+    pk: undefined,
+    account: p.account ?? null,
+    trader: p.trader,
+    amount: p.amount,
+    evidence_type: p.evidence_type as NewEntryForm['evidence_type'],
+    contract: p.contract ?? null,
   })
 
-  // Step 2: Create new entries (no pk)
-  parseResult.value.entriesToCreate.forEach(parsedEntry => {
-    if (!parsedEntry.isValid) return // Skip invalid
+  if (isCreateMode.value) {
+    // 신규 모드: 저장된 항목(pk)이 없으므로 업로드된 유효 항목으로 전체 교체
+    const list = targetEntries.value
+    const uploaded = [
+      ...parseResult.value.entriesToUpdate,
+      ...parseResult.value.entriesToCreate,
+    ]
+      .filter(p => p.isValid)
+      .sort((a, b) => a.rowNumber - b.rowNumber)
+      .map(toEntry)
+    if (uploaded.length) list.splice(0, list.length, ...uploaded)
+  } else {
+    // Step 1: Update existing entries (preserve pk)
+    parseResult.value.entriesToUpdate.forEach(parsedEntry => {
+      if (!parsedEntry.isValid) return // Skip invalid
 
-    editableEntries.value.push({
-      pk: undefined,
-      account: parsedEntry.account ?? null,
-      trader: parsedEntry.trader,
-      amount: parsedEntry.amount,
-      evidence_type: parsedEntry.evidence_type as NewEntryForm['evidence_type'],
-      contract: parsedEntry.contract ?? null,
+      const existingEntry = editableEntries.value.find(e => e.pk === parsedEntry.existingPk)
+
+      if (existingEntry) {
+        // Update fields (keep pk)
+        existingEntry.account = parsedEntry.account ?? null
+        existingEntry.trader = parsedEntry.trader
+        existingEntry.amount = parsedEntry.amount
+        existingEntry.evidence_type = parsedEntry.evidence_type as NewEntryForm['evidence_type']
+        existingEntry.contract = parsedEntry.contract ?? null
+      }
     })
-  })
 
-  // Step 3: Delete entries (remove from an array)
-  parseResult.value.entriesToDelete.forEach(entryToDelete => {
-    const index = editableEntries.value.findIndex(e => e.pk === entryToDelete.pk)
-    if (index !== -1) {
-      editableEntries.value.splice(index, 1)
-    }
-  })
+    // Step 2: Create new entries (no pk)
+    parseResult.value.entriesToCreate.forEach(parsedEntry => {
+      if (!parsedEntry.isValid) return // Skip invalid
+      editableEntries.value.push(toEntry(parsedEntry))
+    })
+
+    // Step 3: Delete entries (remove from an array)
+    parseResult.value.entriesToDelete.forEach(entryToDelete => {
+      const index = editableEntries.value.findIndex(e => e.pk === entryToDelete.pk)
+      if (index !== -1) {
+        editableEntries.value.splice(index, 1)
+      }
+    })
+  }
 
   uploadDialogVisible.value = false
   parseResult.value = null
+}
+
+// === 엑셀: 다수 은행거래 + 회계 계정 대량 입력 (신규 모드 전용) ===
+const bulkFileInputRef = ref<HTMLInputElement | null>(null)
+const bulkDialogVisible = ref(false)
+const bulkResult = ref<BulkParseResult | null>(null)
+const { downloadBulkTemplate, parseBulkFile } = useBulkTransExcel()
+
+const handleBulkDownload = () =>
+  downloadBulkTemplate({
+    bankAccounts: formBankAccounts.value,
+    accounts: proLedgerStore.proAccounts,
+  })
+
+const handleBulkUploadClick = () => bulkFileInputRef.value?.click()
+
+const handleBulkFileChange = async (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
+  if (!file) return
+
+  try {
+    bulkResult.value = await parseBulkFile(file, {
+      bankAccounts: formBankAccounts.value,
+      accounts: proLedgerStore.proAccounts,
+      contracts: contractStore.getContracts,
+    })
+    bulkDialogVisible.value = true
+  } catch (error) {
+    console.error('Bulk excel parsing error:', error)
+    alert('엑셀 파일 파싱 중 오류가 발생했습니다.')
+  } finally {
+    target.value = ''
+  }
+}
+
+// 현재 폼에 사용자가 입력한 내용이 있는지 (빈 기본 거래건 1개는 '없음'으로 간주)
+const hasEnteredTransactions = computed(() =>
+  bankTransactions.value.some(
+    t =>
+      t.bankForm.amount ||
+      t.bankForm.content ||
+      t.entries.some(e => e.amount || e.account || e.trader),
+  ),
+)
+
+const handleBulkConfirm = ({ replace }: { replace: boolean }) => {
+  if (!bulkResult.value) return
+
+  const imported: BankTransactionData[] = bulkResult.value.transactions
+    .filter(t => t.isValid)
+    .map(t =>
+      createNewTransaction({
+        bankForm: {
+          deal_date: t.bankForm.deal_date,
+          bank_account: t.bankForm.bank_account,
+          amount: t.bankForm.amount,
+          sort: t.bankForm.sort,
+          content: t.bankForm.content,
+          note: t.bankForm.note,
+        },
+        entries: t.entries.map(e => ({
+          account: e.account,
+          trader: e.trader,
+          amount: e.amount,
+          evidence_type: e.evidence_type,
+          contract: e.contract,
+          contractor: null,
+        })),
+      }),
+    )
+
+  if (!imported.length) return
+  bankTransactions.value = replace ? imported : [...bankTransactions.value, ...imported]
+  bulkResult.value = null
 }
 
 const addRow = () => {
@@ -419,17 +510,7 @@ const insertTransferFeeEntry = (index: number) => {
 
 // 새 은행거래건 추가
 const addBankTransaction = () => {
-  bankTransactions.value.push({
-    bankForm: {
-      deal_date: getToday(),
-      bank_account: '',
-      amount: null,
-      sort: 2,
-      content: '',
-      note: '',
-    },
-    entries: [{}],
-  })
+  bankTransactions.value.push(createNewTransaction())
 }
 
 // 은행거래건 삭제
@@ -687,7 +768,10 @@ const hasUnsavedChanges = computed(() => {
   if (!isCreateMode.value) return false
 
   return (
-    bankForm.amount !== null || bankForm.content !== '' || editableEntries.value.some(e => e.amount)
+    hasEnteredTransactions.value ||
+    bankForm.amount !== null ||
+    bankForm.content !== '' ||
+    editableEntries.value.some(e => e.amount)
   )
 })
 
@@ -785,32 +869,68 @@ onBeforeMount(async () => {
 
       <CTableHead class="sticky-table-head">
         <CTableRow :color="TableSecondary" class="sticky-header-row-1">
-          <CTableHeaderCell class="pl-3" colspan="5">은행거래내역</CTableHeaderCell>
+          <CTableHeaderCell class="pl-3" colspan="5">
+            은행거래내역
+            <!-- 신규 모드: 다수 은행거래 + 회계 계정 엑셀 대량 입력 -->
+            <template v-if="isCreateMode">
+              <span class="text-grey mx-2">|</span>
+              <span class="text-caption mr-1">엑셀 대량 입력</span>
+              <v-icon
+                icon="mdi-download"
+                size="16"
+                color="info"
+                class="mr-2 pointer"
+                @click="handleBulkDownload"
+                v-tooltip="'다수 은행거래 + 회계 계정 대량 입력 템플릿 다운로드'"
+              />
+              <v-icon
+                icon="mdi-upload"
+                size="16"
+                color="success"
+                class="pointer"
+                @click="handleBulkUploadClick"
+                v-tooltip="'다수 은행거래 + 회계 계정 엑셀 업로드 (1회 최대 50건 / 200행)'"
+              />
+              <input
+                ref="bulkFileInputRef"
+                type="file"
+                accept=".xlsx,.xls"
+                style="display: none"
+                @change="handleBulkFileChange"
+              />
+            </template>
+          </CTableHeaderCell>
           <CTableHeaderCell class="pl-0" :colspan="canLedgerManage ? 4 : 3">
             <span class="text-grey mr-2">|</span> 분류 내역
+            <span v-if="isCreateMode" class="text-caption text-grey ml-1">
+              (거래건별 엑셀 입력은 각 행의 아이콘 사용)
+            </span>
           </CTableHeaderCell>
           <CTableHeaderCell class="px-0">
-            <!-- Download Template -->
-            <v-icon
-              icon="mdi-download"
-              size="16"
-              color="info"
-              class="mr-2 pointer"
-              @click="handleDownloadTemplate"
-              v-tooltip="'회계 계정 정보 템플릿 다운로드'"
-            />
+            <!-- 수정 모드: 단일 거래건의 회계 계정 템플릿 -->
+            <template v-if="!isCreateMode">
+              <!-- Download Template -->
+              <v-icon
+                icon="mdi-download"
+                size="16"
+                color="info"
+                class="mr-2 pointer"
+                @click="handleDownloadTemplate()"
+                v-tooltip="'회계 계정 정보 템플릿 다운로드'"
+              />
 
-            <!-- Upload Excel -->
-            <v-icon
-              icon="mdi-upload"
-              size="16"
-              color="success"
-              class="pointer"
-              @click="handleUploadClick"
-              v-tooltip="'회계 계정 정보 엑셀 업로드'"
-            />
+              <!-- Upload Excel -->
+              <v-icon
+                icon="mdi-upload"
+                size="16"
+                color="success"
+                class="pointer"
+                @click="handleUploadClick()"
+                v-tooltip="'회계 계정 정보 엑셀 업로드'"
+              />
+            </template>
 
-            <!-- Hidden file input -->
+            <!-- Hidden file input (분류 내역 업로드: 신규/수정 공통) -->
             <input
               ref="fileInputRef"
               type="file"
@@ -850,7 +970,7 @@ onBeforeMount(async () => {
         <template v-if="isCreateMode">
           <BankTransactionRow
             v-for="(trans, idx) in bankTransactions"
-            :key="`trans-${idx}`"
+            :key="trans.uid ?? `trans-${idx}`"
             :transaction="trans"
             :index="idx"
             :bank-accounts="formBankAccounts"
@@ -860,6 +980,8 @@ onBeforeMount(async () => {
             @update:transaction="updateBankTransaction(idx, $event)"
             @remove="removeBankTransaction(idx)"
             @detect-transfer-withdraw="handleTransferWithdraw"
+            @download-template="handleDownloadTemplate(idx)"
+            @upload-entries="handleUploadClick(idx)"
           />
 
           <!-- 거래건 추가 버튼 행 -->
@@ -976,8 +1098,15 @@ onBeforeMount(async () => {
   <ExcelUploadDialog
     v-model="uploadDialogVisible"
     :parse-result="parseResult"
-    :transaction-amount="bankForm.amount ?? 0"
+    :transaction-amount="targetAmount"
     system-type="project"
     @confirm="handleUploadConfirm"
+  />
+
+  <BulkTransUploadDialog
+    v-model="bulkDialogVisible"
+    :result="bulkResult"
+    :has-existing="hasEnteredTransactions"
+    @confirm="handleBulkConfirm"
   />
 </template>

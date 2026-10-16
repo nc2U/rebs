@@ -245,7 +245,12 @@ const getOGSort = (pk: number): string =>
 const getKUCode = (pk: number) => getKeyUnits.value.filter(k => k.value === pk).map(k => k.label)[0]
 
 const setOGSort = () =>
-  nextTick(() => (form.order_group_sort = getOGSort(Number(form.order_group as number))))
+  nextTick(() => {
+    form.order_group_sort = getOGSort(Number(form.order_group as number))
+    if (!props.contract) {
+      form.qualification = form.order_group_sort === '2' ? '1' : '2'
+    }
+  })
 
 const setKeyCode = () => {
   nextTick(() => {

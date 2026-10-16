@@ -95,19 +95,24 @@ export const useRawTransaction = defineStore('rawTransaction', () => {
     }
   }
 
-  const syncAllCredentials = async (startDate?: string, endDate?: string) => {
+  const syncAllCredentials = async (
+    startDate?: string,
+    endDate?: string,
+    credentialIds?: number[],
+  ) => {
     isLoading.value = true
     try {
       const payload: Record<string, any> = {}
       if (startDate) payload.start_date = startDate
       if (endDate) payload.end_date = endDate
+      if (credentialIds && credentialIds.length > 0) payload.credential_ids = credentialIds
 
       const res = await api.post('/ledger/credentials/sync_all/', payload)
       const { total_accounts, success_accounts, total_created, total_skipped } = res.data
       message(
         'success',
         '알림',
-        `전체 계좌 수집 완료: 총 ${total_accounts}개 계좌 중 ${success_accounts}개 성공 (신규 ${total_created}건, 기존 중복 ${total_skipped}건)`,
+        `계좌 수집 완료: 총 ${total_accounts}개 계좌 중 ${success_accounts}개 성공 (신규 ${total_created}건, 기존 중복 ${total_skipped}건)`,
       )
       return res.data
     } catch (err: any) {
@@ -115,6 +120,43 @@ export const useRawTransaction = defineStore('rawTransaction', () => {
       throw err
     } finally {
       isLoading.value = false
+    }
+  }
+
+  const registerCertificate = async (formData: FormData): Promise<any> => {
+    try {
+      const res = await api.post('/ledger/credentials/register_certificate/', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      message('success', '계정 등록 완료', `총 ${res.data.accounts?.length || 0}개의 보유 계좌를 조회했습니다.`)
+      return res.data
+    } catch (err: any) {
+      errorHandle(err.response?.data)
+      throw err
+    }
+  }
+
+  const batchLinkCredentials = async (payload: any) => {
+    try {
+      const res = await api.post('/ledger/credentials/batch_link/', payload)
+      message('success', '계좌 연동 완료', `${res.data.linked_count}개 계좌가 시스템에 정상 연동되었습니다.`)
+      await fetchCredentialList()
+      return res.data
+    } catch (err: any) {
+      errorHandle(err.response?.data)
+      throw err
+    }
+  }
+
+  const registerFastAccount = async (payload: any) => {
+    try {
+      const res = await api.post('/ledger/credentials/register_fast_account/', payload)
+      message('success', '신탁/빠른조회 연동 완료', res.data.message || '계좌가 성공적으로 연동되었습니다.')
+      await fetchCredentialList()
+      return res.data
+    } catch (err: any) {
+      errorHandle(err.response?.data)
+      throw err
     }
   }
 
@@ -129,5 +171,9 @@ export const useRawTransaction = defineStore('rawTransaction', () => {
     bulkConfirm,
     syncCredential,
     syncAllCredentials,
+    registerCertificate,
+    batchLinkCredentials,
+    registerFastAccount,
   }
 })
+

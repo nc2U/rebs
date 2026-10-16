@@ -25,6 +25,7 @@ interface EntryForm {
 
 // 전체 거래건 데이터 구조
 export interface BankTransactionData {
+  uid?: string | number
   bankForm: BankForm
   entries: EntryForm[]
 }
@@ -43,18 +44,25 @@ interface Emits {
   (e: 'update:transaction', value: BankTransactionData): void
   (e: 'remove'): void
   (e: 'detectTransferWithdraw', sourceData: BankTransactionData): void
+  (e: 'downloadTemplate'): void
+  (e: 'uploadEntries'): void
 }
 
 const emit = defineEmits<Emits>()
 
 // 로컬 상태 관리 - props를 직접 수정하지 않고 emit으로 업데이트
 const localBankForm = reactive<BankForm>({ ...props.transaction.bankForm })
+let isSyncingFromProps = false
 
 // props 변경 시 localBankForm 동기화
 watch(
   () => props.transaction.bankForm,
   newBankForm => {
+    isSyncingFromProps = true
     Object.assign(localBankForm, newBankForm)
+    setTimeout(() => {
+      isSyncingFromProps = false
+    }, 0)
   },
   { deep: true },
 )
@@ -62,15 +70,17 @@ watch(
 const localEntries = computed({
   get: () => props.transaction.entries,
   set: value => {
-    emit('update:transaction', { bankForm: localBankForm, entries: value })
+    emit('update:transaction', { uid: props.transaction.uid, bankForm: localBankForm, entries: value })
   },
 })
 
-// bankForm 변경 시 부모에게 알림
+// bankForm 변경 시 부모에게 알림 (props로 인한 변경 시 루프 방지)
 watch(
   localBankForm,
   () => {
-    emit('update:transaction', { bankForm: localBankForm, entries: props.transaction.entries })
+    if (!isSyncingFromProps) {
+      emit('update:transaction', { uid: props.transaction.uid, bankForm: localBankForm, entries: props.transaction.entries })
+    }
   },
   { deep: true },
 )
@@ -237,12 +247,28 @@ watch(
           style="width: 120px"
           class="text-right mr-2"
         />
+        <v-icon
+          icon="mdi-download"
+          size="16"
+          color="info"
+          class="ml-auto mr-1 pointer"
+          @click="emit('downloadTemplate')"
+          v-tooltip="'이 거래건의 회계 계정 템플릿 다운로드'"
+        />
+        <v-icon
+          icon="mdi-upload"
+          size="16"
+          color="success"
+          class="mr-1 pointer"
+          @click="emit('uploadEntries')"
+          v-tooltip="'이 거래건의 회계 계정 엑셀 업로드'"
+        />
         <v-btn
           v-if="index > 0"
           density="compact"
           rounded="1"
           size="22"
-          class="ml-auto pointer"
+          class="pointer"
           @click="emit('remove')"
         >
           <v-icon icon="mdi-minus" color="error" />
@@ -251,8 +277,7 @@ watch(
           density="compact"
           rounded="1"
           size="22"
-          :class="index === 0 ? 'ml-auto' : 'ml-1'"
-          class="pointer"
+          class="ml-1 pointer"
           @click="addRow"
         >
           <v-icon icon="mdi-plus" color="success" />

@@ -1297,3 +1297,99 @@ class BankScrapingAPITests(LedgerTestBase):
         self.assertEqual(pr_tx.amount, 450000)
         self.assertEqual(pr_tx.accounting_entries.first().account, self.proj_account)
 
+    def test_register_certificate_and_batch_link(self):
+        """인증서/계정 등록(Mock) 및 보유 계좌 일괄 연동 API 검증"""
+        from unittest.mock import patch
+        from io import BytesIO
+        from django.core.files.uploadedfile import SimpleUploadedFile
+
+        self.client.force_authenticate(user=self.admin_user)
+
+        with patch('ledger.services.codef_client.CodefClient.create_account') as mock_create, \
+             patch('ledger.services.codef_client.CodefClient.fetch_account_list') as mock_list, \
+             patch('ledger.services.codef_client.CodefClient.encrypt_rsa', return_value='ENC_PW'):
+
+            mock_create.return_value = 'MOCK-CONNECTED-ID-123'
+            mock_list.return_value = [
+                {
+                    'resAccount': '1111111111',  # com_bank_acc1과 일치
+                    'resAccountName': '기업보통예금1',
+                    'resAccountHolder': '(주)테스트건설',
+                },
+                {
+                    'resAccount': '5555555555',  # 신규 계좌
+                    'resAccountName': '현장전도금신규',
+                    'resAccountHolder': '(주)테스트건설',
+                }
+            ]
+
+            # 1-A. der + key 분리형 호출
+            der_file = SimpleUploadedFile("signCert.der", b"fake_der_content", content_type="application/octet-stream")
+            key_file = SimpleUploadedFile("signPri.key", b"fake_key_content", content_type="application/octet-stream")
+
+            res = self.client.post(
+                '/api/v1/ledger/credentials/register_certificate/',
+                {
+                    'bank_code': '0004',
+                    'login_type': '0',
+                    'password': 'password123!',
+                    'der_file': der_file,
+                    'key_file': key_file
+                },
+                format='multipart'
+            )
+            self.assertEqual(res.status_code, http_status.HTTP_200_OK)
+            data = res.json()
+            self.assertEqual(data['connected_id'], 'MOCK-CONNECTED-ID-123')
+            self.assertEqual(len(data['accounts']), 2)
+            # 첫 번째 계좌는 기존 com1_bank와 자동 매칭되어야 함
+            self.assertEqual(data['accounts'][0]['matched_type'], 'company')
+            self.assertEqual(data['accounts'][0]['matched_account_id'], self.com1_bank.id)
+
+            # 1-B. cert_file 단일 통합 파일 (.pfx, .p12, .pt2) 호출
+            single_file = SimpleUploadedFile("company_cert.pt2", b"fake_pfx_content", content_type="application/octet-stream")
+            res_single = self.client.post(
+                '/api/v1/ledger/credentials/register_certificate/',
+                {
+                    'bank_code': '0004',
+                    'login_type': '0',
+                    'password': 'password123!',
+                    'cert_file': single_file
+                },
+                format='multipart'
+            )
+            self.assertEqual(res_single.status_code, http_status.HTTP_200_OK)
+            self.assertEqual(res_single.json()['connected_id'], 'MOCK-CONNECTED-ID-123')
+
+
+            # 2. batch_link 호출 (두 계좌 일괄 연동)
+            link_payload = {
+                'connected_id': 'MOCK-CONNECTED-ID-123',
+                'bank_code': '0004',
+                'items': [
+                    {
+                        'account_number': '1111111111',
+                        'target_type': 'company',
+                        'existing_account_id': self.com1_bank.id,
+                    },
+                    {
+                        'account_number': '5555555555',
+                        'account_name': '신규전도금',
+                        'target_type': 'project',
+                        'project_id': self.project_a.id,
+                        'is_imprest': True,
+                    }
+                ]
+            }
+            res_link = self.client.post('/api/v1/ledger/credentials/batch_link/', link_payload, format='json')
+            self.assertEqual(res_link.status_code, http_status.HTTP_200_OK)
+            self.assertEqual(res_link.json()['linked_count'], 2)
+
+            # DB에 정상 생성/연동되었는지 확인
+            from ledger.models import BankApiCredential, ProjectBankAccount
+            cred_new = BankApiCredential.objects.get(account_number='5555555555')
+            self.assertEqual(cred_new.connected_id, 'MOCK-CONNECTED-ID-123')
+            self.assertTrue(cred_new.project_bank_account.is_imprest)
+            self.assertEqual(cred_new.project_bank_account.project, self.project_a)
+
+

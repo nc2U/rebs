@@ -46,14 +46,27 @@ def sync_credential_transactions(
     created_raw_txs = []
 
     try:
-        raw_list = client.fetch_transactions(
-            connected_id=credential.connected_id,
-            organization=credential.bank_code,
-            account_number=credential.account_number,
-            start_date=s_date,
-            end_date=e_date,
-            is_business=True  # 기본 법인
-        )
+        if credential.auth_type == 'fast':
+            # 빠른조회 (신탁사/조합 계좌: connectedId 없이 사업자번호+비밀번호로 즉시 조회)
+            raw_list = client.fetch_fast_transactions(
+                organization=credential.bank_code,
+                account_number=credential.account_number,
+                start_date=s_date,
+                end_date=e_date,
+                account_password=credential.fast_password,
+                identity=credential.fast_business_number,
+                is_business=True
+            )
+        else:
+            # 일반 공동인증서/아이디 연동 (connectedId 기반)
+            raw_list = client.fetch_transactions(
+                connected_id=credential.connected_id,
+                organization=credential.bank_code,
+                account_number=credential.account_number,
+                start_date=s_date,
+                end_date=e_date,
+                is_business=True  # 기본 법인
+            )
     except CodefException as ce:
         error_msg = f"CODEF API 실패 [{ce.code}]: {ce.message}"
         logger.error("계좌 %s 수집 오류: %s", credential.account_number, error_msg)
@@ -181,11 +194,19 @@ def sync_credential_transactions(
     return stats
 
 
-def sync_all_active_credentials(start_date: Optional[str] = None, end_date: Optional[str] = None) -> Dict[str, Any]:
+def sync_all_active_credentials(
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    credential_ids: Optional[List[int]] = None
+) -> Dict[str, Any]:
     """
-    모든 활성화된 연동 계좌를 순회하며 거래내역 자동 수집
+    활성화된 연동 계좌를 순회하며 거래내역 자동 수집
+    credential_ids가 주어지면 해당 계좌들만 타겟팅하여 수집 (API 호출 수 최적화)
     """
     credentials = BankApiCredential.objects.filter(is_active=True)
+    if credential_ids:
+        credentials = credentials.filter(pk__in=credential_ids)
+
     summary = {
         'total_accounts': credentials.count(),
         'success_accounts': 0,

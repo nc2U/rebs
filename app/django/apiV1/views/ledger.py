@@ -1,5 +1,8 @@
+import logging
 from collections import defaultdict
 from datetime import datetime
+
+logger = logging.getLogger(__name__)
 
 from django.db import transaction as db_transaction
 from django.db.models import Sum, F, Case, When, Count, Q
@@ -9,6 +12,7 @@ from django_filters.rest_framework import FilterSet
 from rest_framework import permissions
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.response import Response
 
 from apiV1.permissions._utils import get_project_ids_with_permission
@@ -37,6 +41,7 @@ from ..serializers.ledger import (
     ProjectLedgerLastDealDateSerializer,
     BankApiCredentialSerializer, RawBankTransactionSerializer,
     RawBankTransactionConfirmSerializer, RawBankTransactionBulkConfirmSerializer,
+    BankCertificateRegisterSerializer, BankCredentialBatchLinkSerializer,
 )
 
 
@@ -1343,13 +1348,350 @@ class BankApiCredentialViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def sync_all(self, request):
-        """활성화된 전체 은행 연동 계좌 거래내역 일괄 동기화 (1회 통합 호출)"""
+        """활성화된 은행 연동 계좌 거래내역 일괄 동기화 (특정 credential_ids 지정 가능)"""
         from ledger.services.bank_scraping import sync_all_active_credentials
         start_date = request.data.get('start_date')
         end_date = request.data.get('end_date')
+        credential_ids = request.data.get('credential_ids')
 
-        summary = sync_all_active_credentials(start_date=start_date, end_date=end_date)
+        summary = sync_all_active_credentials(start_date=start_date, end_date=end_date, credential_ids=credential_ids)
         return Response(summary, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['post'], parser_classes=[MultiPartParser, FormParser, JSONParser])
+    def register_certificate(self, request):
+        """
+        공동인증서(또는 ID/PW) 등록 -> CODEF connectedId 발급 -> 은행 보유 계좌 목록 조회
+        """
+        import base64
+        import re
+        from ledger.services.codef_client import CodefClient, CodefException
+
+        serializer = BankCertificateRegisterSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        bank_code = serializer.validated_data['bank_code']
+        login_type = serializer.validated_data['login_type']
+        raw_id = serializer.validated_data.get('id', '')
+        password = serializer.validated_data['password']
+        cert_file = serializer.validated_data.get('cert_file')
+        der_file = serializer.validated_data.get('der_file')
+        key_file = serializer.validated_data.get('key_file')
+
+        client = CodefClient(is_sandbox=False)
+
+        account_item = {
+            "countryCode": "KR",
+            "businessType": "BK",
+            "organization": bank_code,
+            "clientType": "B",  # 기본 기업(법인)
+            "loginType": login_type,
+        }
+
+        try:
+            if login_type == '0':  # 공동인증서
+                if cert_file:  # 통합 인증서 포맷 (.pfx, .p12, .pt2 등)
+                    cert_b64 = base64.b64encode(cert_file.read()).decode('utf-8')
+                    account_item['certType'] = 'pfx'
+                    account_item['certFile'] = cert_b64
+                    account_item['password'] = client.encrypt_rsa(password)
+                elif der_file and key_file:  # der + key 분리 포맷
+                    der_b64 = base64.b64encode(der_file.read()).decode('utf-8')
+                    key_b64 = base64.b64encode(key_file.read()).decode('utf-8')
+                    account_item['certType'] = '1'
+                    account_item['derFile'] = der_b64
+                    account_item['keyFile'] = key_b64
+                    account_item['password'] = client.encrypt_rsa(password)
+                else:
+                    return Response(
+                        {'error': '통합 인증서 파일(.pfx, .p12, .pt2) 또는 der/key 파일 쌍을 업로드해야 합니다.'},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+            else:  # 아이디/비밀번호
+                if not raw_id:
+                    return Response({'error': '인터넷뱅킹 아이디를 입력해야 합니다.'}, status=status.HTTP_400_BAD_REQUEST)
+                account_item['id'] = raw_id
+                account_item['password'] = client.encrypt_rsa(password)
+
+            connected_id = client.create_account([account_item])
+        except CodefException as ce:
+            msg = f"CODEF 계정 등록 실패 [{ce.code}]: {ce.message}"
+            if ce.extra_message:
+                msg += f" ({ce.extra_message})"
+            logger.warning("CODEF 계정 등록 실패: %s", msg)
+            return Response({'error': msg}, status=status.HTTP_400_BAD_REQUEST)
+        except ValueError as ve:
+            logger.warning("CODEF 설정 오류: %s", str(ve))
+            return Response({'error': "CODEF 설정 정보가 올바르지 않습니다. 시스템 관리자에게 문의하세요."}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            logger.exception("계정 등록 처리 중 예외 발생")
+            return Response({'error': "계정 등록 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+        # 즉시 해당 은행의 보유 계좌 목록 조회
+        try:
+            raw_accounts = client.fetch_account_list(connected_id=connected_id, organization=bank_code, is_business=True)
+        except Exception as e:
+            raw_accounts = []
+
+        # 기존 시스템의 CompanyBankAccount 및 ProjectBankAccount 조회하여 매칭
+        com_accounts = list(CompanyBankAccount.objects.all().select_related('company', 'bankcode'))
+        proj_accounts = list(ProjectBankAccount.objects.all().select_related('project', 'bankcode'))
+
+        def clean_num(n):
+            return re.sub(r'[^0-9]', '', str(n or ''))
+
+        results = []
+        for raw_acc in raw_accounts:
+            acc_num = raw_acc.get('resAccount') or raw_acc.get('account') or raw_acc.get('accountNo') or ''
+            acc_name = raw_acc.get('resAccountName') or raw_acc.get('accountName') or raw_acc.get('resAccountNickName') or ''
+            holder = raw_acc.get('resAccountHolder') or raw_acc.get('holder') or ''
+            balance = raw_acc.get('resAccountDeposit') or raw_acc.get('balance') or None
+
+            clean_acc = clean_num(acc_num)
+            matched_type = None
+            matched_account_id = None
+            matched_account_alias = None
+            company_id = None
+            project_id = None
+            is_imprest = False
+
+            # 본사 계좌 매칭 시도
+            for ca in com_accounts:
+                if clean_num(ca.number) == clean_acc:
+                    matched_type = 'company'
+                    matched_account_id = ca.id
+                    matched_account_alias = ca.alias_name
+                    company_id = ca.company_id
+                    break
+
+            # 프로젝트 계좌 매칭 시도 (본사에 없으면)
+            if not matched_type:
+                for pa in proj_accounts:
+                    if clean_num(pa.number) == clean_acc:
+                        matched_type = 'project'
+                        matched_account_id = pa.id
+                        matched_account_alias = pa.alias_name
+                        project_id = pa.project_id
+                        is_imprest = pa.is_imprest
+                        break
+
+            # 이미 BankApiCredential에 등록되어 있는지 여부
+            is_already_registered = BankApiCredential.objects.filter(
+                bank_code=bank_code,
+                account_number=acc_num
+            ).exists()
+
+            results.append({
+                'account_number': acc_num,
+                'account_name': acc_name,
+                'holder': holder,
+                'balance': balance,
+                'matched_type': matched_type,
+                'matched_account_id': matched_account_id,
+                'matched_account_alias': matched_account_alias,
+                'company_id': company_id,
+                'project_id': project_id,
+                'is_imprest': is_imprest,
+                'is_already_registered': is_already_registered
+            })
+
+        return Response({
+            'connected_id': connected_id,
+            'bank_code': bank_code,
+            'accounts': results
+        }, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['post'])
+    def batch_link(self, request):
+        """
+        보유 계좌 목록 중 사용자가 선택한 계좌들을 BankApiCredential 및 계좌 모델과 일괄 연동/생성
+        """
+        serializer = BankCredentialBatchLinkSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        connected_id = serializer.validated_data['connected_id']
+        bank_code_str = serializer.validated_data['bank_code']
+        items = serializer.validated_data['items']
+
+        bank_obj = BankCode.objects.filter(code=bank_code_str[-3:]).first() or BankCode.objects.filter(code=bank_code_str).first()
+        if not bank_obj:
+            bank_obj = BankCode.objects.first()
+
+        created_credentials = []
+
+        with db_transaction.atomic():
+            for item in items:
+                acc_num = item['account_number']
+                target_type = item['target_type']
+                company_id = item.get('company_id')
+                project_id = item.get('project_id')
+                is_imprest = item.get('is_imprest', False)
+                existing_id = item.get('existing_account_id')
+                alias_name = item.get('alias_name') or item.get('account_name') or f"계좌 {acc_num[-4:]}"
+                holder = item.get('holder', '')
+
+                com_bank_acc = None
+                proj_bank_acc = None
+
+                if target_type == 'company':
+                    if existing_id:
+                        com_bank_acc = CompanyBankAccount.objects.filter(id=existing_id).first()
+                    elif company_id:
+                        com_bank_acc, _ = CompanyBankAccount.objects.get_or_create(
+                            company_id=company_id,
+                            number=acc_num,
+                            defaults={
+                                'bankcode': bank_obj,
+                                'alias_name': alias_name,
+                                'holder': holder,
+                            }
+                        )
+                    if not com_bank_acc:
+                        continue
+                else:  # project
+                    if existing_id:
+                        proj_bank_acc = ProjectBankAccount.objects.filter(id=existing_id).first()
+                    elif project_id:
+                        proj_bank_acc, _ = ProjectBankAccount.objects.get_or_create(
+                            project_id=project_id,
+                            number=acc_num,
+                            defaults={
+                                'bankcode': bank_obj,
+                                'alias_name': alias_name,
+                                'holder': holder,
+                                'is_imprest': is_imprest
+                            }
+                        )
+                    if not proj_bank_acc:
+                        continue
+
+                cred_defaults = {
+                    'auth_type': 'cert',
+                    'connected_id': connected_id,
+                    'bank_code': bank_code_str,
+                    'account_number': acc_num,
+                    'is_active': True,
+                    'last_status': 'ready'
+                }
+                if com_bank_acc:
+                    cred, _ = BankApiCredential.objects.update_or_create(
+                        company_bank_account=com_bank_acc,
+                        defaults=cred_defaults
+                    )
+                else:
+                    cred, _ = BankApiCredential.objects.update_or_create(
+                        project_bank_account=proj_bank_acc,
+                        defaults=cred_defaults
+                    )
+                created_credentials.append(cred.pk)
+
+        return Response({
+            'success': True,
+            'linked_count': len(created_credentials),
+            'credential_ids': created_credentials
+        }, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['post'])
+    def register_fast_account(self, request):
+        """
+        신탁사/조합 빠른조회 계좌 직접 연동
+        공동인증서/connectedId 없이 사업자번호 + 계좌비밀번호로 즉시 연동 및 초기 테스트
+        """
+        from apiV1.serializers.ledger import BankFastAccountRegisterSerializer
+        serializer = BankFastAccountRegisterSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        bank_code_str = serializer.validated_data['bank_code']
+        acc_num = serializer.validated_data['account_number']
+        biz_num = serializer.validated_data['business_number']
+        acc_pwd = serializer.validated_data['account_password']
+        target_type = serializer.validated_data['target_type']
+        project_id = serializer.validated_data.get('project_id')
+        company_id = serializer.validated_data.get('company_id')
+        existing_id = serializer.validated_data.get('existing_account_id')
+        alias_name = serializer.validated_data.get('alias_name') or f"신탁/빠른조회 ({acc_num[-4:]})"
+        holder = serializer.validated_data.get('holder', '')
+        is_imprest = serializer.validated_data.get('is_imprest', False)
+
+        bank_obj = BankCode.objects.filter(code=bank_code_str[-3:]).first() or BankCode.objects.filter(code=bank_code_str).first()
+        if not bank_obj:
+            bank_obj = BankCode.objects.first()
+
+        com_bank_acc = None
+        proj_bank_acc = None
+
+        with db_transaction.atomic():
+            if target_type == 'project':
+                if not project_id and not existing_id:
+                    return Response({'error': '프로젝트를 선택해야 합니다.'}, status=status.HTTP_400_BAD_REQUEST)
+                if existing_id:
+                    proj_bank_acc = ProjectBankAccount.objects.filter(id=existing_id).first()
+                elif project_id:
+                    proj_bank_acc, _ = ProjectBankAccount.objects.get_or_create(
+                        project_id=project_id,
+                        number=acc_num,
+                        defaults={
+                            'bankcode': bank_obj,
+                            'alias_name': alias_name,
+                            'holder': holder,
+                            'is_imprest': is_imprest,
+                        }
+                    )
+            else:
+                if not company_id and not existing_id:
+                    return Response({'error': '회사를 선택해야 합니다.'}, status=status.HTTP_400_BAD_REQUEST)
+                if existing_id:
+                    com_bank_acc = CompanyBankAccount.objects.filter(id=existing_id).first()
+                elif company_id:
+                    com_bank_acc, _ = CompanyBankAccount.objects.get_or_create(
+                        company_id=company_id,
+                        number=acc_num,
+                        defaults={
+                            'bankcode': bank_obj,
+                            'alias_name': alias_name,
+                            'holder': holder,
+                        }
+                    )
+
+            target_acc = proj_bank_acc or com_bank_acc
+            if not target_acc:
+                return Response({'error': '계좌 생성 또는 조회가 실패했습니다.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            cred_defaults = {
+                'auth_type': 'fast',
+                'connected_id': '',
+                'bank_code': bank_code_str,
+                'account_number': acc_num,
+                'fast_business_number': biz_num.replace('-', '').strip(),
+                'fast_password': acc_pwd,
+                'is_active': True,
+                'last_status': 'ready'
+            }
+
+            if proj_bank_acc:
+                cred, _ = BankApiCredential.objects.update_or_create(
+                    project_bank_account=proj_bank_acc,
+                    defaults=cred_defaults
+                )
+            else:
+                cred, _ = BankApiCredential.objects.update_or_create(
+                    company_bank_account=com_bank_acc,
+                    defaults=cred_defaults
+                )
+
+        # 연동 완료 후 즉시 1회 거래내역 수집 시도 (테스트 및 초기 데이터 로드)
+        try:
+            from ledger.services.bank_scraping import sync_credential_transactions
+            sync_credential_transactions(cred)
+        except Exception as e:
+            logger.warning("신탁/빠른조회 초기 수집 실패 (등록은 완료됨): %s", str(e))
+
+        return Response({
+            'success': True,
+            'credential_id': cred.pk,
+            'message': f"신탁/빠른조회 계좌({alias_name})가 성공적으로 연동되었습니다."
+        }, status=status.HTTP_200_OK)
+
 
 
 class RawBankTransactionViewSet(viewsets.ModelViewSet):
@@ -1418,7 +1760,8 @@ class RawBankTransactionViewSet(viewsets.ModelViewSet):
             )
             return Response(result, status=status.HTTP_200_OK)
         except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            logger.exception("거래 승인 처리 중 예외 발생 (#%s)", raw_tx.pk)
+            return Response({'error': "거래 승인 처리 중 오류가 발생했습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=False, methods=['post'])
     def bulk_confirm(self, request):

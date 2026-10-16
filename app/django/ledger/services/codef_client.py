@@ -1,4 +1,5 @@
 import base64
+import json
 import logging
 import urllib.parse
 from typing import Any, Dict, List, Optional
@@ -126,21 +127,54 @@ class CodefClient:
 
         try:
             resp = requests.post(url, json=body, headers=headers, timeout=30)
-            res_json = resp.json()
+            raw_text = resp.text.strip() if resp.text else ""
+
+            # CODEF API는 응답 본문 전체를 URL 인코딩(%7B...%7D)하여 반환할 수 있으므로 unquote 처리
+            if raw_text.startswith('%'):
+                decoded_text = urllib.parse.unquote_plus(raw_text)
+            else:
+                decoded_text = raw_text
+
+            try:
+                res_json = json.loads(decoded_text)
+            except json.JSONDecodeError:
+                try:
+                    res_json = resp.json()
+                except Exception:
+                    logger.error("CODEF 응답 JSON 파싱 실패 (HTTP %d): %s", resp.status_code, raw_text[:500])
+                    raise CodefException("PARSE_ERROR", f"CODEF 응답을 JSON으로 파싱할 수 없습니다 (HTTP {resp.status_code})", raw_text[:200])
 
             # URL 디코딩 처리 (CODEF는 일부 응답 문자열을 URL 인코딩하여 반환할 수 있음)
             result = res_json.get("result", {})
             code = result.get("code", "")
-            message = result.get("message", "")
-            extra_msg = result.get("extraMessage", "")
+            raw_msg = result.get("message", "")
+            message = urllib.parse.unquote_plus(raw_msg) if raw_msg else ""
+            raw_extra = result.get("extraMessage", "")
+            extra_msg = urllib.parse.unquote_plus(raw_extra) if raw_extra else ""
+
+            # data 내부의 errorList 확인 (계정 등록 등에서 실패한 세부 항목 정보)
+            data_part = res_json.get("data", {})
+            if isinstance(data_part, dict) and "errorList" in data_part:
+                err_items = data_part.get("errorList", [])
+                if err_items:
+                    detail_msgs = []
+                    for item in err_items:
+                        item_msg = urllib.parse.unquote_plus(item.get("message", ""))
+                        item_extra = urllib.parse.unquote_plus(item.get("extraMessage", ""))
+                        detail_msgs.append(f"{item_msg}" + (f" ({item_extra})" if item_extra else ""))
+                    if detail_msgs:
+                        joined_detail = "; ".join(detail_msgs)
+                        extra_msg = f"{extra_msg} [{joined_detail}]" if extra_msg else joined_detail
 
             # 성공 코드: CF-00000
             if code == "CF-00000":
                 return res_json.get("data", {})
             else:
-                logger.warning("CODEF API 응답 오류 [%s]: %s (추가: %s)", code, message, extra_msg)
+                logger.warning("CODEF API 응답 오류 [%s]: %s (추가: %s) / 원본 데이터: %s", code, message, extra_msg, res_json)
                 raise CodefException(code=code, message=message, extra_message=extra_msg)
 
+        except CodefException:
+            raise
         except requests.RequestException as e:
             logger.error("CODEF API 요청 통신 오류: %s", str(e))
             raise CodefException("NETWORK_ERROR", f"CODEF API 호출 실패 ({endpoint})", str(e))
@@ -208,3 +242,97 @@ class CodefClient:
                 or []
             )
         return []
+
+    def fetch_account_list(
+        self,
+        connected_id: str,
+        organization: str,
+        is_business: bool = True
+    ) -> List[Dict[str, Any]]:
+        """
+        보유 은행 계좌 목록 조회 API (/v1/kr/bank/b/account/list 또는 /p/account/list)
+        
+        Args:
+            connected_id: 계정 등록 식별자
+            organization: 은행 기관코드 (예: '0004' 국민, '0088' 신한 등)
+            is_business: True면 법인(/b/), False면 개인(/p/)
+        """
+        client_type = "b" if is_business else "p"
+        endpoint = f"/v1/kr/bank/{client_type}/account/list"
+        body = {
+            "connectedId": connected_id,
+            "organization": organization
+        }
+        data = self._request(endpoint, body)
+        if isinstance(data, list):
+            return data
+        elif isinstance(data, dict):
+            return data.get("resAccountList") or data.get("resList") or []
+        return []
+
+    def fetch_fast_transactions(
+        self,
+        organization: str,
+        account_number: str,
+        start_date: str,
+        end_date: str,
+        account_password: str = "",
+        identity: str = "",
+        fast_id: str = "",
+        fast_password: str = "",
+        order_by: str = "0",
+        is_business: bool = True
+    ) -> List[Dict[str, Any]]:
+        """
+        신탁사/조합 은행 빠른조회(스피드조회) 거래내역 조회
+        공동인증서/connectedId 없이 사업자번호 + 계좌비밀번호 등으로 즉시 조회
+        
+        Args:
+            organization: 은행 기관코드 (예: '0004' 국민, '0088' 신한 등)
+            account_number: 계좌번호
+            start_date: 조회시작일 (YYYYMMDD)
+            end_date: 조회종료일 (YYYYMMDD)
+            account_password: 계좌 비밀번호 (평문 - 내부에서 RSA 암호화)
+            identity: 사업자등록번호 (10자리 숫자) 또는 주민번호
+            fast_id: 빠른조회 전용 아이디 (있는 경우)
+            fast_password: 빠른조회 전용 비밀번호 (평문 - 내부에서 RSA 암호화)
+            order_by: "0"(최신순), "1"(과거순)
+            is_business: True면 기업(/b/), False면 개인(/p/)
+        """
+        client_type = "b" if is_business else "p"
+        endpoint = f"/v1/kr/bank/{client_type}/fast-account/transaction-list"
+        body: Dict[str, Any] = {
+            "organization": organization,
+            "account": account_number,
+            "startDate": start_date,
+            "endDate": end_date,
+            "orderBy": order_by,
+        }
+
+        if identity:
+            clean_biz_no = identity.replace("-", "").strip()
+            body["identity"] = clean_biz_no
+
+        if account_password:
+            body["accountPassword"] = self.encrypt_rsa(account_password)
+
+        if fast_id:
+            body["fastId"] = fast_id
+
+        if fast_password:
+            body["fastPassword"] = self.encrypt_rsa(fast_password)
+
+        data = self._request(endpoint, body)
+
+        if isinstance(data, list):
+            return data
+        elif isinstance(data, dict):
+            return (
+                data.get("resTrHistoryList")
+                or data.get("resTrList")
+                or data.get("resAccountTrList")
+                or data.get("resList")
+                or []
+            )
+        return []
+

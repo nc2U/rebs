@@ -5,13 +5,23 @@ defineProps({ project: { type: Number, default: null } })
 
 const emit = defineEmits<{
   (e: 'open-scraping'): void
+  (e: 'open-register'): void
 }>()
 </script>
 
 <template>
   <CAlert :color="AlertLight" variant="solid" class="d-flex justify-end ga-2">
     <v-btn
-      color="indigo"
+      color="indigo-darken-2"
+      variant="tonal"
+      :disabled="!project"
+      prepend-icon="mdi-shield-key-outline"
+      @click="emit('open-register')"
+    >
+      공동인증서/계좌 연동
+    </v-btn>
+    <v-btn
+      color="teal"
       variant="flat"
       :disabled="!project"
       prepend-icon="mdi-bank-transfer-in"

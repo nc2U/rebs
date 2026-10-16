@@ -22,9 +22,14 @@ import ListController from './components/ListController.vue'
 import AddProTrans from './components/AddProTrans.vue'
 import ProTransList from './components/ProTransList.vue'
 import ProTransForm from './components/ProTransForm.vue'
+import BankScrapingDialog from '@/components/BankScraping/BankScrapingDialog.vue'
+import BankRegisterDialog from '@/components/BankScraping/BankRegisterDialog.vue'
 
 const { can, PERM } = usePerms()
 const canLedgerCreate = computed(() => can(PERM.LEDGER_CREATE))
+
+const isBankScrapingOpen = ref<boolean>(false)
+const isBankRegisterOpen = ref<boolean>(false)
 
 const listControl = ref()
 const [route, router] = [useRoute() as Loaded & { name: string }, useRouter()]
@@ -40,17 +45,23 @@ const urlProjectId = computed(() => {
   return id ? parseInt(id as string, 10) : null
 })
 
+const PAGE_SIZE = 15 // Django 목록 페이지 크기와 동일하게 유지
+
 const excelUrl = computed(() => {
-  const from_date = dataFilter.value.from_date || ''
-  const to_date = dataFilter.value.to_date || ''
-  const sort = dataFilter.value.sort || ''
-  const account = dataFilter.value.account || ''
-  const account_category = dataFilter.value.account_category || ''
-  const bank_account = dataFilter.value.bank_account || ''
-  const contract = dataFilter.value.contract || ''
-  const search = dataFilter.value.search || ''
-  const url = `/excel/pro-trans/?project=${project.value}&is_imprest=true`
-  return `${url}&from_date=${from_date}&to_date=${to_date}&sort=${sort}&account_category=${account_category}&account=${account}&bank_account=${bank_account}&contract=${contract}&search=${search}`
+  const f = dataFilter.value
+  const params = new URLSearchParams({
+    project: String(project.value ?? ''),
+    is_imprest: 'true',
+    from_date: f.from_date || '',
+    to_date: f.to_date || '',
+    sort: String(f.sort || ''),
+    account_category: String(f.account_category || ''),
+    account: String(f.account || ''),
+    bank_account: String(f.bank_account || ''),
+    contract: String(f.contract || ''),
+    search: f.search || '',
+  })
+  return `/excel/pro-trans/?${params.toString()}`
 })
 
 const proStore = useProject()
@@ -91,24 +102,30 @@ const findProBankTransPage = (highlightId: number, filters: Filter) =>
   proLedgerStore.findProBankTransPage(highlightId, filters)
 const fetchProLedgerCalculation = (com: number) => proLedgerStore.fetchProLedgerCalculation(com)
 
-const pageSelect = (page: number) => listControl.value.listFiltering(page)
+const pageSelect = (page: number) => listControl.value?.listFiltering(page)
 
 const listFiltering = (payload: Filter) => {
   // 필터링 시 query string 정리
   clearQueryString()
   if (project.value) payload.project = project.value
-  if (project.value) fetchProBankTransList({ is_imprest: 'true', ...payload })
+  if (project.value) fetchProBankTransList({ ...payload, is_imprest: 'true' })
 }
 
 const dataSetup = async (pk: number) => {
-  await fetchProject(pk)
-  await fetchAllContracts(pk)
-  await fetchAllContractors(pk)
-  await fetchProBankAccList(pk)
-  await fetchAllProBankAccList(pk)
-  await fetchProBankTransList({ project: pk, is_imprest: 'true' })
-  await fetchProLedgerCalculation(pk)
+  // 거래 목록 조회 전에 필터의 project 설정
   proLedgerStore.proBankTransFilter.project = pk
+  // 서로 독립적인 호출은 병렬로 실행
+  await Promise.all([
+    fetchProject(pk),
+    fetchAllContracts(pk),
+    fetchAllContractors(pk),
+    fetchProBankAccList(pk),
+    fetchAllProBankAccList(pk),
+  ])
+  await Promise.all([
+    fetchProBankTransList({ project: pk, is_imprest: 'true' }),
+    fetchProLedgerCalculation(pk),
+  ])
 }
 
 const dataReset = () => {
@@ -127,7 +144,6 @@ const projSelect = async (target: number | null, skipClearQuery = false) => {
   }
   dataReset()
   if (!!target) {
-    await fetchProject(target)
     await dataSetup(target)
   }
 }
@@ -135,12 +151,13 @@ const projSelect = async (target: number | null, skipClearQuery = false) => {
 // Query string 정리 함수
 const clearQueryString = () => {
   if (route.query.highlight_id) {
+    // highlight_id만 제거하고 나머지 query(project 등)는 보존
+    const { highlight_id: _omit, ...rest } = route.query
     router
       .replace({
         name: route.name,
         params: route.params,
-        // query를 빈 객체로 설정하여 모든 query string 제거
-        query: {},
+        query: rest,
       })
       .catch(() => {
         // 같은 경로로의 이동에서 발생하는 NavigationDuplicated 에러 무시
@@ -167,7 +184,7 @@ const loadHighlightPage = async () => {
         ...dataFilter.value,
         project: project.value,
         is_imprest: 'true',
-        limit: 15, // Django에서 사용하는 페이지 크기와 동일하게 설정
+        limit: PAGE_SIZE,
       })
       // 해당 페이지로 이동 (1페이지여도 page 값 명시적 설정)
       proLedgerStore.proBankTransFilter.page = targetPage
@@ -188,7 +205,6 @@ onBeforeMount(async () => {
     // URL에서 프로젝트 ID가 지정되어 있으면 해당 프로젝트로 전환
     let projectId = project.value || proStore.currentProject
     if (urlProjectId.value && urlProjectId.value !== projectId) {
-      console.log(`Switching to project ${urlProjectId.value} from URL parameter`)
       // 프로젝트 전환 (query string 정리 건너뛰기)
       await projSelect(urlProjectId.value, true)
       projectId = urlProjectId.value
@@ -206,6 +222,7 @@ onBeforeMount(async () => {
       await scrollToHighlight()
     }
   } catch (err) {
+    console.error('Error loading page:', err)
     message('warning', '알림!', '페이지 로딩 중 에러가 발생하였습니다.')
   } finally {
     loading.value = false
@@ -237,7 +254,12 @@ onBeforeRouteLeave(() => {
             @list-filtering="listFiltering"
           />
 
-          <AddProTrans v-if="canLedgerCreate" :project="project as number" />
+          <AddProTrans
+            v-if="canLedgerCreate"
+            :project="project as number"
+            @open-scraping="isBankScrapingOpen = true"
+            @open-register="isBankRegisterOpen = true"
+          />
 
           <TableTitleRow
             title="프로젝트 입출금 관리"
@@ -254,6 +276,21 @@ onBeforeRouteLeave(() => {
             @on-bank-create="onBankCreate"
             @on-bank-update="onBankUpdate"
             @page-select="pageSelect"
+          />
+
+          <!-- 운영비(전도금) 계좌 거래 AI 가져오기 다이얼로그 (is-imprest=true) -->
+          <BankScrapingDialog
+            v-model="isBankScrapingOpen"
+            :project-id="project as number"
+            :is-imprest="true"
+            @confirmed="fetchProBankTransList({ ...dataFilter, is_imprest: 'true' })"
+          />
+
+          <!-- 공동인증서/은행 계좌 등록 다이얼로그 (프로젝트 모드) -->
+          <BankRegisterDialog
+            v-model="isBankRegisterOpen"
+            :project-id="project as number"
+            @registered="fetchProBankTransList({ ...dataFilter, is_imprest: 'true' })"
           />
         </div>
 
