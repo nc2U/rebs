@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, type PropType } from 'vue'
 import { useStore } from '@/store'
-import { useAccount } from '@/store/pinia/account.ts'
-import { useWork } from '@/store/pinia/work_project.ts'
+import { useAccount } from '@/store/pinia/account'
+import { useWork } from '@/store/pinia/work_project'
 import { type RouteRecordName, useRoute, useRouter } from 'vue-router'
 
 defineProps({
-  menus: { type: Array, required: true },
+  menus: { type: Array as PropType<string[]>, required: true },
 })
 
 const accStore = useAccount()
@@ -40,7 +40,7 @@ const isMenuActive = (menu: unknown) => {
   )
 }
 
-const getTitle = (title: String) => (title ?? '').replace(/[() ]/gim, '')
+const getTitle = (title: string) => (title ?? '').replace(/[() ]/gim, '')
 
 const toLocation = (menu: string) => {
   const targetName = menu as RouteRecordName

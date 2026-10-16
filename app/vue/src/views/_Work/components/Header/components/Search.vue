@@ -38,7 +38,7 @@ onBeforeMount(async () => {
       <MultiSelect
         mode="single"
         :options="allActiveProjects"
-        placeholder="프로젝트 바로가기"
+        placeholder="워크스페이스 바로가기"
         @change="emit('change-project', $event)"
       />
     </v-col>

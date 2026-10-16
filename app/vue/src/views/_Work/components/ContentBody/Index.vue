@@ -1,11 +1,14 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, provide, ref } from 'vue'
+import { computed, onBeforeMount, type PropType, provide, ref } from 'vue'
 import { useStore } from '@/store'
-import { useAccount } from '@/store/pinia/account.ts'
-import type { User } from '@/store/types/accounts.ts'
+import { useAccount } from '@/store/pinia/account'
+import type { User } from '@/store/types/accounts'
 import { type RouteRecordName, useRoute, useRouter } from 'vue-router'
 
-defineProps({ aside: { type: Boolean, default: true }, navMenu: { type: Array, default: [] } })
+defineProps({
+  aside: { type: Boolean, default: true },
+  navMenu: { type: Array as PropType<string[]>, default: () => [] },
+})
 
 const visible = ref(false)
 
@@ -96,7 +99,7 @@ onBeforeMount(async () => {
       placement="end"
       class="px-2 pt-4"
       :visible="visible"
-      @hide="() => (visible = !visible)"
+      @hide="visible = false"
     >
       <COffcanvasHeader class="mb-4">
         <COffcanvasTitle class="w-100 pr-2">
@@ -157,6 +160,8 @@ onBeforeMount(async () => {
 .main {
   background: #ffffff;
   border-right: 1px solid #ddd !important;
+  flex: 1 1 0%;
+  min-width: 0; // 중요: Flex 자식 요소가 내부 콘텐츠 폭에 의해 늘어나는 것 방지
 }
 
 .dark-theme .main {
@@ -183,14 +188,5 @@ onBeforeMount(async () => {
 
 .dark-theme .sidebar-switch:hover {
   background: #2a2b36;
-}
-
-.main {
-  background: #ffffff;
-  border-right: 1px solid #ddd !important;
-
-  // 추가: 메인 콘텐츠가 사이드바 공간을 침범하지 않게 함
-  flex: 1 1 0%;
-  min-width: 0; // 중요: Flex 자식 요소가 내부 콘텐츠 폭에 의해 늘어나는 것 방지
 }
 </style>

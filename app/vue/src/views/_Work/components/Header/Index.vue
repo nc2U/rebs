@@ -2,17 +2,17 @@
 import { computed, type PropType, ref, watch } from 'vue'
 import { useStore } from '@/store'
 import { useRoute, useRouter } from 'vue-router'
-import { useWork } from '@/store/pinia/work_project.ts'
-import { useCompany } from '@/store/pinia/company.ts'
-import { useAccount } from '@/store/pinia/account.ts'
-import type { Company } from '@/store/types/settings.ts'
-import type { SimpleProject } from '@/store/types/work_project.ts'
+import { useWork } from '@/store/pinia/work_project'
+import { useCompany } from '@/store/pinia/company'
+import { useAccount } from '@/store/pinia/account'
+import type { Company } from '@/store/types/settings'
+import type { SimpleProject } from '@/store/types/work_project'
 import HeaderSearch from './components/Search.vue'
 import HeaderNav from './components/HeaderNav.vue'
 
 defineProps({
   pageTitle: { type: String, default: '' },
-  navMenu: { type: Array, default: () => ['Base Menu'] },
+  navMenu: { type: Array as PropType<string[]>, default: () => ['Base Menu'] },
   ancestors: { type: Array as PropType<SimpleProject[]>, default: () => [] },
 })
 
@@ -54,7 +54,7 @@ const allActiveProjects = computed(() =>
 const chkModules = (slug: string) => {
   const routeName = (route.name as string) ?? ''
   const excluded = ['워크스페이스', '전체검색']
-  const project = workStore.allReadableProjectsFlat.filter(p => p.slug === slug)[0]
+  const project = workStore.allReadableProjectsFlat.find(p => p.slug === slug)
   if (
     (route.meta as any)?.title === '설 정 관 리' ||
     excluded.some(name => routeName.includes(name))
@@ -87,9 +87,9 @@ const getAncestorRouteTarget = (slug: string) => {
   return { name, params: { projId: slug } }
 }
 
-const cngProject = async (slug: any) => {
+const cngProject = async (slug: string | number | null | undefined) => {
   if (slug) {
-    const target = getAncestorRouteTarget(slug)
+    const target = getAncestorRouteTarget(String(slug))
     await router.push(target)
   }
 }
@@ -145,7 +145,6 @@ const cngProject = async (slug: any) => {
 
             <CCol
               class="text-body d-lg-none pointer"
-              :class="{ pointer: !!ancestors.length }"
               @click="visible = !visible"
             >
               <div class="d-flex align-items-center">
@@ -157,7 +156,7 @@ const cngProject = async (slug: any) => {
                 <strong class="title pl-1"> {{ pageTitle }}</strong>
                 <v-chip
                   v-if="superAuth"
-                  color="danger"
+                  color="deep-purple-lighten-1"
                   variant="elevated"
                   size="x-small"
                   class="ms-3"

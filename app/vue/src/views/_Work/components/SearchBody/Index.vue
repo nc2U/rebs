@@ -2,18 +2,18 @@
 import { computed, ref, watch } from 'vue'
 import { navMenu2 as navMenu } from '@/views/_Work/_menu/headermixin1'
 import { colorLight } from '@/utils/cssMixins'
-import { useCompany } from '@/store/pinia/company.ts'
-import { useSearch } from '@/store/pinia/work_search.ts'
+import { useCompany } from '@/store/pinia/company'
+import { useSearch } from '@/store/pinia/work_search'
 import type { Company } from '@/store/types/settings'
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 
-const cBody = ref()
+const cBody = ref<InstanceType<typeof ContentBody> | null>(null)
 const comStore = useCompany()
 const company = computed<Company | null>(() => comStore.company)
 const comName = computed(() => company?.value?.name)
-const sideNavCAll = () => cBody.value.toggle()
+const sideNavCall = () => cBody.value?.toggle()
 
 const searchStore = useSearch()
 const searchWord = ref('')
@@ -124,7 +124,7 @@ const meetingStatusLabel: Record<string, string> = { '1': '준비', '2': '종료
 </script>
 
 <template>
-  <Header :page-title="comName" :nav-menu="navMenu" @side-nav-call="sideNavCAll" />
+  <Header :page-title="comName" :nav-menu="navMenu" @side-nav-call="sideNavCall" />
 
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="route?.query" :aside="false">
     <template v-slot:default>
@@ -150,23 +150,22 @@ const meetingStatusLabel: Record<string, string> = { '1': '준비', '2': '종료
                       placeholder="검색어 입력 (2자 이상)"
                       @keydown.enter="goSearch"
                     />
-                    <span
-                      color="primary"
-                      variant="flat"
-                      rounded="0"
-                      size="small"
-                      class="input-group-text"
-                      :loading="searchStore.loading"
-                      @click="goSearch"
-                    >
-                      <v-icon icon="mdi-magnify" size="18" class="mr-1" />
-                    </span>
+                    <CInputGroupText class="pointer" @click="goSearch">
+                      <v-progress-circular
+                        v-if="searchStore.loading"
+                        indeterminate
+                        size="18"
+                        width="2"
+                        color="primary"
+                      />
+                      <v-icon v-else icon="mdi-magnify" size="18" />
+                    </CInputGroupText>
                   </CInputGroup>
                 </CCol>
                 <CCol sm="4" xl="3" class="mb-1">
                   <CFormSelect v-model="projectScope">
-                    <option value="all">모든 프로젝트</option>
-                    <option value="my">내 프로젝트</option>
+                    <option value="all">모든 워크스페이스</option>
+                    <option value="my">내 워크스페이스</option>
                   </CFormSelect>
                 </CCol>
               </CRow>

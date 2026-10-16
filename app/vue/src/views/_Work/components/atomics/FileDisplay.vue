@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed, type PropType, ref } from 'vue'
-import { useWork } from '@/store/pinia/work_project.ts'
-import type { SimpleUser } from '@/store/types/work_project.ts'
-import { cutString, humanizeFileSize, timeFormat } from '@/utils/baseMixins.ts'
+import { useWork } from '@/store/pinia/work_project'
+import type { SimpleUser } from '@/store/types/work_project'
+import { cutString, humanizeFileSize, timeFormat } from '@/utils/baseMixins'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 interface File {
@@ -19,11 +19,11 @@ const props = defineProps({ file: { type: Object as PropType<File>, required: tr
 
 const emit = defineEmits(['delete-file'])
 
-const RefDelFile = ref() // Del confirm model
+const RefDelFile = ref<InstanceType<typeof ConfirmModal> | null>(null) // Del confirm model
 
 const deleteFile = () => {
   emit('delete-file', props.file?.pk)
-  RefDelFile.value.close()
+  RefDelFile.value?.close()
 }
 
 const workStore = useWork()
@@ -48,16 +48,18 @@ const projStatus = computed(() => workStore.currentProject?.status)
     <span class="file-desc2 mr-1 text-grey"> {{ file.creator?.username }}, </span>
     <span class="file-desc2 mr-2 text-grey">{{ timeFormat(file.created) }}</span>
     <span v-if="projStatus === '1'">
-      <router-link to="">
+      <a
+        href="javascript:void(0)"
+        class="mr-2 cursor-pointer"
+        @click.prevent="RefDelFile?.callModal()"
+      >
         <v-icon
           icon="mdi-trash-can-outline"
           size="16"
           color="secondary"
-          class="mr-2"
-          @click="RefDelFile.callModal()"
         />
         <v-tooltip activator="parent" location="top">삭제</v-tooltip>
-      </router-link>
+      </a>
     </span>
   </CCol>
 

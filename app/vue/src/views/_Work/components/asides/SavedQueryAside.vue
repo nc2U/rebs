@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { computed, onMounted, type PropType, ref } from 'vue'
-import { useInform } from '@/store/pinia/work_inform.ts'
+import { computed, onMounted, type PropType, ref, watch } from 'vue'
+import { useInform } from '@/store/pinia/work_inform'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 type TargetType = 'project' | 'meeting' | 'issue' | 'calendar'
@@ -13,7 +13,7 @@ const props = defineProps({
 
 const emit = defineEmits(['on-query-click', 'on-reset-query'])
 
-const refConfirmDelete = ref()
+const refConfirmDelete = ref<InstanceType<typeof ConfirmModal> | null>(null)
 
 const informStore = useInform()
 
@@ -27,15 +27,24 @@ const pubQueries = computed(() =>
 const onDeleteQuery = async (query: any, event: Event) => {
   event.stopPropagation()
   delPk.value = query.pk
-  refConfirmDelete.value.callModal()
+  refConfirmDelete.value?.callModal()
 }
 const delPk = ref<number | null>(null)
 const onDeleteConfirm = async () => {
   await informStore.deleteQuery(delPk.value as number)
   await informStore.fetchQueries({ targetType: props.targetType })
-  refConfirmDelete.value.close()
+  refConfirmDelete.value?.close()
   delPk.value = null
 }
+
+watch(
+  () => props.targetType,
+  async newType => {
+    if (newType) {
+      await informStore.fetchQueries({ targetType: newType })
+    }
+  },
+)
 
 onMounted(async () => {
   await informStore.fetchQueries({ targetType: props.targetType })

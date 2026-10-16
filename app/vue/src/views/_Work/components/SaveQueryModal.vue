@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { ref, type PropType } from 'vue'
-import { isValidate } from '@/utils/helper.ts'
+import { isValidate } from '@/utils/helper'
 import { usePerms } from '@/composables/usePerms'
-import { useInform } from '@/store/pinia/work_inform.ts'
+import { useInform } from '@/store/pinia/work_inform'
 import FormModal from '@/components/Modals/FormModal.vue'
 
 const props = defineProps({
@@ -32,7 +32,7 @@ const emit = defineEmits<{
   (e: 'saved'): void
 }>()
 
-const refModal = ref()
+const refModal = ref<InstanceType<typeof FormModal> | null>(null)
 const { can, PERM } = usePerms()
 const informStore = useInform()
 
@@ -46,11 +46,11 @@ const callModal = () => {
   queryDescription.value = ''
   isPublic.value = false
   validated.value = false
-  refModal.value.callModal()
+  refModal.value?.callModal()
 }
 
 const closeModal = () => {
-  refModal.value.close()
+  refModal.value?.close()
 }
 
 const saveQuery = async (event: Event) => {
