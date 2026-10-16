@@ -1,7 +1,7 @@
-<script lang="ts" setup="">
+<script lang="ts" setup>
 import { computed, type PropType } from 'vue'
 import type { Docs } from '@/store/types/docs'
-import { usePerms } from '@/composables/usePerms.ts'
+import { usePerms } from '@/composables/usePerms'
 import { cutString, timeFormat } from '@/utils/baseMixins'
 import DOMPurify from 'dompurify'
 

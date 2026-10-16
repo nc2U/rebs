@@ -2,10 +2,10 @@
 import { computed, onBeforeMount, provide, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { navMenu2 as navMenu } from '@/views/_Work/_menu/headermixin1'
-import { useWork } from '@/store/pinia/work_project.ts'
+import { useWork } from '@/store/pinia/work_project'
 import { type DocsFilter, type SuitCaseFilter, useDocs } from '@/store/pinia/docs'
-import { useCompany } from '@/store/pinia/company.ts'
-import { usePerms } from '@/composables/usePerms.ts'
+import { useCompany } from '@/store/pinia/company'
+import { usePerms } from '@/composables/usePerms'
 import type { Company } from '@/store/types/settings'
 import type { AFile, Docs, Link, SuitCase } from '@/store/types/docs'
 import Header from '@/views/_Work/components/Header/Index.vue'
@@ -20,8 +20,8 @@ import CaseList from '@/components/LawSuitCase/CaseList.vue'
 import CaseDetail from '@/components/LawSuitCase/CaseDetail.vue'
 import CaseForm from '@/components/LawSuitCase/CaseForm.vue'
 
-const cBody = ref()
-const sideNavCAll = () => cBody.value.toggle()
+const cBody = ref<InstanceType<typeof ContentBody> | null>(null)
+const sideNavCall = () => cBody.value?.toggle()
 
 const typeNumber = ref<1 | 2>(1)
 const types = ref([
@@ -296,7 +296,7 @@ watch(
 
 <template>
   <Loading v-model:active="loading" />
-  <Header :page-title="comName" :nav-menu="navMenu" @side-nav-call="sideNavCAll" />
+  <Header :page-title="comName" :nav-menu="navMenu" @side-nav-call="sideNavCall" />
 
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="route?.query">
     <template v-slot:default>
@@ -339,7 +339,7 @@ watch(
 
           <!-- 새 문서 또는 새 사건 등록 버튼 -->
           <span v-if="canDocsCreate && !isSuitCase" class="mr-2 form-text">
-            <TextButton name="새 문서" @click="viewForm = !viewForm" :active="false" />
+            <TextButton name="새 문서" @click="viewForm = !viewForm" />
           </span>
           <span
             v-else-if="canDocsCreate && isSuitCase && route.name === '문서 사건'"
@@ -348,7 +348,6 @@ watch(
             <TextButton
               name="새 사건"
               @click="router.push({ name: `${mainViewName} - 작성` })"
-              :active="false"
             />
           </span>
         </CCol>

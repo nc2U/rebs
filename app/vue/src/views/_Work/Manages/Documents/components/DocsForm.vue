@@ -2,12 +2,12 @@
 import { computed, onBeforeMount, type PropType, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
-import { usePerms } from '@/composables/usePerms.ts'
+import { usePerms } from '@/composables/usePerms'
 import { useDocs } from '@/store/pinia/docs'
-import { useAccount } from '@/store/pinia/account.ts'
+import { useAccount } from '@/store/pinia/account'
 import { colorLight } from '@/utils/cssMixins'
-import type { CodeValue } from '@/store/types/work_issue.ts'
-import type { selectProject } from '@/store/types/work_project.ts'
+import type { CodeValue } from '@/store/types/work_issue'
+import type { selectProject } from '@/store/types/work_project'
 import type { AFile, Attatches, Docs, Link, SuitCase } from '@/store/types/docs'
 import MdEditor from '@/components/MdEditor/Index.vue'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
@@ -33,9 +33,9 @@ const docStore = useDocs()
 const createDocs = (payload: { form: FormData }) => docStore.createDocs(payload)
 const updateDocs = (payload: { pk: number; form: FormData }) => docStore.updateDocs(payload)
 
-const refFileForms = ref()
-const refLinkForms = ref()
-const refModalCaseForm = ref()
+const refFileForms = ref<InstanceType<typeof FileForms> | null>(null)
+const refLinkForms = ref<InstanceType<typeof LinkForms> | null>(null)
+const refModalCaseForm = ref<InstanceType<typeof ModalCaseForm> | null>(null)
 
 const openCaseModal = () => refModalCaseForm.value?.callModal()
 const onCaseCreated = async (payload: SuitCase) => {
@@ -93,7 +93,6 @@ const fileChange = (payload: { pk: number; file: File }) => cngFiles.value.push(
 
 const filesUpdate = (payload: AFile[]) => {
   form.value.files = payload
-  console.log({ ...form.value.files })
 }
 
 const linksUpdate = (payload: Link[]) => (form.value.links = payload)
@@ -111,9 +110,9 @@ const submitCheck = (event: Event) => {
     validated.value = true
   } else {
     validated.value = false
-    refLinkForms.value.newLinkPush()
+    refLinkForms.value?.newLinkPush()
     onSubmit({ ...form.value, newLinks: newLinks.value })
-    refFileForms.value.checkRelease()
+    refFileForms.value?.checkRelease()
   }
 }
 
@@ -252,7 +251,7 @@ onBeforeMount(() => dataSetup())
             <CCol class="col-sm-10 col-md-4 col-lg-3 col-xl-2 pt-1">
               <CFormSelect v-model="form.security_level" size="sm">
                 <option value="4">4등급 전사 공개</option>
-                <option value="3">3등급 프로젝트 공개</option>
+                <option value="3">3등급 워크스페이스 공개</option>
                 <option value="2">2등급 팀 공개</option>
                 <option value="1">1등급 비공개</option>
               </CFormSelect>
@@ -260,7 +259,7 @@ onBeforeMount(() => dataSetup())
           </CRow>
 
           <CRow v-if="!projectPk" class="mb-3">
-            <CFormLabel class="col-form-label text-right col-2 required">프로젝트</CFormLabel>
+            <CFormLabel class="col-form-label text-right col-2 required">워크스페이스</CFormLabel>
             <CCol class="col-sm-10 col-md-6 col-lg-4 col-xl-3">
               <CFormSelect v-model="form.issue_project" required>
                 <option value="">---------</option>

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, onMounted, type PropType } from 'vue'
-import { useAccount } from '@/store/pinia/account.ts'
+import { useAccount } from '@/store/pinia/account'
 import type { Docs } from '@/store/types/docs'
 import { useRoute, useRouter } from 'vue-router'
 import { timeFormat } from '@/utils/baseMixins'
@@ -49,7 +49,7 @@ const securityLevelInfo = computed(() => {
       return {
         color: 'grey-darken-1',
         icon: 'mdi-folder-account-outline',
-        label: '3등급 프로젝트',
+        label: '3등급 워크스페이스',
         tooltip: '3등급: 워크스페이스 멤버 열람 가능',
       }
     case '4':

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, ref, watch } from 'vue'
-import { useWork } from '@/store/pinia/work_project.ts'
+import { computed, onBeforeMount, type PropType, ref, watch } from 'vue'
+import { useWork } from '@/store/pinia/work_project'
 import { useRoute, useRouter } from 'vue-router'
-import { usePerms } from '@/composables/usePerms.ts'
-import type { AFile, Docs, Link, SuitCase } from '@/store/types/docs.ts'
-import type { IssueProject } from '@/store/types/work_project.ts'
+import { usePerms } from '@/composables/usePerms'
+import type { AFile, Docs, Link, SuitCase } from '@/store/types/docs'
+import type { IssueProject } from '@/store/types/work_project'
 import { type DocsFilter, type SuitCaseFilter, useDocs } from '@/store/pinia/docs'
 import Loading from '@/components/Loading/Index.vue'
 import DocsList from '@/views/_Work/Manages/Documents/components/DocsList.vue'
@@ -19,13 +19,19 @@ import CaseList from '@/components/LawSuitCase/CaseList.vue'
 import CaseDetail from '@/components/LawSuitCase/CaseDetail.vue'
 import CaseForm from '@/components/LawSuitCase/CaseForm.vue'
 
-const cBody = ref()
-const toggle = () => cBody.value.toggle()
+defineProps({
+  navMenu: { type: Array as PropType<string[]>, default: () => [] },
+  currentProject: { type: Object as PropType<IssueProject | null>, default: null },
+  query: { type: Object, default: () => ({}) },
+})
+
+const cBody = ref<InstanceType<typeof ContentBody> | null>(null)
+const toggle = () => cBody.value?.toggle()
 defineExpose({ toggle })
 
 const typeNumber = ref<1 | 2>(1)
-const refDocsForm = ref()
-const RefDelDocs = ref()
+const refDocsForm = ref<InstanceType<typeof DocsForm> | null>(null)
+const RefDelDocs = ref<InstanceType<typeof ConfirmModal> | null>(null)
 
 const types = ref([
   { value: 1, label: '일반문서' },
@@ -129,10 +135,10 @@ const getDocsList = (target: unknown) => {
       router.push({ name: '(문서)', params: { projId: projId.value } })
     }
     docsFilter.value.page = 1
-    docsFilter.value.doc_type = target as number
-    fetchCategoryList(target as 1 | 2)
+    docsFilter.value.doc_type = target
+    fetchCategoryList(target)
     fetchDocsList(docsFilter.value)
-    if (viewForm.value) refDocsForm.value.setDocType(target as number)
+    if (viewForm.value) refDocsForm.value?.setDocType(target)
   }
 }
 
@@ -251,7 +257,7 @@ watch(
 )
 
 const docsDelConfirm = async () => {
-  RefDelDocs.value.close()
+  RefDelDocs.value?.close()
   const docId = docs.value?.pk
   if (docId && projId) await deleteDocs(docId, Number(projId.value))
 
@@ -343,7 +349,7 @@ watch(
 
 <template>
   <Loading v-model:active="loading" />
-  <ContentBody ref="cBody">
+  <ContentBody ref="cBody" :nav-menu="navMenu">
     <template v-slot:default>
       <span v-if="route.name !== '(문서)' && route.name !== '(문서 사건)'">
         <router-link :to="{ name: isSuitCase ? '(문서 사건)' : '(문서)', params: { projId } }">
@@ -378,7 +384,7 @@ watch(
           </v-btn>
 
           <span v-if="canDocsCreate" class="mr-2 form-text">
-            <TextButton name="새 문서" @click="viewForm = !viewForm" :active="false" />
+            <TextButton name="새 문서" @click="viewForm = !viewForm" />
           </span>
         </CCol>
 
@@ -399,7 +405,6 @@ watch(
             <TextButton
               name="새 사건"
               @click="router.push({ name: `${mainViewName} - 작성`, params: { projId } })"
-              :active="false"
             />
           </span>
         </CCol>
@@ -434,7 +439,7 @@ watch(
               name="삭제"
               icon="mdi-trash-can-outline"
               icon-color="grey"
-              @click="RefDelDocs.callModal()"
+              @click="RefDelDocs?.callModal()"
             />
           </span>
         </CCol>

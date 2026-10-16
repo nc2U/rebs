@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue'
-import type { Category } from '@/store/types/docs.ts'
+import type { Category } from '@/store/types/docs'
 import type { SuitCaseFilter } from '@/store/pinia/docs'
-import type { selectProject } from '@/store/types/work_project.ts'
+import type { selectProject } from '@/store/types/work_project'
 import { courtChoices } from '@/components/LawSuitCase/components/court'
 import MultiSelect from '@/components/MultiSelect/index.vue'
 import IssueProjectSelector from '@/views/_Work/components/atomics/IssueProjectSelector.vue'
@@ -109,11 +109,11 @@ const emit = defineEmits([
             @keydown.enter="emit('search')"
           />
           <button
-            class="btn btn-outline-secondary"
+            class="btn btn-outline-secondary d-flex align-items-center"
             type="button"
             @click="emit('search', { ...filter, search: filter.search })"
           >
-            <v-btn icon="mdi-magnify" size="sm" color="light" flat />
+            <v-icon icon="mdi-magnify" size="18" class="mr-1" />
             검색
           </button>
         </div>
