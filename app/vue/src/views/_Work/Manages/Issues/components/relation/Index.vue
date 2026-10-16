@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { type PropType, ref, watchEffect } from 'vue'
+import { type PropType, ref, watchEffect, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { usePerms } from '@/composables/usePerms.ts'
+import { usePerms } from '@/composables/usePerms'
 import { cutString, diffDate } from '@/utils/baseMixins'
-import type { IssueRelation } from '@/store/types/work_issue.ts'
+import type { IssueRelation } from '@/store/types/work_issue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import IssueDropDown from '@/views/_Work/Manages/Issues/components/IssueDropDown.vue'
 
@@ -19,8 +19,9 @@ const { can, PERM } = usePerms()
 
 const selected = ref<number | null>(null)
 
-const handleClickOutside = (event: any) => {
-  const closestRelIssue = event.target.closest('.rel-issue')
+const handleClickOutside = (event: MouseEvent) => {
+  const target = event.target as HTMLElement | null
+  const closestRelIssue = target?.closest('.rel-issue')
   // 클릭한 대상이 .rel-issue 외부이거나, 혹은 다른 rel-issue 요소인 경우 선택 해제
   if (!closestRelIssue || closestRelIssue.id !== `rel-issue-${props.rel.issue?.pk}`) {
     selected.value = null
@@ -32,14 +33,18 @@ watchEffect(() => {
   else document.removeEventListener('click', handleClickOutside)
 })
 
-const delRelRef = ref()
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
+
+const delRelRef = ref<InstanceType<typeof ConfirmModal> | null>(null)
 const deleteRelation = () => {
-  delRelRef.value.callModal()
+  delRelRef.value?.callModal()
 }
 
 const deleteRelConfirm = () => {
   emit('delete-relation')
-  delRelRef.value.close()
+  delRelRef.value?.close()
 }
 
 const projId = route.params.projId as string

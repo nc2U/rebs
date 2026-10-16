@@ -1,15 +1,15 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, type PropType, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { useWork } from '@/store/pinia/work_project.ts'
-import { useIssue } from '@/store/pinia/work_issue.ts'
-import { useAccount } from '@/store/pinia/account.ts'
-import type { User } from '@/store/types/accounts.ts'
-import type { IssueProject } from '@/store/types/work_project.ts'
-import type { Issue, SimpleCategory } from '@/store/types/work_issue.ts'
-import { isValidate } from '@/utils/helper.ts'
+import { useWork } from '@/store/pinia/work_project'
+import { useIssue } from '@/store/pinia/work_issue'
+import { useAccount } from '@/store/pinia/account'
+import type { User } from '@/store/types/accounts'
+import type { IssueProject } from '@/store/types/work_project'
+import type { Issue, SimpleCategory } from '@/store/types/work_issue'
+import { isValidate } from '@/utils/helper'
 import { dateFormat } from '@/utils/baseMixins'
-import { usePerms } from '@/composables/usePerms.ts'
+import { usePerms } from '@/composables/usePerms'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 import Multiselect from '@vueform/multiselect'
@@ -69,8 +69,8 @@ const removeLink = (index: number) => {
   newLinks.value.splice(index, 1)
 }
 
-const isCreator = computed(() => props.issue.creator.pk === userInfo?.value?.pk)
-const isAssignee = computed(() => props.issue.assigned_to?.pk === userInfo?.value?.pk)
+const isCreator = computed(() => props.issue?.creator?.pk === userInfo?.value?.pk)
+const isAssignee = computed(() => props.issue?.assigned_to?.pk === userInfo?.value?.pk)
 
 const { can, PERM } = usePerms()
 const canIssueCreate = computed(() => can(PERM.ISSUE_CREATE))
@@ -423,9 +423,9 @@ const callReply = (payload: any) => {
   cmtFocus.value = true
 }
 
-const RefCategoryModal = ref()
-const RefVersionModal = ref()
-const refWatcherAdd = ref()
+const RefCategoryModal = ref<InstanceType<typeof FormModal> | null>(null)
+const RefVersionModal = ref<InstanceType<typeof FormModal> | null>(null)
+const refWatcherAdd = ref<InstanceType<typeof WatcherAdd> | null>(null)
 
 const createCategory = (payload: any) => issueStore.createCategory(payload)
 const createVersion = (payload: any) => workStore.createVersion(payload)
@@ -514,7 +514,7 @@ defineExpose({ callComment, callReply })
           <CRow class="mb-3">
             <CCol md="8">
               <CRow class="mb-3">
-                <CFormLabel for="issue-project" class="col-sm-2 col-form-label text-right required">
+                <CFormLabel for="tracker" class="col-sm-2 col-form-label text-right required">
                   유형
                 </CFormLabel>
                 <CCol sm="4">
@@ -697,9 +697,9 @@ defineExpose({ callComment, callReply })
                       class="form-text pt-2"
                     >
                       <v-icon icon="mdi-link-plus" color="primary" size="sm" class="mr-1" />
-                      <router-link to="" @click="addLink">
+                      <a href="javascript:void(0)" @click="addLink">
                         외부 클라우드 링크 추가 (OneDrive, Google Drive 등)
-                      </router-link>
+                      </a>
                     </CCol>
                   </CRow>
                 </div>
@@ -725,9 +725,9 @@ defineExpose({ callComment, callReply })
                   <CCol class="col-sm-2"></CCol>
                   <CCol class="form-text">
                     <v-icon icon="mdi-plus-circle" color="success" size="sm" class="mr-2" />
-                    <router-link to="" @click="refWatcherAdd.callModal()">
+                    <a href="javascript:void(0)" @click="refWatcherAdd?.callModal()">
                       추가할 업무 관람자 검색
-                    </router-link>
+                    </a>
                   </CCol>
                 </CRow>
               </CRow>
@@ -861,7 +861,7 @@ defineExpose({ callComment, callReply })
                     <CInputGroupText
                       v-if="can(PERM.PROJECT_VERSION)"
                       class="pointer"
-                      @click="RefVersionModal.callModal()"
+                      @click="RefVersionModal?.callModal()"
                     >
                       <v-icon icon="mdi-plus-circle" color="success" size="sm" />
                     </CInputGroupText>
@@ -884,7 +884,7 @@ defineExpose({ callComment, callReply })
                     <CInputGroupText
                       v-if="can(PERM.ISSUE_CATEGORY_MANAGE)"
                       class="pointer"
-                      @click="RefCategoryModal.callModal()"
+                      @click="RefCategoryModal?.callModal()"
                     >
                       <v-icon icon="mdi-plus-circle" color="success" size="sm" />
                     </CInputGroupText>
@@ -1050,7 +1050,7 @@ defineExpose({ callComment, callReply })
   <FormModal ref="RefVersionModal">
     <template #header>새 단계</template>
     <template #default>
-      <FormInIssueVersion @close="RefVersionModal.close()" @create-version="createVersion" />
+      <FormInIssueVersion @close="RefVersionModal?.close()" @create-version="createVersion" />
     </template>
   </FormModal>
 
@@ -1059,7 +1059,7 @@ defineExpose({ callComment, callReply })
     <template #default>
       <FormInIssueCategory
         :member-list="memberList"
-        @close="RefCategoryModal.close()"
+        @close="RefCategoryModal?.close()"
         @create-category="createCategory"
       />
     </template>

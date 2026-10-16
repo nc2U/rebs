@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue'
 import { useRoute } from 'vue-router'
-import { usePerms } from '@/composables/usePerms.ts'
+import { usePerms } from '@/composables/usePerms'
+import type { SubIssue } from '@/store/types/work_issue'
 
 defineProps({
   issuePk: { type: Number, required: true },
-  relations: { type: Array as PropType<any[]>, default: () => [] },
+  relations: { type: Array as PropType<SubIssue[]>, default: () => [] },
 })
 
 const route = useRoute()

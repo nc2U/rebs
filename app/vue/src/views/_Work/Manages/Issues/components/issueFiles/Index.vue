@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { onBeforeMount, type PropType, ref, watch } from 'vue'
-import { useIssue } from '@/store/pinia/work_issue.ts'
-import type { IssueFile } from '@/store/types/work_issue.ts'
+import { useIssue } from '@/store/pinia/work_issue'
+import type { IssueFile } from '@/store/types/work_issue'
 import FileDisplay from '@/views/_Work/components/atomics/FileDisplay.vue'
 
 const props = defineProps({
@@ -17,9 +17,7 @@ watch(
   },
 )
 
-const emit = defineEmits(['file-change'])
-
-// File delte
+// File delete
 const issueStore = useIssue()
 const fileControl = (payload: FormData) => issueStore.patchIssue(props.issuePk as number, payload)
 
@@ -69,17 +67,13 @@ onBeforeMount(async () => {
         <FileDisplay :file="file" @delete-file="deleteFile" />
 
         <CCol v-if="i === 0" class="text-right form-text col-2">
-          <span v-if="projStatus !== '9'" class="mr-2">
-            <router-link to="">
-              <v-icon icon="mdi-pencil" color="amber" size="18" @click="editMode = !editMode" />
-            </router-link>
+          <span v-if="projStatus !== '9'" class="mr-2 pointer" @click="editMode = !editMode">
+            <v-icon icon="mdi-pencil" color="amber" size="18" />
             <v-tooltip activator="parent" location="top">첨부파일 편집</v-tooltip>
           </span>
 
-          <span v-if="issueFiles.length > 1" class="mr-2">
-            <router-link to="">
-              <v-icon icon="mdi-download-box" color="secondary" size="18" />
-            </router-link>
+          <span v-if="issueFiles.length > 1" class="mr-2 pointer">
+            <v-icon icon="mdi-download-box" color="secondary" size="18" />
             <v-tooltip activator="parent" location="top">전체 다운로드</v-tooltip>
           </span>
         </CCol>

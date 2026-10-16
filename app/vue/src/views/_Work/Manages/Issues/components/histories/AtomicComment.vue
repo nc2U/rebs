@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { computed, type PropType, ref } from 'vue'
-import type { IssueLogEntry } from '@/store/types/work_logging.ts'
+import type { IssueLogEntry } from '@/store/types/work_logging'
 import { useRoute } from 'vue-router'
 import { usePerms } from '@/composables/usePerms'
-import { markdownRender, message } from '@/utils/helper.ts'
+import { markdownRender, message } from '@/utils/helper'
 import { elapsedTime, timeFormat } from '@/utils/baseMixins'
-import { useAccount } from '@/store/pinia/account.ts'
-import { useIssue } from '@/store/pinia/work_issue.ts'
+import { useAccount } from '@/store/pinia/account'
+import { useIssue } from '@/store/pinia/work_issue'
 import MdEditor from '@/components/MdEditor/Index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
@@ -14,7 +14,7 @@ const props = defineProps({ log: { type: Object as PropType<IssueLogEntry>, requ
 
 const emit = defineEmits(['del-submit', 'call-reply'])
 
-const RefDelConfirm = ref()
+const RefDelConfirm = ref<InstanceType<typeof ConfirmModal> | null>(null)
 const delPk = ref<null | number>(null)
 
 const route = useRoute()
@@ -93,13 +93,13 @@ const copyLink = (path: string, hash: string) => {
 
 const delConfirm = (pk: number) => {
   delPk.value = pk
-  RefDelConfirm.value.callModal('삭제 확인', '계속 진행하시겠습니까?', '', 'warning')
+  RefDelConfirm.value?.callModal('삭제 확인', '계속 진행하시겠습니까?', '', 'warning')
 }
 
 const delSubmit = () => {
   emit('del-submit', delPk.value)
   delPk.value = null
-  RefDelConfirm.value.close()
+  RefDelConfirm.value?.close()
 }
 </script>
 
@@ -187,26 +187,22 @@ const delSubmit = () => {
               </CDropdownToggle>
               <CDropdownMenu>
                 <CDropdownItem
-                  class="form-text"
+                  class="form-text pointer"
                   @click="copyLink(route.path, `#note-${log.log_id}`)"
                 >
-                  <router-link to="">
-                    <v-icon icon="mdi-pencil" color="amber" size="sm" />
-                    링크 복사
-                  </router-link>
+                  <v-icon icon="mdi-link-variant" color="amber" size="sm" class="mr-1" />
+                  링크 복사
                 </CDropdownItem>
                 <CDropdownItem
                   v-if="
                     can(PERM.ISSUE_COMMENT_UPDATE) ||
                     (can(PERM.ISSUE_COMMENT_OWN_UPDATE) && userInfo?.pk === log.comment?.creator.pk)
                   "
-                  class="form-text"
+                  class="form-text pointer"
                   @click="delConfirm(log.comment?.pk as number)"
                 >
-                  <router-link to="">
-                    <v-icon icon="mdi-trash-can" color="grey" size="sm" />
-                    삭제
-                  </router-link>
+                  <v-icon icon="mdi-trash-can" color="grey" size="sm" class="mr-1" />
+                  삭제
                 </CDropdownItem>
               </CDropdownMenu>
             </CDropdown>

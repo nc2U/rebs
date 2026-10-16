@@ -54,7 +54,7 @@ const addRelIssue = (event: Event) => {
           <option value="predecessor">선행 업무 (이 업무를 우선 진행)</option>
         </CFormSelect>
       </CCol>
-      <CFormLabel for="colFormLabel" class="col-sm-1 col-form-label text-right">
+      <CFormLabel class="col-sm-1 col-form-label text-right">
         업무 :
       </CFormLabel>
       <CCol sm="4" md="3" lg="2">
@@ -72,7 +72,7 @@ const addRelIssue = (event: Event) => {
           searchable
         />
       </CCol>
-      <CFormLabel for="colFormLabel" class="col-sm-1 col-form-label text-right">
+      <CFormLabel class="col-sm-1 col-form-label text-right">
         [예정]대기 :
       </CFormLabel>
       <CCol sm="3" md="2" lg="1">

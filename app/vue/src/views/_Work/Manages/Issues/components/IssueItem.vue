@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { computed, type PropType } from 'vue'
-import { DEFAULT_ISSUE_COLUMNS } from '@/views/_Work/Manages/Issues/constants.ts'
-import { cutString, dateFormat, timeFormat } from '@/utils/baseMixins.ts'
-import { usePerms } from '@/composables/usePerms.ts'
-import type { Issue } from '@/store/types/work_issue.ts'
+import { DEFAULT_ISSUE_COLUMNS } from '@/views/_Work/Manages/Issues/constants'
+import { cutString, dateFormat, timeFormat } from '@/utils/baseMixins'
+import { usePerms } from '@/composables/usePerms'
+import type { Issue } from '@/store/types/work_issue'
 import IssueDropDown from './IssueDropDown.vue'
 
 const props = defineProps({
@@ -68,7 +68,7 @@ const statusColor = computed(() => {
     </CTableDataCell>
 
     <!-- 프로젝트 -->
-    <CTableDataCell v-else-if="colKey === 'project' && !$route.params.projId">
+    <CTableDataCell v-else-if="colKey === 'project'">
       <router-link
         v-if="issue.project?.slug"
         :to="{ name: '(개요)', params: { projId: issue.project.slug } }"

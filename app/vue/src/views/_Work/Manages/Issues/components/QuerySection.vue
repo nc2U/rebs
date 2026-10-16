@@ -9,15 +9,15 @@ import {
   ref,
   watch,
 } from 'vue'
-import type { selectProject } from '@/store/types/work_project.ts'
-import type { IssueStatus, Tracker } from '@/store/types/work_issue.ts'
+import type { selectProject } from '@/store/types/work_project'
+import type { IssueStatus, Tracker } from '@/store/types/work_issue'
 import Multiselect from '@vueform/multiselect'
 import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
 import { usePerms } from '@/composables/usePerms'
 import { useWork } from '@/store/pinia/work_project'
 import { useAccount } from '@/store/pinia/account'
-import { useIssueFilter } from '@/store/pinia/work_issue_filter.ts'
+import { useIssueFilter } from '@/store/pinia/work_issue_filter'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
 import IssueProjectSelector from '@/views/_Work/components/atomics/IssueProjectSelector.vue'
 import TextButton from '@/views/_Work/components/atomics/TextButton.vue'
@@ -49,7 +49,7 @@ const roleList = computed(() => workStore.roleList.filter(r => ![1, 2].includes(
 const issueFilterStore = useIssueFilter()
 const { searchCond, enabledFields, cond, form } = storeToRefs(issueFilterStore)
 
-const refQuerySaveModal = ref()
+const refQuerySaveModal = ref<InstanceType<typeof SaveQueryModal> | null>(null)
 const openSaveModal = () => {
   refQuerySaveModal.value?.callModal()
 }

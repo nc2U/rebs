@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { computed, ref, type PropType } from 'vue'
 import { useRoute } from 'vue-router'
-import { useAccount } from '@/store/pinia/account.ts'
-import { useIssue } from '@/store/pinia/work_issue.ts'
-import { usePerms } from '@/composables/usePerms.ts'
-import { diffDate } from '@/utils/baseMixins.ts'
-import type { Issue, IssueStatus, CodeValue, Tracker } from '@/store/types/work_issue.ts'
+import { useAccount } from '@/store/pinia/account'
+import { useIssue } from '@/store/pinia/work_issue'
+import { usePerms } from '@/composables/usePerms'
+import { diffDate } from '@/utils/baseMixins'
+import type { Issue, IssueStatus, CodeValue, Tracker } from '@/store/types/work_issue'
 import IssueDropDown from './IssueDropDown.vue'
 import NoData from '@/components/NoData/Index.vue'
 
@@ -306,8 +306,8 @@ const onDrop = async (targetStatus: IssueStatus) => {
                   <span
                     v-if="issue.due_date"
                     :class="{
-                      'text-danger font-weight-bold': !issue.closed && diffDate(issue.due_date) < 0,
-                      'text-muted': issue.closed || diffDate(issue.due_date) >= 0,
+                      'text-danger font-weight-bold': !issue.closed && diffDate(issue.due_date) > 0,
+                      'text-muted': issue.closed || diffDate(issue.due_date) <= 0,
                     }"
                   >
                     <v-icon icon="mdi-calendar-clock" size="11" class="mr-1" />

@@ -36,7 +36,7 @@ export const DEFAULT_ISSUE_COLUMNS: string[] = [
   'updated',
 ]
 
-// 키-라벨 매핑 객체 (MeetingTable 헤더용)
+// 키-라벨 매핑 객체 (IssueTable 헤더용)
 export const ISSUE_COLUMN_LABEL_MAP: Record<string, string> = Object.fromEntries(
   ALL_ISSUE_COLUMNS.map(col => [col.key, col.label]),
 )

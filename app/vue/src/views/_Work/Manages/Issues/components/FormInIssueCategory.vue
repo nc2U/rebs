@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, type PropType, ref } from 'vue'
 import { isValidate } from '@/utils/helper'
-import { useAccount } from '@/store/pinia/account.ts'
+import { useAccount } from '@/store/pinia/account'
 
 defineProps({
   memberList: { type: Array as PropType<{ pk: number; username: string }[]>, default: () => [] },
@@ -44,15 +44,15 @@ const closeModal = () => emit('close')
           이름
         </CFormLabel>
         <CCol class="col-7">
-          <CFormInput v-model="nCategory.name" placeholder="새 업무 범주 이름" required />
+          <CFormInput id="category-name" v-model="nCategory.name" placeholder="새 업무 범주 이름" required />
         </CCol>
       </CRow>
       <CRow class="mb-3">
-        <CFormLabel for="category-name" class="col-3 col-form-label text-right">
+        <CFormLabel for="category-assigned-to" class="col-3 col-form-label text-right">
           담당자
         </CFormLabel>
         <CCol class="col-7">
-          <CFormSelect v-model.number="nCategory.assigned_to">
+          <CFormSelect id="category-assigned-to" v-model.number="nCategory.assigned_to">
             <option value="">---------</option>
             <option :value="userInfo?.pk">&lt;&lt; 나 &gt;&gt;</option>
             <option v-for="user in memberList" :value="user.pk" :key="user.pk">

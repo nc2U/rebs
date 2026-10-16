@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { computed, type PropType } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { message } from '@/utils/helper.ts'
-import { usePerms } from '@/composables/usePerms.ts'
-import { useAccount } from '@/store/pinia/account.ts'
-import type { Issue } from '@/store/types/work_issue.ts'
+import { message } from '@/utils/helper'
+import { usePerms } from '@/composables/usePerms'
+import { useAccount } from '@/store/pinia/account'
+import type { Issue } from '@/store/types/work_issue'
 import TextButton from '@/views/_Work/components/atomics/TextButton.vue'
 
 const props = defineProps({
@@ -140,17 +140,13 @@ const callDeleteIssue = () => emit('call-delete-issue')
           <v-tooltip activator="parent" location="top">Actions</v-tooltip>
         </CDropdownToggle>
         <CDropdownMenu>
-          <CDropdownItem class="form-text" @click="issueLinkCopy">
-            <router-link to="">
-              <v-icon icon="mdi-link-plus" color="grey" size="sm" />
-              링크 복사
-            </router-link>
+          <CDropdownItem class="form-text pointer" @click="issueLinkCopy">
+            <v-icon icon="mdi-link-plus" color="grey" size="sm" class="mr-1" />
+            링크 복사
           </CDropdownItem>
-          <CDropdownItem v-if="showDeleteButton" class="form-text" @click="callDeleteIssue">
-            <router-link to="">
-              <v-icon icon="mdi-trash-can-outline" color="grey" size="sm" />
-              업무 삭제
-            </router-link>
+          <CDropdownItem v-if="showDeleteButton" class="form-text pointer" @click="callDeleteIssue">
+            <v-icon icon="mdi-trash-can-outline" color="grey" size="sm" class="mr-1" />
+            업무 삭제
           </CDropdownItem>
         </CDropdownMenu>
       </CDropdown>

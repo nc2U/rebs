@@ -1,10 +1,10 @@
-<script lang="ts" setup="">
+<script lang="ts" setup>
 import { type PropType } from 'vue'
 import { useRoute } from 'vue-router'
-import type { IssueLogEntry } from '@/store/types/work_logging.ts'
+import type { IssueLogEntry } from '@/store/types/work_logging'
 import { elapsedTime, timeFormat } from '@/utils/baseMixins'
-import { markdownRender } from '@/utils/helper.ts'
-import { usePerms } from '@/composables/usePerms.ts'
+import { markdownRender } from '@/utils/helper'
+import { usePerms } from '@/composables/usePerms'
 import { CCol, CRow } from '@coreui/vue'
 
 defineProps({ log: { type: Object as PropType<IssueLogEntry>, required: true } })

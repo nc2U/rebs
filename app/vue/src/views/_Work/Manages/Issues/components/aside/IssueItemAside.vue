@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { computed, type PropType, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { useIssue } from '@/store/pinia/work_issue.ts'
-import { useAccount } from '@/store/pinia/account.ts'
-import { usePerms } from '@/composables/usePerms.ts'
-import type { Issue } from '@/store/types/work_issue.ts'
+import { useIssue } from '@/store/pinia/work_issue'
+import { useAccount } from '@/store/pinia/account'
+import { usePerms } from '@/composables/usePerms'
+import type { Issue } from '@/store/types/work_issue'
 import WatcherAdd from './WatcherAdd.vue'
 
 const props = defineProps({
@@ -12,7 +12,7 @@ const props = defineProps({
   issue: { type: Object as PropType<Issue>, required: true },
 })
 
-const refWatcherAdd = ref()
+const refWatcherAdd = ref<InstanceType<typeof WatcherAdd> | null>(null)
 
 const accStore = useAccount()
 const userInfo = computed(() => accStore.userInfo)
@@ -70,7 +70,7 @@ const delWatcher = (pk: number) => {
         <h6 class="asideTitle">업무 관람자 ({{ watchers.length }})</h6>
       </CCol>
       <CCol v-if="canAddWatcher" class="text-right">
-        <router-link to="" @click="refWatcherAdd.callModal()">추가</router-link>
+        <a href="javascript:void(0)" @click="refWatcherAdd?.callModal()">추가</a>
       </CCol>
     </CRow>
     <CRow v-for="watcher in watchers" :key="watcher.pk">

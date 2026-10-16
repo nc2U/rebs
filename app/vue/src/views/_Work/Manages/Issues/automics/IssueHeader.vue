@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { usePerms } from '@/composables/usePerms.ts'
-import { useAccount } from '@/store/pinia/account.ts'
-import { useWork } from '@/store/pinia/work_project.ts'
+import { usePerms } from '@/composables/usePerms'
+import { useAccount } from '@/store/pinia/account'
+import { useWork } from '@/store/pinia/work_project'
 import TextButton from '@/views/_Work/components/atomics/TextButton.vue'
 import { CRow } from '@coreui/vue'
 
@@ -93,31 +93,25 @@ const router = useRouter()
           <CDropdownMenu>
             <CDropdownItem
               v-if="route.params.projId"
-              class="form-text"
+              class="form-text pointer"
               @click="router.push({ name: '(업무) - 보고서' })"
             >
-              <router-link to="">
-                <v-icon icon="mdi-chart-bar" color="amber" size="sm" class="mr-1" />요약
-              </router-link>
+              <v-icon icon="mdi-chart-bar" color="amber" size="sm" class="mr-1" />요약
             </CDropdownItem>
             <CDropdownItem v-if="projStatus !== '9'" class="form-text" disabled>
-              <!--              <router-link to="">-->
               <v-icon
                 icon="mdi-file-document-arrow-right"
                 color="blue-lighten"
                 size="sm"
                 class="mr-1"
               />가져오기
-              <!--              </router-link>-->
             </CDropdownItem>
             <CDropdownItem
               v-if="projStatus === '1' && route.params.projId && workManager"
-              class="form-text"
+              class="form-text pointer"
               @click="router.push({ name: '(설정)', query: { menu: '업무추적' } })"
             >
-              <router-link to="">
-                <v-icon icon="mdi-cog" color="secondary" size="sm" class="mr-1" />설정
-              </router-link>
+              <v-icon icon="mdi-cog" color="secondary" size="sm" class="mr-1" />설정
             </CDropdownItem>
           </CDropdownMenu>
         </CDropdown>

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, type PropType, ref, watch } from 'vue'
-import { useWork } from '@/store/pinia/work_project.ts'
+import { useWork } from '@/store/pinia/work_project'
 import { useAccount } from '@/store/pinia/account'
-import type { IssueProject } from '@/store/types/work_project.ts'
+import type { IssueProject } from '@/store/types/work_project'
 import Multiselect from '@vueform/multiselect'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
@@ -12,8 +12,8 @@ const props = defineProps({
 
 const emit = defineEmits(['watcher-add-submit'])
 
-const addUser = ref()
-const refConfirmModal = ref()
+const addUser = ref<number | null>(null)
+const refConfirmModal = ref<InstanceType<typeof ConfirmModal> | null>(null)
 
 const addUsers = ref<number[]>([])
 const addMembers = ref<{ pk: number; username: string }[]>([])
@@ -25,7 +25,7 @@ const userAdding = () => {
       pk: u.value,
       username: u.label,
     }))[0]
-  addMembers.value.push(user)
+  if (user) addMembers.value.push(user)
   addUser.value = null
 }
 
@@ -62,14 +62,14 @@ watch(
 
 const callModal = () => {
   addUsers.value = []
-  refConfirmModal.value.callModal()
+  refConfirmModal.value?.callModal()
 }
 defineExpose({ callModal })
 
 const watcherAddSubmit = () => {
   const selectedMembers = addMembers.value.filter(m => addUsers.value.includes(m.pk))
   emit('watcher-add-submit', selectedMembers)
-  refConfirmModal.value.close()
+  refConfirmModal.value?.close()
 }
 
 onBeforeMount(() => {

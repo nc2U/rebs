@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, provide, ref } from 'vue'
 import { navMenu2 as navMenu } from '@/views/_Work/_menu/headermixin1'
-import { ALL_ISSUE_COLUMNS, DEFAULT_ISSUE_COLUMNS } from './constants.ts'
+import { ALL_ISSUE_COLUMNS, DEFAULT_ISSUE_COLUMNS } from './constants'
 import { useAccount } from '@/store/pinia/account'
-import { useWork } from '@/store/pinia/work_project.ts'
-import { useIssue } from '@/store/pinia/work_issue.ts'
-import { useIssueFilter } from '@/store/pinia/work_issue_filter.ts'
-import { useCompany } from '@/store/pinia/company.ts'
+import { useWork } from '@/store/pinia/work_project'
+import { useIssue } from '@/store/pinia/work_issue'
+import { useIssueFilter } from '@/store/pinia/work_issue_filter'
+import { useCompany } from '@/store/pinia/company'
 import { useRoute } from 'vue-router'
-import { useTableColumns } from '@/composables/useTableColumns.ts'
+import { useTableColumns } from '@/composables/useTableColumns'
 import type { Company } from '@/store/types/settings'
-import type { Issue, IssueFilter } from '@/store/types/work_issue.ts'
+import type { Issue, IssueFilter } from '@/store/types/work_issue'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import IssueHeader from './automics/IssueHeader.vue'
@@ -29,12 +29,12 @@ const onViewModeChange = (mode: 'list' | 'kanban') => {
   localStorage.setItem('ibs_work_issue_view_mode', mode)
 }
 
-const cBody = ref()
+const cBody = ref<InstanceType<typeof ContentBody> | null>(null)
 const comStore = useCompany()
 const company = computed<Company | null>(() => comStore.company)
 const comName = computed(() => company?.value?.name)
 
-const sideNavCAll = () => cBody.value.toggle()
+const sideNavCall = () => cBody.value?.toggle()
 
 const accStore = useAccount()
 const getUsers = computed(() => accStore.getUsers)
@@ -67,7 +67,7 @@ const pageSelect = (page: number) => {
   issueStore.fetchIssueList(listFilter.value)
 }
 
-const querySectionRef = ref()
+const querySectionRef = ref<InstanceType<typeof QuerySection> | null>(null)
 const activeQueryId = computed(() => issueFilterStore.activeQueryId)
 const onQueryClick = (query: any) => {
   querySectionRef.value?.applyQuery(query)
@@ -105,7 +105,7 @@ onBeforeMount(async () => {
 
 <template>
   <Loading v-model:active="loading" />
-  <Header :page-title="comName" :nav-menu="navMenu" @side-nav-call="sideNavCAll" />
+  <Header :page-title="comName" :nav-menu="navMenu" @side-nav-call="sideNavCall" />
 
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="route?.query">
     <template v-slot:default>
@@ -134,7 +134,6 @@ onBeforeMount(async () => {
 
       <IssueTable
         v-if="viewMode === 'list'"
-        ref="issueListRef"
         :issue-list="issueList as Issue[]"
         :columns="selectedColumns"
         @page-select="pageSelect"

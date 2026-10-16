@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, type PropType, ref, watch } from 'vue'
-import type { selectProject, IssueProject } from '@/store/types/work_project.ts'
-import type { CodeValue, Issue, IssueComment, IssueStatus } from '@/store/types/work_issue.ts'
+import type { selectProject, IssueProject } from '@/store/types/work_project'
+import type { CodeValue, Issue, IssueComment, IssueStatus } from '@/store/types/work_issue'
 import { useRoute, useRouter } from 'vue-router'
 import { usePerms } from '@/composables/usePerms'
-import { markdownRender } from '@/utils/helper.ts'
+import { markdownRender } from '@/utils/helper'
 import { diffDate, elapsedTime, timeFormat } from '@/utils/baseMixins'
-import { useIssue } from '@/store/pinia/work_issue.ts'
-import { useLogging } from '@/store/pinia/work_logging.ts'
-import { useWork } from '@/store/pinia/work_project.ts'
+import { useIssue } from '@/store/pinia/work_issue'
+import { useLogging } from '@/store/pinia/work_logging'
+import { useWork } from '@/store/pinia/work_project'
 import IssueControl from './IssueControl.vue'
 import IssueHistory from './IssueHistory.vue'
 import IssueForm from './IssueForm.vue'
@@ -19,7 +19,7 @@ import RelSummary from './relation/Summary.vue'
 import Relation from './relation/Index.vue'
 import AddRelationForm from './relation/AddRelationForm.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import { markNotificationReadByTarget } from '@/utils/notification.ts'
+import { markNotificationReadByTarget } from '@/utils/notification'
 
 const props = defineProps({
   issue: { type: Object as PropType<Issue>, required: true },
@@ -43,7 +43,7 @@ watch(
   { immediate: true },
 )
 
-const issueFormRef = ref()
+const issueFormRef = ref<InstanceType<typeof IssueForm> | null>(null)
 const editForm = ref(false)
 
 const { can, canViewUser, PERM } = usePerms()
@@ -156,10 +156,10 @@ const deleteRelation = (pk: number) => issueStore.deleteIssueRelation(pk, props.
 // issue comment 관련
 const delSubmit = (pk: number) => issueStore.deleteIssueComment(pk, props.issue?.pk)
 
-const refDelModal = ref()
+const refDelModal = ref<InstanceType<typeof ConfirmModal> | null>(null)
 
 const deleteIssue = () => {
-  refDelModal.value.callModal(
+  refDelModal.value?.callModal(
     '업무 삭제',
     '정말로 이 업무를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.',
     'mdi-trash-can-outline',
@@ -169,7 +169,7 @@ const deleteIssue = () => {
 
 const confirmDelete = () => {
   issueStore.deleteIssue(props.issue?.pk as number)
-  refDelModal.value.close()
+  refDelModal.value?.close()
   if (route.params.projId) router.push({ name: '(업무)' })
   else router.push({ name: '업무' })
 }
@@ -408,7 +408,7 @@ onBeforeMount(async () => {
         <CCol class="title">설명</CCol>
         <CCol v-if="canCommentCreate" class="text-right form-text">
           <v-icon icon="mdi-comment-text-outline" size="sm" color="grey" class="mr-2" />
-          <router-link to="" @click="callComment">댓글달기</router-link>
+          <a href="javascript:void(0)" @click="callComment">댓글달기</a>
         </CCol>
       </CRow>
 
@@ -487,7 +487,7 @@ onBeforeMount(async () => {
           v-if="currentProject?.status === '1' && can(PERM.ISSUE_REL_MANAGE)"
           class="text-right form-text"
         >
-          <router-link to="" @click="addRIssue = !addRIssue">추가</router-link>
+          <a href="javascript:void(0)" @click="addRIssue = !addRIssue">추가</a>
         </CCol>
       </CRow>
 

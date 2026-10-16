@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue'
 import { useRoute } from 'vue-router'
-import type { SubIssue } from '@/store/types/work_issue.ts'
-import { usePerms } from '@/composables/usePerms.ts'
+import type { SubIssue } from '@/store/types/work_issue'
+import { usePerms } from '@/composables/usePerms'
 
 defineProps({
   issuePk: { type: Number, required: true },

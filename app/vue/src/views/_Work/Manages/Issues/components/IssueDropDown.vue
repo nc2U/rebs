@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, type PropType, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { usePerms } from '@/composables/usePerms.ts'
+import { usePerms } from '@/composables/usePerms'
 import { errorHandle, message } from '@/utils/helper'
-import { useAccount } from '@/store/pinia/account.ts'
-import { useIssue } from '@/store/pinia/work_issue.ts'
-import { useWork } from '@/store/pinia/work_project.ts'
-import type { Issue, SimpleIssue, SubIssue } from '@/store/types/work_issue.ts'
-import type { SimpleUser } from '@/store/types/work_project.ts'
+import { useAccount } from '@/store/pinia/account'
+import { useIssue } from '@/store/pinia/work_issue'
+import { useWork } from '@/store/pinia/work_project'
+import type { Issue, SimpleIssue, SubIssue } from '@/store/types/work_issue'
+import type { SimpleUser } from '@/store/types/work_project'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const props = defineProps({
@@ -15,7 +15,7 @@ const props = defineProps({
   isDelete: { type: Boolean, default: false },
 })
 
-const refDelModal = ref()
+const refDelModal = ref<InstanceType<typeof ConfirmModal> | null>(null)
 
 const router = useRouter()
 const route = useRoute()
@@ -27,7 +27,7 @@ const workStore = useWork()
 const { can, PERM } = usePerms()
 
 // 프로젝트 닫힘 여부 및 내 권한 연동 연산 추가
-const isProjectClosed = computed(() => props.issue.project.status !== '1')
+const isProjectClosed = computed(() => props.issue?.project?.status !== '1')
 
 const issueCreator = computed(() => (props.issue as any).creator?.pk ?? null)
 const issueAssignee = computed(() => {
@@ -49,14 +49,14 @@ const canCreateSubIssue = computed(() => can(PERM.ISSUE_CREATE) && !isProjectClo
 const issueStore = useIssue()
 const statusList = computed(() => issueStore.statusList)
 const trackerList = computed(() => {
-  const projectPk = props.issue.project.pk
+  const projectPk = props.issue?.project?.pk
   return issueStore.trackerList.filter(t => t.projects.some(p => p.pk === projectPk))
 })
 const priorityList = computed(() => issueStore.priorityList)
 
 const isWatcher = ref(false)
 
-const isCumputedWatcher = computed(() =>
+const isComputedWatcher = computed(() =>
   props.issue?.watchers.map(w => w.pk).includes(userInfo?.value?.pk as number),
 )
 
@@ -201,7 +201,7 @@ const copyIssue = () => {
 
 // 업무 삭제
 const deleteIssue = () => {
-  refDelModal.value.callModal(
+  refDelModal.value?.callModal(
     '업무 삭제',
     '정말로 이 업무를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.',
     'mdi-trash-can-outline',
@@ -211,10 +211,10 @@ const deleteIssue = () => {
 
 const confirmDelete = async () => {
   await issueStore.deleteIssue(props.issue.pk)
-  refDelModal.value.close()
+  refDelModal.value?.close()
 }
 
-onBeforeMount(() => (isWatcher.value = isCumputedWatcher.value as any))
+onBeforeMount(() => (isWatcher.value = !!isComputedWatcher.value))
 </script>
 
 <template>
@@ -231,7 +231,7 @@ onBeforeMount(() => (isWatcher.value = isCumputedWatcher.value as any))
             @click="
               router.push({
                 name: '(업무) - 보기',
-                params: { projId: issue.project.slug, issueId: issue.pk },
+                params: { projId: issue.project?.slug, issueId: issue.pk },
                 query: { edit: '1' },
               })
             "
@@ -498,7 +498,7 @@ onBeforeMount(() => (isWatcher.value = isCumputedWatcher.value as any))
             @click="
               router.push({
                 name: '(업무) - 추가',
-                params: { projId: issue.project.slug },
+                params: { projId: issue.project?.slug },
                 query: { parent: issue.pk, tracker: issue.tracker.pk },
               })
             "

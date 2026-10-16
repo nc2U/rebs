@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onBeforeMount, type PropType, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import type { IssueLogEntry } from '@/store/types/work_logging.ts'
+import type { IssueLogEntry } from '@/store/types/work_logging'
 import AtomicLog from './histories/AtomicLog.vue'
 import AtomicComment from './histories/AtomicComment.vue'
 

@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref, watch } from 'vue'
-import { ALL_ISSUE_COLUMNS, DEFAULT_ISSUE_COLUMNS } from '@/views/_Work/Manages/Issues/constants.ts'
-import { useAccount } from '@/store/pinia/account.ts'
-import { useWork } from '@/store/pinia/work_project.ts'
-import { useIssue } from '@/store/pinia/work_issue.ts'
-import { useIssueFilter } from '@/store/pinia/work_issue_filter.ts'
-import { useLogging } from '@/store/pinia/work_logging.ts'
+import { ALL_ISSUE_COLUMNS, DEFAULT_ISSUE_COLUMNS } from '@/views/_Work/Manages/Issues/constants'
+import { useAccount } from '@/store/pinia/account'
+import { useWork } from '@/store/pinia/work_project'
+import { useIssue } from '@/store/pinia/work_issue'
+import { useIssueFilter } from '@/store/pinia/work_issue_filter'
+import { useLogging } from '@/store/pinia/work_logging'
 import { usePerms } from '@/composables/usePerms'
 import { useRoute, useRouter } from 'vue-router'
-import { useTableColumns } from '@/composables/useTableColumns.ts'
-import type { IssueProject } from '@/store/types/work_project.ts'
-import type { Issue, IssueFilter } from '@/store/types/work_issue.ts'
+import { useTableColumns } from '@/composables/useTableColumns'
+import type { IssueProject } from '@/store/types/work_project'
+import type { Issue, IssueFilter } from '@/store/types/work_issue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import IssueHeader from '@/views/_Work/Manages/Issues/automics/IssueHeader.vue'
 import IssueTable from '@/views/_Work/Manages/Issues/components/IssueTable.vue'
@@ -24,6 +24,12 @@ import SavedQueryAside from '@/views/_Work/components/asides/SavedQueryAside.vue
 import ColumnSelector from '@/components/ColumnSelector/Index.vue'
 import Loading from '@/components/Loading/Index.vue'
 
+const props = defineProps<{
+  navMenu?: any
+  currentProject?: IssueProject | null
+  query?: any
+}>()
+
 const viewMode = ref<'list' | 'kanban'>(
   (localStorage.getItem('ibs_work_issue_view_mode') as 'list' | 'kanban') || 'list',
 )
@@ -32,8 +38,8 @@ const onViewModeChange = (mode: 'list' | 'kanban') => {
   localStorage.setItem('ibs_work_issue_view_mode', mode)
 }
 
-const cBody = ref()
-const toggle = () => cBody.value.toggle()
+const cBody = ref<InstanceType<typeof ContentBody> | null>(null)
+const toggle = () => cBody.value?.toggle()
 defineExpose({ toggle })
 
 const { can, PERM } = usePerms()
@@ -48,7 +54,9 @@ const workStore = useWork()
 const getVersions = computed(() => workStore.getVersions)
 const allReadableProjects = computed(() => workStore.getAllReadableProjects)
 const myProjects = computed(() => workStore.getMyProjects)
-const currentProject = computed<IssueProject | null>(() => workStore.currentProject)
+const currentProject = computed<IssueProject | null>(
+  () => props.currentProject || workStore.currentProject,
+)
 
 const issueStore = useIssue()
 const issue = computed<Issue | null>(() => issueStore.issue)
@@ -61,8 +69,7 @@ const priorityList = computed(() => issueStore.priorityList)
 const categoryList = computed(() => issueStore.categoryList)
 const getIssues = computed(() => issueStore.getIssues)
 
-const issueListRef = ref()
-const querySectionRef = ref()
+const querySectionRef = ref<InstanceType<typeof QuerySection> | null>(null)
 const issueFilterStore = useIssueFilter()
 const activeQueryId = computed(() => issueFilterStore.activeQueryId)
 
@@ -211,7 +218,7 @@ onBeforeMount(async () => {
 
 <template>
   <Loading v-model:active="loading" />
-  <ContentBody ref="cBody">
+  <ContentBody ref="cBody" :nav-menu="navMenu" :query="query">
     <template v-slot:default>
       <IssueHeader
         :proj-status="currentProject?.status"
@@ -239,7 +246,6 @@ onBeforeMount(async () => {
 
       <IssueTable
         v-if="route.name === '(업무)' && viewMode === 'list'"
-        ref="issueListRef"
         :issue-list="issueList as Issue[]"
         :columns="selectedColumns"
         @page-select="pageSelect"

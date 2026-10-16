@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { ref, type PropType, watchEffect } from 'vue'
+import { ref, type PropType, watchEffect, onUnmounted } from 'vue'
 import { cutString, diffDate } from '@/utils/baseMixins'
 import { useRoute } from 'vue-router'
-import { usePerms } from '@/composables/usePerms.ts'
-import type { SubIssue } from '@/store/types/work_issue.ts'
+import { usePerms } from '@/composables/usePerms'
+import type { SubIssue } from '@/store/types/work_issue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import IssueDropDown from '@/views/_Work/Manages/Issues/components/IssueDropDown.vue'
 
@@ -16,8 +16,9 @@ const { can, PERM } = usePerms()
 
 const selected = ref<number | null>(null)
 
-const handleClickOutside = (event: any) => {
-  const closestSubIssue = event.target.closest('.sub-issue')
+const handleClickOutside = (event: MouseEvent) => {
+  const target = event.target as HTMLElement | null
+  const closestSubIssue = target?.closest('.sub-issue')
   // 클릭한 대상이 .sub-issue 외부이거나, 혹은 다른 rel-issue 요소인 경우 선택 해제
   if (!closestSubIssue || closestSubIssue.id !== `sub-issue-${props.sub?.pk}`) {
     selected.value = null
@@ -29,18 +30,22 @@ watchEffect(() => {
   else document.removeEventListener('click', handleClickOutside)
 })
 
-const delSubRef = ref()
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
+
+const delSubRef = ref<InstanceType<typeof ConfirmModal> | null>(null)
 const child = ref<number | null>(null)
 
 const parentUnlink = (pk: number) => {
   child.value = pk
-  delSubRef.value.callModal()
+  delSubRef.value?.callModal()
 }
 
 const unlinkSubIssue = () => {
   emit('unlink-sub-issue', child.value)
   child.value = null
-  delSubRef.value.close()
+  delSubRef.value?.close()
 }
 
 const projId = route.params.projId as string
@@ -61,9 +66,9 @@ const detailRouteParams = (id: number) => (projId ? { projId, issueId: id } : { 
         :to="{ name: detailRouteName, params: detailRouteParams(sub.pk) }"
         :class="{ closed: sub.closed }"
       >
-        기능 #{{ sub.pk }}
+        {{ sub.tracker?.name || '업무' }} #{{ sub.pk }}
       </router-link>
-      <span v-else :class="{ closed: sub.closed }">기능 #{{ sub.pk }}</span>
+      <span v-else :class="{ closed: sub.closed }">{{ sub.tracker?.name || '업무' }} #{{ sub.pk }}</span>
       : {{ sub.subject }}
     </CCol>
 

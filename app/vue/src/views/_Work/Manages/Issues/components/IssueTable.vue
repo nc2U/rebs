@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-import { computed, type PropType, ref, watchEffect } from 'vue'
-import { useRoute } from 'vue-router'
+import { onUnmounted, type PropType, ref, watchEffect } from 'vue'
 import {
   DEFAULT_ISSUE_COLUMNS,
   ISSUE_COLUMN_LABEL_MAP,
-} from '@/views/_Work/Manages/Issues/constants.ts'
-import { useIssue } from '@/store/pinia/work_issue.ts'
-import type { Issue } from '@/store/types/work_issue.ts'
+} from '@/views/_Work/Manages/Issues/constants'
+import { useIssue } from '@/store/pinia/work_issue'
+import type { Issue } from '@/store/types/work_issue'
 import Pagination from '@/components/Pagination'
 import NoData from '@/components/NoData/Index.vue'
 import IssueItem from './IssueItem.vue'
@@ -21,8 +20,6 @@ const props = defineProps({
 
 const emit = defineEmits(['page-select'])
 
-const route = useRoute()
-
 const selectedRow = ref<number | null>(null)
 const handleClickOutside = (event: any) => {
   if (!event.target.closest('.table-row')) selectedRow.value = null
@@ -33,11 +30,9 @@ watchEffect(() => {
   else document.removeEventListener('click', handleClickOutside)
 })
 
-const querySectionRef = ref()
-const applyQuery = (query: any) => querySectionRef.value?.applyQuery(query)
-const resetFilter = () => querySectionRef.value?.resetFilter()
-
-defineExpose({ applyQuery, resetFilter })
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
 
 const issueStore = useIssue()
 const issuePages = (pageNum: number) => issueStore.issuePages(pageNum)
