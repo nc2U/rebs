@@ -3,7 +3,7 @@ import { type PropType } from 'vue'
 import type { Forum } from '@/store/types/forum'
 import { useRoute } from 'vue-router'
 import { elapsedTime } from '@/utils/baseMixins'
-import { usePerms } from '@/composables/usePerms.ts'
+import { usePerms } from '@/composables/usePerms'
 
 defineProps({
   forumList: { type: Array as PropType<Forum[]>, default: () => [] },
@@ -31,6 +31,11 @@ const { can, PERM } = usePerms()
       </CTableRow>
     </CTableHead>
     <CTableBody>
+      <CTableRow v-if="!forumList.length">
+        <CTableDataCell colspan="4" class="text-center py-4 text-muted">
+          등록된 게시판이 없습니다.
+        </CTableDataCell>
+      </CTableRow>
       <CTableRow v-for="frm in forumList" :key="frm.pk as number">
         <CTableDataCell class="pl-4">
           <router-link

@@ -1,17 +1,16 @@
 <script lang="ts" setup>
 import { computed, type PropType } from 'vue'
-import { useAccount } from '@/store/pinia/account.ts'
-import type { Post } from '@/store/types/forum'
+import { useAccount } from '@/store/pinia/account'
+import type { Comment as ForumComment, Post } from '@/store/types/forum'
 import { useRoute, useRouter } from 'vue-router'
 import { elapsedTime, humanizeFileSize } from '@/utils/baseMixins'
-import { usePerms } from '@/composables/usePerms.ts'
+import { usePerms } from '@/composables/usePerms'
 import PostContent from '@/components/OtherParts/PostContent.vue'
 import Comment from '@/components/Comments/Index.vue'
-import { CRow } from '@coreui/vue'
 
 const props = defineProps({
   post: { type: Object as PropType<Post>, required: true },
-  comments: { type: Array as PropType<any[]>, default: () => [] },
+  comments: { type: Array as PropType<ForumComment[]>, default: () => [] },
 })
 
 const emit = defineEmits(['delete-post', 'like-post', 'blame-post'])
@@ -28,7 +27,7 @@ const canForumUpdate = computed(() => {
 
 const canForumDelete = computed(() => {
   if (can(PERM.FORUM_DELETE)) return true
-  if (can(PERM.FORUM_OWN_DELETE)) return props.post?.creator?.pk === userInfo.value?.pk
+  if (can(PERM.FORUM_OWN_DELETE)) return props.post.creator?.pk === userInfo.value?.pk
   return false
 })
 
@@ -60,10 +59,10 @@ const userInfo = computed(() => accStore.userInfo)
           <v-col cols="auto" class="mr-3 strong">
             <v-icon icon="mdi-account-circle-outline" size="small" class="mr-1" />
             <router-link
-              v-if="canViewUser(userInfo?.pk)"
+              v-if="post.creator?.pk && canViewUser(post.creator.pk)"
               :to="{
                 name: '사용자 - 보기',
-                params: { userId: 1 },
+                params: { userId: post.creator.pk },
               }"
               class="text-decoration-none text-grey"
             >
@@ -143,7 +142,17 @@ const userInfo = computed(() => accStore.userInfo)
         <v-icon icon="mdi-trash-can-outline" size="small" class="mr-1" />
         삭제
       </v-btn>
-      <v-btn color="light" class="mr-2" @click="router.push({ name: '(게시판) - 보기' })" flat>
+      <v-btn
+        color="light"
+        class="mr-2"
+        @click="
+          router.push({
+            name: '(게시판) - 보기',
+            params: { projId: route.params.projId, forumId: post.forum },
+          })
+        "
+        flat
+      >
         목록으로
       </v-btn>
     </div>

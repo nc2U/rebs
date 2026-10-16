@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { usePerms } from '@/composables/usePerms.ts'
-import { useAccount } from '@/store/pinia/account.ts'
-import { useForum } from '@/store/pinia/forum.ts'
-import type { Post } from '@/store/types/forum.ts'
+import { usePerms } from '@/composables/usePerms'
+import { useAccount } from '@/store/pinia/account'
+import { useForum } from '@/store/pinia/forum'
+import type { IssueProject } from '@/store/types/work_project'
+import type { Post } from '@/store/types/forum'
 import Loading from '@/components/Loading/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import ForumIndex from './components/ForumIndex.vue'
@@ -14,8 +15,15 @@ import PostForm from './components/PostForm.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import TextButton from '@/views/_Work/components/atomics/TextButton.vue'
 
-const cBody = ref()
-const toggle = () => cBody.value.toggle()
+defineProps<{
+  navMenu?: any
+  currentProject?: IssueProject | null
+  query?: any
+}>()
+
+const loading = ref(true)
+const cBody = ref<InstanceType<typeof ContentBody> | null>(null)
+const toggle = () => cBody.value?.toggle()
 defineExpose({ toggle })
 
 const { can, PERM } = usePerms()
@@ -57,12 +65,12 @@ const fetchPostData = async (pk: number) => {
   }
 }
 
-const refConfirmModal = ref()
+const refConfirmModal = ref<InstanceType<typeof ConfirmModal> | null>(null)
 const delPk = ref<number | null>(null)
 
 const onDeletePost = (pk: number) => {
   delPk.value = pk
-  refConfirmModal.value.callModal('게시물 삭제', '이 게시물을 정말 삭제하시겠습니까?', '', 'danger')
+  refConfirmModal.value?.callModal('게시물 삭제', '이 게시물을 정말 삭제하시겠습니까?', '', 'danger')
 }
 
 const deletePostConfirm = async () => {
@@ -76,7 +84,7 @@ const deletePostConfirm = async () => {
       params: { projId: route.params.projId, forumId: route.params.forumId },
     })
   }
-  refConfirmModal.value.close()
+  refConfirmModal.value?.close()
 }
 
 const onLikePost = (pk: number) => forumStore.patchPostLike(pk)
@@ -148,7 +156,6 @@ watch(
   { deep: true },
 )
 
-const loading = ref(true)
 onBeforeMount(async () => {
   await dataSetup()
 })
@@ -156,7 +163,7 @@ onBeforeMount(async () => {
 
 <template>
   <Loading v-model:active="loading" />
-  <ContentBody ref="cBody">
+  <ContentBody ref="cBody" :nav-menu="navMenu" :query="query">
     <template v-slot:default>
       <CRow class="py-2">
         <CCol>
@@ -192,8 +199,8 @@ onBeforeMount(async () => {
 
       <!-- 게시물 상세 -->
       <PostDetail
-        v-else-if="route.name === '(게시판) - 게시물 보기' && (post || loading)"
-        :post="post as Post"
+        v-else-if="route.name === '(게시판) - 게시물 보기' && post"
+        :post="post"
         :comments="commentList"
         @delete-post="onDeletePost"
         @like-post="onLikePost"
@@ -209,7 +216,7 @@ onBeforeMount(async () => {
 
       <!-- 게시물 수정 -->
       <PostForm
-        v-else-if="route.name === '(게시판) - 게시물 수정' && (post || loading)"
+        v-else-if="route.name === '(게시판) - 게시물 수정' && post"
         :post="post"
         :forum-id="Number(route.params.forumId)"
         :categories="categoryList"
@@ -272,8 +279,10 @@ onBeforeMount(async () => {
               </router-link>
             </li>
             <li>
-              <v-icon icon="mdi-trash-can-outline" size="small" class="mr-2" />
-              <router-link to="">휴지통</router-link>
+              <span class="text-muted">
+                <v-icon icon="mdi-trash-can-outline" size="small" class="mr-2 text-muted" />
+                휴지통 (준비 중)
+              </span>
             </li>
           </ul>
           <div v-else class="py-4 text-muted">게시판 관리 권한이 없습니다.</div>
@@ -284,7 +293,7 @@ onBeforeMount(async () => {
 
   <ConfirmModal ref="refConfirmModal">
     <template #footer>
-      <v-btn color="danger" @click="deletePostConfirm">삭제</v-btn>
+      <v-btn color="error" @click="deletePostConfirm">삭제</v-btn>
     </template>
   </ConfirmModal>
 </template>

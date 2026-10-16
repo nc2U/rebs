@@ -5,7 +5,6 @@ import { useForum } from '@/store/pinia/forum'
 import Pagination from '@/components/Pagination'
 import NoData from '@/components/NoData/Index.vue'
 import PostItem from './PostItem.vue'
-import { CCol } from '@coreui/vue'
 
 defineProps({
   forum: { type: Object as PropType<Forum | null>, default: null },
@@ -21,7 +20,7 @@ const pageSelect = (page: number) => emit('page-select', page)
 </script>
 
 <template>
-  <p class="text-body-2 text-muted mb-4">{{ forum?.description }}</p>
+  <p v-if="forum?.description" class="text-body-2 text-muted mb-4">{{ forum.description }}</p>
 
   <NoData v-if="!postList.length" />
 

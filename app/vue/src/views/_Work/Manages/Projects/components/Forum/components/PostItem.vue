@@ -3,7 +3,7 @@ import { computed, type PropType } from 'vue'
 import type { Post } from '@/store/types/forum'
 import { useRoute } from 'vue-router'
 import { timeFormat } from '@/utils/baseMixins'
-import { usePerms } from '@/composables/usePerms.ts'
+import { usePerms } from '@/composables/usePerms'
 
 defineProps({
   post: { type: Object as PropType<Post>, required: true },
@@ -44,7 +44,7 @@ const canForumRead = computed(() => can(PERM.FORUM_READ))
       new
     </v-chip>
   </CTableDataCell>
-  <CTableDataCell class="text-center">{{ post.creator?.username }}</CTableDataCell>
-  <CTableDataCell class="text-center">{{ timeFormat(post.created as string) }}</CTableDataCell>
+  <CTableDataCell class="text-center">{{ post.creator?.username ?? '-' }}</CTableDataCell>
+  <CTableDataCell class="text-center">{{ post.created ? timeFormat(post.created) : '-' }}</CTableDataCell>
   <CTableDataCell class="text-center">{{ post.hit }}</CTableDataCell>
 </template>

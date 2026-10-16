@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed, type PropType, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { usePerms } from '@/composables/usePerms.ts'
-import { isValidate } from '@/utils/helper.ts'
+import { usePerms } from '@/composables/usePerms'
+import { isValidate } from '@/utils/helper'
 import { useAccount } from '@/store/pinia/account'
 import { useForum } from '@/store/pinia/forum'
 import { colorLight } from '@/utils/cssMixins'
@@ -17,7 +17,7 @@ const props = defineProps({
   categories: { type: Array as PropType<PostCategory[]>, default: () => [] },
 })
 
-const categoryForm = ref()
+const categoryForm = ref<InstanceType<typeof FormModal> | null>(null)
 
 const [route, router] = [useRoute(), useRouter()]
 
@@ -61,7 +61,7 @@ const openCategoryDialog = () => {
     order: props.categories.length + 1,
     is_manager_only: false,
   }
-  categoryForm.value.callModal()
+  categoryForm.value?.callModal()
 }
 
 const submitCategory = (event: Event) => {
@@ -69,7 +69,7 @@ const submitCategory = (event: Event) => {
   else {
     isSubmittingCategory.value = true
     frmStore.createCategory(newCategory.value, projId.value).then(() => {
-      categoryForm.value.close()
+      categoryForm.value?.close()
       categoryValidated.value = false
       isSubmittingCategory.value = false
     })
@@ -81,7 +81,7 @@ const createPost = (payload: { form: FormData }, project: string = '') =>
 const updatePost = (payload: { pk: number; form: FormData }, project: string = '') =>
   frmStore.updatePost(payload, project)
 
-const refFileForms = ref()
+const refFileForms = ref<InstanceType<typeof FileForms> | null>(null)
 
 const validated = ref(false)
 const form = ref<Post>({
@@ -116,7 +116,7 @@ const submitCheck = (event: Event) => {
   } else {
     validated.value = false
     onSubmit()
-    refFileForms.value.checkRelease()
+    refFileForms.value?.checkRelease()
   }
 }
 
@@ -322,7 +322,7 @@ watch(
             </CCol>
           </CRow>
           <CRow class="mb-3">
-            <CFormLabel for="cat-name" class="col-sm-3 col-form-label">색상</CFormLabel>
+            <CFormLabel for="cat-color" class="col-sm-3 col-form-label">색상</CFormLabel>
             <CCol sm="9">
               <CFormInput
                 v-model="newCategory.color"
@@ -359,7 +359,7 @@ watch(
           </CRow>
         </CModalBody>
         <CModalFooter>
-          <v-btn variant="flat" color="light" size="small" @click="categoryForm.close()">
+          <v-btn variant="flat" color="light" size="small" @click="categoryForm?.close()">
             닫기
           </v-btn>
           <v-btn type="submit" color="primary" size="small" :loading="isSubmittingCategory">
