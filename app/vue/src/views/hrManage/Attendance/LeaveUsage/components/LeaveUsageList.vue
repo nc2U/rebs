@@ -7,7 +7,11 @@ import { type StaffLeaveUsage as StaffLeaveUsageType } from '@/store/types/compa
 import Pagination from '@/components/Pagination'
 import LeaveUsage from './LeaveUsage.vue'
 
-const emit = defineEmits(['page-select', 'multi-submit', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'page-select', page: number): void
+  (e: 'multi-submit', payload: StaffLeaveUsageType): void
+  (e: 'on-delete', pk: number): void
+}>()
 
 const { canGlobal, PERM } = usePerms()
 const canHrWorkManage = computed(

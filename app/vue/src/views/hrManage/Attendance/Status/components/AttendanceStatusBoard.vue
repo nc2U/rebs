@@ -2,7 +2,6 @@
 import { computed } from 'vue'
 import { TableSecondary } from '@/utils/cssMixins.ts'
 import { type Staff, type StaffLeaveQuota } from '@/store/types/company.ts'
-import { CTable } from '@coreui/vue'
 
 const props = defineProps<{
   staffList: Staff[]
@@ -17,6 +16,16 @@ const quotaMap = computed(() => {
   })
   return map
 })
+
+const getStaffQuota = (staffPk?: number) => (staffPk ? quotaMap.value.get(staffPk) : undefined)
+
+const getStaffUsageRate = (staffPk?: number) => {
+  const q = getStaffQuota(staffPk)
+  const granted = Number(q?.total_granted_days || 0)
+  const used = Number(q?.used_days || 0)
+  if (granted <= 0) return 0
+  return (used / granted) * 100
+}
 
 const getStatusBadge = (status: string) => {
   switch (status) {
@@ -71,46 +80,24 @@ const getStatusBadge = (status: string) => {
         <CTableDataCell>{{ staff.position || staff.grade || '-' }}</CTableDataCell>
         <CTableDataCell class="fw-bold">{{ staff.name }}</CTableDataCell>
         <CTableDataCell class="small text-muted">{{ staff.date_join || '-' }}</CTableDataCell>
-        <CTableDataCell class="text-right">
-          {{ Number(quotaMap.get(staff.pk as number)?.total_granted_days || 0).toFixed(2) }}
+        <CTableDataCell class="text-end">
+          {{ Number(getStaffQuota(staff.pk)?.total_granted_days || 0).toFixed(2) }}
         </CTableDataCell>
-        <CTableDataCell class="text-right text-danger">
-          {{ Number(quotaMap.get(staff.pk as number)?.used_days || 0).toFixed(2) }}
+        <CTableDataCell class="text-end text-danger">
+          {{ Number(getStaffQuota(staff.pk)?.used_days || 0).toFixed(2) }}
         </CTableDataCell>
-        <CTableDataCell class="text-right fw-bold text-success">
-          {{ Number(quotaMap.get(staff.pk as number)?.remaining_days || 0).toFixed(2) }}
+        <CTableDataCell class="text-end fw-bold text-success">
+          {{ Number(getStaffQuota(staff.pk)?.remaining_days || 0).toFixed(2) }}
         </CTableDataCell>
-        <CTableDataCell class="text-right">
+        <CTableDataCell class="text-end">
           <div class="d-flex align-items-center justify-content-end">
             <span class="small me-2">
-              {{
-                Number(quotaMap.get(staff.pk as number)?.total_granted_days || 0) > 0
-                  ? (
-                      (Number(quotaMap.get(staff.pk as number)?.used_days || 0) /
-                        Number(quotaMap.get(staff.pk as number)?.total_granted_days || 0)) *
-                      100
-                    ).toFixed(1)
-                  : '0.0'
-              }}%
+              {{ getStaffUsageRate(staff.pk).toFixed(1) }}%
             </span>
             <CProgress
               thin
-              :color="
-                Number(quotaMap.get(staff.pk as number)?.total_granted_days || 0) > 0 &&
-                (Number(quotaMap.get(staff.pk as number)?.used_days || 0) /
-                  Number(quotaMap.get(staff.pk as number)?.total_granted_days || 0)) *
-                  100 >=
-                  80
-                  ? 'danger'
-                  : 'info'
-              "
-              :value="
-                Number(quotaMap.get(staff.pk as number)?.total_granted_days || 0) > 0
-                  ? (Number(quotaMap.get(staff.pk as number)?.used_days || 0) /
-                      Number(quotaMap.get(staff.pk as number)?.total_granted_days || 0)) *
-                    100
-                  : 0
-              "
+              :color="getStaffUsageRate(staff.pk) >= 80 ? 'danger' : 'info'"
+              :value="getStaffUsageRate(staff.pk)"
               style="width: 50px"
             />
           </div>

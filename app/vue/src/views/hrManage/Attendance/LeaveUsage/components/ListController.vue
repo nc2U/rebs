@@ -3,10 +3,13 @@ import { reactive, computed, nextTick } from 'vue'
 import { numFormat } from '@/utils/baseMixins.ts'
 import { useCompany } from '@/store/pinia/company.ts'
 import { bgLight } from '@/utils/cssMixins.ts'
+import { type StaffLeaveUsageFilter } from '@/store/types/company.ts'
 import Multiselect from '@vueform/multiselect'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
 
-const emit = defineEmits(['list-filtering'])
+const emit = defineEmits<{
+  (e: 'list-filtering', filter: StaffLeaveUsageFilter): void
+}>()
 
 const leaveTypeOptions = [
   { value: '', label: '휴가 구분 전체' },
@@ -140,7 +143,9 @@ defineExpose({ listFiltering })
                 aria-label="search"
                 @keydown.enter="listFiltering(1)"
               />
-              <CInputGroupText @click="listFiltering(1)">검색</CInputGroupText>
+              <CInputGroupText role="button" style="cursor: pointer" @click="listFiltering(1)">
+                검색
+              </CInputGroupText>
             </CInputGroup>
           </CCol>
         </CRow>
@@ -148,10 +153,10 @@ defineExpose({ listFiltering })
     </CRow>
 
     <CRow>
-      <CCol class="p-2 pl-3">
+      <CCol class="p-2 ps-3">
         <strong> 휴가 사용 내역 조회 결과 : {{ numFormat(staffLeaveUsagesCount) }} 건 </strong>
       </CCol>
-      <CCol v-if="!formsCheck" class="text-right mb-0">
+      <CCol v-if="!formsCheck" class="text-end mb-0">
         <v-btn color="info" size="small" @click="resetForm"> 검색조건 초기화</v-btn>
       </CCol>
     </CRow>

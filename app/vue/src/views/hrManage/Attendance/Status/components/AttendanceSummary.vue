@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { numFormat } from '@/utils/baseMixins.ts'
-import { TableSecondary, TableSuccess, TablePrimary, TableInfo } from '@/utils/cssMixins.ts'
+import { TableSecondary } from '@/utils/cssMixins.ts'
 import { type Staff, type StaffLeaveQuota } from '@/store/types/company.ts'
 
 const props = defineProps<{

@@ -1,26 +1,24 @@
 <script lang="ts" setup>
-import { computed, type PropType, ref } from 'vue'
-import { useAccount } from '@/store/pinia/account.ts'
+import { computed, ref } from 'vue'
 import { usePerms } from '@/composables/usePerms.ts'
 import { type StaffLeaveQuota } from '@/store/types/company.ts'
 import FormModal from '@/components/Modals/FormModal.vue'
 import LeaveQuotaForm from './LeaveQuotaForm.vue'
 
-defineProps({
-  quota: { type: Object as PropType<StaffLeaveQuota>, required: true },
-})
+defineProps<{ quota: StaffLeaveQuota }>()
+const emit = defineEmits<{
+  (e: 'multi-submit', payload: StaffLeaveQuota): void
+  (e: 'on-delete', pk: number): void
+}>()
 
-const emit = defineEmits(['multi-submit', 'on-delete'])
-
-const { can, PERM } = usePerms()
-const accStore = useAccount()
+const { canGlobal, PERM } = usePerms()
 const canHrWorkManage = computed(
-  () => accStore.isStaff && (can(PERM.HQ_HR_WORK_CREATE) || can(PERM.HQ_HR_WORK_UPDATE)),
+  () => canGlobal(PERM.HQ_HR_WORK_CREATE) || canGlobal(PERM.HQ_HR_WORK_UPDATE),
 )
 
-const updateFormModal = ref()
+const updateFormModal = ref<InstanceType<typeof FormModal> | null>(null)
 
-const showDetail = () => updateFormModal.value.callModal()
+const showDetail = () => updateFormModal.value?.callModal()
 const multiSubmit = (payload: StaffLeaveQuota) => emit('multi-submit', payload)
 const onDelete = (pk: number) => emit('on-delete', pk)
 </script>
@@ -29,30 +27,32 @@ const onDelete = (pk: number) => emit('on-delete', pk)
   <CTableRow v-if="quota" class="text-center">
     <CTableDataCell>{{ quota.year }}년</CTableDataCell>
     <CTableDataCell>
-      <a href="javascript:void(0);" @click="showDetail">{{ quota.staff_name }}</a>
+      <a href="javascript:void(0);" role="button" @click.prevent="showDetail">{{
+        quota.staff_name
+      }}</a>
     </CTableDataCell>
-    <CTableDataCell class="text-right">{{
+    <CTableDataCell class="text-end">{{
       Number(quota.granted_days || 0).toFixed(2)
     }}</CTableDataCell>
-    <CTableDataCell class="text-right">{{
+    <CTableDataCell class="text-end">{{
       Number(quota.carry_over_days || 0).toFixed(2)
     }}</CTableDataCell>
-    <CTableDataCell class="text-right">{{
+    <CTableDataCell class="text-end">{{
       Number(quota.reward_days || 0).toFixed(2)
     }}</CTableDataCell>
-    <CTableDataCell class="text-right fw-bold text-primary">
+    <CTableDataCell class="text-end fw-bold text-primary">
       {{ Number(quota.total_granted_days || 0).toFixed(2) }}
     </CTableDataCell>
-    <CTableDataCell class="text-right text-danger">
+    <CTableDataCell class="text-end text-danger">
       {{ Number(quota.used_days || 0).toFixed(2) }}
     </CTableDataCell>
-    <CTableDataCell class="text-right fw-bold text-success">
+    <CTableDataCell class="text-end fw-bold text-success">
       {{ Number(quota.remaining_days || 0).toFixed(2) }}
     </CTableDataCell>
     <CTableDataCell class="small text-muted">
       {{ quota.valid_start }} ~ {{ quota.valid_end }}
     </CTableDataCell>
-    <CTableDataCell class="text-left small">{{ quota.note || '-' }}</CTableDataCell>
+    <CTableDataCell class="text-start small">{{ quota.note || '-' }}</CTableDataCell>
     <CTableDataCell v-if="canHrWorkManage">
       <v-btn color="info" size="x-small" @click="showDetail">확인</v-btn>
     </CTableDataCell>
@@ -65,7 +65,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         :quota="quota"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
-        @close="updateFormModal.close()"
+        @close="updateFormModal?.close()"
       />
     </template>
   </FormModal>

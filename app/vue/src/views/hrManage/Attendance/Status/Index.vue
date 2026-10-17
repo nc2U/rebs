@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed } from 'vue'
-import { pageTitle, navMenu2 } from '@/views/hrManage/_menu/headermixin3'
+import { pageTitle, navMenu1, navMenu2 } from '@/views/hrManage/_menu/headermixin3'
+import { usePerms } from '@/composables/usePerms.ts'
 import { useCompany } from '@/store/pinia/company.ts'
 import type { Company } from '@/store/types/settings.ts'
 import Loading from '@/components/Loading/Index.vue'
@@ -11,6 +12,15 @@ import TableTitleRow from '@/components/TableTitleRow.vue'
 import ListController from './components/ListController.vue'
 import AttendanceSummary from './components/AttendanceSummary.vue'
 import AttendanceStatusBoard from './components/AttendanceStatusBoard.vue'
+
+const { canGlobal, PERM } = usePerms()
+const isHrManager = computed(
+  () =>
+    canGlobal(PERM.HQ_HR_WORK_READ) ||
+    canGlobal(PERM.HQ_HR_WORK_CREATE) ||
+    canGlobal(PERM.HQ_HR_WORK_UPDATE),
+)
+const navMenu = computed(() => (!isHrManager.value ? navMenu1 : navMenu2))
 
 const currentYear = new Date().getFullYear()
 
@@ -104,7 +114,7 @@ onMounted(async () => {
     <Loading v-model:active="loading" />
     <ContentHeader
       :page-title="pageTitle"
-      :nav-menu="navMenu2"
+      :nav-menu="navMenu"
       selector="CompanySelect"
       @com-select="comSelect"
     />

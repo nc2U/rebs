@@ -2,13 +2,16 @@
 import { computed } from 'vue'
 import { usePerms } from '@/composables/usePerms.ts'
 import { useCompany } from '@/store/pinia/company.ts'
-import { useAccount } from '@/store/pinia/account.ts'
 import { TableSecondary } from '@/utils/cssMixins.ts'
 import { type StaffLeaveQuota as StaffLeaveQuotaType } from '@/store/types/company.ts'
 import Pagination from '@/components/Pagination'
 import LeaveQuota from './LeaveQuota.vue'
 
-const emit = defineEmits(['page-select', 'multi-submit', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'page-select', page: number): void
+  (e: 'multi-submit', payload: StaffLeaveQuotaType): void
+  (e: 'on-delete', pk: number): void
+}>()
 
 const { canGlobal, PERM } = usePerms()
 const canHrWorkManage = computed(

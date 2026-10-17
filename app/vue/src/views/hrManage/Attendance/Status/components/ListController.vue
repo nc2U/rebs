@@ -1,11 +1,20 @@
 <script lang="ts" setup>
 import { reactive, computed, nextTick } from 'vue'
-import { numFormat } from '@/utils/baseMixins.ts'
 import { useCompany } from '@/store/pinia/company.ts'
 import { bgLight } from '@/utils/cssMixins.ts'
 import Multiselect from '@vueform/multiselect'
 
-const emit = defineEmits(['list-filtering'])
+const emit = defineEmits<{
+  (
+    e: 'list-filtering',
+    payload: {
+      year: number
+      department: string
+      status: string
+      search: string
+    },
+  ): void
+}>()
 
 const currentYear = new Date().getFullYear()
 const years = Array.from({ length: 6 }, (_, i) => ({
@@ -104,7 +113,9 @@ defineExpose({ listFiltering })
                 aria-label="search"
                 @keydown.enter="listFiltering"
               />
-              <CInputGroupText @click="listFiltering">검색</CInputGroupText>
+              <CInputGroupText role="button" style="cursor: pointer" @click="listFiltering">
+                검색
+              </CInputGroupText>
             </CInputGroup>
           </CCol>
         </CRow>
@@ -112,7 +123,7 @@ defineExpose({ listFiltering })
     </CRow>
 
     <CRow v-if="!formsCheck">
-      <CCol class="text-right mb-2">
+      <CCol class="text-end mb-2">
         <v-btn color="info" size="small" @click="resetForm"> 검색조건 초기화</v-btn>
       </CCol>
     </CRow>

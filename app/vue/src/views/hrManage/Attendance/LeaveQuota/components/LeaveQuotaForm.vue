@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount, watch, type PropType } from 'vue'
+import { ref, computed, onBeforeMount, watch } from 'vue'
 import { isValidate } from '@/utils/helper.ts'
 import { usePerms } from '@/composables/usePerms.ts'
-import { useAccount } from '@/store/pinia/account.ts'
 import { useCompany } from '@/store/pinia/company.ts'
 import { type StaffLeaveQuota } from '@/store/types/company.ts'
 import Multiselect from '@vueform/multiselect'
@@ -10,18 +9,21 @@ import DatePicker from '@/components/DatePicker/DatePicker.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({
-  company: { type: String, default: null },
-  quota: { type: Object as PropType<StaffLeaveQuota>, default: null },
-})
+const props = defineProps<{
+  company?: string
+  quota?: StaffLeaveQuota
+}>()
 
-const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
+const emit = defineEmits<{
+  (e: 'multi-submit', payload: StaffLeaveQuota): void
+  (e: 'on-delete', pk: number): void
+  (e: 'close'): void
+}>()
 
-const { can, PERM } = usePerms()
-const accStore = useAccount()
-const canHrWorkCreate = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_CREATE))
-const canHrWorkUpdate = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_UPDATE))
-const canHrWorkDelete = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_DELETE))
+const { canGlobal, PERM } = usePerms()
+const canHrWorkCreate = computed(() => canGlobal(PERM.HQ_HR_WORK_CREATE))
+const canHrWorkUpdate = computed(() => canGlobal(PERM.HQ_HR_WORK_UPDATE))
+const canHrWorkDelete = computed(() => canGlobal(PERM.HQ_HR_WORK_DELETE))
 
 const comStore = useCompany()
 const allStaffList = computed(() => comStore.allStaffList)
@@ -39,8 +41,8 @@ const years = Array.from({ length: 6 }, (_, i) => ({
   label: `${currentYear - 3 + i}년`,
 }))
 
-const refDelModal = ref()
-const refAlertModal = ref()
+const refDelModal = ref<InstanceType<typeof ConfirmModal> | null>(null)
+const refAlertModal = ref<InstanceType<typeof AlertModal> | null>(null)
 const validated = ref(false)
 
 const form = ref<StaffLeaveQuota>({
@@ -91,7 +93,7 @@ const onSubmit = (event: Event) => {
     validated.value = true
   } else {
     if (canHrWorkCreate.value || canHrWorkUpdate.value) multiSubmit({ ...form.value })
-    else refAlertModal.value.callModal()
+    else refAlertModal.value?.callModal()
   }
 }
 
@@ -102,13 +104,13 @@ const multiSubmit = (payload: StaffLeaveQuota) => {
 
 const deleteObject = (pk: number) => {
   emit('on-delete', pk)
-  refDelModal.value.close()
+  refDelModal.value?.close()
   emit('close')
 }
 
 const deleteConfirm = () => {
-  if (canHrWorkDelete.value) refDelModal.value.callModal()
-  else refAlertModal.value.callModal()
+  if (canHrWorkDelete.value) refDelModal.value?.callModal()
+  else refAlertModal.value?.callModal()
 }
 
 const formDataSetup = () => {
@@ -272,7 +274,15 @@ watch(
         <v-btn v-if="quota" type="button" size="small" color="warning" @click="deleteConfirm">
           삭제
         </v-btn>
-        <v-btn type="button" size="small" color="light" @click="$emit('close')" flat> 닫기</v-btn>
+        <v-btn
+          type="button"
+          size="small"
+          color="light"
+          variant="flat"
+          @click="$emit('close')"
+        >
+          닫기
+        </v-btn>
       </slot>
     </CModalFooter>
   </CForm>
@@ -283,7 +293,13 @@ watch(
       삭제한 데이터는 복구할 수 없습니다. 해당 연차 부여 정보를 삭제하시겠습니까?
     </template>
     <template #footer>
-      <v-btn color="warning" size="small" @click="deleteObject(quota.pk as number)"> 삭제 </v-btn>
+      <v-btn
+        color="warning"
+        size="small"
+        @click="deleteObject(quota?.pk as number)"
+      >
+        삭제
+      </v-btn>
     </template>
   </ConfirmModal>
 
