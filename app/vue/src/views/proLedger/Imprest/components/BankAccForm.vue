@@ -8,9 +8,9 @@ import DatePicker from '@/components/DatePicker/DatePicker.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({
-  bankAcc: { type: Object as PropType<ProjectBank>, default: () => null },
-})
+const props = defineProps<{
+  bankAcc?: ProjectBank | null
+}>()
 const emit = defineEmits(['on-bank-create', 'on-bank-update'])
 
 const { can, PERM } = usePerms()
@@ -196,7 +196,7 @@ onUpdated(() => formDataSetup())
                   color="success"
                   hide-details
                 />
-                <v-tooltip activator="parent" location="start"> 운영비용(전도금) 계좌"</v-tooltip>
+                <v-tooltip activator="parent" location="start">운영비용(전도금) 계좌</v-tooltip>
               </CCol>
             </CRow>
           </CCol>
@@ -242,7 +242,7 @@ onUpdated(() => formDataSetup())
                 <v-switch
                   v-model="form.inactive"
                   label="사용종료 계좌"
-                  color="danger"
+                  color="error"
                   hide-details
                 />
                 <v-tooltip activator="parent" location="start">
@@ -254,7 +254,7 @@ onUpdated(() => formDataSetup())
         </CRow>
 
         <CRow>
-          <CCol sm="12" class="text-right pt-1">
+          <CCol sm="12" class="text-end pt-1">
             <v-btn :color="bankAcc ? 'success' : 'primary'" type="submit" :disabled="formsCheck">
               거래계좌 정보 <span v-if="bankAcc">저장</span><span v-else>추가</span>하기
             </v-btn>

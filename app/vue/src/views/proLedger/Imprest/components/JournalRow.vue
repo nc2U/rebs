@@ -219,7 +219,7 @@ const isEvidenceRequired = (row: NewEntryForm): boolean => {
           <option value="6">지로용지 및 청구서</option>
         </CFormSelect>
       </CTableDataCell>
-      <CTableDataCell v-if="canLedgerManage" class="text-right pr-2">
+      <CTableDataCell v-if="canLedgerManage" class="text-end pe-2">
         <v-icon
           v-if="sort === 2 && !row.trader?.includes('이체수수료')"
           icon="mdi-playlist-plus"
@@ -230,7 +230,7 @@ const isEvidenceRequired = (row: NewEntryForm): boolean => {
           v-tooltip="'이체수수료 추가'"
           @click="insertTransferFee(idx)"
         />
-        <v-icon icon="mdi-close" size="small" class="ml-2 pointer" @click="removeEntry(idx)" />
+        <v-icon icon="mdi-close" size="small" class="ms-2 pointer" @click="removeEntry(idx)" />
       </CTableDataCell>
     </CTableRow>
   </CTable>

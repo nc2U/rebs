@@ -9,15 +9,21 @@ import type { ProAccountingEntry, ProBankTrans } from '@/store/types/proLedger.t
 import LedgerAccountPicker from '@/components/LedgerAccount/Picker.vue'
 import BaseSelectModal from './BaseSelectModal.vue'
 
-const props = defineProps({
-  proTrans: { type: Object as PropType<ProBankTrans>, required: true },
-  calculated: { type: String, default: '2000-01-01' },
-  isHighlighted: { type: Boolean, default: false },
+interface Props {
+  proTrans: ProBankTrans
+  calculated?: string
+  isHighlighted?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  calculated: '2000-01-01',
+  isHighlighted: false,
 })
 
 const { can, canGlobal, PERM } = usePerms()
 const canLedgerUpdate = computed(() => can(PERM.LEDGER_UPDATE))
 const canLedgerManage = computed(() => can(PERM.LEDGER_MANAGE) || canGlobal(PERM.LEDGER_MANAGE))
+const canLedgerEdit = computed(() => canLedgerUpdate.value || canLedgerManage.value)
 
 const router = useRouter()
 const proLedgerStore = useProLedger()
@@ -27,8 +33,8 @@ const rowColor = computed(() => (props.isHighlighted ? 'warning' : ''))
 const allowedPeriod = computed(
   () =>
     canLedgerManage.value ||
-    (canLedgerUpdate.value &&
-      diffDate(props.proTrans?.deal_date as string, new Date(props.calculated)) <= 10),
+    (canLedgerEdit.value &&
+      diffDate(props.proTrans?.deal_date as string, props.calculated) <= 10),
 )
 
 const proAccounts = inject<ComputedRef<AccountPicker[]>>('proAccounts')
@@ -475,7 +481,7 @@ const handleUpdate = async () => {
       </CTableDataCell>
 
       <CTableDataCell
-        class="text-right"
+        class="text-end"
         :class="{
           'editable-cell-hint': !isEditing('tran', proTrans.pk!, 'sort_amount'),
           pointer: !isEditing('tran', proTrans.pk!, 'sort_amount'),
@@ -492,7 +498,7 @@ const handleUpdate = async () => {
           v-if="isEditing('tran', proTrans.pk!, 'sort_amount') && editValue"
           class="d-flex align-items-center justify-content-end"
         >
-          <v-chip :color="proTrans.sort === 1 ? 'primary' : 'danger'" size="x-small" class="me-2">
+          <v-chip :color="proTrans.sort === 1 ? 'primary' : 'error'" size="x-small" class="me-2">
             {{ proTrans.sort === 1 ? '입금' : '출금' }}
           </v-chip>
 
@@ -515,17 +521,17 @@ const handleUpdate = async () => {
 
       <CTableDataCell class="text-center">
         <v-icon v-if="proTrans.is_balanced" icon="mdi-check-circle" color="success" size="sm" />
-        <v-icon v-else icon="mdi-minus-circle" color="danger" size="sm" />
+        <v-icon v-else icon="mdi-minus-circle" color="error" size="sm" />
       </CTableDataCell>
 
-      <CTableDataCell colspan="6" class="p-0">
+      <CTableDataCell :colspan="canLedgerEdit ? 5 : 4" class="p-0">
         <CTable class="m-0 p-0">
           <colgroup>
             <col style="width: 28%" />
             <col style="width: 26%" />
             <col style="width: 16%" />
             <col style="width: 24%" />
-            <col v-if="canLedgerUpdate" style="width: 6%" />
+            <col v-if="canLedgerEdit" style="width: 6%" />
           </colgroup>
           <CTableRow v-for="entry in visibleEntries" :key="entry.pk" class="bg-amber-lighten-5">
             <CTableDataCell
@@ -707,15 +713,15 @@ const handleUpdate = async () => {
               </span>
             </CTableDataCell>
             <CTableDataCell
-              class="text-right"
+              class="text-end"
               :class="proTrans.sort === 1 ? 'text-success strong' : ''"
             >
               {{ proTrans.sort === 1 ? '+' : '-' }}{{ numFormat(entry.amount) }}
             </CTableDataCell>
-            <CTableDataCell class="pl-3">
+            <CTableDataCell class="ps-3">
               {{ cutString(entry.evidence_type_display, 10) }}
             </CTableDataCell>
-            <CTableDataCell v-if="canLedgerUpdate" class="text-right pr-2">
+            <CTableDataCell v-if="canLedgerEdit" class="text-end pe-2">
               <v-icon
                 v-if="allowedPeriod"
                 icon="mdi-pencil"
@@ -733,7 +739,7 @@ const handleUpdate = async () => {
 
           <!-- Expand/Collapse Controls Row -->
           <CTableRow v-if="shouldShowExpand" class="bg-grey-lighten-4">
-            <CTableDataCell colspan="5" class="text-center py-2">
+            <CTableDataCell :colspan="canLedgerEdit ? 5 : 4" class="text-center py-2">
               <!-- Expand More Button -->
               <v-btn
                 v-if="!isFullyExpanded"
@@ -742,7 +748,7 @@ const handleUpdate = async () => {
                 color="primary"
                 @click="expandMore"
               >
-                <v-icon icon="mdi-chevron-down" size="18" class="mr-1" />
+                <v-icon icon="mdi-chevron-down" size="18" class="me-1" />
                 더보기 ({{ remainingCount }}개 항목)
               </v-btn>
 

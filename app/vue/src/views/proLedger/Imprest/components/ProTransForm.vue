@@ -829,10 +829,10 @@ onBeforeMount(async () => {
     @submit.prevent="saveTransaction"
   >
     <CRow
-      class="text-right py-2 mb-1 mx-1"
+      class="text-end py-2 mb-1 mx-1"
       :class="isCreateMode ? 'bg-brown-lighten-5' : 'bg-amber-lighten-5'"
     >
-      <CCol class="text-left">
+      <CCol class="text-start">
         <template v-if="isCreateMode">
           <span class="text-primary strong">신규 거래 등록 중...</span>
         </template>
@@ -1048,13 +1048,13 @@ onBeforeMount(async () => {
             </CTableDataCell>
 
             <!-- 입출금액 -->
-            <CTableDataCell class="text-right">
+            <CTableDataCell class="text-end">
               <div class="d-flex align-items-center justify-content-end">
                 <CFormSelect
                   v-model.number="bankForm.sort"
                   style="width: 70px"
                   required
-                  class="mr-2"
+                  class="me-2"
                 >
                   <option :value="1">입금</option>
                   <option :value="2">출금</option>
@@ -1066,15 +1066,15 @@ onBeforeMount(async () => {
                   placeholder="금액"
                   required
                   style="width: 120px"
-                  class="text-right"
+                  class="text-end"
                 />
-                <v-btn density="compact" rounded="1" size="22" class="ml-2 pointer" @click="addRow">
+                <v-btn density="compact" rounded="1" size="22" class="ms-2 pointer" @click="addRow">
                   <v-icon icon="mdi-plus" color="success" />
                 </v-btn>
               </div>
             </CTableDataCell>
 
-            <CTableDataCell colspan="7" class="p-0">
+            <CTableDataCell :colspan="canLedgerManage ? 5 : 4" class="p-0">
               <JournalRow
                 :sort="bankForm.sort"
                 :display-rows="displayRows"
@@ -1088,7 +1088,7 @@ onBeforeMount(async () => {
       </CTableBody>
     </CTable>
 
-    <CRow v-if="!isCreateMode" class="text-right px-2">
+    <CRow v-if="!isCreateMode" class="text-end px-2">
       <CCol>
         <v-btn
           color="warning"
@@ -1103,12 +1103,12 @@ onBeforeMount(async () => {
   </CForm>
 
   <ConfirmModal ref="confirmModal">
-    <template #header>본서 거래 내역 삭제</template>
+    <template #header>운영비 거래 내역 삭제</template>
     <template #default>
       삭제한 데이터는 복구할 수 없습니다. 해당 입출금 거래 정보를 삭제하시겠습니까?
     </template>
     <template #footer>
-      <v-btn size="small" color="warning" @click="delTransaction">저장</v-btn>
+      <v-btn size="small" color="warning" @click="delTransaction">삭제</v-btn>
     </template>
   </ConfirmModal>
 

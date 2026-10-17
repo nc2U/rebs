@@ -92,7 +92,7 @@ const handleCancel = () => {
         :class="`bg-${config.color}`"
       >
         <div class="d-flex align-items-center">
-          <v-icon :icon="config.icon" size="20" class="mr-2" />
+          <v-icon :icon="config.icon" size="20" class="me-2" />
           <span>{{ config.title }}</span>
         </div>
         <v-btn icon="mdi-close" variant="text" size="small" @click="handleCancel" />

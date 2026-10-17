@@ -7,7 +7,7 @@ import BankAccForm from './BankAccForm.vue'
 
 const emit = defineEmits(['on-bank-create', 'on-bank-update'])
 
-const refComBankAcc = ref()
+const refProBankAcc = ref()
 const bankAccAdd = ref(false)
 
 const proLedgerStore = useProLedger()
@@ -16,21 +16,21 @@ const allProBankAccList = computed(() => proLedgerStore.allProBankList)
 const onBankCreate = (payload: ProjectBank) => emit('on-bank-create', payload)
 const onBankUpdate = (payload: ProjectBank) => emit('on-bank-update', payload)
 
-const callModal = () => refComBankAcc.value.callModal()
+const callModal = () => refProBankAcc.value.callModal()
 
 defineExpose({ callModal })
 </script>
 
 <template>
-  <AlertModal ref="refComBankAcc" size="lg">
-    <template #header> 프로젝트 거래 계좌 관리</template>
+  <AlertModal ref="refProBankAcc" size="lg">
+    <template #header>운영비용 거래 계좌 관리</template>
     <template #default>
       <CAccordion class="mb-3">
         <CAccordionItem v-for="bank in allProBankAccList" :key="bank.pk" :item-key="bank.pk">
           <CAccordionHeader>
             {{ `${bank.alias_name}  :: ${bank.number}` }}
           </CAccordionHeader>
-          <CAccordionBody class="pl-3">
+          <CAccordionBody class="ps-3">
             <BankAccForm :bank-acc="bank" @on-bank-update="onBankUpdate" />
           </CAccordionBody>
         </CAccordionItem>
@@ -39,7 +39,7 @@ defineExpose({ callModal })
       <CRow v-show="bankAccAdd">
         <CCol>
           <h5 class="p-3 bg-light">
-            <v-icon icon="mdi-plus-circle" color="primary" class="mr-1" />
+            <v-icon icon="mdi-plus-circle" color="primary" class="me-1" />
             계좌 추가
           </h5>
           <BankAccForm @on-bank-create="onBankCreate" />
@@ -47,7 +47,7 @@ defineExpose({ callModal })
       </CRow>
 
       <CRow>
-        <CCol class="text-right">
+        <CCol class="text-end">
           <v-btn
             :prepend-icon="`mdi-${!bankAccAdd ? 'plus' : 'minus'}-circle`"
             variant="text"

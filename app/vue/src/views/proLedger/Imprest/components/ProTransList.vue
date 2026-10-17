@@ -9,15 +9,23 @@ import AccountManage from '@/views/proLedger/Manage/components/AccountManage.vue
 import BankAcc from './BankAcc.vue'
 import ProTransItem from './ProTransItem.vue'
 
-const props = defineProps({
-  project: { type: Number, default: null },
-  highlightId: { type: Number, default: null },
-  currentPage: { type: Number, default: 1 },
+interface Props {
+  project?: number | null
+  highlightId?: number | null
+  currentPage?: number
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  project: null,
+  highlightId: null,
+  currentPage: 1,
 })
 const emit = defineEmits(['page-select', 'on-bank-create', 'on-bank-update'])
 
 const { can, PERM } = usePerms()
 const canLedgerUpdate = computed(() => can(PERM.LEDGER_UPDATE))
+const canLedgerManage = computed(() => can(PERM.LEDGER_CREATE))
+const canLedgerEdit = computed(() => canLedgerUpdate.value || canLedgerManage.value)
 
 const refAccountManage = ref()
 const refBankAcc = ref()
@@ -49,14 +57,14 @@ const accCallModal = () => {
       <col style="width: 13%" />
       <col style="width: 8%" />
       <col style="width: 12%" />
-      <col v-if="canLedgerUpdate" style="width: 3%" />
+      <col v-if="canLedgerEdit" style="width: 3%" />
     </colgroup>
 
     <CTableHead>
       <CTableRow :color="TableSecondary">
-        <CTableHeaderCell class="pl-3" colspan="6">은행거래내역</CTableHeaderCell>
-        <CTableHeaderCell class="pl-0" :colspan="canLedgerUpdate ? 6 : 5">
-          <span class="text-grey mr-2">|</span> 분류 내역
+        <CTableHeaderCell class="ps-3" colspan="6">은행거래내역</CTableHeaderCell>
+        <CTableHeaderCell class="ps-0" :colspan="canLedgerEdit ? 5 : 4">
+          <span class="text-grey me-2">|</span> 분류 내역
         </CTableHeaderCell>
       </CTableRow>
 
@@ -65,23 +73,23 @@ const accCallModal = () => {
         <CTableHeaderCell scope="col">메모</CTableHeaderCell>
         <CTableHeaderCell scope="col">
           거래계좌
-          <a href="javascript:void(0)" class="ml-1">
+          <a href="javascript:void(0)" class="ms-1">
             <CIcon name="cilCog" @click="accCallModal" />
           </a>
         </CTableHeaderCell>
         <CTableHeaderCell scope="col">적요</CTableHeaderCell>
         <CTableHeaderCell scope="col">입출금액</CTableHeaderCell>
         <CTableHeaderCell scope="col">확인</CTableHeaderCell>
-        <CTableHeaderCell class="pl-0" scope="col">
-          <span class="text-grey mr-2">|</span> 계정
-          <a href="javascript:void(0)" class="ml-1">
+        <CTableHeaderCell class="ps-0" scope="col">
+          <span class="text-grey me-2">|</span> 계정
+          <a href="javascript:void(0)" class="ms-1">
             <CIcon name="cilCog" @click="refAccountManage.callModal()" />
           </a>
         </CTableHeaderCell>
         <CTableHeaderCell scope="col">거래처</CTableHeaderCell>
         <CTableHeaderCell scope="col">분류 금액</CTableHeaderCell>
         <CTableHeaderCell scope="col">지출증빙</CTableHeaderCell>
-        <CTableHeaderCell v-if="canLedgerUpdate" scope="col"></CTableHeaderCell>
+        <CTableHeaderCell v-if="canLedgerEdit" scope="col"></CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 

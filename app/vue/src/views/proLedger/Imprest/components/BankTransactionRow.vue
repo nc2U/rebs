@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, type ComputedRef, inject, provide, reactive, watch } from 'vue'
+import { usePerms } from '@/composables/usePerms.ts'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
 import JournalRow from './JournalRow.vue'
 
@@ -103,6 +104,9 @@ provide(
 
 const transferFeePk = inject<ComputedRef<number | undefined>>('transferFeePk')
 
+const { can, PERM } = usePerms()
+const canLedgerManage = computed(() => can(PERM.LEDGER_CREATE) || can(PERM.LEDGER_UPDATE))
+
 // 거래 구분 이름
 const sortName = computed(() => (localBankForm.sort === 1 ? '입금' : '출금'))
 
@@ -129,7 +133,7 @@ const displayRows = computed(() => props.transaction.entries)
 // 분개 행 추가
 const addRow = () => {
   const newEntries = [...props.transaction.entries, {}]
-  emit('update:transaction', { bankForm: localBankForm, entries: newEntries })
+  emit('update:transaction', { uid: props.transaction.uid, bankForm: localBankForm, entries: newEntries })
 }
 
 // 분개 행 삭제
@@ -142,7 +146,7 @@ const removeEntry = (index: number) => {
     // 2개 이상일 때는 배열에서 제거
     newEntries.splice(index, 1)
   }
-  emit('update:transaction', { bankForm: localBankForm, entries: newEntries })
+  emit('update:transaction', { uid: props.transaction.uid, bankForm: localBankForm, entries: newEntries })
 }
 
 const insertTransferFeeEntry = (index: number) => {
@@ -184,7 +188,7 @@ const insertTransferFeeEntry = (index: number) => {
   newEntries.splice(index + 1, 0, newEntry)
 
   // Emit to parent
-  emit('update:transaction', { bankForm: localBankForm, entries: newEntries })
+  emit('update:transaction', { uid: props.transaction.uid, bankForm: localBankForm, entries: newEntries })
 }
 
 // 대체(출금) 계정 감지 watch
@@ -241,7 +245,7 @@ watch(
     <!-- 입출금액 -->
     <CTableDataCell>
       <div class="d-flex align-items-center">
-        <CFormSelect v-model.number="localBankForm.sort" style="width: 70px" required class="mr-2">
+        <CFormSelect v-model.number="localBankForm.sort" style="width: 70px" required class="me-2">
           <option :value="1">입금</option>
           <option :value="2">출금</option>
         </CFormSelect>
@@ -252,13 +256,13 @@ watch(
           placeholder="금액"
           required
           style="width: 120px"
-          class="text-right mr-2"
+          class="text-end me-2"
         />
         <v-icon
           icon="mdi-download"
           size="16"
           color="info"
-          class="ml-auto mr-1 pointer"
+          class="ms-auto me-1 pointer"
           @click="emit('downloadTemplate')"
           v-tooltip="'이 거래건의 회계 계정 템플릿 다운로드'"
         />
@@ -266,7 +270,7 @@ watch(
           icon="mdi-upload"
           size="16"
           color="success"
-          class="mr-1 pointer"
+          class="me-1 pointer"
           @click="emit('uploadEntries')"
           v-tooltip="'이 거래건의 회계 계정 엑셀 업로드'"
         />
@@ -284,7 +288,7 @@ watch(
           density="compact"
           rounded="1"
           size="22"
-          class="ml-1 pointer"
+          class="ms-1 pointer"
           @click="addRow"
         >
           <v-icon icon="mdi-plus" color="success" />
@@ -293,7 +297,7 @@ watch(
     </CTableDataCell>
 
     <!-- 분류 내역 (JournalRow) -->
-    <CTableDataCell colspan="7" class="p-0">
+    <CTableDataCell :colspan="canLedgerManage ? 5 : 4" class="p-0">
       <JournalRow
         :sort="localBankForm.sort"
         :display-rows="displayRows"
@@ -306,7 +310,7 @@ watch(
 
   <!-- 금액 일치 여부 표시 행 (차액이 0이 아닐 때만) -->
   <CTableRow v-if="!isBalanced" class="bg-warning-lighten-5">
-    <CTableDataCell colspan="10" class="text-center py-1">
+    <CTableDataCell :colspan="canLedgerManage ? 10 : 9" class="text-center py-1">
       <small class="text-danger">
         <v-icon icon="mdi-alert" size="16" />
         차액: {{ sortName }} {{ Math.abs(difference).toLocaleString() }}원 (거래 금액과 분류 금액이

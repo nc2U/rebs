@@ -262,11 +262,11 @@ onBeforeRouteLeave(() => {
           />
 
           <TableTitleRow
-            title="프로젝트 입출금 관리"
+            title="운영비용 입출금 관리"
             color="indigo"
             excel
             :url="excelUrl"
-            filename="PR자금_출납내역.xls"
+            filename="PR운영비용_출납내역.xls"
             :disabled="!project"
           />
           <ProTransList
