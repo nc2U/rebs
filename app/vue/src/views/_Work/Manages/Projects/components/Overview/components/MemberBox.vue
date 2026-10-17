@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, type PropType } from 'vue'
 import { useStore } from '@/store'
-import { usePerms } from '@/composables/usePerms.ts'
+import { usePerms } from '@/composables/usePerms'
 
 defineProps({
   projectMembers: {
@@ -35,7 +35,7 @@ const { canViewUser } = usePerms()
               {{ u.username }}
             </router-link>
             <span v-else>{{ u.username }}</span>
-            <span v-if="Number(i) + 1 < val.length">, </span>
+            <span v-if="i + 1 < val.length">, </span>
           </span>
         </div>
       </CCardText>

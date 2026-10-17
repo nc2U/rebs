@@ -1,19 +1,35 @@
 <script lang="ts" setup>
-import { computed, type PropType } from 'vue'
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { useStore } from '@/store'
 
-const props = defineProps({
-  trackers: { type: Array as PropType<{ pk: number; name: string }[]>, default: () => [] },
-  trackerSummary: {
-    type: Array as PropType<{ pk: number; name: string; open: number; closed: number }[]>,
-    default: () => [],
-  },
+interface Tracker {
+  pk: number
+  name: string
+}
+
+interface TrackerSummary {
+  pk: number
+  name: string
+  open: number
+  closed: number
+}
+
+interface Props {
+  trackers?: Tracker[]
+  trackerSummary?: TrackerSummary[]
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  trackers: () => [],
+  trackerSummary: () => [],
 })
 
+const route = useRoute()
 const store = useStore()
 const isDark = computed(() => store.theme === 'dark')
 
-const getSummary = (pk: number) => props.trackerSummary.filter(t => t.pk === pk)[0]
+const getSummary = (pk: number) => props.trackerSummary.find(t => t.pk === pk)
 </script>
 
 <template>
@@ -36,24 +52,46 @@ const getSummary = (pk: number) => props.trackerSummary.filter(t => t.pk === pk)
         <CTableBody>
           <CTableRow v-for="tracker in trackers" :key="tracker.pk" class="text-center">
             <CTableHeaderCell>
-              <router-link :to="{ name: '(업무)', query: { tracker: tracker.pk } }">
+              <router-link
+                :to="{
+                  name: '(업무)',
+                  params: { projId: route.params.projId },
+                  query: { tracker: tracker.pk },
+                }"
+              >
                 {{ tracker.name }}
               </router-link>
             </CTableHeaderCell>
             <CTableDataCell>
-              <router-link :to="{ name: '(업무)', query: { tracker: tracker.pk } }">
+              <router-link
+                :to="{
+                  name: '(업무)',
+                  params: { projId: route.params.projId },
+                  query: { tracker: tracker.pk },
+                }"
+              >
                 {{ getSummary(tracker.pk)?.open ?? 0 }}
               </router-link>
             </CTableDataCell>
             <CTableDataCell>
               <router-link
-                :to="{ name: '(업무)', query: { status: 'closed', tracker: tracker.pk } }"
+                :to="{
+                  name: '(업무)',
+                  params: { projId: route.params.projId },
+                  query: { status: 'closed', tracker: tracker.pk },
+                }"
               >
                 {{ getSummary(tracker.pk)?.closed ?? 0 }}
               </router-link>
             </CTableDataCell>
             <CTableDataCell>
-              <router-link :to="{ name: '(업무)', query: { status: 'any', tracker: tracker.pk } }">
+              <router-link
+                :to="{
+                  name: '(업무)',
+                  params: { projId: route.params.projId },
+                  query: { status: 'any', tracker: tracker.pk },
+                }"
+              >
                 {{ (getSummary(tracker.pk)?.open ?? 0) + (getSummary(tracker.pk)?.closed ?? 0) }}
               </router-link>
             </CTableDataCell>
@@ -63,11 +101,17 @@ const getSummary = (pk: number) => props.trackerSummary.filter(t => t.pk === pk)
     </CCardBody>
 
     <CCardText class="mx-3 mb-2 form-text">
-      <router-link :to="{ name: '(업무)' }">모든 업무 보기</router-link>
+      <router-link :to="{ name: '(업무)', params: { projId: route.params.projId } }">
+        모든 업무 보기
+      </router-link>
       <span class="px-2">|</span>
-      <router-link :to="{ name: '(업무) - 보고서' }"> 요약</router-link>
+      <router-link :to="{ name: '(업무) - 보고서', params: { projId: route.params.projId } }">
+        요약
+      </router-link>
       <span class="px-2">|</span>
-      <router-link :to="{ name: '(캘린더)' }"> 캘린더</router-link>
+      <router-link :to="{ name: '(캘린더)', params: { projId: route.params.projId } }">
+        캘린더
+      </router-link>
     </CCardText>
   </CCard>
 </template>

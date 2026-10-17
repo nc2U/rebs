@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
-import { useWork } from '@/store/pinia/work_project.ts'
-import { useIssue } from '@/store/pinia/work_issue.ts'
-import { useInform } from '@/store/pinia/work_inform.ts'
-import type { IssueProject, SimpleMember } from '@/store/types/work_project.ts'
+import { computed, ref, watch } from 'vue'
+import { useRouter, type LocationQueryRaw } from 'vue-router'
+import { useWork } from '@/store/pinia/work_project'
+import { useIssue } from '@/store/pinia/work_issue'
+import { useInform } from '@/store/pinia/work_inform'
+import type { IssueProject, SimpleMember } from '@/store/types/work_project'
 import Loading from '@/components/Loading/Index.vue'
 import OverViewHeader from './components/OverViewHeader.vue'
 import IssueTracker from './components/IssueTracker.vue'
@@ -13,16 +13,24 @@ import MemberBox from './components/MemberBox.vue'
 import SubProjects from './components/SubProjects.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 
+const props = defineProps<{
+  navMenu?: any
+  currentProject?: IssueProject | null
+  query?: LocationQueryRaw
+}>()
+
 const router = useRouter()
 
-const cBody = ref()
-const toggle = () => cBody.value.toggle()
+const cBody = ref<InstanceType<typeof ContentBody> | null>(null)
+const toggle = () => cBody.value?.toggle()
 defineExpose({ toggle })
 
 const workStore = useWork()
-const currentProject = computed<IssueProject | null>(() => workStore.currentProject)
+const currentProject = computed<IssueProject | null>(
+  () => props.currentProject ?? workStore.currentProject,
+)
 const allMembers = computed<SimpleMember[]>(
-  () => (workStore.currentProject as IssueProject)?.all_members ?? [],
+  () => (currentProject.value as IssueProject)?.all_members ?? [],
 )
 const infStore = useInform()
 const newsList = computed(() => infStore.newsList)
@@ -31,25 +39,19 @@ const computedMembers = computed(() => {
   const organizedData = {} as { [key: string]: Array<{ pk: number; username: string }> }
 
   allMembers.value.forEach(item => {
-    // Iterate over the roles of each user
     item.roles.forEach(role => {
-      // If the role exists in the organizedData, push the user
       if (organizedData[role.name]) {
         organizedData[role.name].push(item.user)
       } else {
-        // If the role doesn't exist, create a new array with the user
         organizedData[role.name] = [item.user]
       }
     })
 
-    // Check if there are additional roles
     if (item.add_roles) {
       item.add_roles.forEach(role => {
-        // If the role exists in the organizedData, push the user
         if (organizedData[role.name]) {
           organizedData[role.name].push(item.user)
         } else {
-          // If the role doesn't exist, create a new array with the user
           organizedData[role.name] = [item.user]
         }
       })
@@ -59,57 +61,56 @@ const computedMembers = computed(() => {
   return organizedData
 })
 
-const patchIssueProject = (payload: { slug: string; status?: '1' | '9' }) =>
-  workStore.patchIssueProject(payload)
-
 const issueStore = useIssue()
 const trackerSum = computed(() => issueStore.trackerSum)
 
+const loading = ref(false)
+
 watch(
   () => currentProject.value,
-  nVal => {
-    if (nVal?.pk) issueStore.fetchTrackerSummary(nVal.pk)
+  async nVal => {
+    if (nVal?.pk) {
+      loading.value = true
+      try {
+        await Promise.all([
+          issueStore.fetchTrackerSummary(nVal.pk),
+          infStore.fetchNewsList({ project: nVal.slug }),
+        ])
+      } catch (err) {
+        console.error('Failed to load project overview data:', err)
+      } finally {
+        loading.value = false
+      }
+    }
   },
+  { immediate: true },
 )
-
-const closeProject = (slug: string) => patchIssueProject({ slug, status: '9' })
-
-const reopenProject = (slug: string) => patchIssueProject({ slug, status: '1' })
 
 const deleteProject = async (slug: string) => {
   await workStore.deleteIssueProject(slug)
   await router.push({ name: '워크스페이스' })
 }
-
-const loading = ref(true)
-onBeforeMount(async () => {
-  try {
-    if (currentProject.value) {
-      await issueStore.fetchTrackerSummary(currentProject.value?.pk)
-      await infStore.fetchNewsList({ project: currentProject.value.slug })
-    }
-  } catch (err) {
-    console.error('Failed to load project overview data:', err)
-  } finally {
-    loading.value = false
-  }
-})
 </script>
 
 <template>
   <Loading v-model:active="loading" />
-  <ContentBody ref="cBody" :aside="false">
+  <ContentBody
+    ref="cBody"
+    :nav-menu="navMenu"
+    :current-project="currentProject"
+    :query="query"
+    :aside="false"
+  >
     <template v-slot:default>
       <OverViewHeader
-        :project="currentProject as IssueProject"
-        @close-project="closeProject"
-        @reopen-project="reopenProject"
+        v-if="currentProject"
+        :project="currentProject"
         @delete-project="deleteProject"
       />
 
-      <CAlert v-if="currentProject?.status === '2'" color="warning">
+      <CAlert v-if="currentProject?.status !== '1'" color="warning">
         <v-icon icon="mdi-lock" color="warning" size="sm" />
-        이 프로젝트는 닫혀 있으며 읽기 전용입니다.
+        이 프로젝트는 닫혀 있거나 잠금보관 상태이며 읽기 전용입니다.
       </CAlert>
 
       <CRow class="my-2">

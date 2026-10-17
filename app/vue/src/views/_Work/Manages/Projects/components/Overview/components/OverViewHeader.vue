@@ -2,8 +2,8 @@
 import { computed, type PropType, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { usePerms } from '@/composables/usePerms'
-import { useWork } from '@/store/pinia/work_project.ts'
-import type { IssueProject } from '@/store/types/work_project.ts'
+import { useWork } from '@/store/pinia/work_project'
+import type { IssueProject } from '@/store/types/work_project'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import TextButton from '@/views/_Work/components/atomics/TextButton.vue'
 
@@ -11,15 +11,18 @@ const props = defineProps({
   project: { type: Object as PropType<IssueProject>, required: true },
 })
 
-const emit = defineEmits(['delete-project'])
+const emit = defineEmits<{
+  (e: 'delete-project', slug: string): void
+}>()
 
 const { can, PERM } = usePerms() // 사용자 권한 데이터
 const canSubProjectCreate = computed(() => can(PERM.PROJECT_CREATE_SUB))
 const canProjectClose = computed(() => can(PERM.PROJECT_CLOSE))
 const canProjectDelete = computed(() => can(PERM.PROJECT_DELETE))
+const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
 
-const RefProjectCloseConfirm = ref()
-const RefProjectDeleteConfirm = ref()
+const RefProjectCloseConfirm = ref<InstanceType<typeof ConfirmModal> | null>(null)
+const RefProjectDeleteConfirm = ref<InstanceType<typeof ConfirmModal> | null>(null)
 const idForDelete = ref('')
 
 const router = useRouter()
@@ -27,7 +30,7 @@ const router = useRouter()
 const workStore = useWork()
 const toggleStatus = async () => {
   await workStore.toggleProjectClose(props.project.slug as string)
-  RefProjectCloseConfirm.value.close()
+  RefProjectCloseConfirm.value?.close()
 }
 
 const onToggleBookmark = (projectPk: number) => workStore.toggleBookmark(projectPk)
@@ -35,7 +38,7 @@ const onToggleBookmark = (projectPk: number) => workStore.toggleBookmark(project
 const projectDelete = () => {
   if (idForDelete.value === (props.project?.slug as string)) {
     emit('delete-project', props.project.slug)
-    RefProjectDeleteConfirm.value.close()
+    RefProjectDeleteConfirm.value?.close()
   } else idForDelete.value = ''
 }
 
@@ -87,7 +90,7 @@ const isBookMarked = computed(() => props.project?.is_bookmarked)
             <CDropdownItem
               v-if="canProjectClose"
               class="form-text"
-              @click="RefProjectCloseConfirm.callModal()"
+              @click="RefProjectCloseConfirm?.callModal()"
             >
               <span class="text-primary">
                 <v-icon
@@ -102,7 +105,7 @@ const isBookMarked = computed(() => props.project?.is_bookmarked)
             <CDropdownItem
               v-if="canProjectDelete"
               class="form-text"
-              @click="RefProjectDeleteConfirm.callModal()"
+              @click="RefProjectDeleteConfirm?.callModal()"
             >
               <span class="text-primary">
                 <v-icon icon="mdi-trash-can-outline" color="danger" size="sm" class="mr-1" />
@@ -110,9 +113,9 @@ const isBookMarked = computed(() => props.project?.is_bookmarked)
               </span>
             </CDropdownItem>
             <CDropdownItem
-              v-if="project?.status === '1'"
+              v-if="project?.status === '1' && canProjectUpdate"
               class="form-text"
-              @click="router.push({ name: '(설정)' })"
+              @click="router.push({ name: '(설정)', params: { projId: project?.slug } })"
             >
               <span class="text-primary">
                 <v-icon icon="mdi-cog" color="secondary" size="sm" class="mr-1" />

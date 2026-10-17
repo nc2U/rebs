@@ -1,7 +1,7 @@
-<script lang="ts" setup="">
+<script lang="ts" setup>
 import { computed, type PropType } from 'vue'
 import { useStore } from '@/store'
-import type { IssueProject } from '@/store/types/work_project.ts'
+import type { IssueProject } from '@/store/types/work_project'
 
 defineProps({
   subProjects: { type: Array as PropType<IssueProject[]>, default: () => [] },
