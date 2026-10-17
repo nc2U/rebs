@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, provide, ref } from 'vue'
 import { navMenu2 as navMenu } from '@/views/_Work/_menu/headermixin1'
-import { useInform } from '@/store/pinia/work_inform.ts'
-import { useCompany } from '@/store/pinia/company.ts'
+import { useInform } from '@/store/pinia/work_inform'
+import { useCompany } from '@/store/pinia/company'
 import type { Company } from '@/store/types/settings'
 import { useRoute } from 'vue-router'
 import { usePerms } from '@/composables/usePerms'
@@ -12,10 +12,9 @@ import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import NewsForm from './components/NewsForm.vue'
 import NewsList from './components/NewsList.vue'
 import TextButton from '../../components/atomics/TextButton.vue'
+import { useWork } from '@/store/pinia/work_project'
 
-import { useWork } from '@/store/pinia/work_project.ts'
-
-const cBody = ref()
+const cBody = ref<InstanceType<typeof ContentBody> | null>(null)
 const comStore = useCompany()
 const company = computed<Company | null>(() => comStore.company)
 const comName = computed(() => company?.value?.name)
@@ -35,7 +34,7 @@ const canNewsManage = computed(() => activeNewsProjects.value.length > 0 && can(
 provide('navMenu', navMenu)
 provide('query', route?.query)
 
-const sideNavCAll = () => cBody.value.toggle()
+const sideNavCall = () => cBody.value?.toggle()
 
 const infStore = useInform()
 const newsList = computed(() => infStore.newsList)
@@ -43,7 +42,7 @@ const importantNews = computed(() => newsList.value.filter(n => n.is_important))
 
 const createNews = (payload: any) => infStore.createNews(payload)
 
-const onSubmit = (payload: any) => {
+const onSubmit = async (payload: any) => {
   const getData: Record<string, any> = { ...payload }
 
   const form = new FormData()
@@ -59,7 +58,7 @@ const onSubmit = (payload: any) => {
       form.append(key, formValue as string)
     }
   }
-  createNews(form)
+  await createNews(form)
   viewForm.value = false
 }
 
@@ -83,7 +82,7 @@ onBeforeMount(async () => {
 
 <template>
   <Loading v-model:active="loading" />
-  <Header :page-title="comName" :nav-menu="navMenu" @side-nav-call="sideNavCAll" />
+  <Header :page-title="comName" :nav-menu="navMenu" @side-nav-call="sideNavCall" />
 
   <ContentBody ref="cBody" :nav-menu="navMenu" :query="route?.query" :aside="true">
     <template v-slot:default>

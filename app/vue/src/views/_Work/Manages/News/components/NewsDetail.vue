@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { computed, type PropType } from 'vue'
-import type { News } from '@/store/types/work_inform.ts'
-import { useRoute, useRouter } from 'vue-router'
-import { markdownRender } from '@/utils/helper.ts'
-import { elapsedTime } from '@/utils/baseMixins.ts'
-import { usePerms } from '@/composables/usePerms.ts'
-import { useInform } from '@/store/pinia/work_inform.ts'
+import { type PropType } from 'vue'
+import type { News } from '@/store/types/work_inform'
+import { useRouter } from 'vue-router'
+import { markdownRender } from '@/utils/helper'
+import { elapsedTime } from '@/utils/baseMixins'
+import { usePerms } from '@/composables/usePerms'
+import { useInform } from '@/store/pinia/work_inform'
 import FileDisplay from '@/views/_Work/components/atomics/FileDisplay.vue'
 import CommentList from './CommentList.vue'
 
@@ -14,7 +14,7 @@ const props = defineProps({
   viewForm: { type: Boolean, default: false },
 })
 
-const [route, router] = [useRoute(), useRouter()]
+const router = useRouter()
 
 const infStore = useInform()
 
@@ -64,7 +64,11 @@ const deleteFile = (pk: number) => {
         <div class="d-flex align-center mr-4">
           <v-icon icon="mdi-clock-outline" size="18" class="mr-1" />
           <router-link
-            :to="{ name: '(업무실행내역)', params: { projId: news.project?.slug } }"
+            :to="{
+              name: '(업무실행내역)',
+              params: { projId: news.project?.slug },
+              query: { from: news.created.substring(0, 10) },
+            }"
             class="text-decoration-none"
           >
             {{ elapsedTime(news.created) }}
@@ -109,7 +113,12 @@ const deleteFile = (pk: number) => {
 
     <CRow class="text-right my-3">
       <CCol>
-        <v-btn size="small" color="light" variant="flat" @click="router.push({ name: '(공지)' })">
+        <v-btn
+          size="small"
+          color="light"
+          variant="flat"
+          @click="router.push({ name: '(공지)', params: { projId: news.project?.slug } })"
+        >
           목록으로
         </v-btn>
       </CCol>

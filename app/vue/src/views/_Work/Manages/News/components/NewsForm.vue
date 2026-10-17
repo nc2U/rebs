@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, type PropType, ref } from 'vue'
-import { colorLight } from '@/utils/cssMixins.ts'
-import { useWork } from '@/store/pinia/work_project.ts'
+import { useRoute } from 'vue-router'
+import { colorLight } from '@/utils/cssMixins'
+import { useWork } from '@/store/pinia/work_project'
 import { usePerms } from '@/composables/usePerms'
-import type { News } from '@/store/types/work_inform.ts'
+import type { News } from '@/store/types/work_inform'
 import MdEditor from '@/components/MdEditor/Index.vue'
 import FileModify from '@/components/FileControl/FileModify.vue'
 import FileUpload from '@/components/FileControl/FileUpload.vue'
@@ -13,10 +14,11 @@ const props = defineProps({ news: { type: Object as PropType<News | null>, defau
 
 const emit = defineEmits(['on-submit', 'close-form'])
 
+const route = useRoute()
 const validated = ref(false)
 const form = ref({
   pk: null as number | null,
-  project: null as number | null,
+  project: null as string | null,
   title: '',
   summary: '',
   content: '',
@@ -32,7 +34,7 @@ const getNewsProjects = computed(() =>
   workStore.getMyActiveProjects.filter(proj => proj.module?.news),
 )
 
-const RefNewFiles = ref()
+const RefNewFiles = ref<InstanceType<typeof FileUpload> | null>(null)
 const fileUpload = (newFiles: any[]) => (form.value.newFiles = newFiles)
 const fileChange = (payload: { pk: number; file: File }) => form.value.cngFiles.push(payload)
 const fileDelete = (payload: { pk: number; del: boolean }): void => {
@@ -41,14 +43,14 @@ const fileDelete = (payload: { pk: number; del: boolean }): void => {
 }
 
 const onSubmit = (event: Event) => {
-  const e = event.currentTarget as HTMLSelectElement
+  const e = event.currentTarget as HTMLFormElement
   if (!e.checkValidity()) {
     event.preventDefault()
     event.stopPropagation()
 
     validated.value = true
   } else {
-    RefNewFiles.value.getNewFiles()
+    RefNewFiles.value?.getNewFiles()
     emit('on-submit', { ...form.value })
   }
 }
@@ -56,7 +58,7 @@ const onSubmit = (event: Event) => {
 onBeforeMount(() => {
   if (props.news) {
     form.value.pk = props.news.pk
-    form.value.project = props.news?.project.pk as number
+    form.value.project = props.news?.project?.slug ?? null
     form.value.title = props.news?.title as string
     form.value.summary = props.news?.summary as string
     form.value.content = props.news?.content as string
@@ -76,7 +78,7 @@ onBeforeMount(() => {
   >
     <CCard :color="colorLight" class="mb-3">
       <CCardBody>
-        <CRow v-if="!$route.params.projId" class="mb-2">
+        <CRow v-if="!route.params.projId" class="mb-2">
           <CFormLabel for="project" class="col-sm-2 col-form-label text-right required">
             프로젝트
           </CFormLabel>
@@ -85,18 +87,19 @@ onBeforeMount(() => {
             <IssueProjectSelector
               v-model="form.project"
               :issue-project-list="getNewsProjects"
-              :required="!$route.params.projId"
+              :required="!route.params.projId"
+              value-type="slug"
             />
           </CCol>
         </CRow>
 
         <CRow class="mb-2">
-          <CFormLabel for="project" class="col-sm-2 col-form-label text-right required">
+          <CFormLabel for="title" class="col-sm-2 col-form-label text-right required">
             제목
           </CFormLabel>
 
           <CCol sm="6">
-            <CFormInput v-model="form.title" placeholder="공지 제목" required />
+            <CFormInput id="title" v-model="form.title" placeholder="공지 제목" required />
           </CCol>
           <CCol sm="4" class="pt-2">
             <CFormCheck
@@ -108,15 +111,15 @@ onBeforeMount(() => {
         </CRow>
 
         <CRow class="mb-2">
-          <CFormLabel for="project" class="col-sm-2 col-form-label text-right"> 요약</CFormLabel>
+          <CFormLabel for="summary" class="col-sm-2 col-form-label text-right"> 요약</CFormLabel>
 
           <CCol sm="10">
-            <CFormTextarea v-model="form.summary" placeholder="공지 요약" />
+            <CFormTextarea id="summary" v-model="form.summary" placeholder="공지 요약" />
           </CCol>
         </CRow>
 
         <CRow class="mb-2">
-          <CFormLabel for="project" class="col-sm-2 col-form-label text-right"> 내용</CFormLabel>
+          <CFormLabel for="content" class="col-sm-2 col-form-label text-right"> 내용</CFormLabel>
 
           <CCol sm="10">
             <MdEditor v-model="form.content" placeholder="공지 내용" />
@@ -124,7 +127,7 @@ onBeforeMount(() => {
         </CRow>
 
         <CRow>
-          <CFormLabel for="title" class="col-md-2 col-form-label text-right">파일</CFormLabel>
+          <CFormLabel for="files" class="col-md-2 col-form-label text-right">파일</CFormLabel>
           <CCol md="10" lg="9" xl="8">
             <FileModify
               v-if="news && form.files.length"
@@ -143,7 +146,7 @@ onBeforeMount(() => {
       <v-btn type="submit" :color="news ? 'success' : 'primary'" :disabled="!can(PERM.NEWS_MANAGE)">
         저장
       </v-btn>
-      <v-btn color="light" @click="emit('close-form')" flat>취소</v-btn>
+      <v-btn color="light" type="button" class="ml-2" @click="emit('close-form')" flat>취소</v-btn>
     </CCol>
   </CForm>
 </template>

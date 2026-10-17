@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue'
-import type { BaseComment } from '@/store/types/work_inform.ts'
-import { usePerms } from '@/composables/usePerms.ts'
-import { elapsedTime } from '@/utils/baseMixins.ts'
+import type { BaseComment } from '@/store/types/work_inform'
+import { usePerms } from '@/composables/usePerms'
+import { elapsedTime } from '@/utils/baseMixins'
 
 defineProps({
   comment: { type: Object as PropType<BaseComment>, required: true },

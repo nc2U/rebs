@@ -1,18 +1,25 @@
 <script lang="ts" setup>
-import { type PropType } from 'vue'
-import type { News } from '@/store/types/work_inform.ts'
-import { useInform } from '@/store/pinia/work_inform.ts'
+import type { News } from '@/store/types/work_inform'
+import { useInform } from '@/store/pinia/work_inform'
 import NewsItem from './NewsItem.vue'
 import NoData from '@/components/NoData/Index.vue'
 import Pagination from '@/components/Pagination'
 
-defineProps({
-  page: { type: Number, default: 1 },
-  viewForm: { type: Boolean, default: false },
-  newsList: { type: Array as PropType<News[]>, default: () => [] },
+interface Props {
+  page?: number
+  viewForm?: boolean
+  newsList?: News[]
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  page: 1,
+  viewForm: false,
+  newsList: () => [],
 })
 
-const emit = defineEmits(['view-form', 'page-select'])
+const emit = defineEmits<{
+  (e: 'page-select', page: number): void
+}>()
 
 const infStore = useInform()
 const newsPages = (pageNum: number) => infStore.newsPages(pageNum)
@@ -31,6 +38,7 @@ const pageSelect = (page: number) => {
   </template>
 
   <Pagination
+    v-if="newsPages(10) > 1"
     :active-page="page"
     :limit="8"
     :pages="newsPages(10)"

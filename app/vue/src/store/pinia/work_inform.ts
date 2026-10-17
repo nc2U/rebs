@@ -1,8 +1,8 @@
 import api from '@/api'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { errorHandle, message } from '@/utils/helper.ts'
-import type { News, NewsComment, CustomQuery, TargetType } from '@/store/types/work_inform.ts'
+import { errorHandle, message } from '@/utils/helper'
+import type { News, NewsComment, CustomQuery, TargetType } from '@/store/types/work_inform'
 
 export const useInform = defineStore('inform', () => {
   // news states & getters

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import { usePerms } from '@/composables/usePerms'
-import { useInform } from '@/store/pinia/work_inform.ts'
-import { useAccount } from '@/store/pinia/account.ts'
-import type { News } from '@/store/types/work_inform.ts'
+import { useInform } from '@/store/pinia/work_inform'
+import { useAccount } from '@/store/pinia/account'
+import type { News, NewsComment } from '@/store/types/work_inform'
 import Comment from './Comment.vue'
 
 const accStore = useAccount()
@@ -16,16 +16,18 @@ const news = computed(() => infStore.news as News | null)
 
 const commentContent = ref('')
 
-const onSubmit = () => {
-  if (!commentContent.value.trim()) return
+const onSubmit = async () => {
+  if (!commentContent.value.trim() || !news.value?.pk) return
 
-  const payload: any = {
-    news: news.value?.pk,
+  const payload: NewsComment = {
+    news: news.value.pk,
     content: commentContent.value,
     parent: null,
+    created: '',
+    updated: '',
   }
 
-  infStore.createNewsComment(payload)
+  await infStore.createNewsComment(payload)
   commentContent.value = ''
 }
 </script>

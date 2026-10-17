@@ -2,8 +2,8 @@
 import { computed, type PropType } from 'vue'
 import { useRoute } from 'vue-router'
 import { usePerms } from '@/composables/usePerms'
-import { cutString, elapsedTime } from '@/utils/baseMixins.ts'
-import type { News } from '@/store/types/work_inform.ts'
+import { cutString, elapsedTime } from '@/utils/baseMixins'
+import type { News } from '@/store/types/work_inform'
 import { CRow } from '@coreui/vue'
 
 const props = defineProps({ news: { type: Object as PropType<News>, required: true } })
@@ -119,12 +119,18 @@ const previewContent = computed(() => {
           v-if="canViewUser(news.author?.pk)"
           :to="{ name: '사용자 - 보기', params: { userId: news.author?.pk } }"
         >
-          {{ news.author?.username || 'Austin Kho' }}
+          {{ news.author?.username || '알 수 없음' }}
         </router-link>
-        <span v-else>{{ news.author?.username || 'Austin Kho' }}</span>
+        <span v-else>{{ news.author?.username || '알 수 없음' }}</span>
         <span class="mx-2">|</span>
         <v-icon icon="mdi-clock-outline" size="small" class="mr-1" />
-        <router-link :to="{ name: '(업무실행내역)', params: { projId: news.project?.slug } }">
+        <router-link
+          :to="{
+            name: '(업무실행내역)',
+            params: { projId: news.project?.slug },
+            query: { from: news.created.substring(0, 10) },
+          }"
+        >
           {{ elapsedTime(news.created) }}
         </router-link>
       </CCol>

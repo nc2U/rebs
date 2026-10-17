@@ -1,4 +1,4 @@
-import type { SimpleProject, SimpleUser } from '@/store/types/work_project.ts'
+import type { SimpleProject, SimpleUser } from '@/store/types/work_project'
 
 export interface News {
   pk: number

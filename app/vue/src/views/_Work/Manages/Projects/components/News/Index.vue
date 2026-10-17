@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute, useRouter, type LocationQueryRaw } from 'vue-router'
 import { usePerms } from '@/composables/usePerms'
-import { useInform } from '@/store/pinia/work_inform.ts'
-import type { News } from '@/store/types/work_inform.ts'
+import { useInform } from '@/store/pinia/work_inform'
+import type { News } from '@/store/types/work_inform'
+import type { IssueProject } from '@/store/types/work_project'
 import Loading from '@/components/Loading/Index.vue'
 import NewsList from '@/views/_Work/Manages/News/components/NewsList.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
@@ -11,16 +12,22 @@ import NewsForm from '@/views/_Work/Manages/News/components/NewsForm.vue'
 import NewsDetail from '@/views/_Work/Manages/News/components/NewsDetail.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import TextButton from '@/views/_Work/components/atomics/TextButton.vue'
-import { useWork } from '@/store/pinia/work_project.ts'
+import { useWork } from '@/store/pinia/work_project'
 
-const cBody = ref()
-const toggle = () => cBody.value.toggle()
+const props = defineProps<{
+  navMenu?: any
+  currentProject?: IssueProject | null
+  query?: LocationQueryRaw
+}>()
+
+const cBody = ref<InstanceType<typeof ContentBody> | null>(null)
+const toggle = () => cBody.value?.toggle()
 defineExpose({ toggle })
 
 const workStore = useWork()
 const isProjectActive = computed(() => workStore.currentProject?.status === '1')
 
-const RefDelNews = ref()
+const RefDelNews = ref<InstanceType<typeof ConfirmModal> | null>(null)
 const { can, PERM } = usePerms()
 const canNewsManage = computed(() => isProjectActive.value && can(PERM.NEWS_MANAGE))
 const viewForm = ref(false)
@@ -33,7 +40,7 @@ const createNews = (payload: any, proj?: string) => infStore.createNews(payload,
 const updateNews = (pk: number, payload: any) => infStore.updateNews(pk, payload)
 const deleteNews = (pk: number, proj: null | string) => infStore.deleteNews(pk, proj)
 
-const onSubmit = (payload: any) => {
+const onSubmit = async (payload: any) => {
   payload.project = route.params.projId
   const { pk, ...rest } = payload
   const getData: Record<string, any> = { ...rest }
@@ -58,18 +65,18 @@ const onSubmit = (payload: any) => {
       form.append(key, formValue as string)
     }
   }
-  if (pk) updateNews(pk, form)
-  else createNews(form, payload.project)
+  if (pk) await updateNews(pk, form)
+  else await createNews(form, payload.project)
 
   viewForm.value = false
 }
 
 const newsDelConfirm = async () => {
-  RefDelNews.value.close()
+  RefDelNews.value?.close()
   const newsId = Number(route.params.newsId)
   const projId = route.params.projId as string
   await deleteNews(newsId, projId)
-  await router.replace({ name: '(공지)' })
+  await router.replace({ name: '(공지)', params: { projId } })
 }
 
 const page = ref(1)
@@ -118,10 +125,18 @@ onBeforeMount(async () => {
 
 <template>
   <Loading v-model:active="loading" />
-  <ContentBody ref="cBody" :aside="false">
+  <ContentBody
+    ref="cBody"
+    :nav-menu="navMenu"
+    :current-project="currentProject"
+    :query="query"
+    :aside="false"
+  >
     <template v-slot:default>
       <span v-if="route.name !== '(공지)'">
-        <router-link :to="{ name: '(공지)' }">공지</router-link>
+        <router-link :to="{ name: '(공지)', params: { projId: route.params.projId } }">
+          공지
+        </router-link>
         »
       </span>
 
@@ -138,7 +153,7 @@ onBeforeMount(async () => {
             <TextButton name="새 공지" @click="viewForm = !viewForm" />
           </span>
 
-          <span v-if="$route.params.projId && can(PERM.NEWS_READ)">
+          <span v-if="route.params.projId && can(PERM.NEWS_READ)">
             <TextButton name="지켜보기" icon="mdi-star" icon-color="amber" color="secondary" />
           </span>
         </CCol>
@@ -162,7 +177,7 @@ onBeforeMount(async () => {
               name="삭제"
               icon="mdi-trash-can-outline"
               icon-color="grey"
-              @click="RefDelNews.callModal()"
+              @click="RefDelNews?.callModal()"
             />
           </span>
         </CCol>
