@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { isValidate } from '@/utils/helper.ts'
+import { isValidate } from '@/utils/helper'
 import { useWork } from '@/store/pinia/work_project'
 import type { Role } from '@/store/types/work_project'
 import { CModal } from '@coreui/vue'
@@ -35,6 +35,7 @@ watch(
   () => props.visible,
   val => {
     if (val) {
+      validated.value = false
       if (props.role) {
         form.value = {
           pk: props.role.pk,

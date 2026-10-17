@@ -4,7 +4,7 @@ import { pageTitle, navMenu } from '@/views/_Work/_menu/headermixin2'
 import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
 import { useWork } from '@/store/pinia/work_project'
-import { useAccount } from '@/store/pinia/account.ts'
+import { useAccount } from '@/store/pinia/account'
 import type { Role } from '@/store/types/work_project'
 import Loading from '@/components/Loading/Index.vue'
 import Header from '@/views/_Work/components/Header/Index.vue'
@@ -23,13 +23,13 @@ const workManager = computed(() => accStore.workManager)
 const workStore = useWork()
 const { roleList, groupedPermissions } = storeToRefs(workStore)
 
-const cBody = ref()
-const sideNavCAll = () => cBody.value.toggle()
+const cBody = ref<InstanceType<typeof ContentBody> | null>(null)
+const sideNavCAll = () => cBody.value?.toggle()
 
 const activeTab = ref(0)
 const loading = ref(true)
 
-const refConfirmModal = ref()
+const refConfirmModal = ref<InstanceType<typeof ConfirmModal> | null>(null)
 const pkToDelete = ref<number | null>(null)
 
 const roleModal = ref(false)
@@ -57,18 +57,18 @@ const showRoleModal = (role: Role | null = null) => {
 
 const deleteRole = (pk: number) => {
   pkToDelete.value = pk
-  refConfirmModal.value.callModal(
+  refConfirmModal.value?.callModal(
     '역할 삭제',
     '이 작업은 되돌릴 수 없습니다. 정말로 이 역할을 삭제하시겠습니까?',
     'mdi-trash-can-outline',
-    'danger',
+    'error',
   )
 }
 
 const roleDelete = async () => {
   if (pkToDelete.value) {
     await workStore.deleteRole(pkToDelete.value)
-    refConfirmModal.value.close()
+    refConfirmModal.value?.close()
   }
 }
 
@@ -81,7 +81,7 @@ onBeforeMount(async () => {
   <Loading v-model:active="loading" />
   <Header :page-title="pageTitle" :nav-menu="navMenu" @side-nav-call="sideNavCAll" />
 
-  <ContentBody ref="cBody" :nav-menu="navMenu" :query="route?.query">
+  <ContentBody ref="cBody" :aside="false" :nav-menu="navMenu" :query="route?.query">
     <template v-slot:default>
       <CRow class="py-2">
         <CCol>
@@ -158,7 +158,5 @@ onBeforeMount(async () => {
         </template>
       </ConfirmModal>
     </template>
-
-    <template v-slot:aside></template>
   </ContentBody>
 </template>
