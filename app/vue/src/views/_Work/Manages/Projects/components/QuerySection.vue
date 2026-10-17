@@ -2,9 +2,9 @@
 import { computed, onBeforeMount, onMounted, type PropType, reactive, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { usePerms } from '@/composables/usePerms'
-import { useInform } from '@/store/pinia/work_inform.ts'
-import { useProjectFilter } from '@/store/pinia/work_project_filter.ts'
-import type { selectProject } from '@/store/types/work_project.ts'
+import { useInform } from '@/store/pinia/work_inform'
+import { useProjectFilter } from '@/store/pinia/work_project_filter'
+import type { selectProject } from '@/store/types/work_project'
 import Multiselect from '@vueform/multiselect'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
 import IssueProjectSelector from '@/views/_Work/components/atomics/IssueProjectSelector.vue'
@@ -22,7 +22,7 @@ const props = defineProps({
 
 const emit = defineEmits(['filter-submit', 'change-view-mode'])
 
-const refQuerySaveModal = ref()
+const refQuerySaveModal = ref<InstanceType<typeof SaveQueryModal> | null>(null)
 
 const { can, PERM } = usePerms()
 const informStore = useInform()
@@ -203,7 +203,7 @@ const extraQueryData = computed(() => ({
 }))
 
 const openSaveModal = () => {
-  refQuerySaveModal.value.callModal()
+  refQuerySaveModal.value?.callModal()
 }
 
 const applyQuery = (query: any) => {

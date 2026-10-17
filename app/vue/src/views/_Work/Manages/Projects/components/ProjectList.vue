@@ -1,15 +1,15 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { useWork } from '@/store/pinia/work_project.ts'
-import { useProjectFilter } from '@/store/pinia/work_project_filter.ts'
+import { useWork } from '@/store/pinia/work_project'
+import { useProjectFilter } from '@/store/pinia/work_project_filter'
 import {
   ALL_PROJECT_COLUMNS,
   DEFAULT_PROJECT_COLUMNS,
-} from '@/views/_Work/Settings/Project/constants.ts'
-import { useRoute } from 'vue-router'
+} from '@/views/_Work/Settings/Project/constants'
+import { useRoute, type LocationQueryRaw } from 'vue-router'
 import { usePerms } from '@/composables/usePerms'
-import { useTableColumns } from '@/composables/useTableColumns.ts'
-import type { IssueProject, ProjectFilter } from '@/store/types/work_project.ts'
+import { useTableColumns } from '@/composables/useTableColumns'
+import type { IssueProject, ProjectFilter } from '@/store/types/work_project'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import ColumnSelector from '@/components/ColumnSelector/Index.vue'
 import SavedQueryAside from '@/views/_Work/components/asides/SavedQueryAside.vue'
@@ -19,8 +19,14 @@ import ProjectCard from './ProjectCard.vue'
 import ProjectTable from './ProjectTable.vue'
 import NoData from '@/components/NoData/Index.vue'
 
-const cBody = ref()
-const toggle = () => cBody.value.toggle()
+defineProps<{
+  navMenu?: any
+  currentProject?: IssueProject | null
+  query?: LocationQueryRaw
+}>()
+
+const cBody = ref<InstanceType<typeof ContentBody> | null>(null)
+const toggle = () => cBody.value?.toggle()
 defineExpose({ toggle })
 
 const { can, PERM } = usePerms() // 사용자 권한 데이터
@@ -67,7 +73,7 @@ const route = useRoute()
 const hasVisible = (project: IssueProject): boolean => {
   if (project.visible) return true
   if (project.sub_projects && project.sub_projects.length > 0)
-    for (let sub of project.sub_projects) {
+    for (const sub of project.sub_projects) {
       if (hasVisible(sub)) return true
     }
   return false
@@ -101,7 +107,7 @@ const colProps = computed(() => {
 // 검색양식 관련 계산 및 메서드
 const projectFilterStore = useProjectFilter()
 const activeQueryId = computed(() => projectFilterStore.activeQueryId)
-const querySectionRef = ref()
+const querySectionRef = ref<InstanceType<typeof QuerySection> | null>(null)
 
 const onQueryClick = (query: any) => {
   if (querySectionRef.value) {
@@ -129,7 +135,12 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <ContentBody ref="cBody">
+  <ContentBody
+    ref="cBody"
+    :nav-menu="navMenu"
+    :current-project="currentProject"
+    :query="query"
+  >
     <template v-slot:default>
       <CRow class="py-2">
         <CCol>

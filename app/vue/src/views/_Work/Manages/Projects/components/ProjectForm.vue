@@ -3,7 +3,6 @@ import {
   computed,
   onBeforeMount,
   onMounted,
-  onUpdated,
   type PropType,
   reactive,
   ref,
@@ -13,10 +12,10 @@ import { useRoute, useRouter } from 'vue-router'
 import { usePerms } from '@/composables/usePerms'
 import { useStore } from '@/store'
 import { useCompany } from '@/store/pinia/company'
-import { useIssue } from '@/store/pinia/work_issue.ts'
-import { useWork } from '@/store/pinia/work_project.ts'
+import { useIssue } from '@/store/pinia/work_issue'
+import { useWork } from '@/store/pinia/work_project'
 import { colorLight } from '@/utils/cssMixins'
-import type { IssueProject } from '@/store/types/work_project.ts'
+import type { IssueProject } from '@/store/types/work_project'
 import MdEditor from '@/components/MdEditor/Index.vue'
 import MultiSelect from '@/components/MultiSelect/index.vue'
 import IssueProjectSelector from '@/views/_Work/components/atomics/IssueProjectSelector.vue'
@@ -109,13 +108,13 @@ const formsCheck = computed(() => {
     const m = !canProjectModule.value || module.calendar === props.project.module?.calendar
     const n = form.is_inherit_members === props.project.is_inherit_members
     const o =
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      JSON.stringify(form.allowed_roles.sort((a, b) => a - b)) ===
-      JSON.stringify(props.project.allowed_roles?.map(r => r.pk).sort((a, b) => a - b))
+      JSON.stringify([...form.allowed_roles].sort((a, b) => a - b)) ===
+      JSON.stringify(
+        [...(props.project.allowed_roles?.map(r => r.pk) ?? [])].sort((a, b) => a - b),
+      )
     const p =
-      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      JSON.stringify(form.trackers.sort((a, b) => a - b)) ===
-      JSON.stringify(props.project.trackers?.map(t => t.pk).sort((a, b) => a - b))
+      JSON.stringify([...form.trackers].sort((a, b) => a - b)) ===
+      JSON.stringify([...(props.project.trackers?.map(t => t.pk) ?? [])].sort((a, b) => a - b))
     const q = form.chat_channel_enabled === (props.project.chat_channel_enabled ?? true)
     const r = form.slack_notifications_enabled === props.project.slack_notifications_enabled
 
@@ -255,8 +254,11 @@ const types = ref([
   { value: '3', label: '기타 워크스페이스' },
 ])
 
-onMounted(() => dataSetup())
-onUpdated(() => dataSetup())
+watch(
+  () => props.project,
+  () => dataSetup(),
+  { immediate: true },
+)
 
 onBeforeMount(async () => {
   if (!!route.query.parent) form.parent = Number(route.query.parent)
@@ -321,9 +323,10 @@ onBeforeMount(async () => {
         </CRow>
 
         <CRow class="mb-3">
-          <CFormLabel class="required col-form-label text-right col-2">이름</CFormLabel>
+          <CFormLabel for="project-name" class="required col-form-label text-right col-2">이름</CFormLabel>
           <CCol>
             <CFormInput
+              id="project-name"
               v-model="form.name"
               @keydown="getSlug"
               maxlength="100"
@@ -341,9 +344,10 @@ onBeforeMount(async () => {
         </CRow>
 
         <CRow class="mb-3">
-          <CFormLabel class="required col-form-label text-right col-2">식별자</CFormLabel>
+          <CFormLabel for="project-slug" class="required col-form-label text-right col-2">식별자</CFormLabel>
           <CCol>
             <CFormInput
+              id="project-slug"
               v-model="form.slug"
               maxlength="100"
               placeholder="워크스페이스 식별자 (영문, 숫자, - 문자만 사용)"
@@ -355,9 +359,9 @@ onBeforeMount(async () => {
         </CRow>
 
         <CRow class="mb-3">
-          <CFormLabel class="col-form-label text-right col-2">홈페이지</CFormLabel>
+          <CFormLabel for="project-homepage" class="col-form-label text-right col-2">홈페이지</CFormLabel>
           <CCol>
-            <CFormInput v-model="form.homepage" maxlength="255" placeholder="홈페이지 URL" />
+            <CFormInput id="project-homepage" v-model="form.homepage" maxlength="255" placeholder="홈페이지 URL" />
           </CCol>
         </CRow>
 
@@ -456,7 +460,7 @@ onBeforeMount(async () => {
       <v-icon icon="mdi-check-bold" size="sm" color="success" />
       모듈
     </h6>
-    <CCard class="mb-3" :color="!isDark ? 'light' : ''">
+    <CCard class="mb-3" :color="colorLight">
       <CCardBody>
         <CRow>
           <CCol sm="6" md="4" lg="3" xl="2">

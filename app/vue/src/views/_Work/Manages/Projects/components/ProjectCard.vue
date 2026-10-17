@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed, type PropType } from 'vue'
-import { useAccount } from '@/store/pinia/account.ts'
-import type { IssueProject } from '@/store/types/work_project.ts'
-import { markdownRender } from '@/utils/helper.ts'
+import { useAccount } from '@/store/pinia/account'
+import type { IssueProject } from '@/store/types/work_project'
+import { markdownRender } from '@/utils/helper'
 
 // 컴포넌트 자체 참조를 위해 이름 명시
 defineOptions({
@@ -19,8 +19,10 @@ defineProps({
 const accStore = useAccount()
 const userInfo = computed(() => accStore.userInfo)
 
-const isOwnProject = (project: IssueProject) =>
-  project.all_members?.map(m => m.user.pk).includes(userInfo?.value?.pk as number)
+const isOwnProject = (project: IssueProject) => {
+  if (!userInfo.value?.pk) return false
+  return project.all_members?.some(m => m.user.pk === userInfo.value?.pk) ?? false
+}
 </script>
 
 <template>
@@ -38,7 +40,7 @@ const isOwnProject = (project: IssueProject) =>
         color="blue-grey-lighten-2"
         size="15"
         class="ml-2"
-        title="비공개 프로젝트"
+        title="비공개 워크스페이스"
       />
       <v-icon
         v-if="isOwnProject(project)"
@@ -46,6 +48,7 @@ const isOwnProject = (project: IssueProject) =>
         color="success"
         size="15"
         class="ml-2"
+        title="내 워크스페이스"
       />
       <v-icon
         v-if="project?.is_bookmarked"
@@ -53,8 +56,9 @@ const isOwnProject = (project: IssueProject) =>
         color="info"
         size="15"
         class="ml-2"
+        title="북마크됨"
       />
-      <span v-html="markdownRender(project.description)" />
+      <div v-if="project.description" class="project-desc" v-html="markdownRender(project.description)" />
     </div>
 
     <!-- 재귀 호출: 하위 프로젝트가 있는 경우 -->

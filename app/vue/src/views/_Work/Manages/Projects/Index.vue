@@ -84,7 +84,7 @@ provide('navMenu', navMenu)
 provide('query', route?.query)
 
 const workStore = useWork()
-const currentProject = computed(() => workStore.currentProject as IssueProject)
+const currentProject = computed<IssueProject | null>(() => workStore.currentProject)
 const allReadableProjectsFlat = computed(() => workStore.allReadableProjectsFlat)
 
 const infStore = useInform()
