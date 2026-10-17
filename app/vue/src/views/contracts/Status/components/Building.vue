@@ -1,53 +1,64 @@
 <script lang="ts" setup>
-import { ref, computed, type PropType } from 'vue'
+import { ref, computed } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
-import { type SimpleUnit } from './ContractBoard.vue'
+import type { SimpleUnit } from './ContractBoard.vue'
 import Unit from '@/views/contracts/Status/components/Unit.vue'
 
-const props = defineProps({
-  bldg: { type: Number, default: null },
-  maxFloor: { type: Number, default: null },
-  units: { type: Object as PropType<SimpleUnit[]>, default: null },
-})
+const props = defineProps<{
+  bldg: number
+  maxFloor?: number
+  units: SimpleUnit[]
+}>()
 
 const maxPiloti = ref(3) // 맥스 피로티 층
 
 const pDataStore = useProjectData()
 const buildingList = computed(() => pDataStore.buildingList)
+
 const lineList = computed(() => {
-  const lines = [...new Set(props.units.map((u: { line: number }) => u.line))] as number[]
-  return lines.sort((prev: number, curr: number) => prev - curr)
+  const lines = [...new Set(props.units.map(u => u.line))]
+  return lines.sort((prev, curr) => prev - curr)
 })
+
 const floorList = computed(() => {
-  const floors = [...new Set(props.units.map((u: { floor: number }) => u.floor))] as number[]
-  return floors.sort((prev: number, curr: number) => curr - prev)
+  const floors = [...new Set(props.units.map(u => u.floor))]
+  return floors.sort((prev, curr) => curr - prev)
 })
+
 const bldgWidth = computed(() => 40 * lineList.value.length)
 
-const getUnit = (line: number, floor: number) =>
-  props.units
-    .filter((u: { line: number }) => u.line === line)
-    .filter((u: { floor: number }) => u.floor === floor)[0]
+// O(1) 유닛 조회를 위한 맵 인덱싱
+const unitMap = computed(() => {
+  const map = new Map<string, SimpleUnit>()
+  for (const u of props.units) {
+    map.set(`${u.line}-${u.floor}`, u)
+  }
+  return map
+})
 
-const getFirst = (floor: number) =>
-  floor > maxPiloti.value
-    ? props.units
-        .filter((u: { floor: number }) => u.floor == floor)
-        .map((u: { line: number }) => u.line)
-        .sort()[0]
-    : 1
+const getUnit = (line: number, floor: number) => unitMap.value.get(`${line}-${floor}`)
 
-const bldgName = (bldg: number) =>
-  buildingList.value.filter((b: { pk: number; name: string }) => b.pk === bldg).map(b => b.name)[0]
+const getFirst = (floor: number) => {
+  if (floor > maxPiloti.value) {
+    const lines = props.units
+      .filter(u => u.floor === floor)
+      .map(u => u.line)
+      .sort((a, b) => a - b)
+    return lines[0] ?? 1
+  }
+  return 1
+}
+
+const bldgName = (bldgId: number) =>
+  buildingList.value.find(b => b.pk === bldgId)?.name || String(bldgId)
 </script>
 
 <template>
-  <CCol class="ml-4 mt-5" :style="{ width: `${bldgWidth}px` }">
-    <CRow v-for="i in floorList as Array<number>" :key="i" :style="{ width: `${bldgWidth}px` }">
+  <CCol class="ms-4 mt-5" :style="{ width: `${bldgWidth}px` }">
+    <CRow v-for="i in floorList" :key="i" :style="{ width: `${bldgWidth}px` }">
       <Unit
-        v-for="line in lineList as number[]"
+        v-for="line in lineList"
         :key="line"
-        :units="units"
         :unit="getUnit(line, i)"
         :floor="i"
         :line="line"

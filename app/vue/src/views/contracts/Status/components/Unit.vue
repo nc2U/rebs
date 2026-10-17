@@ -1,30 +1,38 @@
 <script lang="ts" setup>
-import { computed, inject, type PropType } from 'vue'
-import { type SimpleUnit } from './ContractBoard.vue'
+import { computed, inject, ref, type Ref } from 'vue'
+import type { SimpleUnit } from './ContractBoard.vue'
 
-const props = defineProps({
-  units: { type: Object as PropType<SimpleUnit[]>, default: null },
-  unit: { type: Object as PropType<SimpleUnit>, required: true },
-  floor: { type: Number, default: 1 },
-  line: { type: Number, default: 1 },
-  maxPiloti: { type: Number, default: 1 },
-  firstLine: { type: Number, default: 1 },
-})
+const props = withDefaults(
+  defineProps<{
+    unit?: SimpleUnit | null
+    floor?: number
+    line?: number
+    maxPiloti?: number
+    firstLine?: number
+  }>(),
+  {
+    unit: null,
+    floor: 1,
+    line: 1,
+    maxPiloti: 1,
+    firstLine: 1,
+  },
+)
 
-const isContor = inject('isContor')
+const isContor = inject<Ref<boolean>>('isContor', ref(true))
 
 const isPiloti = computed(() => !props.unit && props.floor < props.maxPiloti)
 const isContract = computed(() => !!props.unit?.key_unit?.contract)
 const contorName = computed(() =>
-  isContract.value ? props.unit.key_unit.contract?.contractor.name : '',
+  isContract.value ? props.unit?.key_unit.contract?.contractor.name : '',
 )
-const contorPk = computed(() =>
-  isContract.value ? props.unit.key_unit.contract?.contractor.pk : '',
+const contorPk = computed<number | null>(() =>
+  isContract.value ? (props.unit?.key_unit.contract?.contractor.pk ?? null) : null,
 )
 const status = computed(() =>
-  isContract.value ? props.unit.key_unit.contract?.contractor.status : '',
+  isContract.value ? props.unit?.key_unit.contract?.contractor.status : '',
 )
-const isHold = computed(() => props.unit?.is_hold || '')
+const isHold = computed(() => !!props.unit?.is_hold)
 </script>
 
 <template>
@@ -56,7 +64,7 @@ const isHold = computed(() => props.unit?.is_hold || '')
       }"
     >
       <span v-show="isContor">
-        <span v-if="unit && unit.key_unit && unit.key_unit.contract">
+        <span v-if="unit && unit.key_unit && unit.key_unit.contract && contorPk">
           <router-link
             :to="{
               name: '계약 상세 보기',
@@ -70,7 +78,7 @@ const isHold = computed(() => props.unit?.is_hold || '')
         <span v-if="isHold">
           HOLD
           <v-tooltip activator="parent" location="top">
-            {{ unit.hold_reason }}
+            {{ unit?.hold_reason || '홀딩' }}
           </v-tooltip>
         </span>
       </span>

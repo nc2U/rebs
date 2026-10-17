@@ -111,10 +111,16 @@ onBeforeMount(async () => {
     <ContentBody>
       <CCardBody class="pb-5">
         <ContSummary />
-        <TableTitleRow excel :url="excelUrl" filename="동호수현황표.xlsx" :disabled="!project">
+        <TableTitleRow
+          title="동호수 현황표"
+          excel
+          :url="excelUrl"
+          filename="동호수현황표.xlsx"
+          :disabled="!project"
+        >
           <div class="p-2">
             <CFormSwitch
-              id="flexCheckDefault"
+              id="isContorSwitch"
               v-model="isContor"
               label="계약자명 표시"
               style="font-size: 0.825em"

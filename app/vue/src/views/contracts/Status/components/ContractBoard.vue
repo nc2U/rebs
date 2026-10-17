@@ -19,16 +19,31 @@ export type SimpleUnit = {
 const pDataStore = useProjectData()
 const simpleUnits = computed(() => pDataStore.simpleUnits)
 
+// 숫자 오름차순 정렬 (기본 .sort()의 문자열 사전순 정렬 버그 수정)
 const getBldg = computed(() =>
-  [...new Set(simpleUnits.value.map((u: SimpleUnit) => u.bldg))].sort(),
+  [...new Set(simpleUnits.value.map((u: SimpleUnit) => u.bldg))].sort((a, b) => a - b),
 )
+
+// 빌딩별 유닛 사전 그룹화 캐싱 (매 렌더링 시 filter 호출 제거)
+const unitsByBuilding = computed(() => {
+  const map = new Map<number, SimpleUnit[]>()
+  for (const u of simpleUnits.value) {
+    const list = map.get(u.bldg)
+    if (list) {
+      list.push(u)
+    } else {
+      map.set(u.bldg, [u])
+    }
+  }
+  return map
+})
+
 const maxFloor = computed(() => {
   if (!simpleUnits.value.length) return 0
   return Math.max(...simpleUnits.value.map((u: SimpleUnit) => u.floor))
 })
 
-const getUnits = (bldg: number): SimpleUnit[] =>
-  simpleUnits.value.filter((u: SimpleUnit) => u.bldg === bldg)
+const getUnits = (bldg: number): SimpleUnit[] => unitsByBuilding.value.get(bldg) || []
 </script>
 
 <template>

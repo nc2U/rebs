@@ -10,8 +10,17 @@ const simpleTypes = computed(() => pDataStore.simpleTypes)
 const unitSum = computed(() => pDataStore.unitSummary)
 
 const contStore = useContract()
-const contSum = computed(() => contStore.contSum)
-const subsSum = computed(() => contStore.subsSum)
+const contSum = computed(() => contStore.contSum || 0)
+const subsSum = computed(() => contStore.subsSum || 0)
+
+const totalUnits = computed(() => unitSum.value?.totalNum || 0)
+const totalHolding = computed(() => unitSum.value?.holdNum || 0)
+const sumTotal = computed(() => subsSum.value + contSum.value)
+const assignedNum = computed(
+  () => (unitSum.value?.contNum || 0) + (unitSum.value?.appNum || 0),
+)
+const unassignedNum = computed(() => sumTotal.value - assignedNum.value)
+const remainingNum = computed(() => totalUnits.value - totalHolding.value - sumTotal.value)
 </script>
 
 <template>
@@ -27,49 +36,49 @@ const subsSum = computed(() => contStore.subsSum)
         <CTableBody>
           <CTableRow>
             <CTableHeaderCell :color="TableSecondary"> 총세대수 </CTableHeaderCell>
-            <CTableDataCell class="text-right" colspan="3">
-              {{ numFormat(unitSum.totalNum) }}
+            <CTableDataCell class="text-end" colspan="3">
+              {{ numFormat(totalUnits) }}
             </CTableDataCell>
           </CTableRow>
 
           <CTableRow>
             <CTableHeaderCell :color="TableSuccess">청약세대</CTableHeaderCell>
-            <CTableDataCell class="text-right">
+            <CTableDataCell class="text-end">
               {{ numFormat(subsSum) }}
             </CTableDataCell>
             <CTableHeaderCell :color="TablePrimary">계약세대</CTableHeaderCell>
-            <CTableDataCell class="text-right">
+            <CTableDataCell class="text-end">
               {{ numFormat(contSum) }}
             </CTableDataCell>
           </CTableRow>
 
           <CTableRow>
             <CTableHeaderCell :color="TableSecondary"> 동호미배정 세대 </CTableHeaderCell>
-            <CTableDataCell class="text-right">
-              {{ numFormat(subsSum + contSum - (unitSum.contNum + unitSum.appNum)) }}
+            <CTableDataCell class="text-end">
+              {{ numFormat(unassignedNum) }}
             </CTableDataCell>
             <CTableHeaderCell :color="TableSecondary"> 홀딩세대 </CTableHeaderCell>
-            <CTableDataCell class="text-right">
-              {{ numFormat(unitSum.holdNum) }}
+            <CTableDataCell class="text-end">
+              {{ numFormat(totalHolding) }}
             </CTableDataCell>
           </CTableRow>
 
           <CTableRow>
             <CTableHeaderCell :color="TableSecondary">합계</CTableHeaderCell>
-            <CTableDataCell class="text-right">
-              {{ numFormat(subsSum + contSum) }}
+            <CTableDataCell class="text-end">
+              {{ numFormat(sumTotal) }}
             </CTableDataCell>
             <CTableHeaderCell :color="TableSecondary"> 잔여세대 </CTableHeaderCell>
-            <CTableDataCell class="text-right">
-              {{ numFormat(unitSum.totalNum - unitSum.holdNum - (subsSum + contSum)) }}
+            <CTableDataCell class="text-end">
+              {{ numFormat(remainingNum) }}
             </CTableDataCell>
           </CTableRow>
         </CTableBody>
       </CTable>
     </CCol>
     <CCol lg="7">
-      <span v-for="type in simpleTypes" :key="type.pk" class="mr-3">
-        <v-icon icon="mdi mdi-square" size="small" :color="type.color" />
+      <span v-for="type in simpleTypes" :key="type.pk" class="me-3">
+        <v-icon icon="mdi-square" size="small" :color="type.color" />
         {{ type.name }}
       </span>
     </CCol>

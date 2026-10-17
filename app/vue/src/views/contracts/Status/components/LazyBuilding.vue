@@ -1,45 +1,50 @@
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted, type PropType } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import Building from './Building.vue'
-import { type SimpleUnit } from './ContractBoard.vue'
+import type { SimpleUnit } from './ContractBoard.vue'
 
-const props = defineProps({
-  bldg: { type: Number, required: true },
-  maxFloor: { type: Number, required: true },
-  units: { type: Object as PropType<SimpleUnit[]>, required: true },
-})
+defineProps<{
+  bldg: number
+  maxFloor: number
+  units: SimpleUnit[]
+}>()
 
-const isVisible = ref(false)
 const hasBeenVisible = ref(false) // 한 번 로드되면 유지
 const container = ref<HTMLElement | null>(null)
 let observer: IntersectionObserver | null = null
 
 onMounted(() => {
-  observer = new IntersectionObserver(
-    entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          isVisible.value = true
-          hasBeenVisible.value = true
-        } else {
-          isVisible.value = false
-        }
-      })
-    },
-    {
-      rootMargin: '300px', // 뷰포트 300px 전에 미리 로드
-      threshold: 0.01,
-    },
-  )
+  if (typeof window !== 'undefined' && 'IntersectionObserver' in window) {
+    observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            hasBeenVisible.value = true
+            if (observer && container.value) {
+              observer.unobserve(container.value)
+            }
+          }
+        })
+      },
+      {
+        rootMargin: '300px', // 뷰포트 300px 전에 미리 로드
+        threshold: 0.01,
+      },
+    )
 
-  if (container.value) {
-    observer.observe(container.value)
+    if (container.value) {
+      observer.observe(container.value)
+    }
+  } else {
+    // IntersectionObserver 미지원 환경 fallback
+    hasBeenVisible.value = true
   }
 })
 
 onUnmounted(() => {
-  if (observer && container.value) {
-    observer.unobserve(container.value)
+  if (observer) {
+    observer.disconnect()
+    observer = null
   }
 })
 </script>
