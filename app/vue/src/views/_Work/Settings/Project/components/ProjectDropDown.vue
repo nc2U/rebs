@@ -2,8 +2,8 @@
 import { ref, type PropType, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { usePerms } from '@/composables/usePerms'
-import { useWork } from '@/store/pinia/work_project.ts'
-import type { IssueProject } from '@/store/types/work_project.ts'
+import { useWork } from '@/store/pinia/work_project'
+import type { IssueProject } from '@/store/types/work_project'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const props = defineProps({
@@ -17,13 +17,13 @@ const canProjectDelete = computed(() => can(PERM.PROJECT_DELETE))
 const router = useRouter()
 const workStore = useWork()
 
-const RefProjectArchiveConfirm = ref()
-const RefProjectDeleteConfirm = ref()
+const RefProjectArchiveConfirm = ref<InstanceType<typeof ConfirmModal> | null>(null)
+const RefProjectDeleteConfirm = ref<InstanceType<typeof ConfirmModal> | null>(null)
 const idForDelete = ref('')
 
 const toggleArchive = async () => {
   await workStore.toggleProjectLock(props.project.slug)
-  RefProjectArchiveConfirm.value.close()
+  RefProjectArchiveConfirm.value?.close()
 }
 
 const onCopyProject = () => {
@@ -33,7 +33,7 @@ const onCopyProject = () => {
 const projectDelete = async () => {
   if (idForDelete.value === props.project.slug) {
     await workStore.deleteIssueProject(props.project.slug)
-    RefProjectDeleteConfirm.value.close()
+    RefProjectDeleteConfirm.value?.close()
     idForDelete.value = ''
   }
 }
@@ -45,7 +45,7 @@ const projectDelete = async () => {
     <v-tooltip activator="parent" location="top">Actions</v-tooltip>
     <v-menu activator="parent" location="bottom start" transition="scale-transition">
       <v-list density="compact" class="py-1">
-        <v-list-item v-if="canProjectDelete" @click="RefProjectArchiveConfirm.callModal()">
+        <v-list-item v-if="canProjectDelete" @click="RefProjectArchiveConfirm?.callModal()">
           <template v-slot:prepend>
             <v-icon
               :icon="project.status === '9' ? 'mdi-lock-open-variant' : 'mdi-lock'"
@@ -66,9 +66,9 @@ const projectDelete = async () => {
           </template>
         </v-list-item>
 
-        <v-list-item v-if="canProjectDelete" @click="RefProjectDeleteConfirm.callModal()">
+        <v-list-item v-if="canProjectDelete" @click="RefProjectDeleteConfirm?.callModal()">
           <template v-slot:prepend>
-            <v-icon icon="mdi-trash-can-outline" color="danger" size="x-small" class="mr-2" />
+            <v-icon icon="mdi-trash-can-outline" color="error" size="x-small" class="mr-2" />
             <v-list-item-title class="text-caption">삭제</v-list-item-title>
           </template>
         </v-list-item>
@@ -105,7 +105,7 @@ const projectDelete = async () => {
 
   <ConfirmModal ref="RefProjectDeleteConfirm">
     <template #icon>
-      <v-icon icon="mdi-trash-can" color="danger" class="mr-2" />
+      <v-icon icon="mdi-trash-can" color="error" class="mr-2" />
     </template>
     <template #default>
       <div class="bg-amber-lighten-4 p-4 text-center">
@@ -128,7 +128,7 @@ const projectDelete = async () => {
     </template>
     <template #footer>
       <v-btn
-        color="danger"
+        color="error"
         @click="projectDelete"
         size="small"
         :disabled="idForDelete !== project.slug"

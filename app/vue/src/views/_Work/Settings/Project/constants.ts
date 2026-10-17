@@ -16,7 +16,7 @@ export const ALL_PROJECT_COLUMNS: ColumnOption[] = [
 // 기본 선택 컬럼 키 목록
 export const DEFAULT_PROJECT_COLUMNS: string[] = ['name', 'slug', 'description']
 
-// 키-라벨 매핑 객체 (MeetingTable 헤더용)
+// 키-라벨 매핑 객체 (ProjectTable 헤더용)
 export const PROJECT_COLUMN_LABEL_MAP: Record<string, string> = Object.fromEntries(
   ALL_PROJECT_COLUMNS.map(col => [col.key, col.label]),
 )

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { computed, type PropType } from 'vue'
-import { DEFAULT_PROJECT_COLUMNS, PROJECT_COLUMN_LABEL_MAP } from '../constants.ts'
-import { useAccount } from '@/store/pinia/account.ts'
-import { markdownRender } from '@/utils/helper.ts'
-import type { IssueProject } from '@/store/types/work_project.ts'
+import { DEFAULT_PROJECT_COLUMNS, PROJECT_COLUMN_LABEL_MAP } from '../constants'
+import { useAccount } from '@/store/pinia/account'
+import { markdownRender } from '@/utils/helper'
+import type { IssueProject } from '@/store/types/work_project'
 import ProjectDropDown from './ProjectDropDown.vue'
 
 defineProps({
@@ -17,8 +17,10 @@ defineProps({
 const accStore = useAccount()
 const userInfo = computed(() => accStore.userInfo)
 
-const isOwnProject = (project: IssueProject) =>
-  project.all_members?.map(m => m.user.pk).includes(userInfo?.value?.pk as number)
+const isOwnProject = (project: IssueProject) => {
+  if (!userInfo.value?.pk) return false
+  return project.all_members?.some(m => m.user.pk === userInfo.value?.pk) ?? false
+}
 </script>
 
 <template>
@@ -49,7 +51,7 @@ const isOwnProject = (project: IssueProject) =>
         <template v-for="colKey in columns" :key="'body-' + proj.pk + '-' + colKey">
           <!-- 이름 컬럼 -->
           <CTableDataCell v-if="colKey === 'name'" class="pl-4">
-            <span :style="{ paddingLeft: `${proj.depth * 10}px` }">
+            <span :style="{ paddingLeft: `${(proj.depth ?? 0) * 10}px` }">
               <v-icon
                 v-if="proj.depth > 0"
                 icon="mdi-chevron-right"

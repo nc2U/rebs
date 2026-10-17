@@ -2,11 +2,11 @@
 import { computed, onBeforeMount, ref } from 'vue'
 import { navMenu, pageTitle } from '@/views/_Work/_menu/headermixin2'
 import { ALL_PROJECT_COLUMNS, DEFAULT_PROJECT_COLUMNS } from './constants'
-import { useWork } from '@/store/pinia/work_project.ts'
+import { useWork } from '@/store/pinia/work_project'
 import { useRoute } from 'vue-router'
-import { usePerms } from '@/composables/usePerms.ts'
+import { usePerms } from '@/composables/usePerms'
 import { useTableColumns } from '@/composables/useTableColumns'
-import type { IssueProject, ProjectFilter } from '@/store/types/work_project.ts'
+import type { IssueProject, ProjectFilter } from '@/store/types/work_project'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import ColumnSelector from '@/components/ColumnSelector/Index.vue'
@@ -16,8 +16,9 @@ import ProjectTable from './components/ProjectTable.vue'
 import Loading from '@/components/Loading/Index.vue'
 import NoData from '@/components/NoData/Index.vue'
 
-const cBody = ref()
-const sideNavCall = () => cBody.value.toggle()
+const cBody = ref<InstanceType<typeof ContentBody> | null>(null)
+const sideNavCall = () => cBody.value?.toggle()
+const querySectionRef = ref<InstanceType<typeof QuerySection> | null>(null)
 
 const { can, PERM } = usePerms()
 const canProjectCreate = computed(() => can(PERM.PROJECT_CREATE))
@@ -56,7 +57,7 @@ onBeforeMount(async () => {
 <template>
   <Loading v-model:active="loading" />
   <Header :pageTitle="pageTitle" :navMenu="navMenu" @side-nav-call="sideNavCall" />
-  <ContentBody ref="cBody" :nav-menu="navMenu" :query="route?.query" :aside="true">
+  <ContentBody ref="cBody" :nav-menu="navMenu" :query="route?.query" :aside="false">
     <template v-slot:default>
       <CRow class="py-2">
         <CCol>
@@ -97,7 +98,5 @@ onBeforeMount(async () => {
 
       <ProjectTable v-else :issue-projects-flat="projectResultsFlat" :columns="selectedColumns" />
     </template>
-
-    <template v-slot:aside></template>
   </ContentBody>
 </template>
