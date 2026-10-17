@@ -4,7 +4,7 @@ import { isValidate } from '@/utils/helper.ts'
 import { getToday, numFormat } from '@/utils/baseMixins.ts'
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
 import { useComLedger } from '@/store/pinia/comLedger.ts'
-import { useAccount } from '@/store/pinia/account.ts'
+import { usePerms } from '@/composables/usePerms'
 import type { ParseResult } from '@/composables/useExcelUpload'
 import { useExcelUpload } from '@/composables/useExcelUpload'
 import { type BulkParseResult, useBulkTransExcel } from '@/composables/useBulkTransExcel'
@@ -30,8 +30,6 @@ watch(
     else router.push({ name: '본사 거래 내역' })
   },
 )
-
-import { usePerms } from '@/composables/usePerms'
 
 const { canGlobal, PERM } = usePerms()
 const canComLedgerCreate = computed(() => canGlobal(PERM.HQ_LEDGER_CREATE))
@@ -815,10 +813,10 @@ onBeforeRouteLeave((to, from, next) => {
     @submit.prevent="saveTransaction"
   >
     <CRow
-      class="text-right py-2 mb-1 mx-1"
+      class="text-end py-2 mb-1 mx-1"
       :class="isCreateMode ? 'bg-light-blue-lighten-5' : 'bg-light-green-lighten-5'"
     >
-      <CCol class="text-left">
+      <CCol class="text-start">
         <template v-if="isCreateMode">
           <span class="text-primary strong">신규 거래 등록 중...</span>
         </template>
@@ -1059,7 +1057,7 @@ onBeforeRouteLeave((to, from, next) => {
               </div>
             </CTableDataCell>
 
-            <CTableDataCell colspan="7" class="p-0">
+            <CTableDataCell :colspan="canComLedgerEdit ? 5 : 4" class="p-0">
               <JournalRow
                 :sort="bankForm.sort"
                 :display-rows="displayRows"
@@ -1073,7 +1071,7 @@ onBeforeRouteLeave((to, from, next) => {
       </CTableBody>
     </CTable>
 
-    <CRow v-if="!isCreateMode" class="text-right px-2">
+    <CRow v-if="!isCreateMode" class="text-end px-2">
       <CCol>
         <v-btn
           color="warning"
@@ -1088,12 +1086,12 @@ onBeforeRouteLeave((to, from, next) => {
   </CForm>
 
   <ConfirmModal ref="confirmModal">
-    <template #header>본서 거래 내역 삭제</template>
+    <template #header>본사 거래 내역 삭제</template>
     <template #default>
       삭제한 데이터는 복구할 수 없습니다. 해당 입출금 거래 정보를 삭제하시겠습니까?
     </template>
     <template #footer>
-      <v-btn size="small" color="warning" @click="delTransaction">저장</v-btn>
+      <v-btn size="small" color="warning" @click="delTransaction">삭제</v-btn>
     </template>
   </ConfirmModal>
 

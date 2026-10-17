@@ -2,9 +2,9 @@
 import { computed, onBeforeMount, onBeforeUpdate, type PropType, reactive, ref } from 'vue'
 import { useCompany } from '@/store/pinia/company'
 import { useComLedger } from '@/store/pinia/comLedger.ts'
+import { usePerms } from '@/composables/usePerms'
 import type { CompanyBank } from '@/store/types/comLedger'
 import { isValidate } from '@/utils/helper'
-import { useAccount } from '@/store/pinia/account.ts'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -12,8 +12,6 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 const props = defineProps({
   bankAcc: { type: Object as PropType<CompanyBank>, default: () => null },
 })
-
-import { usePerms } from '@/composables/usePerms'
 
 const refAlertModal = ref()
 const refConfirmModal = ref()
@@ -236,7 +234,7 @@ onBeforeUpdate(() => dataSetup())
         </CRow>
 
         <CRow>
-          <CCol sm="12" class="text-right pt-1">
+          <CCol sm="12" class="text-end pt-1">
             <v-btn :color="bankAcc ? 'success' : 'primary'" type="submit" :disabled="formsCheck">
               거래계좌 정보 <span v-if="bankAcc">저장</span><span v-else>추가</span>하기
             </v-btn>

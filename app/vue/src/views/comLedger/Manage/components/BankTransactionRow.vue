@@ -286,7 +286,7 @@ watch(
     </CTableDataCell>
 
     <!-- 분류 내역 (JournalRow) -->
-    <CTableDataCell colspan="7" class="p-0">
+    <CTableDataCell colspan="5" class="p-0">
       <JournalRow
         :sort="localBankForm.sort"
         :display-rows="displayRows"

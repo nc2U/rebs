@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { AlertLight } from '@/utils/cssMixins'
 
-defineProps({
-  company: { type: Number, default: null },
-})
+defineProps<{
+  company?: number | null
+}>()
 
 const emit = defineEmits<{
   (e: 'open-scraping'): void

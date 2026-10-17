@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, type ComputedRef, inject, ref, watch } from 'vue'
-import { useAccount } from '@/store/pinia/account.ts'
+import { usePerms } from '@/composables/usePerms'
 import type { AccountPicker } from '@/store/types/comLedger.ts'
 import LedgerAccount from '@/components/LedgerAccount/Index.vue'
 
@@ -43,8 +43,6 @@ watch(
     }
   },
 )
-
-import { usePerms } from '@/composables/usePerms'
 
 interface Emits {
   (e: 'removeEntry', index: number): void

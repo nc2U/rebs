@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import { useComLedger } from '@/store/pinia/comLedger'
-import { useAccount } from '@/store/pinia/account.ts'
+import { usePerms } from '@/composables/usePerms'
 import { TableSecondary } from '@/utils/cssMixins'
 import Pagination from '@/components/Pagination'
 import BankAcc from './BankAcc.vue'
@@ -13,8 +13,6 @@ const props = defineProps({
   highlightId: { type: Number, default: null },
   currentPage: { type: Number, default: 1 },
 })
-
-import { usePerms } from '@/composables/usePerms'
 
 const emit = defineEmits(['page-select'])
 
@@ -59,7 +57,7 @@ const accCallModal = () => {
     <CTableHead>
       <CTableRow :color="TableSecondary">
         <CTableHeaderCell class="pl-3" colspan="6">은행거래내역</CTableHeaderCell>
-        <CTableHeaderCell class="pl-0" :colspan="canComLedgerEdit ? 6 : 5">
+        <CTableHeaderCell class="pl-0" :colspan="canComLedgerEdit ? 5 : 4">
           <span class="text-grey mr-2">|</span> 분류 내역
         </CTableHeaderCell>
       </CTableRow>

@@ -151,7 +151,7 @@ onBeforeMount(() => {
               </CCol>
 
               <CCol md="6" lg="3" class="mb-3">
-                <CFormSelect v-model.number="form.account_category" @change="cateSelect">
+                <CFormSelect v-model="form.account_category" @change="cateSelect">
                   <option value="">계정분류</option>
                   <option value="asset">자산</option>
                   <option value="liability">부채</option>
@@ -175,7 +175,7 @@ onBeforeMount(() => {
               </CCol>
 
               <CCol md="6" lg="3" class="mb-3">
-                <CFormSelect v-model="form.bank_account" @change="listFiltering(1)">
+                <CFormSelect v-model.number="form.bank_account" @change="listFiltering(1)">
                   <option value="">거래계좌</option>
                   <option v-for="acc in allComBankList" :key="acc.pk" :value="acc.pk">
                     {{ acc.alias_name }}
@@ -203,11 +203,10 @@ onBeforeMount(() => {
               <CFormInput
                 v-model="form.search"
                 placeholder="적요, 거래처 검색"
-                aria-label="Username"
-                aria-describedby="addon-wrapping"
+                aria-label="검색어"
                 @keydown.enter="listFiltering(1)"
               />
-              <CInputGroupText @click="listFiltering(1)">검색</CInputGroupText>
+              <CInputGroupText class="pointer" @click="listFiltering(1)">검색</CInputGroupText>
             </CInputGroup>
           </CCol>
         </CRow>
@@ -218,7 +217,7 @@ onBeforeMount(() => {
       <CCol color="warning" class="p-2 pl-3">
         <strong> 거래 건수 조회 결과 : {{ numFormat(bankTransactionCount ?? 0, 0, 0) }} 건 </strong>
       </CCol>
-      <CCol v-if="!formsCheck" class="text-right mb-0">
+      <CCol v-if="!formsCheck" class="text-end mb-0">
         <v-btn color="info" size="small" @click="resetForm"> 검색조건 초기화</v-btn>
       </CCol>
     </CRow>

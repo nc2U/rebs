@@ -8,7 +8,6 @@ import {
 } from 'vue-router'
 import { navMenu, pageTitle } from '@/views/comLedger/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
-import { useAccount } from '@/store/pinia/account.ts'
 import { message } from '@/utils/helper.ts'
 import type { Company } from '@/store/types/settings.ts'
 import { type DataFilter as Filter, useComLedger } from '@/store/pinia/comLedger'

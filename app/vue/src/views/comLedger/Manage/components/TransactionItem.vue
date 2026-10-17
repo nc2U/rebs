@@ -22,6 +22,7 @@ const canComLedgerManage = computed(
 const canComLedgerUpdate = computed(
   () => can(PERM.HQ_LEDGER_UPDATE) || canGlobal(PERM.HQ_LEDGER_UPDATE),
 )
+const canComLedgerEdit = computed(() => canComLedgerUpdate.value || canComLedgerManage.value)
 
 const router = useRouter()
 const ledgerStore = useComLedger()
@@ -32,7 +33,7 @@ const accStore = useAccount()
 const superAuth = computed(() => accStore.superAuth)
 const allowedPeriod = computed(
   () =>
-    (superAuth as any).value ||
+    superAuth.value ||
     canComLedgerManage.value ||
     (canComLedgerUpdate.value &&
       diffDate(props.transaction?.deal_date as string, props.calculated) <= 10),
@@ -515,14 +516,14 @@ const collapseAll = () => {
         <v-icon v-else icon="mdi-minus-circle" color="danger" size="sm" />
       </CTableDataCell>
 
-      <CTableDataCell colspan="6" class="p-0">
+      <CTableDataCell :colspan="canComLedgerEdit ? 5 : 4" class="p-0">
         <CTable class="m-0 p-0">
           <colgroup>
             <col style="width: 28%" />
             <col style="width: 26%" />
             <col style="width: 16%" />
             <col style="width: 24%" />
-            <col v-if="canComLedgerUpdate" style="width: 6%" />
+            <col v-if="canComLedgerEdit" style="width: 6%" />
           </colgroup>
           <CTableRow v-for="entry in visibleEntries" :key="entry.pk" class="bg-yellow-lighten-5">
             <CTableDataCell
@@ -657,7 +658,7 @@ const collapseAll = () => {
             <CTableDataCell class="pl-3">
               {{ cutString(entry.evidence_type_display, 10) }}
             </CTableDataCell>
-            <CTableDataCell v-if="canComLedgerUpdate" class="text-right pr-2">
+            <CTableDataCell v-if="canComLedgerEdit" class="text-right pr-2">
               <v-icon
                 v-if="allowedPeriod"
                 icon="mdi-pencil"
@@ -675,7 +676,7 @@ const collapseAll = () => {
 
           <!-- Expand/Collapse Controls Row -->
           <CTableRow v-if="shouldShowExpand" class="bg-grey-lighten-4">
-            <CTableDataCell colspan="5" class="text-center py-2">
+            <CTableDataCell :colspan="canComLedgerEdit ? 5 : 4" class="text-center py-2">
               <!-- Expand More Button -->
               <v-btn
                 v-if="!isFullyExpanded"
