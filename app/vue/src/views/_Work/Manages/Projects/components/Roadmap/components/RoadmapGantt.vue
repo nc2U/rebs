@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed, ref, type PropType } from 'vue'
 import { useRoute } from 'vue-router'
-import { diffDate } from '@/utils/baseMixins.ts'
-import type { Version } from '@/store/types/work_project.ts'
+import { diffDate } from '@/utils/baseMixins'
+import type { Version } from '@/store/types/work_project'
 import NoData from '@/components/NoData/Index.vue'
 
 const props = defineProps({

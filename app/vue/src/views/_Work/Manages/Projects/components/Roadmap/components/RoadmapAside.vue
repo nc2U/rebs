@@ -1,20 +1,28 @@
 <script lang="ts" setup>
-import { ref, type PropType, watch } from 'vue'
-import type { Version } from '@/store/types/work_project.ts'
-import type { Tracker } from '@/store/types/work_issue.ts'
+import { ref, watch } from 'vue'
+import type { Version } from '@/store/types/work_project'
+import type { Tracker } from '@/store/types/work_issue'
 
-const props = defineProps({
-  trackers: {
-    type: Array as PropType<Tracker[] | { pk: number; name: string; description?: string }[]>,
-    default: () => [],
-  },
-  versionList: { type: Array as PropType<Version[]>, default: () => [] },
-  completed: { type: Boolean, default: false },
-  selectedTrackers: { type: Array as PropType<number[]>, default: () => [] },
-  selectedVersionId: { type: Number as PropType<number | null>, default: null },
+interface Props {
+  trackers?: (Tracker | { pk: number; name: string; description?: string })[]
+  versionList?: Version[]
+  completed?: boolean
+  selectedTrackers?: number[]
+  selectedVersionId?: number | null
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  trackers: () => [],
+  versionList: () => [],
+  completed: false,
+  selectedTrackers: () => [],
+  selectedVersionId: null,
 })
 
-const emit = defineEmits(['apply-filter', 'select-version'])
+const emit = defineEmits<{
+  (e: 'apply-filter', filter: { completed: boolean; trackerIds: number[] }): void
+  (e: 'select-version', verId: number): void
+}>()
 
 const isCompleted = ref(props.completed)
 const selectedTrackerIds = ref<number[]>([...props.selectedTrackers])

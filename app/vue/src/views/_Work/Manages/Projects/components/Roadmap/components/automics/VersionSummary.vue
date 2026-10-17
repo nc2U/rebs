@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref, type PropType } from 'vue'
-import type { Issue, SimpleIssue } from '@/store/types/work_issue.ts'
+import type { Issue, SimpleIssue } from '@/store/types/work_issue'
 
 const props = defineProps({
   issues: {

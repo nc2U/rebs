@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { ref, computed, type PropType } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { usePerms } from '@/composables/usePerms.ts'
-import { useWork } from '@/store/pinia/work_project.ts'
-import type { Version } from '@/store/types/work_project.ts'
+import { usePerms } from '@/composables/usePerms'
+import { useWork } from '@/store/pinia/work_project'
+import type { Version } from '@/store/types/work_project'
 import RoadmapItem from './RoadmapItem.vue'
 import RoadmapGantt from './RoadmapGantt.vue'
 import TextButton from '@/views/_Work/components/atomics/TextButton.vue'
@@ -57,7 +57,10 @@ const onViewModeChange = (mode: 'list' | 'gantt') => {
       </v-btn-toggle>
 
       <span v-if="canManageVersions" class="mr-2 form-text">
-        <TextButton name="새 단계" :to="{ name: '(로드맵) - 추가' }" />
+        <TextButton
+          name="새 단계"
+          :to="{ name: '(로드맵) - 추가', params: { projId: route.params.projId } }"
+        />
       </span>
 
       <span>
@@ -76,12 +79,18 @@ const onViewModeChange = (mode: 'list' | 'gantt') => {
             <CDropdownItem
               v-if="route.params.projId"
               class="form-text"
-              @click="router.push({ name: '(설정)', query: { menu: '단계' } })"
+              @click="
+                router.push({
+                  name: '(설정)',
+                  params: { projId: route.params.projId },
+                  query: { menu: '단계' },
+                })
+              "
             >
-              <router-link to="">
-                <v-icon icon="mdi-cog" color="grey" size="sm" class="mr-2" />
+              <span class="text-primary">
+                <v-icon icon="mdi-cog" color="secondary" size="sm" class="mr-1" />
                 설정
-              </router-link>
+              </span>
             </CDropdownItem>
           </CDropdownMenu>
         </CDropdown>

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref, watch } from 'vue'
-import { useWork } from '@/store/pinia/work_project.ts'
-import { useRoute, useRouter } from 'vue-router'
-import type { Version } from '@/store/types/work_project.ts'
+import { useWork } from '@/store/pinia/work_project'
+import { useRoute, useRouter, type LocationQueryRaw } from 'vue-router'
+import type { IssueProject, Version } from '@/store/types/work_project'
 import Loading from '@/components/Loading/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import RoadmapList from './components/RoadmapList.vue'
@@ -10,20 +10,26 @@ import VersionDetail from './components/VersionDetail.vue'
 import VersionForm from './components/VersionForm.vue'
 import RoadmapAside from './components/RoadmapAside.vue'
 
-const cBody = ref()
-const toggle = () => cBody.value.toggle()
+const props = defineProps<{
+  navMenu?: any
+  currentProject?: IssueProject | null
+  query?: LocationQueryRaw
+}>()
+
+const cBody = ref<InstanceType<typeof ContentBody> | null>(null)
+const toggle = () => cBody.value?.toggle()
 defineExpose({ toggle })
+
+const [route, router] = [useRoute(), useRouter()]
 
 const aside = computed(() => route.name === '(로드맵)')
 
 const workStore = useWork()
 
-const currentProject = computed(() => workStore.currentProject)
+const currentProject = computed(() => props.currentProject ?? workStore.currentProject)
 const version = computed(() => workStore.version)
 const rawVersionList = computed(() => workStore.versionList)
 const trackerList = computed(() => currentProject.value?.trackers ?? [])
-
-const [route, router] = [useRoute(), useRouter()]
 
 const showCompleted = ref(route.query.completed === '1')
 const selectedTrackers = ref<number[]>([])
@@ -90,13 +96,16 @@ const onApplyFilter = async (filter: { completed: boolean; trackerIds: number[] 
   }
 }
 
-const onSubmit = (payload: any, back = false) => {
+const onSubmit = async (payload: any, back = false) => {
+  const projId = route.params.projId as string
   if (!payload.pk) {
-    payload.project = route.params.projId as string
-    workStore.createVersion(payload)
-    if (!back) router.replace({ name: '(로드맵)' })
-  } else workStore.updateVersion(payload)
-  if (back) router.replace({ name: '(설정)', query: { menu: '단계' } })
+    payload.project = projId
+    await workStore.createVersion(payload)
+    if (!back) router.replace({ name: '(로드맵)', params: { projId } })
+  } else {
+    await workStore.updateVersion(payload)
+  }
+  if (back) router.replace({ name: '(설정)', params: { projId }, query: { menu: '단계' } })
 }
 
 watch(
@@ -120,7 +129,13 @@ onBeforeMount(async () => {
 
 <template>
   <Loading v-model:active="loading" />
-  <ContentBody ref="cBody" :aside="aside">
+  <ContentBody
+    ref="cBody"
+    :nav-menu="navMenu"
+    :current-project="currentProject"
+    :query="query"
+    :aside="aside"
+  >
     <template v-slot:default>
       <RoadmapList
         v-if="route.name === '(로드맵)'"

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, type PropType, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { usePerms } from '@/composables/usePerms.ts'
-import { useWork } from '@/store/pinia/work_project.ts'
-import type { Version } from '@/store/types/work_project.ts'
+import { usePerms } from '@/composables/usePerms'
+import { useWork } from '@/store/pinia/work_project'
+import type { Version } from '@/store/types/work_project'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import VersionSummary from './automics/VersionSummary.vue'
 import VersionIssuesTable from './automics/VersionIssuesTable.vue'
@@ -43,16 +43,21 @@ const done_ratio = computed(() => {
 
 const [route, router] = [useRoute(), useRouter()]
 
-const RefVersionConfirm = ref()
+const RefVersionConfirm = ref<InstanceType<typeof ConfirmModal> | null>(null)
 
-const deleteSubmit = () => {
-  RefVersionConfirm.value.close()
-  workStore.deleteVersion(props.version?.pk as number, props.version.project?.slug as string)
-  router.replace({ name: '(로드맵)' })
+const deleteSubmit = async () => {
+  RefVersionConfirm.value?.close()
+  await workStore.deleteVersion(
+    props.version?.pk as number,
+    (props.version.project?.slug || route.params.projId) as string,
+  )
+  await router.replace({ name: '(로드맵)', params: { projId: route.params.projId } })
 }
 
 onBeforeMount(() => {
-  workStore.fetchVersion(Number(route.params.verId))
+  if (route.params.verId) {
+    workStore.fetchVersion(Number(route.params.verId))
+  }
 })
 </script>
 
@@ -66,24 +71,41 @@ onBeforeMount(() => {
     <CCol class="text-right form-text">
       <span v-if="canManageVersions" class="mr-3">
         <v-icon icon="mdi-pencil" color="amber" size="16" class="mr-1" />
-        <router-link :to="{ name: '(로드맵) - 수정', params: { verId: version?.pk } }">
+        <router-link
+          :to="{
+            name: '(로드맵) - 수정',
+            params: { projId: route.params.projId, verId: version?.pk },
+          }"
+        >
           편집
         </router-link>
       </span>
       <span v-if="canManageVersions" class="mr-3">
         <v-icon icon="mdi-trash-can-outline" color="grey" size="16" class="mr-1" />
-        <router-link
-          to=""
+        <a
+          href="javascript:void(0)"
+          class="text-decoration-none"
           @click="
-            RefVersionConfirm.callModal('', '이 단계 삭제를 계속 진행 하시겠습니까?', '', 'warning')
+            RefVersionConfirm?.callModal(
+              '',
+              '이 단계 삭제를 계속 진행 하시겠습니까?',
+              '',
+              'warning',
+            )
           "
         >
           삭제
-        </router-link>
+        </a>
       </span>
       <span v-if="canManageVersions && version?.status === '1'" class="mr-3">
         <v-icon icon="mdi-plus-circle" color="success" size="16" class="mr-1" />
-        <router-link :to="{ name: '(업무) - 추가', query: { version: version?.pk } }">
+        <router-link
+          :to="{
+            name: '(업무) - 추가',
+            params: { projId: route.params.projId },
+            query: { version: version?.pk },
+          }"
+        >
           새 업무
         </router-link>
       </span>
@@ -110,14 +132,24 @@ onBeforeMount(() => {
     <CRow class="mb-4">
       <CCol class="form-text">
         <span>
-          <router-link :to="{ name: '(업무)', query: { status: 'any', version: version?.pk } }">
+          <router-link
+            :to="{
+              name: '(업무)',
+              params: { projId: route.params.projId },
+              query: { status: 'any', version: version?.pk },
+            }"
+          >
             업무 {{ version?.issues?.length }} 건
           </router-link>
         </span>
         <span>
           (<template v-if="closedNum > 0">
             <router-link
-              :to="{ name: '(업무)', query: { status: 'closed', version: version?.pk } }"
+              :to="{
+                name: '(업무)',
+                params: { projId: route.params.projId },
+                query: { status: 'closed', version: version?.pk },
+              }"
             >
               {{ closedStr }}
             </router-link>
@@ -127,7 +159,13 @@ onBeforeMount(() => {
         </span>
         <span>
           <template v-if="progressNum > 0">
-            <router-link :to="{ name: '(업무)', query: { status: 'open', version: version?.pk } }">
+            <router-link
+              :to="{
+                name: '(업무)',
+                params: { projId: route.params.projId },
+                query: { status: 'open', version: version?.pk },
+              }"
+            >
               {{ progressStr }}
             </router-link>
           </template>

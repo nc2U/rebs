@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, type PropType } from 'vue'
-import type { SimpleIssue } from '@/store/types/work_issue.ts'
+import { useRoute } from 'vue-router'
+import type { SimpleIssue } from '@/store/types/work_issue'
 import IssueDropDown from '@/views/_Work/Manages/Issues/components/IssueDropDown.vue'
 
 const props = defineProps({
@@ -10,6 +11,7 @@ const props = defineProps({
   },
 })
 
+const route = useRoute()
 const selectedRow = ref<number | null>(null)
 </script>
 
@@ -33,7 +35,13 @@ const selectedRow = ref<number | null>(null)
           <CTableDataCell>
             <span>
               <router-link
-                :to="{ name: '(업무) - 보기', params: { issueId: issue.pk } }"
+                :to="{
+                  name: '(업무) - 보기',
+                  params: {
+                    projId: issue.project?.slug || route.params.projId,
+                    issueId: issue.pk,
+                  },
+                }"
                 :class="{ closed: issue.closed }"
               >
                 {{ issue.tracker?.name || '업무' }} #{{ issue.pk }}

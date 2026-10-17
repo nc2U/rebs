@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { computed, type PropType } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { usePerms } from '@/composables/usePerms.ts'
-import { useWork } from '@/store/pinia/work_project.ts'
-import type { Version } from '@/store/types/work_project.ts'
+import { usePerms } from '@/composables/usePerms'
+import { useWork } from '@/store/pinia/work_project'
+import type { Version } from '@/store/types/work_project'
 import VersionIssuesTable from './automics/VersionIssuesTable.vue'
 
 const props = defineProps({
@@ -66,7 +66,13 @@ const done_ratio = computed(() => {
           icon="mdi-pencil"
           color="amber"
           size="18"
-          @click="router.push({ name: '(로드맵) - 수정', params: { verId: version.pk } })"
+          class="pointer"
+          @click="
+            router.push({
+              name: '(로드맵) - 수정',
+              params: { projId: projId, verId: version.pk },
+            })
+          "
         />
       </CCol>
     </CRow>
@@ -91,14 +97,24 @@ const done_ratio = computed(() => {
       <CRow class="mb-4">
         <CCol class="form-text">
           <span>
-            <router-link :to="{ name: '(업무)', query: { status: 'any', version: version?.pk } }">
-              업무 {{ version?.issues?.length }} 건
+            <router-link
+              :to="{
+                name: '(업무)',
+                params: { projId: projId },
+                query: { status: 'any', version: version?.pk },
+              }"
+            >
+              업무 {{ version.total_num ?? version.issues?.length ?? 0 }} 건
             </router-link>
           </span>
           <span>
             (<template v-if="closedNum > 0">
               <router-link
-                :to="{ name: '(업무)', query: { status: 'closed', version: version?.pk } }"
+                :to="{
+                  name: '(업무)',
+                  params: { projId: projId },
+                  query: { status: 'closed', version: version?.pk },
+                }"
               >
                 {{ closedStr }}
               </router-link>
@@ -109,7 +125,11 @@ const done_ratio = computed(() => {
           <span>
             <template v-if="progressNum > 0">
               <router-link
-                :to="{ name: '(업무)', query: { status: 'open', version: version?.pk } }"
+                :to="{
+                  name: '(업무)',
+                  params: { projId: projId },
+                  query: { status: 'open', version: version?.pk },
+                }"
               >
                 {{ progressStr }}
               </router-link>

@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { ref, computed, onBeforeMount } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { isValidate } from '@/utils/helper'
-import { usePerms } from '@/composables/usePerms.ts'
+import { usePerms } from '@/composables/usePerms'
 import { colorLight } from '@/utils/cssMixins'
-import { useWork } from '@/store/pinia/work_project.ts'
-import type { FormVersion } from '@/store/types/work_project.ts'
+import { useWork } from '@/store/pinia/work_project'
+import type { FormVersion } from '@/store/types/work_project'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
 
 const emit = defineEmits(['on-submit'])
@@ -44,7 +44,7 @@ const formsCheck = computed(() => {
   return false
 })
 
-const route = useRoute()
+const [route, router] = [useRoute(), useRouter()]
 
 const workStore = useWork()
 const version = computed(() => workStore.version)
@@ -105,23 +105,29 @@ onBeforeMount(async () => {
             </CFormLabel>
 
             <CCol sm="10" lg="6">
-              <CFormInput v-model="form.name" placeholder="새 단계 이름" required />
+              <CFormInput id="name" v-model="form.name" placeholder="새 단계 이름" required />
             </CCol>
           </CRow>
 
           <CRow class="mb-3">
-            <CFormLabel for="name" class="col-sm-2 col-form-label text-right"> 설명</CFormLabel>
+            <CFormLabel for="description" class="col-sm-2 col-form-label text-right">
+              설명
+            </CFormLabel>
 
             <CCol sm="10" lg="6">
-              <CFormInput v-model="form.description" placeholder="새 단계에 대한 설명" />
+              <CFormInput
+                id="description"
+                v-model="form.description"
+                placeholder="새 단계에 대한 설명"
+              />
             </CCol>
           </CRow>
 
           <CRow class="mb-3">
-            <CFormLabel for="name" class="col-sm-2 col-form-label text-right"> 상태</CFormLabel>
+            <CFormLabel for="status" class="col-sm-2 col-form-label text-right"> 상태</CFormLabel>
 
             <CCol sm="10" lg="6">
-              <CFormSelect v-model="form.status">
+              <CFormSelect id="status" v-model="form.status">
                 <option value="1">진행</option>
                 <option value="2">잠김</option>
                 <option value="3">닫힘</option>
@@ -130,7 +136,9 @@ onBeforeMount(async () => {
           </CRow>
 
           <CRow class="mb-3">
-            <CFormLabel for="name" class="col-sm-2 col-form-label text-right"> 날짜</CFormLabel>
+            <CFormLabel for="effective_date" class="col-sm-2 col-form-label text-right">
+              날짜
+            </CFormLabel>
 
             <CCol sm="6">
               <DatePicker v-model="form.effective_date" placeholder="단계 완료 기한" />
@@ -138,10 +146,10 @@ onBeforeMount(async () => {
           </CRow>
 
           <CRow class="mb-3">
-            <CFormLabel for="name" class="col-sm-2 col-form-label text-right"> 공유</CFormLabel>
+            <CFormLabel for="sharing" class="col-sm-2 col-form-label text-right"> 공유</CFormLabel>
 
             <CCol sm="6">
-              <CFormSelect v-model="form.sharing">
+              <CFormSelect id="sharing" v-model="form.sharing">
                 <option value="0">공유 없음</option>
                 <option value="1">하위 프로젝트</option>
                 <option value="2">상위 및 하위 프로젝트</option>
@@ -152,12 +160,12 @@ onBeforeMount(async () => {
           </CRow>
 
           <CRow class="mb-3">
-            <CFormLabel for="name" class="col-sm-2 col-form-label text-right">
+            <CFormLabel for="is_default" class="col-sm-2 col-form-label text-right">
               기본 단계
             </CFormLabel>
 
             <CCol sm="6" class="pt-2">
-              <CFormCheck v-model="form.is_default" />
+              <CFormCheck id="is_default" v-model="form.is_default" />
             </CCol>
           </CRow>
         </CCardBody>
@@ -166,7 +174,15 @@ onBeforeMount(async () => {
       <v-btn type="submit" :color="version ? 'success' : 'primary'" :disabled="formsCheck">
         저장
       </v-btn>
-      <v-btn color="light" @click="$router.replace({ name: '(로드맵)' })" flat> 목록으로 </v-btn>
+      <v-btn
+        color="light"
+        type="button"
+        class="ml-2"
+        @click="router.replace({ name: '(로드맵)', params: { projId: route.params.projId } })"
+        flat
+      >
+        목록으로
+      </v-btn>
     </CForm>
   </CRow>
 </template>
