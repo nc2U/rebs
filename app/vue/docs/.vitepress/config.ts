@@ -121,7 +121,7 @@ export default withMermaid(
               collapsed: true,
               items: [
                 { text: '기안서 작성 및 상신', link: '/approval/draft' },
-                { text: '기안 양식 안내 (17종)', link: '/approval/forms' },
+                { text: '기안 양식 안내 (18종)', link: '/approval/forms' },
               ],
             },
             {
