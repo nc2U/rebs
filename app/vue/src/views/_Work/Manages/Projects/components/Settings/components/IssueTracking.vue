@@ -1,11 +1,5 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
-import { useStore } from '@/store'
-
-const store = useStore()
-const isDark = computed(() => store.theme === 'dark')
-
-const light = computed(() => (!isDark?.value ? 'light' : ''))
+import { colorLight } from '@/utils/cssMixins'
 </script>
 
 <template>
@@ -24,7 +18,7 @@ const light = computed(() => (!isDark?.value ? 'light' : ''))
 
   <CRow>
     <CCol>
-      <CCard class="mb-3" :color="light">
+      <CCard class="mb-3" :color="colorLight">
         <CCardBody>
           <CRow>
             <CCol>
@@ -46,34 +40,34 @@ const light = computed(() => (!isDark?.value ? 'light' : ''))
 
   <CRow>
     <CCol>
-      <CCard class="mb-3" :color="light">
+      <CCard class="mb-3" :color="colorLight">
         <CCardBody>
           <CRow class="mb-2">
-            <CFormLabel for="inputEmail3" class="col-sm-2 col-form-label text-right">
+            <CFormLabel for="default-version" class="col-sm-2 col-form-label text-right">
               기본 단계
             </CFormLabel>
             <CCol sm="4">
-              <CFormSelect>
+              <CFormSelect id="default-version">
                 <option value="">없음</option>
               </CFormSelect>
             </CCol>
           </CRow>
           <CRow class="mb-2">
-            <CFormLabel for="inputEmail3" class="col-sm-2 col-form-label text-right">
+            <CFormLabel for="default-assignee" class="col-sm-2 col-form-label text-right">
               기본 담당자
             </CFormLabel>
             <CCol sm="4">
-              <CFormSelect>
+              <CFormSelect id="default-assignee">
                 <option value="">없음</option>
               </CFormSelect>
             </CCol>
           </CRow>
           <CRow>
-            <CFormLabel for="inputEmail3" class="col-sm-2 col-form-label text-right">
+            <CFormLabel for="default-query" class="col-sm-2 col-form-label text-right">
               기본 업무 요청
             </CFormLabel>
             <CCol sm="4">
-              <CFormSelect>
+              <CFormSelect id="default-query">
                 <option value="">없음</option>
                 <option value="1">나에게 할당된 업무</option>
                 <option value="2">보고된 업무</option>

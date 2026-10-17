@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { ref, type PropType, nextTick, computed } from 'vue' // computed 추가
-import { usePerms } from '@/composables/usePerms' // 추가
+import { ref, type PropType, nextTick, computed } from 'vue'
+import { usePerms } from '@/composables/usePerms'
 import { colorLight } from '@/utils/cssMixins'
-import type { Version } from '@/store/types/work_project.ts'
+import type { Version } from '@/store/types/work_project'
 import NoData from '@/components/NoData/Index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import TextButton from '@/views/_Work/components/atomics/TextButton.vue'
@@ -14,11 +14,11 @@ defineProps({
 
 const emit = defineEmits(['version-filter', 'delete-version'])
 
-// 권한 설정 추가
+// 권한 설정
 const { can, PERM } = usePerms()
 const canManageVersions = computed(() => can(PERM.PROJECT_VERSION))
 
-const RefVersionConfirm = ref()
+const RefVersionConfirm = ref<InstanceType<typeof ConfirmModal> | null>(null)
 
 const status = ref('')
 const search = ref('')
@@ -38,12 +38,19 @@ const formReset = () => {
 
 const toDelete = (ver: number) => {
   deleteVersion.value = ver
-  RefVersionConfirm.value.callModal('', '이 단계 삭제를 계속 진행 하시겠습니까?', '', 'warning')
+  RefVersionConfirm.value?.callModal(
+    '',
+    '이 단계 삭제를 계속 진행 하시겠습니까?',
+    '',
+    'warning',
+  )
 }
 
 const deleteSubmit = () => {
-  emit('delete-version', deleteVersion.value)
-  RefVersionConfirm.value.close()
+  if (deleteVersion.value) {
+    emit('delete-version', deleteVersion.value)
+    RefVersionConfirm.value?.close()
+  }
 }
 </script>
 
@@ -51,7 +58,14 @@ const deleteSubmit = () => {
   <CRow class="py-2">
     <CCol>
       <span v-if="canManageVersions" class="mr-2 form-text">
-        <TextButton name="새 단계" :to="{ name: '(로드맵) - 추가', query: { back: 1 } }" />
+        <TextButton
+          name="새 단계"
+          :to="{
+            name: '(로드맵) - 추가',
+            params: { projId: currentProjectSlug },
+            query: { back: 1 },
+          }"
+        />
       </span>
     </CCol>
 
@@ -81,11 +95,11 @@ const deleteSubmit = () => {
       <CCard class="mb-3" :color="colorLight">
         <CCardBody>
           <CRow>
-            <CFormLabel for="inputEmail3" class="col-sm-1 col-form-label text-right">
+            <CFormLabel for="version-status" class="col-sm-1 col-form-label text-right">
               상태
             </CFormLabel>
             <CCol sm="2">
-              <CFormSelect v-model="status" @change="versionFilter">
+              <CFormSelect id="version-status" v-model="status" @change="versionFilter">
                 <option value="">모두</option>
                 <option value="1">진행</option>
                 <option value="2">잠김</option>
@@ -93,11 +107,11 @@ const deleteSubmit = () => {
               </CFormSelect>
             </CCol>
 
-            <CFormLabel for="inputEmail3" class="col-sm-1 col-form-label text-right">
+            <CFormLabel for="version-search" class="col-sm-1 col-form-label text-right">
               단계
             </CFormLabel>
             <CCol sm="2">
-              <CFormInput v-model="search" placeholder="검색어 입력" />
+              <CFormInput id="version-search" v-model="search" placeholder="검색어 입력" />
             </CCol>
 
             <CCol class="pt-1">
@@ -106,7 +120,7 @@ const deleteSubmit = () => {
               </v-btn>
               <span class="ml-2">
                 <v-icon icon="mdi-reload" size="sm" color="success" />
-                <router-link to="" @click="formReset">지우기</router-link>
+                <a href="javascript:void(0)" @click="formReset">지우기</a>
               </span>
             </CCol>
           </CRow>
@@ -193,14 +207,18 @@ const deleteSubmit = () => {
                 <span v-if="canManageVersions" class="mr-2">
                   <v-icon icon="mdi-pencil" color="amber" size="sm" class="mr-1" />
                   <router-link
-                    :to="{ name: '(로드맵) - 수정', params: { verId: ver.pk }, query: { back: 1 } }"
+                    :to="{
+                      name: '(로드맵) - 수정',
+                      params: { projId: currentProjectSlug, verId: ver.pk },
+                      query: { back: 1 },
+                    }"
                   >
                     편집
                   </router-link>
                 </span>
                 <span v-if="canManageVersions">
                   <v-icon icon="mdi-trash-can" color="grey" size="sm" class="mr-1" />
-                  <router-link to="" @click="toDelete(ver?.pk as number)">삭제</router-link>
+                  <a href="javascript:void(0)" @click="toDelete(ver?.pk as number)">삭제</a>
                 </span>
               </span>
             </CTableDataCell>
@@ -212,7 +230,7 @@ const deleteSubmit = () => {
 
   <ConfirmModal ref="RefVersionConfirm">
     <template #footer>
-      <v-btn color="warning" @click="deleteSubmit">삭제</v-btn>
+      <v-btn color="warning" size="small" @click="deleteSubmit">삭제</v-btn>
     </template>
   </ConfirmModal>
 </template>

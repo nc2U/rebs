@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, provide, ref } from 'vue'
 import { navMenu1, navMenu2 } from '@/views/_Work/_menu/headermixin1'
-import { useCompany } from '@/store/pinia/company.ts'
-import { useWork } from '@/store/pinia/work_project.ts'
-import { useInform } from '@/store/pinia/work_inform.ts'
-import { useAccount } from '@/store/pinia/account.ts'
-import { usePerms } from '@/composables/usePerms.ts'
+import { useCompany } from '@/store/pinia/company'
+import { useWork } from '@/store/pinia/work_project'
+import { useInform } from '@/store/pinia/work_inform'
+import { useAccount } from '@/store/pinia/account'
+import { usePerms } from '@/composables/usePerms'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import type { Company } from '@/store/types/settings'
-import type { IssueProject } from '@/store/types/work_project.ts'
+import type { IssueProject } from '@/store/types/work_project'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import Loading from '@/components/Loading/Index.vue'
 
 const cBody = ref()
-const sideNavCAll = () => cBody.value.toggle()
+const sideNavCAll = () => cBody.value?.toggle()
 
 const route = useRoute()
 

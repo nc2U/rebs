@@ -3,20 +3,20 @@ import { computed, onBeforeMount, ref, watch } from 'vue'
 import { useForum } from '@/store/pinia/forum'
 import type { Forum } from '@/store/types/forum'
 import { useRoute } from 'vue-router'
-import { getOrderedList, isValidate, setLocalStorage } from '@/utils/helper.ts'
-import { usePerms } from '@/composables/usePerms.ts'
+import { getOrderedList, isValidate, setLocalStorage } from '@/utils/helper'
+import { usePerms } from '@/composables/usePerms'
 import Draggable from 'vuedraggable'
 import NoData from '@/components/NoData/Index.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import TextButton from '../../../../../components/atomics/TextButton.vue'
+import TextButton from '@/views/_Work/components/atomics/TextButton.vue'
 
 const props = defineProps({ project: { type: Number, required: true } })
 
 const route = useRoute()
 
-const RefForumForm = ref()
-const RefDelConfirm = ref()
+const RefForumForm = ref<InstanceType<typeof FormModal> | null>(null)
+const RefDelConfirm = ref<InstanceType<typeof ConfirmModal> | null>(null)
 
 const { can, PERM } = usePerms()
 const canForumManage = computed(() => can(PERM.FORUM_MANAGE))
@@ -65,9 +65,9 @@ watch(
 )
 
 // 게시판 등록 수정
-const crateForum = () => {
+const createForum = () => {
   resetForm()
-  RefForumForm.value.callModal()
+  RefForumForm.value?.callModal()
 }
 
 const modifyCall = (frm: Forum) => {
@@ -76,18 +76,18 @@ const modifyCall = (frm: Forum) => {
   form.value.name = frm.name
   form.value.description = frm.description
   form.value.parent = frm.parent
-  RefForumForm.value.callModal()
+  RefForumForm.value?.callModal()
 }
 
-const onSubmit = (event: Event) => {
+const onSubmit = async (event: Event) => {
   if (isValidate(event)) validated.value = true
   else {
     if (form.value.pk) {
       const { pk, ...rest } = form.value
-      frmStore.updateForum(pk as number, rest, projId.value)
-    } else frmStore.createForum({ ...form.value }, projId.value)
+      await frmStore.updateForum(pk as number, rest, projId.value)
+    } else await frmStore.createForum({ ...form.value }, projId.value)
     validated.value = false
-    RefForumForm.value.close()
+    RefForumForm.value?.close()
     resetForm()
   }
 }
@@ -96,11 +96,13 @@ const onSubmit = (event: Event) => {
 const delForumPk = ref<number | null>(null)
 const deleteModalCall = (pk: number) => {
   delForumPk.value = pk
-  RefDelConfirm.value.callModal()
+  RefDelConfirm.value?.callModal()
 }
-const deleteForum = () => {
-  frmStore.deleteForum(delForumPk.value as number, route.params.projId as string)
-  RefDelConfirm.value.close()
+const deleteForum = async () => {
+  if (delForumPk.value) {
+    await frmStore.deleteForum(delForumPk.value, route.params.projId as string)
+    RefDelConfirm.value?.close()
+  }
 }
 
 onBeforeMount(async () => {
@@ -115,7 +117,7 @@ onBeforeMount(async () => {
   <CRow class="py-2">
     <CCol>
       <span v-if="canForumManage">
-        <TextButton name="새 게시판" @click="crateForum" />
+        <TextButton name="새 게시판" @click="createForum" />
       </span>
     </CCol>
   </CRow>
@@ -141,9 +143,14 @@ onBeforeMount(async () => {
           @end="setLocalStorage(orderedList as any[], STORAGE_KEY)"
         >
           <template #item="{ element }">
-            <CTableRow class="asdfasdf">
+            <CTableRow>
               <CTableDataCell class="pl-3">
-                <router-link :to="{ name: '(게시판) - 보기', params: { forumId: element.pk } }">
+                <router-link
+                  :to="{
+                    name: '(게시판) - 보기',
+                    params: { projId: route.params.projId, forumId: element.pk },
+                  }"
+                >
                   {{ element.name }}
                 </router-link>
               </CTableDataCell>
@@ -157,11 +164,11 @@ onBeforeMount(async () => {
                 />
                 <span v-if="canForumManage" class="mr-3 cursor-pointer">
                   <v-icon icon="mdi-pencil" color="amber" size="15" class="mr-2" />
-                  <router-link to="" @click="modifyCall(element)">편집</router-link>
+                  <a href="javascript:void(0)" @click="modifyCall(element)">편집</a>
                 </span>
                 <span v-if="canForumManage">
                   <v-icon icon="mdi-trash-can-outline" color="grey" size="15" class="mr-2" />
-                  <router-link to="" @click="deleteModalCall(element.pk)">삭제</router-link>
+                  <a href="javascript:void(0)" @click="deleteModalCall(element.pk)">삭제</a>
                 </span>
               </CTableDataCell>
             </CTableRow>
@@ -223,7 +230,7 @@ onBeforeMount(async () => {
           >
             확인
           </v-btn>
-          <v-btn variant="flat" color="light" size="small" @click="RefForumForm.close()" flat>
+          <v-btn color="light" size="small" flat @click="RefForumForm?.close()">
             닫기
           </v-btn>
         </CModalFooter>

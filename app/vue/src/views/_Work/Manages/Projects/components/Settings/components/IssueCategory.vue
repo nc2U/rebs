@@ -1,21 +1,24 @@
 <script lang="ts" setup>
 import { ref, type PropType } from 'vue'
-import type { SimpleCategory } from '@/store/types/work_issue.ts'
+import { useRoute } from 'vue-router'
+import type { SimpleCategory } from '@/store/types/work_issue'
 import NoData from '@/components/NoData/Index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import TextButton from '../../../../../components/atomics/TextButton.vue'
+import TextButton from '@/views/_Work/components/atomics/TextButton.vue'
 
 defineProps({ categories: { type: Array as PropType<SimpleCategory[]>, default: () => [] } })
 
 const emit = defineEmits(['delete-category'])
 
-const RefCateDelConfirm = ref()
+const route = useRoute()
 
-const deleteCatePk = ref()
+const RefCateDelConfirm = ref<InstanceType<typeof ConfirmModal> | null>(null)
+
+const deleteCatePk = ref<number | null>(null)
 
 const toDelete = (pk: number) => {
   deleteCatePk.value = pk
-  RefCateDelConfirm.value.callModal(
+  RefCateDelConfirm.value?.callModal(
     '',
     '이 업무 범주 삭제를 계속 진행 하시겠습니까?',
     '',
@@ -24,8 +27,10 @@ const toDelete = (pk: number) => {
 }
 
 const deleteCategory = () => {
-  emit('delete-category', deleteCatePk.value)
-  RefCateDelConfirm.value.close()
+  if (deleteCatePk.value) {
+    emit('delete-category', deleteCatePk.value)
+    RefCateDelConfirm.value?.close()
+  }
 }
 </script>
 
@@ -33,7 +38,10 @@ const deleteCategory = () => {
   <CRow class="py-2">
     <CCol>
       <span class="mr-2 form-text">
-        <TextButton name="새 업무범주" :to="{ name: '(설정) - 범주추가' }" />
+        <TextButton
+          name="새 업무범주"
+          :to="{ name: '(설정) - 범주추가', params: { projId: route.params.projId } }"
+        />
       </span>
     </CCol>
   </CRow>
@@ -64,13 +72,18 @@ const deleteCategory = () => {
             <CTableDataCell class="form-text">
               <span class="mr-2">
                 <v-icon icon="mdi-pencil" color="amber" size="sm" class="mr-1" />
-                <router-link :to="{ name: '(설정) - 범주수정', params: { cateId: category.pk } }">
+                <router-link
+                  :to="{
+                    name: '(설정) - 범주수정',
+                    params: { projId: route.params.projId, cateId: category.pk },
+                  }"
+                >
                   편집
                 </router-link>
               </span>
               <span>
                 <v-icon icon="mdi-trash-can" color="grey" size="sm" class="mr-1" />
-                <router-link to="" @click="toDelete(category.pk)">삭제</router-link>
+                <a href="javascript:void(0)" @click="toDelete(category.pk)">삭제</a>
               </span>
             </CTableDataCell>
           </CTableRow>

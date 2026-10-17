@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref, watch } from 'vue'
-import { type IssueProject } from '@/store/types/work_project.ts'
-import { type IssueCategory as ICategory } from '@/store/types/work_issue.ts'
-import { useWork } from '@/store/pinia/work_project.ts'
-import { useIssue } from '@/store/pinia/work_issue.ts'
-import { useAccount } from '@/store/pinia/account.ts'
-import { message } from '@/utils/helper.ts'
-import { useRoute, useRouter } from 'vue-router'
-import { usePerms } from '@/composables/usePerms.ts'
+import type { IssueProject } from '@/store/types/work_project'
+import type { IssueCategory as ICategory } from '@/store/types/work_issue'
+import { useWork } from '@/store/pinia/work_project'
+import { useIssue } from '@/store/pinia/work_issue'
+import { useAccount } from '@/store/pinia/account'
+import { message } from '@/utils/helper'
+import { useRoute, useRouter, type LocationQueryRaw } from 'vue-router'
+import { usePerms } from '@/composables/usePerms'
 import Loading from '@/components/Loading/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import ProjectForm from '@/views/_Work/Manages/Projects/components/ProjectForm.vue'
@@ -18,8 +18,14 @@ import IssueCategory from './components/IssueCategory.vue'
 import CategoryForm from './category/CategoryForm.vue'
 import Forum from './components/Forum.vue'
 
-const cBody = ref()
-const toggle = () => cBody.value.toggle()
+const props = defineProps<{
+  navMenu?: any
+  currentProject?: IssueProject | null
+  query?: LocationQueryRaw
+}>()
+
+const cBody = ref<InstanceType<typeof ContentBody> | null>(null)
+const toggle = () => cBody.value?.toggle()
 defineExpose({ toggle })
 
 const menu = ref('메인설정')
@@ -78,26 +84,35 @@ const settingMenus = computed(() => {
 })
 
 const workStore = useWork()
-const currentProject = computed<IssueProject | null>(() => workStore.currentProject)
-const versionList = computed(() => workStore.versionList)
-const memberList = computed(() =>
-  (
-    (currentProject.value
-      ? currentProject.value.all_members
-      : [...new Map(workStore.memberList.map(m => [m.user.pk, m])).values()]) as any[]
-  ).map(m => m.user),
+const currentProject = computed<IssueProject | null>(
+  () => props.currentProject ?? workStore.currentProject,
 )
+const versionList = computed(() => workStore.versionList)
+const memberList = computed(() => {
+  const members = currentProject.value
+    ? (currentProject.value.all_members ?? [])
+    : [...new Map(workStore.memberList.map(m => [m.user.pk, m])).values()]
+  return (members as any[]).map(m => m.user).filter(Boolean)
+})
 
-const deleteVersion = (pk: number) => workStore.deleteVersion(pk, currentProject.value?.slug)
+const deleteVersion = async (pk: number) => {
+  await workStore.deleteVersion(pk, currentProject.value?.slug)
+}
 
 const issueStore = useIssue()
 
-const categorySubmit = (payload: ICategory) => {
-  if (payload.pk) issueStore.updateCategory(payload)
-  else issueStore.createCategory(payload)
-  router.push({ name: '(설정)' })
+const categorySubmit = async (payload: ICategory) => {
+  if (payload.pk) await issueStore.updateCategory(payload)
+  else await issueStore.createCategory(payload)
+  await router.push({
+    name: '(설정)',
+    params: { projId: route.params.projId },
+    query: { menu: '업무범주' },
+  })
 }
-const deleteCategory = (pk: number) => issueStore.deleteCategory(pk, currentProject.value?.slug)
+const deleteCategory = async (pk: number) => {
+  await issueStore.deleteCategory(pk, currentProject.value?.slug)
+}
 
 const versionFilter = async (payload: { status?: '' | '1' | '2' | '3'; search?: string }) => {
   const { status, search } = payload
@@ -151,7 +166,13 @@ const handleMenuClick = (m: string) => {
 
 <template>
   <Loading v-model:active="loading" />
-  <ContentBody ref="cBody" :aside="false">
+  <ContentBody
+    ref="cBody"
+    :nav-menu="navMenu"
+    :current-project="currentProject"
+    :query="query"
+    :aside="false"
+  >
     <template v-slot:default>
       <template v-if="route.name === '(설정)'">
         <CRow class="py-2">
@@ -186,7 +207,7 @@ const handleMenuClick = (m: string) => {
         <Version
           v-if="menu === '단계'"
           :versions="versionList"
-          :current-project-slug="currentProject?.slug as string"
+          :current-project-slug="(currentProject?.slug as string) || (route.params.projId as string)"
           @version-filter="versionFilter"
           @delete-version="deleteVersion"
         />

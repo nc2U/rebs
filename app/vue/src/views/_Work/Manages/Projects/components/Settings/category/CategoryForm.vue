@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, type PropType, ref } from 'vue'
 import { colorLight } from '@/utils/cssMixins'
-import { useAccount } from '@/store/pinia/account.ts'
-import { useIssue } from '@/store/pinia/work_issue.ts'
-import { useRoute } from 'vue-router'
+import { useAccount } from '@/store/pinia/account'
+import { useIssue } from '@/store/pinia/work_issue'
+import { useRoute, useRouter } from 'vue-router'
 import { isValidate } from '@/utils/helper'
 
 defineProps({
@@ -33,6 +33,7 @@ const formsCheck = computed(() => {
 })
 
 const route = useRoute()
+const router = useRouter()
 
 const categorySubmit = (event: Event) => {
   if (isValidate(event)) {
@@ -75,21 +76,21 @@ onBeforeMount(async () => {
     <CCard :color="colorLight" class="mb-3">
       <CCardBody>
         <CRow class="mb-3">
-          <CFormLabel for="name" class="col-sm-2 col-form-label text-right required">
+          <CFormLabel for="category-name" class="col-sm-2 col-form-label text-right required">
             이름
           </CFormLabel>
 
           <CCol sm="10" lg="6">
-            <CFormInput v-model="form.name" placeholder="업무 범주 이름" required />
+            <CFormInput id="category-name" v-model="form.name" placeholder="업무 범주 이름" required />
           </CCol>
         </CRow>
 
         <CRow class="mb-3">
-          <CFormLabel for="category-name" class="col-sm-2 col-form-label text-right">
+          <CFormLabel for="category-assigned" class="col-sm-2 col-form-label text-right">
             담당자
           </CFormLabel>
           <CCol sm="10" lg="6">
-            <CFormSelect v-model.number="form.assigned_to">
+            <CFormSelect id="category-assigned" v-model.number="form.assigned_to">
               <option value="">---------</option>
               <option :value="userInfo?.pk">&lt;&lt; 나 &gt;&gt;</option>
               <option v-for="user in memberList" :value="user.pk" :key="user.pk">
@@ -106,7 +107,19 @@ onBeforeMount(async () => {
         <v-btn type="submit" :color="category ? 'success' : 'primary'" :disabled="formsCheck">
           저장
         </v-btn>
-        <v-btn color="light" flat @click="$router.push({ name: '(설정)' })">취소</v-btn>
+        <v-btn
+          color="light"
+          flat
+          @click="
+            router.push({
+              name: '(설정)',
+              params: { projId: route.params.projId },
+              query: { menu: '업무범주' },
+            })
+          "
+        >
+          취소
+        </v-btn>
       </CCol>
     </CRow>
   </CForm>

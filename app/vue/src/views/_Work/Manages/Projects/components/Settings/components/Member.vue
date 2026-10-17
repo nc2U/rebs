@@ -2,15 +2,15 @@
 import { computed, onBeforeMount, ref } from 'vue'
 import { usePerms } from '@/composables/usePerms'
 import { useAccount } from '@/store/pinia/account'
-import { useWork } from '@/store/pinia/work_project.ts'
-import type { IssueProject, SimpleMember } from '@/store/types/work_project.ts'
+import { useWork } from '@/store/pinia/work_project'
+import type { IssueProject, SimpleMember } from '@/store/types/work_project'
 import NoData from '@/components/NoData/Index.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import TextButton from '@/views/_Work/components/atomics/TextButton.vue'
 
-const memberConfirmModal = ref()
-const memberFormModal = ref()
+const memberConfirmModal = ref<InstanceType<typeof ConfirmModal> | null>(null)
+const memberFormModal = ref<InstanceType<typeof FormModal> | null>(null)
 
 const { can, PERM } = usePerms()
 const canManageMembers = computed(() => can(PERM.PROJECT_MEMBER))
@@ -24,18 +24,18 @@ const allMembers = computed<SimpleMember[]>(
   () => (workStore.currentProject as IssueProject)?.all_members ?? [],
 )
 
-const updateMembers = (payload: {
+const updateMembers = async (payload: {
   slug: string
   users: number[]
   roles: number[]
   del_mem?: number
-}) => workStore.updateMembers(payload)
+}) => await workStore.updateMembers(payload)
 
-const createMember = (payload: { user?: number; roles?: number[]; slug: string }) =>
-  workStore.createMember(payload)
+const createMember = async (payload: { user?: number; roles?: number[]; slug: string }) =>
+  await workStore.createMember(payload)
 
-const patchMember = (payload: { pk: number; user?: number; roles?: number[]; slug?: string }) =>
-  workStore.patchMember(payload)
+const patchMember = async (payload: { pk: number; user?: number; roles?: number[]; slug?: string }) =>
+  await workStore.patchMember(payload)
 
 const accStore = useAccount()
 const userList = computed(() => {
@@ -65,20 +65,20 @@ const cancelEdit = () => {
   memberRole.value = []
 }
 
-const editSubmit = (mem: SimpleMember, roles: number[]) => {
+const editSubmit = async (mem: SimpleMember, roles: number[]) => {
   const slug = currentProject?.value.slug as string
   const parent_roles = mem.roles.filter(r => r.inherited).map(r => r.pk)
   const calc_roles = roles.filter(r => !parent_roles.includes(r))
   const me = memberList.value.filter(m => m.user.pk === mem.user.pk).map(m => m.pk)[0]
 
-  if (!!me) patchMember({ pk: me, roles: calc_roles })
-  else createMember({ user: mem.user.pk, roles: calc_roles, slug })
+  if (!!me) await patchMember({ pk: me, roles: calc_roles })
+  else await createMember({ user: mem.user.pk, roles: calc_roles, slug })
 
   cancelEdit()
 }
 
 const toDelete = (memPk: number) => {
-  memberConfirmModal.value.callModal(
+  memberConfirmModal.value?.callModal(
     '',
     '이 구성원을 프로젝트에서 삭제하시겠습니까?',
     '',
@@ -89,14 +89,14 @@ const toDelete = (memPk: number) => {
 
 const deleteMember = ref<number | null>(null)
 
-const deleteSubmit = () => {
-  updateMembers({
+const deleteSubmit = async () => {
+  await updateMembers({
     slug: currentProject?.value.slug as string,
     users: [],
     roles: [],
     del_mem: deleteMember.value ?? undefined,
   })
-  memberConfirmModal.value.close()
+  memberConfirmModal.value?.close()
 }
 
 const mergedMembers = (
@@ -116,12 +116,12 @@ const isInherit = (memRoles: any[], role: number) =>
 
 const validated = ref(false)
 
-const users = ref([])
-const roles = ref([])
+const users = ref<number[]>([])
+const roles = ref<number[]>([])
 
 const editMode = ref<number | null>(null)
 
-const callModal = () => memberFormModal.value.callModal()
+const callModal = () => memberFormModal.value?.callModal()
 
 const onSubmit = (event: Event) => {
   const el = event.currentTarget as HTMLFormElement
@@ -132,14 +132,14 @@ const onSubmit = (event: Event) => {
   } else {
     modalAction()
     validated.value = false
-    memberFormModal.value.close()
+    memberFormModal.value?.close()
   }
 }
 
-const modalAction = () => {
+const modalAction = async () => {
   const _memList = [...users.value.sort((a, b) => a - b)]
   const _roles = [...roles.value.sort((a, b) => a - b)]
-  updateMembers({ slug: currentProject?.value.slug as string, users: _memList, roles: _roles })
+  await updateMembers({ slug: currentProject?.value.slug as string, users: _memList, roles: _roles })
   users.value = []
   roles.value = []
 }
@@ -245,16 +245,16 @@ onBeforeMount(() => accStore.fetchUsersList())
                 class="mr-2"
               >
                 <v-icon icon="mdi-pencil" color="amber" size="sm" />
-                <router-link to="" @click="toEdit(mem)">편집</router-link>
+                <a href="javascript:void(0)" @click="toEdit(mem)">편집</a>
               </span>
               <span v-else-if="editMode === mem.pk" class="mr-2">
                 <v-icon icon="mdi-close-octagon-outline" color="grey" size="sm" class="mr-1" />
-                <router-link to="" @click="cancelEdit">취소</router-link>
+                <a href="javascript:void(0)" @click="cancelEdit">취소</a>
               </span>
 
               <span v-if="canManageMembers && noInheritMem(mem.pk)">
                 <v-icon icon="mdi-trash-can-outline" color="grey" size="sm" class="mr-1" />
-                <router-link to="" @click="toDelete(mem.pk)">삭제</router-link>
+                <a href="javascript:void(0)" @click="toDelete(mem.pk)">삭제</a>
               </span>
             </CTableDataCell>
           </CTableRow>
@@ -280,7 +280,7 @@ onBeforeMount(() => accStore.fetchUsersList())
                 v-for="u in userList"
                 :key="u.pk"
                 :value="u.pk"
-                :id="u.username"
+                :id="'user-' + u.pk"
                 :label="u.username"
                 v-model="users"
                 :required="!users.length"
@@ -299,7 +299,7 @@ onBeforeMount(() => accStore.fetchUsersList())
                 v-for="r in currentProject?.allowed_roles"
                 :key="r.pk"
                 :value="r.pk"
-                :id="r.name"
+                :id="'add-role-' + r.pk"
                 :label="r.name"
                 v-model="roles"
                 :required="!roles.length"
@@ -311,7 +311,7 @@ onBeforeMount(() => accStore.fetchUsersList())
           <v-btn :disabled="!canManageMembers" color="primary" size="small" type="submit">
             추가
           </v-btn>
-          <v-btn color="light" size="small" @click="memberFormModal.close" flat> 닫기</v-btn>
+          <v-btn color="light" size="small" @click="memberFormModal?.close()" flat> 닫기</v-btn>
         </CModalFooter>
       </CForm>
     </template>
