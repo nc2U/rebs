@@ -1,61 +1,64 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { numFormat } from '@/utils/baseMixins'
 import { TableSecondary } from '@/utils/cssMixins'
 import { useProLedger } from '@/store/pinia/proLedger.ts'
 
-defineProps({ date: { type: String, default: '' }, isBalance: { type: String, default: 'true' } })
+interface Props {
+  date?: string
+  isBalance?: string
+}
 
-const emit = defineEmits(['is-exist-balance', 'direct-balance'])
+withDefaults(defineProps<Props>(), {
+  date: '',
+  isBalance: 'true',
+})
 
-const preBalance = ref(0)
-const dateIncSum = ref(0)
-const dateOutSum = ref(0)
-const dateBalance = ref(0)
+const emit = defineEmits<{
+  (e: 'is-exist-balance', val: boolean): void
+  (e: 'direct-balance', val: boolean): void
+}>()
 
 const pLedgerStore = useProLedger()
 const proBalanceByAccList = computed(() => pLedgerStore.proLedgerBalanceByAccList)
 
-const getSumTotal = () => {
-  const dateIncSumCalc =
-    proBalanceByAccList.value.length !== 0
-      ? proBalanceByAccList.value
-          .map((i: any) => i.date_inc)
-          .reduce((x: number, y: number) => x + y, 0)
-      : 0
-  const dateOutSumCalc =
-    proBalanceByAccList.value.length !== 0
-      ? proBalanceByAccList.value
-          .map((o: any) => o.date_out)
-          .reduce((x: number, y: number) => x + y, 0)
-      : 0
-  const dateIncTotalCalc =
-    proBalanceByAccList.value.length !== 0
-      ? proBalanceByAccList.value
-          .filter((i: any) => i.inc_sum !== null)
-          .map(i => i.inc_sum || 0)
-          .reduce((x: number, y: number) => x + y, 0)
-      : 0
-  const dateOutTotalCalc =
-    proBalanceByAccList.value.length !== 0
-      ? proBalanceByAccList.value
-          .filter((o: any) => o.out_sum !== null)
-          .map(o => o.out_sum || 0)
-          .reduce((x: number, y: number) => x + y, 0)
-      : 0
-  dateIncSum.value = dateIncSumCalc
-  dateOutSum.value = dateOutSumCalc
-  dateBalance.value = dateIncTotalCalc - dateOutTotalCalc
-  preBalance.value = dateIncTotalCalc - dateOutTotalCalc - (dateIncSumCalc - dateOutSumCalc)
+const totals = computed(() => {
+  let dateIncSum = 0
+  let dateOutSum = 0
+  let dateIncTotal = 0
+  let dateOutTotal = 0
+
+  for (const bal of proBalanceByAccList.value) {
+    dateIncSum += (bal as any).date_inc || 0
+    dateOutSum += (bal as any).date_out || 0
+    if ((bal as any).inc_sum !== null && (bal as any).inc_sum !== undefined) {
+      dateIncTotal += (bal as any).inc_sum || 0
+    }
+    if ((bal as any).out_sum !== null && (bal as any).out_sum !== undefined) {
+      dateOutTotal += (bal as any).out_sum || 0
+    }
+  }
+
+  const dateBalance = dateIncTotal - dateOutTotal
+  const preBalance = dateBalance - (dateIncSum - dateOutSum)
+
+  return {
+    preBalance,
+    dateIncSum,
+    dateOutSum,
+    dateBalance,
+  }
+})
+
+const handleExistBalanceChange = (e: Event) => {
+  const target = e.target as HTMLInputElement
+  emit('is-exist-balance', target.checked)
 }
 
-const isExistBalance = async (val: boolean) => emit('is-exist-balance', val)
-
-const directBalance = (val: boolean) => emit('direct-balance', val)
-
-watch(proBalanceByAccList, () => getSumTotal())
-
-onBeforeMount(() => getSumTotal())
+const handleDirectBalanceChange = (e: Event) => {
+  const target = e.target as HTMLInputElement
+  emit('direct-balance', target.checked)
+}
 </script>
 
 <template>
@@ -83,17 +86,17 @@ onBeforeMount(() => getSumTotal())
             id="select-acc-sort"
             label="잔고 존재 계좌"
             :checked="!!isBalance"
-            @change="isExistBalance($event.target.checked)"
+            @change="handleExistBalanceChange"
           />
         </CTableDataCell>
         <CTableDataCell colspan="3">
           <CFormSwitch
             id="select-directpay"
             label="직불 용역비 계좌 포함"
-            @change="directBalance($event.target.checked)"
+            @change="handleDirectBalanceChange"
           />
         </CTableDataCell>
-        <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
+        <CTableDataCell class="text-end">(단위: 원)</CTableDataCell>
       </CTableRow>
       <CTableRow :color="TableSecondary" class="text-center">
         <CTableHeaderCell colspan="3">계좌 구분</CTableHeaderCell>
@@ -105,28 +108,35 @@ onBeforeMount(() => getSumTotal())
     </CTableHead>
 
     <CTableBody>
-      <CTableRow v-for="(bal, i) in proBalanceByAccList" :key="i" class="text-right">
-        <CTableDataCell v-if="i === 0" class="text-center" :rowspan="proBalanceByAccList.length">
-          보통예금
-        </CTableDataCell>
-        <CTableDataCell class="text-left">{{ bal.bank_acc }}</CTableDataCell>
-        <CTableDataCell class="text-left">{{ bal.bank_num }}</CTableDataCell>
-        <CTableDataCell>
-          {{ numFormat((bal.inc_sum || 0) - (bal.out_sum || 0) - (bal.date_inc - bal.date_out)) }}
-        </CTableDataCell>
-        <CTableDataCell>{{ numFormat(bal.date_inc) }}</CTableDataCell>
-        <CTableDataCell>{{ numFormat(bal.date_out) }}</CTableDataCell>
-        <CTableDataCell>
-          {{ numFormat((bal.inc_sum || 0) - (bal.out_sum || 0)) }}
+      <template v-if="proBalanceByAccList.length > 0">
+        <CTableRow v-for="(bal, i) in proBalanceByAccList" :key="i" class="text-end">
+          <CTableDataCell v-if="i === 0" class="text-center" :rowspan="proBalanceByAccList.length">
+            보통예금
+          </CTableDataCell>
+          <CTableDataCell class="text-start">{{ bal.bank_acc }}</CTableDataCell>
+          <CTableDataCell class="text-start">{{ bal.bank_num }}</CTableDataCell>
+          <CTableDataCell>
+            {{ numFormat(((bal as any).inc_sum || 0) - ((bal as any).out_sum || 0) - ((bal as any).date_inc - (bal as any).date_out)) }}
+          </CTableDataCell>
+          <CTableDataCell>{{ numFormat((bal as any).date_inc) }}</CTableDataCell>
+          <CTableDataCell>{{ numFormat((bal as any).date_out) }}</CTableDataCell>
+          <CTableDataCell>
+            {{ numFormat(((bal as any).inc_sum || 0) - ((bal as any).out_sum || 0)) }}
+          </CTableDataCell>
+        </CTableRow>
+      </template>
+      <CTableRow v-else>
+        <CTableDataCell colspan="7" class="text-center py-4 text-muted">
+          조회된 계좌별 자금 현황이 없습니다.
         </CTableDataCell>
       </CTableRow>
 
-      <CTableRow :color="TableSecondary" class="text-right">
+      <CTableRow :color="TableSecondary" class="text-end">
         <CTableHeaderCell colspan="3" class="text-center"> 현금성 자산 계</CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(preBalance) }}</CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(dateIncSum) }}</CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(dateOutSum) }}</CTableHeaderCell>
-        <CTableHeaderCell>{{ numFormat(dateBalance) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(totals.preBalance) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(totals.dateIncSum) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(totals.dateOutSum) }}</CTableHeaderCell>
+        <CTableHeaderCell>{{ numFormat(totals.dateBalance) }}</CTableHeaderCell>
       </CTableRow>
     </CTableBody>
   </CTable>

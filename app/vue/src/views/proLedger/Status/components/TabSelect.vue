@@ -5,7 +5,9 @@ const tabPanePillsActiveKey = ref(Number(localStorage.getItem('proLedgerStatus')
 
 watch(tabPanePillsActiveKey, nVal => localStorage.setItem('proLedgerStatus', String(nVal)))
 
-const emit = defineEmits(['tab-select'])
+const emit = defineEmits<{
+  (e: 'tab-select', tab: number): void
+}>()
 
 const showTab = (num: number) => {
   tabPanePillsActiveKey.value = num

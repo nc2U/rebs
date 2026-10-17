@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { message } from '@/utils/helper.ts'
 import { numFormat } from '@/utils/baseMixins'
 import { usePerms } from '@/composables/usePerms.ts'
@@ -10,20 +10,44 @@ import type {
   LedgerExecAmountToBudget as LedgerExecBudget,
 } from '@/store/types/project'
 
-defineProps({ date: { type: String, default: '' } })
+interface Props {
+  date?: string
+}
 
-const emit = defineEmits(['patch-budget', 'update-revised'])
+withDefaults(defineProps<Props>(), {
+  date: '',
+})
 
-const { can, PERM } = usePerms()
-const canLedgerUpdate = computed(() => can(PERM.LEDGER_UPDATE))
+const emit = defineEmits<{
+  (e: 'patch-budget', pk: number, budget: number, isRevised: boolean): void
+  (e: 'update-revised', isRevised: number): void
+}>()
+
+const { can, canGlobal, PERM } = usePerms()
+const canLedgerEdit = computed(
+  () => can(PERM.LEDGER_UPDATE) || can(PERM.LEDGER_MANAGE) || canGlobal(PERM.LEDGER_MANAGE),
+)
 
 const formNumber = ref(1000)
 const isRevised = ref('1')
+
+watch(isRevised, val => {
+  emit('update-revised', Number(val))
+})
 
 const projStore = useProject()
 // ledger 기반 집행금액 사용
 const execAmountList = computed(() => projStore.ledgerExecAmountList)
 const statusOutBudgetList = computed(() => projStore.statusOutBudgetList)
+
+// ledger 기반: account pk로 집행금액 O(1) 조회용 Map
+const execAmountMap = computed(() => {
+  const map = new Map<number, LedgerExecBudget>()
+  for (const e of execAmountList.value) {
+    if (e.account) map.set(e.account, e)
+  }
+  return map
+})
 
 // ledger 기반: account.parent.children_pks 사용 (기존 account_d2.pro_d3s 대체)
 const getChildrenInter = (arr: number[]) => {
@@ -42,15 +66,9 @@ const getSubTitle = (sub: string, parentPk: number) =>
         .map(b => b.pk)
     : []
 
-// ledger 기반: account pk로 집행금액 조회 (기존 acc_d3 대체)
-const getExecAmount = (accountPk: number) =>
-  execAmountList.value.filter((e: LedgerExecBudget) => e.account === accountPk)
+const getEASum = (accountPk: number): number => execAmountMap.value.get(accountPk)?.all_sum || 0
 
-const getEASum = (accountPk: number) =>
-  getExecAmount(accountPk).map((e: LedgerExecBudget) => e.all_sum)[0]
-
-const getEAMonth = (accountPk: number) =>
-  getExecAmount(accountPk).map((e: LedgerExecBudget) => e.month_sum)[0]
+const getEAMonth = (accountPk: number): number => execAmountMap.value.get(accountPk)?.month_sum || 0
 
 const sumTotal = computed(() => {
   // 예산 합계 계산
@@ -62,15 +80,14 @@ const sumTotal = computed(() => {
     .reduce((res: number, val: number) => res + val, 0)
 
   // 집행금액 합계 계산 - Excel SUM 공식과 동일하게 각 행의 표시값 합산
-  // (기존: execAmountList 전체 합산 → statusOutBudgetList의 account만 합산)
   let preExecAmt = 0
   let monthExecAmt = 0
   let totalExecAmt = 0
 
   for (const b of statusOutBudgetList.value) {
     const accountPk = b.account?.pk || 0
-    const allSum = getEASum(accountPk) || 0
-    const monthSum = getEAMonth(accountPk) || 0
+    const allSum = getEASum(accountPk)
+    const monthSum = getEAMonth(accountPk)
 
     preExecAmt += allSum - monthSum // 전월 집행금액 누계 (각 행의 표시값 합산)
     monthExecAmt += monthSum // 당월 집행금액
@@ -90,17 +107,23 @@ const sumTotal = computed(() => {
   }
 })
 
-const patchBudget = (pk: number, budget: string, oldBudget: number, isRevised = false) => {
+let isPatching = false
+const patchBudget = (pk: number, budgetStr: string, oldBudget: number, isRevised = false) => {
+  if (isPatching) return
   formNumber.value = 1000
-  if (canLedgerUpdate.value) {
-    const bg = parseInt(budget)
-    if (bg !== oldBudget) emit('patch-budget', pk, bg, isRevised)
+  if (canLedgerEdit.value) {
+    const bg = parseInt(budgetStr, 10) || 0
+    if (bg !== oldBudget) {
+      isPatching = true
+      emit('patch-budget', pk, bg, isRevised)
+      setTimeout(() => {
+        isPatching = false
+      }, 300)
+    }
   } else {
     message('warning', '알림!', '예산 수정 권한이 없습니다.')
   }
 }
-
-const updateRevised = ($event: any) => emit('update-revised', $event.target.value)
 </script>
 
 <template>
@@ -140,7 +163,6 @@ const updateRevised = ($event: any) => emit('update-revised', $event.target.valu
               label="기초 예산"
               value="0"
               v-model="isRevised"
-              @click="updateRevised"
             />
             <CFormCheck
               type="radio"
@@ -151,11 +173,10 @@ const updateRevised = ($event: any) => emit('update-revised', $event.target.valu
               label="현황 예산"
               value="1"
               v-model="isRevised"
-              @click="updateRevised"
             />
           </v-btn-group>
         </CTableDataCell>
-        <CTableDataCell colspan="4" class="text-right">(단위: 원)</CTableDataCell>
+        <CTableDataCell colspan="4" class="text-end">(단위: 원)</CTableDataCell>
       </CTableRow>
       <CTableRow :color="TableSecondary" class="text-center">
         <CTableHeaderCell colspan="4">구분</CTableHeaderCell>
@@ -169,7 +190,7 @@ const updateRevised = ($event: any) => emit('update-revised', $event.target.valu
     </CTableHead>
 
     <CTableBody>
-      <CTableRow v-for="(obj, i) in statusOutBudgetList" :key="obj.pk" class="text-right">
+      <CTableRow v-for="(obj, i) in statusOutBudgetList" :key="obj.pk" class="text-end">
         <CTableDataCell
           v-if="i === 0"
           :color="TableInfo"
@@ -191,12 +212,12 @@ const updateRevised = ($event: any) => emit('update-revised', $event.target.valu
             obj.account_opt &&
             obj.pk === getSubTitle(obj.account_opt, obj.account?.parent?.pk || 0)[0]
           "
-          class="text-left"
+          class="text-start"
           :rowspan="getSubTitle(obj.account_opt, obj.account?.parent?.pk || 0).length"
         >
           {{ obj.account_opt }}
         </CTableDataCell>
-        <CTableDataCell class="text-left" :colspan="obj.account_opt ? 1 : 2">
+        <CTableDataCell class="text-start" :colspan="obj.account_opt ? 1 : 2">
           {{ obj.account?.name }}
           <v-tooltip v-if="obj.basis_calc" activator="parent" location="left">
             {{ obj.basis_calc }}
@@ -208,8 +229,8 @@ const updateRevised = ($event: any) => emit('update-revised', $event.target.valu
         <CTableDataCell
           v-show="isRevised === '1'"
           class="py-0 bg-amber-lighten-5"
-          :class="canLedgerUpdate ? 'pointer' : ''"
-          @dblclick="formNumber = canLedgerUpdate ? i : 1000"
+          :class="canLedgerEdit ? 'pointer' : ''"
+          @dblclick="formNumber = canLedgerEdit ? i : 1000"
         >
           <span v-if="formNumber !== i">
             {{ numFormat(obj.revised_budget || obj.budget) }}
@@ -217,13 +238,13 @@ const updateRevised = ($event: any) => emit('update-revised', $event.target.valu
           <span v-else class="p-0">
             <CFormInput
               type="text"
-              class="form-control text-right"
+              class="form-control text-end"
               :value="obj.revised_budget || obj.budget"
               @blur="
-                patchBudget(obj.pk as number, $event.target.value, obj.revised_budget ?? 0, true)
+                patchBudget(obj.pk as number, ($event.target as HTMLInputElement).value, obj.revised_budget ?? 0, true)
               "
               @keydown.enter="
-                patchBudget(obj.pk as number, $event.target.value, obj.revised_budget ?? 0, true)
+                patchBudget(obj.pk as number, ($event.target as HTMLInputElement).value, obj.revised_budget ?? 0, true)
               "
             />
           </span>
@@ -256,7 +277,7 @@ const updateRevised = ($event: any) => emit('update-revised', $event.target.valu
         </CTableDataCell>
       </CTableRow>
 
-      <CTableRow :color="TableSecondary" class="text-right">
+      <CTableRow :color="TableSecondary" class="text-end">
         <CTableHeaderCell colspan="4" class="text-center"> 합계</CTableHeaderCell>
         <CTableHeaderCell v-show="isRevised === '0'">
           {{ numFormat(sumTotal.totalBudgetCalc) }}

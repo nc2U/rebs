@@ -17,7 +17,7 @@ import TableTitleRow from '@/components/TableTitleRow.vue'
 import StatusByAccount from '@/views/proLedger/Status/components/StatusByAccount.vue'
 import TransListByDate from '@/views/proLedger/Status/components/TransListByDate.vue'
 import SummaryForBudget from '@/views/proLedger/Status/components/SummaryForBudget.vue'
-import Calculated from '@/views/comLedger/Status/components/Calculated.vue'
+import Calculated from '@/views/proLedger/Status/components/Calculated.vue'
 
 const date = ref(getToday())
 const direct = ref('0')
@@ -146,7 +146,7 @@ const patchBudget = (pk: number, budget: number, isRevised: boolean) => {
   }
 }
 
-const isExistBalance = (val: 'true' | '') => {
+const isExistBalance = (val: boolean | 'true' | '') => {
   isBalance.value = val ? 'true' : ''
   if (project.value) {
     fetchProLedgerBalanceByAccList({
@@ -223,7 +223,13 @@ onBeforeMount(async () => {
 
         <TabSelect @tab-select="showTab" />
 
-        <TableTitleRow excel :url="excelUrl" :filename="filename" :disabled="!project">
+        <TableTitleRow
+          title="프로젝트 자금 및 예산 현황"
+          excel
+          :url="excelUrl"
+          :filename="filename"
+          :disabled="!project"
+        >
           <template #tail>
             <v-btn
               v-if="compName === 'SummaryForBudget'"
@@ -231,14 +237,12 @@ onBeforeMount(async () => {
               color="primary"
               variant="tonal"
               @click="handleDownload(cashFlowUrl, '월별_자금집행_현황.xlsx')"
-              flat
-              :disabled="false"
               class="mt-1 mx-1"
               style="text-decoration: none"
             >
-              <v-icon icon="mdi-microsoft-excel" color="green" class="mr-2" />
+              <v-icon icon="mdi-microsoft-excel" color="green" class="me-2" />
               캐시플로우 폼
-              <v-icon icon="mdi-download" color="grey" class="ml-2" />
+              <v-icon icon="mdi-download" color="grey" class="ms-2" />
             </v-btn>
           </template>
         </TableTitleRow>
