@@ -1,9 +1,12 @@
 <script lang="ts" setup>
-import { computed, type PropType } from 'vue'
+import { computed, type PropType, ref } from 'vue'
 import { useContract } from '@/store/pinia/contract'
 import { TableSecondary } from '@/utils/cssMixins'
 import { usePerms } from '@/composables/usePerms.ts'
+import type { Contract } from '@/store/types/contract'
 import Pagination from '@/components/Pagination'
+import FormModal from '@/components/Modals/FormModal.vue'
+import ContractForm from './ContractForm.vue'
 import ContractItem from './ContractItem.vue'
 
 const emit = defineEmits(['page-select', 'contract-converted'])
@@ -21,6 +24,19 @@ const canContractManage = computed(() => can(PERM.CONTRACT_READ) || can(PERM.CON
 
 const contractStore = useContract()
 const contractList = computed(() => contractStore.contractList)
+
+const updateFormModal = ref<InstanceType<typeof FormModal> | null>(null)
+const selectedContract = ref<Contract | null>(null)
+
+const openUpdateModal = (contract: Contract) => {
+  selectedContract.value = contract
+  updateFormModal.value?.callModal()
+}
+
+const closeUpdateModal = () => {
+  updateFormModal.value?.close()
+  selectedContract.value = null
+}
 
 const contractPages = (pageNum: number) => contractStore.contractPages(pageNum)
 const pageSelect = (page: number) => emit('page-select', page)
@@ -63,15 +79,23 @@ const pageSelect = (page: number) => emit('page-select', page)
     </CTableHead>
 
     <CTableBody>
-      <ContractItem
-        v-for="contract in contractList"
-        :key="contract.pk"
-        :contract="contract"
-        :unit-set="unitSet"
-        :is-highlighted="props.highlightId === contract.pk"
-        :current-page="props.currentPage"
-        @contract-converted="$emit('contract-converted')"
-      />
+      <template v-if="contractList.length > 0">
+        <ContractItem
+          v-for="contract in contractList"
+          :key="contract.pk"
+          :contract="contract"
+          :unit-set="unitSet"
+          :is-highlighted="props.highlightId === contract.pk"
+          :current-page="props.currentPage"
+          @contract-converted="$emit('contract-converted')"
+          @open-update="openUpdateModal"
+        />
+      </template>
+      <CTableRow v-else class="text-center">
+        <CTableDataCell :colspan="canContractManage ? 13 : 12" class="py-5 text-medium-emphasis">
+          조회된 청약/계약 내역이 없습니다.
+        </CTableDataCell>
+      </CTableRow>
     </CTableBody>
   </CTable>
 
@@ -82,4 +106,18 @@ const pageSelect = (page: number) => emit('page-select', page)
     class="mt-3"
     @active-page-change="pageSelect"
   />
+
+  <FormModal ref="updateFormModal" size="xl">
+    <template #header>청약 / 계약 등록 수정</template>
+    <template #default>
+      <ContractForm
+        v-if="selectedContract"
+        :project="selectedContract.project"
+        :contract="selectedContract"
+        :unit-set="unitSet"
+        @close="closeUpdateModal"
+        @contract-converted="$emit('contract-converted')"
+      />
+    </template>
+  </FormModal>
 </template>

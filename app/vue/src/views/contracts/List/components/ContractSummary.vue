@@ -20,25 +20,26 @@ const subsSummaryList = computed(() => contractStore.subsSummaryList)
 const contSummaryList = computed(() => contractStore.contSummaryList)
 const unitTypeList = computed(() => projectDataStore.unitTypeList)
 
-const subsNum = (type?: number | null) => {
-  // 청약 수
-  let subs: SubsSummary[] | number[] = subsSummaryList.value
+const calcRatio = (numerator: number, denominator: number | null | undefined): string => {
+  if (!denominator || denominator <= 0) return ratioFormat(0)
+  return ratioFormat((numerator / denominator) * 100)
+}
+
+const subsNum = (type?: number | null): number => {
+  let list = subsSummaryList.value
   if (type !== undefined) {
-    subs = subs.filter((s: SubsSummary) => s.unit_type === type)
+    list = list.filter((s: SubsSummary) => s.unit_type === type)
   }
-  subs = subs.map((s: SubsSummary) => s.num_cont)
-  return subs.reduce((o: number, n: number) => o + n, 0)
+  return list.reduce((acc: number, cur: SubsSummary) => acc + (cur.num_cont || 0), 0)
 }
 
 const untypedSubsNum = computed(() => subsNum(null))
 
-const contNum = (order: number | null, type?: number) => {
-  // 계약 수
-  let cont: ContSummary[] | number[] = contSummaryList.value
-  cont = order ? cont.filter((c: ContSummary) => c.order_group === order) : cont
-  cont = type ? cont.filter((c: ContSummary) => c.unit_type === type) : cont
-  cont = cont.map((c: ContSummary) => c.conts_num)
-  return cont.reduce((p: number, c: number) => p + c, 0)
+const contNum = (order: number | null, type?: number): number => {
+  let list = contSummaryList.value
+  if (order) list = list.filter((c: ContSummary) => c.order_group === order)
+  if (type) list = list.filter((c: ContSummary) => c.unit_type === type)
+  return list.reduce((acc: number, cur: ContSummary) => acc + (cur.conts_num || 0), 0)
 }
 </script>
 
@@ -103,15 +104,11 @@ const contNum = (order: number | null, type?: number) => {
         </CTableDataCell>
         <!-- 계약율-->
         <CTableDataCell>
-          {{ ratioFormat((contNum(null, type.pk) / (type?.num_unit as number)) * 100) }}
+          {{ calcRatio(contNum(null, type.pk), type.num_unit) }}
         </CTableDataCell>
         <!-- 분양율(청약+계약)-->
         <CTableDataCell>
-          {{
-            ratioFormat(
-              ((contNum(null, type.pk) + subsNum(type.pk)) / (type.num_unit as number)) * 100,
-            )
-          }}
+          {{ calcRatio(contNum(null, type.pk) + subsNum(type.pk), type.num_unit) }}
         </CTableDataCell>
       </CTableRow>
 
@@ -151,11 +148,11 @@ const contNum = (order: number | null, type?: number) => {
         </CTableDataCell>
         <!-- 타입별 계약율 합계-->
         <CTableDataCell>
-          {{ ratioFormat((contNum(null) / (props.project?.num_unit ?? 1)) * 100) }}
+          {{ calcRatio(contNum(null), props.project?.num_unit) }}
         </CTableDataCell>
         <!-- 타입별 분양율(청약+계약) 합계-->
         <CTableDataCell>
-          {{ ratioFormat(((contNum(null) + subsNum()) / (props.project?.num_unit ?? 1)) * 100) }}
+          {{ calcRatio(contNum(null) + subsNum(), props.project?.num_unit) }}
         </CTableDataCell>
       </CTableRow>
     </CTableBody>

@@ -1,11 +1,9 @@
 <script lang="ts" setup>
-import { computed, type PropType, ref } from 'vue'
+import { computed, type PropType } from 'vue'
 import { numFormat } from '@/utils/baseMixins'
 import { useRouter } from 'vue-router'
 import { usePerms } from '@/composables/usePerms.ts'
 import { type Contract } from '@/store/types/contract'
-import ContractForm from './ContractForm.vue'
-import FormModal from '@/components/Modals/FormModal.vue'
 
 const props = defineProps({
   contract: { type: Object as PropType<Contract>, required: true },
@@ -14,13 +12,11 @@ const props = defineProps({
   currentPage: { type: Number, default: 1 },
 })
 
-const emit = defineEmits(['contract-converted'])
+const emit = defineEmits(['contract-converted', 'open-update'])
 
 const { can, PERM } = usePerms()
 const canContractRead = computed(() => can(PERM.CONTRACT_READ))
 const canContractUpdate = computed(() => can(PERM.CONTRACT_UPDATE))
-
-const updateFormModal = ref()
 
 const router = useRouter()
 const contractorPk = computed(() => props.contract?.contractor?.pk)
@@ -154,6 +150,7 @@ const changeTypeColor = computed(() => {
         type="button"
         color="info"
         size="x-small"
+        class="mr-1"
         @click="
           router.push({
             name: '계약 상세 보기',
@@ -169,23 +166,10 @@ const changeTypeColor = computed(() => {
         type="button"
         color="success"
         size="x-small"
-        @click="updateFormModal.callModal()"
+        @click="emit('open-update', contract)"
       >
         수정
       </v-btn>
     </CTableDataCell>
   </CTableRow>
-
-  <FormModal ref="updateFormModal" size="xl">
-    <template #header>청약 / 계약 등록 수정</template>
-    <template #default>
-      <ContractForm
-        :project="contract.project"
-        :contract="contract"
-        :unit-set="unitSet"
-        @close="updateFormModal.close()"
-        @contract-converted="$emit('contract-converted')"
-      />
-    </template>
-  </FormModal>
 </template>

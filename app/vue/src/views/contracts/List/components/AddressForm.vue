@@ -85,8 +85,8 @@ const patchContAddress = async (pk: number, payload: Partial<AddressInContractor
   highlightTableChange()
 }
 
-const toSame = () => {
-  sameAddr.value = !sameAddr.value
+const onSameAddrChange = (val: boolean | null) => {
+  sameAddr.value = !!val
   if (sameAddr.value) {
     form.value.dm_zipcode = form.value.id_zipcode
     form.value.dm_address1 = form.value.id_address1
@@ -107,13 +107,13 @@ const addressCallback = (data: AddressData) => {
     form.value.id_address1 = address1
     form.value.id_address2 = ''
     form.value.id_address3 = address3
-    refAddress1.value.$el.nextElementSibling.focus()
+    refAddress1.value?.$el?.nextElementSibling?.focus?.()
   } else if (formNum === 2) {
     form.value.dm_zipcode = zipcode
     form.value.dm_address1 = address1
     form.value.dm_address2 = ''
     form.value.dm_address3 = address3
-    refAddress2.value.$el.nextElementSibling.focus()
+    refAddress2.value?.$el?.nextElementSibling?.focus?.()
   }
 }
 
@@ -259,13 +259,13 @@ onBeforeUnmount(() => {
         </CCol>
         <CCol sm="12" lg="2" xl="1" class="pt-1 mb-3">
           <v-checkbox-btn
-            v-model="sameAddr"
             id="to-same-for-modal"
+            :model-value="sameAddr"
             label="상동"
             density="compact"
             :color="isDark ? '#857DCC' : '#321FDB'"
             :disabled="!form.id_zipcode"
-            @click="toSame"
+            @update:model-value="onSameAddrChange"
           />
         </CCol>
       </CRow>

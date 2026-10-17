@@ -203,8 +203,11 @@ const dataSetup = async (projId: number, initialPage?: number) => {
   await loadSummaryData(projId)
 }
 
+let isLeaving = false
+
 // 임시 쿼리만 선택적으로 정리 (project 등 다른 쿼리 보존)
 const clearTransientQueries = () => {
+  if (isLeaving) return
   if (route.query.page || route.query.highlight_id) {
     const nextQuery = { ...route.query }
     delete nextQuery.page
@@ -220,8 +223,9 @@ const pageSelect = (page: number) => {
 
 const onContFiltering = (payload: ContFilter) => {
   clearTransientQueries()
+  limit.value = typeof payload.limit === 'number' && payload.limit > 0 ? payload.limit : 10
+  payload.limit = limit.value
   currentFilters.value = { ...payload }
-  limit.value = payload.limit || 10
   payload.status = curr_status.value
   payload.project = project.value?.pk
 
@@ -277,7 +281,7 @@ onBeforeRouteUpdate(async to => {
 })
 
 onBeforeRouteLeave(() => {
-  // 라우트 이동 중 router.replace 실행 방지
+  isLeaving = true
 })
 
 onBeforeMount(async () => {
@@ -343,7 +347,7 @@ onBeforeMount(async () => {
             [엑셀 출력항목 선택]
           </v-btn>
         </TableTitleRow>
-        <SelectItems :visible="visible" :unit-set="unitSet" @print-items="printItems = $event" />
+        <SelectItems :visible="visible" :unit-set="unitSet" v-model:print-items="printItems" />
         <ContractList
           :limit="limit"
           :unit-set="unitSet"

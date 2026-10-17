@@ -40,8 +40,9 @@ const formsCheck = computed(() => {
   const j = form.ordering === '-created'
   const k = (form.search as string)?.trim() === ''
   const l = form.is_completed === ''
+  const m = form.is_sup_cont === ''
   const groupA = a && c && d && e
-  const groupB = f && g && h && i && j && k && l
+  const groupB = f && g && h && i && j && k && l && m
   return groupA && groupB
 })
 
@@ -94,6 +95,7 @@ const resetForm = () => {
   form.qualification = ''
   form.change_type = ''
   form.is_completed = ''
+  form.is_sup_cont = ''
   combinedStatus.value = ''
   from_date.value = ''
   to_date.value = ''
@@ -111,7 +113,7 @@ const resetForm = () => {
           <CCol md="4" xl="2" class="mb-3">
             <CFormSelect v-model.number="form.limit" @change="listFiltering(1)">
               <option value="">표시 개수</option>
-              <option :value="10" :disabled="form.limit === '' || form.limit === 10">10 개</option>
+              <option :value="10" :disabled="form.limit === 10">10 개</option>
               <option :value="30" :disabled="form.limit === 30">30 개</option>
               <option :value="50" :disabled="form.limit === 50">50 개</option>
               <!--              <option value="100">100 개</option>-->
@@ -224,7 +226,9 @@ const resetForm = () => {
                 aria-describedby="addon-wrapping"
                 @keydown.enter="listFiltering(1)"
               />
-              <CInputGroupText @click="listFiltering(1)">검색</CInputGroupText>
+              <CInputGroupText style="cursor: pointer" role="button" @click="listFiltering(1)">
+                검색
+              </CInputGroupText>
             </CInputGroup>
           </CCol>
         </CRow>

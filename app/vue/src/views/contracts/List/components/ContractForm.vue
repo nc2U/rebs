@@ -4,7 +4,6 @@ import {
   nextTick,
   onBeforeMount,
   onMounted,
-  onUpdated,
   type PropType,
   reactive,
   ref,
@@ -311,8 +310,9 @@ const typeSelect = () => {
   })
 }
 
-const remove_sup_cDate = () => {
-  if (form.is_sup_cont) {
+const onSupContChange = (val: boolean | null) => {
+  form.is_sup_cont = !!val
+  if (!form.is_sup_cont) {
     form.sup_cont_date = null
     form.is_completed = false
   }
@@ -435,20 +435,20 @@ const addressCallback = (data: AddressData) => {
     form.id_address1 = address1
     form.id_address2 = ''
     form.id_address3 = address3
-    address21.value.$el.nextElementSibling.focus()
+    address21.value?.$el?.nextElementSibling?.focus?.()
   } else if (formNum === 3) {
     form.dm_zipcode = zipcode
     form.dm_address1 = address1
     form.dm_address2 = ''
     form.dm_address3 = address3
-    address22.value.$el.nextElementSibling.focus()
+    address22.value?.$el?.nextElementSibling?.focus?.()
   }
 }
 
 const sameAddrBtnSet = (chk: boolean) => (sameAddr.value = chk)
 
-const toSame = () => {
-  sameAddr.value = !sameAddr.value
+const onSameAddrChange = (val: boolean | null) => {
+  sameAddr.value = !!val
   if (sameAddr.value) {
     form.dm_zipcode = form.id_zipcode
     form.dm_address1 = form.id_address1
@@ -547,24 +547,22 @@ const fileControl = (payload: any) => {
 
 defineExpose({ formDataReset })
 
-// Props 변경 감지를 위한 이전 값 저장
-const prevContractPk = ref<number | null>(null)
-
 onBeforeMount(() => paymentStore.fetchPayOrderList(props.project, '1'))
 onMounted(() => {
   formDataSetup()
-  // 초기 contract pk 저장
-  prevContractPk.value = props.contract?.pk ?? null
 })
 
-onUpdated(() => {
-  // props.contract가 실제로 변경되었을 때만 formDataSetup 호출
-  const currentContractPk = props.contract?.pk ?? null
-  if (prevContractPk.value !== currentContractPk) {
-    formDataSetup()
-    prevContractPk.value = currentContractPk
-  }
-})
+watch(
+  () => props.contract,
+  newContract => {
+    if (newContract) {
+      formDataSetup()
+    } else {
+      formDataReset()
+    }
+  },
+  { deep: true },
+)
 
 onBeforeRouteLeave(() => formDataReset())
 </script>
@@ -683,12 +681,12 @@ onBeforeRouteLeave(() => formDataReset())
             <CFormLabel class="col-sm-2 col-lg-1 col-form-label">공급계약</CFormLabel>
             <CCol sm="10" lg="2" class="pt-1">
               <v-checkbox-btn
-                v-model="form.is_sup_cont"
+                :model-value="form.is_sup_cont"
                 label="체결 여부"
                 :color="isDark ? '#857DCC' : '#321FDB'"
                 density="compact"
                 :disabled="!isContract"
-                @click="remove_sup_cDate"
+                @update:model-value="onSupContChange"
               />
             </CCol>
             <CFormLabel class="col-sm-2 col-lg-1 col-form-label">체결일자</CFormLabel>
@@ -1102,11 +1100,11 @@ onBeforeRouteLeave(() => formDataReset())
           <v-checkbox-btn
             v-if="!address?.id_zipcode || !address?.dm_zipcode"
             id="to-same"
-            v-model="sameAddr"
+            :model-value="sameAddr"
             label="상동"
             :color="isDark ? '#857DCC' : '#321FDB'"
             :disabled="!isContract || !form.id_zipcode"
-            @click="toSame"
+            @update:model-value="onSameAddrChange"
           />
           <v-btn
             v-else

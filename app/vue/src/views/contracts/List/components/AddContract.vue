@@ -3,16 +3,25 @@ import { ref } from 'vue'
 import ContractForm from './ContractForm.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 
-defineProps({
-  project: { type: Number, default: null },
-  unitSet: { type: Boolean, default: false },
-})
+defineProps<{
+  project?: number | null
+  unitSet?: boolean
+}>()
 
-const emit = defineEmits(['subscription-created', 'contract-converted'])
+defineEmits(['subscription-created', 'contract-converted'])
 
-const createFormModal = ref()
+const createFormModal = ref<InstanceType<typeof FormModal> | null>(null)
+const isModalOpen = ref(false)
 
-const createConfirm = () => createFormModal.value.callModal()
+const createConfirm = () => {
+  isModalOpen.value = true
+  createFormModal.value?.callModal()
+}
+
+const onClose = () => {
+  createFormModal.value?.close()
+  isModalOpen.value = false
+}
 </script>
 
 <template>
@@ -24,9 +33,10 @@ const createConfirm = () => createFormModal.value.callModal()
     <template #header>청약 / 계약 등록 수정</template>
     <template #default>
       <ContractForm
-        :project="project"
+        v-if="isModalOpen"
+        :project="project ?? undefined"
         :unit-set="unitSet"
-        @close="createFormModal.close()"
+        @close="onClose"
         @subscription-created="$emit('subscription-created')"
         @contract-converted="$emit('contract-converted')"
       />
