@@ -9,20 +9,11 @@ defineProps({
 })
 
 // 다운로드 컴포저블 사용
-const { downloadFile, downloadPDF, downloadExcel } = useDownload()
+const { downloadFile } = useDownload()
 
 // 통합 파일 다운로드 핸들러
 const handleFileDownload = (url: string, fileName: string) => {
   downloadFile(url, fileName)
-}
-
-// 타입별 다운로드 핸들러 (호환성)
-const handlePDFDownload = (url: string, fileName: string) => {
-  downloadPDF(url, fileName)
-}
-
-const handleExcelDownload = (url: string, fileName: string) => {
-  downloadExcel(url, fileName)
 }
 </script>
 
@@ -61,7 +52,7 @@ const handleExcelDownload = (url: string, fileName: string) => {
           <strong>총 납부액 :</strong>
         </CCol>
         <CCol :cols="6" class="text-end">
-          <strong class="text-success">{{ numFormat(contract.total_paid) }} 원</strong>
+          <strong class="text-success">{{ numFormat(contract.total_paid || 0) }} 원</strong>
         </CCol>
       </CRow>
       <CRow>

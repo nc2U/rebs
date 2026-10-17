@@ -1,7 +1,12 @@
 <script lang="ts" setup>
 import { onMounted, ref, watch } from 'vue'
+import type { Contract } from '@/store/types/contract'
 import AddRequiredDocs from './AddRequiredDocs.vue'
 import AddConsultation from './AddConsultation.vue'
+
+defineProps<{
+  contract?: Contract | null
+}>()
 
 // 로컬 스토리지 키
 const PROOF_DOCS_EXPANDED_KEY = 'contract_proof_docs_expanded'

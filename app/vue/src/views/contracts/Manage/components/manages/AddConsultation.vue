@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { usePerms } from '@/composables/usePerms.ts'
 import { useContract } from '@/store/pinia/contract.ts'
@@ -28,6 +28,9 @@ const consultationLogList = computed(() => contStore.consultationLogList)
 
 // 로딩 상태
 const isLoading = ref(false)
+
+// 현재 페이지 상태
+const currentPage = ref(1)
 
 // 필터 상태
 const statusFilter = ref<string>('')
@@ -89,6 +92,7 @@ const consultationLogPages = (pageNum: number) => contStore.consultationLogPages
 // 페이지 변경
 const onPageChange = (page: number) => {
   if (!contractorId.value) return
+  currentPage.value = page
   loadData(page)
 }
 
@@ -112,6 +116,7 @@ const loadData = async (page = 1) => {
 // 상태 필터 변경 시 데이터 새로고침
 watch(statusFilter, () => {
   if (contractorId.value) {
+    currentPage.value = 1
     loadData(1)
   }
 })
@@ -121,7 +126,8 @@ watch(
   contractorId,
   newId => {
     if (newId) {
-      loadData()
+      currentPage.value = 1
+      loadData(1)
     } else contStore.consultationLogList = []
   },
   { immediate: true },
@@ -188,7 +194,7 @@ watch(
     <CCol class="d-flex justify-content-center mt-0">
       <Pagination
         v-show="filteredList.length"
-        :active-page="1"
+        :active-page="currentPage"
         :limit="8"
         :pages="consultationLogPages(10)"
         class="mt-3"

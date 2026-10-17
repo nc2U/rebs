@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { cutString } from '@/utils/baseMixins.ts'
 import { usePerms } from '@/composables/usePerms.ts'
@@ -236,11 +236,6 @@ watch(
   { immediate: true },
 )
 
-onMounted(() => {
-  if (contractorId.value) {
-    loadData()
-  }
-})
 </script>
 
 <template>

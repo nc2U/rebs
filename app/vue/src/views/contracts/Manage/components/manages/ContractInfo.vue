@@ -1,21 +1,27 @@
 <script lang="ts" setup>
-import { computed, type PropType, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useStore } from '@/store'
 import { useContract } from '@/store/pinia/contract'
 import { bgLight } from '@/utils/cssMixins.ts'
 import { usePerms } from '@/composables/usePerms.ts'
 import { timeFormat } from '@/utils/baseMixins.ts'
-import type { Contract, Contractor } from '@/store/types/contract'
+import type { Contract, Contractor, ContractorAddress } from '@/store/types/contract'
 import AddressForm from '@/views/contracts/List/components/AddressForm.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
-const props = defineProps({
-  contract: { type: Object as PropType<Contract>, required: true },
-  contractor: { type: Object as PropType<Contractor>, required: true },
-  currentAddress: { type: Object as PropType<any>, default: null },
-  pastAddresses: { type: Array as PropType<any[]>, default: () => [] },
-})
+const props = withDefaults(
+  defineProps<{
+    contract: Contract
+    contractor: Contractor
+    currentAddress?: ContractorAddress | null
+    pastAddresses?: ContractorAddress[]
+  }>(),
+  {
+    currentAddress: null,
+    pastAddresses: () => [],
+  },
+)
 
 const { can, PERM } = usePerms()
 const canContractUpdate = computed(() => can(PERM.CONTRACT_UPDATE))
@@ -538,11 +544,11 @@ const getQualificationColor = (q: '1' | '2' | '3' | '') => {
                 </a>
               </div>
               <small class="text-grey">
-                {{ (file.file_size / 1024).toFixed(2) }} KB
+                {{ ((file.file_size || 0) / 1024).toFixed(2) }} KB
                 <span class="mx-1">|</span>
                 {{ timeFormat(file.created) }}
                 <span class="mx-1">|</span>
-                {{ file.creator.username }}
+                {{ file.creator?.username || '미지정' }}
               </small>
             </div>
             <div>

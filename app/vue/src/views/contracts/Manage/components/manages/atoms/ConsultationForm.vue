@@ -9,11 +9,19 @@ const emit = defineEmits<{
   submit: [data: Partial<ConsultationLog>]
 }>()
 
-const refAlertModal = ref()
+const getToday = () => {
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
 
-// 폼 데이터
-const formData = ref<Partial<ConsultationLog>>({
-  consultation_date: new Date().toISOString().split('T')[0],
+const refAlertModal = ref<InstanceType<typeof AlertModal> | null>(null)
+
+// 폼 기본 데이터 팩토리
+const createInitialFormData = (): Partial<ConsultationLog> => ({
+  consultation_date: getToday(),
   channel: 'phone',
   category: 'question',
   title: '',
@@ -26,32 +34,22 @@ const formData = ref<Partial<ConsultationLog>>({
   is_important: false,
 })
 
+// 폼 데이터
+const formData = ref<Partial<ConsultationLog>>(createInitialFormData())
+
 // 폼 제출
 const submitForm = () => {
-  if (!(formData.value.title as string)?.trim()) {
-    // alert('상담 제목을 입력해주세요.')
-    refAlertModal.value.callModal()
+  if (!formData.value.title?.trim()) {
+    refAlertModal.value?.callModal()
     return
   }
-  emit('submit', formData.value as any)
+  emit('submit', { ...formData.value })
   resetForm()
 }
 
 // 폼 초기화
 const resetForm = () => {
-  formData.value = {
-    consultation_date: new Date().toISOString().split('T')[0],
-    channel: 'phone',
-    category: 'question',
-    title: '',
-    content: '',
-    status: '1',
-    priority: 'normal',
-    follow_up_required: false,
-    follow_up_note: '',
-    completion_date: null,
-    is_important: false,
-  }
+  formData.value = createInitialFormData()
 }
 </script>
 

@@ -1,4 +1,18 @@
 <script lang="ts" setup>
+interface FilterOption {
+  value: string
+  label: string
+  color: string
+}
+
+const filterOptions: FilterOption[] = [
+  { value: '', label: '전체', color: 'primary' },
+  { value: '1', label: '처리대기', color: 'warning' },
+  { value: '2', label: '처리중', color: 'primary' },
+  { value: '3', label: '처리완료', color: 'success' },
+  { value: '4', label: '보류', color: 'secondary' },
+]
+
 // Props
 const props = defineProps<{
   modelValue: string
@@ -18,39 +32,14 @@ const setFilter = (value: string) => {
 <template>
   <div class="mb-3 d-flex gap-2">
     <v-chip
-      :color="props.modelValue === '' ? 'primary' : 'default'"
-      @click="setFilter('')"
+      v-for="option in filterOptions"
+      :key="option.value"
+      :color="props.modelValue === option.value ? option.color : 'default'"
       size="small"
+      style="cursor: pointer"
+      @click="setFilter(option.value)"
     >
-      전체
-    </v-chip>
-    <v-chip
-      :color="props.modelValue === '1' ? 'warning' : 'default'"
-      @click="setFilter('1')"
-      size="small"
-    >
-      처리대기
-    </v-chip>
-    <v-chip
-      :color="props.modelValue === '2' ? 'primary' : 'default'"
-      @click="setFilter('2')"
-      size="small"
-    >
-      처리중
-    </v-chip>
-    <v-chip
-      :color="props.modelValue === '3' ? 'success' : 'default'"
-      @click="setFilter('3')"
-      size="small"
-    >
-      처리완료
-    </v-chip>
-    <v-chip
-      :color="props.modelValue === '4' ? 'secondary' : 'default'"
-      @click="setFilter('4')"
-      size="small"
-    >
-      보류
+      {{ option.label }}
     </v-chip>
   </div>
 </template>

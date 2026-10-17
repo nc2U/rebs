@@ -3,25 +3,39 @@ import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useContract } from '@/store/pinia/contract'
 
-const props = defineProps({ project: { type: Number, default: null } })
+const props = defineProps<{ project?: number | null }>()
 const emit = defineEmits(['search-contractor', 'get-succession'])
 
 const search = ref('')
+const isSearched = ref(false)
 
 const contractStore = useContract()
 const contractorList = computed(() => contractStore.contractorList)
 
-const searchContractor = () => emit('search-contractor', search.value.trim())
+const searchContractor = () => {
+  const query = search.value.trim()
+  if (!query) return
+  isSearched.value = true
+  emit('search-contractor', query)
+}
 
-watch(props, nVal => {
-  if (nVal.project) searchContractor()
+watch(search, () => {
+  isSearched.value = false
 })
+
+watch(
+  () => props.project,
+  newProj => {
+    if (newProj && search.value.trim()) searchContractor()
+  },
+)
 
 const router = useRouter()
 const setContractor = (pk: number) => {
   router.push({ name: '계약 상세 보기', params: { contractorId: pk } })
 
   search.value = ''
+  isSearched.value = false
   contractStore.contractorList = []
 }
 </script>
@@ -41,7 +55,9 @@ const setContractor = (pk: number) => {
                 :disabled="!project"
                 @keydown.enter="searchContractor"
               />
-              <CInputGroupText @click="searchContractor"> 계약 건 찾기</CInputGroupText>
+              <CInputGroupText style="cursor: pointer" role="button" @click="searchContractor">
+                계약 건 찾기
+              </CInputGroupText>
             </CInputGroup>
           </CCol>
           <CCol
@@ -56,12 +72,13 @@ const setContractor = (pk: number) => {
               color="primary"
               variant="outlined"
               size="small"
+              class="me-1 mb-1"
               @click="setContractor(contractor.pk)"
             >
               {{ contractor.__str__ }}
             </v-btn>
           </CCol>
-          <CCol v-if="search && contractorList.length === 0" class="text-danger py-2">
+          <CCol v-if="isSearched && contractorList.length === 0" class="text-danger py-2">
             검색 결과가 없습니다.
           </CCol>
         </CRow>

@@ -82,7 +82,7 @@ const goToList = () => {
     <!-- 탭 선택 영역 -->
     <CRow class="mb-3">
       <CCol>
-        <v-btn-toggle v-model="selectedTabs" multiple density="compact" rounded="0">
+        <v-btn-toggle v-model="selectedTabs" multiple density="compact" rounded="0" mandatory>
           <v-btn value="contract">
             <v-icon icon="mdi-file-document-outline" size="small" class="mr-1" />
             계약관련 내역

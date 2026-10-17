@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { ref, watch } from 'vue'
 import type { ConsultationLog } from '@/store/types/contract'
 
 // Props
@@ -12,11 +13,25 @@ const emit = defineEmits<{
   cancel: []
 }>()
 
+// 로컬 폼 복사본 유지 (단방향 데이터 흐름 준수 및 원본 오염 방지)
+const form = ref<ConsultationLog>({ ...props.log })
+
+watch(
+  () => props.log,
+  newLog => {
+    form.value = { ...newLog }
+  },
+  { deep: true },
+)
+
 // 저장
-const save = () => emit('save', props.log)
+const save = () => emit('save', form.value)
 
 // 취소
-const cancel = () => emit('cancel')
+const cancel = () => {
+  form.value = { ...props.log }
+  emit('cancel')
+}
 </script>
 
 <template>
@@ -24,11 +39,11 @@ const cancel = () => emit('cancel')
     <CRow class="g-2">
       <CCol :md="3">
         <CFormLabel>상담일자</CFormLabel>
-        <CFormInput v-model="log.consultation_date" type="date" size="sm" />
+        <CFormInput v-model="form.consultation_date" type="date" size="sm" />
       </CCol>
       <CCol :md="2">
         <CFormLabel>채널</CFormLabel>
-        <CFormSelect v-model="log.channel" size="sm">
+        <CFormSelect v-model="form.channel" size="sm">
           <option value="visit">방문</option>
           <option value="phone">전화</option>
           <option value="email">이메일</option>
@@ -39,7 +54,7 @@ const cancel = () => emit('cancel')
       </CCol>
       <CCol :md="2">
         <CFormLabel>유형</CFormLabel>
-        <CFormSelect v-model="log.category" size="sm">
+        <CFormSelect v-model="form.category" size="sm">
           <option value="payment">납부상담</option>
           <option value="contract">계약상담</option>
           <option value="change">변경상담</option>
@@ -53,7 +68,7 @@ const cancel = () => emit('cancel')
       </CCol>
       <CCol :md="2">
         <CFormLabel>처리상태</CFormLabel>
-        <CFormSelect v-model="log.status" size="sm">
+        <CFormSelect v-model="form.status" size="sm">
           <option value="1">처리대기</option>
           <option value="2">처리중</option>
           <option value="3">처리완료</option>
@@ -62,7 +77,7 @@ const cancel = () => emit('cancel')
       </CCol>
       <CCol :md="3">
         <CFormLabel>중요도</CFormLabel>
-        <CFormSelect v-model="log.priority" size="sm">
+        <CFormSelect v-model="form.priority" size="sm">
           <option value="low">낮음</option>
           <option value="normal">보통</option>
           <option value="high">높음</option>
@@ -74,21 +89,21 @@ const cancel = () => emit('cancel')
     <CRow class="g-2 mt-2">
       <CCol :md="12">
         <CFormLabel>제목</CFormLabel>
-        <CFormInput v-model="log.title" size="sm" />
+        <CFormInput v-model="form.title" size="sm" />
       </CCol>
     </CRow>
 
     <CRow class="g-2 mt-2">
       <CCol :md="12">
         <CFormLabel>내용</CFormLabel>
-        <CFormTextarea v-model="log.content" rows="4" size="sm" />
+        <CFormTextarea v-model="form.content" rows="4" size="sm" />
       </CCol>
     </CRow>
 
     <CRow class="g-2 mt-2">
       <CCol :md="12">
         <CFormLabel>후속조치 내용</CFormLabel>
-        <CFormTextarea v-model="log.follow_up_note" rows="2" size="sm" />
+        <CFormTextarea v-model="form.follow_up_note" rows="2" size="sm" />
       </CCol>
     </CRow>
 

@@ -25,15 +25,13 @@ const alertColor = computed(() => {
   return aColor
 })
 
-const getStatus = (num: string) => {
-  const status = [
-    { code: '1', text: '청약' },
-    { code: '2', text: '계약' },
-    { code: '3', text: '해지신청' },
-    { code: '4', text: '해지완료' },
-  ]
-  return status.filter(s => s.code === num).map(s => s.text)[0]
+const statusMap: Record<string, string> = {
+  '1': '청약',
+  '2': '계약',
+  '3': '해지신청',
+  '4': '해지완료',
 }
+const getStatus = (num: string) => statusMap[num] || '미정'
 
 const contStore = useContract()
 const clearContractor = () => {
@@ -63,15 +61,16 @@ const resumeForm = () => {
       </CCol>
       <CCol class="text-right">
         <span v-if="!isBlank || !contractor.contract">
-          <v-icon icon="mdi mdi-close" @click.stop="clearContractor" />
+          <v-icon icon="mdi-close" class="pointer" style="cursor: pointer" @click.stop="clearContractor" />
           <v-tooltip activator="parent" location="start"> 계약자 선택 해제</v-tooltip>
         </span>
         <a v-else href="javascript:void(0)">
           <v-icon
-            icon="mdi mdi-refresh"
+            icon="mdi-refresh"
             size="large"
             color="primary"
-            class="rotate"
+            class="rotate pointer"
+            style="cursor: pointer"
             @click="resumeForm"
           />
           <v-tooltip activator="parent" location="start"> 계약자 정보 채우기</v-tooltip>

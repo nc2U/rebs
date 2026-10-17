@@ -29,7 +29,7 @@ defineProps<{
     <CRow class="mt-2">
       <CCol :md="12" class="text-end">
         <small class="text-muted">
-          등록자 :: {{ (log.consultant as any)?.username || '미지정' }}
+          등록자 :: {{ log.consultant?.username || '미지정' }}
           <span class="ml-2">{{ timeFormat(log.created) }}</span>
         </small>
       </CCol>

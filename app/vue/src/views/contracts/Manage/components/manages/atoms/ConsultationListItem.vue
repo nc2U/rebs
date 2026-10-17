@@ -48,44 +48,33 @@ const cancelEdit = () => {
 
 // 수정 저장
 const saveEdit = (log: ConsultationLog) => {
-  emit('edit', log as any)
+  emit('edit', log)
   editingLog.value = null
   isExpanded.value = false
 }
 
 // 삭제
-const handleDelete = () => emit('delete', props.log.pk! as any)
+const handleDelete = () => {
+  if (props.log.pk) emit('delete', props.log.pk)
+}
 
 // 중요도별 색상
-const getPriorityColor = (priority: string) => {
-  switch (priority) {
-    case 'low':
-      return 'info'
-    case 'normal':
-      return 'success'
-    case 'high':
-      return 'warning'
-    case 'urgent':
-      return 'danger'
-    default:
-  }
+const priorityColorMap: Record<string, string> = {
+  low: 'info',
+  normal: 'success',
+  high: 'warning',
+  urgent: 'danger',
 }
+const getPriorityColor = (priority: string) => priorityColorMap[priority] || 'default'
 
 // 상태별 색상
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case '1':
-      return 'warning'
-    case '2':
-      return 'primary'
-    case '3':
-      return 'success'
-    case '4':
-      return 'secondary'
-    default:
-      return 'default'
-  }
+const statusColorMap: Record<string, string> = {
+  '1': 'warning',
+  '2': 'primary',
+  '3': 'success',
+  '4': 'secondary',
 }
+const getStatusColor = (status: string) => statusColorMap[status] || 'default'
 </script>
 
 <template>
