@@ -19,10 +19,10 @@ import FormModal from '@/components/Modals/FormModal.vue'
 import ContController from './components/ContController.vue'
 import SuccessionButton from './components/SuccessionButton.vue'
 import SuccessionList from './components/SuccessionList.vue'
-import SuccessionForm from './components/SuccessionForm.vue'
+import SuccessionForm, { type SuccessionFormData } from './components/SuccessionForm.vue'
 
 const { can, PERM } = usePerms()
-const canContractUpdate = computed(() => can(PERM.CONTRACT_UPDATE))
+const canContractSuccession = computed(() => can(PERM.CONTRACT_SUCCESSION))
 
 const route = useRoute()
 const router = useRouter()
@@ -160,11 +160,14 @@ const projSelect = async (target: number | null, isAuto = false) => {
   }
 }
 
-const callFormModal = (suc?: Succession) => {
-  if (canContractUpdate.value) {
-    if (suc) {
-      contStore.succession = suc
+const callFormModal = async (suc?: Succession) => {
+  if (suc) {
+    contStore.succession = suc
+    if (suc.seller?.pk && contStore.contractor?.pk !== suc.seller.pk) {
+      await contStore.fetchContractor(suc.seller.pk)
     }
+  }
+  if (canContractSuccession.value) {
     successionFormModal.value?.callModal()
   } else {
     successionAlertModal.value?.callModal()
@@ -178,19 +181,23 @@ const doneAlert = () => {
   )
 }
 
-const onSubmit = async (payload: { s_data: Succession; b_data: BuyerForm }) => {
+const onSubmit = async (payload: { s_data: SuccessionFormData; b_data: BuyerForm }) => {
   const { s_data, b_data } = payload
+  if (!project.value) return
+
   const dbData = { ...s_data, ...b_data }
 
   if (!isSuccession.value && !s_data.pk) {
-    await contStore.createSuccession({ ...dbData, project: project.value as number, page: 1 })
-    router.push({ name: '권리 의무 승계 보기', params: { contractorId: s_data.seller.pk } })
+    await contStore.createSuccession({ ...dbData, project: project.value, page: 1 } as any)
+    if (s_data.seller) {
+      router.push({ name: '권리 의무 승계 보기', params: { contractorId: s_data.seller } })
+    }
   } else {
     await contStore.patchSuccession({
       ...dbData,
-      project: project.value as number,
+      project: project.value,
       page: page.value,
-    })
+    } as any)
   }
   successionFormModal.value?.close()
 }
@@ -252,7 +259,7 @@ onBeforeMount(async () => {
         <ContractorAlert v-if="contractor" :contractor="contractor" clear-route="권리 의무 승계" />
 
         <SuccessionButton
-          v-if="canContractUpdate && contractor"
+          v-if="canContractSuccession && contractor"
           :is-succession="isSuccession"
           @call-form="callFormModal"
         />
@@ -274,7 +281,7 @@ onBeforeMount(async () => {
     </ContentBody>
 
     <FormModal ref="successionFormModal" size="lg">
-      <template #header>권리 의무 승계 수정 등록</template>
+      <template #header>{{ isSuccession ? '권리 의무 승계 수정' : '권리 의무 승계 등록' }}</template>
       <template #default>
         <SuccessionForm
           :succession="succession ?? undefined"

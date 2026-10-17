@@ -3,25 +3,45 @@ import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useContract } from '@/store/pinia/contract'
 
-const props = defineProps({ project: { type: Number, default: null } })
-const emit = defineEmits(['search-contractor', 'get-succession'])
+const props = defineProps<{
+  project?: number | null
+}>()
 
-const search = ref('')
-
-const contractStore = useContract()
-const contractorList = computed(() => contractStore.contractorList)
-
-const searchContractor = () => emit('search-contractor', search.value.trim())
-
-watch(props, nVal => {
-  if (nVal.project) searchContractor()
-})
+const emit = defineEmits<{
+  'search-contractor': [search: string]
+}>()
 
 const router = useRouter()
+const contractStore = useContract()
+
+const search = ref('')
+const isSearched = ref(false)
+
+const contractorList = computed(() => contractStore.contractorList)
+
+const searchContractor = () => {
+  if (!search.value.trim()) return
+  isSearched.value = true
+  emit('search-contractor', search.value.trim())
+}
+
+watch(
+  () => props.project,
+  () => {
+    search.value = ''
+    isSearched.value = false
+    contractStore.contractorList = []
+  },
+)
+
+watch(search, () => {
+  isSearched.value = false
+})
+
 const setContractor = (pk: number) => {
   router.push({ name: '권리 의무 승계 보기', params: { contractorId: pk } })
-
   search.value = ''
+  isSearched.value = false
   contractStore.contractorList = []
 }
 </script>
@@ -41,7 +61,12 @@ const setContractor = (pk: number) => {
                 :disabled="!project"
                 @keydown.enter="searchContractor"
               />
-              <CInputGroupText @click="searchContractor"> 계약 건 찾기</CInputGroupText>
+              <CInputGroupText
+                style="cursor: pointer"
+                @click="searchContractor"
+              >
+                계약 건 찾기
+              </CInputGroupText>
             </CInputGroup>
           </CCol>
           <CCol
@@ -56,10 +81,18 @@ const setContractor = (pk: number) => {
               color="primary"
               variant="outlined"
               size="small"
+              class="me-1 mb-1"
+              style="cursor: pointer"
               @click="setContractor(contractor.pk)"
             >
               {{ contractor.__str__ }}
             </v-btn>
+          </CCol>
+          <CCol
+            v-else-if="isSearched"
+            class="p-1 pl-3 mb-2 d-flex align-items-center text-muted"
+          >
+            <small>검색 결과가 없습니다.</small>
           </CCol>
         </CRow>
       </CCol>

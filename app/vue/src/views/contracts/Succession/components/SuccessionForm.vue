@@ -1,52 +1,73 @@
 <script lang="ts" setup>
-import { computed, nextTick, onBeforeMount, type PropType, reactive, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeMount, reactive, ref, watch } from 'vue'
 import { useContract } from '@/store/pinia/contract'
 import { isValidate } from '@/utils/helper'
 import { usePerms } from '@/composables/usePerms.ts'
-import {
-  type BuyerForm,
-  type Contract,
-  type Contractor,
-  type Succession,
-} from '@/store/types/contract'
+import type { BuyerForm, Contract, Contractor, Succession } from '@/store/types/contract'
 import { type AddressData, callAddress } from '@/components/DaumPostcode/address'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
-const props = defineProps({
-  succession: { type: Object as PropType<Succession>, default: () => null },
-  isSuccession: { type: Boolean, default: false },
-})
+export interface SuccessionFormData {
+  pk: number | undefined
+  contract: number | null
+  seller: number | null
+  buyer: number | null
+  apply_date: string
+  trading_date: string
+  status: '1' | '2' | '3' | '9'
+  approval_date: string | null
+  note: string
+}
 
-const emit = defineEmits(['on-submit', 'on-delete', 'close'])
+const props = withDefaults(
+  defineProps<{
+    succession?: Succession | null
+    isSuccession?: boolean
+  }>(),
+  {
+    succession: null,
+    isSuccession: false,
+  },
+)
+
+const emit = defineEmits<{
+  'on-submit': [payload: { s_data: SuccessionFormData; b_data: BuyerForm }]
+  'on-delete': [pk: number]
+  close: []
+}>()
 
 const { can, PERM } = usePerms()
-const canContractUpdate = computed(() => can(PERM.CONTRACT_UPDATE))
+const canContractSuccession = computed(() => can(PERM.CONTRACT_SUCCESSION))
 
-const postCode = ref()
-const refAlertModal = ref()
-const refConfirmModal = ref()
+const postCode = ref<InstanceType<typeof DaumPostcode> | null>(null)
+const refAlertModal = ref<InstanceType<typeof AlertModal> | null>(null)
+const refConfirmModal = ref<InstanceType<typeof ConfirmModal> | null>(null)
 
-const address21 = ref()
-const address22 = ref()
+const address21 = ref<any>(null)
+const address22 = ref<any>(null)
 const sameAddr = ref(false)
 const validated = ref(false)
 
-const form = reactive({
-  pk: undefined as undefined | number,
-  contract: null as number | null,
-  seller: null as number | null,
-  buyer: null as number | null,
-  apply_date: '',
-  trading_date: '',
-  status: '1',
-  approval_date: null as string | null,
-  note: '',
-})
+const openPostcode = (formNum: 2 | 3) => {
+  postCode.value?.initiate(formNum)
+}
 
-const buyer_data = reactive<BuyerForm>({
+const getToday = () => {
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+const contStore = useContract()
+const contract = computed<Contract | null>(() => contStore.contract)
+const contractor = computed<Contractor | null>(() => contStore.contractor)
+
+const createInitialBuyerData = (): BuyerForm => ({
   name: '',
   birth_date: '',
   gender: 'M',
@@ -64,43 +85,55 @@ const buyer_data = reactive<BuyerForm>({
   email: '',
 })
 
+const createInitialFormData = () => ({
+  pk: undefined as undefined | number,
+  contract: contractor.value?.contract || null,
+  seller: contractor.value?.pk || null,
+  buyer: null as number | null,
+  apply_date: getToday(),
+  trading_date: getToday(),
+  status: '1',
+  approval_date: null as string | null,
+  note: '',
+})
+
+const form = reactive(createInitialFormData())
+const buyer_data = reactive<BuyerForm>(createInitialBuyerData())
+
 const formsCheck = computed(() => {
-  if (props.isSuccession) {
-    const a = form.seller === props.succession.seller.pk
-    const b = form.buyer === props.succession.buyer.pk
+  if (props.isSuccession && props.succession) {
+    const a = form.seller === props.succession.seller?.pk
+    const b = form.buyer === props.succession.buyer?.pk
     const c = form.apply_date === props.succession.apply_date
     const d = form.trading_date === props.succession.trading_date
     const e = form.status === props.succession.status
     const f = form.approval_date === props.succession.approval_date
-    const g = form.note === props.succession.note
-    const h = buyer_data.name === props.succession.buyer.name
-    const i = buyer_data.birth_date === props.succession.buyer.birth_date
-    const j = buyer_data.gender === props.succession.buyer.gender
+    const g = (form.note || '') === (props.succession.note || '')
+    const h = buyer_data.name === props.succession.buyer?.name
+    const i = buyer_data.birth_date === props.succession.buyer?.birth_date
+    const j = buyer_data.gender === props.succession.buyer?.gender
 
-    const addr = props.succession.buyer.contractoraddress
-    const k = buyer_data.id_zipcode === addr.id_zipcode
-    const l = buyer_data.id_address1 === addr.id_address1
-    const m = buyer_data.id_address2 === addr.id_address2
-    const n = buyer_data.id_address3 === addr.id_address3
-    const o = buyer_data.dm_zipcode === addr.dm_zipcode
-    const p = buyer_data.dm_address1 === addr.dm_address1
-    const q = buyer_data.dm_address2 === addr.dm_address2
-    const r = buyer_data.dm_address3 === addr.dm_address3
+    const addr = props.succession.buyer?.contractoraddress
+    const k = buyer_data.id_zipcode === (addr?.id_zipcode || '')
+    const l = buyer_data.id_address1 === (addr?.id_address1 || '')
+    const m = buyer_data.id_address2 === (addr?.id_address2 || '')
+    const n = buyer_data.id_address3 === (addr?.id_address3 || '')
+    const o = buyer_data.dm_zipcode === (addr?.dm_zipcode || '')
+    const p = buyer_data.dm_address1 === (addr?.dm_address1 || '')
+    const q = buyer_data.dm_address2 === (addr?.dm_address2 || '')
+    const r = buyer_data.dm_address3 === (addr?.dm_address3 || '')
 
-    const cont = props.succession.buyer.contractorcontact
-    const s = buyer_data.cell_phone === cont.cell_phone
-    const t = buyer_data.home_phone === cont.home_phone
-    const u = buyer_data.other_phone === cont.other_phone
-    const v = buyer_data.email === cont.email
+    const cont = props.succession.buyer?.contractorcontact
+    const s = buyer_data.cell_phone === (cont?.cell_phone || '')
+    const t = buyer_data.home_phone === (cont?.home_phone || '')
+    const u = buyer_data.other_phone === (cont?.other_phone || '')
+    const v = buyer_data.email === (cont?.email || '')
     const fc = a && b && c && d && e && f && g && h && i && j && k
     const bc = l && m && n && o && p && q && r && s && t && u && v
     return fc && bc
-  } else return false
+  }
+  return false
 })
-
-const contStore = useContract()
-const contract = computed<Contract | null>(() => contStore.contract)
-const contractor = computed<Contractor | null>(() => contStore.contractor)
 
 const statusOptions = computed(() => {
   const isGeneral = contract.value?.order_group_sort === '2'
@@ -120,29 +153,29 @@ const statusOptions = computed(() => {
 })
 
 const seller = computed(() => ({
-  pk: props.isSuccession ? props.succession.seller.pk : contractor.value?.pk,
-  name: props.isSuccession ? props.succession.seller.name : contractor.value?.name,
+  pk: props.isSuccession ? (props.succession?.seller?.pk ?? null) : (contractor.value?.pk ?? null),
+  name: props.isSuccession ? (props.succession?.seller?.name ?? '') : (contractor.value?.name ?? ''),
 }))
 
 const onSubmit = (event: Event) => {
-  if (canContractUpdate.value) {
+  if (canContractSuccession.value) {
     if (isValidate(event)) {
       validated.value = true
     } else {
       const s_data = { ...form }
       const b_data = { ...buyer_data }
-      emit('on-submit', { ...{ s_data }, ...{ b_data } })
+      emit('on-submit', { s_data: s_data as any, b_data })
     }
-  } else refAlertModal.value.callModal()
+  } else refAlertModal.value?.callModal()
 }
 
 const deleteConfirm = () => {
-  if (canContractUpdate.value) refConfirmModal.value.callModal()
-  else refAlertModal.value.callModal()
+  if (canContractSuccession.value) refConfirmModal.value?.callModal()
+  else refAlertModal.value?.callModal()
 }
 
 const modalAction = () => {
-  refConfirmModal.value.close()
+  refConfirmModal.value?.close()
   if (form.pk) emit('on-delete', form.pk)
 }
 
@@ -153,13 +186,13 @@ const addressCallback = (data: AddressData) => {
     buyer_data.id_address1 = address1
     buyer_data.id_address2 = ''
     buyer_data.id_address3 = address3
-    address21.value.$el.nextElementSibling.focus()
+    address21.value?.$el?.nextElementSibling?.focus?.()
   } else if (formNum === 3) {
     buyer_data.dm_zipcode = zipcode
     buyer_data.dm_address1 = address1
     buyer_data.dm_address2 = ''
     buyer_data.dm_address3 = address3
-    address22.value.$el.nextElementSibling.focus()
+    address22.value?.$el?.nextElementSibling?.focus?.()
   }
 }
 
@@ -184,40 +217,43 @@ const chkStatus = () => {
 }
 
 const formDataSet = () => {
-  if (props.isSuccession) {
+  if (props.isSuccession && props.succession) {
     const buyer = props.succession.buyer
     form.pk = props.succession.pk
     form.contract = props.succession.contract.pk
     form.seller = props.succession.seller.pk
-    form.buyer = buyer.pk as number
+    form.buyer = (buyer.pk as number) || null
     form.apply_date = props.succession.apply_date
     form.trading_date = props.succession.trading_date
     form.status = props.succession.status
     form.approval_date = props.succession.approval_date
-    form.note = props.succession.note
+    form.note = props.succession.note || ''
 
     buyer_data.name = buyer.name
     buyer_data.birth_date = buyer.birth_date
     buyer_data.gender = buyer.gender
 
     const addr = buyer.contractoraddress
-    buyer_data.id_zipcode = addr.id_zipcode
-    buyer_data.id_address1 = addr.id_address1
-    buyer_data.id_address2 = addr.id_address2
-    buyer_data.id_address3 = addr.id_address3
-    buyer_data.dm_zipcode = addr.dm_zipcode
-    buyer_data.dm_address1 = addr.dm_address1
-    buyer_data.dm_address2 = addr.dm_address2
-    buyer_data.dm_address3 = addr.dm_address3
+    buyer_data.id_zipcode = addr?.id_zipcode || ''
+    buyer_data.id_address1 = addr?.id_address1 || ''
+    buyer_data.id_address2 = addr?.id_address2 || ''
+    buyer_data.id_address3 = addr?.id_address3 || ''
+    buyer_data.dm_zipcode = addr?.dm_zipcode || ''
+    buyer_data.dm_address1 = addr?.dm_address1 || ''
+    buyer_data.dm_address2 = addr?.dm_address2 || ''
+    buyer_data.dm_address3 = addr?.dm_address3 || ''
 
     const cont = buyer.contractorcontact
-    buyer_data.cell_phone = cont.cell_phone
-    buyer_data.home_phone = cont.home_phone
-    buyer_data.other_phone = cont.other_phone
-    buyer_data.email = cont.email
+    buyer_data.cell_phone = cont?.cell_phone || ''
+    buyer_data.home_phone = cont?.home_phone || ''
+    buyer_data.other_phone = cont?.other_phone || ''
+    buyer_data.email = cont?.email || ''
   } else {
-    form.contract = contractor.value?.contract || null
-    form.seller = contractor.value?.pk || null
+    // 신규 등록 모드: 깨끗하게 초기화
+    Object.assign(form, createInitialFormData())
+    Object.assign(buyer_data, createInitialBuyerData())
+    sameAddr.value = false
+    validated.value = false
   }
 }
 
@@ -393,7 +429,7 @@ watch([() => props.succession, contractor], () => formDataSet(), { deep: true })
             <CFormLabel class="col-sm-2 col-form-label required"> 주민등록주소</CFormLabel>
             <CCol xs="4">
               <CInputGroup>
-                <CInputGroupText @click="postCode.initiate(2)"> 우편번호</CInputGroupText>
+                <CInputGroupText style="cursor: pointer" @click="openPostcode(2)"> 우편번호</CInputGroupText>
                 <CFormInput
                   v-model="buyer_data.id_zipcode"
                   v-maska
@@ -401,7 +437,7 @@ watch([() => props.succession, contractor], () => formDataSet(), { deep: true })
                   maxlength="5"
                   placeholder="우편번호"
                   required
-                  @focus="postCode.initiate(2)"
+                  @focus="openPostcode(2)"
                 />
               </CInputGroup>
             </CCol>
@@ -411,7 +447,7 @@ watch([() => props.succession, contractor], () => formDataSet(), { deep: true })
                 maxlength="35"
                 placeholder="주민등록 메인 주소"
                 required
-                @focus="postCode.initiate(2)"
+                @focus="openPostcode(2)"
               />
             </CCol>
           </CRow>
@@ -442,7 +478,7 @@ watch([() => props.succession, contractor], () => formDataSet(), { deep: true })
             <CFormLabel class="col-sm-2 col-form-label required"> 우편송달주소</CFormLabel>
             <CCol xs="4">
               <CInputGroup>
-                <CInputGroupText @click="postCode.initiate(3)"> 우편번호</CInputGroupText>
+                <CInputGroupText style="cursor: pointer" @click="openPostcode(3)"> 우편번호</CInputGroupText>
                 <CFormInput
                   v-model="buyer_data.dm_zipcode"
                   v-maska
@@ -450,7 +486,7 @@ watch([() => props.succession, contractor], () => formDataSet(), { deep: true })
                   maxlength="5"
                   placeholder="우편번호"
                   required
-                  @focus="postCode.initiate(3)"
+                  @focus="openPostcode(3)"
                 />
               </CInputGroup>
             </CCol>
@@ -460,7 +496,7 @@ watch([() => props.succession, contractor], () => formDataSet(), { deep: true })
                 maxlength="35"
                 placeholder="우편송달 메인 주소"
                 required
-                @focus="postCode.initiate(3)"
+                @focus="openPostcode(3)"
               />
             </CCol>
           </CRow>
@@ -558,12 +594,12 @@ watch([() => props.succession, contractor], () => formDataSet(), { deep: true })
             type="button"
             size="small"
             color="warning"
-            :disabled="succession.status === '3'"
+            :disabled="succession?.status === '3'"
             @click="deleteConfirm"
           >
             삭제
           </v-btn>
-          <v-tooltip v-if="succession.status === '3'" activator="parent" location="top">
+          <v-tooltip v-if="succession?.status === '3'" activator="parent" location="top">
             승계완료된 거래 건은 삭제할 수 없습니다.
           </v-tooltip>
         </span>

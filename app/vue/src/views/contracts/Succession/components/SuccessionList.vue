@@ -1,27 +1,38 @@
 <script lang="ts" setup>
-import { computed, type PropType } from 'vue'
+import { computed } from 'vue'
 import { usePerms } from '@/composables/usePerms.ts'
 import { useContract } from '@/store/pinia/contract'
 import { bgLight, TableSecondary } from '@/utils/cssMixins'
 import Pagination from '@/components/Pagination'
 import Succession from '@/views/contracts/Succession/components/Succession.vue'
+import type { Succession as SuccessionType } from '@/store/types/contract'
 
-const emit = defineEmits(['page-select', 'call-form', 'done-alert'])
+withDefaults(
+  defineProps<{
+    highlightId?: number | null
+    currentPage?: number
+  }>(),
+  {
+    highlightId: null,
+    currentPage: 1,
+  },
+)
 
-const props = defineProps({
-  highlightId: { type: [Number, null] as PropType<number | null>, default: null },
-  currentPage: { type: Number, default: 1 },
-})
+const emit = defineEmits<{
+  'page-select': [page: number]
+  'call-form': [suc: SuccessionType]
+  'done-alert': []
+}>()
 
 const { can, PERM } = usePerms()
-const canContractUpdate = computed(() => can(PERM.CONTRACT_UPDATE))
+const canContractSuccession = computed(() => can(PERM.CONTRACT_SUCCESSION))
 
 const contractStore = useContract()
 const successionList = computed(() => contractStore.successionList)
 const successionPages = computed(() => contractStore.successionPages)
 
 const pageSelect = (page: number) => emit('page-select', page)
-const callForm = (suc: any) => emit('call-form', suc)
+const callForm = (suc: SuccessionType) => emit('call-form', suc)
 const doneAlert = () => emit('done-alert')
 </script>
 
@@ -35,7 +46,7 @@ const doneAlert = () => emit('done-alert')
       <col style="width: 15%" />
       <col style="width: 15%" />
       <col style="width: 11%" />
-      <col v-if="canContractUpdate" style="width: 8%" />
+      <col v-if="canContractSuccession" style="width: 8%" />
     </colgroup>
 
     <CTableHead :color="TableSecondary" class="text-center">
@@ -47,20 +58,24 @@ const doneAlert = () => emit('done-alert')
         <CTableHeaderCell>매매계약일</CTableHeaderCell>
         <CTableHeaderCell>변경인가일</CTableHeaderCell>
         <CTableHeaderCell>진행상태</CTableHeaderCell>
-        <CTableHeaderCell v-if="canContractUpdate">확인</CTableHeaderCell>
+        <CTableHeaderCell v-if="canContractSuccession">확인</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
     <CTableBody>
+      <CTableRow v-if="!successionList || successionList.length === 0">
+        <CTableDataCell :colspan="canContractSuccession ? 8 : 7" class="text-center py-5 text-muted">
+          등록된 권리 의무 승계 내역이 없습니다.
+        </CTableDataCell>
+      </CTableRow>
       <CTableRow
         v-for="suc in successionList"
         :key="suc.pk"
         :class="suc.status === '3' ? bgLight : ''"
-        :color="props.highlightId === suc.pk ? 'warning' : ''"
+        :color="highlightId === suc.pk ? 'warning' : ''"
         :data-succession-id="suc.pk"
       >
         <Succession
           :succession="suc"
-          :is-highlighted="props.highlightId === suc.pk"
           @call-form="callForm"
           @done-alert="doneAlert"
         />
@@ -69,7 +84,7 @@ const doneAlert = () => emit('done-alert')
   </CTable>
 
   <Pagination
-    :active-page="props.currentPage"
+    :active-page="currentPage"
     :limit="8"
     :pages="successionPages(10)"
     class="mt-3"
