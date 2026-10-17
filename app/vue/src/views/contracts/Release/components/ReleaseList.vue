@@ -11,10 +11,13 @@ const props = defineProps<{
   currentPage?: number
 }>()
 
-const emit = defineEmits(['page-select', 'call-form'])
+const emit = defineEmits<{
+  'page-select': [page: number]
+  'call-form': [contractorId: number]
+}>()
 
 const { can, PERM } = usePerms()
-const canContractUpdate = computed(() => can(PERM.CONTRACT_UPDATE))
+const canContractRelease = computed(() => can(PERM.CONTRACT_RELEASE))
 
 const contractStore = useContract()
 const contReleaseList = computed(() => contractStore.contReleaseList)
@@ -26,18 +29,6 @@ const callForm = (contractor: number) => emit('call-form', contractor)
 
 <template>
   <CTable hover responsive align="middle">
-    <!--    <colgroup>-->
-    <!--      <col style="width: 25%" />-->
-    <!--      <col style="width: 10%" />-->
-    <!--      <col style="width: 12%" />-->
-    <!--      <col style="width: 10%" />-->
-    <!--      <col style="width: 12%" />-->
-    <!--      <col style="width: 9%" />-->
-    <!--      <col style="width: 9%" />-->
-    <!--      <col style="width: 9%" />-->
-    <!--      <col style="width: 5%" />-->
-    <!--    </colgroup>-->
-
     <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
         <CTableHeaderCell>계약 해지자</CTableHeaderCell>
@@ -49,10 +40,15 @@ const callForm = (contractor: number) => emit('call-form', contractor)
         <CTableHeaderCell>해지 신청일</CTableHeaderCell>
         <CTableHeaderCell>환불 처리일</CTableHeaderCell>
         <CTableHeaderCell>해지 확정일</CTableHeaderCell>
-        <CTableHeaderCell v-if="canContractUpdate">비고</CTableHeaderCell>
+        <CTableHeaderCell v-if="canContractRelease">비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
     <CTableBody>
+      <CTableRow v-if="!contReleaseList || contReleaseList.length === 0">
+        <CTableDataCell :colspan="canContractRelease ? 10 : 9" class="text-center py-5 text-muted">
+          등록된 계약 해지 내역이 없습니다.
+        </CTableDataCell>
+      </CTableRow>
       <CTableRow
         v-for="release in contReleaseList"
         :key="release.pk"
@@ -61,7 +57,6 @@ const callForm = (contractor: number) => emit('call-form', contractor)
       >
         <Release
           :release="release"
-          :highlight-id="highlightId || undefined"
           @call-form="callForm"
         />
       </CTableRow>

@@ -16,13 +16,13 @@ import ContractorAlert from '@/views/contracts/Manage/components/ContractorAlert
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
-import ReleasetButton from './components/ReleasetButton.vue'
+import ReleaseButton from './components/ReleaseButton.vue'
 import ContController from './components/ContController.vue'
 import ReleaseList from './components/ReleaseList.vue'
-import ReleaseForm from './components/ReleaseForm.vue'
+import ReleaseForm, { type ReleaseFormData } from './components/ReleaseForm.vue'
 
 const { can, PERM } = usePerms()
-const canContractUpdate = computed(() => can(PERM.CONTRACT_UPDATE))
+const canContractRelease = computed(() => can(PERM.CONTRACT_RELEASE))
 
 const route = useRoute()
 const router = useRouter()
@@ -138,9 +138,17 @@ const callForm = async (targetContractorId: number) => {
       query: route.query,
     })
 
-    await contStore.fetchContractor(targetContractorId)
+    if (contStore.contractor?.pk !== targetContractorId) {
+      await contStore.fetchContractor(targetContractorId)
+    }
 
-    if (canContractUpdate.value) {
+    if (contStore.contractor?.contractorrelease) {
+      await contStore.fetchContRelease(contStore.contractor.contractorrelease)
+    } else {
+      contStore.contRelease = null
+    }
+
+    if (canContractRelease.value) {
       releaseFormModal.value?.callModal()
     } else {
       releaseAlertModal.value?.callModal()
@@ -176,13 +184,29 @@ const projSelect = async (target: number | null, isAuto = false) => {
   }
 }
 
-const onSubmit = async (payload: ContractRelease) => {
-  if (project.value) payload.project = project.value
+const onSubmit = async (payload: ReleaseFormData) => {
+  if (!project.value || !payload.contractor || !payload.request_date) return
+
+  const releaseData: ContractRelease = {
+    pk: payload.pk ?? 0,
+    project: project.value,
+    contractor: payload.contractor,
+    request_date: payload.request_date,
+    release_type: payload.release_type,
+    status: payload.status,
+    refund_amount: payload.refund_amount,
+    refund_account_bank: payload.refund_account_bank,
+    refund_account_number: payload.refund_account_number,
+    refund_account_depositor: payload.refund_account_depositor,
+    refund_completion_date: payload.refund_completion_date,
+    completion_date: payload.completion_date,
+    note: payload.note,
+  }
 
   if (!payload.pk) {
-    await contStore.createRelease({ ...payload })
+    await contStore.createRelease(releaseData)
   } else {
-    await contStore.updateRelease({ page: page.value, ...payload })
+    await contStore.updateRelease({ page: page.value, ...releaseData })
   }
   releaseFormModal.value?.close()
 }
@@ -245,12 +269,11 @@ onBeforeMount(async () => {
         <ContController
           :project="project ?? undefined"
           @search-contractor="searchContractor"
-          @call-form="callForm"
         />
         <ContractorAlert v-if="contractor" :contractor="contractor" clear-route="계약 해지 관리" />
 
-        <ReleasetButton
-          v-if="canContractUpdate && contractor"
+        <ReleaseButton
+          v-if="canContractRelease && contractor"
           :contractor="contractor"
           :cont-release="contRelease ?? undefined"
           @call-form="callForm"
@@ -268,17 +291,16 @@ onBeforeMount(async () => {
           :current-page="page"
           @page-select="pageSelect"
           @call-form="callForm"
-          @on-submit="onSubmit"
         />
       </CCardBody>
     </ContentBody>
 
     <FormModal ref="releaseFormModal" size="lg">
-      <template #header>계약 해지 수정 등록</template>
+      <template #header>{{ contRelease ? '계약 해지 수정' : '계약 해지 등록' }}</template>
       <template #default>
         <ReleaseForm
           :release="contRelease ?? undefined"
-          :contractor="contractor as Contractor"
+          :contractor="contractor"
           @on-submit="onSubmit"
           @on-delete="onDelete"
           @close="releaseFormModal?.close()"

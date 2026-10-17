@@ -1,24 +1,51 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, type PropType, reactive, ref, watch } from 'vue'
+import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
 import { isValidate } from '@/utils/helper'
 import { usePerms } from '@/composables/usePerms.ts'
-import { type Contractor, type ContractRelease } from '@/store/types/contract'
+import type { Contractor, ContractRelease } from '@/store/types/contract'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({
-  release: { type: Object as PropType<ContractRelease>, default: () => null },
-  contractor: { type: Object as PropType<Contractor>, default: () => null },
-})
+export interface ReleaseFormData {
+  pk: number | null
+  contractor: number | null
+  request_date: string | null
+  release_type: '1' | '2' | '3'
+  status: '1' | '2' | '3' | '4' | '9'
+  refund_amount: number | null
+  refund_account_bank: string
+  refund_account_number: string
+  refund_account_depositor: string
+  refund_completion_date: string | null
+  completion_date: string | null
+  note: string
+}
 
-const emit = defineEmits(['on-submit', 'on-delete', 'close'])
+const props = defineProps<{
+  release?: ContractRelease | null
+  contractor?: Contractor | null
+}>()
+
+const emit = defineEmits<{
+  'on-submit': [payload: ReleaseFormData]
+  'on-delete': [pk: number]
+  close: []
+}>()
 
 const { can, PERM } = usePerms()
 const canContractRelease = computed(() => can(PERM.CONTRACT_RELEASE))
 
-const refConfirmModal = ref()
-const refAlertModal = ref()
+const refConfirmModal = ref<InstanceType<typeof ConfirmModal> | null>(null)
+const refAlertModal = ref<InstanceType<typeof AlertModal> | null>(null)
+
+const getToday = () => {
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
 
 const validated = ref(false)
 const form = reactive({
@@ -41,15 +68,16 @@ const formsCheck = computed(() => {
     const a = form.request_date === props.release.request_date
     const b = form.release_type === props.release.release_type
     const c = form.status === props.release.status
-    const d = !form.refund_amount || form.refund_amount === props.release.refund_amount
-    const e = form.refund_account_bank === props.release.refund_account_bank
-    const f = form.refund_account_number === props.release.refund_account_number
-    const g = form.refund_account_depositor === props.release.refund_account_depositor
-    const h = form.refund_completion_date === props.release.refund_completion_date
-    const i = form.completion_date === props.release.completion_date
-    const j = form.note === props.release.note
+    const d = (form.refund_amount ?? null) === (props.release.refund_amount ?? null)
+    const e = (form.refund_account_bank || '') === (props.release.refund_account_bank || '')
+    const f = (form.refund_account_number || '') === (props.release.refund_account_number || '')
+    const g = (form.refund_account_depositor || '') === (props.release.refund_account_depositor || '')
+    const h = (form.refund_completion_date ?? null) === (props.release.refund_completion_date ?? null)
+    const i = (form.completion_date ?? null) === (props.release.completion_date ?? null)
+    const j = (form.note || '') === (props.release.note || '')
     return a && b && c && d && e && f && g && h && i && j
-  } else return false
+  }
+  return false
 })
 
 const statusOptions = computed(() => {
@@ -73,16 +101,16 @@ const onSubmit = (event: Event) => {
     if (isValidate(event)) {
       validated.value = true
     } else emit('on-submit', { ...form })
-  } else refAlertModal.value.callModal()
+  } else refAlertModal.value?.callModal()
 }
 
 const deleteConfirm = () => {
-  if (canContractRelease.value) refConfirmModal.value.callModal()
-  else refAlertModal.value.callModal()
+  if (canContractRelease.value) refConfirmModal.value?.callModal()
+  else refAlertModal.value?.callModal()
 }
 
 const modalAction = () => {
-  refConfirmModal.value.close()
+  refConfirmModal.value?.close()
   if (form.pk) emit('on-delete', form.pk)
 }
 
@@ -94,13 +122,26 @@ const formDataSet = () => {
     form.release_type = props.release.release_type
     form.status = props.release.status
     form.refund_amount = props.release.refund_amount
-    form.refund_account_bank = props.release.refund_account_bank
-    form.refund_account_number = props.release.refund_account_number
-    form.refund_account_depositor = props.release.refund_account_depositor
+    form.refund_account_bank = props.release.refund_account_bank || ''
+    form.refund_account_number = props.release.refund_account_number || ''
+    form.refund_account_depositor = props.release.refund_account_depositor || ''
     form.refund_completion_date = props.release.refund_completion_date
     form.completion_date = props.release.completion_date
-    form.note = props.release.note
-  } else form.contractor = props.contractor.pk
+    form.note = props.release.note || ''
+  } else {
+    form.pk = null
+    form.contractor = props.contractor?.pk ?? null
+    form.request_date = getToday()
+    form.release_type = '1'
+    form.status = '1'
+    form.refund_amount = null
+    form.refund_account_bank = ''
+    form.refund_account_number = ''
+    form.refund_account_depositor = ''
+    form.refund_completion_date = null
+    form.completion_date = null
+    form.note = ''
+  }
 }
 
 onBeforeMount(() => formDataSet())
@@ -123,7 +164,7 @@ watch([() => props.release, () => props.contractor], () => formDataSet(), { deep
             <CCol sm="8">
               <CFormSelect v-model="form.contractor" required readonly>
                 <option :value="form.contractor">
-                  {{ contractor ? contractor.name : release.__str__ }}
+                  {{ contractor?.name || release?.__str__ || '계약자 정보 없음' }}
                 </option>
               </CFormSelect>
             </CCol>
@@ -133,7 +174,7 @@ watch([() => props.release, () => props.contractor], () => formDataSet(), { deep
         <CCol xs="6">
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label required">해지유형</CFormLabel>
-            <CCol sm="8" class="text-left">
+            <CCol sm="8" class="text-start">
               <CFormSelect v-model="form.release_type" required>
                 <option value="1">해지신청 (계약자)</option>
                 <option value="2">부적격확인 (계약자)</option>
@@ -158,7 +199,7 @@ watch([() => props.release, () => props.contractor], () => formDataSet(), { deep
         <CCol xs="6">
           <CRow>
             <CFormLabel class="col-sm-4 col-form-label required">진행상태</CFormLabel>
-            <CCol sm="8" class="text-left">
+            <CCol sm="8" class="text-start">
               <CFormSelect v-model="form.status" required>
                 <option v-for="opt in statusOptions" :key="opt.value" :value="opt.value">
                   {{ opt.label }}
