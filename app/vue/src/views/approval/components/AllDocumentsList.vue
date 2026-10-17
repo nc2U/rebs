@@ -309,7 +309,7 @@ onMounted(async () => {
             <v-chip
               :color="
                 doc.security_level === '1'
-                  ? 'danger'
+                  ? 'error'
                   : doc.security_level === '2'
                     ? 'primary'
                     : 'success'
@@ -340,7 +340,7 @@ onMounted(async () => {
 
           <!-- 기안자 -->
           <CTableDataCell class="text-center">
-            {{ doc.drafter_name || doc.drafter?.full_name || doc.drafter?.username }}
+            {{ doc.drafter_name || doc.drafter?.full_name || doc.drafter?.username || '-' }}
           </CTableDataCell>
 
           <!-- 제목 -->

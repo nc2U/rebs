@@ -67,6 +67,8 @@ const openEditModal = (item: ApprovalDelegation) => {
   isModalOpen.value = true
 }
 
+const isSubmitting = ref(false)
+
 const handleSubmit = async () => {
   if (!form.value.delegatee_id || !form.value.start_date || !form.value.end_date) {
     formValidated.value = true
@@ -86,24 +88,38 @@ const handleSubmit = async () => {
     is_active: form.value.is_active,
   }
 
-  if (editingId.value) {
-    await updateDelegation(editingId.value, payload)
-  } else {
-    await createDelegation(payload)
+  isSubmitting.value = true
+  try {
+    if (editingId.value) {
+      await updateDelegation(editingId.value, payload)
+    } else {
+      await createDelegation(payload)
+    }
+    isModalOpen.value = false
+  } catch (err) {
+    console.error('Failed to save delegation:', err)
+  } finally {
+    isSubmitting.value = false
   }
-
-  isModalOpen.value = false
 }
 
 const handleDelete = async (id: number) => {
   if (confirm('해당 결재 위임 설정을 삭제하시겠습니까?')) {
-    await deleteDelegation(id)
+    try {
+      await deleteDelegation(id)
+    } catch (err) {
+      console.error('Failed to delete delegation:', err)
+    }
   }
 }
 
 const toggleActive = async (item: ApprovalDelegation) => {
   if (item.id) {
-    await updateDelegation(item.id, { is_active: !item.is_active })
+    try {
+      await updateDelegation(item.id, { is_active: !item.is_active })
+    } catch (err) {
+      console.error('Failed to toggle delegation active status:', err)
+    }
   }
 }
 </script>
@@ -165,7 +181,7 @@ const toggleActive = async (item: ApprovalDelegation) => {
             <CTableRow v-for="(item, idx) in delegationList" :key="item.id">
               <CTableDataCell class="text-center text-muted small">{{ idx + 1 }}</CTableDataCell>
               <CTableDataCell class="fw-semibold">
-                {{ item.delegator?.full_name ?? item.delegator?.username }}
+                {{ item.delegator?.full_name || item.delegator?.username || '-' }}
                 <v-chip
                   v-if="item.delegator?.id === userInfo?.pk"
                   size="x-small"
@@ -176,7 +192,7 @@ const toggleActive = async (item: ApprovalDelegation) => {
                 </v-chip>
               </CTableDataCell>
               <CTableDataCell class="fw-semibold text-primary">
-                {{ item.delegatee?.full_name ?? item.delegatee?.username }}
+                {{ item.delegatee?.full_name || item.delegatee?.username || '-' }}
                 <v-chip
                   v-if="item.delegatee?.id === userInfo?.pk"
                   size="x-small"
@@ -311,10 +327,18 @@ const toggleActive = async (item: ApprovalDelegation) => {
         </CForm>
       </CModalBody>
       <CModalFooter>
-        <v-btn color="primary" size="small" @click="handleSubmit">
+        <v-btn
+          color="primary"
+          size="small"
+          :loading="isSubmitting"
+          :disabled="isSubmitting"
+          @click="handleSubmit"
+        >
           {{ editingId ? '수정 저장' : '위임 등록' }}
         </v-btn>
-        <v-btn color="light" size="small" @click="isModalOpen = false" flat>취소</v-btn>
+        <v-btn color="light" size="small" :disabled="isSubmitting" @click="isModalOpen = false" flat>
+          취소
+        </v-btn>
       </CModalFooter>
     </CModal>
   </div>

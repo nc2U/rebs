@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, ref } from 'vue'
+import { computed } from 'vue'
 import { navMenu as defaultNavMenu, pageTitle } from '@/views/approval/_menu/headermixin'
 import { useRoute } from 'vue-router'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -17,20 +17,23 @@ const route = useRoute()
 
 const navMenu = computed(() => defaultNavMenu)
 
-const comSelect = async (target: number | null) => {
-  if (!!target) {
-  }
-}
-
-const loading = ref(true)
-onBeforeMount(async () => {
-  loading.value = false
+const isDetailView = computed(() => {
+  const name = (route.name as string) || ''
+  return /결재 대기함 - 보기|기안 문서함 - 보기|결재 문서함 - 보기|전체 문서함 - 보기/.test(name)
 })
+
+const isFormView = computed(() => {
+  const name = (route.name as string) || ''
+  return /기안 문서함 - 작성|기안 문서함 - 수정/.test(name)
+})
+
+const comSelect = async (_target: number | null) => {
+  // 회사 선택 변경 시 필요한 경우 하위 뷰에 전달 또는 스토어 반응 처리
+}
 </script>
 
 <template>
   <ComAuthGuard>
-    <Loading v-model:active="loading" />
     <ContentHeader
       :page-title="pageTitle"
       :nav-menu="navMenu"
@@ -50,17 +53,9 @@ onBeforeMount(async () => {
 
         <DelegationList v-else-if="route.name === '결재 위임 관리'" />
 
-        <DocumentDetail
-          v-else-if="
-            /결재 대기함 - 보기|기안 문서함 - 보기|결재 문서함 - 보기|전체 문서함 - 보기/.test(
-              route.name as string,
-            )
-          "
-        />
+        <DocumentDetail v-else-if="isDetailView" />
 
-        <DocumentForm
-          v-else-if="/기안 문서함 - 작성|기안 문서함 - 수정/.test(route.name as string)"
-        />
+        <DocumentForm v-else-if="isFormView" />
       </CCardBody>
     </ContentBody>
   </ComAuthGuard>

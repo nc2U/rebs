@@ -96,9 +96,13 @@ const STEP_STATUS_COLOR: Record<StepStatus, string> = {
 }
 
 const toList = () => {
-  const name = route.name as string
+  const name = (route.name as string) || ''
   const go_route = name.replace(/\s*-\s*보기$/, '')
-  router.replace({ name: go_route })
+  if (go_route && go_route !== name) {
+    router.replace({ name: go_route })
+  } else {
+    router.push({ name: '결재 대기함' })
+  }
 }
 
 const getAction = (step: ApprovalStep, userId: number): ApprovalActionRecord | undefined =>
@@ -137,24 +141,33 @@ const doAct = async () => {
     return
   }
   acting.value = true
-  await actDocument(docId.value, { action: pendingAction.value, comment: actComment.value })
-  acting.value = false
-  showModal.value = false
+  try {
+    await actDocument(docId.value, { action: pendingAction.value, comment: actComment.value })
+    showModal.value = false
+  } finally {
+    acting.value = false
+  }
 }
 
 const confirmSubmit = async () => {
   submitting.value = true
-  await submitDocument(docId.value)
-  await fetchDocument(docId.value)
-  submitting.value = false
+  try {
+    await submitDocument(docId.value)
+    await fetchDocument(docId.value)
+  } finally {
+    submitting.value = false
+  }
 }
 
 const confirmCancel = async () => {
   if (!confirm('결재 진행 중인 기안 문서를 회수(취소)하시겠습니까?')) return
   cancelling.value = true
-  await cancelDocument(docId.value)
-  await fetchDocument(docId.value)
-  cancelling.value = false
+  try {
+    await cancelDocument(docId.value)
+    await fetchDocument(docId.value)
+  } finally {
+    cancelling.value = false
+  }
 }
 
 // 결재선 진행률 계산
@@ -246,7 +259,6 @@ onMounted(async () => {
         <div class="d-flex gap-2 flex-wrap">
           <v-btn
             v-if="document.pdf_url"
-            color=""
             size="small"
             :href="document.pdf_url"
             target="_blank"
@@ -327,7 +339,9 @@ onMounted(async () => {
             <CTableRow>
               <CTableHeaderCell class="text-center bg-more-light">기안자</CTableHeaderCell>
               <CTableDataCell class="pl-3">
-                <span class="fw-semibold">{{ document.drafter?.full_name }}</span>
+                <span class="fw-semibold">
+                  {{ document.drafter?.full_name || document.drafter?.username || '-' }}
+                </span>
                 <v-chip
                   v-if="document.drafter_assignment_desc"
                   color="secondary"
@@ -540,7 +554,7 @@ onMounted(async () => {
                   <div class="d-flex align-items-center gap-1 mb-1">
                     <v-chip
                       :color="
-                        getAction(step, approver.id)!.action === 'approved' ? 'success' : 'danger'
+                        getAction(step, approver.id)!.action === 'approved' ? 'success' : 'error'
                       "
                       variant="flat"
                       size="x-small"
@@ -604,7 +618,7 @@ onMounted(async () => {
     </CCard>
 
     <CRow>
-      <CCol class="text-right">
+      <CCol class="text-end">
         <v-btn color="light" class="text-body" @click="toList" flat> 목록으로 </v-btn>
       </CCol>
     </CRow>

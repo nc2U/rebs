@@ -88,12 +88,15 @@ const doAct = async (action: 'approved' | 'rejected') => {
     return
   }
   acting.value = action
-  await actDocument(selectedDoc.value.id, { action, comment: actComment.value })
-  acting.value = ''
-  showModal.value = false
-  // 목록에서 선택되어 있었다면 제거
-  const idx = selectedDocIds.value.indexOf(selectedDoc.value.id)
-  if (idx > -1) selectedDocIds.value.splice(idx, 1)
+  try {
+    await actDocument(selectedDoc.value.id, { action, comment: actComment.value })
+    showModal.value = false
+    // 목록에서 선택되어 있었다면 제거
+    const idx = selectedDocIds.value.indexOf(selectedDoc.value.id)
+    if (idx > -1) selectedDocIds.value.splice(idx, 1)
+  } finally {
+    acting.value = ''
+  }
 }
 
 // ── 다건 일괄 승인 실행 ──
@@ -148,9 +151,18 @@ onMounted(fetchMyPending)
   <CRow class="mb-3 align-items-center">
     <CCol md="5">
       <CInputGroup>
+        <CInputGroupText class="bg-light">
+          <v-icon icon="mdi-magnify" size="small" />
+        </CInputGroupText>
         <CFormInput v-model="searchText" placeholder="제목 또는 문서 유형 검색..." />
-        <CButton color="light" @click="searchText = ''">
-          <v-icon icon="mdi-magnify" /> 검색
+        <CButton
+          v-if="searchText"
+          color="light"
+          type="button"
+          title="검색어 초기화"
+          @click="searchText = ''"
+        >
+          <v-icon icon="mdi-close" size="small" />
         </CButton>
       </CInputGroup>
     </CCol>

@@ -67,17 +67,23 @@ const confirmCancel = (id: number) => {
 const doSubmit = async () => {
   if (!targetDocId.value) return
   processing.value = true
-  await submitDocument(targetDocId.value)
-  processing.value = false
-  showSubmitModal.value = false
+  try {
+    await submitDocument(targetDocId.value)
+    showSubmitModal.value = false
+  } finally {
+    processing.value = false
+  }
 }
 
 const doCancel = async () => {
   if (!targetDocId.value) return
   processing.value = true
-  await cancelDocument(targetDocId.value)
-  processing.value = false
-  showCancelModal.value = false
+  try {
+    await cancelDocument(targetDocId.value)
+    showCancelModal.value = false
+  } finally {
+    processing.value = false
+  }
 }
 
 const resetFilter = () => {
@@ -103,8 +109,19 @@ onMounted(fetchMyDrafted)
     </CCol>
     <CCol md="4">
       <CInputGroup>
+        <CInputGroupText class="bg-light">
+          <v-icon icon="mdi-magnify" size="small" />
+        </CInputGroupText>
         <CFormInput v-model="searchText" placeholder="제목 검색..." />
-        <CButton color="light" @click="resetFilter"> <v-icon icon="mdi-magnify" /> 검색 </CButton>
+        <CButton
+          v-if="searchText || statusFilter"
+          color="light"
+          type="button"
+          title="필터 초기화"
+          @click="resetFilter"
+        >
+          <v-icon icon="mdi-close" size="small" />
+        </CButton>
       </CInputGroup>
     </CCol>
     <CCol class="d-flex align-items-center justify-content-between">

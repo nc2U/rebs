@@ -83,7 +83,11 @@ const removeSelectedFile = (idx: number) => {
 
 const removeExistingAttachment = async (attachmentId: number) => {
   if (confirm('첨부파일을 삭제하시겠습니까?')) {
-    await deleteAttachment(attachmentId, Number(route.params.docId))
+    try {
+      await deleteAttachment(attachmentId, Number(route.params.docId))
+    } catch (err) {
+      console.error('Failed to delete attachment:', err)
+    }
   }
 }
 
@@ -257,33 +261,43 @@ const buildFormData = () => {
 
 const onSubmit = async () => {
   saving.value = 'draft'
-  const formData = buildFormData()
-  if (isEdit.value) {
-    await updateDocument(Number(route.params.docId), formData)
-    selectedFiles.value = []
-  } else {
-    const created = await createDocument(formData)
-    if (created) await router.push({ name: '기안 문서함 - 수정', params: { docId: created.id } })
+  try {
+    const formData = buildFormData()
+    if (isEdit.value) {
+      await updateDocument(Number(route.params.docId), formData)
+      selectedFiles.value = []
+    } else {
+      const created = await createDocument(formData)
+      if (created) await router.push({ name: '기안 문서함 - 수정', params: { docId: created.id } })
+    }
+  } catch (err) {
+    console.error('Failed to save draft document:', err)
+  } finally {
+    saving.value = ''
   }
-  saving.value = ''
 }
 
 const onSubmitAndSend = async () => {
   saving.value = 'submit'
-  const formData = buildFormData()
-  let docId: number | undefined
-  if (isEdit.value) {
-    await updateDocument(Number(route.params.docId), formData)
-    docId = Number(route.params.docId)
-  } else {
-    const created = await createDocument(formData)
-    docId = created?.id
+  try {
+    const formData = buildFormData()
+    let docId: number | undefined
+    if (isEdit.value) {
+      await updateDocument(Number(route.params.docId), formData)
+      docId = Number(route.params.docId)
+    } else {
+      const created = await createDocument(formData)
+      docId = created?.id
+    }
+    if (docId) {
+      await submitDocument(docId)
+      await router.push({ name: '기안 문서함' })
+    }
+  } catch (err) {
+    console.error('Failed to submit document:', err)
+  } finally {
+    saving.value = ''
   }
-  if (docId) {
-    await submitDocument(docId)
-    await router.push({ name: '기안 문서함' })
-  }
-  saving.value = ''
 }
 
 const getFormElement = (e?: Event): HTMLFormElement | null => {
@@ -409,7 +423,7 @@ const applyExampleTitle = (title: string) => {
           class="needs-validation"
           novalidate
           :validated="validated"
-          @submit.prevent="handleSubmit($event, 'draft')"
+          @submit.prevent
         >
           <!-- 수신 공문 연동 안내 배너 -->
           <CAlert
@@ -802,7 +816,13 @@ const applyExampleTitle = (title: string) => {
 
           <!-- 하단 버튼 -->
           <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
-            <v-btn type="submit" color="blue-grey-lighten-2" :disabled="!!saving" flat>
+            <v-btn
+              type="button"
+              color="blue-grey-lighten-2"
+              :disabled="!!saving"
+              @click="handleSubmit($event, 'draft')"
+              flat
+            >
               <CSpinner v-if="saving === 'draft'" size="sm" class="me-1" />
               임시저장
             </v-btn>

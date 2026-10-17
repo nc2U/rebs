@@ -95,9 +95,18 @@ onMounted(() => {
   <CRow class="mb-3">
     <CCol md="5">
       <CInputGroup>
+        <CInputGroupText class="bg-light">
+          <v-icon icon="mdi-magnify" size="small" />
+        </CInputGroupText>
         <CFormInput v-model="searchText" placeholder="제목, 문서유형, 기안자, 문서번호 검색..." />
-        <CButton color="light" @click="searchText = ''">
-          <v-icon icon="mdi-magnify" /> 검색
+        <CButton
+          v-if="searchText"
+          color="light"
+          type="button"
+          title="검색어 초기화"
+          @click="searchText = ''"
+        >
+          <v-icon icon="mdi-close" size="small" />
         </CButton>
       </CInputGroup>
     </CCol>
@@ -206,7 +215,7 @@ onMounted(() => {
 
         <!-- 기안자 -->
         <CTableDataCell class="text-center">
-          <div>{{ doc.drafter?.full_name }}</div>
+          <div>{{ doc.drafter?.full_name || doc.drafter?.username || '-' }}</div>
           <small
             v-if="doc.drafter_assignment_desc"
             class="text-muted d-block"
