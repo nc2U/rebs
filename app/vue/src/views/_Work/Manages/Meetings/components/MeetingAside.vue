@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { reactive } from 'vue'
 import { useRoute } from 'vue-router'
-import type { MeetingCategory, MeetingFilter } from '@/store/types/work_meeting.ts'
+import type { MeetingCategory, MeetingFilter } from '@/store/types/work_meeting'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
 
 defineProps({

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { computed, type PropType } from 'vue'
-import { useMeeting } from '@/store/pinia/work_meeting.ts'
+import { useMeeting } from '@/store/pinia/work_meeting'
 import { DEFAULT_MEETING_COLUMNS } from '../constants'
 import { useRoute } from 'vue-router'
-import { timeFormat, diffDate, getMeetingStatusColor } from '@/utils/baseMixins.ts'
-import type { Meeting } from '@/store/types/work_meeting.ts'
+import { timeFormat, diffDate, getMeetingStatusColor } from '@/utils/baseMixins'
+import type { Meeting } from '@/store/types/work_meeting'
 
 const props = defineProps({
   meeting: { type: Object as PropType<Meeting>, required: true },
@@ -61,7 +61,7 @@ const downloadPdf = (event: Event) => {
 
   <template v-for="colKey in columns" :key="'body-' + meeting.pk + '-' + colKey">
     <!-- 프로젝트 -->
-    <CTableDataCell v-if="colKey === 'project' && !route.params.projId">
+    <CTableDataCell v-if="colKey === 'project'">
       {{ meeting.project_desc?.name }}
     </CTableDataCell>
 
@@ -102,7 +102,19 @@ const downloadPdf = (event: Event) => {
       class="text-left"
       :class="{ closed: meeting.status === '3' }"
     >
-      <router-link to="">{{ meeting.title }}</router-link>
+      <router-link
+        v-if="meeting.project_desc?.slug"
+        :to="{
+          name: '(회의) - 보기',
+          params: {
+            projId: (route.params.projId as string) || meeting.project_desc.slug,
+            meetingId: meeting.pk,
+          },
+        }"
+      >
+        {{ meeting.title }}
+      </router-link>
+      <span v-else>{{ meeting.title }}</span>
     </CTableDataCell>
 
     <!-- 회의 일시 -->

@@ -4,9 +4,9 @@ import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
 import { usePerms } from '@/composables/usePerms'
 import { useAccount } from '@/store/pinia/account'
-import { useMeetingFilter } from '@/store/pinia/work_meeting_filter.ts'
-import type { selectProject } from '@/store/types/work_project.ts'
-import type { MeetingCategory, MeetingFilter } from '@/store/types/work_meeting.ts'
+import { useMeetingFilter } from '@/store/pinia/work_meeting_filter'
+import type { selectProject } from '@/store/types/work_project'
+import type { MeetingCategory, MeetingFilter } from '@/store/types/work_meeting'
 import IssueProjectSelector from '@/views/_Work/components/atomics/IssueProjectSelector.vue'
 import TextButton from '@/views/_Work/components/atomics/TextButton.vue'
 import SaveQueryModal from '@/views/_Work/components/SaveQueryModal.vue'
@@ -39,7 +39,7 @@ const canSaveQuery = computed(() => can(PERM.PROJECT_SAVE_QUERY))
 const meetingFilterStore = useMeetingFilter()
 const { searchCond, enabledFields, cond, form } = storeToRefs(meetingFilterStore)
 
-const refQuerySaveModal = ref()
+const refQuerySaveModal = ref<InstanceType<typeof SaveQueryModal> | null>(null)
 
 const extraQueryData = computed(() => {
   const projId = (route.params.projId as string) || ''
@@ -48,7 +48,7 @@ const extraQueryData = computed(() => {
 })
 
 const openSaveQueryModal = () => {
-  refQuerySaveModal.value.callModal()
+  refQuerySaveModal.value?.callModal()
 }
 
 const currentUserId = computed(() => accStore.userInfo?.pk)

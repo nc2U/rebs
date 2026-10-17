@@ -2,14 +2,14 @@
 import { computed, onBeforeMount, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
-import { useMeeting } from '@/store/pinia/work_meeting.ts'
-import { useWork } from '@/store/pinia/work_project.ts'
-import { useIssue } from '@/store/pinia/work_issue.ts'
-import { usePerms } from '@/composables/usePerms.ts'
-import { elapsedTime, timeFormat } from '@/utils/baseMixins.ts'
-import { markdownRender } from '@/utils/helper.ts'
-import { markNotificationReadByTarget } from '@/utils/notification.ts'
-import { diffDate, getMeetingStatusColor } from '@/utils/baseMixins.ts'
+import { useMeeting } from '@/store/pinia/work_meeting'
+import { useWork } from '@/store/pinia/work_project'
+import { useIssue } from '@/store/pinia/work_issue'
+import { usePerms } from '@/composables/usePerms'
+import { diffDate, elapsedTime, timeFormat, getMeetingStatusColor } from '@/utils/baseMixins'
+import { markdownRender } from '@/utils/helper'
+import { markNotificationReadByTarget } from '@/utils/notification'
+import type { SimpleIssueInMeeting } from '@/store/types/work_meeting'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import FileDisplay from '@/views/_Work/components/atomics/FileDisplay.vue'
@@ -45,7 +45,7 @@ const isProjectActive = computed(() => {
   return status === '1'
 })
 
-const { can, PERM } = usePerms()
+const { can, canViewUser, PERM } = usePerms()
 const canIssueCreate = computed(() => isProjectActive.value && can(PERM.ISSUE_CREATE))
 const canMeetingUpdate = computed(() => {
   if (!isProjectActive.value) return false
@@ -98,7 +98,7 @@ const fetchMeeting = async (pk: number) => {
   }
 }
 
-const refIssueModal = ref()
+const refIssueModal = ref<InstanceType<typeof FormModal> | null>(null)
 const initialIssueSubject = ref('')
 const initialIssueDescription = ref('')
 
@@ -106,7 +106,7 @@ const openIssueModalForActionItem = () => {
   if (meeting.value) {
     initialIssueSubject.value = `[후속조치] ${meeting.value.title}`
     initialIssueDescription.value = `### 회의 후속 조치 사항\n${meeting.value.action_items}`
-    refIssueModal.value.callModal()
+    refIssueModal.value?.callModal()
   }
 }
 
@@ -115,7 +115,7 @@ export interface ParsedActionItem {
   title: string
   assignedName?: string
   dueDate?: string
-  linkedIssue?: any
+  linkedIssue?: SimpleIssueInMeeting
 }
 
 const parsedActionItems = computed<ParsedActionItem[]>(() => {
@@ -178,14 +178,14 @@ const openIssueModalForSpecificItem = (item: ParsedActionItem) => {
   if (meeting.value) {
     initialIssueSubject.value = item.title
     initialIssueDescription.value = `### 회의 후속 조치 사항\n- **관련 회의**: #${meeting.value.pk} ${meeting.value.title}\n- **후속 조치 내용**: ${item.raw}`
-    refIssueModal.value.callModal()
+    refIssueModal.value?.callModal()
   }
 }
 
 const openNormalIssueModal = () => {
   initialIssueSubject.value = ''
   initialIssueDescription.value = ''
-  refIssueModal.value.callModal()
+  refIssueModal.value?.callModal()
 }
 
 const createRelatedIssue = async (payload: any) => {
@@ -232,7 +232,7 @@ const createRelatedIssue = async (payload: any) => {
 
     await issueStore.createIssue(formData)
     await meetingStore.fetchMeeting(meeting.value.pk)
-    refIssueModal.value.close()
+    refIssueModal.value?.close()
   }
 }
 
@@ -300,7 +300,7 @@ watch(
   },
 )
 
-const refConfirmModal = ref()
+const refConfirmModal = ref<InstanceType<typeof ConfirmModal> | null>(null)
 </script>
 
 <template>
@@ -338,7 +338,14 @@ const refConfirmModal = ref()
         <CRow>
           <CCol>
             <p class="mt-1 form-text text-muted">
-              <strong>{{ meeting.creator.username }}</strong> 이(가)
+              <router-link
+                v-if="meeting.creator?.pk && canViewUser(meeting.creator.pk)"
+                :to="{ name: '사용자 - 보기', params: { userId: meeting.creator.pk } }"
+              >
+                {{ meeting.creator.username }}
+              </router-link>
+              <strong v-else>{{ meeting.creator.username }}</strong>
+              이(가)
               <span>
                 {{ elapsedTime(meeting.created) }}
                 <v-tooltip activator="parent" location="top">
@@ -348,7 +355,14 @@ const refConfirmModal = ref()
               전에 추가함.
               <span v-if="meeting.updater">
                 <span class="mx-1">/</span>
-                <strong>{{ meeting.updater.username }}</strong> 이(가)
+                <router-link
+                  v-if="meeting.updater?.pk && canViewUser(meeting.updater.pk)"
+                  :to="{ name: '사용자 - 보기', params: { userId: meeting.updater.pk } }"
+                >
+                  {{ meeting.updater.username }}
+                </router-link>
+                <strong v-else>{{ meeting.updater.username }}</strong>
+                이(가)
                 {{ elapsedTime(meeting.updated) }}
                 <v-tooltip activator="parent" location="top">
                   {{ timeFormat(meeting.updated) }}
@@ -422,6 +436,12 @@ const refConfirmModal = ref()
                   size="x-small"
                   color="primary"
                   class="mr-1 mb-1"
+                  :to="
+                    canViewUser(user.pk)
+                      ? { name: '사용자 - 보기', params: { userId: user.pk } }
+                      : undefined
+                  "
+                  :link="canViewUser(user.pk)"
                 >
                   {{ user.username }}
                 </v-chip>
@@ -723,7 +743,7 @@ const refConfirmModal = ref()
         <v-btn
           v-if="canMeetingDelete"
           color="warning"
-          @click="refConfirmModal.callModal()"
+          @click="refConfirmModal?.callModal()"
           :disabled="meeting.is_confirmed"
         >
           삭제
@@ -753,7 +773,7 @@ const refConfirmModal = ref()
         :initial-subject="initialIssueSubject"
         :initial-description="initialIssueDescription"
         @on-submit="createRelatedIssue"
-        @close-form="refIssueModal.close()"
+        @close-form="refIssueModal?.close()"
       />
     </template>
   </FormModal>

@@ -3,14 +3,14 @@ import { useRoute } from 'vue-router'
 import { computed, onBeforeMount, provide, ref, watch } from 'vue'
 import { navMenu1, navMenu2 } from '@/views/_Work/_menu/headermixin1'
 import { ALL_MEETING_COLUMNS, DEFAULT_MEETING_COLUMNS } from './constants'
-import { useWork } from '@/store/pinia/work_project.ts'
-import { useMeeting } from '@/store/pinia/work_meeting.ts'
-import { useMeetingFilter } from '@/store/pinia/work_meeting_filter.ts'
-import { useCompany } from '@/store/pinia/company.ts'
-import { usePerms } from '@/composables/usePerms.ts'
+import { useWork } from '@/store/pinia/work_project'
+import { useMeeting } from '@/store/pinia/work_meeting'
+import { useMeetingFilter } from '@/store/pinia/work_meeting_filter'
+import { useCompany } from '@/store/pinia/company'
+import { usePerms } from '@/composables/usePerms'
 import { useTableColumns } from '@/composables/useTableColumns'
 import type { Company } from '@/store/types/settings'
-import type { MeetingFilter } from '@/store/types/work_meeting.ts'
+import type { MeetingFilter } from '@/store/types/work_meeting'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import MeetingTable from './components/MeetingTable.vue'
@@ -21,14 +21,14 @@ import QuerySection from '@/views/_Work/Manages/Meetings/components/QuerySection
 import Loading from '@/components/Loading/Index.vue'
 import NoData from '@/components/NoData/Index.vue'
 
-const cBody = ref()
+const cBody = ref<InstanceType<typeof ContentBody> | null>(null)
 const comStore = useCompany()
 const company = computed<Company | null>(() => comStore.company)
 const comName = computed(() => company?.value?.name)
 
 const route = useRoute()
 
-const sideNavCAll = () => cBody.value.toggle()
+const sideNavCall = () => cBody.value?.toggle()
 
 const navMenu = computed(() => (!allReadableProjectsFlat.value.length ? navMenu1 : navMenu2))
 
@@ -50,8 +50,7 @@ const categories = computed(() => meetingStore.categoryList)
 provide('navMenu', navMenu)
 
 const page = ref(1)
-const meetingListRef = ref()
-const querySectionRef = ref()
+const querySectionRef = ref<InstanceType<typeof QuerySection> | null>(null)
 const meetingFilterStore = useMeetingFilter()
 const activeQueryId = computed(() => meetingFilterStore.activeQueryId)
 
@@ -118,7 +117,7 @@ watch(
 
 <template>
   <Loading v-model:active="loading" />
-  <Header :page-title="comName" :nav-menu="navMenu" @side-nav-call="sideNavCAll" />
+  <Header :page-title="comName" :nav-menu="navMenu" @side-nav-call="sideNavCall" />
 
   <ContentBody ref="cBody" :nav-menu="navMenu">
     <template v-slot:default>
@@ -162,7 +161,6 @@ watch(
       <!-- 전역 회의 관리 목록 -->
       <MeetingTable
         v-else
-        ref="meetingListRef"
         :meeting-list="meetingList"
         :categories="categories"
         :columns="selectedColumns"

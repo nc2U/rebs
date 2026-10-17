@@ -1,4 +1,4 @@
-import type { SimpleUser, SimpleProject } from '@/store/types/work_project.ts'
+import type { SimpleUser, SimpleProject } from '@/store/types/work_project'
 
 export interface MeetingCategory {
   pk: number

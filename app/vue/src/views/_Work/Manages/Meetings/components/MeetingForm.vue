@@ -2,14 +2,14 @@
 import { computed, onBeforeMount, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
-import { useWork } from '@/store/pinia/work_project.ts'
-import { useMeeting } from '@/store/pinia/work_meeting.ts'
-import { useIssue } from '@/store/pinia/work_issue.ts'
-import { usePerms } from '@/composables/usePerms.ts'
-import { timeFormat } from '@/utils/baseMixins.ts'
-import { isValidate } from '@/utils/helper.ts'
-import type { Meeting } from '@/store/types/work_meeting.ts'
-import type { IssueProject } from '@/store/types/work_project.ts'
+import { useWork } from '@/store/pinia/work_project'
+import { useMeeting } from '@/store/pinia/work_meeting'
+import { useIssue } from '@/store/pinia/work_issue'
+import { usePerms } from '@/composables/usePerms'
+import { timeFormat } from '@/utils/baseMixins'
+import { isValidate } from '@/utils/helper'
+import type { Meeting } from '@/store/types/work_meeting'
+import type { IssueProject } from '@/store/types/work_project'
 import MdEditor from '@/components/MdEditor/Index.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -377,7 +377,7 @@ const onSubmit = async (event: Event) => {
   }
 }
 
-const refIssueModal = ref()
+const refIssueModal = ref<InstanceType<typeof FormModal> | null>(null)
 const selectedIssue = ref<any>(null)
 const modalKey = ref(0)
 
@@ -388,7 +388,7 @@ const callIssueModal = async (pk?: number) => {
   } else selectedIssue.value = null
 
   modalKey.value++
-  refIssueModal.value.callModal()
+  refIssueModal.value?.callModal()
 }
 
 const createRelatedIssue = async (payload: any) => {
@@ -441,7 +441,7 @@ const createRelatedIssue = async (payload: any) => {
     else await issueStore.createIssue(formData)
 
     await meetingStore.fetchMeeting(form.value.pk) // Refresh meeting to get updated issues list
-    refIssueModal.value.close()
+    refIssueModal.value?.close()
   }
 }
 
@@ -490,7 +490,7 @@ const userOptions = computed(() =>
   })),
 )
 
-const refCategoryModal = ref()
+const refCategoryModal = ref<InstanceType<typeof FormModal> | null>(null)
 const categoryForm = ref({
   project: form.value.project,
   name: '',
@@ -503,7 +503,7 @@ const callCategoryModal = () => {
   categoryForm.value.name = ''
   categoryForm.value.color = '#fffdbd'
   categoryForm.value.order = (categories.value.length || 0) + 1
-  refCategoryModal.value.callModal()
+  refCategoryModal.value?.callModal()
 }
 
 const onCategorySubmit = (event: Event) => {
@@ -511,7 +511,7 @@ const onCategorySubmit = (event: Event) => {
     validated.value = true
   } else {
     meetingStore.createCategory(categoryForm.value as any)
-    refCategoryModal.value.close()
+    refCategoryModal.value?.close()
   }
 }
 
@@ -607,8 +607,8 @@ const resetDefaultTemplates = () => {
 }
 
 // 템플릿 관리 모달 상태
-const refTemplateManageModal = ref()
-const refTemplateEditModal = ref()
+const refTemplateManageModal = ref<InstanceType<typeof FormModal> | null>(null)
+const refTemplateEditModal = ref<InstanceType<typeof FormModal> | null>(null)
 const templateEditIndex = ref<number | null>(null)
 const templateEditForm = ref<MeetingTemplate>({
   name: '',
@@ -619,7 +619,7 @@ const templateEditForm = ref<MeetingTemplate>({
 })
 
 const openTemplateManageModal = () => {
-  refTemplateManageModal.value.callModal()
+  refTemplateManageModal.value?.callModal()
 }
 
 const openTemplateEditModal = (index?: number) => {
@@ -636,7 +636,7 @@ const openTemplateEditModal = (index?: number) => {
       actionItems: '',
     }
   }
-  refTemplateEditModal.value.callModal()
+  refTemplateEditModal.value?.callModal()
 }
 
 const saveTemplateEdit = (event: Event) => {
@@ -652,7 +652,7 @@ const saveTemplateEdit = (event: Event) => {
     meetingTemplates.value.push({ ...templateEditForm.value })
   }
   saveMeetingTemplates()
-  refTemplateEditModal.value.close()
+  refTemplateEditModal.value?.close()
 }
 
 const deleteTemplate = (index: number) => {
@@ -711,7 +711,7 @@ const applyMeetingTemplate = (tmpl: MeetingTemplate) => {
 // ==========================================
 // 🎙️ AI 회의록 생성 (실시간 웹 녹음 & 파일 분석)
 // ==========================================
-const refAiRecordModal = ref()
+const refAiRecordModal = ref<InstanceType<typeof FormModal> | null>(null)
 const isRecording = ref(false)
 const recordingSeconds = ref(0)
 const isAiAnalyzing = ref(false)
@@ -733,7 +733,7 @@ const openAiRecordModal = () => {
   recordingSeconds.value = 0
   audioChunks = []
   if (recordingTimer) clearInterval(recordingTimer)
-  refAiRecordModal.value.callModal()
+  refAiRecordModal.value?.callModal()
 }
 
 const startRecording = async () => {
@@ -814,7 +814,7 @@ const processAudioWithAi = async (audioBlob: Blob, filename: string) => {
     const result = await meetingStore.aiSummarizeMeeting(audioBlob, filename)
     if (result) {
       populateFormFromAiSummary(result)
-      refAiRecordModal.value.close()
+      refAiRecordModal.value?.close()
     }
   } catch (err: any) {
     console.error('AI summary failed:', err)
@@ -1503,7 +1503,7 @@ onBeforeMount(async () => {
         :get-issues="getIssues"
         :btn-size="'small'"
         @on-submit="createRelatedIssue"
-        @close-form="refIssueModal.close()"
+        @close-form="refIssueModal?.close()"
       />
     </template>
   </FormModal>
@@ -1559,7 +1559,7 @@ onBeforeMount(async () => {
         <CRow>
           <CCol class="text-right">
             <v-btn type="submit" color="primary" size="small"> 저장</v-btn>
-            <v-btn color="light" size="small" @click="refCategoryModal.close()" flat> 취소</v-btn>
+            <v-btn color="light" size="small" @click="refCategoryModal?.close()" flat> 취소</v-btn>
           </CCol>
         </CRow>
       </CForm>
@@ -1737,7 +1737,7 @@ onBeforeMount(async () => {
               color="light"
               size="small"
               class="ml-2"
-              @click="refTemplateEditModal.close()"
+              @click="refTemplateEditModal?.close()"
               flat
             >
               취소

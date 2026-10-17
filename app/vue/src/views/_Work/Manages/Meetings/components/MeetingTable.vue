@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { type PropType, ref, watchEffect } from 'vue'
+import { type PropType, ref, watchEffect, onUnmounted } from 'vue'
 import { DEFAULT_MEETING_COLUMNS, MEETING_COLUMN_LABEL_MAP } from '../constants'
-import { useMeeting } from '@/store/pinia/work_meeting.ts'
+import { useMeeting } from '@/store/pinia/work_meeting'
 import { useRoute, useRouter } from 'vue-router'
-import type { Meeting, MeetingCategory } from '@/store/types/work_meeting.ts'
+import type { Meeting, MeetingCategory } from '@/store/types/work_meeting'
 import Pagination from '@/components/Pagination'
 import MeetingItem from './MeetingItem.vue'
 
@@ -25,16 +25,19 @@ const router = useRouter()
 const meetingStore = useMeeting()
 const meetingPages = (limit: number) => meetingStore.meetingPages(limit)
 
-const querySectionRef = ref()
-
 const selectedRow = ref<number | null>(null)
-const handleClickOutside = (event: any) => {
-  if (!event.target.closest('.table-row')) selectedRow.value = null
+const handleClickOutside = (event: MouseEvent) => {
+  const target = event.target as HTMLElement | null
+  if (!target?.closest('.table-row')) selectedRow.value = null
 }
 
 watchEffect(() => {
   if (selectedRow.value) document.addEventListener('click', handleClickOutside)
   else document.removeEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
 })
 
 const goDetail = (meeting: Meeting) => {
@@ -45,8 +48,6 @@ const goDetail = (meeting: Meeting) => {
 }
 
 const pageSelect = (page: number) => emit('page-select', page)
-
-defineExpose({ querySectionRef })
 </script>
 
 <template>

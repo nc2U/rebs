@@ -3,15 +3,15 @@ import { computed, onBeforeMount, ref, watch } from 'vue'
 import {
   ALL_MEETING_COLUMNS,
   DEFAULT_MEETING_COLUMNS,
-} from '@/views/_Work/Manages/Meetings/constants.ts'
-import { useMeeting } from '@/store/pinia/work_meeting.ts'
-import { useMeetingFilter } from '@/store/pinia/work_meeting_filter.ts'
-import { useWork } from '@/store/pinia/work_project.ts'
+} from '@/views/_Work/Manages/Meetings/constants'
+import { useMeeting } from '@/store/pinia/work_meeting'
+import { useMeetingFilter } from '@/store/pinia/work_meeting_filter'
+import { useWork } from '@/store/pinia/work_project'
 import { useRoute } from 'vue-router'
-import { usePerms } from '@/composables/usePerms.ts'
-import { useTableColumns } from '@/composables/useTableColumns.ts'
-import type { IssueProject } from '@/store/types/work_project.ts'
-import type { MeetingFilter } from '@/store/types/work_meeting.ts'
+import { usePerms } from '@/composables/usePerms'
+import { useTableColumns } from '@/composables/useTableColumns'
+import type { IssueProject } from '@/store/types/work_project'
+import type { MeetingFilter } from '@/store/types/work_meeting'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
 import ColumnSelector from '@/components/ColumnSelector/Index.vue'
 import QuerySection from '@/views/_Work/Manages/Meetings/components/QuerySection.vue'
@@ -22,12 +22,14 @@ import MeetingForm from '@/views/_Work/Manages/Meetings/components/MeetingForm.v
 import TextButton from '@/views/_Work/components/atomics/TextButton.vue'
 import NoData from '@/components/NoData/Index.vue'
 
-const props = defineProps({
-  currentProject: { type: Object as () => IssueProject, default: null },
-})
+const props = defineProps<{
+  navMenu?: any
+  currentProject?: IssueProject | null
+  query?: any
+}>()
 
-const cBody = ref()
-const toggle = () => cBody.value.toggle()
+const cBody = ref<InstanceType<typeof ContentBody> | null>(null)
+const toggle = () => cBody.value?.toggle()
 defineExpose({ toggle })
 
 const route = useRoute()
@@ -55,8 +57,7 @@ const viewMode = computed(() => {
 })
 
 const page = ref(1)
-const meetingListRef = ref()
-const querySectionRef = ref()
+const querySectionRef = ref<InstanceType<typeof QuerySection> | null>(null)
 const meetingFilterStore = useMeetingFilter()
 const activeQueryId = computed(() => meetingFilterStore.activeQueryId)
 const listFilter = ref<MeetingFilter>({})
@@ -130,7 +131,7 @@ onBeforeMount(fetchMeetings)
 </script>
 
 <template>
-  <ContentBody ref="cBody">
+  <ContentBody ref="cBody" :nav-menu="navMenu" :query="query">
     <template v-slot:default>
       <CRow class="py-2">
         <CCol>
@@ -172,7 +173,6 @@ onBeforeMount(fetchMeetings)
 
         <MeetingTable
           v-else
-          ref="meetingListRef"
           :meeting-list="meetingList"
           :categories="categories"
           :columns="selectedColumns"
