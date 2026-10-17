@@ -262,7 +262,7 @@ onUpdated(() => formDataSetup())
         </CRow>
 
         <CRow>
-          <CCol sm="12" class="text-right pt-1">
+          <CCol sm="12" class="text-end pt-1">
             <v-btn :color="bankAcc ? 'success' : 'primary'" type="submit" :disabled="formsCheck">
               거래계좌 정보 <span v-if="bankAcc">저장</span><span v-else>추가</span>하기
             </v-btn>
@@ -280,7 +280,7 @@ onUpdated(() => formDataSetup())
       거래계좌 정보를 <span v-if="bankAcc">저장</span><span v-else>추가</span>하시겠습니까?
     </template>
     <template #footer>
-      <v-btn :color="bankAcc ? 'success' : 'primary'" @click="onBankAccSubmit">저장</v-btn>
+      <v-btn size="small" :color="bankAcc ? 'success' : 'primary'" @click="onBankAccSubmit">저장</v-btn>
     </template>
   </ConfirmModal>
 

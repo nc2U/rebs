@@ -18,6 +18,7 @@ const props = defineProps({
 const { can, canGlobal, PERM } = usePerms()
 const canLedgerUpdate = computed(() => can(PERM.LEDGER_UPDATE))
 const canLedgerManage = computed(() => can(PERM.LEDGER_MANAGE) || canGlobal(PERM.LEDGER_MANAGE))
+const canLedgerEdit = computed(() => canLedgerUpdate.value || canLedgerManage.value)
 
 const router = useRouter()
 const proLedgerStore = useProLedger()
@@ -28,7 +29,7 @@ const allowedPeriod = computed(
   () =>
     canLedgerManage.value ||
     (canLedgerUpdate.value &&
-      diffDate(props.proTrans?.deal_date as string, new Date(props.calculated)) <= 10),
+      diffDate(props.proTrans?.deal_date as string, props.calculated) <= 10),
 )
 
 const proAccounts = inject<ComputedRef<AccountPicker[]>>('proAccounts')
@@ -519,14 +520,14 @@ const handleUpdate = async () => {
         <v-icon v-else icon="mdi-minus-circle" color="danger" size="sm" />
       </CTableDataCell>
 
-      <CTableDataCell colspan="6" class="p-0">
+      <CTableDataCell :colspan="canLedgerEdit ? 5 : 4" class="p-0">
         <CTable class="m-0 p-0">
           <colgroup>
             <col style="width: 28%" />
             <col style="width: 26%" />
             <col style="width: 16%" />
             <col style="width: 24%" />
-            <col v-if="canLedgerUpdate" style="width: 6%" />
+            <col v-if="canLedgerEdit" style="width: 6%" />
           </colgroup>
           <CTableRow v-for="entry in visibleEntries" :key="entry.pk" class="bg-lime-lighten-5">
             <CTableDataCell
@@ -716,7 +717,7 @@ const handleUpdate = async () => {
             <CTableDataCell class="pl-3">
               {{ cutString(entry.evidence_type_display, 10) }}
             </CTableDataCell>
-            <CTableDataCell v-if="canLedgerUpdate" class="text-right pr-2">
+            <CTableDataCell v-if="canLedgerEdit" class="text-right pr-2">
               <v-icon
                 v-if="allowedPeriod"
                 icon="mdi-pencil"
@@ -734,7 +735,7 @@ const handleUpdate = async () => {
 
           <!-- Expand/Collapse Controls Row -->
           <CTableRow v-if="shouldShowExpand" class="bg-grey-lighten-4">
-            <CTableDataCell colspan="5" class="text-center py-2">
+            <CTableDataCell :colspan="canLedgerEdit ? 5 : 4" class="text-center py-2">
               <!-- Expand More Button -->
               <v-btn
                 v-if="!isFullyExpanded"

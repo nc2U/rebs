@@ -4,6 +4,7 @@ import BankScrapingDialog from '@/components/BankScraping/BankScrapingDialog.vue
 const props = defineProps<{
   modelValue: boolean
   projectId?: number | null
+  isImprest?: boolean | null
 }>()
 
 const emit = defineEmits<{
@@ -17,6 +18,7 @@ const emit = defineEmits<{
     :model-value="props.modelValue"
     mode="project"
     :project-id="props.projectId"
+    :is-imprest="props.isImprest"
     @update:model-value="emit('update:modelValue', $event)"
     @confirmed="emit('confirmed')"
   />

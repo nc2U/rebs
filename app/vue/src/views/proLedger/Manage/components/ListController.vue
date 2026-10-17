@@ -40,8 +40,9 @@ const formsCheck = computed(() => {
   const d = !form.value.account_category
   const e = !form.value.account
   const f = !form.value.bank_account
-  const g = !(form.value.search ?? '')?.trim()
-  return a && b && c && d && e && f && g
+  const g = !form.value.contract
+  const h = !(form.value.search ?? '')?.trim()
+  return a && b && c && d && e && f && g && h
 })
 
 const contStore = useContract()
@@ -96,6 +97,7 @@ const resetForm = () => {
   form.value.account_category = ''
   form.value.account = null
   form.value.bank_account = null
+  form.value.contract = null
   form.value.search = ''
   listFiltering(1)
 }
@@ -108,6 +110,7 @@ onBeforeMount(() => {
     form.value.account_category = props.dataFilter.account_category
     form.value.account = props.dataFilter.account
     form.value.bank_account = props.dataFilter.bank_account
+    form.value.contract = props.dataFilter.contract
     form.value.search = props.dataFilter.search
   }
 })
@@ -148,7 +151,7 @@ onBeforeMount(() => {
               </CCol>
 
               <CCol md="6" lg="2" class="mb-3">
-                <CFormSelect v-model.number="form.account_category" @change="cateSelect">
+                <CFormSelect v-model="form.account_category" @change="cateSelect">
                   <option value="">계정분류</option>
                   <option value="asset">자산</option>
                   <option value="liability">부채</option>
@@ -172,7 +175,7 @@ onBeforeMount(() => {
               </CCol>
 
               <CCol md="6" lg="3" class="mb-3">
-                <CFormSelect v-model="form.bank_account" @change="listFiltering(1)">
+                <CFormSelect v-model.number="form.bank_account" @change="listFiltering(1)">
                   <option value="">거래계좌</option>
                   <option v-for="acc in allProBankList" :key="acc.pk" :value="acc.pk">
                     {{ acc.alias_name }}
@@ -201,11 +204,10 @@ onBeforeMount(() => {
               <CFormInput
                 v-model="form.search"
                 placeholder="적요, 거래처 검색"
-                aria-label="Username"
-                aria-describedby="addon-wrapping"
+                aria-label="검색어"
                 @keydown.enter="listFiltering(1)"
               />
-              <CInputGroupText @click="listFiltering(1)">검색</CInputGroupText>
+              <CInputGroupText class="pointer" @click="listFiltering(1)">검색</CInputGroupText>
             </CInputGroup>
           </CCol>
         </CRow>
@@ -216,7 +218,7 @@ onBeforeMount(() => {
       <CCol color="warning" class="p-2 pl-3">
         <strong> 거래 건수 조회 결과 : {{ numFormat(proBankTransCount ?? 0, 0, 0) }} 건 </strong>
       </CCol>
-      <CCol v-if="!formsCheck" class="text-right mb-0">
+      <CCol v-if="!formsCheck" class="text-end mb-0">
         <v-btn color="info" size="small" @click="resetForm"> 검색조건 초기화</v-btn>
       </CCol>
     </CRow>

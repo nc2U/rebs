@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import { AlertLight } from '@/utils/cssMixins'
 
-defineProps({ project: { type: Number, default: null } })
+defineProps<{
+  project?: number | null
+}>()
 
 const emit = defineEmits<{
   (e: 'open-scraping'): void

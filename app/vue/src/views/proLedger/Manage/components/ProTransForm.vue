@@ -808,10 +808,10 @@ onBeforeMount(async () => {
     @submit.prevent="saveTransaction"
   >
     <CRow
-      class="text-right py-2 mb-1 mx-1"
+      class="text-end py-2 mb-1 mx-1"
       :class="isCreateMode ? 'bg-light-blue-lighten-5' : 'bg-light-green-lighten-5'"
     >
-      <CCol class="text-left">
+      <CCol class="text-start">
         <template v-if="isCreateMode">
           <span class="text-primary strong">신규 거래 등록 중...</span>
         </template>
@@ -1053,7 +1053,7 @@ onBeforeMount(async () => {
               </div>
             </CTableDataCell>
 
-            <CTableDataCell colspan="7" class="p-0">
+            <CTableDataCell :colspan="canLedgerManage ? 5 : 4" class="p-0">
               <ProAccountEntry
                 :sort="bankForm.sort"
                 :display-rows="displayRows"
@@ -1067,7 +1067,7 @@ onBeforeMount(async () => {
       </CTableBody>
     </CTable>
 
-    <CRow v-if="!isCreateMode" class="text-right px-2">
+    <CRow v-if="!isCreateMode" class="text-end px-2">
       <CCol>
         <v-btn
           color="warning"
@@ -1087,7 +1087,7 @@ onBeforeMount(async () => {
       삭제한 데이터는 복구할 수 없습니다. 해당 입출금 거래 정보를 삭제하시겠습니까?
     </template>
     <template #footer>
-      <v-btn size="small" color="warning" @click="delTransaction">저장</v-btn>
+      <v-btn size="small" color="warning" @click="delTransaction">삭제</v-btn>
     </template>
   </ConfirmModal>
 

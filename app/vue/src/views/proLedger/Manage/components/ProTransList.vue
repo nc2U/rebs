@@ -16,8 +16,10 @@ const props = defineProps({
 })
 const emit = defineEmits(['page-select', 'on-bank-create', 'on-bank-update'])
 
-const { can, PERM } = usePerms()
+const { can, canGlobal, PERM } = usePerms()
 const canLedgerUpdate = computed(() => can(PERM.LEDGER_UPDATE))
+const canLedgerManage = computed(() => can(PERM.LEDGER_MANAGE) || canGlobal(PERM.LEDGER_MANAGE))
+const canLedgerEdit = computed(() => canLedgerUpdate.value || canLedgerManage.value)
 
 const refAccountManage = ref()
 const refBankAcc = ref()
@@ -49,13 +51,13 @@ const accCallModal = () => {
       <col style="width: 13%" />
       <col style="width: 8%" />
       <col style="width: 12%" />
-      <col v-if="canLedgerUpdate" style="width: 3%" />
+      <col v-if="canLedgerEdit" style="width: 3%" />
     </colgroup>
 
     <CTableHead>
       <CTableRow :color="TableSecondary">
         <CTableHeaderCell class="pl-3" colspan="6">은행거래내역</CTableHeaderCell>
-        <CTableHeaderCell class="pl-0" :colspan="canLedgerUpdate ? 6 : 5">
+        <CTableHeaderCell class="pl-0" :colspan="canLedgerEdit ? 5 : 4">
           <span class="text-grey mr-2">|</span> 분류 내역
         </CTableHeaderCell>
       </CTableRow>
@@ -81,7 +83,7 @@ const accCallModal = () => {
         <CTableHeaderCell scope="col">거래처</CTableHeaderCell>
         <CTableHeaderCell scope="col">분류 금액</CTableHeaderCell>
         <CTableHeaderCell scope="col">지출증빙</CTableHeaderCell>
-        <CTableHeaderCell v-if="canLedgerUpdate" scope="col"></CTableHeaderCell>
+        <CTableHeaderCell v-if="canLedgerEdit" scope="col"></CTableHeaderCell>
       </CTableRow>
     </CTableHead>
 

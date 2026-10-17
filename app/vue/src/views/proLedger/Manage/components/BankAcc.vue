@@ -47,7 +47,7 @@ defineExpose({ callModal })
       </CRow>
 
       <CRow>
-        <CCol class="text-right">
+        <CCol class="text-end">
           <v-btn
             :prepend-icon="`mdi-${!bankAccAdd ? 'plus' : 'minus'}-circle`"
             variant="text"
