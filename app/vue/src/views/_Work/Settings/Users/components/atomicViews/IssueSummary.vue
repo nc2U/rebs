@@ -1,12 +1,23 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
 
-defineProps({
-  issueNum: {
-    type: Object,
-    default: () => {},
+interface IssueNum {
+  open_charged?: number
+  closed_charged?: number
+  all_charged?: number
+  open_created?: number
+  closed_created?: number
+  all_created?: number
+}
+
+withDefaults(
+  defineProps<{
+    issueNum?: IssueNum
+  }>(),
+  {
+    issueNum: () => ({}),
   },
-})
+)
 
 const route = useRoute()
 </script>

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref, watch } from 'vue'
 import { useAccount } from '@/store/pinia/account'
-import { usePerms } from '@/composables/usePerms.ts'
-import { useWork } from '@/store/pinia/work_project.ts'
-import type { Member } from '@/store/types/work_project.ts'
+import { usePerms } from '@/composables/usePerms'
+import { useWork } from '@/store/pinia/work_project'
+import type { Member } from '@/store/types/work_project'
 import NoData from '@/components/NoData/Index.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -17,8 +17,8 @@ const canProjectMember = computed(() => can(PERM.PROJECT_MEMBER))
 // ────────────────────────────────────────────────────
 // 스토어 & 데이터
 // ────────────────────────────────────────────────────
-const confirmModal = ref()
-const formModal = ref()
+const confirmModal = ref<InstanceType<typeof ConfirmModal> | null>(null)
+const formModal = ref<InstanceType<typeof FormModal> | null>(null)
 
 const accStore = useAccount()
 const workStore = useWork()
@@ -61,7 +61,7 @@ const editSubmit = (mem: Member, roles: number[]) => {
 const deleteMemberPk = ref<number | null>(null)
 
 const toDelete = (pk: number) => {
-  confirmModal.value.callModal(
+  confirmModal.value?.callModal(
     '',
     '이 사용자를 해당 워크스페이스에서 제거하시겠습니까?',
     '',
@@ -74,7 +74,7 @@ const deleteSubmit = () => {
   if (deleteMemberPk.value !== null) {
     workStore.deleteMember(deleteMemberPk.value, props.userPk)
   }
-  confirmModal.value.close()
+  confirmModal.value?.close()
 }
 
 // ────────────────────────────────────────────────────
@@ -95,7 +95,7 @@ watch(selectedProject, () => {
   selectedRoles.value = []
 })
 
-const callModal = () => formModal.value.callModal()
+const callModal = () => formModal.value?.callModal()
 
 const onSubmit = (event: Event) => {
   const el = event.currentTarget as HTMLFormElement
@@ -106,7 +106,7 @@ const onSubmit = (event: Event) => {
   } else {
     modalAction()
     validated.value = false
-    formModal.value.close()
+    formModal.value?.close()
   }
 }
 
@@ -235,16 +235,16 @@ onBeforeMount(async () => {
               <CTableDataCell v-if="canProjectMember" class="px-3">
                 <span v-if="editMode === null || editMode !== mem.pk" class="mr-2">
                   <v-icon icon="mdi-pencil" color="amber" size="sm" />
-                  <router-link to="" @click="toEdit(mem)">편집</router-link>
+                  <a href="javascript:void(0)" @click="toEdit(mem)">편집</a>
                 </span>
                 <span v-else-if="editMode === mem.pk" class="mr-2">
                   <v-icon icon="mdi-close-octagon-outline" color="grey" size="sm" class="mr-1" />
-                  <router-link to="" @click="cancelEdit">취소</router-link>
+                  <a href="javascript:void(0)" @click="cancelEdit">취소</a>
                 </span>
 
                 <span>
                   <v-icon icon="mdi-trash-can-outline" color="grey" size="sm" class="mr-1" />
-                  <router-link to="" @click="toDelete(mem.pk)">삭제</router-link>
+                  <a href="javascript:void(0)" @click="toDelete(mem.pk)">삭제</a>
                 </span>
               </CTableDataCell>
             </CTableRow>
@@ -331,7 +331,7 @@ onBeforeMount(async () => {
 
           <CModalFooter>
             <v-btn color="primary" size="small" type="submit">추가</v-btn>
-            <v-btn color="light" size="small" @click="formModal.close" flat>닫기</v-btn>
+            <v-btn color="light" size="small" @click="formModal?.close()" flat>닫기</v-btn>
           </CModalFooter>
         </CForm>
       </template>

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/_Work/_menu/headermixin2'
-import type { ActLogEntryFilter } from '@/store/types/work_logging.ts'
+import type { ActLogEntryFilter } from '@/store/types/work_logging'
 import { useRoute } from 'vue-router'
 import { useAccount } from '@/store/pinia/account'
-import { useWork } from '@/store/pinia/work_project.ts'
-import { useIssue } from '@/store/pinia/work_issue.ts'
-import { useLogging } from '@/store/pinia/work_logging.ts'
+import { useWork } from '@/store/pinia/work_project'
+import { useIssue } from '@/store/pinia/work_issue'
+import { useLogging } from '@/store/pinia/work_logging'
 import Loading from '@/components/Loading/Index.vue'
 import Header from '@/views/_Work/components/Header/Index.vue'
 import ContentBody from '@/views/_Work/components/ContentBody/Index.vue'
@@ -17,9 +17,9 @@ import MyAccountForm from './components/MyAccountForm.vue'
 import MyPasswordForm from './components/MyPasswordForm.vue'
 import MyProjectView from '@/views/_Work/Settings/Users/components/MyProjectView.vue'
 
-const cBody = ref()
+const cBody = ref<InstanceType<typeof ContentBody> | null>(null)
 
-const sideNavCAll = () => cBody.value.toggle()
+const sideNavCAll = () => cBody.value?.toggle()
 
 const component = computed(() => {
   if (route.name === '사용자') return '목록보기'
@@ -76,7 +76,7 @@ onBeforeMount(async () => {
   <Loading v-model:active="loading" />
   <Header :page-title="pageTitle" :nav-menu="navMenu" @side-nav-call="sideNavCAll" />
 
-  <ContentBody ref="cBody" :nav-menu="navMenu" :query="route?.query" :aside="true">
+  <ContentBody ref="cBody" :nav-menu="navMenu" :query="route?.query" :aside="false">
     <template v-slot:default>
       <UserList v-if="component === '목록보기'" :user-list="usersList" />
 
@@ -92,7 +92,5 @@ onBeforeMount(async () => {
       <MyPasswordForm v-else-if="component === '비밀번호 변경'" />
       <MyProjectView v-else-if="component === '프로젝트 보기'" />
     </template>
-
-    <template v-slot:aside></template>
   </ContentBody>
 </template>

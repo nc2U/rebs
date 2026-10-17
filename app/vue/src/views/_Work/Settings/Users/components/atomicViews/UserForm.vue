@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
 import { onBeforeRouteUpdate, useRouter } from 'vue-router'
-import { generatePassword } from '@/utils/helper.ts'
-import { useAccount } from '@/store/pinia/account.ts'
-import type { User } from '@/store/types/accounts.ts'
+import { generatePassword } from '@/utils/helper'
+import { useAccount } from '@/store/pinia/account'
+import type { User } from '@/store/types/accounts'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
@@ -13,8 +13,8 @@ const emit = defineEmits(['submit'])
 
 const validated = ref(false)
 
-const refAlertModal = ref()
-const refConfirmModal = ref()
+const refAlertModal = ref<InstanceType<typeof AlertModal> | null>(null)
+const refConfirmModal = ref<InstanceType<typeof ConfirmModal> | null>(null)
 
 const router = useRouter()
 
@@ -92,11 +92,11 @@ const onSubmit = async (event: Event) => {
   }
 
   if (form.password && form.password !== form.pass_conf) {
-    refAlertModal.value.callModal('', '비밀번호가 일치하지 않습니다.')
+    refAlertModal.value?.callModal('', '비밀번호가 일치하지 않습니다.')
     return
   }
 
-  refConfirmModal.value.callModal()
+  refConfirmModal.value?.callModal()
 }
 
 const onSubmitConfirm = async () => {
@@ -135,11 +135,11 @@ const onSubmitConfirm = async () => {
     }
 
     validated.value = false
-    refConfirmModal.value.close()
+    refConfirmModal.value?.close()
     // await router.push({ name: '사용자' })
   } catch (err: any) {
     console.error(err)
-    refAlertModal.value.callModal('', '사용자 정보 저장 중 오류가 발생했습니다.')
+    refAlertModal.value?.callModal('', '사용자 정보 저장 중 오류가 발생했습니다.')
   }
 }
 

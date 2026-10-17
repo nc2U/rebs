@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref, watch } from 'vue'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
-import { useAccount } from '@/store/pinia/account.ts'
-import type { User } from '@/store/types/accounts.ts'
+import { useAccount } from '@/store/pinia/account'
+import type { User } from '@/store/types/accounts'
 import TextButton from '@/views/_Work/components/atomics/TextButton.vue'
 import UserForm from './atomicViews/UserForm.vue'
 import UserProjects from './atomicViews/UserProjects.vue'

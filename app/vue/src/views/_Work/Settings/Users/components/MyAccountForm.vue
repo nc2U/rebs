@@ -11,7 +11,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const refAlertModal = ref<InstanceType<typeof AlertModal>>()
-const refConfirmModal = ref<InstanceType<typeof AlertModal>>()
+const refConfirmModal = ref<InstanceType<typeof ConfirmModal>>()
 
 const router = useRouter()
 
@@ -319,7 +319,7 @@ onBeforeRouteUpdate(async to => {
               </CRow>
 
               <CRow class="mb-3">
-                <CFormLabel for="email" class="col-sm-3 col-form-label required">
+                <CFormLabel for="birth_date" class="col-sm-3 col-form-label required">
                   생년월일
                 </CFormLabel>
                 <CCol sm="9">
@@ -334,7 +334,7 @@ onBeforeRouteUpdate(async to => {
               </CRow>
 
               <CRow class="mb-3">
-                <CFormLabel for="password" class="col-sm-3 col-form-label"> 휴대전화</CFormLabel>
+                <CFormLabel for="cell_phone" class="col-sm-3 col-form-label"> 휴대전화</CFormLabel>
                 <CCol>
                   <input
                     v-model="form.cell_phone"

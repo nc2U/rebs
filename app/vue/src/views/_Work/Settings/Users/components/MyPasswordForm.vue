@@ -6,7 +6,7 @@ import AlertModal from '@/components/Modals/AlertModal.vue'
 import TextButton from '@/views/_Work/components/atomics/TextButton.vue'
 import { CModal } from '@coreui/vue'
 
-const refAlertModal = ref()
+const refAlertModal = ref<InstanceType<typeof AlertModal> | null>(null)
 
 const router = useRouter()
 const accStore = useAccount()
@@ -33,7 +33,7 @@ const openResetModal = () => {
 
 const handleSendResetEmail = async () => {
   if (!resetEmail.value || !resetEmail.value.includes('@')) {
-    refAlertModal.value.callModal('', '유효한 이메일 주소를 입력해주세요.')
+    refAlertModal.value?.callModal('', '유효한 이메일 주소를 입력해주세요.')
     return
   }
   isSendingReset.value = true
@@ -46,7 +46,7 @@ const handleSendResetEmail = async () => {
 }
 
 const onSubmit = async (event: Event) => {
-  const e = event.currentTarget as HTMLInputElement
+  const e = event.currentTarget as HTMLFormElement
   if (!e.checkValidity()) {
     event.preventDefault()
     event.stopPropagation()
@@ -60,7 +60,7 @@ const onSubmit = async (event: Event) => {
         }, 1000)
       }
     } else {
-      refAlertModal.value.callModal('', '비밀번호가 서로 다릅니다.')
+      refAlertModal.value?.callModal('', '비밀번호가 서로 다릅니다.')
     }
   }
 }

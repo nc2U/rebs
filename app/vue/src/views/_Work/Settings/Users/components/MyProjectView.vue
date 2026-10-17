@@ -1,14 +1,11 @@
 <script lang="ts" setup>
-import { ref, reactive, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import UserProjects from '@/views/_Work/Settings/Users/components/atomicViews/UserProjects.vue'
 import TextButton from '@/views/_Work/components/atomics/TextButton.vue'
 
-const router = useRouter()
 const accStore = useAccount()
 const userInfo = computed(() => accStore.userInfo)
-const usernameVal = computed(() => userInfo.value?.username || '')
 </script>
 
 <template>
@@ -30,6 +27,6 @@ const usernameVal = computed(() => userInfo.value?.username || '')
   </CRow>
 
   <CRow>
-    <UserProjects :user-pk="userInfo?.pk as number" />
+    <UserProjects v-if="userInfo?.pk" :user-pk="userInfo.pk" />
   </CRow>
 </template>

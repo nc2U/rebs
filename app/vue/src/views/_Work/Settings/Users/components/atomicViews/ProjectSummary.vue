@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, type PropType } from 'vue'
-import type { IssueProject } from '@/store/types/work_project.ts'
+import type { IssueProject } from '@/store/types/work_project'
 import { useRoute } from 'vue-router'
 import { dateFormat } from '@/utils/baseMixins'
 
@@ -13,7 +13,7 @@ const userId = computed(() => route.params.userId)
 
 const getMember = (members: any[]) => {
   let member = members.filter(m => m.user.pk == userId.value)[0]
-  return member ? [member.roles, member.created] : [[], '1900-01-01']
+  return member ? [member.roles, member.created] : [[], '']
 }
 </script>
 
@@ -40,7 +40,7 @@ const getMember = (members: any[]) => {
                 >
                   {{ proj.name }}
                 </router-link>
-                <span v-if="proj.status !== '1'" class="text-caption text-grey ml-2">[댣힘]</span>
+                <span v-if="proj.status !== '1'" class="text-caption text-grey ml-2">[닫힘]</span>
               </CTableDataCell>
               <CTableDataCell>
                 {{

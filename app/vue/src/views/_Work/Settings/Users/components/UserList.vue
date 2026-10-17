@@ -2,11 +2,10 @@
 import { computed, type PropType } from 'vue'
 import { useRoute } from 'vue-router'
 import type { User } from '@/store/types/accounts'
-import { useAccount } from '@/store/pinia/account.ts'
+import { useAccount } from '@/store/pinia/account'
 import NoData from '@/components/NoData/Index.vue'
-// import QuerySection from '@/views/_Work/Manages/Projects/components/QuerySection.vue'
-import UserItem from '@/views/_Work/Settings/Users/components/UserItem.vue'
-import TextButton from '../../../components/atomics/TextButton.vue'
+import UserItem from './UserItem.vue'
+import TextButton from '@/views/_Work/components/atomics/TextButton.vue'
 
 defineProps({
   userList: { type: Array as PropType<User[]>, default: () => [] },
@@ -68,7 +67,7 @@ const workManager = computed(() => accStore.workManager)
       <v-divider class="mb-0" />
       <CTable hover striped responsive align="middle">
         <CTableHead>
-          <CTableRow color="">
+          <CTableRow>
             <CTableHeaderCell>
               <CFormCheck />
             </CTableHeaderCell>
