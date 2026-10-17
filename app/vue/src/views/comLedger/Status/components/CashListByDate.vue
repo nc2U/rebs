@@ -1,39 +1,40 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useComLedger } from '@/store/pinia/comLedger'
 import { TableSecondary } from '@/utils/cssMixins'
 import { numFormat } from '@/utils/baseMixins'
 import type { BankTransaction } from '@/store/types/comLedger'
 
-defineProps({ date: { type: String, default: '' } })
+interface Props {
+  date?: string
+}
 
-const dateIncSet = ref<BankTransaction[]>([])
-const dateOutSet = ref<BankTransaction[]>([])
-const dateIncTotal = ref<number>(0)
-const dateOutTotal = ref<number>(0)
+withDefaults(defineProps<Props>(), {
+  date: '',
+})
 
 const ledgerStore = useComLedger()
 const dateLedgerTransactions = computed(() => ledgerStore.dateLedgerTransactions)
 
-watch(dateLedgerTransactions, () => setData())
+const dateIncSet = computed(() =>
+  dateLedgerTransactions.value.filter((tx: BankTransaction) => tx.sort === 1),
+)
+const dateOutSet = computed(() =>
+  dateLedgerTransactions.value.filter((tx: BankTransaction) => tx.sort === 2),
+)
 
-onBeforeMount(() => setData())
+const dateIncTotal = computed(() =>
+  dateIncSet.value.reduce((sum: number, tx: BankTransaction) => sum + (tx.amount || 0), 0),
+)
+const dateOutTotal = computed(() =>
+  dateOutSet.value.reduce((sum: number, tx: BankTransaction) => sum + (tx.amount || 0), 0),
+)
 
 const getFirstEntry = (tx: BankTransaction) => tx.accounting_entries?.[0]
-
-const setData = () => {
-  // sort === 1: 입금, sort === 2: 출금
-  dateIncSet.value = dateLedgerTransactions.value.filter((tx: BankTransaction) => tx.sort === 1)
-  dateOutSet.value = dateLedgerTransactions.value.filter((tx: BankTransaction) => tx.sort === 2)
-  dateIncTotal.value = dateIncSet.value.reduce(
-    (sum: number, tx: BankTransaction) => sum + tx.amount,
-    0,
-  )
-  dateOutTotal.value = dateOutSet.value.reduce(
-    (sum: number, tx: BankTransaction) => sum + tx.amount,
-    0,
-  )
-}
+const getEntryCountSuffix = (tx: BankTransaction) =>
+  tx.accounting_entries && tx.accounting_entries.length > 1
+    ? ` 외 ${tx.accounting_entries.length - 1}건`
+    : ''
 </script>
 
 <template>
@@ -54,7 +55,7 @@ const setData = () => {
           </strong>
           <small class="text-medium-emphasis"> ({{ date }}) 기준 </small>
         </CTableDataCell>
-        <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
+        <CTableDataCell class="text-end">(단위: 원)</CTableDataCell>
       </CTableRow>
       <CTableRow :color="TableSecondary" class="text-center">
         <CTableHeaderCell>거래 계좌</CTableHeaderCell>
@@ -66,27 +67,26 @@ const setData = () => {
     </CTableHead>
 
     <CTableBody>
-      <CTableRow v-for="inc in dateIncSet" :key="inc.pk" class="text-center">
-        <CTableDataCell>{{ inc.bank_account_name }}</CTableDataCell>
-        <CTableDataCell class="text-left">{{ inc.content }}</CTableDataCell>
-        <CTableDataCell class="text-right" color="success">
-          {{ numFormat(inc.amount) }}
+      <template v-if="dateIncSet.length > 0">
+        <CTableRow v-for="inc in dateIncSet" :key="inc.pk" class="text-center">
+          <CTableDataCell>{{ inc.bank_account_name }}</CTableDataCell>
+          <CTableDataCell class="text-start">{{ inc.content }}</CTableDataCell>
+          <CTableDataCell class="text-end" color="success">
+            {{ numFormat(inc.amount) }}
+          </CTableDataCell>
+          <CTableDataCell class="text-start">
+            {{ getFirstEntry(inc)?.account_name ?? '' }}{{ getEntryCountSuffix(inc) }}
+          </CTableDataCell>
+          <CTableDataCell class="text-start">{{ getFirstEntry(inc)?.trader ?? '' }}</CTableDataCell>
+        </CTableRow>
+      </template>
+      <CTableRow v-else>
+        <CTableDataCell colspan="5" class="text-center py-4 text-muted">
+          당일 입금 내역이 없습니다.
         </CTableDataCell>
-        <CTableDataCell class="text-left">
-          {{ getFirstEntry(inc)?.account_name ?? '' }}
-        </CTableDataCell>
-        <CTableDataCell class="text-left">{{ getFirstEntry(inc)?.trader ?? '' }}</CTableDataCell>
       </CTableRow>
 
-      <CTableRow class="text-center">
-        <CTableDataCell>&nbsp;</CTableDataCell>
-        <CTableDataCell></CTableDataCell>
-        <CTableDataCell color="success"></CTableDataCell>
-        <CTableDataCell></CTableDataCell>
-        <CTableDataCell></CTableDataCell>
-      </CTableRow>
-
-      <CTableRow :color="TableSecondary" class="text-right">
+      <CTableRow :color="TableSecondary" class="text-end">
         <CTableHeaderCell class="text-center">합계</CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(dateIncTotal) }}</CTableHeaderCell>
@@ -113,7 +113,7 @@ const setData = () => {
           </strong>
           <small class="text-medium-emphasis"> ({{ date }}) 기준 </small>
         </CTableDataCell>
-        <CTableDataCell class="text-right">(단위: 원)</CTableDataCell>
+        <CTableDataCell class="text-end">(단위: 원)</CTableDataCell>
       </CTableRow>
       <CTableRow :color="TableSecondary" class="text-center">
         <CTableHeaderCell>거래 계좌</CTableHeaderCell>
@@ -125,27 +125,26 @@ const setData = () => {
     </CTableHead>
 
     <CTableBody>
-      <CTableRow v-for="out in dateOutSet" :key="out.pk" class="text-center">
-        <CTableDataCell>{{ out.bank_account_name }}</CTableDataCell>
-        <CTableDataCell class="text-left">{{ out.content }}</CTableDataCell>
-        <CTableDataCell class="text-right" color="danger">
-          {{ numFormat(out.amount) }}
+      <template v-if="dateOutSet.length > 0">
+        <CTableRow v-for="out in dateOutSet" :key="out.pk" class="text-center">
+          <CTableDataCell>{{ out.bank_account_name }}</CTableDataCell>
+          <CTableDataCell class="text-start">{{ out.content }}</CTableDataCell>
+          <CTableDataCell class="text-end" color="danger">
+            {{ numFormat(out.amount) }}
+          </CTableDataCell>
+          <CTableDataCell class="text-start">
+            {{ getFirstEntry(out)?.account_name ?? '' }}{{ getEntryCountSuffix(out) }}
+          </CTableDataCell>
+          <CTableDataCell class="text-start">{{ getFirstEntry(out)?.trader ?? '' }}</CTableDataCell>
+        </CTableRow>
+      </template>
+      <CTableRow v-else>
+        <CTableDataCell colspan="5" class="text-center py-4 text-muted">
+          당일 출금 내역이 없습니다.
         </CTableDataCell>
-        <CTableDataCell class="text-left">
-          {{ getFirstEntry(out)?.account_name ?? '' }}
-        </CTableDataCell>
-        <CTableDataCell class="text-left">{{ getFirstEntry(out)?.trader ?? '' }}</CTableDataCell>
       </CTableRow>
 
-      <CTableRow class="text-center">
-        <CTableDataCell>&nbsp;</CTableDataCell>
-        <CTableDataCell></CTableDataCell>
-        <CTableDataCell color="danger"></CTableDataCell>
-        <CTableDataCell></CTableDataCell>
-        <CTableDataCell></CTableDataCell>
-      </CTableRow>
-
-      <CTableRow :color="TableSecondary" class="text-right">
+      <CTableRow :color="TableSecondary" class="text-end">
         <CTableHeaderCell class="text-center">합계</CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
         <CTableHeaderCell>{{ numFormat(dateOutTotal) }}</CTableHeaderCell>

@@ -18,6 +18,7 @@ import CashListByDate from './components/CashListByDate.vue'
 import Calculated from './components/Calculated.vue'
 
 const date = ref(getToday())
+const isBalance = ref<'' | 'true'>('true')
 const compName = ref('StatusByAccount')
 
 const comStore = useCompany()
@@ -49,14 +50,16 @@ const isCalculated = computed(
     comLedgerCalculated.value.calculated >= (comLedgerLastDealDate.value?.deal_date ?? ''),
 ) // 최종 정산 일자 이후에 거래 기록이 없음 === true
 
-const checkBalance = () => {
+const checkBalance = async () => {
+  if (!company.value) return
   const payload = {
     company: company.value as number,
     calculated: comLedgerLastDealDate.value?.deal_date as string,
   }
   if (!!comLedgerCalculated.value)
-    patchComLedgerCalc({ ...{ pk: comLedgerCalculated.value.pk }, ...payload })
-  else createComLedgerCalc(payload)
+    await patchComLedgerCalc({ ...{ pk: comLedgerCalculated.value.pk }, ...payload })
+  else await createComLedgerCalc(payload)
+  await fetchComLedgerCalc(company.value as number)
 }
 
 const excelUrl = computed(() => {
@@ -91,16 +94,17 @@ const showTab = (num: number) => {
 const setDate = (dt: string) => {
   date.value = dt
   if (company.value) {
-    fetchComLedgerBalanceByAccList({ company: company.value, date: dt })
+    fetchComLedgerBalanceByAccList({ company: company.value, date: dt, is_balance: isBalance.value })
     fetchDateLedgerTransactionList({ company: company.value, date: dt })
   }
 }
 
-const isExistBalance = (val: 'true' | '') => {
+const isExistBalance = (val: boolean | 'true' | '') => {
+  isBalance.value = val ? 'true' : ''
   if (company.value) {
     fetchComLedgerBalanceByAccList({
       company: company.value as number,
-      is_balance: val,
+      is_balance: isBalance.value,
       date: date.value,
     })
   }
@@ -129,8 +133,11 @@ const comSelect = (target: number | null) => {
 
 const loading = ref(true)
 onBeforeMount(async () => {
-  dataSetup(company.value || comStore.initComId)
-  compName.value = comp[Number(localStorage.getItem('comLedgerStatus') ?? 1)]
+  const comId = company.value || comStore.initComId
+  if (comId) {
+    dataSetup(comId)
+    compName.value = comp[Number(localStorage.getItem('comLedgerStatus') ?? 1)]
+  }
   loading.value = false
 })
 </script>
@@ -150,11 +157,18 @@ onBeforeMount(async () => {
 
         <TabSelect @tab-select="showTab" />
 
-        <TableTitleRow excel :url="excelUrl" :filename="filename" :disabled="!company" />
+        <TableTitleRow
+          title="본사 계좌 및 자금 현황"
+          excel
+          :url="excelUrl"
+          :filename="filename"
+          :disabled="!company"
+        />
 
         <StatusByAccount
           v-if="compName === 'StatusByAccount'"
           :date="date"
+          :is-balance="isBalance"
           @is-exist-balance="isExistBalance"
         />
 

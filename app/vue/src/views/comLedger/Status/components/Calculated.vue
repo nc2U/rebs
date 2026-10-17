@@ -3,11 +3,15 @@ import { ref, computed } from 'vue'
 import { usePerms } from '@/composables/usePerms.ts'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
-defineProps({
-  calcDate: { type: String, default: null },
-  isCalculated: { type: Boolean, default: false },
-})
-const emit = defineEmits(['to-calculate'])
+interface Props {
+  calcDate?: string | null
+  isCalculated?: boolean
+}
+
+defineProps<Props>()
+const emit = defineEmits<{
+  (e: 'to-calculate'): void
+}>()
 
 const { canGlobal, PERM } = usePerms()
 const canComLedgerUpdate = computed(
@@ -28,9 +32,9 @@ const modalAction = () => {
   <CAlert
     v-if="canComLedgerUpdate"
     :color="isCalculated ? 'success' : 'warning'"
-    class="text-right"
+    class="text-end"
   >
-    <span v-if="calcDate" class="mr-3">[정산일 : {{ calcDate }}]</span>
+    <span v-if="calcDate" class="me-3">[정산일 : {{ calcDate }}]</span>
     <v-btn v-if="isCalculated" color="success" size="x-large" disabled> 잔고정산 확인완료</v-btn>
     <v-btn v-else color="warning" size="x-large" @click="toCalculated"> 당일잔고 정산확인</v-btn>
   </CAlert>
