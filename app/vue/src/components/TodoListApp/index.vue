@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { ref, computed, onBeforeMount, watch } from 'vue'
 import { useAccount } from '@/store/pinia/account.ts'
-import type { Todo as T } from '@/store/types/accounts.ts'
+import type { Todo as T, TodoIssueInfo } from '@/store/types/accounts.ts'
 import Todo from './Todo.vue'
+import ConvertModal from './ConvertModal.vue'
 
 type FilterKey = 'all' | 'active' | 'completed'
 
@@ -25,6 +26,25 @@ const allChecked = computed(() => todos.value.length > 0 && todos.value.every(to
 const filteredTodos = computed(() => filters[visibility.value](todos.value))
 
 const remaining = computed(() => todos.value.filter(todo => !todo.completed).length)
+
+const convertModalVisible = ref(false)
+const selectedTodoForConvert = ref<T | null>(null)
+const successNotice = ref<{
+  visible: boolean
+  issue: TodoIssueInfo
+} | null>(null)
+
+const openConvertModal = (todo: T) => {
+  selectedTodoForConvert.value = todo
+  convertModalVisible.value = true
+}
+
+const onConverted = (payload: { todo: T; issue: TodoIssueInfo }) => {
+  successNotice.value = { visible: true, issue: payload.issue }
+  setTimeout(() => {
+    if (successNotice.value) successNotice.value.visible = false
+  }, 8000)
+}
 
 const addTodo = (e: Event) => {
   const input = e.target as HTMLInputElement
@@ -74,6 +94,32 @@ onBeforeMount(() => account.fetchTodoList())
 </script>
 
 <template>
+  <CAlert
+    v-if="successNotice?.visible"
+    color="success"
+    dismissible
+    class="mb-3 py-2 px-3 small d-flex justify-content-between align-items-center"
+    @close="successNotice.visible = false"
+  >
+    <div class="me-2 text-truncate">
+      <CIcon name="cilCheckCircle" class="me-1 text-success align-middle" />
+      <strong>[#{{ successNotice.issue.pk }}] {{ successNotice.issue.subject }}</strong>
+      (으)로 전환되었습니다.
+    </div>
+    <router-link
+      :to="{
+        name: '(업무) - 보기',
+        params: {
+          projId: successNotice.issue.project_slug || successNotice.issue.project_id,
+          issueId: successNotice.issue.pk,
+        },
+      }"
+      class="btn btn-sm btn-outline-success py-0 flex-shrink-0"
+    >
+      업무 바로가기
+    </router-link>
+  </CAlert>
+
   <section class="todoapp mb-4">
     <!-- header -->
     <header class="header">
@@ -103,6 +149,7 @@ onBeforeMount(() => account.fetchTodoList())
           @toggle-todo="toggleTodo"
           @edit-todo="editTodo"
           @del-todo="delTodo"
+          @convert-todo="openConvertModal"
         />
       </ul>
     </section>
@@ -124,6 +171,12 @@ onBeforeMount(() => account.fetchTodoList())
       </button>
     </footer>
   </section>
+
+  <ConvertModal
+    v-model:visible="convertModalVisible"
+    :todo="selectedTodoForConvert"
+    @converted="onConverted"
+  />
 
   <footer class="info text-center bottom-footer" style="font-size: 0.875rem">
     <p v-if="todos.length">할 일 목록을 수정하려면 더블클릭 하세요.</p>

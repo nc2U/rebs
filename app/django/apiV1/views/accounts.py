@@ -7,6 +7,7 @@ from django.contrib.auth.hashers import check_password
 from django.core.mail import send_mail
 from django.db import transaction
 from django.db.models import Q
+from django.utils import timezone
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from rest_framework import viewsets, status
@@ -17,7 +18,8 @@ from rest_framework.views import APIView
 
 from accounts.models import User, Profile, DocScrape, PostScrape, Todo, PasswordResetToken, FCMDevice, Notification
 from apiV1.permissions.auth_perms import IsOwnerOnly, IsWorkManagerOnly
-from work.models.project import Role, Member
+from work.models.issue import Issue, Tracker, IssueStatus, CodeIssuePriority
+from work.models.project import Role, Member, IssueProject
 from ..pagination import PageNumberPaginationThreeThousand, PageNumberPaginationFifty
 from ..serializers.accounts import UserSerializer, ProfileSerializer, \
     DocScrapeSerializer, PostScrapeSerializer, TodoSerializer, ChangePasswordSerializer, \
@@ -173,12 +175,92 @@ class TodoViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if not user or not user.is_authenticated:
             return Todo.objects.none()
+        qs = Todo.objects.select_related('issue', 'issue__project')
         if user.is_superuser:
-            return Todo.objects.all()
-        return Todo.objects.filter(user=user)
+            return qs
+        return qs.filter(user=user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    @action(detail=True, methods=['post'])
+    def convert_to_issue(self, request, pk=None):
+        todo = self.get_object()
+        project_id = request.data.get('project')
+        if not project_id:
+            return Response({'error': '업무를 등록할 워크스페이스를 선택해주세요.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            issue_project = IssueProject.objects.get(pk=project_id)
+        except IssueProject.DoesNotExist:
+            return Response({'error': '유효하지 않은 워크스페이스입니다.'}, status=status.HTTP_404_NOT_FOUND)
+
+        # 권한 확인: 사용자가 해당 워크스페이스의 멤버이거나 슈퍼유저/work_manager인지 확인
+        user = request.user
+        if not (user.is_superuser or getattr(user, 'work_manager', False)):
+            is_member = issue_project.members.filter(user=user).exists()
+            if not is_member and not issue_project.is_public:
+                return Response({'error': '해당 워크스페이스에 접근 권한이 없습니다.'}, status=status.HTTP_403_FORBIDDEN)
+
+        # Tracker 결정: request.data.get('tracker') or 워크스페이스 허용 trackers 중 첫 번째 or 기본 tracker
+        tracker_id = request.data.get('tracker')
+        tracker = None
+        if tracker_id:
+            tracker = Tracker.objects.filter(pk=tracker_id).first()
+        if not tracker:
+            tracker = issue_project.trackers.first() or Tracker.objects.first()
+
+        if not tracker:
+            return Response({'error': '사용 가능한 업무 유형(Tracker)이 없습니다.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Status 결정: request.data.get('status') or tracker.default_status or 첫 번째 미종료 status
+        status_id = request.data.get('status')
+        issue_status = None
+        if status_id:
+            issue_status = IssueStatus.objects.filter(pk=status_id).first()
+        if not issue_status:
+            issue_status = getattr(tracker, 'default_status', None) or IssueStatus.objects.filter(closed=False).first()
+
+        if not issue_status:
+            return Response({'error': '사용 가능한 업무 상태(Status)가 없습니다.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Priority 결정: request.data.get('priority') or 기본 priority or 첫 번째 priority
+        priority_id = request.data.get('priority')
+        priority = None
+        if priority_id:
+            priority = CodeIssuePriority.objects.filter(pk=priority_id).first()
+        if not priority:
+            priority = CodeIssuePriority.objects.filter(default=True).first() or CodeIssuePriority.objects.first()
+
+        subject = request.data.get('subject') or todo.title
+
+        with transaction.atomic():
+            issue = Issue.objects.create(
+                project=issue_project,
+                tracker=tracker,
+                status=issue_status,
+                priority=priority,
+                subject=subject,
+                description=request.data.get('description', ''),
+                assigned_to=user,
+                start_date=timezone.now().date(),
+                creator=user,
+                updater=user,
+            )
+            todo.completed = True
+            todo.issue = issue
+            todo.save(update_fields=['completed', 'issue', 'updated'])
+
+        return Response({
+            'todo': TodoSerializer(todo).data,
+            'issue': {
+                'pk': issue.pk,
+                'project_id': issue_project.pk,
+                'project_slug': issue_project.slug,
+                'project_name': issue_project.name,
+                'subject': issue.subject,
+            }
+        }, status=status.HTTP_201_CREATED)
 
 
 class CheckPasswordView(APIView):

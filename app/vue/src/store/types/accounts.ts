@@ -70,10 +70,20 @@ interface Post {
   title: string
 }
 
+export interface TodoIssueInfo {
+  pk: number
+  project_id: number
+  project_slug: string
+  project_name: string
+  subject: string
+}
+
 export interface Todo {
   pk?: number
   user?: number
   title?: string
   completed?: boolean
   soft_deleted?: boolean
+  issue?: number | null
+  issue_info?: TodoIssueInfo | null
 }

@@ -210,7 +210,7 @@
 
   .todo-list li label {
     word-break: break-all;
-    padding: 15px 15px 15px 50px;
+    padding: 15px 85px 15px 50px;
     display: block;
     line-height: 1;
     font-size: 14px;
@@ -228,10 +228,10 @@
     top: 0;
     right: 10px;
     bottom: 0;
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     margin: auto 0;
-    font-size: 30px;
+    font-size: 28px;
     color: #cc9a9a;
     transition: color 0.2s ease-out;
     cursor: pointer;
@@ -247,6 +247,46 @@
 
   .todo-list li:hover .destroy {
     display: block;
+  }
+
+  .todo-list li .convert-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    right: 48px;
+    bottom: 0;
+    width: 28px;
+    height: 28px;
+    margin: auto 0;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    color: #6c757d;
+    opacity: 0.45;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 1;
+      color: #0d6efd;
+      background-color: rgba(13, 110, 253, 0.12);
+      transform: scale(1.1);
+    }
+  }
+
+  .todo-list li:hover .convert-btn {
+    opacity: 0.85;
+  }
+
+  .todo-list li .issue-badge {
+    font-size: 0.72rem;
+    font-weight: 500;
+    padding: 0.2rem 0.45rem;
+    border-radius: 4px;
+    vertical-align: middle;
   }
 
   .todo-list li .edit {
@@ -392,6 +432,15 @@
 
   .todo-list li .destroy {
     color: #f4b8b8;
+  }
+
+  .todo-list li .convert-btn {
+    color: #94a3b8;
+
+    &:hover {
+      color: #60a5fa;
+      background-color: rgba(96, 165, 250, 0.2);
+    }
   }
 
   .footer:before {

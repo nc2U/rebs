@@ -1,5 +1,6 @@
 from django.db import transaction
 from django.db.models import Q, Prefetch
+from django.http import Http404
 from django_filters.rest_framework import FilterSet, BooleanFilter, CharFilter, DateFilter
 from rest_framework import viewsets, serializers, permissions, status
 from rest_framework.decorators import action
@@ -137,6 +138,26 @@ class IssueProjectViewSet(viewsets.ModelViewSet):
         elif self.action == 'members':
             return ProjectMemberUserSerializer
         return IssueProjectSerializer
+
+    def get_object(self):
+        queryset = self.filter_queryset(self.get_queryset())
+        lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
+        lookup_value = self.kwargs[lookup_url_kwarg]
+
+        filter_kwargs = {self.lookup_field: lookup_value}
+        try:
+            obj = queryset.get(**filter_kwargs)
+        except (IssueProject.DoesNotExist, Exception):
+            if str(lookup_value).isdigit():
+                try:
+                    obj = queryset.get(pk=int(lookup_value))
+                except IssueProject.DoesNotExist:
+                    raise Http404
+            else:
+                raise Http404
+
+        self.check_object_permissions(self.request, obj)
+        return obj
 
     @action(detail=False, methods=['get'], pagination_class=None)
     def my_projects(self, request):

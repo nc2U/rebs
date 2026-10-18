@@ -6,6 +6,7 @@ from rest_framework import serializers
 from accounts.models import User, Profile, Todo, DocScrape, PasswordResetToken, PostScrape, FCMDevice, Notification
 from forum.models import Post
 from docs.models import Document
+from work.models.issue import Issue
 from work.models.project import IssueProject
 
 
@@ -245,10 +246,22 @@ class PostScrapeSerializer(serializers.ModelSerializer):
         return scrape
 
 
+class TodoIssueInfoSerializer(serializers.ModelSerializer):
+    project_id = serializers.IntegerField(source='project.pk', read_only=True)
+    project_slug = serializers.CharField(source='project.slug', read_only=True)
+    project_name = serializers.CharField(source='project.name', read_only=True)
+
+    class Meta:
+        model = Issue
+        fields = ('pk', 'project_id', 'project_slug', 'project_name', 'subject')
+
+
 class TodoSerializer(serializers.ModelSerializer):
+    issue_info = TodoIssueInfoSerializer(source='issue', read_only=True)
+
     class Meta:
         model = Todo
-        fields = ('pk', 'user', 'title', 'completed', 'soft_deleted')
+        fields = ('pk', 'user', 'title', 'completed', 'soft_deleted', 'issue', 'issue_info')
 
 
 class ChangePasswordSerializer(serializers.Serializer):

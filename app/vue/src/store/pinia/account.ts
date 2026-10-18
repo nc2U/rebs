@@ -410,6 +410,24 @@ export const useAccount = defineStore('account', () => {
       })
       .catch(err => errorHandle(err.response.data))
 
+  const convertTodoToIssue = async (
+    pk: number,
+    payload: {
+      project: number
+      tracker?: number
+      priority?: number
+      subject?: string
+      description?: string
+    },
+  ) =>
+    await api
+      .post(`/todo/${pk}/convert_to_issue/`, payload)
+      .then(res => {
+        fetchTodoList()
+        return res.data
+      })
+      .catch(err => errorHandle(err.response.data))
+
   return {
     user,
     userInfo,
@@ -476,5 +494,6 @@ export const useAccount = defineStore('account', () => {
     createTodo,
     patchTodo,
     deleteTodo,
+    convertTodoToIssue,
   }
 })

@@ -156,6 +156,8 @@ class Todo(models.Model):
     created = models.DateTimeField('등록일시', auto_now_add=True)
     updated = models.DateTimeField('편집일시', auto_now=True)
     soft_deleted = models.BooleanField('삭제여부', default=False)
+    issue = models.ForeignKey('work.Issue', on_delete=models.SET_NULL, null=True, blank=True,
+                              related_name='source_todos', verbose_name='전환된 업무')
 
     def __str__(self):
         return self.title

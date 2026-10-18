@@ -10,6 +10,7 @@ const emit = defineEmits<{
   (e: 'del-todo', pk: number): void
   (e: 'edit-todo', pk: number, title: string): void
   (e: 'toggle-todo', todo: Todo): void
+  (e: 'convert-todo', todo: Todo): void
 }>()
 
 const editInput = ref<HTMLInputElement>()
@@ -49,8 +50,37 @@ const cancelEdit = (e: Event) => {
   <li :class="{ completed: todo.completed, editing: editing }" class="todo">
     <div class="view">
       <input :checked="todo.completed" class="toggle" type="checkbox" @change="toggleTodo(todo)" />
-      <label @dblclick="editing = true" v-text="todo.title" />
-      <button class="destroy" @click="delTodo(todo.pk)" />
+      <label @dblclick="editing = true">
+        {{ todo.title }}
+        <router-link
+          v-if="todo.issue_info"
+          :to="{
+            name: '(업무) - 보기',
+            params: {
+              projId: todo.issue_info.project_slug || todo.issue_info.project_id,
+              issueId: todo.issue_info.pk,
+            },
+          }"
+          class="badge text-bg-primary text-decoration-none ms-2 align-middle issue-badge"
+          :title="`[${todo.issue_info.project_name}] ${todo.issue_info.subject}`"
+          @click.stop
+        >
+          #{{ todo.issue_info.pk }}
+        </router-link>
+        <span v-else-if="todo.issue" class="badge text-bg-secondary ms-2 align-middle issue-badge">
+          #{{ todo.issue }}
+        </span>
+      </label>
+      <button
+        v-if="!todo.issue"
+        type="button"
+        class="convert-btn"
+        title="업무로 전환"
+        @click.stop="emit('convert-todo', todo)"
+      >
+        <v-icon icon="mdi-transfer-right" size="18" />
+      </button>
+      <button class="destroy" title="삭제" @click="delTodo(todo.pk)" />
     </div>
     <input
       v-show="editing"
