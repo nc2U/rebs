@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../core/theme/app_colors_extension.dart';
 import '../data/models/todo_model.dart';
+import 'convert_todo_sheet.dart';
 import 'providers/todo_provider.dart';
 
 class TodoScreen extends ConsumerStatefulWidget {
@@ -34,6 +36,32 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
       _inputController.clear();
       setState(() => _isAdding = false);
     }
+  }
+
+  /// 전환된 업무 상세 화면으로 이동 (업무 상세 라우트는 issueId만 사용)
+  void _openIssue(int issueId) {
+    context.push('/work/issues/$issueId');
+  }
+
+  /// 할일 → 업무 전환 바텀시트 호출 및 결과 안내
+  Future<void> _openConvertSheet(TodoItem item) async {
+    FocusScope.of(context).unfocus();
+    final result = await showConvertTodoSheet(context, item);
+    if (result == null || !mounted) return;
+
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text('[#${result.issue.pk}] 업무로 전환되었습니다.'),
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 5),
+          action: SnackBarAction(
+            label: '업무 보기',
+            onPressed: () => _openIssue(result.issue.pk),
+          ),
+        ),
+      );
   }
 
   void _showEditDialog(TodoItem item) {
@@ -489,6 +517,54 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
     );
   }
 
+  /// 전환된 업무 뱃지 (#업무번호 · 워크스페이스명) — 탭하면 업무 상세로 이동
+  Widget _buildIssueBadge(TodoIssueInfo info) {
+    final label = info.projectName.isNotEmpty
+        ? '#${info.pk} · ${info.projectName}'
+        : '#${info.pk}';
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(6),
+      onTap: () => _openIssue(info.pk),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+        decoration: BoxDecoration(
+          color: context.colors.accentWork.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.assignment_turned_in_outlined,
+              size: 12,
+              color: context.colors.accentWork,
+            ),
+            const SizedBox(width: 4),
+            Flexible(
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: context.colors.accentWork,
+                ),
+              ),
+            ),
+            const SizedBox(width: 2),
+            Icon(
+              Icons.chevron_right_rounded,
+              size: 14,
+              color: context.colors.accentWork,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildTodoTile(TodoItem item) {
     return Dismissible(
       key: ValueKey('todo_${item.pk}'),
@@ -575,22 +651,47 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
                   ),
                 ),
                 const SizedBox(width: 12),
-                // 제목
+                // 제목 (+ 전환된 업무 뱃지)
                 Expanded(
-                  child: Text(
-                    item.title,
-                    style: AppTextStyles.bodyMd.copyWith(
-                      color: item.completed
-                          ? context.colors.textMuted
-                          : context.colors.textPrimary,
-                      decoration: item.completed
-                          ? TextDecoration.lineThrough
-                          : TextDecoration.none,
-                      decorationColor: context.colors.textMuted,
-                      height: 1.3,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.title,
+                        style: AppTextStyles.bodyMd.copyWith(
+                          color: item.completed
+                              ? context.colors.textMuted
+                              : context.colors.textPrimary,
+                          decoration: item.completed
+                              ? TextDecoration.lineThrough
+                              : TextDecoration.none,
+                          decorationColor: context.colors.textMuted,
+                          height: 1.3,
+                        ),
+                      ),
+                      if (item.issueInfo != null) ...[
+                        const SizedBox(height: 4),
+                        _buildIssueBadge(item.issueInfo!),
+                      ] else if (item.issue != null) ...[
+                        const SizedBox(height: 4),
+                        _buildIssueBadge(
+                          TodoIssueInfo(pk: item.issue!, projectId: 0),
+                        ),
+                      ],
+                    ],
                   ),
                 ),
+                // 업무로 전환 버튼 (이미 전환된 할일은 숨김)
+                if (!item.isConverted)
+                  IconButton(
+                    icon: Icon(
+                      Icons.assignment_turned_in_outlined,
+                      size: 19,
+                      color: context.colors.accentWork,
+                    ),
+                    tooltip: '업무로 전환',
+                    onPressed: () => _openConvertSheet(item),
+                  ),
                 // 수정 아이콘 버튼
                 IconButton(
                   icon: Icon(

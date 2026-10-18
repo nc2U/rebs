@@ -12,6 +12,7 @@ abstract class ApiEndpoints {
   static const String passwordReset  = '/api/v1/password-reset/';
   static const String todos          = '/api/v1/todo/';
   static const String todoDetail     = '/api/v1/todo/{id}/';
+  static const String todoConvertToIssue = '/api/v1/todo/{id}/convert_to_issue/';
 
   // ── Project ──────────────────────────────────────
   static const String projects           = '/api/v1/issue-project/';

@@ -72,6 +72,26 @@ class TodoRepository {
     await _dio.patch(url, data: {'soft_deleted': true});
   }
 
+  /// 할일을 워크스페이스 업무(Issue)로 전환
+  /// 서버에서 업무 생성 + 할일 완료 처리 + 업무 연결을 원자적으로 수행한다.
+  Future<TodoConvertResult> convertToIssue({
+    required int id,
+    required int projectId,
+    required String subject,
+    String description = '',
+  }) async {
+    final url = ApiEndpoints.resolve(ApiEndpoints.todoConvertToIssue, {'id': id});
+    final response = await _dio.post(
+      url,
+      data: {
+        'project': projectId,
+        'subject': subject,
+        'description': description,
+      },
+    );
+    return TodoConvertResult.fromJson(response.data as Map<String, dynamic>);
+  }
+
   /// 할일 영구 삭제
   Future<void> deleteTodo(int id) async {
     final url = ApiEndpoints.resolve(ApiEndpoints.todoDetail, {'id': id});

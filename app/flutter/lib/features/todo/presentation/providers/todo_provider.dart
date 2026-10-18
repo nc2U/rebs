@@ -122,6 +122,30 @@ class TodoListNotifier extends AsyncNotifier<List<TodoItem>> {
     }
   }
 
+  /// 할일을 워크스페이스 업무(Issue)로 전환
+  /// 성공 시 서버가 반환한 할일(완료 처리 + 업무 연결)로 목록을 갱신하고 결과를 반환한다.
+  /// 실패 시 예외를 그대로 던져 호출 측(UI)에서 에러 메시지를 표시할 수 있게 한다.
+  Future<TodoConvertResult> convertToIssue({
+    required TodoItem item,
+    required int projectId,
+    required String subject,
+    String description = '',
+  }) async {
+    final repo = ref.read(todoRepositoryProvider);
+    final result = await repo.convertToIssue(
+      id: item.pk,
+      projectId: projectId,
+      subject: subject,
+      description: description,
+    );
+
+    final currentList = state.valueOrNull ?? [];
+    state = AsyncData(
+      currentList.map((t) => t.pk == result.todo.pk ? result.todo : t).toList(),
+    );
+    return result;
+  }
+
   /// 완료된 할일 전체 일괄 삭제
   Future<void> clearCompletedTodos() async {
     final previousList = state.valueOrNull ?? [];
