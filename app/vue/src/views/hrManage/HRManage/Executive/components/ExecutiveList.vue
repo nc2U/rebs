@@ -2,13 +2,16 @@
 import { computed } from 'vue'
 import { usePerms } from '@/composables/usePerms.ts'
 import { useCompany } from '@/store/pinia/company.ts'
-import { useAccount } from '@/store/pinia/account.ts'
 import { TableSecondary } from '@/utils/cssMixins.ts'
 import { type Executive as ExecutiveType } from '@/store/types/company.ts'
 import Pagination from '@/components/Pagination'
 import Executive from './Executive.vue'
 
-const emit = defineEmits(['page-select', 'multi-submit', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'page-select', page: number): void
+  (e: 'multi-submit', payload: ExecutiveType): void
+  (e: 'on-delete', pk: number): void
+}>()
 
 const { canGlobal, PERM } = usePerms()
 const canHrWorkManage = computed(
@@ -63,6 +66,11 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
       />
+      <CTableRow v-if="executiveList.length === 0">
+        <CTableDataCell :colspan="canHrWorkManage ? 10 : 9" class="text-center text-muted py-4">
+          조회된 임원 정보가 없습니다.
+        </CTableDataCell>
+      </CTableRow>
     </CTableBody>
   </CTable>
 

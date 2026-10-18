@@ -1,29 +1,26 @@
 <script lang="ts" setup>
-import { computed, type PropType, ref } from 'vue'
-import { useAccount } from '@/store/pinia/account.ts'
+import { computed, ref } from 'vue'
 import { usePerms } from '@/composables/usePerms.ts'
 import { type Staff } from '@/store/types/company.ts'
 import StaffForm from './StaffForm.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
-import { CTableRow } from '@coreui/vue'
 
-defineProps({
-  staff: { type: Object as PropType<Staff>, required: true },
-})
+defineProps<{ staff: Staff }>()
+const emit = defineEmits<{
+  (e: 'multi-submit', payload: Staff): void
+  (e: 'on-delete', pk: number): void
+}>()
 
-const emit = defineEmits(['multi-submit', 'on-delete'])
-
-const { can, PERM } = usePerms()
-const accStore = useAccount()
+const { canGlobal, PERM } = usePerms()
 const canHrWorkManage = computed(
-  () => accStore.isStaff && (can(PERM.HQ_HR_WORK_CREATE) || can(PERM.HQ_HR_WORK_UPDATE)),
+  () => canGlobal(PERM.HQ_HR_WORK_CREATE) || canGlobal(PERM.HQ_HR_WORK_UPDATE),
 )
 
-const updateFormModal = ref()
+const updateFormModal = ref<InstanceType<typeof FormModal> | null>(null)
 
-const badgeColor = ['', 'success', 'teal-darken-2', 'warning', 'danger']
+const badgeColor = ['', 'success', 'teal-darken-2', 'warning', 'error']
 
-const showDetail = () => updateFormModal.value.callModal()
+const showDetail = () => updateFormModal.value?.callModal()
 const multiSubmit = (payload: Staff) => emit('multi-submit', payload)
 const onDelete = (pk: number) => emit('on-delete', pk)
 </script>
@@ -35,9 +32,9 @@ const onDelete = (pk: number) => emit('on-delete', pk)
     <CTableDataCell>{{ staff.position }}</CTableDataCell>
     <CTableDataCell>{{ staff.duty }}</CTableDataCell>
     <CTableDataCell>
-      <a href="javascript:void(0);" @click="showDetail">{{ staff.name }}</a>
+      <a href="javascript:void(0);" role="button" @click.prevent="showDetail">{{ staff.name }}</a>
     </CTableDataCell>
-    <CTableDataCell class="text-left">{{ staff.email }}</CTableDataCell>
+    <CTableDataCell class="text-start">{{ staff.email }}</CTableDataCell>
     <CTableDataCell>{{ staff.date_join }}</CTableDataCell>
     <CTableDataCell>
       <v-chip :color="badgeColor[staff.status]" variant="flat" size="x-small">
@@ -50,13 +47,13 @@ const onDelete = (pk: number) => emit('on-delete', pk)
   </CTableRow>
 
   <FormModal ref="updateFormModal" size="lg">
-    <template #header>직원 정보 등록</template>
+    <template #header>직원 정보 상세 및 수정</template>
     <template #default>
       <StaffForm
         :staff="staff"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
-        @close="updateFormModal.close()"
+        @close="updateFormModal?.close()"
       />
     </template>
   </FormModal>

@@ -172,9 +172,9 @@ onMounted(async () => {
         <CNav variant="tabs" class="mb-3">
           <CNavItem>
             <CNavLink
-              href="javascript:void(0);"
+              href="#"
               :active="currentTab === 'career'"
-              @click="onTabChange('career')"
+              @click.prevent="onTabChange('career')"
             >
               <CIcon icon="cil-briefcase" class="me-1" />
               경력 사항
@@ -182,9 +182,9 @@ onMounted(async () => {
           </CNavItem>
           <CNavItem>
             <CNavLink
-              href="javascript:void(0);"
+              href="#"
               :active="currentTab === 'certificate'"
-              @click="onTabChange('certificate')"
+              @click.prevent="onTabChange('certificate')"
             >
               <CIcon icon="cil-badge" class="me-1" />
               자격 및 면허
@@ -192,9 +192,9 @@ onMounted(async () => {
           </CNavItem>
           <CNavItem>
             <CNavLink
-              href="javascript:void(0);"
+              href="#"
               :active="currentTab === 'reward'"
-              @click="onTabChange('reward')"
+              @click.prevent="onTabChange('reward')"
             >
               <CIcon icon="cil-star" class="me-1" />
               상벌 이력

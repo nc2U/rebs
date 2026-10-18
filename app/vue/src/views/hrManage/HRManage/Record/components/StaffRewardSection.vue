@@ -2,7 +2,6 @@
 import { computed, ref } from 'vue'
 import { useCompany } from '@/store/pinia/company.ts'
 import { usePerms } from '@/composables/usePerms.ts'
-import { useAccount } from '@/store/pinia/account.ts'
 import { type StaffRewardPunishment } from '@/store/types/company.ts'
 import { TableSecondary, AlertSecondary } from '@/utils/cssMixins.ts'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
@@ -11,22 +10,32 @@ import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import Pagination from '@/components/Pagination'
 import TableTitleRow from '@/components/TableTitleRow.vue'
-import { CTable } from '@coreui/vue'
 
-const props = defineProps({
-  company: { type: String, default: null },
-  excelUrl: { type: String, default: '' },
-  excelFilename: { type: String, default: '' },
-  selectedStaff: { type: Number, default: null },
-})
+const props = withDefaults(
+  defineProps<{
+    company?: string | null
+    excelUrl?: string
+    excelFilename?: string
+    selectedStaff?: number | null
+  }>(),
+  {
+    company: null,
+    excelUrl: '',
+    excelFilename: '',
+    selectedStaff: null,
+  },
+)
 
-const emit = defineEmits(['multi-submit', 'on-delete', 'page-select'])
+const emit = defineEmits<{
+  (e: 'multi-submit', payload: StaffRewardPunishment): void
+  (e: 'on-delete', pk: number): void
+  (e: 'page-select', page: number): void
+}>()
 
-const { can, canGlobal, PERM } = usePerms()
-const accStore = useAccount()
-const canHrWorkCreate = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_CREATE))
-const canHrWorkUpdate = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_UPDATE))
-const canHrWorkDelete = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_DELETE))
+const { canGlobal, PERM } = usePerms()
+const canHrWorkCreate = computed(() => canGlobal(PERM.HQ_HR_WORK_CREATE))
+const canHrWorkUpdate = computed(() => canGlobal(PERM.HQ_HR_WORK_UPDATE))
+const canHrWorkDelete = computed(() => canGlobal(PERM.HQ_HR_WORK_DELETE))
 const canHrWorkManage = computed(
   () => canGlobal(PERM.HQ_HR_WORK_CREATE) || canGlobal(PERM.HQ_HR_WORK_UPDATE),
 )
@@ -115,8 +124,8 @@ defineExpose({ openCreateModal })
 </script>
 
 <template>
-  <CAlert v-if="canHrWorkCreate" :color="AlertSecondary" class="text-right">
-    <v-btn color="primary" :disabled="!company" @click="openCreateModal">
+  <CAlert v-if="canHrWorkCreate" :color="AlertSecondary" class="text-end">
+    <v-btn color="primary" variant="flat" :disabled="!company" @click="openCreateModal">
       직원 상벌 내역 등록
     </v-btn>
   </CAlert>
@@ -157,24 +166,24 @@ defineExpose({ openCreateModal })
     <CTableBody>
       <CTableRow v-for="item in staffRewardPunishmentList" :key="item.pk" class="text-center">
         <CTableDataCell>
-          <a href="javascript:void(0);" @click="openEditModal(item)">{{ item.staff_name }}</a>
+          <a href="#" role="button" @click.prevent="openEditModal(item)">{{ item.staff_name }}</a>
         </CTableDataCell>
         <CTableDataCell>
           <v-chip
-            :color="item.sort === 'reward' ? 'success' : 'danger'"
+            :color="item.sort === 'reward' ? 'success' : 'error'"
             variant="flat"
             size="x-small"
           >
             {{ item.sort_desc || (item.sort === 'reward' ? '포상/표창' : '징계/문책') }}
           </v-chip>
         </CTableDataCell>
-        <CTableDataCell class="fw-semibold text-left">{{ item.type_name }}</CTableDataCell>
+        <CTableDataCell class="fw-semibold text-start">{{ item.type_name }}</CTableDataCell>
         <CTableDataCell class="small">{{ item.action_date }}</CTableDataCell>
         <CTableDataCell class="small text-muted">{{ item.expire_date || '-' }}</CTableDataCell>
         <CTableDataCell>{{ item.organization || '-' }}</CTableDataCell>
-        <CTableDataCell class="text-left small">{{ item.reason }}</CTableDataCell>
+        <CTableDataCell class="text-start small">{{ item.reason }}</CTableDataCell>
         <CTableDataCell v-if="canHrWorkManage">
-          <v-btn color="info" size="x-small" @click="openEditModal(item)">확인</v-btn>
+          <v-btn color="info" variant="flat" size="x-small" @click="openEditModal(item)">확인</v-btn>
         </CTableDataCell>
       </CTableRow>
       <CTableRow v-if="staffRewardPunishmentList.length === 0">
@@ -300,11 +309,31 @@ defineExpose({ openCreateModal })
         </CRow>
 
         <div class="d-flex justify-content-end gap-2 mt-4">
-          <v-btn type="submit" size="small" :color="isEdit ? 'success' : 'primary'"> 저장 </v-btn>
-          <v-btn v-if="isEdit" type="button" size="small" color="warning" @click="deleteConfirm">
+          <v-btn
+            type="submit"
+            size="small"
+            variant="flat"
+            :color="isEdit ? 'success' : 'primary'"
+          >
+            저장
+          </v-btn>
+          <v-btn
+            v-if="isEdit"
+            type="button"
+            size="small"
+            variant="flat"
+            color="warning"
+            @click="deleteConfirm"
+          >
             삭제
           </v-btn>
-          <v-btn type="button" size="small" color="light" @click="refFormModal.close()" flat>
+          <v-btn
+            type="button"
+            size="small"
+            variant="flat"
+            color="light"
+            @click="refFormModal.close()"
+          >
             닫기
           </v-btn>
         </div>
@@ -318,7 +347,7 @@ defineExpose({ openCreateModal })
       삭제한 데이터는 복구할 수 없습니다. 해당 상벌 이력을 삭제하시겠습니까?
     </template>
     <template #footer>
-      <v-btn color="warning" size="small" @click="deleteObject">삭제</v-btn>
+      <v-btn color="warning" size="small" variant="flat" @click="deleteObject">삭제</v-btn>
     </template>
   </ConfirmModal>
 

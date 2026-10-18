@@ -2,13 +2,16 @@
 import { computed } from 'vue'
 import { usePerms } from '@/composables/usePerms.ts'
 import { useCompany } from '@/store/pinia/company.ts'
-import { useAccount } from '@/store/pinia/account.ts'
 import { TableSecondary } from '@/utils/cssMixins.ts'
 import { type PersonnelOrder as PersonnelOrderType } from '@/store/types/company.ts'
 import Pagination from '@/components/Pagination'
 import Appointment from './Appointment.vue'
 
-const emit = defineEmits(['page-select', 'multi-submit', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'page-select', page: number): void
+  (e: 'multi-submit', payload: PersonnelOrderType): void
+  (e: 'on-delete', pk: number): void
+}>()
 
 const { canGlobal, PERM } = usePerms()
 const canHrWorkManage = computed(
@@ -52,6 +55,11 @@ const onDelete = (pk: number) => emit('on-delete', pk)
     </CTableHead>
 
     <CTableBody>
+      <CTableRow v-if="personnelOrderList.length === 0" class="text-center">
+        <CTableDataCell :colspan="canHrWorkManage ? 8 : 7" class="py-4 text-muted">
+          조회된 인사 발령 내역이 없습니다.
+        </CTableDataCell>
+      </CTableRow>
       <Appointment
         v-for="order in personnelOrderList"
         :key="order.pk"

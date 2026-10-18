@@ -2,13 +2,16 @@
 import { computed } from 'vue'
 import { usePerms } from '@/composables/usePerms.ts'
 import { useCompany } from '@/store/pinia/company.ts'
-import { useAccount } from '@/store/pinia/account.ts'
 import { TableSecondary } from '@/utils/cssMixins.ts'
 import { type Staff as StaffType } from '@/store/types/company.ts'
 import Pagination from '@/components/Pagination'
 import Staff from './Staff.vue'
 
-const emit = defineEmits(['page-select', 'multi-submit', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'page-select', page: number): void
+  (e: 'multi-submit', payload: StaffType): void
+  (e: 'on-delete', pk: number): void
+}>()
 
 const { canGlobal, PERM } = usePerms()
 const canHrWorkManage = computed(
@@ -61,6 +64,11 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
       />
+      <CTableRow v-if="staffList.length === 0">
+        <CTableDataCell :colspan="canHrWorkManage ? 9 : 8" class="text-center text-muted py-4">
+          조회된 직원 정보가 없습니다.
+        </CTableDataCell>
+      </CTableRow>
     </CTableBody>
   </CTable>
 

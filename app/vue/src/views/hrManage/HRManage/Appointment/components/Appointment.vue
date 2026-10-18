@@ -1,21 +1,22 @@
 <script lang="ts" setup>
-import { computed, type PropType, ref } from 'vue'
-import { useAccount } from '@/store/pinia/account.ts'
+import { computed, ref } from 'vue'
 import { usePerms } from '@/composables/usePerms.ts'
 import { type PersonnelOrder } from '@/store/types/company.ts'
 import FormModal from '@/components/Modals/FormModal.vue'
 import AppointmentForm from './AppointmentForm.vue'
 
-defineProps({
-  order: { type: Object as PropType<PersonnelOrder>, required: true },
-})
+defineProps<{
+  order: PersonnelOrder
+}>()
 
-const emit = defineEmits(['multi-submit', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'multi-submit', payload: PersonnelOrder): void
+  (e: 'on-delete', pk: number): void
+}>()
 
-const { can, PERM } = usePerms()
-const accStore = useAccount()
+const { canGlobal, PERM } = usePerms()
 const canHrWorkManage = computed(
-  () => accStore.isStaff && (can(PERM.HQ_HR_WORK_CREATE) || can(PERM.HQ_HR_WORK_UPDATE)),
+  () => canGlobal(PERM.HQ_HR_WORK_CREATE) || canGlobal(PERM.HQ_HR_WORK_UPDATE),
 )
 
 const updateFormModal = ref()
@@ -47,13 +48,13 @@ const formatNewState = (order: PersonnelOrder) => {
     </CTableDataCell>
     <CTableDataCell>{{ order.order_no || '-' }}</CTableDataCell>
     <CTableDataCell>
-      <a href="javascript:void(0);" @click="showDetail">{{ order.staff_name }}</a>
+      <a href="#" role="button" @click.prevent="showDetail">{{ order.staff_name }}</a>
     </CTableDataCell>
     <CTableDataCell class="text-muted small">{{ formatPrevState(order) }}</CTableDataCell>
     <CTableDataCell class="fw-semibold">{{ formatNewState(order) }}</CTableDataCell>
-    <CTableDataCell class="text-left small">{{ order.description || '-' }}</CTableDataCell>
+    <CTableDataCell class="text-start small">{{ order.description || '-' }}</CTableDataCell>
     <CTableDataCell v-if="canHrWorkManage">
-      <v-btn color="info" size="x-small" @click="showDetail">확인</v-btn>
+      <v-btn color="info" variant="flat" size="x-small" @click="showDetail">확인</v-btn>
     </CTableDataCell>
   </CTableRow>
 

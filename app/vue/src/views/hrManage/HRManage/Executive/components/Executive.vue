@@ -1,27 +1,24 @@
 <script lang="ts" setup>
-import { computed, type PropType, ref } from 'vue'
-import { useAccount } from '@/store/pinia/account.ts'
+import { computed, ref } from 'vue'
 import { usePerms } from '@/composables/usePerms.ts'
 import { type Executive } from '@/store/types/company.ts'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ExecutiveForm from './ExecutiveForm.vue'
-import { CTableDataCell, CTableRow } from '@coreui/vue'
 
-defineProps({
-  executive: { type: Object as PropType<Executive>, required: true },
-})
+defineProps<{ executive: Executive }>()
+const emit = defineEmits<{
+  (e: 'multi-submit', payload: Executive): void
+  (e: 'on-delete', pk: number): void
+}>()
 
-const emit = defineEmits(['multi-submit', 'on-delete'])
-
-const { can, PERM } = usePerms()
-const accStore = useAccount()
+const { canGlobal, PERM } = usePerms()
 const canHrWorkManage = computed(
-  () => accStore.isStaff && (can(PERM.HQ_HR_WORK_CREATE) || can(PERM.HQ_HR_WORK_UPDATE)),
+  () => canGlobal(PERM.HQ_HR_WORK_CREATE) || canGlobal(PERM.HQ_HR_WORK_UPDATE),
 )
 
-const updateFormModal = ref()
+const updateFormModal = ref<InstanceType<typeof FormModal> | null>(null)
 
-const showDetail = () => updateFormModal.value.callModal()
+const showDetail = () => updateFormModal.value?.callModal()
 const multiSubmit = (payload: Executive) => emit('multi-submit', payload)
 const onDelete = (pk: number) => emit('on-delete', pk)
 </script>
@@ -29,7 +26,9 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 <template>
   <CTableRow v-if="executive" class="text-center">
     <CTableDataCell>
-      <a href="javascript:void(0);" @click="showDetail">{{ executive.full_name }}</a>
+      <a href="javascript:void(0);" role="button" @click.prevent="showDetail">{{
+        executive.full_name
+      }}</a>
     </CTableDataCell>
     <CTableDataCell>{{ executive.rank_name || '-' }}</CTableDataCell>
     <CTableDataCell>{{ executive.executive_type_desc }}</CTableDataCell>
@@ -46,20 +45,20 @@ const onDelete = (pk: number) => emit('on-delete', pk)
     <CTableDataCell>{{ executive.represent_type_desc }}</CTableDataCell>
     <CTableDataCell>{{ executive.term_start || '-' }}</CTableDataCell>
     <CTableDataCell>{{ executive.term_end || '-' }}</CTableDataCell>
-    <CTableDataCell class="text-left">{{ executive.note || '-' }}</CTableDataCell>
+    <CTableDataCell class="text-start">{{ executive.note || '-' }}</CTableDataCell>
     <CTableDataCell v-if="canHrWorkManage">
       <v-btn color="info" size="x-small" @click="showDetail">확인</v-btn>
     </CTableDataCell>
   </CTableRow>
 
   <FormModal ref="updateFormModal" size="lg">
-    <template #header>임원 재임 정보 등록</template>
+    <template #header>임원 재임 정보 상세 및 수정</template>
     <template #default>
       <ExecutiveForm
         :executive="executive"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
-        @close="updateFormModal.close()"
+        @close="updateFormModal?.close()"
       />
     </template>
   </FormModal>

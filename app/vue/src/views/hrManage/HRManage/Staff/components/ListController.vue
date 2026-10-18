@@ -3,11 +3,24 @@ import { reactive, computed, nextTick } from 'vue'
 import { numFormat } from '@/utils/baseMixins.ts'
 import { useCompany } from '@/store/pinia/company.ts'
 import { bgLight } from '@/utils/cssMixins.ts'
+import { type StaffFilter } from '@/store/types/company.ts'
 import Multiselect from '@vueform/multiselect'
 
-const emit = defineEmits(['list-filtering'])
+const emit = defineEmits<{
+  (e: 'list-filtering', filter: StaffFilter): void
+}>()
 
-const form = reactive({
+const form = reactive<{
+  page: number
+  com: number
+  sort: '' | '1' | '2'
+  dep: string
+  gra: string
+  pos: string
+  dut: string
+  sts: '' | '1' | '2' | '3' | '4'
+  q: string
+}>({
   page: 1,
   com: 1,
   sort: '',
@@ -53,12 +66,12 @@ const listFiltering = (page = 1) => {
   nextTick(() => {
     emit('list-filtering', {
       page,
-      sort: form.sort || '',
+      sort: form.sort,
       dep: form.dep || '',
       gra: form.gra || '',
       pos: form.pos || '',
       dut: form.dut || '',
-      sts: form.sts || '',
+      sts: (form.sts || undefined) as '1' | '2' | '3' | '4' | undefined,
       q: form.q,
     })
   })
@@ -168,7 +181,9 @@ defineExpose({ listFiltering })
                 aria-label="search"
                 @keydown.enter="listFiltering(1)"
               />
-              <CInputGroupText @click="listFiltering(1)">검색</CInputGroupText>
+              <CInputGroupText role="button" style="cursor: pointer" @click="listFiltering(1)">
+                검색
+              </CInputGroupText>
             </CInputGroup>
           </CCol>
         </CRow>
@@ -176,10 +191,10 @@ defineExpose({ listFiltering })
     </CRow>
 
     <CRow>
-      <CCol class="p-2 pl-3">
+      <CCol class="p-2 ps-3">
         <strong> 직원 수 조회 결과 : {{ numFormat(staffsCount) }} 건 </strong>
       </CCol>
-      <CCol v-if="!formsCheck" class="text-right mb-0">
+      <CCol v-if="!formsCheck" class="text-end mb-0">
         <v-btn color="info" size="small" @click="resetForm"> 검색조건 초기화</v-btn>
       </CCol>
     </CRow>

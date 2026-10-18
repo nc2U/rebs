@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount, watch, type PropType } from 'vue'
+import { ref, computed, onBeforeMount, watch } from 'vue'
 import { useStore } from '@/store'
 import { useCompany } from '@/store/pinia/company.ts'
 import { useAccount } from '@/store/pinia/account.ts'
@@ -11,20 +11,24 @@ import DatePicker from '@/components/DatePicker/DatePicker.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({
-  company: { type: String, default: null },
-  staff: { type: Object as PropType<Staff>, default: null },
-})
+const props = defineProps<{
+  company?: string
+  staff?: Staff
+}>()
 
-const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
+const emit = defineEmits<{
+  (e: 'multi-submit', payload: Staff): void
+  (e: 'on-delete', pk: number): void
+  (e: 'close'): void
+}>()
 
-const { can, PERM } = usePerms()
-const canHrWorkCreate = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_CREATE))
-const canHrWorkUpdate = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_UPDATE))
-const canHrWorkDelete = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_DELETE))
+const { canGlobal, PERM } = usePerms()
+const canHrWorkCreate = computed(() => canGlobal(PERM.HQ_HR_WORK_CREATE))
+const canHrWorkUpdate = computed(() => canGlobal(PERM.HQ_HR_WORK_UPDATE))
+const canHrWorkDelete = computed(() => canGlobal(PERM.HQ_HR_WORK_DELETE))
 
-const refDelModal = ref()
-const refAlertModal = ref()
+const refDelModal = ref<InstanceType<typeof ConfirmModal> | null>(null)
+const refAlertModal = ref<InstanceType<typeof AlertModal> | null>(null)
 
 const validated = ref(false)
 
@@ -97,8 +101,8 @@ const onSubmit = (event: Event) => {
   if (isValidate(event)) {
     validated.value = true
   } else {
-    if (canHrWorkCreate.value || canHrWorkUpdate) multiSubmit({ ...form.value })
-    else refAlertModal.value.callModal()
+    if (canHrWorkCreate.value || canHrWorkUpdate.value) multiSubmit({ ...form.value })
+    else refAlertModal.value?.callModal()
   }
 }
 
@@ -107,15 +111,17 @@ const multiSubmit = (payload: Staff) => {
   emit('close')
 }
 
-const deleteObject = (pk: number) => {
-  emit('on-delete', pk)
-  refDelModal.value.close()
-  emit('close')
+const deleteObject = () => {
+  if (props.staff?.pk) {
+    emit('on-delete', props.staff.pk)
+    refDelModal.value?.close()
+    emit('close')
+  }
 }
 
 const deleteConfirm = () => {
-  if (canHrWorkDelete.value) refDelModal.value.callModal()
-  else refAlertModal.value.callModal()
+  if (canHrWorkDelete.value) refDelModal.value?.callModal()
+  else refAlertModal.value?.callModal()
 }
 
 const formDataSetup = () => {
@@ -384,7 +390,15 @@ watch(
         <v-btn v-if="staff" type="button" size="small" color="warning" @click="deleteConfirm">
           삭제
         </v-btn>
-        <v-btn type="button" color="light" size="small" @click="$emit('close')" flat> 닫기</v-btn>
+        <v-btn
+          type="button"
+          color="light"
+          size="small"
+          variant="flat"
+          @click="$emit('close')"
+        >
+          닫기
+        </v-btn>
       </slot>
     </CModalFooter>
   </CForm>
