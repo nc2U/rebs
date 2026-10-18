@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue'
-import { getToday } from '@/utils/baseMixins'
+import { getToday } from '@/utils/baseMixins.ts'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
 
-const emit = defineEmits(['set-date'])
+const emit = defineEmits<{ (e: 'set-date', date: string): void }>()
 
 const date = ref(getToday())
 

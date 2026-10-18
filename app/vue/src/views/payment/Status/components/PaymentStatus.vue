@@ -1,22 +1,29 @@
 <script lang="ts" setup>
 import { computed, onMounted, watch } from 'vue'
-import { numFormat } from '@/utils/baseMixins'
-import type { Project } from '@/store/types/project.ts'
-import { useProject } from '@/store/pinia/project'
-import { usePayment } from '@/store/pinia/payment'
-import { TableSecondary } from '@/utils/cssMixins'
+import { numFormat } from '@/utils/baseMixins.ts'
+import type { PaymentStatusByUnitType } from '@/store/types/payment.ts'
+import { useProject } from '@/store/pinia/project.ts'
+import { usePayment } from '@/store/pinia/payment.ts'
+import { TableSecondary } from '@/utils/cssMixins.ts'
 
-const props = defineProps({
-  date: { type: String, default: '' },
-})
+const props = withDefaults(
+  defineProps<{
+    date?: string
+  }>(),
+  {
+    date: '',
+  },
+)
 
 const proStore = useProject()
 const paymentStore = usePayment()
-const paymentStatusData = computed<any[]>(() => paymentStore.ledgerPaymentStatusByUnitType)
+const paymentStatusData = computed<PaymentStatusByUnitType[]>(
+  () => paymentStore.ledgerPaymentStatusByUnitType,
+)
 
 // Fetch payment status data on component mount
 onMounted(async () => {
-  const currentProject = (proStore.project as Project)?.pk
+  const currentProject = proStore.project?.pk
   if (currentProject) {
     await paymentStore.fetchLedgerPaymentStatusByUnitType(currentProject, props.date)
   }
@@ -26,7 +33,7 @@ onMounted(async () => {
 watch(
   () => props.date,
   async newDate => {
-    const currentProject = (proStore.project as Project)?.pk
+    const currentProject = proStore.project?.pk
     if (currentProject) {
       await paymentStore.fetchLedgerPaymentStatusByUnitType(currentProject, newDate)
     }
@@ -34,7 +41,7 @@ watch(
 )
 
 // 차수별 첫번째 타입인지 확인
-const isFirstTypeInOrderGroup = (item: any) => {
+const isFirstTypeInOrderGroup = (item: PaymentStatusByUnitType) => {
   const sameOrderGroupItems = paymentStatusData.value.filter(
     d => d.order_group_id === item.order_group_id,
   )

@@ -115,6 +115,7 @@ export interface PaymentStatusByUnitType {
   total_sales_amount: number
   planned_units: number
   contract_units: number
+  non_contract_units: number
   contract_amount: number
   paid_amount: number
   unpaid_amount: number

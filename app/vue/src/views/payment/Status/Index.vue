@@ -1,11 +1,10 @@
 <script lang="ts" setup>
 import { ref, computed, onBeforeMount, watch } from 'vue'
-import { navMenu, pageTitle } from '@/views/payment/_menu/headermixin'
-import { useProject } from '@/store/pinia/project'
-import { useContract } from '@/store/pinia/contract'
-import { usePayment } from '@/store/pinia/payment'
-import { getToday } from '@/utils/baseMixins'
-import type { Project } from '@/store/types/project.ts'
+import { navMenu, pageTitle } from '@/views/payment/_menu/headermixin.ts'
+import { useProject } from '@/store/pinia/project.ts'
+import { useContract } from '@/store/pinia/contract.ts'
+import { usePayment } from '@/store/pinia/payment.ts'
+import { getToday } from '@/utils/baseMixins.ts'
 import Loading from '@/components/Loading/Index.vue'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -26,7 +25,7 @@ const excelUrl2 = computed(
 )
 
 const projStore = useProject()
-const project = computed(() => (projStore.project as Project)?.pk)
+const project = computed(() => projStore.project?.pk)
 
 const contStore = useContract()
 const fetchOrderGroupList = (proj: number) => contStore.fetchOrderGroupList(proj)
@@ -71,7 +70,7 @@ const dataReset = () => {
 
 const projSelect = (target: number | null) => {
   dataReset()
-  if (!!target) dataSetup(target)
+  if (target) dataSetup(target)
 }
 
 // 메뉴 변경 시 필요한 API 호출

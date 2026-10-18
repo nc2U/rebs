@@ -1,15 +1,22 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { numFormat } from '@/utils/baseMixins'
-import { TableSecondary } from '@/utils/cssMixins'
-import { usePayment } from '@/store/pinia/payment'
-import type { OverallSummary as QS, OverallSummaryPayOrder as QSPO } from '@/store/types/payment'
+import { numFormat } from '@/utils/baseMixins.ts'
+import { TableSecondary } from '@/utils/cssMixins.ts'
+import { usePayment } from '@/store/pinia/payment.ts'
+import type { OverallSummaryPayOrder as QSPO } from '@/store/types/payment.ts'
 
-defineProps({ date: { type: String, default: '' } })
+withDefaults(
+  defineProps<{
+    date?: string
+  }>(),
+  {
+    date: '',
+  },
+)
 
 const payStore = usePayment()
-const payOrderList = computed<QSPO[]>(() => (payStore.ledgerOverallSummary as QS)?.pay_orders || [])
-const contAggregate = computed(() => (payStore.ledgerOverallSummary as QS)?.aggregate)
+const payOrderList = computed<QSPO[]>(() => payStore.ledgerOverallSummary?.pay_orders || [])
+const contAggregate = computed(() => payStore.ledgerOverallSummary?.aggregate)
 
 const total_cont_amount = computed(() =>
   payOrderList.value.reduce((acc, order) => acc + order.contract_amount, 0),
@@ -173,7 +180,12 @@ const total_total_unpaid = computed(() =>
           {{ numFormat(order.collection?.collection_rate ?? 0, 2) }}%
         </CTableDataCell>
         <CTableDataCell class="text-right">
-          {{ numFormat((total_actual_collected / total_cont_amount) * 100, 2) }}%
+          {{
+            numFormat(
+              total_cont_amount > 0 ? (total_actual_collected / total_cont_amount) * 100 : 0,
+              2,
+            )
+          }}%
         </CTableDataCell>
       </CTableRow>
       <CTableRow>
@@ -199,7 +211,14 @@ const total_total_unpaid = computed(() =>
           {{ numFormat(order.due_period?.unpaid_rate ?? 0, 2) }}%
         </CTableDataCell>
         <CTableDataCell class="text-right">
-          {{ numFormat((total_due_unpaid_amount / total_due_contract_amount) * 100, 2) }}%
+          {{
+            numFormat(
+              total_due_contract_amount > 0
+                ? (total_due_unpaid_amount / total_due_contract_amount) * 100
+                : 0,
+              2,
+            )
+          }}%
         </CTableDataCell>
       </CTableRow>
       <CTableRow>
