@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref, watch } from 'vue'
-import { navMenu, pageTitle } from '@/views/proDocs/_menu/headermixin1'
-import { useProject } from '@/store/pinia/project'
+import { navMenu, pageTitle } from '@/views/proDocs/_menu/headermixin1.ts'
+import { useProject } from '@/store/pinia/project.ts'
 import {
   onBeforeRouteUpdate,
   type RouteLocationNormalizedLoaded as LoadedRoute,
@@ -9,8 +9,8 @@ import {
   useRouter,
 } from 'vue-router'
 import { usePerms } from '@/composables/usePerms.ts'
-import { type SuitCaseFilter as cFilter, useDocs } from '@/store/pinia/docs'
-import type { AFile, Link, SuitCase } from '@/store/types/docs'
+import { type SuitCaseFilter as cFilter, useDocs } from '@/store/pinia/docs.ts'
+import type { AFile, Link, SuitCase } from '@/store/types/docs.ts'
 import Loading from '@/components/Loading/Index.vue'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -39,13 +39,10 @@ const caseFilter = ref<cFilter>({
   limit: '',
 })
 
-const excelFilter = computed(
-  // Todo 퀴리 점검 할 것
-  () => {
-    const { is_real_dev, sort, level, court, in_progress, search } = caseFilter.value
-    return `project=${project.value}&is_real_dev=${is_real_dev}&sort=${sort}&level=${level}&court=${court}&in_progress=${in_progress}&search=${search}`
-  },
-)
+const excelFilter = computed(() => {
+  const { is_real_dev, sort, level, court, in_progress, search } = caseFilter.value
+  return `project=${project.value}&is_real_dev=${is_real_dev}&sort=${sort}&level=${level}&court=${court}&in_progress=${in_progress}&search=${search}`
+})
 const excelUrl = computed(() => `/excel/suitcases/?company=${company.value}&${excelFilter.value}`)
 
 const listFiltering = (payload: cFilter) => {
@@ -115,7 +112,7 @@ const onSubmit = async (payload: SuitCase & { is_real_dev?: boolean }) => {
         params: { caseId: payload.pk },
       })
     } else {
-      payload.issue_project = projStore.project?.issue_project as number
+      payload.issue_project = projStore.project?.issue_project ?? null
       payload.is_real_dev = true
       await createSuitCase(payload)
       await router.replace({ name: `${mainViewName.value}` })
@@ -130,20 +127,20 @@ const onDelete = async (pk: number) => {
 }
 
 const agencyFilter = (court: string) => {
-  fController.value.courtChange(court)
+  fController.value?.courtChange(court)
   caseFilter.value.page = 1
   caseFilter.value.court = court
   listFiltering(caseFilter.value)
 }
 const agencySearch = (agent: string) => {
-  fController.value.searchChange(agent)
+  fController.value?.searchChange(agent)
   caseFilter.value.page = 1
   caseFilter.value.search = agent
   listFiltering(caseFilter.value)
 }
 
 const relatedFilter = (related: number) => {
-  fController.value.relatedChange(related)
+  fController.value?.relatedChange(related)
   caseFilter.value.page = 1
   caseFilter.value.related_case = related
   listFiltering(caseFilter.value)
@@ -158,21 +155,23 @@ const dataSetup = (pk: number, caseId?: string | string[]) => {
 }
 
 const dataReset = () => {
-  docStore.suitcaseList = []
+  docStore.removeSuitcase()
+  docStore.removeSuitcaseList()
   docStore.suitcaseCount = 0
   caseFilter.value.project = ''
   router.replace({ name: `${mainViewName.value}` })
 }
 
 const projSelect = (target: number | null) => {
+  fController.value?.resetForm(false)
   dataReset()
-  if (!!target) dataSetup(target)
+  if (target) dataSetup(target)
 }
 
 const projId = computed(() => project.value || projStore.currentProject)
 
-onBeforeRouteUpdate(() => {
-  if (projId.value) dataSetup(projId.value, route.params?.caseId)
+onBeforeRouteUpdate(to => {
+  if (projId.value) dataSetup(projId.value, to.params?.caseId)
 })
 
 const loading = ref(true)
@@ -225,7 +224,8 @@ onBeforeMount(async () => {
 
         <div v-else-if="route.name.includes('보기')">
           <CaseDetail
-            :suitcase="suitcase as SuitCase"
+            v-if="suitcase"
+            :suitcase="suitcase"
             :view-route="mainViewName"
             :curr-page="caseFilter.page ?? 1"
             @link-hit="linkHit"
@@ -251,7 +251,7 @@ onBeforeMount(async () => {
             v-if="can(PERM.DOCS_UPDATE)"
             :sort-name="projName"
             :get-suit-case="getSuitCase"
-            :suitcase="suitcase"
+            :suitcase="suitcase ?? undefined"
             :view-route="mainViewName"
             @on-submit="onSubmit"
             @on-delete="onDelete"

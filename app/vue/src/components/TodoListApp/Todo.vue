@@ -1,42 +1,47 @@
 <script setup lang="ts">
-import { type PropType, ref, watch, nextTick } from 'vue'
-import type { Todo } from '@/store/types/accounts'
+import { ref, watch, nextTick } from 'vue'
+import type { Todo } from '@/store/types/accounts.ts'
 
-const props = defineProps({
-  todo: { type: Object as PropType<Todo>, required: true },
-})
+const props = defineProps<{
+  todo: Todo
+}>()
 
-const emit = defineEmits(['delTodo', 'editTodo', 'toggleTodo'])
+const emit = defineEmits<{
+  (e: 'del-todo', pk: number): void
+  (e: 'edit-todo', pk: number, title: string): void
+  (e: 'toggle-todo', todo: Todo): void
+}>()
 
-const editInput = ref()
+const editInput = ref<HTMLInputElement>()
 const editing = ref(false)
 
 watch(editing, val => {
-  if (val) nextTick(() => editInput.value.focus())
+  if (val) nextTick(() => editInput.value?.focus())
 })
 
 const delTodo = (pk: number | undefined) => {
-  if (!!pk) emit('delTodo', pk)
+  if (pk) emit('del-todo', pk)
 }
 
 const editTodo = (pk: number, title: string) => {
-  if (props.todo?.title !== title) emit('editTodo', pk, title)
-  else return
+  if (props.todo.title !== title) emit('edit-todo', pk, title)
 }
 
-const toggleTodo = (todo: Todo) => emit('toggleTodo', todo)
+const toggleTodo = (todo: Todo) => emit('toggle-todo', todo)
 
 const doneEdit = (e: Event) => {
   if (!editing.value) return
-  const title = (e.target as HTMLInputElement).value.trim()
-  if (!title && props.todo?.pk) delTodo(props.todo.pk)
-  else if (props.todo?.pk) editTodo(props.todo.pk, title)
+  const input = e.target as HTMLInputElement
+  const title = input.value.trim()
+  if (!title && props.todo.pk) delTodo(props.todo.pk)
+  else if (props.todo.pk) editTodo(props.todo.pk, title)
   editing.value = false
 }
 
 const cancelEdit = (e: Event) => {
   editing.value = false
-  ;(e.target as HTMLInputElement).value = props.todo?.title || ''
+  const input = e.target as HTMLInputElement
+  input.value = props.todo.title || ''
 }
 </script>
 

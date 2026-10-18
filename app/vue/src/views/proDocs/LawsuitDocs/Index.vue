@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, ref, watch } from 'vue'
-import { navMenu, pageTitle } from '@/views/proDocs/_menu/headermixin1'
-import { useAccount } from '@/store/pinia/account'
-import { useProject } from '@/store/pinia/project'
+import { navMenu, pageTitle } from '@/views/proDocs/_menu/headermixin1.ts'
+import { useAccount } from '@/store/pinia/account.ts'
+import { useProject } from '@/store/pinia/project.ts'
 import {
   onBeforeRouteUpdate,
   type RouteLocationNormalizedLoaded as Loaded,
@@ -10,10 +10,8 @@ import {
   useRouter,
 } from 'vue-router'
 import { usePerms } from '@/composables/usePerms.ts'
-import type { User } from '@/store/types/accounts.ts'
-import type { Project } from '@/store/types/project.ts'
-import { type DocsFilter, type SuitCaseFilter, useDocs } from '@/store/pinia/docs'
-import type { AFile, Attatches, Docs, Link, PatchDocs, SuitCase } from '@/store/types/docs'
+import { type DocsFilter, type SuitCaseFilter, useDocs } from '@/store/pinia/docs.ts'
+import type { AFile, Attatches, Docs, Link, PatchDocs, SuitCase } from '@/store/types/docs.ts'
 import Loading from '@/components/Loading/Index.vue'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -64,9 +62,8 @@ const pageSelect = (page: number) => {
 }
 
 const projStore = useProject()
-const projObj = computed(() => projStore.project as Project | null)
-const project = computed(() => projObj.value?.pk)
-const projName = computed(() => projObj.value?.name)
+const project = computed(() => projStore.project?.pk)
+const projName = computed(() => projStore.project?.name)
 
 const accStore = useAccount()
 const createDocScrape = (payload: { docs: number; user: number }) =>
@@ -97,7 +94,7 @@ const [route, router] = [useRoute() as Loaded & { name: string }, useRouter()]
 
 watch(route, val => {
   if (val.params.docsId) fetchDocs(Number(val.params.docsId))
-  else docStore.removeDocs() //docs = null
+  else docStore.removeDocs()
 })
 
 const docsRenewal = (page: number) => {
@@ -106,8 +103,8 @@ const docsRenewal = (page: number) => {
 }
 
 const docsScrape = (docs: number) => {
-  const user = (accStore.userInfo as User)?.pk as number
-  createDocScrape({ docs, user }) // 스크랩 추가
+  const user = accStore.userInfo?.pk
+  if (user) createDocScrape({ docs, user })
 }
 
 const onSubmit = async (payload: Docs & Attatches) => {
@@ -115,7 +112,7 @@ const onSubmit = async (payload: Docs & Attatches) => {
     const { pk, ...rest } = payload
     const getData: Record<string, any> = { ...rest }
 
-    getData.issue_project = projObj.value?.issue_project as number
+    getData.issue_project = projStore.project?.issue_project
 
     const form = new FormData()
 
@@ -142,18 +139,18 @@ const onSubmit = async (payload: Docs & Attatches) => {
     }
 
     if (pk) {
-      await updateDocs({ pk, form, ...{ isProject: true } })
+      await updateDocs({ pk, form, isProject: true })
       await router.replace({ name: `${mainViewName.value} - 보기`, params: { docsId: pk } })
     } else {
-      await createDocs({ form, ...{ isProject: true } })
+      await createDocs({ form, isProject: true })
       await router.replace({ name: `${mainViewName.value}` })
-      fController.value.resetForm(false)
+      fController.value?.resetForm(false)
     }
   }
 }
 
 const createLawSuit = (payload: SuitCase) => {
-  if (!payload.issue_project) payload.issue_project = projObj.value?.issue_project as number
+  if (!payload.issue_project) payload.issue_project = projStore.project?.issue_project ?? null
   createSuitCase(payload)
 }
 
@@ -161,7 +158,7 @@ const docsHit = async (pk: number) => {
   if (!heatedPage.value.includes(pk)) {
     heatedPage.value.push(pk)
     await fetchDocs(pk)
-    const hit = ((docs.value as Docs)?.hit ?? 0) + 1
+    const hit = (docs.value?.hit ?? 0) + 1
     await patchDocs({ pk, hit, filter: docsFilter.value })
   }
 }
@@ -184,20 +181,20 @@ const dataSetup = (pk: number, docsId?: string | string[]) => {
   fetchAllSuitCaseList({
     project: pk,
     is_real_dev: 'true',
-  }) // Todo 프로젝트마다 변경 로직 구현
+  })
 }
 
 const dataReset = () => {
   docStore.removeDocs()
-  docStore.docsList = []
+  docStore.removeDocsList()
   docStore.docsCount = 0
   router.replace({ name: `${mainViewName.value}` })
 }
 
 const projSelect = (target: number | null) => {
-  if (fController.value) fController.value.resetForm(false)
+  fController.value?.resetForm(false)
   dataReset()
-  if (!!target) dataSetup(target)
+  if (target) dataSetup(target)
   else docStore.removeDocsList()
 }
 
@@ -236,13 +233,13 @@ onBeforeMount(async () => {
           />
 
           <CategoryTabs
-            :category="docsFilter.category as number"
+            :category="Number(docsFilter.category) || 0"
             :category-list="categoryList"
             @select-cate="selectCate"
           />
 
           <DocsList
-            :project="project as number"
+            :project="project"
             :limit="docsFilter.limit || 10"
             :page="docsFilter.page || 1"
             :docs-list="docsList"
@@ -254,11 +251,12 @@ onBeforeMount(async () => {
 
         <div v-else-if="route.name.includes('보기')">
           <DocsDetail
+            v-if="docs"
             :type-num="typeNumber"
             :heated-page="heatedPage"
             :re-order="docsFilter.ordering !== '-created'"
-            :category="docsFilter.category as number"
-            :docs="docs as Docs"
+            :category="Number(docsFilter.category) || undefined"
+            :docs="docs"
             :view-route="mainViewName"
             :curr-page="docsFilter.page ?? 1"
             :docs-filter="docsFilter"
@@ -291,7 +289,7 @@ onBeforeMount(async () => {
             :type-num="typeNumber"
             :get-suit-case="getSuitCase"
             :category-list="categoryList"
-            :docs="docs as Docs"
+            :docs="docs ?? undefined"
             :view-route="mainViewName"
             @on-submit="onSubmit"
             @create-lawsuit="createLawSuit"

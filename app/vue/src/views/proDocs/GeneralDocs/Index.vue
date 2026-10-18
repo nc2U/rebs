@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeMount, watch } from 'vue'
-import { pageTitle, navMenu } from '@/views/proDocs/_menu/headermixin1'
+import { pageTitle, navMenu } from '@/views/proDocs/_menu/headermixin1.ts'
 import {
   onBeforeRouteUpdate,
   type RouteLocationNormalizedLoaded as Loaded,
@@ -8,12 +8,10 @@ import {
   useRouter,
 } from 'vue-router'
 import { usePerms } from '@/composables/usePerms.ts'
-import { useAccount } from '@/store/pinia/account'
-import { useProject } from '@/store/pinia/project'
-import type { User } from '@/store/types/accounts.ts'
-import type { Project } from '@/store/types/project.ts'
-import { useDocs, type DocsFilter } from '@/store/pinia/docs'
-import type { AFile, Attatches, Link, Docs, PatchDocs } from '@/store/types/docs'
+import { useAccount } from '@/store/pinia/account.ts'
+import { useProject } from '@/store/pinia/project.ts'
+import { useDocs, type DocsFilter } from '@/store/pinia/docs.ts'
+import type { AFile, Attatches, Link, Docs, PatchDocs } from '@/store/types/docs.ts'
 import Loading from '@/components/Loading/Index.vue'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -62,15 +60,15 @@ const pageSelect = (page: number) => {
 }
 
 const projStore = useProject()
-const project = computed(() => (projStore.project as Project)?.pk)
-const projName = computed(() => (projStore.project as Project)?.name)
+const project = computed(() => projStore.project?.pk)
+const projName = computed(() => projStore.project?.name)
 
 const accStore = useAccount()
 const createDocScrape = (payload: { docs: number; user: number }) =>
   accStore.createDocScrape(payload)
 
 const docStore = useDocs()
-const docs = computed(() => docStore.docs as Docs | null)
+const docs = computed(() => docStore.docs)
 const docsList = computed(() => docStore.docsList)
 const categoryList = computed(() => docStore.categoryList)
 
@@ -100,8 +98,8 @@ const docsRenewal = (page: number) => {
 }
 
 const docsScrape = (docs: number) => {
-  const user = (accStore.userInfo as User)?.pk as number
-  createDocScrape({ docs, user }) // 스크랩 추가
+  const user = accStore.userInfo?.pk
+  if (user) createDocScrape({ docs, user })
 }
 
 const onSubmit = async (payload: Docs & Attatches) => {
@@ -110,7 +108,7 @@ const onSubmit = async (payload: Docs & Attatches) => {
     const getData: Record<string, any> = { ...rest }
 
     if (!payload.issue_project)
-      getData.issue_project = (projStore.project as Project)?.issue_project as number
+      getData.issue_project = projStore.project?.issue_project
 
     const form = new FormData()
 
@@ -137,12 +135,12 @@ const onSubmit = async (payload: Docs & Attatches) => {
     }
 
     if (pk) {
-      await updateDocs({ pk, form, ...{ isProject: true } })
+      await updateDocs({ pk, form, isProject: true })
       await router.replace({ name: `${mainViewName.value} - 보기`, params: { docsId: pk } })
     } else {
-      await createDocs({ form, ...{ isProject: true } })
+      await createDocs({ form, isProject: true })
       await router.replace({ name: `${mainViewName.value}` })
-      fController.value.resetForm(false)
+      fController.value?.resetForm(false)
     }
   }
 }
@@ -181,21 +179,21 @@ const dataReset = () => {
 }
 
 const projSelect = (target: number | null) => {
-  if (fController.value) fController.value.resetForm(false)
+  fController.value?.resetForm(false)
   dataReset()
-  if (!!target) dataSetup(target)
+  if (target) dataSetup(target)
   else docStore.removeDocsList()
 }
 
+const projId = computed(() => project.value || projStore.currentProject)
+
 onBeforeRouteUpdate(to => {
-  const projId = project.value || projStore.currentProject
-  if (projId) dataSetup(projId, to.params?.docsId)
+  if (projId.value) dataSetup(projId.value, to.params?.docsId)
 })
 
 const loading = ref(true)
 onBeforeMount(async () => {
-  const projId = project.value || projStore.currentProject
-  if (projId) dataSetup(projId, route.params?.docsId)
+  if (projId.value) dataSetup(projId.value, route.params?.docsId)
   loading.value = false
 })
 </script>
@@ -221,13 +219,13 @@ onBeforeMount(async () => {
           />
 
           <CategoryTabs
-            :category="docsFilter.category as number"
+            :category="Number(docsFilter.category) || 0"
             :category-list="categoryList"
             @select-cate="selectCate"
           />
 
           <DocsList
-            :project="project as number"
+            :project="project"
             :limit="docsFilter.limit || 10"
             :page="docsFilter.page || 1"
             :docs-list="docsList"
@@ -238,11 +236,12 @@ onBeforeMount(async () => {
 
         <div v-else-if="route.name.includes('보기')">
           <DocsDetail
+            v-if="docs"
             :type-num="typeNumber"
             :heated-page="heatedPage"
             :re-order="docsFilter.ordering !== '-created'"
-            :category="docsFilter.category as number"
-            :docs="docs as Docs"
+            :category="Number(docsFilter.category) || undefined"
+            :docs="docs"
             :view-route="mainViewName"
             :curr-page="docsFilter.page ?? 1"
             :docs-filter="docsFilter"
@@ -272,7 +271,7 @@ onBeforeMount(async () => {
             :sort-name="projName"
             :type-num="typeNumber"
             :category-list="categoryList"
-            :docs="docs as Docs"
+            :docs="docs ?? undefined"
             :view-route="mainViewName"
             @on-submit="onSubmit"
           />

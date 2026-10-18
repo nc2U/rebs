@@ -1,70 +1,69 @@
 <script lang="ts" setup>
 import { ref, computed, onBeforeMount, watch } from 'vue'
-import { useAccount } from '@/store/pinia/account'
-import type { Todo as T } from '@/store/types/accounts'
+import { useAccount } from '@/store/pinia/account.ts'
+import type { Todo as T } from '@/store/types/accounts.ts'
 import Todo from './Todo.vue'
 
-const todos = ref<T[]>([])
-const visibility = ref('all')
+type FilterKey = 'all' | 'active' | 'completed'
 
-type filterType = Record<string, (myTodos: T[]) => T[]>
+const todos = ref<T[]>([])
+const visibility = ref<FilterKey>('all')
 
 const account = useAccount()
-const userInfo = computed(() => account.userInfo?.pk || 1)
+const userId = computed(() => account.userInfo?.pk)
 const myTodos = computed(() => account.myTodos)
 watch(myTodos, val => (todos.value = val))
 
-const filters: filterType = {
-  all: (myTodos: T[]) => myTodos,
-  active: (myTodos: T[]) => myTodos.filter(todo => !todo.completed),
-  completed: (myTodos: T[]) => myTodos.filter(todo => todo.completed),
+const filters: Record<FilterKey, (items: T[]) => T[]> = {
+  all: (items: T[]) => items,
+  active: (items: T[]) => items.filter(todo => !todo.completed),
+  completed: (items: T[]) => items.filter(todo => todo.completed),
 }
 
 const allChecked = computed(() => todos.value.length > 0 && todos.value.every(todo => todo.completed))
 
 const filteredTodos = computed(() => filters[visibility.value](todos.value))
 
-const remaining = computed(() => todos.value.filter((todo: T) => !todo.completed).length)
+const remaining = computed(() => todos.value.filter(todo => !todo.completed).length)
 
 const addTodo = (e: Event) => {
-  const title = (e.target as HTMLInputElement).value.trim()
-  if (userInfo.value && title) {
-    account.createTodo({ user: userInfo.value, title })
+  const input = e.target as HTMLInputElement
+  const title = input.value.trim()
+  if (userId.value && title) {
+    account.createTodo({ user: userId.value, title })
   }
-  ;(e.target as HTMLInputElement).value = ''
+  input.value = ''
 }
 
 const toggleTodo = (todo: T) => {
-  todo.completed = !todo.completed
-  const payload = { pk: todo.pk, completed: todo.completed }
-  account.patchTodo(payload)
+  if (todo.pk) {
+    todo.completed = !todo.completed
+    account.patchTodo({ pk: todo.pk, completed: todo.completed })
+  }
 }
 
 const delTodo = (pk: number) => {
-  const soft_deleted = true
-  const payload = { pk, soft_deleted }
-  account.patchTodo(payload)
+  account.patchTodo({ pk, soft_deleted: true })
 }
 
 const editTodo = (pk: number, title: string) => {
-  const payload = { pk, title }
-  account.patchTodo(payload)
+  account.patchTodo({ pk, title })
 }
 
 const clearCompleted = () => {
   todos.value.forEach((todo: T) => {
-    if (todo.completed) {
-      const payload = { pk: todo.pk, soft_deleted: true }
-      account.patchTodo(payload)
+    if (todo.completed && todo.pk) {
+      account.patchTodo({ pk: todo.pk, soft_deleted: true })
     }
   })
 }
 
 const toggleAll = ({ completed }: { completed: boolean }) => {
   todos.value.forEach((todo: T) => {
-    todo.completed = completed
-    const payload = { pk: todo.pk, completed: todo.completed }
-    account.patchTodo(payload)
+    if (todo.pk) {
+      todo.completed = completed
+      account.patchTodo({ pk: todo.pk, completed })
+    }
   })
 }
 
@@ -113,9 +112,9 @@ onBeforeMount(() => account.fetchTodoList())
         <strong>{{ remaining }}</strong> {{ pluralize(remaining, 'item') }} left
       </span>
       <ul class="filters">
-        <li v-for="(val, key) in filters" :key="key">
-          <a :class="{ selected: visibility === key }" @click.prevent="visibility = key as string">
-            {{ capitalize(key as string) }}
+        <li v-for="(_, key) in filters" :key="key">
+          <a :class="{ selected: visibility === key }" @click.prevent="visibility = key">
+            {{ capitalize(key) }}
           </a>
         </li>
       </ul>
