@@ -5,10 +5,10 @@ import { usePerms } from '@/composables/usePerms.ts'
 import { markdownRender } from '@/utils/helper.ts'
 import { type AddressData, callAddress } from '@/components/DaumPostcode/address'
 import type { OfficialLetter } from '@/store/types/docs'
-import type { LetterFilter } from '@/store/pinia/docs'
-import { useDocs } from '@/store/pinia/docs'
-import { useAccount } from '@/store/pinia/account'
-import { useCompany } from '@/store/pinia/company'
+import type { LetterFilter } from '@/store/pinia/docs.ts'
+import { useDocs } from '@/store/pinia/docs.ts'
+import { useAccount } from '@/store/pinia/account.ts'
+import { useCompany } from '@/store/pinia/company.ts'
 import LetterA4Preview from './LetterA4Preview.vue'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -21,8 +21,8 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  onDelete: [pk: number]
-  generatePdf: [pk: number]
+  (e: 'onDelete', pk: number): void
+  (e: 'generatePdf', pk: number): void
 }>()
 
 const { can, PERM } = usePerms()
@@ -844,7 +844,13 @@ const formatDateTime = (dateStr: string | null | undefined) => {
               <strong>발송 및 대장 관리 메타 정보</strong>
             </div>
             <div>
-              <v-btn v-if="canDocsUpdate" color="success" size="small" @click="openDispatchModal">
+              <v-btn
+                v-if="canDocsUpdate"
+                color="success"
+                variant="flat"
+                size="small"
+                @click="openDispatchModal"
+              >
                 <v-icon icon="mdi-pencil-box-outline" size="small" class="me-1" />
                 발송 대장 정보 등록/수정
               </v-btn>
@@ -931,6 +937,7 @@ const formatDateTime = (dateStr: string | null | undefined) => {
                   />
                   <v-btn
                     color="success"
+                    variant="flat"
                     size="small"
                     :disabled="scanUploadLoading"
                     @click="scanFileInputRef?.click()"
@@ -948,6 +955,7 @@ const formatDateTime = (dateStr: string | null | undefined) => {
                 <v-btn
                   v-if="canRegeneratePdf"
                   color="warning"
+                  variant="flat"
                   size="small"
                   :disabled="pdfLoading"
                   @click="onGeneratePdf"
@@ -968,6 +976,7 @@ const formatDateTime = (dateStr: string | null | undefined) => {
               <div>
                 <v-btn
                   color="light"
+                  variant="flat"
                   size="default"
                   class="font-weight-medium"
                   elevation="1"
@@ -1008,6 +1017,7 @@ const formatDateTime = (dateStr: string | null | undefined) => {
                 <v-btn
                   v-if="canDocsCreate"
                   color="primary"
+                  variant="flat"
                   size="small"
                   :disabled="pdfLoading"
                   @click="onGeneratePdf"
@@ -1050,7 +1060,13 @@ const formatDateTime = (dateStr: string | null | undefined) => {
                 (최종 결재 승인되어 내용 수정이 불가합니다)
               </small>
 
-              <v-btn v-if="canEditLetter" color="success" size="default" @click="goToEdit">
+              <v-btn
+                v-if="canEditLetter"
+                color="success"
+                variant="flat"
+                size="default"
+                @click="goToEdit"
+              >
                 <v-icon icon="mdi-pencil" size="small" class="me-1" />
                 수정
               </v-btn>
@@ -1221,12 +1237,20 @@ const formatDateTime = (dateStr: string | null | undefined) => {
         <DaumPostcode ref="refDispatchPostCode" @address-callback="postCodeCallback" />
       </CModalBody>
       <CModalFooter>
-        <v-btn color="success" size="small" :disabled="dispatchSaving" @click="saveDispatchMeta">
+        <v-btn
+          color="success"
+          variant="flat"
+          size="small"
+          :disabled="dispatchSaving"
+          @click="saveDispatchMeta"
+        >
           <CSpinner v-if="dispatchSaving" size="sm" class="me-1" />
           <v-icon v-else icon="mdi-content-save-outline" class="me-1" />
           발송 정보 저장
         </v-btn>
-        <v-btn color="light" size="small" @click="showDispatchModal = false" flat> 취소 </v-btn>
+        <v-btn color="light" variant="flat" size="small" @click="showDispatchModal = false">
+          취소
+        </v-btn>
       </CModalFooter>
     </CModal>
   </div>

@@ -4,10 +4,9 @@ import { useRouter } from 'vue-router'
 import { usePerms } from '@/composables/usePerms.ts'
 import { useAccount } from '@/store/pinia/account.ts'
 import type { OfficialLetter } from '@/store/types/docs'
-import type { LetterFilter } from '@/store/pinia/docs'
+import type { LetterFilter } from '@/store/pinia/docs.ts'
 import Pagination from '@/components/Pagination'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
-import { CTable } from '@coreui/vue'
 
 const props = defineProps<{
   company: number
@@ -18,8 +17,8 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  listFilter: [payload: LetterFilter]
-  pageSelect: [page: number]
+  (e: 'listFilter', payload: LetterFilter): void
+  (e: 'pageSelect', page: number): void
 }>()
 
 const { can, PERM } = usePerms()
@@ -115,10 +114,10 @@ const formatDate = (dateStr: string | undefined) => {
             placeholder="문서번호, 제목, 수신처..."
             @keyup.enter="onFilter"
           />
-          <v-btn color="light" @click="onFilter" flat>
+          <v-btn color="light" variant="flat" @click="onFilter">
             <v-icon icon="mdi-magnify" size="small" />
           </v-btn>
-          <v-btn color="light" @click="resetFilter" flat>
+          <v-btn color="light" variant="flat" @click="resetFilter">
             <v-icon icon="mdi-refresh" size="small" />
           </v-btn>
         </CInputGroup>
@@ -129,7 +128,7 @@ const formatDate = (dateStr: string | undefined) => {
     <CRow class="mb-3">
       <CCol class="d-flex justify-content-between align-items-center">
         <span class="text-muted">총 {{ letterCount }}건</span>
-        <v-btn v-if="canDocsCreate" color="primary" @click="goToCreate">
+        <v-btn v-if="canDocsCreate" color="primary" variant="flat" @click="goToCreate">
           <v-icon icon="mdi-plus" size="small" class="me-1" />
           공문 작성
         </v-btn>

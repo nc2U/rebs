@@ -3,16 +3,15 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { markdownRender } from '@/utils/helper.ts'
 import { usePerms } from '@/composables/usePerms.ts'
-import { useDocs } from '@/store/pinia/docs'
+import { useDocs } from '@/store/pinia/docs.ts'
 import { useAccount } from '@/store/pinia/account.ts'
-import { useCompany } from '@/store/pinia/company'
+import { useCompany } from '@/store/pinia/company.ts'
 import type { OfficialLetter } from '@/store/types/docs'
 import MdEditor from '@/components/MdEditor/Index.vue'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import { type AddressData, callAddress } from '@/components/DaumPostcode/address'
 import LetterA4Preview from './LetterA4Preview.vue'
-import { CCard, CCardBody, CCol, CForm, CRow } from '@coreui/vue'
 
 const props = defineProps<{
   company: number
@@ -27,11 +26,12 @@ export interface LocalAttachmentItem {
 }
 
 const emit = defineEmits<{
-  onSubmit: [
+  (
+    e: 'onSubmit',
     payload: OfficialLetter,
     attachmentsToUpload?: LocalAttachmentItem[],
     isDirectSubmit?: boolean,
-  ]
+  ): void
 }>()
 
 const { can, PERM } = usePerms()
@@ -857,7 +857,7 @@ const goBack = () => {
                     class="d-none"
                     @change="onFileSelect"
                   />
-                  <v-btn color="info" size="small" @click="fileInputRef?.click()">
+                  <v-btn color="info" variant="flat" size="small" @click="fileInputRef?.click()">
                     <v-icon icon="mdi-cloud-upload" size="small" class="me-1" />
                     파일 추가하기 (다중 선택 가능)
                   </v-btn>
@@ -1443,6 +1443,7 @@ const goBack = () => {
                 <v-btn
                   type="submit"
                   :color="isEdit ? 'success' : 'primary'"
+                  variant="flat"
                   :disabled="(!accStore.isStaff && !accStore.superAuth) || !canOLManage"
                 >
                   <v-icon icon="mdi-content-save-outline" class="me-1" />

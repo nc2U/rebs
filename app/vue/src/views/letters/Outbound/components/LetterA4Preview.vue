@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import { markdownRender } from '@/utils/helper.ts'
 import { useAccount } from '@/store/pinia/account.ts'
-import type { Company, CompanySeal } from '@/store/types/settings'
+import type { Company, CompanySeal } from '@/store/types/settings.ts'
 import type { OfficialLetter } from '@/store/types/docs'
 import type { LocalAttachmentItem } from './LetterForm.vue'
 

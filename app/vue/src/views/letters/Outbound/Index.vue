@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, ref, watch } from 'vue'
-import { navMenu, pageTitle } from '@/views/letters/_menu/headermixin'
+import { navMenu, pageTitle } from '@/views/letters/_menu/headermixin.ts'
 import {
   onBeforeRouteLeave,
   onBeforeRouteUpdate,
@@ -8,9 +8,8 @@ import {
   useRoute,
   useRouter,
 } from 'vue-router'
-import { useCompany } from '@/store/pinia/company'
-import type { Company } from '@/store/types/settings.ts'
-import { type LetterFilter, useDocs } from '@/store/pinia/docs'
+import { useCompany } from '@/store/pinia/company.ts'
+import { type LetterFilter, useDocs } from '@/store/pinia/docs.ts'
 import type { OfficialLetter } from '@/store/types/docs'
 import Loading from '@/components/Loading/Index.vue'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -34,7 +33,7 @@ const letterFilter = ref<LetterFilter>({
 })
 
 const comStore = useCompany()
-const company = computed(() => (comStore.company as Company)?.pk)
+const company = computed(() => comStore.company?.pk)
 
 const docStore = useDocs()
 const letter = computed<OfficialLetter | null>(() => docStore.letter)
