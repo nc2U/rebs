@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref, watch } from 'vue'
-import { navMenu, pageTitle } from '@/views/notices/_menu/headermixin'
-import { useNotice } from '@/store/pinia/notice'
-import { useProject } from '@/store/pinia/project'
-import { useContract } from '@/store/pinia/contract'
-import { useProjectData } from '@/store/pinia/project_data'
-import { usePerms } from '@/composables/usePerms'
+import { navMenu, pageTitle } from '@/views/notices/_menu/headermixin.ts'
+import { useNotice } from '@/store/pinia/notice.ts'
+import { useProject } from '@/store/pinia/project.ts'
+import { useContract } from '@/store/pinia/contract.ts'
+import { useProjectData } from '@/store/pinia/project_data.ts'
+import { usePerms } from '@/composables/usePerms.ts'
 import type { EmailNotice } from '@/store/types/notice'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -24,7 +24,7 @@ const projStore = useProject()
 const contractStore = useContract()
 const pDataStore = useProjectData()
 
-const project = computed(() => (projStore.project as any)?.pk)
+const project = computed(() => projStore.project?.pk)
 const orderGroups = computed(() => contractStore.orderGroupList)
 const buildingList = computed(() => pDataStore.buildingList)
 
@@ -153,8 +153,11 @@ const addManualRecipient = () => {
 }
 
 // 직접 추가 수신자 삭제
-const removeManualRecipient = (idx: number) => {
-  editableRecipients.value.splice(idx, 1)
+const removeManualRecipient = (target: EditableRecipient) => {
+  const i = editableRecipients.value.indexOf(target)
+  if (i > -1) {
+    editableRecipients.value.splice(i, 1)
+  }
 }
 
 // 대상자 집계 로드
@@ -598,6 +601,7 @@ const getStatusBadgeColor = (status: string) => {
                       </span>
                       <v-btn
                         color="primary"
+                        variant="flat"
                         :disabled="isSending || finalRecipients.length === 0"
                         @click="handleSendEmail"
                       >
@@ -869,7 +873,7 @@ const getStatusBadgeColor = (status: string) => {
                           color="danger"
                           variant="text"
                           size="x-small"
-                          @click="removeManualRecipient(idx)"
+                          @click="removeManualRecipient(r)"
                         >
                           삭제
                         </v-btn>
@@ -902,7 +906,12 @@ const getStatusBadgeColor = (status: string) => {
             </strong>
             명
           </div>
-          <v-btn color="primary" size="small" flat @click="showRecipientManageModal = false">
+          <v-btn
+            color="primary"
+            variant="flat"
+            size="small"
+            @click="showRecipientManageModal = false"
+          >
             설정 완료
           </v-btn>
         </CModalFooter>
@@ -951,7 +960,9 @@ const getStatusBadgeColor = (status: string) => {
           </CTable>
         </CModalBody>
         <CModalFooter>
-          <v-btn color="light" size="small" flat @click="showUnregisteredModal = false">닫기</v-btn>
+          <v-btn color="light" variant="flat" size="small" @click="showUnregisteredModal = false">
+            닫기
+          </v-btn>
         </CModalFooter>
       </CModal>
 
@@ -1107,7 +1118,9 @@ const getStatusBadgeColor = (status: string) => {
           </CTable>
         </CModalBody>
         <CModalFooter>
-          <v-btn color="light" size="small" flat @click="showDetailModal = false">닫기</v-btn>
+          <v-btn color="light" variant="flat" size="small" @click="showDetailModal = false">
+            닫기
+          </v-btn>
         </CModalFooter>
       </CModal>
     </ContentBody>
