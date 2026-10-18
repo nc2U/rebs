@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import type { PostLabel } from '@/store/types/notice'
-import { SPECS, type PrintOptions } from '../types'
+import { SPECS, type PrintOptions } from '../types.ts'
 
 const props = defineProps<{
   items: PostLabel[]

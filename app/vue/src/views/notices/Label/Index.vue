@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref, watch } from 'vue'
-import { navMenu, pageTitle } from '@/views/notices/_menu/headermixin'
-import { useNotice } from '@/store/pinia/notice'
-import { useProject } from '@/store/pinia/project'
-import { useContract } from '@/store/pinia/contract'
-import { useProjectData } from '@/store/pinia/project_data'
-import { usePerms } from '@/composables/usePerms'
-import { SPECS, type PrintOptions } from './types'
+import { navMenu, pageTitle } from '@/views/notices/_menu/headermixin.ts'
+import { useNotice } from '@/store/pinia/notice.ts'
+import { useProject } from '@/store/pinia/project.ts'
+import { useContract } from '@/store/pinia/contract.ts'
+import { useProjectData } from '@/store/pinia/project_data.ts'
+import { usePerms } from '@/composables/usePerms.ts'
+import { SPECS, type PrintOptions } from './types.ts'
 import type { PostLabel } from '@/store/types/notice'
 import Loading from '@/components/Loading/Index.vue'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -24,7 +24,7 @@ const projStore = useProject()
 const contractStore = useContract()
 const pDataStore = useProjectData()
 
-const project = computed(() => (projStore.project as any)?.pk)
+const project = computed(() => projStore.project?.pk)
 const orderGroups = computed(() => contractStore.orderGroupList)
 const buildingList = computed(() => pDataStore.buildingList)
 
@@ -425,6 +425,7 @@ const displayAddress = (item: PostLabel) => {
             <!-- 즉시 인쇄 버튼 -->
             <v-btn
               color="primary"
+              variant="flat"
               size="small"
               :disabled="selectedIds.length === 0"
               @click="handlePrint"
@@ -566,7 +567,7 @@ const displayAddress = (item: PostLabel) => {
           <v-btn color="secondary" variant="outlined" @click="showPreviewModal = false">
             닫기
           </v-btn>
-          <v-btn color="primary" @click="handlePrint">
+          <v-btn color="primary" variant="flat" @click="handlePrint">
             <v-icon icon="mdi-printer" size="small" class="me-1" />
             이대로 인쇄하기
           </v-btn>
