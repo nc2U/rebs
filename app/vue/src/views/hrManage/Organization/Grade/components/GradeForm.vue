@@ -1,18 +1,23 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount, watch, type PropType } from 'vue'
+import { ref, computed, onBeforeMount, watch } from 'vue'
 import { useCompany } from '@/store/pinia/company.ts'
 import { isValidate } from '@/utils/helper.ts'
 import { usePerms } from '@/composables/usePerms.ts'
-import { useAccount } from '@/store/pinia/account.ts'
 import { type Grade } from '@/store/types/company.ts'
 import Multiselect from '@vueform/multiselect'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({
-  company: { type: String, default: null },
-  grade: { type: Object as PropType<Grade>, default: null },
-})
+const props = withDefaults(
+  defineProps<{
+    company?: string | null
+    grade?: Grade | null
+  }>(),
+  {
+    company: null,
+    grade: null,
+  },
+)
 
 watch(
   () => props.company,
@@ -22,13 +27,16 @@ watch(
   },
 )
 
-const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
+const emit = defineEmits<{
+  (e: 'multi-submit', payload: Grade): void
+  (e: 'on-delete', pk: number): void
+  (e: 'close'): void
+}>()
 
-const { can, PERM } = usePerms()
-const accStore = useAccount()
-const canHrWorkCreate = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_CREATE))
-const canHrWorkUpdate = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_UPDATE))
-const canHrWorkDelete = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_DELETE))
+const { canGlobal, PERM } = usePerms()
+const canHrWorkCreate = computed(() => canGlobal(PERM.HQ_HR_WORK_CREATE))
+const canHrWorkUpdate = computed(() => canGlobal(PERM.HQ_HR_WORK_UPDATE))
+const canHrWorkDelete = computed(() => canGlobal(PERM.HQ_HR_WORK_DELETE))
 
 const refDelModal = ref()
 const refAlertModal = ref()
@@ -74,10 +82,12 @@ const multiSubmit = (payload: Grade) => {
   emit('close')
 }
 
-const deleteObject = (pk: number) => {
-  emit('on-delete', pk)
-  refDelModal.value.close()
-  emit('close')
+const deleteObject = () => {
+  if (props.grade?.pk) {
+    emit('on-delete', props.grade.pk)
+    refDelModal.value.close()
+    emit('close')
+  }
 }
 
 const deleteConfirm = () => {
@@ -94,7 +104,7 @@ const formDataSetup = () => {
     form.value.min_promotion_years = props.grade.min_promotion_years
     form.value.positions = props.grade.positions
     form.value.promotion_criteria = props.grade.promotion_criteria
-  } else form.value.company = props.company
+  } else form.value.company = props.company || undefined
 }
 
 onBeforeMount(() => formDataSetup())
@@ -104,8 +114,6 @@ onBeforeMount(() => formDataSetup())
   <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
     <CModalBody class="p-4">
       <div>
-        <CRow class="mb-3"></CRow>
-
         <CRow class="mb-3">
           <CCol sm="12">
             <CRow>
@@ -148,7 +156,7 @@ onBeforeMount(() => formDataSetup())
         <CRow class="mb-3">
           <CCol sm="12">
             <CRow>
-              <CFormLabel class="col-sm-2 col-form-label"> 허용직위</CFormLabel>
+              <CFormLabel class="col-sm-2 col-form-label">허용직위</CFormLabel>
               <CCol sm="10">
                 <Multiselect
                   v-model="form.positions"
@@ -168,7 +176,7 @@ onBeforeMount(() => formDataSetup())
         <CRow class="mb-3">
           <CCol sm="12">
             <CRow>
-              <CFormLabel class="col-sm-2 col-form-label"> 승급 기준</CFormLabel>
+              <CFormLabel class="col-sm-2 col-form-label">승급 기준</CFormLabel>
               <CCol sm="10">
                 <CFormTextarea
                   v-model="form.promotion_criteria"
@@ -187,15 +195,31 @@ onBeforeMount(() => formDataSetup())
         <v-btn
           type="submit"
           size="small"
+          variant="flat"
           :color="grade ? 'success' : 'primary'"
           :disabled="formsCheck"
         >
           저장
         </v-btn>
-        <v-btn v-if="grade" type="button" size="small" color="warning" @click="deleteConfirm">
+        <v-btn
+          v-if="grade"
+          type="button"
+          size="small"
+          variant="flat"
+          color="warning"
+          @click="deleteConfirm"
+        >
           삭제
         </v-btn>
-        <v-btn type="button" size="small" color="light" @click="$emit('close')" flat> 닫기</v-btn>
+        <v-btn
+          type="button"
+          size="small"
+          variant="flat"
+          color="light"
+          @click="$emit('close')"
+        >
+          닫기
+        </v-btn>
       </slot>
     </CModalFooter>
   </CForm>
@@ -206,7 +230,7 @@ onBeforeMount(() => formDataSetup())
       삭제한 데이터는 복구할 수 없습니다. 해당 정보를 삭제하시겠습니까?
     </template>
     <template #footer>
-      <v-btn color="warning" size="small" @click="deleteObject(grade.pk as number)">삭제</v-btn>
+      <v-btn color="warning" size="small" variant="flat" @click="deleteObject">삭제</v-btn>
     </template>
   </ConfirmModal>
 

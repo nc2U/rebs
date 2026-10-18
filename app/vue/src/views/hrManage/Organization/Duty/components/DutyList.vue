@@ -2,18 +2,20 @@
 import { computed } from 'vue'
 import { useCompany } from '@/store/pinia/company.ts'
 import { TableSecondary } from '@/utils/cssMixins.ts'
-import { useAccount } from '@/store/pinia/account.ts'
 import { usePerms } from '@/composables/usePerms.ts'
 import { type Duty as DutyType } from '@/store/types/company.ts'
 import Pagination from '@/components/Pagination'
 import Duty from './Duty.vue'
 
-const emit = defineEmits(['page-select', 'multi-submit', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'page-select', page: number): void
+  (e: 'multi-submit', payload: DutyType): void
+  (e: 'on-delete', pk: number): void
+}>()
 
-const { can, PERM } = usePerms()
-const accStore = useAccount()
+const { canGlobal, PERM } = usePerms()
 const canHrWorkManage = computed(
-  () => accStore.isStaff && (can(PERM.HQ_HR_WORK_CREATE) || can(PERM.HQ_HR_WORK_UPDATE)),
+  () => canGlobal(PERM.HQ_HR_WORK_CREATE) || canGlobal(PERM.HQ_HR_WORK_UPDATE),
 )
 
 const companyStore = useCompany()
@@ -47,6 +49,11 @@ const onDelete = (pk: number) => emit('on-delete', pk)
     </CTableHead>
 
     <CTableBody>
+      <CTableRow v-if="dutyList.length === 0" class="text-center">
+        <CTableDataCell :colspan="canHrWorkManage ? 5 : 4" class="py-4 text-muted">
+          등록된 직책 정보가 없습니다.
+        </CTableDataCell>
+      </CTableRow>
       <Duty
         v-for="duty in dutyList"
         :key="duty.pk"

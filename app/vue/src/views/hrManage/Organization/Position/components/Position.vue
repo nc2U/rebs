@@ -1,22 +1,23 @@
 <script lang="ts" setup>
-import { ref, computed, type PropType } from 'vue'
+import { ref, computed } from 'vue'
 import { usePerms } from '@/composables/usePerms.ts'
 import { useCompany } from '@/store/pinia/company.ts'
-import { useAccount } from '@/store/pinia/account.ts'
 import { type Position } from '@/store/types/company.ts'
 import FormModal from '@/components/Modals/FormModal.vue'
 import PositionForm from './PositionForm.vue'
 
-const props = defineProps({
-  position: { type: Object as PropType<Position>, required: true },
-})
+const props = defineProps<{
+  position: Position
+}>()
 
-const emit = defineEmits(['multi-submit', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'multi-submit', payload: Position): void
+  (e: 'on-delete', pk: number): void
+}>()
 
-const { can, PERM } = usePerms()
-const accStore = useAccount()
+const { canGlobal, PERM } = usePerms()
 const canHrWorkManage = computed(
-  () => accStore.isStaff && (can(PERM.HQ_HR_WORK_CREATE) || can(PERM.HQ_HR_WORK_UPDATE)),
+  () => canGlobal(PERM.HQ_HR_WORK_CREATE) || canGlobal(PERM.HQ_HR_WORK_UPDATE),
 )
 
 const updateFormModal = ref()
@@ -25,7 +26,7 @@ const comStore = useCompany()
 const getPkGrades = computed(() => comStore.getPkGrades)
 
 const grades = computed(() => {
-  const ids = props.position.grades
+  const ids = props.position.grades || []
   return getPkGrades.value
     .filter(g => ids.includes(g.value as number))
     .map(g => g.label)
@@ -41,15 +42,15 @@ const onDelete = (pk: number) => emit('on-delete', pk)
   <CTableRow class="text-center">
     <CTableDataCell>{{ position.pk }}</CTableDataCell>
     <CTableDataCell>{{ position.name }}</CTableDataCell>
-    <CTableDataCell class="text-left">{{ grades }}</CTableDataCell>
-    <CTableDataCell class="text-left">{{ position.desc }}</CTableDataCell>
+    <CTableDataCell class="text-start">{{ grades }}</CTableDataCell>
+    <CTableDataCell class="text-start">{{ position.desc }}</CTableDataCell>
     <CTableDataCell v-if="canHrWorkManage">
-      <v-btn color="info" size="x-small" @click="showDetail">확인</v-btn>
+      <v-btn color="info" variant="flat" size="x-small" @click="showDetail">확인</v-btn>
     </CTableDataCell>
   </CTableRow>
 
   <FormModal ref="updateFormModal" size="lg">
-    <template #header>직급 정보 등록</template>
+    <template #header>직위 정보 수정</template>
     <template #default>
       <PositionForm
         :position="position"

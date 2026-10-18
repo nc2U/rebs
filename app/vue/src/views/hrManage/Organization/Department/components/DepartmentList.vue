@@ -2,19 +2,21 @@
 import { computed } from 'vue'
 import { useCompany } from '@/store/pinia/company.ts'
 import { TableSecondary } from '@/utils/cssMixins.ts'
-import { useAccount } from '@/store/pinia/account.ts'
 import { usePerms } from '@/composables/usePerms.ts'
 import { type Department as Depart } from '@/store/types/company.ts'
 import Pagination from '@/components/Pagination'
 import Department from './Department.vue'
 
-const emit = defineEmits(['page-select', 'multi-submit', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'page-select', page: number): void
+  (e: 'multi-submit', payload: Depart): void
+  (e: 'on-delete', pk: number): void
+}>()
 
-const { can, PERM } = usePerms()
-const accStore = useAccount()
-const canHrWorkCreate = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_CREATE))
-const canHrWorkUpdate = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_UPDATE))
-const canHrWorkManager = computed(() => canHrWorkCreate.value || canHrWorkUpdate.value)
+const { canGlobal, PERM } = usePerms()
+const canHrWorkManager = computed(
+  () => canGlobal(PERM.HQ_HR_WORK_CREATE) || canGlobal(PERM.HQ_HR_WORK_UPDATE),
+)
 
 const companyStore = useCompany()
 const getPkDeparts = computed(() => companyStore.getPkDeparts)
@@ -50,6 +52,11 @@ const onDelete = (pk: number) => emit('on-delete', pk)
     </CTableHead>
 
     <CTableBody>
+      <CTableRow v-if="departmentList.length === 0" class="text-center">
+        <CTableDataCell :colspan="canHrWorkManager ? 6 : 5" class="py-4 text-muted">
+          등록된 부서 정보가 없습니다.
+        </CTableDataCell>
+      </CTableRow>
       <Department
         v-for="depart in departmentList"
         :key="depart.pk"

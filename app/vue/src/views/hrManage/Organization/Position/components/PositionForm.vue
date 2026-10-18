@@ -1,18 +1,23 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount, watch, type PropType } from 'vue'
+import { ref, computed, onBeforeMount, watch } from 'vue'
 import { useCompany } from '@/store/pinia/company.ts'
 import { isValidate } from '@/utils/helper.ts'
 import { usePerms } from '@/composables/usePerms.ts'
-import { useAccount } from '@/store/pinia/account.ts'
 import { type Position } from '@/store/types/company.ts'
 import Multiselect from '@vueform/multiselect'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({
-  company: { type: String, default: null },
-  position: { type: Object as PropType<Position>, default: null },
-})
+const props = withDefaults(
+  defineProps<{
+    company?: string | null
+    position?: Position | null
+  }>(),
+  {
+    company: null,
+    position: null,
+  },
+)
 
 watch(
   () => props.company,
@@ -22,13 +27,16 @@ watch(
   },
 )
 
-const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
+const emit = defineEmits<{
+  (e: 'multi-submit', payload: Position): void
+  (e: 'on-delete', pk: number): void
+  (e: 'close'): void
+}>()
 
-const { can, PERM } = usePerms()
-const accStore = useAccount()
-const canHrWorkCreate = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_CREATE))
-const canHrWorkUpdate = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_UPDATE))
-const canHrWorkDelete = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_DELETE))
+const { canGlobal, PERM } = usePerms()
+const canHrWorkCreate = computed(() => canGlobal(PERM.HQ_HR_WORK_CREATE))
+const canHrWorkUpdate = computed(() => canGlobal(PERM.HQ_HR_WORK_UPDATE))
+const canHrWorkDelete = computed(() => canGlobal(PERM.HQ_HR_WORK_DELETE))
 
 const refDelModal = ref()
 const refAlertModal = ref()
@@ -46,7 +54,7 @@ const form = ref<Position>({
 const formsCheck = computed(() => {
   if (props.position) {
     const a = form.value.name === props.position.name
-    const b = form.value.grades === props.position.grades
+    const b = JSON.stringify(form.value.grades) === JSON.stringify(props.position.grades)
     const c = form.value.desc === props.position.desc
 
     return a && b && c
@@ -70,10 +78,12 @@ const multiSubmit = (payload: Position) => {
   emit('close')
 }
 
-const deleteObject = (pk: number) => {
-  emit('on-delete', pk)
-  refDelModal.value.close()
-  emit('close')
+const deleteObject = () => {
+  if (props.position?.pk) {
+    emit('on-delete', props.position.pk)
+    refDelModal.value.close()
+    emit('close')
+  }
 }
 
 const deleteConfirm = () => {
@@ -88,7 +98,7 @@ const formDataSetup = () => {
     form.value.name = props.position.name
     form.value.grades = props.position.grades
     form.value.desc = props.position.desc
-  } else form.value.company = props.company
+  } else form.value.company = props.company || undefined
 }
 
 onBeforeMount(() => formDataSetup())
@@ -98,8 +108,6 @@ onBeforeMount(() => formDataSetup())
   <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
     <CModalBody class="p-4">
       <div>
-        <CRow class="mb-3"></CRow>
-
         <CRow class="mb-3">
           <CCol sm="12">
             <CRow>
@@ -149,26 +157,42 @@ onBeforeMount(() => formDataSetup())
         <v-btn
           type="submit"
           size="small"
+          variant="flat"
           :color="position ? 'success' : 'primary'"
           :disabled="formsCheck"
         >
           저장
         </v-btn>
-        <v-btn v-if="position" type="button" size="small" color="warning" @click="deleteConfirm">
+        <v-btn
+          v-if="position"
+          type="button"
+          size="small"
+          variant="flat"
+          color="warning"
+          @click="deleteConfirm"
+        >
           삭제
         </v-btn>
-        <v-btn type="button" size="small" color="light" @click="$emit('close')" flat> 닫기</v-btn>
+        <v-btn
+          type="button"
+          size="small"
+          variant="flat"
+          color="light"
+          @click="$emit('close')"
+        >
+          닫기
+        </v-btn>
       </slot>
     </CModalFooter>
   </CForm>
 
   <ConfirmModal ref="refDelModal">
-    <template #header>직급 정보 삭제</template>
+    <template #header>직위 정보 삭제</template>
     <template #default>
       삭제한 데이터는 복구할 수 없습니다. 해당 정보를 삭제하시겠습니까?
     </template>
     <template #footer>
-      <v-btn color="warning" size="small" @click="deleteObject(position.pk as number)">삭제</v-btn>
+      <v-btn color="warning" size="small" variant="flat" @click="deleteObject">삭제</v-btn>
     </template>
   </ConfirmModal>
 

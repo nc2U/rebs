@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { Staff } from '@/store/types/company.ts'
 import type { OrgNode } from './OrgTreeNode.vue'
 
 defineProps<{

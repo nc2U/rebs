@@ -1,22 +1,25 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 import { AlertSecondary } from '@/utils/cssMixins.ts'
-import { useAccount } from '@/store/pinia/account.ts'
 import { usePerms } from '@/composables/usePerms.ts'
 import { type Grade } from '@/store/types/company.ts'
 import GradeForm from './GradeForm.vue'
 import FormModal from '@/components/Modals/FormModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-defineProps({ company: { type: String, default: null } })
-const emit = defineEmits(['multi-submit'])
+defineProps<{
+  company?: string | null
+}>()
+
+const emit = defineEmits<{
+  (e: 'multi-submit', payload: Grade): void
+}>()
 
 const refFormModal = ref()
 const refAlertModal = ref()
 
-const { can, PERM } = usePerms()
-const accStore = useAccount()
-const canHrWorkCreate = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_CREATE))
+const { canGlobal, PERM } = usePerms()
+const canHrWorkCreate = computed(() => canGlobal(PERM.HQ_HR_WORK_CREATE))
 
 const createConfirm = () => {
   if (canHrWorkCreate.value) refFormModal.value.callModal()
@@ -26,8 +29,10 @@ const multiSubmit = (payload: Grade) => emit('multi-submit', payload)
 </script>
 
 <template>
-  <CAlert :color="AlertSecondary" class="text-right">
-    <v-btn color="primary" :disabled="!company" @click="createConfirm"> 직급 정보 신규등록 </v-btn>
+  <CAlert :color="AlertSecondary" class="text-end">
+    <v-btn color="primary" variant="flat" :disabled="!company" @click="createConfirm">
+      직급 정보 신규등록
+    </v-btn>
   </CAlert>
 
   <FormModal ref="refFormModal" size="lg">

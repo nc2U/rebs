@@ -2,7 +2,6 @@
 import { ref, computed, onMounted } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin1.ts'
 import { useCompany } from '@/store/pinia/company.ts'
-import { useAccount } from '@/store/pinia/account.ts'
 import { usePerms } from '@/composables/usePerms.ts'
 import { type ExecutiveRank, type ComFilter } from '@/store/types/company.ts'
 import Loading from '@/components/Loading/Index.vue'
@@ -14,9 +13,8 @@ import AddExecutiveRank from './components/AddExecutiveRank.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import ExecutiveRankList from './components/ExecutiveRankList.vue'
 
-const accStore = useAccount()
 const { canGlobal, PERM } = usePerms()
-const canHrWorkCreate = computed(() => accStore.isStaff && canGlobal(PERM.HQ_HR_WORK_CREATE))
+const canHrWorkCreate = computed(() => canGlobal(PERM.HQ_HR_WORK_CREATE))
 
 const dataFilter = ref<ComFilter>({
   page: 1,

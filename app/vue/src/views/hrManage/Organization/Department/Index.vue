@@ -3,7 +3,6 @@ import { ref, onMounted, computed } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin1.ts'
 import { usePerms } from '@/composables/usePerms.ts'
 import { useCompany } from '@/store/pinia/company.ts'
-import { useAccount } from '@/store/pinia/account.ts'
 import type { Company } from '@/store/types/settings.ts'
 import { type Department as Depart, type DepFilter } from '@/store/types/company.ts'
 import Loading from '@/components/Loading/Index.vue'
@@ -15,9 +14,8 @@ import AddDepartment from './components/AddDepartment.vue'
 import TableTitleRow from '@/components/TableTitleRow.vue'
 import DepartmentList from './components/DepartmentList.vue'
 
-const accStore = useAccount()
 const { canGlobal, PERM } = usePerms()
-const canHrWorkCreate = computed(() => accStore.isStaff && canGlobal(PERM.HQ_HR_WORK_CREATE))
+const canHrWorkCreate = computed(() => canGlobal(PERM.HQ_HR_WORK_CREATE))
 
 const dataFilter = ref<DepFilter>({
   page: 1,

@@ -1,22 +1,23 @@
 <script lang="ts" setup>
-import { computed, type PropType, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useCompany } from '@/store/pinia/company.ts'
-import { useAccount } from '@/store/pinia/account.ts'
 import { usePerms } from '@/composables/usePerms.ts'
 import { type Grade } from '@/store/types/company.ts'
 import FormModal from '@/components/Modals/FormModal.vue'
-import StaffForm from './GradeForm.vue'
+import GradeForm from './GradeForm.vue'
 
-const props = defineProps({
-  grade: { type: Object as PropType<Grade>, required: true },
-})
+const props = defineProps<{
+  grade: Grade
+}>()
 
-const emit = defineEmits(['multi-submit', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'multi-submit', payload: Grade): void
+  (e: 'on-delete', pk: number): void
+}>()
 
-const { can, PERM } = usePerms()
-const accStore = useAccount()
+const { canGlobal, PERM } = usePerms()
 const canHrWorkManage = computed(
-  () => accStore.isStaff && (can(PERM.HQ_HR_WORK_CREATE) || can(PERM.HQ_HR_WORK_UPDATE)),
+  () => canGlobal(PERM.HQ_HR_WORK_CREATE) || canGlobal(PERM.HQ_HR_WORK_UPDATE),
 )
 
 const updateFormModal = ref()
@@ -41,19 +42,19 @@ const onDelete = (pk: number) => emit('on-delete', pk)
   <CTableRow v-if="grade" class="text-center">
     <CTableDataCell>{{ grade.pk }}</CTableDataCell>
     <CTableDataCell>{{ grade.code }}</CTableDataCell>
-    <CTableDataCell class="text-left">{{ grade.role }}</CTableDataCell>
+    <CTableDataCell class="text-start">{{ grade.role }}</CTableDataCell>
     <CTableDataCell>{{ grade.min_promotion_years ?? '-' }}</CTableDataCell>
-    <CTableDataCell class="text-left">{{ positions }}</CTableDataCell>
-    <CTableDataCell class="text-left">{{ grade.promotion_criteria }}</CTableDataCell>
+    <CTableDataCell class="text-start">{{ positions }}</CTableDataCell>
+    <CTableDataCell class="text-start">{{ grade.promotion_criteria }}</CTableDataCell>
     <CTableDataCell v-if="canHrWorkManage">
-      <v-btn color="info" size="x-small" @click="showDetail">확인</v-btn>
+      <v-btn color="info" variant="flat" size="x-small" @click="showDetail">확인</v-btn>
     </CTableDataCell>
   </CTableRow>
 
   <FormModal ref="updateFormModal" size="lg">
-    <template #header>직급 정보 등록</template>
+    <template #header>직급 정보 수정</template>
     <template #default>
-      <StaffForm
+      <GradeForm
         :grade="grade"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"

@@ -1,18 +1,23 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount, watch, type PropType } from 'vue'
+import { ref, computed, onBeforeMount, watch } from 'vue'
 import { isValidate } from '@/utils/helper.ts'
 import { usePerms } from '@/composables/usePerms.ts'
 import { useCompany } from '@/store/pinia/company.ts'
-import { useAccount } from '@/store/pinia/account.ts'
 import { type Department } from '@/store/types/company.ts'
 import MultiSelect from '@/components/MultiSelect/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({
-  company: { type: String, default: null },
-  department: { type: Object as PropType<Department>, default: null },
-})
+const props = withDefaults(
+  defineProps<{
+    company?: string | null
+    department?: Department | null
+  }>(),
+  {
+    company: null,
+    department: null,
+  },
+)
 
 watch(
   () => props.company,
@@ -22,14 +27,17 @@ watch(
   },
 )
 
-const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
+const emit = defineEmits<{
+  (e: 'multi-submit', payload: Department): void
+  (e: 'on-delete', pk: number): void
+  (e: 'close'): void
+}>()
 
-const { can, PERM } = usePerms()
-const accStore = useAccount()
-const canHrWorkCreate = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_CREATE))
-const canHrWorkUpdate = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_UPDATE))
+const { canGlobal, PERM } = usePerms()
+const canHrWorkCreate = computed(() => canGlobal(PERM.HQ_HR_WORK_CREATE))
+const canHrWorkUpdate = computed(() => canGlobal(PERM.HQ_HR_WORK_UPDATE))
 const canHrWorkManager = computed(() => canHrWorkCreate.value || canHrWorkUpdate.value)
-const canHrWorkDelete = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_DELETE))
+const canHrWorkDelete = computed(() => canGlobal(PERM.HQ_HR_WORK_DELETE))
 
 const refDelModal = ref()
 const refAlertModal = ref()
@@ -75,10 +83,12 @@ const multiSubmit = (payload: Department) => {
   emit('close')
 }
 
-const deleteObject = (pk: number) => {
-  emit('on-delete', pk)
-  refDelModal.value.close()
-  emit('close')
+const deleteObject = () => {
+  if (props.department?.pk) {
+    emit('on-delete', props.department.pk)
+    refDelModal.value.close()
+    emit('close')
+  }
 }
 
 const deleteConfirm = () => {
@@ -95,7 +105,7 @@ const formDataSetup = () => {
     form.value.name = props.department.name
     form.value.manager = props.department.manager
     form.value.task = props.department.task
-  } else form.value.company = props.company
+  } else form.value.company = props.company || undefined
 }
 
 onBeforeMount(() => formDataSetup())
@@ -126,7 +136,7 @@ onBeforeMount(() => formDataSetup())
             <CRow>
               <CFormLabel class="col-sm-2 col-form-label required">부서명</CFormLabel>
               <CCol sm="10">
-                <CFormInput v-model.number="form.name" required placeholder="부서명" />
+                <CFormInput v-model="form.name" required placeholder="부서명" />
               </CCol>
             </CRow>
           </CCol>
@@ -166,6 +176,7 @@ onBeforeMount(() => formDataSetup())
         <v-btn
           v-if="canHrWorkManager"
           type="submit"
+          variant="flat"
           :color="department ? 'success' : 'primary'"
           size="small"
           :disabled="formsCheck"
@@ -175,13 +186,22 @@ onBeforeMount(() => formDataSetup())
         <v-btn
           v-if="department && canHrWorkDelete"
           type="button"
+          variant="flat"
           color="warning"
           size="small"
           @click="deleteConfirm"
         >
           삭제
         </v-btn>
-        <v-btn type="button" color="light" size="small" @click="$emit('close')" flat> 닫기</v-btn>
+        <v-btn
+          type="button"
+          variant="flat"
+          color="light"
+          size="small"
+          @click="$emit('close')"
+        >
+          닫기
+        </v-btn>
       </slot>
     </CModalFooter>
   </CForm>
@@ -192,7 +212,7 @@ onBeforeMount(() => formDataSetup())
       삭제한 데이터는 복구할 수 없습니다. 해당 정보를 삭제하시겠습니까?
     </template>
     <template #footer>
-      <v-btn color="warning" size="small" @click="deleteObject(department.pk as number)">
+      <v-btn color="warning" size="small" variant="flat" @click="deleteObject">
         삭제
       </v-btn>
     </template>

@@ -2,7 +2,6 @@
 import { ref, computed, onMounted } from 'vue'
 import { pageTitle, navMenu } from '@/views/hrManage/_menu/headermixin1.ts'
 import { useCompany } from '@/store/pinia/company.ts'
-import { useAccount } from '@/store/pinia/account.ts'
 import { usePerms } from '@/composables/usePerms.ts'
 import type { Company } from '@/store/types/settings.ts'
 import { type Position, type ComFilter } from '@/store/types/company.ts'
@@ -16,8 +15,7 @@ import TableTitleRow from '@/components/TableTitleRow.vue'
 import PositionList from './components/PositionList.vue'
 
 const { canGlobal, PERM } = usePerms()
-const accStore = useAccount()
-const canHrWorkCreate = computed(() => accStore.isStaff && canGlobal(PERM.HQ_HR_WORK_CREATE))
+const canHrWorkCreate = computed(() => canGlobal(PERM.HQ_HR_WORK_CREATE))
 
 const dataFilter = ref<ComFilter>({
   page: 1,

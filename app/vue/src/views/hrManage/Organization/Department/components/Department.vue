@@ -1,23 +1,33 @@
 <script lang="ts" setup>
-import { computed, type PropType, ref } from 'vue'
-import { useAccount } from '@/store/pinia/account.ts'
+import { computed, ref } from 'vue'
 import { usePerms } from '@/composables/usePerms.ts'
 import { type Department } from '@/store/types/company.ts'
 import FormModal from '@/components/Modals/FormModal.vue'
 import DepartmentForm from './DepartmentForm.vue'
 
-const props = defineProps({
-  department: { type: Object as PropType<Department>, required: true },
-  getDeparts: { type: Array, default: () => [] },
-})
+const props = withDefaults(
+  defineProps<{
+    department: Department
+    getDeparts?: {
+      value?: number
+      label: string
+      level: number
+    }[]
+  }>(),
+  {
+    getDeparts: () => [],
+  },
+)
 
-const emit = defineEmits(['multi-submit', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'multi-submit', payload: Department): void
+  (e: 'on-delete', pk: number): void
+}>()
 
-const { can, PERM } = usePerms()
-const accStore = useAccount()
-const canHrWorkCreate = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_CREATE))
-const canHrWorkUpdate = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_UPDATE))
-const canHrWorkManager = computed(() => canHrWorkCreate.value || canHrWorkUpdate.value)
+const { canGlobal, PERM } = usePerms()
+const canHrWorkManager = computed(
+  () => canGlobal(PERM.HQ_HR_WORK_CREATE) || canGlobal(PERM.HQ_HR_WORK_UPDATE),
+)
 
 const updateFormModal = ref()
 
@@ -25,13 +35,7 @@ const showDetail = () => updateFormModal.value.callModal()
 const multiSubmit = (payload: Department) => emit('multi-submit', payload)
 const onDelete = (pk: number) => emit('on-delete', pk)
 const getUpperName = (up: number | null) => {
-  const deps = up
-    ? (props.getDeparts as {
-        value: number
-        label: string
-        level: number
-      }[])
-    : []
+  const deps = up ? props.getDeparts : []
   return up && !!deps.length ? deps.filter(d => d.value === up).map(d => d.label)[0] : ''
 }
 </script>
@@ -44,14 +48,14 @@ const getUpperName = (up: number | null) => {
     </CTableDataCell>
     <CTableDataCell>{{ department.name }}</CTableDataCell>
     <CTableDataCell>{{ department.manager_name }}</CTableDataCell>
-    <CTableDataCell class="text-left pl-4">{{ department.task }}</CTableDataCell>
+    <CTableDataCell class="text-start ps-4">{{ department.task }}</CTableDataCell>
     <CTableDataCell v-if="canHrWorkManager">
-      <v-btn color="info" size="x-small" @click="showDetail">확인</v-btn>
+      <v-btn color="info" variant="flat" size="x-small" @click="showDetail">확인</v-btn>
     </CTableDataCell>
   </CTableRow>
 
   <FormModal ref="updateFormModal" size="lg">
-    <template #header>부서 정보 등록</template>
+    <template #header>부서 정보 수정</template>
     <template #default>
       <DepartmentForm
         :department="department"
