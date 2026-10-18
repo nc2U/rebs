@@ -54,6 +54,7 @@ class _IssueFormScreenState extends ConsumerState<IssueFormScreen> {
   int _trackerId = 4; // 기본값: 기획일반(4)
   int _statusId = 1; // 기본값: 준비/신규(1)
   int _priorityId = 2; // 기본값: 보통(2)
+  int _doneRatio = 0; // 진척도 (0~100)
   int? _assignedToId;
   int? _parentIssueId;
   int? _fixedVersionId;
@@ -81,6 +82,7 @@ class _IssueFormScreenState extends ConsumerState<IssueFormScreen> {
       _trackerId = issue.tracker.pk;
       _statusId = issue.status.pk;
       _priorityId = issue.priority.pk;
+      _doneRatio = issue.doneRatio;
       _assignedToId = issue.assignedTo?.pk;
       _parentIssueId = issue.parent?.pk;
       _fixedVersionId = issue.fixedVersion?.pk;
@@ -90,6 +92,7 @@ class _IssueFormScreenState extends ConsumerState<IssueFormScreen> {
       _meetingId = issue.meeting ?? widget.initialMeetingId;
       _selectedProjectSlug = issue.project.slug;
     } else {
+      _doneRatio = 0;
       _meetingId = widget.initialMeetingId;
       if (widget.initialProjectSlug != null) {
         _selectedProjectSlug = widget.initialProjectSlug;
@@ -100,6 +103,46 @@ class _IssueFormScreenState extends ConsumerState<IssueFormScreen> {
         }
       }
     }
+  }
+
+  /// 상태 변경 핸들러: 완료/종료 상태(closed == true 또는 pk >= 5)로 변경 시 진척도를 자동으로 100%로 설정
+  void _onStatusChanged(int newStatusId, List<IssueStatusModel>? statuses) {
+    setState(() {
+      _statusId = newStatusId;
+      final isClosed = statuses
+              ?.where((s) => s.pk == newStatusId)
+              .firstOrNull
+              ?.closed ??
+          (newStatusId >= 5);
+
+      if (isClosed && _doneRatio != 100) {
+        _doneRatio = 100;
+      }
+    });
+  }
+
+  /// 진척도 변경 핸들러: 진척도를 100%로 설정 시 미완료 상태인 경우 완료(closed == true) 상태로 자동 전환
+  void _onDoneRatioChanged(int newRatio, List<IssueStatusModel>? statuses) {
+    setState(() {
+      _doneRatio = newRatio;
+      if (_doneRatio == 100) {
+        final isCurrentClosed = statuses
+                ?.where((s) => s.pk == _statusId)
+                .firstOrNull
+                ?.closed ??
+            (_statusId >= 5);
+
+        if (!isCurrentClosed) {
+          final closedStatus = statuses?.where((s) => s.closed).firstOrNull ??
+              statuses?.where((s) => s.pk == 5).firstOrNull;
+          if (closedStatus != null) {
+            _statusId = closedStatus.pk;
+          } else {
+            _statusId = 5;
+          }
+        }
+      }
+    });
   }
 
   String _todayStr() {
@@ -159,6 +202,7 @@ class _IssueFormScreenState extends ConsumerState<IssueFormScreen> {
       'tracker': _trackerId,
       'status': _statusId,
       'priority': _priorityId,
+      'done_ratio': _doneRatio,
       'is_private': _isPrivate,
       'start_date': _startDateController.text.trim().isNotEmpty
           ? _startDateController.text.trim()
@@ -611,7 +655,7 @@ class _IssueFormScreenState extends ConsumerState<IssueFormScreen> {
                                   if (_statusId == 1)
                                     InkWell(
                                       borderRadius: BorderRadius.circular(4),
-                                      onTap: () => setState(() => _statusId = 2),
+                                      onTap: () => _onStatusChanged(2, statusListAsync.valueOrNull),
                                       child: Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
                                         child: Text(
@@ -626,7 +670,7 @@ class _IssueFormScreenState extends ConsumerState<IssueFormScreen> {
                                   else if (_statusId == 2)
                                     InkWell(
                                       borderRadius: BorderRadius.circular(4),
-                                      onTap: () => setState(() => _statusId = 5),
+                                      onTap: () => _onStatusChanged(5, statusListAsync.valueOrNull),
                                       child: Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
                                         child: Text(
@@ -656,7 +700,7 @@ class _IssueFormScreenState extends ConsumerState<IssueFormScreen> {
                                     DropdownMenuItem(value: 4, child: Text('의견')),
                                     DropdownMenuItem(value: 5, child: Text('완료')),
                                   ],
-                                  onChanged: (v) => setState(() => _statusId = v ?? 2),
+                                  onChanged: (v) => _onStatusChanged(v ?? 2, null),
                                 ),
                                 data: (statuses) {
                                   final filtered = isEdit ? statuses : statuses.where((s) => s.pk <= 2).toList();
@@ -688,7 +732,7 @@ class _IssueFormScreenState extends ConsumerState<IssueFormScreen> {
                                             DropdownMenuItem(value: 1, child: Text('준비')),
                                             DropdownMenuItem(value: 2, child: Text('진행')),
                                           ],
-                                    onChanged: (v) => setState(() => _statusId = v ?? 1),
+                                    onChanged: (v) => _onStatusChanged(v ?? 1, statuses),
                                   );
                                 },
                               ),
@@ -766,6 +810,125 @@ class _IssueFormScreenState extends ConsumerState<IssueFormScreen> {
                               ),
                             ],
                           ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+
+                    // ── 진척도 (0% ~ 100%) ──────────────────────────────
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '진척도',
+                              style: AppTextStyles.titleSm.copyWith(
+                                color: context.colors.textPrimary,
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: _doneRatio == 100
+                                    ? context.colors.success.withValues(alpha: 0.15)
+                                    : context.colors.accentWork.withValues(alpha: 0.15),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                '$_doneRatio%',
+                                style: AppTextStyles.bodySm.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: _doneRatio == 100
+                                      ? context.colors.success
+                                      : context.colors.accentWork,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: SliderTheme(
+                                data: SliderTheme.of(context).copyWith(
+                                  activeTrackColor: _doneRatio == 100
+                                      ? context.colors.success
+                                      : context.colors.accentWork,
+                                  thumbColor: _doneRatio == 100
+                                      ? context.colors.success
+                                      : context.colors.accentWork,
+                                  overlayColor: (_doneRatio == 100
+                                          ? context.colors.success
+                                          : context.colors.accentWork)
+                                      .withValues(alpha: 0.2),
+                                  inactiveTrackColor: context.colors.borderSubtle,
+                                  trackHeight: 4,
+                                ),
+                                child: Slider(
+                                  value: _doneRatio.toDouble(),
+                                  min: 0,
+                                  max: 100,
+                                  divisions: 20, // 5% 단위
+                                  label: '$_doneRatio%',
+                                  onChanged: (v) => _onDoneRatioChanged(
+                                    v.round(),
+                                    statusListAsync.valueOrNull,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        // 빠른 선택 칩 (0%, 25%, 50%, 75%, 100%)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [0, 25, 50, 75, 100].map((ratio) {
+                            final isSelected = _doneRatio == ratio;
+                            return InkWell(
+                              borderRadius: BorderRadius.circular(6),
+                              onTap: () => _onDoneRatioChanged(
+                                ratio,
+                                statusListAsync.valueOrNull,
+                              ),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: isSelected
+                                      ? (ratio == 100
+                                          ? context.colors.success
+                                          : context.colors.accentWork)
+                                      : context.colors.bgInput,
+                                  borderRadius: BorderRadius.circular(6),
+                                  border: Border.all(
+                                    color: isSelected
+                                        ? Colors.transparent
+                                        : context.colors.borderSubtle,
+                                  ),
+                                ),
+                                child: Text(
+                                  '$ratio%',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: isSelected
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                    color: isSelected
+                                        ? Colors.white
+                                        : context.colors.textMuted,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }).toList(),
                         ),
                       ],
                     ),
