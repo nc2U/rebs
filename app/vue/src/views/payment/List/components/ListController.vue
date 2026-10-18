@@ -1,16 +1,18 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, nextTick, watch } from 'vue'
-import { bgLight } from '@/utils/cssMixins'
+import { bgLight } from '@/utils/cssMixins.ts'
 import { numFormat } from '@/utils/baseMixins.ts'
-import { usePayment } from '@/store/pinia/payment'
+import { usePayment } from '@/store/pinia/payment.ts'
 import { useProLedger } from '@/store/pinia/proLedger.ts'
-import { useContract } from '@/store/pinia/contract'
-import { useProjectData } from '@/store/pinia/project_data'
+import { useContract } from '@/store/pinia/contract.ts'
+import { useProjectData } from '@/store/pinia/project_data.ts'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
 import Multiselect from '@vueform/multiselect'
 
-const props = defineProps({ byCont: { type: Boolean, default: false } })
-const emit = defineEmits(['payment-filtering'])
+const props = withDefaults(defineProps<{ byCont?: boolean }>(), { byCont: false })
+const emit = defineEmits<{
+  (e: 'payment-filtering', payload: any): void
+}>()
 
 const from_date = ref('')
 const to_date = ref('')
@@ -211,7 +213,9 @@ defineExpose({ listFiltering })
         <strong>납부 건수 조회 결과 : {{ numFormat(paymentsCount, 0, 0) }} 건</strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
-        <v-btn color="info" size="small" @click="resetForm"> 검색조건 초기화</v-btn>
+        <v-btn color="info" variant="flat" size="small" @click="resetForm">
+          검색조건 초기화
+        </v-btn>
       </CCol>
     </CRow>
   </CCallout>

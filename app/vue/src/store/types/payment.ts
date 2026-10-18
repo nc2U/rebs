@@ -234,10 +234,10 @@ export interface OriginPayment extends BasePayment {
 
 export interface PaymentList {
   pk: number
-  trans_id: number
+  trans_id: number | null
   entry_id: number
   deal_date: string
-  contract: ContractInPayment
+  contract: ContractInPayment | null
   order_group: string
   type_color: string
   type_name: string

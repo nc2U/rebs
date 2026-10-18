@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { TableSecondary } from '@/utils/cssMixins'
-import { numFormat } from '@/utils/baseMixins'
-import { usePayment } from '@/store/pinia/payment'
+import { TableSecondary } from '@/utils/cssMixins.ts'
+import { numFormat } from '@/utils/baseMixins.ts'
+import { usePayment } from '@/store/pinia/payment.ts'
 
-defineProps({ project: { type: Number, default: null } })
+withDefaults(defineProps<{ project?: number | null }>(), { project: null })
 
 const paymentStore = usePayment()
 const paymentSummaryList = computed(() => paymentStore.ledgerPaymentSummaryList)

@@ -1,17 +1,19 @@
 <script lang="ts" setup>
-import { computed, type PropType, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { numFormat } from '@/utils/baseMixins'
+import { numFormat } from '@/utils/baseMixins.ts'
 import type { PaymentList } from '@/store/types/payment.ts'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ContChoicer from './ContChoicer.vue'
 
-const props = defineProps({
-  project: { type: Number, required: true },
-  payment: { type: Object as PropType<PaymentList>, required: true },
-})
+const props = defineProps<{
+  project: number
+  payment: PaymentList
+}>()
 
-const emit = defineEmits(['pay-match'])
+const emit = defineEmits<{
+  (e: 'pay-match', payload: any): void
+}>()
 
 const router = useRouter()
 const contMatchingModal = ref()
@@ -28,7 +30,7 @@ const toManage = () => (props.payment?.contract ? toRegister() : contMatching())
 const toRegister = () => {
   router.push({
     name: '건별 납부 관리 - 상세',
-    params: { contractId: props.payment?.contract.pk },
+    params: { contractId: props.payment?.contract?.pk },
     query: { payment: props.payment?.pk },
   })
 }
@@ -74,7 +76,9 @@ const payMatch = (payload: any) => emit('pay-match', payload)
     <CTableDataCell>{{ payment.bank_account }}</CTableDataCell>
     <CTableDataCell>{{ payment.trader }}</CTableDataCell>
     <CTableDataCell>
-      <v-btn type="button" color="info" size="x-small" @click="toManage"> 확인</v-btn>
+      <v-btn type="button" color="info" variant="flat" size="x-small" @click="toManage">
+        확인
+      </v-btn>
     </CTableDataCell>
   </CTableRow>
 

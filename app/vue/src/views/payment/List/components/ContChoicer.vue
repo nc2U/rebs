@@ -1,19 +1,22 @@
 <script lang="ts" setup>
-import { ref, onMounted, computed, nextTick, type PropType } from 'vue'
-import { numFormat } from '@/utils/baseMixins'
+import { ref, onMounted, computed, nextTick } from 'vue'
+import { numFormat } from '@/utils/baseMixins.ts'
 import { usePerms } from '@/composables/usePerms.ts'
-import { useContract } from '@/store/pinia/contract'
-import type { Contract, ContFilter } from '@/store/types/contract'
+import { useContract } from '@/store/pinia/contract.ts'
+import type { Contract, ContFilter } from '@/store/types/contract.ts'
 import type { PaymentList } from '@/store/types/payment.ts'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({
-  project: { type: Number, required: true },
-  payment: { type: Object as PropType<PaymentList>, required: true },
-})
+const props = defineProps<{
+  project: number
+  payment: PaymentList
+}>()
 
-const emit = defineEmits(['pay-match', 'close'])
+const emit = defineEmits<{
+  (e: 'pay-match', payload: any): void
+  (e: 'close'): void
+}>()
 
 const { can, PERM } = usePerms()
 const canPaymentCreate = computed(() => can(PERM.PAYMENT_CREATE))
@@ -39,7 +42,7 @@ const fetchContractList = (payload: ContFilter) => contStore.fetchContractList(p
 const pageInit = () => {
   form.value.search = ''
   textClass.value = 'text-medium-emphasis'
-  msg.value = '계약자 관련정보 또는 계약 일련변호를 입력하세요.'
+  msg.value = '계약자 관련정보 또는 계약 일련번호를 입력하세요.'
   contStore.contractList = []
 }
 
@@ -116,7 +119,7 @@ const modalAction = () => {
       </CCallout>
 
       <CAlert v-if="contactList.length !== 0" color="default" class="pt-0 pb-0 text-primary">
-        상기 계약 건 중 아래 수납 항목을 매칭 등록할 계약 건을 선택한 후 클릭하여 주십시요.
+        상기 계약 건 중 아래 수납 항목을 매칭 등록할 계약 건을 선택한 후 클릭하여 주십시오.
       </CAlert>
 
       <CAlert color="info">
@@ -139,7 +142,7 @@ const modalAction = () => {
       >&gt; 계약 건의 납부대금으로 등록합니다.
     </template>
     <template #footer>
-      <v-btn color="primary" size="small" @click="modalAction">저장</v-btn>
+      <v-btn color="primary" variant="flat" size="small" @click="modalAction">저장</v-btn>
     </template>
   </ConfirmModal>
 

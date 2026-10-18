@@ -1,17 +1,20 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { usePayment } from '@/store/pinia/payment'
-import { TableSecondary } from '@/utils/cssMixins'
+import { usePayment } from '@/store/pinia/payment.ts'
+import { TableSecondary } from '@/utils/cssMixins.ts'
 import type { PaymentList } from '@/store/types/payment.ts'
 import Pagination from '@/components/Pagination'
 import Payment from './Payment.vue'
 
-const emit = defineEmits(['page-select', 'pay-match'])
+defineProps<{
+  page: number
+  project: number
+}>()
 
-defineProps({
-  page: { type: Number, required: true },
-  project: { type: Number, required: true },
-})
+const emit = defineEmits<{
+  (e: 'page-select', page: number): void
+  (e: 'pay-match', payload: any): void
+}>()
 
 const paymentStore = usePayment()
 const getPayments = computed(() => paymentStore.legerGetPayments)
@@ -56,7 +59,7 @@ const pageSelect = (page: number) => emit('page-select', page)
         v-for="payment in getPayments"
         :key="payment.pk"
         :project="project"
-        :payment="payment as PaymentList"
+        :payment="payment"
         @pay-match="payMatch"
       />
     </CTableBody>

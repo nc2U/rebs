@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref, watch } from 'vue'
-import { navMenu, pageTitle } from '@/views/payment/_menu/headermixin'
-import { useProject } from '@/store/pinia/project'
-import { useContract } from '@/store/pinia/contract'
-import { useProjectData } from '@/store/pinia/project_data'
-import { usePayment } from '@/store/pinia/payment'
+import { navMenu, pageTitle } from '@/views/payment/_menu/headermixin.ts'
+import { useProject } from '@/store/pinia/project.ts'
+import { useContract } from '@/store/pinia/contract.ts'
+import { useProjectData } from '@/store/pinia/project_data.ts'
+import { usePayment } from '@/store/pinia/payment.ts'
 import { useProLedger } from '@/store/pinia/proLedger.ts'
 import { onBeforeRouteLeave } from 'vue-router'
 import type { Project } from '@/store/types/project.ts'
@@ -33,7 +33,7 @@ const filterItems = ref<ContPayFilter>({
 })
 
 const projStore = useProject()
-const project = computed(() => (projStore.project as Project)?.pk)
+const project = computed(() => projStore.project?.pk)
 
 const fetchIncBudgetList = (proj: number) => projStore.fetchIncBudgetList(proj)
 
@@ -127,7 +127,7 @@ const dataReset = () => {
 
 const projSelect = (target: number | null) => {
   dataReset()
-  if (!!target) dataSetup(target)
+  if (target) dataSetup(target)
 }
 
 const loading = ref(true)
@@ -152,7 +152,7 @@ onBeforeRouteLeave(async () => {
       selector="ProjectSelect"
       @proj-select="projSelect"
     >
-      <PaymentSummary :project="project as number" />
+      <PaymentSummary :project="project" />
     </ContentHeader>
 
     <ContentBody>
@@ -184,7 +184,7 @@ onBeforeRouteLeave(async () => {
           </v-radio-group>
         </TableTitleRow>
         <PaymentList
-          :page="filterItems.page as number"
+          :page="filterItems.page || 1"
           :project="project as number"
           @pay-match="payMatch"
           @page-select="pageSelect"
