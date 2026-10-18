@@ -5,7 +5,6 @@ import { usePerms } from '@/composables/usePerms.ts'
 import type { InboundLetter } from '@/store/types/docs'
 import type { InboundLetterFilter } from '@/store/pinia/docs'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import { CCard, CCardBody } from '@coreui/vue'
 
 const props = defineProps<{
   letter: InboundLetter | null
@@ -14,8 +13,8 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  onDelete: [pk: number]
-  onStatusChange: [pk: number, status: string]
+  (e: 'onDelete', pk: number): void
+  (e: 'onStatusChange', pk: number, status: string): void
 }>()
 
 const { can, PERM } = usePerms()

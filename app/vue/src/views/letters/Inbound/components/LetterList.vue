@@ -7,7 +7,6 @@ import type { InboundLetter } from '@/store/types/docs'
 import type { InboundLetterFilter } from '@/store/pinia/docs'
 import Pagination from '@/components/Pagination'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
-import { CTable, CTableBody } from '@coreui/vue'
 
 const props = defineProps<{
   company: number
@@ -19,8 +18,8 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  listFilter: [payload: InboundLetterFilter]
-  pageSelect: [page: number]
+  (e: 'listFilter', payload: InboundLetterFilter): void
+  (e: 'pageSelect', page: number): void
 }>()
 
 const { can, PERM } = usePerms()
@@ -171,10 +170,10 @@ const getScanFileIcon = (fileUrl: string | null | undefined) => {
             placeholder="접수번호, 발신처, 제목..."
             @keyup.enter="onFilter"
           />
-          <v-btn color="light" @click="onFilter" flat>
+          <v-btn color="light" variant="flat" @click="onFilter">
             <v-icon icon="mdi-magnify" size="small" />
           </v-btn>
-          <v-btn color="light" @click="resetFilter" flat>
+          <v-btn color="light" variant="flat" @click="resetFilter">
             <v-icon icon="mdi-refresh" size="small" />
           </v-btn>
         </CInputGroup>
@@ -187,7 +186,7 @@ const getScanFileIcon = (fileUrl: string | null | undefined) => {
         <div class="d-flex align-items-center gap-2">
           <span class="text-muted">총 {{ letterCount }}건</span>
         </div>
-        <v-btn v-if="canDocsCreate" color="primary" @click="goToCreate">
+        <v-btn v-if="canDocsCreate" color="primary" variant="flat" @click="goToCreate">
           <v-icon icon="mdi-plus" size="small" class="me-1" />
           수신 공문 접수
         </v-btn>

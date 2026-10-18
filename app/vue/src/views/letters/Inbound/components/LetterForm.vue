@@ -23,7 +23,12 @@ export interface LocalAttachmentItem {
 }
 
 const emit = defineEmits<{
-  onSubmit: [payload: FormData, attachmentsToUpload?: LocalAttachmentItem[], pk?: number]
+  (
+    e: 'onSubmit',
+    payload: FormData,
+    attachmentsToUpload?: LocalAttachmentItem[],
+    pk?: number,
+  ): void
 }>()
 
 const router = useRouter()
