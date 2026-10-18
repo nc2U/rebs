@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import type { MessageSendHistory } from '@/store/types/notice'
+import type { MessageSendHistory } from '@/store/types/notice.ts'
 
 // Props
 interface Props {
@@ -12,7 +12,7 @@ const props = defineProps<Props>()
 
 // Emits
 const emit = defineEmits<{
-  'update:visible': [value: boolean]
+  (e: 'update:visible', value: boolean): void
 }>()
 
 // 모달 닫기

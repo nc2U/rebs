@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
-import { CAlert } from '@coreui/vue'
 
 // Props
 interface Props {
@@ -15,7 +14,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 // Emits
 const emit = defineEmits<{
-  refresh: []
+  (e: 'refresh'): void
 }>()
 
 // 열림/닫힘 상태

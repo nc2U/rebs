@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useNotice } from '@/store/pinia/notice'
-import type { MessageTemplate } from '@/store/types/notice'
+import type { MessageTemplate } from '@/store/types/notice.ts'
 import FormModal from '@/components/Modals/FormModal.vue'
 
 // Store
@@ -202,6 +202,7 @@ defineExpose({ openModal, closeModal })
     <CModalFooter>
       <v-btn
         :color="editingId ? 'success' : 'primary'"
+        variant="flat"
         size="small"
         @click="handleSubmit"
         :loading="submitting"
@@ -209,10 +210,22 @@ defineExpose({ openModal, closeModal })
         {{ editingId ? '수정' : '등록' }}
       </v-btn>
 
-      <v-btn v-if="editingId" size="small" color="primary" @click="handleCancelEdit">
+      <v-btn
+        v-if="editingId"
+        size="small"
+        color="primary"
+        variant="flat"
+        @click="handleCancelEdit"
+      >
         새 템플릿
       </v-btn>
-      <v-btn color="light" size="small" @click="closeModal" :disabled="submitting" flat>
+      <v-btn
+        color="light"
+        size="small"
+        variant="flat"
+        @click="closeModal"
+        :disabled="submitting"
+      >
         취소
       </v-btn>
     </CModalFooter>
@@ -292,8 +305,8 @@ defineExpose({ openModal, closeModal })
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn size="small" color="error" @click="handleDelete"> 삭제 </v-btn>
-        <v-btn size="small" @click="showDeleteConfirm = false" flat> 취소 </v-btn>
+        <v-btn size="small" color="error" variant="flat" @click="handleDelete"> 삭제 </v-btn>
+        <v-btn size="small" variant="flat" @click="showDeleteConfirm = false"> 취소 </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

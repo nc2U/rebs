@@ -98,15 +98,17 @@ defineExpose({ openModal, closeModal })
       </CAlert>
 
       <!-- 발신번호 입력 -->
-      <input
-        v-model="form.phone_number"
-        label="발신번호"
-        v-maska
-        data-maska="['###-###-####', '###-####-####']"
-        placeholder="예: 02-1234-5678 또는 01012345678"
-        class="mb-3 form-control"
-        required
-      />
+      <div class="mb-3">
+        <CFormLabel>발신번호</CFormLabel>
+        <input
+          v-model="form.phone_number"
+          v-maska
+          data-maska="['###-###-####', '###-####-####']"
+          placeholder="예: 02-1234-5678 또는 01012345678"
+          class="form-control"
+          required
+        />
+      </div>
 
       <!-- 설명 입력 -->
       <CFormInput
@@ -118,10 +120,22 @@ defineExpose({ openModal, closeModal })
     </CModalBody>
 
     <CModalFooter>
-      <v-btn color="primary" size="small" @click="handleSubmit" :loading="submitting">
+      <v-btn
+        color="primary"
+        variant="flat"
+        size="small"
+        @click="handleSubmit"
+        :loading="submitting"
+      >
         {{ editItem ? '수정' : '등록' }}
       </v-btn>
-      <v-btn color="light" size="small" @click="closeModal" :disabled="submitting" flat>
+      <v-btn
+        color="light"
+        variant="flat"
+        size="small"
+        @click="closeModal"
+        :disabled="submitting"
+      >
         취소
       </v-btn>
     </CModalFooter>

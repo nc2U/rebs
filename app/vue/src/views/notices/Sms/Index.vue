@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref } from 'vue'
-import { navMenu, pageTitle } from '@/views/notices/_menu/headermixin'
+import { navMenu, pageTitle } from '@/views/notices/_menu/headermixin.ts'
 import { useNotice } from '@/store/pinia/notice.ts'
 import { useCompany } from '@/store/pinia/company.ts'
 import { useProject } from '@/store/pinia/project.ts'
@@ -45,7 +45,7 @@ const attachedImages = ref<File[]>([])
 const comStore = useCompany()
 const company = computed<Company | null>(() => comStore.company)
 const projectStore = useProject()
-const project = computed<Project | null>(() => projectStore.project as Project)
+const project = computed<Project | null>(() => projectStore.project)
 
 // 폼 데이터
 const smsForm = ref({

@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 
 // Emits 정의
 const emit = defineEmits<{
-  insert: [char: string]
+  (e: 'insert', char: string): void
 }>()
 
 // 모달 상태
@@ -290,7 +290,7 @@ defineExpose({
 
       <v-card-actions>
         <v-spacer />
-        <v-btn size="small" @click="closeModal" flat> 닫기 </v-btn>
+        <v-btn size="small" variant="flat" @click="closeModal"> 닫기 </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

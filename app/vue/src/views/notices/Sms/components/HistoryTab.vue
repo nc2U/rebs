@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, onBeforeMount } from 'vue'
 import { useNotice } from '@/store/pinia/notice'
-import type { MessageSendHistory, HistoryListParams } from '@/store/types/notice'
+import type { MessageSendHistory, HistoryListParams } from '@/store/types/notice.ts'
 import HistoryFilter from './HistoryFilter.vue'
 import HistoryTable from './HistoryTable.vue'
 import HistoryDetail from './HistoryDetail.vue'

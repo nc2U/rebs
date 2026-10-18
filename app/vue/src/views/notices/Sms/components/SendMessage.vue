@@ -16,7 +16,7 @@ const props = defineProps<Props>()
 
 // Emits 정의
 const emit = defineEmits<{
-  sendMessage: []
+  (e: 'sendMessage'): void
 }>()
 
 const handleSendMessage = () => emit('sendMessage')
@@ -68,6 +68,7 @@ const handleSendMessage = () => emit('sendMessage')
           <div class="text-right">
             <v-btn
               :color="props.activeTab === 'sms' ? 'primary' : 'success'"
+              variant="flat"
               :loading="props.isSending"
               :disabled="props.isDisabled"
               :prepend-icon="props.activeTab === 'sms' ? 'mdi-send' : 'mdi-chat'"

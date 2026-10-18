@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useNotice } from '@/store/pinia/notice'
 import { cutString } from '@/utils/baseMixins.ts'
-import type { HistoryListResponse, MessageSendHistoryList } from '@/store/types/notice'
+import type { HistoryListResponse, MessageSendHistoryList } from '@/store/types/notice.ts'
 import Pagination from '@/components/Pagination'
 
 // Props
@@ -16,8 +16,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 // Emits
 const emit = defineEmits<{
-  detail: [id: number]
-  pageChange: [page: number]
+  (e: 'detail', id: number): void
+  (e: 'pageChange', page: number): void
 }>()
 
 // Store
@@ -45,7 +45,7 @@ const handlePageChange = (page: number) => {
 }
 
 // 상세보기
-const handleDetail = (item: MessageSendHistoryList) => emit('detail', item.id as any)
+const handleDetail = (item: MessageSendHistoryList) => emit('detail', item.id)
 
 // 메시지 타입 뱃지 색상
 const getTypeColor = (type: string) => {
@@ -106,7 +106,7 @@ const formatDate = (dateStr: string) => {
         <CTableBody>
           <!-- 로딩 중 -->
           <CTableRow v-if="loading">
-            <CTableDataCell colspan="7" class="text-center py-5">
+            <CTableDataCell colspan="8" class="text-center py-5">
               <CSpinner color="primary" />
               <div class="mt-2 text-medium-emphasis">데이터를 불러오는 중...</div>
             </CTableDataCell>
@@ -147,7 +147,9 @@ const formatDate = (dateStr: string) => {
               {{ item.sent_by?.username || '-' }}
             </CTableDataCell>
             <CTableDataCell class="text-center">
-              <v-btn color="info" size="x-small" @click="handleDetail(item)"> 확인 </v-btn>
+              <v-btn color="info" variant="flat" size="x-small" @click="handleDetail(item)">
+                확인
+              </v-btn>
             </CTableDataCell>
           </CTableRow>
         </CTableBody>

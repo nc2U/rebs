@@ -15,11 +15,11 @@ const messageCount = defineModel<number>('messageCount') as any
 
 // Emits 정의
 const emit = defineEmits<{
-  selectTemplate: []
-  'update:messageCount': [value: number]
-  'update:hasVariables': [value: boolean]
-  'update:variableNames': [value: string[]]
-  'update:attachedImages': [value: File[]]
+  (e: 'selectTemplate'): void
+  (e: 'update:messageCount', value: number): void
+  (e: 'update:hasVariables', value: boolean): void
+  (e: 'update:variableNames', value: string[]): void
+  (e: 'update:attachedImages', value: File[]): void
 }>()
 
 const { can, PERM } = usePerms()
@@ -200,8 +200,8 @@ const handleTemplateSelect = () => {
     if (!selectedTemplate.value) {
       // 템플릿 선택 해제 시 (직접 입력 선택 시)
       // 변수 상태 초기화
-      emit('update:hasVariables', false as any)
-      emit('update:variableNames', [] as any)
+      emit('update:hasVariables', false)
+      emit('update:variableNames', [])
       // 메시지 내용 초기화
       smsForm.value.message = ''
       return
@@ -220,8 +220,8 @@ const handleTemplateSelect = () => {
       const hasVariables = variables.length > 0
 
       // 부모 컴포넌트에 변수 정보 전달
-      emit('update:hasVariables', hasVariables as any)
-      emit('update:variableNames', variables as any)
+      emit('update:hasVariables', hasVariables)
+      emit('update:variableNames', variables)
     }
   })
 }
@@ -358,9 +358,6 @@ const formattedTotalSize = computed(() => {
   const sizeInKB = totalImageSize.value / 1024
   return `${sizeInKB.toFixed(1)}KB`
 })
-
-// Computed 속성들
-const project = computed(() => '동춘1구역9블럭지역주택조합')
 
 // SMS 메시지 변경 감지 및 자동 타입 변경
 watch(

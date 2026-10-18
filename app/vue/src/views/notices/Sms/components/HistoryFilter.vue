@@ -4,8 +4,8 @@ import DatePicker from '@/components/DatePicker/DatePicker.vue'
 
 // Emits
 const emit = defineEmits<{
-  search: [filters: FilterData]
-  reset: []
+  (e: 'search', filters: FilterData): void
+  (e: 'reset'): void
 }>()
 
 // 필터 데이터 타입
@@ -102,7 +102,13 @@ initDates()
 
         <!-- 버튼 -->
         <CCol :md="6" lg="2" class="d-flex align-items-end">
-          <v-btn color="primary" class="me-2" prepend-icon="mdi-magnify" @click="handleSearch">
+          <v-btn
+            color="primary"
+            variant="flat"
+            class="me-2"
+            prepend-icon="mdi-magnify"
+            @click="handleSearch"
+          >
             검색
           </v-btn>
           <v-btn

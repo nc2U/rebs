@@ -18,9 +18,10 @@ const props = defineProps<{
 
 // Emits 정의
 const emit = defineEmits<{
-  'update:recipientsWithVariables': [
+  (
+    e: 'update:recipientsWithVariables',
     value: Array<{ phone: string; variables: Record<string, string> }>,
-  ]
+  ): void
 }>()
 
 // Stores
@@ -56,7 +57,7 @@ watch(
   () => {
     const groupPhones = recipientGroups.value.flatMap(g => g.phones)
     const allPhones = [...new Set([...individualRecipients.value, ...groupPhones])]
-    recipientsList.value = allPhones as any
+    recipientsList.value = allPhones
   },
   { deep: true },
 )
@@ -403,7 +404,7 @@ const handleExcelFileChange = async (file: File | File[] | null) => {
 
       // recipientsList도 업데이트 (전화번호만)
       const phones = validRecipientsWithVars.map(item => item.phone)
-      recipientsList.value = phones as any
+      recipientsList.value = phones
 
       // individualRecipients도 업데이트 (v-chip 표시를 위해)
       // 기존 수신자 초기화 후 새로운 수신자 추가
@@ -570,7 +571,7 @@ const handleAddRecipient = () => {
   }
 
   // 입력 필드 초기화
-  recipientInput.value = undefined as any
+  recipientInput.value = ''
 }
 
 const handleRemoveIndividual = (phoneNumber: string) => {
@@ -638,7 +639,7 @@ const handleGroupSelect = async () => {
 
       refAlertModal.value?.callModal(
         '',
-        `${data.debug.active_contractors}명의 계약 자 중 중복 제거 후 ${phones.length}명의 연락처가 추가되었습니다.`,
+        `${data.debug.active_contractors}명의 계약자 중 중복 제거 후 ${phones.length}명의 연락처가 추가되었습니다.`,
       )
     } catch (error) {
       refAlertModal.value?.callModal('', '그룹 조회 중 오류가 발생했습니다.')
@@ -707,6 +708,7 @@ const handleGroupSelect = async () => {
                 <CCol cols="12" md="2">
                   <v-btn
                     color="primary"
+                    variant="flat"
                     @click="handleAddRecipient"
                     prepend-icon="mdi-plus"
                     :disabled="!recipientInput"
