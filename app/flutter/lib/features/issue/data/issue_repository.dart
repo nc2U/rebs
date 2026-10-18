@@ -27,10 +27,21 @@ class IssueRepository {
     return IssueModel.fromJson(response.data as Map<String, dynamic>);
   }
 
-  /// 진척률 업데이트 (PATCH)
-  Future<void> updateDoneRatio(int issueId, int ratio) async {
+  /// 진척률 업데이트 (PATCH, 필요 시 상태 자동 연동)
+  Future<IssueModel> updateDoneRatio(
+    int issueId,
+    int ratio, {
+    int? statusId,
+  }) async {
     final url = ApiEndpoints.resolve(ApiEndpoints.issueDetail, {'id': issueId});
-    await _dio.patch(url, data: {'done_ratio': ratio});
+    final response = await _dio.patch(
+      url,
+      data: {
+        'done_ratio': ratio,
+        if (statusId != null) 'status': statusId,
+      },
+    );
+    return IssueModel.fromJson(response.data as Map<String, dynamic>);
   }
 
   /// 업무 생성 (POST)

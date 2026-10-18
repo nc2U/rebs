@@ -18,7 +18,6 @@ import '../../project/providers/project_provider.dart';
 import '../data/issue_repository.dart';
 import '../data/models/issue_model.dart';
 import '../providers/issue_provider.dart';
-import 'issue_form_screen.dart';
 import 'widgets/done_ratio_bottom_sheet.dart';
 import 'widgets/issue_log_tile.dart';
 
@@ -330,11 +329,9 @@ class _IssueDetailScreenState extends ConsumerState<IssueDetailScreen> {
                     IconButton(
                       icon: const Icon(Icons.edit_outlined, size: 22),
                       tooltip: '수정',
-                      onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => IssueFormScreen(initialIssue: issue),
-                        ),
+                      onPressed: () => context.push(
+                        '/work/issues/${issue.pk}/edit',
+                        extra: issue,
                       ),
                     ),
                 ],

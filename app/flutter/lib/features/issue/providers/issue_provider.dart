@@ -132,30 +132,77 @@ class IssueDetailNotifier
     return ref.read(issueRepositoryProvider).fetchIssueDetail(id);
   }
 
-  /// 진척률 업데이트 (Optimistic Update 지원)
+  /// 진척률 업데이트 (Optimistic Update 및 상태 자동 연동 지원)
   Future<void> updateDoneRatio(int ratio) async {
-    final current = state.valueOrNull;
-    if (current != null) {
-      final updatedIssue = current.copyWith(doneRatio: ratio);
+    final detailIssue = state.valueOrNull;
+    final listIssue = ref
+        .read(issueListProvider)
+        .valueOrNull
+        ?.items
+        .where((i) => i.pk == arg)
+        .firstOrNull;
+    final baseIssue = detailIssue ?? listIssue;
+    final statuses = ref.read(issueStatusListProvider).valueOrNull;
 
-      // 상세 화면 및 목록 화면 모두 즉시 Optimistic 반영
-      state = AsyncData(updatedIssue);
-      ref.read(issueListProvider.notifier).updateSingleIssue(updatedIssue);
+    IssueStatusModel? nextStatus;
+    int? nextStatusId;
+
+    if (ratio == 100) {
+      if (baseIssue == null || !baseIssue.status.closed) {
+        nextStatus = statuses?.where((s) => s.closed).firstOrNull ??
+            const IssueStatusModel(pk: 5, name: '완료', closed: true);
+        nextStatusId = nextStatus.pk;
+      }
+    } else if (baseIssue != null) {
+      if (baseIssue.status.closed) {
+        nextStatus = statuses?.where((s) => s.pk == 2).firstOrNull ??
+            statuses?.where((s) => !s.closed && s.pk != 1).firstOrNull ??
+            const IssueStatusModel(pk: 2, name: '진행', closed: false);
+        nextStatusId = nextStatus.pk;
+      } else if (ratio > 0 && baseIssue.status.pk == 1) {
+        nextStatus = statuses?.where((s) => s.pk == 2).firstOrNull ??
+            statuses?.where((s) => !s.closed && s.pk != 1).firstOrNull ??
+            const IssueStatusModel(pk: 2, name: '진행', closed: false);
+        nextStatusId = nextStatus.pk;
+      }
+    }
+
+    if (baseIssue != null) {
+      final optimisticIssue = baseIssue.copyWith(
+        doneRatio: ratio,
+        status: nextStatus ?? baseIssue.status,
+      );
+
+      if (detailIssue != null) {
+        state = AsyncData(optimisticIssue);
+      }
+      ref.read(issueListProvider.notifier).updateSingleIssue(optimisticIssue);
 
       try {
-        await ref.read(issueRepositoryProvider).updateDoneRatio(current.pk, ratio);
-        ref.invalidate(issueLogProvider(current.pk));
+        final serverUpdated = await ref
+            .read(issueRepositoryProvider)
+            .updateDoneRatio(arg, ratio, statusId: nextStatusId);
+        state = AsyncData(serverUpdated);
+        ref.read(issueListProvider.notifier).updateSingleIssue(serverUpdated);
+        if (baseIssue.status.closed != serverUpdated.status.closed) {
+          ref.invalidate(issueListProvider);
+        }
+        ref.invalidate(issueLogProvider(arg));
       } catch (_) {
         // 실패 시 원래 값으로 롤백
-        state = AsyncData(current);
-        ref.read(issueListProvider.notifier).updateSingleIssue(current);
+        if (detailIssue != null) {
+          state = AsyncData(detailIssue);
+        }
+        ref.read(issueListProvider.notifier).updateSingleIssue(baseIssue);
         rethrow;
       }
     } else {
-      // 목록 화면 등에서 상세 프로바이더가 아직 초기화되지 않은 상태에서 호출된 경우
-      await ref.read(issueRepositoryProvider).updateDoneRatio(arg, ratio);
+      final serverUpdated = await ref
+          .read(issueRepositoryProvider)
+          .updateDoneRatio(arg, ratio, statusId: nextStatusId);
+      state = AsyncData(serverUpdated);
       ref.invalidate(issueListProvider);
-      ref.invalidateSelf();
+      ref.invalidate(issueLogProvider(arg));
     }
   }
 

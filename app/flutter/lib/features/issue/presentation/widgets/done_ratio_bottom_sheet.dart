@@ -59,7 +59,6 @@ class _DoneRatioSheetState extends State<_DoneRatioSheet> {
       await widget.ref
           .read(issueDetailProvider(widget.issueId).notifier)
           .updateDoneRatio(_ratio.round());
-      widget.ref.invalidate(issueListProvider);
       if (mounted) Navigator.pop(context);
     } catch (_) {
       if (mounted) {
@@ -79,6 +78,8 @@ class _DoneRatioSheetState extends State<_DoneRatioSheet> {
   Widget build(BuildContext context) {
     final ratio = _ratio.round();
     final color = ratio == 100 ? context.colors.success : context.colors.accentWork;
+    final willComplete = ratio == 100 && widget.initialRatio < 100;
+    final willReopen = ratio < 100 && widget.initialRatio == 100;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
@@ -126,7 +127,7 @@ class _DoneRatioSheetState extends State<_DoneRatioSheet> {
           ),
           const SizedBox(height: 8),
 
-          // 슬라이더
+          // 슬라이더 (5% 단위)
           SliderTheme(
             data: SliderThemeData(
               activeTrackColor: color,
@@ -141,19 +142,87 @@ class _DoneRatioSheetState extends State<_DoneRatioSheet> {
               value: _ratio,
               min: 0,
               max: 100,
-              divisions: 10,
+              divisions: 20,
               onChanged: (v) => setState(() => _ratio = v),
             ),
           ),
 
-          // 0 / 50 / 100 라벨
+          // 빠른 선택 칩 (0%, 25%, 50%, 75%, 100%)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: ['0%', '50%', '100%']
-                .map((l) => Text(l, style: AppTextStyles.caption.copyWith(color: context.colors.textMuted)))
-                .toList(),
+            children: [0, 25, 50, 75, 100].map((preset) {
+              final isSelected = ratio == preset;
+              return InkWell(
+                borderRadius: BorderRadius.circular(6),
+                onTap: () => setState(() => _ratio = preset.toDouble()),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? (preset == 100
+                            ? context.colors.success
+                            : context.colors.accentWork)
+                        : context.colors.bgInput,
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(
+                      color: isSelected
+                          ? Colors.transparent
+                          : context.colors.borderSubtle,
+                    ),
+                  ),
+                  child: Text(
+                    '$preset%',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight:
+                          isSelected ? FontWeight.bold : FontWeight.normal,
+                      color: isSelected ? Colors.white : context.colors.textMuted,
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
           ),
-          const SizedBox(height: 24),
+
+          if (willComplete || willReopen) ...[
+            const SizedBox(height: 12),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: color.withAlpha(20),
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(color: color.withAlpha(60), width: 0.8),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    willComplete
+                        ? Icons.check_circle_outline_rounded
+                        : Icons.autorenew_rounded,
+                    size: 16,
+                    color: color,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      willComplete
+                          ? '100% 저장 시 업무 상태가 [완료]로 함께 변경됩니다.'
+                          : '100% 미만으로 저장 시 업무 상태가 [진행]으로 전환됩니다.',
+                      style: AppTextStyles.caption.copyWith(
+                        color: color,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          const SizedBox(height: 20),
 
           // 저장 버튼
           SizedBox(

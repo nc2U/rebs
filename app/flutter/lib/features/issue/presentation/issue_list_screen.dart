@@ -236,21 +236,89 @@ class _IssueListScreenState extends ConsumerState<IssueListScreen> {
                 );
               }
 
-              // 1) 캘린더 뷰
-              if (_viewMode == _ViewMode.calendar) {
-                return IssueCalendarView(
-                  issues: state.items,
-                  onIssueTap: _navigateToDetail,
-                  onDoneRatioTap: _openDoneRatioSheet,
-                );
-              }
+              // 1) 캘린더 뷰 / 2) 간트 타임라인 뷰
+              if (_viewMode == _ViewMode.calendar ||
+                  _viewMode == _ViewMode.gantt) {
+                final viewChild = _viewMode == _ViewMode.calendar
+                    ? IssueCalendarView(
+                        issues: state.items,
+                        onIssueTap: _navigateToDetail,
+                        onDoneRatioTap: _openDoneRatioSheet,
+                      )
+                    : IssueGanttView(
+                        issues: state.items,
+                        onIssueTap: _navigateToDetail,
+                        onDoneRatioTap: _openDoneRatioSheet,
+                      );
 
-              // 2) 간트 타임라인 뷰
-              if (_viewMode == _ViewMode.gantt) {
-                return IssueGanttView(
-                  issues: state.items,
-                  onIssueTap: _navigateToDetail,
-                  onDoneRatioTap: _openDoneRatioSheet,
+                if (!state.hasMore) return viewChild;
+
+                return Column(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: context.colors.accentWork.withAlpha(20),
+                        border: Border(
+                          bottom: BorderSide(
+                            color: context.colors.border,
+                            width: 0.8,
+                          ),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.info_outline_rounded,
+                            size: 14,
+                            color: context.colors.accentWork,
+                          ),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              '전체 ${state.totalCount}건 중 최근 ${state.items.length}건이 표시되고 있습니다.',
+                              style: AppTextStyles.caption.copyWith(
+                                color: context.colors.textSecond,
+                              ),
+                            ),
+                          ),
+                          if (state.isLoadingMore)
+                            SizedBox(
+                              width: 14,
+                              height: 14,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: context.colors.accentWork,
+                              ),
+                            )
+                          else
+                            InkWell(
+                              onTap: () => ref
+                                  .read(issueListProvider.notifier)
+                                  .loadMore(),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                  vertical: 2,
+                                ),
+                                child: Text(
+                                  '더 불러오기',
+                                  style: AppTextStyles.caption.copyWith(
+                                    color: context.colors.accentWork,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                    Expanded(child: viewChild),
+                  ],
                 );
               }
 

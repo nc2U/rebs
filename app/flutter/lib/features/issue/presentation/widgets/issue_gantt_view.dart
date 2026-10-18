@@ -408,52 +408,55 @@ class _IssueGanttViewState extends State<IssueGanttView> {
 
                           // 타임라인 바디 그리드 + 업무 바
                           Expanded(
-                            child: ListView.builder(
-                              controller: _verticalBodyController,
-                              physics: const ClampingScrollPhysics(),
-                              itemCount: widget.issues.length,
-                              itemBuilder: (context, index) {
-                                final issue = widget.issues[index];
-                                return Container(
-                                  height: _rowHeight,
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      bottom: BorderSide(
-                                          color: context.colors.border.withAlpha(120),
-                                          width: 0.5),
-                                    ),
-                                  ),
-                                  child: Stack(
-                                    alignment: Alignment.centerLeft,
-                                    children: [
-                                      // 세로 격자선 및 오늘 하이라이트 배경
-                                      Row(
-                                        children: List.generate(_totalDays, (i) {
-                                          final date = _rangeStart.add(Duration(days: i));
-                                          final isToday = date.year == today.year &&
-                                              date.month == today.month &&
-                                              date.day == today.day;
-                                          return Container(
-                                            width: _colWidth,
-                                            decoration: BoxDecoration(
-                                              color: isToday
-                                                  ? context.colors.accentWork.withAlpha(15)
-                                                  : Colors.transparent,
-                                              border: Border(
-                                                right: BorderSide(
-                                                    color: context.colors.border
-                                                        .withAlpha(40),
-                                                    width: 0.5),
+                            child: Builder(
+                              builder: (context) {
+                                final todayIndex =
+                                    today.difference(_rangeStart).inDays;
+                                final gridLineColor =
+                                    context.colors.border.withAlpha(40);
+                                final todayHighlightColor =
+                                    context.colors.accentWork.withAlpha(15);
+
+                                return ListView.builder(
+                                  controller: _verticalBodyController,
+                                  physics: const ClampingScrollPhysics(),
+                                  itemCount: widget.issues.length,
+                                  itemBuilder: (context, index) {
+                                    final issue = widget.issues[index];
+                                    return Container(
+                                      height: _rowHeight,
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            color: context.colors.border
+                                                .withAlpha(120),
+                                            width: 0.5,
+                                          ),
+                                        ),
+                                      ),
+                                      child: Stack(
+                                        alignment: Alignment.centerLeft,
+                                        children: [
+                                          // 세로 격자선 및 오늘 하이라이트 배경 (CustomPainter로 단일 패스 렌더링)
+                                          Positioned.fill(
+                                            child: CustomPaint(
+                                              painter: _GanttRowGridPainter(
+                                                totalDays: _totalDays,
+                                                colWidth: _colWidth,
+                                                todayIndex: todayIndex,
+                                                gridLineColor: gridLineColor,
+                                                todayHighlightColor:
+                                                    todayHighlightColor,
                                               ),
                                             ),
-                                          );
-                                        }),
-                                      ),
+                                          ),
 
-                                      // 간트 바 (Gantt Progress Bar)
-                                      _buildGanttBar(issue, context),
-                                    ],
-                                  ),
+                                          // 간트 바 (Gantt Progress Bar)
+                                          _buildGanttBar(issue, context),
+                                        ],
+                                      ),
+                                    );
+                                  },
                                 );
                               },
                             ),
@@ -549,5 +552,53 @@ class _IssueGanttViewState extends State<IssueGanttView> {
         ),
       ),
     );
+  }
+}
+
+/// 간트 행 배경 격자선 및 오늘 날짜 컬럼 하이라이트 전용 CustomPainter
+class _GanttRowGridPainter extends CustomPainter {
+  final int totalDays;
+  final double colWidth;
+  final int todayIndex;
+  final Color gridLineColor;
+  final Color todayHighlightColor;
+
+  const _GanttRowGridPainter({
+    required this.totalDays,
+    required this.colWidth,
+    required this.todayIndex,
+    required this.gridLineColor,
+    required this.todayHighlightColor,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (todayIndex >= 0 && todayIndex < totalDays) {
+      final highlightPaint = Paint()
+        ..color = todayHighlightColor
+        ..style = PaintingStyle.fill;
+      canvas.drawRect(
+        Rect.fromLTWH(todayIndex * colWidth, 0, colWidth, size.height),
+        highlightPaint,
+      );
+    }
+
+    final linePaint = Paint()
+      ..color = gridLineColor
+      ..strokeWidth = 0.5;
+
+    for (int i = 1; i <= totalDays; i++) {
+      final x = i * colWidth;
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), linePaint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _GanttRowGridPainter oldDelegate) {
+    return oldDelegate.totalDays != totalDays ||
+        oldDelegate.colWidth != colWidth ||
+        oldDelegate.todayIndex != todayIndex ||
+        oldDelegate.gridLineColor != gridLineColor ||
+        oldDelegate.todayHighlightColor != todayHighlightColor;
   }
 }

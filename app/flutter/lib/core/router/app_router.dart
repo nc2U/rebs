@@ -6,6 +6,7 @@ import '../providers/share_payload_provider.dart';
 import '../../features/auth/views/login_page.dart';
 import '../../features/dashboard/views/main_shell.dart';
 import '../../features/dashboard/views/home_tab.dart';
+import '../../features/issue/data/models/issue_model.dart';
 import '../../features/issue/presentation/issue_detail_screen.dart';
 
 import '../../features/meeting/presentation/meeting_detail_screen.dart';
@@ -149,6 +150,15 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                           0;
                       return IssueDetailScreen(issueId: id);
                     },
+                    routes: [
+                      GoRoute(
+                        path: 'edit',
+                        builder: (ctx, state) {
+                          final initialIssue = state.extra as IssueModel?;
+                          return IssueFormScreen(initialIssue: initialIssue);
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),

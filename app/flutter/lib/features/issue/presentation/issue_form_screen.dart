@@ -339,6 +339,7 @@ class _IssueFormScreenState extends ConsumerState<IssueFormScreen> {
                     }
 
                     return DropdownButtonFormField<String>(
+                      key: ValueKey('project_$validSlug'),
                       initialValue: validSlug,
                       isExpanded: true,
                       style: AppTextStyles.bodyMd.copyWith(color: context.colors.textPrimary),
@@ -415,6 +416,7 @@ class _IssueFormScreenState extends ConsumerState<IssueFormScreen> {
                                     loading: () => const SizedBox(height: 48),
                                     error: (_, __) =>
                                         DropdownButtonFormField<int>(
+                                      key: ValueKey('tracker_err_$_trackerId'),
                                       initialValue: _trackerId,
                                       style: AppTextStyles.bodyMd.copyWith(color: context.colors.textPrimary),
                                       dropdownColor: context.colors.bgCard,
@@ -443,6 +445,7 @@ class _IssueFormScreenState extends ConsumerState<IssueFormScreen> {
                                           : _trackerId;
 
                                       return DropdownButtonFormField<int>(
+                                        key: ValueKey('tracker_${_selectedProjectSlug}_$currentTrackerId'),
                                         initialValue: currentTrackerId,
                                         isExpanded: true,
                                         style: AppTextStyles.bodyMd.copyWith(color: context.colors.textPrimary),
@@ -467,6 +470,7 @@ class _IssueFormScreenState extends ConsumerState<IssueFormScreen> {
                                     },
                                   ) ??
                                   DropdownButtonFormField<int>(
+                                    key: ValueKey('tracker_fallback_$_trackerId'),
                                     initialValue: _trackerId,
                                     isExpanded: true,
                                     style: AppTextStyles.bodyMd.copyWith(color: context.colors.textPrimary),
@@ -494,6 +498,7 @@ class _IssueFormScreenState extends ConsumerState<IssueFormScreen> {
                               priorityListAsync.when(
                                 loading: () => const SizedBox(height: 48),
                                 error: (_, __) => DropdownButtonFormField<int>(
+                                  key: ValueKey('priority_err_$_priorityId'),
                                   initialValue: _priorityId,
                                   isExpanded: true,
                                   style: AppTextStyles.bodyMd.copyWith(color: context.colors.textPrimary),
@@ -523,6 +528,7 @@ class _IssueFormScreenState extends ConsumerState<IssueFormScreen> {
                                       : _priorityId;
 
                                   return DropdownButtonFormField<int>(
+                                    key: ValueKey('priority_$currentPriorityId'),
                                     initialValue: currentPriorityId,
                                     isExpanded: true,
                                     style: AppTextStyles.bodyMd.copyWith(color: context.colors.textPrimary),
@@ -613,6 +619,7 @@ class _IssueFormScreenState extends ConsumerState<IssueFormScreen> {
                                           : _assignedToId;
 
                                       return DropdownButtonFormField<int?>(
+                                        key: ValueKey('assigned_${_selectedProjectSlug}_$currentAssignedId'),
                                         initialValue: currentAssignedId,
                                         isExpanded: true,
                                         style: AppTextStyles.bodyMd.copyWith(color: context.colors.textPrimary),
@@ -688,6 +695,7 @@ class _IssueFormScreenState extends ConsumerState<IssueFormScreen> {
                               statusListAsync.when(
                                 loading: () => const SizedBox(height: 48),
                                 error: (_, __) => DropdownButtonFormField<int>(
+                                  key: ValueKey('status_err_$_statusId'),
                                   initialValue: _statusId,
                                   isExpanded: true,
                                   style: AppTextStyles.bodyMd.copyWith(color: context.colors.textPrimary),
@@ -716,6 +724,7 @@ class _IssueFormScreenState extends ConsumerState<IssueFormScreen> {
                                       : _statusId;
 
                                   return DropdownButtonFormField<int>(
+                                    key: ValueKey('status_$currentStatusId'),
                                     initialValue: currentStatusId,
                                     isExpanded: true,
                                     style: AppTextStyles.bodyMd.copyWith(color: context.colors.textPrimary),
@@ -779,6 +788,7 @@ class _IssueFormScreenState extends ConsumerState<IssueFormScreen> {
                               ),
                               const SizedBox(height: 6),
                               DropdownButtonFormField<String?>(
+                                key: ValueKey('duration_${_statusId}_$_expectedDuration'),
                                 initialValue: _expectedDuration,
                                 isExpanded: true,
                                 style: AppTextStyles.bodyMd.copyWith(color: context.colors.textPrimary),
@@ -1039,6 +1049,7 @@ class _IssueFormScreenState extends ConsumerState<IssueFormScreen> {
                                         }
 
                                         return DropdownButtonFormField<int?>(
+                                          key: ValueKey('version_${_selectedProjectSlug}_$selectedVerId'),
                                           initialValue: selectedVerId,
                                           isExpanded: true,
                                           style: AppTextStyles.bodyMd.copyWith(color: context.colors.textPrimary),
@@ -1120,6 +1131,7 @@ class _IssueFormScreenState extends ConsumerState<IssueFormScreen> {
                                                 : _categoryId;
 
                                         return DropdownButtonFormField<int?>(
+                                          key: ValueKey('category_${_selectedProjectSlug}_$currentCategoryId'),
                                           initialValue: currentCategoryId,
                                           isExpanded: true,
                                           style: AppTextStyles.bodyMd.copyWith(color: context.colors.textPrimary),
