@@ -1,26 +1,28 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount, watch, type PropType } from 'vue'
+import { ref, computed, onBeforeMount, watch } from 'vue'
 import { isValidate } from '@/utils/helper.ts'
 import { usePerms } from '@/composables/usePerms.ts'
-import { useAccount } from '@/store/pinia/account.ts'
 import { useCompany } from '@/store/pinia/company.ts'
 import { type PromotionPolicy } from '@/store/types/company.ts'
 import Multiselect from '@vueform/multiselect'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({
-  company: { type: String, default: null },
-  policy: { type: Object as PropType<PromotionPolicy>, default: null },
-})
+const props = defineProps<{
+  company?: string | null
+  policy?: PromotionPolicy | null
+}>()
 
-const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
+const emit = defineEmits<{
+  (e: 'multi-submit', payload: PromotionPolicy): void
+  (e: 'on-delete', pk: number): void
+  (e: 'close'): void
+}>()
 
-const { can, PERM } = usePerms()
-const accStore = useAccount()
-const canHrWorkCreate = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_CREATE))
-const canHrWorkUpdate = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_UPDATE))
-const canHrWorkDelete = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_DELETE))
+const { canGlobal, PERM } = usePerms()
+const canHrWorkCreate = computed(() => canGlobal(PERM.HQ_HR_WORK_CREATE))
+const canHrWorkUpdate = computed(() => canGlobal(PERM.HQ_HR_WORK_UPDATE))
+const canHrWorkDelete = computed(() => canGlobal(PERM.HQ_HR_WORK_DELETE))
 
 const comStore = useCompany()
 const getPkGrades = computed(() => comStore.getPkGrades)
@@ -101,7 +103,7 @@ const formDataSetup = () => {
     form.value.disqualification_conditions = props.policy.disqualification_conditions || ''
     form.value.description = props.policy.description || ''
     form.value.is_active = props.policy.is_active
-  } else form.value.company = props.company
+  } else form.value.company = props.company || undefined
 }
 
 onBeforeMount(() => formDataSetup())
@@ -261,15 +263,31 @@ watch(
         <v-btn
           type="submit"
           size="small"
+          variant="flat"
           :color="policy ? 'success' : 'primary'"
           :disabled="formsCheck"
         >
           저장
         </v-btn>
-        <v-btn v-if="policy" type="button" size="small" color="warning" @click="deleteConfirm">
+        <v-btn
+          v-if="policy"
+          type="button"
+          size="small"
+          variant="flat"
+          color="warning"
+          @click="deleteConfirm"
+        >
           삭제
         </v-btn>
-        <v-btn type="button" size="small" color="light" @click="$emit('close')" flat> 닫기</v-btn>
+        <v-btn
+          type="button"
+          size="small"
+          variant="flat"
+          color="light"
+          @click="$emit('close')"
+        >
+          닫기
+        </v-btn>
       </slot>
     </CModalFooter>
   </CForm>
@@ -280,7 +298,15 @@ watch(
       삭제한 데이터는 복구할 수 없습니다. 해당 승급 정책을 삭제하시겠습니까?
     </template>
     <template #footer>
-      <v-btn color="warning" size="small" @click="deleteObject(policy.pk as number)"> 삭제 </v-btn>
+      <v-btn
+        color="warning"
+        size="small"
+        variant="flat"
+        :disabled="!policy?.pk"
+        @click="deleteObject(policy?.pk as number)"
+      >
+        삭제
+      </v-btn>
     </template>
   </ConfirmModal>
 

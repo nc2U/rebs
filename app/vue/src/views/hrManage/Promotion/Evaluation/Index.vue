@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue'
-import { navMenu, pageTitle } from '@/views/hrManage/_menu/headermixin4'
+import { navMenu, pageTitle } from '@/views/hrManage/_menu/headermixin4.ts'
 import { useCompany } from '@/store/pinia/company.ts'
 import { usePerms } from '@/composables/usePerms.ts'
-import type { Company } from '@/store/types/settings.ts'
 import { type StaffEvaluation, type StaffEvaluationFilter } from '@/store/types/company.ts'
 import Loading from '@/components/Loading/Index.vue'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -30,8 +29,8 @@ const dataFilter = ref<StaffEvaluationFilter>({
 })
 
 const comStore = useCompany()
-const company = computed(() => (comStore.company as Company)?.pk)
-const comName = computed(() => (comStore.company as Company)?.name || undefined)
+const company = computed(() => comStore.company?.pk)
+const comName = computed(() => comStore.company?.name || undefined)
 
 const excelUrl = computed(() => {
   const url = `/excel/staff-evaluations/?company=${company.value}`

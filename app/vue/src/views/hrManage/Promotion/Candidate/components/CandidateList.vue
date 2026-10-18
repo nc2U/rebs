@@ -7,7 +7,11 @@ import { type PromotionCandidate as PromotionCandidateType } from '@/store/types
 import Pagination from '@/components/Pagination'
 import Candidate from './Candidate.vue'
 
-const emit = defineEmits(['page-select', 'multi-submit', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'page-select', page: number): void
+  (e: 'multi-submit', payload: PromotionCandidateType): void
+  (e: 'on-delete', pk: number): void
+}>()
 
 const { canGlobal, PERM } = usePerms()
 const canHrWorkManage = computed(

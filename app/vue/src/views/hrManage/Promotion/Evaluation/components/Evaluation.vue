@@ -1,21 +1,22 @@
 <script lang="ts" setup>
-import { computed, type PropType, ref } from 'vue'
-import { useAccount } from '@/store/pinia/account.ts'
+import { computed, ref } from 'vue'
 import { usePerms } from '@/composables/usePerms.ts'
 import { type StaffEvaluation } from '@/store/types/company.ts'
 import FormModal from '@/components/Modals/FormModal.vue'
 import EvaluationForm from './EvaluationForm.vue'
 
-defineProps({
-  evaluation: { type: Object as PropType<StaffEvaluation>, required: true },
-})
+defineProps<{
+  evaluation: StaffEvaluation
+}>()
 
-const emit = defineEmits(['multi-submit', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'multi-submit', payload: StaffEvaluation): void
+  (e: 'on-delete', pk: number): void
+}>()
 
-const { can, PERM } = usePerms()
-const accStore = useAccount()
+const { canGlobal, PERM } = usePerms()
 const canHrWorkManage = computed(
-  () => accStore.isStaff && (can(PERM.HQ_HR_WORK_CREATE) || can(PERM.HQ_HR_WORK_UPDATE)),
+  () => canGlobal(PERM.HQ_HR_WORK_CREATE) || canGlobal(PERM.HQ_HR_WORK_UPDATE),
 )
 
 const updateFormModal = ref()
@@ -49,7 +50,7 @@ const getGradeBadge = (grade: string) => {
       <v-chip color="info" variant="flat" size="x-small">{{ evaluation.eval_period_desc }}</v-chip>
     </CTableDataCell>
     <CTableDataCell class="fw-bold">
-      <a href="javascript:void(0);" @click="showDetail">{{ evaluation.staff_name }}</a>
+      <a href="javascript:void(0);" @click.prevent="showDetail">{{ evaluation.staff_name }}</a>
     </CTableDataCell>
     <CTableDataCell>
       <v-chip
@@ -61,7 +62,7 @@ const getGradeBadge = (grade: string) => {
         {{ getGradeBadge(evaluation.grade).label }}
       </v-chip>
     </CTableDataCell>
-    <CTableDataCell class="text-right fw-bold">
+    <CTableDataCell class="text-end fw-bold">
       {{
         evaluation.score !== null && evaluation.score !== undefined
           ? Number(evaluation.score).toFixed(1)
@@ -70,12 +71,12 @@ const getGradeBadge = (grade: string) => {
     </CTableDataCell>
     <CTableDataCell>{{ evaluation.evaluator_name || '-' }}</CTableDataCell>
     <CTableDataCell>{{ evaluation.reviewer_name || '-' }}</CTableDataCell>
-    <CTableDataCell class="text-left small">
+    <CTableDataCell class="text-start small">
       {{ evaluation.achievement_summary || '-' }}
     </CTableDataCell>
-    <CTableDataCell class="text-left small">{{ evaluation.notes || '-' }}</CTableDataCell>
+    <CTableDataCell class="text-start small">{{ evaluation.notes || '-' }}</CTableDataCell>
     <CTableDataCell v-if="canHrWorkManage">
-      <v-btn color="info" size="x-small" @click="showDetail">확인</v-btn>
+      <v-btn color="info" size="x-small" variant="flat" @click="showDetail">확인</v-btn>
     </CTableDataCell>
   </CTableRow>
 

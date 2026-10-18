@@ -1,22 +1,22 @@
 <script lang="ts" setup>
-import { computed, type PropType, ref } from 'vue'
-import { useAccount } from '@/store/pinia/account.ts'
+import { computed, ref } from 'vue'
 import { usePerms } from '@/composables/usePerms.ts'
 import { type PromotionPolicy } from '@/store/types/company.ts'
 import FormModal from '@/components/Modals/FormModal.vue'
 import PolicyForm from './PolicyForm.vue'
-import { CTableDataCell, CTableRow } from '@coreui/vue'
 
-defineProps({
-  policy: { type: Object as PropType<PromotionPolicy>, required: true },
-})
+defineProps<{
+  policy: PromotionPolicy
+}>()
 
-const emit = defineEmits(['multi-submit', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'multi-submit', payload: PromotionPolicy): void
+  (e: 'on-delete', pk: number): void
+}>()
 
-const { can, PERM } = usePerms()
-const accStore = useAccount()
+const { canGlobal, PERM } = usePerms()
 const canHrWorkManage = computed(
-  () => accStore.isStaff && (can(PERM.HQ_HR_WORK_CREATE) || can(PERM.HQ_HR_WORK_UPDATE)),
+  () => canGlobal(PERM.HQ_HR_WORK_CREATE) || canGlobal(PERM.HQ_HR_WORK_UPDATE),
 )
 
 const updateFormModal = ref()
@@ -38,7 +38,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
       </v-chip>
     </CTableDataCell>
     <CTableDataCell>{{ policy.min_years }}년</CTableDataCell>
-    <CTableDataCell class="text-right">
+    <CTableDataCell class="text-end">
       {{
         policy.min_avg_grade_point !== null && policy.min_avg_grade_point !== undefined
           ? Number(policy.min_avg_grade_point).toFixed(1)
@@ -46,13 +46,13 @@ const onDelete = (pk: number) => emit('on-delete', pk)
       }}
     </CTableDataCell>
     <CTableDataCell>{{ policy.required_eval_grade || '-' }}</CTableDataCell>
-    <CTableDataCell class="text-left small">{{
+    <CTableDataCell class="text-start small">{{
       policy.required_credentials || '-'
     }}</CTableDataCell>
-    <CTableDataCell class="text-left small text-danger">{{
+    <CTableDataCell class="text-start small text-danger">{{
       policy.disqualification_conditions || '-'
     }}</CTableDataCell>
-    <CTableDataCell class="text-left small text-muted">{{
+    <CTableDataCell class="text-start small text-muted">{{
       policy.description || '-'
     }}</CTableDataCell>
     <CTableDataCell>
@@ -61,7 +61,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
       </v-chip>
     </CTableDataCell>
     <CTableDataCell v-if="canHrWorkManage">
-      <v-btn color="info" size="x-small" @click="showDetail">수정</v-btn>
+      <v-btn color="info" size="x-small" variant="flat" @click="showDetail">수정</v-btn>
     </CTableDataCell>
   </CTableRow>
 

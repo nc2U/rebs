@@ -7,7 +7,11 @@ import { type StaffEvaluation as StaffEvaluationType } from '@/store/types/compa
 import Pagination from '@/components/Pagination'
 import Evaluation from './Evaluation.vue'
 
-const emit = defineEmits(['page-select', 'multi-submit', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'page-select', page: number): void
+  (e: 'multi-submit', payload: StaffEvaluationType): void
+  (e: 'on-delete', pk: number): void
+}>()
 
 const { canGlobal, PERM } = usePerms()
 const canHrWorkManage = computed(

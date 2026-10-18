@@ -1,21 +1,22 @@
 <script lang="ts" setup>
-import { computed, type PropType, ref } from 'vue'
-import { useAccount } from '@/store/pinia/account.ts'
+import { computed, ref } from 'vue'
 import { usePerms } from '@/composables/usePerms.ts'
 import { type PromotionCandidate } from '@/store/types/company.ts'
 import FormModal from '@/components/Modals/FormModal.vue'
 import CandidateForm from './CandidateForm.vue'
 
-defineProps({
-  candidate: { type: Object as PropType<PromotionCandidate>, required: true },
-})
+defineProps<{
+  candidate: PromotionCandidate
+}>()
 
-const emit = defineEmits(['multi-submit', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'multi-submit', payload: PromotionCandidate): void
+  (e: 'on-delete', pk: number): void
+}>()
 
-const { can, PERM } = usePerms()
-const accStore = useAccount()
+const { canGlobal, PERM } = usePerms()
 const canHrWorkManage = computed(
-  () => accStore.isStaff && (can(PERM.HQ_HR_WORK_CREATE) || can(PERM.HQ_HR_WORK_UPDATE)),
+  () => canGlobal(PERM.HQ_HR_WORK_CREATE) || canGlobal(PERM.HQ_HR_WORK_UPDATE),
 )
 
 const updateFormModal = ref()
@@ -46,7 +47,7 @@ const getStatusBadge = (status: string) => {
   <CTableRow v-if="candidate" class="text-center">
     <CTableDataCell>{{ candidate.eval_year }}년</CTableDataCell>
     <CTableDataCell class="fw-bold">
-      <a href="javascript:void(0);" @click="showDetail">{{ candidate.staff_name }}</a>
+      <a href="javascript:void(0);" @click.prevent="showDetail">{{ candidate.staff_name }}</a>
     </CTableDataCell>
     <CTableDataCell>
       <v-chip color="light" variant="flat" size="x-small" class="text-body border">
@@ -57,10 +58,10 @@ const getStatusBadge = (status: string) => {
         {{ candidate.target_grade_code }}
       </v-chip>
     </CTableDataCell>
-    <CTableDataCell class="text-right">
+    <CTableDataCell class="text-end">
       {{ Number(candidate.tenure_years || 0).toFixed(1) }} 년
     </CTableDataCell>
-    <CTableDataCell class="text-right fw-bold">
+    <CTableDataCell class="text-end fw-bold">
       {{
         candidate.avg_eval_score !== null && candidate.avg_eval_score !== undefined
           ? Number(candidate.avg_eval_score).toFixed(1)
@@ -80,11 +81,11 @@ const getStatusBadge = (status: string) => {
     <CTableDataCell class="small text-muted">
       {{ candidate.promoted_date || '-' }}
     </CTableDataCell>
-    <CTableDataCell class="text-left small">
+    <CTableDataCell class="text-start small">
       {{ candidate.committee_review || '-' }}
     </CTableDataCell>
     <CTableDataCell v-if="canHrWorkManage">
-      <v-btn color="info" size="x-small" @click="showDetail">확인</v-btn>
+      <v-btn color="info" size="x-small" variant="flat" @click="showDetail">확인</v-btn>
     </CTableDataCell>
   </CTableRow>
 

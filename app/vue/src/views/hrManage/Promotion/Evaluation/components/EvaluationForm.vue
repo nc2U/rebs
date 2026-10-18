@@ -1,30 +1,28 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount, watch, type PropType } from 'vue'
+import { ref, computed, onBeforeMount, watch } from 'vue'
 import { isValidate } from '@/utils/helper.ts'
 import { usePerms } from '@/composables/usePerms.ts'
-import { useAccount } from '@/store/pinia/account.ts'
 import { useCompany } from '@/store/pinia/company.ts'
-import {
-  type StaffEvaluation,
-  type EvaluationGrade,
-  type EvaluationPeriod,
-} from '@/store/types/company.ts'
+import { type StaffEvaluation } from '@/store/types/company.ts'
 import Multiselect from '@vueform/multiselect'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({
-  company: { type: String, default: null },
-  evaluation: { type: Object as PropType<StaffEvaluation>, default: null },
-})
+const props = defineProps<{
+  company?: string | null
+  evaluation?: StaffEvaluation | null
+}>()
 
-const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
+const emit = defineEmits<{
+  (e: 'multi-submit', payload: StaffEvaluation): void
+  (e: 'on-delete', pk: number): void
+  (e: 'close'): void
+}>()
 
-const { can, PERM } = usePerms()
-const accStore = useAccount()
-const canHrWorkCreate = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_CREATE))
-const canHrWorkUpdate = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_UPDATE))
-const canHrWorkDelete = computed(() => accStore.isStaff && can(PERM.HQ_HR_WORK_DELETE))
+const { canGlobal, PERM } = usePerms()
+const canHrWorkCreate = computed(() => canGlobal(PERM.HQ_HR_WORK_CREATE))
+const canHrWorkUpdate = computed(() => canGlobal(PERM.HQ_HR_WORK_UPDATE))
+const canHrWorkDelete = computed(() => canGlobal(PERM.HQ_HR_WORK_DELETE))
 
 const comStore = useCompany()
 const allStaffList = computed(() => comStore.allStaffList)
@@ -132,7 +130,7 @@ const formDataSetup = () => {
     form.value.evaluator = props.evaluation.evaluator || null
     form.value.reviewer = props.evaluation.reviewer || null
     form.value.notes = props.evaluation.notes || ''
-  } else form.value.company = props.company
+  } else form.value.company = props.company || undefined
 }
 
 onBeforeMount(() => formDataSetup())
@@ -292,15 +290,31 @@ watch(
         <v-btn
           type="submit"
           size="small"
+          variant="flat"
           :color="evaluation ? 'success' : 'primary'"
           :disabled="formsCheck"
         >
           저장
         </v-btn>
-        <v-btn v-if="evaluation" type="button" size="small" color="warning" @click="deleteConfirm">
+        <v-btn
+          v-if="evaluation"
+          type="button"
+          size="small"
+          variant="flat"
+          color="warning"
+          @click="deleteConfirm"
+        >
           삭제
         </v-btn>
-        <v-btn type="button" size="small" color="light" @click="$emit('close')" flat> 닫기</v-btn>
+        <v-btn
+          type="button"
+          size="small"
+          variant="flat"
+          color="light"
+          @click="$emit('close')"
+        >
+          닫기
+        </v-btn>
       </slot>
     </CModalFooter>
   </CForm>
@@ -311,7 +325,13 @@ watch(
       삭제한 데이터는 복구할 수 없습니다. 해당 인사 평가 기록을 삭제하시겠습니까?
     </template>
     <template #footer>
-      <v-btn color="warning" size="small" @click="deleteObject(evaluation.pk as number)">
+      <v-btn
+        color="warning"
+        size="small"
+        variant="flat"
+        :disabled="!evaluation?.pk"
+        @click="deleteObject(evaluation?.pk as number)"
+      >
         삭제
       </v-btn>
     </template>
