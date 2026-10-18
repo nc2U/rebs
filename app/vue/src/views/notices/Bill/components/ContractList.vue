@@ -1,17 +1,26 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
-import { TableSecondary } from '@/utils/cssMixins'
-import { useContract } from '@/store/pinia/contract'
+import { TableSecondary } from '@/utils/cssMixins.ts'
+import { useContract } from '@/store/pinia/contract.ts'
 import { usePerms } from '@/composables/usePerms.ts'
-import Contract from '@/views/notices/Bill/components/Contract.vue'
+import Contract from './Contract.vue'
 import Pagination from '@/components/Pagination'
 
-defineProps({
-  nowOrder: { type: Number, default: null },
-  limit: { type: Number, default: 10 },
+interface Props {
+  nowOrder?: number | null
+  limit?: number
+}
+
+withDefaults(defineProps<Props>(), {
+  nowOrder: null,
+  limit: 10,
 })
 
-const emit = defineEmits(['page-select', 'on-cont-chk', 'all-un-checked'])
+const emit = defineEmits<{
+  (e: 'page-select', page: number): void
+  (e: 'on-cont-chk', payload: { chk: boolean; pk: number }): void
+  (e: 'all-un-checked'): void
+}>()
 
 const { can, PERM } = usePerms()
 const canNoticeRead = computed(() => can(PERM.NOTICE_READ))
@@ -23,13 +32,13 @@ const contractStore = useContract()
 const contractList = computed(() => contractStore.contractList)
 const contractPages = computed(() => contractStore.contractPages)
 
-const pageSelect = (page: number) => {
+const pageSelect = (p: number) => {
+  page.value = p
   allChecked.value = false
-  emit('page-select', page)
+  emit('page-select', p)
 }
 
-const allUnChecked = () => {
-  allChecked.value = !allChecked.value
+const onAllCheckChange = () => {
   if (!allChecked.value) emit('all-un-checked')
 }
 
@@ -52,8 +61,8 @@ const onContChk = (payload: { chk: boolean; pk: number }) => emit('on-cont-chk',
 
     <CTableHead :color="TableSecondary">
       <CTableRow class="text-center">
-        <CTableHeaderCell v-if="canNoticeRead" scope="col" class="pl-3">
-          <CFormCheck id="checkAll" v-model="allChecked" label="전체" @change="allUnChecked" />
+        <CTableHeaderCell v-if="canNoticeRead" scope="col" class="ps-3">
+          <CFormCheck id="checkAll" v-model="allChecked" label="전체" @change="onAllCheckChange" />
         </CTableHeaderCell>
         <CTableHeaderCell scope="col">차수</CTableHeaderCell>
         <CTableHeaderCell scope="col">타입</CTableHeaderCell>
@@ -80,11 +89,10 @@ const onContChk = (payload: { chk: boolean; pk: number }) => emit('on-cont-chk',
   </CTable>
 
   <Pagination
-    :active-page="1"
+    :active-page="page"
     :limit="8"
     :pages="contractPages(limit)"
     class="mt-3"
-    @on-ctor-pk="onContChk"
     @active-page-change="pageSelect"
   />
 </template>

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, onMounted, onUpdated, type PropType } from 'vue'
-import { usePayment } from '@/store/pinia/payment'
-import { type SalesBillIssue } from '@/store/types/notice'
-import { isValidate } from '@/utils/helper'
-import { getToday } from '@/utils/baseMixins'
+import { ref, reactive, computed, watch } from 'vue'
+import { usePayment } from '@/store/pinia/payment.ts'
+import type { SalesBillIssue } from '@/store/types/notice'
+import { isValidate } from '@/utils/helper.ts'
+import { getToday } from '@/utils/baseMixins.ts'
 import { usePerms } from '@/composables/usePerms.ts'
 import { type AddressData, callAddress } from '@/components/DaumPostcode/address'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
@@ -11,20 +11,29 @@ import DatePicker from '@/components/DatePicker/DatePicker.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({
-  project: { type: Number, default: null },
-  billIssue: { type: Object as PropType<SalesBillIssue>, default: null },
+interface Props {
+  project?: number | null
+  billIssue?: SalesBillIssue | null
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  project: null,
+  billIssue: null,
 })
 
-const emit = defineEmits(['on-submit', 'get-now-order', 'set-pub-date'])
+const emit = defineEmits<{
+  (e: 'on-submit', payload: SalesBillIssue & { now_due_date: string | null }): void
+  (e: 'get-now-order', orderPk: number | null): void
+  (e: 'set-pub-date', pubDate: string): void
+}>()
 
 const { can, PERM } = usePerms()
 const canNoticeManage = computed(() => can(PERM.NOTICE_CREATE) || can(PERM.PAYMENT_UPDATE))
 
 const address2 = ref()
-const postCode = ref()
-const refConfirmModal = ref()
-const refAlertModal = ref()
+const postCode = ref<InstanceType<typeof DaumPostcode> | null>(null)
+const refConfirmModal = ref<InstanceType<typeof ConfirmModal> | null>(null)
+const refAlertModal = ref<InstanceType<typeof AlertModal> | null>(null)
 
 const visible = ref(false)
 const validated = ref(false)
@@ -98,10 +107,10 @@ const onSubmit = (event: Event) => {
     if (isValidate(event)) {
       validated.value = true
     } else {
-      refConfirmModal.value.callModal()
+      refConfirmModal.value?.callModal()
     }
   } else {
-    refAlertModal.value.callModal()
+    refAlertModal.value?.callModal()
   }
 }
 
@@ -109,7 +118,7 @@ const modalAction = () => {
   emit('on-submit', { ...form })
 
   validated.value = false
-  refConfirmModal.value.close()
+  refConfirmModal.value?.close()
 }
 
 const addressCallback = (data: AddressData) => {
@@ -119,7 +128,7 @@ const addressCallback = (data: AddressData) => {
     form.address1 = address1
     form.address2 = ''
     form.address3 = address3
-    address2.value.$el.nextElementSibling.focus()
+    address2.value?.$el?.nextElementSibling?.focus()
   }
 }
 
@@ -171,8 +180,18 @@ const formDataSetup = () => {
   } else formDataReset()
 }
 
-onMounted(() => formDataSetup())
-onUpdated(() => formDataSetup())
+watch(
+  () => props.billIssue,
+  () => formDataSetup(),
+  { immediate: true },
+)
+
+watch(
+  () => props.project,
+  val => {
+    if (!props.billIssue) form.project = val
+  },
+)
 </script>
 
 <template>
@@ -340,7 +359,9 @@ onUpdated(() => formDataSetup())
 
         <CCol xs="12" sm="8" md="4" xl="2" class="mb-1">
           <CInputGroup>
-            <CInputGroupText @click="postCode.initiate()"> 우편번호</CInputGroupText>
+            <CInputGroupText style="cursor: pointer" @click="postCode?.initiate()">
+              우편번호
+            </CInputGroupText>
             <CFormInput
               v-model="form.zipcode"
               v-maska
@@ -349,7 +370,7 @@ onUpdated(() => formDataSetup())
               placeholder="우편번호"
               maxlength="5"
               required
-              @focus="postCode.initiate()"
+              @focus="postCode?.initiate()"
             />
             <!--            <CFormFeedback invalid>우편번호를 입력하세요.</CFormFeedback>-->
           </CInputGroup>
@@ -363,7 +384,7 @@ onUpdated(() => formDataSetup())
             placeholder="메인 주소"
             maxlength="35"
             required
-            @click="postCode.initiate()"
+            @click="postCode?.initiate()"
           />
         </CCol>
 
@@ -374,7 +395,7 @@ onUpdated(() => formDataSetup())
             ref="address2"
             v-model="form.address2"
             placeholder="상세 주소"
-            maxlngth="50"
+            maxlength="50"
             required
           />
         </CCol>
@@ -392,7 +413,7 @@ onUpdated(() => formDataSetup())
         </CCol>
 
         <CCol sm="8" md="10" lg="12" xl="11">
-          <CFormInput v-model="form.title" placeholder="고재서 제목" maxlength="80" required />
+          <CFormInput v-model="form.title" placeholder="고지서 제목" maxlength="80" required />
         </CCol>
         <CCol class="d-none d-md-block d-lg-none" md="6" />
       </CRow>
@@ -407,8 +428,8 @@ onUpdated(() => formDataSetup())
         <CCol class="d-none d-md-block d-lg-none" md="6" />
       </CRow>
 
-      <CAlert v-if="canNoticeManage" color="secondary" class="text-right">
-        <v-btn type="submit" :color="btnClass" :disabled="!project || formsCheck">
+      <CAlert v-if="canNoticeManage" color="secondary" class="text-end">
+        <v-btn type="submit" :color="btnClass" variant="flat" :disabled="!project || formsCheck">
           {{ confirmText }}
         </v-btn>
       </CAlert>
@@ -421,7 +442,7 @@ onUpdated(() => formDataSetup())
     <template #header> 수납 고지서 발행 정보</template>
     <template #default> 수납 고지서 발행 정보 {{ confirmText }}을(를) 진행하시겠습니까?</template>
     <template #footer>
-      <v-btn :color="btnClass" size="small" @click="modalAction">저장</v-btn>
+      <v-btn :color="btnClass" variant="flat" size="small" @click="modalAction">저장</v-btn>
     </template>
   </ConfirmModal>
 

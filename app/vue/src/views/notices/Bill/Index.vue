@@ -1,24 +1,24 @@
 <script lang="ts" setup>
 import { computed, onBeforeMount, reactive, ref, watch } from 'vue'
-import { navMenu, pageTitle } from '@/views/notices/_menu/headermixin'
-import { useNotice } from '@/store/pinia/notice'
-import { useProject } from '@/store/pinia/project'
-import { usePayment } from '@/store/pinia/payment'
-import { useProjectData } from '@/store/pinia/project_data'
-import { useContract } from '@/store/pinia/contract'
-import { getToday } from '@/utils/baseMixins'
+import { navMenu, pageTitle } from '@/views/notices/_menu/headermixin.ts'
+import { useNotice } from '@/store/pinia/notice.ts'
+import { useProject } from '@/store/pinia/project.ts'
+import { usePayment } from '@/store/pinia/payment.ts'
+import { useProjectData } from '@/store/pinia/project_data.ts'
+import { useContract } from '@/store/pinia/contract.ts'
+import { getToday } from '@/utils/baseMixins.ts'
 import { usePerms } from '@/composables/usePerms.ts'
-import { type PayOrder } from '@/store/types/payment'
-import { type SalesBillIssue } from '@/store/types/notice'
+import type { PayOrder } from '@/store/types/payment'
+import type { SalesBillIssue } from '@/store/types/notice'
 import type { ContFilter } from '@/store/types/contract'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import Loading from '@/components/Loading/Index.vue'
 import NoticeAuthGuard from '@/components/AuthGuard/NoticeAuthGuard.vue'
-import SalesBillIssueForm from '@/views/notices/Bill/components/SalesBillIssueForm.vue'
-import ListController from '@/views/notices/Bill/components/ListController.vue'
-import DownloadButton from '@/views/notices/Bill/components/DownloadButton.vue'
-import ContractList from '@/views/notices/Bill/components/ContractList.vue'
+import SalesBillIssueForm from './components/SalesBillIssueForm.vue'
+import ListController from './components/ListController.vue'
+import DownloadButton from './components/DownloadButton.vue'
+import ContractList from './components/ContractList.vue'
 
 const { can, PERM } = usePerms()
 const canNoticeRead = computed(() => can(PERM.NOTICE_READ))
@@ -26,7 +26,7 @@ const canNoticeRead = computed(() => can(PERM.NOTICE_READ))
 const listControl = ref()
 const limit = ref(10)
 
-const cont_ids = ref([])
+const cont_ids = ref<number[]>([])
 const printData = reactive({
   is_bill_issue: false,
   project: null as null | number,
@@ -34,7 +34,7 @@ const printData = reactive({
 })
 
 const projStore = useProject()
-const project = computed(() => (projStore.project as any)?.pk)
+const project = computed(() => projStore.project?.pk)
 
 const noticeStore = useNotice()
 const billIssue = computed(() => noticeStore.billIssue)
@@ -92,24 +92,26 @@ const onContChk = (payload: { chk: boolean; pk: number }) => {
     if (!contractors.includes(payload.pk)) contractors.push(payload.pk)
   } else {
     const i = contractors.indexOf(payload.pk)
-    contractors.splice(i, 1)
+    if (i > -1) contractors.splice(i, 1)
   }
 }
 
 const allUnChecked = () => (cont_ids.value = [])
 
-const getNowOrder = (orderPk: number) => fetchPayOrder(orderPk)
+const getNowOrder = (orderPk: number | null) => {
+  if (orderPk) fetchPayOrder(orderPk)
+}
 
 const setPubDate = (payload: string) => (printData.pub_date = payload)
 
-const onSubmit = (payload: SalesBillIssue & { now_due_date: string }) => {
+const onSubmit = (payload: SalesBillIssue & { now_due_date: string | null }) => {
   const { pk, now_payment_order } = payload
   const { now_due_date, ...bill_data } = payload
 
-  if (payOrder.value?.pay_due_date !== now_due_date) {
+  if (now_payment_order && payOrder.value?.pay_due_date !== now_due_date) {
     patchPayOrder({
       pk: now_payment_order,
-      pay_due_date: now_due_date,
+      pay_due_date: now_due_date || undefined,
     })
   }
 
@@ -170,7 +172,7 @@ onBeforeMount(() => {
       <CCardBody class="pb-5">
         <SalesBillIssueForm
           :project="project || undefined"
-          :bill-issue="billIssue as SalesBillIssue"
+          :bill-issue="billIssue"
           @get-now-order="getNowOrder"
           @set-pub-date="setPubDate"
           @on-submit="onSubmit"

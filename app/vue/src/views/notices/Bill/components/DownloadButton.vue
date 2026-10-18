@@ -1,15 +1,26 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue'
 import { downloadFile } from '@/utils/helper.ts'
-import { AlertSecondary } from '@/utils/cssMixins'
+import { AlertSecondary } from '@/utils/cssMixins.ts'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({
-  printData: { type: Object, default: null },
-  contracts: { type: Array, default: () => [] },
+interface PrintData {
+  is_bill_issue: boolean
+  project: number | null
+  pub_date: string
+}
+
+interface Props {
+  printData?: PrintData | null
+  contracts?: number[]
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  printData: null,
+  contracts: () => [],
 })
 
-const refAlertModal = ref()
+const refAlertModal = ref<InstanceType<typeof AlertModal> | null>(null)
 
 const noPrice = ref(localStorage.getItem('noPrice') === 'true')
 
@@ -24,12 +35,11 @@ watch(noLate, newVal => {
 })
 
 const printBill = () => {
-  const { is_bill_issue } = props.printData
-  if (!is_bill_issue) {
-    refAlertModal.value.callModal('', '고지서 관련 기본 설정 데이터를 입력하여 주십시요.')
+  if (!props.printData?.is_bill_issue) {
+    refAlertModal.value?.callModal('', '고지서 관련 기본 설정 데이터를 입력하여 주십시요.')
   } else {
     if (props.contracts?.length === 0) {
-      refAlertModal.value.callModal('', '다운로드(출력)할 계약 건을 선택하여 주십시요.')
+      refAlertModal.value?.callModal('', '다운로드(출력)할 계약 건을 선택하여 주십시요.')
     } else {
       const { project, pub_date } = props.printData
       const seq = props.contracts?.join('-')
@@ -47,7 +57,7 @@ const printBill = () => {
   <CAlert :color="AlertSecondary" class="pb-2">
     <CRow class="p-0 m-0">
       <CCol sm="6">
-        <v-btn color="primary" :disabled="!contracts.length" @click="printBill">
+        <v-btn color="primary" variant="flat" :disabled="!contracts.length" @click="printBill">
           선택 건별 고지서 내려받기
         </v-btn>
       </CCol>

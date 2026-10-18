@@ -1,12 +1,32 @@
 <script lang="ts" setup>
 import { computed, reactive, nextTick } from 'vue'
-import { bgLight } from '@/utils/cssMixins'
+import { bgLight } from '@/utils/cssMixins.ts'
 import { numFormat } from '@/utils/baseMixins.ts'
-import { useContract } from '@/store/pinia/contract'
-import { useProjectData } from '@/store/pinia/project_data'
+import { useContract } from '@/store/pinia/contract.ts'
+import { useProjectData } from '@/store/pinia/project_data.ts'
 
-defineProps({ nowOrderName: { type: String, default: '' } })
-const emit = defineEmits(['list-filtering'])
+export interface BillListFilter {
+  page?: number
+  limit?: '' | number
+  order_group?: string
+  unit_type?: string
+  building?: string
+  ordering?: string
+  search?: string
+  project?: number | null
+}
+
+interface Props {
+  nowOrderName?: string
+}
+
+withDefaults(defineProps<Props>(), {
+  nowOrderName: '',
+})
+
+const emit = defineEmits<{
+  (e: 'list-filtering', payload: BillListFilter): void
+}>()
 
 const contractStore = useContract()
 const orderGroupList = computed(() => contractStore.orderGroupList)
@@ -129,19 +149,24 @@ defineExpose({ listFiltering })
                 aria-label="Username"
                 aria-describedby="addon-wrapping"
                 @change="listFiltering(1)"
+                @keyup.enter="listFiltering(1)"
               />
-              <CInputGroupText @click="listFiltering(1)">검색</CInputGroupText>
+              <CInputGroupText style="cursor: pointer" @click="listFiltering(1)">
+                검색
+              </CInputGroupText>
             </CInputGroup>
           </CCol>
         </CRow>
       </CCol>
     </CRow>
     <CRow>
-      <CCol color="warning" class="p-2 pl-3">
+      <CCol color="warning" class="p-2 ps-3">
         <strong>계약 건수 조회 결과 : {{ numFormat(contractsCount, 0, 0) }} 건</strong>
       </CCol>
-      <CCol v-if="!formsCheck" class="text-right mb-0">
-        <v-btn color="info" size="small" @click="resetForm"> 검색조건 초기화</v-btn>
+      <CCol v-if="!formsCheck" class="text-end mb-0">
+        <v-btn color="info" variant="flat" size="small" @click="resetForm">
+          검색조건 초기화
+        </v-btn>
       </CCol>
     </CRow>
   </CCallout>
