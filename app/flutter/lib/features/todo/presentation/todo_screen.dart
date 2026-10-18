@@ -56,9 +56,14 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
           content: Text('[#${result.issue.pk}] 업무로 전환되었습니다.'),
           behavior: SnackBarBehavior.floating,
           duration: const Duration(seconds: 5),
+          // action이 있으면 기본값이 persist=true(자동으로 닫히지 않음)이므로 명시적으로 해제
+          persist: false,
           action: SnackBarAction(
             label: '업무 보기',
-            onPressed: () => _openIssue(result.issue.pk),
+            onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              _openIssue(result.issue.pk);
+            },
           ),
         ),
       );
