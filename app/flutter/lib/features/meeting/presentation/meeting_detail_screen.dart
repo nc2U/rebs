@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../core/constants/permissions.dart';
+import '../../../../core/providers/auth_provider.dart';
 import '../../../../core/providers/permission_provider.dart';
 import '../../../../core/providers/notification_provider.dart';
 import '../../../../core/theme/app_colors_extension.dart';
@@ -13,23 +15,32 @@ import '../../project/providers/project_provider.dart';
 import '../data/models/meeting_model.dart';
 import '../data/meeting_repository.dart';
 import '../providers/meeting_provider.dart';
-import 'meeting_form_screen.dart';
 import 'widgets/meeting_pdf_helper.dart';
 
 /// 회의 상세 화면
-class MeetingDetailScreen extends ConsumerWidget {
+class MeetingDetailScreen extends ConsumerStatefulWidget {
   final int meetingId;
   const MeetingDetailScreen({super.key, required this.meetingId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MeetingDetailScreen> createState() =>
+      _MeetingDetailScreenState();
+}
+
+class _MeetingDetailScreenState extends ConsumerState<MeetingDetailScreen> {
+  @override
+  void initState() {
+    super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
           .read(notificationListProvider.notifier)
-          .markReadByTarget('meeting', meetingId.toString());
+          .markReadByTarget('meeting', widget.meetingId.toString());
     });
+  }
 
-    final detailState = ref.watch(meetingDetailProvider(meetingId));
+  @override
+  Widget build(BuildContext context) {
+    final detailState = ref.watch(meetingDetailProvider(widget.meetingId));
 
     return Scaffold(
       backgroundColor: context.colors.bgPrimary,
@@ -49,10 +60,31 @@ class MeetingDetailScreen extends ConsumerWidget {
           detailState.maybeWhen(
             data: (meeting) {
               final projectSlug = meeting.projectDesc.slug;
-              final canConfirm = ref.can(Perm.meetingConfirm, projectSlug: projectSlug);
-              final canUpdate = ref.can(Perm.meetingUpdate, projectSlug: projectSlug) ||
-                  ref.can(Perm.meetingOwnUpdate, projectSlug: projectSlug);
-              final canDelete = ref.can(Perm.meetingDelete, projectSlug: projectSlug);
+              final myProjects = ref.watch(myProjectsProvider).valueOrNull ?? [];
+              final project = myProjects
+                  .where((p) => p.slug == projectSlug)
+                  .firstOrNull;
+              final isClosed = project?.status == '2';
+
+              final currentUser = ref.watch(currentUserProvider).valueOrNull;
+              final isCreator = currentUser != null &&
+                  currentUser.pk == meeting.creator?.pk;
+
+              final canConfirm = !isClosed &&
+                  ref.can(Perm.meetingConfirm, projectSlug: projectSlug);
+              final hasUpdatePerm =
+                  ref.can(Perm.meetingUpdate, projectSlug: projectSlug) ||
+                      (ref.can(Perm.meetingOwnUpdate,
+                              projectSlug: projectSlug) &&
+                          isCreator);
+              final canEditConfirmed =
+                  ref.can(Perm.meetingEditConfirmed, projectSlug: projectSlug);
+              final canUpdate = !isClosed &&
+                  hasUpdatePerm &&
+                  (!meeting.isConfirmed || canEditConfirmed);
+              final canDelete = !isClosed &&
+                  ref.can(Perm.meetingDelete, projectSlug: projectSlug) &&
+                  !meeting.isConfirmed;
 
               return Row(
                 mainAxisSize: MainAxisSize.min,
@@ -74,20 +106,18 @@ class MeetingDetailScreen extends ConsumerWidget {
                       tooltip: meeting.isConfirmed ? '확정 취소' : '회의 확정',
                       onPressed: () => _handleConfirmToggle(context, ref, meeting),
                     ),
-                  // ── 회의 수정 버튼 (meeting.update 권한 및 미확정 상태일 때만 노출) ──
-                  if (canUpdate && !meeting.isConfirmed)
+                  // ── 회의 수정 버튼 (권한 및 확정/확정수정권한 조건 만족 시 노출) ──
+                  if (canUpdate)
                     IconButton(
                       icon: const Icon(Icons.edit_outlined, size: 22),
                       tooltip: '수정',
-                      onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => MeetingFormScreen(initialMeeting: meeting),
-                        ),
+                      onPressed: () => context.push(
+                        '/work/meetings/${meeting.pk}/edit',
+                        extra: meeting,
                       ),
                     ),
                   // ── 회의 삭제 버튼 (meeting.delete 권한 및 미확정 상태일 때만 노출) ──
-                  if (canDelete && !meeting.isConfirmed)
+                  if (canDelete)
                     IconButton(
                       icon: const Icon(Icons.delete_outline_rounded, size: 22),
                       tooltip: '삭제',
@@ -107,15 +137,16 @@ class MeetingDetailScreen extends ConsumerWidget {
           IconButton(
             icon: const Icon(Icons.refresh_rounded, size: 22),
             tooltip: '새로고침',
-            onPressed: () =>
-                ref.read(meetingDetailProvider(meetingId).notifier).refresh(),
+            onPressed: () => ref
+                .read(meetingDetailProvider(widget.meetingId).notifier)
+                .refresh(),
           ),
         ],
       ),
       body: detailState.when(
         loading: () => const LoadingShimmer(itemCount: 4, itemHeight: 120),
         error: (e, _) => ErrorView.network(
-          onRetry: () => ref.invalidate(meetingDetailProvider(meetingId)),
+          onRetry: () => ref.invalidate(meetingDetailProvider(widget.meetingId)),
         ),
         data: (meeting) {
           final canRead = ref.can(Perm.meetingRead, projectSlug: meeting.projectDesc.slug);
@@ -351,8 +382,10 @@ class MeetingDetailScreen extends ConsumerWidget {
                       onTap: () async {
                         final subject =
                             Uri.encodeComponent('[후속조치] ${meeting.title}');
+                        final description =
+                            Uri.encodeComponent(meeting.actionItems);
                         await context.push(
-                          '/work/issues/new?meeting_id=${meeting.pk}&project_slug=${meeting.projectDesc.slug}&subject=$subject',
+                          '/work/issues/new?meeting_id=${meeting.pk}&project_slug=${meeting.projectDesc.slug}&subject=$subject&description=$description',
                         );
                         if (context.mounted) {
                           ref.invalidate(meetingDetailProvider(meeting.pk));
@@ -607,7 +640,7 @@ class _Row extends StatelessWidget {
   }
 }
 
-// ── 텍스트 카드 (의제, 내용, 결정사항 등) ──────────────────────────────────────────
+// ── 텍스트 카드 (의제, 내용, 결정사항 등 - 마크다운 렌더링 지원) ──────────────────────
 class _TextCard extends StatelessWidget {
   final String content;
   final Color? borderColor;
@@ -625,7 +658,41 @@ class _TextCard extends StatelessWidget {
           width: borderColor != null ? 1.2 : 0.8,
         ),
       ),
-      child: Text(content, style: AppTextStyles.bodyMd.copyWith(color: context.colors.textPrimary)),
+      child: MarkdownBody(
+        data: content,
+        selectable: true,
+        styleSheet: MarkdownStyleSheet(
+          p: AppTextStyles.bodyMd.copyWith(color: context.colors.textPrimary),
+          strong: AppTextStyles.bodyMd.copyWith(
+            fontWeight: FontWeight.bold,
+            color: context.colors.textPrimary,
+          ),
+          em: AppTextStyles.bodyMd.copyWith(
+            fontStyle: FontStyle.italic,
+            color: context.colors.textSecond,
+          ),
+          blockquote: AppTextStyles.bodyMd.copyWith(
+            color: context.colors.textMuted,
+          ),
+          blockquoteDecoration: BoxDecoration(
+            color: context.colors.bgSurface,
+            border: Border(
+              left: BorderSide(
+                color: borderColor ?? context.colors.accentWork,
+                width: 3,
+              ),
+            ),
+          ),
+          code: TextStyle(
+            backgroundColor: context.colors.bgSurface,
+            color: context.colors.accentWork,
+            fontFamily: 'monospace',
+          ),
+          listBullet: AppTextStyles.bodyMd.copyWith(
+            color: context.colors.textSecond,
+          ),
+        ),
+      ),
     );
   }
 }

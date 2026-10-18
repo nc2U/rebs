@@ -9,6 +9,7 @@ import '../../features/dashboard/views/home_tab.dart';
 import '../../features/issue/data/models/issue_model.dart';
 import '../../features/issue/presentation/issue_detail_screen.dart';
 
+import '../../features/meeting/data/models/meeting_model.dart';
 import '../../features/meeting/presentation/meeting_detail_screen.dart';
 import '../../features/meeting/presentation/meeting_form_screen.dart';
 
@@ -135,10 +136,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                       final meetingIdStr = state.uri.queryParameters['meeting_id'];
                       final meetingId = meetingIdStr != null ? int.tryParse(meetingIdStr) : null;
                       final projectSlug = state.uri.queryParameters['project_slug'];
+                      final subject = state.uri.queryParameters['subject'];
+                      final description = state.uri.queryParameters['description'];
 
                       return IssueFormScreen(
                         initialMeetingId: meetingId,
                         initialProjectSlug: projectSlug,
+                        initialSubject: subject,
+                        initialDescription: description,
                       );
                     },
                   ),
@@ -178,6 +183,17 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                           0;
                       return MeetingDetailScreen(meetingId: id);
                     },
+                    routes: [
+                      GoRoute(
+                        path: 'edit',
+                        builder: (ctx, state) {
+                          final initialMeeting = state.extra as MeetingModel?;
+                          return MeetingFormScreen(
+                            initialMeeting: initialMeeting,
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),

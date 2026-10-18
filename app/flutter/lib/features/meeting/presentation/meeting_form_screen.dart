@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:file_picker/file_picker.dart';
@@ -120,6 +120,17 @@ class _MeetingFormScreenState extends ConsumerState<MeetingFormScreen> {
   }
 
   Future<void> _startRecording() async {
+    if (kIsWeb) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('웹 브라우저 환경에서는 [음성 파일 선택]을 이용해 주세요.'),
+            backgroundColor: context.colors.error,
+          ),
+        );
+      }
+      return;
+    }
     try {
       if (await _audioRecorder.hasPermission()) {
         final tempDir = await getTemporaryDirectory();
@@ -154,6 +165,14 @@ class _MeetingFormScreenState extends ConsumerState<MeetingFormScreen> {
       }
     } catch (e) {
       debugPrint('Error starting audio recording: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('녹음을 시작할 수 없습니다: $e'),
+            backgroundColor: context.colors.error,
+          ),
+        );
+      }
     }
   }
 
@@ -166,11 +185,19 @@ class _MeetingFormScreenState extends ConsumerState<MeetingFormScreen> {
       });
 
       final finalPath = path ?? _currentRecordingPath;
-      if (finalPath != null && File(finalPath).existsSync()) {
+      if (!kIsWeb && finalPath != null && File(finalPath).existsSync()) {
         await _processAudioFileWithAi(File(finalPath));
       }
     } catch (e) {
       debugPrint('Error stopping audio recording: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('녹음 중지 중 오류가 발생했습니다: $e'),
+            backgroundColor: context.colors.error,
+          ),
+        );
+      }
     }
   }
 
@@ -178,7 +205,7 @@ class _MeetingFormScreenState extends ConsumerState<MeetingFormScreen> {
     try {
       await _audioRecorder.stop();
       _recordingTimer?.cancel();
-      if (_currentRecordingPath != null) {
+      if (!kIsWeb && _currentRecordingPath != null) {
         final f = File(_currentRecordingPath!);
         if (f.existsSync()) await f.delete();
       }
@@ -206,7 +233,7 @@ class _MeetingFormScreenState extends ConsumerState<MeetingFormScreen> {
         Uint8List? bytes = pickedFile.bytes;
         File? localFile;
 
-        if (bytes == null && pickedFile.path != null) {
+        if (!kIsWeb && bytes == null && pickedFile.path != null) {
           final f = File(pickedFile.path!);
           if (f.existsSync()) {
             bytes = await f.readAsBytes();
@@ -220,16 +247,32 @@ class _MeetingFormScreenState extends ConsumerState<MeetingFormScreen> {
       }
     } catch (e) {
       debugPrint('Error picking audio file: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('음성 파일을 불러오는 중 오류가 발생했습니다: $e'),
+            backgroundColor: context.colors.error,
+          ),
+        );
+      }
     }
   }
 
   Future<void> _processAudioFileWithAi(File audioFile) async {
     try {
       final bytes = await audioFile.readAsBytes();
-      final fileName = audioFile.path.split(Platform.pathSeparator).last;
+      final fileName = audioFile.path.split(RegExp(r'[/\\]')).last;
       await _processAudioBytesWithAi(bytes, fileName, tempFileToDelete: audioFile);
     } catch (e) {
       debugPrint('Error reading audio file: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('녹음 파일을 읽는 중 오류가 발생했습니다: $e'),
+            backgroundColor: context.colors.error,
+          ),
+        );
+      }
     }
   }
 
@@ -703,6 +746,7 @@ class _MeetingFormScreenState extends ConsumerState<MeetingFormScreen> {
                     }
 
                     return DropdownButtonFormField<int>(
+                      key: ValueKey('meeting_project_$validProjectPk'),
                       initialValue: validProjectPk,
                       isExpanded: true,
                       style: AppTextStyles.bodyMd.copyWith(color: context.colors.textPrimary),
@@ -774,6 +818,7 @@ class _MeetingFormScreenState extends ConsumerState<MeetingFormScreen> {
                         Text('진행 상태', style: AppTextStyles.titleSm.copyWith(color: context.colors.textPrimary)),
                         const SizedBox(height: 6),
                         DropdownButtonFormField<String>(
+                          key: ValueKey('meeting_status_$_status'),
                           initialValue: _status,
                           isExpanded: true,
                           style: AppTextStyles.bodyMd.copyWith(color: context.colors.textPrimary),
@@ -849,6 +894,7 @@ class _MeetingFormScreenState extends ConsumerState<MeetingFormScreen> {
                       }
 
                       return DropdownButtonFormField<int?>(
+                        key: ValueKey('meeting_category_${_selectedProjectPk}_$validCategoryPk'),
                         initialValue: validCategoryPk,
                         isExpanded: true,
                         style: AppTextStyles.bodyMd.copyWith(color: context.colors.textPrimary),

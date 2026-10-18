@@ -82,6 +82,7 @@ class _MeetingListScreenState extends ConsumerState<MeetingListScreen> {
   }
 
   void _onSearchChanged(String val) {
+    setState(() {});
     _debounceTimer?.cancel();
     _debounceTimer = Timer(const Duration(milliseconds: 300), () {
       _applyFilter();
@@ -89,7 +90,9 @@ class _MeetingListScreenState extends ConsumerState<MeetingListScreen> {
   }
 
   void _clearSearch() {
-    _searchController.clear();
+    setState(() {
+      _searchController.clear();
+    });
     _debounceTimer?.cancel();
     _applyFilter();
   }

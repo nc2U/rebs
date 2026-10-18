@@ -31,12 +31,16 @@ class IssueFormScreen extends ConsumerStatefulWidget {
   final IssueModel? initialIssue;
   final int? initialMeetingId;
   final String? initialProjectSlug;
+  final String? initialSubject;
+  final String? initialDescription;
 
   const IssueFormScreen({
     super.key,
     this.initialIssue,
     this.initialMeetingId,
     this.initialProjectSlug,
+    this.initialSubject,
+    this.initialDescription,
   });
 
   @override
@@ -71,9 +75,12 @@ class _IssueFormScreenState extends ConsumerState<IssueFormScreen> {
     super.initState();
     final issue = widget.initialIssue;
 
-    _subjectController = TextEditingController(text: issue?.subject ?? '');
-    _descriptionController =
-        TextEditingController(text: issue?.description ?? '');
+    _subjectController = TextEditingController(
+      text: issue?.subject ?? widget.initialSubject ?? '',
+    );
+    _descriptionController = TextEditingController(
+      text: issue?.description ?? widget.initialDescription ?? '',
+    );
     _startDateController =
         TextEditingController(text: issue?.startDate ?? _todayStr());
     _dueDateController = TextEditingController(text: issue?.dueDate ?? '');

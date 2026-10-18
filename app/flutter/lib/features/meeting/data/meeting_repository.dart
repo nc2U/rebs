@@ -149,7 +149,7 @@ class MeetingRepository {
   /// AI 음성 회의록 생성 (File 기반)
   Future<Map<String, dynamic>> aiSummarizeAudio(File audioFile) async {
     final bytes = await audioFile.readAsBytes();
-    final fileName = audioFile.path.split(Platform.pathSeparator).last;
+    final fileName = audioFile.path.split(RegExp(r'[/\\]')).last;
     return aiSummarizeAudioBytes(bytes, fileName);
   }
 }
