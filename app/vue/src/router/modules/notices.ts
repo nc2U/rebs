@@ -50,16 +50,6 @@ const notices = {
         requiresNoticeAuth: true,
       },
     },
-    {
-      path: 'log',
-      name: '발송 기록 관리',
-      component: () => import('@/views/notices/Log/Index.vue'),
-      meta: {
-        title: '발송 기록 관리',
-        auth: true,
-        requiresNoticeAuth: true,
-      },
-    },
   ],
 }
 
