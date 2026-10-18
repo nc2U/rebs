@@ -112,8 +112,8 @@ const handleConvert = async () => {
       </CModalTitle>
     </CModalHeader>
 
-    <CModalBody class="py-3">
-      <p class="text-medium-emphasis mb-3 small">
+    <CModalBody class="py-3 text-body">
+      <p class="text-muted mb-3 small">
         개인 할 일을 워크스페이스 공식 업무로 등록합니다. 전환 완료 시 본 할 일은 자동으로 완료 처리됩니다.
       </p>
 

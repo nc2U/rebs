@@ -8,7 +8,8 @@ import { useIssue } from '@/store/pinia/work_issue'
 import { useCompany } from '@/store/pinia/company'
 import { useProject } from '@/store/pinia/project'
 import type { Company } from '@/store/types/settings'
-import type { Todo as TodoType } from '@/store/types/accounts'
+import type { Todo as TodoType, TodoIssueInfo } from '@/store/types/accounts'
+import ConvertModal from '@/components/TodoListApp/ConvertModal.vue'
 
 const router = useRouter()
 const store = useStore()
@@ -34,6 +35,34 @@ const pendingApprovals = computed(() => approvalStore.pendingList)
 const myChargedIssues = computed(() => issueStore.issueNumByMember.open_charged || 0)
 const myTodos = computed(() => accountStore.myTodos)
 const newTodoTitle = ref('')
+
+const convertModalVisible = ref(false)
+const selectedTodoForConvert = ref<TodoType | null>(null)
+const successNotice = ref<{
+  visible: boolean
+  issue: TodoIssueInfo
+} | null>(null)
+
+const openConvertModal = (todo: TodoType) => {
+  selectedTodoForConvert.value = todo
+  convertModalVisible.value = true
+}
+
+const onConverted = (payload: { todo: TodoType; issue: TodoIssueInfo }) => {
+  successNotice.value = { visible: true, issue: payload.issue }
+  setTimeout(() => {
+    if (successNotice.value) successNotice.value.visible = false
+  }, 6000)
+}
+
+const navigateToIssue = (issueInfo: TodoIssueInfo) => {
+  const projId = issueInfo.project_slug || issueInfo.project_id
+  store.toggleAside()
+  router.push({
+    name: '(업무) - 보기',
+    params: { projId, issueId: issueInfo.pk },
+  })
+}
 
 const handleAddTodo = async () => {
   const title = newTodoTitle.value.trim()
@@ -220,6 +249,28 @@ const openExternal = (url: string) => {
             <v-btn size="small" color="primary" @click="handleAddTodo"> 추가 </v-btn>
           </div>
 
+          <!-- 전환 완료 알림 -->
+          <CAlert
+            v-if="successNotice && successNotice.visible"
+            color="success"
+            dismissible
+            class="py-2 px-2 mb-2 d-flex align-items-center justify-content-between small"
+            @close="successNotice.visible = false"
+          >
+            <div class="text-truncate me-1">
+              <strong>[#{{ successNotice.issue.pk }}]</strong> 업무로 전환됨
+            </div>
+            <v-btn
+              variant="text"
+              size="x-small"
+              color="success"
+              class="fw-bold flex-shrink-0"
+              @click="navigateToIssue(successNotice.issue)"
+            >
+              보기 &gt;
+            </v-btn>
+          </CAlert>
+
           <!-- 할 일 목록 -->
           <div
             v-if="myTodos.length === 0"
@@ -239,14 +290,14 @@ const openExternal = (url: string) => {
               class="d-flex align-items-center justify-content-between p-2"
             >
               <div
-                class="d-flex align-items-center text-truncate cursor-pointer"
+                class="d-flex align-items-center text-truncate cursor-pointer flex-grow-1 me-2"
                 @click="toggleTodo(todo)"
               >
                 <v-icon
                   :icon="todo.completed ? 'mdi-checkbox-marked' : 'mdi-checkbox-blank-outline'"
                   size="small"
                   :color="todo.completed ? 'success' : 'grey'"
-                  class="me-2"
+                  class="me-2 flex-shrink-0"
                 />
                 <span
                   class="small text-truncate"
@@ -254,14 +305,36 @@ const openExternal = (url: string) => {
                 >
                   {{ todo.title }}
                 </span>
+                <span
+                  v-if="todo.issue_info"
+                  class="badge text-bg-primary ms-1 flex-shrink-0 cursor-pointer"
+                  style="font-size: 0.7rem"
+                  :title="`[${todo.issue_info.project_name}] ${todo.issue_info.subject}`"
+                  @click.stop="navigateToIssue(todo.issue_info)"
+                >
+                  #{{ todo.issue_info.pk }}
+                </span>
               </div>
-              <v-btn
-                icon="mdi-close"
-                size="x-small"
-                variant="text"
-                color="danger"
-                @click.stop="removeTodo(todo.pk)"
-              />
+              <div class="d-flex align-items-center flex-shrink-0">
+                <v-btn
+                  v-if="!todo.issue"
+                  icon="mdi-transfer-right"
+                  size="x-small"
+                  variant="text"
+                  color="primary"
+                  title="업무로 전환"
+                  class="me-1"
+                  @click.stop="openConvertModal(todo)"
+                />
+                <v-btn
+                  icon="mdi-close"
+                  size="x-small"
+                  variant="text"
+                  color="danger"
+                  title="삭제"
+                  @click.stop="removeTodo(todo.pk)"
+                />
+              </div>
             </CListGroupItem>
           </CListGroup>
         </div>
@@ -431,6 +504,12 @@ const openExternal = (url: string) => {
       </CTabPane>
     </CTabContent>
   </CSidebar>
+
+  <ConvertModal
+    v-model:visible="convertModalVisible"
+    :todo="selectedTodoForConvert"
+    @converted="onConverted"
+  />
 </template>
 
 <style lang="scss" scoped>
