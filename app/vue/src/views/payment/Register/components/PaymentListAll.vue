@@ -1,19 +1,29 @@
 <script lang="ts" setup>
-import { computed, type PropType } from 'vue'
-import { TableSecondary } from '@/utils/cssMixins'
-import { numFormat } from '@/utils/baseMixins'
+import { computed } from 'vue'
+import { TableSecondary } from '@/utils/cssMixins.ts'
+import { numFormat } from '@/utils/baseMixins.ts'
 import { usePerms } from '@/composables/usePerms.ts'
-import { type Contract } from '@/store/types/contract'
-import { type OriginPayment } from '@/store/types/payment'
+import type { Contract } from '@/store/types/contract.ts'
+import type { OriginPayment } from '@/store/types/payment.ts'
 import Payment from './Payment.vue'
 
-const props = defineProps({
-  contract: { type: Object as PropType<Contract>, default: null },
-  paymentList: { type: Array as PropType<OriginPayment[]>, default: () => [] },
-  paymentId: { type: String, default: '' },
-})
+const props = withDefaults(
+  defineProps<{
+    contract?: Contract | null
+    paymentList?: OriginPayment[]
+    paymentId?: string
+  }>(),
+  {
+    contract: null,
+    paymentList: () => [],
+    paymentId: '',
+  },
+)
 
-const emit = defineEmits(['on-update', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'on-update', bankTransactionId: number, payload: any): void
+  (e: 'on-delete', pk: number): void
+}>()
 
 const { can, PERM } = usePerms()
 const canPaymentManage = computed(
@@ -23,7 +33,7 @@ const canPaymentManage = computed(
 const paymentSum = computed(() => {
   return props.paymentList.length !== 0
     ? props.paymentList
-        .map((p: OriginPayment) => p.amount! as number)
+        .map((p: OriginPayment) => p.amount || 0)
         .reduce((x: number, y: number) => x + y, 0)
     : 0
 })
@@ -72,7 +82,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         <CTableHeaderCell :color="TableSecondary" class="text-center"> 합계</CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
         <CTableHeaderCell>
-          {{ numFormat(paymentSum as number) }}
+          {{ numFormat(paymentSum) }}
         </CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>
         <CTableHeaderCell></CTableHeaderCell>

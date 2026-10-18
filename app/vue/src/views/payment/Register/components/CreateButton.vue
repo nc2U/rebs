@@ -1,12 +1,15 @@
 <script lang="ts" setup>
 import { ref, computed } from 'vue'
-import { type ProjectCashBook } from '@/store/types/payment'
-import { AlertLight } from '@/utils/cssMixins'
+import type { Contract } from '@/store/types/contract.ts'
+import type { ContractPaymentPayload } from '@/store/types/payment.ts'
+import { AlertLight } from '@/utils/cssMixins.ts'
 import FormModal from '@/components/Modals/FormModal.vue'
 import PaymentForm from './PaymentForm.vue'
 
-const props = defineProps({ contract: { type: Object, default: null } })
-const emit = defineEmits(['on-create'])
+const props = withDefaults(defineProps<{ contract?: Contract | null }>(), { contract: null })
+const emit = defineEmits<{
+  (e: 'on-create', payload: ContractPaymentPayload): void
+}>()
 
 const createFormModal = ref()
 
@@ -14,7 +17,7 @@ const btnActive = computed(() => !props.contract)
 
 const showDetail = () => createFormModal.value.callModal()
 
-const createObject = (payload: ProjectCashBook) => {
+const createObject = (payload: ContractPaymentPayload) => {
   emit('on-create', payload)
   createFormModal.value.close()
 }
@@ -22,7 +25,13 @@ const createObject = (payload: ProjectCashBook) => {
 
 <template>
   <CAlert :color="AlertLight" variant="solid" class="text-right">
-    <v-btn type="button" color="primary" :disabled="btnActive" @click="showDetail">
+    <v-btn
+      type="button"
+      color="primary"
+      variant="flat"
+      :disabled="btnActive"
+      @click="showDetail"
+    >
       신규납부 등록
     </v-btn>
   </CAlert>

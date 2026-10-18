@@ -1,19 +1,30 @@
 <script lang="ts" setup>
-import { ref, onMounted, type PropType, computed } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { numFormat } from '@/utils/baseMixins'
+import { numFormat } from '@/utils/baseMixins.ts'
 import { usePerms } from '@/composables/usePerms.ts'
-import { TableSecondary } from '@/utils/cssMixins'
-import { type OriginPayment } from '@/store/types/payment'
+import { TableSecondary } from '@/utils/cssMixins.ts'
+import type { Contract } from '@/store/types/contract.ts'
+import type { OriginPayment } from '@/store/types/payment.ts'
 import FormModal from '@/components/Modals/FormModal.vue'
 import PaymentForm from './PaymentForm.vue'
 
-const props = defineProps({
-  payment: { type: Object as PropType<OriginPayment>, default: null },
-  paymentId: { type: String, default: '' },
-  contract: { type: Object, default: null },
-})
-const emit = defineEmits(['on-update', 'on-delete'])
+const props = withDefaults(
+  defineProps<{
+    payment?: OriginPayment | null
+    paymentId?: string
+    contract?: Contract | null
+  }>(),
+  {
+    payment: null,
+    paymentId: '',
+    contract: null,
+  },
+)
+const emit = defineEmits<{
+  (e: 'on-update', bankTransactionId: number, payload: any): void
+  (e: 'on-delete', bankTransactionId: number): void
+}>()
 
 const { can, PERM } = usePerms()
 const canPaymentUpdate = computed(() => can(PERM.PAYMENT_UPDATE))
@@ -46,7 +57,11 @@ const deleteObject = (bankTransactionId: number) => {
 </script>
 
 <template>
-  <CTableRow class="text-center" :color="payment.pk.toString() === paymentId ? TableSecondary : ''">
+  <CTableRow
+    v-if="payment"
+    class="text-center"
+    :color="payment.pk.toString() === paymentId ? TableSecondary : ''"
+  >
     <CTableDataCell>{{ payment.deal_date }}</CTableDataCell>
     <CTableDataCell>
       {{ payment.installment_order ? payment.installment_order.str_display : '-' }}
@@ -58,16 +73,18 @@ const deleteObject = (bankTransactionId: number) => {
         class="text-decoration-none"
         @click="showDetail"
       >
-        {{ numFormat(payment.amount! as number) }}
+        {{ numFormat(payment.amount || 0) }}
       </a>
       <span v-else>
-        {{ numFormat(payment.amount! as number) }}
+        {{ numFormat(payment.amount || 0) }}
       </span>
     </CTableDataCell>
     <CTableDataCell>{{ payment.bank_account.alias_name }}</CTableDataCell>
     <CTableDataCell>{{ payment.trader }}</CTableDataCell>
     <CTableDataCell v-if="canPaymentUpdate">
-      <v-btn type="button" color="info" size="x-small" @click="showDetail"> 보기</v-btn>
+      <v-btn type="button" color="info" variant="flat" size="x-small" @click="showDetail">
+        보기
+      </v-btn>
     </CTableDataCell>
   </CTableRow>
 

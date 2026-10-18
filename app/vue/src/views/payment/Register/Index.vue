@@ -1,19 +1,19 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, onMounted, onUpdated, ref, watch } from 'vue'
-import { navMenu, pageTitle } from '@/views/payment/_menu/headermixin'
+import { computed, onBeforeMount, onMounted, ref, watch } from 'vue'
+import { navMenu, pageTitle } from '@/views/payment/_menu/headermixin.ts'
 import { downloadFile } from '@/utils/helper.ts'
-import { useProject } from '@/store/pinia/project'
-import { useProjectData } from '@/store/pinia/project_data'
-import { usePayment } from '@/store/pinia/payment'
+import { useProject } from '@/store/pinia/project.ts'
+import { useProjectData } from '@/store/pinia/project_data.ts'
+import { usePayment } from '@/store/pinia/payment.ts'
 import { useProLedger } from '@/store/pinia/proLedger.ts'
-import { useContract } from '@/store/pinia/contract'
-import { dateFormat } from '@/utils/baseMixins'
+import { useContract } from '@/store/pinia/contract.ts'
+import { dateFormat } from '@/utils/baseMixins.ts'
 import { usePerms } from '@/composables/usePerms.ts'
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
 import type { Project } from '@/store/types/project.ts'
-import type { ContFilter, Contract } from '@/store/types/contract'
+import type { ContFilter, Contract } from '@/store/types/contract.ts'
 import type { ProAccountFilter } from '@/store/types/proLedger.ts'
-import type { ContPayFilter, DownPayFilter, PriceFilter } from '@/store/types/payment'
+import type { ContPayFilter, DownPayFilter, PriceFilter } from '@/store/types/payment.ts'
 import Loading from '@/components/Loading/Index.vue'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -55,7 +55,7 @@ const lateFeeUrl = computed(() => {
 })
 
 const projStore = useProject()
-const project = computed(() => (projStore.project as Project)?.pk)
+const project = computed(() => projStore.project?.pk)
 
 const projectDataStore = useProjectData()
 const fetchTypeList = (projId: number) => projectDataStore.fetchTypeList(projId)
@@ -75,7 +75,7 @@ const fetchProjectAccounts = (payload: ProAccountFilter) =>
   proLedgerStore.fetchProjectAccounts(payload)
 
 const contractStore = useContract()
-const contract = computed(() => contractStore.contract as Contract | null)
+const contract = computed(() => contractStore.contract)
 
 const fetchContractList = (payload: ContFilter) => contractStore.fetchContractList(payload)
 const fetchContract = (pk: number) => contractStore.fetchContract(pk)
@@ -173,7 +173,7 @@ const dataReset = () => {
 const projSelect = (target: number | null) => {
   router.replace({ name: '건별 수납 관리' })
   dataReset()
-  if (!!target) dataSetup(target)
+  if (target) dataSetup(target)
 }
 
 const loading = ref(true)
@@ -293,7 +293,6 @@ onBeforeRouteLeave(() => {
 
             <v-btn
               v-if="project === 1"
-              flat
               :disabled="!project || !contract"
               variant="tonal"
               size="small"
@@ -305,7 +304,6 @@ onBeforeRouteLeave(() => {
             </v-btn>
 
             <v-btn
-              flat
               :disabled="!project || !contract"
               variant="tonal"
               size="small"

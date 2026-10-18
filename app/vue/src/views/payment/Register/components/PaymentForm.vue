@@ -1,22 +1,33 @@
 <script lang="ts" setup>
 import { ref, reactive, computed, onBeforeMount, watch } from 'vue'
-import { useAccount } from '@/store/pinia/account'
-import { usePayment } from '@/store/pinia/payment'
+import { useAccount } from '@/store/pinia/account.ts'
+import { usePayment } from '@/store/pinia/payment.ts'
 import { useProLedger } from '@/store/pinia/proLedger.ts'
-import { getToday, diffDate } from '@/utils/baseMixins'
+import { getToday, diffDate } from '@/utils/baseMixins.ts'
 import { usePerms } from '@/composables/usePerms.ts'
-import { isValidate } from '@/utils/helper'
+import { isValidate } from '@/utils/helper.ts'
 import type { PaymentAccEntryInput, ContractPaymentPayload } from '@/store/types/payment.ts'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({
-  contract: { type: Object, default: null },
-  payment: { type: Object, default: null },
-})
+const props = withDefaults(
+  defineProps<{
+    contract?: any
+    payment?: any
+  }>(),
+  {
+    contract: null,
+    payment: null,
+  },
+)
 
-const emit = defineEmits(['on-submit', 'on-delete', 'close'])
+const emit = defineEmits<{
+  (e: 'on-submit', payload: ContractPaymentPayload): void
+  (e: 'on-submit', bankTransactionId: number, payload: ContractPaymentPayload): void
+  (e: 'on-delete', bankTransactionId: number): void
+  (e: 'close'): void
+}>()
 
 const { can, PERM } = usePerms()
 const canPaymentManage = computed(() =>
@@ -777,6 +788,7 @@ onBeforeMount(() => {
         <v-btn
           v-if="canPaymentManage"
           type="submit"
+          variant="flat"
           size="small"
           :color="payment ? 'success' : 'primary'"
           :disabled="isSaveDisabled"
@@ -786,13 +798,16 @@ onBeforeMount(() => {
         <v-btn
           v-if="payment && canPaymentDelete"
           type="button"
+          variant="flat"
           size="small"
           color="warning"
           @click="deleteConfirm"
         >
           삭제
         </v-btn>
-        <v-btn type="button" size="small" color="light" @click="$emit('close')" flat> 닫기</v-btn>
+        <v-btn type="button" size="small" variant="flat" color="light" @click="$emit('close')">
+          닫기
+        </v-btn>
       </slot>
     </CModalFooter>
   </CForm>
@@ -804,7 +819,7 @@ onBeforeMount(() => {
       해당 건별 수납 정보 계약 건 귀속 해제(변경)를 진행하시겠습니까?
     </template>
     <template #footer>
-      <v-btn color="success" size="small" @click="modalAction">변경</v-btn>
+      <v-btn color="success" variant="flat" size="small" @click="modalAction">변경</v-btn>
     </template>
   </ConfirmModal>
 
@@ -814,7 +829,7 @@ onBeforeMount(() => {
       삭제 후 복구할 수 없습니다. 해당 건별 수납 정보 삭제를 진행하시겠습니까?
     </template>
     <template #footer>
-      <v-btn color="warning" size="small" @click="onDelete">삭제</v-btn>
+      <v-btn color="warning" variant="flat" size="small" @click="onDelete">삭제</v-btn>
     </template>
   </ConfirmModal>
 

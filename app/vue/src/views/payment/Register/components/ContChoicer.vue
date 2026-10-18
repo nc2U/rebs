@@ -1,16 +1,26 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, nextTick, onMounted, type PropType } from 'vue'
-import { type Contract } from '@/store/types/contract'
-import { useContract } from '@/store/pinia/contract'
-import { usePayment } from '@/store/pinia/payment'
+import { ref, reactive, computed, nextTick, onMounted } from 'vue'
+import { type Contract } from '@/store/types/contract.ts'
+import { useContract } from '@/store/pinia/contract.ts'
+import { usePayment } from '@/store/pinia/payment.ts'
 
-defineProps({
-  project: { type: Number, default: null },
-  contract: { type: Object as PropType<Contract>, default: null },
-  paymentUrl: { type: String, default: '' },
-})
+withDefaults(
+  defineProps<{
+    project?: number | null
+    contract?: Contract | null
+    paymentUrl?: string
+  }>(),
+  {
+    project: null,
+    contract: null,
+    paymentUrl: '',
+  },
+)
 
-const emit = defineEmits(['list-filtering', 'get-contract'])
+const emit = defineEmits<{
+  (e: 'list-filtering', payload: any): void
+  (e: 'get-contract', cont: number): void
+}>()
 
 const form = reactive({ search: '' })
 const msg = ref('')
@@ -22,7 +32,7 @@ const contractList = computed(() => contractStore.contractList)
 const pageInit = () => {
   form.search = ''
   textClass.value = 'text-medium-emphasis'
-  msg.value = '계약자 관련정보 또는 계약 일련변호를 입력하세요.'
+  msg.value = '계약자 관련정보 또는 계약 일련번호를 입력하세요.'
   contractStore.contractList = []
 }
 

@@ -1,17 +1,23 @@
 <script lang="ts" setup>
-import { computed, ref, watch, type PropType } from 'vue'
-import { usePayment } from '@/store/pinia/payment'
-import { useContract } from '@/store/pinia/contract'
+import { computed, ref, watch } from 'vue'
+import { usePayment } from '@/store/pinia/payment.ts'
+import { useContract } from '@/store/pinia/contract.ts'
 import type { Contract, ContractPriceWithPaymentPlan } from '@/store/types/contract.ts'
-import { type OriginPayment, type PayOrder, type Price } from '@/store/types/payment'
-import { numFormat, getToday } from '@/utils/baseMixins'
-import { TableSecondary } from '@/utils/cssMixins'
+import type { OriginPayment, PayOrder, Price } from '@/store/types/payment.ts'
+import { numFormat, getToday } from '@/utils/baseMixins.ts'
+import { TableSecondary } from '@/utils/cssMixins.ts'
 import Order from './Order.vue'
 
-const props = defineProps({
-  contract: { type: Object as PropType<Contract>, default: null },
-  paymentList: { type: Array as PropType<OriginPayment[]>, default: () => [] },
-})
+const props = withDefaults(
+  defineProps<{
+    contract?: Contract | null
+    paymentList?: OriginPayment[]
+  }>(),
+  {
+    contract: null,
+    paymentList: () => [],
+  },
+)
 
 const paymentStore = usePayment()
 const contractStore = useContract()
@@ -20,9 +26,10 @@ const priceList = computed(() => paymentStore.priceList)
 
 // 계약의 차수(order_group)에 따라 제외된 회차를 필터링한 리스트
 const filteredPayOrderList = computed(() => {
-  if (!props.contract?.order_group) return payOrderList.value
+  const orderGroup = props.contract?.order_group
+  if (!orderGroup) return payOrderList.value
   return payOrderList.value.filter((po: PayOrder) => {
-    return !po.excluded_order_groups?.includes(props.contract?.order_group)
+    return !po.excluded_order_groups?.includes(orderGroup)
   })
 })
 

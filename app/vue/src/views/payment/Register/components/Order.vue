@@ -1,17 +1,27 @@
 <script lang="ts" setup>
-import { computed, type PropType } from 'vue'
+import { computed } from 'vue'
 import type { Contract } from '@/store/types/contract.ts'
-import { type OriginPayment, type PayOrder } from '@/store/types/payment'
-import { numFormat, getToday, addDaysToDate } from '@/utils/baseMixins'
+import type { OriginPayment, PayOrder } from '@/store/types/payment.ts'
+import { numFormat, getToday } from '@/utils/baseMixins.ts'
 
-const props = defineProps({
-  contract: { type: Object as PropType<Contract>, default: null },
-  order: { type: Object as PropType<PayOrder>, default: null },
-  commit: { type: Number, default: 0 },
-  price: { type: Number, default: 0 },
-  adjustedDueDate: { type: String as PropType<string | null>, default: null },
-  paymentList: { type: Array as PropType<OriginPayment[]>, default: () => [] },
-})
+const props = withDefaults(
+  defineProps<{
+    contract?: Contract | null
+    order?: PayOrder | null
+    commit?: number
+    price?: number
+    adjustedDueDate?: string | null
+    paymentList?: OriginPayment[]
+  }>(),
+  {
+    contract: null,
+    order: null,
+    commit: 0,
+    price: 0,
+    adjustedDueDate: null,
+    paymentList: () => [],
+  },
+)
 
 const dueDate = computed(() => {
   // 1. 백엔드에서 조정된 날짜가 전달된 경우 최우선 사용
@@ -44,16 +54,16 @@ const calculated = computed(() => {
   return dueDate.value !== '-' && (dueDate.value as Date | string) <= getToday() ? duePay : 0
 })
 
-const calcClass = () => {
-  const calc = calculated.value > 0 ? 'text-primary' : 'text-danger'
-  return calculated.value === 0 ? '' : calc
-}
+const calcClass = computed(() => {
+  if (calculated.value === 0) return ''
+  return calculated.value > 0 ? 'text-primary' : 'text-danger'
+})
 </script>
 
 <template>
   <CTableDataCell class="text-center"> {{ dueDate }}</CTableDataCell>
   <CTableDataCell class="text-center">
-    {{ order.pay_name }}
+    {{ order?.pay_name }}
   </CTableDataCell>
   <CTableDataCell>
     {{ numFormat(commit) }}
