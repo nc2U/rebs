@@ -26,6 +26,8 @@ export interface BulkParseOptions {
   accounts: Array<{ value: number; label: string; is_cate_only?: boolean }>
   // 프로젝트: 계약자 후보 / 본사: 관계회사(프로젝트) 후보
   contracts: Array<{ value: number; label: string }>
+  // 프로젝트 전용: 납부회차 후보
+  payOrders?: Array<{ value: number; label: string }>
   systemType?: BulkSystemType
 }
 
@@ -46,6 +48,8 @@ export interface BulkEntry {
   evidence_type: '' | '0' | '1' | '2' | '3' | '4' | '5' | '6'
   contract: number | null // 프로젝트: 계약자 ID / 본사: 관계회사(affiliate) ID
   contract_name: string
+  installment_order?: number | null // 프로젝트: 납부회차 ID
+  installment_order_name?: string
   errors: string[]
   warnings: string[]
 }
@@ -82,7 +86,7 @@ export interface BulkParseResult {
 }
 
 export const BULK_COLUMNS = [
-  // 화면 폼(거래일자 → 메모 → 거래계좌 → 적요 → 입출금액 → 계정 → 거래처 → 분류금액 → 지출증빙) 순서와 동일
+  // 화면 폼(거래일자 → 메모 → 거래계좌 → 적요 → 입출금액 → 계정 → 계약자/관계회사 → 납부회차 → 거래처 → 분류금액 → 지출증빙)
   { header: '그룹번호', key: 'key', width: 12 },
   { header: '거래일자', key: 'deal_date', width: 14 },
   { header: '메모', key: 'note', width: 20 },
@@ -92,6 +96,7 @@ export const BULK_COLUMNS = [
   { header: '입출금액', key: 'amount', width: 16 },
   { header: '계정이름', key: 'account_name', width: 25 },
   { header: '__RELATED__', key: 'contract_name', width: 22 },
+  { header: '납부회차', key: 'installment_order_name', width: 20 },
   { header: '거래처', key: 'trader', width: 25 },
   { header: '분류금액', key: 'entry_amount', width: 16 },
   { header: '지출증빙', key: 'evidence_type', width: 22 },
@@ -132,15 +137,20 @@ export function useBulkTransExcel() {
   const downloadBulkTemplate = async (ref_: {
     bankAccounts: Option[]
     accounts: Array<{ label: string; is_cate_only?: boolean }>
+    payOrders?: Option[]
     systemType?: BulkSystemType
   }) => {
     const workbook = new ExcelJS.Workbook()
     const ws = workbook.addWorksheet('거래내역 대량입력')
     const relatedLabel = relatedLabelOf(ref_.systemType)
-    ws.columns = BULK_COLUMNS.map(c => ({
+    const isProject = ref_.systemType !== 'company'
+
+    // 본사(company)의 경우 납부회차 열을 제외하고, 프로젝트는 납부회차 열 포함
+    const columns = BULK_COLUMNS.filter(c => isProject || c.key !== 'installment_order_name').map(c => ({
       ...c,
       header: c.header === '__RELATED__' ? relatedLabel : c.header,
     }))
+    ws.columns = columns
 
     const header = ws.getRow(1)
     header.font = { bold: true }
@@ -152,15 +162,21 @@ export function useBulkTransExcel() {
     const accB = accounts[1]?.label || accA
 
     // 예시: 1번 거래는 분류 2건, 2번 거래는 분류 1건
-    // 열 순서: 그룹번호, 거래일자, 메모, 거래계좌, 적요, 구분, 입출금액, 계정이름, 계약자, 거래처, 분류금액, 지출증빙
-    ws.addRow([1, '2026-01-15', '', firstBank, '예시 적요', '출금', 1500000, accA, '', '거래처A', 1000000, '증빙없음'])
-    ws.addRow([1, '', '', '', '', '', '', accB, '', '거래처B', 500000, '세금계산서'])
-    ws.addRow([2, '2026-01-16', '', firstBank, '예시 입금', '입금', 300000, accA, '', '거래처C', 300000, ''])
+    if (isProject) {
+      // 열 순서: 그룹번호, 거래일자, 메모, 거래계좌, 적요, 구분, 입출금액, 계정이름, 계약자, 납부회차, 거래처, 분류금액, 지출증빙
+      ws.addRow([1, '2026-01-15', '', firstBank, '예시 적요', '출금', 1500000, accA, '', '', '거래처A', 1000000, '증빙없음'])
+      ws.addRow([1, '', '', '', '', '', '', accB, '', '', '거래처B', 500000, '세금계산서'])
+      ws.addRow([2, '2026-01-16', '', firstBank, '예시 입금', '입금', 300000, accA, '', '', '거래처C', 300000, ''])
+    } else {
+      ws.addRow([1, '2026-01-15', '', firstBank, '예시 적요', '출금', 1500000, accA, '', '거래처A', 1000000, '증빙없음'])
+      ws.addRow([1, '', '', '', '', '', '', accB, '', '거래처B', 500000, '세금계산서'])
+      ws.addRow([2, '2026-01-16', '', firstBank, '예시 입금', '입금', 300000, accA, '', '거래처C', 300000, ''])
+    }
     ws.getColumn('deal_date').numFmt = '@'
 
     const guide = workbook.addWorksheet('작성안내')
     guide.columns = [{ width: 100 }]
-    ;[
+    const guideTexts = [
       '■ 작성 방법 및 제한사항',
       `★ [입력 제한] 화면 렌더링 및 안정성을 위해 1회 업로드 시 최대 ${MAX_BULK_ROWS}행 / 은행거래 ${MAX_BULK_TRANSACTIONS}건 이하로 작성해 주세요.`,
       `   - 데이터가 많은 경우 파일을 나누어(예: 30~50건 단위) 순차적으로 등록해 주시기 바랍니다.`,
@@ -172,22 +188,40 @@ export function useBulkTransExcel() {
       '4. 같은 그룹의 분류금액 합계는 입출금액과 반드시 일치해야 합니다.',
       '5. 거래일자는 YYYY-MM-DD 형식, 구분은 "입금" 또는 "출금"으로 입력하세요.',
       '6. 거래계좌/계정이름/' + relatedLabel + '은(는) 시스템에 등록된 이름과 정확히 일치해야 합니다. (참조목록 시트 확인)',
-      '7. 지출증빙: ' + Object.keys(EVIDENCE_TYPE_MAP).join(', '),
-      '8. 예시 행(1~3번 거래)은 삭제하고 입력하세요.',
-    ].forEach(t => guide.addRow([t]))
+    ]
+    if (isProject) {
+      guideTexts.push(
+        '7. 납부회차: 분양대금 또는 분(부)담금 입금 시 지정 (선택사항, 참조목록 시트의 회차명과 일치해야 함. 미지정 시 업로드 팝업 또는 수납 관리에서 사후 지정 가능)',
+        '8. 지출증빙: ' + Object.keys(EVIDENCE_TYPE_MAP).join(', '),
+        '9. 예시 행(1~3번 거래)은 삭제하고 입력하세요.',
+      )
+    } else {
+      guideTexts.push(
+        '7. 지출증빙: ' + Object.keys(EVIDENCE_TYPE_MAP).join(', '),
+        '8. 예시 행(1~3번 거래)은 삭제하고 입력하세요.',
+      )
+    }
+    guideTexts.forEach(t => guide.addRow([t]))
     guide.getRow(1).font = { bold: true }
     guide.getRow(2).font = { bold: true, color: { argb: 'FFC00000' } }
 
     const refSheet = workbook.addWorksheet('참조목록')
+    const payOrderNames = isProject && ref_.payOrders ? ref_.payOrders.filter(p => p.value).map(p => p.label) : []
+
     refSheet.columns = [
       { header: '거래계좌', key: 'bank', width: 30 },
       { header: '계정이름', key: 'acc', width: 30 },
+      ...(isProject ? [{ header: '납부회차', key: 'payOrder', width: 25 }] : []),
     ]
     refSheet.getRow(1).font = { bold: true }
     const bankNames = ref_.bankAccounts.filter(b => b.value).map(b => b.label)
-    const rows = Math.max(bankNames.length, accounts.length)
+    const rows = Math.max(bankNames.length, accounts.length, payOrderNames.length)
     for (let i = 0; i < rows; i++) {
-      refSheet.addRow({ bank: bankNames[i] || '', acc: accounts[i]?.label || '' })
+      refSheet.addRow({
+        bank: bankNames[i] || '',
+        acc: accounts[i]?.label || '',
+        ...(isProject ? { payOrder: payOrderNames[i] || '' } : {}),
+      })
     }
 
     const buffer = await workbook.xlsx.writeBuffer()
@@ -216,26 +250,56 @@ export function useBulkTransExcel() {
       let lastKey = ''
       let validRowCount = 0
 
+      // 1행(헤더)을 분석하여 컬럼 인덱스 결정 (하위 호환성 및 열 순서 유연성 지원)
+      const headerRow = ws.getRow(1)
+      let colKey = 1, colDate = 2, colNote = 3, colBank = 4, colContent = 5
+      let colSort = 6, colBankAmt = 7, colAcc = 8, colContract = 9
+      let colPayOrder = -1, colTrader = 10, colEntryAmt = 11, colEvidence = 12
+
+      const headerMap: Record<string, number> = {}
+      for (let c = 1; c <= headerRow.cellCount; c++) {
+        const text = extractCellValue(headerRow.getCell(c)).trim()
+        if (text) headerMap[text] = c
+      }
+
+      if (Object.keys(headerMap).length > 0) {
+        Object.entries(headerMap).forEach(([text, c]) => {
+          if (text.includes('그룹번호')) colKey = c
+          else if (text.includes('거래일자')) colDate = c
+          else if (text.includes('메모')) colNote = c
+          else if (text.includes('거래계좌')) colBank = c
+          else if (text.includes('적요')) colContent = c
+          else if (text.includes('구분')) colSort = c
+          else if (text.includes('입출금액')) colBankAmt = c
+          else if (text.includes('계정')) colAcc = c
+          else if (text.includes('계약자') || text.includes('관계회사')) colContract = c
+          else if (text.includes('납부회차') || text.includes('회차')) colPayOrder = c
+          else if (text.includes('거래처')) colTrader = c
+          else if (text.includes('분류금액')) colEntryAmt = c
+          else if (text.includes('증빙')) colEvidence = c
+        })
+      }
+
       for (let i = 2; i <= ws.rowCount; i++) {
         const row = ws.getRow(i)
-        // 열 순서: 그룹번호, 거래일자, 메모, 거래계좌, 적요, 구분, 입출금액, 계정이름, 계약자, 거래처, 분류금액, 지출증빙
-        const key = extractCellValue(row.getCell(1))
-        const dealDate = normalizeDate(row.getCell(2))
-        const note = extractCellValue(row.getCell(3))
-        const bankName = extractCellValue(row.getCell(4))
-        const content = extractCellValue(row.getCell(5))
-        const sortRaw = extractCellValue(row.getCell(6))
-        const bankAmount = extractCellNumber(row.getCell(7))
-        const accountName = extractCellValue(row.getCell(8))
-        const contractName = extractCellValue(row.getCell(9))
-        const trader = extractCellValue(row.getCell(10))
-        const entryAmount = extractCellNumber(row.getCell(11))
-        const rawEvidence = extractCellValue(row.getCell(12))
+        const key = extractCellValue(row.getCell(colKey))
+        const dealDate = normalizeDate(row.getCell(colDate))
+        const note = extractCellValue(row.getCell(colNote))
+        const bankName = extractCellValue(row.getCell(colBank))
+        const content = extractCellValue(row.getCell(colContent))
+        const sortRaw = extractCellValue(row.getCell(colSort))
+        const bankAmount = extractCellNumber(row.getCell(colBankAmt))
+        const accountName = extractCellValue(row.getCell(colAcc))
+        const contractName = extractCellValue(row.getCell(colContract))
+        const payOrderName = colPayOrder > 0 ? extractCellValue(row.getCell(colPayOrder)) : ''
+        const trader = extractCellValue(row.getCell(colTrader))
+        const entryAmount = extractCellNumber(row.getCell(colEntryAmt))
+        const rawEvidence = extractCellValue(row.getCell(colEvidence))
 
         // 빈 행 건너뛰기
         if (
           !key && !dealDate && !bankName && !sortRaw && !content && !note && !bankAmount &&
-          !accountName && !trader && !entryAmount && !rawEvidence && !contractName
+          !accountName && !trader && !entryAmount && !rawEvidence && !contractName && !payOrderName
         ) {
           continue
         }
@@ -299,6 +363,8 @@ export function useBulkTransExcel() {
           evidence_type: '',
           contract: null,
           contract_name: contractName,
+          installment_order: null,
+          installment_order_name: payOrderName,
           errors: [],
           warnings: [],
         }
@@ -321,6 +387,17 @@ export function useBulkTransExcel() {
             entry.warnings.push(
               `${relatedLabelOf(opts.systemType)} '${contractName}'을(를) 찾을 수 없음 - 업로드 후 선택 필요`,
             )
+        }
+
+        if (payOrderName && opts.payOrders && opts.payOrders.length) {
+          const po = opts.payOrders.find(
+            o => o.label === payOrderName || o.label.includes(payOrderName) || payOrderName.includes(o.label),
+          )
+          if (po && po.value) {
+            entry.installment_order = po.value
+          } else {
+            entry.warnings.push(`납부회차 '${payOrderName}'을(를) 찾을 수 없음 - 업로드 후 선택 필요`)
+          }
         }
 
         current!.entries.push(entry)

@@ -22,6 +22,7 @@ interface EntryForm {
   contract?: number | null
   contractor?: number | null
   evidence_type?: '' | '0' | '1' | '2' | '3' | '4' | '5' | '6'
+  installment_order?: number | null
 }
 
 // 전체 거래건 데이터 구조

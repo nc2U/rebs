@@ -9,6 +9,8 @@ const props = defineProps<{
   hasExisting: boolean
   // 연관 대상 열 이름 (프로젝트: 계약자, 본사: 관계회사(프로젝트))
   relatedLabel?: string
+  // 프로젝트 전용: 납부회차 목록
+  payOrders?: Array<{ value: number; label: string }>
 }>()
 
 const emit = defineEmits<{
@@ -17,12 +19,36 @@ const emit = defineEmits<{
 }>()
 
 const replace = ref(true)
+const selectedBulkPayOrder = ref<number | null>(null)
+
 watch(
   () => props.modelValue,
   open => {
-    if (open) replace.value = !props.hasExisting
+    if (open) {
+      replace.value = !props.hasExisting
+      selectedBulkPayOrder.value = null
+    }
   },
 )
+
+// 일괄 납부회차 적용
+const applyBulkPayOrder = () => {
+  if (!props.result || !selectedBulkPayOrder.value || !props.payOrders) return
+  const matched = props.payOrders.find(p => p.value === selectedBulkPayOrder.value)
+  if (!matched) return
+
+  let appliedCount = 0
+  props.result.transactions.forEach(t => {
+    t.entries.forEach(e => {
+      // 계약자가 있거나 금액이 있는 유효 분개에 회차 적용
+      e.installment_order = matched.value
+      e.installment_order_name = matched.label
+      // 이전 회차 미매칭 경고 제거
+      e.warnings = e.warnings.filter(w => !w.includes('납부회차'))
+      appliedCount++
+    })
+  })
+}
 
 const validCount = computed(() => props.result?.summary.validTransactions ?? 0)
 
@@ -44,7 +70,7 @@ const handleConfirm = () => {
       </v-card-title>
 
       <v-card-text v-if="result">
-        <v-alert :type="result.isValid ? 'success' : 'warning'" variant="tonal" class="mb-4">
+        <v-alert :type="result.isValid ? 'success' : 'warning'" variant="tonal" class="mb-3">
           <div class="d-flex align-center justify-space-between flex-wrap">
             <div>
               <strong>은행거래:</strong> {{ result.summary.transactionCount }}건 (최대 50건) |
@@ -63,6 +89,40 @@ const handleConfirm = () => {
             ※ 폼에 반영된 데이터는 화면에서 확인 및 수정 후 상단의 [생성] 버튼을 눌러야 최종 저장됩니다.
           </div>
         </v-alert>
+
+        <!-- 중도금 대출 일괄 실행 등 동일 회차 대량 입력 시 편의 기능 -->
+        <div
+          v-if="payOrders && payOrders.length"
+          class="d-flex align-center flex-wrap ga-2 mb-3 pa-2 bg-grey-lighten-4 rounded"
+        >
+          <v-icon size="18" color="primary">mdi-calendar-check</v-icon>
+          <span class="text-caption font-weight-bold">일괄 납부회차 지정:</span>
+          <div style="min-width: 240px; max-width: 320px">
+            <v-select
+              v-model="selectedBulkPayOrder"
+              :items="payOrders"
+              item-title="label"
+              item-value="value"
+              density="compact"
+              variant="outlined"
+              hide-details
+              placeholder="적용할 납부회차 선택"
+              clearable
+            />
+          </div>
+          <v-btn
+            size="small"
+            color="primary"
+            variant="tonal"
+            :disabled="!selectedBulkPayOrder"
+            @click="applyBulkPayOrder"
+          >
+            전체 분개에 일괄 적용
+          </v-btn>
+          <span class="text-caption text-grey-darken-1">
+            (엑셀에 회차가 미기재되었거나 변경이 필요할 때 한 번에 지정할 수 있습니다)
+          </span>
+        </div>
 
         <div v-if="result.transactions.length === 0" class="text-center text-grey py-6">
           읽을 수 있는 거래 행이 없습니다. 템플릿 형식을 확인해 주세요.
@@ -115,6 +175,7 @@ const handleConfirm = () => {
                     <th class="pa-1 text-left">거래처</th>
                     <th class="pa-1 text-right">분류금액</th>
                     <th class="pa-1 text-left">{{ relatedLabel ?? '계약자' }}</th>
+                    <th v-if="payOrders && payOrders.length" class="pa-1 text-left">납부회차</th>
                     <th class="pa-1 text-left">검증</th>
                   </tr>
                 </thead>
@@ -125,6 +186,12 @@ const handleConfirm = () => {
                     <td class="pa-1">{{ e.trader }}</td>
                     <td class="pa-1 text-right">{{ e.amount.toLocaleString() }}</td>
                     <td class="pa-1">{{ e.contract_name }}</td>
+                    <td v-if="payOrders && payOrders.length" class="pa-1">
+                      <span v-if="e.installment_order_name" class="text-primary font-weight-medium">
+                        {{ e.installment_order_name }}
+                      </span>
+                      <span v-else class="text-grey">-</span>
+                    </td>
                     <td class="pa-1">
                       <span v-for="(m, i) in e.errors" :key="`ee${i}`" class="text-error d-block">
                         {{ m }}

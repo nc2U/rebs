@@ -7,6 +7,7 @@ import { useExcelUpload } from '@/composables/useExcelUpload'
 import { usePerms } from '@/composables/usePerms.ts'
 import { useProLedger } from '@/store/pinia/proLedger.ts'
 import { useContract } from '@/store/pinia/contract.ts'
+import { usePayment } from '@/store/pinia/payment.ts'
 import { TableSecondary } from '@/utils/cssMixins.ts'
 import type { ProBankTrans } from '@/store/types/proLedger.ts'
 import type { ParseResult } from '@/composables/useExcelUpload'
@@ -30,6 +31,7 @@ const fetchFormData = async (projId: number) => {
   await proLedgerStore.fetchProjectAccounts()
   await contractStore.fetchAllContracts(projId)
   await contractStore.fetchAllContractors(projId)
+  await paymentStore.fetchPayOrderList(projId)
 }
 
 watch(
@@ -61,6 +63,13 @@ const isSaving = ref(false)
 
 const proLedgerStore = useProLedger()
 const contractStore = useContract()
+const paymentStore = usePayment()
+const payOrderOptions = computed(() =>
+  paymentStore.payOrderList.map(po => ({
+    value: po.pk as number,
+    label: po.alias_name || po.pay_name || po.str_display || `회차 ${po.pk}`,
+  })),
+)
 const transferFeePk = computed(() => proLedgerStore.transferFeePk)
 const transaction = computed(() => proLedgerStore.proBankTrans as ProBankTrans | null)
 
@@ -104,6 +113,7 @@ interface NewEntryForm {
   contract?: number | null
   contractor?: number | null
   evidence_type?: '' | '0' | '1' | '2' | '3' | '4' | '5' | '6'
+  installment_order?: number | null
 }
 
 // 수정 가능한 폼 데이터 (기존 데이터 + 새로운 데이터) - 수정 모드용
@@ -394,6 +404,8 @@ const handleBulkDownload = () =>
   downloadBulkTemplate({
     bankAccounts: formBankAccounts.value,
     accounts: proLedgerStore.proAccounts,
+    payOrders: payOrderOptions.value,
+    systemType: 'project',
   })
 
 const handleBulkUploadClick = () => bulkFileInputRef.value?.click()
@@ -407,6 +419,8 @@ const handleBulkFileChange = async (event: Event) => {
     bulkResult.value = await parseBulkFile(file, {
       bankAccounts: formBankAccounts.value,
       accounts: proLedgerStore.proAccounts,
+    payOrders: payOrderOptions.value,
+    systemType: 'project',
       contracts: contractStore.getContracts,
     })
     bulkDialogVisible.value = true
@@ -450,6 +464,7 @@ const handleBulkConfirm = ({ replace }: { replace: boolean }) => {
           evidence_type: e.evidence_type,
           contract: e.contract,
           contractor: null,
+          installment_order: e.installment_order ?? null,
         })),
       }),
     )
@@ -648,6 +663,7 @@ const saveMultipleTransactions = async () => {
         ...entry,
         contract: entry.contract ?? null,
         contractor: entry.contractor ?? null,
+        installment_order: entry.installment_order ?? null,
         evidence_type: entry.evidence_type === '' ? null : entry.evidence_type,
       }))
 
@@ -1107,6 +1123,7 @@ onBeforeMount(async () => {
     v-model="bulkDialogVisible"
     :result="bulkResult"
     :has-existing="hasEnteredTransactions"
+    :pay-orders="payOrderOptions"
     @confirm="handleBulkConfirm"
   />
 </template>
