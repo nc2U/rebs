@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { usePerms } from '@/composables/usePerms.ts'
+import { usePerms } from '@/composables/usePerms'
 import { useSite } from '@/store/pinia/project_site'
-import { TableInfo, TableSuccess, TableSecondary } from '@/utils/cssMixins'
-import { type Relation, type SiteOwner as Owner } from '@/store/types/project'
+import { TableInfo, TableSecondary, TableSuccess } from '@/utils/cssMixins'
+import type { Relation, SiteOwner as Owner } from '@/store/types/project'
 import SiteOwner from '@/views/projects/SiteOwner/components/SiteOwner.vue'
 import Pagination from '@/components/Pagination'
 
 const props = defineProps({
-  isReturned: { type: Boolean },
+  isReturned: { type: Boolean, default: false },
   limit: { type: Number, default: 10 },
-  highlightId: { type: Number, default: null },
+  highlightId: { type: Number, default: undefined },
   currentPage: { type: Number, default: 1 },
 })
 const emit = defineEmits(['relation-patch', 'page-select', 'on-delete', 'multi-submit'])
@@ -26,12 +26,12 @@ const ownerPages = (num: number) => Math.ceil(siteOwnerCount.value / num)
 const pageSelect = (page: number) => emit('page-select', page)
 const relationPatch = (payload: Relation) => emit('relation-patch', payload)
 const multiSubmit = (payload: Owner) => emit('multi-submit', payload)
-const onDelete = (pk: number) => emit('on-delete', pk)
+const onDelete = (payload: { pk: number; project: number }) => emit('on-delete', payload)
 </script>
 
 <template>
   <CTable hover responsive bordered align="middle">
-    <colgroup>
+    <colgroup v-if="canSiteUpdate">
       <col style="width: 6%" />
       <col style="width: 9%" />
       <col style="width: 10%" />
@@ -42,13 +42,25 @@ const onDelete = (pk: number) => emit('on-delete', pk)
       <col style="width: 9%" />
       <col style="width: 10%" />
       <col style="width: 6%" />
-      <col v-if="canSiteUpdate" style="width: 4%" />
-      <col v-if="canSiteUpdate" style="width: 4%" />
+      <col style="width: 4%" />
+      <col style="width: 4%" />
+    </colgroup>
+    <colgroup v-else>
+      <col style="width: 7%" />
+      <col style="width: 10%" />
+      <col style="width: 11%" />
+      <col style="width: 13%" />
+      <col style="width: 11%" />
+      <col style="width: 11%" />
+      <col style="width: 11%" />
+      <col style="width: 10%" />
+      <col style="width: 10%" />
+      <col style="width: 6%" />
     </colgroup>
 
     <CTableHead :color="TableSecondary">
       <CTableRow class="text-center">
-        <CTableHeaderCell colspan="5" :color="TableInfo"> 소유자 관련 정보</CTableHeaderCell>
+        <CTableHeaderCell colspan="5" :color="TableInfo">소유자 관련 정보</CTableHeaderCell>
         <CTableHeaderCell :colspan="canSiteUpdate ? 7 : 5" :color="TableSuccess">
           소유권 관련 정보
         </CTableHeaderCell>
@@ -63,7 +75,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         <CTableHeaderCell colspan="2" scope="col">
           소유면적 <span v-if="isReturned">(환지면적 기준)</span>
         </CTableHeaderCell>
-        <CTableHeaderCell rowspan="2" scope="col"> 소유권 취득일</CTableHeaderCell>
+        <CTableHeaderCell rowspan="2" scope="col">소유권 취득일</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">사용동의</CTableHeaderCell>
         <CTableHeaderCell v-if="canSiteUpdate" rowspan="2" colspan="2" scope="col">
           비고
@@ -87,7 +99,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         @on-delete="onDelete"
       />
       <CTableRow v-if="!siteOwnerList.length">
-        <CTableDataCell colspan="13" class="text-center p-5 text-danger">
+        <CTableDataCell :colspan="canSiteUpdate ? 12 : 10" class="text-center p-5 text-danger">
           등록된 데이터가 없습니다.
         </CTableDataCell>
       </CTableRow>
@@ -95,7 +107,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
   </CTable>
 
   <Pagination
-    v-if="siteOwnerCount > 10"
+    v-if="ownerPages(limit) > 1"
     :active-page="props.currentPage"
     :limit="8"
     :pages="ownerPages(limit)"

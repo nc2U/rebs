@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { computed, onBeforeMount, type PropType, reactive, ref, watch } from 'vue'
 import { numFormat } from '@/utils/baseMixins'
-import { usePerms } from '@/composables/usePerms.ts'
-import { type SiteOwner, type SimpleSite } from '@/store/types/project'
+import { usePerms } from '@/composables/usePerms'
+import type { SimpleSite, SiteOwner } from '@/store/types/project'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
 
 const props = defineProps({
   owner: { type: Object as PropType<SiteOwner>, required: true },
   site: { type: Object as PropType<SimpleSite>, required: true },
   index: { type: Number, default: 0 },
+  isReturned: { type: Boolean, default: false },
+  isHighlight: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['show-detail', 'relation-patch'])
@@ -54,7 +56,7 @@ const showDetail = () => emit('show-detail')
 const relationPatch = (payload: semiRel) => emit('relation-patch', payload)
 const relPatch = () => relationPatch(form)
 
-onBeforeMount(() => {
+const dataSetup = () => {
   if (props.site) {
     form.pk = props.site.pk
     form.site = props.site.site
@@ -63,7 +65,11 @@ onBeforeMount(() => {
     form.acquisition_date = props.site.acquisition_date
     calcArea.value = (Number(props.site.owned_area) || 0) * 0.3025
   }
-})
+}
+
+watch(() => props.site, dataSetup, { deep: true })
+
+onBeforeMount(() => dataSetup())
 </script>
 
 <template>
@@ -89,7 +95,7 @@ onBeforeMount(() => {
       min="0"
       step="0.0000001"
       placeholder="소유지분(%)"
-      @keydown.enter="relPatch"
+      @keydown.enter.prevent="relPatch"
     />
   </CTableDataCell>
   <CTableDataCell class="text-right">
@@ -99,7 +105,7 @@ onBeforeMount(() => {
       min="0"
       step="0.0000001"
       placeholder="면적(제곱미터)"
-      @keydown.enter="relPatch"
+      @keydown.enter.prevent="relPatch"
     />
   </CTableDataCell>
   <CTableDataCell class="text-right" color="warning">
@@ -108,19 +114,18 @@ onBeforeMount(() => {
   <CTableDataCell class="text-left">
     <DatePicker
       v-model="form.acquisition_date"
-      type="number"
       maxlength="10"
       placeholder="소유권 취득일"
-      @keydown.enter="relPatch"
+      @keydown.enter.prevent="relPatch"
     />
   </CTableDataCell>
   <CTableDataCell :class="{ 'bg-success': owner.use_consent }">
     {{ owner.use_consent ? '동의' : '' }}
   </CTableDataCell>
   <CTableDataCell v-if="canSiteUpdate">
-    <v-btn color="success" size="x-small" :disabled="formsCheck" @click="relPatch"> 적용</v-btn>
+    <v-btn color="success" size="x-small" :disabled="formsCheck" @click="relPatch">적용</v-btn>
   </CTableDataCell>
   <CTableDataCell v-if="index === 0 && canSiteUpdate" :rowspan="sitesNum">
-    <v-btn color="info" size="x-small" @click="showDetail"> 확인</v-btn>
+    <v-btn color="info" size="x-small" @click="showDetail">확인</v-btn>
   </CTableDataCell>
 </template>

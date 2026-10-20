@@ -1,18 +1,21 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount } from 'vue'
+import { computed, onBeforeMount, type PropType, reactive, ref, watch } from 'vue'
 import { isValidate } from '@/utils/helper'
-import { usePerms } from '@/composables/usePerms.ts'
+import { usePerms } from '@/composables/usePerms'
 import { useProject } from '@/store/pinia/project'
 import { useSite } from '@/store/pinia/project_site'
 import { type AddressData, callAddress } from '@/components/DaumPostcode/address'
-import { type SimpleSite, type SiteOwner } from '@/store/types/project'
+import type { SimpleSite, SiteOwner } from '@/store/types/project'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import Multiselect from '@/components/MultiSelect/index.vue'
 
-const props = defineProps({ owner: { type: Object, default: null } })
+const props = defineProps({
+  owner: { type: Object as PropType<SiteOwner>, default: null },
+  project: { type: Number, default: undefined },
+})
 
 const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
 
@@ -30,7 +33,11 @@ const address2 = ref()
 
 const validated = ref(false)
 
-const form = reactive<SiteOwner>({
+type SiteOwnerFormData = Omit<SiteOwner, 'sites'> & {
+  sites: number[]
+}
+
+const form = reactive<SiteOwnerFormData>({
   pk: null,
   project: null,
   own_sort: '1',
@@ -56,7 +63,7 @@ const own_sort_select = [
 
 const projectStore = useProject()
 const currProject = computed(() => projectStore.currentProject)
-const project = computed(() => projectStore.project?.pk || currProject.value)
+const project = computed(() => props.project || projectStore.project?.pk || currProject.value)
 
 const siteStore = useSite()
 const getSites = computed(() => siteStore.getSites)
@@ -81,13 +88,16 @@ const formsCheck = computed(() => {
 
     return a && b && c && d && e && f && g && h && i && j && k && l
   }
-  return !canSiteCreate.value
+  return false
+})
+
+const isFormValid = computed(() => {
+  return Boolean(form.owner?.trim()) && Array.isArray(form.sites) && form.sites.length > 0
 })
 
 const addressCallback = (data: AddressData) => {
   const { formNum, zipcode, address1, address3 } = callAddress(data)
   if (formNum === 1) {
-    // 입력할 데이터와 focus 폼 지정
     form.zipcode = zipcode
     form.address1 = address1
     form.address2 = ''
@@ -97,16 +107,17 @@ const addressCallback = (data: AddressData) => {
 }
 
 const onSubmit = (event: Event) => {
-  if (isValidate(event)) {
+  if (isValidate(event) || !isFormValid.value) {
     validated.value = true
   } else {
     if (canSiteManage.value) multiSubmit(form)
     else refAlertModal.value.callModal()
+    validated.value = false
   }
 }
 
-const multiSubmit = (multiPayload: SiteOwner) => {
-  emit('multi-submit', multiPayload)
+const multiSubmit = (multiPayload: SiteOwnerFormData) => {
+  emit('multi-submit', multiPayload as unknown as SiteOwner)
   emit('close')
 }
 
@@ -122,6 +133,8 @@ const deleteConfirm = () => {
 }
 
 const dataSetup = () => {
+  validated.value = false
+
   if (props.owner) {
     form.pk = props.owner.pk
     form.project = props.owner.project
@@ -138,8 +151,26 @@ const dataSetup = () => {
     form.address3 = props.owner.address3
     form.own_sort_desc = props.owner.own_sort_desc
     form.note = props.owner.note
-  } else form.project = project.value
+  } else {
+    form.pk = null
+    form.project = project.value
+    form.own_sort = '1'
+    form.owner = ''
+    form.use_consent = false
+    form.date_of_birth = null
+    form.sites = []
+    form.phone1 = ''
+    form.phone2 = ''
+    form.zipcode = ''
+    form.address1 = ''
+    form.address2 = ''
+    form.address3 = ''
+    form.own_sort_desc = ''
+    form.note = ''
+  }
 }
+
+watch(() => props.owner, dataSetup, { deep: true })
 
 onBeforeMount(() => dataSetup())
 </script>
@@ -167,9 +198,9 @@ onBeforeMount(() => dataSetup())
               <CFormLabel class="col-sm-4 col-form-label">사용동의</CFormLabel>
               <CCol sm="8" class="pt-2">
                 <CFormSwitch
+                  id="use-consent"
                   v-model="form.use_consent"
                   label="토지사용 동의(승낙) 여부"
-                  id="use-consent"
                   :disabled="!owner"
                 />
               </CCol>
@@ -205,7 +236,7 @@ onBeforeMount(() => dataSetup())
         <CRow class="mb-3">
           <CCol sm="12">
             <CRow>
-              <CFormLabel class="col-sm-2 col-form-label required"> 소유부지</CFormLabel>
+              <CFormLabel class="col-sm-2 col-form-label required">소유부지</CFormLabel>
               <CCol sm="10">
                 <Multiselect
                   v-model="form.sites"
@@ -237,7 +268,7 @@ onBeforeMount(() => dataSetup())
 
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 보조 연락처</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label">보조 연락처</CFormLabel>
               <CCol sm="8">
                 <input
                   v-model="form.phone2"
@@ -258,7 +289,9 @@ onBeforeMount(() => dataSetup())
               <CFormLabel class="col-sm-2 col-form-label">주소</CFormLabel>
               <CCol sm="3">
                 <CInputGroup>
-                  <CInputGroupText @click="refPostCode.initiate()"> 우편번호</CInputGroupText>
+                  <CInputGroupText style="cursor: pointer" @click="refPostCode.initiate()">
+                    우편번호
+                  </CInputGroupText>
                   <CFormInput
                     v-model="form.zipcode"
                     v-maska
@@ -304,7 +337,7 @@ onBeforeMount(() => dataSetup())
         <CRow class="mb-3">
           <CCol sm="12">
             <CRow>
-              <CFormLabel class="col-sm-2 col-form-label"> 주요 상담 기록</CFormLabel>
+              <CFormLabel class="col-sm-2 col-form-label">주요 상담 기록</CFormLabel>
               <CCol sm="10">
                 <CFormTextarea v-model="form.note" rows="4" placeholder="주요 상담 기록" />
               </CCol>
@@ -320,14 +353,14 @@ onBeforeMount(() => dataSetup())
           type="submit"
           size="small"
           :color="owner ? 'success' : 'primary'"
-          :disabled="formsCheck"
+          :disabled="formsCheck || !isFormValid"
         >
           저장
         </v-btn>
         <v-btn v-if="owner" size="small" type="button" color="warning" @click="deleteConfirm">
           삭제
         </v-btn>
-        <v-btn type="button" size="small" color="light" @click="$emit('close')" flat> 닫기</v-btn>
+        <v-btn type="button" size="small" color="light" flat @click="$emit('close')">닫기</v-btn>
       </slot>
     </CModalFooter>
 
@@ -335,9 +368,9 @@ onBeforeMount(() => dataSetup())
   </CForm>
 
   <ConfirmModal ref="refDelModal">
-    <template #header> 사업 부지 정보 삭제</template>
+    <template #header>부지 소유자 정보 삭제</template>
     <template #default>
-      삭제한 데이터는 복구할 수 없습니다. 해당 사업 부지 정보를 삭제하시겠습니까?
+      삭제한 데이터는 복구할 수 없습니다. 해당 부지 소유자 정보를 삭제하시겠습니까?
     </template>
     <template #footer>
       <v-btn color="warning" size="small" @click="deleteObject">삭제</v-btn>

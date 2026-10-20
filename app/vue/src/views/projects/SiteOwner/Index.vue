@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount, nextTick } from 'vue'
-import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
-import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
+import { computed, nextTick, onBeforeMount, ref, watch } from 'vue'
+import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
+import { navMenu, pageTitle } from '@/views/projects/_menu/headermixin2'
 import { numFormat } from '@/utils/baseMixins'
-import { usePerms } from '@/composables/usePerms.ts'
+import { usePerms } from '@/composables/usePerms'
 import { useProject } from '@/store/pinia/project'
-import { useSite, type OwnerFilter } from '@/store/pinia/project_site'
+import { type OwnerFilter, useSite } from '@/store/pinia/project_site'
 import type { Project, Relation, SiteOwner } from '@/store/types/project'
 import Loading from '@/components/Loading/Index.vue'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -51,11 +51,6 @@ const isReturned = computed(() => (projStore.project as Project)?.is_returned_ar
 const siteStore = useSite()
 const getOwnersTotal = computed(() => siteStore.getOwnersTotal?.owned_area)
 
-// Store 함수들
-const findSiteOwnerPage = (highlightId: number, filters: OwnerFilter) =>
-  siteStore.findSiteOwnerPage(highlightId, filters)
-const fetchSiteOwnerList = (payload: OwnerFilter) => siteStore.fetchSiteOwnerList(payload)
-
 const excelUrl = computed(() => {
   const url = `/excel/sites-by-owner/?project=${project.value}`
   const filter = dataFilter.value
@@ -65,7 +60,6 @@ const excelUrl = computed(() => {
 })
 
 const listFiltering = (payload: OwnerFilter) => {
-  // 필터링 시 query string 정리
   clearQueryString()
   payload.project = project.value as number
   dataFilter.value = payload
@@ -73,7 +67,6 @@ const listFiltering = (payload: OwnerFilter) => {
 }
 
 const pageSelect = (page: number) => {
-  // 페이지 변경 시 query string 정리
   clearQueryString()
   dataFilter.value.project = project.value as number
   dataFilter.value.page = page
@@ -95,26 +88,24 @@ const scrollToHighlight = async () => {
 const loadHighlightPage = async (projectId: number) => {
   if (highlightId.value && projectId) {
     try {
-      // URL의 page 파라미터가 있으면 해당 페이지로 이동
       const pageParam = route.query.page
-      if (pageParam) {
-        const targetPage = parseInt(pageParam as string, 10)
-        dataFilter.value = {
+      let targetPage = pageParam ? parseInt(pageParam as string, 10) : 1
+      if (!pageParam) {
+        targetPage = await siteStore.findSiteOwnerPage(highlightId.value, {
           project: projectId,
-          limit: dataFilter.value.limit || '',
-          page: targetPage,
-          sort: dataFilter.value.sort || '',
-          is_use_consent: dataFilter.value.is_use_consent || '',
-          search: dataFilter.value.search || '',
-        }
-        siteStore.fetchSiteOwnerList({ project: projectId, page: targetPage })
-      } else {
-        // page 파라미터가 없으면 기본 첫 페이지
-        dataSetup(projectId)
+        })
       }
+      dataFilter.value = {
+        project: projectId,
+        limit: dataFilter.value.limit || '',
+        page: targetPage,
+        sort: dataFilter.value.sort || '',
+        is_use_consent: dataFilter.value.is_use_consent || '',
+        search: dataFilter.value.search || '',
+      }
+      siteStore.fetchSiteOwnerList({ project: projectId, page: targetPage })
     } catch (error) {
       console.error('Error loading highlight page:', error)
-      // 오류 발생시 기본 첫 페이지 로드
       dataSetup(projectId)
     }
   }
@@ -148,8 +139,8 @@ const multiSubmit = (payload: SiteOwner) => {
 }
 
 const onDelete = (payload: { pk: number; project: number }) => {
-  const { pk, project } = payload
-  siteStore.deleteSiteOwner(pk, project)
+  const { pk, project: projId } = payload
+  siteStore.deleteSiteOwner(pk, projId)
 }
 
 const dataSetup = (pk: number) => {
@@ -164,10 +155,9 @@ const dataReset = () => {
 }
 
 const projSelect = (target: number | null) => {
-  // 프로젝트 변경 시 query string 정리
   clearQueryString()
   dataReset()
-  if (!!target) dataSetup(target)
+  if (target) dataSetup(target)
 }
 
 // Query string 정리 함수
@@ -177,16 +167,23 @@ const clearQueryString = () => {
       .replace({
         name: route.name,
         params: route.params,
-        // query를 빈 객체로 설정하여 모든 query string 제거
         query: {},
       })
       .catch(() => {
-        // 같은 경로로의 이동에서 발생하는 NavigationDuplicated 에러 무시
+        // 동일 경로 이동 NavigationDuplicated 에러 무시
       })
   }
 }
 
-// 다른 라우트로 이동 시 query string 정리
+watch(
+  () => project.value,
+  newVal => {
+    clearQueryString()
+    dataReset()
+    if (newVal) dataSetup(newVal)
+  },
+)
+
 onBeforeRouteLeave(() => {
   clearQueryString()
 })
@@ -194,7 +191,6 @@ onBeforeRouteLeave(() => {
 const loading = ref(true)
 onBeforeMount(async () => {
   if (canSiteRead.value) {
-    // URL에서 프로젝트 ID가 지정되어 있으면 해당 프로젝트 사용
     let projectId = urlProjectId.value || project.value || projStore.currentProject
     if (projectId) {
       if (urlProjectId.value && urlProjectId.value !== project.value) {
@@ -202,9 +198,8 @@ onBeforeMount(async () => {
         projectId = urlProjectId.value
       }
 
-      if (projectId) siteStore.fetchAllSites(projectId)
+      siteStore.fetchAllSites(projectId)
 
-      // 하이라이트 항목이 있으면 해당 페이지로 이동 후 스크롤
       if (highlightId.value) {
         await loadHighlightPage(projectId)
         await scrollToHighlight()
@@ -230,13 +225,12 @@ onBeforeMount(async () => {
     <ContentBody>
       <CCardBody class="pb-5">
         <ListController
-          ref="listControl"
-          :project="project as number"
+          :project="project ?? undefined"
           @list-filtering="listFiltering"
         />
         <AddSiteOwner
           v-if="canSiteCreate"
-          :project="project as number"
+          :project="project ?? undefined"
           @multi-submit="multiSubmit"
         />
         <TableTitleRow
@@ -248,14 +242,14 @@ onBeforeMount(async () => {
         >
           <span v-if="project" class="text-success" style="padding-top: 7px">
             소유자 면적 :
-            {{ numFormat(getOwnersTotal as number, 2) }}m<sup>2</sup> ({{
-              numFormat((getOwnersTotal as number) * 0.3025, 2)
+            {{ numFormat(getOwnersTotal || 0, 2) }}m<sup>2</sup> ({{
+              numFormat((getOwnersTotal || 0) * 0.3025, 2)
             }}평) 등록
           </span>
         </TableTitleRow>
         <SiteOwnerList
           :is-returned="isReturned"
-          :limit="dataFilter.limit || 10"
+          :limit="Number(dataFilter.limit) || 10"
           :highlight-id="highlightId || undefined"
           :current-page="dataFilter.page"
           @page-select="pageSelect"
