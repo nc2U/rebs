@@ -1,41 +1,63 @@
 <script lang="ts" setup>
 import { computed, inject, reactive, ref, watch } from 'vue'
-import { usePerms } from '@/composables/usePerms.ts'
+import { isValidate } from '@/utils/helper'
+import { usePerms } from '@/composables/usePerms'
+import type { ProOutBudget } from '@/store/types/project'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
+export interface AccItem {
+  value: number
+  label: string
+}
+
 const props = defineProps({ disabled: Boolean })
-const emit = defineEmits(['on-submit'])
+const emit = defineEmits<{
+  (e: 'on-submit', payload: Omit<ProOutBudget, 'pk' | 'project'>): void
+}>()
 
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
 
-const accountList = inject<any>('accountList')
+const accountList = inject<AccItem[]>('accountList')
 
 const refAlertModal = ref()
 const refConfirmModal = ref()
 
 const validated = ref(false)
-const form = reactive({
-  account: null,
+const form = reactive<{
+  account: number | ''
+  basis_calc: string
+  budget: number | null
+  revised_budget: number | null
+}>({
+  account: '',
   basis_calc: '',
   budget: null,
   revised_budget: null,
 })
 
-watch(props, newVal => {
-  if (!!newVal.disabled) resetForm()
-})
+watch(
+  () => props.disabled,
+  newVal => {
+    if (newVal) resetForm()
+  },
+)
+
+const isFormValid = computed(
+  () =>
+    Boolean(form.account) &&
+    form.budget !== null &&
+    form.budget >= 0,
+)
 
 const onSubmit = (event: Event) => {
   if (canProjectUpdate.value) {
-    const e = event.currentTarget as HTMLFormElement
-    if (!e.checkValidity()) {
-      event.preventDefault()
-      event.stopPropagation()
-
+    if (isValidate(event)) {
       validated.value = true
-    } else refConfirmModal.value.callModal()
+    } else {
+      refConfirmModal.value.callModal()
+    }
   } else {
     refAlertModal.value.callModal()
     resetForm()
@@ -43,14 +65,22 @@ const onSubmit = (event: Event) => {
 }
 
 const modalAction = () => {
-  emit('on-submit', form)
+  emit('on-submit', {
+    account: Number(form.account),
+    basis_calc: form.basis_calc.trim(),
+    budget: Number(form.budget),
+    revised_budget:
+      form.revised_budget !== null && (form.revised_budget as any) !== ''
+        ? Number(form.revised_budget)
+        : null,
+  })
   validated.value = false
   refConfirmModal.value.close()
   resetForm()
 }
 
 const resetForm = () => {
-  form.account = null
+  form.account = ''
   form.basis_calc = ''
   form.budget = null
   form.revised_budget = null
@@ -63,7 +93,7 @@ const resetForm = () => {
       <CCol md="10" xl="11">
         <CRow>
           <CCol md="3" class="mb-2">
-            <CFormSelect v-model="form.account" required :disabled="disabled">
+            <CFormSelect v-model.number="form.account" required :disabled="disabled">
               <option value="">계정 과목</option>
               <option v-for="acc in accountList" :key="acc.value" :value="acc.value">
                 {{ acc.label }}
@@ -106,7 +136,9 @@ const resetForm = () => {
       <CCol md="2" xl="1">
         <CRow>
           <CCol md="12" class="d-grid gap-2 d-lg-block text-right mb-3">
-            <v-btn color="primary" type="submit" :disabled="disabled"> 지출 예산 추가</v-btn>
+            <v-btn color="primary" type="submit" :disabled="disabled || !isFormValid">
+              지출 예산 추가
+            </v-btn>
           </CCol>
         </CRow>
       </CCol>
@@ -114,8 +146,8 @@ const resetForm = () => {
   </CForm>
 
   <ConfirmModal ref="refConfirmModal">
-    <template #header> 수입 예산 등록</template>
-    <template #default> 프로젝트의 수입 예산 정보 등록을 진행하시겠습니까?</template>
+    <template #header> 지출 예산 등록</template>
+    <template #default> 프로젝트의 지출 예산 정보 등록을 진행하시겠습니까?</template>
     <template #footer>
       <v-btn color="primary" size="small" @click="modalAction">저장</v-btn>
     </template>

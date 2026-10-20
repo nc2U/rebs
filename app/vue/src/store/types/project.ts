@@ -70,10 +70,12 @@ export interface ProIncBudget {
 export interface ProOutBudget {
   pk?: number
   project?: number
+  order?: number | null
   account: number
-  account_d1: number | null
-  account_d2: number | null
-  account_opt: string
+  account_d1?: number | null
+  account_d2?: number | null
+  account_d3?: number | null
+  account_opt?: string
   basis_calc: string
   budget: number
   revised_budget: number | null

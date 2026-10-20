@@ -1,22 +1,37 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount, inject } from 'vue'
-import { usePerms } from '@/composables/usePerms.ts'
+import { ref, reactive, computed, watch, inject, type PropType } from 'vue'
+import { usePerms } from '@/composables/usePerms'
 import { useAccount } from '@/store/pinia/account'
+import type { ProOutBudget } from '@/store/types/project'
+import type { AccItem } from './BudgetAddForm.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({ budget: { type: Object, required: true } })
-const emit = defineEmits(['on-update', 'on-delete'])
+const props = defineProps({
+  budget: { type: Object as PropType<ProOutBudget>, required: true },
+})
+
+const emit = defineEmits<{
+  (e: 'on-update', payload: ProOutBudget): void
+  (e: 'on-delete', pk: number): void
+}>()
 
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
+const isSuperAuth = computed(() => useAccount().superAuth)
 
-const accountList = inject<any>('accountList')
+const accountList = inject<AccItem[]>('accountList')
 
-const form = reactive({
+const form = reactive<{
+  pk: number | null
+  account: number | ''
+  basis_calc: string
+  budget: number | null
+  revised_budget: number | null
+}>({
   pk: null,
-  account: null,
-  basis_calc: null,
+  account: '',
+  basis_calc: '',
   budget: null,
   revised_budget: null,
 })
@@ -24,27 +39,63 @@ const form = reactive({
 const refAlertModal = ref()
 const refConfirmModal = ref()
 
+const dataSetup = () => {
+  form.pk = props.budget.pk ?? null
+  form.account = props.budget.account
+  form.basis_calc = props.budget.basis_calc ?? ''
+  form.budget = props.budget.budget ?? null
+  form.revised_budget = props.budget.revised_budget ?? null
+}
+
+watch(
+  () => props.budget,
+  () => dataSetup(),
+  { deep: true, immediate: true },
+)
+
+const isUnchanged = computed(() => {
+  return (
+    Number(form.account) === props.budget.account &&
+    form.basis_calc.trim() === (props.budget.basis_calc || '') &&
+    Number(form.budget) === props.budget.budget &&
+    (form.revised_budget !== null && (form.revised_budget as any) !== ''
+      ? Number(form.revised_budget)
+      : null) === (props.budget.revised_budget || null)
+  )
+})
+
 const formsCheck = computed(() => {
-  const a = form.pk === props.budget.pk
-  const b = form.account === props.budget.account
-  const c = form.basis_calc === props.budget.basis_calc
-  const d = form.budget === props.budget.budget || !props.budget.budget
-  const e = form.revised_budget === props.budget.revised_budget
-  return a && b && c && d && e
+  return (
+    !form.account ||
+    form.budget === null ||
+    form.budget < 0 ||
+    isUnchanged.value
+  )
 })
 
 const onUpdateBudget = () => {
+  if (formsCheck.value) return
+
   if (canProjectUpdate.value) {
-    emit('on-update', { ...form })
+    emit('on-update', {
+      pk: props.budget.pk,
+      project: props.budget.project,
+      account: Number(form.account),
+      basis_calc: form.basis_calc.trim(),
+      budget: Number(form.budget),
+      revised_budget:
+        form.revised_budget !== null && (form.revised_budget as any) !== ''
+          ? Number(form.revised_budget)
+          : null,
+    })
   } else {
     refAlertModal.value.callModal()
     dataSetup()
   }
 }
 
-const accStore = useAccount()
 const onDeleteBudget = () => {
-  if (accStore.superAuth) refConfirmModal.value.callModal()
+  if (isSuperAuth.value) refConfirmModal.value.callModal()
   else {
     refAlertModal.value.callModal()
     dataSetup()
@@ -52,19 +103,11 @@ const onDeleteBudget = () => {
 }
 
 const modalAction = () => {
-  emit('on-delete', props.budget.pk)
+  if (props.budget.pk) {
+    emit('on-delete', props.budget.pk)
+  }
   refConfirmModal.value.close()
 }
-
-const dataSetup = () => {
-  form.pk = props.budget.pk
-  form.account = props.budget.account
-  form.basis_calc = props.budget.basis_calc
-  form.budget = props.budget.budget || '0'
-  form.revised_budget = props.budget.revised_budget
-}
-
-onBeforeMount(() => dataSetup())
 </script>
 
 <template>
@@ -81,7 +124,7 @@ onBeforeMount(() => dataSetup())
       <CFormInput
         v-model="form.basis_calc"
         placeholder="산출근거"
-        @keydown.enter="onUpdateBudget"
+        @keydown.enter.prevent="onUpdateBudget"
       />
     </CTableDataCell>
     <CTableDataCell>
@@ -91,7 +134,7 @@ onBeforeMount(() => dataSetup())
         min="0"
         required
         placeholder="인준 지출 예산"
-        @keydown.enter="onUpdateBudget"
+        @keydown.enter.prevent="onUpdateBudget"
       />
     </CTableDataCell>
     <CTableDataCell>
@@ -100,7 +143,7 @@ onBeforeMount(() => dataSetup())
         type="number"
         min="0"
         placeholder="현황 지출 예산"
-        @keydown.enter="onUpdateBudget"
+        @keydown.enter.prevent="onUpdateBudget"
       />
     </CTableDataCell>
     <CTableDataCell v-if="canProjectUpdate" class="text-center pt-3">

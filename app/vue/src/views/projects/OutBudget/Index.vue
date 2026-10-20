@@ -1,13 +1,11 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, provide, ref } from 'vue'
+import { computed, onBeforeMount, provide, ref, watch } from 'vue'
 import { navMenu, pageTitle } from '@/views/projects/_menu/headermixin3'
 import { useProject } from '@/store/pinia/project'
-import { useContract } from '@/store/pinia/contract'
-import { useProLedger } from '@/store/pinia/proLedger.ts'
-import { useProjectData } from '@/store/pinia/project_data'
-import { usePerms } from '@/composables/usePerms.ts'
+import { useProLedger } from '@/store/pinia/proLedger'
+import { usePerms } from '@/composables/usePerms'
 import type { Project, ProOutBudget } from '@/store/types/project'
-import type { ProAccountFilter } from '@/store/types/proLedger.ts'
+import type { ProAccountFilter } from '@/store/types/proLedger'
 import Loading from '@/components/Loading/Index.vue'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -26,53 +24,45 @@ const allProAccount = computed(() => pLedgerStore.proAccounts)
 const fetchProjectAccounts = (payload: ProAccountFilter) =>
   pLedgerStore.fetchProjectAccounts(payload)
 
-const contStore = useContract()
-const getOrderGroups = computed(() => contStore.getOrderGroups)
-
-const pDataStore = useProjectData()
-const getTypes = computed(() => pDataStore.getTypes)
-
 provide('accountList', allProAccount)
-provide('orderGroups', getOrderGroups)
-provide('unitTypes', getTypes)
 
 const fetchOutBudgetList = (pj: number) => projStore.fetchOutBudgetList(pj)
 const createOutBudget = (payload: ProOutBudget) => projStore.createOutBudget(payload)
 const updateOutBudget = (payload: ProOutBudget) => projStore.updateOutBudget(payload)
 const deleteOutBudget = (pk: number, project: number) => projStore.deleteOutBudget(pk, project)
 
-const fetchOrderGroupList = (proj: number) => contStore.fetchOrderGroupList(proj)
-
-const fetchTypeList = (proj: number) => pDataStore.fetchTypeList(proj)
-
-const onSubmit = (payload: ProOutBudget) => {
-  if (project.value) createOutBudget({ ...{ project: project.value }, ...payload })
+const onSubmit = (payload: Omit<ProOutBudget, 'pk' | 'project'>) => {
+  if (project.value) createOutBudget({ project: project.value, ...payload })
 }
 
 const onUpdateBudget = (payload: ProOutBudget) => {
-  if (project.value) updateOutBudget({ ...{ project: project.value }, ...payload })
+  if (project.value) updateOutBudget({ project: project.value, ...payload })
 }
 
 const onDeleteBudget = (pk: number) => {
   if (project.value) deleteOutBudget(pk, project.value)
 }
 
-const dataSetup = (pk: number) => {
-  fetchOrderGroupList(pk)
-  fetchTypeList(pk)
-  fetchOutBudgetList(pk)
+const dataSetup = async (pk: number) => {
+  await fetchOutBudgetList(pk)
 }
 
 const dataReset = () => {
-  contStore.orderGroupList = []
-  pDataStore.unitTypeList = []
   projStore.proOutBudgetList = []
 }
 
 const projSelect = (target: number | null) => {
   dataReset()
-  if (!!target) dataSetup(target)
+  if (target) dataSetup(target)
 }
+
+watch(
+  () => project.value,
+  newProjId => {
+    dataReset()
+    if (newProjId) dataSetup(newProjId)
+  },
+)
 
 const loading = ref(true)
 onBeforeMount(async () => {
@@ -82,7 +72,7 @@ onBeforeMount(async () => {
     is_active: true,
     category: 'expense',
   })
-  if (project.value) dataSetup(project.value)
+  if (project.value) await dataSetup(project.value)
   loading.value = false
 })
 </script>

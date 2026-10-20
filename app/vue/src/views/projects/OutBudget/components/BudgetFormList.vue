@@ -1,12 +1,15 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useProject } from '@/store/pinia/project'
-import { usePerms } from '@/composables/usePerms.ts'
-import { type ProOutBudget } from '@/store/types/project'
+import { usePerms } from '@/composables/usePerms'
+import type { ProOutBudget } from '@/store/types/project'
 import { TableSecondary } from '@/utils/cssMixins'
 import OutBudget from './OutBudget.vue'
 
-const emit = defineEmits(['on-update', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'on-update', payload: ProOutBudget): void
+  (e: 'on-delete', pk: number): void
+}>()
 
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
@@ -14,8 +17,8 @@ const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
 const proStore = useProject()
 const proOutBudgetList = computed(() => proStore.proOutBudgetList)
 
-const onUpdateOrder = (payload: ProOutBudget) => emit('on-update', payload)
-const onDeleteOrder = (pk: number) => emit('on-delete', pk)
+const onUpdateBudget = (payload: ProOutBudget) => emit('on-update', payload)
+const onDeleteBudget = (pk: number) => emit('on-delete', pk)
 </script>
 
 <template>
@@ -41,14 +44,14 @@ const onDeleteOrder = (pk: number) => emit('on-delete', pk)
         v-for="budget in proOutBudgetList"
         :key="budget.pk"
         :budget="budget"
-        @on-update="onUpdateOrder"
-        @on-delete="onDeleteOrder"
+        @on-update="onUpdateBudget"
+        @on-delete="onDeleteBudget"
       />
     </CTableBody>
 
     <CTableBody v-else>
       <CTableRow>
-        <CTableDataCell :colspan="canProjectUpdate ? 7 : 6" class="text-center p-5 text-danger">
+        <CTableDataCell :colspan="canProjectUpdate ? 5 : 4" class="text-center p-5 text-danger">
           등록된 데이터가 없습니다.
         </CTableDataCell>
       </CTableRow>
