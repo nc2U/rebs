@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { ref, reactive, inject, watch, computed } from 'vue'
+import { ref, reactive, inject, computed } from 'vue'
 import { isValidate } from '@/utils/helper'
 import { usePerms } from '@/composables/usePerms.ts'
+import { usePayment } from '@/store/pinia/payment'
 import { type OrderGroup } from '@/store/types/contract'
 import { type UnitType } from '@/store/types/project'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
@@ -14,12 +15,22 @@ const orders = inject<OrderGroup[]>('orders')
 const types = inject<UnitType[]>('types')
 
 const props = defineProps({ disabled: Boolean })
-const emit = defineEmits(['on-submit'])
+const emit = defineEmits<{
+  (
+    e: 'on-submit',
+    payload: { order_group: number; unit_type: number; payment_amount: number },
+  ): void
+}>()
 
+const paymentStore = usePayment()
 const refAlertModal = ref()
 const refConfirmModal = ref()
 
-const form = reactive({
+const form = reactive<{
+  order_group: number | ''
+  unit_type: number | ''
+  payment_amount: number | null
+}>({
   order_group: '',
   unit_type: '',
   payment_amount: null,
@@ -27,25 +38,51 @@ const form = reactive({
 
 const validated = ref(false)
 
-watch(props, () => {
-  form.order_group = ''
-  form.unit_type = ''
+// 이미 등록된 차수 + 타입 조합인지 확인
+const isDuplicate = computed(() => {
+  if (!form.order_group || !form.unit_type) return false
+  return paymentStore.downPayList.some(
+    dp => dp.order_group === Number(form.order_group) && dp.unit_type === Number(form.unit_type),
+  )
 })
+
+const isFormValid = computed(
+  () =>
+    Boolean(form.order_group) &&
+    Boolean(form.unit_type) &&
+    form.payment_amount !== null &&
+    form.payment_amount >= 0 &&
+    !isDuplicate.value,
+)
 
 const onSubmit = (event: Event) => {
   if (canProjectUpdate.value) {
+    if (isDuplicate.value) {
+      alert('이미 등록된 차수와 타입의 조합입니다.')
+      return
+    }
     isValidate(event) ? (validated.value = true) : refConfirmModal.value.callModal()
   } else {
     refAlertModal.value.callModal()
     resetForm()
   }
 }
+
 const modalAction = () => {
-  emit('on-submit', form)
+  if (isDuplicate.value) {
+    alert('이미 등록된 차수와 타입의 조합입니다.')
+    return
+  }
+  emit('on-submit', {
+    order_group: Number(form.order_group),
+    unit_type: Number(form.unit_type),
+    payment_amount: Number(form.payment_amount),
+  })
   validated.value = false
   refConfirmModal.value.close()
   resetForm()
 }
+
 const resetForm = () => {
   form.order_group = ''
   form.unit_type = ''
@@ -82,14 +119,25 @@ const resetForm = () => {
           min="0"
           required
           :disabled="disabled"
+          :feedback-invalid="isDuplicate ? '이미 등록된 차수/타입 조합입니다.' : undefined"
+          :invalid="isDuplicate"
           text="동호 미지정 계약 등 차수 및 타입별 각 계약금 회차 고정 납부 계약금. 미지정 시 공급가격 * 회차별 납부비율 적용"
         />
+        <div v-if="isDuplicate" class="text-danger small mt-1">
+          ※ 이미 등록된 차수와 타입의 조합입니다.
+        </div>
       </CCol>
 
       <CCol md="2">
         <CRow>
           <CCol md="12" class="d-grid gap-2 d-lg-block mb-3">
-            <v-btn color="primary" type="submit" :disabled="disabled"> 계약금액 추가</v-btn>
+            <v-btn
+              color="primary"
+              type="submit"
+              :disabled="disabled || !isFormValid"
+            >
+              계약금액 추가
+            </v-btn>
           </CCol>
         </CRow>
       </CCol>

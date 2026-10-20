@@ -3,10 +3,13 @@ import { computed } from 'vue'
 import { usePayment } from '@/store/pinia/payment'
 import { TableSecondary } from '@/utils/cssMixins'
 import { usePerms } from '@/composables/usePerms.ts'
-import { type DownPay as dp } from '@/store/types/payment'
-import DownPay from '@/views/projects/DownPay/components/DownPay.vue'
+import { type DownPay } from '@/store/types/payment'
+import DownPayItem from '@/views/projects/DownPay/components/DownPay.vue'
 
-const emit = defineEmits(['on-update', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'on-update', payload: DownPay): void
+  (e: 'on-delete', pk: number): void
+}>()
 
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
@@ -14,7 +17,7 @@ const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
 const paymentStore = usePayment()
 const downPayList = computed(() => paymentStore.downPayList)
 
-const onUpdateDownPay = (payload: dp) => emit('on-update', payload)
+const onUpdateDownPay = (payload: DownPay) => emit('on-update', payload)
 const onDeleteDownPay = (pk: number) => emit('on-delete', pk)
 </script>
 
@@ -35,7 +38,7 @@ const onDeleteDownPay = (pk: number) => emit('on-delete', pk)
       </CTableRow>
     </CTableHead>
     <CTableBody v-if="downPayList.length > 0">
-      <DownPay
+      <DownPayItem
         v-for="downPay in downPayList"
         :key="downPay.pk"
         :down-pay="downPay"

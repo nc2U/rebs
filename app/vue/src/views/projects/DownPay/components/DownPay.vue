@@ -1,60 +1,104 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, inject, onBeforeMount } from 'vue'
+import { ref, reactive, computed, inject, watch, type PropType } from 'vue'
 import { useAccount } from '@/store/pinia/account'
+import { usePayment } from '@/store/pinia/payment'
 import { usePerms } from '@/composables/usePerms.ts'
 import { type OrderGroup } from '@/store/types/contract'
 import { type UnitType } from '@/store/types/project'
+import { type DownPay } from '@/store/types/payment'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
+const props = defineProps({
+  downPay: { type: Object as PropType<DownPay>, required: true },
+})
+
+const emit = defineEmits<{
+  (e: 'on-update', payload: DownPay): void
+  (e: 'on-delete', pk: number): void
+}>()
+
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
+const isSuperAuth = computed(() => useAccount().superAuth)
 
 const orders = inject<OrderGroup[]>('orders')
 const types = inject<UnitType[]>('types')
 
-const props = defineProps({ downPay: { type: Object, required: true } })
-
-const emit = defineEmits(['on-update', 'on-delete'])
-
-const form = reactive({
-  order_group: null,
-  unit_type: null,
-  payment_amount: null,
-})
+const paymentStore = usePayment()
 
 const refAlertModal = ref()
 const refConfirmModal = ref()
 
-const formsCheck = computed(() => {
-  const a = form.order_group === props.downPay.order_group
-  const b = form.unit_type === props.downPay.unit_type
-  const c = form.payment_amount === props.downPay.payment_amount
-  return a && b && c
+const form = reactive<{
+  order_group: number | ''
+  unit_type: number | ''
+  payment_amount: number | null
+}>({
+  order_group: '',
+  unit_type: '',
+  payment_amount: null,
 })
 
-const formCheck = (bool: boolean) => {
-  if (bool) onUpdateDownPay()
-  return
-}
+// 다른 항목과 차수+타입 중복 검사
+const isDuplicate = computed(() => {
+  if (!form.order_group || !form.unit_type) return false
+  return paymentStore.downPayList.some(
+    dp =>
+      dp.pk !== props.downPay.pk &&
+      dp.order_group === Number(form.order_group) &&
+      dp.unit_type === Number(form.unit_type),
+  )
+})
+
+// 기존 데이터에서 변경된 내용이 없는지 검사
+const isUnchanged = computed(
+  () =>
+    Number(form.order_group) === props.downPay.order_group &&
+    Number(form.unit_type) === props.downPay.unit_type &&
+    Number(form.payment_amount) === props.downPay.payment_amount,
+)
+
+// 수정 버튼 비활성화 여부
+const formsCheck = computed(
+  () =>
+    !form.order_group ||
+    !form.unit_type ||
+    form.payment_amount === null ||
+    form.payment_amount < 0 ||
+    isDuplicate.value ||
+    isUnchanged.value,
+)
+
 const onUpdateDownPay = () => {
+  if (formsCheck.value) return
+
   if (canProjectUpdate.value) {
-    const pk = props.downPay.pk
-    emit('on-update', { ...{ pk }, ...form })
+    emit('on-update', {
+      pk: props.downPay.pk,
+      project: props.downPay.project,
+      order_group: Number(form.order_group),
+      unit_type: Number(form.unit_type),
+      payment_amount: Number(form.payment_amount),
+    })
   } else {
     refAlertModal.value.callModal()
     dataSetup()
   }
 }
+
 const onDeleteDownPay = () => {
-  if (useAccount().superAuth) refConfirmModal.value.callModal()
+  if (isSuperAuth.value) refConfirmModal.value.callModal()
   else {
     refAlertModal.value.callModal()
     dataSetup()
   }
 }
+
 const modalAction = () => {
-  emit('on-delete', props.downPay.pk)
+  if (props.downPay.pk) {
+    emit('on-delete', props.downPay.pk)
+  }
   refConfirmModal.value.close()
 }
 
@@ -64,7 +108,11 @@ const dataSetup = () => {
   form.payment_amount = props.downPay.payment_amount
 }
 
-onBeforeMount(() => dataSetup())
+watch(
+  () => props.downPay,
+  () => dataSetup(),
+  { deep: true, immediate: true },
+)
 </script>
 
 <template>
@@ -72,7 +120,7 @@ onBeforeMount(() => dataSetup())
     <CTableDataCell>
       <CFormSelect v-model="form.order_group" required>
         <option value="">차수선택</option>
-        <option v-for="order in orders" :key="order.pk" :value="order.pk">
+        <option v-for="order in orders" :key="order.pk as number" :value="order.pk as number">
           {{ order.name }}
         </option>
       </CFormSelect>
@@ -92,7 +140,7 @@ onBeforeMount(() => dataSetup())
         type="number"
         min="0"
         required
-        @keypress.enter="formCheck(form.payment_amount !== downPay.payment_amount)"
+        @keydown.enter.prevent="onUpdateDownPay"
       />
     </CTableDataCell>
 
@@ -100,7 +148,7 @@ onBeforeMount(() => dataSetup())
       <v-btn color="success" size="x-small" :disabled="formsCheck" @click="onUpdateDownPay">
         수정
       </v-btn>
-      <v-btn color="warning" size="x-small" @click="onDeleteDownPay">삭제</v-btn>
+      <v-btn color="warning" size="x-small" class="ml-1" @click="onDeleteDownPay">삭제</v-btn>
     </CTableDataCell>
   </CTableRow>
 

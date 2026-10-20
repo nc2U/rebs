@@ -43,7 +43,7 @@ export interface PriceFilter {
 }
 
 export interface DownPay {
-  pk: number
+  pk?: number
   project: number
   order_group: number
   unit_type: number
