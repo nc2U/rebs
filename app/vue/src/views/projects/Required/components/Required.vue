@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { useAccount } from '@/store/pinia/account'
-import { useContract } from '@/store/pinia/contract.ts'
-import { usePerms } from '@/composables/usePerms.ts'
-import type { RequiredDocs } from '@/store/types/contract.ts'
+import { useContract } from '@/store/pinia/contract'
+import { usePerms } from '@/composables/usePerms'
+import type { RequiredDocs } from '@/store/types/contract'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
@@ -12,13 +12,19 @@ const props = defineProps({
   disabled: Boolean,
 })
 
-const emit = defineEmits(['on-update', 'on-delete'])
-
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
 
+const accountStore = useAccount()
+const isSuperAuth = computed(() => accountStore.superAuth)
+
 const contStore = useContract()
 const documentTypeList = computed(() => contStore.documentTypeList)
+const existingOtherTypeIds = computed(() =>
+  contStore.requiredDocsList
+    .filter(doc => doc.pk !== props.requiredDoc?.pk)
+    .map(doc => doc.document_type),
+)
 
 const form = reactive({
   sort: 'proof' as 'proof' | 'pledge',
@@ -32,20 +38,35 @@ const form = reactive({
 const refAlertModal = ref()
 const refConfirmModal = ref()
 
-const formsCheck = computed(() => {
-  const a = form.sort === props.requiredDoc?.sort
-  const b = form.document_type === props.requiredDoc?.document_type
-  const c = form.quantity === props.requiredDoc?.quantity
-  const d = form.require_type === props.requiredDoc?.require_type
-  const e = form.description === props.requiredDoc?.description
-  const f = form.display_order === props.requiredDoc?.display_order
-  return a && b && c && d && e && f
+const isFormUnchanged = computed(() => {
+  return (
+    form.sort === props.requiredDoc?.sort &&
+    form.document_type === props.requiredDoc?.document_type &&
+    form.quantity === props.requiredDoc?.quantity &&
+    form.require_type === props.requiredDoc?.require_type &&
+    form.description === (props.requiredDoc?.description ?? '') &&
+    form.display_order === (props.requiredDoc?.display_order ?? 0)
+  )
+})
+
+const isFormValid = computed(() => {
+  return (
+    Boolean(form.document_type) &&
+    (form.quantity === undefined || form.quantity === null || form.quantity >= 0) &&
+    (form.display_order === undefined || form.display_order === null || form.display_order >= 0)
+  )
 })
 
 const onUpdateRequiredDoc = async () => {
+  if (isFormUnchanged.value || !isFormValid.value) return
+
   if (canProjectUpdate.value) {
     try {
-      await contStore.updateRequiredDoc(props.requiredDoc?.pk as number, { ...form })
+      await contStore.updateRequiredDoc(props.requiredDoc.pk, {
+        ...form,
+        quantity: form.quantity || 1,
+        display_order: form.display_order || 0,
+      })
     } catch (error) {
       console.error('Failed to update required document:', error)
     }
@@ -56,7 +77,7 @@ const onUpdateRequiredDoc = async () => {
 }
 
 const onDeleteRequiredDoc = () => {
-  if (useAccount().superAuth) refConfirmModal.value.callModal()
+  if (isSuperAuth.value) refConfirmModal.value.callModal()
   else {
     refAlertModal.value.callModal()
     dataSetup()
@@ -66,8 +87,8 @@ const onDeleteRequiredDoc = () => {
 const modalAction = async () => {
   try {
     await contStore.deleteRequiredDoc(
-      props.requiredDoc?.pk as number,
-      props.requiredDoc?.project as number,
+      props.requiredDoc.pk,
+      props.requiredDoc.project,
     )
     refConfirmModal.value.close()
   } catch (error) {
@@ -76,15 +97,16 @@ const modalAction = async () => {
 }
 
 const dataSetup = () => {
-  form.sort = props.requiredDoc?.sort as any
-  form.document_type = props.requiredDoc?.document_type as number
-  form.quantity = props.requiredDoc?.quantity as number
-  form.require_type = props.requiredDoc?.require_type as any
-  form.description = props.requiredDoc?.description as string
-  form.display_order = props.requiredDoc?.display_order as number
+  if (!props.requiredDoc) return
+  form.sort = props.requiredDoc.sort
+  form.document_type = props.requiredDoc.document_type
+  form.quantity = props.requiredDoc.quantity
+  form.require_type = props.requiredDoc.require_type
+  form.description = props.requiredDoc.description ?? ''
+  form.display_order = props.requiredDoc.display_order ?? 0
 }
 
-onBeforeMount(() => dataSetup())
+watch(() => props.requiredDoc, dataSetup, { immediate: true, deep: true })
 </script>
 
 <template>
@@ -98,8 +120,13 @@ onBeforeMount(() => dataSetup())
     <CTableDataCell>
       <CFormSelect v-model="form.document_type" :disabled="disabled" required>
         <option value="">서류 유형</option>
-        <option v-for="tp in documentTypeList" :value="tp.pk" :key="tp.pk">
-          {{ tp.name }}
+        <option
+          v-for="tp in documentTypeList"
+          :key="tp.pk"
+          :value="tp.pk"
+          :disabled="existingOtherTypeIds.includes(tp.pk)"
+        >
+          {{ tp.name }}{{ existingOtherTypeIds.includes(tp.pk) ? ' (이미 등록됨)' : '' }}
         </option>
       </CFormSelect>
     </CTableDataCell>
@@ -110,6 +137,7 @@ onBeforeMount(() => dataSetup())
         type="number"
         min="0"
         :disabled="disabled"
+        @keydown.enter.prevent="onUpdateRequiredDoc"
       />
     </CTableDataCell>
 
@@ -127,6 +155,7 @@ onBeforeMount(() => dataSetup())
         maxlength="255"
         placeholder="설명"
         :disabled="disabled"
+        @keydown.enter.prevent="onUpdateRequiredDoc"
       />
     </CTableDataCell>
     <CTableDataCell>
@@ -136,11 +165,17 @@ onBeforeMount(() => dataSetup())
         type="number"
         min="0"
         :disabled="disabled"
+        @keydown.enter.prevent="onUpdateRequiredDoc"
       />
     </CTableDataCell>
 
     <CTableDataCell v-if="canProjectUpdate" class="text-center pt-3">
-      <v-btn color="success" size="x-small" :disabled="formsCheck" @click="onUpdateRequiredDoc">
+      <v-btn
+        color="success"
+        size="x-small"
+        :disabled="isFormUnchanged || !isFormValid"
+        @click="onUpdateRequiredDoc"
+      >
         수정
       </v-btn>
       <v-btn color="warning" size="x-small" @click="onDeleteRequiredDoc">삭제</v-btn>
@@ -148,9 +183,9 @@ onBeforeMount(() => dataSetup())
   </CTableRow>
 
   <ConfirmModal ref="refConfirmModal">
-    <template #header> 구비 서류 삭제</template>
+    <template #header>구비 서류 삭제</template>
     <template #default>
-      해당 데이터를 삭제하면 이후 복구할 수 없습니다. 이 계약 조건 정보를 삭제 하시겠습니까?
+      해당 데이터를 삭제하면 이후 복구할 수 없습니다. 이 구비 서류 정보를 삭제하시겠습니까?
     </template>
     <template #footer>
       <v-btn size="small" color="warning" @click="modalAction">삭제</v-btn>

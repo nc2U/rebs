@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { reactive, ref, computed } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { isValidate } from '@/utils/helper'
-import { usePerms } from '@/composables/usePerms.ts'
-import { useProject } from '@/store/pinia/project.ts'
-import { useContract } from '@/store/pinia/contract.ts'
-import type { Project } from '@/store/types/project.ts'
+import { usePerms } from '@/composables/usePerms'
+import { useProject } from '@/store/pinia/project'
+import { useContract } from '@/store/pinia/contract'
+import type { Project } from '@/store/types/project'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({ disabled: Boolean })
+defineProps({ disabled: Boolean })
 
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
@@ -30,12 +30,25 @@ const project = computed(() => (projStore.project as Project)?.pk)
 
 const contStore = useContract()
 const documentTypeList = computed(() => contStore.documentTypeList)
+const existingTypeIds = computed(() => contStore.requiredDocsList.map(doc => doc.document_type))
 
 const validated = ref(false)
 
+const isFormValid = computed(() => {
+  return (
+    Boolean(form.document_type) &&
+    (form.quantity === undefined || form.quantity === null || form.quantity >= 0) &&
+    (form.display_order === undefined || form.display_order === null || form.display_order >= 0)
+  )
+})
+
 const onSubmit = (event: Event) => {
   if (canProjectUpdate.value) {
-    isValidate(event) ? (validated.value = true) : refConfirmModal.value.callModal()
+    if (isValidate(event)) {
+      validated.value = true
+    } else {
+      refConfirmModal.value.callModal()
+    }
   } else {
     refAlertModal.value.callModal()
     resetForm()
@@ -43,12 +56,14 @@ const onSubmit = (event: Event) => {
 }
 
 const modalAction = async () => {
-  if (!project.value) return
+  if (!project.value || !form.document_type) return
 
   try {
     await contStore.createRequiredDoc({
       ...form,
       project: project.value,
+      quantity: form.quantity || 1,
+      display_order: form.display_order || 0,
     } as any)
     validated.value = false
     refConfirmModal.value.close()
@@ -65,6 +80,7 @@ const resetForm = () => {
   form.require_type = 'required'
   form.description = ''
   form.display_order = undefined
+  validated.value = false
 }
 </script>
 
@@ -83,8 +99,13 @@ const resetForm = () => {
           <CCol md="6" lg="4" xl="2" class="mb-2">
             <CFormSelect v-model="form.document_type" :disabled="disabled" required>
               <option value="">서류 유형</option>
-              <option v-for="tp in documentTypeList" :value="tp.pk" :key="tp.pk">
-                {{ tp.name }}
+              <option
+                v-for="tp in documentTypeList"
+                :key="tp.pk"
+                :value="tp.pk"
+                :disabled="existingTypeIds.includes(tp.pk)"
+              >
+                {{ tp.name }}{{ existingTypeIds.includes(tp.pk) ? ' (이미 등록됨)' : '' }}
               </option>
             </CFormSelect>
           </CCol>
@@ -131,7 +152,9 @@ const resetForm = () => {
       <CCol lg="2" xl="1">
         <CRow>
           <CCol md="12" class="d-grid gap-2 d-lg-block mb-3">
-            <v-btn color="primary" type="submit" :disabled="disabled">필요서류 추가</v-btn>
+            <v-btn color="primary" type="submit" :disabled="disabled || !isFormValid">
+              필요서류 추가
+            </v-btn>
           </CCol>
         </CRow>
       </CCol>
@@ -139,8 +162,8 @@ const resetForm = () => {
   </CForm>
 
   <ConfirmModal ref="refConfirmModal">
-    <template #header> 계약시 구비서류</template>
-    <template #default> 프로젝트의 계약 시 구비서류 정보 등록을 진행하시겠습니까?</template>
+    <template #header>계약 시 구비 서류 등록</template>
+    <template #default>프로젝트의 계약 시 구비 서류 정보 등록을 진행하시겠습니까?</template>
     <template #footer>
       <v-btn color="primary" size="small" @click="modalAction">저장</v-btn>
     </template>

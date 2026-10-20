@@ -1,11 +1,9 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { TableSecondary } from '@/utils/cssMixins'
-import { useContract } from '@/store/pinia/contract.ts'
-import { usePerms } from '@/composables/usePerms.ts'
+import { useContract } from '@/store/pinia/contract'
+import { usePerms } from '@/composables/usePerms'
 import Required from './Required.vue'
-
-const emit = defineEmits(['on-update', 'on-delete'])
 
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
@@ -16,14 +14,22 @@ const requiredDocsList = computed(() => contStore.requiredDocsList)
 
 <template>
   <CTable hover responsive>
-    <colgroup>
+    <colgroup v-if="canProjectUpdate">
+      <col style="width: 12%" />
+      <col style="width: 18%" />
       <col style="width: 10%" />
+      <col style="width: 14%" />
+      <col style="width: 26%" />
+      <col style="width: 8%" />
+      <col style="width: 12%" />
+    </colgroup>
+    <colgroup v-else>
+      <col style="width: 14%" />
+      <col style="width: 20%" />
+      <col style="width: 12%" />
+      <col style="width: 14%" />
+      <col style="width: 30%" />
       <col style="width: 10%" />
-      <col style="width: 10%" />
-      <col style="width: 10%" />
-      <col style="width: 10%" />
-      <col style="width: 10%" />
-      <col v-if="canProjectUpdate" style="width: 10%" />
     </colgroup>
     <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
@@ -41,8 +47,6 @@ const requiredDocsList = computed(() => contStore.requiredDocsList)
         v-for="doc in requiredDocsList"
         :key="doc.pk"
         :required-doc="doc"
-        @on-update="emit('on-update', $event)"
-        @on-delete="emit('on-delete', $event)"
       />
     </CTableBody>
 
