@@ -1,11 +1,15 @@
 <script lang="ts" setup>
 import { ref, reactive, computed } from 'vue'
+import { isValidate } from '@/utils/helper'
 import { usePerms } from '@/composables/usePerms.ts'
+import type { UnitFloorType } from '@/store/types/project'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 defineProps({ disabled: Boolean })
-const emit = defineEmits(['on-submit'])
+const emit = defineEmits<{
+  (e: 'on-submit', payload: Omit<UnitFloorType, 'pk' | 'project'>): void
+}>()
 
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
@@ -13,7 +17,13 @@ const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
 const refAlertModal = ref()
 const refConfirmModal = ref()
 
-const form = reactive({
+const form = reactive<{
+  sort: '' | '1' | '2' | '3' | '4' | '5' | '6'
+  start_floor: number | ''
+  end_floor: number | ''
+  extra_cond: string
+  alias_name: string
+}>({
   sort: '',
   start_floor: '',
   end_floor: '',
@@ -23,17 +33,29 @@ const form = reactive({
 
 const validated = ref(false)
 
+// 시작 층이 종료 층보다 큰지 여부 검증
+const isRangeInvalid = computed(() => {
+  if (form.start_floor === '' || form.end_floor === '') return false
+  return Number(form.start_floor) > Number(form.end_floor)
+})
+
+// 폼 유효성 검사
+const isFormValid = computed(
+  () =>
+    Boolean(form.sort) &&
+    form.start_floor !== '' &&
+    form.end_floor !== '' &&
+    Boolean(form.alias_name.trim()) &&
+    !isRangeInvalid.value,
+)
+
 const onSubmit = (event: Event) => {
   if (canProjectUpdate.value) {
-    const el = event.currentTarget as HTMLFormElement
-    if (!el.checkValidity()) {
-      event.preventDefault()
-      event.stopPropagation()
-
-      validated.value = true
-    } else {
-      refConfirmModal.value.callModal()
+    if (isRangeInvalid.value) {
+      alert('종료 층은 시작 층보다 크거나 같아야 합니다.')
+      return
     }
+    isValidate(event) ? (validated.value = true) : refConfirmModal.value.callModal()
   } else {
     refAlertModal.value.callModal()
     resetForm()
@@ -41,7 +63,17 @@ const onSubmit = (event: Event) => {
 }
 
 const modalAction = () => {
-  emit('on-submit', form)
+  if (isRangeInvalid.value) {
+    alert('종료 층은 시작 층보다 크거나 같아야 합니다.')
+    return
+  }
+  emit('on-submit', {
+    sort: form.sort,
+    start_floor: Number(form.start_floor),
+    end_floor: Number(form.end_floor),
+    extra_cond: form.extra_cond.trim(),
+    alias_name: form.alias_name.trim(),
+  })
   validated.value = false
   refConfirmModal.value.close()
   resetForm()
@@ -90,7 +122,12 @@ const resetForm = () => {
           min="-10"
           required
           :disabled="disabled"
+          :invalid="isRangeInvalid"
+          :feedback-invalid="isRangeInvalid ? '종료 층은 시작 층보다 크거나 같아야 합니다.' : undefined"
         />
+        <div v-if="isRangeInvalid" class="text-danger small mt-1">
+          ※ 종료 층은 시작 층보다 크거나 같아야 합니다.
+        </div>
       </CCol>
 
       <CCol md="2" class="mb-2">
@@ -113,7 +150,9 @@ const resetForm = () => {
       </CCol>
 
       <CCol md="2" class="d-grid gap-2 d-lg-block mb-3">
-        <v-btn color="primary" type="submit" :disabled="disabled"> 층별타입추가</v-btn>
+        <v-btn color="primary" type="submit" :disabled="disabled || !isFormValid">
+          층별타입추가
+        </v-btn>
       </CCol>
     </CRow>
   </CForm>

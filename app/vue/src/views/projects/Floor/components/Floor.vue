@@ -1,45 +1,83 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount } from 'vue'
+import { ref, reactive, computed, watch, type PropType } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { usePerms } from '@/composables/usePerms.ts'
+import type { UnitFloorType } from '@/store/types/project'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({ floor: { type: Object, required: true } })
-const emit = defineEmits(['on-update', 'on-delete'])
+const props = defineProps({
+  floor: { type: Object as PropType<UnitFloorType>, required: true },
+})
+
+const emit = defineEmits<{
+  (e: 'on-update', payload: UnitFloorType): void
+  (e: 'on-delete', pk: number): void
+}>()
 
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
+const isSuperAuth = computed(() => useAccount().superAuth)
 
 const refAlertModal = ref()
 const refConfirmModal = ref()
 
-const form = reactive({
+const form = reactive<{
+  sort: '' | '1' | '2' | '3' | '4' | '5' | '6'
+  start_floor: number | ''
+  end_floor: number | ''
+  extra_cond: string
+  alias_name: string
+}>({
   sort: '',
-  start_floor: null,
-  end_floor: null,
+  start_floor: '',
+  end_floor: '',
   extra_cond: '',
   alias_name: '',
 })
 
-const formsCheck = computed(() => {
-  const a = form.sort === props.floor.sort
-  const b = form.start_floor === props.floor.start_floor
-  const c = form.end_floor === props.floor.end_floor
-  const d = form.extra_cond === props.floor.extra_cond
-  const e = form.alias_name === props.floor.alias_name
-  return a && b && c && d && e
+// 시작 층이 종료 층보다 큰지 여부 검증
+const isRangeInvalid = computed(() => {
+  if (form.start_floor === '' || form.end_floor === '') return false
+  return Number(form.start_floor) > Number(form.end_floor)
 })
 
-const formCheck = (bool: boolean) => {
-  if (bool) onUpdateFloor()
-  return
-}
+// 기존 데이터와 동일한지 여부
+const isUnchanged = computed(() => {
+  return (
+    form.sort === props.floor.sort &&
+    Number(form.start_floor) === props.floor.start_floor &&
+    Number(form.end_floor) === props.floor.end_floor &&
+    form.extra_cond.trim() === (props.floor.extra_cond || '') &&
+    form.alias_name.trim() === props.floor.alias_name
+  )
+})
+
+// 수정 버튼 비활성화 여부
+const formsCheck = computed(() => {
+  return (
+    !form.sort ||
+    form.start_floor === '' ||
+    form.end_floor === '' ||
+    !form.alias_name.trim() ||
+    isRangeInvalid.value ||
+    isUnchanged.value
+  )
+})
 
 const onUpdateFloor = () => {
+  if (formsCheck.value) return
+
   if (canProjectUpdate.value) {
-    const pk = props.floor.pk
-    emit('on-update', { ...{ pk }, ...form })
+    emit('on-update', {
+      pk: props.floor.pk,
+      project: props.floor.project,
+      sort: form.sort,
+      start_floor: Number(form.start_floor),
+      end_floor: Number(form.end_floor),
+      extra_cond: form.extra_cond.trim(),
+      alias_name: form.alias_name.trim(),
+    })
   } else {
     refAlertModal.value.callModal()
     dataSetup()
@@ -47,25 +85,33 @@ const onUpdateFloor = () => {
 }
 
 const onDeleteFloor = () => {
-  if (useAccount().superAuth) refConfirmModal.value.callModal()
+  if (isSuperAuth.value) refConfirmModal.value.callModal()
   else {
     refAlertModal.value.callModal()
     dataSetup()
   }
 }
+
 const modalAction = () => {
-  emit('on-delete', props.floor.pk)
+  if (props.floor.pk) {
+    emit('on-delete', props.floor.pk)
+  }
   refConfirmModal.value.close()
 }
+
 const dataSetup = () => {
   form.sort = props.floor.sort
   form.start_floor = props.floor.start_floor
   form.end_floor = props.floor.end_floor
-  form.extra_cond = props.floor.extra_cond
-  form.alias_name = props.floor.alias_name
+  form.extra_cond = props.floor.extra_cond ?? ''
+  form.alias_name = props.floor.alias_name ?? ''
 }
 
-onBeforeMount(() => dataSetup())
+watch(
+  () => props.floor,
+  () => dataSetup(),
+  { deep: true, immediate: true },
+)
 </script>
 
 <template>
@@ -88,7 +134,7 @@ onBeforeMount(() => dataSetup())
         type="number"
         min="-10"
         required
-        @keypress.enter="formCheck(form.start_floor !== floor.start_floor)"
+        @keydown.enter.prevent="onUpdateFloor"
       />
     </CTableDataCell>
     <CTableDataCell>
@@ -98,8 +144,12 @@ onBeforeMount(() => dataSetup())
         type="number"
         min="-10"
         required
-        @keypress.enter="formCheck(form.end_floor !== form.end_floor)"
+        :invalid="isRangeInvalid"
+        @keydown.enter.prevent="onUpdateFloor"
       />
+      <div v-if="isRangeInvalid" class="text-danger small mt-1">
+        ※ 종료 층은 시작 층 이상이어야 합니다.
+      </div>
     </CTableDataCell>
 
     <CTableDataCell>
@@ -107,7 +157,7 @@ onBeforeMount(() => dataSetup())
         v-model="form.extra_cond"
         maxlength="20"
         placeholder="방향/위치"
-        @keypress.enter="formCheck(form.extra_cond !== floor.extra_cond)"
+        @keydown.enter.prevent="onUpdateFloor"
       />
     </CTableDataCell>
 
@@ -117,14 +167,14 @@ onBeforeMount(() => dataSetup())
         maxlength="20"
         placeholder="층별 범위 명칭"
         required
-        @keypress.enter="formCheck(form.alias_name !== floor.alias_name)"
+        @keydown.enter.prevent="onUpdateFloor"
       />
     </CTableDataCell>
     <CTableDataCell v-if="canProjectUpdate" class="text-center pt-3">
       <v-btn color="success" size="x-small" :disabled="formsCheck" @click="onUpdateFloor">
         수정
       </v-btn>
-      <v-btn color="warning" size="x-small" @click="onDeleteFloor">삭제</v-btn>
+      <v-btn color="warning" size="x-small" class="ml-1" @click="onDeleteFloor">삭제</v-btn>
     </CTableDataCell>
   </CTableRow>
 

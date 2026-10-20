@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, ref } from 'vue'
+import { computed, onBeforeMount, ref, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin4'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
@@ -16,7 +16,7 @@ const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
 
 const projStore = useProject()
-const project = computed(() => (projStore.project as Project)?.pk)
+const project = computed(() => (projStore.project as Project | null)?.pk)
 
 const pDataStore = useProjectData()
 const fetchFloorTypeList = (projId: number) => pDataStore.fetchFloorTypeList(projId)
@@ -24,11 +24,23 @@ const createFloorType = (payload: UnitFloorType) => pDataStore.createFloorType(p
 const updateFloorType = (payload: UnitFloorType) => pDataStore.updateFloorType(payload)
 const deleteFloorType = (pk: number, project: number) => pDataStore.deleteFloorType(pk, project)
 
-const onSubmit = (payload: UnitFloorType) =>
-  createFloorType({ ...{ project: project.value }, ...payload })
+const onSubmit = (payload: Omit<UnitFloorType, 'pk' | 'project'>) => {
+  if (project.value) {
+    createFloorType({
+      project: project.value,
+      ...payload,
+    } as UnitFloorType)
+  }
+}
 
-const onUpdateFloor = (payload: UnitFloorType) =>
-  updateFloorType({ ...{ project: project.value }, ...payload })
+const onUpdateFloor = (payload: UnitFloorType) => {
+  if (project.value) {
+    updateFloorType({
+      ...payload,
+      project: project.value,
+    })
+  }
+}
 
 const onDeleteFloor = (pk: number) => {
   if (project.value) deleteFloorType(pk, project.value)
@@ -36,8 +48,16 @@ const onDeleteFloor = (pk: number) => {
 
 const projSelect = (target: number | null) => {
   pDataStore.floorTypeList = []
-  if (!!target) fetchFloorTypeList(target)
+  if (target) fetchFloorTypeList(target)
 }
+
+watch(
+  () => project.value,
+  newProjId => {
+    pDataStore.floorTypeList = []
+    if (newProjId) fetchFloorTypeList(newProjId)
+  },
+)
 
 const loading = ref(true)
 onBeforeMount(async () => {

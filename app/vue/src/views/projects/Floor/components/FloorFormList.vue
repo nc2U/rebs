@@ -4,9 +4,12 @@ import { useProjectData } from '@/store/pinia/project_data'
 import { usePerms } from '@/composables/usePerms.ts'
 import { type UnitFloorType } from '@/store/types/project'
 import { TableSecondary } from '@/utils/cssMixins'
-import Floor from '@/views/projects/Floor/components/Floor.vue'
+import FloorItem from '@/views/projects/Floor/components/Floor.vue'
 
-const emit = defineEmits(['on-update', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'on-update', payload: UnitFloorType): void
+  (e: 'on-delete', pk: number): void
+}>()
 
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
@@ -39,7 +42,7 @@ const onDeleteFloor = (pk: number) => emit('on-delete', pk)
       </CTableRow>
     </CTableHead>
     <CTableBody v-if="floorTypeList.length > 0">
-      <Floor
+      <FloorItem
         v-for="floor in floorTypeList"
         :key="floor.pk"
         :floor="floor"
