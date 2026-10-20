@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, ref } from 'vue'
+import { computed, onBeforeMount, ref, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin5'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
@@ -16,7 +16,7 @@ const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
 
 const projStore = useProject()
-const project = computed(() => (projStore.project as Project)?.pk)
+const project = computed(() => (projStore.project as Project | null)?.pk)
 
 const pDataStore = useProjectData()
 const fetchBuildingList = (projId: number) => pDataStore.fetchBuildingList(projId)
@@ -24,20 +24,36 @@ const createBuilding = (payload: BuildingUnit) => pDataStore.createBuilding(payl
 const updateBuilding = (payload: BuildingUnit) => pDataStore.updateBuilding(payload)
 const deleteBuilding = (pk: number, projId: number) => pDataStore.deleteBuilding(pk, projId)
 
-const onCreateBuilding = (payload: BuildingUnit) =>
-  createBuilding({ ...{ project: project.value }, ...payload })
+const onCreateBuilding = (payload: { name: string }) => {
+  if (project.value) {
+    createBuilding({ project: project.value, name: payload.name } as BuildingUnit)
+  }
+}
 
-const onUpdateBuilding = (payload: BuildingUnit) =>
-  updateBuilding({ ...{ project: project.value }, ...payload })
+const onUpdateBuilding = (payload: { pk?: number; name: string }) => {
+  if (project.value && payload.pk) {
+    updateBuilding({ project: project.value, pk: payload.pk, name: payload.name } as BuildingUnit)
+  }
+}
 
 const onDeleteBuilding = (pk: number) => {
-  if (project.value) deleteBuilding(pk, project.value as number)
+  if (project.value) {
+    deleteBuilding(pk, project.value)
+  }
 }
 
 const projSelect = (target: number | null) => {
   pDataStore.buildingList = []
-  if (!!target) fetchBuildingList(target)
+  if (target) fetchBuildingList(target)
 }
+
+watch(
+  () => project.value,
+  newProjId => {
+    if (newProjId) fetchBuildingList(newProjId)
+    else pDataStore.buildingList = []
+  },
+)
 
 const loading = ref(true)
 onBeforeMount(async () => {

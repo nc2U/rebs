@@ -5,7 +5,9 @@ import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 defineProps({ disabled: Boolean })
-const emit = defineEmits(['on-submit'])
+const emit = defineEmits<{
+  (e: 'on-submit', payload: { name: string }): void
+}>()
 
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
@@ -18,11 +20,10 @@ const validated = ref(false)
 
 const onSubmit = (event: Event) => {
   if (canProjectUpdate.value) {
-    const form = event.currentTarget as HTMLFormElement
-    if (!form.checkValidity()) {
+    const formEl = event.currentTarget as HTMLFormElement
+    if (!formEl.checkValidity() || !form.name.trim()) {
       event.preventDefault()
       event.stopPropagation()
-
       validated.value = true
     } else {
       refConfirmModal.value.callModal()
@@ -32,18 +33,22 @@ const onSubmit = (event: Event) => {
     resetForm()
   }
 }
+
 const modalAction = () => {
-  emit('on-submit', form)
+  emit('on-submit', { name: form.name.trim() })
   validated.value = false
   refConfirmModal.value.close()
   resetForm()
 }
-const resetForm = () => (form.name = '')
+
+const resetForm = () => {
+  form.name = ''
+}
 </script>
 
 <template>
   <CForm novalidate class="needs-validation" :validated="validated" @submit.prevent="onSubmit">
-    <CRow class="p-2" color="success">
+    <CRow class="p-2">
       <CCol md="3" class="mb-2">
         <CFormInput
           v-model="form.name"
@@ -55,7 +60,9 @@ const resetForm = () => (form.name = '')
       </CCol>
 
       <CCol md="3" class="d-grid gap-2 d-lg-block mb-3">
-        <v-btn color="primary" type="submit" :disabled="disabled"> 동 추가</v-btn>
+        <v-btn color="primary" type="submit" :disabled="disabled || !form.name.trim()">
+          동 추가
+        </v-btn>
       </CCol>
     </CRow>
   </CForm>

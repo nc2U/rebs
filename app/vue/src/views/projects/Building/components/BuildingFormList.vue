@@ -3,10 +3,12 @@ import { computed } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
 import { TableSecondary } from '@/utils/cssMixins'
 import { usePerms } from '@/composables/usePerms.ts'
-import { type BuildingUnit } from '@/store/types/project'
 import Building from '@/views/projects/Building/components/Building.vue'
 
-const emit = defineEmits(['on-update', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'on-update', payload: { pk?: number; name: string }): void
+  (e: 'on-delete', pk: number): void
+}>()
 
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
@@ -14,19 +16,19 @@ const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
 const projectDataStore = useProjectData()
 const buildingList = computed(() => projectDataStore.buildingList)
 
-const onUpdateBuilding = (payload: BuildingUnit) => emit('on-update', payload)
+const onUpdateBuilding = (payload: { pk?: number; name: string }) => emit('on-update', payload)
 const onDeleteBuilding = (pk: number) => emit('on-delete', pk)
 </script>
 
 <template>
   <CTable hover responsive>
     <colgroup>
-      <col style="width: 50%" />
-      <col v-if="canProjectUpdate" style="width: 50%" />
+      <col :style="{ width: canProjectUpdate ? '70%' : '100%' }" />
+      <col v-if="canProjectUpdate" style="width: 30%" />
     </colgroup>
     <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
-        <CTableHeaderCell>동(건물)이름</CTableHeaderCell>
+        <CTableHeaderCell>동(건물) 이름</CTableHeaderCell>
         <CTableHeaderCell v-if="canProjectUpdate">비 고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
