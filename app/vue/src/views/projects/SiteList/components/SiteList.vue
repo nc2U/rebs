@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { usePerms } from '@/composables/usePerms.ts'
+import { usePerms } from '@/composables/usePerms'
 import { useSite } from '@/store/pinia/project_site'
 import { TableSecondary } from '@/utils/cssMixins'
-import { type Site as S } from '@/store/types/project'
+import type { Site as S } from '@/store/types/project'
 import Site from '@/views/projects/SiteList/components/Site.vue'
 import Pagination from '@/components/Pagination'
 
 const props = defineProps({
-  isReturned: { type: Boolean },
+  isReturned: { type: Boolean, default: false },
   limit: { type: Number, default: 10 },
-  highlightId: { type: Number, default: null },
+  highlightId: { type: Number, default: undefined },
   currentPage: { type: Number, default: 1 },
 })
 const emit = defineEmits(['page-select', 'on-delete', 'multi-submit'])
@@ -21,31 +21,70 @@ const canSiteUpdate = computed(() => can(PERM.SITE_UPDATE))
 const canSiteManage = computed(() => canSiteCreate.value || canSiteUpdate.value)
 
 const siteStore = useSite()
-// const siteList = computed<S[]>(() => siteStore.getSiteList)
 const siteList = computed<S[]>(() => siteStore.siteList)
 const siteCount = computed(() => siteStore.siteCount)
 
 const sitePages = (num: number) => Math.ceil(siteCount.value / num)
 const pageSelect = (page: number) => emit('page-select', page)
 const multiSubmit = (payload: S) => emit('multi-submit', payload)
-const onDelete = (pk: number) => emit('on-delete', pk)
+const onDelete = (payload: { pk: number; project: number }) => emit('on-delete', payload)
 </script>
 
 <template>
   <CTable hover responsive bordered align="middle">
-    <colgroup>
+    <!-- 환지면적 포함 & 비고 컬럼 포함 (12 cols) -->
+    <colgroup v-if="isReturned && canSiteManage">
       <col style="width: 5%" />
       <col style="width: 6%" />
       <col style="width: 7%" />
       <col style="width: 5%" />
       <col style="width: 8%" />
       <col style="width: 8%" />
-      <col v-if="isReturned" style="width: 7%" />
-      <col v-if="isReturned" style="width: 7%" />
+      <col style="width: 7%" />
+      <col style="width: 7%" />
       <col style="width: 30%" />
       <col style="width: 5%" />
+      <col style="width: 6%" />
+      <col style="width: 6%" />
+    </colgroup>
+    <!-- 환지면적 포함 & 비고 컬럼 미포함 (11 cols) -->
+    <colgroup v-else-if="isReturned && !canSiteManage">
+      <col style="width: 5%" />
       <col style="width: 7%" />
-      <col v-if="canSiteManage" style="width: 6%" />
+      <col style="width: 8%" />
+      <col style="width: 5%" />
+      <col style="width: 9%" />
+      <col style="width: 9%" />
+      <col style="width: 7%" />
+      <col style="width: 7%" />
+      <col style="width: 31%" />
+      <col style="width: 5%" />
+      <col style="width: 7%" />
+    </colgroup>
+    <!-- 환지면적 미포함 & 비고 컬럼 포함 (10 cols) -->
+    <colgroup v-else-if="!isReturned && canSiteManage">
+      <col style="width: 6%" />
+      <col style="width: 8%" />
+      <col style="width: 9%" />
+      <col style="width: 6%" />
+      <col style="width: 10%" />
+      <col style="width: 10%" />
+      <col style="width: 33%" />
+      <col style="width: 6%" />
+      <col style="width: 6%" />
+      <col style="width: 6%" />
+    </colgroup>
+    <!-- 환지면적 미포함 & 비고 컬럼 미포함 (9 cols) -->
+    <colgroup v-else>
+      <col style="width: 6%" />
+      <col style="width: 8%" />
+      <col style="width: 9%" />
+      <col style="width: 6%" />
+      <col style="width: 11%" />
+      <col style="width: 11%" />
+      <col style="width: 35%" />
+      <col style="width: 7%" />
+      <col style="width: 7%" />
     </colgroup>
 
     <CTableHead :color="TableSecondary">
@@ -55,7 +94,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         <CTableHeaderCell rowspan="2" scope="col">지번</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">지목</CTableHeaderCell>
         <CTableHeaderCell colspan="2" scope="col">공부상 면적</CTableHeaderCell>
-        <CTableHeaderCell v-if="isReturned" colspan="2" scope="col"> 환지 면적</CTableHeaderCell>
+        <CTableHeaderCell v-if="isReturned" colspan="2" scope="col">환지 면적</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">소유자 목록</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">등기부 등본</CTableHeaderCell>
         <CTableHeaderCell rowspan="2" scope="col">등본 발급일</CTableHeaderCell>
@@ -64,7 +103,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
       <CTableRow class="text-center">
         <CTableHeaderCell scope="col">m<sup>2</sup></CTableHeaderCell>
         <CTableHeaderCell scope="col">평</CTableHeaderCell>
-        <CTableHeaderCell v-if="isReturned" scope="col"> m<sup>2</sup></CTableHeaderCell>
+        <CTableHeaderCell v-if="isReturned" scope="col">m<sup>2</sup></CTableHeaderCell>
         <CTableHeaderCell v-if="isReturned" scope="col">평</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
@@ -80,7 +119,10 @@ const onDelete = (pk: number) => emit('on-delete', pk)
         @on-delete="onDelete"
       />
       <CTableRow v-if="!siteList.length">
-        <CTableDataCell colspan="13" class="text-center p-5 text-danger">
+        <CTableDataCell
+          :colspan="(isReturned ? 11 : 9) + (canSiteManage ? 1 : 0)"
+          class="text-center p-5 text-danger"
+        >
           등록된 데이터가 없습니다.
         </CTableDataCell>
       </CTableRow>
@@ -88,7 +130,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
   </CTable>
 
   <Pagination
-    v-if="siteCount > 10"
+    v-if="sitePages(limit) > 1"
     :active-page="props.currentPage"
     :limit="8"
     :pages="sitePages(limit)"

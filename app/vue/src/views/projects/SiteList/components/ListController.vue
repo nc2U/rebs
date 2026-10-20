@@ -1,16 +1,15 @@
 <script lang="ts" setup>
-import { computed, reactive, nextTick } from 'vue'
+import { computed, nextTick, reactive } from 'vue'
 import { useSite } from '@/store/pinia/project_site'
 import { numFormat } from '@/utils/baseMixins'
 import { bgLight } from '@/utils/cssMixins'
 
-defineProps({ project: { type: Number, default: null } })
+defineProps({ project: { type: Number, default: undefined } })
 const emit = defineEmits(['list-filtering'])
 
 const form = reactive({ limit: '' as '' | number, search: '' })
 
 const siteStore = useSite()
-
 const siteCount = computed(() => siteStore.siteCount)
 
 const formsCheck = computed(() => form.limit === '' && form.search.trim() === '')
@@ -35,7 +34,7 @@ const resetForm = () => {
     <CRow>
       <CCol md="12" lg="8" xl="6">
         <CRow>
-          <CCol md="6" lg="4" xl="2" class="mb-3">
+          <CCol sm="4" md="3" lg="3" class="mb-3">
             <CFormSelect v-model.number="form.limit" @change="listFiltering(1)">
               <option value="">표시 개수</option>
               <option :value="10" :disabled="form.limit === '' || form.limit === 10">10 개</option>
@@ -44,7 +43,7 @@ const resetForm = () => {
               <option :value="100" :disabled="form.limit === 100">100 개</option>
             </CFormSelect>
           </CCol>
-          <CCol md="6" lg="5" xl="3" class="mb-3">
+          <CCol sm="8" md="9" lg="9" class="mb-3">
             <CInputGroup class="flex-nowrap">
               <CFormInput
                 v-model="form.search"
@@ -53,7 +52,9 @@ const resetForm = () => {
                 :disabled="!project"
                 @keydown.enter="listFiltering(1)"
               />
-              <CInputGroupText @click="listFiltering(1)">검색</CInputGroupText>
+              <CInputGroupText class="pointer" style="cursor: pointer" @click="listFiltering(1)">
+                검색
+              </CInputGroupText>
             </CInputGroup>
           </CCol>
         </CRow>
@@ -64,7 +65,7 @@ const resetForm = () => {
         <strong> 필지 건 수 조회 결과 : {{ numFormat(siteCount, 0, 0) }} 건 </strong>
       </CCol>
       <CCol v-if="!formsCheck" class="text-right mb-0">
-        <v-btn color="info" size="small" @click="resetForm"> 검색조건 초기화</v-btn>
+        <v-btn color="info" size="small" @click="resetForm">검색조건 초기화</v-btn>
       </CCol>
     </CRow>
   </CCallout>

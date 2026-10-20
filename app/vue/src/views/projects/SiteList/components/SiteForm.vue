@@ -1,16 +1,19 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount, type PropType } from 'vue'
+import { computed, onBeforeMount, type PropType, reactive, ref, watch } from 'vue'
 import { isValidate } from '@/utils/helper'
-import { usePerms } from '@/composables/usePerms.ts'
+import { usePerms } from '@/composables/usePerms'
 import { useProject } from '@/store/pinia/project'
 import { useSite } from '@/store/pinia/project_site'
-import { type Project, type Site } from '@/store/types/project'
+import type { Project, Site } from '@/store/types/project'
 import AttatchFile from '@/components/AttatchFile/Index.vue'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({ site: { type: Object as PropType<Site>, default: null } })
+const props = defineProps({
+  site: { type: Object as PropType<Site>, default: null },
+  project: { type: Number, default: undefined },
+})
 
 const emit = defineEmits(['multi-submit', 'on-delete', 'close'])
 
@@ -44,7 +47,7 @@ const form = reactive({
 
 const projectStore = useProject()
 const currProject = computed(() => projectStore.currentProject)
-const project = computed(() => (projectStore.project as Project)?.pk || currProject.value)
+const project = computed(() => props.project || (projectStore.project as Project)?.pk || currProject.value)
 const isReturned = computed(() => (projectStore.project as Project)?.is_returned_area)
 const siteStore = useSite()
 
@@ -69,7 +72,21 @@ const formsCheck = computed(() => {
     const p = !delFile.value
 
     return a && b && c && d && e && f && g && h && i && j && k && l && m && n && o && p
-  } else return false
+  }
+  return false
+})
+
+const isFormValid = computed(() => {
+  return (
+    Boolean(form.district?.trim()) &&
+    Boolean(form.lot_number?.trim()) &&
+    Boolean(form.site_purpose?.trim()) &&
+    Boolean(form.official_area) &&
+    Number(form.official_area) >= 0 &&
+    form.order !== null &&
+    form.order !== undefined &&
+    form.order >= 0
+  )
 })
 
 const newFile = ref<File | ''>('')
@@ -94,11 +111,12 @@ const fileControl = (payload: any) => {
 }
 
 const onSubmit = (event: Event) => {
-  if (isValidate(event)) {
+  if (isValidate(event) || !isFormValid.value) {
     validated.value = true
   } else {
     if (canSiteManage.value) multiSubmit({ ...form })
     else refAlertModal.value.callModal()
+    validated.value = false
   }
 }
 
@@ -125,6 +143,12 @@ const deleteConfirm = () => {
 }
 
 const dataSetup = () => {
+  newFile.value = ''
+  editFile.value = ''
+  cngFile.value = ''
+  delFile.value = undefined
+  validated.value = false
+
   if (props.site) {
     form.pk = props.site.pk
     form.project = props.site.project
@@ -139,12 +163,26 @@ const dataSetup = () => {
     form.rights_b = props.site.rights_b
     form.dup_issue_date = props.site.dup_issue_date
     form.note = props.site.note
-    form.site_info_files = props.site.site_info_files
+    form.site_info_files = props.site.site_info_files || []
   } else {
+    form.pk = null
     form.project = project.value
     form.order = siteStore.siteCount + 1
+    form.district = ''
+    form.lot_number = ''
+    form.site_purpose = ''
+    form.official_area = ''
+    form.returned_area = null
+    form.notice_price = null
+    form.rights_a = ''
+    form.rights_b = ''
+    form.dup_issue_date = null
+    form.note = ''
+    form.site_info_files = []
   }
 }
+
+watch(() => props.site, dataSetup, { deep: true })
 
 onBeforeMount(() => dataSetup())
 </script>
@@ -209,7 +247,7 @@ onBeforeMount(() => dataSetup())
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label required"> 공부상 면적(㎡)</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label required">공부상 면적(㎡)</CFormLabel>
               <CCol sm="8">
                 <CFormInput
                   v-model.number="form.official_area"
@@ -224,7 +262,7 @@ onBeforeMount(() => dataSetup())
           </CCol>
           <CCol sm="6">
             <CRow v-if="isReturned">
-              <CFormLabel class="col-sm-4 col-form-label"> 환지 면적(㎡)</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label">환지 면적(㎡)</CFormLabel>
               <CCol sm="8">
                 <CFormInput
                   v-model.number="form.returned_area"
@@ -245,7 +283,7 @@ onBeforeMount(() => dataSetup())
         <CRow class="mb-3">
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 등기부 발급일</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label">등기부 발급일</CFormLabel>
               <CCol sm="8">
                 <DatePicker
                   v-model="form.dup_issue_date"
@@ -259,7 +297,7 @@ onBeforeMount(() => dataSetup())
 
           <CCol sm="6">
             <CRow>
-              <CFormLabel class="col-sm-4 col-form-label"> 공시지가</CFormLabel>
+              <CFormLabel class="col-sm-4 col-form-label">공시지가</CFormLabel>
               <CCol sm="8">
                 <CFormInput
                   v-model.number="form.notice_price"
@@ -275,7 +313,7 @@ onBeforeMount(() => dataSetup())
         <CRow class="mb-3">
           <CCol sm="12">
             <CRow>
-              <CFormLabel class="col-sm-2 col-form-label"> 갑구 권리 제한 사항</CFormLabel>
+              <CFormLabel class="col-sm-2 col-form-label">갑구 권리 제한 사항</CFormLabel>
               <CCol sm="10">
                 <CFormTextarea v-model="form.rights_a" rows="4" placeholder="갑구 권리 제한 사항" />
               </CCol>
@@ -286,7 +324,7 @@ onBeforeMount(() => dataSetup())
         <CRow class="mb-3">
           <CCol sm="12">
             <CRow>
-              <CFormLabel class="col-sm-2 col-form-label"> 을구 권리 제한 사항</CFormLabel>
+              <CFormLabel class="col-sm-2 col-form-label">을구 권리 제한 사항</CFormLabel>
               <CCol sm="10">
                 <CFormTextarea v-model="form.rights_b" rows="4" placeholder="을구 권리 제한 사항" />
               </CCol>
@@ -299,7 +337,7 @@ onBeforeMount(() => dataSetup())
         <CRow class="mb-3">
           <CCol sm="12">
             <CRow>
-              <CFormLabel class="col-sm-2 col-form-label"> 비고</CFormLabel>
+              <CFormLabel class="col-sm-2 col-form-label">비고</CFormLabel>
               <CCol sm="10">
                 <CFormTextarea
                   v-model="form.note"
@@ -328,7 +366,7 @@ onBeforeMount(() => dataSetup())
           type="submit"
           size="small"
           :color="site ? 'success' : 'primary'"
-          :disabled="formsCheck"
+          :disabled="formsCheck || !isFormValid"
         >
           저장
         </v-btn>
@@ -341,13 +379,13 @@ onBeforeMount(() => dataSetup())
         >
           삭제
         </v-btn>
-        <v-btn type="button" size="small" color="light" @click="$emit('close')" flat> 닫기</v-btn>
+        <v-btn type="button" size="small" color="light" flat @click="$emit('close')">닫기</v-btn>
       </slot>
     </CModalFooter>
   </CForm>
 
   <ConfirmModal ref="refDelModal">
-    <template #header> 사업 부지 정보 삭제</template>
+    <template #header>사업 부지 정보 삭제</template>
     <template #default>
       삭제한 데이터는 복구할 수 없습니다. 해당 사업 부지 정보를 삭제하시겠습니까?
     </template>

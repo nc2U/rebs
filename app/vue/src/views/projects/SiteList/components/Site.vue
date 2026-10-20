@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { computed, type PropType, ref } from 'vue'
-import { type Site } from '@/store/types/project'
-import { usePerms } from '@/composables/usePerms.ts'
+import type { Site } from '@/store/types/project'
+import { usePerms } from '@/composables/usePerms'
 import { cutString, numFormat } from '@/utils/baseMixins'
 import FormModal from '@/components/Modals/FormModal.vue'
 import SiteForm from './SiteForm.vue'
 
 const props = defineProps({
   site: { type: Object as PropType<Site>, required: true },
-  isReturned: { type: Boolean },
+  isReturned: { type: Boolean, default: false },
   isHighlight: { type: Boolean, default: false },
 })
 
@@ -20,12 +20,29 @@ const canSiteUpdate = computed(() => can(PERM.SITE_UPDATE))
 const canSiteManage = computed(() => canSiteCreate.value || canSiteUpdate.value)
 
 const updateFormModal = ref()
+const isModalVisible = ref(false)
 
 const owners = computed(() => (props.site.owners ? props.site.owners.map(o => o.owner) : []))
 
-const showDetail = () => updateFormModal.value.callModal()
-const multiSubmit = (payload: Site) => emit('multi-submit', payload)
-const onDelete = (payload: { pk: number; project: number }) => emit('on-delete', payload)
+const showDetail = () => {
+  isModalVisible.value = true
+  updateFormModal.value.callModal()
+}
+
+const closeModal = () => {
+  updateFormModal.value.close()
+  isModalVisible.value = false
+}
+
+const multiSubmit = (payload: Site) => {
+  emit('multi-submit', payload)
+  closeModal()
+}
+
+const onDelete = (payload: { pk: number; project: number }) => {
+  emit('on-delete', payload)
+  closeModal()
+}
 </script>
 
 <template>
@@ -36,25 +53,29 @@ const onDelete = (payload: { pk: number; project: number }) => emit('on-delete',
   >
     <CTableDataCell>{{ site.order }}</CTableDataCell>
     <CTableDataCell>
-      {{ site.district }}
+      <a href="javascript:void(0);" @click="showDetail">
+        {{ site.district }}
+      </a>
     </CTableDataCell>
     <CTableDataCell>
-      {{ site.lot_number }}
+      <a href="javascript:void(0);" @click="showDetail">
+        {{ site.lot_number }}
+      </a>
     </CTableDataCell>
     <CTableDataCell>
       {{ site.site_purpose }}
     </CTableDataCell>
     <CTableDataCell class="text-right">
-      {{ numFormat(site.official_area, 2) }}
+      {{ numFormat(site.official_area || 0, 2) }}
     </CTableDataCell>
     <CTableDataCell class="text-right" color="warning">
       {{ numFormat((Number(site.official_area) || 0) * 0.3025, 2) }}
     </CTableDataCell>
     <CTableDataCell v-if="isReturned" class="text-right">
-      {{ numFormat(site.returned_area as number, 2) }}
+      {{ numFormat(site.returned_area || 0, 2) }}
     </CTableDataCell>
     <CTableDataCell v-if="isReturned" class="text-right" color="warning">
-      {{ numFormat((site.returned_area as number) * 0.3025, 2) }}
+      {{ numFormat((Number(site.returned_area) || 0) * 0.3025, 2) }}
     </CTableDataCell>
     <CTableDataCell class="text-left">
       {{ owners.length ? cutString(owners.join(', '), 48) : '' }}
@@ -63,7 +84,7 @@ const onDelete = (payload: { pk: number; project: number }) => emit('on-delete',
       </v-tooltip>
     </CTableDataCell>
     <CTableDataCell>
-      <span v-if="!!site.site_info_files.length" class="pointer">
+      <span v-if="site.site_info_files && site.site_info_files.length" class="pointer">
         <a :href="site.site_info_files[0].file" target="_blank">
           <v-icon icon="mdi-download-box" color="primary" />
         </a>
@@ -85,13 +106,14 @@ const onDelete = (payload: { pk: number; project: number }) => emit('on-delete',
   </CTableRow>
 
   <FormModal ref="updateFormModal" size="lg">
-    <template #header>사업 부지 등록</template>
+    <template #header>사업 부지 상세 및 수정</template>
     <template #default>
       <SiteForm
+        v-if="isModalVisible"
         :site="site"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
-        @close="updateFormModal.close()"
+        @close="closeModal"
       />
     </template>
   </FormModal>

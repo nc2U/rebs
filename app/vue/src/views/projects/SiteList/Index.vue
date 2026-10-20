@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount, watch, nextTick } from 'vue'
-import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
+import { computed, nextTick, onBeforeMount, ref, watch } from 'vue'
+import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
+import { navMenu, pageTitle } from '@/views/projects/_menu/headermixin2'
 import { useProject } from '@/store/pinia/project'
-import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
-import { usePerms } from '@/composables/usePerms.ts'
+import { usePerms } from '@/composables/usePerms'
 import { numFormat } from '@/utils/baseMixins'
-import { useSite, type SiteFilter } from '@/store/pinia/project_site'
+import { type SiteFilter, useSite } from '@/store/pinia/project_site'
 import type { Project, Site } from '@/store/types/project'
 import Loading from '@/components/Loading/Index.vue'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -59,7 +59,6 @@ const excelUrl = computed(
 )
 
 const listFiltering = (payload: SiteFilter) => {
-  // 필터링 시 query string 정리
   clearQueryString()
   payload.project = project.value as number
   dataFilter.value = payload
@@ -67,11 +66,15 @@ const listFiltering = (payload: SiteFilter) => {
 }
 
 const pageSelect = (page: number) => {
-  // 페이지 변경 시 query string 정리
   clearQueryString()
   dataFilter.value.page = page
-  if (project.value) siteStore.fetchSiteList({ project: project.value, page })
-  listControl.value.listFiltering(page)
+  if (project.value) {
+    siteStore.fetchSiteList({
+      ...dataFilter.value,
+      project: project.value,
+      page,
+    })
+  }
 }
 
 const onCreate = (payload: { form: FormData; page?: number; search?: string }) =>
@@ -87,8 +90,6 @@ const multiSubmit = (payload: Site) => {
   const form = new FormData()
   for (const key in data) {
     const value = data[key]
-
-    // null, undefined, 빈 문자열은 제외 (숫자 필드 오류 방지 목적)
     if (value !== null && value !== undefined && value !== '') form.set(key, value)
   }
 
@@ -99,11 +100,14 @@ const multiSubmit = (payload: Site) => {
 }
 
 const onDelete = (payload: { pk: number; project: number }) => {
-  const { pk, project } = payload
-  siteStore.deleteSite(pk, project)
+  const { pk, project: projId } = payload
+  siteStore.deleteSite(pk, projId)
 }
 
-const dataSetup = (pk: number) => siteStore.fetchSiteList({ project: pk })
+const dataSetup = (pk: number) => {
+  dataFilter.value.project = pk
+  siteStore.fetchSiteList(dataFilter.value)
+}
 
 const dataReset = () => {
   siteStore.siteList = []
@@ -111,10 +115,9 @@ const dataReset = () => {
 }
 
 const projSelect = (target: number | null) => {
-  // 프로젝트 변경 시 query string 정리
   clearQueryString()
   dataReset()
-  if (!!target) dataSetup(target)
+  if (target) dataSetup(target)
 }
 
 // Query string 정리 함수
@@ -124,11 +127,10 @@ const clearQueryString = () => {
       .replace({
         name: route.name,
         params: route.params,
-        // query를 빈 객체로 설정하여 모든 query string 제거
         query: {},
       })
       .catch(() => {
-        // 같은 경로로의 이동에서 발생하는 NavigationDuplicated 에러 무시
+        // 동일 경로 이동 NavigationDuplicated 에러 무시
       })
   }
 }
@@ -148,7 +150,6 @@ const scrollToHighlight = async () => {
 const loadHighlightPage = async (projectId: number) => {
   if (highlightId.value && projectId) {
     try {
-      // URL의 page 파라미터가 있으면 해당 페이지로 이동
       const pageParam = route.query.page
       if (pageParam) {
         const targetPage = parseInt(pageParam as string, 10)
@@ -160,18 +161,24 @@ const loadHighlightPage = async (projectId: number) => {
         }
         siteStore.fetchSiteList({ project: projectId, page: targetPage })
       } else {
-        // page 파라미터가 없으면 기본 첫 페이지
         dataSetup(projectId)
       }
     } catch (error) {
       console.error('Error loading highlight page:', error)
-      // 오류 발생시 기본 첫 페이지 로드
       dataSetup(projectId)
     }
   }
 }
 
-// 다른 라우트로 이동 시 query string 정리
+watch(
+  () => project.value,
+  newVal => {
+    clearQueryString()
+    dataReset()
+    if (newVal) dataSetup(newVal)
+  },
+)
+
 onBeforeRouteLeave(() => {
   clearQueryString()
 })
@@ -179,12 +186,10 @@ onBeforeRouteLeave(() => {
 const loading = ref(true)
 onBeforeMount(async () => {
   if (canSiteRead.value) {
-    // URL에서 프로젝트 ID가 지정되어 있으면 해당 프로젝트 사용
     let projectId = urlProjectId.value || project.value || projStore.currentProject
     if (projectId) {
       if (urlProjectId.value && urlProjectId.value !== project.value) projectId = urlProjectId.value
 
-      // 하이라이트 항목이 있으면 해당 페이지로 이동 후 스크롤
       if (highlightId.value) {
         await loadHighlightPage(projectId)
         await scrollToHighlight()
@@ -211,11 +216,14 @@ onBeforeMount(async () => {
       <CCardBody class="pb-5">
         <ListController
           ref="listControl"
-          :project="project as number"
-          :is-returned="isReturned"
+          :project="project ?? undefined"
           @list-filtering="listFiltering"
         />
-        <AddSite v-if="canSiteCreate" :project="project as number" @multi-submit="multiSubmit" />
+        <AddSite
+          v-if="canSiteCreate"
+          :project="project ?? undefined"
+          @multi-submit="multiSubmit"
+        />
         <TableTitleRow
           title="사업 부지 목록"
           excel
@@ -224,15 +232,15 @@ onBeforeMount(async () => {
           :disabled="!project"
         >
           <span v-if="project" class="text-success" style="padding-top: 7px">
-            총 면적 : {{ numFormat(totalArea as number, 2) }}m<sup>2</sup> ({{
-              numFormat((totalArea as number) * 0.3025, 2)
+            총 면적 : {{ numFormat(totalArea || 0, 2) }}m<sup>2</sup> ({{
+              numFormat((totalArea || 0) * 0.3025, 2)
             }}
             평) 등록
           </span>
           <span style="padding-top: 7px">
             <CFormCheck
-              v-model="rights"
               id="include-rights"
+              v-model="rights"
               label="권리제한사항 포함"
               class="ml-3"
             />
@@ -240,7 +248,7 @@ onBeforeMount(async () => {
         </TableTitleRow>
         <SiteList
           :is-returned="isReturned"
-          :limit="dataFilter.limit || 10"
+          :limit="Number(dataFilter.limit) || 10"
           :highlight-id="highlightId || undefined"
           :current-page="dataFilter.page"
           @page-select="pageSelect"
