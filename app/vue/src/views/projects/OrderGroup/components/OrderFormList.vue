@@ -3,10 +3,13 @@ import { computed } from 'vue'
 import { useContract } from '@/store/pinia/contract'
 import { TableSecondary } from '@/utils/cssMixins'
 import { usePerms } from '@/composables/usePerms.ts'
-import { type OrderGroup as og } from '@/store/types/contract'
-import OrderGroup from './OrderGroup.vue'
+import { type OrderGroup } from '@/store/types/contract'
+import OrderGroupItem from './OrderGroup.vue'
 
-const emit = defineEmits(['on-update', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'on-update', payload: OrderGroup): void
+  (e: 'on-delete', pk: number): void
+}>()
 
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
@@ -19,7 +22,7 @@ const hasDefaultOrderGroup = computed(() => {
   return orderGroupList.value.some(og => og.is_default_for_uncontracted)
 })
 
-const onUpdateOrder = (payload: og) => emit('on-update', payload)
+const onUpdateOrder = (payload: OrderGroup) => emit('on-update', payload)
 const onDeleteOrder = (pk: number) => emit('on-delete', pk)
 </script>
 
@@ -44,7 +47,7 @@ const onDeleteOrder = (pk: number) => emit('on-delete', pk)
     </CTableHead>
 
     <CTableBody v-if="orderGroupList.length > 0">
-      <OrderGroup
+      <OrderGroupItem
         v-for="order in orderGroupList"
         :key="order.pk"
         :order="order"

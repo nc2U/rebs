@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount, type PropType } from 'vue'
+import { ref, reactive, computed, watch, type PropType } from 'vue'
 import { usePerms } from '@/composables/usePerms.ts'
 import { useAccount } from '@/store/pinia/account'
 import type { OrderGroup } from '@/store/types/contract.ts'
@@ -10,13 +10,23 @@ const props = defineProps({
   order: { type: Object as PropType<OrderGroup>, required: true },
   hasDefault: { type: Boolean, required: true },
 })
-const emit = defineEmits(['on-update', 'on-delete'])
+
+const emit = defineEmits<{
+  (e: 'on-update', payload: OrderGroup): void
+  (e: 'on-delete', pk: number): void
+}>()
 
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
+const isSuperAuth = computed(() => useAccount().superAuth)
 
-const form = reactive({
-  order_number: null as number | null,
+const form = reactive<{
+  order_number: number | ''
+  sort: '1' | '2' | ''
+  name: string
+  is_default_for_uncontracted: boolean
+}>({
+  order_number: '',
   sort: '',
   name: '',
   is_default_for_uncontracted: false,
@@ -25,41 +35,51 @@ const form = reactive({
 const refAlertModal = ref()
 const refConfirmModal = ref()
 
+const isUnchanged = computed(() => {
+  return (
+    Number(form.order_number) === props.order?.order_number &&
+    form.sort === props.order?.sort &&
+    form.name.trim() === props.order?.name &&
+    form.is_default_for_uncontracted === props.order?.is_default_for_uncontracted
+  )
+})
+
 const formsCheck = computed(() => {
-  const a = form.order_number === props.order?.order_number
-  const b = form.sort === props.order?.sort
-  const c = form.name === props.order?.name
-  const d = form.is_default_for_uncontracted === props.order?.is_default_for_uncontracted
-  return a && b && c && d
+  return (
+    form.order_number === '' ||
+    Number(form.order_number) <= 0 ||
+    !form.sort ||
+    !form.name.trim() ||
+    isUnchanged.value
+  )
 })
 
-// 체크박스 disabled 로직
+// 체크박스 disabled 로직: 다른 항목이 이미 기본으로 설정되어 있는 경우 비활성화
 const isCheckboxDisabled = computed(() => {
-  // 아무것도 선택되지 않았으면 모든 체크박스 활성화
-  if (!props.hasDefault) return false
-
-  // 하나라도 선택된 상태이면서 현재 컴포넌트가 선택되지 않은 경우 비활성화
-  return props.hasDefault && !form.is_default_for_uncontracted
+  return props.hasDefault && !props.order?.is_default_for_uncontracted
 })
-
-const formCheck = (bool: boolean) => {
-  if (bool) onUpdateOrder()
-  return
-}
 
 const onUpdateOrder = () => {
+  if (formsCheck.value) return
+
   if (canProjectUpdate.value) {
-    const pk = props.order?.pk
-    emit('on-update', { ...{ pk }, ...form })
+    emit('on-update', {
+      pk: props.order.pk,
+      project: props.order.project,
+      order_number: Number(form.order_number),
+      sort: form.sort as '1' | '2',
+      sort_desc: props.order.sort_desc,
+      name: form.name.trim(),
+      is_default_for_uncontracted: form.is_default_for_uncontracted,
+    })
   } else {
     refAlertModal.value.callModal()
     dataSetup()
   }
 }
 
-const accStore = useAccount()
 const onDeleteOrder = () => {
-  if (accStore.superAuth) refConfirmModal.value.callModal()
+  if (isSuperAuth.value) refConfirmModal.value.callModal()
   else {
     refAlertModal.value.callModal()
     dataSetup()
@@ -67,7 +87,9 @@ const onDeleteOrder = () => {
 }
 
 const modalAction = () => {
-  emit('on-delete', props.order?.pk)
+  if (props.order?.pk) {
+    emit('on-delete', props.order.pk)
+  }
   refConfirmModal.value.close()
 }
 
@@ -80,7 +102,11 @@ const dataSetup = () => {
   }
 }
 
-onBeforeMount(() => dataSetup())
+watch(
+  () => props.order,
+  () => dataSetup(),
+  { deep: true, immediate: true },
+)
 </script>
 
 <template>
@@ -92,12 +118,12 @@ onBeforeMount(() => dataSetup())
         min="1"
         required
         placeholder="등록차수"
-        @keypress.enter="formCheck(form.order_number !== order.order_number)"
+        @keydown.enter.prevent="onUpdateOrder"
       />
     </CTableDataCell>
 
     <CTableDataCell>
-      <CFormSelect v-model="form.sort">
+      <CFormSelect v-model="form.sort" required>
         <option value="">구분선택</option>
         <option value="1">조합모집</option>
         <option value="2">일반분양</option>
@@ -109,7 +135,8 @@ onBeforeMount(() => dataSetup())
         v-model="form.name"
         maxlength="20"
         placeholder="차수그룹명"
-        @keypress.enter="formCheck(form.name !== order.name)"
+        required
+        @keydown.enter.prevent="onUpdateOrder"
       />
     </CTableDataCell>
 
@@ -129,7 +156,7 @@ onBeforeMount(() => dataSetup())
       <v-btn color="success" size="x-small" :disabled="formsCheck" @click="onUpdateOrder">
         수정
       </v-btn>
-      <v-btn color="warning" size="x-small" @click="onDeleteOrder">삭제</v-btn>
+      <v-btn color="warning" size="x-small" class="ml-1" @click="onDeleteOrder">삭제</v-btn>
     </CTableDataCell>
   </CTableRow>
 

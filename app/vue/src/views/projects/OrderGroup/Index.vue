@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, ref } from 'vue'
+import { computed, onBeforeMount, ref, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin4'
 import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
@@ -17,9 +17,12 @@ const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
 
 const projStore = useProject()
-const project = computed(() => (projStore.project as Project)?.pk)
+const project = computed(() => (projStore.project as Project | null)?.pk)
 
 const contStore = useContract()
+const hasDefaultOrderGroup = computed(() =>
+  contStore.orderGroupList.some(og => og.is_default_for_uncontracted),
+)
 
 const fetchOrderGroupList = (pk: number) => contStore.fetchOrderGroupList(pk)
 const createOrderGroup = (payload: OrderGroup) => contStore.createOrderGroup(payload)
@@ -27,19 +30,42 @@ const updateOrderGroup = (payload: OrderGroup) => contStore.updateOrderGroup(pay
 const deleteOrderGroup = (payload: { pk: number; project: number }) =>
   contStore.deleteOrderGroup(payload)
 
-const onSubmit = (payload: OrderGroup) =>
-  createOrderGroup({ ...{ project: project.value }, ...payload })
+const onSubmit = (payload: Omit<OrderGroup, 'pk' | 'project' | 'sort_desc'>) => {
+  if (project.value) {
+    createOrderGroup({
+      project: project.value,
+      ...payload,
+    } as OrderGroup)
+  }
+}
 
-const onUpdateOrder = (payload: OrderGroup) =>
-  updateOrderGroup({ ...{ project: project.value }, ...payload })
+const onUpdateOrder = (payload: OrderGroup) => {
+  if (project.value) {
+    updateOrderGroup({
+      ...payload,
+      project: project.value,
+    })
+  }
+}
 
-const onDeleteOrder = (pk: number) =>
-  deleteOrderGroup({ pk, project: project.value || projStore.currentProject })
+const onDeleteOrder = (pk: number) => {
+  if (project.value) {
+    deleteOrderGroup({ pk, project: project.value })
+  }
+}
 
 const projSelect = (target: number | null) => {
   contStore.orderGroupList = []
-  if (!!target) fetchOrderGroupList(target)
+  if (target) fetchOrderGroupList(target)
 }
+
+watch(
+  () => project.value,
+  newProjId => {
+    contStore.orderGroupList = []
+    if (newProjId) fetchOrderGroupList(newProjId)
+  },
+)
 
 const loading = ref(true)
 onBeforeMount(async () => {
@@ -61,7 +87,12 @@ onBeforeMount(async () => {
 
     <ContentBody>
       <CCardBody class="pb-5">
-        <OrderAddForm v-if="canProjectUpdate" :disabled="!project" @on-submit="onSubmit" />
+        <OrderAddForm
+          v-if="canProjectUpdate"
+          :disabled="!project"
+          :has-default="hasDefaultOrderGroup"
+          @on-submit="onSubmit"
+        />
         <OrderFormList @on-update="onUpdateOrder" @on-delete="onDeleteOrder" />
       </CCardBody>
     </ContentBody>

@@ -1,11 +1,19 @@
 <script lang="ts" setup>
 import { ref, reactive, computed } from 'vue'
+import { isValidate } from '@/utils/helper'
 import { usePerms } from '@/composables/usePerms.ts'
+import type { OrderGroup } from '@/store/types/contract'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-defineProps({ disabled: Boolean })
-const emit = defineEmits(['on-submit'])
+defineProps({
+  disabled: Boolean,
+  hasDefault: Boolean,
+})
+
+const emit = defineEmits<{
+  (e: 'on-submit', payload: Omit<OrderGroup, 'pk' | 'project' | 'sort_desc'>): void
+}>()
 
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
@@ -14,22 +22,33 @@ const refAlertModal = ref()
 const refConfirmModal = ref()
 
 const validated = ref(false)
-const form = reactive({
-  order_number: null,
+const form = reactive<{
+  order_number: number | ''
+  sort: '1' | '2' | ''
+  name: string
+  is_default_for_uncontracted: boolean
+}>({
+  order_number: '',
   sort: '',
   name: '',
   is_default_for_uncontracted: false,
 })
 
+const isFormValid = computed(
+  () =>
+    form.order_number !== '' &&
+    Number(form.order_number) > 0 &&
+    Boolean(form.sort) &&
+    Boolean(form.name.trim()),
+)
+
 const onSubmit = (event: Event) => {
   if (canProjectUpdate.value) {
-    const e = event.currentTarget as HTMLFormElement
-    if (!e.checkValidity()) {
-      event.preventDefault()
-      event.stopPropagation()
-
+    if (isValidate(event)) {
       validated.value = true
-    } else refConfirmModal.value.callModal()
+    } else {
+      refConfirmModal.value.callModal()
+    }
   } else {
     refAlertModal.value.callModal()
     resetForm()
@@ -37,14 +56,19 @@ const onSubmit = (event: Event) => {
 }
 
 const modalAction = () => {
-  emit('on-submit', form)
+  emit('on-submit', {
+    order_number: Number(form.order_number),
+    sort: form.sort as '1' | '2',
+    name: form.name.trim(),
+    is_default_for_uncontracted: form.is_default_for_uncontracted,
+  })
   validated.value = false
   refConfirmModal.value.close()
   resetForm()
 }
 
 const resetForm = () => {
-  form.order_number = null
+  form.order_number = ''
   form.sort = ''
   form.name = ''
   form.is_default_for_uncontracted = false
@@ -88,16 +112,17 @@ const resetForm = () => {
           v-model="form.is_default_for_uncontracted"
           label="미계약세대 기본설정"
           id="is_default_for_uncontracted"
-          :disabled="disabled"
-        >
-        </CFormCheck>
+          :disabled="disabled || hasDefault"
+        />
         <div class="form-text d-none d-lg-block">
-          미계약 세대 분양(공급)가격 생성시 용할 기본 차수 여적
+          미계약 세대 분양(공급)가격 생성 시 적용할 기본 차수 여부
         </div>
       </CCol>
 
       <CCol md="3" class="d-grid gap-2 d-lg-block mb-3">
-        <v-btn color="primary" type="submit" :disabled="disabled"> 그룹추가</v-btn>
+        <v-btn color="primary" type="submit" :disabled="disabled || !isFormValid">
+          그룹추가
+        </v-btn>
       </CCol>
     </CRow>
   </CForm>
