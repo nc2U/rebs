@@ -1,13 +1,17 @@
 <script lang="ts" setup>
-import { ref, reactive, computed } from 'vue'
-import { usePerms } from '@/composables/usePerms.ts'
+import { ref, reactive, computed, watch } from 'vue'
+import { isValidate } from '@/utils/helper'
+import { usePerms } from '@/composables/usePerms'
+import type { PayOrder } from '@/store/types/payment'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-defineProps({ disabled: Boolean })
+const props = defineProps({ disabled: Boolean })
 
-const emit = defineEmits(['on-submit'])
+const emit = defineEmits<{
+  (e: 'on-submit', payload: Omit<PayOrder, 'pk' | 'project'>): void
+}>()
 
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
@@ -16,34 +20,85 @@ const refAlertModal = ref()
 const refConfirmModal = ref()
 
 const validated = ref(false)
-const form = reactive({
+const form = reactive<{
+  type_sort: '1' | '2' | '3' | '4' | '5' | '6'
+  pay_sort: '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | ''
+  calculation_method: 'auto' | 'ratio' | 'downpayment'
+  is_except_price: boolean
+  pay_code: number | null
+  pay_time: number | null
+  pay_name: string
+  alias_name: string
+  pay_amt: number | null
+  pay_ratio: number | null
+  pay_due_date: string | null
+  days_since_prev: number | null
+  is_prep_discount: boolean
+  prep_discount_ratio: number | null
+  prep_ref_date: string | null
+  is_late_penalty: boolean
+  late_penalty_ratio: number | null
+  extra_due_date: string | null
+}>({
   type_sort: '1',
   pay_sort: '',
   calculation_method: 'auto',
   is_except_price: false,
-  pay_code: null as string | null,
-  pay_time: null as string | null,
+  pay_code: null,
+  pay_time: null,
   pay_name: '',
   alias_name: '',
   pay_amt: null,
   pay_ratio: null,
-  pay_due_date: null as string | null,
-  days_since_prev: null as number | null,
+  pay_due_date: null,
+  days_since_prev: null,
   is_prep_discount: false,
   prep_discount_ratio: null,
-  prep_ref_date: null as string | null,
+  prep_ref_date: null,
   is_late_penalty: false,
   late_penalty_ratio: null,
-  extra_due_date: null as string | null,
+  extra_due_date: null,
+})
+
+watch(
+  () => props.disabled,
+  newVal => {
+    if (newVal) resetForm()
+  },
+)
+
+const onPaySortChange = () => {
+  if (form.pay_sort !== '1') {
+    form.calculation_method = 'auto'
+  }
+  if (form.pay_sort === '2' || form.pay_sort === '3') {
+    form.pay_amt = null
+  }
+  if (form.pay_sort === '3') {
+    form.pay_ratio = null
+  }
+}
+
+const isFormValid = computed(() => {
+  const hasType = Boolean(form.type_sort)
+  const hasSort = Boolean(form.pay_sort)
+  const hasCode = typeof form.pay_code === 'number' && form.pay_code >= 0
+  const hasTime = typeof form.pay_time === 'number' && form.pay_time >= 0
+  const hasName = Boolean(form.pay_name.trim())
+
+  const prepValid =
+    !form.is_prep_discount ||
+    (form.prep_discount_ratio !== null && (form.prep_discount_ratio as any) !== '')
+  const lateValid =
+    !form.is_late_penalty ||
+    (form.late_penalty_ratio !== null && (form.late_penalty_ratio as any) !== '')
+
+  return hasType && hasSort && hasCode && hasTime && hasName && prepValid && lateValid
 })
 
 const onSubmit = (event: Event) => {
   if (canProjectUpdate.value) {
-    const el = event.currentTarget as HTMLSelectElement
-    if (!el.checkValidity()) {
-      event.preventDefault()
-      event.stopPropagation()
-
+    if (isValidate(event) || !isFormValid.value) {
       validated.value = true
     } else {
       refConfirmModal.value.callModal()
@@ -55,7 +110,40 @@ const onSubmit = (event: Event) => {
 }
 
 const modalAction = () => {
-  emit('on-submit', form)
+  emit('on-submit', {
+    type_sort: form.type_sort,
+    pay_sort: form.pay_sort,
+    calculation_method: form.calculation_method,
+    is_except_price: form.is_except_price,
+    pay_code: form.pay_code !== null ? Number(form.pay_code) : null,
+    pay_time: form.pay_time !== null ? Number(form.pay_time) : null,
+    pay_name: form.pay_name.trim(),
+    alias_name: form.alias_name.trim(),
+    pay_amt: form.pay_amt !== null && (form.pay_amt as any) !== '' ? Number(form.pay_amt) : null,
+    pay_ratio:
+      form.pay_ratio !== null && (form.pay_ratio as any) !== '' ? Number(form.pay_ratio) : null,
+    pay_due_date: form.pay_due_date || null,
+    days_since_prev:
+      form.days_since_prev !== null && (form.days_since_prev as any) !== ''
+        ? Number(form.days_since_prev)
+        : null,
+    is_prep_discount: form.is_prep_discount,
+    prep_discount_ratio:
+      form.is_prep_discount &&
+      form.prep_discount_ratio !== null &&
+      (form.prep_discount_ratio as any) !== ''
+        ? Number(form.prep_discount_ratio)
+        : null,
+    prep_ref_date: form.is_prep_discount ? form.prep_ref_date || null : null,
+    is_late_penalty: form.is_late_penalty,
+    late_penalty_ratio:
+      form.is_late_penalty &&
+      form.late_penalty_ratio !== null &&
+      (form.late_penalty_ratio as any) !== ''
+        ? Number(form.late_penalty_ratio)
+        : null,
+    extra_due_date: form.is_late_penalty ? form.extra_due_date || null : null,
+  })
   validated.value = false
   refConfirmModal.value.close()
   resetForm()
@@ -73,13 +161,14 @@ const resetForm = () => {
   form.pay_amt = null
   form.pay_ratio = null
   form.pay_due_date = null
-  form.days_since_prev = null
+  days_since_prev: null
   form.is_prep_discount = false
   form.prep_discount_ratio = null
   form.prep_ref_date = null
   form.is_late_penalty = false
   form.late_penalty_ratio = null
   form.extra_due_date = null
+  validated.value = false
 }
 </script>
 
@@ -100,7 +189,12 @@ const resetForm = () => {
             </CFormSelect>
           </CCol>
           <CCol lg="2" md="6" class="mb-3">
-            <CFormSelect v-model="form.pay_sort" :disabled="disabled" required>
+            <CFormSelect
+              v-model="form.pay_sort"
+              :disabled="disabled"
+              required
+              @change="onPaySortChange"
+            >
               <option value="">회차 종류</option>
               <option value="1">계약금</option>
               <option value="2">중도금</option>
@@ -124,7 +218,7 @@ const resetForm = () => {
           <CCol lg="2" md="6" class="pt-2 col-form-label mb-3">
             <CFormSwitch
               v-model="form.is_except_price"
-              id="is_prep_discount"
+              id="add_iep"
               label="공급가 불포함"
               :disabled="disabled"
             />
@@ -180,11 +274,12 @@ const resetForm = () => {
           </CCol>
           <CCol lg="3" md="6" class="mb-3">
             <CFormInput
-              v-model="form.pay_amt"
+              v-model.number="form.pay_amt"
               maxlength="20"
               type="number"
+              min="0"
               placeholder="납부 약정금액"
-              :disabled="disabled || form.pay_sort === '3'"
+              :disabled="disabled || form.pay_sort === '2' || form.pay_sort === '3'"
             />
             <v-tooltip activator="parent" location="start">
               약정금이 차수, 타입에 관계 없이 정액인 경우 설정(예: 세대별 업무대행비)
@@ -192,9 +287,10 @@ const resetForm = () => {
           </CCol>
           <CCol lg="3" md="6" class="mb-3">
             <CFormInput
-              v-model="form.pay_ratio"
+              v-model.number="form.pay_ratio"
               maxlength="20"
               type="number"
+              min="0"
               placeholder="납부비율(%, 공급가대비)"
               :disabled="disabled || form.pay_sort === '3'"
             />
@@ -223,6 +319,7 @@ const resetForm = () => {
                 <CFormInput
                   v-model.number="form.days_since_prev"
                   type="number"
+                  min="0"
                   maxlength="20"
                   placeholder="전회 기준 경과일수"
                   :disabled="disabled"
@@ -236,7 +333,7 @@ const resetForm = () => {
                   <CCol class="pt-2 col-form-label">
                     <CFormSwitch
                       v-model="form.is_prep_discount"
-                      id="is_prep_discount"
+                      id="add_ipd"
                       label="선납할인 적용"
                       :disabled="disabled"
                     />
@@ -245,11 +342,13 @@ const resetForm = () => {
               </CCol>
               <CCol lg="3" md="6" class="mb-3">
                 <CFormInput
-                  v-model="form.prep_discount_ratio"
+                  v-model.number="form.prep_discount_ratio"
                   maxlength="20"
                   type="number"
+                  min="0"
                   placeholder="선납할인율(%, 연리)"
-                  :disabled="disabled"
+                  :disabled="disabled || !form.is_prep_discount"
+                  :required="form.is_prep_discount"
                 />
               </CCol>
             </CRow>
@@ -263,7 +362,7 @@ const resetForm = () => {
                   maxlength="10"
                   placeholder="선납 기준일"
                   :required="false"
-                  :disabled="disabled"
+                  :disabled="disabled || !form.is_prep_discount"
                 />
                 <v-tooltip activator="parent" location="start">
                   선납 할인 기준은 납부 약정일이 원칙이나 이 값이 있는 경우 선납 기준일로 우선
@@ -276,7 +375,7 @@ const resetForm = () => {
                   <CCol class="pt-2 col-form-label">
                     <CFormSwitch
                       v-model="form.is_late_penalty"
-                      id="is_late_penalty"
+                      id="add_ilp"
                       label="연체가산 적용"
                       :disabled="disabled"
                     />
@@ -285,11 +384,13 @@ const resetForm = () => {
               </CCol>
               <CCol lg="3" md="6" class="mb-3">
                 <CFormInput
-                  v-model="form.late_penalty_ratio"
+                  v-model.number="form.late_penalty_ratio"
                   maxlength="20"
                   type="number"
+                  min="0"
                   placeholder="연체가산율(%, 연리)"
-                  :disabled="disabled"
+                  :disabled="disabled || !form.is_late_penalty"
+                  :required="form.is_late_penalty"
                 />
               </CCol>
               <CCol lg="3" md="6" class="mb-3">
@@ -298,7 +399,7 @@ const resetForm = () => {
                   maxlength="10"
                   placeholder="연체 기준일"
                   :required="false"
-                  :disabled="disabled"
+                  :disabled="disabled || !form.is_late_penalty"
                 />
                 <v-tooltip activator="parent" location="start">
                   연체료 계산 기준은 납부기한일이 원칙이나 이 값이 있는 경우 연체 기준일로 우선
@@ -311,7 +412,7 @@ const resetForm = () => {
       </CCol>
 
       <CCol xl="1" class="mb-3 text-right">
-        <v-btn color="primary" type="submit" :disabled="disabled"> 회차추가</v-btn>
+        <v-btn color="primary" type="submit" :disabled="disabled || !isFormValid"> 회차추가</v-btn>
       </CCol>
     </CRow>
   </CForm>

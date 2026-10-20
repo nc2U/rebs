@@ -3,7 +3,7 @@ export interface PayOrder {
   project?: number
   str_display?: string
   type_sort?: '1' | '2' | '3' | '4' | '5' | '6' | ''
-  pay_sort?: '1' | '2' | '3' | '4' | '5' | '6' | '7' | ''
+  pay_sort?: '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | ''
   calculation_method?: 'auto' | 'ratio' | 'downpayment'
   is_except_price?: boolean
   pay_code?: number | null

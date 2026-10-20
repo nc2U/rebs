@@ -2,11 +2,14 @@
 import { computed } from 'vue'
 import { usePayment } from '@/store/pinia/payment'
 import { TableSecondary } from '@/utils/cssMixins'
-import { usePerms } from '@/composables/usePerms.ts'
-import { type PayOrder as po } from '@/store/types/payment'
-import PayOrder from '@/views/projects/PayOrder/components/PayOrder.vue'
+import { usePerms } from '@/composables/usePerms'
+import type { PayOrder } from '@/store/types/payment'
+import PayOrderRow from '@/views/projects/PayOrder/components/PayOrder.vue'
 
-const emit = defineEmits(['on-update', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'on-update', payload: PayOrder): void
+  (e: 'on-delete', pk: number): void
+}>()
 
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
@@ -14,7 +17,7 @@ const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
 const paymentStore = usePayment()
 const payOrderList = computed(() => paymentStore.payOrderList)
 
-const onUpdatePayOrder = (payload: po) => emit('on-update', payload)
+const onUpdatePayOrder = (payload: PayOrder) => emit('on-update', payload)
 const onDeletePayOrder = (pk: number) => emit('on-delete', pk)
 </script>
 
@@ -23,16 +26,16 @@ const onDeletePayOrder = (pk: number) => emit('on-delete', pk)
     <colgroup>
       <col style="width: 8%" />
       <col style="width: 8%" />
+      <col style="width: 9%" />
+      <col style="width: 7%" />
+      <col style="width: 7%" />
+      <col style="width: 7%" />
+      <col style="width: 9%" />
       <col style="width: 8%" />
-      <col style="width: 6%" />
-      <col style="width: 7%" />
-      <col style="width: 7%" />
+      <col style="width: 9%" />
       <col style="width: 8%" />
-      <col style="width: 7%" />
       <col style="width: 8%" />
-      <col style="width: 7%" />
-      <col style="width: 5%" />
-      <col v-if="canProjectUpdate" style="width: 8%" />
+      <col v-if="canProjectUpdate" style="width: 12%" />
     </colgroup>
     <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>
@@ -72,38 +75,12 @@ const onDeletePayOrder = (pk: number) => emit('on-delete', pk)
             "공급 가격 등록" 데이터와 비교 차액 데이터 우선
           </v-tooltip>
         </CTableHeaderCell>
-        <!--        <CTableHeaderCell>납부약정일</CTableHeaderCell>-->
-        <!--        <CTableHeaderCell class="cursor-help">-->
-        <!--          전회기준 경과일수-->
-        <!--          <v-icon icon="mdi-tooltip-question-outline" size="14" color="grey" />-->
-        <!--          <v-tooltip activator="parent" location="top">-->
-        <!--            전 회차(예: 계약일)로부터 __일 이내 형식으로 납부기한을 지정할 경우 해당 일수-->
-        <!--          </v-tooltip>-->
-        <!--        </CTableHeaderCell>-->
-        <!--        <CTableHeaderCell>선납할인 적용</CTableHeaderCell>-->
-        <!--        <CTableHeaderCell>선납할인율</CTableHeaderCell>-->
-        <!--        <CTableHeaderCell class="cursor-help">-->
-        <!--          선납기준일-->
-        <!--          <v-icon icon="mdi-tooltip-question-outline" size="14" color="grey" />-->
-        <!--          <v-tooltip activator="parent" location="top">-->
-        <!--            선납 할인 기준은 납부 약정일이 원칙이나 이 값이 있는 경우 선납 기준일로 우선 적용한다.-->
-        <!--          </v-tooltip>-->
-        <!--        </CTableHeaderCell>-->
-        <!--        <CTableHeaderCell>연체가산 적용</CTableHeaderCell>-->
-        <!--        <CTableHeaderCell>연체가산율</CTableHeaderCell>-->
-        <!--        <CTableHeaderCell class="cursor-help">-->
-        <!--          연체기준일-->
-        <!--          <v-icon icon="mdi-tooltip-question-outline" size="14" color="grey" />-->
-        <!--          <v-tooltip activator="parent" location="top">-->
-        <!--            연체료 계산 기준은 납부기한일이 원칙이나 이 값이 있는 경우 연체 기준일로 우선 적용한다.-->
-        <!--          </v-tooltip>-->
-        <!--        </CTableHeaderCell>-->
         <CTableHeaderCell class="text-center">설정 확장</CTableHeaderCell>
         <CTableHeaderCell v-if="canProjectUpdate">비고</CTableHeaderCell>
       </CTableRow>
     </CTableHead>
     <CTableBody v-if="payOrderList.length > 0">
-      <PayOrder
+      <PayOrderRow
         v-for="payOrder in payOrderList"
         :key="payOrder.pk as number"
         :pay-order="payOrder"
@@ -114,7 +91,7 @@ const onDeletePayOrder = (pk: number) => emit('on-delete', pk)
 
     <CTableBody v-else>
       <CTableRow>
-        <CTableDataCell :colspan="canProjectUpdate ? 18 : 17" class="text-center p-5 text-danger">
+        <CTableDataCell :colspan="canProjectUpdate ? 12 : 11" class="text-center p-5 text-danger">
           등록된 데이터가 없습니다.
         </CTableDataCell>
       </CTableRow>

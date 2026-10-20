@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, ref } from 'vue'
+import { computed, onBeforeMount, ref, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin6'
 import { useProject } from '@/store/pinia/project'
 import { usePayment } from '@/store/pinia/payment'
-import { usePerms } from '@/composables/usePerms.ts'
-import { type PayOrder } from '@/store/types/payment'
-import type { Project } from '@/store/types/project.ts'
+import { usePerms } from '@/composables/usePerms'
+import type { PayOrder } from '@/store/types/payment'
+import type { Project } from '@/store/types/project'
 import Loading from '@/components/Loading/Index.vue'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -25,25 +25,42 @@ const createPayOrder = (payload: PayOrder) => payStore.createPayOrder(payload)
 const updatePayOrder = (payload: PayOrder) => payStore.updatePayOrder(payload)
 const deletePayOrder = (pk: number, projId: number) => payStore.deletePayOrder(pk, projId)
 
-const onSubmit = (payload: PayOrder) =>
-  createPayOrder({ ...{ project: project.value as number }, ...payload })
+const onSubmit = (payload: Omit<PayOrder, 'pk' | 'project'>) => {
+  if (project.value) createPayOrder({ project: project.value, ...payload })
+}
 
-const onUpdatePayOrder = (payload: PayOrder) =>
-  updatePayOrder({ ...{ project: project.value as number }, ...payload })
+const onUpdatePayOrder = (payload: PayOrder) => {
+  if (project.value) updatePayOrder({ ...payload, project: project.value })
+}
 
 const onDeletePayOrder = (pk: number) => {
   if (project.value) deletePayOrder(pk, project.value)
 }
 
-const projSelect = (target: number | null) => {
+const dataReset = () => {
   payStore.payOrderList = []
-  if (!!target) fetchPayOrderList(target)
 }
+
+const dataSetup = async (pk: number) => {
+  await fetchPayOrderList(pk)
+}
+
+const projSelect = (target: number | null) => {
+  dataReset()
+  if (target) dataSetup(target)
+}
+
+watch(
+  () => project.value,
+  newProjId => {
+    dataReset()
+    if (newProjId) dataSetup(newProjId)
+  },
+)
 
 const loading = ref(true)
 onBeforeMount(async () => {
-  const projId = project.value || projStore.currentProject
-  if (projId) await fetchPayOrderList(projId)
+  if (project.value) await dataSetup(project.value)
   loading.value = false
 })
 </script>
