@@ -4,9 +4,12 @@ import { useProject } from '@/store/pinia/project'
 import { TableSecondary } from '@/utils/cssMixins'
 import { usePerms } from '@/composables/usePerms.ts'
 import { type ProIncBudget } from '@/store/types/project'
-import IncBudget from './IncBudget.vue'
+import IncBudgetItem from './IncBudget.vue'
 
-const emit = defineEmits(['on-update', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'on-update', payload: ProIncBudget): void
+  (e: 'on-delete', pk: number): void
+}>()
 
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
@@ -14,8 +17,8 @@ const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
 const proStore = useProject()
 const proIncBudgetList = computed(() => proStore.proIncBudgetList)
 
-const onUpdateOrder = (payload: ProIncBudget) => emit('on-update', payload)
-const onDeleteOrder = (pk: number) => emit('on-delete', pk)
+const onUpdateBudget = (payload: ProIncBudget) => emit('on-update', payload)
+const onDeleteBudget = (pk: number) => emit('on-delete', pk)
 </script>
 
 <template>
@@ -45,18 +48,18 @@ const onDeleteOrder = (pk: number) => emit('on-delete', pk)
       </CTableRow>
     </CTableHead>
     <CTableBody v-if="proIncBudgetList.length > 0">
-      <IncBudget
+      <IncBudgetItem
         v-for="budget in proIncBudgetList"
         :key="budget.pk"
         :budget="budget"
-        @on-update="onUpdateOrder"
-        @on-delete="onDeleteOrder"
+        @on-update="onUpdateBudget"
+        @on-delete="onDeleteBudget"
       />
     </CTableBody>
 
     <CTableBody v-else>
       <CTableRow>
-        <CTableDataCell :colspan="canProjectUpdate ? 10 : 9" class="text-center p-5 text-danger">
+        <CTableDataCell :colspan="canProjectUpdate ? 9 : 8" class="text-center p-5 text-danger">
           등록된 데이터가 없습니다.
         </CTableDataCell>
       </CTableRow>

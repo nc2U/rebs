@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, provide, ref } from 'vue'
+import { computed, onBeforeMount, provide, ref, watch } from 'vue'
 import { navMenu, pageTitle } from '@/views/projects/_menu/headermixin3'
 import { useProject } from '@/store/pinia/project'
 import { useContract } from '@/store/pinia/contract'
@@ -19,7 +19,7 @@ const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
 
 const projStore = useProject()
-const project = computed(() => (projStore.project as Project)?.pk)
+const project = computed(() => (projStore.project as Project | null)?.pk)
 
 const pLedgerStore = useProLedger()
 const allProAccount = computed(() => pLedgerStore.proAccounts)
@@ -42,25 +42,36 @@ const updateIncBudget = (payload: ProIncBudget) => projStore.updateIncBudget(pay
 const deleteIncBudget = (pk: number, project: number) => projStore.deleteIncBudget(pk, project)
 
 const fetchOrderGroupList = (proj: number) => contStore.fetchOrderGroupList(proj)
-
 const fetchTypeList = (proj: number) => pDataStore.fetchTypeList(proj)
 
-const onSubmit = (payload: ProIncBudget) => {
-  if (project.value) createIncBudget({ ...{ project: project.value }, ...payload })
+const onSubmit = (payload: Omit<ProIncBudget, 'pk' | 'project'>) => {
+  if (project.value) {
+    createIncBudget({
+      project: project.value,
+      ...payload,
+    })
+  }
 }
 
 const onUpdateBudget = (payload: ProIncBudget) => {
-  if (project.value) updateIncBudget({ ...{ project: project.value }, ...payload })
+  if (project.value) {
+    updateIncBudget({
+      ...payload,
+      project: project.value,
+    })
+  }
 }
 
 const onDeleteBudget = (pk: number) => {
   if (project.value) deleteIncBudget(pk, project.value)
 }
 
-const dataSetup = (pk: number) => {
-  fetchOrderGroupList(pk)
-  fetchTypeList(pk)
-  fetchIncBudgetList(pk)
+const dataSetup = async (pk: number) => {
+  await Promise.all([
+    fetchOrderGroupList(pk),
+    fetchTypeList(pk),
+    fetchIncBudgetList(pk),
+  ])
 }
 
 const dataReset = () => {
@@ -71,13 +82,22 @@ const dataReset = () => {
 
 const projSelect = (target: number | null) => {
   dataReset()
-  if (!!target) dataSetup(target)
+  if (target) dataSetup(target)
 }
+
+watch(
+  () => project.value,
+  newProjId => {
+    dataReset()
+    if (newProjId) dataSetup(newProjId)
+  },
+)
 
 const loading = ref(true)
 onBeforeMount(async () => {
   await fetchProjectAccounts({ direction: 'deposit', is_active: true, is_payment: true })
-  if (project.value) dataSetup(project.value)
+  const projId = project.value || projStore.currentProject
+  if (projId) await dataSetup(projId)
   loading.value = false
 })
 </script>

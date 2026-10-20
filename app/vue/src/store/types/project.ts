@@ -55,8 +55,9 @@ export interface ProIncBudget {
   pk?: number
   project?: number
   account: number
-  account_d1: number | null
-  account_d2: number | null
+  account_d1?: number | null
+  account_d2?: number | null
+  account_d3?: number | null
   order_group: number | null
   unit_type: number | null
   item_name: string

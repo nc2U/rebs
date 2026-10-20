@@ -1,8 +1,15 @@
 <script lang="ts" setup>
-import { ref, reactive, inject, watch, computed } from 'vue'
+import { ref, reactive, inject, computed } from 'vue'
+import { isValidate } from '@/utils/helper'
 import { usePerms } from '@/composables/usePerms.ts'
+import type { ProIncBudget } from '@/store/types/project'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
+
+export interface AccItem {
+  value: number
+  label: string
+}
 
 export interface OGroup {
   value: number
@@ -18,21 +25,32 @@ export interface UType {
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
 
-const accountList = inject<any>('accountList')
+const accountList = inject<AccItem[]>('accountList')
 const orderGroups = inject<OGroup[]>('orderGroups')
 const unitTypes = inject<UType[]>('unitTypes')
 
 const props = defineProps({ disabled: Boolean })
-const emit = defineEmits(['on-submit'])
+const emit = defineEmits<{
+  (e: 'on-submit', payload: Omit<ProIncBudget, 'pk' | 'project'>): void
+}>()
 
 const refAlertModal = ref()
 const refConfirmModal = ref()
 
 const validated = ref(false)
-const form = reactive({
-  account: null,
-  order_group: null,
-  unit_type: null,
+const form = reactive<{
+  account: number | ''
+  order_group: number | ''
+  unit_type: number | ''
+  item_name: string
+  average_price: number | null
+  quantity: number | null
+  budget: number | null
+  revised_budget: number | null
+}>({
+  account: '',
+  order_group: '',
+  unit_type: '',
   item_name: '',
   average_price: null,
   quantity: null,
@@ -40,19 +58,28 @@ const form = reactive({
   revised_budget: null,
 })
 
-watch(props, newVal => {
-  if (!!newVal.disabled) resetForm()
-})
+// 폼 유효성 검사:
+// 1) 계정(account) 필수
+// 2) unit_type 없으면 item_name 필수
+// 3) quantity 필수 (0 초과)
+// 4) budget 필수 (0 이상)
+const isFormValid = computed(
+  () =>
+    Boolean(form.account) &&
+    (Boolean(form.unit_type) || Boolean(form.item_name.trim())) &&
+    form.quantity !== null &&
+    form.quantity > 0 &&
+    form.budget !== null &&
+    form.budget >= 0,
+)
 
 const onSubmit = (event: Event) => {
   if (canProjectUpdate.value) {
-    const e = event.currentTarget as HTMLFormElement
-    if (!e.checkValidity()) {
-      event.preventDefault()
-      event.stopPropagation()
-
+    if (isValidate(event)) {
       validated.value = true
-    } else refConfirmModal.value.callModal()
+    } else {
+      refConfirmModal.value.callModal()
+    }
   } else {
     refAlertModal.value.callModal()
     resetForm()
@@ -60,16 +87,31 @@ const onSubmit = (event: Event) => {
 }
 
 const modalAction = () => {
-  emit('on-submit', form)
+  emit('on-submit', {
+    account: Number(form.account),
+    order_group: form.order_group ? Number(form.order_group) : null,
+    unit_type: form.unit_type ? Number(form.unit_type) : null,
+    item_name: form.item_name.trim(),
+    average_price:
+      form.average_price !== null && (form.average_price as any) !== ''
+        ? Number(form.average_price)
+        : null,
+    quantity: Number(form.quantity),
+    budget: Number(form.budget),
+    revised_budget:
+      form.revised_budget !== null && (form.revised_budget as any) !== ''
+        ? Number(form.revised_budget)
+        : null,
+  })
   validated.value = false
   refConfirmModal.value.close()
   resetForm()
 }
 
 const resetForm = () => {
-  form.account = null
-  form.order_group = null
-  form.unit_type = null
+  form.account = ''
+  form.order_group = ''
+  form.unit_type = ''
   form.item_name = ''
   form.average_price = null
   form.quantity = null
@@ -172,7 +214,9 @@ const resetForm = () => {
       <CCol lg="12" xl="2">
         <CRow>
           <CCol md="12" class="d-grid gap-2 d-md-block text-right mb-3">
-            <v-btn color="primary" type="submit" :disabled="disabled"> 수입 예산 추가</v-btn>
+            <v-btn color="primary" type="submit" :disabled="disabled || !isFormValid">
+              수입 예산 추가
+            </v-btn>
           </CCol>
         </CRow>
       </CCol>
