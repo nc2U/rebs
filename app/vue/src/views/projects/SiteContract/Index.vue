@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount, nextTick } from 'vue'
-import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin2'
+import { computed, nextTick, onBeforeMount, ref, watch } from 'vue'
+import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
+import { navMenu, pageTitle } from '@/views/projects/_menu/headermixin2'
 import { numFormat } from '@/utils/baseMixins'
-import { usePerms } from '@/composables/usePerms.ts'
-import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
+import { usePerms } from '@/composables/usePerms'
 import { useProject } from '@/store/pinia/project'
-import { useSite, type ContFilter } from '@/store/pinia/project_site'
+import { type ContFilter, useSite } from '@/store/pinia/project_site'
 import type { Project, SiteContract } from '@/store/types/project'
 import Loading from '@/components/Loading/Index.vue'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -49,11 +49,6 @@ const project = computed(() => (projStore.project as Project)?.pk)
 const siteStore = useSite()
 const getContsTotal = computed(() => siteStore.getContsTotal?.contracted_area)
 
-// Store 함수들
-const findSiteContractPage = (highlightId: number, filters: ContFilter) =>
-  siteStore.findSiteContractPage(highlightId, filters)
-const fetchSiteContList = (payload: ContFilter) => siteStore.fetchSiteContList(payload)
-
 const excelUrl = computed(() => {
   const url = `/excel/sites-contracts/?project=${project.value}`
   const filter = dataFilter.value
@@ -63,7 +58,6 @@ const excelUrl = computed(() => {
 })
 
 const listFiltering = (payload: ContFilter) => {
-  // 필터링 시 query string 정리
   clearQueryString()
   if (project.value) {
     payload.project = project.value
@@ -87,25 +81,23 @@ const scrollToHighlight = async () => {
 const loadHighlightPage = async (projectId: number) => {
   if (highlightId.value && projectId) {
     try {
-      // URL의 page 파라미터가 있으면 해당 페이지로 이동
       const pageParam = route.query.page
-      if (pageParam) {
-        const targetPage = parseInt(pageParam as string, 10)
-        dataFilter.value = {
+      let targetPage = pageParam ? parseInt(pageParam as string, 10) : 1
+      if (!pageParam) {
+        targetPage = await siteStore.findSiteContractPage(highlightId.value, {
           project: projectId,
-          limit: dataFilter.value.limit || '',
-          page: targetPage,
-          own_sort: dataFilter.value.own_sort || '',
-          search: dataFilter.value.search || '',
-        }
-        siteStore.fetchSiteContList({ project: projectId, page: targetPage })
-      } else {
-        // page 파라미터가 없으면 기본 첫 페이지
-        dataSetup(projectId)
+        })
       }
+      dataFilter.value = {
+        project: projectId,
+        limit: dataFilter.value.limit || '',
+        page: targetPage,
+        own_sort: dataFilter.value.own_sort || '',
+        search: dataFilter.value.search || '',
+      }
+      siteStore.fetchSiteContList({ project: projectId, page: targetPage })
     } catch (error) {
       console.error('Error loading highlight page:', error)
-      // 오류 발생시 기본 첫 페이지 로드
       dataSetup(projectId)
     }
   }
@@ -142,8 +134,8 @@ const multiSubmit = (payload: SiteContract | FormData) => {
 }
 
 const onDelete = (payload: { pk: number; project: number }) => {
-  const { pk, project } = payload
-  siteStore.deleteSiteCont(pk, project)
+  const { pk, project: projId } = payload
+  siteStore.deleteSiteCont(pk, projId)
 }
 
 const dataSetup = (pk: number) => {
@@ -158,14 +150,12 @@ const dataReset = () => {
 }
 
 const projSelect = (target: number | null) => {
-  // 프로젝트 변경 시 query string 정리
   clearQueryString()
   dataReset()
-  if (!!target) dataSetup(target)
+  if (target) dataSetup(target)
 }
 
 const pageSelect = (page: number) => {
-  // 페이지 변경 시 query string 정리
   clearQueryString()
   dataFilter.value.page = page
   if (project.value) dataSetup(project.value)
@@ -178,16 +168,23 @@ const clearQueryString = () => {
       .replace({
         name: route.name,
         params: route.params,
-        // query를 빈 객체로 설정하여 모든 query string 제거
         query: {},
       })
       .catch(() => {
-        // 같은 경로로의 이동에서 발생하는 NavigationDuplicated 에러 무시
+        // 동일 경로 이동 NavigationDuplicated 무시
       })
   }
 }
 
-// 다른 라우트로 이동 시 query string 정리
+watch(
+  () => project.value,
+  newVal => {
+    clearQueryString()
+    dataReset()
+    if (newVal) dataSetup(newVal)
+  },
+)
+
 onBeforeRouteLeave(() => {
   clearQueryString()
 })
@@ -195,7 +192,6 @@ onBeforeRouteLeave(() => {
 const loading = ref(true)
 onBeforeMount(async () => {
   if (canSiteRead.value) {
-    // URL에서 프로젝트 ID가 지정되어 있으면 해당 프로젝트 사용
     let projectId = urlProjectId.value || project.value || projStore.currentProject
     if (projectId) {
       if (urlProjectId.value && urlProjectId.value !== project.value) {
@@ -203,13 +199,14 @@ onBeforeMount(async () => {
         projectId = urlProjectId.value
       }
 
-      if (projectId) siteStore.fetchAllOwners(projectId)
+      siteStore.fetchAllOwners(projectId)
 
-      // 하이라이트 항목이 있으면 해당 페이지로 이동 후 스크롤
       if (highlightId.value) {
         await loadHighlightPage(projectId)
         await scrollToHighlight()
-      } else dataSetup(projectId)
+      } else {
+        dataSetup(projectId)
+      }
     }
   }
   loading.value = false
@@ -229,13 +226,12 @@ onBeforeMount(async () => {
     <ContentBody>
       <CCardBody class="pb-5">
         <ListController
-          ref="listControl"
-          :project="project as number"
+          :project="project ?? undefined"
           @list-filtering="listFiltering"
         />
         <AddSiteContract
           v-if="canSiteCreate"
-          :project="project as number"
+          :project="project ?? undefined"
           @multi-submit="multiSubmit"
         />
         <TableTitleRow
@@ -247,13 +243,13 @@ onBeforeMount(async () => {
         >
           <span v-if="project" class="text-success" style="padding-top: 7px">
             총 계약 면적 :
-            {{ numFormat(getContsTotal as number, 2) }}
-            m<sup>2</sup> ({{ numFormat((getContsTotal as number) * 0.3025, 2) }}
+            {{ numFormat(getContsTotal || 0, 2) }}
+            m<sup>2</sup> ({{ numFormat((getContsTotal || 0) * 0.3025, 2) }}
             평) 등록
           </span>
         </TableTitleRow>
         <SiteContractList
-          :limit="dataFilter.limit || 10"
+          :limit="Number(dataFilter.limit) || 10"
           :highlight-id="highlightId ?? undefined"
           :current-page="dataFilter.page"
           @page-select="pageSelect"

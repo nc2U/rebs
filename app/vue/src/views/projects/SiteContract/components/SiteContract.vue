@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed, type PropType, ref } from 'vue'
-import { type SiteContract } from '@/store/types/project'
-import { numFormat, humanizeFileSize } from '@/utils/baseMixins'
-import { usePerms } from '@/composables/usePerms.ts'
+import type { SiteContract } from '@/store/types/project'
+import { humanizeFileSize, numFormat } from '@/utils/baseMixins'
+import { usePerms } from '@/composables/usePerms'
 import FormModal from '@/components/Modals/FormModal.vue'
 import SiteContractForm from './SiteContractForm.vue'
 
@@ -17,10 +17,27 @@ const { can, PERM } = usePerms()
 const canSiteUpdate = computed(() => can(PERM.SITE_UPDATE))
 
 const updateFormModal = ref()
+const isModalVisible = ref(false)
 
-const showDetail = () => updateFormModal.value.callModal()
-const multiSubmit = (payload: SiteContract) => emit('multi-submit', payload)
-const onDelete = (payload: { pk: number; project: number }) => emit('on-delete', payload)
+const showDetail = () => {
+  isModalVisible.value = true
+  updateFormModal.value.callModal()
+}
+
+const closeModal = () => {
+  updateFormModal.value.close()
+  isModalVisible.value = false
+}
+
+const multiSubmit = (payload: SiteContract) => {
+  emit('multi-submit', payload)
+  closeModal()
+}
+
+const onDelete = (payload: { pk: number; project: number }) => {
+  emit('on-delete', payload)
+  closeModal()
+}
 </script>
 
 <template>
@@ -39,25 +56,25 @@ const onDelete = (payload: { pk: number; project: number }) => emit('on-delete',
     <CTableDataCell>
       <a href="javascript:void(0);" @click="showDetail">
         {{ contract.contract_date }}
-      </a></CTableDataCell
-    >
+      </a>
+    </CTableDataCell>
     <CTableDataCell class="text-right">
-      {{ numFormat(contract.contract_area as number, 2) }}
+      {{ numFormat(contract.contract_area || 0, 2) }}
     </CTableDataCell>
     <CTableDataCell class="text-right" color="warning">
-      {{ numFormat((contract.contract_area as number) * 0.3025, 2) }}
+      {{ numFormat((contract.contract_area || 0) * 0.3025, 2) }}
     </CTableDataCell>
     <CTableDataCell class="text-right">
-      {{ numFormat(contract.total_price as number) }}
+      {{ numFormat(contract.total_price || 0) }}
     </CTableDataCell>
     <CTableDataCell class="text-right">
-      {{ numFormat(contract.down_pay1 as number) }}
+      {{ numFormat(contract.down_pay1 || 0) }}
     </CTableDataCell>
     <CTableDataCell :class="{ 'bg-success': contract.down_pay1_is_paid }">
       {{ contract.down_pay1_is_paid ? '완료' : '' }}
     </CTableDataCell>
     <CTableDataCell class="text-right">
-      {{ numFormat(contract.remain_pay as number) }}
+      {{ numFormat(contract.remain_pay || 0) }}
     </CTableDataCell>
     <CTableDataCell :class="{ 'bg-success': contract.remain_pay_is_paid }">
       {{ contract.remain_pay_is_paid ? '완료' : '' }}
@@ -128,13 +145,14 @@ const onDelete = (payload: { pk: number; project: number }) => emit('on-delete',
   </CTableRow>
 
   <FormModal ref="updateFormModal" size="lg">
-    <template #header>부지 매입 계약 등록</template>
+    <template #header>부지 매입 계약 상세 및 수정</template>
     <template #default>
       <SiteContractForm
+        v-if="isModalVisible"
         :contract="contract"
         @multi-submit="multiSubmit"
         @on-delete="onDelete"
-        @close="updateFormModal.close()"
+        @close="closeModal"
       />
     </template>
   </FormModal>
