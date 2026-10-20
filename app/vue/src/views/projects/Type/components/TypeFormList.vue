@@ -2,11 +2,14 @@
 import { computed } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
 import { TableSecondary } from '@/utils/cssMixins'
-import { usePerms } from '@/composables/usePerms.ts'
-import { type UnitType } from '@/store/types/project'
+import { usePerms } from '@/composables/usePerms'
+import type { UnitType } from '@/store/types/project'
 import Type from '@/views/projects/Type/components/Type.vue'
 
-const emit = defineEmits(['on-update', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'on-update', payload: UnitType): void
+  (e: 'on-delete', pk: number): void
+}>()
 
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
@@ -21,17 +24,17 @@ const onDeleteType = (pk: number) => emit('on-delete', pk)
 <template>
   <CTable hover responsive>
     <colgroup>
-      <col style="width: 10%" />
-      <col style="width: 10%" />
-      <col style="width: 10%" />
+      <col :style="{ width: canProjectUpdate ? '9%' : '10%' }" />
+      <col :style="{ width: canProjectUpdate ? '9%' : '10%' }" />
+      <col :style="{ width: canProjectUpdate ? '9%' : '10%' }" />
       <col style="width: 5%" />
-      <col style="width: 10%" />
-      <col style="width: 10%" />
-      <col style="width: 10%" />
-      <col style="width: 10%" />
-      <col style="width: 10%" />
-      <col style="width: 10%" />
-      <col v-if="canProjectUpdate" style="width: 10%" />
+      <col :style="{ width: canProjectUpdate ? '9%' : '10%' }" />
+      <col :style="{ width: canProjectUpdate ? '9%' : '10%' }" />
+      <col :style="{ width: canProjectUpdate ? '9%' : '10%' }" />
+      <col :style="{ width: canProjectUpdate ? '10%' : '11%' }" />
+      <col :style="{ width: canProjectUpdate ? '11%' : '14%' }" />
+      <col :style="{ width: canProjectUpdate ? '9%' : '10%' }" />
+      <col v-if="canProjectUpdate" style="width: 11%" />
     </colgroup>
     <CTableHead :color="TableSecondary" class="text-center">
       <CTableRow>

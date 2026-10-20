@@ -1,11 +1,14 @@
 <script lang="ts" setup>
 import { computed, inject, reactive, ref } from 'vue'
-import { usePerms } from '@/composables/usePerms.ts'
+import { usePerms } from '@/composables/usePerms'
+import type { UnitType } from '@/store/types/project'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 defineProps({ disabled: Boolean })
-const emit = defineEmits(['on-submit'])
+const emit = defineEmits<{
+  (e: 'on-submit', payload: Omit<UnitType, 'pk' | 'project'>): void
+}>()
 
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
@@ -21,7 +24,18 @@ const refAlertModal = ref()
 const refConfirmModal = ref()
 
 const validated = ref(false)
-const form = reactive({
+const form = reactive<{
+  sort: '1' | '2' | '3' | '4' | '5' | '6' | ''
+  main_or_sub: '1' | '2' | ''
+  name: string
+  color: string
+  actual_area: number | '' | null
+  supply_area: number | '' | null
+  contract_area: number | '' | null
+  average_price: number | '' | null
+  price_setting: '1' | '2' | '3' | ''
+  num_unit: number | '' | null
+}>({
   sort: '',
   main_or_sub: '1',
   name: '',
@@ -43,26 +57,41 @@ const onSubmit = (event: Event) => {
 
       validated.value = true
     } else {
-      refConfirmModal.value.callModal()
+      refConfirmModal.value?.callModal()
     }
   } else {
-    refAlertModal.value.callModal()
+    refAlertModal.value?.callModal()
     resetForm()
   }
 }
 
 const modalAction = () => {
-  emit('on-submit', { ...form })
+  emit('on-submit', {
+    sort: form.sort,
+    main_or_sub: form.main_or_sub,
+    name: form.name.trim(),
+    color: form.color,
+    actual_area:
+      form.actual_area !== null && form.actual_area !== '' ? Number(form.actual_area) : null,
+    supply_area:
+      form.supply_area !== null && form.supply_area !== '' ? Number(form.supply_area) : null,
+    contract_area:
+      form.contract_area !== null && form.contract_area !== '' ? Number(form.contract_area) : null,
+    average_price:
+      form.average_price !== null && form.average_price !== '' ? Number(form.average_price) : null,
+    price_setting: form.price_setting,
+    num_unit: form.num_unit !== null && form.num_unit !== '' ? Number(form.num_unit) : null,
+  })
   validated.value = false
-  refConfirmModal.value.close()
+  refConfirmModal.value?.close()
   resetForm()
 }
 
 const resetForm = () => {
   form.sort = ''
-  form.main_or_sub = ''
+  form.main_or_sub = '1'
   form.name = ''
-  form.color = ''
+  form.color = '#000000'
   form.actual_area = null
   form.supply_area = null
   form.contract_area = null
@@ -130,7 +159,7 @@ const resetForm = () => {
               step="0.0001"
               :disabled="disabled"
             />
-            <CFormFeedback invalid> 전용면적을 소소점4자리 이하로 입력하세요.</CFormFeedback>
+            <CFormFeedback invalid>전용면적을 소수점 4자리 이하로 입력하세요.</CFormFeedback>
           </CCol>
           <CCol lg="2" class="mb-2">
             <CFormInput
@@ -141,7 +170,7 @@ const resetForm = () => {
               step="0.0001"
               :disabled="disabled"
             />
-            <CFormFeedback invalid> 공급면적을 소소점4자리 이하로 입력하세요.</CFormFeedback>
+            <CFormFeedback invalid>공급면적을 소수점 4자리 이하로 입력하세요.</CFormFeedback>
           </CCol>
           <CCol lg="2" class="mb-2">
             <CFormInput
@@ -152,7 +181,7 @@ const resetForm = () => {
               step="0.0001"
               :disabled="disabled"
             />
-            <CFormFeedback invalid> 계약면적을 소소점4자리 이하로 입력하세요.</CFormFeedback>
+            <CFormFeedback invalid>계약면적을 소수점 4자리 이하로 입력하세요.</CFormFeedback>
           </CCol>
 
           <CCol lg="2" class="mb-2">
@@ -179,6 +208,7 @@ const resetForm = () => {
               v-model.number="form.num_unit"
               placeholder="세대수"
               type="number"
+              min="0"
               required
               :disabled="disabled"
             />
@@ -189,7 +219,7 @@ const resetForm = () => {
       <CCol lg="1">
         <CRow>
           <CCol lg="12" class="d-grid gap-2 d-lg-block mb-3">
-            <v-btn color="primary" type="submit" :disabled="disabled"> 타입추가</v-btn>
+            <v-btn color="primary" type="submit" :disabled="disabled">타입추가</v-btn>
           </CCol>
         </CRow>
       </CCol>
@@ -197,8 +227,8 @@ const resetForm = () => {
   </CForm>
 
   <ConfirmModal ref="refConfirmModal">
-    <template #header> 타입 정보 등록</template>
-    <template #default> 프로젝트의 타입 정보 등록을 진행하시겠습니까?</template>
+    <template #header>타입 정보 등록</template>
+    <template #default>프로젝트의 타입 정보 등록을 진행하시겠습니까?</template>
     <template #footer>
       <v-btn color="primary" size="small" @click="modalAction">저장</v-btn>
     </template>
