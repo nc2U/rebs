@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, provide, ref } from 'vue'
+import { computed, onBeforeMount, provide, ref, watch } from 'vue'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin6'
 import { useProject } from '@/store/pinia/project'
 import { useProjectData } from '@/store/pinia/project_data'
-import { usePerms } from '@/composables/usePerms.ts'
+import { usePerms } from '@/composables/usePerms'
 import type { OptionItem, Project } from '@/store/types/project'
 import Loading from '@/components/Loading/Index.vue'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -28,34 +28,44 @@ const createOptionItem = (payload: OptionItem) => pDataStore.createOptionItem(pa
 const updateOptionItem = (payload: OptionItem) => pDataStore.updateOptionItem(payload)
 const deleteOptionItem = (pk: number, proj: number) => pDataStore.deleteOptionItem(pk, proj)
 
-const onSubmit = (payload: OptionItem) =>
-  createOptionItem({ ...{ project: project.value }, ...payload })
+const onSubmit = (payload: Omit<OptionItem, 'pk' | 'project'>) => {
+  if (project.value) createOptionItem({ project: project.value, ...payload })
+}
 
-const onUpdateOption = (payload: OptionItem) =>
-  updateOptionItem({ ...{ project: project.value }, ...payload })
+const onUpdateOption = (payload: OptionItem) => {
+  if (project.value) updateOptionItem({ ...payload, project: project.value })
+}
 
 const onDeleteOption = (pk: number) => {
   if (project.value) deleteOptionItem(pk, project.value)
 }
 
-const projSelect = (target: number | null) => {
-  pDataStore.unitTypeList = []
-  if (!!target) {
-    fetchTypeList(target, '1')
-    fetchOptionItemList(target)
-  } else {
-    pDataStore.unitTypeList = []
-    pDataStore.optionItemList = []
-  }
+const dataSetup = async (pk: number) => {
+  await fetchTypeList(pk, '1')
+  await fetchOptionItemList(pk)
 }
+
+const dataReset = () => {
+  pDataStore.unitTypeList = []
+  pDataStore.optionItemList = []
+}
+
+const projSelect = (target: number | null) => {
+  dataReset()
+  if (target) dataSetup(target)
+}
+
+watch(
+  () => project.value,
+  newProjId => {
+    dataReset()
+    if (newProjId) dataSetup(newProjId)
+  },
+)
 
 const loading = ref(true)
 onBeforeMount(async () => {
-  const projId = project.value ?? projStore.currentProject
-  if (projId) {
-    await fetchTypeList(projId, '1')
-    await fetchOptionItemList(projId)
-  }
+  if (project.value) await dataSetup(project.value)
   loading.value = false
 })
 </script>
@@ -75,7 +85,6 @@ onBeforeMount(async () => {
         <OptionAddForm
           v-if="canProjectUpdate"
           :disabled="!project"
-          :get-types="getTypes"
           @on-submit="onSubmit"
         />
         <OptionFormList @on-update="onUpdateOption" @on-delete="onDeleteOption" />

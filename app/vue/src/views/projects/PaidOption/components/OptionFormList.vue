@@ -2,11 +2,14 @@
 import { computed } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
 import { TableSecondary } from '@/utils/cssMixins'
-import { usePerms } from '@/composables/usePerms.ts'
-import { type OptionItem } from '@/store/types/project'
+import { usePerms } from '@/composables/usePerms'
+import type { OptionItem } from '@/store/types/project'
 import PaidOption from '@/views/projects/PaidOption/components/PaidOption.vue'
 
-const emit = defineEmits(['on-update', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'on-update', payload: OptionItem): void
+  (e: 'on-delete', pk: number): void
+}>()
 
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))

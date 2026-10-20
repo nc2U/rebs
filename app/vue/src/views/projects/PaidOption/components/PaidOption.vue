@@ -1,83 +1,184 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, onBeforeMount, inject, type PropType } from 'vue'
+import { ref, reactive, computed, watch, inject, type PropType } from 'vue'
 import { useAccount } from '@/store/pinia/account'
-import { usePerms } from '@/composables/usePerms.ts'
+import { usePerms } from '@/composables/usePerms'
 import type { OptionItem } from '@/store/types/project'
+import type { TypeOption } from './OptionAddForm.vue'
 import Multiselect from '@/components/MultiSelect/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-const props = defineProps({ optionItem: { type: Object as PropType<OptionItem>, required: true } })
-const emit = defineEmits(['on-update', 'on-delete'])
+const props = defineProps({
+  optionItem: { type: Object as PropType<OptionItem>, required: true },
+})
+
+const emit = defineEmits<{
+  (e: 'on-update', payload: OptionItem): void
+  (e: 'on-delete', pk: number): void
+}>()
 
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
+const isSuperAuth = computed(() => useAccount().superAuth)
 
-const getTypes = inject('getTypes')
+const getTypes = inject<TypeOption[]>('getTypes')
 
-const form = reactive({
-  types: [] as number[],
-  opt_code: '' as string | null,
+const form = reactive<{
+  types: number[]
+  opt_code: string
+  opt_name: string
+  opt_desc: string
+  opt_maker: string
+  opt_price: number | null
+  opt_deposit: number | null
+  opt_balance: number | null
+}>({
+  types: [],
+  opt_code: '',
   opt_name: '',
-  opt_desc: '' as string | null,
-  opt_maker: '' as string | null,
-  opt_price: null as null | number,
-  opt_deposit: null as null | number,
-  opt_balance: null as null | number,
+  opt_desc: '',
+  opt_maker: '',
+  opt_price: null,
+  opt_deposit: null,
+  opt_balance: null,
 })
 
 const refAlertModal = ref()
 const refConfirmModal = ref()
 
-const formsCheck = computed(() => {
-  const a = JSON.stringify(form.types) === JSON.stringify(props.optionItem.types)
-  const b = form.opt_code === props.optionItem.opt_code
-  const c = form.opt_name === props.optionItem.opt_name
-  const d = form.opt_desc === props.optionItem.opt_desc
-  const e = form.opt_maker === props.optionItem.opt_maker
-  const f = form.opt_price === props.optionItem.opt_price
-  const g = form.opt_deposit === props.optionItem.opt_deposit
-  const h = form.opt_balance === props.optionItem.opt_balance
-  return a && b && c && d && e && f && g && h
-})
-
-const formCheck = (bool: boolean) => {
-  if (bool) onUpdateOption()
-  return
+const dataSetup = () => {
+  form.types = [...(props.optionItem.types || [])]
+  form.opt_code = props.optionItem.opt_code ?? ''
+  form.opt_name = props.optionItem.opt_name ?? ''
+  form.opt_desc = props.optionItem.opt_desc ?? ''
+  form.opt_maker = props.optionItem.opt_maker ?? ''
+  form.opt_price = props.optionItem.opt_price ?? null
+  form.opt_deposit = props.optionItem.opt_deposit ?? null
+  form.opt_balance = props.optionItem.opt_balance ?? null
 }
 
+watch(
+  () => props.optionItem,
+  () => dataSetup(),
+  { deep: true, immediate: true },
+)
+
+const areArraysEqual = (a: number[], b: number[]) => {
+  if (a.length !== b.length) return false
+  const sortedA = [...a].sort((x, y) => x - y)
+  const sortedB = [...b].sort((x, y) => x - y)
+  return sortedA.every((val, idx) => val === sortedB[idx])
+}
+
+const isDepositBalanceValid = computed(() => {
+  if (
+    form.opt_price !== null &&
+    form.opt_deposit !== null &&
+    (form.opt_deposit as any) !== '' &&
+    form.opt_balance !== null &&
+    (form.opt_balance as any) !== ''
+  ) {
+    return Number(form.opt_deposit) + Number(form.opt_balance) === Number(form.opt_price)
+  }
+  return true
+})
+
+const isUnchanged = computed(() => {
+  const typesSame = areArraysEqual(form.types, props.optionItem.types || [])
+  const codeSame = (form.opt_code || '').trim() === (props.optionItem.opt_code || '').trim()
+  const nameSame = form.opt_name.trim() === (props.optionItem.opt_name || '').trim()
+  const descSame = (form.opt_desc || '').trim() === (props.optionItem.opt_desc || '').trim()
+  const makerSame = (form.opt_maker || '').trim() === (props.optionItem.opt_maker || '').trim()
+  const priceSame = Number(form.opt_price) === props.optionItem.opt_price
+  const depositSame =
+    (form.opt_deposit !== null && (form.opt_deposit as any) !== ''
+      ? Number(form.opt_deposit)
+      : null) === (props.optionItem.opt_deposit || null)
+  const balanceSame =
+    (form.opt_balance !== null && (form.opt_balance as any) !== ''
+      ? Number(form.opt_balance)
+      : null) === (props.optionItem.opt_balance || null)
+
+  return (
+    typesSame &&
+    codeSame &&
+    nameSame &&
+    descSame &&
+    makerSame &&
+    priceSame &&
+    depositSame &&
+    balanceSame
+  )
+})
+
+const formsCheck = computed(() => {
+  const hasTypes = form.types.length > 0
+  const hasName = Boolean(form.opt_name.trim())
+  const hasPrice = form.opt_price !== null && form.opt_price >= 0
+  const depositValid =
+    form.opt_deposit === null ||
+    (form.opt_deposit as any) === '' ||
+    Number(form.opt_deposit) >= 0
+  const balanceValid =
+    form.opt_balance === null ||
+    (form.opt_balance as any) === '' ||
+    Number(form.opt_balance) >= 0
+
+  if (
+    !hasTypes ||
+    !hasName ||
+    !hasPrice ||
+    !depositValid ||
+    !balanceValid ||
+    !isDepositBalanceValid.value
+  ) {
+    return true
+  }
+  return isUnchanged.value
+})
+
 const onUpdateOption = () => {
+  if (formsCheck.value) return
+
   if (canProjectUpdate.value) {
-    const pk = props.optionItem.pk
-    emit('on-update', { ...{ pk }, ...form })
+    emit('on-update', {
+      pk: props.optionItem.pk,
+      project: props.optionItem.project,
+      types: [...form.types],
+      opt_code: form.opt_code.trim() || null,
+      opt_name: form.opt_name.trim(),
+      opt_desc: form.opt_desc.trim() || null,
+      opt_maker: form.opt_maker.trim() || null,
+      opt_price: Number(form.opt_price),
+      opt_deposit:
+        form.opt_deposit !== null && (form.opt_deposit as any) !== ''
+          ? Number(form.opt_deposit)
+          : null,
+      opt_balance:
+        form.opt_balance !== null && (form.opt_balance as any) !== ''
+          ? Number(form.opt_balance)
+          : null,
+    })
   } else {
     refAlertModal.value.callModal()
     dataSetup()
   }
 }
+
 const onDeleteOption = () => {
-  if (useAccount().superAuth) refConfirmModal.value.callModal()
+  if (isSuperAuth.value) refConfirmModal.value.callModal()
   else {
     refAlertModal.value.callModal()
     dataSetup()
   }
 }
+
 const modalAction = () => {
-  emit('on-delete', props.optionItem.pk)
+  if (props.optionItem.pk) {
+    emit('on-delete', props.optionItem.pk)
+  }
   refConfirmModal.value.close()
 }
-const dataSetup = () => {
-  form.types = props.optionItem.types
-  form.opt_code = props.optionItem.opt_code
-  form.opt_name = props.optionItem.opt_name
-  form.opt_desc = props.optionItem.opt_desc
-  form.opt_maker = props.optionItem.opt_maker
-  form.opt_price = props.optionItem.opt_price
-  form.opt_deposit = props.optionItem.opt_deposit
-  form.opt_balance = props.optionItem.opt_balance
-}
-
-onBeforeMount(() => dataSetup())
 </script>
 
 <template>
@@ -85,7 +186,7 @@ onBeforeMount(() => dataSetup())
     <CTableDataCell>
       <Multiselect
         v-model="form.types"
-        :options="getTypes as any[]"
+        :options="getTypes || []"
         placeholder="타입구분"
         required
       />
@@ -96,7 +197,7 @@ onBeforeMount(() => dataSetup())
         v-model="form.opt_code"
         maxlength="20"
         placeholder="품목 코드"
-        @keypress.enter="formCheck(form.opt_code !== optionItem.opt_code)"
+        @keydown.enter.prevent="onUpdateOption"
       />
     </CTableDataCell>
     <CTableDataCell>
@@ -105,7 +206,7 @@ onBeforeMount(() => dataSetup())
         maxlength="100"
         placeholder="품목 이름"
         required
-        @keypress.enter="formCheck(form.opt_name !== optionItem.opt_name)"
+        @keydown.enter.prevent="onUpdateOption"
       />
     </CTableDataCell>
     <CTableDataCell>
@@ -113,7 +214,7 @@ onBeforeMount(() => dataSetup())
         v-model="form.opt_desc"
         maxlength="200"
         placeholder="세부 옵션"
-        @keypress.enter="formCheck(form.opt_desc !== optionItem.opt_desc)"
+        @keydown.enter.prevent="onUpdateOption"
       />
     </CTableDataCell>
 
@@ -121,7 +222,7 @@ onBeforeMount(() => dataSetup())
       <CFormInput
         v-model="form.opt_maker"
         placeholder="제조사"
-        @keypress.enter="formCheck(form.opt_maker !== optionItem.opt_maker)"
+        @keydown.enter.prevent="onUpdateOption"
       />
     </CTableDataCell>
 
@@ -132,7 +233,7 @@ onBeforeMount(() => dataSetup())
         type="number"
         min="0"
         required
-        @keypress.enter="formCheck(form.opt_price !== optionItem.opt_price)"
+        @keydown.enter.prevent="onUpdateOption"
       />
     </CTableDataCell>
 
@@ -142,7 +243,7 @@ onBeforeMount(() => dataSetup())
         placeholder="계약금"
         type="number"
         min="0"
-        @keypress.enter="formCheck(form.opt_deposit !== optionItem.opt_deposit)"
+        @keydown.enter.prevent="onUpdateOption"
       />
     </CTableDataCell>
 
@@ -152,7 +253,7 @@ onBeforeMount(() => dataSetup())
         placeholder="잔금"
         type="number"
         min="0"
-        @keypress.enter="formCheck(form.opt_balance !== optionItem.opt_balance)"
+        @keydown.enter.prevent="onUpdateOption"
       />
     </CTableDataCell>
 

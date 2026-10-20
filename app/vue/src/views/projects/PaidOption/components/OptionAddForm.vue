@@ -1,40 +1,98 @@
 <script lang="ts" setup>
-import { ref, reactive, inject, computed } from 'vue'
-import { usePerms } from '@/composables/usePerms.ts'
+import { ref, reactive, inject, computed, watch } from 'vue'
+import { isValidate } from '@/utils/helper'
+import { usePerms } from '@/composables/usePerms'
+import type { OptionItem } from '@/store/types/project'
 import Multiselect from '@/components/MultiSelect/index.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-defineProps({ disabled: Boolean })
-const emit = defineEmits(['on-submit'])
+export interface TypeOption {
+  value: number
+  label: string
+}
+
+const props = defineProps({ disabled: Boolean })
+const emit = defineEmits<{
+  (e: 'on-submit', payload: Omit<OptionItem, 'pk' | 'project'>): void
+}>()
 
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
 
-const getTypes = inject('getTypes')
+const getTypes = inject<TypeOption[]>('getTypes')
 
 const refAlertModal = ref()
 const refConfirmModal = ref()
 
 const validated = ref(false)
-const form = reactive({
-  types: [] as number[],
+const form = reactive<{
+  types: number[]
+  opt_code: string
+  opt_name: string
+  opt_desc: string
+  opt_maker: string
+  opt_price: number | null
+  opt_deposit: number | null
+  opt_balance: number | null
+}>({
+  types: [],
   opt_code: '',
   opt_name: '',
   opt_desc: '',
   opt_maker: '',
-  opt_price: null as null | number,
-  opt_deposit: null as null | number,
-  opt_balance: null as null | number,
+  opt_price: null,
+  opt_deposit: null,
+  opt_balance: null,
+})
+
+watch(
+  () => props.disabled,
+  newVal => {
+    if (newVal) resetForm()
+  },
+)
+
+// 계약금 + 잔금의 합계가 옵션가격과 일치해야 함 (둘 다 입력된 경우)
+const isDepositBalanceValid = computed(() => {
+  if (
+    form.opt_price !== null &&
+    form.opt_deposit !== null &&
+    (form.opt_deposit as any) !== '' &&
+    form.opt_balance !== null &&
+    (form.opt_balance as any) !== ''
+  ) {
+    return Number(form.opt_deposit) + Number(form.opt_balance) === Number(form.opt_price)
+  }
+  return true
+})
+
+const isFormValid = computed(() => {
+  const hasTypes = form.types.length > 0
+  const hasName = Boolean(form.opt_name.trim())
+  const hasPrice = form.opt_price !== null && form.opt_price >= 0
+  const depositValid =
+    form.opt_deposit === null ||
+    (form.opt_deposit as any) === '' ||
+    Number(form.opt_deposit) >= 0
+  const balanceValid =
+    form.opt_balance === null ||
+    (form.opt_balance as any) === '' ||
+    Number(form.opt_balance) >= 0
+
+  return (
+    hasTypes &&
+    hasName &&
+    hasPrice &&
+    depositValid &&
+    balanceValid &&
+    isDepositBalanceValid.value
+  )
 })
 
 const onSubmit = (event: Event) => {
   if (canProjectUpdate.value) {
-    const el = event.currentTarget as HTMLFormElement
-    if (!el.checkValidity()) {
-      event.preventDefault()
-      event.stopPropagation()
-
+    if (isValidate(event) || !isFormValid.value) {
       validated.value = true
     } else {
       refConfirmModal.value.callModal()
@@ -46,7 +104,22 @@ const onSubmit = (event: Event) => {
 }
 
 const modalAction = () => {
-  emit('on-submit', form)
+  emit('on-submit', {
+    types: [...form.types],
+    opt_code: form.opt_code.trim() || null,
+    opt_name: form.opt_name.trim(),
+    opt_desc: form.opt_desc.trim() || null,
+    opt_maker: form.opt_maker.trim() || null,
+    opt_price: Number(form.opt_price),
+    opt_deposit:
+      form.opt_deposit !== null && (form.opt_deposit as any) !== ''
+        ? Number(form.opt_deposit)
+        : null,
+    opt_balance:
+      form.opt_balance !== null && (form.opt_balance as any) !== ''
+        ? Number(form.opt_balance)
+        : null,
+  })
   validated.value = false
   refConfirmModal.value.close()
   resetForm()
@@ -61,6 +134,7 @@ const resetForm = () => {
   form.opt_price = null
   form.opt_deposit = null
   form.opt_balance = null
+  validated.value = false
 }
 </script>
 
@@ -72,12 +146,15 @@ const resetForm = () => {
           <CCol lg="12" xl="7" class="mb-2">
             <Multiselect
               v-model="form.types"
-              :options="getTypes as any[]"
+              :options="getTypes || []"
               placeholder="타입구분"
               required
+              :invalid="validated && form.types.length === 0"
               :disabled="disabled"
             />
-            <CFormFeedback invalid> 적용 타입을 선택하세요.</CFormFeedback>
+            <div v-if="validated && form.types.length === 0" class="text-danger small mt-1">
+              적용 타입을 선택하세요.
+            </div>
           </CCol>
 
           <CCol lg="12" xl="5" class="mb-2">
@@ -150,13 +227,18 @@ const resetForm = () => {
               min="0"
               :disabled="disabled"
             />
+            <div v-if="validated && !isDepositBalanceValid" class="text-danger small mt-1">
+              계약금 + 잔금의 합계가 옵션 가격과 일치해야 합니다.
+            </div>
           </CCol>
         </CRow>
       </CCol>
 
       <CCol lg="12" xl="1">
         <CCol lg="12" class="d-grid gap-2 d-lg-block mb-3 text-center">
-          <v-btn color="primary" type="submit" :disabled="disabled"> 옵션추가</v-btn>
+          <v-btn color="primary" type="submit" :disabled="disabled || !isFormValid">
+            옵션추가
+          </v-btn>
         </CCol>
       </CCol>
     </CRow>
