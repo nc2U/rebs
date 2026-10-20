@@ -7,9 +7,14 @@ import { areaM2PyFormat, ratioFormat } from '@/utils/areaMixins'
 import { type Project } from '@/store/types/project'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-defineProps({ project: { type: Object as PropType<Project>, default: () => null } })
+defineProps({
+  project: { type: Object as PropType<Project | null>, default: null },
+})
 
-const emit = defineEmits(['create-form', 'update-form'])
+const emit = defineEmits<{
+  (e: 'create-form'): void
+  (e: 'update-form'): void
+}>()
 
 const { can, PERM } = usePerms()
 const canProjectCreate = computed(() => can(PERM.PROJECT_CREATE))
@@ -21,6 +26,7 @@ const toCreate = () => {
   if (canProjectCreate.value) emit('create-form')
   else refAlertModal.value.callModal()
 }
+
 const toUpdate = () => {
   if (canProjectUpdate.value) emit('update-form')
   else refAlertModal.value.callModal()
@@ -28,7 +34,7 @@ const toUpdate = () => {
 </script>
 
 <template>
-  <CCardBody>
+  <CCardBody v-if="project">
     <CRow>
       <CCol class="pt-2">
         <CTable hover responsive>
@@ -38,14 +44,6 @@ const toUpdate = () => {
             <col style="width: 15%" />
             <col style="width: 40%" />
           </colgroup>
-          <CTableHead>
-            <CTableRow>
-              <CTableHeaderCell scope="col"></CTableHeaderCell>
-              <CTableHeaderCell scope="col"></CTableHeaderCell>
-              <CTableHeaderCell scope="col"></CTableHeaderCell>
-              <CTableHeaderCell scope="col"></CTableHeaderCell>
-            </CTableRow>
-          </CTableHead>
           <CTableBody>
             <CTableRow>
               <CTableHeaderCell scope="row" :color="TableSecondary"> 프로젝트명</CTableHeaderCell>
@@ -167,6 +165,10 @@ const toUpdate = () => {
         </CTable>
       </CCol>
     </CRow>
+  </CCardBody>
+
+  <CCardBody v-else class="text-center p-5 text-secondary">
+    등록된 프로젝트 정보가 없거나 선택되지 않았습니다. 상단에서 프로젝트를 선택하거나 신규 등록해주세요.
   </CCardBody>
 
   <CCardFooter>

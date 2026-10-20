@@ -13,7 +13,10 @@ const props = defineProps({
   project: { type: Object as PropType<Project>, default: null },
 })
 
-const emit = defineEmits(['to-submit', 'reset-form'])
+const emit = defineEmits<{
+  (e: 'to-submit', payload: Project): void
+  (e: 'reset-form'): void
+}>()
 
 const { can, PERM } = usePerms()
 const canProjectCreate = computed(() => can(PERM.PROJECT_CREATE))
@@ -80,7 +83,7 @@ const form = reactive<Project>({
   slack_notifications_enabled: false,
 })
 
-const sortOptins = [
+const sortOptions = [
   { value: '1', label: '공동주택(아파트)' },
   { value: '2', label: '공동주택(타운하우스)' },
   { value: '3', label: '주상복합(아파트)' },
@@ -143,14 +146,14 @@ const validated = ref(false)
 
 const onSubmit = (event: Event) => {
   if (canProjectCreate.value || canProjectUpdate.value) {
-    const e = event.currentTarget as HTMLSelectElement
+    const formEl = event.currentTarget as HTMLFormElement
     if (!props.project && workspaceMode.value === 'match' && !form.issue_project) {
       event.preventDefault()
       event.stopPropagation()
       validated.value = true
       return
     }
-    if (!e.checkValidity()) {
+    if (!formEl.checkValidity()) {
       event.preventDefault()
       event.stopPropagation()
       validated.value = true
@@ -265,6 +268,7 @@ onBeforeMount(async () => {
 watch(
   () => props.project,
   () => formDataSetup(),
+  { deep: true },
 )
 </script>
 
@@ -291,10 +295,9 @@ watch(
               <CFormSelect v-model="form.kind" required>
                 <option value="">프로젝트 종류</option>
                 <option
-                  v-for="sort in sortOptins"
+                  v-for="sort in sortOptions"
                   :key="sort.value"
                   :value="sort.value"
-                  :selected="project && sort.value === project.kind"
                 >
                   {{ sort.label }}
                 </option>
@@ -324,7 +327,7 @@ watch(
                 v-model.number="form.order"
                 type="number"
                 min="0"
-                placeholder="프로젝트 정력순서를 입력하세요"
+                placeholder="프로젝트 정렬순서를 입력하세요"
               />
               <CFormFeedback invalid>정렬순서를 입력하세요.</CFormFeedback>
             </CCol>
@@ -592,7 +595,7 @@ watch(
                 step="0.0001"
                 placeholder="대지매입면적을 입력하세요"
               />
-              <CFormFeedback invalid> 대지매입면적을 소소점4자리 이하로 입력하세요.</CFormFeedback>
+              <CFormFeedback invalid> 대지매입면적을 소수점 4자리 이하로 입력하세요.</CFormFeedback>
             </CCol>
             <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 계획대지면적</CFormLabel>
             <CCol md="10" lg="2" class="mb-md-3">
@@ -603,7 +606,7 @@ watch(
                 step="0.0001"
                 placeholder="계획대지면적을 입력하세요"
               />
-              <CFormFeedback invalid> 계획대지면적을 소소점4자리 이하로 입력하세요.</CFormFeedback>
+              <CFormFeedback invalid> 계획대지면적을 소수점 4자리 이하로 입력하세요.</CFormFeedback>
             </CCol>
 
             <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 기부채납면적</CFormLabel>
@@ -615,7 +618,7 @@ watch(
                 step="0.0001"
                 placeholder="기부채납면적을 입력하세요"
               />
-              <CFormFeedback invalid> 기부채납면적을 소소점4자리 이하로 입력하세요.</CFormFeedback>
+              <CFormFeedback invalid> 기부채납면적을 소수점 4자리 이하로 입력하세요.</CFormFeedback>
             </CCol>
           </CRow>
 
@@ -629,7 +632,7 @@ watch(
                 step="0.0001"
                 placeholder="지상연면적을 입력하세요"
               />
-              <CFormFeedback invalid> 지상연면적을 소소점4자리 이하로 입력하세요.</CFormFeedback>
+              <CFormFeedback invalid> 지상연면적을 소수점 4자리 이하로 입력하세요.</CFormFeedback>
             </CCol>
             <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 지하연면적</CFormLabel>
             <CCol md="10" lg="2" class="mb-md-3">
@@ -640,7 +643,7 @@ watch(
                 step="0.0001"
                 placeholder="지하연면적을 입력하세요"
               />
-              <CFormFeedback invalid> 지하연면적을 소소점4자리 이하로 입력하세요.</CFormFeedback>
+              <CFormFeedback invalid> 지하연면적을 소수점 4자리 이하로 입력하세요.</CFormFeedback>
             </CCol>
             <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 총 연면적</CFormLabel>
             <CCol md="10" lg="2" class="mb-md-3">
@@ -651,7 +654,7 @@ watch(
                 step="0.0001"
                 placeholder="총 연면적을 입력하세요"
               />
-              <CFormFeedback invalid> 총 연면적을 소소점4자리 이하로 입력하세요.</CFormFeedback>
+              <CFormFeedback invalid> 총 연면적을 소수점 4자리 이하로 입력하세요.</CFormFeedback>
             </CCol>
 
             <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 건축면적</CFormLabel>
@@ -663,7 +666,7 @@ watch(
                 step="0.0001"
                 placeholder="건축면적을 입력하세요"
               />
-              <CFormFeedback invalid> 총 연면적을 소소점4자리 이하로 입력하세요.</CFormFeedback>
+              <CFormFeedback invalid>건축면적을 소수점 4자리 이하로 입력하세요.</CFormFeedback>
             </CCol>
           </CRow>
 
@@ -677,7 +680,7 @@ watch(
                 step="0.0001"
                 placeholder="용적율(%)을 입력하세요"
               />
-              <CFormFeedback invalid> 용적율(%)을 소소점4자리 이하로 입력하세요.</CFormFeedback>
+              <CFormFeedback invalid> 용적율(%)을 소수점 4자리 이하로 입력하세요.</CFormFeedback>
             </CCol>
             <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 건폐율(%)</CFormLabel>
             <CCol md="10" lg="2" class="mb-md-3">
@@ -688,7 +691,7 @@ watch(
                 step="0.0001"
                 placeholder="건폐율(%)을 입력하세요"
               />
-              <CFormFeedback invalid> 건폐율(%)을 소소점4자리 이하로 입력하세요.</CFormFeedback>
+              <CFormFeedback invalid> 건폐율(%)을 소수점 4자리 이하로 입력하세요.</CFormFeedback>
             </CCol>
             <CFormLabel class="col-md-2 col-lg-1 col-form-label"> 법정주차대수</CFormLabel>
             <CCol md="10" lg="2" class="mb-md-3">

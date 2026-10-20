@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, ref } from 'vue'
+import { computed, onBeforeMount, ref, watch } from 'vue'
 import { navMenu, pageTitle } from '@/views/projects/_menu/headermixin1'
 import { useProject } from '@/store/pinia/project'
 import { type Project } from '@/store/types/project'
@@ -10,28 +10,38 @@ import ProjectAuthGuard from '@/components/AuthGuard/ProjectAuthGuard.vue'
 import IndexForm from '@/views/projects/List/components/IndexForm.vue'
 import IndexDetail from '@/views/projects/List/components/IndexDetail.vue'
 
-const compName = ref('IndexDetail')
+const compName = ref<'IndexDetail' | 'CreateForm' | 'UpdateForm'>('IndexDetail')
 
 const projStore = useProject()
 const project = computed(() => projStore.project)
-
-const createProject = (payload: Project) => projStore.createProject(payload)
-const updateProject = (payload: Project) => projStore.updateProject(payload)
 
 const createForm = () => (compName.value = 'CreateForm')
 const updateForm = () => (compName.value = 'UpdateForm')
 const resetForm = () => (compName.value = 'IndexDetail')
 
-const toCreate = (payload: Project) => createProject(payload)
-const toUpdate = (payload: Project) => updateProject(payload)
 const toSubmit = async (payload: Project) => {
-  if (payload.pk) await toUpdate(payload)
-  else await toCreate(payload)
+  if (payload.pk) await projStore.updateProject(payload)
+  else await projStore.createProject(payload)
   compName.value = 'IndexDetail'
 }
 
+const projSelect = (target: number | null) => {
+  resetForm()
+  if (target) projStore.fetchProject(target)
+}
+
+watch(
+  () => project.value,
+  () => {
+    compName.value = 'IndexDetail'
+  },
+)
+
 const loading = ref(true)
 onBeforeMount(async () => {
+  if (!projStore.project && projStore.currentProject) {
+    await projStore.fetchProject(projStore.currentProject)
+  }
   loading.value = false
 })
 </script>
@@ -39,7 +49,12 @@ onBeforeMount(async () => {
 <template>
   <ProjectAuthGuard>
     <Loading v-model:active="loading" />
-    <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" selector="ProjectSelect" />
+    <ContentHeader
+      :page-title="pageTitle"
+      :nav-menu="navMenu"
+      selector="ProjectSelect"
+      @proj-select="projSelect"
+    />
 
     <ContentBody>
       <IndexDetail
@@ -58,10 +73,6 @@ onBeforeMount(async () => {
         @to-submit="toSubmit"
         @reset-form="resetForm"
       />
-
-      <template #footer>
-        <div style="display: none"></div>
-      </template>
     </ContentBody>
   </ProjectAuthGuard>
 </template>
