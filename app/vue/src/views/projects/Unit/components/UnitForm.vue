@@ -1,43 +1,72 @@
 <script lang="ts" setup>
-import { computed, onMounted, type PropType, ref } from 'vue'
+import { computed, onMounted, type PropType, ref, watch } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import { useProjectData } from '@/store/pinia/project_data'
-import { usePerms } from '@/composables/usePerms.ts'
-import type { AllHouseUnit } from '@/store/types/project.ts'
+import { usePerms } from '@/composables/usePerms'
+import type { AllHouseUnit } from '@/store/types/project'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
 const props = defineProps({ unit: { type: Object as PropType<AllHouseUnit>, required: true } })
-const emit = defineEmits(['on-update', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'on-update', payload: any): void
+  (e: 'on-delete', payload: { pk: number; type: number }): void
+}>()
 
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
+const isSuperAuth = computed(() => useAccount().superAuth)
 
 const refAlertModal = ref()
 const refConfirmModal = ref()
 
-const form = ref({
-  unit_type: null as number | null,
-  floor_type: null as number | null,
-  building_unit: null as number | null,
+interface UnitFormData {
+  unit_type: number | null
+  floor_type: number | null
+  building_unit: number | null
+  name: string
+  bldg_line: number | null
+  floor_no: number | null
+  is_hold: boolean
+  hold_reason: string
+}
+
+const form = ref<UnitFormData>({
+  unit_type: null,
+  floor_type: null,
+  building_unit: null,
   name: '',
-  bldg_line: null as number | null,
-  floor_no: null as number | null,
+  bldg_line: null,
+  floor_no: null,
   is_hold: false,
   hold_reason: '',
 })
 
-const formCheck = computed(() => {
-  const a = form.value.unit_type === props.unit?.unit_type?.pk
-  const b = form.value.floor_type === props.unit?.floor_type
-  const c = form.value.building_unit === props.unit?.building_unit
-  const d = form.value.name === props.unit?.name
-  const e = form.value.bldg_line === props.unit?.bldg_line
-  const f = form.value.floor_no === props.unit?.floor_no
-  const g = form.value.is_hold === props.unit?.is_hold
-  const h = form.value.hold_reason === props.unit?.hold_reason
-  return a && b && c && d && e && f && g && h
+const isUnchanged = computed(() => {
+  return (
+    form.value.unit_type === (props.unit?.unit_type?.pk ?? null) &&
+    form.value.floor_type === (props.unit?.floor_type ?? null) &&
+    form.value.building_unit === (props.unit?.building_unit ?? null) &&
+    form.value.name.trim() === (props.unit?.name ?? '') &&
+    form.value.bldg_line === (props.unit?.bldg_line ?? null) &&
+    form.value.floor_no === (props.unit?.floor_no ?? null) &&
+    form.value.is_hold === (props.unit?.is_hold ?? false) &&
+    form.value.hold_reason.trim() === (props.unit?.hold_reason ?? '')
+  )
 })
+
+const isInvalid = computed(() => {
+  return (
+    !form.value.unit_type ||
+    !form.value.floor_type ||
+    !form.value.building_unit ||
+    !form.value.name.trim() ||
+    form.value.bldg_line === null ||
+    form.value.floor_no === null
+  )
+})
+
+const formCheck = computed(() => isUnchanged.value || isInvalid.value)
 
 const proDataStore = useProjectData()
 const getTypes = computed(() => proDataStore.getTypes)
@@ -45,20 +74,35 @@ const getFloorTypes = computed(() => proDataStore.getFloorTypes)
 const buildingList = computed(() => proDataStore.buildingList)
 
 const onUpdateUnit = () => {
+  if (formCheck.value) return
+
   if (canProjectUpdate.value) {
     const pk = props.unit?.pk
-    emit('on-update', { ...{ pk }, ...form.value })
-  } else refAlertModal.value.callModal()
+    emit('on-update', {
+      pk,
+      ...form.value,
+      name: form.value.name.trim(),
+      hold_reason: form.value.hold_reason.trim(),
+    })
+  } else {
+    refAlertModal.value?.callModal()
+    dataSetup()
+  }
 }
 
 const onDeleteUnit = () => {
-  if (useAccount().superAuth) refConfirmModal.value.callModal()
-  else refAlertModal.value.callModal()
+  if (isSuperAuth.value) refConfirmModal.value?.callModal()
+  else {
+    refAlertModal.value?.callModal()
+    dataSetup()
+  }
 }
 
 const delConfirm = () => {
-  emit('on-delete', { pk: props.unit?.pk, type: props.unit?.unit_type?.pk })
-  refConfirmModal.value.close()
+  if (props.unit?.pk && props.unit?.unit_type?.pk) {
+    emit('on-delete', { pk: props.unit.pk, type: props.unit.unit_type.pk })
+  }
+  refConfirmModal.value?.close()
 }
 
 const dataSetup = () => {
@@ -73,6 +117,11 @@ const dataSetup = () => {
 }
 
 onMounted(() => dataSetup())
+watch(
+  () => props.unit,
+  () => dataSetup(),
+  { deep: true },
+)
 </script>
 
 <template>
@@ -107,27 +156,27 @@ onMounted(() => dataSetup())
         maxlength="5"
         placeholder="호수"
         required
-        @keydown.enter="onUpdateUnit"
+        @keydown.enter.prevent="onUpdateUnit"
       />
     </CTableDataCell>
     <CTableDataCell>
       <CFormInput
         v-model.number="form.bldg_line"
         type="number"
-        num="0"
+        min="1"
         placeholder="라인"
         required
-        @keydown.enter="onUpdateUnit"
+        @keydown.enter.prevent="onUpdateUnit"
       />
     </CTableDataCell>
     <CTableDataCell>
       <CFormInput
         v-model.number="form.floor_no"
         type="number"
-        num="0"
+        min="-10"
         placeholder="층수"
         required
-        @keydown.enter="onUpdateUnit"
+        @keydown.enter.prevent="onUpdateUnit"
       />
     </CTableDataCell>
     <CTableDataCell>
@@ -138,22 +187,22 @@ onMounted(() => dataSetup())
         v-model="form.hold_reason"
         maxlength="100"
         placeholder="홀딩 사유"
-        @keydown.enter="onUpdateUnit"
+        @keydown.enter.prevent="onUpdateUnit"
       />
     </CTableDataCell>
     <CTableDataCell v-if="canProjectUpdate">
       <v-btn color="success" size="x-small" :disabled="formCheck" @click="onUpdateUnit">
         수정
       </v-btn>
-      <v-btn color="warning" size="x-small" @click="onDeleteUnit">삭제</v-btn>
+      <v-btn color="warning" size="x-small" class="ml-1" @click="onDeleteUnit">삭제</v-btn>
     </CTableDataCell>
   </CTableRow>
 
   <ConfirmModal ref="refConfirmModal">
-    <template #header> 호수 유닛 삭제</template>
+    <template #header>호수 유닛 삭제</template>
     <template #default>
       이 호수에 등록된 계약 건 데이터가 있는 경우 해당 계약 데이터의 동호수 유니트 정보가
-      삭제됩니다. 해당 호수 유닛을 삭제 하시겠습니까?
+      삭제됩니다. 해당 호수 유닛을 삭제하시겠습니까?
     </template>
     <template #footer>
       <v-btn size="small" color="warning" @click="delConfirm">삭제</v-btn>

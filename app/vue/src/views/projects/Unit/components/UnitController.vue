@@ -2,8 +2,8 @@
 import { computed, reactive, ref, watch } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
 import { AlertLight } from '@/utils/cssMixins'
-import { usePerms } from '@/composables/usePerms.ts'
-import { type BuildingUnit } from '@/store/types/project'
+import { usePerms } from '@/composables/usePerms'
+import type { BuildingUnit } from '@/store/types/project'
 import FormModal from '@/components/Modals/FormModal.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -16,6 +16,8 @@ const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
 
 const projReset = () => {
   form.building = null
+  bldgName.value = ''
+  typeName.value = ''
   reset(1)
 }
 
@@ -30,7 +32,13 @@ const refAlertModal = ref()
 const bldgName = ref('')
 const typeName = ref('')
 
-const form = reactive({
+const form = reactive<{
+  building: number | null
+  line: number | null
+  type: number | null
+  minFloor: number | null
+  maxFloor: number | null
+}>({
   building: null,
   line: null,
   type: null,
@@ -40,20 +48,22 @@ const form = reactive({
 
 const warning = computed(() => !!form.maxFloor)
 
-const typeNameLength = computed(() => {
-  const typeNames = unitTypeList.value
-    .map((t: { name: string }) => t.name)
-    .map((t: string) => t.replace(/[^0-9a-zA-Z]/g, ''))
-    .map((t: string) => t.length)
-  return Math.max.apply({}, typeNames)
+const isRangeInvalid = computed(() => {
+  if (form.minFloor === null || form.maxFloor === null) return false
+  return form.minFloor > form.maxFloor
 })
 
-const maxUnits = computed(() =>
-  Math.max.apply(
-    {},
-    unitTypeList.value.map(t => t.num_unit as number),
-  ),
-)
+const typeNameLength = computed(() => {
+  if (!unitTypeList.value.length) return 0
+  const typeNames = unitTypeList.value.map(t => t.name.replace(/[^0-9a-zA-Z]/g, '').length)
+  return Math.max(0, ...typeNames)
+})
+
+const maxUnits = computed(() => {
+  if (!unitTypeList.value.length) return 0
+  const counts = unitTypeList.value.map(t => Number(t.num_unit || 0))
+  return Math.max(0, ...counts)
+})
 
 const projectDataStore = useProjectData()
 const unitTypeList = computed(() => projectDataStore.unitTypeList)
@@ -63,42 +73,60 @@ const simpleFloors = computed(() => projectDataStore.simpleFloors)
 const fetchNumUnitByType = (projId: number, unit_type: number) =>
   projectDataStore.fetchNumUnitByType(projId, unit_type)
 
-watch(form, val => {
-  if (!val.building) reset(1)
-  else if (!val.line) reset(2)
-  else if (!val.type) reset(3)
-  else if (!val.minFloor) reset(4)
-})
+watch(
+  () => form.building,
+  val => {
+    if (!val) reset(1)
+  },
+)
+watch(
+  () => form.line,
+  val => {
+    if (!val) reset(2)
+  },
+)
+watch(
+  () => form.type,
+  val => {
+    if (!val) reset(3)
+  },
+)
+watch(
+  () => form.minFloor,
+  val => {
+    if (val === null) reset(4)
+  },
+)
 
 const dong = ref('')
 
 const onSubmit = (event: Event) => {
   if (canProjectUpdate.value) {
-    const e = event.currentTarget as HTMLSelectElement
+    const e = event.currentTarget as HTMLFormElement
     if (!e.checkValidity()) {
       event.preventDefault()
       event.stopPropagation()
 
       validated.value = true
     } else {
-      emit('dong-register', dong.value)
+      emit('dong-register', dong.value.trim())
       dong.value = ''
-      refBuildForm.value.close()
+      refBuildForm.value?.close()
     }
   }
 }
 
 const reset = (n: number) => {
-  if (n == 1) {
+  if (n === 1) {
     form.line = null
     form.type = null
     form.minFloor = null
     form.maxFloor = null
-  } else if (n == 2) {
+  } else if (n === 2) {
     form.type = null
     form.minFloor = null
     form.maxFloor = null
-  } else if (n == 3) {
+  } else if (n === 3) {
     form.minFloor = null
     form.maxFloor = null
   } else {
@@ -107,32 +135,35 @@ const reset = (n: number) => {
 }
 
 const bldgSelect = (event: Event) => {
-  const bdName = (event.target as HTMLSelectElement).value
-    ? buildingList.value.filter(
-        (b: BuildingUnit) => b.pk.toString() == (event.target as HTMLSelectElement).value,
-      )[0].name
-    : ''
+  const targetVal = (event.target as HTMLSelectElement).value
+  const targetPk = Number(targetVal) || 0
+  const targetBldg = buildingList.value.find((b: BuildingUnit) => b.pk === targetPk)
+  const bdName = targetBldg?.name ?? ''
+
   bldgName.value = bdName
-  const bldg = {
-    pk: (event.target as HTMLSelectElement).value,
+  emit('bldg-select', {
+    pk: targetPk,
     name: bdName,
-  }
-  emit('bldg-select', bldg)
+  })
 }
 
 const typeSelect = (event: Event) => {
-  typeName.value = (event.target as HTMLSelectElement).value
-    ? unitTypeList.value.filter(
-        t => (t.pk as number).toString() == (event.target as HTMLSelectElement).value,
-      )[0].name
-    : ''
-  fetchNumUnitByType(props.project, Number((event.target as HTMLSelectElement).value))
+  const targetVal = (event.target as HTMLSelectElement).value
+  const targetPk = Number(targetVal) || 0
+  const targetType = unitTypeList.value.find(t => t.pk === targetPk)
+
+  typeName.value = targetType?.name ?? ''
+  if (targetPk && props.project) {
+    fetchNumUnitByType(props.project, targetPk)
+  }
 }
 
 const unitRegister = () => {
-  if (canProjectUpdate.value) refConfirmModal.value.callModal()
+  if (isRangeInvalid.value || form.minFloor === null) return
+
+  if (canProjectUpdate.value) refConfirmModal.value?.callModal()
   else {
-    refAlertModal.value.callModal()
+    refAlertModal.value?.callModal()
     reset(1)
   }
 }
@@ -141,14 +172,12 @@ const modalAction = () => {
   if (!form.maxFloor) form.maxFloor = form.minFloor
   emit('unit-register', {
     ...form,
-    ...{
-      typeName: typeName.value,
-      maxLength: typeNameLength.value,
-      maxUnits: maxUnits.value,
-    },
-    ...{ floors: simpleFloors.value },
+    typeName: typeName.value,
+    maxLength: typeNameLength.value,
+    maxUnits: maxUnits.value,
+    floors: simpleFloors.value,
   })
-  refConfirmModal.value.close()
+  refConfirmModal.value?.close()
   reset(1)
 }
 </script>
@@ -158,10 +187,10 @@ const modalAction = () => {
     <CRow>
       <CCol md="3" class="mb-2">
         <CRow>
-          <CFormLabel class="col-sm-4 col-form-label"> 동(건물)선택</CFormLabel>
+          <CFormLabel class="col-sm-4 col-form-label">동(건물)선택</CFormLabel>
           <CCol sm="8">
             <CFormSelect v-model.number="form.building" :disabled="!project" @change="bldgSelect">
-              <option value>---------</option>
+              <option value="">---------</option>
               <option v-for="bldg in buildingList" :key="bldg.pk" :value="bldg.pk">
                 {{ bldg.name }}동
               </option>
@@ -175,7 +204,7 @@ const modalAction = () => {
           size="16"
           color="success"
           class="pointer"
-          @click="refBuildForm.callModal()"
+          @click="refBuildForm?.callModal()"
         />
       </CCol>
     </CRow>
@@ -185,12 +214,12 @@ const modalAction = () => {
     <CRow>
       <CCol md="3" class="mb-2">
         <CRow>
-          <CFormLabel class="col-sm-4 col-form-label"> 등록라인</CFormLabel>
+          <CFormLabel class="col-sm-4 col-form-label">등록라인</CFormLabel>
           <CCol sm="8">
             <CFormInput
               v-model.number="form.line"
               type="number"
-              min="0"
+              min="1"
               placeholder="등록할 라인 숫자 입력"
               :disabled="!form.building"
             />
@@ -200,10 +229,10 @@ const modalAction = () => {
 
       <CCol md="3" class="mb-2">
         <CRow>
-          <CFormLabel class="col-sm-4 col-form-label"> 타입선택</CFormLabel>
+          <CFormLabel class="col-sm-4 col-form-label">타입선택</CFormLabel>
           <CCol sm="8">
             <CFormSelect v-model.number="form.type" :disabled="!form.line" @change="typeSelect">
-              <option value>---------</option>
+              <option value="">---------</option>
               <option v-for="type in unitTypeList" :key="type.pk" :value="type.pk">
                 {{ type.name }}
               </option>
@@ -214,13 +243,13 @@ const modalAction = () => {
 
       <CCol md="3" class="mb-2">
         <CRow>
-          <CFormLabel class="col-sm-4 col-form-label"> 시작층</CFormLabel>
+          <CFormLabel class="col-sm-4 col-form-label">시작층</CFormLabel>
           <CCol sm="8">
             <CFormInput
               v-model.number="form.minFloor"
               type="number"
               min="-10"
-              placeholder="시작층(피로티 제외)"
+              placeholder="시작층(필로티 제외)"
               :disabled="!form.type"
               @keydown.enter="unitRegister"
             />
@@ -230,7 +259,7 @@ const modalAction = () => {
 
       <CCol md="3" class="mb-2">
         <CRow>
-          <CFormLabel class="col-sm-4 col-form-label"> 종료층</CFormLabel>
+          <CFormLabel class="col-sm-4 col-form-label">종료층</CFormLabel>
           <CCol sm="8">
             <CFormInput
               v-model.number="form.maxFloor"
@@ -238,8 +267,12 @@ const modalAction = () => {
               min="-10"
               placeholder="입력 범위 종료층"
               :disabled="!form.minFloor"
+              :invalid="isRangeInvalid"
               @keydown.enter="unitRegister"
             />
+            <div v-if="isRangeInvalid" class="text-danger small mt-1">
+              ※ 종료층은 시작층 이상이어야 합니다.
+            </div>
           </CCol>
         </CRow>
       </CCol>
@@ -250,11 +283,15 @@ const modalAction = () => {
     <CIcon name="cilWarning" />
     <strong> 주의</strong> : 해당 라인에서 시작층부터 종료층까지 범위의 호수(유니트)가
     <strong>"일괄등록"</strong>됩니다. 해당 동, 타입과 층을 다시 한번 확인하고 불필요한 유니트가
-    등록되지 않도록 신중하게 진행하여 주십시요.
+    등록되지 않도록 신중하게 진행하여 주십시오.
   </CAlert>
 
   <CAlert v-if="canProjectUpdate" :color="AlertLight" variant="solid" class="text-right">
-    <v-btn color="primary" :disabled="!project || !form.minFloor" @click="unitRegister">
+    <v-btn
+      color="primary"
+      :disabled="!project || form.minFloor === null || isRangeInvalid"
+      @click="unitRegister"
+    >
       호수(유니트) 일괄등록
     </v-btn>
   </CAlert>
@@ -273,18 +310,18 @@ const modalAction = () => {
         </CModalBody>
         <CModalFooter>
           <v-btn type="submit" size="small" color="primary">저장</v-btn>
-          <v-btn color="light" size="small" @click="refBuildForm.close()" flat> 닫기</v-btn>
+          <v-btn color="light" size="small" @click="refBuildForm?.close()" flat>닫기</v-btn>
         </CModalFooter>
       </CForm>
     </template>
   </FormModal>
 
   <ConfirmModal ref="refConfirmModal">
-    <template #header> 호수(유니트) 정보</template>
+    <template #header>호수(유니트) 정보</template>
     <template #default>
       <p class="text-primary">
         <strong>
-          [{{ bldgName }}동] ({{ form.type }} 타입) {{ form.line }}호 라인, 층<span
+          [{{ bldgName }}동] ({{ typeName || form.type }} 타입) {{ form.line }}호 라인, 층<span
             v-if="form.maxFloor"
           >
             범위

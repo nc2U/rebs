@@ -1,18 +1,16 @@
 <script lang="ts" setup>
 import { computed, type PropType } from 'vue'
-import { type SimpleUnit } from '@/store/types/project'
+import type { SimpleUnit } from '@/store/types/project'
 
 const props = defineProps({
-  unit: { type: Object as PropType<SimpleUnit>, default: null },
+  unit: { type: Object as PropType<SimpleUnit | null>, default: null },
   floor: { type: Number, default: 1 },
   line: { type: Number, default: 1 },
 })
 
 const color = computed(() => {
-  let color = ''
-  color = props.floor < 3 ? '#ccc' : color
-  color = props.unit ? props.unit.color : color
-  return color
+  if (props.unit?.color) return props.unit.color
+  return props.floor < 3 ? '#ccc' : ''
 })
 </script>
 
@@ -20,7 +18,7 @@ const color = computed(() => {
   <div
     class="unit"
     :class="{
-      border: unit || floor < 3,
+      border: !!unit || floor < 3,
     }"
     :style="{ background: color }"
   >

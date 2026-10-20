@@ -1,30 +1,42 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { useProjectData } from '@/store/pinia/project_data'
-import { usePerms } from '@/composables/usePerms.ts'
-import { type HouseUnit } from '@/store/types/project'
+import { usePerms } from '@/composables/usePerms'
+import type { HouseUnit } from '@/store/types/project'
 import Unit from '@/views/projects/Unit/components/Unit.vue'
 import UnitForm from './UnitForm.vue'
 
 defineProps({ bldgName: { type: String, default: '' } })
-const emit = defineEmits(['on-update', 'on-delete'])
+const emit = defineEmits<{
+  (e: 'on-update', payload: HouseUnit): void
+  (e: 'on-delete', payload: { pk: number; type: number }): void
+}>()
 
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
 
 const proDataStore = useProjectData()
 const units = computed(() => proDataStore.simpleUnits)
-const floorList = computed(() => [...new Set(units.value.map(u => u.floor))].sort((a, b) => b - a))
-const lineList = computed(() => [...new Set(units.value.map(u => u.line))].sort((a, b) => a - b))
+const floorList = computed(() =>
+  [...new Set(units.value.map(u => u.floor))].sort((a, b) => b - a),
+)
+const lineList = computed(() =>
+  [...new Set(units.value.map(u => u.line))].sort((a, b) => a - b),
+)
 const houseUnitList = computed(() => proDataStore.houseUnitList)
 
 const unitCol = computed(() => (lineList.value.length > 8 ? 12 : 5))
 const formCol = computed(() => (lineList.value.length > 8 ? 12 : 7))
 
-const getUnit = (line: number, floor: number) =>
-  units.value
-    .filter((u: { line: number }) => u.line === line)
-    .filter((u: { floor: number }) => u.floor === floor)[0]
+const unitMap = computed(() => {
+  const map = new Map<string, (typeof units.value)[number]>()
+  for (const u of units.value) {
+    map.set(`${u.line}-${u.floor}`, u)
+  }
+  return map
+})
+
+const getUnit = (line: number, floor: number) => unitMap.value.get(`${line}-${floor}`) ?? null
 
 const onUpdate = (payload: HouseUnit) => emit('on-update', payload)
 const onDelete = (payload: { pk: number; type: number }) => emit('on-delete', payload)
@@ -33,7 +45,7 @@ const onDelete = (payload: { pk: number; type: number }) => emit('on-delete', pa
 <template>
   <CContainer fluid>
     <CRow v-if="units.length === 0">
-      <CCol class="text-center p-5 text-danger"> 등록된 데이터가 없습니다.</CCol>
+      <CCol class="text-center p-5 text-danger">등록된 데이터가 없습니다.</CCol>
     </CRow>
 
     <CRow v-else>
@@ -47,7 +59,7 @@ const onDelete = (payload: { pk: number; type: number }) => emit('on-delete', pa
             :line="line"
           />
         </CRow>
-        <CRow v-if="lineList">
+        <CRow v-if="lineList.length">
           <div
             class="text-center build-base"
             :style="{
@@ -69,7 +81,7 @@ const onDelete = (payload: { pk: number; type: number }) => emit('on-delete', pa
             <col style="width: 9%" />
             <col style="width: 10%" />
             <col style="width: 6%" />
-            <col style="width: 18%" />
+            <col :style="{ width: canProjectUpdate ? '18%' : '28%' }" />
             <col v-if="canProjectUpdate" style="width: 10%" />
           </colgroup>
           <CTableHead>

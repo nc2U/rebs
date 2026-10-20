@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount } from 'vue'
+import { computed, onBeforeMount, ref, watch } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 import { pageTitle, navMenu } from '@/views/projects/_menu/headermixin5'
 import { useProject } from '@/store/pinia/project'
-import { type HouseUnit, type Project } from '@/store/types/project'
+import type { HouseUnit, Project } from '@/store/types/project'
 import { type CreateUnit, useProjectData } from '@/store/pinia/project_data'
 import { message } from '@/utils/helper'
 import Loading from '@/components/Loading/Index.vue'
@@ -19,7 +19,7 @@ const bldgPk = ref<null | number>(null)
 const bldgName = ref('')
 
 const projStore = useProject()
-const project = computed(() => (projStore.project as Project)?.pk)
+const project = computed(() => (projStore.project as Project | null)?.pk)
 
 const pDataStore = useProjectData()
 const numUnitByType = computed(() => pDataStore.numUnitByType)
@@ -34,16 +34,17 @@ const fetchHouseUnitList = (projId: number, bldg?: number) =>
 const createBuilding = (payload: any) => pDataStore.createBuilding(payload)
 const createUnit = (payload: CreateUnit) => pDataStore.createUnit(payload)
 const patchUnit = (payload: HouseUnit & { bldg: number }) => pDataStore.patchUnit(payload)
-const deleteUnit = (pk: number, proj: number, type: number) => pDataStore.deleteUnit(pk, proj, type)
+const deleteUnit = (pk: number, proj: number, type: number) =>
+  pDataStore.deleteUnit(pk, proj, type)
 
 const bldgSelect = (bldg: { pk: number; name: string }) => {
-  if (!!bldg.pk && project.value) fetchHouseUnitList(project.value, bldg.pk)
-  else pDataStore.houseUnitList = []
   bldgPk.value = bldg.pk
   bldgName.value = bldg.name
+  if (bldg.pk && project.value) fetchHouseUnitList(project.value, bldg.pk)
+  else pDataStore.houseUnitList = []
 }
 
-type OriginalUnit = {
+export type OriginalUnit = {
   type: number
   building: number
   line: number
@@ -61,80 +62,113 @@ type OriginalUnit = {
 }
 
 const dongRegister = (dong: string) => {
-  if (!!project.value) createBuilding({ project: project.value, name: dong })
+  if (project.value) createBuilding({ project: project.value, name: dong })
 }
 
-const unitRegister = (payload: OriginalUnit) => {
-  if (!!project.value) {
-    const unit_type = payload.type
-    const building_unit = payload.building
-    const bldg_line = payload.line
-    const midWord = bldg_line < 10 ? '0' : ''
-    const size = payload.maxFloor - payload.minFloor + 1
-    const range = (size: number, min: number): number[] =>
-      [...Array(size).keys()].map(key => key + min)
-    const between = (x: number, min: number, max: number): boolean => x >= min && x <= max // 주어진 x가 범위 내에 있늕지 확인하는 변수
-    const getCode = (num: number, digit: number) => {
-      const prefix = '0'.repeat(digit - `${num}`.length)
-      const typeStr = payload.typeName.replace(/[^0-9a-zA-Z]/g, '')
-      const typeDigit = payload.maxLength - typeStr.length
-      const suffix = typeDigit >= 1 ? '0'.repeat(typeDigit - 1) + '1' : ''
-      return `${typeStr}${suffix}${prefix}${num}`
+const unitRegister = async (payload: OriginalUnit) => {
+  if (!project.value) return
+
+  if (payload.maxFloor < payload.minFloor) {
+    alert('종료층은 시작층 이상이어야 합니다.')
+    return
+  }
+
+  const unit_type = payload.type
+  const building_unit = payload.building
+  const bldg_line = payload.line
+  const midWord = bldg_line < 10 ? '0' : ''
+  const size = payload.maxFloor - payload.minFloor + 1
+  const range = (size: number, min: number): number[] =>
+    [...Array(size).keys()].map(key => key + min)
+  const between = (x: number, min: number, max: number): boolean => x >= min && x <= max
+  const getCode = (num: number, digit: number) => {
+    const safeDigit = Math.max(1, digit)
+    const prefix = '0'.repeat(Math.max(0, safeDigit - `${num}`.length))
+    const typeStr = payload.typeName.replace(/[^0-9a-zA-Z]/g, '')
+    const typeDigit = payload.maxLength - typeStr.length
+    const suffix = typeDigit >= 1 ? '0'.repeat(typeDigit - 1) + '1' : ''
+    return `${typeStr}${suffix}${prefix}${num}`
+  }
+
+  let num = numUnitByType.value // 해당 타입의 개수 구하기
+
+  const existingFloors = simpleUnits.value
+    .filter((u: { line: number }) => u.line === bldg_line)
+    .map((u: { floor: number }) => u.floor)
+
+  const requestedFloors = range(size, payload.minFloor)
+  const isExist = requestedFloors.some(f => existingFloors.includes(f))
+
+  if (isExist) {
+    alert('해당 범위의 호수 중 이미 등록되어 있는 유니트가 있습니다.')
+    return
+  }
+
+  // 층타입 매핑 확인
+  const inputUnits = requestedFloors.map(i => {
+    const matchedFloor = payload.floors.find(f => between(i, f.start, f.end))
+    return {
+      floor_no: i,
+      name: `${i < 0 ? `B${i * -1}` : i}${midWord}${bldg_line}`,
+      floor_type: matchedFloor?.pk,
+      unit_code: getCode((num += 1), `${payload.maxUnits}`.length),
     }
+  })
 
-    let num = numUnitByType.value // 해당 타입의 개수 구하기
+  const unassigned = inputUnits.filter(u => !u.floor_type)
+  if (unassigned.length > 0) {
+    alert(
+      '해당 범위 중 층별 조건(Floor Type)이 설정되지 않은 층이 있습니다. 먼저 층별 조건을 등록하세요.',
+    )
+    return
+  }
 
-    const isExist = range(size, payload.minFloor).map(i =>
-      simpleUnits.value
-        .filter((u: { line: number }) => u.line === bldg_line)
-        .map((u: { floor: number }) => u.floor)
-        .includes(i),
-    ) // 들록하려는 호수가 기존에 등록되어 있어 중복되고 있지 않은지 확인
-
-    if (isExist.includes(true)) {
-      // 중복되어 있는 경우 경고 후 로직 중단
-      alert('해당 범위의 호수 중 이미 등록되어 있는 유니트가 있습니다.')
-      return
-    } else {
-      // 중복되어 있지 않은 경우 로직 진행
-      const inputUnits = range(size, payload.minFloor).map(i => ({
-        floor_no: i,
-        name: `${i < 0 ? `B${i * -1}` : i}${midWord}${bldg_line}`,
-        floor_type: payload.floors
-          .filter((f: { start: number; end: number }) => between(i, f.start, f.end))
-          .map((f: { pk: number }) => f.pk)[0],
-        unit_code: getCode((num += 1), `${payload.maxUnits}`.length),
-      })) // 입력할 유닛 데이터 배열 생성
-
-      inputUnits.forEach(unit => {
+  try {
+    await Promise.all(
+      inputUnits.map(unit =>
         createUnit({
-          ...{
-            project: Number(project.value),
-            unit_type,
-            building_unit,
-            bldg_line,
-          },
-          ...unit,
-        })
-      }) // 생성된 배열을 디비에 등록
-      fetchHouseUnitList(project.value, building_unit).then(() => message())
-    }
+          project: Number(project.value),
+          unit_type,
+          building_unit,
+          bldg_line,
+          floor_no: unit.floor_no,
+          name: unit.name,
+          floor_type: unit.floor_type as number,
+          unit_code: unit.unit_code,
+        }),
+      ),
+    )
+    await fetchHouseUnitList(project.value, building_unit)
+    message()
+  } catch (err) {
+    console.error(err)
   }
 }
 
-const onUpdate = (payload: HouseUnit) =>
-  !!bldgPk.value
-    ? patchUnit({
+const onUpdate = (payload: HouseUnit) => {
+  if (bldgPk.value) {
+    const projId = project.value || projStore.currentProject
+    if (projId) {
+      patchUnit({
         ...payload,
-        ...{
-          project: project.value || projStore.currentProject,
-          bldg: bldgPk.value,
-        },
+        project: projId,
+        bldg: bldgPk.value,
       })
-    : alert('동(건물)을 선택하세요!')
+    }
+  } else {
+    alert('동(건물)을 선택하세요!')
+  }
+}
 
-const onDelete = (payload: { pk: number; type: number }) =>
-  deleteUnit(payload.pk, project.value || projStore.currentProject, payload.type)
+const onDelete = async (payload: { pk: number; type: number }) => {
+  const proj = project.value || projStore.currentProject
+  if (proj) {
+    await deleteUnit(payload.pk, proj, payload.type)
+    if (bldgPk.value) {
+      await fetchHouseUnitList(proj, bldgPk.value)
+    }
+  }
+}
 
 const dataSetup = async (pk: number) => {
   await Promise.all([fetchTypeList(pk), fetchFloorTypeList(pk), fetchBuildingList(pk)])
@@ -145,13 +179,24 @@ const dataReset = () => {
   pDataStore.floorTypeList = []
   pDataStore.buildingList = []
   pDataStore.houseUnitList = []
+  bldgPk.value = null
+  bldgName.value = ''
 }
 
 const projSelect = (target: number | null) => {
   if (refUnitController.value) refUnitController.value.projReset()
   dataReset()
-  if (!!target) dataSetup(target)
+  if (target) dataSetup(target)
 }
+
+watch(
+  () => project.value,
+  newProjId => {
+    if (refUnitController.value) refUnitController.value.projReset()
+    dataReset()
+    if (newProjId) dataSetup(newProjId)
+  },
+)
 
 const loading = ref(true)
 onBeforeMount(async () => {
@@ -190,7 +235,5 @@ onBeforeRouteLeave(() => {
         <UnitTable :bldg-name="bldgName" @on-update="onUpdate" @on-delete="onDelete" />
       </CCardBody>
     </ContentBody>
-
-    <AlertModal ref="alertModal" />
   </ProjectAuthGuard>
 </template>
