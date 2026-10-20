@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { computed, inject, onMounted, onUpdated, type PropType, reactive, ref, watch } from 'vue'
-import { numFormat } from '@/utils/baseMixins.ts'
+import { computed, inject, type PropType, reactive, ref, watch } from 'vue'
+import { numFormat } from '@/utils/baseMixins'
 import { useAccount } from '@/store/pinia/account'
 import type {
   PaymentPerInstallment as PayInstallType,
@@ -9,9 +9,9 @@ import type {
   Price,
   PriceFilter,
 } from '@/store/types/payment'
-import { type UnitFloorType } from '@/store/types/project'
+import type { UnitFloorType } from '@/store/types/project'
 import { usePayment } from '@/store/pinia/payment'
-import { usePerms } from '@/composables/usePerms.ts'
+import { usePerms } from '@/composables/usePerms'
 import PaymentPerInstallment from './PaymentPerInstallment.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
@@ -26,10 +26,16 @@ const props = defineProps({
   payOrders: { type: Array as PropType<PayOrder[]>, default: () => [] },
 })
 
-const emit = defineEmits(['on-create', 'on-update', 'on-delete', 'payment-changed'])
+const emit = defineEmits<{
+  (e: 'on-create', payload: Price): void
+  (e: 'on-update', payload: Price): void
+  (e: 'on-delete', pk: number): void
+  (e: 'payment-changed'): void
+}>()
 
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
+const isSuperAuth = computed(() => useAccount().superAuth)
 
 const refFormModal = ref()
 const refConfirmModal = ref()
@@ -49,18 +55,74 @@ const {
   createPaymentPerInstallment,
   updatePaymentPerInstallment,
   deletePaymentPerInstallment,
-  paymentPerInstallmentList,
 } = payStore
 
-watch(form, val => {
-  if (!val.price_build) form.price_build = null
-  if (!val.price_land) form.price_land = null
-  if (!val.price_tax) form.price_tax = null
-  if (!val.price) form.price = null
+const dataSetup = () => {
+  if (props.price) {
+    form.price_build = props.price.price_build ?? null
+    form.price_land = props.price.price_land ?? null
+    form.price_tax = props.price.price_tax ?? null
+    form.price = props.price.price ?? null
+  } else {
+    dataReset()
+  }
+}
+
+const dataReset = () => {
+  form.price_build = null
+  form.price_land = null
+  form.price_tax = null
+  form.price = null
+}
+
+watch(
+  () => props.price,
+  () => dataSetup(),
+  { deep: true, immediate: true },
+)
+
+const onComponentPriceChange = () => {
+  const b = Number(form.price_build) || 0
+  const l = Number(form.price_land) || 0
+  const t = Number(form.price_tax) || 0
+  if (
+    form.price_build !== null ||
+    form.price_land !== null ||
+    form.price_tax !== null
+  ) {
+    form.price = b + l + t
+  }
+}
+
+const areNumbersEqual = (a: number | null | undefined, b: number | null | undefined) => {
+  const numA = a !== null && a !== undefined && (a as any) !== '' ? Number(a) : null
+  const numB = b !== null && b !== undefined && (b as any) !== '' ? Number(b) : null
+  return numA === numB
+}
+
+const isUnchanged = computed(() => {
+  if (!props.price) return false
+  const a = areNumbersEqual(form.price_build, props.price.price_build)
+  const b = areNumbersEqual(form.price_land, props.price.price_land)
+  const c = areNumbersEqual(form.price_tax, props.price.price_tax)
+  const d = areNumbersEqual(form.price, props.price.price)
+  return a && b && c && d
 })
 
-watch(props, val => {
-  if (val.price) dataSetup()
+const isFormValid = computed(() => {
+  return (
+    form.price !== null &&
+    form.price !== undefined &&
+    (form.price as any) !== '' &&
+    Number(form.price) > 0
+  )
+})
+
+const formsCheck = computed(() => {
+  if (!canProjectUpdate.value) return true
+  if (!isFormValid.value) return true
+  if (props.price) return isUnchanged.value
+  return false
 })
 
 const btnColor = computed(() => (props.price ? 'success' : 'primary'))
@@ -69,40 +131,41 @@ const btnTitle = computed(() => (props.price ? '수정' : '등록'))
 // PaymentPerInstallment 토글 상태
 const showPaymentDetails = ref(false)
 
-// 테이블 총 컬럼 수 (write_project 권한에 따라 달라짐)
-const totalColumns = computed(() => {
-  return canProjectUpdate.value ? 9 : 7 // 기본 5개 + 관리 2개 컬럼
-})
-
-const formsCheck = computed(() => {
-  if (props.price) {
-    const a = form.price_build === props.price.price_build
-    const b = form.price_land === props.price.price_land
-    const c = form.price_tax === props.price.price_tax
-    const d = form.price === props.price.price || !props.price
-    return a && b && c && d
-  } else {
-    return !form.price_build && !form.price_land && !form.price_tax && !form.price
-  }
-})
+// 테이블 총 컬럼 수 (canProjectUpdate 권한에 따라 달라짐)
+const totalColumns = computed(() => (canProjectUpdate.value ? 9 : 7))
 
 const onStorePrice = () => {
+  if (formsCheck.value) return
+
   if (canProjectUpdate.value) {
-    const payload = {
-      ...props.pFilters,
-      ...{ unit_floor_type: props.floor?.pk },
-      ...form,
+    const payload: Price = {
+      project: Number(props.pFilters?.project),
+      order_group: Number(props.pFilters?.order_group),
+      unit_type: Number(props.pFilters?.unit_type),
+      unit_floor_type: props.floor.pk,
+      price_build:
+        form.price_build !== null && (form.price_build as any) !== ''
+          ? Number(form.price_build)
+          : null,
+      price_land:
+        form.price_land !== null && (form.price_land as any) !== ''
+          ? Number(form.price_land)
+          : null,
+      price_tax:
+        form.price_tax !== null && (form.price_tax as any) !== ''
+          ? Number(form.price_tax)
+          : null,
+      price: Number(form.price),
     }
     if (!props.price) emit('on-create', payload)
     else {
-      const updatePayload = { ...{ pk: props.price.pk }, ...payload }
-      emit('on-update', updatePayload)
+      emit('on-update', { pk: props.price.pk, ...payload })
     }
   } else refAlertModal.value.callModal()
 }
 
 const deletePrice = () => {
-  if (useAccount().superAuth) {
+  if (isSuperAuth.value) {
     confirmModalType.value = 'price'
     refConfirmModal.value.callModal()
   } else {
@@ -113,13 +176,12 @@ const deletePrice = () => {
 const modalAction = async () => {
   try {
     if (confirmModalType.value === 'price') {
-      // Delete Price
-      emit('on-delete', props.price?.pk)
-      dataReset()
+      if (props.price?.pk) {
+        emit('on-delete', props.price.pk)
+        dataReset()
+      }
     } else if (confirmModalType.value === 'payment' && paymentEditId.value) {
-      // Delete PaymentPerInstallment
       await deletePaymentPerInstallment(paymentEditId.value, props.price?.pk as number)
-      // Refresh PaymentPerInstallment data
       refPaymentPerInstallment.value?.loadData()
       emit('payment-changed')
     }
@@ -127,22 +189,6 @@ const modalAction = async () => {
   } catch (error) {
     console.error('Delete operation failed:', error)
   }
-}
-
-const dataSetup = () => {
-  if (props.price) {
-    form.price_build = props.price.price_build
-    form.price_land = props.price.price_land
-    form.price_tax = props.price.price_tax
-    form.price = props.price.price
-  }
-}
-
-const dataReset = () => {
-  form.price_build = null
-  form.price_land = null
-  form.price_tax = null
-  form.price = null
 }
 
 // -------------------------------------------------------- //
@@ -158,34 +204,23 @@ const paymentForm = reactive<Partial<PaymentPerInstallmentPayload>>({
 
 const paymentEditMode = ref(false)
 const paymentEditId = ref<number | null>(null)
-const isPaymentModal = ref(false)
 
 // 현재 Price 레코드에서 사용된 pay_order ID들 (로컬 상태)
 const localUsedPayOrderIds = ref<number[]>([])
 
 const togglePaymentDetails = () => (showPaymentDetails.value = !showPaymentDetails.value)
 
-const onPaymentChanged = () => {
-  // PaymentPerInstallment 데이터 변경 시 상위 컴포넌트에 알림
-  emit('payment-changed')
-}
-
 // PaymentPerInstallment 관련 함수들
 const availablePayOrders = computed(() => {
-  // Filter out 중도금(2) and 잔금(3) payment orders
   const filteredOrders = props.payOrders.filter(
     order => order.pay_sort && !['2', '3'].includes(order.pay_sort),
   )
 
-  // In edit mode, show all filtered orders
   if (paymentEditMode.value) return filteredOrders
 
-  // In create mode, filter out orders that already have PaymentPerInstallment records
-  // 로컬 상태를 사용하여 현재 Price 레코드의 데이터만 고려
   return filteredOrders.filter(order => order.pk && !localUsedPayOrderIds.value.includes(order.pk))
 })
 
-// PaymentPerInstallment 컴포넌트에서 사용된 pay_order ID들 업데이트
 const handleUsedPayOrdersChanged = (usedIds: number[]) => {
   localUsedPayOrderIds.value = usedIds
 }
@@ -193,7 +228,6 @@ const handleUsedPayOrdersChanged = (usedIds: number[]) => {
 const handlePaymentCreate = () => {
   paymentEditMode.value = false
   paymentEditId.value = null
-  isPaymentModal.value = true
   resetPaymentForm()
   refFormModal.value.callModal()
 }
@@ -201,7 +235,6 @@ const handlePaymentCreate = () => {
 const handlePaymentEdit = (item: PayInstallType) => {
   paymentEditMode.value = true
   paymentEditId.value = item.pk
-  isPaymentModal.value = true
   paymentForm.pay_order = item.pay_order
   paymentForm.amount = item.amount
   refFormModal.value.callModal()
@@ -232,7 +265,6 @@ const handlePaymentModalAction = async () => {
 
   try {
     if (paymentEditMode.value && paymentEditId.value) {
-      // Update existing PaymentPerInstallment
       const payload: PaymentPerInstallmentPayload = {
         pk: paymentEditId.value,
         sales_price: props.price?.pk as number,
@@ -241,7 +273,6 @@ const handlePaymentModalAction = async () => {
       }
       await updatePaymentPerInstallment(payload)
     } else {
-      // Create a new PaymentPerInstallment
       const payload: PaymentPerInstallmentPayload = {
         sales_price: props.price?.pk as number,
         pay_order: paymentForm.pay_order as number,
@@ -251,16 +282,13 @@ const handlePaymentModalAction = async () => {
     }
 
     refFormModal.value.close()
-    isPaymentModal.value = false
     paymentEditMode.value = false
     paymentEditId.value = null
     resetPaymentForm()
 
-    // Refresh PaymentPerInstallment data
     refPaymentPerInstallment.value?.loadData()
     emit('payment-changed')
   } catch (error: any) {
-    // Handle unique constraint violation
     if (error?.response?.data?.non_field_errors) {
       const errorMessage = error.response.data.non_field_errors[0]
       if (errorMessage.includes('고유해야 합니다')) {
@@ -273,12 +301,6 @@ const handlePaymentModalAction = async () => {
     } else refAlertModal.value.alertOpen('', '특별 약정금액 처리 중 오류가 발생했습니다.', 'danger')
   }
 }
-
-onMounted(() => dataSetup())
-onUpdated(() => {
-  dataReset()
-  dataSetup()
-})
 </script>
 
 <template>
@@ -299,7 +321,8 @@ onUpdated(() => {
         type="number"
         min="0"
         placeholder="타입별 건물가"
-        @keydown.enter="onStorePrice"
+        @input="onComponentPriceChange"
+        @keydown.enter.prevent="onStorePrice"
       />
     </CTableDataCell>
     <CTableDataCell>
@@ -308,7 +331,8 @@ onUpdated(() => {
         type="number"
         min="0"
         placeholder="타입별 대지가"
-        @keydown.enter="onStorePrice"
+        @input="onComponentPriceChange"
+        @keydown.enter.prevent="onStorePrice"
       />
     </CTableDataCell>
     <CTableDataCell>
@@ -317,7 +341,8 @@ onUpdated(() => {
         type="number"
         min="0"
         placeholder="타입별 부가세"
-        @keydown.enter="onStorePrice"
+        @input="onComponentPriceChange"
+        @keydown.enter.prevent="onStorePrice"
       />
     </CTableDataCell>
     <CTableDataCell>
@@ -326,7 +351,8 @@ onUpdated(() => {
         type="number"
         min="0"
         placeholder="타입별 공급가격"
-        @keydown.enter="onStorePrice"
+        required
+        @keydown.enter.prevent="onStorePrice"
       />
     </CTableDataCell>
     <CTableDataCell v-if="canProjectUpdate" class="text-center pt-3">
@@ -340,16 +366,16 @@ onUpdated(() => {
         :color="showPaymentDetails ? 'secondary' : 'info'"
         size="x-small"
         class="mr-1"
-        @click="togglePaymentDetails"
         :disabled="!price"
+        @click="togglePaymentDetails"
       >
         {{ showPaymentDetails ? '접기' : '보기' }}
       </v-btn>
       <v-btn
         color="primary"
         size="x-small"
-        @click="handlePaymentCreate"
         :disabled="!price || !availablePayOrders.length"
+        @click="handlePaymentCreate"
       >
         추가
       </v-btn>
@@ -364,7 +390,7 @@ onUpdated(() => {
         v-if="price && showPaymentDetails"
         :key="`payment-per-installment-${price.pk}`"
         :project-id="pFilters.project as number"
-        :sales-price-id="price.pk"
+        :sales-price-id="price.pk as number"
         :pay-orders="payOrders"
         @create-requested="handlePaymentCreate"
         @edit-requested="handlePaymentEdit"
@@ -376,16 +402,10 @@ onUpdated(() => {
 
   <FormModal ref="refFormModal">
     <template #header>
-      {{
-        isPaymentModal
-          ? paymentEditMode
-            ? '특별 약정금액 수정'
-            : '특별 약정금액 등록'
-          : '특별약정 추가'
-      }}
+      {{ paymentEditMode ? '특별 약정금액 수정' : '특별 약정금액 등록' }}
     </template>
     <template #default>
-      <CForm v-if="isPaymentModal">
+      <CForm>
         <CModalBody class="text-body">
           <CRow class="mb-3">
             <CFormLabel class="col-sm-4 col-form-label">기준 공급가</CFormLabel>
@@ -415,6 +435,7 @@ onUpdated(() => {
               <CFormInput
                 v-model.number="paymentForm.amount"
                 type="number"
+                min="0"
                 placeholder="특별 지정 납부 약정금액"
                 text="일반 납부회차의 경우 기준 공급가 * 회당 납부비율을 적용 하나, 이 데이터 등록 시 예외적으로 이 데이터를 우선 적용함"
               />
@@ -430,42 +451,6 @@ onUpdated(() => {
           >
             확인
           </v-btn>
-          <v-btn color="light" size="small" @click="refFormModal.close()" flat> 닫기</v-btn>
-        </CModalFooter>
-      </CForm>
-      <CForm v-else>
-        <CModalBody class="text-body">
-          <CRow class="mb-3">
-            <CFormLabel class="col-sm-4 col-form-label">기준 공급가</CFormLabel>
-            <CCol sm="8" class="pt-2">
-              <span class="text-primary bold">{{ numFormat(price?.price || 0) }} </span>
-              ({{ condTexts?.orderText }} / {{ condTexts?.typeText }} / {{ floor.alias_name }})
-            </CCol>
-          </CRow>
-          <CRow class="mb-3">
-            <CFormLabel class="col-sm-4 col-form-label">지정 납부회차</CFormLabel>
-            <CCol sm="8">
-              <CFormSelect>
-                <option value="">---------</option>
-                <option v-for="po in payOrders" :value="po?.pk as number" :key="po?.pk as number">
-                  {{ po.pay_name }}
-                </option>
-              </CFormSelect>
-            </CCol>
-          </CRow>
-          <CRow class="mb-3">
-            <CFormLabel class="col-sm-4 col-form-label">납부 약정금액</CFormLabel>
-            <CCol sm="8">
-              <CFormInput
-                type="number"
-                placeholder="특별 지정 납부 약정금액"
-                text="일반 납부회차의 경우 기준 공급가 * 회당 납부비율을 적용 하나, 이 데이터 등록 시 예외적으로 이 데이터를 우선 적용함"
-              />
-            </CCol>
-          </CRow>
-        </CModalBody>
-        <CModalFooter>
-          <v-btn color="primary" size="small">확인</v-btn>
           <v-btn color="light" size="small" @click="refFormModal.close()" flat> 닫기</v-btn>
         </CModalFooter>
       </CForm>

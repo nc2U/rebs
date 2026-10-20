@@ -2,7 +2,7 @@
 import { ref, computed, type PropType, onMounted } from 'vue'
 import { useAccount } from '@/store/pinia/account'
 import type { OrderGroup } from '@/store/types/contract'
-import type { UnitType } from '@/store/types/project.ts'
+import type { UnitType } from '@/store/types/project'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 defineProps({
@@ -11,17 +11,21 @@ defineProps({
   types: { type: Array as PropType<UnitType[]>, default: () => [] },
 })
 
-const emit = defineEmits([
-  'on-sort-select',
-  'on-order-select',
-  'on-type-select',
-  'cont-price-view',
-  'cont-price-set',
-])
+const emit = defineEmits<{
+  (e: 'on-sort-select', sort: '1' | '2' | '3' | '4' | '5' | '6'): void
+  (e: 'on-order-select', order: number | null): void
+  (e: 'on-type-select', type: number | null): void
+  (e: 'cont-price-view'): void
+  (e: 'cont-price-set'): void
+}>()
 
 const refConfirmModal = ref()
 
-const form = ref({
+const form = ref<{
+  sort: '1' | '2' | '3' | '4' | '5' | '6'
+  order: number | null
+  type: number | null
+}>({
   sort: '1',
   order: null,
   type: null,
@@ -38,15 +42,19 @@ defineExpose({ dataReset })
 const onSortSelect = (e: Event) => {
   form.value.order = null
   form.value.type = null
-  emit('on-sort-select', (e.target as HTMLSelectElement).value)
+  emit('on-sort-select', (e.target as HTMLSelectElement).value as any)
 }
 
 const onOrderSelect = (e: Event) => {
   form.value.type = null
-  emit('on-order-select', (e.target as HTMLSelectElement).value)
+  const val = (e.target as HTMLSelectElement).value
+  emit('on-order-select', val ? Number(val) : null)
 }
 
-const onTypeSelect = (e: Event) => emit('on-type-select', (e.target as HTMLSelectElement).value)
+const onTypeSelect = (e: Event) => {
+  const val = (e.target as HTMLSelectElement).value
+  emit('on-type-select', val ? Number(val) : null)
+}
 
 const accStore = useAccount()
 const superAuth = computed(() => accStore.superAuth)
@@ -65,7 +73,6 @@ const bulkUpdateModalAction = () => {
 
 onMounted(() => {
   dataReset()
-  emit('on-sort-select', form.value.sort)
 })
 </script>
 
@@ -74,9 +81,9 @@ onMounted(() => {
     <CRow>
       <CCol md="3" class="mb-2">
         <CRow>
-          <CFormLabel for="sel1" class="col-sm-4 col-form-label"> 구분</CFormLabel>
+          <CFormLabel for="sel_sort" class="col-sm-4 col-form-label"> 구분</CFormLabel>
           <CCol sm="8">
-            <CFormSelect v-model="form.sort" :disabled="!project" @change="onSortSelect">
+            <CFormSelect id="sel_sort" v-model="form.sort" :disabled="!project" @change="onSortSelect">
               <option value="">---------</option>
               <option value="1">공동주택</option>
               <option value="2">오피스텔</option>
@@ -91,10 +98,10 @@ onMounted(() => {
 
       <CCol md="3" class="mb-2">
         <CRow>
-          <CFormLabel for="sel1" class="col-sm-4 col-form-label"> 차수선택</CFormLabel>
+          <CFormLabel for="sel_order" class="col-sm-4 col-form-label"> 차수선택</CFormLabel>
           <CCol sm="8">
             <CFormSelect
-              id="sel1"
+              id="sel_order"
               v-model.number="form.order"
               :disabled="!project"
               @change="onOrderSelect"
@@ -110,11 +117,11 @@ onMounted(() => {
 
       <CCol md="3" class="mb-2">
         <CRow>
-          <CFormLabel for="sel2" class="col-sm-4 col-form-label"> 타입선택</CFormLabel>
+          <CFormLabel for="sel_type" class="col-sm-4 col-form-label"> 타입선택</CFormLabel>
           <CCol sm="8">
             <CFormSelect
-              id="sel2"
-              v-model="form.type"
+              id="sel_type"
+              v-model.number="form.type"
               :disabled="!form.order"
               @change="onTypeSelect"
             >

@@ -1,18 +1,23 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
 import { TableSecondary } from '@/utils/cssMixins'
-import { usePerms } from '@/composables/usePerms.ts'
+import { usePerms } from '@/composables/usePerms'
 import { usePayment } from '@/store/pinia/payment'
 import { useProjectData } from '@/store/pinia/project_data'
-import { type Price as P } from '@/store/types/payment'
+import type { Price as P, PriceFilter } from '@/store/types/payment'
 import Price from '@/views/projects/Price/components/Price.vue'
 
-defineProps({
-  msg: { type: String, default: '' },
-  pFilters: { type: Object, default: null },
-  priceSetting: { type: String, default: '2' },
-})
-const emit = defineEmits(['on-create', 'on-update', 'on-delete'])
+defineProps<{
+  msg?: string
+  pFilters: PriceFilter
+  priceSetting?: string
+}>()
+
+const emit = defineEmits<{
+  (e: 'on-create', payload: P): void
+  (e: 'on-update', payload: P): void
+  (e: 'on-delete', pk: number): void
+}>()
 
 const { can, PERM } = usePerms()
 const canProjectUpdate = computed(() => can(PERM.PROJECT_UPDATE))
@@ -24,7 +29,7 @@ const paymentStore = usePayment()
 const payOrderList = computed(() => paymentStore.payOrderList)
 const priceList = computed(() => paymentStore.priceList)
 
-const getPrice = (floor: number) => priceList.value.filter((p: P) => p.unit_floor_type === floor)[0]
+const getPrice = (floor: number) => priceList.value.find((p: P) => p.unit_floor_type === floor)
 
 const onCreate = (payload: P) => emit('on-create', payload)
 const onUpdate = (payload: P) => emit('on-update', payload)
@@ -61,7 +66,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
       <Price
         v-for="floor in floorTypeList"
         :key="floor.pk"
-        :p-filters="pFilters as any"
+        :p-filters="pFilters"
         :floor="floor"
         :price="getPrice(floor.pk)"
         :pay-orders="payOrderList"
@@ -73,7 +78,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 
     <CTableBody v-else>
       <CTableRow>
-        <CTableDataCell :colspan="canProjectUpdate ? 13 : 12" class="text-center p-5 text-info">
+        <CTableDataCell :colspan="canProjectUpdate ? 9 : 7" class="text-center p-5 text-info">
           {{ msg }}
         </CTableDataCell>
       </CTableRow>
@@ -81,7 +86,7 @@ const onDelete = (pk: number) => emit('on-delete', pk)
 
     <CTableBody v-if="!msg && floorTypeList.length === 0">
       <CTableRow>
-        <CTableDataCell :colspan="canProjectUpdate ? 13 : 12" class="text-center p-5 text-danger">
+        <CTableDataCell :colspan="canProjectUpdate ? 9 : 7" class="text-center p-5 text-danger">
           <p>
             <CIcon name="cilWarning" />
             등록된 [

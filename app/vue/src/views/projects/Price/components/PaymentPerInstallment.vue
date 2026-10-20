@@ -32,7 +32,7 @@ const availablePayOrders = computed(() =>
 const usedPayOrderIds = computed(() => {
   return localPaymentPerInstallmentList.value
     .map(ppi => ppi.pay_order)
-    .filter(id => id !== null) as number[]
+    .filter((id): id is number => id !== null && id !== undefined)
 })
 
 // 데이터 변경 시 부모에게 알림
@@ -72,10 +72,8 @@ const loadData = async () => {
 }
 
 const handleCreate = () => emit('createRequested')
-
-const handleEdit = (item: PaymentPerInstallment) => emit('editRequested', item as any)
-
-const handleDelete = (item: PaymentPerInstallment) => emit('deleteRequested', item as any)
+const handleEdit = (item: PaymentPerInstallment) => emit('editRequested', item)
+const handleDelete = (item: PaymentPerInstallment) => emit('deleteRequested', item)
 
 const getPayOrderName = (payOrderId: number) => {
   const payOrder = availablePayOrders.value.find(order => order.pk === payOrderId)
