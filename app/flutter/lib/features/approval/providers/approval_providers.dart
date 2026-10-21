@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/models/common_models.dart';
 import '../data/approval_repository.dart';
 import '../data/models/approval_model.dart';
 
@@ -110,7 +111,7 @@ final approvalDetailProvider = FutureProvider.autoDispose.family<ApprovalDocumen
   return repo.fetchDocumentDetail(docId);
 });
 
-// ── 8. 카테고리 / 문서 유형 / 보직 프로바이더 ──────────────────────────────────
+// ── 8. 카테고리 / 문서 유형 / 보직 / 활성 사용자 프로바이더 ──────────────────────
 final docCategoriesProvider = FutureProvider.autoDispose<List<DocCategoryModel>>((ref) async {
   final repo = ref.watch(approvalRepositoryProvider);
   return repo.fetchDocCategories();
@@ -124,6 +125,11 @@ final forDraftDocTypesProvider = FutureProvider.autoDispose.family<List<Document
 final myAssignmentsProvider = FutureProvider.autoDispose<List<StaffAssignmentItemModel>>((ref) async {
   final repo = ref.watch(approvalRepositoryProvider);
   return repo.fetchMyAssignments();
+});
+
+final activeUsersProvider = FutureProvider.autoDispose<List<SimpleUserModel>>((ref) async {
+  final repo = ref.watch(approvalRepositoryProvider);
+  return repo.fetchActiveUsers();
 });
 
 // ── 9. 결재 액션 컨트롤러 (승인 / 반려 / 의견 / 상신 / 회수) ──────────────────

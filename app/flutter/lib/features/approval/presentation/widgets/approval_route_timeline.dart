@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_text_styles.dart';
+import '../../../../core/models/common_models.dart';
 import '../../../../core/theme/app_colors_extension.dart';
 import '../../data/models/approval_model.dart';
 
@@ -23,6 +24,12 @@ class ApprovalRouteTimeline extends StatelessWidget {
     } catch (_) {
       return '';
     }
+  }
+
+  String _userDisplayName(SimpleUserModel u) {
+    if (u.fullName != null && u.fullName!.isNotEmpty) return u.fullName!;
+    if (u.name.isNotEmpty) return u.name;
+    return u.username;
   }
 
   @override
@@ -91,37 +98,31 @@ class ApprovalRouteTimeline extends StatelessWidget {
     IconData nodeIcon;
     String statusStr;
     String timeStr = '';
-    String? commentStr;
 
     // 단계 내 액션 기록 확인
-    final approvedAction = step.actions.where((a) => a.action == 'approved').firstOrNull;
-    final rejectedAction = step.actions.where((a) => a.action == 'rejected').firstOrNull;
+    final approvedAction = step.actions.where((a) => a.action == 'approved').lastOrNull;
+    final rejectedAction = step.actions.where((a) => a.action == 'rejected').lastOrNull;
+    final commentActions = step.actions.where((a) => a.comment.trim().isNotEmpty).toList();
 
     String? delegatedInfo;
     if (rejectedAction != null) {
       nodeColor = context.colors.error;
       nodeIcon = Icons.cancel_rounded;
       if (rejectedAction.isDelegated) {
-        final actName = (rejectedAction.approver.fullName != null && rejectedAction.approver.fullName!.isNotEmpty)
-            ? rejectedAction.approver.fullName!
-            : rejectedAction.approver.username;
+        final actName = _userDisplayName(rejectedAction.approver);
         delegatedInfo = '[대결: $actName]';
       }
       statusStr = delegatedInfo != null ? '$delegatedInfo 반려' : '반려';
       timeStr = _formatTime(rejectedAction.actedAt);
-      commentStr = rejectedAction.comment;
-    } else if (approvedAction != null) {
+    } else if (approvedAction != null && step.status == 'approved') {
       nodeColor = context.colors.success;
       nodeIcon = Icons.check_circle_rounded;
       if (approvedAction.isDelegated) {
-        final actName = (approvedAction.approver.fullName != null && approvedAction.approver.fullName!.isNotEmpty)
-            ? approvedAction.approver.fullName!
-            : approvedAction.approver.username;
+        final actName = _userDisplayName(approvedAction.approver);
         delegatedInfo = '[대결: $actName]';
       }
       statusStr = delegatedInfo != null ? '$delegatedInfo 승인' : '승인';
       timeStr = _formatTime(approvedAction.actedAt);
-      commentStr = approvedAction.comment.isNotEmpty ? approvedAction.comment : null;
     } else if (step.status == 'approved') {
       nodeColor = context.colors.success;
       nodeIcon = Icons.check_circle_rounded;
@@ -129,7 +130,12 @@ class ApprovalRouteTimeline extends StatelessWidget {
     } else if (step.status == 'pending') {
       nodeColor = context.colors.warning;
       nodeIcon = Icons.access_time_filled_rounded;
-      statusStr = '결재대기';
+      final approvedCount = step.actions.where((a) => a.action == 'approved').length;
+      if (approvedCount > 0 && step.approvers.length > 1) {
+        statusStr = '결재진행 ($approvedCount/${step.approvers.length})';
+      } else {
+        statusStr = '결재대기';
+      }
     } else if (step.status == 'skipped') {
       nodeColor = Colors.grey;
       nodeIcon = Icons.remove_circle_outline_rounded;
@@ -140,7 +146,7 @@ class ApprovalRouteTimeline extends StatelessWidget {
       statusStr = '대기';
     }
 
-    final approverNames = step.approvers.map((u) => u.username).join(', ');
+    final approverNames = step.approvers.map(_userDisplayName).join(', ');
     final conditionSuffix = step.condition == 'OR' ? ' (1인승인)' : (step.approvers.length > 1 ? ' (전원승인)' : '');
 
     return _buildNode(
@@ -153,7 +159,7 @@ class ApprovalRouteTimeline extends StatelessWidget {
       nameText: approverNames.isNotEmpty ? approverNames : '지정자 없음',
       timeText: timeStr,
       statusText: statusStr,
-      comment: commentStr,
+      commentActions: commentActions,
     );
   }
 
@@ -167,7 +173,7 @@ class ApprovalRouteTimeline extends StatelessWidget {
     required String nameText,
     required String timeText,
     required String statusText,
-    String? comment,
+    List<ApprovalActionModel> commentActions = const [],
   }) {
     return IntrinsicHeight(
       child: Row(
@@ -210,15 +216,18 @@ class ApprovalRouteTimeline extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Text(
-                        nameText,
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: context.colors.textSecond,
+                      Expanded(
+                        child: Text(
+                          nameText,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: context.colors.textSecond,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      const Spacer(),
+                      const SizedBox(width: 6),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
                         decoration: BoxDecoration(
@@ -247,7 +256,7 @@ class ApprovalRouteTimeline extends StatelessWidget {
                       ),
                     ),
                   ],
-                  if (comment != null && comment.isNotEmpty) ...[
+                  for (final act in commentActions) ...[
                     const SizedBox(height: 4),
                     Container(
                       width: double.infinity,
@@ -261,14 +270,21 @@ class ApprovalRouteTimeline extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Icon(
-                            Icons.chat_bubble_outline_rounded,
+                            act.action == 'rejected'
+                                ? Icons.error_outline_rounded
+                                : Icons.chat_bubble_outline_rounded,
                             size: 11,
-                            color: context.colors.textMuted,
+                            color: act.action == 'rejected'
+                                ? context.colors.error
+                                : context.colors.textMuted,
                           ),
                           const SizedBox(width: 5),
                           Expanded(
                             child: Text(
-                              comment,
+                              '${_userDisplayName(act.approver)}'
+                              '${act.action == 'commented' ? ' (의견)' : ''}'
+                              '${_formatTime(act.actedAt).isNotEmpty ? ' · ${_formatTime(act.actedAt)}' : ''}: '
+                              '${act.comment}',
                               style: TextStyle(
                                 fontSize: 11,
                                 color: context.colors.textSecond,

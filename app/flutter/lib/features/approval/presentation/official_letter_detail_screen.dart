@@ -443,8 +443,13 @@ class _OfficialLetterDetailScreenState
                             ],
                             if (letter.dispatchedAt != null) ...[
                               const SizedBox(height: 6),
-                              _buildInfoRow('발송일시',
-                                  letter.dispatchedAt!.substring(0, 16).replaceAll('T', ' ')),
+                              _buildInfoRow(
+                                '발송일시',
+                                (letter.dispatchedAt!.length >= 16
+                                        ? letter.dispatchedAt!.substring(0, 16)
+                                        : letter.dispatchedAt!)
+                                    .replaceAll('T', ' '),
+                              ),
                             ],
                           ],
                         ),

@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import '../../../core/constants/api_endpoints.dart';
+import '../../../core/models/common_models.dart';
 import '../../../core/providers/dio_provider.dart';
 import 'models/approval_model.dart';
 
@@ -153,11 +154,70 @@ class ApprovalRepository {
     }
   }
 
-  /// 13. 문서 수정
-  Future<ApprovalDocumentModel> updateDocument(int id, Map<String, dynamic> data) async {
+  /// 13. 문서 수정 (Multipart 또는 JSON)
+  Future<ApprovalDocumentModel> updateDocument(
+    int id,
+    Map<String, dynamic> data, {
+    List<String>? filePaths,
+  }) async {
     final url = ApiEndpoints.resolve(ApiEndpoints.approvalDocumentDetail, {'id': id});
-    final res = await _dio.patch(url, data: data);
-    return ApprovalDocumentModel.fromJson(res.data as Map<String, dynamic>);
+    if (filePaths != null && filePaths.isNotEmpty) {
+      final formData = FormData();
+      data.forEach((key, value) {
+        if (value != null) {
+          if (value is Map || value is List) {
+            formData.fields.add(MapEntry(key, jsonEncode(value)));
+          } else {
+            formData.fields.add(MapEntry(key, value.toString()));
+          }
+        }
+      });
+      for (final path in filePaths) {
+        formData.files.add(
+          MapEntry(
+            'files',
+            await MultipartFile.fromFile(
+              path,
+              filename: path.split(RegExp(r'[/\\]')).last,
+            ),
+          ),
+        );
+      }
+      final res = await _dio.patch(url, data: formData);
+      return ApprovalDocumentModel.fromJson(res.data as Map<String, dynamic>);
+    } else {
+      final res = await _dio.patch(url, data: data);
+      return ApprovalDocumentModel.fromJson(res.data as Map<String, dynamic>);
+    }
+  }
+
+  /// 13-1. 개별 첨부파일 삭제
+  Future<void> deleteAttachment(int attachmentId) async {
+    final url = '${ApiEndpoints.approvalAttachments}$attachmentId/';
+    await _dio.delete(url);
+  }
+
+  /// 13-2. 활성 사용자 목록 조회 (참조자 및 대결 위임자 지정용)
+  Future<List<SimpleUserModel>> fetchActiveUsers() async {
+    final res = await _dio.get(
+      ApiEndpoints.users,
+      queryParameters: {'is_active': 'true', 'is_system': 'false'},
+    );
+    final list = (res.data is List)
+        ? res.data as List
+        : ((res.data as Map<String, dynamic>)['results'] as List? ?? []);
+    return list.map((raw) {
+      final map = Map<String, dynamic>.from(raw as Map);
+      final profile = map['profile'] as Map<String, dynamic>?;
+      final profileName = profile?['name']?.toString() ?? '';
+      final name = map['name']?.toString() ?? profileName;
+      final fullName = map['full_name']?.toString() ?? (name.isNotEmpty ? name : null);
+      return SimpleUserModel.fromJson({
+        ...map,
+        'name': name,
+        if (fullName != null) 'full_name': fullName,
+      });
+    }).toList();
   }
 
   /// 14. 문서 삭제 (임시저장 문서)

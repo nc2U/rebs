@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_text_styles.dart';
+import '../../../../core/models/common_models.dart';
 import '../../../../core/providers/auth_provider.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/services/biometric_service.dart';
@@ -297,6 +298,35 @@ class _ApprovalMainScreenState extends ConsumerState<ApprovalMainScreen>
                       ],
                     ),
                   ),
+                  // ⚡ 부재/대결 위임 설정 버튼
+                  if (_mainCategoryMode == 0) ...[
+                    const SizedBox(width: 6),
+                    InkWell(
+                      onTap: () => _showDelegationSheet(context),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: context.colors.bgCard,
+                          border: Border.all(color: context.colors.border, width: 0.8),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.manage_accounts_outlined, size: 14, color: context.colors.textSecond),
+                            const SizedBox(width: 4),
+                            Text(
+                              '대결설정',
+                              style: TextStyle(
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.bold,
+                                color: context.colors.textSecond,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                   // ⚡ 대기함 탭일 때만 [다중 선택 / 취소] 액션 버튼 노출 (사내 결재 모드일 때)
                   if (_mainCategoryMode == 0 && isPendingTab && pendingCount > 0) ...[
                     const SizedBox(width: 8),
@@ -833,7 +863,11 @@ class _ApprovalMainScreenState extends ConsumerState<ApprovalMainScreen>
                 tooltip: '상태 필터',
                 onSelected: (val) {
                   ref.read(allApprovalsFilterProvider.notifier).state =
-                      filter.copyWith(status: val == 'ALL' ? null : val, page: 1);
+                      filter.copyWith(
+                        status: val == 'ALL' ? null : val,
+                        clearStatus: val == 'ALL',
+                        page: 1,
+                      );
                 },
                 itemBuilder: (ctx) => [
                   const PopupMenuItem(value: 'ALL', child: Text('전체 상태')),
@@ -847,7 +881,7 @@ class _ApprovalMainScreenState extends ConsumerState<ApprovalMainScreen>
           ),
         ),
 
-        // 목록 리스트
+        // 목록 리스트 + 페이지네이션
         Expanded(
           child: RefreshIndicator(
             onRefresh: () async => ref.refresh(allApprovalsProvider),
@@ -857,13 +891,57 @@ class _ApprovalMainScreenState extends ConsumerState<ApprovalMainScreen>
                 if (resp.results.isEmpty) {
                   return const ErrorView.empty(message: '조회된 결재 문서가 없습니다.');
                 }
-                return ListView.builder(
-                  padding: const EdgeInsets.all(14),
-                  itemCount: resp.results.length,
-                  itemBuilder: (ctx, i) => ApprovalDocCard(
-                    document: resp.results[i],
-                    onTap: () => _goDetail(resp.results[i].id),
-                  ),
+                final hasPagination = resp.previous != null || resp.next != null;
+                return Column(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                        padding: const EdgeInsets.all(14),
+                        itemCount: resp.results.length,
+                        itemBuilder: (ctx, i) => ApprovalDocCard(
+                          document: resp.results[i],
+                          onTap: () => _goDetail(resp.results[i].id),
+                        ),
+                      ),
+                    ),
+                    if (hasPagination)
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: context.colors.bgCard,
+                          border: Border(top: BorderSide(color: context.colors.border, width: 0.6)),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextButton.icon(
+                              onPressed: resp.previous != null && filter.page > 1
+                                  ? () {
+                                      ref.read(allApprovalsFilterProvider.notifier).state =
+                                          filter.copyWith(page: filter.page - 1);
+                                    }
+                                  : null,
+                              icon: const Icon(Icons.chevron_left, size: 18),
+                              label: const Text('이전', style: TextStyle(fontSize: 12)),
+                            ),
+                            Text(
+                              '${filter.page} 페이지 (총 ${resp.count}건)',
+                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: context.colors.textSecond),
+                            ),
+                            TextButton.icon(
+                              onPressed: resp.next != null
+                                  ? () {
+                                      ref.read(allApprovalsFilterProvider.notifier).state =
+                                          filter.copyWith(page: filter.page + 1);
+                                    }
+                                  : null,
+                              icon: const Icon(Icons.chevron_right, size: 18),
+                              label: const Text('다음', style: TextStyle(fontSize: 12)),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
                 );
               },
               loading: () => const LoadingShimmer(),
@@ -876,6 +954,236 @@ class _ApprovalMainScreenState extends ConsumerState<ApprovalMainScreen>
           ),
         ),
       ],
+    );
+  }
+
+  Future<void> _showDelegationSheet(BuildContext context) async {
+    SimpleUserModel? selectedDelegatee;
+    DateTime startDate = DateTime.now();
+    DateTime endDate = DateTime.now().add(const Duration(days: 3));
+    final reasonCtrl = TextEditingController();
+    bool showCreateForm = false;
+
+    String fmtDate(DateTime d) =>
+        '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: context.colors.bgCard,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+      builder: (sheetCtx) {
+        return StatefulBuilder(
+          builder: (ctx, setModalState) {
+            return Consumer(
+              builder: (ctx, modalRef, _) {
+                final delegationsAsync = modalRef.watch(delegationsProvider);
+                final usersAsync = modalRef.watch(activeUsersProvider);
+
+                return SafeArea(
+                  child: SizedBox(
+                    height: MediaQuery.of(ctx).size.height * 0.72,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.manage_accounts_outlined, size: 18, color: ctx.colors.accentApproval),
+                              const SizedBox(width: 6),
+                              Text(
+                                '부재 및 대결(권한 위임) 설정',
+                                style: AppTextStyles.titleSm.copyWith(fontWeight: FontWeight.w800),
+                              ),
+                              const Spacer(),
+                              TextButton.icon(
+                                onPressed: () => setModalState(() => showCreateForm = !showCreateForm),
+                                icon: Icon(showCreateForm ? Icons.list : Icons.add, size: 16),
+                                label: Text(showCreateForm ? '목록보기' : '신규등록', style: const TextStyle(fontSize: 12)),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.close, size: 20),
+                                onPressed: () => Navigator.of(sheetCtx).pop(),
+                              ),
+                            ],
+                          ),
+                          const Divider(),
+                          if (showCreateForm) ...[
+                            usersAsync.when(
+                              data: (users) => DropdownButtonFormField<SimpleUserModel>(
+                                initialValue: selectedDelegatee,
+                                decoration: const InputDecoration(
+                                  labelText: '대결 수임자 선택',
+                                  isDense: true,
+                                  border: OutlineInputBorder(borderRadius: BorderRadius.zero),
+                                ),
+                                items: users.map((u) {
+                                  final label = (u.fullName != null && u.fullName!.isNotEmpty)
+                                      ? '${u.fullName} (${u.username})'
+                                      : (u.name.isNotEmpty ? '${u.name} (${u.username})' : u.username);
+                                  return DropdownMenuItem(
+                                    value: u,
+                                    child: Text(label, style: const TextStyle(fontSize: 13)),
+                                  );
+                                }).toList(),
+                                onChanged: (val) => setModalState(() => selectedDelegatee = val),
+                              ),
+                              loading: () => const LinearProgressIndicator(),
+                              error: (e, _) => Text('사용자 목록 오류: $e'),
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: OutlinedButton(
+                                    onPressed: () async {
+                                      final picked = await showDatePicker(
+                                        context: ctx,
+                                        initialDate: startDate,
+                                        firstDate: DateTime(2024),
+                                        lastDate: DateTime(2035),
+                                      );
+                                      if (picked != null) {
+                                        setModalState(() {
+                                          startDate = picked;
+                                          if (endDate.isBefore(startDate)) endDate = startDate;
+                                        });
+                                      }
+                                    },
+                                    child: Text('시작: ${fmtDate(startDate)}', style: const TextStyle(fontSize: 12)),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: OutlinedButton(
+                                    onPressed: () async {
+                                      final picked = await showDatePicker(
+                                        context: ctx,
+                                        initialDate: endDate,
+                                        firstDate: startDate,
+                                        lastDate: DateTime(2035),
+                                      );
+                                      if (picked != null) setModalState(() => endDate = picked);
+                                    },
+                                    child: Text('종료: ${fmtDate(endDate)}', style: const TextStyle(fontSize: 12)),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            TextField(
+                              controller: reasonCtrl,
+                              decoration: const InputDecoration(
+                                labelText: '위임 사유 (예: 하계 휴가, 해외 출장)',
+                                isDense: true,
+                                border: OutlineInputBorder(borderRadius: BorderRadius.zero),
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: ctx.colors.accentApproval,
+                                foregroundColor: Colors.white,
+                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                              ),
+                              onPressed: selectedDelegatee == null
+                                  ? null
+                                  : () async {
+                                      try {
+                                        final repo = modalRef.read(approvalRepositoryProvider);
+                                        await repo.createDelegation({
+                                          'delegatee_id': selectedDelegatee!.pk,
+                                          'start_date': fmtDate(startDate),
+                                          'end_date': fmtDate(endDate),
+                                          'reason': reasonCtrl.text.trim(),
+                                          'is_active': true,
+                                        });
+                                        modalRef.invalidate(delegationsProvider);
+                                        modalRef.invalidate(pendingApprovalsProvider);
+                                        setModalState(() => showCreateForm = false);
+                                      } catch (e) {
+                                        if (ctx.mounted) {
+                                          ScaffoldMessenger.of(ctx).showSnackBar(
+                                            SnackBar(content: Text('위임 등록 실패: $e')),
+                                          );
+                                        }
+                                      }
+                                    },
+                              child: const Text('대결 위임 등록', style: TextStyle(fontWeight: FontWeight.bold)),
+                            ),
+                          ] else
+                            Expanded(
+                              child: delegationsAsync.when(
+                                data: (list) {
+                                  if (list.isEmpty) {
+                                    return Center(
+                                      child: Text(
+                                        '등록된 결재 위임(대결) 내역이 없습니다.',
+                                        style: TextStyle(fontSize: 12.5, color: ctx.colors.textMuted),
+                                      ),
+                                    );
+                                  }
+                                  return ListView.separated(
+                                    itemCount: list.length,
+                                    separatorBuilder: (_, __) => const Divider(height: 1),
+                                    itemBuilder: (ctx, i) {
+                                      final d = list[i];
+                                      final delegatorName = d.delegator?.fullName ?? d.delegator?.name ?? d.delegator?.username ?? '-';
+                                      final delegateeName = d.delegatee?.fullName ?? d.delegatee?.name ?? d.delegatee?.username ?? '-';
+                                      return ListTile(
+                                        contentPadding: EdgeInsets.zero,
+                                        title: Text(
+                                          '$delegatorName ➔ $delegateeName',
+                                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+                                        ),
+                                        subtitle: Text(
+                                          '${d.startDate} ~ ${d.endDate}${d.reason != null && d.reason!.isNotEmpty ? ' · ${d.reason}' : ''}',
+                                          style: TextStyle(fontSize: 11.5, color: ctx.colors.textSecond),
+                                        ),
+                                        trailing: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Switch(
+                                              value: d.isActive,
+                                              onChanged: (val) async {
+                                                await modalRef
+                                                    .read(approvalRepositoryProvider)
+                                                    .updateDelegation(d.id, {'is_active': val});
+                                                modalRef.invalidate(delegationsProvider);
+                                                modalRef.invalidate(pendingApprovalsProvider);
+                                              },
+                                            ),
+                                            IconButton(
+                                              icon: Icon(Icons.delete_outline, size: 18, color: ctx.colors.error),
+                                              onPressed: () async {
+                                                await modalRef
+                                                    .read(approvalRepositoryProvider)
+                                                    .deleteDelegation(d.id);
+                                                modalRef.invalidate(delegationsProvider);
+                                                modalRef.invalidate(pendingApprovalsProvider);
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                loading: () => const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                                error: (e, _) => Center(child: Text('위임 내역 조회 실패: $e')),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        );
+      },
     );
   }
 }

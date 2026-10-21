@@ -132,6 +132,7 @@ class _OfficialLetterTabViewState extends ConsumerState<OfficialLetterTabView> {
   Widget _buildOutboundView(BuildContext context) {
     final colors = context.colors;
     final currentStatus = ref.watch(letterFilterStatusProvider);
+    final currentPage = ref.watch(officialLetterPageProvider);
     final lettersAsync = ref.watch(officialLettersProvider);
 
     return Column(
@@ -162,6 +163,7 @@ class _OfficialLetterTabViewState extends ConsumerState<OfficialLetterTabView> {
                             icon: const Icon(Icons.clear, size: 16),
                             onPressed: () {
                               _outboundSearchController.clear();
+                              ref.read(officialLetterPageProvider.notifier).state = 1;
                               ref.read(letterSearchQueryProvider.notifier).state = '';
                             },
                           )
@@ -170,6 +172,7 @@ class _OfficialLetterTabViewState extends ConsumerState<OfficialLetterTabView> {
                     contentPadding: const EdgeInsets.symmetric(vertical: 8),
                   ),
                   onSubmitted: (val) {
+                    ref.read(officialLetterPageProvider.notifier).state = 1;
                     ref.read(letterSearchQueryProvider.notifier).state = val.trim();
                   },
                 ),
@@ -185,6 +188,7 @@ class _OfficialLetterTabViewState extends ConsumerState<OfficialLetterTabView> {
                       label: '전체',
                       isSelected: currentStatus == null,
                       onTap: () {
+                        ref.read(officialLetterPageProvider.notifier).state = 1;
                         ref.read(letterFilterStatusProvider.notifier).state = null;
                       },
                     ),
@@ -193,6 +197,7 @@ class _OfficialLetterTabViewState extends ConsumerState<OfficialLetterTabView> {
                       label: '결재대기',
                       isSelected: currentStatus == 'pending',
                       onTap: () {
+                        ref.read(officialLetterPageProvider.notifier).state = 1;
                         ref.read(letterFilterStatusProvider.notifier).state = 'pending';
                       },
                     ),
@@ -201,6 +206,7 @@ class _OfficialLetterTabViewState extends ConsumerState<OfficialLetterTabView> {
                       label: '결재승인',
                       isSelected: currentStatus == 'approved',
                       onTap: () {
+                        ref.read(officialLetterPageProvider.notifier).state = 1;
                         ref.read(letterFilterStatusProvider.notifier).state = 'approved';
                       },
                     ),
@@ -209,6 +215,7 @@ class _OfficialLetterTabViewState extends ConsumerState<OfficialLetterTabView> {
                       label: '발송완료',
                       isSelected: currentStatus == 'dispatched',
                       onTap: () {
+                        ref.read(officialLetterPageProvider.notifier).state = 1;
                         ref.read(letterFilterStatusProvider.notifier).state = 'dispatched';
                       },
                     ),
@@ -257,22 +264,60 @@ class _OfficialLetterTabViewState extends ConsumerState<OfficialLetterTabView> {
                 );
               }
 
-              return RefreshIndicator(
-                onRefresh: () async => ref.refresh(officialLettersProvider.future),
-                child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  itemCount: letters.length,
-                  itemBuilder: (context, index) {
-                    final letter = letters[index];
-                    return LetterCard(
-                      letter: letter,
-                      onTap: () async {
-                        await context.push('${AppRoutes.approval}/letters/${letter.id}');
-                        ref.invalidate(officialLettersProvider);
-                      },
-                    );
-                  },
-                ),
+              final hasPagination = res.previous != null || res.next != null;
+              return Column(
+                children: [
+                  Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: () async => ref.refresh(officialLettersProvider.future),
+                      child: ListView.builder(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        itemCount: letters.length,
+                        itemBuilder: (context, index) {
+                          final letter = letters[index];
+                          return LetterCard(
+                            letter: letter,
+                            onTap: () async {
+                              await context.push('${AppRoutes.approval}/letters/${letter.id}');
+                              ref.invalidate(officialLettersProvider);
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  if (hasPagination)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: colors.bgCard,
+                        border: Border(top: BorderSide(color: colors.border, width: 0.6)),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TextButton.icon(
+                            onPressed: res.previous != null && currentPage > 1
+                                ? () => ref.read(officialLetterPageProvider.notifier).state = currentPage - 1
+                                : null,
+                            icon: const Icon(Icons.chevron_left, size: 18),
+                            label: const Text('이전', style: TextStyle(fontSize: 12)),
+                          ),
+                          Text(
+                            '$currentPage 페이지 (총 ${res.count}건)',
+                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textSecond),
+                          ),
+                          TextButton.icon(
+                            onPressed: res.next != null
+                                ? () => ref.read(officialLetterPageProvider.notifier).state = currentPage + 1
+                                : null,
+                            icon: const Icon(Icons.chevron_right, size: 18),
+                            label: const Text('다음', style: TextStyle(fontSize: 12)),
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
               );
             },
           ),

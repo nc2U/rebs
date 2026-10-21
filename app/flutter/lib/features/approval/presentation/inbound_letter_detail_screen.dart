@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../../core/api/api_client.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/services/share_helper.dart';
@@ -581,8 +582,12 @@ class _InboundLetterDetailScreenState
                     IconButton(
                       icon: Icon(Icons.download_rounded, size: 18, color: colors.accentApproval),
                       onPressed: () async {
-                        final uri = Uri.tryParse(att.file!);
-                        if (uri != null) {
+                        final rawUrl = att.file!;
+                        final fullUrl = (rawUrl.startsWith('http://') || rawUrl.startsWith('https://'))
+                            ? rawUrl
+                            : '$appBaseUrl${rawUrl.startsWith('/') ? '' : '/'}$rawUrl';
+                        final uri = Uri.tryParse(fullUrl);
+                        if (uri != null && await canLaunchUrl(uri)) {
                           await launchUrl(uri, mode: LaunchMode.externalApplication);
                         }
                       },

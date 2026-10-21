@@ -8,13 +8,18 @@ final letterFilterStatusProvider = StateProvider<String?>((ref) => null);
 /// 공문 검색어 상태
 final letterSearchQueryProvider = StateProvider<String>((ref) => '');
 
+/// 공문 페이지 번호 상태
+final officialLetterPageProvider = StateProvider.autoDispose<int>((ref) => 1);
+
 /// 공문 목록 프로바이더
 final officialLettersProvider = FutureProvider.autoDispose<OfficialLetterListResponseModel>((ref) async {
   final repo = ref.watch(letterRepositoryProvider);
   final status = ref.watch(letterFilterStatusProvider);
   final search = ref.watch(letterSearchQueryProvider);
+  final page = ref.watch(officialLetterPageProvider);
 
   return repo.fetchLetters(
+    page: page,
     approvalStatus: status,
     search: search,
   );

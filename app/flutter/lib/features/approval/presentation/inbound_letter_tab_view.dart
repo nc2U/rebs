@@ -83,6 +83,7 @@ class _InboundLetterTabViewState extends ConsumerState<InboundLetterTabView> {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final currentStatus = ref.watch(inboundLetterFilterStatusProvider);
+    final currentPage = ref.watch(inboundLetterPageProvider);
     final lettersAsync = ref.watch(inboundLettersProvider);
 
     return Column(
@@ -113,6 +114,7 @@ class _InboundLetterTabViewState extends ConsumerState<InboundLetterTabView> {
                             icon: const Icon(Icons.clear, size: 16),
                             onPressed: () {
                               _searchController.clear();
+                              ref.read(inboundLetterPageProvider.notifier).state = 1;
                               ref.read(inboundLetterSearchQueryProvider.notifier).state = '';
                             },
                           )
@@ -121,6 +123,7 @@ class _InboundLetterTabViewState extends ConsumerState<InboundLetterTabView> {
                     contentPadding: const EdgeInsets.symmetric(vertical: 8),
                   ),
                   onSubmitted: (val) {
+                    ref.read(inboundLetterPageProvider.notifier).state = 1;
                     ref.read(inboundLetterSearchQueryProvider.notifier).state = val.trim();
                   },
                 ),
@@ -136,6 +139,7 @@ class _InboundLetterTabViewState extends ConsumerState<InboundLetterTabView> {
                       label: '전체',
                       isSelected: currentStatus == null,
                       onTap: () {
+                        ref.read(inboundLetterPageProvider.notifier).state = 1;
                         ref.read(inboundLetterFilterStatusProvider.notifier).state = null;
                       },
                     ),
@@ -144,6 +148,7 @@ class _InboundLetterTabViewState extends ConsumerState<InboundLetterTabView> {
                       label: '접수',
                       isSelected: currentStatus == 'received',
                       onTap: () {
+                        ref.read(inboundLetterPageProvider.notifier).state = 1;
                         ref.read(inboundLetterFilterStatusProvider.notifier).state = 'received';
                       },
                     ),
@@ -152,6 +157,7 @@ class _InboundLetterTabViewState extends ConsumerState<InboundLetterTabView> {
                       label: '처리중',
                       isSelected: currentStatus == 'in_progress',
                       onTap: () {
+                        ref.read(inboundLetterPageProvider.notifier).state = 1;
                         ref.read(inboundLetterFilterStatusProvider.notifier).state = 'in_progress';
                       },
                     ),
@@ -160,6 +166,7 @@ class _InboundLetterTabViewState extends ConsumerState<InboundLetterTabView> {
                       label: '회신완료',
                       isSelected: currentStatus == 'replied',
                       onTap: () {
+                        ref.read(inboundLetterPageProvider.notifier).state = 1;
                         ref.read(inboundLetterFilterStatusProvider.notifier).state = 'replied';
                       },
                     ),
@@ -168,6 +175,7 @@ class _InboundLetterTabViewState extends ConsumerState<InboundLetterTabView> {
                       label: '종결',
                       isSelected: currentStatus == 'closed',
                       onTap: () {
+                        ref.read(inboundLetterPageProvider.notifier).state = 1;
                         ref.read(inboundLetterFilterStatusProvider.notifier).state = 'closed';
                       },
                     ),
@@ -216,23 +224,61 @@ class _InboundLetterTabViewState extends ConsumerState<InboundLetterTabView> {
                 );
               }
 
-              return RefreshIndicator(
-                onRefresh: () async => ref.refresh(inboundLettersProvider.future),
-                child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  itemCount: letters.length,
-                  itemBuilder: (ctx, idx) {
-                    final item = letters[idx];
-                    return InboundLetterCard(
-                      letter: item,
-                      onTap: () async {
-                        await context.push('${AppRoutes.approval}/letters/inbound/${item.id}');
-                        ref.invalidate(inboundLettersProvider);
-                      },
-                      onPdfTap: item.hasScan ? () => _quickViewScanPdf(item) : null,
-                    );
-                  },
-                ),
+              final hasPagination = res.previous != null || res.next != null;
+              return Column(
+                children: [
+                  Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: () async => ref.refresh(inboundLettersProvider.future),
+                      child: ListView.builder(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        itemCount: letters.length,
+                        itemBuilder: (ctx, idx) {
+                          final item = letters[idx];
+                          return InboundLetterCard(
+                            letter: item,
+                            onTap: () async {
+                              await context.push('${AppRoutes.approval}/letters/inbound/${item.id}');
+                              ref.invalidate(inboundLettersProvider);
+                            },
+                            onPdfTap: item.hasScan ? () => _quickViewScanPdf(item) : null,
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  if (hasPagination)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: colors.bgCard,
+                        border: Border(top: BorderSide(color: colors.border, width: 0.6)),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TextButton.icon(
+                            onPressed: res.previous != null && currentPage > 1
+                                ? () => ref.read(inboundLetterPageProvider.notifier).state = currentPage - 1
+                                : null,
+                            icon: const Icon(Icons.chevron_left, size: 18),
+                            label: const Text('이전', style: TextStyle(fontSize: 12)),
+                          ),
+                          Text(
+                            '$currentPage 페이지 (총 ${res.count}건)',
+                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colors.textSecond),
+                          ),
+                          TextButton.icon(
+                            onPressed: res.next != null
+                                ? () => ref.read(inboundLetterPageProvider.notifier).state = currentPage + 1
+                                : null,
+                            icon: const Icon(Icons.chevron_right, size: 18),
+                            label: const Text('다음', style: TextStyle(fontSize: 12)),
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
               );
             },
           ),

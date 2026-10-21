@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_text_styles.dart';
+import '../../../../core/models/common_models.dart';
 import '../../../../core/theme/app_colors_extension.dart';
 import '../../../../core/widgets/loading_shimmer.dart';
 import '../data/approval_repository.dart';
@@ -26,8 +27,12 @@ class _ApprovalDraftScreenState extends ConsumerState<ApprovalDraftScreen> {
   // 폼 선택 상태
   StaffAssignmentItemModel? _selectedAssignment;
   DocumentTypeModel? _selectedDocType;
+  String _securityLevel = '2';
+  List<SimpleUserModel> _selectedObservers = [];
+  List<ApprovalAttachmentModel> _existingAttachments = [];
   final List<String> _attachedFilePaths = [];
   bool _isSubmitting = false;
+  bool _didInitRoutePreview = false;
 
   // ── 양식별 컨트롤러 ─────────────────────────────────────────────
   // 휴가신청서
@@ -227,6 +232,9 @@ class _ApprovalDraftScreenState extends ConsumerState<ApprovalDraftScreen> {
 
   void _initFromEditDoc(ApprovalDocumentModel doc) {
     _titleController.text = doc.title;
+    _securityLevel = doc.securityLevel.isNotEmpty ? doc.securityLevel : '2';
+    _selectedObservers = List<SimpleUserModel>.from(doc.observers ?? const []);
+    _existingAttachments = List<ApprovalAttachmentModel>.from(doc.attachments ?? const []);
     final c = doc.content;
 
     // 1. 휴가
@@ -569,6 +577,129 @@ class _ApprovalDraftScreenState extends ConsumerState<ApprovalDraftScreen> {
     setState(() {
       _attachedFilePaths.removeAt(index);
     });
+  }
+
+  Future<void> _deleteExistingAttachment(ApprovalAttachmentModel att) async {
+    try {
+      final repo = ref.read(approvalRepositoryProvider);
+      await repo.deleteAttachment(att.id);
+      if (mounted) {
+        setState(() {
+          _existingAttachments.removeWhere((x) => x.id == att.id);
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('첨부파일이 삭제되었습니다.')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('첨부파일 삭제 실패: $e'), backgroundColor: context.colors.error),
+        );
+      }
+    }
+  }
+
+  Future<void> _showObserverPicker(BuildContext context) async {
+    String searchQuery = '';
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: context.colors.bgCard,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+      builder: (sheetCtx) {
+        return StatefulBuilder(
+          builder: (ctx, setModalState) {
+            return Consumer(
+              builder: (ctx, modalRef, _) {
+                final usersAsync = modalRef.watch(activeUsersProvider);
+                return SafeArea(
+                  child: SizedBox(
+                    height: MediaQuery.of(ctx).size.height * 0.65,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                '참조자 (공람) 선택',
+                                style: AppTextStyles.titleSm.copyWith(fontWeight: FontWeight.w800),
+                              ),
+                              const Spacer(),
+                              IconButton(
+                                icon: const Icon(Icons.close, size: 20),
+                                onPressed: () => Navigator.of(sheetCtx).pop(),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          TextField(
+                            decoration: _inputDecoration(ctx, '이름 또는 아이디 검색'),
+                            onChanged: (v) => setModalState(() => searchQuery = v.trim().toLowerCase()),
+                          ),
+                          const SizedBox(height: 10),
+                          Expanded(
+                            child: usersAsync.when(
+                              data: (users) {
+                                final filtered = users.where((u) {
+                                  if (searchQuery.isEmpty) return true;
+                                  final name = (u.fullName ?? u.name).toLowerCase();
+                                  return name.contains(searchQuery) ||
+                                      u.username.toLowerCase().contains(searchQuery);
+                                }).toList();
+                                if (filtered.isEmpty) {
+                                  return Center(
+                                    child: Text(
+                                      '검색 결과가 없습니다.',
+                                      style: TextStyle(fontSize: 12.5, color: ctx.colors.textMuted),
+                                    ),
+                                  );
+                                }
+                                return ListView.builder(
+                                  itemCount: filtered.length,
+                                  itemBuilder: (ctx, idx) {
+                                    final u = filtered[idx];
+                                    final isSelected = _selectedObservers.any((x) => x.pk == u.pk);
+                                    final label = (u.fullName != null && u.fullName!.isNotEmpty)
+                                        ? '${u.fullName} (${u.username})'
+                                        : (u.name.isNotEmpty ? '${u.name} (${u.username})' : u.username);
+                                    return CheckboxListTile(
+                                      dense: true,
+                                      value: isSelected,
+                                      title: Text(label, style: const TextStyle(fontSize: 13)),
+                                      onChanged: (checked) {
+                                        setState(() {
+                                          if (checked == true) {
+                                            if (!_selectedObservers.any((x) => x.pk == u.pk)) {
+                                              _selectedObservers.add(u);
+                                            }
+                                          } else {
+                                            _selectedObservers.removeWhere((x) => x.pk == u.pk);
+                                          }
+                                        });
+                                        setModalState(() {});
+                                      },
+                                    );
+                                  },
+                                );
+                              },
+                              loading: () => const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                              error: (e, _) => Center(child: Text('사용자 목록 로드 실패: $e')),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        );
+      },
+    );
   }
 
   Map<String, dynamic> _buildContentMap() {
@@ -964,12 +1095,18 @@ class _ApprovalDraftScreenState extends ConsumerState<ApprovalDraftScreen> {
         'title': _titleController.text.trim(),
         'doc_type': _selectedDocType!.id,
         'drafter_assignment': _selectedAssignment!.id,
+        'security_level': _securityLevel,
+        'observer_ids': _selectedObservers.map((u) => u.pk).toList(),
         'content': content,
       };
 
       final ApprovalDocumentModel doc;
       if (widget.editDoc != null) {
-        doc = await repo.updateDocument(widget.editDoc!.id, payload);
+        doc = await repo.updateDocument(
+          widget.editDoc!.id,
+          payload,
+          filePaths: _attachedFilePaths.isNotEmpty ? _attachedFilePaths : null,
+        );
       } else {
         doc = await repo.createDocument(
           payload,
@@ -984,6 +1121,7 @@ class _ApprovalDraftScreenState extends ConsumerState<ApprovalDraftScreen> {
       ref.invalidate(pendingApprovalsProvider);
       ref.invalidate(draftedApprovalsProvider);
       ref.invalidate(approvedApprovalsProvider);
+      ref.invalidate(observedApprovalsProvider);
       ref.invalidate(allApprovalsProvider);
       if (widget.editDoc != null) {
         ref.invalidate(approvalDetailProvider(widget.editDoc!.id));
@@ -1152,6 +1290,7 @@ class _ApprovalDraftScreenState extends ConsumerState<ApprovalDraftScreen> {
               title: '기안자 정보',
               icon: Icons.person_pin_circle_outlined,
               child: DropdownButtonFormField<StaffAssignmentItemModel>(
+                key: ValueKey('assignment_${_selectedAssignment?.id}'),
                 initialValue: _selectedAssignment,
                 decoration: _inputDecoration(context, '기안 보직'),
                 items: assignments.map((a) {
@@ -1179,6 +1318,12 @@ class _ApprovalDraftScreenState extends ConsumerState<ApprovalDraftScreen> {
                 data: (docTypes) {
                   if (_selectedDocType == null && widget.editDoc != null) {
                     _selectedDocType = docTypes.where((dt) => dt.id == widget.editDoc!.docType).firstOrNull;
+                    if (_selectedDocType != null && !_didInitRoutePreview) {
+                      _didInitRoutePreview = true;
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        if (mounted) _updateRoutePreview();
+                      });
+                    }
                   }
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1186,6 +1331,7 @@ class _ApprovalDraftScreenState extends ConsumerState<ApprovalDraftScreen> {
                       // 자주 쓰는 4대 양식 빠른 선택 칩
                       _buildQuickDocTypeChips(context, docTypes),
                       DropdownButtonFormField<DocumentTypeModel>(
+                        key: ValueKey('doctype_${_selectedDocType?.id}'),
                         initialValue: _selectedDocType,
                         decoration: _inputDecoration(context, '문서 유형 선택'),
                         items: docTypes.map((dt) {
@@ -1196,7 +1342,12 @@ class _ApprovalDraftScreenState extends ConsumerState<ApprovalDraftScreen> {
                           );
                         }).toList(),
                         onChanged: (val) {
-                          setState(() => _selectedDocType = val);
+                          setState(() {
+                            _selectedDocType = val;
+                            if (val != null && widget.editDoc == null) {
+                              _securityLevel = val.defaultSecurityLevel;
+                            }
+                          });
                           _updateRoutePreview();
                         },
                         validator: (v) => v == null ? '문서 유형을 선택하세요' : null,
@@ -1280,6 +1431,61 @@ class _ApprovalDraftScreenState extends ConsumerState<ApprovalDraftScreen> {
             ),
             const SizedBox(height: 14),
 
+            // ── 4-1. 보안등급 및 참조자(공람) 설정 ────────────────────
+            _buildSectionCard(
+              context,
+              title: '보안등급 및 참조자(공람)',
+              icon: Icons.security_rounded,
+              action: TextButton.icon(
+                onPressed: () => _showObserverPicker(context),
+                icon: const Icon(Icons.person_add_alt_1_outlined, size: 15),
+                label: const Text('참조자 추가', style: TextStyle(fontSize: 12)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  DropdownButtonFormField<String>(
+                    key: ValueKey('security_$_securityLevel'),
+                    initialValue: _securityLevel,
+                    decoration: _inputDecoration(context, '보안등급'),
+                    items: const [
+                      DropdownMenuItem(value: '1', child: Text('1등급 (기안/결재자 비밀)', style: TextStyle(fontSize: 13))),
+                      DropdownMenuItem(value: '2', child: Text('2등급 (부서 공개)', style: TextStyle(fontSize: 13))),
+                      DropdownMenuItem(value: '3', child: Text('3등급 (전사 공개)', style: TextStyle(fontSize: 13))),
+                    ],
+                    onChanged: (v) {
+                      if (v != null) setState(() => _securityLevel = v);
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  if (_selectedObservers.isEmpty)
+                    Text('지정된 참조자(공람)가 없습니다.', style: TextStyle(fontSize: 12, color: context.colors.textMuted))
+                  else
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: _selectedObservers.map((u) {
+                        final label = (u.fullName != null && u.fullName!.isNotEmpty)
+                            ? u.fullName!
+                            : (u.name.isNotEmpty ? u.name : u.username);
+                        return Chip(
+                          label: Text(label, style: const TextStyle(fontSize: 11.5)),
+                          visualDensity: VisualDensity.compact,
+                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          deleteIcon: const Icon(Icons.close, size: 14),
+                          onDeleted: () {
+                            setState(() {
+                              _selectedObservers.removeWhere((x) => x.pk == u.pk);
+                            });
+                          },
+                        );
+                      }).toList(),
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 14),
+
             // ── 5. 첨부파일 ─────────────────────────────────────────────
             _buildSectionCard(
               context,
@@ -1292,9 +1498,37 @@ class _ApprovalDraftScreenState extends ConsumerState<ApprovalDraftScreen> {
               ),
               child: Column(
                 children: [
-                  if (_attachedFilePaths.isEmpty)
+                  if (_existingAttachments.isEmpty && _attachedFilePaths.isEmpty)
                     Text('첨부된 파일이 없습니다.', style: TextStyle(fontSize: 12, color: context.colors.textMuted))
-                  else
+                  else ...[
+                    for (final att in _existingAttachments)
+                      Container(
+                        margin: const EdgeInsets.only(bottom: 6),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        color: context.colors.bgSurface,
+                        child: Row(
+                          children: [
+                            Icon(Icons.attach_file_rounded, size: 16, color: context.colors.accentApproval),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                att.fileName.isNotEmpty
+                                    ? att.fileName
+                                    : (att.file ?? '').split(RegExp(r'[/\\]')).last,
+                                style: const TextStyle(fontSize: 12),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.delete_outline, size: 16, color: context.colors.error),
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                              tooltip: '기존 첨부 삭제',
+                              onPressed: () => _deleteExistingAttachment(att),
+                            ),
+                          ],
+                        ),
+                      ),
                     for (int i = 0; i < _attachedFilePaths.length; i++)
                       Container(
                         margin: const EdgeInsets.only(bottom: 6),
@@ -1306,7 +1540,7 @@ class _ApprovalDraftScreenState extends ConsumerState<ApprovalDraftScreen> {
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
-                                _attachedFilePaths[i].split('/').last,
+                                _attachedFilePaths[i].split(RegExp(r'[/\\]')).last,
                                 style: const TextStyle(fontSize: 12),
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -1320,6 +1554,7 @@ class _ApprovalDraftScreenState extends ConsumerState<ApprovalDraftScreen> {
                           ],
                         ),
                       ),
+                  ],
                 ],
               ),
             ),
@@ -3851,7 +4086,12 @@ class _ApprovalDraftScreenState extends ConsumerState<ApprovalDraftScreen> {
             padding: const EdgeInsets.only(right: 6),
             child: InkWell(
               onTap: () {
-                setState(() => _selectedDocType = matchedDt);
+                setState(() {
+                  _selectedDocType = matchedDt;
+                  if (widget.editDoc == null) {
+                    _securityLevel = matchedDt.defaultSecurityLevel;
+                  }
+                });
                 _updateRoutePreview();
               },
               borderRadius: BorderRadius.circular(20),

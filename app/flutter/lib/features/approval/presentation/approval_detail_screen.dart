@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../../core/api/api_client.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../core/providers/auth_provider.dart';
 import '../../../../core/providers/notification_provider.dart';
@@ -1542,9 +1543,14 @@ class ApprovalDetailScreen extends ConsumerWidget {
           for (final f in files)
             InkWell(
               onTap: () async {
-                final url = f.fileUrl ?? f.file;
-                if (url != null && await canLaunchUrl(Uri.parse(url))) {
-                  await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+                final rawUrl = f.fileUrl ?? f.file;
+                if (rawUrl == null || rawUrl.isEmpty) return;
+                final fullUrl = (rawUrl.startsWith('http://') || rawUrl.startsWith('https://'))
+                    ? rawUrl
+                    : '$appBaseUrl${rawUrl.startsWith('/') ? '' : '/'}$rawUrl';
+                final uri = Uri.tryParse(fullUrl);
+                if (uri != null && await canLaunchUrl(uri)) {
+                  await launchUrl(uri, mode: LaunchMode.externalApplication);
                 }
               },
               child: Container(
@@ -1595,13 +1601,16 @@ class ApprovalDetailScreen extends ConsumerWidget {
             child: Wrap(
               spacing: 6,
               children: observers.map((u) {
+                final label = (u.fullName != null && u.fullName!.isNotEmpty)
+                    ? u.fullName!
+                    : (u.name.isNotEmpty ? u.name : u.username);
                 return Container(
                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
                     color: context.colors.bgSurface,
                     border: Border.all(color: context.colors.border, width: 0.5),
                   ),
-                  child: Text(u.username, style: TextStyle(fontSize: 11, color: context.colors.textSecond)),
+                  child: Text(label, style: TextStyle(fontSize: 11, color: context.colors.textSecond)),
                 );
               }).toList(),
             ),
@@ -1619,12 +1628,36 @@ class ApprovalDetailScreen extends ConsumerWidget {
   ) {
     if (currentUserId == null) return null;
 
-    // 현재 단계에서 내가 결재자이고 단계 상태가 pending인지 확인
+    // 현재 단계에서 내가 결재자(또는 유효한 대결 수임자)이고 아직 승인/반려하지 않았는지 확인
     final currentStepObj = doc.steps?.where((s) => s.stepOrder == doc.currentStep).firstOrNull;
+    final delegations = ref.watch(delegationsProvider).valueOrNull ?? const [];
+    final pendingDocs = ref.watch(pendingApprovalsProvider).valueOrNull ?? const [];
+
+    final isDirectApprover = currentStepObj != null &&
+        currentStepObj.approvers.any((u) => u.pk == currentUserId);
+    final matchedDelegation = currentStepObj == null
+        ? null
+        : delegations
+            .where((d) =>
+                d.isActive &&
+                d.isValidNow &&
+                d.delegatee?.pk == currentUserId &&
+                currentStepObj.approvers.any((u) => u.pk == d.delegator?.pk))
+            .firstOrNull;
+    final isInMyPending = pendingDocs.any((d) => d.id == doc.id);
+
+    final alreadyActed = currentStepObj != null &&
+        currentStepObj.actions.any((a) =>
+            (a.action == 'approved' || a.action == 'rejected') &&
+            (a.approver.pk == currentUserId ||
+                (matchedDelegation?.delegator != null &&
+                    a.delegatedFrom?.pk == matchedDelegation!.delegator!.pk)));
+
     final isMyTurn = doc.status == 'pending' &&
         currentStepObj != null &&
         currentStepObj.status == 'pending' &&
-        currentStepObj.approvers.any((u) => u.pk == currentUserId);
+        !alreadyActed &&
+        (isDirectApprover || matchedDelegation != null || isInMyPending);
 
     final isMyDraft = doc.drafter.pk == currentUserId;
 
@@ -1645,9 +1678,37 @@ class ApprovalDetailScreen extends ConsumerWidget {
         child: SafeArea(
           child: Row(
             children: [
-              // 반려 버튼 (40%)
+              // 의견 버튼 (25%)
               Expanded(
-                flex: 4,
+                flex: 3,
+                child: SizedBox(
+                  height: 44,
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      ApprovalActionBottomSheet.show(
+                        context,
+                        type: ApprovalActionModalType.comment,
+                        title: doc.title,
+                        onConfirm: (comment) => ref
+                            .read(approvalActionControllerProvider.notifier)
+                            .addComment(doc.id, comment: comment ?? ''),
+                      );
+                    },
+                    style: OutlinedButton.styleFrom(
+                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                      side: BorderSide(color: context.colors.border),
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                    ),
+                    icon: Icon(Icons.chat_bubble_outline_rounded, color: context.colors.textSecond, size: 16),
+                    label: Text('의견', style: TextStyle(color: context.colors.textPrimary, fontWeight: FontWeight.w700, fontSize: 13)),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+
+              // 반려 버튼 (30%)
+              Expanded(
+                flex: 3,
                 child: SizedBox(
                   height: 44,
                   child: ElevatedButton.icon(
@@ -1665,17 +1726,18 @@ class ApprovalDetailScreen extends ConsumerWidget {
                       backgroundColor: context.colors.error,
                       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
                       elevation: 0,
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
                     ),
-                    icon: const Icon(Icons.close_rounded, color: Colors.white, size: 18),
-                    label: const Text('반려', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14)),
+                    icon: const Icon(Icons.close_rounded, color: Colors.white, size: 17),
+                    label: const Text('반려', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13.5)),
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
 
-              // 결재 승인 버튼 (60%)
+              // 결재 승인 버튼 (45%)
               Expanded(
-                flex: 6,
+                flex: 5,
                 child: SizedBox(
                   height: 44,
                   child: ElevatedButton.icon(
@@ -1693,9 +1755,13 @@ class ApprovalDetailScreen extends ConsumerWidget {
                       backgroundColor: context.colors.success,
                       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
                       elevation: 0,
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
                     ),
                     icon: const Icon(Icons.check_rounded, color: Colors.white, size: 18),
-                    label: const Text('결재 승인', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14)),
+                    label: Text(
+                      matchedDelegation != null ? '대결 승인' : '결재 승인',
+                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13.5),
+                    ),
                   ),
                 ),
               ),

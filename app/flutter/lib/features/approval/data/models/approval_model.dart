@@ -5,7 +5,7 @@ part 'approval_model.freezed.dart';
 part 'approval_model.g.dart';
 
 Object? _readId(Map json, String key) {
-  final val = json['id'] ?? json['pk'];
+  final val = json[key] ?? json['id'] ?? json['pk'];
   if (val is num) return val.toInt();
   if (val is String) return int.tryParse(val) ?? 0;
   return 0;
@@ -118,7 +118,6 @@ class StaffAssignmentItemModel with _$StaffAssignmentItemModel {
       _$StaffAssignmentItemModelFromJson(json);
 }
 
-// ── 4. 결재 행동 이력 모델 ─────────────────────────────────────────
 // ── 4. 결재 행동 이력 모델 ─────────────────────────────────────────
 @freezed
 class ApprovalActionModel with _$ApprovalActionModel {
