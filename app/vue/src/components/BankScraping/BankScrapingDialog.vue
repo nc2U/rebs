@@ -51,6 +51,8 @@ const availableAccounts = computed(() => {
       .map(a => ({
         value: a.value,
         title: a.label,
+        direction: a.direction,
+        category: a.category,
       }))
   } else {
     return proLedgerStore.proAccounts
@@ -58,9 +60,20 @@ const availableAccounts = computed(() => {
       .map(a => ({
         value: a.value,
         title: a.label,
+        direction: a.direction,
+        category: a.category,
       }))
   }
 })
+
+// 계정과목 자동완성 검색 커스텀 필터 (계정명 + 구분(입금/출금) 통합 검색)
+const customAccountFilter = (value: any, query: string, item?: any) => {
+  if (!query) return true
+  const q = String(query).toLowerCase().trim()
+  const title = String(value || '').toLowerCase()
+  const dir = String(item?.raw?.direction || '').toLowerCase()
+  return title.includes(q) || dir.includes(q)
+}
 
 // 현재 모드 및 컨텍스트(회사 / 프로젝트 / 운영비)에 해당하는 계좌 목록
 const filteredCredentials = computed(() => {
@@ -499,7 +512,7 @@ onMounted(() => {
 
               <!-- 추천 계정과목 (선택 가능 드롭다운) -->
               <td class="text-left">
-                <v-select
+                <v-autocomplete
                   v-if="tx.status !== 'confirmed'"
                   v-model="selectedAccounts[tx.pk]"
                   :items="availableAccounts"
@@ -507,8 +520,26 @@ onMounted(() => {
                   variant="underlined"
                   hide-details
                   style="min-width: 190px"
-                  placeholder="계정 선택"
-                />
+                  item-value="value"
+                  item-title="title"
+                  clearable
+                  placeholder="계정 검색/선택"
+                  no-data-text="일치하는 계정과목이 없습니다"
+                  :custom-filter="customAccountFilter"
+                  auto-select-first
+                >
+                  <template #item="{ props: itemProps, item }">
+                    <v-list-item
+                      v-bind="itemProps"
+                      :subtitle="
+                        (item as any)?.raw?.direction
+                          ? `[${(item as any)?.raw?.direction}]`
+                          : undefined
+                      "
+                    />
+                  </template>
+                </v-autocomplete>
+
                 <span v-else class="text-caption font-weight-medium text-success">
                   {{
                     mode === 'company'

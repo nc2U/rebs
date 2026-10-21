@@ -1764,7 +1764,7 @@ class RawBankTransactionViewSet(viewsets.ModelViewSet):
             logger.exception("거래 승인 처리 중 예외 발생 (#%s)", raw_tx.pk)
             return Response({'error': "거래 승인 처리 중 오류가 발생했습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['post'], url_path='bulk-confirm')
     def bulk_confirm(self, request):
         """고신뢰도 거래 일괄 승인"""
         from ledger.services.transaction_confirm import bulk_confirm_high_confidence
@@ -1775,4 +1775,9 @@ class RawBankTransactionViewSet(viewsets.ModelViewSet):
 
         result = bulk_confirm_high_confidence(user=request.user, min_confidence=min_confidence)
         return Response(result, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['post'], url_path='bulk_confirm')
+    def bulk_confirm_legacy(self, request):
+        """고신뢰도 거래 일괄 승인 (언더스코어 URL 호환)"""
+        return self.bulk_confirm(request)
 
