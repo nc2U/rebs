@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { pageTitle, useSalesNavMenu } from '@/views/sales/_menu/headermixin'
 import { useProject } from '@/store/pinia/project'
 import { useSales } from '@/store/pinia/sales'
 import type { Project } from '@/store/types/project'
-import type { SalesAgency, SalesTeam, SalesPerson } from '@/store/types/sales'
+import type { SalesAgency, SalesPerson, SalesTeam } from '@/store/types/sales'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
 import SalesAuthGuard from '@/components/AuthGuard/SalesAuthGuard.vue'
@@ -16,7 +16,7 @@ import PersonFormModal from './components/PersonFormModal.vue'
 import PersonDocumentModal from './components/PersonDocumentModal.vue'
 
 const projStore = useProject()
-const project = computed(() => (projStore.project as Project)?.pk)
+const project = computed(() => (projStore.project as Project | null)?.pk)
 const navMenu = useSalesNavMenu(project)
 
 const salesStore = useSales()
@@ -39,18 +39,28 @@ const loadData = async (projId: number) => {
   ])
 }
 
-const projSelect = async (projId: number | null) => {
+const projSelect = (projId: number | null) => {
   selectedAgencyId.value = null
   selectedTeamId.value = null
-  if (projId) {
-    await loadData(projId)
+  if (!projId) {
+    salesStore.agencyList = []
+    salesStore.teamList = []
+    salesStore.personList = []
   }
 }
 
 watch(
   project,
   newVal => {
-    if (newVal) loadData(newVal)
+    selectedAgencyId.value = null
+    selectedTeamId.value = null
+    if (newVal) {
+      loadData(newVal)
+    } else {
+      salesStore.agencyList = []
+      salesStore.teamList = []
+      salesStore.personList = []
+    }
   },
   { immediate: true },
 )
@@ -61,9 +71,16 @@ const onSelectAgency = (agencyId: number | null) => {
   selectedTeamId.value = null
 }
 
-const onSelectTeam = (teamId: number | null) => {
+const onSelectTeam = (teamId: number | null, agencyId?: number | null) => {
   selectedTeamId.value = teamId
-  if (!teamId) {
+  if (teamId) {
+    if (agencyId) {
+      selectedAgencyId.value = agencyId
+    } else {
+      const team = salesStore.teamList.find(t => t.id === teamId)
+      if (team) selectedAgencyId.value = team.agency
+    }
+  } else {
     selectedAgencyId.value = null
   }
 }
@@ -75,7 +92,8 @@ const openEditAgency = (agency: SalesAgency) => agencyModalRef.value?.open(agenc
 const openAddTeam = (agencyId?: number) => teamModalRef.value?.open(undefined, agencyId)
 const openEditTeam = (team: SalesTeam) => teamModalRef.value?.open(team)
 
-const openAddPerson = () => personModalRef.value?.open(undefined, selectedTeamId.value ?? undefined)
+const openAddPerson = () =>
+  personModalRef.value?.open(undefined, selectedTeamId.value ?? undefined)
 const openEditPerson = (person: SalesPerson) => personModalRef.value?.open(person)
 const openDocModal = (person: SalesPerson) => docModalRef.value?.open(person)
 
@@ -96,65 +114,65 @@ const onDataChanged = async () => {
     />
 
     <ContentBody>
-    <CCardBody class="p-3 p-md-4 pb-5">
-      <div v-if="!project" class="py-5 text-center text-muted">
-        <v-icon icon="mdi-alert-circle-outline" size="large" class="mb-2 text-warning" />
-        <h5>프로젝트를 먼저 선택해 주세요.</h5>
-        <p class="mb-0 text-secondary">
-          상단 프로젝트 선택 메뉴에서 관리하실 프로젝트를 선택하시면 분양 대행 조직 및 인력을 관리할
-          수 있습니다.
-        </p>
-      </div>
+      <CCardBody class="p-3 p-md-4 pb-5">
+        <div v-if="!project" class="py-5 text-center text-muted">
+          <v-icon icon="mdi-alert-circle-outline" size="large" class="mb-2 text-warning" />
+          <h5>프로젝트를 먼저 선택해 주세요.</h5>
+          <p class="mb-0 text-secondary">
+            상단 프로젝트 선택 메뉴에서 관리하실 프로젝트를 선택하시면 분양 대행 조직 및 인력을
+            관리할 수 있습니다.
+          </p>
+        </div>
 
-      <CRow v-else>
-        <!-- 좌측: 영업 조직 (대행사 및 팀 트리) -->
-        <CCol lg="4" xl="3">
-          <AgencyTeamTree
-            :project="project"
-            :selected-agency-id="selectedAgencyId"
-            :selected-team-id="selectedTeamId"
-            @select-agency="onSelectAgency"
-            @select-team="onSelectTeam"
-            @add-agency="openAddAgency"
-            @edit-agency="openEditAgency"
-            @add-team="openAddTeam"
-            @edit-team="openEditTeam"
-          />
-        </CCol>
+        <CRow v-else>
+          <!-- 좌측: 영업 조직 (대행사 및 팀 트리) -->
+          <CCol lg="4" xl="3">
+            <AgencyTeamTree
+              :project="project"
+              :selected-agency-id="selectedAgencyId"
+              :selected-team-id="selectedTeamId"
+              @select-agency="onSelectAgency"
+              @select-team="onSelectTeam"
+              @add-agency="openAddAgency"
+              @edit-agency="openEditAgency"
+              @add-team="openAddTeam"
+              @edit-team="openEditTeam"
+            />
+          </CCol>
 
-        <!-- 우측: 영업 인력 목록 -->
-        <CCol lg="8" xl="9">
-          <PersonList
-            :project="project"
-            :selected-agency-id="selectedAgencyId"
-            :selected-team-id="selectedTeamId"
-            @add-person="openAddPerson"
-            @edit-person="openEditPerson"
-            @open-docs="openDocModal"
-          />
-        </CCol>
-      </CRow>
-    </CCardBody>
+          <!-- 우측: 영업 인력 목록 -->
+          <CCol lg="8" xl="9">
+            <PersonList
+              :project="project"
+              :selected-agency-id="selectedAgencyId"
+              :selected-team-id="selectedTeamId"
+              @add-person="openAddPerson"
+              @edit-person="openEditPerson"
+              @open-docs="openDocModal"
+            />
+          </CCol>
+        </CRow>
+      </CCardBody>
 
-    <!-- 모달 다이얼로그들 -->
-    <AgencyFormModal
-      v-if="project"
-      ref="agencyModalRef"
-      :project="project"
-      @saved="onDataChanged"
-    />
-    <TeamFormModal
-      ref="teamModalRef"
-      :agency-id="selectedAgencyId ?? undefined"
-      @saved="onDataChanged"
-    />
-    <PersonFormModal
-      ref="personModalRef"
-      :default-team-id="selectedTeamId ?? undefined"
-      @saved="onDataChanged"
-      @open-docs="openDocModal"
-    />
-    <PersonDocumentModal ref="docModalRef" @updated="onDataChanged" />
-  </ContentBody>
-</SalesAuthGuard>
+      <!-- 모달 다이얼로그들 -->
+      <AgencyFormModal
+        v-if="project"
+        ref="agencyModalRef"
+        :project="project"
+        @saved="onDataChanged"
+      />
+      <TeamFormModal
+        ref="teamModalRef"
+        :agency-id="selectedAgencyId ?? undefined"
+        @saved="onDataChanged"
+      />
+      <PersonFormModal
+        ref="personModalRef"
+        :default-team-id="selectedTeamId ?? undefined"
+        @saved="onDataChanged"
+        @open-docs="openDocModal"
+      />
+      <PersonDocumentModal ref="docModalRef" @updated="onDataChanged" />
+    </ContentBody>
+  </SalesAuthGuard>
 </template>

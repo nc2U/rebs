@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, watch } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import { useSales } from '@/store/pinia/sales'
 import type { SalesAgency } from '@/store/types/sales'
 import { isValidate } from '@/utils/helper'
@@ -65,7 +65,7 @@ const open = (agency?: SalesAgency) => {
     form.order = agency.order
     form.is_active = agency.is_active
   }
-  modalRef.value.callModal()
+  modalRef.value?.callModal()
 }
 
 const isSubmitting = ref(false)
@@ -98,7 +98,7 @@ const submit = async (event: Event) => {
     } else {
       await salesStore.createAgency(payload)
     }
-    modalRef.value.close()
+    modalRef.value?.close()
     emit('saved')
   } finally {
     isSubmitting.value = false
@@ -176,9 +176,15 @@ defineExpose({ open })
           >
             {{ isEdit ? '수정 저장' : '등록하기' }}
           </v-btn>
-          <v-btn color="light" size="small" flat :disabled="isSubmitting" @click="modalRef.close()"
-            >취소</v-btn
+          <v-btn
+            color="light"
+            size="small"
+            flat
+            :disabled="isSubmitting"
+            @click="modalRef?.close()"
           >
+            취소
+          </v-btn>
         </CModalFooter>
       </CForm>
     </template>

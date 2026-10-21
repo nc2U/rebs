@@ -4,7 +4,6 @@ import { useSales } from '@/store/pinia/sales'
 import { usePerms } from '@/composables/usePerms'
 import type { SalesAgency, SalesTeam } from '@/store/types/sales'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
-import { CCard } from '@coreui/vue'
 
 const props = defineProps({
   project: { type: Number, required: true },
@@ -12,14 +11,14 @@ const props = defineProps({
   selectedAgencyId: { type: Number as PropType<number | null>, default: null },
 })
 
-const emit = defineEmits([
-  'select-team',
-  'select-agency',
-  'add-agency',
-  'edit-agency',
-  'add-team',
-  'edit-team',
-])
+const emit = defineEmits<{
+  (e: 'select-team', teamId: number | null, agencyId?: number | null): void
+  (e: 'select-agency', agencyId: number | null): void
+  (e: 'add-agency'): void
+  (e: 'edit-agency', agency: SalesAgency): void
+  (e: 'add-team', agencyId?: number): void
+  (e: 'edit-team', team: SalesTeam): void
+}>()
 
 const { can, PERM } = usePerms()
 const salesStore = useSales()
@@ -33,7 +32,7 @@ const selectAgency = (agency: SalesAgency) => {
 }
 
 const selectTeam = (team: SalesTeam) => {
-  emit('select-team', team.id)
+  emit('select-team', team.id, team.agency)
 }
 
 const confirmModalRef = ref()
@@ -54,15 +53,29 @@ const executeDelete = async () => {
   confirmModalRef.value?.close()
 
   if (pendingDelete.value.type === 'agency') {
-    await salesStore.deleteAgency(pendingDelete.value.id)
+    const deletedId = pendingDelete.value.id
+    await salesStore.deleteAgency(deletedId)
     if (props.project) {
-      await salesStore.fetchAgencyList(props.project)
-      await salesStore.fetchTeamList(undefined, props.project)
+      await Promise.all([
+        salesStore.fetchAgencyList(props.project),
+        salesStore.fetchTeamList(undefined, props.project),
+        salesStore.fetchPersonList(undefined, props.project),
+      ])
+    }
+    if (props.selectedAgencyId === deletedId) {
+      emit('select-agency', null)
     }
   } else if (pendingDelete.value.type === 'team') {
-    await salesStore.deleteTeam(pendingDelete.value.id)
+    const deletedId = pendingDelete.value.id
+    await salesStore.deleteTeam(deletedId)
     if (props.project) {
-      await salesStore.fetchTeamList(undefined, props.project)
+      await Promise.all([
+        salesStore.fetchTeamList(undefined, props.project),
+        salesStore.fetchPersonList(undefined, props.project),
+      ])
+    }
+    if (props.selectedTeamId === deletedId) {
+      emit('select-team', null)
     }
   }
   pendingDelete.value = null
@@ -211,7 +224,8 @@ const executeDelete = async () => {
     <template #header>삭제 확인</template>
     <template #default>
       <p class="mb-0">
-        <strong>[{{ pendingDelete?.name }}]</strong> {{ pendingDelete?.type === 'agency' ? '대행사를' : '조직을' }} 삭제하시겠습니까?
+        <strong>[{{ pendingDelete?.name }}]</strong>
+        {{ pendingDelete?.type === 'agency' ? '대행사를' : '조직을' }} 삭제하시겠습니까?
       </p>
       <small v-if="pendingDelete?.type === 'agency'" class="text-danger">
         (하위 조직 및 인력이 함께 삭제되거나 데이터 무결성 오류가 발생할 수 있습니다)

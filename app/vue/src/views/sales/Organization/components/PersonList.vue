@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { ref, computed, type PropType } from 'vue'
+import { computed, ref, type PropType } from 'vue'
 import { useSales } from '@/store/pinia/sales'
 import { usePerms } from '@/composables/usePerms'
 import type { SalesPerson } from '@/store/types/sales'
 import { TableSecondary } from '@/utils/cssMixins'
-import { CCard, CCardBody, CTable } from '@coreui/vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 
 const props = defineProps({
   project: { type: Number, required: true },
@@ -12,7 +12,11 @@ const props = defineProps({
   selectedAgencyId: { type: Number as PropType<number | null>, default: null },
 })
 
-const emit = defineEmits(['add-person', 'edit-person', 'open-docs'])
+const emit = defineEmits<{
+  (e: 'add-person'): void
+  (e: 'edit-person', person: SalesPerson): void
+  (e: 'open-docs', person: SalesPerson): void
+}>()
 
 const { can, PERM } = usePerms()
 const salesStore = useSales()
@@ -30,7 +34,7 @@ const filteredPersons = computed(() => {
     // 대행사 필터
     if (props.selectedAgencyId) {
       const team = salesStore.teamList.find(t => t.id === p.team)
-      if (team && team.agency !== props.selectedAgencyId) return false
+      if (!team || team.agency !== props.selectedAgencyId) return false
     }
     // 직책 필터
     if (dutyFilter.value && p.duty !== dutyFilter.value) return false
@@ -62,14 +66,23 @@ const statusBadgeColor: Record<string, string> = {
   '3': 'secondary',
 }
 
-const deletePerson = async (person: SalesPerson) => {
-  if (confirm(`'${person.name}' 인력을 삭제하시겠습니까?`)) {
-    await salesStore.deletePerson(person.id)
-    if (props.project) {
-      await salesStore.fetchPersonList(undefined, props.project)
-      await salesStore.fetchTeamList(undefined, props.project)
-    }
+const confirmModalRef = ref()
+const pendingDelete = ref<SalesPerson | null>(null)
+
+const deletePerson = (person: SalesPerson) => {
+  pendingDelete.value = person
+  confirmModalRef.value?.callModal()
+}
+
+const executeDelete = async () => {
+  if (!pendingDelete.value) return
+  confirmModalRef.value?.close()
+  await salesStore.deletePerson(pendingDelete.value.id)
+  if (props.project) {
+    await salesStore.fetchPersonList(undefined, props.project)
+    await salesStore.fetchTeamList(undefined, props.project)
   }
+  pendingDelete.value = null
 }
 </script>
 
@@ -168,9 +181,9 @@ const deletePerson = async (person: SalesPerson) => {
             </CTableDataCell>
             <CTableDataCell>
               <a
-                href="javascript:void(0);"
+                href="#"
                 class="fw-bold text-primary text-decoration-none"
-                @click="emit('edit-person', person)"
+                @click.prevent="emit('edit-person', person)"
               >
                 {{ person.name }}
               </a>
@@ -181,7 +194,7 @@ const deletePerson = async (person: SalesPerson) => {
                 {{ person.tax_type_display }}
               </span>
             </CTableDataCell>
-            <CTableDataCell class="text-left font-monospace">
+            <CTableDataCell class="text-start font-monospace">
               <span v-if="person.bank_name || person.account_number">
                 <strong>{{ person.bank_name }}</strong> {{ person.account_number }}
                 <span class="text-muted">({{ person.account_holder }})</span>
@@ -242,4 +255,17 @@ const deletePerson = async (person: SalesPerson) => {
       </CTable>
     </CCardBody>
   </CCard>
+
+  <ConfirmModal ref="confirmModalRef">
+    <template #header>삭제 확인</template>
+    <template #default>
+      <p class="mb-0">
+        <strong>[{{ pendingDelete?.name }}]</strong> 인력을 삭제하시겠습니까?
+      </p>
+      <small class="text-danger">(등록된 계약 및 수수료 정산 내역과의 연결이 해제될 수 있습니다)</small>
+    </template>
+    <template #footer>
+      <v-btn size="small" color="danger" @click="executeDelete">삭제</v-btn>
+    </template>
+  </ConfirmModal>
 </template>

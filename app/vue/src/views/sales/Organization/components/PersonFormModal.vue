@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import { ref, reactive, computed } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useSales } from '@/store/pinia/sales'
-import type { SalesPerson, SalesDuty, SalesPersonStatus, TaxType } from '@/store/types/sales'
+import type { SalesDuty, SalesPerson, SalesPersonStatus, TaxType } from '@/store/types/sales'
 import { isValidate } from '@/utils/helper'
 import FormModal from '@/components/Modals/FormModal.vue'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
-import { CModalBody } from '@coreui/vue'
 
 const props = defineProps({
   defaultTeamId: { type: Number, default: null },
@@ -104,7 +103,7 @@ const open = (person?: SalesPerson, teamId?: number) => {
     form.quit_date = person.quit_date || ''
     form.notes = person.notes
   }
-  modalRef.value.callModal()
+  modalRef.value?.callModal()
 }
 
 const isSubmitting = ref(false)
@@ -145,7 +144,7 @@ const submit = async (event: Event) => {
     } else {
       await salesStore.createPerson(payload)
     }
-    modalRef.value.close()
+    modalRef.value?.close()
     emit('saved')
   } finally {
     isSubmitting.value = false
@@ -348,9 +347,10 @@ defineExpose({ open })
               size="small"
               flat
               :disabled="isSubmitting"
-              @click="modalRef.close()"
-              >취소</v-btn
+              @click="modalRef?.close()"
             >
+              취소
+            </v-btn>
           </div>
         </CModalFooter>
       </CForm>

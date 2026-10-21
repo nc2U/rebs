@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { ref, reactive, computed } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useSales } from '@/store/pinia/sales'
 import { usePerms } from '@/composables/usePerms'
-import type { SalesPerson, SalesPersonDocument, SalesDocType } from '@/store/types/sales'
+import type { SalesDocType, SalesPerson, SalesPersonDocument } from '@/store/types/sales'
 import FormModal from '@/components/Modals/FormModal.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import { TableSecondary } from '@/utils/cssMixins'
 
 const emit = defineEmits(['updated'])
@@ -16,6 +17,9 @@ const fileInputRef = ref<HTMLInputElement | null>(null)
 const currentPerson = ref<SalesPerson | null>(null)
 const selectedFile = ref<File | null>(null)
 const isUploading = ref(false)
+
+const confirmModalRef = ref()
+const pendingDeleteDoc = ref<SalesPersonDocument | null>(null)
 
 const docTypeLabels: Record<SalesDocType, string> = {
   '1': '주민등록등본/초본',
@@ -51,7 +55,7 @@ const open = async (person: SalesPerson) => {
     fileInputRef.value.value = ''
   }
   await salesStore.fetchPersonDocuments(person.id)
-  modalRef.value.callModal()
+  modalRef.value?.callModal()
 }
 
 const onDocTypeChange = () => {
@@ -111,17 +115,22 @@ const toggleVerify = async (doc: SalesPersonDocument) => {
   emit('updated')
 }
 
-const removeDoc = async (doc: SalesPersonDocument) => {
-  if (!currentPerson.value) return
-  if (confirm(`'${doc.title}' 서류를 삭제하시겠습니까?`)) {
-    await salesStore.deletePersonDocument(doc.id)
-    await salesStore.fetchPersonDocuments(currentPerson.value.id)
-    emit('updated')
-  }
+const removeDoc = (doc: SalesPersonDocument) => {
+  pendingDeleteDoc.value = doc
+  confirmModalRef.value?.callModal()
+}
+
+const executeDeleteDoc = async () => {
+  if (!currentPerson.value || !pendingDeleteDoc.value) return
+  confirmModalRef.value?.close()
+  await salesStore.deletePersonDocument(pendingDeleteDoc.value.id)
+  await salesStore.fetchPersonDocuments(currentPerson.value.id)
+  pendingDeleteDoc.value = null
+  emit('updated')
 }
 
 const formatFileSize = (bytes?: number | null) => {
-  if (!bytes || bytes === 0) return '0 B'
+  if (!bytes || bytes <= 0) return '0 B'
   const k = 1024
   const sizes = ['B', 'KB', 'MB', 'GB']
   const i = Math.floor(Math.log(bytes) / Math.log(k))
@@ -322,8 +331,21 @@ defineExpose({ open })
         </CTable>
       </CModalBody>
       <CModalFooter>
-        <v-btn color="light" size="small" flat @click="modalRef.close()">닫기</v-btn>
+        <v-btn color="light" size="small" flat @click="modalRef?.close()">닫기</v-btn>
       </CModalFooter>
     </template>
   </FormModal>
+
+  <ConfirmModal ref="confirmModalRef">
+    <template #header>서류 삭제 확인</template>
+    <template #default>
+      <p class="mb-0">
+        <strong>[{{ pendingDeleteDoc?.title || pendingDeleteDoc?.file_name }}]</strong> 서류를
+        삭제하시겠습니까?
+      </p>
+    </template>
+    <template #footer>
+      <v-btn size="small" color="danger" @click="executeDeleteDoc">삭제</v-btn>
+    </template>
+  </ConfirmModal>
 </template>
