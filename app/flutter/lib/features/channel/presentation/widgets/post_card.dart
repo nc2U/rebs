@@ -25,7 +25,7 @@ class PostCard extends StatelessWidget {
     final isDark = context.isDarkMode;
     final plainContent = _stripHtml(post.content);
     final hasFiles = post.files.isNotEmpty;
-    final hasComments = post.comments.isNotEmpty;
+    final hasComments = post.commentCount > 0;
     final hasLikes = post.like > 0;
 
     final cardBg = post.isNotice
@@ -56,6 +56,25 @@ class PostCard extends StatelessWidget {
                 // ── 1. 상단 라인: [카테고리 / 공지 / 비밀글] + [등록일자 / N] ──────
                 Row(
                   children: [
+                    if (showWorkspaceBadge && post.forumName.isNotEmpty) ...[
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: context.colors.bgSurface,
+                          borderRadius: BorderRadius.zero,
+                          border: Border.all(color: context.colors.border, width: 0.8),
+                        ),
+                        child: Text(
+                          post.forumName,
+                          style: TextStyle(
+                            color: context.colors.textSecond,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                    ],
                     if (post.isNotice) ...[
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -186,7 +205,7 @@ class PostCard extends StatelessWidget {
                           Icon(Icons.chat_bubble_outline_rounded, size: 12, color: context.colors.accentChannel),
                           const SizedBox(width: 3),
                           Text(
-                            '${post.comments.length}',
+                            '${post.commentCount}',
                             style: TextStyle(
                               color: context.colors.accentChannel,
                               fontWeight: FontWeight.bold,

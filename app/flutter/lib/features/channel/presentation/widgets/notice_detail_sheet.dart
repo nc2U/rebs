@@ -117,6 +117,32 @@ class _NoticeDetailSheetState extends ConsumerState<NoticeDetailSheet> {
   }
 
   Future<void> _handleDeleteComment(int commentId) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: context.colors.bgCard,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+        title: Text('댓글 삭제', style: AppTextStyles.titleLg.copyWith(color: context.colors.textPrimary)),
+        content: Text('댓글을 삭제하시겠습니까?', style: AppTextStyles.bodySecond.copyWith(color: context.colors.textPrimary)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text('취소', style: AppTextStyles.bodyMuted.copyWith(color: context.colors.textMuted)),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: FilledButton.styleFrom(
+              backgroundColor: context.colors.error,
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+            ),
+            child: const Text('삭제'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm != true || !mounted) return;
+
     try {
       final repo = ref.read(noticeRepositoryProvider);
       await repo.deleteComment(commentId);
@@ -146,11 +172,16 @@ class _NoticeDetailSheetState extends ConsumerState<NoticeDetailSheet> {
     setState(() => _isDownloadingFile = true);
     try {
       final dio = ref.read(dioProvider);
-      final dir = await getApplicationDocumentsDirectory();
+      final dir = await getTemporaryDirectory();
       final savePath = '${dir.path}/${file.fileName}';
 
       await dio.download(file.file, savePath);
-      await OpenFilex.open(savePath);
+      final result = await OpenFilex.open(savePath);
+      if (result.type != ResultType.done && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('파일 열기 상태: ${result.message}')),
+        );
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

@@ -77,7 +77,18 @@ class _NoticeFormSheetState extends ConsumerState<NoticeFormSheet> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
-    if (!ref.can(Perm.newsManage)) {
+    final currentWs = ref.read(selectedProjectProvider);
+    final projects = ref.read(newsFormProjectsProvider).valueOrNull ?? [];
+    final targetProjectPk = _selectedProjectPk ??
+        currentWs?.pk ??
+        (projects.isNotEmpty ? projects.first.pk : null);
+    final matchedProject = projects
+        .where((p) => p.pk == targetProjectPk)
+        .firstOrNull;
+    final targetProjectSlug =
+        matchedProject?.slug ?? currentWs?.slug ?? widget.notice?.project?.slug;
+
+    if (!ref.can(Perm.newsManage, projectSlug: targetProjectSlug)) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('공지사항 관리 권한(news.manage)이 없습니다.'),
@@ -87,10 +98,7 @@ class _NoticeFormSheetState extends ConsumerState<NoticeFormSheet> {
       return;
     }
 
-    final currentWs = ref.read(selectedProjectProvider);
-    final targetProjectPk = _selectedProjectPk ?? currentWs?.pk;
-
-    if (widget.notice == null && targetProjectPk == null) {
+    if (widget.notice == null && targetProjectPk == null && targetProjectSlug == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('공지사항을 등록할 워크스페이스를 선택해 주세요.'),
@@ -106,7 +114,8 @@ class _NoticeFormSheetState extends ConsumerState<NoticeFormSheet> {
     try {
       if (widget.notice == null) {
         await repo.createNotice(
-          projectId: targetProjectPk!,
+          projectId: targetProjectPk,
+          projectSlug: targetProjectSlug,
           title: _titleController.text.trim(),
           summary: _summaryController.text.trim(),
           content: _contentController.text.trim(),
@@ -117,6 +126,7 @@ class _NoticeFormSheetState extends ConsumerState<NoticeFormSheet> {
         await repo.updateNotice(
           id: widget.notice!.pk,
           projectId: targetProjectPk,
+          projectSlug: targetProjectSlug,
           title: _titleController.text.trim(),
           summary: _summaryController.text.trim(),
           content: _contentController.text.trim(),

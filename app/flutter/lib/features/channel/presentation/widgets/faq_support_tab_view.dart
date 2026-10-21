@@ -523,7 +523,7 @@ class _FaqSupportTabViewState extends ConsumerState<FaqSupportTabView> {
         TextField(
           controller: _titleController,
           decoration: InputDecoration(
-            hintText: '문의 제목을 입력하세요 (예: 00현장 워크스페이스 권한 요청)',
+            hintText: '문의 제목을 입력하세요 (예: 00프로젝트 워크스페이스 권한 요청)',
             hintStyle: TextStyle(color: context.colors.textMuted, fontSize: 13),
             filled: true,
             fillColor: context.colors.bgCard,

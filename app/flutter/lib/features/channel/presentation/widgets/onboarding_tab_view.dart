@@ -17,6 +17,7 @@ class _OnboardingTabViewState extends ConsumerState<OnboardingTabView> {
   final ScrollController _filterScrollController = ScrollController();
   bool _canScrollLeft = false;
   bool _canScrollRight = false;
+  final Set<int> _completedTasks = {0, 1};
 
   @override
   void initState() {
@@ -265,10 +266,10 @@ class _OnboardingTabViewState extends ConsumerState<OnboardingTabView> {
   // 🔰 1주차 체크리스트
   Widget _buildFirstWeekChecklist(BuildContext context) {
     final tasks = [
-      {'title': '사내 그룹웨어 및 IBS 워크스페이스 계정 발급 확인', 'done': true},
-      {'title': '사내 메신저 설치 및 소속 본부 대화방 참여', 'done': true},
-      {'title': '사내 복무규정 및 정보보안 서약서 확인', 'done': false},
-      {'title': '본사관리 및 담당 프로젝트 워크스페이스 권한 부여 요청', 'done': false},
+      '사내 그룹웨어 및 IBS 워크스페이스 계정 발급 확인',
+      '사내 메신저 설치 및 소속 본부 대화방 참여',
+      '사내 복무규정 및 정보보안 서약서 확인',
+      '본사관리 및 담당 프로젝트 워크스페이스 권한 부여 요청',
     ];
 
     return Column(
@@ -282,31 +283,42 @@ class _OnboardingTabViewState extends ConsumerState<OnboardingTabView> {
           ),
         ),
         const SizedBox(height: 10),
-        ...tasks.map((t) => Container(
-              margin: const EdgeInsets.only(bottom: 6),
-              decoration: BoxDecoration(
-                color: context.colors.bgCard,
-                borderRadius: BorderRadius.zero,
-                border: Border.all(color: context.colors.border, width: 0.8),
-              ),
-              child: CheckboxListTile(
-                value: t['done'] as bool,
-                onChanged: (_) {},
-                activeColor: context.colors.accentProject,
-                dense: true,
-                title: Text(
-                  t['title'] as String,
-                  style: AppTextStyles.bodyMd.copyWith(
-                    color: (t['done'] as bool)
-                        ? context.colors.textMuted
-                        : context.colors.textPrimary,
-                    decoration: (t['done'] as bool)
-                        ? TextDecoration.lineThrough
-                        : null,
-                  ),
+        ...tasks.asMap().entries.map((entry) {
+          final idx = entry.key;
+          final title = entry.value;
+          final isDone = _completedTasks.contains(idx);
+          return Container(
+            margin: const EdgeInsets.only(bottom: 6),
+            decoration: BoxDecoration(
+              color: context.colors.bgCard,
+              borderRadius: BorderRadius.zero,
+              border: Border.all(color: context.colors.border, width: 0.8),
+            ),
+            child: CheckboxListTile(
+              value: isDone,
+              onChanged: (checked) {
+                setState(() {
+                  if (checked == true) {
+                    _completedTasks.add(idx);
+                  } else {
+                    _completedTasks.remove(idx);
+                  }
+                });
+              },
+              activeColor: context.colors.accentProject,
+              dense: true,
+              title: Text(
+                title,
+                style: AppTextStyles.bodyMd.copyWith(
+                  color: isDone
+                      ? context.colors.textMuted
+                      : context.colors.textPrimary,
+                  decoration: isDone ? TextDecoration.lineThrough : null,
                 ),
               ),
-            )),
+            ),
+          );
+        }),
       ],
     );
   }

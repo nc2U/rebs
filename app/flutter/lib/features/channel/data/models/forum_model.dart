@@ -199,6 +199,7 @@ class PostModel {
   final bool isBlind;
   final List<PostFileModel> files;
   final List<PostCommentModel> comments;
+  final int commentCount;
   final SimpleUserModel? creator;
   final String? created;
   final String? updated;
@@ -228,6 +229,7 @@ class PostModel {
     this.isBlind = false,
     this.files = const [],
     this.comments = const [],
+    this.commentCount = 0,
     this.creator,
     this.created,
     this.updated,
@@ -248,6 +250,13 @@ class PostModel {
         .whereType<Map<String, dynamic>>()
         .map((c) => PostCommentModel.fromJson(c))
         .toList();
+    final parsedCommentCount = (json['comment_count'] as int?) ??
+        (commentsList.isNotEmpty
+            ? commentsList.fold<int>(
+                commentsList.length,
+                (sum, c) => sum + c.replies.length,
+              )
+            : rawComments.length);
 
     return PostModel(
       pk: json['pk'] as int,
@@ -271,6 +280,7 @@ class PostModel {
       isBlind: json['is_blind'] as bool? ?? false,
       files: filesList,
       comments: commentsList,
+      commentCount: parsedCommentCount,
       creator: json['creator'] != null
           ? SimpleUserModel.fromJson(json['creator'] as Map<String, dynamic>)
           : null,

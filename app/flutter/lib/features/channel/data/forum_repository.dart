@@ -200,9 +200,7 @@ class ForumRepository {
       if (forumId != null) {
         formData.fields.add(MapEntry('forum', forumId.toString()));
       }
-      if (categoryId != null) {
-        formData.fields.add(MapEntry('category', categoryId.toString()));
-      }
+      formData.fields.add(MapEntry('category', categoryId?.toString() ?? ''));
       formData.fields.add(MapEntry('title', title));
       formData.fields.add(MapEntry('content', content));
       formData.fields.add(MapEntry('is_notice', isNotice ? 'true' : 'false'));
@@ -210,7 +208,7 @@ class ForumRepository {
 
       if (deleteFilePks != null && deleteFilePks.isNotEmpty) {
         for (var pk in deleteFilePks) {
-          formData.fields.add(MapEntry('del_file', pk.toString()));
+          formData.fields.add(MapEntry('files_del', pk.toString()));
         }
       }
 

@@ -384,7 +384,7 @@ class _CompanyIntroTabViewState extends ConsumerState<CompanyIntroTabView> {
     final depts = [
       {'name': '대표이사실', 'role': '총괄 경영 및 미래 전략 지휘', 'badge': '경영총괄'},
       {'name': '사업개발본부', 'role': '신규 사업지 발굴 및 시행 인허가', 'badge': '기획/전략'},
-      {'name': '사업운영본부', 'role': '현장, PMO, 운영·데이터·지원 총괄', 'badge': '시행/운영'},
+      {'name': '사업운영본부', 'role': '프로젝트, PMO, 운영·데이터·지원 총괄', 'badge': '시행/운영'},
       {'name': '분양·마케팅팀', 'role': '분양 계약, 고객·상품·프로세스 관리', 'badge': '영업/전략'},
       {'name': '경영지원팀', 'role': '자금, 세무회계, 인사·총무, IT지원', 'badge': '본사관리'},
     ];

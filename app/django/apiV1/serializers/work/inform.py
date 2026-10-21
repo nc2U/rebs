@@ -37,11 +37,22 @@ class NewsSerializer(serializers.ModelSerializer):
         fields = ('pk', 'project', 'title', 'summary', 'content', 'is_important',
                   'files', 'author', 'comments', 'is_new', 'created', 'updated')
 
+    @staticmethod
+    def _resolve_project(project_val):
+        if not project_val:
+            return None
+        if isinstance(project_val, IssueProject):
+            return project_val
+        if isinstance(project_val, int) or (isinstance(project_val, str) and project_val.isdigit()):
+            return IssueProject.objects.filter(pk=int(project_val)).first()
+        return IssueProject.objects.filter(slug=str(project_val)).first()
+
     @transaction.atomic
     def create(self, validated_data):
-        project_slug = self.initial_data.get('project')
-        if project_slug:
-            validated_data['project'] = IssueProject.objects.get(slug=project_slug)
+        project_val = self.initial_data.get('project')
+        resolved_project = self._resolve_project(project_val)
+        if resolved_project:
+            validated_data['project'] = resolved_project
         news = super().create(validated_data)
 
         # 파일 처리
@@ -57,9 +68,10 @@ class NewsSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def update(self, instance, validated_data):
         instance = super().update(instance, validated_data)
-        project_slug = self.initial_data.get('project')
-        if project_slug and project_slug != instance.project.slug:
-            instance.project = IssueProject.objects.get(slug=project_slug)
+        project_val = self.initial_data.get('project')
+        resolved_project = self._resolve_project(project_val)
+        if resolved_project and resolved_project.pk != instance.project_id:
+            instance.project = resolved_project
         instance.save()
 
         # 파일 처리

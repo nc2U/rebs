@@ -276,6 +276,10 @@ class _PostDetailSheetState extends ConsumerState<PostDetailSheet> {
         : ref.can(Perm.forumDelete, projectSlug: selectedProject?.slug) ||
             ref.can(Perm.forumManage, projectSlug: selectedProject?.slug);
 
+    final canComment = !post.isHideComment &&
+        (ref.can(Perm.forumCreate, projectSlug: selectedProject?.slug) ||
+            ref.can(Perm.forumManage, projectSlug: selectedProject?.slug));
+
     return Container(
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.9,
@@ -656,108 +660,128 @@ class _PostDetailSheetState extends ConsumerState<PostDetailSheet> {
           ),
 
           // ── 3. 하단 댓글 입력 바 ─────────────────────────────────────
-          Container(
-            decoration: BoxDecoration(
-              color: context.colors.bgSurface,
-              border: Border(top: BorderSide(color: context.colors.border, width: 0.8)),
-            ),
-            child: SafeArea(
-              top: false,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (_replyParentId != null)
-                    Container(
+          if (post.isHideComment)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: context.colors.bgSurface,
+                border: Border(
+                    top: BorderSide(color: context.colors.border, width: 0.8)),
+              ),
+              child: SafeArea(
+                top: false,
+                child: Text(
+                  '댓글이 비활성화된 게시글입니다.',
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.caption
+                      .copyWith(color: context.colors.textMuted),
+                ),
+              ),
+            )
+          else if (canComment)
+            Container(
+              decoration: BoxDecoration(
+                color: context.colors.bgSurface,
+                border: Border(top: BorderSide(color: context.colors.border, width: 0.8)),
+              ),
+              child: SafeArea(
+                top: false,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (_replyParentId != null)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 6),
+                        color: context.colors.accentWork.withAlpha(25),
+                        child: Row(
+                          children: [
+                            Icon(Icons.reply_rounded,
+                                size: 14, color: context.colors.accentWork),
+                            const SizedBox(width: 6),
+                            Text(
+                              '답글 작성 중...',
+                              style: AppTextStyles.caption.copyWith(
+                                color: context.colors.accentWork,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const Spacer(),
+                            GestureDetector(
+                              onTap: () =>
+                                  setState(() => _replyParentId = null),
+                              child: Icon(Icons.close_rounded,
+                                  size: 14, color: context.colors.textMuted),
+                            ),
+                          ],
+                        ),
+                      ),
+                    Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 6),
-                      color: context.colors.accentWork.withAlpha(25),
+                          horizontal: 16, vertical: 10),
                       child: Row(
                         children: [
-                          Icon(Icons.reply_rounded,
-                              size: 14, color: context.colors.accentWork),
-                          const SizedBox(width: 6),
-                          Text(
-                            '답글 작성 중...',
-                            style: AppTextStyles.caption.copyWith(
-                              color: context.colors.accentWork,
-                              fontWeight: FontWeight.bold,
+                          Expanded(
+                            child: TextField(
+                              controller: _commentController,
+                              style: AppTextStyles.bodyMd.copyWith(color: context.colors.textPrimary),
+                              decoration: InputDecoration(
+                                hintText: _replyParentId != null
+                                    ? '답글을 입력해 주세요...'
+                                    : '댓글을 입력해 주세요...',
+                                hintStyle: AppTextStyles.bodyMuted.copyWith(color: context.colors.textMuted),
+                                filled: true,
+                                fillColor: context.colors.bgCard,
+                                isDense: true,
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 10),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.zero,
+                                  borderSide: BorderSide(color: context.colors.border),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.zero,
+                                  borderSide: BorderSide(color: context.colors.border),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.zero,
+                                  borderSide:
+                                      BorderSide(color: context.colors.accentWork),
+                                ),
+                              ),
                             ),
                           ),
-                          const Spacer(),
-                          GestureDetector(
-                            onTap: () =>
-                                setState(() => _replyParentId = null),
-                            child: Icon(Icons.close_rounded,
-                                size: 14, color: context.colors.textMuted),
+                          const SizedBox(width: 8),
+                          FilledButton(
+                            onPressed: _isSubmittingComment
+                                ? null
+                                : _handleAddComment,
+                            style: FilledButton.styleFrom(
+                              backgroundColor: context.colors.accentWork,
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.zero),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 12),
+                            ),
+                            child: _isSubmittingComment
+                                ? const SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : const Text('등록'),
                           ),
                         ],
                       ),
                     ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 10),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: _commentController,
-                            style: AppTextStyles.bodyMd.copyWith(color: context.colors.textPrimary),
-                            decoration: InputDecoration(
-                              hintText: _replyParentId != null
-                                  ? '답글을 입력해 주세요...'
-                                  : '댓글을 입력해 주세요...',
-                              hintStyle: AppTextStyles.bodyMuted.copyWith(color: context.colors.textMuted),
-                              filled: true,
-                              fillColor: context.colors.bgCard,
-                              isDense: true,
-                              contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 10),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.zero,
-                                borderSide: BorderSide(color: context.colors.border),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.zero,
-                                borderSide: BorderSide(color: context.colors.border),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.zero,
-                                borderSide:
-                                    BorderSide(color: context.colors.accentWork),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        FilledButton(
-                          onPressed: _isSubmittingComment
-                              ? null
-                              : _handleAddComment,
-                          style: FilledButton.styleFrom(
-                            backgroundColor: context.colors.accentWork,
-                            shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.zero),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 12),
-                          ),
-                          child: _isSubmittingComment
-                              ? const SizedBox(
-                                  width: 16,
-                                  height: 16,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.white,
-                                  ),
-                                )
-                              : const Text('등록'),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
         ],
       ),
     );
@@ -765,13 +789,16 @@ class _PostDetailSheetState extends ConsumerState<PostDetailSheet> {
 
   Widget _buildCommentTile(PostCommentModel c, dynamic currentUser,
       {bool isReply = false}) {
+    final selectedProject = ref.read(selectedWorkspaceProvider);
     final isCommentAuthor = currentUser != null &&
         c.creator != null &&
         (currentUser.pk == c.creator!.pk ||
             currentUser.username == c.creator!.username);
-    final canDeleteThisComment = ref.can(Perm.forumDelete) ||
-        ref.can(Perm.forumManage) ||
-        (ref.can(Perm.forumOwnDelete) && isCommentAuthor);
+    final canDeleteThisComment =
+        ref.can(Perm.forumDelete, projectSlug: selectedProject?.slug) ||
+            ref.can(Perm.forumManage, projectSlug: selectedProject?.slug) ||
+            (ref.can(Perm.forumOwnDelete, projectSlug: selectedProject?.slug) &&
+                isCommentAuthor);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

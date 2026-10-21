@@ -120,6 +120,7 @@ class _ForumTabViewState extends ConsumerState<ForumTabView> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               child: TextField(
                 controller: _searchController,
+                onChanged: (_) => setState(() {}),
                 onSubmitted: _onSearch,
                 textInputAction: TextInputAction.search,
                 style: AppTextStyles.bodySm.copyWith(color: context.colors.textPrimary),
@@ -133,7 +134,7 @@ class _ForumTabViewState extends ConsumerState<ForumTabView> {
                           icon: Icon(Icons.clear_rounded,
                               size: 16, color: context.colors.textMuted),
                           onPressed: () {
-                            _searchController.clear();
+                            setState(() => _searchController.clear());
                             _onSearch('');
                           },
                         )
@@ -384,7 +385,7 @@ class _ForumTabViewState extends ConsumerState<ForumTabView> {
                         final post = data.results[index];
                         return PostCard(
                           post: post,
-                          showWorkspaceBadge: selectedProject == null,
+                          showWorkspaceBadge: selectedForumId == null,
                           onTap: () {
                             showModalBottomSheet(
                               context: context,

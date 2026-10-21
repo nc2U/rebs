@@ -71,6 +71,21 @@ class _NoticeListViewState extends ConsumerState<NoticeListView> {
       );
     }
 
+    final isNewsDisabled =
+        selectedProject != null && (selectedProject.module?.news == false);
+    if (isNewsDisabled) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: ErrorView.empty(
+            message: '공지사항 모듈이 없는 워크스페이스입니다.',
+            subMessage: '[${selectedProject.name}] 워크스페이스는 공지사항 기능을 사용하지 않습니다.',
+            icon: Icons.campaign_outlined,
+          ),
+        ),
+      );
+    }
+
     final noticeListAsync = ref.watch(noticeListProvider);
 
     return Column(
@@ -81,6 +96,7 @@ class _NoticeListViewState extends ConsumerState<NoticeListView> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           child: TextField(
             controller: _searchController,
+            onChanged: (_) => setState(() {}),
             onSubmitted: _onSearch,
             textInputAction: TextInputAction.search,
             style: AppTextStyles.bodySm.copyWith(color: context.colors.textPrimary),
@@ -94,7 +110,7 @@ class _NoticeListViewState extends ConsumerState<NoticeListView> {
                       icon: Icon(Icons.clear_rounded,
                           size: 16, color: context.colors.textMuted),
                       onPressed: () {
-                        _searchController.clear();
+                        setState(() => _searchController.clear());
                         _onSearch('');
                       },
                     )
@@ -126,7 +142,7 @@ class _NoticeListViewState extends ConsumerState<NoticeListView> {
           child: noticeListAsync.when(
             data: (data) {
               if (data.results.isEmpty) {
-                return const ErrorView(
+                return const ErrorView.empty(
                   message: '등록된 공지사항이 없습니다.',
                   icon: Icons.campaign_outlined,
                 );
@@ -146,7 +162,7 @@ class _NoticeListViewState extends ConsumerState<NoticeListView> {
                       notice: notice,
                       showWorkspaceBadge: selectedProject == null,
                       onTap: () {
-                        if (!ref.can(Perm.newsRead)) return;
+                        if (!ref.can(Perm.newsRead, projectSlug: selectedProject?.slug)) return;
                         showModalBottomSheet(
                           context: context,
                           isScrollControlled: true,

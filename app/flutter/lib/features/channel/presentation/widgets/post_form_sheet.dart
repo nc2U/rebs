@@ -5,6 +5,7 @@ import '../../../../core/constants/app_text_styles.dart';
 import '../../../../core/constants/permissions.dart';
 import '../../../../core/providers/auth_provider.dart';
 import '../../../../core/providers/permission_provider.dart';
+import '../../../../core/providers/project_provider.dart';
 import '../../../../core/theme/app_colors_extension.dart';
 import '../../data/models/forum_model.dart';
 import '../../data/forum_repository.dart';
@@ -138,9 +139,13 @@ class _PostFormSheetState extends ConsumerState<PostFormSheet> {
     if (!_formKey.currentState!.validate()) return;
 
     final isEdit = widget.post != null;
+    final selectedProject = ref.read(selectedWorkspaceProvider);
     final canAction = isEdit
-        ? ref.can(Perm.forumUpdate) || ref.can(Perm.forumOwnUpdate) || ref.can(Perm.forumManage)
-        : ref.can(Perm.forumCreate) || ref.can(Perm.forumManage);
+        ? ref.can(Perm.forumUpdate, projectSlug: selectedProject?.slug) ||
+            ref.can(Perm.forumOwnUpdate, projectSlug: selectedProject?.slug) ||
+            ref.can(Perm.forumManage, projectSlug: selectedProject?.slug)
+        : ref.can(Perm.forumCreate, projectSlug: selectedProject?.slug) ||
+            ref.can(Perm.forumManage, projectSlug: selectedProject?.slug);
 
     if (!canAction) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -222,7 +227,9 @@ class _PostFormSheetState extends ConsumerState<PostFormSheet> {
   Widget build(BuildContext context) {
     final isEdit = widget.post != null;
     final forumsAsync = ref.watch(forumListProvider);
-    final canManageForum = ref.can(Perm.forumManage);
+    final selectedProject = ref.watch(selectedWorkspaceProvider);
+    final canManageForum =
+        ref.can(Perm.forumManage, projectSlug: selectedProject?.slug);
 
     return Container(
       constraints: BoxConstraints(

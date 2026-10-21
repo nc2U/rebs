@@ -52,7 +52,8 @@ class NoticeRepository {
 
   /// 공지사항 생성
   Future<NoticeModel> createNotice({
-    required int projectId,
+    int? projectId,
+    String? projectSlug,
     required String title,
     String summary = '',
     String content = '',
@@ -60,9 +61,12 @@ class NoticeRepository {
     List<PlatformFile>? newFiles,
   }) async {
     try {
+      final dynamic projectParam =
+          (projectSlug != null && projectSlug.isNotEmpty) ? projectSlug : projectId;
+
       if (newFiles == null || newFiles.isEmpty) {
         final data = {
-          'project': projectId,
+          if (projectParam != null) 'project': projectParam,
           'title': title,
           'summary': summary,
           'content': content,
@@ -73,7 +77,9 @@ class NoticeRepository {
       }
 
       final formData = FormData();
-      formData.fields.add(MapEntry('project', projectId.toString()));
+      if (projectParam != null) {
+        formData.fields.add(MapEntry('project', projectParam.toString()));
+      }
       formData.fields.add(MapEntry('title', title));
       formData.fields.add(MapEntry('summary', summary));
       formData.fields.add(MapEntry('content', content));
@@ -83,14 +89,14 @@ class NoticeRepository {
         if (pf.bytes != null) {
           formData.files.add(
             MapEntry(
-              'files',
+              'new_files',
               MultipartFile.fromBytes(pf.bytes!, filename: pf.name),
             ),
           );
         } else if (pf.path != null) {
           formData.files.add(
             MapEntry(
-              'files',
+              'new_files',
               await MultipartFile.fromFile(pf.path!, filename: pf.name),
             ),
           );
@@ -112,6 +118,7 @@ class NoticeRepository {
   Future<NoticeModel> updateNotice({
     required int id,
     int? projectId,
+    String? projectSlug,
     required String title,
     String summary = '',
     String content = '',
@@ -120,9 +127,12 @@ class NoticeRepository {
     List<int>? deleteFilePks,
   }) async {
     try {
+      final dynamic projectParam =
+          (projectSlug != null && projectSlug.isNotEmpty) ? projectSlug : projectId;
+
       final formData = FormData();
-      if (projectId != null) {
-        formData.fields.add(MapEntry('project', projectId.toString()));
+      if (projectParam != null) {
+        formData.fields.add(MapEntry('project', projectParam.toString()));
       }
       formData.fields.add(MapEntry('title', title));
       formData.fields.add(MapEntry('summary', summary));
@@ -131,7 +141,7 @@ class NoticeRepository {
 
       if (deleteFilePks != null && deleteFilePks.isNotEmpty) {
         for (var pk in deleteFilePks) {
-          formData.fields.add(MapEntry('del_files', pk.toString()));
+          formData.fields.add(MapEntry('files_del', pk.toString()));
         }
       }
 
@@ -140,14 +150,14 @@ class NoticeRepository {
           if (pf.bytes != null) {
             formData.files.add(
               MapEntry(
-                'files',
+                'new_files',
                 MultipartFile.fromBytes(pf.bytes!, filename: pf.name),
               ),
             );
           } else if (pf.path != null) {
             formData.files.add(
               MapEntry(
-                'files',
+                'new_files',
                 await MultipartFile.fromFile(pf.path!, filename: pf.name),
               ),
             );
