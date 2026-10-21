@@ -1,11 +1,9 @@
 <script lang="ts" setup>
-import { ref, reactive, computed } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import type { ContractSalesAgent } from '@/store/types/sales'
 import FormModal from '@/components/Modals/FormModal.vue'
 
-const emit = defineEmits<{
-  (e: 'confirm', payload: { id: number; isApproved: boolean; approvalNote: string }): void
-}>()
+const emit = defineEmits(['confirm'])
 
 const modalRef = ref()
 const targetMapping = ref<ContractSalesAgent | null>(null)
@@ -53,7 +51,7 @@ defineExpose({ open, close })
   <FormModal ref="modalRef" size="lg">
     <template #header>수수료 정산 승인 / 보류 관리</template>
     <template #icon>
-      <v-icon icon="mdi-check-decagram-outline" size="small" color="primary" class="mr-2" />
+      <v-icon icon="mdi-check-decagram-outline" size="small" color="primary" class="me-2" />
     </template>
     <template #default>
       <CModalBody class="p-4">

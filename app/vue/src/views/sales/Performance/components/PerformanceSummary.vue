@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, type PropType } from 'vue'
 import type { ContractSalesAgent } from '@/store/types/sales'
 
 const props = defineProps({
   totalContracts: { type: Number, default: 0 },
-  mappedList: { type: Array as () => ContractSalesAgent[], default: () => [] },
+  mappedList: { type: Array as PropType<ContractSalesAgent[]>, default: () => [] },
 })
 
 const mappedCount = computed(() => props.mappedList.length)
@@ -16,12 +16,13 @@ const mappingRate = computed(() => {
 
 const mgmCount = computed(() => props.mappedList.filter(m => !!m.mgm_name).length)
 
-// 최다 실적 상담사 계산
+// 최다 실적 상담사 계산 (개별 상담사가 지정된 건만 집계)
 const topAgent = computed(() => {
   if (props.mappedList.length === 0) return null
   const counts: Record<string, { name: string; team: string; count: number }> = {}
   props.mappedList.forEach(m => {
-    const key = m.sales_person_name || '미정'
+    if (!m.sales_person_name) return
+    const key = m.sales_person_name
     if (!counts[key]) {
       counts[key] = { name: key, team: m.team_name || '', count: 0 }
     }

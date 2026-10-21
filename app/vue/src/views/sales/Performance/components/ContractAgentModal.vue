@@ -1,23 +1,27 @@
 <script lang="ts" setup>
-import { ref, reactive, computed, watch } from 'vue'
+import { computed, reactive, ref, watch, type PropType } from 'vue'
 import { useSales } from '@/store/pinia/sales'
 import type { ContractSalesAgent } from '@/store/types/sales'
 import { getToday } from '@/utils/baseMixins'
 import { isValidate } from '@/utils/helper'
 import FormModal from '@/components/Modals/FormModal.vue'
+import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
-import { CForm, CModalBody } from '@coreui/vue'
 
 const props = defineProps({
   project: { type: Number, required: true },
-  contractOptions: { type: Array as () => { value: number; label: string }[], default: () => [] },
-  mappedContractIds: { type: Array as () => number[], default: () => [] },
+  contractOptions: {
+    type: Array as PropType<{ value: number; label: string }[]>,
+    default: () => [],
+  },
+  mappedContractIds: { type: Array as PropType<number[]>, default: () => [] },
 })
 
 const emit = defineEmits(['saved'])
 
 const salesStore = useSales()
 const modalRef = ref()
+const confirmModalRef = ref()
 const isEdit = ref(false)
 const targetId = ref<number | null>(null)
 const validated = ref(false)
@@ -136,7 +140,7 @@ const open = (mapping?: ContractSalesAgent, defaultContractId?: number) => {
       assignmentType.value = 'direct'
     }
   }
-  modalRef.value.callModal()
+  modalRef.value?.callModal()
 }
 
 const submit = async (event: Event) => {
@@ -182,17 +186,21 @@ const submit = async (event: Event) => {
   } else {
     await salesStore.createContractAgent(payload)
   }
-  modalRef.value.close()
+  modalRef.value?.close()
   emit('saved')
 }
 
-const removeMapping = async () => {
+const removeMapping = () => {
   if (!targetId.value) return
-  if (confirm('담당자 배정을 해제하시겠습니까?')) {
-    await salesStore.deleteContractAgent(targetId.value)
-    modalRef.value.close()
-    emit('saved')
-  }
+  confirmModalRef.value?.callModal()
+}
+
+const executeRemoveMapping = async () => {
+  if (!targetId.value) return
+  confirmModalRef.value?.close()
+  await salesStore.deleteContractAgent(targetId.value)
+  modalRef.value?.close()
+  emit('saved')
 }
 
 defineExpose({ open })
@@ -208,7 +216,7 @@ defineExpose({ open })
             <!-- 대상 계약 선택 -->
             <CCol md="12">
               <CFormLabel class="small required"> 대상 분양 계약</CFormLabel>
-              <div v-if="isEdit" class="form-control bg-light font-weight-bold">
+              <div v-if="isEdit" class="form-control bg-light fw-bold">
                 {{ form.contract_info || `계약 번호 #${form.contract}` }}
               </div>
               <div v-else>
@@ -284,7 +292,7 @@ defineExpose({ open })
                     color="warning"
                     class="py-1 px-2 mb-0 small text-body-secondary border-warning"
                   >
-                    <v-icon icon="mdi-alert" size="small" class="text-warning mr-1" />
+                    <v-icon icon="mdi-alert" size="small" class="text-warning me-1" />
                     {{ selectedPersonTeamWarning }}
                   </CAlert>
                 </div>
@@ -311,7 +319,7 @@ defineExpose({ open })
             <!-- MGM 및 소개 수수료 -->
             <CCol md="12" class="pt-2">
               <div class="border-bottom pb-1 text-primary fw-bold">
-                <v-icon icon="mdi-handshake" size="small" class="mr-1" /> MGM / 소개 중개사 연계
+                <v-icon icon="mdi-handshake" size="small" class="me-1" /> MGM / 소개 중개사 연계
                 정보 (선택)
               </div>
             </CCol>
@@ -345,7 +353,7 @@ defineExpose({ open })
                 class="border-bottom pb-1 text-primary fw-bold d-flex justify-content-between align-items-center"
               >
                 <span>
-                  <v-icon icon="mdi-check-decagram-outline" size="small" class="mr-1" />
+                  <v-icon icon="mdi-check-decagram-outline" size="small" class="me-1" />
                   수수료 정산 승인 관리
                 </span>
                 <v-chip
@@ -387,7 +395,7 @@ defineExpose({ open })
         <CModalFooter class="d-flex justify-content-between">
           <div>
             <v-btn v-if="isEdit" color="danger" variant="text" size="small" @click="removeMapping">
-              <v-icon icon="mdi-account-remove" size="small" class="mr-1" />
+              <v-icon icon="mdi-account-remove" size="small" class="me-1" />
               배정 해제
             </v-btn>
           </div>
@@ -395,10 +403,25 @@ defineExpose({ open })
             <v-btn type="submit" color="primary" size="small">
               {{ isEdit ? '수정 저장' : '배정하기' }}
             </v-btn>
-            <v-btn color="light" size="small" flat @click="modalRef.close()">취소</v-btn>
+            <v-btn color="light" size="small" flat @click="modalRef?.close()">취소</v-btn>
           </div>
         </CModalFooter>
       </CForm>
     </template>
   </FormModal>
+
+  <ConfirmModal ref="confirmModalRef">
+    <template #header>담당자 배정 해제 확인</template>
+    <template #default>
+      <p class="mb-0">
+        <strong>{{ form.contract_info || `계약 #${form.contract}` }}</strong> 건의 영업 담당자 배정을 해제하시겠습니까?
+      </p>
+      <p class="text-danger small mt-2 mb-0">
+        * 해제 시 기존 배정 정보가 삭제되며, 미배정 계약으로 전환됩니다.
+      </p>
+    </template>
+    <template #footer>
+      <v-btn size="small" color="danger" @click="executeRemoveMapping">해제 실행</v-btn>
+    </template>
+  </ConfirmModal>
 </template>
