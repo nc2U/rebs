@@ -3,12 +3,11 @@
  * PersonPayoutHistoryModal.vue
  * 영업인력 개인별 전 회차 누적 수수료 지급 이력 모달
  */
-import { ref, computed } from 'vue'
-import { useSales } from '@/store/pinia/sales'
-import type { CommissionPayout, CommissionClawback } from '@/store/types/sales'
-import { CModal } from '@coreui/vue'
+import { computed, ref } from 'vue'
+import api from '@/api'
+import type { CommissionClawback, CommissionPayout } from '@/store/types/sales'
+import { TableSecondary } from '@/utils/cssMixins'
 
-const salesStore = useSales()
 const isVisible = ref(false)
 const isLoading = ref(false)
 
@@ -30,10 +29,8 @@ const open = async (payout: CommissionPayout) => {
     params.append('sales_person', String(payout.sales_person))
     params.append('limit', '500')
     const [payoutRes, clawbackRes] = await Promise.all([
-      import('@/api').then(m => m.default.get(`/sales-payout/?${params}`)),
-      import('@/api').then(m =>
-        m.default.get(`/sales-clawback/?sales_person=${payout.sales_person}`),
-      ),
+      api.get(`/sales-payout/?${params}`),
+      api.get(`/sales-clawback/?sales_person=${payout.sales_person}`),
     ])
     historyList.value = payoutRes.data.results ?? payoutRes.data
     clawbackList.value = clawbackRes.data.results ?? clawbackRes.data
@@ -114,7 +111,7 @@ const payStatusColor = (status: string) => {
 
         <!-- 지급 이력 테이블 -->
         <CTable hover responsive bordered align="middle" class="mb-0 text-center text-body small">
-          <CTableHead color="light">
+          <CTableHead :color="TableSecondary">
             <CTableRow>
               <CTableHeaderCell>정산 회차</CTableHeaderCell>
               <CTableHeaderCell>계약건수</CTableHeaderCell>
@@ -179,7 +176,7 @@ const payStatusColor = (status: string) => {
             환수 이력 상세
           </div>
           <CTable hover responsive bordered align="middle" class="mb-0 text-center text-body small">
-            <CTableHead color="light">
+            <CTableHead :color="TableSecondary">
               <CTableRow>
                 <CTableHeaderCell>해지 계약</CTableHeaderCell>
                 <CTableHeaderCell>환수 금액</CTableHeaderCell>

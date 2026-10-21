@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, type PropType } from 'vue'
 import type { CommissionPayout } from '@/store/types/sales'
 
 const props = defineProps({
-  payouts: { type: Array as () => CommissionPayout[], default: () => [] },
+  payouts: { type: Array as PropType<CommissionPayout[]>, default: () => [] },
 })
 
 const totalNetAmount = computed(() =>
