@@ -90,7 +90,7 @@ pnpm type-check
     - `ledger` - 재무 거래 및 자금 흐름 관리
     - `notice` - 고객 고지 및 알림 관리
     - `payment` - 수납 처리 및 수납 청구 관리
-    - `project` - 건설 프로젝트 (현장) 관리
+    - `project` - 건설 프로젝트 관리
     - `sales` - 분양 대행 관리 시스템
     - `work` - 레드마인 기반 업무 (Issue) 및 회의 연동 관리
 
@@ -113,7 +113,7 @@ pnpm type-check
 
 ### 프론트엔드 통합
 
-- **Vue 3.5**: Vite 6.3 빌드 시스템, TypeScript 5.8, Vuetify 3.10 UI 프레임워크 기반의 메인 SPA입니다.
+- **Vue 3.5**: Vite 7.* 빌드 시스템, TypeScript 5.8, Vuetify 4.* UI 프레임워크 기반의 메인 SPA입니다.
     - 풍부한 컴포넌트 생태계 활용 (d3, 차트, 마크다운 에디터, 데이트 피커 등)
     - Pinia를 활용한 전역 상태 관리
     - Vitest 및 Cypress를 사용한 테스트 코드 작성
@@ -138,8 +138,7 @@ pnpm type-check
 - **'현장' 용어 사용 엄금**: 전체 프로젝트 코드베이스 및 문서에서 '현장'이라는 용어 대신 '워크스페이스' 또는 '프로젝트'를 사용합니다.
 - **워크스페이스 (`work_space`)**: 업무 (Issue), 회의록 (Meeting), 로드맵, 공지사항 등 본사/프로젝트/기타 전반의 협업을 수행하는 공간 단위.
 - **본사 관리 (`ibs_hq_manage`)**: 본사 경영지원, 재경, 인사, 법무 등 본사 경영 직무를 전담하며 슈퍼유저 전용 보안 격리 (`is_confidential`)를 지원하는 역할/권한 영역.
-- **프로젝트 (`ibs_pr_manage`)**: 부동산 개발 (`type='2'`)에 한정되어 계약 (Contract), 수납 (Payment), 재무 (Ledger), 부지 (Site)를 관리하는 사업지
-  단위.
+- **프로젝트 (`ibs_pr_manage`)**: 부동산 개발 (`type='2'`)에 한정되어 계약 (Contract), 수납 (Payment), 재무 (Ledger), 부지 (Site)를 관리하는 사업지 단위.
 
 ## 업무 관리 시스템 (work 앱) 아키텍처
 
@@ -147,28 +146,41 @@ pnpm type-check
 
 #### 1. 데이터 모델 및 비즈니스 흐름
 
-* **워크스페이스 (IssueProject) 및 회의 (Meeting) 중심 협업**: 워크스페이스는 최상위 관리 단위이며, 회의는 워크스페이스 내 의사결정을 자산화하는 핵심 도구입니다. 단순 회의 기록 작성을
-  넘어 의제 (
-  `agenda`), 결정 사항 (`decisions`), 후속 조치 (`action_items`)를 자산화합니다. 외부인 참석자는 `other_attendees` 텍스트 필드로 기록합니다.
-* **회의와 업무의 유기적 매핑**: `Issue` 모델은 `meeting`을 외래키로 참조합니다. 회의 중 생성된 액션 아이템은 관련 업무 (`Issue`)로 자동/수동 할당되어 진척률 (`done_ratio`)
-  과 완료율이 실시간 모니터링됩니다.
-* **통합 이력 추적**: `ActivityLogEntry`를 통해 워크스페이스 내 전체 활동을 로깅하며, `IssueLogEntry`를 활용해 업무의 상태 변경 정보와 텍스트 차이점 (`diff`)을 보관하여
-  변경 이력을 투명하게 보관합니다.
+* **워크스페이스 (IssueProject) 및 회의 (Meeting) 중심 협업**: 워크스페이스는 최상위 관리 단위이며, 회의는 워크스페이스 내 의사결정을 자산화하는 핵심 도구입니다. 단순 회의 기록 작성을 넘어 의제 (`agenda`), 결정 사항 (`decisions`), 후속 조치 (`action_items`)를 자산화합니다. 외부인 참석자는 `other_attendees` 텍스트 필드로 기록합니다.
+* **회의와 업무의 유기적 매핑**: `Issue` 모델은 `meeting`을 외래키로 참조합니다. 회의 중 생성된 액션 아이템은 관련 업무 (`Issue`)로 자동/수동 할당되어 진척률 (`done_ratio`)과 완료율이 실시간 모니터링됩니다.
+* **통합 이력 추적**: `ActivityLogEntry`를 통해 워크스페이스 내 전체 활동을 로깅하며, `IssueLogEntry`를 활용해 업무의 상태 변경 정보와 텍스트 차이점 (`diff`)을 보관하여 변경 이력을 투명하게 보관합니다.
 
 #### 2. 백엔드 API & 권한 통제
 
-* **액션 기반 권한 매핑**: 각 ViewSet에는 `@property`로 `required_permission`을 정의하여 DRF 액션별 권한 코드 (예: `meeting.read`,
-  `issue.create`)
-  를 명시합니다. 이 코드는 `ProjectPermission` 등의 커스텀 권한 클래스에서 요청 유저의 역할 (`Role`)과 비교 검증됩니다.
-* **행 단위 데이터 보안 (Row-Level Security)**: 권한 검증과 별개로 목록 조회 (`list`) 시 권한 없는 워크스페이스의 데이터 유출을 막기 위해, `get_queryset()` 메서드에서
-  반드시 슈퍼유저/work_manager가 아닐 경우 **"공개 워크스페이스이거나, 사용자가 속한 워크스페이스이거나, 작성자/담당자인 데이터"**로만 필터링해야 합니다.
+* **액션 기반 권한 매핑**: 각 ViewSet에는 `@property`로 `required_permission`을 정의하여 DRF 액션별 권한 코드 (예: `meeting.read`, `issue.create`)를 명시합니다. 이 코드는 `ProjectPermission` 등의 커스텀 권한 클래스에서 요청 유저의 역할 (`Role`)과 비교 검증됩니다.
+* **행 단위 데이터 보안 (Row-Level Security)**: 권한 검증과 별개로 목록 조회 (`list`) 시 권한 없는 워크스페이스의 데이터 유출을 막기 위해, `get_queryset()` 메서드에서 반드시 슈퍼유저/work_manager가 아닐 경우 **"공개 워크스페이스이거나, 사용자가 속한 워크스페이스이거나, 작성자/담당자인 데이터"**로만 필터링해야 합니다.
 * **Eager Loading 최적화**: N+1 쿼리 문제를 원천 차단하기 위해 `select_related` 및 `prefetch_related`를 통해 관계 테이블을 미리 로딩해야 합니다.
 
 #### 3. 프론트엔드 Pinia & 타입 연동
 
-* **상태 동기화**: Pinia 스토어 (`useIssue`, `useMeeting` 등)에서 CRUD 완료 시, 연관된 타 스토어 (`useLogging`, `useWork` 등)의 액션을 재조회하여 화면의
-  일관성을 맞춥니다. 파일이 첨부된 폼을 전송할 때는 `multipart/form-data` 헤더를 설정합니다.
+* **상태 동기화**: Pinia 스토어 (`useIssue`, `useMeeting` 등)에서 CRUD 완료 시, 연관된 타 스토어 (`useLogging`, `useWork` 등)의 액션을 재조회하여 화면의 일관성을 맞춥니다. 파일이 첨부된 폼을 전송할 때는 `multipart/form-data` 헤더를 설정합니다.
 * **타입 안전성**: 프론트엔드 `store/types/work_*.ts` 파일 내 인터페이스는 백엔드 Serializer가 반환하는 필드 및 Nullable 옵션과 100% 일치하도록 일원화되어야 합니다.
+
+## 분양 대행 관리 시스템 (sales 앱) 아키텍처
+
+부동산 개발 프로젝트(`type='2'`)에서 발생하는 분양 대행 조직, 계약 실적 매핑, 수수료 정책, 정산 회차 및 지급/환수를 총괄하는 도메인입니다.
+
+#### 1. 비즈니스 모델 및 흐름
+
+* **영업 조직 관리 (`SalesAgency`, `SalesTeam`, `SalesPerson`)**: 직영 사업부(`is_direct_managed=True`)와 외주 대행사(`is_direct_managed=False`)를 구분하여 관리하며, 인력별 직책(`duty`: 1-상담사, 2-팀장, 3-본부장, 4-임원, 5-지원직)과 재직 상태(`status`: 1-재직, 2-퇴사)를 관리합니다.
+* **계약 실적 매핑 (`ContractSalesAgent`)**: 분양 계약(`contract.Contract`)과 영업 인력 또는 외주 대행사의 1:1 매핑 정보를 관리합니다. MGM/중개사 소개 수수료 연계 정보 및 수수료 정산 대상 포함 여부(`is_settlement_approved`)를 지정합니다.
+* **수수료 정책 (`CommissionPolicy`)**: 차수/타입별 건당 직급별 인센티브(상담사, 팀장, 본부장, 대행사) 기준표를 정의하며, 공급가(VAT 별도) 및 시행사 청구액(VAT 10% 포함)을 자동으로 계산합니다.
+* **정산 회차 및 산출 (`SettlementPeriod`, `CommissionPayout`, `AgencyPayout`)**:
+  - 지정 기간 내 체결된 승인 계약 건을 집계하며 타 회차 기정산 건은 자동 제외합니다.
+  - 소속 팀에 팀장 부재 시 상위 본부장에게 합산 배정되거나 대행사 이익(`unallocated_fee`)으로 자동 귀속됩니다.
+  - 개인별 지급 명세(`CommissionPayout`)는 인센티브, 기본급/일비, 공제/환수액을 반영한 뒤 원천징수 세액 3.3%(사업소득세 3% + 지방소득세 0.3%)를 공제한 세후 실지급액을 산출합니다.
+  - 계약 해지 시 발생하는 환수 건(`CommissionClawback`)은 차기 정산 시 자동으로 차감 상계됩니다.
+* **지급 관리**: 정산 확정(`status='2'`) 후 회차별/개인별/대행사별 지급 상태(1-미지급, 2-지급 준비, 3-지급 완료)를 갱신 및 관리합니다.
+
+#### 2. 백엔드 & 프론트엔드 연동 규칙
+
+* **권한 통제**: `sales.read`(조회), `sales.settle`(정산 실행/확정), `sales.payout`(지급 처리), `sales.policy`(정책 관리), `sales.manage`(조직 및 매핑 관리) 권한 체계를 엄격히 준수합니다.
+* **상태 일관성**: 정산 실행(`generatePayouts`) 및 확정(`confirmSettlement`) 시 연관된 대장(개인별 명세, 대행사 명세, 환수 대장)의 상태를 동기화하여 재조회합니다.
 
 ### 설정 아키텍처 (Configuration)
 
@@ -204,8 +216,7 @@ pnpm type-check
     - **시놀로지 NAS** (외부 NFS 서버)
         - 역할: Django 미디어 파일 (`media`) 보관 및 데이터베이스 정기 백업 파일 저장.
 - **실제 서비스 배포 경로**:
-    - 모든 애플리케이션 및 헬름 차트 배포는 **`.github/workflows/` 기반의 GitHub Actions 자동 배포 (Git Push 트리거)**와 **로컬/마스터 서버 내 배포 스크립트를 통한
-      수동 배포** 방식을 병행하여 지원함.
+    - 모든 애플리케이션 및 헬름 차트 배포는 **`.github/workflows/` 기반의 GitHub Actions 자동 배포 (Git Push 트리거)**와 **로컬/마스터 서버 내 배포 스크립트를 통한 수동 배포** 방식을 병행하여 지원함.
 - **Helm 차트**: `deploy/helm/` 내에 전체 배포 설정 위치
 - **CI/CD**: 자동 배포를 위한 종합적인 GitHub Actions 워크플로우 구성
     - Django 백엔드 및 Vue 컴포넌트 각각을 위한 워크플로우 분리
@@ -248,16 +259,14 @@ pnpm test:e2e
 
 #### 1. 백엔드 배포 (`django_dev.yml`, `django_prod.yml`)
 
-* **컨테이너 이미지 빌드**: Git SHA 값을 태그 (`dev-${SHA}` / `${SHA}`)로 지정하여 Dockerfile 기반 이미지를 빌드하고 Docker Hub (`nc2u/django`)에
-  푸시합니다.
+* **컨테이너 이미지 빌드**: Git SHA 값을 태그 (`dev-${SHA}` / `${SHA}`)로 지정하여 Dockerfile 기반 이미지를 빌드하고 Docker Hub (`nc2u/django`)에 푸시합니다.
 * **K8s 리소스 충돌 관리**: 배포 전 보류 중인 Helm 업그레이드 작업을 클리닝하고, 기존 PV/PVC를 Helm 릴리즈에 자동 편입 (Adoption)합니다.
 * **Helm 배포**: `deploy/helm/` 차트를 사용하여 지정된 네임스페이스에 배포 및 마이그레이션 작업을 수행하며, 완료 시 롤아웃 상태를 검증합니다.
 
 #### 2. 프론트엔드 배포 (`vue_dev.yml`, `vue_prod.yml`)
 
 * **정적 파일 빌드**: Node.js와 pnpm을 사용하여 Vue.js SPA를 빌드하며, 빌드 무결성을 자동 검증합니다.
-* **무중단 원자적 배포**: 빌드 폴더 (`dist_${TIMESTAMP}`)를 CI/CD 서버로 복사 (SCP)한 뒤, `dist` 심볼릭 링크를 원자적으로 교체 (Symlink Swap)하여 중단 없는
-  서비스를 실현합니다.
+* **무중단 원자적 배포**: 빌드 폴더 (`dist_${TIMESTAMP}`)를 CI/CD 서버로 복사 (SCP)한 뒤, `dist` 심볼릭 링크를 원자적으로 교체 (Symlink Swap)하여 중단 없는 서비스를 실현합니다.
 * **리소싱 효율성**: 성공한 최신 3개의 빌드 디렉토리만 서버에 유지하고 이전 빌드는 자동 삭제합니다.
 * **캐시 갱신**: 프론트엔드 배포 후 Django 템플릿과 Nginx의 파일 변경이 즉시 반영되도록 관련 Pod를 재시작 (`rollout restart`)합니다.
 
@@ -285,15 +294,31 @@ pnpm test:e2e
 
 ### 개발 프랙티스
 
+#### 백엔드 개발 원칙
 - 모든 데이터베이스 마이그레이션이 항상 최신으로 반영되어야 함
 - 확장을 고려한 마스터-슬레이브 데이터베이스 라우팅
 - Redis 기반 캐싱 및 세션 관리 사용
 - 비동기 태스크 처리를 위한 Celery 사용
 
+#### 프론트엔드 개발 및 리팩토링 원칙 (엄수 ⭐️)
+- **개행 코드 표준 준수**: 모든 프론트엔드 소스 파일(`.vue`, `.ts`, `.js`, `.json` 등)은 Git 및 빌드 일관성을 위해 반드시 **LF (Line Feed)** 개행 코드를 엄수합니다.
+- **Bootstrap 5 표준 클래스 준수**:
+  - 텍스트 정렬: `text-left` / `text-right` (폐기) ➔ `text-start` / `text-end`
+  - 마진/패딩: `ml-*` / `mr-*` (폐기) ➔ `ms-*` / `me-*`, `pl-*` / `pr-*` (폐기) ➔ `ps-*` / `pe-*`
+  - 글꼴 두께: `font-weight-bold` / `font-weight-normal` ➔ `fw-bold` / `fw-normal`
+  - 아이콘 접두사: `icon="mdi mdi-*"` 중복 방지 ➔ `icon="mdi-*"` 사용
+- **브라우저 기본 다이얼로그 사용 금지**: `window.confirm()`, `window.alert()` 사용을 엄금하며 프로젝트 표준 공통 모달 컴포넌트(`ConfirmModal.vue`, `AlertModal.vue`, `FormModal.vue`)를 사용합니다.
+- **이중 동시 API 호출(Race Condition) 방지**: 상단 셀렉터(`ContentHeader`의 `@proj-select`, `@com-select`) 이벤트 핸들러와 `watch(project)`, `watch(comId)` 간의 중복 `loadData` 호출을 방지하고 `watch`로 데이터 조회를 단일화합니다.
+- **웹 표준 및 폼 유효성 검사**:
+  - `href="javascript:void(0);"` 안티패턴 대신 `@click.prevent`를 사용합니다.
+  - 폼 유효성 검사 시 `(event.currentTarget as HTMLInputElement).checkValidity()` 등 불안전한 캐스팅 대신 공통 헬퍼인 `isValidate(event)` (`@/utils/helper`)를 사용합니다.
+- **TypeScript 타입 엄격성**:
+  - 컴포넌트 Props 정의 시 `Array as () => any[]` 또는 `Object` 같은 느슨한 타입 지양 ➔ `PropType<T>`을 통해 모델 타입을 명확히 정의합니다.
+  - 템플릿 ref 호출 시 옵셔널 체이닝(`?.`)을 적용하여 렌더링 타이밍 이슈를 원천 차단합니다.
+
 ### 사용자 매뉴얼 (VitePress) 작성 규칙 (엄수 ⭐️)
 
-- **`##` (h2) 요소 직전 구분선 (`---`) 사용 엄금**: VitePress 기본 CSS 테마에서 `h2` 요소 상단에 `border-top` 구분선이 자동으로 렌더링됩니다. 따라서 `##` 직전에
-  수동으로 `---` 구분선을 추가하면 선이 이중으로 중복 표출되므로 **`##` 바로 앞에는 절대로 `---`를 작성하지 않습니다.**
+- **`##` (h2) 요소 직전 구분선 (`---`) 사용 엄금**: VitePress 기본 CSS 테마에서 `h2` 요소 상단에 `border-top` 구분선이 자동으로 렌더링됩니다. 따라서 `##` 직전에 수동으로 `---` 구분선을 추가하면 선이 이중으로 중복 표출되므로 **`##` 바로 앞에는 절대로 `---`를 작성하지 않습니다.**
 
 ### 파일 구조 요약
 
