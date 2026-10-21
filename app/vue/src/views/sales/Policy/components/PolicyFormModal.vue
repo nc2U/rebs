@@ -1,7 +1,9 @@
 <script lang="ts" setup>
-import { ref, reactive, computed } from 'vue'
+import { computed, reactive, ref, type PropType } from 'vue'
 import { useSales } from '@/store/pinia/sales'
 import type { CommissionPolicy } from '@/store/types/sales'
+import type { OrderGroup } from '@/store/types/contract'
+import type { UnitType } from '@/store/types/project'
 import { getToday } from '@/utils/baseMixins'
 import { isValidate } from '@/utils/helper'
 import FormModal from '@/components/Modals/FormModal.vue'
@@ -9,8 +11,8 @@ import DatePicker from '@/components/DatePicker/DatePicker.vue'
 
 const props = defineProps({
   project: { type: Number, required: true },
-  orderGroupList: { type: Array as () => any[], default: () => [] },
-  unitTypeList: { type: Array as () => any[], default: () => [] },
+  orderGroupList: { type: Array as PropType<OrderGroup[]>, default: () => [] },
+  unitTypeList: { type: Array as PropType<UnitType[]>, default: () => [] },
 })
 
 const emit = defineEmits(['saved'])
@@ -78,7 +80,7 @@ const open = (policy?: CommissionPolicy) => {
     form.end_date = policy.end_date || ''
     form.is_active = policy.is_active
   }
-  modalRef.value.callModal()
+  modalRef.value?.callModal()
 }
 
 const submit = async (event: Event) => {
@@ -112,7 +114,7 @@ const submit = async (event: Event) => {
   } else {
     await salesStore.createPolicy(payload)
   }
-  modalRef.value.close()
+  modalRef.value?.close()
   emit('saved')
 }
 
@@ -162,7 +164,7 @@ defineExpose({ open })
                 class="border-bottom pb-2 text-primary fw-bold d-flex flex-wrap justify-content-between align-items-center gap-2"
               >
                 <span>
-                  <v-icon icon="mdi-cash-multiple" size="small" class="mr-1" />
+                  <v-icon icon="mdi-cash-multiple" size="small" class="me-1" />
                   직급별 건당 수수료 (원)
                 </span>
                 <div class="d-flex align-items-center gap-3">
@@ -214,7 +216,7 @@ defineExpose({ open })
             <!-- 지급 조건 및 기간 -->
             <CCol md="12" class="pt-2">
               <div class="border-bottom pb-1 text-primary fw-bold">
-                <v-icon icon="mdi-clock-check-outline" size="small" class="mr-1" /> 지급 조건 및
+                <v-icon icon="mdi-clock-check-outline" size="small" class="me-1" /> 지급 조건 및
                 적용 기간
               </div>
             </CCol>
@@ -253,7 +255,7 @@ defineExpose({ open })
           <v-btn type="submit" color="primary" size="small">
             {{ isEdit ? '수정 저장' : '등록하기' }}
           </v-btn>
-          <v-btn color="light" size="small" flat @click="modalRef.close()">취소</v-btn>
+          <v-btn color="light" size="small" flat @click="modalRef?.close()">취소</v-btn>
         </CModalFooter>
       </CForm>
     </template>
