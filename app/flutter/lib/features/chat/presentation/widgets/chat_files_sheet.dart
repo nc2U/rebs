@@ -73,11 +73,9 @@ class _ChatFilesSheetState extends ConsumerState<ChatFilesSheet>
     _tabController = TabController(length: 3, vsync: this);
     _loadTabItems('media');
     _tabController.addListener(() {
-      if (_tabController.indexIsChanging) {
-        final currentTab = _tabs[_tabController.index];
-        if (_items[currentTab]!.isEmpty && !_isLoading[currentTab]!) {
-          _loadTabItems(currentTab);
-        }
+      final currentTab = _tabs[_tabController.index];
+      if (_items[currentTab]!.isEmpty && !_isLoading[currentTab]!) {
+        _loadTabItems(currentTab);
       }
     });
   }

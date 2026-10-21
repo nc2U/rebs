@@ -552,18 +552,20 @@ class _ChatRoomListScreenState extends ConsumerState<ChatRoomListScreen>
                 isChannel ? '참여 중인 워크스페이스 채널이 없습니다.' : '진행 중인 1:1 대화가 없습니다.',
                 style: AppTextStyles.bodyMd.copyWith(color: context.colors.textMuted),
               ),
-              const SizedBox(height: 16),
-              ElevatedButton.icon(
-                onPressed: () => UserSelectSheet.show(context),
-                icon: const Icon(Icons.person_add_alt_1_rounded, size: 18),
-                label: const Text('대화 상대 선택하기'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: context.colors.accentWork,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              if (!isChannel) ...[
+                const SizedBox(height: 16),
+                ElevatedButton.icon(
+                  onPressed: () => UserSelectSheet.show(context),
+                  icon: const Icon(Icons.person_add_alt_1_rounded, size: 18),
+                  label: const Text('대화 상대 선택하기'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: context.colors.accentWork,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
         ),

@@ -515,7 +515,9 @@ class _ChatShareTargetSheetState extends ConsumerState<ChatShareTargetSheet>
                       Expanded(
                         child: Text(
                           widget.payload.files.isNotEmpty
-                              ? '${widget.payload.files.first.name} 외 ${widget.payload.files.length - 1}개 파일'
+                              ? (widget.payload.files.length > 1
+                                  ? '${widget.payload.files.first.name} 외 ${widget.payload.files.length - 1}개 파일'
+                                  : widget.payload.files.first.name)
                               : (widget.payload.links.isNotEmpty
                                   ? widget.payload.links.first
                                   : '공유 항목'),

@@ -1,3 +1,4 @@
+import '../../../../core/api/api_client.dart';
 import '../../../../core/models/common_models.dart';
 
 /// 대화방 유형
@@ -290,8 +291,11 @@ class ChatMessageModel {
   String get senderName =>
       sender?.name.isNotEmpty == true ? sender!.name : (sender?.username ?? '알 수 없음');
 
-  /// 파일 URL (file 필드 또는 빈 문자열)
-  String get fileUrl => file ?? '';
+  /// 파일 URL (상대경로일 경우 appBaseUrl 결합)
+  String get fileUrl {
+    if (file == null || file!.isEmpty) return '';
+    return file!.startsWith('http') ? file! : '$appBaseUrl$file';
+  }
 
   /// 파일 첨부 여부
   bool get hasFile => (file != null && file!.isNotEmpty) || fileName.isNotEmpty;

@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../../../core/api/api_client.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../core/providers/auth_provider.dart';
 import '../../../../core/theme/app_colors_extension.dart';
@@ -267,7 +266,11 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
     final currentUserId = currentUser?.pk ?? 0;
     final currentUsername = currentUser?.username ?? '';
 
-    final roomTitle = widget.initialRoom?.getDisplayName(currentUserId) ?? '대화방 #${widget.roomId}';
+    final rooms = ref.watch(chatRoomsProvider).valueOrNull;
+    final activeRoom = rooms?.where((r) => r.id == widget.roomId).firstOrNull ??
+        widget.initialRoom;
+    final roomTitle =
+        activeRoom?.getDisplayName(currentUserId) ?? '대화방 #${widget.roomId}';
 
     return Scaffold(
       backgroundColor: context.colors.bgPrimary,
@@ -367,9 +370,9 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  if (widget.initialRoom?.projectName != null)
+                  if (activeRoom?.projectName != null)
                     Text(
-                      widget.initialRoom!.projectName!,
+                      activeRoom!.projectName!,
                       style: AppTextStyles.caption.copyWith(color: context.colors.textMuted),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -396,13 +399,13 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                     );
                   },
                 ),
-                if (widget.initialRoom?.roomType != ChatRoomType.self)
+                if (activeRoom?.roomType != ChatRoomType.self)
                   IconButton(
                     icon: Stack(
                       clipBehavior: Clip.none,
                       children: [
                         Icon(Icons.people_alt_outlined, color: context.colors.textPrimary, size: 22),
-                        if ((widget.initialRoom?.members.length ?? 0) > 0)
+                        if ((activeRoom?.members.length ?? 0) > 0)
                           Positioned(
                             top: -4,
                             right: -6,
@@ -413,7 +416,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
-                                '${widget.initialRoom!.members.length}',
+                                '${activeRoom!.members.length}',
                                 style: const TextStyle(
                                   fontSize: 9,
                                   fontWeight: FontWeight.bold,
@@ -426,9 +429,9 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                       ],
                     ),
                     tooltip: '참여자 목록',
-                    onPressed: () => _showMembersSheet(widget.initialRoom, currentUserId),
+                    onPressed: () => _showMembersSheet(activeRoom, currentUserId),
                   ),
-                if (widget.initialRoom?.roomType == ChatRoomType.direct || widget.initialRoom?.roomType == ChatRoomType.group)
+                if (activeRoom?.roomType == ChatRoomType.direct || activeRoom?.roomType == ChatRoomType.group)
                   IconButton(
                     icon: Icon(Icons.exit_to_app_rounded, color: context.colors.textMuted, size: 22),
                     tooltip: '대화방 나가기',
@@ -470,7 +473,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                     }
 
                 if (messages.isEmpty) {
-                  if (widget.initialRoom?.roomType == ChatRoomType.self) {
+                  if (activeRoom?.roomType == ChatRoomType.self) {
                     return Align(
                       alignment: Alignment.topCenter,
                       child: SingleChildScrollView(
@@ -501,7 +504,7 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                               ),
                               const SizedBox(height: 12),
                               Text(
-                                '• 도면/사진 보관: 모바일과 PC 웹 간 현장 사진, 도면, 공문 파일을 자유롭게 전송·다운로드하세요.\n'
+                                '• 도면/사진 보관: 모바일과 PC 웹 간 프로젝트 사진, 도면, 공문 파일을 자유롭게 전송·다운로드하세요.\n'
                                 '• 리치 카드 확인: 결재 문서나 업무(Issue) 공유 카드를 미리 보내보고 형태를 사전 확인할 수 있습니다.\n'
                                 '• 개인 메모장: 중요한 일정, To-Do, 아이디어를 빠르게 기록해 두세요.',
                                 style: AppTextStyles.bodySm.copyWith(
@@ -959,15 +962,48 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                       ),
                     ),
                     title: Text(room.getDisplayName(currentUserId), style: const TextStyle(fontSize: 14)),
-                    onTap: () {
+                    onTap: () async {
                       Navigator.pop(ctx);
-                      ref.read(chatRoomNotifierProvider(room.id).notifier).sendMessage(
-                        content: msg.content.isNotEmpty ? msg.content : (msg.refTitle.isNotEmpty ? msg.refTitle : '전달된 메시지'),
-                        type: msg.messageType,
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('${room.getDisplayName(currentUserId)} 방으로 전달했습니다.')),
-                      );
+                      try {
+                        final repo = ref.read(chatRepositoryProvider);
+                        final isRichCard = msg.messageType == ChatMessageType.issue ||
+                            msg.messageType == ChatMessageType.meeting ||
+                            msg.messageType == ChatMessageType.approval;
+                        final forwardType = isRichCard ? msg.messageType.name : 'text';
+                        String forwardContent = msg.content;
+                        if (msg.hasFile && msg.fileUrl.isNotEmpty) {
+                          final fileInfo = '📎 ${msg.fileName.isNotEmpty ? msg.fileName : "첨부파일"}\n${msg.fileUrl}';
+                          forwardContent = forwardContent.isNotEmpty
+                              ? '$forwardContent\n$fileInfo'
+                              : fileInfo;
+                        } else if (forwardContent.isEmpty) {
+                          forwardContent = msg.refTitle.isNotEmpty ? msg.refTitle : '전달된 메시지';
+                        }
+
+                        await repo.sendTextMessage(
+                          roomId: room.id,
+                          content: forwardContent,
+                          messageType: forwardType,
+                          refId: msg.refId,
+                          refTitle: msg.refTitle,
+                          refSub: msg.refSub,
+                        );
+                        ref.invalidate(chatRoomsProvider);
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('${room.getDisplayName(currentUserId)} 방으로 전달했습니다.')),
+                          );
+                        }
+                      } catch (e) {
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('전달 실패: $e'),
+                              backgroundColor: Colors.redAccent,
+                            ),
+                          );
+                        }
+                      }
                     },
                   );
                 },
@@ -1132,11 +1168,11 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                                   try {
                                     final newRoom = await ref.read(chatRepositoryProvider).getOrCreateDm(member.pk);
                                     ref.invalidate(chatRoomsProvider);
-                                    if (!mounted || !context.mounted) return;
-                                    context.push('/chat/${newRoom.id}', extra: newRoom);
+                                    if (!mounted) return;
+                                    this.context.push('/chat/${newRoom.id}', extra: newRoom);
                                   } catch (e) {
-                                    if (!mounted || !context.mounted) return;
-                                    ScaffoldMessenger.of(context).showSnackBar(
+                                    if (!mounted) return;
+                                    ScaffoldMessenger.of(this.context).showSnackBar(
                                       SnackBar(content: Text('대화방 생성 실패: $e')),
                                     );
                                   }
@@ -1334,41 +1370,44 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // ↩️ 답장 원본 인용 프리뷰 박스
+                        // ↩️ 답장 원본 인용 프리뷰 박스 (탭 시 원본 메시지로 이동)
                         if (msg.replyToDetail != null && !msg.isDeleted) ...[
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                            margin: const EdgeInsets.only(bottom: 6),
-                            decoration: BoxDecoration(
-                              color: isMe
-                                  ? (context.isDarkMode ? Colors.black26 : Colors.white.withAlpha(180))
-                                  : (context.isDarkMode ? Colors.white10 : Colors.black.withAlpha(12)),
-                              borderRadius: BorderRadius.circular(4),
-                              border: Border(
-                                left: BorderSide(color: isMe ? Colors.blueAccent : context.colors.accentWork, width: 3),
+                          GestureDetector(
+                            onTap: () => _jumpToTargetMessage(msg.replyToDetail!.id),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              margin: const EdgeInsets.only(bottom: 6),
+                              decoration: BoxDecoration(
+                                color: isMe
+                                    ? (context.isDarkMode ? Colors.black26 : Colors.white.withAlpha(180))
+                                    : (context.isDarkMode ? Colors.white10 : Colors.black.withAlpha(12)),
+                                borderRadius: BorderRadius.circular(4),
+                                border: Border(
+                                  left: BorderSide(color: isMe ? Colors.blueAccent : context.colors.accentWork, width: 3),
+                                ),
                               ),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  msg.replyToDetail!.senderName,
-                                  style: TextStyle(
-                                    fontSize: 10.5,
-                                    fontWeight: FontWeight.bold,
-                                    color: isMe ? (context.isDarkMode ? Colors.lightBlueAccent : const Color(0xFF1D4ED8)) : context.colors.accentWork,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    msg.replyToDetail!.senderName,
+                                    style: TextStyle(
+                                      fontSize: 10.5,
+                                      fontWeight: FontWeight.bold,
+                                      color: isMe ? (context.isDarkMode ? Colors.lightBlueAccent : const Color(0xFF1D4ED8)) : context.colors.accentWork,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  msg.replyToDetail!.content,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: 10.5,
-                                    color: context.isDarkMode ? Colors.white70 : Colors.black87,
+                                  Text(
+                                    msg.replyToDetail!.content,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 10.5,
+                                      color: context.isDarkMode ? Colors.white70 : Colors.black87,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ],
@@ -1421,101 +1460,168 @@ class _ChatRoomScreenState extends ConsumerState<ChatRoomScreen> {
 
     // 📷 이미지 메시지 렌더링
     if (msg.messageType == ChatMessageType.image && msg.file != null) {
-      final imgUrl = msg.file!.startsWith('http') ? msg.file! : '$appBaseUrl${msg.file}';
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: CachedNetworkImage(
-          imageUrl: imgUrl,
-          width: 200,
-          fit: BoxFit.cover,
-          placeholder: (_, __) => Container(
-            height: 140,
-            width: 200,
-            color: Colors.black12,
-            child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+      final imgUrl = msg.fileUrl;
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: CachedNetworkImage(
+              imageUrl: imgUrl,
+              width: 200,
+              fit: BoxFit.cover,
+              placeholder: (_, __) => Container(
+                height: 140,
+                width: 200,
+                color: Colors.black12,
+                child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+              ),
+              errorWidget: (_, __, ___) => const Icon(Icons.broken_image_rounded, size: 48),
+            ),
           ),
-          errorWidget: (_, __, ___) => const Icon(Icons.broken_image_rounded, size: 48),
-        ),
+          if (msg.content.isNotEmpty) ...[
+            const SizedBox(height: 6),
+            Text(
+              msg.content,
+              style: TextStyle(
+                color: isMe
+                    ? myTextColor
+                    : (context.isDarkMode ? Colors.white : const Color(0xFF1E293B)),
+                fontSize: 13.5,
+                height: 1.35,
+              ),
+            ),
+          ],
+        ],
       );
     }
 
     // 📎 일반 파일 / 도면 첨부 렌더링
     if (msg.messageType == ChatMessageType.file) {
-      final fileUrl = msg.file != null ? (msg.file!.startsWith('http') ? msg.file! : '$appBaseUrl${msg.file}') : '';
+      final fileUrl = msg.fileUrl;
       return InkWell(
         onTap: () {
           if (fileUrl.isNotEmpty) launchUrl(Uri.parse(fileUrl), mode: LaunchMode.externalApplication);
         },
         onLongPress: () => _showMessageActionMenu(msg),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.insert_drive_file_rounded, size: 24, color: isMe ? myTextColor : context.colors.accentWork),
-            const SizedBox(width: 8),
-            Flexible(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    msg.fileName.isNotEmpty ? msg.fileName : '첨부파일',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5, color: isMe ? myTextColor : context.colors.textPrimary),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.insert_drive_file_rounded, size: 24, color: isMe ? myTextColor : context.colors.accentWork),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        msg.fileName.isNotEmpty ? msg.fileName : '첨부파일',
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5, color: isMe ? myTextColor : context.colors.textPrimary),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      if (msg.fileSize > 0)
+                        Text(
+                          '${(msg.fileSize / 1024).toStringAsFixed(1)} KB',
+                          style: TextStyle(fontSize: 10, color: isMe ? mySubTextColor : context.colors.textMuted),
+                        ),
+                    ],
                   ),
-                  if (msg.fileSize > 0)
-                    Text(
-                      '${(msg.fileSize / 1024).toStringAsFixed(1)} KB',
-                      style: TextStyle(fontSize: 10, color: isMe ? mySubTextColor : context.colors.textMuted),
-                    ),
-                ],
-              ),
+                ),
+              ],
             ),
+            if (msg.content.isNotEmpty) ...[
+              const SizedBox(height: 6),
+              Text(
+                msg.content,
+                style: TextStyle(
+                  color: isMe
+                      ? myTextColor
+                      : (context.isDarkMode ? Colors.white : const Color(0xFF1E293B)),
+                  fontSize: 13.5,
+                  height: 1.35,
+                ),
+              ),
+            ],
           ],
         ),
       );
     }
 
-    // 📋 IBS 리치 링크 카드 렌더링
+    // 📋 IBS 리치 링크 카드 렌더링 (탭 시 해당 업무/회의/결재 상세로 이동)
     if (msg.messageType == ChatMessageType.issue ||
         msg.messageType == ChatMessageType.meeting ||
         msg.messageType == ChatMessageType.approval) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                msg.messageType == ChatMessageType.issue
-                    ? Icons.task_alt_rounded
-                    : (msg.messageType == ChatMessageType.meeting
-                        ? Icons.event_note_rounded
-                        : Icons.fact_check_rounded),
-                size: 16,
-                color: isMe ? myTextColor : context.colors.accentWork,
-              ),
-              const SizedBox(width: 6),
+      return InkWell(
+        onTap: (msg.refId != null && msg.refId! > 0)
+            ? () {
+                switch (msg.messageType) {
+                  case ChatMessageType.issue:
+                    context.push('/work/issues/${msg.refId}');
+                    break;
+                  case ChatMessageType.meeting:
+                    context.push('/work/meetings/${msg.refId}');
+                    break;
+                  case ChatMessageType.approval:
+                    context.push('/approval/${msg.refId}');
+                    break;
+                  default:
+                    break;
+                }
+              }
+            : null,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  msg.messageType == ChatMessageType.issue
+                      ? Icons.task_alt_rounded
+                      : (msg.messageType == ChatMessageType.meeting
+                          ? Icons.event_note_rounded
+                          : Icons.fact_check_rounded),
+                  size: 16,
+                  color: isMe ? myTextColor : context.colors.accentWork,
+                ),
+                const SizedBox(width: 6),
+                Flexible(
+                  child: Text(
+                    msg.refTitle.isNotEmpty ? msg.refTitle : msg.content,
+                    style: TextStyle(
+                      color: isMe ? myTextColor : context.colors.textPrimary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
+                  ),
+                ),
+                if (msg.refId != null && msg.refId! > 0) ...[
+                  const SizedBox(width: 4),
+                  Icon(
+                    Icons.open_in_new_rounded,
+                    size: 13,
+                    color: isMe ? mySubTextColor : context.colors.textMuted,
+                  ),
+                ],
+              ],
+            ),
+            if (msg.refSub.isNotEmpty) ...[
+              const SizedBox(height: 4),
               Text(
-                msg.refTitle.isNotEmpty ? msg.refTitle : msg.content,
+                msg.refSub,
                 style: TextStyle(
-                  color: isMe ? myTextColor : context.colors.textPrimary,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13,
+                  color: isMe ? mySubTextColor : context.colors.textMuted,
+                  fontSize: 11,
                 ),
               ),
             ],
-          ),
-          if (msg.refSub.isNotEmpty) ...[
-            const SizedBox(height: 4),
-            Text(
-              msg.refSub,
-              style: TextStyle(
-                color: isMe ? mySubTextColor : context.colors.textMuted,
-                fontSize: 11,
-              ),
-            ),
           ],
-        ],
+        ),
       );
     }
 
