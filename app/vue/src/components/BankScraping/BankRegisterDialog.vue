@@ -109,6 +109,11 @@ const projectOptions = computed(() => {
   }))
 })
 
+const selectedBankName = computed(() => {
+  const b = bankOptions.find(opt => opt.value === selectedBank.value)
+  return b ? b.title.split(' (')[0] : '선택 은행'
+})
+
 // Step 1 유효성
 const isStep1Valid = computed(() => {
   if (!selectedBank.value) return false
@@ -330,8 +335,8 @@ onMounted(() => {
       <!-- 헤더 -->
       <v-card-title class="d-flex align-center justify-space-between pb-3 border-b">
         <div class="d-flex align-center">
-          <v-icon color="primary" class="mr-2">mdi-shield-key-outline</v-icon>
-          <span class="text-h6 font-weight-bold">
+          <v-icon color="primary" class="me-2">mdi-shield-key-outline</v-icon>
+          <span class="text-h6 fw-bold">
             은행 계좌 자동 연동 (공동인증서 / 계정 등록 마법사)
           </span>
         </div>
@@ -355,13 +360,13 @@ onMounted(() => {
                 <v-avatar
                   size="28"
                   :color="currentStep === 1 ? 'primary' : 'grey-lighten-1'"
-                  class="text-white font-weight-bold"
+                  class="text-white fw-bold"
                 >
                   1
                 </v-avatar>
                 <div>
                   <div
-                    class="font-weight-bold"
+                    class="fw-bold"
                     :class="currentStep === 1 ? 'text-primary' : 'text-grey'"
                   >
                     은행 및 인증서 등록
@@ -376,13 +381,13 @@ onMounted(() => {
                 <v-avatar
                   size="28"
                   :color="currentStep === 2 ? 'primary' : 'grey-lighten-1'"
-                  class="text-white font-weight-bold"
+                  class="text-white fw-bold"
                 >
                   2
                 </v-avatar>
                 <div>
                   <div
-                    class="font-weight-bold"
+                    class="fw-bold"
                     :class="currentStep === 2 ? 'text-primary' : 'text-grey'"
                   >
                     보유 계좌 확인 및 매핑
@@ -455,8 +460,8 @@ onMounted(() => {
           <!-- ============================================== -->
           <div v-if="loginType === '0'" class="mt-2 pa-3 bg-more-light border rounded">
             <div class="d-flex align-center justify-space-between mb-2 flex-wrap ga-2">
-              <div class="text-subtitle-2 font-weight-bold d-flex align-center">
-                <v-icon size="18" color="primary" class="mr-1">mdi-file-certificate-outline</v-icon>
+              <div class="text-subtitle-2 fw-bold d-flex align-center">
+                <v-icon size="18" color="primary" class="me-1">mdi-file-certificate-outline</v-icon>
                 공동인증서 파일 업로드
               </div>
               <v-btn-toggle
@@ -536,8 +541,8 @@ onMounted(() => {
             class="mt-2 pa-3 bg-more-light border border-teal rounded"
           >
             <div class="d-flex align-center mb-2">
-              <v-icon size="20" color="teal-darken-2" class="mr-1">mdi-bank-check</v-icon>
-              <span class="text-subtitle-2 font-weight-bold text-teal-darken-3">
+              <v-icon size="20" color="teal-darken-2" class="me-1">mdi-bank-check</v-icon>
+              <span class="text-subtitle-2 fw-bold text-teal-darken-3">
                 신탁사 및 조합 전용 빠른조회(스피드조회) 계좌 연동
               </span>
             </div>
@@ -695,26 +700,62 @@ onMounted(() => {
         <!-- STEP 2: 발견된 계좌 확인 및 매핑 테이블 -->
         <!-- ============================================== -->
         <div v-else class="py-2">
+          <!-- 계좌 0건 발견 시 경고 카드 -->
           <v-alert
+            v-if="discoveredAccounts.length === 0"
+            type="warning"
+            variant="tonal"
+            density="compact"
+            icon="mdi-alert-circle-outline"
+            class="mb-3 text-caption"
+          >
+            <div class="fw-bold text-subtitle-2 mb-1">
+              선택하신 은행({{ selectedBankName }})에서 조회된 보유 계좌가 0건입니다
+            </div>
+            <div>
+              • 등록하신 공동인증서가 <strong>{{ selectedBankName }}</strong>의 인터넷뱅킹에 정상 등록되어 있는지 확인해 주세요.<br />
+              • 타 은행 전용 인증서이거나 사업자번호 구분이 다르면 보유 계좌가 조회되지 않습니다.<br />
+              • 아래 [이전 단계] 버튼을 눌러 은행을 다시 선택하시거나 올바른 인증서 파일로 다시 등록해 주세요.
+            </div>
+            <div class="mt-2">
+              <v-btn
+                size="x-small"
+                variant="outlined"
+                color="warning"
+                prepend-icon="mdi-arrow-left"
+                @click="currentStep = 1"
+              >
+                이전 단계로 돌아가서 다시 시도
+              </v-btn>
+            </div>
+          </v-alert>
+
+          <!-- 계좌 1건 이상 발견 시 성공 안내 카드 -->
+          <v-alert
+            v-else
             type="success"
             variant="tonal"
             density="compact"
             icon="mdi-check-decagram"
             class="mb-3 text-caption"
           >
-            <strong>계정 연동 성공!</strong> 코드에프(CODEF)로부터 커넥티드 ID가 정상 발급되었으며,
-            해당 은행에서 <strong>총 {{ discoveredAccounts.length }}개</strong>의 계좌를
-            확인했습니다. 시스템에 연동할 계좌를 선택하고 본사/프로젝트를 지정해 주세요.
+            <div class="fw-bold text-subtitle-2 mb-1">
+              ✔ {{ selectedBankName }} 공동인증서 연동 성공!
+            </div>
+            <div>
+              은행으로부터 <strong>총 {{ discoveredAccounts.length }}개</strong>의 보유 계좌를 성공적으로 확인했습니다.<br />
+              IBS 시스템에서 실시간 자동 수집할 계좌를 체크하고 본사/프로젝트를 지정한 후, 하단의 <strong>[선택 계좌 연동 완료]</strong> 버튼을 눌러 저장을 완료해 주세요.
+            </div>
           </v-alert>
 
           <v-table density="compact" hover class="border">
             <thead class="bg-grey-lighten-4">
               <tr>
                 <th class="text-center" style="width: 50px">선택</th>
-                <th class="text-left" style="width: 180px">계좌번호</th>
-                <th class="text-left" style="width: 180px">예금주 / 상품명</th>
-                <th class="text-left" style="width: 140px">IBS 연동 구분</th>
-                <th class="text-left">연결 대상 (회사 / 프로젝트)</th>
+                <th class="text-start" style="width: 180px">계좌번호</th>
+                <th class="text-start" style="width: 180px">예금주 / 상품명</th>
+                <th class="text-start" style="width: 140px">IBS 연동 구분</th>
+                <th class="text-start">연결 대상 (회사 / 프로젝트)</th>
                 <th class="text-center" style="width: 120px">상태</th>
               </tr>
             </thead>
@@ -739,7 +780,7 @@ onMounted(() => {
 
                 <!-- 계좌번호 -->
                 <td>
-                  <div class="font-weight-bold font-monospace">{{ acc.account_number }}</div>
+                  <div class="fw-bold font-monospace">{{ acc.account_number }}</div>
                   <div v-if="acc.balance !== null" class="text-caption text-grey">
                     잔액: {{ Number(acc.balance).toLocaleString() }}원
                   </div>
@@ -747,7 +788,7 @@ onMounted(() => {
 
                 <!-- 예금주 / 상품명 -->
                 <td>
-                  <div class="font-weight-medium">{{ acc.holder || '-' }}</div>
+                  <div class="fw-medium">{{ acc.holder || '-' }}</div>
                   <div class="text-caption text-grey text-truncate" style="max-width: 170px">
                     {{ acc.account_name || '보통예금' }}
                   </div>

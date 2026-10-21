@@ -5,6 +5,7 @@ import { useProLedger } from '@/store/pinia/proLedger'
 import { useComLedger } from '@/store/pinia/comLedger'
 import type { RawBankTransaction } from '@/store/types/rawTransaction'
 import BankRegisterDialog from './BankRegisterDialog.vue'
+import { message } from '@/utils/helper'
 
 const props = withDefaults(
   defineProps<{
@@ -228,6 +229,55 @@ const filteredCredentials = computed(() => {
   })
 })
 
+
+const bankCodeMap: Record<string, string> = {
+  '0004': 'KB국민',
+  '0088': '신한',
+  '0020': '우리',
+  '0081': '하나',
+  '0003': 'IBK기업',
+  '0011': 'NH농협',
+  '0023': 'SC제일',
+  '0027': '한국씨티',
+  '0002': 'KDB산업',
+  '0090': '카카오뱅크',
+  '0089': '케이뱅크',
+  '0092': '토스뱅크',
+  '0031': 'iM뱅크(대구)',
+  '0032': 'BNK부산',
+  '0034': '광주',
+  '0037': '전북',
+  '0039': 'BNK경남',
+  '0071': '우체국',
+  '0007': 'Sh수협',
+  '0045': '새마을금고',
+  '0048': '신협',
+}
+
+const getBankName = (code: string) => {
+  return bankCodeMap[code] || `은행(${code})`
+}
+
+// 연동 현황 요약 (은행별 계좌 수 및 연동 방식)
+const connectedBankSummary = computed(() => {
+  const map: Record<string, { bank_code: string; bank_name: string; count: number; has_cert: boolean }> = {}
+  filteredCredentials.value.forEach(c => {
+    if (!map[c.bank_code]) {
+      map[c.bank_code] = {
+        bank_code: c.bank_code,
+        bank_name: getBankName(c.bank_code),
+        count: 0,
+        has_cert: false,
+      }
+    }
+    map[c.bank_code].count += 1
+    if (c.auth_type === 'cert') {
+      map[c.bank_code].has_cert = true
+    }
+  })
+  return Object.values(map)
+})
+
 // 현재 표시할 거래내역 목록 (클라이언트 사이드 실시간 필터링)
 const displayedTransactions = computed(() => {
   return rawStore.rawTransList.filter(tx => {
@@ -331,6 +381,14 @@ watch(
 
 // 도메인 해당 계좌 일괄 동기화 (관련 계좌만 타겟팅하여 API 호출 비용 최적화)
 const handleSyncAll = async () => {
+  if (filteredCredentials.value.length === 0) {
+    message(
+      'warning',
+      '수집 안내',
+      '현재 등록된 연동 계좌가 없습니다. 상단의 [+ 새 계좌/인증서 연동] 버튼을 눌러 계좌 또는 공동인증서를 먼저 연동해 주세요.',
+    )
+    return
+  }
   isSyncingAll.value = true
   try {
     const targetCredIds = filteredCredentials.value.map(c => c.pk)
@@ -469,7 +527,56 @@ onMounted(() => {
       </v-card-title>
 
       <!-- 툴바 컨트롤러 -->
-      <v-card-text class="pt-4 pb-2">
+      <v-card-text class="pt-3 pb-2">
+        <!-- 연동 계좌(인증서) 상태 안내 배너 / 배지 바 -->
+        <v-alert
+          v-if="filteredCredentials.length === 0"
+          type="warning"
+          density="compact"
+          variant="tonal"
+          class="mb-3 text-caption"
+          icon="mdi-alert-circle-outline"
+        >
+          <div class="d-flex align-center justify-space-between flex-wrap ga-2">
+            <div>
+              <strong>연동된 계좌(공동인증서)가 없습니다.</strong> 실시간 거래 수집을 위해 먼저 계좌를 연동해 주세요.
+            </div>
+            <v-btn
+              size="x-small"
+              color="warning"
+              variant="elevated"
+              prepend-icon="mdi-link-variant-plus"
+              @click="isBankRegisterOpen = true"
+            >
+              + 계좌/인증서 연동하기
+            </v-btn>
+          </div>
+        </v-alert>
+
+        <div
+          v-else
+          class="d-flex align-center flex-wrap ga-2 mb-3 pb-2 text-caption text-grey-darken-2 border-b"
+        >
+          <span class="fw-bold text-grey-darken-3 d-flex align-center">
+            <v-icon size="small" color="primary" class="me-1">mdi-shield-check</v-icon>
+            연동 현황:
+          </span>
+          <v-chip
+            v-for="info in connectedBankSummary"
+            :key="info.bank_code"
+            size="x-small"
+            color="primary"
+            variant="tonal"
+            class="fw-medium"
+          >
+            <v-icon start size="x-small">{{ info.has_cert ? 'mdi-certificate' : 'mdi-flash' }}</v-icon>
+            {{ info.bank_name }}: 계좌 {{ info.count }}개 ({{ info.has_cert ? '공동인증서' : '빠른조회' }})
+          </v-chip>
+          <span class="text-caption text-grey ms-auto">
+            (총 {{ filteredCredentials.length }}개 계좌 활성화됨)
+          </span>
+        </div>
+
         <v-row dense align="center">
           <!-- 연동 계좌 선택 -->
           <v-col cols="12" sm="4" md="3">
@@ -488,12 +595,32 @@ onMounted(() => {
                   v-bind="itemProps"
                   :subtitle="
                     (item as any)?.raw?.pk
-                      ? `${(item as any)?.raw?.bank_code || ''} | ${(item as any)?.raw?.account_number || ''}`
+                      ? `${getBankName((item as any)?.raw?.bank_code)} | ${(item as any)?.raw?.account_number || ''}`
                       : '모든 연동 계좌의 거래내역 표시'
                   "
                 >
-                  <template #append v-if="(item as any)?.raw?.is_imprest">
-                    <v-chip size="x-small" color="teal" variant="flat">운영비 전도금</v-chip>
+                  <template #append>
+                    <v-chip
+                      v-if="(item as any)?.raw?.auth_type === 'cert'"
+                      size="x-small"
+                      color="primary"
+                      variant="outlined"
+                      class="me-1"
+                    >
+                      <v-icon start size="10">mdi-certificate</v-icon>인증서
+                    </v-chip>
+                    <v-chip
+                      v-else-if="(item as any)?.raw?.auth_type === 'fast'"
+                      size="x-small"
+                      color="amber-darken-3"
+                      variant="outlined"
+                      class="me-1"
+                    >
+                      <v-icon start size="10">mdi-flash</v-icon>빠른조회
+                    </v-chip>
+                    <v-chip v-if="(item as any)?.raw?.is_imprest" size="x-small" color="teal" variant="flat">
+                      운영비 전도금
+                    </v-chip>
                   </template>
                 </v-list-item>
               </template>
@@ -609,9 +736,34 @@ onMounted(() => {
               </td>
             </tr>
             <tr v-else-if="displayedTransactions.length === 0">
-              <td :colspan="mode === 'project' ? 8 : 7" class="text-center py-6 text-grey">
-                조회된 거래내역이 없습니다. (상단의 [전체 일괄 수집] 버튼을 눌러 은행 거래를
-                가져오세요)
+              <td :colspan="mode === 'project' ? 8 : 7" class="text-center py-8 text-grey">
+                <div v-if="filteredCredentials.length === 0" class="py-2">
+                  <v-icon size="40" color="grey-lighten-1" class="mb-2">mdi-bank-off-outline</v-icon>
+                  <div class="fw-bold text-subtitle-2 text-grey-darken-2 mb-1">
+                    등록된 은행 연동 계좌(공동인증서)가 없습니다
+                  </div>
+                  <div class="text-caption text-grey mb-3">
+                    공동인증서 또는 신탁 빠른조회 계좌를 연동하면 실시간으로 통장 거래내역을 수집할 수 있습니다.
+                  </div>
+                  <v-btn
+                    size="small"
+                    color="primary"
+                    variant="elevated"
+                    prepend-icon="mdi-link-variant-plus"
+                    @click="isBankRegisterOpen = true"
+                  >
+                    + 새 계좌/인증서 연동하기
+                  </v-btn>
+                </div>
+                <div v-else class="py-2">
+                  <v-icon size="40" color="grey-lighten-1" class="mb-2">mdi-file-document-outline</v-icon>
+                  <div class="fw-bold text-subtitle-2 text-grey-darken-2 mb-1">
+                    조회된 거래내역이 없습니다
+                  </div>
+                  <div class="text-caption text-grey mb-3">
+                    상단의 [전체 일괄 수집] 버튼을 눌러 연동된 은행으로부터 최신 거래내역을 가져오세요.
+                  </div>
+                </div>
               </td>
             </tr>
             <template

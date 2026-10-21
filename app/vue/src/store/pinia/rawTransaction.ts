@@ -116,11 +116,19 @@ export const useRawTransaction = defineStore('rawTransaction', () => {
 
       const res = await api.post('/ledger/credentials/sync_all/', payload)
       const { total_accounts, success_accounts, total_created, total_skipped } = res.data
-      message(
-        'success',
-        '알림',
-        `계좌 수집 완료: 총 ${total_accounts}개 계좌 중 ${success_accounts}개 성공 (신규 ${total_created}건, 기존 중복 ${total_skipped}건)`,
-      )
+      if (total_accounts === 0) {
+        message(
+          'warning',
+          '수집 안내',
+          '수집 대상인 등록된 은행 연동 계좌가 없습니다. 먼저 [+ 새 계좌/인증서 연동] 버튼을 눌러 계좌를 등록해 주세요.',
+        )
+      } else {
+        message(
+          'success',
+          '계좌 수집 완료',
+          `계좌 수집 완료: 총 ${total_accounts}개 계좌 중 ${success_accounts}개 성공 (신규 ${total_created}건, 기존 중복 ${total_skipped}건)`,
+        )
+      }
       return res.data
     } catch (err: any) {
       errorHandle(err.response?.data)
@@ -135,7 +143,20 @@ export const useRawTransaction = defineStore('rawTransaction', () => {
       const res = await api.post('/ledger/credentials/register_certificate/', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
-      message('success', '계정 등록 완료', `총 ${res.data.accounts?.length || 0}개의 보유 계좌를 조회했습니다.`)
+      const accCount = res.data.accounts?.length || 0
+      if (accCount === 0) {
+        message(
+          'warning',
+          '인증서 등록 알림',
+          '공동인증서는 인증되었으나 해당 은행에서 조회된 보유 계좌가 0건입니다. 은행 및 인증서 등록 여부를 확인해 주세요.',
+        )
+      } else {
+        message(
+          'success',
+          '인증서 등록 성공',
+          `공동인증서 등록 완료: 은행에서 총 ${accCount}개의 보유 계좌를 확인했습니다. 연동할 계좌를 선택해 주세요.`,
+        )
+      }
       return res.data
     } catch (err: any) {
       errorHandle(err.response?.data)
@@ -146,7 +167,11 @@ export const useRawTransaction = defineStore('rawTransaction', () => {
   const batchLinkCredentials = async (payload: any) => {
     try {
       const res = await api.post('/ledger/credentials/batch_link/', payload)
-      message('success', '계좌 연동 완료', `${res.data.linked_count}개 계좌가 시스템에 정상 연동되었습니다.`)
+      message(
+        'success',
+        '계좌 연동 완료',
+        `공동인증서 및 ${res.data.linked_count}개 계좌가 시스템에 정상 연동되었습니다.`,
+      )
       await fetchCredentialList()
       return res.data
     } catch (err: any) {
