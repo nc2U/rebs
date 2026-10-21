@@ -1431,6 +1431,7 @@ class BankApiCredentialViewSet(viewsets.ModelViewSet):
         try:
             raw_accounts = client.fetch_account_list(connected_id=connected_id, organization=bank_code, is_business=True)
         except Exception as e:
+            logger.warning("보유 계좌 목록 조회 실패 (connected_id=%s, bank_code=%s): %s", connected_id, bank_code, str(e))
             raw_accounts = []
 
         # 기존 시스템의 CompanyBankAccount 및 ProjectBankAccount 조회하여 매칭
@@ -1445,7 +1446,7 @@ class BankApiCredentialViewSet(viewsets.ModelViewSet):
             acc_num = raw_acc.get('resAccount') or raw_acc.get('account') or raw_acc.get('accountNo') or ''
             acc_name = raw_acc.get('resAccountName') or raw_acc.get('accountName') or raw_acc.get('resAccountNickName') or ''
             holder = raw_acc.get('resAccountHolder') or raw_acc.get('holder') or ''
-            balance = raw_acc.get('resAccountDeposit') or raw_acc.get('balance') or None
+            balance = raw_acc.get('resAccountBalance') or raw_acc.get('balance') or raw_acc.get('resAccountDeposit') or None
 
             clean_acc = clean_num(acc_num)
             matched_type = None

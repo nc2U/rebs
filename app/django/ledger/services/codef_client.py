@@ -258,7 +258,7 @@ class CodefClient:
             is_business: True면 법인(/b/), False면 개인(/p/)
         """
         client_type = "b" if is_business else "p"
-        endpoint = f"/v1/kr/bank/{client_type}/account/list"
+        endpoint = f"/v1/kr/bank/{client_type}/account/account-list"
         body = {
             "connectedId": connected_id,
             "organization": organization
@@ -267,7 +267,14 @@ class CodefClient:
         if isinstance(data, list):
             return data
         elif isinstance(data, dict):
-            return data.get("resAccountList") or data.get("resList") or []
+            accounts: List[Dict[str, Any]] = []
+            for key in ["resDepositTrust", "resForeignCurrency", "resAccountList", "resList"]:
+                val = data.get(key)
+                if isinstance(val, list):
+                    accounts.extend(val)
+                elif isinstance(val, dict):
+                    accounts.append(val)
+            return accounts
         return []
 
     def fetch_fast_transactions(

@@ -36,8 +36,8 @@ const bankOptions = [
   { title: '우리은행 (0020)', value: '0020' },
   { title: '하나은행 (0081)', value: '0081' },
   { title: 'IBK기업은행 (0003)', value: '0003' },
-  { title: 'NH농협은행 (0011)', value: '0011' },
-  { title: '지역농축협 / 단위농협 (0012)', value: '0012' },
+  { title: 'NH농협은행 / 지역농축협·단위농협 (0011)', value: '0011' },
+
   { title: 'SC제일은행 (0023)', value: '0023' },
   { title: '한국씨티은행 (0027)', value: '0027' },
   { title: 'KDB산업은행 (0002)', value: '0002' },
@@ -422,6 +422,8 @@ onMounted(() => {
                 density="compact"
                 variant="outlined"
                 prepend-inner-icon="mdi-bank"
+                :hint="selectedBank === '0011' ? '※ NH농협은행 및 각 지역 농·축협(단위농협) 계좌는 0011로 통합 조회됩니다.' : undefined"
+                :persistent-hint="selectedBank === '0011'"
               />
             </v-col>
 

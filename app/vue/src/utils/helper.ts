@@ -35,6 +35,7 @@ export const errorHandle = (err: any) => {
     // 401 Unauthorized 에러의 경우 조용히 처리 (이미 API 인터셉터에서 리다이렉트 처리됨)
     console.log('Unauthorized - redirecting to login')
   } else {
+    console.error('[API Error Detail]:', JSON.stringify(errorData, null, 2))
     console.log(err)
 
     // If errorData is an object with error details, iterate through them
