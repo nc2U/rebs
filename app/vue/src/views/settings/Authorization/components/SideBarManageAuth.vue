@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { ref, computed, onMounted, watch, type PropType } from 'vue'
+import { computed, onMounted, ref, watch, type PropType } from 'vue'
 import { useWork } from '@/store/pinia/work_project'
-import { usePerms } from '@/composables/usePerms.ts'
+import { usePerms } from '@/composables/usePerms'
 import type { User } from '@/store/types/accounts'
-import type { Role, Member } from '@/store/types/work_project'
+import type { Member, Role } from '@/store/types/work_project'
 
 const props = defineProps({
   user: { type: Object as PropType<User | null>, default: null },
@@ -72,11 +72,10 @@ const toggleRole = async (projPk: number, rolePk: number) => {
     try {
       loading.value = true
       await workStore.createMember({
-        project: projPk,
+        user: props.user.pk,
+        roles: [rolePk],
         slug: proj.slug,
-        user_id: props.user.pk,
-        role_ids: [rolePk],
-      } as any)
+      })
       await fetchUserMembers()
     } catch (error) {
       console.error('Failed to create member and assign role:', error)
@@ -126,8 +125,8 @@ onMounted(() => {
     <!-- 프로젝트별 비즈니스 데이터 권한(Role) 매핑 -->
     <CRow>
       <CCol>
-        <h6 class="font-weight-bold mb-3">
-          <v-icon icon="mdi-shield-key-outline" color="primary" size="sm" class="mr-2" />
+        <h6 class="fw-bold mb-3">
+          <v-icon icon="mdi-shield-key-outline" color="primary" size="small" class="me-2" />
           프로젝트 별 담당 권한
         </h6>
 
@@ -150,17 +149,17 @@ onMounted(() => {
           <CCard v-for="proj in allDevProjects" :key="proj.pk" class="mb-3">
             <CCardHeader class="bg-more-light d-flex align-items-center justify-content-between">
               <span class="fw-bold text-body d-flex align-items-center">
-                <v-icon icon="mdi-folder" color="grey" size="small" class="pt-1 mr-1" />
+                <v-icon icon="mdi-folder" color="grey" size="small" class="pt-1 me-1" />
                 {{ proj.name }}
                 <v-chip
                   v-if="!proj.is_public"
                   color="danger"
                   size="x-small"
                   variant="flat"
-                  class="ml-2 p-2 font-weight-bold text-white"
+                  class="ms-2 p-2 fw-bold text-white"
                   density="comfortable"
                 >
-                  <v-icon icon="mdi-lock" size="x-small" class="mr-2" />
+                  <v-icon icon="mdi-lock" size="x-small" class="me-2" />
                   비공개
                 </v-chip>
               </span>

@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { computed, onBeforeMount, ref, watch } from 'vue'
+import { computed, onBeforeMount, ref } from 'vue'
 import { navMenu, pageTitle } from '@/views/settings/_menu/headermixin'
-import { type User } from '@/store/types/accounts'
-import { useCompany } from '@/store/pinia/company'
+import type { User } from '@/store/types/accounts'
 import { useAccount, type UserByAdmin } from '@/store/pinia/account'
 import Loading from '@/components/Loading/Index.vue'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
@@ -13,14 +12,6 @@ import SideBarManageAuth from './components/SideBarManageAuth.vue'
 import AddUserFormModal from './components/AddUserFormModal.vue'
 
 const refFormModal = ref()
-
-const comInfo = ref<{ company: number | null }>({
-  company: null,
-})
-
-const comStore = useCompany()
-const comId = computed(() => comStore.company?.pk)
-const fetchCompany = async (pk: number) => await comStore.fetchCompany(pk)
 
 const accStore = useAccount()
 const user = computed<User | null>(() => accStore.user)
@@ -42,19 +33,9 @@ const onSubmit = async (payload: UserByAdmin) => {
   }
 }
 
-watch(comId, async val => (!!val ? await dataSetup(val) : dataReset()))
-
-const dataSetup = async (pk: number) => {
-  await fetchCompany(pk)
-  comInfo.value.company = pk
-}
-
-const dataReset = () => (comInfo.value.company = null)
-
 const loading = ref(true)
 onBeforeMount(async () => {
   await accStore.fetchUsersList()
-  comInfo.value.company = comId.value || comStore.initComId
   if (accStore?.userInfo) selectUser((accStore.userInfo as User).pk as number)
   loading.value = false
 })
@@ -65,11 +46,11 @@ onBeforeMount(async () => {
     <Loading v-model:active="loading" />
     <ContentHeader :page-title="pageTitle" :nav-menu="navMenu" selector="CompanySelect" />
     <ContentBody>
-      <CCardBody>
+      <CCardBody class="p-3 p-md-4 pb-5">
         <UserSelect
           :sel-user="user?.pk"
           @select-user="selectUser"
-          @add-user-modal="refFormModal.callModal()"
+          @add-user-modal="refFormModal?.callModal()"
         />
 
         <SideBarManageAuth :user="user as User" />

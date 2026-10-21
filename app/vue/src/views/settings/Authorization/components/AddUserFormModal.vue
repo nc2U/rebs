@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { reactive, ref } from 'vue'
+import { isValidate } from '@/utils/helper'
 import FormModal from '@/components/Modals/FormModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
@@ -19,26 +20,24 @@ const form = reactive({
 })
 
 const genPass = ref()
-const validated = ref()
+const validated = ref(false)
 const refAlertModal = ref()
 
 const onSubmit = (event: Event) => {
-  const el = event.currentTarget as HTMLInputElement
-  if (!el.checkValidity()) {
-    event.preventDefault()
-    event.stopPropagation()
-
+  if (isValidate(event)) {
     validated.value = true
-  } else {
-    if (form.password !== form.pass_conf) {
-      refAlertModal.value?.callModal('알림', '비밀번호가 일치하지 않습니다.')
-      return
-    }
-    emit('on-submit', { ...form })
-    validated.value = false
-    formReset()
-    refFormModal.value.close()
+    return
   }
+
+  if (form.password !== form.pass_conf) {
+    refAlertModal.value?.callModal('알림', '비밀번호가 일치하지 않습니다.')
+    return
+  }
+
+  emit('on-submit', { ...form })
+  validated.value = false
+  formReset()
+  refFormModal.value?.close()
 }
 
 const formReset = () => {
@@ -73,7 +72,7 @@ const applyGen = () => {
   genPass.value = ''
 }
 
-const callModal = () => refFormModal.value.callModal()
+const callModal = () => refFormModal.value?.callModal()
 
 defineExpose({ callModal })
 </script>
@@ -81,7 +80,7 @@ defineExpose({ callModal })
 <template>
   <FormModal ref="refFormModal">
     <template #icon>
-      <v-icon icon="mdi-account-check" color="success" class="mr-2" />
+      <v-icon icon="mdi-account-check" color="success" class="me-2" />
     </template>
     <template #header>새 사용자 생성</template>
     <template #default>
@@ -171,7 +170,7 @@ defineExpose({ callModal })
           </CRow>
 
           <CRow>
-            <CCol sm="12" class="pl-5 mb-3">
+            <CCol sm="12" class="ps-5 mb-3">
               <CFormCheck
                 v-model="form.send_option"
                 value="1"
@@ -183,8 +182,8 @@ defineExpose({ callModal })
               />
             </CCol>
             <CRow>
-              <CCol sm="5" class="pl-5 mb-3">
-                <span class="pl-4">링크 만료 시간 : </span>
+              <CCol sm="5" class="ps-5 mb-3">
+                <span class="ps-4">링크 만료 시간 : </span>
               </CCol>
               <CCol sm="4">
                 <CFormSelect v-model.number="form.expired" size="sm" :disabled="!form.mail_sending">
@@ -195,7 +194,7 @@ defineExpose({ callModal })
               </CCol>
               <CCol>시간</CCol>
             </CRow>
-            <CCol sm="12" class="pl-5 mb-3">
+            <CCol sm="12" class="ps-5 mb-3">
               <CFormCheck
                 v-model="form.send_option"
                 value="2"
@@ -210,7 +209,7 @@ defineExpose({ callModal })
         </CModalBody>
         <CModalFooter>
           <v-btn type="submit" size="small" color="primary">확인</v-btn>
-          <v-btn color="light" size="small" @click="() => refFormModal.close()" flat> 닫기</v-btn>
+          <v-btn color="light" size="small" flat @click="refFormModal?.close()">닫기</v-btn>
         </CModalFooter>
       </CForm>
     </template>
