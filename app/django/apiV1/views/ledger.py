@@ -1729,7 +1729,7 @@ class RawBankTransactionViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def confirm(self, request, pk=None):
-        """단건 승인 및 원장 반영"""
+        """단건 승인 및 원장 반영 (단일 계정 및 복수 분개 분할 지원)"""
         from ledger.services.transaction_confirm import confirm_raw_transaction
         from ledger.models import CompanyAccount, ProjectAccount
         from contract.models import Contract
@@ -1740,6 +1740,7 @@ class RawBankTransactionViewSet(viewsets.ModelViewSet):
 
         custom_account_id = serializer.validated_data.get('custom_account_id')
         custom_contract_id = serializer.validated_data.get('custom_contract_id')
+        entries_data = serializer.validated_data.get('entries')
 
         custom_account = None
         if custom_account_id:
@@ -1752,14 +1753,41 @@ class RawBankTransactionViewSet(viewsets.ModelViewSet):
         if custom_contract_id and raw_tx.credential.is_project:
             custom_contract = Contract.objects.filter(id=custom_contract_id).first()
 
+        resolved_entries = None
+        if entries_data and len(entries_data) > 0:
+            resolved_entries = []
+            for item in entries_data:
+                acc_id = item['account_id']
+                if raw_tx.credential.is_project:
+                    acc_obj = ProjectAccount.objects.filter(id=acc_id).first()
+                else:
+                    acc_obj = CompanyAccount.objects.filter(id=acc_id).first()
+                if not acc_obj:
+                    return Response({'error': f"존재하지 않는 회계계정 ID ({acc_id})입니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+                c_obj = None
+                c_id = item.get('contract_id')
+                if c_id and raw_tx.credential.is_project:
+                    c_obj = Contract.objects.filter(id=c_id).first()
+
+                resolved_entries.append({
+                    'account': acc_obj,
+                    'amount': item['amount'],
+                    'trader': item.get('trader', ''),
+                    'contract': c_obj
+                })
+
         try:
             result = confirm_raw_transaction(
                 raw_tx=raw_tx,
                 user=request.user,
                 custom_account=custom_account,
-                custom_contract=custom_contract
+                custom_contract=custom_contract,
+                entries_data=resolved_entries
             )
             return Response(result, status=status.HTTP_200_OK)
+        except ValueError as ve:
+            return Response({'error': str(ve)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             logger.exception("거래 승인 처리 중 예외 발생 (#%s)", raw_tx.pk)
             return Response({'error': "거래 승인 처리 중 오류가 발생했습니다."}, status=status.HTTP_400_BAD_REQUEST)

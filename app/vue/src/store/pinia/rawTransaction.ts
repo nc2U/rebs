@@ -42,11 +42,18 @@ export const useRawTransaction = defineStore('rawTransaction', () => {
     pk: number,
     customAccountId?: number | null,
     customContractId?: number | null,
+    entries?: Array<{
+      account_id: number
+      amount: number
+      trader?: string
+      contract_id?: number | null
+    }> | null,
   ) => {
     try {
       const payload: Record<string, any> = {}
       if (customAccountId) payload.custom_account_id = customAccountId
       if (customContractId) payload.custom_contract_id = customContractId
+      if (entries && entries.length > 0) payload.entries = entries
 
       const res = await api.post(`/ledger/raw-transactions/${pk}/confirm/`, payload)
       message('success', '알림', '해당 거래가 정식 원장 및 분양수납으로 승인 반영되었습니다.')

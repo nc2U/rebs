@@ -39,6 +39,137 @@ const imprestFilter = ref<'all' | 'trust' | 'imprest'>(
   props.isImprest === true ? 'imprest' : props.isImprest === false ? 'trust' : 'all',
 )
 const selectedAccounts = ref<Record<number, number | null>>({})
+
+interface SplitEntry {
+  id: number
+  account_id: number | null
+  amount: number
+  trader: string
+  contract_id?: number | null
+}
+
+const splitEntries = ref<Record<number, SplitEntry[]>>({})
+const isSplitOpen = ref<Record<number, boolean>>({})
+
+// 이체수수료 계정 PK
+const transferFeePk = computed(() => {
+  return props.mode === 'company'
+    ? comLedgerStore.transferFeePk
+    : proLedgerStore.transferFeePk
+})
+
+// 분개 분할 토글
+const toggleSplit = (tx: RawBankTransaction) => {
+  if (isSplitOpen.value[tx.pk]) {
+    isSplitOpen.value[tx.pk] = false
+  } else {
+    isSplitOpen.value[tx.pk] = true
+    if (!splitEntries.value[tx.pk] || splitEntries.value[tx.pk].length === 0) {
+      const currentAcc =
+        selectedAccounts.value[tx.pk] ||
+        (props.mode === 'company'
+          ? tx.suggested_company_account
+          : tx.suggested_project_account) ||
+        null
+      splitEntries.value[tx.pk] = [
+        {
+          id: 1,
+          account_id: currentAcc,
+          amount: Number(tx.amount) || 0,
+          trader: tx.client_name || '',
+          contract_id: tx.suggested_contract || null,
+        },
+      ]
+    }
+  }
+}
+
+// 이체수수료 500원 원클릭 자동 분할
+const quickAddTransferFee = (tx: RawBankTransaction) => {
+  isSplitOpen.value[tx.pk] = true
+  const totalAmount = Number(tx.amount) || 0
+  const feeAmount = 500
+  const mainAmount = Math.max(0, totalAmount - feeAmount)
+  const traderName = tx.client_name || ''
+  const currentAcc =
+    selectedAccounts.value[tx.pk] ||
+    (props.mode === 'company'
+      ? tx.suggested_company_account
+      : tx.suggested_project_account) ||
+    null
+
+  splitEntries.value[tx.pk] = [
+    {
+      id: 1,
+      account_id: currentAcc,
+      amount: mainAmount,
+      trader: traderName,
+      contract_id: tx.suggested_contract || null,
+    },
+    {
+      id: 2,
+      account_id: transferFeePk.value ?? null,
+      amount: feeAmount,
+      trader: traderName ? `[${traderName}]-이체수수료` : '이체수수료',
+      contract_id: null,
+    },
+  ]
+}
+
+// 분개 행 추가
+const addSplitRow = (tx: RawBankTransaction) => {
+  if (!splitEntries.value[tx.pk]) {
+    splitEntries.value[tx.pk] = []
+  }
+  const currentTotal = splitEntries.value[tx.pk].reduce(
+    (sum, e) => sum + (Number(e.amount) || 0),
+    0,
+  )
+  const remaining = Math.max(0, Number(tx.amount) - currentTotal)
+
+  splitEntries.value[tx.pk].push({
+    id: Date.now(),
+    account_id: null,
+    amount: remaining,
+    trader: tx.client_name || '',
+    contract_id: null,
+  })
+}
+
+// 분개 행 삭제
+const removeSplitRow = (tx: RawBankTransaction, index: number) => {
+  if (!splitEntries.value[tx.pk]) return
+  splitEntries.value[tx.pk].splice(index, 1)
+  if (splitEntries.value[tx.pk].length === 0) {
+    isSplitOpen.value[tx.pk] = false
+  }
+}
+
+// 분개 분할 취소
+const cancelSplit = (tx: RawBankTransaction) => {
+  isSplitOpen.value[tx.pk] = false
+  delete splitEntries.value[tx.pk]
+}
+
+// 분개 합계 및 차액 계산
+const getSplitTotal = (txPk: number): number => {
+  const entries = splitEntries.value[txPk]
+  if (!entries) return 0
+  return entries.reduce((sum, e) => sum + (Number(e.amount) || 0), 0)
+}
+
+const getSplitDiff = (tx: RawBankTransaction): number => {
+  return Number(tx.amount) - getSplitTotal(tx.pk)
+}
+
+// 분할 모드 유효성 검사 (차액 0 & 계정 선택 여부)
+const isSplitValid = (tx: RawBankTransaction): boolean => {
+  if (!isSplitOpen.value[tx.pk]) return true
+  const entries = splitEntries.value[tx.pk]
+  if (!entries || entries.length === 0) return false
+  if (getSplitDiff(tx) !== 0) return false
+  return entries.every(e => !!e.account_id && Number(e.amount) > 0)
+}
 const isSyncingAll = ref<boolean>(false)
 const isSyncingSingle = ref<boolean>(false)
 const isConfirming = ref<Record<number, boolean>>({})
@@ -222,16 +353,40 @@ const handleSyncSingle = async () => {
   }
 }
 
-// 단건 승인
+// 단건 승인 (복수 분개 분할 지원)
 const handleConfirm = async (tx: RawBankTransaction) => {
   isConfirming.value[tx.pk] = true
   try {
-    const customAccount =
-      selectedAccounts.value[tx.pk] ||
-      (props.mode === 'company' ? tx.suggested_company_account : tx.suggested_project_account)
-    const customContract = props.mode === 'project' ? tx.suggested_contract : null
+    let customAccount: number | null = null
+    let customContract: number | null = null
+    let entriesPayload:
+      | Array<{
+          account_id: number
+          amount: number
+          trader?: string
+          contract_id?: number | null
+        }>
+      | null = null
 
-    await rawStore.confirmRawTransaction(tx.pk, customAccount, customContract)
+    if (isSplitOpen.value[tx.pk] && (splitEntries.value[tx.pk]?.length ?? 0) > 0) {
+      if (!isSplitValid(tx)) return
+      entriesPayload = splitEntries.value[tx.pk].map(e => ({
+        account_id: e.account_id!,
+        amount: Number(e.amount),
+        trader: e.trader || undefined,
+        contract_id: e.contract_id || null,
+      }))
+    } else {
+      customAccount =
+        selectedAccounts.value[tx.pk] ||
+        (props.mode === 'company' ? tx.suggested_company_account : tx.suggested_project_account) ||
+        null
+      customContract = props.mode === 'project' ? tx.suggested_contract || null : null
+    }
+
+    await rawStore.confirmRawTransaction(tx.pk, customAccount, customContract, entriesPayload)
+    isSplitOpen.value[tx.pk] = false
+    delete splitEntries.value[tx.pk]
     await fetchTransactions()
     emit('confirmed')
   } finally {
@@ -276,13 +431,13 @@ onMounted(() => {
       <!-- 헤더 -->
       <v-card-title class="d-flex align-center justify-space-between pb-2 border-b">
         <div class="d-flex align-center">
-          <v-icon color="primary" class="mr-2">mdi-bank-transfer-in</v-icon>
-          <span class="text-h6 font-weight-bold">
+          <v-icon color="primary" class="me-2">mdi-bank-transfer-in</v-icon>
+          <span class="text-h6 fw-bold">
             은행 거래내역 자동 수집 & AI 회계 분류 검토
             <v-chip
               size="small"
               :color="mode === 'company' ? 'info' : props.isImprest ? 'teal' : 'primary'"
-              class="ml-2 font-weight-bold"
+              class="ms-2 fw-bold"
             >
               {{
                 mode === 'company'
@@ -434,22 +589,22 @@ onMounted(() => {
             <tr>
               <th class="text-center" style="width: 100px">거래일시</th>
               <th class="text-center" style="width: 70px">구분</th>
-              <th class="text-right" style="width: 110px">금액</th>
-              <th class="text-left" style="width: 180px">거래처 / 적요</th>
-              <th class="text-left" style="width: 230px">
+              <th class="text-end" style="width: 110px">금액</th>
+              <th class="text-start" style="width: 180px">거래처 / 적요</th>
+              <th class="text-start" style="width: 230px">
                 {{ mode === 'company' ? '본사 추천 계정과목' : '프로젝트 추천 계정과목' }}
               </th>
-              <th v-if="mode === 'project'" class="text-left" style="width: 170px">
+              <th v-if="mode === 'project'" class="text-start" style="width: 170px">
                 추천 분양계약
               </th>
-              <th class="text-left">AI 신뢰도 & 추천 사유</th>
+              <th class="text-start">AI 신뢰도 & 추천 사유</th>
               <th class="text-center" style="width: 90px">승인</th>
             </tr>
           </thead>
           <tbody>
             <tr v-if="rawStore.isLoading">
               <td :colspan="mode === 'project' ? 8 : 7" class="text-center py-6 text-grey">
-                <v-progress-circular indeterminate color="primary" size="24" class="mr-2" />
+                <v-progress-circular indeterminate color="primary" size="24" class="me-2" />
                 거래내역을 불러오는 중입니다...
               </td>
             </tr>
@@ -459,13 +614,13 @@ onMounted(() => {
                 가져오세요)
               </td>
             </tr>
-            <tr
+            <template
               v-for="tx in displayedTransactions"
               :key="tx.pk"
-              :class="{ 'bg-grey-lighten-5': tx.status === 'confirmed' }"
             >
+              <tr :class="{ 'bg-grey-lighten-5': tx.status === 'confirmed' }">
               <!-- 일시 -->
-              <td class="text-center text-caption font-weight-medium">
+              <td class="text-center text-caption fw-medium">
                 <div>{{ tx.deal_date }}</div>
                 <div class="text-grey text-caption" style="font-size: 11px">
                   {{ tx.deal_time || '' }}
@@ -478,7 +633,7 @@ onMounted(() => {
                   :color="tx.sort_type === 'deposit' ? 'primary' : 'error'"
                   size="x-small"
                   variant="tonal"
-                  class="font-weight-bold"
+                  class="fw-bold"
                 >
                   {{ tx.sort_type === 'deposit' ? '입금' : '출금' }}
                 </v-chip>
@@ -486,16 +641,16 @@ onMounted(() => {
 
               <!-- 금액 -->
               <td
-                class="text-right font-weight-bold"
+                class="text-end fw-bold"
                 :class="tx.sort_type === 'deposit' ? 'text-primary' : 'text-error'"
               >
                 {{ (tx.amount || 0).toLocaleString() }}원
               </td>
 
               <!-- 거래처 / 적요 -->
-              <td class="text-left">
+              <td class="text-start">
                 <div
-                  class="font-weight-bold text-truncate"
+                  class="fw-bold text-truncate"
                   style="max-width: 170px"
                   :title="tx.client_name"
                 >
@@ -510,37 +665,81 @@ onMounted(() => {
                 </div>
               </td>
 
-              <!-- 추천 계정과목 (선택 가능 드롭다운) -->
-              <td class="text-left">
-                <v-autocomplete
-                  v-if="tx.status !== 'confirmed'"
-                  v-model="selectedAccounts[tx.pk]"
-                  :items="availableAccounts"
-                  density="compact"
-                  variant="underlined"
-                  hide-details
-                  style="min-width: 190px"
-                  item-value="value"
-                  item-title="title"
-                  clearable
-                  placeholder="계정 검색/선택"
-                  no-data-text="일치하는 계정과목이 없습니다"
-                  :custom-filter="customAccountFilter"
-                  auto-select-first
-                >
-                  <template #item="{ props: itemProps, item }">
-                    <v-list-item
-                      v-bind="itemProps"
-                      :subtitle="
-                        (item as any)?.raw?.direction
-                          ? `[${(item as any)?.raw?.direction}]`
-                          : undefined
-                      "
-                    />
-                  </template>
-                </v-autocomplete>
+              <!-- 추천 계정과목 (선택 가능 드롭다운 & 복합 분할 컨트롤) -->
+              <td class="text-start">
+                <!-- 복합 분개 편집 모드 활성화 시 -->
+                <div v-if="tx.status !== 'confirmed' && isSplitOpen[tx.pk]" class="d-flex align-center ga-1">
+                  <v-chip size="x-small" color="indigo" variant="flat" class="fw-bold">
+                    <v-icon start size="x-small">mdi-call-split</v-icon>
+                    {{ splitEntries[tx.pk]?.length || 0 }}개 분개 편집 중
+                  </v-chip>
+                  <v-btn
+                    size="x-small"
+                    variant="text"
+                    color="grey-darken-1"
+                    title="단일 분개로 복귀"
+                    @click="cancelSplit(tx)"
+                  >
+                    취소
+                  </v-btn>
+                </div>
 
-                <span v-else class="text-caption font-weight-medium text-success">
+                <!-- 일반 단일 계정 선택 모드 -->
+                <div v-else-if="tx.status !== 'confirmed'">
+                  <v-autocomplete
+                    v-model="selectedAccounts[tx.pk]"
+                    :items="availableAccounts"
+                    density="compact"
+                    variant="underlined"
+                    hide-details
+                    style="min-width: 190px"
+                    item-value="value"
+                    item-title="title"
+                    clearable
+                    placeholder="계정 검색/선택"
+                    no-data-text="일치하는 계정과목이 없습니다"
+                    :custom-filter="customAccountFilter"
+                    auto-select-first
+                  >
+                    <template #item="{ props: itemProps, item }">
+                      <v-list-item
+                        v-bind="itemProps"
+                        :subtitle="
+                          (item as any)?.raw?.direction
+                            ? `[${(item as any)?.raw?.direction}]`
+                            : undefined
+                        "
+                      />
+                    </template>
+                  </v-autocomplete>
+
+                  <!-- 복합 분개 & 이체수수료 빠른 액션 버튼 -->
+                  <div class="d-flex align-center ga-1 mt-1">
+                    <v-btn
+                      v-if="tx.sort_type === 'withdraw'"
+                      size="x-small"
+                      variant="tonal"
+                      color="indigo-darken-1"
+                      prepend-icon="mdi-playlist-plus"
+                      title="송금액과 이체수수료(500원)를 원클릭으로 분할합니다"
+                      @click="quickAddTransferFee(tx)"
+                    >
+                      +수수료(500원) 분리
+                    </v-btn>
+                    <v-btn
+                      size="x-small"
+                      variant="text"
+                      color="primary"
+                      prepend-icon="mdi-call-split"
+                      title="여러 계정으로 복합 분개합니다"
+                      @click="toggleSplit(tx)"
+                    >
+                      복합 분개
+                    </v-btn>
+                  </div>
+                </div>
+
+                <span v-else class="text-caption fw-medium text-success">
                   {{
                     mode === 'company'
                       ? tx.suggested_company_account_name
@@ -550,11 +749,11 @@ onMounted(() => {
               </td>
 
               <!-- 추천 분양계약 (프로젝트 모드일 때만 표시) -->
-              <td v-if="mode === 'project'" class="text-left">
+              <td v-if="mode === 'project'" class="text-start">
                 <div v-if="tx.suggested_contract_name" class="d-flex align-center">
-                  <v-icon size="small" color="success" class="mr-1">mdi-home-check</v-icon>
+                  <v-icon size="small" color="success" class="me-1">mdi-home-check</v-icon>
                   <span
-                    class="text-caption font-weight-bold text-truncate"
+                    class="text-caption fw-bold text-truncate"
                     style="max-width: 140px"
                   >
                     {{ tx.suggested_contract_name }}
@@ -564,13 +763,13 @@ onMounted(() => {
               </td>
 
               <!-- AI 신뢰도 & 추천 사유 -->
-              <td class="text-left">
+              <td class="text-start">
                 <div class="d-flex align-center">
                   <v-chip
                     :color="getScoreColor(tx.confidence_score)"
                     size="x-small"
                     variant="flat"
-                    class="font-weight-bold mr-2"
+                    class="fw-bold me-2"
                   >
                     {{ tx.confidence_score }}%
                   </v-chip>
@@ -589,16 +788,154 @@ onMounted(() => {
                 <v-btn
                   v-if="tx.status !== 'confirmed'"
                   size="x-small"
-                  color="primary"
+                  :color="isSplitOpen[tx.pk] ? 'indigo' : 'primary'"
                   variant="flat"
                   :loading="isConfirming[tx.pk]"
+                  :disabled="isSplitOpen[tx.pk] && !isSplitValid(tx)"
                   @click="handleConfirm(tx)"
                 >
-                  승인
+                  {{ isSplitOpen[tx.pk] ? '분할 승인' : '승인' }}
                 </v-btn>
                 <v-chip v-else size="x-small" color="grey" variant="tonal"> 완료 </v-chip>
               </td>
             </tr>
+
+            <!-- 복합 거래 분개 분할 패널 (하위 확장 행) -->
+            <tr
+              v-if="tx.status !== 'confirmed' && isSplitOpen[tx.pk]"
+              class="bg-indigo-lighten-5"
+            >
+              <td :colspan="mode === 'project' ? 8 : 7" class="pa-3">
+                <v-card variant="outlined" color="indigo-lighten-3" class="bg-white pa-3 rounded">
+                  <div class="d-flex align-center justify-space-between mb-2 flex-wrap ga-2">
+                    <div class="d-flex align-center ga-2">
+                      <v-icon color="indigo">mdi-call-split</v-icon>
+                      <span class="fw-bold text-subtitle-2 text-indigo-darken-3">
+                        복합 거래 분개 분할
+                      </span>
+                      <v-chip size="x-small" color="indigo" variant="tonal">
+                        통장 거래금액: {{ (tx.amount || 0).toLocaleString() }}원
+                      </v-chip>
+                    </div>
+
+                    <div class="d-flex align-center ga-3 flex-wrap">
+                      <!-- 차액 실시간 계산 상태 -->
+                      <div class="text-caption fw-bold">
+                        분개 합계:
+                        <span class="text-primary fw-bold">
+                          {{ getSplitTotal(tx.pk).toLocaleString() }}원
+                        </span>
+                        /
+                        <span v-if="getSplitDiff(tx) === 0" class="text-success fw-bold">
+                          <v-icon size="small" color="success">mdi-check-circle</v-icon> 대차 일치
+                        </span>
+                        <span v-else class="text-error fw-bold">
+                          <v-icon size="small" color="error">mdi-alert-circle</v-icon> 차액:
+                          {{ getSplitDiff(tx) > 0 ? '+' : '' }}{{ getSplitDiff(tx).toLocaleString() }}원
+                        </span>
+                      </div>
+
+                      <v-btn
+                        size="x-small"
+                        color="indigo"
+                        variant="elevated"
+                        prepend-icon="mdi-plus"
+                        @click="addSplitRow(tx)"
+                      >
+                        분개 행 추가
+                      </v-btn>
+                      <v-btn
+                        size="x-small"
+                        variant="outlined"
+                        color="grey-darken-1"
+                        @click="cancelSplit(tx)"
+                      >
+                        분할 취소
+                      </v-btn>
+                    </div>
+                  </div>
+
+                  <!-- 분개 항목 테이블 -->
+                  <v-table density="compact" class="border rounded">
+                    <thead class="bg-grey-lighten-4">
+                      <tr>
+                        <th style="width: 45px" class="text-center">#</th>
+                        <th style="width: 280px" class="text-start">회계 계정과목 *</th>
+                        <th style="width: 180px" class="text-end">분개 금액 (원) *</th>
+                        <th class="text-start">거래처 / 적요</th>
+                        <th style="width: 55px" class="text-center">삭제</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(entry, eIdx) in splitEntries[tx.pk]" :key="entry.id">
+                        <td class="text-center fw-bold text-grey">
+                          {{ eIdx + 1 }}
+                        </td>
+                        <td>
+                          <v-autocomplete
+                            v-model="entry.account_id"
+                            :items="availableAccounts"
+                            item-value="value"
+                            item-title="title"
+                            density="compact"
+                            variant="outlined"
+                            hide-details
+                            clearable
+                            placeholder="계정 검색/선택"
+                            no-data-text="일치하는 계정과목이 없습니다"
+                            :custom-filter="customAccountFilter"
+                          >
+                            <template #item="{ props: itemProps, item }">
+                              <v-list-item
+                                v-bind="itemProps"
+                                :subtitle="
+                                  (item as any)?.raw?.direction
+                                    ? `[${(item as any)?.raw?.direction}]`
+                                    : undefined
+                                "
+                              />
+                            </template>
+                          </v-autocomplete>
+                        </td>
+                        <td>
+                          <v-text-field
+                            v-model.number="entry.amount"
+                            type="number"
+                            min="0"
+                            density="compact"
+                            variant="outlined"
+                            hide-details
+                            suffix="원"
+                            class="text-end fw-bold"
+                          />
+                        </td>
+                        <td>
+                          <v-text-field
+                            v-model="entry.trader"
+                            density="compact"
+                            variant="outlined"
+                            hide-details
+                            placeholder="거래처명 / 메모"
+                          />
+                        </td>
+                        <td class="text-center">
+                          <v-btn
+                            icon="mdi-trash-can-outline"
+                            size="x-small"
+                            variant="text"
+                            color="error"
+                            :disabled="splitEntries[tx.pk].length <= 1"
+                            title="행 삭제"
+                            @click="removeSplitRow(tx, eIdx)"
+                          />
+                        </td>
+                      </tr>
+                    </tbody>
+                  </v-table>
+                </v-card>
+              </td>
+            </tr>
+          </template>
           </tbody>
         </v-table>
       </v-card-text>

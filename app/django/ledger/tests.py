@@ -1297,6 +1297,61 @@ class BankScrapingAPITests(LedgerTestBase):
         self.assertEqual(pr_tx.amount, 450000)
         self.assertEqual(pr_tx.accounting_entries.first().account, self.proj_account)
 
+    def test_confirm_raw_transaction_composite_split(self):
+        """복합 거래(수수료 분리 등) 분할 승인 시 1개의 은행거래와 N개의 회계전표 생성 검증"""
+        from ledger.models import RawBankTransaction, CompanyAccount
+
+        fee_account = CompanyAccount.objects.create(
+            code='5120', name='지급수수료', category='expense', depth=2
+        )
+
+        raw_split = RawBankTransaction.objects.create(
+            credential=self.cred_com1,
+            deal_date=date(2026, 7, 7),
+            sort_type='withdraw',
+            amount=1500,
+            client_name='차입금 상환 및 수수료',
+            status='ready',
+            tx_hash='hash_test_split_confirm'
+        )
+
+        # 1. 금액 불일치 테스트 (1000 + 400 != 1500) -> 400 에러
+        invalid_payload = {
+            'entries': [
+                {'account_id': self.com_account.pk, 'amount': 1000, 'trader': '차입금 상환'},
+                {'account_id': fee_account.pk, 'amount': 400, 'trader': '이체수수료'},
+            ]
+        }
+        res_fail = self.client.post(f'/api/v1/ledger/raw-transactions/{raw_split.pk}/confirm/', invalid_payload, format='json')
+        self.assertEqual(res_fail.status_code, http_status.HTTP_400_BAD_REQUEST)
+
+        # 2. 정상 분할 테스트 (1000 + 500 == 1500)
+        valid_payload = {
+            'entries': [
+                {'account_id': self.com_account.pk, 'amount': 1000, 'trader': '차입금 상환'},
+                {'account_id': fee_account.pk, 'amount': 500, 'trader': '이체수수료'},
+            ]
+        }
+        res_ok = self.client.post(f'/api/v1/ledger/raw-transactions/{raw_split.pk}/confirm/', valid_payload, format='json')
+        self.assertEqual(res_ok.status_code, http_status.HTTP_200_OK)
+
+        raw_split.refresh_from_db()
+        self.assertEqual(raw_split.status, 'confirmed')
+        self.assertIsNotNone(raw_split.created_company_transaction)
+
+        com_tx = raw_split.created_company_transaction
+        self.assertEqual(com_tx.amount, 1500)
+        self.assertEqual(com_tx.accounting_entries.count(), 2)
+
+        entries = list(com_tx.accounting_entries.order_by('id'))
+        self.assertEqual(entries[0].account, self.com_account)
+        self.assertEqual(entries[0].amount, 1000)
+        self.assertEqual(entries[0].trader, '차입금 상환')
+
+        self.assertEqual(entries[1].account, fee_account)
+        self.assertEqual(entries[1].amount, 500)
+        self.assertEqual(entries[1].trader, '이체수수료')
+
     def test_register_certificate_and_batch_link(self):
         """인증서/계정 등록(Mock) 및 보유 계좌 일괄 연동 API 검증"""
         from unittest.mock import patch

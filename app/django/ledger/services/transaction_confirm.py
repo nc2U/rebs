@@ -19,16 +19,19 @@ def confirm_raw_transaction(
     raw_tx: RawBankTransaction,
     user=None,
     custom_account=None,
-    custom_contract=None
+    custom_contract=None,
+    entries_data: Optional[List[Dict[str, Any]]] = None
 ) -> Dict[str, Any]:
     """
     수집된 RawBankTransaction을 승인(Confirm)하여 정식 원장 및 분양수납(payment)으로 반영
+    (단일 분개 및 복합 거래 복수 분개 분할 지원)
     
     Args:
         raw_tx: 승인할 RawBankTransaction 인스턴스
         user: 승인자 (User 인스턴스)
-        custom_account: 담당자가 직접 변경/선택한 회계계정 (없으면 AI 추천 계정 사용)
-        custom_contract: 담당자가 직접 변경/선택한 분양계약 (없으면 AI 추천 계약 사용)
+        custom_account: 담당자가 직접 변경/선택한 회계계정 (단일 분개 시)
+        custom_contract: 담당자가 직접 변경/선택한 분양계약 (단일 분개 시)
+        entries_data: 복수 분개 항목 리스트 [{'account': ..., 'amount': ..., 'trader': ..., 'contract': ...}, ...]
     
     Returns:
         Dict: 생성된 거래 및 분개 정보
@@ -43,16 +46,31 @@ def confirm_raw_transaction(
     sort_id = 1 if raw_tx.sort_type == 'deposit' else 2
     sort_obj = AccountSort.objects.get(id=sort_id)
 
-    # 2. 계정과목 확정
-    account = custom_account or (raw_tx.suggested_project_account if is_project else raw_tx.suggested_company_account)
-    if not account:
-        raise ValueError("회계 계정과목이 지정되지 않았습니다. 계정을 선택해 주세요.")
+    # 2. 분개 데이터 검증 및 준비
+    if entries_data and len(entries_data) > 0:
+        total_entry_amount = sum(item['amount'] for item in entries_data)
+        if total_entry_amount != raw_tx.amount:
+            raise ValueError(
+                f"분개 금액 합계({total_entry_amount:,}원)가 통장 거래금액({raw_tx.amount:,}원)과 일치하지 않습니다. (차액: {raw_tx.amount - total_entry_amount:,}원)"
+            )
+        resolved_entries = entries_data
+    else:
+        # 단일 분개 기본 처리
+        account = custom_account or (raw_tx.suggested_project_account if is_project else raw_tx.suggested_company_account)
+        if not account:
+            raise ValueError("회계 계정과목이 지정되지 않았습니다. 계정을 선택해 주세요.")
+        contract = custom_contract or raw_tx.suggested_contract if is_project else None
+        resolved_entries = [{
+            'account': account,
+            'amount': raw_tx.amount,
+            'trader': raw_tx.client_name or '',
+            'contract': contract
+        }]
 
     # 3. 프로젝트 거래 생성
     if is_project:
         project_bank_acc = cred.project_bank_account
         project = project_bank_acc.project
-        contract = custom_contract or raw_tx.suggested_contract
 
         # (1) ProjectBankTransaction 생성
         bank_tx = ProjectBankTransaction.objects.create(
@@ -67,17 +85,22 @@ def confirm_raw_transaction(
             updator=user
         )
 
-        # (2) ProjectAccountingEntry 생성 (save 시 내부에서 trigger_sync_contract_payment 동작)
-        contractor = contract.contractor if contract and hasattr(contract, 'contractor') else None
-        entry = ProjectAccountingEntry.objects.create(
-            project=project,
-            transaction_id=bank_tx.transaction_id,
-            account=account,
-            amount=raw_tx.amount,
-            trader=raw_tx.client_name or (contractor.name if contractor else ''),
-            contract=contract,
-            contractor=contractor
-        )
+        # (2) ProjectAccountingEntry 복수/단수 생성 (save 시 내부에서 trigger_sync_contract_payment 동작)
+        created_entry_ids = []
+        for e in resolved_entries:
+            c = e.get('contract')
+            contractor = c.contractor if c and hasattr(c, 'contractor') else None
+            entry_trader = e.get('trader') or raw_tx.client_name or (contractor.name if contractor else '')
+            entry = ProjectAccountingEntry.objects.create(
+                project=project,
+                transaction_id=bank_tx.transaction_id,
+                account=e['account'],
+                amount=e['amount'],
+                trader=entry_trader,
+                contract=c,
+                contractor=contractor
+            )
+            created_entry_ids.append(entry.id)
 
         # (3) RawBankTransaction 상태 업데이트
         raw_tx.status = 'confirmed'
@@ -90,14 +113,15 @@ def confirm_raw_transaction(
         ])
 
         logger.info(
-            "RawBankTransaction #%d 승인 완료 -> ProjectBankTransaction #%d, ProjectAccountingEntry #%d 생성",
-            raw_tx.id, bank_tx.id, entry.id
+            "RawBankTransaction #%d 승인 완료 -> ProjectBankTransaction #%d, ProjectAccountingEntry %s 생성",
+            raw_tx.id, bank_tx.id, created_entry_ids
         )
 
         return {
             'success': True,
             'bank_transaction_id': bank_tx.id,
-            'accounting_entry_id': entry.id,
+            'accounting_entry_id': created_entry_ids[0] if created_entry_ids else None,
+            'accounting_entry_ids': created_entry_ids,
             'is_project': True
         }
 
@@ -119,14 +143,18 @@ def confirm_raw_transaction(
             updator=user
         )
 
-        # (2) CompanyAccountingEntry 생성
-        entry = CompanyAccountingEntry.objects.create(
-            company=company,
-            transaction_id=bank_tx.transaction_id,
-            account=account,
-            amount=raw_tx.amount,
-            trader=raw_tx.client_name
-        )
+        # (2) CompanyAccountingEntry 복수/단수 생성
+        created_entry_ids = []
+        for e in resolved_entries:
+            entry_trader = e.get('trader') or raw_tx.client_name or ''
+            entry = CompanyAccountingEntry.objects.create(
+                company=company,
+                transaction_id=bank_tx.transaction_id,
+                account=e['account'],
+                amount=e['amount'],
+                trader=entry_trader
+            )
+            created_entry_ids.append(entry.id)
 
         # (3) RawBankTransaction 상태 업데이트
         raw_tx.status = 'confirmed'
@@ -139,14 +167,15 @@ def confirm_raw_transaction(
         ])
 
         logger.info(
-            "RawBankTransaction #%d 승인 완료 -> CompanyBankTransaction #%d, CompanyAccountingEntry #%d 생성",
-            raw_tx.id, bank_tx.id, entry.id
+            "RawBankTransaction #%d 승인 완료 -> CompanyBankTransaction #%d, CompanyAccountingEntry %s 생성",
+            raw_tx.id, bank_tx.id, created_entry_ids
         )
 
         return {
             'success': True,
             'bank_transaction_id': bank_tx.id,
-            'accounting_entry_id': entry.id,
+            'accounting_entry_id': created_entry_ids[0] if created_entry_ids else None,
+            'accounting_entry_ids': created_entry_ids,
             'is_project': False
         }
 

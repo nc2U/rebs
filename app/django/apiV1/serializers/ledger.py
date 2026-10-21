@@ -1240,10 +1240,24 @@ class RawBankTransactionSerializer(serializers.ModelSerializer):
         return None
 
 
+class RawBankTransactionEntryItemSerializer(serializers.Serializer):
+    """복수 분개 항목 Serializer"""
+    account_id = serializers.IntegerField()
+    amount = serializers.DecimalField(max_digits=15, decimal_places=0)
+    trader = serializers.CharField(max_length=100, required=False, allow_blank=True, default='')
+    contract_id = serializers.IntegerField(required=False, allow_null=True)
+
+
 class RawBankTransactionConfirmSerializer(serializers.Serializer):
-    """단건 승인 요청용 Serializer"""
+    """단건 승인 요청용 Serializer (단일 계정 또는 복수 분개 항목)"""
     custom_account_id = serializers.IntegerField(required=False, allow_null=True)
     custom_contract_id = serializers.IntegerField(required=False, allow_null=True)
+    entries = serializers.ListField(
+        child=RawBankTransactionEntryItemSerializer(),
+        required=False,
+        allow_null=True,
+        default=None
+    )
 
 
 class RawBankTransactionBulkConfirmSerializer(serializers.Serializer):
