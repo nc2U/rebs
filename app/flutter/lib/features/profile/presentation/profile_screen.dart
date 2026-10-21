@@ -113,17 +113,26 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Future<void> _toggleBiometric(bool value) async {
+    final tokenStorage = ref.read(tokenStorageProvider);
     if (value) {
-      // 켤 때는 실제 생체 인증을 한번 확인
+      // 켤 때는 실제 생체 인증을 한번 확인 (forceAuth: true로 실제 OS 생체 인증 강제)
       final result = await BiometricService.authenticate(
         reason: '$_biometricLabel 사용을 위해 본인 인증을 진행합니다.',
+        forceAuth: true,
       );
       if (result == BiometricAuthResult.success) {
         await BiometricService.setBiometricEnabled(true);
+        // 현재 세션의 리프레시 토큰을 생체 인증용 스토리지에 즉시 동기화하여
+        // 재로그인 없이 다음 로그아웃 직후부터 간편 로그인이 작동하도록 보장
+        final currentRefresh = await tokenStorage.getRefreshToken();
+        if (currentRefresh != null && currentRefresh.isNotEmpty) {
+          await tokenStorage.saveBiometricRefreshToken(currentRefresh);
+        }
         if (mounted) setState(() => _biometricEnabled = true);
       }
     } else {
       await BiometricService.setBiometricEnabled(false);
+      await tokenStorage.clearBiometricRefreshToken();
       if (mounted) setState(() => _biometricEnabled = false);
     }
   }

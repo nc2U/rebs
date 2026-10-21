@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import 'dart:io';
+import '../services/biometric_service.dart';
 import '../storage/token_storage.dart';
 import '../constants/api_endpoints.dart';
 
@@ -213,6 +214,9 @@ class AuthInterceptor extends QueuedInterceptorsWrapper {
         final newRefresh = response.data['refresh'] as String?;
         if (newRefresh != null && newRefresh.isNotEmpty) {
           await tokenStorage.saveRefreshToken(newRefresh);
+          if (await BiometricService.isBiometricEnabled()) {
+            await tokenStorage.saveBiometricRefreshToken(newRefresh);
+          }
         }
         return true;
       }

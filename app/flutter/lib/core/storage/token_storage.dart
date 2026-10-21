@@ -31,6 +31,11 @@ class TokenStorage {
     return _inMemoryUserData;
   }
 
+  Future<void> clearUserData() async {
+    _inMemoryUserData = null;
+    await _storage.delete(key: _cachedUserKey);
+  }
+
   // Access Token 저장/읽기/삭제
   Future<void> saveAccessToken(String token) async {
     _cachedAccessToken = token;

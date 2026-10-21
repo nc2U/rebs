@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import '../models/user_model.dart';
+import '../services/fcm_service.dart';
 import 'dio_provider.dart';
 
 part 'auth_provider.freezed.dart';
@@ -27,8 +28,11 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
   }
 
   Future<void> logout() async {
+    final dio = ref.read(dioProvider);
     final tokenStorage = ref.read(tokenStorageProvider);
+    await FcmService.deactivateTokenOnLogout(dio);
     await tokenStorage.clearTokens();
+    ref.invalidate(currentUserProvider);
     state = const AsyncData(AuthState.unauthenticated());
   }
 

@@ -57,6 +57,27 @@ class FcmService {
   static const _pushEnabledKey = 'PUSH_NOTIFICATION_ENABLED';
   static const _pushPromptShownKey = 'PUSH_NOTIFICATION_PROMPT_SHOWN';
   static bool _isInitialized = false;
+  static bool _listenersRegistered = false;
+
+  /// 로그아웃 시 서버 측 기기 토큰 비활성화 및 로컬 알림 상태 리셋
+  static Future<void> deactivateTokenOnLogout(Dio dio) async {
+    try {
+      if (Firebase.apps.isNotEmpty) {
+        final fcmToken = await _messaging
+            .getToken()
+            .timeout(const Duration(seconds: 3), onTimeout: () => null);
+        if (fcmToken != null && fcmToken.isNotEmpty) {
+          await _registerTokenToServer(dio, fcmToken, isActive: false)
+              .timeout(const Duration(seconds: 3), onTimeout: () {});
+        }
+      }
+    } catch (e) {
+      debugPrint('⚠️ [FCM] 로그아웃 토큰 비활성화 건너뜀: $e');
+    } finally {
+      _isInitialized = false;
+      await AppBadgeService.removeBadge();
+    }
+  }
 
   /// 최초 푸시 권한 모달 안내를 표시했는지 여부
   static Future<bool> hasPromptedPushPermission() async {
@@ -260,62 +281,66 @@ class FcmService {
           debugPrint('⚠️ [FCM] FCM Token 발급 예외: $e');
         }
 
-        // 6. 토큰 갱신 이벤트 리스너
-        _messaging.onTokenRefresh.listen((newToken) {
-          debugPrint('🔄 [FCM] Device Token Refreshed: $newToken');
-          _registerTokenToServer(dio, newToken);
-        });
+        // 6. 토큰 갱신 및 메시지 이벤트 리스너 (중복 구독 방지)
+        if (!_listenersRegistered) {
+          _listenersRegistered = true;
 
-        // 7. 포그라운드(앱 켜진 상태) 메시지 리스너
-        FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-          debugPrint('📩 [FCM] 포그라운드 알림 수신: ${message.notification?.title} / ${message.notification?.body}');
+          _messaging.onTokenRefresh.listen((newToken) {
+            debugPrint('🔄 [FCM] Device Token Refreshed: $newToken');
+            _registerTokenToServer(dio, newToken);
+          });
 
-          final notification = message.notification;
-          final android = message.notification?.android;
+          // 7. 포그라운드(앱 켜진 상태) 메시지 리스너
+          FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+            debugPrint('📩 [FCM] 포그라운드 알림 수신: ${message.notification?.title} / ${message.notification?.body}');
 
-          // 포그라운드에서도 상단 헤드업 팝업 및 상태바 알림 생성 (OS 뱃지 자동 연동)
-          if (notification != null && !kIsWeb) {
-            kLocalNotificationsPlugin.show(
-              notification.hashCode,
-              notification.title,
-              notification.body,
-              NotificationDetails(
-                android: AndroidNotificationDetails(
-                  kAndroidNotificationChannel.id,
-                  kAndroidNotificationChannel.name,
-                  channelDescription: kAndroidNotificationChannel.description,
-                  importance: Importance.max,
-                  priority: Priority.high,
-                  icon: android?.smallIcon ?? '@mipmap/ic_launcher',
-                  playSound: true,
-                  enableVibration: true,
-                  number: android?.count,
+            final notification = message.notification;
+            final android = message.notification?.android;
+
+            // 포그라운드에서도 상단 헤드업 팝업 및 상태바 알림 생성 (OS 뱃지 자동 연동)
+            if (notification != null && !kIsWeb) {
+              kLocalNotificationsPlugin.show(
+                notification.hashCode,
+                notification.title,
+                notification.body,
+                NotificationDetails(
+                  android: AndroidNotificationDetails(
+                    kAndroidNotificationChannel.id,
+                    kAndroidNotificationChannel.name,
+                    channelDescription: kAndroidNotificationChannel.description,
+                    importance: Importance.max,
+                    priority: Priority.high,
+                    icon: android?.smallIcon ?? '@mipmap/ic_launcher',
+                    playSound: true,
+                    enableVibration: true,
+                    number: android?.count,
+                  ),
+                  iOS: const DarwinNotificationDetails(
+                    presentAlert: true,
+                    presentBadge: true,
+                    presentSound: true,
+                  ),
                 ),
-                iOS: const DarwinNotificationDetails(
-                  presentAlert: true,
-                  presentBadge: true,
-                  presentSound: true,
-                ),
-              ),
-              payload: jsonEncode(message.data),
-            );
-          }
-
-          // 뱃지 카운트 갱신
-          final badgeStr = message.data['badge'] ?? message.notification?.android?.count;
-          if (badgeStr != null) {
-            final badgeCount = int.tryParse(badgeStr.toString());
-            if (badgeCount != null) {
-              AppBadgeService.updateBadgeCount(badgeCount);
+                payload: jsonEncode(message.data),
+              );
             }
-          }
-        });
 
-        // 8. 백그라운드 푸시 탭하여 앱 진입 시 리스너
-        FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-          debugPrint('🚀 [FCM] 백그라운드 푸시 탭으로 앱 진입: ${message.data}');
-          handleNotificationNavigation(message.data);
-        });
+            // 뱃지 카운트 갱신
+            final badgeStr = message.data['badge'] ?? message.notification?.android?.count;
+            if (badgeStr != null) {
+              final badgeCount = int.tryParse(badgeStr.toString());
+              if (badgeCount != null) {
+                AppBadgeService.updateBadgeCount(badgeCount);
+              }
+            }
+          });
+
+          // 8. 백그라운드 푸시 탭하여 앱 진입 시 리스너
+          FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+            debugPrint('🚀 [FCM] 백그라운드 푸시 탭으로 앱 진입: ${message.data}');
+            handleNotificationNavigation(message.data);
+          });
+        }
 
         // 9. 앱 완전 종료(Terminated) 상태에서 푸시 탭으로 진입한 경우 확인
         final initialMessage = await _messaging.getInitialMessage();

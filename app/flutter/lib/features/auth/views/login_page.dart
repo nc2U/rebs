@@ -110,16 +110,166 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     final result = await authService.loginWithBiometrics();
 
     if (!mounted) return;
-    setState(() => _isLoading = false);
+    final canBio = await authService.canBiometricLogin();
+    if (!mounted) return;
+
+    setState(() {
+      _isLoading = false;
+      _canUseBiometrics = canBio;
+    });
 
     if (result['success'] == true) {
       // 사용자 캐시 무효화 및 새 인증 토큰 반영
       ref.invalidate(currentUserProvider);
       ref.read(authProvider.notifier).setAuthenticated(result['access'] as String);
       if (mounted) context.go(AppRoutes.home);
+    } else if (result['canceled'] == true) {
+      // 사용자가 생체 인증 팝업을 직접 취소한 경우 에러 배너 미표출
+      return;
     } else {
       setState(() => _errorMessage = result['message'] ?? '$_biometricLabel 로그인 실패');
     }
+  }
+
+  /// 비밀번호 분실 시 재설정 링크 이메일 발송 다이얼로그
+  Future<void> _showPasswordResetDialog() async {
+    FocusScope.of(context).unfocus();
+    final resetEmailController = TextEditingController(
+      text: _emailController.text.trim(),
+    );
+    bool isSending = false;
+    String? dialogError;
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogCtx) {
+        return StatefulBuilder(
+          builder: (dialogCtx, setDialogState) {
+            return AlertDialog(
+              backgroundColor: context.colors.bgCard,
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+              title: Row(
+                children: [
+                  Icon(Icons.mark_email_read_outlined, color: context.colors.accentWork, size: 22),
+                  const SizedBox(width: 8),
+                  Text(
+                    '비밀번호 찾기',
+                    style: AppTextStyles.titleMd.copyWith(
+                      fontWeight: FontWeight.w800,
+                      color: context.colors.textPrimary,
+                    ),
+                  ),
+                ],
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '가입하신 이메일 주소를 입력하시면 비밀번호 재설정 링크가 포함된 안내 메일을 발송해 드립니다.',
+                    style: AppTextStyles.bodySm.copyWith(
+                      color: context.colors.textSecond,
+                      height: 1.4,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  if (dialogError != null) ...[
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: context.colors.errorBg,
+                        border: Border.all(color: context.colors.errorBorder),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.error_outline_rounded, color: context.colors.error, size: 18),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              dialogError!,
+                              style: AppTextStyles.caption.copyWith(color: context.colors.error),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                  TextField(
+                    controller: resetEmailController,
+                    keyboardType: TextInputType.emailAddress,
+                    style: AppTextStyles.bodyMd.copyWith(color: context.colors.textPrimary),
+                    decoration: _inputDecoration(context, '이메일 주소', Icons.email_outlined),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: isSending ? null : () => Navigator.of(dialogCtx).pop(),
+                  child: Text(
+                    '취소',
+                    style: AppTextStyles.bodyMd.copyWith(color: context.colors.textMuted),
+                  ),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: context.colors.accentWork,
+                    foregroundColor: Colors.white,
+                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                  ),
+                  onPressed: isSending
+                      ? null
+                      : () async {
+                          final email = resetEmailController.text.trim();
+                          final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
+                          if (email.isEmpty || !emailRegex.hasMatch(email)) {
+                            setDialogState(() => dialogError = '올바른 이메일 주소를 입력해주세요.');
+                            return;
+                          }
+
+                          setDialogState(() {
+                            isSending = true;
+                            dialogError = null;
+                          });
+
+                          final authService = ref.read(authServiceProvider);
+                          final res = await authService.requestPasswordReset(email: email);
+
+                          if (!dialogCtx.mounted) return;
+                          setDialogState(() => isSending = false);
+
+                          if (res['success'] == true) {
+                            Navigator.of(dialogCtx).pop();
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(res['message']?.toString() ?? '비밀번호 재설정 메일을 발송했습니다.'),
+                                  behavior: SnackBarBehavior.floating,
+                                  backgroundColor: context.colors.success,
+                                ),
+                              );
+                            }
+                          } else {
+                            setDialogState(() {
+                              dialogError = res['message']?.toString() ?? '비밀번호 재설정 요청에 실패했습니다.';
+                            });
+                          }
+                        },
+                  child: isSending
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                        )
+                      : const Text('재설정 메일 발송'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+    resetEmailController.dispose();
   }
 
   @override
@@ -260,26 +410,47 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           ),
                           const SizedBox(height: 12),
 
-                          // 아이디(이메일) 저장 체크박스
+                          // 아이디(이메일) 저장 체크박스 & 비밀번호 찾기
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: Checkbox(
-                                  value: _rememberEmail,
-                                  activeColor: context.colors.accentWork,
-                                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-                                  onChanged: (val) => setState(() => _rememberEmail = val ?? false),
-                                ),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: Checkbox(
+                                      value: _rememberEmail,
+                                      activeColor: context.colors.accentWork,
+                                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                                      onChanged: (val) => setState(() => _rememberEmail = val ?? false),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  GestureDetector(
+                                    onTap: () => setState(() => _rememberEmail = !_rememberEmail),
+                                    child: Text(
+                                      '아이디(이메일) 저장',
+                                      style: AppTextStyles.caption.copyWith(
+                                        color: context.colors.textSecond,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              const SizedBox(width: 8),
-                              GestureDetector(
-                                onTap: () => setState(() => _rememberEmail = !_rememberEmail),
+                              TextButton(
+                                onPressed: _isLoading ? null : _showPasswordResetDialog,
+                                style: TextButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  minimumSize: Size.zero,
+                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                ),
                                 child: Text(
-                                  '아이디(이메일) 저장',
+                                  '비밀번호 찾기',
                                   style: AppTextStyles.caption.copyWith(
-                                    color: context.colors.textSecond,
+                                    color: context.colors.accentWork,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ),

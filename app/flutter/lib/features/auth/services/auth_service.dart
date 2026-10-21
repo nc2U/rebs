@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/api_endpoints.dart';
 import '../../../core/providers/dio_provider.dart';
 import '../../../core/services/biometric_service.dart';
+import '../../../core/services/fcm_service.dart';
 import '../../../core/storage/token_storage.dart';
 
 class AuthService {
@@ -20,27 +21,40 @@ class AuthService {
     bool rememberEmail = true,
   }) async {
     try {
+      final normalizedEmail = email.trim();
+      final prevSavedEmail = await _tokenStorage.getSavedEmail();
+      final isAccountChanged = prevSavedEmail != null &&
+          prevSavedEmail.isNotEmpty &&
+          prevSavedEmail.toLowerCase() != normalizedEmail.toLowerCase();
+
       final response = await _dio.post(
         ApiEndpoints.jwtCreate,
-        data: {'email': email, 'password': password},
+        data: {'email': normalizedEmail, 'password': password},
       );
 
       final data = response.data as Map<String, dynamic>;
       final accessToken  = data['access']  as String;
       final refreshToken = data['refresh'] as String;
 
+      // 이전 계정의 프로필 캐시 초기화
+      await _tokenStorage.clearUserData();
       await _tokenStorage.saveAccessToken(accessToken);
       await _tokenStorage.saveRefreshToken(refreshToken);
 
-      // 생체 인증 사용 설정이 켜져 있는 경우에만 생체 인증용 토큰 보관
+      // 생체 인증 사용 설정이 켜져 있는 경우 새 토큰으로 갱신하고,
+      // 꺼져 있거나 계정이 변경된 경우 이전 계정의 생체 토큰 잔존을 방지
       final isBioEnabled = await BiometricService.isBiometricEnabled();
-      if (isBioEnabled) {
+      if (isBioEnabled && !isAccountChanged) {
         await _tokenStorage.saveBiometricRefreshToken(refreshToken);
+      } else if (isBioEnabled && isAccountChanged) {
+        await _tokenStorage.saveBiometricRefreshToken(refreshToken);
+      } else {
+        await _tokenStorage.clearBiometricRefreshToken();
       }
 
       // 이메일 기억하기 설정 여부에 따라 저장 또는 삭제
       if (rememberEmail) {
-        await _tokenStorage.saveSavedEmail(email);
+        await _tokenStorage.saveSavedEmail(normalizedEmail);
       } else {
         await _tokenStorage.clearSavedEmail();
       }
@@ -74,11 +88,18 @@ class AuthService {
       final label = await BiometricService.getBiometricLabel();
       final bioResult = await BiometricService.authenticate(
         reason: 'IBS 워크스페이스 로그인을 위해 $label 본인 인증을 진행합니다.',
+        forceAuth: true,
       );
 
       if (bioResult != BiometricAuthResult.success) {
+        if (bioResult == BiometricAuthResult.canceled) {
+          return {'success': false, 'canceled': true};
+        }
         if (bioResult == BiometricAuthResult.lockedOut) {
           return {'success': false, 'message': '생체 인증 시도 횟수를 초과했습니다. 비밀번호로 로그인해 주세요.'};
+        }
+        if (bioResult == BiometricAuthResult.notAvailable) {
+          return {'success': false, 'message': '기기에서 생체 인증을 사용할 수 없습니다. 기기 설정을 확인해 주세요.'};
         }
         return {'success': false, 'message': '생체 인증에 실패했습니다.'};
       }
@@ -97,13 +118,15 @@ class AuthService {
       final accessToken = data['access'] as String;
       await _tokenStorage.saveAccessToken(accessToken);
 
-      if (data.containsKey('refresh') && data['refresh'] != null) {
-        final newRefresh = data['refresh'] as String;
-        await _tokenStorage.saveRefreshToken(newRefresh);
-        await _tokenStorage.saveBiometricRefreshToken(newRefresh);
-      }
+      // ROTATE_REFRESH_TOKENS=False 인 경우에도 일반 세션 REFRESH_TOKEN을 복원해야
+      // 이후 AuthInterceptor._tryRefresh()에서 정상적으로 토큰 갱신이 가능함
+      final activeRefresh = (data.containsKey('refresh') && data['refresh'] != null)
+          ? data['refresh'] as String
+          : refreshToken;
+      await _tokenStorage.saveRefreshToken(activeRefresh);
+      await _tokenStorage.saveBiometricRefreshToken(activeRefresh);
 
-      return {'success': true, 'access': accessToken};
+      return {'success': true, 'access': accessToken, 'refresh': activeRefresh};
     } on DioException catch (e) {
       if (e.response?.statusCode == 401) {
         // 리프레시 토큰 만료 또는 폐기 시 로컬 생체 토큰 삭제
@@ -116,8 +139,31 @@ class AuthService {
     }
   }
 
-  /// 로그아웃 (일반 세션 토큰 삭제, 생체 로그인 세션은 유지)
+  /// 비밀번호 재설정 이메일 발송 요청 (/api/v1/password-reset/)
+  Future<Map<String, dynamic>> requestPasswordReset({required String email}) async {
+    try {
+      final response = await _dio.post(
+        ApiEndpoints.passwordReset,
+        data: {'email': email.trim()},
+      );
+      final data = response.data;
+      final detail = (data is Map && data['detail'] != null)
+          ? data['detail'].toString()
+          : '비밀번호 재설정을 위한 이메일을 발송했습니다.';
+      return {'success': true, 'message': detail};
+    } on DioException catch (e) {
+      return {
+        'success': false,
+        'message': _parseDioError(e, defaultMessage: '비밀번호 재설정 요청에 실패했습니다.'),
+      };
+    } catch (_) {
+      return {'success': false, 'message': '서버와의 통신 중 예기치 않은 오류가 발생했습니다.'};
+    }
+  }
+
+  /// 로그아웃 (FCM 기기 토큰 비활성화 + 일반 세션 토큰 삭제, 생체 로그인 세션은 유지)
   Future<void> logout() async {
+    await FcmService.deactivateTokenOnLogout(_dio);
     await _tokenStorage.clearTokens(clearBiometric: false);
   }
 

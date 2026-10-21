@@ -61,8 +61,11 @@ class BiometricService {
   }
 
   /// 생체 인증 실행
+  /// - [forceAuth]: true이면 설정에서 아직 생체 인증이 꺼져 있어도(예: 설정 활성화 시점)
+  ///   건너뛰지 않고 실제 OS 생체 인증 팝업을 호출합니다.
   static Future<BiometricAuthResult> authenticate({
     String reason = '전자결재 승인을 위해 본인 인증을 진행합니다.',
+    bool forceAuth = false,
   }) async {
     try {
       final canAuth = await canAuthenticate();
@@ -70,10 +73,12 @@ class BiometricService {
         return BiometricAuthResult.notAvailable;
       }
 
-      final isEnabled = await isBiometricEnabled();
-      if (!isEnabled) {
-        // 사용자가 생체인증 기능을 비활성화한 경우 생체 인증 건너뜀
-        return BiometricAuthResult.success;
+      if (!forceAuth) {
+        final isEnabled = await isBiometricEnabled();
+        if (!isEnabled) {
+          // 전자결재 등에서 사용자가 생체인증 기능을 비활성화한 경우 생체 인증 건너뜀
+          return BiometricAuthResult.success;
+        }
       }
 
       final bool didAuthenticate = await _auth.authenticate(
@@ -87,12 +92,14 @@ class BiometricService {
 
       return didAuthenticate
           ? BiometricAuthResult.success
-          : BiometricAuthResult.failed;
+          : BiometricAuthResult.canceled;
     } on PlatformException catch (e) {
-      if (e.code == 'NotAvailable') {
+      if (e.code == 'NotAvailable' || e.code == 'NotEnrolled' || e.code == 'PasscodeNotSet') {
         return BiometricAuthResult.notAvailable;
       } else if (e.code == 'LockedOut' || e.code == 'PermanentlyLockedOut') {
         return BiometricAuthResult.lockedOut;
+      } else if (e.code == 'UserCanceled' || e.code == 'SystemCanceled') {
+        return BiometricAuthResult.canceled;
       }
       return BiometricAuthResult.failed;
     } catch (_) {
@@ -103,6 +110,7 @@ class BiometricService {
 
 enum BiometricAuthResult {
   success,
+  canceled,
   failed,
   notAvailable,
   lockedOut,
