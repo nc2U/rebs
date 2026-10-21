@@ -1,35 +1,37 @@
 <script lang="ts" setup>
 import { computed, type PropType, ref } from 'vue'
-import { usePerms } from '@/composables/usePerms.ts'
+import { usePerms } from '@/composables/usePerms'
 import { useAccount } from '@/store/pinia/account'
 import { TableSecondary } from '@/utils/cssMixins'
-import { type Company } from '@/store/types/settings'
+import type { Company } from '@/store/types/settings'
 import AlertModal from '@/components/Modals/AlertModal.vue'
 
-defineProps({ company: { type: Object as PropType<Company>, default: null } })
+defineProps({
+  company: { type: Object as PropType<Company | null>, default: null },
+})
 
 const emit = defineEmits(['create-form', 'update-form'])
 
 const refAlertModal = ref()
 
 const { can, PERM } = usePerms()
+const account = useAccount()
+
 const canProjectUpdate = computed(() => account.isStaff && can(PERM.PROJECT_UPDATE))
 
 const toEdit = () => {
   if (canProjectUpdate.value) emit('update-form')
-  else refAlertModal.value.callModal()
+  else refAlertModal.value?.callModal()
 }
-
-const account = useAccount()
 
 const toCreate = () => {
   if (account.superAuth) emit('create-form')
-  else refAlertModal.value.callModal()
+  else refAlertModal.value?.callModal()
 }
 </script>
 
 <template>
-  <CCardBody>
+  <CCardBody class="p-3 p-md-4">
     <CRow>
       <CCol class="pt-2">
         <CTable hover responsive>
@@ -123,13 +125,13 @@ const toCreate = () => {
     <CRow v-if="canProjectUpdate" class="justify-content-between">
       <CCol xs="auto">
         <v-btn type="button" color="success" :disabled="!company" @click="toEdit">
-          <v-icon icon="mdi mdi-check-circle-outline" size="small" />
+          <v-icon icon="mdi-check-circle-outline" size="small" class="me-1" />
           수정하기
         </v-btn>
       </CCol>
       <CCol xs="auto">
         <v-btn type="button" color="primary" @click="toCreate">
-          <v-icon icon="mdi mdi-check-circle-outline" size="small" />
+          <v-icon icon="mdi-check-circle-outline" size="small" class="me-1" />
           등록하기
         </v-btn>
       </CCol>

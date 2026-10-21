@@ -1,13 +1,18 @@
 <script lang="ts" setup>
-import { computed, reactive, ref, watch } from 'vue'
-import { type Company } from '@/store/types/settings'
-import { usePerms } from '@/composables/usePerms.ts'
+import { computed, reactive, ref, watch, type PropType } from 'vue'
+import type { Company } from '@/store/types/settings'
+import { usePerms } from '@/composables/usePerms'
 import { useAccount } from '@/store/pinia/account'
+import { isValidate } from '@/utils/helper'
 import { type AddressData, callAddress } from '@/components/DaumPostcode/address'
 import DaumPostcode from '@/components/DaumPostcode/index.vue'
 import DatePicker from '@/components/DatePicker/DatePicker.vue'
 import ConfirmModal from '@/components/Modals/ConfirmModal.vue'
 import AlertModal from '@/components/Modals/AlertModal.vue'
+
+const props = defineProps({
+  company: { type: Object as PropType<Company | null>, default: null },
+})
 
 const emit = defineEmits(['fetch-company', 'on-submit', 'on-delete', 'reset-form'])
 
@@ -17,10 +22,6 @@ const { can, PERM } = usePerms()
 const canProjectCreate = computed(() => account.isStaff && can(PERM.PROJECT_CREATE))
 const canProjectUpdate = computed(() => account.isStaff && can(PERM.PROJECT_UPDATE))
 const canProjectDelete = computed(() => account.isStaff && can(PERM.PROJECT_DELETE))
-
-const props = defineProps({
-  company: { type: Object, default: null },
-})
 
 const refDelModal = ref()
 const refAlertModal = ref()
@@ -61,35 +62,32 @@ const addressCallback = (data: AddressData) => {
 
 const onSubmit = (event: Event) => {
   if (canProjectCreate.value || canProjectUpdate.value) {
-    const e = event.currentTarget as HTMLSelectElement
-    if (!e.checkValidity()) {
-      event.preventDefault()
-      event.stopPropagation()
-
+    if (isValidate(event)) {
       validated.value = true
-    } else {
-      refConfirmModal.value.callModal()
+      return
     }
+    refConfirmModal.value?.callModal()
   } else {
-    refAlertModal.value.callModal()
+    refAlertModal.value?.callModal()
   }
 }
+
 const modalAction = () => {
   emit('on-submit', { ...form })
   validated.value = false
-  refConfirmModal.value.close()
+  refConfirmModal.value?.close()
 }
 
 const deleteCompany = () => {
-  if (account.superAuth) refDelModal.value.callModal()
-  else refAlertModal.value.callModal()
+  if (account.superAuth) refDelModal.value?.callModal()
+  else refAlertModal.value?.callModal()
 }
 
 const modalActionDelete = () => {
   if (props.company?.pk) {
     emit('on-delete', props.company.pk)
   }
-  refDelModal.value.close()
+  refDelModal.value?.close()
 }
 
 const confirmText = computed(() => (props.company ? '변경' : '등록'))
@@ -144,7 +142,7 @@ watch(
 
 <template>
   <CForm class="needs-validation" novalidate :validated="validated" @submit.prevent="onSubmit">
-    <CCardBody>
+    <CCardBody class="p-3 p-md-4">
       <CRow class="mb-3">
         <CFormLabel for="companyName" class="col-md-2 col-form-label required"> 회사명</CFormLabel>
 
@@ -287,7 +285,7 @@ watch(
         <CFormLabel for="zipcode" class="col-md-2 col-form-label required"> 회사주소</CFormLabel>
         <CCol md="4" xl="2" class="mb-3">
           <CInputGroup>
-            <CInputGroupText @click="refPostCode.initiate()"> 우편번호</CInputGroupText>
+            <CInputGroupText @click="refPostCode?.initiate()"> 우편번호</CInputGroupText>
             <CFormInput
               v-model="form.zipcode"
               id="zipcode"
@@ -295,7 +293,7 @@ watch(
               placeholder="우편번호"
               maxlength="5"
               required
-              @focus="refPostCode.initiate()"
+              @focus="refPostCode?.initiate()"
             />
             <CFormFeedback invalid>우편번호를 입력하세요.</CFormFeedback>
           </CInputGroup>
@@ -309,7 +307,7 @@ watch(
             placeholder="회사주소를 입력하세요"
             maxlength="35"
             required
-            @focus="refPostCode.initiate()"
+            @focus="refPostCode?.initiate()"
           />
           <CFormFeedback invalid>회사주소를 입력하세요.</CFormFeedback>
         </CCol>
@@ -339,20 +337,21 @@ watch(
       </CRow>
     </CCardBody>
 
-    <CCardFooter class="text-right">
+    <CCardFooter class="text-end">
       <v-btn type="submit" :color="btnClass" :disabled="formsCheck">
-        <v-icon icon="mdi mdi-check-circle-outline" size="small" />
+        <v-icon icon="mdi-check-circle-outline" size="small" class="me-1" />
         저장
       </v-btn>
       <v-btn
         v-if="company && canProjectDelete"
         type="button"
         color="warning"
+        class="ms-2"
         @click="deleteCompany"
       >
         삭제
       </v-btn>
-      <v-btn type="button" color="light" @click="emit('reset-form')" flat> 취소</v-btn>
+      <v-btn type="button" color="light" class="ms-2" @click="emit('reset-form')" flat> 취소</v-btn>
     </CCardFooter>
   </CForm>
 

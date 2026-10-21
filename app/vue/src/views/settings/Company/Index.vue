@@ -2,7 +2,7 @@
 import { computed, onBeforeMount, ref } from 'vue'
 import { navMenu, pageTitle } from '@/views/settings/_menu/headermixin'
 import { useCompany } from '@/store/pinia/company'
-import { type Company } from '@/store/types/settings'
+import type { Company } from '@/store/types/settings'
 import Loading from '@/components/Loading/Index.vue'
 import ContentHeader from '@/layouts/ContentHeader/Index.vue'
 import ContentBody from '@/layouts/ContentBody/Index.vue'
@@ -10,24 +10,19 @@ import SettingsCompanyGuard from '@/components/AuthGuard/SettingsCompanyGuard.vu
 import CompanyForm from './components/CompanyForm.vue'
 import CompanyDetail from './components/CompanyDetail.vue'
 
-const compName = ref('CompanyDetail')
+const compName = ref<'CompanyDetail' | 'CreateForm' | 'UpdateForm'>('CompanyDetail')
 
 const comStore = useCompany()
 const company = computed(() => comStore.company)
-
-const createCompany = (payload: Company) => comStore.createCompany(payload)
-const updateCompany = (payload: Company) => comStore.updateCompany(payload)
 
 const createForm = () => (compName.value = 'CreateForm')
 const updateForm = () => (compName.value = 'UpdateForm')
 const resetForm = () => (compName.value = 'CompanyDetail')
 
-const onCreate = (payload: Company) => createCompany(payload)
-const onUpdate = (payload: Company) => updateCompany(payload)
-
-const onSubmit = (payload: Company) => {
-  if (payload.pk) onUpdate(payload)
-  else onCreate(payload)
+const onSubmit = async (payload: Company) => {
+  if (payload.pk) await comStore.updateCompany(payload)
+  else await comStore.createCompany(payload)
+  resetForm()
 }
 
 const onDelete = async (pk: number) => {
