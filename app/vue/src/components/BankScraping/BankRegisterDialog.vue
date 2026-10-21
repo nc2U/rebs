@@ -37,6 +37,7 @@ const bankOptions = [
   { title: '하나은행 (0081)', value: '0081' },
   { title: 'IBK기업은행 (0003)', value: '0003' },
   { title: 'NH농협은행 (0011)', value: '0011' },
+  { title: '지역농축협 / 단위농협 (0012)', value: '0012' },
   { title: 'SC제일은행 (0023)', value: '0023' },
   { title: '한국씨티은행 (0027)', value: '0027' },
   { title: 'KDB산업은행 (0002)', value: '0002' },
@@ -55,7 +56,7 @@ const bankOptions = [
 ]
 
 // Step 1 Form State
-const selectedBank = ref<string>('0004')
+const selectedBank = ref<string>('')
 const loginType = ref<'0' | '1' | 'fast'>('0') // '0': 공동인증서, '1': ID/PW, 'fast': 신탁사/조합 빠른조회
 const certFormat = ref<'single' | 'split'>('single') // 'single': .pfx/.p12/.pt2 단일 파일, 'split': der + key 2개 파일
 const singleCertFile = ref<File | null>(null)
@@ -286,7 +287,7 @@ const handleBatchLink = async () => {
 // 폼 초기화
 const resetForm = () => {
   currentStep.value = 1
-  selectedBank.value = '0004'
+  selectedBank.value = ''
   loginType.value = '0'
   certFormat.value = 'single'
   singleCertFile.value = null
@@ -411,11 +412,13 @@ onMounted(() => {
 
           <v-row dense>
             <!-- 거래 은행 선택 -->
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="5">
               <v-select
                 v-model="selectedBank"
                 :items="bankOptions"
-                label="거래 은행 선택 *"
+                label="연동할 거래 은행 선택 *"
+                placeholder="인증서가 등록된 은행 선택"
+                clearable
                 density="compact"
                 variant="outlined"
                 prepend-inner-icon="mdi-bank"
