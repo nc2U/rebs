@@ -287,7 +287,16 @@ export const useSales = defineStore('sales', () => {
       })
   }
 
-  const createPeriod = (payload: Partial<SettlementPeriod>) =>
+    const updatePeriod = (id: number, payload: Partial<SettlementPeriod>) =>
+    api
+      .patch('/sales-settlement-period/' + id + '/', payload)
+      .then(res => {
+        message('success', '알림!', '정산 회차가 수정되었습니다.')
+        return res.data
+      })
+      .catch(err => errorHandle(err))
+
+const createPeriod = (payload: Partial<SettlementPeriod>) =>
     api
       .post('/sales-settlement-period/', payload)
       .then(res => {
@@ -430,6 +439,7 @@ export const useSales = defineStore('sales', () => {
     periodList,
     fetchPeriodList,
     createPeriod,
+    updatePeriod,
     generatePayouts,
     confirmSettlement,
 

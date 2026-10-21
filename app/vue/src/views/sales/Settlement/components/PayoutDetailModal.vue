@@ -8,7 +8,7 @@ const payout = ref<CommissionPayout | null>(null)
 
 const open = (data: CommissionPayout) => {
   payout.value = data
-  modalRef.value.callModal()
+  modalRef.value?.callModal()
 }
 
 defineExpose({ open })
@@ -23,17 +23,17 @@ defineExpose({ open })
         <div class="bg-light p-3 rounded mb-3 border">
           <div class="d-flex justify-content-between align-items-center mb-2">
             <div>
-              <span class="fs-5 fw-bold text-body mr-2">{{ payout.sales_person_name }}</span>
-              <span class="badge bg-primary mr-1">{{ payout.duty_display }}</span>
+              <span class="fs-5 fw-bold text-body me-2">{{ payout.sales_person_name }}</span>
+              <span class="badge bg-primary me-1">{{ payout.duty_display }}</span>
               <span class="badge bg-secondary">{{ payout.team_name }}</span>
             </div>
             <div>
-              <span class="text-muted small mr-1">지급 상태:</span>
+              <span class="text-muted small me-1">지급 상태:</span>
               <span class="badge bg-info">{{ payout.pay_status_display }}</span>
             </div>
           </div>
           <div class="small text-secondary">
-            <v-icon icon="mdi-bank" size="x-small" class="mr-1" />
+            <v-icon icon="mdi-bank" size="x-small" class="me-1" />
             입금 계좌: <strong>{{ payout.bank_name || '-' }}</strong>
             {{ payout.account_number }} (예금주: {{ payout.account_holder }})
           </div>
@@ -97,7 +97,7 @@ defineExpose({ open })
         <!-- 포함된 계약 건별 상세 내역 -->
         <div class="border-top pt-3">
           <div class="fw-bold mb-2 text-body">
-            <v-icon icon="mdi-format-list-bulleted" size="small" class="mr-1 text-primary" />
+            <v-icon icon="mdi-format-list-bulleted" size="small" class="me-1 text-primary" />
             정산 대상 계약 상세 목록 ({{ payout.contract_details?.length ?? 0 }}건)
           </div>
           <div class="table-responsive" style="max-height: 240px; overflow-y: auto">
@@ -117,7 +117,7 @@ defineExpose({ open })
                   <td>
                     <span class="badge bg-light text-body border">{{ c.role_type_display }}</span>
                   </td>
-                  <td class="text-right font-monospace fw-bold text-primary">
+                  <td class="text-end font-monospace fw-bold text-primary">
                     {{ c.unit_fee.toLocaleString() }}원
                   </td>
                 </tr>
@@ -134,7 +134,7 @@ defineExpose({ open })
         </div>
       </CModalBody>
       <CModalFooter>
-        <v-btn color="light" size="small" flat @click="modalRef.close()">닫기</v-btn>
+        <v-btn color="light" size="small" flat @click="modalRef?.close()">닫기</v-btn>
       </CModalFooter>
     </template>
   </FormModal>

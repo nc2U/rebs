@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import { useSales } from '@/store/pinia/sales'
 import type { SettlementPeriod } from '@/store/types/sales'
 import { getToday } from '@/utils/baseMixins'
@@ -50,7 +50,7 @@ const open = (period?: SettlementPeriod) => {
     form.payout_date = period.payout_date || ''
     form.status = period.status
   }
-  modalRef.value.callModal()
+  modalRef.value?.callModal()
 }
 
 const submit = async (event: Event) => {
@@ -74,13 +74,11 @@ const submit = async (event: Event) => {
   }
 
   if (isEdit.value && targetId.value) {
-    // Note: If updatePeriod is needed, salesStore.createPeriod / custom update
-    // But mostly period creation is the primary flow
-    await salesStore.createPeriod(payload) // or update
+    await salesStore.updatePeriod(targetId.value, payload)
   } else {
     await salesStore.createPeriod(payload)
   }
-  modalRef.value.close()
+  modalRef.value?.close()
   emit('saved')
 }
 
@@ -108,9 +106,9 @@ defineExpose({ open })
               <CFormLabel class="small required">정산 대상 시작일</CFormLabel>
               <DatePicker v-model="form.start_date" required placeholder="정산 대상 시작일" />
               <CFormFeedback invalid>정산 대상 시작일을 입력해주세요.</CFormFeedback>
-              <small class="text-muted d-block mt-1"
-                >이 기간 내 체결된 계약 실적이 집계됩니다.</small
-              >
+              <small class="text-muted d-block mt-1">
+                이 기간 내 체결된 계약 실적이 집계됩니다.
+              </small>
             </CCol>
 
             <CCol md="6">
@@ -138,7 +136,7 @@ defineExpose({ open })
           <v-btn type="submit" color="primary" size="small">
             {{ isEdit ? '수정 저장' : '회차 생성' }}
           </v-btn>
-          <v-btn color="light" size="small" flat @click="modalRef.close()">취소</v-btn>
+          <v-btn color="light" size="small" flat @click="modalRef?.close()">취소</v-btn>
         </CModalFooter>
       </CForm>
     </template>
