@@ -249,6 +249,12 @@ class ProjectSerializer(serializers.ModelSerializer):
             setattr(instance, attr, value)
         instance.save()
 
+        # 연동된 IssueProject 명칭 동기화
+        new_name = validated_data.get('name')
+        if new_name and instance.issue_project and instance.issue_project.name != new_name:
+            instance.issue_project.name = new_name
+            instance.issue_project.save(update_fields=['name'])
+
         # 필요 서류 동기화
         if not RequiredDocument.objects.filter(project=instance).exists():
             self._create_default_required_documents(instance)

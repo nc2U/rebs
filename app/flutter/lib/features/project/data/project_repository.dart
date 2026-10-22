@@ -11,7 +11,10 @@ class ProjectRepository {
 
   /// 프로젝트 목록 조회
   Future<List<ProjectModel>> fetchProjects() async {
-    final response = await _dio.get(ApiEndpoints.projects);
+    final response = await _dio.get(
+      ApiEndpoints.projects,
+      queryParameters: {'limit': 1000},
+    );
     final data = response.data;
     if (data is Map && data.containsKey('results')) {
       return (data['results'] as List)
@@ -71,7 +74,10 @@ class ProjectRepository {
     } on DioException catch (e) {
       if (e.response?.data is Map) {
         final map = e.response!.data as Map;
-        return map.entries.map((entry) => '${entry.key}: ${entry.value}').join('\n');
+        return map.entries.map((entry) {
+          final val = entry.value is List ? (entry.value as List).join(', ') : entry.value.toString();
+          return '${entry.key}: $val';
+        }).join('\n');
       }
       return e.message ?? '프로젝트 정보 수정에 실패했습니다.';
     } catch (e) {

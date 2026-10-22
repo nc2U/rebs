@@ -74,7 +74,7 @@ class _ProjectSettingsScreenState extends ConsumerState<ProjectSettingsScreen> {
                 height: 36,
                 decoration: BoxDecoration(
                   color: const Color(0xFF00796B).withAlpha(30),
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: BorderRadius.zero,
                 ),
                 child: const Icon(Icons.settings_outlined,
                     size: 20, color: Color(0xFF00796B)),
@@ -99,7 +99,7 @@ class _ProjectSettingsScreenState extends ConsumerState<ProjectSettingsScreen> {
                           decoration: BoxDecoration(
                             color: const Color(0xFF00796B).withAlpha(20),
                             border: Border.all(color: const Color(0xFF00796B).withAlpha(120), width: 0.8),
-                            borderRadius: BorderRadius.circular(4),
+                            borderRadius: BorderRadius.zero,
                           ),
                           child: const Text(
                             'SETTINGS',
@@ -166,7 +166,7 @@ class _ProjectSettingsScreenState extends ConsumerState<ProjectSettingsScreen> {
                               backgroundColor: const Color(0xFF00796B),
                               foregroundColor: Colors.white,
                               elevation: 0,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                             ),
                             onPressed: () => _showEditBasicInfoModal(detail),
@@ -178,7 +178,7 @@ class _ProjectSettingsScreenState extends ConsumerState<ProjectSettingsScreen> {
                             decoration: BoxDecoration(
                               color: context.colors.bgSurface,
                               border: Border.all(color: context.colors.border, width: 0.8),
-                              borderRadius: BorderRadius.circular(4),
+                              borderRadius: BorderRadius.zero,
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -267,7 +267,7 @@ class _ProjectSettingsScreenState extends ConsumerState<ProjectSettingsScreen> {
           height: 24,
           decoration: BoxDecoration(
             color: accentColor.withAlpha(25),
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.zero,
           ),
           child: Icon(icon, size: 14, color: accentColor),
         ),
@@ -295,7 +295,7 @@ class _ProjectSettingsScreenState extends ConsumerState<ProjectSettingsScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
         color: context.colors.bgSurface,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.zero,
         border: Border.all(color: context.colors.border, width: 0.8),
       ),
       child: Text(
@@ -312,7 +312,7 @@ class _ProjectSettingsScreenState extends ConsumerState<ProjectSettingsScreen> {
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: context.colors.bgCard,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.zero,
         border: Border.all(color: context.colors.border, width: 0.8),
       ),
       child: Column(
@@ -339,7 +339,7 @@ class _ProjectSettingsScreenState extends ConsumerState<ProjectSettingsScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
                     color: const Color(0xFF00796B).withAlpha(20),
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.zero,
                     border: Border.all(color: const Color(0xFF00796B).withAlpha(90), width: 0.6),
                   ),
                   child: Text(
@@ -447,7 +447,7 @@ class _ProjectSettingsScreenState extends ConsumerState<ProjectSettingsScreen> {
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
       decoration: BoxDecoration(
         color: context.colors.bgSurface,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.zero,
         border: Border.all(color: context.colors.border, width: 0.6),
       ),
       child: Column(
@@ -497,7 +497,7 @@ class _ProjectSettingsScreenState extends ConsumerState<ProjectSettingsScreen> {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: context.colors.bgCard,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.zero,
         border: Border.all(color: context.colors.border, width: 0.8),
       ),
       child: Column(
@@ -538,7 +538,7 @@ class _ProjectSettingsScreenState extends ConsumerState<ProjectSettingsScreen> {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: context.colors.bgCard,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.zero,
         border: Border.all(color: context.colors.border, width: 0.8),
       ),
       child: Column(
@@ -579,7 +579,7 @@ class _ProjectSettingsScreenState extends ConsumerState<ProjectSettingsScreen> {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: context.colors.bgCard,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.zero,
         border: Border.all(color: context.colors.border, width: 0.8),
       ),
       child: Column(
@@ -620,7 +620,7 @@ class _ProjectSettingsScreenState extends ConsumerState<ProjectSettingsScreen> {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: context.colors.bgCard,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.zero,
         border: Border.all(color: context.colors.border, width: 0.8),
       ),
       child: Column(
@@ -745,6 +745,9 @@ class _EditProjectBasicInfoSheetState extends ConsumerState<_EditProjectBasicInf
       return;
     }
 
+    final messenger = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
+
     setState(() => _isLoading = true);
 
     final payload = <String, dynamic>{
@@ -774,24 +777,23 @@ class _EditProjectBasicInfoSheetState extends ConsumerState<_EditProjectBasicInf
       payload: payload,
     );
 
+    if (!mounted) return;
     setState(() => _isLoading = false);
 
-    if (mounted) {
-      if (errorMsg == null) {
-        widget.onSuccess(newName);
-        Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('프로젝트 기본 정보가 수정되었습니다.'), behavior: SnackBarBehavior.floating),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('수정 실패: $errorMsg'),
-            backgroundColor: context.colors.error,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      }
+    if (errorMsg == null) {
+      widget.onSuccess(newName);
+      navigator.pop();
+      messenger.showSnackBar(
+        const SnackBar(content: Text('프로젝트 기본 정보가 수정되었습니다.'), behavior: SnackBarBehavior.floating),
+      );
+    } else {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text('수정 실패: $errorMsg'),
+          backgroundColor: context.colors.error,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
     }
   }
 
@@ -803,9 +805,9 @@ class _EditProjectBasicInfoSheetState extends ConsumerState<_EditProjectBasicInf
           Container(
             width: 3.5,
             height: 14,
-            decoration: BoxDecoration(
-              color: const Color(0xFF00796B),
-              borderRadius: BorderRadius.circular(2),
+            decoration: const BoxDecoration(
+              color: Color(0xFF00796B),
+              borderRadius: BorderRadius.zero,
             ),
           ),
           const SizedBox(width: 8),
@@ -827,14 +829,14 @@ class _EditProjectBasicInfoSheetState extends ConsumerState<_EditProjectBasicInf
       hintText: hint,
       isDense: true,
       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
+      border: const OutlineInputBorder(borderRadius: BorderRadius.zero),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.zero,
         borderSide: BorderSide(color: context.colors.border),
       ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(6),
-        borderSide: const BorderSide(color: Color(0xFF00796B), width: 1.5),
+      focusedBorder: const OutlineInputBorder(
+        borderRadius: BorderRadius.zero,
+        borderSide: BorderSide(color: Color(0xFF00796B), width: 1.5),
       ),
     );
   }
@@ -846,7 +848,7 @@ class _EditProjectBasicInfoSheetState extends ConsumerState<_EditProjectBasicInf
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: context.colors.bgCard,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+        borderRadius: BorderRadius.zero,
         border: Border(top: BorderSide(color: context.colors.border, width: 0.8)),
       ),
       child: SafeArea(
@@ -863,7 +865,7 @@ class _EditProjectBasicInfoSheetState extends ConsumerState<_EditProjectBasicInf
                     height: 32,
                     decoration: BoxDecoration(
                       color: const Color(0xFF00796B).withAlpha(20),
-                      borderRadius: BorderRadius.circular(6),
+                      borderRadius: BorderRadius.zero,
                     ),
                     child: const Icon(Icons.edit_note, size: 18, color: Color(0xFF00796B)),
                   ),
@@ -1073,7 +1075,7 @@ class _EditProjectBasicInfoSheetState extends ConsumerState<_EditProjectBasicInf
                       children: [
                         Expanded(
                           child: InkWell(
-                            borderRadius: BorderRadius.circular(6),
+                            borderRadius: BorderRadius.zero,
                             onTap: () async {
                               final picked = await showDatePicker(
                                 context: context,
@@ -1094,7 +1096,7 @@ class _EditProjectBasicInfoSheetState extends ConsumerState<_EditProjectBasicInf
                         const SizedBox(width: 10),
                         Expanded(
                           child: InkWell(
-                            borderRadius: BorderRadius.circular(6),
+                            borderRadius: BorderRadius.zero,
                             onTap: () async {
                               final picked = await showDatePicker(
                                 context: context,
@@ -1120,7 +1122,7 @@ class _EditProjectBasicInfoSheetState extends ConsumerState<_EditProjectBasicInf
                     Container(
                       decoration: BoxDecoration(
                         color: context.colors.bgSurface,
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.zero,
                         border: Border.all(color: context.colors.border, width: 0.8),
                       ),
                       child: Column(
@@ -1170,7 +1172,7 @@ class _EditProjectBasicInfoSheetState extends ConsumerState<_EditProjectBasicInf
                       style: OutlinedButton.styleFrom(
                         foregroundColor: context.colors.textPrimary,
                         side: BorderSide(color: context.colors.border),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       onPressed: _isLoading ? null : () => Navigator.pop(context),
@@ -1184,7 +1186,7 @@ class _EditProjectBasicInfoSheetState extends ConsumerState<_EditProjectBasicInf
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF00796B),
                         foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       onPressed: _isLoading ? null : _submit,

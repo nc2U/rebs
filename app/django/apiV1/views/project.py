@@ -55,7 +55,7 @@ _SITE_ACTION_PERMISSION_MAP = {
 class ProjectFilterSet(FilterSet):
     class Meta:
         model = Project
-        fields = ('kind', 'start_year', 'is_direct_manage', 'is_returned_area',
+        fields = ('issue_project', 'kind', 'start_year', 'is_direct_manage', 'is_returned_area',
                   'is_unit_set', 'issue_project__status')
 
 

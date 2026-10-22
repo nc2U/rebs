@@ -36,12 +36,13 @@ class ProjectScreen extends ConsumerStatefulWidget {
 
 class _ProjectScreenState extends ConsumerState<ProjectScreen> {
   void _openSubModule(ProjectActiveModule module, [SelectedProject? project]) {
-    if (module == ProjectActiveModule.docs && project != null) {
+    final currentProj = project ?? ref.read(selectedRealEstateProjectProvider);
+    if (module == ProjectActiveModule.docs && currentProj != null) {
       ref.read(docsContextProvider.notifier).state = DocsContext.project(
         SimpleProjectModel(
-          pk: project.pk,
-          name: project.name,
-          slug: project.slug,
+          pk: currentProj.pk,
+          name: currentProj.name,
+          slug: currentProj.slug,
         ),
       );
     }
@@ -52,7 +53,7 @@ class _ProjectScreenState extends ConsumerState<ProjectScreen> {
         Perm.salesPolicy,
         Perm.salesSettle,
         Perm.salesPayout,
-      ], projectSlug: project?.slug);
+      ], projectSlug: currentProj?.slug);
       if (!canSales) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(
@@ -69,6 +70,10 @@ class _ProjectScreenState extends ConsumerState<ProjectScreen> {
   }
 
   void _closeSubModule() {
+    final currentModule = ref.read(projectActiveModuleProvider);
+    if (currentModule == ProjectActiveModule.docs) {
+      ref.read(docsContextProvider.notifier).state = DocsContext.all();
+    }
     ref.read(projectActiveModuleProvider.notifier).state =
         ProjectActiveModule.none;
   }
