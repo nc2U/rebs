@@ -150,7 +150,11 @@ class _ContractMatchBottomSheetState
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('회차 변경 저장에 실패했습니다. 다시 시도해 주세요.'),
+            content: Text(
+              _selectedContract != null
+                  ? '계약 매칭 저장에 실패했습니다. 다시 시도해 주세요.'
+                  : '회차 변경 저장에 실패했습니다. 다시 시도해 주세요.',
+            ),
             backgroundColor: context.colors.error,
             behavior: SnackBarBehavior.floating,
           ),
@@ -794,7 +798,11 @@ class _ContractMatchBottomSheetState
                           )
                         : const Icon(Icons.check_rounded, size: 18),
                     label: Text(
-                      _isSaving ? '저장 중...' : '계약 매칭 완료',
+                      _isSaving
+                          ? '저장 중...'
+                          : (isAlreadyContractMatched && !_showContractSearch
+                              ? '회차 변경 완료'
+                              : '계약 매칭 완료'),
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 13.5,

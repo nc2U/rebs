@@ -10,7 +10,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/constants/app_text_styles.dart';
+import '../../../core/constants/permissions.dart';
+import '../../../core/providers/permission_provider.dart';
 import '../../../core/providers/project_provider.dart';
+import '../../../core/widgets/error_view.dart';
 import '../../../core/services/share_helper.dart';
 import '../../../core/theme/app_colors_extension.dart';
 import '../../contract/data/contract_repository.dart';
@@ -61,6 +64,7 @@ class _PaymentListScreenState extends ConsumerState<PaymentListScreen> {
   }
 
   void _onTransactionsScroll() {
+    if (!_transactionsScrollController.hasClients) return;
     if (_transactionsScrollController.position.pixels >=
         _transactionsScrollController.position.maxScrollExtent - 200) {
       final currentTab = ref.read(paymentCurrentSubTabProvider);
@@ -570,7 +574,20 @@ class _PaymentListScreenState extends ConsumerState<PaymentListScreen> {
     required SalesBillIssueModel billIssue,
     required List<InstallmentStatusItemModel> installmentOrders,
   }) {
-    int? selectedOrder = billIssue.nowPaymentOrder;
+    final selectedProject = ref.read(selectedRealEstateProjectProvider);
+    if (!ref.can(Perm.paymentUpdate, projectSlug: selectedProject?.slug) &&
+        !ref.can(Perm.noticeUpdate, projectSlug: selectedProject?.slug)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('고지 기준 회차 설정 권한이 없습니다.'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+    final hasValidOrder = billIssue.nowPaymentOrder != null &&
+        installmentOrders.any((ord) => ord.orderId == billIssue.nowPaymentOrder);
+    int? selectedOrder = hasValidOrder ? billIssue.nowPaymentOrder : null;
     bool isSaving = false;
 
     showDialog(
@@ -1043,6 +1060,16 @@ class _PaymentListScreenState extends ConsumerState<PaymentListScreen> {
 
   /// 🔗 실시간 계약 & 회차 매칭 바텀시트 모달 (1번 탭 전용)
   void _showMatchContractBottomSheet(PaymentTransactionItemModel item) {
+    final selectedProject = ref.read(selectedRealEstateProjectProvider);
+    if (!ref.can(Perm.paymentUpdate, projectSlug: selectedProject?.slug)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('수납 매칭 권한(payment.update)이 없습니다.'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -1058,6 +1085,16 @@ class _PaymentListScreenState extends ConsumerState<PaymentListScreen> {
 
   /// 🗓️ 순수 납부 회차 변경/지정 전용 바텀시트 모달 (2번 탭 전용)
   void _showChangeInstallmentBottomSheet(PaymentTransactionItemModel item) {
+    final selectedProject = ref.read(selectedRealEstateProjectProvider);
+    if (!ref.can(Perm.paymentUpdate, projectSlug: selectedProject?.slug)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('수납 회차 변경 권한(payment.update)이 없습니다.'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -1082,6 +1119,7 @@ class _PaymentListScreenState extends ConsumerState<PaymentListScreen> {
     });
 
     final selectedProject = ref.watch(selectedRealEstateProjectProvider);
+    final canRead = ref.can(Perm.paymentRead, projectSlug: selectedProject?.slug);
     final aggregateAsync = ref.watch(paymentOverallAggregateProvider);
     final currentTab = ref.watch(paymentCurrentSubTabProvider);
 
@@ -1190,7 +1228,19 @@ class _PaymentListScreenState extends ConsumerState<PaymentListScreen> {
           Divider(color: context.colors.border, height: 1),
 
           // ── 헤더 아래 전체를 CustomScrollView로 스크롤 가능하게 구성 ──────────────
-          if (selectedProject == null)
+          if (!canRead)
+            const Expanded(
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.all(24.0),
+                  child: ErrorView.empty(
+                    message: '대금 수납 내역을 조회할 권한이 없습니다.',
+                    subMessage: '관리자에게 [수납 조회] 권한(payment.read)을 요청해 주세요.',
+                  ),
+                ),
+              ),
+            )
+          else if (selectedProject == null)
             Expanded(
               child: Center(
                 child: Column(

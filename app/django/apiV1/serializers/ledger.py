@@ -676,8 +676,8 @@ class CompanyCompositeTransactionSerializer(serializers.Serializer):
 class ProjectAccountingEntryInputSerializer(serializers.Serializer):
     """프로젝트 회계분개 입력 시리얼라이저"""
     pk = serializers.IntegerField(required=False, allow_null=True)
-    account = serializers.IntegerField()
-    amount = serializers.IntegerField()
+    account = serializers.IntegerField(required=False, allow_null=True)
+    amount = serializers.IntegerField(required=False, allow_null=True)
     trader = serializers.CharField(max_length=50, required=False, allow_blank=True)
     evidence_type = serializers.ChoiceField(choices=['0', '1', '2', '3', '4', '5', '6'], required=False,
                                             allow_null=True)
@@ -1087,44 +1087,57 @@ class ProjectCompositeTransactionSerializer(serializers.Serializer):
 
     @staticmethod
     def _update_contract_payment_installment(accounting_entry, installment_order_id, bank_transaction_deal_date):
-        if not installment_order_id:
-            return
-
         # Only create/update ContractPayment if the associated account is a payment account
-        if not accounting_entry.account.is_payment:
+        if not accounting_entry.account or not getattr(accounting_entry.account, 'is_payment', False):
             return
 
         # ✅ 복제 지연 방지를 위해 Master DB('default') 명시적 사용
-        contract_payment, created = ContractPayment.objects.using('default').get_or_create(
-            accounting_entry=accounting_entry,
-            defaults={
-                'project': accounting_entry.project,
-                'contract': accounting_entry.contract,
-                'installment_order_id': installment_order_id,
-                'deal_date': bank_transaction_deal_date,
-            }
-        )
+        if installment_order_id:
+            contract_payment, created = ContractPayment.objects.using('default').get_or_create(
+                accounting_entry=accounting_entry,
+                defaults={
+                    'project': accounting_entry.project,
+                    'contract': accounting_entry.contract,
+                    'installment_order_id': installment_order_id,
+                    'deal_date': bank_transaction_deal_date,
+                }
+            )
 
-        if not created:
-            update_fields = []
-            if contract_payment.installment_order_id != installment_order_id:
-                contract_payment.installment_order_id = installment_order_id
-                update_fields.append('installment_order')
+            if not created:
+                update_fields = []
+                if contract_payment.installment_order_id != installment_order_id:
+                    contract_payment.installment_order_id = installment_order_id
+                    update_fields.append('installment_order')
 
-            if contract_payment.deal_date != bank_transaction_deal_date:
-                contract_payment.deal_date = bank_transaction_deal_date
-                update_fields.append('deal_date')
+                if contract_payment.deal_date != bank_transaction_deal_date:
+                    contract_payment.deal_date = bank_transaction_deal_date
+                    update_fields.append('deal_date')
 
-            if contract_payment.contract_id != accounting_entry.contract_id:
-                contract_payment.contract = accounting_entry.contract
-                update_fields.append('contract')
+                if contract_payment.contract_id != accounting_entry.contract_id:
+                    contract_payment.contract = accounting_entry.contract
+                    update_fields.append('contract')
 
-            if contract_payment.project_id != accounting_entry.project_id:
-                contract_payment.project = accounting_entry.project
-                update_fields.append('project')
+                if contract_payment.project_id != accounting_entry.project_id:
+                    contract_payment.project = accounting_entry.project
+                    update_fields.append('project')
 
-            if update_fields:
-                contract_payment.save(update_fields=update_fields + ['updated_at'])
+                if update_fields:
+                    contract_payment.save(update_fields=update_fields + ['updated_at'])
+        else:
+            # installment_order_id가 None 또는 0일 때: 회차 미지정으로 변경(해제)
+            try:
+                contract_payment = ContractPayment.objects.using('default').get(accounting_entry=accounting_entry)
+                update_fields = []
+                if contract_payment.installment_order_id is not None:
+                    contract_payment.installment_order_id = None
+                    update_fields.append('installment_order')
+                if contract_payment.contract_id != accounting_entry.contract_id:
+                    contract_payment.contract = accounting_entry.contract
+                    update_fields.append('contract')
+                if update_fields:
+                    contract_payment.save(update_fields=update_fields + ['updated_at'])
+            except ContractPayment.DoesNotExist:
+                pass
 
 
 # ============================================

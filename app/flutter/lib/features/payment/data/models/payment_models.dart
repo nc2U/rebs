@@ -90,9 +90,18 @@ class PaymentTransactionItemModel {
             ? contractRaw
             : _tryParseInt(json['contract_id']));
 
-    final contractor = contract != null && contract['contractor'] is Map
-        ? contract['contractor']
-        : null;
+    String? parsedContractorName;
+    if (contract != null) {
+      final cRaw = contract['contractor'];
+      if (cRaw is Map) {
+        parsedContractorName = cRaw['name']?.toString();
+      } else if (cRaw is String && cRaw.trim().isNotEmpty) {
+        parsedContractorName = cRaw.trim();
+      }
+    }
+    parsedContractorName ??= json['contractor_name']?.toString() ??
+        (json['contractor'] is String ? json['contractor']?.toString() : null) ??
+        json['trader']?.toString();
     final unitType = contract != null && contract['unit_type'] is Map
         ? contract['unit_type']
         : null;
@@ -133,9 +142,7 @@ class PaymentTransactionItemModel {
     return PaymentTransactionItemModel(
       pk: _parseInt(json['pk'] ?? json['id']),
       dealId: _tryParseInt(json['deal_id']),
-      contractorName: contractor != null
-          ? contractor['name']?.toString()
-          : (json['contractor_name']?.toString() ?? json['trader']?.toString()),
+      contractorName: parsedContractorName,
       unitStr:
           parsedUnit ??
           (json['unit_desc']?.toString() ??

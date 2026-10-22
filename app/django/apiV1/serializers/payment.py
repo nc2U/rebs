@@ -256,6 +256,25 @@ class ContractPaymentSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ('deal_date', 'created_at', 'updated_at')
 
+    def update(self, instance, validated_data):
+        request = self.context.get('request')
+        if request and hasattr(request, 'data'):
+            update_fields = []
+            if 'contract' in request.data:
+                contract_val = request.data.get('contract')
+                instance.contract_id = contract_val
+                update_fields.append('contract')
+                if instance.accounting_entry:
+                    instance.accounting_entry.contract_id = contract_val
+                    instance.accounting_entry.save(update_fields=['contract'])
+            if 'installment_order' in request.data:
+                order_val = request.data.get('installment_order')
+                instance.installment_order_id = order_val
+                update_fields.append('installment_order')
+            if update_fields:
+                instance.save(update_fields=update_fields + ['updated_at'])
+        return super().update(instance, validated_data)
+
     def _get_related_transaction(self, obj):
         """related_transaction 캐시 조회 (동일 요청 내 중복 쿼리 방지)"""
         if not hasattr(obj, '_cached_related_transaction'):

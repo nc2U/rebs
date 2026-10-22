@@ -1470,7 +1470,12 @@ class ContractPaymentViewSet(viewsets.ModelViewSet):
     pagination_class = PageNumberPaginationTen
     search_fields = [
         'contract__contractor__name',  # 계약자명
-        'accounting_entry__trader',  # 거래처
+        'contract__serial_number',  # 일련번호
+        'contract__key_unit__houseunit__name',  # 호수
+        'contract__key_unit__houseunit__building_unit',  # 동
+        'accounting_entry__trader',  # 거래처(입금자명)
+        'accounting_entry__related_transaction__bank_account__alias_name',  # 계좌별칭
+        'accounting_entry__related_transaction__note',  # 비고/메모
     ]
     ordering_fields = ['deal_date', 'created_at', 'installment_order']
     ordering = ['-deal_date', '-created_at']  # 기본 정렬

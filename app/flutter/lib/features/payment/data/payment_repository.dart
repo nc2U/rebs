@@ -83,7 +83,7 @@ class PaymentRepository {
       }
       return null;
     } catch (e) {
-      return null;
+      rethrow;
     }
   }
 
@@ -100,6 +100,7 @@ class PaymentRepository {
     try {
       final queryParams = <String, dynamic>{
         'project': projectId,
+        'is_payment_mismatch': 'false',
         'page': page,
         'limit': limit,
       };
@@ -114,6 +115,7 @@ class PaymentRepository {
       }
       if (noInstall == true) {
         queryParams['no_install'] = 'true';
+        queryParams['no_contract'] = 'false';
       }
 
       final response = await dio.get(
@@ -130,7 +132,7 @@ class PaymentRepository {
           .map((json) => PaymentTransactionItemModel.fromJson(json))
           .toList();
     } catch (e) {
-      return [];
+      rethrow;
     }
   }
 
@@ -152,7 +154,7 @@ class PaymentRepository {
       }
       return [];
     } catch (e) {
-      return [];
+      rethrow;
     }
   }
 
@@ -163,11 +165,12 @@ class PaymentRepository {
   }) async {
     try {
       final response = await dio.get(
-        '/api/v1/ledger/payment/',
+        '/api/v1/ledger/all-payment/',
         queryParameters: {
           'project': projectId,
           'contract': contractId,
-          'ordering': 'deal_date',
+          'is_payment_mismatch': 'false',
+          'ordering': 'installment_order',
           'limit': 100,
         },
       );
@@ -181,7 +184,7 @@ class PaymentRepository {
           .map((json) => PaymentTransactionItemModel.fromJson(json))
           .toList();
     } catch (e) {
-      return [];
+      rethrow;
     }
   }
 
