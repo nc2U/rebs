@@ -9,6 +9,7 @@ import '../../../core/theme/app_colors_extension.dart';
 import '../../../core/widgets/notification_sheet.dart';
 import '../../approval/providers/approval_providers.dart';
 import '../../chat/providers/chat_provider.dart';
+import '../../todo/presentation/providers/todo_provider.dart';
 
 /// 홈 탭 — 3대 카테고리 히어로 카드 + 채널(공지/게시판) 퀵 카드
 /// ── 당겨서 새로고침(Pull-to-Refresh) 및 반응형 오버플로우 방어 레이아웃 적용
@@ -16,11 +17,13 @@ class HomeTab extends ConsumerWidget {
   const HomeTab({super.key});
 
   Future<void> _handleRefresh(WidgetRef ref) async {
-    ref.read(notificationListProvider.notifier).fetchNotifications();
     ref.invalidate(pendingApprovalsProvider);
     ref.invalidate(totalUnreadChatCountProvider);
     ref.invalidate(chatRoomsProvider);
-    await Future<void>.delayed(const Duration(milliseconds: 300));
+    await Future.wait([
+      ref.read(notificationListProvider.notifier).fetchNotifications(),
+      ref.read(todoListProvider.notifier).refresh(),
+    ]);
   }
 
   @override
@@ -224,6 +227,7 @@ class _UserBriefingHeader extends ConsumerWidget {
     final user = ref.watch(currentUserProvider).valueOrNull;
     final displayName = user?.nameOrUsername ?? '사용자';
     final unreadNotif = ref.watch(unreadNotificationCountProvider);
+    final pendingTodo = ref.watch(pendingTodoCountProvider);
     final unreadChat = ref.watch(totalUnreadChatCountProvider).valueOrNull ?? 0;
 
     return Container(
@@ -292,6 +296,13 @@ class _UserBriefingHeader extends ConsumerWidget {
                   count: unreadNotif,
                   color: context.colors.accentWork,
                   onTap: () => NotificationSheet.show(context),
+                ),
+                const SizedBox(width: 8),
+                _BriefingChip(
+                  label: '할일',
+                  count: pendingTodo,
+                  color: context.colors.accentProject,
+                  onTap: () => context.push(AppRoutes.todo),
                 ),
                 if (unreadChat > 0) ...[
                   const SizedBox(width: 8),

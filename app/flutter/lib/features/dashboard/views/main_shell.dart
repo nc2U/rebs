@@ -46,22 +46,25 @@ class _MainShellState extends ConsumerState<MainShell> {
   late final AppLifecycleListener _lifecycleListener;
   bool _fcmInitialized = false;
   DateTime? _lastBackPressTime;
+  DateTime? _lastSyncTime;
 
   @override
   void initState() {
     super.initState();
-    // 1. 앱 포그라운드/백그라운드 라이프사이클 감지
+    // 1. 앱 포그라운드/백그라운드 라이프사이클 감지 (중복 호출 방지를 위해 onResume / onPause 단일화)
     _lifecycleListener = AppLifecycleListener(
       onResume: () {
+        if (!mounted) return;
+        ref.read(sseNotificationServiceProvider).start();
         _syncData();
         _startSyncTimer();
       },
-      onShow: () {
-        _syncData();
-        _startSyncTimer();
+      onPause: () {
+        _stopSyncTimer();
+        if (mounted) {
+          ref.read(sseNotificationServiceProvider).stop();
+        }
       },
-      onPause: _stopSyncTimer,
-      onHide: _stopSyncTimer,
     );
 
     // 2. 스마트 주기적 자동 동기화 시작 (SSE/WebSocket이 메인이므로 60초 간격)
@@ -86,7 +89,9 @@ class _MainShellState extends ConsumerState<MainShell> {
     if (!hasPrompted && mounted) {
       // 최초 권한 안내 바텀시트 모달 표시
       final bool? accepted = await PushPermissionPromptModal.show(context);
-      await FcmService.markPushPromptShown();
+      if (accepted != null) {
+        await FcmService.markPushPromptShown();
+      }
 
       if (accepted == true && mounted) {
         // 사용자가 '알림 받기'를 선택한 경우 권한 요청 및 서버 등록 진행
@@ -121,6 +126,13 @@ class _MainShellState extends ConsumerState<MainShell> {
     final isAuthenticated = ref.read(isAuthenticatedProvider);
     if (!isAuthenticated) return;
 
+    final now = DateTime.now();
+    if (_lastSyncTime != null &&
+        now.difference(_lastSyncTime!) < const Duration(seconds: 2)) {
+      return;
+    }
+    _lastSyncTime = now;
+
     ref.read(notificationListProvider.notifier).fetchNotifications();
     ref.invalidate(pendingApprovalsProvider);
     ref.invalidate(totalUnreadChatCountProvider);
@@ -135,12 +147,13 @@ class _MainShellState extends ConsumerState<MainShell> {
     super.dispose();
   }
 
-  int _currentIndex(BuildContext context) {
+  /// 현재 라우트가 5대 하단 탭 중 어디에 속하는지 반환 (비탭 보조 화면인 경우 null)
+  int? _matchedTabIndex(BuildContext context) {
     final location = GoRouterState.of(context).matchedLocation;
     for (var i = 0; i < _tabs.length; i++) {
       if (location.startsWith(_tabs[i].route)) return i;
     }
-    return 0;
+    return null;
   }
 
   void _onTabTap(BuildContext context, int index) {
@@ -154,14 +167,27 @@ class _MainShellState extends ConsumerState<MainShell> {
   void _handlePopInvoked(bool didPop) {
     if (didPop) return;
 
-    final currentIdx = _currentIndex(context);
-    if (currentIdx != 0) {
-      // 홈이 아닌 탭에 머무르고 있을 때는 홈 탭으로 복귀
+    // 1. push로 진입한 하위 페이지(상세, 검색, 채팅, 할일 등)가 스택에 있으면 먼저 pop 수행
+    if (context.canPop()) {
+      context.pop();
+      return;
+    }
+
+    // 2. 스택이 비어있으나 현재 위치가 홈(/home) 루트가 아닌 경우:
+    //    - 탭의 하위 상세 경로(예: 딥링크로 진입한 /work/issues/123)이면 해당 탭 루트로 이동
+    //    - 그 외 다른 탭 루트 또는 보조 화면(/chat, /todo, /search, /docs)이면 홈 탭으로 복귀
+    final location = GoRouterState.of(context).matchedLocation;
+    final matchedIdx = _matchedTabIndex(context);
+    if (matchedIdx != null && location != _tabs[matchedIdx].route) {
+      context.go(_tabs[matchedIdx].route);
+      return;
+    }
+    if (location != AppRoutes.home) {
       context.go(AppRoutes.home);
       return;
     }
 
-    // 홈 탭일 때: 2초 내에 두 번 누르면 앱 종료
+    // 3. 홈 탭(/home) 루트일 때: 2초 내에 두 번 누르면 앱 종료
     final now = DateTime.now();
     if (_lastBackPressTime == null ||
         now.difference(_lastBackPressTime!) > const Duration(seconds: 2)) {
@@ -179,7 +205,9 @@ class _MainShellState extends ConsumerState<MainShell> {
 
   @override
   Widget build(BuildContext context) {
-    final currentIdx = _currentIndex(context);
+    final matchedIdx = _matchedTabIndex(context);
+    final currentIdx = matchedIdx ?? 0;
+    final isOnMainTab = matchedIdx != null;
 
     // 모바일 OS 앱 아이콘 알림 뱃지 자동 동기화 (미확인 알림 + 미결 결재)
     ref.watch(totalAppBadgeCountProvider);
@@ -387,10 +415,14 @@ class _MainShellState extends ConsumerState<MainShell> {
           onTap: (i) => _onTabTap(context, i),
           type: BottomNavigationBarType.fixed,
           backgroundColor: context.colors.bgSurface,
-          selectedItemColor: context.colors.accentWork,
+          selectedItemColor: isOnMainTab
+              ? context.colors.accentWork
+              : context.colors.textDisabled,
           unselectedItemColor: context.colors.textDisabled,
-          selectedLabelStyle:
-              const TextStyle(fontWeight: FontWeight.bold, fontSize: 11),
+          selectedLabelStyle: TextStyle(
+            fontWeight: isOnMainTab ? FontWeight.bold : FontWeight.normal,
+            fontSize: 11,
+          ),
           unselectedLabelStyle: const TextStyle(fontSize: 11),
           elevation: 8,
           items: _tabs.map((t) {

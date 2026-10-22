@@ -14,7 +14,9 @@ class NotificationListNotifier
 
   Future<void> fetchNotifications() async {
     try {
-      state = const AsyncValue.loading();
+      if (state.valueOrNull == null) {
+        state = const AsyncValue.loading();
+      }
       final response = await _dio.get('/api/v1/notification/');
       final data = response.data;
       List<dynamic> rawList = [];
@@ -28,7 +30,9 @@ class NotificationListNotifier
           .toList();
       state = AsyncValue.data(items);
     } catch (e, st) {
-      state = AsyncValue.error(e, st);
+      if (state.valueOrNull == null) {
+        state = AsyncValue.error(e, st);
+      }
     }
   }
 
@@ -90,8 +94,7 @@ final notificationListProvider = StateNotifierProvider.autoDispose<
 final unreadNotificationCountProvider =
     Provider.autoDispose<int>((ref) {
   final listAsync = ref.watch(notificationListProvider);
-  return listAsync.maybeWhen(
-    data: (list) => list.where((n) => !n.isRead).length,
-    orElse: () => 0,
-  );
+  final list = listAsync.valueOrNull;
+  if (list == null) return 0;
+  return list.where((n) => !n.isRead).length;
 });
