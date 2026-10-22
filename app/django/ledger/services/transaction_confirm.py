@@ -198,7 +198,7 @@ def bulk_confirm_high_confidence(user=None, min_confidence: int = 90) -> Dict[st
             confirm_raw_transaction(raw, user=user)
             success_count += 1
         except Exception as e:
-            errors.append(f"#{raw.id}: {str(e)}")
+            errors.append(f"#{raw.id}: 승인 처리 중 오류가 발생했습니다.")
             logger.error("일괄 승인 중 #%d 실패: %s", raw.id, str(e))
 
     return {

@@ -1777,6 +1777,26 @@ class RawBankTransactionViewSet(viewsets.ModelViewSet):
                     'contract': c_obj
                 })
 
+        if raw_tx.status == 'confirmed':
+            return Response({'error': '이미 승인 완료된 거래입니다.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if resolved_entries:
+            total_entry_amount = sum(item['amount'] for item in resolved_entries)
+            if total_entry_amount != raw_tx.amount:
+                return Response(
+                    {'error': '분개 금액 합계가 통장 거래금액과 일치하지 않습니다.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        else:
+            default_account = custom_account or (
+                raw_tx.suggested_project_account if raw_tx.credential.is_project else raw_tx.suggested_company_account
+            )
+            if not default_account:
+                return Response(
+                    {'error': '회계 계정과목이 지정되지 않았습니다. 계정을 선택해 주세요.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
         try:
             result = confirm_raw_transaction(
                 raw_tx=raw_tx,
@@ -1787,7 +1807,11 @@ class RawBankTransactionViewSet(viewsets.ModelViewSet):
             )
             return Response(result, status=status.HTTP_200_OK)
         except ValueError as ve:
-            return Response({'error': str(ve)}, status=status.HTTP_400_BAD_REQUEST)
+            logger.warning("거래 승인 유효성 검증 실패 (#%s): %s", raw_tx.pk, ve)
+            return Response(
+                {'error': "유효하지 않은 거래 승인 요청입니다. 입력 정보를 확인해 주세요."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         except Exception as e:
             logger.exception("거래 승인 처리 중 예외 발생 (#%s)", raw_tx.pk)
             return Response({'error': "거래 승인 처리 중 오류가 발생했습니다."}, status=status.HTTP_400_BAD_REQUEST)

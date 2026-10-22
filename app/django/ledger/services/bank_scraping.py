@@ -81,7 +81,7 @@ def sync_credential_transactions(
         credential.last_status = 'error'
         credential.last_error_message = error_msg
         credential.save(update_fields=['last_status', 'last_error_message', 'updated_at'])
-        stats['errors'].append(error_msg)
+        stats['errors'].append("거래내역 수집 중 내부 오류가 발생했습니다.")
         return stats
 
     stats['total'] = len(raw_list)
@@ -169,7 +169,7 @@ def sync_credential_transactions(
 
         except Exception as ex:
             logger.warning("거래 파싱 에러 (%s): %s", item, str(ex))
-            stats['errors'].append(str(ex))
+            stats['errors'].append("거래 데이터 파싱 중 오류가 발생했습니다.")
 
     # 신규 수집된 거래에 대해 AI 잠정 계정 분류 자동 실행
     if created_raw_txs:
