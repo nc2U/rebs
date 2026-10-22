@@ -436,6 +436,7 @@ class ProjectSubscriptionViewSet(viewsets.ModelViewSet):
     queryset = ProjectSubscription.objects.all()
     serializer_class = ProjectSubscriptionSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    pagination_class = None
     filterset_fields = ('project',)
 
     def get_queryset(self):

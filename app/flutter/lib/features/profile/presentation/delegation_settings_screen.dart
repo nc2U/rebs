@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_text_styles.dart';
+import '../../../../core/models/user_model.dart';
 import '../../../../core/providers/auth_provider.dart';
 import '../../../../core/theme/app_colors_extension.dart';
 import '../../../../core/widgets/error_view.dart';
@@ -32,12 +33,26 @@ class _DelegationSettingsScreenState extends ConsumerState<DelegationSettingsScr
     // 직원/사용자 목록 로드
     int? selectedDelegateeId = editItem?.delegatee?.pk;
     bool isSaving = false;
-    final allUsers = ref.read(usersListProvider).valueOrNull ?? [];
-    final myUser = ref.read(currentUserProvider).valueOrNull;
+    List<UserModel> allUsers = ref.read(usersListProvider).valueOrNull ?? [];
+    if (allUsers.isEmpty) {
+      try {
+        allUsers = await ref.read(usersListProvider.future);
+      } catch (_) {
+        allUsers = [];
+      }
+    }
+    var myUser = ref.read(currentUserProvider).valueOrNull;
+    if (myUser == null) {
+      try {
+        myUser = await ref.read(currentUserProvider.future);
+      } catch (_) {}
+    }
     // 1. 활성 계정(is_active=True), 2. 실제 임직원(has_staff=True 또는 is_superuser=True), 3. 본인 제외 필터링
     final eligibleUsers = allUsers
         .where((u) => u.pk != myUser?.pk && u.isActive && (u.hasStaff || u.isSuperuser))
         .toList();
+
+    if (!mounted) return;
 
     try {
       await showModalBottomSheet(
@@ -270,7 +285,12 @@ class _DelegationSettingsScreenState extends ConsumerState<DelegationSettingsScr
                                 lastDate: DateTime.now().add(const Duration(days: 365)),
                               );
                               if (picked != null) {
-                                setModalState(() => startDate = picked);
+                                setModalState(() {
+                                  startDate = picked;
+                                  if (endDate.isBefore(startDate)) {
+                                    endDate = startDate.add(const Duration(days: 7));
+                                  }
+                                });
                               }
                             },
                             icon: const Icon(Icons.calendar_today, size: 16),
@@ -287,9 +307,10 @@ class _DelegationSettingsScreenState extends ConsumerState<DelegationSettingsScr
                         Expanded(
                           child: OutlinedButton.icon(
                             onPressed: () async {
+                              final initialEnd = endDate.isBefore(startDate) ? startDate : endDate;
                               final picked = await showDatePicker(
                                 context: ctx,
-                                initialDate: endDate,
+                                initialDate: initialEnd,
                                 firstDate: startDate,
                                 lastDate: DateTime.now().add(const Duration(days: 365)),
                               );

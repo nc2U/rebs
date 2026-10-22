@@ -163,8 +163,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(use_url=True, allow_empty_file=False, required=False)
-    sign_image = serializers.ImageField(use_url=True, allow_empty_file=False, required=False)
+    image = serializers.ImageField(use_url=True, allow_empty_file=False, required=False, allow_null=True)
+    sign_image = serializers.ImageField(use_url=True, allow_empty_file=False, required=False, allow_null=True)
 
     class Meta:
         model = Profile
@@ -172,6 +172,20 @@ class ProfileSerializer(serializers.ModelSerializer):
                   'auto_watch_created', 'auto_watch_assigned',
                   'meeting_created_notification', 'meeting_confirmed_notification',
                   'like_posts', 'like_comments', 'blame_posts', 'blame_comments')
+        read_only_fields = ('user',)
+
+    @transaction.atomic
+    def create(self, validated_data):
+        instance = super().create(validated_data)
+
+        user = instance.user
+        new_email = self.initial_data.get('email')
+        if new_email and user.email != new_email:
+            if User.objects.filter(email=new_email).exists():
+                raise serializers.ValidationError({'email': '이미 등록된 이메일입니다.'})
+            user.email = new_email
+            user.save()
+        return instance
 
     @transaction.atomic
     def update(self, instance, validated_data):

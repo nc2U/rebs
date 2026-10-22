@@ -35,14 +35,21 @@ class _SignSettingsScreenState extends ConsumerState<SignSettingsScreen> {
     _loadInitialSign();
   }
 
-  void _loadInitialSign() {
-    final user = ref.read(currentUserProvider).valueOrNull;
+  Future<void> _loadInitialSign() async {
+    var user = ref.read(currentUserProvider).valueOrNull;
+    if (user == null) {
+      try {
+        user = await ref.read(currentUserProvider.future);
+      } catch (_) {}
+    }
     final profile = user?.profile;
     if (profile != null) {
       _signType = profile.signType;
       _serverSignImageUrl = profile.signImage;
     }
-    setState(() => _isLoading = false);
+    if (mounted) {
+      setState(() => _isLoading = false);
+    }
   }
 
   /// 갤러리/사진첩에서 이미지 선택 (Web & Mobile 공통 바이트 지원)
@@ -94,17 +101,25 @@ class _SignSettingsScreenState extends ConsumerState<SignSettingsScreen> {
 
   /// 서버로 저장 (multipart/form-data, Web/Mobile 공통 바이트 전송)
   Future<void> _saveSign() async {
-    final user = ref.read(currentUserProvider).valueOrNull;
-    final profilePk = user?.profile?.pk;
-    if (user == null || profilePk == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('프로필 정보가 유효하지 않습니다.'),
-          backgroundColor: context.colors.error,
-        ),
-      );
+    var user = ref.read(currentUserProvider).valueOrNull;
+    if (user == null) {
+      try {
+        user = await ref.read(currentUserProvider.future);
+      } catch (_) {}
+    }
+    if (user == null) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('프로필 정보가 유효하지 않습니다.'),
+            backgroundColor: context.colors.error,
+          ),
+        );
+      }
       return;
     }
+
+    final profilePk = user.profile?.pk;
 
     setState(() => _isSaving = true);
     final dio = ref.read(dioProvider);
@@ -123,10 +138,17 @@ class _SignSettingsScreenState extends ConsumerState<SignSettingsScreen> {
 
       final formData = FormData.fromMap(mapData);
 
-      await dio.patch(
-        '/api/v1/profile/$profilePk/',
-        data: formData,
-      );
+      if (profilePk != null) {
+        await dio.patch(
+          '/api/v1/profile/$profilePk/',
+          data: formData,
+        );
+      } else {
+        await dio.post(
+          '/api/v1/profile/',
+          data: formData,
+        );
+      }
 
       // 사용자 정보 갱신
       ref.invalidate(currentUserProvider);
@@ -549,7 +571,8 @@ class _SignPadBottomSheetState extends State<_SignPadBottomSheet> {
   }
 
   Future<void> _exportSignature() async {
-    if (_points.where((p) => p != null).isEmpty) {
+    final validPoints = _points.whereType<Offset>().toList();
+    if (validPoints.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('서명을 화면에 그려주세요.')),
       );
@@ -559,24 +582,51 @@ class _SignPadBottomSheetState extends State<_SignPadBottomSheet> {
     setState(() => _isExporting = true);
 
     try {
+      // 실제 서명이 그려진 바운딩 박스 계산
+      double minX = validPoints.first.dx;
+      double maxX = validPoints.first.dx;
+      double minY = validPoints.first.dy;
+      double maxY = validPoints.first.dy;
+
+      for (final p in validPoints) {
+        if (p.dx < minX) minX = p.dx;
+        if (p.dx > maxX) maxX = p.dx;
+        if (p.dy < minY) minY = p.dy;
+        if (p.dy > maxY) maxY = p.dy;
+      }
+
+      // 사방 16px 여백 확보
+      const padding = 16.0;
+      final outWidth = (maxX - minX).clamp(24.0, 2000.0) + (padding * 2);
+      final outHeight = (maxY - minY).clamp(24.0, 2000.0) + (padding * 2);
+
       final recorder = ui.PictureRecorder();
       final canvas = Canvas(recorder);
-      const size = Size(320, 240);
 
-      // 투명 배경에 서명 선 렌더링
+      // 투명 배경에 서명 선/점 렌더링
       final paint = Paint()
         ..color = Colors.black
         ..strokeCap = StrokeCap.round
         ..strokeWidth = 3.5;
 
-      for (int i = 0; i < _points.length - 1; i++) {
-        if (_points[i] != null && _points[i + 1] != null) {
-          canvas.drawLine(_points[i]!, _points[i + 1]!, paint);
+      // 바운딩 박스 기준 이동
+      canvas.translate(-minX + padding, -minY + padding);
+
+      for (int i = 0; i < _points.length; i++) {
+        final p = _points[i];
+        if (p != null) {
+          if (i + 1 < _points.length && _points[i + 1] != null) {
+            canvas.drawLine(p, _points[i + 1]!, paint);
+          } else if ((i == 0 || _points[i - 1] == null) &&
+              (i + 1 == _points.length || _points[i + 1] == null)) {
+            // 단일 터치(점) 보존
+            canvas.drawCircle(p, 1.75, paint);
+          }
         }
       }
 
       final picture = recorder.endRecording();
-      final img = await picture.toImage(size.width.toInt(), size.height.toInt());
+      final img = await picture.toImage(outWidth.ceil(), outHeight.ceil());
       final byteData = await img.toByteData(format: ui.ImageByteFormat.png);
 
       if (byteData == null) throw Exception('이미지 변환 실패');
@@ -722,9 +772,16 @@ class _SignPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..strokeWidth = 3.5;
 
-    for (int i = 0; i < points.length - 1; i++) {
-      if (points[i] != null && points[i + 1] != null) {
-        canvas.drawLine(points[i]!, points[i + 1]!, paint);
+    for (int i = 0; i < points.length; i++) {
+      final p = points[i];
+      if (p != null) {
+        if (i + 1 < points.length && points[i + 1] != null) {
+          canvas.drawLine(p, points[i + 1]!, paint);
+        } else if ((i == 0 || points[i - 1] == null) &&
+            (i + 1 == points.length || points[i + 1] == null)) {
+          // 단일 탭으로 찍은 점 렌더링
+          canvas.drawCircle(p, 1.75, paint);
+        }
       }
     }
   }

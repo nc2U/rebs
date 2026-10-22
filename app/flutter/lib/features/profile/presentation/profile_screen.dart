@@ -256,13 +256,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     String? newAvatarFileName;
     bool isSaving = false;
 
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: context.colors.bgCard,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.zero,
-      ),
+    try {
+      await showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: context.colors.bgCard,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.zero,
+        ),
       builder: (ctx) {
         return StatefulBuilder(
           builder: (modalCtx, setModalState) {
@@ -374,7 +375,28 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       controller: birthDateController,
                       keyboardType: TextInputType.datetime,
                       style: AppTextStyles.bodyMd.copyWith(color: context.colors.textPrimary),
-                      decoration: _flatInputDecoration('YYYY-MM-DD'),
+                      decoration: _flatInputDecoration('YYYY-MM-DD').copyWith(
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.calendar_today, size: 18),
+                          onPressed: () async {
+                            DateTime initial = DateTime.now();
+                            if (birthDateController.text.trim().isNotEmpty) {
+                              final parsed = DateTime.tryParse(birthDateController.text.trim());
+                              if (parsed != null) initial = parsed;
+                            }
+                            final picked = await showDatePicker(
+                              context: modalCtx,
+                              initialDate: initial,
+                              firstDate: DateTime(1920),
+                              lastDate: DateTime.now(),
+                            );
+                            if (picked != null) {
+                              birthDateController.text =
+                                  '${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}';
+                            }
+                          },
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 12),
 
@@ -476,6 +498,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         );
       },
     );
+    } finally {
+      nameController.dispose();
+      phoneController.dispose();
+      birthDateController.dispose();
+      emailController.dispose();
+    }
   }
 
   InputDecoration _flatInputDecoration(String hint) {
@@ -508,7 +536,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final username = user?.username ?? '';
     final email = user?.email ?? '';
     final cellPhone = user?.profile?.cellPhone;
-    final hasRealName = user?.nameOrUsername != null && user!.nameOrUsername.isNotEmpty;
+    final hasRealName = user?.profile?.name != null && user!.profile!.name!.trim().isNotEmpty;
     final displayName = user?.nameOrUsername ?? username;
 
     return Scaffold(

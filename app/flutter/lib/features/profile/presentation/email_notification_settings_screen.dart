@@ -35,7 +35,12 @@ class _EmailNotificationSettingsScreenState
   }
 
   Future<void> _loadInitialData() async {
-    final user = ref.read(currentUserProvider).valueOrNull;
+    var user = ref.read(currentUserProvider).valueOrNull;
+    if (user == null) {
+      try {
+        user = await ref.read(currentUserProvider.future);
+      } catch (_) {}
+    }
     final profile = user?.profile;
 
     if (profile != null) {
@@ -53,8 +58,13 @@ class _EmailNotificationSettingsScreenState
           '/api/v1/project-subscription/',
           queryParameters: {'user': user.pk},
         );
-        if (res.data is List) {
-          final pids = (res.data as List)
+        final rawList = res.data is List
+            ? (res.data as List)
+            : (res.data is Map && res.data['results'] is List
+                ? (res.data['results'] as List)
+                : null);
+        if (rawList != null) {
+          final pids = rawList
               .map((item) => item['project'] as int?)
               .whereType<int>()
               .toSet();
@@ -89,9 +99,17 @@ class _EmailNotificationSettingsScreenState
             'auto_watch_assigned': _autoWatchAssigned,
           },
         );
+      } else {
+        await dio.post(
+          '/api/v1/profile/',
+          data: {
+            'meeting_created_notification': _meetingCreated,
+            'meeting_confirmed_notification': _meetingConfirmed,
+            'auto_watch_created': _autoWatchCreated,
+            'auto_watch_assigned': _autoWatchAssigned,
+          },
+        );
       }
-
-      // 2. 알림 구독 프로젝트 일괄 업데이트 (bulk_update)
       await dio.post(
         '/api/v1/project-subscription/bulk-update/',
         data: {
