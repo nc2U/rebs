@@ -107,9 +107,10 @@ class _ContractListScreenState extends ConsumerState<ContractListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // ── 🔄 프로젝트 변경 감지 리스너: 프로젝트가 변경되면 3대 탭 목록 및 종합 집계를 즉시 자동 갱신 ──
+    // ── 🔄 프로젝트 변경 감지 리스너: 프로젝트가 변경되면 선택된 동 초기화 및 3대 탭 목록·종합 집계를 즉시 자동 갱신 ──
     ref.listen(selectedRealEstateProjectProvider, (previous, next) {
       if (previous?.realProjectId != next?.realProjectId) {
+        ref.read(selectedBuildingUnitIdProvider.notifier).state = null;
         _refreshAllData();
       }
     });

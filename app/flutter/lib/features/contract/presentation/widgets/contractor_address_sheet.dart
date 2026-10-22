@@ -360,7 +360,7 @@ class _NewAddressDialogState extends ConsumerState<_NewAddressDialog> {
 
     final repository = ref.read(contractRepositoryProvider);
 
-    final success = await repository.createAddress(
+    final result = await repository.createAddress(
       contractorId: widget.contractorId,
       idZipcode: _idZipController.text,
       idAddress1: _idAddr1Controller.text,
@@ -376,7 +376,7 @@ class _NewAddressDialogState extends ConsumerState<_NewAddressDialog> {
     if (!mounted) return;
     setState(() => _isLoading = false);
 
-    if (success) {
+    if (result.success) {
       widget.onSuccess();
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -387,7 +387,10 @@ class _NewAddressDialogState extends ConsumerState<_NewAddressDialog> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('주소 등록에 실패했습니다.'), behavior: SnackBarBehavior.floating),
+        SnackBar(
+          content: Text(result.errorMessage ?? '주소 등록에 실패했습니다.'),
+          behavior: SnackBarBehavior.floating,
+        ),
       );
     }
   }
@@ -462,10 +465,12 @@ class _NewAddressDialogState extends ConsumerState<_NewAddressDialog> {
                   child: TextField(
                     controller: _idZipController,
                     keyboardType: TextInputType.number,
+                    maxLength: 5,
                     style: const TextStyle(fontSize: 12.5),
                     decoration: InputDecoration(
                       labelText: '우편번호',
                       hintText: '12345',
+                      counterText: '',
                       isDense: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
                     ),
@@ -576,10 +581,12 @@ class _NewAddressDialogState extends ConsumerState<_NewAddressDialog> {
                     controller: _dmZipController,
                     enabled: !_isSameAsId,
                     keyboardType: TextInputType.number,
+                    maxLength: 5,
                     style: const TextStyle(fontSize: 12.5),
                     decoration: InputDecoration(
                       labelText: '우편번호',
                       hintText: '12345',
+                      counterText: '',
                       isDense: true,
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(6)),
                     ),

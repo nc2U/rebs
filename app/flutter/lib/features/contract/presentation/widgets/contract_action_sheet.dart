@@ -248,6 +248,7 @@ class ContractActionSheet extends ConsumerWidget {
       final repository = ref.read(contractRepositoryProvider);
       final pdfBytes = await repository.downloadPaymentCertPdf(
         contractId: contract.pk,
+        projectId: contract.project,
       );
 
       // 로딩 닫기 (안전한 dialog context 사용)
@@ -421,15 +422,17 @@ class ContractActionSheet extends ConsumerWidget {
                       tooltip: '전화번호 복사',
                       color: context.colors.textMuted,
                       onPressed: () {
+                        final rootCtx = Navigator.of(context, rootNavigator: true).context;
                         Navigator.pop(context);
-                        _copyToClipboard(context, cellPhone, '$contractorName 연락처');
+                        _copyToClipboard(rootCtx, cellPhone, '$contractorName 연락처');
                       },
                     )
                   : null,
               onTap: () {
+                final rootCtx = Navigator.of(context, rootNavigator: true).context;
                 Navigator.pop(context);
                 makeContractPhoneCall(
-                  context,
+                  rootCtx,
                   cellPhone,
                   contractorName: contractorName,
                   unitStr: contract.displayUnit,
@@ -441,8 +444,9 @@ class ContractActionSheet extends ConsumerWidget {
               title: const Text('분양대금 납부확인서 발급', style: TextStyle(fontSize: 13.5)),
               subtitle: const Text('기납부 및 약정 내역 PDF 출력·공유', style: TextStyle(fontSize: 11.5)),
               onTap: () {
+                final rootCtx = Navigator.of(context, rootNavigator: true).context;
                 Navigator.pop(context);
-                _downloadAndSharePaymentCertPdf(context, ref);
+                _downloadAndSharePaymentCertPdf(rootCtx, ref);
               },
             ),
             ListTile(
@@ -450,8 +454,9 @@ class ContractActionSheet extends ConsumerWidget {
               title: const Text('민원 및 상담 이력 / 기록 등록', style: TextStyle(fontSize: 13.5)),
               subtitle: const Text('과거 상담 이력 조회 및 신규 상담일지 작성', style: TextStyle(fontSize: 11.5)),
               onTap: () {
+                final rootCtx = Navigator.of(context, rootNavigator: true).context;
                 Navigator.pop(context);
-                ContractorConsultationBottomSheet.show(context, contract: contract);
+                ContractorConsultationBottomSheet.show(rootCtx, contract: contract);
               },
             ),
             ListTile(
@@ -459,8 +464,9 @@ class ContractActionSheet extends ConsumerWidget {
               title: const Text('주소 변경 이력 / 신규 등록', style: TextStyle(fontSize: 13.5)),
               subtitle: const Text('주민등록 및 우편물 수령지 변경 내역 관리', style: TextStyle(fontSize: 11.5)),
               onTap: () {
+                final rootCtx = Navigator.of(context, rootNavigator: true).context;
                 Navigator.pop(context);
-                ContractorAddressBottomSheet.show(context, contract: contract);
+                ContractorAddressBottomSheet.show(rootCtx, contract: contract);
               },
             ),
             const SizedBox(height: 12),

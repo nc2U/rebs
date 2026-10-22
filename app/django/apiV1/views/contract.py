@@ -905,6 +905,7 @@ class SuccessionViewSet(viewsets.ModelViewSet):
     serializer_class = SuccessionSerializer
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly, IbsModulePermission)
     filterset_fields = ('contract__project',)
+    search_fields = ('contract__serial_number', 'seller__name', 'buyer__name', 'note')
 
     @property
     def required_permission(self):
@@ -1050,6 +1051,13 @@ class ContReleaseViewSet(viewsets.ModelViewSet):
     serializer_class = ContractorReleaseSerializer
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly, IbsModulePermission)
     filterset_fields = ('project', 'status')
+    search_fields = (
+        'contractor__name',
+        'contractor__contract__serial_number',
+        'contractor__prev_contract__serial_number',
+        'refund_account_depositor',
+        'note',
+    )
 
     @property
     def required_permission(self):

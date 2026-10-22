@@ -106,7 +106,10 @@ class ValidContractListNotifier extends StateNotifier<ContractPaginationState<Co
         hasMore: items.length >= 10,
       );
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      state = state.copyWith(
+        isLoading: false,
+        error: ContractRepository.extractErrorMessage(e, '계약 목록을 불러오지 못했습니다.'),
+      );
     }
   }
 
@@ -177,7 +180,10 @@ class SuccessionListNotifier extends StateNotifier<ContractPaginationState<Succe
         hasMore: items.length >= 10,
       );
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      state = state.copyWith(
+        isLoading: false,
+        error: ContractRepository.extractErrorMessage(e, '계약 목록을 불러오지 못했습니다.'),
+      );
     }
   }
 
@@ -248,7 +254,10 @@ class ContractorReleaseListNotifier extends StateNotifier<ContractPaginationStat
         hasMore: items.length >= 10,
       );
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      state = state.copyWith(
+        isLoading: false,
+        error: ContractRepository.extractErrorMessage(e, '계약 목록을 불러오지 못했습니다.'),
+      );
     }
   }
 

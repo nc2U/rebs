@@ -370,7 +370,7 @@ class _NewConsultationDialogState extends ConsumerState<_NewConsultationDialog> 
     final repository = ref.read(contractRepositoryProvider);
     final dateStr = DateFormat('yyyy-MM-dd').format(_selectedDate);
 
-    final success = await repository.createConsultationLog(
+    final result = await repository.createConsultationLog(
       contractorId: widget.contractorId,
       consultationDate: dateStr,
       channel: _channel,
@@ -387,7 +387,7 @@ class _NewConsultationDialogState extends ConsumerState<_NewConsultationDialog> 
     if (!mounted) return;
     setState(() => _isLoading = false);
 
-    if (success) {
+    if (result.success) {
       widget.onSuccess();
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -395,7 +395,10 @@ class _NewConsultationDialogState extends ConsumerState<_NewConsultationDialog> 
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('상담 기록 등록에 실패했습니다.'), behavior: SnackBarBehavior.floating),
+        SnackBar(
+          content: Text(result.errorMessage ?? '상담 기록 등록에 실패했습니다.'),
+          behavior: SnackBarBehavior.floating,
+        ),
       );
     }
   }
@@ -450,13 +453,19 @@ class _NewConsultationDialogState extends ConsumerState<_NewConsultationDialog> 
                         initialDate: _selectedDate,
                         firstDate: DateTime(2015),
                         lastDate: DateTime(2035),
-                        builder: (context, child) {
+                        builder: (pickerContext, child) {
+                          final isDark = context.isDarkMode;
                           return Theme(
-                            data: Theme.of(context).copyWith(
-                              colorScheme: ColorScheme.dark(
-                                primary: context.colors.accentProject,
-                                surface: context.colors.bgCard,
-                              ),
+                            data: Theme.of(pickerContext).copyWith(
+                              colorScheme: isDark
+                                  ? ColorScheme.dark(
+                                      primary: context.colors.accentProject,
+                                      surface: context.colors.bgCard,
+                                    )
+                                  : ColorScheme.light(
+                                      primary: context.colors.accentProject,
+                                      surface: context.colors.bgCard,
+                                    ),
                             ),
                             child: child!,
                           );

@@ -13,6 +13,7 @@ import '../../../../core/theme/app_colors_extension.dart';
 import '../../data/contract_repository.dart';
 import '../../data/models/contract_models.dart';
 import '../../providers/contract_provider.dart';
+import 'contract_action_sheet.dart';
 
 /// 🏢 동호수 배치도 (배치 매트릭스) 시각화 컴포넌트
 /// - 상단 동(Building) 선택 탭
@@ -468,6 +469,43 @@ class UnitMatrixView extends ConsumerWidget {
                         ? unit.contractSerialNumber!
                         : '-',
                   ),
+                  if (unit.contractId != null) ...[
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: const Color(0xFF38BDF8),
+                          side: const BorderSide(color: Color(0xFF38BDF8), width: 0.9),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                        ),
+                        icon: const Icon(Icons.assignment_ind_outlined, size: 17),
+                        label: const Text(
+                          '계약자 통화 · 납부확인서 · 상담/주소 관리',
+                          style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.bold),
+                        ),
+                        onPressed: () async {
+                          final rootCtx = Navigator.of(ctx, rootNavigator: true).context;
+                          Navigator.pop(ctx);
+                          final loadedItems = ref.read(validContractListProvider).items;
+                          ContractItemModel? contractItem;
+                          for (final item in loadedItems) {
+                            if (item.pk == unit.contractId) {
+                              contractItem = item;
+                              break;
+                            }
+                          }
+                          contractItem ??= await ref
+                              .read(contractRepositoryProvider)
+                              .fetchContractDetail(unit.contractId!);
+                          if (contractItem != null && rootCtx.mounted) {
+                            ContractActionSheet.show(rootCtx, contract: contractItem);
+                          }
+                        },
+                      ),
+                    ),
+                  ],
                 ],
 
                 // ── 5. 홀딩 사유 (홀딩된 경우) ──
@@ -651,8 +689,10 @@ class UnitMatrixView extends ConsumerWidget {
               }
 
               // 표시할 동 목록 결정 (특정 동 필터링 또는 전체 동)
+              final bool hasValidSelectedBuilding =
+                  selectedBuildingId != null && buildingGroups.containsKey(selectedBuildingId);
               final List<int> targetBuildingIds;
-              if (selectedBuildingId != null) {
+              if (hasValidSelectedBuilding) {
                 targetBuildingIds = [selectedBuildingId];
               } else {
                 // 프로젝트의 등록된 동 목록 순서 또는 PK 순서대로 정렬
