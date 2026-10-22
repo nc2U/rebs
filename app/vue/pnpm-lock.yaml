@@ -108,8 +108,8 @@ importers:
         specifier: ^3.0.8
         version: 3.0.8
       markdown-it:
-        specifier: ^14.3.2
-        version: 14.3.2
+        specifier: ^14.3.3
+        version: 14.3.3
       maska:
         specifier: ^3.2.2
         version: 3.2.2
@@ -3433,8 +3433,8 @@ packages:
   markdown-it-sup@2.0.0:
     resolution: {integrity: sha512-5VgmdKlkBd8sgXuoDoxMpiU+BiEt3I49GItBzzw7Mxq9CxvnhE/k09HFli09zgfFDRixDQDfDxi0mgBCXtaTvA==}
 
-  markdown-it@14.3.2:
-    resolution: {integrity: sha512-sHHjZ5fJKlgrG4qns2YwVcdNep35h5fERrfkD2YNsb9UFk0UIHarbiTaHKVMlPuWAoiilyK8Fv/jAm11slsY7Q==}
+  markdown-it@14.3.3:
+    resolution: {integrity: sha512-L//tDAkjTjJCU6pBUSBTgs3Kg4InVaZuUZog/b6V12UKhcDQ7S78877ibbCanRExwPuYP1CZD7Gd2dxSy1GXRg==}
     hasBin: true
 
   marked@16.4.2:
@@ -8431,15 +8431,15 @@ snapshots:
 
   mark.js@8.11.1: {}
 
-  markdown-it-image-figures@2.1.1(markdown-it@14.3.2):
+  markdown-it-image-figures@2.1.1(markdown-it@14.3.3):
     dependencies:
-      markdown-it: 14.3.2
+      markdown-it: 14.3.3
 
   markdown-it-sub@2.0.0: {}
 
   markdown-it-sup@2.0.0: {}
 
-  markdown-it@14.3.2:
+  markdown-it@14.3.3:
     dependencies:
       argparse: 2.0.1
       entities: 4.5.0
@@ -8471,8 +8471,8 @@ snapshots:
       '@vavt/markdown-theme': 5.0.2
       '@vavt/util': 2.1.2
       codemirror: 6.0.2
-      markdown-it: 14.3.2
-      markdown-it-image-figures: 2.1.1(markdown-it@14.3.2)
+      markdown-it: 14.3.3
+      markdown-it-image-figures: 2.1.1(markdown-it@14.3.3)
       markdown-it-sub: 2.0.0
       markdown-it-sup: 2.0.0
       medium-zoom: 1.1.0
