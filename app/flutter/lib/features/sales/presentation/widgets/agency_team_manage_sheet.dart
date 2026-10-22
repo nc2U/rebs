@@ -47,7 +47,8 @@ class _AgencyTeamManageSheetState
     final bizController = TextEditingController(text: agency?.businessNumber ?? '');
     bool isDirect = agency?.isDirectManaged ?? true;
 
-    final saved = await showDialog<bool>(
+    try {
+      final saved = await showDialog<bool>(
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDlgState) => AlertDialog(
@@ -257,12 +258,19 @@ class _AgencyTeamManageSheetState
       ref.invalidate(salesAgenciesProvider);
       ref.invalidate(salesTeamsProvider);
     }
+    } finally {
+      nameController.dispose();
+      ceoController.dispose();
+      phoneController.dispose();
+      bizController.dispose();
+    }
   }
 
   Future<void> _openTeamDialog({required int agencyId, SalesTeamModel? team}) async {
     final nameController = TextEditingController(text: team?.name ?? '');
 
-    final saved = await showDialog<bool>(
+    try {
+      final saved = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -322,6 +330,9 @@ class _AgencyTeamManageSheetState
 
     if (saved == true) {
       ref.invalidate(salesTeamsProvider);
+    }
+    } finally {
+      nameController.dispose();
     }
   }
 

@@ -128,12 +128,18 @@ class _ContractAgentFormSheetState
 
   Future<void> _selectDate() async {
     final now = DateTime.now();
-    final initialDate = _selectedContractDate ?? now;
+    final rawInitial = _selectedContractDate ?? now;
+    final firstDate = DateTime(2000);
+    final lastDate = DateTime(2100);
+    final initialDate = rawInitial.isBefore(firstDate)
+        ? firstDate
+        : (rawInitial.isAfter(lastDate) ? lastDate : rawInitial);
+
     final picked = await showDatePicker(
       context: context,
       initialDate: initialDate,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2035),
+      firstDate: firstDate,
+      lastDate: lastDate,
       builder: (ctx, child) {
         return Theme(
           data: Theme.of(ctx).copyWith(

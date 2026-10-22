@@ -721,6 +721,7 @@ class AgencyPayoutModel {
   final String? accountNumber;
   final String? accountHolder;
   final String? note;
+  final List<PayoutContractDetailModel> contractDetails;
 
   const AgencyPayoutModel({
     required this.id,
@@ -741,9 +742,15 @@ class AgencyPayoutModel {
     this.accountNumber,
     this.accountHolder,
     this.note,
+    this.contractDetails = const [],
   });
 
   factory AgencyPayoutModel.fromJson(Map<String, dynamic> json) {
+    final detailsList = (json['contract_details'] as List<dynamic>?)
+            ?.map((d) => PayoutContractDetailModel.fromJson(d as Map<String, dynamic>))
+            .toList() ??
+        [];
+
     return AgencyPayoutModel(
       id: _parseInt(json['id']),
       period: _parseInt(json['period']),
@@ -763,6 +770,7 @@ class AgencyPayoutModel {
       accountNumber: json['account_number'] as String?,
       accountHolder: json['account_holder'] as String?,
       note: json['note'] as String?,
+      contractDetails: detailsList,
     );
   }
 }

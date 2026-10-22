@@ -118,15 +118,21 @@ class _PolicyFormSheetState extends ConsumerState<PolicyFormSheet> {
   }
 
   Future<void> _selectDate(BuildContext context, bool isStart) async {
-    final initial = isStart
+    final rawInitial = isStart
         ? (_startDate ?? DateTime.now())
         : (_endDate ?? _startDate ?? DateTime.now());
+
+    final firstDate = DateTime(2000);
+    final lastDate = DateTime(2100);
+    final initial = rawInitial.isBefore(firstDate)
+        ? firstDate
+        : (rawInitial.isAfter(lastDate) ? lastDate : rawInitial);
 
     final picked = await showDatePicker(
       context: context,
       initialDate: initial,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      firstDate: firstDate,
+      lastDate: lastDate,
       builder: (ctx, child) {
         return Theme(
           data: Theme.of(ctx).copyWith(

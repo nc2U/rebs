@@ -843,7 +843,8 @@ class _SalesPerformanceTabViewState extends ConsumerState<SalesPerformanceTabVie
     bool isApproved = mapping.isSettlementApproved;
     final noteController = TextEditingController(text: mapping.approvalNote ?? '');
 
-    final result = await showDialog<bool>(
+    try {
+      final result = await showDialog<bool>(
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (context, setModalState) {
@@ -1054,6 +1055,9 @@ class _SalesPerformanceTabViewState extends ConsumerState<SalesPerformanceTabVie
           backgroundColor: context.colors.error,
         ),
       );
+    }
+    } finally {
+      noteController.dispose();
     }
   }
 }

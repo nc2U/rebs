@@ -99,17 +99,23 @@ class _PeriodFormSheetState extends ConsumerState<PeriodFormSheet> {
 
   Future<void> _selectDate(BuildContext context, int type) async {
     // 0: start, 1: end, 2: payout
-    final initial = type == 0
+    final rawInitial = type == 0
         ? (_startDate ?? DateTime.now())
         : (type == 1
             ? (_endDate ?? _startDate ?? DateTime.now())
             : (_payoutDate ?? _endDate ?? DateTime.now()));
 
+    final firstDate = DateTime(2000);
+    final lastDate = DateTime(2100);
+    final initial = rawInitial.isBefore(firstDate)
+        ? firstDate
+        : (rawInitial.isAfter(lastDate) ? lastDate : rawInitial);
+
     final picked = await showDatePicker(
       context: context,
       initialDate: initial,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      firstDate: firstDate,
+      lastDate: lastDate,
       builder: (ctx, child) {
         return Theme(
           data: Theme.of(ctx).copyWith(

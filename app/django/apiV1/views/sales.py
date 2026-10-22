@@ -414,7 +414,7 @@ class CommissionClawbackViewSet(viewsets.ModelViewSet):
     serializer_class = CommissionClawbackSerializer
     permission_classes = (IsAuthenticated, IbsModulePermission)
     pagination_class = PageNumberPaginationCustomBasic
-    filterset_fields = ('contract', 'sales_person', 'is_settled')
+    filterset_fields = ('contract', 'contract__project', 'sales_person', 'is_settled')
     search_fields = ('sales_person__name', 'contract__serial_number')
 
     def get_queryset(self):

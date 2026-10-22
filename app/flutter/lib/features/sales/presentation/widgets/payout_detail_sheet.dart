@@ -69,6 +69,8 @@ class _PayoutDetailSheetState extends ConsumerState<PayoutDetailSheet> {
       final repository = ref.read(salesRepositoryProvider);
       await repository.updatePayStatus(_payout.id, newStatus);
       ref.invalidate(commissionPayoutsProvider);
+      ref.invalidate(payoutTabPayoutsProvider);
+      ref.invalidate(settlementPeriodsProvider);
 
       if (mounted) {
         setState(() {

@@ -113,11 +113,19 @@ class _PersonFormSheetState extends ConsumerState<PersonFormSheet> {
   }
 
   Future<void> _selectJoinDate() async {
+    final now = DateTime.now();
+    final rawInitial = _joinDate ?? now;
+    final firstDate = DateTime(2000);
+    final lastDate = DateTime(2100);
+    final initialDate = rawInitial.isBefore(firstDate)
+        ? firstDate
+        : (rawInitial.isAfter(lastDate) ? lastDate : rawInitial);
+
     final picked = await showDatePicker(
       context: context,
-      initialDate: _joinDate ?? DateTime.now(),
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2035),
+      initialDate: initialDate,
+      firstDate: firstDate,
+      lastDate: lastDate,
     );
     if (picked != null) {
       setState(() => _joinDate = picked);
@@ -125,11 +133,19 @@ class _PersonFormSheetState extends ConsumerState<PersonFormSheet> {
   }
 
   Future<void> _selectQuitDate() async {
+    final now = DateTime.now();
+    final rawInitial = _quitDate ?? now;
+    final firstDate = DateTime(2000);
+    final lastDate = DateTime(2100);
+    final initialDate = rawInitial.isBefore(firstDate)
+        ? firstDate
+        : (rawInitial.isAfter(lastDate) ? lastDate : rawInitial);
+
     final picked = await showDatePicker(
       context: context,
-      initialDate: _quitDate ?? DateTime.now(),
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2035),
+      initialDate: initialDate,
+      firstDate: firstDate,
+      lastDate: lastDate,
     );
     if (picked != null) {
       setState(() => _quitDate = picked);

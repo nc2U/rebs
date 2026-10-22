@@ -551,10 +551,12 @@ class SalesRepository {
     required int salesPersonId,
     String? docType,
     bool? isVerified,
+    int limit = 100,
   }) async {
     try {
       final queryParams = <String, dynamic>{
         'sales_person': salesPersonId,
+        'limit': limit,
       };
       if (docType != null && docType.isNotEmpty) {
         queryParams['doc_type'] = docType;
