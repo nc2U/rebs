@@ -99,6 +99,27 @@ class DocumentCard extends StatelessWidget {
                 const SizedBox(height: 10),
 
                 // ── 제목 ───────────────────────────────────────────────────
+                if (doc.lawsuitName != null && doc.lawsuitName!.isNotEmpty) ...[
+                  Row(
+                    children: [
+                      const Icon(Icons.gavel_rounded,
+                          size: 13, color: Color(0xFFBA68C8)),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          doc.lawsuitName!,
+                          style: AppTextStyles.caption.copyWith(
+                            color: const Color(0xFFBA68C8),
+                            fontWeight: FontWeight.w600,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                ],
                 Text(
                   doc.title,
                   style: AppTextStyles.titleSm.copyWith(

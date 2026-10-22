@@ -16,7 +16,7 @@ _$DocCategoryModelImpl _$$DocCategoryModelImplFromJson(
   parent: (json['parent'] as num?)?.toInt(),
   order: (json['order'] as num?)?.toInt() ?? 0,
   active: json['active'] as bool? ?? true,
-  defaultVal: json['default_val'] as bool? ?? false,
+  defaultVal: (json['default'] ?? json['default_val']) as bool? ?? false,
 );
 
 Map<String, dynamic> _$$DocCategoryModelImplToJson(
@@ -29,7 +29,7 @@ Map<String, dynamic> _$$DocCategoryModelImplToJson(
   'parent': instance.parent,
   'order': instance.order,
   'active': instance.active,
-  'default_val': instance.defaultVal,
+  'default': instance.defaultVal,
 };
 
 _$DocFileModelImpl _$$DocFileModelImplFromJson(Map<String, dynamic> json) =>

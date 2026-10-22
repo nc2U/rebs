@@ -107,9 +107,10 @@ class _DocumentFormSheetState extends ConsumerState<DocumentFormSheet> {
       firstDate: DateTime(2000),
       lastDate: DateTime(2050),
       builder: (context, child) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.dark(
+            colorScheme: (isDark ? ColorScheme.dark : ColorScheme.light)(
               primary: context.colors.accentWork,
               onPrimary: Colors.white,
               surface: context.colors.bgSurface,
@@ -390,6 +391,7 @@ class _DocumentFormSheetState extends ConsumerState<DocumentFormSheet> {
         await repo.createDocument(
           issueProjectId: issueProjectId!,
           title: _titleController.text.trim(),
+          docType: _selectedDocType,
           categoryId: _selectedCategory,
           lawsuitId: _selectedDocType == '2' ? _selectedLawsuit : null,
           executionDate: _dateController.text.trim(),
@@ -402,6 +404,7 @@ class _DocumentFormSheetState extends ConsumerState<DocumentFormSheet> {
         await repo.updateDocument(
           id: widget.doc!.pk,
           title: _titleController.text.trim(),
+          docType: _selectedDocType,
           categoryId: _selectedCategory,
           lawsuitId: _selectedDocType == '2' ? _selectedLawsuit : null,
           executionDate: _dateController.text.trim(),
@@ -470,7 +473,7 @@ class _DocumentFormSheetState extends ConsumerState<DocumentFormSheet> {
             ? (currentSelectedProj?.name ?? docsContext.project?.name)
             : (isWorkspaceScope ? docsContext.project?.name : null));
 
-    final categoriesAsync = ref.watch(docCategoriesProvider);
+    final categoriesAsync = ref.watch(docCategoriesByTypeProvider(_selectedDocType));
 
     // 기존 파일 및 링크 중 아직 삭제 표시되지 않은 항목들
     final existingFiles = widget.doc?.files
@@ -549,7 +552,17 @@ class _DocumentFormSheetState extends ConsumerState<DocumentFormSheet> {
                 children: [
                   Expanded(
                     child: InkWell(
-                      onTap: isEdit ? null : () => setState(() => _selectedDocType = '1'),
+                      onTap: isEdit
+                          ? null
+                          : () {
+                              if (_selectedDocType != '1') {
+                                setState(() {
+                                  _selectedDocType = '1';
+                                  _selectedCategory = null;
+                                  _selectedLawsuit = null;
+                                });
+                              }
+                            },
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 9),
                         decoration: BoxDecoration(
@@ -593,7 +606,17 @@ class _DocumentFormSheetState extends ConsumerState<DocumentFormSheet> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: InkWell(
-                      onTap: isEdit ? null : () => setState(() => _selectedDocType = '2'),
+                      onTap: isEdit
+                          ? null
+                          : () {
+                              if (_selectedDocType != '2') {
+                                setState(() {
+                                  _selectedDocType = '2';
+                                  _selectedCategory = null;
+                                  _selectedLawsuit = null;
+                                });
+                              }
+                            },
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 9),
                         decoration: BoxDecoration(
@@ -989,10 +1012,20 @@ class _DocumentFormSheetState extends ConsumerState<DocumentFormSheet> {
                         const SizedBox(height: 6),
                         categoriesAsync.when(
                           data: (categories) {
+                            final defaultCate = !isEdit && _selectedCategory == null
+                                ? categories.where((c) => c.defaultVal).firstOrNull?.pk
+                                : null;
+                            if (defaultCate != null) {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                if (mounted && _selectedCategory == null) {
+                                  setState(() => _selectedCategory = defaultCate);
+                                }
+                              });
+                            }
                             final validCate = (_selectedCategory != null &&
                                     categories.any((c) => c.pk == _selectedCategory))
                                 ? _selectedCategory
-                                : null;
+                                : defaultCate;
 
                             return DropdownButtonFormField<int?>(
                               initialValue: validCate,

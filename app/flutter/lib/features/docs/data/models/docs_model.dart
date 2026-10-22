@@ -14,7 +14,7 @@ class DocCategoryModel with _$DocCategoryModel {
     int? parent,
     @Default(0) int order,
     @Default(true) bool active,
-    @Default(false) bool defaultVal,
+    @JsonKey(name: 'default') @Default(false) bool defaultVal,
   }) = _DocCategoryModel;
 
   factory DocCategoryModel.fromJson(Map<String, dynamic> json) =>

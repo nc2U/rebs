@@ -48,11 +48,14 @@ class DocsRepository {
   }
 
   /// 카테고리 목록 조회
-  Future<List<DocCategoryModel>> fetchCategories({String? docType}) async {
+  Future<List<DocCategoryModel>> fetchCategories({String? docType, bool activeOnly = true}) async {
     try {
       final queryParams = <String, dynamic>{};
       if (docType != null && docType.isNotEmpty) {
         queryParams['doc_type'] = docType;
+      }
+      if (activeOnly) {
+        queryParams['active'] = true;
       }
       final response = await _dio.get('/api/v1/category/', queryParameters: queryParams);
       final data = response.data;
@@ -68,29 +71,32 @@ class DocsRepository {
   }
 
   /// 소송 사건 목록 조회 (옵션 드롭다운용)
-  Future<List<SuitCaseOptionModel>> fetchSuitCases({int? issueProject, String? projectSlug}) async {
+  Future<List<SuitCaseOptionModel>> fetchSuitCases({int? issueProject}) async {
+    final queryParams = <String, dynamic>{};
+    if (issueProject != null) {
+      queryParams['issue_project'] = issueProject;
+    }
     try {
-      final queryParams = <String, dynamic>{};
-      if (issueProject != null) {
-        queryParams['issue_project'] = issueProject;
-      }
-      if (projectSlug != null && projectSlug.isNotEmpty) {
-        queryParams['project'] = projectSlug;
-      }
       final response = await _dio.get('/api/v1/all-suitcase/', queryParameters: queryParams);
       final list = (response.data is List) ? (response.data as List) : (response.data['results'] as List? ?? []);
       return list.map((e) => SuitCaseOptionModel.fromJson(e as Map<String, dynamic>)).toList();
     } on DioException {
       try {
-        final queryParams = <String, dynamic>{};
-        if (issueProject != null) queryParams['issue_project'] = issueProject;
-        if (projectSlug != null && projectSlug.isNotEmpty) queryParams['project'] = projectSlug;
         final response = await _dio.get('/api/v1/suitcase/', queryParameters: queryParams);
         final list = (response.data is List) ? (response.data as List) : (response.data['results'] as List? ?? []);
         return list.map((e) => SuitCaseOptionModel.fromJson(e as Map<String, dynamic>)).toList();
       } catch (_) {
         return [];
       }
+    }
+  }
+
+  /// 문서 조회수 증가
+  Future<void> hitDocument(int id) async {
+    try {
+      await _dio.post('/api/v1/docs/$id/hit/');
+    } catch (_) {
+      // 조회수 증가 실패는 무시
     }
   }
 
@@ -108,6 +114,7 @@ class DocsRepository {
   Future<DocumentModel> createDocument({
     required int issueProjectId,
     required String title,
+    String docType = '1',
     int? categoryId,
     int? lawsuitId,
     String? executionDate,
@@ -119,6 +126,7 @@ class DocsRepository {
     try {
       final formData = FormData();
       formData.fields.add(MapEntry('issue_project', issueProjectId.toString()));
+      formData.fields.add(MapEntry('doc_type', docType));
       formData.fields.add(MapEntry('title', title));
       formData.fields.add(MapEntry('security_level', securityLevel));
       if (categoryId != null) {
@@ -175,6 +183,7 @@ class DocsRepository {
   Future<DocumentModel> updateDocument({
     required int id,
     required String title,
+    String? docType,
     int? categoryId,
     int? lawsuitId,
     String? executionDate,
@@ -188,12 +197,11 @@ class DocsRepository {
     try {
       final formData = FormData();
       formData.fields.add(MapEntry('title', title));
-      if (categoryId != null) {
-        formData.fields.add(MapEntry('category', categoryId.toString()));
+      if (docType != null && docType.isNotEmpty) {
+        formData.fields.add(MapEntry('doc_type', docType));
       }
-      if (lawsuitId != null) {
-        formData.fields.add(MapEntry('lawsuit', lawsuitId.toString()));
-      }
+      formData.fields.add(MapEntry('category', categoryId?.toString() ?? ''));
+      formData.fields.add(MapEntry('lawsuit', lawsuitId?.toString() ?? ''));
       if (executionDate != null) {
         formData.fields.add(MapEntry('execution_date', executionDate));
       }

@@ -14,10 +14,26 @@ import '../../providers/docs_provider.dart';
 import 'document_form_sheet.dart';
 
 /// 문서 상세 보기 바텀 시트 (radius = 0, 스크롤 오버플로우 방어)
-class DocumentDetailSheet extends ConsumerWidget {
+class DocumentDetailSheet extends ConsumerStatefulWidget {
   final DocumentModel doc;
 
   const DocumentDetailSheet({super.key, required this.doc});
+
+  @override
+  ConsumerState<DocumentDetailSheet> createState() =>
+      _DocumentDetailSheetState();
+}
+
+class _DocumentDetailSheetState extends ConsumerState<DocumentDetailSheet> {
+  DocumentModel get doc => widget.doc;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      ref.read(docsRepositoryProvider).hitDocument(doc.pk);
+    });
+  }
 
   Future<void> _handleDelete(BuildContext context, WidgetRef ref) async {
     final confirm = await showDialog<bool>(
@@ -182,7 +198,7 @@ class DocumentDetailSheet extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final isRealEstate = doc.projType == '2';
     final scopeLabel = doc.project != null
         ? (isRealEstate ? '🏗 ${doc.project!.name}' : '📋 ${doc.project!.name}')
@@ -338,6 +354,11 @@ class DocumentDetailSheet extends ConsumerWidget {
                       child: Column(
                         children: [
                           _InfoRow(label: '카테고리', value: doc.cateName ?? '미지정'),
+                          if (doc.lawsuitName != null &&
+                              doc.lawsuitName!.isNotEmpty) ...[
+                            const SizedBox(height: 6),
+                            _InfoRow(label: '소송사건', value: doc.lawsuitName!),
+                          ],
                           const SizedBox(height: 6),
                           _InfoRow(label: '보안등급', value: _getSecurityLevelLabel(doc)),
                           if (doc.executionDate != null &&
@@ -355,6 +376,8 @@ class DocumentDetailSheet extends ConsumerWidget {
                                 label: '등록일시',
                                 value: doc.created!.substring(0, 10)),
                           ],
+                          const SizedBox(height: 6),
+                          _InfoRow(label: '조회수', value: '${doc.hit + 1}'),
                         ],
                       ),
                     ),

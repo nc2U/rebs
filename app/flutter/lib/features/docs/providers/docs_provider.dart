@@ -6,6 +6,11 @@ import '../data/models/docs_model.dart';
 /// 카테고리 목록 프로바이더 (현재 선택된 docType에 맞춰 자동 연동)
 final docCategoriesProvider = FutureProvider<List<DocCategoryModel>>((ref) async {
   final docType = ref.watch(docTypeFilterProvider);
+  return ref.watch(docCategoriesByTypeProvider(docType).future);
+});
+
+/// 문서 구분별 카테고리 목록 프로바이더 (폼 내부에서 docType 전환 시 즉시 연동)
+final docCategoriesByTypeProvider = FutureProvider.family<List<DocCategoryModel>, String?>((ref, docType) async {
   final repo = ref.watch(docsRepositoryProvider);
   return repo.fetchCategories(docType: docType);
 });

@@ -110,7 +110,7 @@ class LawSuitCaseSerializer(serializers.ModelSerializer):
 class SimpleLawSuitCaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = LawsuitCase
-        fields = ('pk', '__str__')
+        fields = ('pk', '__str__', 'case_number', 'case_name', 'issue_project')
 
 
 class LinksInDocumentSerializer(serializers.ModelSerializer):
