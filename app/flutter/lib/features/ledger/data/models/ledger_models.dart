@@ -40,7 +40,7 @@ class ProjectBankAccountModel {
       aliasName: json['alias_name']?.toString() ?? '',
       number: json['number']?.toString(),
       holder: json['holder']?.toString(),
-      bankName: json['bankcode_desc'] ?? json['bank_name'],
+      bankName: json['bankcode_name'] ?? json['bankcode_desc'] ?? json['bank_name'],
       isHide: json['is_hide'] ?? false,
       inactive: json['inactive'] ?? false,
       isImprest: json['is_imprest'] ?? false,
@@ -223,8 +223,10 @@ class ProjectAccountingEntryModel {
 
 /// 📊 4. 계좌별 잔액 현황 모델 (/api/v1/ledger/project-transaction/balance_by_account/)
 class ProjectBalanceByAccountModel {
+  final int? bankId;          // 계좌 ID
   final String bankAcc;       // 계좌 별칭
   final String bankNum;       // 계좌 번호
+  final bool isImprest;       // 전도금/운영비 계좌 여부
   final int incSum;           // 수입 총누계
   final int outSum;           // 지출 총누계
   final int dateInc;          // 당일 수입
@@ -232,8 +234,10 @@ class ProjectBalanceByAccountModel {
   final int balance;          // 현재 잔액
 
   ProjectBalanceByAccountModel({
+    this.bankId,
     required this.bankAcc,
     required this.bankNum,
+    this.isImprest = false,
     required this.incSum,
     required this.outSum,
     required this.dateInc,
@@ -243,8 +247,10 @@ class ProjectBalanceByAccountModel {
 
   factory ProjectBalanceByAccountModel.fromJson(Map<String, dynamic> json) {
     return ProjectBalanceByAccountModel(
+      bankId: json['bank_id'] is int ? json['bank_id'] as int : null,
       bankAcc: json['bank_acc']?.toString() ?? '',
       bankNum: json['bank_num']?.toString() ?? '',
+      isImprest: json['is_imprest'] == true,
       incSum: _parseInt(json['inc_sum']),
       outSum: _parseInt(json['out_sum']),
       dateInc: _parseInt(json['date_inc']),
@@ -252,6 +258,17 @@ class ProjectBalanceByAccountModel {
       balance: _parseInt(json['balance']),
     );
   }
+}
+
+/// 📄 거래 전표 페이지네이션 응답 모델
+class ProjectTransactionPageResult {
+  final List<ProjectTransactionItemModel> items;
+  final bool hasMore;
+
+  const ProjectTransactionPageResult({
+    required this.items,
+    required this.hasMore,
+  });
 }
 
 /// 📈 5. 회계 자금 종합 요약 KPI 모델 (100% 팩트 기반 실시간 잔고 & 당월 캐시플로우)

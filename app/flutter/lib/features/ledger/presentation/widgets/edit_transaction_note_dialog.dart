@@ -76,8 +76,11 @@ class _EditTransactionNoteDialogState
           behavior: SnackBarBehavior.floating,
         ),
       );
-      ref.read(projectTransactionsProvider.notifier).fetchInitial();
-      widget.onSaved?.call();
+      if (widget.onSaved != null) {
+        widget.onSaved!.call();
+      } else {
+        ref.read(projectTransactionsProvider.notifier).fetchInitial();
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

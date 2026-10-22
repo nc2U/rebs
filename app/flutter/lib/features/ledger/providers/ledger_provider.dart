@@ -74,13 +74,32 @@ final ledgerBalanceByAccountProvider =
   return repository.fetchBalanceByAccount(selectedProject.realProjectId);
 });
 
-/// 프로젝트 전도금/운영비 계좌 목록 프로바이더 (운영비, 전도금 키워드 필터링)
+/// 프로젝트 전도금/운영비 계좌 목록 프로바이더 (is_imprest 플래그 우선 + 운영비/전도금 키워드 폴백)
 final ledgerImprestAccountsProvider =
     Provider.autoDispose<AsyncValue<List<ProjectBalanceByAccountModel>>>((ref) {
   final balancesAsync = ref.watch(ledgerBalanceByAccountProvider);
+  final bankAccountsAsync = ref.watch(projectBankAccountsProvider);
+  final imprestBankIds = <int>{};
+  final imprestAliases = <String>{};
+  if (bankAccountsAsync.valueOrNull != null) {
+    for (final acc in bankAccountsAsync.valueOrNull!) {
+      if (acc.isImprest) {
+        imprestBankIds.add(acc.pk);
+        imprestAliases.add(acc.aliasName);
+      }
+    }
+  }
+
   return balancesAsync.whenData((items) {
     return items
-        .where((i) => i.bankAcc.contains('운영비') || i.bankAcc.contains('전도금'))
+        .where(
+          (i) =>
+              i.isImprest ||
+              (i.bankId != null && imprestBankIds.contains(i.bankId)) ||
+              imprestAliases.contains(i.bankAcc) ||
+              i.bankAcc.contains('운영비') ||
+              i.bankAcc.contains('전도금'),
+        )
         .toList();
   });
 });
@@ -149,7 +168,7 @@ class ProjectTransactionsNotifier
     final repository = ref.read(ledgerRepositoryProvider);
 
     try {
-      final items = await repository.fetchProjectTransactions(
+      final pageResult = await repository.fetchProjectTransactionsPage(
         projectId: selectedProject.realProjectId,
         search: search,
         sort: sort,
@@ -162,9 +181,9 @@ class ProjectTransactionsNotifier
 
       state = state.copyWith(
         isLoading: false,
-        items: items,
+        items: pageResult.items,
         page: 1,
-        hasMore: items.length >= 10,
+        hasMore: pageResult.hasMore,
       );
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
@@ -188,7 +207,7 @@ class ProjectTransactionsNotifier
     final repository = ref.read(ledgerRepositoryProvider);
 
     try {
-      final newItems = await repository.fetchProjectTransactions(
+      final pageResult = await repository.fetchProjectTransactionsPage(
         projectId: selectedProject.realProjectId,
         search: search,
         sort: sort,
@@ -201,9 +220,9 @@ class ProjectTransactionsNotifier
 
       state = state.copyWith(
         isFetchingNextPage: false,
-        items: [...state.items, ...newItems],
+        items: [...state.items, ...pageResult.items],
         page: nextPage,
-        hasMore: newItems.length >= 10,
+        hasMore: pageResult.hasMore,
       );
     } catch (e) {
       state = state.copyWith(isFetchingNextPage: false);

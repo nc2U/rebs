@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../core/constants/app_text_styles.dart';
+import '../../../core/constants/permissions.dart';
+import '../../../core/providers/permission_provider.dart';
 import '../../../core/providers/project_provider.dart';
 import '../../../core/theme/app_colors_extension.dart';
+import '../../../core/widgets/error_view.dart';
 import '../providers/ledger_provider.dart';
 import 'widgets/account_balance_card.dart';
 import 'widgets/cashflow_mini_chart_card.dart';
@@ -38,6 +41,7 @@ class _LedgerScreenState extends ConsumerState<LedgerScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         ref.invalidate(ledgerOverallAggregateProvider);
+        ref.invalidate(monthlyCashflowChartProvider);
         ref.invalidate(projectBankAccountsProvider);
         ref.invalidate(ledgerBalanceByAccountProvider);
         ref.read(projectTransactionsProvider.notifier).fetchInitial();
@@ -54,6 +58,7 @@ class _LedgerScreenState extends ConsumerState<LedgerScreen> {
   }
 
   void _onTransactionsScroll() {
+    if (!_transactionsScrollController.hasClients) return;
     if (_transactionsScrollController.position.pixels >=
         _transactionsScrollController.position.maxScrollExtent - 200) {
       if (ref.read(ledgerCurrentSubTabProvider) == LedgerSubTab.transactions) {
@@ -148,9 +153,10 @@ class _LedgerScreenState extends ConsumerState<LedgerScreen> {
       lastDate: DateTime(2035),
       initialDateRange: DateTimeRange(start: initialStart, end: initialEnd),
       builder: (context, child) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.dark(
+            colorScheme: (isDark ? ColorScheme.dark : ColorScheme.light)(
               primary: context.colors.accentProject,
               onPrimary: Colors.white,
               surface: context.colors.bgCard,
@@ -179,6 +185,7 @@ class _LedgerScreenState extends ConsumerState<LedgerScreen> {
     ref.listen(selectedRealEstateProjectProvider, (previous, next) {
       if (previous?.realProjectId != next?.realProjectId) {
         ref.invalidate(ledgerOverallAggregateProvider);
+        ref.invalidate(monthlyCashflowChartProvider);
         ref.invalidate(projectBankAccountsProvider);
         ref.invalidate(ledgerBalanceByAccountProvider);
         ref.read(ledgerSelectedBankAccFilterProvider.notifier).state = null;
@@ -187,6 +194,7 @@ class _LedgerScreenState extends ConsumerState<LedgerScreen> {
     });
 
     final selectedProject = ref.watch(selectedRealEstateProjectProvider);
+    final canRead = ref.can(Perm.ledgerRead, projectSlug: selectedProject?.slug);
     final aggregateAsync = ref.watch(ledgerOverallAggregateProvider);
     final currentTab = ref.watch(ledgerCurrentSubTabProvider);
     final bankAccountsAsync = ref.watch(projectBankAccountsProvider);
@@ -278,6 +286,7 @@ class _LedgerScreenState extends ConsumerState<LedgerScreen> {
                 IconButton(
                   onPressed: () {
                     ref.invalidate(ledgerOverallAggregateProvider);
+                    ref.invalidate(monthlyCashflowChartProvider);
                     ref.invalidate(ledgerBalanceByAccountProvider);
                     ref.invalidate(projectBankAccountsProvider);
                     ref.read(projectTransactionsProvider.notifier).fetchInitial();
@@ -294,7 +303,19 @@ class _LedgerScreenState extends ConsumerState<LedgerScreen> {
           Divider(color: context.colors.border, height: 1),
 
           // ── 아래부터 스크롤 가능한 본문 영역 (CustomScrollView) ───────────────
-          if (selectedProject == null)
+          if (!canRead)
+            const Expanded(
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.all(24.0),
+                  child: ErrorView.empty(
+                    message: '회계 자금 내역을 조회할 권한이 없습니다.',
+                    subMessage: '관리자에게 [회계 자금 조회] 권한(ledger.read)을 요청해 주세요.',
+                  ),
+                ),
+              ),
+            )
+          else if (selectedProject == null)
             Expanded(
               child: Center(
                 child: Column(
@@ -330,9 +351,10 @@ class _LedgerScreenState extends ConsumerState<LedgerScreen> {
                 color: context.colors.accentProject,
                 onRefresh: () async {
                   ref.invalidate(ledgerOverallAggregateProvider);
+                  ref.invalidate(monthlyCashflowChartProvider);
                   ref.invalidate(ledgerBalanceByAccountProvider);
                   ref.invalidate(projectBankAccountsProvider);
-                  ref.read(projectTransactionsProvider.notifier).fetchInitial();
+                  await ref.read(projectTransactionsProvider.notifier).fetchInitial();
                 },
                 child: CustomScrollView(
                 controller: _transactionsScrollController,
@@ -651,7 +673,7 @@ class _LedgerScreenState extends ConsumerState<LedgerScreen> {
                                 ),
                                 const SizedBox(width: 4),
                                 _FilterChipButton(
-                                  label: '수입(+)',
+                                  label: '입금(+)',
                                   isSelected: sortFilter == '1',
                                   color: const Color(0xFF10B981),
                                   onTap: () {
@@ -667,7 +689,7 @@ class _LedgerScreenState extends ConsumerState<LedgerScreen> {
                                 ),
                                 const SizedBox(width: 4),
                                 _FilterChipButton(
-                                  label: '지출(-)',
+                                  label: '출금(-)',
                                   isSelected: sortFilter == '2',
                                   color: const Color(0xFFEF4444),
                                   onTap: () {
@@ -675,22 +697,6 @@ class _LedgerScreenState extends ConsumerState<LedgerScreen> {
                                         .read(
                                             ledgerSortFilterProvider.notifier)
                                         .state = '2';
-                                    ref
-                                        .read(projectTransactionsProvider
-                                            .notifier)
-                                        .fetchInitial();
-                                  },
-                                ),
-                                const SizedBox(width: 4),
-                                _FilterChipButton(
-                                  label: '대체',
-                                  isSelected: sortFilter == '3',
-                                  color: const Color(0xFF38BDF8),
-                                  onTap: () {
-                                    ref
-                                        .read(
-                                            ledgerSortFilterProvider.notifier)
-                                        .state = '3';
                                     ref
                                         .read(projectTransactionsProvider
                                             .notifier)

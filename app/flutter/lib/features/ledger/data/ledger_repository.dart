@@ -51,8 +51,8 @@ class LedgerRepository {
     }
   }
 
-  /// 2. 프로젝트 거래 전표 목록 조회 (/api/v1/ledger/project-transaction/?project={projectId}&page={page})
-  Future<List<ProjectTransactionItemModel>> fetchProjectTransactions({
+  /// 2. 프로젝트 거래 전표 페이지 조회 (/api/v1/ledger/project-transaction/?project={projectId}&page={page})
+  Future<ProjectTransactionPageResult> fetchProjectTransactionsPage({
     required int projectId,
     String? search,
     String? sort,
@@ -89,12 +89,45 @@ class LedgerRepository {
         queryParameters: queryParams,
       );
 
-      final List<dynamic> results = response.data is Map && response.data.containsKey('results')
-          ? response.data['results']
-          : (response.data is List ? response.data : []);
+      final data = response.data;
+      final List<dynamic> results = data is Map && data.containsKey('results')
+          ? data['results']
+          : (data is List ? data : []);
+      final items = results.map((json) => ProjectTransactionItemModel.fromJson(json)).toList();
+      final bool hasMore = data is Map && data.containsKey('next')
+          ? data['next'] != null
+          : items.length >= limit;
 
-      return results.map((json) => ProjectTransactionItemModel.fromJson(json)).toList();
-    } catch (e) {
+      return ProjectTransactionPageResult(items: items, hasMore: hasMore);
+    } on DioException catch (e) {
+      throw Exception(e.response?.data?['detail'] ?? '출납 거래 내역을 불러오지 못했습니다.');
+    }
+  }
+
+  /// 2-1. 프로젝트 거래 전표 목록 조회 (집계/차트용)
+  Future<List<ProjectTransactionItemModel>> fetchProjectTransactions({
+    required int projectId,
+    String? search,
+    String? sort,
+    int? bankAccount,
+    String? fromDate,
+    String? toDate,
+    int page = 1,
+    int limit = 10,
+  }) async {
+    try {
+      final res = await fetchProjectTransactionsPage(
+        projectId: projectId,
+        search: search,
+        sort: sort,
+        bankAccount: bankAccount,
+        fromDate: fromDate,
+        toDate: toDate,
+        page: page,
+        limit: limit,
+      );
+      return res.items;
+    } catch (_) {
       return [];
     }
   }
@@ -112,8 +145,8 @@ class LedgerRepository {
         return list.map((json) => ProjectBalanceByAccountModel.fromJson(json)).toList();
       }
       return [];
-    } catch (e) {
-      return [];
+    } on DioException catch (e) {
+      throw Exception(e.response?.data?['detail'] ?? '계좌별 잔액 현황을 불러오지 못했습니다.');
     }
   }
 
@@ -127,7 +160,7 @@ class LedgerRepository {
       final toDate = '$monthStr-$lastDay';
 
       // 1. 계좌별 잔액 조회 (모든 프로젝트 계좌 실시간 가용 잔액)
-      final balancesFuture = fetchBalanceByAccount(projectId);
+      final balancesFuture = fetchBalanceByAccount(projectId).catchError((_) => <ProjectBalanceByAccountModel>[]);
 
       // 2. 당월 입금 거래 내역 조회 (sort=1, 당월 일자 범위 지정)
       final monthIncomeFuture = fetchProjectTransactions(
@@ -174,14 +207,6 @@ class LedgerRepository {
       for (final tx in expTransactions) {
         if (tx.dealDate.startsWith(monthStr)) {
           monthExpense += tx.amount;
-        }
-      }
-
-      // 만약 거래 목록에서 0건이고 balance_by_account에 당일 집계가 있으면 보정
-      if (monthIncome == 0 && monthExpense == 0) {
-        for (final item in balances) {
-          monthIncome += item.dateInc;
-          monthExpense += item.dateOut;
         }
       }
 

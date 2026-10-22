@@ -705,8 +705,10 @@ class ProjectBankTransactionViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(project_id=project)
 
         result = queryset.values(
+            bank_id=F('bank_account_id'),
             bank_acc=F('bank_account__alias_name'),
-            bank_num=F('bank_account__number')
+            bank_num=F('bank_account__number'),
+            is_imprest=F('bank_account__is_imprest'),
         ).annotate(
             inc_sum=Sum(Case(
                 When(sort_id=1, then=F('amount')),  # 1 = 입금
