@@ -5,26 +5,68 @@ Excel Export Common Mixins
 """
 import datetime
 import io
+import re
+from decimal import Decimal
 from urllib.parse import quote
 
 import xlsxwriter
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.views.generic import View
 
 from project.models import Project
 
-TODAY = datetime.date.today().strftime('%Y-%m-%d')
+
+class _TodayProxy(str):
+    """서버 가동 중 날짜가 바뀌어도 항상 현재 날짜를 동적으로 반환하는 프록시 문자열"""
+
+    def __str__(self):
+        return datetime.date.today().strftime('%Y-%m-%d')
+
+    def __repr__(self):
+        return repr(str(self))
+
+    def __add__(self, other):
+        return str(self) + str(other)
+
+    def __radd__(self, other):
+        return str(other) + str(self)
+
+    def __eq__(self, other):
+        return str(self) == other
+
+    def __hash__(self):
+        return hash(str(self))
 
 
-class ExcelExportMixin(View):
-    """Excel 내보내기 공통 기능 믹스인"""
+# 하위 호환성을 위해 TODAY 심볼 유지 (동적 프록시 적용)
+TODAY = _TodayProxy()
+
+
+class ExcelExportMixin(LoginRequiredMixin, View):
+    """Excel 내보내기 공통 기능 믹스인 (로그인 인증 필수)"""
+    raise_exception = False
 
     @staticmethod
-    def create_workbook(sheet_name=None, in_memory=False, default_row=20):
+    def get_today_str():
+        """동적으로 현재 날짜 반환 (프로세스 캐싱 방지)"""
+        return datetime.date.today().strftime('%Y-%m-%d')
+
+    @classmethod
+    def sanitize_sheet_name(cls, name, default='데이터'):
+        """시트 이름 유효성 검증 및 31자/금지문자 정제"""
+        if not name:
+            return default
+        # 엑셀 시트명 금지 문자 \ / ? * : [ ] 제거
+        cleaned = re.sub(r'[\\/?*:[\]]', '', str(name)).strip()
+        return cleaned[:31] if cleaned else default
+
+    @classmethod
+    def create_workbook(cls, sheet_name=None, in_memory=False, default_row=20):
         """워크북과 워크시트 생성"""
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': in_memory})
-        worksheet = workbook.add_worksheet(sheet_name or '데이터')
+        worksheet = workbook.add_worksheet(cls.sanitize_sheet_name(sheet_name))
         worksheet.set_default_row(default_row)
         return output, workbook, worksheet
 
@@ -91,13 +133,16 @@ class ExcelExportMixin(View):
         """제목 작성"""
         title_format = self.create_title_format(workbook)
         worksheet.set_row(row_num, 50)
-        worksheet.merge_range(row_num, 0, row_num, col_count, title, title_format)
+        if col_count > 0:
+            worksheet.merge_range(row_num, 0, row_num, col_count, title, title_format)
+        else:
+            worksheet.write(row_num, 0, title, title_format)
         return row_num + 1
 
-    @staticmethod
-    def write_date_info(worksheet, workbook, row_num, col_count, date_str=None, right_format=None):
-        """날짜 정보 작성 (성능 최적화)"""
-        date_info = (date_str or TODAY) + ' 현재'
+    @classmethod
+    def write_date_info(cls, worksheet, workbook, row_num, col_count, date_str=None, right_format=None):
+        """날짜 정보 작성 (동적 현재 일자 적용)"""
+        date_info = (date_str or cls.get_today_str()) + ' 현재'
         worksheet.set_row(row_num, 18)
 
         # Use the provided format or create once
@@ -120,11 +165,17 @@ class ExcelExportMixin(View):
         return row_num + 1
 
     def write_data_rows(self, worksheet, workbook, row_num, headers, data_list):
-        """데이터 행 작성 (성능 최적화)"""
+        """데이터 행 작성 (성능 최적화 및 정확한 타입별 서식 적용)"""
         # Pre-create format objects for reuse
         default_format = workbook.add_format({
             'border': True,
             'align': 'center',
+            'valign': 'vcenter'
+        })
+
+        left_format = workbook.add_format({
+            'border': True,
+            'align': 'left',
             'valign': 'vcenter'
         })
 
@@ -137,7 +188,7 @@ class ExcelExportMixin(View):
 
         number_format = workbook.add_format({
             'border': True,
-            'align': 'center',
+            'align': 'right',
             'valign': 'vcenter',
             'num_format': '#,##0'
         })
@@ -147,11 +198,13 @@ class ExcelExportMixin(View):
                 if header_name and field_name:  # 빈 헤더와 필드 제외
                     value = self.get_field_value(item, field_name)
 
-                    # Select the appropriate format based on a value type
-                    if isinstance(value, (int, float)) and '금액' in header_name:
+                    # 값의 타입 및 컬럼 헤더명에 따른 적절한 서식 매칭
+                    if isinstance(value, (int, float)):
                         cell_format = number_format
-                    elif '일자' in header_name or '날짜' in header_name:
+                    elif isinstance(value, str) and ('일자' in header_name or '날짜' in header_name):
                         cell_format = date_format
+                    elif isinstance(value, str) and any(kw in header_name for kw in ('비고', '주소', '내용', '상호', '적요')):
+                        cell_format = left_format
                     else:
                         cell_format = default_format
 
@@ -162,7 +215,7 @@ class ExcelExportMixin(View):
 
     @staticmethod
     def get_field_value(obj, field_name):
-        """객체에서 필드 값 추출 (중첩 필드 지원)"""
+        """객체에서 필드 값 추출 (중첩 필드 지원 및 숫자/날짜 타입 보존)"""
         if not field_name:
             return ''
 
@@ -173,33 +226,54 @@ class ExcelExportMixin(View):
             for field in fields:
                 if hasattr(value, field):
                     value = getattr(value, field)
+                elif isinstance(value, dict):
+                    value = value.get(field, '')
                 elif hasattr(value, 'get') and callable(getattr(value, 'get')):
                     value = value.get(field, '')
                 else:
                     return ''
 
-            # 날짜 포맷팅
+            if value is None:
+                return ''
+
+            # 1. 숫자 타입 보존 (Decimal, int, float) -> 엑셀에서 수식/합계 정상 작동
+            if isinstance(value, Decimal):
+                return float(value) if value % 1 else int(value)
+            if isinstance(value, (int, float)):
+                return value
+
+            # 2. 날짜/시간 포맷팅
             if isinstance(value, datetime.date):
                 return value.strftime('%Y-%m-%d')
             elif isinstance(value, datetime.datetime):
                 return value.strftime('%Y-%m-%d %H:%M')
 
-            return str(value) if value is not None else ''
+            # 3. 기타 값은 문자열 반환
+            return str(value)
         except (AttributeError, KeyError, TypeError):
             return ''
 
     @staticmethod
     def create_response(output, workbook, filename):
-        """HTTP 응답 생성"""
-        workbook.close()
-        output.seek(0)
+        """HTTP 응답 생성 (중복 close 방지 및 파일명 인젝션 방어)"""
+        # 중복 close 방어 (하위 뷰에서 이미 close()를 호출한 경우 발생할 수 있는 UserWarning 차단)
+        if not getattr(workbook, 'fileclosed', 0):
+            try:
+                workbook.close()
+            except Exception:
+                pass
 
-        response = HttpResponse(output.read(),
-                                content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-        # RFC 5987: filename*=UTF-8''encoded_filename for better browser compatibility
-        encoded_filename = quote(f'{filename}.xlsx')
-        response['Content-Disposition'] = \
-            f"attachment; filename=\"{filename}.xlsx\"; filename*=UTF-8''{encoded_filename}"
+        output.seek(0)
+        response = HttpResponse(
+            output.getvalue(),
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        # HTTP Response Splitting 및 특수문자 정제
+        clean_name = re.sub(r'["\r\n]', '', str(filename)).strip() or 'export'
+        encoded_filename = quote(f'{clean_name}.xlsx')
+        response['Content-Disposition'] = (
+            f'attachment; filename="{clean_name}.xlsx"; filename*=UTF-8\'\'{encoded_filename}'
+        )
         return response
 
 
@@ -234,14 +308,22 @@ class ExcelUtilsMixin:
 
     @staticmethod
     def format_currency(amount):
-        """통화 형식으로 포맷"""
-        if amount is None:
+        """통화 형식으로 포맷 (문자열, Decimal, float, int 완벽 방어)"""
+        if amount is None or amount == '':
             return ''
-        return f"{amount:,}"
+        try:
+            if isinstance(amount, str):
+                clean_str = amount.replace(',', '').strip()
+                amount = float(clean_str) if '.' in clean_str else int(clean_str)
+            elif isinstance(amount, Decimal):
+                amount = float(amount) if amount % 1 else int(amount)
+            return f"{amount:,}"
+        except (ValueError, TypeError):
+            return str(amount)
 
     @staticmethod
     def format_phone(phone):
-        """전화번호 형식으로 포맷"""
+        """전화번호 형식으로 포맷 (서울 02 국번 9/10자리 및 일반 10/11자리 대응)"""
         if not phone:
             return ''
         # 하이픈 제거 후 재포맷
@@ -249,18 +331,26 @@ class ExcelUtilsMixin:
         if len(clean_phone) == 11:
             return f"{clean_phone[:3]}-{clean_phone[3:7]}-{clean_phone[7:]}"
         elif len(clean_phone) == 10:
+            if clean_phone.startswith('02'):
+                return f"{clean_phone[:2]}-{clean_phone[2:6]}-{clean_phone[6:]}"
             return f"{clean_phone[:3]}-{clean_phone[3:6]}-{clean_phone[6:]}"
+        elif len(clean_phone) == 9 and clean_phone.startswith('02'):
+            return f"{clean_phone[:2]}-{clean_phone[2:5]}-{clean_phone[5:]}"
         return phone
 
     @staticmethod
     def safe_get_attr(obj, attr_path, default=''):
-        """안전한 속성 접근"""
+        """안전한 속성/키 접근 (객체 및 딕셔너리 동시 지원)"""
         try:
             attrs = attr_path.split('__')
             result = obj
             for attr in attrs:
                 if hasattr(result, attr):
                     result = getattr(result, attr)
+                elif isinstance(result, dict):
+                    result = result.get(attr, default)
+                elif hasattr(result, 'get') and callable(getattr(result, 'get')):
+                    result = result.get(attr, default)
                 else:
                     return default
             return result if result is not None else default
@@ -426,7 +516,7 @@ class XlwtStyleMixin:
         style_amount.borders.top = 1
         style_amount.borders.bottom = 1
         style_amount.alignment.vert = style_amount.alignment.VERT_CENTER
-        style_amount.num_format_str = '#,##'
+        style_amount.num_format_str = '#,##0'
 
         # 헤더 스타일 (굵게 + 회색 배경 + 가운데 정렬)
         style_header = xlwt.XFStyle()

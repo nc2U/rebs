@@ -1,4 +1,6 @@
+from django.contrib.auth.decorators import login_required
 from django.urls import path
+
 from company.exports import (ExportStaffs, ExportDeparts, ExportPositions, ExportDuties, ExportGrades,
                              ExportExecutiveRanks, ExportExecutives, ExportAppointments,
                              ExportStaffCareers, ExportStaffCertificates, ExportStaffRewards,
@@ -55,14 +57,14 @@ urlpatterns = [
     # ledger
     path('com-balance/', ExportLedgerBalanceByAcc.as_view(), name='com-balance'),
     path('com-daily-cash/', ExportLedgerDateCashbook.as_view(), name='com-daily-cash'),
-    path('com-trans/', export_com_transaction_xls, name='com-trans'),
+    path('com-trans/', login_required(export_com_transaction_xls), name='com-trans'),
 
     # ledger
     path('pro-balance/', ExportProjectLedgerBalance.as_view(), name='ledger-pro-balance'),
     path('pro-daily-cash/', ExportProjectLedgerDateCashbook.as_view(), name='ledger-pro-daily-cash'),
     path('pro-budget/', ExportLedgerBudgetExecutionStatus.as_view(), name='ledger-pro-budget'),
     path('ledger-cash-flow-form/', ExportLedgerCashFlowForm.as_view(), name='ledger-cash-flow-form'),
-    path('pro-trans/', export_pro_transaction_xls, name='pro-trans'),
+    path('pro-trans/', login_required(export_pro_transaction_xls), name='pro-trans'),
 
     # DocsItem 관련 (새 모듈)
     path('suitcases/', ExportSuitCases.as_view(), name='suitcases'),
