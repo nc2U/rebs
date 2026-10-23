@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import 'dart:io';
@@ -120,18 +121,34 @@ class RetryInterceptor extends Interceptor {
 
 /// JWT 토큰 자동 갱신 인터셉터
 /// - 모든 요청에 Authorization 헤더 자동 삽입
-/// - 401 응답 시 refresh_token으로 access_token 재발급 후 원요청 재시도
-/// - 갱신 실패 시 토큰 삭제 (로그인 화면으로 go_router가 리다이렉트 처리)
+/// - 401 응답 시 동시 다발적 refresh 요청을 방지(Completer 락)하고 단 1회만 안전하게 갱신
+/// - 큐 내부 데드락(Deadlock) 방지를 위해 독립 retry Dio 인스턴스로 원요청 재시도
+/// - 갱신 실패 시(Refresh 토큰 만료)에만 토큰 삭제 및 세션 만료 알림(로그인 화면 이동)
 class AuthInterceptor extends QueuedInterceptorsWrapper {
   final Dio dio;
   final TokenStorage tokenStorage;
   final void Function()? onSessionExpired;
 
+  // 동시 401 발생 시 중복 리프레시 요청 방지 (Lock)
+  Completer<bool>? _refreshCompleter;
+
+  // QueuedInterceptorsWrapper 내부 데드락 방지를 위한 인터셉터 없는 독립 retry 전용 Dio
+  late final Dio _retryDio;
+
   AuthInterceptor({
     required this.dio,
     required this.tokenStorage,
     this.onSessionExpired,
-  });
+  }) {
+    _retryDio = Dio(
+      BaseOptions(
+        baseUrl: dio.options.baseUrl,
+        connectTimeout: dio.options.connectTimeout,
+        receiveTimeout: dio.options.receiveTimeout,
+        sendTimeout: dio.options.sendTimeout,
+      ),
+    );
+  }
 
   @override
   Future<void> onRequest(
@@ -166,27 +183,80 @@ class AuthInterceptor extends QueuedInterceptorsWrapper {
         err.requestOptions.path.contains(ApiEndpoints.jwtRefresh);
 
     if (!isAuthEndpoint && err.response?.statusCode == 401) {
-      // access_token 만료 → refresh 시도
-      final refreshed = await _tryRefresh();
-      if (refreshed) {
-        // 원 요청 재시도 (새 access_token으로)
-        final newToken = await tokenStorage.getAccessToken();
-        final retryOptions = err.requestOptions;
-        retryOptions.headers['Authorization'] = 'Bearer $newToken';
-        try {
-          final retryResponse = await dio.fetch(retryOptions);
-          return handler.resolve(retryResponse);
-        } catch (e) {
-          // 재시도도 실패 → 토큰 삭제 및 세션 만료 알림
-          await tokenStorage.clearTokens();
-          onSessionExpired?.call();
-        }
+      // 1. 현재 저장된 최신 토큰 및 요청 시 전송했던 토큰 확인
+      final currentToken = await tokenStorage.getAccessToken();
+      final sentToken = err.requestOptions.headers['Authorization']
+          ?.toString()
+          .replaceFirst('Bearer ', '')
+          .trim();
+
+      bool refreshed = false;
+      // 다른 동시 요청이나 로그인으로 인해 이미 최신 토큰으로 갱신된 상태라면 재갱신 불필요
+      if (currentToken != null &&
+          currentToken.isNotEmpty &&
+          sentToken != null &&
+          sentToken.isNotEmpty &&
+          sentToken != currentToken) {
+        refreshed = true;
       } else {
-        await tokenStorage.clearTokens();
-        onSessionExpired?.call();
+        // 현재 유효했던 토큰이 만료된 것이므로 1회만 안전하게 토큰 갱신
+        refreshed = await _synchronizedRefresh();
       }
+
+      if (refreshed) {
+        // 새 access_token으로 원 요청 재시도
+        final newToken = await tokenStorage.getAccessToken();
+        if (newToken != null && newToken.isNotEmpty) {
+          final retryOptions = err.requestOptions;
+          retryOptions.headers['Authorization'] = 'Bearer $newToken';
+          try {
+            // 데드락 방지를 위해 인터셉터 없는 _retryDio로 재시도
+            final retryResponse = await _retryDio.fetch<dynamic>(retryOptions);
+            return handler.resolve(retryResponse);
+          } on DioException catch (retryErr) {
+            // 재시도한 요청마저 401인 경우에만 최종 세션 만료로 처리
+            if (retryErr.response?.statusCode == 401) {
+              await tokenStorage.clearTokens();
+              onSessionExpired?.call();
+            }
+            return handler.reject(retryErr);
+          } catch (e) {
+            return handler.reject(
+              DioException(
+                requestOptions: err.requestOptions,
+                error: e,
+              ),
+            );
+          }
+        }
+      }
+
+      // 리프레시 토큰까지 만료되어 갱신에 최종 실패한 경우에만 토큰 정리 및 세션 만료
+      await tokenStorage.clearTokens();
+      onSessionExpired?.call();
+      return handler.next(err);
     }
+
     handler.next(err);
+  }
+
+  Future<bool> _synchronizedRefresh() async {
+    if (_refreshCompleter != null) {
+      return _refreshCompleter!.future;
+    }
+
+    final completer = Completer<bool>();
+    _refreshCompleter = completer;
+    try {
+      final success = await _tryRefresh();
+      completer.complete(success);
+      return success;
+    } catch (e) {
+      completer.complete(false);
+      return false;
+    } finally {
+      _refreshCompleter = null;
+    }
   }
 
   Future<bool> _tryRefresh() async {
