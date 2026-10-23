@@ -3,32 +3,77 @@ PDF Export Common Mixins
 
 공통 PDF 내보내기 기능을 제공하는 믹스인 클래스들
 """
+import re
 from datetime import date, datetime
+from decimal import Decimal
+from urllib.parse import quote, urlparse
 
+from django.conf import settings
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.views.generic import View
 from weasyprint import HTML
+from weasyprint.urls import URLFetcher
 
 from contract.models import Contract
 from payment.models import InstallmentPaymentOrder
 
-from urllib.parse import quote
+_base_fetcher = URLFetcher()
 
-class PdfExportMixin(View):
-    """PDF 내보내기 공통 기능 믹스인"""
+
+class PdfExportMixin(LoginRequiredMixin, View):
+    """PDF 내보내기 공통 기능 믹스인 (로그인 인증 필수 및 SSRF 방어)"""
+    raise_exception = False
 
     @staticmethod
-    def create_pdf_response(template_name, context, filename):
-        """PDF 응답 생성 (메모리 버퍼 기반 생성으로 디스크 I/O 및 동시성 충돌 방지)"""
+    def safe_url_fetcher(url, *args, **kwargs):
+        """SSRF 방어를 위한 WeasyPrint URL Fetcher (내부 사설망 및 메타데이터 차단)"""
+        parsed = urlparse(url)
+        scheme = parsed.scheme.lower()
+
+        # data: 또는 file: URI 등 로컬 자원은 기본 처리 허용
+        if scheme in ('data', 'file', ''):
+            return _base_fetcher(url, *args, **kwargs)
+
+        if scheme in ('http', 'https'):
+            hostname = (parsed.hostname or '').lower()
+            # 내부망/메타데이터 IP, localhost 및 k8s 내부 도메인 차단
+            blocked_hosts = ('localhost', '127.0.0.1', '::1', '169.254.169.254')
+            if hostname in blocked_hosts or hostname.startswith('10.') or hostname.startswith('192.168.') \
+                    or hostname.endswith('.cluster.local') or hostname.endswith('.svc'):
+                raise ValueError(f"Access to internal network URL {url} is forbidden.")
+            if hostname.startswith('172.'):
+                parts = hostname.split('.')
+                if len(parts) >= 2 and parts[1].isdigit() and 16 <= int(parts[1]) <= 31:
+                    raise ValueError(f"Access to internal network URL {url} is forbidden.")
+
+        return _base_fetcher(url, *args, **kwargs)
+
+    @classmethod
+    def create_pdf_response(cls, template_name, context, filename, request=None):
+        """PDF 응답 생성 (메모리 버퍼 기반 생성 및 base_url/SSRF 방어 지원)"""
         html_string = render_to_string(template_name, context)
-        html = HTML(string=html_string)
+
+        base_url = request.build_absolute_uri('/') if request else str(settings.BASE_DIR)
+        html = HTML(string=html_string, base_url=base_url, url_fetcher=cls.safe_url_fetcher)
         pdf_bytes = html.write_pdf()
 
-        encoded_filename = quote(f"{filename}.pdf" if not filename.lower().endswith('.pdf') else filename)
+        clean_filename = re.sub(r'["\r\n]', '', str(filename)).strip() or 'document'
+        if not clean_filename.lower().endswith('.pdf'):
+            clean_filename = f"{clean_filename}.pdf"
+
+        encoded_filename = quote(clean_filename)
+
+        # RFC 6266: ASCII fallback 파일명 생성 (헤더 깨짐 방지)
+        ascii_name = clean_filename.encode('ascii', 'ignore').decode('ascii').strip()
+        if not ascii_name or ascii_name == '.pdf':
+            ascii_name = 'download.pdf'
 
         response = HttpResponse(pdf_bytes, content_type='application/pdf')
-        response['Content-Disposition'] = f"attachment; filename*=UTF-8''{encoded_filename}"
+        response['Content-Disposition'] = (
+            f'attachment; filename="{ascii_name}"; filename*=UTF-8\'\'{encoded_filename}'
+        )
         return response
 
     @staticmethod
@@ -89,9 +134,16 @@ class PaymentPdfMixin:
 
     @staticmethod
     def get_paid_list(contract, pub_date=None):
-        """기 납부 목록 가져오기"""
-
-        return [], 0
+        """기 납부 목록 가져오기 (_pdf.utils.get_paid 래핑)"""
+        from _pdf.utils import get_paid
+        if not contract:
+            return [], 0
+        ref_date = pub_date or date.today()
+        try:
+            paid_dict_list, paid_sum_total, _ = get_paid(contract, [], ref_date)
+            return paid_dict_list, paid_sum_total
+        except Exception:
+            return [], 0
 
 
 class DateUtilMixin:
@@ -132,17 +184,29 @@ class FormattingMixin:
 
     @staticmethod
     def format_currency(amount):
-        """통화 형식으로 포맷"""
-        if amount is None:
-            return 0
-        return f"{amount:,}"
+        """통화 형식으로 포맷 (문자열, Decimal, float, int 완벽 방어)"""
+        if amount is None or amount == '':
+            return '0'
+        try:
+            if isinstance(amount, str):
+                clean_str = amount.replace(',', '').strip()
+                amount = float(clean_str) if '.' in clean_str else int(clean_str)
+            elif isinstance(amount, Decimal):
+                amount = float(amount) if amount % 1 else int(amount)
+            return f"{amount:,}"
+        except (ValueError, TypeError):
+            return str(amount)
 
     @staticmethod
     def format_percentage(value, decimal_places=2):
         """퍼센티지 형식으로 포맷"""
         if value is None:
             return "0%"
-        return f"{value:.{decimal_places}f}%"
+        try:
+            val_float = float(value)
+            return f"{val_float:.{decimal_places}f}%"
+        except (ValueError, TypeError):
+            return "0%"
 
     @staticmethod
     def safe_division(dividend, divisor, default=0):

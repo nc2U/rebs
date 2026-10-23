@@ -7,7 +7,58 @@ from contract.models import Contract
 from payment.models import OverDueRule, SpecialOverDueRule
 from _utils.contract_price import get_due_date_per_order
 
-TODAY = date.today()
+
+def get_today():
+    """동적으로 현재 날짜 반환 (프로세스 캐싱 방지)"""
+    return date.today()
+
+
+class _TodayProxy:
+    """하위 호환성을 위한 동적 오늘 날짜 프록시"""
+
+    @property
+    def _current(self):
+        return date.today()
+
+    def __getattr__(self, item):
+        return getattr(self._current, item)
+
+    def __str__(self):
+        return str(self._current)
+
+    def __repr__(self):
+        return repr(self._current)
+
+    def __eq__(self, other):
+        return self._current == other
+
+    def __lt__(self, other):
+        return self._current < other
+
+    def __le__(self, other):
+        return self._current <= other
+
+    def __gt__(self, other):
+        return self._current > other
+
+    def __ge__(self, other):
+        return self._current >= other
+
+    def __sub__(self, other):
+        return self._current - other
+
+    def __rsub__(self, other):
+        return other - self._current
+
+    def __add__(self, other):
+        return self._current + other
+
+    def __radd__(self, other):
+        return other + self._current
+
+
+# 하위 호환성을 위해 TODAY 심볼 유지 (동적 프록시 적용)
+TODAY = _TodayProxy()
 
 
 def get_contract(cont_id):
@@ -106,9 +157,9 @@ def get_late_fee(project, late_amt, days, is_past=False):
     """
 
     if not is_past:
-        rules = OverDueRule.objects.filter(project=project)
+        rules = OverDueRule.objects.filter(project=project).order_by('term_start')
     else:
-        rules = SpecialOverDueRule.objects.filter(project=project)
+        rules = SpecialOverDueRule.objects.filter(project=project).order_by('term_start')
 
     calc_fee = 0
     calc_days = 0
