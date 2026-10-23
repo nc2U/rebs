@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -61,7 +62,6 @@ class _SearchResultsScreenState extends ConsumerState<SearchResultsScreen> {
   }
 
   void _onSearchChanged(String val) {
-    setState(() {});
     _debounceTimer?.cancel();
     final trimmed = val.trim();
     if (trimmed.length < 2) {
@@ -79,7 +79,26 @@ class _SearchResultsScreenState extends ConsumerState<SearchResultsScreen> {
     _debounceTimer?.cancel();
     _controller.clear();
     ref.read(searchQueryProvider.notifier).state = '';
-    setState(() {});
+  }
+
+  String _getErrorMessage(Object err) {
+    if (err is DioException) {
+      if (err.type == DioExceptionType.connectionTimeout ||
+          err.type == DioExceptionType.receiveTimeout ||
+          err.type == DioExceptionType.sendTimeout ||
+          err.type == DioExceptionType.connectionError) {
+        return '서버와 연결할 수 없습니다. 네트워크 연결을 확인해 주세요.';
+      }
+      final data = err.response?.data;
+      if (data is Map) {
+        if (data['detail'] != null) return data['detail'].toString();
+        if (data['error'] != null) return data['error'].toString();
+      }
+      if (err.response?.statusCode != null) {
+        return '검색 중 오류가 발생했습니다. (오류 코드: ${err.response!.statusCode})';
+      }
+    }
+    return '검색 결과를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.';
   }
 
   Future<void> _openDocumentDetail(int pk) async {
@@ -226,12 +245,16 @@ class _SearchResultsScreenState extends ConsumerState<SearchResultsScreen> {
                                 size: 20,
                                 color: context.colors.accentWork,
                               ),
-                              suffixIcon: _controller.text.isNotEmpty
-                                  ? IconButton(
-                                      icon: Icon(Icons.clear_rounded, size: 16, color: context.colors.textMuted),
-                                      onPressed: _onClearSearch,
-                                    )
-                                  : null,
+                              suffixIcon: ValueListenableBuilder<TextEditingValue>(
+                                valueListenable: _controller,
+                                builder: (context, value, _) {
+                                  if (value.text.isEmpty) return const SizedBox.shrink();
+                                  return IconButton(
+                                    icon: Icon(Icons.clear_rounded, size: 16, color: context.colors.textMuted),
+                                    onPressed: _onClearSearch,
+                                  );
+                                },
+                              ),
                               border: InputBorder.none,
                               contentPadding: const EdgeInsets.symmetric(vertical: 11),
                             ),
@@ -382,7 +405,8 @@ class _SearchResultsScreenState extends ConsumerState<SearchResultsScreen> {
                       : searchResultsAsync.when(
                           loading: () => const LoadingShimmer(itemCount: 5, itemHeight: 90),
                           error: (err, _) => ErrorView(
-                            message: '$err',
+                            message: _getErrorMessage(err),
+                            subMessage: '네트워크 연결 상태나 검색어 조건을 확인해 주세요.',
                             onRetry: () => ref.invalidate(searchResultsProvider),
                           ),
                           data: (response) {
@@ -699,7 +723,7 @@ class _HighlightText extends StatelessWidget {
     final qLower = trimmedQuery.toLowerCase();
     int start = 0;
 
-    while (true) {
+    while (start < text.length) {
       final index = text.toLowerCase().indexOf(qLower, start);
       if (index == -1) {
         spans.add(TextSpan(text: text.substring(start)));
@@ -708,15 +732,17 @@ class _HighlightText extends StatelessWidget {
       if (index > start) {
         spans.add(TextSpan(text: text.substring(start, index)));
       }
+      final matchEnd = (index + trimmedQuery.length).clamp(0, text.length);
       spans.add(TextSpan(
-        text: text.substring(index, index + trimmedQuery.length),
+        text: text.substring(index, matchEnd),
         style: (style ?? const TextStyle()).copyWith(
           color: highlightColor,
           fontWeight: FontWeight.bold,
           backgroundColor: highlightColor.withAlpha(25),
         ),
       ));
-      start = index + trimmedQuery.length;
+      start = matchEnd;
+      if (start >= text.length) break;
     }
 
     return Text.rich(

@@ -20,10 +20,14 @@ final searchResultsProvider = FutureProvider<UnifiedSearchResponse?>((ref) async
   final scope = ref.watch(searchScopeProvider);
   final selectedProj = ref.watch(selectedProjectProvider);
 
+  // 선택된 워크스페이스가 없는 상태에서 'project' 범위가 선택된 경우 'all'로 안전하게 폴백
+  final effectiveScope = (scope == 'project' && selectedProj != null) ? 'project' : 'all';
+  final effectiveSlug = effectiveScope == 'project' ? selectedProj?.slug : null;
+
   return ref.watch(searchRepositoryProvider).runSearch(
         query: query,
-        scope: scope,
-        slug: scope == 'project' ? selectedProj?.slug : null,
+        scope: effectiveScope,
+        slug: effectiveSlug,
       );
 });
 

@@ -1,3 +1,11 @@
+int _parseInt(dynamic val, [int fallback = 0]) {
+  if (val == null) return fallback;
+  if (val is int) return val;
+  if (val is num) return val.toInt();
+  if (val is String) return int.tryParse(val) ?? fallback;
+  return fallback;
+}
+
 class SearchProjectInfo {
   final String slug;
   final String name;
@@ -20,7 +28,7 @@ class SearchUserInfo {
 
   factory SearchUserInfo.fromJson(Map<String, dynamic> json) {
     return SearchUserInfo(
-      pk: json['pk'] as int? ?? 0,
+      pk: _parseInt(json['pk']),
       username: json['username']?.toString() ?? '',
     );
   }
@@ -54,7 +62,7 @@ class IssueSearchResult {
     final creatorJson = json['creator'] as Map<String, dynamic>?;
 
     return IssueSearchResult(
-      pk: json['pk'] as int? ?? 0,
+      pk: _parseInt(json['pk']),
       project: SearchProjectInfo.fromJson(projJson),
       subject: json['subject']?.toString() ?? '',
       created: json['created']?.toString() ?? '',
@@ -88,7 +96,7 @@ class MeetingSearchResult {
     final creatorJson = json['creator'] as Map<String, dynamic>?;
 
     return MeetingSearchResult(
-      pk: json['pk'] as int? ?? 0,
+      pk: _parseInt(json['pk']),
       project: SearchProjectInfo.fromJson(projJson),
       title: json['title']?.toString() ?? '',
       meetingDate: json['meeting_date']?.toString() ?? '',
@@ -120,7 +128,7 @@ class DocumentSearchResult {
     final creatorJson = json['creator'] as Map<String, dynamic>?;
 
     return DocumentSearchResult(
-      pk: json['pk'] as int? ?? 0,
+      pk: _parseInt(json['pk']),
       project: SearchProjectInfo.fromJson(projJson),
       title: json['title']?.toString() ?? '',
       description: json['description']?.toString() ?? '',
@@ -152,7 +160,7 @@ class NewsSearchResult {
     final authorJson = json['author'] as Map<String, dynamic>?;
 
     return NewsSearchResult(
-      pk: json['pk'] as int? ?? 0,
+      pk: _parseInt(json['pk']),
       project: SearchProjectInfo.fromJson(projJson),
       title: json['title']?.toString() ?? '',
       summary: json['summary']?.toString() ?? '',
@@ -184,9 +192,9 @@ class PostSearchResult {
     final creatorJson = json['creator'] as Map<String, dynamic>?;
 
     return PostSearchResult(
-      pk: json['pk'] as int? ?? 0,
+      pk: _parseInt(json['pk']),
       project: SearchProjectInfo.fromJson(projJson),
-      forum: json['forum'] as int? ?? 0,
+      forum: _parseInt(json['forum']),
       title: json['title']?.toString() ?? '',
       created: json['created']?.toString() ?? '',
       creator: creatorJson != null ? SearchUserInfo.fromJson(creatorJson) : null,
@@ -219,8 +227,8 @@ class CommentSearchResult {
     final creatorJson = json['creator'] as Map<String, dynamic>?;
 
     return CommentSearchResult(
-      pk: json['pk'] as int? ?? 0,
-      issuePk: issueJson['pk'] as int? ?? 0,
+      pk: _parseInt(json['pk']),
+      issuePk: _parseInt(issueJson['pk']),
       issueSubject: issueJson['subject']?.toString() ?? '',
       project: SearchProjectInfo.fromJson(projJson),
       content: json['content']?.toString() ?? '',
