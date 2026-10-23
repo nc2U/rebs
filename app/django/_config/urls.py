@@ -1,7 +1,7 @@
 """_config URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information, please see:
-    https://docs.djangoproject.com/en/4.0/topics/http/urls/
+    https://docs.djangoproject.com/en/6.1/topics/http/urls/
 Examples:
 Function views
     1. Add an import:  from my_app import views
@@ -75,7 +75,7 @@ urlpatterns = [
     path("healthz/", health_check),
     path("healthz/live/", health_live),
     path("healthz/ready/", health_ready),
-    path('install/', include('accounts.urls'), name='install'),
+    path('install/', include('accounts.urls')),
 
     path('book/', include('book.urls')),
 

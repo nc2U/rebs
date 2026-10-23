@@ -1,6 +1,6 @@
 import os
 import time
-from django.db import connections
+from django.db import connection, connections
 from django.db.utils import OperationalError
 
 
@@ -28,8 +28,8 @@ class MasterSlaveRouter:
             if 'replica' not in connections:
                 self._replica_enabled = False
                 return False
-            connection = connections['replica']
-            connection.ensure_connection()
+            replica_conn = connections['replica']
+            replica_conn.ensure_connection()
             self._replica_enabled = True
         except (OperationalError, KeyError, Exception):
             # replica 연결 실패 시 default 사용으로 안전하게 폴백
@@ -38,6 +38,16 @@ class MasterSlaveRouter:
         return self._replica_enabled
 
     def db_for_read(self, model, **hints):
+        # 1. 쓰기 트랜잭션(atomic) 블록 내부인 경우 정합성(Read-your-own-writes)을 위해 항상 primary(default) 사용
+        if connection.in_atomic_block:
+            return 'default'
+
+        # 2. 힌트로 전달된 인스턴스가 default 데이터베이스에 속해 있으면 default 사용
+        instance = hints.get('instance')
+        if instance and getattr(instance, '_state', None) and instance._state.db == 'default':
+            return 'default'
+
+        # 3. replica 사용 가능 시 읽기 트래픽 분산
         return 'replica' if self._check_replica_available() else 'default'
 
     @staticmethod
