@@ -46,7 +46,7 @@
 
             {% if request.GET.q %}
                 {% include 'book/subjects/main/search.html' %}
-            {% elif 'subjects/delete' in request.path %}
+            {% elif 'subject/delete' in request.path %}
                 {% include 'book/subjects/main/subject_confirm_delete.html' %}
             {% else %}
                 {% include 'book/subjects/main/content.html' %}

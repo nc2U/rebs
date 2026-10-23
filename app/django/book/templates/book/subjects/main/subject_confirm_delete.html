@@ -1,5 +1,17 @@
 <main>
-    <div class="text-center text-danger" style="margin: 150px 0;">
-        <p>삭제기능을 사용할 수 없습니다. 관리자에게 문의해 주십시요!</p>
+    <div class="text-center" style="margin: 100px 0;">
+        <h4 class="text-danger mb-4">단원 삭제 확인</h4>
+        <p class="lead"><strong>[{{ object.seq }}] {{ object.title }}</strong> 단원을 정말 삭제하시겠습니까?</p>
+        <p class="text-muted"><small>단원을 삭제하면 포함된 내용 및 관련 이미지가 모두 삭제됩니다.</small></p>
+
+        <form action="" method="post" class="mt-4">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger me-2">
+                <i class="fa fa-trash-o"></i> 삭제하기
+            </button>
+            <a href="{% url 'book:subject_detail' book.id object.id %}" class="btn btn-secondary">
+                취소
+            </a>
+        </form>
     </div>
 </main>

@@ -7,10 +7,11 @@ from .models import Book, Subject, Image
 
 
 class BooksAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'title', 'author', 'translator', 'publisher', 'pub_date')
+    list_display = ('id', 'title', 'author', 'translator', 'publisher', 'pub_date', 'disclosure')
+    list_editable = ('disclosure',)
     search_fields = ('title', 'author', 'translator', 'publisher')
     list_display_links = ('title',)
-    list_filter = ('pub_date',)
+    list_filter = ('disclosure', 'pub_date')
     formfield_overrides = {
         models.TextField: {'widget': MDEditorWidget}
     }
@@ -26,6 +27,7 @@ class SubjectAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display_links = ('title',)
     search_fields = ('title', 'content')
     list_filter = ('book',)
+    list_select_related = ('book',)
     inlines = (ImagesInline,)
 
 

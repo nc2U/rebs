@@ -1,7 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, Max
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import TemplateView, ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -15,11 +16,11 @@ class BooksListView(LoginRequiredMixin, ListView):
     paginate_by = 5
 
     def get_queryset(self):
-        queryset = super(BooksListView, self).get_queryset()  # 기본 구현을 호출해 queryset을 가져온다.
+        queryset = super().get_queryset()
         q = self.request.GET.get('q')
 
         if q:
-            queryset = Book.objects.filter(
+            queryset = queryset.filter(
                 Q(title__icontains=q) |
                 Q(author__icontains=q) |
                 Q(translator__icontains=q) |
@@ -63,19 +64,29 @@ class BooksDeleteView(LoginRequiredMixin, DeleteView):
 class Breadcrumb:
     def get_breadcrumb(self):
         breadcrumb = []
-        try:
-            sub = Subject.objects.get(book=self.kwargs['book'], id=self.kwargs['pk'])
-        except:
-            sub = Subject.objects.filter(book=self.kwargs['book']).first()
+        book_id = self.kwargs.get('book')
+        pk = self.kwargs.get('pk')
+
+        sub = None
+        if pk:
+            try:
+                sub = Subject.objects.get(book_id=book_id, id=pk)
+            except (Subject.DoesNotExist, KeyError):
+                pass
+        if not sub:
+            sub = Subject.objects.filter(book_id=book_id).order_by('seq').first()
 
         if sub:
-            for i in range(1, int(sub.level) + 1):  # 1부터 현재 게시물의 레벨 수만큼 실행(3이면 1, 2, 3)
-                bread_subs = Subject.objects.filter(book=self.kwargs['book'], level=i, id__lte=sub.id)
-                bread_sub = bread_subs.order_by('-id').first() if sub.level != i else sub
+            for i in range(1, int(sub.level) + 1):
+                bread_subs = Subject.objects.filter(book_id=book_id, level=i, seq__lte=sub.seq)
+                bread_sub = bread_subs.order_by('-seq').first() if sub.level != i else sub
+                if not bread_sub:
+                    continue
                 url = bread_sub.get_absolute_url()
                 label = bread_sub.title
-                cls1 = 'active' if (sub.level != i) else ''  # 레벨1 제목이 아이디와 같으면 활성 아니면 비활성
-                cls2 = 'aria-current=page' if (sub.level != i) else ''
+                is_current = (sub.level == i)
+                cls1 = 'active' if is_current else ''
+                cls2 = 'aria-current=page' if is_current else ''
 
                 breadcrumb.append({'url': url, 'label': label, 'cls1': cls1, 'cls2': cls2})
         return breadcrumb
@@ -83,26 +94,27 @@ class Breadcrumb:
 
 class SearchResult:
     def get_search_list(self):
-        search_list = {}
         q = self.request.GET.get('q')
 
         if q:
-            search_list = Subject.objects.filter(
+            return Subject.objects.filter(
                 Q(book_id=self.kwargs['book']) &
                 (Q(title__icontains=q) | Q(content__icontains=q))
             ).distinct()
-        return search_list
+        return Subject.objects.none()
 
 
 class SubjectsIndexView(LoginRequiredMixin, TemplateView, Breadcrumb, SearchResult):
     template_name = 'book/subjects/index.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(SubjectsIndexView, self).get_context_data(**kwargs)
-        context['book'] = Book.objects.get(id=self.kwargs['book'])
-        context['subjects'] = Subject.objects.filter(book=self.kwargs['book'])
-        context['total'] = Subject.objects.filter(book=self.kwargs['book']).count()
-        context['object'] = context['subjects'].first()
+        context = super().get_context_data(**kwargs)
+        book = get_object_or_404(Book, id=self.kwargs['book'])
+        subjects = Subject.objects.filter(book=book)
+        context['book'] = book
+        context['subjects'] = subjects
+        context['total'] = subjects.count()
+        context['object'] = subjects.first()
         context['breadcrumb'] = self.get_breadcrumb()
         context['search_list'] = self.get_search_list()
         return context
@@ -113,10 +125,12 @@ class SubjectsDetailView(LoginRequiredMixin, DetailView, Breadcrumb, SearchResul
     template_name = 'book/subjects/index.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(SubjectsDetailView, self).get_context_data(**kwargs)
-        context['book'] = Book.objects.get(id=self.kwargs['book'])
-        context['subjects'] = Subject.objects.filter(book=self.kwargs['book'])
-        context['total'] = Subject.objects.filter(book=self.kwargs['book']).count()
+        context = super().get_context_data(**kwargs)
+        book = get_object_or_404(Book, id=self.kwargs['book'])
+        subjects = Subject.objects.filter(book=book)
+        context['book'] = book
+        context['subjects'] = subjects
+        context['total'] = subjects.count()
         context['breadcrumb'] = self.get_breadcrumb()
         context['search_list'] = self.get_search_list()
         return context
@@ -132,20 +146,35 @@ class SubjectsCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
         return reverse('book:subject_detail', args=(self.kwargs['book'], self.object.id))
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(SubjectsCreateView, self).get_context_data(**kwargs)
-        context['book'] = Book.objects.get(id=self.kwargs['book'])
-        subjects = Subject.objects.filter(book=self.kwargs['book'])
-        context['last_level'] = subjects.last().level if subjects else 0
-        context['formset'] = ImageFormSet(queryset=Image.objects.none())
+        context = super().get_context_data(**kwargs)
+        book = get_object_or_404(Book, id=self.kwargs['book'])
+        subjects = Subject.objects.filter(book=book)
+        context['book'] = book
+        context['last_level'] = subjects.last().level if subjects.exists() else 0
+        if self.request.POST:
+            context['formset'] = ImageFormSet(self.request.POST, self.request.FILES)
+        else:
+            context['formset'] = ImageFormSet(queryset=Image.objects.none())
         return context
 
     def form_valid(self, form):
-        formset = ImageFormSet(self.request.POST, self.request.FILES)
-        form.instance.creator = self.request.user
-        form.instance.book = Book.objects.get(id=self.kwargs['book'])
-        seq_num = Subject.objects.filter(book=self.kwargs['book']).count()
-        form.instance.seq = seq_num + 1
-        return super(SubjectsCreateView, self).form_valid(form)
+        context = self.get_context_data()
+        formset = context['formset']
+        book = get_object_or_404(Book, id=self.kwargs['book'])
+
+        if not formset.is_valid():
+            return self.form_invalid(form)
+
+        with transaction.atomic():
+            form.instance.creator = self.request.user
+            form.instance.book = book
+            max_seq = Subject.objects.filter(book=book).aggregate(Max('seq'))['seq__max'] or 0
+            form.instance.seq = max_seq + 1
+            response = super().form_valid(form)
+            formset.instance = self.object
+            formset.save()
+
+        return response
 
 
 class SubjectsUpdateView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
@@ -158,32 +187,46 @@ class SubjectsUpdateView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
         return reverse('book:subject_detail', args=(self.kwargs['book'], self.kwargs['pk']))
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(SubjectsUpdateView, self).get_context_data(**kwargs)
-        context['book'] = Book.objects.get(id=self.kwargs['book'])
-        subjects = Subject.objects.filter(book=self.kwargs['book'])
-        context['last_level'] = subjects.last().level if subjects else 0
-        context['formset'] = ImageFormSet(instance=self.object, queryset=Image.objects.filter(subject=self.object))
+        context = super().get_context_data(**kwargs)
+        book = get_object_or_404(Book, id=self.kwargs['book'])
+        subjects = Subject.objects.filter(book=book)
+        context['book'] = book
+        context['last_level'] = subjects.last().level if subjects.exists() else 0
+        if self.request.POST:
+            context['formset'] = ImageFormSet(self.request.POST, self.request.FILES, instance=self.object)
+        else:
+            context['formset'] = ImageFormSet(instance=self.object, queryset=Image.objects.filter(subject=self.object))
         return context
 
     def form_valid(self, form):
+        context = self.get_context_data()
+        formset = context['formset']
+
+        if not formset.is_valid():
+            return self.form_invalid(form)
+
         with transaction.atomic():
-            formset = ImageFormSet(self.request.POST, self.request.FILES, instance=self.object)
-            # for img in formset:
-            #     img.save()
-            form.instance.creator = self.request.user
-            form.instance.book = Book.objects.get(id=self.kwargs['book'])
-            return super(SubjectsUpdateView, self).form_valid(form)
+            response = super().form_valid(form)
+            formset.instance = self.object
+            formset.save()
+
+        return response
 
 
 class SubjectsDeleteView(LoginRequiredMixin, DeleteView, Breadcrumb, SearchResult):
     model = Subject
     template_name = 'book/subjects/index.html'
 
+    def get_success_url(self):
+        return reverse('book:subject_index', args=[self.kwargs['book']])
+
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(SubjectsDeleteView, self).get_context_data(**kwargs)
-        context['book'] = Book.objects.get(id=self.kwargs['book'])
-        context['subjects'] = Subject.objects.filter(book=self.kwargs['book'])
-        context['total'] = Subject.objects.filter(book=self.kwargs['book']).count()
+        context = super().get_context_data(**kwargs)
+        book = get_object_or_404(Book, id=self.kwargs['book'])
+        subjects = Subject.objects.filter(book=book)
+        context['book'] = book
+        context['subjects'] = subjects
+        context['total'] = subjects.count()
         context['breadcrumb'] = self.get_breadcrumb()
         context['search_list'] = self.get_search_list()
         return context
