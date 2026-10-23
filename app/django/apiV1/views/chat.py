@@ -462,9 +462,17 @@ class ChatMessageViewSet(viewsets.ModelViewSet):
         page_size = ChatMessageCursorPagination.page_size
 
         if before_id:
-            qs = qs.filter(id__lt=before_id)
+            try:
+                before_id = int(before_id)
+                qs = qs.filter(id__lt=before_id)
+            except (ValueError, TypeError):
+                before_id = None
         elif after_id:
-            qs = qs.filter(id__gt=after_id).order_by('created')
+            try:
+                after_id = int(after_id)
+                qs = qs.filter(id__gt=after_id).order_by('created')
+            except (ValueError, TypeError):
+                after_id = None
 
         # page_size+1개를 가져와 초과 여부를 판단 → qs.count() 추가 쿼리 제거
         fetched = list(qs[:page_size + 1])

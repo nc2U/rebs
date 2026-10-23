@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from _utils.file_cleanup import file_cleanup_signals
 from work.models import IssueProject
 
 
@@ -165,3 +166,6 @@ class ChatMessage(models.Model):
             except Exception:
                 pass
         super().save(*args, **kwargs)
+
+
+file_cleanup_signals(ChatMessage, ['file'])

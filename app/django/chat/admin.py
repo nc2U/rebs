@@ -15,7 +15,7 @@ class ChatRoomAdmin(admin.ModelAdmin):
         - 1:1 DM(direct) 및 나와의 채팅(self)은 프라이버시 보호를 위해 일반 스태프 어드민 목록에서 제외
         - 오직 시스템 최고관리자(superuser)만 감사(Audit) 목적으로 전체 열람 가능
         """
-        qs = super().get_queryset(request)
+        qs = super().get_queryset(request).select_related('project', 'created_by')
         if request.user.is_superuser:
             return qs
         return qs.exclude(room_type__in=['direct', 'self'])
@@ -28,7 +28,7 @@ class ChatRoomMemberAdmin(admin.ModelAdmin):
     search_fields = ('user__username', 'room__title')
 
     def get_queryset(self, request):
-        qs = super().get_queryset(request)
+        qs = super().get_queryset(request).select_related('room', 'user')
         if request.user.is_superuser:
             return qs
         return qs.exclude(room__room_type__in=['direct', 'self'])
@@ -46,7 +46,7 @@ class ChatMessageAdmin(admin.ModelAdmin):
         - 일반 스태프 관리자는 공용 채널/그룹방 메시지만 열람 가능
         - 1:1 DM 및 나와의 채팅 메시지는 일반 어드민에 미노출
         """
-        qs = super().get_queryset(request)
+        qs = super().get_queryset(request).select_related('room', 'sender')
         if request.user.is_superuser:
             return qs
         return qs.exclude(room__room_type__in=['direct', 'self'])

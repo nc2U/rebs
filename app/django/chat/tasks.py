@@ -16,7 +16,7 @@ def send_chat_push_notification(self, message_id):
     - 알림 끄기(is_muted=True) 한 멤버는 제외
     """
     try:
-        msg = ChatMessage.objects.select_related('room', 'sender').get(pk=message_id)
+        msg = ChatMessage.objects.select_related('room', 'sender__profile').get(pk=message_id)
         room = msg.room
         sender = msg.sender
         sender_name = sender.profile.name if (sender and hasattr(sender, 'profile') and sender.profile.name) else (sender.username if sender else '알 수 없음')

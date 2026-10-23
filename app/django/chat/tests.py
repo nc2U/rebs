@@ -243,3 +243,64 @@ class ChatMessageAPITests(APITestCase):
         self.assertIsNone(res.data['reply_to_detail'])
 
 
+
+    def test_chat_message_file_cleanup_on_delete(self):
+        """ChatMessage 삭제 시 첨부파일이 스토리지에서 자동 삭제되는지 검증"""
+        from django.core.files.base import ContentFile
+        from django.core.files.storage import default_storage
+        from chat.models import ChatMessage
+
+        msg = ChatMessage.objects.create(
+            room=self.room,
+            sender=self.user1,
+            message_type='file',
+            content='파일 메시지',
+            file_name='test_file.txt',
+        )
+        msg.file.save('test_chat_file.txt', ContentFile(b'chat attachment data'))
+        msg.save()
+
+        file_path = msg.file.name
+        self.assertTrue(default_storage.exists(file_path))
+
+        # 메시지 삭제
+        msg.delete()
+
+        # 스토리지 파일 삭제 검증
+        self.assertFalse(default_storage.exists(file_path))
+
+    def test_chat_room_cascade_file_cleanup(self):
+        """ChatRoom 삭제(CASCADE) 시 포함된 메시지의 첨부파일도 스토리지에서 자동 삭제되는지 검증"""
+        from django.core.files.base import ContentFile
+        from django.core.files.storage import default_storage
+        from chat.models import ChatMessage
+
+        msg = ChatMessage.objects.create(
+            room=self.room,
+            sender=self.user1,
+            message_type='file',
+            content='대화방 파일 메시지',
+            file_name='room_file.txt',
+        )
+        msg.file.save('room_file.txt', ContentFile(b'room cascade test data'))
+        msg.save()
+
+        file_path = msg.file.name
+        self.assertTrue(default_storage.exists(file_path))
+
+        # 방 삭제 시 CASCADE로 메시지 및 파일 자동 정리
+        self.room.delete()
+
+        self.assertFalse(default_storage.exists(file_path))
+
+    def test_cursor_pagination_invalid_param_safe(self):
+        """커서 페이지네이션에 비정상 문자열 before_id/after_id 전달 시 500 에러 없이 200 반환 검증"""
+        self.client.force_authenticate(user=self.user1)
+
+        # 1. before_id가 숫자가 아닌 경우
+        res1 = self.client.get(f'/api/v1/chat-message/?room={self.room.id}&before_id=abc')
+        self.assertEqual(res1.status_code, status.HTTP_200_OK)
+
+        # 2. after_id가 숫자가 아닌 경우
+        res2 = self.client.get(f'/api/v1/chat-message/?room={self.room.id}&after_id=xyz')
+        self.assertEqual(res2.status_code, status.HTTP_200_OK)
