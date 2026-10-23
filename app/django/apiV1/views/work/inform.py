@@ -1,3 +1,4 @@
+import logging
 from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
@@ -14,6 +15,9 @@ from apiV1.serializers.work.search import (CommentSearchSerializer)
 from work.models import NewsFile
 from work.models.inform import News, NewsComment, Search, CustomQuery
 from work.models.issue import IssueComment
+
+
+logger = logging.getLogger(__name__)
 
 
 class NewsViewSet(viewsets.ModelViewSet):
@@ -59,7 +63,7 @@ class NewsViewSet(viewsets.ModelViewSet):
             from work.tasks import send_news_push_task
             send_news_push_task.delay(instance.pk)
         except Exception as e:
-            print(f"❌ Failed to trigger news push task: {e}")
+            logger.error(f"Failed to trigger news push task: {e}")
 
 
 class NewsFileViewSet(viewsets.ModelViewSet):

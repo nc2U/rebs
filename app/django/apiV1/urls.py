@@ -274,7 +274,7 @@ urlpatterns += [path('password-reset-confirm/<str:user_id>/<str:token>/', accoun
 
 urlpatterns += [
     path('post/<int:pk>/copy/', forum.PostViewSet.as_view({'post': 'copy_and_create'}), name='post-copy')]
-urlpatterns += [path('docs/<int:pk>/copy/', docs.DocumentViewSet.as_view({'docs': 'copy_and_create'}),
+urlpatterns += [path('docs/<int:pk>/copy/', docs.DocumentViewSet.as_view({'post': 'copy_and_create'}),
                      name='docs-copy')]
 urlpatterns += [path('notifications/stream/', sse.sse_notification_stream, name='notifications-stream')]
 

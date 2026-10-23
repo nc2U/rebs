@@ -1,3 +1,4 @@
+import logging
 from rest_framework import serializers
 from approval.models import (
     DocCategory, DocumentType, ApprovalPolicyRule,
@@ -291,7 +292,7 @@ class ApprovalDocumentSerializer(serializers.ModelSerializer):
                     try:
                         mutable_data['content'] = json.loads(content_val)
                     except Exception as e:
-                        print(f'⚠️ Failed to parse approval content JSON: {e}, val={content_val[:100]}')
+                        logger.warning(f'Failed to parse approval content JSON: {e}, val={content_val[:100]}')
                         mutable_data['content'] = {}
             elif isinstance(content_val, dict):
                 mutable_data['content'] = content_val

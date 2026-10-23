@@ -1,3 +1,4 @@
+import logging
 import json
 
 from django.db import transaction
@@ -8,6 +9,9 @@ from apiV1.serializers.work.project import SimpleIssueProjectSerializer
 from work.models.issue import Issue
 from work.models.meeting import MeetingCategory, Meeting, MeetingFile, MeetingLink
 from _utils.file_service import FileService
+
+
+logger = logging.getLogger(__name__)
 
 
 class MeetingCategorySerializer(serializers.ModelSerializer):
@@ -156,7 +160,7 @@ class MeetingSerializer(serializers.ModelSerializer):
                             link_obj.name = link_data['description']
                         link_obj.save()
                 except Exception as e:
-                    print(f"MeetingLink 처리 중 오류: {e}")
+                    logger.error(f"MeetingLink 처리 중 오류: {e}")
 
             new_links = self.initial_data.getlist('newLinks', [])
             new_link_names = self.initial_data.getlist('newLinkNames', [])

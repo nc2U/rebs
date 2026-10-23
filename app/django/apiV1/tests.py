@@ -336,3 +336,92 @@ class HqPermissionPolicyTests(TestCase):
         res = self.client.post('/api/v1/ledger/company-composite-transaction/', post_data, format='json')
         self.assertEqual(res.status_code, 403)
         self.assertIn('권한이 없습니다', res.data.get('detail', ''))
+
+
+from django.contrib.auth.models import AnonymousUser
+from rest_framework.test import APITestCase
+from apiV1.permissions.auth_perms import (
+    IsStaffOnly, IsStaffOrReadOnly, IsProjectStaffOnly, IsProjectStaffOrReadOnly,
+    IsSuperUserOnly, IsWorkManagerOnly
+)
+from docs.models import Document
+
+
+class AnonymousUserAuthPermsSafetyTests(TestCase):
+    """비로그인(AnonymousUser) 사용자가 권한 클래스 검사 시 AttributeError 크래시 없이 False 반환 검증"""
+
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.anon_user = AnonymousUser()
+
+    def test_anonymous_user_returns_false_safely(self):
+        perms = [
+            IsStaffOnly(),
+            IsStaffOrReadOnly(),
+            IsProjectStaffOnly(),
+            IsProjectStaffOrReadOnly(),
+            IsSuperUserOnly(),
+            IsWorkManagerOnly(),
+        ]
+
+        post_request = self.factory.post('/api/v1/any-endpoint/')
+        post_request.user = self.anon_user
+
+        for perm in perms:
+            # AttributeError 등 예외 없이 정상적으로 False 반환되어야 함
+            result = perm.has_permission(post_request, None)
+            self.assertFalse(result, f"{perm.__class__.__name__} failed to safely reject AnonymousUser on POST")
+
+    def test_anonymous_user_safe_methods_behavior(self):
+        get_request = self.factory.get('/api/v1/any-endpoint/')
+        get_request.user = self.anon_user
+
+        # Safe method인 경우 ReadOnly 권한은 True, Only 권한은 False
+        self.assertTrue(IsStaffOrReadOnly().has_permission(get_request, None))
+        self.assertTrue(IsProjectStaffOrReadOnly().has_permission(get_request, None))
+        self.assertFalse(IsStaffOnly().has_permission(get_request, None))
+        self.assertFalse(IsProjectStaffOnly().has_permission(get_request, None))
+
+
+class DocumentCopyRouteTests(APITestCase):
+    """POST /api/v1/docs/{pk}/copy/ 엔드포인트 정상 라우팅 검증"""
+
+    def setUp(self):
+        self.user = User.objects.create_superuser(username='docadmin', email='docadmin@test.com', password='password123')
+        self.client.force_authenticate(user=self.user)
+        self.company = Company.objects.create(name='Doc Test Company')
+        self.issue_project = IssueProject.objects.create(
+            company=self.company,
+            name='Doc Project',
+            slug='doc-project',
+            type='2',
+            creator=self.user
+        )
+        self.doc = Document.objects.create(
+            issue_project=self.issue_project,
+            doc_type='1',
+            title='원본 문서',
+            description='문서 본문',
+            creator=self.user
+        )
+
+    def test_doc_copy_route_resolution(self):
+        url = f'/api/v1/docs/{self.doc.pk}/copy/'
+        res = self.client.post(url, {
+            'issue_project': self.issue_project.pk,
+            'doc_type': '1',
+        })
+        self.assertEqual(res.status_code, 201, res.data)
+        self.assertTrue(Document.objects.filter(title='원본 문서').count() >= 2)
+
+
+class SSENotificationStreamSecurityTests(APITestCase):
+    """/api/v1/notifications/stream/ 비인가 토큰 거부 검증"""
+
+    def test_stream_without_token_returns_403(self):
+        res = self.client.get('/api/v1/notifications/stream/')
+        self.assertEqual(res.status_code, 403)
+
+    def test_stream_with_invalid_token_returns_403(self):
+        res = self.client.get('/api/v1/notifications/stream/?token=invalid-jwt-token')
+        self.assertEqual(res.status_code, 403)

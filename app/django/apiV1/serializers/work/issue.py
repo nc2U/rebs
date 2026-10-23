@@ -1,3 +1,4 @@
+import logging
 from django.db import transaction, IntegrityError
 from django.utils import timezone
 from rest_framework import serializers
@@ -10,6 +11,9 @@ from work.models.issue import (IssueCategory, Tracker, IssueStatus, Workflow, Co
                                Issue, IssueRelation, IssueFile, IssueLink, IssueComment)
 from work.models.meeting import Meeting
 from work.models.project import IssueProject, Member, Version, ProjectSubscription
+
+
+logger = logging.getLogger(__name__)
 
 
 class MeetingInIssueSerializer(serializers.ModelSerializer):
@@ -500,7 +504,7 @@ class IssueSerializer(serializers.ModelSerializer):
                             link_obj.name = link_data['description']
                         link_obj.save()
                 except Exception as e:
-                    print(f"IssueLink 처리 중 오류: {e}")
+                    logger.error(f"IssueLink 처리 중 오류: {e}")
 
             new_links = self.initial_data.getlist('newLinks', [])
             new_link_names = self.initial_data.getlist('newLinkNames', [])
