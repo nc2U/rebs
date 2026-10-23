@@ -82,6 +82,9 @@ class ApprovalAttachmentInline(admin.TabularInline):
 class ApprovalDocumentAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('doc_number', 'title', 'doc_type', 'drafter', 'drafter_assignment', 'status', 'created_at',
                     'submitted_at', 'completed_at')
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('doc_type', 'drafter', 'drafter_assignment__department')
     list_filter = ('status', 'doc_type', 'created_at')
     search_fields = ('title', 'drafter__username', 'doc_number')
     readonly_fields = ('doc_number', 'content_hash', 'created_at', 'updated_at', 'submitted_at', 'completed_at')
@@ -92,6 +95,9 @@ class ApprovalDocumentAdmin(ImportExportMixin, admin.ModelAdmin):
 @admin.register(ApprovalStep)
 class ApprovalStepAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'document', 'step_order', 'role_label', 'condition', 'status')
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('document')
     list_filter = ('status', 'condition')
     search_fields = ('role_label', 'document__title', 'document__doc_number')
     filter_horizontal = ('approvers',)
@@ -100,6 +106,9 @@ class ApprovalStepAdmin(ImportExportMixin, admin.ModelAdmin):
 
 @admin.register(ApprovalAction)
 class ApprovalActionAdmin(ImportExportMixin, admin.ModelAdmin):
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('step__document', 'approver', 'delegated_from')
     list_display = ('id', 'get_document', 'step', 'approver', 'is_delegated', 'delegated_from', 'action', 'comment',
                     'acted_at')
     list_filter = ('action', 'is_delegated', 'acted_at')
@@ -116,6 +125,9 @@ class ApprovalActionAdmin(ImportExportMixin, admin.ModelAdmin):
 
 @admin.register(ApprovalDelegation)
 class ApprovalDelegationAdmin(ImportExportMixin, admin.ModelAdmin):
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('delegator', 'delegatee')
     list_display = ('id', 'delegator', 'delegatee', 'start_date', 'end_date', 'reason', 'is_active', 'created_at')
     list_filter = ('is_active', 'start_date', 'end_date')
     search_fields = ('delegator__username', 'delegatee__username', 'reason')
@@ -124,6 +136,9 @@ class ApprovalDelegationAdmin(ImportExportMixin, admin.ModelAdmin):
 
 @admin.register(ApprovalAttachment)
 class ApprovalAttachmentAdmin(ImportExportMixin, admin.ModelAdmin):
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('document', 'creator')
     list_display = ('id', 'document', 'file_name', 'file_type', 'file_size', 'creator', 'created_at')
     list_filter = ('created_at',)
     search_fields = ('file_name', 'document__title', 'document__doc_number')

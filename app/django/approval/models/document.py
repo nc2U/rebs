@@ -407,5 +407,5 @@ class ApprovalAttachment(models.Model):
         verbose_name_plural = '06. 결재 첨부파일 목록'
 
 
-file_cleanup_signals(ApprovalDocument, 'attachment')
-file_cleanup_signals(ApprovalAttachment, 'file')
+file_cleanup_signals(ApprovalDocument, ['attachment', 'pdf_file'])
+file_cleanup_signals(ApprovalAttachment, ['file'])

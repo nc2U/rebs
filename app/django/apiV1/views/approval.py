@@ -355,6 +355,7 @@ class ApprovalDocumentViewSet(viewsets.ModelViewSet):
 
     # ── POST /approval-document/{id}/submit/ ──────────────────
     @action(detail=True, methods=['post'])
+    @transaction.atomic
     def submit(self, request, pk=None):
         """임시저장 → 상신. 조직도 또는 템플릿 기반으로 동적 결재선 생성 후 1단계 알림"""
         document = self.get_object()

@@ -587,3 +587,54 @@ class ApprovalWorkflowAPITestCase(APITestCase):
         self.assertEqual(res_leader.data['delegator']['id'], self.user_leader.id)
         self.assertEqual(res_leader.data['delegatee']['id'], self.user_drafter.id)
 
+
+    def test_file_cleanup_on_document_delete(self):
+        """ApprovalDocument 삭제 시 attachment 및 pdf_file 파일이 스토리지에서 자동 삭제되는지 검증"""
+        from django.core.files.base import ContentFile
+        from django.core.files.storage import default_storage
+
+        doc = ApprovalDocument.objects.create(
+            doc_type=self.doc_type,
+            drafter=self.user_drafter,
+            drafter_assignment=self.assign_drafter,
+            title='파일 정리 테스트 품의',
+            status=ApprovalDocument.STATUS_DRAFT,
+        )
+        doc.attachment.save('test_att.txt', ContentFile(b'sample attachment content'))
+        doc.pdf_file.save('test_pdf.pdf', ContentFile(b'%PDF-1.4 sample pdf'))
+        doc.save()
+
+        att_path = doc.attachment.name
+        pdf_path = doc.pdf_file.name
+
+        self.assertTrue(default_storage.exists(att_path))
+        self.assertTrue(default_storage.exists(pdf_path))
+
+        # 문서 삭제 시 파일도 함께 삭제되는지 검증
+        doc.delete()
+
+        self.assertFalse(default_storage.exists(att_path))
+        self.assertFalse(default_storage.exists(pdf_path))
+
+    @patch('approval.tasks.generate_approval_pdf_task.delay')
+    def test_ceo_direct_submit_auto_finalizes(self, mock_pdf_task):
+        """대표이사 직접 기안 후 submit 호출 시 단독 승인으로 즉시 approved 상태 및 채번 완료 검증"""
+        self.client.force_authenticate(user=self.user_ceo)
+        doc = ApprovalDocument.objects.create(
+            doc_type=self.doc_type,
+            drafter=self.user_ceo,
+            drafter_assignment=self.assign_ceo,
+            title='대표이사 직접 기안 결재',
+            status=ApprovalDocument.STATUS_DRAFT,
+        )
+
+        res = self.client.post(f'/api/v1/approval-document/{doc.id}/submit/')
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+        doc.refresh_from_db()
+        self.assertEqual(doc.status, ApprovalDocument.STATUS_APPROVED)
+        self.assertIsNotNone(doc.completed_at)
+        self.assertIsNotNone(doc.doc_number)
+        self.assertTrue(len(doc.doc_number) > 0)
+        self.assertEqual(doc.steps.count(), 1)
+        self.assertEqual(doc.steps.first().status, ApprovalStep.STATUS_APPROVED)
