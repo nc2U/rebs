@@ -84,7 +84,8 @@ def calculate_all_installments_payment_allocation(contract, as_of_date: Optional
         remaining_payment = payment_amount
 
         for inst in all_installments:
-            if remaining_payment <= 0: break
+            if remaining_payment <= 0:
+                break
             status = installment_status[inst.id]
             if not status['is_fully_paid']:
                 allocated = min(remaining_payment, status['remaining_amount'])
@@ -199,7 +200,7 @@ def get_installment_adjustment_summary(contract, installment_order, as_of_date: 
 
 
 def aggregate_installment_adjustments(contract, payment_orders, now_due_order, pub_date) -> Dict[str, Any]:
-    """분할 납부를 회차별로 집계하여 할인/가산금 계산 (고지서용)"""
+    """분할 납부를 회차별로 집계하여 할인/가산금 계산 (고지서용 - 중복 연산 최적화 적용)"""
     all_status = calculate_all_installments_payment_allocation(contract, pub_date)
     display_installments = payment_orders.filter(
         Q(pay_code__lte=now_due_order)
@@ -209,26 +210,29 @@ def aggregate_installment_adjustments(contract, payment_orders, now_due_order, p
 
     for inst in display_installments:
         status = all_status.get(inst.id, {})
-        if not status: continue
-        
+        if not status:
+            continue
+
         # 조정된 날짜가 발행일 이후인 경우 미납 계산 제외 (Catch-up 반영)
         due_date = status['due_date']
-        if due_date and due_date > pub_date: continue
+        if due_date and due_date > pub_date:
+            continue
 
         penalty = status.get('total_late_penalty', 0)
-        adj = get_installment_adjustment_summary(contract, inst, pub_date)
-        
+        # 최적화: get_installment_adjustment_summary 재호출 제거하고 이미 계산된 값 직접 사용
+        discount = status.get('total_discount', 0)
+
         details.append({
             'installment': inst,
             'order_name': inst.pay_name,
             'is_fully_paid': status['is_fully_paid'],
             'late_days': status['late_days'],
             'penalty_amount': penalty,
-            'discount_amount': adj['total_discount'],
+            'discount_amount': discount,
             'late_amount': status['late_payment_amount'] if penalty > 0 else 0,
         })
         total_late_fee += penalty
-        total_discount += adj['total_discount']
+        total_discount += discount
 
     return {
         'total_late_fee': total_late_fee,
@@ -242,21 +246,30 @@ def aggregate_installment_adjustments(contract, payment_orders, now_due_order, p
 def calculate_effective_late_metrics(late_payment_details):
     """분할 납부 시 가중 평균 지연 지표 계산"""
     late_only = [d for d in late_payment_details if d.get('type') == 'paid_late']
-    if not late_only: return None, None
+    if not late_only:
+        return None, None
     total_amount = sum(d.get('payment_amount', 0) for d in late_only)
-    if total_amount == 0: return None, None
+    if total_amount == 0:
+        return None, None
     weighted_days_sum = sum(d.get('payment_amount', 0) * d.get('late_days', 0) for d in late_only)
     return total_amount, round(weighted_days_sum / total_amount)
 
 
 def get_first_due_date_after_contract(contract, current_date=None) -> Optional[date]:
     """계약일 이후 첫 번째 도래 회차 납부기한 (유틸리티)"""
-    if current_date is None: current_date = date.today()
+    if current_date is None:
+        current_date = date.today()
     contract_date = get_effective_contract_date(contract)
-    if not contract_date: return None
+    if not contract_date:
+        return None
     from _utils.contract_price import get_due_date_per_order
-    all_insts = InstallmentPaymentOrder.objects.filter(project=contract.project, type_sort=contract.unit_type.sort).exclude(excluded_order_groups=contract.order_group).order_by('pay_code')
+    all_insts = InstallmentPaymentOrder.objects.filter(
+        project=contract.project,
+        type_sort=contract.unit_type.sort
+    ).exclude(excluded_order_groups=contract.order_group).order_by('pay_code')
+
     for inst in all_insts:
         due = get_due_date_per_order(contract, inst, all_insts)
-        if due and due > contract_date: return due
+        if due and due > contract_date:
+            return due
     return None

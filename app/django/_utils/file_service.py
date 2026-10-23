@@ -1,6 +1,9 @@
 import json
+import logging
 from django.db import transaction
 from django.core.files.storage import default_storage
+
+logger = logging.getLogger(__name__)
 
 
 class FileService:
@@ -66,7 +69,7 @@ class FileService:
                     if old_file_name:
                         transaction.on_commit(lambda name=old_file_name: default_storage.delete(name))
                 except Exception as e:
-                    print(f"파일 처리 중 오류 발생: {e}")
+                    logger.error("파일 처리 중 오류 발생: %s", e)
 
         # 3. Single file edit (Meeting/Issue pattern)
         edit_file = initial_data.get('edit_file')
@@ -94,7 +97,7 @@ class FileService:
             except file_model.DoesNotExist:
                 pass
             except Exception as e:
-                print(f"단일 파일 수정 중 오류 발생: {e}")
+                logger.error("단일 파일 수정 중 오류 발생: %s", e)
 
         # 4. Single file deletion (direct)
         del_file = initial_data.get('del_file')

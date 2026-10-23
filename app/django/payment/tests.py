@@ -515,6 +515,10 @@ class PaymentAPITests(PaymentTestCaseBase):
 
 
 class PaymentExportTests(PaymentTestCaseBase):
+    def setUp(self):
+        super().setUp()
+        self.client.force_login(self.user)
+
     @patch('weasyprint.HTML.write_pdf')
     def test_pdf_export_ledger_payment(self, mock_write_pdf):
         """납부 확인서 PDF 내보내기 인메모리 반환 및 예외 처리 검증"""

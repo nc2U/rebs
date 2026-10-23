@@ -170,4 +170,4 @@ def send_push_notification(
         except Exception as e:
             logger.warning(f"Redis SSE Publish error: {e}")
 
-    return len(notifications_to_create)
+    return notifications_count
