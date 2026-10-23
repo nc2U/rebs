@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/providers/project_provider.dart';
+import '../../../core/providers/project_provider.dart';
 import '../data/models/site_models.dart';
 import '../data/site_repository.dart';
 

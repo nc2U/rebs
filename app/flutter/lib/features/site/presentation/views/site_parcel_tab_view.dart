@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../core/theme/app_colors_extension.dart';
+import '../../../../core/widgets/error_view.dart';
 import '../../data/models/site_models.dart';
 import '../../providers/site_provider.dart';
 import '../widgets/site_detail_sheets.dart';
@@ -54,31 +55,18 @@ class _SiteParcelTabViewState extends ConsumerState<SiteParcelTabView> {
 
     if (state.error != null && state.items.isEmpty) {
       return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              '데이터 로드 실패: ${state.error}',
-              style: TextStyle(color: context.colors.error),
-            ),
-            const SizedBox(height: 12),
-            OutlinedButton(
-              onPressed: _refresh,
-              style: OutlinedButton.styleFrom(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-              ),
-              child: const Text('다시 시도'),
-            ),
-          ],
+        child: ErrorView(
+          message: '필지 데이터를 불러오지 못했습니다.',
+          subMessage: state.error,
+          onRetry: _refresh,
         ),
       );
     }
 
     if (state.items.isEmpty) {
-      return Center(
-        child: Text(
-          '등록된 사업부지 필지가 없습니다.',
-          style: TextStyle(color: context.colors.textMuted),
+      return const Center(
+        child: ErrorView.empty(
+          message: '등록된 사업부지 필지가 없습니다.',
         ),
       );
     }

@@ -375,24 +375,23 @@ class _NewSiteOwnerConsultationDialogState extends ConsumerState<_NewSiteOwnerCo
       followUpNote: _followUpController.text.trim(),
     );
 
+    if (!mounted) return;
     setState(() => _isLoading = false);
 
-    if (mounted) {
-      if (errorMsg == null) {
-        widget.onSuccess();
-        Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('상담일지가 등록되었습니다.'), behavior: SnackBarBehavior.floating),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('상담일지 등록 실패: $errorMsg'),
-            backgroundColor: context.colors.error,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      }
+    if (errorMsg == null) {
+      widget.onSuccess();
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('상담일지가 등록되었습니다.'), behavior: SnackBarBehavior.floating),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('상담일지 등록 실패: $errorMsg'),
+          backgroundColor: context.colors.error,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
     }
   }
 

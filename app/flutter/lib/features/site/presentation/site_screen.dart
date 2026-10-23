@@ -357,13 +357,17 @@ class _SiteScreenState extends ConsumerState<SiteScreen> {
                     size: 18,
                     color: context.colors.textMuted,
                   ),
-                  suffixIcon: _searchController.text.isNotEmpty
-                      ? IconButton(
-                          icon: const Icon(Icons.clear_rounded, size: 16),
-                          color: context.colors.textMuted,
-                          onPressed: _onClearSearch,
-                        )
-                      : null,
+                  suffixIcon: ValueListenableBuilder<TextEditingValue>(
+                    valueListenable: _searchController,
+                    builder: (context, value, _) {
+                      if (value.text.isEmpty) return const SizedBox.shrink();
+                      return IconButton(
+                        icon: const Icon(Icons.clear_rounded, size: 16),
+                        color: context.colors.textMuted,
+                        onPressed: _onClearSearch,
+                      );
+                    },
+                  ),
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.symmetric(vertical: 9),
                 ),

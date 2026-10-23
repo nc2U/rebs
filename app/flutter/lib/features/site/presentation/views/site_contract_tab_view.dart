@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../core/theme/app_colors_extension.dart';
+import '../../../../core/widgets/error_view.dart';
 import '../../data/models/site_models.dart';
 import '../../providers/site_provider.dart';
+import '../widgets/site_common_widgets.dart';
 import '../widgets/site_detail_sheets.dart';
 
 /// 📑 사업부지 매입계약 탭 뷰
@@ -45,6 +47,73 @@ class _SiteContractTabViewState extends ConsumerState<SiteContractTabView> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(siteContractListProvider);
+    final ownSortFilter = ref.watch(siteOwnSortFilterProvider);
+
+    return Column(
+      children: [
+        // 상단 소유구분 필터 바
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          color: context.colors.bgSurface,
+          child: Row(
+            children: [
+              Text(
+                '소유구분:',
+                style: AppTextStyles.caption.copyWith(
+                  color: context.colors.textMuted,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(width: 8),
+              SiteFilterChipBtn(
+                label: '전체',
+                isSelected: ownSortFilter == '',
+                onTap: () {
+                  ref.read(siteOwnSortFilterProvider.notifier).state = '';
+                  ref.invalidate(siteContractListProvider);
+                },
+              ),
+              const SizedBox(width: 4),
+              SiteFilterChipBtn(
+                label: '개인',
+                isSelected: ownSortFilter == '1',
+                onTap: () {
+                  ref.read(siteOwnSortFilterProvider.notifier).state = '1';
+                  ref.invalidate(siteContractListProvider);
+                },
+              ),
+              const SizedBox(width: 4),
+              SiteFilterChipBtn(
+                label: '법인',
+                isSelected: ownSortFilter == '2',
+                onTap: () {
+                  ref.read(siteOwnSortFilterProvider.notifier).state = '2';
+                  ref.invalidate(siteContractListProvider);
+                },
+              ),
+              const SizedBox(width: 4),
+              SiteFilterChipBtn(
+                label: '국공유지',
+                isSelected: ownSortFilter == '3',
+                onTap: () {
+                  ref.read(siteOwnSortFilterProvider.notifier).state = '3';
+                  ref.invalidate(siteContractListProvider);
+                },
+              ),
+            ],
+          ),
+        ),
+        Divider(color: context.colors.border, height: 1),
+
+        // 본문 리스트 영역
+        Expanded(
+          child: _buildBody(state),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBody(SitePaginationState<SiteContractItemModel> state) {
     final numFormat = NumberFormat('#,###');
 
     if (state.isLoading) {
@@ -55,31 +124,18 @@ class _SiteContractTabViewState extends ConsumerState<SiteContractTabView> {
 
     if (state.error != null && state.items.isEmpty) {
       return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              '데이터 로드 실패: ${state.error}',
-              style: TextStyle(color: context.colors.error),
-            ),
-            const SizedBox(height: 12),
-            OutlinedButton(
-              onPressed: _refresh,
-              style: OutlinedButton.styleFrom(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-              ),
-              child: const Text('다시 시도'),
-            ),
-          ],
+        child: ErrorView(
+          message: '계약 데이터를 불러오지 못했습니다.',
+          subMessage: state.error,
+          onRetry: _refresh,
         ),
       );
     }
 
     if (state.items.isEmpty) {
-      return Center(
-        child: Text(
-          '체결된 사업부지 매입 계약이 없습니다.',
-          style: TextStyle(color: context.colors.textMuted),
+      return const Center(
+        child: ErrorView.empty(
+          message: '체결된 사업부지 매입 계약이 없습니다.',
         ),
       );
     }

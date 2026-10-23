@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:mobile_ibs/core/services/share_helper.dart';
+import '../../../../core/services/share_helper.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -82,7 +82,7 @@ class SiteFileHelper {
       }
 
       if (progressDialogContext != null && progressDialogContext!.mounted) {
-        Navigator.of(progressDialogContext!).pop();
+        Navigator.of(progressDialogContext!, rootNavigator: true).pop();
         progressDialogContext = null;
       }
 
@@ -124,7 +124,7 @@ class SiteFileHelper {
       );
     } catch (e) {
       if (progressDialogContext != null && progressDialogContext!.mounted) {
-        Navigator.of(progressDialogContext!).pop();
+        Navigator.of(progressDialogContext!, rootNavigator: true).pop();
       }
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -175,7 +175,7 @@ class SiteFileHelper {
       final rawBytes = await repository.downloadSiteRegisterFile(regFile.file);
 
       if (progressDialogContext != null && progressDialogContext!.mounted) {
-        Navigator.of(progressDialogContext!).pop();
+        Navigator.of(progressDialogContext!, rootNavigator: true).pop();
         progressDialogContext = null;
       }
 
@@ -217,7 +217,7 @@ class SiteFileHelper {
       );
     } catch (e) {
       if (progressDialogContext != null && progressDialogContext!.mounted) {
-        Navigator.of(progressDialogContext!).pop();
+        Navigator.of(progressDialogContext!, rootNavigator: true).pop();
       }
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -267,7 +267,7 @@ class SiteFileHelper {
       final rawBytes = await repository.downloadSiteRegisterFile(contFile.file);
 
       if (progressDialogContext != null && progressDialogContext!.mounted) {
-        Navigator.of(progressDialogContext!).pop();
+        Navigator.of(progressDialogContext!, rootNavigator: true).pop();
         progressDialogContext = null;
       }
 
@@ -309,7 +309,7 @@ class SiteFileHelper {
       );
     } catch (e) {
       if (progressDialogContext != null && progressDialogContext!.mounted) {
-        Navigator.of(progressDialogContext!).pop();
+        Navigator.of(progressDialogContext!, rootNavigator: true).pop();
       }
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

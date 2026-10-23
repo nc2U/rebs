@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/providers/dio_provider.dart';
+import '../../../core/providers/dio_provider.dart';
 import 'models/site_models.dart';
 
 final siteRepositoryProvider = Provider<SiteRepository>((ref) {

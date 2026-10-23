@@ -417,6 +417,13 @@ Future<void> makeSitePhoneCall(
     final uri = Uri.parse('tel:$cleanPhone');
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
+    } else if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('전화 앱을 실행할 수 없습니다.'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
     }
   }
 }
