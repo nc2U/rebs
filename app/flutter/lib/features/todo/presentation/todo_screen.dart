@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../core/theme/app_colors_extension.dart';
+import '../../../../core/widgets/error_view.dart';
+import '../../issue/providers/issue_provider.dart';
 import '../data/models/todo_model.dart';
 import 'convert_todo_sheet.dart';
 import 'providers/todo_provider.dart';
@@ -48,6 +50,9 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
     FocusScope.of(context).unfocus();
     final result = await showConvertTodoSheet(context, item);
     if (result == null || !mounted) return;
+
+    // 업무 목록 프로바이더 무효화하여 업무 목록 화면과 상태 동기화
+    ref.invalidate(issueListProvider);
 
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
@@ -133,11 +138,12 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
     );
   }
 
-  Future<void> _confirmDeleteItem(TodoItem item) async {
-    final confirmed = await showDialog<bool>(
+  Future<bool?> _showDeleteConfirmDialog(BuildContext context, String title) {
+    return showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: context.colors.bgPrimary,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Text(
           '할일 삭제',
           style: AppTextStyles.titleMd.copyWith(
@@ -146,7 +152,7 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
           ),
         ),
         content: Text(
-          '"${item.title}" 항목을 삭제하시겠습니까?',
+          '"$title" 항목을 삭제하시겠습니까?',
           style: AppTextStyles.bodyMd.copyWith(
             color: context.colors.textSecond,
           ),
@@ -159,6 +165,7 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
           FilledButton(
             style: FilledButton.styleFrom(
               backgroundColor: Colors.redAccent,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             ),
             onPressed: () => Navigator.of(ctx).pop(true),
             child: const Text('삭제'),
@@ -166,7 +173,10 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
         ],
       ),
     );
+  }
 
+  Future<void> _confirmDeleteItem(TodoItem item) async {
+    final confirmed = await _showDeleteConfirmDialog(context, item.title);
     if (confirmed == true && mounted) {
       ref.read(todoListProvider.notifier).deleteTodo(item.pk);
     }
@@ -301,6 +311,17 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
                           size: 20,
                           color: context.colors.textMuted,
                         ),
+                        suffixIcon: ValueListenableBuilder<TextEditingValue>(
+                          valueListenable: _inputController,
+                          builder: (context, value, _) {
+                            if (value.text.isEmpty) return const SizedBox.shrink();
+                            return IconButton(
+                              icon: const Icon(Icons.clear_rounded, size: 18),
+                              color: context.colors.textMuted,
+                              onPressed: () => _inputController.clear(),
+                            );
+                          },
+                        ),
                         border: InputBorder.none,
                         contentPadding: const EdgeInsets.symmetric(
                           horizontal: 12,
@@ -387,25 +408,11 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
             child: todoState.when(
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (err, _) => Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.error_outline_rounded,
-                        size: 40, color: context.colors.textMuted),
-                    const SizedBox(height: 12),
-                    Text(
-                      '할일 목록을 불러오지 못했습니다.',
-                      style: AppTextStyles.bodyMd.copyWith(
-                        color: context.colors.textSecond,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    TextButton(
-                      onPressed: () =>
-                          ref.read(todoListProvider.notifier).refresh(),
-                      child: const Text('다시 시도'),
-                    ),
-                  ],
+                child: ErrorView(
+                  message: '할일 목록을 불러오지 못했습니다.',
+                  subMessage: '$err',
+                  onRetry: () =>
+                      ref.read(todoListProvider.notifier).refresh(),
                 ),
               ),
               data: (_) {
@@ -583,40 +590,7 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
         ),
         child: const Icon(Icons.delete_outline_rounded, color: Colors.white, size: 24),
       ),
-      confirmDismiss: (dir) async {
-        return await showDialog<bool>(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            backgroundColor: context.colors.bgPrimary,
-            title: Text(
-              '할일 삭제',
-              style: AppTextStyles.titleMd.copyWith(
-                fontWeight: FontWeight.bold,
-                color: context.colors.textPrimary,
-              ),
-            ),
-            content: Text(
-              '"${item.title}" 항목을 삭제하시겠습니까?',
-              style: AppTextStyles.bodyMd.copyWith(
-                color: context.colors.textSecond,
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(ctx).pop(false),
-                child: Text('취소', style: TextStyle(color: context.colors.textMuted)),
-              ),
-              FilledButton(
-                style: FilledButton.styleFrom(
-                  backgroundColor: Colors.redAccent,
-                ),
-                onPressed: () => Navigator.of(ctx).pop(true),
-                child: const Text('삭제'),
-              ),
-            ],
-          ),
-        );
-      },
+      confirmDismiss: (dir) => _showDeleteConfirmDialog(context, item.title),
       onDismissed: (_) {
         ref.read(todoListProvider.notifier).deleteTodo(item.pk);
       },

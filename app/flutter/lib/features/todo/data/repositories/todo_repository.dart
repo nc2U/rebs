@@ -23,8 +23,8 @@ class TodoRepository {
 
     final data = response.data;
     List results;
-    if (data is Map<String, dynamic> && data.containsKey('results')) {
-      results = data['results'] as List;
+    if (data is Map && data.containsKey('results')) {
+      results = data['results'] as List? ?? [];
     } else if (data is List) {
       results = data;
     } else {
@@ -32,7 +32,8 @@ class TodoRepository {
     }
 
     return results
-        .map((e) => TodoItem.fromJson(e as Map<String, dynamic>))
+        .whereType<Map>()
+        .map((e) => TodoItem.fromJson(Map<String, dynamic>.from(e)))
         .toList();
   }
 
@@ -48,7 +49,10 @@ class TodoRepository {
         'user': userId,
       },
     );
-    return TodoItem.fromJson(response.data as Map<String, dynamic>);
+    final data = response.data;
+    return TodoItem.fromJson(
+      data is Map ? Map<String, dynamic>.from(data) : <String, dynamic>{},
+    );
   }
 
   /// 할일 완료/미완료 토글 및 제목 수정
@@ -63,7 +67,10 @@ class TodoRepository {
 
     final url = ApiEndpoints.resolve(ApiEndpoints.todoDetail, {'id': id});
     final response = await _dio.patch(url, data: data);
-    return TodoItem.fromJson(response.data as Map<String, dynamic>);
+    final respData = response.data;
+    return TodoItem.fromJson(
+      respData is Map ? Map<String, dynamic>.from(respData) : <String, dynamic>{},
+    );
   }
 
   /// 할일 삭제 (soft_deleted 처리)
@@ -89,7 +96,10 @@ class TodoRepository {
         'description': description,
       },
     );
-    return TodoConvertResult.fromJson(response.data as Map<String, dynamic>);
+    final respData = response.data;
+    return TodoConvertResult.fromJson(
+      respData is Map ? Map<String, dynamic>.from(respData) : <String, dynamic>{},
+    );
   }
 
   /// 할일 영구 삭제

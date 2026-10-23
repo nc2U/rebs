@@ -1,5 +1,21 @@
 import 'package:flutter/foundation.dart';
 
+int _parseInt(dynamic val, [int fallback = 0]) {
+  if (val == null) return fallback;
+  if (val is int) return val;
+  if (val is num) return val.toInt();
+  if (val is String) return int.tryParse(val) ?? fallback;
+  return fallback;
+}
+
+int? _tryParseInt(dynamic val) {
+  if (val == null) return null;
+  if (val is int) return val;
+  if (val is num) return val.toInt();
+  if (val is String) return int.tryParse(val);
+  return null;
+}
+
 /// 할일이 업무(Issue)로 전환된 경우의 요약 정보 (백엔드 TodoIssueInfoSerializer 대응)
 @immutable
 class TodoIssueInfo {
@@ -19,11 +35,11 @@ class TodoIssueInfo {
 
   factory TodoIssueInfo.fromJson(Map<String, dynamic> json) {
     return TodoIssueInfo(
-      pk: json['pk'] as int? ?? 0,
-      projectId: json['project_id'] as int? ?? 0,
-      projectSlug: json['project_slug'] as String? ?? '',
-      projectName: json['project_name'] as String? ?? '',
-      subject: json['subject'] as String? ?? '',
+      pk: _parseInt(json['pk']),
+      projectId: _parseInt(json['project_id']),
+      projectSlug: json['project_slug']?.toString() ?? '',
+      projectName: json['project_name']?.toString() ?? '',
+      subject: json['subject']?.toString() ?? '',
     );
   }
 
@@ -87,14 +103,14 @@ class TodoItem {
   factory TodoItem.fromJson(Map<String, dynamic> json) {
     final rawInfo = json['issue_info'];
     return TodoItem(
-      pk: json['pk'] as int? ?? 0,
-      user: json['user'] as int? ?? 0,
-      title: json['title'] as String? ?? '',
+      pk: _parseInt(json['pk']),
+      user: _parseInt(json['user']),
+      title: json['title']?.toString() ?? '',
       completed: json['completed'] as bool? ?? false,
       softDeleted: json['soft_deleted'] as bool? ?? false,
-      issue: json['issue'] as int?,
-      issueInfo: rawInfo is Map<String, dynamic>
-          ? TodoIssueInfo.fromJson(rawInfo)
+      issue: _tryParseInt(json['issue']),
+      issueInfo: rawInfo is Map
+          ? TodoIssueInfo.fromJson(Map<String, dynamic>.from(rawInfo))
           : null,
     );
   }
@@ -162,9 +178,15 @@ class TodoConvertResult {
   const TodoConvertResult({required this.todo, required this.issue});
 
   factory TodoConvertResult.fromJson(Map<String, dynamic> json) {
+    final todoRaw = json['todo'];
+    final issueRaw = json['issue'];
     return TodoConvertResult(
-      todo: TodoItem.fromJson(json['todo'] as Map<String, dynamic>),
-      issue: TodoIssueInfo.fromJson(json['issue'] as Map<String, dynamic>),
+      todo: TodoItem.fromJson(
+        todoRaw is Map ? Map<String, dynamic>.from(todoRaw) : <String, dynamic>{},
+      ),
+      issue: TodoIssueInfo.fromJson(
+        issueRaw is Map ? Map<String, dynamic>.from(issueRaw) : <String, dynamic>{},
+      ),
     );
   }
 }

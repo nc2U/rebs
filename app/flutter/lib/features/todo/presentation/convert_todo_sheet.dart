@@ -1,6 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_text_styles.dart';
+import '../../../core/providers/project_provider.dart';
 import '../../../core/theme/app_colors_extension.dart';
 import '../../project/providers/project_provider.dart';
 import '../data/models/todo_model.dart';
@@ -80,11 +82,22 @@ class _ConvertTodoSheetState extends ConsumerState<ConvertTodoSheet> {
             description: _descController.text.trim(),
           );
       if (mounted) Navigator.of(context).pop(result);
-    } catch (_) {
+    } catch (e) {
       if (mounted) {
+        String msg = '업무 전환 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.';
+        if (e is DioException) {
+          final data = e.response?.data;
+          if (data is Map) {
+            if (data['error'] != null) {
+              msg = data['error'].toString();
+            } else if (data['detail'] != null) {
+              msg = data['detail'].toString();
+            }
+          }
+        }
         setState(() {
           _submitting = false;
-          _errorMessage = '업무 전환 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.';
+          _errorMessage = msg;
         });
       }
     }
@@ -171,14 +184,18 @@ class _ConvertTodoSheetState extends ConsumerState<ConvertTodoSheet> {
           );
         }
 
-        // 최초 진입 시 첫 번째 워크스페이스를 기본 선택
+        // 최초 진입 시 활성 워크스페이스 또는 첫 번째 워크스페이스를 기본 선택
         final selected = projects.any((p) => p.pk == _selectedProjectId)
             ? _selectedProjectId
             : null;
         if (selected == null && _selectedProjectId == null) {
+          final currentProj = ref.read(selectedProjectProvider);
+          final defaultId = projects.any((p) => p.slug == currentProj?.slug)
+              ? projects.firstWhere((p) => p.slug == currentProj?.slug).pk
+              : projects.first.pk;
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted && _selectedProjectId == null) {
-              setState(() => _selectedProjectId = projects.first.pk);
+              setState(() => _selectedProjectId = defaultId);
             }
           });
         }
