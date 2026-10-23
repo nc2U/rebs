@@ -1,4 +1,7 @@
+import logging
 from django.conf import settings
+
+logger = logging.getLogger(__name__)
 from django.core.mail import send_mail
 from django.db import transaction
 from rest_framework import serializers
@@ -139,7 +142,7 @@ class UserSerializer(serializers.ModelSerializer):
             )
             send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [settings.DEFAULT_FROM_EMAIL])
         except Exception as e:
-            print(f"메일 발송 실패 {e}")
+            logger.error(f"회원가입 환영/알림 메일 발송 실패: {e}")
 
         user.save()
         return user
@@ -200,7 +203,10 @@ class ProfileSerializer(serializers.ModelSerializer):
 
         is_active = self.initial_data.get('is_active')
         if is_active is not None:
-            user.is_active = bool(is_active)
+            request = self.context.get('request')
+            is_admin = request and (request.user.is_superuser or getattr(request.user, 'work_manager', False))
+            if is_admin:
+                user.is_active = bool(is_active)
         user.save()
         return instance
 

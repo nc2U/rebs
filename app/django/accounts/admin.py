@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from import_export.admin import ImportExportMixin
 
 from .forms import UserCreationForm, UserChangeForm
-from .models import User, Profile, DocScrape, Todo, PasswordResetToken, FCMDevice, Notification
+from .models import User, Profile, DocScrape, PostScrape, Todo, PasswordResetToken, FCMDevice, Notification
 
 
 @admin.register(Profile)
@@ -77,6 +77,14 @@ class UserAdmin(ImportExportMixin, BaseUserAdmin):
 class DocScrapeAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('pk', 'user', 'docs', 'title', 'created')
     list_display_links = ('pk', 'user', 'docs')
+
+@admin.register(PostScrape)
+class PostScrapeAdmin(ImportExportMixin, admin.ModelAdmin):
+    list_display = ('pk', 'user', 'post', 'title', 'created')
+    list_display_links = ('pk', 'user', 'post')
+    list_filter = ('created',)
+    search_fields = ('title', 'user__username', 'post__title')
+
 
 
 @admin.register(Todo)

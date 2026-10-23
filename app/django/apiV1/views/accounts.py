@@ -1,4 +1,5 @@
 import base64
+import logging
 
 from allauth.account.forms import default_token_generator
 from django.conf import settings
@@ -8,13 +9,15 @@ from django.core.mail import send_mail
 from django.db import transaction
 from django.db.models import Q
 from django.utils import timezone
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+logger = logging.getLogger(__name__)
 
 from accounts.models import User, Profile, DocScrape, PostScrape, Todo, PasswordResetToken, FCMDevice, Notification
 from apiV1.permissions.auth_perms import IsOwnerOnly, IsWorkManagerOnly
@@ -78,6 +81,14 @@ class UserViewSet(viewsets.ModelViewSet):
         elif is_active_param.lower() in ('false', '0'):
             queryset = queryset.filter(is_active=False)
         # 'all'인 경우 filter 생략
+
+        # N+1 쿼리 방지 Eager Loading 적용
+        queryset = queryset.select_related(
+            'profile',
+            'staff__executive__rank',
+            'staff__position',
+            'staff__grade'
+        ).prefetch_related('member_set__project')
 
         # 슈퍼유저나 work_manager는 전체 사용자 조회 가능
         if user.is_superuser or getattr(user, 'work_manager', False):
@@ -280,7 +291,7 @@ class CheckPasswordView(APIView):
             # Password is correct
             return Response({'detail': 'Password correct.'}, status=status.HTTP_200_OK)
         else:
-            # Password is correct
+            # Password is incorrect
             return Response({'detail': 'Password incorrect.'}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -325,14 +336,10 @@ class PasswordResetRequestView(APIView):
             except User.DoesNotExist:
                 return Response({'detail': '입력한 이메일로 등록된 사용자가 존재하지 않습니다.'}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Generate a password reset token
+            # Generate a password reset token (이전 미사용 토큰 정리 후 단일 발급)
             token = default_token_generator.make_token(user)
-            try:
-                token_db = PasswordResetToken.objects.get(user=user)
-                token_db.token = token
-            except PasswordResetToken.DoesNotExist:
-                token_db = PasswordResetToken(user=user, token=token)
-            token_db.save()
+            PasswordResetToken.objects.filter(user=user).delete()
+            token_db = PasswordResetToken.objects.create(user=user, token=token)
 
             # Create a password reset link
             uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
@@ -371,28 +378,21 @@ class PasswordResetConfirmView(APIView):
 
     @staticmethod
     def post(request, *args, **kwargs):
-        user_id = kwargs.get('user_id')
-        while len(user_id) % 4 != 0:
-            user_id += '='
-        user_id = base64.b64decode(user_id, validate=True).decode('utf-8')
-        token = kwargs.get('token')
-
         try:
+            user_id = force_str(urlsafe_base64_decode(kwargs.get('user_id')))
             user = User.objects.get(pk=user_id)
-        except User.DoesNotExist:
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
             return Response({'detail': 'User not found.'}, status=status.HTTP_400_BAD_REQUEST)
 
+        token = kwargs.get('token')
         if default_token_generator.check_token(user, token):
-            token_db = PasswordResetToken.objects.get(user=user)
-            if not token_db.is_expired():
+            token_db = PasswordResetToken.objects.filter(user=user, token=token).order_by('-created').first()
+            if token_db and not token_db.is_expired():
                 # Token is valid, perform password reset
                 new_password = request.data.get('new_password')
                 user.set_password(new_password)
                 user.save()
-
-                # # Log the user in with the new password
-                # authenticated_user = authenticate (username=user.username, password=new_password)
-                # login(request, authenticated_user)
+                token_db.delete()  # 일회용 토큰 소모
 
                 return Response({'detail': 'Password reset successful'}, status=status.HTTP_200_OK)
             else:
@@ -451,12 +451,8 @@ class AdminManageUserView(APIView):
                         # Generate a password reset token
                         token = default_token_generator.make_token(user)
                         expired = serializer.validated_data.get('expired')
-                        try:
-                            token_db = PasswordResetToken.objects.get(user=user)
-                            token_db.token = token
-                        except PasswordResetToken.DoesNotExist:
-                            token_db = PasswordResetToken(user=user, token=token, expired=expired * 3600)
-                        token_db.save()
+                        PasswordResetToken.objects.filter(user=user).delete()
+                        token_db = PasswordResetToken.objects.create(user=user, token=token, expired=expired * 3600)
 
                         # Create a password reset link
                         uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
@@ -505,7 +501,7 @@ IBS 워크스페이스'''
                     try:
                         send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [email])
                     except Exception as e:
-                        print(f"관리자 유저 생성 메일 발송 실패: {e}")
+                        logger.error(f"관리자 유저 생성 메일 발송 실패: {e}")
                         return Response(
                             {'pk': user.pk, 'detail': '새 계정이 생성되었으나 알림 이메일 발송에는 실패했습니다. 비밀번호를 수동으로 전달하십시오.'},
                             status=status.HTTP_201_CREATED)
@@ -561,12 +557,8 @@ IBS 워크스페이스'''
                     if send_option == '1':
                         # Generate a password reset token
                         token = default_token_generator.make_token(user)
-                        try:
-                            token_db = PasswordResetToken.objects.get(user=user)
-                            token_db.token = token
-                        except PasswordResetToken.DoesNotExist:
-                            token_db = PasswordResetToken(user=user, token=token, expired=expired * 3600)
-                        token_db.save()
+                        PasswordResetToken.objects.filter(user=user).delete()
+                        token_db = PasswordResetToken.objects.create(user=user, token=token, expired=expired * 3600)
 
                         # Create a password reset link
                         uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
@@ -613,7 +605,7 @@ IBS 워크스페이스'''
                     try:
                         send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [email])
                     except Exception as e:
-                        print(f"비밀번호 재설정 메일 발송 실패: {e}")
+                        logger.error(f"비밀번호 재설정 메일 발송 실패: {e}")
                         return Response({'detail': '비밀번호 처리가 완료되었으나 알림 이메일 발송에 실패했습니다.'}, status=status.HTTP_200_OK)
 
                     return Response({'detail': '비밀번호 재설정 처리 및 알림 이메일을 발송했습니다.'}, status=status.HTTP_200_OK)

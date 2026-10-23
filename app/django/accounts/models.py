@@ -177,7 +177,7 @@ class PasswordResetToken(models.Model):
 
     def is_expired(self):
         # Check if 10 minutes have passed since creation
-        time_diff = timezone.localtime() - self.created
+        time_diff = timezone.now() - self.created
         return time_diff.total_seconds() >= self.expired
 
     class Meta:

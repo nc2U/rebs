@@ -120,7 +120,7 @@ def create_project(request):
                      '8': '기타'}[kind]
 
         issue_project = IssueProject.objects.create(company_id=company,
-                                                    sort='2',
+                                                    type='2',
                                                     name=name,
                                                     slug='proj1',
                                                     description=f'{name} {kind_name} 신축사업',
