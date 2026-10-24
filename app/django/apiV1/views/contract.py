@@ -766,7 +766,9 @@ class ContractDocumentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        queryset = super().get_queryset().select_related('contractor', 'required_document')
+        queryset = super().get_queryset().select_related(
+            'contractor', 'required_document__document_type'
+        ).prefetch_related('files')
         if not (user.is_superuser or getattr(user, 'work_manager', False)):
             allowed_ids = get_accessible_project_ids(user)
             queryset = queryset.filter(
@@ -1065,9 +1067,10 @@ class ContReleaseViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        # [M-3] ContractorReleaseSerializer 직렬화 시 contractor/project 접근으로 발생하는 N+1 방지
+        # [M-3] ContractorReleaseSerializer 직렬화 시 contractor/project 및 contract 접근으로 발생하는 N+1 방지
         queryset = ContractorRelease.objects.select_related(
-            'contractor',
+            'contractor__contract',
+            'contractor__prev_contract',
             'project',
         )
         if not (user.is_superuser or getattr(user, 'work_manager', False)):

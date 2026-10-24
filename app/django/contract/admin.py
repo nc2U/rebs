@@ -12,6 +12,7 @@ from .models import (OrderGroup, DocumentType, RequiredDocument, Contract, Contr
 class OrderGroupAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'project', 'name', 'order_number', 'sort', 'is_default_for_uncontracted')
     list_display_links = ('project', 'name',)
+    list_select_related = ('project',)
     list_filter = ('project', 'sort')
     list_editable = ('order_number', 'is_default_for_uncontracted',)
     search_fields = ('name',)
@@ -31,6 +32,7 @@ class RequiredDocumentAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'project', 'sort', 'document_type', 'quantity',
                     'require_type', 'description', 'display_order')
     list_display_links = ('project', 'document_type')
+    list_select_related = ('project', 'document_type')
     list_filter = ('project', 'document_type', 'require_type')
     list_editable = ('sort', 'quantity', 'require_type', 'description', 'display_order')
     search_fields = ('document_type__name',)
@@ -53,9 +55,17 @@ class ContractAdmin(ImportExportMixin, admin.ModelAdmin):
                     'is_active', 'contractor', 'contractprice', 'is_sup_cont',
                     'sup_cont_date', 'created', 'creator')
     list_display_links = ('project', 'serial_number',)
+    list_select_related = ('project', 'key_unit__houseunit', 'order_group', 'unit_type',
+                           'contractor', 'contractprice', 'creator')
     list_filter = ('project', 'order_group', 'unit_type', 'is_active', 'contractor__status')
     search_fields = ('serial_number', 'contractor__name')
     inlines = [ContractPriceInline, ContractorInline]
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related(
+            'project', 'key_unit__houseunit', 'order_group', 'unit_type',
+            'contractor', 'contractprice', 'creator'
+        )
 
 
 class ContractStatusFilter(admin.SimpleListFilter):
@@ -82,6 +92,7 @@ class ContractPriceAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'order_group', 'contract_status', 'contract', 'house_unit', 'unit_type_display', 'price',
                     'is_cache_valid')
     list_display_links = ('contract', 'house_unit')
+    list_select_related = ('order_group', 'contract__unit_type', 'house_unit__unit_type')
     list_editable = ('order_group', 'price')
     list_filter = (
         'contract__project',
@@ -207,6 +218,7 @@ class ContactorAdmin(ImportExportMixin, admin.ModelAdmin):
                     'status', 'change_type', 'is_active', 'reservation_date', 'contract_date', 'created')
     search_fields = ('name',)
     list_display_links = ('name',)
+    list_select_related = ('contract__project',)
     list_filter = ('contract__project', 'contract__order_group', 'contract__unit_type',
                    'contract_date', 'gender', 'qualification', 'status', 'change_type')
     list_editable = ('gender', 'qualification', 'status', 'change_type', 'is_active')
@@ -256,6 +268,7 @@ class ContactorAdmin(ImportExportMixin, admin.ModelAdmin):
 @admin.register(ContractorAddress)
 class CAdressAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('__str__', 'id_zipcode', 'id_address1', 'id_address2', 'id_address3', 'is_current')
+    list_select_related = ('contractor__contract',)
     list_editable = ('is_current',)
 
 
@@ -264,6 +277,7 @@ class ContractorConsultationLogsAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'contractor', 'consultation_date', 'category', 'channel',
                     'status_badge', 'priority_badge', 'consultant', 'is_important', 'created')
     list_display_links = ('contractor',)
+    list_select_related = ('contractor', 'consultant')
     list_filter = ('status', 'priority', 'category', 'channel', 'is_important', 'consultation_date')
     list_editable = ('is_important',)
     search_fields = ('contractor__name', 'title', 'content', 'consultant__username')
@@ -332,6 +346,7 @@ class SuccessionAdmin(ImportExportMixin, admin.ModelAdmin):
                     'status', 'approval_date', 'creator')
     search_fields = ('seller', 'buyer')
     list_display_links = ('contract', 'seller', 'buyer')
+    list_select_related = ('contract', 'seller', 'buyer', 'creator')
     list_editable = ('status', 'approval_date')
 
 
@@ -340,4 +355,5 @@ class ContractorReleaseAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'contractor', 'status', 'release_type', 'refund_amount',
                     'refund_account_bank', 'refund_account_number',
                     'refund_account_depositor', 'request_date', 'completion_date')
+    list_select_related = ('contractor',)
     list_editable = ('status', 'release_type', 'request_date', 'completion_date')

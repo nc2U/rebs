@@ -863,3 +863,64 @@ class ContractAndPaymentSecurityTests(APITestCase):
             self.assertIsNotNone(current_addr)
             self.assertEqual(current_addr.pk, self.addr_a.pk)
 
+    def test_contract_admin_query_optimization(self):
+        """ContractAdmin의 list_select_related 적용으로 외래키 접근 시 추가 쿼리 0건 검증"""
+        from django.contrib.admin.sites import AdminSite
+        from contract.admin import ContractAdmin
+        from django.test import RequestFactory
+
+        self.contract_a.creator = self.admin_user
+        self.contract_a.save()
+
+        admin = ContractAdmin(Contract, AdminSite())
+        request = RequestFactory().get('/admin/contract/contract/')
+        request.user = self.admin_user
+
+        qs = admin.get_queryset(request).filter(pk=self.contract_a.pk)
+        contracts = list(qs)
+        self.assertEqual(len(contracts), 1)
+
+        with self.assertNumQueries(0):
+            item = contracts[0]
+            _ = item.project.name
+            _ = item.order_group.name
+            _ = item.unit_type.name
+            _ = item.contractor.name
+            _ = item.contractprice.price
+            _ = item.creator.username
+
+    def test_excel_and_pdf_export_views(self):
+        """리팩토링된 엑셀(ExportContracts, ExportSuccessions, ExportReleases, ExportUnitStatus) 및 PDF 뷰 검증"""
+        from django.test import RequestFactory
+        from contract.exports.excel import ExportContracts, ExportSuccessions, ExportReleases, ExportUnitStatus
+        from contract.exports.pdf import PdfExportCertOccupancy
+        factory = RequestFactory()
+
+        # 1. ExportContracts
+        req = factory.get(f'/contract/export/contracts/?project={self.project_a.pk}&col=1-2-3-4-5-6-7&status=2')
+        res = ExportContracts().get(req)
+        self.assertEqual(res.status_code, 200)
+
+        # 2. ExportSuccessions
+        req_succ = factory.get(f'/contract/export/successions/?project={self.project_a.pk}')
+        res_succ = ExportSuccessions().get(req_succ)
+        self.assertEqual(res_succ.status_code, 200)
+
+        # 3. ExportReleases
+        req_rel = factory.get(f'/contract/export/releases/?project={self.project_a.pk}')
+        res_rel = ExportReleases().get(req_rel)
+        self.assertEqual(res_rel.status_code, 200)
+
+        # 4. ExportUnitStatus
+        req_unit = factory.get(f'/contract/export/unit-status/?project={self.project_a.pk}')
+        res_unit = ExportUnitStatus().get(req_unit)
+        self.assertEqual(res_unit.status_code, 200)
+
+        # 5. PdfExportCertOccupancy (메모리 스트리밍 반환 검증)
+        req_pdf = factory.get(f'/contract/export/cert-occupancy/?contract={self.contract_a.pk}')
+        req_pdf.user = self.admin_user
+        res_pdf = PdfExportCertOccupancy().get(req_pdf)
+        self.assertEqual(res_pdf.status_code, 200)
+        self.assertEqual(res_pdf['Content-Type'], 'application/pdf')
+        self.assertTrue(len(res_pdf.content) > 0)
+

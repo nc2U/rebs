@@ -239,6 +239,11 @@ class ExportContracts(ExcelExportMixin):
 
         quali_str = {'1': '일반분양', '2': '미인가', '3': '인가', '4': '부적격', }
 
+        fmt_center_num = workbook.add_format({'border': True, 'valign': 'vcenter', 'align': 'center', 'num_format': '#,##0'})
+        fmt_currency = workbook.add_format({'border': True, 'valign': 'vcenter', 'align': 'right', 'num_format': 41})
+        fmt_left = workbook.add_format({'border': True, 'valign': 'vcenter', 'align': 'left', 'num_format': '@'})
+        fmt_date = workbook.add_format({'border': True, 'valign': 'vcenter', 'align': 'center', 'num_format': 'yyyy-mm-dd'})
+
         for i, row in enumerate(data):
             row_num += 1
             row = list(row)
@@ -250,21 +255,17 @@ class ExportContracts(ExcelExportMixin):
             row[0] = i + 1  # pk 대신 순서 삽입
 
             for col_num, cell_data in enumerate(row):
-                # css 설정
                 if col_num == 0:
-                    body_format['align'] = 'center'
-                    body_format['num_format'] = '#,##0'
+                    bf = fmt_center_num
                 elif col_num in is_num:
-                    body_format['num_format'] = 41
+                    bf = fmt_currency
                 elif col_num in is_left:
-                    body_format['align'] = 'left'
+                    bf = fmt_left
                 else:
-                    body_format['align'] = 'center'
-                    body_format['num_format'] = 'yyyy-mm-dd'
+                    bf = fmt_date
 
                 # 인가 여부 데이터 치환
                 cell_value = quali_str.get(cell_data, '') if reg_col == col_num else cell_data
-                bf = workbook.add_format(body_format)
                 worksheet.write(row_num, col_num, cell_value, bf)
 
         # Close the workbook before sending the data.
@@ -342,38 +343,43 @@ class ExportSuccessions(ExcelExportMixin):
 
         # 4. Body
         # Get some data to write to the spreadsheet.
-        obj_list = Succession.objects.filter(contract__project=project)
-
-        data = obj_list.values_list(*params)
+        obj_list = Succession.objects.filter(contract__project=project).select_related(
+            'contract__project', 'seller', 'buyer'
+        ).order_by('-apply_date', '-trading_date', '-id')
 
         # Turn off some of the warnings:
         worksheet.ignore_errors({'number_stored_as_text': 'F:G'})
 
-        # Write header
-        for i, row in enumerate(data):
-            row = list(row)
+        format_center_text = workbook.add_format({'border': True, 'valign': 'vcenter', 'align': 'center', 'num_format': '@'})
+        format_center_num = workbook.add_format({'border': True, 'valign': 'vcenter', 'align': 'center', 'num_format': '#,##0'})
+        format_date = workbook.add_format({'border': True, 'valign': 'vcenter', 'align': 'center', 'num_format': 'yyyy-mm-dd'})
+        format_left = workbook.add_format({'border': True, 'valign': 'vcenter', 'align': 'left', 'num_format': '@'})
+
+        status_dict = dict(Succession.SUCCESSION_STATUS_CHOICES)
+
+        for i, s in enumerate(obj_list):
             row_num += 1
-            row.insert(0, i + 1)
-            for col_num, cell_data in enumerate(row):
-                if col_num == 1:
-                    cell_data = obj_list.get(contract=cell_data).contract.__str__()
-                if col_num == 2:
-                    cell_data = obj_list.get(seller=cell_data).contract.contractor.name
-                if col_num == 3:
-                    cell_data = obj_list.get(buyer=cell_data).buyer.name
-                if col_num not in (4, 5, 6):
-                    body_format['num_format'] = '#,##0'
+            row_data = [
+                i + 1,
+                str(s.contract),
+                s.seller.name if s.seller else '',
+                s.buyer.name if s.buyer else '',
+                s.apply_date or '',
+                s.trading_date or '',
+                s.approval_date or '',
+                status_dict.get(s.status, s.status),
+                s.note or '',
+            ]
+            for col_num, cell_data in enumerate(row_data):
+                if col_num == 0:
+                    bf = format_center_num
+                elif col_num in (4, 5, 6) and cell_data:
+                    bf = format_date
+                elif col_num == 8:
+                    bf = format_left
                 else:
-                    body_format['num_format'] = 'yyyy-mm-dd'
-                if col_num == 7:
-                    status_dict = {'1': '신청접수', '2': '변경인가대기', '3': '승계완료', '9': '승계취소'}
-                    cell_data = status_dict.get(cell_data, '')
-                if col_num == 8:
-                    body_format['align'] = 'left'
-                else:
-                    body_format['align'] = 'center'
-                bformat = workbook.add_format(body_format)
-                worksheet.write(row_num, col_num, cell_data, bformat)
+                    bf = format_center_text
+                worksheet.write(row_num, col_num, cell_data, bf)
 
         # Close the workbook before sending the data.
         workbook.close()
@@ -473,6 +479,12 @@ class ExportReleases(ExcelExportMixin):
         # Turn off some of the warnings:
         worksheet.ignore_errors({'number_stored_as_text': 'F:G'})
 
+        fmt_center_num = workbook.add_format({'border': True, 'valign': 'vcenter', 'align': 'center', 'num_format': '#,##0'})
+        fmt_currency = workbook.add_format({'border': True, 'valign': 'vcenter', 'align': 'right', 'num_format': 41})
+        fmt_date = workbook.add_format({'border': True, 'valign': 'vcenter', 'align': 'center', 'num_format': 'yyyy-mm-dd'})
+        fmt_left = workbook.add_format({'border': True, 'valign': 'vcenter', 'align': 'left', 'num_format': '@'})
+        fmt_center_text = workbook.add_format({'border': True, 'valign': 'vcenter', 'align': 'center', 'num_format': '@'})
+
         # Write header
         choice = dict(ContractorRelease.STATUS_CHOICES)
         for i, row in enumerate(data):
@@ -481,18 +493,18 @@ class ExportReleases(ExcelExportMixin):
             row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
                 if col_num == 0:
-                    body_format['num_format'] = '#,##0'
-                else:
-                    body_format['num_format'] = 'yyyy-mm-dd'
-                if col_num == 4:
-                    body_format['num_format'] = 41
+                    bformat = fmt_center_num
+                elif col_num == 4 and cell_data is not None:
+                    bformat = fmt_currency
+                elif col_num in (8, 9, 10) and cell_data:
+                    bformat = fmt_date
                 elif col_num == 11:
-                    body_format['align'] = 'left'
+                    bformat = fmt_left
                 else:
-                    body_format['align'] = 'center'
+                    bformat = fmt_center_text
+
                 if col_num == 3:
-                    cell_data = choice[cell_data]
-                bformat = workbook.add_format(body_format)
+                    cell_data = choice.get(cell_data, cell_data)
                 worksheet.write(row_num, col_num, cell_data, bformat)
 
         # Close the workbook before sending the data.
@@ -516,27 +528,62 @@ class ExportUnitStatus(ExcelExportMixin):
 
         # data start --------------------------------------------- #
         project = Project.objects.get(pk=request.GET.get('project'))
-        max_floor = HouseUnit.objects.aggregate(Max('floor_no'))
+        max_floor = HouseUnit.objects.filter(building_unit__project=project).aggregate(Max('floor_no'))
         floor_no__max = max_floor['floor_no__max'] if max_floor['floor_no__max'] else 1
         max_floor_range = range(0, floor_no__max)
-        unit_numbers = HouseUnit.objects.filter(building_unit__project=project)
-        dong_obj = BuildingUnit.objects.filter(project=project).values('name')
+
+        all_units = list(
+            HouseUnit.objects.filter(building_unit__project=project).select_related(
+                'unit_type', 'building_unit', 'key_unit__contract__contractor'
+            )
+        )
+        dong_obj = list(BuildingUnit.objects.filter(project=project).values('name').order_by('name'))
         is_contor = True if request.GET.get('iscontor') == 'true' else False
 
-        # 포맷 생성
+        # 사전 메모리 맵 구성 (3중 루프 쿼리 제거)
+        unit_map = {}
+        dong_lines = {}
+        for u in all_units:
+            d_name = u.building_unit.name if u.building_unit else ''
+            unit_map[(d_name, u.floor_no, u.bldg_line)] = u
+            if d_name not in dong_lines:
+                dong_lines[d_name] = set()
+            dong_lines[d_name].add(u.bldg_line)
+
+        dong_lines_sorted = {
+            d_name: sorted(list(lines))
+            for d_name, lines in dong_lines.items()
+        }
+
+        # 포맷 생성 및 캐시
         title_format = self.create_title_format(workbook)
-        unit_format = {
-            'border': True,
-            'font_size': 8,
-            'align': 'center',
-            'valign': 'vcenter'
-        }
-        status_format = {
-            'border': True,
-            'font_size': 8,
-            'align': 'center',
-            'valign': 'vcenter'
-        }
+        unit_format_cache = {}
+        status_format_cache = {}
+
+        def get_unit_format(color):
+            if color not in unit_format_cache:
+                unit_format_cache[color] = workbook.add_format({
+                    'border': True,
+                    'font_size': 8,
+                    'align': 'center',
+                    'valign': 'vcenter',
+                    'bg_color': color
+                })
+            return unit_format_cache[color]
+
+        def get_status_format(bg_color, font_color='black'):
+            key = (bg_color, font_color)
+            if key not in status_format_cache:
+                status_format_cache[key] = workbook.add_format({
+                    'border': True,
+                    'font_size': 8,
+                    'align': 'center',
+                    'valign': 'vcenter',
+                    'bg_color': bg_color,
+                    'font_color': font_color
+                })
+            return status_format_cache[key]
+
         dong_title_format = workbook.add_format()
         dong_title_format.set_bold()
         dong_title_format.set_border()
@@ -556,11 +603,8 @@ class ExportUnitStatus(ExcelExportMixin):
         row_num = 1
 
         for dong in dong_obj:
-            lines = unit_numbers.order_by('bldg_line').values('bldg_line').filter(
-                building_unit__name__contains=dong['name']).distinct()
-            for line in lines:
-                max_col += 1
-            max_col += 1
+            lines = dong_lines_sorted.get(dong['name'], [])
+            max_col += len(lines) + 1
 
         worksheet.write(row_num, max_col, TODAY + ' 현재', workbook.add_format({'align': 'right', 'font_size': '9'}))
 
@@ -575,35 +619,34 @@ class ExportUnitStatus(ExcelExportMixin):
             col_num = 1
             # 동 수 만큼 반복
             for dong in dong_obj:  # 동호수 표시 라인
-                units = unit_numbers.filter(building_unit__name=dong['name'])
-                lines = unit_numbers.order_by('bldg_line').values('bldg_line').filter(
-                    building_unit__name__contains=dong['name']).distinct()
-                for line in lines:
-                    try:
-                        unit = units.get(floor_no=floor_no, bldg_line=line['bldg_line'])
-                    except ObjectDoesNotExist:
-                        unit = None
+                d_name = dong['name']
+                lines = dong_lines_sorted.get(d_name, [])
+                for bldg_line in lines:
+                    unit = unit_map.get((d_name, floor_no, bldg_line))
                     if unit or floor_no <= 2:
-                        unit_format['bg_color'] = unit.unit_type.color if unit else '#BBBBBB'
-                        unit_formats = workbook.add_format(unit_format)
+                        color = unit.unit_type.color if unit and unit.unit_type and unit.unit_type.color else '#BBBBBB'
+                        unit_formats = get_unit_format(color)
                         if not unit:
                             worksheet.merge_range(row_num, col_num, row_num + 1, col_num, '', unit_formats)
                         else:
-                            worksheet.write(row_num, col_num, int(unit.name), unit_formats)
-                            if unit.key_unit:
-                                if unit.key_unit.contract.contractor.status in ('2', '4'):
-                                    status_format['bg_color'] = '#DDDDDD'
-                                    status_format['font_color'] = 'black'
+                            val = int(unit.name) if str(unit.name).isdigit() else unit.name
+                            worksheet.write(row_num, col_num, val, unit_formats)
+
+                            key_unit = getattr(unit, 'key_unit', None)
+                            contract = getattr(key_unit, 'contract', None) if key_unit else None
+                            contractor = getattr(contract, 'contractor', None) if contract else None
+
+                            if contractor:
+                                if contractor.status in ('2', '4'):
+                                    status_formats = get_status_format('#DDDDDD', 'black')
                                 else:
-                                    status_format['bg_color'] = '#FFFF99'
-                                    status_format['font_color'] = 'black'
+                                    status_formats = get_status_format('#FFFF99', 'black')
                             elif unit.is_hold:
-                                status_format['bg_color'] = '#999999'
-                                status_format['font_color'] = 'black'
+                                status_formats = get_status_format('#999999', 'black')
                             else:
-                                status_format['bg_color'] = 'white'
-                            cont = unit.key_unit.contract.contractor.name if unit.key_unit and is_contor else ''
-                            status_formats = workbook.add_format(status_format)
+                                status_formats = get_status_format('white', 'black')
+
+                            cont = contractor.name if (contractor and is_contor) else ''
                             worksheet.write(row_num + 1, col_num, cont, status_formats)
                     col_num += 1
                 col_num += 1
@@ -613,13 +656,14 @@ class ExportUnitStatus(ExcelExportMixin):
 
         # 동 수 만큼 반복
         for dong in dong_obj:  # 호수 상태 표시 라인
-            lines = unit_numbers.order_by('-bldg_line').values('bldg_line').filter(
-                building_unit__name__contains=dong['name']).distinct()
-            worksheet.merge_range(row_num, col_num, row_num + 1, col_num + lines.count() - 1,
-                                  dong['name'] + '동',
-                                  dong_title_format)
-
-            col_num = col_num + lines.count() + 1
+            d_name = dong['name']
+            lines = dong_lines_sorted.get(d_name, [])
+            line_count = len(lines)
+            if line_count > 0:
+                worksheet.merge_range(row_num, col_num, row_num + 1, col_num + line_count - 1,
+                                      d_name + '동',
+                                      dong_title_format)
+            col_num = col_num + line_count + 1
         # data end ----------------------------------------------- #
 
         # Close the workbook before sending the data.

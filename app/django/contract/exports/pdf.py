@@ -5,7 +5,6 @@ Contract PDF Export Views
 """
 from datetime import date
 
-from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.views.generic import View
@@ -83,15 +82,12 @@ class PdfExportCertOccupancy(View):
             html_string = html_string + overlay_text
 
         html = HTML(string=html_string)
-        html.write_pdf(target='/tmp/mypdf.pdf')
+        pdf_bytes = html.write_pdf()
 
         filename = request.GET.get('filename', 'cert-occupancy')
-
-        fs = FileSystemStorage('/tmp')
-        with fs.open('mypdf.pdf') as pdf:
-            response = HttpResponse(pdf, content_type='application/pdf')
-            response['Content-Disposition'] = f'attachment; filename="{filename}.pdf"'
-            return response
+        response = HttpResponse(pdf_bytes, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="{filename}.pdf"'
+        return response
 
     @staticmethod
     def generate_text_overlay(context):
