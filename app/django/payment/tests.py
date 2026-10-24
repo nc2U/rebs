@@ -1,12 +1,17 @@
 import uuid
 from datetime import date
 from unittest.mock import patch
+from django.contrib.admin.sites import AdminSite
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.test import RequestFactory
 from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework import status
 
+from apiV1.serializers.payment import (
+    SalesPriceSerializer, DownPaymentSerializer, PaymentPerInstallmentSerializer
+)
 from company.models import Company
 from contract.models import OrderGroup, Contract, ContractPrice, Contractor
 from items.models import UnitType, KeyUnit, HouseUnit, BuildingUnit, UnitFloorType
@@ -14,9 +19,14 @@ from project.models import Project, ProjectIncBudget
 from work.models.project import IssueProject, Member, Role, Permission
 from ibs.models import AccountSort
 from ledger.models import ProjectAccount, ProjectBankAccount, ProjectBankTransaction, ProjectAccountingEntry, BankCode
+from payment.admin import (
+    InstallmentPaymentOrderAdmin, SalesPriceByGTAdmin, ContractPaymentAdmin,
+    DownPaymentAdmin, OverDueRuleAdmin
+)
 from payment.models import (
     InstallmentPaymentOrder, SalesPriceByGT, PaymentPerInstallment,
-    DownPayment, ContractPayment, OverDueRule
+    DownPayment, ContractPayment, OverDueRule,
+    SpecialPaymentOrder, SpecialDownPay, SpecialOverDueRule
 )
 
 User = get_user_model()
@@ -292,6 +302,21 @@ class SalesPriceByGTModelTests(PaymentTestCaseBase):
             f'1차 일반분양 / 84A / 1-5층 - {300000000:,}원'
         )
 
+    def test_sales_price_clean_mismatch_project(self):
+        """차수 또는 타입의 프로젝트가 일치하지 않을 때 ValidationError 검증"""
+        other_og = OrderGroup.objects.create(
+            project=self.project_b, order_number=1, sort='1', name='타프로젝트 차수'
+        )
+        invalid_sp = SalesPriceByGT(
+            project=self.project,
+            order_group=other_og,
+            unit_type=self.unit_type,
+            unit_floor_type=self.floor_type,
+            price=300000000
+        )
+        with self.assertRaises(ValidationError):
+            invalid_sp.clean()
+
 
 class PaymentPerInstallmentModelTests(PaymentTestCaseBase):
     def test_creation_and_str(self):
@@ -331,6 +356,20 @@ class DownPaymentModelTests(PaymentTestCaseBase):
             str(self.down_payment),
             f'{self.order_group} / {self.unit_type} - {30000000:,}원'
         )
+
+    def test_down_payment_clean_mismatch_project(self):
+        """차수 또는 타입의 프로젝트가 일치하지 않을 때 ValidationError 검증"""
+        other_og = OrderGroup.objects.create(
+            project=self.project_b, order_number=1, sort='1', name='타프로젝트 차수'
+        )
+        invalid_dp = DownPayment(
+            project=self.project,
+            order_group=other_og,
+            unit_type=self.unit_type,
+            payment_amount=30000000
+        )
+        with self.assertRaises(ValidationError):
+            invalid_dp.clean()
 
 
 class OverDueRuleModelTests(PaymentTestCaseBase):
@@ -631,3 +670,165 @@ class PaymentExportTests(PaymentTestCaseBase):
         # 프로젝트 누락 400
         res_no_proj = self.client.get(reverse('excel:ledger-overall-summary'))
         self.assertEqual(res_no_proj.status_code, 400)
+
+    @patch('weasyprint.HTML.write_pdf')
+    def test_pdf_exports_forbidden_for_unauthorized_user(self, mock_write_pdf):
+        """PDF 내보내기 뷰 3종에 대해 타 프로젝트 사용자(user_b) 접근 시 403 Forbidden 차단 검증"""
+        mock_write_pdf.return_value = b'%PDF-1.4 test'
+        self.client.force_login(self.user_b)
+
+        # 1. 납부 확인서 403 차단
+        url_payment = reverse('pdf:ledger-payment') + f'?contract={self.contract.pk}'
+        res1 = self.client.get(url_payment)
+        self.assertEqual(res1.status_code, 403)
+
+        # 2. 일자별 연체료 403 차단
+        url_daily = reverse('pdf:ledger-daily-late-fee') + f'?contract={self.contract.pk}'
+        res2 = self.client.get(url_daily)
+        self.assertEqual(res2.status_code, 403)
+
+        # 3. 선납할인/연체가산 내역서 403 차단
+        url_calc = reverse('pdf:ledger-calculation') + f'?project={self.project.pk}&contract={self.contract.pk}'
+        res3 = self.client.get(url_calc)
+        self.assertEqual(res3.status_code, 403)
+
+        # 권한 있는 사용자(user_a)는 200 OK
+        self.client.force_login(self.user_a)
+        res_ok = self.client.get(url_payment)
+        self.assertEqual(res_ok.status_code, 200)
+
+    def test_excel_exports_forbidden_for_unauthorized_user(self):
+        """Excel 내보내기 뷰 4종에 대해 타 프로젝트 사용자(user_b) 접근 시 403 Forbidden 차단 검증"""
+        self.client.force_login(self.user_b)
+        urls = [
+            reverse('excel:ledger-payment') + f'?project={self.project.pk}',
+            reverse('excel:ledger-paid-by-cont') + f'?project={self.project.pk}',
+            reverse('excel:ledger-paid-status') + f'?project={self.project.pk}',
+            reverse('excel:ledger-overall-summary') + f'?project={self.project.pk}',
+        ]
+        for url in urls:
+            res = self.client.get(url)
+            self.assertEqual(res.status_code, 403, f'User B should be forbidden from {url}')
+
+        # 권한 있는 사용자(user_a)는 200 OK
+        self.client.force_login(self.user_a)
+        for url in urls:
+            res_ok = self.client.get(url)
+            self.assertEqual(res_ok.status_code, 200, f'User A should access {url}')
+
+
+class SpecialPaymentModelsTests(PaymentTestCaseBase):
+    def test_special_down_pay_clean_mismatch_project(self):
+        """SpecialDownPay 차수/타입 프로젝트 불일치 시 ValidationError 검증"""
+        other_og = OrderGroup.objects.create(
+            project=self.project_b, order_number=1, sort='1', name='타프로젝트 차수'
+        )
+        invalid_sdp = SpecialDownPay(
+            project=self.project,
+            order_group=other_og,
+            unit_type=self.unit_type,
+            payment_amount=50000000
+        )
+        with self.assertRaises(ValidationError):
+            invalid_sdp.clean()
+
+    def test_special_overdue_rule_clean_validation(self):
+        """SpecialOverDueRule term_start >= term_end 시 ValidationError 검증"""
+        rule = SpecialOverDueRule(
+            project=self.project,
+            term_start=20,
+            term_end=10,
+            rate_year=7.5
+        )
+        with self.assertRaises(ValidationError):
+            rule.clean()
+
+
+class PaymentSerializerValidationTests(PaymentTestCaseBase):
+    def test_sales_price_serializer_mismatch_project(self):
+        """SalesPriceSerializer에서 차수 프로젝트 불일치 시 유효성 에러 검증"""
+        other_og = OrderGroup.objects.create(
+            project=self.project_b, order_number=1, sort='1', name='타프로젝트 차수'
+        )
+        serializer = SalesPriceSerializer(data={
+            'project': self.project.pk,
+            'order_group': other_og.pk,
+            'unit_type': self.unit_type.pk,
+            'unit_floor_type': self.floor_type.pk,
+            'price': 300000000
+        })
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('order_group', serializer.errors)
+
+    def test_down_payment_serializer_mismatch_project(self):
+        """DownPaymentSerializer에서 타입 프로젝트 불일치 시 유효성 에러 검증"""
+        other_ut = UnitType.objects.create(
+            project=self.project_b, name='타타입', sort='1', color='#000000', average_price=200000000, num_unit=5
+        )
+        serializer = DownPaymentSerializer(data={
+            'project': self.project.pk,
+            'order_group': self.order_group.pk,
+            'unit_type': other_ut.pk,
+            'payment_amount': 30000000
+        })
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('unit_type', serializer.errors)
+
+    def test_payment_per_installment_serializer_mismatch_project(self):
+        """PaymentPerInstallmentSerializer에서 기준가와 납부회차 프로젝트 불일치 시 유효성 에러 검증"""
+        other_pay_order = InstallmentPaymentOrder.objects.create(
+            project=self.project_b,
+            type_sort='1',
+            pay_sort='1',
+            pay_code=1,
+            pay_time=1,
+            pay_name='타프로젝트 회차',
+            pay_ratio=10.0
+        )
+        serializer = PaymentPerInstallmentSerializer(data={
+            'sales_price': self.sales_price.pk,
+            'pay_order': other_pay_order.pk,
+            'amount': 29000000
+        })
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('pay_order', serializer.errors)
+
+
+class PaymentAdminRLSTests(PaymentTestCaseBase):
+    def test_admin_get_queryset_rls_filtering(self):
+        """Admin 클래스별 get_queryset RLS 필터링 검증"""
+        factory = RequestFactory()
+        site = AdminSite()
+
+        # 1. InstallmentPaymentOrderAdmin
+        ipo_admin = InstallmentPaymentOrderAdmin(InstallmentPaymentOrder, site)
+        req_a = factory.get('/admin/payment/installmentpaymentorder/')
+        req_a.user = self.user_a
+        qs_a = ipo_admin.get_queryset(req_a)
+        self.assertIn(self.pay_order_down, qs_a)
+
+        req_b = factory.get('/admin/payment/installmentpaymentorder/')
+        req_b.user = self.user_b
+        qs_b = ipo_admin.get_queryset(req_b)
+        self.assertNotIn(self.pay_order_down, qs_b)
+
+        # 2. SalesPriceByGTAdmin
+        sp_admin = SalesPriceByGTAdmin(SalesPriceByGT, site)
+        qs_sp_a = sp_admin.get_queryset(req_a)
+        self.assertIn(self.sales_price, qs_sp_a)
+        qs_sp_b = sp_admin.get_queryset(req_b)
+        self.assertNotIn(self.sales_price, qs_sp_b)
+
+        # 3. ContractPaymentAdmin
+        cp = ContractPayment.objects.first()
+        cp_admin = ContractPaymentAdmin(ContractPayment, site)
+        qs_cp_a = cp_admin.get_queryset(req_a)
+        self.assertIn(cp, qs_cp_a)
+        qs_cp_b = cp_admin.get_queryset(req_b)
+        self.assertNotIn(cp, qs_cp_b)
+
+        # Superuser는 모두 조회 가능
+        req_admin = factory.get('/admin/payment/contractpayment/')
+        req_admin.user = self.user
+        qs_cp_admin = cp_admin.get_queryset(req_admin)
+        self.assertIn(cp, qs_cp_admin)

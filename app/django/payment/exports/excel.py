@@ -10,6 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q, Sum
 from django.http import HttpResponse
 
+from apiV1.permissions._utils import get_project_ids_with_permission
 from _excel.mixins import ExcelExportMixin, ProjectFilterMixin, AdvancedExcelMixin
 from contract.models import Contract
 from ledger.models import ProjectBankAccount
@@ -29,6 +30,12 @@ class ExportLedgerPayments(ExcelExportMixin, ProjectFilterMixin, AdvancedExcelMi
         project = self.get_project(request)
         if not project:
             return HttpResponse('프로젝트 파라미터가 필요합니다.', status=400, content_type='text/plain; charset=utf-8')
+
+        user = request.user
+        if not (user.is_superuser or getattr(user, 'work_manager', False)):
+            accessible_projects = get_project_ids_with_permission(user, 'payment.read')
+            if project.pk not in accessible_projects:
+                return HttpResponse('해당 프로젝트에 대한 열람 권한이 없습니다.', status=403, content_type='text/plain; charset=utf-8')
 
         sd = request.GET.get('sd', '1900-01-01')
         ed = request.GET.get('ed', get_today_str())
@@ -213,6 +220,12 @@ class ExportLedgerPaymentsByCont(ExcelExportMixin, ProjectFilterMixin, AdvancedE
         project = self.get_project(request)
         if not project:
             return HttpResponse('프로젝트 파라미터가 필요합니다.', status=400, content_type='text/plain; charset=utf-8')
+
+        user = request.user
+        if not (user.is_superuser or getattr(user, 'work_manager', False)):
+            accessible_projects = get_project_ids_with_permission(user, 'payment.read')
+            if project.pk not in accessible_projects:
+                return HttpResponse('해당 프로젝트에 대한 열람 권한이 없습니다.', status=403, content_type='text/plain; charset=utf-8')
 
         date = request.GET.get('to_date', get_today_str())
 
@@ -542,6 +555,12 @@ class ExportLedgerPaymentStatus(ExcelExportMixin, ProjectFilterMixin, AdvancedEx
         if not project:
             return HttpResponse('프로젝트 파라미터가 필요합니다.', status=400, content_type='text/plain; charset=utf-8')
 
+        user = request.user
+        if not (user.is_superuser or getattr(user, 'work_manager', False)):
+            accessible_projects = get_project_ids_with_permission(user, 'payment.read')
+            if project.pk not in accessible_projects:
+                return HttpResponse('해당 프로젝트에 대한 열람 권한이 없습니다.', status=403, content_type='text/plain; charset=utf-8')
+
         date = request.GET.get('date', get_today_str())
 
         # Create a workbook with performance optimization
@@ -820,6 +839,12 @@ class ExportLedgerOverallSummary(ExcelExportMixin, ProjectFilterMixin, AdvancedE
         project = self.get_project(request)
         if not project:
             return HttpResponse('프로젝트 파라미터가 필요합니다.', status=400, content_type='text/plain; charset=utf-8')
+
+        user = request.user
+        if not (user.is_superuser or getattr(user, 'work_manager', False)):
+            accessible_projects = get_project_ids_with_permission(user, 'payment.read')
+            if project.pk not in accessible_projects:
+                return HttpResponse('해당 프로젝트에 대한 열람 권한이 없습니다.', status=403, content_type='text/plain; charset=utf-8')
 
         date = request.GET.get('date', get_today_str())
 

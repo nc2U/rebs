@@ -9,6 +9,7 @@ from django.template.loader import render_to_string
 from django.views.generic import View
 from weasyprint import HTML
 
+from apiV1.permissions._utils import get_project_ids_with_permission
 from _pdf.utils import (get_contract, get_simple_orders, get_paid)
 from _utils.contract_price import get_contract_payment_plan, get_contract_price
 from _utils.payment_adjustment import (calculate_all_installments_payment_allocation,
@@ -37,6 +38,12 @@ class PdfExportLedgerPayment(View):
             context['contract'] = contract = get_contract(cont_id)
         except (Contract.DoesNotExist, ValueError):
             return HttpResponse('존재하지 않는 계약 건입니다.', status=404, content_type='text/plain; charset=utf-8')
+
+        user = request.user
+        if not (user.is_superuser or getattr(user, 'work_manager', False)):
+            accessible_projects = get_project_ids_with_permission(user, 'payment.read')
+            if contract.project_id not in accessible_projects:
+                return HttpResponse('해당 프로젝트에 대한 열람 권한이 없습니다.', status=403, content_type='text/plain; charset=utf-8')
 
         context['is_calc'] = calc = True if request.GET.get('is_calc') else False  # 1 = 일반용(할인가산 포함) / '' = 확인용
 
@@ -311,6 +318,12 @@ class PdfExportLedgerDailyLateFee(View):
         except (Contract.DoesNotExist, ValueError):
             return HttpResponse('존재하지 않는 계약 건입니다.', status=404, content_type='text/plain; charset=utf-8')
 
+        user = request.user
+        if not (user.is_superuser or getattr(user, 'work_manager', False)):
+            accessible_projects = get_project_ids_with_permission(user, 'payment.read')
+            if contract.project_id not in accessible_projects:
+                return HttpResponse('해당 프로젝트에 대한 열람 권한이 없습니다.', status=403, content_type='text/plain; charset=utf-8')
+
         # 발행일자
         pub_date = request.GET.get('pub_date', None)
         pub_date = datetime.strptime(pub_date, '%Y-%m-%d').date() if pub_date else get_today()
@@ -533,6 +546,12 @@ class PdfExportLedgerCalculation(View):
             context['contract'] = contract = get_contract(cont_id)
         except (Contract.DoesNotExist, ValueError):
             return HttpResponse('존재하지 않는 계약 건입니다.', status=404, content_type='text/plain; charset=utf-8')
+
+        user = request.user
+        if not (user.is_superuser or getattr(user, 'work_manager', False)):
+            accessible_projects = get_project_ids_with_permission(user, 'payment.read')
+            if contract.project_id not in accessible_projects:
+                return HttpResponse('해당 프로젝트에 대한 열람 권한이 없습니다.', status=403, content_type='text/plain; charset=utf-8')
 
         # 발행일자
         pub_date = request.GET.get('pub_date', None)

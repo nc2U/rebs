@@ -51,6 +51,17 @@ class SalesPriceSerializer(serializers.ModelSerializer):
     def get_price_setting(obj):
         return obj.unit_type.price_setting if obj.unit_type else None
 
+    def validate(self, attrs):
+        project = attrs.get('project', getattr(self.instance, 'project', None))
+        order_group = attrs.get('order_group', getattr(self.instance, 'order_group', None))
+        unit_type = attrs.get('unit_type', getattr(self.instance, 'unit_type', None))
+        if project:
+            if order_group and order_group.project_id != project.id:
+                raise serializers.ValidationError({'order_group': '차수의 프로젝트와 기준 공급가격의 프로젝트가 일치해야 합니다.'})
+            if unit_type and unit_type.project_id != project.id:
+                raise serializers.ValidationError({'unit_type': '타입의 프로젝트와 기준 공급가격의 프로젝트가 일치해야 합니다.'})
+        return attrs
+
 
 class PaymentPerInstallmentSerializer(serializers.ModelSerializer):
     sales_price_info = serializers.SerializerMethodField(read_only=True)
@@ -83,11 +94,30 @@ class PaymentPerInstallmentSerializer(serializers.ModelSerializer):
             }
         return None
 
+    def validate(self, attrs):
+        sales_price = attrs.get('sales_price', getattr(self.instance, 'sales_price', None))
+        pay_order = attrs.get('pay_order', getattr(self.instance, 'pay_order', None))
+        if sales_price and pay_order:
+            if sales_price.project_id != pay_order.project_id:
+                raise serializers.ValidationError({'pay_order': '기준 공급가격과 납부 회차의 프로젝트가 일치해야 합니다.'})
+        return attrs
+
 
 class DownPaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = DownPayment
         fields = ('pk', 'project', 'order_group', 'unit_type', 'payment_amount')
+
+    def validate(self, attrs):
+        project = attrs.get('project', getattr(self.instance, 'project', None))
+        order_group = attrs.get('order_group', getattr(self.instance, 'order_group', None))
+        unit_type = attrs.get('unit_type', getattr(self.instance, 'unit_type', None))
+        if project:
+            if order_group and order_group.project_id != project.id:
+                raise serializers.ValidationError({'order_group': '차수의 프로젝트와 일괄 계약금의 프로젝트가 일치해야 합니다.'})
+            if unit_type and unit_type.project_id != project.id:
+                raise serializers.ValidationError({'unit_type': '타입의 프로젝트와 일괄 계약금의 프로젝트가 일치해야 합니다.'})
+        return attrs
 
 
 class OverDueRuleSerializer(serializers.ModelSerializer):
@@ -255,6 +285,29 @@ class ContractPaymentSerializer(serializers.ModelSerializer):
             'bank_transaction_amount', 'sibling_entries'
         )
         read_only_fields = ('deal_date', 'created_at', 'updated_at')
+
+    def validate(self, attrs):
+        request = self.context.get('request')
+        if request and hasattr(request, 'data') and self.instance:
+            if 'contract' in request.data:
+                contract_val = request.data.get('contract')
+                if contract_val:
+                    try:
+                        contract_obj = Contract.objects.get(pk=contract_val)
+                        if contract_obj.project_id != self.instance.project_id:
+                            raise serializers.ValidationError({'contract': '계약의 프로젝트와 일치하지 않습니다.'})
+                    except Contract.DoesNotExist:
+                        pass
+            if 'installment_order' in request.data:
+                order_val = request.data.get('installment_order')
+                if order_val:
+                    try:
+                        order_obj = InstallmentPaymentOrder.objects.get(pk=order_val)
+                        if order_obj.project_id != self.instance.project_id:
+                            raise serializers.ValidationError({'installment_order': '납부회차의 프로젝트와 일치하지 않습니다.'})
+                    except InstallmentPaymentOrder.DoesNotExist:
+                        pass
+        return attrs
 
     def update(self, instance, validated_data):
         request = self.context.get('request')

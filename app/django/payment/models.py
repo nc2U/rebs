@@ -68,6 +68,10 @@ class InstallmentPaymentOrder(models.Model):  # 분할 납부 차수 등록
         if self.is_late_penalty and self.late_penalty_ratio is None:
             raise ValidationError({'late_penalty_ratio': '연체가산율을 입력해야 합니다.'})
 
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
+
     class Meta:
         ordering = ['project', 'pay_code', 'pay_time']
         verbose_name = '01. 납입회차 관리'
@@ -86,6 +90,19 @@ class SalesPriceByGT(models.Model):  # 차수별 타입별 분양가격
 
     def __str__(self):
         return f'{self.order_group} / {self.unit_type} / {self.unit_floor_type} - {self.price:,}원'
+
+    def clean(self):
+        super().clean()
+        if hasattr(self, 'order_group') and self.order_group_id and self.project_id:
+            if self.order_group.project_id != self.project_id:
+                raise ValidationError({'order_group': '차수의 프로젝트와 기준 공급가격의 프로젝트가 일치해야 합니다.'})
+        if hasattr(self, 'unit_type') and self.unit_type_id and self.project_id:
+            if self.unit_type.project_id != self.project_id:
+                raise ValidationError({'unit_type': '타입의 프로젝트와 기준 공급가격의 프로젝트가 일치해야 합니다.'})
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
     class Meta:
         ordering = ('order_group', 'unit_type', 'unit_floor_type', 'project')
@@ -110,6 +127,10 @@ class PaymentPerInstallment(models.Model):
             if self.sales_price.project_id != self.pay_order.project_id:
                 raise ValidationError({'pay_order': '기준 공급가격과 납부 회차의 프로젝트가 일치해야 합니다.'})
 
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
+
     class Meta:
         ordering = ('sales_price__order_group', 'pay_order', 'sales_price__unit_type')
         verbose_name = '03. 특별 약정금액'
@@ -126,6 +147,19 @@ class DownPayment(models.Model):
 
     def __str__(self):
         return f'{self.order_group} / {self.unit_type} - {self.payment_amount:,}원'
+
+    def clean(self):
+        super().clean()
+        if hasattr(self, 'order_group') and self.order_group_id and self.project_id:
+            if self.order_group.project_id != self.project_id:
+                raise ValidationError({'order_group': '차수의 프로젝트와 일괄 계약금의 프로젝트가 일치해야 합니다.'})
+        if hasattr(self, 'unit_type') and self.unit_type_id and self.project_id:
+            if self.unit_type.project_id != self.project_id:
+                raise ValidationError({'unit_type': '타입의 프로젝트와 일괄 계약금의 프로젝트가 일치해야 합니다.'})
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
     class Meta:
         ordering = ('id',)
@@ -427,6 +461,10 @@ class OverDueRule(models.Model):
             if self.term_start >= self.term_end:
                 raise ValidationError('최소연체(선납)일은 최대연체(선납)일보다 작아야 합니다.')
 
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
+
     class Meta:
         ordering = ('project', 'term_start', 'term_end')
         verbose_name = '06. 선납할인/연체이율 관리'
@@ -471,6 +509,19 @@ class SpecialDownPay(models.Model):
     def __str__(self):
         return f'{self.payment_amount}'
 
+    def clean(self):
+        super().clean()
+        if hasattr(self, 'order_group') and self.order_group_id and self.project_id:
+            if self.order_group.project_id != self.project_id:
+                raise ValidationError({'order_group': '차수의 프로젝트와 특별 회차 납입금의 프로젝트가 일치해야 합니다.'})
+        if hasattr(self, 'unit_type') and self.unit_type_id and self.project_id:
+            if self.unit_type.project_id != self.project_id:
+                raise ValidationError({'unit_type': '타입의 프로젝트와 특별 회차 납입금의 프로젝트가 일치해야 합니다.'})
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
+
     class Meta:
         ordering = ('id',)
         verbose_name = '08. 특별 회차별 납입금'
@@ -487,6 +538,16 @@ class SpecialOverDueRule(models.Model):  # 가산금 / 할인액 계산을 위�
         ts = str(self.term_start) + '일' if self.term_start is not None else 'Min'
         te = str(self.term_end) + '일' if self.term_end is not None else 'Max'
         return f'{ts} - {te}'
+
+    def clean(self):
+        super().clean()
+        if self.term_start is not None and self.term_end is not None:
+            if self.term_start >= self.term_end:
+                raise ValidationError('최소연체(선납)일은 최대연체(선납)일보다 작아야 합니다.')
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
     class Meta:
         ordering = ('-project', 'term_start', 'term_end')

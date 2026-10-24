@@ -4,6 +4,7 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from import_export.admin import ImportExportMixin
 
+from apiV1.views.payment import get_accessible_project_ids
 from .models import (InstallmentPaymentOrder, SalesPriceByGT, PaymentPerInstallment,
                      DownPayment, OverDueRule, SpecialPaymentOrder, SpecialDownPay, SpecialOverDueRule,
                      ContractPayment)
@@ -23,6 +24,13 @@ class InstallmentPaymentOrderAdmin(ImportExportMixin, admin.ModelAdmin):
     list_filter = ('project', 'pay_sort')
     filter_horizontal = ('excluded_order_groups',)
     list_select_related = ('project',)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_accessible_project_ids(request.user, 'payment.read')
+        return qs.filter(project_id__in=accessible_projects)
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         if db_field.name == "excluded_order_groups":
@@ -78,6 +86,13 @@ class SalesPriceByGTAdmin(ImportExportMixin, admin.ModelAdmin):
     list_select_related = ('project', 'order_group', 'unit_type', 'unit_floor_type')
     inlines = (PaymentPerInstallmentInline,)
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_accessible_project_ids(request.user, 'payment.read')
+        return qs.filter(project_id__in=accessible_projects)
+
 
 @admin.register(PaymentPerInstallment)
 class PaymentPerInstallmentAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -87,6 +102,13 @@ class PaymentPerInstallmentAdmin(ImportExportMixin, admin.ModelAdmin):
     list_filter = ('sales_price__project', 'sales_price__order_group', 'sales_price__unit_type')
     search_fields = ('pay_order__pay_name',)
     list_select_related = ('sales_price__project', 'sales_price__order_group', 'sales_price__unit_type', 'sales_price__unit_floor_type', 'pay_order')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_accessible_project_ids(request.user, 'payment.read')
+        return qs.filter(sales_price__project_id__in=accessible_projects)
 
     def get_sales_price_info(self, obj):
         if obj.sales_price:
@@ -118,6 +140,13 @@ class DownPaymentAdmin(ImportExportMixin, admin.ModelAdmin):
     list_filter = ('project', 'order_group', 'unit_type')
     list_select_related = ('project', 'order_group', 'unit_type')
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_accessible_project_ids(request.user, 'payment.read')
+        return qs.filter(project_id__in=accessible_projects)
+
 
 @admin.register(OverDueRule)
 class OverDueRuleAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -126,6 +155,13 @@ class OverDueRuleAdmin(ImportExportMixin, admin.ModelAdmin):
     list_editable = ('term_start', 'term_end', 'rate_year')
     list_filter = ('project',)
     list_select_related = ('project',)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_accessible_project_ids(request.user, 'payment.read')
+        return qs.filter(project_id__in=accessible_projects)
 
 
 @admin.register(SpecialPaymentOrder)
@@ -138,6 +174,13 @@ class SpecialPaymentOrderAdmin(ImportExportMixin, admin.ModelAdmin):
     list_filter = ('project', 'pay_sort')
     list_select_related = ('project',)
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_accessible_project_ids(request.user, 'payment.read')
+        return qs.filter(project_id__in=accessible_projects)
+
 
 @admin.register(SpecialDownPay)
 class SpecialDownPayAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -147,6 +190,13 @@ class SpecialDownPayAdmin(ImportExportMixin, admin.ModelAdmin):
     list_filter = ('project', 'order_group', 'unit_type')
     list_select_related = ('project', 'order_group', 'unit_type')
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_accessible_project_ids(request.user, 'payment.read')
+        return qs.filter(project_id__in=accessible_projects)
+
 
 @admin.register(SpecialOverDueRule)
 class SpecialOverDueRuleAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -155,6 +205,13 @@ class SpecialOverDueRuleAdmin(ImportExportMixin, admin.ModelAdmin):
     list_editable = ('term_start', 'term_end', 'rate_year')
     list_filter = ('project',)
     list_select_related = ('project',)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_accessible_project_ids(request.user, 'payment.read')
+        return qs.filter(project_id__in=accessible_projects)
 
 
 # ============================================
@@ -293,14 +350,18 @@ class ContractPaymentAdmin(ImportExportMixin, admin.ModelAdmin):
     payment_mismatch_info.short_description = '계정 일치성 상세 정보'
 
     def get_queryset(self, request):
-        """관련 정보를 함께 로드"""
-        return super().get_queryset(request).select_related(
+        """관련 정보를 함께 로드 및 RLS 필터링"""
+        qs = super().get_queryset(request).select_related(
             'accounting_entry__account',
             'contract',
             'project',
             'creator',
             'installment_order'
         )
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_accessible_project_ids(request.user, 'payment.read')
+        return qs.filter(project_id__in=accessible_projects)
 
     actions = ['fix_payment_mismatch', 'mark_as_mismatch']
 
