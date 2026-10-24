@@ -17,6 +17,14 @@ class SalesBillIssueSerializer(serializers.ModelSerializer):
                   'bank_account2', 'bank_number2', 'bank_host2', 'zipcode', 'address1',
                   'address2', 'address3', 'title', 'content', 'creator', 'updated')
 
+    def validate(self, attrs):
+        order = attrs.get('now_payment_order', getattr(self.instance, 'now_payment_order', None))
+        project = attrs.get('project', getattr(self.instance, 'project', None))
+        if order and project:
+            if order.project_id != project.id:
+                raise serializers.ValidationError({'now_payment_order': '현재 발행회차(now_payment_order)는 해당 프로젝트에 속해야 합니다.'})
+        return attrs
+
 
 # Backward compatibility alias
 SallesBillIssueSerializer = SalesBillIssueSerializer

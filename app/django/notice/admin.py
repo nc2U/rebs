@@ -1,6 +1,7 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
 
+from apiV1.views.notice import get_accessible_project_ids
 from .models import (
     SalesBillIssue, RegisteredSenderNumber, MessageTemplate, MessageSendHistory,
     EmailNotice, EmailSendLog
@@ -11,6 +12,13 @@ from .models import (
 class SalesBillIssueAdmin(admin.ModelAdmin):
     list_display = ('project', 'now_payment_order', 'host_name', 'host_tel', 'agency', 'agency_tel')
     list_select_related = ('project', 'now_payment_order')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_accessible_project_ids(request.user, 'notice.read')
+        return qs.filter(project_id__in=accessible_projects)
 
 
 @admin.register(RegisteredSenderNumber)
@@ -38,6 +46,13 @@ class MessageSendHistoryAdmin(ImportExportMixin, admin.ModelAdmin):
     search_fields = ('title', 'message_content')
     list_select_related = ('project', 'sent_by')
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_accessible_project_ids(request.user, 'notice.read')
+        return qs.filter(project_id__in=accessible_projects)
+
 
 @admin.register(EmailNotice)
 class EmailNoticeAdmin(admin.ModelAdmin):
@@ -48,6 +63,13 @@ class EmailNoticeAdmin(admin.ModelAdmin):
     list_select_related = ('project', 'sent_by')
     readonly_fields = ('total_recipients', 'success_count', 'fail_count', 'status', 'created', 'completed_at')
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_accessible_project_ids(request.user, 'notice.read')
+        return qs.filter(project_id__in=accessible_projects)
+
 
 @admin.register(EmailSendLog)
 class EmailSendLogAdmin(admin.ModelAdmin):
@@ -55,5 +77,12 @@ class EmailSendLogAdmin(admin.ModelAdmin):
                     'recipient_email', 'unit_info', 'status', 'sent_at')
     list_filter = ('status', 'email_notice__project')
     search_fields = ('recipient_name', 'recipient_email', 'unit_info')
-    list_select_related = ('email_notice', 'contractor')
+    list_select_related = ('email_notice__project', 'contractor')
     readonly_fields = ('sent_at',)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_accessible_project_ids(request.user, 'notice.read')
+        return qs.filter(email_notice__project_id__in=accessible_projects)

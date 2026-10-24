@@ -1,14 +1,20 @@
 from unittest.mock import patch
+from django.contrib.admin.sites import AdminSite
 from django.contrib.auth import get_user_model
-from django.test import TestCase, Client
+from django.core.exceptions import ValidationError
+from django.test import TestCase, Client, RequestFactory
 from django.urls import reverse
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from apiV1.serializers.notice import SalesBillIssueSerializer
 from company.models import Company
 from contract.models import Contract, Contractor, ContractorContact, ContractorAddress, OrderGroup
 from items.models import UnitType
+from notice.admin import (
+    SalesBillIssueAdmin, MessageSendHistoryAdmin, EmailNoticeAdmin, EmailSendLogAdmin
+)
 from notice.models import (
     SalesBillIssue, MessageSendHistory, RegisteredSenderNumber, MessageTemplate,
     EmailNotice, EmailSendLog
@@ -142,6 +148,15 @@ class NoticeAppSecurityTests(TestCase):
         )
         self.bill_b = SalesBillIssue.objects.create(
             project=self.project_b,
+            host_name='시행사B',
+            host_tel='02-3333-4444',
+            bank_account1='신한은행',
+            bank_number1='987-654-321',
+            bank_host1='시행사B',
+            zipcode='06200',
+            address1='서울시 서초구',
+            title='수납 고지서 B',
+            content='납부 바랍니다 B.',
             creator=self.admin_user
         )
 
@@ -375,15 +390,31 @@ class NoticeAppSecurityTests(TestCase):
 
     @patch('weasyprint.HTML.write_pdf')
     def test_pdf_export_bill(self, mock_write_pdf):
-        """고지서 PDF 내보내기 뷰 응답 및 예외 처리 검증"""
+        """고지서 PDF 내보내기 뷰 응답, 예외 처리 및 프로젝트 RLS 차단 검증"""
         mock_write_pdf.return_value = b'%PDF-1.4 dummy pdf'
 
-        # 정상 요청
         url_ok = reverse('pdf:bill') + f'?project={self.project_a.pk}&seq={self.contract_a.pk}'
+
+        # 1. 미인증 요청 시 302 리다이렉트 (login_required)
+        res_unauth = self.client.get(url_ok)
+        self.assertEqual(res_unauth.status_code, 302)
+
+        # 2. 비인가 사용자 (User B는 Project A 권한 없음) 접근 시 403 Forbidden
+        self.client.force_login(self.user_b)
+        res_forbidden = self.client.get(url_ok)
+        self.assertEqual(res_forbidden.status_code, 403)
+
+        # 3. 인가 사용자 (User A) 정상 요청 (200 OK)
+        self.client.force_login(self.user_a)
         res_ok = self.client.get(url_ok)
         self.assertEqual(res_ok.status_code, 200)
         self.assertEqual(res_ok['Content-Type'], 'application/pdf')
         self.assertEqual(res_ok.content, b'%PDF-1.4 dummy pdf')
+
+        # 4. 슈퍼유저 정상 요청 (200 OK)
+        self.client.force_login(self.admin_user)
+        res_admin = self.client.get(url_ok)
+        self.assertEqual(res_admin.status_code, 200)
 
         # seq 미전달 시 400 Bad Request
         url_no_seq = reverse('pdf:bill') + f'?project={self.project_a.pk}'
@@ -394,3 +425,97 @@ class NoticeAppSecurityTests(TestCase):
         url_no_bill = reverse('pdf:bill') + f'?project=999999&seq={self.contract_a.pk}'
         res_no_bill = self.client.get(url_no_bill)
         self.assertEqual(res_no_bill.status_code, 404)
+
+    def test_sales_bill_issue_clean_mismatch_project(self):
+        """SalesBillIssue clean() 시 now_payment_order와 project 불일치 방어 검증"""
+        order_b = InstallmentPaymentOrder.objects.create(
+            project=self.project_b,
+            pay_sort='1',
+            pay_code=1,
+            pay_time=1,
+            pay_name='1차 계약금',
+            pay_due_date='2026-06-30'
+        )
+        invalid_bill = SalesBillIssue(
+            project=self.project_a,
+            now_payment_order=order_b,
+            creator=self.admin_user
+        )
+        with self.assertRaises(ValidationError):
+            invalid_bill.clean()
+
+    def test_sales_bill_issue_serializer_mismatch_project(self):
+        """SalesBillIssueSerializer validate() 시 order와 project 불일치 방어 검증"""
+        order_b = InstallmentPaymentOrder.objects.create(
+            project=self.project_b,
+            pay_sort='1',
+            pay_code=1,
+            pay_time=1,
+            pay_name='1차 계약금',
+            pay_due_date='2026-06-30'
+        )
+        serializer = SalesBillIssueSerializer(
+            instance=self.bill_a,
+            data={'now_payment_order': order_b.pk},
+            partial=True
+        )
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('now_payment_order', serializer.errors)
+
+    def test_email_send_log_clean_mismatch_contractor(self):
+        """EmailSendLog clean() 시 contractor와 email_notice 프로젝트 불일치 방어 검증"""
+        notice_b = EmailNotice.objects.create(
+            project=self.project_b,
+            title='공지 B',
+            content='내용',
+            sent_by=self.admin_user
+        )
+        invalid_log = EmailSendLog(
+            email_notice=notice_b,
+            contractor=self.contractor_a,
+            recipient_name='홍길동',
+            recipient_email='hong@test.com'
+        )
+        with self.assertRaises(ValidationError):
+            invalid_log.clean()
+
+    def test_message_send_without_project_forbidden_for_non_superuser(self):
+        """비슈퍼유저가 project 누락 시 메시지 발송 차단(400 Bad Request) 검증"""
+        self.client.force_authenticate(user=self.user_a)
+        payload = {
+            'sender_number': '02-1234-5678',
+            'message': '프로젝트 없는 발송 시도',
+            'recipients': ['010-1234-5678']
+        }
+        res_sms = self.client.post('/api/v1/messages/send-sms/', payload, format='json')
+        self.assertEqual(res_sms.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('error', res_sms.data)
+
+        res_kakao = self.client.post('/api/v1/messages/send-kakao/', payload, format='json')
+        self.assertEqual(res_kakao.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('error', res_kakao.data)
+
+    def test_admin_query_rls_filtering(self):
+        """Admin 클래스별 get_queryset RLS 필터링 검증"""
+        factory = RequestFactory()
+        site = AdminSite()
+
+        # SalesBillIssueAdmin
+        bill_admin = SalesBillIssueAdmin(SalesBillIssue, site)
+        req_a = factory.get('/admin/notice/salesbillissue/')
+        req_a.user = self.user_a
+        qs_a = bill_admin.get_queryset(req_a)
+        self.assertIn(self.bill_a, qs_a)
+        self.assertNotIn(self.bill_b, qs_a)
+
+        req_admin = factory.get('/admin/notice/salesbillissue/')
+        req_admin.user = self.admin_user
+        qs_admin = bill_admin.get_queryset(req_admin)
+        self.assertIn(self.bill_a, qs_admin)
+        self.assertIn(self.bill_b, qs_admin)
+
+        # MessageSendHistoryAdmin
+        msg_admin = MessageSendHistoryAdmin(MessageSendHistory, site)
+        qs_msg_a = msg_admin.get_queryset(req_a)
+        self.assertIn(self.history_a, qs_msg_a)
+        self.assertNotIn(self.history_b, qs_msg_a)

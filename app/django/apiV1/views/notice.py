@@ -31,8 +31,10 @@ from ..serializers.notice import (
 
 
 
-def get_accessible_project_ids(user):
-    return IssueProject.objects.filter(members__user=user).values_list('project__id', flat=True)
+def get_accessible_project_ids(user, required_perm: str = 'notice.read'):
+    """[RLS] 사용자가 특정 권한(기본: notice.read)을 보유한 프로젝트 ID 목록 반환"""
+    from apiV1.permissions._utils import get_project_ids_with_permission
+    return get_project_ids_with_permission(user, required_perm)
 
 
 class BillIssueViewSet(viewsets.ModelViewSet):
@@ -53,21 +55,42 @@ class BillIssueViewSet(viewsets.ModelViewSet):
         return 'notice.read' if self.action in ('list', 'retrieve') else 'notice.create' if self.action == 'create' else 'notice.update' if self.action in ('update', 'partial_update') else 'notice.delete' if self.action == 'destroy' else 'notice.read'
 
     def perform_create(self, serializer):
-        serializer.save(creator=self.request.user)
+        user = self.request.user
+        project = serializer.validated_data.get('project')
+        if project and not (user.is_superuser or getattr(user, 'work_manager', False)):
+            accessible = get_accessible_project_ids(user, 'notice.create')
+            if project.id not in accessible:
+                raise permissions.exceptions.PermissionDenied('해당 프로젝트의 고지서 생성 권한이 없습니다.')
+        serializer.save(creator=user)
 
 
 class RegisteredSenderNumberViewSet(viewsets.ModelViewSet):
     """등록된 발신번호 관리 ViewSet"""
     queryset = RegisteredSenderNumber.objects.filter(is_active=True)
     serializer_class = RegisteredSenderNumberSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
 
     def get_queryset(self):
         """활성화된 발신번호만 조회"""
         return RegisteredSenderNumber.objects.filter(is_active=True).order_by('-created_at')
 
+    def check_manage_permission(self):
+        user = self.request.user
+        if not (user.is_superuser or getattr(user, 'work_manager', False)):
+            if not get_accessible_project_ids(user, 'notice.manage') and not get_accessible_project_ids(user, 'notice.create'):
+                raise permissions.exceptions.PermissionDenied('발신번호 관리 권한이 없습니다.')
+
+    def perform_create(self, serializer):
+        self.check_manage_permission()
+        serializer.save()
+
+    def perform_update(self, serializer):
+        self.check_manage_permission()
+        serializer.save()
+
     def destroy(self, request, *args, **kwargs):
         """삭제 대신 비활성화"""
+        self.check_manage_permission()
         instance = self.get_object()
         instance.is_active = False
         instance.save()
@@ -78,18 +101,30 @@ class MessageTemplateViewSet(viewsets.ModelViewSet):
     """메시지 템플릿 관리 ViewSet"""
     queryset = MessageTemplate.objects.filter(is_active=True).select_related('created_by')
     serializer_class = MessageTemplateSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly)
 
     def get_queryset(self):
         """활성화된 템플릿만 조회"""
         return MessageTemplate.objects.filter(is_active=True).select_related('created_by').order_by('-created_at')
 
+    def check_manage_permission(self):
+        user = self.request.user
+        if not (user.is_superuser or getattr(user, 'work_manager', False)):
+            if not get_accessible_project_ids(user, 'notice.manage') and not get_accessible_project_ids(user, 'notice.create'):
+                raise permissions.exceptions.PermissionDenied('메시지 템플릿 관리 권한이 없습니다.')
+
     def perform_create(self, serializer):
         """템플릿 생성 시 현재 사용자 저장"""
+        self.check_manage_permission()
         serializer.save(created_by=self.request.user)
+
+    def perform_update(self, serializer):
+        self.check_manage_permission()
+        serializer.save()
 
     def destroy(self, request, *args, **kwargs):
         """삭제 대신 비활성화"""
+        self.check_manage_permission()
         instance = self.get_object()
         instance.is_active = False
         instance.save()
@@ -106,8 +141,10 @@ class MessageViewSet(viewsets.ViewSet):
         """SMS/LMS 메시지 발송"""
         # 프로젝트 권한 검증
         project_id = request.data.get('project')
-        if project_id and not (request.user.is_superuser or getattr(request.user, 'work_manager', False)):
-            accessible_projects = list(get_accessible_project_ids(request.user))
+        if not (request.user.is_superuser or getattr(request.user, 'work_manager', False)):
+            if not project_id:
+                return Response({'error': '프로젝트를 지정해야 합니다.'}, status=status.HTTP_400_BAD_REQUEST)
+            accessible_projects = list(get_accessible_project_ids(request.user, 'notice.create'))
             try:
                 p_id_int = int(project_id)
             except (ValueError, TypeError):
@@ -183,40 +220,8 @@ class MessageViewSet(viewsets.ViewSet):
                                 datetime.combine(schedule_date, schedule_time)
                             )
 
-                        # 실제 발송 시간 (company_id가 있으면 API에서 가져오기, 없으면 현재 시간)
+                        # 실제 발송 시간 (동기 요청 블로킹 방지를 위해 현재 시간으로 기록)
                         actual_sent_at = timezone.now()
-
-                        if company_id:
-                            # company_id가 있으면 발송 내역 조회로 실제 발송 시간 확인
-                            time.sleep(2.5)  # iwinv API 처리 대기
-
-                            from datetime import date
-                            today = date.today()
-                            history_result = sms_service.get_send_history(
-                                company_id=company_id,
-                                start_date=today.strftime('%Y-%m-%d'),
-                                end_date=today.strftime('%Y-%m-%d'),
-                                request_no=request_no,
-                                page_num=1,
-                                page_size=10
-                            )
-
-                            if history_result.get('resultCode') == 0 and history_result.get('list'):
-                                records = [item for item in history_result['list'] if
-                                           item.get('requestNo') == request_no]
-                                send_result = next(
-                                    (item for item in records if item.get('sendStatusCode') not in ['WAIT', 'FAIL']),
-                                    records[0] if records else None)
-
-                                if send_result:
-                                    # sendDate 파싱
-                                    send_date_str = send_result.get('sendDate')
-                                    if send_date_str:
-                                        try:
-                                            actual_sent_at = datetime.strptime(send_date_str, '%Y-%m-%d %H:%M:%S')
-                                            actual_sent_at = timezone.make_aware(actual_sent_at)
-                                        except ValueError:
-                                            pass
 
                         # 히스토리 저장 (resultCode=0이면 성공으로 간주)
                         MessageSendHistory.objects.create(
@@ -268,8 +273,10 @@ class MessageViewSet(viewsets.ViewSet):
         """MMS 메시지 발송"""
         # 프로젝트 권한 검증
         project_id = request.data.get('project')
-        if project_id and not (request.user.is_superuser or getattr(request.user, 'work_manager', False)):
-            accessible_projects = list(get_accessible_project_ids(request.user))
+        if not (request.user.is_superuser or getattr(request.user, 'work_manager', False)):
+            if not project_id:
+                return Response({'error': '프로젝트를 지정해야 합니다.'}, status=status.HTTP_400_BAD_REQUEST)
+            accessible_projects = list(get_accessible_project_ids(request.user, 'notice.create'))
             try:
                 p_id_int = int(project_id)
             except (ValueError, TypeError):
@@ -326,40 +333,8 @@ class MessageViewSet(viewsets.ViewSet):
                                 datetime.combine(schedule_date, schedule_time)
                             )
 
-                        # 실제 발송 시간 (company_id가 있으면 API에서 가져오기, 없으면 현재 시간)
+                        # 실제 발송 시간 (동기 요청 블로킹 방지를 위해 현재 시간으로 기록)
                         actual_sent_at = timezone.now()
-
-                        if company_id:
-                            # company_id가 있으면 발송 내역 조회로 실제 발송 시간 확인
-                            time.sleep(2.5)  # iwinv API 처리 대기
-
-                            from datetime import date
-                            today = date.today()
-                            history_result = sms_service.get_send_history(
-                                company_id=company_id,
-                                start_date=today.strftime('%Y-%m-%d'),
-                                end_date=today.strftime('%Y-%m-%d'),
-                                request_no=request_no,
-                                page_num=1,
-                                page_size=10
-                            )
-
-                            if history_result.get('resultCode') == 0 and history_result.get('list'):
-                                records = [item for item in history_result['list'] if
-                                           item.get('requestNo') == request_no]
-                                send_result = next(
-                                    (item for item in records if item.get('sendStatusCode') not in ['WAIT', 'FAIL']),
-                                    records[0] if records else None)
-
-                                if send_result:
-                                    # sendDate 파싱
-                                    send_date_str = send_result.get('sendDate')
-                                    if send_date_str:
-                                        try:
-                                            actual_sent_at = datetime.strptime(send_date_str, '%Y-%m-%d %H:%M:%S')
-                                            actual_sent_at = timezone.make_aware(actual_sent_at)
-                                        except ValueError:
-                                            pass
 
                         # 히스토리 저장 (resultCode=0이면 성공으로 간주)
                         MessageSendHistory.objects.create(
@@ -413,8 +388,10 @@ class MessageViewSet(viewsets.ViewSet):
         """카카오 알림톡 발송"""
         # 프로젝트 권한 검증
         project_id = request.data.get('project')
-        if project_id and not (request.user.is_superuser or getattr(request.user, 'work_manager', False)):
-            accessible_projects = list(get_accessible_project_ids(request.user))
+        if not (request.user.is_superuser or getattr(request.user, 'work_manager', False)):
+            if not project_id:
+                return Response({'error': '프로젝트를 지정해야 합니다.'}, status=status.HTTP_400_BAD_REQUEST)
+            accessible_projects = list(get_accessible_project_ids(request.user, 'notice.create'))
             try:
                 p_id_int = int(project_id)
             except (ValueError, TypeError):
@@ -546,6 +523,11 @@ class MessageViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['get'], url_path='send-history')
     def get_send_history(self, request):
         """전송 내역 조회"""
+        if not (request.user.is_superuser or getattr(request.user, 'work_manager', False)):
+            accessible_projects = get_accessible_project_ids(request.user, 'notice.read')
+            if not accessible_projects.exists():
+                return Response({'error': '조회 권한이 없습니다.'}, status=status.HTTP_403_FORBIDDEN)
+
         serializer = SMSHistoryQuerySerializer(data=request.query_params)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -610,6 +592,11 @@ class MessageViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['get'], url_path='balance')
     def get_balance(self, request):
         """잔액 조회"""
+        if not (request.user.is_superuser or getattr(request.user, 'work_manager', False)):
+            accessible_projects = get_accessible_project_ids(request.user, 'notice.read')
+            if not accessible_projects.exists():
+                return Response({'error': '조회 권한이 없습니다.'}, status=status.HTTP_403_FORBIDDEN)
+
         try:
             # iwinv SMS 서비스 초기화
             sms_service = IwinvSMSService()

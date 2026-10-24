@@ -25,6 +25,17 @@ class PdfExportBill(View):
         :return:
         """
         project = request.GET.get('project')  # 프로젝트 ID
+        user = request.user
+        if not (user.is_superuser or getattr(user, 'work_manager', False)):
+            from apiV1.permissions._utils import get_project_ids_with_permission
+            accessible_projects = get_project_ids_with_permission(user, 'notice.read')
+            try:
+                p_id_int = int(project) if project else None
+            except (ValueError, TypeError):
+                p_id_int = None
+            if p_id_int not in accessible_projects:
+                return HttpResponse('해당 프로젝트의 고지서 출력 권한이 없습니다.', status=403, content_type='text/plain; charset=utf-8')
+
         pub_date = request.GET.get('date')
         pub_date = datetime.strptime(pub_date, '%Y-%m-%d').date() if pub_date else date.today()
         bill_info = SalesBillIssue.objects.filter(project_id=project).first()
@@ -38,19 +49,24 @@ class PdfExportBill(View):
             'pub_date': pub_date,
             'bill_info': bill_info
         }  # 전체 데이터 딕셔너리
-        payment_orders = InstallmentPaymentOrder.objects.filter(project=project)  # 전체 납부회차 리스트
+        payment_orders = InstallmentPaymentOrder.objects.filter(project_id=project)  # 전체 납부회차 리스트
         now_due_order = bill_info.now_payment_order.pay_code if bill_info.now_payment_order else 2  # 당회 납부 회차
 
         contractor_list = [c for c in request.GET.get('seq', '').split('-') if c]  # 계약 건 ID 리스트
         if not contractor_list:
             return HttpResponse('고지서 발행 대상 계약 건이 지정되지 않았습니다.', status=400, content_type='text/plain; charset=utf-8')
 
-        # 해당 계약건에 대한 데이터 정리 --------------------------------------- start
-        context['data_list'] = (self.get_bill_data(cont_id,
-                                                   payment_orders,
-                                                   now_due_order, pub_date, np, nl) for cont_id in contractor_list)
+        # 해당 계약건에 대한 데이터 정리 (리스트로 구체화하여 템플릿 다중 순회 보장 및 프로젝트 격리)
+        data_list = []
+        for cont_id in contractor_list:
+            b_data = self.get_bill_data(cont_id, payment_orders, now_due_order, pub_date, np, nl)
+            if b_data and getattr(b_data.get('contract'), 'project_id', None) == bill_info.project_id:
+                data_list.append(b_data)
 
-        # 해당 계약건에 대한 데이터 정리 --------------------------------------- end
+        if not data_list:
+            return HttpResponse('출력 가능한 계약 건 데이터가 없습니다.', status=400, content_type='text/plain; charset=utf-8')
+
+        context['data_list'] = data_list
 
         html_string = render_to_string('pdf/bill_control.html', context)
         html = HTML(string=html_string)

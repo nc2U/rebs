@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 
 
@@ -32,6 +33,16 @@ class SalesBillIssue(models.Model):
 
     def __str__(self):
         return f'{self.project}-고지서 정보'
+
+    def clean(self):
+        super().clean()
+        if self.now_payment_order_id and self.project_id:
+            if self.now_payment_order.project_id != self.project_id:
+                raise ValidationError({'now_payment_order': '현재 발행회차의 프로젝트와 고지서의 프로젝트가 일치하지 않습니다.'})
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
 
 class RegisteredSenderNumber(models.Model):
@@ -193,4 +204,11 @@ class EmailSendLog(models.Model):
 
     def __str__(self):
         return f'{self.recipient_name}({self.recipient_email}) - {self.get_status_display()}'
+
+    def clean(self):
+        super().clean()
+        if self.contractor_id and self.email_notice_id:
+            contractor_project_id = getattr(getattr(self.contractor, 'contract', None), 'project_id', None)
+            if contractor_project_id and contractor_project_id != self.email_notice.project_id:
+                raise ValidationError({'contractor': '계약자의 프로젝트와 이메일 공지의 프로젝트가 일치하지 않습니다.'})
 
