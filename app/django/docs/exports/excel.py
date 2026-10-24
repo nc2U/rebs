@@ -1,6 +1,7 @@
 import datetime
 
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
 
 from _excel.mixins import ExcelExportMixin
 from company.models import Company
@@ -27,11 +28,26 @@ class ExportSuitCases(ExcelExportMixin):
         # 포맷 생성
         title_format = self.create_title_format(workbook)
         h_format = self.create_header_format(workbook)
-        body_format = {
+
+        # 사전 포맷 생성 (루프 내 중복 생성 방지)
+        center_format = workbook.add_format({
             'border': True,
+            'align': 'center',
             'valign': 'vcenter',
             'num_format': '#,##0'
-        }
+        })
+        date_format = workbook.add_format({
+            'border': True,
+            'align': 'center',
+            'valign': 'vcenter',
+            'num_format': 'yyyy-mm-dd'
+        })
+        left_format = workbook.add_format({
+            'border': True,
+            'align': 'left',
+            'valign': 'vcenter',
+            'num_format': '#,##0'
+        })
 
         # title_list
         header_src = [[],
@@ -117,14 +133,15 @@ class ExportSuitCases(ExcelExportMixin):
                 Q(case_end_date__icontains=search) |
                 Q(summary__icontains=search))
 
-        data = obj_list.values_list(*params)
+        data = list(obj_list.values_list(*params))
 
-        # Turn off some of the warnings:
-        # worksheet.ignore_errors({'number_stored_as_text': 'F:G'})
-
-        def get_related_case(pk):
-            rs_case = LawsuitCase.objects.get(pk=pk)
-            return rs_case.case_number
+        # 관련 사건(related_case) ID 수집 및 사전 맵핑 (N+1 쿼리 제거)
+        # params index 2 = 'related_case'
+        related_case_ids = [row[2] for row in data if row[2]]
+        related_dict = (
+            dict(LawsuitCase.objects.filter(id__in=related_case_ids).values_list('id', 'case_number'))
+            if related_case_ids else {}
+        )
 
         sort_dict = dict(LawsuitCase.SORT_CHOICES)
         level_dict = dict(LawsuitCase.LEVEL_CHOICES)
@@ -141,21 +158,17 @@ class ExportSuitCases(ExcelExportMixin):
                 elif col_num == 2:
                     cell_data = level_dict.get(cell_data, cell_data or '')
                 elif col_num == 3:
-                    cell_data = get_related_case(cell_data) if cell_data else ''
+                    cell_data = related_dict.get(cell_data, '') if cell_data else ''
                 elif col_num == 5:
                     cell_data = court_dict.get(cell_data, cell_data or '') if cell_data else ''
-                if col_num < 6 or col_num in (15, 16):
-                    if col_num in (15, 16):
-                        body_format['num_format'] = 'yyyy-mm-dd'
-                    else:
-                        body_format['num_format'] = '#,##0'
-                    body_format['align'] = 'center'
-                    bformat = workbook.add_format(body_format)
-                    worksheet.write(row_num, col_num, cell_data, bformat)
+
+                if col_num in (15, 16):
+                    bformat = date_format
+                elif col_num < 6:
+                    bformat = center_format
                 else:
-                    body_format['align'] = 'left'
-                    bformat = workbook.add_format(body_format)
-                    worksheet.write(row_num, col_num, cell_data, bformat)
+                    bformat = left_format
+                worksheet.write(row_num, col_num, cell_data, bformat)
 
         # data finish -------------------------------------------- #
 
@@ -166,7 +179,7 @@ class ExportSuitCases(ExcelExportMixin):
         output.seek(0)
 
         # Set up the Http response.
-        filename = request.GET.get('filename') or 'successions'
+        filename = request.GET.get('filename') or 'lawsuit_cases'
         filename = f'{filename}-{TODAY}'
         return self.create_response(output, workbook, filename)
 
@@ -179,7 +192,7 @@ class ExportSuitCase(ExcelExportMixin):
         output, workbook, worksheet = self.create_workbook('소송_사건', False, 25)
 
         # data start --------------------------------------------- #
-        obj = LawsuitCase.objects.get(pk=request.GET.get('pk'))
+        obj = get_object_or_404(LawsuitCase, pk=request.GET.get('pk'))
 
         # 포맷 생성
         title_format = self.create_title_format(workbook)
@@ -281,6 +294,6 @@ class ExportSuitCase(ExcelExportMixin):
         output.seek(0)
 
         # Set up the Http response.
-        filename = request.GET.get('filename') or 'suitcase'
+        filename = request.GET.get('filename') or 'lawsuit_case'
         filename = f'{filename}-{TODAY}'
         return self.create_response(output, workbook, filename)

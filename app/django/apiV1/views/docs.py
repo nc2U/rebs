@@ -1,5 +1,6 @@
 import logging
 
+from django.db import transaction
 from django.db.models import F, Q
 from django.http import FileResponse
 from django.utils import timezone
@@ -300,7 +301,7 @@ class LinkViewSet(viewsets.ModelViewSet):
 
         from work.models import IssueProject
         from company.models import StaffAssignment
-        accessible_projects = IssueProject.objects.filter(members__user=user)
+        accessible_projects = IssueProject.objects.filter(Q(is_public=True) | Q(members__user=user))
         user_dept_ids = StaffAssignment.objects.filter(
             staff__user=user, department__isnull=False
         ).values_list('department_id', flat=True)
@@ -351,7 +352,7 @@ class FileViewSet(viewsets.ModelViewSet):
 
         from work.models import IssueProject
         from company.models import StaffAssignment
-        accessible_projects = IssueProject.objects.filter(members__user=user)
+        accessible_projects = IssueProject.objects.filter(Q(is_public=True) | Q(members__user=user))
         user_dept_ids = StaffAssignment.objects.filter(
             staff__user=user, department__isnull=False
         ).values_list('department_id', flat=True)
@@ -396,7 +397,7 @@ class ImageViewSet(viewsets.ModelViewSet):
 
         from work.models import IssueProject
         from company.models import StaffAssignment
-        accessible_projects = IssueProject.objects.filter(members__user=user)
+        accessible_projects = IssueProject.objects.filter(Q(is_public=True) | Q(members__user=user))
         user_dept_ids = StaffAssignment.objects.filter(
             staff__user=user, department__isnull=False
         ).values_list('department_id', flat=True)
@@ -474,7 +475,7 @@ class OfficialLetterFilterSet(FilterSet):
 
 class OfficialLetterViewSet(viewsets.ModelViewSet):
     queryset = OfficialLetter.objects.select_related(
-        'company', 'seal', 'creator', 'updator', 'approval_document'
+        'company', 'seal', 'co_seal', 'creator', 'updator', 'approval_document', 'parent_inbound_letter'
     ).prefetch_related('attachments')
     serializer_class = OfficialLetterSerializer
     permission_classes = (permissions.IsAuthenticated, IsStaffOrReadOnly, HqProjectModulePermission)
@@ -685,6 +686,7 @@ class OfficialLetterViewSet(viewsets.ModelViewSet):
                             status=status.HTTP_404_NOT_FOUND)
 
     @action(detail=True, methods=['post'])
+    @transaction.atomic
     def submit_approval(self, request, pk=None):
         """공문을 전자결재(ApprovalDocument)로 상신"""
         from approval.models import ApprovalDocument, DocumentType, ApprovalStep
@@ -935,6 +937,7 @@ class InboundLetterViewSet(viewsets.ModelViewSet):
                             status=status.HTTP_404_NOT_FOUND)
 
     @action(detail=True, methods=['post'])
+    @transaction.atomic
     def submit_approval(self, request, pk=None):
         """수신 공문을 전자결재(ApprovalDocument)로 상신"""
         from approval.models import ApprovalDocument, DocumentType, ApprovalStep, ApprovalAttachment

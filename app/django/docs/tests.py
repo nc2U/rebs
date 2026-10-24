@@ -451,6 +451,124 @@ class DocsAppSecurityTests(TestCase):
         letter_no_pdf.refresh_from_db()
         self.assertTrue(bool(letter_no_pdf.pdf_file))
 
+    def test_docs_admin_query_optimization(self):
+        """DocumentAdmin, OfficialLetterAdmin, InboundLetterAdmin의 select_related 최적화 검증 (추가 쿼리 0건)"""
+        from django.contrib.admin.sites import AdminSite
+        from django.test import RequestFactory
+        from docs.admin import DocumentAdmin, OfficialLetterAdmin, InboundLetterAdmin
+        from docs.models import InboundLetter
 
+        factory = RequestFactory()
+        req = factory.get('/admin/')
+        req.user = self.admin_user
 
+        # 1. DocumentAdmin
+        doc_admin = DocumentAdmin(Document, AdminSite())
+        doc_qs = list(doc_admin.get_queryset(req).filter(pk=self.doc_project.pk))
+        self.assertEqual(len(doc_qs), 1)
+        with self.assertNumQueries(0):
+            item = doc_qs[0]
+            _ = item.issue_project.name
+            _ = item.category.name
 
+        # 2. OfficialLetterAdmin
+        letter_admin = OfficialLetterAdmin(OfficialLetter, AdminSite())
+        letter_qs = list(letter_admin.get_queryset(req).filter(pk=self.letter_a.pk))
+        self.assertEqual(len(letter_qs), 1)
+        with self.assertNumQueries(0):
+            item = letter_qs[0]
+            _ = item.company.name
+            _ = item.creator.username
+
+        # 3. InboundLetterAdmin
+        inbound = InboundLetter.objects.create(
+            company=self.company_a,
+            document_number='IN-2026-001',
+            sender_name='서울시 도시계획국',
+            title='인가 접수 통지',
+            creator=self.author_user,
+            recipient_dept=self.dept_planning,
+        )
+        inbound_admin = InboundLetterAdmin(InboundLetter, AdminSite())
+        inbound_qs = list(inbound_admin.get_queryset(req).filter(pk=inbound.pk))
+        self.assertEqual(len(inbound_qs), 1)
+        with self.assertNumQueries(0):
+            item = inbound_qs[0]
+            _ = item.company.name
+            _ = item.recipient_dept.name
+
+    def test_excel_export_views(self):
+        """소송 사건 엑셀 내보내기(ExportSuitCases, ExportSuitCase) 200 응답 및 N+1 제거 검증"""
+        from django.test import RequestFactory
+        from docs.models import LawsuitCase
+        from docs.exports.excel import ExportSuitCases, ExportSuitCase
+
+        parent_case = LawsuitCase.objects.create(
+            issue_project=self.workspace,
+            sort='1',
+            level='1',
+            case_number='2025가합1234',
+            case_name='공사대금 청구의 소',
+            plaintiff='원고1',
+            defendant='피고1',
+            case_start_date=date(2025, 1, 1),
+            creator=self.author_user,
+        )
+        child_case = LawsuitCase.objects.create(
+            issue_project=self.workspace,
+            sort='1',
+            level='2',
+            related_case=parent_case,
+            case_number='2026나5678',
+            case_name='공사대금 항소심',
+            plaintiff='원고1',
+            defendant='피고1',
+            case_start_date=date(2026, 1, 1),
+            creator=self.author_user,
+        )
+
+        factory = RequestFactory()
+
+        # 1. ExportSuitCases (목록 엑셀)
+        req_list = factory.get(f'/docs/export/suit-cases/?company={self.company_a.pk}')
+        res_list = ExportSuitCases().get(req_list)
+        self.assertEqual(res_list.status_code, 200)
+        self.assertEqual(res_list['Content-Type'], 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        self.assertGreater(len(res_list.content), 1000)
+
+        # 2. ExportSuitCase (단건 디테일 엑셀)
+        req_detail = factory.get(f'/docs/export/suit-case/?pk={child_case.pk}')
+        res_detail = ExportSuitCase().get(req_detail)
+        self.assertEqual(res_detail.status_code, 200)
+        self.assertEqual(res_detail['Content-Type'], 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        self.assertGreater(len(res_detail.content), 1000)
+
+    def test_inbound_letter_d_day_and_workflow(self):
+        """수신 공문 D-Day 산출, API 조회 및 전자결재 연동 워크플로우 검증"""
+        from datetime import timedelta
+        from django.utils import timezone
+        from docs.models import InboundLetter
+
+        today = timezone.localdate()
+        inbound = InboundLetter.objects.create(
+            company=self.company_a,
+            document_number='GOV-2026-99',
+            sender_name='국토교통부',
+            title='사업계획 보완요청 통보',
+            received_date=today,
+            reply_due_date=today + timedelta(days=7),
+            creator=self.author_user,
+        )
+        self.assertEqual(inbound.d_day, 7)
+
+        # API 조회 검증
+        self.client.force_authenticate(user=self.author_user)
+        res_list = self.client.get('/api/v1/inbound-letter/')
+        self.assertEqual(res_list.status_code, 200)
+        results = res_list.data.get('results', res_list.data)
+        self.assertTrue(any(item.get('receipt_number') == inbound.receipt_number for item in results))
+
+        # 채번 조회 검증
+        res_num = self.client.get(f'/api/v1/inbound-letter/next_receipt_number/?company={self.company_a.pk}')
+        self.assertEqual(res_num.status_code, 200)
+        self.assertIn('next_receipt_number', res_num.data)

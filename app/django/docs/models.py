@@ -347,7 +347,7 @@ class OfficialLetter(models.Model):
     )
     sender_duty_title = models.CharField(
         '발신 명의 표기 직책', max_length=20, blank=True, default='',
-        help_text='예: 대표이사, 본부장, 현장소장 (단독/직접 발송 시 지정, 미지정 시 결재선/기본값 자동 산출)'
+        help_text='예: 대표이사, 본부장, 프로젝트 PM (단독/직접 발송 시 지정, 미지정 시 결재선/기본값 자동 산출)'
     )
     sender_name = models.CharField(
         '발신 명의 표기 성명', max_length=30, blank=True, default='',
@@ -365,7 +365,7 @@ class OfficialLetter(models.Model):
     drafter_position = models.CharField('기안/담당 직위', max_length=50, blank=True, default='')
     is_solo_approval = models.BooleanField(
         '승인(전결)권자 직접 기안 (담당 생략)', default=False,
-        help_text='대표이사, 현장소장, 본부장 등 최종 승인(전결)권자가 직접 기안하여 공문서 하단 담당자란을 생략하고 단독 결재로 처리하는 경우'
+        help_text='대표이사, 본부장, 프로젝트 PM 등 최종 승인(전결)권자가 직접 기안하여 공문서 하단 담당자란을 생략하고 단독 결재로 처리하는 경우'
     )
 
     recipient_address = models.CharField('수신처 주소', max_length=255, blank=True, default='')

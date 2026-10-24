@@ -552,7 +552,11 @@ class SimpleOfficialLetterSerializer(serializers.ModelSerializer):
                   'approval_status_desc', 'parent_inbound_letter', 'creator', 'created')
 
     def get_has_attachments(self, obj):
-        return bool(obj.attachment_text or obj.attachments.exists())
+        if obj.attachment_text:
+            return True
+        if hasattr(obj, '_prefetched_objects_cache') and 'attachments' in obj._prefetched_objects_cache:
+            return len(obj.attachments.all()) > 0
+        return obj.attachments.exists()
 
 
 # Inbound Official Letter (수신 공문) ----------------------------------------------------
@@ -675,5 +679,7 @@ class SimpleInboundLetterSerializer(serializers.ModelSerializer):
         return bool(obj.scan_file)
 
     def get_has_attachments(self, obj):
+        if hasattr(obj, '_prefetched_objects_cache') and 'attachments' in obj._prefetched_objects_cache:
+            return len(obj.attachments.all()) > 0
         return obj.attachments.exists()
 

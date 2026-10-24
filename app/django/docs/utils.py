@@ -52,12 +52,12 @@ def get_letter_approval_line(letter):
         if letter.seal and letter.seal.final_approval_duty:
             final_title = letter.seal.final_approval_duty.name
 
-        date_label = '시행' if letter.dispatched_at else ('전결' if final_title in ['현장소장', '소장', '본부장', '팀장'] else '승인')
+        date_label = '시행' if letter.dispatched_at else ('전결' if final_title in ['현장소장', '프로젝트 PM', '프로젝트PM', 'PM', '소장', '본부장', '팀장'] else '승인')
 
         # 승인권자 직무(전결직책)에 따른 최종 결재권자 성명 결정:
         # 1) 대표이사 결재인 경우: 회사 대표이사 성명 우선
-        # 2) 현장소장/본부장 등 전결인 경우: 전결권자 직접 기안 시 기안자 성명이 곧 최종 결재권자 성명
-        if final_title in ['현장소장', '소장', '본부장', '팀장']:
+        # 2) 프로젝트 PM/본부장 등 전결인 경우: 전결권자 직접 기안 시 기안자 성명이 곧 최종 결재권자 성명
+        if final_title in ['현장소장', '프로젝트 PM', '프로젝트PM', 'PM', '소장', '본부장', '팀장']:
             final_person_name = clean_drafter_name or raw_drafter_name
         else:
             final_person_name = representative_name or clean_drafter_name
@@ -204,7 +204,7 @@ def get_letter_approval_line(letter):
                 is_solo = True
 
     date_label = '시행' if letter.dispatched_at else '승인'
-    if not letter.dispatched_at and final_approver_info.get('display_title') in ['현장소장', '소장', '본부장', '팀장']:
+    if not letter.dispatched_at and final_approver_info.get('display_title') in ['현장소장', '프로젝트 PM', '프로젝트PM', 'PM', '소장', '본부장', '팀장']:
         date_label = '전결'
 
     return {

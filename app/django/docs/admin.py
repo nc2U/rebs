@@ -3,7 +3,7 @@ from import_export.admin import ImportExportMixin
 
 from .models import (
     Category, LawsuitCase, Document, Link, File, Image,
-    LetterSequence, OfficialLetter,
+    LetterSequence, OfficialLetter, OfficialLetterAttachment,
     InboundSequence, InboundLetter, InboundLetterAttachment
 )
 
@@ -12,6 +12,7 @@ from .models import (
 class CategoryAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'doc_type', 'color', 'name', 'parent', 'order', 'active', 'default')
     list_display_links = ('name',)
+    list_select_related = ('parent',)
     list_editable = ('doc_type', 'color', 'parent', 'order', 'active', 'default')
     search_fields = ('name',)
     list_filter = ('doc_type',)
@@ -36,16 +37,21 @@ class ImageInline(admin.TabularInline):
 class DocumentAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'doc_type', 'issue_project', 'category', 'title', 'execution_date')
     list_display_links = ('title',)
+    list_select_related = ('issue_project', 'category')
     list_editable = ('doc_type', 'issue_project', 'category', 'execution_date')
     search_fields = ('title', 'description')
     list_filter = ('doc_type', 'issue_project__company', 'issue_project__project', 'issue_project', 'category')
     inlines = (LinkInline, FileInline, ImageInline)
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('issue_project', 'category')
 
 
 @admin.register(LawsuitCase)
 class LawsuitCaseAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'issue_project', 'sort', 'level', '__str__', 'plaintiff', 'defendant', 'case_start_date')
     list_display_links = ('__str__',)
+    list_select_related = ('issue_project',)
     list_editable = ('issue_project', 'sort', 'level', 'case_start_date',)
     list_filter = ('issue_project', 'sort', 'level')
     search_fields = ('case_number', 'case_name', 'plaintiff', 'defendant')
@@ -55,18 +61,26 @@ class LawsuitCaseAdmin(ImportExportMixin, admin.ModelAdmin):
 class LetterSequenceAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'company', 'year', 'last_sequence')
     list_display_links = ('company',)
+    list_select_related = ('company',)
     list_filter = ('company', 'year')
     search_fields = ('company__name',)
+
+
+class OfficialLetterAttachmentInline(admin.TabularInline):
+    model = OfficialLetterAttachment
+    extra = 1
 
 
 @admin.register(OfficialLetter)
 class OfficialLetterAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'document_number', 'company', 'title', 'recipient_name', 'issue_date', 'creator')
     list_display_links = ('document_number', 'title')
+    list_select_related = ('company', 'creator')
     list_filter = ('company', 'issue_date', 'creator')
     search_fields = ('document_number', 'title', 'recipient_name', 'drafter_name', 'content')
     readonly_fields = ('document_number', 'created', 'updated')
     date_hierarchy = 'issue_date'
+    inlines = (OfficialLetterAttachmentInline,)
     fieldsets = (
         ('기본 정보', {
             'fields': ('company', 'document_number', 'title', 'issue_date')
@@ -89,17 +103,20 @@ class OfficialLetterAdmin(ImportExportMixin, admin.ModelAdmin):
         }),
     )
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('company', 'creator')
+
 
 @admin.register(InboundSequence)
 class InboundSequenceAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'company', 'year', 'last_sequence')
     list_display_links = ('company',)
+    list_select_related = ('company',)
     list_filter = ('company', 'year')
     search_fields = ('company__name',)
 
 
 class InboundLetterAttachmentInline(admin.TabularInline):
-    from .models import InboundLetterAttachment
     model = InboundLetterAttachment
     extra = 1
 
@@ -108,9 +125,12 @@ class InboundLetterAttachmentInline(admin.TabularInline):
 class InboundLetterAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'receipt_number', 'document_number', 'company', 'sender_name', 'title', 'received_date', 'reply_due_date', 'status')
     list_display_links = ('receipt_number', 'title')
+    list_select_related = ('company', 'recipient_dept', 'recipient_manager')
     list_filter = ('company', 'status', 'received_date', 'recipient_dept')
     search_fields = ('receipt_number', 'document_number', 'sender_name', 'title', 'content')
     readonly_fields = ('receipt_number', 'created', 'updated')
     date_hierarchy = 'received_date'
     inlines = (InboundLetterAttachmentInline,)
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('company', 'recipient_dept', 'recipient_manager')
