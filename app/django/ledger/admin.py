@@ -13,10 +13,26 @@ from ledger.models import (
     CompanyLedgerCalculation, ProjectLedgerCalculation,
     BankApiCredential, RawBankTransaction,
 )
+from django.db.models import Q
 from ledger.resources import (
     CompanyBankTransactionResource, ProjectBankTransactionResource,
     CompanyAccountingEntryResource, ProjectAccountingEntryResource
 )
+from ledger.services.company_transaction import prefetch_company_transactions
+from ledger.services.project_transaction import prefetch_project_transactions
+
+
+def preload_bank_transactions(entries, model_cls):
+    """지정된 AccountingEntry 목록에 _related_transaction을 미리 매핑하여 N+1 방지"""
+    tx_ids = [e.transaction_id for e in entries if getattr(e, 'transaction_id', None)]
+    if not tx_ids:
+        return
+    tx_map = {
+        tx.transaction_id: tx
+        for tx in model_cls.objects.filter(transaction_id__in=tx_ids).select_related('sort')
+    }
+    for e in entries:
+        e._related_transaction = tx_map.get(e.transaction_id)
 
 
 # ============================================
@@ -259,6 +275,13 @@ class CompanyBankAccountAdmin(ImportExportMixin, admin.ModelAdmin):
     search_fields = ('alias_name', 'number', 'holder', 'note')
     ordering = ('order', 'id')
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        from apiV1.views.ledger import get_accessible_company_ids
+        return qs.filter(company_id__in=get_accessible_company_ids(request.user))
+
 
 @admin.register(ProjectBankAccount)
 class ProjectBankAccountAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -270,6 +293,13 @@ class ProjectBankAccountAdmin(ImportExportMixin, admin.ModelAdmin):
     list_filter = ('project', 'bankcode', 'holder', 'is_hide', 'inactive', 'directpay', 'is_imprest')
     search_fields = ('alias_name', 'number', 'holder', 'note', 'project__name')
     ordering = ('order', 'id')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        from apiV1.views.ledger import get_accessible_project_ids
+        return qs.filter(project_id__in=get_accessible_project_ids(request.user))
 
 
 # ============================================
@@ -324,6 +354,23 @@ class CompanyBankTransactionAdmin(AsyncImportExportMixin, admin.ModelAdmin):
         return mark_safe('<br>'.join(links) + '<br>' + add_link)
 
     related_accounting_entries.short_description = '연관 회계분개'
+
+    def changelist_view(self, request, extra_context=None):
+        response = super().changelist_view(request, extra_context=extra_context)
+        try:
+            cl = response.context_data.get('cl')
+            if cl and hasattr(cl, 'result_list'):
+                prefetch_company_transactions(cl.result_list)
+        except (AttributeError, KeyError):
+            pass
+        return response
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        from apiV1.views.ledger import get_accessible_company_ids
+        return qs.filter(company_id__in=get_accessible_company_ids(request.user))
 
     @admin.display(description='거래 ID')
     def transaction_id_short(self, obj):
@@ -427,6 +474,23 @@ class ProjectBankTransactionAdmin(AsyncImportExportMixin, admin.ModelAdmin):
         return mark_safe('<br>'.join(links) + '<br>' + add_link)
 
     related_accounting_entries.short_description = '연관 회계분개'
+
+    def changelist_view(self, request, extra_context=None):
+        response = super().changelist_view(request, extra_context=extra_context)
+        try:
+            cl = response.context_data.get('cl')
+            if cl and hasattr(cl, 'result_list'):
+                prefetch_project_transactions(cl.result_list)
+        except (AttributeError, KeyError):
+            pass
+        return response
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        from apiV1.views.ledger import get_accessible_project_ids
+        return qs.filter(project_id__in=get_accessible_project_ids(request.user))
 
     @admin.display(description='거래 ID')
     def transaction_id_short(self, obj):
@@ -558,6 +622,23 @@ class CompanyAccountingEntryAdmin(AsyncImportExportMixin, admin.ModelAdmin):
             return str(obj.affiliate)
         return '-'
 
+    def changelist_view(self, request, extra_context=None):
+        response = super().changelist_view(request, extra_context=extra_context)
+        try:
+            cl = response.context_data.get('cl')
+            if cl and hasattr(cl, 'result_list'):
+                preload_bank_transactions(cl.result_list, CompanyBankTransaction)
+        except (AttributeError, KeyError):
+            pass
+        return response
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        from apiV1.views.ledger import get_accessible_company_ids
+        return qs.filter(company_id__in=get_accessible_company_ids(request.user))
+
 
 @admin.register(ProjectAccountingEntry)
 class ProjectAccountingEntryAdmin(AsyncImportExportMixin, admin.ModelAdmin):
@@ -618,6 +699,23 @@ class ProjectAccountingEntryAdmin(AsyncImportExportMixin, admin.ModelAdmin):
         if obj.contractor:
             return str(obj.contractor)
         return '-'
+
+    def changelist_view(self, request, extra_context=None):
+        response = super().changelist_view(request, extra_context=extra_context)
+        try:
+            cl = response.context_data.get('cl')
+            if cl and hasattr(cl, 'result_list'):
+                preload_bank_transactions(cl.result_list, ProjectBankTransaction)
+        except (AttributeError, KeyError):
+            pass
+        return response
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        from apiV1.views.ledger import get_accessible_project_ids
+        return qs.filter(project_id__in=get_accessible_project_ids(request.user))
 
 
 # ============================================
@@ -711,16 +809,45 @@ class ProjectLedgerCalculationAdmin(admin.ModelAdmin):
 
 @admin.register(BankApiCredential)
 class BankApiCredentialAdmin(admin.ModelAdmin):
+    list_select_related = ('company_bank_account__company', 'project_bank_account__project')
     list_display = ('__str__', 'bank_code', 'account_number', 'is_active', 'last_status', 'last_scraped_at')
     list_filter = ('is_active', 'last_status', 'bank_code')
     search_fields = ('account_number', 'connected_id')
     readonly_fields = ('last_scraped_at', 'last_status', 'last_error_message', 'created_at', 'updated_at')
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        from apiV1.views.ledger import get_accessible_company_ids, get_accessible_project_ids
+        c_ids = get_accessible_company_ids(request.user)
+        p_ids = get_accessible_project_ids(request.user)
+        return qs.filter(
+            Q(company_bank_account__company_id__in=c_ids) |
+            Q(project_bank_account__project_id__in=p_ids)
+        )
+
 
 @admin.register(RawBankTransaction)
 class RawBankTransactionAdmin(admin.ModelAdmin):
+    list_select_related = (
+        'credential__company_bank_account__company',
+        'credential__project_bank_account__project'
+    )
     list_display = ('deal_date', 'deal_time', 'sort_type', 'amount', 'client_name', 'content', 'status', 'confidence_score', 'credential')
     list_filter = ('status', 'sort_type', 'deal_date', 'credential__bank_code')
     search_fields = ('client_name', 'content', 'amount', 'tx_hash')
     readonly_fields = ('tx_hash', 'raw_data', 'created_at', 'updated_at', 'confirmed_at', 'confirmed_by')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        from apiV1.views.ledger import get_accessible_company_ids, get_accessible_project_ids
+        c_ids = get_accessible_company_ids(request.user)
+        p_ids = get_accessible_project_ids(request.user)
+        return qs.filter(
+            Q(credential__company_bank_account__company_id__in=c_ids) |
+            Q(credential__project_bank_account__project_id__in=p_ids)
+        )
 

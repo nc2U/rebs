@@ -36,6 +36,8 @@ def confirm_raw_transaction(
     Returns:
         Dict: 생성된 거래 및 분개 정보
     """
+    # 비관적 락(Pessimistic Lock)을 획득하여 동시 중복 승인 및 이중 분개 원천 차단
+    raw_tx = RawBankTransaction.objects.select_for_update().get(pk=raw_tx.pk)
     if raw_tx.status == 'confirmed':
         raise ValueError(f"RawBankTransaction #{raw_tx.id}는 이미 승인 완료된 거래입니다.")
 
@@ -180,11 +182,12 @@ def confirm_raw_transaction(
         }
 
 
-def bulk_confirm_high_confidence(user=None, min_confidence: int = 90) -> Dict[str, Any]:
+def bulk_confirm_high_confidence(user=None, min_confidence: int = 90, base_qs=None) -> Dict[str, Any]:
     """
     신뢰도가 기준점(기본 90%) 이상인 대기 상태 거래들을 일괄 승인
     """
-    targets = RawBankTransaction.objects.filter(
+    targets = base_qs if base_qs is not None else RawBankTransaction.objects.all()
+    targets = targets.filter(
         status='ready',
         confidence_score__gte=min_confidence
     )

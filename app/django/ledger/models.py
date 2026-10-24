@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 # ============================================
-# Bank Account Models - 본사 / 현장 은행 계좌 모델
+# Bank Account Models - 본사 / 프로젝트 은행 계좌 모델
 # ============================================
 
 class BankCode(models.Model):
@@ -94,7 +94,7 @@ class ProjectBankAccount(BankAccount):
 
 
 # ============================================
-# Account Models - 본사 / 현장 회계 계정 모델
+# Account Models - 본사 / 프로젝트 회계 계정 모델
 # ============================================
 
 class Account(models.Model):
@@ -425,7 +425,7 @@ class Affiliate(models.Model):
 
 
 # ============================================
-# Banking Domain - 본사 / 현장 은행 거래 도메인
+# Banking Domain - 본사 / 프로젝트 은행 거래 도메인
 # ============================================
 
 class BankTransaction(models.Model):
@@ -496,13 +496,19 @@ class BankTransaction(models.Model):
     def validate_accounting_entries(self):
         """
         이 거래에 대한 AccountingEntry의 금액 합계 검증
+        (prefetched_accounting_entries 캐시 존재 시 메모리 계산으로 N+1 쿼리 방지)
 
         Returns:
             dict: {'is_valid': bool, 'bank_amount': int, 'accounting_total': int, 'difference': int}
         """
-        result = self.accounting_entries.aggregate(total=Sum('amount'), count=Count('id'))
-        accounting_total = result['total'] or 0
-        entry_count = result['count'] or 0
+        if hasattr(self, 'prefetched_accounting_entries'):
+            entries = self.prefetched_accounting_entries
+            accounting_total = sum(e.amount for e in entries)
+            entry_count = len(entries)
+        else:
+            result = self.accounting_entries.aggregate(total=Sum('amount'), count=Count('id'))
+            accounting_total = result['total'] or 0
+            entry_count = result['count'] or 0
         difference = self.amount - accounting_total
 
         return {
@@ -536,6 +542,12 @@ class CompanyBankTransaction(BankTransaction):
             models.Index(fields=['bank_account', 'deal_date']),
         ]
 
+    def clean(self):
+        super().clean()
+        if self.bank_account_id and self.company_id:
+            if self.bank_account.company_id != self.company_id:
+                raise ValidationError({'bank_account': '거래 계좌의 회사와 거래 회사가 일치하지 않습니다.'})
+
     @property
     def accounting_entries(self):
         """이 은행 거래에 연결된 모든 회계 분개 항목들을 반환합니다."""
@@ -568,6 +580,12 @@ class ProjectBankTransaction(BankTransaction):
         indexes = [
             models.Index(fields=['bank_account', 'deal_date']),
         ]
+
+    def clean(self):
+        super().clean()
+        if self.bank_account_id and self.project_id:
+            if self.bank_account.project_id != self.project_id:
+                raise ValidationError({'bank_account': '거래 계좌의 프로젝트와 거래 프로젝트가 일치하지 않습니다.'})
 
     def save(self, *args, **kwargs):
         """
@@ -642,7 +660,7 @@ class ProjectBankTransaction(BankTransaction):
 
 
 # ============================================
-# Accounting Domain - 본사 / 현장 회계 분개 도메인
+# Accounting Domain - 본사 / 프로젝트 회계 분개 도메인
 # ============================================
 
 class AccountingEntry(models.Model):
@@ -837,6 +855,28 @@ class ProjectAccountingEntry(AccountingEntry):
                 'account': f'"{self.account.name}"는 비활성 계정이므로 사용할 수 없습니다.'
             })
 
+        # 계약-프로젝트 일치 검증
+        if self.contract_id and self.project_id:
+            contract_project_id = self.contract.project_id if self.contract else None
+            if contract_project_id and contract_project_id != self.project_id:
+                raise ValidationError({
+                    'contract': '분개의 프로젝트와 계약의 프로젝트가 일치하지 않습니다.'
+                })
+
+        # 계약자-계약 일치 검증
+        if self.contractor_id and self.contract_id:
+            contractor_contract_id = self.contractor.contract_id if self.contractor else None
+            if contractor_contract_id and contractor_contract_id != self.contract_id:
+                raise ValidationError({
+                    'contractor': '계약자와 계약 정보가 일치하지 않습니다.'
+                })
+
+        # requires_contract 검증
+        if self.account and getattr(self.account, 'requires_contract', False) and not self.contract_id:
+            raise ValidationError({
+                'contract': f'"{self.account.name}" 계정은 계약 선택이 필수입니다.'
+            })
+
     @transaction.atomic
     def save(self, *args, **kwargs):
         """
@@ -881,7 +921,7 @@ class ProjectAccountingEntry(AccountingEntry):
 
 
 # ============================================
-# Calculation Domain - 본사 / 현장 정산 확인 도메인
+# Calculation Domain - 본사 / 프로젝트 정산 확인 도메인
 # ============================================
 
 
@@ -1053,6 +1093,10 @@ class BankApiCredential(models.Model):
             raise ValidationError('본사 계좌 또는 프로젝트 계좌 중 하나를 반드시 선택해야 합니다.')
         if self.company_bank_account and self.project_bank_account:
             raise ValidationError('본사 계좌와 프로젝트 계좌를 동시에 선택할 수 없습니다.')
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     @property
     def target_account(self):

@@ -1319,7 +1319,16 @@ class BankApiCredentialViewSet(viewsets.ModelViewSet):
     pagination_class = PageNumberPaginationFifty
 
     def get_queryset(self):
+        user = self.request.user
         qs = super().get_queryset()
+        if not (user.is_superuser or getattr(user, 'work_manager', False)):
+            c_ids = get_accessible_company_ids(user)
+            p_ids = get_accessible_project_ids(user)
+            qs = qs.filter(
+                Q(company_bank_account__company_id__in=c_ids) |
+                Q(project_bank_account__project_id__in=p_ids)
+            )
+
         company = self.request.query_params.get('company')
         project = self.request.query_params.get('project')
         is_imprest = self.request.query_params.get('is_imprest')
@@ -1715,7 +1724,16 @@ class RawBankTransactionViewSet(viewsets.ModelViewSet):
     search_fields = ('client_name', 'content')
 
     def get_queryset(self):
+        user = self.request.user
         qs = super().get_queryset()
+        if not (user.is_superuser or getattr(user, 'work_manager', False)):
+            c_ids = get_accessible_company_ids(user)
+            p_ids = get_accessible_project_ids(user)
+            qs = qs.filter(
+                Q(credential__company_bank_account__company_id__in=c_ids) |
+                Q(credential__project_bank_account__project_id__in=p_ids)
+            )
+
         company = self.request.query_params.get('company')
         project = self.request.query_params.get('project')
         is_imprest = self.request.query_params.get('is_imprest')
@@ -1737,6 +1755,23 @@ class RawBankTransactionViewSet(viewsets.ModelViewSet):
         from contract.models import Contract
 
         raw_tx = self.get_object()
+        user = request.user
+        if not (user.is_superuser or getattr(user, 'work_manager', False)):
+            if raw_tx.credential.is_project:
+                manage_projects = get_accessible_project_ids(user, 'ledger.manage')
+                if raw_tx.credential.project_bank_account.project_id not in manage_projects:
+                    return Response(
+                        {'error': '해당 프로젝트의 거래 승인(ledger.manage) 권한이 없습니다.'},
+                        status=status.HTTP_403_FORBIDDEN
+                    )
+            else:
+                manage_companies = get_accessible_company_ids(user)
+                if raw_tx.credential.company_bank_account.company_id not in manage_companies:
+                    return Response(
+                        {'error': '해당 회사의 거래 승인 권한이 없습니다.'},
+                        status=status.HTTP_403_FORBIDDEN
+                    )
+
         serializer = RawBankTransactionConfirmSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -1827,7 +1862,16 @@ class RawBankTransactionViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         min_confidence = serializer.validated_data.get('min_confidence', 90)
 
-        result = bulk_confirm_high_confidence(user=request.user, min_confidence=min_confidence)
+        base_qs = None
+        if not (request.user.is_superuser or getattr(request.user, 'work_manager', False)):
+            c_ids = get_accessible_company_ids(request.user)
+            p_ids = get_accessible_project_ids(request.user, 'ledger.manage')
+            base_qs = RawBankTransaction.objects.filter(
+                Q(credential__company_bank_account__company_id__in=c_ids) |
+                Q(credential__project_bank_account__project_id__in=p_ids)
+            )
+
+        result = bulk_confirm_high_confidence(user=request.user, min_confidence=min_confidence, base_qs=base_qs)
         return Response(result, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['post'], url_path='bulk_confirm')

@@ -1,5 +1,6 @@
 import uuid
 from datetime import date
+from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from rest_framework import status as http_status
 from rest_framework.test import APITestCase
@@ -282,7 +283,7 @@ class LedgerRowLevelSecurityAndIsolationTests(LedgerTestBase):
             deal_date=date(2026, 7, 10),
             amount=10000000,
             sort=self.sort_deposit,
-            content='A현장 입금 거래',
+            content='A프로젝트 입금 거래',
             creator=self.user_a,
         )
         self.entry_a = ProjectAccountingEntry.objects.create(
@@ -300,7 +301,7 @@ class LedgerRowLevelSecurityAndIsolationTests(LedgerTestBase):
             deal_date=date(2026, 7, 15),
             amount=20000000,
             sort=self.sort_deposit,
-            content='B현장 입금 거래',
+            content='B프로젝트 입금 거래',
             creator=self.user_b,
         )
         self.entry_b = ProjectAccountingEntry.objects.create(
@@ -1105,7 +1106,7 @@ class BankScrapingAPITests(LedgerTestBase):
             bankcode=self.bank_code,
             alias_name='프로젝트A 운영비전도금계좌',
             number='444-44-44444',
-            holder='프로젝트A 현장전도금',
+            holder='프로젝트A 운영비전도금',
             is_imprest=True,
             order=2
         )
@@ -1146,7 +1147,7 @@ class BankScrapingAPITests(LedgerTestBase):
             code='5110', name='여비교통비', category='expense', depth=2
         )
         self.proj_account = ProjectAccount.objects.create(
-            code='5210', name='현장운영비', category='expense', depth=2
+            code='5210', name='프로젝트운영비', category='expense', depth=2
         )
 
     def test_credential_filtering_by_company_and_project(self):
@@ -1216,8 +1217,8 @@ class BankScrapingAPITests(LedgerTestBase):
             deal_date=date(2026, 7, 4),
             sort_type='withdraw',
             amount=300000,
-            client_name='현장 식대',
-            tx_hash=RawBankTransaction.generate_hash('4444444444', '2026-07-04', None, 'withdraw', 300000, None, '현장 식대', '')
+            client_name='프로젝트 식대',
+            tx_hash=RawBankTransaction.generate_hash('4444444444', '2026-07-04', None, 'withdraw', 300000, None, '프로젝트 식대', '')
         )
 
         # (1) 본사 1 거래 필터링
@@ -1278,7 +1279,7 @@ class BankScrapingAPITests(LedgerTestBase):
             deal_date=date(2026, 7, 6),
             sort_type='withdraw',
             amount=450000,
-            client_name='현장 문구류',
+            client_name='프로젝트 문구류',
             status='ready',
             suggested_project_account=self.proj_account,
             confidence_score=90,
@@ -1373,7 +1374,7 @@ class BankScrapingAPITests(LedgerTestBase):
                 },
                 {
                     'resAccount': '5555555555',  # 신규 계좌
-                    'resAccountName': '현장전도금신규',
+                    'resAccountName': '운영비전도금신규',
                     'resAccountHolder': '(주)테스트건설',
                 }
             ]
@@ -1446,5 +1447,267 @@ class BankScrapingAPITests(LedgerTestBase):
             self.assertEqual(cred_new.connected_id, 'MOCK-CONNECTED-ID-123')
             self.assertTrue(cred_new.project_bank_account.is_imprest)
             self.assertEqual(cred_new.project_bank_account.project, self.project_a)
+
+
+class LedgerAuditEnhancementsTests(LedgerTestBase):
+    """정밀 검사 감사 지적사항 및 비즈니스 무결성 강화 검증 테스트"""
+
+    def setUp(self):
+        super().setUp()
+        self.com_bank_acc = CompanyBankAccount.objects.create(
+            company=self.company,
+            bankcode=self.bank_code,
+            alias_name='본사 계좌',
+            number='100-200-3000',
+        )
+
+    def test_bank_transaction_cross_company_and_project_clean(self):
+        """은행계좌와 거래 간 회사 및 프로젝트 불일치 시 ValidationError 발생 검증"""
+        company2 = Company.objects.create(name='(주)타회사')
+        tx_com = CompanyBankTransaction(
+            company=company2,
+            bank_account=self.com_bank_acc,  # self.com_bank_acc는 self.company 소속
+            deal_date=date(2026, 7, 1),
+            amount=100000,
+            sort=self.sort_deposit,
+        )
+        with self.assertRaises(ValidationError) as cm:
+            tx_com.clean()
+        self.assertIn('bank_account', cm.exception.message_dict)
+
+        tx_proj = ProjectBankTransaction(
+            project=self.project_b,
+            bank_account=self.bank_acc_a,  # self.bank_acc_a는 project_a 소속
+            deal_date=date(2026, 7, 1),
+            amount=100000,
+            sort=self.sort_deposit,
+        )
+        with self.assertRaises(ValidationError) as cm:
+            tx_proj.clean()
+        self.assertIn('bank_account', cm.exception.message_dict)
+
+    def test_project_accounting_entry_contract_cross_project_clean(self):
+        """ProjectAccountingEntry의 계약/계약자 프로젝트 일치 및 requires_contract clean 검증"""
+        # 1. 계약의 프로젝트 불일치 검증
+        entry_wrong_project = ProjectAccountingEntry(
+            project=self.project_b,
+            account=self.account_deposit,
+            amount=10000,
+            contract=self.contract_a,  # self.contract_a는 project_a 소속
+            transaction_id=uuid.uuid4(),
+        )
+        with self.assertRaises(ValidationError) as cm:
+            entry_wrong_project.clean()
+        self.assertIn('contract', cm.exception.message_dict)
+
+        # 2. 계약자의 계약 불일치 검증
+        other_contract = Contract.objects.create(
+            project=self.project_a,
+            order_group=self.order_group_a,
+            unit_type=self.unit_type_a,
+            key_unit=KeyUnit.objects.create(project=self.project_a, unit_type=self.unit_type_a, unit_code='A102'),
+            serial_number='CONT-A-002',
+            creator=self.admin_user,
+        )
+        other_contractor = Contractor.objects.create(
+            contract=other_contract,
+            name='이몽룡',
+            status='2',
+        )
+        entry_mismatch_contractor = ProjectAccountingEntry(
+            project=self.project_a,
+            account=self.account_deposit,
+            amount=10000,
+            contract=self.contract_a,
+            contractor=other_contractor,  # contractor는 other_contract 소속
+            transaction_id=uuid.uuid4(),
+        )
+        with self.assertRaises(ValidationError) as cm:
+            entry_mismatch_contractor.clean()
+        self.assertIn('contractor', cm.exception.message_dict)
+
+        # 3. requires_contract=True 계정인데 contract 누락 시 검증
+        entry_missing_contract = ProjectAccountingEntry(
+            project=self.project_a,
+            account=self.account_sales,  # requires_contract=True
+            amount=10000,
+            contract=None,
+            transaction_id=uuid.uuid4(),
+        )
+        with self.assertRaises(ValidationError) as cm:
+            entry_missing_contract.clean()
+        self.assertIn('contract', cm.exception.message_dict)
+
+    def test_bank_api_credential_save_full_clean(self):
+        """BankApiCredential.save() 호출 시 clean() 유효성 검사 강제 동작 검증"""
+        from ledger.models import BankApiCredential
+        # 둘 다 None인 경우
+        cred_empty = BankApiCredential(
+            bank_code='004',
+            account_number='111222333',
+        )
+        with self.assertRaises(ValidationError):
+            cred_empty.save()
+
+        # 둘 다 지정된 경우
+        cred_both = BankApiCredential(
+            bank_code='004',
+            account_number='111222333',
+            company_bank_account=self.com_bank_acc,
+            project_bank_account=self.bank_acc_a,
+        )
+        with self.assertRaises(ValidationError):
+            cred_both.save()
+
+    def test_raw_transaction_and_credential_rls_isolation(self):
+        """비인가 사용자의 타 프로젝트/회사 Credential 및 RawTransaction 접근/승인 차단 검증"""
+        from ledger.models import BankApiCredential, RawBankTransaction
+
+        cred_b = BankApiCredential.objects.create(
+            project_bank_account=self.bank_acc_b,
+            connected_id='cid_b',
+            bank_code='004',
+            account_number='999888777',
+            is_active=True,
+        )
+        raw_b = RawBankTransaction.objects.create(
+            credential=cred_b,
+            deal_date=date(2026, 7, 20),
+            sort_type='deposit',
+            amount=5000000,
+            client_name='B수납자',
+            status='ready',
+            tx_hash='hash_b_rls_test',
+        )
+
+        # user_a(프로젝트 A만 접근 가능)로 로그인
+        self.client.force_authenticate(user=self.user_a)
+
+        # 1. Credential 목록 조회 시 프로젝트 B의 Credential은 조회되지 않아야 함
+        res_cred = self.client.get('/api/v1/ledger/credentials/')
+        self.assertEqual(res_cred.status_code, http_status.HTTP_200_OK)
+        cred_pks = [item['pk'] for item in res_cred.data.get('results', [])]
+        self.assertNotIn(cred_b.pk, cred_pks)
+
+        # 2. Raw Transaction 목록 조회 시 프로젝트 B 거래는 조회되지 않아야 함
+        res_raw = self.client.get('/api/v1/ledger/raw-transactions/')
+        self.assertEqual(res_raw.status_code, http_status.HTTP_200_OK)
+        raw_pks = [item['pk'] for item in res_raw.data.get('results', [])]
+        self.assertNotIn(raw_b.pk, raw_pks)
+
+        # 3. 프로젝트 B 거래 승인(confirm) 시도 시 404 (또는 403) 차단되어야 함
+        res_confirm = self.client.post(f'/api/v1/ledger/raw-transactions/{raw_b.pk}/confirm/', {})
+        self.assertIn(res_confirm.status_code, (http_status.HTTP_404_NOT_FOUND, http_status.HTTP_403_FORBIDDEN))
+
+    def test_confirm_raw_transaction_concurrency_lock_and_idempotency(self):
+        """confirm_raw_transaction 이중 호출 시 이미 승인된 거래 에러 방어 검증"""
+        from ledger.models import BankApiCredential, RawBankTransaction
+        from ledger.services.transaction_confirm import confirm_raw_transaction
+
+        cred_a = BankApiCredential.objects.create(
+            project_bank_account=self.bank_acc_a,
+            connected_id='cid_a',
+            bank_code='004',
+            account_number='111222333',
+            is_active=True,
+        )
+        raw_a = RawBankTransaction.objects.create(
+            credential=cred_a,
+            deal_date=date(2026, 7, 21),
+            sort_type='withdraw',
+            amount=200000,
+            client_name='소모품비',
+            status='ready',
+            suggested_project_account=self.account_expense,
+            tx_hash='hash_a_concurrency_test',
+        )
+
+        # 1차 승인 성공
+        result = confirm_raw_transaction(raw_a, user=self.admin_user)
+        self.assertTrue(result['success'])
+
+        raw_a.refresh_from_db()
+        self.assertEqual(raw_a.status, 'confirmed')
+
+        # 2차 동시/중복 승인 시도 시 ValueError 발생
+        with self.assertRaises(ValueError) as cm:
+            confirm_raw_transaction(raw_a, user=self.admin_user)
+        self.assertIn('이미 승인 완료된 거래입니다', str(cm.exception))
+
+    def test_project_composite_transaction_cross_project_contract_validation(self):
+        """ProjectCompositeTransaction 생성 시 타 프로젝트 계약 지정 차단 검증"""
+        self.client.force_authenticate(user=self.admin_user)
+
+        payload = {
+            'project': self.project_b.pk,
+            'bank_account': self.bank_acc_b.pk,
+            'deal_date': '2026-07-22',
+            'sort': 1,
+            'amount': 10000000,
+            'content': '타 프로젝트 계약 수납 시도',
+            'accounting_entries': [
+                {
+                    'account': self.account_sales.pk,
+                    'amount': 10000000,
+                    'trader': '홍길동',
+                    'contract': self.contract_a.pk,  # contract_a는 project_a 소속!
+                }
+            ],
+        }
+
+        res = self.client.post('/api/v1/ledger/project-composite-transaction/', payload, format='json')
+        self.assertEqual(res.status_code, http_status.HTTP_400_BAD_REQUEST)
+        self.assertIn('accounting_entries', res.data)
+        self.assertIn('일치하지 않습니다', str(res.data['accounting_entries']))
+
+    def test_ledger_admin_query_optimization(self):
+        """Admin prefetch 및 preload 동작 및 N+1 방지 메모리 검증 테스트"""
+        from ledger.services.company_transaction import prefetch_company_transactions
+        from ledger.services.project_transaction import prefetch_project_transactions
+        from ledger.admin import preload_bank_transactions
+
+        # 1. CompanyBankTransaction prefetch 검증
+        tx_com = CompanyBankTransaction.objects.create(
+            company=self.company,
+            bank_account=self.com_bank_acc,
+            deal_date=date(2026, 7, 23),
+            sort=self.sort_deposit,
+            amount=150000,
+            content='본사 입금 테스트',
+        )
+        CompanyAccountingEntry.objects.create(
+            company=self.company,
+            transaction_id=tx_com.transaction_id,
+            account=CompanyAccount.objects.create(code='4110', name='매출', category='revenue', depth=2),
+            amount=150000,
+            trader='매출처',
+        )
+
+        prefetch_company_transactions([tx_com])
+        self.assertTrue(hasattr(tx_com, 'prefetched_accounting_entries'))
+        self.assertEqual(len(tx_com.prefetched_accounting_entries), 1)
+        self.assertTrue(tx_com.is_balanced)
+
+        # 2. ProjectAccountingEntry preload 검증
+        tx_proj = ProjectBankTransaction.objects.create(
+            project=self.project_a,
+            bank_account=self.bank_acc_a,
+            deal_date=date(2026, 7, 24),
+            sort=self.sort_withdraw,
+            amount=50000,
+            content='프로젝트 출금 테스트',
+        )
+        entry_proj = ProjectAccountingEntry.objects.create(
+            project=self.project_a,
+            transaction_id=tx_proj.transaction_id,
+            account=self.account_expense,
+            amount=50000,
+            trader='출금처',
+        )
+
+        preload_bank_transactions([entry_proj], ProjectBankTransaction)
+        self.assertTrue(hasattr(entry_proj, '_related_transaction'))
+        self.assertEqual(entry_proj._related_transaction.pk, tx_proj.pk)
+        self.assertEqual(entry_proj.sort, self.sort_withdraw)
 
 

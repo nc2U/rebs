@@ -501,50 +501,6 @@ class CompanyCompositeTransactionSerializer(serializers.Serializer):
                 'accounting_entries': f'회계 분개 금액 총합({entries_total:,}원)이 은행 거래 금액({bank_amount:,}원)과 일치하지 않습니다.'
             })
 
-        # [M-6] 수납 초과 납부 검증 — 계약별 잔여 미납액 초과 여부 API 레벨에서 사전 차단
-        # 입금(sort=1) 거래이고 accounting_entries 중 contract가 지정된 경우만 검증
-        sort_value = attrs.get('sort', instance.sort_id if is_update else None)
-        if sort_value == 1:  # 1 = 입금
-            incoming_entries = attrs.get('accounting_entries', [])
-            for entry_data in incoming_entries:
-                contract_id = entry_data.get('contract')
-                entry_amount = entry_data.get('amount', 0)
-                if not contract_id or not entry_amount:
-                    continue
-                try:
-                    from contract.models import Contract
-                    from payment.models import ContractPayment
-                    from django.db.models import Sum as _Sum
-                    contract_obj = Contract.objects.select_related('contractprice').get(pk=contract_id)
-                    contract_price = getattr(contract_obj, 'contractprice', None)
-                    if contract_price and contract_price.price:
-                        total_price = contract_price.price
-                        # 기존 유효 수납 합계 조회
-                        paid_qs = ContractPayment.objects.valid_payments().filter(
-                            contract_id=contract_id
-                        )
-                        if is_update:
-                            # 수정 시: 현재 거래의 기존 수납액은 제외하고 잔여액 계산
-                            paid_qs = paid_qs.exclude(
-                                accounting_entry__transaction_id=instance.transaction_id
-                            )
-                        already_paid = paid_qs.aggregate(
-                            total=_Sum('accounting_entry__amount')
-                        )['total'] or 0
-                        remaining = total_price - already_paid
-                        if entry_amount > remaining:
-                            raise serializers.ValidationError({
-                                'accounting_entries': (
-                                    f'수납 금액({entry_amount:,}원)이 해당 계약의 잔여 미납액'
-                                    f'({remaining:,}원)을 초과합니다. '
-                                    f'(계약 총액: {total_price:,}원, 기수납: {already_paid:,}원)'
-                                )
-                            })
-                except serializers.ValidationError:
-                    raise  # 검증 에러는 그대로 재발생
-                except Exception:
-                    pass  # 계약 정보 조회 실패 등 예외는 통과 (저장 레이어에서 재검증 가능)
-
         return attrs
 
     @transaction.atomic
@@ -864,49 +820,51 @@ class ProjectCompositeTransactionSerializer(serializers.Serializer):
                 'accounting_entries': f'회계 분개 금액 총합({entries_total:,}원)이 은행 거래 금액({bank_amount:,}원)과 일치하지 않습니다.'
             })
 
-        # [M-6] 수납 초과 납부 검증 — 계약별 잔여 미납액 초과 여부 API 레벨에서 사전 차단
-        # 입금(sort=1) 거래이고 accounting_entries 중 contract가 지정된 경우만 검증
-        sort_value = attrs.get('sort', instance.sort_id if is_update else None)
-        if sort_value == 1:  # 1 = 입금
-            incoming_entries = attrs.get('accounting_entries', [])
-            for entry_data in incoming_entries:
-                contract_id = entry_data.get('contract')
-                entry_amount = entry_data.get('amount', 0)
-                if not contract_id or not entry_amount:
-                    continue
+        # 계약-프로젝트 일치 및 수납 초과 납부 검증
+        project_id = attrs.get('project', instance.project_id if is_update else None)
+        incoming_entries = attrs.get('accounting_entries', [])
+        for entry_data in incoming_entries:
+            contract_id = entry_data.get('contract')
+            if contract_id:
                 try:
                     from contract.models import Contract
-                    from payment.models import ContractPayment
-                    from django.db.models import Sum as _Sum
                     contract_obj = Contract.objects.select_related('contractprice').get(pk=contract_id)
-                    contract_price = getattr(contract_obj, 'contractprice', None)
-                    if contract_price and contract_price.price:
-                        total_price = contract_price.price
-                        # 기존 유효 수납 합계 조회
-                        paid_qs = ContractPayment.objects.valid_payments().filter(
-                            contract_id=contract_id
-                        )
-                        if is_update:
-                            # 수정 시: 현재 거래의 기존 수납액은 제외하고 잔여액 계산
-                            paid_qs = paid_qs.exclude(
-                                accounting_entry__transaction_id=instance.transaction_id
+                    if project_id and contract_obj.project_id != project_id:
+                        raise serializers.ValidationError({
+                            'accounting_entries': f'지정된 계약(#{contract_id})의 프로젝트가 현재 거래의 프로젝트(#{project_id})와 일치하지 않습니다.'
+                        })
+
+                    sort_value = attrs.get('sort', instance.sort_id if is_update else None)
+                    entry_amount = entry_data.get('amount', 0)
+                    if sort_value == 1 and entry_amount:
+                        from payment.models import ContractPayment
+                        from django.db.models import Sum as _Sum
+                        contract_price = getattr(contract_obj, 'contractprice', None)
+                        if contract_price and contract_price.price:
+                            total_price = contract_price.price
+                            paid_qs = ContractPayment.objects.valid_payments().filter(
+                                contract_id=contract_id
                             )
-                        already_paid = paid_qs.aggregate(
-                            total=_Sum('accounting_entry__amount')
-                        )['total'] or 0
-                        remaining = total_price - already_paid
-                        if entry_amount > remaining:
-                            raise serializers.ValidationError({
-                                'accounting_entries': (
-                                    f'수납 금액({entry_amount:,}원)이 해당 계약의 잔여 미납액'
-                                    f'({remaining:,}원)을 초과합니다. '
-                                    f'(계약 총액: {total_price:,}원, 기수납: {already_paid:,}원)'
+                            if is_update:
+                                paid_qs = paid_qs.exclude(
+                                    accounting_entry__transaction_id=instance.transaction_id
                                 )
-                            })
+                            already_paid = paid_qs.aggregate(
+                                total=_Sum('accounting_entry__amount')
+                            )['total'] or 0
+                            remaining = total_price - already_paid
+                            if entry_amount > remaining:
+                                raise serializers.ValidationError({
+                                    'accounting_entries': (
+                                        f'수납 금액({entry_amount:,}원)이 해당 계약의 잔여 미납액'
+                                        f'({remaining:,}원)을 초과합니다. '
+                                        f'(계약 총액: {total_price:,}원, 기수납: {already_paid:,}원)'
+                                    )
+                                })
                 except serializers.ValidationError:
-                    raise  # 검증 에러는 그대로 재발생
+                    raise
                 except Exception:
-                    pass  # 계약 정보 조회 실패 등 예외는 통과 (저장 레이어에서 재검증 가능)
+                    pass
 
         return attrs
 
