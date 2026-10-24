@@ -1,4 +1,5 @@
 from django.contrib import admin
+from apiV1.permissions._utils import get_project_ids_with_permission
 from .models import (
     SalesAgency, SalesTeam, SalesPerson, SalesPersonDocument, CommissionPolicy,
     ContractSalesAgent, SettlementPeriod, CommissionPayout,
@@ -13,6 +14,13 @@ class SalesAgencyAdmin(admin.ModelAdmin):
     search_fields = ('name', 'ceo_name', 'business_number')
     list_select_related = ('project',)
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_project_ids_with_permission(request.user, 'sales.read')
+        return qs.filter(project_id__in=accessible_projects)
+
 
 @admin.register(SalesTeam)
 class SalesTeamAdmin(admin.ModelAdmin):
@@ -20,6 +28,13 @@ class SalesTeamAdmin(admin.ModelAdmin):
     list_filter = ('agency__project', 'agency', 'is_active')
     search_fields = ('name',)
     list_select_related = ('agency', 'parent')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_project_ids_with_permission(request.user, 'sales.read')
+        return qs.filter(agency__project_id__in=accessible_projects)
 
 
 class SalesPersonDocumentInline(admin.TabularInline):
@@ -37,6 +52,13 @@ class SalesPersonAdmin(admin.ModelAdmin):
     list_select_related = ('team', 'team__agency')
     inlines = [SalesPersonDocumentInline]
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_project_ids_with_permission(request.user, 'sales.read')
+        return qs.filter(team__agency__project_id__in=accessible_projects)
+
 
 @admin.register(SalesPersonDocument)
 class SalesPersonDocumentAdmin(admin.ModelAdmin):
@@ -44,6 +66,13 @@ class SalesPersonDocumentAdmin(admin.ModelAdmin):
     list_filter = ('doc_type', 'is_verified', 'sales_person__team__agency__project')
     search_fields = ('sales_person__name', 'title', 'file_name')
     list_select_related = ('sales_person', 'verified_by')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_project_ids_with_permission(request.user, 'sales.read')
+        return qs.filter(sales_person__team__agency__project_id__in=accessible_projects)
 
 
 @admin.register(CommissionPolicy)
@@ -53,6 +82,13 @@ class CommissionPolicyAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     list_select_related = ('project', 'order_group', 'unit_type')
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_project_ids_with_permission(request.user, 'sales.read')
+        return qs.filter(project_id__in=accessible_projects)
+
 
 @admin.register(ContractSalesAgent)
 class ContractSalesAgentAdmin(admin.ModelAdmin):
@@ -60,6 +96,13 @@ class ContractSalesAgentAdmin(admin.ModelAdmin):
     list_filter = ('agency__project', 'agency', 'team')
     search_fields = ('contract__serial_number', 'agency__name', 'sales_person__name', 'mgm_name')
     list_select_related = ('contract', 'agency', 'sales_person', 'team')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_project_ids_with_permission(request.user, 'sales.read')
+        return qs.filter(contract__project_id__in=accessible_projects)
 
 
 class CommissionPayoutInline(admin.TabularInline):
@@ -84,6 +127,13 @@ class SettlementPeriodAdmin(admin.ModelAdmin):
     list_select_related = ('project',)
     inlines = [CommissionPayoutInline, AgencyPayoutInline]
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_project_ids_with_permission(request.user, 'sales.read')
+        return qs.filter(project_id__in=accessible_projects)
+
 
 @admin.register(CommissionPayout)
 class CommissionPayoutAdmin(admin.ModelAdmin):
@@ -92,12 +142,26 @@ class CommissionPayoutAdmin(admin.ModelAdmin):
     search_fields = ('sales_person__name', 'account_holder')
     list_select_related = ('period', 'sales_person')
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_project_ids_with_permission(request.user, 'sales.read')
+        return qs.filter(period__project_id__in=accessible_projects)
+
 
 @admin.register(PayoutContractDetail)
 class PayoutContractDetailAdmin(admin.ModelAdmin):
     list_display = ('id', 'payout', 'contract', 'role_type', 'unit_fee')
     list_filter = ('role_type',)
     list_select_related = ('payout', 'contract')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_project_ids_with_permission(request.user, 'sales.read')
+        return qs.filter(payout__period__project_id__in=accessible_projects)
 
 
 @admin.register(CommissionClawback)
@@ -107,6 +171,13 @@ class CommissionClawbackAdmin(admin.ModelAdmin):
     search_fields = ('sales_person__name', 'contract__serial_number')
     list_select_related = ('sales_person', 'contract', 'settled_payout')
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_project_ids_with_permission(request.user, 'sales.read')
+        return qs.filter(contract__project_id__in=accessible_projects)
+
 
 @admin.register(AgencyPayout)
 class AgencyPayoutAdmin(admin.ModelAdmin):
@@ -115,8 +186,22 @@ class AgencyPayoutAdmin(admin.ModelAdmin):
     search_fields = ('agency__name', 'business_number', 'account_holder')
     list_select_related = ('period', 'agency')
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_project_ids_with_permission(request.user, 'sales.read')
+        return qs.filter(period__project_id__in=accessible_projects)
+
 
 @admin.register(AgencyPayoutContractDetail)
 class AgencyPayoutContractDetailAdmin(admin.ModelAdmin):
     list_display = ('id', 'payout', 'contract', 'unit_fee')
     list_select_related = ('payout', 'contract')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_project_ids_with_permission(request.user, 'sales.read')
+        return qs.filter(payout__period__project_id__in=accessible_projects)

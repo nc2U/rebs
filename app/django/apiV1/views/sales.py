@@ -26,8 +26,9 @@ from sales.services import generate_period_payouts
 from work.models import IssueProject
 
 
-def get_accessible_project_ids(user):
-    return IssueProject.objects.filter(members__user=user).values_list('project__id', flat=True)
+def get_accessible_project_ids(user, required_perm: str = 'sales.read'):
+    """[RLS] 사용자가 특정 권한(기본: sales.read)을 보유한 프로젝트 ID 목록 반환"""
+    return get_project_ids_with_permission(user, required_perm)
 
 
 def _sync_period_status(period: SettlementPeriod) -> None:

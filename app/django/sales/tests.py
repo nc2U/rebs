@@ -1,7 +1,8 @@
 from datetime import date, timedelta
+from django.contrib.admin.sites import AdminSite
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase
+from django.test import TestCase, RequestFactory
 from django.utils import timezone
 from rest_framework import status as http_status
 from rest_framework.test import APITestCase
@@ -16,6 +17,16 @@ from sales.models import (
     SalesAgency, SalesTeam, SalesPerson, SalesPersonDocument, CommissionPolicy,
     ContractSalesAgent, SettlementPeriod, CommissionPayout,
     PayoutContractDetail, CommissionClawback, AgencyPayout, AgencyPayoutContractDetail
+)
+from sales.admin import (
+    SalesAgencyAdmin, SalesTeamAdmin, SalesPersonAdmin, SalesPersonDocumentAdmin,
+    CommissionPolicyAdmin, ContractSalesAgentAdmin, SettlementPeriodAdmin,
+    CommissionPayoutAdmin, PayoutContractDetailAdmin, CommissionClawbackAdmin,
+    AgencyPayoutAdmin, AgencyPayoutContractDetailAdmin
+)
+from apiV1.serializers.sales import (
+    CommissionPolicySerializer, ContractSalesAgentSerializer, SettlementPeriodSerializer,
+    SalesTeamSerializer, SalesPersonSerializer
 )
 
 User = get_user_model()
@@ -1287,11 +1298,12 @@ class SalesImprovementTests(APITestCase):
             category='ibs_pr_manage',
             creator=self.admin_user
         )
-        perm, _ = Permission.objects.get_or_create(
-            code='sales.settle',
-            defaults={'name': '정산 관리', 'module': 'sales', 'is_for_project': True}
-        )
-        role.permissions.add(perm)
+        for code in ('sales.settle', 'sales.read', 'sales.manage', 'sales.policy', 'sales.payout'):
+            perm, _ = Permission.objects.get_or_create(
+                code=code,
+                defaults={'name': code, 'module': 'sales', 'is_for_project': True}
+            )
+            role.permissions.add(perm)
         member = Member.objects.create(user=self.normal_user, project=self.issue_project1)
         member.roles.add(role)
 
@@ -1316,6 +1328,12 @@ class SalesImprovementTests(APITestCase):
             duty='1',
             status='1'
         )
+        self.person2 = SalesPerson.objects.create(
+            team=self.team2,
+            name='직원2',
+            duty='1',
+            status='1'
+        )
 
         # 차수 및 유니트 타입
         self.order_group1 = OrderGroup.objects.create(project=self.project1, order_number=1, name='1차')
@@ -1332,6 +1350,14 @@ class SalesImprovementTests(APITestCase):
             unit_type=self.unit_type1,
             key_unit=self.key_unit1
         )
+        self.key_unit2 = KeyUnit.objects.create(project=self.project2, unit_type=self.unit_type2, unit_code='U02')
+        self.contract2 = Contract.objects.create(
+            project=self.project2,
+            serial_number='CONT-002',
+            order_group=self.order_group2,
+            unit_type=self.unit_type2,
+            key_unit=self.key_unit2
+        )
 
     def test_commission_policy_clean_order_group_and_unit_type(self):
         """수수료 정책의 차수/유니트 타입 프로젝트 불일치 및 날짜 역전 방어"""
@@ -1343,6 +1369,8 @@ class SalesImprovementTests(APITestCase):
         )
         with self.assertRaises(self.ValidationError):
             policy.clean()
+        with self.assertRaises(self.ValidationError):
+            policy.save()
 
         policy2 = CommissionPolicy(
             project=self.project1,
@@ -1352,6 +1380,8 @@ class SalesImprovementTests(APITestCase):
         )
         with self.assertRaises(self.ValidationError):
             policy2.clean()
+        with self.assertRaises(self.ValidationError):
+            policy2.save()
 
         policy3 = CommissionPolicy(
             project=self.project1,
@@ -1361,16 +1391,22 @@ class SalesImprovementTests(APITestCase):
         )
         with self.assertRaises(self.ValidationError):
             policy3.clean()
+        with self.assertRaises(self.ValidationError):
+            policy3.save()
 
     def test_sales_team_clean_cross_agency_and_self_parent(self):
         """영업팀의 타 대행사 본부 참조 및 자기 참조 방어"""
         team = SalesTeam(agency=self.agency1, parent=self.team2, name='교차팀')
         with self.assertRaises(self.ValidationError):
             team.clean()
+        with self.assertRaises(self.ValidationError):
+            team.save()
 
         self.team1.parent = self.team1
         with self.assertRaises(self.ValidationError):
             self.team1.clean()
+        with self.assertRaises(self.ValidationError):
+            self.team1.save()
 
     def test_contract_sales_agent_clean_project_mismatch(self):
         """계약 영업 매핑의 대행사/영업인력 프로젝트 불일치 방어"""
@@ -1380,6 +1416,8 @@ class SalesImprovementTests(APITestCase):
         )
         with self.assertRaises(self.ValidationError):
             mapping.clean()
+        with self.assertRaises(self.ValidationError):
+            mapping.save()
 
     def test_settlement_period_clean_date_inversion(self):
         """정산 회차 시작/종료일 역전 방어"""
@@ -1391,6 +1429,8 @@ class SalesImprovementTests(APITestCase):
         )
         with self.assertRaises(self.ValidationError):
             period.clean()
+        with self.assertRaises(self.ValidationError):
+            period.save()
 
     def test_recalculation_clawback_recovery(self):
         """정산 회차 재계산 시 기존 상계된 CommissionClawback이 유실되지 않고 재상계되는지 검증"""
@@ -1510,6 +1550,256 @@ class SalesImprovementTests(APITestCase):
         self.assertIsNotNone(target)
         self.assertEqual(target['payout_count'], 1)
         self.assertEqual(target['agency_payout_count'], 1)
+
+    def test_sales_person_clean_and_save_date_inversion(self):
+        """영업인력 위촉일/해촉일 역전 방어"""
+        person = SalesPerson(
+            team=self.team1,
+            name='역전인력',
+            join_date=date(2026, 10, 1),
+            quit_date=date(2026, 9, 1)
+        )
+        with self.assertRaises(self.ValidationError):
+            person.clean()
+        with self.assertRaises(self.ValidationError):
+            person.save()
+
+    def test_commission_payout_and_agency_payout_clean_save_mismatch(self):
+        """지급 명세(직영/외주)의 프로젝트 불일치 방어"""
+        period = SettlementPeriod.objects.create(
+            project=self.project1,
+            title='테스트 회차',
+            start_date=date(2026, 9, 1),
+            end_date=date(2026, 9, 30)
+        )
+        # 직영: project 1 회차에 project 2 인력 매핑 시 차단
+        payout = CommissionPayout(period=period, sales_person=self.person2)
+        with self.assertRaises(self.ValidationError):
+            payout.clean()
+        with self.assertRaises(self.ValidationError):
+            payout.save()
+
+        # 외주: project 1 회차에 project 2 대행사 매핑 시 차단
+        apayout = AgencyPayout(period=period, agency=self.agency2)
+        with self.assertRaises(self.ValidationError):
+            apayout.clean()
+        with self.assertRaises(self.ValidationError):
+            apayout.save()
+
+    def test_payout_contract_detail_and_clawback_clean_save_mismatch(self):
+        """지급 상세 및 환수 대장의 프로젝트 불일치 방어"""
+        period = SettlementPeriod.objects.create(
+            project=self.project1,
+            title='테스트 회차',
+            start_date=date(2026, 9, 1),
+            end_date=date(2026, 9, 30)
+        )
+        payout = CommissionPayout.objects.create(period=period, sales_person=self.person1)
+        apayout = AgencyPayout.objects.create(period=period, agency=self.agency1)
+
+        # 타 프로젝트(project 2) 계약을 project 1 지급 상세에 추가 시 차단
+        pcd = PayoutContractDetail(payout=payout, contract=self.contract2)
+        with self.assertRaises(self.ValidationError):
+            pcd.clean()
+        with self.assertRaises(self.ValidationError):
+            pcd.save()
+
+        apcd = AgencyPayoutContractDetail(payout=apayout, contract=self.contract2)
+        with self.assertRaises(self.ValidationError):
+            apcd.clean()
+        with self.assertRaises(self.ValidationError):
+            apcd.save()
+
+        # 타 프로젝트(project 2) 인력을 project 1 계약 환수에 지정 시 차단
+        clawback = CommissionClawback(contract=self.contract1, sales_person=self.person2, amount=100000)
+        with self.assertRaises(self.ValidationError):
+            clawback.clean()
+        with self.assertRaises(self.ValidationError):
+            clawback.save()
+
+    def test_serializers_validation(self):
+        """시리얼라이저 사전 유효성 검증 테스트"""
+        # 1. CommissionPolicySerializer: 차수 프로젝트 불일치
+        s_data = {
+            'project': self.project1.pk,
+            'order_group': self.order_group2.pk,
+            'name': '정책',
+            'start_date': '2026-09-01'
+        }
+        s1 = CommissionPolicySerializer(data=s_data)
+        self.assertFalse(s1.is_valid())
+        self.assertIn('order_group', s1.errors)
+
+        # 2. CommissionPolicySerializer: 시작일 > 종료일
+        s_data2 = {
+            'project': self.project1.pk,
+            'name': '정책2',
+            'start_date': '2026-09-30',
+            'end_date': '2026-09-01'
+        }
+        s2 = CommissionPolicySerializer(data=s_data2)
+        self.assertFalse(s2.is_valid())
+        self.assertIn('end_date', s2.errors)
+
+        # 3. ContractSalesAgentSerializer: 계약과 대행사 프로젝트 불일치
+        s_data3 = {
+            'contract': self.contract1.pk,
+            'agency': self.agency2.pk
+        }
+        s3 = ContractSalesAgentSerializer(data=s_data3)
+        self.assertFalse(s3.is_valid())
+        self.assertIn('agency', s3.errors)
+
+        # 4. SettlementPeriodSerializer: 시작일 > 종료일
+        s_data4 = {
+            'project': self.project1.pk,
+            'title': '회차',
+            'start_date': '2026-09-30',
+            'end_date': '2026-09-01'
+        }
+        s4 = SettlementPeriodSerializer(data=s_data4)
+        self.assertFalse(s4.is_valid())
+        self.assertIn('end_date', s4.errors)
+
+        # 5. SalesTeamSerializer: 상위 조직 대행사 불일치
+        s_data5 = {
+            'agency': self.agency1.pk,
+            'parent': self.team2.pk,
+            'name': '팀'
+        }
+        s5 = SalesTeamSerializer(data=s_data5)
+        self.assertFalse(s5.is_valid())
+        self.assertIn('parent', s5.errors)
+
+        # 6. SalesPersonSerializer: 위촉일 > 해촉일
+        s_data6 = {
+            'team': self.team1.pk,
+            'name': '직원',
+            'phone': '010-0000-0000',
+            'join_date': '2026-10-01',
+            'quit_date': '2026-09-01'
+        }
+        s6 = SalesPersonSerializer(data=s_data6)
+        self.assertFalse(s6.is_valid())
+        self.assertIn('quit_date', s6.errors)
+
+    def test_admin_get_queryset_rls_filtering(self):
+        """12개 Admin 클래스별 get_queryset RLS 필터링 검증"""
+        factory = RequestFactory()
+        site = AdminSite()
+
+        period1 = SettlementPeriod.objects.create(
+            project=self.project1, title='P1 회차',
+            start_date=date(2026, 9, 1), end_date=date(2026, 9, 30)
+        )
+        period2 = SettlementPeriod.objects.create(
+            project=self.project2, title='P2 회차',
+            start_date=date(2026, 9, 1), end_date=date(2026, 9, 30)
+        )
+        payout1 = CommissionPayout.objects.create(period=period1, sales_person=self.person1)
+        payout2 = CommissionPayout.objects.create(period=period2, sales_person=self.person2)
+        pcd1 = PayoutContractDetail.objects.create(payout=payout1, contract=self.contract1, unit_fee=10000)
+        pcd2 = PayoutContractDetail.objects.create(payout=payout2, contract=self.contract2, unit_fee=20000)
+        apayout1 = AgencyPayout.objects.create(period=period1, agency=self.agency1)
+        apayout2 = AgencyPayout.objects.create(period=period2, agency=self.agency2)
+        apcd1 = AgencyPayoutContractDetail.objects.create(payout=apayout1, contract=self.contract1, unit_fee=30000)
+        apcd2 = AgencyPayoutContractDetail.objects.create(payout=apayout2, contract=self.contract2, unit_fee=40000)
+        clawback1 = CommissionClawback.objects.create(contract=self.contract1, sales_person=self.person1, amount=1000)
+        clawback2 = CommissionClawback.objects.create(contract=self.contract2, sales_person=self.person2, amount=2000)
+        policy1 = CommissionPolicy.objects.create(project=self.project1, name='P1 정책', start_date=date(2026, 1, 1))
+        policy2 = CommissionPolicy.objects.create(project=self.project2, name='P2 정책', start_date=date(2026, 1, 1))
+        agent1 = ContractSalesAgent.objects.create(contract=self.contract1, sales_person=self.person1)
+        agent2 = ContractSalesAgent.objects.create(contract=self.contract2, sales_person=self.person2)
+
+        req_normal = factory.get('/admin/sales/')
+        req_normal.user = self.normal_user
+
+        req_admin = factory.get('/admin/sales/')
+        req_admin.user = self.admin_user
+
+        # 1. SalesAgencyAdmin
+        a_admin = SalesAgencyAdmin(SalesAgency, site)
+        self.assertIn(self.agency1, a_admin.get_queryset(req_normal))
+        self.assertNotIn(self.agency2, a_admin.get_queryset(req_normal))
+        self.assertIn(self.agency2, a_admin.get_queryset(req_admin))
+
+        # 2. SalesTeamAdmin
+        t_admin = SalesTeamAdmin(SalesTeam, site)
+        self.assertIn(self.team1, t_admin.get_queryset(req_normal))
+        self.assertNotIn(self.team2, t_admin.get_queryset(req_normal))
+        self.assertIn(self.team2, t_admin.get_queryset(req_admin))
+
+        # 3. SalesPersonAdmin
+        p_admin = SalesPersonAdmin(SalesPerson, site)
+        self.assertIn(self.person1, p_admin.get_queryset(req_normal))
+        self.assertNotIn(self.person2, p_admin.get_queryset(req_normal))
+        self.assertIn(self.person2, p_admin.get_queryset(req_admin))
+
+        # 4. CommissionPolicyAdmin
+        pol_admin = CommissionPolicyAdmin(CommissionPolicy, site)
+        self.assertIn(policy1, pol_admin.get_queryset(req_normal))
+        self.assertNotIn(policy2, pol_admin.get_queryset(req_normal))
+        self.assertIn(policy2, pol_admin.get_queryset(req_admin))
+
+        # 5. ContractSalesAgentAdmin
+        csa_admin = ContractSalesAgentAdmin(ContractSalesAgent, site)
+        self.assertIn(agent1, csa_admin.get_queryset(req_normal))
+        self.assertNotIn(agent2, csa_admin.get_queryset(req_normal))
+        self.assertIn(agent2, csa_admin.get_queryset(req_admin))
+
+        # 6. SettlementPeriodAdmin
+        sp_admin = SettlementPeriodAdmin(SettlementPeriod, site)
+        self.assertIn(period1, sp_admin.get_queryset(req_normal))
+        self.assertNotIn(period2, sp_admin.get_queryset(req_normal))
+        self.assertIn(period2, sp_admin.get_queryset(req_admin))
+
+        # 7. CommissionPayoutAdmin
+        cp_admin = CommissionPayoutAdmin(CommissionPayout, site)
+        self.assertIn(payout1, cp_admin.get_queryset(req_normal))
+        self.assertNotIn(payout2, cp_admin.get_queryset(req_normal))
+        self.assertIn(payout2, cp_admin.get_queryset(req_admin))
+
+        # 8. PayoutContractDetailAdmin
+        pcd_admin = PayoutContractDetailAdmin(PayoutContractDetail, site)
+        self.assertIn(pcd1, pcd_admin.get_queryset(req_normal))
+        self.assertNotIn(pcd2, pcd_admin.get_queryset(req_normal))
+        self.assertIn(pcd2, pcd_admin.get_queryset(req_admin))
+
+        # 9. CommissionClawbackAdmin
+        cc_admin = CommissionClawbackAdmin(CommissionClawback, site)
+        self.assertIn(clawback1, cc_admin.get_queryset(req_normal))
+        self.assertNotIn(clawback2, cc_admin.get_queryset(req_normal))
+        self.assertIn(clawback2, cc_admin.get_queryset(req_admin))
+
+        # 10. AgencyPayoutAdmin
+        ap_admin = AgencyPayoutAdmin(AgencyPayout, site)
+        self.assertIn(apayout1, ap_admin.get_queryset(req_normal))
+        self.assertNotIn(apayout2, ap_admin.get_queryset(req_normal))
+        self.assertIn(apayout2, ap_admin.get_queryset(req_admin))
+
+        # 11. AgencyPayoutContractDetailAdmin
+        apcd_admin = AgencyPayoutContractDetailAdmin(AgencyPayoutContractDetail, site)
+        self.assertIn(apcd1, apcd_admin.get_queryset(req_normal))
+        self.assertNotIn(apcd2, apcd_admin.get_queryset(req_normal))
+        self.assertIn(apcd2, apcd_admin.get_queryset(req_admin))
+
+        # 12. SalesPersonDocumentAdmin
+        doc1 = SalesPersonDocument.objects.create(
+            sales_person=self.person1,
+            doc_type='1',
+            title='등본1',
+            file=SimpleUploadedFile('test1.pdf', b'PDF-content')
+        )
+        doc2 = SalesPersonDocument.objects.create(
+            sales_person=self.person2,
+            doc_type='1',
+            title='등본2',
+            file=SimpleUploadedFile('test2.pdf', b'PDF-content')
+        )
+        doc_admin = SalesPersonDocumentAdmin(SalesPersonDocument, site)
+        self.assertIn(doc1, doc_admin.get_queryset(req_normal))
+        self.assertNotIn(doc2, doc_admin.get_queryset(req_normal))
+        self.assertIn(doc2, doc_admin.get_queryset(req_admin))
 
 
 

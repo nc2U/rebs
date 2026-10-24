@@ -28,6 +28,16 @@ class SalesTeamSerializer(serializers.ModelSerializer):
             'name', 'order', 'is_active', 'members_count', 'created_at'
         )
 
+    def validate(self, attrs):
+        agency = attrs.get('agency') or (self.instance.agency if self.instance else None)
+        parent = attrs.get('parent') if 'parent' in attrs else (self.instance.parent if self.instance else None)
+        if agency and parent:
+            if parent.agency_id != agency.pk:
+                raise serializers.ValidationError({'parent': '상위 조직은 동일한 대행사 소속이어야 합니다.'})
+            if self.instance and parent.pk == self.instance.pk:
+                raise serializers.ValidationError({'parent': '자기 자신을 상위 조직으로 지정할 수 없습니다.'})
+        return attrs
+
     def get_members_count(self, obj):
         if hasattr(obj, 'annotate_members_count'):
             return obj.annotate_members_count
@@ -83,6 +93,13 @@ class SalesPersonSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('올바르지 않은 주민등록번호 뒷자리 형식입니다.')
         return value.strip()
 
+    def validate(self, attrs):
+        join_date = attrs.get('join_date') if 'join_date' in attrs else (self.instance.join_date if self.instance else None)
+        quit_date = attrs.get('quit_date') if 'quit_date' in attrs else (self.instance.quit_date if self.instance else None)
+        if join_date and quit_date and join_date > quit_date:
+            raise serializers.ValidationError({'quit_date': '해촉/퇴사일은 위촉/입사일보다 이전일 수 없습니다.'})
+        return attrs
+
     def get_documents_count(self, obj):
         # annotated 값(annotate_documents_count)이 있으면 우선 사용 (N+1 방지)
         if hasattr(obj, 'annotate_documents_count'):
@@ -106,6 +123,22 @@ class CommissionPolicySerializer(serializers.ModelSerializer):
             'start_date', 'end_date', 'is_active',
             'created_at', 'updated_at'
         )
+
+    def validate(self, attrs):
+        project = attrs.get('project') or (self.instance.project if self.instance else None)
+        order_group = attrs.get('order_group') if 'order_group' in attrs else (self.instance.order_group if self.instance else None)
+        unit_type = attrs.get('unit_type') if 'unit_type' in attrs else (self.instance.unit_type if self.instance else None)
+        start_date = attrs.get('start_date') if 'start_date' in attrs else (self.instance.start_date if self.instance else None)
+        end_date = attrs.get('end_date') if 'end_date' in attrs else (self.instance.end_date if self.instance else None)
+
+        if project:
+            if order_group and order_group.project_id != project.pk:
+                raise serializers.ValidationError({'order_group': '차수 그룹의 프로젝트와 수수료 정책의 프로젝트가 일치해야 합니다.'})
+            if unit_type and unit_type.project_id != project.pk:
+                raise serializers.ValidationError({'unit_type': '유니트 타입의 프로젝트와 수수료 정책의 프로젝트가 일치해야 합니다.'})
+        if start_date and end_date and start_date > end_date:
+            raise serializers.ValidationError({'end_date': '적용 종료일은 적용 시작일보다 이전일 수 없습니다.'})
+        return attrs
 
 
 class ContractSalesAgentSerializer(serializers.ModelSerializer):
@@ -139,10 +172,22 @@ class ContractSalesAgentSerializer(serializers.ModelSerializer):
         )
 
     def validate(self, attrs):
+        contract = attrs.get('contract') or (self.instance.contract if self.instance else None)
         agency = attrs.get('agency') or (self.instance.agency if self.instance else None)
         sales_person = attrs.get('sales_person') or (self.instance.sales_person if self.instance else None)
+        policy = attrs.get('policy') if 'policy' in attrs else (self.instance.policy if self.instance else None)
+
         if not agency and not sales_person:
             raise serializers.ValidationError('외주 대행사 또는 담당 영업직원(상담사) 중 하나는 필수 입력해야 합니다.')
+
+        if contract:
+            if agency and agency.project_id != contract.project_id:
+                raise serializers.ValidationError({'agency': '대행사의 프로젝트와 계약의 프로젝트가 일치해야 합니다.'})
+            if sales_person and hasattr(sales_person, 'team') and hasattr(sales_person.team, 'agency'):
+                if sales_person.team.agency.project_id != contract.project_id:
+                    raise serializers.ValidationError({'sales_person': '영업직원 소속 대행사의 프로젝트와 계약의 프로젝트가 일치해야 합니다.'})
+            if policy and policy.project_id != contract.project_id:
+                raise serializers.ValidationError({'policy': '수수료 정책의 프로젝트와 계약의 프로젝트가 일치해야 합니다.'})
         return attrs
 
     def get_unit_info(self, obj):
@@ -226,6 +271,13 @@ class SettlementPeriodSerializer(serializers.ModelSerializer):
             'agency_fee_total', 'billing_supply_price', 'billing_vat', 'billing_total_amount',
             'payout_count', 'agency_payout_count', 'created_by', 'created_at', 'updated_at'
         )
+
+    def validate(self, attrs):
+        start_date = attrs.get('start_date') if 'start_date' in attrs else (self.instance.start_date if self.instance else None)
+        end_date = attrs.get('end_date') if 'end_date' in attrs else (self.instance.end_date if self.instance else None)
+        if start_date and end_date and start_date > end_date:
+            raise serializers.ValidationError({'end_date': '정산 대상 종료일은 시작일보다 이전일 수 없습니다.'})
+        return attrs
 
     def get_payout_count(self, obj):
         if hasattr(obj, 'annotate_payout_count'):

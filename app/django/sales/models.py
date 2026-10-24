@@ -71,6 +71,10 @@ class SalesTeam(models.Model):
             if self.pk and self.parent_id == self.pk:
                 raise ValidationError({'parent': '자기 자신을 상위 조직으로 지정할 수 없습니다.'})
 
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
+
 
 class SalesPerson(models.Model):
     """영업 인력 (분양상담사 / 팀장 / 본부장 / 프리랜서)"""
@@ -130,6 +134,15 @@ class SalesPerson(models.Model):
     def __str__(self):
         return f'{self.name} ({self.get_duty_display()} / {self.team})'
 
+    def clean(self):
+        super().clean()
+        if self.join_date and self.quit_date and self.join_date > self.quit_date:
+            raise ValidationError({'quit_date': '해촉/퇴사일은 위촉/입사일보다 이전일 수 없습니다.'})
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
+
 
 class CommissionPolicy(models.Model):
     """수수료 정책 (유니트/타입별 건당 인센티브 기준표)"""
@@ -184,6 +197,10 @@ class CommissionPolicy(models.Model):
                 raise ValidationError({'unit_type': '유니트 타입의 프로젝트와 수수료 정책의 프로젝트가 일치해야 합니다.'})
         if self.start_date and self.end_date and self.start_date > self.end_date:
             raise ValidationError({'end_date': '적용 종료일은 적용 시작일보다 이전일 수 없습니다.'})
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
 
 class ContractSalesAgent(models.Model):
@@ -269,6 +286,7 @@ class ContractSalesAgent(models.Model):
             self.team = None
             self.sales_person = None
 
+        self.clean()
         super().save(*args, **kwargs)
 
 
@@ -317,6 +335,10 @@ class SettlementPeriod(models.Model):
         super().clean()
         if self.start_date and self.end_date and self.start_date > self.end_date:
             raise ValidationError({'end_date': '정산 대상 종료일은 시작일보다 이전일 수 없습니다.'})
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
 
 class CommissionPayout(models.Model):
@@ -386,12 +408,20 @@ class CommissionPayout(models.Model):
 
         self.net_amount = max(0, self.gross_amount - self.total_tax)
 
+    def clean(self):
+        super().clean()
+        if hasattr(self, 'period') and hasattr(self, 'sales_person'):
+            if hasattr(self.sales_person, 'team') and hasattr(self.sales_person.team, 'agency'):
+                if self.sales_person.team.agency.project_id != self.period.project_id:
+                    raise ValidationError({'sales_person': '영업인력의 소속 프로젝트와 정산 회차의 프로젝트가 일치해야 합니다.'})
+
     def save(self, *args, **kwargs):
         # 계좌 정보 동기화 (비어있는 경우 영업인력 프로필 계좌 복사)
         if not self.bank_name and self.sales_person_id:
             self.bank_name = self.sales_person.bank_name
             self.account_number = self.sales_person.account_number
             self.account_holder = self.sales_person.account_holder
+        self.clean()
         self.calculate_taxes()
         super().save(*args, **kwargs)
 
@@ -425,6 +455,16 @@ class PayoutContractDetail(models.Model):
     def __str__(self):
         return f'{self.payout.sales_person.name} ➔ {self.contract} ({self.unit_fee:,}원)'
 
+    def clean(self):
+        super().clean()
+        if hasattr(self, 'payout') and hasattr(self, 'contract'):
+            if self.contract.project_id != self.payout.period.project_id:
+                raise ValidationError({'contract': '계약의 프로젝트와 정산 회차의 프로젝트가 일치해야 합니다.'})
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
+
 
 class CommissionClawback(models.Model):
     """계약 해지 시 수수료 환수 관리"""
@@ -455,6 +495,17 @@ class CommissionClawback(models.Model):
     def __str__(self):
         settled_tag = '[상계완료]' if self.is_settled else '[미상계]'
         return f'{settled_tag} {self.sales_person.name} - {self.contract} ({self.amount:,}원)'
+
+    def clean(self):
+        super().clean()
+        if hasattr(self, 'contract') and hasattr(self, 'sales_person'):
+            if hasattr(self.sales_person, 'team') and hasattr(self.sales_person.team, 'agency'):
+                if self.sales_person.team.agency.project_id != self.contract.project_id:
+                    raise ValidationError({'sales_person': '환수 대상자의 프로젝트와 계약의 프로젝트가 일치해야 합니다.'})
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
 
 class AgencyPayout(models.Model):
@@ -516,10 +567,17 @@ class AgencyPayout(models.Model):
         self.vat_amount = int(self.agency_fee_sum * 0.1 // 10 * 10)
         self.total_amount = self.agency_fee_sum + self.vat_amount
 
+    def clean(self):
+        super().clean()
+        if hasattr(self, 'period') and hasattr(self, 'agency'):
+            if self.agency.project_id != self.period.project_id:
+                raise ValidationError({'agency': '대행사의 프로젝트와 정산 회차의 프로젝트가 일치해야 합니다.'})
+
     def save(self, *args, **kwargs):
         # 대행사 사업자정보 동기화
         if not self.business_number and self.agency_id:
             self.business_number = self.agency.business_number
+        self.clean()
         self.calculate_vat()
         super().save(*args, **kwargs)
 
@@ -545,6 +603,16 @@ class AgencyPayoutContractDetail(models.Model):
 
     def __str__(self):
         return f'{self.payout.agency.name} ➔ {self.contract} ({self.unit_fee:,}원)'
+
+    def clean(self):
+        super().clean()
+        if hasattr(self, 'payout') and hasattr(self, 'contract'):
+            if self.contract.project_id != self.payout.period.project_id:
+                raise ValidationError({'contract': '계약의 프로젝트와 정산 회차의 프로젝트가 일치해야 합니다.'})
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
 
 def get_sales_docs_upload_path(instance, filename):
