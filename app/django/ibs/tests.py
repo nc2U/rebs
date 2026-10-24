@@ -225,7 +225,7 @@ class CalendarScheduleViewSetTest(TestCase):
             creator=self.admin
         )
         self.schedule2 = CalendarSchedule.objects.create(
-            title='현장 안전점검',
+            title='프로젝트 안전점검',
             all_day=True,
             start_date='2026-09-25',
             end_date='2026-09-25',
@@ -250,7 +250,7 @@ class CalendarScheduleViewSetTest(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         results = res.data['results']
         self.assertEqual(len(results), 1)
-        self.assertEqual(results[0]['title'], '현장 안전점검')
+        self.assertEqual(results[0]['title'], '프로젝트 안전점검')
 
     def test_schedule_create_permission(self):
         """일반 유저는 일정 등록 차단, 프로젝트 스태프는 등록 허용 및 creator 자동 설정"""
@@ -268,6 +268,24 @@ class CalendarScheduleViewSetTest(TestCase):
         })
         self.assertEqual(allow_res.status_code, status.HTTP_201_CREATED)
         self.assertEqual(allow_res.data['creator']['username'], 'staff_cal')
+
+    def test_schedule_date_range_filter(self):
+        """[M-2] 캘린더 일정 날짜 범위 필터(CalendarScheduleFilterSet) 검증"""
+        self.client.force_authenticate(user=self.normal_user)
+
+        # 9월 20일 ~ 9월 22일 범위 조회 -> schedule1 (2026-09-20) 포함, schedule2 (2026-09-25) 제외
+        res = self.client.get('/api/v1/schedule/?start_date_from=2026-09-20&start_date_to=2026-09-22')
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        results = res.data['results']
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]['title'], '2026년 주간공정회의')
+
+        # 9월 24일 이후 조회 -> schedule2 포함
+        res2 = self.client.get('/api/v1/schedule/?start_date_from=2026-09-24')
+        self.assertEqual(res2.status_code, status.HTTP_200_OK)
+        results2 = res2.data['results']
+        self.assertEqual(len(results2), 1)
+        self.assertEqual(results2[0]['title'], '프로젝트 안전점검')
 
 
 class AccountViewSetsPermissionTest(TestCase):
@@ -343,3 +361,67 @@ class IbsPermsHardeningTest(TestCase):
         self.assertIsNone(IbsModulePermission._resolve_project_issue_project(None))
         self.assertIsNone(IbsModulePermission._resolve_project_issue_project('invalid_string'))
         self.assertIsNone(IbsModulePermission._resolve_project_issue_project(99999999))
+
+
+class IbsAdminQueryOptimizationTest(TestCase):
+    """[M-3] AccountSubD3Admin, ProjectAccountD3Admin, CalendarScheduleAdmin list_select_related 최적화 검증"""
+
+    def setUp(self):
+        self.admin = User.objects.create_superuser(
+            username='admin_opt', email='admin@opt.com', password='password123'
+        )
+        self.sort = AccountSort.objects.create(name='출금')
+        self.d1 = AccountSubD1.objects.create(code='200', name='부채', description='부채 계정')
+        self.d1.sorts.add(self.sort)
+        self.d2 = AccountSubD2.objects.create(d1=self.d1, code='210', name='유동부채', description='유동부채')
+        self.d3 = AccountSubD3.objects.create(
+            sort=self.sort, d2=self.d2, code='211', name='외상매입금', description='외상'
+        )
+        self.pro_d2 = ProjectAccountD2.objects.create(d1=self.d1, code='310', name='판매비', description='판매비')
+        self.pro_d3 = ProjectAccountD3.objects.create(
+            sort=self.sort, d2=self.pro_d2, code='311', name='분양수수료', description='수수료'
+        )
+        self.schedule = CalendarSchedule.objects.create(
+            title='공정회의',
+            all_day=True,
+            start_date='2026-09-20',
+            end_date='2026-09-20',
+            creator=self.admin
+        )
+
+    def test_ibs_admin_query_optimization(self):
+        from django.contrib.admin.sites import AdminSite
+        from django.test import RequestFactory
+        from ibs.admin import (
+            AccountSubD3Admin, ProjectAccountD3Admin, CalendarScheduleAdmin
+        )
+
+        factory = RequestFactory()
+        req = factory.get('/admin/')
+        req.user = self.admin
+
+        # 1. AccountSubD3Admin
+        d3_admin = AccountSubD3Admin(AccountSubD3, AdminSite())
+        d3_qs = list(d3_admin.get_queryset(req).filter(pk=self.d3.pk))
+        self.assertEqual(len(d3_qs), 1)
+        with self.assertNumQueries(0):
+            item = d3_qs[0]
+            _ = item.sort.name
+            _ = item.d2.name
+
+        # 2. ProjectAccountD3Admin
+        pro_d3_admin = ProjectAccountD3Admin(ProjectAccountD3, AdminSite())
+        pro_d3_qs = list(pro_d3_admin.get_queryset(req).filter(pk=self.pro_d3.pk))
+        self.assertEqual(len(pro_d3_qs), 1)
+        with self.assertNumQueries(0):
+            item = pro_d3_qs[0]
+            _ = item.sort.name
+            _ = item.d2.name
+
+        # 3. CalendarScheduleAdmin
+        cal_admin = CalendarScheduleAdmin(CalendarSchedule, AdminSite())
+        cal_qs = list(cal_admin.get_queryset(req).filter(pk=self.schedule.pk))
+        self.assertEqual(len(cal_qs), 1)
+        with self.assertNumQueries(0):
+            item = cal_qs[0]
+            _ = item.creator.username
