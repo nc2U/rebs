@@ -25,11 +25,12 @@ class ForumSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_post_count(obj):
-        return obj.post_set.filter(deleted=None, is_faq=False).count()
+        if not hasattr(obj, '_cached_post_count'):
+            obj._cached_post_count = obj.post_set.filter(deleted=None, is_faq=False).count()
+        return obj._cached_post_count
 
-    @staticmethod
-    def get_all_post_count(obj):
-        post_count = obj.post_set.filter(deleted=None, is_faq=False).count()
+    def get_all_post_count(self, obj):
+        post_count = self.get_post_count(obj)
         comment_count = Comment.objects.filter(post__forum=obj, post__deleted=None, post__is_faq=False).count()
         return post_count + comment_count
 

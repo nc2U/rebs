@@ -226,3 +226,74 @@ class ForumAppSecurityTests(TestCase):
         self.assertEqual(res_member.status_code, status.HTTP_200_OK)
         member_trash_ids = [item['pk'] for item in res_member.data.get('results', res_member.data)]
         self.assertIn(self.normal_post.pk, member_trash_ids)
+
+    def test_copy_post_idor_blocked_and_allowed(self):
+        """[H-1] 타 비공개 프로젝트 글 복사 시도 시 IDOR 차단(404) 및 권한 있는 글 복사(201) 검증"""
+        # 1. 권한 없는 사용자(other_user)가 비공개 프로젝트 글 복사 시도 -> 404 차단
+        self.client.force_authenticate(user=self.other_user)
+        payload = {'forum': self.general_forum.pk}
+        res_denied = self.client.post(f'/api/v1/post/{self.normal_post.pk}/copy/', payload, format='json')
+        self.assertEqual(res_denied.status_code, status.HTTP_404_NOT_FOUND)
+
+        # 2. 권한 있는 프로젝트 멤버(member_user)가 복사 시도 -> 201 Created
+        self.client.force_authenticate(user=self.member_user)
+        res_ok = self.client.post(f'/api/v1/post/{self.normal_post.pk}/copy/', payload, format='json')
+        self.assertEqual(res_ok.status_code, status.HTTP_201_CREATED)
+        self.assertIn('복사됨', res_ok.data['content'])
+
+    def test_post_trash_permanent_delete(self):
+        """[H-2] 휴지통에서 영구 삭제(DELETE) 시 실제 DB 레코드가 완전히 삭제되는지 검증"""
+        # 글 삭제 (소프트 삭제)
+        self.normal_post.delete()
+        post_pk = self.normal_post.pk
+        self.assertTrue(Post.objects.filter(pk=post_pk).exists())
+
+        # 관리자 계정으로 휴지통에서 영구 삭제 실행
+        self.client.force_authenticate(user=self.admin_user)
+        res_del = self.client.delete(f'/api/v1/post-trash-can/{post_pk}/')
+        self.assertEqual(res_del.status_code, status.HTTP_204_NO_CONTENT)
+
+        # 실제 DB에서 완전히 삭제되었는지 검증 (소프트 삭제가 아니라 영구 삭제)
+        self.assertFalse(Post.objects.filter(pk=post_pk).exists())
+
+    def test_forum_admin_query_optimization(self):
+        """[M-2] ForumAdmin, PostAdmin, CommentAdmin의 list_select_related 적용으로 외래키 추가 쿼리 0건 검증"""
+        from django.contrib.admin.sites import AdminSite
+        from django.test import RequestFactory
+        from forum.admin import ForumAdmin, PostAdmin, CommentAdmin
+        from forum.models import Comment
+
+        factory = RequestFactory()
+        req = factory.get('/admin/')
+        req.user = self.admin_user
+
+        # 1. ForumAdmin
+        forum_admin = ForumAdmin(Forum, AdminSite())
+        f_qs = list(forum_admin.get_queryset(req).filter(pk=self.general_forum.pk))
+        self.assertEqual(len(f_qs), 1)
+        with self.assertNumQueries(0):
+            item = f_qs[0]
+            _ = item.project.name
+
+        # 2. PostAdmin
+        post_admin = PostAdmin(Post, AdminSite())
+        p_qs = list(post_admin.get_queryset(req).filter(pk=self.secret_post.pk))
+        self.assertEqual(len(p_qs), 1)
+        with self.assertNumQueries(0):
+            item = p_qs[0]
+            _ = item.forum.name
+            _ = item.creator.username
+
+        # 3. CommentAdmin
+        comment = Comment.objects.create(
+            post=self.secret_post,
+            content='비밀글에 달린 댓글',
+            creator=self.member_user
+        )
+        comm_admin = CommentAdmin(Comment, AdminSite())
+        c_qs = list(comm_admin.get_queryset(req).filter(pk=comment.pk))
+        self.assertEqual(len(c_qs), 1)
+        with self.assertNumQueries(0):
+            item = c_qs[0]
+            _ = item.post.title
+            _ = item.creator.username

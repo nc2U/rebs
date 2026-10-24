@@ -38,11 +38,11 @@ class ForumViewSet(viewsets.ModelViewSet):
         user = self.request.user
         queryset = super().get_queryset()
         if user.is_superuser or getattr(user, 'work_manager', False):
-            return queryset.select_related('project')
+            return queryset.select_related('project').prefetch_related('manager')
         # 행 보안: 사용자가 속한 워크스페이스의 게시판이거나 공개 워크스페이스의 게시판만 노출
         return queryset.filter(
             Q(project__is_public=True) | Q(project__members__user=user)
-        ).distinct().select_related('project')
+        ).distinct().select_related('project').prefetch_related('manager')
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -129,8 +129,8 @@ class PostViewSet(viewsets.ModelViewSet):
         forum = request.data.get('forum')
 
         try:
-            # 기존 행을 가져와서 복사한다.
-            org_instance = Post.objects.get(pk=origin_pk)
+            # [H-1] self.get_object()를 호출하여 RLS 및 권한 필터를 거치도록 수정 (IDOR 차단)
+            org_instance = self.get_object()
 
             # 개선: timezone을 사용하여 로컬 타임존 일관성 유지
             now_str = timezone.localtime(timezone.now()).strftime('%Y-%m-%d %H:%M:%S')
@@ -258,7 +258,7 @@ class CommentFilterSet(FilterSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     # 개선: N+1 쿼리 방지를 위한 select_related 및 prefetch_related 적용
-    queryset = Comment.objects.all().select_related('creator', 'post__forum').prefetch_related('replies')
+    queryset = Comment.objects.all().select_related('creator', 'post__forum').prefetch_related('replies__creator')
     serializer_class = CommentSerializer
     permission_classes = (permissions.IsAuthenticated, ForumPermission)
     filterset_class = CommentFilterSet
@@ -350,3 +350,9 @@ class PostInTrashViewSet(PostViewSet):
         return queryset.filter(
             Q(forum__project__is_public=True) | Q(forum__project__members__user=user)
         ).distinct()
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        # [H-2] 휴지통에서 삭제 시 모델 기본 delete()의 소프트 삭제 대신 실제 DB 레코드 영구 삭제 수행
+        Post.objects.filter(pk=instance.pk).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
