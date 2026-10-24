@@ -93,6 +93,11 @@ class HouseUnitSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {'key_unit': '호수의 타입과 계약유닛의 타입이 일치하지 않습니다.'}
             )
+        if key_unit and hasattr(key_unit, 'houseunit') and key_unit.houseunit is not None:
+            if self.instance is None or key_unit.houseunit.pk != self.instance.pk:
+                raise serializers.ValidationError(
+                    {'key_unit': f'해당 유닛 코드({key_unit.unit_code})는 이미 다른 세대({key_unit.houseunit})에 배정되어 있습니다.'}
+                )
         return attrs
 
     @classmethod
@@ -110,13 +115,23 @@ class HouseUnitSerializer(serializers.ModelSerializer):
                     {'unit_type': '동수와 타입의 프로젝트가 일치하지 않습니다.'}
                 )
             # [C-2] transaction.atomic + select_for_update 으로 Race Condition 차단
-            # get_or_create 이후 행 락을 즉시 획득하여 동시 요청의 이중 배정을 원천 방지
+            # get_or_create 시 다른 타입과의 unique_together 충돌(500)을 방어하기 위해 filter 후 검증
             with transaction.atomic():
-                key_unit, _ = KeyUnit.objects.select_for_update().get_or_create(
+                key_unit = KeyUnit.objects.select_for_update().filter(
                     project=building_unit.project,
-                    unit_type=unit_type,
                     unit_code=unit_code,
-                )
+                ).first()
+                if key_unit:
+                    if key_unit.unit_type_id != unit_type.pk:
+                        raise serializers.ValidationError(
+                            {'unit_code': f'해당 유닛 코드({unit_code})는 이미 다른 타입({key_unit.unit_type})으로 등록되어 있습니다.'}
+                        )
+                else:
+                    key_unit = KeyUnit.objects.create(
+                        project=building_unit.project,
+                        unit_type=unit_type,
+                        unit_code=unit_code,
+                    )
                 if hasattr(key_unit, 'houseunit') and key_unit.houseunit is not None:
                     if instance is None or key_unit.houseunit.pk != instance.pk:
                         raise serializers.ValidationError(
@@ -202,5 +217,14 @@ class OptionItemSerializer(serializers.ModelSerializer):
             if opt_deposit + opt_balance != opt_price:
                 raise serializers.ValidationError(
                     {'opt_deposit': '계약금 + 잔금의 합계가 옵션가격과 일치해야 합니다.'}
+                )
+
+        types = attrs.get('types')
+        project = attrs.get('project') or (self.instance.project if self.instance else None)
+        if types and project:
+            invalid_types = [t for t in types if t.project_id != project.id]
+            if invalid_types:
+                raise serializers.ValidationError(
+                    {'types': '옵션 품목의 프로젝트와 타입 구분의 프로젝트가 일치해야 합니다.'}
                 )
         return attrs

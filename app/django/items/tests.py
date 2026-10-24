@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
+from django.test import TestCase
 from rest_framework import status
 
 from rest_framework.test import APITestCase
@@ -529,6 +530,188 @@ class ItemsIsolationAndPermissionTests(APITestCase):
         )
         self.assertIsNotNone(valid_opt.pk)
         self.assertEqual(valid_opt.opt_price, 2000000)
+
+    def test_house_unit_direct_key_unit_already_bound_validation(self):
+        """[H-1] key_unit PK 직접 전달 시 이미 타 세대에 바인딩된 경우 500이 아닌 400 ValidationError 반환"""
+        self.client.force_authenticate(user=self.user_a)
+
+        # 1. house_a에 key_unit_a 배정
+        self.house_a.key_unit = self.key_unit_a
+        self.house_a.save()
+
+        # 2. 신규 세대 생성 시 key_unit_a를 직접 key_unit 필드로 전달 -> 400 Bad Request
+        res = self.client.post('/api/v1/house-unit/', {
+            'building_unit': self.bldg_a.pk,
+            'unit_type': self.unit_type_a.pk,
+            'bldg_line': 2,
+            'floor_no': 3,
+            'name': '105',
+            'key_unit': self.key_unit_a.pk
+        })
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('key_unit', res.data)
+
+    def test_house_unit_resolve_key_unit_type_mismatch(self):
+        """[H-2] unit_code가 이미 동일 프로젝트 내 다른 unit_type으로 존재하는 경우 500이 아닌 400 ValidationError 반환"""
+        self.client.force_authenticate(user=self.user_a)
+
+        # 1. unit_type_a2 생성 및 해당 타입으로 KU-MIS 유닛코드 등록
+        unit_type_a2 = UnitType.objects.create(
+            project=self.project_a, name='104B', color='#777777', sort='1', num_unit=20
+        )
+        KeyUnit.objects.create(
+            project=self.project_a, unit_type=unit_type_a2, unit_code='KU-MIS'
+        )
+
+        # 2. unit_type_a로 세대 생성 시 동일한 KU-MIS를 unit_code로 전달 -> 400 Bad Request
+        res = self.client.post('/api/v1/house-unit/', {
+            'building_unit': self.bldg_a.pk,
+            'unit_type': self.unit_type_a.pk,
+            'bldg_line': 1,
+            'floor_no': 5,
+            'name': '106',
+            'unit_code': 'KU-MIS'
+        })
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('unit_code', res.data)
+
+    def test_option_item_cross_project_types_validation(self):
+        """[H-3] OptionItem에 타 프로젝트의 UnitType을 ManyToMany로 배정 시 400 ValidationError 차단"""
+        self.client.force_authenticate(user=self.user_a)
+
+        # project_a의 옵션 품목에 project_b의 unit_type_b 배정 시도 -> 400 Bad Request
+        res = self.client.post('/api/v1/option-item/', {
+            'project': self.project_a.pk,
+            'opt_name': '주방 엔지니어드스톤',
+            'opt_price': 1500000,
+            'types': [self.unit_type_b.pk]
+        })
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('types', res.data)
+
+    def test_unit_floor_type_model_clean_validation(self):
+        """[M-1] UnitFloorType 모델 레벨 clean()에서 시작 층 > 종료 층 시 ValidationError 발생 검증"""
+        floor = UnitFloorType(
+            project=self.project_a, sort='1', start_floor=15, end_floor=10, alias_name='역전층'
+        )
+        with self.assertRaises(ValidationError):
+            floor.save()
+
+    def test_available_house_unit_viewset_readonly(self):
+        """[L-1] AvailableHouseUnitViewSet은 ReadOnly이므로 POST 등 쓰기 요청 시 405 Method Not Allowed 반환"""
+        self.client.force_authenticate(user=self.user_a)
+
+        res = self.client.post('/api/v1/available-house-unit/', {
+            'building_unit': self.bldg_a.pk,
+            'unit_type': self.unit_type_a.pk,
+            'bldg_line': 1,
+            'floor_no': 1,
+            'name': '909'
+        })
+        self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+class ItemsAdminQueryOptimizationTest(TestCase):
+    """[M-2, M-4] KeyUnitAdmin, UnitTypeAdmin, HouseUnitAdmin 등 get_queryset 최적화 및 N+1 방어 검증"""
+
+    def setUp(self):
+        self.admin = User.objects.create_superuser(
+            username='admin_item_opt', email='admin_opt@test.com', password='password123'
+        )
+        self.company = Company.objects.create(name='옵티건설')
+        self.ip = IssueProject.objects.create(
+            company=self.company, name='옵티프로젝트', slug='opti-proj', type='2', creator=self.admin
+        )
+        self.project = Project.objects.create(
+            issue_project=self.ip, name='옵티프로젝트', kind='1',
+            start_year=2026, monthly_aggr_start_date='2026-01-01',
+            construction_start_date='2026-03-01', construction_period_months=24
+        )
+        self.unit_type = UnitType.objects.create(
+            project=self.project, name='84A', color='#000000', sort='1', num_unit=50
+        )
+        self.floor_type = UnitFloorType.objects.create(
+            project=self.project, sort='1', start_floor=1, end_floor=5, alias_name='1-5층'
+        )
+        self.bldg = BuildingUnit.objects.create(project=self.project, name='101동')
+        self.key_unit = KeyUnit.objects.create(
+            project=self.project, unit_type=self.unit_type, unit_code='KU-OPT'
+        )
+        self.house = HouseUnit.objects.create(
+            building_unit=self.bldg, unit_type=self.unit_type, floor_type=self.floor_type,
+            bldg_line=1, floor_no=1, name='101', key_unit=self.key_unit
+        )
+        self.order_group = OrderGroup.objects.create(
+            project=self.project, order_number=1, name='일반분양'
+        )
+        self.contract = Contract.objects.create(
+            project=self.project, order_group=self.order_group, serial_number='CONT-OPT-001',
+            key_unit=self.key_unit, creator=self.admin
+        )
+        self.option = OptionItem.objects.create(
+            project=self.project, opt_name='빌트인 오븐', opt_price=800000
+        )
+        self.option.types.add(self.unit_type)
+
+    def test_items_admin_query_optimization(self):
+        from django.contrib.admin.sites import AdminSite
+        from django.test import RequestFactory
+        from items.admin import (
+            UnitTypeAdmin, UnitFloorTypeAdmin, KeyUnitAdmin,
+            BuildingUnitAdmin, HouseUnitAdmin, OptionItemAdmin
+        )
+
+        factory = RequestFactory()
+        req = factory.get('/admin/')
+        req.user = self.admin
+        site = AdminSite()
+
+        # 1. KeyUnitAdmin - project, unit_type, contract pre-fetched
+        ku_admin = KeyUnitAdmin(KeyUnit, site)
+        ku_qs = list(ku_admin.get_queryset(req).filter(pk=self.key_unit.pk))
+        self.assertEqual(len(ku_qs), 1)
+        with self.assertNumQueries(0):
+            item = ku_qs[0]
+            _ = item.project.name
+            _ = item.unit_type.name
+            _ = item.contract.serial_number
+
+        # 2. HouseUnitAdmin - building_unit__project, unit_type, building_unit, floor_type, key_unit
+        hu_admin = HouseUnitAdmin(HouseUnit, site)
+        hu_qs = list(hu_admin.get_queryset(req).filter(pk=self.house.pk))
+        self.assertEqual(len(hu_qs), 1)
+        with self.assertNumQueries(0):
+            item = hu_qs[0]
+            _ = item.building_unit.project.name
+            _ = item.unit_type.name
+            _ = item.building_unit.name
+            _ = item.floor_type.alias_name
+            _ = item.key_unit.unit_code
+
+        # 3. UnitTypeAdmin
+        ut_admin = UnitTypeAdmin(UnitType, site)
+        ut_qs = list(ut_admin.get_queryset(req).filter(pk=self.unit_type.pk))
+        self.assertEqual(len(ut_qs), 1)
+        with self.assertNumQueries(0):
+            item = ut_qs[0]
+            _ = item.project.name
+
+        # 4. BuildingUnitAdmin
+        bu_admin = BuildingUnitAdmin(BuildingUnit, site)
+        bu_qs = list(bu_admin.get_queryset(req).filter(pk=self.bldg.pk))
+        self.assertEqual(len(bu_qs), 1)
+        with self.assertNumQueries(0):
+            item = bu_qs[0]
+            _ = item.project.name
+
+        # 5. OptionItemAdmin
+        oi_admin = OptionItemAdmin(OptionItem, site)
+        oi_qs = list(oi_admin.get_queryset(req).filter(pk=self.option.pk))
+        self.assertEqual(len(oi_qs), 1)
+        with self.assertNumQueries(0):
+            item = oi_qs[0]
+            _ = item.project.name
+            _ = list(item.types.all())
 
 
 

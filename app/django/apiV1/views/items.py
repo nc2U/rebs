@@ -1,5 +1,5 @@
 from django.db.models import Q
-from django_filters import BooleanFilter
+from django_filters import BooleanFilter, NumberFilter, CharFilter
 from django_filters.rest_framework import FilterSet
 from rest_framework import viewsets
 
@@ -115,12 +115,23 @@ class BuildingUnitViewSet(viewsets.ModelViewSet):
         return qs.filter(project_id__in=get_accessible_project_ids(user))
 
 
+class HouseUnitFilterSet(FilterSet):
+    project = NumberFilter(field_name='building_unit__project_id', label='프로젝트')
+    unit_type_sort = CharFilter(field_name='unit_type__sort', label='타입종류')
+
+    class Meta:
+        model = HouseUnit
+        fields = (
+            'project', 'building_unit__project', 'unit_type__sort', 'unit_type_sort',
+            'unit_type', 'floor_type', 'building_unit', 'is_hold'
+        )
+
+
 class HouseUnitViewSet(viewsets.ModelViewSet):
     queryset = HouseUnit.objects.select_related('unit_type', 'floor_type', 'building_unit', 'key_unit').all()
     serializer_class = HouseUnitSerializer
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly, IbsModulePermission)
-    filterset_fields = ('building_unit__project', 'unit_type__sort', 'unit_type',
-                        'floor_type', 'building_unit', 'is_hold')
+    filterset_class = HouseUnitFilterSet
     search_fields = ('name', 'building_unit__name', 'hold_reason')
 
     @property
@@ -137,8 +148,17 @@ class HouseUnitViewSet(viewsets.ModelViewSet):
         return qs.filter(building_unit__project_id__in=get_accessible_project_ids(user))
 
 
-class AvailableHouseUnitViewSet(HouseUnitViewSet):
+class AvailableHouseUnitViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = HouseUnit.objects.select_related('unit_type', 'floor_type', 'building_unit', 'key_unit').all()
+    serializer_class = HouseUnitSerializer
+    permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly, IbsModulePermission)
     pagination_class = PageNumberPaginationThreeHundred
+    filterset_class = HouseUnitFilterSet
+    search_fields = ('name', 'building_unit__name', 'hold_reason')
+
+    @property
+    def required_permission(self):
+        return None
 
     def get_queryset(self):
         user = self.request.user
@@ -165,12 +185,17 @@ class AvailableHouseUnitViewSet(HouseUnitViewSet):
 
 
 class AllHouseUnitViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = HouseUnit.objects.all()
+    queryset = HouseUnit.objects.select_related(
+        'unit_type',
+        'floor_type',
+        'building_unit',
+        'key_unit__contract__contractor',
+        'key_unit__contract__contractprice',
+    ).all()
     serializer_class = AllHouseUnitSerializer
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly, IbsModulePermission)
     pagination_class = PageNumberPaginationThreeThousand
-    filterset_fields = ('building_unit__project', 'unit_type__sort', 'unit_type',
-                        'floor_type', 'building_unit', 'is_hold')
+    filterset_class = HouseUnitFilterSet
     search_fields = ('name', 'building_unit__name', 'hold_reason')
 
     @property
@@ -179,13 +204,7 @@ class AllHouseUnitViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        queryset = HouseUnit.objects.select_related(
-            'unit_type',
-            'floor_type',
-            'building_unit',
-            'key_unit__contract__contractor',
-            'key_unit__contract__contractprice',
-        ).all()
+        queryset = super().get_queryset()
         if user.is_superuser or getattr(user, 'work_manager', False):
             return queryset
         return queryset.filter(building_unit__project_id__in=get_accessible_project_ids(user))
@@ -195,8 +214,8 @@ class HouseUnitSummaryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = HouseUnit.objects.select_related('unit_type', 'building_unit').all()
     serializer_class = HouseUnitSummarySerializer
     permission_classes = (permissions.IsAuthenticated, IsProjectStaffOrReadOnly, IbsModulePermission)
-    filterset_fields = ('building_unit__project', 'unit_type',
-                        'floor_type', 'building_unit', 'is_hold')
+    filterset_class = HouseUnitFilterSet
+    search_fields = ('name', 'building_unit__name')
 
     @property
     def required_permission(self):
@@ -227,5 +246,5 @@ class OptionItemViewSet(viewsets.ModelViewSet):
         user = self.request.user
         qs = super().get_queryset()
         if user.is_superuser or getattr(user, 'work_manager', False):
-            return qs
-        return qs.filter(project_id__in=get_accessible_project_ids(user))
+            return qs.distinct()
+        return qs.filter(project_id__in=get_accessible_project_ids(user)).distinct()

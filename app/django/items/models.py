@@ -46,6 +46,15 @@ class UnitFloorType(models.Model):  # 층별 타입
     def __str__(self):
         return self.alias_name
 
+    def clean(self):
+        if self.start_floor is not None and self.end_floor is not None:
+            if self.start_floor > self.end_floor:
+                raise ValidationError({'end_floor': '종료 층은 시작 층보다 크거나 같아야 합니다.'})
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
+
     class Meta:
         ordering = ['-project__id', 'sort', '-end_floor']
         verbose_name = '02. 층별 조건'
