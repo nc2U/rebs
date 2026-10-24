@@ -8,6 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
+from apiV1.permissions._utils import get_project_ids_with_permission
 from apiV1.permissions.auth_perms import permissions, IsProjectStaffOrReadOnly
 from apiV1.permissions.ibs_perms import IbsModulePermission
 from ledger.models import ProjectAccountingEntry, ProjectBankTransaction
@@ -25,8 +26,9 @@ from ..serializers.project import ProjectSerializer, ProjectIncBudgetSerializer,
 logger = logging.getLogger(__name__)
 
 
-def get_accessible_project_ids(user):
-    return IssueProject.objects.filter(members__user=user).values_list('project__id', flat=True)
+def get_accessible_project_ids(user, required_perm: str = 'project.public'):
+    """[RLS] 사용자가 특정 권한(기본: project.public)을 보유한 프로젝트 ID 목록 반환"""
+    return get_project_ids_with_permission(user, required_perm)
 
 
 # 프로젝트 액션별 권한 매핑
@@ -215,7 +217,7 @@ class TotalSiteAreaViewSet(viewsets.ReadOnlyModelViewSet):
         user = self.request.user
         qs = Site.objects.all()
         if not (user.is_superuser or getattr(user, 'work_manager', False)):
-            qs = qs.filter(project_id__in=get_accessible_project_ids(user))
+            qs = qs.filter(project_id__in=get_accessible_project_ids(user, 'site.read'))
         return qs.values('project') \
             .annotate(official=Sum('official_area'),
                       returned=Sum('returned_area')) \
@@ -239,7 +241,7 @@ class SiteViewSet(viewsets.ModelViewSet):
         user = self.request.user
         queryset = super().get_queryset()
         if not (user.is_superuser or getattr(user, 'work_manager', False)):
-            queryset = queryset.filter(project_id__in=get_accessible_project_ids(user))
+            queryset = queryset.filter(project_id__in=get_accessible_project_ids(user, 'site.read'))
         # M2M(owners) 역방향 검색 시 중복 결과 방지
         if self.request.query_params.get('search'):
             return queryset.distinct()
@@ -268,7 +270,7 @@ class AllSiteViewSet(viewsets.ReadOnlyModelViewSet):
         qs = super().get_queryset()
         if user.is_superuser or getattr(user, 'work_manager', False):
             return qs
-        return qs.filter(project_id__in=get_accessible_project_ids(user))
+        return qs.filter(project_id__in=get_accessible_project_ids(user, 'site.read'))
 
 
 class TotalOwnerAreaViewSet(viewsets.ReadOnlyModelViewSet):
@@ -280,7 +282,7 @@ class TotalOwnerAreaViewSet(viewsets.ReadOnlyModelViewSet):
         user = self.request.user
         qs = Site.objects.all()
         if not (user.is_superuser or getattr(user, 'work_manager', False)):
-            qs = qs.filter(project_id__in=get_accessible_project_ids(user))
+            qs = qs.filter(project_id__in=get_accessible_project_ids(user, 'site.read'))
         return qs.values('project') \
             .annotate(owned_area=Sum('siteownshiprelationship__owned_area')) \
             .order_by('project')
@@ -345,7 +347,7 @@ class SiteOwnerViewSet(FindPageMixin, viewsets.ModelViewSet):
         user = self.request.user
         queryset = super().get_queryset()
         if not (user.is_superuser or getattr(user, 'work_manager', False)):
-            queryset = queryset.filter(project_id__in=get_accessible_project_ids(user))
+            queryset = queryset.filter(project_id__in=get_accessible_project_ids(user, 'site.read'))
         if self.request.query_params.get('search'):
             return queryset.distinct()
         return queryset
@@ -370,7 +372,7 @@ class AllOwnerViewSet(viewsets.ReadOnlyModelViewSet):
         qs = super().get_queryset()
         if user.is_superuser or getattr(user, 'work_manager', False):
             return qs
-        return qs.filter(project_id__in=get_accessible_project_ids(user))
+        return qs.filter(project_id__in=get_accessible_project_ids(user, 'site.read'))
 
 
 class SiteRelationViewSet(viewsets.ModelViewSet):
@@ -387,7 +389,7 @@ class SiteRelationViewSet(viewsets.ModelViewSet):
         qs = super().get_queryset()
         if user.is_superuser or getattr(user, 'work_manager', False):
             return qs
-        return qs.filter(site__project_id__in=get_accessible_project_ids(user))
+        return qs.filter(site__project_id__in=get_accessible_project_ids(user, 'site.read'))
 
 
 class TotalContractedAreaViewSet(viewsets.ReadOnlyModelViewSet):
@@ -399,7 +401,7 @@ class TotalContractedAreaViewSet(viewsets.ReadOnlyModelViewSet):
         user = self.request.user
         qs = SiteContract.objects.all()
         if not (user.is_superuser or getattr(user, 'work_manager', False)):
-            qs = qs.filter(project_id__in=get_accessible_project_ids(user))
+            qs = qs.filter(project_id__in=get_accessible_project_ids(user, 'site.read'))
         return qs.values('project') \
             .annotate(contracted_area=Sum('contract_area')) \
             .order_by('project')
@@ -427,7 +429,7 @@ class SiteContractViewSet(FindPageMixin, viewsets.ModelViewSet):
         user = self.request.user
         queryset = super().get_queryset()
         if not (user.is_superuser or getattr(user, 'work_manager', False)):
-            queryset = queryset.filter(project_id__in=get_accessible_project_ids(user))
+            queryset = queryset.filter(project_id__in=get_accessible_project_ids(user, 'site.read'))
         if self.request.query_params.get('search'):
             return queryset.distinct()
         return queryset
@@ -457,7 +459,7 @@ class SiteOwnerConsultationLogsViewSet(viewsets.ModelViewSet):
         user = self.request.user
         qs = super().get_queryset()
         if not (user.is_superuser or getattr(user, 'work_manager', False)):
-            qs = qs.filter(site_owner__project_id__in=get_accessible_project_ids(user))
+            qs = qs.filter(site_owner__project_id__in=get_accessible_project_ids(user, 'site.read'))
         return qs
 
     def perform_create(self, serializer):

@@ -1,9 +1,10 @@
 import datetime
 
 from django.db.models import Q
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest
 
 from _excel.mixins import ExcelExportMixin, AdvancedExcelMixin
+from apiV1.permissions._utils import get_project_ids_with_permission
 from project.models import Project, Site, SiteOwner, SiteContract
 
 
@@ -23,6 +24,12 @@ class ExportSites(ExcelExportMixin, AdvancedExcelMixin):
             project = Project.objects.get(pk=project_id)
         except (Project.DoesNotExist, ValueError):
             return HttpResponseBadRequest('유효하지 않은 프로젝트 ID입니다.')
+
+        user = request.user
+        if not (user.is_superuser or getattr(user, 'work_manager', False)):
+            accessible_projects = get_project_ids_with_permission(user, 'site.read')
+            if project.pk not in accessible_projects:
+                return HttpResponse('해당 프로젝트에 대한 열람 권한이 없습니다.', status=403, content_type='text/plain; charset=utf-8')
 
         today = get_today()
 
@@ -228,6 +235,12 @@ class ExportSitesByOwner(ExcelExportMixin, AdvancedExcelMixin):
             project = Project.objects.get(pk=project_id)
         except (Project.DoesNotExist, ValueError):
             return HttpResponseBadRequest('유효하지 않은 프로젝트 ID입니다.')
+
+        user = request.user
+        if not (user.is_superuser or getattr(user, 'work_manager', False)):
+            accessible_projects = get_project_ids_with_permission(user, 'site.read')
+            if project.pk not in accessible_projects:
+                return HttpResponse('해당 프로젝트에 대한 열람 권한이 없습니다.', status=403, content_type='text/plain; charset=utf-8')
 
         today = get_today()
 
@@ -436,6 +449,12 @@ class ExportSitesContracts(ExcelExportMixin, AdvancedExcelMixin):
             project = Project.objects.get(pk=project_id)
         except (Project.DoesNotExist, ValueError):
             return HttpResponseBadRequest('유효하지 않은 프로젝트 ID입니다.')
+
+        user = request.user
+        if not (user.is_superuser or getattr(user, 'work_manager', False)):
+            accessible_projects = get_project_ids_with_permission(user, 'site.read')
+            if project.pk not in accessible_projects:
+                return HttpResponse('해당 프로젝트에 대한 열람 권한이 없습니다.', status=403, content_type='text/plain; charset=utf-8')
 
         today = get_today()
 

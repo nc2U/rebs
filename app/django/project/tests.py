@@ -4,9 +4,11 @@ from unittest.mock import patch
 from django.contrib.auth import get_user_model
 from django.contrib.admin.sites import AdminSite
 from django.core.exceptions import ValidationError
+from django.test import RequestFactory
 from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework import status
+from rest_framework.exceptions import ValidationError as DRFValidationError
 
 from company.models import Company
 from contract.models import OrderGroup
@@ -20,6 +22,10 @@ from project.models import (
 from project.admin import (
     ProjectAdmin, ProjectIncBudgetAdmin, ProjectOutBudgetAdmin, SiteAdmin,
     SiteOwnerAdmin, SiteOwnshipRelationshipAdmin, SiteOwnerConsultationLogsAdmin, SiteContractAdmin
+)
+from apiV1.serializers.project import (
+    SiteOwnerSerializer, ProjectIncBudgetSerializer,
+    SiteContractSerializer, SiteOwnshipRelationshipSerializer
 )
 from work.models.project import IssueProject, Member, Role, Permission
 
@@ -35,6 +41,7 @@ class ProjectTestCaseBase(APITestCase):
             password='password123'
         )
         self.client.force_authenticate(user=self.admin_user)
+        self.client.force_login(self.admin_user)
 
         # 2. 회사 및 기본 워크스페이스
         self.company = Company.objects.create(name='테스트건설')
@@ -221,6 +228,36 @@ class ProjectTestCaseBase(APITestCase):
             creator=self.admin_user
         )
 
+        # 8. 예산 데이터
+        self.inc_budget_a = ProjectIncBudget.objects.create(
+            project=self.project_a,
+            account=self.account,
+            order_group=self.order_group_a,
+            unit_type=self.unit_type_a,
+            quantity=10,
+            budget=1000000000
+        )
+        self.out_budget_a = ProjectOutBudget.objects.create(
+            project=self.project_a,
+            order=1,
+            account=self.account,
+            budget=500000000
+        )
+        self.inc_budget_b = ProjectIncBudget.objects.create(
+            project=self.project_b,
+            account=self.account,
+            order_group=self.order_group_b,
+            unit_type=self.unit_type_b,
+            quantity=20,
+            budget=2000000000
+        )
+        self.out_budget_b = ProjectOutBudget.objects.create(
+            project=self.project_b,
+            order=1,
+            account=self.account,
+            budget=800000000
+        )
+
 
 class ProjectModelValidationTest(ProjectTestCaseBase):
     """모델 clean() 및 비즈니스 무결성 검증 테스트"""
@@ -292,6 +329,108 @@ class ProjectModelValidationTest(ProjectTestCaseBase):
         with self.assertRaises(ValidationError) as ctx:
             contract.clean()
         self.assertIn('owner', ctx.exception.message_dict)
+
+    def test_project_inc_budget_save_calls_clean(self):
+        """수입예산 저장 시 clean()이 호출되어 불일치 차수일 때 ValidationError 발생"""
+        budget = ProjectIncBudget(
+            project=self.project_a,
+            account=self.account,
+            order_group=self.order_group_b,  # 다른 프로젝트의 차수
+            unit_type=self.unit_type_a,
+            quantity=10,
+            budget=1000000000
+        )
+        with self.assertRaises(ValidationError):
+            budget.save()
+
+    def test_site_ownership_relationship_save_calls_clean(self):
+        """부지-소유자 관계 저장 시 clean()이 호출되어 불일치 프로젝트일 때 ValidationError 발생"""
+        rel = SiteOwnshipRelationship(
+            site=self.site_a,
+            site_owner=self.owner_b
+        )
+        with self.assertRaises(ValidationError):
+            rel.save()
+
+    def test_site_contract_save_calls_clean(self):
+        """계약 저장 시 clean()이 호출되어 불일치 프로젝트일 때 ValidationError 발생"""
+        contract = SiteContract(
+            project=self.project_a,
+            owner=self.owner_b,
+            contract_date=date(2026, 1, 1),
+            total_price=100000000,
+            acc_bank='우리은행',
+            acc_number='123-456-789',
+            acc_owner='소유자B'
+        )
+        with self.assertRaises(ValidationError):
+            contract.save()
+
+
+class ProjectSerializerValidationTest(ProjectTestCaseBase):
+    """시리얼라이저 레벨 프로젝트 불일치 차단 검증"""
+
+    def test_site_owner_serializer_create_cross_project_site_fails(self):
+        """SiteOwnerSerializer 생성 시 타 프로젝트 부지 전달 시 ValidationError 발생"""
+        data = {
+            'project': self.project_a.pk,
+            'owner': '신규소유자',
+            'sites': [self.site_b.pk]  # 프로젝트 B 부지
+        }
+        serializer = SiteOwnerSerializer(data=data)
+        self.assertTrue(serializer.is_valid())
+        with self.assertRaises(DRFValidationError) as ctx:
+            serializer.save()
+        self.assertIn('sites', ctx.exception.detail)
+
+    def test_site_owner_serializer_update_cross_project_site_fails(self):
+        """SiteOwnerSerializer 수정 시 타 프로젝트 부지 전달 시 ValidationError 발생"""
+        data = {
+            'owner': '소유자A_수정',
+            'sites': [self.site_b.pk]  # 프로젝트 B 부지
+        }
+        serializer = SiteOwnerSerializer(instance=self.owner_a, data=data, partial=True)
+        self.assertTrue(serializer.is_valid())
+        with self.assertRaises(DRFValidationError) as ctx:
+            serializer.save()
+        self.assertIn('sites', ctx.exception.detail)
+
+    def test_project_inc_budget_serializer_cross_project_fails(self):
+        """ProjectIncBudgetSerializer validate에서 프로젝트 불일치 차수 전달 시 차단"""
+        data = {
+            'project': self.project_a.pk,
+            'account': self.account.pk,
+            'order_group': self.order_group_b.pk,  # 프로젝트 B 차수
+            'quantity': 10,
+            'budget': 500000000
+        }
+        serializer = ProjectIncBudgetSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('order_group', serializer.errors)
+
+    def test_site_contract_serializer_cross_project_fails(self):
+        """SiteContractSerializer validate에서 프로젝트 불일치 소유자 전달 시 차단"""
+        data = {
+            'project': self.project_a.pk,
+            'owner': self.owner_b.pk,  # 프로젝트 B 소유자
+            'contract_date': '2026-03-01',
+            'total_price': 100000000,
+            'acc_bank': '우리은행',
+            'acc_number': '123-456-789',
+            'acc_owner': '소유자B'
+        }
+        serializer = SiteContractSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('owner', serializer.errors)
+
+    def test_site_ownership_relationship_serializer_cross_project_fails(self):
+        """SiteOwnshipRelationshipSerializer validate에서 프로젝트 불일치 관계 전달 시 차단"""
+        data = {
+            'site': self.site_a.pk,
+            'site_owner': self.owner_b.pk  # 프로젝트 B 소유자
+        }
+        serializer = SiteOwnshipRelationshipSerializer(data=data)
+        self.assertFalse(serializer.is_valid())
 
 
 class ProjectRLSTestCase(ProjectTestCaseBase):
@@ -439,9 +578,33 @@ class ProjectExcelExportTestCase(ProjectTestCaseBase):
         self.assertEqual(response['Content-Type'],
                          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
+    def test_export_sites_unauthorized_user_forbidden(self):
+        """ExportSites: 권한이 없는 사용자가 요청 시 403 Forbidden 반환"""
+        self.client.force_login(self.user_b)
+        url = reverse('excel:sites') + f'?project={self.project_a.pk}'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
+        self.assertIn('열람 권한이 없습니다', response.content.decode('utf-8'))
 
-class ProjectAdminTestCase(APITestCase):
-    """Admin 클래스 N+1 쿼리 방지 list_select_related 설정 검증"""
+    def test_export_sites_by_owner_unauthorized_user_forbidden(self):
+        """ExportSitesByOwner: 권한이 없는 사용자가 요청 시 403 Forbidden 반환"""
+        self.client.force_login(self.user_b)
+        url = reverse('excel:sites-by-owner') + f'?project={self.project_a.pk}'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
+        self.assertIn('열람 권한이 없습니다', response.content.decode('utf-8'))
+
+    def test_export_sites_contracts_unauthorized_user_forbidden(self):
+        """ExportSitesContracts: 권한이 없는 사용자가 요청 시 403 Forbidden 반환"""
+        self.client.force_login(self.user_b)
+        url = reverse('excel:sites-contracts') + f'?project={self.project_a.pk}'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
+        self.assertIn('열람 권한이 없습니다', response.content.decode('utf-8'))
+
+
+class ProjectAdminTestCase(ProjectTestCaseBase):
+    """Admin 클래스 N+1 쿼리 방지 list_select_related 및 RLS 설정 검증"""
 
     def test_admin_list_select_related_configured(self):
         site = AdminSite()
@@ -465,6 +628,68 @@ class ProjectAdminTestCase(APITestCase):
             ('site_owner', 'consultant', 'site_owner__project')
         )
         self.assertEqual(SiteContractAdmin(SiteContract, site).list_select_related, ('owner', 'project'))
+
+    def test_admin_get_queryset_rls_filtering(self):
+        """8개 Admin 클래스별 get_queryset RLS 필터링 검증"""
+        factory = RequestFactory()
+        site = AdminSite()
+
+        # 1. ProjectAdmin
+        admin_obj = ProjectAdmin(Project, site)
+        req_a = factory.get('/admin/project/project/')
+        req_a.user = self.user_a
+        qs_a = admin_obj.get_queryset(req_a)
+        self.assertIn(self.project_a, qs_a)
+        self.assertNotIn(self.project_b, qs_a)
+
+        # 2. ProjectIncBudgetAdmin
+        admin_obj = ProjectIncBudgetAdmin(ProjectIncBudget, site)
+        qs_a = admin_obj.get_queryset(req_a)
+        self.assertIn(self.inc_budget_a, qs_a)
+        self.assertNotIn(self.inc_budget_b, qs_a)
+
+        # 3. ProjectOutBudgetAdmin
+        admin_obj = ProjectOutBudgetAdmin(ProjectOutBudget, site)
+        qs_a = admin_obj.get_queryset(req_a)
+        self.assertIn(self.out_budget_a, qs_a)
+        self.assertNotIn(self.out_budget_b, qs_a)
+
+        # 4. SiteAdmin
+        admin_obj = SiteAdmin(Site, site)
+        qs_a = admin_obj.get_queryset(req_a)
+        self.assertIn(self.site_a, qs_a)
+        self.assertNotIn(self.site_b, qs_a)
+
+        # 5. SiteOwnerAdmin
+        admin_obj = SiteOwnerAdmin(SiteOwner, site)
+        qs_a = admin_obj.get_queryset(req_a)
+        self.assertIn(self.owner_a, qs_a)
+        self.assertNotIn(self.owner_b, qs_a)
+
+        # 6. SiteOwnshipRelationshipAdmin
+        admin_obj = SiteOwnshipRelationshipAdmin(SiteOwnshipRelationship, site)
+        qs_a = admin_obj.get_queryset(req_a)
+        self.assertIn(self.relation_a, qs_a)
+        self.assertNotIn(self.relation_b, qs_a)
+
+        # 7. SiteOwnerConsultationLogsAdmin
+        admin_obj = SiteOwnerConsultationLogsAdmin(SiteOwnerConsultationLogs, site)
+        qs_a = admin_obj.get_queryset(req_a)
+        self.assertIn(self.consultation_a, qs_a)
+        self.assertNotIn(self.consultation_b, qs_a)
+
+        # 8. SiteContractAdmin
+        admin_obj = SiteContractAdmin(SiteContract, site)
+        qs_a = admin_obj.get_queryset(req_a)
+        self.assertIn(self.contract_a, qs_a)
+        self.assertNotIn(self.contract_b, qs_a)
+
+        # Superuser는 전체 접근 가능
+        req_admin = factory.get('/admin/project/sitecontract/')
+        req_admin.user = self.admin_user
+        qs_admin = admin_obj.get_queryset(req_admin)
+        self.assertIn(self.contract_a, qs_admin)
+        self.assertIn(self.contract_b, qs_admin)
 
 
 class ProjectSignalTestCase(ProjectTestCaseBase):

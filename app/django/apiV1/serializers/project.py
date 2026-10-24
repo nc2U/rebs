@@ -270,6 +270,17 @@ class ProjectIncBudgetSerializer(serializers.ModelSerializer):
         fields = ('pk', 'project', 'account', 'account_d2', 'account_d3', 'order_group',
                   'unit_type', 'item_name', 'average_price', 'quantity', 'budget', 'revised_budget')
 
+    def validate(self, attrs):
+        project = attrs.get('project') or (self.instance.project if self.instance else None)
+        order_group = attrs.get('order_group') if 'order_group' in attrs else (self.instance.order_group if self.instance else None)
+        unit_type = attrs.get('unit_type') if 'unit_type' in attrs else (self.instance.unit_type if self.instance else None)
+
+        if project and order_group and order_group.project_id != project.pk:
+            raise serializers.ValidationError({'order_group': '차수의 프로젝트가 예산의 프로젝트와 일치하지 않습니다.'})
+        if project and unit_type and unit_type.project_id != project.pk:
+            raise serializers.ValidationError({'unit_type': '타입의 프로젝트가 예산의 프로젝트와 일치하지 않습니다.'})
+        return attrs
+
 
 class ProjectOutBudgetSerializer(serializers.ModelSerializer):
     class Meta:
@@ -508,6 +519,8 @@ class SiteOwnerSerializer(serializers.ModelSerializer):
                 site_instance = Site.objects.get(pk=site_pk)
             except Site.DoesNotExist:
                 raise serializers.ValidationError({"sites": f"Site with ID {site_pk} does not exist."})
+            if site_instance.project_id != site_owner.project_id:
+                raise serializers.ValidationError({"sites": f"부지 #{site_pk}의 프로젝트가 소유자의 프로젝트와 일치하지 않습니다."})
             SiteOwnshipRelationship.objects.create(site=site_instance, site_owner=site_owner)
 
         return site_owner
@@ -526,11 +539,14 @@ class SiteOwnerSerializer(serializers.ModelSerializer):
                 relation.delete()
 
         # 새로 추가할 관계
+        target_project_id = validated_data.get('project', instance.project).pk if hasattr(validated_data.get('project', instance.project), 'pk') else (validated_data.get('project') or instance.project_id)
         for site_pk in incoming_site_pks - existing_site_pks:
             try:
                 site = Site.objects.get(pk=site_pk)
             except Site.DoesNotExist:
                 raise serializers.ValidationError({"sites": f"Site with ID {site_pk} does not exist."})
+            if site.project_id != target_project_id:
+                raise serializers.ValidationError({"sites": f"부지 #{site_pk}의 프로젝트가 소유자의 프로젝트와 일치하지 않습니다."})
             SiteOwnshipRelationship.objects.create(site=site, site_owner=instance)
 
         for attr, value in validated_data.items():
@@ -554,6 +570,13 @@ class SiteOwnshipRelationshipSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteOwnshipRelationship
         fields = ('pk', 'site', 'site_owner', 'ownership_ratio', 'owned_area', 'acquisition_date')
+
+    def validate(self, attrs):
+        site = attrs.get('site') or (self.instance.site if self.instance else None)
+        site_owner = attrs.get('site_owner') or (self.instance.site_owner if self.instance else None)
+        if site and site_owner and site.project_id != site_owner.project_id:
+            raise serializers.ValidationError('부지의 프로젝트와 소유자의 프로젝트가 일치해야 합니다.')
+        return attrs
 
 
 class TotalContractedAreaSerializer(serializers.ModelSerializer):
@@ -580,6 +603,13 @@ class SiteContractSerializer(serializers.ModelSerializer):
                   'remain_pay', 'remain_pay_date', 'remain_pay_is_paid', 'ownership_completion',
                   'acc_bank', 'acc_number', 'acc_owner', 'site_cont_files', 'note',
                   'creator', 'updator', 'created', 'updated')
+
+    def validate(self, attrs):
+        project = attrs.get('project') or (self.instance.project if self.instance else None)
+        owner = attrs.get('owner') or (self.instance.owner if self.instance else None)
+        if project and owner and project.pk != owner.project_id:
+            raise serializers.ValidationError({'owner': '계약의 프로젝트와 소유자의 프로젝트가 일치해야 합니다.'})
+        return attrs
 
     @transaction.atomic
     def create(self, validated_data):

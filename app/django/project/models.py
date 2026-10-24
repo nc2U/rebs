@@ -86,6 +86,10 @@ class ProjectIncBudget(models.Model):
         if self.unit_type and self.unit_type.project_id != self.project_id:
             raise ValidationError({'unit_type': '타입의 프로젝트가 예산의 프로젝트와 일치하지 않습니다.'})
 
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
+
     class Meta:
         ordering = ('-project', 'id')
         verbose_name = '02. 프로젝트 수입예산'
@@ -214,6 +218,10 @@ class SiteOwnshipRelationship(models.Model):
             if self.site.project_id != self.site_owner.project_id:
                 raise ValidationError('부지의 프로젝트와 소유자의 프로젝트가 일치해야 합니다.')
 
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
+
     class Meta:
         ordering = ('-id',)
         verbose_name = '06. 사업부지 소유관계'
@@ -297,6 +305,10 @@ class SiteContract(models.Model):
         if hasattr(self, 'owner') and hasattr(self, 'project'):
             if self.project_id != self.owner.project_id:
                 raise ValidationError({'owner': '계약의 프로젝트와 소유자의 프로젝트가 일치해야 합니다.'})
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
     class Meta:
         ordering = ('-id',)

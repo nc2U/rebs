@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.humanize.templatetags.humanize import intcomma
 from import_export.admin import ImportExportMixin
 
+from apiV1.views.project import get_accessible_project_ids
 from .models import (Project, ProjectIncBudget, ProjectOutBudget, Site, SiteInfoFile,
                      SiteOwner, SiteOwnshipRelationship, SiteOwnerConsultationLogs,
                      SiteContract, SiteContractFile)
@@ -36,6 +37,13 @@ class ProjectAdmin(ImportExportMixin, admin.ModelAdmin):
         }),
     )
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_accessible_project_ids(request.user, 'project.public')
+        return qs.filter(pk__in=accessible_projects)
+
 
 @admin.register(ProjectIncBudget)
 class ProjectIncBudgetAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -47,6 +55,13 @@ class ProjectIncBudgetAdmin(ImportExportMixin, admin.ModelAdmin):
     list_filter = ('project', 'order_group', 'unit_type')
     list_select_related = ('project', 'account', 'account_d2', 'account_d3', 'order_group', 'unit_type')
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_accessible_project_ids(request.user, 'project.public')
+        return qs.filter(project_id__in=accessible_projects)
+
 
 @admin.register(ProjectOutBudget)
 class ProjectOutBudgetAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -57,6 +72,13 @@ class ProjectOutBudgetAdmin(ImportExportMixin, admin.ModelAdmin):
                      'budget', 'revised_budget', 'basis_calc')
     list_filter = ('project', 'account_d2', 'account_d3')
     list_select_related = ('project', 'account', 'account_d2', 'account_d3')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_accessible_project_ids(request.user, 'project.public')
+        return qs.filter(project_id__in=accessible_projects)
 
 
 class InfoFileAdmin(admin.TabularInline):
@@ -76,6 +98,13 @@ class SiteAdmin(ImportExportMixin, admin.ModelAdmin):
     list_select_related = ('project',)
     inlines = (InfoFileAdmin,)
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_accessible_project_ids(request.user, 'site.read')
+        return qs.filter(project_id__in=accessible_projects)
+
 
 @admin.register(SiteOwner)
 class SiteOwnerAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -86,6 +115,13 @@ class SiteOwnerAdmin(ImportExportMixin, admin.ModelAdmin):
     list_filter = ('project', 'own_sort',)
     list_select_related = ('project',)
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_accessible_project_ids(request.user, 'site.read')
+        return qs.filter(project_id__in=accessible_projects)
+
 
 @admin.register(SiteOwnshipRelationship)
 class SiteOwnshipRelationshipAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -94,6 +130,13 @@ class SiteOwnshipRelationshipAdmin(ImportExportMixin, admin.ModelAdmin):
     list_editable = ('ownership_ratio', 'owned_area', 'acquisition_date')
     list_filter = ('site__project',)
     list_select_related = ('site', 'site_owner', 'site__project')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_accessible_project_ids(request.user, 'site.read')
+        return qs.filter(site__project_id__in=accessible_projects)
 
 
 @admin.register(SiteOwnerConsultationLogs)
@@ -123,6 +166,13 @@ class SiteOwnerConsultationLogsAdmin(ImportExportMixin, admin.ModelAdmin):
         }),
     )
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_accessible_project_ids(request.user, 'site.read')
+        return qs.filter(site_owner__project_id__in=accessible_projects)
+
     def save_model(self, request, obj, form, change):
         if not change:
             obj.creator = request.user
@@ -144,6 +194,13 @@ class SiteContractAdmin(ImportExportMixin, admin.ModelAdmin):
     list_filter = ('owner__project',)
     list_select_related = ('owner', 'project')
     inlines = (ContFileAdmin,)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or getattr(request.user, 'work_manager', False):
+            return qs
+        accessible_projects = get_accessible_project_ids(request.user, 'site.read')
+        return qs.filter(project_id__in=accessible_projects)
 
     def formatted_price(self, obj):
         price = intcomma(obj.total_price)
