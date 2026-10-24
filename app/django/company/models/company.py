@@ -148,11 +148,11 @@ class CompanySeal(models.Model):
     SEAL_TYPE_CHOICES = (
         ('CORP_SEAL', '법인인감 (대표이사 직인)'),
         ('USAGE_SEAL', '사용인감'),
-        ('DEPT_SEAL', '부서/현장 직인'),
+        ('DEPT_SEAL', '부서/사업소 직인'),
         ('OMIT', '직인생략'),
     )
     CUSTODY_TYPE_CHOICES = (
-        ('internal', '사내 보관 (본사/현장)'),
+        ('internal', '사내 보관 (본사/사업소)'),
         ('external', '외부 교부 (용역사/대행사/법무사 등)'),
     )
 

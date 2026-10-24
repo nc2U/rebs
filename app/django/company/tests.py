@@ -367,3 +367,69 @@ class CompanyBugFixRegressionTests(APITestCase):
         res_att = ExportStaffAttendanceStatus().get(req_att)
         self.assertEqual(res_att.status_code, 200)
 
+    def test_company_seal_terminology(self):
+        """CompanySeal의 도메인 용어 체계 준수 검증 ('현장' 배제 및 '부서/사업소 직인' 확인)"""
+        seal = CompanySeal.objects.create(
+            company=self.company,
+            seal_type='DEPT_SEAL',
+            name='개발사업소 직인',
+            custody_type='internal',
+        )
+        self.assertEqual(seal.get_seal_type_display(), '부서/사업소 직인')
+        self.assertEqual(seal.get_custody_type_display(), '사내 보관 (본사/사업소)')
+
+    def test_staff_admin_and_prefetch_cache_query_optimization(self):
+        """StaffAdmin 렌더링 및 Staff.primary_assignment prefetch 캐시 활용 시 추가 쿼리 0건 검증"""
+        from django.contrib.admin.sites import AdminSite
+        from company.admin import StaffAdmin
+        from company.models import Department, DutyTitle, StaffAssignment
+
+        dept = Department.objects.create(company=self.company, name='경영기획팀')
+        duty = DutyTitle.objects.create(company=self.company, code='D1', name='팀장')
+        StaffAssignment.objects.create(
+            company=self.company, staff=self.staff, department=dept, duty=duty, is_primary=True
+        )
+
+        admin = StaffAdmin(Staff, AdminSite())
+        from django.test import RequestFactory
+        request = RequestFactory().get('/admin/company/staff/')
+        request.user = self.admin
+
+        qs = admin.get_queryset(request)
+        staff_list = list(qs)
+        self.assertEqual(len(staff_list), 1)
+
+        # 쿼리가 이미 끝난 상태에서 display 메서드 호출 시 추가 쿼리가 0건이어야 함
+        with self.assertNumQueries(0):
+            item = staff_list[0]
+            self.assertEqual(admin.get_executive_rank(item), '전무')
+            self.assertEqual(admin.get_department(item), '경영기획팀')
+            self.assertEqual(admin.get_duty(item), '팀장')
+
+    def test_excel_export_optimized_views(self):
+        """리팩토링된 ExportDeparts, ExportPositions, ExportGrades 엑셀 내보내기 200 검증"""
+        from django.test import RequestFactory
+        from company.exports.excel import ExportDeparts, ExportPositions, ExportGrades
+        from company.models import Department, JobGrade, Position
+        factory = RequestFactory()
+
+        dept = Department.objects.create(company=self.company, name='개발기획팀')
+        grade = JobGrade.objects.create(company=self.company, code='G1', role='과장')
+        pos = Position.objects.create(company=self.company, name='선임연구원')
+        pos.grades.add(grade)
+
+        # 1. ExportDeparts
+        req = factory.get(f'/company/export/departs/?company={self.company.pk}')
+        res = ExportDeparts().get(req)
+        self.assertEqual(res.status_code, 200)
+
+        # 2. ExportPositions
+        req = factory.get(f'/company/export/positions/?company={self.company.pk}')
+        res = ExportPositions().get(req)
+        self.assertEqual(res.status_code, 200)
+
+        # 3. ExportGrades
+        req = factory.get(f'/company/export/grades/?company={self.company.pk}')
+        res = ExportGrades().get(req)
+        self.assertEqual(res.status_code, 200)
+

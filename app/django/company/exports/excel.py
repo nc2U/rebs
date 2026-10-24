@@ -14,9 +14,6 @@ from company.models import (Company, Staff, Department, JobGrade, Position, Duty
                             ExecutiveRank, Executive, PersonnelOrder, StaffCareer, StaffCertificate,
                             StaffRewardPunishment, StaffLeaveQuota, StaffLeaveUsage, StaffEvaluation,
                             PromotionPolicy, PromotionCandidate)
-from contract.models import Contract
-from project.models import Project
-
 TODAY = datetime.date.today().strftime('%Y-%m-%d')
 
 
@@ -110,12 +107,18 @@ class ExportStaffs(ExcelExportMixin):
             Q(personal_phone__icontains=search) |
             Q(email__icontains=search)).distinct() if search else obj_list
 
-        body_format = {
+        format_date = workbook.add_format({
             'border': True,
             'align': 'center',
             'valign': 'vcenter',
             'num_format': 'yyyy-mm-dd'
-        }
+        })
+        format_text = workbook.add_format({
+            'border': True,
+            'align': 'center',
+            'valign': 'vcenter',
+            'num_format': '@'
+        })
 
         # Turn off some of the warnings:
         worksheet.ignore_errors({'number_stored_as_text': 'B:L'})
@@ -141,11 +144,7 @@ class ExportStaffs(ExcelExportMixin):
                 s.date_leave or '',
             ]
             for col_num, cell_data in enumerate(row_data):
-                if col_num in (10, 12):
-                    body_format['num_format'] = 'yyyy-mm-dd'
-                else:
-                    body_format['num_format'] = '@'
-                bformat = workbook.add_format(body_format)
+                bformat = format_date if col_num in (10, 12) else format_text
                 worksheet.write(row_num, col_num, cell_data, bformat)
 
         # data finish -------------------------------------------- #
@@ -220,12 +219,20 @@ class ExportDeparts(ExcelExportMixin):
             Q(task__icontains=search)) if search else obj_list
 
         data = obj_list.values_list(*params)
+        dept_map = {d.pk: d.name for d in Department.objects.filter(company=company)}
 
-        body_format = {
+        format_left = workbook.add_format({
             'border': True,
+            'align': 'left',
             'valign': 'vcenter',
             'num_format': '#,##0'
-        }
+        })
+        format_center = workbook.add_format({
+            'border': True,
+            'align': 'center',
+            'valign': 'vcenter',
+            'num_format': '#,##0'
+        })
 
         # Turn off some of the warnings:
         # worksheet.ignore_errors({'number_stored_as_text': 'F:G'})
@@ -237,13 +244,8 @@ class ExportDeparts(ExcelExportMixin):
             row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
                 if col_num == 1:
-                    cell_data = obj_list.get(pk=cell_data).name if cell_data else None
-                if col_num == 3:
-                    body_format['align'] = 'left'
-                else:
-                    body_format['align'] = 'center'
-
-                bformat = workbook.add_format(body_format)
+                    cell_data = dept_map.get(cell_data) if cell_data else None
+                bformat = format_left if col_num == 3 else format_center
                 worksheet.write(row_num, col_num, cell_data, bformat)
 
         # data finish -------------------------------------------- #
@@ -316,17 +318,23 @@ class ExportPositions(ExcelExportMixin):
         data = [i['fields'] for i in json.loads(json_data)]
         # data = obj_list.values_list(*params)
 
-        body_format = {
+        grade_map = {g.pk: g.code for g in JobGrade.objects.filter(company=company)}
+
+        format_left = workbook.add_format({
             'border': True,
+            'align': 'left',
             'valign': 'vcenter',
             'num_format': '#,##0'
-        }
+        })
+        format_center = workbook.add_format({
+            'border': True,
+            'align': 'center',
+            'valign': 'vcenter',
+            'num_format': '#,##0'
+        })
 
         # Turn off some of the warnings:
         worksheet.ignore_errors({'number_stored_as_text': 'A:D'})
-
-        def get_grade(pk):
-            return JobGrade.objects.get(pk=pk).code
 
         # Write body
         params.insert(0, 'num')
@@ -341,14 +349,10 @@ class ExportPositions(ExcelExportMixin):
             row_data.insert(3, row['desc'])
 
             for col_num, cell_data in enumerate(row_data):
-                if type(cell_data) == list:
-                    grades = [get_grade(i) for i in cell_data]
+                if isinstance(cell_data, list):
+                    grades = [grade_map.get(gid, '') for gid in cell_data if gid in grade_map]
                     cell_data = ', '.join(sorted(grades))
-                if col_num in (2, 3):
-                    body_format['align'] = 'left'
-                else:
-                    body_format['align'] = 'center'
-                bformat = workbook.add_format(body_format)
+                bformat = format_left if col_num in (2, 3) else format_center
                 worksheet.write(row_num, col_num, cell_data, bformat)
         # data finish -------------------------------------------- #
 
@@ -420,11 +424,18 @@ class ExportDuties(ExcelExportMixin):
 
         data = obj_list.values_list(*params)
 
-        body_format = {
+        format_left = workbook.add_format({
             'border': True,
+            'align': 'left',
             'valign': 'vcenter',
             'num_format': '#,##0'
-        }
+        })
+        format_center = workbook.add_format({
+            'border': True,
+            'align': 'center',
+            'valign': 'vcenter',
+            'num_format': '#,##0'
+        })
 
         # Turn off some of the warnings:
         # worksheet.ignore_errors({'number_stored_as_text': 'F:G'})
@@ -435,11 +446,7 @@ class ExportDuties(ExcelExportMixin):
             row_num += 1
             row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
-                if col_num in (2, 3):
-                    body_format['align'] = 'left'
-                else:
-                    body_format['align'] = 'center'
-                bformat = workbook.add_format(body_format)
+                bformat = format_left if col_num in (2, 3) else format_center
                 worksheet.write(row_num, col_num, cell_data, bformat)
         # data finish -------------------------------------------- #
 
@@ -537,17 +544,23 @@ class ExportGrades(ExcelExportMixin):
             dt['positions'] = dt['p_list']
             del dt['p_list']
 
-        body_format = {
+        pos_map = {p.pk: p.name for p in Position.objects.filter(company=company)}
+
+        format_left = workbook.add_format({
             'border': True,
+            'align': 'left',
             'valign': 'vcenter',
             'num_format': '#,##0'
-        }
+        })
+        format_center = workbook.add_format({
+            'border': True,
+            'align': 'center',
+            'valign': 'vcenter',
+            'num_format': '#,##0'
+        })
 
         # Turn off some of the warnings:
         worksheet.ignore_errors({'number_stored_as_text': 'A:D'})
-
-        def get_position(pk):
-            return Position.objects.get(pk=pk).name
 
         # Write body
         for i, row in enumerate(data):
@@ -556,14 +569,10 @@ class ExportGrades(ExcelExportMixin):
                         row['promotion_criteria']]
 
             for col_num, cell_data in enumerate(row_data):
-                if type(cell_data) == list:
-                    positions = [get_position(i) for i in cell_data]
+                if isinstance(cell_data, list):
+                    positions = [pos_map.get(i, '') for i in cell_data if i in pos_map]
                     cell_data = ', '.join(sorted(positions))
-                if col_num in (2, 4, 5):
-                    body_format['align'] = 'left'
-                else:
-                    body_format['align'] = 'center'
-                bformat = workbook.add_format(body_format)
+                bformat = format_left if col_num in (2, 4, 5) else format_center
                 worksheet.write(row_num, col_num, cell_data, bformat)
         # data finish -------------------------------------------- #
 
@@ -636,11 +645,18 @@ class ExportExecutiveRanks(ExcelExportMixin):
 
         data = obj_list.values_list(*params)
 
-        body_format = {
+        format_left = workbook.add_format({
             'border': True,
+            'align': 'left',
             'valign': 'vcenter',
             'num_format': '#,##0'
-        }
+        })
+        format_center = workbook.add_format({
+            'border': True,
+            'align': 'center',
+            'valign': 'vcenter',
+            'num_format': '#,##0'
+        })
 
         # Write body
         for i, row in enumerate(data):
@@ -648,11 +664,7 @@ class ExportExecutiveRanks(ExcelExportMixin):
             row_num += 1
             row.insert(0, i + 1)
             for col_num, cell_data in enumerate(row):
-                if col_num in (3, 4):
-                    body_format['align'] = 'left'
-                else:
-                    body_format['align'] = 'center'
-                bformat = workbook.add_format(body_format)
+                bformat = format_left if col_num in (3, 4) else format_center
                 worksheet.write(row_num, col_num, cell_data, bformat)
         # data finish -------------------------------------------- #
 
@@ -751,12 +763,9 @@ class ExportExecutives(ExcelExportMixin):
                 Q(note__icontains=search)
             )
 
-        body_format = {
-            'border': True,
-            'align': 'center',
-            'valign': 'vcenter',
-            'num_format': '@'
-        }
+        fmt_date = workbook.add_format({'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': 'yyyy-mm-dd'})
+        fmt_text_center = workbook.add_format({'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': '@'})
+        fmt_text_left = workbook.add_format({'border': True, 'align': 'left', 'valign': 'vcenter', 'num_format': '@'})
 
         executive_map = dict(Executive.EXECUTIVE_TYPE_CHOICES)
         represent_map = dict(Executive.REPRESENT_CHOICES)
@@ -779,14 +788,11 @@ class ExportExecutives(ExcelExportMixin):
 
             for col_num, cell_data in enumerate(row_data):
                 if col_num in (7, 8, 9) and cell_data:
-                    body_format['num_format'] = 'yyyy-mm-dd'
+                    bformat = fmt_date
+                elif col_num == 10:
+                    bformat = fmt_text_left
                 else:
-                    body_format['num_format'] = '@'
-                if col_num == 10:
-                    body_format['align'] = 'left'
-                else:
-                    body_format['align'] = 'center'
-                bformat = workbook.add_format(body_format)
+                    bformat = fmt_text_center
                 worksheet.write(row_num, col_num, cell_data, bformat)
 
         # data finish -------------------------------------------- #
@@ -876,12 +882,9 @@ class ExportAppointments(ExcelExportMixin):
                 Q(description__icontains=search)
             )
 
-        body_format = {
-            'border': True,
-            'align': 'center',
-            'valign': 'vcenter',
-            'num_format': '@'
-        }
+        fmt_date = workbook.add_format({'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': 'yyyy-mm-dd'})
+        fmt_text_center = workbook.add_format({'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': '@'})
+        fmt_text_left = workbook.add_format({'border': True, 'align': 'left', 'valign': 'vcenter', 'num_format': '@'})
 
         order_type_map = dict(PersonnelOrder.ORDER_TYPE_CHOICES)
 
@@ -905,14 +908,11 @@ class ExportAppointments(ExcelExportMixin):
 
             for col_num, cell_data in enumerate(row_data):
                 if col_num in (1, 12) and cell_data:
-                    body_format['num_format'] = 'yyyy-mm-dd'
+                    bformat = fmt_date
+                elif col_num in (3, 11):
+                    bformat = fmt_text_left
                 else:
-                    body_format['num_format'] = '@'
-                if col_num in (3, 11):
-                    body_format['align'] = 'left'
-                else:
-                    body_format['align'] = 'center'
-                bformat = workbook.add_format(body_format)
+                    bformat = fmt_text_center
                 worksheet.write(row_num, col_num, cell_data, bformat)
 
         # data finish -------------------------------------------- #
@@ -979,7 +979,9 @@ class ExportStaffCareers(ExcelExportMixin):
                 Q(assigned_tasks__icontains=search)
             )
 
-        body_format = {'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': '@'}
+        fmt_date = workbook.add_format({'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': 'yyyy-mm-dd'})
+        fmt_text_center = workbook.add_format({'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': '@'})
+        fmt_text_left = workbook.add_format({'border': True, 'align': 'left', 'valign': 'vcenter', 'num_format': '@'})
 
         for i, item in enumerate(obj_list):
             row_num += 1
@@ -997,14 +999,11 @@ class ExportStaffCareers(ExcelExportMixin):
             ]
             for col_num, cell_data in enumerate(row_data):
                 if col_num in (6, 7) and cell_data:
-                    body_format['num_format'] = 'yyyy-mm-dd'
+                    bformat = fmt_date
+                elif col_num in (2, 5, 9):
+                    bformat = fmt_text_left
                 else:
-                    body_format['num_format'] = '@'
-                if col_num in (2, 5, 9):
-                    body_format['align'] = 'left'
-                else:
-                    body_format['align'] = 'center'
-                bformat = workbook.add_format(body_format)
+                    bformat = fmt_text_center
                 worksheet.write(row_num, col_num, cell_data, bformat)
 
         filename = request.GET.get('filename') or 'staff-careers'
@@ -1070,7 +1069,9 @@ class ExportStaffCertificates(ExcelExportMixin):
                 Q(issuer__icontains=search)
             )
 
-        body_format = {'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': '@'}
+        fmt_date = workbook.add_format({'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': 'yyyy-mm-dd'})
+        fmt_text_center = workbook.add_format({'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': '@'})
+        fmt_text_left = workbook.add_format({'border': True, 'align': 'left', 'valign': 'vcenter', 'num_format': '@'})
 
         for i, item in enumerate(obj_list):
             row_num += 1
@@ -1088,14 +1089,11 @@ class ExportStaffCertificates(ExcelExportMixin):
             ]
             for col_num, cell_data in enumerate(row_data):
                 if col_num in (6, 7) and cell_data:
-                    body_format['num_format'] = 'yyyy-mm-dd'
+                    bformat = fmt_date
+                elif col_num in (2, 8):
+                    bformat = fmt_text_left
                 else:
-                    body_format['num_format'] = '@'
-                if col_num in (2, 8):
-                    body_format['align'] = 'left'
-                else:
-                    body_format['align'] = 'center'
-                bformat = workbook.add_format(body_format)
+                    bformat = fmt_text_center
                 worksheet.write(row_num, col_num, cell_data, bformat)
 
         filename = request.GET.get('filename') or 'staff-certificates'
@@ -1163,7 +1161,9 @@ class ExportStaffRewards(ExcelExportMixin):
                 Q(reason__icontains=search)
             )
 
-        body_format = {'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': '@'}
+        fmt_date = workbook.add_format({'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': 'yyyy-mm-dd'})
+        fmt_text_center = workbook.add_format({'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': '@'})
+        fmt_text_left = workbook.add_format({'border': True, 'align': 'left', 'valign': 'vcenter', 'num_format': '@'})
 
         for i, item in enumerate(obj_list):
             row_num += 1
@@ -1180,14 +1180,11 @@ class ExportStaffRewards(ExcelExportMixin):
             ]
             for col_num, cell_data in enumerate(row_data):
                 if col_num in (4, 5) and cell_data:
-                    body_format['num_format'] = 'yyyy-mm-dd'
+                    bformat = fmt_date
+                elif col_num in (3, 7, 8):
+                    bformat = fmt_text_left
                 else:
-                    body_format['num_format'] = '@'
-                if col_num in (3, 7, 8):
-                    body_format['align'] = 'left'
-                else:
-                    body_format['align'] = 'center'
-                bformat = workbook.add_format(body_format)
+                    bformat = fmt_text_center
                 worksheet.write(row_num, col_num, cell_data, bformat)
 
         filename = request.GET.get('filename') or 'staff-rewards'
@@ -1257,7 +1254,10 @@ class ExportStaffLeaveQuotas(ExcelExportMixin):
                 Q(note__icontains=search)
             )
 
-        body_format = {'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': '#,##0.00'}
+        fmt_num_right = workbook.add_format({'border': True, 'align': 'right', 'valign': 'vcenter', 'num_format': '#,##0.00'})
+        fmt_date = workbook.add_format({'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': 'yyyy-mm-dd'})
+        fmt_text_left = workbook.add_format({'border': True, 'align': 'left', 'valign': 'vcenter', 'num_format': '@'})
+        fmt_text_center = workbook.add_format({'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': '@'})
 
         for i, item in enumerate(obj_list):
             row_num += 1
@@ -1277,18 +1277,13 @@ class ExportStaffLeaveQuotas(ExcelExportMixin):
             ]
             for col_num, cell_data in enumerate(row_data):
                 if col_num in (3, 4, 5, 6, 7, 8):
-                    body_format['num_format'] = '#,##0.00'
-                    body_format['align'] = 'right'
+                    bformat = fmt_num_right
                 elif col_num in (9, 10) and cell_data:
-                    body_format['num_format'] = 'yyyy-mm-dd'
-                    body_format['align'] = 'center'
+                    bformat = fmt_date
                 elif col_num == 11:
-                    body_format['num_format'] = '@'
-                    body_format['align'] = 'left'
+                    bformat = fmt_text_left
                 else:
-                    body_format['num_format'] = '@'
-                    body_format['align'] = 'center'
-                bformat = workbook.add_format(body_format)
+                    bformat = fmt_text_center
                 worksheet.write(row_num, col_num, cell_data, bformat)
 
         filename = request.GET.get('filename') or 'staff-leave-quotas'
@@ -1362,7 +1357,10 @@ class ExportStaffLeaveUsages(ExcelExportMixin):
                 Q(reason__icontains=search)
             )
 
-        body_format = {'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': '@'}
+        fmt_num_right = workbook.add_format({'border': True, 'align': 'right', 'valign': 'vcenter', 'num_format': '#,##0.00'})
+        fmt_date = workbook.add_format({'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': 'yyyy-mm-dd'})
+        fmt_text_left = workbook.add_format({'border': True, 'align': 'left', 'valign': 'vcenter', 'num_format': '@'})
+        fmt_text_center = workbook.add_format({'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': '@'})
 
         for i, item in enumerate(obj_list):
             row_num += 1
@@ -1380,18 +1378,13 @@ class ExportStaffLeaveUsages(ExcelExportMixin):
             ]
             for col_num, cell_data in enumerate(row_data):
                 if col_num == 5:
-                    body_format['num_format'] = '#,##0.00'
-                    body_format['align'] = 'right'
+                    bformat = fmt_num_right
                 elif col_num in (3, 4, 8):
-                    body_format['num_format'] = 'yyyy-mm-dd'
-                    body_format['align'] = 'center'
+                    bformat = fmt_date
                 elif col_num == 6:
-                    body_format['num_format'] = '@'
-                    body_format['align'] = 'left'
+                    bformat = fmt_text_left
                 else:
-                    body_format['num_format'] = '@'
-                    body_format['align'] = 'center'
-                bformat = workbook.add_format(body_format)
+                    bformat = fmt_text_center
                 worksheet.write(row_num, col_num, cell_data, bformat)
 
         filename = request.GET.get('filename') or 'staff-leave-usages'
@@ -1460,10 +1453,15 @@ class ExportStaffAttendanceStatus(ExcelExportMixin):
         if search:
             staff_list = staff_list.filter(Q(name__icontains=search) | Q(personal_phone__icontains=search))
 
-        body_format = {'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': '@'}
+        quota_map = {q.staff_id: q for q in StaffLeaveQuota.objects.filter(company=company, year=year)}
+
+        fmt_num_right = workbook.add_format({'border': True, 'align': 'right', 'valign': 'vcenter', 'num_format': '#,##0.00'})
+        fmt_text_right = workbook.add_format({'border': True, 'align': 'right', 'valign': 'vcenter', 'num_format': '@'})
+        fmt_date = workbook.add_format({'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': 'yyyy-mm-dd'})
+        fmt_text_center = workbook.add_format({'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': '@'})
 
         for i, s in enumerate(staff_list):
-            quota = StaffLeaveQuota.objects.filter(company=company, staff=s, year=year).first()
+            quota = quota_map.get(s.id)
             tot = float(quota.total_granted_days) if quota else 0.0
             used = float(quota.used_days) if quota else 0.0
             rem = float(quota.remaining_days) if quota else 0.0
@@ -1484,18 +1482,13 @@ class ExportStaffAttendanceStatus(ExcelExportMixin):
             ]
             for col_num, cell_data in enumerate(row_data):
                 if col_num in (5, 6, 7):
-                    body_format['num_format'] = '#,##0.00'
-                    body_format['align'] = 'right'
+                    bformat = fmt_num_right
                 elif col_num == 8:
-                    body_format['num_format'] = '@'
-                    body_format['align'] = 'right'
+                    bformat = fmt_text_right
                 elif col_num == 4:
-                    body_format['num_format'] = 'yyyy-mm-dd'
-                    body_format['align'] = 'center'
+                    bformat = fmt_date
                 else:
-                    body_format['num_format'] = '@'
-                    body_format['align'] = 'center'
-                bformat = workbook.add_format(body_format)
+                    bformat = fmt_text_center
                 worksheet.write(row_num, col_num, cell_data, bformat)
 
         filename = request.GET.get('filename') or 'staff-attendance-status'
@@ -1552,8 +1545,8 @@ class ExportStaffEvaluations(ExcelExportMixin):
             worksheet.write(row_num, col_num, title, h_format)
 
         obj_list = StaffEvaluation.objects.filter(company=company).select_related(
-            'staff', 'staff__department', 'staff__position', 'staff__grade', 'evaluator', 'reviewer'
-        )
+            'staff', 'staff__position', 'staff__grade', 'evaluator', 'reviewer'
+        ).prefetch_related('staff__assignments__department')
         eval_year = request.GET.get('eval_year')
         eval_period = request.GET.get('eval_period')
         grade = request.GET.get('grade')
@@ -1575,7 +1568,9 @@ class ExportStaffEvaluations(ExcelExportMixin):
                 Q(notes__icontains=search)
             )
 
-        body_format = {'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': '@'}
+        fmt_num_right = workbook.add_format({'border': True, 'align': 'right', 'valign': 'vcenter', 'num_format': '#,##0.00'})
+        fmt_text_left = workbook.add_format({'border': True, 'align': 'left', 'valign': 'vcenter', 'num_format': '@'})
+        fmt_text_center = workbook.add_format({'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': '@'})
 
         for i, item in enumerate(obj_list):
             row_num += 1
@@ -1597,15 +1592,11 @@ class ExportStaffEvaluations(ExcelExportMixin):
             ]
             for col_num, cell_data in enumerate(row_data):
                 if col_num == 7 and cell_data != '':
-                    body_format['num_format'] = '#,##0.00'
-                    body_format['align'] = 'right'
+                    bformat = fmt_num_right
                 elif col_num in (10, 11):
-                    body_format['num_format'] = '@'
-                    body_format['align'] = 'left'
+                    bformat = fmt_text_left
                 else:
-                    body_format['num_format'] = '@'
-                    body_format['align'] = 'center'
-                bformat = workbook.add_format(body_format)
+                    bformat = fmt_text_center
                 worksheet.write(row_num, col_num, cell_data, bformat)
 
         filename = request.GET.get('filename') or 'staff-evaluations'
@@ -1661,8 +1652,8 @@ class ExportPromotionCandidates(ExcelExportMixin):
             worksheet.write(row_num, col_num, title, h_format)
 
         obj_list = PromotionCandidate.objects.filter(company=company).select_related(
-            'staff', 'staff__department', 'policy', 'policy__current_grade', 'policy__target_grade'
-        )
+            'staff', 'policy__current_grade', 'policy__target_grade'
+        ).prefetch_related('staff__assignments__department')
         eval_year = request.GET.get('eval_year')
         status = request.GET.get('status')
         staff = request.GET.get('staff')
@@ -1680,7 +1671,10 @@ class ExportPromotionCandidates(ExcelExportMixin):
                 Q(committee_review__icontains=search)
             )
 
-        body_format = {'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': '@'}
+        fmt_num_right = workbook.add_format({'border': True, 'align': 'right', 'valign': 'vcenter', 'num_format': '#,##0.0'})
+        fmt_date = workbook.add_format({'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': 'yyyy-mm-dd'})
+        fmt_text_left = workbook.add_format({'border': True, 'align': 'left', 'valign': 'vcenter', 'num_format': '@'})
+        fmt_text_center = workbook.add_format({'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': '@'})
 
         for i, item in enumerate(obj_list):
             row_num += 1
@@ -1702,18 +1696,13 @@ class ExportPromotionCandidates(ExcelExportMixin):
             ]
             for col_num, cell_data in enumerate(row_data):
                 if col_num in (6, 7) and cell_data != '':
-                    body_format['num_format'] = '#,##0.0'
-                    body_format['align'] = 'right'
+                    bformat = fmt_num_right
                 elif col_num == 9 and cell_data != '-':
-                    body_format['num_format'] = 'yyyy-mm-dd'
-                    body_format['align'] = 'center'
+                    bformat = fmt_date
                 elif col_num == 10:
-                    body_format['num_format'] = '@'
-                    body_format['align'] = 'left'
+                    bformat = fmt_text_left
                 else:
-                    body_format['num_format'] = '@'
-                    body_format['align'] = 'center'
-                bformat = workbook.add_format(body_format)
+                    bformat = fmt_text_center
                 worksheet.write(row_num, col_num, cell_data, bformat)
 
         filename = request.GET.get('filename') or 'promotion-candidates'
@@ -1788,7 +1777,9 @@ class ExportPromotionPolicies(ExcelExportMixin):
                 Q(description__icontains=search)
             )
 
-        body_format = {'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': '@'}
+        fmt_num_right = workbook.add_format({'border': True, 'align': 'right', 'valign': 'vcenter', 'num_format': '#,##0.00'})
+        fmt_text_left = workbook.add_format({'border': True, 'align': 'left', 'valign': 'vcenter', 'num_format': '@'})
+        fmt_text_center = workbook.add_format({'border': True, 'align': 'center', 'valign': 'vcenter', 'num_format': '@'})
 
         for i, item in enumerate(obj_list):
             row_num += 1
@@ -1806,98 +1797,13 @@ class ExportPromotionPolicies(ExcelExportMixin):
             ]
             for col_num, cell_data in enumerate(row_data):
                 if col_num == 4 and cell_data != '-':
-                    body_format['num_format'] = '#,##0.00'
-                    body_format['align'] = 'right'
+                    bformat = fmt_num_right
                 elif col_num in (5, 6, 7, 8):
-                    body_format['num_format'] = '@'
-                    body_format['align'] = 'left'
+                    bformat = fmt_text_left
                 else:
-                    body_format['num_format'] = '@'
-                    body_format['align'] = 'center'
-                bformat = workbook.add_format(body_format)
+                    bformat = fmt_text_center
                 worksheet.write(row_num, col_num, cell_data, bformat)
 
         filename = request.GET.get('filename') or 'promotion-policies'
-        filename = f'{filename}-{TODAY}'
-        return self.create_response(output, workbook, filename)
-
-
-class ExportExamples(ExcelExportMixin):
-    """Examples"""
-
-    def get(self, request):
-        # 워크북 생성
-        output, workbook, worksheet = self.create_workbook('시트_타이틀')
-
-        # data start --------------------------------------------- #
-        project = Project.objects.get(pk=request.GET.get('project'))
-
-        # 포맷 생성
-        title_format = self.create_title_format(workbook)
-        h_format = self.create_header_format(workbook)
-
-        # title_list
-        header_src = [[],
-                      ['head title', 'column', 10]]
-        titles = ['No']  # header titles
-        params = []  # ORM 추출 field
-        widths = [7]  # No. 컬럼 넓이
-
-        for el in header_src:
-            if el:
-                titles.append(el[0])
-                params.append(el[1])
-                widths.append(el[2])
-
-        # 1. Title
-        row_num = 0
-        worksheet.set_row(row_num, 50)
-        worksheet.merge_range(row_num, 0, row_num, len(header_src) - 1, '시트 헤더 타이틀', title_format)
-
-        # 2. Pre Header - Date
-        row_num = 1
-        worksheet.set_row(row_num, 18)
-        worksheet.write(row_num, len(header_src) - 1, TODAY + ' 현재', workbook.add_format({'align': 'right'}))
-
-        # 3. Header - 1
-        row_num = 2
-        worksheet.set_row(row_num, 20, workbook.add_format({'bold': True}))
-
-        # Adjust the column width.
-        for i, col_width in enumerate(widths):
-            worksheet.set_column(i, i, col_width)
-
-        # Write header - 1
-        for col_num, title in enumerate(titles):
-            worksheet.write(row_num, col_num, title, h_format)
-
-        # 4. Body
-        # Get some data to write to the spreadsheet.
-        obj_list = Contract.objects.filter(project=project)
-
-        data = obj_list.values_list(*params)
-
-        body_format = {
-            'border': True,
-            'valign': 'vcenter',
-            'num_format': '#,##0'
-        }
-
-        # Turn off some of the warnings:
-        # worksheet.ignore_errors({'number_stored_as_text': 'F:G'})
-
-        # Write body
-        for i, row in enumerate(data):
-            row = list(row)
-            row_num += 1
-            row.insert(0, i + 1)
-            for col_num, cell_data in enumerate(row):
-                bformat = workbook.add_format(body_format)
-                worksheet.write(row_num, col_num, cell_data, bformat)
-
-        # data finish -------------------------------------------- #
-
-        # Close the workbook before sending the data.
-        filename = request.GET.get('filename') or 'examples'
         filename = f'{filename}-{TODAY}'
         return self.create_response(output, workbook, filename)

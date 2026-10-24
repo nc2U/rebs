@@ -78,6 +78,7 @@ class CompanySealAdmin(ImportExportMixin, admin.ModelAdmin):
     )
     list_display_links = ('name',)
     list_editable = ('is_active',)
+    list_select_related = ('company', 'internal_manager', 'final_approval_duty', 'route_template')
     list_filter = ('company', 'seal_type', 'custody_type', 'final_approval_duty', 'is_active')
     search_fields = ('name', 'purpose', 'custodian', 'internal_manager__name')
     raw_id_fields = ('internal_manager', 'route_template')
@@ -256,24 +257,28 @@ class DepartmentAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'company', 'upper_depart', 'name', 'level', 'task', 'manager')
     list_display_links = ('company', 'name')
     list_editable = ('task', 'manager')
+    list_select_related = ('company', 'upper_depart')
     list_filter = ('company',)
 
 
 class JobGradeAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'company', 'code', 'role', 'min_promotion_years', 'promotion_criteria')
     list_display_links = ('code',)
+    list_select_related = ('company',)
     list_filter = ('company',)
 
 
 class PositionAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'company', 'name', 'desc')
     list_display_links = ('name',)
+    list_select_related = ('company',)
     list_filter = ('company',)
 
 
 class DutyTitleAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'company', 'code', 'name', 'desc')
     list_display_links = ('code', 'name')
+    list_select_related = ('company',)
     list_filter = ('company',)
     search_fields = ('code', 'name', 'desc')
 
@@ -282,6 +287,7 @@ class ExecutiveRankAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'company', 'sort_order', 'code', 'name', 'role_desc')
     list_display_links = ('name',)
     list_editable = ('sort_order',)
+    list_select_related = ('company',)
     list_filter = ('company',)
     search_fields = ('code', 'name', 'role_desc')
 
@@ -290,6 +296,7 @@ class ExecutiveAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'company', 'staff', 'rank', 'executive_type', 'is_registered',
                     'is_standing', 'represent_type', 'term_start', 'term_end')
     list_display_links = ('staff',)
+    list_select_related = ('company', 'staff', 'rank')
     list_filter = ('company', 'rank', 'executive_type', 'is_registered', 'is_standing', 'represent_type')
     search_fields = ('staff__name', 'rank__name', 'note')
 
@@ -299,9 +306,17 @@ class StaffAdmin(ImportExportMixin, admin.ModelAdmin):
                     'grade', 'position', 'get_department', 'get_duty', 'email', 'status',
                     'date_join', 'contract_end_date', 'date_leave')
     list_display_links = ('name', 'email')
+    list_select_related = ('company', 'grade', 'position', 'executive__rank')
     list_filter = ('company', 'sort', 'employment_type', 'grade', 'position', 'status')
     inlines = (StaffAssignmentInline, ExecutiveInline, PersonnelOrderInline,
                StaffCareerInline, StaffCertificateInline, StaffRewardPunishmentInline)
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related(
+            'company', 'grade', 'position', 'executive__rank'
+        ).prefetch_related(
+            'assignments__department', 'assignments__duty'
+        )
 
     @admin.display(description='임원 직위')
     def get_executive_rank(self, obj):
@@ -320,6 +335,7 @@ class StaffAssignmentAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'company', 'staff', 'department', 'duty', 'is_primary',
                     'assigned_tasks')
     list_display_links = ('staff',)
+    list_select_related = ('company', 'staff', 'department', 'duty')
     list_filter = ('company', 'department', 'is_primary', 'duty')
     search_fields = ('staff__name', 'department__name', 'assigned_tasks')
 
@@ -328,6 +344,7 @@ class PersonnelOrderAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'company', 'order_date', 'order_no', 'staff', 'order_type',
                     'new_department', 'new_grade', 'new_position', 'new_duty', 'is_processed')
     list_display_links = ('order_date', 'staff')
+    list_select_related = ('company', 'staff', 'new_department', 'new_grade', 'new_position', 'new_duty')
     list_filter = ('company', 'order_type', 'is_processed', 'new_department')
     search_fields = ('staff__name', 'order_no', 'description')
 
@@ -336,6 +353,7 @@ class StaffCareerAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'company', 'staff', 'company_name', 'department_name', 'position_title',
                     'start_date', 'end_date', 'recognized_ratio')
     list_display_links = ('company_name', 'staff')
+    list_select_related = ('company', 'staff')
     list_filter = ('company',)
     search_fields = ('staff__name', 'company_name', 'assigned_tasks')
 
@@ -344,6 +362,7 @@ class StaffCertificateAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'company', 'staff', 'name', 'grade', 'cert_number', 'issuer',
                     'acquired_date', 'expire_date', 'has_allowance')
     list_display_links = ('name', 'staff')
+    list_select_related = ('company', 'staff')
     list_filter = ('company', 'has_allowance')
     search_fields = ('staff__name', 'name', 'grade', 'cert_number', 'issuer')
 
@@ -351,6 +370,7 @@ class StaffCertificateAdmin(ImportExportMixin, admin.ModelAdmin):
 class StaffRewardPunishmentAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'company', 'staff', 'sort', 'type_name', 'action_date', 'expire_date', 'organization')
     list_display_links = ('type_name', 'staff')
+    list_select_related = ('company', 'staff')
     list_filter = ('company', 'sort')
     search_fields = ('staff__name', 'type_name', 'reason', 'organization')
 
@@ -360,6 +380,7 @@ class PromotionPolicyAdmin(ImportExportMixin, admin.ModelAdmin):
                     'required_eval_grade', 'min_avg_grade_point', 'is_active')
     list_display_links = ('current_grade', 'target_grade')
     list_editable = ('min_years', 'is_active')
+    list_select_related = ('company', 'current_grade', 'target_grade')
     list_filter = ('company', 'is_active')
     search_fields = ('current_grade__code', 'target_grade__code', 'required_credentials', 'disqualification_conditions')
 
@@ -367,6 +388,7 @@ class PromotionPolicyAdmin(ImportExportMixin, admin.ModelAdmin):
 class StaffEvaluationAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'company', 'staff', 'eval_year', 'eval_period', 'grade', 'score', 'evaluator', 'reviewer')
     list_display_links = ('staff',)
+    list_select_related = ('company', 'staff', 'evaluator', 'reviewer')
     list_filter = ('company', 'eval_year', 'eval_period', 'grade')
     search_fields = ('staff__name', 'achievement_summary', 'notes')
 
@@ -376,6 +398,7 @@ class PromotionCandidateAdmin(ImportExportMixin, admin.ModelAdmin):
                     'promoted_date')
     list_display_links = ('staff',)
     list_editable = ('status', 'promoted_date')
+    list_select_related = ('company', 'staff', 'policy__current_grade', 'policy__target_grade')
     list_filter = ('company', 'eval_year', 'status', 'policy')
     search_fields = ('staff__name', 'committee_review')
 
@@ -384,6 +407,7 @@ class StaffLeaveQuotaAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'company', 'year', 'staff', 'granted_days', 'carry_over_days', 'reward_days',
                     'get_total_granted', 'get_used_days', 'get_remaining_days', 'valid_start', 'valid_end')
     list_display_links = ('year', 'staff')
+    list_select_related = ('company', 'staff')
     list_filter = ('company', 'year')
     search_fields = ('staff__name', 'note')
 
@@ -404,6 +428,7 @@ class StaffLeaveUsageAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('id', 'company', 'staff', 'leave_type', 'start_date', 'end_date',
                     'deduction_days', 'approval_doc', 'is_cancelled', 'created')
     list_display_links = ('staff', 'leave_type')
+    list_select_related = ('company', 'staff', 'approval_doc')
     list_filter = ('company', 'leave_type', 'is_cancelled', 'start_date')
     search_fields = ('staff__name', 'reason', 'approval_doc__title', 'approval_doc__doc_number')
 

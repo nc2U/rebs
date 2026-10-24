@@ -41,6 +41,12 @@ class Staff(models.Model):
     @property
     def primary_assignment(self):
         """주보직 (없으면 첫 번째 보직)"""
+        if hasattr(self, '_prefetched_objects_cache') and 'assignments' in self._prefetched_objects_cache:
+            for a in self.assignments.all():
+                if a.is_primary:
+                    return a
+            assignments = list(self.assignments.all())
+            return assignments[0] if assignments else None
         return self.assignments.filter(is_primary=True).first() or self.assignments.first()
 
     @property
@@ -300,12 +306,16 @@ class StaffLeaveQuota(models.Model):
     @property
     def used_days(self):
         """해당 유효 기간 내 실제 차감된 연차 사용 일수 합계"""
-        res = self.staff.leave_usages.filter(
-            start_date__gte=self.valid_start,
-            start_date__lte=self.valid_end,
+        qs = self.staff.leave_usages.filter(
             is_cancelled=False,
             deduction_days__gt=0,
-        ).aggregate(
+        )
+        if self.valid_start and self.valid_end:
+            qs = qs.filter(start_date__gte=self.valid_start, start_date__lte=self.valid_end)
+        else:
+            qs = qs.filter(start_date__year=self.year)
+
+        res = qs.aggregate(
             total=Coalesce(Sum('deduction_days'), Decimal('0.00'))
         )
         return res['total']
