@@ -103,6 +103,10 @@ class Issue(models.Model):
         if errors:
             raise ValidationError(errors)
 
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
+
     class Meta:
         ordering = ('-updated', '-created')
         verbose_name = '09. 업무(작업)'
@@ -161,6 +165,15 @@ class IssueComment(models.Model):
     def __str__(self):
         return self.content
 
+    def clean(self):
+        super().clean()
+        if self.parent and self.issue_id and self.parent.issue_id != self.issue_id:
+            raise ValidationError({'parent': '부모 댓글은 동일한 업무의 댓글이어야 합니다.'})
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
+
     class Meta:
         indexes = [
             GinIndex(fields=['content'], opclasses=['gin_trgm_ops'], name='work_comment_content_trgm'),
@@ -190,6 +203,10 @@ class IssueRelation(models.Model):
                 reverse_relation = reverse_relation.exclude(pk=self.pk)
             if reverse_relation.exists():
                 raise ValidationError({'target': '해당 업무와 상호 순환 참조되는 관계가 이미 존재합니다.'})
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
 
 class TrackerManager(models.Manager):

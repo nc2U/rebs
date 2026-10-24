@@ -433,8 +433,8 @@ class WorkMeetingAndSecurityAPITests(APITestCase):
         payload = {
             'project': self.private_project.pk,
             'title': '시공사/감리단 합동 대책회의',
-            'location': '현장 상황실 2층 대회의실 & Zoom 화상 회의',
-            'other_attendees': '홍길동 수석감리원 (○○엔지니어링), 이순신 현장소장 (△△건설)',
+            'location': '프로젝트 상황실 2층 대회의실 & Zoom 화상 회의',
+            'other_attendees': '홍길동 수석감리원 (○○엔지니어링), 이순신 소장 (△△건설)',
             'agenda': '기초 파일 항타 공법 변경 심의',
             'status': '1',
         }
@@ -716,6 +716,7 @@ class WorkImprovementTests(TestCase):
         with self.assertRaises(ValidationError) as ctx:
             self.project_a.clean()
         self.assertIn('parent', ctx.exception.message_dict)
+        self.project_a.parent = None
 
         # 2. 순환 참조: A -> B -> A
         self.project_b.parent = self.project_a
@@ -1474,3 +1475,232 @@ class IssueCountByTrackerApiTests(APITestCase):
 
 
 
+
+
+from work.models import (
+    IssueProject, Tracker, IssueStatus, CodeIssuePriority,
+    Issue, IssueRelation, IssueFile, IssueCategory,
+    Meeting, News, IssueComment, NewsComment, Member
+)
+
+
+from django.core.files.uploadedfile import SimpleUploadedFile
+
+
+class WorkAuditAndRLSTests(TestCase):
+    """
+    work 앱 정밀 감사 신규 검증 테스트:
+    1. Issue.save() 호출 시 clean() 강제 무결성 검증 (날짜 역전)
+    2. IssueRelation.save() 호출 시 clean() 강제 무결성 검증 (순환 관계)
+    3. Meeting.save() 호출 시 clean() 강제 무결성 검증 (미종료 상태 확정)
+    4. IssueComment 및 NewsComment 타 글 부모 댓글 지정 차단 검증
+    5. IssueRelationViewSet, IssueFileViewSet, IssueCategoryViewSet RLS 격리 검증
+    6. Django Admin (IssueProjectAdmin, IssueAdmin, MeetingAdmin) Staff RLS 격리 검증
+    """
+
+    def setUp(self):
+        from accounts.models import User
+        from company.models import Company
+        from work.models import (
+            IssueProject, Tracker, IssueStatus, CodeIssuePriority,
+            Issue, IssueRelation, IssueFile, IssueCategory,
+            Meeting, News, IssueComment, NewsComment, Member
+        )
+        self.company = Company.objects.create(name='(주)보안테스트건설')
+        self.admin_user = User.objects.create_superuser(username='work_admin', email='admin@example.com', password='pw')
+        self.member_user = User.objects.create_user(username='work_member', email='member@example.com', password='pw')
+        self.outsider_user = User.objects.create_user(username='work_outsider', email='outsider@example.com', password='pw')
+        self.staff_user = User.objects.create_user(username='work_staff', email='staff@example.com', password='pw', is_staff=True)
+
+        # 비공개 프로젝트
+        self.private_project = IssueProject.objects.create(
+            company=self.company,
+            name='기밀 프로젝트',
+            slug='confidential-prj',
+            is_public=False,
+            creator=self.admin_user
+        )
+        # 공개 프로젝트
+        self.public_project = IssueProject.objects.create(
+            company=self.company,
+            name='공개 프로젝트',
+            slug='public-prj',
+            is_public=True,
+            creator=self.admin_user
+        )
+
+        # 멤버 할당 (member_user -> private_project)
+        Member.objects.create(user=self.member_user, project=self.private_project)
+
+        self.status_open = IssueStatus.objects.create(name='진행', creator=self.admin_user)
+        self.status_closed = IssueStatus.objects.create(name='종료', closed=True, creator=self.admin_user)
+        self.tracker = Tracker.objects.create(name='기밀업무', default_status=self.status_open, creator=self.admin_user)
+        self.priority = CodeIssuePriority.objects.create(name='높음', creator=self.admin_user)
+
+    def test_issue_save_enforces_clean(self):
+        """Issue.save() 직접 호출 시 날짜 역전 방어 clean()이 강제 실행되는지 검증"""
+        issue = Issue(
+            project=self.public_project,
+            tracker=self.tracker,
+            status=self.status_open,
+            priority=self.priority,
+            subject='직접 저장 날짜 역전',
+            start_date=timezone.now().date() + timedelta(days=10),
+            due_date=timezone.now().date(),
+            creator=self.admin_user
+        )
+        with self.assertRaises(ValidationError) as ctx:
+            issue.save()
+        self.assertIn('due_date', ctx.exception.message_dict)
+
+    def test_issue_relation_save_enforces_clean(self):
+        """IssueRelation.save() 호출 시 역방향 순환 참조 방어 clean()이 강제 실행되는지 검증"""
+        issue1 = Issue.objects.create(
+            project=self.public_project, tracker=self.tracker, status=self.status_open,
+            priority=self.priority, subject='업무 1', start_date=timezone.now().date(), creator=self.admin_user
+        )
+        issue2 = Issue.objects.create(
+            project=self.public_project, tracker=self.tracker, status=self.status_open,
+            priority=self.priority, subject='업무 2', start_date=timezone.now().date(), creator=self.admin_user
+        )
+
+        # 1. 선행 관계: issue1 -> issue2 저장
+        rel1 = IssueRelation(source=issue1, target=issue2, creator=self.admin_user)
+        rel1.save()
+
+        # 2. 역방향 순환 관계 시도: issue2 -> issue1 저장 시 차단
+        rel2 = IssueRelation(source=issue2, target=issue1, creator=self.admin_user)
+        with self.assertRaises(ValidationError) as ctx:
+            rel2.save()
+        self.assertIn('target', ctx.exception.message_dict)
+
+    def test_meeting_save_enforces_clean(self):
+        """Meeting.save() 호출 시 미종료 상태 확정 방어 clean()이 강제 실행되는지 검증"""
+        meeting = Meeting(
+            project=self.public_project,
+            title='미종료 확정 시도 회의',
+            status='1',  # 준비/진행
+            is_confirmed=True,  # 미종료 상태에서 확정 시도
+            creator=self.admin_user
+        )
+        with self.assertRaises(ValidationError) as ctx:
+            meeting.save()
+        self.assertIn('is_confirmed', ctx.exception.message_dict)
+
+    def test_comment_parent_mismatch_clean(self):
+        """타 업무/타 공지의 댓글을 부모 댓글로 지정 시 clean()에서 차단되는지 검증"""
+        issue_a = Issue.objects.create(
+            project=self.public_project, tracker=self.tracker, status=self.status_open,
+            priority=self.priority, subject='업무 A', start_date=timezone.now().date(), creator=self.admin_user
+        )
+        issue_b = Issue.objects.create(
+            project=self.public_project, tracker=self.tracker, status=self.status_open,
+            priority=self.priority, subject='업무 B', start_date=timezone.now().date(), creator=self.admin_user
+        )
+        comment_a = IssueComment.objects.create(issue=issue_a, content='A 댓글', creator=self.admin_user)
+
+        # B 업무의 댓글인데 부모 댓글로 comment_a(A 업무 댓글)를 지정
+        cross_comment = IssueComment(issue=issue_b, parent=comment_a, content='B 댓글 (오류)', creator=self.admin_user)
+        with self.assertRaises(ValidationError) as ctx:
+            cross_comment.save()
+        self.assertIn('parent', ctx.exception.message_dict)
+
+        # NewsComment도 검증
+        news_a = News.objects.create(project=self.public_project, title='공지 A', author=self.admin_user)
+        news_b = News.objects.create(project=self.public_project, title='공지 B', author=self.admin_user)
+        news_comment_a = NewsComment.objects.create(news=news_a, content='A 공지 댓글', creator=self.admin_user)
+
+        cross_news_comment = NewsComment(news=news_b, parent=news_comment_a, content='B 공지 댓글 (오류)', creator=self.admin_user)
+        with self.assertRaises(ValidationError) as ctx:
+            cross_news_comment.save()
+        self.assertIn('parent', ctx.exception.message_dict)
+
+    def test_viewsets_rls_isolation(self):
+        """IssueRelationViewSet, IssueFileViewSet, IssueCategoryViewSet RLS 격리 검증"""
+        from rest_framework.test import APIClient
+        client = APIClient()
+
+        # 비공개 프로젝트 내 업무 및 관계, 파일, 범주 생성
+        p_issue1 = Issue.objects.create(
+            project=self.private_project, tracker=self.tracker, status=self.status_open,
+            priority=self.priority, subject='비공개 업무 1', start_date=timezone.now().date(), creator=self.admin_user
+        )
+        p_issue2 = Issue.objects.create(
+            project=self.private_project, tracker=self.tracker, status=self.status_open,
+            priority=self.priority, subject='비공개 업무 2', start_date=timezone.now().date(), creator=self.admin_user
+        )
+        p_rel = IssueRelation.objects.create(source=p_issue1, target=p_issue2, creator=self.admin_user)
+        p_file = IssueFile.objects.create(
+            issue=p_issue1,
+            file=SimpleUploadedFile('secret.txt', b'confidential content'),
+            file_name='secret.txt',
+            creator=self.admin_user
+        )
+        p_cat = IssueCategory.objects.create(project=self.private_project, name='비공개 범주')
+
+        # 1. 비인가 사용자(outsider_user)로 조회 시 비공개 데이터는 결과에 포함되지 않아야 함
+        client.force_authenticate(user=self.outsider_user)
+
+        res_rel = client.get('/api/v1/issue-relation/')
+        self.assertEqual(res_rel.status_code, 200)
+        rel_results = res_rel.data.get('results', res_rel.data)
+        self.assertFalse(any(r['pk'] == p_rel.pk for r in rel_results))
+
+        res_file = client.get('/api/v1/issue-file/')
+        self.assertEqual(res_file.status_code, 200)
+        file_results = res_file.data.get('results', res_file.data)
+        self.assertFalse(any(f['pk'] == p_file.pk for f in file_results))
+
+        res_cat = client.get('/api/v1/issue-category/')
+        self.assertEqual(res_cat.status_code, 200)
+        cat_results = res_cat.data.get('results', res_cat.data)
+        self.assertFalse(any(c['pk'] == p_cat.pk for c in cat_results))
+
+        # 2. 관리자(admin_user)로 조회 시 정상 노출 검증
+        client.force_authenticate(user=self.admin_user)
+        res_cat_admin = client.get('/api/v1/issue-category/')
+        cat_admin_results = res_cat_admin.data.get('results', res_cat_admin.data)
+        self.assertTrue(any(c['pk'] == p_cat.pk for c in cat_admin_results))
+
+    def test_admin_rls_isolation(self):
+        """Django Admin (IssueProjectAdmin, IssueAdmin, MeetingAdmin) Staff RLS 격리 검증"""
+        from django.test import RequestFactory
+        from django.contrib.admin.sites import AdminSite
+        from work.admin.project import IssueProjectAdmin
+        from work.admin.issue import IssueAdmin
+        from work.admin.meeting import MeetingAdmin
+
+        rf = RequestFactory()
+        request = rf.get('/admin/')
+        request.user = self.staff_user  # 비슈퍼유저 스태프
+
+        site = AdminSite()
+        proj_admin = IssueProjectAdmin(IssueProject, site)
+        issue_admin = IssueAdmin(Issue, site)
+        meet_admin = MeetingAdmin(Meeting, site)
+
+        # 비공개 데이터 생성
+        p_issue = Issue.objects.create(
+            project=self.private_project, tracker=self.tracker, status=self.status_open,
+            priority=self.priority, subject='비공개 어드민 업무', start_date=timezone.now().date(), creator=self.admin_user
+        )
+        p_meet = Meeting.objects.create(
+            project=self.private_project, title='비공개 어드민 회의', creator=self.admin_user
+        )
+
+        # 1. Staff의 get_queryset()에서는 비공개 프로젝트 항목이 은닉되어야 함
+        proj_qs = proj_admin.get_queryset(request)
+        self.assertNotIn(self.private_project, proj_qs)
+        self.assertIn(self.public_project, proj_qs)
+
+        issue_qs = issue_admin.get_queryset(request)
+        self.assertNotIn(p_issue, issue_qs)
+
+        meet_qs = meet_admin.get_queryset(request)
+        self.assertNotIn(p_meet, meet_qs)
+
+        # 2. Superuser의 get_queryset()에서는 모든 항목이 조회되어야 함
+        request.user = self.admin_user
+        self.assertIn(self.private_project, proj_admin.get_queryset(request))
+        self.assertIn(p_issue, issue_admin.get_queryset(request))
+        self.assertIn(p_meet, meet_admin.get_queryset(request))

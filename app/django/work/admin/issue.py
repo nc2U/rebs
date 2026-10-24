@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
 from rangefilter.filters import DateRangeFilter
@@ -39,6 +40,15 @@ class IssueAdmin(ImportExportMixin, admin.ModelAdmin):
     search_fields = ('subject',)
     inlines = (IssueFileInline, IssueLinkInline, IssueCommentInline, IssueRelationInline)
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        user = request.user
+        if user.is_superuser or getattr(user, 'work_manager', False):
+            return qs
+        return qs.filter(
+            Q(project__is_public=True) | Q(project__members__user=user) | Q(creator=user) | Q(assigned_to=user)
+        ).distinct()
+
 
 @admin.register(Tracker)
 class TrackerAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -55,6 +65,13 @@ class IssueCategoryAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display_links = ('name',)
     list_editable = ('project', 'assigned_to')
     list_select_related = ('project', 'assigned_to')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        user = request.user
+        if user.is_superuser or getattr(user, 'work_manager', False):
+            return qs
+        return qs.filter(Q(project__is_public=True) | Q(project__members__user=user)).distinct()
 
 
 @admin.register(IssueStatus)

@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.postgres.indexes import GinIndex
 
@@ -70,6 +71,15 @@ class NewsComment(models.Model):
 
     def __str__(self):
         return f"{self.news} -> {self.content}"
+
+    def clean(self):
+        super().clean()
+        if self.parent and self.news_id and self.parent.news_id != self.news_id:
+            raise ValidationError({'parent': '부모 댓글은 동일한 공지의 댓글이어야 합니다.'})
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
     class Meta:
         ordering = ['-created']

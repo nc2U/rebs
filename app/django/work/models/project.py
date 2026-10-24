@@ -76,6 +76,10 @@ class IssueProject(models.Model):
                     visited.add(curr.pk)
                 curr = curr.parent
 
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
+
     def depth(self):
         if self.parent is None:
             return 0

@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
 from rangefilter.filters import DateRangeFilter
@@ -12,6 +13,15 @@ class MeetingCategoryAdmin(ImportExportMixin, admin.ModelAdmin):
     list_editable = ('description', 'color', 'order')
     list_select_related = ('project',)
     list_filter = ('project',)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        user = request.user
+        if user.is_superuser or getattr(user, 'work_manager', False):
+            return qs
+        return qs.filter(
+            Q(project__isnull=True) | Q(project__is_public=True) | Q(project__members__user=user)
+        ).distinct()
 
 
 class MeetingFileInline(admin.TabularInline):
@@ -35,6 +45,15 @@ class MeetingAdmin(ImportExportMixin, admin.ModelAdmin):
     search_fields = ('title', 'agenda', 'content', 'decisions', 'action_items')
     filter_horizontal = ('attendees',)
     inlines = (MeetingFileInline, MeetingLinkInline)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        user = request.user
+        if user.is_superuser or getattr(user, 'work_manager', False):
+            return qs
+        return qs.filter(
+            Q(project__is_public=True) | Q(project__members__user=user) | Q(creator=user) | Q(attendees=user)
+        ).distinct()
 
     fieldsets = (
         ('기본 정보', {

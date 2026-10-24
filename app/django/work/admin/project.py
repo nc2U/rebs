@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
 
@@ -61,6 +62,13 @@ class IssueProjectAdmin(ImportExportMixin, admin.ModelAdmin):
 
     readonly_fields = ('created', 'updated')
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        user = request.user
+        if user.is_superuser or getattr(user, 'work_manager', False):
+            return qs
+        return qs.filter(Q(is_public=True) | Q(members__user=user)).distinct()
+
     def get_readonly_fields(self, request, obj=None):
         readonly = list(self.readonly_fields)
         if obj:  # 기존 객체 수정 시
@@ -120,7 +128,11 @@ class MemberAdmin(ImportExportMixin, admin.ModelAdmin):
     list_filter = ('project', 'roles')
 
     def get_queryset(self, request):
-        return super().get_queryset(request).prefetch_related('roles')
+        qs = super().get_queryset(request)
+        user = request.user
+        if not (user.is_superuser or getattr(user, 'work_manager', False)):
+            qs = qs.filter(Q(project__is_public=True) | Q(project__members__user=user)).distinct()
+        return qs.prefetch_related('roles')
 
     def get_roles(self, obj):
         return ", ".join([role.name for role in obj.roles.all()]) if obj.roles.all() else '-'
@@ -135,6 +147,13 @@ class VersionAdmin(ImportExportMixin, admin.ModelAdmin):
     list_select_related = ('project',)
     list_filter = ('project', 'status', 'sharing')
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        user = request.user
+        if user.is_superuser or getattr(user, 'work_manager', False):
+            return qs
+        return qs.filter(Q(project__is_public=True) | Q(project__members__user=user)).distinct()
+
 
 @admin.register(ProjectSubscription)
 class ProjectSubscriptionAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -143,11 +162,25 @@ class ProjectSubscriptionAdmin(ImportExportMixin, admin.ModelAdmin):
     list_select_related = ('user', 'project')
     list_filter = ('project',)
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        user = request.user
+        if user.is_superuser or getattr(user, 'work_manager', False):
+            return qs
+        return qs.filter(user=user)
+
 
 @admin.register(ProjectBookmark)
 class ProjectBookmarkAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ('pk', 'user', 'project', 'order', 'created')
     list_display_links = ('pk', 'user')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        user = request.user
+        if user.is_superuser or getattr(user, 'work_manager', False):
+            return qs
+        return qs.filter(user=user)
     list_editable = ('order',)
     list_select_related = ('user', 'project')
     list_filter = ('project',)

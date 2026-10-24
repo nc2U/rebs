@@ -649,6 +649,14 @@ class IssueRelationViewSet(viewsets.ModelViewSet):
         }
         return mapping.get(self.action, None)
 
+    def get_queryset(self):
+        user = self.request.user
+        queryset = super().get_queryset().select_related('source', 'target').order_by('id')
+        if user.is_superuser or getattr(user, 'work_manager', False):
+            return queryset
+        accessible_issues = build_issue_queryset(user)
+        return queryset.filter(source__in=accessible_issues, target__in=accessible_issues).distinct()
+
     def perform_create(self, serializer):
         serializer.save(creator=self.request.user)
 
@@ -672,6 +680,14 @@ class IssueFileViewSet(viewsets.ModelViewSet):
             'destroy': 'issue.update'
         }
         return mapping.get(self.action, None)
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = super().get_queryset().select_related('issue', 'creator').order_by('id')
+        if user.is_superuser or getattr(user, 'work_manager', False):
+            return queryset
+        accessible_issues = build_issue_queryset(user)
+        return queryset.filter(issue__in=accessible_issues).distinct()
 
     def perform_create(self, serializer):
         serializer.save(creator=self.request.user)
@@ -788,6 +804,15 @@ class IssueCategoryViewSet(viewsets.ModelViewSet):
     serializer_class = IssueCategorySerializer
     permission_classes = (permissions.IsAuthenticated, ProjectPermission)
     filterset_fields = ('project__slug',)
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = super().get_queryset().select_related('project', 'assigned_to')
+        if user.is_superuser or getattr(user, 'work_manager', False):
+            return queryset
+        return queryset.filter(
+            Q(project__is_public=True) | Q(project__members__user=user)
+        ).distinct()
 
     @property
     def required_permission(self):

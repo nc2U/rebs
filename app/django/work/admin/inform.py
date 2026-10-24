@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
 
@@ -22,6 +23,13 @@ class NewsAdmin(ImportExportMixin, admin.ModelAdmin):
     list_select_related = ('project', 'author')
     inlines = (NewsFileInline, NewsCommentInline)
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        user = request.user
+        if user.is_superuser or getattr(user, 'work_manager', False):
+            return qs
+        return qs.filter(Q(project__is_public=True) | Q(project__members__user=user)).distinct()
+
 
 @admin.register(CustomQuery)
 class CustomQueryAdmin(ImportExportMixin, admin.ModelAdmin):
@@ -31,3 +39,10 @@ class CustomQueryAdmin(ImportExportMixin, admin.ModelAdmin):
     list_filter = ('target_type', 'is_public', 'user')
     search_fields = ('name', 'description')
     readonly_fields = ('created', 'updated')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        user = request.user
+        if user.is_superuser or getattr(user, 'work_manager', False):
+            return qs
+        return qs.filter(Q(user=user) | Q(is_public=True)).distinct()

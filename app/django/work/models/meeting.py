@@ -83,6 +83,10 @@ class Meeting(models.Model):
         if errors:
             raise ValidationError(errors)
 
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
+
 
 class MeetingFile(models.Model):
     meeting = models.ForeignKey(Meeting, on_delete=models.CASCADE, default=None, verbose_name='회의록',
